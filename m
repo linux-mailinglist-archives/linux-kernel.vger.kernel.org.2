@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4A3439ECE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB302439ED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhJYTCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:02:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26508 "EHLO
+        id S233734AbhJYTDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:03:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48418 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232144AbhJYTCN (ORCPT
+        by vger.kernel.org with ESMTP id S233719AbhJYTDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:02:13 -0400
+        Mon, 25 Oct 2021 15:03:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635188390;
+        s=mimecast20190719; t=1635188458;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=u4kru4s1e7GAOIDOmUaVKYjqsMWQYSUCOrzEgrrXdhU=;
-        b=f2dKBSi95rjO01a5DpQ+9w071WIRB9pEA/lyCbjvkYo+zgwE+SmgF9VS+YVcyj4L2O+u3l
-        l3VhoAQR0yEUy54JVFq2K+Vr0MxG0gStHwiWxxCV+A0rBID2a3bPmtWVY5QC5B37n86FW8
-        zfzo1TfrtZYM4g6fRdSYrzWTS+g+I04=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-Nce26myTM1Wu38ir7M7Zgw-1; Mon, 25 Oct 2021 14:59:49 -0400
-X-MC-Unique: Nce26myTM1Wu38ir7M7Zgw-1
-Received: by mail-qk1-f197.google.com with SMTP id bl10-20020a05620a1a8a00b004624f465b6eso7907889qkb.22
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:59:49 -0700 (PDT)
+        bh=QkyoC/NexH1Nu0O2R4wJhF/62iz6WrFzKuF9woFeRsA=;
+        b=FMgtWL46advIFc7a6Z4Daj5ZHup5t8m+GSfyUGpbsOs3yNJiysWmY6X4so8zxrrF8RdYHb
+        KYr9DvZLg1Rwjnlg9PbS+aoALmXhDNDC4lZIhyj10VO5tixNxrwqy2IIBOa97gYtty03QF
+        hA+w8TXa7lI0lp/nfm32RH8f4G3KqQ0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-NDeFFj-BNW2zmvHWaONXBQ-1; Mon, 25 Oct 2021 15:00:56 -0400
+X-MC-Unique: NDeFFj-BNW2zmvHWaONXBQ-1
+Received: by mail-wr1-f72.google.com with SMTP id d10-20020adffd8a000000b00167f0846597so2904234wrr.16
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:00:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u4kru4s1e7GAOIDOmUaVKYjqsMWQYSUCOrzEgrrXdhU=;
-        b=GHNWu4kxigEddI4KFuOjWbsvGcdxQggNQJEHen5ySVzTPjhLz2lL5q9++MuW1UK9X7
-         93XpwU4flbWG3KDHzCwFd/bnD/wevqi2iorez4pV3uxD9vN/68Ocik+up3M4agK5EWZk
-         8C2hHwZbwZhK3dB1NB7QT7mUNgiXqisxtNrPkGiFfo8WxL6b5+/PuA++c7iExRpBRxIO
-         anyKIfKNh35RcyAaiL4saPouDOddGl/S7aXS0vKSP+LtjYZO8gYLry9ANKrfVqhMeqiS
-         E1lncIQnxz36XlTbEjrJfL2uEE3IVaYSSFLU5i82rQFfZp0zN+7g8DwfyUSzRyLYNz2r
-         P+aQ==
-X-Gm-Message-State: AOAM532BR7G9hs9m2gZMtef8DB9xt7R4IQLRiWbFWV7b6HJ6kuTQd1JR
-        5mlj+WdaYXAeN79PGKYGWBn9xXkYqbnstJwcHDCTERAta/6etR8rqI4kLKFEts/1M+6qA3gHmP+
-        I1MufDTmeSEEJAt3yZrIwERpL
-X-Received: by 2002:a05:622a:4d2:: with SMTP id q18mr19790075qtx.84.1635188388527;
-        Mon, 25 Oct 2021 11:59:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKm0YX8u1rcHOL+P2hPWmc3GB11xYrFeECTLbJbQ9a8nAe1QmzFGsQrrMc79aYQ1nLIj++XA==
-X-Received: by 2002:a05:622a:4d2:: with SMTP id q18mr19790050qtx.84.1635188388240;
-        Mon, 25 Oct 2021 11:59:48 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id b71sm9096789qkg.131.2021.10.25.11.59.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 11:59:47 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 11:59:45 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Rob Landley <rob@landley.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: Commit 0d989ac2c90b broke my x86-64 build.
-Message-ID: <20211025185945.ywcvhqypzoaxohyc@treble>
-References: <53f767cd-9160-1015-d1b8-0230b5566574@landley.net>
- <CAK7LNAQFEi=4nky4nxRA8s+ODaf89Wa5kwDhe9dppKWX0UiFJA@mail.gmail.com>
- <20211024192742.uo62mbqb6hmhafjs@treble>
- <66ed460c-ac48-2b5a-e8e4-07613cf69ab0@landley.net>
- <YXZzIUqdWW9wwlpr@hirez.programming.kicks-ass.net>
- <20211025144656.fqqneysf72wwxp3m@treble>
- <YXbFpfJwXJXABDup@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QkyoC/NexH1Nu0O2R4wJhF/62iz6WrFzKuF9woFeRsA=;
+        b=uCtutGaDd5ZeHYiy8jRBWiBpS0LacaxRnPquOe7upCNhY5y9I1px1Hq2jQ9VSGBhya
+         R58JCpmcSg6DsmPMXHxJXsEa0HtzBp1lspypOcKYLUHHL+/kJ11DMPnlzRth0qSH++jo
+         nCSFAArSUGapKnGXUAF46Q6Pup0MUdkLJzRRDXf+7IfbS51NAHZJ9DpStMtMpYb8ojl/
+         ZxPNWvQN1xVQS/Or4Aj9Nd/TySMGyX3pU2u6u2CuIi+x0s0QcbtaH8q9PCAfj1WSfaPH
+         jKGH4ohajuhwxOl0JeZSB4h0y6CJGGp25MwXPF5nHooj4E3w/5tf96d6RFkKj2Fvz15X
+         8R2A==
+X-Gm-Message-State: AOAM531dpIJb7n1X1hOQ+QG6RR07oJYIJcesCUC3GsEygQDCtYmbVS59
+        yAu1llpY5U8/MzszH97kzdIJ1JjoTESNKLSLEFO070djG8ighwmkhb/KnHKqULnTIGHA56ddPN7
+        fuBTsFZsvBvNCG/83DgqcL20JDDOOaM+LM2kUu3R+
+X-Received: by 2002:a7b:c74f:: with SMTP id w15mr21890331wmk.186.1635188455482;
+        Mon, 25 Oct 2021 12:00:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzXLWqbHTas2L+Ep0jJ8Ym3FrcHaKtpcTPgh7nV35XP5aJDxyjNlJ4UaNmG9hWfJd1eun8dCJKnnE+XiZ6mmk=
+X-Received: by 2002:a7b:c74f:: with SMTP id w15mr21890297wmk.186.1635188455236;
+ Mon, 25 Oct 2021 12:00:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YXbFpfJwXJXABDup@hirez.programming.kicks-ass.net>
+References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+In-Reply-To: <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 25 Oct 2021 21:00:43 +0200
+Message-ID: <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 04:56:37PM +0200, Peter Zijlstra wrote:
-> On Mon, Oct 25, 2021 at 07:46:56AM -0700, Josh Poimboeuf wrote:
-> > On Mon, Oct 25, 2021 at 11:04:33AM +0200, Peter Zijlstra wrote:
-> > > On Sun, Oct 24, 2021 at 09:51:45PM -0500, Rob Landley wrote:
-> > > > > Unfortunately I think CONFIG_STACK_VALIDATION is no longer optional on
-> > > > > x86-64 these days, because of static calls and retpolines.
-> > > > 
-> > > > Does it need stack validation, or just a frame unwinder?
-> > > 
-> > > static_calls rely on objtool to find all "call __SCT*" instructions and
-> > > write their location in a .static_call_sites section.
-> > > 
-> > > The having of static calls is not optional on x86_64, and I have zero
-> > > interest in trying to work out what not having static_call() does, or to
-> > > maintain that option.
-> > 
-> > What I meant was, make STATIC_CALL_INLINE optional.  Then it would use
-> > out-of-line static calls which should just work, no?
-> 
-> Yeah, I suppose so... I think we're then missing a STACK_VALIDATION
-> dependency for KCOV. We rely on objtool to nop out those
-> __sanitizer_cov_* calls.
-> 
-> I had really hoped to just make objtool an unconditional part of x86_64.
+On Fri, Oct 22, 2021 at 9:23 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Fri, Oct 22, 2021 at 8:06 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > Probing only the first byte(s) in fault_in() would be ideal, no need to
+> > go through all filesystems and try to change the uaccess/probing order.
+>
+> Let's try that. Or rather: probing just the first page - since there
+> are users like that btrfs ioctl, and the direct-io path.
 
-I was hoping the opposite ;-)  Not everybody wants the extra build
-overhead, object size, complexity, warnings, etc.  And it should be
-pretty easy to make it optional anyway.
+For direct I/O, we actually only want to trigger page fault-in so that
+we can grab page references with bio_iov_iter_get_pages. Probing for
+sub-page error domains will only slow things down. If we hit -EFAULT
+during the actual copy-in or copy-out, we know that the error can't be
+page fault related. Similarly, in the buffered I/O case, we only
+really care about the next byte, so any probing beyond that is
+unnecessary.
 
-Plus it's a good idea to make the dependencies more explicit.  We've
-already been looking at modularizing, like creating a new CONFIG_OBJTOOL
-option and splitting stack validation out from some of the other
-features.  This could be a nice extension of that.
+So maybe we should split the sub-page error domain probing off from
+the fault-in functions. Or at least add an argument to the fault-in
+functions that specifies the amount of memory to probe.
 
-Which reminds me, I'm still thinking we need to make the interface more
-easily combinable, like:
-
-objtool run				\
-	[--validate]			\
-	[--noinstr]			\
-	[--retpoline]			\
-	[--orc]				\
-	[--mcount]			\
-	[--static-call]			\
-	[--kcov]			\
-	[--frame-pointer]		\
-	[--vmlinux]			\
-	[--uaccess]			\
-	[--module]			\
-	[--no-unreachable]		\
-	[--backup]			\
-	[--stats]			\
-	[--backtrace]
-
-objtool dump				\
-	[--orc]				\
-	[--mcount]			\
-	[--static-call]			\
-	[--alternatives]		\
-	[--whatever]
-
-I can hopefully get to it one of these weeks...
-
--- 
-Josh
+Thanks,
+Andreas
 
