@@ -2,139 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FD4439E2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C53439E2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 20:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhJYSKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 14:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34792 "EHLO
+        id S232056AbhJYSKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 14:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbhJYSJ6 (ORCPT
+        with ESMTP id S231278AbhJYSKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 14:09:58 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AFEC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:07:35 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id o11so18247737ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:07:35 -0700 (PDT)
+        Mon, 25 Oct 2021 14:10:43 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC5CC061767
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:08:21 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id x13so3807669qvk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:08:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jznhQY9YDN9Bo/+eZUeL8mH4xnaJXsN5ZUXlcBDztJg=;
-        b=W+3CaI/+xfMKHHZbtPTIA70pf3Oa5gyMV5/CeqjIVzuThNfi0uWdgR+yeAKOXW2u05
-         BurZSwquYdSoeH8ItJYd7vesmHFvXhKHtHEmi4zU9e+hBb/Uy+/W3dYnAwDHvvAfRsRl
-         RQ7Ei3wYUUIHXW6KudfWAFYcMWUK2zCbt/bTA=
+        d=metztli-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=723Xr55q/68X2ExvwXw8IoW4BYez2a4ZswDyF1RWfVc=;
+        b=tp1nVPmXlM7LhIyoZMXYOBCzGWlp2bTB4bl/pmtLhYoeMuMPde4Y+jWwNxVhkQrGJi
+         ZgLrageuDgDcPaeT8P3m64dQ0S52Qc0PaFcgbT/XTcyUrQTG8d3i9DciU2WMS7Qh1EwU
+         fONRGIBVmJG+HpVTBVn8ghQwTIUVbOnCrNuGJO3HJ9+7c169teR/ZWuT0ZPMRtGiGe6K
+         RPFERBH6k8EdbgaKQ22aEg+qNGxATHHzQj23hn1uahgnFA1c1g3BcIXHDAUdeHG0m0R6
+         8c2q2c8T7NAVEhesqheFUqPxkf6yu+CzaGl2eHMHrfVS9f4k7zamRkX77czkw5BMAGjo
+         /qOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jznhQY9YDN9Bo/+eZUeL8mH4xnaJXsN5ZUXlcBDztJg=;
-        b=NDSSneEnq4gtBP0+5DUYsnKhrZxLkYm2ejc2GTL1nsj3gtUBGz7ORh6hNtmJsT4EwI
-         ZkS5iEOYJQILUGoZyWR73c0qr3y0vwqJzWV3tFqc4E/436dre4t6aw8jbcZ1UKfsQGfR
-         EJe4XIHED3UFjddhPMwXbDYFpLWfj2CSabzxkO2BTGDJ3rRkf42rTnf8okiiKJ0US+7N
-         OMS/sLrFlrchWeeloJ2Xf7NGz/kM+duSpJr77FuMebYLLWpd3nyaJt6DXy9f8+9MZrvh
-         Z4T4G3r6P8iV/80byp/Ojxnj2iaE5x6L++A/R5CDfJ+I7HGo/slK4GJ5jAxHpDFA7cd7
-         GSSA==
-X-Gm-Message-State: AOAM532ZEWjrvnbSHFJMqPkilElJWYJxk0UqQKDFdGCASKTmUjk0xXZF
-        LSNweTuFtopTaBazpewj60cZL2IRwVd/Oixt
-X-Google-Smtp-Source: ABdhPJxRtLdN4EzAeyCwLNHxkcjZXsndv2qZx/f0Pi3dkYKGsSce2CKLvg7w5z3y4nidntss9V+B7w==
-X-Received: by 2002:a05:651c:b27:: with SMTP id b39mr20861634ljr.431.1635185253628;
-        Mon, 25 Oct 2021 11:07:33 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id u8sm856929lff.53.2021.10.25.11.07.32
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=723Xr55q/68X2ExvwXw8IoW4BYez2a4ZswDyF1RWfVc=;
+        b=hHnO6KV8VN/ztqlxlfmBqQZoWG1T88kIsKx7ZyuJ+9iIEge9r5qLu9fuPy8UcNPhDr
+         L7/NsYpoyL/mKB4gDa5BhMnEf55xuNbQX5zNtjbmAyhmA49wgdIA/IZR83TfjrkXujQF
+         LH99kj+fovWjzIcTUuFDrOkssmPKmHWv82Pec3+idPpTiVB+CyqlHJ2ZPNVnXIPAPOfe
+         Z/eBhfRPIMDaLzWyZQK7ztnoKsWhWqkYXK0dcVORhNskX3DIMoReDNKXNcujT3idWHGM
+         9OR76pUZm4fdxK7yGT7HkyO6MS0iNrLmHW3fIhlUFtpF9UW8b24oECukoAcD8Nkav2NS
+         jCKg==
+X-Gm-Message-State: AOAM533ZoX+ownZh213vI76fru8K4ZuRn0aF2ojVaAlJUMjuo4Bl28nT
+        vwZ1kFpfDtw+uY1JO9FVl2e5BQ==
+X-Google-Smtp-Source: ABdhPJxkcb9HnLsfJa/4T621dr8t3FlYiTSyavcPJ+N/CsdAw93qnKJukwhU2yD9djc4WyxNFH6TWg==
+X-Received: by 2002:ad4:5965:: with SMTP id eq5mr17118845qvb.45.1635185300223;
+        Mon, 25 Oct 2021 11:08:20 -0700 (PDT)
+Received: from ?IPv6:2600:1700:6470:27a0:4e80:93ff:fe00:3ff7? ([2600:1700:6470:27a0:4e80:93ff:fe00:3ff7])
+        by smtp.gmail.com with ESMTPSA id g10sm2241191qko.38.2021.10.25.11.08.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 11:07:33 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id l13so15142906lfg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 11:07:32 -0700 (PDT)
-X-Received: by 2002:a05:6512:3983:: with SMTP id j3mr10730262lfu.402.1635185252505;
- Mon, 25 Oct 2021 11:07:32 -0700 (PDT)
+        Mon, 25 Oct 2021 11:08:19 -0700 (PDT)
+Subject: Re: Unsubscription Incident
+To:     Slade Watkins <slade@sladewatkins.com>,
+        Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Lijun Pan <lijunp213@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alan Coopersmith <alan.coopersmith@oracle.com>
+References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
+ <CA+h21hqrX32qBmmdcNiNkp6_QvzsX61msyJ5_g+-FFJazxLgDw@mail.gmail.com>
+ <YXY15jCBCAgB88uT@d3>
+ <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
+From:   Metztli Information Technology <jose.r.r@metztli.com>
+Message-ID: <c00f22d2-6566-8911-b56b-142f6fe42b8c@metztli.com>
+Date:   Mon, 25 Oct 2021 11:08:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <CAHk-=wjbXW13Eh6YnB4C5ghLrhJCq0u2bpSNA0JbK8eDb6o_XA@mail.gmail.com>
- <20211019203320.GA748645@roeck-us.net>
-In-Reply-To: <20211019203320.GA748645@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 25 Oct 2021 11:07:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whPA5ZgXAG08vqtvZw3DK5H7Tkd9r+ZHSxxNaKYWzjw9g@mail.gmail.com>
-Message-ID: <CAHk-=whPA5ZgXAG08vqtvZw3DK5H7Tkd9r+ZHSxxNaKYWzjw9g@mail.gmail.com>
-Subject: Re: Linux 5.15-rc6
-To:     Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 1:33 PM Guenter Roeck <linux@roeck-us.net> wrote:
+
+On 10/25/21 10:04 AM, Slade Watkins wrote:
+> On Mon, Oct 25, 2021 at 12:43 AM Benjamin Poirier
+> <benjamin.poirier@gmail.com> wrote:
+>> On 2021-10-22 18:54 +0300, Vladimir Oltean wrote:
+>>> On Fri, 22 Oct 2021 at 18:53, Lijun Pan <lijunp213@gmail.com> wrote:
+>>>> Hi,
+>>>>
+>>>>  From Oct 11, I did not receive any emails from both linux-kernel and
+>>>> netdev mailing list. Did anyone encounter the same issue? I subscribed
+>>>> again and I can receive incoming emails now. However, I figured out
+>>>> that anyone can unsubscribe your email without authentication. Maybe
+>>>> it is just a one-time issue that someone accidentally unsubscribed my
+>>>> email. But I would recommend that our admin can add one more
+>>>> authentication step before unsubscription to make the process more
+>>>> secure.
+>>>>
+>>>> Thanks,
+>>>> Lijun
+>>> Yes, the exact same thing happened to me. I got unsubscribed from all
+>>> vger mailing lists.
+>> It happened to a bunch of people on gmail:
+>> https://lore.kernel.org/netdev/1fd8d0ac-ba8a-4836-59ab-0ed3b0321775@mojatatu.com/t/#u
+> I can at least confirm that this didn't happen to me on my hosted
+> Gmail through Google Workspace. Could be wrong, but it seems isolated
+> to normal @gmail.com accounts.
 >
-> Building alpha:allmodconfig ... failed
->
-> drivers/spi/spi-tegra20-slink.c:1197:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
->  1197 | static int tegra_slink_runtime_resume(struct device *dev)
+> Best,
+>               -slade
 
-Ok, I've fixed this up _again_ now in my tree, since I'm about to make
-another rc and didn't get the fix any other way.
+Niltze [Hello], all-
 
-And honestly, I'm a bit upset.
+Could it have something to do with the following?
 
-I'm upset because Mark not only screwed up a merge commit, he did so
-despite the fact that HE SHOULD NOT HAVE DONE A MERGE AT ALL.
+---------- Forwarded message ---------
 
-Mark, please stop doing these mindless AND INCORRECT back-merges of my
-tree. There is absolutely no excuse for garbage like this:
+From: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date: Thu, Oct 21, 2021 at 12:06 PM
+Subject: [oss-security] Mailman 2.1.35 security release
+To: <oss-security@lists.openwall.com>
 
-  commit 59c4e190b10cd2d6edccb5c238a3d2bda071a018
-  Merge: 6840615f85f6 5816b3e6577e
-  Author: Mark Brown <broonie@kernel.org>
-  Date:   Mon Sep 27 18:38
 
-      Merge tag 'v5.15-rc3' into spi-5.15
+Quoting from Mark Sapiro's emails at:
+https://mail.python.org/archives/list/mailman-announce@python.org/thread/IKCO6JU755AP5G5TKMBJL6IEZQTTNPDQ/
 
-      Linux 5.15-rc3
+ > A couple of vulnerabilities have recently been reported. Thanks to Andre
+ > Protas, Richard Cloke and Andy Nuttall of Apple for reporting these and
+ > helping with the development of a fix.
+ >
+ > CVE-2021-42096 could allow a list member to discover the list admin
+ > password.
+ >
+ > CVE-2021-42097 could allow a list member to create a successful CSRF
+ > attack against another list member enabling takeover of the members 
+account.
+ >
+ > These attacks can't be carried out by non-members so may not be of
+ > concern for sites with only trusted list members.
 
-  commit ffb1e76f4f32d2b8ea4189df0484980370476395
-  Merge: 2bab94090b01 e4e737bb5c17
-  Author: Mark Brown <broonie@kernel.org>
-  Date:   Mon Sep 20 15:56
 
-      Merge tag 'v5.15-rc2' into spi-5.15
+ > I am pleased to announce the release of Mailman 2.1.35.
+ >
+ > This is a security and minor bug fix release. See the attached
+ > README.txt for details. For those who just want a patch for the security
+ > issues, see
+ > https://bazaar.launchpad.net/~mailman-coders/mailman/2.1/revision/1873.
+ > The patch is also attached to the bug reports at
+ > https://bugs.launchpad.net/mailman/+bug/1947639 and
+ > https://bugs.launchpad.net/mailman/+bug/1947640. The patch is the same
+ > on both and fixes both issues.
+ >
+ > As noted Mailman 2.1.30 was the last feature release of the Mailman 2.1
+ > branch from the GNU Mailman project. There has been some discussion as
+ > to what this means. It means there will be no more releases from the GNU
+ > Mailman project containing any new features. There may be future patch
+ > releases to address the following:
+ >
+ > i18n updates.
+ > security issues.
+ > bugs affecting operation for which no satisfactory workaround exists.
+ >
+ > Mailman 2.1.35 is the fifth such patch release.
+ >
+ > Mailman is free software for managing email mailing lists and
+ > e-newsletters. Mailman is used for all the python.org and
+ > SourceForge.net mailing lists, as well as at hundreds of other sites.
+ >
+ > For more information, please see our web site at one of:
+ >
+ > http://www.list.org
+ > https://www.gnu.org/software/mailman
+ > http://mailman.sourceforge.net/
+ >
+ > Mailman 2.1.35 can be downloaded from
+ >
+ > https://launchpad.net/mailman/2.1/
+ > https://ftp.gnu.org/gnu/mailman/
+ > https://sourceforge.net/projects/mailman/
 
-      Linux 5.15-rc2
+ > --
+ >        -Alan Coopersmith- alan.coopersmith@oracle.com
+ >         Oracle Solaris Engineering - https://blogs.oracle.com/alanc
 
-where one of those merges was actively incorrect, and BOTH of the
-merges were pure crap in that they don't have any explanation for what
-the reason for the merge was.
 
-I've said this a hundred times before, and I bet I'll have to say it a
-hundred times again, but let me repeat one more time:
+Best Professional Regards.
 
-   IF YOU CANNOT EXPLAIN WHY YOU ARE DOING A MERGE, THEN DON'T DO THE MERGE.
-
-Dammit, it's really that simple. This is not a complicated rule.
-
-If your merge doesn't have an explanation for what you're doing and
-*WHY* you are doing it, then your merge is bad, bad, bad.
-
-Don't do it. Just stop it. Just keep developing your own tree, and
-don't do bad back-merges of the upstream tree. You have absolutely no
-business merging my random changes like this, and that is doubly true
-when you do it badly and the end result is just broken and wrong to
-the point of not even building.
-
-If you really need to do a back-merge, explain WHY. And it had better
-be some important reason.
-
-In particular, the reson should not be "fix conflict", because you're
-clearly not particularly good at it.
-
-Yes, I can screw up merges too. It happens. But I do a _lot_ of
-merges, and as a result I'm pretty good at them. Trying to fix a
-conflict so that I don't see it is likely to just make things worse.
-
-It makes things worse not only because you're more likely to get it
-wrong, it makes it worse because it's literally hiding the kinds of
-development process issues that I want to see so that I am aware of
-them.
-
-              Linus
+-- 
+Jose R R
+http://metztli.it
+---------------------------------------------------------------------------------------------
+Download Metztli Reiser4: Debian Bullseye w/ Linux 5.13.14 AMD64
+---------------------------------------------------------------------------------------------
+feats ZSTD compression https://sf.net/projects/metztli-reiser4/
+---------------------------------------------------------------------------------------------
+or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
+-------------------------------------------------------------------------------------------
+Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
