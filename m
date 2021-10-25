@@ -2,101 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48DA439065
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A4A439067
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhJYHdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 03:33:24 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26193 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhJYHdX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:33:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hd66B4KSSz8tv4;
-        Mon, 25 Oct 2021 15:29:38 +0800 (CST)
-Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 15:30:58 +0800
-Received: from [10.174.178.240] (10.174.178.240) by
- dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 15:30:57 +0800
-Subject: Re: [PATCH net 2/3] can: j1939: j1939_can_recv(): ignore messages
- with invalid source address
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-CC:     Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        <kernel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>
-References: <1634825057-47915-1-git-send-email-zhangchangzhong@huawei.com>
- <1634825057-47915-3-git-send-email-zhangchangzhong@huawei.com>
- <20211022102306.GB20681@pengutronix.de>
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-Message-ID: <9c636d7f-70df-18c9-66ed-46eb21f4ffbb@huawei.com>
-Date:   Mon, 25 Oct 2021 15:30:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20211022102306.GB20681@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.240]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
+        id S231743AbhJYHeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 03:34:08 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:50562 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231710AbhJYHeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 03:34:05 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-01 (Coremail) with SMTP id qwCowAAHoCBHXXZhWuRJBQ--.64178S2;
+        Mon, 25 Oct 2021 15:31:19 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] seq_file: Fix potential addition overflow
+Date:   Mon, 25 Oct 2021 07:31:18 +0000
+Message-Id: <1635147078-2409190-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowAAHoCBHXXZhWuRJBQ--.64178S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF1rAw1ktFW8AryrWw4xtFb_yoWfXFc_ta
+        9avw1rGr42qa1vvF9rtr409rykAwn7tr4Yq34fX3sxtFWUKr43AF1DCr9xCr1fC395XF1D
+        X34vvF90g3W5ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
+        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
+        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUekucDUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/22 18:23, Oleksij Rempel wrote:
-> On Thu, Oct 21, 2021 at 10:04:16PM +0800, Zhang Changzhong wrote:
->> According to SAE-J1939-82 2015 (A.3.6 Row 2), a receiver should never
->> send TP.CM_CTS to the global address, so we can add a check in
->> j1939_can_recv() to drop messages with invalid source address.
->>
->> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
->> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> 
-> NACK. This will break Address Claiming, where first message is SA == 0xff
+After seq_hlist_start_percpu(), the value of &iter->li_cpu might be
+MAX_UINT.
+In that case, there will be addition overflow in the cpumask_next().
+Therefore, it might be better to add the check before.
 
-I know that 0xfe can be used as a source address, but which message has a source
-address of 0xff?
+Fixes: 0bc7738 ("seq_file: add seq_list_*_percpu helpers")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ fs/seq_file.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-According to SAE-J1939-81 2017 4.2.2.8：
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 5059248..f768c28 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -1105,6 +1105,9 @@ seq_hlist_next_percpu(void *v, struct hlist_head __percpu *head,
+ 	if (node->next)
+ 		return node->next;
+ 
++	if (*cpu >= nr_cpu_ids)
++		return NULL;
++
+ 	for (*cpu = cpumask_next(*cpu, cpu_possible_mask); *cpu < nr_cpu_ids;
+ 	     *cpu = cpumask_next(*cpu, cpu_possible_mask)) {
+ 		struct hlist_head *bucket = per_cpu_ptr(head, *cpu);
+-- 
+2.7.4
 
-  The network address 255, also known as the Global address, is permitted in the
-  Destination Address field of the SAE J1939 message identifier but never in the
-  Source Address field.
-
-> 
->> ---
->>  net/can/j1939/main.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
->> index 08c8606..4f1e4bb 100644
->> --- a/net/can/j1939/main.c
->> +++ b/net/can/j1939/main.c
->> @@ -75,6 +75,10 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
->>  	skcb->addr.pgn = (cf->can_id >> 8) & J1939_PGN_MAX;
->>  	/* set default message type */
->>  	skcb->addr.type = J1939_TP;
->> +	if (!j1939_address_is_valid(skcb->addr.sa))
->> +		/* ignore messages whose sa is broadcast address */
->> +		goto done;
->> +
->>  	if (j1939_pgn_is_pdu1(skcb->addr.pgn)) {
->>  		/* Type 1: with destination address */
->>  		skcb->addr.da = skcb->addr.pgn;
->> -- 
->> 2.9.5
->>
->>
->>
-> 
