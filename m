@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4AD439F60
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B679543A1A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234713AbhJYTTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        id S234623AbhJYTkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:40:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234294AbhJYTTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:19:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED022610A1;
-        Mon, 25 Oct 2021 19:16:48 +0000 (UTC)
+        id S236412AbhJYTeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:34:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8707610A5;
+        Mon, 25 Oct 2021 19:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189409;
-        bh=9AvXhGyKZjGJmMQatpWmELdKmiWyNhDfhmljIpmGST0=;
+        s=korg; t=1635190234;
+        bh=xZOhryl0XSWzplWr+qj+2hR8QhvZpt1hEK2PI5GGjlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=myS4TcBQWTQlMq20emPHxwQET8OhPGCGc25Gyf49F0Nu4nX59M8gSw+wHpwFxX4c6
-         uKBpR1kq+OWs7XvLGqkOApp/KCxZwfUtGi30w+pOLifI7Aipxt6y2PCvrux7j6MmXk
-         zue3BKJ3+eWuUrrxfC4KkLw1SfaJhAp3VrSsUpQc=
+        b=FaqS0uy9TJ/khQX0ZGxqqdbgRAZJvTC/YkC2ELx3jy9RkuFW+gbgAPm6gRR4M/0wK
+         iXRz3CpWGycMqjvJXOWDMQmXapjPG94KtMuOuJKAavCHQCECA/GyfkJfQncAam04Z0
+         cZHmUH94J5WHgMpralXloHyIYKBYLlztrK7/mWe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 24/44] netfilter: ipvs: make global sysctl readonly in non-init netns
-Date:   Mon, 25 Oct 2021 21:14:05 +0200
-Message-Id: <20211025190933.546292776@linuxfoundation.org>
+Subject: [PATCH 5.10 09/95] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+Date:   Mon, 25 Oct 2021 21:14:06 +0200
+Message-Id: <20211025190958.102526105@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-[ Upstream commit 174c376278949c44aad89c514a6b5db6cee8db59 ]
+[ Upstream commit f3d7c2cdf6dc0d5402ec29c3673893b3542c5ad1 ]
 
-Because the data pointer of net/ipv4/vs/debug_level is not updated per
-netns, it must be marked as read-only in non-init netns.
+Use platform data to initialize xtfpga device drivers when CONFIG_USE_OF
+is not selected. This fixes xtfpga networking when CONFIG_USE_OF is not
+selected but CONFIG_OF is.
 
-Fixes: c6d2d445d8de ("IPVS: netns, final patch enabling network name space.")
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Acked-by: Julian Anastasov <ja@ssi.bg>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/xtensa/platforms/xtfpga/setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 1adbcdda2158..dccaa816c17b 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -3922,6 +3922,11 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	tbl[idx++].data = &ipvs->sysctl_conn_reuse_mode;
- 	tbl[idx++].data = &ipvs->sysctl_schedule_icmp;
- 	tbl[idx++].data = &ipvs->sysctl_ignore_tunneled;
-+#ifdef CONFIG_IP_VS_DEBUG
-+	/* Global sysctls must be ro in non-init netns */
-+	if (!net_eq(net, &init_net))
-+		tbl[idx++].mode = 0444;
-+#endif
+diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
+index 4f7d6142d41f..59b7f11f2a3e 100644
+--- a/arch/xtensa/platforms/xtfpga/setup.c
++++ b/arch/xtensa/platforms/xtfpga/setup.c
+@@ -66,7 +66,7 @@ void __init platform_calibrate_ccount(void)
  
- 	ipvs->sysctl_hdr = register_net_sysctl(net, "net/ipv4/vs", tbl);
- 	if (ipvs->sysctl_hdr == NULL) {
+ #endif
+ 
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ 
+ static void __init xtfpga_clk_setup(struct device_node *np)
+ {
+@@ -284,4 +284,4 @@ static int __init xtavnet_init(void)
+  */
+ arch_initcall(xtavnet_init);
+ 
+-#endif /* CONFIG_OF */
++#endif /* CONFIG_USE_OF */
 -- 
 2.33.0
 
