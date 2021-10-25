@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B2F439F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDE3439F80
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbhJYTTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:19:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35532 "EHLO mail.kernel.org"
+        id S234072AbhJYTV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234204AbhJYTRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:17:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AEC16108C;
-        Mon, 25 Oct 2021 19:15:30 +0000 (UTC)
+        id S234406AbhJYTUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:20:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A62761090;
+        Mon, 25 Oct 2021 19:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189332;
-        bh=RP0WfVS+8bNkOpjBzmhUlHGA4U6PwAQwLksv6VNslQU=;
+        s=korg; t=1635189473;
+        bh=lO0DuIKUZ5zkgHkfV2sRjPBl0xkSfEwWiAYLq1/9Cq4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y86Bk3ysZAftMlgxZFxlU3b9MRN9GBV4Lxr0D0X08UV/XiTdOSwmWJgkL64t/KvWM
-         dahvDZPbZMGtqfNYU2JQ3+KRRSkUtW8vy4F/D3ysDmpovVqjDTJrOaLU9FPQ7XpC+t
-         zi66gi32K3LZlhfFz5utDsL8Pvb4381GPdCuuoSs=
+        b=2kA+tL2uwJtiuXiwQaiDtz7osNPMeSk7IEdpJCyfDy2nCMzeZAbUTcuhvFjoEsNV2
+         pUiDVqjllFUeQOqQMlGJAnG87adothdnWP46b98+kKGDjOkpJTpqGEycNuvkXNZS8q
+         UF3Ovs+7jTU3FjGBNqSfri4SPMfu63yP4ssVRPfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 4.4 09/44] nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
-Date:   Mon, 25 Oct 2021 21:13:50 +0200
-Message-Id: <20211025190930.523351591@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 4.9 04/50] cb710: avoid NULL pointer subtraction
+Date:   Mon, 25 Oct 2021 21:13:51 +0200
+Message-Id: <20211025190933.598563270@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+References: <20211025190932.542632625@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 5d388fa01fa6eb310ac023a363a6cb216d9d8fe9 upstream.
+commit 42641042c10c757fe10cc09088cf3f436cec5007 upstream.
 
-If a cell has 'nbits' equal to a multiple of BITS_PER_BYTE the logic
+clang-14 complains about an unusual way of converting a pointer to
+an integer:
 
- *p &= GENMASK((cell->nbits%BITS_PER_BYTE) - 1, 0);
+drivers/misc/cb710/sgbuf2.c:50:15: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+        return ((ptr - NULL) & 3) != 0;
 
-will become undefined behavior because nbits modulo BITS_PER_BYTE is 0, and we
-subtract one from that making a large number that is then shifted more than the
-number of bits that fit into an unsigned long.
+Replace this with a normal cast to uintptr_t.
 
-UBSAN reports this problem:
-
- UBSAN: shift-out-of-bounds in drivers/nvmem/core.c:1386:8
- shift exponent 64 is too large for 64-bit type 'unsigned long'
- CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.15.0-rc3+ #9
- Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
- Workqueue: events_unbound deferred_probe_work_func
- Call trace:
-  dump_backtrace+0x0/0x170
-  show_stack+0x24/0x30
-  dump_stack_lvl+0x64/0x7c
-  dump_stack+0x18/0x38
-  ubsan_epilogue+0x10/0x54
-  __ubsan_handle_shift_out_of_bounds+0x180/0x194
-  __nvmem_cell_read+0x1ec/0x21c
-  nvmem_cell_read+0x58/0x94
-  nvmem_cell_read_variable_common+0x4c/0xb0
-  nvmem_cell_read_variable_le_u32+0x40/0x100
-  a6xx_gpu_init+0x170/0x2f4
-  adreno_bind+0x174/0x284
-  component_bind_all+0xf0/0x264
-  msm_drm_bind+0x1d8/0x7a0
-  try_to_bring_up_master+0x164/0x1ac
-  __component_add+0xbc/0x13c
-  component_add+0x20/0x2c
-  dp_display_probe+0x340/0x384
-  platform_probe+0xc0/0x100
-  really_probe+0x110/0x304
-  __driver_probe_device+0xb8/0x120
-  driver_probe_device+0x4c/0xfc
-  __device_attach_driver+0xb0/0x128
-  bus_for_each_drv+0x90/0xdc
-  __device_attach+0xc8/0x174
-  device_initial_probe+0x20/0x2c
-  bus_probe_device+0x40/0xa4
-  deferred_probe_work_func+0x7c/0xb8
-  process_one_work+0x128/0x21c
-  process_scheduled_works+0x40/0x54
-  worker_thread+0x1ec/0x2a8
-  kthread+0x138/0x158
-  ret_from_fork+0x10/0x20
-
-Fix it by making sure there are any bits to mask out.
-
-Fixes: 69aba7948cbe ("nvmem: Add a simple NVMEM framework for consumers")
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20211013124511.18726-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 5f5bac8272be ("mmc: Driver for CB710/720 memory card reader (MMC part)")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210927121408.939246-1-arnd@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvmem/core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/misc/cb710/sgbuf2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -815,7 +815,8 @@ static inline void nvmem_shift_read_buff
- 		*p-- = 0;
- 
- 	/* clear msb bits if any leftover in the last byte */
--	*p &= GENMASK((cell->nbits%BITS_PER_BYTE) - 1, 0);
-+	if (cell->nbits % BITS_PER_BYTE)
-+		*p &= GENMASK((cell->nbits % BITS_PER_BYTE) - 1, 0);
+--- a/drivers/misc/cb710/sgbuf2.c
++++ b/drivers/misc/cb710/sgbuf2.c
+@@ -50,7 +50,7 @@ static inline bool needs_unaligned_copy(
+ #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	return false;
+ #else
+-	return ((ptr - NULL) & 3) != 0;
++	return ((uintptr_t)ptr & 3) != 0;
+ #endif
  }
  
- static int __nvmem_cell_read(struct nvmem_device *nvmem,
 
 
