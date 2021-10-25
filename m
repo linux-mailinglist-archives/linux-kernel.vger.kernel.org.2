@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF91C43A04A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26D543A023
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235268AbhJYT3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:29:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40432 "EHLO mail.kernel.org"
+        id S234313AbhJYT2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:28:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235298AbhJYT0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:26:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D642610CB;
-        Mon, 25 Oct 2021 19:23:24 +0000 (UTC)
+        id S234761AbhJYTZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:25:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDD176101C;
+        Mon, 25 Oct 2021 19:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189805;
-        bh=sCtYATWhwOmOQOxHj9i5kDiYLJ2uPI8BE2sb55f/YOc=;
+        s=korg; t=1635189756;
+        bh=2axpv9MsnXquyd9SO13itOLQopnKGxdrNOZCp193ruM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l9pSDPz6ETSIkC/0aHo7ShnV5Id4H3Q9VLc1XeqQ7p5j3OdPCwAsB3JKSCFQO1yQk
-         himsEN53EyCavKOXlhRUX1XBVozUFVktFHVoAptoTAGXnbnN9crqFCv7mU+j+W86a3
-         7pzCMpHmIQDVKOi59Ukn8VNo92kRkC7auXPw/Jz4=
+        b=HproGeucHkRg7ro9/EXGCBD1Bp5IhrSLx8f8rpgh6N21Lwdc+elKO2Y0aBYQXsKyl
+         rKS+7iRUKCmQ6kFy45LfepNaaj1yE1GOVpZ+g5emSs3EJuiyYFUaHfQpGMiobzt0HQ
+         bEjLX+ENdtRHrnPaSncVUxYb4m9rk7O9xexls/eQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 04/37] NFSD: Keep existing listeners on portlist error
+        stable@vger.kernel.org,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.14 09/30] can: peak_usb: pcan_usb_fd_decode_status(): fix back to ERROR_ACTIVE state notification
 Date:   Mon, 25 Oct 2021 21:14:29 +0200
-Message-Id: <20211025190929.143886782@linuxfoundation.org>
+Message-Id: <20211025190925.282870839@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-References: <20211025190926.680827862@linuxfoundation.org>
+In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
+References: <20211025190922.089277904@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Coddington <bcodding@redhat.com>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-[ Upstream commit c20106944eb679fa3ab7e686fe5f6ba30fbc51e5 ]
+commit 3d031abc7e7249573148871180c28ecedb5e27df upstream.
 
-If nfsd has existing listening sockets without any processes, then an error
-returned from svc_create_xprt() for an additional transport will remove
-those existing listeners.  We're seeing this in practice when userspace
-attempts to create rpcrdma transports without having the rpcrdma modules
-present before creating nfsd kernel processes.  Fix this by checking for
-existing sockets before calling nfsd_destroy().
+This corrects the lack of notification of a return to ERROR_ACTIVE
+state for USB - CANFD devices from PEAK-System.
 
-Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
+Link: https://lore.kernel.org/all/20210929142111.55757-1-s.grosjean@peak-system.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfsctl.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index cb69660d0779..ff9899cc9913 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -788,7 +788,10 @@ out_close:
- 		svc_xprt_put(xprt);
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -560,11 +560,10 @@ static int pcan_usb_fd_decode_status(str
+ 	} else if (sm->channel_p_w_b & PUCAN_BUS_WARNING) {
+ 		new_state = CAN_STATE_ERROR_WARNING;
+ 	} else {
+-		/* no error bit (so, no error skb, back to active state) */
+-		dev->can.state = CAN_STATE_ERROR_ACTIVE;
++		/* back to (or still in) ERROR_ACTIVE state */
++		new_state = CAN_STATE_ERROR_ACTIVE;
+ 		pdev->bec.txerr = 0;
+ 		pdev->bec.rxerr = 0;
+-		return 0;
  	}
- out_err:
--	nfsd_destroy(net);
-+	if (!list_empty(&nn->nfsd_serv->sv_permsocks))
-+		nn->nfsd_serv->sv_nrthreads--;
-+	 else
-+		nfsd_destroy(net);
- 	return err;
- }
  
--- 
-2.33.0
-
+ 	/* state hasn't changed */
 
 
