@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E1C43A010
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F41543A1C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhJYT1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:27:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
+        id S235355AbhJYTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:41:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235043AbhJYTZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:25:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2704860FE8;
-        Mon, 25 Oct 2021 19:22:18 +0000 (UTC)
+        id S236538AbhJYTey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:34:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CEFE6103C;
+        Mon, 25 Oct 2021 19:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635189738;
-        bh=xQH6xbKIA9JfXpgVrSV2Ie+26/isb91g+KzUq6/V17g=;
+        s=korg; t=1635190284;
+        bh=YtplX7ENlKSo0YXZkDaEXzwPNtKcowSANbe0onNv4PM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rh77+fDoP86grwXiF5SXWUNQGQPO2UxaLM1swlNizm/rKNzK/scb/XSfVhE1EbvA6
-         jekaFOnc6itIH0S9N7unGebyOL5KrsiQ7PMQ8Ny/Zas5Xcw0lIvsqdSslH0EHyKCg/
-         l6c+qoTKx+KJdXEmVcb6qAGBjMPBfmTt6VTXDOZI=
+        b=h12wF4SztfzKFmyKj9+KdHxfSWB21mpDDOg2PfZrXa+7cOXdbm+/0rJOn4csGB18q
+         xsoL9vXukfCiyADi2Yq9IiwRYfJbn/5y7+1o5tVlze5dEimfjD0NgqBO3dQIsWqzx0
+         16ahoL+737qQEMAFKXDqNTX8RNWx7O1bm4i+9KHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Hao Sun <sunhao.th@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 14/30] vfs: check fd has read access in kernel_read_file_from_fd()
+        "Sottas Guillaume (LMB)" <Guillaume.Sottas@liebherr.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.10 37/95] can: isotp: isotp_sendmsg(): fix return error on FC timeout on TX path
 Date:   Mon, 25 Oct 2021 21:14:34 +0200
-Message-Id: <20211025190926.501953774@linuxfoundation.org>
+Message-Id: <20211025191002.183693059@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190922.089277904@linuxfoundation.org>
-References: <20211025190922.089277904@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,45 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-commit 032146cda85566abcd1c4884d9d23e4e30a07e9a upstream.
+commit d674a8f123b4096d85955c7eaabec688f29724c9 upstream.
 
-If we open a file without read access and then pass the fd to a syscall
-whose implementation calls kernel_read_file_from_fd(), we get a warning
-from __kernel_read():
+When the a large chunk of data send and the receiver does not send a
+Flow Control frame back in time, the sendmsg() does not return a error
+code, but the number of bytes sent corresponding to the size of the
+packet.
 
-        if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
+If a timeout occurs the isotp_tx_timer_handler() is fired, sets
+sk->sk_err and calls the sk->sk_error_report() function. It was
+wrongly expected that the error would be propagated to user space in
+every case. For isotp_sendmsg() blocking on wait_event_interruptible()
+this is not the case.
 
-This currently affects both finit_module() and kexec_file_load(), but it
-could affect other syscalls in the future.
+This patch fixes the problem by checking if sk->sk_err is set and
+returning the error to user space.
 
-Link: https://lkml.kernel.org/r/20211007220110.600005-1-willy@infradead.org
-Fixes: b844f0ecbc56 ("vfs: define kernel_copy_file_from_fd()")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Link: https://github.com/hartkopp/can-isotp/issues/42
+Link: https://github.com/hartkopp/can-isotp/pull/43
+Link: https://lore.kernel.org/all/20210507091839.1366379-1-mkl@pengutronix.de
+Cc: stable@vger.kernel.org
+Reported-by: Sottas Guillaume (LMB) <Guillaume.Sottas@liebherr.com>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/exec.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/can/isotp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -980,7 +980,7 @@ int kernel_read_file_from_fd(int fd, voi
- 	struct fd f = fdget(fd);
- 	int ret = -EBADF;
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -953,6 +953,9 @@ static int isotp_sendmsg(struct socket *
+ 	if (wait_tx_done) {
+ 		/* wait for complete transmission of current pdu */
+ 		wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
++
++		if (sk->sk_err)
++			return -sk->sk_err;
+ 	}
  
--	if (!f.file)
-+	if (!f.file || !(f.file->f_mode & FMODE_READ))
- 		goto out;
- 
- 	ret = kernel_read_file(f.file, buf, size, max_size, id);
+ 	return size;
 
 
