@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8CA43A24B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE8443A2DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbhJYTr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:47:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237190AbhJYTj7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:39:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635190656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9aAky+o+A3o8orvEWSZgWo8dAX6pVohf78faelvH+XE=;
-        b=GnGMcLhE+usm1Nj2t2QZPQorJZ+Y/fs9IM0frnSNf8eHWuOAyialCV9EqU1CvjVe+GJMlP
-        k6UBzcNeO2OF0NYXX/mIMDJ/JUB+5AH/BA7P/zhBpXuvyyXRnYpJyYEtgxbYI8BHb2TTLI
-        MzXtSKiymcD/F4GRz/1L9PNJooI9zmY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-Fhla3MdgP4-KjUBP7db6Ag-1; Mon, 25 Oct 2021 15:37:34 -0400
-X-MC-Unique: Fhla3MdgP4-KjUBP7db6Ag-1
-Received: by mail-wm1-f70.google.com with SMTP id k6-20020a7bc306000000b0030d92a6bdc7so397333wmj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 12:37:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9aAky+o+A3o8orvEWSZgWo8dAX6pVohf78faelvH+XE=;
-        b=FNDgfgYMJsk5xaRcbHQcsH7x51IyZewG9jd38TPQMjQG2R4FyGj42eiYXEUPKjQw9l
-         OYMqkSoe7xMBRvY40FRIgzTzo/o3AbZaaHVDL4Uq8nvcXABwS2NHCYz2Upk+nK7b3qnj
-         nj0EjOZatGrlQnuXBwrexnm4znr/a3tNVBXyZ8AvrbFZkLwwePbg/U7HW6msi809pAWZ
-         SQTBXHGuWTdhSpu9QBjAUOnqZ0Rjv9m3MKJwUFR1qI/NzAOIOpZqvtApaLZT2VyPQ/Oj
-         IPHGZidESKX9/3vymEZvwFYhU9qt6K6YRUcu3Uk09BACrO/GH3pC63NMQ9LA3u3C2Hi+
-         9A4A==
-X-Gm-Message-State: AOAM530G9SPf+2WRs6sj1cSb3BTEExaswGsc4OzoeHIfglRXWXrtntoB
-        IB9k3EpFh4GF0oTgO6AiQ+J6/9f8Ud3YAokExg2ImnF0ZoCrAImzUQMmeJAy3Dr58kWNCLYkn6k
-        ZDn7JwYC0l/ZSTK4Bh16ZXShP88qlKhIhv3bDjpA8
-X-Received: by 2002:adf:e411:: with SMTP id g17mr24943047wrm.228.1635190653767;
-        Mon, 25 Oct 2021 12:37:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4ZUW3Mo472pPGFPqydjyYBJNjFGoCJJfUViSULsVvl27H2hHnmzQ8wgBE36rQvAagQBtIOpD1/zpOLrWd37Q=
-X-Received: by 2002:adf:e411:: with SMTP id g17mr24943016wrm.228.1635190653583;
- Mon, 25 Oct 2021 12:37:33 -0700 (PDT)
+        id S238783AbhJYTxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:53:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235738AbhJYTrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:47:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1772561205;
+        Mon, 25 Oct 2021 19:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635190820;
+        bh=7i0EGCIRB4HrVnhBD2qDiI6GxHmFk3q3ZtD9GUd1INA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IZYbzKSAk4vMkqevR8sy5nqAFXwOoSEHNjogCmvkDtWsYdgskXTD55Ei3quSLi94M
+         Tz9Qut0hR+P5PJ8rOxjSr0+3M4TZHsvMkx6fPyWU1MqeqHWx2pF+VhEhiNMfD5qgF8
+         TAFp8Um1yuM9lCuSNkBaHcjktU0lAszMP2DqG1SweVLNdYExWfAXrtONGM3aQXfFt9
+         EuPTF1C92aqmiJ0Mky79Tik4ni4tSvZHlzX29hxf6JC62o/AbnryKX11+HbAxmuwka
+         o8R9oFc5EufcPhddizzL3lGuaJ4PBzNJzTVZePfkYBEJ5U7tG6f9587RXP0GM8Cgj+
+         dEL+I6AvuI8dw==
+From:   Mark Brown <broonie@kernel.org>
+To:     alsa-devel@alsa-project.org, plai@codeaurora.org,
+        srinivas.kandagatla@linaro.org, devicetree@vger.kernel.org,
+        perex@perex.cz, lgirdwood@gmail.com, judyhsiao@chromium.org,
+        bjorn.andersson@linaro.org, swboyd@chromium.org, tiwai@suse.com,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        rohitkr@codeaurora.org, bgoswami@codeaurora.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: dt-bindings: lpass: add binding headers for digital codecs
+Date:   Mon, 25 Oct 2021 20:40:12 +0100
+Message-Id: <163519067112.407220.9849529941824458080.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <1633670491-27432-1-git-send-email-srivasam@codeaurora.org>
+References: <1633670491-27432-1-git-send-email-srivasam@codeaurora.org>
 MIME-Version: 1.0
-References: <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk> <YWR2cPKeDrc0uHTK@arm.com>
- <CAHk-=wjvQWj7mvdrgTedUW50c2fkdn6Hzxtsk-=ckkMrFoTXjQ@mail.gmail.com>
- <YWSnvq58jDsDuIik@arm.com> <CAHk-=wiNWOY5QW5ZJukt_9pHTWvrJhE2=DxPpEtFHAWdzOPDTg@mail.gmail.com>
- <CAHc6FU7bpjAxP+4dfE-C0pzzQJN1p=C2j3vyXwUwf7fF9JF72w@mail.gmail.com>
- <YXE7fhDkqJbfDk6e@arm.com> <CAHc6FU5xTMOxuiEDyc9VO_V98=bvoDc-0OFi4jsGPgWJWjRJWQ@mail.gmail.com>
- <YXGexrdprC+NTslm@arm.com> <CAHc6FU7im8UzxWCzqUFMKOwyg9zoQ8OZ_M+rRC_E20yE5RNu9g@mail.gmail.com>
- <YXMFw34ZpW+CwlmI@arm.com>
-In-Reply-To: <YXMFw34ZpW+CwlmI@arm.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 25 Oct 2021 21:37:22 +0200
-Message-ID: <CAHc6FU43-n3tk+vvhXKCX+oyUu4x23-vh8pg18wRgYsB0rt+rA@mail.gmail.com>
-Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 8:41 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> On Thu, Oct 21, 2021 at 08:00:50PM +0200, Andreas Gruenbacher wrote:
-> > On Thu, Oct 21, 2021 at 7:09 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > This discussion started with the btrfs search_ioctl() where, even if
-> > > some bytes were written in copy_to_sk(), it always restarts from an
-> > > earlier position, reattempting to write the same bytes. Since
-> > > copy_to_sk() doesn't guarantee forward progress even if some bytes are
-> > > writable, Linus' suggestion was for fault_in_writable() to probe the
-> > > whole range. I consider this overkill since btrfs is the only one that
-> > > needs probing every 16 bytes. The other cases like the new
-> > > fault_in_safe_writeable() can be fixed by probing the first byte only
-> > > followed by gup.
-> >
-> > Hmm. Direct I/O request sizes are multiples of the underlying device
-> > block size, so we'll also get stuck there if fault-in won't give us a
-> > full block. This is getting pretty ugly. So scratch that idea; let's
-> > stick with probing the whole range.
->
-> Ah, I wasn't aware of this. I got lost in the call trees but I noticed
-> __iomap_dio_rw() does an iov_iter_revert() only if direction is READ. Is
-> this the case for writes as well?
+On Fri, 8 Oct 2021 10:51:31 +0530, Srinivasa Rao Mandadapu wrote:
+> Add header defining for lpass internal digital codecs rx,tx and va
+> dai node id's.
+> 
+> 
 
-It's the EOF case, so it only applies to reads:
+Applied to
 
-        /*
-         * We only report that we've read data up to i_size.
-         * Revert iter to a state corresponding to that as some callers (such
-         * as the splice code) rely on it.
-         */
-        if (iov_iter_rw(iter) == READ && iomi.pos >= dio->i_size)
-                iov_iter_revert(iter, iomi.pos - dio->i_size);
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Andreas
+Thanks!
 
+[1/1] ASoC: dt-bindings: lpass: add binding headers for digital codecs
+      commit: de6e9190a8a74d55ed936ec483919b328bbbbf5c
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
