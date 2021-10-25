@@ -2,167 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA623439656
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D48F43965D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 14:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhJYMbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 08:31:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51072 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232582AbhJYMbW (ORCPT
+        id S233083AbhJYMd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 08:33:59 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:47452 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232582AbhJYMd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 08:31:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635164939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ODWAC2kPVBIFuPUdtI4g09Ho4gCD2YMuSiOZS86l4U=;
-        b=BndqNhHCvJ+Glm6IdujH4+o0KOyKLXRozmf/zNWWSyYQdpmUg373vahWncCMQOakut0fB5
-        ZbsQWxIRP/zTocR0MengVjc6yEIK6vYJp31/0eoGnPgTOHGOE92K5CScxGSaTCwpL4M/Nk
-        hCIfb/w4cK9CKBCtyF5r50zCVXSsbLg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-qwxBnBBsMFKoWto3aWCFmA-1; Mon, 25 Oct 2021 08:28:57 -0400
-X-MC-Unique: qwxBnBBsMFKoWto3aWCFmA-1
-Received: by mail-wm1-f70.google.com with SMTP id z17-20020a7bc7d1000000b0032cafafaf79so1928090wmk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 05:28:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=2ODWAC2kPVBIFuPUdtI4g09Ho4gCD2YMuSiOZS86l4U=;
-        b=aOfwO9AdbGtvHxs/FtB26mu9kB2rkUDcRe/wnwCgLS/71pxaX4n2sEwB+p2lPcfmGO
-         gYR7wBnztDdpDmu4czlav1pS+zJzkkmeXXNfBuP9f/aNa9QXQMIsHJn0BqBoy8U/KmLm
-         Ohax5lORE+uQQaKN9rQ4GJ8M5/p1j3gIbVnR3UNX5AukXmxO7PbNGhsqhxzkTpuurYNx
-         mkQzP0MwtvKX2FBH5RfdYWFu+vyq+tUofniqpuJT4vlFzrfpMKcW48B0lgAqCaUNkVFp
-         6/hEHed+77FZW+aMMJd3/jBFzEntvL8g/EfKbtpRTBt5pC9lk1rp/rC/5hQFnLl+Kdh1
-         nZTA==
-X-Gm-Message-State: AOAM532F5WSOczEGkwZPxoad0Cni2CJSlS0mXq8cm90wpD0atoBQemyz
-        EayPA6vX6v6O8SScZhwEHq6ci4Rjb3p01xC/pd9iQkVwZt36YwYVt6sGaN0fJ/0cNPsAgOEM/rf
-        qVbAowAa4xm2iAzkd0fwxXvYM
-X-Received: by 2002:a5d:62d0:: with SMTP id o16mr23263782wrv.206.1635164936543;
-        Mon, 25 Oct 2021 05:28:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw617Ej0Qgn2OshjIK1/cSPxPzf4Dx4RNMcL9U1rlmQG2vOOyYfwwjD+PbnuD24/smsnfHsBQ==
-X-Received: by 2002:a5d:62d0:: with SMTP id o16mr23263752wrv.206.1635164936232;
-        Mon, 25 Oct 2021 05:28:56 -0700 (PDT)
-Received: from [192.168.1.128] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id b19sm19153070wmj.9.2021.10.25.05.28.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 05:28:55 -0700 (PDT)
-Message-ID: <f3c9f2e5-73f7-e7c9-dc97-8bfa7b294b0b@redhat.com>
-Date:   Mon, 25 Oct 2021 14:28:54 +0200
+        Mon, 25 Oct 2021 08:33:58 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19P7i5eK021540;
+        Mon, 25 Oct 2021 05:31:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=K1PYtbv/VaaQ1kphs3Y5cL44ARkzArrdsRK925kZZ2w=;
+ b=svTayc4rR2ki71Y+ioC0OTEcf4LkVRRUG/qJYcU+I98ueO8hiXWe8plxNvijGI1hJVCD
+ Y2FRML7rfThbI5BlkePSXxD2KMHtcRLjZr6ti6cOGNhYn8MT8lKt4/yzpSrl4bv/qp9C
+ ALJ06GyART7LCBV/KHwW5qYG9Gah6lTRFbJF3zb1rfNotaTkhpsuSlDuUS6oEdmf5xW2
+ JzCsAWg5MHjNNWJPJQiZKaiXVjeW/nc7kbvqcsseVLhKnJD/hYKTjc8hGs1bKmGYATgd
+ qnKvlpH5W0i1tKJ7mzPvVnJ9DK20XWrZIMzUbjdxVvq0/x1qRffonlRBc7hIRbnXJPVb kg== 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2044.outbound.protection.outlook.com [104.47.73.44])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 3bwrew8vhf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Oct 2021 05:31:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D1ysAjcPIWx8JooVr1DMI1H2/wDW4UGKQKdXVbXYrWi6QyMeOEwcqhDHXDOSloda4nC4+cP9+XXc8SsuI98w8hUvUa/KpmIlqYWNnF45GgKsXm2dWGmANA9KLT/U8ZepfJQZ8I8LdcXq++Z0s3nzPGj3BLiTWFJsz+9C5U19ojWuGutshicjMvcmQvIXbBx4ETTATZxJ0rBR67NxiS6Ke0RYxBwQyZlDo8RLhaF4L8G1Osq5of4OLgJgSdywGPtjN4Dz7aMQjIxwKacMNx85U01zOngCBxqHcahfe3SGK/tGfHrFY0wiS7uh8n0xom9QEe83ppoDJecJzSaDAPXVpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K1PYtbv/VaaQ1kphs3Y5cL44ARkzArrdsRK925kZZ2w=;
+ b=Rr7Fs1Fij+M3N14CKRZj4+EAEWo/uTDL0l9AunnD/H5wmqegy83xM2rRsWjc4jQDaRInxAPXarfBbKnSjDi+oGl8pCNk6QX12/Qzwfc9kkXU1TQWHK4tWuKnFj9fgAqF8+5ggAQXJo2jUpHt6XyodC09reRy47dQl8pLXFy7AVxUagxjJ/dWCtmhahe2+CTYpsZb3o1UJq7mOeHKnxpGSG4Ll6XZO7a+WVlo/0c1qRYeM1z1CR/U1V+oX+wZv6NRjk8uLmel/G16rz6IVhoQbyAiQX992UtWKUe72Yp9sg6vQEw2YgcTp6M/pdKh3Q/ojfTPtbj++tqUgASRV2lYcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K1PYtbv/VaaQ1kphs3Y5cL44ARkzArrdsRK925kZZ2w=;
+ b=599knwWOFuSi0Kf1JnkmrzSNNQguUD2gAV5kg30INTT/+FqOs8fOxomgeLu381VVrU+407dReRwmDOkKOUe7m/55zl9Ym6qSdNmOkbf8HwSEb8v6CeoYyBAYQ4J6RIr9TuqSr2nFzDUXu4RDqx+e4kW/l1S/mcIg4/0/osBj1Po=
+Received: from BN6PR2001CA0010.namprd20.prod.outlook.com
+ (2603:10b6:404:b4::20) by BYAPR07MB5670.namprd07.prod.outlook.com
+ (2603:10b6:a03:9f::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Mon, 25 Oct
+ 2021 12:31:18 +0000
+Received: from BN8NAM12FT043.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:404:b4:cafe::da) by BN6PR2001CA0010.outlook.office365.com
+ (2603:10b6:404:b4::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend
+ Transport; Mon, 25 Oct 2021 12:31:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none
+ header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ BN8NAM12FT043.mail.protection.outlook.com (10.13.183.68) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4649.8 via Frontend Transport; Mon, 25 Oct 2021 12:31:18 +0000
+Received: from mailsj9.global.cadence.com (mailsj9.cadence.com [10.202.56.202])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 19PCVHnM019618
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Oct 2021 05:31:17 -0700
+Received: from mailsj8.global.cadence.com (10.202.56.201) by
+ mailsj9.global.cadence.com (10.202.56.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 25 Oct 2021 05:31:17 -0700
+Received: from ipgpd01.cadence.com (158.140.83.21) by
+ mailsj8.global.cadence.com (10.202.56.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
+ via Frontend Transport; Mon, 25 Oct 2021 05:31:17 -0700
+Received: from ipgpd01.cadence.com (localhost.localdomain [127.0.0.1])
+        by ipgpd01.cadence.com (8.14.4/8.14.4) with ESMTP id 19PCVHrs089906;
+        Mon, 25 Oct 2021 05:31:17 -0700
+Received: (from pthombar@localhost)
+        by ipgpd01.cadence.com (8.14.4/8.14.4/Submit) id 19PCVGeh089905;
+        Mon, 25 Oct 2021 05:31:16 -0700
+From:   Parshuram Raju Thombare <pthombar@cadence.com>
+To:     <bhelgaas@google.com>, <kishon@ti.com>, <tjoseph@cadence.com>,
+        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>, <kw@linux.com>
+CC:     <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
+        <pthombar@cadence.com>
+Subject: [PATCH v2] PCI: cadence: Clear FLR in device capabilities register
+Date:   Mon, 25 Oct 2021 05:31:15 -0700
+Message-ID: <1635165075-89864-1-git-send-email-pthombar@cadence.com>
+X-Mailer: git-send-email 2.2.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC PATCH] drm/aperture: Add param to disable conflicting
- framebuffers removal
-Content-Language: en-US
-To:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20211022144040.3418284-1-javierm@redhat.com>
- <YXMNOfBS5iFenmx8@intel.com>
- <c1d1f245-7bcf-16e5-c3f4-c13550843e02@redhat.com>
- <931230b4-1e73-948d-abaf-f1d62ea58239@daenzer.net>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <931230b4-1e73-948d-abaf-f1d62ea58239@daenzer.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-CrossPremisesHeadersFilteredBySendConnector: mailsj9.global.cadence.com
+X-OrganizationHeadersPreserved: mailsj9.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9324026e-6d4e-4b77-60a9-08d997b3581f
+X-MS-TrafficTypeDiagnostic: BYAPR07MB5670:
+X-Microsoft-Antispam-PRVS: <BYAPR07MB56701C2292BFC8D9EBA3A3ABC1839@BYAPR07MB5670.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: p5mq+y+60ru8WH88zbADxsQIXpSBXWcpB5xnrUdfPpUujXobRlJV5u6+hb7Jkr9xhheU1jt/rJ4cqPx9HctuEDwik+j99qbL6ELL8FlB4XE7hWO5diredb3iL/VP4EHcCpHGqv+FaYL0uTZaWaFEawAG74es0KS3sNED/9LqeyAdgHX3CBD2Izc21JwVGBqDucKJeEdMsx+alLKWVU1BUSMm3AmiLanNX1TZSXYA3+404HPwUv3DNYLzVIlEoGlZQLxgO9inGnVSmQlf3SPD7hg+FUzxv12uLzM9UBO4ff4wIVZ0JnZGskQqkkAD2RnkUBAgWGp+ZOODkgo+tZjiMP6HeYYEZ7JUPoRETvNwbgzUCeVGsRIo5DOQ1svJjhYzsYcLapdzN4vcj823Kz7knEfU9IVMzXw+n01d2q0tg+WsFGXVafrBp7PLkTV99V7kOY5+AIBAONBH6vw3uuIrkwPlwchk6Hjz//fTHIlfIhwe0jsrKxD0aMPS15WKyNCMdT13oXGSR8tZVPJQoZD3bXrSwDrXICm5AmIQ4IgimKhZzVElKufu3RTIU7BDU3IamTicgHIh2DmF7b1YPq7HYCTjU9tqx1A8f22kJyWgzMLAbw6ffivcIiMNvFQQG/gPkyjF5cwR+epIjzBbUVVae3Mtp+3ptQp+rxe86ja0FnJFd74+jDmhLaa/Nf76ueKuw/iXLmXZTVk1HPLIsIPGVyGolBX+ViABJs0neN//Kq0=
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(36092001)(36840700001)(46966006)(36756003)(356005)(110136005)(54906003)(8676002)(42186006)(70206006)(83380400001)(26005)(70586007)(36860700001)(4326008)(36906005)(7636003)(186003)(5660300002)(2906002)(508600001)(316002)(8936002)(82310400003)(47076005)(336012)(426003)(2616005)(107886003)(86362001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 12:31:18.1548
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9324026e-6d4e-4b77-60a9-08d997b3581f
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT043.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB5670
+X-Proofpoint-ORIG-GUID: JOFIqNEuppPupMNN8V-WQIpzeopdHl-f
+X-Proofpoint-GUID: JOFIqNEuppPupMNN8V-WQIpzeopdHl-f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_04,2021-10-25_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
+ bulkscore=0 spamscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 suspectscore=0 mlxlogscore=999
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110250076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Michel,
+From: Parshuram Thombare <pthombar@cadence.com>
 
-On 10/25/21 12:45, Michel Dänzer wrote:
-> On 2021-10-24 22:32, Javier Martinez Canillas wrote:
->> Hello Ville,
->>
->> On 10/22/21 21:12, Ville Syrjälä wrote:
->>> On Fri, Oct 22, 2021 at 04:40:40PM +0200, Javier Martinez Canillas wrote:
->>>> The simpledrm driver allows to use the frame buffer that was set-up by the
->>>> firmware. This gives early video output before the platform DRM driver is
->>>> probed and takes over.
->>>>
->>>> But it would be useful to have a way to disable this take over by the real
->>>> DRM drivers. For example, there may be bugs in the DRM drivers that could
->>>> cause the display output to not work correctly.
->>>>
->>>> For those cases, it would be good to keep the simpledrm driver instead and
->>>> at least get a working display as set-up by the firmware.
->>>>
->>>> Let's add a drm.remove_fb boolean kernel command line parameter, that when
->>>> set to false will prevent the conflicting framebuffers to being removed.
->>>>
->>>> Since the drivers call drm_aperture_remove_conflicting_framebuffers() very
->>>> early in their probe callback, this will cause the drivers' probe to fail.
->>>
->>> Why is that better than just modprobe.blacklisting those drivers?
->>
->> Because would allow to deny list all native (as Thomas called it) DRM drivers
->> and only allow the simpledrm driver to be probed. This is useful for distros,
->> since could add a "Basic graphics mode" to the boot menu entries, that could
->> boot the kernel passing a "drm.disable_native_drivers=1" cmdline option.
->>
->> That way, if there's any problem with a given DRM driver, the distro may be
->> installed and booted using the simpledrm driver and troubleshoot why a native
->> DRM driver is not working. Or try updating the kernel package, etc.
-> 
-> For troubleshooting, it'll be helpful if this new parameter can be enabled for the boot via the kernel command line, then disabled again after boot-up. One simple possibility for this would be allowing the parameter to be changed via /sys/module
+Clear FLR (Function Level Reset) from device capabilities
+registers for all physical functions.
 
-That's already the case with the current patch, i.e:
+During FLR, the Margining Lane Status and Margining Lane Control
+registers should not be reset, as per PCIe specification.
+However, the controller incorrectly resets these registers upon FLR.
+This causes PCISIG compliance FLR test to fail. Hence preventing
+all functions from advertising FLR support if flag quirk_disable_flr
+is set.
 
-$ grep -o drm.* /proc/cmdline 
-drm.disable_native_drivers=1
+Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+---
+Changes since v1:
+Changes suggested by Bjorn in the description.
 
-$ cat /proc/fb 
-0 simpledrm
+---
+ drivers/pci/controller/cadence/pci-j721e.c       |  3 +++
+ drivers/pci/controller/cadence/pcie-cadence-ep.c | 18 +++++++++++++++++-
+ drivers/pci/controller/cadence/pcie-cadence.h    |  3 +++
+ 3 files changed, 23 insertions(+), 1 deletion(-)
 
-$ modprobe virtio_gpu
-
-$ dmesg
-[  125.731549] [drm] pci: virtio-vga detected at 0000:00:01.0
-[  125.732410] virtio_gpu: probe of virtio0 failed with error -16
-
-$ echo 0 > /sys/module/drm/parameters/disable_native_drivers
-
-$ modprobe virtio_gpu
-
-$ dmesg 
-[  187.889136] [drm] pci: virtio-vga detected at 0000:00:01.0
-[  187.894578] Console: switching to colour dummy device 80x25
-[  187.897090] virtio-pci 0000:00:01.0: vgaarb: deactivate vga console
-[  187.899983] [drm] features: -virgl +edid -resource_blob -host_visible
-[  187.907176] [drm] number of scanouts: 1
-[  187.907714] [drm] number of cap sets: 0
-[  187.914108] [drm] Initialized virtio_gpu 0.1.0 0 for virtio0 on minor 1
-[  187.930807] Console: switching to colour frame buffer device 128x48
-[  187.938737] virtio_gpu virtio0: [drm] fb0: virtio_gpu frame buffer device
-
-$ cat /proc/fb 
-0 virtio_gpu
-
-/drm/parameters/<name>, which I suspect doesn't work with the patch as is (due to the 0600 permissions).
-> 
-> 
-
-I followed the convention used by other drm module parameters, hence the
-0600. Do you mean that for this parameter we should be less restrictive ?
-
-Best regards,
+diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+index ffb176d..635e36c 100644
+--- a/drivers/pci/controller/cadence/pci-j721e.c
++++ b/drivers/pci/controller/cadence/pci-j721e.c
+@@ -70,6 +70,7 @@ struct j721e_pcie_data {
+ 	enum j721e_pcie_mode	mode;
+ 	unsigned int		quirk_retrain_flag:1;
+ 	unsigned int		quirk_detect_quiet_flag:1;
++	unsigned int		quirk_disable_flr:1;
+ 	u32			linkdown_irq_regfield;
+ 	unsigned int		byte_access_allowed:1;
+ };
+@@ -308,6 +309,7 @@ static int cdns_ti_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
+ static const struct j721e_pcie_data j7200_pcie_ep_data = {
+ 	.mode = PCI_MODE_EP,
+ 	.quirk_detect_quiet_flag = true,
++	.quirk_disable_flr = true,
+ };
+ 
+ static const struct j721e_pcie_data am64_pcie_rc_data = {
+@@ -510,6 +512,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+ 			goto err_get_sync;
+ 		}
+ 		ep->quirk_detect_quiet_flag = data->quirk_detect_quiet_flag;
++		ep->quirk_disable_flr = data->quirk_disable_flr;
+ 
+ 		cdns_pcie = &ep->pcie;
+ 		cdns_pcie->dev = dev;
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+index 88e05b9..4b1c4bc 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+@@ -565,7 +565,8 @@ static int cdns_pcie_ep_start(struct pci_epc *epc)
+ 	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
+ 	struct cdns_pcie *pcie = &ep->pcie;
+ 	struct device *dev = pcie->dev;
+-	int ret;
++	int max_epfs = sizeof(epc->function_num_map) * 8;
++	int ret, value, epf;
+ 
+ 	/*
+ 	 * BIT(0) is hardwired to 1, hence function 0 is always enabled
+@@ -573,6 +574,21 @@ static int cdns_pcie_ep_start(struct pci_epc *epc)
+ 	 */
+ 	cdns_pcie_writel(pcie, CDNS_PCIE_LM_EP_FUNC_CFG, epc->function_num_map);
+ 
++	if (ep->quirk_disable_flr) {
++		for (epf = 0; epf < max_epfs; epf++) {
++			if (!(epc->function_num_map & BIT(epf)))
++				continue;
++
++			value = cdns_pcie_ep_fn_readl(pcie, epf,
++					CDNS_PCIE_EP_FUNC_DEV_CAP_OFFSET +
++					PCI_EXP_DEVCAP);
++			value &= ~PCI_EXP_DEVCAP_FLR;
++			cdns_pcie_ep_fn_writel(pcie, epf,
++					CDNS_PCIE_EP_FUNC_DEV_CAP_OFFSET +
++					PCI_EXP_DEVCAP, value);
++		}
++	}
++
+ 	ret = cdns_pcie_start_link(pcie);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to start link\n");
+diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+index 262421e..e978e7c 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence.h
++++ b/drivers/pci/controller/cadence/pcie-cadence.h
+@@ -123,6 +123,7 @@
+ 
+ #define CDNS_PCIE_EP_FUNC_MSI_CAP_OFFSET	0x90
+ #define CDNS_PCIE_EP_FUNC_MSIX_CAP_OFFSET	0xb0
++#define CDNS_PCIE_EP_FUNC_DEV_CAP_OFFSET	0xc0
+ #define CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET	0x200
+ 
+ /*
+@@ -357,6 +358,7 @@ struct cdns_pcie_epf {
+  *        minimize time between read and write
+  * @epf: Structure to hold info about endpoint function
+  * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
++ * @quirk_disable_flr: Disable FLR (Function Level Reset) quirk flag
+  */
+ struct cdns_pcie_ep {
+ 	struct cdns_pcie	pcie;
+@@ -372,6 +374,7 @@ struct cdns_pcie_ep {
+ 	spinlock_t		lock;
+ 	struct cdns_pcie_epf	*epf;
+ 	unsigned int		quirk_detect_quiet_flag:1;
++	unsigned int		quirk_disable_flr:1;
+ };
+ 
+ 
 -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+1.9.1
 
