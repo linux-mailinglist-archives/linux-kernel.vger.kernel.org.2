@@ -2,65 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE468438CBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 02:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29B4438CBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 02:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhJYAMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Oct 2021 20:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
+        id S231937AbhJYAND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Oct 2021 20:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhJYAMw (ORCPT
+        with ESMTP id S229814AbhJYANC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Oct 2021 20:12:52 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E285C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 17:10:31 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e12so9491934wra.4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Oct 2021 17:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=geczGTHn5VeCvub+uTma/PXREfA+zQbHUxfmekOcdTU=;
-        b=GnylUWJDJm8I/rpAxp3r72trN+FHQ6ELmmgGTW1vg2PkNNqNHJ6Ap+RqSzzsYjfbKw
-         jtxD5U0F8X/vbR2q0yINM8nZgBwsKT1+ISIGZqeejalkzU7aehg28FkYwtJPaPC7LttA
-         TBRlTEKoVYSyCM96GejFSLOWB3X1S1XhvttvZzAp5U6/xYAOuuGEuUPBW/uBfUXZAnSD
-         k+lVuq9XWuDb+t65S30pXkwxomw3ucxlz34MoCkPmQnbBv+zY4X7jF7KysDrUJzT11kM
-         ibI8KsUVhUIpI+81HTQMvjvqQ1wnSqL0JS+ERufI/XD5hxPHg+AoG8pyLr09oYYMKhGy
-         4uVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=geczGTHn5VeCvub+uTma/PXREfA+zQbHUxfmekOcdTU=;
-        b=4/JlFfAlX6xkQAnU32bO5FzHGpHsC+HFSVLF36IwvNx5MtEgKK1ZvId+9cEzkSqtgk
-         b0PDD2e+/baDeu/2ZMK/OoQioXC6MVFIYH0EKIl8tjOmWSdLPq0ugy6q/AqO9tX2ghZr
-         cFA9baPqq+IvN97GhgwOEuc48TJmJD5O5VOiTKGivhBHP96lkw6wV71ABc/IZTz4JLZp
-         oDIWoFe9q+WPaniZDwtri/JdHn37h3GmjHnS3Rmj4Mx1od5n6FMlnBH0tmxY4FIyzLY5
-         Bm/b4K/GIjEa+87Ll8/HAzA3e11SmvlKEq5G5lfLAPfHC9yGzDkkBaAS4Tw2jIRagHGJ
-         CYVA==
-X-Gm-Message-State: AOAM532Dj2nGdjQtalp9o2HjEnLKwisJJWwuynyjDE/gQlfjtebPmM2c
-        PwiEZseshvHqTFuPiFQaraS+KOy2+EGC5i//snI=
-X-Google-Smtp-Source: ABdhPJzsmv+fqH7eO8Yve+lmyi3M23OEeF9WSc5t44JLmSX5Oi12HipdXa+Xj2nhfOB796FCPf4XYVXA0070c2El8LI=
-X-Received: by 2002:adf:dd88:: with SMTP id x8mr18821797wrl.189.1635120629602;
- Sun, 24 Oct 2021 17:10:29 -0700 (PDT)
+        Sun, 24 Oct 2021 20:13:02 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05B8C061745;
+        Sun, 24 Oct 2021 17:10:40 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HcwMf4vgyz4xbr;
+        Mon, 25 Oct 2021 11:10:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635120639;
+        bh=CahYHHO62eFOy5myA/8RGsjfkANf200+JsYPQzgehw4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lkzvIZ6+xzB8iHrUDexiKFIkkFITUaUr83yM3MabibkJcHLz/KDkf0+8dxj0WA1Ir
+         TW6UzGUXBKDywd0gbPCnt1nrL57fGVjHZlP9K3PekYrgcrEspQ8rtKEWVwpfqcjnpK
+         DOegaBI2QjBigg8mdpFFVVKAIMlZjlGurENfb7slzU8szZOylLPe8AI1FETMyZizP+
+         ynJ+RU/yeSFh7NOPHzR254SSRXbdKGpKM0yPjPV6MEGFC9khgKJb86UXaMq5CfYf9T
+         MrB3KwhDCQfE17pUpevLb/Q1VAQ/EZHIbVUZT+sIYaUXs/9tntdN16KdarVOLfiGNl
+         JpgmqxKeGKF4A==
+Date:   Mon, 25 Oct 2021 11:10:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Trond Myklebust <trondmy@gmail.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: Re: linux-next: manual merge of the nfsd tree with the nfs tree
+Message-ID: <20211025111037.7b4b8889@canb.auug.org.au>
+In-Reply-To: <20211025105951.109598aa@canb.auug.org.au>
+References: <20211025105951.109598aa@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:adf:ff82:0:0:0:0:0 with HTTP; Sun, 24 Oct 2021 17:10:28
- -0700 (PDT)
-Reply-To: Mrs_Bill.Chantal.Lawrence@email.com
-From:   "mrs.Bill Chantal" <bgfdytre4@gmail.com>
-Date:   Mon, 25 Oct 2021 01:10:28 +0100
-Message-ID: <CA+X6MqLLzX7z5FMAU9d4yA=DtjKUokFe2ayvTo=b+3=WYckYbw@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/4=9mYuJ8EAlk6+lmNcnnz1.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 4.4 million dollars in this
-united nation the payment will be Issue into ATM visa card and send to
-you from the bank  we need your address passport and your Whatsapp
-Number.
-Thanks
-Mrs. Bill Chantal
+--Sig_/4=9mYuJ8EAlk6+lmNcnnz1.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Mon, 25 Oct 2021 10:59:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the nfsd tree got a conflict in:
+>=20
+>   include/trace/events/sunrpc.h
+>=20
+> between commit:
+>=20
+>   b4776a341ec0 ("SUNRPC: Tracepoints should display tk_pid and cl_clid as=
+ a fixed-size field")
+>=20
+> from the nfs tree and commit:
+>=20
+>   35940a58f9f1 ("SUNRPC: Capture value of xdr_buf::page_base")
+>=20
+> from the nfsd tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc include/trace/events/sunrpc.h
+> index dc922e664820,9ea59959a2fe..000000000000
+> --- a/include/trace/events/sunrpc.h
+> +++ b/include/trace/events/sunrpc.h
+> @@@ -80,11 -80,12 +82,14 @@@ DECLARE_EVENT_CLASS(rpc_xdr_buf_class
+>   		__entry->msg_len =3D xdr->len;
+>   	),
+>  =20
+>  -	TP_printk("task:%u@%u head=3D[%p,%zu] page=3D%u(%u) tail=3D[%p,%zu] le=
+n=3D%u",
+>  +	TP_printk(SUNRPC_TRACE_TASK_SPECIFIER
+>  +		  " head=3D[%p,%zu] page=3D%u tail=3D[%p,%zu] len=3D%u",
+
+Oops, I have taken the above line out.
+
+> ++		  " head=3D[%p,%zu] page=3D%u(%u) tail=3D[%p,%zu] len=3D%u",
+>   		__entry->task_id, __entry->client_id,
+> - 		__entry->head_base, __entry->head_len, __entry->page_len,
+> - 		__entry->tail_base, __entry->tail_len, __entry->msg_len
+> + 		__entry->head_base, __entry->head_len,
+> + 		__entry->page_len, __entry->page_base,
+> + 		__entry->tail_base, __entry->tail_len,
+> + 		__entry->msg_len
+>   	)
+>   );
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/4=9mYuJ8EAlk6+lmNcnnz1.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF19f0ACgkQAVBC80lX
+0GyvKAf+P4qrdE6aZjXK0LdRNz7wmzdQlg5jO6AFhDk95EX7jj0AygfzF61JOzY1
++xeXwBkg1jk2AciYluxiB/P21N09k9vqbMjrrzsEBKHGF5/BtZgoXgpsz48zdfvD
+UgrsAq2HMeBI8xnU/cU5nR61ocaeROcbglMkxRyUS1XKcRvhvfckU5T7UnFFBlrD
+RIrGpZV+2RhG7DOCzGD1CUxV1xwtL+3FJhYsTkjtjJpo+Htm/+NuQ9LS+DsI1ZBT
+o6/rxKRE/XTMU85HABQMlaJickVZWYSSm9gjeGfDsVKlWiSo+YK/OVdNkeNJ0woB
+VSh3+esRcs7f9sPEe3iBalyP3kfg6g==
+=6Kee
+-----END PGP SIGNATURE-----
+
+--Sig_/4=9mYuJ8EAlk6+lmNcnnz1.--
