@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34BB438E70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB09B438E72
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 06:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhJYEjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 00:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232263AbhJYEjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 00:39:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66EFA61076;
-        Mon, 25 Oct 2021 04:36:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635136600;
-        bh=i42mi0+V1rzwA2P+sPblq3qoI29XMabxnRbayMFYlBs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ADyR7j3W9PwwHKzkUbkuBHNdhbZYdjCGbOoqRtsGKKpVLE3mi3f1ByMT4LFTxRAMi
-         YvGNvQ8oy98XwpizFi72kh8yt/3g5bXr4iBrmfIJOnGmNH0TqsI4l+fTqhjyAvTJ7v
-         VeZUqj92JfG095nA7IqhnH6z6JS3Dbm5EV80U99qZD8HZIukltJtRVLLoN0sqG3RIi
-         s32ljPlDv2kfysVshJql2TJNCInT3HRVzxNL+BJN1cfqQQMYIB73d1HnLf4BNLz9Be
-         a8raM3BgnaEXn9nQWbxLVLrZhlBDJ/4ScJjRytc6ucKMaaAjiWAJkjcKiRR8M9wk3Z
-         TVY+FPF4TxhTA==
-Date:   Mon, 25 Oct 2021 10:06:36 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: tegra210-adma: fix pm runtime unbalance in
- tegra_adma_remove
-Message-ID: <YXY0VJ63vm+4paHy@matsya>
-References: <20211021031432.3466261-1-mudongliangabcd@gmail.com>
+        id S232166AbhJYEmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 00:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhJYEmG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 00:42:06 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA21C061745;
+        Sun, 24 Oct 2021 21:39:44 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd2L72NKlz4xbP;
+        Mon, 25 Oct 2021 15:39:43 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635136783;
+        bh=RaZntV467jJhI65Nc4URoJTuDEc8f5+1tJdidFOL3xQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ldtXs5wzJZoHwaayPf56OV+AtuqIhrz2AEGNHz5C0WPOP0rN9CaGxSGLzs13Bi/3v
+         Bvj05l4cutUWYUsSyd4OQAUoX7kTqtmQdsy5CMK2WvkyZt//wPEWfUAvXF0OYN1LrS
+         mS+DlPS0vXVJRzWnTxA5qZNT5mxs+2RBrAvB7J9xJkHUf1hPvkNmhAfKIe8YtI7lV9
+         Ebkh5mOXpd/c0DcCmHwJ6lVlpDcnJ6NEzptgGJAPa+j/AL+QafcSpVvsCbSMB1trmJ
+         5MjCyqM8cexN82i8uVYpmcSigXKpatnwJeHluBtF024GRgoUNnJsdanXoasY4QJMwC
+         rxCsT+7mC+h+Q==
+Date:   Mon, 25 Oct 2021 15:39:42 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the ftrace tree
+Message-ID: <20211025153942.0c31bd06@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021031432.3466261-1-mudongliangabcd@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/mcChzwc4swO.RnXTtuIDi95";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-10-21, 11:14, Dongliang Mu wrote:
-> Since pm_runtime_put is done when tegra_adma_probe is successful, we
-> cannot do pm_runtime_put_sync again in tegra_adma_remove.
-> 
-> Fix this by removing the pm_runtime_put_sync in tegra_adma_remove.
+--Sig_/mcChzwc4swO.RnXTtuIDi95
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks
+Hi all,
 
--- 
-~Vinod
+After merging the ftrace tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
+
+WARNING: modpost: vmlinux.o(.text.unlikely+0x90082): Section mismatch in re=
+ference from the function xbc_alloc_mem() to the function .init.text:memblo=
+ck_alloc_try_nid()
+The function xbc_alloc_mem() references
+the function __init memblock_alloc_try_nid().
+This is often because xbc_alloc_mem lacks a __init=20
+annotation or the annotation of memblock_alloc_try_nid is wrong.
+
+Introduced by commit
+
+  4ee1b4cac236 ("bootconfig: Cleanup dummy headers in tools/bootconfig")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/mcChzwc4swO.RnXTtuIDi95
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2NQ4ACgkQAVBC80lX
+0Gwk8Qf+IvF+aCHvU3Ar+xWxDYXyyfs8r1yc6mNV7+AZPMm365uF8oPXHqXPUZko
+PR/8jsppjVSsIiofGVypvij4nadrk6zjwBPUUzWxa01sRc7tDIhDe9hqvJ5w42C7
+7/iQjtlF8WCKRxTvFM2C++8wWcpKv5P7Vi7IA8NbEt6a2z1r4pVfj2G2V2/Onijo
+ynuGoQjAJN+lbgpTLsflKikhN4NAeK0X2M7qUeX99SKX4uZa4t654YnYjlfZZaYM
+lBjuTwH+vosqRW4rq2dyNXbQ97Bp9G86+6OQqSyNr/QG36qE+jlUdMiUDXMBXkwU
+VS4JHAxmYNZTNu6/0ZJoz5MC7acWcw==
+=XZML
+-----END PGP SIGNATURE-----
+
+--Sig_/mcChzwc4swO.RnXTtuIDi95--
