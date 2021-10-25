@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D6F43A168
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AAD43A1FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 21:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237030AbhJYTih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 15:38:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48434 "EHLO mail.kernel.org"
+        id S237711AbhJYToI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 15:44:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236123AbhJYTdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 658F161179;
-        Mon, 25 Oct 2021 19:29:08 +0000 (UTC)
+        id S236190AbhJYThA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:37:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 303C161106;
+        Mon, 25 Oct 2021 19:33:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635190149;
-        bh=xVZTo5T4KrfC9S8sFKtShoQPdw37wurz9TeoXWiYCQs=;
+        s=korg; t=1635190433;
+        bh=AUqUU8MogCa7JJnv8XVEV8H16bZRliFWnzCQozhgL3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fpUinaSQEB6XQBQF+ISUyD+F9tpgWOEgzhKuuR46lIGemqrImUM6Eo//quw7ls3TD
-         7dOFFedHLlXJVwwHEUEm2iIeEH8CX+Fex/ef4yhaG7cbWeL69ktR5NnRbi2rZGXN/x
-         KocrdUhzjlC7klEftYmbmXTpkFU4TREF2CnWI1CI=
+        b=vEffDeLMoNTpME50e1DrSsmOm7Z2hieb5b0ZUuF6slUCryMdjI1/NgcKJeH5X33h+
+         QStt9mTghiFYEKfqPvqpFceKV8xwQgjgiUPvc/Y/CfaYCGNzs+ObVR4U6xONindbZI
+         N1NvdngZG3T90XQsSHj4NZeQQ0OXy0pHzx4BGaKU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 55/58] net: mdiobus: Fix memory leak in __mdiobus_register
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 75/95] isdn: mISDN: Fix sleeping function called from invalid context
 Date:   Mon, 25 Oct 2021 21:15:12 +0200
-Message-Id: <20211025190946.814460157@linuxfoundation.org>
+Message-Id: <20211025191007.817353181@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025190937.555108060@linuxfoundation.org>
-References: <20211025190937.555108060@linuxfoundation.org>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+References: <20211025190956.374447057@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,89 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanfei Xu <yanfei.xu@windriver.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit ab609f25d19858513919369ff3d9a63c02cd9e2e upstream.
+[ Upstream commit 6510e80a0b81b5d814e3aea6297ba42f5e76f73c ]
 
-Once device_register() failed, we should call put_device() to
-decrement reference count for cleanup. Or it will cause memory
-leak.
+The driver can call card->isac.release() function from an atomic
+context.
 
-BUG: memory leak
-unreferenced object 0xffff888114032e00 (size 256):
-  comm "kworker/1:3", pid 2960, jiffies 4294943572 (age 15.920s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 08 2e 03 14 81 88 ff ff  ................
-    08 2e 03 14 81 88 ff ff 90 76 65 82 ff ff ff ff  .........ve.....
-  backtrace:
-    [<ffffffff8265cfab>] kmalloc include/linux/slab.h:591 [inline]
-    [<ffffffff8265cfab>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff8265cfab>] device_private_init drivers/base/core.c:3203 [inline]
-    [<ffffffff8265cfab>] device_add+0x89b/0xdf0 drivers/base/core.c:3253
-    [<ffffffff828dd643>] __mdiobus_register+0xc3/0x450 drivers/net/phy/mdio_bus.c:537
-    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
-    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
-    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
-    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
-    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
-    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
-    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
-    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
-    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
-    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
-    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
-    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
-    [<ffffffff82660916>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:487
-    [<ffffffff8265cd0b>] device_add+0x5fb/0xdf0 drivers/base/core.c:3359
-    [<ffffffff82c343b9>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2170
-    [<ffffffff82c4473c>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+Fix this by calling this function after releasing the lock.
 
-BUG: memory leak
-unreferenced object 0xffff888116f06900 (size 32):
-  comm "kworker/0:2", pid 2670, jiffies 4294944448 (age 7.160s)
-  hex dump (first 32 bytes):
-    75 73 62 2d 30 30 31 3a 30 30 33 00 00 00 00 00  usb-001:003.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81484516>] kstrdup+0x36/0x70 mm/util.c:60
-    [<ffffffff814845a3>] kstrdup_const+0x53/0x80 mm/util.c:83
-    [<ffffffff82296ba2>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
-    [<ffffffff82358d4b>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
-    [<ffffffff826575f3>] dev_set_name+0x63/0x90 drivers/base/core.c:3147
-    [<ffffffff828dd63b>] __mdiobus_register+0xbb/0x450 drivers/net/phy/mdio_bus.c:535
-    [<ffffffff828cb835>] __devm_mdiobus_register+0x75/0xf0 drivers/net/phy/mdio_devres.c:87
-    [<ffffffff82b92a00>] ax88772_init_mdio drivers/net/usb/asix_devices.c:676 [inline]
-    [<ffffffff82b92a00>] ax88772_bind+0x330/0x480 drivers/net/usb/asix_devices.c:786
-    [<ffffffff82baa33f>] usbnet_probe+0x3ff/0xdf0 drivers/net/usb/usbnet.c:1745
-    [<ffffffff82c36e17>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<ffffffff82661d17>] call_driver_probe drivers/base/dd.c:517 [inline]
-    [<ffffffff82661d17>] really_probe.part.0+0xe7/0x380 drivers/base/dd.c:596
-    [<ffffffff826620bc>] really_probe drivers/base/dd.c:558 [inline]
-    [<ffffffff826620bc>] __driver_probe_device+0x10c/0x1e0 drivers/base/dd.c:751
-    [<ffffffff826621ba>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:781
-    [<ffffffff82662a26>] __device_attach_driver+0xf6/0x140 drivers/base/dd.c:898
-    [<ffffffff8265eca7>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:427
-    [<ffffffff826625a2>] __device_attach+0x122/0x260 drivers/base/dd.c:969
+The following log reveals it:
 
-Reported-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+[   44.168226 ] BUG: sleeping function called from invalid context at kernel/workqueue.c:3018
+[   44.168941 ] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 5475, name: modprobe
+[   44.169574 ] INFO: lockdep is turned off.
+[   44.169899 ] irq event stamp: 0
+[   44.170160 ] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[   44.170627 ] hardirqs last disabled at (0): [<ffffffff814209ed>] copy_process+0x132d/0x3e00
+[   44.171240 ] softirqs last  enabled at (0): [<ffffffff81420a1a>] copy_process+0x135a/0x3e00
+[   44.171852 ] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[   44.172318 ] Preemption disabled at:
+[   44.172320 ] [<ffffffffa009b0a9>] nj_release+0x69/0x500 [netjet]
+[   44.174441 ] Call Trace:
+[   44.174630 ]  dump_stack_lvl+0xa8/0xd1
+[   44.174912 ]  dump_stack+0x15/0x17
+[   44.175166 ]  ___might_sleep+0x3a2/0x510
+[   44.175459 ]  ? nj_release+0x69/0x500 [netjet]
+[   44.175791 ]  __might_sleep+0x82/0xe0
+[   44.176063 ]  ? start_flush_work+0x20/0x7b0
+[   44.176375 ]  start_flush_work+0x33/0x7b0
+[   44.176672 ]  ? trace_irq_enable_rcuidle+0x85/0x170
+[   44.177034 ]  ? kasan_quarantine_put+0xaa/0x1f0
+[   44.177372 ]  ? kasan_quarantine_put+0xaa/0x1f0
+[   44.177711 ]  __flush_work+0x11a/0x1a0
+[   44.177991 ]  ? flush_work+0x20/0x20
+[   44.178257 ]  ? lock_release+0x13c/0x8f0
+[   44.178550 ]  ? __kasan_check_write+0x14/0x20
+[   44.178872 ]  ? do_raw_spin_lock+0x148/0x360
+[   44.179187 ]  ? read_lock_is_recursive+0x20/0x20
+[   44.179530 ]  ? __kasan_check_read+0x11/0x20
+[   44.179846 ]  ? do_raw_spin_unlock+0x55/0x900
+[   44.180168 ]  ? ____kasan_slab_free+0x116/0x140
+[   44.180505 ]  ? _raw_spin_unlock_irqrestore+0x41/0x60
+[   44.180878 ]  ? skb_queue_purge+0x1a3/0x1c0
+[   44.181189 ]  ? kfree+0x13e/0x290
+[   44.181438 ]  flush_work+0x17/0x20
+[   44.181695 ]  mISDN_freedchannel+0xe8/0x100
+[   44.182006 ]  isac_release+0x210/0x260 [mISDNipac]
+[   44.182366 ]  nj_release+0xf6/0x500 [netjet]
+[   44.182685 ]  nj_remove+0x48/0x70 [netjet]
+[   44.182989 ]  pci_device_remove+0xa9/0x250
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio_bus.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/isdn/hardware/mISDN/netjet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -395,6 +395,7 @@ int __mdiobus_register(struct mii_bus *b
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
-+		put_device(&bus->dev);
- 		return -EINVAL;
+diff --git a/drivers/isdn/hardware/mISDN/netjet.c b/drivers/isdn/hardware/mISDN/netjet.c
+index 2a1ddd47a096..a52f275f8263 100644
+--- a/drivers/isdn/hardware/mISDN/netjet.c
++++ b/drivers/isdn/hardware/mISDN/netjet.c
+@@ -949,8 +949,8 @@ nj_release(struct tiger_hw *card)
+ 		nj_disable_hwirq(card);
+ 		mode_tiger(&card->bc[0], ISDN_P_NONE);
+ 		mode_tiger(&card->bc[1], ISDN_P_NONE);
+-		card->isac.release(&card->isac);
+ 		spin_unlock_irqrestore(&card->lock, flags);
++		card->isac.release(&card->isac);
+ 		release_region(card->base, card->base_s);
+ 		card->base_s = 0;
  	}
- 
+-- 
+2.33.0
+
 
 
