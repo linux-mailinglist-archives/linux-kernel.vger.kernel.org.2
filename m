@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162FB43A497
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0F643A498
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 22:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbhJYU1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 16:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
+        id S236714AbhJYU1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 16:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235983AbhJYU06 (ORCPT
+        with ESMTP id S235493AbhJYU1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 16:26:58 -0400
+        Mon, 25 Oct 2021 16:27:00 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FC6C06965E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:13:17 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso19323597ybj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:13:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350D6C069661
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:13:19 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id h40-20020a25b1a8000000b005c16d98634bso3371141ybj.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 13:13:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=p252xG12hm36TVtMBIc5o9CfWgJnI3e/NiInHiVMTig=;
-        b=Wu2LLRdbO75g2MJEjWRIADkGRjmCiBhAy+jmAo12Tyf2ZcqCPI3jN66i6zU/hhGOxm
-         LUInj/1ds2YyRdBRfWxggtTr7grJ+wUJ4BGGwSkxpwdvawfPLM2PuALkxw5AoMbP15hI
-         bLD8OPrKoKD8EG4UNeGiB2JTL37INIyc/igaGDXkCIPEHz9LWohzT6OwdnC09uinshXF
-         Gh2TRmOY9A8kv/z16HHblrmBgXhOhDj/2071nNoZi8uxPRvsvStMdThVj1qHM6/aH2OZ
-         7TryXlS9W+6Tdtie8F9EeDx6vgcSKPKjKSE2Wewa6n2uqU8ZDgygICpvaCEFforQxAfQ
-         a0nA==
+        bh=WT2FUqpTjJpqqDcLvsyDTMaTG3w5Wil3Dn+SC0moScM=;
+        b=a75Kgfjv2TPAV9RjQ2s2XNJGt8nF3ljPUvsp+/k/vtSfmH80y24sfhjyI9OQkGUPkp
+         C5Hq+tL45dWIq+DAhjBst38JWj7GdtnrToXRkw0Xpjoj5vGe7LovgANzWFTTjoo/gxxv
+         IOov4bTo0CbG0uJRI1xhs4ALrXT3het05GyGoCjh8zWsmWEau2T8FseVCKdULSwlN2xR
+         2VLFUsS003qbzT+teL4ndL9s9dNC/hyWwr5T/B0u5ZwOObSMPEjGK6suhPpG0cMoX0FA
+         0Lj6viUMtpJUN7a2dpSX06ducs7cPb1EM38+EB4i0k2BhX/jMZc8dsFhSgVTcxBtBXP/
+         FAPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=p252xG12hm36TVtMBIc5o9CfWgJnI3e/NiInHiVMTig=;
-        b=NUqoDvtGEn0UVu4AZ3kDN2ReQjmHn2+YLaD6awxjthU4JJXsChZBfVXH97SUccxx0l
-         CiQ0ALP6i4BARQRHR/Zkb9F5nVprQWkysvqFLj8G2zkNn4liSkofkBeWAggPTHc8nmeS
-         1/R8yETx6lKtuEyGXqic7TOaaLWubas3qtzH3U0PZsfs+PJTYtxoy43KgV9NHksT9qvr
-         4WUMgDWrRpfpjx2CV07991MjCeOH9pnZc97LlIxE5j/n/cNwA3wgT3j9Lo8EgOCxHtyE
-         vsb2y01ny530s4ns6u7R5PHMVRvoCAp0kdHepiPG/OyloUBh6kmFmsOJ8Qfwb1HLbPkY
-         dc0A==
-X-Gm-Message-State: AOAM530DBBWGPY1huJka8eGieR6GO+DNc67Mo7EdfGqKrXJ9tzZlUfRW
-        Hd63HKBGvFKPLfcCDO3ndA6tHTPAxJA=
-X-Google-Smtp-Source: ABdhPJyX1C9LS3NtwtpDtNnMk+lszKwoChWvg8vLnJhbeYZcGMMZYmwcnXkklyY2MclrLQtdcdHKETzORiU=
+        bh=WT2FUqpTjJpqqDcLvsyDTMaTG3w5Wil3Dn+SC0moScM=;
+        b=g/jkIa7NqLw13Nus3ys1CbluvVXnW96j/B9TQ9grIOS2D5TlCGc6nFfv6QbZJ6qT5c
+         g/T/3B/WKtCFgzVIR2RuBPrMONfCPcKF39J68PCZJ1fVe2Rp/UNTF579jRtP0dIPlC+X
+         uzhyUOEA7L/wuuNVG/SCQUMSimSykQqRn6fOqNYxGf3P9YpcgeZNvtb8V+AfnrrSFbux
+         M1JMc8BZ5Zx0VVsHGFDxk+pCnyVw47eRp6GHnJEnPt+8ceRuINUE0FXFT+6uQXLPEO6b
+         8O9WZSQpClZwIDY3vESlkMwqNpQmfk+oa6Alhr43ew3FGqTujrOLbUQl4p+Ujx+mw+ab
+         5rRQ==
+X-Gm-Message-State: AOAM530lLo0CUXqHh9EWO8bjAYEsbM71Usy7oA5EGBckWRFpJlArfiXg
+        a+nXgYb54Eg18Gh1WfB8nBoEFZjiNCc=
+X-Google-Smtp-Source: ABdhPJwmrxYKbZaZpjbK4FHOL9LJURoUqAEjHP7X6KNVoCB/s+b/txvdyiSvR3NxNRCL1+BMoy4HQCxD6DA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:ffbb:dc28:15d8:6cdc])
- (user=seanjc job=sendgmr) by 2002:a25:2cf:: with SMTP id 198mr9129871ybc.205.1635192796287;
- Mon, 25 Oct 2021 13:13:16 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:a169:: with SMTP id z96mr20186749ybh.491.1635192798506;
+ Mon, 25 Oct 2021 13:13:18 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 25 Oct 2021 13:13:10 -0700
+Date:   Mon, 25 Oct 2021 13:13:11 -0700
 In-Reply-To: <20211025201311.1881846-1-seanjc@google.com>
-Message-Id: <20211025201311.1881846-2-seanjc@google.com>
+Message-Id: <20211025201311.1881846-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211025201311.1881846-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 1/2] KVM: x86: Don't WARN if userspace mucks with RCX during
- string I/O exit
+Subject: [PATCH 2/2] KVM: selftests: Add test to verify KVM doesn't explode on
+ "bad" I/O
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,46 +67,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a WARN with a comment to call out that userspace can modify RCX
-during an exit to userspace to handle string I/O.  KVM doesn't actually
-support changing the rep count during an exit, i.e. the scenario can be
-ignored, but the WARN needs to go as it's trivial to trigger from
-userspace.
+Add an x86 selftest to verify that KVM doesn't WARN or otherwise explode
+if userspace modifies RCX during a userspace exit to handle string I/O.
+This is a regression test for a user-triggerable WARN introduced by
+commit 3b27de271839 ("KVM: x86: split the two parts of emulator_pio_in").
 
-Cc: stable@vger.kernel.org
-Fixes: 3b27de271839 ("KVM: x86: split the two parts of emulator_pio_in")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/x86.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/userspace_io_test.c  | 114 ++++++++++++++++++
+ 3 files changed, 116 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/userspace_io_test.c
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b26647a5ea22..1726812f31af 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -6948,7 +6948,13 @@ static int emulator_pio_in(struct kvm_vcpu *vcpu, int size,
- 			   unsigned short port, void *val, unsigned int count)
- {
- 	if (vcpu->arch.pio.count) {
--		/* Complete previous iteration.  */
+diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+index b8dbabe24ac2..691262c7b122 100644
+--- a/tools/testing/selftests/kvm/.gitignore
++++ b/tools/testing/selftests/kvm/.gitignore
+@@ -27,6 +27,7 @@
+ /x86_64/svm_int_ctl_test
+ /x86_64/sync_regs_test
+ /x86_64/tsc_msrs_test
++/x86_64/userspace_io_test
+ /x86_64/userspace_msr_exit_test
+ /x86_64/vmx_apic_access_test
+ /x86_64/vmx_close_while_nested_test
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index d1774f461393..1a611cb80c4e 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -58,6 +58,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_preemption_timer_test
+ TEST_GEN_PROGS_x86_64 += x86_64/svm_vmcall_test
+ TEST_GEN_PROGS_x86_64 += x86_64/svm_int_ctl_test
+ TEST_GEN_PROGS_x86_64 += x86_64/sync_regs_test
++TEST_GEN_PROGS_x86_64 += x86_64/userspace_io_test
+ TEST_GEN_PROGS_x86_64 += x86_64/userspace_msr_exit_test
+ TEST_GEN_PROGS_x86_64 += x86_64/vmx_apic_access_test
+ TEST_GEN_PROGS_x86_64 += x86_64/vmx_close_while_nested_test
+diff --git a/tools/testing/selftests/kvm/x86_64/userspace_io_test.c b/tools/testing/selftests/kvm/x86_64/userspace_io_test.c
+new file mode 100644
+index 000000000000..e4bef2e05686
+--- /dev/null
++++ b/tools/testing/selftests/kvm/x86_64/userspace_io_test.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/ioctl.h>
++
++#include "test_util.h"
++
++#include "kvm_util.h"
++#include "processor.h"
++
++#define VCPU_ID			1
++
++static void guest_ins_port80(uint8_t *buffer, unsigned int count)
++{
++	unsigned long end;
++
++	if (count == 2)
++		end = (unsigned long)buffer + 1;
++	else
++		end = (unsigned long)buffer + 8192;
++
++	asm volatile("cld; rep; insb" : "+D"(buffer), "+c"(count) : "d"(0x80) : "memory");
++	GUEST_ASSERT_1(count == 0, count);
++	GUEST_ASSERT_2((unsigned long)buffer == end, buffer, end);
++}
++
++static void guest_code(void)
++{
++	uint8_t buffer[8192];
++	int i;
++
++	/*
++	 * Special case tests.  main() will adjust RCX 2 => 1 and 3 => 8192 to
++	 * test that KVM doesn't explode when userspace modifies the "count" on
++	 * a userspace I/O exit.  KVM isn't required to play nice with the I/O
++	 * itself as KVM doesn't support manipulating the count, it just needs
++	 * to not explode or overflow a buffer.
++	 */
++	guest_ins_port80(buffer, 2);
++	guest_ins_port80(buffer, 3);
++
++	/* Verify KVM fills the buffer correctly when not stuffing RCX. */
++	memset(buffer, 0, sizeof(buffer));
++	guest_ins_port80(buffer, 8192);
++	for (i = 0; i < 8192; i++)
++		GUEST_ASSERT_2(buffer[i] == 0xaa, i, buffer[i]);
++
++	GUEST_DONE();
++}
++
++int main(int argc, char *argv[])
++{
++	struct kvm_regs regs;
++	struct kvm_run *run;
++	struct kvm_vm *vm;
++	struct ucall uc;
++	int rc;
++
++	/* Tell stdout not to buffer its content */
++	setbuf(stdout, NULL);
++
++	/* Create VM */
++	vm = vm_create_default(VCPU_ID, 0, guest_code);
++	run = vcpu_state(vm, VCPU_ID);
++
++	memset(&regs, 0, sizeof(regs));
++
++	while (1) {
++		rc = _vcpu_run(vm, VCPU_ID);
++
++		TEST_ASSERT(rc == 0, "vcpu_run failed: %d\n", rc);
++		TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
++			    "Unexpected exit reason: %u (%s),\n",
++			    run->exit_reason,
++			    exit_reason_str(run->exit_reason));
++
++		if (get_ucall(vm, VCPU_ID, &uc))
++			break;
++
++		TEST_ASSERT(run->io.port == 0x80,
++			    "Expected I/O at port 0x80, got port 0x%x\n", run->io.port);
++
 +		/*
-+		 * Complete a previous iteration that required userspace I/O.
-+		 * Note, @count isn't guaranteed to match pio.count as userspace
-+		 * can modify ECX before rerunning the vCPU.  Ignore any such
-+		 * shenanigans as KVM doesn't support modifying the rep count,
-+		 * and the emulator ensures @count doesn't overflow the buffer.
++		 * Modify the rep string count in RCX: 2 => 1 and 3 => 8192.
++		 * Note, this abuses KVM's batching of rep string I/O to avoid
++		 * getting stuck in an infinite loop.  That behavior isn't in
++		 * scope from a testing perspective as it's not ABI in any way,
++		 * i.e. it really is abusing internal KVM knowledge.
 +		 */
- 	} else {
- 		int r = __emulator_pio_in(vcpu, size, port, count);
- 		if (!r)
-@@ -6957,7 +6963,6 @@ static int emulator_pio_in(struct kvm_vcpu *vcpu, int size,
- 		/* Results already available, fall through.  */
- 	}
- 
--	WARN_ON(count != vcpu->arch.pio.count);
- 	complete_emulator_pio_in(vcpu, val);
- 	return 1;
- }
++		vcpu_regs_get(vm, VCPU_ID, &regs);
++		if (regs.rcx == 2)
++			regs.rcx = 1;
++		if (regs.rcx == 3)
++			regs.rcx = 8192;
++		memset((void *)run + run->io.data_offset, 0xaa, 4096);
++		vcpu_regs_set(vm, VCPU_ID, &regs);
++	}
++
++	switch (uc.cmd) {
++	case UCALL_DONE:
++		break;
++	case UCALL_ABORT:
++		TEST_FAIL("%s at %s:%ld : argN+1 = 0x%lx, argN+2 = 0x%lx",
++			  (const char *)uc.args[0], __FILE__, uc.args[1],
++			  uc.args[2], uc.args[3]);
++	default:
++		TEST_FAIL("Unknown ucall %lu", uc.cmd);
++	}
++
++	kvm_vm_free(vm);
++	return 0;
++}
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
