@@ -2,134 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2AA4390A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2814390AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 09:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhJYIA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230458AbhJYIAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:00:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32518 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230157AbhJYIA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 04:00:28 -0400
-Received: from mail-dm6nam10on2042.outbound.protection.outlook.com ([40.107.93.42]:6635
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229498AbhJYIA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:00:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cN8GWtl4zHopEPfCTSbLrtgj3p3n/98W3/yncVoDgtVu/qTEMHTmkX9jpCQFS3TLhjqEumjavuRtViYklKGTN79eKVOHxK41iS4Evrx+AgVCAZ9jS9r9kLCSLoiEe59yrTsYjHwpd5zQo43rBVW4HZpNVPZub6rWwg66cJek3j7lIM4sQhepHclkqyFDUDXYtPjL5VPBojLbONTjh1WfpsPTAbO7bv3M3gRETVW+Y3cGzWRD6yvYTFwKk1I679BQASDmae/fBVvI9dtK5rZAZq/MntMR5aGvfRsX9/Y1xJJmovjBE8tnYczpKrfhrMQ9EwZ4wLAN0D4WE9K7sYuSWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=moCF78UXa6hg04/lVy73abzTvCYi7vVeWKIm+FEN1vI=;
- b=YI4UHh+I0GfRJTyNLev494t9HADQDJuyZyUAAp3ynB6+jeTPeMYp3QG5k36i5cKu2g+iXjON0I+2h5OpayhopMb/IVMZx5RspipdPTKWCFz/0OD3S4AQDMYLS9llc6GnRGpo5e/FnX9DRXngTD5t7vkWZB51Ktw2ZtMYecISZyii22ljGLnvX5avt1V855tsFhVvCoaeSxik2sH5g6iPS7t9sKLViM/HQs+EcspALvamdLhtF8CjrRu1YHAPrOvTOUTuo+KIjmb1ebqz2KiuM5XjuvvwmBPJz5jbOMPjIkbnt3sQb40BqYiUnEl0ayUgHkEMc6+baOhf2olCPVOZlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=moCF78UXa6hg04/lVy73abzTvCYi7vVeWKIm+FEN1vI=;
- b=cQPDkOrozJtkehsfNiD9Lustgl/tPK0RHGLUSRsWk6HV9mwUqOMDMyMY90enQa4rrUycZcCs8943il27SzL/39nyoOpi/sTFe0H6A6GgPZayyJUvCquolpjPmNidCx8NuFJxuF05iTgDG4xzRjy+rV4m8+SedMwD58/aEY79jac=
-Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB3627.namprd12.prod.outlook.com (2603:10b6:5:3e::18) by
- DM6PR12MB4894.namprd12.prod.outlook.com (2603:10b6:5:209::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.18; Mon, 25 Oct 2021 07:58:03 +0000
-Received: from DM6PR12MB3627.namprd12.prod.outlook.com
- ([fe80::549b:1773:f036:9ee2]) by DM6PR12MB3627.namprd12.prod.outlook.com
- ([fe80::549b:1773:f036:9ee2%4]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 07:58:03 +0000
-Message-ID: <9085bf61-9b97-75a1-60c6-6818b28dee48@amd.com>
-Date:   Mon, 25 Oct 2021 13:27:48 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: linux-next: build failure after merge of the sound-asoc tree
-Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211025131302.5c5757fb@canb.auug.org.au>
-From:   Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-In-Reply-To: <20211025131302.5c5757fb@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN1PR01CA0090.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c00:1::30) To DM6PR12MB3627.namprd12.prod.outlook.com
- (2603:10b6:5:3e::18)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635148686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0SKe2bjhvSLrSG4XH/ApB+juNru0m23A7Hu0J3xtAKU=;
+        b=PbU6LwVtI2xBcDP4OysZGHfXlTN3qTXQQkwDymSJF5uhf6F1aOQ18WBpZ24gjfSOjGel0a
+        0rCkLmLXJL4ul7HQpgYgXYVOU2UCpjEVVL4dyky561YatxS444zxUoFOSxFq1l/51vXrqM
+        KsHOp05IyJyPFXSPWYj/03Pbc9cpKXY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-407-S0cnnbxbPKmtxSX45VhYlA-1; Mon, 25 Oct 2021 03:58:05 -0400
+X-MC-Unique: S0cnnbxbPKmtxSX45VhYlA-1
+Received: by mail-wm1-f69.google.com with SMTP id v18-20020a7bcb52000000b00322fea1d5b7so3610397wmj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 00:58:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0SKe2bjhvSLrSG4XH/ApB+juNru0m23A7Hu0J3xtAKU=;
+        b=4H8xQI8dEhkdtpRgyPOr82dict3gRKhT1dgkuj9fq+W5D12VAhfZFn7p06Zfyx/coz
+         LKB2q0GATyPQBBRw3PD3XlFiNHgP/8mLRQaeccl74XZ65TuO/OLucuCukSJMtBVIflWv
+         iaSLFDw5UT/WHnlzN5M2Zyz0F1TEFM4UmzdBXTwnI56zbLHeT/rrjXCtj9zU4mqAuOmA
+         AlWj9p1ibfTMnlLXd7wBoN4bZAIym787WbbmaSn26bZp37MZRQTGe9E6/VaP9wvbd5rs
+         6MD6qANBQRckuZZRf+BgGIutV8/PtXdlFFfhExDTPNVjthJBnxPcn8OJzK5+laQLXZf/
+         iqPw==
+X-Gm-Message-State: AOAM531Yew/LS3bFo3rOdRM+i9KMPdpVeL2EMTsDCmODv6Ex6AU82CAv
+        ByWro/oG19F9ARlH7sIVYnn14Y/I8rbmO6hCn/T336mfjHkHfGTZAWrUN7sYP6zNTkw2cYnsXIH
+        DOM1z5eyF4StNkbB5wNvKC0ziQNMxBmYjd17WHK8Iur8yYFqbFpRCPneBhTzxr6e2NienniK0uF
+        c=
+X-Received: by 2002:a05:600c:2505:: with SMTP id d5mr5484425wma.194.1635148683619;
+        Mon, 25 Oct 2021 00:58:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcEaxipbcpXSkrk6igJI58QxDtczsadM2Z+/CN6to52SDebzHifcGYGzU2vkui3i9Ud7FGNQ==
+X-Received: by 2002:a05:600c:2505:: with SMTP id d5mr5484388wma.194.1635148683349;
+        Mon, 25 Oct 2021 00:58:03 -0700 (PDT)
+Received: from minerva.home ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id d1sm15939502wrr.72.2021.10.25.00.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 00:58:02 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Neal Gompa <ngompa13@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v2 0/2] Add a drm.disable_native_drivers command line option
+Date:   Mon, 25 Oct 2021 09:57:54 +0200
+Message-Id: <20211025075756.3479157-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: from [10.252.92.171] (165.204.159.242) by PN1PR01CA0090.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c00:1::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Mon, 25 Oct 2021 07:57:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c4efc8ae-db75-4795-2292-08d9978d2b53
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4894:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4894BB852FBC6DD515CB4BA982839@DM6PR12MB4894.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PoWZNExfpyW3nv5uU1DEu+4lPR/Ol5ZByQT7njJfKzrSQ5ZJN/TzJtNBtoO+4A3a6WEsZDHLJKuSwuGkjJrrK5e6GGuspMS+66JswUfVRY/Uqqv2yI8vEyv2+cBN8w98bJHFaq2yNgEg0sLe6DGUk0BtwK2N5MLcsgd+RfZFMLciJRdj2MdvNaYtLJNIEGQkkLCVl8/2StmdEvZXU8U1jzoP6F12R7m2LArERJYuDomXwGQGBJt9Uo2Q5DaDvOEjlh+7VmpQPDsOkFmTjQKC1/kaXq/2Bgerol983p2RXA2WwkdXuR2U1XbyV/E2qUY1mfeypqrwmMl7R0i8mjuF1Rj2+7HyxNEpbSXiheypSRZSyCyAmV3ij85YZxezztDIkMq5JVuIjyNI5sIdiW25d34ZD05XES85Mztk7KkdJhdcAhw+OzQCdcCsjuG7fIt7RWZqIrz4GCLTgBny01vEz2cAof5M+DkXSmbJqqX3uuCzdjbJKAzqNabfHUfSqSWFFJa8BUZq6tKdqd44ZqDKdcEFaz7/a5/ESPKajQhsjk3DsnfBbax76M8QpZf/fvWq5bSzslUJLpghlOLocOZA8cYC3Lfsn8CZJ5v8mTdv65ev7xLi76CaX/Jo4fQ7fIg9NV1+7DChqOxwChS0Dd+4NPc41vBxEEI9NdrLzk9ajg20MVNFcQ3l76cIPF8u05xvf94GDvV6Iq7reZVZD02IplnpM2a4xsaoIHE+nlaMFGCj5xqzpWit/dDNyLOjA6Ken7NlMGnamEOeofs2bk8Q3F3zMBScn/9vOwx/smPUqIhme5YbuckhFyZy5IEqHubF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3627.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(186003)(53546011)(6486002)(26005)(5660300002)(4744005)(8676002)(966005)(8936002)(66946007)(66476007)(66556008)(2616005)(956004)(38100700002)(36756003)(86362001)(31696002)(110136005)(4326008)(31686004)(316002)(16576012)(54906003)(6666004)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V3dmNW5WSjNQS1pMSXQ2bmN3OGRuWG83VWViZVptcXMwMzQzc3JXQ2F5NVEv?=
- =?utf-8?B?dElZOGZPNUo5bG1DNHUxMEJuQkNNSEtIak5ZYjNDMkdiK2xQcXRjYkdRWnQ4?=
- =?utf-8?B?cW5odUZxV29kcHVsK3grVXlRNmc2THRRdkRFK0FNMm4yek9ZcVRCaDV5U3g2?=
- =?utf-8?B?SlphOExneWxOUGVzMmJ1akNXcmN0QzVZbmJWTjlxT3R6bVNNTkczeXdzOXhr?=
- =?utf-8?B?RGJxWlpNSEFKWUd4SUUxYisvQklQVnk1akR0YWVDR3RPd25jay9uMmhsdDky?=
- =?utf-8?B?T2VvVk5manNHWXkwUG8rQmI0OHpLYzMweFJYYVFWR2FWc3FnTUl0bERoNm9Q?=
- =?utf-8?B?V3R1dThqZSt3K0dTUlN5anhKb01CdmRaaVUvd3lJbmwrYjBPMGtpUTdFR1lu?=
- =?utf-8?B?Y09MQ1lWeUZ6QWhDdGk1VTdjUGdXTVQxb3daWlZ5YTd2Ry9yVWdCOGZzSDkr?=
- =?utf-8?B?Qm53Yy9JVEJ5M1RWakc4NW4rSDIvNU1UVytFWXpHVi9PblpqWlI4L1QyOXZM?=
- =?utf-8?B?Q3J4YTBNNzVMc2cyWnNiQVJsMk5ocWRxbDJuSUt1SVlmV0lwUmM3ekM5T2xn?=
- =?utf-8?B?eUlxRjBLeVg3TDJvZzZpQWlMWHN5eURwS2liSUtXb1F0aXJXM1lDNlRWaXZq?=
- =?utf-8?B?MHdiWU5lSGJqWS92OVI0bWFSODZLZHFxSnM0MSs1QnAzZmdDaXFsU1F4cjg4?=
- =?utf-8?B?R3VqMWdxYlh4UEFiZlV2SjFJdzRrcXFHaXRxRzRsb1F0bFdZYTVzeUZnazRU?=
- =?utf-8?B?NFRpTjVRS1YraDMvYUM1SS9pZFFXNUVrOWk3TUVYTWpRVm5WNEFqWGhCN2o4?=
- =?utf-8?B?RFhsMVdzbWdxeFp1Z3J4U3hwL2cvUWNMZXA0Lzg5SjgwV1Q4Y3FDZ3AwSUdG?=
- =?utf-8?B?NGdrcTZjM3hCN0FZYlJyT2JieS93ZEFROHJhSnFIVXk5MHlaZUhDbS9qbUlw?=
- =?utf-8?B?Ujc4c0tINXUybHN1Qkh0Vk45a3h0cVMzZks5UUZSR1Y4b212Q29ZdWUzU3I3?=
- =?utf-8?B?azZ1MzAyMm54b3dqVkRHeDl3QXdxdnYyVm4relg2V0ptdmlXei9kald5aEJJ?=
- =?utf-8?B?WVZUUkp5YVZrT2xGSGJDN3lTYzYvY3VaVVRRQS9FcUNJd3JXTWJVaEx5YzFv?=
- =?utf-8?B?V2JOa0daV0IzWTNUZktFMXdwR2Fzd3dXZktzcjh4N1JEdXZzNVQ2YmNvOUR4?=
- =?utf-8?B?emEvY2o5N2k0RlRQampidkYrRVBIS2pBZmMxUXVKOGVQSnBxSExSclE1cDNw?=
- =?utf-8?B?a20vWU5LcHZ6S3FzbHNhVXdGb3R4M3FPRHFuNEtERWtiM1dvY2dtOGRUd0Mw?=
- =?utf-8?B?SFJpcWk3WVk4U3RJSVJlQnIyWE9iMlBYOVNNRi9yUGZrZU85QmsrbFkvbDVX?=
- =?utf-8?B?cTI0cGVqSkR5YVFFcnBJWUdYVGZjQWZRelFqaGRpbURPYjRHY0UvZXNUS0xm?=
- =?utf-8?B?eFZyYUI3TFdKQ1RsVHlWQzArc1E4L21Dclp1dUdwVm50YWdUc1EzN2g1SlFs?=
- =?utf-8?B?V3c2djZkeTVQL2xBSXkxY2srcGtnRXpBNlRORFhGRzBqakE1VnhMcW0yNW9l?=
- =?utf-8?B?b1QzazE4R2gvVFJDQmM4cGVwVjlFT0p5U1dSYzcyaW0rOWxlZVdibnBPMDhW?=
- =?utf-8?B?QmxEN1gvS1UrSkdhYm5SOHRCT013TlJkYkp6SFQ0aGdFRis1cUVFTWRqbUVO?=
- =?utf-8?B?N3k2L29Ha2hFczE2dVZGaEpqdDdkVXp4cHpxQk8yZytvZ0sxVE9rRHZ2YW5T?=
- =?utf-8?B?aHZ1YmdCVGxNbE1nNnNwSldYdGNLdU1DZy9TU0tGYXV0YjFRcTNVQWFzUkVo?=
- =?utf-8?B?bC9MNVczbDhkbUJlMzVwZlJrdW9kb0wwMHpMYXRNWkhxRXpUZmVoQmtkZzhp?=
- =?utf-8?B?N2lpZTA3ckNQQ2xrR3F2UFhlc0ltSWlLSmtIYkVUM1V0MUtDTERFVk1GdVlz?=
- =?utf-8?B?ZjFUcTY3ZjNtdXpYWWNqdVQ1VUdmL0VhYjdqb2pZcVNIWHRUZDVvNXhQLzBx?=
- =?utf-8?B?Z3RZSk1yOGJFV0JSbW96UElRL2Qwdk43NVRpa0JZRlcrTDZwc01scFVYVkRJ?=
- =?utf-8?B?c2hVNC9PckVSWGhYRnFlWWlHa1hnM0dYOFlCRDAyWkxqQU83RzhsOGtyNWVY?=
- =?utf-8?B?RVExamo3Z1FVbGJ2Uml2T0ZVcTM0RkFEWEZuTDZ6N2RoMDN4WkhNa1R0WWYz?=
- =?utf-8?Q?y6XvdPNk5iOq/lBS9sItqAI=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4efc8ae-db75-4795-2292-08d9978d2b53
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3627.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2021 07:58:02.8753
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2WGVAE0Uh2Nz5cegsnvNhn+b6EI1KrCboiT/VzAvPX4zKCWNxFho/Yn2gjK0ln7HegjM6XXbdCQ2ZDqNlF6DWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4894
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apologies this seems to be missed, i've pushed a quick fix at
+This patch-series add a drm.disable_native_drivers option that can be used
+to prevent native DRM drivers to be probed. That way, the simpledrm driver
+won't be removed which can be useful to troubleshoot DRM drivers problems.
 
-https://patchwork.kernel.org/project/alsa-devel/patch/20211025074808.471333-1-AjitKumar.Pandey@amd.com/
+Patch #1 is just a small preparatory patch that moves the logic to remove
+the conflicting fbdev frame buffer to a helper function.
 
-@Mark , please pick this one into asoc tree to fix build issue. 
-Apologies for inconvenience
+Patch #2 adds the new kernel command line option and if set, prevents the
+drm_aperture_remove_conflicting_framebuffers() function to succeed.
 
-Thanks & Regards
-Ajit
+This is a v2 that addresses the issues pointed out by Thomas and Neal.
 
-On 10/25/2021 7:43 AM, Stephen Rothwell wrote:
-> [CAUTION: External Email]
-> 
+Best regards,
+Javier
+
+Changes in v2:
+- Rename command line parameter to drm.disable_native_drivers.
+- Return -EBUSY instead of -EINVAL when the function fails.
+- Invert the parameter logic and make it false by default.
+
+Javier Martinez Canillas (2):
+  drm/aperture: Move conflicting fbdev frame buffer removal to a helper
+  drm/aperture: Prevent conflicting framebuffers removal if option is
+    set
+
+ drivers/gpu/drm/drm_aperture.c | 54 ++++++++++++++++++++++++++--------
+ 1 file changed, 42 insertions(+), 12 deletions(-)
+
+-- 
+2.31.1
+
