@@ -2,211 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038D2439B9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44410439BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhJYQgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 12:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
+        id S233998AbhJYQgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 12:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhJYQgW (ORCPT
+        with ESMTP id S233960AbhJYQgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:36:22 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353C5C061745;
-        Mon, 25 Oct 2021 09:34:00 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id AF1991F43289
-Message-ID: <1e24268a-fd6a-10cd-cb1d-c479bb2f930f@collabora.com>
-Date:   Mon, 25 Oct 2021 13:33:37 -0300
+        Mon, 25 Oct 2021 12:36:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A7BC061745;
+        Mon, 25 Oct 2021 09:34:29 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 16:34:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635179667;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SyoqGRuQLiPSVy3O8/AD4i/1iCllFOsnHSJylbHakJo=;
+        b=C33MwLQjIQqINyL8T5ZmnNTVmnz7NsBvIkaQpmv+l3GW7B4nDxzk5uuACuGEF63phcX0Ph
+        H0nQm7TSI+eEykjRiJhoje1XI9sSVajxz4L1L+T8ZM+0JMb0FzA0/B9Q1+Mq7s76wdTOkU
+        K4CFYNmqAtodD2dmZykVrCMvM1ORz+abADX0IhlZ91QDHMZM9rlTUyXLdjtCZlgxvJ6397
+        r4/SfBzHv6yhOUpM+bpRhSDfsaGy2oP0nseUXiZ5LhOyM29YHvEQPUsSwyHLxKMOPA7O2k
+        /p+2FAetkrfMOxXg4sjy3F2jhE8IJixVRmMuwfJ80aKB73hmtd4UhoAit33g/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635179667;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SyoqGRuQLiPSVy3O8/AD4i/1iCllFOsnHSJylbHakJo=;
+        b=CQ1+nVQciRiF7BnCO9ANU+hlGaCQgNuU3BG5Kx5VyVN7K5AZ6eNkAGq0FqIIvJu8iGcDtW
+        Xc+enJw7oVR6VjDQ==
+From:   "tip-bot2 for Tianyu Lan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sev: Expose sev_es_ghcb_hv_call() for use by HyperV
+Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Borislav Petkov <bp@suse.de>,
+        Michael Kelley <mikelley@microsoft.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211025122116.264793-6-ltykernel@gmail.com>
+References: <20211025122116.264793-6-ltykernel@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] uapi: futex: Add a futex syscall
-Content-Language: en-US
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     alistair23@gmail.com, arnd@arndb.de,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20211021055408.4006408-1-alistair.francis@opensource.wdc.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <20211021055408.4006408-1-alistair.francis@opensource.wdc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <163517966616.626.15035578353013624242.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alistair,
+The following commit has been merged into the x86/sev branch of tip:
 
-Às 02:54 de 21/10/21, Alistair Francis escreveu:
-> From: Alistair Francis <alistair.francis@wdc.com>
-> 
-> This commit adds two futex syscall wrappers that are exposed to
-> userspace.
-> 
-> Neither the kernel or glibc currently expose a futex wrapper, so
-> userspace is left performing raw syscalls. This has mostly been becuase
+Commit-ID:     007faec014cb5d26983c1f86fd08c6539b41392e
+Gitweb:        https://git.kernel.org/tip/007faec014cb5d26983c1f86fd08c6539b41392e
+Author:        Tianyu Lan <Tianyu.Lan@microsoft.com>
+AuthorDate:    Mon, 25 Oct 2021 08:21:10 -04:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 25 Oct 2021 18:11:42 +02:00
 
-                                                                  because
+x86/sev: Expose sev_es_ghcb_hv_call() for use by HyperV
 
-> the overloading of one of the arguments makes it impossible to provide a
-> single type safe function.
-> 
-> Until recently the single syscall has worked fine. With the introduction
-> of a 64-bit time_t futex call on 32-bit architectures, this has become
-> more complex. The logic of handling the two possible futex syscalls is
-> complex and often implemented incorrectly.
-> 
-> This patch adds two futux syscall functions that correctly handle the
-> time_t complexity for userspace.
-> 
-> This idea is based on previous discussions: https://lkml.org/lkml/2021/9/21/143
+Hyper-V needs to issue the GHCB HV call in order to read/write MSRs in
+Isolation VMs. For that, expose sev_es_ghcb_hv_call().
 
-I would use lore
-https://lore.kernel.org/lkml/CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com/
+The Hyper-V Isolation VMs are unenlightened guests and run a paravisor
+at VMPL0 for communicating. GHCB pages are being allocated and set up
+by that paravisor. Linux gets the GHCB page's physical address via
+MSR_AMD64_SEV_ES_GHCB from the paravisor and should not change it.
 
-> 
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+Add a @set_ghcb_msr parameter to sev_es_ghcb_hv_call() to control
+whether the function should set the GHCB's address prior to the call or
+not and export that function for use by HyperV.
 
-Thanks for working on that :)
+  [ bp: - Massage commit message
+        - add a struct ghcb forward declaration to fix randconfig builds. ]
 
-> ---
->  include/uapi/linux/futex_syscall.h | 81 ++++++++++++++++++++++++++++++
->  1 file changed, 81 insertions(+)
->  create mode 100644 include/uapi/linux/futex_syscall.h
-> 
-> diff --git a/include/uapi/linux/futex_syscall.h b/include/uapi/linux/futex_syscall.h
-> new file mode 100644
-> index 0000000000000..f84a0c68baf78
-> --- /dev/null
-> +++ b/include/uapi/linux/futex_syscall.h
-> @@ -0,0 +1,81 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_LINUX_FUTEX_SYSCALL_H
-> +#define _UAPI_LINUX_FUTEX_SYSCALL_H
-> +
-> +#include <asm/unistd.h>
-> +#include <errno.h>
-> +#include <linux/types.h>
-> +#include <linux/time_types.h>
-> +#include <sys/syscall.h>
-> +
-> +/**
-> + * futex_syscall_timeout() - __NR_futex/__NR_futex_time64 syscall wrapper
-> + * @uaddr:  address of first futex
-> + * @op:   futex op code
-> + * @val:  typically expected value of uaddr, but varies by op
-> + * @timeout:  an absolute struct timespec
-> + * @uaddr2: address of second futex for some ops
-> + * @val3: varies by op
-> + */
-> +static inline int
-> +__kernel_futex_syscall_timeout(volatile u_int32_t *uaddr, int op, u_int32_t val,
-> +		      struct timespec *timeout, volatile u_int32_t *uaddr2, int val3)
+Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/20211025122116.264793-6-ltykernel@gmail.com
+---
+ arch/x86/include/asm/sev.h   |  6 ++++++
+ arch/x86/kernel/sev-shared.c | 25 ++++++++++++++++---------
+ arch/x86/kernel/sev.c        | 13 +++++++------
+ 3 files changed, 29 insertions(+), 15 deletions(-)
 
-I tried to write an example[0] that uses this header, but I can't
-compile given that u_int32_t isn't defined. Maybe change to uint32_t and
-include <stdint.h>?
-
-Also, I got some invalid use of undefined type 'struct timespec', and
-#include <time.h> solved.
-
-[0] https://paste.debian.net/1216834/
-
-> +{
-> +#if defined(__NR_futex_time64)
-> +	if (sizeof(*timeout) != sizeof(struct __kernel_old_timespec)) {
-> +		int ret =  syscall(__NR_futex_time64, uaddr, op, val, timeout, uaddr2, val3);
-> +
-> +		if (ret == 0 || errno != ENOSYS)
-> +			return ret;
-> +	}
-> +#endif
-> +
-> +#if defined(__NR_futex)
-> +	if (sizeof(*timeout) == sizeof(struct __kernel_old_timespec))
-> +		return syscall(__NR_futex, uaddr, op, val, timeout, uaddr2, val3);
-> +
-> +	if (timeout && timeout->tv_sec == (long)timeout->tv_sec) {
-> +		struct __kernel_old_timespec ts32;
-> +
-> +		ts32.tv_sec = (__kernel_long_t) timeout->tv_sec;> +		ts32.tv_nsec = (__kernel_long_t) timeout->tv_nsec;
-> +
-> +		return syscall(__NR_futex, uaddr, op, val, &ts32, uaddr2, val3);
-> +	} else if (!timeout) {
-> +		return syscall(__NR_futex, uaddr, op, val, NULL, uaddr2, val3);
-> +	}
-> +#endif
-
-If I read this part right, you will always use ts32 for __NR_futex. I
-know that it can be misleading, but __NR_futex uses ts64 in 64-bit
-archs, so they shouldn't be converted to ts32 in those cases.
-
-Just to make it clear, there's no __NR_futex_time64 at 64-bit archs.
-
-> +
-> +	errno = ENOSYS;
-> +	return -1;
-> +}
-> +
-> +/**
-> + * futex_syscall_nr_requeue() - __NR_futex/__NR_futex_time64 syscall wrapper
-> + * @uaddr:  address of first futex
-> + * @op:   futex op code
-> + * @val:  typically expected value of uaddr, but varies by op
-> + * @nr_requeue:  an op specific meaning
-> + * @uaddr2: address of second futex for some ops
-> + * @val3: varies by op
-> + */
-> +static inline int
-> +__kernel_futex_syscall_nr_requeue(volatile u_int32_t *uaddr, int op, u_int32_t val,
-> +			 u_int32_t nr_requeue, volatile u_int32_t *uaddr2, int val3)
-
-I would always assume that op is FUTEX_CMP_REQUEUE, given that
-FUTEX_REQUEUE is racy. From `man futex`:
-
-The  FUTEX_CMP_REQUEUE operation was added as a replacement for the
-earlier FUTEX_REQUEUE.  The difference is that the check of the value at
-uaddr can be used to ensure that requeueing happens only under certain
-conditions, which allows race conditions to be avoided in certain use cases.
-
-And then we can drop `int op` from the args and give defined
-descriptions for the args.
-
-> +{
-> +#if defined(__NR_futex_time64)
-> +	int ret =  syscall(__NR_futex_time64, uaddr, op, val, nr_requeue, uaddr2, val3);
-> +
-> +	if (ret == 0 || errno != ENOSYS)
-> +		return ret;
-> +#endif
-> +
-> +#if defined(__NR_futex)
-> +	return syscall(__NR_futex, uaddr, op, val, nr_requeue, uaddr2, val3);
-> +#endif
-> +
-> +	errno = ENOSYS;
-> +	return -1;
-> +}
-> +
-> +#endif /* _UAPI_LINUX_FUTEX_SYSCALL_H */
-> 
-
-Sorry if this question was already asked but I didn't find it in the
-thread: Should we go with wrappers for the most common op? Like:
-
-__kernel_futex_wait(volatile uint32_t *uaddr, uint32_t val, struct
-timespec *timeout)
-
-__kernel_futex_wake(volatile uint32_t *uaddr, uint32_t nr_wake)
-
-Thanks!
-	André
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index fa5cd05..ec060c4 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -53,6 +53,7 @@ static inline u64 lower_bits(u64 val, unsigned int bits)
+ 
+ struct real_mode_header;
+ enum stack_type;
++struct ghcb;
+ 
+ /* Early IDT entry points for #VC handler */
+ extern void vc_no_ghcb(void);
+@@ -81,6 +82,11 @@ static __always_inline void sev_es_nmi_complete(void)
+ 		__sev_es_nmi_complete();
+ }
+ extern int __init sev_es_efi_map_ghcbs(pgd_t *pgd);
++extern enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
++					  bool set_ghcb_msr,
++					  struct es_em_ctxt *ctxt,
++					  u64 exit_code, u64 exit_info_1,
++					  u64 exit_info_2);
+ #else
+ static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+ static inline void sev_es_ist_exit(void) { }
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index 4579c38..0aacd60 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -125,10 +125,9 @@ static enum es_result verify_exception_info(struct ghcb *ghcb, struct es_em_ctxt
+ 	return ES_VMM_ERROR;
+ }
+ 
+-static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+-					  struct es_em_ctxt *ctxt,
+-					  u64 exit_code, u64 exit_info_1,
+-					  u64 exit_info_2)
++enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb, bool set_ghcb_msr,
++				   struct es_em_ctxt *ctxt, u64 exit_code,
++				   u64 exit_info_1, u64 exit_info_2)
+ {
+ 	/* Fill in protocol and format specifiers */
+ 	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
+@@ -138,7 +137,14 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+ 	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
+ 	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
+ 
+-	sev_es_wr_ghcb_msr(__pa(ghcb));
++	/*
++	 * Hyper-V unenlightened guests use a paravisor for communicating and
++	 * GHCB pages are being allocated and set up by that paravisor. Linux
++	 * should not change the GHCB page's physical address.
++	 */
++	if (set_ghcb_msr)
++		sev_es_wr_ghcb_msr(__pa(ghcb));
++
+ 	VMGEXIT();
+ 
+ 	return verify_exception_info(ghcb, ctxt);
+@@ -418,7 +424,7 @@ static enum es_result vc_handle_ioio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
+ 		 */
+ 		sw_scratch = __pa(ghcb) + offsetof(struct ghcb, shared_buffer);
+ 		ghcb_set_sw_scratch(ghcb, sw_scratch);
+-		ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_IOIO,
++		ret = sev_es_ghcb_hv_call(ghcb, true, ctxt, SVM_EXIT_IOIO,
+ 					  exit_info_1, exit_info_2);
+ 		if (ret != ES_OK)
+ 			return ret;
+@@ -460,7 +466,8 @@ static enum es_result vc_handle_ioio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
+ 
+ 		ghcb_set_rax(ghcb, rax);
+ 
+-		ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_IOIO, exit_info_1, 0);
++		ret = sev_es_ghcb_hv_call(ghcb, true, ctxt,
++					  SVM_EXIT_IOIO, exit_info_1, 0);
+ 		if (ret != ES_OK)
+ 			return ret;
+ 
+@@ -491,7 +498,7 @@ static enum es_result vc_handle_cpuid(struct ghcb *ghcb,
+ 		/* xgetbv will cause #GP - use reset value for xcr0 */
+ 		ghcb_set_xcr0(ghcb, 1);
+ 
+-	ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_CPUID, 0, 0);
++	ret = sev_es_ghcb_hv_call(ghcb, true, ctxt, SVM_EXIT_CPUID, 0, 0);
+ 	if (ret != ES_OK)
+ 		return ret;
+ 
+@@ -516,7 +523,7 @@ static enum es_result vc_handle_rdtsc(struct ghcb *ghcb,
+ 	bool rdtscp = (exit_code == SVM_EXIT_RDTSCP);
+ 	enum es_result ret;
+ 
+-	ret = sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, 0, 0);
++	ret = sev_es_ghcb_hv_call(ghcb, true, ctxt, exit_code, 0, 0);
+ 	if (ret != ES_OK)
+ 		return ret;
+ 
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 2de1f36..113d3ae 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -648,7 +648,8 @@ static enum es_result vc_handle_msr(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
+ 		ghcb_set_rdx(ghcb, regs->dx);
+ 	}
+ 
+-	ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_MSR, exit_info_1, 0);
++	ret = sev_es_ghcb_hv_call(ghcb, true, ctxt, SVM_EXIT_MSR,
++				  exit_info_1, 0);
+ 
+ 	if ((ret == ES_OK) && (!exit_info_1)) {
+ 		regs->ax = ghcb->save.rax;
+@@ -867,7 +868,7 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+ 
+ 	ghcb_set_sw_scratch(ghcb, ghcb_pa + offsetof(struct ghcb, shared_buffer));
+ 
+-	return sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1, exit_info_2);
++	return sev_es_ghcb_hv_call(ghcb, true, ctxt, exit_code, exit_info_1, exit_info_2);
+ }
+ 
+ static enum es_result vc_handle_mmio_twobyte_ops(struct ghcb *ghcb,
+@@ -1117,7 +1118,7 @@ static enum es_result vc_handle_dr7_write(struct ghcb *ghcb,
+ 
+ 	/* Using a value of 0 for ExitInfo1 means RAX holds the value */
+ 	ghcb_set_rax(ghcb, val);
+-	ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_WRITE_DR7, 0, 0);
++	ret = sev_es_ghcb_hv_call(ghcb, true, ctxt, SVM_EXIT_WRITE_DR7, 0, 0);
+ 	if (ret != ES_OK)
+ 		return ret;
+ 
+@@ -1147,7 +1148,7 @@ static enum es_result vc_handle_dr7_read(struct ghcb *ghcb,
+ static enum es_result vc_handle_wbinvd(struct ghcb *ghcb,
+ 				       struct es_em_ctxt *ctxt)
+ {
+-	return sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_WBINVD, 0, 0);
++	return sev_es_ghcb_hv_call(ghcb, true, ctxt, SVM_EXIT_WBINVD, 0, 0);
+ }
+ 
+ static enum es_result vc_handle_rdpmc(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
+@@ -1156,7 +1157,7 @@ static enum es_result vc_handle_rdpmc(struct ghcb *ghcb, struct es_em_ctxt *ctxt
+ 
+ 	ghcb_set_rcx(ghcb, ctxt->regs->cx);
+ 
+-	ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_RDPMC, 0, 0);
++	ret = sev_es_ghcb_hv_call(ghcb, true, ctxt, SVM_EXIT_RDPMC, 0, 0);
+ 	if (ret != ES_OK)
+ 		return ret;
+ 
+@@ -1197,7 +1198,7 @@ static enum es_result vc_handle_vmmcall(struct ghcb *ghcb,
+ 	if (x86_platform.hyper.sev_es_hcall_prepare)
+ 		x86_platform.hyper.sev_es_hcall_prepare(ghcb, ctxt->regs);
+ 
+-	ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_VMMCALL, 0, 0);
++	ret = sev_es_ghcb_hv_call(ghcb, true, ctxt, SVM_EXIT_VMMCALL, 0, 0);
+ 	if (ret != ES_OK)
+ 		return ret;
+ 
