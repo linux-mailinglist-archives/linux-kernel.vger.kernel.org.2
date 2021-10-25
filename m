@@ -2,153 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CABE4391CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1540A4391D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 10:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhJYI4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 04:56:53 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:55637 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbhJYI4w (ORCPT
+        id S232262AbhJYI7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 04:59:30 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:42664 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231463AbhJYI73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 04:56:52 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hd8034xG3z4xbq;
-        Mon, 25 Oct 2021 19:54:27 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635152068;
-        bh=iej0kjXjZ0C0zUj4zxQ80BQjk0VWVdGfN6v0h3ZeHv4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fQYcofEdUOkXEhrYvXReRehQucJSbLwicqVhktSqFF0uDuZki7oe9o/NKILLLpxNc
-         g3g/juQC6AYefYEuf0X9i1+i+9sBhizsnUK01PPK1hLuhcvIQ3Oa2OIsFVXhrAA1s3
-         XQIEhoCila2It+jJKJuzVBeHsDnbp2jgd9GRVC++OYijbHUMbYdeuR+AYNT4lTWRd/
-         DIGx85MCY/LSILsIfXCjKmZ3hfdw9piiXiRk504cIqDLMDcZMNtJNt5wnM9BeShZAd
-         3m/8LlVVECNvkq94N4RKGVI4Z6+8kMUrn5GYKzQaLIl2PPbbajLQCfqmu9KofN/cbI
-         f2SHpHdshMnCQ==
-Date:   Mon, 25 Oct 2021 19:54:26 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: linux-next: manual merge of the akpm-current tree with the ftrace
- tree
-Message-ID: <20211025195426.34e4a0a1@canb.auug.org.au>
+        Mon, 25 Oct 2021 04:59:29 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19P8ukbE109334;
+        Mon, 25 Oct 2021 03:56:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635152206;
+        bh=r4fDR2q9W8VbL9No75Rv5RRZ+ZkwNCxRKt2G5ngXxHY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=i87sLChGv1QEnJbSDjSltLMJQ7xwbebZmFgNoWk683NWWcGIPZTRJ1X3Wzy2fA2f9
+         tpLWys4iDFO4jgFLrwo/90d1ZlOixgkQ7IBKFiGtUPpZ20Y7iqM1XVjIYGxoUEGQ/9
+         5Lk6q/3wvyeAri95cvcDJ7dAbZb2rNvdUisBwTDo=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19P8uk7E084125
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Oct 2021 03:56:46 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 25
+ Oct 2021 03:56:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 25 Oct 2021 03:56:45 -0500
+Received: from [10.250.233.112] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19P8uf45085408;
+        Mon, 25 Oct 2021 03:56:42 -0500
+Subject: Re: [PATCH v15 02/13] PCI: kirin: Add support for a PHY layer
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
+References: <cover.1634812676.git.mchehab+huawei@kernel.org>
+ <f38361df2e9d0dc5a38ff942b631f7fef64cdc12.1634812676.git.mchehab+huawei@kernel.org>
+ <3919b668-cf6a-ffda-0115-c2a94750e56a@ti.com>
+ <20211025095254.522c1da6@sal.lan>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <7c3848c4-afd7-8a97-d782-68dc38b81f28@ti.com>
+Date:   Mon, 25 Oct 2021 14:26:41 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L7yUvH1u36Sj6MLY9yuXXpe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20211025095254.522c1da6@sal.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/L7yUvH1u36Sj6MLY9yuXXpe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Mauro,
 
-Hi all,
+On 25/10/21 2:22 pm, Mauro Carvalho Chehab wrote:
+> Hi Kishon,
+> 
+> Em Mon, 25 Oct 2021 13:44:57 +0530
+> Kishon Vijay Abraham I <kishon@ti.com> escreveu:
+> 
+>> Hi Mauro,
+> 
+>>> +
+>>> +static const struct of_device_id kirin_pcie_match[] = {
+>>> +	{
+>>> +		.compatible = "hisilicon,kirin960-pcie",
+>>> +		.data = (void *)PCIE_KIRIN_INTERNAL_PHY
+>>> +	},  
+>>
+>> Where is PCIE_KIRIN_EXTERNAL_PHY used?
+> 
+> See:
+> 	[PATCH v15 06/13] PCI: kirin: Add Kirin 970 compatible
+> 
+> 	https://lore.kernel.org/all/ac8c730c0300b90d96bdaaf387d458d8949241a9.1634812676.git.mchehab+huawei@kernel.org/
+> 
+> Basically, Kirin 970 (and any other devices that would use the same
+> driver) should also use PCIE_KIRIN_EXTERNAL_PHY and place the PHY 
+> driver inside drivers/phy, instead of hardcoding it at the driver.
+> 
+> The Kirin 970 PHY driver was already merged at linux-next:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/phy/hisilicon/phy-hi3670-pcie.c
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Thanks for clarifying.
 
-  lib/bootconfig.c
 
-between commit:
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
 
-  4ee1b4cac236 ("bootconfig: Cleanup dummy headers in tools/bootconfig")
 
-from the ftrace tree and commit:
-
-  13ab40b0e60e ("memblock: use memblock_free for freeing virtual pointers")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc lib/bootconfig.c
-index a056ae137750,547558d80e64..000000000000
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@@ -42,50 -34,6 +42,50 @@@ static int xbc_err_pos __initdata
-  static int open_brace[XBC_DEPTH_MAX] __initdata;
-  static int brace_index __initdata;
- =20
- +#ifdef __KERNEL__
- +static inline void *xbc_alloc_mem(size_t size)
- +{
- +	return memblock_alloc(size, SMP_CACHE_BYTES);
- +}
- +
- +static inline void xbc_free_mem(void *addr, size_t size)
- +{
-- 	memblock_free_ptr(addr, size);
-++	memblock_free(addr, size);
- +}
- +
- +#else /* !__KERNEL__ */
- +
- +static inline void *xbc_alloc_mem(size_t size)
- +{
- +	return malloc(size);
- +}
- +
- +static inline void xbc_free_mem(void *addr, size_t size)
- +{
- +	free(addr);
- +}
- +#endif
- +/**
- + * xbc_get_info() - Get the information of loaded boot config
- + * node_size: A pointer to store the number of nodes.
- + * data_size: A pointer to store the size of bootconfig data.
- + *
- + * Get the number of used nodes in @node_size if it is not NULL,
- + * and the size of bootconfig data in @data_size if it is not NULL.
- + * Return 0 if the boot config is initialized, or return -ENODEV.
- + */
- +int __init xbc_get_info(int *node_size, size_t *data_size)
- +{
- +	if (!xbc_data)
- +		return -ENODEV;
- +
- +	if (node_size)
- +		*node_size =3D xbc_node_num;
- +	if (data_size)
- +		*data_size =3D xbc_data_size;
- +	return 0;
- +}
- +
-  static int __init xbc_parse_error(const char *msg, const char *p)
-  {
-  	xbc_err_msg =3D msg;
-
---Sig_/L7yUvH1u36Sj6MLY9yuXXpe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF2cMIACgkQAVBC80lX
-0GwbLQf+KV9akMjzCoybJ49ThPgMEpUFmHdDGRXzK4ONRUNl4Ke/PdYDVy2NSi1m
-2RPz9hZyp9LiUcohwSfJSifk6W8yAofr2Y5yphMc08m/FIpx7evtUNzAfEnqkkT0
-fePFkvMbPD9WyRaU+d8TBO8AgGGWDa4DsTmDd7C+400vHNSup38Gnxl2qMywuKy6
-Mmb90q/v0N0nH1nirOTnKZeFbX/2mF4CVoduw7XGYAdRu448RtvvCE4Enh6HWFwZ
-n9jTqjoPet8+NBSeOmI+QlKjK+Ii7DNyQ1/zvr5ccxH58UuFCrX79A+wr5GLY1ik
-u+7g8Xc5GpTzhz8FmojsN35jlNOnDw==
-=+HnU
------END PGP SIGNATURE-----
-
---Sig_/L7yUvH1u36Sj6MLY9yuXXpe--
+Regards,
+Kishon
