@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24300439C34
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 18:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2A1439C60
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Oct 2021 19:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234146AbhJYRB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 13:01:58 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:57009 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232050AbhJYRBy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 13:01:54 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 1D297808C5;
-        Mon, 25 Oct 2021 19:59:27 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1635181167;
-        bh=gUy+qk4k+tYm1QGWsx1o8F44iIlg+MWlY8HDA1Uw+To=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=ZRcbrsUDNmlsbAuLS2pSiiw2Zi2c+Pma15Ol9StNZGVKYSgDMyrD1LJuSBFUiob9l
-         8o4hOS0jkL36BXUY18hM/hh0MykZsrbnkYM4xuUK4893pblDONaDSSHiwoGbdwMwXb
-         N4h9hblLR6GWt0Q90B7lf2J/tGZsVI2E0I57hWLA=
-Received: from [192.168.211.155] (192.168.211.155) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 25 Oct 2021 19:59:26 +0300
-Message-ID: <512a989d-c15f-d73f-09c1-74ba25eeec27@paragon-software.com>
-Date:   Mon, 25 Oct 2021 19:59:26 +0300
+        id S234422AbhJYRDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 13:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234272AbhJYRCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:02:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 967F760FDC;
+        Mon, 25 Oct 2021 17:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635181214;
+        bh=Zi+X0CHUBXp8Eeb2+fbHZbqEmRXZzxKBUizEuKnew4Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jp0+jNv3Y+BZdKQIRcH6HmRyVKmYNsa2g43/0iS6SPxocQEb7PmF7z+i9QWcu9XH0
+         oIYI3o6UkCmyEV4yPNPykMUtFT8CYZT4Py1TrB5wbZjAYkxO9BCP9EwIvCDTjRXkFl
+         nXVy0wV4bvYaw2hs6NM9NjCwai2hfq8MQVxtkXdFbOlAERcwkcYz1CyEKeAHxFLT9r
+         NnXKVTZrV+8lZWh0XdpIQ4VaoRp/gCwaFO9I2pT9xWIQr/I/AYdztBGctPtS2yTStl
+         qlpp9d6C6pkVYv0k8iK1XDmlaSq7DHn5p9VNt2IolqN+ij+kxy16Cyv/OSSBNxrEVE
+         G8MBcPQRt/4dg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zheyu Ma <zheyuma97@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, sgoutham@marvell.com,
+        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 13/18] cavium: Fix return values of the probe function
+Date:   Mon, 25 Oct 2021 12:59:26 -0400
+Message-Id: <20211025165939.1393655-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211025165939.1393655-1-sashal@kernel.org>
+References: <20211025165939.1393655-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: [PATCH 3/4] fs/ntfs3: Check new size for limits
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
-In-Reply-To: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.155]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We must check size before trying to allocate.
-Size can be set for example by "ulimit -f".
-Fixes xfstest generic/228
-Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+[ Upstream commit c69b2f46876825c726bd8a97c7fa852d8932bc32 ]
+
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/file.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 5418e5ba64b3..efb3110e1790 100644
---- a/fs/ntfs3/file.c
-+++ b/fs/ntfs3/file.c
-@@ -661,7 +661,13 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
- 		/*
- 		 * Normal file: Allocate clusters, do not change 'valid' size.
- 		 */
--		err = ntfs_set_size(inode, max(end, i_size));
-+		loff_t new_size = max(end, i_size);
-+
-+		err = inode_newsize_ok(inode, new_size);
-+		if (err)
-+			goto out;
-+
-+		err = ntfs_set_size(inode, new_size);
- 		if (err)
- 			goto out;
+diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_main.c b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
+index e2b290135fd9..a61107e05216 100644
+--- a/drivers/net/ethernet/cavium/thunder/nicvf_main.c
++++ b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
+@@ -1224,7 +1224,7 @@ static int nicvf_register_misc_interrupt(struct nicvf *nic)
+ 	if (ret < 0) {
+ 		netdev_err(nic->netdev,
+ 			   "Req for #%d msix vectors failed\n", nic->num_vec);
+-		return 1;
++		return ret;
+ 	}
  
+ 	sprintf(nic->irq_name[irq], "%s Mbox", "NICVF");
+@@ -1243,7 +1243,7 @@ static int nicvf_register_misc_interrupt(struct nicvf *nic)
+ 	if (!nicvf_check_pf_ready(nic)) {
+ 		nicvf_disable_intr(nic, NICVF_INTR_MBOX, 0);
+ 		nicvf_unregister_interrupts(nic);
+-		return 1;
++		return -EIO;
+ 	}
+ 
+ 	return 0;
 -- 
 2.33.0
 
