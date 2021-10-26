@@ -2,80 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DBE43BA14
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF0E43BA19
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238463AbhJZTDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:03:00 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60386 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238449AbhJZTCs (ORCPT
+        id S231592AbhJZTEH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 15:04:07 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:58456 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238481AbhJZTEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:02:48 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id a2ba91e1d231c4e5; Tue, 26 Oct 2021 21:00:16 +0200
-Received: from kreacher.localnet (unknown [213.134.187.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 7B54D66A9F8;
-        Tue, 26 Oct 2021 21:00:15 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH v1 2/2] ACPI: scan: Do not set type.bus_address if _HID is valid
-Date:   Tue, 26 Oct 2021 21:00:03 +0200
-Message-ID: <2223516.ElGaqSPkdT@kreacher>
-In-Reply-To: <11860508.O9o76ZdvQC@kreacher>
-References: <11860508.O9o76ZdvQC@kreacher>
+        Tue, 26 Oct 2021 15:04:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 3046361EAE61;
+        Tue, 26 Oct 2021 21:01:33 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 0Uej2VSHJAXt; Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5634F61EAE6D;
+        Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id RJhtugjmg9J7; Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 351E461EAE61;
+        Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
+Date:   Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Trevor Woerner <twoerner@gmail.com>
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <876982414.38679.1635274892099.JavaMail.zimbra@nod.at>
+In-Reply-To: <20211026150350.GA5136@localhost>
+References: <20210801234509.18774-1-ezequiel@collabora.com> <20211026150350.GA5136@localhost>
+Subject: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.187.81
-X-CLIENT-HOSTNAME: 213.134.187.81
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeetffeugeduleegieeklefffedtteetvdekvddtieejueffgeehveetudehjeffieenucffohhmrghinhepuhgvfhhirdhorhhgnecukfhppedvudefrddufeegrddukeejrdekudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrdekuddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgv
- lhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF93 (Linux)/8.8.12_GA_3809)
+Thread-Topic: mtdblock: Advertise about UBI and UBI block
+Thread-Index: ygsGgewhiNEi2q8Y/RdrIOGb8OTitg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Trevor,
 
-According to Section 6.1 of ACPI 6.4, it is invalid to provide both
-_HID and _ADR for one device at the same time, so modify the code to
-set pnp.type.bus_address and pnp.bus_address for a device only if it
-has _ADR, but it doesn't have a valid _HID.
+----- Ursprüngliche Mail -----
+> Von: "Trevor Woerner" <twoerner@gmail.com>
+> An: "Ezequiel Garcia" <ezequiel@collabora.com>
+> CC: "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel" <linux-kernel@vger.kernel.org>, "richard"
+> <richard@nod.at>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Vignesh Raghavendra" <vigneshr@ti.com>
+> Gesendet: Dienstag, 26. Oktober 2021 17:03:50
+> Betreff: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
 
-Link: https://uefi.org/specs/ACPI/6.4/06_Device_Configuration/Device_Configuration.html#device-identification-objects
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/scan.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Sun 2021-08-01 @ 08:45:02 PM, Ezequiel Garcia wrote:
+>> Hi Richard, and everyone else:
+>> 
+>> Browsing the internet for "JFFS2 mtd" results in tutorials, articles
+>> and github.gists0 that point to mtdblock.
+>> 
+>> In fact, even the MTD wiki mentions that JFFS2
+>> needs mtdblock to mount a rootfs:
+>> 
+>>   http://www.linux-mtd.infradead.org/faq/jffs2.html
+>> 
+>> Moreover, I suspect there may be lots of users
+>> that still believe mtdblock is somehow needed to
+>> mount SquashFS.
+>> 
+>> I've taken a verbose route and added a pr_warn
+>> warning if the devices are NAND. I don't think using
+>> NAND without UBI is too wise, and given the amount
+>> of outdated tutorials I believe some advertising
+>> will help.
+> 
+> Not all NAND partitions on a device will contain linux root filesystems. For a
+> linux root filesystem perhaps using UBI/UBIFS is preferred, yet these messages
+> print out for each and every NAND partition:
+> 
+>	[    0.900827] Creating 8 MTD partitions on "nxp_lpc3220_slc":
+>	[    0.906431] 0x000000000000-0x000000020000 : "bootrom"
+>	[    0.913523] mtdblock: MTD device 'bootrom' is NAND, please consider using UBI
+>	block devices instead.
+>	[    0.933334] 0x000000020000-0x000000080000 : "uboot"
+>	[    0.940439] mtdblock: MTD device 'uboot' is NAND, please consider using UBI
+>	block devices instead.
+>	[    0.963322] 0x000000080000-0x000000440000 : "fbkernel"
+>	[    0.970655] mtdblock: MTD device 'fbkernel' is NAND, please consider using
+>	UBI block devices instead.
+>	[    0.993361] 0x000000440000-0x000000920000 : "fbrootfs"
+>	[    1.000725] mtdblock: MTD device 'fbrootfs' is NAND, please consider using
+>	UBI block devices instead.
+>	[    1.023315] 0x000000920000-0x000000ce0000 : "c_kernel"
+>	[    1.030722] mtdblock: MTD device 'c_kernel' is NAND, please consider using
+>	UBI block devices instead.
+>	[    1.053444] 0x000000ce0000-0x000000d00000 : "c__atags"
+>	[    1.060742] mtdblock: MTD device 'c__atags' is NAND, please consider using
+>	UBI block devices instead.
+>	[    1.083349] 0x000000d00000-0x000001000000 : "c_rootfs"
+>	[    1.090702] mtdblock: MTD device 'c_rootfs' is NAND, please consider using
+>	UBI block devices instead.
+>	[    1.113335] 0x000001000000-0x000020000000 : "mender"
+>	[    1.131627] mtdblock: MTD device 'mender' is NAND, please consider using UBI
+>	block devices instead.
+> 
+> NAND tends to be something found on older devices, the firmware/bootloaders
+> of older devices couldn't possibly understand UBI/UBIFS so many of these
+> partitions need be "raw" partitions, or use something that predates UBI.
+> 
+> Ironically my "mender" partition contains a UBI (with multiple UBIFSes inside)
+> yet I got the same "please use UBI" message as all the others (lol)
+> 
+> I'm specifying my partitions in DT with:
+> 
+> partitions {
+>        compatible = "fixed-partitions";
+>        #address-cells = <1>;
+>        #size-cells = <1>;
+> 
+>        mtd0@0       { label = "bootrom";   reg = <0x00000000 0x00020000>; };
+>        mtd1@20000   { label = "uboot";     reg = <0x00020000 0x00060000>; };
+>        mtd2@80000   { label = "fbkernel";  reg = <0x00080000 0x003c0000>; };
+>        mtd3@440000  { label = "fbrootfs";  reg = <0x00440000 0x004e0000>; };
+>        mtd4@920000  { label = "c_kernel";  reg = <0x00920000 0x003c0000>; };
+>        mtd5@ce0000  { label = "c__atags";  reg = <0x00ce0000 0x00020000>; };
+>        mtd6@d00000  { label = "c_rootfs";  reg = <0x00d00000 0x00300000>; };
+>        mtd7@1000000 { label = "mender";    reg = <0x01000000 0x1f000000>; };
+> };
+> 
+> which is why, I assume, I'm getting these messages. Is there a UBI-friendly
+> way to define them to avoid these messages?
 
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -1343,11 +1343,11 @@ static void acpi_set_pnp_ids(acpi_handle
- 				for (i = 0; i < cid_list->count; i++)
- 					acpi_add_id(pnp, cid_list->ids[i].string);
- 			}
--		}
--		if (info->valid & ACPI_VALID_ADR) {
-+		} else if (info->valid & ACPI_VALID_ADR) {
- 			pnp->bus_address = info->address;
- 			pnp->type.bus_address = 1;
- 		}
-+
- 		if (info->valid & ACPI_VALID_UID)
- 			pnp->unique_id = kstrdup(info->unique_id.string,
- 							GFP_KERNEL);
+Hmm, maybe it makes sense to advertise it only once and not for each mtdblock device.
 
-
-
+Thanks,
+//richard
