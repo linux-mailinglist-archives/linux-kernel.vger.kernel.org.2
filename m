@@ -2,42 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9DE43B555
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E8643B557
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhJZPU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        id S235733AbhJZPUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231931AbhJZPUZ (ORCPT
+        with ESMTP id S231931AbhJZPUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:20:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510AAC061745;
-        Tue, 26 Oct 2021 08:18:01 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id BAC211F43A1C
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [RFC 04/13] iommu/mediatek: Add APU iommu support
-To:     Flora Fu <flora.fu@mediatek.com>,
+        Tue, 26 Oct 2021 11:20:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08590C061745;
+        Tue, 26 Oct 2021 08:18:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=36Le8JT+MjbwIpd4YPOBdixMDoOu86XDiNDfVhsHRrw=; b=z1MLW99S5t8/UX5swpjnywtnO2
+        VAidXRPVIWdITEqTWL27k9WqWnTQ+LWAlNymFeH5cb53zLuRrbVyrhjMZFLwxdblQgc9TmlNqg/Hd
+        lOYG1ENnPBKzO+6sFdgSgAxBbs7Gy+sSb3BJlZeGLA7tLQ5lUH4JgMlKoV6nPSK5hUN5N6xFPgMYS
+        Q1hzgcL8h6+EiOuQS535tW8aEnfK1G3L+sI8XtNgTStDI5ULbZL6W+mgiHqLzTUUg7UvRRe6cq7q9
+        iscnx/c7gwCnUvsC1c6CiSUViZRzZIXuAMwoMN4L+XyYobBkF98edx9VYYWLLoWYmA5tZhTYevQuH
+        073kB+Kw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfODc-0028EW-8R; Tue, 26 Oct 2021 15:18:28 +0000
+Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
+ macros
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Trevor Woerner <twoerner@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Yong Wu <yong.wu@mediatek.com>,
-        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>
-References: <20211023111409.30463-1-flora.fu@mediatek.com>
- <20211023111409.30463-5-flora.fu@mediatek.com>
-Message-ID: <792b4ca0-e23b-11ba-98fd-ef4c62a382f8@collabora.com>
-Date:   Tue, 26 Oct 2021 17:17:57 +0200
+        Miguel Ojeda <ojeda@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Yorick de Wid <yorickdewid@users.noreply.github.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20210423184012.39300-1-twoerner@gmail.com>
+ <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
+ <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
+ <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
+ <20211026144452.GA40651@localhost>
+ <CANiq72kf0QZUeO+=U67NLs=WXc=sEtasdv_yaZ5sZedNmzzJBw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fe86efbd-4e03-76c8-55cf-dabd33e85823@infradead.org>
+Date:   Tue, 26 Oct 2021 08:18:27 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211023111409.30463-5-flora.fu@mediatek.com>
+In-Reply-To: <CANiq72kf0QZUeO+=U67NLs=WXc=sEtasdv_yaZ5sZedNmzzJBw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,149 +65,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 23/10/21 13:14, Flora Fu ha scritto:
-> APU IOMMU is a new iommu HW. it use a new pagetable.
-> Add support for mt8192 apu iommu.
+On 10/26/21 8:10 AM, Miguel Ojeda wrote:
+> On Tue, Oct 26, 2021 at 4:44 PM Trevor Woerner <twoerner@gmail.com> wrote:
+>>
+>> get_maintainer.pl didn't add Andrew back then on my patch and still doesn't
+>> even now. Maybe the MAINTAINERS file needs an update if Andrew is to be
+>> included on trivial/documentation patches?
 > 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
-> ---
->   drivers/iommu/mtk_iommu.c                     | 57 +++++++++++++++++++
->   include/dt-bindings/memory/mt8192-larb-port.h |  4 ++
->   2 files changed, 61 insertions(+)
-> 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 90be8ebbc98a..a5f8f19e053a 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -133,6 +133,7 @@
->   /* 2 bits: iommu type */
->   #define MTK_IOMMU_TYPE_MM		(0x0 << 13)
->   #define MTK_IOMMU_TYPE_INFRA		(0x1 << 13)
-> +#define MTK_IOMMU_TYPE_APU		(0x2 << 13)
->   #define MTK_IOMMU_TYPE_MASK		(0x3 << 13)
->   #define IFA_IOMMU_PCIe_SUPPORT		BIT(15)
->   
-> @@ -185,6 +186,7 @@ static int mtk_iommu_hw_init(const struct mtk_iommu_data *data, unsigned int ban
->   #define MTK_IOMMU_4GB_MODE_REMAP_BASE	 0x140000000UL
->   
->   static LIST_HEAD(m4ulist);	/* List all the M4U HWs */
-> +static LIST_HEAD(apulist);	/* List the apu iommu HWs */
->   
->   #define for_each_m4u(data, head)  list_for_each_entry(data, head, list)
->   
-> @@ -209,6 +211,13 @@ static const struct mtk_iommu_iova_region mt8192_multi_dom[] = {
->   	#endif
->   };
->   
-> +static const struct mtk_iommu_iova_region mt8192_multi_dom_apu[] = {
-> +	{ .iova_base = 0x0,		.size = SZ_4G}, /* APU DATA */
-> +	{ .iova_base = 0x4000000ULL,	.size = 0x4000000},  /* APU VLM */
-> +	{ .iova_base = 0x10000000ULL,	.size = 0x10000000}, /* APU VPU */
-> +	{ .iova_base = 0x70000000ULL,	.size = 0x12600000}, /* APU REG */
-> +};
-> +
->   /* If 2 M4U share a domain(use the same hwlist), Put the corresponding info in first data.*/
->   static struct mtk_iommu_data *mtk_iommu_get_frst_data(struct list_head *hwlist)
->   {
-> @@ -923,6 +932,37 @@ static int mtk_iommu_mm_dts_parse(struct device *dev,
->   	return 0;
->   }
->   
-> +static int mtk_iommu_apu_prepare(struct device *dev)
-> +{
-> +	struct device_node *apupower_node;
-> +	struct platform_device *apudev;
-> +	struct device_link *link;
-> +
-> +	apupower_node = of_find_compatible_node(NULL, NULL, "mediatek,apusys-power");
+> I mentioned Andrew because he does the hard job of being a backup for
+> everything and everyone, but normally you should try to put the actual
+> maintainer first in the `To` field and/or trivial@kernel.org.
 
-Is it expected to have PM ops in the apusys-power driver? Currently, I can't see
-any, but maybe it's because of how complex is this entire implementation.
+I think that we decided to stop using trivial@kernel.org for new patches
+a few months ago...
 
-In any case, the name suggests that this controls power for the entire APU... so
-it would be more appropriate if apusys-power would expose a power domain (since it
-also has some sort of OPP, from what I can see), in which case you wouldn't be
-retrieving it here like you're doing right now... but simply as a power domain,
-simplifying the entire handling of that in here.
-
-
-> +	if (!apupower_node) {
-> +		dev_warn(dev, "Can't find apu power node!\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!of_device_is_available(apupower_node)) {
-> +		of_node_put(apupower_node);
-> +		return -EPERM;
-> +	}
-> +
-> +	apudev = of_find_device_by_node(apupower_node);
-> +	if (!apudev) {
-> +		of_node_put(apupower_node);
-> +		return -EPROBE_DEFER;
-> +	}
-> +
-> +	link = device_link_add(&apudev->dev, dev, DL_FLAG_PM_RUNTIME);
-> +	if (!link)
-> +		dev_err(dev, "Unable link %s.\n", apudev->name);
-> +
-> +	of_node_put(apupower_node);
-> +	return 0;
-> +}
-> +
->   static int mtk_iommu_probe(struct platform_device *pdev)
->   {
->   	struct mtk_iommu_data   *data;
-> @@ -1021,6 +1061,10 @@ static int mtk_iommu_probe(struct platform_device *pdev)
->   		}
->   
->   		data->pericfg = infracfg;
-> +	} else if (MTK_IOMMU_IS_TYPE(data->plat_data, MTK_IOMMU_TYPE_APU)) {
-> +		ret = mtk_iommu_apu_prepare(dev);
-> +		if (ret)
-> +			goto out_runtime_disable;
->   	}
->   
->   	platform_set_drvdata(pdev, data);
-> @@ -1268,6 +1312,18 @@ static const struct mtk_iommu_plat_data mt8192_data = {
->   			   {0, 14, 16}, {0, 13, 18, 17}},
->   };
->   
-> +static const struct mtk_iommu_plat_data mt8192_data_apu = {
-> +	.m4u_plat       = M4U_MT8192,
-> +	.flags          = WR_THROT_EN | DCM_DISABLE | MTK_IOMMU_TYPE_APU |
-> +			  SHARE_PGTABLE,
-> +	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
-> +	.hw_list        = &apulist,
-> +	.bank_nr	= 1,
-> +	.bank_enable    = {true},
-> +	.iova_region    = mt8192_multi_dom_apu,
-> +	.iova_region_nr = ARRAY_SIZE(mt8192_multi_dom_apu),
-> +};
-> +
->   static const struct mtk_iommu_plat_data mt8195_data_infra = {
->   	.m4u_plat	  = M4U_MT8195,
->   	.flags            = WR_THROT_EN | DCM_DISABLE |
-> @@ -1323,6 +1379,7 @@ static const struct of_device_id mtk_iommu_of_ids[] = {
->   	{ .compatible = "mediatek,mt8173-m4u", .data = &mt8173_data},
->   	{ .compatible = "mediatek,mt8183-m4u", .data = &mt8183_data},
->   	{ .compatible = "mediatek,mt8192-m4u", .data = &mt8192_data},
-> +	{ .compatible = "mediatek,mt8192-iommu-apu",   .data = &mt8192_data_apu},
->   	{ .compatible = "mediatek,mt8195-iommu-infra", .data = &mt8195_data_infra},
->   	{ .compatible = "mediatek,mt8195-iommu-vdo",   .data = &mt8195_data_vdo},
->   	{ .compatible = "mediatek,mt8195-iommu-vpp",   .data = &mt8195_data_vpp},
-> diff --git a/include/dt-bindings/memory/mt8192-larb-port.h b/include/dt-bindings/memory/mt8192-larb-port.h
-> index 23035a52c675..908d6831bf99 100644
-> --- a/include/dt-bindings/memory/mt8192-larb-port.h
-> +++ b/include/dt-bindings/memory/mt8192-larb-port.h
-> @@ -240,4 +240,8 @@
->   #define M4U_PORT_L20_IPE_RSC_RDMA0		MTK_M4U_ID(20, 4)
->   #define M4U_PORT_L20_IPE_RSC_WDMA		MTK_M4U_ID(20, 5)
->   
-> +#define IOMMU_PORT_APU_DATA			MTK_M4U_ID(0, 0)
-> +#define IOMMU_PORT_APU_VLM			MTK_M4U_ID(0, 1)
-> +#define IOMMU_PORT_APU_VPU			MTK_M4U_ID(0, 2)
-> +
->   #endif
-> 
+-- 
+~Randy
