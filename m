@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527C143B490
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AECA43B493
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236909AbhJZOpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:45:55 -0400
+        id S236925AbhJZOp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:45:58 -0400
 Received: from mga01.intel.com ([192.55.52.88]:13756 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236898AbhJZOpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234908AbhJZOpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Oct 2021 10:45:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="253467439"
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="253467444"
 X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="253467439"
+   d="scan'208";a="253467444"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 07:34:06 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 07:34:09 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="635200343"
+   d="scan'208";a="635200360"
 Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2021 07:34:02 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2021 07:34:06 -0700
 From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
 To:     Prashant Malani <pmalani@chromium.org>,
         Benson Leung <bleung@google.com>
@@ -31,9 +31,9 @@ Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
         "Gopal, Saranya" <saranya.gopal@intel.com>,
         "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/4] usb: pd: uapi header split
-Date:   Tue, 26 Oct 2021 17:33:49 +0300
-Message-Id: <20211026143352.78387-2-heikki.krogerus@linux.intel.com>
+Subject: [RFC PATCH 2/4] usb: typec: Character device for USB Power Delivery devices
+Date:   Tue, 26 Oct 2021 17:33:50 +0300
+Message-Id: <20211026143352.78387-3-heikki.krogerus@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
 References: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
@@ -43,1018 +43,632 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WIP. This still needs tuning.
+Interim.
 
-Exporting the USB Power Delivery definitions to user space.
+TODO/ideas:
+- Figure out a proper magic value for the ioctl and check if
+  the ioctl range is OK.
+- Register separate PD device for the cdev, and register it
+  only if the device (port, plug or partner) actually
+  supports USB PD (or come up with some other solution?).
+- Introduce something like
+
+	struct pd_request {
+		struct pd_message request;
+		struct pd_message __user *response;
+	};
+
+  and use it instead of only single struct pd_messages everywhere.
+
+- Add compat support.
+- What do we do with Alerts and Attentions?
 
 Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
- include/linux/usb/pd.h      | 487 +----------------------------------
- include/uapi/linux/usb/pd.h | 496 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 497 insertions(+), 486 deletions(-)
- create mode 100644 include/uapi/linux/usb/pd.h
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ drivers/usb/typec/Makefile                    |   2 +-
+ drivers/usb/typec/class.c                     |  42 ++++
+ drivers/usb/typec/class.h                     |   4 +
+ drivers/usb/typec/pd-dev.c                    | 210 ++++++++++++++++++
+ drivers/usb/typec/pd-dev.h                    |  15 ++
+ include/linux/usb/pd_dev.h                    |  22 ++
+ include/linux/usb/typec.h                     |   8 +
+ include/uapi/linux/usb/pd_dev.h               |  55 +++++
+ 9 files changed, 358 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/usb/typec/pd-dev.c
+ create mode 100644 drivers/usb/typec/pd-dev.h
+ create mode 100644 include/linux/usb/pd_dev.h
+ create mode 100644 include/uapi/linux/usb/pd_dev.h
 
-diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-index 96b7ff66f074b..86802d59ca510 100644
---- a/include/linux/usb/pd.h
-+++ b/include/linux/usb/pd.h
-@@ -6,493 +6,8 @@
- #ifndef __LINUX_USB_PD_H
- #define __LINUX_USB_PD_H
+diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+index 0ba463be6c588..fd443fd21f62a 100644
+--- a/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -175,6 +175,7 @@ Code  Seq#    Include File                                           Comments
+ 'P'   60-6F  sound/sscape_ioctl.h                                    conflict!
+ 'P'   00-0F  drivers/usb/class/usblp.c                               conflict!
+ 'P'   01-09  drivers/misc/pci_endpoint_test.c                        conflict!
++'P'   70-7F  uapi/linux/usb/pd_dev.h                                 <mailto:linux-usb@vger.kernel.org>
+ 'Q'   all    linux/soundcard.h
+ 'R'   00-1F  linux/random.h                                          conflict!
+ 'R'   01     linux/rfkill.h                                          conflict!
+diff --git a/drivers/usb/typec/Makefile b/drivers/usb/typec/Makefile
+index a0adb8947a301..be44528168013 100644
+--- a/drivers/usb/typec/Makefile
++++ b/drivers/usb/typec/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_TYPEC)		+= typec.o
+-typec-y				:= class.o mux.o bus.o port-mapper.o
++typec-y				:= class.o mux.o bus.o port-mapper.o pd-dev.o
+ obj-$(CONFIG_TYPEC)		+= altmodes/
+ obj-$(CONFIG_TYPEC_TCPM)	+= tcpm/
+ obj-$(CONFIG_TYPEC_UCSI)	+= ucsi/
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index aeef453aa6585..19fcc5da175d7 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -15,6 +15,7 @@
  
--#include <linux/kernel.h>
--#include <linux/types.h>
--#include <linux/usb/typec.h>
-+#include <uapi/linux/usb/pd.h>
+ #include "bus.h"
+ #include "class.h"
++#include "pd-dev.h"
  
--/* USB PD Messages */
--enum pd_ctrl_msg_type {
--	/* 0 Reserved */
--	PD_CTRL_GOOD_CRC = 1,
--	PD_CTRL_GOTO_MIN = 2,
--	PD_CTRL_ACCEPT = 3,
--	PD_CTRL_REJECT = 4,
--	PD_CTRL_PING = 5,
--	PD_CTRL_PS_RDY = 6,
--	PD_CTRL_GET_SOURCE_CAP = 7,
--	PD_CTRL_GET_SINK_CAP = 8,
--	PD_CTRL_DR_SWAP = 9,
--	PD_CTRL_PR_SWAP = 10,
--	PD_CTRL_VCONN_SWAP = 11,
--	PD_CTRL_WAIT = 12,
--	PD_CTRL_SOFT_RESET = 13,
--	/* 14-15 Reserved */
--	PD_CTRL_NOT_SUPP = 16,
--	PD_CTRL_GET_SOURCE_CAP_EXT = 17,
--	PD_CTRL_GET_STATUS = 18,
--	PD_CTRL_FR_SWAP = 19,
--	PD_CTRL_GET_PPS_STATUS = 20,
--	PD_CTRL_GET_COUNTRY_CODES = 21,
--	/* 22-31 Reserved */
--};
--
--enum pd_data_msg_type {
--	/* 0 Reserved */
--	PD_DATA_SOURCE_CAP = 1,
--	PD_DATA_REQUEST = 2,
--	PD_DATA_BIST = 3,
--	PD_DATA_SINK_CAP = 4,
--	PD_DATA_BATT_STATUS = 5,
--	PD_DATA_ALERT = 6,
--	PD_DATA_GET_COUNTRY_INFO = 7,
--	PD_DATA_ENTER_USB = 8,
--	/* 9-14 Reserved */
--	PD_DATA_VENDOR_DEF = 15,
--	/* 16-31 Reserved */
--};
--
--enum pd_ext_msg_type {
--	/* 0 Reserved */
--	PD_EXT_SOURCE_CAP_EXT = 1,
--	PD_EXT_STATUS = 2,
--	PD_EXT_GET_BATT_CAP = 3,
--	PD_EXT_GET_BATT_STATUS = 4,
--	PD_EXT_BATT_CAP = 5,
--	PD_EXT_GET_MANUFACTURER_INFO = 6,
--	PD_EXT_MANUFACTURER_INFO = 7,
--	PD_EXT_SECURITY_REQUEST = 8,
--	PD_EXT_SECURITY_RESPONSE = 9,
--	PD_EXT_FW_UPDATE_REQUEST = 10,
--	PD_EXT_FW_UPDATE_RESPONSE = 11,
--	PD_EXT_PPS_STATUS = 12,
--	PD_EXT_COUNTRY_INFO = 13,
--	PD_EXT_COUNTRY_CODES = 14,
--	/* 15-31 Reserved */
--};
--
--#define PD_REV10	0x0
--#define PD_REV20	0x1
--#define PD_REV30	0x2
- #define PD_MAX_REV	PD_REV30
+ static DEFINE_IDA(typec_index_ida);
  
--#define PD_HEADER_EXT_HDR	BIT(15)
--#define PD_HEADER_CNT_SHIFT	12
--#define PD_HEADER_CNT_MASK	0x7
--#define PD_HEADER_ID_SHIFT	9
--#define PD_HEADER_ID_MASK	0x7
--#define PD_HEADER_PWR_ROLE	BIT(8)
--#define PD_HEADER_REV_SHIFT	6
--#define PD_HEADER_REV_MASK	0x3
--#define PD_HEADER_DATA_ROLE	BIT(5)
--#define PD_HEADER_TYPE_SHIFT	0
--#define PD_HEADER_TYPE_MASK	0x1f
--
--#define PD_HEADER(type, pwr, data, rev, id, cnt, ext_hdr)		\
--	((((type) & PD_HEADER_TYPE_MASK) << PD_HEADER_TYPE_SHIFT) |	\
--	 ((pwr) == TYPEC_SOURCE ? PD_HEADER_PWR_ROLE : 0) |		\
--	 ((data) == TYPEC_HOST ? PD_HEADER_DATA_ROLE : 0) |		\
--	 (rev << PD_HEADER_REV_SHIFT) |					\
--	 (((id) & PD_HEADER_ID_MASK) << PD_HEADER_ID_SHIFT) |		\
--	 (((cnt) & PD_HEADER_CNT_MASK) << PD_HEADER_CNT_SHIFT) |	\
--	 ((ext_hdr) ? PD_HEADER_EXT_HDR : 0))
--
--#define PD_HEADER_LE(type, pwr, data, rev, id, cnt) \
--	cpu_to_le16(PD_HEADER((type), (pwr), (data), (rev), (id), (cnt), (0)))
--
--static inline unsigned int pd_header_cnt(u16 header)
--{
--	return (header >> PD_HEADER_CNT_SHIFT) & PD_HEADER_CNT_MASK;
--}
--
--static inline unsigned int pd_header_cnt_le(__le16 header)
--{
--	return pd_header_cnt(le16_to_cpu(header));
--}
--
--static inline unsigned int pd_header_type(u16 header)
--{
--	return (header >> PD_HEADER_TYPE_SHIFT) & PD_HEADER_TYPE_MASK;
--}
--
--static inline unsigned int pd_header_type_le(__le16 header)
--{
--	return pd_header_type(le16_to_cpu(header));
--}
--
--static inline unsigned int pd_header_msgid(u16 header)
--{
--	return (header >> PD_HEADER_ID_SHIFT) & PD_HEADER_ID_MASK;
--}
--
--static inline unsigned int pd_header_msgid_le(__le16 header)
--{
--	return pd_header_msgid(le16_to_cpu(header));
--}
--
--static inline unsigned int pd_header_rev(u16 header)
--{
--	return (header >> PD_HEADER_REV_SHIFT) & PD_HEADER_REV_MASK;
--}
--
--static inline unsigned int pd_header_rev_le(__le16 header)
--{
--	return pd_header_rev(le16_to_cpu(header));
--}
--
--#define PD_EXT_HDR_CHUNKED		BIT(15)
--#define PD_EXT_HDR_CHUNK_NUM_SHIFT	11
--#define PD_EXT_HDR_CHUNK_NUM_MASK	0xf
--#define PD_EXT_HDR_REQ_CHUNK		BIT(10)
--#define PD_EXT_HDR_DATA_SIZE_SHIFT	0
--#define PD_EXT_HDR_DATA_SIZE_MASK	0x1ff
--
--#define PD_EXT_HDR(data_size, req_chunk, chunk_num, chunked)				\
--	((((data_size) & PD_EXT_HDR_DATA_SIZE_MASK) << PD_EXT_HDR_DATA_SIZE_SHIFT) |	\
--	 ((req_chunk) ? PD_EXT_HDR_REQ_CHUNK : 0) |					\
--	 (((chunk_num) & PD_EXT_HDR_CHUNK_NUM_MASK) << PD_EXT_HDR_CHUNK_NUM_SHIFT) |	\
--	 ((chunked) ? PD_EXT_HDR_CHUNKED : 0))
--
--#define PD_EXT_HDR_LE(data_size, req_chunk, chunk_num, chunked) \
--	cpu_to_le16(PD_EXT_HDR((data_size), (req_chunk), (chunk_num), (chunked)))
--
--static inline unsigned int pd_ext_header_chunk_num(u16 ext_header)
--{
--	return (ext_header >> PD_EXT_HDR_CHUNK_NUM_SHIFT) &
--		PD_EXT_HDR_CHUNK_NUM_MASK;
--}
--
--static inline unsigned int pd_ext_header_data_size(u16 ext_header)
--{
--	return (ext_header >> PD_EXT_HDR_DATA_SIZE_SHIFT) &
--		PD_EXT_HDR_DATA_SIZE_MASK;
--}
--
--static inline unsigned int pd_ext_header_data_size_le(__le16 ext_header)
--{
--	return pd_ext_header_data_size(le16_to_cpu(ext_header));
--}
--
--#define PD_MAX_PAYLOAD		7
--#define PD_EXT_MAX_CHUNK_DATA	26
--
--/**
--  * struct pd_chunked_ext_message_data - PD chunked extended message data as
--  *					 seen on wire
--  * @header:    PD extended message header
--  * @data:      PD extended message data
--  */
--struct pd_chunked_ext_message_data {
--	__le16 header;
--	u8 data[PD_EXT_MAX_CHUNK_DATA];
--} __packed;
--
--/**
--  * struct pd_message - PD message as seen on wire
--  * @header:    PD message header
--  * @payload:   PD message payload
--  * @ext_msg:   PD message chunked extended message data
--  */
--struct pd_message {
--	__le16 header;
--	union {
--		__le32 payload[PD_MAX_PAYLOAD];
--		struct pd_chunked_ext_message_data ext_msg;
--	};
--} __packed;
--
--/* PDO: Power Data Object */
--#define PDO_MAX_OBJECTS		7
--
--enum pd_pdo_type {
--	PDO_TYPE_FIXED = 0,
--	PDO_TYPE_BATT = 1,
--	PDO_TYPE_VAR = 2,
--	PDO_TYPE_APDO = 3,
--};
--
--#define PDO_TYPE_SHIFT		30
--#define PDO_TYPE_MASK		0x3
--
--#define PDO_TYPE(t)	((t) << PDO_TYPE_SHIFT)
--
--#define PDO_VOLT_MASK		0x3ff
--#define PDO_CURR_MASK		0x3ff
--#define PDO_PWR_MASK		0x3ff
--
--#define PDO_FIXED_DUAL_ROLE		BIT(29)	/* Power role swap supported */
--#define PDO_FIXED_SUSPEND		BIT(28) /* USB Suspend supported (Source) */
--#define PDO_FIXED_HIGHER_CAP		BIT(28) /* Requires more than vSafe5V (Sink) */
--#define PDO_FIXED_EXTPOWER		BIT(27) /* Externally powered */
--#define PDO_FIXED_USB_COMM		BIT(26) /* USB communications capable */
--#define PDO_FIXED_DATA_SWAP		BIT(25) /* Data role swap supported */
--#define PDO_FIXED_UNCHUNK_EXT		BIT(24) /* Unchunked Extended Message supported (Source) */
--#define PDO_FIXED_FRS_CURR_MASK		(BIT(24) | BIT(23)) /* FR_Swap Current (Sink) */
--#define PDO_FIXED_FRS_CURR_SHIFT	23
--#define PDO_FIXED_VOLT_SHIFT		10	/* 50mV units */
--#define PDO_FIXED_CURR_SHIFT		0	/* 10mA units */
--
--#define PDO_FIXED_VOLT(mv)	((((mv) / 50) & PDO_VOLT_MASK) << PDO_FIXED_VOLT_SHIFT)
--#define PDO_FIXED_CURR(ma)	((((ma) / 10) & PDO_CURR_MASK) << PDO_FIXED_CURR_SHIFT)
--
--#define PDO_FIXED(mv, ma, flags)			\
--	(PDO_TYPE(PDO_TYPE_FIXED) | (flags) |		\
--	 PDO_FIXED_VOLT(mv) | PDO_FIXED_CURR(ma))
--
--#define VSAFE5V 5000 /* mv units */
--
--#define PDO_BATT_MAX_VOLT_SHIFT	20	/* 50mV units */
--#define PDO_BATT_MIN_VOLT_SHIFT	10	/* 50mV units */
--#define PDO_BATT_MAX_PWR_SHIFT	0	/* 250mW units */
--
--#define PDO_BATT_MIN_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_BATT_MIN_VOLT_SHIFT)
--#define PDO_BATT_MAX_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_BATT_MAX_VOLT_SHIFT)
--#define PDO_BATT_MAX_POWER(mw) ((((mw) / 250) & PDO_PWR_MASK) << PDO_BATT_MAX_PWR_SHIFT)
--
--#define PDO_BATT(min_mv, max_mv, max_mw)			\
--	(PDO_TYPE(PDO_TYPE_BATT) | PDO_BATT_MIN_VOLT(min_mv) |	\
--	 PDO_BATT_MAX_VOLT(max_mv) | PDO_BATT_MAX_POWER(max_mw))
--
--#define PDO_VAR_MAX_VOLT_SHIFT	20	/* 50mV units */
--#define PDO_VAR_MIN_VOLT_SHIFT	10	/* 50mV units */
--#define PDO_VAR_MAX_CURR_SHIFT	0	/* 10mA units */
--
--#define PDO_VAR_MIN_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_VAR_MIN_VOLT_SHIFT)
--#define PDO_VAR_MAX_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_VAR_MAX_VOLT_SHIFT)
--#define PDO_VAR_MAX_CURR(ma) ((((ma) / 10) & PDO_CURR_MASK) << PDO_VAR_MAX_CURR_SHIFT)
--
--#define PDO_VAR(min_mv, max_mv, max_ma)				\
--	(PDO_TYPE(PDO_TYPE_VAR) | PDO_VAR_MIN_VOLT(min_mv) |	\
--	 PDO_VAR_MAX_VOLT(max_mv) | PDO_VAR_MAX_CURR(max_ma))
--
--enum pd_apdo_type {
--	APDO_TYPE_PPS = 0,
--};
--
--#define PDO_APDO_TYPE_SHIFT	28	/* Only valid value currently is 0x0 - PPS */
--#define PDO_APDO_TYPE_MASK	0x3
--
--#define PDO_APDO_TYPE(t)	((t) << PDO_APDO_TYPE_SHIFT)
--
--#define PDO_PPS_APDO_MAX_VOLT_SHIFT	17	/* 100mV units */
--#define PDO_PPS_APDO_MIN_VOLT_SHIFT	8	/* 100mV units */
--#define PDO_PPS_APDO_MAX_CURR_SHIFT	0	/* 50mA units */
--
--#define PDO_PPS_APDO_VOLT_MASK	0xff
--#define PDO_PPS_APDO_CURR_MASK	0x7f
--
--#define PDO_PPS_APDO_MIN_VOLT(mv)	\
--	((((mv) / 100) & PDO_PPS_APDO_VOLT_MASK) << PDO_PPS_APDO_MIN_VOLT_SHIFT)
--#define PDO_PPS_APDO_MAX_VOLT(mv)	\
--	((((mv) / 100) & PDO_PPS_APDO_VOLT_MASK) << PDO_PPS_APDO_MAX_VOLT_SHIFT)
--#define PDO_PPS_APDO_MAX_CURR(ma)	\
--	((((ma) / 50) & PDO_PPS_APDO_CURR_MASK) << PDO_PPS_APDO_MAX_CURR_SHIFT)
--
--#define PDO_PPS_APDO(min_mv, max_mv, max_ma)				\
--	(PDO_TYPE(PDO_TYPE_APDO) | PDO_APDO_TYPE(APDO_TYPE_PPS) |	\
--	PDO_PPS_APDO_MIN_VOLT(min_mv) | PDO_PPS_APDO_MAX_VOLT(max_mv) |	\
--	PDO_PPS_APDO_MAX_CURR(max_ma))
--
--static inline enum pd_pdo_type pdo_type(u32 pdo)
--{
--	return (pdo >> PDO_TYPE_SHIFT) & PDO_TYPE_MASK;
--}
--
--static inline unsigned int pdo_fixed_voltage(u32 pdo)
--{
--	return ((pdo >> PDO_FIXED_VOLT_SHIFT) & PDO_VOLT_MASK) * 50;
--}
--
--static inline unsigned int pdo_min_voltage(u32 pdo)
--{
--	return ((pdo >> PDO_VAR_MIN_VOLT_SHIFT) & PDO_VOLT_MASK) * 50;
--}
--
--static inline unsigned int pdo_max_voltage(u32 pdo)
--{
--	return ((pdo >> PDO_VAR_MAX_VOLT_SHIFT) & PDO_VOLT_MASK) * 50;
--}
--
--static inline unsigned int pdo_max_current(u32 pdo)
--{
--	return ((pdo >> PDO_VAR_MAX_CURR_SHIFT) & PDO_CURR_MASK) * 10;
--}
--
--static inline unsigned int pdo_max_power(u32 pdo)
--{
--	return ((pdo >> PDO_BATT_MAX_PWR_SHIFT) & PDO_PWR_MASK) * 250;
--}
--
--static inline enum pd_apdo_type pdo_apdo_type(u32 pdo)
--{
--	return (pdo >> PDO_APDO_TYPE_SHIFT) & PDO_APDO_TYPE_MASK;
--}
--
--static inline unsigned int pdo_pps_apdo_min_voltage(u32 pdo)
--{
--	return ((pdo >> PDO_PPS_APDO_MIN_VOLT_SHIFT) &
--		PDO_PPS_APDO_VOLT_MASK) * 100;
--}
--
--static inline unsigned int pdo_pps_apdo_max_voltage(u32 pdo)
--{
--	return ((pdo >> PDO_PPS_APDO_MAX_VOLT_SHIFT) &
--		PDO_PPS_APDO_VOLT_MASK) * 100;
--}
--
--static inline unsigned int pdo_pps_apdo_max_current(u32 pdo)
--{
--	return ((pdo >> PDO_PPS_APDO_MAX_CURR_SHIFT) &
--		PDO_PPS_APDO_CURR_MASK) * 50;
--}
--
--/* RDO: Request Data Object */
--#define RDO_OBJ_POS_SHIFT	28
--#define RDO_OBJ_POS_MASK	0x7
--#define RDO_GIVE_BACK		BIT(27)	/* Supports reduced operating current */
--#define RDO_CAP_MISMATCH	BIT(26) /* Not satisfied by source caps */
--#define RDO_USB_COMM		BIT(25) /* USB communications capable */
--#define RDO_NO_SUSPEND		BIT(24) /* USB Suspend not supported */
--
--#define RDO_PWR_MASK			0x3ff
--#define RDO_CURR_MASK			0x3ff
--
--#define RDO_FIXED_OP_CURR_SHIFT		10
--#define RDO_FIXED_MAX_CURR_SHIFT	0
--
--#define RDO_OBJ(idx) (((idx) & RDO_OBJ_POS_MASK) << RDO_OBJ_POS_SHIFT)
--
--#define PDO_FIXED_OP_CURR(ma) ((((ma) / 10) & RDO_CURR_MASK) << RDO_FIXED_OP_CURR_SHIFT)
--#define PDO_FIXED_MAX_CURR(ma) ((((ma) / 10) & RDO_CURR_MASK) << RDO_FIXED_MAX_CURR_SHIFT)
--
--#define RDO_FIXED(idx, op_ma, max_ma, flags)			\
--	(RDO_OBJ(idx) | (flags) |				\
--	 PDO_FIXED_OP_CURR(op_ma) | PDO_FIXED_MAX_CURR(max_ma))
--
--#define RDO_BATT_OP_PWR_SHIFT		10	/* 250mW units */
--#define RDO_BATT_MAX_PWR_SHIFT		0	/* 250mW units */
--
--#define RDO_BATT_OP_PWR(mw) ((((mw) / 250) & RDO_PWR_MASK) << RDO_BATT_OP_PWR_SHIFT)
--#define RDO_BATT_MAX_PWR(mw) ((((mw) / 250) & RDO_PWR_MASK) << RDO_BATT_MAX_PWR_SHIFT)
--
--#define RDO_BATT(idx, op_mw, max_mw, flags)			\
--	(RDO_OBJ(idx) | (flags) |				\
--	 RDO_BATT_OP_PWR(op_mw) | RDO_BATT_MAX_PWR(max_mw))
--
--#define RDO_PROG_VOLT_MASK	0x7ff
--#define RDO_PROG_CURR_MASK	0x7f
--
--#define RDO_PROG_VOLT_SHIFT	9
--#define RDO_PROG_CURR_SHIFT	0
--
--#define RDO_PROG_VOLT_MV_STEP	20
--#define RDO_PROG_CURR_MA_STEP	50
--
--#define PDO_PROG_OUT_VOLT(mv)	\
--	((((mv) / RDO_PROG_VOLT_MV_STEP) & RDO_PROG_VOLT_MASK) << RDO_PROG_VOLT_SHIFT)
--#define PDO_PROG_OP_CURR(ma)	\
--	((((ma) / RDO_PROG_CURR_MA_STEP) & RDO_PROG_CURR_MASK) << RDO_PROG_CURR_SHIFT)
--
--#define RDO_PROG(idx, out_mv, op_ma, flags)			\
--	(RDO_OBJ(idx) | (flags) |				\
--	 PDO_PROG_OUT_VOLT(out_mv) | PDO_PROG_OP_CURR(op_ma))
--
--static inline unsigned int rdo_index(u32 rdo)
--{
--	return (rdo >> RDO_OBJ_POS_SHIFT) & RDO_OBJ_POS_MASK;
--}
--
--static inline unsigned int rdo_op_current(u32 rdo)
--{
--	return ((rdo >> RDO_FIXED_OP_CURR_SHIFT) & RDO_CURR_MASK) * 10;
--}
--
--static inline unsigned int rdo_max_current(u32 rdo)
--{
--	return ((rdo >> RDO_FIXED_MAX_CURR_SHIFT) &
--		RDO_CURR_MASK) * 10;
--}
--
--static inline unsigned int rdo_op_power(u32 rdo)
--{
--	return ((rdo >> RDO_BATT_OP_PWR_SHIFT) & RDO_PWR_MASK) * 250;
--}
--
--static inline unsigned int rdo_max_power(u32 rdo)
--{
--	return ((rdo >> RDO_BATT_MAX_PWR_SHIFT) & RDO_PWR_MASK) * 250;
--}
--
--/* Enter_USB Data Object */
--#define EUDO_USB_MODE_MASK		GENMASK(30, 28)
--#define EUDO_USB_MODE_SHIFT		28
--#define   EUDO_USB_MODE_USB2		0
--#define   EUDO_USB_MODE_USB3		1
--#define   EUDO_USB_MODE_USB4		2
--#define EUDO_USB4_DRD			BIT(26)
--#define EUDO_USB3_DRD			BIT(25)
--#define EUDO_CABLE_SPEED_MASK		GENMASK(23, 21)
--#define EUDO_CABLE_SPEED_SHIFT		21
--#define   EUDO_CABLE_SPEED_USB2		0
--#define   EUDO_CABLE_SPEED_USB3_GEN1	1
--#define   EUDO_CABLE_SPEED_USB4_GEN2	2
--#define   EUDO_CABLE_SPEED_USB4_GEN3	3
--#define EUDO_CABLE_TYPE_MASK		GENMASK(20, 19)
--#define EUDO_CABLE_TYPE_SHIFT		19
--#define   EUDO_CABLE_TYPE_PASSIVE	0
--#define   EUDO_CABLE_TYPE_RE_TIMER	1
--#define   EUDO_CABLE_TYPE_RE_DRIVER	2
--#define   EUDO_CABLE_TYPE_OPTICAL	3
--#define EUDO_CABLE_CURRENT_MASK		GENMASK(18, 17)
--#define EUDO_CABLE_CURRENT_SHIFT	17
--#define   EUDO_CABLE_CURRENT_NOTSUPP	0
--#define   EUDO_CABLE_CURRENT_3A		2
--#define   EUDO_CABLE_CURRENT_5A		3
--#define EUDO_PCIE_SUPPORT		BIT(16)
--#define EUDO_DP_SUPPORT			BIT(15)
--#define EUDO_TBT_SUPPORT		BIT(14)
--#define EUDO_HOST_PRESENT		BIT(13)
--
--/* USB PD timers and counters */
--#define PD_T_NO_RESPONSE	5000	/* 4.5 - 5.5 seconds */
--#define PD_T_DB_DETECT		10000	/* 10 - 15 seconds */
--#define PD_T_SEND_SOURCE_CAP	150	/* 100 - 200 ms */
--#define PD_T_SENDER_RESPONSE	60	/* 24 - 30 ms, relaxed */
--#define PD_T_RECEIVER_RESPONSE	15	/* 15ms max */
--#define PD_T_SOURCE_ACTIVITY	45
--#define PD_T_SINK_ACTIVITY	135
--#define PD_T_SINK_WAIT_CAP	310	/* 310 - 620 ms */
--#define PD_T_PS_TRANSITION	500
--#define PD_T_SRC_TRANSITION	35
--#define PD_T_DRP_SNK		40
--#define PD_T_DRP_SRC		30
--#define PD_T_PS_SOURCE_OFF	920
--#define PD_T_PS_SOURCE_ON	480
--#define PD_T_PS_SOURCE_ON_PRS	450	/* 390 - 480ms */
--#define PD_T_PS_HARD_RESET	30
--#define PD_T_SRC_RECOVER	760
--#define PD_T_SRC_RECOVER_MAX	1000
--#define PD_T_SRC_TURN_ON	275
--#define PD_T_SAFE_0V		650
--#define PD_T_VCONN_SOURCE_ON	100
--#define PD_T_SINK_REQUEST	100	/* 100 ms minimum */
--#define PD_T_ERROR_RECOVERY	100	/* minimum 25 is insufficient */
--#define PD_T_SRCSWAPSTDBY	625	/* Maximum of 650ms */
--#define PD_T_NEWSRC		250	/* Maximum of 275ms */
--#define PD_T_SWAP_SRC_START	20	/* Minimum of 20ms */
--#define PD_T_BIST_CONT_MODE	50	/* 30 - 60 ms */
--#define PD_T_SINK_TX		16	/* 16 - 20 ms */
--#define PD_T_CHUNK_NOT_SUPP	42	/* 40 - 50 ms */
--
--#define PD_T_DRP_TRY		100	/* 75 - 150 ms */
--#define PD_T_DRP_TRYWAIT	600	/* 400 - 800 ms */
--
--#define PD_T_CC_DEBOUNCE	200	/* 100 - 200 ms */
--#define PD_T_PD_DEBOUNCE	20	/* 10 - 20 ms */
--#define PD_T_TRY_CC_DEBOUNCE	15	/* 10 - 20 ms */
--
--#define PD_N_CAPS_COUNT		(PD_T_NO_RESPONSE / PD_T_SEND_SOURCE_CAP)
--#define PD_N_HARD_RESET_COUNT	2
--
--#define PD_P_SNK_STDBY_MW	2500	/* 2500 mW */
--
- #endif /* __LINUX_USB_PD_H */
-diff --git a/include/uapi/linux/usb/pd.h b/include/uapi/linux/usb/pd.h
+@@ -665,6 +666,11 @@ static const struct attribute_group *typec_partner_groups[] = {
+ 	NULL
+ };
+ 
++char *typec_partner_devnode(struct device *dev, umode_t *mode, kuid_t *uid, kgid_t *gid)
++{
++	return kasprintf(GFP_KERNEL, "pd%u/partner", to_typec_port(dev->parent)->id);
++}
++
+ static void typec_partner_release(struct device *dev)
+ {
+ 	struct typec_partner *partner = to_typec_partner(dev);
+@@ -676,6 +682,7 @@ static void typec_partner_release(struct device *dev)
+ const struct device_type typec_partner_dev_type = {
+ 	.name = "typec_partner",
+ 	.groups = typec_partner_groups,
++	.devnode = typec_partner_devnode,
+ 	.release = typec_partner_release,
+ };
+ 
+@@ -807,6 +814,7 @@ struct typec_partner *typec_register_partner(struct typec_port *port,
+ 
+ 	ida_init(&partner->mode_ids);
+ 	partner->usb_pd = desc->usb_pd;
++	partner->pd_dev = desc->pd_dev;
+ 	partner->accessory = desc->accessory;
+ 	partner->num_altmodes = -1;
+ 	partner->pd_revision = desc->pd_revision;
+@@ -826,6 +834,9 @@ struct typec_partner *typec_register_partner(struct typec_port *port,
+ 	partner->dev.type = &typec_partner_dev_type;
+ 	dev_set_name(&partner->dev, "%s-partner", dev_name(&port->dev));
+ 
++	if (partner->pd_dev)
++		partner->dev.devt = MKDEV(PD_DEV_MAJOR, port->id * 4 + 3);
++
+ 	ret = device_register(&partner->dev);
+ 	if (ret) {
+ 		dev_err(&port->dev, "failed to register partner (%d)\n", ret);
+@@ -853,6 +864,13 @@ EXPORT_SYMBOL_GPL(typec_unregister_partner);
+ /* ------------------------------------------------------------------------- */
+ /* Type-C Cable Plugs */
+ 
++char *typec_plug_devnode(struct device *dev, umode_t *mode, kuid_t *uid, kgid_t *gid)
++{
++	return kasprintf(GFP_KERNEL, "pd%u/plug%d",
++			 to_typec_port(dev->parent->parent)->id,
++			 to_typec_plug(dev)->index);
++}
++
+ static void typec_plug_release(struct device *dev)
+ {
+ 	struct typec_plug *plug = to_typec_plug(dev);
+@@ -891,6 +909,7 @@ static const struct attribute_group *typec_plug_groups[] = {
+ const struct device_type typec_plug_dev_type = {
+ 	.name = "typec_plug",
+ 	.groups = typec_plug_groups,
++	.devnode = typec_plug_devnode,
+ 	.release = typec_plug_release,
+ };
+ 
+@@ -973,11 +992,16 @@ struct typec_plug *typec_register_plug(struct typec_cable *cable,
+ 	ida_init(&plug->mode_ids);
+ 	plug->num_altmodes = -1;
+ 	plug->index = desc->index;
++	plug->pd_dev = desc->pd_dev;
+ 	plug->dev.class = &typec_class;
+ 	plug->dev.parent = &cable->dev;
+ 	plug->dev.type = &typec_plug_dev_type;
+ 	dev_set_name(&plug->dev, "%s-%s", dev_name(cable->dev.parent), name);
+ 
++	if (plug->pd_dev)
++		plug->dev.devt = MKDEV(PD_DEV_MAJOR,
++				       to_typec_port(cable->dev.parent)->id * 4 + 1 + plug->index);
++
+ 	ret = device_register(&plug->dev);
+ 	if (ret) {
+ 		dev_err(&cable->dev, "failed to register plug (%d)\n", ret);
+@@ -1595,6 +1619,11 @@ static int typec_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	return ret;
+ }
+ 
++char *typec_devnode(struct device *dev, umode_t *mode, kuid_t *uid, kgid_t *gid)
++{
++	return kasprintf(GFP_KERNEL, "pd%u/port", to_typec_port(dev)->id);
++}
++
+ static void typec_release(struct device *dev)
+ {
+ 	struct typec_port *port = to_typec_port(dev);
+@@ -1611,6 +1640,7 @@ const struct device_type typec_port_dev_type = {
+ 	.name = "typec_port",
+ 	.groups = typec_groups,
+ 	.uevent = typec_uevent,
++	.devnode = typec_devnode,
+ 	.release = typec_release,
+ };
+ 
+@@ -2044,6 +2074,7 @@ struct typec_port *typec_register_port(struct device *parent,
+ 
+ 	port->id = id;
+ 	port->ops = cap->ops;
++	port->pd_dev = cap->pd_dev;
+ 	port->port_type = cap->type;
+ 	port->prefer_role = cap->prefer_role;
+ 
+@@ -2055,6 +2086,9 @@ struct typec_port *typec_register_port(struct device *parent,
+ 	dev_set_name(&port->dev, "port%d", id);
+ 	dev_set_drvdata(&port->dev, cap->driver_data);
+ 
++	if (port->pd_dev)
++		port->dev.devt = MKDEV(PD_DEV_MAJOR, id * 4);
++
+ 	port->cap = kmemdup(cap, sizeof(*cap), GFP_KERNEL);
+ 	if (!port->cap) {
+ 		put_device(&port->dev);
+@@ -2121,8 +2155,15 @@ static int __init typec_init(void)
+ 	if (ret)
+ 		goto err_unregister_mux_class;
+ 
++	ret = usbpd_dev_init();
++	if (ret)
++		goto err_unregister_class;
++
+ 	return 0;
+ 
++err_unregister_class:
++	class_unregister(&typec_class);
++
+ err_unregister_mux_class:
+ 	class_unregister(&typec_mux_class);
+ 
+@@ -2135,6 +2176,7 @@ subsys_initcall(typec_init);
+ 
+ static void __exit typec_exit(void)
+ {
++	usbpd_dev_exit();
+ 	class_unregister(&typec_class);
+ 	ida_destroy(&typec_index_ida);
+ 	bus_unregister(&typec_bus);
+diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
+index aef03eb7e1523..87c072f2ad753 100644
+--- a/drivers/usb/typec/class.h
++++ b/drivers/usb/typec/class.h
+@@ -14,6 +14,7 @@ struct typec_plug {
+ 	enum typec_plug_index		index;
+ 	struct ida			mode_ids;
+ 	int				num_altmodes;
++	const struct pd_dev		*pd_dev;
+ };
+ 
+ struct typec_cable {
+@@ -33,6 +34,7 @@ struct typec_partner {
+ 	int				num_altmodes;
+ 	u16				pd_revision; /* 0300H = "3.0" */
+ 	enum usb_pd_svdm_ver		svdm_version;
++	const struct pd_dev		*pd_dev;
+ };
+ 
+ struct typec_port {
+@@ -59,6 +61,8 @@ struct typec_port {
+ 	struct mutex			port_list_lock; /* Port list lock */
+ 
+ 	void				*pld;
++
++	const struct pd_dev		*pd_dev;
+ };
+ 
+ #define to_typec_port(_dev_) container_of(_dev_, struct typec_port, dev)
+diff --git a/drivers/usb/typec/pd-dev.c b/drivers/usb/typec/pd-dev.c
 new file mode 100644
-index 0000000000000..407d8deea3ea9
+index 0000000000000..436853e046ce4
 --- /dev/null
-+++ b/include/uapi/linux/usb/pd.h
-@@ -0,0 +1,496 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
++++ b/drivers/usb/typec/pd-dev.c
+@@ -0,0 +1,210 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Copyright 2015-2017 Google, Inc
++ * USB Power Delivery /dev entries
++ *
++ * Copyright (C) 2021 Intel Corporation
++ * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 + */
 +
-+#ifndef _UAPI__LINUX_USB_PD_H
-+#define _UAPI__LINUX_USB_PD_H
++#include <linux/cdev.h>
++#include <linux/fs.h>
++#include <linux/slab.h>
++#include <linux/usb/pd_dev.h>
++
++#include "class.h"
++
++#define PD_DEV_MAX (MINORMASK + 1)
++
++dev_t usbpd_devt;
++static struct cdev usb_pd_cdev;
++
++struct pddev {
++	struct device *dev;
++	struct typec_port *port;
++	const struct pd_dev *pd_dev;
++};
++
++static ssize_t usbpd_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
++{
++	/* FIXME TODO XXX */
++
++	/* Alert and Attention handling here (with poll) ? */
++
++	return 0;
++}
++
++static long usbpd_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	struct pddev *pd = file->private_data;
++	void __user *p = (void __user *)arg;
++	unsigned int pwr_role;
++	struct pd_message msg;
++	u32 configuration;
++	int ret = 0;
++
++	switch (cmd) {
++	case USBPDDEV_INFO:
++		if (copy_to_user(p, pd->pd_dev->info, sizeof(*pd->pd_dev->info)))
++			return -EFAULT;
++		break;
++	case USBPDDEV_CONFIGURE:
++		if (!pd->pd_dev->ops->configure)
++			return -ENOTTY;
++
++		if (copy_from_user(&configuration, p, sizeof(configuration)))
++			return -EFAULT;
++
++		ret = pd->pd_dev->ops->configure(pd->pd_dev, configuration);
++		if (ret)
++			return ret;
++		break;
++	case USBPDDEV_PWR_ROLE:
++		if (is_typec_plug(pd->dev))
++			return -ENOTTY;
++
++		if (is_typec_partner(pd->dev)) {
++			if (pd->port->pwr_role == TYPEC_SINK)
++				pwr_role = TYPEC_SOURCE;
++			else
++				pwr_role = TYPEC_SINK;
++		} else {
++			pwr_role = pd->port->pwr_role;
++		}
++
++		if (copy_to_user(p, &pwr_role, sizeof(unsigned int)))
++			return -EFAULT;
++		break;
++	case USBPDDEV_GET_MESSAGE:
++		if (!pd->pd_dev->ops->get_message)
++			return -ENOTTY;
++
++		if (copy_from_user(&msg, p, sizeof(msg)))
++			return -EFAULT;
++
++		ret = pd->pd_dev->ops->get_message(pd->pd_dev, &msg);
++		if (ret)
++			return ret;
++
++		if (copy_to_user(p, &msg, sizeof(msg)))
++			return -EFAULT;
++		break;
++	case USBPDDEV_SET_MESSAGE:
++		if (!pd->pd_dev->ops->set_message)
++			return -ENOTTY;
++
++		ret = pd->pd_dev->ops->set_message(pd->pd_dev, &msg);
++		if (ret)
++			return ret;
++
++		if (copy_to_user(p, &msg, sizeof(msg)))
++			return -EFAULT;
++		break;
++	case USBPDDEV_SUBMIT_MESSAGE:
++		if (!pd->pd_dev->ops->submit)
++			return -ENOTTY;
++
++		if (copy_from_user(&msg, p, sizeof(msg)))
++			return -EFAULT;
++
++		ret = pd->pd_dev->ops->submit(pd->pd_dev, &msg);
++		if (ret)
++			return ret;
++
++		if (copy_to_user(p, &msg, sizeof(msg)))
++			return -EFAULT;
++		break;
++	default:
++		return -ENOTTY;
++	}
++
++	return 0;
++}
++
++static int usbpd_open(struct inode *inode, struct file *file)
++{
++	struct device *dev;
++	struct pddev *pd;
++
++	dev = class_find_device_by_devt(&typec_class, inode->i_rdev);
++	if (!dev)
++		return -ENODEV;
++
++	pd = kzalloc(sizeof(*pd), GFP_KERNEL);
++	if (!pd) {
++		put_device(dev);
++		return -ENOMEM;
++	}
++
++	if (is_typec_partner(dev)) {
++		if (!to_typec_partner(dev)->usb_pd) {
++			put_device(dev);
++			kfree(pd);
++			return -ENODEV;
++		}
++		pd->port = to_typec_port(dev->parent);
++		pd->pd_dev = to_typec_partner(dev)->pd_dev;
++	} else if (is_typec_plug(dev)) {
++		pd->port = to_typec_port(dev->parent->parent);
++		pd->pd_dev = to_typec_plug(dev)->pd_dev;
++	} else {
++		pd->port = to_typec_port(dev);
++		pd->pd_dev = to_typec_port(dev)->pd_dev;
++	}
++
++	pd->dev = dev;
++	file->private_data = pd;
++
++	return 0;
++}
++
++static int usbpd_release(struct inode *inode, struct file *file)
++{
++	struct pddev *pd = file->private_data;
++
++	put_device(pd->dev);
++	kfree(pd);
++
++	return 0;
++}
++
++const struct file_operations usbpd_file_operations = {
++	.owner		= THIS_MODULE,
++	.llseek		= no_llseek,
++	.read		= usbpd_read,
++	.unlocked_ioctl = usbpd_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
++	.open		= usbpd_open,
++	.release	= usbpd_release,
++};
++
++int __init usbpd_dev_init(void)
++{
++	int ret;
++
++	ret = alloc_chrdev_region(&usbpd_devt, 0, PD_DEV_MAX, "usb_pd");
++	if (ret)
++		return ret;
++
++	/*
++	 * FIXME!
++	 *
++	 * Now the cdev is always created, even when the device does not support
++	 * USB PD.
++	 */
++
++	cdev_init(&usb_pd_cdev, &usbpd_file_operations);
++
++	ret = cdev_add(&usb_pd_cdev, usbpd_devt, PD_DEV_MAX);
++	if (ret) {
++		unregister_chrdev_region(usbpd_devt, PD_DEV_MAX);
++		return ret;
++	}
++
++	return 0;
++}
++
++void __exit usbpd_dev_exit(void)
++{
++	cdev_del(&usb_pd_cdev);
++	unregister_chrdev_region(usbpd_devt, PD_DEV_MAX);
++}
+diff --git a/drivers/usb/typec/pd-dev.h b/drivers/usb/typec/pd-dev.h
+new file mode 100644
+index 0000000000000..2d817167c4042
+--- /dev/null
++++ b/drivers/usb/typec/pd-dev.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __USB_TYPEC_PDDEV__
++#define __USB_TYPEC_PDDEV__
++
++#include <linux/kdev_t.h>
++
++#define PD_DEV_MAJOR	MAJOR(usbpd_devt)
++
++extern dev_t usbpd_devt;
++
++int usbpd_dev_init(void);
++void usbpd_dev_exit(void);
++
++#endif /* __USB_TYPEC_PDDEV__ */
+diff --git a/include/linux/usb/pd_dev.h b/include/linux/usb/pd_dev.h
+new file mode 100644
+index 0000000000000..d451928f94e78
+--- /dev/null
++++ b/include/linux/usb/pd_dev.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __LINUX_USB_PDDEV_H
++#define __LINUX_USB_PDDEV_H
++
++#include <uapi/linux/usb/pd_dev.h>
++
++struct pd_dev;
++
++struct pd_ops {
++	int (*configure)(const struct pd_dev *dev, u32 flags);
++	int (*get_message)(const struct pd_dev *dev, struct pd_message *msg);
++	int (*set_message)(const struct pd_dev *dev, struct pd_message *msg);
++	int (*submit)(const struct pd_dev *dev, struct pd_message *msg);
++};
++
++struct pd_dev {
++	const struct pd_info *info;
++	const struct pd_ops *ops;
++};
++
++#endif /* __LINUX_USB_PDDEV_H */
+diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
+index e2e44bb1dad85..6df7b096f769c 100644
+--- a/include/linux/usb/typec.h
++++ b/include/linux/usb/typec.h
+@@ -20,6 +20,7 @@ struct typec_port;
+ struct typec_altmode_ops;
+ 
+ struct fwnode_handle;
++struct pd_dev;
+ struct device;
+ 
+ enum typec_port_type {
+@@ -159,11 +160,13 @@ enum typec_plug_index {
+  * struct typec_plug_desc - USB Type-C Cable Plug Descriptor
+  * @index: SOP Prime for the plug connected to DFP and SOP Double Prime for the
+  *         plug connected to UFP
++ * @pd_dev: USB Power Delivery Character Device
+  *
+  * Represents USB Type-C Cable Plug.
+  */
+ struct typec_plug_desc {
+ 	enum typec_plug_index	index;
++	const struct pd_dev	*pd_dev;
+ };
+ 
+ /*
+@@ -189,6 +192,7 @@ struct typec_cable_desc {
+  * @accessory: Audio, Debug or none.
+  * @identity: Discover Identity command data
+  * @pd_revision: USB Power Delivery Specification Revision if supported
++ * @pd_dev: USB Power Delivery Character Device
+  *
+  * Details about a partner that is attached to USB Type-C port. If @identity
+  * member exists when partner is registered, a directory named "identity" is
+@@ -204,6 +208,7 @@ struct typec_partner_desc {
+ 	enum typec_accessory	accessory;
+ 	struct usb_pd_identity	*identity;
+ 	u16			pd_revision; /* 0300H = "3.0" */
++	const struct pd_dev	*pd_dev;
+ };
+ 
+ /**
+@@ -241,6 +246,7 @@ enum usb_pd_svdm_ver {
+  * @fwnode: Optional fwnode of the port
+  * @driver_data: Private pointer for driver specific info
+  * @ops: Port operations vector
++ * @pd_dev: USB Power Delivery Character Device
+  *
+  * Static capabilities of a single USB Type-C port.
+  */
+@@ -258,6 +264,8 @@ struct typec_capability {
+ 	void			*driver_data;
+ 
+ 	const struct typec_operations	*ops;
++
++	const struct pd_dev	*pd_dev;
+ };
+ 
+ /* Specific to try_role(). Indicates the user want's to clear the preference. */
+diff --git a/include/uapi/linux/usb/pd_dev.h b/include/uapi/linux/usb/pd_dev.h
+new file mode 100644
+index 0000000000000..44027bc6b6339
+--- /dev/null
++++ b/include/uapi/linux/usb/pd_dev.h
+@@ -0,0 +1,55 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _UAPI__LINUX_USB_PDDEV_H
++#define _UAPI__LINUX_USB_PDDEV_H
 +
 +#include <linux/types.h>
-+#include <asm/byteorder.h>	/* le16_to_cpu */
++#include <linux/usb/pd.h>
 +
-+/* USB PD Messages */
-+enum pd_ctrl_msg_type {
-+	/* 0 Reserved */
-+	PD_CTRL_GOOD_CRC = 1,
-+	PD_CTRL_GOTO_MIN = 2,
-+	PD_CTRL_ACCEPT = 3,
-+	PD_CTRL_REJECT = 4,
-+	PD_CTRL_PING = 5,
-+	PD_CTRL_PS_RDY = 6,
-+	PD_CTRL_GET_SOURCE_CAP = 7,
-+	PD_CTRL_GET_SINK_CAP = 8,
-+	PD_CTRL_DR_SWAP = 9,
-+	PD_CTRL_PR_SWAP = 10,
-+	PD_CTRL_VCONN_SWAP = 11,
-+	PD_CTRL_WAIT = 12,
-+	PD_CTRL_SOFT_RESET = 13,
-+	/* 14-15 Reserved */
-+	PD_CTRL_NOT_SUPP = 16,
-+	PD_CTRL_GET_SOURCE_CAP_EXT = 17,
-+	PD_CTRL_GET_STATUS = 18,
-+	PD_CTRL_FR_SWAP = 19,
-+	PD_CTRL_GET_PPS_STATUS = 20,
-+	PD_CTRL_GET_COUNTRY_CODES = 21,
-+	/* 22-31 Reserved */
-+};
-+
-+enum pd_data_msg_type {
-+	/* 0 Reserved */
-+	PD_DATA_SOURCE_CAP = 1,
-+	PD_DATA_REQUEST = 2,
-+	PD_DATA_BIST = 3,
-+	PD_DATA_SINK_CAP = 4,
-+	PD_DATA_BATT_STATUS = 5,
-+	PD_DATA_ALERT = 6,
-+	PD_DATA_GET_COUNTRY_INFO = 7,
-+	PD_DATA_ENTER_USB = 8,
-+	/* 9-14 Reserved */
-+	PD_DATA_VENDOR_DEF = 15,
-+	/* 16-31 Reserved */
-+};
-+
-+enum pd_ext_msg_type {
-+	/* 0 Reserved */
-+	PD_EXT_SOURCE_CAP_EXT = 1,
-+	PD_EXT_STATUS = 2,
-+	PD_EXT_GET_BATT_CAP = 3,
-+	PD_EXT_GET_BATT_STATUS = 4,
-+	PD_EXT_BATT_CAP = 5,
-+	PD_EXT_GET_MANUFACTURER_INFO = 6,
-+	PD_EXT_MANUFACTURER_INFO = 7,
-+	PD_EXT_SECURITY_REQUEST = 8,
-+	PD_EXT_SECURITY_RESPONSE = 9,
-+	PD_EXT_FW_UPDATE_REQUEST = 10,
-+	PD_EXT_FW_UPDATE_RESPONSE = 11,
-+	PD_EXT_PPS_STATUS = 12,
-+	PD_EXT_COUNTRY_INFO = 13,
-+	PD_EXT_COUNTRY_CODES = 14,
-+	/* 15-31 Reserved */
-+};
-+
-+#define PD_REV10	0x0
-+#define PD_REV20	0x1
-+#define PD_REV30	0x2
-+
-+#define PD_HEADER_EXT_HDR	BIT(15)
-+#define PD_HEADER_CNT_SHIFT	12
-+#define PD_HEADER_CNT_MASK	0x7
-+#define PD_HEADER_ID_SHIFT	9
-+#define PD_HEADER_ID_MASK	0x7
-+#define PD_HEADER_PWR_ROLE	BIT(8)
-+#define PD_HEADER_REV_SHIFT	6
-+#define PD_HEADER_REV_MASK	0x3
-+#define PD_HEADER_DATA_ROLE	BIT(5)
-+#define PD_HEADER_TYPE_SHIFT	0
-+#define PD_HEADER_TYPE_MASK	0x1f
-+
-+#define PD_HEADER(type, pwr, data, rev, id, cnt, ext_hdr)		\
-+	((((type) & PD_HEADER_TYPE_MASK) << PD_HEADER_TYPE_SHIFT) |	\
-+	 ((pwr) ? PD_HEADER_PWR_ROLE : 0) |				\
-+	 ((data) ? PD_HEADER_DATA_ROLE : 0) |				\
-+	 ((rev) << PD_HEADER_REV_SHIFT) |					\
-+	 (((id) & PD_HEADER_ID_MASK) << PD_HEADER_ID_SHIFT) |		\
-+	 (((cnt) & PD_HEADER_CNT_MASK) << PD_HEADER_CNT_SHIFT) |	\
-+	 ((ext_hdr) ? PD_HEADER_EXT_HDR : 0))
-+
-+#define PD_HEADER_LE(type, pwr, data, rev, id, cnt) \
-+	cpu_to_le16(PD_HEADER((type), (pwr), (data), (rev), (id), (cnt), (0)))
-+
-+static inline unsigned int pd_header_cnt(__u16 header)
-+{
-+	return (header >> PD_HEADER_CNT_SHIFT) & PD_HEADER_CNT_MASK;
-+}
-+
-+static inline unsigned int pd_header_cnt_le(__le16 header)
-+{
-+	return pd_header_cnt(le16_to_cpu(header));
-+}
-+
-+static inline unsigned int pd_header_type(__u16 header)
-+{
-+	return (header >> PD_HEADER_TYPE_SHIFT) & PD_HEADER_TYPE_MASK;
-+}
-+
-+static inline unsigned int pd_header_type_le(__le16 header)
-+{
-+	return pd_header_type(le16_to_cpu(header));
-+}
-+
-+static inline unsigned int pd_header_msgid(__u16 header)
-+{
-+	return (header >> PD_HEADER_ID_SHIFT) & PD_HEADER_ID_MASK;
-+}
-+
-+static inline unsigned int pd_header_msgid_le(__le16 header)
-+{
-+	return pd_header_msgid(le16_to_cpu(header));
-+}
-+
-+static inline unsigned int pd_header_rev(__u16 header)
-+{
-+	return (header >> PD_HEADER_REV_SHIFT) & PD_HEADER_REV_MASK;
-+}
-+
-+static inline unsigned int pd_header_rev_le(__le16 header)
-+{
-+	return pd_header_rev(le16_to_cpu(header));
-+}
-+
-+#define PD_EXT_HDR_CHUNKED		BIT(15)
-+#define PD_EXT_HDR_CHUNK_NUM_SHIFT	11
-+#define PD_EXT_HDR_CHUNK_NUM_MASK	0xf
-+#define PD_EXT_HDR_REQ_CHUNK		BIT(10)
-+#define PD_EXT_HDR_DATA_SIZE_SHIFT	0
-+#define PD_EXT_HDR_DATA_SIZE_MASK	0x1ff
-+
-+#define PD_EXT_HDR(data_size, req_chunk, chunk_num, chunked)				\
-+	((((data_size) & PD_EXT_HDR_DATA_SIZE_MASK) << PD_EXT_HDR_DATA_SIZE_SHIFT) |	\
-+	 ((req_chunk) ? PD_EXT_HDR_REQ_CHUNK : 0) |					\
-+	 (((chunk_num) & PD_EXT_HDR_CHUNK_NUM_MASK) << PD_EXT_HDR_CHUNK_NUM_SHIFT) |	\
-+	 ((chunked) ? PD_EXT_HDR_CHUNKED : 0))
-+
-+#define PD_EXT_HDR_LE(data_size, req_chunk, chunk_num, chunked) \
-+	cpu_to_le16(PD_EXT_HDR((data_size), (req_chunk), (chunk_num), (chunked)))
-+
-+static inline unsigned int pd_ext_header_chunk_num(__u16 ext_header)
-+{
-+	return (ext_header >> PD_EXT_HDR_CHUNK_NUM_SHIFT) &
-+		PD_EXT_HDR_CHUNK_NUM_MASK;
-+}
-+
-+static inline unsigned int pd_ext_header_data_size(__u16 ext_header)
-+{
-+	return (ext_header >> PD_EXT_HDR_DATA_SIZE_SHIFT) &
-+		PD_EXT_HDR_DATA_SIZE_MASK;
-+}
-+
-+static inline unsigned int pd_ext_header_data_size_le(__le16 ext_header)
-+{
-+	return pd_ext_header_data_size(le16_to_cpu(ext_header));
-+}
-+
-+#define PD_MAX_PAYLOAD		7
-+#define PD_EXT_MAX_CHUNK_DATA	26
-+
-+/**
-+ * struct pd_chunked_ext_message_data - PD chunked extended message data as
-+ *					 seen on wire
-+ * @header:    PD extended message header
-+ * @data:      PD extended message data
++/*
++ * struct pd_info - USB Power Delivery Device Information
++ * @specification_revision: USB Power Delivery Specification Revision
++ * @supported_ctrl_msgs: Supported Control Messages
++ * @supported_data_msgs: Supported Data Messages
++ * @supported_ext_msgs: Supported Extended Messages
++ *
++ * @specification_revision is in the same format as the Specification Revision
++ * Field in the Message Header. @supported_ctrl_msgs, @supported_data_msgs and
++ * @supported_ext_msgs list the messages, a bit for each, that can be used with
++ * USBPDDEV_SUBMIT_MESSAGE ioctl.
 + */
-+struct pd_chunked_ext_message_data {
-+	__le16 header;
-+	__u8 data[PD_EXT_MAX_CHUNK_DATA];
++struct pd_info {
++	__u8 specification_revision; /* XXX I don't know if this is useful? */
++	__u32 ctrl_msgs_supported;
++	__u32 data_msgs_supported;
++	__u32 ext_msgs_supported;
 +} __attribute__ ((packed));
 +
-+/**
-+ * struct pd_message - PD message as seen on wire
-+ * @header:    PD message header
-+ * @payload:   PD message payload
-+ * @ext_msg:   PD message chunked extended message data
++/* Example configuration flags for ports. */
++#define USBPDDEV_CFPORT_ENTER_MODES	BIT(0) /* Automatic alt mode entry. */
++
++/*
++ * For basic communication use USBPDDEV_SUBMIT_MESSAGE ioctl. GoodCRC is not
++ * supported. Response will also never be GoodCRC.
++ *
++ * To check cached objects (if they are cached) use USBPDDEV_GET_MESSAGE ioctl.
++ * Useful most likely with RDO and EUDO, but also with Identity etc.
++ * USBPDDEV_SET_MESSAGE is primarily meant to be used with ports. If supported,
++ * it can be used to assign the values for objects like EUDO that the port should
++ * use in future communication.
++ *
++ * The idea with USBPDDEV_CONFIGURE is that you could modify the behaviour of
++ * the underlying TCPM (or what ever interface you have) with some things. So
++ * for example, you could disable automatic alternate mode entry with it with
++ * that USBPDDEV_CFPORT_ENTER_MODES - It's just an example! - so basically, you
++ * could take over some things from TCPM with it.
 + */
-+struct pd_message {
-+	__le16 header;
-+	union {
-+		__le32 payload[PD_MAX_PAYLOAD];
-+		struct pd_chunked_ext_message_data ext_msg;
-+	};
-+} __attribute__ ((packed));
 +
-+/* PDO: Power Data Object */
-+#define PDO_MAX_OBJECTS		7
++#define USBPDDEV_INFO		_IOR('P', 0x70, struct pd_info)
++#define USBPDDEV_CONFIGURE	_IOW('P', 0x71, __u32)
++#define USBPDDEV_PWR_ROLE	_IOR('P', 0x72, int) /* The *current* role! */
++#define USBPDDEV_GET_MESSAGE	_IOWR('P', 0x73, struct pd_message)
++#define USBPDDEV_SET_MESSAGE	_IOW('P', 0x74, struct pd_message)
++#define USBPDDEV_SUBMIT_MESSAGE	_IOWR('P', 0x75, struct pd_message)
 +
-+enum pd_pdo_type {
-+	PDO_TYPE_FIXED = 0,
-+	PDO_TYPE_BATT = 1,
-+	PDO_TYPE_VAR = 2,
-+	PDO_TYPE_APDO = 3,
-+};
-+
-+#define PDO_TYPE_SHIFT		30
-+#define PDO_TYPE_MASK		0x3
-+
-+#define PDO_TYPE(t)	((t) << PDO_TYPE_SHIFT)
-+
-+#define PDO_VOLT_MASK		0x3ff
-+#define PDO_CURR_MASK		0x3ff
-+#define PDO_PWR_MASK		0x3ff
-+
-+#define PDO_FIXED_DUAL_ROLE		BIT(29)	/* Power role swap supported */
-+#define PDO_FIXED_SUSPEND		BIT(28) /* USB Suspend supported (Source) */
-+#define PDO_FIXED_HIGHER_CAP		BIT(28) /* Requires more than vSafe5V (Sink) */
-+#define PDO_FIXED_EXTPOWER		BIT(27) /* Externally powered */
-+#define PDO_FIXED_USB_COMM		BIT(26) /* USB communications capable */
-+#define PDO_FIXED_DATA_SWAP		BIT(25) /* Data role swap supported */
-+#define PDO_FIXED_UNCHUNK_EXT		BIT(24) /* Unchunked Extended Message supported (Source) */
-+#define PDO_FIXED_FRS_CURR_MASK		(BIT(24) | BIT(23)) /* FR_Swap Current (Sink) */
-+#define PDO_FIXED_FRS_CURR_SHIFT	23
-+#define PDO_FIXED_VOLT_SHIFT		10	/* 50mV units */
-+#define PDO_FIXED_CURR_SHIFT		0	/* 10mA units */
-+
-+#define PDO_FIXED_VOLT(mv)	((((mv) / 50) & PDO_VOLT_MASK) << PDO_FIXED_VOLT_SHIFT)
-+#define PDO_FIXED_CURR(ma)	((((ma) / 10) & PDO_CURR_MASK) << PDO_FIXED_CURR_SHIFT)
-+
-+#define PDO_FIXED(mv, ma, flags)			\
-+	(PDO_TYPE(PDO_TYPE_FIXED) | (flags) |		\
-+	 PDO_FIXED_VOLT(mv) | PDO_FIXED_CURR(ma))
-+
-+#define VSAFE5V 5000 /* mv units */
-+
-+#define PDO_BATT_MAX_VOLT_SHIFT	20	/* 50mV units */
-+#define PDO_BATT_MIN_VOLT_SHIFT	10	/* 50mV units */
-+#define PDO_BATT_MAX_PWR_SHIFT	0	/* 250mW units */
-+
-+#define PDO_BATT_MIN_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_BATT_MIN_VOLT_SHIFT)
-+#define PDO_BATT_MAX_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_BATT_MAX_VOLT_SHIFT)
-+#define PDO_BATT_MAX_POWER(mw) ((((mw) / 250) & PDO_PWR_MASK) << PDO_BATT_MAX_PWR_SHIFT)
-+
-+#define PDO_BATT(min_mv, max_mv, max_mw)			\
-+	(PDO_TYPE(PDO_TYPE_BATT) | PDO_BATT_MIN_VOLT(min_mv) |	\
-+	 PDO_BATT_MAX_VOLT(max_mv) | PDO_BATT_MAX_POWER(max_mw))
-+
-+#define PDO_VAR_MAX_VOLT_SHIFT	20	/* 50mV units */
-+#define PDO_VAR_MIN_VOLT_SHIFT	10	/* 50mV units */
-+#define PDO_VAR_MAX_CURR_SHIFT	0	/* 10mA units */
-+
-+#define PDO_VAR_MIN_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_VAR_MIN_VOLT_SHIFT)
-+#define PDO_VAR_MAX_VOLT(mv) ((((mv) / 50) & PDO_VOLT_MASK) << PDO_VAR_MAX_VOLT_SHIFT)
-+#define PDO_VAR_MAX_CURR(ma) ((((ma) / 10) & PDO_CURR_MASK) << PDO_VAR_MAX_CURR_SHIFT)
-+
-+#define PDO_VAR(min_mv, max_mv, max_ma)				\
-+	(PDO_TYPE(PDO_TYPE_VAR) | PDO_VAR_MIN_VOLT(min_mv) |	\
-+	 PDO_VAR_MAX_VOLT(max_mv) | PDO_VAR_MAX_CURR(max_ma))
-+
-+enum pd_apdo_type {
-+	APDO_TYPE_PPS = 0,
-+};
-+
-+#define PDO_APDO_TYPE_SHIFT	28	/* Only valid value currently is 0x0 - PPS */
-+#define PDO_APDO_TYPE_MASK	0x3
-+
-+#define PDO_APDO_TYPE(t)	((t) << PDO_APDO_TYPE_SHIFT)
-+
-+#define PDO_PPS_APDO_MAX_VOLT_SHIFT	17	/* 100mV units */
-+#define PDO_PPS_APDO_MIN_VOLT_SHIFT	8	/* 100mV units */
-+#define PDO_PPS_APDO_MAX_CURR_SHIFT	0	/* 50mA units */
-+
-+#define PDO_PPS_APDO_VOLT_MASK	0xff
-+#define PDO_PPS_APDO_CURR_MASK	0x7f
-+
-+#define PDO_PPS_APDO_MIN_VOLT(mv)	\
-+	((((mv) / 100) & PDO_PPS_APDO_VOLT_MASK) << PDO_PPS_APDO_MIN_VOLT_SHIFT)
-+#define PDO_PPS_APDO_MAX_VOLT(mv)	\
-+	((((mv) / 100) & PDO_PPS_APDO_VOLT_MASK) << PDO_PPS_APDO_MAX_VOLT_SHIFT)
-+#define PDO_PPS_APDO_MAX_CURR(ma)	\
-+	((((ma) / 50) & PDO_PPS_APDO_CURR_MASK) << PDO_PPS_APDO_MAX_CURR_SHIFT)
-+
-+#define PDO_PPS_APDO(min_mv, max_mv, max_ma)				\
-+	(PDO_TYPE(PDO_TYPE_APDO) | PDO_APDO_TYPE(APDO_TYPE_PPS) |	\
-+	PDO_PPS_APDO_MIN_VOLT(min_mv) | PDO_PPS_APDO_MAX_VOLT(max_mv) |	\
-+	PDO_PPS_APDO_MAX_CURR(max_ma))
-+
-+static inline enum pd_pdo_type pdo_type(__u32 pdo)
-+{
-+	return (pdo >> PDO_TYPE_SHIFT) & PDO_TYPE_MASK;
-+}
-+
-+static inline unsigned int pdo_fixed_voltage(__u32 pdo)
-+{
-+	return ((pdo >> PDO_FIXED_VOLT_SHIFT) & PDO_VOLT_MASK) * 50;
-+}
-+
-+static inline unsigned int pdo_min_voltage(__u32 pdo)
-+{
-+	return ((pdo >> PDO_VAR_MIN_VOLT_SHIFT) & PDO_VOLT_MASK) * 50;
-+}
-+
-+static inline unsigned int pdo_max_voltage(__u32 pdo)
-+{
-+	return ((pdo >> PDO_VAR_MAX_VOLT_SHIFT) & PDO_VOLT_MASK) * 50;
-+}
-+
-+static inline unsigned int pdo_max_current(__u32 pdo)
-+{
-+	return ((pdo >> PDO_VAR_MAX_CURR_SHIFT) & PDO_CURR_MASK) * 10;
-+}
-+
-+static inline unsigned int pdo_max_power(__u32 pdo)
-+{
-+	return ((pdo >> PDO_BATT_MAX_PWR_SHIFT) & PDO_PWR_MASK) * 250;
-+}
-+
-+static inline enum pd_apdo_type pdo_apdo_type(__u32 pdo)
-+{
-+	return (pdo >> PDO_APDO_TYPE_SHIFT) & PDO_APDO_TYPE_MASK;
-+}
-+
-+static inline unsigned int pdo_pps_apdo_min_voltage(__u32 pdo)
-+{
-+	return ((pdo >> PDO_PPS_APDO_MIN_VOLT_SHIFT) &
-+		PDO_PPS_APDO_VOLT_MASK) * 100;
-+}
-+
-+static inline unsigned int pdo_pps_apdo_max_voltage(__u32 pdo)
-+{
-+	return ((pdo >> PDO_PPS_APDO_MAX_VOLT_SHIFT) &
-+		PDO_PPS_APDO_VOLT_MASK) * 100;
-+}
-+
-+static inline unsigned int pdo_pps_apdo_max_current(__u32 pdo)
-+{
-+	return ((pdo >> PDO_PPS_APDO_MAX_CURR_SHIFT) &
-+		PDO_PPS_APDO_CURR_MASK) * 50;
-+}
-+
-+/* RDO: Request Data Object */
-+#define RDO_OBJ_POS_SHIFT	28
-+#define RDO_OBJ_POS_MASK	0x7
-+#define RDO_GIVE_BACK		BIT(27)	/* Supports reduced operating current */
-+#define RDO_CAP_MISMATCH	BIT(26) /* Not satisfied by source caps */
-+#define RDO_USB_COMM		BIT(25) /* USB communications capable */
-+#define RDO_NO_SUSPEND		BIT(24) /* USB Suspend not supported */
-+
-+#define RDO_PWR_MASK			0x3ff
-+#define RDO_CURR_MASK			0x3ff
-+
-+#define RDO_FIXED_OP_CURR_SHIFT		10
-+#define RDO_FIXED_MAX_CURR_SHIFT	0
-+
-+#define RDO_OBJ(idx) (((idx) & RDO_OBJ_POS_MASK) << RDO_OBJ_POS_SHIFT)
-+
-+#define PDO_FIXED_OP_CURR(ma) ((((ma) / 10) & RDO_CURR_MASK) << RDO_FIXED_OP_CURR_SHIFT)
-+#define PDO_FIXED_MAX_CURR(ma) ((((ma) / 10) & RDO_CURR_MASK) << RDO_FIXED_MAX_CURR_SHIFT)
-+
-+#define RDO_FIXED(idx, op_ma, max_ma, flags)			\
-+	(RDO_OBJ(idx) | (flags) |				\
-+	 PDO_FIXED_OP_CURR(op_ma) | PDO_FIXED_MAX_CURR(max_ma))
-+
-+#define RDO_BATT_OP_PWR_SHIFT		10	/* 250mW units */
-+#define RDO_BATT_MAX_PWR_SHIFT		0	/* 250mW units */
-+
-+#define RDO_BATT_OP_PWR(mw) ((((mw) / 250) & RDO_PWR_MASK) << RDO_BATT_OP_PWR_SHIFT)
-+#define RDO_BATT_MAX_PWR(mw) ((((mw) / 250) & RDO_PWR_MASK) << RDO_BATT_MAX_PWR_SHIFT)
-+
-+#define RDO_BATT(idx, op_mw, max_mw, flags)			\
-+	(RDO_OBJ(idx) | (flags) |				\
-+	 RDO_BATT_OP_PWR(op_mw) | RDO_BATT_MAX_PWR(max_mw))
-+
-+#define RDO_PROG_VOLT_MASK	0x7ff
-+#define RDO_PROG_CURR_MASK	0x7f
-+
-+#define RDO_PROG_VOLT_SHIFT	9
-+#define RDO_PROG_CURR_SHIFT	0
-+
-+#define RDO_PROG_VOLT_MV_STEP	20
-+#define RDO_PROG_CURR_MA_STEP	50
-+
-+#define PDO_PROG_OUT_VOLT(mv)	\
-+	((((mv) / RDO_PROG_VOLT_MV_STEP) & RDO_PROG_VOLT_MASK) << RDO_PROG_VOLT_SHIFT)
-+#define PDO_PROG_OP_CURR(ma)	\
-+	((((ma) / RDO_PROG_CURR_MA_STEP) & RDO_PROG_CURR_MASK) << RDO_PROG_CURR_SHIFT)
-+
-+#define RDO_PROG(idx, out_mv, op_ma, flags)			\
-+	(RDO_OBJ(idx) | (flags) |				\
-+	 PDO_PROG_OUT_VOLT(out_mv) | PDO_PROG_OP_CURR(op_ma))
-+
-+static inline unsigned int rdo_index(__u32 rdo)
-+{
-+	return (rdo >> RDO_OBJ_POS_SHIFT) & RDO_OBJ_POS_MASK;
-+}
-+
-+static inline unsigned int rdo_op_current(__u32 rdo)
-+{
-+	return ((rdo >> RDO_FIXED_OP_CURR_SHIFT) & RDO_CURR_MASK) * 10;
-+}
-+
-+static inline unsigned int rdo_max_current(__u32 rdo)
-+{
-+	return ((rdo >> RDO_FIXED_MAX_CURR_SHIFT) &
-+		RDO_CURR_MASK) * 10;
-+}
-+
-+static inline unsigned int rdo_op_power(__u32 rdo)
-+{
-+	return ((rdo >> RDO_BATT_OP_PWR_SHIFT) & RDO_PWR_MASK) * 250;
-+}
-+
-+static inline unsigned int rdo_max_power(__u32 rdo)
-+{
-+	return ((rdo >> RDO_BATT_MAX_PWR_SHIFT) & RDO_PWR_MASK) * 250;
-+}
-+
-+/* Enter_USB Data Object */
-+#define EUDO_USB_MODE_MASK		GENMASK(30, 28)
-+#define EUDO_USB_MODE_SHIFT		28
-+#define   EUDO_USB_MODE_USB2		0
-+#define   EUDO_USB_MODE_USB3		1
-+#define   EUDO_USB_MODE_USB4		2
-+#define EUDO_USB4_DRD			BIT(26)
-+#define EUDO_USB3_DRD			BIT(25)
-+#define EUDO_CABLE_SPEED_MASK		GENMASK(23, 21)
-+#define EUDO_CABLE_SPEED_SHIFT		21
-+#define   EUDO_CABLE_SPEED_USB2		0
-+#define   EUDO_CABLE_SPEED_USB3_GEN1	1
-+#define   EUDO_CABLE_SPEED_USB4_GEN2	2
-+#define   EUDO_CABLE_SPEED_USB4_GEN3	3
-+#define EUDO_CABLE_TYPE_MASK		GENMASK(20, 19)
-+#define EUDO_CABLE_TYPE_SHIFT		19
-+#define   EUDO_CABLE_TYPE_PASSIVE	0
-+#define   EUDO_CABLE_TYPE_RE_TIMER	1
-+#define   EUDO_CABLE_TYPE_RE_DRIVER	2
-+#define   EUDO_CABLE_TYPE_OPTICAL	3
-+#define EUDO_CABLE_CURRENT_MASK		GENMASK(18, 17)
-+#define EUDO_CABLE_CURRENT_SHIFT	17
-+#define   EUDO_CABLE_CURRENT_NOTSUPP	0
-+#define   EUDO_CABLE_CURRENT_3A		2
-+#define   EUDO_CABLE_CURRENT_5A		3
-+#define EUDO_PCIE_SUPPORT		BIT(16)
-+#define EUDO_DP_SUPPORT			BIT(15)
-+#define EUDO_TBT_SUPPORT		BIT(14)
-+#define EUDO_HOST_PRESENT		BIT(13)
-+
-+/* USB PD timers and counters */
-+#define PD_T_NO_RESPONSE	5000	/* 4.5 - 5.5 seconds */
-+#define PD_T_DB_DETECT		10000	/* 10 - 15 seconds */
-+#define PD_T_SEND_SOURCE_CAP	150	/* 100 - 200 ms */
-+#define PD_T_SENDER_RESPONSE	60	/* 24 - 30 ms, relaxed */
-+#define PD_T_RECEIVER_RESPONSE	15	/* 15ms max */
-+#define PD_T_SOURCE_ACTIVITY	45
-+#define PD_T_SINK_ACTIVITY	135
-+#define PD_T_SINK_WAIT_CAP	310	/* 310 - 620 ms */
-+#define PD_T_PS_TRANSITION	500
-+#define PD_T_SRC_TRANSITION	35
-+#define PD_T_DRP_SNK		40
-+#define PD_T_DRP_SRC		30
-+#define PD_T_PS_SOURCE_OFF	920
-+#define PD_T_PS_SOURCE_ON	480
-+#define PD_T_PS_SOURCE_ON_PRS	450	/* 390 - 480ms */
-+#define PD_T_PS_HARD_RESET	30
-+#define PD_T_SRC_RECOVER	760
-+#define PD_T_SRC_RECOVER_MAX	1000
-+#define PD_T_SRC_TURN_ON	275
-+#define PD_T_SAFE_0V		650
-+#define PD_T_VCONN_SOURCE_ON	100
-+#define PD_T_SINK_REQUEST	100	/* 100 ms minimum */
-+#define PD_T_ERROR_RECOVERY	100	/* minimum 25 is insufficient */
-+#define PD_T_SRCSWAPSTDBY	625	/* Maximum of 650ms */
-+#define PD_T_NEWSRC		250	/* Maximum of 275ms */
-+#define PD_T_SWAP_SRC_START	20	/* Minimum of 20ms */
-+#define PD_T_BIST_CONT_MODE	50	/* 30 - 60 ms */
-+#define PD_T_SINK_TX		16	/* 16 - 20 ms */
-+#define PD_T_CHUNK_NOT_SUPP	42	/* 40 - 50 ms */
-+
-+#define PD_T_DRP_TRY		100	/* 75 - 150 ms */
-+#define PD_T_DRP_TRYWAIT	600	/* 400 - 800 ms */
-+
-+#define PD_T_CC_DEBOUNCE	200	/* 100 - 200 ms */
-+#define PD_T_PD_DEBOUNCE	20	/* 10 - 20 ms */
-+#define PD_T_TRY_CC_DEBOUNCE	15	/* 10 - 20 ms */
-+
-+#define PD_N_CAPS_COUNT		(PD_T_NO_RESPONSE / PD_T_SEND_SOURCE_CAP)
-+#define PD_N_HARD_RESET_COUNT	2
-+
-+#define PD_P_SNK_STDBY_MW	2500	/* 2500 mW */
-+
-+#endif /* _UAPI__LINUX_USB_PD_H */
++#endif /* _UAPI__LINUX_USB_PDDEV_H */
 -- 
 2.33.0
 
