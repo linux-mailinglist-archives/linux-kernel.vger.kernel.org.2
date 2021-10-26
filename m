@@ -2,111 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A863843B427
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AB243B3D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236694AbhJZOcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
+        id S236452AbhJZOWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236637AbhJZOcA (ORCPT
+        with ESMTP id S232907AbhJZOWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:32:00 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CEDC061745;
-        Tue, 26 Oct 2021 07:29:32 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id g205-20020a1c20d6000000b0032cc6bbd505so2749614wmg.5;
-        Tue, 26 Oct 2021 07:29:32 -0700 (PDT)
+        Tue, 26 Oct 2021 10:22:04 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDADC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:19:40 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id y78so9020074wmc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:19:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RHa+Rgak7KYfG/GiuSya4DwIwWSin95Lmp23d+Ek348=;
-        b=gRQ6lVYFKlp6Z0xeJ7Hzq8kFxDXhHRAWN1qP/kdsZySvg4IxghT16L/+lNDXy9rMK4
-         CE4LUg/2kUSuerAUdVkOJ93caOgdYi/PJLzD0Rx02/VJ4p1QHZuqToUaPXlW44ra7st+
-         bfeqlsdYfoqUq7PkP9ybAoJp1Iw9Bi6RAGeqDVGnPHwq11bT9emw2LvuZ00qvCFQ8dkG
-         Wx8gaPX7SVsb6uXY3oSqreLj9xBVx1sUB1BWBGtlE3m7fZOSFpfccVBlF9jKaZRJECuw
-         EBGA8QaZXoeEJ70CflNR0I+YK9uw3UaylSfe8npxcgUrFZKYIb9I1Xt47Why+i188XG7
-         Tvzw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ymxJaa2BlrWL2+RXM0aWcrPrkleRVCX/6OMjVLXnHtc=;
+        b=XWAqQZZNvVVVwLs4pdIGM8QinWryHGx3OAOqEn2Ss7dz0S3K7xo+eslGhwWJBalIFM
+         60OLe9buohW0yo0naWMeahIfop42HbrEE4AhZDeecb+nFxs+yVAckLTCRGqF98J2BUKs
+         Tnsf6dOqRJSy7XVkC8u8uhdhsZWd3R2Bhab6PIiISlBUXNSo1llmLUzIFf69/h3Vv5Af
+         wjDBOeqht4Zmfm6hqUEtdD4/HJvIMNOlSwe9jL2hLXHEsj7+meFYFsaGUT16GJQggAH4
+         RpluBK7h3/aCGc0Ls3UWwih7ZeyukAe04lEsr1nYIQH64HT8enl6TRRII8uvOYmdN/1j
+         iYWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RHa+Rgak7KYfG/GiuSya4DwIwWSin95Lmp23d+Ek348=;
-        b=JUixoyqhPxQX74l+9hfh/STv4QnuFeMLJEqr3fzdJd/5n5neqBykmgp9n2bbWwv2Ji
-         BFr+PURsP/uGC+XBBxUVX+T6OhELRO8Kohb+dO0k/RF58+msXJTSQPhfedNK+CL7Cj6U
-         xOEC6amGW6rRKLBouiZ5RG+W9zhTHad4Q4EIqs63+Rb+ylIywru8rMuzGURGvvciK38Q
-         LmbFitR3bbcWtge4J/+CiBxMUXOLLrhAncKHj4gpiVCqMUKwvbT2q1sRPzCm+vqzbjOB
-         cF/WDBSAUo1ikv1fD+gMvNXJvQgkrpFV/BmasjOgTykL8ltJC6NKMlbeXkqKbLdQmPaN
-         4xhA==
-X-Gm-Message-State: AOAM530CevyWXVlQ1Jk9etfqz9SMDGYxaushPwbQTEboVSleyx0pwrpC
-        2Sw/cNRZtxaHXzXoh1Dwgg4=
-X-Google-Smtp-Source: ABdhPJzsqYlI5jjmeDTdd2RH7OeBlPYYybYzSTYReYGnh0Gd3mIODs2JSHDui0TosxuLT4W6SyvPsQ==
-X-Received: by 2002:a05:600c:b41:: with SMTP id k1mr58259599wmr.4.1635258570950;
-        Tue, 26 Oct 2021 07:29:30 -0700 (PDT)
-Received: from localhost.localdomain (i5C74E3E5.versanet.de. [92.116.227.229])
-        by smtp.gmail.com with ESMTPSA id f18sm18745717wrg.3.2021.10.26.07.29.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ymxJaa2BlrWL2+RXM0aWcrPrkleRVCX/6OMjVLXnHtc=;
+        b=qS46T9D662oiVsJY/FWWLKxzxRDXeWa0eG0pK1sHR2N/x/l+qVnImPUfXateR7wiSJ
+         7LSi+c+WpZ48byEcbkUX9MwSpopHOVVj/bVrafVMfdbgaoxDg5rvXbG4hfC/R3aMjWXj
+         3c0axNJCjHOR3xjikxVJv4BO/D/NnUS3CpuAIiCQoN9y++wYzh1Yfr/KALji6Yk85mip
+         EISh9QaJbGX/Yaj9IBgeoDzl7jwHMUiCHiaGjkD/6xpJcExEY1qINhlUyloV1GQIimbB
+         1kgmIzJtr1Z771OTADaWRI2PMPThuQF6nR0a0/iR9SHWAoIypyFbXcixDK4HsVdYK45C
+         8wOg==
+X-Gm-Message-State: AOAM531OWL+RYaUn8I9N5EvTQ6BpdTzY/AOffLZWN/kzwwuotJPOQKX+
+        7nKQ89gfaCyxXqJaxFLpMzo=
+X-Google-Smtp-Source: ABdhPJyH9o9somPIHfeMc5isE6xascAU+4UrpUU9SY3Y8u3MODCrO1+DwFNsybtMTX8LgmGBhzdALA==
+X-Received: by 2002:a05:600c:4ba1:: with SMTP id e33mr4147069wmp.9.1635257978977;
+        Tue, 26 Oct 2021 07:19:38 -0700 (PDT)
+Received: from kernel.org ([2a0d:6fc0:68c:c000:a2b6:e878:f1bf:3444])
+        by smtp.gmail.com with ESMTPSA id q18sm764216wmc.7.2021.10.26.07.19.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 07:29:30 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Yu Chen <chenyu56@huawei.com>, Sam Ravnborg <sam@ravnborg.org>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        kernel-janitors@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v5 4/4] MAINTAINERS: rectify entry for ALLWINNER HARDWARE SPINLOCK SUPPORT
-Date:   Tue, 26 Oct 2021 16:19:02 +0200
-Message-Id: <20211026141902.4865-5-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20211026141902.4865-1-lukas.bulwahn@gmail.com>
-References: <20211026141902.4865-1-lukas.bulwahn@gmail.com>
+        Tue, 26 Oct 2021 07:19:38 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 17:19:34 +0300
+From:   Mike Rapoport <mike.rapoport@gmail.com>
+To:     Kushal Kothari <kushalkothari285@gmail.com>
+Cc:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, hdegoede@redhat.com,
+        marcocesati@gmail.com, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, kushalkothari2850@gmail.com
+Subject: Re: [PATCH v2] staging: rtl8723bs: core: Refactor nested if-else
+Message-ID: <YXgOdpebeA/dFWIz@kernel.org>
+References: <20211026134253.7868-1-kushalkothari285@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026134253.7868-1-kushalkothari285@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock") adds
-Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml,
-but the related commit 3c881e05c814 ("hwspinlock: add sun6i hardware
-spinlock support") adds a file reference to allwinner,sun6i-hwspinlock.yaml
-instead.
+On Tue, Oct 26, 2021 at 07:12:53PM +0530, Kushal Kothari wrote:
+> Refactor nested if-else to avoid deep indentations. There is no change
+> in the logic of the new code, however, now it is simple because it gets
+> rid of five unnecessary else conditionals and it combines nested if into
+> single if-else-if. This refactor also leads to fix warning detected by
+> checkpatch.pl:
+> WARNING: Too many leading tabs - consider code refactoring
+> 
+> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
+> ---
+> 
+> Changes in v2: Fix the bug of not handling properly the else logic
+> when p is not null in else-if. Also, reword the subject line and break 
+> it up at 72 columns.
+> 
+>  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 69 ++++++++-----------
+>  1 file changed, 29 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+> index 0f82f5031c43..267d853b1514 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+> @@ -1192,50 +1192,39 @@ unsigned int OnAssocReq(struct adapter *padapter, union recv_frame *precv_frame)
+>  		p = pframe + WLAN_HDR_A3_LEN + ie_offset; ie_len = 0;
+>  		for (;;) {
+>  			p = rtw_get_ie(p, WLAN_EID_VENDOR_SPECIFIC, &ie_len, pkt_len - WLAN_HDR_A3_LEN - ie_offset);
+> -			if (p) {
+> -				if (!memcmp(p+2, WMM_IE, 6)) {
+> -
+> -					pstat->flags |= WLAN_STA_WME;
+> -
+> -					pstat->qos_option = 1;
+> -					pstat->qos_info = *(p+8);
+> -
+> -					pstat->max_sp_len = (pstat->qos_info>>5)&0x3;
+> -
+> -					if ((pstat->qos_info&0xf) != 0xf)
+> -						pstat->has_legacy_ac = true;
+> -					else
+> -						pstat->has_legacy_ac = false;
+> -
+> -					if (pstat->qos_info&0xf) {
+> -						if (pstat->qos_info&BIT(0))
+> -							pstat->uapsd_vo = BIT(0)|BIT(1);
+> -						else
+> -							pstat->uapsd_vo = 0;
+> -
+> -						if (pstat->qos_info&BIT(1))
+> -							pstat->uapsd_vi = BIT(0)|BIT(1);
+> -						else
+> -							pstat->uapsd_vi = 0;
+> -
+> -						if (pstat->qos_info&BIT(2))
+> -							pstat->uapsd_bk = BIT(0)|BIT(1);
+> -						else
+> -							pstat->uapsd_bk = 0;
+> -
+> -						if (pstat->qos_info&BIT(3))
+> -							pstat->uapsd_be = BIT(0)|BIT(1);
+> -						else
+> -							pstat->uapsd_be = 0;
+> -
+> -					}
+> -
+> -					break;
+> +			if (p && memcmp(p+2, WMM_IE, 6)) {
+> +				p = p + ie_len + 2;
+> +			} else if (p && !memcmp(p+2, WMM_IE, 6)) {
+> +				pstat->flags |= WLAN_STA_WME;
+> +				pstat->qos_option = 1;
+> +				pstat->qos_info = *(p+8);
+> +				pstat->max_sp_len = (pstat->qos_info>>5)&0x3;
+> +
+> +				pstat->has_legacy_ac = false;
+> +				if ((pstat->qos_info&0xf) != 0xf)
+> +					pstat->has_legacy_ac = true;
+> +
+> +				if (pstat->qos_info&0xf) {
+> +					pstat->uapsd_vo = 0;
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+This variable and other variables below are set to 0 just before the loop,
+so the initialization here can be removed.
 
-  warning: no file matches  F:  Documentation/devicetree/bindings/hwlock/allwinner,sun6i-hwspinlock.yaml
+> +					if (pstat->qos_info&BIT(0))
+> +						pstat->uapsd_vo = BIT(0)|BIT(1);
+> +
+> +					pstat->uapsd_vi = 0;
+> +					if (pstat->qos_info&BIT(1))
+> +						pstat->uapsd_vi = BIT(0)|BIT(1);
+> +
+> +					pstat->uapsd_bk = 0;
+> +					if (pstat->qos_info&BIT(2))
+> +						pstat->uapsd_bk = BIT(0)|BIT(1);
+> +
+> +					pstat->uapsd_be = 0;
+> +					if (pstat->qos_info&BIT(3))
+> +						pstat->uapsd_be = BIT(0)|BIT(1);
+>  				}
+> +				break;
+>  			} else {
+>  				break;
+>  			}
+> -			p = p + ie_len + 2;
+>  		}
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
 
-Rectify this file reference in ALLWINNER HARDWARE SPINLOCK SUPPORT.
-
-Reviewed-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 88cc726c36c0..aa88e9a0a747 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -761,7 +761,7 @@ F:	drivers/crypto/allwinner/
- ALLWINNER HARDWARE SPINLOCK SUPPORT
- M:	Wilken Gottwalt <wilken.gottwalt@posteo.net>
- S:	Maintained
--F:	Documentation/devicetree/bindings/hwlock/allwinner,sun6i-hwspinlock.yaml
-+F:	Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
- F:	drivers/hwspinlock/sun6i_hwspinlock.c
- 
- ALLWINNER THERMAL DRIVER
 -- 
-2.26.2
-
+Sincerely yours,
+Mike.
