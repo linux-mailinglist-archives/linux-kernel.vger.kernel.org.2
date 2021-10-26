@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F48F43AE1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5E743AE1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhJZIe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:34:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234481AbhJZIet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:34:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2245860E8C;
-        Tue, 26 Oct 2021 08:32:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635237146;
-        bh=Np5uvCL7SAY+xKREpkQD5F9psWb/DCaA1uMgfOsvw94=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YVONyq0jH01z8GaA5jaD63ThMhxFOuXbsaAyA+W0ZtO3aQop4A/uQy7DY27a7o2HX
-         KcuxOnrhcOCqj5WGfZt8qOqj+7vmyi7PIRSNCV3q0c9oaNDdqkfPD7qBteylRIbYyR
-         TWG7hRk5sIL22gMsmlIMg+Q9wYRnfcHuz8sLm5Z+lvHRX0dUQp9pfcmbhuIYbzE7dK
-         1BXuuqP4t6sxW0Ab7ff3j5e+v2YXBlMT6DH0jxR7A4JM51+knPaIOzZbx9axMJ7DVU
-         0Hb+BtaaiFsnLiAM9BHImoWNmMHUjz2xE9BAgYnwRejqSV7t2G7B1yR9K1BIejVjUc
-         +05DIZGrZ09fQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Eli Cohen <elic@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] eni_vdpa: alibaba: fix Kconfig typo
-Date:   Tue, 26 Oct 2021 10:31:59 +0200
-Message-Id: <20211026083214.3375383-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234434AbhJZIfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:35:14 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:35872 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234435AbhJZIfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:35:12 -0400
+Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
+        by Forcepoint Email with ESMTPS id BA0F310589D61CEC0ABC;
+        Tue, 26 Oct 2021 16:32:30 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 26 Oct 2021 16:32:30 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
+ BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
+ 15.01.2308.014; Tue, 26 Oct 2021 16:32:30 +0800
+From:   "Cai,Huoqing" <caihuoqing@baidu.com>
+To:     "rostedt@goodmis.org" <rostedt@goodmis.org>
+CC:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: RE: [PATCH v3 1/6] kthread: Add the helper function
+ kthread_run_on_cpu()
+Thread-Topic: [PATCH v3 1/6] kthread: Add the helper function
+ kthread_run_on_cpu()
+Thread-Index: AQHXxvDG6BMxoeagk0Ch2rpac1seKavk+Xww
+Date:   Tue, 26 Oct 2021 08:32:30 +0000
+Message-ID: <40fae23eb02c4363bc75649e23f78c1c@baidu.com>
+References: <20211022025711.3673-1-caihuoqing@baidu.com>
+ <20211022025711.3673-2-caihuoqing@baidu.com>
+In-Reply-To: <20211022025711.3673-2-caihuoqing@baidu.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.21.146.48]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-The Kconfig symbol was misspelled, which leads to randconfig link
-failures:
-
-ld.lld: error: undefined symbol: vp_legacy_probe
->>> referenced by eni_vdpa.c
->>>               vdpa/alibaba/eni_vdpa.o:(eni_vdpa_probe) in archive drivers/built-in.a
-
-Fixes: 52e437b2b222 ("eni_vdpa: add vDPA driver for Alibaba ENI")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/vdpa/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-index 481a38e6c600..dd258f42140e 100644
---- a/drivers/vdpa/Kconfig
-+++ b/drivers/vdpa/Kconfig
-@@ -80,7 +80,7 @@ config VP_VDPA
- 
- config ALIBABA_ENI_VDPA
- 	tristate "vDPA driver for Alibaba ENI"
--	select VIRTIO_PCI_LEGACY_LIB
-+	select VIRTIO_PCI_LIB_LEGACY
- 	depends on PCI_MSI && !CPU_BIG_ENDIAN
- 	help
- 	  VDPA driver for Alibaba ENI (Elastic Network Interface) which is built upon
--- 
-2.29.2
-
+SGVsbG8sDQpKdXN0IGEgcGluZywgdG8gc2VlIGlmIHRoZXJlIGFyZSBhbnkgbW9yZSBjb21tZW50
+cyA6LVANCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ2FpLEh1b3Fpbmcg
+PGNhaWh1b3FpbmdAYmFpZHUuY29tPg0KPiBTZW50OiAyMDIxxOoxMNTCMjLI1SAxMDo1Nw0KPiBT
+dWJqZWN0OiBbUEFUQ0ggdjMgMS82XSBrdGhyZWFkOiBBZGQgdGhlIGhlbHBlciBmdW5jdGlvbiBr
+dGhyZWFkX3J1bl9vbl9jcHUoKQ0KPiANCj4gdGhlIGhlbHBlciBmdW5jdGlvbiBrdGhyZWFkX3J1
+bl9vbl9jcHUoKSBpbmNsdWRlcw0KPiBrdGhyZWFkX2NyZWF0ZV9vbl9jcHUvd2FrZV91cF9wcm9j
+ZXNzKCkuDQo+IEluIHNvbWUgY2FzZXMsIHVzZSBrdGhyZWFkX3J1bl9vbl9jcHUoKSBkaXJlY3Rs
+eSBpbnN0ZWFkIG9mDQo+IGt0aHJlYWRfY3JlYXRlX29uX25vZGUva3RocmVhZF9iaW5kL3dha2Vf
+dXBfcHJvY2VzcygpIG9yDQo+IGt0aHJlYWRfY3JlYXRlX29uX2NwdS93YWtlX3VwX3Byb2Nlc3Mo
+KSBvcg0KPiBrdGhyZWFkZF9jcmVhdGUva3RocmVhZF9iaW5kL3dha2VfdXBfcHJvY2VzcygpIHRv
+IHNpbXBsaWZ5IHRoZSBjb2RlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2FpIEh1b3FpbmcgPGNh
+aWh1b3FpbmdAYmFpZHUuY29tPg0KPiAtLS0NCj4gdjEtPnYyOg0KPiAJKlJlbW92ZSBjcHVfdG9f
+bm9kZSBmcm9tIGt0aHJlYWRfY3JlYXRlX29uX2NwdSBwYXJhbXMuDQo+IAkqVXBkYXRlZCB0aGUg
+bWFjcm8gZGVzY3JpcHRpb24gY29tbWVudC4NCj4gdjItPnYzOg0KPiAJKkNvbnZlcnQgdGhpcyBo
+ZWxwZXIgbWFjcm8gdG8gc3RhdGljIGlubGluZSBmdW5jdGlvbg0KPiAJKkZpeCB0eXBvIGluIGNo
+YW5nZWxvZw0KPiANCj4gdjEgbGluazoNCj4gCWh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwv
+MjAyMTEwMjExMjAxMzUuMzAwMy0yLQ0KPiBjYWlodW9xaW5nQGJhaWR1LmNvbS8NCj4gdjIgbGlu
+azoNCj4gCWh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMTEwMjExMjI3NTguMzA5Mi0y
+LQ0KPiBjYWlodW9xaW5nQGJhaWR1LmNvbS8NCj4gDQo+ICBpbmNsdWRlL2xpbnV4L2t0aHJlYWQu
+aCB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAyNSBp
+bnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9rdGhyZWFkLmgg
+Yi9pbmNsdWRlL2xpbnV4L2t0aHJlYWQuaA0KPiBpbmRleCAzNDZiMGYyNjkxNjEuLmRiNDdhYWU3
+YzQ4MSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9rdGhyZWFkLmgNCj4gKysrIGIvaW5j
+bHVkZS9saW51eC9rdGhyZWFkLmgNCj4gQEAgLTU2LDYgKzU2LDMxIEBAIGJvb2wga3RocmVhZF9p
+c19wZXJfY3B1KHN0cnVjdCB0YXNrX3N0cnVjdCAqayk7DQo+ICAJX19rOwkJCQkJCQkJICAgXA0K
+PiAgfSkNCj4gDQo+ICsvKioNCj4gKyAqIGt0aHJlYWRfcnVuX29uX2NwdSAtIGNyZWF0ZSBhbmQg
+d2FrZSBhIGNwdSBib3VuZCB0aHJlYWQuDQo+ICsgKiBAdGhyZWFkZm46IHRoZSBmdW5jdGlvbiB0
+byBydW4gdW50aWwgc2lnbmFsX3BlbmRpbmcoY3VycmVudCkuDQo+ICsgKiBAZGF0YTogZGF0YSBw
+dHIgZm9yIEB0aHJlYWRmbi4NCj4gKyAqIEBjcHU6IFRoZSBjcHUgb24gd2hpY2ggdGhlIHRocmVh
+ZCBzaG91bGQgYmUgYm91bmQsDQo+ICsgKiBAbmFtZWZtdDogcHJpbnRmLXN0eWxlIG5hbWUgZm9y
+IHRoZSB0aHJlYWQuIEZvcm1hdCBpcyByZXN0cmljdGVkDQo+ICsgKgkgICAgIHRvICJuYW1lLiol
+dSIuIENvZGUgZmlsbHMgaW4gY3B1IG51bWJlci4NCj4gKyAqDQo+ICsgKiBEZXNjcmlwdGlvbjog
+Q29udmVuaWVudCB3cmFwcGVyIGZvciBrdGhyZWFkX2NyZWF0ZV9vbl9jcHUoKQ0KPiArICogZm9s
+bG93ZWQgYnkgd2FrZV91cF9wcm9jZXNzKCkuICBSZXR1cm5zIHRoZSBrdGhyZWFkIG9yDQo+ICsg
+KiBFUlJfUFRSKC1FTk9NRU0pLg0KPiArICovDQo+ICtzdGF0aWMgaW5saW5lIHN0cnVjdCB0YXNr
+X3N0cnVjdCAqDQo+ICtrdGhyZWFkX3J1bl9vbl9jcHUoaW50ICgqdGhyZWFkZm4pKHZvaWQgKmRh
+dGEpLCB2b2lkICpkYXRhLA0KPiArCQkJdW5zaWduZWQgaW50IGNwdSwgY29uc3QgY2hhciAqbmFt
+ZWZtdCkNCj4gK3sNCj4gKwlzdHJ1Y3QgdGFza19zdHJ1Y3QgKnA7DQo+ICsNCj4gKwlwID0ga3Ro
+cmVhZF9jcmVhdGVfb25fY3B1KHRocmVhZGZuLCBkYXRhLCBjcHUsIG5hbWVmbXQpOw0KPiArCWlm
+ICghSVNfRVJSKHApKQ0KPiArCQl3YWtlX3VwX3Byb2Nlc3MocCk7DQo+ICsNCj4gKwlyZXR1cm4g
+cDsNCj4gK30NCj4gKw0KPiAgdm9pZCBmcmVlX2t0aHJlYWRfc3RydWN0KHN0cnVjdCB0YXNrX3N0
+cnVjdCAqayk7DQo+ICB2b2lkIGt0aHJlYWRfYmluZChzdHJ1Y3QgdGFza19zdHJ1Y3QgKmssIHVu
+c2lnbmVkIGludCBjcHUpOw0KPiAgdm9pZCBrdGhyZWFkX2JpbmRfbWFzayhzdHJ1Y3QgdGFza19z
+dHJ1Y3QgKmssIGNvbnN0IHN0cnVjdCBjcHVtYXNrICptYXNrKTsNCj4gLS0NCj4gMi4yNS4xDQoN
+Cg==
