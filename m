@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AA843BC31
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9703643BC34
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239482AbhJZVTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:19:53 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:33346 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbhJZVTj (ORCPT
+        id S239489AbhJZVUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:20:00 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:35255 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239474AbhJZVTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:19:39 -0400
-Received: by mail-ot1-f50.google.com with SMTP id 107-20020a9d0a74000000b00553bfb53348so675596otg.0;
-        Tue, 26 Oct 2021 14:17:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8/SrXILfDig/lomeVjP9F/pME3hMbDlFyEMawRRJ9jo=;
-        b=C+OM+J0Rav/+VM01YRb5BxumRAgux+FtbG33pfivCK0zhc3Fj1JZIMa1hTiOfiqal+
-         bUtaHkqMIq/f9n6CtqTpwVh37i1fld/NVVnDQcflQLeKeGEJVcdYTQg7+hhS8EZaZpJ3
-         Nvoo+LpqWSPk7D8rhvAfqxSDL8/D3CzaGiIBcJNWkr5GBWEw4nCjhCYYitPDkHnX59QQ
-         vmqm4YvBNEHroM02/gx10Jfd6AXf8773IT4qjU8rdXDRsPBq6tc0CoVB9LrFJMh7vczj
-         thCpcmGCPujwbdixJWwT7k3ah9hUKi+X6CUVq58e9aJGnrH2XGhCecNJ0V3SC9EVIHg5
-         InUw==
-X-Gm-Message-State: AOAM533iCbUdxtGIv9nejno8y0xjMhygY5jTnByR0Tic+OiVdYFXmxLh
-        Ykj7NMgWVPbU8NMOFGXcm8wDr9o19w==
-X-Google-Smtp-Source: ABdhPJyU3/GpOrfCyBeuLzT4mA91G664hqEOZhtukXvwz9aEgFHc9GajOknk/2GTZt1YJ2VZu83npA==
-X-Received: by 2002:a9d:715c:: with SMTP id y28mr22144929otj.362.1635283035238;
-        Tue, 26 Oct 2021 14:17:15 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g21sm4301009ooc.31.2021.10.26.14.17.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:17:14 -0700 (PDT)
-Received: (nullmailer pid 3267937 invoked by uid 1000);
-        Tue, 26 Oct 2021 21:17:13 -0000
-Date:   Tue, 26 Oct 2021 16:17:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Li Yang <leoyang.li@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: memory: fsl: convert ifc binding to
- yaml schema
-Message-ID: <YXhwWR7fDrv9L+mY@robh.at.kernel.org>
-References: <20211015005707.1996-1-leoyang.li@nxp.com>
- <20211015005707.1996-2-leoyang.li@nxp.com>
+        Tue, 26 Oct 2021 17:19:55 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf4Qx6j6Qz4xbW;
+        Wed, 27 Oct 2021 08:17:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635283050;
+        bh=TFo3mzXV8wml/3Q3pUquoF0+zubLRBZHkfTWZ3rcX5A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RszvCpC7GKeVP5F/Npur3jA+7Ko/REi27xmbeP+9t5biFV/AFadSA7aiDT07Zg+ha
+         qmJiAsfwGCKONLcr5w8ywnFIO4TSUkKS/GIxpWfLr4SSMHcICwJ+h5LzdsWbnzP443
+         SMFtUMltL/3PadmZAZmQ1gV7e9V2nww5sVIwMAf1ryInOIRgcYpOxW4CUxMJEmI95m
+         SVopYMvsI4iv6l4f5UqkcTo6HfxN6DQN2qAZhufKS+f05shq1Pjs1HM5CbL89JRlI3
+         3S1UYWn83nuUYCPu6c/W9C7KK8d/oaAI9vHm9HcZG2hTwLr4rI84UQxKoke15xpGtF
+         0keKb1f+ZPRMw==
+Date:   Wed, 27 Oct 2021 08:17:28 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the ftrace tree
+Message-ID: <20211027081728.1ff488bf@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015005707.1996-2-leoyang.li@nxp.com>
+Content-Type: multipart/signed; boundary="Sig_/OEi=q6+oHN=46abOCGMIfrO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 19:57:06 -0500, Li Yang wrote:
-> Convert the txt binding to yaml format and add description.  Drop the
-> "simple-bus" compatible string from the example and not allowed by the
-> binding any more.  This will help to enforce the correct probe order
-> between parent device and child devices, but will require the ifc driver
-> to probe the child devices to work properly.
-> 
-> Signed-off-by: Li Yang <leoyang.li@nxp.com>
-> ---
->  .../memory-controllers/fsl/fsl,ifc.yaml       | 113 ++++++++++++++++++
->  .../bindings/memory-controllers/fsl/ifc.txt   |  82 -------------
->  2 files changed, 113 insertions(+), 82 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ifc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
-> 
+--Sig_/OEi=q6+oHN=46abOCGMIfrO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi all,
+
+Commit
+
+  7a335f11747c ("ftrace/sh: Add arch_ftrace_ops_list_func stub to have comp=
+ressed image still link")
+
+is missing a Signed-off-by from its author.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/OEi=q6+oHN=46abOCGMIfrO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF4cGgACgkQAVBC80lX
+0GyKOwf+IvisQpCP/hujJPMpaTZKK0JpH7GQzeEo9jpGvFErIhrJDtcFixz/bd5I
+DkoQLsGhK4dTTlU3GamBi5YBSw5PIpxAnYR1TgKnEx8KjXZiXSwOYXZ1eXOc4qyK
+SvYPOEvmgOQX0mh9DDbiJaGOG48WQacVf7l1tiELNCxuK9XX+HRpzfULLGI5YXO2
+LSoEadUAmcU+FSbhaqLWdiY3khgSBzw2KjLIhewL2d5M8AmILB8PBnrdB3ofeWuo
+SDwYLhjkQSdE0A684dFG46spJU4Mau2x8UxCZxozgulA8XjPHmrG+33G92oCZ8uf
+PPU+9EcoyI3eUJ4jbumlZ1nL5sx9ng==
+=iU+5
+-----END PGP SIGNATURE-----
+
+--Sig_/OEi=q6+oHN=46abOCGMIfrO--
