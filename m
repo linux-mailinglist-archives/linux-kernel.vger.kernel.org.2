@@ -2,136 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1836343B264
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE0B43B268
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235364AbhJZMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
+        id S235943AbhJZMcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbhJZMaH (ORCPT
+        with ESMTP id S230308AbhJZMcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:30:07 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B669C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 05:27:44 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id n67so986638iod.9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 05:27:44 -0700 (PDT)
+        Tue, 26 Oct 2021 08:32:18 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B15C061745;
+        Tue, 26 Oct 2021 05:29:54 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id w12so7130307edd.11;
+        Tue, 26 Oct 2021 05:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=forshee.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V+t8Uh427gXOwBLEDrEt+gH2ARCwSbvbPoEeeptk2yo=;
-        b=eNy9xO6KA1OgHa5Ht2c1KSa5vPFfwYaNhksbiRtYrOw+PwQ5PID0vjiuNkhuIfuVLh
-         cPXX+BXnCxHsvg521P+x0WiIx1Bi2MTmafO9/zZBLwUOZvPzGgh9eiDo4F6UrJthVbV1
-         ILToS25sji6o1gU3GqgtSJyPc1OPB+rLLOmExy5HsQga2bA1kIo8q9eakPcjTYEF7U1z
-         l+kNWPEtfkaMxxx32CO89vjRfMl2lDTujiKr1MBOWVpNCYytbzeRHbtRSQ1Ab9eTYUGe
-         KGyG6xsAP35lePhAnyfp/L6Yj+AVk+pKQDkbC58tuRJO6ei8NE/qZEbw6FpgActzfmwU
-         B7wA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=95w+JIBxdk96vFyS997ptIswrw8erLoiU2nFptHB2Z4=;
+        b=U3BhOWCO7EE9x/zhlbhUZ9GuWsusB7VPV8wreSMY23LIw9s0HFjFo3fgjKH24xoDc6
+         0lcAo+sm/9Hb1iRd3LKl8yzR6lX9csqO1YwpSbGE7c0nOpK1zbJsGc0c0qtAjxgxXCz9
+         sNWpfikrThv7UUE/wCnjeW2ZxUPKJKPoZQtESIGCgQqoR8XZN6sciTCXc/z3Ssx5zq12
+         Guj8ui8XE/CjempXrda83s/7O31q9fFTrmAmbd1/jaoGHkl8L8SMyqNXOHQoVJtJU9t5
+         QzXzsAXl4GeOjHjFgVG4KBG5+5VqOoLJPAEFLfL42lcFdk36E89Vy+q0ighoCrd8+ma9
+         RpuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V+t8Uh427gXOwBLEDrEt+gH2ARCwSbvbPoEeeptk2yo=;
-        b=UE8b8qZLAAp/2gg5u0+IockXuuV/KQMlNf6e14B++sTGsaBzlM7EiTo+wxgO0HtBhm
-         /AzXt3LociOTjsrpUauZt6odjLRxZQWYOH11lbPOf5GSyTMr81F+uC/JgDxDbrMuS2SX
-         4I7k2509+7XMbw4+p1vRMu0+GaEQOUobOsCH6Z/2ydpCqKAEXtjmCdic85kA7q1hDsLA
-         nGOCZiW0hX/VUQ+zEqGAjAhQGlNB0YnziSGFpwtJhrGUCCQKMDUjF3LfYjJPb9riiJBX
-         PU/vC+JhBncE8yu+JEdhu18Z5YylahfGnmRKCmDiYE6oZSiXY85UzFPtvOoL4KBiJrGn
-         a8uw==
-X-Gm-Message-State: AOAM5313P//tZGV71rdAH7kmFW5PyJFN3q9qNcwaC8adxGOeQpECMzUM
-        0mjZAUgpQKBDRdyI5WVnQARoDNJERegMudCgpHA=
-X-Google-Smtp-Source: ABdhPJyWjOeRB0XmPfxyDLYYs5rCcDrDGehWGq8z2FIkNvTN4WvYfL1BNzJmNXSLTVPTDjQqtcDoUw==
-X-Received: by 2002:a02:5409:: with SMTP id t9mr7620884jaa.43.1635251263393;
-        Tue, 26 Oct 2021 05:27:43 -0700 (PDT)
-Received: from localhost ([2605:a601:ac0f:820:fca3:95d3:b064:21ae])
-        by smtp.gmail.com with ESMTPSA id t2sm5770986ilg.1.2021.10.26.05.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 05:27:42 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 07:27:42 -0500
-From:   Seth Forshee <seth@forshee.me>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: sch: eliminate unnecessary RCU waits in
- mini_qdisc_pair_swap()
-Message-ID: <YXf0PpSPNu31pXDM@ubuntu-x1>
-References: <20211022161747.81609-1-seth@forshee.me>
- <20211025124828.1e4900e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=95w+JIBxdk96vFyS997ptIswrw8erLoiU2nFptHB2Z4=;
+        b=cyBcmRzgU3iW5o7AEKbHY1AfaIDAzQ774XWq2iAsKw9UdXOZeTXs1ZfcikXWiMUm07
+         RkkwqctOFLqbyLBK6h7EskRxGjYsGFCCUQjWbF7bwmCq2BLd8LUnNtndDVzzlikFPspl
+         AJ295sj7yBDHPOahXikg8lP+Br2Y5ZPanNwwkGYY0xnqrKyrdbeTj0MMQR1N2aaEwi2X
+         7RGtrkb8YGv4KYd4nvjXXPoVOLb3TmDYI7r4g4M7N/sGFabIDMKhfjiEYO8RqmSYsQ1K
+         R/XihmauOSYGtF5q3pBDbWhFWjpZGUVusuhYfFZPeR1s/+pyhR/r7vtjGMlduiyFHwlq
+         IDYg==
+X-Gm-Message-State: AOAM531EQzfWl+OgZt1A86xoTvPSE1003HVF9cVOC1j/gcWz0tPkShro
+        KqKMyEyQRtwDwUuOed0eMnDqTuELtWs5MyGXCpI=
+X-Google-Smtp-Source: ABdhPJzgzCatEBIyHH641b2+HxtvgsbEOOEdWaqIXEqWyDN3PlxYeazI2rGOOdImDvGopH6ZwTknOL9YLRd534JaPOk=
+X-Received: by 2002:a17:906:1601:: with SMTP id m1mr30164722ejd.117.1635251387825;
+ Tue, 26 Oct 2021 05:29:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025124828.1e4900e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211026100432.1730393-1-arnd@kernel.org>
+In-Reply-To: <20211026100432.1730393-1-arnd@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Tue, 26 Oct 2021 05:29:36 -0700
+Message-ID: <CAMo8BfLskHzSW5FJUajAEvr6NRfvYhRRxKG4CQOFAQwtZtrRLg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] futex: ensure futex_atomic_cmpxchg_inatomic() is present
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Chris Zankel <chris@zankel.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:48:28PM -0700, Jakub Kicinski wrote:
-> On Fri, 22 Oct 2021 11:17:46 -0500 Seth Forshee wrote:
-> > From: Seth Forshee <sforshee@digitalocean.com>
-> > 
-> > Currently rcu_barrier() is used to ensure that no readers of the
-> > inactive mini_Qdisc buffer remain before it is reused. This waits for
-> > any pending RCU callbacks to complete, when all that is actually
-> > required is to wait for one RCU grace period to elapse after the buffer
-> > was made inactive. This means that using rcu_barrier() may result in
-> > unnecessary waits.
-> > 
-> > To improve this, store the current RCU state when a buffer is made
-> > inactive and use poll_state_synchronize_rcu() to check whether a full
-> > grace period has elapsed before reusing it. If a full grace period has
-> > not elapsed, wait for a grace period to elapse, and in the non-RT case
-> > use synchronize_rcu_expedited() to hasten it.
-> > 
-> > Since this approach eliminates the RCU callback it is no longer
-> > necessary to synchronize_rcu() in the tp_head==NULL case. However, the
-> > RCU state should still be saved for the previously active buffer.
-> > 
-> > Before this change I would typically see mini_qdisc_pair_swap() take
-> > tens of milliseconds to complete. After this change it typcially
-> > finishes in less than 1 ms, and often it takes just a few microseconds.
-> > 
-> > Thanks to Paul for walking me through the options for improving this.
-> > 
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Signed-off-by: Seth Forshee <sforshee@digitalocean.com>
-> 
-> LGTM, but please rebase and retest on top of latest net-next.
+On Tue, Oct 26, 2021 at 3:04 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The boot-time detection of futex_atomic_cmpxchg_inatomic()
+> has a bug on some 32-bit arm builds, and Thomas Gleixner
+> suggested that setting CONFIG_HAVE_FUTEX_CMPXCHG would
+> avoid the problem, as it is always present anyway.
+>
+> Looking into which other architectures could do the same
+> showed that almost all architectures have it, the exceptions
+> being:
+>
+>  - some old 32-bit MIPS uniprocessor cores without ll/sc
+>  - one xtensa variant with no SMP
+>  - 32-bit SPARC when built for SMP
+>
+> Fix MIPS And Xtensa by rearranging the generic code to let it be used
+> as a fallback.
+>
+> For SPARC, the SMP definition just ends up turning off futex anyway,
+> so this can be done at Kconfig time instead. Note that sparc32
+> glibc requires the CASA instruction for its mutexes anyway,
+> which is only available when running on SPARCv9 or LEON CPUs,
+> but needs to be implemented in the sparc32 kernel for those.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/mips/include/asm/futex.h   | 29 ++++++++++++++++++-----------
+>  arch/xtensa/include/asm/futex.h |  8 ++++++--
+>  include/asm-generic/futex.h     | 31 +++++++++++--------------------
+>  init/Kconfig                    |  1 +
+>  4 files changed, 36 insertions(+), 33 deletions(-)
 
-Will do.
+For xtensa:
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
-> >  void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
-> >  			  struct tcf_proto *tp_head)
-> >  {
-> > @@ -1423,28 +1419,30 @@ void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
-> >  
-> >  	if (!tp_head) {
-> >  		RCU_INIT_POINTER(*miniqp->p_miniq, NULL);
-> > -		/* Wait for flying RCU callback before it is freed. */
-> > -		rcu_barrier();
-> > -		return;
-> > -	}
-> > +	} else {
-> > +		miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
-> > +			&miniqp->miniq1 : &miniqp->miniq2;
-> >  
-> > -	miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
-> > -		&miniqp->miniq1 : &miniqp->miniq2;
-> 
-> nit: any reason this doesn't read:
-> 
-> 	miniq = miniq_old != &miniqp->miniq1 ? 
-> 		&miniqp->miniq1 : &miniqp->miniq2;
-> 
-> Surely it's not equal to miniq1 or miniq2 if it's NULL.
-
-I agree, that looks simpler and functionally equivalent. It seems
-off-topic for this patch though; I'm only touching that line to change
-the indentation.
-
-Thanks,
-Seth
+-- 
+Thanks.
+-- Max
