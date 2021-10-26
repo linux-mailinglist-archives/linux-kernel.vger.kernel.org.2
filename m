@@ -2,197 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51D543BE1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E6843BE21
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240353AbhJZXuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S237486AbhJZXvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240347AbhJZXuh (ORCPT
+        with ESMTP id S236297AbhJZXvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:50:37 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7901C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:48:12 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id m21so1051571pgu.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:48:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xwza6UlzVfIQQLUuHstHSQWG0hE12xpERozbdrPW5Tg=;
-        b=bL5UUtVmpGXr2E5Swk1wrnFLDjzAL5Db5e0u7N0mi/tqyGsx6+GlK/MkA1PeZ0MiBH
-         UqtEMnzlp4JbqIrOHDLM0X7xwdqxm+Q8XxYRc+jEfslnKpP7/aHhW6qvSVnH6excYZDb
-         VC1IQvQSDaBfc7R44xET+k4hlApI/RL63bhahOqKT9YDZN693dpwNfoCBN4inVtOaevB
-         bGax5fOJWR8FUq3dAHHrM5qU9UXizjS8YLq3e8e4Djy65nS3ZC+ArzwuQMAMNOH12B7A
-         7el8VdsFddT3cD4ORzpcSHthBAHXQqBYYrDgxbVUSfbV3/tcjwQrnBfO5l8NcMVRwpXV
-         V10g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=xwza6UlzVfIQQLUuHstHSQWG0hE12xpERozbdrPW5Tg=;
-        b=HFMLmAXZxHAQmLWtWO/w/t532pYK3p8/JivfGwRzewQcbFEG8B3SqG1aQxfj/79oSS
-         wTFP68SYA6T+Jww0LLe6Fz8sAMjUKITnFkue0UF3VF3RUfBMVFYRsmEW9FRpGQmDuj7p
-         S7ernJ/Cje4QjLvF2rwawev8Nuv0bc8Ms5blgZX1yLR6WmvT/kNRexsu4kqYjYNrdEIn
-         uLdwAAfuXWr2tolQV5/Ass8R0RwW9Tj+ql1JqviXzVsLc8QPLn5w4ToXiFFA3rX5ZzV/
-         Y4dGilefCdY7945KbKWL9MVdctz7OJPdYNJwAooheC7oBwaQAQhQYiGnCv8jXOKHlIVl
-         Z5CA==
-X-Gm-Message-State: AOAM531jKZ0H9B08PwCd6F94JPBd3I+y4M6GQ6vva8sR++QAlJcyXiUv
-        VBJBolWejEKr9e1bbU00vfI1PA==
-X-Google-Smtp-Source: ABdhPJyRkUu4Ob775r7anWlvMiPOtSlIC4kpnedNkEQ7aHSpYHADrjTrcPXKvv/WmHKLJfAYPq7/Ng==
-X-Received: by 2002:a63:8243:: with SMTP id w64mr16130369pgd.18.1635292092131;
-        Tue, 26 Oct 2021 16:48:12 -0700 (PDT)
-Received: from localhost ([2620:0:1000:5e10:676c:ab93:f48d:23ae])
-        by smtp.gmail.com with ESMTPSA id ls7sm1981133pjb.16.2021.10.26.16.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 16:48:11 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 16:48:11 -0700 (PDT)
-X-Google-Original-Date: Tue, 26 Oct 2021 16:48:02 PDT (-0700)
-Subject:     Re: [PATCH v9 0/8] RISC-V CPU Idle Support
-In-Reply-To: <20211012095857.1314214-1-anup.patel@wdc.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        daniel.lezcano@linaro.org, ulf.hansson@linaro.org,
-        rjw@rjwysocki.net, pavel@ucw.cz, robh+dt@kernel.org,
-        milun.tripathy@gmail.com, Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        liush@allwinnertech.com, anup@brainfault.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Anup Patel <Anup.Patel@wdc.com>
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     Anup Patel <Anup.Patel@wdc.com>
-Message-ID: <mhng-63e8dc0c-278d-46e3-a617-abe1d68fcc6d@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
+        Tue, 26 Oct 2021 19:51:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59F1C061570;
+        Tue, 26 Oct 2021 16:49:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=V6gYGPSmlZO2+IdapoJ3lT2mIVvRXAYGfe/XfmyiAJs=; b=a3USxLIdQD1loITMP9y1jCz4Lq
+        3wo17dxEitP+ofnaJnPJnzHbPtf0/6nSS+jRls7BoQ6n4+AqhALYLt4oU1IQNRPpO4B3u8Yh1RJPV
+        dla5b9Zs9PV2g13PAUryJDSMft9V9ujage5Q2uzb5ijJItZb5OPNR/fnHcMVF1Ts/SnQwvbajcyQL
+        YSPMWLvPtfLR319S94f7Vrh7YyZ8L6jDevViR+HLMBP9hDylEMKxsoatWSSIz9TrStuq7R1ymIKIq
+        xdEaZXH3egUNBWfEEUTW1CXg/47DM5cAxPDjupeJssDdp9gUP4+NI2mqagFa8SxPnJnY0AFr//sEM
+        9sdckVcw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfWBk-003IBF-AO; Tue, 26 Oct 2021 23:49:04 +0000
+Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
+ macros
+To:     Joe Perches <joe@perches.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Trevor Woerner <twoerner@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Yorick de Wid <yorickdewid@users.noreply.github.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20210423184012.39300-1-twoerner@gmail.com>
+ <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
+ <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
+ <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
+ <20211026144452.GA40651@localhost>
+ <CANiq72kf0QZUeO+=U67NLs=WXc=sEtasdv_yaZ5sZedNmzzJBw@mail.gmail.com>
+ <fe86efbd-4e03-76c8-55cf-dabd33e85823@infradead.org>
+ <58650d3729a5b3a8bc86037757bccda5cc254e3f.camel@perches.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0976b45a-5cf8-450d-c651-96984fa340c9@infradead.org>
+Date:   Tue, 26 Oct 2021 16:49:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <58650d3729a5b3a8bc86037757bccda5cc254e3f.camel@perches.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 02:58:49 PDT (-0700), Anup Patel wrote:
-> This series adds RISC-V CPU Idle support using SBI HSM suspend function.
+On 10/26/21 8:27 AM, Joe Perches wrote:
+> On Tue, 2021-10-26 at 08:18 -0700, Randy Dunlap wrote:
+>> On 10/26/21 8:10 AM, Miguel Ojeda wrote:
+>>> On Tue, Oct 26, 2021 at 4:44 PM Trevor Woerner <twoerner@gmail.com> wrote:
+>>>>
+>>>> get_maintainer.pl didn't add Andrew back then on my patch and still doesn't
+>>>> even now. Maybe the MAINTAINERS file needs an update if Andrew is to be
+>>>> included on trivial/documentation patches?
+>>>
+>>> I mentioned Andrew because he does the hard job of being a backup for
+>>> everything and everyone, but normally you should try to put the actual
+>>> maintainer first in the `To` field and/or trivial@kernel.org.
+>>
+>> I think that we decided to stop using trivial@kernel.org for new patches
+>> a few months ago...
+> 
+> Dunno who the "we" is but then maybe this is appropriate:
+> ---
+>   MAINTAINERS | 6 ------
+>   1 file changed, 6 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 869e6cc6366bc..8c933736bb412 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19282,12 +19282,6 @@ W:	https://github.com/srcres258/linux-doc
+>   T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
+>   F:	Documentation/translations/zh_TW/
+>   
+> -TRIVIAL PATCHES
+> -M:	Jiri Kosina <trivial@kernel.org>
+> -S:	Maintained
+> -T:	git git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial.git
+> -K:	^Subject:.*(?i)trivial
+> -
+>   TTY LAYER
+>   M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>   M:	Jiri Slaby <jirislaby@kernel.org>
+> 
 
-This all generally looks good to me, I'm just not sure what the spec 
-status is.  If one of you guys says it's frozen then that's good enough 
-for me, please just either point me to something where that's been 
-publicly said or just post here.
+Jiri?
 
-> The RISC-V SBI CPU idle driver added by this series is highly inspired
-> from the ARM PSCI CPU idle driver.
->
-> At high-level, this series includes the following changes:
-> 1) Preparatory arch/riscv patches (Patches 1 to 3)
-> 2) Defines for RISC-V SBI HSM suspend (Patch 4)
-> 3) Preparatory patch to share code between RISC-V SBI CPU idle driver
->    and ARM PSCI CPU idle driver (Patch 5)
-> 4) RISC-V SBI CPU idle driver and related DT bindings (Patches 6 to 7)
->
-> These patches can be found in riscv_sbi_hsm_suspend_v9 branch at
-> https://github.com/avpatel/linux
->
-> Special thanks Sandeep Tripathy for providing early feeback on SBI HSM
-> support in all above projects (RISC-V SBI specification, OpenSBI, and
-> Linux RISC-V).
->
-> Changes since v8:
->  - Rebased on Linux-5.15-rc5
->  - Fixed DT schema check errors in PATCH7
->
-> Changes since v7:
->  - Rebased on Linux-5.15-rc3
->  - Renamed cpuidle-sbi.c to cpuidle-riscv-sbi.c in PATCH6
->
-> Changes since v6:
->  - Fixed error reported by "make DT_CHECKER_FLAGS=-m dt_binding_check"
->
-> Changes since v5:
->  - Rebased on Linux-5.13-rc5
->  - Removed unnecessary exports from PATCH5
->  - Removed stray ";" from PATCH5
->  - Moved sbi_cpuidle_pd_power_off() under "#ifdef CONFIG_DT_IDLE_GENPD"
->    in PATCH6
->
-> Changes since v4:
->  - Rebased on Linux-5.13-rc2
->  - Renamed all dt_idle_genpd functions to have "dt_idle_" prefix
->  - Added MAINTAINERS file entry for dt_idle_genpd
->
-> Changes since v3:
->  - Rebased on Linux-5.13-rc2
->  - Fixed __cpu_resume_enter() which was broken due to XIP kernel support
->  - Removed "struct dt_idle_genpd_ops" abstraction which simplifies code
->    sharing between ARM PSCI and RISC-V SBI drivers in PATCH5
->
-> Changes since v2:
->  - Rebased on Linux-5.12-rc3
->  - Updated PATCH7 to add common DT bindings for both ARM and RISC-V
->    idle states
->  - Added "additionalProperties = false" for both idle-states node and
->    child nodes in PATCH7
->
-> Changes since v1:
->  - Fixex minor typo in PATCH1
->  - Use just "idle-states" as DT node name for CPU idle states
->  - Added documentation for "cpu-idle-states" DT property in
->    devicetree/bindings/riscv/cpus.yaml
->  - Added documentation for "riscv,sbi-suspend-param" DT property in
->    devicetree/bindings/riscv/idle-states.yaml
->
-> Anup Patel (8):
->   RISC-V: Enable CPU_IDLE drivers
->   RISC-V: Rename relocate() and make it global
->   RISC-V: Add arch functions for non-retentive suspend entry/exit
->   RISC-V: Add SBI HSM suspend related defines
->   cpuidle: Factor-out power domain related code from PSCI domain driver
->   cpuidle: Add RISC-V SBI CPU idle driver
->   dt-bindings: Add common bindings for ARM and RISC-V idle states
->   RISC-V: Enable RISC-V SBI CPU Idle driver for QEMU virt machine
->
->  .../bindings/arm/msm/qcom,idle-state.txt      |   2 +-
->  .../devicetree/bindings/arm/psci.yaml         |   2 +-
->  .../bindings/{arm => cpu}/idle-states.yaml    | 228 ++++++-
->  .../devicetree/bindings/riscv/cpus.yaml       |   6 +
->  MAINTAINERS                                   |  14 +
->  arch/riscv/Kconfig                            |   7 +
->  arch/riscv/Kconfig.socs                       |   3 +
->  arch/riscv/configs/defconfig                  |  15 +-
->  arch/riscv/configs/rv32_defconfig             |   8 +-
->  arch/riscv/include/asm/asm.h                  |  17 +
->  arch/riscv/include/asm/cpuidle.h              |  24 +
->  arch/riscv/include/asm/sbi.h                  |  27 +-
->  arch/riscv/include/asm/suspend.h              |  35 +
->  arch/riscv/kernel/Makefile                    |   2 +
->  arch/riscv/kernel/asm-offsets.c               |   3 +
->  arch/riscv/kernel/cpu_ops_sbi.c               |   2 +-
->  arch/riscv/kernel/head.S                      |  18 +-
->  arch/riscv/kernel/process.c                   |   3 +-
->  arch/riscv/kernel/suspend.c                   |  86 +++
->  arch/riscv/kernel/suspend_entry.S             | 123 ++++
->  drivers/cpuidle/Kconfig                       |   9 +
->  drivers/cpuidle/Kconfig.arm                   |   1 +
->  drivers/cpuidle/Kconfig.riscv                 |  15 +
->  drivers/cpuidle/Makefile                      |   5 +
->  drivers/cpuidle/cpuidle-psci-domain.c         | 138 +---
->  drivers/cpuidle/cpuidle-psci.h                |  15 +-
->  drivers/cpuidle/cpuidle-riscv-sbi.c           | 626 ++++++++++++++++++
->  drivers/cpuidle/dt_idle_genpd.c               | 177 +++++
->  drivers/cpuidle/dt_idle_genpd.h               |  50 ++
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Some of the patches that touch drivers/cpuidle don't have Acks from the 
-subsystem maintainers.  I'm OK taking this through the RISC-V tree, but 
-I'd prefer to have acks first.  I'm also fine doing something like a 
-shared tag between the trees, if that's better for folks.
+thanks.
 
->  29 files changed, 1474 insertions(+), 187 deletions(-)
->  rename Documentation/devicetree/bindings/{arm => cpu}/idle-states.yaml (74%)
->  create mode 100644 arch/riscv/include/asm/cpuidle.h
->  create mode 100644 arch/riscv/include/asm/suspend.h
->  create mode 100644 arch/riscv/kernel/suspend.c
->  create mode 100644 arch/riscv/kernel/suspend_entry.S
->  create mode 100644 drivers/cpuidle/Kconfig.riscv
->  create mode 100644 drivers/cpuidle/cpuidle-riscv-sbi.c
->  create mode 100644 drivers/cpuidle/dt_idle_genpd.c
->  create mode 100644 drivers/cpuidle/dt_idle_genpd.h
+-- 
+~Randy
