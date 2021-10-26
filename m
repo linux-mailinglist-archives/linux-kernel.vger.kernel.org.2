@@ -2,165 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3008643A99C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7B743A99D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbhJZBNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 21:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        id S234709AbhJZBOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbhJZBNl (ORCPT
+        with ESMTP id S232827AbhJZBOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:13:41 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E328C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:18 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id u21so17476204lff.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:18 -0700 (PDT)
+        Mon, 25 Oct 2021 21:14:20 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D7DC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:57 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id bm16so756415qkb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rtWXwfuaH6YO89IeWMAaSmOX7k04XWxVVJQflOLKKPU=;
-        b=DjFGmggF2BzXZ3m0L7IJhIQ6i1iK4kxkRXO1HpAV7yknmCHxWUZBIB7IOldZXa1w5Q
-         1GHozxd5zQsANLVpe5xqWWzm4PK35l3/hXuDbzTDZHtJQLkYzgBAsNRhBt4Ts920bt8T
-         vkDTc5JaWSDAKi3dB/TDj6IDLUWMB0bE7alKM=
+        d=poorly.run; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=10z83rn1dQLyIYsIkVAoxSDw4ZTZcNGKVFgCWqQpaRI=;
+        b=O7FUpJ+Lf4ouk0CQSS6+rtrpb05h/csYBf6gBMi8eubWIEhWnUqA2KK+OMs0E5hnyP
+         OJ75tTKAku67GQiKymEqwhHgdANicgK7TGgeRl0hNPvfBSPr2wbtOTHyeXdQlcI+6gYw
+         RS5iVhKU1qq6NGWT+SlV4cuWiasAzrbr4gvXoXT1fYxzFZ3buCfJ+9gjYFyOAE/wmY16
+         yPZS3+kP60A/CO28QONPKM/1WT2ZuOADXMEBrHoBMepZamFHQu0kEXfYu/qTcDtEnRqW
+         +ia5+lP0mHkpRKx5xZvkTm2zIoMbSXw6Ny6QPbtIeV3Sfbj4SWJ1XP/M2BEKSKpPBm5N
+         aqeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rtWXwfuaH6YO89IeWMAaSmOX7k04XWxVVJQflOLKKPU=;
-        b=30BdCf/pAqlGKi5MP5H/dE+7XfISuovnCblCfMl3x/0ahLBJ2NrCp0cZxzhfrqhf7v
-         ISggWhQ+KggKUEe7K7Hh+0iiUVRWhDEJpd2ZLxld50S7WIO055SI7ZaEjfVj2wCJ3z1F
-         cHfVK3T5ouKvBV5j2NRk4h3qZsJpQJVn3ZcHrLW8ProQGtu2SbU22vLMUyCYc+KNeJU0
-         zRnH4lZIvA2hNI8OfnfSOymvETiw1M6Ssqou8C6zPVUZNaXKtNNtmxD/mQPnh9ctL7lk
-         jvzCNS3+EvPTZBgpSEGx9R6FIfzlIibBdQej1SFPMrGnXX/QqeCFgvkpfO8OV/FjFHrc
-         rMPg==
-X-Gm-Message-State: AOAM532FsMKC1jPOltf7mzlyGFv4cNbKV5MyOpcAoj5JEBe4DJ8IFu7R
-        +aA/mrs1KNS210yn8/CBdbPytgFVn7CJBg==
-X-Google-Smtp-Source: ABdhPJxv8cOydOIvq79KHi/KQyRictls7pWQZnwRTVngzNlfNXRxRg0Iy8+M/L27DFcAHgJqbfXwRA==
-X-Received: by 2002:a05:6512:1056:: with SMTP id c22mr20788652lfb.26.1635210675609;
-        Mon, 25 Oct 2021 18:11:15 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id a12sm436855lff.236.2021.10.25.18.11.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 18:11:15 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id w23so11716573lje.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:14 -0700 (PDT)
-X-Received: by 2002:a2e:bc24:: with SMTP id b36mr22545470ljf.95.1635210674455;
- Mon, 25 Oct 2021 18:11:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=10z83rn1dQLyIYsIkVAoxSDw4ZTZcNGKVFgCWqQpaRI=;
+        b=hZFtReT22BYUFRRGKahnqJbudYtQMOYi8Cgkv0uXx1GMffB4ezRNvk+zftaSfIi81L
+         EhnpLURVbA9fc8bfr1jDWocmJ8KaCcSdQdj7pLFJyZoJJLZLgOP3A/NjK37DVb/bw4Kl
+         TGK0w2tVMeKRksrSWCvG0ClnsoKNGhPiZXejDQO3tKGGBJUD9M3IbZGihoXVrngwU6DW
+         BP/3bp7ZczhB+9jZOy+BdApmUsIw/FduQVoFqNtea4i4catB0LFgy+ZhavHeQ5VHgdPR
+         mdezXTvVcNJPr5VIz8M6hplzRwl4skCIx6dYcuM7RHdlXgwqwtbm2xKIBP99SEuTW849
+         mp8w==
+X-Gm-Message-State: AOAM532CCXvQHH58kWl38Seyv6HaTCTIF25j67lW8+w9zZr3EpL0+n1y
+        0eGwdSu2v4U9gY24b24YuOCiyw==
+X-Google-Smtp-Source: ABdhPJx3AyIQMi7nUKZ0qGI6PBHImbS56SPUe1LBpNs8MI9iz9C3YGwpEtgyc8Trb9/CIxVjLfPTOw==
+X-Received: by 2002:a05:620a:f0b:: with SMTP id v11mr16051354qkl.429.1635210716577;
+        Mon, 25 Oct 2021 18:11:56 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id 14sm10381079qtp.97.2021.10.25.18.11.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 Oct 2021 18:11:56 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 21:11:54 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Mark Yacoub <markyacoub@chromium.org>
+Cc:     linux-mediatek@lists.infradead.org, seanpaul@chromium.org,
+        Mark Yacoub <markyacoub@google.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/mediatek: Set Rotation default value to 1.
+Message-ID: <20211026011154.GE2515@art_vandelay>
+References: <20211022165409.178281-1-markyacoub@chromium.org>
 MIME-Version: 1.0
-References: <20211025181634.3889666-1-willy@infradead.org> <202110251225.D01841AE67@keescook>
- <YXcKzKVX7NTAtvPh@casper.infradead.org> <202110251402.ADFA4D41BF@keescook>
- <CAHk-=wgvb72urgEM5q_SpXFv1OXnDGY8VFs8QmZPt9_n1bH0CQ@mail.gmail.com>
- <202110251438.1762406A5@keescook> <CAHk-=wj9j8KnWzTTFCXi_xWyytFbtZ71hu32eB=nHR++X+UY=A@mail.gmail.com>
- <202110251706.BBEE1428@keescook>
-In-Reply-To: <202110251706.BBEE1428@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 25 Oct 2021 18:10:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgVhUMXR80UmT-6vYNs-BmraOqXOVdH5XVmxbhrtjAbtg@mail.gmail.com>
-Message-ID: <CAHk-=wgVhUMXR80UmT-6vYNs-BmraOqXOVdH5XVmxbhrtjAbtg@mail.gmail.com>
-Subject: Re: [PATCH] secretmem: Prevent secretmem_users from wrapping to zero
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022165409.178281-1-markyacoub@chromium.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 5:18 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Right, sure, but it's not a rare pattern.
+On Fri, Oct 22, 2021 at 12:54:02PM -0400, Mark Yacoub wrote:
+> From: Mark Yacoub <markyacoub@google.com>
+> 
+> [Why]
+> The Rotation prob is a bitmask value. It must always have a valid value.
 
-Well, for an actual reference count it certainly isn't a rare pattern,
-and zero _is_ special, because at zero, you are now in use-after-free
-territory.
+nit: s/prob/prop/
 
-But that's kind of the issue here: that really isn't what
-'secretmem_users' was ever about.
+> A default NO rotation is equal to 1 not 0.
+> 
+> [How]
+> 1. At the reset hook, call __drm_atomic_helper_plane_reset which is
+> called at the initialization of the plane and sets the default value of
+> all planes to DRM_MODE_ROTATE_0 which is equal to 1.
+> 2. At the ovl layer check, do no overwrite the state->rotation value 0
+> if DRM_MODE_ROTATE_0 is set. We should not change the value that the
+> userspace has set, especially if it's an unsupported value.
 
-Zero isn't some "now we're use-after-free" situation. Quite the
-reverse. Zero ends up being the safe thing.
+nit: I would probably split these into 2 patches since they're related but
+different
 
-So with that kind of "just count number of existing users", where zero
-isn't special, then refcount_t doesn't make sense.
+Sean
 
-And refcount_t is for non-core stuff that has a lot of random kernel
-users that you can't easily verify.
+> 
+> Tested on Jacuzzi(MTK).
+> Fixes IGT@kms_properties@plane-properties-{legacy,atomic} and
+> IGT@kms_properties@get_properties-sanity-{atomic,non-atomic}
+> 
+> Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  2 +-
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c     | 20 +++++++-------------
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  5 ++---
+>  drivers/gpu/drm/mediatek/mtk_drm_plane.c    |  3 ++-
+>  4 files changed, 12 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> index 86c3068894b11..2fc566964f68e 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> @@ -64,7 +64,7 @@ void mtk_ovl_config(struct device *dev, unsigned int w,
+>  		    unsigned int h, unsigned int vrefresh,
+>  		    unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
+>  int mtk_ovl_layer_check(struct device *dev, unsigned int idx,
+> -			struct mtk_plane_state *mtk_state);
+> +			const struct mtk_plane_state *mtk_state);
+>  void mtk_ovl_layer_config(struct device *dev, unsigned int idx,
+>  			  struct mtk_plane_state *state,
+>  			  struct cmdq_pkt *cmdq_pkt);
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> index ea5760f856ec6..13999564304bc 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> @@ -190,19 +190,15 @@ unsigned int mtk_ovl_supported_rotations(struct device *dev)
+>  }
+>  
+>  int mtk_ovl_layer_check(struct device *dev, unsigned int idx,
+> -			struct mtk_plane_state *mtk_state)
+> +			const struct mtk_plane_state *mtk_state)
+>  {
+> -	struct drm_plane_state *state = &mtk_state->base;
+> -	unsigned int rotation = 0;
+> +	const struct drm_plane_state *state = &mtk_state->base;
+> +	unsigned int rotation = drm_rotation_simplify(
+> +		state->rotation,
+> +		DRM_MODE_ROTATE_0 | DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y);
+>  
+> -	rotation = drm_rotation_simplify(state->rotation,
+> -					 DRM_MODE_ROTATE_0 |
+> -					 DRM_MODE_REFLECT_X |
+> -					 DRM_MODE_REFLECT_Y);
+> -	rotation &= ~DRM_MODE_ROTATE_0;
+> -
+> -	/* We can only do reflection, not rotation */
+> -	if ((rotation & DRM_MODE_ROTATE_MASK) != 0)
+> +	/* We can only do reflection, not non-zero rotation */
+> +	if (((rotation & ~DRM_MODE_ROTATE_0) & DRM_MODE_ROTATE_MASK) != 0)
+>  		return -EINVAL;
+>  
+>  	/*
+> @@ -212,8 +208,6 @@ int mtk_ovl_layer_check(struct device *dev, unsigned int idx,
+>  	if (state->fb->format->is_yuv && rotation != 0)
+>  		return -EINVAL;
+>  
+> -	state->rotation = rotation;
+> -
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> index 1b582262b682b..530bdd031933f 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> @@ -53,9 +53,8 @@ struct mtk_ddp_comp_funcs {
+>  	void (*disable_vblank)(struct device *dev);
+>  	unsigned int (*supported_rotations)(struct device *dev);
+>  	unsigned int (*layer_nr)(struct device *dev);
+> -	int (*layer_check)(struct device *dev,
+> -			   unsigned int idx,
+> -			   struct mtk_plane_state *state);
+> +	int (*layer_check)(struct device *dev, unsigned int idx,
+> +			   const struct mtk_plane_state *state);
+>  	void (*layer_config)(struct device *dev, unsigned int idx,
+>  			     struct mtk_plane_state *state,
+>  			     struct cmdq_pkt *cmdq_pkt);
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> index e6dcb34d30522..accd26481b9fb 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> @@ -44,9 +44,10 @@ static void mtk_plane_reset(struct drm_plane *plane)
+>  		state = kzalloc(sizeof(*state), GFP_KERNEL);
+>  		if (!state)
+>  			return;
+> -		plane->state = &state->base;
+>  	}
+>  
+> +	__drm_atomic_helper_plane_reset(plane, &state->base);
+> +
+>  	state->base.plane = plane;
+>  	state->pending.format = DRM_FORMAT_RGB565;
+>  }
+> -- 
+> 2.33.0.1079.g6e70778dc9-goog
+> 
 
-In contrast, 'secretmem_users' had exactly two sites that modified it,
-and one that tested it.
-
-> But these places need to check for insane
-> conditions too ("we got a -1 back -- this means there's a bug but what
-> do we do?"). Same for atomic_inc(): "oh, we're at our limit, do
-> something", but what above discovering ourselves above the limit?
-
-So honestly, "above the limit" is often perfectly fine too.
-
-It can be fine for two very different reasons:
-
- (a) racy checks are often much simpler and faster, and perfectly safe
-when the limit is "far away from overflow".
-
- (b) limits can change
-
-And (a) isn't just about "avoid special atomics". It's about doing the
-limit check optimistically outside locking etc.
-
-And (b) wasn't an issue here (where the only real use was ltierally
-"are there any users at all"), but in most _proper_ use cases you will
-want to have some resource limit that might be set by MIS. And might
-be changed dynamically.
-
-So it's entirely possible that somebody sets the limit to something
-smaller than the current user (prep for shutdown, whatever), without
-it being an error at all.
-
-The limit is for future work, not for past work. Easily happens with
-things like rlimits etc.
-
-> There's nothing about using the atomic_t primitives that enforces these
-> kinds of checks. (And there likely shouldn't be for atomic_t -- it's a
-> plain type.) But we likely need something that fills in this API gap
-> between atomic_t and refcount_t.
-
-I dispute the "need". This isn't as common as you claim. Most resource
-counting _is_ for "free when no longer used".
-
-And on the other end, you have the users that don't want refcount_t
-because they can't live with the limitations of that interface, like
-the page counts etc, that do it properly.
-
-So I think in 99% of all situations, the proper fix is to embed an
-"atomic_t" in the type it protects, and then have the helper functions
-that actually do it properly. Like we do for "get_page()" and friends.
-The "new type" isn't about the reference counting, it's about the data
-itself, and the atomic_t is just a part of it.
-
-Could we do something new type that warns on the "decrement past zero"
-and "overflow on increment"? Sure. But since they by _definition_
-aren't about data lifetimes, they probably don't need saturation - you
-want the _warning_, but they aren't protecting data, since they aren't
-refcounts.
-
-Or could we have something even fancier, that is an actual defined
-range, and "overflow" is not "overflow in 32 bits", but "becomes
-bigger than X")? That gets more complex because now you'd have to
-encode the range in the type somehow.
-
-You could do it with actual static types (generate typedef names and
-code), or you could do it with types that have a more dynamic pointer
-to ranges (kind of like the sysfs interfaces do) or have the ranges
-embedded in the data structure itself.
-
-But honestly, the complexity downside seems to just dwarf the upside.
-
-                  Linus
+-- 
+Sean Paul, Software Engineer, Google / Chromium OS
