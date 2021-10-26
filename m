@@ -2,108 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD79243A989
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DE743A98D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhJZBE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 21:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbhJZBE5 (ORCPT
+        id S235684AbhJZBJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:09:22 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:26196 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232679AbhJZBJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:04:57 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FECC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:02:34 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so17449814ote.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QoNo/gJ6xc/Lk71yUFY24yh/oDqwuM2rlI5YSI1Io30=;
-        b=GPfYmTWaHMBbwyAoKorrgVTbZsmFqlu3TOEUwGHy2OWxrtvOOFmL05VvF2U0sO6yq0
-         cVG2pGChgd50T10TZSsWNX05FELD1uvjy4vLApxnevG1JaFlX/01wc7bxYRIYPX9ot1j
-         mhYj1Tn0i4N36hjzzsBFrFWjLhvHNK5OzDFjtK4IGQ/3RZsFvUyASOSC146FiTC7yTWx
-         HZ/+VrrW4xUyv5bJobb84DMvFKh18sl1EjBuYTM6yOx7G8gWIfIcOy/Lv+2OP97aLqdm
-         kVSOnhDE6i8MzbciAdTRwtEDm22pLsFy89+ZvJOg2agEUTAHLC62rfazSXLNYffW8WL8
-         azdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QoNo/gJ6xc/Lk71yUFY24yh/oDqwuM2rlI5YSI1Io30=;
-        b=m97+SQOxOidvaJg7xHDdpsUwlyd5FXun4zRqE94o8AejgtrKxN8nzC8bknZAjZzZbM
-         k4zq9vO0W8JTBIQmQnVg3nPQc41DA55mCE2o4z/s+IBr07ROdYCUUhMmzEr+jwD7A1uV
-         4bIiPT6He/+rArW8Ms6tGhKQMOa608ONY8VqFCW8+31TzN48BEMG/jZ8RPqbQxunglGg
-         CZ4tWkeH/lADg6ElDOb70n6Go+kANl6r/wJ4p+dN34zRyqF20V8nKOMDOFTofzzGv9bt
-         oLV0fscxHdQ6n1xwnJMAtpAH087sFsDsQJo76Tylwf1yr6fD4WbOWniC48+Rl7LQIcjc
-         2lbg==
-X-Gm-Message-State: AOAM5319tTtNyhSpUtwCHRdkOyvugDl2SL4EtS4Hc0JRqeKMf/iEcLWs
-        mSG7XnTbnujXHnMFuXUcPNzNpUKP7Fk=
-X-Google-Smtp-Source: ABdhPJxMlKWW+1zbC7QoBnBIjxiIfh66+rRIl5XDXf7TN2O3gbhH6mxZxLAaz09z6baWVCUcqaQD8g==
-X-Received: by 2002:a9d:4616:: with SMTP id y22mr16425867ote.165.1635210154279;
-        Mon, 25 Oct 2021 18:02:34 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o12sm3987438oti.21.2021.10.25.18.02.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 18:02:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [RESEND 0/5] ARM/arm64: arm_pm_restart removal
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        lorenzo.pieralisi@arm.com, sstabellini@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wsa+renesas@sang-engineering.com, treding@nvidia.com,
-        arnd@arndb.de, xen-devel@lists.xenproject.org,
-        patches@armlinux.org.uk
-References: <20210604140357.2602028-1-lee.jones@linaro.org>
- <526fe66f-df08-c873-2a20-f1295e30a855@gmail.com>
- <a4fe088f-0f13-f80f-5011-4eee2d44ef63@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <321b167f-8744-9ca8-58b0-e09ff39dfa02@roeck-us.net>
-Date:   Mon, 25 Oct 2021 18:02:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 25 Oct 2021 21:09:20 -0400
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HdYXW3GdLz8tcK;
+        Tue, 26 Oct 2021 09:05:31 +0800 (CST)
+Received: from [127.0.0.1] (10.67.102.125) by dggeme758-chm.china.huawei.com
+ (10.3.19.104) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Tue, 26
+ Oct 2021 09:06:51 +0800
+Message-ID: <617754AB.60307@hisilicon.com>
+Date:   Tue, 26 Oct 2021 09:06:51 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-In-Reply-To: <a4fe088f-0f13-f80f-5011-4eee2d44ef63@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Yu Chen <chenyu56@huawei.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <xuwei5@hisilicon.com>
+Subject: Re: [PATCH v5] dt-bindings: misc: add schema for USB hub on Kirin
+ devices
+References: <f955e7dba47e2e96ca6bfe761a1f998e9b5a4c50.1632814787.git.mchehab+huawei@kernel.org>
+In-Reply-To: <f955e7dba47e2e96ca6bfe761a1f998e9b5a4c50.1632814787.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.125]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 4:55 PM, Dmitry Osipenko wrote:
-> 26.10.2021 02:29, Florian Fainelli пишет:
->> On 6/4/21 7:03 AM, Lee Jones wrote:
->>> This is a rebase/refresh of a set sent out, reviewed,
->>> then forgotten about.  It's still considered useful.
->>>
->>> Here is an excerpt from the previous attempt:
->>>
->>>   "Hi Russell, ARM SoC maintainers,
->>>
->>>   here's the full set of patches that remove arm_pm_restart as discussed
->>>   earlier. There's some background on the series in this thread:
->>>
->>> 	https://lore.kernel.org/linux-arm-kernel/20170130110512.6943-1-thierry.reding@gmail.com/
->>>
->>>   I also have a set of patches that build on top of this and try to add
->>>   something slightly more formal by adding a power/reset framework that
->>>   driver can register with. If we can get this series merged, I'll find
->>>   some time to refresh those patches and send out for review again.
->>
->> What happened to this patch series? Is there any chance we will get it
->> included at some point? It is included in the Android13-5.10 tree AFAICT
->>
+Hi Mauro,
+
+On 2021/9/28 15:40, Mauro Carvalho Chehab wrote:
+> From: Yu Chen <chenyu56@huawei.com>
 > 
-> It's in mainline since v5.14, AFAICS.
+> This patch adds binding documentation to support USB HUB and
+> USB data role switch of HiSilicon HiKey960 and HiKey970 boards.
+> 
+> [mchehab: updated OF schema and added HiKey970 example]
+> Signed-off-by: Yu Chen <chenyu56@huawei.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Acked-by: Wei Xu <xuwei5@hisilicon.com>
+
+Thanks!
+
+Best Regards,
+Wei
+
+> ---
+>  .../bindings/misc/hisilicon,hikey-usb.yaml    | 87 +++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+> new file mode 100644
+> index 000000000000..761ab686121a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2019 Linaro Ltd.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/hisilicon,hikey-usb.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiKey960/970 onboard USB GPIO Hub
+> +
+> +maintainers:
+> +  - John Stultz <john.stultz@linaro.org>
+> +
+> +description: |
+> +  Supports the onboard USB GPIO hubs found on HiKey960/970.
+> +  Such hubs require a power supply for the USB I/O. Depending on the
+> +  exact hub model, after USB I/O is powered up, a reset should be needed.
+> +
+> +  It also acts as a role-switch intermediary to detect the state of
+> +  the USB-C port, to switch the hub into dual-role USB-C or host mode,
+> +  which enables and powers up the onboard USB-A host ports.
+> +
+> +  Schematics about such hubs can be found here:
+> +    https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
+> +    https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-docs/files/hikey970-schematics.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - hisilicon,usbhub
+> +
+> +  typec-vbus-gpios:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: phandle to the typec-vbus gpio
+> +
+> +  otg-switch-gpios:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: phandle to the otg-switch gpio
+> +
+> +  hub-reset-en-gpios:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: phandle to the hub reset gpio
+> +
+> +  usb-role-switch:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: Support role switch.
+> +
+> +  hub-vdd-supply:
+> +    description: regulator for hub power
+> +
+> +  port:
+> +    description: |
+> +      describe hadware connections between USB endpoints.
+> +      Two ports are supported: the first being the endpoint that will
+> +      be notified by this driver, and the second being the endpoint
+> +      that notifies this driver of a role switch.
+> +
+> +required:
+> +  - compatible
+> +  - hub-vdd-supply
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    usb-hub {
+> +        compatible = "hisilicon,usbhub";
+> +        typec-vbus-gpios = <&gpio25 2 GPIO_ACTIVE_HIGH>;
+> +        otg-switch-gpios = <&gpio25 6 GPIO_ACTIVE_HIGH>;
+> +        hub-reset-en-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+> +        hub-vdd-supply = <&usb_hub_vdd>;
+> +        usb-role-switch;
+> +        port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            usb_ep0: endpoint@0 {
+> +                reg = <0>;
+> +                remote-endpoint = <&dwc3_role_switch>;
+> +            };
+> +            usb_ep1: endpoint@1 {
+> +                reg = <1>;
+> +                remote-endpoint = <&rt1711h_ep>;
+> +            };
+> +        };
+> +    };
 > 
 
-Yes, indeed.
-
-Guenter
