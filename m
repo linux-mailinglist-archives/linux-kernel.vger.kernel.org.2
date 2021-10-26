@@ -2,75 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24AD43AD19
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D4F43AD1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhJZHXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:23:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234027AbhJZHWw (ORCPT
+        id S232907AbhJZHXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234463AbhJZHXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:22:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635232828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdOuNDX3/xmLdrBREE9VW7efZLufc82SxJkpEXQ7fj8=;
-        b=Vb0s5D4GHDUOg+WUNwlHcKDExRw7u+94l1gHxPXSikQ6bpXrzMny3KdsnfgG7PKDn2CcGj
-        abtWumQZsO4mPPaMrPqXjT79tEFiuCkJv0DFNbqFgMN2NP/HCNCPlw8fsx3+Uw7oJlwWOw
-        IpwZdK53BOP+UNjXbr1i5k2VCODT9Dw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-HVBOHg-bMkqAYUDSmK77LA-1; Tue, 26 Oct 2021 03:20:23 -0400
-X-MC-Unique: HVBOHg-bMkqAYUDSmK77LA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2AF55074B;
-        Tue, 26 Oct 2021 07:20:21 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-12-80.pek2.redhat.com [10.72.12.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D208619C79;
-        Tue, 26 Oct 2021 07:20:18 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH V4 4/4] virtio-scsi: don't let virtio core to validate used buffer length
-Date:   Tue, 26 Oct 2021 15:20:00 +0800
-Message-Id: <20211026072000.8699-5-jasowang@redhat.com>
-In-Reply-To: <20211026072000.8699-1-jasowang@redhat.com>
-References: <20211026072000.8699-1-jasowang@redhat.com>
+        Tue, 26 Oct 2021 03:23:16 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4CAC061243
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 00:20:52 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 136-20020a1c008e000000b0032ccae3b331so524197wma.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 00:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uK4FEnHzYo2iEEhaGJnf6I9ZRkM8/MsJyen6l90ZGKI=;
+        b=L40b46cvNdnoFhEJgc4ozV6AU+8HP3JD9axeHoM1+le7lYvCvQzY34TfMZqx/L2q/0
+         ug63G0r7I68BS/CtcWqpLnCMbmJlNSbkxElIbYZioptOg0yw/s7ST4dpS/4FZzX5UwvD
+         WGhWgKCcYfbjp9NgyazdiWncis/Brnk5cRx+PCDZD9oD0dsh5vwG7KEcNgkjg4LmuQik
+         oEhOQS1B6biVGXQ32ihYHZDvnABGdCt0kIFIRZsrkFR72BUCbu6vU4nFu5p8/TIxsHtl
+         NKbMydmy1tBt8K6jZQ/zBUrGyDVx2hdxcc+nb97ZKG+6QhNZ4pmUhurmX7kRgjjUO+0o
+         WFMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uK4FEnHzYo2iEEhaGJnf6I9ZRkM8/MsJyen6l90ZGKI=;
+        b=u3pbWRz9KcrW0FwnbYi3+KTTSECHyHwQUIsj55drnfPvmz57Kl08eLrN2velMs52hz
+         itmzLfY1JF5rexlm0vL+uSacnPI0FFo4JVEWQJ5Hb3bD7XnhOX8DX0Bf6VPzrDzMoPFS
+         ksPeZQhBj0ITHSqsAGJvH1M23jz3/YQ+2+aBGQqEdy9qPIrzIn77wuBm7H2J9fsaa0cT
+         9ww54tTlGxrZH/YKWkr0NDXKa9xeBSqoQbm758DNUHZw9wsg3sEF5pbBlw2Oj/uEtl2R
+         unkHvWAQl3zFTe7XMJkD7yLtcXNtdS0idgrcOEO8D/cpzI1iSNMtHF9qh8c45utTeT1B
+         NM3A==
+X-Gm-Message-State: AOAM533CEYHx4p+DiNNkrXzOnz5y/X27Ry80e6O2AfV57lYvEvG3gUg0
+        ftd5kHdDl8/oj+8QH8SK8ePwEvwVuioWQauuu3pGMA==
+X-Google-Smtp-Source: ABdhPJxaZPO1AnPCFdVJO9RU5s/rQ6FpcabewmEN+KQwwXwpufrKWHvczAximO9dbWgB2kgUPqL0aH5nekYca6HIiQg=
+X-Received: by 2002:a05:600c:354c:: with SMTP id i12mr26131590wmq.59.1635232851263;
+ Tue, 26 Oct 2021 00:20:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <CAAhSdy3DWOux6HiDU6fPazZUq=FOor8_ZEoqh6FBZru07NyxLQ@mail.gmail.com>
+ <20211021115706.1060778-1-ran.jianping@zte.com.cn>
+In-Reply-To: <20211021115706.1060778-1-ran.jianping@zte.com.cn>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 26 Oct 2021 12:50:40 +0530
+Message-ID: <CAAhSdy3mu-eKUYjEQmQoDODeKnzXEErkmLrgtztsFN7-+o3rHg@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V:KVM: remove unneeded semicolon
+To:     cgel.zte@gmail.com
+Cc:     Anup Patel <anup.patel@wdc.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        kvm-riscv@lists.infradead.org, KVM General <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        ran jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never tries to use used length, so the patch prevents the virtio
-core from validating used length.
+On Thu, Oct 21, 2021 at 5:27 PM <cgel.zte@gmail.com> wrote:
+>
+> From: ran jianping <ran.jianping@zte.com.cn>
+>
+>  Elimate the following coccinelle check warning:
+>  ./arch/riscv/kvm/vcpu_sbi.c:169:2-3: Unneeded semicolon
+>  ./arch/riscv/kvm/vcpu_exit.c:397:2-3: Unneeded semicolon
+>  ./arch/riscv/kvm/vcpu_exit.c:687:2-3: Unneeded semicolon
+>  ./arch/riscv/kvm/vcpu_exit.c:645:2-3: Unneeded semicolon
+>  ./arch/riscv/kvm/vcpu.c:247:2-3: Unneeded semicolon
+>  ./arch/riscv/kvm/vcpu.c:284:2-3: Unneeded semicolon
+>  ./arch/riscv/kvm/vcpu_timer.c:123:2-3: Unneeded semicolon
+>  ./arch/riscv/kvm/vcpu_timer.c:170:2-3: Unneeded semicolon
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/scsi/virtio_scsi.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied to riscv_kvm_next, Thanks!
 
-diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
-index 07d0250f17c3..03b09ecea42d 100644
---- a/drivers/scsi/virtio_scsi.c
-+++ b/drivers/scsi/virtio_scsi.c
-@@ -977,6 +977,7 @@ static unsigned int features[] = {
- static struct virtio_driver virtio_scsi_driver = {
- 	.feature_table = features,
- 	.feature_table_size = ARRAY_SIZE(features),
-+	.suppress_used_validation = true,
- 	.driver.name = KBUILD_MODNAME,
- 	.driver.owner = THIS_MODULE,
- 	.id_table = id_table,
--- 
-2.25.1
+Regards,
+Anup
 
+> ---
+>  arch/riscv/kvm/vcpu.c       | 4 ++--
+>  arch/riscv/kvm/vcpu_exit.c  | 6 +++---
+>  arch/riscv/kvm/vcpu_sbi.c   | 2 +-
+>  arch/riscv/kvm/vcpu_timer.c | 4 ++--
+>  4 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> index c44cabce7dd8..912928586df9 100644
+> --- a/arch/riscv/kvm/vcpu.c
+> +++ b/arch/riscv/kvm/vcpu.c
+> @@ -244,7 +244,7 @@ static int kvm_riscv_vcpu_get_reg_config(struct kvm_vcpu *vcpu,
+>                 break;
+>         default:
+>                 return -EINVAL;
+> -       };
+> +       }
+>
+>         if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
+>                 return -EFAULT;
+> @@ -281,7 +281,7 @@ static int kvm_riscv_vcpu_set_reg_config(struct kvm_vcpu *vcpu,
+>                 break;
+>         default:
+>                 return -EINVAL;
+> -       };
+> +       }
+>
+>         return 0;
+>  }
+> diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
+> index 13bbc3f73713..7f2d742ae4c6 100644
+> --- a/arch/riscv/kvm/vcpu_exit.c
+> +++ b/arch/riscv/kvm/vcpu_exit.c
+> @@ -394,7 +394,7 @@ static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>                 break;
+>         default:
+>                 return -EOPNOTSUPP;
+> -       };
+> +       }
+>
+>         /* Update MMIO details in kvm_run struct */
+>         run->mmio.is_write = true;
+> @@ -642,7 +642,7 @@ int kvm_riscv_vcpu_mmio_return(struct kvm_vcpu *vcpu, struct kvm_run *run)
+>                 break;
+>         default:
+>                 return -EOPNOTSUPP;
+> -       };
+> +       }
+>
+>  done:
+>         /* Move to next instruction */
+> @@ -684,7 +684,7 @@ int kvm_riscv_vcpu_exit(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>                 break;
+>         default:
+>                 break;
+> -       };
+> +       }
+>
+>         /* Print details in-case of error */
+>         if (ret < 0) {
+> diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
+> index ebdcdbade9c6..eb3c045edf11 100644
+> --- a/arch/riscv/kvm/vcpu_sbi.c
+> +++ b/arch/riscv/kvm/vcpu_sbi.c
+> @@ -166,7 +166,7 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
+>                 /* Return error for unsupported SBI calls */
+>                 cp->a0 = SBI_ERR_NOT_SUPPORTED;
+>                 break;
+> -       };
+> +       }
+>
+>         if (next_sepc)
+>                 cp->sepc += 4;
+> diff --git a/arch/riscv/kvm/vcpu_timer.c b/arch/riscv/kvm/vcpu_timer.c
+> index ddd0ce727b83..5c4c37ff2d48 100644
+> --- a/arch/riscv/kvm/vcpu_timer.c
+> +++ b/arch/riscv/kvm/vcpu_timer.c
+> @@ -120,7 +120,7 @@ int kvm_riscv_vcpu_get_reg_timer(struct kvm_vcpu *vcpu,
+>                 break;
+>         default:
+>                 return -EINVAL;
+> -       };
+> +       }
+>
+>         if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
+>                 return -EFAULT;
+> @@ -167,7 +167,7 @@ int kvm_riscv_vcpu_set_reg_timer(struct kvm_vcpu *vcpu,
+>         default:
+>                 ret = -EINVAL;
+>                 break;
+> -       };
+> +       }
+>
+>         return ret;
+>  }
+> --
+> 2.25.1
+>
