@@ -2,250 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ABC43AB6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0FD43AB6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbhJZErb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 00:47:31 -0400
-Received: from mx0a-00622301.pphosted.com ([205.220.163.205]:11734 "EHLO
-        mx0a-00622301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233481AbhJZEr3 (ORCPT
+        id S234776AbhJZEsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 00:48:30 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:47510 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233481AbhJZEs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 00:47:29 -0400
-Received: from pps.filterd (m0241924.ppops.net [127.0.0.1])
-        by mx0a-00622301.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19Q4iaa9025829;
-        Mon, 25 Oct 2021 21:44:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ambarella.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=com20210415pp;
- bh=Es/LgqvvH1PWKLZHkueSvTvzJfyEaySsRlILIgbg7CM=;
- b=IlrjPA1At9J6+welVMuuQxgfREOvZBhXpp/sFLc6ygKNjzHsfcTZ+7d9sPT45Gm+ZI5n
- +PubvlajKmBOPj3wtQaKJww4Puz5rmb1vc8n4X9sbKbTpHCTSq6jGCIrvKlSpxp81xoL
- 96R/RWtXD6RzB6zwNwYZlpcqpUEDS2G6HHUKGNWeuSZzoLqVkIyEEDKRIVqaNs2/339h
- UOGYF+I0N8kC9I4RlOWdQdANOmEdoS614pmUQ/R7wl84MKi5B+UNv9NzEThPVZSmUjQm
- 2YXnA4KbjGVUQR//dc/oPicX0pwdoej0R29JSHvLcIzHUxDdSBeU7fKEwEK5XI8IOyeo Dg== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
-        by mx0a-00622301.pphosted.com with ESMTP id 3bx53gg4q7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 21:44:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IpzoHwaEBkkxQHbjueKyRYD943CxJ88s1th8JKqwB8TvHBrgGe+Ue0vFcRod2BwKrRN9qhTSMKQ0qaLbfXi76Qp4ZL/R/opaKxHD4jG0S+v4ul+RNpXtwJTdwL9yfQxwnpt0ReTof1rMS2aegTQtykb2OZ7pZ7QR6N1gib6P8F5SVpJ994JlNxGzzWZVBVULTvSOUYsFpybhbiH8Qqpgj4T3PkdkRsRYoNyt+7Jl9Zf1fm7jcANqyQH2FhzG36QKKrzwfTo4c7cGNrzi22G1Ccywg9XhwHH+hnExi/O8GIG2ZZKdK8jQMcUze2hSr1Hj/QLYrHaQ7VNg0RBIlvUVig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TOMJCGeVsbMI9Q20c4MwmZhXLiGicOdJ2zfnJYehObU=;
- b=nWGAPBkDad5lBVnLJTMD9WLQpHSFnxLFhp/mE1jNrRiyIWy7JE9Hccfga8w3mO+evIxiMts0hEqEbbkf/kr3sIeVXsvJrvyWKtPT7q0qCygkwMOY82pUs5/5URO8WTny/6S9DcPitxokeHREWmlEgL+OaLfcO/DkGVCAPMCYkBQlB7iC56ZLPrMsR9h2zrbS1VRriXNAFYBtL7a6HFHpwaCpKCvHtE8ga11xGH/c+DgVsGgu+E9/J6iYsHtlxecMYdebXP2cpRGdLVQPbfiM1K+QMLg4h13dfmHW4jjK1ABE4Nz8ymJ1ClBkMy4C0C4WlobhPxXRIttkyNp/r5HG+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ambarella.com; dmarc=pass action=none
- header.from=ambarella.com; dkim=pass header.d=ambarella.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=ambarella.onmicrosoft.com; s=selector1-ambarella-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TOMJCGeVsbMI9Q20c4MwmZhXLiGicOdJ2zfnJYehObU=;
- b=h5+ka1zbesoYat3IlGdwnQhfZJ2JQbSTXLGxljpSlAMGnoOVjY1wY3CrWN2f4KpmVII160AqeY+DMzbZj09sawv1QYTiW0loo/CBvCQEqa3VrF0ptH/J+wggJqMlzzYGndeMre/vXMYvuUKbXJV2bLkEKhRI1elB6y1TIqnkvuI=
-Received: from CH2PR19MB4024.namprd19.prod.outlook.com (2603:10b6:610:92::22)
- by CH2PR19MB3672.namprd19.prod.outlook.com (2603:10b6:610:45::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Tue, 26 Oct
- 2021 04:44:32 +0000
-Received: from CH2PR19MB4024.namprd19.prod.outlook.com
- ([fe80::8143:f3e0:9fd3:a8e7]) by CH2PR19MB4024.namprd19.prod.outlook.com
- ([fe80::8143:f3e0:9fd3:a8e7%5]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
- 04:44:32 +0000
-From:   Li Chen <lchen@ambarella.com>
-To:     Keith Busch <kbusch@kernel.org>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-Subject: RE: [EXT] Re: nvme may get timeout from dd when using different
- non-prefetch mmio outbound/ranges
-Thread-Topic: [EXT] Re: nvme may get timeout from dd when using different
- non-prefetch mmio outbound/ranges
-Thread-Index: AdfHKUVD4pdAQATdSnyIoo960S9VyQCjl4+AAAEy0AAAFvQC8AAB+KwAAADI3xA=
-Date:   Tue, 26 Oct 2021 04:44:32 +0000
-Message-ID: <CH2PR19MB4024FEB7A178841BD7EB85F9A0849@CH2PR19MB4024.namprd19.prod.outlook.com>
-References: <CH2PR19MB4024E04EBD0E4958F0BBB2ACA0809@CH2PR19MB4024.namprd19.prod.outlook.com>
- <20211025154739.GA4760@bhelgaas>
- <20211025162158.GA2335242@dhcp-10-100-145-180.wdc.com>
- <CH2PR19MB4024372120E0E74C8F2CB685A0849@CH2PR19MB4024.namprd19.prod.outlook.com>
- <20211026041538.GB2335242@dhcp-10-100-145-180.wdc.com>
-In-Reply-To: <20211026041538.GB2335242@dhcp-10-100-145-180.wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=ambarella.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5f3dcee5-6e78-4cd5-0245-08d9983b4dff
-x-ms-traffictypediagnostic: CH2PR19MB3672:
-x-microsoft-antispam-prvs: <CH2PR19MB36721623C8432260D78D8DDAA0849@CH2PR19MB3672.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RVbHC5PWon6k0PUqTC2vabzzMp7pQsEQhive8hU9HRNfyiiIocIVVpWMZU7Vai9E8RTKK62GdUIcLkvEylW/wYK2kPVBWYJfwlIV+vYG3J60kdAaztsAa5ddmcGXg29T1uwMrU6B42lnlRQ4htlyertvNs49cdxtRHUHbwM8bt4rVXogywrKSDjQSvjRsZ/CQnuf/ALCJlyi5gnhNRpD91uG73KVHAYUJKU3QYOvBOD7RZWfv2wINpTTmei0AThAurWiLTgFR7ucPXbflxu8XVCSlaxiGzcKH7Z3u1sDXcrPPWtwemsZmgoKgg/JDHW3FrCeRt5Dg6Nz9t5S0iEXbLnPSYoWo2X4O0enV8AJVpFEztiyRYt9c7nDOEOwqdMhn7GBSfbiWkht30ihmAETOKgH6WYuEB1fg40ki4gMmKjpbZGmDzUg8CxpKgC/qOmuwLAHpuywV7pek3KfgIFalCfE3ywrJ+4vFP9GXKk41weB2a1NE1kB/jHuURIrFNcDG8Vx/VpWfHmtW7jpqWzT5ICkkFnPBsSulIkd1wnubdL/iazpxJyKAGUHT16OC1SU+VXeDfjsxWvX7bzP4R0EPPX5sCOCczwh86dGNoN0Z9XIv9zMYl7GVX1S//0o00Q9rbjQcUUZfGDF7AmjY99axsRpHcS4W/1J6GOCe0j5DH3qwanWfVGvmpvw/+57YQn2y0HTLwquufM910AOXJ/2FbwZ2+NtFmwCYDGEYpNHt1k=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR19MB4024.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(71200400001)(186003)(26005)(7696005)(6506007)(33656002)(83380400001)(5660300002)(55016002)(53546011)(9686003)(66476007)(38100700002)(966005)(122000001)(66446008)(7416002)(316002)(66946007)(4326008)(8936002)(66556008)(88996005)(508600001)(64756008)(86362001)(6916009)(54906003)(8676002)(2906002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?mBbfSf/jjHIqPfz5wCG5HvJQ1nnM9cK/KpUZ5sWWgQDwO1Qd35DwN4PJbH+i?=
- =?us-ascii?Q?mEPHftsmYLJU3gAfEUl1MtC+n4r01fUOjUHohipfG+0iTm37jSOZN/4Bnhh7?=
- =?us-ascii?Q?ldFg57Ra8225rG9qkb2NwNRs0PSB0SLIQ5H1h7Qzu7gPvmOOl+UOToGl1u1n?=
- =?us-ascii?Q?VG1tnl+1OELhwwZSmdKur8q0sQwChRvYnLwruCHEih5uCTh3ByHcHnGgD8NI?=
- =?us-ascii?Q?vUHD/MHKe8rd0kpMa9VaZv/MvPuqMo802uDdI174KLysf/Z6iAM9GO17+M/K?=
- =?us-ascii?Q?5NR71UJINbh8tO+An0DIdwFCMerNyG2V+7I6y51vtsWBAbSs9u5iy8FNgpIO?=
- =?us-ascii?Q?maOZv0x9WH0RdzrqT60to3hJ2e2SgP2bFJcahHjnfrJ9zzIjGcjfgzrN89fs?=
- =?us-ascii?Q?PFhAoZWxoE4uCM08sWcgX3r9W4IZTJPq/SJx63RkAfMW4lCFp4Nn/odGb/it?=
- =?us-ascii?Q?szlCr8kKgVvihxLEyGLXiDYRAKjNLS558ihb8leHMdyX+PfmJjt5/3ZuYU3Z?=
- =?us-ascii?Q?2XwHcRWKpMXW0ki8O3h3LyhMm3+lK0OBDjJXDwiaGH4P7disEBIgTK0D8lha?=
- =?us-ascii?Q?+rpiOuv6Zy4tnFBMYQ5huvwqhoKRGvSYUJK3cDvPlp9SAJL4tGq9pDKwTxTA?=
- =?us-ascii?Q?AFcJkPYOqEXhD7N5gTOCM5nIrVU5/6mNrYevYimdowfO2eS/MlBeMdWNTjKz?=
- =?us-ascii?Q?VfgKFCScW4vc0FtST8vi0+/Ig9KORrSOiYw39aOmOvfx92AW785Fz+wpeBu5?=
- =?us-ascii?Q?BPWZSzj0RSnz+8j6HBYZpH1M9l3BKMJk/Ora4PXJfYICahakFSQwe2haDkPn?=
- =?us-ascii?Q?PJYu3uv5zjkVBU10KICQfdi5P2MDtxwiNPhHYaSSbNe6mQ0PbCrPyDVNx/qF?=
- =?us-ascii?Q?gFVKFMzdi+oY2qRWPnofAs3E7f62WFdLg0XlqdeXkoMivP5mVb82K85BxcTn?=
- =?us-ascii?Q?FMYCs/qUTJ3xzQ8wlVolWqu2MzNXOFSLSi7ugaYzJf9NyOFzq0oH7g7jBxPx?=
- =?us-ascii?Q?ERIb2hxvj0GAvEZsr8mkT6AGulNzy/8XdPWTR8MbiikB9As5KnVuQMw9lfds?=
- =?us-ascii?Q?7Z/FI6Hlxqpzem/gNmfF0P1dMCIu9/rj8PUOeuo19xDfdST9/Yfw9BvqTp5u?=
- =?us-ascii?Q?98sVo5hpzVJkDzzxuuSzvckxqtJRBCAU2ObRUOKj3mhxCCmFnHSdwYT2Mn3E?=
- =?us-ascii?Q?WiwToen5pENGmtEbQPNcnTDpOqvn0K9hLM2mbxJRywdi41wauAZ2SRfAUe7l?=
- =?us-ascii?Q?hkQrOeGzTkM6svw1E6vrew7XjsWinN4Rm6666O00IgxbMCzFlYuTZQEN4EX6?=
- =?us-ascii?Q?3C0crhCaiyqWoIKvw/rHxSVz/qkIZ6b3uanr8GjnKRIN+PNMKS4KiUCDpZhD?=
- =?us-ascii?Q?EnB/3rJrO8CFk8PEpA0AOMxndu+bs11L9m43Hr0K/IwSGr9rvmxqVBpXso0w?=
- =?us-ascii?Q?P49TbdgY1CRzhDxbD9nkZxPGO0XcfBJu6ar7XfWfQaZj/Z+9qG+D/smPgrhM?=
- =?us-ascii?Q?yZ6N0CmylUvJslaKO5vxH+TVseidXUdjLtNb5MIecwSf1TKLWC1UV6Uhmd+i?=
- =?us-ascii?Q?afZHH5uYSgBydMyL2acKBb7afzV+vWej8BgVkwv5EEe3d9XZItb1R6qcH/ei?=
- =?us-ascii?Q?1iltoyBL1aDJzZDJ/UJpz0k=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 26 Oct 2021 00:48:28 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:35452)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mfELc-00ATX9-JC; Mon, 25 Oct 2021 22:46:04 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34936 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mfELb-004bCG-Is; Mon, 25 Oct 2021 22:46:04 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+References: <87y26nmwkb.fsf@disp2133>
+        <20211020174406.17889-13-ebiederm@xmission.com>
+        <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
+        <9416e8d7-5545-4fc4-8ab0-68fddd35520b@kernel.org>
+        <CAHk-=whJETM0MHqWQKCVALBkJX-Th5471z5FW3gFJO5c73L6QA@mail.gmail.com>
+Date:   Mon, 25 Oct 2021 23:45:23 -0500
+In-Reply-To: <CAHk-=whJETM0MHqWQKCVALBkJX-Th5471z5FW3gFJO5c73L6QA@mail.gmail.com>
+        (Linus Torvalds's message of "Mon, 25 Oct 2021 16:15:44 -0700")
+Message-ID: <87o87ctmvw.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: ambarella.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR19MB4024.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f3dcee5-6e78-4cd5-0245-08d9983b4dff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2021 04:44:32.6645
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3ccd3c8d-5f7c-4eb4-ae6f-32d8c106402c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UbhUEGVS+xoKAkNQ4JXKoMOOIveZ8CtuG8Uz1GC38rNIDribws2l5SMb+nb1oe1Tjzm8r5x9NSghMRsFjryq8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR19MB3672
-X-Proofpoint-ORIG-GUID: HPJj5TW_nMghPZ21KRGKCoUmzB71p3U0
-X-Proofpoint-GUID: HPJj5TW_nMghPZ21KRGKCoUmzB71p3U0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_08,2021-10-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- adultscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 malwarescore=0
- phishscore=0 suspectscore=0 impostorscore=0 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110260025
+Content-Type: text/plain
+X-XM-SPF: eid=1mfELb-004bCG-Is;;;mid=<87o87ctmvw.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18a6D5O+YrTECRKk40/H4Oj2815LtR98b0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4920]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 382 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 5.0 (1.3%), b_tie_ro: 3.5 (0.9%), parse: 1.14
+        (0.3%), extract_message_metadata: 11 (2.9%), get_uri_detail_list: 2.6
+        (0.7%), tests_pri_-1000: 10 (2.6%), tests_pri_-950: 1.04 (0.3%),
+        tests_pri_-900: 0.81 (0.2%), tests_pri_-90: 56 (14.7%), check_bayes:
+        55 (14.3%), b_tokenize: 6 (1.6%), b_tok_get_all: 9 (2.4%),
+        b_comp_prob: 2.2 (0.6%), b_tok_touch_all: 34 (8.8%), b_finish: 0.79
+        (0.2%), tests_pri_0: 285 (74.6%), check_dkim_signature: 0.41 (0.1%),
+        check_dkim_adsp: 2.8 (0.7%), poll_dns_idle: 0.25 (0.1%), tests_pri_10:
+        2.2 (0.6%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 13/20] signal: Implement force_fatal_sig
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Keith
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-> -----Original Message-----
-> From: Keith Busch [mailto:kbusch@kernel.org]
-> Sent: Tuesday, October 26, 2021 12:16 PM
-> To: Li Chen
-> Cc: Bjorn Helgaas; linux-pci@vger.kernel.org; Lorenzo Pieralisi; Rob Herr=
-ing;
-> kw@linux.com; Bjorn Helgaas; linux-kernel@vger.kernel.org; Tom Joseph; Je=
-ns
-> Axboe; Christoph Hellwig; Sagi Grimberg; linux-nvme@lists.infradead.org
-> Subject: Re: [EXT] Re: nvme may get timeout from dd when using different =
-non-
-> prefetch mmio outbound/ranges
->=20
-> On Tue, Oct 26, 2021 at 03:40:54AM +0000, Li Chen wrote:
-> > My nvme is " 05:00.0 Non-Volatile memory controller: Samsung Electronic=
-s Co
-> Ltd NVMe SSD Controller 980". From its datasheet,
-> https://urldefense.com/v3/__https://s3.ap-northeast-
-> 2.amazonaws.com/global.semi.static/Samsung_NVMe_SSD_980_Data_Sheet_R
-> ev.1.1.pdf__;!!PeEy7nZLVv0!3MU3LdTWuzON9JMUkq29zwJM4d7g7wKtkiZszTu-
-> PVepWchI_uLHpQGgdR_LEZM$ , it says nothing about CMB/SQEs, so I'm not sur=
-e.
-> Is there other ways/tools(like nvme-cli) to query?
->=20
-> The driver will export a sysfs property for it if it is supported:
->=20
->   # cat /sys/class/nvme/nvme0/cmb
->=20
-> If the file doesn't exist, then /dev/nvme0 doesn't have the capability.
->=20
+> On Mon, Oct 25, 2021 at 3:41 PM Andy Lutomirski <luto@kernel.org> wrote:
+>>
+>> I'm rather nervous about all this, and I'm also nervous about the
+>> existing code.  A quick skim is finding plenty of code paths that assume
+>> force_sigsegv (or a do_exit that this series touches) are genuinely
+>> unrecoverable.
+>
+> I was going to say "what are you talking about", because clearly Eric
+> kept it all fatal.
+>
+> But then looked at that patch a bit more before I claimed you were wrong.
+>
+> And yeah, Eric's force_fatal_sig() is completely broken.
+>
+> It claims to force a fatal signal, but doesn't actually do that at
+> all, and is completely misnamed.
+>
+> It just uses "force_sig_info_to_task()", which still allows user space
+> to catch signals - so it's not "fatal" in the least. It only punches
+> through SIG_IGN and blocked signals.
+>
+> So yeah, that's broken.
+>
+> I do still think that that could the behavior we possibly want for
+> that "can't write updated vm86 state back" situation, but for
+> something that is called "fatal", it really needs to be fatal.
 
-# ls /sys/class/nvme/nvme0/
-address            model              rescan_controller  subsysnqn
-cntlid             numa_node          reset_controller   subsystem
-dev                nvme0n1            serial             transport
-device             power              sqsize             uevent
-firmware_rev       queue_count        state
+Once the code gets as far as force_sig_info_to_task the only
+bit that is really missing is to make the signals fatal is:
 
-my nvme doesn't cmb.
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 6a5e1802b9a2..fde043f1e59d 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1048,7 +1048,6 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+                /*
+                 * This signal will be fatal to the whole group.
+                 */
+-               if (!sig_kernel_coredump(sig)) {
+                        /*
+                         * Start a group exit and wake everybody up.
+                         * This way we don't have other threads
+@@ -1065,7 +1064,6 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+                                signal_wake_up(t, 1);
+                        } while_each_thread(p, t);
+                        return;
+-               }
+        }
+ 
+        /*
+
+AKA the only real bit missing is the interaction with the coredump code.
+
+Now we can't just delete sig_kernel_coredump a replacement has to be
+written.   And the easiest replacement depends on my other set of
+changes that are already in linux-next to make coredumps per
+signal_struct instead of per mm.
+
+Which means that in a release or two force_fatal_sig will reliably do
+what the name says.
 
 
-> > > > I don't know how to interpret "ranges".  Can you supply the dmesg a=
-nd
-> > > > "lspci -vvs 0000:05:00.0" output both ways, e.g.,
-> > > >
-> > > >   pci_bus 0000:00: root bus resource [mem 0x7f800000-0xefffffff win=
-dow]
-> > > >   pci_bus 0000:00: root bus resource [mem 0xfd000000-0xfe7fffff win=
-dow]
-> > > >   pci 0000:05:00.0: [vvvv:dddd] type 00 class 0x...
-> > > >   pci 0000:05:00.0: reg 0x10: [mem 0x.....000-0x.....fff ...]
-> > > >
-> > > > > Question:
-> > > > > 1.  Why dd can cause nvme timeout? Is there more debug ways?
-> > >
-> > > That means the nvme controller didn't provide a response to a posted
-> > > command within the driver's latency tolerance.
-> >
-> > FYI, with the help of pci bridger's vendor, they find something interes=
-ting:
-> "From catc log, I saw some memory read pkts sent from SSD card, but its m=
-emory
-> range is within the memory range of switch down port. So, switch down por=
-t will
-> replay UR pkt. It seems not normal." and "Why SSD card send out some memo=
-ry
-> pkts which memory address is within switch down port's memory range. If s=
-o,
-> switch will response UR pkts". I also don't understand how can this happe=
-n?
->=20
-> I think we can safely assume you're not attempting peer-to-peer, so that
-> behavior as described shouldn't be happening. It sounds like the memory
-> windows may be incorrect. The dmesg may help to show if something appears
-> wrong.
 
-Dmesg has been pasted in https://marc.info/?l=3Dlinux-pci&m=3D1635222810246=
-80&w=3D3
 
-Yes, peer-to-peer cannot happen, nvme is my only ep:
+So the question is: Should I name force_fatal_sig to something else in
+the meantime?  What should I name it?
 
-# lspci -i /usr/share/misc/pci.ids
-00:00.0 PCI bridge: Cadence Design Systems, Inc. Device 0100
-01:00.0 PCI bridge: Pericom Semiconductor Device c016 (rev 07)
-02:02.0 PCI bridge: Pericom Semiconductor Device c016 (rev 06)
-02:04.0 PCI bridge: Pericom Semiconductor Device c016 (rev 06)
-02:06.0 PCI bridge: Pericom Semiconductor Device c016 (rev 06)
-05:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD=
- Controller 980
 
-**********************************************************************
-This email and attachments contain Ambarella Proprietary and/or Confidentia=
-l Information and is intended solely for the use of the individual(s) to wh=
-om it is addressed. Any unauthorized review, use, disclosure, distribute, c=
-opy, or print is prohibited. If you are not an intended recipient, please c=
-ontact the sender by reply email and destroy all copies of the original mes=
-sage. Thank you.
+
+
+I do intend to fix that bit in complete_signal, as well as updating the
+code in force_siginfo_to_task so that it doesn't need to change the
+blocked state or the signal handler.
+
+These special cases have been annoying me for years and now Andy has
+found how they are actually hurting us.  So I do intend to fix that code
+as quickly as being careful and code review allows.  Which I think means
+one additional development cycle after this one.
+
+Eric
+
