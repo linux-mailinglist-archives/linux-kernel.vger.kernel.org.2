@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F6A43B01D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC06643B029
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhJZKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:38:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60884 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234299AbhJZKhu (ORCPT
+        id S233537AbhJZKjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234608AbhJZKiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:37:50 -0400
-Date:   Tue, 26 Oct 2021 10:35:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635244525;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hW+1lf3WNllj8PoWQyChg22cMeOWoPy0RwKAFpx0GwE=;
-        b=tArqtTyTiIdGaalAlaqVd5bHucsUZe6HJSYaKsx05Bk4lWlI4kXa2JuKFPTfXSHfl6WmI+
-        oYlzsdUGUN0xl/RExoyrq4XvAtU43E//tcbQRxSbQJALpjV5h3HSRZ3rPM3LwcRA3WBSyW
-        ikOdkpOKgggO+xjrL1Fqvpe2EdGDtqjkRMQifARIQw3agpZI6guLHjxxwKe22XSzxBgNVC
-        o3D/TId9k9QFe4FNZv+KBBwcMH4RLbZ6Uq47KgfqHo3jgvl8Y44USw/lDawI4hqy+3gAd/
-        odVmCRf3IunVQGZOBW4L42SfyrW6mF4lhcnBh5Gje44QGrWjySood69PESL8hQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635244525;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hW+1lf3WNllj8PoWQyChg22cMeOWoPy0RwKAFpx0GwE=;
-        b=2uZmpQEIYt6ndmVpTcMIAFw15wNq3KFXT75kd1qqXR3J1LIaykgct3/lBGo3x8l/I7uSiy
-        IEcjMmu7Q3CuvlDQ==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] MIPS: loongson64: Drop call to irq_cpu_offline()
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Serge Semin <fancer.lancer@gmail.com>, tglx@linutronix.de
-In-Reply-To: <20211021170414.3341522-2-maz@kernel.org>
-References: <20211021170414.3341522-2-maz@kernel.org>
+        Tue, 26 Oct 2021 06:38:19 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FE2C061745;
+        Tue, 26 Oct 2021 03:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=zFxsPJg3WPcNJY0FhnIZ6abtZyzPYauR+kJ9zIn0VPo=; b=pA2T6nRAYNHMFL+mB1vnyeWcBH
+        rCb31LMoADZXZUodL/NTT76iO4ALgVY4m/QC3ke4px0pvJOL0qHKAiFMS+lw4P38P0iJEy7Z7+rOR
+        VNKIUXXejHKAuXVRQzza6fqFK9v+H8COMJD3f5B/opCbJmRWBc2cCd4pI07LwH88uJsjRlVAm+kQc
+        umxxnAfj1uVHAiKt+bF9ywqTJCebMYYAyzw0EulAO46DXiGLkOwAqqMeaDGOZtYhg7cqlrwlx/1XY
+        GuRwzVXRjoXf0TBiZlSfxzP5eANvcZawER0S2wJLqk/RglUua+7mjVnS1aqZqJZYHXaY6vvNvlOLe
+        GaDj/vrw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55306)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mfJo2-0005FZ-ND; Tue, 26 Oct 2021 11:35:46 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mfJo1-0006ft-BB; Tue, 26 Oct 2021 11:35:45 +0100
+Date:   Tue, 26 Oct 2021 11:35:45 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: fixed warning: Function parameter not described
+Message-ID: <YXfaAfSfPTaTTpVf@shell.armlinux.org.uk>
+References: <20211026102957.17100-1-luoj@codeaurora.org>
 MIME-Version: 1.0
-Message-ID: <163524452496.626.12676907731914820035.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026102957.17100-1-luoj@codeaurora.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On Tue, Oct 26, 2021 at 06:29:57PM +0800, Luo Jie wrote:
+> Fixed warning: Function parameter or member 'enable' not
+> described in 'genphy_c45_fast_retrain'
+> 
+> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+> ---
+>  drivers/net/phy/phy-c45.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/phy/phy-c45.c b/drivers/net/phy/phy-c45.c
+> index b01180e1f578..db709d30bf84 100644
+> --- a/drivers/net/phy/phy-c45.c
+> +++ b/drivers/net/phy/phy-c45.c
+> @@ -614,6 +614,7 @@ EXPORT_SYMBOL_GPL(genphy_c45_loopback);
+>  /**
+>   * genphy_c45_fast_retrain - configure fast retrain registers
+>   * @phydev: target phy_device struct
+> + * @enable: enable fast retrain or not
+>   *
+>   * Description: If fast-retrain is enabled, we configure PHY as
+>   *   advertising fast retrain capable and THP Bypass Request, then
 
-Commit-ID:     eb5411334c289c473bc11d5cef8b0bea8d7ce324
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/eb5411334c289c473bc11d5cef8b0bea8d7ce324
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Thu, 21 Oct 2021 18:04:12 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Tue, 26 Oct 2021 11:18:33 +01:00
+Patch itself is fine, but I wonder why we've started getting
+Description: prefixes on new functions in this file whereas the
+bulk of the descriptions in the file do not use that prefix.
 
-MIPS: loongson64: Drop call to irq_cpu_offline()
+In any case, for this patch:
 
-Also loongson64 calls irq_cpu_offline(), none of its interrupt
-controllers implement the .irq_cpu_offline callback.
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-It is thus obvious that this call only serves the dubious purpose
-of wasting precious CPU cycles by iterating over all interrupts.
+Thanks.
 
-Get rid of the call altogether.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-Link: https://lore.kernel.org/r/20211021170414.3341522-2-maz@kernel.org
----
- arch/mips/loongson64/smp.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index 09ebe84..660e1de 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -550,7 +550,6 @@ static int loongson3_cpu_disable(void)
- 	set_cpu_online(cpu, false);
- 	calculate_cpu_foreign_map();
- 	local_irq_save(flags);
--	irq_cpu_offline();
- 	clear_c0_status(ST0_IM);
- 	local_irq_restore(flags);
- 	local_flush_tlb_all();
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
