@@ -2,98 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E9B43BDA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4006A43BDA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240213AbhJZXLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
+        id S240201AbhJZXLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235166AbhJZXLQ (ORCPT
+        with ESMTP id S235166AbhJZXLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:11:16 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A075C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:08:52 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5B9B0A24;
-        Wed, 27 Oct 2021 01:08:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1635289728;
-        bh=sFnKz5DtEFUq5qfMzQgCabdLelQTcznSum5JniYZDfY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WUEDZLANeJ4AGFP/B+NkliDMyPAkI/hKa9iiGmCIwY2ah8F0+tNGZjDfZBRHx1uKf
-         /W+m2gsSClJfHZ+LPwPRvkXINSfITEhBwQTPMZZRQjDcRUOyhCgDJXyaasu9ryPMPn
-         9M0G7Xwc23LL/aN8qekRvuLl/7q2F/53doZj4mj8=
-Date:   Wed, 27 Oct 2021 02:08:25 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     robert.foss@linaro.org, narmstrong@baylibre.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        jagan@amarulasolutions.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm: bridge: fix unmet dependency on DRM_KMS_HELPER
- for DRM_PANEL_BRIDGE
-Message-ID: <YXiKaQTCcQIS/+4y@pendragon.ideasonboard.com>
-References: <20211026023638.41646-1-julianbraha@gmail.com>
+        Tue, 26 Oct 2021 19:11:08 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86549C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:08:43 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id v127so866391wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qSV6Ft6zAu1jkbpHI7z7p0QwFJUvX7Q+m/djpD5eMGQ=;
+        b=APKmkyYkLJxj5o9ZLwSTljNtuMGy5RpTE0BOfsldRr2a4d9/duXUZKJGl62dLqEouh
+         2HCND4JByvSL0uGxvDFeQdBh2UGhJg8pE8BW8Jl3bURmVkwTCLY++ENHe7rcqjm5iqL/
+         C1SKm0ls1xUcMztWsUQ6TuR9U8ZPA53xfC8AqcxvSusu2atI6R8L7p1JRvR00Pdxvymx
+         9Yw6rOpnr2nfzf0qlZU2oA66sWt8vZw6rL+T+AJtZs9OFYREUMRwMJFDx99K7EMgLkZ6
+         fmRre32IKdZPMF55GKv6rHvW17nv9exCd6ZxVrgUtn/b33ipALiQQR+tNfd5WQ1r4YwU
+         2EFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qSV6Ft6zAu1jkbpHI7z7p0QwFJUvX7Q+m/djpD5eMGQ=;
+        b=41sgbkcUCyFFr53hy+ekiuuOx/ZAhC7MU9vTfWsIExB8O7lhlIEhvA2ISDyxMRvXYj
+         IfA2L+33ujVqm9RIXjPD/AqLbHgY6Q3ZqC917AqGaedWf4FBF4Zs2QdbqhTq9D8svJ5W
+         IDXp5fy/2eVOyRMw4e5b9IYAGhy98F3+7nxxsYd4DEjgmAMdOiy+U6ImOXp1ZViy/i5M
+         Clgcwrsd5jO3xm5z1jliFDTpXspojc+zR67T2sFaRl8JD/LFx58BpcGq2o2uHmfU1gZi
+         Rzyq50THIxQs4bmv8RGQMCKiMvIep6O4UugbUcUeDKbzol1Mlqk9x20+9jmVFNBvgc0i
+         hdNg==
+X-Gm-Message-State: AOAM530WTjhDT8zYW8dLwtNfyOQxbfjc1xi+syRXg1nUXjnC8HLVqNsm
+        S1HnL6Ls4wjgjU1kKoMiFtjh1ZFJvVxliqCHKP3Kcw==
+X-Google-Smtp-Source: ABdhPJy4W3Y0kS0tSehWOfSkiwmO09a7tuKF6lYhyraCB8ay2PowxlgpetT0jxFNzQFp2hNsXOKv3sMkQNZSdH5MaeE=
+X-Received: by 2002:a7b:c103:: with SMTP id w3mr1770472wmi.179.1635289721986;
+ Tue, 26 Oct 2021 16:08:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211026023638.41646-1-julianbraha@gmail.com>
+References: <20211026153638.3857452-1-dlatypov@google.com>
+In-Reply-To: <20211026153638.3857452-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 27 Oct 2021 07:08:31 +0800
+Message-ID: <CABVgOSnfJT2jaXCEtewo+DRk73=G-bVWu8pgXj54p40qMDVgnw@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: remove claims that kunit is a
+ mocking framework
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Julian,
-
-Thank you for the patch.
-
-On Mon, Oct 25, 2021 at 10:36:38PM -0400, Julian Braha wrote:
-> When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
-> Kbuild gives the following warning:
-> 
-> WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
->   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
->   Selected by [y]:
->   - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
-> 
-> This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
-> without depending on or selecting DRM_KMS_HELPER,
-> despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
-> 
-> This unmet dependency bug was detected by Kismet,
-> a static analysis tool for Kconfig.
-> Please advise if this is not the appropriate solution.
-> 
-> v2:
-> - changed from "select" to "depends on"
-> 
-> Fixes: ce517f18944e ("drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge")
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+On Tue, Oct 26, 2021 at 11:36 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> KUnit does not have any first party support for "mocking".
+>
+> The original RFC had some, but the code got dropped.
+> However, the documentation patches never got updated. This fixes that.
+>
+> https://kunit.dev/mocking.html has a current writeup on the status quo
+> and will hopefully be eventually folded into the in-kernel
+> Documentation.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 > ---
->  drivers/gpu/drm/bridge/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> index 431b6e12a81f..a630cb8fd1c8 100644
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -30,6 +30,7 @@ config DRM_CDNS_DSI
->  config DRM_CHIPONE_ICN6211
->  	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
->  	depends on OF
-> +  depends on DRM_KMS_HELPER
 
-With spaces replaced by tabs for indentation,
+Yeah: this definitely is a bit misleading. Thanks for updating it.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: David Gow <davidgow@google.com>
 
->  	select DRM_MIPI_DSI
->  	select DRM_PANEL_BRIDGE
->  	help
+Cheers,
+-- David
 
--- 
-Regards,
-
-Laurent Pinchart
+>  Documentation/dev-tools/kunit/api/index.rst | 3 +--
+>  Documentation/dev-tools/kunit/api/test.rst  | 3 +--
+>  Documentation/dev-tools/kunit/index.rst     | 2 +-
+>  3 files changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kunit/api/index.rst b/Documentation/dev-tools/kunit/api/index.rst
+> index b33ad72bcf0b..3006cadcf44a 100644
+> --- a/Documentation/dev-tools/kunit/api/index.rst
+> +++ b/Documentation/dev-tools/kunit/api/index.rst
+> @@ -12,5 +12,4 @@ following sections:
+>
+>  Documentation/dev-tools/kunit/api/test.rst
+>
+> - - documents all of the standard testing API excluding mocking
+> -   or mocking related features.
+> + - documents all of the standard testing API
+> diff --git a/Documentation/dev-tools/kunit/api/test.rst b/Documentation/dev-tools/kunit/api/test.rst
+> index aaa97f17e5b3..c5eca423e8b6 100644
+> --- a/Documentation/dev-tools/kunit/api/test.rst
+> +++ b/Documentation/dev-tools/kunit/api/test.rst
+> @@ -4,8 +4,7 @@
+>  Test API
+>  ========
+>
+> -This file documents all of the standard testing API excluding mocking or mocking
+> -related features.
+> +This file documents all of the standard testing API.
+>
+>  .. kernel-doc:: include/kunit/test.h
+>     :internal:
+> diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
+> index cacb35ec658d..7af7dec83646 100644
+> --- a/Documentation/dev-tools/kunit/index.rst
+> +++ b/Documentation/dev-tools/kunit/index.rst
+> @@ -19,7 +19,7 @@ KUnit - Unit Testing for the Linux Kernel
+>  What is KUnit?
+>  ==============
+>
+> -KUnit is a lightweight unit testing and mocking framework for the Linux kernel.
+> +KUnit is a lightweight unit testing framework for the Linux kernel.
+>
+>  KUnit is heavily inspired by JUnit, Python's unittest.mock, and
+>  Googletest/Googlemock for C++. KUnit provides facilities for defining unit test
+>
+> base-commit: 2ab5d5e67f7ab2d2ecf67b8855ac65691f4e4b4d
+> --
+> 2.33.0.1079.g6e70778dc9-goog
+>
