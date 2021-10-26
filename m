@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5047143ABCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8F043ABD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234514AbhJZFot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:44:49 -0400
-Received: from mga09.intel.com ([134.134.136.24]:32225 "EHLO mga09.intel.com"
+        id S234962AbhJZFrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:47:00 -0400
+Received: from ink.ssi.bg ([178.16.128.7]:42913 "EHLO ink.ssi.bg"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231394AbhJZFoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:44:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="229687280"
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="229687280"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 22:42:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="596776976"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by orsmga004.jf.intel.com with ESMTP; 25 Oct 2021 22:42:15 -0700
-Subject: Re: [PATCH: Fix for_each_set_bit(u64) build on 32-bit arches, was
- perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     peterz@infradead.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, mingo@redhat.com,
-        irogers@google.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <YXbg2vbY71qGdsYq@kernel.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a8b64cea-755c-13ee-b923-4d1c521f6068@intel.com>
-Date:   Tue, 26 Oct 2021 08:42:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S229687AbhJZFq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:46:58 -0400
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id 4135E3C09C4;
+        Tue, 26 Oct 2021 08:44:31 +0300 (EEST)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 19Q5iSNs010361;
+        Tue, 26 Oct 2021 08:44:29 +0300
+Date:   Tue, 26 Oct 2021 08:44:28 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     yangxingwu <xingwu.yang@gmail.com>
+cc:     Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        kadlec@netfilter.org, fw@strlen.de,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, corbet@lwn.net
+Subject: Re: [PATCH] ipvs: Fix reuse connection if RS weight is 0
+In-Reply-To: <CA+7U5JsSuwqP7eHj1tMHfsb+EemwrhZEJ2b944LFWTroxAnQRQ@mail.gmail.com>
+Message-ID: <1190ef60-3ad9-119e-5336-1c62522aec81@ssi.bg>
+References: <20211025115910.2595-1-xingwu.yang@gmail.com> <707b5fb3-6b61-c53-e983-bc1373aa2bf@ssi.bg> <CA+7U5JsSuwqP7eHj1tMHfsb+EemwrhZEJ2b944LFWTroxAnQRQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YXbg2vbY71qGdsYq@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 19:52, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Oct 20, 2021 at 02:25:43PM -0300, Arnaldo Carvalho de Melo escreveu:
->>   29     8.60 debian:experimental-x-mipsel  : FAIL gcc version 11.2.0 (Debian 11.2.0-9)
->>     util/intel-pt.c: In function 'intel_pt_synth_pebs_sample':
->>     util/intel-pt.c:2146:33: error: passing argument 1 of 'find_first_bit' from incompatible pointer type [-Werror=incompatible-pointer-types]
->>      2146 |         for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
->>     /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:37:38: note: in definition of macro 'for_each_set_bit'
->>        37 |         for ((bit) = find_first_bit((addr), (size));            \
->>           |                                      ^~~~
->>     In file included from /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops.h:21,
->>                      from /git/perf-5.15.0-rc4/tools/include/linux/bitops.h:34,
->>                      from /git/perf-5.15.0-rc4/tools/include/linux/bitmap.h:6,
->>                      from util/header.h:10,
->>                      from util/session.h:7,
->>                      from util/intel-pt.c:16:
->>     /git/perf-5.15.0-rc4/tools/include/asm-generic/bitops/find.h:109:51: note: expected 'const long unsigned int *' but argument is of type 'const uint64_t *' {aka 'const long long unsigned int *'}
->>
->>  Adrian, this is on:
->>
->>  commit 803a3c9233990e1adac8ea2421e3759c2d380cf8
->> Author: Adrian Hunter <adrian.hunter@intel.com>
->> Date:   Tue Sep 7 19:39:03 2021 +0300
->>
->>     perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
->>
->>     Originally, software only supported redirecting at most one PEBS event to
->>     Intel PT (PEBS-via-PT) because it was not able to differentiate one event
->>     from another. To overcome that, add support for the
->>     PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
->>
->>     Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->>     Reviewed-by: Andi Kleen <ak@linux.intel.com>
->>
->>
->> That is still just on tmp.perf/core, so we can fix it, probably its just
->> making that uint64_t into a unsigned long, will check later if you don't
->> beat me to it.
-> 
-> Do as other code in perf does, e.g.  arch/x86/events/intel/ds.c, dealing
-> with PEBS.
-> 
-> I'm adding this to that patch to fix the build on 32-bit.
-> 
-> - Arnaldo
-> 
-> 
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index 1073c56a512cdc6e..c9542fada8fb6f9b 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -2143,7 +2143,7 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
->  		return intel_pt_synth_single_pebs_sample(ptq);
->  	}
->  
-> -	for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
-> +	for_each_set_bit(hw_id, (unsigned long *)&items->applicable_counters, INTEL_PT_MAX_PEBS) {
->  		pe = &ptq->pebs[hw_id];
->  		if (!pe->evsel) {
->  			if (!pt->single_pebs)
-> 
 
-That is fine. Thank you!
+	Hello,
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+On Tue, 26 Oct 2021, yangxingwu wrote:
 
+> thanks julian
+> 
+> What happens in this situation is that if we set the wait of the
+> realserver to 0 and do NOT remove the weight zero realserver with
+> sysctl settings (conn_reuse_mode == 0 && expire_nodest_conn == 1), and
+> the client reuses its source ports, the kernel will constantly
+> reuse connections and send the traffic to the weight 0 realserver.
+
+	Yes, this is expected when conn_reuse_mode=0.
+
+> you may check the details from
+> https://github.com/kubernetes/kubernetes/issues/81775
+
+	What happens if you try conn_reuse_mode=1? The
+one-second delay in previous kernels should be corrected with
+
+commit f0a5e4d7a594e0fe237d3dfafb069bb82f80f42f
+Date:   Wed Jul 1 18:17:19 2020 +0300
+
+    ipvs: allow connection reuse for unconfirmed conntrack
+
+> On Tue, Oct 26, 2021 at 2:12 AM Julian Anastasov <ja@ssi.bg> wrote:
+> >
+> > On Mon, 25 Oct 2021, yangxingwu wrote:
+> >
+> > > Since commit dc7b3eb900aa ("ipvs: Fix reuse connection if real server is
+> > > dead"), new connections to dead servers are redistributed immediately to
+> > > new servers.
+> > >
+> > > Then commit d752c3645717 ("ipvs: allow rescheduling of new connections when
+> > > port reuse is detected") disable expire_nodest_conn if conn_reuse_mode is
+> > > 0. And new connection may be distributed to a real server with weight 0.
+> >
+> >         Your change does not look correct to me. At the time
+> > expire_nodest_conn was created, it was not checked when
+> > weight is 0. At different places different terms are used
+> > but in short, we have two independent states for real server:
+> >
+> > - inhibited: weight=0 and no new connections should be served,
+> >         packets for existing connections can be routed to server
+> >         if it is still available and packets are not dropped
+> >         by expire_nodest_conn.
+> >         The new feature is that port reuse detection can
+> >         redirect the new TCP connection into a new IPVS conn and
+> >         to expire the existing cp/ct.
+> >
+> > - unavailable (!IP_VS_DEST_F_AVAILABLE): server is removed,
+> >         can be temporary, drop traffic for existing connections
+> >         but on expire_nodest_conn we can select different server
+> >
+> >         The new conn_reuse_mode flag allows port reuse to
+> > be detected. Only then expire_nodest_conn has the
+> > opportunity with commit dc7b3eb900aa to check weight=0
+> > and to consider the old traffic as finished. If a new
+> > server is selected, any retrans from previous connection
+> > would be considered as part from the new connection. It
+> > is a rapid way to switch server without checking with
+> > is_new_conn_expected() because we can not have many
+> > conns/conntracks to different servers.
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
