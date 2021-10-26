@@ -2,67 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A270F43B9E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C935F43B9EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238424AbhJZSsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238408AbhJZSsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:48:05 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EACC061745;
-        Tue, 26 Oct 2021 11:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=S+yaSCiDrfqcbD59UNQ4Zf/BYikNKmlGYeL0rkLgDBw=; b=rPvjn026xfifCWsqNg1XtswwCx
-        LLDPSquZxWWNXow0WRYsr45+lxdPugVP5iMiTMBUH16jifRfT0awqeSyWgZdkK6lcgTbOFkRwX8gm
-        vhIbFkOnXvfDfQUclxST1LOi/6u4L37bazi3XXpW6bKgY60xPjHVXcksj4lk8mGBobzMNhc188HUr
-        yxgeRkUgdNSKeCL318/WkAh/wEAeS0gi9CQaL4NL5BT+WXvLWyFY+P21zNJk+SdjxntD5LGcZjGU3
-        wdvQeHBhgeDDxCtAOb1YHGn1IktlSxZ7RKifaE+bM9Zkbku7LWfU0alvNOM12JAZ6evX/fH3jsGvd
-        RqVLU2PA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfRRq-00CPLM-9q; Tue, 26 Oct 2021 18:45:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 851C9300230;
-        Tue, 26 Oct 2021 20:45:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6929C2C152329; Tue, 26 Oct 2021 20:45:19 +0200 (CEST)
-Date:   Tue, 26 Oct 2021 20:45:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
-Message-ID: <YXhMv6rENfn/zsaj@hirez.programming.kicks-ass.net>
-References: <20211026120132.613201817@infradead.org>
- <CAADnVQJaiHWWnVcaRN43DcNgqktgKs3i1P3uz4Qm8kN7bvPCCg@mail.gmail.com>
+        id S235519AbhJZSs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:48:58 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:49342 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238414AbhJZSsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 14:48:55 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1mfRSn-0007Fb-4t; Tue, 26 Oct 2021 20:46:21 +0200
+Subject: Re: [PATCH v5 09/13] KVM: Use interval tree to do fast hva lookup in
+ memslots
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <89deea791ff7a5f4faa535edb9956e9863a564b8.1632171479.git.maciej.szmigiero@oracle.com>
+ <YXhGo/FpqUAuz7Td@google.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Message-ID: <dcee5903-68da-094e-d3b9-c91d071c3af3@maciej.szmigiero.name>
+Date:   Tue, 26 Oct 2021 20:46:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJaiHWWnVcaRN43DcNgqktgKs3i1P3uz4Qm8kN7bvPCCg@mail.gmail.com>
+In-Reply-To: <YXhGo/FpqUAuz7Td@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:26:57AM -0700, Alexei Starovoitov wrote:
+On 26.10.2021 20:19, Sean Christopherson wrote:
+> On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
+>> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+>>
+>> The current memslots implementation only allows quick binary search by gfn,
+>> quick lookup by hva is not possible - the implementation has to do a linear
+>> scan of the whole memslots array, even though the operation being performed
+>> might apply just to a single memslot.
+>>
+>> This significantly hurts performance of per-hva operations with higher
+>> memslot counts.
+>>
+>> Since hva ranges can overlap between memslots an interval tree is needed
+>> for tracking them.
+>>
+>> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+>> ---
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index 50597608d085..7ed780996910 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -472,6 +472,12 @@ static void kvm_null_fn(void)
+>>   }
+>>   #define IS_KVM_NULL_FN(fn) ((fn) == (void *)kvm_null_fn)
+>>   
+>> +/* Iterate over each memslot intersecting [start, last] (inclusive) range */
+>> +#define kvm_for_each_memslot_in_hva_range(node, slots, start, last)	     \
+>> +	for (node = interval_tree_iter_first(&slots->hva_tree, start, last); \
+>> +	     node;							     \
+>> +	     node = interval_tree_iter_next(node, start, last))	     \
+> 
+> Similar to kvm_for_each_memslot_in_gfn_range(), this should use an opaque iterator
+> to hide the implementation details from the caller, e.g. to avoid having to define
+> a "struct interval_tree_node" and do container_of.
+> 
 
-> It's a merge conflict. The patchset failed to apply to both bpf and
-> bpf-next trees:
+Will convert to an iterator-based for_each implementation in the next version
+of this patchset.
 
-Figures :/ I suspect it relies on tip/objtool/core at the very least and
-possibly some of the x86 trees as well.
-
-I can locally merge tip/master with bpf, but getting a CI to do that
-might be tricky.
+Thanks,
+Maciej
