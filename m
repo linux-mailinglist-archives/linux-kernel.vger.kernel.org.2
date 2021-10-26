@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8521743B462
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5495443B3FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236802AbhJZOjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:39:24 -0400
-Received: from hyperium.qtmlabs.xyz ([194.163.182.183]:48510 "EHLO
-        hyperium.qtmlabs.xyz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236735AbhJZOjN (ORCPT
+        id S235472AbhJZO3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233064AbhJZO3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:39:13 -0400
-X-Greylist: delayed 515 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 10:39:12 EDT
-Received: from dong.kernal.eu (unknown [14.231.159.161])
-        by hyperium.qtmlabs.xyz (Postfix) with ESMTPSA id 019BB82000A;
-        Tue, 26 Oct 2021 16:28:08 +0200 (CEST)
-Received: from [192.168.43.218] (unknown [27.78.4.72])
-        by dong.kernal.eu (Postfix) with ESMTPSA id 82DA9444968D;
-        Tue, 26 Oct 2021 21:24:56 +0700 (+07)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qtmlabs.xyz; s=syka;
-        t=1635258297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Xv0gm2nvo9oj8B1zbj9L5t/DZvRs9gtu0orGPoXZIUY=;
-        b=rtuFhr1Aifg8JtlsDemsoCMU2zj3Css6IUMXRKkd3aDmBtk/ibvmjt54JRk01A7mFrWPM7
-        dSwfhFguIHYT30ZGVsicVXeTrLDIgNdVuwZtdD03WsdB0vOaoLat+CMgCibg+DCfVzeaVl
-        TPNisZZUsTy+KQ1xp3YKafJPnC2itS19+hzWS4dZfMc2OujUZDRwr/vYjOh0NqQbausPq9
-        Sxi4zMKlaJNC8V3u2QUTdPTiunpMbEWKvzdyWuskPxnCLXLtQL4UjrgNfly/EsAqd85E8y
-        KsiTgNQj0NVRPjLJTb9JTatCyKH79dlCj1QI8ShNI5UECN87+2owbgVrT5AVPw==
-Message-ID: <e022d597-302d-c061-0830-6ed20aa61e56@qtmlabs.xyz>
-Date:   Tue, 26 Oct 2021 21:24:50 +0700
+        Tue, 26 Oct 2021 10:29:41 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD64C061745;
+        Tue, 26 Oct 2021 07:27:17 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id s1so14504724edd.3;
+        Tue, 26 Oct 2021 07:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZkJRL0lPRthFxQ90psMtV6Y2lcv2PWeua158fYiZ2tE=;
+        b=VtSn4Qsf+26WNtb9faKkgDJYjE+Y/NifymUBTasTLjEZHV5DjzChjuKMOzrM9ga++F
+         +2LSiHWb+HVvmU70Qason5S/qaPC2Av3LXUmXx9QzXYYMpqvfYqHjuSruE/KAZVkvGLz
+         InCwl55UA0vUpA8Zc3p3TZQYuF0bBNSrD/hLOC65yHokL8hXfHDe2Npgdq7xFEZOf1Se
+         4/aVyntg8sQwpAtHFMH3suBvpy2mQzuIU7IaXbblOMNzfIojyISlS5gqm3pxsJCo83vD
+         sPQFh7HLO1dpSUT0fDnNLNAylF8pOb5oG4/g7EvAs0bZXTW8URjYww9v1aRPdQk+83yL
+         gY3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZkJRL0lPRthFxQ90psMtV6Y2lcv2PWeua158fYiZ2tE=;
+        b=lgNvgGNIP9Z5TX+uLE6zbrxQKCd18O3hHB915xMgUxs8RYUKUnMh9auayzYQbKUpip
+         bcFi9C9BEeBGceOJidCP83kPUVpwm9kq6Q+0nvpAPCEgfW00xOF8rVZOP0Tay6gpW7Em
+         T0d2gad/IhpcUZdsAed6eHX4u0u/TowXe2JNC7s49SMjKQOZUnWX24xZVowx2XuaBM2K
+         Bca1AVeeVAtheo9UDngNw89Rz1H9uI1PliRH/2yGo8M6IWIBtRs1i16NoI4odaZrSStO
+         I8x5tMruOo285aBdPfegE1plnJC1ZVLdm1LdhS7AKC6bT7uFxfLvUzbLFbAxVp6NkB0H
+         ZvsQ==
+X-Gm-Message-State: AOAM5318A394AgJUMpjmSsj/9Ge9orQLysvDMkDefVuL1671oi3k6pKq
+        JcfA0V9ktDWytoF5l6ttXxbNdMKDWKHA7JT/3zo+WW25p/E=
+X-Google-Smtp-Source: ABdhPJzAbha01GzhYnNbtdP2nscjIzf9PN4ekdMn/3Fr8Wwd9C8/kUL/KLZ68gKE8NdMa8m5PpRRMxEYjLqzD9/sJ88=
+X-Received: by 2002:a17:907:d08:: with SMTP id gn8mr30687462ejc.395.1635258318314;
+ Tue, 26 Oct 2021 07:25:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   msizanoen <msizanoen@qtmlabs.xyz>
-Subject: Kernel leaks memory in ip6_dst_cache when suppress_prefix is present
- in ipv6 routing rules and a `fib` rule is present in ipv6 nftables rules
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>
+ <YXAtYGLv/k+j6etV@dhcp22.suse.cz> <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>
+ <20211020192430.GA1861@pc638.lan> <163481121586.17149.4002493290882319236@noble.neil.brown.name>
+ <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz> <20211021104038.GA1932@pc638.lan>
+ <163485654850.17149.3604437537345538737@noble.neil.brown.name>
+ <20211025094841.GA1945@pc638.lan> <163520582122.16092.9250045450947778926@noble.neil.brown.name>
+ <YXeraV5idipgWDB+@dhcp22.suse.cz> <163524388152.8576.15706993879941541847@noble.neil.brown.name>
+In-Reply-To: <163524388152.8576.15706993879941541847@noble.neil.brown.name>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Tue, 26 Oct 2021 16:25:07 +0200
+Message-ID: <CA+KHdyWev2RwoO1o9OrAkaE2VdC7iSXnJdBR+qzarqYOse3cXA@mail.gmail.com>
+Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
+To:     NeilBrown <neilb@suse.de>, Michal Hocko <mhocko@suse.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel leaks memory when a `fib` rule is present in ipv6 nftables firewall rules and a suppress_prefix rule
-is present in the IPv6 routing rules (used by certain tools such as wg-quick). In such scenarios, every incoming
-packet will leak an allocation in ip6_dst_cache slab cache.
+On Tue, Oct 26, 2021 at 12:24 PM NeilBrown <neilb@suse.de> wrote:
+>
+> On Tue, 26 Oct 2021, Michal Hocko wrote:
+> > On Tue 26-10-21 10:50:21, Neil Brown wrote:
+> > > On Mon, 25 Oct 2021, Uladzislau Rezki wrote:
+> > > > On Fri, Oct 22, 2021 at 09:49:08AM +1100, NeilBrown wrote:
+> > > > > However I'm not 100% certain, and the behaviour might change in the
+> > > > > future.  So having one place (the definition of memalloc_retry_wait())
+> > > > > where we can change the sleeping behaviour if the alloc_page behavour
+> > > > > changes, would be ideal.  Maybe memalloc_retry_wait() could take a
+> > > > > gfpflags arg.
+> > > > >
+> > > > At sleeping is required for __get_vm_area_node() because in case of lack
+> > > > of vmap space it will end up in tight loop without sleeping what is
+> > > > really bad.
+> > > >
+> > > So vmalloc() has two failure modes.  alloc_page() failure and
+> > > __alloc_vmap_area() failure.  The caller cannot tell which...
+> > >
+> > > Actually, they can.  If we pass __GFP_NOFAIL to vmalloc(), and it fails,
+> > > then it must have been __alloc_vmap_area() which failed.
+> > > What do we do in that case?
+> > > Can we add a waitq which gets a wakeup when __purge_vmap_area_lazy()
+> > > finishes?
+> > > If we use the spinlock from that waitq in place of free_vmap_area_lock,
+> > > then the wakeup would be nearly free if no-one was waiting, and worth
+> > > while if someone was waiting.
+> >
+> > Is this really required to be part of the initial support?
+>
+> No.... I was just thinking out-loud.
+>
+alloc_vmap_area() has an retry path, basically if it fails the code
+will try to "purge"
+areas and repeat it one more time. So we do not need to purge outside some where
+else.
 
-After some hours of `bpftrace`-ing and source code reading, I tracked down the issue to this commit:
-	https://github.com/torvalds/linux/commit/ca7a03c4175366a92cee0ccc4fec0038c3266e26
-
-The problem with that patch is that the generic args->flags always have FIB_LOOKUP_NOREF set[1][2] but the
-ip6-specific flag RT6_LOOKUP_F_DST_NOREF might not be specified, leading to fib6_rule_suppress not
-decreasing the refcount when needed. This can be fixed by exposing the protocol-specific flags to the
-protocol specific `suppress` function, and check the protocol-specific `flags` argument for
-RT6_LOOKUP_F_DST_NOREF instead of the generic FIB_LOOKUP_NOREF when decreasing the refcount.
-
-How to reproduce:
-- Add the following nftables rule to a prerouting chain: `meta nfproto ipv6 fib saddr . mark . iif oif missing drop`
-- Run `sudo ip -6 rule add table main suppress_prefixlength 0`
-- Watch `sudo slabtop -o | grep ip6_dst_cache` memory usage increase with every incoming ipv6 packet
-
-Example patch:https://gist.github.com/msizanoen1/36a2853467a9bd34fadc5bb3783fde0f
-
-[1]:https://github.com/torvalds/linux/blob/ca7a03c4175366a92cee0ccc4fec0038c3266e26/net/ipv6/fib6_rules.c#L71
-[2]:https://github.com/torvalds/linux/blob/ca7a03c4175366a92cee0ccc4fec0038c3266e26/net/ipv6/fib6_rules.c#L99
-
-
+-- 
+Uladzislau Rezki
