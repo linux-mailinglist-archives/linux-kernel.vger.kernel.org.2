@@ -2,107 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6969043B5D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF5E43B5CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237040AbhJZPnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
+        id S237030AbhJZPnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236987AbhJZPnC (ORCPT
+        with ESMTP id S237026AbhJZPml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:43:02 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F30C061348
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:38 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id o26so20788580ljj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:37 -0700 (PDT)
+        Tue, 26 Oct 2021 11:42:41 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3916EC061243
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:16 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id p14so14053492wrd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yuAeUf9uZkiKUJDSGobKdOnKcJ1uapOPXzgjXviYDro=;
-        b=muMlBrRY3/QCQrarET+Xe5M31Y3VLic0gR0j41gMQ8eAYF2HxZCDUd70WvE/Bjnei1
-         3trPRvzaln8YUcRy/jJuZHGB6oLaj8+pGuquEVE9DTSkynGZh7xu7wmSHE4+7HppLKC4
-         vCVkTDeOxXwWvOw8qLTsHnT17A8koWmSw+oMKXawstQD4FxN/Cz6elLurwvZr8bPPKP2
-         odkXmLs/l8g0ppbEwBN11TGIKFIzR3sHgzAiBL0nCGTSeuy4RI/HW5Hs3vKJcmbb3C9Q
-         gFONbN8eIhLX/VvQGoQnXN1ZalnTFHjt+eaLd7bzOA6cqN44tyLJ+vCdtfyK+TEyeYuh
-         W8sA==
+        bh=gePi6+TPmZdDYlmQwiKRPa1IXCbfIXiDKVvUp0KV1dk=;
+        b=kE1rxiespvWKMp6929B+b7VBTV3OwweARXdocrjgmW0eNMH39Re6H+to/46iAB2k3E
+         ST7TvPIGaMA4KG2iiHivUFFrjuTf7UZb19vsGPCwI0BuPfpVwTC/MTs1LGVRWBel3Aoq
+         jySzkHqVYvIBXCuAc0hec6mqrxHEUsLSJXkKCd7P6v5gxqv6nnqFB4O2hIUS+vshY43c
+         k07zV94SfiXalv34wAHkUXr+NJMLmRFFyjUC669lYj7JZekyKxvBrXgjFGpd55Jk2DA7
+         BQCrJAgwVhdkuVPqMkRRbofzkadbF6Kqp8aSQbcNJvitB3GP66RAgmsgDd9KdZ4rPejw
+         PtRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yuAeUf9uZkiKUJDSGobKdOnKcJ1uapOPXzgjXviYDro=;
-        b=shqJbdVi264ViIH1GebsIroOi0GJHXrumare+GuyvYpWP8z1Z4w+whERlx989qYkhL
-         3GL/Kb77nJKIwYuEuQokGJDFcINpkKsuoIKe+jjGCGOy6GO0YYW+QyACJrQEfFgU5egS
-         cgVVX+Wc9Vdtay1NYWnHTwG5x9mHdFbGhq6lwKj9kHSfoibWJb30OlyU/4LIpUF0Pco9
-         sI3fjtdW9zNlZs056RznUGRJoKzl0NdoNHtcGuQHF8po+/Hcd2nSGfp7Z5nfbuTtDfNf
-         zQNPZftDFJKQUBPZv3PUCi6Pbog9+8jHyosC6QazQxK/mHPw3ZCIqM8mRuP3XxV0OCFc
-         fi3w==
-X-Gm-Message-State: AOAM5327v9ou3GlDqEKPGpm53874MH4o/q/pIzzu4uK+JFxyatw3BWKJ
-        B6TnluqiNbkZtdBICVBOYcd5rxJ85BDf7SVzUlRPWQ==
-X-Google-Smtp-Source: ABdhPJwJxayy3+qErnJw+sJ9TklHlWV26/nGoMVeRjTBnpEsMJAPY+suHEdAsQ4L/4uK7Ul8VoW5H9CPVhbKCZWsnjk=
-X-Received: by 2002:a2e:874d:: with SMTP id q13mr27385797ljj.16.1635262836382;
- Tue, 26 Oct 2021 08:40:36 -0700 (PDT)
+        bh=gePi6+TPmZdDYlmQwiKRPa1IXCbfIXiDKVvUp0KV1dk=;
+        b=HS/3FJnCBSVPJoRAticJKaWJOesZTawoBrqdnv/LmHxvZxT9jmPlbfe8XEZJt/r4Qq
+         hsx7hmL1ktA06YNHM7JND+OvkqB8JZzN5kqAWqZUHmDNujIaiJv1yU8NGz12RL4pfb8s
+         X4p5s+eRQXyrgGRgq3Oo3PIu4Y/OH9W83qDryPKmmsb7PDaly0Ze+DwCnpAtGkWdxWvU
+         4Rc3LX3xNnYNNzG7LkUhqTDBnMlVPcxjvjxo36PRwUCzAt5fn6Kv7vfTZnV0cThcQEbx
+         6U3V3kk4JoMne9BAiQOQqTxhlBO5D/UtgbOKCpL5XYX8mEiVG4aXLmjyGsl2OfJtWnLE
+         j2fg==
+X-Gm-Message-State: AOAM532T4e4TVBwXizypCd3hysuMItGBprggFYOs51mjBW5CVmZuHpUI
+        jdQ1v2j1iYwo5kvwSR+W1p2lbgQXitM7uWtM2JLHAzHJBFW0liqS
+X-Google-Smtp-Source: ABdhPJxb0G4Gc1+Dty2VsaBtrIR7fYPcBPLKjsmZk9+J6COKJ0nz3k1HS/jiG8Jc9esfOQM6Osc9MxogrSsRAqAkfRA=
+X-Received: by 2002:a05:6000:144c:: with SMTP id v12mr32626851wrx.142.1635262815445;
+ Tue, 26 Oct 2021 08:40:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022054740.25222-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20211022054740.25222-1-lukas.bulwahn@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 26 Oct 2021 17:39:59 +0200
-Message-ID: <CAPDyKFqt9a+WhoRiyyQWSsJugSqbzoWniba0xL=w_0Rw3Xn0hQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: drop obsolete file pattern in SDHCI DRIVER section
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20211021185335.380810-1-xiehuan09@gmail.com> <20211022180752.0ed07b35@gandalf.local.home>
+ <CAEr6+EBq_v+DGSDeiX5Dqc0RgD0sPpbhzpi=T2=r7M2oh90Fpg@mail.gmail.com> <20211026104720.03ad26c2@gandalf.local.home>
+In-Reply-To: <20211026104720.03ad26c2@gandalf.local.home>
+From:   Huan Xie <xiehuan09@gmail.com>
+Date:   Tue, 26 Oct 2021 23:40:03 +0800
+Message-ID: <CAEr6+EDn=g+Q4FfxKn96K5CPcVT9B3FqJA0w4MMfo45DH8oShw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] trace: Add trace any kernel object
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, mingo@redhat.com,
+        chenhuacai@kernel.org, linux-kernel@vger.kernel.org,
+        Tom Zanussi <zanussi@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 at 07:47, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+On Tue, Oct 26, 2021 at 10:47 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Commit 5c67aa59bd8f ("mmc: sdhci-pci: Remove dead code (struct
-> sdhci_pci_data et al)") removes ./include/linux/mmc/sdhci-pci-data.h;
-> so, there is no further file that matches 'include/linux/mmc/sdhci*'.
+> On Tue, 26 Oct 2021 16:50:46 +0800
+> Huan Xie <xiehuan09@gmail.com> wrote:
 >
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> > > > +static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> > > > +                              unsigned long object)
+> > > > +{
+> > > > +
+> > > > +     struct trace_buffer *buffer;
+> > > > +     struct ring_buffer_event *event;
+> > > > +     struct trace_object_entry *entry;
+> > > > +     int pc;
+> > > > +
+> > > > +     pc = preempt_count();
+> > > > +     event = trace_event_buffer_lock_reserve(&buffer, &event_trace_file,
+> > > > +                     TRACE_OBJECT, sizeof(*entry), pc);
+> > > > +     if (!event)
+> > > > +             return;
+> > > > +     entry   = ring_buffer_event_data(event);
+> > > > +     entry->ip                       = ip;
+> > > > +     entry->parent_ip                = parent_ip;
+> > > > +     entry->object                   = object;
+> > >
+> > > So here we are just recording the value we saw at the kprobe (not very
+> > > interesting).
+> > >
+> > > I think we want the content of the object:
+> > >
+> > >         long val;
+> > >
+> > >         ret = copy_from_kernel_nofault(&val, object, sizeof(val));
+> > >         if (ret)
+> > >                 val = 0;
+> >
+> > This place is the only thing I don't understand, don't know  why and
+> > where to use the copy_from_kernel_nofault.
 >
->   warning: no file matches    F:    include/linux/mmc/sdhci*
 >
-> Drop this obsolete file pattern in SECURE DIGITAL HOST CONTROLLER
-> INTERFACE (SDHCI) DRIVER.
+> If we have the address of the symbol, we want to read what's at that
+> address, right?
 >
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> >
+> > we can only get the struct pt_regs from the  __kprobe_trace_fun() ,
+> > and use it on the  trace_object_trigger() ,
+> > so need to save the pt_regs using a struct:
+> >
+> > struct object_trigger_param {
+> >         struct pt_regs *regs;
+> >         int param;
+> > };
+> >
+> > /* Kprobe handler */
+> > static nokprobe_inline void __kprobe_trace_func(struct trace_kprobe
+> > *tk, struct pt_regs *regs,
+> >                     struct trace_event_file *trace_file)
+> >
+> >
+> > static void trace_object_trigger(struct event_trigger_data *data,
+> > struct trace_buffer *buffer,  void *rec,
+> >                    struct ring_buffer_event *event)
+>
+>
+> OK, so let me ask this question. What is it that you want to see?
 
-Applied for next, thanks!
+Thanks, I got your point now,  my original idea was to just track the
+flow of objects.
 
-Kind regards
-Uffe
+> If we have (using your example):
+>
+> int bio_add_page(struct bio *bio, struct page *page,
+>                                 unsigned int len, unsigned int offset)
+>
+> And we want to trace "bio" right?
+>
+> Doing:
+>
+>   echo 'p bio_add_page arg1=$arg1' > kprobe_events
+>
+> Will make "arg1" be assigned the pointer that was passed in.
+>
+>   0xffff888102a4b900
+>
+> Which is a local variable that holds an address to some structure bio.
+>
+> Your current example just keeps showing us that same pointer address and
+> not the content of bio, and will never change until the bio_add_page
+> function is called again, in which case, you will now be tracing the
+> next address of the structure that was passed into the function. There's
+> nothing more to learn from this over just tracing that function and giving
+> us the address passed in.
+>
+> Now if I look at struct bio, I see:
+>
+> struct bio {
+>         [..]
+>         atomic_t                __bi_cnt;       /* pin count */
+>         [..]
+> };
+>
+> And let's say I want to monitor that __bi_cnt while functions are being
+> traced. What would be *really cool*, is to mark that value!
 
+This is really cool to  get the change of the value. And is a good
+feature enhancement.
 
-> ---
-> applies cleanly on next-20211021
 >
-> Ulf, please pick this minor non-urgent cleanup patch on top of the
-> commit above.
+> // find the offset of __bi_cnt in struct bio:
+> $ gdb vmlinux
+> (gdb) p &((struct bio *)0)->__bi_cnt
+> $1 = (atomic_t *) 0x64
 >
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
+>  # echo 'objfilter:0x64(arg1) if comm == "cat"' > ./trigger
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 44c590b762d1..c47ac3e938b7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17024,7 +17024,6 @@ M:      Adrian Hunter <adrian.hunter@intel.com>
->  L:     linux-mmc@vger.kernel.org
->  S:     Maintained
->  F:     drivers/mmc/host/sdhci*
-> -F:     include/linux/mmc/sdhci*
+> Which would then read that arg1=0xffff888102a4b900 and offset it by 0x64,
+> and give me the value at that location:
 >
->  SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
->  M:     Eugen Hristev <eugen.hristev@microchip.com>
-> --
-> 2.26.2
+>   *(0xffff888102a4b900 + 0x64)
 >
+> at every function. Then I could watch the __bi_cnt change over time. But to
+> dereference memory safely, we need to use copy_from_kernel_nofault()
+> because that address "0xffff888102a4b900 + 0x64" could point to nothing
+> and fault / crash the kernel.
+>
+>         obj = arg1 + 0x64
+>         if (copy_from_kernel_nofault(&val, arg1 + 0x64, sizeof(val)))
+>                 // faulted
+>                 return;
+>
+> Now val has the content of __bi_cnt and we can print that!
+>
+> -- Steve
+>
+>
+>
+> >
+> > > Then we can see what changed during this time.
