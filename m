@@ -2,115 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B5343B4C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD44643B4C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbhJZOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:50:47 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53458
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236979AbhJZOul (ORCPT
+        id S236130AbhJZOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234709AbhJZOws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:50:41 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8A1493F199
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:48:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635259696;
-        bh=fsVkyjuPYlvrvC5KH9851YDRNpooqzcn8kiRcv7IL+0=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=PXmD2gSf9j2Cdde8TY2611jxj8qiQolMJoCBdTijo01bg5+WZJ+/vmoFkMEpEhBWS
-         9t6c10q2fycOSYJhAeufuzmwQcQ46OkBAMID1vNrcq/Yj4l/nH+E4fL4vx97ySfhYR
-         pelNCXKAs6iFRCLi414uH8wqbAHlIUB4Yzd0mUmp0bEMCi1bzj+lJE1AGK138ls9Ke
-         QVKEzjUS7pdmNxa6QnTfhiSyWVGMFyN2ZcW++FyaxErGqQQDg/BVDzgxqzyM/CQDrm
-         c0h3iNIYmS730eZ1R2tBrbCR4ItoG2Kp9yPOmGwmEm0ttrWfEa2exrA0KM9chNO+VX
-         z2XNv8YxkXHZw==
-Received: by mail-lf1-f72.google.com with SMTP id y40-20020a0565123f2800b003fded085638so6284847lfa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:48:16 -0700 (PDT)
+        Tue, 26 Oct 2021 10:52:48 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA1DC061745;
+        Tue, 26 Oct 2021 07:50:24 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 65so15035070ljf.9;
+        Tue, 26 Oct 2021 07:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wv8gi01ZEigq0zjxWHYaalehUKR7G5eHYfl2J1tFc+g=;
+        b=ndCAi0POSvM+VeiQLzjMGVUHX1XM64AVfkCRl0OLmB/DxOBCnWNuiYgfsnL9XNXH0X
+         U6AXUdWzfqFcuo79jxRoecbK5ib7OZkYMmA2AxtJIJkFTGKGnt+W61I92X8U1EuLQXJt
+         /z2IENPVU0sCyFKXNsNEaCMgO7Ng74wEnDP1IwIoretz2JtJm8g2nKe0WXE+M6lfqg+R
+         L3mioHMCqvrI5prEnWbrS1g8eN98uyk7bNAW8mAQkvoFzh+p1lYwWXz8bjVGyS1c8AAk
+         LV8Gh9k9LSJGQa1zaxhvLaUYL/8wkwNCw9MaJ7ozvmIqX7PS263Y+hG5Ks32/btQ+6mT
+         q0kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fsVkyjuPYlvrvC5KH9851YDRNpooqzcn8kiRcv7IL+0=;
-        b=ce5t0D5zM8y6ZQ08Os1XwC+NdDYiwy6EjdpuQGVz2i+Y2f3PL+/YXI+K8xZDiugVF3
-         fCcAA7hYHBNGVqkTwfUvto1fFQREE57Ch+XPSSVBwOEuPJGe80evfBFRZMdBgQ2viQWq
-         WyW3/aVVmxsytKP8rHRKopJ9IYWZX94JVmhzEYcxrhz9P0dGUDcnTlggG3DjFcfEOWU5
-         qJ9DEyjQotNacI5W52km5GFfO3Z2/OPn/bC2EE5IDPsW11eSdmj4uKB9kRQ+PNTcxxpc
-         rTD8DXYBXjtRuceq09E7xVuo/YqgCUZ+Olg7+JqrkNgpiV3sBlSSyF94N1q7M+WvLHdB
-         QJUA==
-X-Gm-Message-State: AOAM532JAPCfeQn9FM3iI8Svc1fM3BEqpUFp8seIuIJ/qE/tllf2ciNq
-        TSSmJPy5p21o9ZvjrX2P6jtbqRzlrVJjDOiYWbreuQteE9HfoiqIFrLmpTbvmgTlMXaER/Urz6Y
-        x0jZqqlMCcRFG9JshG5/zP0OodxJi/QcaVUlNLX1EqA==
-X-Received: by 2002:a2e:9243:: with SMTP id v3mr27320366ljg.260.1635259695400;
-        Tue, 26 Oct 2021 07:48:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx2KIUw3dMiASKOb3ipaEef5iAQjyB+RBgmFcPme73HkXcK5y3WPmCpFx0YHsoHJhTU83ZWAg==
-X-Received: by 2002:a2e:9243:: with SMTP id v3mr27320346ljg.260.1635259695206;
-        Tue, 26 Oct 2021 07:48:15 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id r13sm483731lff.213.2021.10.26.07.48.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:48:14 -0700 (PDT)
-Subject: Re: [PATCH v2 0/7] Add SPI Multi I/O Bus Controller support for
- RZ/G2L
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <02123905-675a-0fda-086e-c2401c202fce@canonical.com>
-Date:   Tue, 26 Oct 2021 16:48:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wv8gi01ZEigq0zjxWHYaalehUKR7G5eHYfl2J1tFc+g=;
+        b=HEWHeSbYMfKOKHeSGBJSpAEE3ewMZ8aT/a2wcmimshdBiwUkmzp7ay7AjTNOOThKe1
+         ALDxSYjzbGYxv36GhTYOG6Bek61v4qF3YkdZklsrO6MHNuh1Y8nqru5Fe5ufVmT+gUJ/
+         EL4QjwuDmqdZbyUUTsKWYciJl60gZuDxsblZocI4xqCzH47aIg++RmINrnRpZKB954vc
+         IYfm5LlVfsz+WQkURQZeYTFy8utoijEUUrdBziDkdEaeKdUvV/cIcputepGM5ZPCY5Ck
+         Y8ODO4w17j3Vcbtn1mLnRBT5dvQZUYXIAr8bimNbsVwHFy6LBC5Ca3jLgao7BrkOsPKT
+         pd5A==
+X-Gm-Message-State: AOAM533QojhaJE6j0Vc7vr3lkoY16dck4Jbqhe3whbP8z0q70jSPReM9
+        ta1fQS2MwIslKX7h1KJPsY4MJSosD1LNQ78o5roIb4hgyJBlDQ==
+X-Google-Smtp-Source: ABdhPJyy1EKyBIqz5vqbrvWBotlkahxJX5CZ/VCMCLuv055iVc26/E4mc62j6aAEo261WYq+6qrZefJckS+cTHIt3N0=
+X-Received: by 2002:a2e:b5a2:: with SMTP id f2mr5618786ljn.23.1635259822879;
+ Tue, 26 Oct 2021 07:50:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211026033254.1052-1-maahiuzeon@gmail.com> <87fssox7ah.fsf@linux.ibm.com>
+In-Reply-To: <87fssox7ah.fsf@linux.ibm.com>
+From:   Hill Ma <maahiuzeon@gmail.com>
+Date:   Tue, 26 Oct 2021 07:50:12 -0700
+Message-ID: <CABpQrUMcCKbgSTnTB4BeUUVwq5jkOw7pGbUC53SGe-4DEVnUag@mail.gmail.com>
+Subject: Re: [PATCH v2] macintosh/via-pmu-led: make disk activity usage a parameter.
+To:     Nathan Lynch <nathanl@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 22:56, Lad Prabhakar wrote:
-> Hi All,
-> 
-> This patch series adds a couple of fixes for rpc-if driver and
-> adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
-> is identical to the RPC-IF block found on R-Car Gen3 SoC's.
-> 
-> Cheers,
-> Prabhakar
-> 
-> Changes for v2:
-> * Rebased the patches on linux-next
-> * Split patch 5 from v1
-> * Included RB tags
-> * Fixed review comments pointed by Wolfram
-> 
-> v1:
-> https://patchwork.kernel.org/project/linux-renesas-soc/cover/
-> 20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
-> 
+Thanks for the review.
 
-Patches look good but you sent them too late for this cycle. I'll take
-the memory controller parts after the merge window.
+On Tue, Oct 26, 2021 at 6:08 AM Nathan Lynch <nathanl@linux.ibm.com> wrote:
+>
+> Hello,
+>
+> Hill Ma <maahiuzeon@gmail.com> writes:
+> > Whether to use the LED as a disk activity is a user preference.
+> > Some like this usage while others find the LED too bright. So it
+> > might be a good idea to make this choice a runtime parameter rather
+> > than compile-time config.
+>
+> Users already have the ability to change the LED behavior at runtime
+> already, correct? I.e. they can do:
+>
+>   echo none > /sys/class/leds/pmu-led::front/trigger
+>
+> in their boot scripts. Granted, a kernel built with ADB_PMU_LED_DISK=y
+> will blink the LED on disk activity until user space is running. Is this
+> unsatisfactory?
 
+Yes, indeed. As someone who does not like this behavior on iBooks.
 
-Best regards,
-Krzysztof
+> > The default is set to disabled as OS X does not use the LED as a
+> > disk activity indicator.
+>
+> This is long-standing behavior in Linux and OS X has been EOL on this
+> architecture for a decade, so this isn't much of a consideration at this
+> point. Seems more important to avoid surprising existing users and
+> distributions with a behavior change that makes additional work for
+> them. See below.
+>
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 43dc35fe5bc0..a656a51ba0a8 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -250,6 +250,12 @@
+> >                       Use timer override. For some broken Nvidia NF5 boards
+> >                       that require a timer override, but don't have HPET
+> >
+> > +     adb_pmu_led_disk [PPC]
+> > +                     Use front LED as disk LED by default. Only applies to
+> > +                     PowerBook, iBook, PowerMac 7,2/7,3.
+> > +                     Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
+> > +                     Default: disabled
+> > +
+> >       add_efi_memmap  [EFI; X86] Include EFI memory map in
+> >                       kernel's map of available physical RAM.
+> >
+> > diff --git a/drivers/macintosh/Kconfig b/drivers/macintosh/Kconfig
+> > index 5cdc361da37c..243215de563c 100644
+> > --- a/drivers/macintosh/Kconfig
+> > +++ b/drivers/macintosh/Kconfig
+> > @@ -78,16 +78,6 @@ config ADB_PMU_LED
+> >         behaviour of the old CONFIG_BLK_DEV_IDE_PMAC_BLINK, select this
+> >         and the disk LED trigger and configure appropriately through sysfs.
+> >
+> > -config ADB_PMU_LED_DISK
+> > -     bool "Use front LED as DISK LED by default"
+> > -     depends on ADB_PMU_LED
+> > -     depends on LEDS_CLASS
+> > -     select LEDS_TRIGGERS
+> > -     select LEDS_TRIGGER_DISK
+> > -     help
+> > -       This option makes the front LED default to the disk trigger
+> > -       so that it blinks on disk activity.
+> > -
+>
+> So, if I've been relying on CONFIG_ADB_PMU_LED_DISK=y and I upgrade to a
+> newer kernel with the proposed change, from my point of view the disk
+> activity LED has stopped working and I need to alter the bootloader
+> config or init scripts to restore the expected behavior. That seems
+> undesirable to me.
+>
+> I don't think we rigidly enforce Kconfig backward compatibility, but
+> when it comes to a user-visible function on a legacy platform where
+> users and distros likely have their configurations figured out already,
+> it's probably best to avoid such changes.
+
+I actually asked some distributions that still ship PowerPC BE
+architectures to unset it.
+https://github.com/void-ppc/void-packages/pull/48
+https://github.com/void-linux/void-packages/pull/33275
+https://git.adelielinux.org/adelie/packages/-/merge_requests/607
+
+And Debian, which still has PowerPC BE architectures as ports, does
+not turn it on.
+https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/config/kernelarch-powerpc/config
+
+The problem I see is the following:
+- A distribution might accidentally turn it back on, which happened
+with Void already.
+- For people like the disk activity behavior, they need to recompile
+the kernel to regain the exact previous behavior.
+
+I think we could retain backward compatibility by adding back the
+Kconfig and setting the initial value of adb_pmu_led_disk based on the
+config. I am not sure if we need two mechanisms for this single
+preference though.
