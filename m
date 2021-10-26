@@ -2,72 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9DD43BB50
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A329043BB52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239065AbhJZUAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239052AbhJZUAk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:00:40 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8D9C061570;
-        Tue, 26 Oct 2021 12:58:15 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x27so1209434lfu.5;
-        Tue, 26 Oct 2021 12:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=G2EUbiSBFqMAbwlq+Hh6bZmWi5bhxCtnpI1o6+QMB2g=;
-        b=SoHipItjHdtWBcxrwaOJGDTQDqdCu4ryplWxTF37sBQ1eLniffJQZZh80tiRvrhWJw
-         qzhJC2dZwIRHZcVcW5I6WZOC0H5nG3gHUSB0WZSvqrau4BY2IqXUbrwyHsTmzkXlPBxA
-         rbeM4pBik8HbrF9E2CYIjhW2SLcEb5F1Qt2OUguC6UxUtoF6BaA7Td41aCHapJzUHDfQ
-         PtpX2JPiIczvqi5lEO69txh+KLUsXX/MjyU+cnlYilh/gDG3XdALHzVdA7SuzPp0rhRt
-         B7PouoYeKTm5SeHeeaXJaOg+7MaYcXlQMKgpnE2o2gzmIkwTstXWvo3GcfHchAiro5cQ
-         MWhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=G2EUbiSBFqMAbwlq+Hh6bZmWi5bhxCtnpI1o6+QMB2g=;
-        b=OD7sza7vVRaQimbIS0rZ7TTEnRPEl3ID6tCvNqO6D5ZEcGFgjc4MslsOP0b9w0Zvcd
-         XyjAa55HpDKt6zwz7EQJgxpfzaowbZfrNUB8RheEZKiQWRJHKnYMdc8FUYdHvuvGFE+8
-         gwUufP8/9ZO7p1b2mjn0hF2FGsYUszqn1R9OOr6heGqFPLzYdz49OO4wW34MKnYRqNS2
-         H/OEvvXBroct5HIfoabjo/+uXQXjt3JzuAjSAZa77SsTT2d+jrbmov+Ls4npCgbdRdHr
-         ZTv6T8+thIOpaP0X0fTmC8SwjvOqu9ISLzo9NGgbxGZ5tQ+LHIsZ6ECxyMPEZTFXmFs1
-         h9JA==
-X-Gm-Message-State: AOAM532wBlpC19nsDijb+ZHhk1sx5vmv4rVj6YdcMKvxrpZWULH/SWwy
-        DdWpXOVrTTWLukihr7NmvYoFXeDohUtP6w==
-X-Google-Smtp-Source: ABdhPJzAIHsmf6jhU+O5aBG2Yjds5qCqmoR//7ADUCzjefCud9HvzJygMhzcWwpYBJ0ouhiOtkmwHA==
-X-Received: by 2002:a05:6512:3f04:: with SMTP id y4mr24721401lfa.180.1635278294066;
-        Tue, 26 Oct 2021 12:58:14 -0700 (PDT)
-Received: from penguin.lxd ([94.179.4.108])
-        by smtp.gmail.com with ESMTPSA id w26sm2436759ljh.18.2021.10.26.12.58.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 12:58:13 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 22:58:05 +0300
-From:   Denis Pauk <pauk.denis@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     eugene.shalygin@gmail.com, platform-driver-x86@vger.kernel.org,
-        thomas@weissschuh.net, Tor Vic <torvic9@mailbox.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/3] hwmon: (asus_wmi_ec_sensors) Support B550 Asus
- WMI.
-Message-ID: <20211026225805.1504a9f9@penguin.lxd>
-In-Reply-To: <YXcKLvRu3gRm3zUF@smile.fi.intel.com>
-References: <20211022200032.23267-1-pauk.denis@gmail.com>
-        <20211022200032.23267-2-pauk.denis@gmail.com>
-        <YXcDcXrUo4a/KAsT@smile.fi.intel.com>
-        <YXcHYvleoOr6sqMK@smile.fi.intel.com>
-        <YXcKLvRu3gRm3zUF@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; aarch64-unknown-linux-gnu)
+        id S239067AbhJZUCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:02:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231703AbhJZUCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 16:02:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D275060200;
+        Tue, 26 Oct 2021 19:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635278377;
+        bh=9yvP/Mku05mjwGEffiQM/MQYBBjQLlgIiuut1zNScQ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tiwfrVTvvl3aAfbBbDgyVCiEkCR98YxUAyE5NH+74g/WvI8TOIY9FOUObBVlo53ky
+         8LMgyWwHgYvAjrg7OdcrbCVHXfTxAyYYGzkDNvCMxlYU0dVCplcXtv5/WUqrLDSvY7
+         uGJZhPivrX8x+i3gQQ+78k5c/W7ol/KjRZvXKn3qF9muBBDTfOKKIzT71PU2wV6+qX
+         XDNgiWuT9KfxoIj08lSWxl7xhAzJo8YNaWgEa+DKnOGTHv5Qt/29Ah7/UHJpqW1riV
+         lSOXENkpgbzm99m4f5nwOzs3SLyekJ38jHSinXwnw6hzmCu7uoVx3UtEMaRG/2h9tS
+         DaaXaLkSyrd4Q==
+Date:   Tue, 26 Oct 2021 12:59:35 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     =?UTF-8?B?xYF1a2Fzeg==?= Stelmach <l.stelmach@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH net-next] net: ax88796c: fix -Wpointer-bool-conversion
+ warning
+Message-ID: <20211026125935.17caa7b0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211026195711.16152-1-arnd@kernel.org>
+References: <20211026195711.16152-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -75,19 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-Thank you, currently code has returned N/A by some reason. I will search
-place of regression.
-
-On Mon, 25 Oct 2021 22:49:02 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-...
+On Tue, 26 Oct 2021 21:56:39 +0200 Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Okay, here a few additional fixes (make them symmetrical and hope that
-> it will compile now):
+> ax_local->phydev->advertising is an array, not a pointer, so
+> clang points out that checking for NULL is unnecessary:
 > 
-...
+> drivers/net/ethernet/asix/ax88796c_main.c:851:24: error: address of array 'ax_local->phydev->advertising' will always evaluate to 'true' [-Werror,-Wpointer-bool-conversion]
+>         if (ax_local->phydev->advertising &&
+>             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~ ~~
+> 
+> Fixes: a97c69ba4f30 ("net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/ethernet/asix/ax88796c_main.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/asix/ax88796c_main.c b/drivers/net/ethernet/asix/ax88796c_main.c
+> index cfc597f72e3d..846a04922561 100644
+> --- a/drivers/net/ethernet/asix/ax88796c_main.c
+> +++ b/drivers/net/ethernet/asix/ax88796c_main.c
+> @@ -848,11 +848,10 @@ ax88796c_open(struct net_device *ndev)
+>  	/* Setup flow-control configuration */
+>  	phy_support_asym_pause(ax_local->phydev);
+>  
+> -	if (ax_local->phydev->advertising &&
+> -	    (linkmode_test_bit(ETHTOOL_LINK_MODE_Pause_BIT,
+> -			       ax_local->phydev->advertising) ||
+> -	     linkmode_test_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
+> -			       ax_local->phydev->advertising)))
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_Pause_BIT,
+> +			      ax_local->phydev->advertising) ||
+> +	    linkmode_test_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
+> +			      ax_local->phydev->advertising))
+>  		fc |= AX_FC_ANEG;
+>  
+>  	fc |= linkmode_test_bit(ETHTOOL_LINK_MODE_Pause_BIT,
 
-Best regards,
-    Denis.
+Same as 971f5c4079ed46a131ad3ac6e684ed056a7777da in net-next, thanks.
