@@ -2,269 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8897D43AE6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17FD43AE6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhJZI6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:58:48 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:30467 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhJZI6r (ORCPT
+        id S234513AbhJZJAD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 05:00:03 -0400
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:37862 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhJZJAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:58:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635238584; x=1666774584;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=r2ndaKt5+ORqLluT9rI7+4mckCDoBTiYuZ1y7YGtxgk=;
-  b=vAxDRp4QtJlWvwGvkt0y9+OMlD2ujOLm5tM3nCMHnoyZ8zyyN1x2CjxH
-   i3WQKzEtOnS9Fbb2Oo1OkiUcfioiKrSCDZy3FmTovuuaWgC6x9YqDmhvU
-   4/4nm/JiOGbI/yJ3hQx88WtytME+Uk5L4wX6WxiqSLAP8hQSDJheykYph
-   mzav+7fwv9OYA3GePd4g1t/LS+bus25hoSFygVh42lCwMQAcUH/bI2F0O
-   TDwmxW/OkIzmcUk3LAVFRfLG6Opw7VaGNl4DXTB9/hkk4KscCavBfqBjl
-   qRX4mYVLDERGJJspE6FyypRo7D3QmHDLmPdh2gzvY7UGkCek8Ffj1L9l7
-   g==;
-IronPort-SDR: l+xCzogN1lLowpwQk84Mbgvp17OdrLaXaTYWxQ0HjA3PZpCyzb6CvZp/itpc3c0BkIXArgA6NM
- 9NEkKjgYe8qfX9xxpg9orGnp3oIJjrY3HzyWgf3o0Mit776aROWsynkr0KGLoo4/LVL58ypCGw
- tJMehgHK6/FxzlwQn1IHw1Ay+Pn+NruLEih9TMlQ5Ysf/DP6vRSiDeBI8J0Cjlto+Q0RXpTKqb
- BAQ4DuFLQitKjd4oHjkrC69LiPYGNKNv1L/U0OdCbFKIwjSLTTjP0MRPKlznicGf5t8m7x+IGJ
- FTZkpRJq8E7smMTJ7jBd+xph
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="141082505"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Oct 2021 01:56:23 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 26 Oct 2021 01:56:23 -0700
-Received: from chelti64410lx.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 26 Oct 2021 01:56:19 -0700
-From:   Balamanikandan Gunasundar 
-        <balamanikandan.gunasundar@microchip.com>
-To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Balamanikandan Gunasundar 
-        <balamanikandan.gunasundar@microchip.com>,
-        "Dan Sneddon" <dan.sneddon@microchip.com>
-Subject: [PATCH] usb: gadget: at91_udc: Convert to GPIO descriptors
-Date:   Tue, 26 Oct 2021 14:26:10 +0530
-Message-ID: <20211026085610.25264-1-balamanikandan.gunasundar@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 26 Oct 2021 05:00:02 -0400
+Received: by mail-ua1-f52.google.com with SMTP id f4so27704594uad.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:57:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wHMJT8hsNB0mIrUoXmplhj21JrUEEtFBSYSzEEGXMi4=;
+        b=hJCkJZMCV+dTS6cZkMAWDA+YVUUy/IIXqLhZK4mQF2O4v0AHXJJF52rM2DCJlmtyaw
+         pzDaG6ev+WTTmXVaWTHK1px0JDhtv9H9erorRbZje38tUssA9SffQjAYu6utly84UTt4
+         9XnsMPQDlebMqPX/h9oLlQ0HvnDdLSuCy0eBCWr6bdNxFqttp1UfoBluNGfbL0yNOMuw
+         rV1WrietKYo5pIKm3OSCobcG0RyL2YMJLDNDY0SxFOgQxQlFwWmWxW3a2+XY+d6/NnNY
+         tFippQ3NWoCPrcfmzGYXisxkddPE6aj4ZWQ0U1FIur8FTGL5HX5q+tmZFk7PUKSjXoi6
+         ZULA==
+X-Gm-Message-State: AOAM531jP9/PwYdFnjofj6aaarFMbDOlXug2jzLjTIqnFflpZR2mIlA3
+        M2DoAj+XzUjWwWWqhdsraNso9deG8hVmKA==
+X-Google-Smtp-Source: ABdhPJyh2TqfrE8B7IwOhQCxdd1iPere20d4YiDhU47XL8pfKh5sZhv6EDXjp+PRO5rAxM94oMpiPw==
+X-Received: by 2002:a67:ed07:: with SMTP id l7mr21204031vsp.40.1635238658069;
+        Tue, 26 Oct 2021 01:57:38 -0700 (PDT)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id d27sm41319vkq.16.2021.10.26.01.57.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 01:57:37 -0700 (PDT)
+Received: by mail-ua1-f43.google.com with SMTP id s4so3477300uaq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:57:37 -0700 (PDT)
+X-Received: by 2002:ab0:3154:: with SMTP id e20mr21946342uam.14.1635238657335;
+ Tue, 26 Oct 2021 01:57:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
+ <830eda64-6e66-c61b-ceaa-57be87783b2c@w6rz.net> <CAMuHMdU+jgNK8QCEysHnURkpUcazPOoepK32XzV8UGwVQdL5tw@mail.gmail.com>
+ <2328512.Zi2KH1A685@diego>
+In-Reply-To: <2328512.Zi2KH1A685@diego>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Oct 2021 10:57:26 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW7NCC3siVp6avaTRffrdFr+OMXvLeGzdHZJOg+B5aGJw@mail.gmail.com>
+Message-ID: <CAMuHMdW7NCC3siVp6avaTRffrdFr+OMXvLeGzdHZJOg+B5aGJw@mail.gmail.com>
+Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     re@w6rz.net, linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the legacy GPIO APIs with gpio descriptor consumer
-interface. Remove all gpio inversion(active low) flags as it is
-already handled by the gpiod_set_value() and gpiod_get_value()
-functions.
+Hi Heiko,
 
-Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-Reviewed-by: Dan Sneddon <dan.sneddon@microchip.com>
----
- drivers/usb/gadget/udc/at91_udc.c | 67 +++++++++++--------------------
- drivers/usb/gadget/udc/at91_udc.h |  8 ++--
- 2 files changed, 27 insertions(+), 48 deletions(-)
+On Tue, Oct 26, 2021 at 10:53 AM Heiko Stübner <heiko@sntech.de> wrote:
+> Am Dienstag, 26. Oktober 2021, 08:44:31 CEST schrieb Geert Uytterhoeven:
+> > On Tue, Oct 26, 2021 at 2:37 AM Ron Economos <re@w6rz.net> wrote:
+> > > On 10/25/21 8:54 AM, Geert Uytterhoeven wrote:
+> > > > When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
+> > > > the 4th CPU either fails to come online, or the system crashes.
+> > > >
+> > > > This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
+> > > > and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
+> > > >    - unused core has hartid 0 (sifive,e51),
+> > > >    - processor 0 has hartid 1 (sifive,u74-mc),
+> > > >    - processor 1 has hartid 2 (sifive,u74-mc),
+> > > >    - processor 2 has hartid 3 (sifive,u74-mc),
+> > > >    - processor 3 has hartid 4 (sifive,u74-mc).
+> > > >
+> > > > I assume the same issue is present on the SiFive fu540 and fu740
+> > > > SoCs, but I don't have access to these.  The issue is not present
+> > > > on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
+> > > > hartid 0.
+> > > >
+> > > > arch/riscv/kernel/cpu_ops.c has:
+> > > >
+> > > >      void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
+> > > >      void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
+> > > >
+> > > >      void cpu_update_secondary_bootdata(unsigned int cpuid,
+> > > >                                         struct task_struct *tidle)
+> > > >      {
+> > > >              int hartid = cpuid_to_hartid_map(cpuid);
+> > > >
+> > > >              /* Make sure tidle is updated */
+> > > >              smp_mb();
+> > > >              WRITE_ONCE(__cpu_up_stack_pointer[hartid],
+> > > >                         task_stack_page(tidle) + THREAD_SIZE);
+> > > >              WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
+> > > >
+> > > > The above two writes cause out-of-bound accesses beyond
+> > > > __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
+> > > >
+> > > >      }
 
-diff --git a/drivers/usb/gadget/udc/at91_udc.c b/drivers/usb/gadget/udc/at91_udc.c
-index eede5cedacb4..21365f185b94 100644
---- a/drivers/usb/gadget/udc/at91_udc.c
-+++ b/drivers/usb/gadget/udc/at91_udc.c
-@@ -25,7 +25,7 @@
- #include <linux/usb/ch9.h>
- #include <linux/usb/gadget.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/platform_data/atmel.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
-@@ -1510,7 +1510,6 @@ static irqreturn_t at91_udc_irq (int irq, void *_udc)
- 
- static void at91_vbus_update(struct at91_udc *udc, unsigned value)
- {
--	value ^= udc->board.vbus_active_low;
- 	if (value != udc->vbus)
- 		at91_vbus_session(&udc->gadget, value);
- }
-@@ -1521,7 +1520,7 @@ static irqreturn_t at91_vbus_irq(int irq, void *_udc)
- 
- 	/* vbus needs at least brief debouncing */
- 	udelay(10);
--	at91_vbus_update(udc, gpio_get_value(udc->board.vbus_pin));
-+	at91_vbus_update(udc, gpiod_get_value(udc->board.vbus_pin));
- 
- 	return IRQ_HANDLED;
- }
-@@ -1531,7 +1530,7 @@ static void at91_vbus_timer_work(struct work_struct *work)
- 	struct at91_udc *udc = container_of(work, struct at91_udc,
- 					    vbus_timer_work);
- 
--	at91_vbus_update(udc, gpio_get_value_cansleep(udc->board.vbus_pin));
-+	at91_vbus_update(udc, gpiod_get_value_cansleep(udc->board.vbus_pin));
- 
- 	if (!timer_pending(&udc->vbus_timer))
- 		mod_timer(&udc->vbus_timer, jiffies + VBUS_POLL_TIMEOUT);
-@@ -1595,7 +1594,6 @@ static void at91udc_shutdown(struct platform_device *dev)
- static int at91rm9200_udc_init(struct at91_udc *udc)
- {
- 	struct at91_ep *ep;
--	int ret;
- 	int i;
- 
- 	for (i = 0; i < NUM_ENDPOINTS; i++) {
-@@ -1615,32 +1613,23 @@ static int at91rm9200_udc_init(struct at91_udc *udc)
- 		}
- 	}
- 
--	if (!gpio_is_valid(udc->board.pullup_pin)) {
-+	if (!udc->board.pullup_pin) {
- 		DBG("no D+ pullup?\n");
- 		return -ENODEV;
- 	}
- 
--	ret = devm_gpio_request(&udc->pdev->dev, udc->board.pullup_pin,
--				"udc_pullup");
--	if (ret) {
--		DBG("D+ pullup is busy\n");
--		return ret;
--	}
--
--	gpio_direction_output(udc->board.pullup_pin,
--			      udc->board.pullup_active_low);
-+	gpiod_direction_output(udc->board.pullup_pin,
-+			       gpiod_is_active_low(udc->board.pullup_pin));
- 
- 	return 0;
- }
- 
- static void at91rm9200_udc_pullup(struct at91_udc *udc, int is_on)
- {
--	int active = !udc->board.pullup_active_low;
--
- 	if (is_on)
--		gpio_set_value(udc->board.pullup_pin, active);
-+		gpiod_set_value(udc->board.pullup_pin, 1);
- 	else
--		gpio_set_value(udc->board.pullup_pin, !active);
-+		gpiod_set_value(udc->board.pullup_pin, 0);
- }
- 
- static const struct at91_udc_caps at91rm9200_udc_caps = {
-@@ -1783,20 +1772,20 @@ static void at91udc_of_init(struct at91_udc *udc, struct device_node *np)
- {
- 	struct at91_udc_data *board = &udc->board;
- 	const struct of_device_id *match;
--	enum of_gpio_flags flags;
- 	u32 val;
- 
- 	if (of_property_read_u32(np, "atmel,vbus-polled", &val) == 0)
- 		board->vbus_polled = 1;
- 
--	board->vbus_pin = of_get_named_gpio_flags(np, "atmel,vbus-gpio", 0,
--						  &flags);
--	board->vbus_active_low = (flags & OF_GPIO_ACTIVE_LOW) ? 1 : 0;
-+	board->vbus_pin = gpiod_get_from_of_node(np, "atmel,vbus-gpio", 0,
-+						 GPIOD_IN, "udc_vbus");
-+	if (IS_ERR(board->vbus_pin))
-+		board->vbus_pin = NULL;
- 
--	board->pullup_pin = of_get_named_gpio_flags(np, "atmel,pullup-gpio", 0,
--						  &flags);
--
--	board->pullup_active_low = (flags & OF_GPIO_ACTIVE_LOW) ? 1 : 0;
-+	board->pullup_pin = gpiod_get_from_of_node(np, "atmel,pullup-gpio", 0,
-+						   GPIOD_ASIS, "udc_pullup");
-+	if (IS_ERR(board->pullup_pin))
-+		board->pullup_pin = NULL;
- 
- 	match = of_match_node(at91_udc_dt_ids, np);
- 	if (match)
-@@ -1884,22 +1873,14 @@ static int at91udc_probe(struct platform_device *pdev)
- 		goto err_unprepare_iclk;
- 	}
- 
--	if (gpio_is_valid(udc->board.vbus_pin)) {
--		retval = devm_gpio_request(dev, udc->board.vbus_pin,
--					   "udc_vbus");
--		if (retval) {
--			DBG("request vbus pin failed\n");
--			goto err_unprepare_iclk;
--		}
--
--		gpio_direction_input(udc->board.vbus_pin);
-+	if (udc->board.vbus_pin) {
-+		gpiod_direction_input(udc->board.vbus_pin);
- 
- 		/*
- 		 * Get the initial state of VBUS - we cannot expect
- 		 * a pending interrupt.
- 		 */
--		udc->vbus = gpio_get_value_cansleep(udc->board.vbus_pin) ^
--			udc->board.vbus_active_low;
-+		udc->vbus = gpiod_get_value_cansleep(udc->board.vbus_pin);
- 
- 		if (udc->board.vbus_polled) {
- 			INIT_WORK(&udc->vbus_timer_work, at91_vbus_timer_work);
-@@ -1908,7 +1889,7 @@ static int at91udc_probe(struct platform_device *pdev)
- 				  jiffies + VBUS_POLL_TIMEOUT);
- 		} else {
- 			retval = devm_request_irq(dev,
--					gpio_to_irq(udc->board.vbus_pin),
-+					gpiod_to_irq(udc->board.vbus_pin),
- 					at91_vbus_irq, 0, driver_name, udc);
- 			if (retval) {
- 				DBG("request vbus irq %d failed\n",
-@@ -1986,8 +1967,8 @@ static int at91udc_suspend(struct platform_device *pdev, pm_message_t mesg)
- 		enable_irq_wake(udc->udp_irq);
- 
- 	udc->active_suspend = wake;
--	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled && wake)
--		enable_irq_wake(udc->board.vbus_pin);
-+	if (udc->board.vbus_pin && !udc->board.vbus_polled && wake)
-+		enable_irq_wake(gpiod_to_irq(udc->board.vbus_pin));
- 	return 0;
- }
- 
-@@ -1996,9 +1977,9 @@ static int at91udc_resume(struct platform_device *pdev)
- 	struct at91_udc *udc = platform_get_drvdata(pdev);
- 	unsigned long	flags;
- 
--	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled &&
-+	if (udc->board.vbus_pin && !udc->board.vbus_polled &&
- 	    udc->active_suspend)
--		disable_irq_wake(udc->board.vbus_pin);
-+		disable_irq_wake(gpiod_to_irq(udc->board.vbus_pin));
- 
- 	/* maybe reconnect to host; if so, clocks on */
- 	if (udc->active_suspend)
-diff --git a/drivers/usb/gadget/udc/at91_udc.h b/drivers/usb/gadget/udc/at91_udc.h
-index fd58c5b81826..28c1042f8623 100644
---- a/drivers/usb/gadget/udc/at91_udc.h
-+++ b/drivers/usb/gadget/udc/at91_udc.h
-@@ -109,11 +109,9 @@ struct at91_udc_caps {
- };
- 
- struct at91_udc_data {
--	int	vbus_pin;		/* high == host powering us */
--	u8	vbus_active_low;	/* vbus polarity */
--	u8	vbus_polled;		/* Use polling, not interrupt */
--	int	pullup_pin;		/* active == D+ pulled up */
--	u8	pullup_active_low;	/* true == pullup_pin is active low */
-+	struct gpio_desc  *vbus_pin;		/* high == host powering us */
-+	u8	          vbus_polled;		/* Use polling, not interrupt */
-+	struct gpio_desc  *pullup_pin;		/* active == D+ pulled up */
- };
- 
- /*
--- 
-2.25.1
+> > https://riscv.org/wp-content/uploads/2017/05/riscv-privileged-v1.10.pdf
+> > says:
+> >
+> >     Hart IDs might not necessarily be numbered contiguously in a
+> >     multiprocessor system, but at least one hart must have a hart
+> >     ID of zero.
+> >
+> > Which means indexing arrays by hart ID is a no-go?
+>
+> Isn't that also similar on aarch64?
+>
+> On a rk3399 you get 0-3 and 100-101 and with the paragraph above
+> something like this could very well exist on some riscv cpu too I guess.
 
+Yes, it looks like hart IDs are similar to MPIDRs on ARM.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
