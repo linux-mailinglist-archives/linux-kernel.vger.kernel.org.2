@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E7443BDBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8F843BDC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240245AbhJZXWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:22:49 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43579 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhJZXWj (ORCPT
+        id S240246AbhJZXYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhJZXYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:22:39 -0400
-Received: by mail-ot1-f44.google.com with SMTP id y15-20020a9d460f000000b0055337e17a55so961097ote.10;
-        Tue, 26 Oct 2021 16:20:15 -0700 (PDT)
+        Tue, 26 Oct 2021 19:24:31 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DBFC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:22:07 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id h4so1523445uaw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:22:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J18QttHAkFDS7yxz+1rjMOa4CC6r6s8T6z90wWDtKnM=;
+        b=UUgvFrR+HKKFK8Xbmv5tdHLBTz2c3Jxe83/yQSjGWL6ZMTBERVPLz7HGzOIDZXMIiL
+         oU8t/tK18coPzNBChNmQzno0N8loKXyMzVuRFnKRhwgM9QFIyGXbDmlDLaeTeh8J4nGL
+         8WDCBTmwIV66qqkK86dTyaPoQ3AVkvOzdsjsHvtMZUSWtDm0S13xq+amg2QnNYZm5iOE
+         PRa4JObjkF5GrYCEDpzhtOZ0CRS2e9Lb73wscC2FvigHJvezGsaypJTHUOf0tmFb1P1K
+         AW2uVYzq302wtU2mpagTftZpxA3IbcUul8PUgDWiNDkymaNMll/Dc7acJm7mdb9JYP0b
+         V+Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GgApLoxzfDo36zMw0fwuP9MEZGeeBiA63Das3gCl00Q=;
-        b=dGLG1+fwfJCvHRdUFQ8cLRw0vXwroZ/Be/MZLbtf0TGMETgoQ73yIeePGSHaIbG4Ci
-         paqIGuAUa3ZZa0fl9zBTd1PcyWnhu8BR34jwHRPPIRdy9zjFYI5nd+xGEkCdyBRWr9tp
-         TBWxzTrSVKEE5eSgDho6LByMH3ZPEi2CDvDGmBZU1nFzIANZcoUuNC+PZYwkO2JpI34G
-         8qGHIlfpJNGve9KUms4mI3Ep27kQTSo7fQXSvnPB/D6fsfJFRTQNCw8uY7QTa0uJlApE
-         siEC5krmfqXbuBwOiZj22zju/mCpyrv8VuEkBIHZWwZvQ04PK3cGj60lR8cjJENHfY8p
-         8Fww==
-X-Gm-Message-State: AOAM532yOcQYxmVVos5l5nUkxs7l/+IlGslsgFwbd6IBz6kDfNZIy90z
-        5nG+ci6gj1k8Bw5vKy9A0eOhbMB/nA==
-X-Google-Smtp-Source: ABdhPJwR17hUwZQH4tGPyMzmf+w3kLDb599VGEDD71JrIEZ0o1tGb66W2AI2k2/qQ59llSF6BSv90w==
-X-Received: by 2002:a9d:6081:: with SMTP id m1mr22728370otj.262.1635290415040;
-        Tue, 26 Oct 2021 16:20:15 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j16sm5138612oig.29.2021.10.26.16.20.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 16:20:14 -0700 (PDT)
-Received: (nullmailer pid 3502213 invoked by uid 1000);
-        Tue, 26 Oct 2021 23:20:13 -0000
-Date:   Tue, 26 Oct 2021 18:20:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, list@opendingux.net,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: Rename Ingenic CGU headers to
- ingenic,*.h
-Message-ID: <YXiNLZ9ne8D8uv82@robh.at.kernel.org>
-References: <20211016133322.40771-1-paul@crapouillou.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J18QttHAkFDS7yxz+1rjMOa4CC6r6s8T6z90wWDtKnM=;
+        b=U2gTyvpe4jU/y+kcF2vtUfK8qQFGLnapWY6LhGk/T1/sea4LBKMnjYqi2GouV/Hs60
+         RtUUer3Kp5Xd9YpLs37bUUs7EYh6boHcjr+ZZnbfjxd7EA0yXluxulNF2E80XxIGPUAc
+         +GORXm5ENBzZWVA++RVgBDd6gXhRBub5jSior9+G+/VUVToFzeFi23lDJC5xYjnD7lgh
+         3tJQIrc0y4GZlQGlyXhgmcz7OvLExe82sEun0wVGLcI/69ZStFMZiVfIClstLv5H480L
+         DX+jiwlT4Npf//1tNK24ENnNYOZTsHZeTa3ZUdCo+llerR+X5zhten9uydZe4PM4hdo7
+         HLgg==
+X-Gm-Message-State: AOAM530wgF0KVviVGK5xrEtLZiTAtGcgLio1MxTiMGtxm2DBmuJ9neJi
+        jD60axRE6Ga8W7WrFL4FEcEB/202hK15ZQrayOsgEeQ1e8deUg==
+X-Google-Smtp-Source: ABdhPJx4lFsGHDL8KFwKlcXqK7O+w6Mif7FDdqlZ4s4k6X+hEkLS2rBkYwW9nhpkzDj/TM6EYqIvqhMo6ezpRoK8x5g=
+X-Received: by 2002:a05:6102:11f0:: with SMTP id e16mr17418235vsg.21.1635290526524;
+ Tue, 26 Oct 2021 16:22:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016133322.40771-1-paul@crapouillou.net>
+References: <20211012232522.714898-1-posk@google.com> <20211012232522.714898-3-posk@google.com>
+In-Reply-To: <20211012232522.714898-3-posk@google.com>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Tue, 26 Oct 2021 16:21:55 -0700
+Message-ID: <CAFTs51V8c3vuw-hFHWuxJDnvr2t-tNs8SC7syFOVvVSm8JdKKQ@mail.gmail.com>
+Subject: Re: [PATCH v0.7 2/5] mm, x86/uaccess: add userspace atomic helpers
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org
+Cc:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 02:33:21PM +0100, Paul Cercueil wrote:
-> Tidy up a bit the tree, by prefixing all include/dt-bindings/clock/ files
-> related to Ingenic SoCs with 'ingenic,'.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
-> 
-> Notes:
->     v2: Fix x1000-cgu.h and x1830-cgu.h incorrectly renamed to
->         x1000.h / x1830.h
-> 
->  Documentation/devicetree/bindings/clock/ingenic,cgu.yaml      | 2 +-
->  Documentation/devicetree/bindings/display/ingenic,ipu.yaml    | 2 +-
->  Documentation/devicetree/bindings/display/ingenic,lcd.yaml    | 4 ++--
->  Documentation/devicetree/bindings/dma/ingenic,dma.yaml        | 2 +-
->  Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml        | 2 +-
->  Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml    | 2 +-
->  .../devicetree/bindings/memory-controllers/ingenic,nemc.yaml  | 2 +-
->  .../devicetree/bindings/mips/ingenic/ingenic,cpu.yaml         | 2 +-
->  Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml        | 2 +-
->  Documentation/devicetree/bindings/mtd/ingenic,nand.yaml       | 2 +-
->  Documentation/devicetree/bindings/net/ingenic,mac.yaml        | 2 +-
->  .../devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml       | 2 +-
->  Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml    | 2 +-
->  Documentation/devicetree/bindings/remoteproc/ingenic,vpu.yaml | 2 +-
->  Documentation/devicetree/bindings/rng/ingenic,trng.yaml       | 2 +-
->  Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml        | 2 +-
->  Documentation/devicetree/bindings/serial/ingenic,uart.yaml    | 2 +-
->  Documentation/devicetree/bindings/sound/ingenic,aic.yaml      | 2 +-
->  Documentation/devicetree/bindings/sound/ingenic,codec.yaml    | 2 +-
->  Documentation/devicetree/bindings/timer/ingenic,sysost.yaml   | 2 +-
->  Documentation/devicetree/bindings/timer/ingenic,tcu.yaml      | 2 +-
->  Documentation/devicetree/bindings/usb/ingenic,musb.yaml       | 2 +-
->  arch/mips/boot/dts/ingenic/jz4725b.dtsi                       | 2 +-
->  arch/mips/boot/dts/ingenic/jz4740.dtsi                        | 2 +-
->  arch/mips/boot/dts/ingenic/jz4770.dtsi                        | 2 +-
->  arch/mips/boot/dts/ingenic/jz4780.dtsi                        | 2 +-
->  arch/mips/boot/dts/ingenic/x1000.dtsi                         | 2 +-
->  arch/mips/boot/dts/ingenic/x1830.dtsi                         | 2 +-
->  drivers/clk/ingenic/jz4725b-cgu.c                             | 2 +-
->  drivers/clk/ingenic/jz4740-cgu.c                              | 2 +-
->  drivers/clk/ingenic/jz4760-cgu.c                              | 2 +-
->  drivers/clk/ingenic/jz4770-cgu.c                              | 2 +-
->  drivers/clk/ingenic/jz4780-cgu.c                              | 2 +-
->  drivers/clk/ingenic/x1000-cgu.c                               | 2 +-
->  drivers/clk/ingenic/x1830-cgu.c                               | 2 +-
->  .../clock/{jz4725b-cgu.h => ingenic,jz4725b-cgu.h}            | 0
->  .../dt-bindings/clock/{jz4740-cgu.h => ingenic,jz4740-cgu.h}  | 0
->  .../dt-bindings/clock/{jz4760-cgu.h => ingenic,jz4760-cgu.h}  | 0
->  .../dt-bindings/clock/{jz4770-cgu.h => ingenic,jz4770-cgu.h}  | 0
->  .../dt-bindings/clock/{jz4780-cgu.h => ingenic,jz4780-cgu.h}  | 0
->  .../dt-bindings/clock/{x1000-cgu.h => ingenic,x1000-cgu.h}    | 0
->  .../dt-bindings/clock/{x1830-cgu.h => ingenic,x1830-cgu.h}    | 0
->  42 files changed, 36 insertions(+), 36 deletions(-)
->  rename include/dt-bindings/clock/{jz4725b-cgu.h => ingenic,jz4725b-cgu.h} (100%)
->  rename include/dt-bindings/clock/{jz4740-cgu.h => ingenic,jz4740-cgu.h} (100%)
->  rename include/dt-bindings/clock/{jz4760-cgu.h => ingenic,jz4760-cgu.h} (100%)
->  rename include/dt-bindings/clock/{jz4770-cgu.h => ingenic,jz4770-cgu.h} (100%)
->  rename include/dt-bindings/clock/{jz4780-cgu.h => ingenic,jz4780-cgu.h} (100%)
->  rename include/dt-bindings/clock/{x1000-cgu.h => ingenic,x1000-cgu.h} (100%)
->  rename include/dt-bindings/clock/{x1830-cgu.h => ingenic,x1830-cgu.h} (100%)
+On Tue, Oct 12, 2021 at 4:25 PM Peter Oskolkov <posk@posk.io> wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+[...]
 
-However, this will be a pain to merge if there are any new users coming 
-in during the merge window. If not, then Stephen can just take this. If 
-there are, then at the end of the merge window is the best time. For 
-that to work, you need to track when all dependent changes are merged 
-and we need to agree who will pick this up. I usually have fixes from 
-breakages in the merge window anyways.
+> +static inline int __try_xchg_user_32(u32 *oval, u32 __user *uaddr, u32 newval)
+> +{
+> +       u32 oldval = 0;
+> +       int ret = 0;
+> +
+> +       asm volatile("\n"
+> +               "1:\txchgl %0, %2\n"
+> +               "2:\n"
+> +               "\t.section .fixup, \"ax\"\n"
+> +               "3:\tmov     %3, %0\n"
 
-Rob
+I believe the line above should be "mov %3, %1", not "mov %3, %0".
+I'll fix this in the next patchset mailing.
+
+> +               "\tjmp     2b\n"
+> +               "\t.previous\n"
+> +               _ASM_EXTABLE_UA(1b, 3b)
+> +               : "=r" (oldval), "=r" (ret), "+m" (*uaddr)
+> +               : "i" (-EFAULT), "0" (newval), "1" (0)
+> +       );
+> +
+> +       if (ret)
+> +               return ret;
+> +
+> +       *oval = oldval;
+> +       return 0;
+> +}
+> +
+> +static inline int __try_xchg_user_64(u64 *oval, u64 __user *uaddr, u64 newval)
+> +{> +> +
+> +       u64 oldval = 0;
+> +       int ret = 0;
+> +
+> +       asm volatile("\n"
+> +               "1:\txchgq %0, %2\n"
+> +               "2:\n"
+> +               "\t.section .fixup, \"ax\"\n"
+> +               "3:\tmov     %3, %0\n"
+
+Same here.
+
+[...]
