@@ -2,786 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E9943B567
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1683043B574
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235782AbhJZPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
+        id S236554AbhJZP0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231931AbhJZPX6 (ORCPT
+        with ESMTP id S234738AbhJZP00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:23:58 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD7BC061745;
-        Tue, 26 Oct 2021 08:21:34 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 718731F43A2F
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [RFC 08/13] soc: mediatek: apu: Add apusys rv driver
-To:     Flora Fu <flora.fu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Yong Wu <yong.wu@mediatek.com>,
-        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>
-References: <20211023111409.30463-1-flora.fu@mediatek.com>
- <20211023111409.30463-9-flora.fu@mediatek.com>
-Message-ID: <5a67997f-737a-5bd1-9ba3-25b5330b7dc6@collabora.com>
-Date:   Tue, 26 Oct 2021 17:21:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 26 Oct 2021 11:26:26 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD94C061745;
+        Tue, 26 Oct 2021 08:24:02 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id h20so10737498ila.4;
+        Tue, 26 Oct 2021 08:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bYegGVgHZz6GXBZoiZmw9ty75Gg5qvqUFcTPtUsmBxg=;
+        b=NumiM/Y/a185fekTBwz7zlsMCVCEHsbSwC6ASEFJPpZwJ9KxnNn7TXPfWlWkpOMi35
+         9wcHCTCCon03Oq1aybYyithNFjy9FrJQ1W+WIrMc6MdMXkqYz/NUV/zoT5+umpq6H9W/
+         NGbs1pbGfaEl5GunopTbX4C9STNQGNGzE7P6y4OBw5ELP/+BuTZDz8O7EK+sLUSu3pUO
+         HvYyf1BjKjwtXkVmuafSqwZA2++qjIiesaFeDAjYUdvktWCtWPCZfCppVQqurZPAj9vb
+         n/eVa/852UWLOgqN0yjwlWVX6LR7xbKPzAkV2SSVjemCHfyjGENrfnVYpwqPsrYDMFKa
+         mvTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bYegGVgHZz6GXBZoiZmw9ty75Gg5qvqUFcTPtUsmBxg=;
+        b=w1GlL5qEW8MSGWlmYeUXg3iYr9kUGUULrBeEC3FGR+0U6dssILbItXr72e4BawD24y
+         +BOXsS4k8SrRQBtWm3yNytcHBN2/5f4/xhRcBmJfj8n7jEbzdDtmSUcVWGyHw8CoiBcE
+         BAoQmCvjZxv8WDpQRclP9B7JGuMmSaG2NTF6vLTCQAtUjzbm7rCyIFqPFoxU1Qr6pmKf
+         Cnj837AxbEByIl9z0VaERDt76jmLhmtLRmk38cxuIl9Cp93pRyBwg67xKJORc0vtTBvh
+         h0/Q4aE55YH5zzHyQYK89H2jcblUh0EItrZYSKYmhhLa2dZCGqMB5VDn7K+o7IUWxm0R
+         DV3Q==
+X-Gm-Message-State: AOAM532/gAjCtTQaXklPNObNhaYcxN/vq+m4u6fU/hIzGn5PqwyoS9Ju
+        93DHrd8nDV1SErNPWNDN2Uhjt4YhkWdOaciBqMxR2KKI2Ug=
+X-Google-Smtp-Source: ABdhPJxFPq8W0tpjh0fWgwIQzwEbHX6/p0HBAATLcbPwo7bZWsGjC+PH1oKyROgX+BH9LO9ZeqMDnXOpk04wu/Sd7xU=
+X-Received: by 2002:a05:6e02:18cf:: with SMTP id s15mr10296610ilu.198.1635261841745;
+ Tue, 26 Oct 2021 08:24:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211023111409.30463-9-flora.fu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211025204634.2517-1-iangelak@redhat.com>
+In-Reply-To: <20211025204634.2517-1-iangelak@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 26 Oct 2021 18:23:50 +0300
+Message-ID: <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
+To:     Ioannis Angelakopoulos <iangelak@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Steve French <sfrench@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 23/10/21 13:14, Flora Fu ha scritto:
-> Add driver for control APU tinysys
-> 
-> APU integrated subsystem having MD32RV33 (MD32) that runs tinysys
-> The tinsys is running on a micro processor in APU.
-> Its firmware is load and boot from Kernel side. Kernel and tinysys use
-> IPI to tx/rx messages.
-> 
-> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
-> ---
->   drivers/soc/mediatek/apusys/Makefile        |   6 +
->   drivers/soc/mediatek/apusys/apu-config.h    | 100 +++
->   drivers/soc/mediatek/apusys/apu-core.c      |   2 +
->   drivers/soc/mediatek/apusys/apu-core.h      |   2 +
->   drivers/soc/mediatek/apusys/apu-ipi.c       | 486 ++++++++++++
+On Mon, Oct 25, 2021 at 11:47 PM Ioannis Angelakopoulos
+<iangelak@redhat.com> wrote:
+>
+> Hello,
+>
+> I am a PhD student currently interning at Red Hat and working on the
+> virtiofs file system. I am trying to add support for the Inotify
+> notification subsystem in virtiofs. I seek your feedback and
+> suggestions on what is the right direction to take.
+>
 
-I'm not sure of that, but your apu-ipi.c may be more suited to be in
-drivers/remoteproc instead.
+Hi Ioannis!
 
->   drivers/soc/mediatek/apusys/apu-mbox.c      |  83 ++
+I am very happy that you have taken on this task.
+People have been requesting this functionality in the past [1]
+Not specifically for FUSE, but FUSE is a very good place to start.
 
-apu-mbox.c should go to drivers/mailbox/ and you should register it with
-the mailbox API as a mailbox controller instead of what you're currently
-doing...
+[1] https://lore.kernel.org/linux-fsdevel/CAH2r5mt1Fy6hR+Rdig0sHsOS8fVQDsKf9HqZjvjORS3R-7=RFw@mail.gmail.com/
 
- From what I see, you have functions in there that can be indeed mapped
-to struct mbox_chan_ops .send_data and .peek_data... also your function
-apu_mbox_wait_inbox seems to be waiting on an interrupt, and such irq is
-apparently your "mbox0_irq" (as you named it in the dt).
-In that case, you can also manage that in your drivers/mailbox/ driver.
-+
->   drivers/soc/mediatek/apusys/apu-mbox.h      |  27 +
->   drivers/soc/mediatek/apusys/apu-rproc.c     | 806 ++++++++++++++++++++
+> Currently, virtiofs does not support the Inotify API and there are
+> applications which look for the Inotify support in virtiofs (e.g., Kata
+> containers).
+>
+> However, all the event notification subsystems (Dnotify/Inotify/Fanotify)
+> are supported by only by local kernel file systems.
+>
+> --Proposed solution
+>
+> With this RFC patch we add the inotify support to the FUSE kernel module
+> so that the remote virtiofs file system (based on FUSE) used by a QEMU
+> guest VM can make use of this feature.
+>
+> Specifically, we enhance FUSE to add/modify/delete watches on the FUSE
+> server and also receive remote inotify events. To achieve this we modify
+> the fsnotify subsystem so that it calls specific hooks in FUSE when a
+> remote watch is added/modified/deleted and FUSE calls into fsnotify when
+> a remote event is received to send the event to user space.
+>
+> In our case the FUSE server is virtiofsd.
+>
+> We also considered an out of band approach for implementing the remote
+> notifications (e.g., FAM, Gamin), however this approach would break
+> applications that are already compatible with inotify, and thus would
+> require an update.
+>
+> These kernel patches depend on the patch series posted by Vivek Goyal:
+> https://lore.kernel.org/linux-fsdevel/20210930143850.1188628-1-vgoyal@redhat.com/
 
-The apu-rproc.c driver seems to be a good candidate to be moved away from
+It would be a shame if remote fsnotify was not added as a generic
+capability to FUSE filesystems and not only virtiofs.
+Is there a way to get rid of this dependency?
 
-drivers/soc/mediatek/apusys/ - as this is indeed a remoteproc driver.
+>
+> My PoC Linux kernel patches are here:
+> https://github.com/iangelak/linux/commits/inotify_v1
+>
+> My PoC virtiofsd corresponding patches are here:
+> https://github.com/iangelak/qemu/commits/inotify_v1
+>
+> --Advantages
+>
+> 1) Our approach is compatible with existing applications that rely on
+> Inotify, thus improves portability.
+>
+> 2) Everything is implemented in one place (virtiofs and virtiofsd) and
+> there is no need to run additional processes (daemons) specifically to
+> handle the remote notifications.
+>
+> --Weaknesses
+>
+> 1) Both a local (QEMU guest) and a remote (Host/Virtiofsd) watch on the
+> target inode have to be active at the same time. The local watch
+> guarantees that events are going to be sent to the guest user space while
+> the remote watch captures events occurring on the host (and will be sent
+> to the guest).
+>
+> As a result, when an event occures on a inode within the exported
+> directory by virtiofs, two events will be generated at the same time; a
+> local event (generated by the guest kernel) and a remote event (generated
+> by the host), thus the guest will receive duplicate events.
+>
+> To account for this issue we implemented two modes; one where local events
+> function as expected (when virtiofsd does not support the remote
+> inotify) and one where the local events are suppressed and only the
+> remote events originating from the host side are let through (when
+> virtiofsd supports the remote inotify).
 
-Having it as drivers/remoteproc/mtk_apu.c seems to be a good option.
+Dropping events from the local side would be weird.
+Avoiding duplicate events is not a good enough reason IMO
+compared to the problems this could cause.
+I am not convinced this is worth it.
 
+>
+> 3) The lifetime of the local watch in the guest kernel is very
+> important. Specifically, there is a possibility that the guest does not
+> receive remote events on time, if it removes its local watch on the
+> target or deletes the inode (and thus the guest kernel removes the watch).
+> In these cases the guest kernel removes the local watch before the
+> remote events arrive from the host (virtiofsd) and as such the guest
+> kernel drops all the remote events for the target inode (since the
+> corresponding local watch does not exist anymore). On top of that,
+> virtiofsd keeps an open proc file descriptor for each inode that is not
+> immediately closed on a inode deletion request by the guest. As a result
+> no IN_DELETE_SELF is generated by virtiofsd and sent to the guest kernel
+> in this case.
+>
+> 4) Because virtiofsd implements additional operations during the
+> servicing of a request from the guest, additional inotify events might
+> be generated and sent to the guest other than the ones the guest
+> expects. However, this is not technically a limitation and it is dependent
+> on the implementation of the remote file system server (in this case
+> virtiofsd).
+>
+> 5) The current implementation only supports Inotify, due to its
+> simplicity and not Fanotify. Fanotify's complexity requires support from
+> virtiofsd that is not currently available. One such example is
+> Fsnotify's access permission decision capabilities, which could
+> conflict with virtiofsd's current access permission implementation.
 
+Good example, bad decision.
+It is perfectly fine for a remote server to provide a "supported event mask"
+and leave permission events out of the game.
 
->   drivers/soc/mediatek/apusys/apu-sw-logger.c | 429 +++++++++++
+Imagine a remote SMB server, it also does not support all of the events
+that the local application would like to set.
 
-This one definitely belongs here in drivers/soc/mediatek, and it's a consumer
-of the mailbox driver.
+That should not be a reason to rule out fanotify, only specific
+fanotify events.
 
->   drivers/soc/mediatek/apusys/apu.h           | 256 +++++++
->   drivers/soc/mediatek/apusys/mt81xx-plat.c   | 320 ++++++++
-
-If we end up keeping to be in need to have a separate mt81xx-plat.c file,
-then I believe this should have another name, so that it becomes one that
-aggregates all of the very-platform-specific functions in one, instead of
-having one file for each platform.
-
-Though, it may also be possible that this file will disappear entirely:
-since most of the things here will be moved around, it may become mostly
-empty... but it's probably too soon to judge.
-
->   11 files changed, 2517 insertions(+)
->   create mode 100644 drivers/soc/mediatek/apusys/apu-config.h
->   create mode 100644 drivers/soc/mediatek/apusys/apu-ipi.c
->   create mode 100644 drivers/soc/mediatek/apusys/apu-mbox.c
->   create mode 100644 drivers/soc/mediatek/apusys/apu-mbox.h
->   create mode 100644 drivers/soc/mediatek/apusys/apu-rproc.c
->   create mode 100644 drivers/soc/mediatek/apusys/apu-sw-logger.c
->   create mode 100644 drivers/soc/mediatek/apusys/apu.h
->   create mode 100644 drivers/soc/mediatek/apusys/mt81xx-plat.c
-> 
-
-snip...
-
-> diff --git a/drivers/soc/mediatek/apusys/apu-ipi.c b/drivers/soc/mediatek/apusys/apu-ipi.c
-> new file mode 100644
-> index 000000000000..547e034b3620
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/apusys/apu-ipi.c
-
-snip...
-
-> +int apu_ipi_init(struct platform_device *pdev, struct mtk_apu *apu)
-> +{
-> +	struct device *dev = apu->dev;
-> +	int i, ret;
-> +
-> +	tx_serial_no = 0;
-> +	rx_serial_no = 0;
-> +
-> +	mutex_init(&apu->send_lock);
-> +	spin_lock_init(&apu->usage_cnt_lock);
-> +	for (i = 0; i < APU_IPI_MAX; i++) {
-> +		mutex_init(&apu->ipi_desc[i].lock);
-> +		lockdep_set_class_and_name(&apu->ipi_desc[i].lock,
-> +					   &ipi_lock_key[i],
-> +					   apu->platdata->ipi_attrs[i].name);
-> +	}
-> +
-> +	init_waitqueue_head(&apu->run.wq);
-> +	init_waitqueue_head(&apu->ack_wq);
-> +
-> +	/* APU initialization IPI register */
-> +	ret = apu_ipi_register(apu, APU_IPI_INIT, apu_init_ipi_handler, apu);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register ipi for init, ret=%d\n",
-> +			ret);
-> +		return ret;
-> +	}
-> +
-> +	/* add rpmsg subdev */
-> +	apu_add_rpmsg_subdev(apu);
-> +
-> +	/* register mailbox IRQ */
-> +	apu->mbox0_irq_number = platform_get_irq_byname(pdev, "mbox0_irq");
-> +	dev_info(&pdev->dev, "%s: mbox0_irq = %d\n", __func__,
-> +		 apu->mbox0_irq_number);
-> +
-> +	ret = devm_request_threaded_irq(&pdev->dev, apu->mbox0_irq_number,
-> +					NULL, apu_ipi_handler, IRQF_ONESHOT,
-> +					"apu_ipi", apu);
-
-This is the mailbox interrupt... but it's handled in this driver instead of
-being handler in the mailbox driver... it's a bit confusing.
-
-Is this interrupt supposed to fire as a mailbox doorbell or..?
-In that case, you should request it in the mailbox driver and register an
-interrupt controller (still, in the mailbox driver) so that you can export
-a sw interrupt to this one.
-
-Or, maybe you can use notifiers to catch the mailbox message in this driver?
-
-> +	if (ret < 0)
-> +		goto remove_rpmsg_subdev;
-> +
-> +	apu_mbox_hw_init(apu);
-> +
-> +	return 0;
-> +
-> +remove_rpmsg_subdev:
-> +	apu_remove_rpmsg_subdev(apu);
-> +	apu_ipi_unregister(apu, APU_IPI_INIT);
-> +
-> +	return ret;
-> +}
-
-snip...
-
-> diff --git a/drivers/soc/mediatek/apusys/apu-rproc.c b/drivers/soc/mediatek/apusys/apu-rproc.c
-> new file mode 100644
-> index 000000000000..e2fe63dd6cc1
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/apusys/apu-rproc.c
-> @@ -0,0 +1,806 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/iommu.h>
-> +#include <linux/irq.h>
-> +#include <linux/module.h>
-> +#include <linux/remoteproc.h>
-> +#include <linux/time64.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/sched/clock.h>
-> +#include <linux/time64.h>
-> +#include <linux/workqueue.h>
-> +
-> +#include "apu.h"
-> +#include "apu-config.h"
-> +#include "apu-core.h"
-> +
-> +/* cmd */
-> +enum {
-> +	DPIDLE_CMD_LOCK_IPI = 0x5a00,
-> +	DPIDLE_CMD_UNLOCK_IPI = 0x5a01,
-> +	DPIDLE_CMD_PDN_UNLOCK = 0x5a02,
-> +};
-> +
-> +/* ack */
-> +enum {
-> +	DPIDLE_ACK_OK = 0,
-> +	DPIDLE_ACK_LOCK_BUSY,
-> +	DPIDLE_ACK_POWER_DOWN_FAIL,
-> +};
-> +
-> +static struct work_struct *apu_pwr_work;
-> +static struct workqueue_struct *apu_pwr_wq;
-> +static struct dentry *dbg_root;
-> +
-> +static void *apu_da_to_va(struct rproc *rproc, u64 da, size_t len,
-> +			  bool *is_iomem)
-> +{
-> +	void *ptr = NULL;
-> +	struct mtk_apu *apu = (struct mtk_apu *)rproc->priv;
-> +
-> +	if (da >= DRAM_OFFSET && da < DRAM_OFFSET + CODE_BUF_SIZE) {
-> +		ptr = apu->code_buf + (da - DRAM_OFFSET);
-> +	} else {
-> +		dev_err(apu->dev, "%s: invalid da: da = 0x%llx, len = %zu\n",
-> +			__func__, da, len);
-> +	}
-> +	return ptr;
-> +}
-> +
-> +static int apu_run(struct rproc *rproc)
-> +{
-> +	struct mtk_apu *apu = (struct mtk_apu *)rproc->priv;
-> +	struct mtk_apu_hw_ops *hw_ops = &apu->platdata->ops;
-> +	struct device *dev = apu->dev;
-> +	struct apu_run *run = &apu->run;
-> +	struct timespec64 begin, end, delta;
-> +	int ret;
-> +
-> +	pm_runtime_get_sync(apu->dev);
-> +	hw_ops->start(apu);
-
-Don't forget to always check return values.....
-
-> +
-> +	/* check if boot success */
-> +	ktime_get_ts64(&begin);
-> +	ret = wait_event_interruptible_timeout(run->wq,
-> +					       run->signaled,
-> +					       msecs_to_jiffies(10000));
-
-#define APU_INIT_TIMEOUT_MS	10000
-
-...but then, does it really need 10 *seconds* for that?! That's a lot of time...
-
-> +	ktime_get_ts64(&end);
-> +	if (ret == 0) {
-> +		dev_info(dev, "APU initialization timeout!!\n");
-> +		ret = -ETIME;
-> +		goto stop;
-> +	}
-> +	if (ret == -ERESTARTSYS) {
-> +		dev_info(dev, "wait APU interrupted by a signal!!\n");
-> +		goto stop;
-> +	}
-> +
-> +	apu->boot_done = true;
-> +	delta = timespec64_sub(end, begin);
-> +	dev_info(dev, "APU uP boot success. boot time: %llu s, %llu ns\n",
-> +		 (u64)delta.tv_sec, (u64)delta.tv_nsec);
-> +
-> +	return 0;
-> +
-> +stop:
-> +	hw_ops->stop(apu);
-> +
-> +	return ret;
-> +}
-> +
-
-
-snip...
-
-
-> +
-> +static int apu_config_setup(struct mtk_apu *apu)
-> +{
-> +	struct device *dev = apu->dev;
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	apu->conf_buf = dma_alloc_coherent(apu->dev, CONFIG_SIZE,
-> +					   &apu->conf_da, GFP_KERNEL);
-> +
-> +	if (!apu->conf_buf || apu->conf_da == 0) {
-> +		dev_info(dev, "%s: dma_alloc_coherent fail\n", __func__);
-> +		return -ENOMEM;
-> +	}
-> +	memset(apu->conf_buf, 0, CONFIG_SIZE);
-> +
-> +	apu_config_user_ptr_init(apu);
-> +	spin_lock_irqsave(&apu->reg_lock, flags);
-> +	iowrite32((u32)apu->conf_da, apu->apu_mbox + HOST_CONFIG_ADDR);
-> +	spin_unlock_irqrestore(&apu->reg_lock, flags);
-> +
-> +	apu->conf_buf->time_offset = sched_clock();
-> +	ret = apu_ipi_config_init(apu);
-> +	if (ret) {
-> +		dev_info(dev, "apu ipi config init failed\n");
-> +		goto out;
-> +	}
-> +
-> +	ret = sw_logger_config_init(apu);
-
- From what I understand, the sw logger is not critical for functionality... so
-it should probably be a "pluggable" instead.
-Also, since that sw logger seems to be "simply" reading from a mailbox, it
-should be pretty straightforward to make it so, in which case, you wouldn't
-be initializing it here, but as a platform driver instead (if debugging enabled?)
-
-> +	if (ret) {
-> +		dev_err(dev, "sw logger config init failed\n");
-> +		goto err_sw_logger;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_sw_logger:
-> +	apu_ipi_config_remove(apu);
-> +out:
-> +	return ret;
-> +}
-> +
-
-snip...
-
-> diff --git a/drivers/soc/mediatek/apusys/apu.h b/drivers/soc/mediatek/apusys/apu.h
-> new file mode 100644
-> index 000000000000..5bbc46416a19
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/apusys/apu.h
-> @@ -0,0 +1,256 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + */
-> +
-> +#ifndef APU_H
-> +#define APU_H
-> +#include <linux/platform_device.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/rpmsg/mtk_rpmsg.h>
-> +
-> +#include "apu-config.h"
-> +
-> +/* setup the SMC command ops */
-> +#define MTK_SIP_APU_START_MCU	0x00
-> +#define MTK_SIP_APU_STOP_MCU	0x01
-> +
-> +/* md32_sysctrl register definition */
-> +#define MD32_SYS_CTRL	0x0
-> +#define MD32_MON_PC		0x838
-> +#define MD32_MON_LR		0x83c
-> +#define MD32_MON_SP		0x840
-> +#define MD32_STATUS		0x844
-> +
-> +/*wdt register */
-> +#define WDT_INT		0x0
-> +#define WDT_CTRL0	0x4
-> +#define WDT_EN		BIT(31)
-> +
-> +/* apu_mbox spare regiter */
-
-/* apu_mbox spare register: mbox 0..6, spare 0..3 */
-#define REG_MBOX_SPARE(mbox, reg) 	((0x40 + (0x100 * mbox)) + (reg * 0x4))
-#define REG_MBOX0_SPARE(n)		REG_MBOX_SPARE(0, n)
-#define REG_MBOX6_SPARE(n)		REG_MBOX_SPARE(6, n)
-
-#define HOST_CONFIG_ADDR		REG_MBOX_SPARE(0, 2)
-
-Would that be better? Granted, mbox1-5 are also accessible and perhaps used
-in the future.
-
-> +#define MBOX0_SPARE0 0x40
-> +#define MBOX0_SPARE1 0x44
-> +#define MBOX0_SPARE2 0x48
-> +#define MBOX0_SPARE3 0x4C
-> +#define MBOX6_SPARE0 0x640
-> +#define MBOX6_SPARE1 0x644
-> +#define MBOX6_SPARE2 0x648
-> +#define MBOX6_SPARE3 0x64C
-> +
-> +#define HOST_CONFIG_ADDR MBOX0_SPARE2
-> +
-> +#define LOG_W_PTR (MBOX0_SPARE0)
-> +#define LOG_R_PTR (MBOX0_SPARE1)
-> +#define LOG_OV_FLG (MBOX0_SPARE3)
-> +
-> +/* rv setup  */
-> +#define F_PRELOAD_FIRMWARE	BIT(0)
-> +#define F_AUTO_BOOT		BIT(1)
-> +
-
-Use SZ_* macros where possible
-
-> +#define TCM_SIZE (128UL * 1024UL)
-> +#define CODE_BUF_SIZE (1024UL * 1024UL)
-> +#define DRAM_DUMP_SIZE (CODE_BUF_SIZE - TCM_SIZE)
-> +#define REG_SIZE (4UL * 151UL)
-> +#define TBUF_SIZE (4UL * 32UL)
-> +#define CACHE_DUMP_SIZE (37UL * 1024UL)
-> +#define DRAM_OFFSET (0x00000UL)
-> +#define DRAM_DUMP_OFFSET (TCM_SIZE)
-> +#define TCM_OFFSET (0x1d700000UL)
-> +#define CODE_BUF_DA (DRAM_OFFSET)
-> +
-> +/* ipi */
-> +#define APU_FW_VER_LEN	       32
-> +#define APU_SHARE_BUFFER_SIZE  256
-> +
-> +#define IPI_LOCKED			1
-> +#define IPI_UNLOCKED		0
-> +
-> +#define IPI_HOST_INITIATE	0
-> +#define IPI_APU_INITIATE	1
-> +#define IPI_WITH_ACK		1
-> +#define IPI_WITHOUT_ACK		0
-> +
-> +enum {
-> +	APU_IPI_INIT = 0,
-> +	APU_IPI_NS_SERVICE,
-> +	APU_IPI_DEEP_IDLE,
-> +	APU_IPI_CTRL_RPMSG,
-> +	APU_IPI_MIDDLEWARE,
-> +	APU_IPI_REVISER_RPMSG,
-> +	APU_IPI_PWR_TX,
-> +	APU_IPI_PWR_RX,
-> +	APU_IPI_MDLA_TX,
-> +	APU_IPI_MDLA_RX,
-> +	APU_IPI_TIMESYNC,
-> +	APU_IPI_EDMA_TX,
-> +	APU_IPI_MNOC_TX,
-> +	APU_IPI_MAX,
-> +};
-> +
-> +struct mtk_apu;
-> +
-> +struct mtk_apu_hw_ops {
-> +	int (*init)(struct mtk_apu *apu);
-> +	int (*exit)(struct mtk_apu *apu);
-> +	int (*start)(struct mtk_apu *apu);
-> +	int (*stop)(struct mtk_apu *apu);
-> +	int (*resume)(struct mtk_apu *apu);
-> +	int (*apu_memmap_init)(struct mtk_apu *apu);
-> +	void (*apu_memmap_remove)(struct mtk_apu *apu);
-> +	void (*cg_gating)(struct mtk_apu *apu);
-> +	void (*cg_ungating)(struct mtk_apu *apu);
-> +	void (*rv_cachedump)(struct mtk_apu *apu);
-> +
-> +	/* power related ops */
-> +	int (*power_init)(struct mtk_apu *apu);
-> +	int (*power_on)(struct mtk_apu *apu);
-> +	int (*power_off)(struct mtk_apu *apu);
-> +};
-> +
-> +struct apu_ipi {
-> +	char *name;
-> +	unsigned int direction:1;
-> +	unsigned int ack:1;
-> +};
-> +
-> +struct mtk_apu_platdata {
-> +	u32 flags;
-> +	struct mtk_apu_hw_ops ops;
-> +	const struct apu_ipi *ipi_attrs;
-> +};
-> +
-> +struct dpidle_msg {
-> +	u32 cmd;
-> +	u32 ack;
-> +};
-> +
-> +struct apu_run {
-> +	s8 fw_ver[APU_FW_VER_LEN];
-> +	u32 signaled;
-> +	wait_queue_head_t wq;
-> +};
-> +
-> +struct apu_ipi_desc {
-> +	struct mutex lock; /*ipi hanlder mutex */
-
-typo
-
-> +	ipi_handler_t handler;
-> +	void *priv;
-> +	/*
-> +	 * positive: host-initiated ipi outstanding count
-> +	 * negative: apu-initiated ipi outstanding count
-> +	 */
-> +	int usage_cnt;
-> +};
-> +
-> +struct mtk_share_obj {
-> +	u8 share_buf[APU_SHARE_BUFFER_SIZE];
-> +};
-> +
-> +struct sw_logger_seq_data {
-> +	u32 w_ptr;
-> +	u32 r_ptr;
-> +	u32 overflow_flg;
-> +	int i;
-> +	int is_finished;
-> +	char *data;
-> +	bool startl_first;
-> +};
-> +
-> +struct mtk_apu {
-> +	struct rproc *rproc;
-> +	struct device *dev;
-> +	void __iomem *apu_mbox;
-> +	void __iomem *md32_sysctrl;
-> +	void __iomem *apu_wdt;
-> +	int mbox0_irq_number;
-> +	int wdt_irq_number;
-> +	spinlock_t reg_lock; /* register r/w lock */
-> +
-> +	/* Buffer to place execution area */
-> +	void *code_buf;
-> +	dma_addr_t code_da;
-> +
-> +	/* Buffer to place config area */
-> +	struct config_v1 *conf_buf;
-> +	dma_addr_t conf_da;
-> +
-> +	/* to synchronize boot status of remote processor */
-> +	struct apu_run run;
-> +
-> +	/* to prevent multiple ipi_send run concurrently */
-> +	struct mutex send_lock;
-> +	spinlock_t usage_cnt_lock; /* ipi occipued lock */
-> +	struct apu_ipi_desc ipi_desc[APU_IPI_MAX];
-> +	bool ipi_id_ack[APU_IPI_MAX]; /* per-ipi ack */
-> +	bool ipi_inbound_locked;
-> +	wait_queue_head_t ack_wq; /* for waiting for ipi ack */
-> +
-> +	/* ipi */
-> +	struct rproc_subdev *rpmsg_subdev;
-> +	dma_addr_t recv_buf_da;
-> +	struct mtk_share_obj *recv_buf;
-> +	dma_addr_t send_buf_da;
-> +	struct mtk_share_obj *send_buf;
-> +
-> +	/* time sync */
-> +	struct work_struct timesync_work;
-> +	struct workqueue_struct *timesync_wq;
-> +	u64 timesync_stamp;
-> +
-> +	/*deep idle */
-> +	struct dpidle_msg recv_msg;
-> +	struct work_struct deepidle_work;
-> +	struct workqueue_struct *apu_deepidle_workq;
-> +	struct work_struct pwron_dbg_wk;
-> +
-> +	struct mtk_apu_platdata	*platdata;
-> +
-> +	/* link power deive */
-> +	struct device *power_dev;
-> +	bool boot_done;
-> +	struct work_struct pwr_work;
-> +
-> +	/* logger and debug */
-> +	struct dentry *dbg_root;
-> +	dma_addr_t handle;
-> +	char *sw_log_buf;
-> +	spinlock_t sw_logger_spinlock; /* logger status update lock */
-> +	struct sw_logger_seq_data pseqdata_lock;
-> +	struct sw_logger_seq_data *pseqdata;
-> +};
-> +
-> +struct apu_coredump {
-> +	char tcmdump[TCM_SIZE];
-> +	char ramdump[DRAM_DUMP_SIZE];
-> +	char regdump[REG_SIZE];
-> +	char tbufdump[TBUF_SIZE];
-> +	u32 cachedump[CACHE_DUMP_SIZE / sizeof(u32)];
-> +} __packed;
-> +
-> +int apu_ipi_config_init(struct mtk_apu *apu);
-> +void apu_ipi_config_remove(struct mtk_apu *apu);
-> +void apu_ipi_remove(struct mtk_apu *apu);
-> +int apu_ipi_init(struct platform_device *pdev, struct mtk_apu *apu);
-> +int apu_ipi_register(struct mtk_apu *apu, u32 id,
-> +		     ipi_handler_t handler, void *priv);
-> +void apu_ipi_unregister(struct mtk_apu *apu, u32 id);
-> +int apu_ipi_send(struct mtk_apu *apu, u32 id, void *data, u32 len,
-> +		 u32 wait_ms);
-> +int apu_ipi_lock(struct mtk_apu *apu);
-> +void apu_ipi_unlock(struct mtk_apu *apu);
-> +
-> +void apu_deepidle_power_on_aputop(struct mtk_apu *apu);
-> +
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +int sw_logger_config_init(struct mtk_apu *apu);
-> +void sw_logger_config_remove(struct mtk_apu *apu);
-> +int apu_sw_logger_init(struct mtk_apu *apu);
-> +void apu_sw_logger_remove(struct mtk_apu *apu);
-> +#else
-> +static inline int sw_logger_config_init(struct mtk_apu *apu) { return 0; }
-> +static inline void sw_logger_config_remove(struct mtk_apu *apu) { }
-> +static inline int apu_sw_logger_init(struct mtk_apu *apu) { return 0; }
-> +static inline void apu_sw_logger_remove(struct mtk_apu *apu) { }
-> +#endif
-> +
-> +extern const struct mtk_apu_platdata mt8192_platdata;
-> +#endif /* APU_H */
-> diff --git a/drivers/soc/mediatek/apusys/mt81xx-plat.c b/drivers/soc/mediatek/apusys/mt81xx-plat.c
-> new file mode 100644
-> index 000000000000..54f75c8d07c3
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/apusys/mt81xx-plat.c
-> @@ -0,0 +1,320 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + */
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/sched/clock.h>
-> +#include <linux/soc/mediatek/mtk_sip_svc.h>
-> +
-> +#include "apu.h"
-> +
-> +static const struct apu_ipi mt81xx_ipi_attrs[APU_IPI_MAX] = {
-
-In here, this is used only to pass it to the remoteproc "ipi" driver: it would make
-sense if this was in the ipi driver, associated to a compatible like
-mediatek,mt8192-ipi.
-
-> +		   [APU_IPI_INIT] = {
-> +			   .name = "init",
-> +			   .direction = IPI_APU_INITIATE,
-> +			   .ack = IPI_WITHOUT_ACK,
-> +		   },
-> +		   [APU_IPI_NS_SERVICE] = {
-> +			   .name = "name-service",
-> +			   .direction = IPI_APU_INITIATE,
-> +			   .ack = IPI_WITHOUT_ACK,
-> +		   },
-> +		   [APU_IPI_DEEP_IDLE] = {
-> +			   .name = "deep_idle",
-> +			   .direction = IPI_APU_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_CTRL_RPMSG] = {
-> +			   .name = "apu-ctrl-rpmsg",
-> +			   .direction = IPI_APU_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_MIDDLEWARE] = {
-> +			   .name = "apu-mdw-rpmsg",
-> +			   .direction = IPI_HOST_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_REVISER_RPMSG] = {
-> +			   .name = "apu-reviser-rpmsg",
-> +			   .direction = IPI_HOST_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_PWR_TX] = {
-> +			   .name = "apupwr-tx-rpmsg",
-> +			   .direction = IPI_HOST_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_PWR_RX] = {
-> +			   .name = "apupwr-rx-rpmsg",
-> +			   .direction = IPI_APU_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_MDLA_TX] = {
-> +			   .name = "mdla-tx-rpmsg",
-> +			   .direction = IPI_HOST_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_MDLA_RX] = {
-> +			   .name = "mdla-rx-rpmsg",
-> +			   .direction = IPI_APU_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_TIMESYNC] = {
-> +			   .name = "apu-timesync",
-> +			   .direction = IPI_APU_INITIATE,
-> +			   .ack = IPI_WITH_ACK,
-> +		   },
-> +		   [APU_IPI_EDMA_TX] = {
-> +			   .name = "apu-edma-rpmsg",
-> +			   .direction = IPI_HOST_INITIATE,
-> +			   .ack = IPI_WITHOUT_ACK,
-> +		   },
-> +		   [APU_IPI_MNOC_TX] = {
-> +			   .name = "apu-mnoc-rpmsg",
-> +			   .direction = IPI_HOST_INITIATE,
-> +			   .ack = IPI_WITHOUT_ACK,
-> +		   },
-> +};
-> +
-> +static void apu_reset_mcu(struct mtk_apu *apu)
-> +{
-> +	u32 reg;
-> +
-> +	/* assert mcu reset */
-> +	reg = ioread32(apu->md32_sysctrl);
-> +	iowrite32(reg & ~0x1, apu->md32_sysctrl);
-> +	mdelay(10);
-> +	iowrite32(reg | 0x1, apu->md32_sysctrl);
-> +}
-> +
-> +static int apu_start_mcu(struct mtk_apu *apu)
-> +{
-> +	struct arm_smccc_res ares;
-> +
-> +	/* initialize IOMMU and ACP config (iommu_tr_en=1, acp_en=0) */
-> +	iowrite32(0xEA9, apu->md32_sysctrl);
-> +
-> +	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, MTK_SIP_APU_START_MCU,
-> +		      0, 0, 0, 0, 0, 0, &ares);
-> +	if (ares.a0)
-> +		dev_err(apu->dev, "start mcu fail: %lu\n", ares.a0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int apu_stop_mcu(struct mtk_apu *apu)
-> +{
-> +	struct arm_smccc_res ares;
-> +
-> +	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, MTK_SIP_APU_STOP_MCU,
-> +		      0, 0, 0, 0, 0, 0, &ares);
-> +	if (ares.a0)
-> +		dev_err(apu->dev, "stop mcufail: %lu\n", ares.a0);
-> +
-> +	return 0;
-> +}
-
-Is it expected for other SoCs to have different (or more) secure world calls?
-If it is, then it may be worth it to move this to a different driver in
-drivers/firmware, so that you will be able to map different/more values to
-different compatibles.
-
-Otherwise, keep it here.
-
-> +
+Same goes to FAN_MARK_MOUNT and FAN_MARK_FILESYSTEM
+remote server may or may not support anything other than watching
+inode objects, but it should not be a limit of the "remote fsnotify" API.
 
 Thanks,
-- Angelo
+Amir.
