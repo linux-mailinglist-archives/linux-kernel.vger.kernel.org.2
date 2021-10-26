@@ -2,134 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4006A43BDA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947BC43BDAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240201AbhJZXLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
+        id S240206AbhJZXSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235166AbhJZXLI (ORCPT
+        with ESMTP id S231948AbhJZXR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:11:08 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86549C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:08:43 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id v127so866391wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:08:43 -0700 (PDT)
+        Tue, 26 Oct 2021 19:17:58 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45754C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:15:34 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso669877pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qSV6Ft6zAu1jkbpHI7z7p0QwFJUvX7Q+m/djpD5eMGQ=;
-        b=APKmkyYkLJxj5o9ZLwSTljNtuMGy5RpTE0BOfsldRr2a4d9/duXUZKJGl62dLqEouh
-         2HCND4JByvSL0uGxvDFeQdBh2UGhJg8pE8BW8Jl3bURmVkwTCLY++ENHe7rcqjm5iqL/
-         C1SKm0ls1xUcMztWsUQ6TuR9U8ZPA53xfC8AqcxvSusu2atI6R8L7p1JRvR00Pdxvymx
-         9Yw6rOpnr2nfzf0qlZU2oA66sWt8vZw6rL+T+AJtZs9OFYREUMRwMJFDx99K7EMgLkZ6
-         fmRre32IKdZPMF55GKv6rHvW17nv9exCd6ZxVrgUtn/b33ipALiQQR+tNfd5WQ1r4YwU
-         2EFw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=2/dPlzQXyUrhPSkM0+tKmxPBQy3NoWlkGO5NrhUnd4c=;
+        b=ltzgSzMhRgcu+wB0oxx/kTBf5T9s7Hky/B/l4IU11VJhothOVyQQu6qmdTTGoVHvrP
+         QPwlH7g1A95prZ/JTxNmMKxca9YIifD8lz1zTi94ejMJgm0sWUViONTpg+/u+qjv0jn5
+         Vg0hrocFAJ3MCx1RZcyko0B+YHswYgRPhAS9opgBlv4G28QL4a9aYMQpM+OL4BShCCW4
+         SGVQ1XS7MjFndbc2hsPfitB1MFdn6CW1pbNy7nk2CIZy+Z0HwayfVMvTeMZmbkBTMgNo
+         a/eB83zX4itb2jzx6bYoj8WKScAWgEo0dpx9xNlqsBT+TZqFhpT6zvfuHWeiG1jzoUCq
+         AKRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qSV6Ft6zAu1jkbpHI7z7p0QwFJUvX7Q+m/djpD5eMGQ=;
-        b=41sgbkcUCyFFr53hy+ekiuuOx/ZAhC7MU9vTfWsIExB8O7lhlIEhvA2ISDyxMRvXYj
-         IfA2L+33ujVqm9RIXjPD/AqLbHgY6Q3ZqC917AqGaedWf4FBF4Zs2QdbqhTq9D8svJ5W
-         IDXp5fy/2eVOyRMw4e5b9IYAGhy98F3+7nxxsYd4DEjgmAMdOiy+U6ImOXp1ZViy/i5M
-         Clgcwrsd5jO3xm5z1jliFDTpXspojc+zR67T2sFaRl8JD/LFx58BpcGq2o2uHmfU1gZi
-         Rzyq50THIxQs4bmv8RGQMCKiMvIep6O4UugbUcUeDKbzol1Mlqk9x20+9jmVFNBvgc0i
-         hdNg==
-X-Gm-Message-State: AOAM530WTjhDT8zYW8dLwtNfyOQxbfjc1xi+syRXg1nUXjnC8HLVqNsm
-        S1HnL6Ls4wjgjU1kKoMiFtjh1ZFJvVxliqCHKP3Kcw==
-X-Google-Smtp-Source: ABdhPJy4W3Y0kS0tSehWOfSkiwmO09a7tuKF6lYhyraCB8ay2PowxlgpetT0jxFNzQFp2hNsXOKv3sMkQNZSdH5MaeE=
-X-Received: by 2002:a7b:c103:: with SMTP id w3mr1770472wmi.179.1635289721986;
- Tue, 26 Oct 2021 16:08:41 -0700 (PDT)
+         :message-id:subject:cc;
+        bh=2/dPlzQXyUrhPSkM0+tKmxPBQy3NoWlkGO5NrhUnd4c=;
+        b=uvuwFdl0Bb2smKIhKfGdvvL+7uGskfnvt5udqwvQTuCqyLE7k4XI1gpm0+UxXa7MPb
+         X99ZHdqFIUs9oXCV7bMAKRTMrh6YbLxMkVYZxN6Hii1bkPV1dsIDZ/FND3bi8tgZlOJM
+         aYVgntEv2fL2mMMLYyUbNoe5WO9ZdkFLangcZHf16H2WNa38G2nF73EyKVW9j+eVl0O8
+         DN6kpcVgNETkiDZCPIh/pewkpQ7LN1LgJTb3o2RjORxa3iWChhqf0y2+06scpfg4ZNRE
+         TJtI0en0kMikvoPxfAvgx1J9sun4IgDlTYgh06kOymC0FGBml1f5er4U9/AUarK0LA84
+         vjTw==
+X-Gm-Message-State: AOAM531Hj/gwUW7dtFFn0UA911n1yOW3fdpqSw9fBtwYSMGfxwXmWVLG
+        FbsNxqLHtBXFEDLotVwTRVrvK0MEKO/OPYC8F6E=
+X-Received: by 2002:a17:902:848c:b0:13f:e969:3c26 with SMTP id
+ c12-20020a170902848c00b0013fe9693c26mt17639390plo.34.1635290133591; Tue, 26
+ Oct 2021 16:15:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026153638.3857452-1-dlatypov@google.com>
-In-Reply-To: <20211026153638.3857452-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 27 Oct 2021 07:08:31 +0800
-Message-ID: <CABVgOSnfJT2jaXCEtewo+DRk73=G-bVWu8pgXj54p40qMDVgnw@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: remove claims that kunit is a
- mocking framework
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210920053951.4093668-1-goldstein.w.n@gmail.com> <20211015204713.2855996-1-goldstein.w.n@gmail.com>
+In-Reply-To: <20211015204713.2855996-1-goldstein.w.n@gmail.com>
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Date:   Tue, 26 Oct 2021 18:15:22 -0500
+Message-ID: <CAFUsyfLte2vkHxe3yt9Srw0RhcANMWK=_cAWrHt2xazM_z5N3w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] x86/fpu: Add helper function for tracking AVX512 status
+Cc:     tglx@linutronix.de, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:36 PM Daniel Latypov <dlatypov@google.com> wrote:
+On Fri, Oct 15, 2021 at 3:57 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
 >
-> KUnit does not have any first party support for "mocking".
+> This commit adds a new helper function 'fpu_update_avx_timestamp' to
+> perform the logic from tracking AVX512 feature use.
 >
-> The original RFC had some, but the code got dropped.
-> However, the documentation patches never got updated. This fixes that.
->
-> https://kunit.dev/mocking.html has a current writeup on the status quo
-> and will hopefully be eventually folded into the in-kernel
-> Documentation.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
 > ---
-
-Yeah: this definitely is a bit misleading. Thanks for updating it.
-
-Reviewed-by: David Gow <davidgow@google.com>
-
-Cheers,
--- David
-
->  Documentation/dev-tools/kunit/api/index.rst | 3 +--
->  Documentation/dev-tools/kunit/api/test.rst  | 3 +--
->  Documentation/dev-tools/kunit/index.rst     | 2 +-
->  3 files changed, 3 insertions(+), 5 deletions(-)
+> Since Borislav Petkov is concerned about adding more macro masks and
+> inlining the AVX512 status this patch adds a new helper function. This
+> patch does not change the behavior of the current AVX512 status.
 >
-> diff --git a/Documentation/dev-tools/kunit/api/index.rst b/Documentation/dev-tools/kunit/api/index.rst
-> index b33ad72bcf0b..3006cadcf44a 100644
-> --- a/Documentation/dev-tools/kunit/api/index.rst
-> +++ b/Documentation/dev-tools/kunit/api/index.rst
-> @@ -12,5 +12,4 @@ following sections:
+>  arch/x86/include/asm/fpu/xstate.h |  1 +
+>  arch/x86/kernel/fpu/core.c        |  6 ++----
+>  arch/x86/kernel/fpu/xstate.c      | 13 +++++++++++++
+>  3 files changed, 16 insertions(+), 4 deletions(-)
 >
->  Documentation/dev-tools/kunit/api/test.rst
+> diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+> index 109dfcc75299..fe84ac5fb039 100644
+> --- a/arch/x86/include/asm/fpu/xstate.h
+> +++ b/arch/x86/include/asm/fpu/xstate.h
+> @@ -134,6 +134,7 @@ extern u64 xstate_fx_sw_bytes[USER_XSTATE_FX_SW_WORDS];
+>  extern void __init update_regset_xstate_info(unsigned int size,
+>                                              u64 xstate_mask);
 >
-> - - documents all of the standard testing API excluding mocking
-> -   or mocking related features.
-> + - documents all of the standard testing API
-> diff --git a/Documentation/dev-tools/kunit/api/test.rst b/Documentation/dev-tools/kunit/api/test.rst
-> index aaa97f17e5b3..c5eca423e8b6 100644
-> --- a/Documentation/dev-tools/kunit/api/test.rst
-> +++ b/Documentation/dev-tools/kunit/api/test.rst
-> @@ -4,8 +4,7 @@
->  Test API
->  ========
+> +void fpu_update_avx_timestamp(struct fpu *fpu);
+>  void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
+>  int xfeature_size(int xfeature_nr);
+>  int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
+> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+> index 7ada7bd03a32..6dbf3ee642f9 100644
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -102,11 +102,9 @@ void save_fpregs_to_fpstate(struct fpu *fpu)
+>                 os_xsave(&fpu->state.xsave);
 >
-> -This file documents all of the standard testing API excluding mocking or mocking
-> -related features.
-> +This file documents all of the standard testing API.
+>                 /*
+> -                * AVX512 state is tracked here because its use is
+> -                * known to slow the max clock speed of the core.
+> +                * Track of the state of desired avx related xfeatures.
+>                  */
+> -               if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
+> -                       fpu->avx512_timestamp = jiffies;
+> +               fpu_update_avx_timestamp(fpu);
+>                 return;
+>         }
 >
->  .. kernel-doc:: include/kunit/test.h
->     :internal:
-> diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
-> index cacb35ec658d..7af7dec83646 100644
-> --- a/Documentation/dev-tools/kunit/index.rst
-> +++ b/Documentation/dev-tools/kunit/index.rst
-> @@ -19,7 +19,7 @@ KUnit - Unit Testing for the Linux Kernel
->  What is KUnit?
->  ==============
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index c8def1b7f8fb..00b495914be2 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -1245,6 +1245,19 @@ void xrstors(struct xregs_state *xstate, u64 mask)
+>         WARN_ON_ONCE(err);
+>  }
 >
-> -KUnit is a lightweight unit testing and mocking framework for the Linux kernel.
-> +KUnit is a lightweight unit testing framework for the Linux kernel.
->
->  KUnit is heavily inspired by JUnit, Python's unittest.mock, and
->  Googletest/Googlemock for C++. KUnit provides facilities for defining unit test
->
-> base-commit: 2ab5d5e67f7ab2d2ecf67b8855ac65691f4e4b4d
+> +/*
+> + * Track of the state of desired avx architecture features.
+> + */
+> +void fpu_update_avx_timestamp(struct fpu *fpu)
+> +{
+> +       /*
+> +        * AVX512 state is tracked here because its use is known to slow
+> +        * the max clock speed of the core.
+> +        */
+> +       if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
+> +               fpu->avx512_timestamp = jiffies;
+> +}
+> +
+>  #ifdef CONFIG_PROC_PID_ARCH_STATUS
+>  /*
+>   * Report the amount of time elapsed in millisecond since last AVX512
 > --
-> 2.33.0.1079.g6e70778dc9-goog
+> 2.25.1
 >
+
+Ping.
