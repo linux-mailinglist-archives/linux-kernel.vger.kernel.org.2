@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECA943AA6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7683843AA71
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbhJZCpC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Oct 2021 22:45:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234432AbhJZCpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:45:00 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S234454AbhJZCqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:46:44 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:36677 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhJZCqm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 22:46:42 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E000861074;
-        Tue, 26 Oct 2021 02:42:34 +0000 (UTC)
-Date:   Mon, 25 Oct 2021 22:42:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v4 0/2] fix & prevent the missing preemption disabling
-Message-ID: <20211025224233.61b8e088@rorschach.local.home>
-In-Reply-To: <71c21f78-9c44-fdb2-f8e2-d8544b3421bd@linux.alibaba.com>
-References: <32a36348-69ee-6464-390c-3a8d6e9d2b53@linux.alibaba.com>
-        <71c21f78-9c44-fdb2-f8e2-d8544b3421bd@linux.alibaba.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdbkV0pTKz4xbM;
+        Tue, 26 Oct 2021 13:44:18 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635216258;
+        bh=e+yqnpXu0B7HjSmFPYNQFE491k30m4dzAb57qlF2fpw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j9fm43lMzpESWbSdZ/kI1jZvCEggUlG4hRU/UnUvsvxISOze+1r26WG+prMkXbw5D
+         Q7c7UWUEfqhHC967rOlkvjGelx55kZ+BxZ+SQk//SHWaMb48CsZ+P+DhkRGFjEVVMc
+         yDTjPrBBCmhgsDutL45TpLQrRq/tRcjTcZD+bki6AfaDrsjvh/Kr+4rKw31IFgICSW
+         syghzGD1gl/tbYNvErQfeASthBjwInGNvf3ijccgGcUBgwo6+f8qyNv1AaLN9YMZJD
+         C0B9mCkxxHJECnyS5MY35Ln/6g7I+dPWQZpKmq1nAjAGpleCoyZv0MppoU2HCPhvEy
+         o6Agur3sycWdQ==
+Date:   Tue, 26 Oct 2021 13:44:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the devicetree tree
+Message-ID: <20211026134417.1be98b56@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/1a2SAgje1igT8crAvcwruHe";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 10:09:12 +0800
-王贇 <yun.wang@linux.alibaba.com> wrote:
+--Sig_/1a2SAgje1igT8crAvcwruHe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Just a ping, to see if there are any more comments :-P
+Hi all,
 
-I guess you missed what went into mainline (and your name found a bug
-in my perl script for importing patches ;-)
+After merging the devicetree tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
 
-  https://lore.kernel.org/all/20211019091344.65629198@gandalf.local.home/
+drivers/of/unittest-data/tests-phandle.dtsi:11.18-22: Warning (node_name_vs=
+_property_name): /testcase-data/duplicate-name: node name and property name=
+ conflict
+drivers/of/unittest-data/tests-phandle.dtsi:11.18-22: Warning (node_name_vs=
+_property_name): /testcase-data/duplicate-name: node name and property name=
+ conflict
 
-Which means patch 1 needs to change:
+Presumably exposed by commit
 
-> +	/*
-> +	 * Disable preemption to fulfill the promise.
-> +	 *
-> +	 * Don't worry about the bit 0 cases, they indicate
-> +	 * the disabling behaviour has already been done by
-> +	 * internal call previously.
-> +	 */
-> +	preempt_disable_notrace();
-> +
->  	return bit + 1;
->  }
-> 
-> +/*
-> + * Preemption will be enabled (if it was previously enabled).
-> + */
->  static __always_inline void trace_clear_recursion(int bit)
->  {
->  	if (!bit)
->  		return;
-> 
-> +	if (bit > 0)
-> +		preempt_enable_notrace();
-> +
+  e76187b9792e ("scripts/dtc: Update to upstream version v1.6.1-19-g0a3a9d3=
+449c8")
 
-Where this wont work anymore.
+--=20
+Cheers,
+Stephen Rothwell
 
-Need to preempt disable and enable always.
+--Sig_/1a2SAgje1igT8crAvcwruHe
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- Steve
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3a4EACgkQAVBC80lX
+0GxmlQf/XfOW9+GgFnd67IoCx37PvlYBwltqaEY08YY3+P8eEFffmJwvlFx/tl7S
+WPhBR4LzFN5cYF2LVx/fLleE+vrnZbYmnAqBQuPhxDIh44QiPtinvFv364YEWvsy
+Gm9D1O2FlXwdwHb3/m5Pq18O+8hjU9L4LHGj63zvs0TmTuyLC5GeJCiir832o58d
+uVnzugd+cHLYob7Yo2MuFgveY/88jyCBB3ORFjOWgUM4RRnfy3S9dCUR/OoE7B54
+38QgGVDZg4b7yASzCKc6+M/jVIyCVDIpcSZ09sdsvuUObdi7CkXqBdcE80IFQLH1
+xG51SzaQdt/csSJhNv975YcTZPmq9g==
+=v9Dt
+-----END PGP SIGNATURE-----
 
->  	barrier();
->  	bit--;
->  	trace_recursion_clear(bit);
-> @@ -209,7 +227,7 @@ static __always_inline void trace_clear_recursion(int bit)
->   * tracing recursed in the same context (normal vs interrupt),
->   *
+--Sig_/1a2SAgje1igT8crAvcwruHe--
