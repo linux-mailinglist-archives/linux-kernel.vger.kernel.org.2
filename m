@@ -2,97 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EC343B94B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959C443B94F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238178AbhJZSVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233041AbhJZSVZ (ORCPT
+        id S238214AbhJZSVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:21:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21880 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238196AbhJZSVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:21:25 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E90CC061745;
-        Tue, 26 Oct 2021 11:19:01 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id g141so300284wmg.4;
-        Tue, 26 Oct 2021 11:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=00zHIy6uxCqtdB4Oe239178KEZy1IyyQbtz2j0P7x2g=;
-        b=lGqgl2GdjeJ8kbl7XTJZ2wHiJB2pCqQ+kbGl/4B47UJgL2Qs+6BNPzIpvNUrzr4YHr
-         FYmJROGSms2KRYx17huGuHcY2X3Qd4UQ7CNOOv7PVovcdEKZq62xauS04xm1ppe/TZI7
-         dhkBbVIg66eJ5W/Ubd1jKYCI3NF9zRZgp1acRMR1rAx2AHHHa5l2I01v7wdfVRTzlQxU
-         s+UIFxMQk9v19nduWT/hP2ZJqqZXTJA0+pT+bMHsihHgKjR28bdNNLliza3yc7/OEtlS
-         s7Jisrv5Bm9IEUwWmI9BhoOoKTMcwUFm23yIUYvvEoTM7BiZQtpOSHBfSOxs8J0RlvNy
-         Lbqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=00zHIy6uxCqtdB4Oe239178KEZy1IyyQbtz2j0P7x2g=;
-        b=XaJIxRpCIPSIRH6GXfO/Wh0uTc2K0TXgaR8sbO9eopMKj0nZSfIDecFUNrZP7ntt6D
-         H9ntJNXRarzzmZXKk0rEpQitmLs0h4CtuLrEgjuU0A19cIenxQKxb5dhzC5ygJC/k3mD
-         hQnsnmf+NJCrTTe99jjEyMaIZX5flPwhjt9Q/QC5EwiLY+Kz0UileTbUrAGzxSTz3EDo
-         /Vn89kQwHYeKVtF0IbIfsA3y7vJbpmKKM4lz73vICedCK3+9GSESysoqFUttNlZV+qdf
-         5jKX00MG3fNb74Y+7CqZmQrkte0n5Sl2+Hug2t0RMwcwY+XHJY7yp2vwIVgarHZ7RK7F
-         Aj5Q==
-X-Gm-Message-State: AOAM533SpQd9raNo/Q40J6BFileLaCTvftCHFNDhUnaXkRvgMpqPZLii
-        8Ghg7nE2zFuPsMc/+8x7ugYwJET2Zb8=
-X-Google-Smtp-Source: ABdhPJyPaqUEsCnQ6cCn8GpPkerVMYgZINumNxgXppcC9xeNnHSQYwB31Fca3yPOVREMpp7gFiNAeA==
-X-Received: by 2002:a1c:9803:: with SMTP id a3mr327887wme.180.1635272339688;
-        Tue, 26 Oct 2021 11:18:59 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id h14sm1385917wmq.34.2021.10.26.11.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:18:59 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 19:18:57 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/37] 4.19.214-rc1 review
-Message-ID: <YXhGkQqStLJtXo5j@debian>
-References: <20211025190926.680827862@linuxfoundation.org>
+        Tue, 26 Oct 2021 14:21:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635272365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dWX6fvkzSDQgKu3VrjYNBZqwEZ/48vhRdGouru0gtXo=;
+        b=AlpH65lFrqwJw+BYSSuoAVmAoSwCr+bzdLzTbedp5GZW7FFBT6LHWtbTgHqK9xMZ+jAmQA
+        kFLqR86R+a581dwfCoZvgAG/5uH93AOdJfSgK1LPtLvcrdcqWUpi/Q6YjBbz8Osvy2T8ji
+        z8j3uFRkcDa8xCgiym2uass8KphlFFY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-2ZMsfo8wOwmeczkJuWhaHA-1; Tue, 26 Oct 2021 14:19:21 -0400
+X-MC-Unique: 2ZMsfo8wOwmeczkJuWhaHA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35A80802B52;
+        Tue, 26 Oct 2021 18:19:19 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE8CF1002EE2;
+        Tue, 26 Oct 2021 18:19:15 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 9F0D14172ED8; Tue, 26 Oct 2021 15:19:11 -0300 (-03)
+Date:   Tue, 26 Oct 2021 15:19:11 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org, x86@kernel.org
+Subject: Re: [RFC][PATCH v2 11/11] context_tracking,x86: Fix text_poke_sync()
+ vs NOHZ_FULL
+Message-ID: <20211026181911.GA178890@fuller.cnet>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152429.186930629@infradead.org>
+ <20211021183935.GA9071@fuller.cnet>
+ <20211021192543.GV174703@worktop.programming.kicks-ass.net>
+ <20211021195709.GA22422@fuller.cnet>
+ <20211021201859.GX174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
+In-Reply-To: <20211021201859.GX174703@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, Oct 25, 2021 at 09:14:25PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.214 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Oct 21, 2021 at 10:18:59PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 21, 2021 at 04:57:09PM -0300, Marcelo Tosatti wrote:
+> > > Pretty much everything in noinstr is magical, we just have to think
+> > > harder there (and possibly start writing more comments there).
+> > 
+> > mds_user_clear_cpu_buffers happens after sync_core, in your patchset, 
+> > if i am not mistaken.
 > 
-> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
-> Anything received after that time might be too late.
+> Of course it does, mds_user_clear_cpu_buffers() is on exit, the
+> sync_core() is on entry.
 
-Build test:
-mips (gcc version 11.2.1 20211012): 63 configs -> no failure
-arm (gcc version 11.2.1 20211012): 116 configs -> no new failure
-arm64 (gcc version 11.2.1 20211012): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+                                                                  static_key enable/disable
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
+__exit_to_user_mode ->                                            context_tracking_set_cpu_work(cpu, work)
+   user_enter_irqoff ->                                                  preempt_disable();
+   __context_tracking_enter(CONTEXT_USER);                               seq = atomic_read(&ct->seq);
+      ct_seq_user_enter(raw_cpu_ptr(&context_tracking));                 if (__context_tracking_seq_in_user(seq)) {
+      {                                                                          /* ctrl-dep */
+        arch_atomic_set(&ct->work, 0);                                           atomic_or(work, &ct->work);
+        return arch_atomic_add_return(CT_SEQ_USER, &ct->seq);                    ret = atomic_try_cmpxchg(&ct->seq, &seq, seq|CT_SEQ_WORK);
+                                                                         }
+      }                                                                  preempt_enable();
+   arch_exit_to_user_mode()
+   mds_user_clear_cpu_buffers();  <--- sync_core work queued,
+                                       but not executed.
+                                       i-cache potentially stale?
 
-[1]. https://openqa.qa.codethink.co.uk/tests/308
+ct_seq_user_enter should happen _after_ all possible static_key users?
 
+(or recheck that there is no pending work after any possible
+rewritable code/static_key user).
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+> 
+> > > > > +             /* NMI happens here and must still do/finish CT_WORK_n */
+> > > > > +             sync_core();
+> > > > 
+> > > > But after the discussion with you, it seems doing the TLB checking 
+> > > > and (also sync_core) checking very late/very early on exit/entry 
+> > > > makes things easier to review.
+> > > 
+> > > I don't know about late, it must happen *very* early in entry. The
+> > > sync_core() must happen before any self-modifying code gets called
+> > > (static_branch, static_call, etc..) with possible exception of the
+> > > context_tracking static_branch.
+> > > 
+> > > The TLBi must also happen super early, possibly while still on the
+> > > entry stack (since the task stack is vmap'ed).
+> > 
+> > But will it be ever be freed/remapped from other CPUs while the task
+> > is running?
+> 
+> Probably not, still something we need to be really careful with.
+> > 
+> > > We currently don't run C
+> > > code on the entry stack, that needs quite a bit of careful work to make
+> > > happen.
+> > 
+> > Was thinking of coding in ASM after (as early as possible) the write to 
+> > switch to kernel CR3:
+> 
+> No, we're not going to add new feature to ASM. You'll just have to wait
+> until all that gets lifted to C.
+> 
+> >  Kernel entry:
+> >  -------------
+> > 
+> >        cpu = smp_processor_id();
+> > 
+> >        if (isolation_enabled(cpu)) {
+> >                reqs = atomic_xchg(&percpudata->user_kernel_state, IN_KERNEL_MODE);
+> >                if (reqs & CPU_REQ_FLUSH_TLB)
+> > 			flush_tlb_all();
+> >                if (reqs & CPU_REQ_SYNC_CORE)
+> > 			sync_core();
+> >        }                           
+> > 
+> > Exit to userspace (as close to write to CR3 with user pagetable
+> > pointer):
+> >  -----------------
+> > 
+> >        cpu = smp_processor_id();
+> > 
+> >        if (isolation_enabled(cpu)) {
+> >                atomic_or(IN_USER_MODE, &percpudata->user_kernel_state);
+> >        }
+> > 
+> > You think that is a bad idea (in ASM, not C) ? 
+> 
+> Those atomics are a bad idea and not goig to happen.
+> 
+> > > We're not going to add an atomic to context tracking. There is one, we
+> > > just got to extract/share it with RCU.
+> > 
+> > Again, to avoid kernel TLB flushes you'd have to ensure:
+> 
+> I know how it works, but we're not going to add a second atomic to
+> entry/exit. RCU has one in there, that's going to be it. Again, we just
+> got to extract/share.
 
