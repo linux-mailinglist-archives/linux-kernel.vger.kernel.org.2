@@ -2,143 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF0E43BA19
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF9143BA1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhJZTEH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 15:04:07 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:58456 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238481AbhJZTEB (ORCPT
+        id S238479AbhJZTE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:04:26 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22418 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238473AbhJZTEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:04:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 3046361EAE61;
-        Tue, 26 Oct 2021 21:01:33 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 0Uej2VSHJAXt; Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 5634F61EAE6D;
-        Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RJhtugjmg9J7; Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 351E461EAE61;
-        Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
-Date:   Tue, 26 Oct 2021 21:01:32 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Trevor Woerner <twoerner@gmail.com>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <876982414.38679.1635274892099.JavaMail.zimbra@nod.at>
-In-Reply-To: <20211026150350.GA5136@localhost>
-References: <20210801234509.18774-1-ezequiel@collabora.com> <20211026150350.GA5136@localhost>
-Subject: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
+        Tue, 26 Oct 2021 15:04:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635274920; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vjlF/u+Qo1jfb6RLOi04YwLQEuDdY/3zfoWoV1ZisBk=;
+ b=mgYxWCF8KOCmCIRGRbx9UJMRC7MtEm5JQ7tXflek3t/kH4kdRNXZRBz65yZ8oMhqZFRXRW2T
+ qKLAofWb7T9dRlfM/wIcEyED566pfU6sz7EEW65iDh1a9FKTgFC32hVSM9s3ALDN1HSZVFpC
+ PD8AdBbN35zpW6pddwCGoqVawuU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 617850a3fd91319f0f557a16 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 19:01:55
+ GMT
+Sender: sbillaka=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2456BC4360D; Tue, 26 Oct 2021 19:01:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbillaka)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A846C4360D;
+        Tue, 26 Oct 2021 19:01:54 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF93 (Linux)/8.8.12_GA_3809)
-Thread-Topic: mtdblock: Advertise about UBI and UBI block
-Thread-Index: ygsGgewhiNEi2q8Y/RdrIOGb8OTitg==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 27 Oct 2021 00:31:54 +0530
+From:   sbillaka@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org
+Subject: Re: [PATCH v2 1/2] drm/msm/dp: Add support for SC7280 eDP
+In-Reply-To: <CAE-0n52SjFOWNNFAciOOpKRSnPLqq3zs+qib9jukPkxf0frQTQ@mail.gmail.com>
+References: <1634732051-31282-1-git-send-email-quic_sbillaka@quicinc.com>
+ <1634732051-31282-2-git-send-email-quic_sbillaka@quicinc.com>
+ <CAE-0n52SjFOWNNFAciOOpKRSnPLqq3zs+qib9jukPkxf0frQTQ@mail.gmail.com>
+Message-ID: <fc847e128d7d95991bc275bd79763440@codeaurora.org>
+X-Sender: sbillaka@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trevor,
+Hi Stephen,
 
------ Ursprüngliche Mail -----
-> Von: "Trevor Woerner" <twoerner@gmail.com>
-> An: "Ezequiel Garcia" <ezequiel@collabora.com>
-> CC: "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel" <linux-kernel@vger.kernel.org>, "richard"
-> <richard@nod.at>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Vignesh Raghavendra" <vigneshr@ti.com>
-> Gesendet: Dienstag, 26. Oktober 2021 17:03:50
-> Betreff: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
+On 2021-10-21 23:32, Stephen Boyd wrote:
+> Quoting Sankeerth Billakanti (2021-10-20 05:14:10)
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index 62e75dc..9fea49c 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -1238,9 +1240,21 @@ static int dp_ctrl_link_train(struct 
+>> dp_ctrl_private *ctrl,
+>>         link_info.capabilities = DP_LINK_CAP_ENHANCED_FRAMING;
+>> 
+>>         dp_aux_link_configure(ctrl->aux, &link_info);
+>> +
+>> +       if (dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5) {
+> 
+> Please add a static inline macro in include/drm/drm_dp_helper.h that
+> makes this more readable. Something similar to drm_dp_is_branch() but
+> with a human readable replacement for "is_branch". Maybe drm_dp_ssc()?
+> 
+Okay, I will add a macro, drm_dp_max_downspread (to be consistent with 
+the spec and other macros in the file) in drm_dp_helper.h file.
 
-> On Sun 2021-08-01 @ 08:45:02 PM, Ezequiel Garcia wrote:
->> Hi Richard, and everyone else:
+>> +               ssc = DP_SPREAD_AMP_0_5;
+>> +               drm_dp_dpcd_write(ctrl->aux, DP_DOWNSPREAD_CTRL, &ssc, 
+>> 1);
+>> +       }
+>> +
+>>         drm_dp_dpcd_write(ctrl->aux, DP_MAIN_LINK_CHANNEL_CODING_SET,
+>>                                 &encoding, 1);
 >> 
->> Browsing the internet for "JFFS2 mtd" results in tutorials, articles
->> and github.gists0 that point to mtdblock.
->> 
->> In fact, even the MTD wiki mentions that JFFS2
->> needs mtdblock to mount a rootfs:
->> 
->>   http://www.linux-mtd.infradead.org/faq/jffs2.html
->> 
->> Moreover, I suspect there may be lots of users
->> that still believe mtdblock is somehow needed to
->> mount SquashFS.
->> 
->> I've taken a verbose route and added a pr_warn
->> warning if the devices are NAND. I don't think using
->> NAND without UBI is too wise, and given the amount
->> of outdated tutorials I believe some advertising
->> will help.
+>> +       if (dpcd[DP_EDP_CONFIGURATION_CAP] & 
+>> DP_ALTERNATE_SCRAMBLER_RESET_CAP) {
 > 
-> Not all NAND partitions on a device will contain linux root filesystems. For a
-> linux root filesystem perhaps using UBI/UBIFS is preferred, yet these messages
-> print out for each and every NAND partition:
+> And this one already has a helper,
+> drm_dp_alternate_scrambler_reset_cap().
 > 
->	[    0.900827] Creating 8 MTD partitions on "nxp_lpc3220_slc":
->	[    0.906431] 0x000000000000-0x000000020000 : "bootrom"
->	[    0.913523] mtdblock: MTD device 'bootrom' is NAND, please consider using UBI
->	block devices instead.
->	[    0.933334] 0x000000020000-0x000000080000 : "uboot"
->	[    0.940439] mtdblock: MTD device 'uboot' is NAND, please consider using UBI
->	block devices instead.
->	[    0.963322] 0x000000080000-0x000000440000 : "fbkernel"
->	[    0.970655] mtdblock: MTD device 'fbkernel' is NAND, please consider using
->	UBI block devices instead.
->	[    0.993361] 0x000000440000-0x000000920000 : "fbrootfs"
->	[    1.000725] mtdblock: MTD device 'fbrootfs' is NAND, please consider using
->	UBI block devices instead.
->	[    1.023315] 0x000000920000-0x000000ce0000 : "c_kernel"
->	[    1.030722] mtdblock: MTD device 'c_kernel' is NAND, please consider using
->	UBI block devices instead.
->	[    1.053444] 0x000000ce0000-0x000000d00000 : "c__atags"
->	[    1.060742] mtdblock: MTD device 'c__atags' is NAND, please consider using
->	UBI block devices instead.
->	[    1.083349] 0x000000d00000-0x000001000000 : "c_rootfs"
->	[    1.090702] mtdblock: MTD device 'c_rootfs' is NAND, please consider using
->	UBI block devices instead.
->	[    1.113335] 0x000001000000-0x000020000000 : "mender"
->	[    1.131627] mtdblock: MTD device 'mender' is NAND, please consider using UBI
->	block devices instead.
-> 
-> NAND tends to be something found on older devices, the firmware/bootloaders
-> of older devices couldn't possibly understand UBI/UBIFS so many of these
-> partitions need be "raw" partitions, or use something that predates UBI.
-> 
-> Ironically my "mender" partition contains a UBI (with multiple UBIFSes inside)
-> yet I got the same "please use UBI" message as all the others (lol)
-> 
-> I'm specifying my partitions in DT with:
-> 
-> partitions {
->        compatible = "fixed-partitions";
->        #address-cells = <1>;
->        #size-cells = <1>;
-> 
->        mtd0@0       { label = "bootrom";   reg = <0x00000000 0x00020000>; };
->        mtd1@20000   { label = "uboot";     reg = <0x00020000 0x00060000>; };
->        mtd2@80000   { label = "fbkernel";  reg = <0x00080000 0x003c0000>; };
->        mtd3@440000  { label = "fbrootfs";  reg = <0x00440000 0x004e0000>; };
->        mtd4@920000  { label = "c_kernel";  reg = <0x00920000 0x003c0000>; };
->        mtd5@ce0000  { label = "c__atags";  reg = <0x00ce0000 0x00020000>; };
->        mtd6@d00000  { label = "c_rootfs";  reg = <0x00d00000 0x00300000>; };
->        mtd7@1000000 { label = "mender";    reg = <0x01000000 0x1f000000>; };
-> };
-> 
-> which is why, I assume, I'm getting these messages. Is there a UBI-friendly
-> way to define them to avoid these messages?
+Okay, I will use that.
 
-Hmm, maybe it makes sense to advertise it only once and not for each mtdblock device.
+>> +               assr = DP_ALTERNATE_SCRAMBLER_RESET_ENABLE;
+>> +               drm_dp_dpcd_write(ctrl->aux, DP_EDP_CONFIGURATION_SET,
+>> +                               &assr, 1);
+>> +       }
+>> +
+>>         ret = dp_ctrl_link_train_1(ctrl, training_step);
+>>         if (ret) {
+>>                 DRM_ERROR("link training #1 failed. ret=%d\n", ret);
+>> @@ -1312,9 +1326,11 @@ static int 
+>> dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
+>>         struct dp_io *dp_io = &ctrl->parser->io;
+>>         struct phy *phy = dp_io->phy;
+>>         struct phy_configure_opts_dp *opts_dp = &dp_io->phy_opts.dp;
+>> +       const u8 *dpcd = ctrl->panel->dpcd;
+>> 
+>>         opts_dp->lanes = ctrl->link->link_params.num_lanes;
+>>         opts_dp->link_rate = ctrl->link->link_params.rate / 100;
+>> +       opts_dp->ssc = dpcd[DP_MAX_DOWNSPREAD] & 
+>> DP_MAX_DOWNSPREAD_0_5;
+>>         dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
+>>                                         ctrl->link->link_params.rate * 
+>> 1000);
+>> 
+>> @@ -1406,7 +1422,7 @@ void dp_ctrl_host_deinit(struct dp_ctrl 
+>> *dp_ctrl)
+>> 
+>>  static bool dp_ctrl_use_fixed_nvid(struct dp_ctrl_private *ctrl)
+>>  {
+>> -       u8 *dpcd = ctrl->panel->dpcd;
+>> +       const u8 *dpcd = ctrl->panel->dpcd;
+>> 
+>>         /*
+>>          * For better interop experience, used a fixed NVID=0x8000
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index c867745..c16311b 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -144,8 +144,16 @@ static const struct msm_dp_config sc8180x_dp_cfg 
+>> = {
+>>         .num_descs = 3,
+>>  };
+>> 
+>> +static const struct msm_dp_config sc7280_dp_cfg = {
+>> +       .descs = (struct msm_dp_desc[]) {
+> 
+> const
+> 
+Will add it.
 
-Thanks,
-//richard
+>> +               { .io_start = 0x0aea0000, .connector_type = 
+>> DRM_MODE_CONNECTOR_eDP },
+>> +       },
+>> +       .num_descs = 1,
+>> +};
+>> +
+>>  static const struct of_device_id dp_dt_match[] = {
+>>         { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
+>> +       { .compatible = "qcom,sc7280-edp", .data = &sc7280_dp_cfg },
+>>         { .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
+>>         { .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_cfg },
+>>         {}
+>> @@ -1440,7 +1448,7 @@ void msm_dp_irq_postinstall(struct msm_dp 
+>> *dp_display)
+>> 
+>>         dp_hpd_event_setup(dp);
+>> 
+>> -       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 100);
+>> +       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1);
+> 
+> This has no explanation. What is it?
+Will add explanation for it as a comment.
