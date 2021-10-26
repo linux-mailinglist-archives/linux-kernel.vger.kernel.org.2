@@ -2,67 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D2543BD4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC6843BD63
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240077AbhJZWhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 18:37:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230411AbhJZWhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:37:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1B1861078;
-        Tue, 26 Oct 2021 22:35:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635287722;
-        bh=F7c4FLOG/JXpD5fMAX/T0ZjE8OJGkErTGZeG75EeKr0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U7GGPV0a/Y0GUtoRJFPI+7hug+nZfuTykCoG6S301E2bNQWk77gwDGwnS0od4vXjG
-         6eMUZO782AO5h4UEW9A0dbIW15ABmnbs91m9QqrjGHXyRITRll2SfCbz2MpjdX8irx
-         KKj1kK03Fta62LWrP9FAztnV/3OoSDWNniishGobnNo9N8hjntmc2TTHj+oZyAh2oY
-         5cyQ5OYdTGHK9y06i04G9bDCWxXXw9Ck/MwbFpFf9bQ6Yaag3bFkDWpVt5oRUJzucc
-         nTzvn/rMoYcS7NCRt3QE/D8uK0pI2PA8PrSUWB3/iUuPJraxRc2riY7cukPSW6WHtZ
-         VhClmkjPry6Bg==
-Date:   Tue, 26 Oct 2021 17:40:16 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] powerpc/vas: Fix potential NULL pointer dereference
-Message-ID: <20211026224016.GA1488461@embeddedor>
-References: <20211015050345.GA1161918@embeddedor>
- <97c42e43-15b9-5db6-d460-dbb16f31954d@linux.ibm.com>
- <20211026184201.GB1457721@embeddedor>
- <87h7d3beqq.fsf@mpe.ellerman.id.au>
+        id S237522AbhJZWqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233975AbhJZWqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 18:46:24 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806F4C061570;
+        Tue, 26 Oct 2021 15:44:00 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id fv3so581107pjb.3;
+        Tue, 26 Oct 2021 15:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=pbwaXXHnvCbbtImOhR1XxTruqxYAB5oj9GgtPi3o/qo=;
+        b=pcOQ/l4LI49Ji38qwBDwa7GjQpZZqj2OgmqZFuUC/KFLdqqVPGcCXFoNnomAPoTvWt
+         BSfzgXyRnnR5SM0jXalC4QWYoJOOnQhrb1DzQuEC+x8xXGPIHef8aTGBCRLKzPeml0Ok
+         LjvOjU5Vg/oxQHkGeH3MUTphLHgVdEQnOS7am8QYacoQIseIrTAMzTU6KgboAxBllIfC
+         TfzRVqN+v6li6J4gvhCDvQr4T4p/FSK2USw1syAgw+0XwdhZ8+euUUQYgnWqL5wmScJ3
+         DTHk6tKDTsD0fki40O3UkIhi8Fq7OrahdCyub7R/l0TqU0ji8DK+9nY6PhZKJtmU/smu
+         docw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=pbwaXXHnvCbbtImOhR1XxTruqxYAB5oj9GgtPi3o/qo=;
+        b=Kvz/wuw/iu03uggVqyaDkA1RP0ncXcyZttFY9fpeNMOB/3Ycuk2CWvctdK48/bPMhM
+         JOSYw/VNj+PGHEhbYSz3CbLeTl+aFV2rxk0Y1WXA+Ys5mODAXwl31UC9ZQVizszA5klk
+         CFxN739dpcCa801/L7DwdYUlLKxY25kMxMaFSXtpm7DFl6jhEe4zYUh6fSgg+dXg9hYz
+         Zf1C+1DTTKZQ0h+Xdq7/CRgFI4mRPQk8/J6GNBTLgsmUAVwZAQ6dW787Kk/yAnrnC3NH
+         YNdaR8yahzJNF378Jkhi5Yo/pCUo8zMi81q+irkfM92US7ry1pg5BfPv2M0mP/DH8Gb+
+         tBgQ==
+X-Gm-Message-State: AOAM531NODbMWydw4xr6OqGZk934C9r815EHiz7nzGc3oneb3KKdp73y
+        6OFwhX36ghxKcZ8lREveyAY=
+X-Google-Smtp-Source: ABdhPJzjvqg9bEk1OYk+nLzA4QYhy9hiPbv9hwBvX4gMCUsjynoDl4L9hvLJQ+cYPgZbFRES7ms54Q==
+X-Received: by 2002:a17:90a:7e93:: with SMTP id j19mr1824542pjl.172.1635288240053;
+        Tue, 26 Oct 2021 15:44:00 -0700 (PDT)
+Received: from raspberrypi ([49.166.114.232])
+        by smtp.gmail.com with ESMTPSA id d17sm11674985pfj.98.2021.10.26.15.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 15:43:59 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 23:43:54 +0100
+From:   Austin Kim <austindh.kim@gmail.com>
+To:     zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, austin.kim@lge.com,
+        kernel-team@lge.com
+Subject: [PATCH] ima/evm: mark evm_fixmode as __ro_after_init
+Message-ID: <20211026224354.GA13009@raspberrypi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87h7d3beqq.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 09:30:53AM +1100, Michael Ellerman wrote:
-[..]
-> > I think I'll take this in my tree.
-> 
-> I've already put it in powerpc/next:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/commit/?h=next&id=61cb9ac66b30374c7fd8a8b2a3c4f8f432c72e36
+From: Austin Kim <austin.kim@lge.com>
 
-Oh, great. :)
+evm_fixmode global variable is never modified
+outside initcalls, so declaring it with __ro_after_init is better.
 
-> If you need to pick it up as well for some reason that's fine.
+Signed-off-by: Austin Kim <austin.kim@lge.com>
+---
+ security/integrity/evm/evm_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I just didn't  want it to get lost somehow. I'll drop it from tree now.
-
-Thanks
---
-Gustavo
-
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index 1c8435dfabee..08f907382c61 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -78,7 +78,7 @@ static struct xattr_list evm_config_default_xattrnames[] = {
+ 
+ LIST_HEAD(evm_config_xattrnames);
+ 
+-static int evm_fixmode;
++static int evm_fixmode __ro_after_init;
+ static int __init evm_set_fixmode(char *str)
+ {
+ 	if (strncmp(str, "fix", 3) == 0)
+-- 
+2.20.1
 
