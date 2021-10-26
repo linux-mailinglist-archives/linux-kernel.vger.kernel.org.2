@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BA543BC0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F130443BC15
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239415AbhJZVKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:10:01 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:57803 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235813AbhJZVJ7 (ORCPT
+        id S239442AbhJZVK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:10:59 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:44733 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239420AbhJZVKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:09:59 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf4CP5Dmdz4xbG;
-        Wed, 27 Oct 2021 08:07:29 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635282449;
-        bh=UthEJtyhT5RIAUn1+FAgs29p5I0d7JLIMmPFt7GHEA4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dWFQFKpjlL7mr2jVcybLOYF8h9FkUOoVejg0TRGbRcf8B6SnVFLHLPcR1nHRPkAix
-         wS3z3ELfHJ1W5HQr1hOTIrqLorY0DnZVIrHcqt0q/9GHboBqt0nImzbiT4x057bZzn
-         SYLHkvkdqP5Cd2aK8d7cp08f8qXUQ4eP5GrFXjeYDa8EvLqBv34jzGaWe6dz6z2tAu
-         Q2ocWVjoCHfmuXGolgHq1dPikdP0//E1xUCRMlRPy29P45YLIA74GycbJQ+vo4K/0i
-         FAdbJqKBYFT2t0zw+drtRJpFs+Ar8YR67vwCRRb5kyseA9w2FQRiOTdHpS2bxzXTFP
-         zeDv6I6J5oWqA==
-Date:   Wed, 27 Oct 2021 08:07:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Petr Cvachoucek <cvachoucek@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the ubifs tree
-Message-ID: <20211027080727.7e9df9be@canb.auug.org.au>
+        Tue, 26 Oct 2021 17:10:50 -0400
+Received: by mail-ot1-f47.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so513835otl.11;
+        Tue, 26 Oct 2021 14:08:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qf+MGZOD+EH/QKVd28ocI18hHDKyyZZiCGxPxM8SVbU=;
+        b=zlg74YHyju3b+ZLMOqTImEXDkiw1EMGtG96dbxtw6BfWwWkRNHuHg8SubPxbdUizpT
+         io0JlX2ENHDuotE9KwcGSmfMOw4ez12SQaPeVXNIsiK0Dsjl4vQKYPF8qi/PMDn4lC02
+         Xita2efsjqviNWk9yOg4OpjG6WmbT+lezgSlprP2cL1PEw1ukuPDdVEsxsDA+Q3xUwzT
+         orIn0TbR8HYSrnta0WL/iLOGwKQekO63zjxnGnUGS0h+IBxZKJ1kBegkdVTLT/tNLa00
+         emhsp46JSr/A5mvzevXlFFtsI0VG3/GriDYg83MRK164D131jGloHxhAtFF9+Cq0oLgo
+         P2GQ==
+X-Gm-Message-State: AOAM531eIHDv13Qa/20dhqm0MUqBGUYtE9YhQ0zX57/5jM0mdCuzc8AA
+        /qjoYfKzqy2smBwkihypdunc8mOsBw==
+X-Google-Smtp-Source: ABdhPJyckgJ+AIErGvmZtooqTIMJc/q8dE1Aqmg98CxlLU/4B7oGlLnt7dwY8Y59W9EZXZUPAbYqmw==
+X-Received: by 2002:a05:6830:4011:: with SMTP id h17mr21921166ots.208.1635282505533;
+        Tue, 26 Oct 2021 14:08:25 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id h17sm4078739oog.17.2021.10.26.14.08.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 14:08:24 -0700 (PDT)
+Received: (nullmailer pid 3252327 invoked by uid 1000);
+        Tue, 26 Oct 2021 21:08:23 -0000
+Date:   Tue, 26 Oct 2021 16:08:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Ilia Lin <ilia.lin@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: Re: [PATCH 1/8] dt-bindings: clk: qcom: msm8996-apcc: Add CBF
+Message-ID: <YXhuR2DXfzszSgYf@robh.at.kernel.org>
+References: <20211014083016.137441-1-y.oudjana@protonmail.com>
+ <20211014083016.137441-2-y.oudjana@protonmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Kje0IdHUX=py9_NN6ZthpZf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014083016.137441-2-y.oudjana@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Kje0IdHUX=py9_NN6ZthpZf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 14 Oct 2021 08:31:32 +0000, Yassine Oudjana wrote:
+> Add CBF clock and reg.
+> 
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> ---
+>  .../devicetree/bindings/clock/qcom,msm8996-apcc.yaml   | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
 
-Hi all,
-
-Commit
-
-  e7259f574fca ("ubifs: Error path in ubifs_remount_rw() seems to wrongly f=
-ree write buffers")
-
-is missing a Signed-off-by from its author.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Kje0IdHUX=py9_NN6ZthpZf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF4bg8ACgkQAVBC80lX
-0Gy4JggAjubIQQkRjchjiE/CTR8JPthOWcfp8TlzkE7TSCgc9axdBOYCPOyL1UBB
-kwLXVRn1w5aMfI6wJIPUhEMXS3hsQ8qQGbFvMgu9n3ZCk+d7Kfvbr8T2wAsgWiaf
-bDkGakD/mxkiuYpBSz6u3SH66W0jvke4gHFarkNu2zM7ns4Ab3QITFRGZ2FklHe5
-BhyzflGLmcGCcY/+fTVoZt+F4F6c/M3m3hk0VqOm0B/qbZuIZCWe+dllxavagCjW
-JLLazJ/n6NLRp96vbDP7S77TWOd8vTtFESxbDDc50vp968xjAG41mvwqgtw5wIs7
-3I9g36PtLGIFQM/UPiLO32F9hA31+w==
-=/k9B
------END PGP SIGNATURE-----
-
---Sig_/Kje0IdHUX=py9_NN6ZthpZf--
+Acked-by: Rob Herring <robh@kernel.org>
