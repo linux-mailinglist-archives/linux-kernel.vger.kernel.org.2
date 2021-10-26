@@ -2,116 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542B743AE46
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B99643AE48
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbhJZIo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:44:27 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:18826 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhJZIo0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:44:26 -0400
-X-Greylist: delayed 533 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 04:44:25 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635237716;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=u1DhPlwbDH666DKBWaor9+8Usu29r6LeIHM2pVITEKg=;
-    b=fF7nAZBp3GJjqTX3Hpic/QC7nQ2vmzNkc9KwfH66VQIQeGm/BsFbfHlWOVPMKFT7Yc
-    w+y7vpxI2z6CK7/VW00iFr19L4bze2nhTYpx9NK3YEdVB34ehJDRKhlUXhcS0cLjU4Y9
-    9TQB53wnEcRBxjvATxnbSOOp0acgWbBk5l2vip4OYIfC3iN7EfUr4tATYKUTCj+XTV9m
-    I2uEA4/VLr+dezwfW/LQ6N6Rcq9I7PsaJ4LAWwuPA6UmxvbkUGv+oz+wyYYridI9puZj
-    Km6+Rbco3JVz2kw9mmclhrdv9so4n6F5b4Sy6cmz5TM7mXhRWmJlWksnUv/HdCUvE8Gp
-    2QOA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id n020a8x9Q8fs22X
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 10:41:54 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolai Stange <nstange@suse.de>
-Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
-Subject: Re: [PATCH 2/6] crypto: DRBG - track whether DRBG was seeded with !rng_is_initialized()
-Date:   Tue, 26 Oct 2021 10:41:53 +0200
-Message-ID: <56392671.GheZNe4kVQ@positron.chronox.de>
-In-Reply-To: <20211025092525.12805-3-nstange@suse.de>
-References: <20211025092525.12805-1-nstange@suse.de> <20211025092525.12805-3-nstange@suse.de>
+        id S234366AbhJZIpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:45:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233821AbhJZIpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:45:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A11AD60F0F;
+        Tue, 26 Oct 2021 08:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635237789;
+        bh=h43NCwa9ubJX4Wst6s4xQvESgGFgW4Qr8HEznAtMvLo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hEIMK5wFoFUSNYyEwIgrA3+kv0wZXUvyJ2C8qweR4lEfDyLos4FI6qrw3vKeF1Tkb
+         qUAp2DIEo9HW4xGVPoLWNZ0h9FEMG9cWfGHVyywa8dA4F+JwnALt9y3i2l+7ygAySs
+         dDlB+RzGktfU26mgkXCy5lUaXOOTxfWDrEs7jNVoPwsBH5ridFI0yRq/qzYCe0SYyL
+         cDiV8LtO+mbnzLjagNf1LgVrnNwT5iPmWTRDwlm403d4kv57TL/2sBT/ecC2L+H+RZ
+         JA+i3YVM87xI5lD+NC3GpGaEz6aUBVXDvcBFV14zwpGRfKP956bHC2TEqYuSnzwR6c
+         s0Sqx8io9XP6g==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Mark Zhang <markzhang@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-next v1] RDMA/core: Initialize lock when allocate a rdma_hw_stats structure
+Date:   Tue, 26 Oct 2021 11:43:03 +0300
+Message-Id: <4a22986c4685058d2c735d91703ee7d865815bb9.1635237668.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 25. Oktober 2021, 11:25:21 CEST schrieb Nicolai Stange:
+From: Mark Zhang <markzhang@nvidia.com>
 
-Hi Nicolai,
+Initialize the rdma_hw_stats "lock" field when do allocation, to fix the
+warning below. Then we don't need to initialize it in sysfs, remove it.
 
-> Currently, the DRBG implementation schedules asynchronous works from
-> random_ready_callbacks for reseeding the DRBG instances with output from
-> get_random_bytes() once the latter has sufficient entropy available.
->=20
-> However, as the get_random_bytes() initialization state can get queried by
-> means of rng_is_initialized() now, there is no real need for this
-> asynchronous reseeding logic anymore and it's better to keep things simple
-> by doing it synchronously when needed instead, i.e. from drbg_generate()
-> once rng_is_initialized() has flipped to true.
->=20
-> Of course, for this to work, drbg_generate() would need some means by whi=
-ch
-> it can tell whether or not rng_is_initialized() has flipped to true since
-> the last seeding from get_random_bytes(). Or equivalently, whether or not
-> the last seed from get_random_bytes() has happened when
-> rng_is_initialized() was still evaluating to false.
->=20
-> As it currently stands, enum drbg_seed_state allows for the representation
-> of two different DRBG seeding states: DRBG_SEED_STATE_UNSEEDED and
-> DRBG_SEED_STATE_FULL. The former makes drbg_generate() to invoke a full
-> reseeding operation involving both, the rather expensive jitterentropy as
-> well as the get_random_bytes() randomness sources. The DRBG_SEED_STATE_FU=
-LL
-> state on the other hand implies that no reseeding at all is required for a
-> !->pr DRBG variant.
->=20
-> Introduce the new DRBG_SEED_STATE_PARTIAL state to enum drbg_seed_state f=
-or
-> representing the condition that a DRBG was being seeded when
-> rng_is_initialized() had still been false. In particular, this new state
-> implies that
-> - the given DRBG instance has been fully seeded from the jitterentropy
->   source (if enabled)
-> - and drbg_generate() is supposed to reseed from get_random_bytes()
->   *only* once rng_is_initialized() turns to true.
->=20
-> Up to now, the __drbg_seed() helper used to set the given DRBG instance's
-> ->seeded state to constant DRBG_SEED_STATE_FULL. Introduce a new argument
-> allowing for the specification of the to be written ->seeded value instea=
-d.
-> Make the first of its two callers, drbg_seed(), determine the appropriate
-> value based on rng_is_initialized(). The remaining caller,
-> drbg_async_seed(), is known to get invoked only once rng_is_initialized()
-> is true, hence let it pass constant DRBG_SEED_STATE_FULL for the new
-> argument to __drbg_seed().
->=20
-> There is no change in behaviour, except for that the pr_devel() in
-> drbg_generate() would now report "unseeded" for ->pr DRBG instances which
-> had last been seeded when rng_is_initialized() was still evaluating to
-> false.
->=20
-> Signed-off-by: Nicolai Stange <nstange@suse.de>
+ DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+ WARNING: CPU: 4 PID: 64464 at kernel/locking/mutex.c:575 __mutex_lock+0x9c3/0x12b0
+ Modules linked in: bonding ip_gre mlx5_ib geneve ib_ipoib ip6_gre gre nf_tables ip6_tunnel tunnel6 ib_umad mlx5_core rdma_ucm ib_uverbs ipip tunnel4 openvswitch nsh xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core overlay fuse [last unloaded: nf_tables]
+ CPU: 4 PID: 64464 Comm: rdma Not tainted 5.15.0-rc5_for_upstream_debug_2021_10_14_11_06 #1
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:__mutex_lock+0x9c3/0x12b0
+ Code: 08 84 d2 0f 85 cd 08 00 00 8b 05 00 7e 70 01 85 c0 0f 85 51 f7 ff ff 48 c7 c6 00 a4 89 83 48 c7 c7 c0 a1 89 83 e8 b8 97 f0 ff <0f> 0b e9 37 f7 ff ff 48 8b 44 24 40 48 8d b8 f0 06 00 00 48 89 f8
+ RSP: 0018:ffff88822d016d18 EFLAGS: 00010282
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+ RDX: 0000000000000027 RSI: 0000000000000004 RDI: ffffed1045a02d95
+ RBP: 0000000000000000 R08: 0000000000000001 R09: ffff8884d322f8fb
+ R10: ffffed109a645f1f R11: 0000000000000001 R12: dffffc0000000000
+ R13: ffff88819f846000 R14: ffff888102ad6060 R15: ffff88819f846000
+ FS:  00007f149943f800(0000) GS:ffff8884d3200000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007fff4fd8cff8 CR3: 000000017c108001 CR4: 0000000000370ea0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  ? fill_res_counter_entry+0x6ee/0x1020 [ib_core]
+  ? mutex_lock_io_nested+0x1130/0x1130
+  ? fill_res_counter_entry+0x5c7/0x1020 [ib_core]
+  ? lock_downgrade+0x6e0/0x6e0
+  ? memcpy+0x39/0x60
+  ? nla_put+0x15f/0x1c0
+  fill_res_counter_entry+0x6ee/0x1020 [ib_core]
+  ? fill_res_srq_entry+0x940/0x940 [ib_core]
+  ? rdma_restrack_count+0x440/0x440 [ib_core]
+  ? memcpy+0x39/0x60
+  ? nla_put+0x15f/0x1c0
+  res_get_common_dumpit+0x907/0x10a0 [ib_core]
+  ? fill_res_srq_entry+0x940/0x940 [ib_core]
+  ? _nldev_get_dumpit+0x4c0/0x4c0 [ib_core]
+  ? mark_lock+0xf7/0x2e60
+  ? nla_get_range_signed+0x540/0x540
+  ? mark_lock+0xf7/0x2e60
+  ? lock_chain_count+0x20/0x20
+  nldev_stat_get_dumpit+0x20a/0x290 [ib_core]
+  ? res_get_common_dumpit+0x10a0/0x10a0 [ib_core]
+  ? memset+0x20/0x40
+  ? __build_skb_around+0x1f8/0x2b0
+  ? netlink_skb_set_owner_r+0xc6/0x1e0
+  netlink_dump+0x451/0x1040
+  ? netlink_deliver_tap+0xb10/0xb10
+  ? __netlink_dump_start+0x222/0x830
+  __netlink_dump_start+0x583/0x830
+  rdma_nl_rcv_msg+0x3f3/0x7c0 [ib_core]
+  ? rdma_nl_chk_listeners+0xb0/0xb0 [ib_core]
+  ? res_get_common_dumpit+0x10a0/0x10a0 [ib_core]
+  ? netlink_deliver_tap+0xbc/0xb10
+  rdma_nl_rcv+0x264/0x410 [ib_core]
+  ? rdma_nl_rcv_msg+0x7c0/0x7c0 [ib_core]
+  ? netlink_deliver_tap+0x140/0xb10
+  ? netlink_deliver_tap+0x14c/0xb10
+  ? _copy_from_iter+0x282/0xbe0
+  netlink_unicast+0x433/0x700
+  ? netlink_attachskb+0x740/0x740
+  ? __alloc_skb+0x117/0x2c0
+  netlink_sendmsg+0x707/0xbf0
+  ? netlink_unicast+0x700/0x700
+  ? netlink_unicast+0x700/0x700
+  sock_sendmsg+0xb0/0xe0
+  __sys_sendto+0x193/0x240
+  ? __x64_sys_getpeername+0xb0/0xb0
+  ? _copy_to_user+0x94/0xb0
+  ? __x64_sys_connect+0xb0/0xb0
+  ? __x64_sys_socketpair+0xf0/0xf0
+  ? __sys_socket+0x11a/0x1a0
+  ? sock_ioctl+0x610/0x610
+  __x64_sys_sendto+0xdd/0x1b0
+  ? syscall_enter_from_user_mode+0x1d/0x50
+  do_syscall_64+0x3d/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7f1499622cba
+ Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb b8 0f 1f 00 f3 0f 1e fa 41 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 15 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 76 c3 0f 1f 44 00 00 55 48 83 ec 30 44 89 4c
+ RSP: 002b:00007fff4fd8e9a8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+ RAX: ffffffffffffffda RBX: 00007fff4fd8ec70 RCX: 00007f1499622cba
+ RDX: 0000000000000028 RSI: 0000000000c43910 RDI: 0000000000000004
+ RBP: 00007fff4fd8ec70 R08: 00007f14996ee000 R09: 000000000000000c
+ R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000c44940
+ R13: 0000000000000000 R14: 00007fff4fd8ec90 R15: 00007fff4fd8ec70
+ irq event stamp: 44063
+ hardirqs last  enabled at (44063): [<ffffffff83349157>] _raw_spin_unlock_irqrestore+0x47/0x50
+ hardirqs last disabled at (44062): [<ffffffff83348f50>] _raw_spin_lock_irqsave+0x50/0x60
+ softirqs last  enabled at (43932): [<ffffffff82a74532>] netlink_insert+0x172/0x11d0
+ softirqs last disabled at (43930): [<ffffffff828490db>] release_sock+0x1b/0x170
+ ---[ end trace 48c63b35e252a166 ]---
 
-Reviewed-by: Stephan M=FCller <smueller@chronox.de>
+Fixes: 0a0800ce2a6a ("RDMA/core: Add a helper API rdma_free_hw_stats_struct")
+Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Changelog:
+v1:
+ * Changed Fixes line
+ * Removed timestamps from the kernel panic
+ * Change target from rdma-rc to rdma-next
+v0:
+https://lore.kernel.org/all/89baeee29503df46dd28a6a5edbad9ec1a1d86f1.1635055496.git.leonro@nvidia.com/
+---
+ drivers/infiniband/core/sysfs.c | 2 --
+ drivers/infiniband/core/verbs.c | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-Ciao
-Stephan
-
+diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+index 8626dfbf2199..a3f84b50c46a 100644
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -911,7 +911,6 @@ alloc_hw_stats_device(struct ib_device *ibdev)
+ 	if (!data->group.attrs)
+ 		goto err_free_data;
+ 
+-	mutex_init(&stats->lock);
+ 	data->group.name = "hw_counters";
+ 	data->stats = stats;
+ 	return data;
+@@ -1018,7 +1017,6 @@ alloc_hw_stats_port(struct ib_port *port, struct attribute_group *group)
+ 	if (!group->attrs)
+ 		goto err_free_data;
+ 
+-	mutex_init(&stats->lock);
+ 	group->name = "hw_counters";
+ 	data->stats = stats;
+ 	return data;
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 47cf273d0678..692d5ff657df 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -3002,6 +3002,7 @@ struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
+ 	stats->descs = descs;
+ 	stats->num_counters = num_counters;
+ 	stats->lifespan = msecs_to_jiffies(lifespan);
++	mutex_init(&stats->lock);
+ 
+ 	return stats;
+ 
+-- 
+2.31.1
 
