@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7598543AFE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0F343AFE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbhJZKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbhJZKSg (ORCPT
+        id S235302AbhJZKT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:19:27 -0400
+Received: from mail-vk1-f172.google.com ([209.85.221.172]:34616 "EHLO
+        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235460AbhJZKTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:18:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC3AC061243
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 03:16:12 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 10:16:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635243371;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4OOCVjKHu3W3KUF8PnMtt0sRUDhN2PjZZqJztkhBiBk=;
-        b=jL3UrlG0llKCBUqoxaNtRWe5/rlRYZeZsByWwMjpNDoTgmQM3qWY8JyKgFomKKoenUT0dB
-        mJx7IKknoStj+bAWfOAuipwbv4nme03DNFp6u0d+9OH6jgkZlY05CCA60K1bDMM705ddM/
-        lJIMUdT2BwLYNfS3qWKUr1V9bgtJ5p2VuJDOt5upcQzuwXNHWaU7ObinTIff5gf8Kle7Y6
-        aLlK25PK+5dI9K43+QfRMNTbJGR3xN6vqpsRNMHMPS2uQBamU4932DwznbjA0IHyJwgdd9
-        kNq2v5D2PQw4EjHiBJ1usH9b/f/N5fBO3sfNMDzSrXl8+gae0ko6iaL/yowOWg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635243371;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4OOCVjKHu3W3KUF8PnMtt0sRUDhN2PjZZqJztkhBiBk=;
-        b=wY3DklEIQGBYB+wY5FqiZTY5RcbpMCns9XjWYewzqD8T1Orz7zojetqCzAJQ+42ivzVm5N
-        l98lR77u/xhR7kCQ==
-From:   "irqchip-bot for Mark Rutland" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irq: mips: avoid nested irq_enter()
-Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>
+        Tue, 26 Oct 2021 06:19:01 -0400
+Received: by mail-vk1-f172.google.com with SMTP id bc10so6656551vkb.1;
+        Tue, 26 Oct 2021 03:16:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eNj0r0yYtbYaRBmFTkNSJ9P/S2xKrXUmhGE0uyRbugk=;
+        b=imJrk+1ZCy6BXqVTeLRpcHUIKCLRlJsoaoMNzDSD5H9SJehOHDRsuC7zObwp3IFUub
+         NGuavHlPcosgZ8jFbWM55pBYhAUv7hNNc0nVOqHmULc5MbwFIr2XgkWbfZRXV3iTIg6b
+         WyT9PvexJgz81kINyY0X1/3nreN/4B6JpzbIJy6oIqqnqZtapGGg0vo8T5Eb9LQYOF9U
+         CkjyIh2GsaS3zjJXKm3Kf5K7TnLmheZw9BN50DxpttkmmP2EIY5rXCVrHjNCFkTigwMa
+         fT6Bl+2yTpN2DjmBuvONdfLTcrWNscYR+o7U+/WLog6G54Xf6bIcPsUqEhASIeiSebCe
+         UjFw==
+X-Gm-Message-State: AOAM530cQi/smSZjaUQjaT9whLT3x/NjzMurBKayBoqb4zai0wCsX8Nl
+        iGYqZhuq6LQ+0gwQUGa4g0vZi42whDljtg==
+X-Google-Smtp-Source: ABdhPJwQjNbyYx4m6uemnVJtmtXf/d7QJbc9zYK0r+B9IRvjV3enQH6lif+oPcfTpJZoy8TXvmG9GA==
+X-Received: by 2002:a1f:7c4b:: with SMTP id x72mr9630682vkc.3.1635243397577;
+        Tue, 26 Oct 2021 03:16:37 -0700 (PDT)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id v13sm5733817vsi.0.2021.10.26.03.16.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 03:16:37 -0700 (PDT)
+Received: by mail-ua1-f47.google.com with SMTP id e10so28127658uab.3;
+        Tue, 26 Oct 2021 03:16:37 -0700 (PDT)
+X-Received: by 2002:a67:f84d:: with SMTP id b13mr18437374vsp.41.1635243386319;
+ Tue, 26 Oct 2021 03:16:26 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <163524337054.626.7489285313123192852.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20211026100432.1730393-1-arnd@kernel.org> <20211026100432.1730393-2-arnd@kernel.org>
+In-Reply-To: <20211026100432.1730393-2-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Oct 2021 12:16:15 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW0RPpbmCaixYTdKFLPTZGp=3WycHK1xiyryKku45f6_A@mail.gmail.com>
+Message-ID: <CAMuHMdW0RPpbmCaixYTdKFLPTZGp=3WycHK1xiyryKku45f6_A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] futex: remove futex_cmpxchg detection
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On Tue, Oct 26, 2021 at 12:06 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Now that all architectures have a working futex implementation
+> in any configuration, remove the runtime detection code.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Commit-ID:     c65b52d02f6c1a06ddb20cba175ad49eccd6410d
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/c65b52d02f6c1a06ddb20cba175ad49eccd6410d
-Author:        Mark Rutland <mark.rutland@arm.com>
-AuthorDate:    Wed, 20 Oct 2021 17:25:22 +01:00
-Committer:     Mark Rutland <mark.rutland@arm.com>
-CommitterDate: Mon, 25 Oct 2021 10:01:39 +01:00
+>  arch/m68k/Kconfig             |  1 -
 
-irq: mips: avoid nested irq_enter()
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-As bcm6345_l1_irq_handle() is a chained irqchip handler, it will be
-invoked within the context of the root irqchip handler, which must have
-entered IRQ context already.
+Gr{oetje,eeting}s,
 
-When bcm6345_l1_irq_handle() calls arch/mips's do_IRQ() , this will nest
-another call to irq_enter(), and the resulting nested increment to
-`rcu_data.dynticks_nmi_nesting` will cause rcu_is_cpu_rrupt_from_idle()
-to fail to identify wakeups from idle, resulting in failure to preempt,
-and RCU stalls.
+                        Geert
 
-Chained irqchip handlers must invoke IRQ handlers by way of thee core
-irqchip code, i.e. generic_handle_irq() or generic_handle_domain_irq()
-and should not call do_IRQ(), which is intended only for root irqchip
-handlers.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Fix bcm6345_l1_irq_handle() by calling generic_handle_irq() directly.
-
-Fixes: c7c42ec2baa1de7a ("irqchips/bmips: Add bcm6345-l1 interrupt controller")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
- drivers/irqchip/irq-bcm6345-l1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
-index e348378..1bd0621 100644
---- a/drivers/irqchip/irq-bcm6345-l1.c
-+++ b/drivers/irqchip/irq-bcm6345-l1.c
-@@ -140,7 +140,7 @@ static void bcm6345_l1_irq_handle(struct irq_desc *desc)
- 		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD) {
- 			irq = irq_linear_revmap(intc->domain, base + hwirq);
- 			if (irq)
--				do_IRQ(irq);
-+				generic_handle_irq(irq);
- 			else
- 				spurious_interrupt();
- 		}
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
