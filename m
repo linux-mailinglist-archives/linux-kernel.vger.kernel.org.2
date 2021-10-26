@@ -2,213 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832EB43ABEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A0A43ABF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbhJZF6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:58:36 -0400
-Received: from first.geanix.com ([116.203.34.67]:37418 "EHLO first.geanix.com"
+        id S235199AbhJZF7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:59:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235145AbhJZF63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:58:29 -0400
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 06FFBD6F84;
-        Tue, 26 Oct 2021 05:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1635227764; bh=DpYIWsQGX2i1qG2VKEU7tQ6gp/DP02vwh6pgvrOgzt4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=dlPbl3NNPaau09m/XrDeRexRQTws1WDmPJHkMyV2O+M8bsPIqMviADbpeQ4V+SYn6
-         URjivOXpZrbtmRBxVA17pylnRaljPLEM4e9chDShsvI9pwP1/A1qvk/AYkA6mcU90K
-         lrTu9OuoDA+oeu5pYcud/Nx1t8Q4o+OCvYCEsbIvabZ30l5kkqelTqLJJP03jQQyfz
-         5/JagKX2Ll2oJ2+oF9IwfdoxXWXFWJgDNzWpf2EaJkYd2gxuaANew4S//Lnv0ChvIQ
-         GOvijYAx0RhAyUis2CUr8hoIpF6cWyQeSjq6eGVnxi0mLKP+SiYg1w53zC+EPg9b6k
-         wQGDpYKfY4+/g==
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Sean Nyekjaer <sean@geanix.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] mtd: rawnand: remove suspended check
-Date:   Tue, 26 Oct 2021 07:55:51 +0200
-Message-Id: <20211026055551.3053598-5-sean@geanix.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211026055551.3053598-1-sean@geanix.com>
-References: <20211026055551.3053598-1-sean@geanix.com>
+        id S235192AbhJZF64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:58:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C567061074;
+        Tue, 26 Oct 2021 05:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635227793;
+        bh=yQqBNggdScygSpqZv7Yg8QOx3/VB58kGvn6AqtODOik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=To9n0eTDTYvcssoZrxKtQMqQBvePwzv1Ua7NybO7SnCTqy/oHCGgJH9dcYpqEYSw2
+         r+EYy1/FAGlyT45626FullXij8eJvpTZlwzldepVdteI0/LCrjUjuaXv64/30EoH6W
+         hKgl1aOpm5X9YwPPFkCXc5cKqq5onMcB9RbbCnlFb4eG8JtakkCW7iRfB5LOkihtiz
+         ILF6uNDVqlzKQSLDwmFWatVyi0GzP/rzGumH1fgcTB5vB2ws70X0FDcG8uH+MaS8Gm
+         fafWFiJySP6P93MXhwjv4/7IacAG5CSS6iPH72vXCxBXYILwFXJWgKLbJ8apB2rdem
+         +4GcziHyRonzQ==
+Date:   Tue, 26 Oct 2021 08:56:29 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Edwin Peer <edwin.peer@broadcom.com>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Michael Chan <michael.chan@broadcom.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXeYjXx92wKdPe02@unreal>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+ <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Access is protected in upper MTD layer when MTD devices are suspended.
+On Mon, Oct 25, 2021 at 04:19:07PM -0700, Edwin Peer wrote:
+> On Sun, Oct 24, 2021 at 3:35 PM Ido Schimmel <idosch@idosch.org> wrote:
+> 
+> > On Sun, Oct 24, 2021 at 11:42:11AM +0300, Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > >
+> > > Align netdevsim to be like all other physical devices that register and
+> > > unregister devlink traps during their probe and removal respectively.
+> >
+> > No, this is incorrect. Out of the three drivers that support both reload
+> > and traps, both netdevsim and mlxsw unregister the traps during reload.
+> > Here is another report from syzkaller about mlxsw [1].
+> >
+> > Please revert both 22849b5ea595 ("devlink: Remove not-executed trap
+> > policer notifications") and 8bbeed485823 ("devlink: Remove not-executed
+> > trap group notifications").
+> 
+> Could we also revert 82465bec3e97 ("devlink: Delete reload
+> enable/disable interface")? 
 
-Commit ("mtd: core: protect access to MTD devices while in suspend")
-introduces access protection, so it's safe to remove suspended checks.
+Absolutely not.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- drivers/mtd/nand/raw/nand_base.c | 52 ++++++++------------------------
- include/linux/mtd/rawnand.h      |  5 +--
- 2 files changed, 14 insertions(+), 43 deletions(-)
+> This interface is needed because bnxt_en cannot reorder devlink last.
+> If Leon had fully carried out the re-ordering in our driver he would
+> have introduced a udev phys_port_name regression because of:
+> 
+> cda2cab0771 ("bnxt_en: Move devlink_register before registering netdev")
+> 
+> and:
+> 
+> ab178b058c4 ("bnxt: remove ndo_get_phys_port_name implementation")
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d6c6e880520..aa2874ae3c4a 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -332,19 +332,11 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  * @chip: NAND chip structure
-  *
-  * Lock the device and its controller for exclusive access
-- *
-- * Return: -EBUSY if the chip has been suspended, 0 otherwise
-  */
--static int nand_get_device(struct nand_chip *chip)
-+static void nand_get_device(struct nand_chip *chip)
- {
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		mutex_unlock(&chip->lock);
--		return -EBUSY;
--	}
- 	mutex_lock(&chip->controller->lock);
--
--	return 0;
- }
- 
- /**
-@@ -573,10 +565,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
- 		nand_erase_nand(chip, &einfo, 0);
- 
- 		/* Write bad block marker to OOB */
--		ret = nand_get_device(chip);
--		if (ret)
--			return ret;
--
-+		nand_get_device(chip);
- 		ret = nand_markbad_bbm(chip, ofs);
- 		nand_release_device(chip);
- 	}
-@@ -3756,9 +3745,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 	    ops->mode != MTD_OPS_RAW)
- 		return -ENOTSUPP;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	if (!ops->datbuf)
- 		ret = nand_do_read_oob(chip, from, ops);
-@@ -4345,13 +4332,11 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 			  struct mtd_oob_ops *ops)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	int ret;
-+	int ret = 0;
- 
- 	ops->retlen = 0;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	switch (ops->mode) {
- 	case MTD_OPS_PLACE_OOB:
-@@ -4410,10 +4395,8 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 	if (nand_region_is_secured(chip, instr->addr, instr->len))
- 		return -EIO;
- 
--	/* Grab the lock and see if the device is available */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 
- 	/* Shift to get first page */
- 	page = (int)(instr->addr >> chip->page_shift);
-@@ -4499,8 +4482,8 @@ static void nand_sync(struct mtd_info *mtd)
- 
- 	pr_debug("%s: called\n", __func__);
- 
--	/* Grab the lock and see if the device is available */
--	WARN_ON(nand_get_device(chip));
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 	/* Release it and go back */
- 	nand_release_device(chip);
- }
-@@ -4517,9 +4500,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
- 	int ret;
- 
- 	/* Select the NAND device */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	nand_select_target(chip, chipnr);
- 
-@@ -4565,8 +4546,6 @@ static int nand_suspend(struct mtd_info *mtd)
- 	mutex_lock(&chip->lock);
- 	if (chip->ops.suspend)
- 		ret = chip->ops.suspend(chip);
--	if (!ret)
--		chip->suspended = 1;
- 	mutex_unlock(&chip->lock);
- 
- 	return ret;
-@@ -4580,15 +4559,10 @@ static void nand_resume(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
-+
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		if (chip->ops.resume)
--			chip->ops.resume(chip);
--		chip->suspended = 0;
--	} else {
--		pr_err("%s called for a chip which is not in suspended state\n",
--			__func__);
--	}
-+	if (chip->ops.resume)
-+		chip->ops.resume(chip);
- 	mutex_unlock(&chip->lock);
- }
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b2f9dd3cbd69..1198a6548912 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1237,9 +1237,7 @@ struct nand_secure_region {
-  * @pagecache.page: Page number currently in the cache. -1 means no page is
-  *                  currently cached
-  * @buf_align: Minimum buffer alignment required by a platform
-- * @lock: Lock protecting the suspended field. Also used to serialize accesses
-- *        to the NAND device
-- * @suspended: Set to 1 when the device is suspended, 0 when it's not
-+ * @lock: Lock to serialize accesses to the NAND device
-  * @cur_cs: Currently selected target. -1 means no target selected, otherwise we
-  *          should always have cur_cs >= 0 && cur_cs < nanddev_ntargets().
-  *          NAND Controller drivers should not modify this value, but they're
-@@ -1293,7 +1291,6 @@ struct nand_chip {
- 
- 	/* Internals */
- 	struct mutex lock;
--	unsigned int suspended : 1;
- 	int cur_cs;
- 	int read_retries;
- 	struct nand_secure_region *secure_regions;
--- 
-2.33.0
+devlink_register() doesn't do anything except performing as a barrier.
 
+In a nutshell, latest devlink_register() implementation is better
+implementation of previously existed "reload enable/disable" boolean.
+
+You don't need to reorder whole devlink logic, just put a call to
+devlink_register() in the place where you wanted to put your
+devlink_reload_enable().
+
+> 
+> I think this went unnoticed for bnxt_en, because Michael had not yet
+> posted our devlink reload patches, which presently rely on the reload
+> enable/disable API. Absent horrible kludges in reload down/up which
+> currently depends on the netdev, there doesn't appear to be a clean
+> way to resolve the circular dependency without the interlocks this API
+> provides.
+
+You was supposed to update and retest your out-of-tree implementation
+of devlink reload before posting it to the ML. However, if you use
+devlink_*() API correctly, such dependency won't exist.
+
+> 
+> I imagine other subtle regressions are lying in wait.
+
+Sorry, but we don't have crystal ball and can't guess what else is
+broken in your out-of-tree driver.
+
+Thanks
+
+> 
+> Regards,
+> Edwin Peer
