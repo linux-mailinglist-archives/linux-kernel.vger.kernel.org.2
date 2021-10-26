@@ -2,103 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199DE43B33C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED5D43B337
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbhJZNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:38:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33482 "EHLO mail.kernel.org"
+        id S233302AbhJZNh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:37:27 -0400
+Received: from mga02.intel.com ([134.134.136.20]:13406 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhJZNiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:38:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 887F760EC0;
-        Tue, 26 Oct 2021 13:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635255358;
-        bh=GQ+yDzgA2vcbE0+K5hXW5DwWQFmuJ2lxO3v/1xD0kqY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dmGr8/aDCCOrqqKw4knAZf8feV2W8qtoeZpRrNKwTlPOujTYd4cbxtZtLtV5OCCkQ
-         VGYs6OUCNQeI969BVc1fVT6BVVlFAYjOBlWOoVVSbzV5tTVdDCcPvJW7M+zLlp3hjn
-         uE7FfWony7cKnuHUAvz3ifsmL7WSJwfYzNibvpwn5661x1qQFjILBua2JrC/kbVpGU
-         zoUFEkJVnEl3e/F5z/P3EwcQzL9HPO8zeHZKdGAD1+FIcO852pqTYi2jqCljn2TDEd
-         qel2NaiNV7Tn/1sPXWO0GbobCpXBGGzAI7zixU67aLjKfTBHHhfJkLyzPtmLOEkYes
-         cIhvLr+cG9NPQ==
-Received: by mail-ed1-f53.google.com with SMTP id s1so13913051edd.3;
-        Tue, 26 Oct 2021 06:35:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531GcCkxwJ6wh4wbBBj+jH6oLIxPFF7cu9y/130M6JPBDuZT4Nu8
-        BM8sLjkvwr5Y76fXAtkuIjcGdeBwB/dMZyX32g==
-X-Google-Smtp-Source: ABdhPJy26qFbzewnIKR+cGC5EF6zEzbM9xrEV2Eo10i80J/7NA0tKo3J7Uri4jQR0jAmeszts3tdQq9gGOYCEbG+vDo=
-X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr14828933ejc.466.1635255287180;
- Tue, 26 Oct 2021 06:34:47 -0700 (PDT)
+        id S230285AbhJZNh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:37:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="217074202"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="217074202"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 06:34:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="446743530"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 26 Oct 2021 06:34:54 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3676C107; Tue, 26 Oct 2021 16:34:54 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v3 1/2] serial: 8250_pci: Replace custom pci_match_id() implementation
+Date:   Tue, 26 Oct 2021 16:34:51 +0300
+Message-Id: <20211026133452.61657-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211019231907.1009567-1-robh@kernel.org> <20211026131039.GC34073@C02TD0UTHF1T.local>
-In-Reply-To: <20211026131039.GC34073@C02TD0UTHF1T.local>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 26 Oct 2021 08:34:35 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+JLcWESzGzjsmrir+gCFEO88YMYdj+FOBhjZgSBNOeVA@mail.gmail.com>
-Message-ID: <CAL_Jsq+JLcWESzGzjsmrir+gCFEO88YMYdj+FOBhjZgSBNOeVA@mail.gmail.com>
-Subject: Re: [PATCH v11 0/5] arm64 userspace counter support
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 8:10 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Oct 19, 2021 at 06:19:02PM -0500, Rob Herring wrote:
-> > Another version of arm64 userspace counter access support.
-> >
-> > The arm64 support departs from the x86 implementation by requiring the user
-> > to explicitly request user access (via attr.config1) and only enables access
-> > for task bound events. Since usage is explicitly requested, access is
-> > enabled at perf_event_open() rather than on mmap() as that greatly
-> > simplifies the implementation. Rather than trying to lock down the access
-> > as the x86 implementation has been doing, we can start with only a limited
-> > use case enabled and later expand it if needed.
-> >
-> > I've run this version thru Vince's perf tests[13] with arm64 support added.
-> > I wish I'd found these tests sooner...
->
-> When you say "with arm64 support added", do you mean with patches not
-> yet upstreamed?
+Replace pci_quatech_amcc() with generic pci_match_id().
 
-Correct.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v3: fixed uninitialized boolean variable (lkp)
+ drivers/tty/serial/8250/8250_pci.c | 72 +++++++++++++-----------------
+ 1 file changed, 31 insertions(+), 41 deletions(-)
 
-> I took a look at the upstream repo, and there's some existing RDPMC
-> support even though upstream never previously supported userspace
-> access. That support code uses PMSELR_EL0, which this series adds no
-> provisions for.
->
-> Kernel-side, we'll need to either:
->
-> * Document that PMSELR_EL0 is unreliable, and explcitly zero it within
->   the kernel such that it cnanot be used as a covert channel. Get the
->   tests updated to not rely on the never-previously-supported use of
->   PMSELR_EL0.
->
-> * Context switch PMSELR_EL0 (which'll IIUC is unreliable for big.LITTLE,
->   even where the registers exist on each CPU).
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index aea12263a1ff..1c2eb44e9c33 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -1063,13 +1063,6 @@ static int pci_asix_setup(struct serial_private *priv,
+ 	return pci_default_setup(priv, board, port, idx);
+ }
+ 
+-/* Quatech devices have their own extra interface features */
+-
+-struct quatech_feature {
+-	u16 devid;
+-	bool amcc;
+-};
+-
+ #define QPCR_TEST_FOR1		0x3F
+ #define QPCR_TEST_GET1		0x00
+ #define QPCR_TEST_FOR2		0x40
+@@ -1085,42 +1078,30 @@ struct quatech_feature {
+ #define QOPR_CLOCK_X8		0x0003
+ #define QOPR_CLOCK_RATE_MASK	0x0003
+ 
+-
+-static struct quatech_feature quatech_cards[] = {
+-	{ PCI_DEVICE_ID_QUATECH_QSC100,   1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC100,   1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC100E,  0 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC200,   1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSC200E,  0 },
+-	{ PCI_DEVICE_ID_QUATECH_ESC100D,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_ESC100M,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCP100,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCP100,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCP200,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCP200,  1 },
+-	{ PCI_DEVICE_ID_QUATECH_ESCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_SSCLP100, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_QSCLP200, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_DSCLP200, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_SSCLP200, 0 },
+-	{ PCI_DEVICE_ID_QUATECH_SPPXP_100, 0 },
++/* Quatech devices have their own extra interface features */
++static struct pci_device_id quatech_cards[] = {
++	{ PCI_DEVICE_DATA(QUATECH, QSC100,   1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC100,   1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC100E,  0) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC200,   1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSC200E,  0) },
++	{ PCI_DEVICE_DATA(QUATECH, ESC100D,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, ESC100M,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCP100,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCP100,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCP200,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCP200,  1) },
++	{ PCI_DEVICE_DATA(QUATECH, ESCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, SSCLP100, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, QSCLP200, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, DSCLP200, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, SSCLP200, 0) },
++	{ PCI_DEVICE_DATA(QUATECH, SPPXP_100, 0) },
+ 	{ 0, }
+ };
+ 
+-static int pci_quatech_amcc(struct pci_dev *dev)
+-{
+-	struct quatech_feature *qf = &quatech_cards[0];
+-	while (qf->devid) {
+-		if (qf->devid == dev->device)
+-			return qf->amcc;
+-		qf++;
+-	}
+-	pci_err(dev, "unknown port type '0x%04X'.\n", dev->device);
+-	return 0;
+-};
+-
+ static int pci_quatech_rqopr(struct uart_8250_port *port)
+ {
+ 	unsigned long base = port->port.iobase;
+@@ -1280,7 +1261,16 @@ static int pci_quatech_rs422(struct uart_8250_port *port)
+ 
+ static int pci_quatech_init(struct pci_dev *dev)
+ {
+-	if (pci_quatech_amcc(dev)) {
++	const struct pci_device_id *match;
++	bool amcc = false;
++
++	match = pci_match_id(quatech_cards, dev);
++	if (match)
++		amcc = match->driver_data;
++	else
++		pci_err(dev, "unknown port type '0x%04X'.\n", dev->device);
++
++	if (amcc) {
+ 		unsigned long base = pci_resource_start(dev, 0);
+ 		if (base) {
+ 			u32 tmp;
+-- 
+2.33.0
 
-Whether we support userspace using PMSELR_EL0 or not, we just need to
-zero it when userspace access is enabled (like the dirty counters).
-When there's a context switch, the read sequence is going to be
-incremented and PMSELR_EL0 will need to be written to again.
-
-Rob
