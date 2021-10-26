@@ -2,117 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF69843ABD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1485C43ABD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbhJZFsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:48:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
+        id S234626AbhJZFu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231148AbhJZFsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:48:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD1060E05;
-        Tue, 26 Oct 2021 05:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635227154;
-        bh=TIjVkFEWJB7q7GF6lS61TRk3nmEo51a0DU9X6QcW9hY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KhbpyYsNXErwr2o99+8NA/bqELaVNukCD+dHr4vMMMnSZ9mSAgrON3mR5Vwt4UOJx
-         V+hL5MeobyUOoRdjGF9LCqyFjkrRhXsatzF6HUrmKMEEIQnY8ZZFi2oJduqYOothtA
-         LFAw0L4KGWtt9o3cuk0IpVlpj0OR4rNqQVc/bEQc=
-Date:   Tue, 26 Oct 2021 07:45:49 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "chenxiaosong (A)" <chenxiaosong2@huawei.com>
-Cc:     viro@zeniv.linux.org.uk, stable@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dhowells@redhat.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount
- concurrency
-Message-ID: <YXeWDSLo4+MuOg4+@kroah.com>
-References: <20211013095101.641329-1-chenxiaosong2@huawei.com>
- <YWawy0J9JfStEku0@kroah.com>
- <429d87b0-3a53-052a-a304-0afa8d51900d@huawei.com>
- <860c36c4-3668-1388-66d1-a07d463c2ad9@huawei.com>
- <YXAL7K88XGWXckWe@kroah.com>
- <209361bb-9e15-ebaf-2ff8-5846d5bfbbc2@huawei.com>
+        id S229687AbhJZFu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:50:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5150860E73;
+        Tue, 26 Oct 2021 05:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635227285;
+        bh=XsFhsP511nj6/eHseLH0aIDFSZivx3CUuD1Py4KM2Zc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qqQVf5EeWuFj4wEPnHypPj15RIQ5Ysq5Tt/E0bFL7ammniejPLnz5cLFtod+wYRyi
+         So9onQ62TDQUb9iGaLdkoRawZw05OPItooOEsSbrRI0F/QyrSIjxsgvQEFAm+3JHS7
+         MBMfgGxo8bfYuxpPcp+MnMg9Ui08DzWPgcGT6hp+CS2+tlBICOeW1zmSHiZfhzOnCo
+         BKTgAoTB7rx5A3frCcS6F9PseXY7mnRI/WAbA3/62mJ8jqXoLHBhpZKzLdML/Vku+A
+         9JDpseNW6fvfxd2XETOIpRiuJjeAZyucyuSVkboDbdDVX2KfXcThHpcLVAgOyZYdOS
+         wABKAA2YPuRVw==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yuri Nudelman <ynudelman@habana.ai>
+Subject: [PATCH] habanalabs: make last_mask an MMU property
+Date:   Tue, 26 Oct 2021 08:48:00 +0300
+Message-Id: <20211026054800.3033091-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <209361bb-9e15-ebaf-2ff8-5846d5bfbbc2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:18:11AM +0800, chenxiaosong (A) wrote:
-> 
-> 
-> 在 2021/10/20 20:30, Greg KH 写道:
-> > On Wed, Oct 13, 2021 at 06:49:06PM +0800, chenxiaosong (A) wrote:
-> > > 在 2021/10/13 18:38, chenxiaosong (A) 写道:
-> > > > 在 2021/10/13 18:11, Greg KH 写道:
-> > > > > On Wed, Oct 13, 2021 at 05:51:01PM +0800, ChenXiaoSong wrote:
-> > > > > > If two processes mount same superblock, memory leak occurs:
-> > > > > > 
-> > > > > > CPU0               |  CPU1
-> > > > > > do_new_mount       |  do_new_mount
-> > > > > >     fs_set_subtype   |    fs_set_subtype
-> > > > > >       kstrdup        |
-> > > > > >                      |      kstrdup
-> > > > > >       memrory leak   |
-> > > > > > 
-> > > > > > Fix this by adding a write lock while calling fs_set_subtype.
-> > > > > > 
-> > > > > > Linus's tree already have refactoring patchset [1], one of them
-> > > > > > can fix this bug:
-> > > > > >           c30da2e981a7 (fuse: convert to use the new mount API)
-> > > > > > 
-> > > > > > Since we did not merge the refactoring patchset in this branch,
-> > > > > > I create this patch.
-> > > > > > 
-> > > > > > [1] https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/
-> > > > > > 
-> > > > > > 
-> > > > > > Fixes: 79c0b2df79eb (add filesystem subtype support)
-> > > > > > Cc: David Howells <dhowells@redhat.com>
-> > > > > > Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-> > > > > > ---
-> > > > > > v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk
-> > > > > > memory leak caused by mount concurrency)
-> > > > > > v2: Use write lock while writing superblock
-> > > > > > 
-> > > > > >    fs/namespace.c | 9 ++++++---
-> > > > > >    1 file changed, 6 insertions(+), 3 deletions(-)
-> > > > > 
-> > > > > As you are referring to a fuse-only patch above, why are you trying to
-> > > > > resolve this issue in the core namespace code instead?
-> > > > > 
-> > > > > How does fuse have anything to do with this?
-> > > > > 
-> > > > > confused,
-> > > > > 
-> > > > > greg k-h
-> > > > > .
-> > > > > 
-> > > > 
-> > > > Now, only `fuse_fs_type` and `fuseblk_fs_type` has `FS_HAS_SUBTYPE` flag
-> > > > in kernel code, but maybe there is a filesystem module(`struct
-> > > > file_system_type` has `FS_HAS_SUBTYPE` flag). And only mounting fuseblk
-> > > > filesystem(e.g. ntfs) will occur memory leak now.
-> > > 
-> > > How about updating the subject as: VFS: Fix memory leak caused by mounting
-> > > fs with subtype concurrency?
-> > 
-> > That would be a better idea, but still, this is not obvious that this is
-> > the correct fix at all...
-> > .
-> > 
-> Why is this patch not correct? Can you tell me more about it? Thanks.
+From: Yuri Nudelman <ynudelman@habana.ai>
 
-You need to prove that it is correct, and you need to get maintainers to
-approve it.
+Currently LAST_MASK is a global, but really it is an MMU implementation
+specific. We need this change for future ASICs.
 
-thanks,
+Signed-off-by: Yuri Nudelman <ynudelman@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/habanalabs.h |  2 ++
+ drivers/misc/habanalabs/common/mmu/mmu_v1.c | 10 +++++-----
+ drivers/misc/habanalabs/gaudi/gaudi.c       |  1 +
+ drivers/misc/habanalabs/goya/goya.c         |  2 ++
+ 4 files changed, 10 insertions(+), 5 deletions(-)
 
-greg k-h
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 4f3c228c9b9d..6dd7d9ee7a44 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -382,6 +382,7 @@ enum hl_device_hw_state {
+  * @hop3_mask: mask to get the PTE address in hop 3.
+  * @hop4_mask: mask to get the PTE address in hop 4.
+  * @hop5_mask: mask to get the PTE address in hop 5.
++ * @last_mask: mask to get the bit indicating this is the last hop.
+  * @page_size: default page size used to allocate memory.
+  * @num_hops: The amount of hops supported by the translation table.
+  * @host_resident: Should the MMU page table reside in host memory or in the
+@@ -402,6 +403,7 @@ struct hl_mmu_properties {
+ 	u64	hop3_mask;
+ 	u64	hop4_mask;
+ 	u64	hop5_mask;
++	u64	last_mask;
+ 	u32	page_size;
+ 	u32	num_hops;
+ 	u8	host_resident;
+diff --git a/drivers/misc/habanalabs/common/mmu/mmu_v1.c b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
+index 0f536f79dd9c..159da2fafd79 100644
+--- a/drivers/misc/habanalabs/common/mmu/mmu_v1.c
++++ b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
+@@ -573,7 +573,7 @@ static int _hl_mmu_v1_unmap(struct hl_ctx *ctx,
+ 
+ 	curr_pte = *(u64 *) (uintptr_t) hop3_pte_addr;
+ 
+-	is_huge = curr_pte & LAST_MASK;
++	is_huge = curr_pte & mmu_prop->last_mask;
+ 
+ 	if (is_dram_addr && !is_huge) {
+ 		dev_err(hdev->dev,
+@@ -597,7 +597,7 @@ static int _hl_mmu_v1_unmap(struct hl_ctx *ctx,
+ 
+ 	if (hdev->dram_default_page_mapping && is_dram_addr) {
+ 		u64 default_pte = (prop->mmu_dram_default_page_addr &
+-				HOP_PHYS_ADDR_MASK) | LAST_MASK |
++				HOP_PHYS_ADDR_MASK) | mmu_prop->last_mask |
+ 					PAGE_PRESENT_MASK;
+ 		if (curr_pte == default_pte) {
+ 			dev_err(hdev->dev,
+@@ -729,7 +729,7 @@ static int _hl_mmu_v1_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr,
+ 
+ 	if (hdev->dram_default_page_mapping && is_dram_addr) {
+ 		u64 default_pte = (prop->mmu_dram_default_page_addr &
+-					HOP_PHYS_ADDR_MASK) | LAST_MASK |
++					HOP_PHYS_ADDR_MASK) | mmu_prop->last_mask |
+ 						PAGE_PRESENT_MASK;
+ 
+ 		if (curr_pte != default_pte) {
+@@ -769,7 +769,7 @@ static int _hl_mmu_v1_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr,
+ 		goto err;
+ 	}
+ 
+-	curr_pte = (phys_addr & HOP_PHYS_ADDR_MASK) | LAST_MASK
++	curr_pte = (phys_addr & HOP_PHYS_ADDR_MASK) | mmu_prop->last_mask
+ 			| PAGE_PRESENT_MASK;
+ 
+ 	if (is_huge)
+@@ -930,7 +930,7 @@ static int hl_mmu_v1_get_tlb_info(struct hl_ctx *ctx, u64 virt_addr,
+ 		if (!(hops->hop_info[i].hop_pte_val & PAGE_PRESENT_MASK))
+ 			return -EFAULT;
+ 
+-		if (hops->hop_info[i].hop_pte_val & LAST_MASK)
++		if (hops->hop_info[i].hop_pte_val & mmu_prop->last_mask)
+ 			break;
+ 	}
+ 
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 92d55a0a10c1..52fffd76f5cf 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -613,6 +613,7 @@ static int gaudi_set_fixed_properties(struct hl_device *hdev)
+ 			(VA_HOST_SPACE_START + VA_HOST_SPACE_SIZE / 2) - 1;
+ 	prop->pmmu.page_size = PAGE_SIZE_4KB;
+ 	prop->pmmu.num_hops = MMU_ARCH_5_HOPS;
++	prop->pmmu.last_mask = LAST_MASK;
+ 
+ 	/* PMMU and HPMMU are the same except of page size */
+ 	memcpy(&prop->pmmu_huge, &prop->pmmu, sizeof(prop->pmmu));
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 5536e8c27bd5..59bb12fcc935 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -429,6 +429,7 @@ int goya_set_fixed_properties(struct hl_device *hdev)
+ 	prop->dmmu.end_addr = VA_DDR_SPACE_END;
+ 	prop->dmmu.page_size = PAGE_SIZE_2MB;
+ 	prop->dmmu.num_hops = MMU_ARCH_5_HOPS;
++	prop->dmmu.last_mask = LAST_MASK;
+ 
+ 	/* shifts and masks are the same in PMMU and DMMU */
+ 	memcpy(&prop->pmmu, &prop->dmmu, sizeof(prop->dmmu));
+@@ -436,6 +437,7 @@ int goya_set_fixed_properties(struct hl_device *hdev)
+ 	prop->pmmu.end_addr = VA_HOST_SPACE_END;
+ 	prop->pmmu.page_size = PAGE_SIZE_4KB;
+ 	prop->pmmu.num_hops = MMU_ARCH_5_HOPS;
++	prop->pmmu.last_mask = LAST_MASK;
+ 
+ 	/* PMMU and HPMMU are the same except of page size */
+ 	memcpy(&prop->pmmu_huge, &prop->pmmu, sizeof(prop->pmmu));
+-- 
+2.25.1
+
