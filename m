@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142FF43B7CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD9843B7BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237667AbhJZRF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:05:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24684 "EHLO mga12.intel.com"
+        id S237706AbhJZRDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:03:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232003AbhJZRF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:05:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="210047105"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="210047105"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 10:03:03 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="497434243"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.135.40]) ([10.212.135.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 10:03:02 -0700
-Message-ID: <a37ede61-c607-4fcf-2be4-12b83cdf0d7e@linux.intel.com>
-Date:   Tue, 26 Oct 2021 10:03:02 -0700
+        id S237690AbhJZRDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:03:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1FB260F56;
+        Tue, 26 Oct 2021 17:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635267651;
+        bh=N6mR0nlTyP972P3SDjcUELwCXA7yQW09NYrXCt3cNP0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j9cJElx7TbZRVKmslx3nX/2j52TV7RP0OzseU83Aa//zyUqdfPhyvvp2G6siUmNDr
+         uONKV6BqBwe9EmAPDX6enH3cD7c6fz09eaJY8za/FOdWp6jOB7VUrbCfu2lGlc0WLl
+         /wn9T914dIdDshexgKmKmBETBG9xY1KJ1YQ76Y4Oxw9cxD+zVv68hHsLxlSFeGGDmZ
+         rl6pMFIwKAPtAgo4Qqs63e6LRgDDfTpTcMIdEEd27W+mAS5OkjdMLCBfIpWsWhCCUm
+         jtaMP4ux8I0SB0IqjFCfPgTIgfgCh42BSakDcINgNfn3nbnB/IqH8raHN5kvP1mTNo
+         WQA2yfYjl+HeQ==
+Date:   Tue, 26 Oct 2021 12:05:44 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] docs: deprecated.rst: Clarify open-coded arithmetic
+ with literals
+Message-ID: <20211026170544.GA1457721@embeddedor>
+References: <20210925143455.21221-1-len.baker@gmx.com>
+ <871r47g59t.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH V2 3/6] perf intel-pt: Support itrace A option to
- approximate IPC
-Content-Language: en-US
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-References: <20211026090152.357591-1-adrian.hunter@intel.com>
- <20211026090152.357591-4-adrian.hunter@intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <20211026090152.357591-4-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871r47g59t.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 26, 2021 at 09:44:14AM -0600, Jonathan Corbet wrote:
+[..]
+> >  - Reword the sentence to comunicate better (Jonathan Corbet).
+> >
+> > The previous version can be found here [1].
+> >
+> > [1] https://lore.kernel.org/linux-hardening/20210829144716.2931-1-len.baker@gmx.com/
+> 
+> Applied, thanks.
 
-On 10/26/2021 2:01 AM, Adrian Hunter wrote:
-> Normally, for cycle-acccurate mode, IPC values are an exact number of
-> instructions and cycles. Due to the granularity of timestamps, that happens
-> only when a CYC packet correlates to the event.
->
-> Support the itrace 'A' option, to use instead, the number of cycles
-> associated with the current timestamp. This provides IPC information for
-> every change of timestamp, but at the expense of accuracy.
-
-Can you expand a bit what exactly the accuracy loss it?
-
-Would be good to describe that in the manpage too.
-
+Thanks, Jonathan.
+--
+Gustavo
