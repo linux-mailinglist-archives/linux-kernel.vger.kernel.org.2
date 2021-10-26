@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEA443AE20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263E343AE30
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbhJZIfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:35:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55694 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234242AbhJZIfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:35:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A34D560E75;
-        Tue, 26 Oct 2021 08:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635237179;
-        bh=uCkPTVoU53WjkdLeoB8wj5W6HHDIndi8XX783vkYnKc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Gnv4MSVeqWWK56HzvTnGFjdyR/wiG3tDifj8A5YLdfJ/4f8btdSbqrXjKstEWmLyf
-         QUIlgZFQzmlVv+P2lYbmy1ty/dE3+j074o2VXsuTjFxqT0LYvr8AQpTJQ8NrkbYdqZ
-         75pQMJSPAT0ASTXKy0FKHtF5MZxuVqUGbnuxEz4hCJRhmp+8HOYpIUCB1xV6T553Dv
-         IxZmfJqqbod7V1leev1sqxjIvnDo1WD9KtY6xaoSIkNXrxl3SGxvH6mX84Ox4SQyJM
-         910fPjNsidwc/V5b7+jTjmst0vKF9iw+misyqbT3x3lKwdaWilCULzcAOBEUQVCnDc
-         0PRBT2rbeHA3A==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: fix missing #include
-Date:   Tue, 26 Oct 2021 10:32:41 +0200
-Message-Id: <20211026083254.3396322-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232001AbhJZIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:38:32 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:33879 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232993AbhJZIib (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:38:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635237186;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=DNWzDFjYlq2z1lfo6feM5SnahPemPY53FnBM9PiiNoQ=;
+    b=Fuk/CG4k2vVUlZ0s3+R7E9n2BDulVJ9IF6n6DJYCqAsUf7o1AgJYQbx2cuERaZU2eN
+    S+kjHJpG7Yxkor5AG2JXzUoMI3E97EKk7OcR0nZ8Nvm+/VGek3e5JItsOF6B5kDy+MIT
+    7pZcEqTiVxTupdzX//Ga2SkMb+vVOoIp6UuOs6PSPGZo50SL8lg1kV9N8QOjwKTIQ6SL
+    3IVuT07YO1gOg3DHB7l2VjcFAc8z9r8MDjv4Fci66nY7o1Fg9QPOUN2svgNiPPrXaRvl
+    EfW1QHhmIcX7hScHsSCidlq47Diw4pKxtLzF1nWxmo7Zu49pAxcJJxzY+OeNtY8JIyw3
+    8rkg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id n020a8x9Q8X51ym
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 26 Oct 2021 10:33:05 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolai Stange <nstange@suse.de>
+Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
+Subject: Re: [PATCH 0/6] crypto: DRBG - improve 'nopr' reseeding
+Date:   Tue, 26 Oct 2021 10:33:05 +0200
+Message-ID: <2120606.3HGXcN3vsr@positron.chronox.de>
+In-Reply-To: <20211025092525.12805-1-nstange@suse.de>
+References: <20211025092525.12805-1-nstange@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Am Montag, 25. Oktober 2021, 11:25:19 CEST schrieb Nicolai Stange:
 
-Some randconfig builds fail when drm/drm_bridge.h is not included
-implicitly in this file:
+Hi Nicolai,
 
-drivers/gpu/drm/msm/dp/dp_parser.c:279:25: error: implicit declaration of function 'devm_drm_panel_bridge_add' [-Werror,-Wimplicit-function-declaration]
-        parser->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
+> Hi all,
+> 
+> this patchset aims at (hopefully) improving the DRBG code related to
+> reseeding from get_random_bytes() a bit:
 
-Fixes: 4b296d15b355 ("drm/msm/dp: Allow attaching a drm_panel")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/msm/dp/dp_parser.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for sharing your patches.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
-index 81dbcc86d08a..a7acc23f742b 100644
---- a/drivers/gpu/drm/msm/dp/dp_parser.c
-+++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-@@ -8,6 +8,7 @@
- 
- #include <drm/drm_of.h>
- #include <drm/drm_print.h>
-+#include <drm/drm_bridge.h>
- 
- #include "dp_parser.h"
- #include "dp_reg.h"
--- 
-2.29.2
+> - Replace the asynchronous random_ready_callback based DRBG reseeding
+>   logic with a synchronous solution leveraging rng_is_initialized().
+
+Could you please help me why replacing an async method with a sync method is 
+helpful? Which problems do you see with the async method that are alleviated 
+with the swtich to the sync method? In general, an async method is more 
+powerful, though it requires a bit more code.
+
+>   This
+>   move simplifies the code IMO and, as a side-effect, would enable DRBG
+>   users to rely on wait_for_random_bytes() to sync properly with
+>   drbg_generate(), if desired. Implemented by patches 1-5/6.
+> - Make the 'nopr' DRBGs to reseed themselves every 5min from
+>   get_random_bytes(). This achieves at least kind of a partial prediction
+>   resistance over the time domain at almost no extra cost. Implemented
+>   by patch 6/6, the preceding patches in this series are a prerequisite
+>   for this.
+
+Just as a side note not against your ideas and patches, but in general: IMHO 
+it is a failure of all of us that the quite sensitive (re)seeding of RNGs and 
+entropy management is handled in multiple places in the kernel - and each case 
+only handles a subset of considerations around that topic. Note, (re)seeding 
+may be needed in other occasions than the elapse of a timer or the reaching of 
+maximum number of generate operations. Seeding belongs to a central place 
+where it is done right once and usable for differnent RNGs as proposed with my 
+LRNG patch set and the published todo list to get rid of the entire seeding 
+logic in the DRBG code base.
+
+That said, your patch of adding the timer-based reseeding seems appropriate 
+and thus should be considered for the current code base.
+
+Ciao
+Stephan
+
 
