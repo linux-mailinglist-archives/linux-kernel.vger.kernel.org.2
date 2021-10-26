@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC0C43B177
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1001643B180
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbhJZLqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
+        id S235544AbhJZLvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbhJZLqT (ORCPT
+        with ESMTP id S231499AbhJZLut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:46:19 -0400
+        Tue, 26 Oct 2021 07:50:49 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8D1C061745;
-        Tue, 26 Oct 2021 04:43:55 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 13:43:51 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138EFC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 04:48:26 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 13:48:23 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635248632;
+        s=2020; t=1635248904;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eZ4neUNOghjf5S1JjI+gn7geqrIVxjnymAdwbN+Ka6Q=;
-        b=Vv3MANl93vmVT+PzjlUy9IAiN9eKvoX68WnqLW71WE8b0BJ3XZJfgPJwb0BGI8l2gDk6TZ
-        nENdV+Lg0/GOd5s6xk6Rw4OdU2ONT0B1zLtcqycvmbUo7lkLbiQO3BIxMVfNxjXxNMevAi
-        +ufx6mjfKntjwHy+ACeTYNI4OFLX4i73WT9KXjW6G70iXuNpBcnrDca5aLJQXAnPTDYloo
-        VRV3sVXvJGh6zii+0MYL+iZhQUdrsKlWlI2TdwtxFR4vMahAl6nw1sEAqu2Md0X5w6/WKQ
-        Fri219z+Vo4cs5zeUY6DyO7DlfEqVzsQccMb+mMSsUZrrei9oaF8cFRe6uPS7A==
+        bh=/x4H9hxCpLYZVXl7Vl8JdX2ZwMomw7sQZXvJW1FdXh8=;
+        b=030sBQ+x18vdgG5iBA39Z08R0JwhSIKEDMIb0OCb/MFMf8pSU4Ir2TYxT3w4R6YFgUxYNq
+        57y7STzaryfthhyQV5rkiBX45v2wApyBOXc+RgpB4ZNIUKodSmWR97Hox4WBwPW+jjK1tg
+        WbZExVhGcFsHo5+wJz/FJNNI5hc27Gu7n5+BV03ZUMNFRsm/l4rkQSLRTypvA7bDDp0tSb
+        cxQWNxE046K/osJe72Ud6d+tenMa0wFGets421P8jv8rczR2nK3zpnpUYB3lkMw850tw1r
+        HDSGek206rXwch09TFuEhUpfGrEgeDI0BI/Vj1Epe4EJW7fBMtR1ZR2iUk63xw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635248632;
+        s=2020e; t=1635248904;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eZ4neUNOghjf5S1JjI+gn7geqrIVxjnymAdwbN+Ka6Q=;
-        b=FgUEv64Zmy/r7unL5ZMoMgqlnWZ4zbAa/Wg3P+hi61SIGHjQ0KezBbUujwbpNsUwnPEk2o
-        GHXm6gPoHKb7CaDA==
+        bh=/x4H9hxCpLYZVXl7Vl8JdX2ZwMomw7sQZXvJW1FdXh8=;
+        b=aoQy+wxZs8v72fWvhVoZ/wPpvNotOxiSmjPWCJhZZ9Pqv37wLrAFu/EzXGwOn52mRGiLRG
+        vyN8eLoqkgt7sRBw==
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Denis Kirjanov <dkirjanov@suse.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH net-next v3] net: sched: gred: dynamically allocate
- tc_gred_qopt_offload
-Message-ID: <20211026114351.sq2qlpbfptd7hyxm@linutronix.de>
-References: <20211026100711.nalhttf6mbe6sudx@linutronix.de>
- <3bf1e148-14fc-98f6-5319-78046a7b9565@suse.de>
- <20211026105104.vhfxrwisqcbvsxiq@linutronix.de>
- <d3a32766-550c-11a1-4364-98f876e7ce12@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2] smp: Wake ksoftirqd on PREEMPT_RT instead
+ do_softirq().
+Message-ID: <20211026114823.pto26636nzolhint@linutronix.de>
+References: <20210924094755.2m32pgqwrqw2cg2s@linutronix.de>
+ <YU76mB5hzvw3xZRB@infradead.org>
+ <87tui7bc5m.ffs@tglx>
+ <20210927073814.x5h6osr4dgiu44sc@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <d3a32766-550c-11a1-4364-98f876e7ce12@suse.de>
+In-Reply-To: <20210927073814.x5h6osr4dgiu44sc@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-26 14:16:16 [+0300], Denis Kirjanov wrote:
-> 10/26/21 1:51 PM, Sebastian Andrzej Siewior =D0=BF=D0=B8=D1=88=D0=B5=D1=
-=82:
-> > On 2021-10-26 13:42:24 [+0300], Denis Kirjanov wrote:
-> > > > diff --git a/net/sched/sch_gred.c b/net/sched/sch_gred.c
-> > > > index 72de08ef8335e..1073c76d05c45 100644
-> > > > --- a/net/sched/sch_gred.c
-> > > > +++ b/net/sched/sch_gred.c
-> > > > @@ -311,42 +312,43 @@ static void gred_offload(struct Qdisc *sch, e=
-num tc_gred_command command)
-> > > >    {
-> > > >    	struct gred_sched *table =3D qdisc_priv(sch);
-> > > >    	struct net_device *dev =3D qdisc_dev(sch);
-> > > > -	struct tc_gred_qopt_offload opt =3D {
-> > > > -		.command	=3D command,
-> > > > -		.handle		=3D sch->handle,
-> > > > -		.parent		=3D sch->parent,
-> > > > -	};
-> > > > +	struct tc_gred_qopt_offload *opt =3D table->opt;
-> > > >    	if (!tc_can_offload(dev) || !dev->netdev_ops->ndo_setup_tc)
-> > > >    		return;
-> > > > +	memset(opt, 0, sizeof(*opt));
-> > >=20
-> > > It's zeroed in kzalloc()
-> >=20
-> > but it is not limited to a single invocation?
+On 2021-09-27 09:38:16 [+0200], To Thomas Gleixner wrote:
+> The softirq implementation on PREEMPT_RT does not provide do_softirq().
+> The other user of do_softirq() is replaced with a local_bh_disable()
+> + enable() around the possible raise-softirq invocation. This can not be
+> done here because migration_cpu_stop() is invoked with disabled
+> preemption.
 >=20
-> I meant that all fields are set in the function as it was with the stack
-> storage.
+> Wake the softirq thread on PREEMPT_RT if there are any pending softirqs.
+>=20
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+> v1=E2=80=A6v2: Drop an empty line.
 
-What about?
-|                for (i =3D 0; i < table->DPs; i++) {
-|                        struct gred_sched_data *q =3D table->tab[i];
-|=20
-|                        if (!q)
-|                                continue;
-
-The stack storage version has an implicit memset().
+ping.
 
 Sebastian
