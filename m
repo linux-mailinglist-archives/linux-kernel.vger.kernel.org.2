@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D6743B432
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1DD43B439
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236703AbhJZOdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236682AbhJZOdN (ORCPT
+        id S235678AbhJZOfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:35:01 -0400
+Received: from smtp122.ord1c.emailsrvr.com ([108.166.43.122]:37215 "EHLO
+        smtp122.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234196AbhJZOey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:33:13 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E6AC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:30:49 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id l186so7877265pge.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SLvPDSjlXuC0odmXJ7mp0PxXfMTmsQLadPLQAXM53SE=;
-        b=Dq+2cGcxpR4hHgPKwa3lXKppms4MJ1ABJQsR/c/LSTYeTLn031quUbtQfCYikWbSlO
-         bhvydJL2l5UI9TyflxW+LAijacELclNc1P3X+IqC+IG8knSZGj53eKA2uioB7ZQXw93Y
-         9O65vPVdxBb7u9YlYtWrhChqaQrBZVFLFjZtdu7uqBrlbuKTgWemqav6q8m8bbFb/zI1
-         XqC9qTN6dGTDq8nmYsQQUM+/eejRbgDt6KNMb9B/V5tbR8WgvzA3ZOchp01SRfrB6MZR
-         rE3pVRLzYtw5vgSOm/wQlezIB1Ja3yRmbgaxgJGe6JtWTWRVo1/xlJrqR2B/LsGfrJoe
-         IdfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SLvPDSjlXuC0odmXJ7mp0PxXfMTmsQLadPLQAXM53SE=;
-        b=V5ITGVoQUNkMrGEA3Pg/e9IxQBsl8eBc0HhtEJLkBvU+On4f5TT90r1XzDWSEsrypT
-         KcXJT0Hi8fsEgtL86leKMyngIr6XSiMq7NU9B4wv8bCvfIpeCzti0IMAvdDF7aBOAz13
-         8OpauLNOxMpxMKmZAEdsy+Q0G3f+ZNfERo95bTw3jiWgQXw9/6KwKpYg6zIj5c33Ax3K
-         Y4o6Uo6/5M+EFBDObN+KUKw3CmIiQTUacwkuBWHu+neIEraw0cvMdKTlnOMHHBOn98hw
-         qoCJ6EFIzyzDaagpPIGhCdMFP0v/8+0Nm4BTS5WfiSml7n6HGODKvsNasxecCg1DJXmj
-         e+XA==
-X-Gm-Message-State: AOAM5319VZ1lk1J4bBiIiDSwdFUtpSeDkwKoX+QStrtMvIo6hgyaQln6
-        92blW51w8+f5YFy2TlMioNYpdHAYQo4=
-X-Google-Smtp-Source: ABdhPJw8dEeHWMjJ2s+k5kIN+D1MQlPhhtWN2wS1XuAarz9OPNqeaJ2BbEV3lQGKwi+fM0qXMY9kaw==
-X-Received: by 2002:a63:7d46:: with SMTP id m6mr19461290pgn.409.1635258648970;
-        Tue, 26 Oct 2021 07:30:48 -0700 (PDT)
-Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id lr3sm1297294pjb.3.2021.10.26.07.30.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:30:48 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 23/50] x86/entry: Convert SWAPGS to swapgs in error_entry()
-Date:   Tue, 26 Oct 2021 22:30:05 +0800
-Message-Id: <20211026143032.18624-5-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
-References: <20211026141420.17138-1-jiangshanlai@gmail.com>
+        Tue, 26 Oct 2021 10:34:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1635258750;
+        bh=kyHbTTBR89/y1zbVw4a8imERHnNxgrB7fX9rUfytHHs=;
+        h=Subject:To:From:Date:From;
+        b=HioLFGLnR10LHJ7VdGfLvfFKk5YG1eOhpvWE6TKCjgUK/6qzBthXJcMm11HwnFike
+         NmopkcjSPIqs9XOFNRYlU1lBwcQEBBC1yx3xxrrqvEGzOaPYni1yipqQ88Qtb7QHuE
+         MtyMIxALsSqSUcSRh3hWljty5Jo4W6c6v9aGpME4=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp24.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 3562A60196;
+        Tue, 26 Oct 2021 10:32:29 -0400 (EDT)
+Subject: Re: [PATCH 3/5] comedi: vmk80xx: fix transfer-buffer overflows
+To:     Johan Hovold <johan@kernel.org>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20211025114532.4599-1-johan@kernel.org>
+ <20211025114532.4599-4-johan@kernel.org>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <e750ac3f-af11-7950-2619-9fedebf2fb11@mev.co.uk>
+Date:   Tue, 26 Oct 2021 15:32:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211025114532.4599-4-johan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: ae72fbfa-5e41-4d86-8fff-d3f3be659ee3-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 25/10/2021 12:45, Johan Hovold wrote:
+> The driver uses endpoint-sized USB transfer buffers but up until
+> recently had no sanity checks on the sizes.
+> 
+> Commit e1f13c879a7c ("staging: comedi: check validity of wMaxPacketSize
+> of usb endpoints found") inadvertently fixed NULL-pointer dereferences
+> when accessing the transfer buffers in case a malicious device has a
+> zero wMaxPacketSize.
+> 
+> Make sure to allocate buffers large enough to handle also the other
+> accesses that are done without a size check (e.g. byte 18 in
+> vmk80xx_cnt_insn_read() for the VMK8061_MODEL) to avoid writing beyond
+> the buffers, for example, when doing descriptor fuzzing.
+> 
+> The original driver was for a low-speed device with 8-byte buffers.
+> Support was later added for a device that uses bulk transfers and is
+> presumably a full-speed device with a maximum 64-byte wMaxPacketSize.
+> 
+> Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+> Cc: stable@vger.kernel.org      # 2.6.31
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>   drivers/comedi/drivers/vmk80xx.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
+> index 9f920819cd74..f2c1572d0cd7 100644
+> --- a/drivers/comedi/drivers/vmk80xx.c
+> +++ b/drivers/comedi/drivers/vmk80xx.c
+> @@ -90,6 +90,8 @@ enum {
+>   #define IC3_VERSION		BIT(0)
+>   #define IC6_VERSION		BIT(1)
+>   
+> +#define MIN_BUF_SIZE		64
+> +
+>   enum vmk80xx_model {
+>   	VMK8055_MODEL,
+>   	VMK8061_MODEL
+> @@ -678,12 +680,12 @@ static int vmk80xx_alloc_usb_buffers(struct comedi_device *dev)
+>   	struct vmk80xx_private *devpriv = dev->private;
+>   	size_t size;
+>   
+> -	size = usb_endpoint_maxp(devpriv->ep_rx);
+> +	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
+>   	devpriv->usb_rx_buf = kzalloc(size, GFP_KERNEL);
+>   	if (!devpriv->usb_rx_buf)
+>   		return -ENOMEM;
+>   
+> -	size = usb_endpoint_maxp(devpriv->ep_tx);
+> +	size = max(usb_endpoint_maxp(devpriv->ep_rx), MIN_BUF_SIZE);
+>   	devpriv->usb_tx_buf = kzalloc(size, GFP_KERNEL);
+>   	if (!devpriv->usb_tx_buf)
+>   		return -ENOMEM;
+> 
 
-XENPV doesn't use error_entry() anymore, so the pv-aware SWAPGS can be
-changed to native swapgs.
+Looks good, thanks!
 
-It is prepared for later patch to convert error_entry() to C code, which
-uses native_swapgs() directly.  Converting SWAPGS to swapgs in ASM
-error_entry first to ensure the later patch has zero semantic change.
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/entry/entry_64.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 9bad620553c8..b97ce4204f6d 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -996,7 +996,7 @@ SYM_CODE_START_LOCAL(error_entry)
- 	 * We entered from user mode or we're pretending to have entered
- 	 * from user mode due to an IRET fault.
- 	 */
--	SWAPGS
-+	swapgs
- 	FENCE_SWAPGS_USER_ENTRY
- 	/* We have user CR3.  Change to kernel CR3. */
- 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
-@@ -1028,7 +1028,7 @@ SYM_CODE_START_LOCAL(error_entry)
- 	 * gsbase and proceed.  We'll fix up the exception and land in
- 	 * .Lgs_change's error handler with kernel gsbase.
- 	 */
--	SWAPGS
-+	swapgs
- 
- 	/*
- 	 * The above code has no serializing instruction.  So do an lfence
-@@ -1050,7 +1050,7 @@ SYM_CODE_START_LOCAL(error_entry)
- 	 * We came from an IRET to user mode, so we have user
- 	 * gsbase and CR3.  Switch to kernel gsbase and CR3:
- 	 */
--	SWAPGS
-+	swapgs
- 	FENCE_SWAPGS_USER_ENTRY
- 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
- 
 -- 
-2.19.1.6.gb485710b
-
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
