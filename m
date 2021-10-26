@@ -2,86 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7139A43B968
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F9243B956
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238283AbhJZSWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:22:43 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:4099 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238234AbhJZSWc (ORCPT
+        id S238204AbhJZSWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238207AbhJZSWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:22:32 -0400
+        Tue, 26 Oct 2021 14:22:03 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91293C061348
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id s4so198586uaq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635272409; x=1666808409;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=mhhYrAjFPGfm8WNwzjHo/FoEXIypsRhip7lIMeUEaXI=;
-  b=tKG+aKxPJT8Vm8eUTRTq0CVyogQBqbJT8xuPGDAvIeOe1JxcqZ8mE3wA
-   w4Ah/U7Kdzj0Us0sKY6fJe2qSF3ZauyKO7I/t+NCXtUpZlQXLgRQ1T49d
-   N/BW+/ZB85PG4/4JZm0PVjOZfG5nw/PI/XBY9VhsvEmLDUJv7UdFGgpRn
-   0=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 26 Oct 2021 11:20:08 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 11:20:07 -0700
-Received: from c-sanm-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 26 Oct 2021 11:20:01 -0700
-From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "Matthias Kaehlcke" <mka@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-CC:     <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-Subject: [PATCH 3/3] usb: dwc: host: Set the property usb-skip-phy-init
-Date:   Tue, 26 Oct 2021 23:49:32 +0530
-Message-ID: <1635272372-9982-4-git-send-email-quic_c_sanm@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635272372-9982-1-git-send-email-quic_c_sanm@quicinc.com>
-References: <1635272372-9982-1-git-send-email-quic_c_sanm@quicinc.com>
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=RUjv3U6mQK3jrdmtPJyXJfB+g32erJUl6lu8GG5hPzI=;
+        b=P2I3E0pMuFpSz21DQENlwjwJ3mefxsV5Z69RwzzBuM5mdbdCmnRe+23NZkykvH1PYz
+         059ygMMGWiQ1FuiXa/Nb319fCI9yhw82J5TFit4YrXu4Lgy70Z30ZKjQZTfXCunywVtM
+         RPPWhcx0WT9hPm+dPCn9fPJcuT5skDU0+RAqImPUHyH1rGwfTBCKLgN1sW6XtmadQq7S
+         xKm2gMer86WZ7JMioJ2NARKm4m2guROqKKDLUsr4SRm3SiEKhWwBom9ME37052DeOej9
+         MsKA8SEpSexNHCWx2EO58crKtSBS9/xE+xsUwT0+kGXN2DmVJixoo7J0Ozcrst7bmEpN
+         CFbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=RUjv3U6mQK3jrdmtPJyXJfB+g32erJUl6lu8GG5hPzI=;
+        b=wI8ctab73D/X3tfpUWImdRbB2g6gaKFD0k//0MDE6CQe7qiYSbx3tXJLutBPBBCHzr
+         Kcs/F7mFvg12R6RsvPSnFxjQHmf4A8rOb9+hZ2uhSNT6GvLeEs/b2dwhCOHS78ZI6sv+
+         Paoalvb7N6y/7Mc3MtIIXmnju6YrpvBbaflfEou+8CrG92K12yGR+N80vvFkGjOsAvZk
+         8O4yrQSK2QUxzeoUQWwPWXkjPQL9ZLN8MjyBAF0McMGnzGAIaPIUDojz9TXvrBc3+XL+
+         FoCFkCtuQmO9dNowMJhsCsq4W7jG2W7MNxAxoRjb4alH1VAuJKYlTok+PX2jEhsyekxh
+         PGbQ==
+X-Gm-Message-State: AOAM5306T8/kvfxqAkAwA3vqqQ7SutUx2qrp4BFsZCfFpMywnTcVR34C
+        LKrVMBLwlbR0W4DKViGBp61AKZJwNFjz5nUqfWg=
+X-Google-Smtp-Source: ABdhPJwaCKQEV5FVOn5xhfE3zWCMW2dOZoAbaCQh9TPAna7H7vmouvojEaGJMw0xecWxFMfJrKNhXh88wspBWQApEcM=
+X-Received: by 2002:a05:6102:2374:: with SMTP id o20mr18198195vsa.54.1635272378631;
+ Tue, 26 Oct 2021 11:19:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Received: by 2002:a59:d027:0:b0:236:ed6f:1a with HTTP; Tue, 26 Oct 2021
+ 11:19:38 -0700 (PDT)
+Reply-To: douglasmomoh007@gmail.com
+From:   Douglas Momoh <kuntemrjoshua@gmail.com>
+Date:   Tue, 26 Oct 2021 19:19:38 +0100
+Message-ID: <CAFhr1xChZCyU9LNqsVXO=3bymsdoibv2UyTyVYmxt54ASDZYNw@mail.gmail.com>
+Subject: Good day
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dwc3 manages PHY by own DRD driver, so skip the management by
-HCD core.
-During runtime suspend phy was not getting suspend because
-runtime_usage value is 2.
-
-Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
----
- drivers/usb/dwc3/host.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
-index f29a264..5144513 100644
---- a/drivers/usb/dwc3/host.c
-+++ b/drivers/usb/dwc3/host.c
-@@ -107,6 +107,8 @@ int dwc3_host_init(struct dwc3 *dwc)
- 	if (DWC3_VER_IS_WITHIN(DWC3, ANY, 300A))
- 		props[prop_idx++] = PROPERTY_ENTRY_BOOL("quirk-broken-port-ped");
- 
-+	props[prop_idx++] = PROPERTY_ENTRY_BOOL("usb-skip-phy-init");
-+
- 	if (prop_idx) {
- 		ret = device_create_managed_software_node(&xhci->dev, props, NULL);
- 		if (ret) {
 -- 
-2.7.4
+A mail was sent to you sometime last week with the expectation of
+having a retune mail from you but to my surprise you never bothered to replied.
+Kindly reply for further explanations.
 
+Respectfully yours,
+Mr Douglas Momoh.
