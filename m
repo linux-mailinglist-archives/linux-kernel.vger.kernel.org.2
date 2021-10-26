@@ -2,130 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D72643BC02
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FEB43BC04
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239397AbhJZVHY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 17:07:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:38329 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235594AbhJZVHX (ORCPT
+        id S239409AbhJZVHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239401AbhJZVHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:07:23 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-59-nuyPE1CKP524lUkKQActcw-1; Tue, 26 Oct 2021 22:04:56 +0100
-X-MC-Unique: nuyPE1CKP524lUkKQActcw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.24; Tue, 26 Oct 2021 22:04:55 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.024; Tue, 26 Oct 2021 22:04:55 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nathan Chancellor' <nathan@kernel.org>
-CC:     'Nick Terrell' <terrelln@fb.com>,
+        Tue, 26 Oct 2021 17:07:44 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0D1C061570;
+        Tue, 26 Oct 2021 14:05:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lwEflbs752Kv3f25fSJrzwMWFiehOBIeT1BkquusHT4=; b=l1hLIFLnoJl/06pPtHA5tLi6dW
+        bzbST+Lugh79kcFt34x+T+rjqcdsEsnatpeuG+Q5RrgCXsSzCyN0vuI0S0KjtqB3cTZ2SCaopXwvz
+        1cAr07yF1sApR2qWT9T7oanRaNdh/PCL7sS8OkBbY7hgdzPJauaN3htlEazRamziyTVjCaMhx2njr
+        tQGmSmGseB9XccIZAAINEy1X/1rWfEUh+tn4U4DZ+dpcx/1uQsxY2UEAiBONoQTiNcMFzMIqNK5Xt
+        EjI9MIQejV2VgzxgF4eml9ouro7hVUzbzHvB6/QuvfbsFPhT6uZgUqo6pLaPzNLLttjjGv5Sfw3bX
+        z0wri+Xw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfTd8-00CQaR-AS; Tue, 26 Oct 2021 21:05:10 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 551B5981FD5; Tue, 26 Oct 2021 23:05:09 +0200 (CEST)
+Date:   Tue, 26 Oct 2021 23:05:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: RE: [PATCH] lib: zstd: Add cast to silence clang's
- -Wbitwise-instead-of-logical
-Thread-Topic: [PATCH] lib: zstd: Add cast to silence clang's
- -Wbitwise-instead-of-logical
-Thread-Index: AQHXxrmhV8EJKX2UAE+nrwZQNmVvMavkgQmAgACZsECAACtYgIAAgqUg
-Date:   Tue, 26 Oct 2021 21:04:55 +0000
-Message-ID: <2c664a6701b44050a0525b541292ce21@AcuMS.aculab.com>
-References: <20211021202353.2356400-1-nathan@kernel.org>
- <4245BD7A-4B12-4172-B4EE-76A99C717C7D@fb.com>
- <d21e97487ba3447194538ccf0e88ead9@AcuMS.aculab.com>
- <YXgKgQMHQzvQgE4J@archlinux-ax161>
-In-Reply-To: <YXgKgQMHQzvQgE4J@archlinux-ax161>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
+Message-ID: <20211026210509.GH174703@worktop.programming.kicks-ass.net>
+References: <20211026120132.613201817@infradead.org>
+ <CAADnVQJaiHWWnVcaRN43DcNgqktgKs3i1P3uz4Qm8kN7bvPCCg@mail.gmail.com>
+ <YXhMv6rENfn/zsaj@hirez.programming.kicks-ass.net>
+ <CAADnVQ+w_ww3ZR_bJVEU-PxWusT569y0biLNi=GZJNpKqFzNLA@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+w_ww3ZR_bJVEU-PxWusT569y0biLNi=GZJNpKqFzNLA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor
-> Sent: 26 October 2021 15:03
-...
-> > Isn't enabling that warning completely stupid?
-> > The casts required to silence it could easily cause more problems
-> > - by hiding more important bugs. And seriously affect code readability.
-> 
-> Which warning?
-> 
-> -Wbitwise-instead-of-logical is included in clang's -Wall and I do not
-> think it should be disabled; this is the first instance of the warning
-> that has been silenced with a cast.
-
-I'm not sure about that one.
-I have a feeling it will generate false positives for carefully optimised
-code more often that it finds anything where 'short circuiting' will
-be a real gain.
-Especially for values with are known to be either 0 or 1.
- 
-> -Wshorten-64-to-32 will never be enabled for Linux but zstd is a
-> separate project that can be built for a variety of operating systems so
-> that has to be considered when developing changes for the kernel because
-> the kernel changes need to go upstream eventually if they touch core
-> zstd code, otherwise they will just get blown away on the next import.
-> Specifically, this warning was enabled on iOS:
-> https://github.com/facebook/zstd/pull/2062
-
-That one...
-If you are going to enable it, then you need a static inline function
-to convert u64 to u32, not a C cast.
-
-I'm sure that it won't be long before the compiler writes start an
-'open season' on casts.
-They really are more dangerous than the warnings they are trying to remove.
-
-> > ...c
-> > > > index 05570ed5f8be..5105e59ac04a 100644
-> > > > --- a/lib/zstd/decompress/huf_decompress.c
-> > > > +++ b/lib/zstd/decompress/huf_decompress.c
-> > > > @@ -886,7 +886,7 @@ HUF_decompress4X2_usingDTable_internal_body(
-> > > >             HUF_DECODE_SYMBOLX2_0(op2, &bitD2);
-> > > >             HUF_DECODE_SYMBOLX2_0(op3, &bitD3);
-> > > >             HUF_DECODE_SYMBOLX2_0(op4, &bitD4);
-> > > > -            endSignal = (U32)LIKELY(
-> > > > +            endSignal = (U32)LIKELY((U32)
-> > > >                         (BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished)
-> > > >                       & (BIT_reloadDStreamFast(&bitD2) == BIT_DStream_unfinished)
-> > > >                       & (BIT_reloadDStreamFast(&bitD3) == BIT_DStream_unfinished)
+On Tue, Oct 26, 2021 at 01:00:04PM -0700, Alexei Starovoitov wrote:
+> On Tue, Oct 26, 2021 at 11:45 AM Peter Zijlstra <peterz@infradead.org> wrote:
 > >
-> > Isn't that the same as:
-> > 	((BIT_reload() & BIT_reload() & BIT_reload()) == BIT_DStream_unfinished)
-> > which will generate much better code.
-> > Especially on cpu without 'seteq' instructions.
+> > On Tue, Oct 26, 2021 at 11:26:57AM -0700, Alexei Starovoitov wrote:
+> >
+> > > It's a merge conflict. The patchset failed to apply to both bpf and
+> > > bpf-next trees:
+> >
+> > Figures :/ I suspect it relies on tip/objtool/core at the very least and
+> > possibly some of the x86 trees as well.
+> >
+> > I can locally merge tip/master with bpf, but getting a CI to do that
+> > might be tricky.
 > 
-> I don't think so. Feel free to double check my math.
+> We have an ability in CI to supply few additional patches on top bpf/bpf-next
+> trees, but that's usually done for the cases where we've merged a fix into
+> one tree, but it's needed in both while bpf->net->linus->net-next->bpf-next
+> circle is still pending.
 > 
-> BIT_reloadDStreamFast() can return either BIT_DStream_unfinished (0) or
-> BIT_DStream_overflow (3)....
+> Does tip/objtool/core dependency relevant for this set?
+> Can you rebase the current set on top of bpf-next and send it to the list
+> just to get CI to run it? We won't be merging it into bpf-next, of course.
+> I'm mainly interested in seeing all that additional tests passing that
+> we have in bpf-next.
 
-Ah, I'd assumed that BIT_DStream_unfinished was non-zero.
-So you actually want:
-	endSignal = !(BIT() | BIT() | BIT());
-
-Just kill the CaMeLs and unnecessary constants.
-Then the code becomes succint, easier to read/check etc.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+I should be able to rebase it just to that, let me try that in the am
+though, brain is fairly fried atm. Do you really want me to post it to
+the list, or is a git repo good enough?
