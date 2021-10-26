@@ -2,151 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B877043B189
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DEE43B198
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235579AbhJZLzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:55:11 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:49868 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235563AbhJZLzJ (ORCPT
+        id S234781AbhJZLz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:55:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5432 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234077AbhJZLzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:55:09 -0400
-X-UUID: 85655ae7c4df4c47993a373fa7dca3e1-20211026
-X-UUID: 85655ae7c4df4c47993a373fa7dca3e1-20211026
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 592306941; Tue, 26 Oct 2021 19:52:43 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 26 Oct 2021 19:52:41 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 26 Oct 2021 19:52:41 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <christian.koenig@amd.com>
-CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
-        <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <rdunlap@infradead.org>, <sumit.semwal@linaro.org>,
-        <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: Re: [PATCH v3] dma-buf: remove restriction of IOCTL:DMA_BUF_SET_NAME
-Date:   Tue, 26 Oct 2021 19:52:48 +0800
-Message-ID: <20211026115248.9564-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <0e062f12-7e79-5a05-1e7b-10dda8e353b7@amd.com>
-References: <0e062f12-7e79-5a05-1e7b-10dda8e353b7@amd.com>
+        Tue, 26 Oct 2021 07:55:49 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QBcb1e009523;
+        Tue, 26 Oct 2021 11:53:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=s2NwZNz+Be8h9xEhhVLXamdujVyFAWdzG+oq0Ac6Mm0=;
+ b=q07/IsbwiF4jvKcB9fIWqn3EEuvCurfwmu/9UOMKLs64MWttXOtv5q53BRh2Y0aZeDD3
+ TbclORl39fHB9tqoOZ5TFH/M2re3TdgrIx5GHIedR6LJWDrVFxeGF81Asgiw4MNxZRXm
+ eQ23VlTKiRKRm4OQABjvxfUsMtDT+QDf9SD/neknKW+Iye6jVNINfxjJmYUpTbMsFoyd
+ iNT/9Rewc8sn0nC8RHWNbU5A85vZfY7m3vYfd2xOIFGq4l6rGgAYQsQzWAhw+y49jpKV
+ 49jPXKXsJSy29wJaiSoRwmEzAzPKnaPXyLK7hqL/7BA91fTdkj5fuXy4gCzuZErqnLJt Pg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx5exad1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 11:53:25 +0000
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19QBofHQ025661;
+        Tue, 26 Oct 2021 11:53:24 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx5exad0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 11:53:24 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19QBqt51027180;
+        Tue, 26 Oct 2021 11:53:23 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bx4f151w7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 11:53:23 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19QBrIQv62390592
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Oct 2021 11:53:18 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F0EEC42041;
+        Tue, 26 Oct 2021 11:53:17 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 705974204B;
+        Tue, 26 Oct 2021 11:53:17 +0000 (GMT)
+Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.51.215])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Oct 2021 11:53:17 +0000 (GMT)
+Subject: Re: [PATCH v5 06/14] KVM: s390: pv: properly handle page flags for
+ protected guests
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+ <20210920132502.36111-7-imbrenda@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <388a092a-8810-9f67-d314-fc5c93707998@de.ibm.com>
+Date:   Tue, 26 Oct 2021 13:53:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-MTK:  N
+In-Reply-To: <20210920132502.36111-7-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ZpVw3rXPKSSy0BpXVtidUM-m9OxQDTKb
+X-Proofpoint-ORIG-GUID: qBb9q77N6bG2IBvE2bOMvBLpC3tqjEVa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-26_02,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
+ mlxlogscore=814 spamscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110260066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+Am 20.09.21 um 15:24 schrieb Claudio Imbrenda:
+> Introduce variants of the convert and destroy page functions that also
+> clear the PG_arch_1 bit used to mark them as secure pages.
+> 
+> The PG_arch_1 flag is always allowed to overindicate; using the new
+> functions introduced here allows to reduce the extent of overindication
+> and thus improve performance.
+> 
+> These new functions can only be called on pages for which a reference
+> is already being held.
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Acked-by: Janosch Frank <frankja@linux.ibm.com>
+> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
-On Tue, 2021-10-26 at 13:18 +0200, Christian König wrote:
-> Am 14.10.21 um 12:25 schrieb guangming.cao@mediatek.com:
-> > From: Guangming Cao <Guangming.Cao@mediatek.com>
-> > 
-> > In this patch(https://patchwork.freedesktop.org/patch/310349),
-> > it add a new IOCTL to support dma-buf user to set debug name.
-> > 
-> > But it also added a limitation of this IOCTL, it needs the
-> > attachments of dmabuf should be empty, otherwise it will fail.
-> > 
-> > For the original series, the idea was that allowing name change
-> > mid-use could confuse the users about the dma-buf.
-> > However, the rest of the series also makes sure each dma-buf have a
-> > unique
-> > inode(https://patchwork.freedesktop.org/patch/310387/), and any
-> > accounting
-> > should probably use that, without relying on the name as much.
-> > 
-> > So, removing this restriction will let dma-buf userspace users to
-> > use it
-> > more comfortably and without any side effect.
-> > 
-> > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
-> 
-> We could now cleanup the return value from dma_buf_set_name() into a 
-> void since that function can't fail any more as far as I can see.
-> 
-> But that isn't mandatory I think, patch is Reviewed-by: Christian
-> König 
-> <christian.koenig@amd.com>
->
-
-So, here is no need to check return value of 'strndup_user',
-just return without error code if the almost impossible error occurs?
-
-Guangming.
-
-> Regards,
-> Christian.
-> 
-> > ---
-> >   drivers/dma-buf/dma-buf.c | 17 +++--------------
-> >   1 file changed, 3 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> > index 511fe0d217a0..5fbb3a2068a3 100644
-> > --- a/drivers/dma-buf/dma-buf.c
-> > +++ b/drivers/dma-buf/dma-buf.c
-> > @@ -325,10 +325,8 @@ static __poll_t dma_buf_poll(struct file
-> > *file, poll_table *poll)
-> >   
-> >   /**
-> >    * dma_buf_set_name - Set a name to a specific dma_buf to track
-> > the usage.
-> > - * The name of the dma-buf buffer can only be set when the dma-buf 
-> > is not
-> > - * attached to any devices. It could theoritically support
-> > changing the
-> > - * name of the dma-buf if the same piece of memory is used for
-> > multiple
-> > - * purpose between different devices.
-> > + * It could support changing the name of the dma-buf if the same
-> > + * piece of memory is used for multiple purpose between different
-> > devices.
-> >    *
-> >    * @dmabuf: [in]     dmabuf buffer that will be renamed.
-> >    * @buf:    [in]     A piece of userspace memory that contains
-> > the name of
-> > @@ -341,25 +339,16 @@ static __poll_t dma_buf_poll(struct file
-> > *file, poll_table *poll)
-> >   static long dma_buf_set_name(struct dma_buf *dmabuf, const char
-> > __user *buf)
-> >   {
-> >   	char *name = strndup_user(buf, DMA_BUF_NAME_LEN);
-> > -	long ret = 0;
-> >   
-> >   	if (IS_ERR(name))
-> >   		return PTR_ERR(name);
-> >   
-> > -	dma_resv_lock(dmabuf->resv, NULL);
-> > -	if (!list_empty(&dmabuf->attachments)) {
-> > -		ret = -EBUSY;
-> > -		kfree(name);
-> > -		goto out_unlock;
-> > -	}
-> >   	spin_lock(&dmabuf->name_lock);
-> >   	kfree(dmabuf->name);
-> >   	dmabuf->name = name;
-> >   	spin_unlock(&dmabuf->name_lock);
-> >   
-> > -out_unlock:
-> > -	dma_resv_unlock(dmabuf->resv);
-> > -	return ret;
-> > +	return 0;
-> >   }
-> >   
-> >   static long dma_buf_ioctl(struct file *file,
-> 
-> 
+applied.
