@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A9943B4BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B5343B4C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236962AbhJZOue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236073AbhJZOub (ORCPT
+        id S236969AbhJZOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:50:47 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53458
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236979AbhJZOul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:50:31 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03070C061224
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:48:08 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so1920549pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t+GavL7jaDIOLO9+HWOF0JpCL4n+9982OXgOJJO3B68=;
-        b=mMtlNqAGEx5moOXiuoulPA91tzGA7QXfJoC+FMrgS7kXKDaeQEPhlrtU0/6hIAVeF6
-         4XgOag3S8f64bxtieFkoj/CBTBoyg71uy6bYxr2fBQK7J8y0qvj3yp4nxsZiGo0ugwoy
-         chqWhQbdF2M/ss8dRD5cMeGRjF2i7TFbnWAE4XD/Gn+/ew4eCp8tBNWFi6mKqTjGiuSB
-         4K+eMtDT8TA09mAfuKwzPO/bGE/KLqBK8ggRwFAk21MDpCSdzSupIOVWDECUMDk9Gucp
-         WDZDdD8wswuh2DToiC42rEb1Gvw+Zc82wwd7L/2Pn0t+7EwhXqTAcJo8pcrg6fGfmqKg
-         9NUQ==
+        Tue, 26 Oct 2021 10:50:41 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8A1493F199
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:48:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635259696;
+        bh=fsVkyjuPYlvrvC5KH9851YDRNpooqzcn8kiRcv7IL+0=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=PXmD2gSf9j2Cdde8TY2611jxj8qiQolMJoCBdTijo01bg5+WZJ+/vmoFkMEpEhBWS
+         9t6c10q2fycOSYJhAeufuzmwQcQ46OkBAMID1vNrcq/Yj4l/nH+E4fL4vx97ySfhYR
+         pelNCXKAs6iFRCLi414uH8wqbAHlIUB4Yzd0mUmp0bEMCi1bzj+lJE1AGK138ls9Ke
+         QVKEzjUS7pdmNxa6QnTfhiSyWVGMFyN2ZcW++FyaxErGqQQDg/BVDzgxqzyM/CQDrm
+         c0h3iNIYmS730eZ1R2tBrbCR4ItoG2Kp9yPOmGwmEm0ttrWfEa2exrA0KM9chNO+VX
+         z2XNv8YxkXHZw==
+Received: by mail-lf1-f72.google.com with SMTP id y40-20020a0565123f2800b003fded085638so6284847lfa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:48:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t+GavL7jaDIOLO9+HWOF0JpCL4n+9982OXgOJJO3B68=;
-        b=u2BZd8ycxZpBWLoIoOQn5XZUl85NhCUb2uQ9mih8P6s1L1F2pc6gg/SY4DR78lrP9k
-         lEC5u6ACJTdK+7Ma4C745vAggz512CRyBacAvbwhkgdss9JaCuV+smDBj/s9e5ppTAx4
-         3DtNcGITw/+kPi1O6Fw73lJss/dnAx7NoIrdfODRCIYhSC+vMY2imfhVXMZ/DqpsVl2E
-         TQ2ly7WfRCjeiv2/i0qEBu3wl2x9Bhy23oOalgwrugSIpQq7W74zx1cdjEr4x+o2Qxxa
-         9wodbWqXRjjVJbnfvlyrt4kWxvfuL9KsZlGV4NT4NaDYnXGeXHEcO5CGFZsnDn7WLK+a
-         1A1A==
-X-Gm-Message-State: AOAM532fujs5k7O/D7jcMgefskClYTH328/9PsQIzOcekEfHXWhlrzgg
-        HzvRFiZeqRUmlPvbuiB6+sStWw==
-X-Google-Smtp-Source: ABdhPJwehmwFySoaS1hi2p+T+LiAO8upF6izWYrpOOMtkZkPW5L2hiCqpK0gC/Rhqd0TA7qN0BGQqw==
-X-Received: by 2002:a17:902:e88a:b0:140:25a7:4a1b with SMTP id w10-20020a170902e88a00b0014025a74a1bmr22402882plg.67.1635259687236;
-        Tue, 26 Oct 2021 07:48:07 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id fy8sm186294pjb.47.2021.10.26.07.48.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 07:48:06 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 14:48:02 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v2 00/43] KVM: Halt-polling and x86 APICv overhaul
-Message-ID: <YXgVIvYhABnrP2Jo@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <04b1a72e-47b4-4bde-eb9e-ba36c156ff0d@de.ibm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fsVkyjuPYlvrvC5KH9851YDRNpooqzcn8kiRcv7IL+0=;
+        b=ce5t0D5zM8y6ZQ08Os1XwC+NdDYiwy6EjdpuQGVz2i+Y2f3PL+/YXI+K8xZDiugVF3
+         fCcAA7hYHBNGVqkTwfUvto1fFQREE57Ch+XPSSVBwOEuPJGe80evfBFRZMdBgQ2viQWq
+         WyW3/aVVmxsytKP8rHRKopJ9IYWZX94JVmhzEYcxrhz9P0dGUDcnTlggG3DjFcfEOWU5
+         qJ9DEyjQotNacI5W52km5GFfO3Z2/OPn/bC2EE5IDPsW11eSdmj4uKB9kRQ+PNTcxxpc
+         rTD8DXYBXjtRuceq09E7xVuo/YqgCUZ+Olg7+JqrkNgpiV3sBlSSyF94N1q7M+WvLHdB
+         QJUA==
+X-Gm-Message-State: AOAM532JAPCfeQn9FM3iI8Svc1fM3BEqpUFp8seIuIJ/qE/tllf2ciNq
+        TSSmJPy5p21o9ZvjrX2P6jtbqRzlrVJjDOiYWbreuQteE9HfoiqIFrLmpTbvmgTlMXaER/Urz6Y
+        x0jZqqlMCcRFG9JshG5/zP0OodxJi/QcaVUlNLX1EqA==
+X-Received: by 2002:a2e:9243:: with SMTP id v3mr27320366ljg.260.1635259695400;
+        Tue, 26 Oct 2021 07:48:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx2KIUw3dMiASKOb3ipaEef5iAQjyB+RBgmFcPme73HkXcK5y3WPmCpFx0YHsoHJhTU83ZWAg==
+X-Received: by 2002:a2e:9243:: with SMTP id v3mr27320346ljg.260.1635259695206;
+        Tue, 26 Oct 2021 07:48:15 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id r13sm483731lff.213.2021.10.26.07.48.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:48:14 -0700 (PDT)
+Subject: Re: [PATCH v2 0/7] Add SPI Multi I/O Bus Controller support for
+ RZ/G2L
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <02123905-675a-0fda-086e-c2401c202fce@canonical.com>
+Date:   Tue, 26 Oct 2021 16:48:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04b1a72e-47b4-4bde-eb9e-ba36c156ff0d@de.ibm.com>
+In-Reply-To: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021, Christian Borntraeger wrote:
-> Am 09.10.21 um 04:11 schrieb Sean Christopherson:
-> > This is basically two series smushed into one.  The first "half" aims
-> > to differentiate between "halt" and a more generic "block", where "halt"
-> > aligns with x86's HLT instruction, the halt-polling mechanisms, and
-> > associated stats, and "block" means any guest action that causes the vCPU
-> > to block/wait.
-> > 
-> > The second "half" overhauls x86's APIC virtualization code (Posted
-> > Interrupts on Intel VMX, AVIC on AMD SVM) to do their updates in response
-> > to vCPU (un)blocking in the vcpu_load/put() paths, keying off of the
-> > vCPU's rcuwait status to determine when a blocking vCPU is being put and
-> > reloaded.  This idea comes from arm64's kvm_timer_vcpu_put(), which I
-> > stumbled across when diving into the history of arm64's (un)blocking hooks.
-> > 
-> > The x86 APICv overhaul allows for killing off several sets of hooks in
-> > common KVM and in x86 KVM (to the vendor code).  Moving everything to
-> > vcpu_put/load() also realizes nice cleanups, especially for the Posted
-> > Interrupt code, which required some impressive mental gymnastics to
-> > understand how vCPU task migration interacted with vCPU blocking.
-> > 
-> > Non-x86 folks, sorry for the noise.  I'm hoping the common parts can get
-> > applied without much fuss so that future versions can be x86-only.
-> > 
-> > v2:
-> >   - Collect reviews. [Christian, David]
-> >   - Add patch to move arm64 WFI functionality out of hooks. [Marc]
-> >   - Add RISC-V to the fun.
-> >   - Add all the APICv fun.
+On 25/10/2021 22:56, Lad Prabhakar wrote:
+> Hi All,
 > 
-> Have we actually followed up on the regression regarding halt_poll_ns=0 no longer disabling
-> polling for running systems?
+> This patch series adds a couple of fixes for rpc-if driver and
+> adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
+> is identical to the RPC-IF block found on R-Car Gen3 SoC's.
+> 
+> Cheers,
+> Prabhakar
+> 
+> Changes for v2:
+> * Rebased the patches on linux-next
+> * Split patch 5 from v1
+> * Included RB tags
+> * Fixed review comments pointed by Wolfram
+> 
+> v1:
+> https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+> 20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+> 
 
-No, I have that conversation flagged but haven't gotten back to it.  I still like
-the idea of special casing halt_poll_ns=0 to override the capability.  I can send
-a proper patch for that unless there's a different/better idea?
+Patches look good but you sent them too late for this cycle. I'll take
+the memory controller parts after the merge window.
+
+
+Best regards,
+Krzysztof
