@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBDA43AF11
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7C843AF14
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234347AbhJZJ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:29:50 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:52770 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234781AbhJZJ3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:29:19 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-03 (Coremail) with SMTP id rQCowADnyebAyXdhyEH+BA--.24790S2;
-        Tue, 26 Oct 2021 17:26:24 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     song@kernel.org, valentin.schneider@arm.com, peterz@infradead.org,
-        mingo@kernel.org, dave.hansen@linux.intel.com, bristot@redhat.com,
-        namit@vmware.com
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] cpumask and md/raid5: Fix implicit type conversion
-Date:   Tue, 26 Oct 2021 09:26:23 +0000
-Message-Id: <1635240383-2568329-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowADnyebAyXdhyEH+BA--.24790S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF45JF4fCr4kXw1UAF1DJrb_yoW5Cr4fpF
-        10grWjg3yxXr48u34DZ3yUur1Y93ykJ3yvk347G3yUuFW7Jw1kZr12kas8XryUCF95KFyI
-        vr90k3yDuF15JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUhNVgUUUUU=
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S234845AbhJZJaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234844AbhJZJ37 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:29:59 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C22DC061767;
+        Tue, 26 Oct 2021 02:27:36 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id u13so11318306edy.10;
+        Tue, 26 Oct 2021 02:27:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=I7YfSyelzy7SPOD/68bXsBPGsKRurvUCvEQxs14RBXU=;
+        b=TjYgjSVOmnnMkWPm+jlRpAhJ/Jk4zFaOtVPc+6KH2wltPLi8+L2OGO2CneJJC8UzQ4
+         7uN/gaYQM5sKKA4mPCRw6qRskqSUiexL+wLCZvGO6aKLxmcqYDhLs7ZLJPI3uEo74OPM
+         QQDssCjxvjKtBmAyiIF86XrgiPCLZsfLca5tBne2o/OTR/1qEGlGznZOWTgLco0Zl/Yv
+         1W9xKXW3i5JaZmpeAFtwM02TFYyLIwOELeI4IYqW9s28Z72ohycuNSw/4HtigRHBNk7M
+         7hY/nIXdhUnlHVr9niH8No+9GHmLET2CVEtb4zmIH7ejkcuQIcoQDDr9UnubMuhnip1r
+         tUuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=I7YfSyelzy7SPOD/68bXsBPGsKRurvUCvEQxs14RBXU=;
+        b=ZvRlblRK+RaZ/ycYLhe+cpbGq6yxyGw7/XAoiMlcMIMUtQEzNMRhIlTgbboEb/JOBG
+         Xr+/ByWG3tI56pL5ahPM6ah66wFgcUcKoJWcyyqi+z3FxniNQWN0Y6YBDMoDf6HJFUmi
+         EF6ydMx/pSbGj3qkrIaKyeKGvd5IQJzB/K4dcjGOL/StvbJAFlS8XYGhZ4TrLF8Xe2+i
+         7sl90WIHJM8Kp8mYbCiHP95S3B8hrPyt2jrNAD14yY3xe0jAnem+6ywI5SZG6NYRU/NI
+         uBpxCs4IU9JQ0e/UoHmF21hMHjcg46c7YwkvSiNwCknzeBFndtUDzwcJhDe07vK10Tl9
+         GSWw==
+X-Gm-Message-State: AOAM530fx3YbtlJOuUujetA2PhOVGB1J/fSLp8pUkzcLD4PxyksQsRHk
+        /30IUGCvFL0v6qfn8aNp6QA=
+X-Google-Smtp-Source: ABdhPJyV1TPxG9jV+16YCTn2EphruR+NcwnEI+hIumIkqOc9jEfQMUMirh/PaE3daQf+V0FlQVFTaA==
+X-Received: by 2002:a17:907:16aa:: with SMTP id hc42mr19148394ejc.491.1635240454691;
+        Tue, 26 Oct 2021 02:27:34 -0700 (PDT)
+Received: from localhost.localdomain (host-80-181-148-119.retail.telecomitalia.it. [80.181.148.119])
+        by smtp.gmail.com with ESMTPSA id sh19sm6196023ejc.99.2021.10.26.02.27.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 02:27:34 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        mudongliangabcd@gmail.com, netdev@vger.kernel.org,
+        phind.uet@gmail.com, syzkaller-bugs@googlegroups.com
+Cc:     syzbot <syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com>
+Subject: Re: [syzbot] memory leak in cfg80211_inform_single_bss_frame_data
+Date:   Tue, 26 Oct 2021 11:27:31 +0200
+Message-ID: <2678912.i2LAJy1QmT@localhost.localdomain>
+In-Reply-To: <000000000000e1063f05cf34f2a8@google.com>
+References: <000000000000e1063f05cf34f2a8@google.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="nextPart327050664.krEj5IxTLE"
+Content-Transfer-Encoding: 7Bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description of the macro in `include/linux/cpumask.h` says the
-variable 'cpu' can be unsigned int.
-However in the for_each_cpu(), for_each_cpu_wrap() and
-for_each_cpu_and(), its value is assigned to -1.
-That doesn't make sense. Moreover in the cpumask_next(),
-cpumask_next_zero(), cpumask_next_wrap() and cpumask_next_and(),
-'cpu' will be implicitly type conversed to int if the type is
-unsigned int.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to fix the macro description of 'cpu' that
-remove the '(optionally unsigned)' and change the definition of 'cpu'
-in `drivers/md/raid5.c` from unsigned long to long.
+This is a multi-part message in MIME format.
 
-Fixes: c743f0a ("sched/fair, cpumask: Export for_each_cpu_wrap()")
-Fixes: 8bd93a2 ("rcu: Accelerate grace period if last non-dynticked CPU")
-Fixes: 984f2f3 ("cpumask: introduce new API, without changing anything, v3")
-Fixes: 738a273 ("md/raid5: fix allocation of 'scribble' array.")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- drivers/md/raid5.c      | 2 +-
- include/linux/cpumask.h | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+--nextPart327050664.krEj5IxTLE
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 7d4ff8a..32ef82b 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2425,7 +2425,7 @@ static int scribble_alloc(struct raid5_percpu *percpu,
+On Tuesday, October 26, 2021 12:33:23 AM CEST syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    87066fdd2e30 Revert "mm/secretmem: use refcount_t instead 
+..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16b55554b00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d25eeb482b0f99b
+> dashboard link: https://syzkaller.appspot.com/bug?
+extid=7a942657a255a9d9b18a
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils 
+for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171cf464b00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1396b19f300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the 
+commit:
+> Reported-by: syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com
+> 
+> BUG: memory leak
+> unreferenced object 0xffff88810f3c7980 (size 96):
+
+Let's try the attached diff.
+
+Fabio
+--nextPart327050664.krEj5IxTLE
+Content-Disposition: attachment; filename="scan_c_diff"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="scan_c_diff"
+
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index 11c68b159324..e84855ea4075 100644
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -2380,7 +2380,7 @@ cfg80211_inform_single_bss_frame_data(struct wiphy *wiphy,
+ 		capability = le16_to_cpu(mgmt->u.probe_resp.capab_info);
+ 	}
  
- static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
- {
--	unsigned long cpu;
-+	long cpu;
- 	int err = 0;
- 
- 	/*
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index bfc4690..ceaed99 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -232,7 +232,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
- 
- /**
-  * for_each_cpu - iterate over every cpu in a mask
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask: the cpumask pointer
-  *
-  * After the loop, cpu is >= nr_cpu_ids.
-@@ -244,7 +244,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
- 
- /**
-  * for_each_cpu_not - iterate over every cpu in a complemented mask
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask: the cpumask pointer
-  *
-  * After the loop, cpu is >= nr_cpu_ids.
-@@ -258,7 +258,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- 
- /**
-  * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a specified location
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask: the cpumask poiter
-  * @start: the start location
-  *
-@@ -273,7 +273,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- 
- /**
-  * for_each_cpu_and - iterate over every cpu in both masks
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the integer iterator
-  * @mask1: the first cpumask pointer
-  * @mask2: the second cpumask pointer
-  *
--- 
-2.7.4
+-	ies = kzalloc(sizeof(*ies) + ielen, gfp);
++	ies = kzalloc(sizeof(cfg80211_bss_ies) + ielen, gfp);
+ 	if (!ies)
+ 		return NULL;
+ 	ies->len = ielen;
+
+--nextPart327050664.krEj5IxTLE--
+
+
 
