@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1D843AF06
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C3D43AF08
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234072AbhJZJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:28:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:55702 "EHLO foss.arm.com"
+        id S235162AbhJZJ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:28:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:55726 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235097AbhJZJ21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:28:27 -0400
+        id S235121AbhJZJ2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:28:30 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B4BF1063;
-        Tue, 26 Oct 2021 02:26:03 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17D341396;
+        Tue, 26 Oct 2021 02:26:07 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D04F83F70D;
-        Tue, 26 Oct 2021 02:26:00 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6B1553F70D;
+        Tue, 26 Oct 2021 02:26:04 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     aou@eecs.berkeley.edu, catalin.marinas@arm.com,
@@ -28,9 +28,9 @@ Cc:     aou@eecs.berkeley.edu, catalin.marinas@arm.com,
         stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
         tsbogend@alpha.franken.de, vgupta@kernel.org,
         vladimir.murzin@arm.com, will@kernel.org
-Subject: [PATCH v2 14/17] irq: openrisc: perform irqentry in entry code
-Date:   Tue, 26 Oct 2021 10:25:01 +0100
-Message-Id: <20211026092504.27071-15-mark.rutland@arm.com>
+Subject: [PATCH v2 15/17] irq: riscv: perform irqentry in entry code
+Date:   Tue, 26 Oct 2021 10:25:02 +0100
+Message-Id: <20211026092504.27071-16-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211026092504.27071-1-mark.rutland@arm.com>
 References: <20211026092504.27071-1-mark.rutland@arm.com>
@@ -38,65 +38,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for removing HANDLE_DOMAIN_IRQ_IRQENTRY, have
-arch/openrisc perform all the irqentry accounting in its entry code. As
-arch/openrisc uses GENERIC_IRQ_MULTI_HANDLER, we can use
-generic_handle_arch_irq() to do so.
+In preparation for removing HANDLE_DOMAIN_IRQ_IRQENTRY, have arch/riscv
+perform all the irqentry accounting in its entry code. As arch/riscv
+uses GENERIC_IRQ_MULTI_HANDLER, we can use generic_handle_arch_irq() to
+do so.
+
+Since generic_handle_arch_irq() handles the irq entry and setting the
+irq regs, and happens before the irqchip code calls handle_IPI(), we can
+remove the redundant irq entry and irq regs manipulation from
+handle_IPI().
 
 There should be no functional change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Guo Ren <guoren@kernel.org>
 Reviewed-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Stafford Horne <shorne@gmail.com>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/openrisc/Kconfig        | 1 -
- arch/openrisc/kernel/entry.S | 4 ++--
- arch/openrisc/kernel/irq.c   | 5 -----
- 3 files changed, 2 insertions(+), 8 deletions(-)
+ arch/riscv/Kconfig        | 1 -
+ arch/riscv/kernel/entry.S | 3 +--
+ arch/riscv/kernel/smp.c   | 9 +--------
+ 3 files changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index ed783a67065e..e804026b4797 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -14,7 +14,6 @@ config OPENRISC
- 	select OF_EARLY_FLATTREE
- 	select IRQ_DOMAIN
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 740653063a56..301a54233c7e 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -63,7 +63,6 @@ config RISCV
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
  	select HANDLE_DOMAIN_IRQ
 -	select HANDLE_DOMAIN_IRQ_IRQENTRY
- 	select GPIOLIB
- 	select HAVE_ARCH_TRACEHOOK
- 	select SPARSE_IRQ
-diff --git a/arch/openrisc/kernel/entry.S b/arch/openrisc/kernel/entry.S
-index edaa775a648e..59c6d3aa7081 100644
---- a/arch/openrisc/kernel/entry.S
-+++ b/arch/openrisc/kernel/entry.S
-@@ -569,8 +569,8 @@ EXCEPTION_ENTRY(_external_irq_handler)
- #endif
- 	CLEAR_LWA_FLAG(r3)
- 	l.addi	r3,r1,0
--	l.movhi	r8,hi(do_IRQ)
--	l.ori	r8,r8,lo(do_IRQ)
-+	l.movhi	r8,hi(generic_handle_arch_irq)
-+	l.ori	r8,r8,lo(generic_handle_arch_irq)
- 	l.jalr r8
- 	l.nop
- 	l.j    _ret_from_intr
-diff --git a/arch/openrisc/kernel/irq.c b/arch/openrisc/kernel/irq.c
-index c38fa863afa8..f38e10962a84 100644
---- a/arch/openrisc/kernel/irq.c
-+++ b/arch/openrisc/kernel/irq.c
-@@ -36,8 +36,3 @@ void __init init_IRQ(void)
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index 98f502654edd..64236f7efde5 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -130,8 +130,7 @@ skip_context_tracking:
+ 
+ 	/* Handle interrupts */
+ 	move a0, sp /* pt_regs */
+-	la a1, handle_arch_irq
+-	REG_L a1, (a1)
++	la a1, generic_handle_arch_irq
+ 	jr a1
+ 1:
+ 	/*
+diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+index 921d9d7df400..2f6da845c9ae 100644
+--- a/arch/riscv/kernel/smp.c
++++ b/arch/riscv/kernel/smp.c
+@@ -140,12 +140,9 @@ void arch_irq_work_raise(void)
+ 
+ void handle_IPI(struct pt_regs *regs)
  {
- 	irqchip_init();
- }
+-	struct pt_regs *old_regs = set_irq_regs(regs);
+ 	unsigned long *pending_ipis = &ipi_data[smp_processor_id()].bits;
+ 	unsigned long *stats = ipi_data[smp_processor_id()].stats;
+ 
+-	irq_enter();
 -
--void __irq_entry do_IRQ(struct pt_regs *regs)
--{
--	handle_arch_irq(regs);
--}
+ 	riscv_clear_ipi();
+ 
+ 	while (true) {
+@@ -156,7 +153,7 @@ void handle_IPI(struct pt_regs *regs)
+ 
+ 		ops = xchg(pending_ipis, 0);
+ 		if (ops == 0)
+-			goto done;
++			return;
+ 
+ 		if (ops & (1 << IPI_RESCHEDULE)) {
+ 			stats[IPI_RESCHEDULE]++;
+@@ -189,10 +186,6 @@ void handle_IPI(struct pt_regs *regs)
+ 		/* Order data access and bit testing. */
+ 		mb();
+ 	}
+-
+-done:
+-	irq_exit();
+-	set_irq_regs(old_regs);
+ }
+ 
+ static const char * const ipi_names[] = {
 -- 
 2.11.0
 
