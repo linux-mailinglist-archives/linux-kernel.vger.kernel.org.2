@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D041D43AE80
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C174343AEBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhJZJF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:05:56 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:45908 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233240AbhJZJFw (ORCPT
+        id S232957AbhJZJNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:13:40 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:10608 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234864AbhJZJNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:05:52 -0400
-Received: by mail-ua1-f42.google.com with SMTP id f24so8586213uav.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 02:03:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WP4KMCUXl+rWEf2feu/35l51pXt02OCY9vDl3R9CVSQ=;
-        b=ocmm1T/fLVs7tuAnKsx0KMQdfBv4RxIXcJkuSE4L/0cz1lZGO1lpNUqV3t7ByZ1AeW
-         9GD1kQRoP3A5i8dktqVehqYP+Ei9p0+i2D1V9yqHFd2PnT08mZZj+eDCdnbt+xQi4QHS
-         /G5iylx5pcHPUJAlfYDIq4kVc2dA9om3K8EljZsJENxU8JCxm7WAW/JIsVXR5THJ3BMM
-         XpTiUuVkJoy1pjNEXRFGOjsrbb/pUvFbOsTNLK9pcz9lwPM3UfUIYweC4jDVzhnsxMDt
-         3JBzpL8iJMuj8NFfDBZfBJ8/ultDkK+O0VjCYNuipcSdAidwZlOAhr4GM44snfrbxWS1
-         /Tag==
-X-Gm-Message-State: AOAM533cdD9syCf5qI4xjaK6HW4EXJfxLIrIuPrCcBSDyF6X0hx6atUb
-        cleVqvB+DyHn7oUFd1EUU62vgH6qNZtfuQ==
-X-Google-Smtp-Source: ABdhPJyRt557JpGe12gw3l9R/uEcSDnn8wCw2pjfOX4VbSWG9zqXApvS4SD3htR0pIONQk0EwiZeNQ==
-X-Received: by 2002:ab0:5542:: with SMTP id u2mr21852938uaa.62.1635239008181;
-        Tue, 26 Oct 2021 02:03:28 -0700 (PDT)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id k185sm10471363vsc.21.2021.10.26.02.03.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 02:03:27 -0700 (PDT)
-Received: by mail-ua1-f51.google.com with SMTP id e10so27790042uab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 02:03:27 -0700 (PDT)
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr21592387vsl.9.1635239007608;
- Tue, 26 Oct 2021 02:03:27 -0700 (PDT)
+        Tue, 26 Oct 2021 05:13:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635239105;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=bwI0EMSDhui3G9nAXrRR/fGiIoa7r45zPTa6qOOeZ2k=;
+    b=dNt8Trs9NhitRLKz03siCjqYBQETacWBo4DrKsIKc9lcwo/mjNuBLwf0C09Wr37S6P
+    X6yGeHxf81t10EO3l78ZZdMlVES8uLuGRJi02yPrMJWhctbCAjzXtN8wsTLyHPyizhJu
+    J0GOfLvjvFU+SwIpP0PLgSGrL5EJ10Bn8TVHUrdsuAo9pgAWT9JVCyFANnhF9mP85fbr
+    k2jwopyOyRI/Kp8vFKYf0uwEOSDdeyEg/Ts+j7Hj6PsW+SmGDn+sXEVIasXjq5zA3qkL
+    L95UpgAAhvKbMk9FpX8z/ZyhGFpTAPwIAnoxETGBubVRlK9I3z3V75td74pSh+4s3sAJ
+    508g==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id n020a8x9Q9542DE
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 26 Oct 2021 11:05:04 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolai Stange <nstange@suse.de>
+Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
+Subject: Re: [PATCH 3/6] crypto: DRBG - move dynamic ->reseed_threshold adjustments to __drbg_seed()
+Date:   Tue, 26 Oct 2021 11:05:03 +0200
+Message-ID: <2442182.SrK068eSPn@positron.chronox.de>
+In-Reply-To: <20211025092525.12805-4-nstange@suse.de>
+References: <20211025092525.12805-1-nstange@suse.de> <20211025092525.12805-4-nstange@suse.de>
 MIME-Version: 1.0
-References: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
- <CAOnJCULgjUsnb__QrUFdop3Nr9t6G5WtSsG+EE2d4_e+b7Dy5Q@mail.gmail.com>
-In-Reply-To: <CAOnJCULgjUsnb__QrUFdop3Nr9t6G5WtSsG+EE2d4_e+b7Dy5Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 Oct 2021 11:03:16 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUBFE+dzg0Lqechmj8D4ssJS5O_UCrDBtToWn-EP+0T_g@mail.gmail.com>
-Message-ID: <CAMuHMdUBFE+dzg0Lqechmj8D4ssJS5O_UCrDBtToWn-EP+0T_g@mail.gmail.com>
-Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Atish,
+Am Montag, 25. Oktober 2021, 11:25:22 CEST schrieb Nicolai Stange:
 
-On Tue, Oct 26, 2021 at 10:55 AM Atish Patra <atishp@atishpatra.org> wrote:
-> On Mon, Oct 25, 2021 at 8:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
-> > the 4th CPU either fails to come online, or the system crashes.
-> >
-> > This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
-> > and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
-> >   - unused core has hartid 0 (sifive,e51),
-> >   - processor 0 has hartid 1 (sifive,u74-mc),
-> >   - processor 1 has hartid 2 (sifive,u74-mc),
-> >   - processor 2 has hartid 3 (sifive,u74-mc),
-> >   - processor 3 has hartid 4 (sifive,u74-mc).
-> >
-> > I assume the same issue is present on the SiFive fu540 and fu740
-> > SoCs, but I don't have access to these.  The issue is not present
-> > on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
-> > hartid 0.
-> >
-> > arch/riscv/kernel/cpu_ops.c has:
-> >
-> >     void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
-> >     void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
-> >
-> >     void cpu_update_secondary_bootdata(unsigned int cpuid,
-> >                                        struct task_struct *tidle)
-> >     {
-> >             int hartid = cpuid_to_hartid_map(cpuid);
-> >
-> >             /* Make sure tidle is updated */
-> >             smp_mb();
-> >             WRITE_ONCE(__cpu_up_stack_pointer[hartid],
-> >                        task_stack_page(tidle) + THREAD_SIZE);
-> >             WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
-> >
-> > The above two writes cause out-of-bound accesses beyond
-> > __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
-> >
-> >     }
-> >
->
-> Thanks for reporting this. We need to fix this and definitely shouldn't hide it
-> using configs. I guess I never tested with lower values (2 or 4) for
-> CONFIG_NR_CPUS which explains how this bug was not noticed until now.
+Hi Nicolai,
 
-> > How to fix this?
-> >
-> > We could skip hartids >= NR_CPUS, but that feels strange to me, as
-> > you need NR_CPUS to be larger (much larger if the first usable hartid
-> > is a large number) than the number of CPUs used.
-> >
-> > We could store the minimum hartid, and always subtract that when
-> > accessing __cpu_up_{stack,pointer}_pointer[] (also in
-> > arch/riscv/kernel/head.S), but that means unused cores cannot be in the
-> > middle of the hartid range.
->
-> Yeah. Both of the above proposed solutions are not ideal.
->
-> >
-> > Are hartids guaranteed to be continuous? If not, we have no choice but
-> > to index __cpu_up_{stack,pointer}_pointer[] by cpuid instead, which
-> > needs a more expensive conversion in arch/riscv/kernel/head.S.
->
-> This will work for ordered booting with SBI HSM extension. However, it may
-> fail for spinwait booting because cpuid_to_hartid_map might not have setup
-> depending on when secondary harts are jumping to linux.
->
-> Ideally, the size of the __cpu_up_{stack,task}_pointer[] should be the maximum
-> hartid possible. How about adding a config for that ?
+> Since commit 42ea507fae1a ("crypto: drbg - reseed often if seedsource is
+> degraded"), the maximum seed lifetime represented by ->reseed_threshold
+> gets temporarily lowered if the get_random_bytes() source cannot provide
+> sufficient entropy yet, as is common during boot, and restored back to
+> the original value again once that has changed.
+>=20
+> More specifically, if the add_random_ready_callback() invoked from
+> drbg_prepare_hrng() in the course of DRBG instantiation does not return
+> -EALREADY, that is, if get_random_bytes() has not been fully initialized
+> at this point yet, drbg_prepare_hrng() will lower ->reseed_threshold
+> to a value of 50. The drbg_async_seed() scheduled from said
+> random_ready_callback will eventually restore the original value.
+>=20
+> A future patch will replace the random_ready_callback based notification
+> mechanism and thus, there will be no add_random_ready_callback() return
+> value anymore which could get compared to -EALREADY.
+>=20
+> However, there's __drbg_seed() which gets invoked in the course of both,
+> the DRBG instantiation as well as the eventual reseeding from
+> get_random_bytes() in aforementioned drbg_async_seed(), if any. Moreover,
+> it knows about the get_random_bytes() initialization state by the time the
+> seed data had been obtained from it: the new_seed_state argument introduc=
+ed
+> with the previous patch would get set to DRBG_SEED_STATE_PARTIAL in case
+> get_random_bytes() had not been fully initialized yet and to
+> DRBG_SEED_STATE_FULL otherwise. Thus, __drbg_seed() provides a convenient
+> alternative for managing that ->reseed_threshold lowering and restoring at
+> a central place.
+>=20
+> Move all ->reseed_threshold adjustment code from drbg_prepare_hrng() and
+> drbg_async_seed() respectively to __drbg_seed(). Make __drbg_seed()
+> lower the ->reseed_threshold to 50 in case its new_seed_state argument
+> equals DRBG_SEED_STATE_PARTIAL and let it restore the original value
+> otherwise.
+>=20
+> There is no change in behaviour.
+>=20
+> Signed-off-by: Nicolai Stange <nstange@suse.de>
 
-(reading more RISC-V specs)
-Hart IDs can use up to XLEN (32, 64, or 128) bits. So creative sparse
-multi-level encodings like used in MPIDR on ARM[1] makes using a
-simple array infeasible.
+Reviewed-by: Stephan M=FCller <smueller@chronox.de>
 
-[1] arch/arm{,64}/include/asm/cputype.h
+Ciao
+Stephan
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
