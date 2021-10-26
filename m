@@ -2,162 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EEE43BADF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB3E43BAE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238790AbhJZTfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238774AbhJZTfo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:35:44 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0ABC061570;
-        Tue, 26 Oct 2021 12:33:19 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id d13so763472ljg.0;
-        Tue, 26 Oct 2021 12:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sbyPcOn08VL2I8C/2HZAvhs84VOC3xvrXHI1rlDtOFc=;
-        b=OAPSZiEELZNVbfPgmPd9N2DnjB64tmaKrzB3mEP02TMKa7Q70rLDtrD6eqqZIJvlTL
-         PjTQHz8LS/w1aZ7Yq/VYYdfYmykH5+ml8TCf/8q94NpKvSnnR4Uou70DbDHO46liDZ5x
-         BvqaTFFx5iBTn9482Lu/Y5scw/zDkAzdO7phB5RS1ujUDuBY9ptGtO9pOikjkaRQZh92
-         OQLPglDb2pj17/ntaQAmk+ilZt+MJCjIgw2D31UpsnRsPLBderuSSC1o6zYwvpdPP0cS
-         kBPXfU4Z9rYlKpbjyd957TaUmqSZUFv0fkBIerqHImLhOT5d5MCLIAGInvLfGl+vELXB
-         48Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sbyPcOn08VL2I8C/2HZAvhs84VOC3xvrXHI1rlDtOFc=;
-        b=P8AzNKE7QcCHl8yo2uTvr3hmpAvHbRi8rgzP5+bVtI4cwFmqT/kGqWb7S39FkV22CM
-         oiY9B5L3aBmJLVJx+e2Zfhmwy7o72epi6heanNWqRlInTnj6BfzXCWu44z4CJGq/S6N5
-         RAGeHUVzLrGFkdmd1MFgYMYC9rFNpJSv1Vcrq3ULMbkS2Q3ojZ8Gc9osSoGMfJt9J5in
-         IfuwiYWlX8QJZPgHWRDWkxcFDFQTI/OQJ+H7hpjnsIpPO9P/XERSjrUFE6FoQOCMfc/Y
-         IIR326C/IV6l7F67EEXhtgebVBZsqUxJnxbvvaG4JieFdD79SAaslkyfDB05KxKAG3Qj
-         xM5w==
-X-Gm-Message-State: AOAM530zuSbbsKwGISH+Y+ay6jc0tHd2s0D//O/xDZkHFzrwHltRbZmR
-        htp+feiQLn1BaCYmJh0uWPM=
-X-Google-Smtp-Source: ABdhPJydkzhlV9E1KalfXwiiHw8d5e2VhZOR+gxOT16ovEHE85ajFZbo9l64fBsGFku0xx5zCd5GLQ==
-X-Received: by 2002:a2e:9e93:: with SMTP id f19mr27692303ljk.311.1635276798204;
-        Tue, 26 Oct 2021 12:33:18 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id a16sm2011793lfu.274.2021.10.26.12.33.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 12:33:17 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 26 Oct 2021 21:33:15 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <20211026193315.GA1860@pc638.lan>
-References: <20211025150223.13621-1-mhocko@kernel.org>
- <20211025150223.13621-3-mhocko@kernel.org>
- <CA+KHdyVqOuKny7bT+CtrCk8BrnARYz744Ze6cKMuy2BXo5e7jw@mail.gmail.com>
- <YXgsxF/NRlHjH+Ng@dhcp22.suse.cz>
+        id S238799AbhJZTgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:36:06 -0400
+Received: from mga09.intel.com ([134.134.136.24]:37615 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238774AbhJZTgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:36:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="229854952"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="229854952"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 12:33:39 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="447242519"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 12:33:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mfSCD-001IJ5-M4;
+        Tue, 26 Oct 2021 22:33:17 +0300
+Date:   Tue, 26 Oct 2021 22:33:17 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v1 0/2] ACPI: scan: Honor certain device identification
+ rules
+Message-ID: <YXhX/cTjH/H9UOnQ@smile.fi.intel.com>
+References: <11860508.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXgsxF/NRlHjH+Ng@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <11860508.O9o76ZdvQC@kreacher>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 06:28:52PM +0200, Michal Hocko wrote:
-> On Tue 26-10-21 17:48:32, Uladzislau Rezki wrote:
-> > > From: Michal Hocko <mhocko@suse.com>
-> > >
-> > > Dave Chinner has mentioned that some of the xfs code would benefit from
-> > > kvmalloc support for __GFP_NOFAIL because they have allocations that
-> > > cannot fail and they do not fit into a single page.
-> > >
-> > > The larg part of the vmalloc implementation already complies with the
-> > > given gfp flags so there is no work for those to be done. The area
-> > > and page table allocations are an exception to that. Implement a retry
-> > > loop for those.
-> > >
-> > > Add a short sleep before retrying. 1 jiffy is a completely random
-> > > timeout. Ideally the retry would wait for an explicit event - e.g.
-> > > a change to the vmalloc space change if the failure was caused by
-> > > the space fragmentation or depletion. But there are multiple different
-> > > reasons to retry and this could become much more complex. Keep the retry
-> > > simple for now and just sleep to prevent from hogging CPUs.
-> > >
-> > > Signed-off-by: Michal Hocko <mhocko@suse.com>
-> > > ---
-> > >  mm/vmalloc.c | 10 +++++++++-
-> > >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > index c6cc77d2f366..602649919a9d 100644
-> > > --- a/mm/vmalloc.c
-> > > +++ b/mm/vmalloc.c
-> > > @@ -2941,8 +2941,12 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
-> > >         else if ((gfp_mask & (__GFP_FS | __GFP_IO)) == 0)
-> > >                 flags = memalloc_noio_save();
-> > >
-> > > -       ret = vmap_pages_range(addr, addr + size, prot, area->pages,
-> > > +       do {
-> > > +               ret = vmap_pages_range(addr, addr + size, prot, area->pages,
-> > >                         page_shift);
-> > > +               if (ret < 0)
-> > > +                       schedule_timeout_uninterruptible(1);
-> > > +       } while ((gfp_mask & __GFP_NOFAIL) && (ret < 0));
-> > >
-> > 
-> > 1.
-> > After that change a below code:
-> > 
-> > <snip>
-> > if (ret < 0) {
-> >     warn_alloc(orig_gfp_mask, NULL,
-> >         "vmalloc error: size %lu, failed to map pages",
-> >         area->nr_pages * PAGE_SIZE);
-> >     goto fail;
-> > }
-> > <snip>
-> > 
-> > does not make any sense anymore.
+On Tue, Oct 26, 2021 at 08:51:49PM +0200, Rafael J. Wysocki wrote:
+> Hi All,
 > 
-> Why? Allocations without __GFP_NOFAIL can still fail, no?
+> There are some rules in the ACPI spec regarding which device identification
+> objects can be used together etc., but they are not followed by the kernel
+> code.
 > 
-Right. I meant one thing but wrote slightly differently. In case of
-vmap_pages_range() fails(if __GFP_NOFAIL is set) should we emit any
-warning message? Because either we can recover on a future iteration
-or it stuck there infinitely so a user does not understand what happened.
-From the other hand this is how __GFP_NOFAIL works, hm..
+> This series modifies the code to follow the spec more closely (see patch
+> changelogs for details).
 
-Another thing, i see that schedule_timeout_uninterruptible(1) is invoked
-for all cases even when __GFP_NOFAIL is not set, in that scenario we do
-not want to wait, instead we should return back to a caller asap. Or am
-i missing something here?
+I understand the motivation, but afraid about consequences on the OEM cheap
+devices that are not always follow letter of the specification.
 
-> > 2.
-> > Can we combine two places where we handle __GFP_NOFAIL into one place?
-> > That would look like as more sorted out.
-> 
-> I have to admit I am not really fluent at vmalloc code so I wanted to
-> make the code as simple as possible. How would I unwind all the allocated
-> memory (already allocated as GFP_NOFAIL) before retrying at
-> __vmalloc_node_range (if that is what you suggest). And isn't that a
-> bit wasteful?
-> 
-> Or did you have anything else in mind?
->
-It depends on how often all this can fail. But let me double check if
-such combining is easy.
+As per Intel platforms I would look into Baytrail / Cherrytrail devices for
+the past (I think Hans may help here a lot) and into Elkhart Lake in the
+present (for the letter I mostly refer to CSRT + DSDT cooperation to get
+GP DMA devices enumerated, so I _hope_ DSDT shouldn't have _ADR and _HID
+together).
 
---
-Vlad Rezki
+Hence, from the code perspective
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+From the practice I would wait for some tests. I will try to find any new
+information about latest firmware tables on Elkhart Lake machines.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
