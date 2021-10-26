@@ -2,191 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E75C43AA96
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3809A43AA9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbhJZDIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 23:08:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48354 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231445AbhJZDIe (ORCPT
+        id S234551AbhJZDMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 23:12:51 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:35895 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233243AbhJZDMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 23:08:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635217571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bgZfLWj7RPfnAn/W2uAQwfMYaCeUPV0KjyENL3A9vM8=;
-        b=fkdGCEu8pRJYssAtdP76yliyisG568rrUg74isg1KvbpjY/l+9PcGs1pmO6NMVjol3x886
-        Dv15Qlqb5+dPn3J1v5i4+WWnns7+0AwPtE+Po4WQI9m2R+nwD+H6amOQAo/l5uIKRhGwFz
-        qyPI0Xv40Dp9lNm963gw8iWNL4qH+pc=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395--xZXXs4OOKaXB2XYYh5-9w-1; Mon, 25 Oct 2021 23:06:09 -0400
-X-MC-Unique: -xZXXs4OOKaXB2XYYh5-9w-1
-Received: by mail-pf1-f198.google.com with SMTP id y37-20020a056a00182500b0047c102c1ca2so417247pfa.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 20:06:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=bgZfLWj7RPfnAn/W2uAQwfMYaCeUPV0KjyENL3A9vM8=;
-        b=ExuF6VcYKFaUHqV2W5z6QQ6KnOgWLF47XRGLymhixRV0zeGJqj/ERNBwPEnOv9RKFa
-         ZpK1ax4DYlFcmYML5P1wkzUlom57yfhb/IZDmWIhiOjzjIKxgFdZ4rbVCFCj3wN0vGxU
-         3mo/iBNf3gJd14tdZcac8hormS5B8vFbt3iVVqKiYsqrAIu+WXCKwFTZrwtmIaDSOpuE
-         s4nIGzLe3sne+8fwrUZE/g6Lo2bvmEy/zy18jIb/46FeUtRgpN3dJNQVdt3rU0djKTRs
-         69AC1ThzWA6hadCrIg9mDNJAgQkUvJKnyvq9Cp9073EPDVzuNDhulr7kS54h+t+3Zkrn
-         rITw==
-X-Gm-Message-State: AOAM533PL6pYOh7ZZDKgWyUqYjbcSDqXTOwDIQApjw0FlF69zHfiu1UX
-        tEUhG9TcbQwexRSa/mo/xk6WfhacETIMoU7sQAv6ViR6uClep9Bg5C4P0D6oJJZ0V0OL9gKYj4w
-        n1cPLgy+GWaB6d219DqhTY4av7BuerbUAveKCs/Ds/k2n6YwRrwt28GJ/Jgr941bRgQEGli+jUg
+        Mon, 25 Oct 2021 23:12:49 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4270858075B;
+        Mon, 25 Oct 2021 23:10:25 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Mon, 25 Oct 2021 23:10:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=8zoZ7PiK4dC5PQTpKqhe5iwBh4kOsIB
+        /MaKEN4pRp1E=; b=j2Kv7xWRIH80egJksQIylqmLoTFnSROf09yekN7s+jwWBma
+        T0cOg3r1a/kqzmLFHNiGiuKKfnvbUfsbZGnfFySQ6pby/Zp3LI5DRrC1qIhPFKMp
+        47wuz2XIvxXjRDhMwtifY/sKLgrG9/lGTjZotODcI7+iCyrXJXIed/+rHPS3EQAc
+        1vk7QzPsLMCsQiYbXHzsPPpu2vkSRd2GMfSsTneOJnKBbh2XWc9NxeJvTCWje3op
+        grbkhJh4Gj6SIEtZtqtbtRsbR5CE5lQNFkarwdA+qj7s+EdyYuCYkz8FZ55fAc/y
+        O+ZHCsRejFp9ejWczeHYkDqBmpuixiUlabD1MWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=8zoZ7P
+        iK4dC5PQTpKqhe5iwBh4kOsIB/MaKEN4pRp1E=; b=eRNKixxP/orY7kkJu/V3Wc
+        vVLBdjVV/qyIZKmS4Ui7ISvZjHvg8Kwv6E2+4CF9tlzcrz2a0DZ2sRlA2nASSaFj
+        8di54kuMEVxYh3hX6ySZtnkt0+kDUeWBZdQnNIlq9bjlNb73J2cOCLsyYelJvUbs
+        g7I6lphxoF539P5fXJb3vl01wj0zdmTUd4IEoNYllVCtE4KCmpAHkrSUCs2lYAgA
+        RoCycqoPLkLNZzh1llutwhtJbDs5w7ebcA/EQUwzjqv/E7+8OqaJJRZDtdy3Ayue
+        fpWOJUZAnIeok/9Agyb7vufz9mYVAfN5b4eW6yydcsZhAbkloiqAhq6DINqAuu6w
         ==
-X-Received: by 2002:a62:7c0b:0:b0:47b:df8d:816 with SMTP id x11-20020a627c0b000000b0047bdf8d0816mr17489654pfc.11.1635217568078;
-        Mon, 25 Oct 2021 20:06:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWh1eQlGkKFSiSnyZ955TOkEvRh94YZpScVe05hDhVwUuLUubdbFrXIblKI+fZosICPRUWnQ==
-X-Received: by 2002:a62:7c0b:0:b0:47b:df8d:816 with SMTP id x11-20020a627c0b000000b0047bdf8d0816mr17489613pfc.11.1635217567561;
-        Mon, 25 Oct 2021 20:06:07 -0700 (PDT)
-Received: from [10.72.12.93] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id c4sm23523143pfv.144.2021.10.25.20.06.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 20:06:06 -0700 (PDT)
-Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
-To:     Patrick Donnelly <pdonnell@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>
-Cc:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211020143708.14728-1-lhenriques@suse.de>
- <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
- <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
- <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
- <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
- <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
- <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
-From:   Xiubo Li <xiubli@redhat.com>
-Message-ID: <785d1435-4a2c-95aa-0573-2de54b4e7b6b@redhat.com>
-Date:   Tue, 26 Oct 2021 11:05:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-ME-Sender: <xms:oHF3YY09ZjDfsKoD3wt5Z-5dvDP3J1oiOGIBtLYR85qBUoFa8ct64w>
+    <xme:oHF3YTH_xsIvUL2-_FyNp-oS4rO7h5EyRAnHnPESlnpn3Gdtx8IQcWJkw8pW96wXb
+    Rb9cW_9pco-rV0mMg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefiedgheekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:oHF3YQ4GjW5XsQsrFYnw2pHbnq43QjJ7GfrGpUkn8JM1-Nn6lKa1Mg>
+    <xmx:oHF3YR2UR8Ng24x5sEgMBnAkqODiXxzhhWcKaeSVzX5R9Ohmo2SzwQ>
+    <xmx:oHF3YbHii2GQRdDpA7wmwFB2KxkPuKAjz7tBrC142I8W-BIJwuP-Tw>
+    <xmx:oXF3YacFQe3ACCNt5ZKpLoR01YR8ctFFE7ZmUiQebEhqCqtxHem4WQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E6257AC03DB; Mon, 25 Oct 2021 23:10:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
+Mime-Version: 1.0
+Message-Id: <95669b37-d512-4439-86cb-418ab085118f@www.fastmail.com>
+In-Reply-To: <20210922103116.30652-6-chin-ting_kuo@aspeedtech.com>
+References: <20210922103116.30652-1-chin-ting_kuo@aspeedtech.com>
+ <20210922103116.30652-6-chin-ting_kuo@aspeedtech.com>
+Date:   Tue, 26 Oct 2021 13:40:03 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Cc:     BMC-SW@aspeedtech.com, "Steven Lee" <steven_lee@aspeedtech.com>
+Subject: Re: [PATCH 05/10] mmc: aspeed: Adjust delay taps calculation method
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Chin-Ting,
 
-On 10/22/21 1:30 AM, Patrick Donnelly wrote:
-> On Thu, Oct 21, 2021 at 12:35 PM Jeff Layton <jlayton@kernel.org> wrote:
->> On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
->>> On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
->>>> On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
->>>>> On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
->>>>>> On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
->>>>>>> This counter will keep track of the number of remote object copies done on
->>>>>>> copy_file_range syscalls.  This counter will be filesystem per-client, and
->>>>>>> can be accessed from the client debugfs directory.
->>>>>>>
->>>>>>> Cc: Patrick Donnelly <pdonnell@redhat.com>
->>>>>>> Signed-off-by: Luís Henriques <lhenriques@suse.de>
->>>>>>> ---
->>>>>>> This is an RFC to reply to Patrick's request in [0].  Note that I'm not
->>>>>>> 100% sure about the usefulness of this patch, or if this is the best way
->>>>>>> to provide the functionality Patrick requested.  Anyway, this is just to
->>>>>>> get some feedback, hence the RFC.
->>>>>>>
->>>>>>> Cheers,
->>>>>>> --
->>>>>>> Luís
->>>>>>>
->>>>>>> [0] https://github.com/ceph/ceph/pull/42720
->>>>>>>
->>>>>> I think this would be better integrated into the stats infrastructure.
->>>>>>
->>>>>> Maybe you could add a new set of "copy" stats to struct
->>>>>> ceph_client_metric that tracks the total copy operations done, their
->>>>>> size and latency (similar to read and write ops)?
->>>>> I think it's a good idea to integrate this into "stats" but I think a
->>>>> local debugfs file for some counters is still useful. The "stats"
->>>>> module is immature at this time and I'd rather not build any qa tests
->>>>> (yet) that rely on it.
->>>>>
->>>>> Can we generalize this patch-set to a file named "op_counters" or
->>>>> similar and additionally add other OSD ops performed by the kclient?
->>>>>
->>>>
->>>> Tracking this sort of thing is the main purpose of the stats code. I'm
->>>> really not keen on adding a whole separate set of files for reporting
->>>> this.
->>> Maybe I'm confused. Is there some "file" which is already used for
->>> this type of debugging information? Or do you mean the code for
->>> sending stats to the MDS to support cephfs-top?
->>>
->>>> What's the specific problem with relying on the data in debugfs
->>>> "metrics" file?
->>> Maybe no problem? I wasn't aware of a "metrics" file.
->>>
->> Yes. For instance:
->>
->> # cat /sys/kernel/debug/ceph/*/metrics
->> item                               total
->> ------------------------------------------
->> opened files  / total inodes       0 / 4
->> pinned i_caps / total inodes       5 / 4
->> opened inodes / total inodes       0 / 4
->>
->> item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
->> -----------------------------------------------------------------------------------
->> read          0           0               0               0               0
->> write         5           914013          824797          1092343         103476
->> metadata      79          12856           1572            114572          13262
->>
->> item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
->> ----------------------------------------------------------------------------------------
->> read          0           0               0               0               0
->> write         5           4194304         4194304         4194304         20971520
->>
->> item          total           miss            hit
->> -------------------------------------------------
->> d_lease       11              0               29
->> caps          5               68              10702
->>
->>
->> I'm proposing that Luis add new lines for "copy" to go along with the
->> "read" and "write" ones. The "total" counter should give you a count of
->> the number of operations.
-> Okay that makes more sense!
+I think we can split this up a bit:
+
+On Wed, 22 Sep 2021, at 20:01, Chin-Ting Kuo wrote:
+> - The maximum tap delay may be slightly different on
+>   different platforms. It may also be different due to
+>   different SoC processes or different manufacturers.
+>   Thus, the maximum tap delay should be gotten from the
+>   device tree through max-tap-delay property.
+
+I think this could be a patch on its own
+
+> - The delay time for each tap is an absolute value which
+>   is independent of clock frequency. But, in order to combine
+>   this principle with "phase" concept, clock frequency is took
+>   into consideration during calculating delay taps.
+> - The delay cell of eMMC device is non-uniform.
+>   The time period of the first tap is two times of others.
+
+Again, this could be a patch of its own
+
+> - The clock phase degree range is from -360 to 360.
+>   But, if the clock phase signedness is negative, clock signal
+>   is output from the falling edge first by default and thus, clock
+>   signal is leading to data signal by 90 degrees at least.
+
+This line of development is impacted by my comment on an earlier patch 
+in the series, so should be its own patch.
+
 >
-> Side note: I am a bit horrified by how computer-unfriendly that
-> table-formatted data is.
+> Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+> ---
+>  drivers/mmc/host/sdhci-of-aspeed.c | 115 ++++++++++++++++++++++-------
+>  1 file changed, 89 insertions(+), 26 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c 
+> b/drivers/mmc/host/sdhci-of-aspeed.c
+> index c6eaeb02e3f9..739c9503a5ed 100644
+> --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+> @@ -44,6 +44,7 @@ struct aspeed_sdc {
+> 
+>  	spinlock_t lock;
+>  	void __iomem *regs;
+> +	u32 max_tap_delay_ps;
+>  };
+> 
+>  struct aspeed_sdhci_tap_param {
+> @@ -63,6 +64,7 @@ struct aspeed_sdhci_tap_desc {
+>  struct aspeed_sdhci_phase_desc {
+>  	struct aspeed_sdhci_tap_desc in;
+>  	struct aspeed_sdhci_tap_desc out;
+> +	u32 nr_taps;
+>  };
+> 
+>  struct aspeed_sdhci_pdata {
+> @@ -158,43 +160,60 @@ aspeed_sdc_set_phase_taps(struct aspeed_sdc *sdc,
+>  }
+> 
+>  #define PICOSECONDS_PER_SECOND		1000000000000ULL
+> -#define ASPEED_SDHCI_NR_TAPS		15
+> -/* Measured value with *handwave* environmentals and static loading */
+> -#define ASPEED_SDHCI_MAX_TAP_DELAY_PS	1253
+> +#define ASPEED_SDHCI_MAX_TAPS		15
 
-Any suggestion to improve this ?
+Why are we renaming this? It looks to cause a bit of noise in the diff.
 
-How about just make the "metric" file writable like a switch ? And as 
-default it will show the data as above and if tools want the 
-computer-friendly format, just write none-zero to it, then show raw data 
-just like:
+> +
+>  static int aspeed_sdhci_phase_to_tap(struct device *dev, unsigned long rate_hz,
+> -				     int phase_deg)
+> +				     bool invert, int phase_deg, u32 nr_taps)
 
-# cat /sys/kernel/debug/ceph/*/metrics
-opened_files:0
-pinned_i_caps:5
-opened_inodes:0
-total_inodes:4
+Hmm.
 
-read_latency:0,0,0,0,0
-write_latency:5,914013,824797,1092343,103476
-metadata_latency:79,12856,1572,114572,13262
+>  {
+>  	u64 phase_period_ps;
+>  	u64 prop_delay_ps;
+>  	u64 clk_period_ps;
+> -	unsigned int tap;
+> -	u8 inverted;
+> +	u32 tap = 0;
+> +	struct aspeed_sdc *sdc = dev_get_drvdata(dev->parent);
+> 
+> -	phase_deg %= 360;
+> +	if (sdc->max_tap_delay_ps == 0)
+> +		return 0;
 
-read_size:0,0,0,0,0
-write_size:5,4194304,4194304,4194304,20971520
+I don't think just silently returning 0 here is the right thing to do.
 
-d_lease:11,0,29
-caps:5,68,10702
+What about -EINVAL, or printing a warning and using the old hard-coded 
+value?
 
+> 
+> -	if (phase_deg >= 180) {
+> -		inverted = ASPEED_SDHCI_TAP_PARAM_INVERT_CLK;
+> -		phase_deg -= 180;
+> -		dev_dbg(dev,
+> -			"Inverting clock to reduce phase correction from %d to %d degrees\n",
+> -			phase_deg + 180, phase_deg);
+> -	} else {
+> -		inverted = 0;
+> +	prop_delay_ps = sdc->max_tap_delay_ps / nr_taps;
+> +	clk_period_ps = div_u64(PICOSECONDS_PER_SECOND, (u64)rate_hz);
+> +
+> +	/*
+> +	 * For ast2600, if clock phase degree is negative, clock signal is
+> +	 * output from falling edge first by default. Namely, clock signal
+> +	 * is leading to data signal by 90 degrees at least.
+> +	 */
 
+Have I missed something about a asymmetric clock timings? Otherwise the 
+falling edge is 180 degrees away from the rising edge? I'm still not 
+clear on why 90 degrees is used here.
+
+> +	if (invert) {
+> +		if (phase_deg >= 90)
+> +			phase_deg -= 90;
+> +		else
+> +			phase_deg = 0;
+
+Why are we throwing away information?
+
+>  	}
+> 
+> -	prop_delay_ps = ASPEED_SDHCI_MAX_TAP_DELAY_PS / ASPEED_SDHCI_NR_TAPS;
+> -	clk_period_ps = div_u64(PICOSECONDS_PER_SECOND, (u64)rate_hz);
+>  	phase_period_ps = div_u64((u64)phase_deg * clk_period_ps, 360ULL);
+> 
+> -	tap = div_u64(phase_period_ps, prop_delay_ps);
+> -	if (tap > ASPEED_SDHCI_NR_TAPS) {
+> +	/*
+> +	 * The delay cell is non-uniform for eMMC controller.
+> +	 * The time period of the first tap is two times of others.
+> +	 */
+> +	if (nr_taps == 16 && phase_period_ps > prop_delay_ps * 2) {
+> +		phase_period_ps -= prop_delay_ps * 2;
+> +		tap++;
+> +	}
+> +
+> +	tap += div_u64(phase_period_ps, prop_delay_ps);
+> +	if (tap > ASPEED_SDHCI_MAX_TAPS) {
+>  		dev_dbg(dev,
+>  			 "Requested out of range phase tap %d for %d degrees of phase 
+> compensation at %luHz, clamping to tap %d\n",
+> -			 tap, phase_deg, rate_hz, ASPEED_SDHCI_NR_TAPS);
+> -		tap = ASPEED_SDHCI_NR_TAPS;
+> +			 tap, phase_deg, rate_hz, ASPEED_SDHCI_MAX_TAPS);
+> +		tap = ASPEED_SDHCI_MAX_TAPS;
+>  	}
+> 
+> -	return inverted | tap;
+> +	if (invert) {
+> +		dev_info(dev, "invert the clock\n");
+
+I prefer we drop this message
+
+> +		tap |= ASPEED_SDHCI_TAP_PARAM_INVERT_CLK;
+> +	}
+> +
+> +	return tap;
+>  }
+> 
+>  static void
+> @@ -202,13 +221,19 @@ aspeed_sdhci_phases_to_taps(struct device *dev, 
+> unsigned long rate,
+>  			    const struct mmc_clk_phase *phases,
+>  			    struct aspeed_sdhci_tap_param *taps)
+>  {
+> +	struct sdhci_host *host = dev->driver_data;
+> +	struct aspeed_sdhci *sdhci;
+> +
+> +	sdhci = sdhci_pltfm_priv(sdhci_priv(host));
+>  	taps->valid = phases->valid;
+> 
+>  	if (!phases->valid)
+>  		return;
+> 
+> -	taps->in = aspeed_sdhci_phase_to_tap(dev, rate, phases->in_deg);
+> -	taps->out = aspeed_sdhci_phase_to_tap(dev, rate, phases->out_deg);
+> +	taps->in = aspeed_sdhci_phase_to_tap(dev, rate, phases->inv_in_deg,
+> +				phases->in_deg, sdhci->phase_desc->nr_taps);
+> +	taps->out = aspeed_sdhci_phase_to_tap(dev, rate, phases->inv_out_deg,
+> +				phases->out_deg, sdhci->phase_desc->nr_taps);
+>  }
+> 
+>  static void
+> @@ -230,8 +255,8 @@ aspeed_sdhci_configure_phase(struct sdhci_host 
+> *host, unsigned long rate)
+>  	aspeed_sdc_set_phase_taps(sdhci->parent, sdhci->phase_desc, taps);
+>  	dev_dbg(dev,
+>  		"Using taps [%d, %d] for [%d, %d] degrees of phase correction at 
+> %luHz (%d)\n",
+> -		taps->in & ASPEED_SDHCI_NR_TAPS,
+> -		taps->out & ASPEED_SDHCI_NR_TAPS,
+> +		taps->in & ASPEED_SDHCI_MAX_TAPS,
+> +		taps->out & ASPEED_SDHCI_MAX_TAPS,
+>  		params->in_deg, params->out_deg, rate, host->timing);
+>  }
+> 
+> @@ -493,6 +518,7 @@ static const struct aspeed_sdhci_phase_desc 
+> ast2600_sdhci_phase[] = {
+>  			.enable_mask = ASPEED_SDC_S0_PHASE_OUT_EN,
+>  			.enable_value = 3,
+>  		},
+> +		.nr_taps = 15,
+>  	},
+>  	/* SDHCI/Slot 1 */
+>  	[1] = {
+> @@ -506,6 +532,31 @@ static const struct aspeed_sdhci_phase_desc 
+> ast2600_sdhci_phase[] = {
+>  			.enable_mask = ASPEED_SDC_S1_PHASE_OUT_EN,
+>  			.enable_value = 3,
+>  		},
+> +		.nr_taps = 15,
+> +	},
+> +};
+> +
+> +static const struct aspeed_sdhci_phase_desc ast2600_emmc_phase[] = {
+> +	/* eMMC slot 0 */
+> +	[0] = {
+> +		.in = {
+> +			.tap_mask = ASPEED_SDC_S0_PHASE_IN,
+> +			.enable_mask = ASPEED_SDC_S0_PHASE_IN_EN,
+> +			.enable_value = 1,
+> +		},
+> +		.out = {
+> +			.tap_mask = ASPEED_SDC_S0_PHASE_OUT,
+> +			.enable_mask = ASPEED_SDC_S0_PHASE_OUT_EN,
+> +			.enable_value = 3,
+> +		},
+> +
+> +		/*
+> +		 * There are 15 taps recorded in AST2600 datasheet.
+> +		 * But, actually, the time period of the first tap
+> +		 * is two times of others. Thus, 16 tap is used to
+> +		 * emulate this situation.
+> +		 */
+> +		.nr_taps = 16,
+
+I think this is a very indirect way to communicate the problem. The 
+only time we look at nr_taps is in a test that explicitly compensates 
+for the non-uniform delay. I think we should just have a boolean struct 
+member called 'non_uniform_delay' rather than 'nr_taps', as the number 
+of taps isn't what's changing. But also see the discussion below about 
+a potential aspeed,tap-delays property.
+
+>  	},
+>  };
+> 
+> @@ -515,10 +566,17 @@ static const struct aspeed_sdhci_pdata 
+> ast2600_sdhci_pdata = {
+>  	.nr_phase_descs = ARRAY_SIZE(ast2600_sdhci_phase),
+>  };
+> 
+> +static const struct aspeed_sdhci_pdata ast2600_emmc_pdata = {
+> +	.clk_div_start = 1,
+> +	.phase_desc = ast2600_emmc_phase,
+> +	.nr_phase_descs = ARRAY_SIZE(ast2600_emmc_phase),
+> +};
+> +
+>  static const struct of_device_id aspeed_sdhci_of_match[] = {
+>  	{ .compatible = "aspeed,ast2400-sdhci", .data = &ast2400_sdhci_pdata, },
+>  	{ .compatible = "aspeed,ast2500-sdhci", .data = &ast2400_sdhci_pdata, },
+>  	{ .compatible = "aspeed,ast2600-sdhci", .data = &ast2600_sdhci_pdata, },
+> +	{ .compatible = "aspeed,ast2600-emmc", .data = &ast2600_emmc_pdata, },
+
+This needs to be documented (and binding documentation patches need to 
+be the first patches in the series). Something further to consider is 
+whether we separate the compatibles or add e.g. an aspeed,tap-delays 
+property that specifies the specific delay of each logic element. This 
+might take the place of e.g. the max-tap-delay property?
+
+Andrew
+
+>  	{ }
+>  };
+> 
+> @@ -562,6 +620,11 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
+>  		goto err_clk;
+>  	}
+> 
+> +	ret = of_property_read_u32(pdev->dev.of_node, "max-tap-delay",
+> +			&sdc->max_tap_delay_ps);
+> +	if (ret)
+> +		sdc->max_tap_delay_ps = 0;
+> +
+>  	dev_set_drvdata(&pdev->dev, sdc);
+> 
+>  	parent = pdev->dev.of_node;
+> -- 
+> 2.17.1
