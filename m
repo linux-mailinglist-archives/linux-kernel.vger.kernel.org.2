@@ -2,249 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EBE43BA72
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8123E43BA78
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhJZTQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        id S238581AbhJZTRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhJZTQ5 (ORCPT
+        with ESMTP id S235650AbhJZTRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:16:57 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E8EC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:14:33 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 67so187624yba.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:14:33 -0700 (PDT)
+        Tue, 26 Oct 2021 15:17:19 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12850C061570;
+        Tue, 26 Oct 2021 12:14:55 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id q124so96761oig.3;
+        Tue, 26 Oct 2021 12:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e1Od3r3qPkF5gqs5aFmgK4aW8UvHyGg0exs5u3kOpa0=;
-        b=ANzzsKfUm9vSae7g+ybUBDvg9jE+GcvmfzWlk3f7mugii25iwlmsDsODDryutvtCle
-         DYcAu8yQ1+qtB3rdAr0j2/QtXBaxgDqTXvW30azJttqgblP4hgrCe3DUQgtAojRuQkOI
-         NspzrKmW2XpvnQaumNP/BjfaD7B8eqoaL6F20=
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y+zEz08kHBGhu7R8XTDsBEXzZSWT7wtgKoTDOb5ajPw=;
+        b=c3Zh+1X7UmneHWZsoRehuHIRL0fPB+Oh2m7C1gMeTxMsn5GtMj3ubGru9GUbhpiFie
+         ICxgB2ECUjWXlj3KL0HwVwl48NH7scCv/P9EbUpQbOZ8ZNpFoLRHF1bJHwVO8+UQM4j3
+         Gug2sz0w3Lid/qiZQ2lLp4rseSE4dVVCMsL8ibSx9jk1+fbN7RmmpfSxjje9u9H9oMzM
+         7B3cCKUvMymYp53obuYIbjcBz7nOEjZL+V7a+r1iixCX038YalNev+ncVOoMpsLSA7oc
+         lR88EWkS9EsaTeha9joeU52pm+FH+MWhMtxfP61y34khNwZrvkCQqAs4W7RVFFfN0N98
+         Iylg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e1Od3r3qPkF5gqs5aFmgK4aW8UvHyGg0exs5u3kOpa0=;
-        b=A7jHLTJ86o4A67WwUnjTn9CmEV38ZiWCL0GGji/v5o0ARnQeiH6aLYqWuTXFWH4+XK
-         6Py+wQz0AxyPby4VUJ6Vi/4SLMzzzi1RrsKtVtvm6Qv4GmkPs75ufq4PsyFwYVQnwoWC
-         v2Ixn5IcF3tTWVIufD6EzYqPLCfHPmNoKq8fO3wH0TDcE7ffADF5kSew7pqvMIUCeup/
-         +omHDCklsWCtWqHe0/GtvWdssxg61TcgxIBUv8cn0nAoiI8+NNF8hFfpb/PFUmUh4kC5
-         phQ+Ux491cRgvyJ3lJAiIls9BDcwszDReMjY1+MZB8DeswtRwpCD2pCSI0unIa5al1lW
-         JyUA==
-X-Gm-Message-State: AOAM530nXJrkBwo4vkllmT9RLXmN80kD2TNSm5j97ln3WMJX4FWMvk74
-        Pyzfrg3/a0D0E0CaISy08OjWVKQbBOVKdYdhPaBmrw==
-X-Google-Smtp-Source: ABdhPJxC8ykyO0LlKiUPOTjbY7wYtV5Eg4VAmMAB9V5oV/P2EMLduP9B6fK+tqolSIZhDs36vR9F3kQvl0EBYn/xQV0=
-X-Received: by 2002:a25:ea48:: with SMTP id o8mr25556562ybe.14.1635275671133;
- Tue, 26 Oct 2021 12:14:31 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=y+zEz08kHBGhu7R8XTDsBEXzZSWT7wtgKoTDOb5ajPw=;
+        b=Z/KA4K5ytnJ3g9ofGfZWU/6Zt2C+QWdtB+ecprPA5mDvyYhJDSCczh8Q6Pfzmc2+td
+         XjKNGZR462v4/37PvJFrY8zgiXsf+3tjHo5kRzvpkzzPphfjFG+flDlJ2KghherKt6de
+         8wwU3KEZrULgHpesB1a/E332uzg+qxj54cpTdHGkHmnkuqg1TfxblSrM4Frt0Xbs2G+H
+         D7zFMDPfD5S6V8Z1K1jXJYDGRGnXM6zumq1NduSNAeyiD8/BGdLT37icj9oByy9TfalJ
+         pEz4LT6aj4vZhpN+5PN12JaXXtdT9Forj1JFubXsfz+eOrkmvugo1EiIMTLEzxN5eyq3
+         K6mA==
+X-Gm-Message-State: AOAM5301ElMseE6iExmMLbyS85T03sl5pjDOSGJnF6/gperT8uFBng0v
+        iY0UEe6/MI6IEDfI2CuhX0g=
+X-Google-Smtp-Source: ABdhPJxmUUy5GSDH9I8l7WmEPlWDuVIPbxYRijNT0y+YZeFKIli/fTQ8lV+EJlpZtt/x9IZ0dYnMIA==
+X-Received: by 2002:a54:4401:: with SMTP id k1mr450772oiw.25.1635275693047;
+        Tue, 26 Oct 2021 12:14:53 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j7sm802613oon.13.2021.10.26.12.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 12:14:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 26 Oct 2021 12:14:49 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 00/50] 4.9.288-rc1 review
+Message-ID: <20211026191449.GA2014125@roeck-us.net>
+References: <20211025190932.542632625@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20211021140552.v2.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
- <CAE-0n50zgG963E-xPA3H7NJd9=iAQaV5YYdrN9zHPsTj93TE-A@mail.gmail.com>
-In-Reply-To: <CAE-0n50zgG963E-xPA3H7NJd9=iAQaV5YYdrN9zHPsTj93TE-A@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Tue, 26 Oct 2021 12:14:20 -0700
-Message-ID: <CA+cxXhnXVJYs3Q31N8iG+Dt5b+BLTenWan1i=ooPs2kwZq8Peg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] drm/bridge: parade-ps8640: Enable runtime power management
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, dianders@chromium.org,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Mon, Oct 25, 2021 at 09:13:47PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.288 release.
+> There are 50 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+> Anything received after that time might be too late.
+> 
 
-On Mon, Oct 25, 2021 at 1:05 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-10-21 14:05:59)
-> > Fit ps8640 driver into runtime power management framework:
-> >
-> > First, break _poweron() to 3 parts: (1) turn on power and wait for
-> > ps8640's internal MCU to finish init (2) check panel HPD (which is
-> > proxied by GPIO9) (3) the other configs. As runtime_resume() can be
-> > called before panel is powered, we only add (1) to _resume() and leave
-> > (2)(3) to _pre_enable(). We also add (2) to _aux_transfer() as we want
-> > to ensure panel HPD is asserted before we start AUX CH transactions.
-> >
-> > The original driver has a mysterious delay of 50 ms between (2) and
-> > (3). Since Parade's support can't explain what the delay is for, and we
-> > don't see removing the delay break any boards at hand, remove the dalay
->
-> s/dalay/delay/
-Thanks.
-I've fixed it in v3.
->
-> > to fit into this driver change.
-> >
-> > Besides, rename "powered" to "pre_enabled" and don't check for it in
->
-> "Besides" doesn't make sense here. Probably "In addition" or "Also"?
-Thanks.
-I've fixed it in v3.
->
-> > the pm_runtime calls. The pm_runtime calls are already refcounted so
-> > there's no reason to check there. The other user of "powered",
-> > _get_edid(), only cares if pre_enable() has already been called.
-> >
-> > Lastly, change some existing DRM_...() logging to dev_...() along the
-> > way, since DRM_...() seem to be deprecated in [1].
-> >
-> > [1] https://patchwork.freedesktop.org/patch/454760/
-> >
-> > Signed-off-by: Philip Chen <philipchen@chromium.org>
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > index 3aaa90913bf8..220ca3b03d24 100644
-> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> > @@ -148,6 +149,25 @@ static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
-> >         return container_of(aux, struct ps8640, aux);
-> >  }
-> >
-> > +static void ps8640_ensure_hpd(struct ps8640 *ps_bridge)
-> > +{
-> > +       struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
-> > +       struct device *dev = &ps_bridge->page[PAGE2_TOP_CNTL]->dev;
-> > +       int status;
-> > +       int ret;
-> > +
-> > +       /*
-> > +        * Apparently something about the firmware in the chip signals that
-> > +        * HPD goes high by reporting GPIO9 as high (even though HPD isn't
-> > +        * actually connected to GPIO9).
-> > +        */
-> > +       ret = regmap_read_poll_timeout(map, PAGE2_GPIO_H, status,
-> > +                               status & PS_GPIO9, 20 * 1000, 200 * 1000);
-> > +
-> > +       if (ret < 0)
-> > +               dev_warn(dev, "HPD didn't go high: %d", ret);
->
-> Missing newline on the print message.
-Thanks.
-I've fixed it in v3.
->
-> > +}
-> > +
-> >  static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> >                                    struct drm_dp_aux_msg *msg)
-> >  {
-> > @@ -171,6 +191,9 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> >         if (msg->address & ~SWAUX_ADDR_MASK)
-> >                 return -EINVAL;
-> >
-> > +       pm_runtime_get_sync(dev);
-> > +       ps8640_ensure_hpd(ps_bridge);
->
-> Shouldn't we bail out of here with an error if we can't ensure hpd?
-Sounds about right.
-I fixed this in v3.
-PTAL.
->
-> > +
-> >         switch (request) {
-> >         case DP_AUX_NATIVE_WRITE:
-> >         case DP_AUX_NATIVE_READ:
-> > @@ -180,14 +203,15 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> >         case DP_AUX_I2C_READ:
-> >                 break;
-> >         default:
-> > -               return -EINVAL;
-> > +               ret = -EINVAL;
-> > +               goto exit;
-> >         }
-> >
-> >         ret = regmap_write(map, PAGE0_AUXCH_CFG3, AUXCH_CFG3_RESET);
-> >         if (ret) {
-> >                 DRM_DEV_ERROR(dev, "failed to write PAGE0_AUXCH_CFG3: %d\n",
-> >                               ret);
-> > -               return ret;
-> > +               goto exit;
-> >         }
-> >
-> >         /* Assume it's good */
-> > @@ -213,7 +237,7 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> >                                 DRM_DEV_ERROR(dev,
-> >                                               "failed to write WDATA: %d\n",
-> >                                               ret);
-> > -                               return ret;
-> > +                               goto exit;
-> >                         }
-> >                 }
-> >         }
-> > @@ -228,7 +252,7 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> >         if (ret) {
-> >                 DRM_DEV_ERROR(dev, "failed to read PAGE0_SWAUX_STATUS: %d\n",
-> >                               ret);
-> > -               return ret;
-> > +               goto exit;
-> >         }
-> >
-> >         switch (data & SWAUX_STATUS_MASK) {
-> > @@ -250,9 +274,11 @@ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> >                 len = data & SWAUX_M_MASK;
-> >                 break;
-> >         case SWAUX_STATUS_INVALID:
-> > -               return -EOPNOTSUPP;
-> > +               ret = -EOPNOTSUPP;
-> > +               goto exit;
-> >         case SWAUX_STATUS_TIMEOUT:
-> > -               return -ETIMEDOUT;
-> > +               ret = -ETIMEDOUT;
-> > +               goto exit;
-> >         }
-> >
-> >         if (len && (request == DP_AUX_NATIVE_READ ||
->
-> It may be simpler to understand the diff if the transfer function still
-> exited the same way and a small wrapper function was put around this to
-> do the runtime PM operations.
-Thanks for the suggestion.
-I've posted v3 following this route.
-PTAL.
+Build results:
+	total: 163 pass: 163 fail: 0
+Qemu test results:
+	total: 394 pass: 394 fail: 0
 
->
->
->         pm_runtime_get_sync();
->         if (ps8640_hpd_asserted())
->                 ret = ps8640_aux_transfer_msg();
->         pm_runtime_mark_last_busy();
->         pm_runtime_put_autosuspend();
->
->         return ret;
->
->
-> > @@ -587,6 +611,13 @@ static int ps8640_probe(struct i2c_client *client)
-> >         ps_bridge->aux.transfer = ps8640_aux_transfer;
-> >         drm_dp_aux_init(&ps_bridge->aux);
-> >
-> > +       pm_runtime_enable(dev);
-> > +       pm_runtime_set_autosuspend_delay(dev, 500);
->
-> Presumably 500 is chosen because the message transfer speed is faster
-> than that? Can we get a comment in the code for that?
-Added a comment in v3.
-PTAL.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
->
-> > +       pm_runtime_use_autosuspend(dev);
-> > +       ret = devm_add_action_or_reset(dev, ps8640_runtime_disable, dev);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> >         drm_bridge_add(&ps_bridge->bridge);
-> >
-> >         return 0;
+Guenter
