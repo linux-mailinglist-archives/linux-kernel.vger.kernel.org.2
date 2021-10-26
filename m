@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4E443B3C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE05143B3C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236469AbhJZOQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
+        id S235281AbhJZORA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236472AbhJZOQt (ORCPT
+        with ESMTP id S236459AbhJZOQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:16:49 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27501C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:14:26 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so2385243pjl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:14:26 -0700 (PDT)
+        Tue, 26 Oct 2021 10:16:58 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD805C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:14:34 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id c4so6530564plg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:14:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gaT9YXZ0xrDSNNAbM8v6pM4zbVQyGQBBagIJCWsl/6s=;
-        b=JR5eRiW1RLfZq/tyB7Hjzkm/FV1RDwTPX189jyBEgX483U1u+Te/MQ46mIKagHIGD9
-         s4H+f/tC15uHr1BtKshMChAIwwrVkTsVVkdiLCM9+xWn2gwD+AsdoFIIS/UzUSO2NZ8T
-         QznfOcTt++nJjKSyCmHInEQ0lrME9y1Sup+F+1SVa0/qBGGqzTr8jW/Gx5CsQd+nJJWR
-         SqtWcNUd5Lp3gRVT+CosQXjCzv3yk2O388EJmbHHRCG/YZVtqLncuRI43/kkUa6ogJVz
-         2xoBGkpdYwfQ8uf+hlq8OlAG86G7KWYVjP7qRBGurV2ufq95dYwaY9+73SyPWGeAVPoX
-         i03w==
+        bh=r0qjm7jPQqP31FdhJus4GoBFS4vikb3c2lNdWiLTWxY=;
+        b=Ggfwe06peSYkfJCJpCFzEdWKERSBo4c/NHpwOXSee18xCOqBThGZijEH68PmGREHXs
+         fmoCL3OC8ROxFZrolaGBpmTBqhxCxtYs8SKcI2TMnQgHxs8YOY8+LcYnVBsMf7LoPbAM
+         Tqsdg2Uf726MPGtLOlNi7jJXG/Gc59HlS3awTJKVgMJ01guO9mcYjUoO4aLA1RTAF9cF
+         Hdy+g/HwYRqOxJvi4Ga3wqI/2dHlZp1SZYyTXvMd2Gw4cfo8cX5tN9aFVm9sKGuscCuQ
+         3X31PVcx663BhFQWtoDg1I/+WBNFmvSkpQHPrzCuhsGD0XV3hRfqT22cN7Q4pXrNVkyF
+         3ceg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gaT9YXZ0xrDSNNAbM8v6pM4zbVQyGQBBagIJCWsl/6s=;
-        b=RmFlfKM//a7YmAttDN8S2OaMHM3g73vm1lq54FVw/gGCv7qkA8els7tCnSosogkQp7
-         kqoR4rBcOWO3Qjfo+qIBH4i5U0jISoCaydYl1Y9PomlHPeeFi5uOl2VF5ylRE7fD6Yty
-         xVMNsb3TvzewJ41t5YKgvoGv++eR31HFFqyPsWypb4d3NWzC2AjhuryaYyp+brqK1NNF
-         1GSne2Q2nOWlvFLFC+r9VBoR4YQn0vbxYwjx6l54llkWJ8LCgbKzbxsbmcYYUDm/+IdK
-         jTcS7dLg78+WEDavG92DUMuHgUrcaft3t44AGcpHYe/rE1gwB7hPgIEAbLTw9X5tOHyO
-         Wi3g==
-X-Gm-Message-State: AOAM532z9qSUcZXOYOxDVbux12jYqq56T4dxMf5D/hGZZHquFmflpu36
-        X002LgV19JrmjTrakK5rSeRALCPsAQc=
-X-Google-Smtp-Source: ABdhPJxvHVXzG81AduCjZwG99irAYpbUy3i+tBUvlH2oyFmXvdyKVQMrJb4x7AOxvKwuM7xh+xeMOw==
-X-Received: by 2002:a17:902:7246:b0:138:a6ed:66cc with SMTP id c6-20020a170902724600b00138a6ed66ccmr23303181pll.22.1635257665594;
-        Tue, 26 Oct 2021 07:14:25 -0700 (PDT)
+        bh=r0qjm7jPQqP31FdhJus4GoBFS4vikb3c2lNdWiLTWxY=;
+        b=CY5WpIocN3iGw4U8B3WEtOqOrh+JXM6RAO6Y6GBGopNtaIl5sdErenJ2c+i6UBq71V
+         Za8qwf1LPe8esrZgs2Wqh+IMNSUvndYXDouO09dpYsUCy9QHd+q2hpDULDlyiwKIJqeV
+         mwh9VnEnPr0LBMoecvl6JhKGwujKVS+xm32yvaoHeew4Inz11nFpVxpIn9iaEOel3qf1
+         7xO3zuzWRvxKycGyd7gpUiHxmbxFYv8pCz1S2XZr7cu+1suwu+6l9+q08nR/u9Kx8jxI
+         PgZ+jOwUPbC27kekB95pOXl6qbBtfgfm+sluEV9NAUWGaNOdi90bJQ27LVwpx+bw+NGE
+         L4Vw==
+X-Gm-Message-State: AOAM531TqJyr/+GXe9tsW+z7ZDmQAyXRH7ousVMgjnAweREHleh1BkQg
+        6/naVUhRY2BfOCuOl8lZ0Z3FZmuzSE4=
+X-Google-Smtp-Source: ABdhPJxRbNyuSHfUqQinYK5ylVj8CEHXmHOhq3aBfkp4H18L9FOXrXrRlVkS3YuiiunWst0h/Bs3bg==
+X-Received: by 2002:a17:90a:f990:: with SMTP id cq16mr381028pjb.196.1635257673951;
+        Tue, 26 Oct 2021 07:14:33 -0700 (PDT)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id g37sm2162407pgg.89.2021.10.26.07.14.24
+        by smtp.gmail.com with ESMTPSA id 141sm8353033pge.23.2021.10.26.07.14.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:14:25 -0700 (PDT)
+        Tue, 26 Oct 2021 07:14:32 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 02/50] x86/entry: Use the correct fence macro after swapgs in kernel CR3
-Date:   Tue, 26 Oct 2021 22:13:32 +0800
-Message-Id: <20211026141420.17138-3-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>, Chester Lin <clin@suse.com>
+Subject: [PATCH V4 03/50] x86/traps: Remove stack-protector from traps.c
+Date:   Tue, 26 Oct 2021 22:13:33 +0800
+Message-Id: <20211026141420.17138-4-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,54 +75,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The commit c75890700455 ("x86/entry/64: Remove unneeded kernel CR3
-switching") removes a CR3 write in the faulting path of load_gs_index.
+When stack-protector is enabled, the compiler adds some instrument code
+at the beginning and the end of some functions. Many functions in traps.c
+are non-instrumentable.  Moreover, stack-protector code in the beginning
+of the affected function accesses the canary that might be watched by
+hardware breakpoints which also violate the non-instrumentable
+nature of some functions and might cause infinite recursive #DB because
+the canary is accessed before resetting the dr7.
 
-But the path's FENCE_SWAPGS_USER_ENTRY has no fence operation if PTI
-is enabled.  Rahter, it depends on the CR3 write of SWITCH_TO_KERNEL_CR3.
-So the path should use FENCE_SWAPGS_KERNEL_ENTRY if SWITCH_TO_KERNEL_CR3
-is removed.
+So it is better to remove stack-protector from traps.c.
 
-Fixes: c75890700455 ("x86/entry/64: Remove unneeded kernel CR3 switching")
+It is also prepared for later patches that move some entry code into
+traps.c, some of which can NOT use percpu register until gsbase is
+properly switched.  And stack-protector depends on the percpu register
+to work.
+
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ arch/x86/kernel/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 1f98188e83ef..9d468c8877e2 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -994,11 +994,6 @@ SYM_CODE_START_LOCAL(error_entry)
- 	pushq	%r12
- 	ret
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 2ff3e600f426..8ac45801ba8b 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -50,6 +50,7 @@ KCOV_INSTRUMENT		:= n
  
--.Lerror_entry_done_lfence:
--	FENCE_SWAPGS_KERNEL_ENTRY
--.Lerror_entry_done:
--	ret
--
- 	/*
- 	 * There are two places in the kernel that can potentially fault with
- 	 * usergs. Handle them here.  B stepping K8s sometimes report a
-@@ -1021,8 +1016,15 @@ SYM_CODE_START_LOCAL(error_entry)
- 	 * .Lgs_change's error handler with kernel gsbase.
- 	 */
- 	SWAPGS
--	FENCE_SWAPGS_USER_ENTRY
--	jmp .Lerror_entry_done
-+
-+	/*
-+	 * The above code has no serializing instruction.  So do an lfence
-+	 * to prevent GS speculation, regardless of whether it is kernel
-+	 * gsbase or user gsbase.
-+	 */
-+.Lerror_entry_done_lfence:
-+	FENCE_SWAPGS_KERNEL_ENTRY
-+	ret
+ CFLAGS_head$(BITS).o	+= -fno-stack-protector
+ CFLAGS_cc_platform.o	+= -fno-stack-protector
++CFLAGS_traps.o		+= -fno-stack-protector
  
- .Lbstep_iret:
- 	/* Fix truncated RIP */
+ CFLAGS_irq.o := -I $(srctree)/$(src)/../include/asm/trace
+ 
 -- 
 2.19.1.6.gb485710b
 
