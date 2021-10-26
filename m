@@ -2,232 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F8343ACF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E28843ACFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhJZHQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:16:10 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44000 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhJZHQI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:16:08 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6238821940;
-        Tue, 26 Oct 2021 07:13:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635232424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XIm7H1NXWQguuHEZW7jiUPfL4o978yLyAtodWckzLYY=;
-        b=OiXOrzavk+ZMCxE4aEaKbQH+B+PWdUpKOYJ58wshKojoNJd2V2MrgqckBz2BcivwISOdYc
-        mNGAa6KfooqJ8tj9dNm3AodRvKeN+HHtrNXbAv56pQB6p91vRGmW4Wr7Krrgdd9xMiCC7g
-        oz6xH+B7JV5Xnz8Dh9+YhhhkYaYWX24=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2E5A13CCA;
-        Tue, 26 Oct 2021 07:13:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7H0bOaeqd2GLLwAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 26 Oct 2021 07:13:43 +0000
-Subject: Re: [PATCH] xen: Fix implicit type conversion
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, boris.ostrovsky@oracle.com,
-        sstabellini@kernel.org
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <1635218868-2437564-1-git-send-email-jiasheng@iscas.ac.cn>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <b85fc46c-1c0c-87e6-3221-c13fb98856ec@suse.com>
-Date:   Tue, 26 Oct 2021 09:13:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233375AbhJZHRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:17:11 -0400
+Received: from mail-eopbgr1410115.outbound.protection.outlook.com ([40.107.141.115]:13536
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230286AbhJZHRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 03:17:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=laoWVw8XVUqiQUhQcPaX7Q/XximFISvdEW5leEtmG0DPjBhief5+/Gu/TqeEtTS1Pp8HcR1+QTQCopxMf6JCo8wOex1gFCphLZxtgNn2yOimULXd4CEcQSE4CjrRqDThKWnsbrHRxuMBF9bs0wO2uiiNvvmb25NOWps9LASoT3bDMe4I1++EFJmcI6a6HFQkrRVS3wrBI0er3oEJdsjkeDJTvKlSeEAVIYH0lhjTjkZ0DZCAa25ltoi3pz76NMcEOYm2o47aEB2ms8JFdeHeaskJoBQFiGoxGSqhGBw471ENn/MWktqbSogSW2l5XScZlv5z8Li/bhLO+5sR0xSzcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9a2aVUKjJ3GO4a1tXU6U6Ega/zOYq03J8U5QoQg1ap0=;
+ b=LCLzFWc4mcJct0omERZ6tCWN8y+UUY1PcY3zTIv0y6GvWQZyYRVuZdvrY+pM035br3dV/8iC7uZEvziD+2Mj9ghQd3L0a+YheE6LE70BxpOcKT4pGO5q2qDUKb+VcPDi6eBLvOQUebVgqArOrXAiu1n42cs25ljNwATCywBstgtIwKuYd3IVD4CGzzXZgH7Q2mZKO9LS65naxX5k2pJ5Ka2JIfWNp1nH3+/WXIspX3mC+NtCxji2mBB/2mjHIyWi1Q7RbeMMjebcMdTlxPCjS3l3PaWGQOc0n3swZB9dyRh8ZNTC3N3BSrzKp97NiatTQ8Wl9T89JBRqfw548bCVew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9a2aVUKjJ3GO4a1tXU6U6Ega/zOYq03J8U5QoQg1ap0=;
+ b=APb32cO7SGh7hQ8sGtA/kqYQ/PqtlDipowHvJ5FgJSdTSSed7LORonp12pQBtH2bOq40qOpc+MfZg2M99GkLIUGASUtM6Tx/hZHwd4lk0IHRlAQGQqLCS73qylVyWUrr0FeakFOKdEKeV6dRRSdw0+PTz6LFWjSjD+OcQvReh1M=
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYBP286MB0078.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8020::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Tue, 26 Oct
+ 2021 07:14:44 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
+ 07:14:43 +0000
+From:   YE Chengfeng <cyeaa@connect.ust.hk>
+To:     "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: drivers/clk/mediatek: suspected missing null check for return pointer
+ of mtk_alloc_clk_data
+Thread-Topic: drivers/clk/mediatek: suspected missing null check for return
+ pointer of mtk_alloc_clk_data
+Thread-Index: AdfKOSM6J+UdszEsTw24M+/V25HD0Q==
+Date:   Tue, 26 Oct 2021 07:14:43 +0000
+Message-ID: <TYCP286MB118864E74927A579396451588A849@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=none action=none
+ header.from=connect.ust.hk;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ff3d5cd6-ea6f-4e86-63db-08d998504909
+x-ms-traffictypediagnostic: TYBP286MB0078:
+x-microsoft-antispam-prvs: <TYBP286MB007871E5224844A0B516E3918A849@TYBP286MB0078.JPNP286.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SMAwlpYV83C+wqR4MRH4r+9DgzD4kXQ+d5IFwUwsOeA2NAoeX2ekGvyrxhliemWAaFeIRLP0EP6W2P7jwrzlGF/wry2V2VqiJIZVsfn2XD0aEZBKrXAov0WVX9lGzRAru3v1EoS0OU1Py0x8uUXpX0kYdBigkIXijr+UxHyQMivNcxzUjVoGSoUc7yRKwfSFVBLTEgU25/amSBCLuV5I/Hp9i5CYRbpZ/SEUNTwmEHuDyycArN+ubYy6phcxRl44K15RM9T5LSknSAS1MsakSY3XosMJLa3vJYj7bfBvvLhQO8/Nzabj2I6wug5oh/rOw7urXjRIibB0bIKS0bbRtmlpSOm8cUJ31vGNiuVxuWM2LxCe4XhXsN1IrOGSSWoTm7oDr1ZVt9dMgW0KXbncgGvrZ0gsukPMemjgxVGdfXiWRBkvuHf1mUY1panIvPPHX0cOSAq3hLiXRQLoOU5vV2r+Kb+/vM2GMVtn32zdvm2SBGfC+8WX2zldXSZVcI8iYVA3RCxi45frZ2t0l/7x+37wxCnv5u3Kmu/ua97V1DIbhtOhNsdAWlzm+mMbjDZyNUjwmLVsA8uUbLbP1WGtSUYY9fRale32SEcyVWp79mb6dIGgd8BDCYZ9Z/hwiU2hqrMObkiH0kiKSX0T9najLWa+A5pDx5NMaOxtwD0jqRLTOgk79aFyahwaMeVDsncMistk4/HKIANEbZk8NNKbf2lGeQB1WAzGQiUW1uZTFcVhOsT6Y1vEqTME9PdjIe8f/b2FmmxBMl84rdLnkU7R5qUNtCiCKXvSujFoFVlhdE4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(66556008)(6506007)(71200400001)(66446008)(26005)(33656002)(186003)(966005)(66476007)(2906002)(76116006)(64756008)(4744005)(38070700005)(4326008)(8676002)(110136005)(122000001)(66946007)(316002)(786003)(55016002)(38100700002)(5660300002)(8936002)(508600001)(9686003)(52536014)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OzWzr/t5XVA5E186atUAV3SIN4OXKfCnQAjNP7IlJnF42q/bYMGr+kmuOcBa?=
+ =?us-ascii?Q?rIe323mnHqPIJbqWCq1A1JUK4mpl7Sxa6BhAIxqDBXKO36fa7Tw2WBg+4kLR?=
+ =?us-ascii?Q?YFCdl+L53Ajh9CnUX8HVm8doHysEaI1IjCzMpG3tAUPkxt3qKVv8hgAyR0oi?=
+ =?us-ascii?Q?Kwjb/DMqVfQ9g1WaV290MDAoWHZ1+wAb5MMh29bkGaneNo9STKyU34/29o6F?=
+ =?us-ascii?Q?16yf/PtQNBsaqdVE2Ch/1077u3XO8Y8G+Kd/KdaytQObwK5xYKXmP1DOib2g?=
+ =?us-ascii?Q?jLsUvG8H8O7bL1Y3Ynn/sn0REFDuKh+Ath9u223AayXrmCmmxKt6/VuHiLhp?=
+ =?us-ascii?Q?0/r6lUSxQEVVuf1N4YGx/BfrcUJCt28rsQhAg78l+yzKCKfDi5wsOHnbtx8P?=
+ =?us-ascii?Q?YOiHH0hH39Kh8iIY2zRETV2D2vONT6nsRHx5Og/NGiR1TcOVAkcNtX+1W/E9?=
+ =?us-ascii?Q?YzM1KiyFW+2nEpy1GXyVYRAJiP7Cfj3mrZVzT8pvJEFRU7V0yq39nsufLHjc?=
+ =?us-ascii?Q?9JWSWq+pVXSZBNuROs8Uem0sGXO4uE6Zw+9JIxVeYbnXY0g3Kc/zvJEaZTzK?=
+ =?us-ascii?Q?n5PcpKPFybCBun7w4hqK0fBM8P9F+kqfYnR7tsmCPNv80mxcoMTqNtEL94iN?=
+ =?us-ascii?Q?U/X9S7Ei8a2/DlRhMVVovFGxI61rlUYjEvhVo6u0i2xj76FlasbpIXeXAdWQ?=
+ =?us-ascii?Q?YicP5HZG0ckxwn5nMqx9VYYcMyLK8cXzynJgb1SO6o05Fqw6XOEeYxNm202X?=
+ =?us-ascii?Q?FMTAt8f5S7CMbr4o+7xiP90A5xXOkyIQOg7MKR+JcOv/7hpuMfjrtTcREKtM?=
+ =?us-ascii?Q?NOyWrDcedB6JR62GI+s0APIWeGWWRMe33LUEeLNypVdFg0TtRgEHcAUdK6XR?=
+ =?us-ascii?Q?c/03gHjfdp2JXHvXOfiekOJVrYLFBU5i+FuxoXj++GAStt+v0bIg9P53pUZm?=
+ =?us-ascii?Q?Gt/vJQE0GSZEHgkc03nCquxemjxXVF6FLhZvUYAJh/Mwzs+gqbUIO6LdPtBb?=
+ =?us-ascii?Q?kau7dx4lMtw4ddzx2j+6AYM8FJZbibj50W5IE/ApSwb0z9cQ2VYX/FIQMltr?=
+ =?us-ascii?Q?iGH2raBGuCU1ItrxwBhjWx+15rzQxTjzOPKxQ/E3hUjSvWZxeT3760229Sr2?=
+ =?us-ascii?Q?J2ZaLvj+yIAmphOmRBGsePMOq6z62clD73Z0WofDtZhiPLypv0I1v4OR/wZM?=
+ =?us-ascii?Q?u8pIgcxGRVg3nHjq6EeQ0TJqLj15AM28KLZq6kzqOfDmQbGx5elV3/c8DpzS?=
+ =?us-ascii?Q?zCEriIWh+DuFX6mA02CgcNihQ66cdc5TEoSDwb6hHJrvIhPN1meW1aOybosh?=
+ =?us-ascii?Q?pC+e1sfmtJdbV+ZI7t8EsiyygcnHMw0NoQZ91FrA0Y/ElRaxMAG8uPqCGNeC?=
+ =?us-ascii?Q?NUupKOEkgbCGfIC7XIBsyX/9A9qI+zjuhcYAjSosX7ZAG+EFSb4nFMnAysHs?=
+ =?us-ascii?Q?DVzVi5OvJ3QtQ46THoO9WROGtOzdvd+UOAVeQLKaJU99FXdmACIyfMG3hi46?=
+ =?us-ascii?Q?qu1rY8loLIciVtqWFxDweEfHCvhIKzEL9e1FB9Hf1Eg0bCDpVIE3ytNzU63L?=
+ =?us-ascii?Q?D/J0azsjrkdBWB+j3vecJ8+nJdZO5ClkmjOGFq9mTPfeuGb/EaudIiAs1WwS?=
+ =?us-ascii?Q?iZs1/1jciiWJjR3Ifb+yGJo=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1635218868-2437564-1-git-send-email-jiasheng@iscas.ac.cn>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="99XBLDRORLEoblM9AoV0HXYmPlxUqqJQ8"
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff3d5cd6-ea6f-4e86-63db-08d998504909
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2021 07:14:43.7045
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iWJzQ/3j3GNnnAxcJMRd1Yw5EdGTgdiRjYirVNDsg2HJeoyG9fd7cu9JWUJ1riPIIdGpHITETdQOZUifnA1G4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBP286MB0078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---99XBLDRORLEoblM9AoV0HXYmPlxUqqJQ8
-Content-Type: multipart/mixed; boundary="qJkaCkRICl179ZSYKmG00kVO89yJ36MR1";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jiasheng Jiang <jiasheng@iscas.ac.cn>, boris.ostrovsky@oracle.com,
- sstabellini@kernel.org
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Message-ID: <b85fc46c-1c0c-87e6-3221-c13fb98856ec@suse.com>
-Subject: Re: [PATCH] xen: Fix implicit type conversion
-References: <1635218868-2437564-1-git-send-email-jiasheng@iscas.ac.cn>
-In-Reply-To: <1635218868-2437564-1-git-send-email-jiasheng@iscas.ac.cn>
+Hi,
 
---qJkaCkRICl179ZSYKmG00kVO89yJ36MR1
-Content-Type: multipart/mixed;
- boundary="------------BF424F510ECB9792D93575FD"
-Content-Language: en-US
+https://github.com/torvalds/linux/blob/master/drivers/clk/mediatek/clk-mt76=
+22.c#L622
 
-This is a multi-part message in MIME format.
---------------BF424F510ECB9792D93575FD
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+The return pointer of mtk_alloc_clk_data could be null, but null check is m=
+issing. It seems like there could be a potential null-pointer dereference p=
+roblem at #line 639 and so on. Would you like to spare some time to have a =
+look at it?
 
-On 26.10.21 05:27, Jiasheng Jiang wrote:
-> The variable 'i' is defined as UINT.
-> However in the for_each_possible_cpu, its value is assigned to -1.
-> That doesn't make sense and in the cpumask_next() it is implicitly
-> type conversed to INT.
-> It is universally accepted that the implicit type conversion is
-> terrible.
-> Also, having the good programming custom will set an example for
-> others.
-> Thus, it might be better to change the definition of 'i' from UINT
-> to INT.
->=20
-> Fixes: 3fac101 ("xen: Re-upload processor PM data to hypervisor after S=
-3 resume (v2)")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->   drivers/xen/xen-acpi-processor.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/xen/xen-acpi-processor.c b/drivers/xen/xen-acpi-pr=
-ocessor.c
-> index df7cab8..2551691 100644
-> --- a/drivers/xen/xen-acpi-processor.c
-> +++ b/drivers/xen/xen-acpi-processor.c
-> @@ -518,7 +518,7 @@ static struct syscore_ops xap_syscore_ops =3D {
->  =20
->   static int __init xen_acpi_processor_init(void)
->   {
-> -	unsigned int i;
-> +	int i;
-
-I agree with the approach, but could you please fix all the other
-similar issues in that file, please?
-
-The same should be done in free_acpi_perf_data() and in
-xen_upload_processor_pm_data().
-
-
-Juergen
-
---------------BF424F510ECB9792D93575FD
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------BF424F510ECB9792D93575FD--
-
---qJkaCkRICl179ZSYKmG00kVO89yJ36MR1--
-
---99XBLDRORLEoblM9AoV0HXYmPlxUqqJQ8
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmF3qqcFAwAAAAAACgkQsN6d1ii/Ey+D
-TwgAiaYgm6f+6d+KtD421JSmH4FGKVs85spfNEElB4K7+haiEEg2zF6Jc58dsZY5WClzZerZCakD
-BovSX+M/aWTQ1p/2yvtjp4hMzcB3IQXuACXT30Z1nXMbLoIPXMmZaN60946iW3rJ70RSWjbsKzH4
-OBiGZJI6KjmnO95sRjVVpLrUO+Y7uVMATRSWmH9kJQVGa41I3Gw6km5ScZncIp3K/Qh6Ahg9aUzm
-Z8ZlwZu4j2I/8t0/7bfhfT7IZkMMQsLGDr4TJ+Ee79Szc/3mDQSp/xxai3EAjRufyYou+DHfrgml
-LH2sOcqgBCKQ5JoSt1+kKdTSFoxCpbFHJSbXcyhyeA==
-=AWwJ
------END PGP SIGNATURE-----
-
---99XBLDRORLEoblM9AoV0HXYmPlxUqqJQ8--
+Thanks so much,
+Chengfeng
