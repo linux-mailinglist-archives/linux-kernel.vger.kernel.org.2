@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9687543B2BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0A743B2C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236082AbhJZM4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:56:03 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:35449 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233805AbhJZMz7 (ORCPT
+        id S235169AbhJZM75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:59:57 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:10678 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232718AbhJZM7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:55:59 -0400
-Received: by mail-oi1-f178.google.com with SMTP id r6so20419687oiw.2;
-        Tue, 26 Oct 2021 05:53:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o0sKLuOigkZzRb9mIiQk8+FcI77ASATTLv5/Ga7FhFA=;
-        b=LiN5b/hUlWdKTy22hfFNhcVPgP2d9oZTpnTBCB4F+ceWJ7c0gDrb88A18gFTBSItm+
-         ciwbn06AoG+RBwZ0QvaH7xW+TvWFIZJQMhatFiXk6Oye8CM7d3bAzLoe41hR4vyfYq2U
-         Q4ysH9xFsXdUZvVwM9ANoZYj0sNxG/BNciH8Na13e9xtiGUpTmv0HxCY9xH7HJk9r3h4
-         4UkXOT7YcXDuzW1zLyT4G+aqmufgi5UFL3Kd8NZZpZ6d/u2++EN6rcs2Bh9aI7hRw9hC
-         6ZUh5iPpekGPMqhCOYxs47WR6Q5nysQ8qzoe5x00qvRqlKXrcgwljnukCV0gT0ZNkM2O
-         4Z/Q==
-X-Gm-Message-State: AOAM533lbAtFgm9jDD7jbjpLAl/m87n4NQd3HTBAKzwYa2dydELKxDy/
-        4PZLZ8yGLGe0q7vNnmHVag==
-X-Google-Smtp-Source: ABdhPJwP8phGmuV03HOFOfdE+cAf7lJnT51ZIqVF78khc0VQIqXv3RKQK4+vTgDjB/WIq+QnAMnzvA==
-X-Received: by 2002:a05:6808:144d:: with SMTP id x13mr17653853oiv.132.1635252815289;
-        Tue, 26 Oct 2021 05:53:35 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j6sm3760099oot.18.2021.10.26.05.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 05:53:34 -0700 (PDT)
-Received: (nullmailer pid 2444200 invoked by uid 1000);
-        Tue, 26 Oct 2021 12:53:33 -0000
-Date:   Tue, 26 Oct 2021 07:53:33 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v1 01/15] dt-bindings: add pwrseq device tree bindings
-Message-ID: <YXf6TbV2IpPbB/0Y@robh.at.kernel.org>
-References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
- <20211006035407.1147909-2-dmitry.baryshkov@linaro.org>
+        Tue, 26 Oct 2021 08:59:55 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19Q8ssha024219;
+        Tue, 26 Oct 2021 07:57:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=xUQK4rx84DDhMKa29vtKDzqYEvWyNPAtmVXrRmpJ0v8=;
+ b=pVEv880FtofQKBb7Bqibuo+X6YIahUjMX6rfijnZOk6uhaOTqtWjMok2uxVJf05qY64A
+ r9mQDK/M9XfrorIwwyp8HvKmMFrxvi8sGtMZGa+oRWgkN+ioj2Fhyd9HybOmYJlkYXIR
+ YcSVPil+CB/mTClXcz24IfficlrTCKPss4p99T8Ksq8NVOvmJADKnryoTff8mR6bfHjx
+ PLXOc9XniayHc4/soGGlZ24RqXyxcaDbiG4lxaHYf5Q3TQGuYqJTRqEI5OaZSjq+lfx8
+ P2L+x2F93dgr9E36REBfA8zE3qpiw+lTCLmthzzpi7gGD+TxtdEQ9a6ulisTj3a80DrJ zA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3bx4fx0rf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 26 Oct 2021 07:57:26 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Tue, 26 Oct
+ 2021 13:57:25 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
+ Transport; Tue, 26 Oct 2021 13:57:25 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.32])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 665CE11DA;
+        Tue, 26 Oct 2021 12:57:24 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 0/2] ASoC: cs42l42: Fixes to power-down
+Date:   Tue, 26 Oct 2021 13:57:20 +0100
+Message-ID: <20211026125722.10220-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211006035407.1147909-2-dmitry.baryshkov@linaro.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: JcWvijM98kzowk_a4mDt8MYTb7Jb1p50
+X-Proofpoint-ORIG-GUID: JcWvijM98kzowk_a4mDt8MYTb7Jb1p50
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 06:53:53AM +0300, Dmitry Baryshkov wrote:
-> Add device tree bindings for the new power sequencer subsystem.
-> Consumers would reference pwrseq nodes using "foo-pwrseq" properties.
-> Providers would use '#pwrseq-cells' property to declare the amount of
-> cells in the pwrseq specifier.
+Driver probe and remove were inconsistent in what they did to power-down
+and neither did all steps. In addition to that, neither function
+prevented the interrupt handler from running during and after power-down.
 
-Please use get_maintainers.pl.
+Richard Fitzgerald (2):
+  ASoC: cs42l42: Reset and power-down on remove() and failed probe()
+  ASoC: cs42l42: free_irq() before powering-down on probe() fail
 
-This is not a pattern I want to encourage, so NAK on a common binding.
+ sound/soc/codecs/cs42l42.c | 43 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 31 insertions(+), 12 deletions(-)
 
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  .../bindings/power/pwrseq/pwrseq.yaml         | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml b/Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml
-> new file mode 100644
-> index 000000000000..4a8f6c0218bf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml
-> @@ -0,0 +1,32 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/pwrseq/pwrseq.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Power Sequencer devices
-> +
-> +maintainers:
-> +  - Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> +
-> +properties:
-> +  "#powerseq-cells":
-> +    description:
-> +      Number of cells in a pwrseq specifier.
-> +
-> +patternProperties:
-> +  ".*-pwrseq$":
-> +    description: Power sequencer supply phandle(s) for this node
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    qca_pwrseq: qca-pwrseq {
-> +      #pwrseq-cells = <1>;
-> +    };
-> +
-> +    bluetooth {
-> +      bt-pwrseq = <&qca_pwrseq 1>;
-> +    };
-> +...
-> -- 
-> 2.33.0
-> 
-> 
+-- 
+2.11.0
+
