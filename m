@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D177343BBEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C033943BC07
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239331AbhJZU72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:59:28 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:50731 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231396AbhJZU71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:59:27 -0400
-Received: (qmail 1300783 invoked by uid 1000); 26 Oct 2021 16:57:01 -0400
-Date:   Tue, 26 Oct 2021 16:57:01 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: Re: [PATCH] usb: gadget: f_mass_storage: Disable eps during
- disconnect
-Message-ID: <20211026205701.GA1300692@rowland.harvard.edu>
-References: <20211026004456.23054-1-quic_wcheng@quicinc.com>
- <20211026144140.GA1288435@rowland.harvard.edu>
- <81fc3f6d-f747-736b-32db-aecbca77dd31@quicinc.com>
+        id S239416AbhJZVI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:08:29 -0400
+Received: from mx4.wp.pl ([212.77.101.11]:6140 "EHLO mx4.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239450AbhJZVIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 17:08:24 -0400
+Received: (wp-smtpd smtp.wp.pl 32638 invoked from network); 26 Oct 2021 22:59:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1635281958; bh=WgW57u+5yEbJUHlDaeErLMbW3u24lbfeHj4ACnB7IUw=;
+          h=From:To:Cc:Subject;
+          b=Wugg7n9O/oDiE6acVmuSQ/SMjOvtm4JeOIKpMT2xGoxbVrlitjbm76N4FMj0oaCOl
+           UgVwf+enWFmng1S3YoMNlPNv+gah/cUTMYRDRpuQCp9fv1+c+xIr1trEA4IYmswp61
+           qzXaneeTrWD+K8Ota6xXbBmLvTwH5pbovp8MHhm8=
+Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <hauke@hauke-m.de>; 26 Oct 2021 22:59:18 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     hauke@hauke-m.de, davem@davemloft.net, kuba@kernel.org,
+        robh+dt@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH 1/2] net: lantiq_xrx200: Hardcode the burst length value
+Date:   Tue, 26 Oct 2021 22:59:01 +0200
+Message-Id: <20211026205902.335936-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81fc3f6d-f747-736b-32db-aecbca77dd31@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: 43aa16e0fb2cd16703b4d22842b9e459
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [kaNk]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 12:40:04PM -0700, Wesley Cheng wrote:
-> Hi Alan,
-> 
-> On 10/26/2021 7:41 AM, Alan Stern wrote:
-> > On Mon, Oct 25, 2021 at 05:44:56PM -0700, Wesley Cheng wrote:
-> >> From: Wesley Cheng <wcheng@codeaurora.org>
-> >>
-> >> When receiving a disconnect event from the UDC, the mass storage
-> >> function driver currently runs the handle_exception() routine
-> >> asynchronously.  For UDCs that support runtime PM, there is a
-> >> possibility the UDC is already suspended by the time the
-> >> do_set_interface() is executed.  This can lead to HW register access
-> >> while the UDC is already suspended.
-> >>
-> >> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> >> ---
-> >>  drivers/usb/gadget/function/f_mass_storage.c | 10 ++++++++++
-> >>  1 file changed, 10 insertions(+)
-> >>
-> >> diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
-> >> index 3cabf7692ee1..752439690fda 100644
-> >> --- a/drivers/usb/gadget/function/f_mass_storage.c
-> >> +++ b/drivers/usb/gadget/function/f_mass_storage.c
-> >> @@ -2342,6 +2342,16 @@ static void fsg_disable(struct usb_function *f)
-> >>  {
-> >>  	struct fsg_dev *fsg = fsg_from_func(f);
-> >>  
-> >> +	/* Disable the endpoints */
-> >> +	if (fsg->bulk_in_enabled) {
-> >> +		usb_ep_disable(fsg->bulk_in);
-> > 
-> > According to the kerneldoc, this routine must be called in process 
-> > context.
-> > 
-> >> +		fsg->bulk_in_enabled = 0;
-> >> +	}
-> >> +	if (fsg->bulk_out_enabled) {
-> >> +		usb_ep_disable(fsg->bulk_out);
-> >> +		fsg->bulk_out_enabled = 0;
-> >> +	}
-> >> +
-> >>  	__raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE, NULL);
-> >>  }
-> > 
-> > Looks like you'll have to find a different way to avoid the problem.  
-> > For example, if an exception is pending then you might prevent the 
-> > gadget from going into runtime suspend until the exception has been 
-> > handled.
-> > 
-> Thanks for the suggestion.  I noticed that a lot of other FDs currently
-> call usb_ep_disable() in the disable/disconnect path as well.  Actually,
-> f_mass_storage seems to be the only one that doesn't do so.  Maybe we
-> should change the kerneldoc :)
+All SoCs with this IP core support 8 burst length. Hauke
+suggested to hardcode this value and simplify the driver.
 
-You're right; I don't see any real reason why the usb_ep_{en,dis}able 
-routines can't run in an atomic context.  So if you to make this change 
-to f_mass_storage, you should first submit a patch changing the 
-kerneldoc.
+Link: https://lkml.org/lkml/2021/9/14/1533
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ drivers/net/ethernet/lantiq_xrx200.c | 21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
 
-Alan Stern
+diff --git a/drivers/net/ethernet/lantiq_xrx200.c b/drivers/net/ethernet/lantiq_xrx200.c
+index ecf1e11d9b91..0da09ea81980 100644
+--- a/drivers/net/ethernet/lantiq_xrx200.c
++++ b/drivers/net/ethernet/lantiq_xrx200.c
+@@ -25,6 +25,7 @@
+ #define XRX200_DMA_DATA_LEN	(SZ_64K - 1)
+ #define XRX200_DMA_RX		0
+ #define XRX200_DMA_TX		1
++#define XRX200_DMA_BURST_LEN	8
+ 
+ /* cpu port mac */
+ #define PMAC_RX_IPG		0x0024
+@@ -73,9 +74,6 @@ struct xrx200_priv {
+ 	struct net_device *net_dev;
+ 	struct device *dev;
+ 
+-	int tx_burst_len;
+-	int rx_burst_len;
+-
+ 	__iomem void *pmac_reg;
+ };
+ 
+@@ -323,7 +321,7 @@ static netdev_tx_t xrx200_start_xmit(struct sk_buff *skb,
+ 		goto err_drop;
+ 
+ 	/* dma needs to start on a burst length value aligned address */
+-	byte_offset = mapping % (priv->tx_burst_len * 4);
++	byte_offset = mapping % (XRX200_DMA_BURST_LEN * 4);
+ 
+ 	desc->addr = mapping - byte_offset;
+ 	/* Make sure the address is written before we give it to HW */
+@@ -422,7 +420,8 @@ static int xrx200_dma_init(struct xrx200_priv *priv)
+ 	int ret = 0;
+ 	int i;
+ 
+-	ltq_dma_init_port(DMA_PORT_ETOP, priv->tx_burst_len, rx_burst_len);
++	ltq_dma_init_port(DMA_PORT_ETOP, XRX200_DMA_BURST_LEN,
++			  XRX200_DMA_BURST_LEN);
+ 
+ 	ch_rx->dma.nr = XRX200_DMA_RX;
+ 	ch_rx->dma.dev = priv->dev;
+@@ -531,18 +530,6 @@ static int xrx200_probe(struct platform_device *pdev)
+ 	if (err)
+ 		eth_hw_addr_random(net_dev);
+ 
+-	err = device_property_read_u32(dev, "lantiq,tx-burst-length", &priv->tx_burst_len);
+-	if (err < 0) {
+-		dev_err(dev, "unable to read tx-burst-length property\n");
+-		return err;
+-	}
+-
+-	err = device_property_read_u32(dev, "lantiq,rx-burst-length", &priv->rx_burst_len);
+-	if (err < 0) {
+-		dev_err(dev, "unable to read rx-burst-length property\n");
+-		return err;
+-	}
+-
+ 	/* bring up the dma engine and IP core */
+ 	err = xrx200_dma_init(priv);
+ 	if (err)
+-- 
+2.30.2
+
