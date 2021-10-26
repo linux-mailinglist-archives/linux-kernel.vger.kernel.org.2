@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD7743B446
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355BD43B45C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbhJZOgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:36:55 -0400
-Received: from smtp83.ord1c.emailsrvr.com ([108.166.43.83]:55640 "EHLO
-        smtp83.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234211AbhJZOgx (ORCPT
+        id S236814AbhJZOjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236776AbhJZOi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:36:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1635258869;
-        bh=hoG7Z99yRqEL6f8++suWM6VfWSywPukq4+YM/RboeG4=;
-        h=Subject:To:From:Date:From;
-        b=X1hrFjq3VvX32dNP6/NCISeO32ddReMfnzwiQgTIbdnlpq6uO2ZN357cAsHIoeDkP
-         g68SWobJA0zGIi0QF3mR1EAzcci8KVsoJ5OE9ZRIVzhv6I8pTmJN5OaazmyswK85Sn
-         b2lDyzYIXzvnEaVCKRASRi+/pOxJyz7JynR4g9dg=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp11.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 924DAA01E2;
-        Tue, 26 Oct 2021 10:34:28 -0400 (EDT)
-Subject: Re: [PATCH 4/5] comedi: vmk80xx: fix bulk-buffer overflow
-To:     Johan Hovold <johan@kernel.org>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20211025114532.4599-1-johan@kernel.org>
- <20211025114532.4599-5-johan@kernel.org>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <86298eaa-aee8-18fe-d389-8522c6746578@mev.co.uk>
-Date:   Tue, 26 Oct 2021 15:34:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 10:38:59 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D877C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:36:35 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id l186so7896388pge.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SEODT4cHy8v1YRxwVEuwYrnWfee/2o+OJs75MXKU8sk=;
+        b=o1sJN1AFqrdXLaqurxRqdppR+FV+CuIQLyam4uavSIvzzeaScHSHgnVF9JMMbdNEE6
+         xG74JY9I3+BVH53/zWLSlJJxw1bBftbAbysJddziA+BXm44BGSkAreFmviAas+R3sBmo
+         2ZAyGInQHxVULGrWQfZCIQH5KI7i/7abHHutV9MlsjT0SffIc1K/cF5UqXeg5a5swLBd
+         Ny0VT2f7Rc/HlrKLFxjBBQd7GaMm0pkOke2WURv4QN82RVgxU2HHyR9XPdfTpXtKEagm
+         ZIyIUBVccVKWMWv3IA7nxrl8/garx3nuML4W9CJKEi4lG90+9meGZSEzm9sT/PBzzdCJ
+         rA6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SEODT4cHy8v1YRxwVEuwYrnWfee/2o+OJs75MXKU8sk=;
+        b=T6djyju4UYrlaWxQ/3AN7WeUqxPJRTRbNlluMyhLvyVAaOVr+831LJhp1iLAiTc8ho
+         lYjUez9olJJLiIYHISwu38gN3S23DCGir+XGtS59hzDGbG3I7tvTzlhrVYU4PCCN/OVV
+         YVu822Ka1Lng2bdQLlUZ7dZFHGBGpSZqwY7GK9gVehO+Cey5x+T0IDwrbBVOO3pEHUrC
+         DdKCBMOlh+RmtlKfL8FU6dfof0Va6DXo6JG6D76xwXAPdHa+UBDJY9B6DN0UW8tK/K6H
+         +b5g6d3IYfy4dQ7+99A2jqW4ZDexJ5fvnDKfOjuvgstRDdsWOUVQs4IuTEtzVsl9c2oG
+         fX/g==
+X-Gm-Message-State: AOAM531rvppzMaJMf3Jg3BSQi9qtRUAE+w0wbVselkl/+6jqqJAMb0de
+        RPcn8OGu2f+lpSqYZjHZQBSYGJZRzxI=
+X-Google-Smtp-Source: ABdhPJw+bJqLut9sSw5p+8i+UPWULexjKC3RuvYJQtYKhWH+3tQ3jBcYlD3O2QgjWVpm6m4wA0tXIA==
+X-Received: by 2002:a63:7a53:: with SMTP id j19mr16571388pgn.275.1635258994494;
+        Tue, 26 Oct 2021 07:36:34 -0700 (PDT)
+Received: from localhost ([47.88.5.130])
+        by smtp.gmail.com with ESMTPSA id z6sm1157266pjr.35.2021.10.26.07.36.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:36:34 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: [PATCH V4 41/50] x86/nmi: Use DEFINE_IDTENTRY_NMI for nmi
+Date:   Tue, 26 Oct 2021 22:34:27 +0800
+Message-Id: <20211026143436.19071-16-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
+References: <20211026141420.17138-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211025114532.4599-5-johan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 37e2f1e2-460e-40bb-bd09-f599f052d5aa-1-1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 12:45, Johan Hovold wrote:
-> The driver is using endpoint-sized buffers but must not assume that the
-> tx and rx buffers are of equal size or a malicious device could overflow
-> the slab-allocated receive buffer when doing bulk transfers.
-> 
-> Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
-> Cc: stable@vger.kernel.org      # 2.6.31
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->   drivers/comedi/drivers/vmk80xx.c | 16 +++++++---------
->   1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
-> index f2c1572d0cd7..9c56918e3b76 100644
-> --- a/drivers/comedi/drivers/vmk80xx.c
-> +++ b/drivers/comedi/drivers/vmk80xx.c
-> @@ -159,22 +159,20 @@ static void vmk80xx_do_bulk_msg(struct comedi_device *dev)
->   	__u8 rx_addr;
->   	unsigned int tx_pipe;
->   	unsigned int rx_pipe;
-> -	size_t size;
-> +	size_t tx_size;
-> +	size_t rx_size;
->   
->   	tx_addr = devpriv->ep_tx->bEndpointAddress;
->   	rx_addr = devpriv->ep_rx->bEndpointAddress;
->   	tx_pipe = usb_sndbulkpipe(usb, tx_addr);
->   	rx_pipe = usb_rcvbulkpipe(usb, rx_addr);
-> -
-> -	/*
-> -	 * The max packet size attributes of the K8061
-> -	 * input/output endpoints are identical
-> -	 */
-> -	size = usb_endpoint_maxp(devpriv->ep_tx);
-> +	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
-> +	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
->   
->   	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
-> -		     size, NULL, devpriv->ep_tx->bInterval);
-> -	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, size, NULL, HZ * 10);
-> +		     tx_size, NULL, devpriv->ep_tx->bInterval);
-> +
-> +	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
->   }
->   
->   static int vmk80xx_read_packet(struct comedi_device *dev)
-> 
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Looks good, thanks!
+DEFINE_IDTENTRY_NMI is defined, but not used.  It is better to use it.
 
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+It is also prepared for later patch to define DEFINE_IDTENTRY_NMI
+differently in 32bit and 64bit.
 
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/kernel/nmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 4bce802d25fb..44c3adb68282 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -473,7 +473,7 @@ static DEFINE_PER_CPU(enum nmi_states, nmi_state);
+ static DEFINE_PER_CPU(unsigned long, nmi_cr2);
+ static DEFINE_PER_CPU(unsigned long, nmi_dr7);
+ 
+-DEFINE_IDTENTRY_RAW(exc_nmi)
++DEFINE_IDTENTRY_NMI(exc_nmi)
+ {
+ 	irqentry_state_t irq_state;
+ 
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+2.19.1.6.gb485710b
+
