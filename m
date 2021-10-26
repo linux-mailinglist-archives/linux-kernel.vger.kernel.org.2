@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F33D43B43F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CD543B495
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236554AbhJZOgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:36:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
+        id S236939AbhJZOqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:46:01 -0400
+Received: from mga01.intel.com ([192.55.52.88]:13756 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234211AbhJZOgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:36:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A491610A0;
-        Tue, 26 Oct 2021 14:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635258818;
-        bh=2DDd82a6pBIXPZXoD4v/5F9Mf9Q9FC+VQw0+Z7QOTKQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qxhovtrPHavixa1LZdhWOwnO6V4lEjEdWdvA/IxLFpeJkxPrt6oIZBpe2dD9T15SE
-         QUM7dmFIf4LACczKunnblhoVmTSJ7Tk3ifqoeMhzQocam/gh/HPnBBGs2UtLx+u9SF
-         j/AJVqcCVpeo+hKkDbnc6xlnuFIycMSjjXA9zatU4NLNeqOC5DvyTBBJA3fXvQxMqZ
-         BEWwGA+NujzkZblCRjWKMEozgicjZZmw+J8dhhiNZQqlJN4JcGMXH0bOfohQ/xqbdj
-         DjubW1NZFltxZMG/2yAuOZ/mfqATHIPUsouDBATGjP3wBKh7ilC2cxdvCp2v5hxEOl
-         6rVKTM8Sn8Esw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 546755C0D48; Tue, 26 Oct 2021 07:33:37 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 07:33:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     syzbot <syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com>,
-        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
-Message-ID: <20211026143337.GA1861432@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <000000000000ddb95c05cf2ad54a@google.com>
- <CANpmjNPC6Oqq3+8ENDfM=jXUtY+_zWHAkAE5Wq87ZMYZMV6uLg@mail.gmail.com>
- <20211026140729.GW880162@paulmck-ThinkPad-P17-Gen-1>
+        id S236885AbhJZOpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:45:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="253467432"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="253467432"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 07:34:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="635200303"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2021 07:33:52 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@google.com>
+Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Jack Pham <jackp@codeaurora.org>,
+        "Gopal, Saranya" <saranya.gopal@intel.com>,
+        "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/4] USB Power Delivery character device interface
+Date:   Tue, 26 Oct 2021 17:33:48 +0300
+Message-Id: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026140729.GW880162@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 07:07:30AM -0700, Paul E. McKenney wrote:
-> On Mon, Oct 25, 2021 at 12:31:53PM +0200, Marco Elver wrote:
-> > +Cc Paul
-> > 
-> > data race is in rcu code, presumably not yet discovered by rcutorture?
-> 
-> Quite possibly, and I will take a look.  Thank you for sending this
-> along.
+Hi,
 
-And this is (allegedly) fixed by commit 2431774f04d10 ("rcu: Mark accesses
-to rcu_state.n_force_qs"), which is in -rcu and slated for the upcoming
-merge window.  But yes, still a bug in mainline.
+This is the proposal for USB PD character devices that we could use to
+communicate USB PD messages directly with the USB PD capable partners,
+ports and cable plugs from user space. Originally I proposed this idea
+here as a better way to get the PDOs from the partners (and ports and
+plugs): https://lkml.org/lkml/2021/10/8/331
 
-							Thanx, Paul
+Initially you could read the PDOs with this, but it of course is not
+only limited to PDOs - any messages should potentetially be suported.
 
-> > On Mon, 25 Oct 2021 at 12:29, syzbot
-> > <syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=159c4954b00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6339b6ea86d89fd7
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=4dfb96a94317a78f44d9
-> > > compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+4dfb96a94317a78f44d9@syzkaller.appspotmail.com
-> > >
-> > > ==================================================================
-> > > BUG: KCSAN: data-race in call_rcu / rcu_gp_fqs_loop
-> > >
-> > > write to 0xffffffff837342e0 of 8 bytes by task 11 on cpu 1:
-> > >  rcu_gp_fqs kernel/rcu/tree.c:1910 [inline]
-> > >  rcu_gp_fqs_loop+0x348/0x470 kernel/rcu/tree.c:1971
-> > >  rcu_gp_kthread+0x25/0x1a0 kernel/rcu/tree.c:2130
-> > >  kthread+0x262/0x280 kernel/kthread.c:319
-> > >  ret_from_fork+0x1f/0x30
-> > >
-> > > read to 0xffffffff837342e0 of 8 bytes by task 379 on cpu 0:
-> > >  __call_rcu_core kernel/rcu/tree.c:2904 [inline]
-> > >  __call_rcu kernel/rcu/tree.c:3020 [inline]
-> > >  call_rcu+0x4c0/0x6d0 kernel/rcu/tree.c:3067
-> > >  __dentry_kill+0x3ec/0x4e0 fs/dcache.c:596
-> > >  dput+0xc6/0x360 fs/dcache.c:888
-> > >  do_unlinkat+0x2a8/0x540 fs/namei.c:4172
-> > >  __do_sys_unlink fs/namei.c:4217 [inline]
-> > >  __se_sys_unlink fs/namei.c:4215 [inline]
-> > >  __x64_sys_unlink+0x2c/0x30 fs/namei.c:4215
-> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >  do_syscall_64+0x44/0xa0 arch/x86/entry/common.c:80
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >
-> > > value changed: 0x0000000000005c0d -> 0x0000000000005c0e
-> > >
-> > > Reported by Kernel Concurrency Sanitizer on:
-> > > CPU: 0 PID: 379 Comm: udevd Tainted: G        W         5.15.0-rc6-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > ==================================================================
-> > >
-> > >
-> > > ---
-> > > This report is generated by a bot. It may contain errors.
-> > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > >
-> > > syzbot will keep track of this issue. See:
-> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+This is in any case really just a draft, and most likely does not work
+if you try it, but it should give an idea about what I'm proposing
+(hopefully).
+
+In this proposal I'm placing each device that you can have
+behind a single USB PD capable Type-C port (so port, partner
+and plugs) under its own folder, so you would end up with
+something like this if also both plugs are supported:
+
+	/dev/pd0/port
+	/dev/pd0/plug0
+	/dev/pd0/plug1
+	/dev/pd0/partner
+
+I'm also including an ugly test tool that you can try out to dump the
+PDOs depending on the role of the device - tools/usb/pd-test.c. This
+is what I got from a charger (and the port at the same time):
+
+	% pd-test /dev/pd0/port
+	Sink Capabilities:
+	  PDO1: 0x3601912c
+	  PDO2: 0x000640e1
+	  PDO3: 0x9901912c
+
+	% pd-test /dev/pd0/partner
+	Source Capabilities:
+	  PDO1: 0x0801912c
+	  PDO2: 0x0003c12c
+
+But please note that this whole series is really just meant to be PoC!
+Don't assume it will work!
+
+The core code that adds the character devices is here:
+
+	drivers/usb/typec/pd-dev.c.
+
+It's actually really simple, and I don't think it would ever need to
+be much more complicated than that.
+
+Example driver support I added to UCSI:
+
+	drivers/usb/typec/ucsi/pd-dev.c
+
+thanks,
+
+Heikki Krogerus (4):
+  usb: pd: uapi header split
+  usb: typec: Character device for USB Power Delivery devices
+  usb: typec: ucsi: Add support for PD cdev
+  tools: usb: Hideous test tool for USB PD char device
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ drivers/usb/typec/Makefile                    |   2 +-
+ drivers/usb/typec/class.c                     |  42 ++
+ drivers/usb/typec/class.h                     |   4 +
+ drivers/usb/typec/pd-dev.c                    | 210 ++++++++
+ drivers/usb/typec/pd-dev.h                    |  15 +
+ drivers/usb/typec/ucsi/Makefile               |   2 +-
+ drivers/usb/typec/ucsi/pd-dev.c               | 125 +++++
+ drivers/usb/typec/ucsi/ucsi.c                 |  37 +-
+ drivers/usb/typec/ucsi/ucsi.h                 |   7 +
+ include/linux/usb/pd.h                        | 487 +----------------
+ include/linux/usb/pd_dev.h                    |  22 +
+ include/linux/usb/typec.h                     |   8 +
+ include/uapi/linux/usb/pd.h                   | 496 ++++++++++++++++++
+ include/uapi/linux/usb/pd_dev.h               |  55 ++
+ tools/usb/Build                               |   1 +
+ tools/usb/Makefile                            |   8 +-
+ tools/usb/pd-test.c                           | 123 +++++
+ 18 files changed, 1147 insertions(+), 498 deletions(-)
+ create mode 100644 drivers/usb/typec/pd-dev.c
+ create mode 100644 drivers/usb/typec/pd-dev.h
+ create mode 100644 drivers/usb/typec/ucsi/pd-dev.c
+ create mode 100644 include/linux/usb/pd_dev.h
+ create mode 100644 include/uapi/linux/usb/pd.h
+ create mode 100644 include/uapi/linux/usb/pd_dev.h
+ create mode 100644 tools/usb/pd-test.c
+
+-- 
+2.33.0
+
