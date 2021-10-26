@@ -2,156 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1485C43ABD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F3443ABDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhJZFu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:50:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229687AbhJZFu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:50:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5150860E73;
-        Tue, 26 Oct 2021 05:48:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635227285;
-        bh=XsFhsP511nj6/eHseLH0aIDFSZivx3CUuD1Py4KM2Zc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qqQVf5EeWuFj4wEPnHypPj15RIQ5Ysq5Tt/E0bFL7ammniejPLnz5cLFtod+wYRyi
-         So9onQ62TDQUb9iGaLdkoRawZw05OPItooOEsSbrRI0F/QyrSIjxsgvQEFAm+3JHS7
-         MBMfgGxo8bfYuxpPcp+MnMg9Ui08DzWPgcGT6hp+CS2+tlBICOeW1zmSHiZfhzOnCo
-         BKTgAoTB7rx5A3frCcS6F9PseXY7mnRI/WAbA3/62mJ8jqXoLHBhpZKzLdML/Vku+A
-         9JDpseNW6fvfxd2XETOIpRiuJjeAZyucyuSVkboDbdDVX2KfXcThHpcLVAgOyZYdOS
-         wABKAA2YPuRVw==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yuri Nudelman <ynudelman@habana.ai>
-Subject: [PATCH] habanalabs: make last_mask an MMU property
-Date:   Tue, 26 Oct 2021 08:48:00 +0300
-Message-Id: <20211026054800.3033091-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S235093AbhJZFvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhJZFvx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:51:53 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216F9C061745;
+        Mon, 25 Oct 2021 22:49:30 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id e10so26961646uab.3;
+        Mon, 25 Oct 2021 22:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bt8gnFZ7zRXlSxTO50E3NK4ULqXSpvY8WAtWfScUzG0=;
+        b=XvlFPA3yn+iFCXaotivzTIsO+qWlf16GeSElUXWhG3T3M9m/Cj9lW+Yis0yZVM7Cli
+         vKCdl96OEhYMK1MTRZawjaTvU6V4HpDmET0j42lb6aoehCLXEEFXiZ2MeNJteE/GGM7o
+         9mQsk2a1v+CRVPTfZblzsemULBqhRmIKc89xxSl9927Sg0jgb3sKpwM3FnEcPd/RJa7Z
+         nV7eA2eiYNuGBo6WxrF0ARaFqnkRGFn/OQRspkOZO0TLHN3fOJkXFr0LNIgw3kN+i55d
+         UIa5jCN2Xz0OQEeYBxiXb1zz2oYugJ41JVM93ww9jae/5a/JfwWAvARto7/adB/1YE9c
+         +h1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bt8gnFZ7zRXlSxTO50E3NK4ULqXSpvY8WAtWfScUzG0=;
+        b=40TUtplK/NQHD0Uo3olavEDjG6+2VitGt89BuljoXrSrA5ScS+oj67x7nBqvqJg7vT
+         4oLRV4Fta6CbLINaMHn6W9f+nY3rR88QDReX+TKRhQxG8tX6hA36MdFr7/h0HESno3YE
+         hKDF+SxrlkPm5sFLa0G/hVtDRD3jQ3mX+mJydOh2YHOrYq+n+EbOs1qu/pD1O58w+CIG
+         khYeo7HcqRsW3SX/gEQ7EOFZmZuaGKw7pnr6Zra6BplTrUSzhizMopT98k2wNCPDty9A
+         pJso1xSLhF5KUIMI4RuIZHLam5G4TKGBVtlJvcn5ujFlakQ+nQyVv0QSA+Bamoo1Z9zb
+         4mEA==
+X-Gm-Message-State: AOAM5322/cFDImA8sTEQMpzgF1VDI525lZoSbeLznrUkvPFnIwsMX+uc
+        1ULmGI9j2JuILv+QUaN0UwlVX7Sejv9uT3C99gc=
+X-Google-Smtp-Source: ABdhPJwwQ1QduqebQ2QK3PagmHcpgq321TdFHCBaZL1Z8yoc0Ad/iVuajzcpNOgd85uNPT6zLUnZgT57V0K/7wzLMZM=
+X-Received: by 2002:a9f:3523:: with SMTP id o32mr13839895uao.131.1635227368384;
+ Mon, 25 Oct 2021 22:49:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAMhs-H90rD8aHJ+txDzFZ62Ej9_TY=BZMT+1058d=Pm_LfYwPA@mail.gmail.com>
+ <20211025211236.GA31293@bhelgaas>
+In-Reply-To: <20211025211236.GA31293@bhelgaas>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 26 Oct 2021 07:49:16 +0200
+Message-ID: <CAMhs-H_HL3OxfN7dCwbeqjwwufaNWEJJCfQeYk+42CVK8=69Ew@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
+ controller driver
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>, NeilBrown <neil@brown.name>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuri Nudelman <ynudelman@habana.ai>
+On Mon, Oct 25, 2021 at 11:12 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Fri, Oct 22, 2021 at 11:13:39AM +0200, Sergio Paracuellos wrote:
+> > On Fri, Oct 22, 2021 at 10:35 AM Lorenzo Pieralisi
+> > <lorenzo.pieralisi@arm.com> wrote:
+> > >
+> > > On Thu, Oct 21, 2021 at 09:23:35PM +0200, Sergio Paracuellos wrote:
+> > > > On Thu, Oct 21, 2021 at 8:11 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, Oct 21, 2021 at 07:27:21PM +0200, Sergio Paracuellos wrote:
+> > > > > > On Thu, Oct 21, 2021 at 5:52 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > > > > Since this is a PCIe (not conventional PCI) controller, I
+> > > > > > > vote for renaming these from:
+> > > > > > >
+> > > > > > >   PCI_MT7621
+> > > > > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > > > > >   drivers/pci/controller/pci-mt7621.c
+> > > > > > >
+> > > > > > > to:
+> > > > > > >
+> > > > > > >   PCIE_MT7621
+> > > > > > >   Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
+> > > > > > >   drivers/pci/controller/pcie-mt7621.c
+> > > > > > >
+> > > > > > > We have a mix of these, with many of the early PCIe
+> > > > > > > drivers being named "pci", but I think that was my mistake
+> > > > > > > and there's no reason to continue it.
+> > > > > >
+> > > > > > I see.
+> > > > > >
+> > > > > > > I can do this locally unless somebody objects.
+> > > > > >
+> > > > > > I have no problem at all. Only one question. Do you mean to
+> > > > > > change compatible string also, or only the name of the file?
+> > > > > > Let me know if I have to do anything.
+> > > > >
+> > > > > I didn't change the compatible string, to avoid a DT
+> > > > > incompatibility.  But I *did* change the Kconfig symbol to
+> > > > > PCIE_MT7621, which could require changes to out-of-tree
+> > > > > .configs.  I'm open to suggestions either way for both things.
+> > > >
+> > > > IMHO, I do think we should not worry about out-of-tree stuff at
+> > > > all.
+> > >
+> > > For Kconfig I tend to agree. For DT I see some "bindings" in the
+> > > staging tree are being deleted and published as official DT
+> > > bindings with this patchset but I believe we still have to keep
+> > > the compatible string backward compatibility regardless because
+> > > there may be firmware out there using it.
+> >
+> > The bindings txt file removed in staging with this patchset was also
+> > added by me three years ago[0], and has been changing until the YAML
+> > bindings are reviewed by Rob and driver updated accordly in this
+> > patchset.
+> >
+> > OpenWRT maintains its own file[1] which I don't know is updated or
+> > not according to the one in staging which I am pretending to
+> > properly mainline for 5.17. But yes, I agree there might be firmware
+> > out there using current compatible string.
+> >
+> > [0]: Commit 5451e22618b8 ("staging: mt7621-pci: dt-bindings: add dt
+> > bindings for mt7621 pcie controller")
+> > [1]: https://github.com/openwrt/openwrt/blob/master/target/linux/ramips/dts/mt7621.dtsi
+>
+> OK, for now I left my rework as-is:
+>
+>   - changed CONFIG_PCI_MT7621 to CONFIG_PCIE_MT7621
+>   - renamed mediatek,mt7621-pci.yaml to mediatek,mt7621-pcie.yaml
+>   - renamed pci-mt7621.c to pcie-mt7621.c
+>   - kept DT compatible string "mediatek,mt7621-pci" in .yaml and .c
+>
+> I reason that the Kconfig and filename changes only affect people
+> building kernels or DTs, but a compatible string change would force a
+> DT update to be synchronized with a kernel update.
 
-Currently LAST_MASK is a global, but really it is an MMU implementation
-specific. We need this change for future ASICs.
+This is all ok for me, Bjorn. Thanks for doing this. I guess even if
+we don't force people to a DT update to synchronize things, since
+bindings have been changed until they have been approved, I guess most
+people must upgrade from early not approved DT early versions in any
+case. But in any case I guess that maintaining the compatible string
+is the safest thing to do.
 
-Signed-off-by: Yuri Nudelman <ynudelman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/habanalabs.h |  2 ++
- drivers/misc/habanalabs/common/mmu/mmu_v1.c | 10 +++++-----
- drivers/misc/habanalabs/gaudi/gaudi.c       |  1 +
- drivers/misc/habanalabs/goya/goya.c         |  2 ++
- 4 files changed, 10 insertions(+), 5 deletions(-)
+>
+> Happy to change this if necessary.
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 4f3c228c9b9d..6dd7d9ee7a44 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -382,6 +382,7 @@ enum hl_device_hw_state {
-  * @hop3_mask: mask to get the PTE address in hop 3.
-  * @hop4_mask: mask to get the PTE address in hop 4.
-  * @hop5_mask: mask to get the PTE address in hop 5.
-+ * @last_mask: mask to get the bit indicating this is the last hop.
-  * @page_size: default page size used to allocate memory.
-  * @num_hops: The amount of hops supported by the translation table.
-  * @host_resident: Should the MMU page table reside in host memory or in the
-@@ -402,6 +403,7 @@ struct hl_mmu_properties {
- 	u64	hop3_mask;
- 	u64	hop4_mask;
- 	u64	hop5_mask;
-+	u64	last_mask;
- 	u32	page_size;
- 	u32	num_hops;
- 	u8	host_resident;
-diff --git a/drivers/misc/habanalabs/common/mmu/mmu_v1.c b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
-index 0f536f79dd9c..159da2fafd79 100644
---- a/drivers/misc/habanalabs/common/mmu/mmu_v1.c
-+++ b/drivers/misc/habanalabs/common/mmu/mmu_v1.c
-@@ -573,7 +573,7 @@ static int _hl_mmu_v1_unmap(struct hl_ctx *ctx,
- 
- 	curr_pte = *(u64 *) (uintptr_t) hop3_pte_addr;
- 
--	is_huge = curr_pte & LAST_MASK;
-+	is_huge = curr_pte & mmu_prop->last_mask;
- 
- 	if (is_dram_addr && !is_huge) {
- 		dev_err(hdev->dev,
-@@ -597,7 +597,7 @@ static int _hl_mmu_v1_unmap(struct hl_ctx *ctx,
- 
- 	if (hdev->dram_default_page_mapping && is_dram_addr) {
- 		u64 default_pte = (prop->mmu_dram_default_page_addr &
--				HOP_PHYS_ADDR_MASK) | LAST_MASK |
-+				HOP_PHYS_ADDR_MASK) | mmu_prop->last_mask |
- 					PAGE_PRESENT_MASK;
- 		if (curr_pte == default_pte) {
- 			dev_err(hdev->dev,
-@@ -729,7 +729,7 @@ static int _hl_mmu_v1_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr,
- 
- 	if (hdev->dram_default_page_mapping && is_dram_addr) {
- 		u64 default_pte = (prop->mmu_dram_default_page_addr &
--					HOP_PHYS_ADDR_MASK) | LAST_MASK |
-+					HOP_PHYS_ADDR_MASK) | mmu_prop->last_mask |
- 						PAGE_PRESENT_MASK;
- 
- 		if (curr_pte != default_pte) {
-@@ -769,7 +769,7 @@ static int _hl_mmu_v1_map(struct hl_ctx *ctx, u64 virt_addr, u64 phys_addr,
- 		goto err;
- 	}
- 
--	curr_pte = (phys_addr & HOP_PHYS_ADDR_MASK) | LAST_MASK
-+	curr_pte = (phys_addr & HOP_PHYS_ADDR_MASK) | mmu_prop->last_mask
- 			| PAGE_PRESENT_MASK;
- 
- 	if (is_huge)
-@@ -930,7 +930,7 @@ static int hl_mmu_v1_get_tlb_info(struct hl_ctx *ctx, u64 virt_addr,
- 		if (!(hops->hop_info[i].hop_pte_val & PAGE_PRESENT_MASK))
- 			return -EFAULT;
- 
--		if (hops->hop_info[i].hop_pte_val & LAST_MASK)
-+		if (hops->hop_info[i].hop_pte_val & mmu_prop->last_mask)
- 			break;
- 	}
- 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 92d55a0a10c1..52fffd76f5cf 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -613,6 +613,7 @@ static int gaudi_set_fixed_properties(struct hl_device *hdev)
- 			(VA_HOST_SPACE_START + VA_HOST_SPACE_SIZE / 2) - 1;
- 	prop->pmmu.page_size = PAGE_SIZE_4KB;
- 	prop->pmmu.num_hops = MMU_ARCH_5_HOPS;
-+	prop->pmmu.last_mask = LAST_MASK;
- 
- 	/* PMMU and HPMMU are the same except of page size */
- 	memcpy(&prop->pmmu_huge, &prop->pmmu, sizeof(prop->pmmu));
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 5536e8c27bd5..59bb12fcc935 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -429,6 +429,7 @@ int goya_set_fixed_properties(struct hl_device *hdev)
- 	prop->dmmu.end_addr = VA_DDR_SPACE_END;
- 	prop->dmmu.page_size = PAGE_SIZE_2MB;
- 	prop->dmmu.num_hops = MMU_ARCH_5_HOPS;
-+	prop->dmmu.last_mask = LAST_MASK;
- 
- 	/* shifts and masks are the same in PMMU and DMMU */
- 	memcpy(&prop->pmmu, &prop->dmmu, sizeof(prop->dmmu));
-@@ -436,6 +437,7 @@ int goya_set_fixed_properties(struct hl_device *hdev)
- 	prop->pmmu.end_addr = VA_HOST_SPACE_END;
- 	prop->pmmu.page_size = PAGE_SIZE_4KB;
- 	prop->pmmu.num_hops = MMU_ARCH_5_HOPS;
-+	prop->pmmu.last_mask = LAST_MASK;
- 
- 	/* PMMU and HPMMU are the same except of page size */
- 	memcpy(&prop->pmmu_huge, &prop->pmmu, sizeof(prop->pmmu));
--- 
-2.25.1
+Best regards,
+    Sergio Paracuellos
 
+>
+> Bjorn
