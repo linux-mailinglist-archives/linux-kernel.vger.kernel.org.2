@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F7543B0DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F0743B0DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhJZLSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:18:10 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:45352 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhJZLSI (ORCPT
+        id S235424AbhJZLSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:18:30 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32364 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235408AbhJZLS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:18:08 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 196243F0;
-        Tue, 26 Oct 2021 13:15:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1635246943;
-        bh=WxA0PSLaqHfqEyChJwTJYKvReBL3f+/2oUC5lcN5GHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ucXfWtQUi5q+VLNAVYwATavzowlEIhtqsygINS7W+DRWUsI8RE+sb1aFgq93u2VPB
-         K73haXlDyxHFXzDYcf17TUahjEZJIeQHvIDlEkKudUF2cnNgqRlPOdRyw/QbhtybJ7
-         zcEFCevaqgsHsVyJhEZLuT/qO8QCC5/LeGb6ZADk=
-Date:   Tue, 26 Oct 2021 14:15:20 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] media: uvcvideo: fix division by zero at stream start
-Message-ID: <YXfjSJ+fm+LV/m+M@pendragon.ideasonboard.com>
-References: <20211026095511.26673-1-johan@kernel.org>
- <163524570516.1184428.14632987312253060787@Monstersaurus>
+        Tue, 26 Oct 2021 07:18:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635246965; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=jW2IdxGE8fRVPQ1BAeO5iZu8iomkdSBeoAZ5qJQCMuk=; b=CduAJVXV2Wg8BhkWOPj/zrVoGIhRefa3o6GVtU8aIgsJ9jMlx2KLHupYQtHUM5mIHeEFTd2Q
+ btAU8sS2ZOYyTx0VhjLomlcia0lY1zosOrcR2Ucbj3TFThH6YfCa8jfOtoZkclqDAVVerm2I
+ i321ZMMIWlcPs3hIJBOHiaCOGek=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6177e356e29a872c21f38330 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 11:15:34
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8B564C4338F; Tue, 26 Oct 2021 11:15:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.242.143.72] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22F29C4338F;
+        Tue, 26 Oct 2021 11:15:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 22F29C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2] ASoC: qcom: soundwire: Enable soundwire bus clock for
+ version 1.6
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org,
+        Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1633443285-18685-1-git-send-email-srivasam@codeaurora.org>
+ <YWBH9gAKIHJMlFlY@sirena.org.uk>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <4f16ca1f-c243-a221-7fec-cc51d985f10b@codeaurora.org>
+Date:   Tue, 26 Oct 2021 16:45:25 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <163524570516.1184428.14632987312253060787@Monstersaurus>
+In-Reply-To: <YWBH9gAKIHJMlFlY@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:55:05AM +0100, Kieran Bingham wrote:
-> Quoting Johan Hovold (2021-10-26 10:55:11)
-> > Add the missing bulk-endpoint max-packet sanity check to probe() to
-> > avoid division by zero in uvc_alloc_urb_buffers() in case a malicious
-> > device has broken descriptors (or when doing descriptor fuzz testing).
-> > 
-> > Note that USB core will reject URBs submitted for endpoints with zero
-> > wMaxPacketSize but that drivers doing packet-size calculations still
-> > need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
-> > endpoint descriptors with maxpacket=0")).
-> > 
-> > Fixes: c0efd232929c ("V4L/DVB (8145a): USB Video Class driver")
-> > Cc: stable@vger.kernel.org      # 2.6.26
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > ---
-> >  drivers/media/usb/uvc/uvc_video.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > index e16464606b14..85ac5c1081b6 100644
-> > --- a/drivers/media/usb/uvc/uvc_video.c
-> > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > @@ -1958,6 +1958,10 @@ static int uvc_video_start_transfer(struct uvc_streaming *stream,
-> >                 if (ep == NULL)
-> >                         return -EIO;
-> >  
-> > +               /* Reject broken descriptors. */
-> > +               if (usb_endpoint_maxp(&ep->desc) == 0)
-> > +                       return -EIO;
-> 
-> Is there any value in identifying this with a specific return code like
-> -ENODATA?
 
-Going one step further, wouldn't it be better to fail probe() for those
-devices ?
-
-> But either way, this seems sane.
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> > +
-> >                 ret = uvc_init_video_bulk(stream, ep, gfp_flags);
-> >         }
-> >  
+On 10/8/2021 7:00 PM, Mark Brown wrote:
+Thanks for Your time Brown!!!
+> On Tue, Oct 05, 2021 at 07:44:45PM +0530, Srinivasa Rao Mandadapu wrote:
+>
+>> +	if (!of_property_read_u32(dev->of_node, "qcom,swrm-hctl-reg", &swrm_hctl_reg))
+>> +		ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev, swrm_hctl_reg, 0x4);
+> This is a new DT property so needs an update to the bindings.
+Okay. Will update the bindings and re-post it.
 
 -- 
-Regards,
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-Laurent Pinchart
