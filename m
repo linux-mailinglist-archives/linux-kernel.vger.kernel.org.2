@@ -2,114 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A0A43ABF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CA143ABF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhJZF7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235192AbhJZF64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:58:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C567061074;
-        Tue, 26 Oct 2021 05:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635227793;
-        bh=yQqBNggdScygSpqZv7Yg8QOx3/VB58kGvn6AqtODOik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=To9n0eTDTYvcssoZrxKtQMqQBvePwzv1Ua7NybO7SnCTqy/oHCGgJH9dcYpqEYSw2
-         r+EYy1/FAGlyT45626FullXij8eJvpTZlwzldepVdteI0/LCrjUjuaXv64/30EoH6W
-         hKgl1aOpm5X9YwPPFkCXc5cKqq5onMcB9RbbCnlFb4eG8JtakkCW7iRfB5LOkihtiz
-         ILF6uNDVqlzKQSLDwmFWatVyi0GzP/rzGumH1fgcTB5vB2ws70X0FDcG8uH+MaS8Gm
-         fafWFiJySP6P93MXhwjv4/7IacAG5CSS6iPH72vXCxBXYILwFXJWgKLbJ8apB2rdem
-         +4GcziHyRonzQ==
-Date:   Tue, 26 Oct 2021 08:56:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Edwin Peer <edwin.peer@broadcom.com>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
-        Michael Chan <michael.chan@broadcom.com>
-Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
- traps on probe/remove device
-Message-ID: <YXeYjXx92wKdPe02@unreal>
-References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
- <YXUhyLXsc2egWNKx@shredder>
- <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
+        id S233693AbhJZGCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 02:02:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33144 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhJZGCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 02:02:43 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id EBC441F770;
+        Tue, 26 Oct 2021 06:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635228018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Er17uZj5lNnNB09LnO1O9fGl7hL1BW2tQkx9sB8YbfI=;
+        b=eBhOJgPgFZ16RnwVCTAWynSDsbi3KY8eSYmnqweJO7rGubGF/34bkQ/oWOczClGmkE7T7V
+        CVsviVLOz+5J73iAWHdZa6F8v3f1ikzxWudxCf4uAbaFRha30Rjdi59+TvGVTedF7g9WNV
+        /u1ViH6/Udd0KnZey9abg45ss3BQqhM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635228018;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Er17uZj5lNnNB09LnO1O9fGl7hL1BW2tQkx9sB8YbfI=;
+        b=R8gP5i8KP5gOg2c1a9Mi1UD9gNiBTaEZRFsBkF3DStSQbsYr2Q5WJ28+sVPyAy2W4heGC5
+        WNPwfwvz60PBsMCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 9F309A3B81;
+        Tue, 26 Oct 2021 06:00:18 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 08:00:18 +0200
+Message-ID: <s5hmtmwxr4d.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, broonie@kernel.org,
+        joe@perches.com, lars@metafoo.de, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
+Subject: Re: [PATCH next] ALSA: mixer: fix deadlock in snd_mixer_oss_set_volume
+In-Reply-To: <20211024140315.16704-1-paskripkin@gmail.com>
+References: <20211024140315.16704-1-paskripkin@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 04:19:07PM -0700, Edwin Peer wrote:
-> On Sun, Oct 24, 2021 at 3:35 PM Ido Schimmel <idosch@idosch.org> wrote:
+On Sun, 24 Oct 2021 16:03:15 +0200,
+Pavel Skripkin wrote:
 > 
-> > On Sun, Oct 24, 2021 at 11:42:11AM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > >
-> > > Align netdevsim to be like all other physical devices that register and
-> > > unregister devlink traps during their probe and removal respectively.
-> >
-> > No, this is incorrect. Out of the three drivers that support both reload
-> > and traps, both netdevsim and mlxsw unregister the traps during reload.
-> > Here is another report from syzkaller about mlxsw [1].
-> >
-> > Please revert both 22849b5ea595 ("devlink: Remove not-executed trap
-> > policer notifications") and 8bbeed485823 ("devlink: Remove not-executed
-> > trap group notifications").
+> In commit 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
+> added mutex protection in snd_mixer_oss_set_volume(). Second
+> mutex_lock() in same function looks like typo, fix it.
 > 
-> Could we also revert 82465bec3e97 ("devlink: Delete reload
-> enable/disable interface")? 
+> Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
+> Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-Absolutely not.
+Applied now, thanks!
 
-> This interface is needed because bnxt_en cannot reorder devlink last.
-> If Leon had fully carried out the re-ordering in our driver he would
-> have introduced a udev phys_port_name regression because of:
-> 
-> cda2cab0771 ("bnxt_en: Move devlink_register before registering netdev")
-> 
-> and:
-> 
-> ab178b058c4 ("bnxt: remove ndo_get_phys_port_name implementation")
 
-devlink_register() doesn't do anything except performing as a barrier.
-
-In a nutshell, latest devlink_register() implementation is better
-implementation of previously existed "reload enable/disable" boolean.
-
-You don't need to reorder whole devlink logic, just put a call to
-devlink_register() in the place where you wanted to put your
-devlink_reload_enable().
-
-> 
-> I think this went unnoticed for bnxt_en, because Michael had not yet
-> posted our devlink reload patches, which presently rely on the reload
-> enable/disable API. Absent horrible kludges in reload down/up which
-> currently depends on the netdev, there doesn't appear to be a clean
-> way to resolve the circular dependency without the interlocks this API
-> provides.
-
-You was supposed to update and retest your out-of-tree implementation
-of devlink reload before posting it to the ML. However, if you use
-devlink_*() API correctly, such dependency won't exist.
-
-> 
-> I imagine other subtle regressions are lying in wait.
-
-Sorry, but we don't have crystal ball and can't guess what else is
-broken in your out-of-tree driver.
-
-Thanks
-
-> 
-> Regards,
-> Edwin Peer
+Takashi
