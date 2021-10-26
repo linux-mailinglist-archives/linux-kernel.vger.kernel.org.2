@@ -2,138 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AF243B461
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D60D43B408
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236758AbhJZOjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:39:22 -0400
-Received: from smtp69.ord1c.emailsrvr.com ([108.166.43.69]:34089 "EHLO
-        smtp69.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236829AbhJZOjI (ORCPT
+        id S236545AbhJZOaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236548AbhJZOam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:39:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1635258435;
-        bh=ygMxfHxoiBiJdno19BOD9W/2ZmzB4nrg+CxY+1M83Oc=;
-        h=Subject:To:From:Date:From;
-        b=b7kc31AKRuIW7MUJFJq1+/EhUiYSHYYAEy2tSs7ePZLT7pWivTeesLhki+rNGoyn1
-         Pt15TlXKXAobqAADdJ+F3wSoXajaN5SEGAKV0+6SVQ28e0OYDDY0xmOsB9x68esY/O
-         ulAT/RgSwAGWi1BIfrXYc24qhUm95wAZs70Hil1Q=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp9.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 6A98C200FB;
-        Tue, 26 Oct 2021 10:27:14 -0400 (EDT)
-Subject: Re: [PATCH 2/5] comedi: dt9812: fix DMA buffers on stack
-To:     Johan Hovold <johan@kernel.org>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20211025114532.4599-1-johan@kernel.org>
- <20211025114532.4599-3-johan@kernel.org>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <ecdee752-72c3-c48a-fee2-49dccf115d71@mev.co.uk>
-Date:   Tue, 26 Oct 2021 15:27:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 10:30:42 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970C3C061220
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:18 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 75so14323768pga.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=P6Gz7Sa13Nz5wo9ag7NEcCeQMS9LijqUptPqbUded4Q=;
+        b=SaA1NiEkGHtN4J7DUi4X7jm28lADdnHv49wQpaqQkXFoB3SNf/82h5rLTh4jJY4Btt
+         sFX2i9TuLjwdwGWgH7TovhRpmtYSb8F3S8/SF+Js4n7qJH5WqiiAObzWOKaCxGiQUoOZ
+         lRjd5HXOhUrmi/i/sVwbQZ4i2aUE1KBlebPKGVkCZ5Jw2u4FeUV8ILl9fCefkH06AWF5
+         YP6cWCZozd8+6gVWPwKbpp86ulEUgae4TWI0CNK4fQp1aZJ1mby9DfMh2H9mdK8yLgM/
+         gifQFzxuM+NzCSPWqivCCRVQXJHkJg8aSzz1bC/gIZ1wCvIuwe44h0xPltgYmEjt9ujs
+         KNAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=P6Gz7Sa13Nz5wo9ag7NEcCeQMS9LijqUptPqbUded4Q=;
+        b=F72jRUhdAFHXp9ZgAUsIz7vapA0q4zWLyKn84bpCjRN4m0TPVhfRE1HRFj/GYANn3R
+         Tv8hUdBnpAKMPPg4tgoBh/GqcNYln9YbYJ12lUIHliY4fx+wVL6B3jnhFs3xlVAttCJy
+         MhWSJYASAuiaDlv5qma78Habnw0RNbemcos40jRvYNzqvPtETEoN1yNuhxNh2ePIR+Oq
+         +0A4c2/x0Xg7zivOiUAc5A5tV/eEWHvgu3Yxha7YEJ89mfu5qmqpsTfqwUQDadGs0azB
+         RmGraXdoWA0YZrMnqH/5qpBfrNYX+hNsj1fgfZOXO3Zf/8OOw6jZez6qg8bOGqOO1xWg
+         DhyA==
+X-Gm-Message-State: AOAM532xygXAvqxwA9Lye+R1az1YTIiDUo7rTRkcFElB97A+eCopWRjZ
+        SOGHjVJCFuKFEqwT6zoLxlQ7rxTlSYA=
+X-Google-Smtp-Source: ABdhPJyHVRuCy8QwnIHGGX1FbVmTZKRFfXp7Jnfc8oPb4zNKsYgZftt3q32/l9QenAjDm/5tO8rPrw==
+X-Received: by 2002:a65:55c5:: with SMTP id k5mr4400286pgs.471.1635258498025;
+        Tue, 26 Oct 2021 07:28:18 -0700 (PDT)
+Received: from localhost ([47.88.5.130])
+        by smtp.gmail.com with ESMTPSA id v8sm1228106pjd.7.2021.10.26.07.28.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:28:17 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH V4 11/50] x86: Mark __native_read_cr3() & native_write_cr3() as __always_inline
+Date:   Tue, 26 Oct 2021 22:27:43 +0800
+Message-Id: <20211026142824.18362-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
+References: <20211026141420.17138-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211025114532.4599-3-johan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: e21ebda7-67d4-45a0-b931-c527437faa1d-1-1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 12:45, Johan Hovold wrote:
-> USB transfer buffers are typically mapped for DMA and must not be
-> allocated on the stack or transfers will fail.
-> 
-> Allocate proper transfer buffers in the various command helpers and
-> return an error on short transfers instead of acting on random stack
-> data.
-> 
-> Note that this also fixes a stack info leak on systems where DMA is not
-> used as 32 bytes are always sent to the device regardless of how short
-> the command is.
-> 
-> Fixes: 63274cd7d38a ("Staging: comedi: add usb dt9812 driver")
-> Cc: stable@vger.kernel.org      # 2.6.29
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->   drivers/comedi/drivers/dt9812.c | 109 ++++++++++++++++++++++++--------
->   1 file changed, 82 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/comedi/drivers/dt9812.c b/drivers/comedi/drivers/dt9812.c
-> index 634f57730c1e..f15c306f2d06 100644
-> --- a/drivers/comedi/drivers/dt9812.c
-> +++ b/drivers/comedi/drivers/dt9812.c
-> @@ -32,6 +32,7 @@
->   #include <linux/kernel.h>
->   #include <linux/module.h>
->   #include <linux/errno.h>
-> +#include <linux/slab.h>
->   #include <linux/uaccess.h>
->   
->   #include "../comedi_usb.h"
-> @@ -237,22 +238,41 @@ static int dt9812_read_info(struct comedi_device *dev,
->   {
->   	struct usb_device *usb = comedi_to_usb_dev(dev);
->   	struct dt9812_private *devpriv = dev->private;
-> -	struct dt9812_usb_cmd cmd;
-> +	struct dt9812_usb_cmd *cmd;
->   	int count, ret;
-> +	u8 *tbuf;
->   
-> -	cmd.cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
-> -	cmd.u.flash_data_info.address =
-> +	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-> +	if (!cmd)
-> +		return -ENOMEM;
-> +
-> +	cmd->cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
-> +	cmd->u.flash_data_info.address =
->   	    cpu_to_le16(DT9812_DIAGS_BOARD_INFO_ADDR + offset);
-> -	cmd.u.flash_data_info.numbytes = cpu_to_le16(buf_size);
-> +	cmd->u.flash_data_info.numbytes = cpu_to_le16(buf_size);
->   
->   	/* DT9812 only responds to 32 byte writes!! */
->   	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-> -			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-> +			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-> +	kfree(cmd);
->   	if (ret)
->   		return ret;
->   
-> -	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-> -			    buf, buf_size, &count, DT9812_USB_TIMEOUT);
-> +	tbuf = kmalloc(buf_size, GFP_KERNEL);
-> +	if (!tbuf)
-> +		return -ENOMEM;
-> +
-> +	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-> +			   tbuf, buf_size, &count, DT9812_USB_TIMEOUT);
-> +	if (!ret) {
-> +		if (count == buf_size)
-> +			memcpy(buf, tbuf, buf_size);
-> +		else
-> +			ret = -EREMOTEIO;
-> +	}
-> +	kfree(tbuf);
-> +
-> +	return ret;
->   }
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-I suggest doing all the allocations up front so it doesn't leave an 
-unread reply message in the unlikely event that the tbuf allocation 
-fails.  (It could even allocate a single buffer for both the command and 
-the reply since they are not needed at the same time.)
+We need __native_read_cr3() & native_write_cr3() to be ensured noinstr.
 
-Ditto for the other functions in the patch.
+It is prepared for later patches which implement entry code in C file.
+Some of the code needs to handle KPTI and has to read/write CR3.
 
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/include/asm/special_insns.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index 68c257a3de0d..fbb057ba60e6 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -42,14 +42,14 @@ static __always_inline void native_write_cr2(unsigned long val)
+ 	asm volatile("mov %0,%%cr2": : "r" (val) : "memory");
+ }
+ 
+-static inline unsigned long __native_read_cr3(void)
++static __always_inline unsigned long __native_read_cr3(void)
+ {
+ 	unsigned long val;
+ 	asm volatile("mov %%cr3,%0\n\t" : "=r" (val) : __FORCE_ORDER);
+ 	return val;
+ }
+ 
+-static inline void native_write_cr3(unsigned long val)
++static __always_inline void native_write_cr3(unsigned long val)
+ {
+ 	asm volatile("mov %0,%%cr3": : "r" (val) : "memory");
+ }
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+2.19.1.6.gb485710b
+
