@@ -2,122 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB47343BAC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C6C43BAC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238718AbhJZTaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        id S238721AbhJZTbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236282AbhJZTaK (ORCPT
+        with ESMTP id S230437AbhJZTbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:30:10 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B654C061570;
-        Tue, 26 Oct 2021 12:27:46 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id b9so284274ybc.5;
-        Tue, 26 Oct 2021 12:27:46 -0700 (PDT)
+        Tue, 26 Oct 2021 15:31:16 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9006CC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:28:52 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id m26so444222pff.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l+wfMzT5pI4KeLbKtOYEjGxFkq26O6EhH+jW3fAP20s=;
-        b=Ncb4t9TNinjO48UvUq1B0xRaynko7cysjTONTPP77SCo8bzaNeTehUbHgptpcjwUAQ
-         23GyyxUGfAH0D2Qixvy9RCx9oHmRVc+iA9CdvRRdCMyAITQPzJ98zD4CjMZoJBdfSOmO
-         7vY/yf6YzYJlxSRxjJiKpBARv09ri+ZJ5D6sB9MkFjHAF5/O7A+ia8hFPfqEnppxIm+n
-         sTpmuNvubZ/gjBxB3leJNLEEdUFaPA9RATJ3IEND4lg6sOnQ948Ncdj2RKMu908Z0w2M
-         1+sQya9KQ/Z5DwXHKvkbqEqiOO/NwrPLsjoqPPskqxef7pUwepf0KhVAuBb4GMqLdGqa
-         dQ1w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/pu9VbN2omlQedwABoANNiq+a4lKTveMAciuIXttxDs=;
+        b=eKddtGzREu9Bqc3EM227h9mdIsL8vzdmHc7iZOGgVjWp4tc+1k5BBpp3PnUmOmapgu
+         zjvbktEnHWnElTuG2q+eRWdA/dHzVJUx6pituYsEgSiv8pHLoMkal0jKYSV2ezSUWMXk
+         fGlUet6sw5Zz5kqw2n7KmfF2aUWmNYdL5ZPa3SsKvkAcwy4Jgqkh/XYlymH/xfm4LDqF
+         Kw2poMtqOo6RB9jLxa3ridNGBabRoVnhp7GhXAlwwRQ9cZxjtFiRNJgOvaOq+OHK+OCB
+         OQ46i9YbeQoN169lHWM89MQnCwyJ+U0yKbDtWHQtMSRckxXwbNL84pLdvfBOfrrthJot
+         WkAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l+wfMzT5pI4KeLbKtOYEjGxFkq26O6EhH+jW3fAP20s=;
-        b=dAVU7C6Dzu5vQ1THsKl1x4UC33QEHT9rBUFdkcnDpVrle19E8fWgoVbC0Na/HJbxrT
-         HYxjdmmDbtf0GQYOgirm79gykAgfjFbFbFvzbRpv+q8XCcyuG65ajKS8bNcH8TKcEsJm
-         A+xyhwT1KTL+62A4tMSv7lF0oUuum9C239P5RS3lJ+MGcZMXaPoNk4ZbbbKq4o+iOcR2
-         BNvpFqd+WL6O4SRhiUJywBndwc4Chb2kl58FwXxIto7oeqRwNfLkNJmZhsH+lT3UYZuq
-         zNuuesKcPg/5NimmbxekhL2mmiyfzm9W2HYAlLQKCWQ7WHaa/4VqR15KjO3WVAobGmgw
-         9UNQ==
-X-Gm-Message-State: AOAM532Q4dbsNJrUp+XeJLtKVpeL1L0Llhmh5bozVwARjbpkvUNI1iWg
-        i6bixt65hjEKye3zlaWHIiRqlGtl/5DCs59TpaQ=
-X-Google-Smtp-Source: ABdhPJw/2ChRJ5oj3dv8OSYqLhqvL0LlcghhuyFBiV0TA3STVk75KQikO8lmp8LLAAvGSQgf7rIaQ8GxdXCqyOoBuHw=
-X-Received: by 2002:a25:c08a:: with SMTP id c132mr25961947ybf.49.1635276465259;
- Tue, 26 Oct 2021 12:27:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/pu9VbN2omlQedwABoANNiq+a4lKTveMAciuIXttxDs=;
+        b=e0IvkYfUtWp6UH2ZcgLRDeNuAT2i7duyFKtf62CncWW+ujC55sqdYP2BJjZ6Gg3V1S
+         GyOqMEloOpvURMQu+7deiy3FxMcpUl3MoDnXkqV7zhqRB13WU8Mzo382pwSlnOHmNtdK
+         QxO+UnDQjF+5flkS+qFxl8juGmH4H/mhMDpQ8oC4FkjVxetq3MEAoDPQECP9oXHL7JDA
+         MdX6qy6/C4FVadU0mJV6ArmS5BdvmTsCacIWwPosvX6EAFR9SpawLAopIXUiwGkrPCks
+         k/gb4OlgHBlfRyTj4KSonUBv1rw6Z/CB7cu8UleT4lCG5NZtcmyBbFohEr20/wlO6nkJ
+         oUEw==
+X-Gm-Message-State: AOAM531DIUMFXsaHnBStggjUEgnUbED5b7zxvYn+dhJYw1nVbyFsqmM/
+        2IbPCQ7WpLTHzrass34QfVs=
+X-Google-Smtp-Source: ABdhPJwwGH0qYYMJKDLaPfSL6XxI27U50JDqur9eIKqKArhmUjGx6TucFUlbZtFDw4TJqkC+hbtO7A==
+X-Received: by 2002:a05:6a00:1489:b0:47c:29db:a199 with SMTP id v9-20020a056a00148900b0047c29dba199mr104325pfu.33.1635276531909;
+        Tue, 26 Oct 2021 12:28:51 -0700 (PDT)
+Received: from localhost (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id e24sm22761599pfn.8.2021.10.26.12.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 12:28:51 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 12:28:48 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bitmap: simplify GENMASK(size - 1, 0) lines
+Message-ID: <YXhW8K7DxadyVgx3@yury-ThinkPad>
+References: <20211026144108.35373-1-quic_qiancai@quicinc.com>
+ <YXhOEEOSG+fgEy+t@yury-ThinkPad>
+ <YXhVVvG9keoVWJyK@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210930121630.17449-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVm5gYFKZa=4jSm+GAsMYRUFwXjjXNhr16Z-ROVzpsZbA@mail.gmail.com>
-In-Reply-To: <CAMuHMdVm5gYFKZa=4jSm+GAsMYRUFwXjjXNhr16Z-ROVzpsZbA@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 26 Oct 2021 20:27:19 +0100
-Message-ID: <CA+V-a8sgmocz+EPALfSytcmQYHbUeMWcz4ac6g5gzUARWDUaPA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] dt-bindings: pincfg-node: Add "output-impedance" property
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXhVVvG9keoVWJyK@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Tue, Oct 26, 2021 at 10:21:58PM +0300, Andy Shevchenko wrote:
+> On Tue, Oct 26, 2021 at 11:54:16AM -0700, Yury Norov wrote:
+> > On Tue, Oct 26, 2021 at 10:41:08AM -0400, Qian Cai wrote:
+> > > Since "size" is an "unsigned int", the rvalue "size - 1" will still be
+> > > "unsigned int" according to the C standard (3.2.1.5 Usual arithmetic
+> > > conversions). Therefore, GENMASK(size - 1, 0) will always return 0UL. Those
+> > > are also caught by GCC (W=2):
+> > > 
+> > > ./include/linux/find.h: In function 'find_first_bit':
+> > > ./include/linux/bits.h:25:22: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
+> > >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
+> > >       |                      ^
+> > > ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+> > >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+> > >       |                                                              ^
+> > > ./include/linux/bits.h:25:3: note: in expansion of macro '__is_constexpr'
+> > >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
+> > >       |   ^~~~~~~~~~~~~~
+> > > ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+> > >    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> > >       |   ^~~~~~~~~~~~~~~~~~~
+> > > ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
+> > >   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
+> > >       |                               ^~~~~~~
+> > > ./include/linux/bits.h:25:34: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
+> > >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
+> > >       |                                  ^
+> > > ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+> > >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+> > >       |                                                              ^
+> > > ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+> > >    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> > >       |   ^~~~~~~~~~~~~~~~~~~
+> > > ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
+> > >   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
+> > >       |                               ^~~~~~~
+> > > 
+> > > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+> > > ---
+> > >  include/linux/find.h | 28 ++++++++--------------------
+> > >  1 file changed, 8 insertions(+), 20 deletions(-)
+> > > 
+> > > diff --git a/include/linux/find.h b/include/linux/find.h
+> > > index 5bb6db213bcb..5ce2b17aea42 100644
+> > > --- a/include/linux/find.h
+> > > +++ b/include/linux/find.h
+> > > @@ -115,11 +115,8 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+> > >  static inline
+> > >  unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
+> > >  {
+> > > -	if (small_const_nbits(size)) {
+> > > -		unsigned long val = *addr & GENMASK(size - 1, 0);
+> > > -
+> > > -		return val ? __ffs(val) : size;
+> > > -	}
+> > > +	if (small_const_nbits(size))
+> > > +		return size;
+> > >  
+> > >  	return _find_first_bit(addr, size);
+> > >  }
+> > 
+> > [...]
+> > 
+> > Nice catch! I'm a bit concerned that small_const_nbits() will never
+> > allow GENMASK() to be passed with size == 0, but the patch looks
+> > good to me overall.
+> 
+> Can you explain to me how it is supposed to work?
+> 
+> For example,
+> 
+>     x = 0xaa55;
+>     size = 5;
+> 
+>     printf("%lu\n", find_first_bit(&x, size));
+> 
+> In the resulting code we will always have 5 as the result,
+> but is it correct one?
 
-Thank you for the review.
+I think it would work really bad and fail to load the kernel
+for many systems, especially those with NR_CPUS == 64 or less.
 
-On Thu, Oct 7, 2021 at 5:57 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Sep 30, 2021 at 2:17 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > On RZ/G2L SoC for Group-B pins, output impedance can be configured.
-> > This patch documents "output-impedance" property in pincfg-node.yaml so
-> > that other platforms requiring such feature can make use of this property.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
-> > +++ b/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
-> > @@ -114,6 +114,10 @@ properties:
-> >      description: enable output on a pin without actively driving it
-> >        (such as enabling an output buffer)
-> >
-> > +  output-impedance:
->
-> output-impedance-ohms (ugh, the standard suffix is plural)
->
-> Yes, I know only one other property has a standard unit suffix from
-> dt-schema/schemas/property-units.yaml. Should we add properties
-> including standard unit suffixes, and deprecate the old ones?
->
-Yes, that should be the way to go forward.
-
-Cheers,
-Prabhakar
-
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description: set the pins output impedance at most X ohm
-> > +
-> >    output-low:
-> >      type: boolean
-> >      description: set the pin to output mode with low level
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+That's why I think Apr 1 branch is a good place  for it.
