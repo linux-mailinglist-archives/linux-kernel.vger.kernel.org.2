@@ -2,150 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1838B43BD3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C22543BD3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240028AbhJZWa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 18:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
+        id S240048AbhJZWdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239993AbhJZWaP (ORCPT
+        with ESMTP id S230411AbhJZWdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:30:15 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5986AC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:27:51 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id n11so590538plf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l6j46Ws58hCljuR8NCqQZteT2C36qK9PN69x2iQopUA=;
-        b=RiyH1MAUmDpDYAaqftu7hK2mF+EV9QSOtTteYwUlF9KfBFbDI36fHOlNpxBE3gFamQ
-         ILnu/vcbTT57havEJQTW9sxR0CN7qoqErr4hI1S9veHhkdYz6/V3dDkPRt6K34/FlzRW
-         Cba0NTPyKs9GcLUhhstUnzxYMsa2o8AOqkBW1UoKI0mzwcBj+EfZTx/FDnFQD7PEbpG6
-         8gCfbbqezjOqkGw9VQU41lHSy45d8OwpJVhRXYYaed6lUDA2gxk00uiSOwQAVZoW4MJK
-         zBNUmoje8QNvfLBOxxHFwDBuNiXlZoq+7HidasNtcs9UVbWsC6FjGJIO2oKLnoFvInsu
-         1ZOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l6j46Ws58hCljuR8NCqQZteT2C36qK9PN69x2iQopUA=;
-        b=GdXG/LJIYlIWU7KedjzW3QNwqTB7+4bO8Pp1GrOGcHidTHIxIQxn1vr8lTbtPcfyeT
-         8pVYjy/ZG+4JIHvJiZakELQn0LYSiQc3DKax0XrpAADDyRlU3IWjkooFac87V13KYJxt
-         iXSxNUslGq0a9PsHIchMDQzDyWgPMn2HcWmbSqinA0We4qS9YDpzthEKkDoQpaor2wcL
-         ltwZ332bROnGma9BiazgOPIl72JE/gYpvJmD4ZxuQJlzgSksF6bm8CrfyogpNM9cUPJ9
-         YOF5UposT+sQI4skCsbkbqFEpfsO2yTEKTKLiyja2Dt42I2p9joe550sflAp39y2/vLd
-         xN0Q==
-X-Gm-Message-State: AOAM530QHKl8jfwnCdqWU1EGWTvtlf33Ge+x1xwyqEZIg0aHVbtLMj1F
-        F0CIQZRma5dwHJifstxcMPHikVP5/A==
-X-Google-Smtp-Source: ABdhPJzUAlM/fZYGpnNP9uF9B6KtqvrrC1iPk+1bcWyA9dpLAH/tditgXJu9IkE+2tljnSzpDwmFQg==
-X-Received: by 2002:a17:90b:33c7:: with SMTP id lk7mr1707693pjb.172.1635287270856;
-        Tue, 26 Oct 2021 15:27:50 -0700 (PDT)
-Received: from jevburton2.c.googlers.com.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t22sm4401685pfg.63.2021.10.26.15.27.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 15:27:50 -0700 (PDT)
-From:   Joe Burton <jevburton.kernel@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org, Joe Burton <jevburton@google.com>
-Subject: [PATCH] libbpf: Deprecate bpf_objects_list
-Date:   Tue, 26 Oct 2021 22:27:46 +0000
-Message-Id: <20211026222746.403866-1-jevburton.kernel@gmail.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+        Tue, 26 Oct 2021 18:33:24 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA67C061570;
+        Tue, 26 Oct 2021 15:31:00 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf63f3HMqz4xbG;
+        Wed, 27 Oct 2021 09:30:54 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1635287454;
+        bh=XefSZASUt0Shq3/7ecZYzgnUVFy7rObUidTFXFQDrPU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=esTDXAO9VPl+gb2NPopWhgwRcoAKMImKj95UXpm2end2j9VxyW8qWOQExKFdCD2r3
+         4a+mjM6PhzR1Dx7NnsaUdKC8A9h4hQH8QbVPjd0w64niF0gJtD2paXrzLs8gGsawPB
+         5r24B/zV9OZLLbD5DXlXDGV2qQNPcx+t4qsHIlI0w/eZSBKNSktsUqTd548ZBrjqqb
+         T5icJ4Tw5eSz+Vn8mjFyVNqqP2DygNPnzsYuRsql1asJwyp5nXjpt5mhkHuoVqt/R5
+         1RGTLcyFsedb3kM/5vatFc5wmHDc+TE+SvCghW+DRTZvNfXBYMfBhO26O2selqltlS
+         Z9O13Qfolda3g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Haren Myneni <haren@linux.ibm.com>,
+        linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] powerpc/vas: Fix potential NULL pointer dereference
+In-Reply-To: <20211026184201.GB1457721@embeddedor>
+References: <20211015050345.GA1161918@embeddedor>
+ <97c42e43-15b9-5db6-d460-dbb16f31954d@linux.ibm.com>
+ <20211026184201.GB1457721@embeddedor>
+Date:   Wed, 27 Oct 2021 09:30:53 +1100
+Message-ID: <87h7d3beqq.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Burton <jevburton@google.com>
+"Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
+> On Mon, Oct 18, 2021 at 02:09:31PM -0700, Tyrel Datwyler wrote:
+>> On 10/14/21 10:03 PM, Gustavo A. R. Silva wrote:
+>> > (!ptr && !ptr->foo) strikes again. :)
+>> > 
+>> > The expression (!ptr && !ptr->foo) is bogus and in case ptr is NULL,
+>> > it leads to a NULL pointer dereference: ptr->foo.
+>> > 
+>> > Fix this by converting && to ||
+>> > 
+>> > This issue was detected with the help of Coccinelle, and audited and
+>> > fixed manually.
+>> > 
+>> > Fixes: 1a0d0d5ed5e3 ("powerpc/vas: Add platform specific user window operations")
+>> > Cc: stable@vger.kernel.org
+>> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Looking at the usage pattern it is obvious that if we determine !ptr attempting
+>> to also confirm !ptr->ops is going to blow up.
+>> 
+>> LGTM.
+>> 
+>> Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>
+> I think I'll take this in my tree.
 
-Add a flag to `enum libbpf_strict_mode' to disable the global
-`bpf_objects_list', preventing race conditions when concurrent threads
-call bpf_object__open() or bpf_object__close().
+I've already put it in powerpc/next:
 
-bpf_object__next() will return NULL if this option is set.
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/commit/?h=next&id=61cb9ac66b30374c7fd8a8b2a3c4f8f432c72e36
 
-Callers may achieve the same workflow by tracking bpf_objects in
-application code.
+If you need to pick it up as well for some reason that's fine.
 
-  [0] Closes: https://github.com/libbpf/libbpf/issues/293
-
-Signed-off-by: Joe Burton <jevburton@google.com>
----
- tools/lib/bpf/libbpf.c        | 8 +++++++-
- tools/lib/bpf/libbpf.h        | 3 ++-
- tools/lib/bpf/libbpf_legacy.h | 6 ++++++
- 3 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 2fbed2d4a645..59d39ce9f375 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1148,6 +1148,7 @@ static struct bpf_object *bpf_object__new(const char *path,
- 					  size_t obj_buf_sz,
- 					  const char *obj_name)
- {
-+	bool strict = (libbpf_mode & LIBBPF_STRICT_NO_OBJECT_LIST);
- 	struct bpf_object *obj;
- 	char *end;
- 
-@@ -1188,7 +1189,8 @@ static struct bpf_object *bpf_object__new(const char *path,
- 	obj->loaded = false;
- 
- 	INIT_LIST_HEAD(&obj->list);
--	list_add(&obj->list, &bpf_objects_list);
-+	if (!strict)
-+		list_add(&obj->list, &bpf_objects_list);
- 	return obj;
- }
- 
-@@ -7935,6 +7937,10 @@ struct bpf_object *
- bpf_object__next(struct bpf_object *prev)
- {
- 	struct bpf_object *next;
-+	bool strict = (libbpf_mode & LIBBPF_STRICT_NO_OBJECT_LIST);
-+
-+	if (strict)
-+		return NULL;
- 
- 	if (!prev)
- 		next = list_first_entry(&bpf_objects_list,
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index e1900819bfab..defabdbe7760 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -168,7 +168,8 @@ LIBBPF_API struct bpf_program *
- bpf_object__find_program_by_name(const struct bpf_object *obj,
- 				 const char *name);
- 
--LIBBPF_API struct bpf_object *bpf_object__next(struct bpf_object *prev);
-+LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "track bpf_objects in application code instead")
-+struct bpf_object *bpf_object__next(struct bpf_object *prev);
- #define bpf_object__for_each_safe(pos, tmp)			\
- 	for ((pos) = bpf_object__next(NULL),		\
- 		(tmp) = bpf_object__next(pos);		\
-diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legacy.h
-index 29ccafab11a8..5ba5c9beccfa 100644
---- a/tools/lib/bpf/libbpf_legacy.h
-+++ b/tools/lib/bpf/libbpf_legacy.h
-@@ -57,6 +57,12 @@ enum libbpf_strict_mode {
- 	 * function name instead of section name.
- 	 */
- 	LIBBPF_STRICT_SEC_NAME = 0x04,
-+	/*
-+	 * Disable the global 'bpf_objects_list'. Maintaining this list adds
-+	 * a race condition to bpf_object__open() and bpf_object__close().
-+	 * Clients can maintain it on their own if it is valuable for them.
-+	 */
-+	LIBBPF_STRICT_NO_OBJECT_LIST = 0x08,
- 
- 	__LIBBPF_STRICT_LAST,
- };
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+cheers
