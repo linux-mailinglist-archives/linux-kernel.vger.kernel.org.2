@@ -2,77 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4CD43A9A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B09943A9A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbhJZBPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 21:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233612AbhJZBPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:15:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 076CD60E74;
-        Tue, 26 Oct 2021 01:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635210765;
-        bh=R1Cb80uSt4Bhak4u71eS+sP7GToGR8SToOhjkAzRg5c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FAEZjsh8TgFiDgg6k41qSmt8mQfIkief5AgZpWdO688RM3wRNXLchDpsC7iqcWAhH
-         MVUU6En74G2GU+JNw1uO/7LinvDwEi2rK7kTnrUz+oyV1FpWdmCgBbHFDESDqfv7NB
-         as2Dvu0XMTU09anX8tcbaga+Dmut20g2s6+JAwocygFEifm9kcgLXsgv/ekAtxVRPr
-         K4nPVEvdhPUQoWwFbJTiiPF4yGysVd4+d0et+Dhg3aOcUeYhY/kijUcr4t8Z1w+nIA
-         PFyObw4OxHggsGR6T/+9K6YAGmFE3WQgvLzV4ijH5dAgVDHkXRi7ugdzVHZ9pKjdu8
-         lxjLzepfGdGGQ==
-Date:   Mon, 25 Oct 2021 18:12:44 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rakesh Babu <rsaladi2@marvell.com>
-Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: Re: [net-next PATCH 1/3] octeontx2-af: debugfs: Minor changes.
-Message-ID: <20211025181244.13acd58b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211025191442.10084-2-rsaladi2@marvell.com>
-References: <20211025191442.10084-1-rsaladi2@marvell.com>
-        <20211025191442.10084-2-rsaladi2@marvell.com>
+        id S236069AbhJZBPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233612AbhJZBPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 21:15:43 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453E7C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:13:20 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id i1so12050037qtr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zoFDos6hqsoqPNE3Ubon2jXwfOR6C/kTOnroswa4np0=;
+        b=YD76ZQyDKFx2VikMwfx6Wtm4xSipBCQMd/DLWlpZ4zQmxA5Ud/s31RJ4FSUZA77SF5
+         8VKmNmiXVI1JNvMACnCbxkuTr3kiesrznZiUIdy7f1/20He1Z4WdGTHmqmfkiJdU0eeu
+         77YLxMrXZ0o4r2X158iw2180hPelIRw6n/OGcKFzn/B0ClULewryvg3Qvv/TqQ0V8hnT
+         FzIbYZrouWQ+nxIHHd/mw6/h/P9Y1JrLkUnzTGWA/8NQLM9GzXcHrwY/UUs18ChJIF3Y
+         PpIfbNQsnbCuVZuSDrfrnt+5d7Eaxjb/cd0XvPKX5ckVFvzboFMgdYvyDa7JsW6NmiyY
+         hoJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zoFDos6hqsoqPNE3Ubon2jXwfOR6C/kTOnroswa4np0=;
+        b=PtGj8w90Obtoq65J2DdFzutE4rqhxVanvHb/2kdQO6qtU6z53I+U9U2lPkyblWPTq0
+         44ryRijgMzsisuJ2dXQL6pgppC3dwyEy5P9goSODBdktvAAr6jkzQqGMyB94SbP1iN8a
+         atCsHp9EY9pLeIHb8FOZiM5LbPPWdw5oXbRltbbjcbPw+wIwpYuHE7Z8LHBaWbbXuonx
+         PfSsHDjuCGX1HfPHKXunRMkj2c2S/z4LwILlxuz9wpj3yolnESilv1aB7oUBmX64Ofee
+         MZRcR1rYuxgBXVreead0fOv89NUd1gnL4v4s8k2v+xwSmAtTJlMzMO6VJO/uxFQpThZp
+         Jkug==
+X-Gm-Message-State: AOAM530/UH6EwjjnE/58O5eR6Pt44FXnLZSAjbjw+wpb/zOzJwyzIWuV
+        dkKBH28nIPDTa39+Tmzp0EwAJQ==
+X-Google-Smtp-Source: ABdhPJwZ4eKoLPCDqP0AOPkjcIy0mJFLBRYWPbATnTT744Z29KzjLAreryt+LTa8sHr0LQ9cUbLj4w==
+X-Received: by 2002:a05:622a:13:: with SMTP id x19mr21230249qtw.83.1635210799496;
+        Mon, 25 Oct 2021 18:13:19 -0700 (PDT)
+Received: from localhost ([167.100.64.199])
+        by smtp.gmail.com with ESMTPSA id bj26sm10232892qkb.127.2021.10.25.18.13.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 Oct 2021 18:13:19 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 21:13:18 -0400
+From:   Sean Paul <sean@poorly.run>
+To:     Mark Yacoub <markyacoub@chromium.org>
+Cc:     linux-mediatek@lists.infradead.org, seanpaul@chromium.org,
+        Mark Yacoub <markyacoub@google.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mediatek: Set default value for Panel Orientation
+ connector prop.
+Message-ID: <20211026011318.GF2515@art_vandelay>
+References: <20211022172413.195559-1-markyacoub@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022172413.195559-1-markyacoub@chromium.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 00:44:40 +0530 Rakesh Babu wrote:
->  	cmd_buf = memdup_user(buffer, count + 1);
-> -	if (IS_ERR(cmd_buf))
-> +	if (IS_ERR_OR_NULL(cmd_buf))
->  		return -ENOMEM;
+On Fri, Oct 22, 2021 at 01:24:03PM -0400, Mark Yacoub wrote:
+> From: Mark Yacoub <markyacoub@google.com>
+> 
+> [Why]
+> Creating the prop uses UNKNOWN as the initial value, which is not a
+> supported value if the props is to be supported.
+> 
+> [How]
+> Set the panel orientation default value to NORMAL right after creating
+> the prop.
 
-memdup_user() returns NULL now?
+Reviewed-by: Sean Paul <seanpaul@chromium.org>
 
->  	cmd_buf[count] = '\0';
-> @@ -504,7 +504,7 @@ static ssize_t rvu_dbg_qsize_write(struct file *filp,
->  	if (cmd_buf)
->  		ret = -EINVAL;
->  
-> -	if (!strncmp(subtoken, "help", 4) || ret < 0) {
-> +	if (ret < 0 || !strncmp(subtoken, "help", 4)) {
-
-The commit message does not mention this change.
-
->  		dev_info(rvu->dev, "Use echo <%s-lf > qsize\n", blk_string);
->  		goto qsize_write_done;
+> 
+> Tested on Jacuzzi(MTK)
+> Fixes IGT@kms_properties@get_properties-sanity-{atomic,non-atomic}
+> 
+> Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> index 0ad7157660afa..b7c2528a8f41c 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -1039,6 +1039,8 @@ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
+>  		DRM_ERROR("Unable to init panel orientation\n");
+>  		goto err_cleanup_encoder;
 >  	}
-
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> index 7761dcf17b91..d8b1948aaa0a 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> @@ -2583,6 +2583,9 @@ static void nix_free_tx_vtag_entries(struct rvu *rvu, u16 pcifunc)
->  		return;
+> +	drm_connector_set_panel_orientation(dsi->connector,
+> +					    DRM_MODE_PANEL_ORIENTATION_NORMAL);
 >  
->  	nix_hw = get_nix_hw(rvu->hw, blkaddr);
-> +	if (!nix_hw)
-> +		return;
+>  	drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
+>  
+> -- 
+> 2.33.0.1079.g6e70778dc9-goog
+> 
 
-This does not fall under "remove unwanted characters, indenting 
-the code" either.
+-- 
+Sean Paul, Software Engineer, Google / Chromium OS
