@@ -2,122 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294B443B60C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6599043B60F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237107AbhJZPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S237113AbhJZPvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237105AbhJZPvZ (ORCPT
+        with ESMTP id S237131AbhJZPvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:51:25 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1611C061220
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:49:00 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id i9so36002627ybi.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9bVpuD1Y0J9AqmF+3g16iWc8OCZsFp8I5PNhkQ+ZVF8=;
-        b=ETLLMFRoQJtWWgBJT0RT3eQfsBfYysOXlgNe2DEvEZ1QazSwauaMIoM44pYme32Cmf
-         5wDxSE86ikalKtUTF8YaP1Vkcs/bOKBzt0fci7rR3EbizNznCCEx/0w0v70ni5jpJVBn
-         Sh62U8y41huL0JAATtLmBuahL1Xvkh1iSGtriC0Ko45kmdHgePn3PtuEZZHBjRrSzBBJ
-         dGjnlJj7MYVxr1qqvL87tedwzYyPKh3xKjvudUVGo7CSSjA3VfLQ9uqL4RjTuNMod5w7
-         zMBED7gaNA16iIjHd5Hnj6vSRP7OvuF+zHyueWTRLv5g9HUUT/3huLUFxWp7eKQl28lK
-         6V9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9bVpuD1Y0J9AqmF+3g16iWc8OCZsFp8I5PNhkQ+ZVF8=;
-        b=BoVWOkbEoi+8xzUul/YFQMBuwIIFpghfJdz5mbfjs04w2l3W81x5q8VSyofv4BxSK4
-         5Zgo5GB9+I16cyf6C/OElwI6NItruPO3AapdlURvSyuCy3NFRgh1R2Du1eSiQvNeo7kw
-         1x7eW7r0flWur5NVAsFSf/L1JhHjnKlDbCQmcsi/NC7tY4qS/1VY8FJ6EjUO5E2/rBpD
-         C0ECXhOjbpiznzCJxyxMQD15sO1qabypWp2ZKsOt2nKb5XOEz64Hv/71mwkLLztYIEUt
-         06L+IIKAmk/NrEtel/c2azdwJHJNux6lUF4Q1Qjf1rao2j0s/roMtFned9n20bd4EiJD
-         dKHw==
-X-Gm-Message-State: AOAM532rPl3wN94oDO+GKg1JiErH32/NAKnydbg250pFTZuQDHtoXA8V
-        paLaYAVJlmezSkBmmyyIyLmk/28VUBpz/0w195gApA==
-X-Google-Smtp-Source: ABdhPJxkAfBCqV5ai6x0PYyirty5FemxittcYFhZ6c9nyXWtlQOHD/jYuUO4dkRqgU2YSYIgmFfT9YLe/rbjhyI0rAo=
-X-Received: by 2002:a25:2514:: with SMTP id l20mr26110968ybl.30.1635263339751;
- Tue, 26 Oct 2021 08:48:59 -0700 (PDT)
+        Tue, 26 Oct 2021 11:51:49 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867DAC061220;
+        Tue, 26 Oct 2021 08:49:25 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 0865E4B9E;
+        Tue, 26 Oct 2021 15:49:24 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0865E4B9E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1635263365; bh=Pg1HyIVWDqYh3KdDEdBF9F6z/oqCMmI+IVUhFzqsTP4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Is96Qr/8xweF1Unmvtua/rNvjIvTsMWkVgCCoDmUkdrm+CgkeXXo41VSqwh/lj9SH
+         8OEiYu93gxau+4MRXwveTZpzZl9l70ivOQ8nIZjGn4/8p6nJ12+7PXJLUreJbN4CEP
+         PeneENpFTs6SkzHMctXxqoVs7CoSSVKpB7YxzCe1lEAKCWy4suxvomwHjD345vrVMy
+         QOwTZwnYqoq62RkuQ7FR5HZa7JpHdH8uZBPDn039HiPEG1x+D9uHqnac8/RKaj4JQ+
+         sf/Hzz1oMZ2sZ5nrLABEcfdfO5RMQSqf+bDknFgbgOPi+5TQgCZjf62HSNgq8zjaxX
+         XRVsUM4Z79klw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] docs: submitting-patches: make section about the
+ Link: tag more explicit
+In-Reply-To: <20211025210536.hlmkpjwf3nll6mlm@meerkat.local>
+References: <cover.1635152553.git.linux@leemhuis.info>
+ <27105768dc19b395e7c8e7a80d056d1ff9c570d0.1635152553.git.linux@leemhuis.info>
+ <20211025210536.hlmkpjwf3nll6mlm@meerkat.local>
+Date:   Tue, 26 Oct 2021 09:49:24 -0600
+Message-ID: <87wnlzeqgr.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20211005234459.430873-1-michael.roth@amd.com> <20211005234459.430873-3-michael.roth@amd.com>
- <CAL715W+-H7ZSQZeZmAbbJNGKaZCNqf4VdLismivxux=gerFuDw@mail.gmail.com> <20211021033723.tfnhazbnlz4z5czl@amd.com>
-In-Reply-To: <20211021033723.tfnhazbnlz4z5czl@amd.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Tue, 26 Oct 2021 08:48:48 -0700
-Message-ID: <CAL715W+kJpnx5Jax2-vtFRDNrQFsc6+YT+q5ZkWbBM7gFVKjkg@mail.gmail.com>
-Subject: Re: [RFC 02/16] KVM: selftests: add hooks for managing encrypted
- guest memory
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     linux-kselftest@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Nathan Tempelman <natet@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 8:46 PM Michael Roth <michael.roth@amd.com> wrote:
->
-> On Mon, Oct 18, 2021 at 08:00:00AM -0700, Mingwei Zhang wrote:
-> > > +void vm_set_memory_encryption(struct kvm_vm *vm, bool enc_by_default, bool has_enc_bit,
-> > > +                             uint8_t enc_bit)
-> > > +{
-> > > +       vm->memcrypt.enabled = true;
-> > > +       vm->memcrypt.enc_by_default = enc_by_default;
-> > > +       vm->memcrypt.has_enc_bit = has_enc_bit;
-> > > +       vm->memcrypt.enc_bit = enc_bit;
-> > > +}
-> > > +
-> > > +struct sparsebit *
-> > > +vm_get_encrypted_phy_pages(struct kvm_vm *vm, int slot, vm_paddr_t *gpa_start,
-> > > +                          uint64_t *size)
-> > > +{
-> > > +       struct userspace_mem_region *region;
-> > > +       struct sparsebit *encrypted_phy_pages;
-> > > +
-> > > +       if (!vm->memcrypt.enabled)
-> > > +               return NULL;
-> > > +
-> > > +       region = memslot2region(vm, slot);
-> > > +       if (!region)
-> > > +               return NULL;
-> > > +
-> > > +       encrypted_phy_pages = sparsebit_alloc();
-> > > +       sparsebit_copy(encrypted_phy_pages, region->encrypted_phy_pages);
-> >
-> > Do we have to make a copy for the sparsebit? Why not just return the
-> > pointer? By looking at your subsequent patches, I find that this data
-> > structure seems to be just read-only?
->
-> Yes, it's only intended to be used for read access. But I'll if I can
-> enforce that without the need to use a copy.
->
+Konstantin Ryabitsev <konstantin@linuxfoundation.org> writes:
 
-Understood. Thanks for the clarification. Yeah, I think both making a
-copy and returning a const pointer should work. I will leave that to
-you then.
+> On Mon, Oct 25, 2021 at 11:06:35AM +0200, Thorsten Leemhuis wrote:
+>> +If related discussions or any other background information behind the change
+>> +can be found on the web, add 'Link:' tags pointing to it. In case your patch
+>> +for example fixes a bug, add a tag with a URL referencing the report in the
+>> +mailing list archives or a bug tracker; if the patch is a result of some
+>> +earlier mailing list discussion or something documented on the web, point to
+>> +it.
+>
+> The "for example" is splitting the sentence awkwardly, so I would move it to
+> the beginning of the sentence:
+>
+> "For example, in case your patch fixes a bug, add ..." etc
+>
+> Otherwise,
+>
+> Reviewed-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
 
-Thanks.
--Mingwei
+I tweaked things along these lines and applied the patch, thanks.
+
+jon
