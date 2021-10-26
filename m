@@ -2,103 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305B243AE34
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6053343AE82
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbhJZIkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:40:01 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:25556 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhJZIjq (ORCPT
+        id S233966AbhJZJGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:06:16 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.97]:30986 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231211AbhJZJGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:39:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635237442;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=UHIcmmtXAz63qMGGo0D/G7B9h1QgSqadW2ikaM+wM/s=;
-    b=btm+WfmSiWpmmZbicJvsZNNgLsu7laZpDG+W1j/OvmWRW4GCHo+b4Q4oKsN1D/8cvM
-    xSKgg3KGkkE2VCZ02yjrGtmy3LHA3YWG0ymae9dsar31Hl+muY7fjmNlYzNjSndTWeSW
-    HR2XrrH2NtzC61CL8jyqRQxmQTaLZCPN3Edm3DtHMubsMuc0ArTef3eTLVbIrAKJoTT8
-    CjCXjyWU9xvE4OmIamiXQWZMiFZSlBUlgyxOjgO5F8+42DkLFiRBMux5gR/GUnYBRmTS
-    8HYokqhhdIs+m9fS6a2eebkyu/gYsFwbiIcY5knAfp/bx0j2IDWR8oHleGjzOvaSDojO
-    eTBg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id n020a8x9Q8bL20Q
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 10:37:21 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolai Stange <nstange@suse.de>
-Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
-Subject: Re: [PATCH 1/6] crypto: DRBG - prepare for more fine-grained tracking of seeding state
-Date:   Tue, 26 Oct 2021 10:37:21 +0200
-Message-ID: <2351272.LuTyyo00Js@positron.chronox.de>
-In-Reply-To: <20211025092525.12805-2-nstange@suse.de>
-References: <20211025092525.12805-1-nstange@suse.de> <20211025092525.12805-2-nstange@suse.de>
+        Tue, 26 Oct 2021 05:06:14 -0400
+X-Greylist: delayed 1515 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 05:06:14 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 404413FE5F7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 03:38:33 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id fHybmwD4eIWzGfHybm69jM; Tue, 26 Oct 2021 03:38:33 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:60754 helo=[10.0.0.35])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1mfHya-002yuX-0p; Tue, 26 Oct 2021 03:38:32 -0500
+Message-ID: <f30262dc-f1cf-4945-5a7d-5ecf5a0b5cc2@kernel.org>
+Date:   Tue, 26 Oct 2021 10:38:27 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH V5 06/20] trace/osnoise: Allow multiple instances of the
+ same tracer
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635181938.git.bristot@kernel.org>
+ <69cbbd98cce2515c84127c8827d733dc87b04823.1635181938.git.bristot@kernel.org>
+ <20211025220856.7fef7581@rorschach.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20211025220856.7fef7581@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.18.63.114
+X-Source-L: No
+X-Exim-ID: 1mfHya-002yuX-0p
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:60754
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 14
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 25. Oktober 2021, 11:25:20 CEST schrieb Nicolai Stange:
+On 10/26/21 04:08, Steven Rostedt wrote:
+> On Mon, 25 Oct 2021 19:40:31 +0200
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+> 
+>>  kernel/trace/trace_osnoise.c | 101 +++++++++++++++++++++++++++--------
+>>  1 file changed, 78 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+>> index 3db506f49a90..8681ffc3817b 100644
+>> --- a/kernel/trace/trace_osnoise.c
+>> +++ b/kernel/trace/trace_osnoise.c
+>> @@ -64,6 +64,24 @@ static bool osnoise_has_registered_instances(void)
+>>  					list);
+>>  }
+>>  
+>> +/*
+>> + * osnoise_instance_registered - check if a tr is already registered
+>> + */
+>> +static int osnoise_instance_registered(struct trace_array *tr)
+>> +{
+>> +	struct osnoise_instance *inst;
+>> +	int found = 0;
+>> +
+>> +	rcu_read_lock();
+>> +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+>> +		if (inst->tr == tr)
+>> +			found = 1;
+>> +	}
+>> +	rcu_read_unlock();
+>> +
+>> +	return found;
+>> +}
+>> +
+>>  /*
+>>   * osnoise_register_instance - register a new trace instance
+>>   *
+>> @@ -2048,6 +2066,16 @@ static int osnoise_workload_start(void)
+>>  {
+>>  	int retval;
+>>  
+>> +	/*
+>> +	 * Instances need to be registered after calling workload
+>> +	 * start. Hence, if there is already an instance, the
+>> +	 * workload was already registered. Otherwise, this
+>> +	 * code is on the way to register the first instance,
+>> +	 * and the workload will start.
+>> +	 */
+>> +	if (osnoise_has_registered_instances())
+>> +		return 0;
+> 
+> Looking at how this is checked before being called, it really should
+> return -1, as it is an error if this is called with instances active.
 
-Hi Nicolai,
+Hum.... maybe my explanation is not good enough. It is not a problem if it is
+called with active instances. It would be an error if the same instance was
+already registered at this point, but that was checked before. Here it is
+checking for other instances that should have enabled the workload.
 
-> There are two different randomness sources the DRBGs are getting seeded
-> from, namely the jitterentropy source (if enabled) and get_random_bytes().
-> At initial DRBG seeding time during boot, the latter might not have
-> collected sufficient entropy for seeding itself yet and thus, the DRBG
-> implementation schedules a reseed work from a random_ready_callback once
-> that has happened. This is particularly important for the !->pr DRBG
-> instances, for which (almost) no further reseeds are getting triggered
-> during their lifetime.
->=20
-> Because collecting data from the jitterentropy source is a rather expensi=
-ve
-> operation, the aforementioned asynchronously scheduled reseed work
-> restricts itself to get_random_bytes() only. That is, it in some sense
-> amends the initial DRBG seed derived from jitterentropy output at full
-> (estimated) entropy with fresh randomness obtained from get_random_bytes()
-> once that has been seeded with sufficient entropy itself.
->=20
-> With the advent of rng_is_initialized(), there is no real need for doing
-> the reseed operation from an asynchronously scheduled work anymore and a
-> subsequent patch will make it synchronous by moving it next to related
-> logic already present in drbg_generate().
->=20
-> However, for tracking whether a full reseed including the jitterentropy
-> source is required or a "partial" reseed involving only get_random_bytes()
-> would be sufficient already, the boolean struct drbg_state's ->seeded
-> member must become a tristate value.
->=20
-> Prepare for this by introducing the new enum drbg_seed_state and change
-> struct drbg_state's ->seeded member's type from bool to that type.
->=20
-> For facilitating review, enum drbg_seed_state is made to only contain
-> two members corresponding to the former ->seeded values of false and true
-> resp. at this point: DRBG_SEED_STATE_UNSEEDED and DRBG_SEED_STATE_FULL. A
-> third one for tracking the intermediate state of "seeded from jitterentro=
-py
-> only" will be introduced with a subsequent patch.
->=20
-> There is no change in behaviour at this point.
->=20
-> Signed-off-by: Nicolai Stange <nstange@suse.de>
+Does updating the comment with the one below helps?
 
-Reviewed-by: Stephan M=FCller <smueller@chronox.de>
+---- %< ----
+Instances need to be registered after calling workload
+start. Hence, if there is already a registered instance,
+this instance is not the first one to enable the workload,
+and a previous instance has already started the workload.
 
-Ciao
-Stephan
+Otherwise, this code is on the way to register the
+first instance, and the workload needs to start.
+---- >% ----
 
+?
+
+
+> -- Steve
+> 
+>> +
+>>  	osn_var_reset_all();
+>>  
+>>  	retval = osnoise_hook_events();
+>> @@ -2075,6 +2103,13 @@ static int osnoise_workload_start(void)
+>>   */
+>>  static void osnoise_workload_stop(void)
+>>  {
+>> +	/*
+>> +	 * Instances need to be unregistered before calling
+>> +	 * stop. Hence, if there is a registered instance, more
+>> +	 * than one instance is running, and the workload will not
+>> +	 * yet stop. Otherwise, this code is on the way to disable
+>> +	 * the last instance, and the workload can stop.
+>> +	 */
+>>  	if (osnoise_has_registered_instances())
+>>  		return;
+>>  
+>> @@ -2096,7 +2131,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
+>>  {
+>>  	int retval;
+>>  
+>> -	if (osnoise_has_registered_instances())
+>> +	/*
+>> +	 * If the instance is already registered, there is no need to
+>> +	 * register it again.
+>> +	 */
+>> +	if (osnoise_instance_registered(tr))
+>>  		return;
+>>  
+>>  	retval = osnoise_workload_start();
 
