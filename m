@@ -2,165 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FD643B4AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DECB43B4B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbhJZOtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:49:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236054AbhJZOtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:49:46 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B52F7603E5;
-        Tue, 26 Oct 2021 14:47:21 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 10:47:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Huan Xie <xiehuan09@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, mingo@redhat.com,
-        chenhuacai@kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [RFC PATCH v2] trace: Add trace any kernel object
-Message-ID: <20211026104720.03ad26c2@gandalf.local.home>
-In-Reply-To: <CAEr6+EBq_v+DGSDeiX5Dqc0RgD0sPpbhzpi=T2=r7M2oh90Fpg@mail.gmail.com>
-References: <20211021185335.380810-1-xiehuan09@gmail.com>
-        <20211022180752.0ed07b35@gandalf.local.home>
-        <CAEr6+EBq_v+DGSDeiX5Dqc0RgD0sPpbhzpi=T2=r7M2oh90Fpg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236139AbhJZOuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236073AbhJZOuX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:50:23 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FB6C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:47:59 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id b188so20746104iof.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/K//SLo0Y+BMNWk0PxHavcMOsKu1OzHSVlLTYjFyaoU=;
+        b=kny3xphQZ0klhl3nOZiiKdyA97coXOYGxuy4dKY5UkMVNoC3fdEHfhdnhqY4zQKg1u
+         uk/+oSwB7UJwlnHJ0/gL867ked/NhdCDabEjJtv57n8IZ0w7cSK+V5dUGR34o7rHfVUI
+         Xr8zbByZhmt+eGDj95LsBvXcGqDhGt5BhzKCYKPzAWU1DhsizaMonFuYXC6JghGrKlnX
+         l3eng6OQf01I/BdN4szngckWEVAUrrNaZ6MUpWfhieTvfoU8d53qUuvinXxI8jdEFpTm
+         2+Alu47TFOajwxtAGf5pZtYIUxmS7b+uFxDTbTkeexS0wJF79nCD/JC9vilc33/bTUVF
+         au0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/K//SLo0Y+BMNWk0PxHavcMOsKu1OzHSVlLTYjFyaoU=;
+        b=J63REFEt9JogOf3bEa559clg+h6TLUtOf88WswZ9wUa2tF1numwiGSc+3aVhXFWjS+
+         patg7mODSCc7iA77CwaTzHel0xvaaahP0ulpMq58o3zbyb7orFMVkO5V9MBitUCBediQ
+         Io1z5CKvMbu5sAQnJwxckn8E5B5YP1YkbxAVCZilJqMrSL7URN1v/k8pedHr+quMkdh7
+         w+1yG3uhfeoO3rbsxPfie+CE+xuSBU/w6evTb5X8hFXaW+DFy3yuxEJpUg+O333PFqj6
+         J+h2RJR7int/h8ge3FE3Z7x5tSJRTbwBy1TqBaIEkDSFZMoyIzsT9JsMN4Cc3tjpQDJE
+         AFBg==
+X-Gm-Message-State: AOAM531xCly2JmJkH9J5PbioQUFkjtuB4tWl00rcCU95Tt+Iqdyace2u
+        hoUYlLbNKNxaznI9kIh0ucF6sKT1BJHu9g==
+X-Google-Smtp-Source: ABdhPJxiSET+2dZ1htluNGBqY+Myo4q/tXjIB5JuspWVqgg9cz+jq8JjsjjKoMGbbsxFXDRUHXavWw==
+X-Received: by 2002:a6b:102:: with SMTP id 2mr15394325iob.185.1635259678618;
+        Tue, 26 Oct 2021 07:47:58 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id s17sm9881740ioc.28.2021.10.26.07.47.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:47:57 -0700 (PDT)
+Subject: Re: [PATCH] io-wq: Remove unnecessary rcu_read_lock/unlock() in raw
+ spinlock critical section
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20211026032304.30323-1-qiang.zhang1211@gmail.com>
+ <CAMZfGtUXq=nQyijktRaP7xp=sAmVCryTjU4Jo5Z=ufed8arnKQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0efbce2d-1f63-82a7-6479-d8ef062aa90d@kernel.dk>
+Date:   Tue, 26 Oct 2021 08:47:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAMZfGtUXq=nQyijktRaP7xp=sAmVCryTjU4Jo5Z=ufed8arnKQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 16:50:46 +0800
-Huan Xie <xiehuan09@gmail.com> wrote:
-
-> > > +static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
-> > > +                              unsigned long object)
-> > > +{
-> > > +
-> > > +     struct trace_buffer *buffer;
-> > > +     struct ring_buffer_event *event;
-> > > +     struct trace_object_entry *entry;
-> > > +     int pc;
-> > > +
-> > > +     pc = preempt_count();
-> > > +     event = trace_event_buffer_lock_reserve(&buffer, &event_trace_file,
-> > > +                     TRACE_OBJECT, sizeof(*entry), pc);
-> > > +     if (!event)
-> > > +             return;
-> > > +     entry   = ring_buffer_event_data(event);
-> > > +     entry->ip                       = ip;
-> > > +     entry->parent_ip                = parent_ip;
-> > > +     entry->object                   = object;  
-> >
-> > So here we are just recording the value we saw at the kprobe (not very
-> > interesting).
-> >
-> > I think we want the content of the object:
-> >
-> >         long val;
-> >
-> >         ret = copy_from_kernel_nofault(&val, object, sizeof(val));
-> >         if (ret)
-> >                 val = 0;  
+On 10/26/21 4:32 AM, Muchun Song wrote:
+> On Tue, Oct 26, 2021 at 11:23 AM Zqiang <qiang.zhang1211@gmail.com> wrote:
+>>
+>> Due to raw_spin_lock/unlock() contains preempt_disable/enable() action,
+>> already regarded as RCU critical region, so remove unnecessary
+>> rcu_read_lock/unlock().
+>>
+>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>> ---
+>>  fs/io-wq.c | 2 --
+>>  1 file changed, 2 deletions(-)
+>>
+>> diff --git a/fs/io-wq.c b/fs/io-wq.c
+>> index cd88602e2e81..401be005d089 100644
+>> --- a/fs/io-wq.c
+>> +++ b/fs/io-wq.c
+>> @@ -855,9 +855,7 @@ static void io_wqe_enqueue(struct io_wqe *wqe, struct io_wq_work *work)
+>>         io_wqe_insert_work(wqe, work);
+>>         clear_bit(IO_ACCT_STALLED_BIT, &acct->flags);
+>>
+>> -       rcu_read_lock();
 > 
-> This place is the only thing I don't understand, don't know  why and
-> where to use the copy_from_kernel_nofault.
+> Add a comment like:
+> /* spin_lock can serve as an RCU read-side critical section. */
 
+Note that it's a raw spinlock. Honestly I'd probably prefer if we just leave
+it as-is. There are plans to improve the io-wq locking, and a rcu lock/unlock
+is pretty cheap.
 
-If we have the address of the symbol, we want to read what's at that
-address, right?
+That said, if resend with a comment fully detailing why it's OK currently,
+then I'd be fine with that as well.
 
-> 
-> we can only get the struct pt_regs from the  __kprobe_trace_fun() ,
-> and use it on the  trace_object_trigger() ,
-> so need to save the pt_regs using a struct:
-> 
-> struct object_trigger_param {
->         struct pt_regs *regs;
->         int param;
-> };
-> 
-> /* Kprobe handler */
-> static nokprobe_inline void __kprobe_trace_func(struct trace_kprobe
-> *tk, struct pt_regs *regs,
->                     struct trace_event_file *trace_file)
-> 
-> 
-> static void trace_object_trigger(struct event_trigger_data *data,
-> struct trace_buffer *buffer,  void *rec,
->                    struct ring_buffer_event *event)
+-- 
+Jens Axboe
 
-
-OK, so let me ask this question. What is it that you want to see?
-
-If we have (using your example):
-
-int bio_add_page(struct bio *bio, struct page *page,
-				unsigned int len, unsigned int offset)
-
-And we want to trace "bio" right?
-
-Doing:
-
-  echo 'p bio_add_page arg1=$arg1' > kprobe_events
-
-Will make "arg1" be assigned the pointer that was passed in.
-
-  0xffff888102a4b900
-
-Which is a local variable that holds an address to some structure bio.
-
-Your current example just keeps showing us that same pointer address and
-not the content of bio, and will never change until the bio_add_page
-function is called again, in which case, you will now be tracing the
-next address of the structure that was passed into the function. There's
-nothing more to learn from this over just tracing that function and giving
-us the address passed in.
-
-Now if I look at struct bio, I see:
-
-struct bio {
-	[..]
-	atomic_t		__bi_cnt;	/* pin count */
-	[..]
-};
-
-And let's say I want to monitor that __bi_cnt while functions are being
-traced. What would be *really cool*, is to mark that value!
-
-// find the offset of __bi_cnt in struct bio:
-$ gdb vmlinux
-(gdb) p &((struct bio *)0)->__bi_cnt
-$1 = (atomic_t *) 0x64
-
- # echo 'objfilter:0x64(arg1) if comm == "cat"' > ./trigger
-
-Which would then read that arg1=0xffff888102a4b900 and offset it by 0x64,
-and give me the value at that location:
-
-  *(0xffff888102a4b900 + 0x64)
-
-at every function. Then I could watch the __bi_cnt change over time. But to
-dereference memory safely, we need to use copy_from_kernel_nofault()
-because that address "0xffff888102a4b900 + 0x64" could point to nothing
-and fault / crash the kernel.
-
-	obj = arg1 + 0x64
-	if (copy_from_kernel_nofault(&val, arg1 + 0x64, sizeof(val)))
-		// faulted
-		return;
-
-Now val has the content of __bi_cnt and we can print that!
-
--- Steve
-
-
-
-> 
-> > Then we can see what changed during this time.
