@@ -2,148 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA21343B3AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D1143B3B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236419AbhJZONa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:13:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236431AbhJZON2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:13:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13ACB61090;
-        Tue, 26 Oct 2021 14:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635257464;
-        bh=FyBqhCDkTOSwhGAqCQeLfGAKiuUaKIxcmf4jS04tKSI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A/PwOGg3nRhm1yKxCbKqfBxpBUrnyTP5T3xurHrkaOKjrWCKgHS7PeV2420qdJ3hi
-         JotzzX91yArW4aA8i0mtDS/zIvYfoKOE8l++N/k+rl4CHs8YVC6RQu/OABrC92jL3P
-         jf2834D3vtBN/DLqagV0n5lBMapCkXbRLuJyadhyd0LgSAXT0uYG8eanuI+xAzwcnn
-         tePhOFpdCMpjBRsDC6Hua/FaB6a5+2g/dvgyaCIMlXlh0LLgLupQhIFmIYj+zSx0bM
-         NjU2NT/keiXH6OAeWpXo+aENGg9PeUNFyEqT7VGG8BJAw8ufEs+pGac3hkKfEgAKIS
-         K4l+3OUcu5bKw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hasegawa Hitomi <hasegawa-hitomi@fujitsu.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: [PATCH 2/2] sched/cputime: Fix getrusage(RUSAGE_THREAD) with nohz_full
-Date:   Tue, 26 Oct 2021 16:10:55 +0200
-Message-Id: <20211026141055.57358-3-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211026141055.57358-1-frederic@kernel.org>
-References: <20211026141055.57358-1-frederic@kernel.org>
+        id S236437AbhJZOO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:14:28 -0400
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:41963 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236432AbhJZOOZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:14:25 -0400
+Received: by mail-vk1-f169.google.com with SMTP id 20so4403097vkc.8;
+        Tue, 26 Oct 2021 07:12:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CRfQV5P44DJIIjFOVODNH7vxAWsLcKoctro6Rd4M6L0=;
+        b=JhMD9WqBBDNoS5sxFMKvFw+hlp08fIm1aVe6StXjPCPgahqyFFexrsK9u9Dxh0frbv
+         nOHFv9h1lKBMNuYceWS1rfxNDaV7era6ukWMJMGJGKqdZ1rOsnRB5wV26H88UyZxPNJO
+         NZ+QOiCjgqXxQ5TAM9R+d/dSPanpcKblx1SX8RcXzRPz0BKfC/8gKOL8y+PMDYklvZOS
+         pa56UVoDVNkkmj7fE40FwRUq6K3mtW3EL5mrHTKRdp1E2PC1YAfsL2ytZb5pz8L3K2dW
+         OhDt3+JQhMRDS10+P3fdd8Qvqxrrgjo8QJxcKNy66dm8CQFxKBjBVPb5ej0QFCa86DgC
+         Jwig==
+X-Gm-Message-State: AOAM530vZYQ1zjIHBK2G5ejU8o/UYCcSVr+V+ug7kQdVmNQ3xQ82uFxZ
+        CoxVMtkfVtAeYasI3HTP+qFoOfbV7LZBSw==
+X-Google-Smtp-Source: ABdhPJyVPVJuFctm/b0earWTs2EGfmwgb0+E1r5spWPoT3GmPEA2cWxiGb2SnxjM+ZtFbV3JSPLI+g==
+X-Received: by 2002:a1f:5c46:: with SMTP id q67mr23295370vkb.24.1635257521000;
+        Tue, 26 Oct 2021 07:12:01 -0700 (PDT)
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
+        by smtp.gmail.com with ESMTPSA id s23sm3115777vss.33.2021.10.26.07.12.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:12:00 -0700 (PDT)
+Received: by mail-vk1-f181.google.com with SMTP id n201so6967349vkn.12;
+        Tue, 26 Oct 2021 07:12:00 -0700 (PDT)
+X-Received: by 2002:a1f:1604:: with SMTP id 4mr22564190vkw.11.1635257520204;
+ Tue, 26 Oct 2021 07:12:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1635188490-15082-1-git-send-email-george.kennedy@oracle.com>
+ <YXcAbXJfg/jKCo5h@kroah.com> <0ddb1c19-64b0-4117-7a92-c3d2fcddfdcf@oracle.com>
+ <CAMuHMdWcU7wy1dxa_MXuHoUTWebvq6ShP820Bn_v+8tx7-TEdg@mail.gmail.com> <c73402dd-ec3f-4df7-6a16-36fb276a50f4@oracle.com>
+In-Reply-To: <c73402dd-ec3f-4df7-6a16-36fb276a50f4@oracle.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Oct 2021 16:11:48 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVHt=9N274SG+B7W83JbVVnbz_U5Nkejs_PR2HqvZvJgQ@mail.gmail.com>
+Message-ID: <CAMuHMdVHt=9N274SG+B7W83JbVVnbz_U5Nkejs_PR2HqvZvJgQ@mail.gmail.com>
+Subject: Re: [PATCH] video: fbdev: cirrusfb: check pixclock to avoid divide by zero
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-getrusage(RUSAGE_THREAD) with nohz_full may return shorter utime/stime
-than the actual time.
+Hi George,
 
-task_cputime_adjusted() snapshots utime and stime and then adjust their
-sum to match the scheduler maintained cputime.sum_exec_runtime.
-Unfortunately in nohz_full, sum_exec_runtime is only updated once per
-second in the worst case, causing a discrepancy against utime and stime
-that can be updated anytime by the reader using vtime.
+On Tue, Oct 26, 2021 at 3:38 PM George Kennedy
+<george.kennedy@oracle.com> wrote:
+> On 10/26/2021 4:30 AM, Geert Uytterhoeven wrote:
+> > On Mon, Oct 25, 2021 at 9:37 PM George Kennedy
+> > <george.kennedy@oracle.com> wrote:
+> >> On 10/25/2021 3:07 PM, Greg KH wrote:
+> >>> On Mon, Oct 25, 2021 at 02:01:30PM -0500, George Kennedy wrote:
+> >>>> Do a sanity check on pixclock value before using it as a divisor.
+> >>>>
+> >>>> Syzkaller reported a divide error in cirrusfb_check_pixclock.
+> >>>>
+> >>>> divide error: 0000 [#1] SMP KASAN PTI
+> >>>> CPU: 0 PID: 14938 Comm: cirrusfb_test Not tainted 5.15.0-rc6 #1
+> >>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2
+> >>>> RIP: 0010:cirrusfb_check_var+0x6f1/0x1260
+> >>>>
+> >>>> Call Trace:
+> >>>>    fb_set_var+0x398/0xf90
+> >>>>    do_fb_ioctl+0x4b8/0x6f0
+> >>>>    fb_ioctl+0xeb/0x130
+> >>>>    __x64_sys_ioctl+0x19d/0x220
+> >>>>    do_syscall_64+0x3a/0x80
+> >>>>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>>>
+> >>>> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 
-To fix this situation, perform an update of cputime.sum_exec_runtime
-when the cputime snapshot reports the task as actually running while
-the tick is disabled. The related overhead is then contained within the
-relevant situations.
+> >>>> --- a/drivers/video/fbdev/cirrusfb.c
+> >>>> +++ b/drivers/video/fbdev/cirrusfb.c
+> >>>> @@ -477,6 +477,9 @@ static int cirrusfb_check_pixclock(const struct fb_var_screeninfo *var,
+> >>>>       struct cirrusfb_info *cinfo = info->par;
+> >>>>       unsigned maxclockidx = var->bits_per_pixel >> 3;
+> >>>>
+> >>>> +    if (!var->pixclock)
+> >>>> +            return -EINVAL;
+> > This is not correct: fbdev drivers should round up invalid values,
+> > and only return an error if rounding up cannot yield a valid value.
+>
+> What default value would you recommend? Here are examples of some of the
+> possible cirrusfb pixclock values:
+> 40000: 25MHz
+> 20000: 50Mhz
+> 12500: 80Mhz
 
-Reported-by: Hasegawa Hitomi <hasegawa-hitomi@fujitsu.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Hasegawa Hitomi <hasegawa-hitomi@fujitsu.com>
----
- include/linux/sched/cputime.h |  5 +++--
- kernel/sched/cputime.c        | 12 +++++++++---
- 2 files changed, 12 insertions(+), 5 deletions(-)
+You should pick the lowest supported value.
 
-diff --git a/include/linux/sched/cputime.h b/include/linux/sched/cputime.h
-index 6c9f19a33865..ce3c58286062 100644
---- a/include/linux/sched/cputime.h
-+++ b/include/linux/sched/cputime.h
-@@ -18,15 +18,16 @@
- #endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
- 
- #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
--extern void task_cputime(struct task_struct *t,
-+extern bool task_cputime(struct task_struct *t,
- 			 u64 *utime, u64 *stime);
- extern u64 task_gtime(struct task_struct *t);
- #else
--static inline void task_cputime(struct task_struct *t,
-+static inline bool task_cputime(struct task_struct *t,
- 				u64 *utime, u64 *stime)
- {
- 	*utime = t->utime;
- 	*stime = t->stime;
-+	return false;
- }
- 
- static inline u64 task_gtime(struct task_struct *t)
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 872e481d5098..9392aea1804e 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -615,7 +615,8 @@ void task_cputime_adjusted(struct task_struct *p, u64 *ut, u64 *st)
- 		.sum_exec_runtime = p->se.sum_exec_runtime,
- 	};
- 
--	task_cputime(p, &cputime.utime, &cputime.stime);
-+	if (task_cputime(p, &cputime.utime, &cputime.stime))
-+		cputime.sum_exec_runtime = task_sched_runtime(p);
- 	cputime_adjust(&cputime, &p->prev_cputime, ut, st);
- }
- EXPORT_SYMBOL_GPL(task_cputime_adjusted);
-@@ -828,19 +829,21 @@ u64 task_gtime(struct task_struct *t)
-  * add up the pending nohz execution time since the last
-  * cputime snapshot.
-  */
--void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
-+bool task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
- {
- 	struct vtime *vtime = &t->vtime;
- 	unsigned int seq;
- 	u64 delta;
-+	int ret;
- 
- 	if (!vtime_accounting_enabled()) {
- 		*utime = t->utime;
- 		*stime = t->stime;
--		return;
-+		return false;
- 	}
- 
- 	do {
-+		ret = false;
- 		seq = read_seqcount_begin(&vtime->seqcount);
- 
- 		*utime = t->utime;
-@@ -850,6 +853,7 @@ void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
- 		if (vtime->state < VTIME_SYS)
- 			continue;
- 
-+		ret = true;
- 		delta = vtime_delta(vtime);
- 
- 		/*
-@@ -861,6 +865,8 @@ void task_cputime(struct task_struct *t, u64 *utime, u64 *stime)
- 		else
- 			*utime += vtime->utime + delta;
- 	} while (read_seqcount_retry(&vtime->seqcount, seq));
-+
-+	return ret;
- }
- 
- static int vtime_state_fetch(struct vtime *vtime, int cpu)
--- 
-2.25.1
+> We can plug in a default value, but I believe it is just covering up the
+> fact that an incorrect value has been copied in.
 
+Passing zero is not incorrect.  The driver is supposed to round it
+up to a valid value.
+
+> I would think we would want to keep this driver consistent with the
+> other fb drivers that return failure with the incorrect value.
+
+I disagree: non-conformant behavior should be fixed, not copied.
+
+> >>> Shouldn't you be checking further up the call chain where this got set
+> >>> to 0?
+> >> The same pixclock check is done in these fb drivers:
+> >>
+> >> arch/arm/mach-rpc/include/mach/acornfb.h:    if (!var->pixclock)
+> >> drivers/video/fbdev/asiliantfb.c:    if (!var->pixclock)
+> >> drivers/video/fbdev/clps711x-fb.c:    if (!var->pixclock)
+> >> drivers/video/fbdev/core/fbmon.c:    if (!var->pixclock)
+> >> drivers/video/fbdev/core/modedb.c:    if (!var->pixclock)
+> >> drivers/video/fbdev/cirrusfb.c:    if (!var->pixclock)
+> >> drivers/video/fbdev/kyro/fbdev.c:    if (!var->pixclock)
+> >> drivers/video/fbdev/riva/fbdev.c:    if (!var->pixclock)
+> >> drivers/video/fbdev/uvesafb.c:    if (!var->pixclock)
+> >>
+> >>> What logic allows this to be a valid value?  What about all other fb
+> >>> drivers?
+> >> The "check_var" function, which is set into the ".fb_check_var" element
+> >> of the fb_ops struct, should do the check, but in the case of cirrusfb,
+> >> that is not being done.
+> >>
+> >> All this patch does is add the same pixclock check that the other above
+> >> fb drivers do.
+> > Indeed, several drivers are not following the rounding rules.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
