@@ -2,179 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E8043AA31
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E4A43AA36
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhJZCUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:20:47 -0400
-Received: from mail-eopbgr00049.outbound.protection.outlook.com ([40.107.0.49]:61702
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233726AbhJZCUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:20:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gVEmE8cDiT7t88X3P8AhHumZut9Z+XuNCe2ugOanaq+ac4qG6t2RWf1EP8CBpF8BRB00d3widZi41dgRrPQVGrhA6zsStOvMrXXUBJgEXOMq5G6rYF1cDiFewC99X1IkVWWFPb0zYtk+cKfykY1tdYC627DwFqk2D7KppgSe43oLf12sErcdkFhnxSZCXDvGneySaN8TRAQrKAGzA9+do84r+HVjVkrn+8728u0irtDexZ9K7F+RbcyDeiprTW1mdZG5kJT0ZEyG4zWLFuta5tIz5FAzBGRial0wOAU2c9/PAYFp7WoRacJgU9kIthhL8+yyOdIDLkndLDkhnYqQOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sOqu90wkUkVh10ZyFwlVw5IKOUFByZNeFKr+N50of/c=;
- b=ABF9TX++6L3GR8j5/vHIh7rVNWtXEz+TV5N1RdyPBOmYAK9k+T31Rhk/nLY3xABZDBHPZS4hQLsU0v460tosqA3/ChdSD3RjV8y4YyYeNYF2iK/LHStv/+yWX5HhdOBUpMbMiCEW9BndkGCjKUD9HvVTDJ8QIa2LW5Li2ZavlcyB71mKi3aA0UIQ6TYqM2tXpDeM2oY1saFZNKm9J856E5z5FFKqcpBkghZwA1o6ROc4MQ4DVjmOga7rmZJgoJkBybTqgbhE9u716wPaBdeONE45Z1p94BtL5hZmzNJ4odv94QdsY2Kp8pqYNl2dRe6zT5pHXijedH4+aRgTtQXeNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sOqu90wkUkVh10ZyFwlVw5IKOUFByZNeFKr+N50of/c=;
- b=dOs/q+G4OY8z0mrsLkQ9zs42Dj9n8A8eU8a2bZKinNtb1zt9vEV/ISfjMgUFz0PSVl4wATo0cZ9X3dtiLADW/4Ffatn3bffrwSBYQyLt6RJh+3MXJH6BD2+M2h2q1vgOFyGf5RZc+BHjewAnWSIAGcNVmJ1AwbrH749jYcky9jg=
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
- by AS8PR04MB8803.eurprd04.prod.outlook.com (2603:10a6:20b:42e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Tue, 26 Oct
- 2021 02:18:18 +0000
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc]) by AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc%4]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
- 02:18:18 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-CC:     "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: RE: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link never
- came up
-Thread-Topic: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link never
- came up
-Thread-Index: AQHXxxe5hpSrQkcPqkWGr8lEYEKQh6vjlGkAgAAC9gCAAPQyAA==
-Date:   Tue, 26 Oct 2021 02:18:18 +0000
-Message-ID: <AS8PR04MB8676A0F3DA3248C6A27801148C849@AS8PR04MB8676.eurprd04.prod.outlook.com>
-References: <1634886750-13861-1-git-send-email-hongxing.zhu@nxp.com>
- <1634886750-13861-4-git-send-email-hongxing.zhu@nxp.com>
- <20211025111312.GA31419@francesco-nb.int.toradex.com>
- <YXaTxDJjhpcj5XBV@sirena.org.uk>
-In-Reply-To: <YXaTxDJjhpcj5XBV@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 485c7df0-8ca6-4ad8-f4f0-08d99826dff7
-x-ms-traffictypediagnostic: AS8PR04MB8803:
-x-microsoft-antispam-prvs: <AS8PR04MB88039B111297081CCDFCD9038C849@AS8PR04MB8803.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SZ56z7KI/sk3Ch7x8bUFo6CNoBbe5mYHToCKBqqKudJwD7xHWQaS/vDHMd4XAE+rjrY/WCzwhBMUqtHQnFoh7TfdAyIpz4sijH3XgmtJOU+OqNmBYYS6gLV/dEDI69GKYYMkCnGOvNYLswizpIaX0mHZuBZoupq1LdhHYo06pKqL3WdElcaGP8cAC/NL7XIevIbGL/NjRnD8Ula7z73QLsfey0CwmL8NebQ7LlxUC0BAT2cF1tml4iXkpiZIwJw1RQHF0HKDpsb/rvPoeiZVkiFe7AXh9nwSD71RhsgrEm3dPJV7nPrlv+y0inw2je3qh8q3ImqerM/fNd61oja2GQN7g0m0qRA+//zyj41K8P2sB08G/TjVtQb5FbffKgI1FqmgVoDYK/sUnHpyl6hcGF6MKzYY5k6Shy//JN1cidmev55kYaH1m9smUpFy4BWvjNF7oB57H/CUNZJjkj81KWm8latY1hjqhoWX97ave4D1PmJvr+v2VcJP9uXMeblWWGY93n50B6MMUqzqQtGC4MH2scSsKeWzK0qtL8W7rSseXODzbhx/QfKHEg4saEJG8bE4ddTdAdHGAVprZsJk3IWBO00DMRs7YpNQVrb4/jvdngJWlxPIKxZgJerP2PW45XGEu+KDSOD+35PKw9PxIA768fdhOjx2SAozMBYE0pXk9/UiVYGT4mvvtIJDK2zxJ9E+NHN8TlkxNRr+KPPfTAP6y/dX61W7/wQPIPl2LKZV88LLxItkljA172Gmskr9x0Y/d/qsva6bQoKEef8x7Nfrk7BZ8Uv6aPAbO+NzYqw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(7696005)(53546011)(5660300002)(4326008)(66556008)(122000001)(7416002)(71200400001)(38100700002)(110136005)(54906003)(66946007)(66476007)(64756008)(66446008)(55016002)(86362001)(83380400001)(76116006)(966005)(316002)(186003)(38070700005)(33656002)(8936002)(52536014)(8676002)(508600001)(9686003)(26005)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U2OslaCT8kWYdOXu2pRBoORhhSxyKdVh7ZMKs7M3Lgdb4yGO/MJ+HRb3FouF?=
- =?us-ascii?Q?CkBWs5H1V/g2iaMitGSvmw0sxPrb6Jcz20eAWT3+ba8dLFp2mVZdV7g66uUn?=
- =?us-ascii?Q?fjMC/hDrtkkdNxR7gd6zPnN3rVqnTO3FVpLNXQiB8wycXk5xOkJlfrKbDVaU?=
- =?us-ascii?Q?0dn6JWDwLXt3TkrKGeuWa2hsHB92jrkmkMyutvs34SyiZ5514/HIhT3bkgMz?=
- =?us-ascii?Q?96yxl/C4vExEJdBIyOF8EkV4/uiEVF2tjozAED3vCOoTJucjpQEZC51BB3cl?=
- =?us-ascii?Q?rqRA26ujD4esbjl82o2wOz95EBwq8B+t749gBXZnQ65zvd1lt2azNG+gJk+a?=
- =?us-ascii?Q?JE8aEWJ+kqY7f79E787/894fl0KMIi3kv3KB7cCvWP0uvyLSwmhXZNNr2veo?=
- =?us-ascii?Q?0D74S5czNM0xbp15QMFwjTwGyC+R2El+XtTURvFGUxDCmNUr3Q30/u9dV3am?=
- =?us-ascii?Q?fAfIk0aCU2zs+zaAitl452WCeEHIr+wA7tfnY54/NRvFeQDILtZ4+lmn/82B?=
- =?us-ascii?Q?GRiLr8+GnKwluUU8S6dvPX+UcoRkDcTaS88t2wAS4KOUTzsRPahT8e7aD0kt?=
- =?us-ascii?Q?MqxEWrrrOKmZXW8zTLafT1sLoUZ7muiQ7iZuN3xQsBfDd7sMYVRj6r7qX+12?=
- =?us-ascii?Q?pClUkLq+HzwVv2ui4DvTToBxNCKZjKEV/tyrzrX9lXD3q3kG0uss2TTqLxqm?=
- =?us-ascii?Q?tSG4iSBdh57oqR4gfMGg7/9LeXCb6S0VDrueo0hqkT6eyH+Q9Wj1S68yX6U+?=
- =?us-ascii?Q?EQjS/reF2TjS191EXZ9lQFJRjvHAX8FNjwK66IK7r3zVEm5nJlUKeaSjsO0U?=
- =?us-ascii?Q?Bj26XPlr9udbvMe7vq1wbj7XTFq/tw+47Pp2winD/XYZ7sF3MMDxZ8ZnLnsV?=
- =?us-ascii?Q?RxlLnT4ONA0GR01JA8MTvf39Qd6J1nm3CSx5m9vkshdYHrsiHxLr37iaiB7F?=
- =?us-ascii?Q?O0tyDDzf77jDT/2vaMQ47zSSbGxval1KAT33W2hV9a1GpdSJFS/CvBJ+pC1w?=
- =?us-ascii?Q?U2iWiP7+PyPNam+DEr2tHUjCy8YI3Hw10DJhtQDIywsfOLAgLnWa4//bV8Ux?=
- =?us-ascii?Q?B5YFn5BkeK7T9Y1ssTO4SZVYgiEVY+LOh8kIJMZ3hWvwEU5NuuYvvpKaM97y?=
- =?us-ascii?Q?l9D4rEf/f+/p1hnoAUbNQyExbreG+7ptBlr61cOdiikGVpBBR47FslD55zKD?=
- =?us-ascii?Q?1aRMiLClGn1mSJgPNupmhT61t/lpDTXC9XDNy8aKn333wB6NwXHRK5oux/H1?=
- =?us-ascii?Q?DO2VtnoEvtUPWHrWss1gXMS5RY477hdj0NWZb6wHi7Z8Ty1jc8e4XWwIoUGh?=
- =?us-ascii?Q?i16TN9iEfp6Bhkbi6fNeTES2aL1rJ7a+MYsaJFkHYyjS6nZuX5qosAD5Pcu4?=
- =?us-ascii?Q?pjyGLTxBmYuy1ENmgT+T/8ixo2CJfFHN9b2dd6odxngRoBCeTiAdN1X+Ospp?=
- =?us-ascii?Q?5fxL47WaiRgjyUcieS4BgsxcIA/Xy2ZYaUxrSpJD1XhaYzWho/NlQuw1si5C?=
- =?us-ascii?Q?8EDpAYRB3xDfDvfERlpEWTJT8srBMtHR8Nxm1i2XdUxdr2xEe9Q+eTp0z3zB?=
- =?us-ascii?Q?xCL3fQFSQKvVgkJoK4lcOperTGO4jx0ZM87077FITMa7l4OsrYufu7sxc6vH?=
- =?us-ascii?Q?lA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233835AbhJZCV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233654AbhJZCVv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 22:21:51 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33CAC061745;
+        Mon, 25 Oct 2021 19:19:27 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id 188so18133680iou.12;
+        Mon, 25 Oct 2021 19:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k0RKbIIOqMFBOFiljOedZCbcAtZDA7g3jIfQe8Pm7Ic=;
+        b=aoW6OTWlAGkoz5LLHjyuVeW61Uayophh62a+WB1/EWekYjdNjm+OIaF6sEZbcWwtwX
+         occKhayjuggtGGnbc1xtLBNL5iw9jX+AIJgBpx9pJ/auW3IzdhtWxC9PkKi8+lo/GH4X
+         fmGQ/4mcxJm6+UPYs4eeeYv1A24KKwMjyYuQm6r9b4M+K2F59SwhVyjt/0obUWXvgU9G
+         QSYGUm2Jy8+JqhNZIYz14iZeOnC6WpXwOsOgQZPg5fBOia66yMZPK2tfUGrWI63BKu/8
+         zXFs+Oo6I+YPCihBQeMLpcZtxy0SDmKd74abqUCteI5tzt/DBWYOVurt9Pu8bsYf5WgH
+         tcVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k0RKbIIOqMFBOFiljOedZCbcAtZDA7g3jIfQe8Pm7Ic=;
+        b=O1A8EHBhM9PYvqGCIhFmRbs6a2oaY0MZ92uIFqggEWOWRc4gJl/lR6usAmrbaI0YZR
+         2/txoHu5AAurqG2GTmzyiNHERxJjlHnmUAlwXJLLi80kLdAF8tL7P8SM52x2gKBn03pJ
+         EJ0sa9o2EhRUzbbFpXH6D7JGx1AbbKeCTF8I9W7HL6NUYHlcBJtEakFzgBQBcRVGO6w+
+         Td4z6AIqWhPsP2iM+jF07QBukmgFcNZuXhFHAZks/MD8XCTU+wtgU19+whFfgm46yRmb
+         m8wjR39Zqy/eHHO7Z+NzTLdMflUukDZXjWI48Y0ZHh8tZBvrqpTgK1yxQltgV7YUZime
+         3wzw==
+X-Gm-Message-State: AOAM531aS917tRRUlY9YqIrxUeS4c9mCjkm6dW7kAXcHIqlV+zioXQo0
+        apKHT2EcRE+qRDtChjVcIPerVRsPuiQxBx7S9tU=
+X-Google-Smtp-Source: ABdhPJwrAN4fbPYm/5hVv3F2xPLmeiEevoR0k3peWC93PQke/ju+UCPMkqMqGcfkxXu+OioRuTJdpiYFOpyzOJm9wqw=
+X-Received: by 2002:a05:6638:1607:: with SMTP id x7mr12892000jas.128.1635214767233;
+ Mon, 25 Oct 2021 19:19:27 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 485c7df0-8ca6-4ad8-f4f0-08d99826dff7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2021 02:18:18.2577
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Z8NmvxsOKnwgBO8cgy4QtBW0EdJG151QXp0lgf5+lrtIRK/vi6x8kKh/MMLxeVcFBKFcRLSUXX4n+P8wXtNdLw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8803
+References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-9-laoar.shao@gmail.com>
+ <202110251421.7056ACF84@keescook>
+In-Reply-To: <202110251421.7056ACF84@keescook>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 26 Oct 2021 10:18:51 +0800
+Message-ID: <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
+Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
+ task comm size change
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Monday, October 25, 2021 7:24 PM
-> To: Francesco Dolcini <francesco.dolcini@toradex.com>
-> Cc: Richard Zhu <hongxing.zhu@nxp.com>; l.stach@pengutronix.de;
-> bhelgaas@google.com; lorenzo.pieralisi@arm.com; jingoohan1@gmail.com;
-> linux-pci@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> kernel@pengutronix.de
-> Subject: Re: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link n=
-ever
-> came up
->=20
-> On Mon, Oct 25, 2021 at 01:13:12PM +0200, Francesco Dolcini wrote:
->=20
-> > Hello Richard,
-> > please see this comment from Mark,
-> https://lore.kernel.org/all/YXaGve1ZJq0DGZ9l@sirena.org.uk/.
->=20
-> > > +		if (imx6_pcie->vpcie
-> > > +		    && regulator_is_enabled(imx6_pcie->vpcie) > 0)
-> > > +			regulator_disable(imx6_pcie->vpcie);
-> > >  		return ret;
->=20
-> I should probably also say that the check for the regulator looks buggy a=
-s well,
-> regulators should only be optional if they can be physically absent which=
- does
-> not seem likely for PCI devices.  If the driver is not doing something to
-> reconfigure the hardware to account for a missing supply this is generall=
-y a big
-> warning sign.
->=20
-> I really don't understand why regulator support is so frequently problema=
-tic
-> for PCI controllers.  :(
-[Richard Zhu] Hi Mark:
-The _enabled check is used because that this regulator is optional in the H=
-W design.
-To make the codes clean and aligned on different HW boards, the _enabled ch=
-eck is added.
+On Tue, Oct 26, 2021 at 5:24 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Oct 25, 2021 at 08:33:11AM +0000, Yafang Shao wrote:
+> > bpf_probe_read_kernel_str() will add a nul terminator to the dst, then
+> > we don't care about if the dst size is big enough.
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Petr Mladek <pmladek@suse.com>
+>
+> So, if we're ever going to copying these buffers out of the kernel (I
+> don't know what the object lifetime here in bpf is for "e", etc), we
+> should be zero-padding (as get_task_comm() does).
+>
+> Should this, instead, be using a bounce buffer?
 
-The root cause is that the error return is not handled properly by the cont=
-roller driver.
-I.MX PCIe controller doesn't support the Hot-Plug, and it would return -110=
- error
-when PCIe link never came up. Thus, the _probe would be failed in the end.
-The clocks/regulator usage balance should be considered by i.MX PCIe contro=
-ller, that's all.
-It's not a general case, and the problem is not caused by the regulator sup=
-port.
+The comment in bpf_probe_read_kernel_str_common() says
 
-Best Regards
-Richard Zhu
+  :      /*
+  :       * The strncpy_from_kernel_nofault() call will likely not fill the
+  :       * entire buffer, but that's okay in this circumstance as we're probing
+  :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
+  :       * as well probe the stack. Thus, memory is explicitly cleared
+  :       * only in error case, so that improper users ignoring return
+  :       * code altogether don't copy garbage; otherwise length of string
+  :       * is returned that can be used for bpf_perf_event_output() et al.
+  :       */
 
+It seems that it doesn't matter if the buffer is filled as that is
+probing arbitrary memory.
+
+>
+> get_task_comm(comm, task->group_leader);
+
+This helper can't be used by the BPF programs, as it is not exported to BPF.
+
+> bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
+>
+> -Kees
+>
+> > ---
+> >  tools/bpf/bpftool/skeleton/pid_iter.bpf.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+> > index d9b420972934..f70702fcb224 100644
+> > --- a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+> > +++ b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+> > @@ -71,8 +71,8 @@ int iter(struct bpf_iter__task_file *ctx)
+> >
+> >       e.pid = task->tgid;
+> >       e.id = get_obj_id(file->private_data, obj_type);
+> > -     bpf_probe_read_kernel(&e.comm, sizeof(e.comm),
+> > -                           task->group_leader->comm);
+> > +     bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm),
+> > +                               task->group_leader->comm);
+> >       bpf_seq_write(ctx->meta->seq, &e, sizeof(e));
+> >
+> >       return 0;
+> > --
+> > 2.17.1
+> >
+>
+> --
+> Kees Cook
+
+
+
+-- 
+Thanks
+Yafang
