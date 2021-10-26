@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72A043B464
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F23543B453
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbhJZOjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbhJZOjU (ORCPT
+        id S236741AbhJZOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:38:30 -0400
+Received: from smtp122.ord1d.emailsrvr.com ([184.106.54.122]:44071 "EHLO
+        smtp122.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236737AbhJZOiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:39:20 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77170C061348
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:36:56 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso2433521pjm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Iv2xBEWgdsLbsGrbI1Ynj++RbyVyoOiqc5Pz0aTXiaA=;
-        b=OtSYCdaDTSbq4RKOJJ+AV/w5/fCS7qcvuM7T4FnexJaftpDiOLW42FOvSqcTJEfDRj
-         Z+PU8lmDZ7LaBN97jI1c+75rlktP2+Li7N9G8szacry90dBx3KOY5yWuFO/OBxp+mtdB
-         nNCQ4Gkpj6te84rhEbE6ReDX8Ywhq9fN0ZaepJ62lnI46ycCWMkCv6vU8CC1wtqK6crd
-         +cwZNPm++5ZCJFHeEZjm+KpFZ2KpZ3qJnVZAP9kTO4Pfq0s7tM0fUSnhTtwBrFCAx31r
-         sVXuwxp6TWn5IZxnkOQx59mjI8tQ4uJst5e3J9a/rRZfbXSCXpzqXVETUoaD2FF1TPZt
-         gzGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Iv2xBEWgdsLbsGrbI1Ynj++RbyVyoOiqc5Pz0aTXiaA=;
-        b=0xrcWqF3+CWRlmEN544sWOfmS4Wa8C4FHkmiCgVQ/dFlLy33T4piBWTgarkdWR5QNU
-         N1JPI/iK8iJ2QQUcmMYUxb4ZWoeYcS6Qnuwfs8r2iXM8zgwZgEL837V3Esl3ZFhhE3T+
-         lZe9RA5X4Rrx3Ii0XFPZeuE0riKv45ljuxcQH9EFymRKV4MKdJc2xpxrcrP9qcW8Fk79
-         RBdz3AS7C74A03EcXPB7kewgIbtwqSx+klELqUb2j0cm/LvHbmkN705CQ5zfNj6BlxMI
-         gc1CCyvtXTBDADGlcLnPWAm8dhn8J/MjoiJrSkyKOgkLPkm3tBfvhA1ZEtkmLS2BPcQw
-         3r3g==
-X-Gm-Message-State: AOAM530sLru0pyOQ0ft6c1MHKG0g52haaUGmygotPUiSZudjm9mxjyis
-        73aNGpCvWW9bSBMUQRiNsTVAis5jma0=
-X-Google-Smtp-Source: ABdhPJygFz29MoOvCLhldjNVCyJsouKLEYn8o0P4paCo05VcFxq1maBwjvuRpjOQtTjLXLlqb4Nslg==
-X-Received: by 2002:a17:90b:4a07:: with SMTP id kk7mr29054707pjb.37.1635259015801;
-        Tue, 26 Oct 2021 07:36:55 -0700 (PDT)
-Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id p23sm12616547pfw.61.2021.10.26.07.36.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:36:55 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH V4 44/50] x86/doublefault: Use C entry code
-Date:   Tue, 26 Oct 2021 22:34:30 +0800
-Message-Id: <20211026143436.19071-19-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
-References: <20211026141420.17138-1-jiangshanlai@gmail.com>
+        Tue, 26 Oct 2021 10:38:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1635258945;
+        bh=09DsGG934eAWsrYgTTEyogH6LDSB0Wo6kjXmpIsK7zo=;
+        h=Subject:To:From:Date:From;
+        b=JpjX7COpm49F29ojHTexC79WPHa556bgJ5jztCzQpSSC582AAjYzf2ZmZKKdHBw9Z
+         svRdanUjfO+1Uo7MDJoKJFReOCwIIZdQ6wP4y8qp25/U8LE/G/rdPY2liRUPksdW8U
+         Y5Aih6iGtHIgsYv08SkS+wlrY68w1s7buDSb5bNE=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp8.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 05104C0184;
+        Tue, 26 Oct 2021 10:35:44 -0400 (EDT)
+Subject: Re: [PATCH 5/5] comedi: vmk80xx: fix bulk and interrupt message
+ timeouts
+To:     Johan Hovold <johan@kernel.org>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20211025114532.4599-1-johan@kernel.org>
+ <20211025114532.4599-6-johan@kernel.org>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <fb1c3dcd-39cd-d4e2-e6f5-061dad6b2751@mev.co.uk>
+Date:   Tue, 26 Oct 2021 15:35:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211025114532.4599-6-johan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 2f3175d9-b0e8-4937-a8e3-a5d800e9b366-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 25/10/2021 12:45, Johan Hovold wrote:
+> USB bulk and interrupt message timeouts are specified in milliseconds
+> and should specifically not vary with CONFIG_HZ.
+> 
+> Note that the bulk-out transfer timeout was set to the endpoint
+> bInterval value, which should be ignored for bulk endpoints and is
+> typically set to zero. This meant that a failing bulk-out transfer
+> would never time out.
+> 
+> Assume that the 10 second timeout used for all other transfers is more
+> than enough also for the bulk-out endpoint.
+> 
+> Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
+> Fixes: 951348b37738 ("staging: comedi: vmk80xx: wait for URBs to complete")
+> Cc: stable@vger.kernel.org      # 2.6.31
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>   drivers/comedi/drivers/vmk80xx.c | 12 +++++++-----
+>   1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
+> index 9c56918e3b76..4b00a9ea611a 100644
+> --- a/drivers/comedi/drivers/vmk80xx.c
+> +++ b/drivers/comedi/drivers/vmk80xx.c
+> @@ -91,6 +91,7 @@ enum {
+>   #define IC6_VERSION		BIT(1)
+>   
+>   #define MIN_BUF_SIZE		64
+> +#define PACKET_TIMEOUT		10000	/* ms */
+>   
+>   enum vmk80xx_model {
+>   	VMK8055_MODEL,
+> @@ -169,10 +170,11 @@ static void vmk80xx_do_bulk_msg(struct comedi_device *dev)
+>   	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
+>   	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
+>   
+> -	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
+> -		     tx_size, NULL, devpriv->ep_tx->bInterval);
+> +	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf, tx_size, NULL,
+> +		     PACKET_TIMEOUT);
+>   
+> -	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
+> +	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL,
+> +		     PACKET_TIMEOUT);
+>   }
+>   
+>   static int vmk80xx_read_packet(struct comedi_device *dev)
+> @@ -191,7 +193,7 @@ static int vmk80xx_read_packet(struct comedi_device *dev)
+>   	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
+>   	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
+>   				 usb_endpoint_maxp(ep), NULL,
+> -				 HZ * 10);
+> +				 PACKET_TIMEOUT);
+>   }
+>   
+>   static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
+> @@ -212,7 +214,7 @@ static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
+>   	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
+>   	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
+>   				 usb_endpoint_maxp(ep), NULL,
+> -				 HZ * 10);
+> +				 PACKET_TIMEOUT);
+>   }
+>   
+>   static int vmk80xx_reset_device(struct comedi_device *dev)
+> 
 
-Use DEFINE_IDTENTRY_IST_ETNRY_ERRORCODE to emit C entry function and
-use the function directly in entry_64.S.
+Looks good, thanks!
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/entry/entry_64.S       | 12 ++----------
- arch/x86/include/asm/idtentry.h |  1 +
- 2 files changed, 3 insertions(+), 10 deletions(-)
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 0a1a55c8207e..57559d810785 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -575,16 +575,8 @@ SYM_CODE_START(\asmsym)
- 	PUSH_AND_CLEAR_REGS
- 	ENCODE_FRAME_POINTER
- 
--	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
--	call	paranoid_entry
--	UNWIND_HINT_REGS
--
--	movq	%rsp, %rdi		/* pt_regs pointer into first argument */
--	movq	ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
--	movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
--	call	\cfunc
--
--	call	paranoid_exit
-+	movq	%rsp, %rdi		/* pt_regs pointer */
-+	call	ist_\cfunc
- 	jmp	restore_regs_and_return_to_kernel
- 
- _ASM_NOKPROBE(\asmsym)
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index c57606948433..931b689f464c 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -415,6 +415,7 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
-  * Maps to DEFINE_IDTENTRY_RAW_ERRORCODE
-  */
- #define DEFINE_IDTENTRY_DF(func)					\
-+	DEFINE_IDTENTRY_IST_ETNRY_ERRORCODE(func)			\
- 	DEFINE_IDTENTRY_RAW_ERRORCODE(func)
- 
- /**
 -- 
-2.19.1.6.gb485710b
-
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
