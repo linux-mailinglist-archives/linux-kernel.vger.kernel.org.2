@@ -2,65 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB1B43BDCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5F043BDD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240272AbhJZXYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:24:44 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:41533 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240253AbhJZXYm (ORCPT
+        id S240279AbhJZX2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:28:04 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:59658 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240293AbhJZX2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:24:42 -0400
-Received: by mail-ot1-f48.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so987914ote.8;
-        Tue, 26 Oct 2021 16:22:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BlYVCtsIK/ZHSSJFn7jPTA8DCkAvMMkyiTdquv+XGLo=;
-        b=7FxMJMhA9E57FyQL5zYfCX2S+HLbFpnV6yaNTh95ogc6+z1OmTQo7qtrp/aKNIYcAJ
-         Ybvq6ULBiNg8N/I0oIxse/CfEqG1+DiYO7EXvBVwaunxsy4fNQLqmbBCCLtptk9QVTPX
-         MuI50Fxf3Jr0yhpbddkMedfD/zIxBugGW6LW9nfP3q0L9vqnaba/311H8Ey11D9zFXtR
-         sOeNMvXI7ZIlN0/hy9hdBuldAPuKl0OegUa0LjugbM+ZNrPI3NWgQuwC6az6fnSg8t8t
-         gkwl8Dd9TjYk2BMyhcdbJBu8YY5FMMIIyRdm/XlChfkHY8oylxJBNruOXTWbk4MWmB8y
-         99Aw==
-X-Gm-Message-State: AOAM532iL/onpGl7Bt7Y6SpiKdxIa9K8ICLD1pZcxernojNHvA7YXoeh
-        KsUPa09hYHdXK1L6rkuySw==
-X-Google-Smtp-Source: ABdhPJyn70qD8VYRezNuvSOoBBWUBQ7fgcqQi1lPKHXEkDA4p5nn9yrQDtvHoy8o22bFmiPQVQFjxw==
-X-Received: by 2002:a9d:758f:: with SMTP id s15mr21725078otk.78.1635290538156;
-        Tue, 26 Oct 2021 16:22:18 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l25sm4258274oot.36.2021.10.26.16.22.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 16:22:17 -0700 (PDT)
-Received: (nullmailer pid 3505593 invoked by uid 1000);
-        Tue, 26 Oct 2021 23:22:16 -0000
-Date:   Tue, 26 Oct 2021 18:22:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alexey Firago <alexey_firago@mentor.com>
-Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: rtc: Add Maxim Integrated MAX31343
-Message-ID: <YXiNqGVDfYHSLgL/@robh.at.kernel.org>
-References: <20211016192118.255624-1-alexey_firago@mentor.com>
- <20211016192118.255624-3-alexey_firago@mentor.com>
+        Tue, 26 Oct 2021 19:28:02 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7D040596;
+        Wed, 27 Oct 2021 01:25:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1635290733;
+        bh=DaISLcUe+pQlhopS6JPmLGYgWp+GCaeNicg5mvXEFGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CbeyBrWUpUbFPSD3FEfX8a0KRjwrw0/ToMKqy5bva5HTKYqreJPyCLsoXaznESs1t
+         gJuF1BXhsPqGb3gaT434C65XJaJbJRukqwI80X+JgG9TId3n0B6Iu9EZv9Kch0QDiV
+         iABSN2fQdCVaL3AJuPACfJFDn78YgUEgnrG/oqjs=
+Date:   Wed, 27 Oct 2021 02:25:10 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org,
+        Philip Chen <philipchen@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: Fix the bridge chain order for pre_enable /
+ post_disable
+Message-ID: <YXiOVlve5RshqA/B@pendragon.ideasonboard.com>
+References: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
+ <YXHLrnAliqxmrrho@ravnborg.org>
+ <cdcd19de-19e6-83ed-606f-defebdcc0997@intel.com>
+ <YXaTJ+bwm7vSTGpv@pendragon.ideasonboard.com>
+ <0e17993d-1e9f-2673-7fee-abf3787de431@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211016192118.255624-3-alexey_firago@mentor.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0e17993d-1e9f-2673-7fee-abf3787de431@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 22:21:18 +0300, Alexey Firago wrote:
-> It is supported by the rtc-max31343 module.
-> 
-> Signed-off-by: Alexey Firago <alexey_firago@mentor.com>
-> ---
->  Documentation/devicetree/bindings/rtc/trivial-rtc.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+Hi Andrzej,
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Mon, Oct 25, 2021 at 10:11:47PM +0200, Andrzej Hajda wrote:
+> On 25.10.2021 13:21, Laurent Pinchart wrote:
+> > On Mon, Oct 25, 2021 at 01:00:10PM +0200, Andrzej Hajda wrote:
+> >> On 21.10.2021 22:21, Sam Ravnborg wrote:
+> >>> On Thu, Oct 21, 2021 at 12:29:01PM -0700, Douglas Anderson wrote:
+> >>>> Right now, the chaining order of
+> >>>> pre_enable/enable/disable/post_disable looks like this:
+> >>>>
+> >>>> pre_enable:   start from connector and move to encoder
+> >>>> enable:       start from encoder and move to connector
+> >>>> disable:      start from connector and move to encoder
+> >>>> post_disable: start from encoder and move to connector
+> >>>>
+> >>>> In the above, it can be seen that at least pre_enable() and
+> >>>> post_disable() are opposites of each other and enable() and disable()
+> >>>> are opposites. However, it seems broken that pre_enable() and enable()
+> >>>> would not move in the same direction. In other parts of Linux you can
+> >>>> see that various stages move in the same order. For instance, during
+> >>>> system suspend the "early" calls run in the same order as the normal
+> >>>> calls run in the same order as the "late" calls run in the same order
+> >>>> as the "noirq" calls.
+> >>>>
+> >>>> Let fix the above so that it makes more sense. Now we'll have:
+> >>>>
+> >>>> pre_enable:   start from encoder and move to connector
+> >>>> enable:       start from encoder and move to connector
+> >>>> disable:      start from connector and move to encoder
+> >>>> post_disable: start from connector and move to encoder
+> >>>>
+> >>>> This order is chosen because if there are parent-child relationships
+> >>>> anywhere I would expect that the encoder would be a parent and the
+> >>>> connector a child--not the other way around.
+> >>>
+> >>> This makes good sense as you describe it. I hope others can add more
+> >>> useful feedback.
+> >>> Added Andrzej Hajda <andrzej.hajda@intel.com> to the mail, as he have
+> >>> expressed concerns with the chain of bridges before.
+> >>
+> >> Thanks Sam, but I am not sure about useful feedback - when I see bridge
+> >> chain issues it automatically triggers "whining mode" in my head :)
+> >>
+> >>>> This can be important when using the DP AUX bus to instantiate a
+> >>>> panel. The DP AUX bus is likely part of a bridge driver and is a
+> >>>> parent of the panel. We'd like the bridge to be pre_enabled before the
+> >>>> panel and the panel to be post_disabled before the
+> >>>> bridge. Specifically, this allows pm_runtime_put_sync_suspend() in a
+> >>>> bridge driver's post_suspend to work properly even a panel is under
+> >>>> it.
+> >>>>
+> >>>> NOTE: it's entirely possible that this change could break someone who
+> >>>> was relying on the old order. Hopefully this isn't the case, but if
+> >>>> this does break someone it seems like it's better to do it sonner
+> >>>> rather than later so we can fix everyone to handle the order that
+> >>>> makes the most sense.
+> >>
+> >> It will break for sure. So the question is: if it is worth changing?
+> >>
+> >> New order seems good for eDP, DSI sinks [1], probably other as well.
+> >>
+> >> Old order is better for example for THC63LVD1024 [2 p. 20], I guess for
+> >> many other sinks as well.
+> >>
+> >> I am not even sure if it is protocol specific (LVDS, RGB, HDMI,...), or
+> >> it depends on specific hw pairs (source->sink).
+> >>
+> >> This is why I complain about the bridge chain - assumption that one
+> >> fixed call order will work for all setups seems to me ridiculous.
+> >>
+> >> Going back to the question - changing the order from fixed one to
+> >> another fixed one will not solve general issue.
+> >>
+> >> What can we do then?
+> >>
+> >> 1. Configurable call order? Probably doable: every chain element should
+> >> expose info if it's call should be before or after source, then some
+> >> core helper will create queue of callbacks. Seems quite complicated,
+> >> hides the logic from implementer and not fully flexible (for example,
+> >> there are protocols which require to perform sth on source, then on
+> >> sink, then again on the source).
+> >>
+> >> 2. Stop using bridge chain and call sink ops directly from the source
+> >> (this is what Exynos and VC4 do): is flexible and straightforward, gives
+> >> full control to the source.
+> >
+> > And breaks interoperability, because different sources end up calling
+> > operations in different orders. We end up having different sinks that
+> > expect calls in different ways, and divide the world in sink/source
+> > groups that don't interoperate :-(
+> 
+> I have an impression you describe current status :) More seriously, it 
+> is matter of proper specification/documentation/implementations of the 
+> operations. If we really need strict constraints we could try to 
+> implement them on protocol level.
+
+I certainly wouldn't complain if we had better documented operations :-)
+
+> >> 3. Use different abstractions to enforce proper initialization order
+> >> (like extending mipi_dsi_host_ops): requires existence of transport bus
+> >> abstraction (only DSI at the moment(?)).
+> >
+> > A real bus seems overkill, but we could have drm_bridge operations
+> > specific to particular hardware interfaces.
+> >
+> >> ... other ideas?
+> >
+> > I don't like it because of the amount of work it would require to switch
+> > to such a model, but I'm really starting to think that a variation of
+> > the second option would be best, where the sink controls the source
+> > instead of having the source controlling the sink. It's the sink that
+> > knows about its enabling/disabling sequence, and about how the source
+> > needs to be controlled to match it.
+> 
+> I am afraid it depends on the protocol and cross-calls (source->sink, 
+> sink->source) can be hard to avoid in case of some protocols.
+
+Do you have any particular protocol in mind ?
+
+> >> Another idea, connected to the subject - some protocols require some
+> >> negotiations between source and sink bus format, or more steps than
+> >> pre_enable, enable ops to establish link. I wonder if encapsulating
+> >> drm_bridge in some protocol specific struct wouldn't be a solution, it
+> >> can be helpful as well in case of the subject.
+> >>
+> >> For example:
+> >>
+> >> struct drm_bridge_edp {
+> >>
+> >>       const struct drm_bridge_edp_funcs *funcs;
+> >>
+> >>       struct drm_bridge base;
+> >>
+> >>       ...
+> >>
+> >> };
+> >>
+> >> Then source could promote bridge pointer to bridge_edp pointer (if
+> >> applicable) and perform edp specific stuff. To make it working well
+> >> pre-enable order should be as proposed in this patchsets (encoder ->
+> >> connector), as the source should initiate negotiations.
+> >>
+> >> Btw this encapsulation stuff above asks to rename drm_bridge to
+> >> drm_sink, otherwise it would be confusing as bridges have two ends.
+> >
+> > drm_sink would be equally confusing when used for devices that have a
+> > sink and a source :-) I'm not against a rename though, if we can find a
+> > better name.
+> 
+> But in this case we are interested only in sink part of the bridge (OR 
+> panel). If source is looking for specific bridge or panel 
+> (drm_of_find_panel_or_bridge), it is in fact looking for sink.
+
+I'm find using "sink" as part of a function name that would look up a
+sink, but the device itself isn't necessarily just a sink, so we need a
+more generic name.
+
+> >> [1]: I use term sink as short equivalent for 'bridges AND panels'
+> >> (another issue in DRMs).
+> >>
+> >> [2]: https://www.mouser.com/datasheet/2/286/THC63LVD1024-1396205.pdf
+> >>
+> >>>> A FURTHER NOTE: Looking closer at commit 4e5763f03e10 ("drm/bridge:
+> >>>> ti-sn65dsi86: Wrap panel with panel-bridge") you can see that patch
+> >>>> inadvertently changed the order of things. The order used to be
+> >>>> correct (panel prepare was at the tail of the bridge enable) but it
+> >>>> became backwards. We'll restore the original order with this patch.
+> >>>>
+> >>>> Fixes: 4e5763f03e10 ("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge")
+> >>>> Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
+> >>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> >>>
+> >>> To make the patch complete the descriptions in drm_bridge_funcs
+> >>> need to be updated to reflect the new reality.
+> >>>
+> >>>> ---
+> >>>>
+> >>>>    drivers/gpu/drm/drm_bridge.c | 28 ++++++++++++++--------------
+> >>>>    1 file changed, 14 insertions(+), 14 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> >>>> index c96847fc0ebc..98808af59afd 100644
+> >>>> --- a/drivers/gpu/drm/drm_bridge.c
+> >>>> +++ b/drivers/gpu/drm/drm_bridge.c
+> >>>> @@ -583,18 +583,14 @@ EXPORT_SYMBOL(drm_bridge_chain_mode_set);
+> >>>>    void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
+> >>> If you, or someone else, could r-b or ack the pending patches to remove
+> >>> this function, this part of the patch would no longer be needed.
+> >>>
+> >>>>    {
+> >>>>    	struct drm_encoder *encoder;
+> >>>> -	struct drm_bridge *iter;
+> >>>>    
+> >>>>    	if (!bridge)
+> >>>>    		return;
+> >>>>    
+> >>>>    	encoder = bridge->encoder;
+> >>>> -	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
+> >>>> -		if (iter->funcs->pre_enable)
+> >>>> -			iter->funcs->pre_enable(iter);
+> >>>> -
+> >>>> -		if (iter == bridge)
+> >>>> -			break;
+> >>>> +	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
+> >>>> +		if (bridge->funcs->pre_enable)
+> >>>> +			bridge->funcs->pre_enable(bridge);
+> >>>>    	}
+> >>>>    }
+> >>>>    EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
+> >>>> @@ -684,26 +680,30 @@ void drm_atomic_bridge_chain_post_disable(struct drm_bridge *bridge,
+> >>>>    					  struct drm_atomic_state *old_state)
+> >>>>    {
+> >>>>    	struct drm_encoder *encoder;
+> >>>> +	struct drm_bridge *iter;
+> >>> s/iter/bridge/ would make the patch simpler
+> >>> And then the bridge argument could be last_bridge or something.
+> >>> This would IMO increase readability of the code and make the patch smaller.
+> >>>>    
+> >>>>    	if (!bridge)
+> >>>>    		return;
+> >>>>    
+> >>>>    	encoder = bridge->encoder;
+> >>>> -	list_for_each_entry_from(bridge, &encoder->bridge_chain, chain_node) {
+> >>>> -		if (bridge->funcs->atomic_post_disable) {
+> >>>> +	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
+> >>>> +		if (iter->funcs->atomic_post_disable) {
+> >>>>    			struct drm_bridge_state *old_bridge_state;
+> >>>>    
+> >>>>    			old_bridge_state =
+> >>>>    				drm_atomic_get_old_bridge_state(old_state,
+> >>>> -								bridge);
+> >>>> +								iter);
+> >>>>    			if (WARN_ON(!old_bridge_state))
+> >>>>    				return;
+> >>>>    
+> >>>> -			bridge->funcs->atomic_post_disable(bridge,
+> >>>> -							   old_bridge_state);
+> >>>> -		} else if (bridge->funcs->post_disable) {
+> >>>> -			bridge->funcs->post_disable(bridge);
+> >>>> +			iter->funcs->atomic_post_disable(iter,
+> >>>> +							 old_bridge_state);
+> >>>> +		} else if (iter->funcs->post_disable) {
+> >>>> +			iter->funcs->post_disable(iter);
+> >>>>    		}
+> >>>> +
+> >>>> +		if (iter == bridge)
+> >>>> +			break;
+> >>> I cannot see why this is needed, we are at the end of the list here
+> >>> anyway.
+> >>>
+> >>>>    	}
+> >>>>    }
+> >>>>    EXPORT_SYMBOL(drm_atomic_bridge_chain_post_disable);
+
+-- 
+Regards,
+
+Laurent Pinchart
