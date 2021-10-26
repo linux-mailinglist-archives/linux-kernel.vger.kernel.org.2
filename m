@@ -2,101 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D076843ABB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803EC43ABC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbhJZFbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:31:20 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54083 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234973AbhJZFbS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:31:18 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        id S235061AbhJZFm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:42:59 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:38571 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234973AbhJZFm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:42:58 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4Hdgdt0FKfz9s2d;
+        Tue, 26 Oct 2021 07:40:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id A97qknif6goQ; Tue, 26 Oct 2021 07:40:33 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.120])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdgNP37FTz4xZ0;
-        Tue, 26 Oct 2021 16:28:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635226133;
-        bh=RzOCz8t//eY3WBBt/Q2VQ4bujj4hzgTfQaAKiUK8dIY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UIhs6eMGOWgIjR51ebx8fHJ4rIaYslOQ1nwtw9vb4sNSk6DYuv45WfaiP+vbRRdyj
-         +NPJI2U0ni2yo7Mgt+F8PcoBfP3vMENtJfaQcOXzGgx13+lMqFo+YFAfiR7QpfoGxv
-         Cyk2Z1xrs6nnsI8V+MO+fkYZBsq8yMyd5GF6RoSTVAGhlNEzNgWjNpxnrAYLTRi290
-         qwFPiJ9DbDpJYAecQq+QdogK8iq15MuXDD5O7gxRBB/HQwTpHHHiao0crYNcqPems7
-         pj4qlVrxz/BO+/MVTr+791kxobvcun03J0wpL5UxcxdK19vlgeM97oG5wjLNyXQ1RX
-         gpCgdk4UugNlA==
-Date:   Tue, 26 Oct 2021 16:28:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Kartik K <kkartik@nvidia.com>,
-        Prathamesh Shete <pshete@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pinctrl tree
-Message-ID: <20211026162852.6cf2a2aa@canb.auug.org.au>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4Hdgds5GXlz9s2Z;
+        Tue, 26 Oct 2021 07:40:33 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19Q5eWD9009296
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 07:40:32 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19Q5dSpO009213;
+        Tue, 26 Oct 2021 07:39:28 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 1/3] powerpc/nohash: Fix __ptep_set_access_flags() and ptep_set_wrprotect()
+Date:   Tue, 26 Oct 2021 07:39:24 +0200
+Message-Id: <922bdab3a220781bae2360ff3dd5adb7fe4d34f1.1635226743.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0usf5CXkVzaQ34cnSwP0rri";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1635226765; l=4330; s=20211009; h=from:subject:message-id; bh=A6TaDzMM6cBQkNmmbmR20w7/7y1To2PwXuyd+xMD85o=; b=egPjw3AzeYQHYik6rt0LX9dHWHwhZgyoG9ReDN5j3jU4qySIzS82cEK1+8+YgefoB2EgFOlAjipf 1wulAiVTB+Ffi+fy3wCe6rmmOr+JjTsy1FNovDX2rdxUed0vqbhX
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0usf5CXkVzaQ34cnSwP0rri
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Commit 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+changed those two functions to use pte helpers to determine which
+bits to clear and which bits to set.
 
-Hi all,
+This change was based on the assumption that bits to be set/cleared
+are always the same and can be determined by applying the pte
+manipulation helpers on __pte(0).
 
-After merging the pinctrl tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+But on platforms like book3e, the bits depend on whether the page
+is a user page or not.
 
-drivers/pinctrl/tegra/pinctrl-tegra.c: In function 'tegra_pinctrl_get_group=
-':
-drivers/pinctrl/tegra/pinctrl-tegra.c:293:12: warning: return discards 'con=
-st' qualifier from pointer target type [-Wdiscarded-qualifiers]
-  293 |     return &pmx->soc->groups[group];
-      |            ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/pinctrl/tegra/pinctrl-tegra.c:282:25: warning: unused variable 'g' =
-[-Wunused-variable]
-  282 |  struct tegra_pingroup *g;
-      |                         ^
-drivers/pinctrl/tegra/pinctrl-tegra.c: In function 'tegra_pinctrl_gpio_disa=
-ble_free':
-drivers/pinctrl/tegra/pinctrl-tegra.c:341:10: error: 'return' with a value,=
- in function returning void [-Werror=3Dreturn-type]
-  341 |   return -EINVAL;
-      |          ^
-drivers/pinctrl/tegra/pinctrl-tegra.c:327:13: note: declared here
-  327 | static void tegra_pinctrl_gpio_disable_free(struct pinctrl_dev *pct=
-ldev,
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For the time being it more or less works because of _PAGE_EXEC being
+used for user pages only and exec right being set at all time on
+kernel page. But following patch will clean that and output of
+pte_mkexec() will depend on the page being a user or kernel page.
 
-Caused by commit
+Instead of trying to make an even more complicated helper where bits
+would become dependent on the final pte value, come back to a more
+static situation like before commit 26973fa5ac0e ("powerpc/mm: use
+pte helpers in generic code"), by introducing an 8xx specific
+version of __ptep_set_access_flags() and ptep_set_wrprotect().
 
-  a42c7d95d29e ("pinctrl: tegra: Use correct offset for pin group")
+Fixes: 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v3: No change
+v2: New
+---
+ arch/powerpc/include/asm/nohash/32/pgtable.h | 17 +++++++--------
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h | 22 ++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 9 deletions(-)
 
-I have used the pinctrl tree from next-20211025 for today.
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+index 34ce50da1850..11c6849f7864 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -306,30 +306,29 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
+ }
+ 
+ #define __HAVE_ARCH_PTEP_SET_WRPROTECT
++#ifndef ptep_set_wrprotect
+ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+ 				      pte_t *ptep)
+ {
+-	unsigned long clr = ~pte_val(pte_wrprotect(__pte(~0)));
+-	unsigned long set = pte_val(pte_wrprotect(__pte(0)));
+-
+-	pte_update(mm, addr, ptep, clr, set, 0);
++	pte_update(mm, addr, ptep, _PAGE_RW, 0, 0);
+ }
++#endif
+ 
++#ifndef __ptep_set_access_flags
+ static inline void __ptep_set_access_flags(struct vm_area_struct *vma,
+ 					   pte_t *ptep, pte_t entry,
+ 					   unsigned long address,
+ 					   int psize)
+ {
+-	pte_t pte_set = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(0)))));
+-	pte_t pte_clr = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(~0)))));
+-	unsigned long set = pte_val(entry) & pte_val(pte_set);
+-	unsigned long clr = ~pte_val(entry) & ~pte_val(pte_clr);
++	unsigned long set = pte_val(entry) &
++			    (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_RW | _PAGE_EXEC);
+ 	int huge = psize > mmu_virtual_psize ? 1 : 0;
+ 
+-	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
++	pte_update(vma->vm_mm, address, ptep, 0, set, huge);
+ 
+ 	flush_tlb_page(vma, address);
+ }
++#endif
+ 
+ static inline int pte_young(pte_t pte)
+ {
+diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+index fcc48d590d88..1a89ebdc3acc 100644
+--- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+@@ -136,6 +136,28 @@ static inline pte_t pte_mkhuge(pte_t pte)
+ 
+ #define pte_mkhuge pte_mkhuge
+ 
++static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, pte_t *p,
++				     unsigned long clr, unsigned long set, int huge);
++
++static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
++{
++	pte_update(mm, addr, ptep, 0, _PAGE_RO, 0);
++}
++#define ptep_set_wrprotect ptep_set_wrprotect
++
++static inline void __ptep_set_access_flags(struct vm_area_struct *vma, pte_t *ptep,
++					   pte_t entry, unsigned long address, int psize)
++{
++	unsigned long set = pte_val(entry) & (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_EXEC);
++	unsigned long clr = ~pte_val(entry) & _PAGE_RO;
++	int huge = psize > mmu_virtual_psize ? 1 : 0;
++
++	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
++
++	flush_tlb_page(vma, address);
++}
++#define __ptep_set_access_flags __ptep_set_access_flags
++
+ static inline unsigned long pgd_leaf_size(pgd_t pgd)
+ {
+ 	if (pgd_val(pgd) & _PMD_PAGE_8M)
+-- 
+2.31.1
 
---Sig_/0usf5CXkVzaQ34cnSwP0rri
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3khQACgkQAVBC80lX
-0GwvYwf/QHCJrub+Jw7x9aQw7aK2L3IjZx4+zGjHZlFelvHQ0uc99VY3Wd4Gelw3
-Pbj0Ju7wFEfWlkNf7kCSrQk1q4Hlz0SSx03w79e8U7wPyUUFMj5A+4sI+fLWWMg6
-yypwmxLPz2pZNJkeN3O3c1SaHuMXKoQAUPo/aMi/qly0GP4Y89SHJvRjBI/59DVu
-PErGi7HWn7BnwNoqG7rF6Z665yGQc1JrpoAkDz/mnVKLdbfm7TV9SJtm8Ys0uaqe
-5uSrYmMTjnVzm1IOu4nrT5kfpo+ppgeDoM3tm1PMlS0UO0v11KNDOcICcJaxW7Y7
-6+XAuQ9nwzdRW59moz7rMsZEtodJ/Q==
-=i54f
------END PGP SIGNATURE-----
-
---Sig_/0usf5CXkVzaQ34cnSwP0rri--
