@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5517543B3E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAAD43B3E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236515AbhJZOY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        id S236522AbhJZOYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236511AbhJZOYY (ORCPT
+        with ESMTP id S235500AbhJZOY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:24:24 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC66C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:21:59 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id w16so1810222plg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:21:59 -0700 (PDT)
+        Tue, 26 Oct 2021 10:24:29 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3021AC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:22:06 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s136so14299980pgs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:22:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KERbtBPjg9Xgw3qmQtkX07MzJXiLdhnUqwVs/TOwK18=;
-        b=qgY5yxPhBDBZ7zkeL7ZRt6H9OHcDO7hOP5DzZuRq+axFIVKd6uffuWAdjjCrEaX21b
-         jEgcMzQ6ez4FeW089FemW+ilkksUTd9yrc8n5uaw/tQQ08HxB7SADnw+rnKTTg69ReES
-         o/MYnwQbLhFMWNjZPwiXc9uYm3w+EClQoV31/mPYlm9JW5DgIepZtvA4f1eB3+Voa/zQ
-         JnYiBBalfiuIcB1Exxoyp/7DvSdGpKjro4Ys/So3RWbY6TaCrEICPVl02qdt6sRKPxKF
-         IYGTY0ebdheAXYZUK7SQOSjXo5eqf1q9FjjD8ozmcUfHP0r5qDDBZUPZta/OHGTPM36Y
-         uvvw==
+        bh=rggk4Wz28/tanhWvVYfUkI6dZy0E3llR541aTdNtC5E=;
+        b=AV8vvC5bm3acvy8vBmCs3y6hXVTHSJubLJbmUCOnC7UbN0rziLdO2BUN84R9if/y9m
+         dyHwPgCV47OOGZQk1B7jKzI9sz/nMDCH1ifXTjjJR8wmFHJCaZWJWswa5E6v9gvVYusX
+         IkrQsFucQTzXRu2Q70Y/DEZdg3VG6jJG18xMI7VVVrrDMPqsmbUXDVM+9EbKVq6hcN/G
+         wUtGPAQxO5wUhxuRSFsagza5tG44IDycUBJ/DgOjJI20qU6bPjZJ/HYKeZFem+SQBwlf
+         5fYTBd1w6Vw4u9eiPRR77h5AU4y+p0bwbEdnloEgg/2EyfcnzNUriEQxLv3iWRedIG1U
+         Ymlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KERbtBPjg9Xgw3qmQtkX07MzJXiLdhnUqwVs/TOwK18=;
-        b=WQgH3e7FNjI5g4KjeFWPiNnjQEDyC3hpA+k/xi8FKeOzcb2NjyNiQw2PPOcXydzC33
-         UoKkuCWjLq4ryiuRcHVjRfO/A31eAZN+cgzGZv6veyBzqyN55hajnivOt8Te8zXw9NSe
-         WSOS1fppPgGHrnjz/E6AYCDd4lJzTqQkcvnUyNHvXYEgf5bh+XPlpPFBFtxHFIkq0AG+
-         kOwNzCbS5u/VZOjNugSQbbZbE9wN8oUynDi7bHwqfQriE4gkr09VPh6Bb2oCOR0c4N6O
-         nHH9SkEzdzttZtyaEULO9neVwKFZjOifuqy5FTxK+mg/F+iXfysjvcu7gh69T0/inQwX
-         HrUQ==
-X-Gm-Message-State: AOAM533E45R6kclKZGKBOq+nVP5UZWNKxzRT7nKpPNPua7zADu94RzTP
-        3KLXhK7JjJsM7lToYxQrUb1TcM6zXpk=
-X-Google-Smtp-Source: ABdhPJyWIgaGZiY51B0W/UGqthbr4SgHtIrR5pZGHFVCWYz/zX/rv+/7kL3Bt1MFEFjcSczmf6J7Uw==
-X-Received: by 2002:a17:90a:62ca:: with SMTP id k10mr29014520pjs.38.1635258118986;
-        Tue, 26 Oct 2021 07:21:58 -0700 (PDT)
+        bh=rggk4Wz28/tanhWvVYfUkI6dZy0E3llR541aTdNtC5E=;
+        b=gFSk+qTg2k/WdV9ZGoAgM4wAzypTQyJB67K6DAEN2NJKAoLSwjqzUSW84U4IgXcyNh
+         OGUnP45CwN0RLqbBH5QitzncXKSnPzpDB8Efzy9S+TbrMeJovdQAD+0FBGEN2zLUkNI/
+         EI52wajxMh6IKT7ApX40COj5EdF1XCSgA19Rq1tMnXY7RMgzSjXAY8+6wOgks6bktf8x
+         qPTAfU0ZjvHpaLilSSI8dlkfvxI56G7cH7oP6gPrzi4zBNNRDuxp2PIRygQwwyaYMQZF
+         YAE7TjBFtSntzTNcT7d+eM+J6wCmMrkOs1w6uEviUnP6RDEUGkFTyZM8k9PlDNzCHmVB
+         bZWQ==
+X-Gm-Message-State: AOAM533AhM/+9LMUpl2b9nq2dPBQCF4RC9z4c6A2HX02GTHjo0KKZf7K
+        qEuNfy3JYd8PDqnbqpD2h0ldGg/vVR0=
+X-Google-Smtp-Source: ABdhPJx0ixJk40aLnmJi+LUq82xT7l9NqIv4H38gMXk/g9Nq+s2uX8eJCcC8/zi4ExZSIUCGGqGilQ==
+X-Received: by 2002:a63:1d53:: with SMTP id d19mr18864969pgm.85.1635258125522;
+        Tue, 26 Oct 2021 07:22:05 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id p23sm12581255pfw.61.2021.10.26.07.21.57
+        by smtp.gmail.com with ESMTPSA id f7sm12699661pfv.152.2021.10.26.07.22.04
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:21:58 -0700 (PDT)
+        Tue, 26 Oct 2021 07:22:05 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 08/50] x86/entry: Move PTI_USER_* to arch/x86/include/asm/processor-flags.h
-Date:   Tue, 26 Oct 2021 22:20:16 +0800
-Message-Id: <20211026142058.17702-4-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: [PATCH V4 09/50] x86: Remove unused kernel_to_user_p4dp() and user_to_kernel_p4dp()
+Date:   Tue, 26 Oct 2021 22:20:17 +0800
+Message-Id: <20211026142058.17702-5-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,71 +71,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-These constants will be also used in C file, so we move them to
-arch/x86/include/asm/processor-flags.h which already has a kin
-X86_CR3_PTI_PCID_USER_BIT defined in it.
+kernel_to_user_p4dp() and user_to_kernel_p4dp() have no caller and can
+be removed.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/calling.h               | 10 ----------
- arch/x86/include/asm/processor-flags.h | 15 +++++++++++++++
- 2 files changed, 15 insertions(+), 10 deletions(-)
+ arch/x86/include/asm/pgtable.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index a4c061fb7c6e..996b041e92d2 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -149,16 +149,6 @@ For 32-bit we have the following conventions - kernel is built with
- 
- #ifdef CONFIG_PAGE_TABLE_ISOLATION
- 
--/*
-- * PAGE_TABLE_ISOLATION PGDs are 8k.  Flip bit 12 to switch between the two
-- * halves:
-- */
--#define PTI_USER_PGTABLE_BIT		PAGE_SHIFT
--#define PTI_USER_PGTABLE_MASK		(1 << PTI_USER_PGTABLE_BIT)
--#define PTI_USER_PCID_BIT		X86_CR3_PTI_PCID_USER_BIT
--#define PTI_USER_PCID_MASK		(1 << PTI_USER_PCID_BIT)
--#define PTI_USER_PGTABLE_AND_PCID_MASK  (PTI_USER_PCID_MASK | PTI_USER_PGTABLE_MASK)
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 448cd01eb3ec..65542106464b 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1200,16 +1200,6 @@ static inline pgd_t *user_to_kernel_pgdp(pgd_t *pgdp)
+ {
+ 	return ptr_clear_bit(pgdp, PTI_PGTABLE_SWITCH_BIT);
+ }
 -
- .macro SET_NOFLUSH_BIT	reg:req
- 	bts	$X86_CR3_PCID_NOFLUSH_BIT, \reg
- .endm
-diff --git a/arch/x86/include/asm/processor-flags.h b/arch/x86/include/asm/processor-flags.h
-index 02c2cbda4a74..4dd2fbbc861a 100644
---- a/arch/x86/include/asm/processor-flags.h
-+++ b/arch/x86/include/asm/processor-flags.h
-@@ -4,6 +4,7 @@
+-static inline p4d_t *kernel_to_user_p4dp(p4d_t *p4dp)
+-{
+-	return ptr_set_bit(p4dp, PTI_PGTABLE_SWITCH_BIT);
+-}
+-
+-static inline p4d_t *user_to_kernel_p4dp(p4d_t *p4dp)
+-{
+-	return ptr_clear_bit(p4dp, PTI_PGTABLE_SWITCH_BIT);
+-}
+ #endif /* CONFIG_PAGE_TABLE_ISOLATION */
  
- #include <uapi/asm/processor-flags.h>
- #include <linux/mem_encrypt.h>
-+#include <asm/page_types.h>
- 
- #ifdef CONFIG_VM86
- #define X86_VM_MASK	X86_EFLAGS_VM
-@@ -50,7 +51,21 @@
- #endif
- 
- #ifdef CONFIG_PAGE_TABLE_ISOLATION
-+
- # define X86_CR3_PTI_PCID_USER_BIT	11
-+
-+#ifdef CONFIG_X86_64
-+/*
-+ * PAGE_TABLE_ISOLATION PGDs are 8k.  Flip bit 12 to switch between the two
-+ * halves:
-+ */
-+#define PTI_USER_PGTABLE_BIT		PAGE_SHIFT
-+#define PTI_USER_PGTABLE_MASK		(1 << PTI_USER_PGTABLE_BIT)
-+#define PTI_USER_PCID_BIT		X86_CR3_PTI_PCID_USER_BIT
-+#define PTI_USER_PCID_MASK		(1 << PTI_USER_PCID_BIT)
-+#define PTI_USER_PGTABLE_AND_PCID_MASK  (PTI_USER_PCID_MASK | PTI_USER_PGTABLE_MASK)
-+#endif
-+
- #endif
- 
- #endif /* _ASM_X86_PROCESSOR_FLAGS_H */
+ /*
 -- 
 2.19.1.6.gb485710b
 
