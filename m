@@ -2,97 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D990943B9F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB50643BA17
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236892AbhJZSxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:53:02 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:20282 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236853AbhJZSw6 (ORCPT
+        id S238504AbhJZTDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:03:24 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:49568 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238446AbhJZTCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:52:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635274220;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=7ft8Vn6lPZYMUJ7yRwsizM95snAuobtCtLzV7BieLtc=;
-    b=VEeFuwU6xodp2KD9GwJYEFXdI8WK8H+EoJeJyq93OkvqxMux0LdEzq28FwuWs6Eye8
-    UCLVyE3y6a7pPyg/rUV9XqEs2hzlwNcwF+QlAf6E8sg4rMWXVDGLIOWC0OOdzYZyMzqI
-    cGFcWWLbbpXQt/4M2RIXtHFheVtBaCr5f3FC0MkyHIiw8tjZnCU3rz7O27RR3hJwHutT
-    MutBTYuH3GxjK8nYf78thTCgGPOToC46gZSeLanmMe20UoC6Mp8ypB8GOHy82ACtHGmH
-    L0kUOf+FEHzgQAIekjPLgG0hW5M69gYBczzg5/8sVYZHgpNjxl0ejz0lDZvScjKbnbof
-    SMHQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8J+"
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 SBL|AUTH)
-    with ESMTPSA id d01d1fx9QIoJynM
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 20:50:19 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [RESEND PATCH v3 0/6] drm/ingenic: Various improvements v3
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20211026181240.213806-1-paul@crapouillou.net>
-Date:   Tue, 26 Oct 2021 20:50:19 +0200
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <4CBF748C-DA58-4E8B-A6E4-A7CE653F2C52@goldelico.com>
-References: <20211026181240.213806-1-paul@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Tue, 26 Oct 2021 15:02:55 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 825cf11a8721b92c; Tue, 26 Oct 2021 21:00:20 +0200
+Received: from kreacher.localnet (unknown [213.134.187.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 4EBE666A9F8;
+        Tue, 26 Oct 2021 21:00:19 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v1 0/2] ACPI: scan: Honor certain device identification rules
+Date:   Tue, 26 Oct 2021 20:51:49 +0200
+Message-ID: <11860508.O9o76ZdvQC@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.187.81
+X-CLIENT-HOSTNAME: 213.134.187.81
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepvddufedrudefgedrudekjedrkedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudekjedrkedupdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihihrdhshhgvvhgthhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehhuggvghhovgguvgesrhgvughhrghtrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhikhgrrdif
+ vghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hi All,
 
-> Am 26.10.2021 um 20:12 schrieb Paul Cercueil <paul@crapouillou.net>:
-> 
-> Hi,
-> 
-> I resend the V3 of my patchset for drm/ingenic, verbatim.
-> 
-> The previous submission of my V3 received a lot of replies, but none of
-> these replies were actually talking about the patches themselves.
+There are some rules in the ACPI spec regarding which device identification
+objects can be used together etc., but they are not followed by the kernel
+code.
 
-Indeed. And since we have finally managed to add jz4780 HDMI support
-(I didn't find to work in the latest comments) on top of the series as is,
-please go ahead and add my
+This series modifies the code to follow the spec more closely (see patch
+changelogs for details).
 
-tested-by: Nikolaus Schaller <hns@goldelico.com>
+Thanks!
 
-BR and thanks,
-Nikolaus
 
-> 
-> Cheers,
-> -Paul
-> 
-> 
-> Paul Cercueil (6):
->  drm/ingenic: Simplify code by using hwdescs array
->  drm/ingenic: Add support for private objects
->  drm/ingenic: Move IPU scale settings to private state
->  drm/ingenic: Set DMA descriptor chain register when starting CRTC
->  drm/ingenic: Upload palette before frame
->  drm/ingenic: Attach bridge chain to encoders
-> 
-> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 278 +++++++++++++++++-----
-> drivers/gpu/drm/ingenic/ingenic-ipu.c     | 127 ++++++++--
-> 2 files changed, 333 insertions(+), 72 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
 
