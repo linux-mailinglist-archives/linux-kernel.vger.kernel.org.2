@@ -2,48 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A855243AFB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D22643AFBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbhJZKHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:07:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35996 "EHLO mail.kernel.org"
+        id S235129AbhJZKJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:09:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233868AbhJZKHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:07:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C94860551;
-        Tue, 26 Oct 2021 10:04:42 +0000 (UTC)
+        id S235127AbhJZKJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:09:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B044F60551;
+        Tue, 26 Oct 2021 10:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635242686;
-        bh=mueXg1F3T64Z32N3VW1n8boTWbbmg7I1y/7PkQQVs6I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sXZIFRtmURYWbYpeH4TdmXwzXr4RZqqFMbiFASxsr06ZANE0pHmwOxAihUXQ638mG
-         EIC5Y/Yzawqfm3tXW84MGVHsrmgVcY1hVAE5f9DpogFzmVcimKX2752EjcCUa8nQ7k
-         YUm51TngJedNpMy3ew0vggnkNIsdQ0DU+TKLsooAiuVEF2/HpHWf2W7on5d6+Eo4mz
-         H6javFuFTUYRTHbzjfnRQ37vXaVsUqR+L0Sa588RxUFJIAyOm3BoREgil1t/i6lHkV
-         +Dv+0/qiiB9DpCNgHsFClLM7EDhnlaymt+DY2OnFv2gGBXuL/h+6AQsm7tYI9hIffU
-         Vglh1dzxS+D0A==
+        s=k20201202; t=1635242811;
+        bh=/UUpq5yAb9SBJHAGQCwpJ++n+NDCz5SrvkBmQT9f4AM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sVr8uHtfZkNoSIOweaf+O71sFcTtweajZ2yUFEf0k7tTjrr/XnVapzQyhBdTESzpg
+         dPlvZc6JfwlKPbQXRd+uOCce6LL9gAIs8QxdoqD4Dn+io4ZGXXvdBFqV6zDh8+zBIR
+         ILQRg1UQm/8LEOGrruqpzcP8OFu3/sGB8yYXUE34H+v4wT9+UAQ/17/wMB7D7WFIEy
+         RRZDoLcuf5Iw81u3vEqrdA4oStOQLyhAkBAc/esruUB/Buq2VZopf6Yt35koDGwauh
+         LiS/nwKElHYcRW9EzmEyRizGSIShUFMtef8WWGoMXTurXqgHUmo0Y2oI5cTPtLY1+/
+         xQy68IqXxEPlA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+Cc:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>,
         Darren Hart <dvhart@infradead.org>,
         Davidlohr Bueso <dave@stgolabs.net>,
         =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-Subject: [PATCH 1/2] futex: ensure futex_atomic_cmpxchg_inatomic() is present
-Date:   Tue, 26 Oct 2021 12:03:47 +0200
-Message-Id: <20211026100432.1730393-1-arnd@kernel.org>
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: [PATCH 2/2] futex: remove futex_cmpxchg detection
+Date:   Tue, 26 Oct 2021 12:03:48 +0200
+Message-Id: <20211026100432.1730393-2-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20211026100432.1730393-1-arnd@kernel.org>
+References: <20211026100432.1730393-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -52,232 +71,338 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The boot-time detection of futex_atomic_cmpxchg_inatomic()
-has a bug on some 32-bit arm builds, and Thomas Gleixner
-suggested that setting CONFIG_HAVE_FUTEX_CMPXCHG would
-avoid the problem, as it is always present anyway.
-
-Looking into which other architectures could do the same
-showed that almost all architectures have it, the exceptions
-being:
-
- - some old 32-bit MIPS uniprocessor cores without ll/sc
- - one xtensa variant with no SMP
- - 32-bit SPARC when built for SMP
-
-Fix MIPS And Xtensa by rearranging the generic code to let it be used
-as a fallback.
-
-For SPARC, the SMP definition just ends up turning off futex anyway,
-so this can be done at Kconfig time instead. Note that sparc32
-glibc requires the CASA instruction for its mutexes anyway,
-which is only available when running on SPARCv9 or LEON CPUs,
-but needs to be implemented in the sparc32 kernel for those.
+Now that all architectures have a working futex implementation
+in any configuration, remove the runtime detection code.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/mips/include/asm/futex.h   | 29 ++++++++++++++++++-----------
- arch/xtensa/include/asm/futex.h |  8 ++++++--
- include/asm-generic/futex.h     | 31 +++++++++++--------------------
- init/Kconfig                    |  1 +
- 4 files changed, 36 insertions(+), 33 deletions(-)
+ arch/arc/Kconfig              |  1 -
+ arch/arm/Kconfig              |  1 -
+ arch/arm64/Kconfig            |  1 -
+ arch/csky/Kconfig             |  1 -
+ arch/m68k/Kconfig             |  1 -
+ arch/riscv/Kconfig            |  1 -
+ arch/s390/Kconfig             |  1 -
+ arch/sh/Kconfig               |  1 -
+ arch/um/Kconfig               |  1 -
+ arch/um/kernel/skas/uaccess.c |  1 -
+ arch/xtensa/Kconfig           |  1 -
+ init/Kconfig                  |  8 --------
+ kernel/futex/core.c           | 35 -----------------------------------
+ kernel/futex/futex.h          |  6 ------
+ kernel/futex/syscalls.c       | 22 ----------------------
+ 15 files changed, 82 deletions(-)
 
-diff --git a/arch/mips/include/asm/futex.h b/arch/mips/include/asm/futex.h
-index d85248404c52..9287110cb06d 100644
---- a/arch/mips/include/asm/futex.h
-+++ b/arch/mips/include/asm/futex.h
-@@ -19,7 +19,11 @@
- #include <asm/sync.h>
- #include <asm/war.h>
- 
--#define __futex_atomic_op(insn, ret, oldval, uaddr, oparg)		\
-+#define arch_futex_atomic_op_inuser arch_futex_atomic_op_inuser
-+#define futex_atomic_cmpxchg_inatomic futex_atomic_cmpxchg_inatomic
-+#include <asm-generic/futex.h>
-+
-+#define __futex_atomic_op(op, insn, ret, oldval, uaddr, oparg)		\
- {									\
- 	if (cpu_has_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {	\
- 		__asm__ __volatile__(					\
-@@ -80,9 +84,11 @@
- 		: "0" (0), GCC_OFF_SMALL_ASM() (*uaddr), "Jr" (oparg),	\
- 		  "i" (-EFAULT)						\
- 		: "memory");						\
--	} else								\
--		ret = -ENOSYS;						\
--}
-+	} else {							\
-+		/* fallback for non-SMP */				\
-+		ret = arch_futex_atomic_op_inuser_local(op, oparg, oval,\
-+							uaddr);	\
-+	}
- 
- static inline int
- arch_futex_atomic_op_inuser(int op, int oparg, int *oval, u32 __user *uaddr)
-@@ -94,23 +100,23 @@ arch_futex_atomic_op_inuser(int op, int oparg, int *oval, u32 __user *uaddr)
- 
- 	switch (op) {
- 	case FUTEX_OP_SET:
--		__futex_atomic_op("move $1, %z5", ret, oldval, uaddr, oparg);
-+		__futex_atomic_op(op, "move $1, %z5", ret, oldval, uaddr, oparg);
- 		break;
- 
- 	case FUTEX_OP_ADD:
--		__futex_atomic_op("addu $1, %1, %z5",
-+		__futex_atomic_op(op, "addu $1, %1, %z5",
- 				  ret, oldval, uaddr, oparg);
- 		break;
- 	case FUTEX_OP_OR:
--		__futex_atomic_op("or	$1, %1, %z5",
-+		__futex_atomic_op(op, "or	$1, %1, %z5",
- 				  ret, oldval, uaddr, oparg);
- 		break;
- 	case FUTEX_OP_ANDN:
--		__futex_atomic_op("and	$1, %1, %z5",
-+		__futex_atomic_op(op, "and	$1, %1, %z5",
- 				  ret, oldval, uaddr, ~oparg);
- 		break;
- 	case FUTEX_OP_XOR:
--		__futex_atomic_op("xor	$1, %1, %z5",
-+		__futex_atomic_op(op, "xor	$1, %1, %z5",
- 				  ret, oldval, uaddr, oparg);
- 		break;
- 	default:
-@@ -193,8 +199,9 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 		: GCC_OFF_SMALL_ASM() (*uaddr), "Jr" (oldval), "Jr" (newval),
- 		  "i" (-EFAULT)
- 		: "memory");
--	} else
--		return -ENOSYS;
-+	} else {
-+		return futex_atomic_cmpxchg_inatomic_local(uval, uaddr, oldval, newval);
-+	}
- 
- 	*uval = val;
- 	return ret;
-diff --git a/arch/xtensa/include/asm/futex.h b/arch/xtensa/include/asm/futex.h
-index a1a27b2ea460..fe8f31575ab1 100644
---- a/arch/xtensa/include/asm/futex.h
-+++ b/arch/xtensa/include/asm/futex.h
-@@ -16,6 +16,10 @@
- #include <linux/uaccess.h>
- #include <linux/errno.h>
- 
-+#define arch_futex_atomic_op_inuser arch_futex_atomic_op_inuser
-+#define futex_atomic_cmpxchg_inatomic futex_atomic_cmpxchg_inatomic
-+#include <asm-generic/futex.h>
-+
- #if XCHAL_HAVE_EXCLUSIVE
- #define __futex_atomic_op(insn, ret, old, uaddr, arg)	\
- 	__asm__ __volatile(				\
-@@ -105,7 +109,7 @@ static inline int arch_futex_atomic_op_inuser(int op, int oparg, int *oval,
- 
- 	return ret;
- #else
--	return -ENOSYS;
-+	return arch_futex_atomic_op_inuser_local(op, oparg, oval, uaddr);
- #endif
- }
- 
-@@ -156,7 +160,7 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 
- 	return ret;
- #else
--	return -ENOSYS;
-+	return futex_atomic_cmpxchg_inatomic_local(uval, uaddr, oldval, newval);
- #endif
- }
- 
-diff --git a/include/asm-generic/futex.h b/include/asm-generic/futex.h
-index f4c3470480c7..30e7fa63b5df 100644
---- a/include/asm-generic/futex.h
-+++ b/include/asm-generic/futex.h
-@@ -6,15 +6,22 @@
- #include <linux/uaccess.h>
- #include <asm/errno.h>
- 
-+#ifndef futex_atomic_cmpxchg_inatomic
- #ifndef CONFIG_SMP
- /*
-  * The following implementation only for uniprocessor machines.
-  * It relies on preempt_disable() ensuring mutual exclusion.
-  *
-  */
-+#define futex_atomic_cmpxchg_inatomic(uval, uaddr, oldval, newval) \
-+	futex_atomic_cmpxchg_inatomic_local_generic(uval, uaddr, oldval, newval)
-+#define arch_futex_atomic_op_inuser(op, oparg, oval, uaddr) \
-+	arch_futex_atomic_op_inuser_local_generic(op, oparg, oval, uaddr)
-+#endif /* CONFIG_SMP */
-+#endif
- 
- /**
-- * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
-+ * arch_futex_atomic_op_inuser_local() - Atomic arithmetic operation with constant
-  *			  argument and comparison of the previous
-  *			  futex value with another constant.
-  *
-@@ -28,7 +35,7 @@
-  * -ENOSYS - Operation not supported
-  */
- static inline int
--arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
-+futex_atomic_op_inuser_local(int op, u32 oparg, int *oval, u32 __user *uaddr)
- {
- 	int oldval, ret;
- 	u32 tmp;
-@@ -75,7 +82,7 @@ arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
- }
- 
- /**
-- * futex_atomic_cmpxchg_inatomic() - Compare and exchange the content of the
-+ * futex_atomic_cmpxchg_inatomic_local() - Compare and exchange the content of the
-  *				uaddr with newval if the current value is
-  *				oldval.
-  * @uval:	pointer to store content of @uaddr
-@@ -87,10 +94,9 @@ arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index 248389278e8f..f9413041686f 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -31,7 +31,6 @@ config ARC
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select HAVE_DEBUG_KMEMLEAK
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_LZMA
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index bb5d2c45477b..6448d311635d 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -93,7 +93,6 @@ config ARM
+ 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
+ 	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
+ 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL && !(THUMB2_KERNEL && CC_IS_CLANG)
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 0efc501f77aa..6c3c2ff5cef8 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -193,7 +193,6 @@ config ARM64
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_FUNCTION_ARG_ACCESS_API
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select MMU_GATHER_RCU_TABLE_FREE
+ 	select HAVE_RSEQ
+ 	select HAVE_STACKPROTECTOR
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index 823d3d5a9e11..efd7c5feac8b 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -53,7 +53,6 @@ config CSKY
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+-	select HAVE_FUTEX_CMPXCHG if FUTEX && SMP
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_LZO
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 0b50da08a9c5..15a793c5b2dc 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -20,7 +20,6 @@ config M68K
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
+-	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_UID16
+ 	select MMU_GATHER_NO_RANGE if MMU
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 77a088d0a7e9..037fea9fac14 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -84,7 +84,6 @@ config RISCV
+ 	select HAVE_DMA_CONTIGUOUS if MMU
+ 	select HAVE_EBPF_JIT if MMU
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_GENERIC_VDSO if MMU && 64BIT
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index f615c3f65f5a..1c9ecf619e04 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -164,7 +164,6 @@ config S390
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_FUNCTION_TRACER
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_GENERIC_VDSO
+ 	select HAVE_IOREMAP_PROT if PCI
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 6904f4bdbf00..93195d3368c0 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -34,7 +34,6 @@ config SUPERH
+ 	select HAVE_FAST_GUP if MMU
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_FUNCTION_TRACER
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+ 	select HAVE_HW_BREAKPOINT
+ 	select HAVE_IOREMAP_PROT if MMU && !X2TLB
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index c18b45f75d41..c906250d4970 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -14,7 +14,6 @@ config UML
+ 	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_UID16
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select NO_DMA if !UML_DMA_EMULATION
+diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
+index a509be911026..9e37a7c05990 100644
+--- a/arch/um/kernel/skas/uaccess.c
++++ b/arch/um/kernel/skas/uaccess.c
+@@ -348,7 +348,6 @@ EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
   * 0 - On success
   * -EFAULT - User access resulted in a page fault
   * -EAGAIN - Atomic operation was unable to complete due to contention
 - * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
   */
- static inline int
--futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-+futex_atomic_cmpxchg_inatomic_local(u32 *uval, u32 __user *uaddr,
- 			      u32 oldval, u32 newval)
- {
- 	u32 val;
-@@ -112,19 +118,4 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
- 	return 0;
- }
  
--#else
--static inline int
--arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
--{
--	return -ENOSYS;
--}
--
--static inline int
--futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
--			      u32 oldval, u32 newval)
--{
--	return -ENOSYS;
--}
--
--#endif /* CONFIG_SMP */
- #endif
+ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 0e56bad058fa..8ac599aa6d99 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -31,7 +31,6 @@ config XTENSA
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_EXIT_THREAD
+ 	select HAVE_FUNCTION_TRACER
+-	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
+ 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_PCI
 diff --git a/init/Kconfig b/init/Kconfig
-index edc0a0228f14..c0f55ea5a71f 100644
+index c0f55ea5a71f..538688598f2f 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1584,6 +1584,7 @@ config BASE_FULL
- 
- config FUTEX
- 	bool "Enable futex support" if EXPERT
-+	depends on !(SPARC32 && SMP)
+@@ -1597,14 +1597,6 @@ config FUTEX_PI
+ 	depends on FUTEX && RT_MUTEXES
  	default y
- 	imply RT_MUTEXES
- 	help
+ 
+-config HAVE_FUTEX_CMPXCHG
+-	bool
+-	depends on FUTEX
+-	help
+-	  Architectures should select this if futex_atomic_cmpxchg_inatomic()
+-	  is implemented and always working. This removes a couple of runtime
+-	  checks.
+-
+ config EPOLL
+ 	bool "Enable eventpoll support" if EXPERT
+ 	default y
+diff --git a/kernel/futex/core.c b/kernel/futex/core.c
+index 25d8a88b32e5..926c2bb752bc 100644
+--- a/kernel/futex/core.c
++++ b/kernel/futex/core.c
+@@ -41,11 +41,6 @@
+ #include "futex.h"
+ #include "../locking/rtmutex_common.h"
+ 
+-#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
+-int  __read_mostly futex_cmpxchg_enabled;
+-#endif
+-
+-
+ /*
+  * The base of the bucket array and its size are always used together
+  * (after initialization only in futex_hash()), so ensure that they
+@@ -776,9 +771,6 @@ static void exit_robust_list(struct task_struct *curr)
+ 	unsigned long futex_offset;
+ 	int rc;
+ 
+-	if (!futex_cmpxchg_enabled)
+-		return;
+-
+ 	/*
+ 	 * Fetch the list head (which was registered earlier, via
+ 	 * sys_set_robust_list()):
+@@ -874,9 +866,6 @@ static void compat_exit_robust_list(struct task_struct *curr)
+ 	compat_long_t futex_offset;
+ 	int rc;
+ 
+-	if (!futex_cmpxchg_enabled)
+-		return;
+-
+ 	/*
+ 	 * Fetch the list head (which was registered earlier, via
+ 	 * sys_set_robust_list()):
+@@ -950,8 +939,6 @@ static void exit_pi_state_list(struct task_struct *curr)
+ 	struct futex_hash_bucket *hb;
+ 	union futex_key key = FUTEX_KEY_INIT;
+ 
+-	if (!futex_cmpxchg_enabled)
+-		return;
+ 	/*
+ 	 * We are a ZOMBIE and nobody can enqueue itself on
+ 	 * pi_state_list anymore, but we have to be careful
+@@ -1125,26 +1112,6 @@ void futex_exit_release(struct task_struct *tsk)
+ 	futex_cleanup_end(tsk, FUTEX_STATE_DEAD);
+ }
+ 
+-static void __init futex_detect_cmpxchg(void)
+-{
+-#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
+-	u32 curval;
+-
+-	/*
+-	 * This will fail and we want it. Some arch implementations do
+-	 * runtime detection of the futex_atomic_cmpxchg_inatomic()
+-	 * functionality. We want to know that before we call in any
+-	 * of the complex code paths. Also we want to prevent
+-	 * registration of robust lists in that case. NULL is
+-	 * guaranteed to fault and we get -EFAULT on functional
+-	 * implementation, the non-functional ones will return
+-	 * -ENOSYS.
+-	 */
+-	if (futex_cmpxchg_value_locked(&curval, NULL, 0, 0) == -EFAULT)
+-		futex_cmpxchg_enabled = 1;
+-#endif
+-}
+-
+ static int __init futex_init(void)
+ {
+ 	unsigned int futex_shift;
+@@ -1163,8 +1130,6 @@ static int __init futex_init(void)
+ 					       futex_hashsize, futex_hashsize);
+ 	futex_hashsize = 1UL << futex_shift;
+ 
+-	futex_detect_cmpxchg();
+-
+ 	for (i = 0; i < futex_hashsize; i++) {
+ 		atomic_set(&futex_queues[i].waiters, 0);
+ 		plist_head_init(&futex_queues[i].chain);
+diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
+index 040ae4277cb0..c264cbeab71c 100644
+--- a/kernel/futex/futex.h
++++ b/kernel/futex/futex.h
+@@ -27,12 +27,6 @@
+ #define FLAGS_CLOCKRT		0x02
+ #define FLAGS_HAS_TIMEOUT	0x04
+ 
+-#ifdef CONFIG_HAVE_FUTEX_CMPXCHG
+-#define futex_cmpxchg_enabled 1
+-#else
+-extern int  __read_mostly futex_cmpxchg_enabled;
+-#endif
+-
+ #ifdef CONFIG_FAIL_FUTEX
+ extern bool should_fail_futex(bool fshared);
+ #else
+diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
+index 6f91a07a6a83..086a22d1adb7 100644
+--- a/kernel/futex/syscalls.c
++++ b/kernel/futex/syscalls.c
+@@ -29,8 +29,6 @@
+ SYSCALL_DEFINE2(set_robust_list, struct robust_list_head __user *, head,
+ 		size_t, len)
+ {
+-	if (!futex_cmpxchg_enabled)
+-		return -ENOSYS;
+ 	/*
+ 	 * The kernel knows only one size for now:
+ 	 */
+@@ -56,9 +54,6 @@ SYSCALL_DEFINE3(get_robust_list, int, pid,
+ 	unsigned long ret;
+ 	struct task_struct *p;
+ 
+-	if (!futex_cmpxchg_enabled)
+-		return -ENOSYS;
+-
+ 	rcu_read_lock();
+ 
+ 	ret = -ESRCH;
+@@ -103,17 +98,6 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ 			return -ENOSYS;
+ 	}
+ 
+-	switch (cmd) {
+-	case FUTEX_LOCK_PI:
+-	case FUTEX_LOCK_PI2:
+-	case FUTEX_UNLOCK_PI:
+-	case FUTEX_TRYLOCK_PI:
+-	case FUTEX_WAIT_REQUEUE_PI:
+-	case FUTEX_CMP_REQUEUE_PI:
+-		if (!futex_cmpxchg_enabled)
+-			return -ENOSYS;
+-	}
+-
+ 	switch (cmd) {
+ 	case FUTEX_WAIT:
+ 		val3 = FUTEX_BITSET_MATCH_ANY;
+@@ -323,9 +307,6 @@ COMPAT_SYSCALL_DEFINE2(set_robust_list,
+ 		struct compat_robust_list_head __user *, head,
+ 		compat_size_t, len)
+ {
+-	if (!futex_cmpxchg_enabled)
+-		return -ENOSYS;
+-
+ 	if (unlikely(len != sizeof(*head)))
+ 		return -EINVAL;
+ 
+@@ -342,9 +323,6 @@ COMPAT_SYSCALL_DEFINE3(get_robust_list, int, pid,
+ 	unsigned long ret;
+ 	struct task_struct *p;
+ 
+-	if (!futex_cmpxchg_enabled)
+-		return -ENOSYS;
+-
+ 	rcu_read_lock();
+ 
+ 	ret = -ESRCH;
 -- 
 2.29.2
 
