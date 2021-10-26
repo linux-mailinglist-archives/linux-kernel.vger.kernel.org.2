@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8B543B0B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178F143B0B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235392AbhJZLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:03:29 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43762
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235357AbhJZLDV (ORCPT
+        id S235337AbhJZLDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:03:32 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:57572
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235373AbhJZLDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:03:21 -0400
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        Tue, 26 Oct 2021 07:03:25 -0400
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E0AF33F173
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:00:53 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EFD1D40283
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635246053;
+        s=20210705; t=1635246060;
         bh=saCQu9EKQs4I6SKXkv5FjAbPTAvRNyG3cbYVa3bkKDU=;
         h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
          In-Reply-To:Content-Type;
-        b=Z6cJ2pbbSnIn9uVxehdiOgI61pnh3GkFannE2EWHWf5bvqVeJLcFi8seGsGXtvYne
-         O6D7tI3wFUlcpSpqsZuwSkaF2vZFQ3Ajb68lmDNYIlLBv/8YWNCB7LWwNQnTG0sqK5
-         /UDOOZSBtq+x2ZPb42R49kcMtiH2mc9JdDgUdcXHJgvbwcmXgUZQdDMeoPVutH67EK
-         Vbc11/35yFp66kftX76j/qV+pCL1geZyhcJYkLxTdMMaMRxl/hpL5KkcsA3HgL+TH1
-         hNmpYSzgI0+Gt1fb+SBOIA0+TywovvBNuRuHsYphkC+6Ij0unZqr6oZmFac2aiXHeW
-         gZOMcjmb/Ga6g==
-Received: by mail-lj1-f199.google.com with SMTP id d24-20020a2eb058000000b00211892e18f2so1236776ljl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 04:00:53 -0700 (PDT)
+        b=AtabUELtunYvEKBaAWhHTSo9wen3CgzxJ0EHGKnFaOwGbj2qhj5WmZezOXpu8wIUP
+         QzEH45Myz/6kxrn+2upe1YWuyzaE/itRdjsvuWx7tkQ/FHXsueN23TICyHE1rFy6i9
+         YiEtzNyhwhl3uhmAer7FOOsXLVr+LQqGeGfoF2KCDtpIWFe2akiK3KhG7nOY6cssUr
+         aJ71b14TmbsTNB/aKhIQgyTaqlkFOXMV/qy2WLe/CTQGa1fx5EWYmOsjZY0FFRd/LY
+         mrjX0OXaYKXGQzRSqehwOpdruTjqDvBGGuAyyjIbkvvMsFS/L9/8HEO8fDXfGVm+M4
+         f+2/EkHS8RX+Q==
+Received: by mail-lj1-f200.google.com with SMTP id k13-20020a05651c10ad00b00210d682c600so4167030ljn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 04:01:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:to:cc:references:from:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=saCQu9EKQs4I6SKXkv5FjAbPTAvRNyG3cbYVa3bkKDU=;
-        b=u4Wv0JuKurj3/Y+/IysUCkNZwyfHHk7Da47sQ7suluTlMjYjYT0k0g+q7fln38huav
-         m+SD5jlqwZ3L0bYaoVmqdu7PLljB5xWeyPqNw16pXXBCU5ib63cQKzkripcgr0zHpnCs
-         w/77hxsHmLtFAbKx0/y9QfF5/9494alvT+HoiBKkJE4b8YPmgst98incKcd1g8v7UvL1
-         ysJ79tuoynSGUeNADBXRdfHL0Nz3lP1gnUvWYY6cvsjdTzO+EkYy1XnZuWxUmSz8A8oy
-         CsMcs6nT5p+RUtGoe3oN5ReSpcDZLXfXHBlBWwHOANpkUUcsLC2pcJPqDP8C554E5QW3
-         /ALw==
-X-Gm-Message-State: AOAM533+wq+Q3Txms/9clwN50xm+kU63EgwDHga1M314gfhfh+fCj9qU
-        OnXlpRXIlhOVrgh9t6OPqPOtomT9ZBmB65k25Limmzf+KMFLOh/J659EE37QHIJ3buJ2fw7j6lh
-        ImRMG75D6uWB6CWIgXBk2GamJp8g5NTYwkrNTp9kbhA==
-X-Received: by 2002:a2e:8605:: with SMTP id a5mr6639004lji.107.1635246053199;
-        Tue, 26 Oct 2021 04:00:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxu6cel0oQC1BuMesrfNH59P19SIT7Z0msL6k//HhV+BZ9TfGDzQ+R+3+GvGDhor/q3GvReFQ==
-X-Received: by 2002:a2e:8605:: with SMTP id a5mr6638964lji.107.1635246052925;
-        Tue, 26 Oct 2021 04:00:52 -0700 (PDT)
+        b=w0D/4oN9xqYWlJNzurimeoq0tNMEKOhstgQQLN/MtkKhu+r8Z3/GwJMJv55ese5LlL
+         3lN6ObvQfYfkKcAreHG+8MoalVM38LZZD9BUA/BMwGsKz/GkgwKXtW9ZWpcovH3UjS6r
+         oIfZbg3HFpAsSBmNf0KDLlj3jOKzQuAIS/gWhS8f7PDuXnKoIr0C18lfLeOTUBuVFGTI
+         zzwc/mIqTEYVcqcag+ZtqqjmeswD8hrJLNlFLDpjrEleDypVZ02J3i4tI2FVd/Pkp/Tf
+         xaLksNvTzh68aesQXx1A4Z4aupUfm6pL7h79T3cJZl0ZeJWU1wnDe7atAUuxzcDSwGwN
+         IWBQ==
+X-Gm-Message-State: AOAM531fWfYbEx9iK6qw81qSYxxFp9aokwlPg6N/AITLpUgAVSuBAsI8
+        DbIhluNCXnYesM+hBel4U+fzffvMDLmY326nHi3gtaFgO0oIEr0IAca9HKZa4VH3NEcwuV+MduT
+        NLnBun0ijqL/bE6Pr2V93uDGfQOseRz4PhA/P0ZrlAg==
+X-Received: by 2002:a2e:9155:: with SMTP id q21mr2538927ljg.217.1635246060231;
+        Tue, 26 Oct 2021 04:01:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0X6qDFP9FFCD5QwYHQV3v8kwvFuK6o5Wcp/OVDsZAZVQxLeOu6Nqkf7G3YizrzY3oQ+AghQ==
+X-Received: by 2002:a2e:9155:: with SMTP id q21mr2538905ljg.217.1635246060059;
+        Tue, 26 Oct 2021 04:01:00 -0700 (PDT)
 Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id n7sm1985531ljg.47.2021.10.26.04.00.51
+        by smtp.gmail.com with ESMTPSA id u4sm1893284lfs.153.2021.10.26.04.00.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 04:00:52 -0700 (PDT)
+        Tue, 26 Oct 2021 04:00:59 -0700 (PDT)
 To:     Youngmin Nam <youngmin.nam@samsung.com>,
         Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>, daniel.lezcano@linaro.org
@@ -77,8 +77,8 @@ References: <20211021061804.39118-1-youngmin.nam@samsung.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
  Exynos MCT version 2 driver for next Exynos SoC
-Message-ID: <cb5bd5a3-1c23-0dc5-9f77-112befd7269c@canonical.com>
-Date:   Tue, 26 Oct 2021 13:00:51 +0200
+Message-ID: <11ca846b-c8d6-37c9-8ee2-4740fa66d974@canonical.com>
+Date:   Tue, 26 Oct 2021 13:00:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
