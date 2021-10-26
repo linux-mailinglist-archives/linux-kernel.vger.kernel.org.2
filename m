@@ -2,91 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E86C43ADF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0BF43ADF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhJZI3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:29:15 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:53477 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231283AbhJZI3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:29:07 -0400
-Received: from [192.168.0.2] (ip5f5aef5c.dynamic.kabel-deutschland.de [95.90.239.92])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S234095AbhJZI3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:29:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39818 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231283AbhJZI3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:29:49 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1001E61E6478B;
-        Tue, 26 Oct 2021 10:26:42 +0200 (CEST)
-Message-ID: <ab607667-888b-11bf-ac13-a69577f067dd@molgen.mpg.de>
-Date:   Tue, 26 Oct 2021 10:26:41 +0200
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 69CBB1FCA3;
+        Tue, 26 Oct 2021 08:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635236845; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P7u0wBqRsH3OQDCxU4GIDfdl7I5NNgO6MqICOkElv98=;
+        b=dMbf3JbCiptnB8cuG4J+1f3A+QL4rTpQ91enq9bXEkndFjjXU8DwUxmD5AU/1cRM8zs0uf
+        +tLNuTCuSTRYWo08y34jfNrZ/LZuOCvs/j4hMmIH8JdsoaSIRCLJJ+iQkNRArwBml046Sy
+        P/6GS8vgQOcDHcCtLu7uvMeF2SDkAR0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635236845;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P7u0wBqRsH3OQDCxU4GIDfdl7I5NNgO6MqICOkElv98=;
+        b=Xa/h5+HGRvIwTVm6PWy75lgF7Ew+5799LqgTKV1eb9a4zzFkUiVe9i4VikhoeKRHjjmTA1
+        McuXM/8DlgXJ1ICg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5194B13AEE;
+        Tue, 26 Oct 2021 08:27:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fBXlE+27d2FHVgAAMHmgww
+        (envelope-from <bp@suse.de>); Tue, 26 Oct 2021 08:27:25 +0000
+Date:   Tue, 26 Oct 2021 10:27:26 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wei Liu <wei.liu@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: linux-next: manual merge of the hyperv tree with the tip tree
+Message-ID: <YXe77nC1uNKiuPch@zn.tnic>
+References: <20211026172251.0f655709@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] md/raid5: Fix implicit type conversion
-Content-Language: en-US
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Song Liu <song@kernel.org>
-References: <1635235957-2446919-1-git-send-email-jiasheng@iscas.ac.cn>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <1635235957-2446919-1-git-send-email-jiasheng@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211026172251.0f655709@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jiasheng,
-
-
-On 26.10.21 10:12, Jiasheng Jiang wrote:
-> The variable 'cpu' is defined as ULONG.
-> However in the for_each_present_cpu, its value is assigned to -1.
-> That doesn't make sense and in the cpumask_next() it is implicitly
-> type conversed to INT.
-
-The description of the macro in `include/linux/cpumask.h` says:
-
->  * for_each_cpu - iterate over every cpu in a mask
->  * @cpu: the (optionally unsigned) integer iterator
->  * @mask: the cpumask pointer
-
-
-> It is universally accepted that the implicit type conversion is
-> terrible.
-> Also, having the good programming custom will set an example for
-> others.
-> Thus, it might be better to change the definition of 'cpu' from UINT
-> to INT.
-
-Maybe get the macro description fixed first, and then update the users?
-
-> Fixes: 738a273 ("md/raid5: fix allocation of 'scribble' array.")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->   drivers/md/raid5.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Oct 26, 2021 at 05:22:51PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index 7d4ff8a..c7b88eb 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -2425,7 +2425,7 @@ static int scribble_alloc(struct raid5_percpu *percpu,
+> Today's linux-next merge of the hyperv tree got a conflict in:
+> 
+>   arch/x86/mm/pat/set_memory.c
+> 
+> between commit:
+> 
+>   e9d1d2bb75b2 ("treewide: Replace the use of mem_encrypt_active() with cc_platform_has()")
+> 
+> from the tip tree and commit:
+> 
+>   cf90c4532b92 ("x86/hyperv: Add new hvcall guest address host visibility support")
+> 
+> from the hyperv tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc arch/x86/mm/pat/set_memory.c
+> index 527957586f3c,525f682ab150..000000000000
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@@ -2024,6 -2025,17 +2026,17 @@@ static int __set_memory_enc_pgtable(uns
+>   	return ret;
+>   }
 >   
->   static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
+> + static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> + {
+> + 	if (hv_is_isolation_supported())
+> + 		return hv_set_mem_host_visibility(addr, numpages, !enc);
+> + 
+>  -	if (mem_encrypt_active())
+> ++	if (cc_platform_has(CC_ATTR_MEM_ENCRYPT))
+> + 		return __set_memory_enc_pgtable(addr, numpages, enc);
+> + 
+> + 	return 0;
+> + }
+> + 
+>   int set_memory_encrypted(unsigned long addr, int numpages)
 >   {
-> -	unsigned long cpu;
-> +	int cpu;
+>   	return __set_memory_enc_dec(addr, numpages, true);
 
-Why not `long cpu`?
+Looks good, thanks.
 
->   	int err = 0;
->   
->   	/*
-> 
+Wei, you could mention this conflict when sending to Linus or you can
+simply merge into your branch the tip branch tip:x86/cc which has the
+cc_platform_has() changes and then redo the isolation VM stuff ontop.
 
+HTH.
 
-Kind regards,
+-- 
+Regards/Gruss,
+    Boris.
 
-Paul
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
