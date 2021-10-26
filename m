@@ -2,86 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8621143ACAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5949A43ACB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhJZHMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:12:13 -0400
-Received: from www381.your-server.de ([78.46.137.84]:35550 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhJZHML (ORCPT
+        id S232350AbhJZHMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:12:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35894 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232774AbhJZHMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:12:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=bAiPxkcq1Y6Mqy9Co7oacNf9Gp/96uAvHuTosH8SVn8=; b=e6ySv/d3AfLHaWHUfsV1w+aD1f
-        aJ64bJG+MTy+J6h4GZTZnz2Ro34fWref2PVQWpPVhI302oVkjWts7qDmKb8r2t7pIhD0JJkC9q/Cd
-        KCuZ41I/4hj0SBwqDqkseCyaBkZYZd2AN62DFvlPHrrKl4t6/Xl/EPo1z9TCr9rBdCTtv4rS+Fiom
-        uzg9KxN2Qdd3xj3iBs18uJJhqyQCkRRsmuKubV1s83GqhR9hQB/+GBB9a2DXpXA1j9aKKRpUwEQ6/
-        ML5oPt/CMqFC6pDjPbmo75oATVYKjD/zgfilruen4XM1eNA2UbU9TACT92VeJFs88jlIjn1q5K2gy
-        7sqIW8mA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mfGaf-000DW6-3j; Tue, 26 Oct 2021 09:09:45 +0200
-Received: from [82.135.83.71] (helo=[192.168.178.20])
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mfGae-000UaZ-R6; Tue, 26 Oct 2021 09:09:44 +0200
-Subject: Re: [PATCH v7 2/4] iio: adc: Add Xilinx AMS driver
-To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>,
-        linux-kernel@vger.kernel.org, jic23@kernel.org,
-        linux-iio@vger.kernel.org, git@xilinx.com, michal.simek@xilinx.com,
-        pmeerw@pmeerw.net, devicetree@vger.kernel.org
-Cc:     Manish Narani <manish.narani@xilinx.com>
-References: <20211019152048.28983-1-anand.ashok.dumbre@xilinx.com>
- <20211019152048.28983-3-anand.ashok.dumbre@xilinx.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <03afaedd-8ea5-0379-ac98-db61ac679259@metafoo.de>
-Date:   Tue, 26 Oct 2021 09:09:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 03:12:41 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id EEE3C1FCA3;
+        Tue, 26 Oct 2021 07:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635232213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=abo5tucNIoMTysJZzSXI3u3r6is4Z+PDnULG9NIIR1E=;
+        b=WBiLjW4mCjxpk1SzazwX8gSR15CUANeCGNaTANA4K+956fhef07akKRg1O2GSY80mMaVom
+        OU6QNDBf20tVJpKkynojo3OxgqTJ3AdobvPUnrw7ILjgOmcqK67itw77DyNuvrYDECGH5B
+        KPsHb1I13TWLuvxFm4FnnqxiQa1Hq1c=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BF209A3B88;
+        Tue, 26 Oct 2021 07:10:13 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 09:10:13 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH 3/4] mm/vmalloc: be more explicit about supported gfp
+ flags.
+Message-ID: <YXep1ctN1wPP+1a8@dhcp22.suse.cz>
+References: <20211025150223.13621-1-mhocko@kernel.org>
+ <20211025150223.13621-4-mhocko@kernel.org>
+ <163520436674.16092.18372437960890952300@noble.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <20211019152048.28983-3-anand.ashok.dumbre@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26333/Mon Oct 25 10:29:40 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163520436674.16092.18372437960890952300@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/21 5:20 PM, Anand Ashok Dumbre wrote:
-> [...]
-> +#define AMS_CHAN_TEMP(_scan_index, _addr) { \
-> +	.type = IIO_TEMP, \
-> +	.indexed = 1, \
-> +	.address = (_addr), \
-> +	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | \
-> +		BIT(IIO_CHAN_INFO_SCALE) | \
-> +		BIT(IIO_CHAN_INFO_OFFSET), \
-> +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ), \
-There is no handling of IIO_CHAN_INFO_SAMP_FREQ in read_raw(). Reading 
-the sampling_frequency attribute always returns -EINVAL.
-> +	.event_spec = ams_temp_events, \
-> +	.scan_index = _scan_index, \
-> +	.num_event_specs = ARRAY_SIZE(ams_temp_events), \
-> +}
-> +
-> +#define AMS_CHAN_VOLTAGE(_scan_index, _addr, _alarm) { \
-> +	.type = IIO_VOLTAGE, \
-> +	.indexed = 1, \
-> +	.address = (_addr), \
-> +	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | \
-> +		BIT(IIO_CHAN_INFO_SCALE), \
-> +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ), \
-> +	.event_spec = (_alarm) ? ams_voltage_events : NULL, \
-> +	.scan_index = _scan_index, \
-> +	.num_event_specs = (_alarm) ? ARRAY_SIZE(ams_voltage_events) : 0, \
-> +}
+On Tue 26-10-21 10:26:06, Neil Brown wrote:
+> On Tue, 26 Oct 2021, Michal Hocko wrote:
+> > From: Michal Hocko <mhocko@suse.com>
+> > 
+> > The core of the vmalloc allocator __vmalloc_area_node doesn't say
+> > anything about gfp mask argument. Not all gfp flags are supported
+> > though. Be more explicit about constrains.
+> > 
+> > Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > ---
+> >  mm/vmalloc.c | 12 ++++++++++--
+> >  1 file changed, 10 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 602649919a9d..2199d821c981 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -2980,8 +2980,16 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> >   * @caller:		  caller's return address
+> >   *
+> >   * Allocate enough pages to cover @size from the page level
+> > - * allocator with @gfp_mask flags.  Map them into contiguous
+> > - * kernel virtual space, using a pagetable protection of @prot.
+> > + * allocator with @gfp_mask flags. Please note that the full set of gfp
+> > + * flags are not supported. GFP_KERNEL would be a preferred allocation mode
+> > + * but GFP_NOFS and GFP_NOIO are supported as well. Zone modifiers are not
+> 
+> In what sense is GFP_KERNEL "preferred"??
+> The choice of GFP_NOFS, when necessary, isn't based on preference but
+> on need.
+> 
+> I understand that you would prefer no one ever used GFP_NOFs ever - just
+> use the scope API.  I even agree.  But this is not the place to make
+> that case. 
+
+Any suggestion for a better wording?
+
+> > + * supported. From the reclaim modifiers__GFP_DIRECT_RECLAIM is required (aka
+> > + * GFP_NOWAIT is not supported) and only __GFP_NOFAIL is supported (aka
+> 
+> I don't think "aka" is the right thing to use here.  It is short for
+> "also known as" and there is nothing that is being known as something
+> else.
+> It would be appropriate to say (i.e. GFP_NOWAIT is not supported).
+> "i.e." is short for the Latin "id est" which means "that is" and
+> normally introduces an alternate description (whereas aka introduces an
+> alternate name).
+
+OK
+ 
+> > + * __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported).
+> 
+> Why do you think __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported.
+
+Because they cannot be passed to the page table allocator. In both cases
+the allocation would fail when system is short on memory. GFP_KERNEL
+used for ptes implicitly doesn't behave that way.
+
+> 
+> > + * __GFP_NOWARN can be used to suppress error messages about failures.
+> 
+> Surely "NOWARN" suppresses warning messages, not error messages ....
+
+I am not sure I follow. NOWARN means "do not warn" independently on the
+log level chosen for the message. Is an allocation failure an error
+message? Is the "vmalloc error: size %lu, failed to map pages" an error
+message?
+
+Anyway I will go with "__GFP_NOWARN can be used to suppress failure messages"
+
+Is that better?
+-- 
+Michal Hocko
+SUSE Labs
