@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F23543B453
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1431443B469
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbhJZOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:38:30 -0400
-Received: from smtp122.ord1d.emailsrvr.com ([184.106.54.122]:44071 "EHLO
-        smtp122.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236737AbhJZOiK (ORCPT
+        id S236786AbhJZOkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234327AbhJZOkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:38:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1635258945;
-        bh=09DsGG934eAWsrYgTTEyogH6LDSB0Wo6kjXmpIsK7zo=;
-        h=Subject:To:From:Date:From;
-        b=JpjX7COpm49F29ojHTexC79WPHa556bgJ5jztCzQpSSC582AAjYzf2ZmZKKdHBw9Z
-         svRdanUjfO+1Uo7MDJoKJFReOCwIIZdQ6wP4y8qp25/U8LE/G/rdPY2liRUPksdW8U
-         Y5Aih6iGtHIgsYv08SkS+wlrY68w1s7buDSb5bNE=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp8.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 05104C0184;
-        Tue, 26 Oct 2021 10:35:44 -0400 (EDT)
-Subject: Re: [PATCH 5/5] comedi: vmk80xx: fix bulk and interrupt message
- timeouts
-To:     Johan Hovold <johan@kernel.org>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20211025114532.4599-1-johan@kernel.org>
- <20211025114532.4599-6-johan@kernel.org>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <fb1c3dcd-39cd-d4e2-e6f5-061dad6b2751@mev.co.uk>
-Date:   Tue, 26 Oct 2021 15:35:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 10:40:31 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2921C061745;
+        Tue, 26 Oct 2021 07:38:06 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id l7so17480346iln.8;
+        Tue, 26 Oct 2021 07:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mz5oUK/oK3BVMLZWJgHWXHDF3nQYv6jCeATw+GykwaI=;
+        b=kQN4aD+XkvJTvy6+aMGUG/W7WLHjbdFpS4DETJrVPT1WmFGYqgswEF6umeQi5ybXtW
+         uEOkT7dXmR6mOXcb9Ts8GdQNkPnvPVAWeWR7HJLgBHMOVu+LvoDzR1EFTlqzzJiQEEBM
+         zdYZqh9dzAFwQlOuQ+LR8VfDGbSXCddW8gqzthN2MT5iljk7i3ttSNWxcJNWbAoEBfOg
+         ZETI3PD/sJjPQrRUyD7FAFYLb7XKX6DbgTrtPOmpLdpNLRi1MM1SMYSXTuThVpfrrZ6I
+         /j1zB7kS3aKtrPrLNvtg9R21g8Pf309GM2if3InRS7Vuk/nsv8DB/66VIAMwHJqMsa1R
+         0+Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mz5oUK/oK3BVMLZWJgHWXHDF3nQYv6jCeATw+GykwaI=;
+        b=B0tsXZkvxHxU8gHvBT9nW4/66Axqt8XgaxUP3eJAOfJB1mZoQguEgNTxhRmCZ5ogi1
+         fLk1klYlQP3VSxWw1Sew/dhYYYljDhGTZ0fAyqrY1Qb4mvo35gbaYzyxXwikPDRVSYXj
+         UlSSVKwKkHUSW7lBTsjAub2c1rzSb8hAVSYL4rvH4Bf/lqcpgwlikJ19ufrxcBhh1br7
+         nHOHEYbhHffEczKGTyuihta9GX/tUQZSWr8WFrJHYW0IOItgcEEe3hVP4nWWFgeIxDOZ
+         eO4aNA2UE1GJG5OfouyvHr7jL+seyVTd9wrPpP+Z3pzZHEELpTYwuoJmj+CJ3f2glh1/
+         8QSA==
+X-Gm-Message-State: AOAM531rftnMaBtg7OCHNJDjlM9ZLEL48S8DaLWcZKm0HS6X/X0Uyhhe
+        g23PAoI0mJCY7v/NrKTfWKl5M0+ufoYC/ByEKZbfj8ZnZIc=
+X-Google-Smtp-Source: ABdhPJxV/vbN+puYn48rGotFmTAILT3LqA59R0OhV2ggXxFeFbQFI7FcwY00+hdnXdoPGhJLJXcJ7StYrBkvoSADM0Y=
+X-Received: by 2002:a92:d3d1:: with SMTP id c17mr14547328ilh.319.1635259086168;
+ Tue, 26 Oct 2021 07:38:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211025114532.4599-6-johan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 2f3175d9-b0e8-4937-a8e3-a5d800e9b366-1-1
+References: <20211025204634.2517-1-iangelak@redhat.com> <20211025204634.2517-6-iangelak@redhat.com>
+In-Reply-To: <20211025204634.2517-6-iangelak@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 26 Oct 2021 17:37:55 +0300
+Message-ID: <CAOQ4uxikoipcS9g6ShSovBUN+N=+CZGeKc0J27YQO3LYqcdLnA@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/7] Fsnotify: Add a wrapper around the fsnotify function
+To:     Ioannis Angelakopoulos <iangelak@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 12:45, Johan Hovold wrote:
-> USB bulk and interrupt message timeouts are specified in milliseconds
-> and should specifically not vary with CONFIG_HZ.
-> 
-> Note that the bulk-out transfer timeout was set to the endpoint
-> bInterval value, which should be ignored for bulk endpoints and is
-> typically set to zero. This meant that a failing bulk-out transfer
-> would never time out.
-> 
-> Assume that the 10 second timeout used for all other transfers is more
-> than enough also for the bulk-out endpoint.
-> 
-> Fixes: 985cafccbf9b ("Staging: Comedi: vmk80xx: Add k8061 support")
-> Fixes: 951348b37738 ("staging: comedi: vmk80xx: wait for URBs to complete")
-> Cc: stable@vger.kernel.org      # 2.6.31
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+On Mon, Oct 25, 2021 at 11:47 PM Ioannis Angelakopoulos
+<iangelak@redhat.com> wrote:
+>
+> Generally, inotify events are generated locally by calling the "fsnotify"
+> function in fs/notify/fsnotify.c and various helper functions. However, now
+> we expect events to arrive from the FUSE server. Thus, without any
+> intervention a user space application will receive two events. One event is
+> generated locally and one arrives from the server.
+>
+> Hence, to avoid duplicate events we need to "suppress" the local events
+> generated by the guest kernel for FUSE inodes. To achieve this we add a
+> wrapper around the "fsnotify" function in fs/notify/fsnotify.c that
+> checks if the remote inotify is enabled and based on the check either it
+> "suppresses" or lets through a local event.
+>
+> The wrapper will be called in the place of the original "fsnotify" call
+> that is responsible for the event notification (now renamed as
+> "__fsnotify").
+>
+> When the remote inotify is not enabled, all local events will be let
+> through as expected. This process is completely transparent to user space.
+>
+> Signed-off-by: Ioannis Angelakopoulos <iangelak@redhat.com>
 > ---
->   drivers/comedi/drivers/vmk80xx.c | 12 +++++++-----
->   1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
-> index 9c56918e3b76..4b00a9ea611a 100644
-> --- a/drivers/comedi/drivers/vmk80xx.c
-> +++ b/drivers/comedi/drivers/vmk80xx.c
-> @@ -91,6 +91,7 @@ enum {
->   #define IC6_VERSION		BIT(1)
->   
->   #define MIN_BUF_SIZE		64
-> +#define PACKET_TIMEOUT		10000	/* ms */
->   
->   enum vmk80xx_model {
->   	VMK8055_MODEL,
-> @@ -169,10 +170,11 @@ static void vmk80xx_do_bulk_msg(struct comedi_device *dev)
->   	tx_size = usb_endpoint_maxp(devpriv->ep_tx);
->   	rx_size = usb_endpoint_maxp(devpriv->ep_rx);
->   
-> -	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf,
-> -		     tx_size, NULL, devpriv->ep_tx->bInterval);
-> +	usb_bulk_msg(usb, tx_pipe, devpriv->usb_tx_buf, tx_size, NULL,
-> +		     PACKET_TIMEOUT);
->   
-> -	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL, HZ * 10);
-> +	usb_bulk_msg(usb, rx_pipe, devpriv->usb_rx_buf, rx_size, NULL,
-> +		     PACKET_TIMEOUT);
->   }
->   
->   static int vmk80xx_read_packet(struct comedi_device *dev)
-> @@ -191,7 +193,7 @@ static int vmk80xx_read_packet(struct comedi_device *dev)
->   	pipe = usb_rcvintpipe(usb, ep->bEndpointAddress);
->   	return usb_interrupt_msg(usb, pipe, devpriv->usb_rx_buf,
->   				 usb_endpoint_maxp(ep), NULL,
-> -				 HZ * 10);
-> +				 PACKET_TIMEOUT);
->   }
->   
->   static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
-> @@ -212,7 +214,7 @@ static int vmk80xx_write_packet(struct comedi_device *dev, int cmd)
->   	pipe = usb_sndintpipe(usb, ep->bEndpointAddress);
->   	return usb_interrupt_msg(usb, pipe, devpriv->usb_tx_buf,
->   				 usb_endpoint_maxp(ep), NULL,
-> -				 HZ * 10);
-> +				 PACKET_TIMEOUT);
->   }
->   
->   static int vmk80xx_reset_device(struct comedi_device *dev)
-> 
+>  fs/notify/fsnotify.c             | 35 ++++++++++++++++++++++++++++++--
+>  include/linux/fsnotify_backend.h | 14 ++++++++++++-
+>  2 files changed, 46 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index 963e6ce75b96..848a824c29c4 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -440,7 +440,7 @@ static void fsnotify_iter_next(struct fsnotify_iter_info *iter_info)
+>  }
+>
+>  /*
+> - * fsnotify - This is the main call to fsnotify.
+> + * __fsnotify - This is the main call to fsnotify.
+>   *
+>   * The VFS calls into hook specific functions in linux/fsnotify.h.
+>   * Those functions then in turn call here.  Here will call out to all of the
+> @@ -459,7 +459,7 @@ static void fsnotify_iter_next(struct fsnotify_iter_info *iter_info)
+>   *             if both are non-NULL event may be reported to both.
+>   * @cookie:    inotify rename cookie
+>   */
+> -int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
+> +int __fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
+>              const struct qstr *file_name, struct inode *inode, u32 cookie)
+>  {
+>         const struct path *path = fsnotify_data_path(data, data_type);
+> @@ -552,6 +552,37 @@ int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
+>
+>         return ret;
+>  }
+> +
+> +/*
+> + * Wrapper around fsnotify. The main functionality is to filter local events in
+> + * case the inode belongs to a filesystem that supports remote events
+> + */
+> +int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
+> +            const struct qstr *file_name, struct inode *inode, u32 cookie)
+> +{
+> +
+> +       if (inode != NULL || dir != NULL) {
+> +               /*
+> +                * Check if the fsnotify_event operation is available which
+> +                * will let the remote inotify events go through and suppress
+> +                * the local events
+> +                */
+> +               if (inode && inode->i_op->fsnotify_event) {
+> +                       return inode->i_op->fsnotify_event(mask, data,
+> +                                                          data_type, dir,
+> +                                                          file_name, inode,
+> +                                                          cookie);
+> +               }
+> +               if (dir && dir->i_op->fsnotify_event) {
+> +                       return dir->i_op->fsnotify_event(mask, data,
+> +                                                        data_type, dir,
+> +                                                        file_name, inode,
+> +                                                        cookie);
+> +               }
+> +       }
+> +
 
-Looks good, thanks!
+That's not the way to accomplish what you want to do.
 
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Assuming that we agree to let filesystem silence VFS fsnotify hooks
+it should be done using an inode flag, similar to file flag FMODE_NONOTIFY.
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+But the reason you want to do that seems a bit odd.
+Duplicate events are going to be merged with fanotify and I think that
+you ruled out fanotify for the wrong reasons
+(you should have only ruled out permission events)
+
+Thanks,
+Amir.
