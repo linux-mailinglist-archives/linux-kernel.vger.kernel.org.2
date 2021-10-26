@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F1643A8FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 02:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4BA43A8FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 02:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235663AbhJZAEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 20:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S235963AbhJZAE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 20:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235693AbhJZAD0 (ORCPT
+        with ESMTP id S235697AbhJZAD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 20:03:26 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCC8C061243
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:01:02 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id f5so12251954pgc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:01:02 -0700 (PDT)
+        Mon, 25 Oct 2021 20:03:27 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835CBC061224
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:01:03 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id f5so12251982pgc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SfmZAoSN1UYJWac68o+RmufoyphUhdu5prdrSebp+yc=;
-        b=Mpvt6TZqBJRjjpQueNxpmUOJ/CuHCPf3g57W5nKE4F6VDMbDyu4dhn3uzf/zJu2HoD
-         HYPHTESFuoQPQ/vTZtliG3cDTOHLv5VXBkOcN/ec5j8HsNjVn8ADoZeIsVujQHf9TFT3
-         VPxGTWoSrkHT8HeS1x5yN8nsoANr0l+Gcp1iQ=
+        bh=5Xg9zrUyKFMa3ddbem3zPmmRQ2IkXwWBatRdclbFjwA=;
+        b=X+qIwuMITz6qKYQulA551uMYxR8jlZgi8Db5cvWB3HBwUrd3DvVFN2hlELtd3puyiy
+         Ww1WqQqWkyJNVSY8STnESySzdjIyVTwTccUSZMhpSSkbO117dO+9sqLyJaNkB+NtjZsn
+         QMPPk6RaLEZ10FxQZ2hMHJxkO7EZWoksXQ/5E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SfmZAoSN1UYJWac68o+RmufoyphUhdu5prdrSebp+yc=;
-        b=6G8WPRR58LmODTVYZG5yhFDPyAdLIlcyWg9/J/JlrHDySGoFLNiYgd9Wu2nXTtfWb8
-         /X4TvM2QEjCVCrJZUSKjrM347GGOR1B8RJIP5Tk+D3Te0OIfkQ7/y5ON0OJ4M4k6utqX
-         Pd4XmdRZm43tcsedMQ7vdrxE9Kvu8AgiMyuE+wTXXUYCXP02NITowb04AYw5IWSrRelC
-         +bYI1yP1h0t1sRiR/K+WfRNJ7qebZaZ2ZXG0zavo7wAtv/uDT+VReQL2sqMJehD2vv32
-         GGeh8m1pLzc6+QMuTUhYKa52jKnazLqZdCrs5lw/4jrOjOw7SWyVAWs/I2v60VNQnN4k
-         2d1A==
-X-Gm-Message-State: AOAM531Pl1FkIpQZnDQkItE8v5AuRc9WXLWz28gZ4V1PrcjkBa9oSwKB
-        fEMmZSvstb51hXgfi+GZ/2o4Ng==
-X-Google-Smtp-Source: ABdhPJzoTsDymuGkAscyrEmo2xwB1uYCO2fe1f91WYkrzlJ++iMBXIbSeP8G+Pno+4D5KBVt1XjAuA==
-X-Received: by 2002:aa7:8c0d:0:b0:47b:dc76:38c1 with SMTP id c13-20020aa78c0d000000b0047bdc7638c1mr16798377pfd.22.1635206462140;
+        bh=5Xg9zrUyKFMa3ddbem3zPmmRQ2IkXwWBatRdclbFjwA=;
+        b=jqnz5wgnH/zRPtvF7cnQ7UMoUCrIk1nQSz8xwiG4eY0uQXMyud075zrtFKsVbgO4UD
+         HYhPz1v2yQEng9GR3/+Mh0f2Z6CMlSC/WUQNyFWslsom57pN99WiFNAIUiDFLNlS1bJC
+         kh8S5OJb1r9F8dvOglyPo+bvWKhery/FcaJc+e9D1cMojISvCacYOCC77HOASwI8U9C/
+         av8D8Q3SHdKrLTgaUXbYB7yVlSgTWxMVBgTAv1FvHVPfu3l7opZ//rPObBRK6kz3lvu9
+         q3itSSEx5T6ZyvHjMownXQ81xPFMkfntQ68xxYnUXoWiwFH2wMqXyJ/rBuJLw9Ech5H0
+         d0FQ==
+X-Gm-Message-State: AOAM533QPh/69E9KVFnBdgPU8Zj6QDAY6p01CGqtqlUqbCKja4AKOiMN
+        m9wAZiP0EKqWAtmlAEt/vVUpNw==
+X-Google-Smtp-Source: ABdhPJzbX7RPHuR4HDgzeUFNvnhN67eizAx7LkYEUmVqp2zteJi/RHEY1pIzsIFJ6ZJOOv9SAGyaDQ==
+X-Received: by 2002:a63:35cd:: with SMTP id c196mr13974325pga.284.1635206462978;
         Mon, 25 Oct 2021 17:01:02 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:f5e3:5eb1:d5ee:6893])
-        by smtp.gmail.com with ESMTPSA id b7sm9900747pfm.28.2021.10.25.17.01.01
+        by smtp.gmail.com with ESMTPSA id b7sm9900747pfm.28.2021.10.25.17.01.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 17:01:01 -0700 (PDT)
+        Mon, 25 Oct 2021 17:01:02 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Clark <robdclark@gmail.com>,
         Russell King <rmk+kernel@arm.linux.org.uk>,
         Saravana Kannan <saravanak@google.com>
-Subject: [PATCH v3 18/34] drm/mediatek: Migrate to aggregate driver
-Date:   Mon, 25 Oct 2021 17:00:28 -0700
-Message-Id: <20211026000044.885195-19-swboyd@chromium.org>
+Subject: [PATCH v3 19/34] drm/meson: Migrate to aggregate driver
+Date:   Mon, 25 Oct 2021 17:00:29 -0700
+Message-Id: <20211026000044.885195-20-swboyd@chromium.org>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 In-Reply-To: <20211026000044.885195-1-swboyd@chromium.org>
 References: <20211026000044.885195-1-swboyd@chromium.org>
@@ -72,8 +71,7 @@ Use an aggregate driver instead of component ops so that we can get
 proper driver probe ordering of the aggregate device with respect to all
 the component devices that make up the aggregate device.
 
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
 Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
 Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: Rob Clark <robdclark@gmail.com>
@@ -81,70 +79,60 @@ Cc: Russell King <rmk+kernel@arm.linux.org.uk>
 Cc: Saravana Kannan <saravanak@google.com>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/meson/meson_drv.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index aec39724ebeb..a3f27b8c9769 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -348,8 +348,9 @@ static int compare_of(struct device *dev, void *data)
- 	return dev->of_node == data;
- }
- 
--static int mtk_drm_bind(struct device *dev)
-+static int mtk_drm_bind(struct aggregate_device *adev)
- {
-+	struct device *dev = adev->parent;
- 	struct mtk_drm_private *private = dev_get_drvdata(dev);
- 	struct drm_device *drm;
- 	int ret;
-@@ -380,8 +381,9 @@ static int mtk_drm_bind(struct device *dev)
+diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+index bc0d60df04ae..109fb9d057e3 100644
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -357,13 +357,16 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
  	return ret;
  }
  
--static void mtk_drm_unbind(struct device *dev)
-+static void mtk_drm_unbind(struct aggregate_device *adev)
+-static int meson_drv_bind(struct device *dev)
++static int meson_drv_bind(struct aggregate_device *adev)
  {
 +	struct device *dev = adev->parent;
- 	struct mtk_drm_private *private = dev_get_drvdata(dev);
- 
- 	drm_dev_unregister(private->drm);
-@@ -391,9 +393,13 @@ static void mtk_drm_unbind(struct device *dev)
- 	private->drm = NULL;
++
+ 	return meson_drv_bind_master(dev, true);
  }
  
--static const struct component_master_ops mtk_drm_ops = {
--	.bind		= mtk_drm_bind,
--	.unbind		= mtk_drm_unbind,
-+static struct aggregate_driver mtk_drm_aggregate_driver = {
-+	.probe		= mtk_drm_bind,
-+	.remove		= mtk_drm_unbind,
-+	.driver		= {
-+		.name	= "mtk_drm",
-+		.owner	= THIS_MODULE,
+-static void meson_drv_unbind(struct device *dev)
++static void meson_drv_unbind(struct aggregate_device *adev)
+ {
++	struct device *dev = adev->parent;
+ 	struct meson_drm *priv = dev_get_drvdata(dev);
+ 	struct drm_device *drm = priv->drm;
+ 
+@@ -387,9 +390,13 @@ static void meson_drv_unbind(struct device *dev)
+ 	}
+ }
+ 
+-static const struct component_master_ops meson_drv_master_ops = {
+-	.bind	= meson_drv_bind,
+-	.unbind	= meson_drv_unbind,
++static struct aggregate_driver meson_aggregate_drv = {
++	.probe	= meson_drv_bind,
++	.remove	= meson_drv_unbind,
++	.driver = {
++		.name = "meson_drm",
++		.owner = THIS_MODULE,
 +	},
  };
  
- static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
-@@ -593,7 +599,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
+ static int __maybe_unused meson_drv_pm_suspend(struct device *dev)
+@@ -503,9 +510,7 @@ static int meson_drv_probe(struct platform_device *pdev)
+ 	if (count) {
+ 		dev_info(&pdev->dev, "Queued %d outputs on vpu\n", count);
  
- 	platform_set_drvdata(pdev, private);
+-		return component_master_add_with_match(&pdev->dev,
+-						       &meson_drv_master_ops,
+-						       match);
++		return component_aggregate_register(&pdev->dev, &meson_aggregate_drv, match);
+ 	}
  
--	ret = component_master_add_with_match(dev, &mtk_drm_ops, match);
-+	ret = component_aggregate_register(dev, &mtk_drm_aggregate_driver, match);
- 	if (ret)
- 		goto err_pm;
- 
-@@ -616,7 +622,7 @@ static int mtk_drm_remove(struct platform_device *pdev)
- 	struct mtk_drm_private *private = platform_get_drvdata(pdev);
- 	int i;
- 
--	component_master_del(&pdev->dev, &mtk_drm_ops);
-+	component_aggregate_unregister(&pdev->dev, &mtk_drm_aggregate_driver);
- 	pm_runtime_disable(&pdev->dev);
- 	of_node_put(private->mutex_node);
- 	for (i = 0; i < DDP_COMPONENT_ID_MAX; i++)
+ 	/* If no output endpoints were available, simply bail out */
 -- 
 https://chromeos.dev
 
