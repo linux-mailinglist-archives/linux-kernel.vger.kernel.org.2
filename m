@@ -2,159 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB8A43A9F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1A543A9FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhJZBze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 21:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S231462AbhJZB5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbhJZBzd (ORCPT
+        with ESMTP id S230136AbhJZB5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:55:33 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7DFC061745;
-        Mon, 25 Oct 2021 18:53:10 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id e144so18110182iof.3;
-        Mon, 25 Oct 2021 18:53:10 -0700 (PDT)
+        Mon, 25 Oct 2021 21:57:37 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2FBC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:55:14 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id x123so13724866qke.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:55:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pTf4FChHrUD4zN63gzg0O6ODWycwCgp30B2Xd0Glbns=;
-        b=EWg2KyQmct77jHNB7+PnJsR5QYD0vdGQG84gJNTqxm35zMsLVcN4d4NUAshVPeb0Xu
-         a5c7tarSqasBeJQYH9r5mY8NKwzU3zla+91ow63jEb7FV8hb6VOXvwDWX7rIjm196ic5
-         tj+uiO6RPpHmP1SfiDg4xSd0u+ECMvc6XqgFWIX7Q1gzlzGSjaTLGpQ0jICGmVt3ej+/
-         eE+3QE61HjbTv2yTVo3bsR+st1KnKvUsWNfq91bUp5D4eS9PqSJ/LeG0aU3efIlUaydl
-         y3qpBqrRK0evrLS49KyFPfMRUl/cnyWe8uaO9815cS3NRcLREF+xmXXDlOfrOws/VHWq
-         rqaw==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=mCnwnbPbhYcrF9QBa5LUo8e7y29tVyuzmG2cawteQCA=;
+        b=olTS1hbEonbFLujA4x2P8XYUAvZ7BmbseWok6MxtRkkecckkwKz0CEcHcKTIFXqAD1
+         HysBjR0qkBfUHxMdYr2Xq5WICeG/B9+27ROdTcp0AvFcS0g4Panq/rOvWzZ2TmhkTOXG
+         lSJNmzpWOQeUmYVpALraWJDQWLuUknFeO6s2pGwmj3D2HA6DehAJ7vias+zNbYSCewk1
+         t7w4J7gvXmEP+Bv2hY6sasrL+NEZ/KwUlrLQqJNmU9pfR9B8LF4M7no6jIPjIBosEvfP
+         akouqDz9bsBhAcLG0UbstP7ZEIAFG1yuS2OO+gWrMUchRrdLVCvwNZPt4kSFnpe7FKZl
+         vh6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pTf4FChHrUD4zN63gzg0O6ODWycwCgp30B2Xd0Glbns=;
-        b=xsmhhFASi9czsUNHaWocg8NunUgNyoQzX6vjDQQaGAdI3AqMfqKFVL180ocXZJq4V9
-         8W6dnQBagWKv++JzR4lG9xWa7N0aJoNsVV8mAOm9z/XS+6NzYyH7xr0ycHfSYfEmoxud
-         Mdfhp5fJnFgFV7ike+u0PZCTJEGZagSrnHZykr25IIfDR7cy2FSlTKxH7KiDL4ujSmCD
-         +02VBfieWl7pB2iieUkuCcLMif1LtwEwfQ3n/7DbqRnhMURycQUx45TMFB4D+OVmled+
-         mDJvmT+z1HDIcxJvMZgzojBWQuca6GZZr97b7piE9tnkFsp+7iGqf24ovd3kH1vbBwow
-         lmEA==
-X-Gm-Message-State: AOAM533XIB9zFCHsNTW+Ic3uD1jyXRLIX18DOtkUALS3u9nYS2brtaDW
-        uTmWyZmKTMoLgqrMJL1fJjFe92fPaMNPhG9EdXw=
-X-Google-Smtp-Source: ABdhPJyIryqDVwlMvG5xY1qfmY9kjdTWxMdRzXGeuyZ0FRySrojjoK8/YOgWLBMhL8M3gQrLG+9seph0tIe9uWJHhj0=
-X-Received: by 2002:a02:a483:: with SMTP id d3mr3861810jam.23.1635213189854;
- Mon, 25 Oct 2021 18:53:09 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=mCnwnbPbhYcrF9QBa5LUo8e7y29tVyuzmG2cawteQCA=;
+        b=OvFQnykpEsPP7WGTm404+YE9uY/Ip21NluY/SMOSTeaY2CCIVPj7ez1KRM3X8WBEEk
+         JCVfhnW7c/V1FXuE45M0nbHwBLHTJBuNH1gMN105UXQQTWbshynNF2xMxv6oodqEP1RA
+         FyKFms+tEyVxlircvLJ3htLpP6K1L6lzG6rgW3boOH5kVpTskFmBRdNUCEtpYsSgdcJt
+         IM2OvtrRl6te98QlNPrr/eOJXx1Pg9rJD1Xvc0MWuJisDm8G0WFRPM206Y9mjU6o3WP5
+         VcTlVp4q6cet9DNRiVKfPu7O4s3G14pQMV43PbGtbXAoOH95Qq1qWGiUTaHtxRfitzBr
+         Se9w==
+X-Gm-Message-State: AOAM533JIUuAaBj5cDbgpCVFPYzZDY8tB1l3Vs7wA0+JVkB+SmHke9/t
+        Hv2Kd+ftRKOU+0BO/gPBP14=
+X-Google-Smtp-Source: ABdhPJwolSe/hyU6zweo2PfHcxsIbYIwTjHsxR3G5XrXvY2VF2DpbOrilwEvBsvaMiIxs6LTirOehA==
+X-Received: by 2002:a05:620a:25ce:: with SMTP id y14mr4685253qko.66.1635213313158;
+        Mon, 25 Oct 2021 18:55:13 -0700 (PDT)
+Received: from ?IPV6:2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1? ([2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1])
+        by smtp.gmail.com with ESMTPSA id b2sm9291563qtg.88.2021.10.25.18.55.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 18:55:12 -0700 (PDT)
+Message-ID: <f0b28cb6-be34-9b78-844c-0913592fe5f9@gmail.com>
+Date:   Mon, 25 Oct 2021 18:55:09 -0700
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-5-laoar.shao@gmail.com>
- <202110251415.9AD37837@keescook>
-In-Reply-To: <202110251415.9AD37837@keescook>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 26 Oct 2021 09:52:34 +0800
-Message-ID: <CALOAHbDyo1H7hg__h+aCHCa-BZX5z=wtfM+cc+gNSj+4U9nRUQ@mail.gmail.com>
-Subject: Re: [PATCH v6 04/12] drivers/infiniband: make setup_ctxt always get a
- nul terminated task comm
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [RESEND 0/5] ARM/arm64: arm_pm_restart removal
+Content-Language: en-US
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        lorenzo.pieralisi@arm.com, sstabellini@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wsa+renesas@sang-engineering.com, treding@nvidia.com,
+        arnd@arndb.de, xen-devel@lists.xenproject.org,
+        patches@armlinux.org.uk
+References: <20210604140357.2602028-1-lee.jones@linaro.org>
+ <526fe66f-df08-c873-2a20-f1295e30a855@gmail.com>
+ <a4fe088f-0f13-f80f-5011-4eee2d44ef63@gmail.com>
+ <321b167f-8744-9ca8-58b0-e09ff39dfa02@roeck-us.net>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <321b167f-8744-9ca8-58b0-e09ff39dfa02@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 5:16 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Oct 25, 2021 at 08:33:07AM +0000, Yafang Shao wrote:
-> > Use strscpy_pad() instead of strlcpy() to make the comm always nul
-> > terminated. As the comment above the hard-coded 16, we can replace it
-> > with TASK_COMM_LEN, then it will adopt to the comm size change.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  drivers/infiniband/hw/qib/qib.h          | 2 +-
-> >  drivers/infiniband/hw/qib/qib_file_ops.c | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/qib/qib.h b/drivers/infiniband/hw/qib/qib.h
-> > index 9363bccfc6e7..a8e1c30c370f 100644
-> > --- a/drivers/infiniband/hw/qib/qib.h
-> > +++ b/drivers/infiniband/hw/qib/qib.h
-> > @@ -196,7 +196,7 @@ struct qib_ctxtdata {
-> >       pid_t pid;
-> >       pid_t subpid[QLOGIC_IB_MAX_SUBCTXT];
-> >       /* same size as task_struct .comm[], command that opened context */
-> > -     char comm[16];
-> > +     char comm[TASK_COMM_LEN];
-> >       /* pkeys set by this use of this ctxt */
-> >       u16 pkeys[4];
-> >       /* so file ops can get at unit */
-> > diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
-> > index 63854f4b6524..7ab2b448c183 100644
-> > --- a/drivers/infiniband/hw/qib/qib_file_ops.c
-> > +++ b/drivers/infiniband/hw/qib/qib_file_ops.c
-> > @@ -1321,7 +1321,7 @@ static int setup_ctxt(struct qib_pportdata *ppd, int ctxt,
-> >       rcd->tid_pg_list = ptmp;
-> >       rcd->pid = current->pid;
-> >       init_waitqueue_head(&dd->rcd[ctxt]->wait);
-> > -     strlcpy(rcd->comm, current->comm, sizeof(rcd->comm));
-> > +     strscpy_pad(rcd->comm, current->comm, sizeof(rcd->comm));
->
-> This should use (the adjusted) get_task_comm() instead of leaving this
-> open-coded.
->
-
-Sure, that is better.
-
-> >       ctxt_fp(fp) = rcd;
-> >       qib_stats.sps_ctxts++;
-> >       dd->freectxts--;
-> > --
-> > 2.17.1
-> >
->
-> --
-> Kees Cook
 
 
+On 10/25/2021 6:02 PM, Guenter Roeck wrote:
+> On 10/25/21 4:55 PM, Dmitry Osipenko wrote:
+>> 26.10.2021 02:29, Florian Fainelli пишет:
+>>> On 6/4/21 7:03 AM, Lee Jones wrote:
+>>>> This is a rebase/refresh of a set sent out, reviewed,
+>>>> then forgotten about.  It's still considered useful.
+>>>>
+>>>> Here is an excerpt from the previous attempt:
+>>>>
+>>>>   "Hi Russell, ARM SoC maintainers,
+>>>>
+>>>>   here's the full set of patches that remove arm_pm_restart as 
+>>>> discussed
+>>>>   earlier. There's some background on the series in this thread:
+>>>>
+>>>>     https://lore.kernel.org/linux-arm-kernel/20170130110512.6943-1-thierry.reding@gmail.com/ 
+>>>>
+>>>>
+>>>>   I also have a set of patches that build on top of this and try to add
+>>>>   something slightly more formal by adding a power/reset framework that
+>>>>   driver can register with. If we can get this series merged, I'll find
+>>>>   some time to refresh those patches and send out for review again.
+>>>
+>>> What happened to this patch series? Is there any chance we will get it
+>>> included at some point? It is included in the Android13-5.10 tree AFAICT
+>>>
+>>
+>> It's in mainline since v5.14, AFAICS.
+>>
+> 
+> Yes, indeed.
 
+Great, thanks!
 -- 
-Thanks
-Yafang
+Florian
