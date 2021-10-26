@@ -2,134 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E4543B958
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA2543B95C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238236AbhJZSWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238181AbhJZSWE (ORCPT
+        id S238247AbhJZSWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:22:34 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:4099 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238270AbhJZSWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:22:04 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53E1C061220;
-        Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id h196so515953iof.2;
-        Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
+        Tue, 26 Oct 2021 14:22:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wf19AOmnfmju4KLabUVTp8hRay8Ue8otowCzGjfToKY=;
-        b=f8GEAYf83UxpdIyaGi4NEiPx6VBACSIK+KCjfr29ACQW3Ni7YME/QAHX/FaCJvYA1z
-         BXpzhqqyPl3FNkJf72KJm7HNZcc/5koHdO0sx+gC8w8Qn5CuBm1A7DIq4i2YU7wCeurf
-         GIjcg5mKGjjUtly5lQSbPNmI+0ym6RGIcZjJI6rD/XmLbYJ8t/tIH4VQ7QlXiNS994vJ
-         QgHuA7cBCoMXf7zVfid/pC63JqWgdp05kdgiG+bXRmyAFJOo6sJMDGfckOL0BPhoO6Kq
-         DK4laQX0ohqnC5vLWy0667CiXe7/MiZEjPxOfuuGC5Q8x85L8K8Mz5rz1+v1N/WCe9MH
-         6Okg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wf19AOmnfmju4KLabUVTp8hRay8Ue8otowCzGjfToKY=;
-        b=aog8Bko3YEuGFrJS4fekMXmtK7F75Ujyj5dPBWy13LyacEoTFsD1V/Gy1CSa2mXv2v
-         f1rKrvtY7vhU5K4dUPTsWxGkwA4YsMjdnuOJF/NSG8zl+5wvnAfJ9MuHhnV14ru9SRCo
-         nBDEqMcAK5wk7PeBYPqMsnPwMt+se33XroZyRzZq8vNNyi2YGKLijdeQR5ZkFfafwwfe
-         h7aEhOCia6d61rxusbDwDhRsY5QC9P/b4RhuGVYso/IdKWJXEGgmAWHkmyWaIotR/BC4
-         fKSckcyRnopoftxsZe3sc5SIi0CSbfE/8KFC/HvTF8zGafMz+XCXymZhif0fYxVfUHR1
-         nDEg==
-X-Gm-Message-State: AOAM531jxRsFiwCyhjq7Ykunpceth1QkNctPsNU5P8g9C7U0f9ikPEoo
-        6H52EK3U4yfSeYWm5GXNi/l8+D7VoXBHxHLS+28=
-X-Google-Smtp-Source: ABdhPJy9QDP7JK7UoD4tu8AP8q/8LOod4R0KCnSSLL3b++YNrijIXcOdrlZ5jZOgR2D2SCDi8EtKCwCx1ze4jILD5/E=
-X-Received: by 2002:a5d:8792:: with SMTP id f18mr16171056ion.52.1635272379360;
- Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635272393; x=1666808393;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=Q2bZm+M9LPNA9PRwSmsHhCtNkExJgxbpQm2azeVP3H4=;
+  b=pcz0CnljwMWuyLuCfwkBgnUlxQ/oZrIkj0CXIi8vr29AKewBrvohrSzj
+   lRgZaZOSTAI80QW9972wMGa6CSw11l+TgdS8D1uPMTsAErSm7m6H0oZAm
+   tOzFXI6SjULi2+0s2R7rl/nzu6slJamTs+cvl7m/HUXUUmySHxYTI6Kv8
+   s=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 26 Oct 2021 11:19:52 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 11:19:51 -0700
+Received: from c-sanm-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Tue, 26 Oct 2021 11:19:46 -0700
+From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "Matthias Kaehlcke" <mka@chromium.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+CC:     <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Subject: [PATCH 0/3] Skip phy initialization for DWC3 USB Controllers
+Date:   Tue, 26 Oct 2021 23:49:29 +0530
+Message-ID: <1635272372-9982-1-git-send-email-quic_c_sanm@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20211025204634.2517-1-iangelak@redhat.com> <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
- <YXgkTirm5O04xEm5@redhat.com>
-In-Reply-To: <YXgkTirm5O04xEm5@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 26 Oct 2021 21:19:28 +0300
-Message-ID: <CAOQ4uxgmrhMN5smT29mtSC3iV2ht_0a_Z7_ZGyPbA2=yzRG1uQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > As a result, when an event occures on a inode within the exported
-> > > directory by virtiofs, two events will be generated at the same time; a
-> > > local event (generated by the guest kernel) and a remote event (generated
-> > > by the host), thus the guest will receive duplicate events.
-> > >
-> > > To account for this issue we implemented two modes; one where local events
-> > > function as expected (when virtiofsd does not support the remote
-> > > inotify) and one where the local events are suppressed and only the
-> > > remote events originating from the host side are let through (when
-> > > virtiofsd supports the remote inotify).
-> >
-> > Dropping events from the local side would be weird.
-> > Avoiding duplicate events is not a good enough reason IMO
-> > compared to the problems this could cause.
-> > I am not convinced this is worth it.
->
-> So what should be done? If we don't drop local events, then application
-> will see both local and remote events. And then we will have to build
-> this knowledge in API that an event can be either local or remote.
-> Application should be able to distinguish between these two and act
-> accordingly. That sounds like a lot. And I am not even sure if application
-> cares about local events in case of a remote shared filesystem.
->
+DWC3 manages PHY by own driver, so skip the management by HCD core.
 
-I am not completely ruling out the S_NONOTIFY inode flag, but I am not
-yet convinced that it is needed.
-So what if applications get duplicate events? What's the worst thing that
-could happen?
-And once again, merging most of the duplicate events is pretty easy
-and fanotify does that already.
+Sandeep Maheswaram (3):
+  dt-bindings: usb: usb-xhci: Add bindings for usb-skip-phy-init
+    property
+  usb: host: xhci-plat: Add device property to set XHCI_SKIP_PHY_INIT
+    quirk
+  usb: dwc: host: Set the property usb-skip-phy-init
 
-> I have no experience with inotify/fanotify/fsnotify and what people
-> expect from inotify/fanotify API. So we are open to all the ideas
-> w.r.t what will be a good design to support this thing on remote
-> filesystems. Currently whole infrastructure seems to be written with
-> local filesystems in mind.
->
+ Documentation/devicetree/bindings/usb/usb-xhci.yaml | 4 ++++
+ drivers/usb/dwc3/host.c                             | 2 ++
+ drivers/usb/host/xhci-plat.c                        | 3 +++
+ 3 files changed, 9 insertions(+)
 
-I have no control of what users expect from inotify/fanotify
-but I do know that some users' expectations are misaligned with
-how inotify/fanotify actually works.
+-- 
+2.7.4
 
-For example, some users may expect events not to be reordered,
-but there is no such guarantee.
-
-Some inotify users would expect to find a file with the filename
-in the event without realizing that this is a snapshot of a past
-filename, that may now not exist or be a completely different object.
-
-Those are some misconceptions that we tried to address with
-the fanotify FAN_REPORT_DFID_NAME APIs and hopefully we also
-documented the expectations better in the man page.
-
-The use of NFS file handles to identify objects in the FAN_REPORT_FID
-modes enables getting events also for already dead objects
-(without keeping the inode alive like inotify).
-
-I didn't want to complicate Ioannis in this early stage, but I think
-that FUSE fsnotify should be tied to LOOKUP_HANDLE.
-All FUSE remote objects should be described by file handles
-which is the same manner in which network protocols work
-and file handles should be used to describe objects in
-fsnotify FUSE events.
-
-But I am getting ahead of myself with a lot of hand waving....
-
-Thanks,
-Amir.
