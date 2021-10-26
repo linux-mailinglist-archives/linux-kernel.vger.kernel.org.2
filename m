@@ -2,212 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D2D43AB6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA3043AB76
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhJZEtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 00:49:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52522 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231801AbhJZEtI (ORCPT
+        id S234309AbhJZEv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 00:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231801AbhJZEvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 00:49:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635223604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ywFf8Nt0Po4A+AsAVSGAY5OyaS8B6ezXbsiAVAuI/M8=;
-        b=WQrenAprwuxX5LSQFfrExmCHiTsTN9Xsa69Rk5d0wEgRz03hg/XDLAubCp+l8prh5crJDX
-        hdqnmGCdNH2la9qEHtldDBrTZ8ZuRpzbogyNN+lWIw1VnUrEuav6dpgDLAG5lPFeVywBXx
-        L951W4spANHLyp1KX1ffXt8ZM6V0TyA=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-wfoBy_-_PSibvh2p02ecuw-1; Tue, 26 Oct 2021 00:46:43 -0400
-X-MC-Unique: wfoBy_-_PSibvh2p02ecuw-1
-Received: by mail-lf1-f72.google.com with SMTP id t11-20020a056512068b00b003ffb571164dso705105lfe.14
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 21:46:42 -0700 (PDT)
+        Tue, 26 Oct 2021 00:51:18 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C339C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 21:48:55 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id bk18so18716259oib.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 21:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QUu57E+IbafflI6/qVuHyQy7kRwajg1mknD459Ucq7I=;
+        b=T8WI27PGDwenRdxbOfKA3S8HDZp6sbhIYxqeZCLhTLN8rjreR9bE81IbHgyxIXWZDN
+         tfiz3zX8hZ98FBrMRlHLhXGjJR7QyTqpTTo76DmaTboNPKkLZTftb9grrBzZGXJZJMZ2
+         qQNrLs7a2o0D/fB8RmiTp7WV7e3Z4d+z3ZTe8qQX+Ayl03TcVgJd61dlM8KcEG2ckILv
+         w0rld49kC3zcx0mj4gy3KLH4VOr+rh2GWb5FL8aISjJOO/UHp42QlfzDo5ae4NAyouwq
+         VJIdniD5FIqowWM+CY/FCMQajtRI81OoYsunNKlf6BfaDVngZcP25jYNmsjDer9/zmDM
+         DZqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ywFf8Nt0Po4A+AsAVSGAY5OyaS8B6ezXbsiAVAuI/M8=;
-        b=DbsgKGt0zlYnNb+8rm3lKaNPGPhOpJhscEzSTllve9PEVJoiSGxiI7FGGN96H8xi8n
-         f7rsWDw9/qXSXmyvhyAcQLcNmWTIra9MDqOIcjL9WZUdHNq1qkWnv9JzbxcbSWzpGE9W
-         y6E5ahoS0FL2k/dNTXTXLXnehlnaUE+6nDQma9rIQTZ+4Pzaz8rzEhvQr1NOusuWxrEH
-         m3bI67up4xsgNdn/vbNiCeXDBEReC+TJSauz0viIgMi8Ypqfdd38NswgPoaWG6BqiTnx
-         u4ZYzcWJxeK9tWjVazwtmhq3mvsxScylcGZNeFIklPHTUKCuM3GL2dSukSQMjxjHLG59
-         ge4g==
-X-Gm-Message-State: AOAM532NtK3y0O+yGtG3fsTYHd2bvHdzH9qFraEFP+qvLSmVr+zkFy/h
-        iBfBATcy57vCteoKZQeClJszOy02rTOwx/kEtdIBOSUK9OOkh3dyh9ey4jPj0hvOOYHm8Lp78+B
-        r94lZdbiyI/twslf6dHhX+8T/VqB5YFnAEGHN4Bnp
-X-Received: by 2002:a05:6512:3d11:: with SMTP id d17mr16086970lfv.481.1635223601669;
-        Mon, 25 Oct 2021 21:46:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcLiJzIwVWhMCDF8Td4cRTk/ol0gv9lySImO+vOnYnXqjy15iLtfVFK+Rp3mNhOD4BkEZ4r0ZV/jCqDb/6UC4=
-X-Received: by 2002:a05:6512:3d11:: with SMTP id d17mr16086951lfv.481.1635223601462;
- Mon, 25 Oct 2021 21:46:41 -0700 (PDT)
+        bh=QUu57E+IbafflI6/qVuHyQy7kRwajg1mknD459Ucq7I=;
+        b=Sm93OHB+FsDOLPtv4+Vm/R8bH5RlXWOaskWYVfkb0mWPZPuMYYsuYbw02UD9VEIVXm
+         wRi0HdwF4hNHKjZ1IdegJDHwbdd+FbQ3gtHj+bZqrJqJqpQbcIC7rtKzUAGjFeRE4edU
+         +sABTriXZJ42C9eUwq6ukIeCpMbo7sAt9nHx+jgu/g7y5UN9jQ0OzDOCifO9KWrdQd2i
+         3LDJ11QlsX+NrmwSTOAvnDv88JO581uD4yanaHvH0yIOC8Q+7K8v7RuO/SSD1XbW2idQ
+         NVG5sed7MRIiVcX7qALA2bb1q9Myed/qom/RvivGhch/AwS06c1Pzwg6g7HPpOhf+yM+
+         v1lQ==
+X-Gm-Message-State: AOAM531KLiutohaicjgqQQBVOrKCTsIyqFymj7TS8qBKgBUqzh1LJZ7E
+        CbHKpwDiFikllTwT9mie+EwWxBys+mFWsvVufFjnfVKUtcmg2KMF
+X-Google-Smtp-Source: ABdhPJzJuju7W8fVQKSWN7LZOO+GImj6gI5G1vJrPU/fI3FVbgnKwQQU/7onk+tN13HsakK+UGRKvBeTK8zMxSd6LyU=
+X-Received: by 2002:a05:6808:ec9:: with SMTP id q9mr25537738oiv.160.1635223734188;
+ Mon, 25 Oct 2021 21:48:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
- <cover.1634870456.git.wuzongyong@linux.alibaba.com> <c75b4499f7ead922daa19bf67b32eed6f185d260.1634870456.git.wuzongyong@linux.alibaba.com>
- <CACGkMEtNECAUtpEvLvEpTFKfbYRC7YQKnHDnjxR3k9Hap1tmig@mail.gmail.com>
- <20211025024403.GA3684@L-PF27918B-1352.localdomain> <bfb2875b-0da1-27e8-829b-f6b61ea6e326@redhat.com>
- <20211025062454.GA4832@L-PF27918B-1352.localdomain>
-In-Reply-To: <20211025062454.GA4832@L-PF27918B-1352.localdomain>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 26 Oct 2021 12:46:30 +0800
-Message-ID: <CACGkMEvhRqWY=HXEqJHJUMupmEx+GZRvrzA3bZVoVgf=-r2U1A@mail.gmail.com>
-Subject: Re: [PATCH v6 6/8] virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+References: <YUyWYpDl2Dmegz0a@archlinux-ax161> <mhng-b5f8a6a0-c3e8-4d25-9daa-346fdc8a2e5e@palmerdabbelt-glaptop>
+ <YWhg8/UzjJsB51Gd@archlinux-ax161> <afeaea5f-70f2-330f-f032-fb0c8b5d0aa5@ghiti.fr>
+ <990a894c-1806-5ab2-775e-a6f2355c2299@ghiti.fr> <CA+zEjCt28iYQARQa=8Nsw8+_j0PuEee==gUqjKjasMo+w2Ohwg@mail.gmail.com>
+In-Reply-To: <CA+zEjCt28iYQARQa=8Nsw8+_j0PuEee==gUqjKjasMo+w2Ohwg@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 26 Oct 2021 06:48:42 +0200
+Message-ID: <CACT4Y+YB8bjqxFfSrXKbfETXJAUxH=HR+kizC0T-AZLArY3A5A@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
+To:     Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Cc:     Alexandre ghiti <alex@ghiti.fr>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, elver@google.com,
+        akpm@linux-foundation.org, ryabinin.a.a@gmail.com,
+        glider@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
+        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 2:25 PM Wu Zongyong
-<wuzongyong@linux.alibaba.com> wrote:
+On Tue, 26 Oct 2021 at 06:39, Alexandre Ghiti
+<alexandre.ghiti@canonical.com> wrote:
 >
-> On Mon, Oct 25, 2021 at 12:45:44PM +0800, Jason Wang wrote:
+> Hi,
+>
+> On Fri, Oct 15, 2021 at 3:08 PM Alexandre ghiti <alex@ghiti.fr> wrote:
 > >
-> > =E5=9C=A8 2021/10/25 =E4=B8=8A=E5=8D=8810:44, Wu Zongyong =E5=86=99=E9=
-=81=93:
-> > > On Mon, Oct 25, 2021 at 10:22:30AM +0800, Jason Wang wrote:
-> > > > On Fri, Oct 22, 2021 at 10:45 AM Wu Zongyong
-> > > > <wuzongyong@linux.alibaba.com> wrote:
-> > > > > For the devices which implement the get_vq_num_min callback, the =
-driver
-> > > > > should not negotiate with virtqueue size with the backend vdpa de=
-vice if
-> > > > > the value returned by get_vq_num_min equals to the value returned=
- by
-> > > > > get_vq_num_max.
-> > > > > This is useful for vdpa devices based on legacy virtio specficati=
-on.
-> > > > >
-> > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > > > > ---
-> > > > >   drivers/virtio/virtio_vdpa.c | 21 ++++++++++++++++-----
-> > > > >   1 file changed, 16 insertions(+), 5 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio=
-_vdpa.c
-> > > > > index 72eaef2caeb1..e42ace29daa1 100644
-> > > > > --- a/drivers/virtio/virtio_vdpa.c
-> > > > > +++ b/drivers/virtio/virtio_vdpa.c
-> > > > > @@ -145,7 +145,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vd=
-ev, unsigned int index,
-> > > > >          /* Assume split virtqueue, switch to packed if necessary=
- */
-> > > > >          struct vdpa_vq_state state =3D {0};
-> > > > >          unsigned long flags;
-> > > > > -       u32 align, num;
-> > > > > +       u32 align, max_num, min_num =3D 0;
-> > > > > +       bool may_reduce_num =3D true;
-> > > > >          int err;
-> > > > >
-> > > > >          if (!name)
-> > > > > @@ -163,22 +164,32 @@ virtio_vdpa_setup_vq(struct virtio_device *=
-vdev, unsigned int index,
-> > > > >          if (!info)
-> > > > >                  return ERR_PTR(-ENOMEM);
-> > > > >
-> > > > > -       num =3D ops->get_vq_num_max(vdpa);
-> > > > > -       if (num =3D=3D 0) {
-> > > > > +       max_num =3D ops->get_vq_num_max(vdpa);
-> > > > > +       if (max_num =3D=3D 0) {
-> > > > >                  err =3D -ENOENT;
-> > > > >                  goto error_new_virtqueue;
-> > > > >          }
-> > > > >
-> > > > > +       if (ops->get_vq_num_min)
-> > > > > +               min_num =3D ops->get_vq_num_min(vdpa);
-> > > > > +
-> > > > > +       may_reduce_num =3D (max_num =3D=3D min_num) ? false : tru=
-e;
-> > > > > +
-> > > > >          /* Create the vring */
-> > > > >          align =3D ops->get_vq_align(vdpa);
-> > > > > -       vq =3D vring_create_virtqueue(index, num, align, vdev,
-> > > > > -                                   true, true, ctx,
-> > > > > +       vq =3D vring_create_virtqueue(index, max_num, align, vdev=
-,
-> > > > > +                                   true, may_reduce_num, ctx,
-> > > > >                                      virtio_vdpa_notify, callback=
-, name);
-> > > > >          if (!vq) {
-> > > > >                  err =3D -ENOMEM;
-> > > > >                  goto error_new_virtqueue;
-> > > > >          }
-> > > > >
-> > > > > +       if (virtqueue_get_vring_size(vq) < min_num) {
-> > > > > +               err =3D -EINVAL;
-> > > > > +               goto err_vq;
-> > > > > +       }
-> > > > I wonder under which case can we hit this?
-> > > >
-> > > > Thanks
-> > > If min_vq_num < max_vq_num, may_reduce_num should be true, then it is
-> > > possible to allocate a virtqueue with a small size which value is les=
-s
-> > > than the min_vq_num since we only set the upper bound for virtqueue s=
-ize
-> > > when creating virtqueue.
+> > On 10/14/21 8:31 PM, Alex Ghiti wrote:
+> > > Hi Nathan,
 > > >
-> > > Refers to vring_create_virtqueue_split in driver/virtio/virtio_vring.=
-c:
+> > > Le 14/10/2021 =C3=A0 18:55, Nathan Chancellor a =C3=A9crit :
+> > >> On Fri, Oct 08, 2021 at 11:46:55AM -0700, Palmer Dabbelt wrote:
+> > >>> On Thu, 23 Sep 2021 07:59:46 PDT (-0700), nathan@kernel.org wrote:
+> > >>>> On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
+> > >>>>> On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor
+> > >>>>> <nathan@kernel.org> wrote:
+> > >>>>>> Currently, the asan-stack parameter is only passed along if
+> > >>>>>> CFLAGS_KASAN_SHADOW is not empty, which requires
+> > >>>>>> KASAN_SHADOW_OFFSET to
+> > >>>>>> be defined in Kconfig so that the value can be checked. In RISC-=
+V's
+> > >>>>>> case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means
+> > >>>>>> that
+> > >>>>>> asan-stack does not get disabled with clang even when
+> > >>>>>> CONFIG_KASAN_STACK
+> > >>>>>> is disabled, resulting in large stack warnings with allmodconfig=
+:
+> > >>>>>>
+> > >>>>>> drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q=
+02.c:117:12:
+> > >>>>>>
+> > >>>>>> error: stack frame size (14400) exceeds limit (2048) in function
+> > >>>>>> 'lb035q02_connect' [-Werror,-Wframe-larger-than]
+> > >>>>>> static int lb035q02_connect(struct omap_dss_device *dssdev)
+> > >>>>>>             ^
+> > >>>>>> 1 error generated.
+> > >>>>>>
+> > >>>>>> Ensure that the value of CONFIG_KASAN_STACK is always passed
+> > >>>>>> along to
+> > >>>>>> the compiler so that these warnings do not happen when
+> > >>>>>> CONFIG_KASAN_STACK is disabled.
+> > >>>>>>
+> > >>>>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1453
+> > >>>>>> References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-=
+8
+> > >>>>>> and earlier")
+> > >>>>>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > >>>>>
+> > >>>>> Reviewed-by: Marco Elver <elver@google.com>
+> > >>>>
+> > >>>> Thanks!
+> > >>>>
+> > >>>>> [ Which tree are you planning to take it through? ]
+> > >>>>
+> > >>>> Gah, I was intending for it to go through -mm, then I cc'd neither
+> > >>>> Andrew nor linux-mm... :/ Andrew, do you want me to resend or can =
+you
+> > >>>> grab it from LKML?
+> > >>>
+> > >>> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> > >>>
+> > >>> (assuming you still want it through somewhere else)
+> > >>
+> > >> Thanks, it is now in mainline as commit 19532869feb9 ("kasan: always
+> > >> respect CONFIG_KASAN_STACK").
+> > >>
+> > >>>>> Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFSET=
+ in
+> > >>>>> comment (copied from arm64). Did RISC-V just forget to copy over =
+the
+> > >>>>> Kconfig option?
+> > >>>>
+> > >>>> I do see it defined in that file as well but you are right that
+> > >>>> they did
+> > >>>> not copy the Kconfig logic, even though it was present in the tree
+> > >>>> when
+> > >>>> RISC-V KASAN was implemented. Perhaps they should so that they get
+> > >>>> access to the other flags in the "else" branch?
+> > >>>
+> > >>> Ya, looks like we just screwed this up.  I'm seeing some warnings l=
+ike
+> > >>>
+> > >>>     cc1: warning: =E2=80=98-fsanitize=3Dkernel-address=E2=80=99 wit=
+h stack protection
+> > >>> is not supported without =E2=80=98-fasan-shadow-offset=3D=E2=80=99 =
+for this target
+> > >>
+> > >> Hmmm, I thought I did a GCC build with this change but I must not ha=
+ve
+> > >> :/
+> > >>
+> > >>> which is how I ended up here, I'm assuming that's what you're
+> > >>> talking about
+> > >>> here?  LMK if you were planning on sending along a fix or if you
+> > >>> want me to
+> > >>> go figure it out.
+> > >>
+> > >> I took a look at moving the logic into Kconfig like arm64 before sen=
+ding
+> > >> this change and I did not really understand it well enough to do so.=
+ I
+> > >> think it would be best if you were able to do that so that nothing g=
+ets
+> > >> messed up.
+> > >>
 > > >
-> > >     for (; num && vring_size(num, vring_align) > PAGE_SIZE; num /=3D =
-2) {
-> > >             queue =3D vring_alloc_queue(vdev, vring_size(num, vring_a=
-lign),
-> > >                                       &dma_addr,
-> > >                                       GFP_KERNEL|__GFP_NOWARN|__GFP_Z=
-ERO);
-> > >             if (queue)
-> > >                     break;
-> > >             if (!may_reduce_num)
-> > >                     return NULL;
-> > >     }
-> >
-> >
-> > It looks to me it's better to fix this function instead of checking it =
-in
-> > the caller?
->
-> Or we can simply remove that code since this case only exists in theory, =
-and
-> there is no real usecase for now.
-
-(Adding list back)
-
-Somehow, it can't happen if you stick to a 256 as both min and max.
-
-Another question, can ENI support vring size which is less than 256?
-
-Thanks
-
->
-> >
-> >
+> > > I'll do it tomorrow, I'm the last one who touched kasan on riscv :)
 > > >
-> > > BTW, I have replied this mail on Nov.18, have you ever received it?
 > >
-> >
-> > For some reason I dont' get that.
-> >
-> > Thanks
-> >
-> >
-> > > > > +
-> > > > >          /* Setup virtqueue callback */
-> > > > >          cb.callback =3D virtio_vdpa_virtqueue_cb;
-> > > > >          cb.private =3D info;
-> > > > > --
-> > > > > 2.31.1
-> > > > >
+> > Adding KASAN_SHADOW_OFFSET config makes kasan kernel fails to boot.
+> > It receives a *write* fault at the beginning of a memblock_alloc
+> > function while populating the kernel shadow memory: the trap address is
+> > in the kasan shadow virtual address range and this corresponds to a
+> > kernel address in init_stack. The question is: how do I populate the
+> > stack shadow mapping without using memblock API? It's weird, I don't
+> > find anything on other architectures.
 >
+> @kasan: Any idea what we are doing wrong in riscv to encounter the
+> above situation?
 
+Hi Alex, Palmer,
+
+The patch changes the definition of the KASAN_SHADOW_OFFSET const.
+Does it's value change as a result or not? Have you tried to print it
+before/after?
+If value does not change, then this is more mysterious. If it changes,
+then there lots of possible explanations (points to unmapped region,
+overlaps with something), but we need to know values before/after to
+answer this.
+
+
+> Thanks,
+>
+> Alex
+>
+> >
+> > And just a short note: I have realized this will break with the sv48
+> > patchset as we decide at runtime the address space width and the kasan
+> > shadow start address is different between sv39 and sv48. I will have to
+> > do like x86 and move the kasan shadow start at the end of the address
+> > space so that it is the same for both sv39 and sv48.
+> >
+> > Thanks,
+> >
+> > Alex
+> >
+> >
+> > > Thanks,
+> > >
+> > > Alex
+> > >
+> > >> Cheers,
+> > >> Nathan
+> > >>
+> > >> _______________________________________________
+> > >> linux-riscv mailing list
+> > >> linux-riscv@lists.infradead.org
+> > >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > >>
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
