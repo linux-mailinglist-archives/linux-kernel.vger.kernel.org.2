@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BA143BDC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB1B43BDCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240259AbhJZXYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:24:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240253AbhJZXYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:24:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08F4960C4A;
-        Tue, 26 Oct 2021 23:22:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635290534;
-        bh=KCuGBCZxM7222y4hq4fZcy5F3Pi9MDlxLP2ZwweoY3Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=j8Tf+ESNIuhiNRV4y/78z+v6czYstCi1jM26vpqKEO3lI7uBBnOuKSwbGUvtSqPmm
-         32Cj1AoOd7S+07MCV0EbcNqFgS9yyD2pIJO9qgv7g7Y1KUKNRC3NuzcYwSSpi9e//J
-         xwzoCGzzCunCX/vZmIXx9jCJjBkXl1pAXQWqcAqeuEFGWK787zRE4Nvz7F/Q6bnJYh
-         wQkqYDtsZkXqDrso6fdB904+YjQXB1JCXhwylHs2sJb293CtgEx1rLvTC3ZSEOY8hk
-         0YIyea9jBkWRgSLh95QM4RKmEzMrGlC7PNIRxYQBXzyu4sWTr1dVMDVN6NdR9YYkE3
-         8dMnxQcqbaQsQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>, mingo@redhat.com,
-        shuah@kernel.org, Philip Li <philip.li@intel.com>
-Subject: [PATCH v2] selftests/ftrace: Stop tracing while reading the trace file by default
-Date:   Wed, 27 Oct 2021 08:22:11 +0900
-Message-Id: <163529053143.690749.15365238954175942026.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S240272AbhJZXYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:24:44 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:41533 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240253AbhJZXYm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 19:24:42 -0400
+Received: by mail-ot1-f48.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so987914ote.8;
+        Tue, 26 Oct 2021 16:22:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BlYVCtsIK/ZHSSJFn7jPTA8DCkAvMMkyiTdquv+XGLo=;
+        b=7FxMJMhA9E57FyQL5zYfCX2S+HLbFpnV6yaNTh95ogc6+z1OmTQo7qtrp/aKNIYcAJ
+         Ybvq6ULBiNg8N/I0oIxse/CfEqG1+DiYO7EXvBVwaunxsy4fNQLqmbBCCLtptk9QVTPX
+         MuI50Fxf3Jr0yhpbddkMedfD/zIxBugGW6LW9nfP3q0L9vqnaba/311H8Ey11D9zFXtR
+         sOeNMvXI7ZIlN0/hy9hdBuldAPuKl0OegUa0LjugbM+ZNrPI3NWgQuwC6az6fnSg8t8t
+         gkwl8Dd9TjYk2BMyhcdbJBu8YY5FMMIIyRdm/XlChfkHY8oylxJBNruOXTWbk4MWmB8y
+         99Aw==
+X-Gm-Message-State: AOAM532iL/onpGl7Bt7Y6SpiKdxIa9K8ICLD1pZcxernojNHvA7YXoeh
+        KsUPa09hYHdXK1L6rkuySw==
+X-Google-Smtp-Source: ABdhPJyn70qD8VYRezNuvSOoBBWUBQ7fgcqQi1lPKHXEkDA4p5nn9yrQDtvHoy8o22bFmiPQVQFjxw==
+X-Received: by 2002:a9d:758f:: with SMTP id s15mr21725078otk.78.1635290538156;
+        Tue, 26 Oct 2021 16:22:18 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l25sm4258274oot.36.2021.10.26.16.22.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 16:22:17 -0700 (PDT)
+Received: (nullmailer pid 3505593 invoked by uid 1000);
+        Tue, 26 Oct 2021 23:22:16 -0000
+Date:   Tue, 26 Oct 2021 18:22:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alexey Firago <alexey_firago@mentor.com>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: rtc: Add Maxim Integrated MAX31343
+Message-ID: <YXiNqGVDfYHSLgL/@robh.at.kernel.org>
+References: <20211016192118.255624-1-alexey_firago@mentor.com>
+ <20211016192118.255624-3-alexey_firago@mentor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211016192118.255624-3-alexey_firago@mentor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stop tracing while reading the trace file by default, to prevent
-the test results while checking it and to avoid taking a long time
-to check the result.
-If there is any testcase which wants to test the tracing while reading
-the trace file, please override this setting inside the test case.
+On Sat, 16 Oct 2021 22:21:18 +0300, Alexey Firago wrote:
+> It is supported by the rtc-max31343 module.
+> 
+> Signed-off-by: Alexey Firago <alexey_firago@mentor.com>
+> ---
+>  Documentation/devicetree/bindings/rtc/trivial-rtc.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-This also recovers the pause-on-trace when clean it up.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v2:
-  - Recover pause-on-trace to 0 when exit.
----
- tools/testing/selftests/ftrace/ftracetest       |    2 +-
- tools/testing/selftests/ftrace/test.d/functions |   12 ++++++++++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/ftrace/ftracetest b/tools/testing/selftests/ftrace/ftracetest
-index 8ec1922e974e..c3311c8c4089 100755
---- a/tools/testing/selftests/ftrace/ftracetest
-+++ b/tools/testing/selftests/ftrace/ftracetest
-@@ -428,7 +428,7 @@ for t in $TEST_CASES; do
-     exit 1
-   fi
- done
--(cd $TRACING_DIR; initialize_ftrace) # for cleanup
-+(cd $TRACING_DIR; finish_ftrace) # for cleanup
- 
- prlog ""
- prlog "# of passed: " `echo $PASSED_CASES | wc -w`
-diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-index 000fd05e84b1..5f6cbec847fc 100644
---- a/tools/testing/selftests/ftrace/test.d/functions
-+++ b/tools/testing/selftests/ftrace/test.d/functions
-@@ -124,10 +124,22 @@ initialize_ftrace() { # Reset ftrace to initial-state
-     [ -f uprobe_events ] && echo > uprobe_events
-     [ -f synthetic_events ] && echo > synthetic_events
-     [ -f snapshot ] && echo 0 > snapshot
-+
-+# Stop tracing while reading the trace file by default, to prevent
-+# the test results while checking it and to avoid taking a long time
-+# to check the result.
-+    [ -f options/pause-on-trace ] && echo 1 > options/pause-on-trace
-+
-     clear_trace
-     enable_tracing
- }
- 
-+finish_ftrace() {
-+    initialize_ftrace
-+# And recover it to default.
-+    [ -f options/pause-on-trace ] && echo 0 > options/pause-on-trace
-+}
-+
- check_requires() { # Check required files and tracers
-     for i in "$@" ; do
-         r=${i%:README}
-
+Acked-by: Rob Herring <robh@kernel.org>
