@@ -2,189 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DEB43AAAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB6D43AAAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233864AbhJZDRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 23:17:20 -0400
-Received: from mga06.intel.com ([134.134.136.31]:56614 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232702AbhJZDRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 23:17:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="290647681"
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="290647681"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 20:14:55 -0700
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="497101919"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.71]) ([10.238.2.71])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 20:14:52 -0700
-Message-ID: <ce42bf75-7c19-e1e2-80e3-e7729d9beab9@intel.com>
-Date:   Tue, 26 Oct 2021 11:14:50 +0800
+        id S234618AbhJZDRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 23:17:49 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:16160 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234628AbhJZDRr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 23:17:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtjJcPu_1635218116;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtjJcPu_1635218116)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 Oct 2021 11:15:18 +0800
+Subject: [PATCH v5 1/2] ftrace: disable preemption when recursion locked
+To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+Date:   Tue, 26 Oct 2021 11:15:16 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.2.1
-Subject: Re: [PATCH v5 0/7] KVM: PKS Virtualization support
+In-Reply-To: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210811101126.8973-1-chenyi.qiang@intel.com>
- <6ccc8ee5-264b-8341-0af7-bbc6731e93a8@redhat.com>
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-In-Reply-To: <6ccc8ee5-264b-8341-0af7-bbc6731e93a8@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As the documentation explained, ftrace_test_recursion_trylock()
+and ftrace_test_recursion_unlock() were supposed to disable and
+enable preemption properly, however currently this work is done
+outside of the function, which could be missing by mistake.
 
+And since the internal using of trace_test_and_set_recursion()
+and trace_clear_recursion() also require preemption disabled, we
+can just merge the logical.
 
-On 10/25/2021 11:12 PM, Paolo Bonzini wrote:
-> On 11/08/21 12:11, Chenyi Qiang wrote:
->> This patch series is based on top of kernel patchset:
->> https://lore.kernel.org/lkml/20210804043231.2655537-1-ira.weiny@intel.com/ 
->>
->>
->> To help patches review, one missing info in SDM is that PKSR will be
->> cleared on Powerup/INIT/RESET, which should be listed in Table 9.1
->> "IA-32 and Intel 64 Processor States Following Power-up, Reset, or INIT"
->>
->> ---
->>
->> Protection Keys for Supervisor Pages(PKS) is a feature that extends the
->> Protection Keys architecture to support thread-specific permission
->> restrictions on supervisor pages.
->>
->> PKS works similar to an existing feature named PKU(protecting user 
->> pages).
->> They both perform an additional check after normal paging permission
->> checks are done. Access or Writes can be disabled via a MSR update
->> without TLB flushes when permissions changes. If violating this
->> addional check, #PF occurs and PFEC.PK bit will be set.
->>
->> PKS introduces MSR IA32_PKRS to manage supervisor protection key
->> rights. The MSR contains 16 pairs of ADi and WDi bits. Each pair
->> advertises on a group of pages with the same key which is set in the
->> leaf paging-structure entries(bits[62:59]). Currently, IA32_PKRS is not
->> supported by XSAVES architecture.
->>
->> This patchset aims to add the virtualization of PKS in KVM. It
->> implemented PKS CPUID enumeration, vmentry/vmexit configuration, MSR
->> exposure, nested supported etc. Currently, PKS is not yet supported for
->> shadow paging.
->>
->> Detailed information about PKS can be found in the latest Intel 64 and
->> IA-32 Architectures Software Developer's Manual.
-> 
-> Hi Chenyi,
-> 
-> pkrs_cache does not yet exist in Linux 5.15.  What is the state of the 
-> bare-metal support for PKS?
-> 
-> Thanks,
-> 
-> Paolo
-> 
+This patch will make sure the preemption has been disabled when
+trace_test_and_set_recursion() return bit >= 0, and
+trace_clear_recursion() will enable the preemption if previously
+enabled.
 
-Hi Paolo,
+CC: Petr Mladek <pmladek@suse.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
+CC: Miroslav Benes <mbenes@suse.cz>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ arch/csky/kernel/probes/ftrace.c     |  2 --
+ arch/parisc/kernel/ftrace.c          |  2 --
+ arch/powerpc/kernel/kprobes-ftrace.c |  2 --
+ arch/riscv/kernel/probes/ftrace.c    |  2 --
+ arch/x86/kernel/kprobes/ftrace.c     |  2 --
+ include/linux/trace_recursion.h      | 11 ++++++++++-
+ kernel/livepatch/patch.c             | 13 +++++++------
+ kernel/trace/ftrace.c                | 15 +++++----------
+ kernel/trace/trace_functions.c       |  5 -----
+ 9 files changed, 22 insertions(+), 32 deletions(-)
 
-The latest version is still at
-https://lore.kernel.org/lkml/20210804043231.2655537-1-ira.weiny@intel.com/
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index b388228..834cffc 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -17,7 +17,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
 
-Ira is working on the next version but doesn't have concrete schedule.
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (!p) {
+ 		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
+@@ -57,7 +56,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 7d14242..90c4345 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -210,7 +210,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
 
-Thanks
-Chenyi
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -239,7 +238,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	}
+ 	__this_cpu_write(current_kprobe, NULL);
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+index 7154d58..072ebe7 100644
+--- a/arch/powerpc/kernel/kprobes-ftrace.c
++++ b/arch/powerpc/kernel/kprobes-ftrace.c
+@@ -26,7 +26,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		return;
 
->>
->> ---
->>
->> Changelogs:
->>
->> v4->v5
->> - Make setting of MSR intercept/vmcs control bits not dependent on 
->> guest.CR4.PKS.
->>    And set them if PKS is exposed to guest. (Suggested by Sean)
->> - Add pkrs to standard register caching mechanism to help update
->>    vcpu->arch.pkrs on demand. Add related helper functions. (Suggested 
->> by Sean)
->> - Do the real pkrs update in VMCS field in vmx_vcpu_reset and
->>    vmx_sync_vmcs_host_state(). (Sean)
->> - Add a new mmu_role cr4_pks instead of smushing PKU and PKS together.
->>    (Sean & Paolo)
->> - v4: 
->> https://lore.kernel.org/lkml/20210205083706.14146-1-chenyi.qiang@intel.com/ 
->>
->>
->> v3->v4
->> - Make the MSR intercept and load-controls setting depend on CR4.PKS 
->> value
->> - shadow the guest pkrs and make it usable in PKS emultion
->> - add the cr4_pke and cr4_pks check in pkr_mask update
->> - squash PATCH 2 and PATCH 5 to make the dependencies read more clear
->> - v3: 
->> https://lore.kernel.org/lkml/20201105081805.5674-1-chenyi.qiang@intel.com/ 
->>
->>
->> v2->v3:
->> - No function changes since last submit
->> - rebase on the latest PKS kernel support:
->>    
->> https://lore.kernel.org/lkml/20201102205320.1458656-1-ira.weiny@intel.com/ 
->>
->> - add MSR_IA32_PKRS to the vmx_possible_passthrough_msrs[]
->> - RFC v2: 
->> https://lore.kernel.org/lkml/20201014021157.18022-1-chenyi.qiang@intel.com/ 
->>
->>
->> v1->v2:
->> - rebase on the latest PKS kernel support:
->>    https://github.com/weiny2/linux-kernel/tree/pks-rfc-v3
->> - add a kvm-unit-tests for PKS
->> - add the check in kvm_init_msr_list for PKRS
->> - place the X86_CR4_PKS in mmu_role_bits in kvm_set_cr4
->> - add the support to expose VM_{ENTRY, EXIT}_LOAD_IA32_PKRS in nested
->>    VMX MSR
->> - RFC v1: 
->> https://lore.kernel.org/lkml/20200807084841.7112-1-chenyi.qiang@intel.com/ 
->>
->>
->> ---
->>
->> Chenyi Qiang (7):
->>    KVM: VMX: Introduce PKS VMCS fields
->>    KVM: VMX: Add proper cache tracking for PKRS
->>    KVM: X86: Expose IA32_PKRS MSR
->>    KVM: MMU: Rename the pkru to pkr
->>    KVM: MMU: Add support for PKS emulation
->>    KVM: VMX: Expose PKS to guest
->>    KVM: VMX: Enable PKS for nested VM
->>
->>   arch/x86/include/asm/kvm_host.h | 17 ++++---
->>   arch/x86/include/asm/vmx.h      |  6 +++
->>   arch/x86/kvm/cpuid.c            |  2 +-
->>   arch/x86/kvm/kvm_cache_regs.h   |  7 +++
->>   arch/x86/kvm/mmu.h              | 25 +++++----
->>   arch/x86/kvm/mmu/mmu.c          | 68 ++++++++++++++-----------
->>   arch/x86/kvm/vmx/capabilities.h |  6 +++
->>   arch/x86/kvm/vmx/nested.c       | 41 ++++++++++++++-
->>   arch/x86/kvm/vmx/vmcs.h         |  1 +
->>   arch/x86/kvm/vmx/vmcs12.c       |  2 +
->>   arch/x86/kvm/vmx/vmcs12.h       |  4 ++
->>   arch/x86/kvm/vmx/vmx.c          | 89 ++++++++++++++++++++++++++++++---
->>   arch/x86/kvm/vmx/vmx.h          |  7 ++-
->>   arch/x86/kvm/x86.c              |  6 ++-
->>   arch/x86/kvm/x86.h              |  8 +++
->>   arch/x86/mm/pkeys.c             |  6 +++
->>   include/linux/pkeys.h           |  5 ++
->>   17 files changed, 243 insertions(+), 57 deletions(-)
->>
-> 
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)nip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -61,7 +60,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+index aab85a8..7142ec4 100644
+--- a/arch/riscv/kernel/probes/ftrace.c
++++ b/arch/riscv/kernel/probes/ftrace.c
+@@ -15,7 +15,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -52,7 +51,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index 596de2f..dd2ec14 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -25,7 +25,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -59,7 +58,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index abe1a50..2bc1522 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -135,6 +135,9 @@ static __always_inline int trace_get_context_bit(void)
+ # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+ #endif
+
++/*
++ * Preemption is promised to be disabled when return bit > 0.
++ */
+ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+ 							int start)
+ {
+@@ -162,11 +165,17 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+ 	current->trace_recursion = val;
+ 	barrier();
+
++	preempt_disable_notrace();
++
+ 	return bit;
+ }
+
++/*
++ * Preemption will be enabled (if it was previously enabled).
++ */
+ static __always_inline void trace_clear_recursion(int bit)
+ {
++	preempt_enable_notrace();
+ 	barrier();
+ 	trace_recursion_clear(bit);
+ }
+@@ -178,7 +187,7 @@ static __always_inline void trace_clear_recursion(int bit)
+  * tracing recursed in the same context (normal vs interrupt),
+  *
+  * Returns: -1 if a recursion happened.
+- *           >= 0 if no recursion
++ *           > 0 if no recursion.
+  */
+ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+ 							 unsigned long parent_ip)
+diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+index e8029ae..b8d75fb 100644
+--- a/kernel/livepatch/patch.c
++++ b/kernel/livepatch/patch.c
+@@ -49,14 +49,16 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+
+ 	ops = container_of(fops, struct klp_ops, fops);
+
++	/*
++	 *
++	 * The ftrace_test_recursion_trylock() will disable preemption,
++	 * which is required for the variant of synchronize_rcu() that is
++	 * used to allow patching functions where RCU is not watching.
++	 * See klp_synchronize_transition() for more details.
++	 */
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (WARN_ON_ONCE(bit < 0))
+ 		return;
+-	/*
+-	 * A variant of synchronize_rcu() is used to allow patching functions
+-	 * where RCU is not watching, see klp_synchronize_transition().
+-	 */
+-	preempt_disable_notrace();
+
+ 	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+ 				      stack_node);
+@@ -120,7 +122,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+ 	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+
+ unlock:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index b7be1df..7392bc7 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -7198,16 +7198,15 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 	struct ftrace_ops *op;
+ 	int bit;
+
++	/*
++	 * The ftrace_test_and_set_recursion() will disable preemption,
++	 * which is required since some of the ops may be dynamically
++	 * allocated, they must be freed after a synchronize_rcu().
++	 */
+ 	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START);
+ 	if (bit < 0)
+ 		return;
+
+-	/*
+-	 * Some of the ops may be dynamically allocated,
+-	 * they must be freed after a synchronize_rcu().
+-	 */
+-	preempt_disable_notrace();
+-
+ 	do_for_each_ftrace_op(op, ftrace_ops_list) {
+ 		/* Stub functions don't need to be called nor tested */
+ 		if (op->flags & FTRACE_OPS_FL_STUB)
+@@ -7231,7 +7230,6 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 		}
+ 	} while_for_each_ftrace_op(op);
+ out:
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+
+@@ -7279,12 +7277,9 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
+ 		op->func(ip, parent_ip, op, fregs);
+
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+ NOKPROBE_SYMBOL(ftrace_ops_assist_func);
+diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
+index 1f0e63f..9f1bfbe 100644
+--- a/kernel/trace/trace_functions.c
++++ b/kernel/trace/trace_functions.c
+@@ -186,7 +186,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		return;
+
+ 	trace_ctx = tracing_gen_ctx();
+-	preempt_disable_notrace();
+
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+@@ -194,7 +193,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		trace_function(tr, ip, parent_ip, trace_ctx);
+
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ #ifdef CONFIG_UNWINDER_ORC
+@@ -298,8 +296,6 @@ static inline void process_repeats(struct trace_array *tr,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+ 	if (atomic_read(&data->disabled))
+@@ -324,7 +320,6 @@ static inline void process_repeats(struct trace_array *tr,
+
+ out:
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ static void
+-- 
+1.8.3.1
+
