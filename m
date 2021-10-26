@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC7443AF6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BE243AF73
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhJZJtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:49:49 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40072
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233450AbhJZJtm (ORCPT
+        id S234777AbhJZJur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:50:47 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:46166 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234310AbhJZJul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:49:42 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id F31B73F19C
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635241637;
-        bh=OvY8h6gQ2XLx4TLJDVhHrNnjSYAKrKTXm/TLCkBAtZY=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=KRLozsfwsB9rv9f0uUlEfxQCs4uoMjKP2BVYDnO3Vee/Co+JgenMd/2TqGJ1az4LN
-         4+mM1GkiKnpUAAdIUJ/gXyH8UfAKtUyA8XRJbTu5yMQ6+5UH1TkCicuMGo4rHK7l4/
-         NQa1RKxB/w5kJUzKCYdQieGDcLGyV6p09XsrZOZEhQ/mPPzi4QqOeqvHKtKAfg+V4a
-         lgU39Nr/WnjCe0sj6fDeocT29nG/DnMPnXLsRW0dKh4CU4RgEMFXuBcLXUQGc+MphC
-         dibQSAWzeJOwL0QZ7fQMkYdxT5+InuNHeo4NZP+AWjmeygUPAVoIO9T7y8jYoHNqMz
-         NER+6+2JPrubw==
-Received: by mail-lj1-f198.google.com with SMTP id v17-20020a2e7a11000000b002118bb7d585so846353ljc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 02:47:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OvY8h6gQ2XLx4TLJDVhHrNnjSYAKrKTXm/TLCkBAtZY=;
-        b=2ZJRfPki3h0+pjziWCmUxBos+rRJ7EvKIojRHyXhiTwINc1IT8ldrSaVaGy8xLaEl3
-         D6b9MQU7taVOSwVCMvPshA040vnqtlzBhCVH/c7NkrnN+BGYhOcWlBSsTPsXnoVyTqyE
-         VqjGuTqXLGimp+Tm5bAvJAd/9Bkv6VQDDcs/NUZ0Hu0DT8LJwTdh/b56R7xQRYTFAhXe
-         uJZkUO2aqvB6csNEc5oPrZqWbr+rSlF7pZu9PAqBDMHDIBR+MZz5Kf2+lkkIXyJhDLbC
-         DjcbWM8t5NwX7JEWhCaRp7Gbgk2fwFk2MsHAWDDCaL48w2FqOWTnPk60PSrP8ZMI2r9F
-         f/Gw==
-X-Gm-Message-State: AOAM532/y6rnur1vJ+HHdSlaI4WsJ/dqT0mnYB0hZXW7hzFJWmHtSvxR
-        JvefaMbkkApr1iPw1ug5TJdFwUbgkQka3PU/D+YZxtExJSdjFEUyqcqbTPMUSjUATKOW4fMtHxi
-        hi5v+tNRBE/T/Ox82byhAITdvzPQwzWXJg8dJn6NRMw==
-X-Received: by 2002:a05:6512:15a9:: with SMTP id bp41mr10418011lfb.552.1635241637425;
-        Tue, 26 Oct 2021 02:47:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyW5YMz5Q07ZGmdN2Jxfc2u5ScIopNPNG6mpx68Wmg7E4kYJBAnPU+zL0heH2Y7f+IctqKkog==
-X-Received: by 2002:a05:6512:15a9:: with SMTP id bp41mr10417987lfb.552.1635241637269;
-        Tue, 26 Oct 2021 02:47:17 -0700 (PDT)
-Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id v17sm113794lfo.167.2021.10.26.02.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 02:47:16 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL] ARM: samsung: s3c for v5.16
-Date:   Tue, 26 Oct 2021 11:47:09 +0200
-Message-Id: <20211026094709.75692-5-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211026094709.75692-1-krzysztof.kozlowski@canonical.com>
-References: <20211026094709.75692-1-krzysztof.kozlowski@canonical.com>
+        Tue, 26 Oct 2021 05:50:41 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0Utm5zog_1635241690;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Utm5zog_1635241690)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 Oct 2021 17:48:12 +0800
+Subject: Re: [PATCH v5 1/2] ftrace: disable preemption when recursion locked
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
+ <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+ <alpine.LSU.2.21.2110261128120.28494@pobox.suse.cz>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <18ba2a71-e12d-33f7-63fe-2857b2db022c@linux.alibaba.com>
+Date:   Tue, 26 Oct 2021 17:48:10 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <alpine.LSU.2.21.2110261128120.28494@pobox.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+Hi, Miroslav
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+On 2021/10/26 下午5:35, Miroslav Benes wrote:
+> Hi,
+> 
+>> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+>> index abe1a50..2bc1522 100644
+>> --- a/include/linux/trace_recursion.h
+>> +++ b/include/linux/trace_recursion.h
+>> @@ -135,6 +135,9 @@ static __always_inline int trace_get_context_bit(void)
+>>  # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+>>  #endif
+>>
+>> +/*
+>> + * Preemption is promised to be disabled when return bit > 0.
+>> + */
+>>  static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+>>  							int start)
+>>  {
+>> @@ -162,11 +165,17 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+>>  	current->trace_recursion = val;
+>>  	barrier();
+>>
+>> +	preempt_disable_notrace();
+>> +
+>>  	return bit;
+>>  }
+>>
+>> +/*
+>> + * Preemption will be enabled (if it was previously enabled).
+>> + */
+>>  static __always_inline void trace_clear_recursion(int bit)
+>>  {
+>> +	preempt_enable_notrace();
+>>  	barrier();
+>>  	trace_recursion_clear(bit);
+>>  }
+> 
+> The two comments should be updated too since Steven removed the "bit == 0" 
+> trick.
 
-are available in the Git repository at:
+Could you please give more hint on how will it be correct?
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-soc-5.16
+I get the point that bit will no longer be 0, there are only -1 or > 0 now
+so trace_test_and_set_recursion() will disable preemption on bit > 0 and
+trace_clear_recursion() will enabled it since it should only be called when
+bit > 0 (I remember we could use a WARN_ON here now :-P).
 
-for you to fetch changes up to aa519471715ce73034ffaa52fc85681de31c1acf:
+> 
+>> @@ -178,7 +187,7 @@ static __always_inline void trace_clear_recursion(int bit)
+>>   * tracing recursed in the same context (normal vs interrupt),
+>>   *
+>>   * Returns: -1 if a recursion happened.
+>> - *           >= 0 if no recursion
+>> + *           > 0 if no recursion.
+>>   */
+>>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+>>  							 unsigned long parent_ip)
+> 
+> And this change would not be correct now.
 
-  ARM: s3c: Use strscpy to replace strlcpy (2021-09-20 10:13:47 +0200)
+I thought it will no longer return 0 so I change it to > 0, isn't that correct?
 
-----------------------------------------------------------------
-Samsung mach/soc changes for v5.16
+Regards,
+Michael Wang
 
-A minor fix for theoretical issue when handling IRQ setup code errors in
-S3C24xx and a cleanup for S3C64xx.
-
-----------------------------------------------------------------
-Jackie Liu (1):
-      ARM: s3c: irq-s3c24xx: Fix return value check for s3c24xx_init_intc()
-
-Jason Wang (1):
-      ARM: s3c: Use strscpy to replace strlcpy
-
- arch/arm/mach-s3c/irq-s3c24xx.c   | 22 ++++++++++++++++++----
- arch/arm/mach-s3c/mach-mini6410.c |  2 +-
- 2 files changed, 19 insertions(+), 5 deletions(-)
+> 
+> Regards
+> Miroslav
+> 
