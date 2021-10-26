@@ -2,46 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1880943AE24
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B7F43AE26
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhJZIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:35:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55956 "EHLO mail.kernel.org"
+        id S233801AbhJZIg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:36:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233224AbhJZIfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:35:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9F4760F46;
-        Tue, 26 Oct 2021 08:33:28 +0000 (UTC)
+        id S233353AbhJZIg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:36:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B32FA60E75;
+        Tue, 26 Oct 2021 08:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635237212;
-        bh=QzdqZpiGX5vzH78kafZN2BbBbWTTTjlj04OaCvEnSO4=;
+        s=k20201202; t=1635237243;
+        bh=KhCKgXvLcov+EFdzf9jDKXqDhuGa1G79WzeoutDBO6I=;
         h=From:To:Cc:Subject:Date:From;
-        b=R9M5fmXvJV81R3cbYtLS61achVk1fflWq5UM7WAJsoXmeXYqovJFGY+hKKhi/NjOz
-         okDNBwMnoJS8nGkqv94Mw3cmjfKeFa+rutVIvemZyguKtUnvFKhX5N4c22c3zetN6k
-         TVcRYDGeV5+6e6VHypheEiXP5KuPkfcNfFDZ8gSOqziQwpBjzAS7ajqhEFOad9ie3L
-         Wtiju9TeSmJBSh6hIhQuaQuKp6WAxoEZ3qYayR4QE1Lx5zhZK53W/dZzP1IdM+C4cG
-         +9amLZemg9pze/PISe5rYSitGz9U2Txa1tGRy6fCHtAgLtjGB73npXsL4mYw1zXr+m
-         w9fNQ05xDxofA==
+        b=CaXii8800WZSoF23eIYDmA7cfV9mylwV8iQfy1vaZ8vkIRAqjqH50N4ctyYllVGdA
+         zYgqyIaPQKVw8W41zfqj5jFyZprrSOaFZLoyBQ0lDWDa1m6v6UbwHolEfH7AxTnE6d
+         NEBR5EkR176h+e+uhbVxEilFaOsz9zxn9QnSYum2I6UbQ6PrWvpRHKEgArWftyXoYb
+         o9zaPvDWyZNcvM2khqlzGbM0k//2q+/83E+yyE6weQTaXUCeZ14m/xMERcXm2/eSWv
+         tPF1eYGSIvWV9BD09Sc0Xid0emLxD6Mcgdqwu31WCC01SiH9P4MijSP3O3SiRUMv/S
+         mVsgx7cCIxu6A==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        YN Chen <YN.Chen@mediatek.com>,
-        Deren Wu <deren.wu@mediatek.com>,
-        Leon Yen <Leon.Yen@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mt76: mt7663s: fix link error with CONFIG_PM=n
-Date:   Tue, 26 Oct 2021 10:33:09 +0200
-Message-Id: <20211026083326.3421663-1-arnd@kernel.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Marc Bonnici <marc.bonnici@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: arm_ffa: remove unused 'compat_version' variable
+Date:   Tue, 26 Oct 2021 10:33:50 +0200
+Message-Id: <20211026083400.3444946-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -51,40 +40,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The generic register access functions are compiled conditionally,
-causing a link failure in some randconfig builds:
+The newly added ffa_compatible_version_find() function causes a
+build warning because of a variable that is never used:
 
-ERROR: modpost: "mt76_connac_mcu_reg_wr" [drivers/net/wireless/mediatek/mt76/mt7615/mt7663s.ko] undefined!
-ERROR: modpost: "mt76_connac_mcu_reg_rr" [drivers/net/wireless/mediatek/mt76/mt7615/mt7663s.ko] undefined!
+drivers/firmware/arm_ffa/driver.c:180:6: error: unused variable 'compat_version' [-Werror,-Wunused-variable]
+        u32 compat_version;
 
-Move them out of the #ifdef block.
-
-Fixes: 02fbf8199f6e ("mt76: mt7663s: rely on mcu reg access utility")
+Fixes: 8e3f9da608f1 ("firmware: arm_ffa: Handle compatibility with different firmware versions")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/arm_ffa/driver.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-index 32e25180fc1e..26b4b875dcc0 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-@@ -2477,6 +2477,7 @@ void mt76_connac_mcu_set_suspend_iter(void *priv, u8 *mac,
- 	mt76_connac_mcu_set_wow_ctrl(phy, vif, suspend, wowlan);
- }
- EXPORT_SYMBOL_GPL(mt76_connac_mcu_set_suspend_iter);
-+#endif /* CONFIG_PM */
- 
- u32 mt76_connac_mcu_reg_rr(struct mt76_dev *dev, u32 offset)
+diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
+index 12f4c87c4555..14f900047ac0 100644
+--- a/drivers/firmware/arm_ffa/driver.c
++++ b/drivers/firmware/arm_ffa/driver.c
+@@ -177,7 +177,6 @@ static struct ffa_drv_info *drv_info;
+  */
+ static u32 ffa_compatible_version_find(u32 version)
  {
-@@ -2505,7 +2506,6 @@ void mt76_connac_mcu_reg_wr(struct mt76_dev *dev, u32 offset, u32 val)
- 	mt76_mcu_send_msg(dev, MCU_CMD_REG_WRITE, &req, sizeof(req), false);
- }
- EXPORT_SYMBOL_GPL(mt76_connac_mcu_reg_wr);
--#endif /* CONFIG_PM */
- 
- MODULE_AUTHOR("Lorenzo Bianconi <lorenzo@kernel.org>");
- MODULE_LICENSE("Dual BSD/GPL");
+-	u32 compat_version;
+ 	u16 major = MAJOR_VERSION(version), minor = MINOR_VERSION(version);
+ 	u16 drv_major = MAJOR_VERSION(FFA_DRIVER_VERSION);
+ 	u16 drv_minor = MINOR_VERSION(FFA_DRIVER_VERSION);
 -- 
 2.29.2
 
