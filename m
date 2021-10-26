@@ -2,209 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4EA43BCBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D686143BCCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239726AbhJZV7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239712AbhJZV7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:59:20 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399F5C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:56:56 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so537611pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9F+EWbh01K9eqvh7QO6VrhctGso+L9ps7sX+i8thX2Y=;
-        b=Zdc4ztOZkl8MtmXXDulYtc8GEdI8IyMPqz3rieEXFQnL2Lqi1V7RuMN7H7cBLLh/WM
-         /MIdKBeNWbepPud2CCiph86WRpuM3I7XKcdT+TO34XWvl8qHH7qYkb7bMs3S+fds2i43
-         aGu4iuDM+PHXHHNwIcrFMr7ZDDW4/ailCSjR8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9F+EWbh01K9eqvh7QO6VrhctGso+L9ps7sX+i8thX2Y=;
-        b=S9WOy+HFBGz5Q/+Gc47wQt0vGd4iepNalypsww9wqib+vCo32JKC2t66xOph6Nlgkh
-         7fPxoDJz9qGnNlTdWFO+KxD8hRlJBLT64YXhOrGca+KEf9Rfo9+14qHLt7wZjzA6Un4Q
-         RzTlxZcRxhHhIMXexUXljg59wj0bW5WBCl/vt6AlgRMPMU2Twm3ffWcAE6Qy1NdJdKvS
-         CQNTGnKoLt6M5mYr986SK1RXZk1PFwAwe4oNSaoBLllp3QW1XrvWEPktb56lTkgW8Etg
-         380bZG1CLSDjKYHkfbwcFqSL/qsuzhPiQ+Roj3gx350VDCeE2itav/E2XakK9vjNjk/o
-         auxw==
-X-Gm-Message-State: AOAM532eQxuDB3dTT0b2rGEgFo3Z7mxIfcwDVanwQzlwBZPpO7VqpGHW
-        fEQS5GeK39lFoKR2I1qhVqgbAaExO6ro9A==
-X-Google-Smtp-Source: ABdhPJzf1EEFbnTBWOPKTGgp7zivHRUhUNIS7IywoMnYJmw7DzXLac4ndmz27S1IJS0Os/VTjullCA==
-X-Received: by 2002:a17:90b:198b:: with SMTP id mv11mr1503430pjb.235.1635285415549;
-        Tue, 26 Oct 2021 14:56:55 -0700 (PDT)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:dad:6684:6674:b268])
-        by smtp.gmail.com with ESMTPSA id t8sm21225953pgk.66.2021.10.26.14.56.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:56:55 -0700 (PDT)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v4 2/2] drm/bridge: parade-ps8640: Populate devices on aux-bus
-Date:   Tue, 26 Oct 2021 14:56:49 -0700
-Message-Id: <20211026145622.v4.2.I09899dea340f11feab97d719cb4b62bef3179e4b@changeid>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211026145622.v4.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
-References: <20211026145622.v4.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
+        id S239769AbhJZWEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:04:07 -0400
+Received: from mga18.intel.com ([134.134.136.126]:57935 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239728AbhJZWEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 18:04:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="216934482"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="216934482"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 15:00:59 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="497555750"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 15:00:59 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>, x86@kernel.org
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        naoya.horiguchi@nec.com, Andrew Morton <akpm@linux-foundation.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Cathy Zhang <cathy.zhang@intel.com>, linux-sgx@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v11 0/7] Basic recovery for machine checks inside SGX
+Date:   Tue, 26 Oct 2021 15:00:43 -0700
+Message-Id: <20211026220050.697075-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211018202542.584115-1-tony.luck@intel.com>
+References: <20211018202542.584115-1-tony.luck@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Conventionally, panel is listed under the root of the device tree.
-When userland asks for display mode, ps8640 bridge is responsible
-for returning EDID when ps8640_bridge_get_edid() is called.
+Boris,
 
-Now enable a new option of listing panel under "aux-bus" of ps8640
-bridge node in the device tree. In this case, panel driver can retrieve
-EDID by triggering AUX transactions, without ps8640_bridge_get_edid()
-calls at all.
+I took this series out of lkml/x86 for a few revisions, I think
+the last one posted to lkml was v5. So much has changed since then
+that it might be easier to just look at this as if it were v1 and
+ignore the earlier history.
 
-To prevent the "old" and "new" options from interfering with each
-other's logic flow, disable DRM_BRIDGE_OP_EDID when the new option
-is taken.
+First four patches add infrastructure within the SGX code to
+track enclave pages (because these pages don't have a "struct
+page" as they aren't directly accessible by Linux). All have
+"Reviewed-by" tags from Jarkko (SGX maintainer).
 
-Signed-off-by: Philip Chen <philipchen@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
+Patch 5 hooks into memory_failure() to invoke recovery if
+the physical address is in enclave space. This has a
+"Reviewed-by" tag from Naoya Horiguchi the maintainer for
+mm/memory-failure.c
 
-(no changes since v3)
+Patch 6 is a hook into the error injection code and addition
+to the error injection documentation explaining extra steps
+needed to inject into SGX enclave memory.
 
-Changes in v3:
-- Fix when to call of_node_put() in ps8640_of_panel_on_aux_bus()
+Patch 7 is a hook into GHES error reporting path to recognize
+that SGX enclave addresses are valid and need processing.
 
-Changes in v2:
-- Add of_node_put() calls in ps8640_of_panel_on_aux_bus()
-- Select DRM_DP_AUX_BUS for PS8640 driver in Kconfig
-- Replace _put_sync() with _put_sync_suspend() in ps8640_post_disable()
+-Tony
 
- drivers/gpu/drm/bridge/Kconfig         |  1 +
- drivers/gpu/drm/bridge/parade-ps8640.c | 51 ++++++++++++++++++++------
- 2 files changed, 40 insertions(+), 12 deletions(-)
+Tony Luck (7):
+  x86/sgx: Add new sgx_epc_page flag bit to mark free pages
+  x86/sgx: Add infrastructure to identify SGX EPC pages
+  x86/sgx: Initial poison handling for dirty and free pages
+  x86/sgx: Add SGX infrastructure to recover from poison
+  x86/sgx: Hook arch_memory_failure() into mainline code
+  x86/sgx: Add hook to error injection address validation
+  x86/sgx: Add check for SGX pages to ghes_do_memory_failure()
 
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 431b6e12a81f..61db5a66b493 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -182,6 +182,7 @@ config DRM_PARADE_PS8622
- config DRM_PARADE_PS8640
- 	tristate "Parade PS8640 MIPI DSI to eDP Converter"
- 	depends on OF
-+	select DRM_DP_AUX_BUS
- 	select DRM_KMS_HELPER
- 	select DRM_MIPI_DSI
- 	select DRM_PANEL
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index cf1f630a3958..e737f1a27f30 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -14,6 +14,7 @@
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_bridge.h>
-+#include <drm/drm_dp_aux_bus.h>
- #include <drm/drm_dp_helper.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_of.h>
-@@ -149,6 +150,23 @@ static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
- 	return container_of(aux, struct ps8640, aux);
- }
- 
-+static bool ps8640_of_panel_on_aux_bus(struct device *dev)
-+{
-+	struct device_node *bus, *panel;
-+
-+	bus = of_get_child_by_name(dev->of_node, "aux-bus");
-+	if (!bus)
-+		return false;
-+
-+	panel = of_get_child_by_name(bus, "panel");
-+	of_node_put(bus);
-+	if (!panel)
-+		return false;
-+	of_node_put(panel);
-+
-+	return true;
-+}
-+
- static int ps8640_ensure_hpd(struct ps8640 *ps_bridge)
- {
- 	struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
-@@ -556,17 +574,6 @@ static int ps8640_probe(struct i2c_client *client)
- 	if (!ps_bridge)
- 		return -ENOMEM;
- 
--	/* port@1 is ps8640 output port */
--	ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
--	if (ret < 0)
--		return ret;
--	if (!panel)
--		return -ENODEV;
--
--	ps_bridge->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
--	if (IS_ERR(ps_bridge->panel_bridge))
--		return PTR_ERR(ps_bridge->panel_bridge);
--
- 	ps_bridge->supplies[0].supply = "vdd33";
- 	ps_bridge->supplies[1].supply = "vdd12";
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ps_bridge->supplies),
-@@ -589,9 +596,16 @@ static int ps8640_probe(struct i2c_client *client)
- 
- 	ps_bridge->bridge.funcs = &ps8640_bridge_funcs;
- 	ps_bridge->bridge.of_node = dev->of_node;
--	ps_bridge->bridge.ops = DRM_BRIDGE_OP_EDID;
- 	ps_bridge->bridge.type = DRM_MODE_CONNECTOR_eDP;
- 
-+	/*
-+	 * In the device tree, if panel is listed under aux-bus of the bridge
-+	 * node, panel driver should be able to retrieve EDID by itself using
-+	 * aux-bus. So let's not set DRM_BRIDGE_OP_EDID here.
-+	 */
-+	if (!ps8640_of_panel_on_aux_bus(&client->dev))
-+		ps_bridge->bridge.ops = DRM_BRIDGE_OP_EDID;
-+
- 	ps_bridge->page[PAGE0_DP_CNTL] = client;
- 
- 	ps_bridge->regmap[PAGE0_DP_CNTL] = devm_regmap_init_i2c(client, ps8640_regmap_config);
-@@ -630,6 +644,19 @@ static int ps8640_probe(struct i2c_client *client)
- 	if (ret)
- 		return ret;
- 
-+	devm_of_dp_aux_populate_ep_devices(&ps_bridge->aux);
-+
-+	/* port@1 is ps8640 output port */
-+	ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
-+	if (ret < 0)
-+		return ret;
-+	if (!panel)
-+		return -ENODEV;
-+
-+	ps_bridge->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
-+	if (IS_ERR(ps_bridge->panel_bridge))
-+		return PTR_ERR(ps_bridge->panel_bridge);
-+
- 	drm_bridge_add(&ps_bridge->bridge);
- 
- 	return 0;
+ .../firmware-guide/acpi/apei/einj.rst         |  19 +++
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/include/asm/processor.h              |   8 ++
+ arch/x86/include/asm/set_memory.h             |   4 +
+ arch/x86/kernel/cpu/sgx/main.c                | 113 +++++++++++++++++-
+ arch/x86/kernel/cpu/sgx/sgx.h                 |   7 +-
+ drivers/acpi/apei/einj.c                      |   3 +-
+ drivers/acpi/apei/ghes.c                      |   2 +-
+ include/linux/mm.h                            |  13 ++
+ mm/memory-failure.c                           |  19 ++-
+ 10 files changed, 179 insertions(+), 10 deletions(-)
+
+
+base-commit: 3906fe9bb7f1a2c8667ae54e967dc8690824f4ea
 -- 
-2.33.0.1079.g6e70778dc9-goog
+2.31.1
 
