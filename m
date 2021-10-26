@@ -2,147 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76AB43B692
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D37443B6A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237259AbhJZQMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235993AbhJZQMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:12:10 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64318C061348;
-        Tue, 26 Oct 2021 09:09:46 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id h196so21248199iof.2;
-        Tue, 26 Oct 2021 09:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rcwUM+yfYkd1fGoVQ1bAhhWXo7KweulJ4cGcrB1ov2k=;
-        b=j3hPdCROifw9JEpIA+McCEuNKWXOqBx6EsNP39GxRzscQeiT6z+/qJVIw6tlre1oR0
-         jenfCTu+YAhGgcdrYGOccXRLRIGsBdFZgMeSMz8sEwVfc1AqepJEJT9HHBm0UDZXs/O5
-         ZfhiMhpKdc3n2JO5H5DAJ5jvPJVnCsROvENQxUjaXPRspotW4g8Va7dYRA/uOYEbytGK
-         mNsdpH8oeQE1R+Od3g3VwR4XfDRvnLt4feNRnzdmfJko++vkI8GN7ieL6NMHCe8bt3AU
-         Raymkh3ad9Q7ejXGgrSb8jF0qWnMZCQd6Pxqv5sjUlcBK8P3RfghnR5eBA1gAeAOkpd9
-         qf8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rcwUM+yfYkd1fGoVQ1bAhhWXo7KweulJ4cGcrB1ov2k=;
-        b=xuV5OsOsyTNPIm3ICQVCx7KYjjrfJcmsVOZ5OqGfUEMIPI7yxg+K3w7pep8uTaHNDw
-         6rtutCXlpP5DxtvC0EZK/Q2qcNRBi0APSxuwAwoafWorJncMTi4PcN+0k6SxuS9C23ux
-         Q7Qqg5ea8u+OTgmjjzEOXQS4/9/Dagvd9ygpUaNgOJpL5FdRJYBhIaMEg6jWyrKs/0pf
-         cRkTjne4vm0uXrX+VbmgKTRkAu1bdX8QapjaLXA1OqZUsDKvCZNBwNS8kBhFQXxB6cIs
-         qUx7PUiO51IK9B5kqWa5MWgJfscHUbAdIWJ4gEU/BihISNVxQ2I7G4+tFQQzCT48A5MA
-         3T3w==
-X-Gm-Message-State: AOAM530yzEvr7KPQghvuok6UIj4Q6Qox3XBhNrsv5Q1s0ZTjrbxNWeyz
-        tNngYQIHGwiKVY0hTDA1MDwOdPB04r+wVAen4tE=
-X-Google-Smtp-Source: ABdhPJxXrjxmBSp1hood0IVz9PaZRtPxRuaI3ESryi3mTB5SO+Lab1x+ccAB23JEegIpQOzsPDhPHWEbuL2xAQCM5j8=
-X-Received: by 2002:a05:6602:1514:: with SMTP id g20mr16487935iow.9.1635264585800;
- Tue, 26 Oct 2021 09:09:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-9-laoar.shao@gmail.com>
- <202110251421.7056ACF84@keescook> <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
- <20211026091211.569a7ba2@gandalf.local.home>
-In-Reply-To: <20211026091211.569a7ba2@gandalf.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 27 Oct 2021 00:09:09 +0800
-Message-ID: <CALOAHbAK6u8qO5EiQ9yPp5a_HwddmDJE-JDUoDBK4QeEiR6ywQ@mail.gmail.com>
-Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
- task comm size change
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
+        id S237265AbhJZQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:15:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:36128 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237255AbhJZQO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 12:14:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="229898697"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="229898697"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 09:09:23 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="724212227"
+Received: from csvogels-mobl.amr.corp.intel.com (HELO [10.209.57.80]) ([10.209.57.80])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 09:09:22 -0700
+Subject: Re: [PATCH v2 0/5] mm/mprotect: avoid unnecessary TLB flushes
+To:     Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Xu <peterx@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+References: <20211021122112.592634-1-namit@vmware.com>
+ <20211021200450.b13499c379a27dbfefe9f5e3@linux-foundation.org>
+ <9E576E79-E4FD-4CB9-8BE5-142230C12E63@gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <bfa95168-c729-9b81-e87c-f49754cc06fc@intel.com>
+Date:   Tue, 26 Oct 2021 09:09:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <9E576E79-E4FD-4CB9-8BE5-142230C12E63@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 9:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 26 Oct 2021 10:18:51 +0800
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> > > So, if we're ever going to copying these buffers out of the kernel (I
-> > > don't know what the object lifetime here in bpf is for "e", etc), we
-> > > should be zero-padding (as get_task_comm() does).
-> > >
-> > > Should this, instead, be using a bounce buffer?
-> >
-> > The comment in bpf_probe_read_kernel_str_common() says
-> >
-> >   :      /*
-> >   :       * The strncpy_from_kernel_nofault() call will likely not fill the
-> >   :       * entire buffer, but that's okay in this circumstance as we're probing
-> >   :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
-> >   :       * as well probe the stack. Thus, memory is explicitly cleared
-> >   :       * only in error case, so that improper users ignoring return
-> >   :       * code altogether don't copy garbage; otherwise length of string
-> >   :       * is returned that can be used for bpf_perf_event_output() et al.
-> >   :       */
-> >
-> > It seems that it doesn't matter if the buffer is filled as that is
-> > probing arbitrary memory.
-> >
-> > >
-> > > get_task_comm(comm, task->group_leader);
-> >
-> > This helper can't be used by the BPF programs, as it is not exported to BPF.
-> >
-> > > bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
->
-> I guess Kees is worried that e.comm will have something exported to user
-> space that it shouldn't. But since e is part of the BPF program, does the
-> BPF JIT take care to make sure everything on its stack is zero'd out, such
-> that a user BPF couldn't just read various items off its stack and by doing
-> so, see kernel memory it shouldn't be seeing?
->
-> I'm guessing it does, otherwise this would be a bigger issue than this
-> patch series.
->
+On 10/22/21 2:58 PM, Nadav Amit wrote:
+>> [1/5] appears to be a significant fix which should probably be
+>> backported into -stable kernels.  If you agree with this then I suggest
+>> it be prepared as a standalone patch, separate from the other four
+>> patches.  With a cc:stable.
+> 
+> There is no functionality bug in the kernel. The Knights Landing bug
+> was circumvented eventually by changing the swap entry structure so
+> the access/dirty bits would not overlap with the swap entry data.
 
-You guess is correct per my verification.
-But the BPF JIT doesn't  zero it out, while it really does is adding
-some character like '?' in my verification.
+Yeah, it was a significant issue, but we fixed it in here:
 
-Anyway we don't need to worry that the kernel information may be
-leaked though bpf_probe_read_kernel_str().
+> commit 00839ee3b299303c6a5e26a0a2485427a3afcbbf
+> Author: Dave Hansen <dave.hansen@linux.intel.com>
+> Date:   Thu Jul 7 17:19:11 2016 -0700
+> 
+>     x86/mm: Move swap offset/type up in PTE to work around erratum
 
--- 
-Thanks
-Yafang
