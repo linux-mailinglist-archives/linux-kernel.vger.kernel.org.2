@@ -2,117 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5F143B7E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686D643B7E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236422AbhJZRJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:09:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:35102 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234147AbhJZRJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:09:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7246F1FB;
-        Tue, 26 Oct 2021 10:06:49 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F07683F70D;
-        Tue, 26 Oct 2021 10:06:47 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 18:06:41 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset to
- finish
-Message-ID: <20211026170641.GA20573@lpieralisi>
-References: <cover.1634622716.git.mchehab+huawei@kernel.org>
- <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
- <20211022151624.mgsgobjsjgyevnyt@pali>
- <20211023103059.6add00e6@sal.lan>
- <20211025102511.GA10529@lpieralisi>
- <20211025114011.0eca7ccc@sal.lan>
+        id S236446AbhJZRLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234147AbhJZRLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:11:17 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D93BC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:08:53 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id s1so16408215edd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qCd7R32fnniXdlIAcpkZUDMU6nES+blfXibgQwBeFfE=;
+        b=PNVEORwix3jGXAq/di7wx1XCFAiv5HJVtDNm4w2xZE5VBcSeFAZQG3E1C4QCLhURRV
+         IiSiT71/H9HVBoIFJwBRsgeZaQnKnw7AD2LCKahIEGTU9Cfx2DP91MWS8e9XVQGDIiJo
+         AvQQvZ/VMKR8dLUWCnW0iEvywPEG86YzsChXnKeHh/ljOi0yiqd0nqi617BDHwUIfq1T
+         LyeGeAePdPgx2k0F/2rqx4EtO4SlL3YUlQ7jtJY3AUqDeJxWDnJh/UAv3ZVUW7qPKria
+         3x+YnoRFslfR1K0wF78EkdUWCNNV/oICHSkVdsuS/Nnrow+r8peFG4DTWMvZKBv/aDK2
+         nTAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qCd7R32fnniXdlIAcpkZUDMU6nES+blfXibgQwBeFfE=;
+        b=mhj55pMftQy8KOEiCyTAUvKqGZoVKkMR67Pf56wCmJmyyraq4Q0MI4u9UFFVtxNkQZ
+         C5Jdr/0K5HZtTdGXFdVa8dMA1BzyBL0tf0o19VPvGmXSXmw4UedBXTNmfKlnf0gQzY1b
+         57ZNjHRJxRvFbPQqJcC6BFG+/VnBtrqg6Q7AX95waDxSa9PlXoBY4c5sunZql44VoYkZ
+         pvrfzqIjtftneIjnfGqXKI8VlKYJURxeagbaLV8v4qLsFEudbWy82benBOLv3uLrNN39
+         f6Jqn0BP/EH+TbOsIYXHHXYt5tbhwoHz/RK5CWtr2GSIOu6zDRpg0zto0DVNfzmGpZof
+         Rr3Q==
+X-Gm-Message-State: AOAM5338ns9eaVRT474yB9dwqXeocKE4PDvHjZyPBkaaMSbUqi8KBi6Q
+        O8evqIRfHv+/589OguFkz15d/SSkDBYyrCLX1WcQ9A==
+X-Google-Smtp-Source: ABdhPJwW14K+ib9gu+ZFk7+uWz7H5S4aQtjbRLpLJVjBjbhLHstYHlu3gR/YivB85sE/P+h7nXu9PNnPuu/PzDejHv8=
+X-Received: by 2002:a17:907:7fa7:: with SMTP id qk39mr5058503ejc.384.1635268083956;
+ Tue, 26 Oct 2021 10:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211025114011.0eca7ccc@sal.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20211025190928.054676643@linuxfoundation.org>
+In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 26 Oct 2021 22:37:52 +0530
+Message-ID: <CA+G9fYtaSe=PrPFLZaoFw1Ama_dC2RF3CO1CZsOjBWEGyBr3Zg@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/44] 4.4.290-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 11:40:11AM +0100, Mauro Carvalho Chehab wrote:
-> Em Mon, 25 Oct 2021 11:25:11 +0100
-> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
-> 
-> > On Sat, Oct 23, 2021 at 10:30:59AM +0100, Mauro Carvalho Chehab wrote:
-> > > Hi Pali,
-> > > 
-> > > Em Fri, 22 Oct 2021 17:16:24 +0200
-> > > Pali Rohár <pali@kernel.org> escreveu:
-> > >   
-> > > > On Tuesday 19 October 2021 07:06:42 Mauro Carvalho Chehab wrote:  
-> > > > > Before code refactor, the PERST# signals were sent at the
-> > > > > end of the power_on logic. Then, the PCI core would probe for
-> > > > > the buses and add them.
-> > > > > 
-> > > > > The new logic changed it to send PERST# signals during
-> > > > > add_bus operation. That altered the timings.
-> > > > > 
-> > > > > Also, HiKey 970 require a little more waiting time for
-> > > > > the PCI bridge - which is outside the SoC - to finish
-> > > > > the PERST# reset, and then initialize the eye diagram.    
-> > > > 
-> > > > Hello! Which PCIe port do you mean by PCI bridge device? Do you mean
-> > > > PCIe Root Port? Or upstream port on some external PCIe switch connected
-> > > > via PCIe bus to the PCIe Root Port? Because all of these (virtual) PCIe
-> > > > devices are presented as PCI bridge devices, so it is not clear to which
-> > > > device it refers.  
-> > > 
-> > > HiKey 970 uses an external PCI bridge chipset (a Broadcom PEX 8606[1]),
-> > > with 3 elements connected to the bus: an Ethernet card, a M.2 slot and
-> > > a mini PCIe slot. It seems HiKey 970 is unique with regards to PERST# signal,
-> > > as there are 4 independent PERST# signals there:
-> > > 
-> > > 	- one for PEX 8606 (the PCIe root port);
-> > > 	- one for Ethernet;
-> > > 	- one for M.2;
-> > > 	- one for mini-PCIe.
-> > > 
-> > > After sending the PCIe PERST# signals, the device has to wait for 21 ms
-> > > before adjusting the eye diagram.
-> > > 
-> > > [1] https://docs.broadcom.com/docs/PEX_8606_AIC_RDK_HRM_v1.3_06Aug10.pdf
-> > >   
-> > > > Normally PERST# signal is used to reset endpoint card, other end of PCIe
-> > > > link and so PERST# signal should not affect PCIe Root Port at all.  
-> > > 
-> > > That's not the case, as PEX 8606 needs to complete its reset sequence
-> > > for the rest of the devices to be visible. If the wait time is reduced
-> > > or removed, the devices behind it won't be detected.  
-> > 
-> > These pieces of information should go into the commit log (or I can add
-> > a Link: tag to this discussion) - it is fundamental to understand these
-> > changes.
-> > 
-> > I believe we can merge this series but we have to document this
-> > discussion appropriately.
-> 
-> IMO, the best is to add a Link: to the discussion:
-> 
-> Link: https://lore.kernel.org/all/9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org/
-> 
-> But if you prefer otherwise and want me to re-submit the series, please
+On Tue, 26 Oct 2021 at 00:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.290 release.
+> There are 44 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
 > let me know.
+>
+> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.290-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I will squash this patch with the previous one (that describes
-the bridge PERST# requirements) and add the Link above to the
-commit log.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Lorenzo
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.4.290-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.4.y
+* git commit: 7d5d802dae8e729d00633b6608b2183074cd1cba
+* git describe: v4.4.289-45-g7d5d802dae8e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+89-45-g7d5d802dae8e
+
+## No regressions (compared to v4.4.289)
+
+## No fixes (compared to v4.4.289)
+
+## Test result summary
+total: 43390, pass: 34733, fail: 191, skip: 7460, xfail: 1006
+
+## Build Summary
+* arm: 128 total, 128 passed, 0 failed
+* arm64: 33 total, 33 passed, 0 failed
+* i386: 17 total, 17 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 22 total, 22 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 17 total, 17 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
