@@ -2,102 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749C443B326
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC9543B328
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236207AbhJZNcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:32:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:10709 "EHLO mga18.intel.com"
+        id S236234AbhJZNdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235339AbhJZNcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:32:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="216812117"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="216812117"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 06:26:21 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="596927438"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 06:26:19 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfMSk-001869-Rn;
-        Tue, 26 Oct 2021 16:25:58 +0300
-Date:   Tue, 26 Oct 2021 16:25:58 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v2 1/2] serial: 8250_pci: Replace custom pci_match_id()
- implementation
-Message-ID: <YXgB5vt8+r/Tdo07@smile.fi.intel.com>
-References: <20211025124533.29977-1-andriy.shevchenko@linux.intel.com>
- <202110262029.9bqOz12y-lkp@intel.com>
+        id S235339AbhJZNdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:33:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 606E060EB4;
+        Tue, 26 Oct 2021 13:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635255041;
+        bh=sn4s98HdC2qKJsLKjqTV3zcN9AvfBPiE+tmD7sjrIcw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PTUfJro5M79NHhJIkFvbDTOGy34+4a6eetEXLw4zf9pwou9w1Qw+WQWXqD7YbFzRt
+         kEDu3Hpx+0bKb3pShPlOgJWIJ8irf5U1JpJTY1h6QaDFt3LHN/S5XTdFt0JXBlf9nT
+         MUdIcPziVd1T9TnhHrWziVxufGQPSHQ5LrvSALug=
+Date:   Tue, 26 Oct 2021 15:30:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Oliver Neukum <oneukum@suse.com>,
+        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 5.14 165/169] usbnet: sanity check for maxpacket
+Message-ID: <YXgC/6VwCxyrmoQp@kroah.com>
+References: <20211025191017.756020307@linuxfoundation.org>
+ <20211025191038.360463849@linuxfoundation.org>
+ <YXf1tdKi0b0M4XCx@hovoldconsulting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202110262029.9bqOz12y-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YXf1tdKi0b0M4XCx@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 08:45:48PM +0800, kernel test robot wrote:
-> Hi Andy,
+On Tue, Oct 26, 2021 at 02:33:57PM +0200, Johan Hovold wrote:
+> On Mon, Oct 25, 2021 at 09:15:46PM +0200, Greg Kroah-Hartman wrote:
+> > From: Oliver Neukum <oneukum@suse.com>
+> > 
+> > commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
+> > 
+> > maxpacket of 0 makes no sense and oopses as we need to divide
+> > by it. Give up.
+> > 
+> > V2: fixed typo in log and stylistic issues
+> > 
+> > Signed-off-by: Oliver Neukum <oneukum@suse.com>
+> > Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
+> > Reviewed-by: Johan Hovold <johan@kernel.org>
+> > Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> I love your patch! Perhaps something to improve:
+> Please drop this one from all stable queues until
 > 
-> [auto build test WARNING on tty/tty-testing]
-> [cannot apply to v5.15-rc7 next-20211026]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> 	https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
 > 
-> url:    https://github.com/0day-ci/linux/commits/Andy-Shevchenko/serial-8250_pci-Replace-custom-pci_match_id-implementation/20211025-204752
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-> config: i386-randconfig-a003-20211025 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project a461fa64bb37cffd73f683c74f6b0780379fc2ca)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/24a32531ba63f472ec6f40c4d431cb5369b29818
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Andy-Shevchenko/serial-8250_pci-Replace-custom-pci_match_id-implementation/20211025-204752
->         git checkout 24a32531ba63f472ec6f40c4d431cb5369b29818
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> drivers/tty/serial/8250/8250_pci.c:1268:6: warning: variable 'amcc' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
->            if (match)
->                ^~~~~
->    drivers/tty/serial/8250/8250_pci.c:1273:6: note: uninitialized use occurs here
->            if (amcc) {
->                ^~~~
->    drivers/tty/serial/8250/8250_pci.c:1268:2: note: remove the 'if' if its condition is always true
->            if (match)
->            ^~~~~~~~~~
->    drivers/tty/serial/8250/8250_pci.c:1265:11: note: initialize the variable 'amcc' to silence this warning
->            bool amcc;
->                     ^
->                      = 0
+> has landed.
 
-Clang gives a right and wrong advice at the same time.
-Thank you for the uninitialized case, but variable is boolean, what's 0 here?
+Will drop it now and wait for that one, thanks!
 
-I'll send a fix ASAP.
-
->    1 warning generated.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
