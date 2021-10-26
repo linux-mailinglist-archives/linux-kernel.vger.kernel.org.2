@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3FF43AC0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1E243AC0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235167AbhJZGMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 02:12:55 -0400
-Received: from out0.migadu.com ([94.23.1.103]:62450 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232875AbhJZGMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 02:12:54 -0400
-Message-ID: <1d60192a-0eec-70ed-9c3c-8e6f3866d99c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635228629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S235169AbhJZGN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 02:13:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41362 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232721AbhJZGNP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 02:13:15 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id AEDBC21956;
+        Tue, 26 Oct 2021 06:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635228651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oBQbtnpH+00gV7mBGAxGI5OEydFCoAjp1v+/FzoQd1k=;
-        b=J+BKMrUXFE4YEUzli0oDEhIbt38gYW1tEOzDBCtkYly1rEGQeGMsw8UvDnRTiDbVeiugqj
-        fA6eoevDZXQa+EntqUz6Tjr9ZMV23IJQ3P/aTu3vyJDm4LOzFlrVPGXAUHj7QufCLzyQNX
-        bsGXPfbtlWYVe8wBSURqPlQfF0UPRa0=
-Date:   Tue, 26 Oct 2021 09:10:26 +0300
-MIME-Version: 1.0
-Subject: Re: [PATCH for-next 0/3] EFA dmabuf memory regions
-Content-Language: en-US
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Firas Jahjah <firasj@amazon.com>
-References: <20211012120903.96933-1-galpress@amazon.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Gal Pressman <gal.pressman@linux.dev>
-In-Reply-To: <20211012120903.96933-1-galpress@amazon.com>
+        bh=h90ltgfyz9gJ7g53ayzW06q3/x4siV5IgMDlL4cLdgY=;
+        b=Nnh83/h0IOC3tiifeoGDzm5jQtGWCrvFnSFMC3ku8QrZ/H2fQOU0wW76H3qY4qJgibtMi/
+        sTiH9G562tdbNHd6C9TALoPfEq/VWDxmVCPuf5vy7UQhzu+hlQtdxRJcQQFrju9ecz+Xa+
+        S3yijVAXJY/pSReSKm3em1Ywis19EgM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635228651;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h90ltgfyz9gJ7g53ayzW06q3/x4siV5IgMDlL4cLdgY=;
+        b=r8MkTxlBz5HhltV2kgBZtzpv9R14zObtJ0mmlgsPyRF5mWNGAJH3hgvcrfCY6AaXH7w10O
+        Tb/4FOjqOG+zufAA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 67C8EA3B81;
+        Tue, 26 Oct 2021 06:10:51 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 08:10:51 +0200
+Message-ID: <s5hk0i0xqms.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     YE Chengfeng <cyeaa@connect.ust.hk>
+Cc:     "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "chihhao.chen@mediatek.com" <chihhao.chen@mediatek.com>,
+        "damien@zamaudio.com" <damien@zamaudio.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?UTF-8?B?5Zue5aSNOg==?= [PATCH] sound/usb: fix null pointer
+ dereference on pointer cs_desc
+In-Reply-To: <TYCP286MB1188D80DA04A5EE1B96814B28A829@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+References: <20211024111736.11342-1-cyeaa@connect.ust.hk>
+        <TYCP286MB1188D80DA04A5EE1B96814B28A829@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: gal.pressman@linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 15:09, Gal Pressman wrote:
-> Hey all,
->
-> This is a followup to my previous RFCs [1][2], which now adds a new api
-> to the RDMA subsystem that allows drivers to get a pinned dmabuf memory
-> region without requiring an implementation of the move_notify callback.
-> The new api makes use of the dynamic attachment api implemented in the
-> RDMA subsystem, but calls dma_buf_pin() in order to make sure that the
-> callback will not be called, as suggested by Christian.
->
-> As explained in the previous RFC, move_notify requires the RDMA device
-> to support on-demand-paging (ODP) which is not common on most devices
-> (only supported by mlx5).
->
-> While the dynamic requirement makes sense for certain GPUs, some devices
-> (such as habanalabs) have device memory that is always "pinned" and do
-> not need/use the move_notify operation.
->
-> Patch #1 changes the dmabuf documentation to make it clear that pinning
-> does not necessarily mean the memory must be moved to system memory, it
-> is up to the exporter to decide.
-> Patch #2 adds the RDMA api that allows drivers to get pinned dmabuf
-> memory regions.
-> Patch #3 adds the EFA implementation of the dmabuf importer.
->
-> The motivation of this submission is to use habanalabs as the dmabuf
-> exporter, and EFA as the importer to allow for peer2peer access through
-> libibverbs.
->
-> [1] https://lore.kernel.org/linux-rdma/20210818074352.29950-1-galpress@amazon.com/
-> [2] https://lore.kernel.org/linux-rdma/20211007104301.76693-1-galpress@amazon.com/
->
-> Thanks
+On Sun, 24 Oct 2021 13:20:48 +0200,
+YE Chengfeng wrote:
+> 
+> Hi,
+> 
+> I found another potential null-ptr-dereference problem in this file, and not
+> sure whether it is true.  I send this patch to you just for reference, thinks
+> a lot if you could spare some time to look at it.
+
+The Fixes tag doesn't look correct (the code before the refactoring
+also didn't have NULL checks), so applied without it now.
 
 
-Hey Jason, did you get a chance to take a look?
+thanks,
 
+Takashi
+
+> 
+> Thanks so much,
+> Chengfeng
+> ------------------------------------------------------------------------------
+> 发件人: YE Chengfeng <cyeaa@connect.ust.hk>
+> 发送时间: 2021年10月24日 19:17
+> 收件人: perex@perex.cz <perex@perex.cz>; tiwai@suse.com <tiwai@suse.com>;
+> chihhao.chen@mediatek.com <chihhao.chen@mediatek.com>; damien@zamaudio.com
+> <damien@zamaudio.com>
+> 抄送: alsa-devel@alsa-project.org <alsa-devel@alsa-project.org>;
+> linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; YE Chengfeng
+> <cyeaa@connect.ust.hk>
+> 主题: [PATCH] sound/usb: fix null pointer dereference on pointer cs_desc
+>  
+> The pointer cs_desc return from snd_usb_find_clock_source could
+> be null, so there is a potential null pointer dereference issue.
+> Fix this by adding a null check before dereference.
+> 
+> Fixes: 9ec73005 ("ALSA: usb-audio: Refactoring UAC2/3 clock setup code")
+> Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+> ---
+>  sound/usb/clock.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+> index 81d5ce07d548..98345a695dcc 100644
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -496,6 +496,10 @@ int snd_usb_set_sample_rate_v2v3(struct snd_usb_audio
+> *chip,
+>          union uac23_clock_source_desc *cs_desc;
+>  
+>          cs_desc = snd_usb_find_clock_source(chip, clock, fmt->protocol);
+> +
+> +       if (!cs_desc)
+> +               return 0;
+> +
+>          if (fmt->protocol == UAC_VERSION_3)
+>                  bmControls = le32_to_cpu(cs_desc->v3.bmControls);
+>          else
+> --
+> 2.17.1
+> 
+> 
