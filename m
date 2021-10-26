@@ -2,234 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126DA43B2F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A88043B2F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbhJZNMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhJZNMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:12:41 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D1CC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:10:17 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id g10so13713403edj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OeP2uMz0vd+0Who0xc5ehw8wxwkBYkcsuWLBdD8sZ7U=;
-        b=z46YN3gflREfqzH2Fewqg5rqttp063V1gzUTKhozcp0O//DAiziFvJ5k1RRxmF1XJp
-         DEES3QEe9nSjSF+esx/B2RViby4BjvbMHU8IHQJmb9lTEPHJ/Dd6ocDHZPyh1yjuoHWb
-         bI7TE4KKcE2PQucd2snFdgQzjDrWetiupT3IodK6PbgbbDfRFjU59j8+37uzLh9DMumZ
-         xQUHks4YEirE55Qhqgi2JdOrlbfIoc9xggyYofqZZBZJUCf3DdZtNqAkYi7QdMHxmcUQ
-         bIYMx6wCbOs7aUOhG8igwIO2AEVtSBnEzaKU1vPjpdlcRmKzBtRAOn1R8BdnJEhW+ILt
-         O7kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OeP2uMz0vd+0Who0xc5ehw8wxwkBYkcsuWLBdD8sZ7U=;
-        b=V2nbdv0v3951D1TIp0TJbY8ZWthNiidR5/1d5MmA3eWfl8kbcENpAO8xn0cNlvVgKS
-         wuAWUcJvLVES0s9KsdQQL4fNFF822e0pFg0eqWEicxYmFI4ywuAjCh1g9hHV2uplB9ub
-         L66m1qOeWJQy1B1TTGN6xkbA7UBMIjiYkAY9hSD2qdkkr/tr4RyAE6R8gsVURI64/1ac
-         OYHtErV+p+nungJMs9tWhbJwJL9k7peon94/P0p7iacLjubDvbLmBTEMc/0bP49UJW0N
-         +8vO+zjh/+B5Risw8ECduXVRxCiCURMrVNl+OQXsfvet+qpIjmGBtSo+vmmTI24lJka9
-         9Kjw==
-X-Gm-Message-State: AOAM532fe2HocoTuzRNHEks3pnNMpNlp/mhazkQnAlcMKiiK40oDUI/w
-        0Ugd98J0197Gc/OGcMauj0lp/QTJDU93UWAMgloYlw==
-X-Google-Smtp-Source: ABdhPJyv01ZPFZOXeyGnZa74PagrRNC+pdAHU7rGrGka/F21q2HiGVS8goget7VNBMF4v+tlLR0Zb2kelvRx6sYdA/g=
-X-Received: by 2002:a17:907:971e:: with SMTP id jg30mr30149825ejc.169.1635253804651;
- Tue, 26 Oct 2021 06:10:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025190926.680827862@linuxfoundation.org>
-In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 26 Oct 2021 18:39:52 +0530
-Message-ID: <CA+G9fYu9u9frCeLs0+5Ok-3_+50BpdBPLbqNzKmJDn7gJBfCYQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/37] 4.19.214-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S236160AbhJZNMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:12:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:54084 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236128AbhJZNMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:12:40 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD2sp_ndh21EgAA--.34661S2;
+        Tue, 26 Oct 2021 21:10:01 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf-next v7] test_bpf: Add module parameter test_suite
+Date:   Tue, 26 Oct 2021 21:10:00 +0800
+Message-Id: <1635253800-4459-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxD2sp_ndh21EgAA--.34661S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Cr4rWw1fGFyDXw1fWr1Dtrb_yoWDtw18pF
+        Wjqrn0yF18JF97XF18XF17Aa4FyF40y3y8KrWfJryqyrs5AryUtF48K34Iqrn3Jr40v345
+        Za10vFs8G3W2yaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JU24E_UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 00:54, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.214 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.214-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
+operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
+there exists segment fault due to the following reason:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+ALU64_MOV_X: all register value magnitudes jited:1
+Break instruction in kernel code[#1]
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+It seems that the related jit implementations of some test cases
+in test_bpf() have problems. At this moment, I do not care about
+the segment fault while I just want to verify the test cases of
+tail calls.
 
-## Build
-* kernel: 4.19.214-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: e9434cadcff7c1dce4bcc8c599149f87f266e486
-* git describe: v4.19.213-38-ge9434cadcff7
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.213-38-ge9434cadcff7
+Based on the above background and motivation, add the following
+module parameter test_suite to the test_bpf.ko:
+test_suite=<string>: only the specified test suite will be run, the
+string can be "test_bpf", "test_tail_calls" or "test_skb_segment".
 
-## No regressions (compared to v4.19.213)
-## No fixes (compared to v4.19.213)
+If test_suite is not specified, but test_id, test_name or test_range
+is specified, set 'test_bpf' as the default test suite.
 
-## Test result summary
-total: 78293, pass: 63026, fail: 781, skip: 12713, xfail: 1773
+This is useful to only test the corresponding test suite when specify
+the valid test_suite string.
 
-## Build Summary
-* arm: 129 total, 129 passed, 0 failed
-* arm64: 37 total, 37 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 18 total, 18 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 27 total, 27 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 21 total, 21 passed, 0 failed
+Any invalid test suite will result in -EINVAL being returned and no
+tests being run. If the test_suite is not specified or specified as
+empty string, it does not change the current logic, all of the test
+cases will be run.
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+Here are some test results:
+ # dmesg -c
+ # modprobe test_bpf
+ # dmesg | grep Summary
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
 
---
-Linaro LKFT
-https://lkft.linaro.org
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf
+ # dmesg | tail -1
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls
+ # dmesg
+ test_bpf: #0 Tail call leaf jited:0 21 PASS
+ [...]
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment
+ # dmesg
+ test_bpf: #0 gso_with_rx_frags PASS
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_id=1
+ # dmesg
+ test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
+ test_bpf: #1 TXA jited:0 54 51 50 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf test_name=TXA
+ # dmesg
+ test_bpf: #1 TXA jited:0 54 50 51 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
+ # dmesg
+ test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment test_id=1
+ # dmesg
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
+
+By the way, the above segment fault has been fixed in the latest bpf-next
+tree.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+v7:
+  -- Rename prepare_bpf_tests() to prepare_test_range(), remove
+     some unnecessary code, suggested by Johan Almbladh, thank you.
+
+v6:
+  -- Compute the valid range once in the beginning of prepare_bpf_tests(),
+     suggested by Johan Almbladh, thank you.
+
+v5:
+  -- Remove some duplicated code, suggested by Johan Almbladh,
+     thank you.
+  -- Initialize test_range[2] to {0, INT_MAX}.
+  -- If test_suite is specified, but test_range is not specified,
+     set the upper limit of each test_suite to overwrite INT_MAX.
+
+v4:
+  -- Fix the following checkpatch issues:
+     CHECK: Alignment should match open parenthesis
+     CHECK: Please don't use multiple blank lines
+
+     ./scripts/checkpatch.pl --strict *.patch
+     total: 0 errors, 0 warnings, 0 checks, 299 lines checked
+
+     the default max-line-length is 100 in ./scripts/checkpatch.pl,
+     but it seems that the netdev/checkpatch is 80:
+     https://patchwork.hopto.org/static/nipa/559961/12545157/checkpatch/stdout
+
+v3:
+  -- Use test_suite instead of test_type as module parameter
+  -- Make test_id, test_name and test_range selection applied to each test suite
+
+v2:
+  -- Fix typo in the commit message
+  -- Use my private email to send
+
+ lib/test_bpf.c | 212 ++++++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 135 insertions(+), 77 deletions(-)
+
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index e5b10fd..749d8c5 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
+ static int test_id = -1;
+ module_param(test_id, int, 0);
+ 
+-static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
++static int test_range[2] = { 0, INT_MAX };
+ module_param_array(test_range, int, NULL, 0);
+ 
+-static __init int find_test_index(const char *test_name)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+-		if (!strcmp(tests[i].descr, test_name))
+-			return i;
+-	}
+-	return -1;
+-}
+-
+-static __init int prepare_bpf_tests(void)
+-{
+-	if (test_id >= 0) {
+-		/*
+-		 * if a test_id was specified, use test_range to
+-		 * cover only that test.
+-		 */
+-		if (test_id >= ARRAY_SIZE(tests)) {
+-			pr_err("test_bpf: invalid test_id specified.\n");
+-			return -EINVAL;
+-		}
+-
+-		test_range[0] = test_id;
+-		test_range[1] = test_id;
+-	} else if (*test_name) {
+-		/*
+-		 * if a test_name was specified, find it and setup
+-		 * test_range to cover only that test.
+-		 */
+-		int idx = find_test_index(test_name);
+-
+-		if (idx < 0) {
+-			pr_err("test_bpf: no test named '%s' found.\n",
+-			       test_name);
+-			return -EINVAL;
+-		}
+-		test_range[0] = idx;
+-		test_range[1] = idx;
+-	} else {
+-		/*
+-		 * check that the supplied test_range is valid.
+-		 */
+-		if (test_range[0] >= ARRAY_SIZE(tests) ||
+-		    test_range[1] >= ARRAY_SIZE(tests) ||
+-		    test_range[0] < 0 || test_range[1] < 0) {
+-			pr_err("test_bpf: test_range is out of bound.\n");
+-			return -EINVAL;
+-		}
+-
+-		if (test_range[1] < test_range[0]) {
+-			pr_err("test_bpf: test_range is ending before it starts.\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-static __init void destroy_bpf_tests(void)
+-{
+-}
+-
+ static bool exclude_test(int test_id)
+ {
+ 	return test_id < test_range[0] || test_id > test_range[1];
+@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
+ 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+ 		const struct skb_segment_test *test = &skb_segment_tests[i];
+ 
++		cond_resched();
++		if (exclude_test(i))
++			continue;
++
+ 		pr_info("#%d %s ", i, test->descr);
+ 
+ 		if (test_skb_segment_single(test)) {
+@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 		int ret;
+ 
+ 		cond_resched();
++		if (exclude_test(i))
++			continue;
+ 
+ 		pr_info("#%d %s ", i, test->descr);
+ 		if (!fp) {
+@@ -14966,29 +14909,144 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 	return err_cnt ? -EINVAL : 0;
+ }
+ 
++static char test_suite[32];
++module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
++
++static __init int find_test_index(const char *test_name)
++{
++	int i;
++
++	if (!strcmp(test_suite, "test_bpf")) {
++		for (i = 0; i < ARRAY_SIZE(tests); i++) {
++			if (!strcmp(tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_tail_calls")) {
++		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
++			if (!strcmp(tail_call_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_skb_segment")) {
++		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
++			if (!strcmp(skb_segment_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	return -1;
++}
++
++static __init int prepare_test_range(void)
++{
++	int valid_range;
++
++	if (!strcmp(test_suite, "test_bpf"))
++		valid_range = ARRAY_SIZE(tests);
++	else if (!strcmp(test_suite, "test_tail_calls"))
++		valid_range = ARRAY_SIZE(tail_call_tests);
++	else if (!strcmp(test_suite, "test_skb_segment"))
++		valid_range = ARRAY_SIZE(skb_segment_tests);
++	else
++		return 0;
++
++	if (test_id >= 0) {
++		/*
++		 * if a test_id was specified, use test_range to
++		 * cover only that test.
++		 */
++		if (test_id >= valid_range) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++			       test_suite);
++			return -EINVAL;
++		}
++
++		test_range[0] = test_id;
++		test_range[1] = test_id;
++	} else if (*test_name) {
++		/*
++		 * if a test_name was specified, find it and setup
++		 * test_range to cover only that test.
++		 */
++		int idx = find_test_index(test_name);
++
++		if (idx < 0) {
++			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
++			       test_name, test_suite);
++			return -EINVAL;
++		}
++		test_range[0] = idx;
++		test_range[1] = idx;
++	} else if (test_range[0] != 0 || test_range[1] != INT_MAX) {
++		/*
++		 * check that the supplied test_range is valid.
++		 */
++		if (test_range[0] < 0 || test_range[1] >= valid_range) {
++			pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++			       test_suite);
++			return -EINVAL;
++		}
++
++		if (test_range[1] < test_range[0]) {
++			pr_err("test_bpf: test_range is ending before it starts.\n");
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
+ static int __init test_bpf_init(void)
+ {
+ 	struct bpf_array *progs = NULL;
+ 	int ret;
+ 
+-	ret = prepare_bpf_tests();
++	if (strlen(test_suite) &&
++	    strcmp(test_suite, "test_bpf") &&
++	    strcmp(test_suite, "test_tail_calls") &&
++	    strcmp(test_suite, "test_skb_segment")) {
++		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
++		return -EINVAL;
++	}
++
++	/*
++	 * if test_suite is not specified, but test_id, test_name or test_range
++	 * is specified, set 'test_bpf' as the default test suite.
++	 */
++	if (!strlen(test_suite) &&
++	    (test_id != -1 || strlen(test_name) ||
++	    (test_range[0] != 0 || test_range[1] != INT_MAX))) {
++		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
++		strcpy(test_suite, "test_bpf");
++	}
++
++	ret = prepare_test_range();
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = test_bpf();
+-	destroy_bpf_tests();
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
++		ret = test_bpf();
++		if (ret)
++			return ret;
++	}
+ 
+-	ret = prepare_tail_call_tests(&progs);
+-	if (ret)
+-		return ret;
+-	ret = test_tail_calls(progs);
+-	destroy_tail_call_tests(progs);
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
++		ret = prepare_tail_call_tests(&progs);
++		if (ret)
++			return ret;
++		ret = test_tail_calls(progs);
++		destroy_tail_call_tests(progs);
++		if (ret)
++			return ret;
++	}
+ 
+-	return test_skb_segment();
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
++		return test_skb_segment();
++
++	return 0;
+ }
+ 
+ static void __exit test_bpf_exit(void)
+-- 
+2.1.0
+
