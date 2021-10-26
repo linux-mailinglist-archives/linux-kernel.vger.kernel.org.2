@@ -2,101 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BC543B4A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C94A43B4AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236950AbhJZOrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbhJZOrT (ORCPT
+        id S236057AbhJZOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:49:30 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53326
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236054AbhJZOtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:47:19 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C585C061745;
-        Tue, 26 Oct 2021 07:44:55 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id y17so17535421ilb.9;
-        Tue, 26 Oct 2021 07:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Iy+awNeYow+pZc/iB1UDBBsLq5AXRGWMxqulAP9fDkA=;
-        b=MaFGLlXw8Ugv98OU2Ywa01KZmCS1SMD0hUBKIvK2njSBNmhmhbUUJjHDAubWhhY96/
-         1uoOCR18qWVWXpL4p9ElnAxI9EId8fCBeRaApfRpFvFo6gLUzst4uulZoKVKaKplepD4
-         jbg7SH6E7l6whBKq0FGjBfj0NkQhv1ChdDXnlHXXKmZdX+5srX3YnyeMDQAkAEiTX0SR
-         X/yJEI5JCUjHYiWcPCMqb4tIhsQ1yMU4GJ5taDHufVyh+8DKZAHt7x+GLvpQN3IZd4pG
-         IpXDmjxH3dtrOgMp1sQ1HbTCmtOvkAjr6ZBMH1cfiiFRIcFYuKdSUqGCBK0x0r2vUH/M
-         H7XA==
+        Tue, 26 Oct 2021 10:49:25 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 101833F1A0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635259621;
+        bh=sGvC/moOvdyUz5BgWBNn++QElNeJtVEkhjy6Xzwoit8=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=vcS2Toy+sgX/w9lbQrxmqQT21zMs/jKY68V3uhwfwAIOqbyF71II+GWP32eULtjeB
+         dZLVOY+3CE5qQr+H8xPzPjTapITqwfulNO0MVpMmbsAE1ZpwzWxNOkslSLqT2Nhloc
+         HIoww3CRZuSzGEiiLDAf7N2RTZ2dW+7dai+maeYu0C+Z8d76dnFRrY10qVYPbBvDOH
+         uC8A/NBtfFz9L5QQ56uEEQmWcpD8GZi7OC00GXGYC6OIByJZKUSwBfeXbrh++5CYbO
+         FgXz1RpN9vAgxgGlOczuBUqsRohkMY0ocvl4/qTFAb7M1ouMo2FeEMsROb2Xe5LXs+
+         Qn4H9DdlVNTUQ==
+Received: by mail-lf1-f70.google.com with SMTP id bi16-20020a0565120e9000b003fd56ef5a94so6258646lfb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:47:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Iy+awNeYow+pZc/iB1UDBBsLq5AXRGWMxqulAP9fDkA=;
-        b=7Y7bd/nTf3a8Nw9/vjVlSQUtdco7+Fq87eBdkdlM2xspQiQd2XFmyfkuykg3Xzbgj3
-         8c0XrM/CvrUlz9ngZyW0JTokDVAgDJYy2hDsI8Ka2UjYHpq89dzj1BA5W128X+brycih
-         5jW+CsVPaLcLYbWv57FcLLPbZk18WSAO506pypdoqqf7Rq9B/uhGkvDPwmKXDiZh52qu
-         kg8AA/zOa8Hb52u/w89KgHFeGExfI5DGqdurPX2yByTADneEcEKRCRpIrMobcpa8kpJs
-         pdwcKcvBMcq7+jtJ/gk2YKGM7D0LWp7b7gbEmRyRXCR1b2W82rX+TZwezZbY4/tbCWjQ
-         r/tw==
-X-Gm-Message-State: AOAM533ZUh8eLF/znef7B5lPsmpILOAsdgUR9MoWJhwWyD/DsccfZvn5
-        2ZmoLzloY0vXwcV0bjnRgESRfAB9tH0=
-X-Google-Smtp-Source: ABdhPJyzdApKplVzN7/9JWa4Tw5Xsfjg1GuQfTiTMYS5/pJNyb7FjRJq9TcM98BEdvYLiJcOvsG0yg==
-X-Received: by 2002:a05:6e02:104b:: with SMTP id p11mr15157863ilj.187.1635259495054;
-        Tue, 26 Oct 2021 07:44:55 -0700 (PDT)
-Received: from localhost (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
-        by smtp.gmail.com with ESMTPSA id z26sm10063738ioe.9.2021.10.26.07.44.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 07:44:54 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 10:44:52 -0400
-From:   Trevor Woerner <twoerner@gmail.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Yorick de Wid <yorickdewid@users.noreply.github.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
- macros
-Message-ID: <20211026144452.GA40651@localhost>
-References: <20210423184012.39300-1-twoerner@gmail.com>
- <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
- <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
- <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sGvC/moOvdyUz5BgWBNn++QElNeJtVEkhjy6Xzwoit8=;
+        b=1jQAMZnLftXM4ON2fKEveYW/TuW6B6yXf7t8VRDHRoAqMNCzlIAKTzIKD9MkzidgmS
+         k07+gpACbJwkyyXm5ZLVckT++quarcR/yw2/+XbT7b+fgeDMPuVHbfDxcL6cKZlZl8kF
+         U4QbYQzfvujIhCQD1hXIycX13cVD/hhTV3ZAAvGPHqPUinUomDJfq18Z4BxHI4oZYm8i
+         6btw8CfZFDt0Oreb+z4/F/6ZRyh0kEzSJ0Diwur/CYe4Gqh2gf0U5E9uFiqRjdz84y+6
+         dKL0ZZFOpzGRaWmIteOh/busL7bg8FMFJPejOPupTaEdmxwxgqiDTAi4jtX087zlg6Ie
+         f7dg==
+X-Gm-Message-State: AOAM532iVTmvdUVMOXEBAsAW3TU3lfIOZag/0a1LKABA0TNuYKBUb3vq
+        ZxjgaOVv48pbcdq5HW87Utg0y6ycGTVUBcGbVKlgF3XTRPPlFwzEOErivZ7dindlK1kHr+SZpWF
+        7lYVztqdHPqP/jbL7iQRfMTt6YgRzoUFk+cjJvYNPuw==
+X-Received: by 2002:a2e:9a44:: with SMTP id k4mr27138538ljj.149.1635259620089;
+        Tue, 26 Oct 2021 07:47:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzId5LC3CECZNRGA5TXwzhpCrfWJ3jxLerU06SuBsMlTmuewBOjpfWson2aDsP9+nWnmzeFEA==
+X-Received: by 2002:a2e:9a44:: with SMTP id k4mr27138506ljj.149.1635259619839;
+        Tue, 26 Oct 2021 07:46:59 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id u1sm1369162lfs.21.2021.10.26.07.46.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:46:59 -0700 (PDT)
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
+Message-ID: <3739744b-0a10-6d6b-8d1c-9c82b6afe0b3@canonical.com>
+Date:   Tue, 26 Oct 2021 16:46:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-10-26 @ 02:47:12 PM, Miguel Ojeda wrote:
-> On Mon, Oct 25, 2021 at 11:40 PM Trevor Woerner <twoerner@gmail.com> wrote:
-> >
-> > ping?
-> >
-> > It doesn't look like this was picked up by trivial? Although, it doesn't look like git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial.git has been used in a while. Is there an alternate (preferred) path for trivial patches?
+On 25/10/2021 22:56, Lad Prabhakar wrote:
+> SPI Multi I/O Bus Controller on RZ/G2L SoC is almost identical to
+> the RPC-IF interface found on R-Car Gen3 SoC's.
 > 
-> Jonathan should be able to take it, or perhaps Andrew.
+> This patch adds a new compatible string for the RZ/G2L family so
+> that the timing values on RZ/G2L can be adjusted.
 > 
-> Note that you should put whoever should take it in the To field (I
-> just noticed your original email did not) -- use
-> `scripts/get_maintainer.pl` for getting the relevant people for a
-> patch or path.
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+> v1->v2:
+>  * Updated macros as suggested by Wolfram
+> ---
+>  drivers/memory/renesas-rpc-if.c | 72 ++++++++++++++++++++++++++++-----
+>  drivers/mtd/hyperbus/rpc-if.c   |  4 +-
+>  drivers/spi/spi-rpc-if.c        |  4 +-
+>  include/memory/renesas-rpc-if.h |  8 +++-
+>  4 files changed, 75 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+> index 0c56decc91f2..8c51145c0f5c 100644
+> --- a/drivers/memory/renesas-rpc-if.c
+> +++ b/drivers/memory/renesas-rpc-if.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/regmap.h>
+>  #include <linux/reset.h>
+>  
+> @@ -27,8 +28,8 @@
+>  #define RPCIF_CMNCR_MOIIO_HIZ	(RPCIF_CMNCR_MOIIO0(3) | \
+>  				 RPCIF_CMNCR_MOIIO1(3) | \
+>  				 RPCIF_CMNCR_MOIIO2(3) | RPCIF_CMNCR_MOIIO3(3))
+> -#define RPCIF_CMNCR_IO3FV(val)	(((val) & 0x3) << 14) /* undocumented */
+> -#define RPCIF_CMNCR_IO2FV(val)	(((val) & 0x3) << 12) /* undocumented */
+> +#define RPCIF_CMNCR_IO3FV(val)	(((val) & 0x3) << 14) /* documented for RZ/G2L */
+> +#define RPCIF_CMNCR_IO2FV(val)	(((val) & 0x3) << 12) /* documented for RZ/G2L */
+>  #define RPCIF_CMNCR_IO0FV(val)	(((val) & 0x3) << 8)
+>  #define RPCIF_CMNCR_IOFV_HIZ	(RPCIF_CMNCR_IO0FV(3) | RPCIF_CMNCR_IO2FV(3) | \
+>  				 RPCIF_CMNCR_IO3FV(3))
+> @@ -126,6 +127,9 @@
+>  #define RPCIF_SMDRENR_OPDRE	BIT(4)
+>  #define RPCIF_SMDRENR_SPIDRE	BIT(0)
+>  
+> +#define RPCIF_PHYADD		0x0070	/* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+> +#define RPCIF_PHYWR		0x0074	/* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+> +
+>  #define RPCIF_PHYCNT		0x007C	/* R/W */
+>  #define RPCIF_PHYCNT_CAL	BIT(31)
+>  #define RPCIF_PHYCNT_OCTA(v)	(((v) & 0x3) << 22)
+> @@ -133,10 +137,12 @@
+>  #define RPCIF_PHYCNT_OCT	BIT(20)
+>  #define RPCIF_PHYCNT_DDRCAL	BIT(19)
+>  #define RPCIF_PHYCNT_HS		BIT(18)
+> -#define RPCIF_PHYCNT_STRTIM(v)	(((v) & 0x7) << 15)
+> +#define RPCIF_PHYCNT_CKSEL(v)	(((v) & 0x3) << 16) /* valid only for RZ/G2L */
+> +#define RPCIF_PHYCNT_STRTIM(v)	(((v) & 0x7) << 15) /* valid for R-Car and RZ/G2{E,H,M,N} */
+>  #define RPCIF_PHYCNT_WBUF2	BIT(4)
+>  #define RPCIF_PHYCNT_WBUF	BIT(2)
+>  #define RPCIF_PHYCNT_PHYMEM(v)	(((v) & 0x3) << 0)
+> +#define RPCIF_PHYCNT_PHYMEM_MASK GENMASK(1, 0)
+>  
+>  #define RPCIF_PHYOFFSET1	0x0080	/* R/W */
+>  #define RPCIF_PHYOFFSET1_DDRTMG(v) (((v) & 0x3) << 28)
+> @@ -244,18 +250,46 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
+>  		return PTR_ERR(rpc->dirmap);
+>  	rpc->size = resource_size(res);
+>  
+> +	rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
+>  	rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+>  
+>  	return PTR_ERR_OR_ZERO(rpc->rstc);
+>  }
+>  EXPORT_SYMBOL(rpcif_sw_init);
+>  
+> -void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
+> +static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
+> +{
+> +	u32 data;
+> +
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0xa5390000);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000000);
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000022);
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000024);
+> +
+> +	regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
+> +	regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+> +}
+> +
+> +int rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
+>  {
+>  	u32 dummy;
+>  
+>  	pm_runtime_get_sync(rpc->dev);
+>  
+> +	if (rpc->type == RPCIF_RZ_G2L) {
+> +		int ret;
+> +
+> +		ret = reset_control_reset(rpc->rstc);
+> +		if (ret)
+> +			return ret;
+> +		usleep_range(200, 300);
+> +		rpcif_rzg2l_timing_adjust_sdr(rpc);
+> +	}
+> +
+>  	/*
+>  	 * NOTE: The 0x260 are undocumented bits, but they must be set.
+>  	 *	 RPCIF_PHYCNT_STRTIM is strobe timing adjustment bits,
+> @@ -264,8 +298,15 @@ void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
+>  	 *	 On H3 ES1.x, the value should be 0, while on others,
+>  	 *	 the value should be 7.
+>  	 */
+> -	regmap_write(rpc->regmap, RPCIF_PHYCNT, RPCIF_PHYCNT_STRTIM(7) |
+> -		     RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260);
+> +	if (rpc->type == RPCIF_RCAR_GEN3) {
+> +		regmap_write(rpc->regmap, RPCIF_PHYCNT, RPCIF_PHYCNT_STRTIM(7) |
+> +			     RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260);
+> +	} else {
+> +		regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
+> +		dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
+> +		dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
+> +		regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
+> +	}
+>  
+>  	/*
+>  	 * NOTE: The 0x1511144 are undocumented bits, but they must be set
+> @@ -282,9 +323,17 @@ void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
+>  		regmap_update_bits(rpc->regmap, RPCIF_PHYINT,
+>  				   RPCIF_PHYINT_WPVAL, 0);
+>  
+> -	regmap_write(rpc->regmap, RPCIF_CMNCR, RPCIF_CMNCR_SFDE |
+> -		     RPCIF_CMNCR_MOIIO_HIZ | RPCIF_CMNCR_IOFV_HIZ |
+> -		     RPCIF_CMNCR_BSZ(hyperflash ? 1 : 0));
+> +	if (rpc->type == RPCIF_RCAR_GEN3)
+> +		regmap_write(rpc->regmap, RPCIF_CMNCR, RPCIF_CMNCR_SFDE |
+> +			     RPCIF_CMNCR_MOIIO_HIZ | RPCIF_CMNCR_IOFV_HIZ |
+> +			     RPCIF_CMNCR_BSZ(hyperflash ? 1 : 0));
+> +	else
+> +		regmap_write(rpc->regmap, RPCIF_CMNCR, RPCIF_CMNCR_SFDE |
+> +			     RPCIF_CMNCR_MOIIO3(1) | RPCIF_CMNCR_MOIIO2(1) |
+> +			     RPCIF_CMNCR_MOIIO1(1) | RPCIF_CMNCR_MOIIO0(1) |
+> +			     RPCIF_CMNCR_IO3FV(2) | RPCIF_CMNCR_IO2FV(2) |
+> +			     RPCIF_CMNCR_IO0FV(2) | RPCIF_CMNCR_BSZ(hyperflash ? 1 : 0));
+> +
+>  	/* Set RCF after BSZ update */
+>  	regmap_write(rpc->regmap, RPCIF_DRCR, RPCIF_DRCR_RCF);
+>  	/* Dummy read according to spec */
+> @@ -295,6 +344,8 @@ void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
+>  	pm_runtime_put(rpc->dev);
+>  
+>  	rpc->bus_size = hyperflash ? 2 : 1;
+> +
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL(rpcif_hw_init);
+>  
+> @@ -657,7 +708,8 @@ static int rpcif_remove(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id rpcif_of_match[] = {
+> -	{ .compatible = "renesas,rcar-gen3-rpc-if", },
+> +	{ .compatible = "renesas,rcar-gen3-rpc-if", .data = (void *)RPCIF_RCAR_GEN3 },
+> +	{ .compatible = "renesas,rzg2l-rpc-if", .data = (void *)RPCIF_RZ_G2L },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, rpcif_of_match);
+> diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
+> index 367b0d72bf62..40bca89268c3 100644
+> --- a/drivers/mtd/hyperbus/rpc-if.c
+> +++ b/drivers/mtd/hyperbus/rpc-if.c
+> @@ -132,7 +132,9 @@ static int rpcif_hb_probe(struct platform_device *pdev)
+>  
+>  	rpcif_enable_rpm(&hyperbus->rpc);
+>  
+> -	rpcif_hw_init(&hyperbus->rpc, true);
+> +	error = rpcif_hw_init(&hyperbus->rpc, true);
+> +	if (error)
+> +		return error;
+>  
 
-Ah, good point. I have a "cccmd" line in my ~/.gitconfig for adding people to
-the CC when I "git send-email", maybe I should switch that to a "tocmd"?
+Not related to this patch, but the concept used here looks fragile. The
+child driver calls also rpcif_sw_init() and ignores the error code. What
+happens in case of rpcif_sw_init() failure or child probe deferral?
+Since the SW and HW init is called in context of child device, the
+parent won't do anything. Then, second bind of child device (manual or
+because of deferral) will fail on devm_reset_control_get_exclusive()
+with -EBUSY.
 
-get_maintainer.pl didn't add Andrew back then on my patch and still doesn't
-even now. Maybe the MAINTAINERS file needs an update if Andrew is to be
-included on trivial/documentation patches?
+Initializing parent's resources should be rather done from parent's
+context (so renesas-rpc-if.c) to handle properly deferred probe and
+other failures. Doing it from a child, breaks encapsulation and
+separation of devices.
+
+Is there any reason why memory/renesas-rpc-if.c cannot do SW and HW init?
+
+Best regards,
+Krzysztof
