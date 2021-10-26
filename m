@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14D443B391
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996D743B397
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbhJZOGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39290 "EHLO mail.kernel.org"
+        id S236344AbhJZOJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234584AbhJZOG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:06:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C86960C41;
-        Tue, 26 Oct 2021 14:04:03 +0000 (UTC)
+        id S231493AbhJZOI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:08:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDA956103C;
+        Tue, 26 Oct 2021 14:06:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635257045;
-        bh=fYdFs1PisYcKFzN6nRtvkLmTckm/NDSJLCk+ti392Ww=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mXG8+T/cQMFHz2x09oPHlhLJhgracMsXllil7jpAGNm37jTEggSQ0Ztv1l/lYpVOD
-         4yaJbCSkRmUoIkugi192f74I93XiT8A4H0TeeaG6H8kCYjjvDPPlFZNCRN4aP4xROs
-         rVpGprOeNASv0hwRb/TVSFctLrvbJn46AF/iVjWlurWhbbc5k7Cn+8IEkJRPlexUyR
-         muwhqoPHSIKRKQ3wZz3UFmvtgQyjeXYVbd4uVFvAQfxhkx42FKMQmeMGmcPd9KxvdL
-         H0EsnWhxRZJpCcktWb7uSPjIOubg+aBYUIRosyBBEuOE0923IODBggoWuHcwx1rGA8
-         7VLJb4DOloeOw==
-Date:   Tue, 26 Oct 2021 07:04:00 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] dma-buf: st: fix error handling in test_get_fences()
-Message-ID: <YXgK0HAe1+dEPvL1@archlinux-ax161>
-References: <20211026083448.3471055-1-arnd@kernel.org>
+        s=k20201202; t=1635257193;
+        bh=ZzD40Angatb9WKJIB9PLKZoFb4YiYIHNUINS1DX4/Ng=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=r00TIpUZmQmYGSxW5DdMBMLTk8k4m5P/+u8CgiXSXdP2EephzSeNVSHAQw9qm/ZNE
+         RLDaY3lTwxTB5SgA0p+H8IFiBt4OVoECpm2Sx5dPmIhZJipphw/Bpw66X4u/zMbKn3
+         0jIj5OrlrN0v5ZAk6YlPs4qVfjaaTFWov3MPyEg6GTjyFAAgbjMJ+KqWZTsE8tPAvW
+         5Ey08E/9vhkoXwvW1jE1YcvB+zO236izT26Fotl+s35wlohu2It22j7a+NSr9PtGDm
+         3W8fvxXetD6P6sU5V4tMh1xURFfBmJ+Lb2NsJai7X7bX0ho0BcdAARSAq8DNIFoG9q
+         aox1+4S2mM+CQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2A6965C0D48; Tue, 26 Oct 2021 07:06:32 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 07:06:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+Cc:     "dave@stgolabs.net" <dave@stgolabs.net>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] refscale: always log the error message
+Message-ID: <20211026140632.GV880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211025032658.22889-1-lizhijian@cn.fujitsu.com>
+ <20211025032658.22889-3-lizhijian@cn.fujitsu.com>
+ <5f4c53e4-34aa-98f6-343f-0de18df830f2@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026083448.3471055-1-arnd@kernel.org>
+In-Reply-To: <5f4c53e4-34aa-98f6-343f-0de18df830f2@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:34:37AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Oct 25, 2021 at 06:12:40AM +0000, lizhijian@fujitsu.com wrote:
 > 
-> The new driver incorrectly unwinds after errors, as clang points out:
 > 
-> drivers/dma-buf/st-dma-resv.c:295:7: error: variable 'i' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->                 if (r) {
->                     ^
-> drivers/dma-buf/st-dma-resv.c:336:9: note: uninitialized use occurs here
->         while (i--)
->                ^
-> drivers/dma-buf/st-dma-resv.c:295:3: note: remove the 'if' if its condition is always false
->                 if (r) {
->                 ^~~~~~~~
-> drivers/dma-buf/st-dma-resv.c:288:6: error: variable 'i' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->         if (r) {
->             ^
-> drivers/dma-buf/st-dma-resv.c:336:9: note: uninitialized use occurs here
->         while (i--)
->                ^
-> drivers/dma-buf/st-dma-resv.c:288:2: note: remove the 'if' if its condition is always false
->         if (r) {
->         ^~~~~~~~
-> drivers/dma-buf/st-dma-resv.c:280:10: note: initialize the variable 'i' to silence this warning
->         int r, i;
->                 ^
->                  = 0
+> On 25/10/2021 11:26, Li Zhijian wrote:
+> > Generally, error message should be logged anyhow.
+> >
+> > Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> > ---
+> >   kernel/rcu/refscale.c | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+> > index a4479f00dcdc..f055d168365a 100644
+> > --- a/kernel/rcu/refscale.c
+> > +++ b/kernel/rcu/refscale.c
+> > @@ -58,8 +58,8 @@ do {											\
+> >   	}										\
+> >   } while (0)
+> >   
+> > -#define VERBOSE_SCALEOUT_ERRSTRING(s, x...) \
+> > -	do { if (verbose) pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
+> > +#define SCALEOUT_ERRSTRING(s, x...) \
+> > +	do { pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
+> >   
+> >   MODULE_LICENSE("GPL");
+> >   MODULE_AUTHOR("Joel Fernandes (Google) <joel@joelfernandes.org>");
+> > @@ -651,7 +651,7 @@ static int main_func(void *arg)
+> >   	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
+> >   	buf = kzalloc(800 + 64, GFP_KERNEL);
+> >   	if (!result_avg || !buf) {
+> > -		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
+> > +		SCALEOUT_ERRSTRING("out of memory");
 > 
-> Skip cleaning up the bits that have not been allocated at this point.
-> 
-> Fixes: 1d51775cd3f5 ("dma-buf: add dma_resv selftest v4")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> '\n' should be added to the last to flush it.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+And there might well be other missing "\n" instances in similar messages
+in rcuscale.c, rcutorture.c, scftorture.c, locktorture.c, and torture.c.
+Please feel free to send a patch for each file needing this help.
 
-> ---
-> I'm not familiar with these interfaces, so I'm just guessing where
-> we should jump after an error, please double-check and fix if necessary.
-> ---
->  drivers/dma-buf/st-dma-resv.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+I queued your other three patches for v5.17 (not this coming merge window,
+but the one after that), thank you!  I did wordsmith the commit logs,
+so please check to see if I messed anything up.
+
+							Thanx, Paul
+
+> >   		goto oom_exit;
+> >   	}
+> >   	if (holdoff)
+> > @@ -837,7 +837,7 @@ ref_scale_init(void)
+> >   	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
+> >   			       GFP_KERNEL);
+> >   	if (!reader_tasks) {
+> > -		VERBOSE_SCALEOUT_ERRSTRING("out of memory");
+> > +		SCALEOUT_ERRSTRING("out of memory");
+> ditto
 > 
-> diff --git a/drivers/dma-buf/st-dma-resv.c b/drivers/dma-buf/st-dma-resv.c
-> index 6f3ba756da3e..bc32b3eedcb6 100644
-> --- a/drivers/dma-buf/st-dma-resv.c
-> +++ b/drivers/dma-buf/st-dma-resv.c
-> @@ -287,7 +287,7 @@ static int test_get_fences(void *arg, bool shared)
->  	r = dma_resv_lock(&resv, NULL);
->  	if (r) {
->  		pr_err("Resv locking failed\n");
-> -		goto err_free;
-> +		goto err_resv;
->  	}
->  
->  	if (shared) {
-> @@ -295,7 +295,7 @@ static int test_get_fences(void *arg, bool shared)
->  		if (r) {
->  			pr_err("Resv shared slot allocation failed\n");
->  			dma_resv_unlock(&resv);
-> -			goto err_free;
-> +			goto err_resv;
->  		}
->  
->  		dma_resv_add_shared_fence(&resv, f);
-> @@ -336,6 +336,7 @@ static int test_get_fences(void *arg, bool shared)
->  	while (i--)
->  		dma_fence_put(fences[i]);
->  	kfree(fences);
-> +err_resv:
->  	dma_resv_fini(&resv);
->  	dma_fence_put(f);
->  	return r;
-> -- 
-> 2.29.2
-> 
+> Thanks
+> Zhijian
+> >   		firsterr = -ENOMEM;
+> >   		goto unwind;
+> >   	}
