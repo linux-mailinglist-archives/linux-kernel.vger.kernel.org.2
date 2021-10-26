@@ -2,69 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0244843B519
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6A443B520
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhJZPJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231184AbhJZPJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:09:27 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S236194AbhJZPKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:10:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231776AbhJZPK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 11:10:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635260883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RhWBGhTPUXjWCenxI84mF0qWi0IwhDx4oi/aU2tmg8M=;
+        b=I1ir67atA85Bb0tlhILNT4F7JhDGBSnPKom2R6Xi1+haxaXal/OooHvdt0aE9Z/6wS9Ftm
+        JtyHGKt/SFvAYouEzAZRkMwz4NAQ4+cF6ciL+k/mS7/DqBvuCoGAn+1bNRyHA4trih3pY6
+        NIlc2tmxBbCWU2lQkMG3Suah/XZVvZs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-dCr9twRMPm2CU3kpYXEgmw-1; Tue, 26 Oct 2021 11:07:58 -0400
+X-MC-Unique: dCr9twRMPm2CU3kpYXEgmw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14FB0604AC;
-        Tue, 26 Oct 2021 15:07:02 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 11:07:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Kalesh Singh <kaleshsingh@google.com>, surenb@google.com,
-        hridya@google.com, namhyung@kernel.org, kernel-team@android.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 7/8] tracing/selftests: Add tests for hist trigger
- expression parsing
-Message-ID: <20211026110700.3be13865@gandalf.local.home>
-In-Reply-To: <20211026214311.583c728d90d41778c38201dd@kernel.org>
-References: <20211025200852.3002369-1-kaleshsingh@google.com>
-        <20211025200852.3002369-8-kaleshsingh@google.com>
-        <20211026214311.583c728d90d41778c38201dd@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B1E210B3940;
+        Tue, 26 Oct 2021 15:07:56 +0000 (UTC)
+Received: from dreyauc.ausil.us (unknown [10.22.9.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F09B19D9D;
+        Tue, 26 Oct 2021 15:07:54 +0000 (UTC)
+From:   Dennis Gilmore <dgilmore@redhat.com>
+To:     linux-rockchip@lists.infradead.org
+Cc:     dgilmore@redhat.com, Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Florian Klink <flokli@flokli.de>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
+        support), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] arm64: dts: rockchip: helios64: define usb hub and 2.5GbE nic
+Date:   Tue, 26 Oct 2021 10:07:47 -0500
+Message-Id: <20211026150751.70115-1-dgilmore@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 21:43:11 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Add the 4 ports on the internal hub and define and turn on the 2.5GbE
+nic.
 
-> > diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> > new file mode 100644
-> > index 000000000000..e715641c54d3
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> > @@ -0,0 +1,72 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# description: event trigger - test histogram expression parsing
-> > +# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log  
-> 
-> Hmm, are there any way to check the running kernel supports this feature?
-> Because the latest version of the kselftest is expected to run on the old stable
-> kernel for testing, the testcase should check whether the kernel supports this
-> testing feature or not. (That's why the requires tag supports README pattern check)
-> 
-> So, at first if you didn't update the <tracefs>/README, please update it first
-> to show the new syntax is supported, and add "SOME-PATTERN":README to the
-> requires tag.
+Signed-off-by: Dennis Gilmore <dgilmore@redhat.com>
+---
+ .../dts/rockchip/rk3399-kobol-helios64.dts    | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-Yes, please update the README in kernel/trace/trace.c readme_msg[].
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+index 26d45cf7ce00..1ffddf860375 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+@@ -125,6 +125,18 @@ pcie_power: pcie-power {
+ 		vin-supply = <&vcc5v0_perdev>;
+ 	};
+ 
++	usblan_power: usblan-power {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio1 RK_PC7 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usb_lan_en>;
++		regulator-name = "usblan_power";
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vcc5v0_usb>;
++	};
++
+ 	vcc1v8_sys_s0: vcc1v8-sys-s0 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc1v8_sys_s0";
+@@ -465,6 +477,11 @@ hdd_b_power_en: hdd-b-power-en {
+ 		vcc5v0_usb_en: vcc5v0-usb-en {
+ 			rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
++
++		usb_lan_en: usb-lan-en {
++			rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
+ 	};
+ 
+ 	vcc3v0-sd {
+@@ -563,5 +580,43 @@ &usbdrd3_1 {
+ 	usb@fe900000 {
+ 		dr_mode = "host";
+ 		status = "okay";
++
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		hub@1 {
++			compatible = "usb2109,0815";
++			reg = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@1 {
++				reg = <1>;
++				#trigger-source-cells = <0>;
++			};
++
++			port@2 {
++				reg = <2>;
++				#trigger-source-cells = <0>;
++			};
++
++			port@3 {
++				reg = <3>;
++				#trigger-source-cells = <0>;
++			};
++
++			device@4 {
++				compatible = "usbbda,8156";
++				reg = <4>;
++
++				#address-cells = <2>;
++				#size-cells = <0>;
++
++				interface@0 {	/* interface 0 of configuration 1 */
++					compatible = "usbbda,8156.config1.0";
++					reg = <0 1>;
++				};
++			};
++		};
+ 	};
+ };
+-- 
+2.32.0
 
-I'll look at the other patches, and if they are fine, I may just apply them.
-
--- Steve
