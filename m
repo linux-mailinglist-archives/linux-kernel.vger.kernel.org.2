@@ -2,794 +2,786 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5407443B56C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E9943B567
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhJZPYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        id S235782AbhJZPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234738AbhJZPYO (ORCPT
+        with ESMTP id S231931AbhJZPX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:24:14 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02638C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:21:50 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id p14so13945941wrd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Wy+wx2fvPqm5nqOwbC9LDxN6SSZo5D0taxG002YtCX4=;
-        b=yNnDu79azOdSQPTlEQpea931Ef7UjET3iLBa11vEwAFuYXrb/zjRjB/Ig7im5I9k2b
-         G5NwhtlQ7VfMKSFNfZxPRZT2U/8J4XfADiCkvrrN071pqC7GnvSes2XCQIYya9Vfsc/R
-         /kPm6wF5qb0trzFpUdgKUOKLwFWErpghibMF194cSUbOZPWLL3U6Gn5ZqKcjCIwqjcxh
-         vLtjGtNeskvPxjx6aRYcTHlM22SbuXALwUanbrE0z54F5rHLfuPK8/fDkzsHld9rafBu
-         nmU+iZ2bgzCqp9LrtZ5dzOZ9S6cUbT72//l4gXClHaRoIo0AjWCaDrwV3UceKO+JuBGk
-         PlaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Wy+wx2fvPqm5nqOwbC9LDxN6SSZo5D0taxG002YtCX4=;
-        b=lNcfgA5ZHnppFxF0ZB1GsOKM3KehjXdicT4hCRUliLh952uV2jamjFff+X8xrpqHXf
-         j25JLzFQeC47M1KpvP0oxmogfFFqdKIros2Mlv1Om6SeHnnQG1fEg8rcSitDDjoygnXf
-         82CEVBhzrDBjmjDT9yDu4WYs9oSstlm3GnR8d4Gs4hVe21ay1YK45oXeNeN+n/Xb/yGf
-         +yXtYYxOZ+80ZUJR7SynhpUJcfljIUFEQvQ1qGsPic1FATSrZdQR3JnFvFDDQ0nmwHKe
-         bH1tTYal8eOn+j4wZaSvZlSdYPkpO5rZXc3zDsBDW/0R8dtG6K8ucdvlr+gTHO+pvAcd
-         FImA==
-X-Gm-Message-State: AOAM531zXv7PXgHCqFUOH+svINqZWNORcXH2xGTBAMcj5X6doY+TLm7B
-        KzlslDHyGztyvq4mOTiGuBseeFWHkVGwgA==
-X-Google-Smtp-Source: ABdhPJySbgOMxfC7iJUKf4ubc3JfXM8it6BlSv7FhSzg7I6ydt+5BfA6mqtv/4p9UpLU4TnszQqWng==
-X-Received: by 2002:a05:6000:154b:: with SMTP id 11mr32480142wry.422.1635261707623;
-        Tue, 26 Oct 2021 08:21:47 -0700 (PDT)
-Received: from lmecxl0524.lme.st.com ([2a04:cec0:1008:8c94:50ee:a5d1:4a7:ad6])
-        by smtp.gmail.com with ESMTPSA id o11sm27934740wry.0.2021.10.26.08.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 08:21:47 -0700 (PDT)
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Subject: [PATCH v6 2/2] firmware: arm_scmi: Add optee transport
-Date:   Tue, 26 Oct 2021 17:21:28 +0200
-Message-Id: <20211026152128.5834-2-etienne.carriere@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211026152128.5834-1-etienne.carriere@linaro.org>
-References: <20211026152128.5834-1-etienne.carriere@linaro.org>
+        Tue, 26 Oct 2021 11:23:58 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD7BC061745;
+        Tue, 26 Oct 2021 08:21:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 718731F43A2F
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [RFC 08/13] soc: mediatek: apu: Add apusys rv driver
+To:     Flora Fu <flora.fu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Yong Wu <yong.wu@mediatek.com>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>
+References: <20211023111409.30463-1-flora.fu@mediatek.com>
+ <20211023111409.30463-9-flora.fu@mediatek.com>
+Message-ID: <5a67997f-737a-5bd1-9ba3-25b5330b7dc6@collabora.com>
+Date:   Tue, 26 Oct 2021 17:21:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211023111409.30463-9-flora.fu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new transport channel to the SCMI firmware interface driver for
-SCMI message exchange based on optee transport channel. The optee
-transport is realized by connecting and invoking OP-TEE SCMI service
-interface PTA.
+Il 23/10/21 13:14, Flora Fu ha scritto:
+> Add driver for control APU tinysys
+> 
+> APU integrated subsystem having MD32RV33 (MD32) that runs tinysys
+> The tinsys is running on a micro processor in APU.
+> Its firmware is load and boot from Kernel side. Kernel and tinysys use
+> IPI to tx/rx messages.
+> 
+> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
+> ---
+>   drivers/soc/mediatek/apusys/Makefile        |   6 +
+>   drivers/soc/mediatek/apusys/apu-config.h    | 100 +++
+>   drivers/soc/mediatek/apusys/apu-core.c      |   2 +
+>   drivers/soc/mediatek/apusys/apu-core.h      |   2 +
+>   drivers/soc/mediatek/apusys/apu-ipi.c       | 486 ++++++++++++
 
-Optee transport support (CONFIG_ARM_SCMI_TRANSPORT_OPTEE) is default
-enabled when optee driver (CFG_OPTEE) is enabled. Effective optee
-transport is setup upon OP-TEE SCMI service discovery at optee
-device initialization. For this SCMI UUID is registered to the optee
-bus for probing. This is done from the link_supplier operator of the
-SCMI optee transport.
+I'm not sure of that, but your apu-ipi.c may be more suited to be in
+drivers/remoteproc instead.
 
-The optee transport can use a statically defined shared memory in
-which case SCMI device tree node defines it using an "arm,scmi-shmem"
-compatible phandle through property shmem. Alternatively, optee transport
-allocates the shared memory buffer from the optee driver when no shmem
-property is defined.
+>   drivers/soc/mediatek/apusys/apu-mbox.c      |  83 ++
 
-The protocol used to exchange SCMI message over that shared memory is
-negotiated between optee transport driver and the OP-TEE service through
-capabilities exchange.
+apu-mbox.c should go to drivers/mailbox/ and you should register it with
+the mailbox API as a mailbox controller instead of what you're currently
+doing...
 
-OP-TEE SCMI service is integrated in OP-TEE since its release tag 3.13.0.
-The service interface is published in [1].
+ From what I see, you have functions in there that can be indeed mapped
+to struct mbox_chan_ops .send_data and .peek_data... also your function
+apu_mbox_wait_inbox seems to be waiting on an interrupt, and such irq is
+apparently your "mbox0_irq" (as you named it in the dt).
+In that case, you can also manage that in your drivers/mailbox/ driver.
++
+>   drivers/soc/mediatek/apusys/apu-mbox.h      |  27 +
+>   drivers/soc/mediatek/apusys/apu-rproc.c     | 806 ++++++++++++++++++++
 
-Link: [1] https://github.com/OP-TEE/optee_os/blob/3.13.0/lib/libutee/include/pta_scmi_client.h
-Cc: Cristian Marussi <cristian.marussi@arm.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
----
-Changes since v5:
- - scmi_optee_link_supplier() doesn't test scmi_optee_private->tee_ctx.
- - Free allocated shared memory when scmi_optee_chan_setup() fails.
- - Close session to TEE SCMI service when SCMI channel is freed.
- - Use SCMI_OPTEE_MAX_MSG_SIZE in SCMI transport descriptor.
+The apu-rproc.c driver seems to be a good candidate to be moved away from
 
-Changes since v4:
- - Fix commit log that was not updated to v4 changes.
- - Operator scmi_optee_chan_setup() don't need the defer probe
-   operation, it's already done from scmi_optee_link_supplier().
+drivers/soc/mediatek/apusys/ - as this is indeed a remoteproc driver.
 
-Changes since v3:
- - Fix use of configuration switches when CONFIG_OPTEE and
-   CONFIG_ARM_SCMI_PROTOCOL are enabled/modules/disabled.
-   Mimics scmi virtio integration.
- - Implement link_supplier operator for the scmi_optee transport
-   to possibly defer probing when optee bus has not yet enumerated
-   the SCMI OP-TEE service. The function ensures scmi_optee registers
-   to optee bus enumeration when probe is deferred.
- - Add memory barriers to protect global optee service reference
-   when it's updated at transport initialization and removal.
- - Replace enum pta_scmi_caps with macro definitions as enumerated
-   types do not really match bit flags definitions. The capabilities
-   data is now of type u32.
- - Use scmi_optee_ prefix for scmi transport operator handles
-   and few other resources.
- - Fix typo: s/optee_smci_pta_cmd/optee_scmi_pta_cmd/
- - Remove useless DRIVER_NAME.
- - Minor reordering in struct optee_channel.
- - Removed some useless empty lines.
+Having it as drivers/remoteproc/mtk_apu.c seems to be a good option.
 
-Changes since v2:
-- Rebase on for-next/scmi, based on Linux v5.15-rc1.
-- Implement support for dynamic and static shared memory.
-- Factorize some functions and simplify transport exit sequence.
-- Rename driver source file from optee_service.c to optee.c.
 
-No change since v1
----
- drivers/firmware/arm_scmi/Kconfig  |  12 +
- drivers/firmware/arm_scmi/Makefile |   1 +
- drivers/firmware/arm_scmi/common.h |   3 +
- drivers/firmware/arm_scmi/driver.c |   3 +
- drivers/firmware/arm_scmi/optee.c  | 580 +++++++++++++++++++++++++++++
- 5 files changed, 599 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/optee.c
 
-diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index 3d7081e84853..30746350349c 100644
---- a/drivers/firmware/arm_scmi/Kconfig
-+++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -77,6 +77,18 @@ config ARM_SCMI_TRANSPORT_VIRTIO
- 	  If you want the ARM SCMI PROTOCOL stack to include support for a
- 	  transport based on VirtIO, answer Y.
- 
-+config ARM_SCMI_TRANSPORT_OPTEE
-+	bool "SCMI transport based on OP-TEE service"
-+	depends on OPTEE=y || OPTEE=ARM_SCMI_PROTOCOL
-+	select ARM_SCMI_HAVE_TRANSPORT
-+	select ARM_SCMI_HAVE_SHMEM
-+	default y
-+	help
-+	  This enables the OP-TEE service based transport for SCMI.
-+
-+	  If you want the ARM SCMI PROTOCOL stack to include support for a
-+	  transport based on OP-TEE SCMI service, answer Y.
-+
- endif #ARM_SCMI_PROTOCOL
- 
- config ARM_SCMI_POWER_DOMAIN
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index 1dcf123d64ab..ef66ec8ca917 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -6,6 +6,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_MAILBOX) += mailbox.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
- scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
-+scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
- scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
- scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index dea1bfbe1052..6438b5248c24 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -421,6 +421,9 @@ extern const struct scmi_desc scmi_smc_desc;
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
- extern const struct scmi_desc scmi_virtio_desc;
- #endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_OPTEE
-+extern const struct scmi_desc scmi_optee_desc;
-+#endif
- 
- void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv);
- void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id);
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index b406b3f78f46..e3f87e0c4936 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1999,6 +1999,9 @@ static const struct of_device_id scmi_of_match[] = {
- #endif
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
- 	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
-+#endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_OPTEE
-+	{ .compatible = "linaro,scmi-optee", .data = &scmi_optee_desc },
- #endif
- 	{ /* Sentinel */ },
- };
-diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
-new file mode 100644
-index 000000000000..8ad3135375e1
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/optee.c
-@@ -0,0 +1,580 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019-2021 Linaro Ltd.
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+#include <linux/tee_drv.h>
-+#include <linux/uuid.h>
-+#include <uapi/linux/tee.h>
-+
-+#include "common.h"
-+
-+#define SCMI_OPTEE_MAX_MSG_SIZE		128
-+
-+enum scmi_optee_pta_cmd {
-+	/*
-+	 * PTA_SCMI_CMD_CAPABILITIES - Get channel capabilities
-+	 *
-+	 * [out]    value[0].a: Capability bit mask (enum pta_scmi_caps)
-+	 * [out]    value[0].b: Extended capabilities or 0
-+	 */
-+	PTA_SCMI_CMD_CAPABILITIES = 0,
-+
-+	/*
-+	 * PTA_SCMI_CMD_PROCESS_SMT_CHANNEL - Process SCMI message in SMT buffer
-+	 *
-+	 * [in]     value[0].a: Channel handle
-+	 *
-+	 * Shared memory used for SCMI message/response exhange is expected
-+	 * already identified and bound to channel handle in both SCMI agent
-+	 * and SCMI server (OP-TEE) parts.
-+	 * The memory uses SMT header to carry SCMI meta-data (protocol ID and
-+	 * protocol message ID).
-+	 */
-+	PTA_SCMI_CMD_PROCESS_SMT_CHANNEL = 1,
-+
-+	/*
-+	 * PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE - Process SMT/SCMI message
-+	 *
-+	 * [in]     value[0].a: Channel handle
-+	 * [in/out] memref[1]: Message/response buffer (SMT and SCMI payload)
-+	 *
-+	 * Shared memory used for SCMI message/response is a SMT buffer
-+	 * referenced by param[1]. It shall be 128 bytes large to fit response
-+	 * payload whatever message playload size.
-+	 * The memory uses SMT header to carry SCMI meta-data (protocol ID and
-+	 * protocol message ID).
-+	 */
-+	PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE = 2,
-+
-+	/*
-+	 * PTA_SCMI_CMD_GET_CHANNEL - Get channel handle
-+	 *
-+	 * SCMI shm information are 0 if agent expects to use OP-TEE regular SHM
-+	 *
-+	 * [in]     value[0].a: Channel identifier
-+	 * [out]    value[0].a: Returned channel handle
-+	 * [in]     value[0].b: Requested capabilities mask (enum pta_scmi_caps)
-+	 */
-+	PTA_SCMI_CMD_GET_CHANNEL = 3,
-+};
-+
-+/*
-+ * OP-TEE SCMI service capabilities bit flags (32bit)
-+ *
-+ * PTA_SCMI_CAPS_SMT_HEADER
-+ * When set, OP-TEE supports command using SMT header protocol (SCMI shmem) in
-+ * shared memory buffers to carry SCMI protocol synchronisation information.
-+ */
-+#define PTA_SCMI_CAPS_NONE		0
-+#define PTA_SCMI_CAPS_SMT_HEADER	BIT(0)
-+
-+/**
-+ * struct scmi_optee_channel - Description of an OP-TEE SCMI channel
-+ *
-+ * @channel_id: OP-TEE channel ID used for this transport
-+ * @tee_session: TEE session identifier
-+ * @caps: OP-TEE SCMI channel capabilities
-+ * @mu: Mutex protection on channel access
-+ * @cinfo: SCMI channel information
-+ * @shmem: Virtual base address of the shared memory
-+ * @tee_shm: Reference to TEE shared memory or NULL if using static shmem
-+ * @link: Reference in agent's channel list
-+ */
-+struct scmi_optee_channel {
-+	u32 channel_id;
-+	u32 tee_session;
-+	u32 caps;
-+	struct mutex mu;
-+	struct scmi_chan_info *cinfo;
-+	struct scmi_shared_mem __iomem *shmem;
-+	struct tee_shm *tee_shm;
-+	struct list_head link;
-+};
-+
-+/**
-+ * struct scmi_optee_agent - OP-TEE transport private data
-+ *
-+ * @dev: Device used for communication with TEE
-+ * @tee_ctx: TEE context used for communication
-+ * @caps: Supported channel capabilities
-+ * @mu: Mutex for protection of @channel_list
-+ * @channel_list: List of all created channels for the agent
-+ */
-+struct scmi_optee_agent {
-+	struct device *dev;
-+	struct tee_context *tee_ctx;
-+	u32 caps;
-+	struct mutex mu;
-+	struct list_head channel_list;
-+};
-+
-+/* There can be only 1 SCMI service in OP-TEE we connect to */
-+static struct scmi_optee_agent *scmi_optee_private;
-+
-+/* Forward reference to scmi_optee transport initialization */
-+static int scmi_optee_init(void);
-+
-+/* Open a session toward SCMI OP-TEE service with REE_KERNEL identity */
-+static int open_session(struct scmi_optee_agent *agent, u32 *tee_session)
-+{
-+	struct device *dev = agent->dev;
-+	struct tee_client_device *scmi_pta = to_tee_client_device(dev);
-+	struct tee_ioctl_open_session_arg arg = { };
-+	int ret;
-+
-+	memcpy(arg.uuid, scmi_pta->id.uuid.b, TEE_IOCTL_UUID_LEN);
-+	arg.clnt_login = TEE_IOCTL_LOGIN_REE_KERNEL;
-+
-+	ret = tee_client_open_session(agent->tee_ctx, &arg, NULL);
-+	if (ret < 0 || arg.ret) {
-+		dev_err(dev, "Can't open tee session: %d / %#x\n", ret, arg.ret);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	*tee_session = arg.session;
-+
-+	return 0;
-+}
-+
-+static void close_session(struct scmi_optee_agent *agent, u32 tee_session)
-+{
-+	tee_client_close_session(agent->tee_ctx, tee_session);
-+}
-+
-+static int get_capabilities(struct scmi_optee_agent *agent)
-+{
-+	struct tee_ioctl_invoke_arg arg = { };
-+	struct tee_param param[1] = { };
-+	u32 caps;
-+	u32 tee_session;
-+	int ret;
-+
-+	ret = open_session(agent, &tee_session);
-+	if (ret)
-+		return ret;
-+
-+	arg.func = PTA_SCMI_CMD_CAPABILITIES;
-+	arg.session = tee_session;
-+	arg.num_params = 1;
-+
-+	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
-+
-+	ret = tee_client_invoke_func(agent->tee_ctx, &arg, param);
-+
-+	close_session(agent, tee_session);
-+
-+	if (ret < 0 || arg.ret) {
-+		dev_err(agent->dev, "Can't get capabilities: %d / %#x\n", ret, arg.ret);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	caps = param[0].u.value.a;
-+
-+	if (!(caps & PTA_SCMI_CAPS_SMT_HEADER)) {
-+		dev_err(agent->dev, "OP-TEE SCMI PTA doesn't support SMT\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	agent->caps = caps;
-+
-+	return 0;
-+}
-+
-+static int get_channel(struct scmi_optee_channel *channel)
-+{
-+	struct device *dev = scmi_optee_private->dev;
-+	struct tee_ioctl_invoke_arg arg = { };
-+	struct tee_param param[1] = { };
-+	unsigned int caps = PTA_SCMI_CAPS_SMT_HEADER;
-+	int ret;
-+
-+	arg.func = PTA_SCMI_CMD_GET_CHANNEL;
-+	arg.session = channel->tee_session;
-+	arg.num_params = 1;
-+
-+	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT;
-+	param[0].u.value.a = channel->channel_id;
-+	param[0].u.value.b = caps;
-+
-+	ret = tee_client_invoke_func(scmi_optee_private->tee_ctx, &arg, param);
-+
-+	if (ret || arg.ret) {
-+		dev_err(dev, "Can't get channel with caps %#x: %d / %#x\n", caps, ret, arg.ret);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	/* From now on use channel identifer provided by OP-TEE SCMI service */
-+	channel->channel_id = param[0].u.value.a;
-+	channel->caps = caps;
-+
-+	return 0;
-+}
-+
-+static int invoke_process_smt_channel(struct scmi_optee_channel *channel)
-+{
-+	struct tee_ioctl_invoke_arg arg = { };
-+	struct tee_param param[2] = { };
-+	int ret;
-+
-+	arg.session = channel->tee_session;
-+	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
-+	param[0].u.value.a = channel->channel_id;
-+
-+	if (channel->tee_shm) {
-+		param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
-+		param[1].u.memref.shm = channel->tee_shm;
-+		param[1].u.memref.size = SCMI_OPTEE_MAX_MSG_SIZE;
-+		arg.num_params = 2;
-+		arg.func = PTA_SCMI_CMD_PROCESS_SMT_CHANNEL_MESSAGE;
-+	} else {
-+		arg.num_params = 1;
-+		arg.func = PTA_SCMI_CMD_PROCESS_SMT_CHANNEL;
-+	}
-+
-+	ret = tee_client_invoke_func(scmi_optee_private->tee_ctx, &arg, param);
-+	if (ret < 0 || arg.ret) {
-+		dev_err(scmi_optee_private->dev, "Can't invoke channel %u: %d / %#x\n",
-+			channel->channel_id, ret, arg.ret);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static int scmi_optee_link_supplier(struct device *dev)
-+{
-+	if (!scmi_optee_private) {
-+		if (scmi_optee_init())
-+			dev_dbg(dev, "Optee bus not yet ready\n");
-+
-+		/* Wait for optee bus */
-+		return -EPROBE_DEFER;
-+	}
-+
-+	if (!device_link_add(dev, scmi_optee_private->dev, DL_FLAG_AUTOREMOVE_CONSUMER)) {
-+		dev_err(dev, "Adding link to supplier optee device failed\n");
-+		return -ECANCELED;
-+	}
-+
-+	return 0;
-+}
-+
-+static bool scmi_optee_chan_available(struct device *dev, int idx)
-+{
-+	u32 channel_id;
-+
-+	return !of_property_read_u32_index(dev->of_node, "linaro,optee-channel-id",
-+					   idx, &channel_id);
-+}
-+
-+static void scmi_optee_clear_channel(struct scmi_chan_info *cinfo)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+
-+	shmem_clear_channel(channel->shmem);
-+}
-+
-+static int setup_dynamic_shmem(struct device *dev, struct scmi_optee_channel *channel)
-+{
-+	const size_t msg_size = SCMI_OPTEE_MAX_MSG_SIZE;
-+
-+	channel->tee_shm = tee_shm_alloc_kernel_buf(scmi_optee_private->tee_ctx, msg_size);
-+	if (IS_ERR(channel->tee_shm)) {
-+		dev_err(channel->cinfo->dev, "shmem allocation failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	channel->shmem = (void *)tee_shm_get_va(channel->tee_shm, 0);
-+	memset(channel->shmem, 0, msg_size);
-+	shmem_clear_channel(channel->shmem);
-+
-+	return 0;
-+}
-+
-+static int setup_static_shmem(struct device *dev, struct scmi_chan_info *cinfo,
-+			      struct scmi_optee_channel *channel)
-+{
-+	struct device_node *np;
-+	resource_size_t size;
-+	struct resource res;
-+	int ret;
-+
-+	np = of_parse_phandle(cinfo->dev->of_node, "shmem", 0);
-+	if (!of_device_is_compatible(np, "arm,scmi-shmem")) {
-+		ret = -ENXIO;
-+		goto out;
-+	}
-+
-+	ret = of_address_to_resource(np, 0, &res);
-+	if (ret) {
-+		dev_err(dev, "Failed to get SCMI Tx shared memory\n");
-+		goto out;
-+	}
-+
-+	size = resource_size(&res);
-+
-+	channel->shmem = devm_ioremap(dev, res.start, size);
-+	if (!channel->shmem) {
-+		dev_err(dev, "Failed to ioremap SCMI Tx shared memory\n");
-+		ret = -EADDRNOTAVAIL;
-+		goto out;
-+	}
-+
-+	ret = 0;
-+
-+out:
-+	of_node_put(np);
-+
-+	return ret;
-+}
-+
-+static int setup_shmem(struct device *dev, struct scmi_chan_info *cinfo,
-+		       struct scmi_optee_channel *channel)
-+{
-+	if (of_find_property(cinfo->dev->of_node, "shmem", NULL))
-+		return setup_static_shmem(dev, cinfo, channel);
-+	else
-+		return setup_dynamic_shmem(dev, channel);
-+}
-+
-+static int scmi_optee_chan_setup(struct scmi_chan_info *cinfo, struct device *dev, bool tx)
-+{
-+	struct scmi_optee_channel *channel;
-+	uint32_t channel_id;
-+	int ret;
-+
-+	if (!tx)
-+		return -ENODEV;
-+
-+	channel = devm_kzalloc(dev, sizeof(*channel), GFP_KERNEL);
-+	if (!channel)
-+		return -ENOMEM;
-+
-+	ret = of_property_read_u32_index(cinfo->dev->of_node, "linaro,optee-channel-id",
-+					 0, &channel_id);
-+	if (ret)
-+		return ret;
-+
-+	cinfo->transport_info = channel;
-+	channel->cinfo = cinfo;
-+	channel->channel_id = channel_id;
-+	mutex_init(&channel->mu);
-+
-+	ret = setup_shmem(dev, cinfo, channel);
-+	if (ret)
-+		return ret;
-+
-+	ret = open_session(scmi_optee_private, &channel->tee_session);
-+	if (ret)
-+		goto err_free_shm;
-+
-+	ret = get_channel(channel);
-+	if (ret)
-+		goto err_close_sess;
-+
-+	mutex_lock(&scmi_optee_private->mu);
-+	list_add(&channel->link, &scmi_optee_private->channel_list);
-+	mutex_unlock(&scmi_optee_private->mu);
-+
-+	return 0;
-+
-+err_close_sess:
-+	close_session(scmi_optee_private, channel->tee_session);
-+err_free_shm:
-+	if (channel->tee_shm)
-+		tee_shm_free(channel->tee_shm);
-+
-+	return ret;
-+}
-+
-+static int scmi_optee_chan_free(int id, void *p, void *data)
-+{
-+	struct scmi_chan_info *cinfo = p;
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+
-+	mutex_lock(&scmi_optee_private->mu);
-+	list_del(&channel->link);
-+	mutex_unlock(&scmi_optee_private->mu);
-+
-+	close_session(scmi_optee_private, channel->tee_session);
-+
-+	if (channel->tee_shm) {
-+		tee_shm_free(channel->tee_shm);
-+		channel->tee_shm = NULL;
-+	}
-+
-+	cinfo->transport_info = NULL;
-+	channel->cinfo = NULL;
-+
-+	scmi_free_channel(cinfo, data, id);
-+
-+	return 0;
-+}
-+
-+static struct scmi_shared_mem *get_channel_shm(struct scmi_optee_channel *chan,
-+					       struct scmi_xfer *xfer)
-+{
-+	if (!chan)
-+		return NULL;
-+
-+	return chan->shmem;
-+}
-+
-+
-+static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
-+				   struct scmi_xfer *xfer)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+	struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
-+	int ret;
-+
-+	mutex_lock(&channel->mu);
-+	shmem_tx_prepare(shmem, xfer);
-+
-+	ret = invoke_process_smt_channel(channel);
-+
-+	scmi_rx_callback(cinfo, shmem_read_header(shmem), NULL);
-+	mutex_unlock(&channel->mu);
-+
-+	return ret;
-+}
-+
-+static void scmi_optee_fetch_response(struct scmi_chan_info *cinfo,
-+				      struct scmi_xfer *xfer)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+	struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
-+
-+	shmem_fetch_response(shmem, xfer);
-+}
-+
-+static bool scmi_optee_poll_done(struct scmi_chan_info *cinfo,
-+				 struct scmi_xfer *xfer)
-+{
-+	struct scmi_optee_channel *channel = cinfo->transport_info;
-+	struct scmi_shared_mem *shmem = get_channel_shm(channel, xfer);
-+
-+	return shmem_poll_done(shmem, xfer);
-+}
-+
-+static struct scmi_transport_ops scmi_optee_ops = {
-+	.link_supplier = scmi_optee_link_supplier,
-+	.chan_available = scmi_optee_chan_available,
-+	.chan_setup = scmi_optee_chan_setup,
-+	.chan_free = scmi_optee_chan_free,
-+	.send_message = scmi_optee_send_message,
-+	.fetch_response = scmi_optee_fetch_response,
-+	.clear_channel = scmi_optee_clear_channel,
-+	.poll_done = scmi_optee_poll_done,
-+};
-+
-+static int scmi_optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
-+{
-+	return ver->impl_id == TEE_IMPL_ID_OPTEE;
-+}
-+
-+static int scmi_optee_service_probe(struct device *dev)
-+{
-+	struct scmi_optee_agent *agent;
-+	struct tee_context *tee_ctx;
-+	int ret;
-+
-+	/* Only one SCMI OP-TEE device allowed */
-+	if (scmi_optee_private) {
-+		dev_err(dev, "An SCMI OP-TEE device was already initialized: only one allowed\n");
-+		return -EBUSY;
-+	}
-+
-+	tee_ctx = tee_client_open_context(NULL, scmi_optee_ctx_match, NULL, NULL);
-+	if (IS_ERR(tee_ctx))
-+		return -ENODEV;
-+
-+	agent = devm_kzalloc(dev, sizeof(*agent), GFP_KERNEL);
-+	if (!agent) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	agent->dev = dev;
-+	agent->tee_ctx = tee_ctx;
-+	INIT_LIST_HEAD(&agent->channel_list);
-+
-+	ret = get_capabilities(agent);
-+	if (ret)
-+		goto err;
-+
-+	/* Ensure agent resources are all visible before scmi_optee_private is */
-+	smp_mb();
-+	scmi_optee_private = agent;
-+
-+	return 0;
-+
-+err:
-+	tee_client_close_context(tee_ctx);
-+
-+	return ret;
-+}
-+
-+static int scmi_optee_service_remove(struct device *dev)
-+{
-+	struct scmi_optee_agent *agent = scmi_optee_private;
-+
-+	if (!scmi_optee_private)
-+		return -EINVAL;
-+
-+	if (!list_empty(&scmi_optee_private->channel_list))
-+		return -EBUSY;
-+
-+	/* Ensure cleared reference is visible before resources are released */
-+	smp_store_mb(scmi_optee_private, NULL);
-+
-+	tee_client_close_context(agent->tee_ctx);
-+
-+	return 0;
-+}
-+
-+static const struct tee_client_device_id scmi_optee_service_id[] = {
-+	{
-+		UUID_INIT(0xa8cfe406, 0xd4f5, 0x4a2e,
-+			  0x9f, 0x8d, 0xa2, 0x5d, 0xc7, 0x54, 0xc0, 0x99)
-+	},
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(tee, scmi_optee_service_id);
-+
-+static struct tee_client_driver scmi_optee_driver = {
-+	.id_table	= scmi_optee_service_id,
-+	.driver		= {
-+		.name = "scmi-optee",
-+		.bus = &tee_bus_type,
-+		.probe = scmi_optee_service_probe,
-+		.remove = scmi_optee_service_remove,
-+	},
-+};
-+
-+static int scmi_optee_init(void)
-+{
-+	return driver_register(&scmi_optee_driver.driver);
-+}
-+
-+static void scmi_optee_exit(void)
-+{
-+	driver_unregister(&scmi_optee_driver.driver);
-+}
-+
-+const struct scmi_desc scmi_optee_desc = {
-+	.transport_exit = scmi_optee_exit,
-+	.ops = &scmi_optee_ops,
-+	.max_rx_timeout_ms = 30,
-+	.max_msg = 20,
-+	.max_msg_size = SCMI_OPTEE_MAX_MSG_SIZE,
-+};
--- 
-2.17.1
+>   drivers/soc/mediatek/apusys/apu-sw-logger.c | 429 +++++++++++
 
+This one definitely belongs here in drivers/soc/mediatek, and it's a consumer
+of the mailbox driver.
+
+>   drivers/soc/mediatek/apusys/apu.h           | 256 +++++++
+>   drivers/soc/mediatek/apusys/mt81xx-plat.c   | 320 ++++++++
+
+If we end up keeping to be in need to have a separate mt81xx-plat.c file,
+then I believe this should have another name, so that it becomes one that
+aggregates all of the very-platform-specific functions in one, instead of
+having one file for each platform.
+
+Though, it may also be possible that this file will disappear entirely:
+since most of the things here will be moved around, it may become mostly
+empty... but it's probably too soon to judge.
+
+>   11 files changed, 2517 insertions(+)
+>   create mode 100644 drivers/soc/mediatek/apusys/apu-config.h
+>   create mode 100644 drivers/soc/mediatek/apusys/apu-ipi.c
+>   create mode 100644 drivers/soc/mediatek/apusys/apu-mbox.c
+>   create mode 100644 drivers/soc/mediatek/apusys/apu-mbox.h
+>   create mode 100644 drivers/soc/mediatek/apusys/apu-rproc.c
+>   create mode 100644 drivers/soc/mediatek/apusys/apu-sw-logger.c
+>   create mode 100644 drivers/soc/mediatek/apusys/apu.h
+>   create mode 100644 drivers/soc/mediatek/apusys/mt81xx-plat.c
+> 
+
+snip...
+
+> diff --git a/drivers/soc/mediatek/apusys/apu-ipi.c b/drivers/soc/mediatek/apusys/apu-ipi.c
+> new file mode 100644
+> index 000000000000..547e034b3620
+> --- /dev/null
+> +++ b/drivers/soc/mediatek/apusys/apu-ipi.c
+
+snip...
+
+> +int apu_ipi_init(struct platform_device *pdev, struct mtk_apu *apu)
+> +{
+> +	struct device *dev = apu->dev;
+> +	int i, ret;
+> +
+> +	tx_serial_no = 0;
+> +	rx_serial_no = 0;
+> +
+> +	mutex_init(&apu->send_lock);
+> +	spin_lock_init(&apu->usage_cnt_lock);
+> +	for (i = 0; i < APU_IPI_MAX; i++) {
+> +		mutex_init(&apu->ipi_desc[i].lock);
+> +		lockdep_set_class_and_name(&apu->ipi_desc[i].lock,
+> +					   &ipi_lock_key[i],
+> +					   apu->platdata->ipi_attrs[i].name);
+> +	}
+> +
+> +	init_waitqueue_head(&apu->run.wq);
+> +	init_waitqueue_head(&apu->ack_wq);
+> +
+> +	/* APU initialization IPI register */
+> +	ret = apu_ipi_register(apu, APU_IPI_INIT, apu_init_ipi_handler, apu);
+> +	if (ret) {
+> +		dev_err(dev, "failed to register ipi for init, ret=%d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	/* add rpmsg subdev */
+> +	apu_add_rpmsg_subdev(apu);
+> +
+> +	/* register mailbox IRQ */
+> +	apu->mbox0_irq_number = platform_get_irq_byname(pdev, "mbox0_irq");
+> +	dev_info(&pdev->dev, "%s: mbox0_irq = %d\n", __func__,
+> +		 apu->mbox0_irq_number);
+> +
+> +	ret = devm_request_threaded_irq(&pdev->dev, apu->mbox0_irq_number,
+> +					NULL, apu_ipi_handler, IRQF_ONESHOT,
+> +					"apu_ipi", apu);
+
+This is the mailbox interrupt... but it's handled in this driver instead of
+being handler in the mailbox driver... it's a bit confusing.
+
+Is this interrupt supposed to fire as a mailbox doorbell or..?
+In that case, you should request it in the mailbox driver and register an
+interrupt controller (still, in the mailbox driver) so that you can export
+a sw interrupt to this one.
+
+Or, maybe you can use notifiers to catch the mailbox message in this driver?
+
+> +	if (ret < 0)
+> +		goto remove_rpmsg_subdev;
+> +
+> +	apu_mbox_hw_init(apu);
+> +
+> +	return 0;
+> +
+> +remove_rpmsg_subdev:
+> +	apu_remove_rpmsg_subdev(apu);
+> +	apu_ipi_unregister(apu, APU_IPI_INIT);
+> +
+> +	return ret;
+> +}
+
+snip...
+
+> diff --git a/drivers/soc/mediatek/apusys/apu-rproc.c b/drivers/soc/mediatek/apusys/apu-rproc.c
+> new file mode 100644
+> index 000000000000..e2fe63dd6cc1
+> --- /dev/null
+> +++ b/drivers/soc/mediatek/apusys/apu-rproc.c
+> @@ -0,0 +1,806 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/iommu.h>
+> +#include <linux/irq.h>
+> +#include <linux/module.h>
+> +#include <linux/remoteproc.h>
+> +#include <linux/time64.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/sched/clock.h>
+> +#include <linux/time64.h>
+> +#include <linux/workqueue.h>
+> +
+> +#include "apu.h"
+> +#include "apu-config.h"
+> +#include "apu-core.h"
+> +
+> +/* cmd */
+> +enum {
+> +	DPIDLE_CMD_LOCK_IPI = 0x5a00,
+> +	DPIDLE_CMD_UNLOCK_IPI = 0x5a01,
+> +	DPIDLE_CMD_PDN_UNLOCK = 0x5a02,
+> +};
+> +
+> +/* ack */
+> +enum {
+> +	DPIDLE_ACK_OK = 0,
+> +	DPIDLE_ACK_LOCK_BUSY,
+> +	DPIDLE_ACK_POWER_DOWN_FAIL,
+> +};
+> +
+> +static struct work_struct *apu_pwr_work;
+> +static struct workqueue_struct *apu_pwr_wq;
+> +static struct dentry *dbg_root;
+> +
+> +static void *apu_da_to_va(struct rproc *rproc, u64 da, size_t len,
+> +			  bool *is_iomem)
+> +{
+> +	void *ptr = NULL;
+> +	struct mtk_apu *apu = (struct mtk_apu *)rproc->priv;
+> +
+> +	if (da >= DRAM_OFFSET && da < DRAM_OFFSET + CODE_BUF_SIZE) {
+> +		ptr = apu->code_buf + (da - DRAM_OFFSET);
+> +	} else {
+> +		dev_err(apu->dev, "%s: invalid da: da = 0x%llx, len = %zu\n",
+> +			__func__, da, len);
+> +	}
+> +	return ptr;
+> +}
+> +
+> +static int apu_run(struct rproc *rproc)
+> +{
+> +	struct mtk_apu *apu = (struct mtk_apu *)rproc->priv;
+> +	struct mtk_apu_hw_ops *hw_ops = &apu->platdata->ops;
+> +	struct device *dev = apu->dev;
+> +	struct apu_run *run = &apu->run;
+> +	struct timespec64 begin, end, delta;
+> +	int ret;
+> +
+> +	pm_runtime_get_sync(apu->dev);
+> +	hw_ops->start(apu);
+
+Don't forget to always check return values.....
+
+> +
+> +	/* check if boot success */
+> +	ktime_get_ts64(&begin);
+> +	ret = wait_event_interruptible_timeout(run->wq,
+> +					       run->signaled,
+> +					       msecs_to_jiffies(10000));
+
+#define APU_INIT_TIMEOUT_MS	10000
+
+...but then, does it really need 10 *seconds* for that?! That's a lot of time...
+
+> +	ktime_get_ts64(&end);
+> +	if (ret == 0) {
+> +		dev_info(dev, "APU initialization timeout!!\n");
+> +		ret = -ETIME;
+> +		goto stop;
+> +	}
+> +	if (ret == -ERESTARTSYS) {
+> +		dev_info(dev, "wait APU interrupted by a signal!!\n");
+> +		goto stop;
+> +	}
+> +
+> +	apu->boot_done = true;
+> +	delta = timespec64_sub(end, begin);
+> +	dev_info(dev, "APU uP boot success. boot time: %llu s, %llu ns\n",
+> +		 (u64)delta.tv_sec, (u64)delta.tv_nsec);
+> +
+> +	return 0;
+> +
+> +stop:
+> +	hw_ops->stop(apu);
+> +
+> +	return ret;
+> +}
+> +
+
+
+snip...
+
+
+> +
+> +static int apu_config_setup(struct mtk_apu *apu)
+> +{
+> +	struct device *dev = apu->dev;
+> +	unsigned long flags;
+> +	int ret;
+> +
+> +	apu->conf_buf = dma_alloc_coherent(apu->dev, CONFIG_SIZE,
+> +					   &apu->conf_da, GFP_KERNEL);
+> +
+> +	if (!apu->conf_buf || apu->conf_da == 0) {
+> +		dev_info(dev, "%s: dma_alloc_coherent fail\n", __func__);
+> +		return -ENOMEM;
+> +	}
+> +	memset(apu->conf_buf, 0, CONFIG_SIZE);
+> +
+> +	apu_config_user_ptr_init(apu);
+> +	spin_lock_irqsave(&apu->reg_lock, flags);
+> +	iowrite32((u32)apu->conf_da, apu->apu_mbox + HOST_CONFIG_ADDR);
+> +	spin_unlock_irqrestore(&apu->reg_lock, flags);
+> +
+> +	apu->conf_buf->time_offset = sched_clock();
+> +	ret = apu_ipi_config_init(apu);
+> +	if (ret) {
+> +		dev_info(dev, "apu ipi config init failed\n");
+> +		goto out;
+> +	}
+> +
+> +	ret = sw_logger_config_init(apu);
+
+ From what I understand, the sw logger is not critical for functionality... so
+it should probably be a "pluggable" instead.
+Also, since that sw logger seems to be "simply" reading from a mailbox, it
+should be pretty straightforward to make it so, in which case, you wouldn't
+be initializing it here, but as a platform driver instead (if debugging enabled?)
+
+> +	if (ret) {
+> +		dev_err(dev, "sw logger config init failed\n");
+> +		goto err_sw_logger;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_sw_logger:
+> +	apu_ipi_config_remove(apu);
+> +out:
+> +	return ret;
+> +}
+> +
+
+snip...
+
+> diff --git a/drivers/soc/mediatek/apusys/apu.h b/drivers/soc/mediatek/apusys/apu.h
+> new file mode 100644
+> index 000000000000..5bbc46416a19
+> --- /dev/null
+> +++ b/drivers/soc/mediatek/apusys/apu.h
+> @@ -0,0 +1,256 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
+> +
+> +#ifndef APU_H
+> +#define APU_H
+> +#include <linux/platform_device.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/rpmsg/mtk_rpmsg.h>
+> +
+> +#include "apu-config.h"
+> +
+> +/* setup the SMC command ops */
+> +#define MTK_SIP_APU_START_MCU	0x00
+> +#define MTK_SIP_APU_STOP_MCU	0x01
+> +
+> +/* md32_sysctrl register definition */
+> +#define MD32_SYS_CTRL	0x0
+> +#define MD32_MON_PC		0x838
+> +#define MD32_MON_LR		0x83c
+> +#define MD32_MON_SP		0x840
+> +#define MD32_STATUS		0x844
+> +
+> +/*wdt register */
+> +#define WDT_INT		0x0
+> +#define WDT_CTRL0	0x4
+> +#define WDT_EN		BIT(31)
+> +
+> +/* apu_mbox spare regiter */
+
+/* apu_mbox spare register: mbox 0..6, spare 0..3 */
+#define REG_MBOX_SPARE(mbox, reg) 	((0x40 + (0x100 * mbox)) + (reg * 0x4))
+#define REG_MBOX0_SPARE(n)		REG_MBOX_SPARE(0, n)
+#define REG_MBOX6_SPARE(n)		REG_MBOX_SPARE(6, n)
+
+#define HOST_CONFIG_ADDR		REG_MBOX_SPARE(0, 2)
+
+Would that be better? Granted, mbox1-5 are also accessible and perhaps used
+in the future.
+
+> +#define MBOX0_SPARE0 0x40
+> +#define MBOX0_SPARE1 0x44
+> +#define MBOX0_SPARE2 0x48
+> +#define MBOX0_SPARE3 0x4C
+> +#define MBOX6_SPARE0 0x640
+> +#define MBOX6_SPARE1 0x644
+> +#define MBOX6_SPARE2 0x648
+> +#define MBOX6_SPARE3 0x64C
+> +
+> +#define HOST_CONFIG_ADDR MBOX0_SPARE2
+> +
+> +#define LOG_W_PTR (MBOX0_SPARE0)
+> +#define LOG_R_PTR (MBOX0_SPARE1)
+> +#define LOG_OV_FLG (MBOX0_SPARE3)
+> +
+> +/* rv setup  */
+> +#define F_PRELOAD_FIRMWARE	BIT(0)
+> +#define F_AUTO_BOOT		BIT(1)
+> +
+
+Use SZ_* macros where possible
+
+> +#define TCM_SIZE (128UL * 1024UL)
+> +#define CODE_BUF_SIZE (1024UL * 1024UL)
+> +#define DRAM_DUMP_SIZE (CODE_BUF_SIZE - TCM_SIZE)
+> +#define REG_SIZE (4UL * 151UL)
+> +#define TBUF_SIZE (4UL * 32UL)
+> +#define CACHE_DUMP_SIZE (37UL * 1024UL)
+> +#define DRAM_OFFSET (0x00000UL)
+> +#define DRAM_DUMP_OFFSET (TCM_SIZE)
+> +#define TCM_OFFSET (0x1d700000UL)
+> +#define CODE_BUF_DA (DRAM_OFFSET)
+> +
+> +/* ipi */
+> +#define APU_FW_VER_LEN	       32
+> +#define APU_SHARE_BUFFER_SIZE  256
+> +
+> +#define IPI_LOCKED			1
+> +#define IPI_UNLOCKED		0
+> +
+> +#define IPI_HOST_INITIATE	0
+> +#define IPI_APU_INITIATE	1
+> +#define IPI_WITH_ACK		1
+> +#define IPI_WITHOUT_ACK		0
+> +
+> +enum {
+> +	APU_IPI_INIT = 0,
+> +	APU_IPI_NS_SERVICE,
+> +	APU_IPI_DEEP_IDLE,
+> +	APU_IPI_CTRL_RPMSG,
+> +	APU_IPI_MIDDLEWARE,
+> +	APU_IPI_REVISER_RPMSG,
+> +	APU_IPI_PWR_TX,
+> +	APU_IPI_PWR_RX,
+> +	APU_IPI_MDLA_TX,
+> +	APU_IPI_MDLA_RX,
+> +	APU_IPI_TIMESYNC,
+> +	APU_IPI_EDMA_TX,
+> +	APU_IPI_MNOC_TX,
+> +	APU_IPI_MAX,
+> +};
+> +
+> +struct mtk_apu;
+> +
+> +struct mtk_apu_hw_ops {
+> +	int (*init)(struct mtk_apu *apu);
+> +	int (*exit)(struct mtk_apu *apu);
+> +	int (*start)(struct mtk_apu *apu);
+> +	int (*stop)(struct mtk_apu *apu);
+> +	int (*resume)(struct mtk_apu *apu);
+> +	int (*apu_memmap_init)(struct mtk_apu *apu);
+> +	void (*apu_memmap_remove)(struct mtk_apu *apu);
+> +	void (*cg_gating)(struct mtk_apu *apu);
+> +	void (*cg_ungating)(struct mtk_apu *apu);
+> +	void (*rv_cachedump)(struct mtk_apu *apu);
+> +
+> +	/* power related ops */
+> +	int (*power_init)(struct mtk_apu *apu);
+> +	int (*power_on)(struct mtk_apu *apu);
+> +	int (*power_off)(struct mtk_apu *apu);
+> +};
+> +
+> +struct apu_ipi {
+> +	char *name;
+> +	unsigned int direction:1;
+> +	unsigned int ack:1;
+> +};
+> +
+> +struct mtk_apu_platdata {
+> +	u32 flags;
+> +	struct mtk_apu_hw_ops ops;
+> +	const struct apu_ipi *ipi_attrs;
+> +};
+> +
+> +struct dpidle_msg {
+> +	u32 cmd;
+> +	u32 ack;
+> +};
+> +
+> +struct apu_run {
+> +	s8 fw_ver[APU_FW_VER_LEN];
+> +	u32 signaled;
+> +	wait_queue_head_t wq;
+> +};
+> +
+> +struct apu_ipi_desc {
+> +	struct mutex lock; /*ipi hanlder mutex */
+
+typo
+
+> +	ipi_handler_t handler;
+> +	void *priv;
+> +	/*
+> +	 * positive: host-initiated ipi outstanding count
+> +	 * negative: apu-initiated ipi outstanding count
+> +	 */
+> +	int usage_cnt;
+> +};
+> +
+> +struct mtk_share_obj {
+> +	u8 share_buf[APU_SHARE_BUFFER_SIZE];
+> +};
+> +
+> +struct sw_logger_seq_data {
+> +	u32 w_ptr;
+> +	u32 r_ptr;
+> +	u32 overflow_flg;
+> +	int i;
+> +	int is_finished;
+> +	char *data;
+> +	bool startl_first;
+> +};
+> +
+> +struct mtk_apu {
+> +	struct rproc *rproc;
+> +	struct device *dev;
+> +	void __iomem *apu_mbox;
+> +	void __iomem *md32_sysctrl;
+> +	void __iomem *apu_wdt;
+> +	int mbox0_irq_number;
+> +	int wdt_irq_number;
+> +	spinlock_t reg_lock; /* register r/w lock */
+> +
+> +	/* Buffer to place execution area */
+> +	void *code_buf;
+> +	dma_addr_t code_da;
+> +
+> +	/* Buffer to place config area */
+> +	struct config_v1 *conf_buf;
+> +	dma_addr_t conf_da;
+> +
+> +	/* to synchronize boot status of remote processor */
+> +	struct apu_run run;
+> +
+> +	/* to prevent multiple ipi_send run concurrently */
+> +	struct mutex send_lock;
+> +	spinlock_t usage_cnt_lock; /* ipi occipued lock */
+> +	struct apu_ipi_desc ipi_desc[APU_IPI_MAX];
+> +	bool ipi_id_ack[APU_IPI_MAX]; /* per-ipi ack */
+> +	bool ipi_inbound_locked;
+> +	wait_queue_head_t ack_wq; /* for waiting for ipi ack */
+> +
+> +	/* ipi */
+> +	struct rproc_subdev *rpmsg_subdev;
+> +	dma_addr_t recv_buf_da;
+> +	struct mtk_share_obj *recv_buf;
+> +	dma_addr_t send_buf_da;
+> +	struct mtk_share_obj *send_buf;
+> +
+> +	/* time sync */
+> +	struct work_struct timesync_work;
+> +	struct workqueue_struct *timesync_wq;
+> +	u64 timesync_stamp;
+> +
+> +	/*deep idle */
+> +	struct dpidle_msg recv_msg;
+> +	struct work_struct deepidle_work;
+> +	struct workqueue_struct *apu_deepidle_workq;
+> +	struct work_struct pwron_dbg_wk;
+> +
+> +	struct mtk_apu_platdata	*platdata;
+> +
+> +	/* link power deive */
+> +	struct device *power_dev;
+> +	bool boot_done;
+> +	struct work_struct pwr_work;
+> +
+> +	/* logger and debug */
+> +	struct dentry *dbg_root;
+> +	dma_addr_t handle;
+> +	char *sw_log_buf;
+> +	spinlock_t sw_logger_spinlock; /* logger status update lock */
+> +	struct sw_logger_seq_data pseqdata_lock;
+> +	struct sw_logger_seq_data *pseqdata;
+> +};
+> +
+> +struct apu_coredump {
+> +	char tcmdump[TCM_SIZE];
+> +	char ramdump[DRAM_DUMP_SIZE];
+> +	char regdump[REG_SIZE];
+> +	char tbufdump[TBUF_SIZE];
+> +	u32 cachedump[CACHE_DUMP_SIZE / sizeof(u32)];
+> +} __packed;
+> +
+> +int apu_ipi_config_init(struct mtk_apu *apu);
+> +void apu_ipi_config_remove(struct mtk_apu *apu);
+> +void apu_ipi_remove(struct mtk_apu *apu);
+> +int apu_ipi_init(struct platform_device *pdev, struct mtk_apu *apu);
+> +int apu_ipi_register(struct mtk_apu *apu, u32 id,
+> +		     ipi_handler_t handler, void *priv);
+> +void apu_ipi_unregister(struct mtk_apu *apu, u32 id);
+> +int apu_ipi_send(struct mtk_apu *apu, u32 id, void *data, u32 len,
+> +		 u32 wait_ms);
+> +int apu_ipi_lock(struct mtk_apu *apu);
+> +void apu_ipi_unlock(struct mtk_apu *apu);
+> +
+> +void apu_deepidle_power_on_aputop(struct mtk_apu *apu);
+> +
+> +#if IS_ENABLED(CONFIG_DEBUG_FS)
+> +int sw_logger_config_init(struct mtk_apu *apu);
+> +void sw_logger_config_remove(struct mtk_apu *apu);
+> +int apu_sw_logger_init(struct mtk_apu *apu);
+> +void apu_sw_logger_remove(struct mtk_apu *apu);
+> +#else
+> +static inline int sw_logger_config_init(struct mtk_apu *apu) { return 0; }
+> +static inline void sw_logger_config_remove(struct mtk_apu *apu) { }
+> +static inline int apu_sw_logger_init(struct mtk_apu *apu) { return 0; }
+> +static inline void apu_sw_logger_remove(struct mtk_apu *apu) { }
+> +#endif
+> +
+> +extern const struct mtk_apu_platdata mt8192_platdata;
+> +#endif /* APU_H */
+> diff --git a/drivers/soc/mediatek/apusys/mt81xx-plat.c b/drivers/soc/mediatek/apusys/mt81xx-plat.c
+> new file mode 100644
+> index 000000000000..54f75c8d07c3
+> --- /dev/null
+> +++ b/drivers/soc/mediatek/apusys/mt81xx-plat.c
+> @@ -0,0 +1,320 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
+> +
+> +#include <linux/arm-smccc.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/sched/clock.h>
+> +#include <linux/soc/mediatek/mtk_sip_svc.h>
+> +
+> +#include "apu.h"
+> +
+> +static const struct apu_ipi mt81xx_ipi_attrs[APU_IPI_MAX] = {
+
+In here, this is used only to pass it to the remoteproc "ipi" driver: it would make
+sense if this was in the ipi driver, associated to a compatible like
+mediatek,mt8192-ipi.
+
+> +		   [APU_IPI_INIT] = {
+> +			   .name = "init",
+> +			   .direction = IPI_APU_INITIATE,
+> +			   .ack = IPI_WITHOUT_ACK,
+> +		   },
+> +		   [APU_IPI_NS_SERVICE] = {
+> +			   .name = "name-service",
+> +			   .direction = IPI_APU_INITIATE,
+> +			   .ack = IPI_WITHOUT_ACK,
+> +		   },
+> +		   [APU_IPI_DEEP_IDLE] = {
+> +			   .name = "deep_idle",
+> +			   .direction = IPI_APU_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_CTRL_RPMSG] = {
+> +			   .name = "apu-ctrl-rpmsg",
+> +			   .direction = IPI_APU_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_MIDDLEWARE] = {
+> +			   .name = "apu-mdw-rpmsg",
+> +			   .direction = IPI_HOST_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_REVISER_RPMSG] = {
+> +			   .name = "apu-reviser-rpmsg",
+> +			   .direction = IPI_HOST_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_PWR_TX] = {
+> +			   .name = "apupwr-tx-rpmsg",
+> +			   .direction = IPI_HOST_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_PWR_RX] = {
+> +			   .name = "apupwr-rx-rpmsg",
+> +			   .direction = IPI_APU_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_MDLA_TX] = {
+> +			   .name = "mdla-tx-rpmsg",
+> +			   .direction = IPI_HOST_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_MDLA_RX] = {
+> +			   .name = "mdla-rx-rpmsg",
+> +			   .direction = IPI_APU_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_TIMESYNC] = {
+> +			   .name = "apu-timesync",
+> +			   .direction = IPI_APU_INITIATE,
+> +			   .ack = IPI_WITH_ACK,
+> +		   },
+> +		   [APU_IPI_EDMA_TX] = {
+> +			   .name = "apu-edma-rpmsg",
+> +			   .direction = IPI_HOST_INITIATE,
+> +			   .ack = IPI_WITHOUT_ACK,
+> +		   },
+> +		   [APU_IPI_MNOC_TX] = {
+> +			   .name = "apu-mnoc-rpmsg",
+> +			   .direction = IPI_HOST_INITIATE,
+> +			   .ack = IPI_WITHOUT_ACK,
+> +		   },
+> +};
+> +
+> +static void apu_reset_mcu(struct mtk_apu *apu)
+> +{
+> +	u32 reg;
+> +
+> +	/* assert mcu reset */
+> +	reg = ioread32(apu->md32_sysctrl);
+> +	iowrite32(reg & ~0x1, apu->md32_sysctrl);
+> +	mdelay(10);
+> +	iowrite32(reg | 0x1, apu->md32_sysctrl);
+> +}
+> +
+> +static int apu_start_mcu(struct mtk_apu *apu)
+> +{
+> +	struct arm_smccc_res ares;
+> +
+> +	/* initialize IOMMU and ACP config (iommu_tr_en=1, acp_en=0) */
+> +	iowrite32(0xEA9, apu->md32_sysctrl);
+> +
+> +	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, MTK_SIP_APU_START_MCU,
+> +		      0, 0, 0, 0, 0, 0, &ares);
+> +	if (ares.a0)
+> +		dev_err(apu->dev, "start mcu fail: %lu\n", ares.a0);
+> +
+> +	return 0;
+> +}
+> +
+> +static int apu_stop_mcu(struct mtk_apu *apu)
+> +{
+> +	struct arm_smccc_res ares;
+> +
+> +	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, MTK_SIP_APU_STOP_MCU,
+> +		      0, 0, 0, 0, 0, 0, &ares);
+> +	if (ares.a0)
+> +		dev_err(apu->dev, "stop mcufail: %lu\n", ares.a0);
+> +
+> +	return 0;
+> +}
+
+Is it expected for other SoCs to have different (or more) secure world calls?
+If it is, then it may be worth it to move this to a different driver in
+drivers/firmware, so that you will be able to map different/more values to
+different compatibles.
+
+Otherwise, keep it here.
+
+> +
+
+Thanks,
+- Angelo
