@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2142943AEE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AD843AEED
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhJZJWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:22:18 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:33206 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhJZJWR (ORCPT
+        id S234745AbhJZJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231134AbhJZJXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:22:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635239993;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=uELOwsNFWYKP2V7Wa6W8kc6bDK33Uy/EkAiJWP509lU=;
-    b=Dl0l3ABqDyxjoiCnEg1DpmEJi9Nb5DTzmG+7B+wnnDBjBHbHq+voYLTsLhuTGKccS2
-    VbE41N+YeI3/c0J0MqTNO9MzwoAYiU3rQCNEuia7U2WJBxqr+1vBn5mVh7WQ4U/GiUdy
-    yvavfpqnRSL4BTPNEQnDvJywnJW+qfhMW34vHnnVLF/wpXDa2EfPdQPLgJdc5++P+HV3
-    EJTBPDnO/0zBmmrOgudTRnGG4i0URYPNRA03/QDg6KSwYl+YBLmT5KJ6SWaunVt/icm/
-    10m9OYFEIbzMatuQe5KalYB0ZPcW2OSvBEApLj4Q0fiCf5CXQI7LK3NG0y/wP6lmVTRm
-    zVlg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id n020a8x9Q9Jq2Ia
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 11:19:52 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolai Stange <nstange@suse.de>
-Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
-Subject: Re: [PATCH 5/6] crypto: DRBG - make drbg_prepare_hrng() handle jent instantiation errors
-Date:   Tue, 26 Oct 2021 11:19:52 +0200
-Message-ID: <5005897.YiOf5ahdoa@positron.chronox.de>
-In-Reply-To: <20211025092525.12805-6-nstange@suse.de>
-References: <20211025092525.12805-1-nstange@suse.de> <20211025092525.12805-6-nstange@suse.de>
+        Tue, 26 Oct 2021 05:23:08 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230A3C061745;
+        Tue, 26 Oct 2021 02:20:45 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdmWr1XHDz4xZ0;
+        Tue, 26 Oct 2021 20:20:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635240042;
+        bh=m1Rb45uoxjErkJwXWtmqdgMe+iimlHg0wtGe3WiYk1c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fGPE/Y6o4s79/77fvkOlUfY25WgD2qGeN14ZriZcJpVTEuP/2cZQ/9osx+NUXfSMA
+         YvrzTeccjk2vdjMIAvzgbOqfvo7S7YA+52TsygUzpTum94lKLZdtqSQZp5mIA/8Nzf
+         dG3o8yiEczt5rG6HtGX4rl5sQDDAfO4ASVV5i0xopFTzurbiEJENnR9kSmk/pVT16p
+         13iU4pBpjSnp/ULgnC0IFSFnbdKhuzI+W1spemez78pm9BOCkcZmtZ049lvhbv5maD
+         RnW4fxb5oXbXGEH6ViV7tV0NsKlIu/b64ajCtzzKMxJrrTI/TwGxCKqqTdT/BgTgxB
+         aFYM7L/vyGu8A==
+Date:   Tue, 26 Oct 2021 20:20:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Luo Jie <luoj@codeaurora.org>, Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the net-next tree
+Message-ID: <20211026202036.1b8f5c31@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/signed; boundary="Sig_/QUqSzUnd/dg5WRO02XIRbtF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 25. Oktober 2021, 11:25:24 CEST schrieb Nicolai Stange:
+--Sig_/QUqSzUnd/dg5WRO02XIRbtF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Nicolai,
+Hi all,
 
-> Now that drbg_prepare_hrng() doesn't do anything but to instantiate a
-> jitterentropy crypto_rng instance, it looks a little odd to have the
-> related error handling at its only caller, drbg_instantiate().
->=20
-> Move the handling of jitterentropy allocation failures from
-> drbg_instantiate() close to the allocation itself in drbg_prepare_hrng().
->=20
-> There is no change in behaviour.
->=20
-> Signed-off-by: Nicolai Stange <nstange@suse.de>
+After merging the net-next tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Reviewed-by: Stephan M=FCller <smueller@chronox.de>
+drivers/net/phy/phy-c45.c:624: warning: Function parameter or member 'enabl=
+e' not described in 'genphy_c45_fast_retrain'
 
-Ciao
-Stephan
+Introduced by commit
 
+  63c67f526db8 ("net: phy: add genphy_c45_fast_retrain")
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/QUqSzUnd/dg5WRO02XIRbtF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3yGQACgkQAVBC80lX
+0GyAFwgAjhZGGVMQs7w88t3HNqeHLtHNZOx3PSZg3eRF8GJu5Y4SjGuPex4UBPx4
+/OjVg2bf0IG8mGS5iqbC0yQ5gPNL36Fe3WXHVrmbDtF5j6L3fxeshbskl2P/NzDC
+qtrHaNJzRzLcD8a4vcvPHhzrzzMowaRAGUPUS7SjiUIAmxmt51TSerjG8x8NVzPt
+POcjgLew8cVaxhexR3En8ZA1PtxLB1UpBj277UK7tqFiQ1zgWs5EjdRPf7f7/HZo
+1szss/d74yh4yGF6VYoq9nN28qyW5e1Lp6lJTMXr0DguFUmHmk1T2P9CWyw3XZiP
+yX79pTE9f7RgoaY2q7mQ9PflYkhZmA==
+=vs3I
+-----END PGP SIGNATURE-----
+
+--Sig_/QUqSzUnd/dg5WRO02XIRbtF--
