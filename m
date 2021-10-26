@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC99043B0A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88AB43B0A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhJZK6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235288AbhJZK6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234630AbhJZK6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 26 Oct 2021 06:58:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0382B61057
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635245782;
-        bh=bHEangHscPHEDpQmdZ382qrx5zo6GEWR0uEpI3hNTX4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pyHubQDHDEQzntrtaQe3b1Y0xwYV7HAqPS0sJb794Ts1M/hueN30v3GgWrw3ikaME
-         EzL3XjycnJthE7OQgJUeX98RU6c9v4TbL80Emfae9i8GxcMwrHu8Usi64LFibYR7JE
-         c7A/tMjA24pPP0oZPHyINn5eAgkakbw41jPnHcUknog0zd8nUWCFkG2rbs3WuTjDXs
-         zD95SQ7fif89vBYVzTwuxDEGKN6RC2OQhkjlwUgKYWIhy2xrc4KinaRoHBo6IIJfh7
-         7t3a8NAr0+FJs0RcRmlkuhaEZXNFHR2wK0GNOIg/HAagnfm4aLEs7h/98tigrcA2jD
-         aPCNEt1kQXDXw==
-Received: by mail-ot1-f47.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so19247812ott.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 03:56:21 -0700 (PDT)
-X-Gm-Message-State: AOAM531bY47AGBnHyu2bPQe6Vwe1ScCYrP+Rqvtw2kOXZQ1BeFEWxBCv
-        Co2nFpDtN9QUavptjglndPMC0ntEVz2+BFJtvv8=
-X-Google-Smtp-Source: ABdhPJzh7yapKBzSGgUZc3gpTT1GqXPADJZRcTC6IWoT/JNuWVX/lpkcyh39Rzb6lf6b/jjsvJLhPdH0LxUgTSePS+g=
-X-Received: by 2002:a9d:5911:: with SMTP id t17mr18903898oth.30.1635245781230;
- Tue, 26 Oct 2021 03:56:21 -0700 (PDT)
+Received: from mga03.intel.com ([134.134.136.65]:8096 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234007AbhJZK6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:58:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="229823312"
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="229823312"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 03:56:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="724084101"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga005.fm.intel.com with ESMTP; 26 Oct 2021 03:56:15 -0700
+Subject: Re: [PATCH] mmc: cqhci: clear HALT state after CQE enable
+To:     Wenbin Mei <wenbin.mei@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Ritesh Harjani <riteshh@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        stable@vger.kernel.org
+References: <20211026070812.9359-1-wenbin.mei@mediatek.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <8d096ff5-4266-815f-d050-1f3f0cddeba8@intel.com>
+Date:   Tue, 26 Oct 2021 13:56:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211020054942.1608637-1-quanyang.wang@windriver.com>
- <CACRpkdYxMDp4FRGP=EOt8oTMxs_YuskbvMx5wXBDjUWz6hD=gQ@mail.gmail.com>
- <YXfDdmrCynZk/QW8@shell.armlinux.org.uk> <cddc3cd6-a36d-e02f-4cd8-26ff15e72d13@windriver.com>
- <CAMj1kXEyc0S6A_OQRQOTtTFxev=Kj55Zhn2dRDaZ6FP+Ek=17w@mail.gmail.com>
- <8905597e-49a9-c898-c78d-3d2f51180133@windriver.com> <YXfegIP+Xamfcnfp@shell.armlinux.org.uk>
-In-Reply-To: <YXfegIP+Xamfcnfp@shell.armlinux.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 26 Oct 2021 12:56:08 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH+PZsSkCQSxWck-AuqkmRxyKy=4i5Xst8J+dqy_G92uQ@mail.gmail.com>
-Message-ID: <CAMj1kXH+PZsSkCQSxWck-AuqkmRxyKy=4i5Xst8J+dqy_G92uQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: add BUILD_BUG_ON to check if fixmap range spans
- multiple pmds
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Quanyang Wang <quanyang.wang@windriver.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211026070812.9359-1-wenbin.mei@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 12:55, Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Tue, Oct 26, 2021 at 06:38:16PM +0800, Quanyang Wang wrote:
-> > Hi Ard,
-> >
-> > On 10/26/21 6:12 PM, Ard Biesheuvel wrote:
-> > > On Tue, 26 Oct 2021 at 11:53, Quanyang Wang <quanyang.wang@windriver.com> wrote:
-> > > >
-> > > > Hi,
-> > > > Sorry for the inconvenience.
-> > > >
-> > > > On 10/26/21 4:59 PM, Russell King (Oracle) wrote:
-> > > > > On Sun, Oct 24, 2021 at 11:44:31PM +0200, Linus Walleij wrote:
-> > > > > > On Wed, Oct 20, 2021 at 7:50 AM <quanyang.wang@windriver.com> wrote:
-> > > > > >
-> > > > > > > From: Quanyang Wang <quanyang.wang@windriver.com>
-> > > > > > >
-> > > > > > > Not only the early fixmap range, but also the fixmap range should be
-> > > > > > > checked if it spans multiple pmds. When enabling CONFIG_DEBUG_HIGHMEM,
-> > > > > > > some systems which contain up to 16 CPUs will crash.
-> > > > > > >
-> > > > > > > Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-> > > > > >
-> > > > > > Looks reasonable to me.
-> > > > > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > > > > >
-> > > > > > Please submit this patch into Russell's patch tracker.
-> > > > >
-> > > > > ... and has totally broken what looks like _all_ ARM kernel builds.
-> > > > This patch is intended to trigger build error when it check the value of
-> > > > __end_of_fixmap_region is equal or larger than 256.
-> > >
-> > > Why? The fixmap region is larger than one PMD, so why do we need to cap it?
-> > In __kmap_local_pfn_prot, arch_kmap_local_set_pte(&init_mm, vaddr, kmap_pte
-> > - idx, pteval) is used to set pteval.
-> > But the ptep is calculated by "kmap_pte - idx", which means all ptes must be
-> > placed next to each other and no gaps. But for ARM, the ptes for the range
-> > "0xffe00000~0xfff00000" is not next to the ptes for the range
-> > "0xffc80000~0xffdfffff".
-> >
-> > When the idx is larger than 256, virtual address is in 0xffdxxxxx, access
-> > this address will crash since its pteval isn't set correctly.
->
-> Thanks for the explanation.
->
-> Sadly, this does seem to be correct. Even if the PTE tables are
-> located next to each other in memory, they _still_ won't be a
-> contiguous array of entries due to being interleaved with the Linux
-> PTE table and the hardware PTE table.
->
-> Since the address range 0xffe00000-0xfff00000 is already half of one
-> PTE table containing 512 contiguous entries, we are limited to 256
-> fixmap PTEs maximum. If we have more than that we will start trampling
-> over memory below the PTE table _and_ we will start corrupting Linux
-> PTE entries in the 0xfff00000-0xffffffff range.
->
-> I suspect this hasn't been seen because of a general lack of ARM
-> systems with more than 4 CPUs.
->
+On 26/10/2021 10:08, Wenbin Mei wrote:
+> While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
+> cache) and disable cqe, for resume back, we enable CQE and not clear HALT
+> state.
+> In this case MediaTek mmc host controller will keep the value for HALT
+> state after CQE disable/enable flow, so the next CQE transfer after resume
+> will be timeout due to CQE is in HALT state, the log as below:
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
+> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
+> 
+> This change check HALT state after CQE enable, if CQE is in HALT state, we
+> will clear it.
+> 
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Cc: stable@vger.kernel.org
 
-But doesn't that make it a kmap_local regression? Or do you think this
-issue existed before that as well?
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  drivers/mmc/host/cqhci-core.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+> index ca8329d55f43..b0d30c35c390 100644
+> --- a/drivers/mmc/host/cqhci-core.c
+> +++ b/drivers/mmc/host/cqhci-core.c
+> @@ -282,6 +282,9 @@ static void __cqhci_enable(struct cqhci_host *cq_host)
+>  
+>  	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+>  
+> +	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
+> +		cqhci_writel(cq_host, 0, CQHCI_CTL);
+> +
+>  	mmc->cqe_on = true;
+>  
+>  	if (cq_host->ops->enable)
+> 
+
