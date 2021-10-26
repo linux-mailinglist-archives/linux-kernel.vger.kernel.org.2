@@ -2,118 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FF643A955
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 02:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2878243A959
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 02:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235644AbhJZAk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 20:40:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:60311 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235601AbhJZAk1 (ORCPT
+        id S235712AbhJZAmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 20:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235191AbhJZAmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 20:40:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635208684; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=8mByl3gAGfKf4AoJcCSTiFOyD0EhGvwG2hEw0n8Woe8=; b=ShOHMazzG6zWMmN7tjzpA+or3ydxPng2QOimkIWAN3X5jMm5gA2tACKSoq5ejAnHMiNGTYW8
- NHBZWUzZ4m8RLXp1Yara7ZF27ILB4TOiwhpX0mkeOZICt6XFteKBbD5/BTIo0t1kHJGBH4R2
- MbsVDcHNl8JyQdo45l9e34ntDEI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61774de9fd91319f0f256d16 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 00:38:01
- GMT
-Sender: subbaram=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AE8B2C4361A; Tue, 26 Oct 2021 00:38:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.47.233.232] (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: subbaram)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2CA92C4338F;
-        Tue, 26 Oct 2021 00:37:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2CA92C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v10 2/2] leds: Add driver for Qualcomm LPG
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Luca Weiss <luca@z3ntu.xyz>
-References: <20211010043912.136640-1-bjorn.andersson@linaro.org>
- <20211010043912.136640-2-bjorn.andersson@linaro.org>
-From:   Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Message-ID: <1ad508af-f7cb-a88f-07d8-5731c5a45403@codeaurora.org>
-Date:   Mon, 25 Oct 2021 17:37:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 25 Oct 2021 20:42:19 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EB9C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:39:56 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id l186so5919798pge.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YzYDFlVO4yRtUtstyuZjtTCfaHeLtxBbXFUEMFl50gE=;
+        b=I4eh9zJO0VLnLMuN830zfiQzAYRDYtuGSr1IieUbZQMbcEFUavGlzVO73hgMCovAH/
+         WFeFD67omMoSYxzPgBhVZ3e4GFYFyzm5+MxSGqr2aq8+5EKGRaIoglIyx4KddyGuE+ou
+         Ebv5lhIXDPzE+xnOSZv0cxvYh7FUIfrZmcghA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YzYDFlVO4yRtUtstyuZjtTCfaHeLtxBbXFUEMFl50gE=;
+        b=Osg9m05KVIovP0MGT1dftWSxC9iK0q/C0kN+6tK+FNrjfk8v9t3L3mc/rcwhPoB0iw
+         t/SpZajVu4aNr5IAV4ph3KTiL2u74lUObBMWFsu7lNK35gPgI0rrmof2H/rhf2NTIL9c
+         b/tejpPucYtX0S8glVYQdKq8pq3Ei2WkgbyyeUGKk+RbGCY4lOSKcU3qfBBqxddPt358
+         VTArsxIgHiMqiGawxNVfIqXW6uM1LmC+dINeDGqiQ2uniEXyKj+nVJiN7ierNen6f1WD
+         Jwt3NcrgPqD943Mn2iA4x71oS3nDj07W53zLa3NH/rYvqIbSgHfAzxt4afpU1CQ7heh9
+         xO0A==
+X-Gm-Message-State: AOAM530IZDQtOaMLsrgJvwPs0mJebLikNu11dF6aAiPEXBYXxmUmBc2x
+        9aIv08DlwUxEjtqBGw07Ug2vqg==
+X-Google-Smtp-Source: ABdhPJxNGQkKAn0VvFUMEC9gGI3s88Scz933Ih3dJHUfyERI4UGSRzlq/cWVGxOHVMAcydKqNeBoeg==
+X-Received: by 2002:a05:6a00:2443:b0:44e:ec:f388 with SMTP id d3-20020a056a00244300b0044e00ecf388mr21933464pfj.7.1635208795789;
+        Mon, 25 Oct 2021 17:39:55 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:5822:765c:9f84:e1b3])
+        by smtp.gmail.com with UTF8SMTPSA id np17sm24814905pjb.7.2021.10.25.17.39.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 17:39:55 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 17:39:54 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sujit Kautkar <sujitka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] rpmsg: glink: Update cdev add/del API in
+ rpmsg_ctrldev_release_device()
+Message-ID: <YXdOWrY3xcAaI9Ih@google.com>
+References: <20211025233751.1777479-1-sujitka@chromium.org>
+ <20211025163739.v2.2.I507c5cea0cf97db4cedfa0e47029e711e7edd0df@changeid>
 MIME-Version: 1.0
-In-Reply-To: <20211010043912.136640-2-bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20211025163739.v2.2.I507c5cea0cf97db4cedfa0e47029e711e7edd0df@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Mon, Oct 25, 2021 at 04:37:54PM -0700, Sujit Kautkar wrote:
+> Replace cdev add/del APIs with cdev_device_add/cdev_device_del to avoid
+> below kernel warning. This correctly takes a reference to the parent
+> device so the parent will not get released until all references to the
+> cdev are released.
+> 
+> | ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x7c
+> | WARNING: CPU: 7 PID: 19892 at lib/debugobjects.c:488 debug_print_object+0x13c/0x1b0
+> | CPU: 7 PID: 19892 Comm: kworker/7:4 Tainted: G        W         5.4.147-lockdep #1
+> | ==================================================================
+> | Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
+> | Workqueue: events kobject_delayed_cleanup
+> | pstate: 60c00009 (nZCv daif +PAN +UAO)
+> | pc : debug_print_object+0x13c/0x1b0
+> | lr : debug_print_object+0x13c/0x1b0
+> | sp : ffffff83b2ec7970
+> | x29: ffffff83b2ec7970 x28: dfffffd000000000
+> | x27: ffffff83d674f000 x26: dfffffd000000000
+> | x25: ffffffd06b8fa660 x24: dfffffd000000000
+> | x23: 0000000000000000 x22: ffffffd06b7c5108
+> | x21: ffffffd06d597860 x20: ffffffd06e2c21c0
+> | x19: ffffffd06d5974c0 x18: 000000000001dad8
+> | x17: 0000000000000000 x16: dfffffd000000000
+> | BUG: KASAN: use-after-free in qcom_glink_rpdev_release+0x54/0x70
+> | x15: ffffffffffffffff x14: 79616c6564203a74
+> | x13: 0000000000000000 x12: 0000000000000080
+> | Write of size 8 at addr ffffff83d95768d0 by task kworker/3:1/150
+> | x11: 0000000000000001 x10: 0000000000000000
+> | x9 : fc9e8edec0ad0300 x8 : fc9e8edec0ad0300
+> |
+> | x7 : 0000000000000000 x6 : 0000000000000000
+> | x5 : 0000000000000080 x4 : 0000000000000000
+> | CPU: 3 PID: 150 Comm: kworker/3:1 Tainted: G        W         5.4.147-lockdep #1
+> | x3 : ffffffd06c149574 x2 : ffffff83f77f7498
+> | x1 : ffffffd06d596f60 x0 : 0000000000000061
+> | Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
+> | Call trace:
+> |  debug_print_object+0x13c/0x1b0
+> | Workqueue: events kobject_delayed_cleanup
+> |  __debug_check_no_obj_freed+0x25c/0x3c0
+> |  debug_check_no_obj_freed+0x18/0x20
+> | Call trace:
+> |  slab_free_freelist_hook+0xb4/0x1bc
+> |  kfree+0xe8/0x2d8
+> |  dump_backtrace+0x0/0x27c
+> |  rpmsg_ctrldev_release_device+0x78/0xb8
+> |  device_release+0x68/0x14c
+> |  show_stack+0x20/0x2c
+> |  kobject_cleanup+0x12c/0x298
+> |  kobject_delayed_cleanup+0x10/0x18
+> |  dump_stack+0xe0/0x19c
+> |  process_one_work+0x578/0x92c
+> |  worker_thread+0x804/0xcf8
+> |  print_address_description+0x3c/0x4a8
+> |  kthread+0x2a8/0x314
+> |  ret_from_fork+0x10/0x18
+> |  __kasan_report+0x100/0x124
+> 
+> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/rpmsg/rpmsg_char.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 876ce43df732b..b63a5c396da57 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -458,7 +458,7 @@ static void rpmsg_ctrldev_release_device(struct device *dev)
+>  
+>  	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
+>  	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
+> -	cdev_del(&ctrldev->cdev);
+> +	cdev_device_del(&ctrldev->cdev, &ctrldev->dev);
+>  	kfree(ctrldev);
+>  }
+>  
+> @@ -493,14 +493,13 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>  	dev->id = ret;
+>  	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
+>  
+> -	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
+> +	ret = cdev_device_add(&ctrldev->cdev, &ctrldev->dev);
+>  	if (ret)
+>  		goto free_ctrl_ida;
+>  
+>  	/* We can now rely on the release function for cleanup */
+>  	dev->release = rpmsg_ctrldev_release_device;
+>  
+> -	ret = device_add(dev);
+>  	if (ret) {
+>  		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
+>  		put_device(dev);
 
-> +#define LPG_RESOLUTION		512
-
-Just a thought. Having this fixed to 9-bit resolution would require a lot of code churn if this driver ends up supporting higher resolution PWM later. Would it be possible to have this as a parameter in "struct lpg_channel" ?
-
-> +static const unsigned int lpg_clk_rates[] = {1024, 32768, 19200000};
-> +static const unsigned int lpg_pre_divs[] = {1, 3, 5, 6};
-> +
-> +static int lpg_calc_freq(struct lpg_channel *chan, uint64_t period)
-> +{
-> +	unsigned int clk, best_clk = 0;
-> +	unsigned int div, best_div = 0;
-> +	unsigned int m, best_m = 0;
-> +	unsigned int error;
-> +	unsigned int best_err = UINT_MAX;
-> +	u64 best_period = 0;
-> +
-> +	/*
-> +	 * The PWM period is determined by:
-> +	 *
-> +	 *          resolution * pre_div * 2^M
-> +	 * period = --------------------------
-> +	 *                   refclk
-> +	 *
-> +	 * With resolution fixed at 2^9 bits, pre_div = {1, 3, 5, 6} and
-> +	 * M = [0..7].
-> +	 *
-> +	 * This allows for periods between 27uS and 384s, as the PWM framework
-> +	 * wants a period of equal or lower length than requested, reject
-> +	 * anything below 27uS.
-> +	 */
-> +	if (period <= (u64)NSEC_PER_SEC * LPG_RESOLUTION / 19200000)
-> +		return -EINVAL;
-> +
-> +	/* Limit period to largest possible value, to avoid overflows */
-> +	if (period > (u64)NSEC_PER_SEC * LPG_RESOLUTION * 6 * (1 << LPG_MAX_M) / 1024)
-> +		period = (u64)NSEC_PER_SEC * LPG_RESOLUTION * 6 * (1 << LPG_MAX_M) / 2014;
-
-s/2014/1024 ?
-
-Thanks,
-Subbaraman
-
-
+Also remove the error check? There is already a check above for the
+status of 'cdev_device_add'.
