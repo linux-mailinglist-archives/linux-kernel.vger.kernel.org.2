@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7C843AF14
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A44F43AF15
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhJZJaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234844AbhJZJ37 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:29:59 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C22DC061767;
-        Tue, 26 Oct 2021 02:27:36 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id u13so11318306edy.10;
-        Tue, 26 Oct 2021 02:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I7YfSyelzy7SPOD/68bXsBPGsKRurvUCvEQxs14RBXU=;
-        b=TjYgjSVOmnnMkWPm+jlRpAhJ/Jk4zFaOtVPc+6KH2wltPLi8+L2OGO2CneJJC8UzQ4
-         7uN/gaYQM5sKKA4mPCRw6qRskqSUiexL+wLCZvGO6aKLxmcqYDhLs7ZLJPI3uEo74OPM
-         QQDssCjxvjKtBmAyiIF86XrgiPCLZsfLca5tBne2o/OTR/1qEGlGznZOWTgLco0Zl/Yv
-         1W9xKXW3i5JaZmpeAFtwM02TFYyLIwOELeI4IYqW9s28Z72ohycuNSw/4HtigRHBNk7M
-         7hY/nIXdhUnlHVr9niH8No+9GHmLET2CVEtb4zmIH7ejkcuQIcoQDDr9UnubMuhnip1r
-         tUuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I7YfSyelzy7SPOD/68bXsBPGsKRurvUCvEQxs14RBXU=;
-        b=ZvRlblRK+RaZ/ycYLhe+cpbGq6yxyGw7/XAoiMlcMIMUtQEzNMRhIlTgbboEb/JOBG
-         Xr+/ByWG3tI56pL5ahPM6ah66wFgcUcKoJWcyyqi+z3FxniNQWN0Y6YBDMoDf6HJFUmi
-         EF6ydMx/pSbGj3qkrIaKyeKGvd5IQJzB/K4dcjGOL/StvbJAFlS8XYGhZ4TrLF8Xe2+i
-         7sl90WIHJM8Kp8mYbCiHP95S3B8hrPyt2jrNAD14yY3xe0jAnem+6ywI5SZG6NYRU/NI
-         uBpxCs4IU9JQ0e/UoHmF21hMHjcg46c7YwkvSiNwCknzeBFndtUDzwcJhDe07vK10Tl9
-         GSWw==
-X-Gm-Message-State: AOAM530fx3YbtlJOuUujetA2PhOVGB1J/fSLp8pUkzcLD4PxyksQsRHk
-        /30IUGCvFL0v6qfn8aNp6QA=
-X-Google-Smtp-Source: ABdhPJyV1TPxG9jV+16YCTn2EphruR+NcwnEI+hIumIkqOc9jEfQMUMirh/PaE3daQf+V0FlQVFTaA==
-X-Received: by 2002:a17:907:16aa:: with SMTP id hc42mr19148394ejc.491.1635240454691;
-        Tue, 26 Oct 2021 02:27:34 -0700 (PDT)
-Received: from localhost.localdomain (host-80-181-148-119.retail.telecomitalia.it. [80.181.148.119])
-        by smtp.gmail.com with ESMTPSA id sh19sm6196023ejc.99.2021.10.26.02.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 02:27:34 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        mudongliangabcd@gmail.com, netdev@vger.kernel.org,
-        phind.uet@gmail.com, syzkaller-bugs@googlegroups.com
-Cc:     syzbot <syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] memory leak in cfg80211_inform_single_bss_frame_data
-Date:   Tue, 26 Oct 2021 11:27:31 +0200
-Message-ID: <2678912.i2LAJy1QmT@localhost.localdomain>
-In-Reply-To: <000000000000e1063f05cf34f2a8@google.com>
-References: <000000000000e1063f05cf34f2a8@google.com>
+        id S233722AbhJZJac convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 05:30:32 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:35628 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233688AbhJZJab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:30:31 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mfIkT-0004nO-E1; Tue, 26 Oct 2021 11:28:01 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     re@w6rz.net, linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
+Date:   Tue, 26 Oct 2021 11:28:00 +0200
+Message-ID: <1714720.9tEa3Li8Nu@diego>
+In-Reply-To: <CAMuHMdW7NCC3siVp6avaTRffrdFr+OMXvLeGzdHZJOg+B5aGJw@mail.gmail.com>
+References: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com> <2328512.Zi2KH1A685@diego> <CAMuHMdW7NCC3siVp6avaTRffrdFr+OMXvLeGzdHZJOg+B5aGJw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="nextPart327050664.krEj5IxTLE"
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
-
---nextPart327050664.krEj5IxTLE
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-
-On Tuesday, October 26, 2021 12:33:23 AM CEST syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
+Am Dienstag, 26. Oktober 2021, 10:57:26 CEST schrieb Geert Uytterhoeven:
+> Hi Heiko,
 > 
-> HEAD commit:    87066fdd2e30 Revert "mm/secretmem: use refcount_t instead 
-..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16b55554b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d25eeb482b0f99b
-> dashboard link: https://syzkaller.appspot.com/bug?
-extid=7a942657a255a9d9b18a
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils 
-for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171cf464b00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1396b19f300000
+> On Tue, Oct 26, 2021 at 10:53 AM Heiko Stübner <heiko@sntech.de> wrote:
+> > Am Dienstag, 26. Oktober 2021, 08:44:31 CEST schrieb Geert Uytterhoeven:
+> > > On Tue, Oct 26, 2021 at 2:37 AM Ron Economos <re@w6rz.net> wrote:
+> > > > On 10/25/21 8:54 AM, Geert Uytterhoeven wrote:
+> > > > > When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
+> > > > > the 4th CPU either fails to come online, or the system crashes.
+> > > > >
+> > > > > This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
+> > > > > and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
+> > > > >    - unused core has hartid 0 (sifive,e51),
+> > > > >    - processor 0 has hartid 1 (sifive,u74-mc),
+> > > > >    - processor 1 has hartid 2 (sifive,u74-mc),
+> > > > >    - processor 2 has hartid 3 (sifive,u74-mc),
+> > > > >    - processor 3 has hartid 4 (sifive,u74-mc).
+> > > > >
+> > > > > I assume the same issue is present on the SiFive fu540 and fu740
+> > > > > SoCs, but I don't have access to these.  The issue is not present
+> > > > > on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
+> > > > > hartid 0.
+> > > > >
+> > > > > arch/riscv/kernel/cpu_ops.c has:
+> > > > >
+> > > > >      void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
+> > > > >      void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
+> > > > >
+> > > > >      void cpu_update_secondary_bootdata(unsigned int cpuid,
+> > > > >                                         struct task_struct *tidle)
+> > > > >      {
+> > > > >              int hartid = cpuid_to_hartid_map(cpuid);
+> > > > >
+> > > > >              /* Make sure tidle is updated */
+> > > > >              smp_mb();
+> > > > >              WRITE_ONCE(__cpu_up_stack_pointer[hartid],
+> > > > >                         task_stack_page(tidle) + THREAD_SIZE);
+> > > > >              WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
+> > > > >
+> > > > > The above two writes cause out-of-bound accesses beyond
+> > > > > __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
+> > > > >
+> > > > >      }
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the 
-commit:
-> Reported-by: syzbot+7a942657a255a9d9b18a@syzkaller.appspotmail.com
+> > > https://riscv.org/wp-content/uploads/2017/05/riscv-privileged-v1.10.pdf
+> > > says:
+> > >
+> > >     Hart IDs might not necessarily be numbered contiguously in a
+> > >     multiprocessor system, but at least one hart must have a hart
+> > >     ID of zero.
+> > >
+> > > Which means indexing arrays by hart ID is a no-go?
+> >
+> > Isn't that also similar on aarch64?
+> >
+> > On a rk3399 you get 0-3 and 100-101 and with the paragraph above
+> > something like this could very well exist on some riscv cpu too I guess.
 > 
-> BUG: memory leak
-> unreferenced object 0xffff88810f3c7980 (size 96):
+> Yes, it looks like hart IDs are similar to MPIDRs on ARM.
 
-Let's try the attached diff.
+and they have the set_cpu_logical_map construct to map hwids
+to a continuous list of cpu-ids.
 
-Fabio
---nextPart327050664.krEj5IxTLE
-Content-Disposition: attachment; filename="scan_c_diff"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/x-patch; charset="UTF-8"; name="scan_c_diff"
-
-diff --git a/net/wireless/scan.c b/net/wireless/scan.c
-index 11c68b159324..e84855ea4075 100644
---- a/net/wireless/scan.c
-+++ b/net/wireless/scan.c
-@@ -2380,7 +2380,7 @@ cfg80211_inform_single_bss_frame_data(struct wiphy *wiphy,
- 		capability = le16_to_cpu(mgmt->u.probe_resp.capab_info);
- 	}
- 
--	ies = kzalloc(sizeof(*ies) + ielen, gfp);
-+	ies = kzalloc(sizeof(cfg80211_bss_ies) + ielen, gfp);
- 	if (!ies)
- 		return NULL;
- 	ies->len = ielen;
-
---nextPart327050664.krEj5IxTLE--
-
+So with hartids not being necessarily continuous this looks like
+riscv would need a similar mechanism.
 
 
