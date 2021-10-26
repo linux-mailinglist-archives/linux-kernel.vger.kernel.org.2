@@ -2,174 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6A143B15D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4B343B1B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235531AbhJZLnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:43:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234803AbhJZLnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:43:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DB4360C4B;
-        Tue, 26 Oct 2021 11:40:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635248453;
-        bh=jsir7YjseS8J2Bzgug1/HO3u7BEFwv5cWCMG1pexsXo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=aQjzhwyK9XAKMRtANSpUEYxz/KCWd7UDFKbnRh+auMdF9/ZX8Gikp/p7F07saulsa
-         /Yc8JmBaAWmMpHBz59+2xq8sR4bmUTA68/+ggtBqfti1Ekfoa++MI2NS8e2jQCR1gg
-         IhTFuoZv+/4AoH8eEkz/6Nv34MJfCrpCX/GHP0ImE4iGy2++DhJAcynIbFot6PmYsm
-         Tt4VoS+m+iIMfU3YsbD5KBQ52qjhs9znvkABWy9aCD9WyyipCA+dkQffxTTn8nUMzj
-         K+aYybAsH2AC4rrkEciTZ/2Q+vupOBz/iTNS06X2M3XQtPa2G1vpCbygsxrkf9lNXq
-         jGexLjJa3Eeww==
-Message-ID: <604199ed389d9286e3fdab6b5acdf65c421df45d.camel@kernel.org>
-Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Xiubo Li <xiubli@redhat.com>,
-        Patrick Donnelly <pdonnell@redhat.com>
-Cc:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 26 Oct 2021 07:40:51 -0400
-In-Reply-To: <785d1435-4a2c-95aa-0573-2de54b4e7b6b@redhat.com>
-References: <20211020143708.14728-1-lhenriques@suse.de>
-         <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
-         <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
-         <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
-         <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
-         <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
-         <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
-         <785d1435-4a2c-95aa-0573-2de54b4e7b6b@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S234938AbhJZL7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:59:45 -0400
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:25635 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234446AbhJZL7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 07:59:43 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 07:59:42 EDT
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 26 Oct
+ 2021 19:42:14 +0800
+Received: from [10.89.154.55] (123.139.80.25) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 26 Oct
+ 2021 19:42:13 +0800
+Date:   Tue, 26 Oct 2021 19:42:12 +0800
+From:   <tonywwang-oc@zhaoxin.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <a.zummo@towertech.it>, <linux-rtc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
+        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
+        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
+        <YanchenSun@zhaoxin.com>
+Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
+User-Agent: K-9 Mail for Android
+In-Reply-To: <F4869089-9792-4C4F-B984-553662B03E91@zhaoxin.com>
+References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com> <YRogod0HB4d7Og4E@piout.net> <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com> <YRpb4Fey2lM3aOAw@piout.net> <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com> <YRu3v0pb/Z54XxWJ@piout.net> <F4869089-9792-4C4F-B984-553662B03E91@zhaoxin.com>
+Message-ID: <2DAA636C-A992-4FC7-BB53-3E68342437F9@zhaoxin.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [123.139.80.25]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-26 at 11:05 +0800, Xiubo Li wrote:
-> On 10/22/21 1:30 AM, Patrick Donnelly wrote:
-> > On Thu, Oct 21, 2021 at 12:35 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > > On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
-> > > > On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
-> > > > > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
-> > > > > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > > > > > > On Wed, 2021-10-20 at 15:37 +0100, Lu�s Henriques wrote:
-> > > > > > > > This counter will keep track of the number of remote object copies done on
-> > > > > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
-> > > > > > > > can be accessed from the client debugfs directory.
-> > > > > > > > 
-> > > > > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
-> > > > > > > > Signed-off-by: Lu�s Henriques <lhenriques@suse.de>
-> > > > > > > > ---
-> > > > > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
-> > > > > > > > 100% sure about the usefulness of this patch, or if this is the best way
-> > > > > > > > to provide the functionality Patrick requested.  Anyway, this is just to
-> > > > > > > > get some feedback, hence the RFC.
-> > > > > > > > 
-> > > > > > > > Cheers,
-> > > > > > > > --
-> > > > > > > > Lu�s
-> > > > > > > > 
-> > > > > > > > [0] https://github.com/ceph/ceph/pull/42720
-> > > > > > > > 
-> > > > > > > I think this would be better integrated into the stats infrastructure.
-> > > > > > > 
-> > > > > > > Maybe you could add a new set of "copy" stats to struct
-> > > > > > > ceph_client_metric that tracks the total copy operations done, their
-> > > > > > > size and latency (similar to read and write ops)?
-> > > > > > I think it's a good idea to integrate this into "stats" but I think a
-> > > > > > local debugfs file for some counters is still useful. The "stats"
-> > > > > > module is immature at this time and I'd rather not build any qa tests
-> > > > > > (yet) that rely on it.
-> > > > > > 
-> > > > > > Can we generalize this patch-set to a file named "op_counters" or
-> > > > > > similar and additionally add other OSD ops performed by the kclient?
-> > > > > > 
-> > > > > 
-> > > > > Tracking this sort of thing is the main purpose of the stats code. I'm
-> > > > > really not keen on adding a whole separate set of files for reporting
-> > > > > this.
-> > > > Maybe I'm confused. Is there some "file" which is already used for
-> > > > this type of debugging information? Or do you mean the code for
-> > > > sending stats to the MDS to support cephfs-top?
-> > > > 
-> > > > > What's the specific problem with relying on the data in debugfs
-> > > > > "metrics" file?
-> > > > Maybe no problem? I wasn't aware of a "metrics" file.
-> > > > 
-> > > Yes. For instance:
-> > > 
-> > > # cat /sys/kernel/debug/ceph/*/metrics
-> > > item                               total
-> > > ------------------------------------------
-> > > opened files  / total inodes       0 / 4
-> > > pinned i_caps / total inodes       5 / 4
-> > > opened inodes / total inodes       0 / 4
-> > > 
-> > > item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
-> > > -----------------------------------------------------------------------------------
-> > > read          0           0               0               0               0
-> > > write         5           914013          824797          1092343         103476
-> > > metadata      79          12856           1572            114572          13262
-> > > 
-> > > item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
-> > > ----------------------------------------------------------------------------------------
-> > > read          0           0               0               0               0
-> > > write         5           4194304         4194304         4194304         20971520
-> > > 
-> > > item          total           miss            hit
-> > > -------------------------------------------------
-> > > d_lease       11              0               29
-> > > caps          5               68              10702
-> > > 
-> > > 
-> > > I'm proposing that Luis add new lines for "copy" to go along with the
-> > > "read" and "write" ones. The "total" counter should give you a count of
-> > > the number of operations.
-> > Okay that makes more sense!
-> > 
-> > Side note: I am a bit horrified by how computer-unfriendly that
-> > table-formatted data is.
-> 
-> Any suggestion to improve this ?
-> 
-> How about just make the "metric" file writable like a switch ? And as 
-> default it will show the data as above and if tools want the 
-> computer-friendly format, just write none-zero to it, then show raw data 
-> just like:
-> 
-> # cat /sys/kernel/debug/ceph/*/metrics
-> opened_files:0
-> pinned_i_caps:5
-> opened_inodes:0
-> total_inodes:4
-> 
-> read_latency:0,0,0,0,0
-> write_latency:5,914013,824797,1092343,103476
-> metadata_latency:79,12856,1572,114572,13262
-> 
-> read_size:0,0,0,0,0
-> write_size:5,4194304,4194304,4194304,20971520
-> 
-> d_lease:11,0,29
-> caps:5,68,10702
-> 
-> 
 
-I'd rather not multiplex the output of this file based on some input.
-That would also be rather hard to do -- write() and read() are two
-different syscalls, so you'd need to track a bool (or something) across
-them somehow.
 
-Currently, I doubt there are many scripts in the field that scrape this
-info and debugfs is specifically excluded from ABI concerns. If we want
-to make it more machine-readable (which sounds like a good thing), then
-I suggest we just change the output to something like what you have
-above and not worry about preserving the "legacy" output.
--- 
-Jeff Layton <jlayton@kernel.org>
+On August 18, 2021 11:54:20 AM GMT+08:00, tonywwang-oc@zhaoxin.com wrote:
+>
+>
+>On August 17, 2021 9:21:03 PM GMT+08:00, Alexandre Belloni
+><alexandre.belloni@bootlin.com> wrote:
+>>On 17/08/2021 19:09:28+0800, tonywwang-oc@zhaoxin.com wrote:
+>>> 
+>>> 
+>>> On August 16, 2021 8:36:48 PM GMT+08:00, Alexandre Belloni
+>><alexandre.belloni@bootlin.com> wrote:
+>>> >On 16/08/2021 18:03:13+0800, Tony W Wang-oc wrote:
+>>> >> 
+>>> >> On 16/08/2021 16:24, Alexandre Belloni wrote:
+>>> >> > Hello,
+>>> >> > 
+>>> >> > On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
+>>> >> >> When the RTC divider is changed from reset to an operating
+>time
+>>> >base,
+>>> >> >> the first update cycle should be 500ms later. But on some
+>>Zhaoxin
+>>> >SOCs,
+>>> >> >> this first update cycle is one second later.
+>>> >> >>
+>>> >> >> So set RTC time on these Zhaoxin SOCs will causing 500ms
+>delay.
+>>> >> >>
+>>> >> > 
+>>> >> > Can you explain what is the relationship between writing the
+>>> >divider and
+>>> >> > the 500ms delay?
+>>> >> >> Isn't the issue that you are using systohc and set_offset_nsec
+>>is
+>>> >set to
+>>> >> > NSEC_PER_SEC / 2 ?
+>>> >> > 
+>>> >> No.
+>>> >> When using #hwclock -s to set RTC time and set_offset_nsec is
+>>> >> NSEC_PER_SEC / 2, the function mc146818_set_time() requires the
+>>first
+>>> >> update cycle after RTC divider be changed from reset to an
+>>operating
+>>> >> mode is 500ms as the MC146818A spec specified. But on some
+>Zhaoxin
+>>> >SOCs,
+>>> >> the first update cycle of RTC is one second later after RTC
+>>divider
+>>> >be
+>>> >> changed from reset to an operating mode. So the first update
+>cycle
+>>> >after
+>>> >> RTC divider be changed from reset to an operation mode on These
+>>SOCs
+>>> >> will causing 500ms delay with current mc146818_set_time()
+>>> >implementation.
+>>> >> 
+>>> >
+>>> >What happens with hwclock --delay=0 -s ?
+>>> 
+>>> With "hwclock --delay=0 -s" still have this problem. Actually, this
+>>500ms delay caused by writing the RTC time on these Zhaoxin SOCs.
+>>> As I've tested, with hwclock --delay=0 -w can fix it too. 
+>>> 
+>>
+>>Both -s and -w end up calling set_hardware_clock_exact() so both
+>should
+>>end up with the correct time. If this is not the case, then hwclock
+>>needs to be fixed.
+>
+>I checked Util-linux-2.37.2, hwclock -w will call
+>set_hardware_clock_exact() and hwclock -s will not.
+>Please correct me if I'm wrong.
+>
+>Sincerely
+>TonyWWang-oc
 
+As explained before, the root cause of this problem is: these Zhaoxin SOCs
+
+which belong to X86 architecture do not meet the requirement of
+
+MC146818A compatible RTC about “When the divider is changed from reset
+
+to an operating time base, the first update cycle is one-half second later”.
+
+Actually the first update cycle on these Zhaoxin SOCs is one second later in
+
+this case.
+
+ 
+
+This problem is not only happened when running “hwclock -w”. On X86 platform,
+
+the 0.5s delay is default for both “hwclock –w” and NTP driver’s invoke of
+
+sync_cmos_clock().  So set RTC time caused by NTP driver also has this problem.
+
+ 
+
+As have been test pass, skip operate the RTC_REG_A (which divider-control bits in)
+
+with these Zhaoxin SOCs in function mc146818_set_time() can  fix this problem.
+
+I think this patch seems appropriate.
+
+Sincerely
+TonyWWang-oc
