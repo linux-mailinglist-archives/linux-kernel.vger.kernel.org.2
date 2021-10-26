@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0E143B79B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E1D43B79E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237578AbhJZQyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:54:02 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:48179 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbhJZQx7 (ORCPT
+        id S235851AbhJZQz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:55:26 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:43620 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231967AbhJZQzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:53:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1635267093; x=1666803093;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=qZ6hwyvPxJb5cGU1xV/Z814Nl/QSyx2D6YLcmVFesAE=;
-  b=fj1gYqN+N0EIT68ELHcfjf+fay1I/4JuqIIXduL/l+DwVe2nD3mterzo
-   HpMTh4SQKN42iiTQX6cbxStdyWyrDrOeK4I8+8TQFbZuHcSwR/ckS0Upn
-   zNFB3YnFMeUPL2DrfqfOr0jZPhQuKHhmcnwP5imfUdfNYQoHyxbUP8GYE
-   TwtSlivyPziclTSFxNbMmIB4FvKwC9d2269VJedSVh6yse/7fX7ntG8pv
-   XWMhVZ1tWmc2kON5WLNyVnSbYi+/HTXKsnWrnqMf1QHa98X7Msraj6654
-   06rZ9RExV+MdZm1psfJkh0njv39j7jgFyZ85czMbHs7rO9ij995TQFe9C
-   w==;
-X-IronPort-AV: E=Sophos;i="5.87,184,1631548800"; 
-   d="scan'208";a="183889430"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 27 Oct 2021 00:51:33 +0800
-IronPort-SDR: dbffmHeYS6qb+GJv9idlyetMxPD6RxrFxrDXXbu3KDdE28925anCW0YSXjAHwofTvdAk0Oe0cW
- fpFFh5PzdotMVC/CFLqh808elE6Twwq81qv1n8apQLafziMcpOVJj+O349VA55/MXAnjrhDJdo
- vtEDg451TnfX7ImnCQ7h9qcAMQFP5rDo6Jwna9yOvHG/f9YZdGalSPRUzXVIpDGs8UF8whEA1T
- tsYRQvzRNGl14gCAuPs9UrDd+/wc11TE7M73m1gIH3+/57lwEXgn0Yp3b6zl+O5AMfZr9Ym1uD
- xvLDzgvPWqj4J+s21ugqFnBr
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 09:25:32 -0700
-IronPort-SDR: CBtzhmOEgEB6+xT4dcNmNA4qOE7KrJ/EccPcFSeQxFFi2kH0p+/IttplThYuYUzM8+JM4TRlv1
- mHsTh0dwcYyJiOPg+g/6ajrGdg2smbeftXKNVlYx+UIhLZozuMSZnH4DPxXVJ2KIx8gTCEJt65
- xcYW8ZIfb33aOhxlmFpWSlBBFyt6oJd8GGa8X1wufrnIcKWDyEWb2aWEl1b3ncviX8yXHOv5U7
- /Wywp/kNxn1uR5mAezLDWLjNxOoEKlJHfvGe8DPpTLUxINnlmP3DYVOTErd/asnEvGLG7a6nzm
- 3jY=
-WDCIronportException: Internal
-Received: from 3lpbl13.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.115])
-  by uls-op-cesaip01.wdc.com with ESMTP; 26 Oct 2021 09:51:35 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>
-Subject: [PATCH v2] block: schedule queue restart after BLK_STS_ZONE_RESOURCE
-Date:   Wed, 27 Oct 2021 01:51:27 +0900
-Message-Id: <20211026165127.4151055-1-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.33.1
+        Tue, 26 Oct 2021 12:55:14 -0400
+Received: by mail-oi1-f172.google.com with SMTP id o4so21508747oia.10;
+        Tue, 26 Oct 2021 09:52:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yNZ/UOTIH4xrxWIHxjd5MYdbywWkjMFoii+8HdR5Ka0=;
+        b=omTVE9wZOM8qTmzswlFnEvaJDqPcfHGK7aoUr5hkYeLO+iyJWBWlsCfUAqJ9aamORS
+         AF7isdNmmtFFraRQeFVhHiF7FYRvkpZFvMdj2UCYD6scMKn1Qb2ibbSBpLy5//JKN72H
+         F9415SPPDo2CbBnUM3HQ2zRPDoqipPyajSa1J87IaC09xwnlvhjGYTjpKxc77PvP2r8i
+         I5cNlXUpz2+sF7vcrDIkcTBAhqbrQkCH5boNRnZu/WrFI23vpiLl7ebnppbsxJ/N4DDL
+         tCipGnueN5OEtue/7d+yqTyCDHIgV/fXM3KkBXefGAS6Sz/0RjsASz/JVUgqZ/eVeY8A
+         rWog==
+X-Gm-Message-State: AOAM533yijqmzpnqMw8P4t1ZjccIiOJ8MBLwSLUdjmCrQ8+NMzDeRask
+        2N0rnrbbBvreSxuSuVp4QGbKhiEjNI3/5USwpCE=
+X-Google-Smtp-Source: ABdhPJwFzfyvlvh0F2VQsJdmVbDAk+5j0B75M2C3W7Em9cDS3TKXrXMlAIZNvNVjYYbvCvolbqwDOZZayemXY0cNgwE=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr18362216oif.154.1635267170287;
+ Tue, 26 Oct 2021 09:52:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211026162954.89811-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211026162954.89811-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Oct 2021 18:52:39 +0200
+Message-ID: <CAJZ5v0hKkwkYkBJX7nyALbp2cXohOPThV-rkSM7rzn186-2vJQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] device property: Drop redundant NULL checks
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        YE Chengfeng <cyeaa@connect.ust.hk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dispatching a zone append write request to a SCSI zoned block device,
-if the target zone of the request is already locked, the device driver will
-return BLK_STS_ZONE_RESOURCE and the request will be pushed back to the
-hctx dipatch queue. The queue will be marked as RESTART in
-dd_finish_request() and restarted in __blk_mq_free_request(). However, this
-restart applies to the hctx of the completed request. If the requeued
-request is on a different hctx, dispatch will no be retried until another
-request is submitted or the next periodic queue run triggers, leading to up
-to 30 seconds latency for the requeued request.
+On Tue, Oct 26, 2021 at 6:30 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> In cases when functions are called via fwnode operations,
+> we already know that this is software node we are dealing
+> with, hence no need to check if it's NULL, it can't be,
+>
+> Reported-by: YE Chengfeng <cyeaa@connect.ust.hk>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Fix this problem by scheduling a queue restart similarly to the
-BLK_STS_RESOURCE case or when we cannot get the budget.
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Also, consolidate the checks into the "need_resource" variable to simplify
-the condition.
+or please let me know if I need to pick this up.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: Niklas Cassel <Niklas.Cassel@wdc.com>
----
-Changes from v1
-- Rename need_resource to needs_resource to be consistent with
-  needs_restart
-- Use the if- to set needs_resource when prep == PREP_DISPATCH_NO_BUDGET.
-
- block/blk-mq.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 9c64f0025a56..dc49483334c7 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1318,6 +1318,7 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
- 	int errors, queued;
- 	blk_status_t ret = BLK_STS_OK;
- 	LIST_HEAD(zone_list);
-+	bool needs_resource = false;
- 
- 	if (list_empty(list))
- 		return false;
-@@ -1363,6 +1364,8 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
- 			queued++;
- 			break;
- 		case BLK_STS_RESOURCE:
-+			needs_resource = true;
-+			fallthrough;
- 		case BLK_STS_DEV_RESOURCE:
- 			blk_mq_handle_dev_resource(rq, list);
- 			goto out;
-@@ -1373,6 +1376,7 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
- 			 * accept.
- 			 */
- 			blk_mq_handle_zone_resource(rq, &zone_list);
-+			needs_resource = true;
- 			break;
- 		default:
- 			errors++;
-@@ -1399,7 +1403,6 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
- 		/* For non-shared tags, the RESTART check will suffice */
- 		bool no_tag = prep == PREP_DISPATCH_NO_TAG &&
- 			(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED);
--		bool no_budget_avail = prep == PREP_DISPATCH_NO_BUDGET;
- 
- 		if (nr_budgets)
- 			blk_mq_release_budgets(q, list);
-@@ -1440,14 +1443,16 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
- 		 * If driver returns BLK_STS_RESOURCE and SCHED_RESTART
- 		 * bit is set, run queue after a delay to avoid IO stalls
- 		 * that could otherwise occur if the queue is idle.  We'll do
--		 * similar if we couldn't get budget and SCHED_RESTART is set.
-+		 * similar if we couldn't get budget or couldn't lock a zone
-+		 * and SCHED_RESTART is set.
- 		 */
- 		needs_restart = blk_mq_sched_needs_restart(hctx);
-+		if (prep == PREP_DISPATCH_NO_BUDGET)
-+			needs_resource = true;
- 		if (!needs_restart ||
- 		    (no_tag && list_empty_careful(&hctx->dispatch_wait.entry)))
- 			blk_mq_run_hw_queue(hctx, true);
--		else if (needs_restart && (ret == BLK_STS_RESOURCE ||
--					   no_budget_avail))
-+		else if (needs_restart && needs_resource)
- 			blk_mq_delay_run_hw_queue(hctx, BLK_MQ_RESOURCE_DELAY);
- 
- 		blk_mq_update_dispatch_busy(hctx, true);
--- 
-2.33.1
-
+> ---
+>  drivers/base/swnode.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index c46f6a8e14d2..4debcea4fb12 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -413,9 +413,6 @@ software_node_get_name(const struct fwnode_handle *fwnode)
+>  {
+>         const struct swnode *swnode = to_swnode(fwnode);
+>
+> -       if (!swnode)
+> -               return "(null)";
+> -
+>         return kobject_name(&swnode->kobj);
+>  }
+>
+> @@ -507,9 +504,6 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
+>         int error;
+>         int i;
+>
+> -       if (!swnode)
+> -               return -ENOENT;
+> -
+>         prop = property_entry_get(swnode->node->properties, propname);
+>         if (!prop)
+>                 return -ENOENT;
+> --
+> 2.33.0
+>
