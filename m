@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5E743AE1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEA443AE20
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbhJZIfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:35:14 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:35872 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234435AbhJZIfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:35:12 -0400
-Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
-        by Forcepoint Email with ESMTPS id BA0F310589D61CEC0ABC;
-        Tue, 26 Oct 2021 16:32:30 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 26 Oct 2021 16:32:30 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
- BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
- 15.01.2308.014; Tue, 26 Oct 2021 16:32:30 +0800
-From:   "Cai,Huoqing" <caihuoqing@baidu.com>
-To:     "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: RE: [PATCH v3 1/6] kthread: Add the helper function
- kthread_run_on_cpu()
-Thread-Topic: [PATCH v3 1/6] kthread: Add the helper function
- kthread_run_on_cpu()
-Thread-Index: AQHXxvDG6BMxoeagk0Ch2rpac1seKavk+Xww
-Date:   Tue, 26 Oct 2021 08:32:30 +0000
-Message-ID: <40fae23eb02c4363bc75649e23f78c1c@baidu.com>
-References: <20211022025711.3673-1-caihuoqing@baidu.com>
- <20211022025711.3673-2-caihuoqing@baidu.com>
-In-Reply-To: <20211022025711.3673-2-caihuoqing@baidu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.21.146.48]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S233068AbhJZIfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:35:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234242AbhJZIfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:35:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A34D560E75;
+        Tue, 26 Oct 2021 08:32:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635237179;
+        bh=uCkPTVoU53WjkdLeoB8wj5W6HHDIndi8XX783vkYnKc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Gnv4MSVeqWWK56HzvTnGFjdyR/wiG3tDifj8A5YLdfJ/4f8btdSbqrXjKstEWmLyf
+         QUIlgZFQzmlVv+P2lYbmy1ty/dE3+j074o2VXsuTjFxqT0LYvr8AQpTJQ8NrkbYdqZ
+         75pQMJSPAT0ASTXKy0FKHtF5MZxuVqUGbnuxEz4hCJRhmp+8HOYpIUCB1xV6T553Dv
+         IxZmfJqqbod7V1leev1sqxjIvnDo1WD9KtY6xaoSIkNXrxl3SGxvH6mX84Ox4SQyJM
+         910fPjNsidwc/V5b7+jTjmst0vKF9iw+misyqbT3x3lKwdaWilCULzcAOBEUQVCnDc
+         0PRBT2rbeHA3A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: fix missing #include
+Date:   Tue, 26 Oct 2021 10:32:41 +0200
+Message-Id: <20211026083254.3396322-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8sDQpKdXN0IGEgcGluZywgdG8gc2VlIGlmIHRoZXJlIGFyZSBhbnkgbW9yZSBjb21tZW50
-cyA6LVANCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ2FpLEh1b3Fpbmcg
-PGNhaWh1b3FpbmdAYmFpZHUuY29tPg0KPiBTZW50OiAyMDIxxOoxMNTCMjLI1SAxMDo1Nw0KPiBT
-dWJqZWN0OiBbUEFUQ0ggdjMgMS82XSBrdGhyZWFkOiBBZGQgdGhlIGhlbHBlciBmdW5jdGlvbiBr
-dGhyZWFkX3J1bl9vbl9jcHUoKQ0KPiANCj4gdGhlIGhlbHBlciBmdW5jdGlvbiBrdGhyZWFkX3J1
-bl9vbl9jcHUoKSBpbmNsdWRlcw0KPiBrdGhyZWFkX2NyZWF0ZV9vbl9jcHUvd2FrZV91cF9wcm9j
-ZXNzKCkuDQo+IEluIHNvbWUgY2FzZXMsIHVzZSBrdGhyZWFkX3J1bl9vbl9jcHUoKSBkaXJlY3Rs
-eSBpbnN0ZWFkIG9mDQo+IGt0aHJlYWRfY3JlYXRlX29uX25vZGUva3RocmVhZF9iaW5kL3dha2Vf
-dXBfcHJvY2VzcygpIG9yDQo+IGt0aHJlYWRfY3JlYXRlX29uX2NwdS93YWtlX3VwX3Byb2Nlc3Mo
-KSBvcg0KPiBrdGhyZWFkZF9jcmVhdGUva3RocmVhZF9iaW5kL3dha2VfdXBfcHJvY2VzcygpIHRv
-IHNpbXBsaWZ5IHRoZSBjb2RlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2FpIEh1b3FpbmcgPGNh
-aWh1b3FpbmdAYmFpZHUuY29tPg0KPiAtLS0NCj4gdjEtPnYyOg0KPiAJKlJlbW92ZSBjcHVfdG9f
-bm9kZSBmcm9tIGt0aHJlYWRfY3JlYXRlX29uX2NwdSBwYXJhbXMuDQo+IAkqVXBkYXRlZCB0aGUg
-bWFjcm8gZGVzY3JpcHRpb24gY29tbWVudC4NCj4gdjItPnYzOg0KPiAJKkNvbnZlcnQgdGhpcyBo
-ZWxwZXIgbWFjcm8gdG8gc3RhdGljIGlubGluZSBmdW5jdGlvbg0KPiAJKkZpeCB0eXBvIGluIGNo
-YW5nZWxvZw0KPiANCj4gdjEgbGluazoNCj4gCWh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwv
-MjAyMTEwMjExMjAxMzUuMzAwMy0yLQ0KPiBjYWlodW9xaW5nQGJhaWR1LmNvbS8NCj4gdjIgbGlu
-azoNCj4gCWh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMTEwMjExMjI3NTguMzA5Mi0y
-LQ0KPiBjYWlodW9xaW5nQGJhaWR1LmNvbS8NCj4gDQo+ICBpbmNsdWRlL2xpbnV4L2t0aHJlYWQu
-aCB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAyNSBp
-bnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9rdGhyZWFkLmgg
-Yi9pbmNsdWRlL2xpbnV4L2t0aHJlYWQuaA0KPiBpbmRleCAzNDZiMGYyNjkxNjEuLmRiNDdhYWU3
-YzQ4MSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9rdGhyZWFkLmgNCj4gKysrIGIvaW5j
-bHVkZS9saW51eC9rdGhyZWFkLmgNCj4gQEAgLTU2LDYgKzU2LDMxIEBAIGJvb2wga3RocmVhZF9p
-c19wZXJfY3B1KHN0cnVjdCB0YXNrX3N0cnVjdCAqayk7DQo+ICAJX19rOwkJCQkJCQkJICAgXA0K
-PiAgfSkNCj4gDQo+ICsvKioNCj4gKyAqIGt0aHJlYWRfcnVuX29uX2NwdSAtIGNyZWF0ZSBhbmQg
-d2FrZSBhIGNwdSBib3VuZCB0aHJlYWQuDQo+ICsgKiBAdGhyZWFkZm46IHRoZSBmdW5jdGlvbiB0
-byBydW4gdW50aWwgc2lnbmFsX3BlbmRpbmcoY3VycmVudCkuDQo+ICsgKiBAZGF0YTogZGF0YSBw
-dHIgZm9yIEB0aHJlYWRmbi4NCj4gKyAqIEBjcHU6IFRoZSBjcHUgb24gd2hpY2ggdGhlIHRocmVh
-ZCBzaG91bGQgYmUgYm91bmQsDQo+ICsgKiBAbmFtZWZtdDogcHJpbnRmLXN0eWxlIG5hbWUgZm9y
-IHRoZSB0aHJlYWQuIEZvcm1hdCBpcyByZXN0cmljdGVkDQo+ICsgKgkgICAgIHRvICJuYW1lLiol
-dSIuIENvZGUgZmlsbHMgaW4gY3B1IG51bWJlci4NCj4gKyAqDQo+ICsgKiBEZXNjcmlwdGlvbjog
-Q29udmVuaWVudCB3cmFwcGVyIGZvciBrdGhyZWFkX2NyZWF0ZV9vbl9jcHUoKQ0KPiArICogZm9s
-bG93ZWQgYnkgd2FrZV91cF9wcm9jZXNzKCkuICBSZXR1cm5zIHRoZSBrdGhyZWFkIG9yDQo+ICsg
-KiBFUlJfUFRSKC1FTk9NRU0pLg0KPiArICovDQo+ICtzdGF0aWMgaW5saW5lIHN0cnVjdCB0YXNr
-X3N0cnVjdCAqDQo+ICtrdGhyZWFkX3J1bl9vbl9jcHUoaW50ICgqdGhyZWFkZm4pKHZvaWQgKmRh
-dGEpLCB2b2lkICpkYXRhLA0KPiArCQkJdW5zaWduZWQgaW50IGNwdSwgY29uc3QgY2hhciAqbmFt
-ZWZtdCkNCj4gK3sNCj4gKwlzdHJ1Y3QgdGFza19zdHJ1Y3QgKnA7DQo+ICsNCj4gKwlwID0ga3Ro
-cmVhZF9jcmVhdGVfb25fY3B1KHRocmVhZGZuLCBkYXRhLCBjcHUsIG5hbWVmbXQpOw0KPiArCWlm
-ICghSVNfRVJSKHApKQ0KPiArCQl3YWtlX3VwX3Byb2Nlc3MocCk7DQo+ICsNCj4gKwlyZXR1cm4g
-cDsNCj4gK30NCj4gKw0KPiAgdm9pZCBmcmVlX2t0aHJlYWRfc3RydWN0KHN0cnVjdCB0YXNrX3N0
-cnVjdCAqayk7DQo+ICB2b2lkIGt0aHJlYWRfYmluZChzdHJ1Y3QgdGFza19zdHJ1Y3QgKmssIHVu
-c2lnbmVkIGludCBjcHUpOw0KPiAgdm9pZCBrdGhyZWFkX2JpbmRfbWFzayhzdHJ1Y3QgdGFza19z
-dHJ1Y3QgKmssIGNvbnN0IHN0cnVjdCBjcHVtYXNrICptYXNrKTsNCj4gLS0NCj4gMi4yNS4xDQoN
-Cg==
+From: Arnd Bergmann <arnd@arndb.de>
+
+Some randconfig builds fail when drm/drm_bridge.h is not included
+implicitly in this file:
+
+drivers/gpu/drm/msm/dp/dp_parser.c:279:25: error: implicit declaration of function 'devm_drm_panel_bridge_add' [-Werror,-Wimplicit-function-declaration]
+        parser->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
+
+Fixes: 4b296d15b355 ("drm/msm/dp: Allow attaching a drm_panel")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/msm/dp/dp_parser.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+index 81dbcc86d08a..a7acc23f742b 100644
+--- a/drivers/gpu/drm/msm/dp/dp_parser.c
++++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+@@ -8,6 +8,7 @@
+ 
+ #include <drm/drm_of.h>
+ #include <drm/drm_print.h>
++#include <drm/drm_bridge.h>
+ 
+ #include "dp_parser.h"
+ #include "dp_reg.h"
+-- 
+2.29.2
+
