@@ -2,276 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5222343B5A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FD143B5A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbhJZPdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235648AbhJZPdG (ORCPT
+        id S236933AbhJZPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:33:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49032 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231789AbhJZPdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:33:06 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11F6C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:30:42 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id d13so17484067wrf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6cpJtG+wTHrSrhs0lOFF/T+EZ1/Y2hk1uLFmtJtAfwM=;
-        b=i2LbnmQPSPKXqN23DvcJWKtht0TaatbSLGQJJxhc5iy0TEgH4IMbRwBnB9Cnb1oh2l
-         S4ZRcTEtQwBhLxdSy5QNkyUIRqTsJQwSmPH8EF8mx1xRrfWDEPjC+AzJxSkapzdk+JN6
-         rpFc+ATgznln/pysuP5/BEB+h1MAnEDJLM7/OfW8lyzQZWNqNevXixm85nNya6mqpX07
-         ilv5Zk1NXwR5oy/r3CD7kHB85mesdV288D7D7OT41uMg+bMWD3xocnBMQm0sCxPQS+e6
-         3KrwrkyTn60kDZ9ahaZNvLVE0C/rEi9dAPqcuFIFpF0C9wpx93aVdl+UodKxXlGJiubr
-         yWDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6cpJtG+wTHrSrhs0lOFF/T+EZ1/Y2hk1uLFmtJtAfwM=;
-        b=Hdd6u5fdrQkPPURrnc3TJQfe63/X7XLg0iv3a+teR58bUXtArO1aUf51zNsn81M43l
-         YlYiajQXtcobz1Ho3VfrnGO7k/4yKQGfVRtUPGe+7eGO20a70k9f35WtrWWg/9+WFkda
-         CsIwNpnAI84xFMcs8F4o0BeW62nqKI3Ijj6e51LJl8oPqV1l4eLheOwoLLHYP6TWU3Jp
-         XbwR0/lcCkv9oyaT/BXW0BYkq7j0fGAnmKW5mGVknmNmC20RcfwffOmXPLyp+Cp62MrZ
-         3zoPqxP38vjLkcoQ6UcDfh5/MEs8oYmHIevbhShgV6HslGxGgFgrqXg7hzTU6w/7A1J0
-         T35A==
-X-Gm-Message-State: AOAM533iXWZBXAKObxXKPJXgmOmZI3NZVOIkPW6mYO/a73UqsHLzqfaA
-        q5Usqxcabj5PA39hUJogP4y1O2ZTMuE=
-X-Google-Smtp-Source: ABdhPJxBNjs1ZZTCJEUsBCFwLsoJALG86R+WedYljNFCWFOIKNHE8ljqrQRnpJCK1hH9e45bRAl+OA==
-X-Received: by 2002:adf:ef8f:: with SMTP id d15mr32682984wro.72.1635262241470;
-        Tue, 26 Oct 2021 08:30:41 -0700 (PDT)
-Received: from WRT-WX9.. ([95.179.207.30])
-        by smtp.gmail.com with ESMTPSA id s3sm878189wmh.30.2021.10.26.08.30.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 08:30:40 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] mm/damon: simplify stop mechanism
-Date:   Tue, 26 Oct 2021 23:30:33 +0800
-Message-Id: <20211026153033.11140-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 26 Oct 2021 11:33:54 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 71457218EE;
+        Tue, 26 Oct 2021 15:31:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635262289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WRaS7nJzrR8Imfw5d0ZNw+6zjdxIKCzj8dbxpPfA/HM=;
+        b=lDpCN6Bo6deYWNj0WHNQAInx1yVgZJdjHE2q7t7RQUmko4wr/18/tAkdMKao1HfrSZ6Gih
+        IXTuKwrFFNhpVaFYFgKSqk+yKoYVk4PI5iOrUlaH0xOPvONq/dDwI4xao2MdR4LHcVQqil
+        fcFRLUkeOmq5wfRRBmHMzyL8BSo8wzQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635262289;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WRaS7nJzrR8Imfw5d0ZNw+6zjdxIKCzj8dbxpPfA/HM=;
+        b=Kht/G5H7YMoHA0zhEwv9vVMYYC9Z6a2YMeExQFrAPrK0aCmGCUYOHpMc1pdNBWTvY6Oo8X
+        QAKdMnrwbLVWhACQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08C2713B0A;
+        Tue, 26 Oct 2021 15:31:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mJTIOlAfeGGSNQAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Tue, 26 Oct 2021 15:31:28 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 02f16863;
+        Tue, 26 Oct 2021 15:31:28 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 16:31:28 +0100
+From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Xiubo Li <xiubli@redhat.com>,
+        Patrick Donnelly <pdonnell@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+Message-ID: <YXgfUJ9aYrubADRQ@suse.de>
+References: <20211020143708.14728-1-lhenriques@suse.de>
+ <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+ <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
+ <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+ <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+ <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+ <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
+ <785d1435-4a2c-95aa-0573-2de54b4e7b6b@redhat.com>
+ <604199ed389d9286e3fdab6b5acdf65c421df45d.camel@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <604199ed389d9286e3fdab6b5acdf65c421df45d.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An kernel thread can exit gracefully with kthread_stop(). So we don't need
-a new flag 'kdamond_stop'. And to make sure the task struct is not freed
-when accessing it, get task struct on start and put it on stop.
+On Tue, Oct 26, 2021 at 07:40:51AM -0400, Jeff Layton wrote:
+> On Tue, 2021-10-26 at 11:05 +0800, Xiubo Li wrote:
+> > On 10/22/21 1:30 AM, Patrick Donnelly wrote:
+> > > On Thu, Oct 21, 2021 at 12:35 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
+> > > > > On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > > On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+> > > > > > > On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > > > > On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
+> > > > > > > > > This counter will keep track of the number of remote object copies done on
+> > > > > > > > > copy_file_range syscalls.  This counter will be filesystem per-client, and
+> > > > > > > > > can be accessed from the client debugfs directory.
+> > > > > > > > > 
+> > > > > > > > > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > > > > > > > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > > > > > > > > ---
+> > > > > > > > > This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+> > > > > > > > > 100% sure about the usefulness of this patch, or if this is the best way
+> > > > > > > > > to provide the functionality Patrick requested.  Anyway, this is just to
+> > > > > > > > > get some feedback, hence the RFC.
+> > > > > > > > > 
+> > > > > > > > > Cheers,
+> > > > > > > > > --
+> > > > > > > > > Luís
+> > > > > > > > > 
+> > > > > > > > > [0] https://github.com/ceph/ceph/pull/42720
+> > > > > > > > > 
+> > > > > > > > I think this would be better integrated into the stats infrastructure.
+> > > > > > > > 
+> > > > > > > > Maybe you could add a new set of "copy" stats to struct
+> > > > > > > > ceph_client_metric that tracks the total copy operations done, their
+> > > > > > > > size and latency (similar to read and write ops)?
+> > > > > > > I think it's a good idea to integrate this into "stats" but I think a
+> > > > > > > local debugfs file for some counters is still useful. The "stats"
+> > > > > > > module is immature at this time and I'd rather not build any qa tests
+> > > > > > > (yet) that rely on it.
+> > > > > > > 
+> > > > > > > Can we generalize this patch-set to a file named "op_counters" or
+> > > > > > > similar and additionally add other OSD ops performed by the kclient?
+> > > > > > > 
+> > > > > > 
+> > > > > > Tracking this sort of thing is the main purpose of the stats code. I'm
+> > > > > > really not keen on adding a whole separate set of files for reporting
+> > > > > > this.
+> > > > > Maybe I'm confused. Is there some "file" which is already used for
+> > > > > this type of debugging information? Or do you mean the code for
+> > > > > sending stats to the MDS to support cephfs-top?
+> > > > > 
+> > > > > > What's the specific problem with relying on the data in debugfs
+> > > > > > "metrics" file?
+> > > > > Maybe no problem? I wasn't aware of a "metrics" file.
+> > > > > 
+> > > > Yes. For instance:
+> > > > 
+> > > > # cat /sys/kernel/debug/ceph/*/metrics
+> > > > item                               total
+> > > > ------------------------------------------
+> > > > opened files  / total inodes       0 / 4
+> > > > pinned i_caps / total inodes       5 / 4
+> > > > opened inodes / total inodes       0 / 4
+> > > > 
+> > > > item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
+> > > > -----------------------------------------------------------------------------------
+> > > > read          0           0               0               0               0
+> > > > write         5           914013          824797          1092343         103476
+> > > > metadata      79          12856           1572            114572          13262
+> > > > 
+> > > > item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
+> > > > ----------------------------------------------------------------------------------------
+> > > > read          0           0               0               0               0
+> > > > write         5           4194304         4194304         4194304         20971520
+> > > > 
+> > > > item          total           miss            hit
+> > > > -------------------------------------------------
+> > > > d_lease       11              0               29
+> > > > caps          5               68              10702
+> > > > 
+> > > > 
+> > > > I'm proposing that Luis add new lines for "copy" to go along with the
+> > > > "read" and "write" ones. The "total" counter should give you a count of
+> > > > the number of operations.
+> > > Okay that makes more sense!
+> > > 
+> > > Side note: I am a bit horrified by how computer-unfriendly that
+> > > table-formatted data is.
+> > 
+> > Any suggestion to improve this ?
+> > 
+> > How about just make the "metric" file writable like a switch ? And as 
+> > default it will show the data as above and if tools want the 
+> > computer-friendly format, just write none-zero to it, then show raw data 
+> > just like:
+> > 
+> > # cat /sys/kernel/debug/ceph/*/metrics
+> > opened_files:0
+> > pinned_i_caps:5
+> > opened_inodes:0
+> > total_inodes:4
+> > 
+> > read_latency:0,0,0,0,0
+> > write_latency:5,914013,824797,1092343,103476
+> > metadata_latency:79,12856,1572,114572,13262
+> > 
+> > read_size:0,0,0,0,0
+> > write_size:5,4194304,4194304,4194304,20971520
+> > 
+> > d_lease:11,0,29
+> > caps:5,68,10702
+> > 
+> > 
+> 
+> I'd rather not multiplex the output of this file based on some input.
+> That would also be rather hard to do -- write() and read() are two
+> different syscalls, so you'd need to track a bool (or something) across
+> them somehow.
+> 
+> Currently, I doubt there are many scripts in the field that scrape this
+> info and debugfs is specifically excluded from ABI concerns. If we want
+> to make it more machine-readable (which sounds like a good thing), then
+> I suggest we just change the output to something like what you have
+> above and not worry about preserving the "legacy" output.
 
-And since the return value of 'before_terminate' callback is never used,
-we make it have no return value.
+Ok, before submitting any new revision of this patch I should probably
+clean this up.  I can submit a patch to change the format to what Xiubo is
+proposing.  Obviously, that patch will also need to document what all
+those fields actually mean.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- include/linux/damon.h |  3 +--
- mm/damon/core.c       | 59 +++++++++++++------------------------------
- mm/damon/dbgfs.c      |  5 ++--
- 3 files changed, 20 insertions(+), 47 deletions(-)
+Alternatively, the metrics file could be changed into a directory and have
+4 different files, one per each section:
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index a14b3cc54cab..041966786270 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -322,7 +322,7 @@ struct damon_callback {
- 	int (*before_start)(struct damon_ctx *context);
- 	int (*after_sampling)(struct damon_ctx *context);
- 	int (*after_aggregation)(struct damon_ctx *context);
--	int (*before_terminate)(struct damon_ctx *context);
-+	void (*before_terminate)(struct damon_ctx *context);
- };
- 
- /**
-@@ -381,7 +381,6 @@ struct damon_ctx {
- 
- /* public: */
- 	struct task_struct *kdamond;
--	bool kdamond_stop;
- 	struct mutex kdamond_lock;
- 
- 	struct damon_primitive primitive;
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 46a6afea3030..46401c56bfb2 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -390,17 +390,6 @@ static unsigned long damon_region_sz_limit(struct damon_ctx *ctx)
- 	return sz;
- }
- 
--static bool damon_kdamond_running(struct damon_ctx *ctx)
--{
--	bool running;
--
--	mutex_lock(&ctx->kdamond_lock);
--	running = ctx->kdamond != NULL;
--	mutex_unlock(&ctx->kdamond_lock);
--
--	return running;
--}
--
- static int kdamond_fn(void *data);
- 
- /*
-@@ -418,13 +407,13 @@ static int __damon_start(struct damon_ctx *ctx)
- 	mutex_lock(&ctx->kdamond_lock);
- 	if (!ctx->kdamond) {
- 		err = 0;
--		ctx->kdamond_stop = false;
- 		ctx->kdamond = kthread_run(kdamond_fn, ctx, "kdamond.%d",
- 				nr_running_ctxs);
- 		if (IS_ERR(ctx->kdamond)) {
- 			err = PTR_ERR(ctx->kdamond);
- 			ctx->kdamond = NULL;
--		}
-+		} else
-+			get_task_struct(ctx->kdamond);
- 	}
- 	mutex_unlock(&ctx->kdamond_lock);
- 
-@@ -474,18 +463,18 @@ int damon_start(struct damon_ctx **ctxs, int nr_ctxs)
-  */
- static int __damon_stop(struct damon_ctx *ctx)
- {
-+	int ret = -EPERM;
-+
- 	mutex_lock(&ctx->kdamond_lock);
- 	if (ctx->kdamond) {
--		ctx->kdamond_stop = true;
--		mutex_unlock(&ctx->kdamond_lock);
--		while (damon_kdamond_running(ctx))
--			usleep_range(ctx->sample_interval,
--					ctx->sample_interval * 2);
--		return 0;
-+		kthread_stop(ctx->kdamond);
-+		put_task_struct(ctx->kdamond);
-+		ctx->kdamond = NULL;
-+		ret = 0;
- 	}
- 	mutex_unlock(&ctx->kdamond_lock);
- 
--	return -EPERM;
-+	return ret;
- }
- 
- /**
-@@ -925,12 +914,8 @@ static bool kdamond_need_update_primitive(struct damon_ctx *ctx)
- static bool kdamond_need_stop(struct damon_ctx *ctx)
- {
- 	struct damon_target *t;
--	bool stop;
- 
--	mutex_lock(&ctx->kdamond_lock);
--	stop = ctx->kdamond_stop;
--	mutex_unlock(&ctx->kdamond_lock);
--	if (stop)
-+	if (kthread_should_stop())
- 		return true;
- 
- 	if (!ctx->primitive.target_valid)
-@@ -1021,13 +1006,6 @@ static int kdamond_wait_activation(struct damon_ctx *ctx)
- 	return -EBUSY;
- }
- 
--static void set_kdamond_stop(struct damon_ctx *ctx)
--{
--	mutex_lock(&ctx->kdamond_lock);
--	ctx->kdamond_stop = true;
--	mutex_unlock(&ctx->kdamond_lock);
--}
--
- /*
-  * The monitoring daemon that runs as a kernel thread
-  */
-@@ -1038,17 +1016,18 @@ static int kdamond_fn(void *data)
- 	struct damon_region *r, *next;
- 	unsigned int max_nr_accesses = 0;
- 	unsigned long sz_limit = 0;
-+	bool done = false;
- 
- 	pr_debug("kdamond (%d) starts\n", current->pid);
- 
- 	if (ctx->primitive.init)
- 		ctx->primitive.init(ctx);
- 	if (ctx->callback.before_start && ctx->callback.before_start(ctx))
--		set_kdamond_stop(ctx);
-+		done = true;
- 
- 	sz_limit = damon_region_sz_limit(ctx);
- 
--	while (!kdamond_need_stop(ctx)) {
-+	while (!kdamond_need_stop(ctx) && !done) {
- 		if (kdamond_wait_activation(ctx))
- 			continue;
- 
-@@ -1056,7 +1035,7 @@ static int kdamond_fn(void *data)
- 			ctx->primitive.prepare_access_checks(ctx);
- 		if (ctx->callback.after_sampling &&
- 				ctx->callback.after_sampling(ctx))
--			set_kdamond_stop(ctx);
-+			done = true;
- 
- 		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
- 
-@@ -1069,7 +1048,7 @@ static int kdamond_fn(void *data)
- 					sz_limit);
- 			if (ctx->callback.after_aggregation &&
- 					ctx->callback.after_aggregation(ctx))
--				set_kdamond_stop(ctx);
-+				done = true;
- 			kdamond_apply_schemes(ctx);
- 			kdamond_reset_aggregated(ctx);
- 			kdamond_split_regions(ctx);
-@@ -1088,16 +1067,12 @@ static int kdamond_fn(void *data)
- 			damon_destroy_region(r, t);
- 	}
- 
--	if (ctx->callback.before_terminate &&
--			ctx->callback.before_terminate(ctx))
--		set_kdamond_stop(ctx);
-+	if (ctx->callback.before_terminate)
-+		ctx->callback.before_terminate(ctx);
- 	if (ctx->primitive.cleanup)
- 		ctx->primitive.cleanup(ctx);
- 
- 	pr_debug("kdamond (%d) finishes\n", current->pid);
--	mutex_lock(&ctx->kdamond_lock);
--	ctx->kdamond = NULL;
--	mutex_unlock(&ctx->kdamond_lock);
- 
- 	mutex_lock(&damon_lock);
- 	nr_running_ctxs--;
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index befb27a29aab..eccc14b34901 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -645,18 +645,17 @@ static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
- 		debugfs_create_file(file_names[i], 0600, dir, ctx, fops[i]);
- }
- 
--static int dbgfs_before_terminate(struct damon_ctx *ctx)
-+static void dbgfs_before_terminate(struct damon_ctx *ctx)
- {
- 	struct damon_target *t, *next;
- 
- 	if (!targetid_is_pid(ctx))
--		return 0;
-+		return;
- 
- 	damon_for_each_target_safe(t, next, ctx) {
- 		put_pid((struct pid *)t->id);
- 		damon_destroy_target(t);
- 	}
--	return 0;
- }
- 
- static struct damon_ctx *dbgfs_new_ctx(void)
--- 
-2.32.0
+  metrics/
+   |- files <-- not sure how to name the 1st section
+   |- latency
+   |- size
+   \- caps
 
+Each of these files would then have the header but, since it's a single
+header, parsing it in a script would be pretty easy.  The advantage is
+that this would be self-documented (with filenames and headers).
+
+Cheers,
+--
+Luís
