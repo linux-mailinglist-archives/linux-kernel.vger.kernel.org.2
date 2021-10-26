@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC9343BC52
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7F343BC54
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239571AbhJZVZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S239573AbhJZV0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232059AbhJZVZc (ORCPT
+        with ESMTP id S232059AbhJZV0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:25:32 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C63C061570;
-        Tue, 26 Oct 2021 14:23:08 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id n67so1050377iod.9;
-        Tue, 26 Oct 2021 14:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GuopS/a00IpLOIPNe2GKE1DFE1mO+ey9OPeZTHiR3zg=;
-        b=HGvA4MzKTjZL/5S/Ax9qmsmJ1yjWqvdcyb5dCy5ejqiJpxupo/WzagOc9/Qn5BdXpG
-         MhBA9V6ldCmU3o9eBRyuo//QvHPpfsPHsM7S5LSiQaAerg9m5eH4DejYfFtyzhWjolA8
-         rxm0tVJaIBKBVcp7VUnWEJ/VW447UiwqNxWpwpWp26vQx/vjbNIqj6PtHSOj/IycVXHw
-         O4bevGuGznrczJl5p7SG4kyN/RCpeECGvcDccz72itvei+Ww4M63qK8Teil2cz/l2QJd
-         3ybXpgT4TCFHlfJQ7WQmWtghVgUVQVndGMSIou88F/Sra69Yhv44iff1paDnpXJBBMxh
-         cy6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GuopS/a00IpLOIPNe2GKE1DFE1mO+ey9OPeZTHiR3zg=;
-        b=cSclCE/ENNtzAp12PQg3HkHWWHgAVgol7sKmUnEPQjc/akK3+tmnnMjYC2K1GHHPvA
-         bRLGMP3hFOfpamhTzroCYwDy54iS9dV0RzgJ2xoPtTReUQPZor5o4h3PvAZ9urgOWJsK
-         kXQmWKmi5DbBHfQUB3Aw61SN3VV+lz/qQlauVX5OCVvfnW4rwCdmhmrtvTUHaZr5Wruw
-         oGEYIFkJGshuBXuDFbWYiHSkBIwlMAQuQHZjSm16hOuolvBnnNZ9AhbZwC1PA6Vi12Zo
-         WIydHpCiFNBNiYPxWugFMi7FcwsbV45aGEcS5nUPnYUN8qV/QeRIIfQFv4mUFlI1paY3
-         lYkA==
-X-Gm-Message-State: AOAM533OZCRkW9Ab9lPim03xMw0ib0+Txr9C80UI6dlUEx0bDHtXv1DC
-        cwrJFV7vXCFYz5CQkpHiTwc=
-X-Google-Smtp-Source: ABdhPJzqzsY2gK2GmXc9n5IETpAcUQzxLrDimx7RS3PPSC8eh7v8wHnMlcd3ums7sbtxAAmvMw262A==
-X-Received: by 2002:a05:6602:2d13:: with SMTP id c19mr17058694iow.199.1635283388054;
-        Tue, 26 Oct 2021 14:23:08 -0700 (PDT)
-Received: from localhost (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
-        by smtp.gmail.com with ESMTPSA id s7sm11979875iow.31.2021.10.26.14.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:23:07 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 17:23:05 -0400
-From:   Trevor Woerner <twoerner@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
- macros
-Message-ID: <20211026212305.GB6830@localhost>
-References: <20210423184012.39300-1-twoerner@gmail.com>
- <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
- <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
- <87a6ivg5ex.fsf@meer.lwn.net>
+        Tue, 26 Oct 2021 17:26:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D6AC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pUBzPUdB110mn7Gg7YEa/AEceHnmilwE6ZqD1nGsNeE=; b=pCLU+GwD18uZSwjeK6yLP2cDkq
+        t/ZtBh4A0YFbwWF7EBY43+IYRtV1/zOvxH9pOlmDttZjN7BH3f6oZusgjoksYWzx3IGb5nVFqHrlL
+        U3IhUBYiFEbS84zxuBBzJa4F01V8E/aO/yAEfqmm9YnixEFO3zRAi48Y7QqXU+7LoMZ1vMvEq5a6B
+        9W/jxSFjDA1yEeYrehlhc/nhZoSNAYMJv3NnnkhWu0WbbRgRlufV2RWS5YXKPhggsR3tBygsfHa23
+        FqliHuM2NSzvk4oGOYwo97fnJF56ncaivWHHmPuRgs1E3lN5nvlzmiY2E0hM4Jfhn2ISau4XbYTlC
+        EEac3GRQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfTuw-00CQjf-7x; Tue, 26 Oct 2021 21:23:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0175B3002AE;
+        Tue, 26 Oct 2021 23:23:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DF49F2C1D557D; Tue, 26 Oct 2021 23:23:32 +0200 (CEST)
+Date:   Tue, 26 Oct 2021 23:23:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Robin H. Johnson" <robbat2@gentoo.org>,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        rjohnson@digitalocean.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
+Message-ID: <YXhx1N1/xe/v3wrI@hirez.programming.kicks-ass.net>
+References: <20210831043723.13481-1-robbat2@gentoo.org>
+ <20210907212426.73ed81d1@rorschach.local.home>
+ <20211007071151.GL174703@worktop.programming.kicks-ass.net>
+ <20211007092358.65152792@gandalf.local.home>
+ <20211026164343.2e1754bd@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87a6ivg5ex.fsf@meer.lwn.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211026164343.2e1754bd@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-10-26 @ 09:41:10 AM, Jonathan Corbet wrote:
-> Trevor Woerner <twoerner@gmail.com> writes:
+On Tue, Oct 26, 2021 at 04:43:43PM -0400, Steven Rostedt wrote:
+> On Thu, 7 Oct 2021 09:23:58 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> > ping?
-> >
-> > It doesn't look like this was picked up by trivial? Although, it doesn't
-> > look like git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial.git
-> > has been used in a while. Is there an alternate (preferred) path for
-> > trivial patches?
+> > On Thu, 7 Oct 2021 09:11:51 +0200
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > > > > +++ b/kernel/trace/trace_event_perf.c
+> > > > > @@ -400,7 +400,8 @@ void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp)
+> > > > >  	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
+> > > > >  
+> > > > >  	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
+> > > > > -		      "perf buffer not large enough"))
+> > > > > +		      "perf buffer not large enough, wanted %d, have %d",
+> > > > > +		      size, PERF_MAX_TRACE_SIZE))    
+> > > 
+> > > Priting a constant seems daft.. why is any of this important in any way?  
+> > 
+> > I see your point, but it can be useful if you changed it, and want to know
+> > if you are running the kernel with the change or not.
+> > 
+> > I've done daft things were I changed a const and was running a kernel
+> > without the change and couldn't understand why it wasn't working ;-)
 > 
-> Hmm...no idea why I missed it the first time around.  Applied now,
+> Peter,
+> 
+> Do you have any real issue if I just take this patch set through my tree?
 
-Maybe because I added you in the CC instead of TO? Sorry about that. Anyway,
-that's cleaned up now (thanks to Joe's scripts).
-
-> Applied now,
-> apologies for the delay.
-
-Thanks!
+No real objections; just weary, huge events like that are fairly sucky
+for performance.
