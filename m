@@ -2,122 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7482843AAFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045FA43AB09
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhJZEMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 00:12:09 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:5586 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhJZEMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 00:12:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1635221384; x=1666757384;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+JLfUEiHL7SJGj04hhiD/zPeyJs8My/lEUe11JBlcNs=;
-  b=mzT2eGCDlFC/6MKy2+BIaobiL9Ztpry6zZibFKbZg1PWVpaeKThHHr2D
-   al5hN6FKiSY7zitwh3PrUK80dIvZGvtgV/q0G3XtdTdULt4GLxrkPwH6X
-   txMNAGb+PxbWNm0c62y9lwsQIJd56hPLU3+PMkAUltYKjWBZqnlW3Jz7F
-   RKoL8mPB9UnDqObRFVm6dbUNu4p+sX7Z0HzvHy1RrE+1LGdY46+QdaWOF
-   3bqcP45s0kyRv/Vl7eYkGe1pTFEIWgNkTsZlmfrZU589kZJSyTV/RR01I
-   kg6VWiphn0eV/9tQGNxZ43vEeIrT8KV5DHIsxamC2EvZHWib44HB/yhfb
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,182,1631548800"; 
-   d="scan'208";a="188610937"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Oct 2021 12:09:43 +0800
-IronPort-SDR: RrCMofBBp8IRzYHLPH/SZ0Zllk10EIPdQQc3AZ1TThPjiMqDC1QlwtloSf3cWb5EjJwSLvs/ZP
- FD9YDeinbTJ6UladwcVxwt+33kmNik0bFVk9J9poFEMEzv+5EXeLxAmAcTOVbRm7WjK2lp2onM
- fCyNJdW15EQxbo290LDfD2gg+Mb96H74kPsvRwvTq6PZ6Acj2zFl3CA0nIXaeL38UiJEqlbQYp
- 47EOc2v73KtIq+XINHhIhoyn/CW0IR8HV5rz8596YBCVDNOErgOHka+HjdS/JGJVaFrV59iqa+
- ktCcSezInjMy7GQahJchc9oU
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 20:43:41 -0700
-IronPort-SDR: Kbt6fj7jk2I0Kv/jAyJAdSvqipuHx8urkpow35xdKEjmx5CW+EFeQwnQDE5+e5bZxWq9w7XkEa
- 80fQROPI4KnT/bQhbJT4KpQDM5ZmmEqR1VdoCjAdA14YQvF7wJF9iBmcXS2kaMjcDr0jKfMYql
- 8gCfxaJ+hAvkqpdVnegJaYFQkhfWPcTJ28b+XNdiOCSEC9xRDrQxy1lG1skhK8a6AWRexPtMvS
- wb9Yh0N0Nb7j0mYSea/Wgu5xrsI0TuTB/Du1GZ6wb1wbmz4KL9dHwuhICbifd0hRlT02IQHCtR
- Q2g=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 21:09:45 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Hddd36RpYz1RtVn
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 21:09:43 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1635221383; x=1637813384; bh=+JLfUEiHL7SJGj04hhiD/zPeyJs8My/lEUe
-        11JBlcNs=; b=DKiFHqmsdCyIynuZlnXWrs+dBUkNUy0K4PZ57luCa1bGZ4ZvLog
-        eGV4oOk3LKmDQi8bdAgxZbfuzIQ+MPJwwyJ19K+bNmhBDTOaXekKMjJz2y+oNHGR
-        Y8jqhQ6Tv88tpdzmNrAxBTc6WZMOjmdEIFhQcdW6bTP83d26Yskho3+TkCOTpArZ
-        ayLsOqpuv0jxlY8u66jZuR25zzj/CKQbqTDr/p5qRs96Ze+dYXSjrT544c2O91Sg
-        Z64Z9O3+MBtmvTo+bmK1QMPh0P7HIXyJwDZ9DPmIf6fZfpXx0TBsTTBzefbuCr38
-        h+qO4Jsu0STtFvb9zMwd31rJvC5/DYYvw6g==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Sow0ur6L403L for <linux-kernel@vger.kernel.org>;
-        Mon, 25 Oct 2021 21:09:43 -0700 (PDT)
-Received: from [10.225.54.48] (unknown [10.225.54.48])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Hddd319ypz1RtVl;
-        Mon, 25 Oct 2021 21:09:42 -0700 (PDT)
-Message-ID: <81a99dd1-0ef6-9bd0-31c0-b0934023746b@opensource.wdc.com>
-Date:   Tue, 26 Oct 2021 13:09:41 +0900
+        id S230286AbhJZESF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 00:18:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229487AbhJZESE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 00:18:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDD360EDF;
+        Tue, 26 Oct 2021 04:15:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635221741;
+        bh=Upw18BMnAJNHZIJJpkphWj/uFqecyQTLJdSZFRJJJPU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rzAfIKq2hSoaUzW7YoqAGIOnLTuzUnaq2pQdkh0Iug5i0X7VdQz6TG/2QxUbIg80t
+         2LBsKVXMtntLEKIhEGSzVo8H8nvxZalkrQS8XWjlT8PPIjj0TF8Y8NezKGjRHRo+6+
+         WRehkG7fs1xGbuooYpfn1xccuePsl7oKhBX5eDU7h4f4uCg1wzT2aVvPyWad5MZ7cD
+         oCCmVtikSjUPj9qU9FlSYA3Mxn/NbT7jexhdTVuCwdjN6LhCsooiozVuhYlEkLwDe4
+         QOYpytUkqhZws97aGeK3Bmw49JefgJmPlS5/mZgY6DxNhIl9G5ygHkM5HnUofhhRKr
+         6wmGShRuGQ+wQ==
+Date:   Mon, 25 Oct 2021 21:15:38 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Li Chen <lchen@ambarella.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+Subject: Re: [EXT] Re: nvme may get timeout from dd when using different
+ non-prefetch mmio outbound/ranges
+Message-ID: <20211026041538.GB2335242@dhcp-10-100-145-180.wdc.com>
+References: <CH2PR19MB4024E04EBD0E4958F0BBB2ACA0809@CH2PR19MB4024.namprd19.prod.outlook.com>
+ <20211025154739.GA4760@bhelgaas>
+ <20211025162158.GA2335242@dhcp-10-100-145-180.wdc.com>
+ <CH2PR19MB4024372120E0E74C8F2CB685A0849@CH2PR19MB4024.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH] driver/ata: fix potential null pointer dereference on
- pointer last_sge
-Content-Language: en-US
-To:     Chengfeng Ye <cyeaa@connect.ust.hk>
-Cc:     linux-kernel@vger.kernel.org
-References: <20211025131304.17226-1-cyeaa@connect.ust.hk>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital
-In-Reply-To: <20211025131304.17226-1-cyeaa@connect.ust.hk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CH2PR19MB4024372120E0E74C8F2CB685A0849@CH2PR19MB4024.namprd19.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/25 22:13, Chengfeng Ye wrote:
-> The pointer cs_desc could be null if the loop is not
-> executed, so there is a potential NULL-PTR dereference
-> issue. Fix this by adding a null check before dereference.
-> 
-> Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-> ---
->  drivers/ata/sata_sil24.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/ata/sata_sil24.c b/drivers/ata/sata_sil24.c
-> index 06a1e27c4f84..2bd595da799f 100644
-> --- a/drivers/ata/sata_sil24.c
-> +++ b/drivers/ata/sata_sil24.c
-> @@ -785,6 +785,8 @@ static inline void sil24_fill_sg(struct ata_queued_cmd *qc,
->  		sge++;
->  	}
->  
-> +	if (!last_sge)
-> +		return;
->  	last_sge->flags = cpu_to_le32(SGE_TRM);
->  }
+On Tue, Oct 26, 2021 at 03:40:54AM +0000, Li Chen wrote:
+> My nvme is " 05:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller 980". From its datasheet, https://s3.ap-northeast-2.amazonaws.com/global.semi.static/Samsung_NVMe_SSD_980_Data_Sheet_Rev.1.1.pdf, it says nothing about CMB/SQEs, so I'm not sure. Is there other ways/tools(like nvme-cli) to query?
 
-I do not think that this fix is necessary: sil24_fill_sg() is called only if the
-qc has ATA_QCFLAG_DMAMAP set (see sil24_qc_prep()) and that in turn is only set
-if ata_sg_setup() sees at least one sg entry. So the loop in sil24_fill_sg()
-will always be executed for qc marked with ATA_QCFLAG_DMAMAP and so last_sg
-cannot be NULL.
+The driver will export a sysfs property for it if it is supported:
 
--- 
-Damien Le Moal
-Western Digital Research
+  # cat /sys/class/nvme/nvme0/cmb
+
+If the file doesn't exist, then /dev/nvme0 doesn't have the capability.
+
+> > > I don't know how to interpret "ranges".  Can you supply the dmesg and
+> > > "lspci -vvs 0000:05:00.0" output both ways, e.g.,
+> > >
+> > >   pci_bus 0000:00: root bus resource [mem 0x7f800000-0xefffffff window]
+> > >   pci_bus 0000:00: root bus resource [mem 0xfd000000-0xfe7fffff window]
+> > >   pci 0000:05:00.0: [vvvv:dddd] type 00 class 0x...
+> > >   pci 0000:05:00.0: reg 0x10: [mem 0x.....000-0x.....fff ...]
+> > >
+> > > > Question:
+> > > > 1.  Why dd can cause nvme timeout? Is there more debug ways?
+> > 
+> > That means the nvme controller didn't provide a response to a posted
+> > command within the driver's latency tolerance.
+> 
+> FYI, with the help of pci bridger's vendor, they find something interesting: "From catc log, I saw some memory read pkts sent from SSD card, but its memory range is within the memory range of switch down port. So, switch down port will replay UR pkt. It seems not normal." and "Why SSD card send out some memory pkts which memory address is within switch down port's memory range. If so, switch will response UR pkts". I also don't understand how can this happen?
+
+I think we can safely assume you're not attempting peer-to-peer, so that
+behavior as described shouldn't be happening. It sounds like the memory
+windows may be incorrect. The dmesg may help to show if something appears
+wrong.
