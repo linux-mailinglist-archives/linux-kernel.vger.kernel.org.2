@@ -2,312 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840F143B716
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D2043B719
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237464AbhJZQ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:26:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234743AbhJZQ0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:26:14 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B8BA6108B;
-        Tue, 26 Oct 2021 16:23:50 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.95)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mfPEr-000qU3-OH;
-        Tue, 26 Oct 2021 12:23:49 -0400
-Message-ID: <20211026162349.585677978@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 26 Oct 2021 12:23:27 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 12/12] kprobes: Add a test case for stacktrace from kretprobe handler
-References: <20211026162315.297389528@goodmis.org>
+        id S236220AbhJZQ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237482AbhJZQ1A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 12:27:00 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA6DC061235
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:24:34 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id k26so14827850pfi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=q7Maw+sMF3Q6N+ptoNDxzqCK96vnCGLnGzCFF2robfg=;
+        b=GrlvUUDsDZCc4Noh/EpeKHDMxftQ31Xq7/gSooGwllD3Sl0nKzM5Otw5mVQyM3dqDR
+         6h2SAjkMi0yojVE0Z9F0/IpE5nu5RnWJt33MQ1XpOj/Y8KkCLObUYsJjnJjX/SCSnvEb
+         j0OBM7vNTetfxokbGlBbCwLr//JdztO7pwWMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q7Maw+sMF3Q6N+ptoNDxzqCK96vnCGLnGzCFF2robfg=;
+        b=HkazbZqfc0WAlk1hBYuqfl14eUafbT7RJKkpBihTH+4NK+yaX5U0IoX3d+q/jNZvXm
+         IYFRb/EzjpoLO3QREBBTbu/K6vMNlpLGMfDXd74KrFNpuFPVApCq8ega/cUi6zJhiTyB
+         5iJB0DEDBLSE53J51la2+2tRn+XnyE2unTApN3lMhhYu7jA2ze9xVywv9zAY+XYkW8sB
+         +sVPlNDPfNH53rIKIVbyR8pp57ozFx5xWiC/mcFCC9h5oKi6x2HnlOPYxD0RUJG9nFVu
+         vGGj6O7PU/99Sesla/gvzrEi7F2MXaN8SZWglYHxx1yZQA2GGrk7w4LpcUdrZ2CZ1HXo
+         DBMw==
+X-Gm-Message-State: AOAM532F9yfqtLhuNSGOMAkM8I5pBv9EgaLC0XX/EWY2QPYo03oUiFxL
+        d4X9guv3cq2dc9VVQNjGPvf6og==
+X-Google-Smtp-Source: ABdhPJyCY1M7KA9vxuG5wk3czomxfeK9zodk1ezqbTLfWzkoa0cpMyKyH69tTww+DJIHrT6KxsicOQ==
+X-Received: by 2002:a63:8c4f:: with SMTP id q15mr15040959pgn.225.1635265473926;
+        Tue, 26 Oct 2021 09:24:33 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:8854:dee7:f36d:b5da])
+        by smtp.gmail.com with UTF8SMTPSA id q6sm19344307pgc.1.2021.10.26.09.24.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 09:24:33 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 09:24:32 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     tjiang@codeaurora.org
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
+ using different nvm
+Message-ID: <YXgrwKUZwUWuWfG4@google.com>
+References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+On Fri, Oct 22, 2021 at 01:35:38PM +0800, tjiang@codeaurora.org wrote:
+> the RF performance of wcn6855 soc chip from different foundries will be
+> difference, so we should use different nvm to configure them.
+> 
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> ---
+>  drivers/bluetooth/btusb.c | 55
+> +++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 41 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 87b71740fad8..a5fe57e7cd7e 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3195,6 +3195,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev
+> *hdev,
+>  #define QCA_DFU_TIMEOUT		3000
+>  #define QCA_FLAG_MULTI_NVM      0x80
+> 
+> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+> +
+>  struct qca_version {
+>  	__le32	rom_version;
+>  	__le32	patch_version;
+> @@ -3226,6 +3229,7 @@ static const struct qca_device_info
+> qca_devices_table[] = {
+>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+>  };
+> 
+>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+> @@ -3380,6 +3384,42 @@ static int btusb_setup_qca_load_rampatch(struct
+> hci_dev *hdev,
+>  	return err;
+>  }
+> 
+> +static void btusb_generate_qca_nvm_name(char *fwname,
+> +					size_t max_size,
+> +					const struct qca_version *ver)
+> +{
+> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+> +	u16 flag = le16_to_cpu(ver->flag);
+> +
+> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> +		u16 board_id = le16_to_cpu(ver->board_id);
+> +		u32 ram_version = le32_to_cpu(ver->ram_version);
+> +		const char *variant = NULL;
 
-Add a test case for stacktrace from kretprobe handler and
-nested kretprobe handlers.
+This assignement was introduced in v3, it isn't really useful since the
+variable is always assigned to a value in the switch statement below.
 
-This test checks both of stack trace inside kretprobe handler
-and stack trace from pt_regs. Those stack trace must include
-actual function return address instead of kretprobe trampoline.
-The nested kretprobe stacktrace test checks whether the unwinder
-can correctly unwind the call frame on the stack which has been
-modified by the kretprobe.
+btw, why did you reset the patch version numbers, earlier they went up
+to v11? This is confusing, e.g. when someone mentions v3 of this patch,
+are they referring to this version or to
+https://patchwork.kernel.org/project/bluetooth/patch/1628758216-3201-1-git-send-email-zijuhu@codeaurora.org/?
 
-Since the stacktrace on kretprobe is correctly fixed only on x86,
-this introduces a meta kconfig ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-which tells user that the stacktrace on kretprobe is correct or not.
-
-The test results will be shown like below;
-
- TAP version 14
- 1..1
-     # Subtest: kprobes_test
-     1..6
-     ok 1 - test_kprobe
-     ok 2 - test_kprobes
-     ok 3 - test_kretprobe
-     ok 4 - test_kretprobes
-     ok 5 - test_stacktrace_on_kretprobe
-     ok 6 - test_stacktrace_on_nested_kretprobe
- # kprobes_test: pass:6 fail:0 skip:0 total:6
- # Totals: pass:6 fail:0 skip:0 total:6
- ok 1 - kprobes_test
-
-Link: https://lkml.kernel.org/r/163516211244.604541.18350507860972214415.stgit@devnote2
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- arch/Kconfig          |   8 +++
- arch/x86/Kconfig      |   1 +
- kernel/test_kprobes.c | 162 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 171 insertions(+)
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 8df1c7102643..8378f83b462c 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -191,6 +191,14 @@ config HAVE_OPTPROBES
- config HAVE_KPROBES_ON_FTRACE
- 	bool
- 
-+config ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-+	bool
-+	help
-+	  Since kretprobes modifies return address on the stack, the
-+	  stacktrace may see the kretprobe trampoline address instead
-+	  of correct one. If the architecture stacktrace code and
-+	  unwinder can adjust such entries, select this configuration.
-+
- config HAVE_FUNCTION_ERROR_INJECTION
- 	bool
- 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index e39e2bd6acc5..cc9ba6798848 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -61,6 +61,7 @@ config X86
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
- 	select ARCH_32BIT_OFF_T			if X86_32
- 	select ARCH_CLOCKSOURCE_INIT
-+	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
-diff --git a/kernel/test_kprobes.c b/kernel/test_kprobes.c
-index e78f18144145..a5edc2ebc947 100644
---- a/kernel/test_kprobes.c
-+++ b/kernel/test_kprobes.c
-@@ -17,6 +17,11 @@ static u32 (*target)(u32 value);
- static u32 (*target2)(u32 value);
- static struct kunit *current_test;
- 
-+static unsigned long (*internal_target)(void);
-+static unsigned long (*stacktrace_target)(void);
-+static unsigned long (*stacktrace_driver)(void);
-+static unsigned long target_return_address[2];
-+
- static noinline u32 kprobe_target(u32 value)
- {
- 	return (value / div_factor);
-@@ -58,6 +63,33 @@ static noinline u32 kprobe_target2(u32 value)
- 	return (value / div_factor) + 1;
- }
- 
-+static noinline unsigned long kprobe_stacktrace_internal_target(void)
-+{
-+	if (!target_return_address[0])
-+		target_return_address[0] = (unsigned long)__builtin_return_address(0);
-+	return target_return_address[0];
-+}
-+
-+static noinline unsigned long kprobe_stacktrace_target(void)
-+{
-+	if (!target_return_address[1])
-+		target_return_address[1] = (unsigned long)__builtin_return_address(0);
-+
-+	if (internal_target)
-+		internal_target();
-+
-+	return target_return_address[1];
-+}
-+
-+static noinline unsigned long kprobe_stacktrace_driver(void)
-+{
-+	if (stacktrace_target)
-+		stacktrace_target();
-+
-+	/* This is for preventing inlining the function */
-+	return (unsigned long)__builtin_return_address(0);
-+}
-+
- static int kp_pre_handler2(struct kprobe *p, struct pt_regs *regs)
- {
- 	preh_val = (rand1 / div_factor) + 1;
-@@ -175,12 +207,138 @@ static void test_kretprobes(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, krph_val, rand1);
- 	unregister_kretprobes(rps, 2);
- }
-+
-+#ifdef CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-+#define STACK_BUF_SIZE 16
-+static unsigned long stack_buf[STACK_BUF_SIZE];
-+
-+static int stacktrace_return_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
-+{
-+	unsigned long retval = regs_return_value(regs);
-+	int i, ret;
-+
-+	KUNIT_EXPECT_FALSE(current_test, preemptible());
-+	KUNIT_EXPECT_EQ(current_test, retval, target_return_address[1]);
-+
-+	/*
-+	 * Test stacktrace inside the kretprobe handler, this will involves
-+	 * kretprobe trampoline, but must include correct return address
-+	 * of the target function.
-+	 */
-+	ret = stack_trace_save(stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+
-+	for (i = 0; i < ret; i++) {
-+		if (stack_buf[i] == target_return_address[1])
-+			break;
-+	}
-+	KUNIT_EXPECT_NE(current_test, i, ret);
-+
-+#if !IS_MODULE(CONFIG_KPROBES_SANITY_TEST)
-+	/*
-+	 * Test stacktrace from pt_regs at the return address. Thus the stack
-+	 * trace must start from the target return address.
-+	 */
-+	ret = stack_trace_save_regs(regs, stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+	KUNIT_EXPECT_EQ(current_test, stack_buf[0], target_return_address[1]);
-+#endif
-+
-+	return 0;
-+}
-+
-+static struct kretprobe rp3 = {
-+	.handler	= stacktrace_return_handler,
-+	.kp.symbol_name = "kprobe_stacktrace_target"
-+};
-+
-+static void test_stacktrace_on_kretprobe(struct kunit *test)
-+{
-+	unsigned long myretaddr = (unsigned long)__builtin_return_address(0);
-+
-+	current_test = test;
-+	rp3.kp.addr = NULL;
-+	rp3.kp.flags = 0;
-+
-+	/*
-+	 * Run the stacktrace_driver() to record correct return address in
-+	 * stacktrace_target() and ensure stacktrace_driver() call is not
-+	 * inlined by checking the return address of stacktrace_driver()
-+	 * and the return address of this function is different.
-+	 */
-+	KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+
-+	KUNIT_ASSERT_EQ(test, 0, register_kretprobe(&rp3));
-+	KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+	unregister_kretprobe(&rp3);
-+}
-+
-+static int stacktrace_internal_return_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
-+{
-+	unsigned long retval = regs_return_value(regs);
-+	int i, ret;
-+
-+	KUNIT_EXPECT_FALSE(current_test, preemptible());
-+	KUNIT_EXPECT_EQ(current_test, retval, target_return_address[0]);
-+
-+	/*
-+	 * Test stacktrace inside the kretprobe handler for nested case.
-+	 * The unwinder will find the kretprobe_trampoline address on the
-+	 * return address, and kretprobe must solve that.
-+	 */
-+	ret = stack_trace_save(stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+
-+	for (i = 0; i < ret - 1; i++) {
-+		if (stack_buf[i] == target_return_address[0]) {
-+			KUNIT_EXPECT_EQ(current_test, stack_buf[i + 1], target_return_address[1]);
-+			break;
-+		}
-+	}
-+	KUNIT_EXPECT_NE(current_test, i, ret);
-+
-+#if !IS_MODULE(CONFIG_KPROBES_SANITY_TEST)
-+	/* Ditto for the regs version. */
-+	ret = stack_trace_save_regs(regs, stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+	KUNIT_EXPECT_EQ(current_test, stack_buf[0], target_return_address[0]);
-+	KUNIT_EXPECT_EQ(current_test, stack_buf[1], target_return_address[1]);
-+#endif
-+
-+	return 0;
-+}
-+
-+static struct kretprobe rp4 = {
-+	.handler	= stacktrace_internal_return_handler,
-+	.kp.symbol_name = "kprobe_stacktrace_internal_target"
-+};
-+
-+static void test_stacktrace_on_nested_kretprobe(struct kunit *test)
-+{
-+	unsigned long myretaddr = (unsigned long)__builtin_return_address(0);
-+	struct kretprobe *rps[2] = {&rp3, &rp4};
-+
-+	current_test = test;
-+	rp3.kp.addr = NULL;
-+	rp3.kp.flags = 0;
-+
-+	//KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+
-+	KUNIT_ASSERT_EQ(test, 0, register_kretprobes(rps, 2));
-+	KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+	unregister_kretprobes(rps, 2);
-+}
-+#endif /* CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE */
-+
- #endif /* CONFIG_KRETPROBES */
- 
- static int kprobes_test_init(struct kunit *test)
- {
- 	target = kprobe_target;
- 	target2 = kprobe_target2;
-+	stacktrace_target = kprobe_stacktrace_target;
-+	internal_target = kprobe_stacktrace_internal_target;
-+	stacktrace_driver = kprobe_stacktrace_driver;
- 
- 	do {
- 		rand1 = prandom_u32();
-@@ -194,6 +352,10 @@ static struct kunit_case kprobes_testcases[] = {
- #ifdef CONFIG_KRETPROBES
- 	KUNIT_CASE(test_kretprobe),
- 	KUNIT_CASE(test_kretprobes),
-+#ifdef CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-+	KUNIT_CASE(test_stacktrace_on_kretprobe),
-+	KUNIT_CASE(test_stacktrace_on_nested_kretprobe),
-+#endif
- #endif
- 	{}
- };
--- 
-2.33.0
+> +
+> +		switch (ram_version) {
+> +		case WCN6855_2_0_RAM_VERSION_GF:
+> +		case WCN6855_2_1_RAM_VERSION_GF:
+> +			variant = "_gf";
+> +			break;
+> +		default:
+> +			variant = "";
+> +			break;
+> +		}
+> +
+> +		if (board_id == 0) {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
+> +				rom_version, variant);
+> +		} else {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
+> +				rom_version, variant, board_id);
+> +		}
+> +	} else {
+> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +			rom_version);
+> +	}
+> +
+> +}
+> +
+>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+>  				    struct qca_version *ver,
+>  				    const struct qca_device_info *info)
+> @@ -3388,20 +3428,7 @@ static int btusb_setup_qca_load_nvm(struct hci_dev
+> *hdev,
+>  	char fwname[64];
+>  	int err;
+> 
+> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> -		/* if boardid equal 0, use default nvm without surfix */
+> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -				 le32_to_cpu(ver->rom_version));
+> -		} else {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+> -				le32_to_cpu(ver->rom_version),
+> -				le16_to_cpu(ver->board_id));
+> -		}
+> -	} else {
+> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -			 le32_to_cpu(ver->rom_version));
+> -	}
+> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
+> 
+>  	err = request_firmware(&fw, fwname, &hdev->dev);
+>  	if (err) {
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a
+> Linux Foundation Collaborative Project
