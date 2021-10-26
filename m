@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F1243B4DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC1D43B4DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236977AbhJZOzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:55:33 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:39446
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236924AbhJZOzc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:55:32 -0400
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C69EB40284
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635259987;
-        bh=FLFyjOECX2AvNUG03Y16Xa3yjaSG0p5S8KEMYABunrs=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=jrY61ghtCUmCMt+Khqongv7L6q1zMfjDjlL5alnq3wwWwnFqr1Ku1MouPEK5P5Fs4
-         zMvHvF6x3vdUjq027iUh21GSun/KfqphOs5SW8iZDwj/I6jozr6h29JZw7dnmEZGfM
-         7qlQKRfOfL7ZuPmxZ/iLNB6qtEjwqBu75qE8cMQkUAgXRkdmpcRe14JwkmWxrjv53E
-         a2N2i0Z3MYhuqE+CJdtLm5qood8dwBJzIEhJa478X/AlTOv83tl3NqXdPLW5M+EgwO
-         ShUurdwrCy1baZFHPgIMgUdkkz1WN4yNusfNEQpzle5W5+PhKSnJwF3QeLw9Wk9t0C
-         nyCzxFSRp/Qqg==
-Received: by mail-lj1-f199.google.com with SMTP id w9-20020a2e9989000000b00210af61ebbdso4504157lji.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:53:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FLFyjOECX2AvNUG03Y16Xa3yjaSG0p5S8KEMYABunrs=;
-        b=B3LQP2P+pxEVB4tKyGGidOGGR3/LyhrEFhK5csLg6GEuAypXfGLaBilPe2yS05cXcf
-         /QhuUBch1JfWgOj0sVkwECNLLqo1Fh/aaE6LsO+9oD7WLE3DYu6nC95vV+BNq38mcgCm
-         IQtzhBaaIe5kByoASUK4rSAUMMIT/2gmmU4O6RhWrWjWhtWbXS/y+B+hx88qzXHeERM3
-         m7YCJEA6OFBGPorwiZhSc0WGQZPSczhxr6RNkQzKrJav47oLpnPaCI/BazIxaAT/wSIC
-         JGqecNFoNfddFf/o0aR8Bom8lewo/atKIhfLJth+vDaien5jVASuIacolHhauSEKQrBy
-         pldQ==
-X-Gm-Message-State: AOAM5300YgWH/wodp0a1gch++THLECNHOT0RWOZujtJK67tV6By+DYC5
-        ewsGOXVjdHUB7hJsvld0eOR4UXmu1G7n3GHVBPvnuzqZdAac3nA6QIN1GK4US/XkqbrJXO2K7zP
-        sVlncWp3QVKW7unr1tNBpoDCIGsrjvapSOsXPlXhu9A==
-X-Received: by 2002:a2e:b708:: with SMTP id j8mr26414024ljo.466.1635259987030;
-        Tue, 26 Oct 2021 07:53:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7yFHlYp4WaoDp3jQHqEZPyAcBTUqWSTqaKAo9daRd2erHD77YdKOoek8eu9IXM/FCwnFEtg==
-X-Received: by 2002:a2e:b708:: with SMTP id j8mr26414005ljo.466.1635259986876;
-        Tue, 26 Oct 2021 07:53:06 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id f8sm1956093lfq.168.2021.10.26.07.53.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:53:06 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] clk: samsung: exynos850: Register clocks early
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-References: <20211025161254.5575-1-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <cc106f70-7352-c1e3-7bdd-72e070877be3@canonical.com>
-Date:   Tue, 26 Oct 2021 16:53:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236189AbhJZOz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:55:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231178AbhJZOz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:55:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F3B60E73;
+        Tue, 26 Oct 2021 14:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635260014;
+        bh=XWVXck4BTc3O6D5MfPddpqYC5tdKxec60b3+5QEzROQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lhifqTNUtFD8nrTJq+H5e70MsMniLlZ/R4K8HpU02g//8sjFRZVkrqLdWhsjxJRLc
+         nfCvXMMz6UkRZZXDGk6CBz9lmbKQieG7B3yY1Ku7OEt68nPb17IWjRF/GAHtmJsRDW
+         E9N/mDX2e0Lo9UfJsFYm3hQvg3CUfu9bbJcO+0bM=
+Date:   Tue, 26 Oct 2021 16:53:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     lianzhi chang <changlianzhi@uniontech.com>,
+        linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        jirislaby@kernel.org, 282827961@qq.com
+Subject: Re: [PATCH v7] tty: Fix the keyboard led light display problem
+Message-ID: <YXgWbG30THLgS5zJ@kroah.com>
+References: <20211026024032.15897-1-changlianzhi@uniontech.com>
+ <YXgPZw3eluaaVvRc@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211025161254.5575-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXgPZw3eluaaVvRc@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2021 18:12, Sam Protsenko wrote:
-> Some clocks must be registered before init calls. For example MCT clock
-> (from CMU_PERI) is needed for MCT timer driver, which is registered
-> with TIMER_OF_DECLARE(). By the time we get to core_initcall() used for
-> clk-exynos850 platform driver init, it's already too late. Inability to
-> get "mct" clock in MCT driver leads to kernel panic, as functions
-> registered with *_OF_DECLARE() can't do deferred calls. MCT timer driver
-> can't be fixed either, as it's acting as a clock source and it's
-> essential to register it in start_kernel() -> time_init().
+On Tue, Oct 26, 2021 at 05:23:35PM +0300, Andy Shevchenko wrote:
+> On Tue, Oct 26, 2021 at 10:40:32AM +0800, lianzhi chang wrote:
+> > Switching from the desktop environment to the tty environment,
+> > the state of the keyboard led lights and the state of the keyboard
+> > lock are inconsistent. This is because the attribute kb->kbdmode
+> > of the tty bound in the desktop environment (xorg) is set to
 > 
-> Let's register CMU_PERI clocks early, using CLK_OF_DECLARE_DRIVER(), and
-> do all stuff relying on "struct dev" object (like runtime PM and
-> enabling bus clock) later in platform driver probe. Basically
-> CLK_OF_DECLARE_DRIVER() matches CMU compatible, but clears OF_POPULATED
-> flag, which allows the same device to be matched again later.
+> Xorg
 > 
-> Similar issue was discussed at [1] and addressed in commit 1f7db7bbf031
-> ("clk: renesas: cpg-mssr: Add early clock support"), as well as in
-> drivers/clk/mediatek/clk-mt2712.c.
+> I think I already pointed that out.
 > 
-> [1] https://patchwork.kernel.org/project/linux-renesas-soc/patch/20180829132954.64862-2-chris.brandt@renesas.com/
+> > VC_OFF, which causes the ledstate and kb->ledflagstate
+> > values of the bound tty to always be 0, which causes the switch
+> > from the desktop When to the tty environment, the LED light
+> > status is inconsistent with the keyboard lock status.
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
-> Changes in v2:
->   - Register only CMU_PERI clocks early
+> ...
 > 
-> Notes:
->   - This patch should be applied on top of CMU_APM series
->     (clk: samsung: exynos850: Implement CMU_APM domain)
+> > +static void kbd_update_ledstate(struct input_dev *dev)
+> > +{
+> > +	if (!!test_bit(LED_NUML, dev->led) !=
+> > +	    !!(ledstate & BIT(VC_NUMLOCK)))
+> > +		ledstate ^= BIT(VC_NUMLOCK);
+> > +	if (!!test_bit(LED_CAPSL, dev->led) !=
+> > +	    !!(ledstate & BIT(VC_CAPSLOCK)))
+> > +		ledstate ^= BIT(VC_CAPSLOCK);
+> > +	if (!!test_bit(LED_SCROLLL, dev->led) !=
+> > +	    !!(ledstate & BIT(VC_SCROLLOCK)))
+> > +		ledstate ^= BIT(VC_SCROLLOCK);
 > 
->  drivers/clk/samsung/clk-exynos850.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
-> 
+> This looks ugly.
 
+Agreed, we also have the vc_kbd_led() and friend functions that seem to
+be ignored here :(
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> Since LED_* are part of uAPI and VC_* are not, perhaps
+> makes sense to modify kbd_kern.h and optimize above
+> (disclaimer: compile tested only, no locking or other
+>  synchronization have been checked / reviewed / etc):
+> 
+> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> index c7fbbcdcc346..2b04eaa5c6fd 100644
+> --- a/drivers/tty/vt/keyboard.c
+> +++ b/drivers/tty/vt/keyboard.c
+> @@ -49,6 +49,11 @@
+>  
+>  #include <asm/irq_regs.h>
+>  
+> +/* We rely on these in kbd_update_ledstate() */
+> +static_assert(VC_NUMLOCK == LED_NUML);
+> +static_assert(VC_CAPSLOCK == LED_CAPSL);
+> +static_assert(VC_SCROLLOCK == LED_SCROLLL);
 
+This makes more sense, these should be in sync.
 
-Best regards,
-Krzysztof
+> +
+>  /*
+>   * Exported functions/variables
+>   */
+> @@ -1130,6 +1135,15 @@ static void kbd_init_leds(void)
+>  
+>  #endif
+>  
+> +static void kbd_update_ledstate(struct input_dev *dev)
+> +{
+> +	unsigned long leds = BIT(LED_NUML) | BIT(LED_CAPSL) | BIT(LED_SCROLLL);
+> +	unsigned long newstate = *dev->led;
+> +
+> +	newstate ^= ledstate;
+> +	ledstate ^= newstate & leds;
+
+You should document the bit twiddling hack you are doing here just to
+make it easier to understand :)
+
+Also, ledstate is an unsigned int, not unsigned long, perhaps make them
+all u32 for now to make it obvious they are the same?  Or u64?
+
+thanks,
+
+greg k-h
