@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8A543AFF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3409143B026
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbhJZK1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:27:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55516 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbhJZK1N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:27:13 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        id S234647AbhJZKiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:38:46 -0400
+Received: from mail.bitwise.fi ([109.204.228.163]:58476 "EHLO mail.bitwise.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234330AbhJZKiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:38:18 -0400
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 06:38:10 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.bitwise.fi (Postfix) with ESMTP id 175E9460029;
+        Tue, 26 Oct 2021 13:29:15 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at 
+Received: from mail.bitwise.fi ([127.0.0.1])
+        by localhost (mustetatti.dmz.bitwise.fi [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id SmpeHPaUqtwC; Tue, 26 Oct 2021 13:29:09 +0300 (EEST)
+Received: from localhost.net (fw1.dmz.bitwise.fi [192.168.69.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CD5952195A;
-        Tue, 26 Oct 2021 10:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635243887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5+eIRKzH3SmEsZlFnQc8HV52kMGhR1HTYiW5mEjA988=;
-        b=yEp0/YRULNKYJWtznx90xcD3YYi0wqCHvUDKBF4Qqb43L3/pD1KQ/crmld02JDcIwKfBT5
-        J64DG06FSUvP5KGzW7Y7gtlpCT0UjtqGfMHIC2qihF5AebrULHSsDbq5e3mg3X9NU6aoy2
-        EKDgej83W/WNEx/NILfiP6yrhqg3+pk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635243887;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5+eIRKzH3SmEsZlFnQc8HV52kMGhR1HTYiW5mEjA988=;
-        b=5K/mPP0PtdH0o9ZHWQyuZqR/cdoKpM1SSIulQHBheQ1sQZnzcLxT0sWZJijPF/z8iht8sn
-        UFLNDURNDXxnVyDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EB85B13D43;
-        Tue, 26 Oct 2021 10:24:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gynmKWzXd2GkEwAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 26 Oct 2021 10:24:44 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: anssiha)
+        by mail.bitwise.fi (Postfix) with ESMTPSA id B9E01460026;
+        Tue, 26 Oct 2021 13:29:09 +0300 (EEST)
+From:   Anssi Hannula <anssi.hannula@bitwise.fi>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] serial: xilinx_uartps: Fix race condition causing stuck TX
+Date:   Tue, 26 Oct 2021 13:27:41 +0300
+Message-Id: <20211026102741.2910441-1-anssi.hannula@bitwise.fi>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Michal Hocko" <mhocko@suse.com>
-Cc:     "Uladzislau Rezki" <urezki@gmail.com>,
-        "Linux Memory Management List" <linux-mm@kvack.org>,
-        "Dave Chinner" <david@fromorbit.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        "LKML" <linux-kernel@vger.kernel.org>,
-        "Ilya Dryomov" <idryomov@gmail.com>,
-        "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-In-reply-to: <YXeraV5idipgWDB+@dhcp22.suse.cz>
-References: <CA+KHdyUyObf2m51uFpVd_tVCmQyn_mjMO0hYP+L0AmRs0PWKow@mail.gmail.com>,
- <YXAtYGLv/k+j6etV@dhcp22.suse.cz>,
- <CA+KHdyVdrfLPNJESEYzxfF+bksFpKGCd8vH=NqdwfPOLV9ZO8Q@mail.gmail.com>,
- <20211020192430.GA1861@pc638.lan>,
- <163481121586.17149.4002493290882319236@noble.neil.brown.name>,
- <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>, <20211021104038.GA1932@pc638.lan>,
- <163485654850.17149.3604437537345538737@noble.neil.brown.name>,
- <20211025094841.GA1945@pc638.lan>,
- <163520582122.16092.9250045450947778926@noble.neil.brown.name>,
- <YXeraV5idipgWDB+@dhcp22.suse.cz>
-Date:   Tue, 26 Oct 2021 21:24:41 +1100
-Message-id: <163524388152.8576.15706993879941541847@noble.neil.brown.name>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021, Michal Hocko wrote:
-> On Tue 26-10-21 10:50:21, Neil Brown wrote:
-> > On Mon, 25 Oct 2021, Uladzislau Rezki wrote:
-> > > On Fri, Oct 22, 2021 at 09:49:08AM +1100, NeilBrown wrote:
-> > > > However I'm not 100% certain, and the behaviour might change in the
-> > > > future.  So having one place (the definition of memalloc_retry_wait())
-> > > > where we can change the sleeping behaviour if the alloc_page behavour
-> > > > changes, would be ideal.  Maybe memalloc_retry_wait() could take a
-> > > > gfpflags arg.
-> > > > 
-> > > At sleeping is required for __get_vm_area_node() because in case of lack
-> > > of vmap space it will end up in tight loop without sleeping what is
-> > > really bad.
-> > > 
-> > So vmalloc() has two failure modes.  alloc_page() failure and
-> > __alloc_vmap_area() failure.  The caller cannot tell which...
-> > 
-> > Actually, they can.  If we pass __GFP_NOFAIL to vmalloc(), and it fails,
-> > then it must have been __alloc_vmap_area() which failed.
-> > What do we do in that case?
-> > Can we add a waitq which gets a wakeup when __purge_vmap_area_lazy()
-> > finishes?
-> > If we use the spinlock from that waitq in place of free_vmap_area_lock,
-> > then the wakeup would be nearly free if no-one was waiting, and worth
-> > while if someone was waiting.
-> 
-> Is this really required to be part of the initial support?
+xilinx_uartps .start_tx() clears TXEMPTY when enabling TXEMPTY to avoid
+any previous TXEVENT event asserting the UART interrupt. This clear
+operation is done immediately after filling the TX FIFO.
 
-No.... I was just thinking out-loud.
+However, if the bytes inserted by cdns_uart_handle_tx() are consumed by
+the UART before the TXEMPTY is cleared, the clear operation eats the new
+TXEMPTY event as well, causing cdns_uart_isr() to never receive the
+TXEMPTY event. If there are bytes still queued in circbuf, TX will get
+stuck as they will never get transferred to FIFO (unless new bytes are
+queued to circbuf in which case .start_tx() is called again).
 
-NeilBrown
+While the racy missed TXEMPTY occurs fairly often with short data
+sequences (e.g. write 1 byte), in those cases circbuf is usually empty
+so no action on TXEMPTY would have been needed anyway. On the other
+hand, longer data sequences make the race much more unlikely as UART
+takes longer to consume the TX FIFO. Therefore it is rare for this race
+to cause visible issues in general.
+
+Fix the race by clearing the TXEMPTY bit in ISR *before* filling the
+FIFO.
+
+The TXEMPTY bit in ISR will only get asserted at the exact moment the
+TX FIFO *becomes* empty, so clearing the bit before filling FIFO does
+not cause an extra immediate assertion even if the FIFO is initially
+empty.
+
+This is hard to reproduce directly on a normal system, but inserting
+e.g. udelay(200) after cdns_uart_handle_tx(port), setting 4000000 baud,
+and then running "dd if=/dev/zero bs=128 of=/dev/ttyPS0 count=50"
+reliably reproduces the issue on my ZynqMP test system unless this fix
+is applied.
+
+Fixes: 85baf542d54e ("tty: xuartps: support 64 byte FIFO size")
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+---
+ drivers/tty/serial/xilinx_uartps.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index 962e522ccc45..d5e243908d9f 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -601,9 +601,10 @@ static void cdns_uart_start_tx(struct uart_port *port)
+ 	if (uart_circ_empty(&port->state->xmit))
+ 		return;
+ 
++	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
++
+ 	cdns_uart_handle_tx(port);
+ 
+-	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
+ 	/* Enable the TX Empty interrupt */
+ 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
+ }
+-- 
+2.31.1
+
