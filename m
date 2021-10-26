@@ -2,202 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAAA43B363
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE01A43B36D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236288AbhJZN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
+        id S236344AbhJZN7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232606AbhJZN45 (ORCPT
+        with ESMTP id S236305AbhJZN6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:56:57 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FF4C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:54:33 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id l203so9688482pfd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:54:33 -0700 (PDT)
+        Tue, 26 Oct 2021 09:58:55 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55263C061767;
+        Tue, 26 Oct 2021 06:56:31 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id 188so20463374iou.12;
+        Tue, 26 Oct 2021 06:56:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=oChekstjDnKzwBhdDuGFpefvR6xyGjCzFXwyqCTn1FE=;
-        b=XeW0KWC1g2HthKjpNT6Yaa7UdsE2wcfbZJGAm3iHM8imLVv7mRRyyO+fjHbp6/WH4l
-         9rDRx0ijihXYsd8v0me+dtnaXDZuxKT69tBgcO7R6XbECV28jK2FyG/r3wzepmkuz2Ux
-         RWDa+s9CkJvxtCtH3v3TCbmb+1GU7CLQq7vK5Vay+pQxor+axFECWC9kFO20XVVKG+xO
-         /H8fT47GvCuQEk/y1xuMaW4E2n+axYATV4GLzkaO61BEE9PrMoo/Jl0+NZrB2G5bM1eK
-         zfJ6By/TxpSCaxfj+DOIodffhmFskTVBcifhFaKl27UYCFMFs60X8zru/3bVmSU8EXQ7
-         qeCw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OCNly9Pv6GVtqK5WKlYGGpWZ1IwDTUSNcWIUnGMQ4tQ=;
+        b=i7RAxoJj6vRHJO/QOSjI/2wZP40Tm49lxjwUghVRA9loicQXFZNhM0MArl94d+vLjQ
+         3ONCBgOGm6/Tzkk6/rbzph3fyWGtvF06KCpw5TQuJV+IYTHQLBvZq/yAsOXYH5zO2znh
+         0zjKS2Yzo3vcuKLciR7vPdHTMj2n1hFo604EAkwzdVdDIC4TDCtH88vI9tlkTdFe6ovD
+         fUtyJV7cBcB5modNsKwvWcaeO4hCblmIqUYnQtEfhNC7w/zLGp7dGfWhIz6QBgu1TWLw
+         8Ux1Iqr2m7VjjSxbnvmsTLhMEWmkZE4cIbSrm9U8IZMkRyp3VWpS9uj1z99yX47jDUJn
+         YTpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=oChekstjDnKzwBhdDuGFpefvR6xyGjCzFXwyqCTn1FE=;
-        b=chrIr8DnFEPKzS5asEpNPHcIxURM7XYwq4H/1Phb8KJECzh9kWJKLrX9IusqmVngU8
-         MwQYSL1Smgw51U5/HJur7idegu+SJKiBnT/lm2xItvlenp6CUy8hvdtonO9TMgtmDV0u
-         KDtMIF1RA4I2NvZXg9fdaNeLQE9hPqPXCTOsqmViJqQIwWV73z/B7g1AiVeZftU5I4SN
-         1kliskTIiTQioEeKVqBzMdHeQKsCF+nbbwIqrpFRgrlsYLhZqvy42kR84VN5KBxWhOfU
-         zUl4/nw7lQyOifBlvf8NstZZswEEayAWwKxhNJWRX5R0w0E+FjAq1IsFwGWLVdgcY/2S
-         ECmA==
-X-Gm-Message-State: AOAM530t9Ny5hdbQarDSnihxMgsoJc097lowKGSiKdfjle6yQmfkyjN3
-        q6FZxcQKkANi8xz9M0vvAHE=
-X-Google-Smtp-Source: ABdhPJyhgTllBI7U5qR46CHoSwZnv3/cMgyHOAU/WUk4kVqfiooh1NbqVsORYmPmu81CMg0f3yUZkQ==
-X-Received: by 2002:a63:e24b:: with SMTP id y11mr18769979pgj.452.1635256473057;
-        Tue, 26 Oct 2021 06:54:33 -0700 (PDT)
-Received: from [192.168.1.122] ([122.181.48.19])
-        by smtp.gmail.com with ESMTPSA id lb5sm1066507pjb.11.2021.10.26.06.54.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 06:54:32 -0700 (PDT)
-Message-ID: <84add494-6e39-cdd9-96c6-04a0245ae11c@gmail.com>
-Date:   Tue, 26 Oct 2021 19:24:27 +0530
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OCNly9Pv6GVtqK5WKlYGGpWZ1IwDTUSNcWIUnGMQ4tQ=;
+        b=8FWOAAlleloW0xhPMxL+6GS5BexHx48d5GFmrTfGRKL214YQ4qDtQcHro6mpZHRT/f
+         I/SychaEi7/a5YqNF2c3brqa5DsCp5V3ufu6zxcbPsMGFPk6fFukNH0vgLEf5HA+g6zn
+         B3O1AtvPLmVFMzTybzBBt+jFq/2Y/MLH/gkoSFAMJ/uFx8Wbk3Ahy7sI4KwcZP3FP1Rb
+         GNLExtKQUXIGtPUSBxl6oiQttRV1xWqLNnMbDBo60TwO7nRGDPh9/q1WOQ2TTv1f91HY
+         o7eUwun0cj129c0D1qmMKl7J2fBAyxSXjh7yyKxtwCaWwX4TJrg4Ijo1CJXGWe5pcl2L
+         nRyA==
+X-Gm-Message-State: AOAM532aw9v9bPEw3Mmnx6gT5nYW8jfDHqwZk4ykigptZjjYWbeDRJGZ
+        lIMQoS0R4Md0VIfAgzsNjaN8U6nKj1tjHSuPjDg=
+X-Google-Smtp-Source: ABdhPJw6DOg4zAXK3lnhpAIkXs7o2KoNL0GRJkIrWvXjuD/QZ3ItZtbM3RgVBE1XgEfOYoA0wxJIHxgbtWr7mAbD35g=
+X-Received: by 2002:a02:a483:: with SMTP id d3mr6171868jam.23.1635256590773;
+ Tue, 26 Oct 2021 06:56:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: core: Refactor
- nested if-else
-Content-Language: en-US
-To:     Kushal Kothari <kushalkothari285@gmail.com>,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, hdegoede@redhat.com,
-        marcocesati@gmail.com, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mike.rapoport@gmail.com,
-        kushalkothari2850@gmail.com
-References: <20211026134253.7868-1-kushalkothari285@gmail.com>
-From:   Praveen Kumar <kpraveen.lkml@gmail.com>
-In-Reply-To: <20211026134253.7868-1-kushalkothari285@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-9-laoar.shao@gmail.com>
+ <202110251421.7056ACF84@keescook> <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
+ <20211026091211.569a7ba2@gandalf.local.home>
+In-Reply-To: <20211026091211.569a7ba2@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 26 Oct 2021 21:55:54 +0800
+Message-ID: <CALOAHbBAKqbZEMvk5PVMrqFR_kjbi_kotGTNTGEW+=JWnC+_uA@mail.gmail.com>
+Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
+ task comm size change
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-10-2021 19:12, Kushal Kothari wrote:
-> Refactor nested if-else to avoid deep indentations. There is no change
-> in the logic of the new code, however, now it is simple because it gets
-> rid of five unnecessary else conditionals and it combines nested if into
-> single if-else-if. This refactor also leads to fix warning detected by
-> checkpatch.pl:
-> WARNING: Too many leading tabs - consider code refactoring
-> 
-> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
-> ---
-> 
-> Changes in v2: Fix the bug of not handling properly the else logic
-> when p is not null in else-if. Also, reword the subject line and break 
-> it up at 72 columns.
-> 
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 69 ++++++++-----------
->  1 file changed, 29 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index 0f82f5031c43..267d853b1514 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -1192,50 +1192,39 @@ unsigned int OnAssocReq(struct adapter *padapter, union recv_frame *precv_frame)
->  		p = pframe + WLAN_HDR_A3_LEN + ie_offset; ie_len = 0;
->  		for (;;) {
->  			p = rtw_get_ie(p, WLAN_EID_VENDOR_SPECIFIC, &ie_len, pkt_len - WLAN_HDR_A3_LEN - ie_offset);
-> -			if (p) {
-> -				if (!memcmp(p+2, WMM_IE, 6)) {
-> -
-> -					pstat->flags |= WLAN_STA_WME;
-> -
-> -					pstat->qos_option = 1;
-> -					pstat->qos_info = *(p+8);
-> -
-> -					pstat->max_sp_len = (pstat->qos_info>>5)&0x3;
-> -
-> -					if ((pstat->qos_info&0xf) != 0xf)
-> -						pstat->has_legacy_ac = true;
-> -					else
-> -						pstat->has_legacy_ac = false;
-> -
-> -					if (pstat->qos_info&0xf) {
-> -						if (pstat->qos_info&BIT(0))
-> -							pstat->uapsd_vo = BIT(0)|BIT(1);
-> -						else
-> -							pstat->uapsd_vo = 0;
-> -
-> -						if (pstat->qos_info&BIT(1))
-> -							pstat->uapsd_vi = BIT(0)|BIT(1);
-> -						else
-> -							pstat->uapsd_vi = 0;
-> -
-> -						if (pstat->qos_info&BIT(2))
-> -							pstat->uapsd_bk = BIT(0)|BIT(1);
-> -						else
-> -							pstat->uapsd_bk = 0;
-> -
-> -						if (pstat->qos_info&BIT(3))
-> -							pstat->uapsd_be = BIT(0)|BIT(1);
-> -						else
-> -							pstat->uapsd_be = 0;
-> -
-> -					}
-> -
-> -					break;
-> +			if (p && memcmp(p+2, WMM_IE, 6)) {
-> +				p = p + ie_len + 2;
-> +			} else if (p && !memcmp(p+2, WMM_IE, 6)) {
+On Tue, Oct 26, 2021 at 9:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 26 Oct 2021 10:18:51 +0800
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > > So, if we're ever going to copying these buffers out of the kernel (I
+> > > don't know what the object lifetime here in bpf is for "e", etc), we
+> > > should be zero-padding (as get_task_comm() does).
+> > >
+> > > Should this, instead, be using a bounce buffer?
+> >
+> > The comment in bpf_probe_read_kernel_str_common() says
+> >
+> >   :      /*
+> >   :       * The strncpy_from_kernel_nofault() call will likely not fill the
+> >   :       * entire buffer, but that's okay in this circumstance as we're probing
+> >   :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
+> >   :       * as well probe the stack. Thus, memory is explicitly cleared
+> >   :       * only in error case, so that improper users ignoring return
+> >   :       * code altogether don't copy garbage; otherwise length of string
+> >   :       * is returned that can be used for bpf_perf_event_output() et al.
+> >   :       */
+> >
+> > It seems that it doesn't matter if the buffer is filled as that is
+> > probing arbitrary memory.
+> >
+> > >
+> > > get_task_comm(comm, task->group_leader);
+> >
+> > This helper can't be used by the BPF programs, as it is not exported to BPF.
+> >
+> > > bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
+>
+> I guess Kees is worried that e.comm will have something exported to user
+> space that it shouldn't. But since e is part of the BPF program, does the
+> BPF JIT take care to make sure everything on its stack is zero'd out, such
+> that a user BPF couldn't just read various items off its stack and by doing
+> so, see kernel memory it shouldn't be seeing?
+>
 
-I would think of something,
+Understood.
+It can leak information to the user if the user buffer is large enough.
 
-for(;;) {
-	p = rtw_get_ie(p, WLAN_EID_VENDOR_SPECIFIC, &ie_len, pkt_len - WLAN_HDR_A3_LEN - ie_offset);
-	if (p) {
-		if (memcmp(p+2, WMM_IE, 6)) {
-			p = p + ie_len + 2;
-			continue;
-		}
-		pstat->flags |= WLAN_STA_WME;
-		...
-	}
-	/* Here we will reach only if p is NULL or its required entry */
-	break;
-}
 
-Can you please check if this works well. Thanks.
-Also, wanted to check how are you testing these changes ?
+> I'm guessing it does, otherwise this would be a bigger issue than this
+> patch series.
+>
 
-> +				pstat->flags |= WLAN_STA_WME;
-> +				pstat->qos_option = 1;
-> +				pstat->qos_info = *(p+8);
-> +				pstat->max_sp_len = (pstat->qos_info>>5)&0x3;
-> +
-> +				pstat->has_legacy_ac = false;
-> +				if ((pstat->qos_info&0xf) != 0xf)
-> +					pstat->has_legacy_ac = true;
-> +
-> +				if (pstat->qos_info&0xf) {
-> +					pstat->uapsd_vo = 0;
-> +					if (pstat->qos_info&BIT(0))
-> +						pstat->uapsd_vo = BIT(0)|BIT(1);
-> +
-> +					pstat->uapsd_vi = 0;
-> +					if (pstat->qos_info&BIT(1))
-> +						pstat->uapsd_vi = BIT(0)|BIT(1);
-> +
-> +					pstat->uapsd_bk = 0;
-> +					if (pstat->qos_info&BIT(2))
-> +						pstat->uapsd_bk = BIT(0)|BIT(1);
-> +
-> +					pstat->uapsd_be = 0;
-> +					if (pstat->qos_info&BIT(3))
-> +						pstat->uapsd_be = BIT(0)|BIT(1);
->  				}
-> +				break;
->  			} else {
->  				break;
->  			}
-> -			p = p + ie_len + 2;
->  		}
->  	}
->  
-> 
+I will think about how to fix it.
+At first glance, it seems we'd better introduce a new BPF helper like
+bpf_probe_read_kernel_str_pad().
 
-Regards,
-
-~Praveen.
-
+-- 
+Thanks
+Yafang
