@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E06943B40D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C9443B40E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236596AbhJZObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
+        id S236565AbhJZObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236560AbhJZOa5 (ORCPT
+        with ESMTP id S236581AbhJZObD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:30:57 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B4AC061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:33 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so1834026pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:33 -0700 (PDT)
+        Tue, 26 Oct 2021 10:31:03 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CA4C061348
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:39 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 83so8088745pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0go08qE6YjF720dW2xAnGLMtyjjxpO8kE2iuFpdx1kM=;
-        b=XoBtR3vIQXaOLJhHcBP0PxdJposDjjjTVcj5gJMP2n1vuF8fJCjnQfjaNpUh2Tg4xm
-         etwbT7AvlsrW9b16G6yc7ZHDnH9E7qUrsoRsdvv0aSI2Tol8M0LFTx4wsnj8cbYouGMk
-         vmMd0Fdorkwug9N1s9Cz+d1iV2hehsd88hV0+gWL3RH++nEY5zvrQ0WP80zXCrVOJp93
-         3ZJWJbFuIJwY4BfUHbHJILcluhQOZeNCK9W/k4sOWdX+6ZYHj1grZjPu13mmSsbAEM/G
-         ZDC5dgEKpIgO+i5FdK0ifWGFwdsEYaJ+Yy+n9fIIN/UmaTNqC62RR/w2l1DA/leR9M9J
-         Evlw==
+        bh=qVUwb6qJNDu/CeEak3yLPHW/+QDV/ly9Tbge8nu9b0Q=;
+        b=fLeLVsAbEKbSu/pW6wu8oLLi+Tq6/oN/NUkxkREUp1Ikt9h9uUgzizrL6JnO9JIgpJ
+         r8tnABUaG71gGGkJk2/OTkrxmRZ5k5KTglp4YCHX7dclrp7HyrMvTF5atqIEbF1oYB6K
+         eJRFr7KkumPHNnJgKGk6SJqD+cu0kFli8M7ISjPUbDVYkcRmw6ebIIngEzHo8VIH/y4k
+         bBYLdBJ35LbE7HYXQ3kQGhPcS4qdWOK9vYCn0tTkaKSEV1KeMLJZziD2hF9vlXPZiKmb
+         PDIfn5UQxGnLCwNTPMdWd06ZTUEpXPLlmPxfpKwh1fe7sKQhT5Ux5N3BOSugtoTEN+OB
+         L3mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0go08qE6YjF720dW2xAnGLMtyjjxpO8kE2iuFpdx1kM=;
-        b=EkF1UUc7PFddsRXA8JW+wSV/jMcaAC0pf9Z9e+zAQHv0Voe9I7HK8hdHG9oJd9pRxZ
-         kDrUfqwULOe09a0rMpspYwOja+8alQ32O6JKtarlzBqP4TpTjZh2KsPQsVkLO++8hhIh
-         QMb9xsM4oYzvTsZJ4hnks1zsYH/a6UKiUO21sH8QxZEdb6t5Qm/JzbswT60jX3O/YVzV
-         Wg6+H5zGX7uZsJROl27XDjQ7zvZW74qYYwH8cQSOILk0GcHX+fuzUSGLsqkIKAAVYopB
-         ceL8bQu64HB86DO9lBRoFAtDjb8EVIahy0TVWtIBMyHkwkiVrV+ME/BpCkDAwRWdbH15
-         rCMw==
-X-Gm-Message-State: AOAM530576de+JTy9TihiL/0UItYmt81T32B4tB0MlfXXWOt1UNbu5te
-        56QvVuGCJECXWkUFVs0w95125Oks3Uc=
-X-Google-Smtp-Source: ABdhPJz9UYJL+pcyhokS4grZE99PTsjSJwJberiX7CZSDi2sPWmR79BvAj09aVd5NXKFTisUzlKzCQ==
-X-Received: by 2002:a17:90b:1811:: with SMTP id lw17mr10923845pjb.22.1635258513083;
-        Tue, 26 Oct 2021 07:28:33 -0700 (PDT)
+        bh=qVUwb6qJNDu/CeEak3yLPHW/+QDV/ly9Tbge8nu9b0Q=;
+        b=PTDQOrdowninn4W+ZDCuZ3xN4DmLXoBCdGISn/Hq8EGcK02pIitZAVRn60A62eaw6n
+         uLzl5RUq7X4XGLUVp9n7UyC56/OftKrB1zPmDf+YiIX9qIKNA2vcPxbs0n+tXIuBBDXz
+         qbZeNNCWfippqKbW47tXSpLLYr/HJXT0kdsQNtgrVf5MzhkHZk6gV6pafxuRZUmT7dHO
+         ne0kTMV6WnlV94Wo606kUyu1yajq17fdMdl3bgnIvIFTleuMXmJg0RuFonTsCNuJ1Tuh
+         cYDBkfomrTuJUMJd7xopAQxWs5Rrd32v3DQ2D97/fCSh8O268SJMTkm6g0rzODFq/OFi
+         yF5A==
+X-Gm-Message-State: AOAM531K2IQgJlgdKGWz5Ndg0jg2/+rFkcbLla9Ikya2ZXi/NQaEmFSC
+        YALU8DpYMh93Zx4PT99sacoT/zQ3JQw=
+X-Google-Smtp-Source: ABdhPJxbHHFZoetxSmMzAhPk8qZs2CO/bhPeyAABQ9ly+NkQrPO5FWL4xCAMsV9BKsmH5EdgsJ5uxg==
+X-Received: by 2002:a63:7506:: with SMTP id q6mr19083570pgc.349.1635258518629;
+        Tue, 26 Oct 2021 07:28:38 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id b2sm7760766pgh.33.2021.10.26.07.28.31
+        by smtp.gmail.com with ESMTPSA id m15sm1102915pjf.49.2021.10.26.07.28.37
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:28:32 -0700 (PDT)
+        Tue, 26 Oct 2021 07:28:38 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -56,9 +56,9 @@ Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 13/50] x86/entry: Add arch/x86/entry/entry64.c for C entry code
-Date:   Tue, 26 Oct 2021 22:27:45 +0800
-Message-Id: <20211026142824.18362-3-jiangshanlai@gmail.com>
+Subject: [PATCH V4 14/50] x86/entry: Expose the address of .Lgs_change to entry64.c
+Date:   Tue, 26 Oct 2021 22:27:46 +0800
+Message-Id: <20211026142824.18362-4-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,70 +70,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Add a C file "entry64.c" to deposit C entry code for traps and faults
-which will be as the same logic as the existing ASM code in entry_64.S.
+The address of .Lgs_change will be used in traps.c in later patch when
+some entry code is implemented in entry64.c.  So the address of .Lgs_change
+is exposed to traps.c for preparation.
 
-The file is as low level as entry_64.S and its code can be running in
-the environments that the GS base is user controlled value, or the CR3
-is PTI user CR3 or both.
+The label .Lgs_change is still needed in ASM code for extable due to it
+can not use asm_load_gs_index_gs_change.  Otherwise:
 
-All the code in this file should not be instrumentable.  Many instrument
-facilities can be disabled by per-function attributes which are included
-in __noinstr_section.  But stack-protector can not be disabled function-
-granularly by many versions of GCC that can be supported for compiling
-the kernel.  So stack-protector is disabled for the whole file in Makefile.
+	warning: objtool: __ex_table+0x0: don't know how to handle
+	non-section reloc symbol asm_load_gs_index_gs_change
 
-It is prepared for later patches that implement C version of the entry
-code in entry64.c.
-
-Suggested-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/Makefile  |  3 ++-
- arch/x86/entry/entry64.c | 14 ++++++++++++++
- 2 files changed, 16 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/entry/entry64.c
+ arch/x86/entry/entry64.c  | 2 ++
+ arch/x86/entry/entry_64.S | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-index 7fec5dcf6438..792f7009ff32 100644
---- a/arch/x86/entry/Makefile
-+++ b/arch/x86/entry/Makefile
-@@ -10,13 +10,14 @@ KCOV_INSTRUMENT := n
- CFLAGS_REMOVE_common.o		= $(CC_FLAGS_FTRACE)
- 
- CFLAGS_common.o			+= -fno-stack-protector
-+CFLAGS_entry64.o		+= -fno-stack-protector
- 
- obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
- obj-y				+= common.o
-+obj-$(CONFIG_X86_64)		+= entry64.o
- 
- obj-y				+= vdso/
- obj-y				+= vsyscall/
- 
- obj-$(CONFIG_IA32_EMULATION)	+= entry_64_compat.o syscall_32.o
- obj-$(CONFIG_X86_X32_ABI)	+= syscall_x32.o
--
 diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
-new file mode 100644
-index 000000000000..762595603ce7
---- /dev/null
+index 762595603ce7..9813a30dbadb 100644
+--- a/arch/x86/entry/entry64.c
 +++ b/arch/x86/entry/entry64.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Copyright (C) 1991, 1992  Linus Torvalds
-+ *  Copyright (C) 2000, 2001, 2002  Andi Kleen SuSE Labs
-+ *  Copyright (C) 2000  Pavel Machek <pavel@suse.cz>
-+ *  Copyright (C) 2021 Lai Jiangshan, Alibaba
-+ *
-+ * Handle entries and exits for hardware traps and faults.
-+ *
-+ * It is as low level as entry_64.S and its code can be running in the
-+ * environments that the GS base is user controlled value, or the CR3
-+ * is PTI user CR3 or both.
-+ */
-+#include <asm/traps.h>
+@@ -12,3 +12,5 @@
+  * is PTI user CR3 or both.
+  */
+ #include <asm/traps.h>
++
++extern unsigned char asm_load_gs_index_gs_change[];
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index c8f7b740a9f1..daaeeb8acd22 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -731,6 +731,7 @@ _ASM_NOKPROBE(common_interrupt_return)
+ SYM_FUNC_START(asm_load_gs_index)
+ 	FRAME_BEGIN
+ 	swapgs
++SYM_INNER_LABEL(asm_load_gs_index_gs_change, SYM_L_GLOBAL)
+ .Lgs_change:
+ 	movl	%edi, %gs
+ 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
+@@ -1009,7 +1010,7 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	movl	%ecx, %eax			/* zero extend */
+ 	cmpq	%rax, RIP+8(%rsp)
+ 	je	.Lbstep_iret
+-	cmpq	$.Lgs_change, RIP+8(%rsp)
++	cmpq	$asm_load_gs_index_gs_change, RIP+8(%rsp)
+ 	jne	.Lerror_entry_done_lfence
+ 
+ 	/*
 -- 
 2.19.1.6.gb485710b
 
