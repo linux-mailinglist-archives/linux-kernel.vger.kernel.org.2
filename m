@@ -2,171 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6704243ABDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4469143ABE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhJZFwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:52:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229687AbhJZFwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:52:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6664C6058D;
-        Tue, 26 Oct 2021 05:50:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635227415;
-        bh=H97AJUSzxtY1KeNAjKvVW3u0ncDbnOSqhM9oBb396P0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Yb48cQqXPGN47MpkPEK2O+3za09G0VvqAPhan3lqGiHeS1LHZi8htC4Ub0vFJas/e
-         tR+pGuAr4aFQuGEc0i3p0WlV8h0m19tomBs1BuaQaAcLtknXj0IFL4OdTz0QO3rEcN
-         Vd3/bM1byihxMdHzq/k8a1kkMFgeo59vAiNBqYsO+LSJrP3Ho6WpJWgcC6k7hPZNAR
-         +YUa115a9yo9Xt6nRwlJxkP1mf/e3+VNAZgPZytxLwAAD1Gmi+ew1IM2gTHhmn1HZo
-         55wMezYj7UZcrUmjT1VWWdUFH+E4kqQ4b0pPUc7BJTNcmIZhHsxGkzAeMQ27AeXtZY
-         uONQRFwH0ooDA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: v4l2-core: fix VIDIOC_DQEVENT handling on non-x86
-Date:   Tue, 26 Oct 2021 07:49:54 +0200
-Message-Id: <20211026055010.1569728-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S235115AbhJZF4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:56:03 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15995 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhJZF4C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:56:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635227619; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7oRZBa8uvbKECbg21UMpUF9P2BubMa4PGmCQdveSgGc=;
+ b=HhispHb43rRZ1flifQA61Ys61kM28kUJzdUIzStQQK5OwzLuJJGWYsc0lDSOFQyoctx8jTrd
+ 5H20EdYOZtItV6jMRoHTerjoixZKQ1XlxIDZ6Z+GX5Rzq12zkxo/Bf6y/hYp15Ry8zLRjsVE
+ SR6xVd+WTe3QPZ33jHX/v8IJQck=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 617797d267f107c61143394e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 05:53:22
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 013E3C4360C; Tue, 26 Oct 2021 05:53:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31240C4338F;
+        Tue, 26 Oct 2021 05:53:21 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 26 Oct 2021 13:53:21 +0800
+From:   tjiang@codeaurora.org
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
+ using different nvm
+In-Reply-To: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
+References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
+Message-ID: <37ff4532d711face325be2f95d47f960@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-My previous bugfix addressed an API inconsistency found by syzbot,
-and it correctly fixed the issue on x86-64 machines, which now behave
-correctly for both native and compat tasks.
+Hi Marcel:
+   could you help review this patch as I resolved all comments from 
+Matthias , thank you for the help.
 
-Unfortunately, John found that the patch broke compat mode on all other
-architectures, as they can no longer rely on the VIDIOC_DQEVENT_TIME32
-code from the native handler as a fallback in the compat code.
+regards.
+tim
 
-The best way I can see for addressing this is to generalize the
-VIDIOC_DQEVENT32_TIME32 code from x86 and use that for all architectures,
-leaving only the VIDIOC_DQEVENT32 variant as x86 specific. The original
-code was trying to be clever and use the same conversion helper for native
-32-bit code and compat mode, but that turned out to be too obscure so
-even I missed that bit I had introduced myself when I made the fix.
 
-Fixes: c344f07aa1b4 ("media: v4l2-core: ignore native time32 ioctls on 64-bit")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 41 ++++++++-----------
- 1 file changed, 17 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
-index 8176769a89fa..0f3d6b5667b0 100644
---- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
-+++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
-@@ -751,10 +751,6 @@ static int put_v4l2_ext_controls32(struct v4l2_ext_controls *p64,
- /*
-  * x86 is the only compat architecture with different struct alignment
-  * between 32-bit and 64-bit tasks.
-- *
-- * On all other architectures, v4l2_event32 and v4l2_event32_time32 are
-- * the same as v4l2_event and v4l2_event_time32, so we can use the native
-- * handlers, converting v4l2_event to v4l2_event_time32 if necessary.
-  */
- struct v4l2_event32 {
- 	__u32				type;
-@@ -772,21 +768,6 @@ struct v4l2_event32 {
- 	__u32				reserved[8];
- };
- 
--#ifdef CONFIG_COMPAT_32BIT_TIME
--struct v4l2_event32_time32 {
--	__u32				type;
--	union {
--		compat_s64		value64;
--		__u8			data[64];
--	} u;
--	__u32				pending;
--	__u32				sequence;
--	struct old_timespec32		timestamp;
--	__u32				id;
--	__u32				reserved[8];
--};
--#endif
--
- static int put_v4l2_event32(struct v4l2_event *p64,
- 			    struct v4l2_event32 __user *p32)
- {
-@@ -802,7 +783,22 @@ static int put_v4l2_event32(struct v4l2_event *p64,
- 	return 0;
- }
- 
-+#endif
-+
- #ifdef CONFIG_COMPAT_32BIT_TIME
-+struct v4l2_event32_time32 {
-+	__u32				type;
-+	union {
-+		compat_s64		value64;
-+		__u8			data[64];
-+	} u;
-+	__u32				pending;
-+	__u32				sequence;
-+	struct old_timespec32		timestamp;
-+	__u32				id;
-+	__u32				reserved[8];
-+};
-+
- static int put_v4l2_event32_time32(struct v4l2_event *p64,
- 				   struct v4l2_event32_time32 __user *p32)
- {
-@@ -818,7 +814,6 @@ static int put_v4l2_event32_time32(struct v4l2_event *p64,
- 	return 0;
- }
- #endif
--#endif
- 
- struct v4l2_edid32 {
- 	__u32 pad;
-@@ -880,9 +875,7 @@ static int put_v4l2_edid32(struct v4l2_edid *p64,
- #define VIDIOC_QUERYBUF32_TIME32	_IOWR('V',  9, struct v4l2_buffer32_time32)
- #define VIDIOC_QBUF32_TIME32		_IOWR('V', 15, struct v4l2_buffer32_time32)
- #define VIDIOC_DQBUF32_TIME32		_IOWR('V', 17, struct v4l2_buffer32_time32)
--#ifdef CONFIG_X86_64
- #define	VIDIOC_DQEVENT32_TIME32		_IOR ('V', 89, struct v4l2_event32_time32)
--#endif
- #define VIDIOC_PREPARE_BUF32_TIME32	_IOWR('V', 93, struct v4l2_buffer32_time32)
- #endif
- 
-@@ -936,10 +929,10 @@ unsigned int v4l2_compat_translate_cmd(unsigned int cmd)
- #ifdef CONFIG_X86_64
- 	case VIDIOC_DQEVENT32:
- 		return VIDIOC_DQEVENT;
-+#endif
- #ifdef CONFIG_COMPAT_32BIT_TIME
- 	case VIDIOC_DQEVENT32_TIME32:
- 		return VIDIOC_DQEVENT;
--#endif
- #endif
- 	}
- 	return cmd;
-@@ -1032,10 +1025,10 @@ int v4l2_compat_put_user(void __user *arg, void *parg, unsigned int cmd)
- #ifdef CONFIG_X86_64
- 	case VIDIOC_DQEVENT32:
- 		return put_v4l2_event32(parg, arg);
-+#endif
- #ifdef CONFIG_COMPAT_32BIT_TIME
- 	case VIDIOC_DQEVENT32_TIME32:
- 		return put_v4l2_event32_time32(parg, arg);
--#endif
- #endif
- 	}
- 	return 0;
--- 
-2.29.2
-
+On 2021-10-22 13:35, tjiang@codeaurora.org wrote:
+> the RF performance of wcn6855 soc chip from different foundries will be
+> difference, so we should use different nvm to configure them.
+> 
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> ---
+>  drivers/bluetooth/btusb.c | 55 
+> +++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 41 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 87b71740fad8..a5fe57e7cd7e 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3195,6 +3195,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
+> hci_dev *hdev,
+>  #define QCA_DFU_TIMEOUT		3000
+>  #define QCA_FLAG_MULTI_NVM      0x80
+> 
+> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+> +
+>  struct qca_version {
+>  	__le32	rom_version;
+>  	__le32	patch_version;
+> @@ -3226,6 +3229,7 @@ static const struct qca_device_info
+> qca_devices_table[] = {
+>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+>  };
+> 
+>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
+> request,
+> @@ -3380,6 +3384,42 @@ static int btusb_setup_qca_load_rampatch(struct
+> hci_dev *hdev,
+>  	return err;
+>  }
+> 
+> +static void btusb_generate_qca_nvm_name(char *fwname,
+> +					size_t max_size,
+> +					const struct qca_version *ver)
+> +{
+> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+> +	u16 flag = le16_to_cpu(ver->flag);
+> +
+> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> +		u16 board_id = le16_to_cpu(ver->board_id);
+> +		u32 ram_version = le32_to_cpu(ver->ram_version);
+> +		const char *variant = NULL;
+> +
+> +		switch (ram_version) {
+> +		case WCN6855_2_0_RAM_VERSION_GF:
+> +		case WCN6855_2_1_RAM_VERSION_GF:
+> +			variant = "_gf";
+> +			break;
+> +		default:
+> +			variant = "";
+> +			break;
+> +		}
+> +
+> +		if (board_id == 0) {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
+> +				rom_version, variant);
+> +		} else {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
+> +				rom_version, variant, board_id);
+> +		}
+> +	} else {
+> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +			rom_version);
+> +	}
+> +
+> +}
+> +
+>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+>  				    struct qca_version *ver,
+>  				    const struct qca_device_info *info)
+> @@ -3388,20 +3428,7 @@ static int btusb_setup_qca_load_nvm(struct 
+> hci_dev *hdev,
+>  	char fwname[64];
+>  	int err;
+> 
+> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> -		/* if boardid equal 0, use default nvm without surfix */
+> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -				 le32_to_cpu(ver->rom_version));
+> -		} else {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+> -				le32_to_cpu(ver->rom_version),
+> -				le16_to_cpu(ver->board_id));
+> -		}
+> -	} else {
+> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -			 le32_to_cpu(ver->rom_version));
+> -	}
+> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
+> 
+>  	err = request_firmware(&fw, fwname, &hdev->dev);
+>  	if (err) {
