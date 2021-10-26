@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C044643BB39
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A0E43BB3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238977AbhJZTwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhJZTwy (ORCPT
+        id S239002AbhJZT4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:56:54 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:39338 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233673AbhJZT4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:52:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F503C061570;
-        Tue, 26 Oct 2021 12:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=shc+/NvHg/NcqVmYgURHASgtGulIua8OVbhJZJMa/OY=; b=h2scTVFQCKTqaThnNi+sQi6FNf
-        TYuSImBkJQK3rNZLy356ezVStEbL1f3qyQPUSE4tkSAPeMxKOyIKv4nFvePDmdmyEBut4m2vNTQTo
-        EyHvTGyQaAFDe61wM8DoK+02q11vl3ypl3t6jJhFAwHb+YOdhal0Fh8bpRPRSD2QZjMyxDh1qNqli
-        takQyvaijMoRQvZn/jVD6uy4uokCh4Oxo8yPhskgCJBbAnMZVBkST9zH03/QERLhu+Cy7/pOuQsFw
-        hi+ZCTXpluw6yM9ekPYE68dI2gKYLwOlIGwzscTYfSy0TPkXaRRBt3cCG2lx2HQ+Nbp3Ymi3H5ywF
-        ENeF1uXA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfSRP-00H7SC-Jc; Tue, 26 Oct 2021 19:49:21 +0000
-Date:   Tue, 26 Oct 2021 20:48:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-m68k@lists.linux-m68k.org, anshuman.khandual@arm.com,
-        akpm@linux-foundation.org, william.kucharski@oracle.com,
-        mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
-        schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
-        hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
-        weixugc@google.com, gthelen@google.com
-Subject: Re: [RFC 1/8] mm: add overflow and underflow checks for
- page->_refcount
-Message-ID: <YXhbq/6OIpIAr7Tx@casper.infradead.org>
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <20211026173822.502506-2-pasha.tatashin@soleen.com>
+        Tue, 26 Oct 2021 15:56:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635278069; x=1666814069;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=BboTroa5pUL8duR0dglftEbE722Hf+2SVWjxPOC7N+o=;
+  b=QetXSxb7dlhNXSJp4k7zFxgjf2mxwxT+wO3dg97BgYjtSJqlZoJk2rqE
+   sne1X5fB3G6PdpGKhFFdSUy6MRTCbCIagV6HKeYscyRDzkK1Kq1820tuy
+   T1igcL62JKeYHU/7uDqcmcLhe3mLbTyL4JUEMEchLbkTLi4pp/c8upOwG
+   U=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 26 Oct 2021 12:54:29 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 12:54:28 -0700
+Received: from [10.110.83.137] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 26 Oct 2021
+ 12:54:28 -0700
+Subject: Re: [PATCH] bitmap: simplify GENMASK(size - 1, 0) lines
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        <linux-kernel@vger.kernel.org>
+References: <20211026144108.35373-1-quic_qiancai@quicinc.com>
+ <YXhOEEOSG+fgEy+t@yury-ThinkPad> <YXhVVvG9keoVWJyK@smile.fi.intel.com>
+ <YXhW8K7DxadyVgx3@yury-ThinkPad> <YXhaMVTymVNzOlGT@smile.fi.intel.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <031fe271-7fc3-0d95-3547-edbe0c975cbb@quicinc.com>
+Date:   Tue, 26 Oct 2021 15:54:26 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026173822.502506-2-pasha.tatashin@soleen.com>
+In-Reply-To: <YXhaMVTymVNzOlGT@smile.fi.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 05:38:15PM +0000, Pasha Tatashin wrote:
->  static inline void page_ref_add(struct page *page, int nr)
->  {
-> -	atomic_add(nr, &page->_refcount);
-> +	int ret;
-> +
-> +	VM_BUG_ON(nr <= 0);
-> +	ret = atomic_add_return(nr, &page->_refcount);
-> +	VM_BUG_ON_PAGE(ret <= 0, page);
 
-This isn't right.  _refcount is allowed to overflow into the negatives.
-See page_ref_zero_or_close_to_overflow() and the conversations that led
-to it being added.
+
+On 10/26/21 3:42 PM, Andy Shevchenko wrote:
+> Now, I have checked that email appearance in the upstream:
+> 
+> $ git log --oneline --author="quic_qiancai@quicinc.com"
+> 95cadae320be fortify: strlen: Avoid shadowing previous locals
+> 94560f6156fe Revert "arm pl011 serial: support multi-irq request"
+> 
+> While first one perhaps okay, although it also refers to W=2,
+> I have now doubts if the "Revert" was really thought through
+> and not just yet another UMN-like experiment.
+> 
+> Greg, what do you think is the best course of actions here?
+
+Perhaps, a little sympathy towards a stranger might get us a better
+community. Feel free to audit my previous works.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=author&q=Qian+Cai
+
+
+
 
