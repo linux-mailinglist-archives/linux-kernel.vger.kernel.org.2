@@ -2,104 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DDD43AA56
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B52243AA5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhJZCeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        id S234285AbhJZCi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJZCeQ (ORCPT
+        with ESMTP id S234249AbhJZCi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:34:16 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1D3C061745;
-        Mon, 25 Oct 2021 19:31:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdbS60Sybz4xbW;
-        Tue, 26 Oct 2021 13:31:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635215510;
-        bh=zvI9YbGt0l1BIDQHixb3pb8eAR+Quzgr6H4JpCjIGU4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=n5PT9PMJlCg6nRLxUjSoHEDAwLeK0K1rbi7BlaabqIWYrFx9cKHeeJcKzZmU4I5CE
-         q76Cvv3XSi99C+mLI+dmVkBcIUuh3qs03s9WtrHjRB66BlZo5toMNHYALzYPRZ+G+/
-         upjDINL14HT3RuwOcA3Ez/3TXvBoBod0MZBu5nQsuAu2SVk21TPArKAZYykYVqW43C
-         s/gjyO36njEzwaAO2GE7ku7yCMcwyc2VlOSIRWR+TfSRrM70qRJfC+rTfE4Tgzp7F/
-         vBLs9oUj3JksnUoWQuscrn5+5gBtrTugdaCe7X+rmjHGUrTivayPyeCjNfGcOxChGT
-         7BRMK/wvkXMKA==
-Date:   Tue, 26 Oct 2021 13:31:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: linux-next: manual merge of the audit tree with the powerpc tree
-Message-ID: <20211026133147.35d19e00@canb.auug.org.au>
+        Mon, 25 Oct 2021 22:38:57 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826B9C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:36:34 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id x123so13800388qke.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0WMeSWB8rpl9OD9K4iGbTmC/396k4C7y2b8GYI2C4Ok=;
+        b=gLoP/eE1oj2bVGRPfSFWrxiiJwjbRxfkKGR6/Mn+2qyyGAFHGSQ41QpeNWkOeU7vwQ
+         Ehi7bPaR1Omp4VHrIjn3gxNqHOjAqsvFDW2JIowqspwVMLppqzaOMFX7J252ghpSaeru
+         fznOG1OUIeks61lGkVrj2mHudP7bzj7TRNoVf+5hRHcOYj5BQcn+paqAEYOGyG4cCUbA
+         Fx5LKNJVheJ8j5XsL4J+9YtVkILLs3KwJro54TSSqgbsqCo9Sm8765820N6IlIg5Kuaq
+         C6Dxjil9Drtjqur5cvD6OtQf9/WTdOQEfhx4o5xxmXyvS29wOY6zHuuRGwSs219zZFJZ
+         Is7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=0WMeSWB8rpl9OD9K4iGbTmC/396k4C7y2b8GYI2C4Ok=;
+        b=ONduC0AtDMt72za89OxiCR4oYad60FKrU998zOBsL5D0DqdFPTPL7NDexkCUcA5VNi
+         Z/s97FZKn5Z4Ykv62LCdfdmuprPmBH3WYxf0CUBV00a83LkKfp+JXk6HIxTdka7HMClG
+         mWxw0d6pL0E03plYeePI1ctF5SFXKBjtimw8C3lOXmnJnhv1uz3umNe8bxlMd91rtTx5
+         YGQg+TZQOXo6xIdT5N1K2/5wzWdOWOrT/dcLVaRbCo1EQigslr3bgsjTE5kRPAgbQGHO
+         daO9CVup7Ci0UVLFcVf5H2JSSjT1it1Zxvc8KGslaG0YWgL3f958ucepGTrBb8XiBjzq
+         91Yw==
+X-Gm-Message-State: AOAM5336f7O8nM4fjzREHTMnoruHUDhLrsEGFDHkgYOLdEzDyrq9xyRi
+        tTVTRDkY2weTAQ1xCFXmautziS5joWNmZEA/lX8=
+X-Google-Smtp-Source: ABdhPJxAIRACc/l4LXZdfvM4XQCLAip164dixWDF2yMu9E/ExcUQ3WTAYXOYh1HtrQ9P/eGymml0Zg==
+X-Received: by 2002:a05:620a:298d:: with SMTP id r13mr16214942qkp.428.1635215793595;
+        Mon, 25 Oct 2021 19:36:33 -0700 (PDT)
+Received: from ubuntu-mate-laptop.localnet ([67.8.38.84])
+        by smtp.gmail.com with ESMTPSA id t22sm4487568qtw.21.2021.10.25.19.36.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 19:36:33 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     robert.foss@linaro.org, a.hajda@samsung.com,
+        narmstrong@baylibre.com, jonas@kwiboo.se, jernej.skrabec@gmail.com,
+        airlied@linux.ie, daniel@ffwll.ch, jagan@amarulasolutions.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: bridge: fix unmet dependency on DRM_KMS_HELPER for DRM_PANEL_BRIDGE
+Date:   Mon, 25 Oct 2021 22:36:32 -0400
+Message-ID: <4188280.18OdhQZZCD@ubuntu-mate-laptop>
+In-Reply-To: <YXcrRDNylQ896ypx@pendragon.ideasonboard.com>
+References: <20211025174202.32396-1-julianbraha@gmail.com> <2172694.EMfidFSxsr@ubuntu-mate-laptop> <YXcrRDNylQ896ypx@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ynot28kSkVn5UbErtuc45_Z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ynot28kSkVn5UbErtuc45_Z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Monday, October 25, 2021 6:10:12 PM EDT you wrote:
+> Hi Julian,
+> 
+> On Mon, Oct 25, 2021 at 02:51:47PM -0400, Julian Braha wrote:
+> > On Monday, October 25, 2021 1:47:35 PM EDT you wrote:
+> > > On Mon, Oct 25, 2021 at 01:42:02PM -0400, Julian Braha wrote:
+> > > > When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
+> > > > Kbuild gives the following warning:
+> > > > 
+> > > > WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
+> > > >   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
+> > > >   Selected by [y]:
+> > > >   - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
+> > > > 
+> > > > This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
+> > > > without depending on or selecting DRM_KMS_HELPER,
+> > > > despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
+> > > > 
+> > > > This unmet dependency bug was detected by Kismet,
+> > > > a static analysis tool for Kconfig.
+> > > > Please advise if this is not the appropriate solution.
+> > > 
+> > > Shouldn't DRM_PANEL_BRIDGE select DRM_KMS_HELPER instead of depending on
+> > > it ?
+> > > 
+> > > > Fixes: ce517f18944e ("drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge")
+> > > > Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> > > > Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> > > > ---
+> > > >  drivers/gpu/drm/bridge/Kconfig | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> > > > index 431b6e12a81f..a630cb8fd1c8 100644
+> > > > --- a/drivers/gpu/drm/bridge/Kconfig
+> > > > +++ b/drivers/gpu/drm/bridge/Kconfig
+> > > > @@ -30,6 +30,7 @@ config DRM_CDNS_DSI
+> > > >  config DRM_CHIPONE_ICN6211
+> > > >  	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
+> > > >  	depends on OF
+> > > > +  select DRM_KMS_HELPER
+> > > >  	select DRM_MIPI_DSI
+> > > >  	select DRM_PANEL_BRIDGE
+> > > >  	help
+> > 
+> > Hi Laurent,
+> > 
+> > Either a "select" or a "depends" will resolve this issue,
+> 
+> Mixing "select" and "depends" usually lead to be results. DRM_KMS_HELPER
+> is a symbol that is mostly selected (I think there are a handful of
+> occurrences of "depends", which should probably be fixed).
+> 
+> > but most similar devices in this Kconfig file select DRM_KMS_HELPER.
+> > Is there something different about DRM_CHIPONE_ICN6211 that I have missed?
+> 
+> There isn't anything fundamentally different, but because DRM_KMS_HELPER
+> is meant to be selected and not depended on, I think we should fix that
+> for DRM_PANEL_BRIDGE, and it will fix the issue with
+> DRM_CHIPONE_ICN6211. The dependency on the KMS helpers come from
+> drm_panel_bridge.c, not from chipone-icn6211.c as far as I can tell, so
+> it would also be more correct.
+> 
+> 
 
-Hi all,
+Hi Laurent,
 
-Today's linux-next merge of the audit tree got conflicts in:
+I appreciate your feedback! I will make your suggested change,
+and resubmit.
 
-  arch/powerpc/kernel/audit.c
-  arch/powerpc/kernel/compat_audit.c
-
-between commit:
-
-  566af8cda399 ("powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERI=
-C")
-
-from the powerpc tree and commits:
-
-  42f355ef59a2 ("audit: replace magic audit syscall class numbers with macr=
-os")
-  1c30e3af8a79 ("audit: add support for the openat2 syscall")
-
-from the audit tree.
-
-I fixed it up (I just removed the files like the former commit) and can
-carry the fix as necessary. This is now fixed as far as linux-next is
-concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
+- Julian Braha
 
 
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Ynot28kSkVn5UbErtuc45_Z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3aJMACgkQAVBC80lX
-0GyGFwgApMeEPlt9wHRfuDQwvzb5fk0SAh904NgIPmQV9zE8HLQJ/j0LmjDqHHbR
-osGNg2Sdi+zV1430fEqhx8A6yOs0od797zJBtUtDBqLtNOwvSOO8KXtJUUEMCM60
-EC0+nXK5bHPuvownNQMBoDT03s6KZH/SjFraB6V5HMUvnBd7ojYVg+mRX3GUAVYq
-dyoAc6VgQETAzRr9SOvGyCSGYsYmC8JQUA6/orsZQ/yD6TRLlG3KtorZptG7Coqi
-Zn6t3xXb0gRGHrw1sZjPQh2N9OKL5nRSGE3ykYFbL5hNAN6T8fHe/a3NUrln8EA6
-ltgn7nF03w5UPeLO/5kImMr0uqlbUQ==
-=Q3KL
------END PGP SIGNATURE-----
-
---Sig_/Ynot28kSkVn5UbErtuc45_Z--
