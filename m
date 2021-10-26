@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E0643B38F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448D643B3EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbhJZOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:06:24 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50734
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234584AbhJZOGW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:06:22 -0400
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 074943F172
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635257036;
-        bh=x/vUBlyAiuA+avFtBriAudT3vNCXe1kaXbEyrRvMHFE=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Vkx1If1uUsRhmGsUvmSvh/54GYIbzsUbEVWQVzuZtI8lUfxe4143eihtfcf9LAKun
-         Ejmvc2ezD+Qj3FpeeCjJmJLNkQ+Grx3glgF/5+5jGUHg5A86EMKFokpkmSnEaTz+mS
-         GEnr+7afYEXIRiUOs2u5nRHANm6s/WZm/12yHYcjNJylM9GxPFOCzkRBM3O026LWxP
-         NipCEItrUTLq2MmoPbbaKCIeSP/2AybaDyNQrVV+8UaJkJnv6zrnAW1wglZVVWjgq+
-         1UatKP6cc6+p/kuBZibR9I6fy+A3XQ1wamL5D2353UcU5NqjHiS3wHCOPUTIrlDjhe
-         +gUfffrb6YhmA==
-Received: by mail-lj1-f199.google.com with SMTP id r13-20020a2e970d000000b00211a01c5f3fso25548lji.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:03:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x/vUBlyAiuA+avFtBriAudT3vNCXe1kaXbEyrRvMHFE=;
-        b=HTS8cxUWjgyBYkioKfAOObCBT75W0b2380SjxPMiOqWMBDmN5QaPclfTi4UGeowY+z
-         qW1JmHFp4v7GfjmPX9qjI8m2skeSx25MvOc9zFXWAzLe97K07Cah0SuA/VT12WURxVGo
-         cb14Q++2cCq+ZWPpflQ+jAh/rxuso3ZvqemBZTXsSJEX45xEW6SsmBp07fOgFo6kz1wH
-         lvyY9KDMa0TkUxyrlYdttQC2Z8/9FxIU0OJbPu2uCVEn/5x0Bx9lhptOyaw6pd+HIatu
-         9k+suQATt9VlpjstvH67WMgP0zCGZA9E8RN0b6JuQdFrz9TFEpMBV82q5yd4QXnvhIea
-         fRAQ==
-X-Gm-Message-State: AOAM53328Pzq1vrsBHXW+PuUrUhE7sb2jwDd5883jiRqFcrsonbEJh+G
-        DQicW01IiN980yRH7F9gEC7UWHPl+PGkqNseVVBgSeagONhlk+a31SAozY0b1Yba2uhqFLezFAC
-        DmpsaUd4S3XyuGq2GZoyU4wTCiZ9N8etw7lh8/neHyA==
-X-Received: by 2002:a05:6512:23a0:: with SMTP id c32mr23741125lfv.166.1635257035250;
-        Tue, 26 Oct 2021 07:03:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4ERI9ISaFm/R3JZzdG9KW96YbtJuIMYMGTR4liFkJVPAhW2hMHHCatdrqNwv3us4qWXTLYA==
-X-Received: by 2002:a05:6512:23a0:: with SMTP id c32mr23741093lfv.166.1635257035008;
-        Tue, 26 Oct 2021 07:03:55 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id bq37sm1423133lfb.166.2021.10.26.07.03.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:03:54 -0700 (PDT)
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20211026115916.31553-1-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH] arm64: Kconfig: Enable MCT timer for ARCH_EXYNOS
-Message-ID: <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
-Date:   Tue, 26 Oct 2021 16:03:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231407AbhJZO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:27:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:9914 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234374AbhJZO1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:27:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="290755904"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="290755904"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 07:04:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="722383504"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Oct 2021 07:04:03 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D7DC8107; Tue, 26 Oct 2021 17:04:02 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v1 1/1] lib/vsprintf.c: Amend static asserts for format specifier flags
+Date:   Tue, 26 Oct 2021 17:03:56 +0300
+Message-Id: <20211026140356.45610-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20211026115916.31553-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2021 13:59, Sam Protsenko wrote:
-> Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
-> Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
-> is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
-> it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
-> for ARM64 Exynos SoCs.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  arch/arm64/Kconfig.platforms | 1 +
->  1 file changed, 1 insertion(+)
-> 
+There are couple of improvements to static asserts against
+the format specifier flags:
 
-+CC Marek, Marc, Mark and Chanwoo,
-Looks like duplicated:
-https://lore.kernel.org/lkml/20181018095708.1527-7-m.szyprowski@samsung.com/
+- new static assert for SIGN
+- fix static assert for SMALL
 
-The topic stalled and I think this particular patch did not make sense
-on its own, without rest of changes from Marek. I am not sure, though...
+SMALL is not equal to ASCII code of white space, it equals to
+the bit difference between capital and small letters (however
+the value is the same, semantically expression means different
+things).
 
-Best regards,
-Krzysztof
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ lib/vsprintf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index f15a49ff6fab..ddfb3d836f38 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -407,8 +407,9 @@ int num_to_str(char *buf, int size, unsigned long long num, unsigned int width)
+ #define SMALL	32		/* use lowercase in hex (must be 32 == 0x20) */
+ #define SPECIAL	64		/* prefix hex with "0x", octal with "0" */
+ 
++static_assert(SIGN == 1);
+ static_assert(ZEROPAD == ('0' - ' '));
+-static_assert(SMALL == ' ');
++static_assert(SMALL == ('a' ^ 'A'));
+ 
+ enum format_type {
+ 	FORMAT_TYPE_NONE, /* Just a string part */
+-- 
+2.33.0
+
