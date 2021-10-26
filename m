@@ -2,79 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989EC43B33A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49CA43B33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235430AbhJZNiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:38:17 -0400
-Received: from mga06.intel.com ([134.134.136.31]:5637 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhJZNiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:38:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="290740359"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="290740359"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 06:35:52 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="596931413"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 06:35:50 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfMby-0018Ep-CN;
-        Tue, 26 Oct 2021 16:35:30 +0300
-Date:   Tue, 26 Oct 2021 16:35:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v2 1/2] serial: 8250_pci: Replace custom pci_match_id()
- implementation
-Message-ID: <YXgEIhCGXjDUNDU0@smile.fi.intel.com>
-References: <20211025124533.29977-1-andriy.shevchenko@linux.intel.com>
- <202110262029.9bqOz12y-lkp@intel.com>
- <YXgB5vt8+r/Tdo07@smile.fi.intel.com>
+        id S236256AbhJZNit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:38:49 -0400
+Received: from mail-oo1-f44.google.com ([209.85.161.44]:46767 "EHLO
+        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236158AbhJZNis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:38:48 -0400
+Received: by mail-oo1-f44.google.com with SMTP id d144-20020a4a5296000000b002b6cf3f9aceso3741436oob.13;
+        Tue, 26 Oct 2021 06:36:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ca40SsNZgq2MNL2RplDe1lsTRzhybyd8pfJtb7MPycY=;
+        b=rbi8xB7omVJWqSBTpbhfhvb1BWd63a5SZ6Jn6izvh8Ew1XtnI3NGqwV2SpqD8Ut4Xi
+         u03LnozTzM/OD1pE2Wdocwq4FK+1UiwKzLACH97iOxd1l7dVZt9l+n4IoNb4qQAenR7L
+         aO6yh3nZhmj80znkxrxtvD/9QJd4FSvD9oy85vbH4WCQisOdLGhvz6Ls7/Tird5YoMHq
+         H91LihfQjmdu0RCbajuz/1BO5SF/EBVDI5LwYF2TxQ0kYbphnrXJwN2OWIzYPkh0bhXR
+         4eCIZov16RkPdCOZ3iIFXpy0ohupa39ZeJHbiyxuMuPQR103mI2jFr/wG+Fyer6HSjMX
+         rymA==
+X-Gm-Message-State: AOAM531ctv0OZXnrG2WTU58saR0DfRYvyujeQizJ0CksuDDHbZAgxXRN
+        5biEiziGkaa4os51YNKhibOZQPiMSFhlNJe+a4CMx9WJ
+X-Google-Smtp-Source: ABdhPJxgRlcRrxwRxFHsS3HjPVZ7Q5QUlDuaiIbpBrLiU2JeN7EXxV03GxNN3o7tNnCS1qxeSUZur9DEBNFBtAOO3FM=
+X-Received: by 2002:a4a:eb12:: with SMTP id f18mr17138964ooj.91.1635255384230;
+ Tue, 26 Oct 2021 06:36:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXgB5vt8+r/Tdo07@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211024220446.2873-1-schaecsn@gmx.net>
+In-Reply-To: <20211024220446.2873-1-schaecsn@gmx.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Oct 2021 15:36:08 +0200
+Message-ID: <CAJZ5v0jxg_075-Jgbj+ubRk2b7u36OjiMpfnHgavgKg=sF33zQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: AC: Quirk GK45 to skip reading _PSR
+To:     Stefan Schaeckeler <schaecsn@gmx.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 04:25:58PM +0300, Andy Shevchenko wrote:
-> On Tue, Oct 26, 2021 at 08:45:48PM +0800, kernel test robot wrote:
+On Mon, Oct 25, 2021 at 12:07 AM Stefan Schaeckeler <schaecsn@gmx.net> wrote:
+>
+> Let GK45 not go into BIOS for determining the AC power state. BIOS wrongly
+> returns 0. Hardcode the power state to 1.
+>
+> The mini PC GK45 by Besstar Tech Lld. (aka Kodlix) just runs off AC. It
+> does not include any batteries. Nevertheless BIOS reports AC off:
+>
+> root@kodlix:/usr/src/linux# cat /sys/class/power_supply/ADP1/online
+> 0
+>
+> root@kodlix:/usr/src/linux# modprobe acpi_dbg
+> root@kodlix:/usr/src/linux# tools/power/acpi/acpidbg
+>
+> - find _PSR
+>    \_SB.PCI0.SBRG.H_EC.ADP1._PSR Method       000000009283cee8 001 Args 0 Len 001C Aml 00000000f54e5f67
+>
+> - execute \_SB.PCI0.SBRG.H_EC.ADP1._PSR
+> Evaluating \_SB.PCI0.SBRG.H_EC.ADP1._PSR
+> Evaluation of \_SB.PCI0.SBRG.H_EC.ADP1._PSR returned object 00000000dc08c187, external buffer length 18
+>  [Integer] = 0000000000000000
+>
+> that should be
+>
+>  [Integer] = 0000000000000001
+>
+> Signed-off-by: Stefan Schaeckeler <schaecsn@gmx.net>
+> ---
+>  drivers/acpi/ac.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>
+> diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
+> index b0cb662233f1..81aff651a0d4 100644
+> --- a/drivers/acpi/ac.c
+> +++ b/drivers/acpi/ac.c
+> @@ -61,6 +61,7 @@ static SIMPLE_DEV_PM_OPS(acpi_ac_pm, NULL, acpi_ac_resume);
+>
+>  static int ac_sleep_before_get_state_ms;
+>  static int ac_check_pmic = 1;
+> +static int ac_only;
+>
+>  static struct acpi_driver acpi_ac_driver = {
+>         .name = "ac",
+> @@ -93,6 +94,11 @@ static int acpi_ac_get_state(struct acpi_ac *ac)
+>         if (!ac)
+>                 return -EINVAL;
+>
+> +       if (ac_only) {
+> +               ac->state = 1;
+> +               return 0;
+> +       }
+> +
+>         status = acpi_evaluate_integer(ac->device->handle, "_PSR", NULL,
+>                                        &ac->state);
+>         if (ACPI_FAILURE(status)) {
+> @@ -200,6 +206,12 @@ static int __init ac_do_not_check_pmic_quirk(const struct dmi_system_id *d)
+>         return 0;
+>  }
+>
+> +static int __init ac_only_quirk(const struct dmi_system_id *d)
+> +{
+> +       ac_only = 1;
+> +       return 0;
+> +}
+> +
+>  /* Please keep this list alphabetically sorted */
+>  static const struct dmi_system_id ac_dmi_table[]  __initconst = {
+>         {
+> @@ -209,6 +221,13 @@ static const struct dmi_system_id ac_dmi_table[]  __initconst = {
+>                         DMI_MATCH(DMI_PRODUCT_NAME, "EF20EA"),
+>                 },
+>         },
+> +       {
+> +               /* Kodlix GK45 returning incorrect state */
+> +               .callback = ac_only_quirk,
+> +               .matches = {
+> +                       DMI_MATCH(DMI_PRODUCT_NAME, "GK45"),
+> +               },
+> +       },
+>         {
+>                 /* Lenovo Ideapad Miix 320, AXP288 PMIC, separate fuel-gauge */
+>                 .callback = ac_do_not_check_pmic_quirk,
+> --
 
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386
-
-> > >> drivers/tty/serial/8250/8250_pci.c:1268:6: warning: variable 'amcc' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-> >            if (match)
-> >                ^~~~~
-> >    drivers/tty/serial/8250/8250_pci.c:1273:6: note: uninitialized use occurs here
-> >            if (amcc) {
-> >                ^~~~
-> >    drivers/tty/serial/8250/8250_pci.c:1268:2: note: remove the 'if' if its condition is always true
-> >            if (match)
-> >            ^~~~~~~~~~
-> >    drivers/tty/serial/8250/8250_pci.c:1265:11: note: initialize the variable 'amcc' to silence this warning
-> >            bool amcc;
-> >                     ^
-> >                      = 0
-> 
-> Clang gives a right and wrong advice at the same time.
-> Thank you for the uninitialized case, but variable is boolean, what's 0 here?
-> 
-> I'll send a fix ASAP.
-
-Hmm... GCC haven't showed anything here.
-In any case, v3 has just been sent out.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Applied as 5.16 material with minor edits in the changelog, thanks!
