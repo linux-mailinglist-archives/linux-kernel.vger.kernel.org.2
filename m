@@ -2,159 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7824343A999
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3008643A99C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236070AbhJZBMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 21:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236058AbhJZBMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F8AB60F02;
-        Tue, 26 Oct 2021 01:09:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635210577;
-        bh=9IShqJt6djvjPUKPObtm68+6DHvwPd46YWHkaPWwxPU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=DKhWB2ZLMvh4VvXNoIzw3Nasi5QXYIle57ZQGP7SXLJMC9rMhhnIGUkYjUAteIwwC
-         yaocx7eqAQoB9qepVh6S687VAGEF7iRusH2xzdw5iHrL0tQamQsep9Tn3YzxpcT1er
-         CWqTtj/jhCcpM2izuV4e2YGnL2IxICf0AEoDUqVEet8IhZqT2AW7GvNtBbFg0hZrVc
-         vhocZOatFjgNBOIidlWIWhjfy4VA7IIrEIM0fpCLrFAm5IcPXCmY70rbnqees0pfH/
-         U/NWZf6pnhD12uH8ENGjIWxFADzJGWFgS+n2NDQJYDgaBV52yWIsbkoU17/BDfz6Un
-         fmq4cM66pLmWA==
-Message-ID: <c93106ef-b567-b973-7241-ea2fcef84855@kernel.org>
-Date:   Tue, 26 Oct 2021 09:09:33 +0800
+        id S234434AbhJZBNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232827AbhJZBNl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 21:13:41 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E328C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:18 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u21so17476204lff.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rtWXwfuaH6YO89IeWMAaSmOX7k04XWxVVJQflOLKKPU=;
+        b=DjFGmggF2BzXZ3m0L7IJhIQ6i1iK4kxkRXO1HpAV7yknmCHxWUZBIB7IOldZXa1w5Q
+         1GHozxd5zQsANLVpe5xqWWzm4PK35l3/hXuDbzTDZHtJQLkYzgBAsNRhBt4Ts920bt8T
+         vkDTc5JaWSDAKi3dB/TDj6IDLUWMB0bE7alKM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rtWXwfuaH6YO89IeWMAaSmOX7k04XWxVVJQflOLKKPU=;
+        b=30BdCf/pAqlGKi5MP5H/dE+7XfISuovnCblCfMl3x/0ahLBJ2NrCp0cZxzhfrqhf7v
+         ISggWhQ+KggKUEe7K7Hh+0iiUVRWhDEJpd2ZLxld50S7WIO055SI7ZaEjfVj2wCJ3z1F
+         cHfVK3T5ouKvBV5j2NRk4h3qZsJpQJVn3ZcHrLW8ProQGtu2SbU22vLMUyCYc+KNeJU0
+         zRnH4lZIvA2hNI8OfnfSOymvETiw1M6Ssqou8C6zPVUZNaXKtNNtmxD/mQPnh9ctL7lk
+         jvzCNS3+EvPTZBgpSEGx9R6FIfzlIibBdQej1SFPMrGnXX/QqeCFgvkpfO8OV/FjFHrc
+         rMPg==
+X-Gm-Message-State: AOAM532FsMKC1jPOltf7mzlyGFv4cNbKV5MyOpcAoj5JEBe4DJ8IFu7R
+        +aA/mrs1KNS210yn8/CBdbPytgFVn7CJBg==
+X-Google-Smtp-Source: ABdhPJxv8cOydOIvq79KHi/KQyRictls7pWQZnwRTVngzNlfNXRxRg0Iy8+M/L27DFcAHgJqbfXwRA==
+X-Received: by 2002:a05:6512:1056:: with SMTP id c22mr20788652lfb.26.1635210675609;
+        Mon, 25 Oct 2021 18:11:15 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id a12sm436855lff.236.2021.10.25.18.11.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 18:11:15 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id w23so11716573lje.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 18:11:14 -0700 (PDT)
+X-Received: by 2002:a2e:bc24:: with SMTP id b36mr22545470ljf.95.1635210674455;
+ Mon, 25 Oct 2021 18:11:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [f2fs-dev] [PATCH] f2fs: remove circular locking between
- sb_internal and fs_reclaim
-Content-Language: en-US
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-References: <20211014190503.717830-1-daeho43@gmail.com>
- <e8b106fb-2878-2fa9-788f-965eef179a85@kernel.org>
- <CACOAw_yupuz+Xx-z9V0UaExuARHd8H9rruWCa2yj5-mgkeuUtQ@mail.gmail.com>
- <3ddb4013-8d63-7c00-6fdd-1f21752bd60c@kernel.org>
- <CACOAw_wjhr8j=-qEDHP_H+_7cTh_ep7Wix4=JC+5x5zp-zpUFA@mail.gmail.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <CACOAw_wjhr8j=-qEDHP_H+_7cTh_ep7Wix4=JC+5x5zp-zpUFA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211025181634.3889666-1-willy@infradead.org> <202110251225.D01841AE67@keescook>
+ <YXcKzKVX7NTAtvPh@casper.infradead.org> <202110251402.ADFA4D41BF@keescook>
+ <CAHk-=wgvb72urgEM5q_SpXFv1OXnDGY8VFs8QmZPt9_n1bH0CQ@mail.gmail.com>
+ <202110251438.1762406A5@keescook> <CAHk-=wj9j8KnWzTTFCXi_xWyytFbtZ71hu32eB=nHR++X+UY=A@mail.gmail.com>
+ <202110251706.BBEE1428@keescook>
+In-Reply-To: <202110251706.BBEE1428@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Oct 2021 18:10:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgVhUMXR80UmT-6vYNs-BmraOqXOVdH5XVmxbhrtjAbtg@mail.gmail.com>
+Message-ID: <CAHk-=wgVhUMXR80UmT-6vYNs-BmraOqXOVdH5XVmxbhrtjAbtg@mail.gmail.com>
+Subject: Re: [PATCH] secretmem: Prevent secretmem_users from wrapping to zero
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/26 0:22, Daeho Jeong wrote:
-> On Fri, Oct 22, 2021 at 8:32 AM Chao Yu <chao@kernel.org> wrote:
->>
->> On 2021/10/22 0:44, Daeho Jeong wrote:
->>> There is a deadlock between sb_internal lock (sb_start_intwrite()) and
->>> dquot related lock.
->>> It's because we call f2fs_truncate(), which eventually calls
->>> dquot_initialize(), while holding sb_internal lock.
->>> So, I called dquot_initialize() in advance to make the 2nd calling of
->>> it in f2fs_truncate() ineffective.
->>> This is similar with the thing in f2fs_evict_inode() in inode.c
->>
->> Well, if dquot_initialize() fails in f2fs_drop_inode(), will we still run
->> into deadlock?
->>
-> 
-> Do you think the same issue is in f2fs_evict_inode() in inode.c?
+On Mon, Oct 25, 2021 at 5:18 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Right, sure, but it's not a rare pattern.
 
-Yes, I doubt the problem may also happen in f2fs_evict_inode() with below
-callpath:
+Well, for an actual reference count it certainly isn't a rare pattern,
+and zero _is_ special, because at zero, you are now in use-after-free
+territory.
 
-- evict_inode
-  - dquot_initialize failed
-  - sb_start_intwrite
-  - f2fs_truncate
-   - dquot_initialize lock dqio_sem
+But that's kind of the issue here: that really isn't what
+'secretmem_users' was ever about.
 
-How about this?
+Zero isn't some "now we're use-after-free" situation. Quite the
+reverse. Zero ends up being the safe thing.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-old mode 100644
-new mode 100755
-index b24b9bc..0e49593
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -728,6 +728,7 @@ enum {
-      FI_ENABLE_COMPRESS,    /* enable compression in "user" compression mode */
-      FI_COMPRESS_RELEASED,    /* compressed blocks were released */
-      FI_ALIGNED_WRITE,    /* enable aligned write */
-+    FI_QUOTA_INIT_FAIL,    /* inidicate failed to initialize quota in drop_inode()/evict_inode() */
-      FI_MAX,            /* max flag, never be used */
-  };
+So with that kind of "just count number of existing users", where zero
+isn't special, then refcount_t doesn't make sense.
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-old mode 100644
-new mode 100755
-index 13deae0..2fb53f54
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -789,9 +789,11 @@ int f2fs_truncate(struct inode *inode)
-          return -EIO;
-      }
+And refcount_t is for non-core stuff that has a lot of random kernel
+users that you can't easily verify.
 
--    err = dquot_initialize(inode);
--    if (err)
--        return err;
-+    if (!is_inode_flag_set(inode, FI_QUOTA_INIT_FAIL)) {
-+        err = dquot_initialize(inode);
-+        if (err)
-+            return err;
-+    }
+In contrast, 'secretmem_users' had exactly two sites that modified it,
+and one that tested it.
 
-      /* we should check inline_data size */
-      if (!f2fs_may_inline_data(inode)) {
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-old mode 100644
-new mode 100755
-index 1213f15..16cf50c
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -758,6 +758,7 @@ void f2fs_evict_inode(struct inode *inode)
-      if (err) {
-          err = 0;
-          set_sbi_flag(sbi, SBI_QUOTA_NEED_REPAIR);
-+        set_inode_flag(inode, FI_QUOTA_INIT_FAIL);
-      }
+> But these places need to check for insane
+> conditions too ("we got a -1 back -- this means there's a bug but what
+> do we do?"). Same for atomic_inc(): "oh, we're at our limit, do
+> something", but what above discovering ourselves above the limit?
 
-      f2fs_remove_ino_entry(sbi, inode->i_ino, APPEND_INO);
-@@ -770,6 +771,8 @@ void f2fs_evict_inode(struct inode *inode)
-  retry:
-      if (F2FS_HAS_BLOCKS(inode))
-          err = f2fs_truncate(inode);
-+    if (is_inode_flag_set(inode, FI_QUOTA_INIT_FAIL))
-+        clear_inode_flag(inode, FI_QUOTA_INIT_FAIL);
+So honestly, "above the limit" is often perfectly fine too.
 
-      if (time_to_inject(sbi, FAULT_EVICT_INODE)) {
-          f2fs_show_injection_info(sbi, FAULT_EVICT_INODE);
+It can be fine for two very different reasons:
 
-Thanks,
+ (a) racy checks are often much simpler and faster, and perfectly safe
+when the limit is "far away from overflow".
 
+ (b) limits can change
 
-> In fact, I picked up the idea from here.
-> 
->          err = dquot_initialize(inode);
->          if (err) {
->                  err = 0;
->                  set_sbi_flag(sbi, SBI_QUOTA_NEED_REPAIR);
->          }
-> 
->          f2fs_remove_ino_entry(sbi, inode->i_ino, APPEND_INO);
->          f2fs_remove_ino_entry(sbi, inode->i_ino, UPDATE_INO);
->          f2fs_remove_ino_entry(sbi, inode->i_ino, FLUSH_INO);
-> 
->          sb_start_intwrite(inode->i_sb);
->          set_inode_flag(inode, FI_NO_ALLOC);
->          i_size_write(inode, 0);
-> retry:
->          if (F2FS_HAS_BLOCKS(inode))
->                  err = f2fs_truncate(inode);
-> 
+And (a) isn't just about "avoid special atomics". It's about doing the
+limit check optimistically outside locking etc.
+
+And (b) wasn't an issue here (where the only real use was ltierally
+"are there any users at all"), but in most _proper_ use cases you will
+want to have some resource limit that might be set by MIS. And might
+be changed dynamically.
+
+So it's entirely possible that somebody sets the limit to something
+smaller than the current user (prep for shutdown, whatever), without
+it being an error at all.
+
+The limit is for future work, not for past work. Easily happens with
+things like rlimits etc.
+
+> There's nothing about using the atomic_t primitives that enforces these
+> kinds of checks. (And there likely shouldn't be for atomic_t -- it's a
+> plain type.) But we likely need something that fills in this API gap
+> between atomic_t and refcount_t.
+
+I dispute the "need". This isn't as common as you claim. Most resource
+counting _is_ for "free when no longer used".
+
+And on the other end, you have the users that don't want refcount_t
+because they can't live with the limitations of that interface, like
+the page counts etc, that do it properly.
+
+So I think in 99% of all situations, the proper fix is to embed an
+"atomic_t" in the type it protects, and then have the helper functions
+that actually do it properly. Like we do for "get_page()" and friends.
+The "new type" isn't about the reference counting, it's about the data
+itself, and the atomic_t is just a part of it.
+
+Could we do something new type that warns on the "decrement past zero"
+and "overflow on increment"? Sure. But since they by _definition_
+aren't about data lifetimes, they probably don't need saturation - you
+want the _warning_, but they aren't protecting data, since they aren't
+refcounts.
+
+Or could we have something even fancier, that is an actual defined
+range, and "overflow" is not "overflow in 32 bits", but "becomes
+bigger than X")? That gets more complex because now you'd have to
+encode the range in the type somehow.
+
+You could do it with actual static types (generate typedef names and
+code), or you could do it with types that have a more dynamic pointer
+to ranges (kind of like the sysfs interfaces do) or have the ranges
+embedded in the data structure itself.
+
+But honestly, the complexity downside seems to just dwarf the upside.
+
+                  Linus
