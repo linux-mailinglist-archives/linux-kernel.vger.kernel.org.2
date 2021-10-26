@@ -2,106 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCEA43ABA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7853D43ABAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhJZF00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhJZF0Z (ORCPT
+        id S234949AbhJZF3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:29:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15724 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233375AbhJZF3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:26:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C9AC061745;
-        Mon, 25 Oct 2021 22:24:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=plVWDLn7kPJQFEKfT8/7o3CqD6r6OVtsqab9yP+KjBU=; b=4wMqJo3PGbg3IbF6ylQxYeHeUt
-        sIsxI0L39G1XTAX/fnsTuLKdDriDi8VCDU9Om/OGCREp6aFTsHSGvvL8qAmTPy8DXbFZiqwdcuHwC
-        yA8yq46fynherC+vf02tW2jXsrldSLPAQLLMjjYTIE6fJzVH7qOq5yOInYz+yrkKVncE01GcLi8AK
-        hX5RHCEr30j7fEhIyqE8oyEnABTfMU1cBok4aH5ZPM6XnnWEl9vTPVVpftDKldbtdDIoSIkfxfUfT
-        I5iX+Xy0hgT6eSmFsPqsD5Ki10sbNxu01tdRrzvURTRreDbh6rS8pAzzDOVo20sn0TZpm6ApUSsWr
-        fDOUSlnQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfEwI-000fMv-Fv; Tue, 26 Oct 2021 05:23:58 +0000
-Subject: Re: [PATCH] scsi: ufs: clean up the Kconfig file
-To:     Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-References: <20211024064332.16360-1-rdunlap@infradead.org>
- <8578e393-2a25-bc52-65ea-599d071387e9@acm.org>
- <5b13f32c-0cdb-26de-2bb7-af56a099b0b2@infradead.org>
- <b3344662-03a7-43ca-21ea-7e2c4f0f658a@acm.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <25efc8f3-d360-d6bd-47db-34e6c88481e3@infradead.org>
-Date:   Mon, 25 Oct 2021 22:23:57 -0700
+        Tue, 26 Oct 2021 01:29:16 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19Q2AkmV024786;
+        Tue, 26 Oct 2021 05:26:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sZcOWG43I4PDcyKDJGRSZD7/rNzsQiLLe5P+jAVx1Vw=;
+ b=Fckrji53l/1FAQtegIjCkVAwhFZAicpN1tq7BMRYLmQcnnv63qrzmauJLI+/AiLAdFKA
+ h7t/tPv5vgJAZMgmcoyn6WecVNYh2JCDRPQ25oBjfREbPy6ImT8ahx5W71eOzXQCOi7x
+ uzVfpzn4WUK36mBxKG6A5//xwIahzWbJokbZtY75yPx6gyvnfOAzGFkSqABp2zrFat6p
+ o7X1wkZzZnO3Gg25/5ZiPOtYH5sGbQ3bk7la7epq8LL2eZILMmb3UppjYxE+5ldQDjDT
+ jpFh/dP75vHhOOQKeRnK4aVn6Cr3c6QrPqKaacYaWJ0AWO4okmB1HVY3SYTpZDDVTb1y FA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx4k5gsk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 05:26:20 +0000
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19Q4fAva009358;
+        Tue, 26 Oct 2021 05:26:19 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx4k5gsj6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 05:26:19 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19Q5MWne006972;
+        Tue, 26 Oct 2021 05:26:17 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bx4est180-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 05:26:17 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19Q5QDHs53150090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Oct 2021 05:26:13 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3E69A4040;
+        Tue, 26 Oct 2021 05:26:13 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7510DA4057;
+        Tue, 26 Oct 2021 05:26:02 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.120.209])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Oct 2021 05:26:02 +0000 (GMT)
+Subject: Re: [PATCH v2 03/21] perf pmu: Make pmu_sys_event_tables const.
+To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Andrew Kilroy <andrew.kilroy@arm.com>
+Cc:     Stephane Eranian <eranian@google.com>
+References: <20211015172132.1162559-1-irogers@google.com>
+ <20211015172132.1162559-4-irogers@google.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <ec94273e-2f11-cee9-4d8d-4cc9d664c0b2@linux.ibm.com>
+Date:   Tue, 26 Oct 2021 10:56:00 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <b3344662-03a7-43ca-21ea-7e2c4f0f658a@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20211015172132.1162559-4-irogers@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _U3S9reME-n30kEA0LEUxwlzP4wzAcAu
+X-Proofpoint-GUID: _FI8ZpIzSKG4SCL4xCarG3yK5zp-oYiy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-25_08,2021-10-25_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ malwarescore=0 priorityscore=1501 spamscore=0 mlxlogscore=999
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 impostorscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110260026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart--
 
-On 10/24/21 6:17 PM, Bart Van Assche wrote:
-> On 10/24/21 16:35, Randy Dunlap wrote:
->> On 10/24/21 2:29 PM, Bart Van Assche wrote:
->>> On 10/23/21 23:43, Randy Dunlap wrote:
->>>>         sure that you know the name of your UFS host adapter (the card
->>>>         inside your computer that "speaks" the UFS protocol, also
->>>>         called UFS Host Controller), because you will be asked for it.
->>>> @@ -51,7 +50,7 @@ config SCSI_UFSHCD
->>>>         (the one containing the directory /) is located on a UFS device.
->>>>   config SCSI_UFSHCD_PCI
->>>> -    tristate "PCI bus based UFS Controller support"
->>>> +    tristate "PCI bus-based UFS Controller support"
->>>
->>> Even with this change applied capitalization is inconsistent.
->>
->> I don't doubt it, but could you be more explicit about
->> which word(s) you mean, please?
->>
->> I see one "pci" in the Kconfig file.
 
-I changed that one. ^^^
-
->> I see several "Controller" vs. "controller."
->> I see a few of "Support" vs. "support."
->>
->> Which are you referring to? (or something else)
+On 10/15/21 10:51 PM, Ian Rogers wrote:
+> Make lookup nature of data structures clearer through their type.
 > 
-> I was referring to the word "Controller". Although English is not my native
-> language, shouldn't "UFS Controller" be changed into "UFS controller" since
-> neither "bus-based" nor "support" are capitalized?
+> Acked-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/pmu-events/jevents.c    | 2 +-
+>  tools/perf/pmu-events/pmu-events.h | 2 +-
+>  tools/perf/tests/pmu-events.c      | 2 +-
+>  tools/perf/util/pmu.c              | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
 
-That's not so clear to me, but then I don't have access to the UFS specs.
+Patch looks good to me.
 
-This help text:
-	  UFS host adapter (the card
-	  inside your computer that "speaks" the UFS protocol, also
-	  called UFS Host Controller)
+Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
 
-might imply that the spec calls it "UFS Host Controller", but I can't
-read it (AFAIK). OTOH, if that's just a common (non-spec) name for it,
-then yes, it should be in lower case ("controller").
+Thanks,
+Kajol Jain
 
-I'm leaning towards using "controller" everywhere -- or not changing
-any of them. :)
-Oh well.
-
-Do you have any insights into this?
-
-thanks.
--- 
-~Randy
+> 
+> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> index 5624a37d6f93..a31de0f77097 100644
+> --- a/tools/perf/pmu-events/jevents.c
+> +++ b/tools/perf/pmu-events/jevents.c
+> @@ -832,7 +832,7 @@ static void print_mapping_test_table(FILE *outfp)
+>  
+>  static void print_system_event_mapping_table_prefix(FILE *outfp)
+>  {
+> -	fprintf(outfp, "\nstruct pmu_sys_events pmu_sys_event_tables[] = {");
+> +	fprintf(outfp, "\nconst struct pmu_sys_events pmu_sys_event_tables[] = {");
+>  }
+>  
+>  static void print_system_event_mapping_table_suffix(FILE *outfp)
+> diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
+> index 42c6db6bedec..f6c9c9fc4ab2 100644
+> --- a/tools/perf/pmu-events/pmu-events.h
+> +++ b/tools/perf/pmu-events/pmu-events.h
+> @@ -54,6 +54,6 @@ struct pmu_sys_events {
+>   * table of PMU events.
+>   */
+>  extern const struct pmu_events_map pmu_events_map[];
+> -extern struct pmu_sys_events pmu_sys_event_tables[];
+> +extern const struct pmu_sys_events pmu_sys_event_tables[];
+>  
+>  #endif
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index 8a1fdcd072f5..c0f8b61871c8 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -258,7 +258,7 @@ static const struct pmu_events_map *__test_pmu_get_events_map(void)
+>  
+>  static struct pmu_event *__test_pmu_get_sys_events_table(void)
+>  {
+> -	struct pmu_sys_events *tables = &pmu_sys_event_tables[0];
+> +	const struct pmu_sys_events *tables = &pmu_sys_event_tables[0];
+>  
+>  	for ( ; tables->name; tables++) {
+>  		if (!strcmp("pme_test_soc_sys", tables->name))
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 4bcdc595ce5e..c04a89cc7cef 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -873,7 +873,7 @@ void pmu_for_each_sys_event(pmu_sys_event_iter_fn fn, void *data)
+>  	int i = 0;
+>  
+>  	while (1) {
+> -		struct pmu_sys_events *event_table;
+> +		const struct pmu_sys_events *event_table;
+>  		int j = 0;
+>  
+>  		event_table = &pmu_sys_event_tables[i++];
+> 
