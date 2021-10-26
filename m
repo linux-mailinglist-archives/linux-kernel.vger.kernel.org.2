@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F238A43BCAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4923743BB5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239701AbhJZVwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:52:18 -0400
-Received: from gateway31.websitewelcome.com ([192.185.143.4]:46255 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237437AbhJZVvx (ORCPT
+        id S239086AbhJZUGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235867AbhJZUGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:51:53 -0400
-X-Greylist: delayed 1278 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 17:51:52 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 5EE9ED8E01
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:25:53 -0500 (CDT)
-Received: from gator4132.hostgator.com ([192.185.4.144])
-        by cmsmtp with SMTP
-        id fSTSmP67w6dDyfSTTmzDXu; Tue, 26 Oct 2021 14:51:13 -0500
-X-Authority-Reason: nr=8
-Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:60832 helo=[10.0.0.35])
-        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <bristot@kernel.org>)
-        id 1mfSTR-0021ZQ-Aa; Tue, 26 Oct 2021 14:51:05 -0500
-Message-ID: <46ffc66d-26da-7ac5-0f3f-e86594d2b60c@kernel.org>
-Date:   Tue, 26 Oct 2021 21:50:57 +0200
+        Tue, 26 Oct 2021 16:06:43 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2083C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 13:04:18 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id r184so460318ybc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 13:04:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eatsSJ90+7wtVivj0BA+XY9T/Yqtf/IIShhkQpS1u2U=;
+        b=Ol+Xd7xfdmTF0nEr1WSsZg01qEplLaHwGMrNCTy7RvwubZbsuSVjHmoemXCSVTPrkm
+         1Sil+Lopr26zO8CY+VtAbf/VM4w4p3S94KkfZQNxDOMZMT1PkErrNlNiqMtNNzvuoPSB
+         rM7YHnaePQTP10yXowUZ7R96oiU834ZB0XXuM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eatsSJ90+7wtVivj0BA+XY9T/Yqtf/IIShhkQpS1u2U=;
+        b=h9zkwaSCsLplaAWUil9TeAX1D3ns+TUV4LFiPHhQmrbjhOyzrhRfUo7GG7wYyRx5my
+         aXk5CUa0zkKnIhu8TdiXjsJPZ6u4mY22iLixxIIMQXunO93K3Pd86fs7PEtSfdIPZSAy
+         JekrHLyxzKw0KFT872yYYZQnqRiK2gTFDtdNs7MiU9FndPbOosh2KZ2jPJigOgU4O/fI
+         R4epylzxzpEQUEE+qj1hfcDgaBbgSZ0mzsa9PsA9SbJodWQVXhMnOL3U2L3VgT6Mm4YE
+         tdq1m2J3I4g7ejjgHKbMF5y+UGgt87CvhTVh+udYqJTcW8Whp2bGh7dfT/63e8bj/B86
+         Ntdg==
+X-Gm-Message-State: AOAM530/agt7hXUX8Si62G2rEMaZRkrUebMDQd8WH0gf2N3/9BAefZOl
+        QoSzt++DRZRxn7RFUlZ0DOdZzNVK0hTvaCmNz94iZ7NWzTbGEw==
+X-Google-Smtp-Source: ABdhPJySCgAB2rXtsAgCv+0F76mx/WkeJEP1ldlyRor4O6FWWVGSLQEiGo0m2JJHaTFHkNUpQmQ7VSOwOOr7u3YbrP8=
+X-Received: by 2002:a25:6705:: with SMTP id b5mr26165199ybc.116.1635278657910;
+ Tue, 26 Oct 2021 13:04:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH V5 10/20] rtla/osnoise: Add osnoise top mode
-Content-Language: en-US
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1635181938.git.bristot@kernel.org>
- <6252864d71e1864f60c25c716bc773861929e3fb.1635181938.git.bristot@kernel.org>
- <YXgtnEPcT8vay1wI@geo.homenetwork>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <YXgtnEPcT8vay1wI@geo.homenetwork>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - kernel.org
-X-BWhitelist: no
-X-Source-IP: 79.18.63.114
-X-Source-L: No
-X-Exim-ID: 1mfSTR-0021ZQ-Aa
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:60832
-X-Source-Auth: kernel@bristot.me
-X-Email-Count: 29
-X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
-X-Local-Domain: no
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder> <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
+ <YXeYjXx92wKdPe02@unreal> <CAKOOJTyrzosizeKpfYcu4jMn6SRYrqxU0BzMf8qudAk5e74R9g@mail.gmail.com>
+ <YXhVd16heaHCegL1@unreal>
+In-Reply-To: <YXhVd16heaHCegL1@unreal>
+From:   Edwin Peer <edwin.peer@broadcom.com>
+Date:   Tue, 26 Oct 2021 13:03:41 -0700
+Message-ID: <CAKOOJTzrQYz4FTDU_d_R0RLA4u6pfK9=+=E_uKMr4VCNbmF_kA@mail.gmail.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink traps
+ on probe/remove device
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Michael Chan <michael.chan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/21 18:32, Tao Zhou wrote:
->> +	if (params->stop_us)
->> +		osnoise_set_stop_us(tool->context, params->stop_us);
-> osnoise_set_stop_us() also need to check return value feels by me.
-> 
->> +
->> +	if (params->stop_total_us)
->> +		osnoise_set_stop_total_us(tool->context, params->stop_total_us);
-> The same here. Also need to check the return value.
-> 
-> PATCH 10 also has these two places(call the two functions) that not check
-> the return value.
-> 
-> Or I am wrong.
+On Tue, Oct 26, 2021 at 12:22 PM Leon Romanovsky <leon@kernel.org> wrote:
 
+> At least in mlx5 case, reload_enable() was before register_netdev().
+> It stayed like this after swapping it with devlink_register().
 
-You are right, reviewing that.
+What am I missing here?
 
-Thanks!
--- Daniel
+err = mlx5_init_one(dev);
+if (err) {
+       mlx5_core_err(dev, "mlx5_init_one failed with error code %d\n", err);
+       goto err_init_one;
+}
 
-> 
-> 
-> Thanks,
-> Tao
-> 
+err = mlx5_crdump_enable(dev);
+if (err)
+        dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code
+%d\n", err);
 
+pci_save_state(pdev);
+devlink_register(devlink);
+
+Doesn't mlx5_init_one() ultimately result in the netdev being
+presented to user space, even if it is via aux bus?
+
+> No, it is not requirement, but my suggestion. You need to be aware that
+> after call to devlink_register(), the device will be fully open for devlink
+> netlink access. So it is strongly advised to put devlink_register to be the
+> last command in PCI initialization sequence.
+
+Right, that's the problem. Once we register the netdev, we're in a
+race with user space, which may expect to be able to call devlink
+before we get to devlink_register().
+
+> You obviously need to fix your code. Upstream version of bnxt driver
+> doesn't have reload_* support, so all this regression blaming it not
+> relevant here.
+
+Right, our timing is unfortunate and that's on us. It's still not
+clear to me how to actually fix the devlink reload code without the
+benefit of something similar to the reload enable API.
+
+> In upstream code, devlink_register() doesn't accept ops like it was
+> before and position of that call does only one thing - opens devlink
+> netlink access. All kernel devlink APIs continue to be accessible even
+> before devlink_register.
+
+This isn't about kernel API. This is precisely about existing user
+space that expects devlink to work immediately after the netdev
+appears.
+
+> It looks like your failure is in backport code.
+
+Our out-of-tree driver isn't the issue here. I'm talking about the
+proposed upstream code. The issue is what to do in order to get
+something workable upstream for devlink reload. We can't move
+devlink_register() later, that will cause a regression. What do you
+suggest instead?
+
+Regards,
+Edwin Peer
