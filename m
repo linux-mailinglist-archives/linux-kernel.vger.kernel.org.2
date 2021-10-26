@@ -2,139 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D2F43B145
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8ED43B147
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbhJZLfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:35:39 -0400
-Received: from mail-eopbgr1310122.outbound.protection.outlook.com ([40.107.131.122]:43334
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230442AbhJZLff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:35:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nNgBqDK+zRoCe3ZtPOFMxEWlKs/y3X2KVBL0ZrU46vTApRNSQ47uHZ7M7zMqVykT2N+SvxnjqmFXySetbRLmji4ivTHtNscUtPt7TE8ci+RKjWuWT14WmKCuYI7QuxoK1PAEAA6UUnWpgqda58n0PhpmyJHxZjwYJhLic7aRoJpmmz9UUY9tq/miExoKt5QqVlxbH1pn6uvVt67C3iy+m6KsksgYORIn4VYyAhOzwcpJ8q7h17/QaCmFJuueF0sOnPucLoEE+XwMTCVi5k+UP8C9tyeQe7cm09fOCxmGaMZGd9LZUs7IK0KlPgQNI/tjznmRswDjvTTu6IOxMXT7eA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AoppHjeuf3FV1j75g4mw75fjLGGp+O8RdgFIotWGZTQ=;
- b=Sc9j6ANdDf6SU/SXOAbkzLkzIJRziyNV4twUxDAVUw1l4NAnwaYWMlPQaz323NLviK8g8ktrKhWtFLmwwj9BxkirVxVcQdSsqIF6yDh02+qMCgsVbSQv1RLBHR/w23aEAnr4vEmRruBovsH2ORLuMIL676jE7Krr8/F8Wh+8Ue4jAMLZM40CwRRWnzv2LiYnCHXATLLpu9xBdsi3zRc7J9heZ3ASFQWp9Wp55k2kFsqXFpFjuyBRcb0z1JYSiMRiPhBdq7P1SebR0ArcyPjxQ7gTnQUixxuvFy/0S4ZyzHMIlK2niwc5PT0+gp9JNzZWiJZ+gT1bwJzxVIVMYwBVGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AoppHjeuf3FV1j75g4mw75fjLGGp+O8RdgFIotWGZTQ=;
- b=YjjjHCTt/g1eeLnROshlwUaRrv6nd3vqMUaiO+i1FgtYCkYhUSMef4cSZLznJULukYTRU1sFjErPMdAXQNTqoC20BgYLstHGxuYYFSNcbnn0MdPbKmkQ3RLuDrudrqc6r7ohzJ40OGlpz2doOfdWH1qeVEwoFoy7Ig8SlVwf/iE=
-Authentication-Results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB2121.apcprd06.prod.outlook.com (2603:1096:4:9::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.18; Tue, 26 Oct 2021 11:33:06 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
- 11:33:05 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] x86/hyperv: Remove duplicated include in hv_init
-Date:   Tue, 26 Oct 2021 07:32:49 -0400
-Message-Id: <20211026113249.30481-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR03CA0102.apcprd03.prod.outlook.com
- (2603:1096:203:b0::18) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+        id S235133AbhJZLgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:36:01 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58670
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230442AbhJZLf7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 07:35:59 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AAC3840279
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635248012;
+        bh=p/YSQVHQ2qVFgAnoHpMJgz8Z7UR53z+rl6CiCMg8icA=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=rN0uXx2tAIuSsssBf651UUh0UYvlUROOV5XPTab3vdIWwFQ7n6whr6dn7+G9TvIXg
+         bbP5DZR9F471bRWr0TF6BxJki/BUWxX6p6GSzsIAe3Kx1WAaDrQBlIh28Ss5ckLb1C
+         h9eKqZcfCFNTuXrVCSsTrByi2mU5R4/JrBGmbM6P2+jEpd9tNDLJTB+1KWxFmLTcRJ
+         PzBqSu26klnJC0llNOcfRbIJTJSS+Z54sDfhMgVLvbWL+vhs4DfBx8/xACdclaE0Jn
+         TiDk6pfNbjVcJxyN3eLpELMCT1ykbywbMI47fYyfMxmIHCfV7gyEL59J4UnPjLdhEV
+         MYrN9v9mlgdrg==
+Received: by mail-ed1-f70.google.com with SMTP id c25-20020a056402143900b003dc19782ea8so12823162edx.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 04:33:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=p/YSQVHQ2qVFgAnoHpMJgz8Z7UR53z+rl6CiCMg8icA=;
+        b=Ddinc49gLfJJYjM5yuV6VhTWZftXxE+g4kcSCN87ZtCmt4fBXxeqxUWTbZIZT+ZTFU
+         Nd8NQ+mFEWr0XIXgLzG+Wh4u9rBrU6yzP+x6ugnB3Q7vzxneH7NfJFtEzOCcuRn+mSmy
+         m6T24tjzrr+xFEsONbNgdGK2XCO5AiB0YGkRfUfr9X7CxaBPwrpeKmxsUDcu74rFGgfF
+         HPYut/48J5OeQ295pKD039tHzeOiwHI1ljqIIAfIBtZofdQV5nlQ59A9izjSAiQcEf6m
+         uE8NixoTY0mbeh5rku7wAPy9h1tznrfuWGmj81REB1ST+4Nl4ub1LIZvVwKfqkUXJx6e
+         JAzg==
+X-Gm-Message-State: AOAM532c/Bhaz6pBZQVzxvEZlOAV/kj171DmZbD51yHOaC0OrdUaAKWE
+        PVU+gyG+DGH2IHLsyjxIqo1R8S0y9Hk1uDz9XpWcQAfgNVRYT2Gd6k4QLzrZmfwwadXCG3KyVtH
+        0JajEljcmInLx3rbuHRgI6xVwRZsilNceTa1Z4+YZ0qq2H/4qtBwG74faDg==
+X-Received: by 2002:a17:907:3e0a:: with SMTP id hp10mr5178690ejc.156.1635248012166;
+        Tue, 26 Oct 2021 04:33:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwk9yh1otC2FcE4T7DFXV6h0+OXQXCBzAm5yVnfRbJ0//wWZH92fSunNBiBY+8wfJj6PEUCHJI5uenfImglgdM=
+X-Received: by 2002:a17:907:3e0a:: with SMTP id hp10mr5178648ejc.156.1635248011842;
+ Tue, 26 Oct 2021 04:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Received: from localhost.localdomain (218.213.202.190) by HK0PR03CA0102.apcprd03.prod.outlook.com (2603:1096:203:b0::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.22 via Frontend Transport; Tue, 26 Oct 2021 11:33:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1fbb92b2-2365-452c-1bd7-08d998746059
-X-MS-TrafficTypeDiagnostic: SG2PR06MB2121:
-X-Microsoft-Antispam-PRVS: <SG2PR06MB21219EE9743509FD57E41726AB849@SG2PR06MB2121.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /gIlDjWGo9R8Zytqc1MEhu8oFkgbg9junUVLLr2G7MJd0SuUcVlAJNmuE3KNNM7DzbIafL0gC+Jt6GQv6HOVN0gfB+MTEjHe4bXSdwQMPGIEabxuMmZEtg4Ac0/pLi2Urb3MPF9TWw7/ts9dZSMxeQHtgUr2750GfN7m1513xnCQ4r9I6m2GfgBJu2nJznP452PxjpU5E6o9i3dKAJHQdw0NBJOIASTmkLyLN82het46M+Y3oO7I6jLXXyH402XGRZLKfu5ageLiVigqUsapXMITqDbucvzRcDhPqbRDjRij5an2de0ZgTLXPvXQuVwlwgd5lnw6WXOdcYUNaiuM5T7BbpL9zh054mQ2Wl+p0VgGiu3eQn65u0gDkx1pxvspli6SmTEp0+LJseVZRYZ1ItIoR9hNU8qgM7o0IkLUDz40XW7A8AKgf4vKl+865hu1CGbRoGypLpnWyoGRwT5/pIfnwwQzoMtPYpfm1hZpXyMi2IArKj2UMaxaW69eK0rTw8lrrig3gci7+A2GpXBQIchzvS2WD7sUcy/z3JJbXEOtwdCgXiejflKgblVguUrAf4P+dPVB3JIeof8WyOIzNLi2MICWHorbhMNmjudwIOpB2PexBqEQsgjmOqjbSCSw7JU9mJ0pnJR8STnJDlJz8y9Mlwkw/qFN31Txl0HQudi6nLHt6MSANTV13Vqc4laQcgvdozyt/+bnV/tREX/7XlomPvBWgrsuNTVtZ90tPa8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(186003)(316002)(83380400001)(6666004)(1076003)(2616005)(956004)(66556008)(66946007)(8936002)(8676002)(66476007)(36756003)(508600001)(4326008)(6486002)(6506007)(26005)(107886003)(2906002)(6512007)(921005)(52116002)(38100700002)(7416002)(38350700002)(86362001)(110136005)(4744005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KzDyB0NbYs31dl03d+bo3EsJGE07/Ot+4G0wBOdFbvqEMqu7J2qrf75PFiGA?=
- =?us-ascii?Q?mWZoNiqjnWwhCVO8rIw1p+l7t1lX8F+T/P1NrFpW3xYNzWtKgEmdVCIWmeO9?=
- =?us-ascii?Q?hlNt1VcUF15rMOmCeB5ge0GG/mSCpfLNhjooACk84oA7Omb73Ue7Og9OYKj/?=
- =?us-ascii?Q?KwrEvi+dnYTYkXC2+l+9hQt4vqot8dfZ8hELpU1i845X+CpzsRZvgPK2pnil?=
- =?us-ascii?Q?6m11UA7mfxy5JQ2xoH/IBcxXg0vZfTigjstt8uihNWa5dbH8+m2LxJLKQjZ5?=
- =?us-ascii?Q?GkFLyL2G+r0Di8JGMjMBcl2D6GtIyBRQSWRTPI/hbqV344CWE+4igXe3rF12?=
- =?us-ascii?Q?F7kcgTMKekA7e6jMkMtBUgUbqDI3//tnCfjLnzcbaRnehRzA5MI17xVMIdhE?=
- =?us-ascii?Q?e9WrKX6DC+o2RA+oVWcqYX9lhAlgClkHOfhWSTRy1NvDFznpVuW+WBCioy2B?=
- =?us-ascii?Q?y7TrySdNH4dMVi5CGr792S5c6sy5LbHuo8ywl/KiagNocBxmGgavaXTevdCq?=
- =?us-ascii?Q?I077sM7Epdcbhq+47+sWndYYT0WveGsY4M5y8b+BWyqPn8fiFXoLOR0uk7YN?=
- =?us-ascii?Q?mV7j96RbMOCNWxBEXHoImE0ydTbWbfFFQgvL+92tnc9toHft7AiH+rvRaSsF?=
- =?us-ascii?Q?haPG32TGt7cJCddAW3b84sudu/uer2acHWib27LWFRJuhZGaRI7uaKm6wPTw?=
- =?us-ascii?Q?/5Ulqs5r8NV8L3ruLSUV13brkiyguWm3XBIp84yaeugo+OAxbGrNj0dAnOlN?=
- =?us-ascii?Q?9VN9Mr5iia1b1Klkum6eKTsXZI4LdMH/wq6aqSIpjx7R7lQ/M0DIC6OzWM1G?=
- =?us-ascii?Q?hWhtiDTHv4kO3Bt8SKvCnX00QnurWaZyxTNI6cERbKh2+9D4mLB6Vz5YS78/?=
- =?us-ascii?Q?VwGJRekw8irN2uNj3LMKtR5JgbD4Uu0gsj2vTfFc0wAghWJFdr2xwEonD1x1?=
- =?us-ascii?Q?gYWYBPK7hwUoaAuQwh5Kc2xU/I4d33eE/Y+0+ZOZ+MiALS3GJQY8CTmVAVNt?=
- =?us-ascii?Q?gWID1OmDXPU9zOe8zL5DbtDnVO/f0e+RZDgyAHdllijpO+paNMmeHl6OvP7Y?=
- =?us-ascii?Q?bqGllZzl+kvn+wq3R+AUkz59i6jLIOST/Mq6Lc6TJkrXxzsr4wRhgJVForZj?=
- =?us-ascii?Q?tufRtm4PcLl6I7T/7U2yRvYYQ6bjYR85iEPM7AVdw6RvRjQGaOqGY2L1wL62?=
- =?us-ascii?Q?8tEs5cVSIM3qb4I+oEcn1Y/NegGnEIiF+AUeVUtvqeAHB7KcUpGmQHNFWf34?=
- =?us-ascii?Q?R2ZAaPq5EVdLJCLlT9tZUkUKSkEXEgqcQtY7dHY+1edlUwuFt3bGEGENZ9TO?=
- =?us-ascii?Q?Kopq2cBWBB9RFmchgmNQta+9a3Vtaej5g9UepIiggnGtKFm6FgSojqKDEnQy?=
- =?us-ascii?Q?0oupR1QByqFUwXAI631HPF5+ru9keYpB7Kr9UzHdLNS7ASRVGxPMJwFICn71?=
- =?us-ascii?Q?DugAUhuBbFSqVfheU2dOqUEqKIEyfKZ5ySi2QOBx8SMxnY4a3Dan5Fj6mWVV?=
- =?us-ascii?Q?ySNQtRxUZYNoQtyB0hFTSObHTPef/A2C2Q2XeRZRZQA22CeP+UOOE7piWG1c?=
- =?us-ascii?Q?PyadD2mj1Hs/VtMxL15/aMmBf9FPiN56Ng2qcZyuX5JPbWcDc8f7KasxRl/y?=
- =?us-ascii?Q?dd7+vJuDv8o87Z2SLG2uTVw=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fbb92b2-2365-452c-1bd7-08d998746059
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2021 11:33:05.2535
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cvqw5Fof3L7UKWxx3wczu0ilNgmQec5O6AHslL6OBKJjHiahMlkTTjdt8um6MXSsWxNrm52zn2NRR6K/i8BD7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2121
+References: <YUyWYpDl2Dmegz0a@archlinux-ax161> <mhng-b5f8a6a0-c3e8-4d25-9daa-346fdc8a2e5e@palmerdabbelt-glaptop>
+ <YWhg8/UzjJsB51Gd@archlinux-ax161> <afeaea5f-70f2-330f-f032-fb0c8b5d0aa5@ghiti.fr>
+ <990a894c-1806-5ab2-775e-a6f2355c2299@ghiti.fr> <CA+zEjCt28iYQARQa=8Nsw8+_j0PuEee==gUqjKjasMo+w2Ohwg@mail.gmail.com>
+ <CACT4Y+YB8bjqxFfSrXKbfETXJAUxH=HR+kizC0T-AZLArY3A5A@mail.gmail.com>
+In-Reply-To: <CACT4Y+YB8bjqxFfSrXKbfETXJAUxH=HR+kizC0T-AZLArY3A5A@mail.gmail.com>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Tue, 26 Oct 2021 13:33:20 +0200
+Message-ID: <CA+zEjCtVYLdg3FQnnZjv+Bb-bn2mvj9BCZF787dbNNRHPvyZug@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexandre ghiti <alex@ghiti.fr>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, elver@google.com,
+        akpm@linux-foundation.org, ryabinin.a.a@gmail.com,
+        glider@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
+        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following checkinclude.pl warning:
-./arch/x86/hyperv/hv_init.c: linux/io.h is included more than once.
+On Tue, Oct 26, 2021 at 6:48 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Tue, 26 Oct 2021 at 06:39, Alexandre Ghiti
+> <alexandre.ghiti@canonical.com> wrote:
+> >
+> > Hi,
+> >
+> > On Fri, Oct 15, 2021 at 3:08 PM Alexandre ghiti <alex@ghiti.fr> wrote:
+> > >
+> > > On 10/14/21 8:31 PM, Alex Ghiti wrote:
+> > > > Hi Nathan,
+> > > >
+> > > > Le 14/10/2021 =C3=A0 18:55, Nathan Chancellor a =C3=A9crit :
+> > > >> On Fri, Oct 08, 2021 at 11:46:55AM -0700, Palmer Dabbelt wrote:
+> > > >>> On Thu, 23 Sep 2021 07:59:46 PDT (-0700), nathan@kernel.org wrote=
+:
+> > > >>>> On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
+> > > >>>>> On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor
+> > > >>>>> <nathan@kernel.org> wrote:
+> > > >>>>>> Currently, the asan-stack parameter is only passed along if
+> > > >>>>>> CFLAGS_KASAN_SHADOW is not empty, which requires
+> > > >>>>>> KASAN_SHADOW_OFFSET to
+> > > >>>>>> be defined in Kconfig so that the value can be checked. In RIS=
+C-V's
+> > > >>>>>> case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which mea=
+ns
+> > > >>>>>> that
+> > > >>>>>> asan-stack does not get disabled with clang even when
+> > > >>>>>> CONFIG_KASAN_STACK
+> > > >>>>>> is disabled, resulting in large stack warnings with allmodconf=
+ig:
+> > > >>>>>>
+> > > >>>>>> drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb03=
+5q02.c:117:12:
+> > > >>>>>>
+> > > >>>>>> error: stack frame size (14400) exceeds limit (2048) in functi=
+on
+> > > >>>>>> 'lb035q02_connect' [-Werror,-Wframe-larger-than]
+> > > >>>>>> static int lb035q02_connect(struct omap_dss_device *dssdev)
+> > > >>>>>>             ^
+> > > >>>>>> 1 error generated.
+> > > >>>>>>
+> > > >>>>>> Ensure that the value of CONFIG_KASAN_STACK is always passed
+> > > >>>>>> along to
+> > > >>>>>> the compiler so that these warnings do not happen when
+> > > >>>>>> CONFIG_KASAN_STACK is disabled.
+> > > >>>>>>
+> > > >>>>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1453
+> > > >>>>>> References: 6baec880d7a5 ("kasan: turn off asan-stack for clan=
+g-8
+> > > >>>>>> and earlier")
+> > > >>>>>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > > >>>>>
+> > > >>>>> Reviewed-by: Marco Elver <elver@google.com>
+> > > >>>>
+> > > >>>> Thanks!
+> > > >>>>
+> > > >>>>> [ Which tree are you planning to take it through? ]
+> > > >>>>
+> > > >>>> Gah, I was intending for it to go through -mm, then I cc'd neith=
+er
+> > > >>>> Andrew nor linux-mm... :/ Andrew, do you want me to resend or ca=
+n you
+> > > >>>> grab it from LKML?
+> > > >>>
+> > > >>> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > >>>
+> > > >>> (assuming you still want it through somewhere else)
+> > > >>
+> > > >> Thanks, it is now in mainline as commit 19532869feb9 ("kasan: alwa=
+ys
+> > > >> respect CONFIG_KASAN_STACK").
+> > > >>
+> > > >>>>> Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFS=
+ET in
+> > > >>>>> comment (copied from arm64). Did RISC-V just forget to copy ove=
+r the
+> > > >>>>> Kconfig option?
+> > > >>>>
+> > > >>>> I do see it defined in that file as well but you are right that
+> > > >>>> they did
+> > > >>>> not copy the Kconfig logic, even though it was present in the tr=
+ee
+> > > >>>> when
+> > > >>>> RISC-V KASAN was implemented. Perhaps they should so that they g=
+et
+> > > >>>> access to the other flags in the "else" branch?
+> > > >>>
+> > > >>> Ya, looks like we just screwed this up.  I'm seeing some warnings=
+ like
+> > > >>>
+> > > >>>     cc1: warning: =E2=80=98-fsanitize=3Dkernel-address=E2=80=99 w=
+ith stack protection
+> > > >>> is not supported without =E2=80=98-fasan-shadow-offset=3D=E2=80=
+=99 for this target
+> > > >>
+> > > >> Hmmm, I thought I did a GCC build with this change but I must not =
+have
+> > > >> :/
+> > > >>
+> > > >>> which is how I ended up here, I'm assuming that's what you're
+> > > >>> talking about
+> > > >>> here?  LMK if you were planning on sending along a fix or if you
+> > > >>> want me to
+> > > >>> go figure it out.
+> > > >>
+> > > >> I took a look at moving the logic into Kconfig like arm64 before s=
+ending
+> > > >> this change and I did not really understand it well enough to do s=
+o. I
+> > > >> think it would be best if you were able to do that so that nothing=
+ gets
+> > > >> messed up.
+> > > >>
+> > > >
+> > > > I'll do it tomorrow, I'm the last one who touched kasan on riscv :)
+> > > >
+> > >
+> > > Adding KASAN_SHADOW_OFFSET config makes kasan kernel fails to boot.
+> > > It receives a *write* fault at the beginning of a memblock_alloc
+> > > function while populating the kernel shadow memory: the trap address =
+is
+> > > in the kasan shadow virtual address range and this corresponds to a
+> > > kernel address in init_stack. The question is: how do I populate the
+> > > stack shadow mapping without using memblock API? It's weird, I don't
+> > > find anything on other architectures.
+> >
+> > @kasan: Any idea what we are doing wrong in riscv to encounter the
+> > above situation?
+>
+> Hi Alex, Palmer,
+>
+> The patch changes the definition of the KASAN_SHADOW_OFFSET const.
+> Does it's value change as a result or not? Have you tried to print it
+> before/after?
+> If value does not change, then this is more mysterious. If it changes,
+> then there lots of possible explanations (points to unmapped region,
+> overlaps with something), but we need to know values before/after to
 
-The include is in line 13. Remove the duplicated here.
+So I debugged a bit more what happened here, and actually the culprit
+is the call to kasan_populate_early_shadow at the beginning of
+kasan_init which write-protects the access to kasan_early_shadow_page
+and hence the write fault later when using memblock. I don't see the
+point of this call anyway since we populate swapper_pg_dir in
+kasan_early_init and then we write-protect the access to
+kasan_early_shadow_page at the end of kasan_init.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- arch/x86/hyperv/hv_init.c | 1 -
- 1 file changed, 1 deletion(-)
+But that may not be ideal, so I'm open to a better suggestion than
+just removing the call to kasan_populate_early_shadow.
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index a16a83e46a30..4fb7c7bb164e 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -20,7 +20,6 @@
- #include <linux/kexec.h>
- #include <linux/version.h>
- #include <linux/vmalloc.h>
--#include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/hyperv.h>
- #include <linux/slab.h>
--- 
-2.20.1
+Sorry I did not dig further before asking and thanks for your time,
 
+Alex
+
+> answer this.
+>
+>
+> > Thanks,
+> >
+> > Alex
+> >
+> > >
+> > > And just a short note: I have realized this will break with the sv48
+> > > patchset as we decide at runtime the address space width and the kasa=
+n
+> > > shadow start address is different between sv39 and sv48. I will have =
+to
+> > > do like x86 and move the kasan shadow start at the end of the address
+> > > space so that it is the same for both sv39 and sv48.
+> > >
+> > > Thanks,
+> > >
+> > > Alex
+> > >
+> > >
+> > > > Thanks,
+> > > >
+> > > > Alex
+> > > >
+> > > >> Cheers,
+> > > >> Nathan
+> > > >>
+> > > >> _______________________________________________
+> > > >> linux-riscv mailing list
+> > > >> linux-riscv@lists.infradead.org
+> > > >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > > >>
+> > > >
+> > > > _______________________________________________
+> > > > linux-riscv mailing list
+> > > > linux-riscv@lists.infradead.org
+> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
