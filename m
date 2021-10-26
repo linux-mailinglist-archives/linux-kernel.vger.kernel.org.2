@@ -2,82 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CF043B02F
+	by mail.lfdr.de (Postfix) with ESMTP id 48ED743B02E
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbhJZKjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:39:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52704 "EHLO mail.kernel.org"
+        id S234014AbhJZKjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:39:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:56576 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234335AbhJZKje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:39:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4287260724;
-        Tue, 26 Oct 2021 10:37:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635244631;
-        bh=1lznKj02js2vDcFoN3MOczg+gZYFnPf8Nbk8oFIPFvo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dRNqLNpvY3nnnnylgoyhXNjRhLOWXOO6pInn/ZzegNEpIgRqpORFWK1c1e4v0ihHj
-         y/7HYIkS/MTiBEGvr/sYSxXwYicpC/iiwP8xcxPGGMkJGmr3Ph446jn5Uc4C541dF0
-         3D+2DU4RWX7P5JgphzWQAU3wp9eSaKAPKlaMvF7oamIfsL20g65wJwMK1psNeXJOwV
-         aaMT9OCqvRSgjmZODu3HnnlEj3dMHsRs33xEeqN6z1Er9v3FtZwHYu06I1IxSfRQ93
-         ez0Q+/b9NmulmNhneY1nvtLo3MwkhFg4lCDLC4APqAHIR1BSRxyW6b1zttBOf9Y+JL
-         ugvNRM3NWgA4Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mfJp7-0001Ug-VI; Tue, 26 Oct 2021 12:36:54 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Woojung Huh <woojung.huh@microchip.com>
-Cc:     UNGLinuxDriver@microchip.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org,
-        "Woojung . Huh @ microchip . com" <Woojung.Huh@microchip.com>
-Subject: [PATCH] net: lan78xx: fix division by zero in send path
-Date:   Tue, 26 Oct 2021 12:36:17 +0200
-Message-Id: <20211026103617.5686-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S234886AbhJZKjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:39:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D1501FB;
+        Tue, 26 Oct 2021 03:37:00 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.74.144])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 190393F73D;
+        Tue, 26 Oct 2021 03:36:57 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 11:36:55 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        James Morse <james.morse@arm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
+Message-ID: <20211026103655.GB30152@C02TD0UTHF1T.local>
+References: <20211025122102.46089-1-frederic@kernel.org>
+ <20211025122102.46089-3-frederic@kernel.org>
+ <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net>
+ <CAMj1kXELqoVp5zBcQ8g+0O56sBq9qAEDO-7OTenDkpRcb7oeQQ@mail.gmail.com>
+ <YXa85OTw7i3Bg9yj@hirez.programming.kicks-ass.net>
+ <YXbC3NRWDDfsW6DG@hirez.programming.kicks-ass.net>
+ <CAMj1kXEKASsYJMHHNA=uNGTnLMoXO_4BP0--1k7cEfZZupdsog@mail.gmail.com>
+ <YXbHJCtkBdMP/bF6@hirez.programming.kicks-ass.net>
+ <CAMj1kXHYXzU=pW6tUJB61QW5VBL7WKBhT7BkNJ970FQdHz1VVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHYXzU=pW6tUJB61QW5VBL7WKBhT7BkNJ970FQdHz1VVw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing endpoint max-packet sanity check to probe() to avoid
-division by zero in lan78xx_tx_bh() in case a malicious device has
-broken descriptors (or when doing descriptor fuzz testing).
+On Mon, Oct 25, 2021 at 05:10:24PM +0200, Ard Biesheuvel wrote:
+> On Mon, 25 Oct 2021 at 17:05, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Oct 25, 2021 at 04:55:17PM +0200, Ard Biesheuvel wrote:
+> > > On Mon, 25 Oct 2021 at 16:47, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > > Perhaps a little something like so.. Shaves 2 instructions off each
+> > > > trampoline.
+> > > >
+> > > > --- a/arch/arm64/include/asm/static_call.h
+> > > > +++ b/arch/arm64/include/asm/static_call.h
+> > > > @@ -11,9 +11,7 @@
+> > > >             "   hint    34      /* BTI C */                             \n" \
+> > > >                 insn "                                                  \n" \
+> > > >             "   ldr     x16, 0b                                         \n" \
+> > > > -           "   cbz     x16, 1f                                         \n" \
+> > > >             "   br      x16                                             \n" \
+> > > > -           "1: ret                                                     \n" \
+> > > >             "   .popsection                                             \n")
+> > > >
+> > > >  #define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)                      \
+> > > > --- a/arch/arm64/kernel/patching.c
+> > > > +++ b/arch/arm64/kernel/patching.c
+> > > > @@ -90,6 +90,11 @@ int __kprobes aarch64_insn_write(void *a
+> > > >         return __aarch64_insn_write(addr, &i, AARCH64_INSN_SIZE);
+> > > >  }
+> > > >
+> > > > +asm("__static_call_ret:                \n"
+> > > > +    "  ret                     \n")
+> > > > +
+> > >
+> > > This breaks BTI as it lacks the landing pad, and it will be called indirectly.
+> >
+> > Argh!
+> >
+> > > > +extern void __static_call_ret(void);
+> > > > +
+> > >
+> > > Better to have an ordinary C function here (with consistent linkage),
+> > > but we need to take the address in a way that works with Clang CFI.
+> >
+> > There is that.
+> >
+> > > As the two additional instructions are on an ice cold path anyway, I'm
+> > > not sure this is an obvious improvement tbh.
+> >
+> > For me it's both simpler -- by virtue of being more consistent, and
+> > smaller. So double win :-)
+> >
+> > That is; you're already relying on the literal being unconditionally
+> > updated for the normal B foo -> NOP path, and having the RET -> NOP path
+> > be handled differently is just confusing.
+> >
+> > At least, that's how I'm seeing it today...
+> 
+> Fair enough. I don't have a strong opinion either way, so I'll let
+> some other arm64 folks chime in as well.
 
-Note that USB core will reject URBs submitted for endpoints with zero
-wMaxPacketSize but that drivers doing packet-size calculations still
-need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
-endpoint descriptors with maxpacket=0")).
+My preference overall is to keep the trampoline self-contained, and I'd
+prefer to keep the RET inline in the trampoline rather than trying to
+factor it out so that all the control-flow is clearly in one place.
 
-Fixes: 55d7de9de6c3 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
-Cc: stable@vger.kernel.org      # 4.3
-Cc: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/net/usb/lan78xx.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+So I'd prefer that we have the sequence as-is:
 
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index 793f8fbe0069..63cd72c5f580 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -4122,6 +4122,12 @@ static int lan78xx_probe(struct usb_interface *intf,
- 
- 	dev->maxpacket = usb_maxpacket(dev->udev, dev->pipe_out, 1);
- 
-+	/* Reject broken descriptors. */
-+	if (dev->maxpacket == 0) {
-+		ret = -ENODEV;
-+		goto out4;
-+	}
-+
- 	/* driver requires remote-wakeup capability during autosuspend. */
- 	intf->needs_remote_wakeup = 1;
- 
--- 
-2.32.0
+| 0:	.quad 0x0
+| 	bti	c
+| 	< insn >
+| 	ldr	x16, 0b
+| 	cbz	x16, 1f
+| 	br	x16
+| 1:	ret
 
+If we knew these were only called with IRQs enabled (and so we can take
+an IPI to generate a context synchronization event), we could patch
+<insn> to a RET and point the literal back at the BTI, e.g.
+
+| 0:	.quad 0x0
+| 	bti	c
+| 	< insn >
+| 	ldr	x16, 0b
+| 	br	x16
+
+... but I'm pretty sure there are CPUs that will never re-fetch <insn>
+in that case, and will get stuck in an infinite loop.
+
+Thanks,
+Mark.
