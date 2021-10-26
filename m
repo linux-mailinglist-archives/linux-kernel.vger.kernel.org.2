@@ -2,207 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2414543B62D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CED343B627
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237039AbhJZP6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235729AbhJZP6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B59A6108B
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:55:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635263740;
-        bh=NGSch2WtYB3nDlQ/+9YEqgDLoXEDKMRu/wdD8415fBY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uOxlN6zOqT2omHcVNelIwvgof8GWLuIreza4BWEIGF0cSmGon3FHkXbAKF2TjGX99
-         A1dR4GajSgcsFZ1RE6krHef/3thwVIp2Bzsfk2M1m4nrm1DOY2AHGi9vNux/0/J39B
-         oP2gkftMTUTlPzvsFcAjkkU51p4+umBFcIsQy4NLrYHUEtyQD75x1OpX+bavVmSDVC
-         TbrxjNR36WKGwYPFwRv83NVmAUO4GrHmpoKqT3hTtPJhiz5mTqwMa1ZfiBBHDWzBUX
-         V+pXIAQ4KGOzq//qPbkndefH0HBuxLpjaYJIOlf5TGJ73LhPIRrQsAcTgKARnLBler
-         lj5OxaOfZO+VA==
-Received: by mail-ed1-f45.google.com with SMTP id z20so2224473edi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:55:40 -0700 (PDT)
-X-Gm-Message-State: AOAM5332UwJAkWFmwPH9c5KL1qqI7wKWS0cHlGwNLPA5J0JG9eGRE1dc
-        Agka7FSnmHRt1CFSCydyaZPkQPIbJE34+8BXiA==
-X-Google-Smtp-Source: ABdhPJzgqVCWXT+M41aSMPpOJ3v17st31iPfPukH3+SRVrfDKy8AVSdPsaimk9diarnRpFFsF7bEkw5S9zvp3XNpVJA=
-X-Received: by 2002:a50:ff0a:: with SMTP id a10mr22764187edu.357.1635263560041;
- Tue, 26 Oct 2021 08:52:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211026052916.8222-1-jason-jh.lin@mediatek.com> <20211026052916.8222-3-jason-jh.lin@mediatek.com>
-In-Reply-To: <20211026052916.8222-3-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 26 Oct 2021 23:52:29 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-=JhEzK0UT3qVScLWh75LTr9K3VFJhJ6Zs_nuM0kmBXw@mail.gmail.com>
-Message-ID: <CAAOTY_-=JhEzK0UT3qVScLWh75LTr9K3VFJhJ6Zs_nuM0kmBXw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] drm/mediatek: Remove the pointer of struct cmdq_client
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        id S234115AbhJZP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:56:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29491 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237113AbhJZPzz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 11:55:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635263611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rZVCulbOZP1e44gXfA1Bk5ibcEf1Vr4Agh3PF5t9yB4=;
+        b=f4BnnMVH/lQFxK2OXqOXGvxTpzOVUOJR5ATBOdi002md6EjmPP0AaGSe7p6MsyjiGwYwNN
+        9pqrPrcGY995HgQVEgP/lZJDyO+Gb/XPi8WgaOdf/Yaylm3GWjRn50u6J/iczDhxK0QUhm
+        cLxnRTN9er8Af5OLRRfRR+AfawmlCmY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-Wp-ws3TBNJG7ZKIx7jSHGQ-1; Tue, 26 Oct 2021 11:53:28 -0400
+X-MC-Unique: Wp-ws3TBNJG7ZKIx7jSHGQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07C8411295A1;
+        Tue, 26 Oct 2021 15:52:47 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.17.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF6205C1A1;
+        Tue, 26 Oct 2021 15:52:46 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 412072204A5; Tue, 26 Oct 2021 11:52:46 -0400 (EDT)
+Date:   Tue, 26 Oct 2021 11:52:46 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>
+Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
+Message-ID: <YXgkTirm5O04xEm5@redhat.com>
+References: <20211025204634.2517-1-iangelak@redhat.com>
+ <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On Tue, Oct 26, 2021 at 06:23:50PM +0300, Amir Goldstein wrote:
+> On Mon, Oct 25, 2021 at 11:47 PM Ioannis Angelakopoulos
+> <iangelak@redhat.com> wrote:
+> >
+> > Hello,
+> >
+> > I am a PhD student currently interning at Red Hat and working on the
+> > virtiofs file system. I am trying to add support for the Inotify
+> > notification subsystem in virtiofs. I seek your feedback and
+> > suggestions on what is the right direction to take.
+> >
+> 
+> Hi Ioannis!
+> 
+> I am very happy that you have taken on this task.
+> People have been requesting this functionality in the past [1]
+> Not specifically for FUSE, but FUSE is a very good place to start.
+> 
+> [1] https://lore.kernel.org/linux-fsdevel/CAH2r5mt1Fy6hR+Rdig0sHsOS8fVQDsKf9HqZjvjORS3R-7=RFw@mail.gmail.com/
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=88=
-26=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=881:29=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> From: Chun-Kuang Hu <chunkuang.hu@kernel.org>
->
-> In mailbox rx_callback, it pass struct mbox_client to callback
-> function, but it could not map back to mtk_drm_crtc instance
-> because struct cmdq_client use a pointer to struct mbox_client:
->
-> struct cmdq_client {
->         struct mbox_client client;
->         struct mbox_chan *chan;
-> };
->
-> struct mtk_drm_crtc {
->         /* client instance data */
->         struct cmdq_client *cmdq_client;
-> };
->
-> so remove the pointer of struct cmdq_client and let mtk_drm_crtc
-> instance define cmdq_client as:
->
-> struct mtk_drm_crtc {
->         /* client instance data */
->         struct cmdq_client cmdq_client;
-> };
->
-> and in rx_callback function, use struct mbox_client to get
-> struct mtk_drm_crtc.
+Hi Amir,
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Aha, good to know that other remote filesystems are looking for similar
+functionality. So there can be a common design so that other remote
+filesystems can support remote inotify/fanotify events too.
 
->
-> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 37 +++++++++++++------------
->  1 file changed, 20 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index 369d3e68c0b6..e23e3224ac67 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -52,7 +52,7 @@ struct mtk_drm_crtc {
->         bool                            pending_async_planes;
->
->  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> -       struct cmdq_client              *cmdq_client;
-> +       struct cmdq_client              cmdq_client;
->         u32                             cmdq_event;
->  #endif
->
-> @@ -472,19 +472,19 @@ static void mtk_drm_crtc_update_config(struct mtk_d=
-rm_crtc *mtk_crtc,
->                 mtk_mutex_release(mtk_crtc->mutex);
->         }
->  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> -       if (mtk_crtc->cmdq_client) {
-> -               mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
-> -               cmdq_handle =3D cmdq_pkt_create(mtk_crtc->cmdq_client, PA=
-GE_SIZE);
-> +       if (mtk_crtc->cmdq_client.chan) {
-> +               mbox_flush(mtk_crtc->cmdq_client.chan, 2000);
-> +               cmdq_handle =3D cmdq_pkt_create(&mtk_crtc->cmdq_client, P=
-AGE_SIZE);
->                 cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
->                 cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
->                 mtk_crtc_ddp_config(crtc, cmdq_handle);
->                 cmdq_pkt_finalize(cmdq_handle);
-> -               dma_sync_single_for_device(mtk_crtc->cmdq_client->chan->m=
-box->dev,
-> +               dma_sync_single_for_device(mtk_crtc->cmdq_client.chan->mb=
-ox->dev,
->                                            cmdq_handle->pa_base,
->                                            cmdq_handle->cmd_buf_size,
->                                            DMA_TO_DEVICE);
-> -               mbox_send_message(mtk_crtc->cmdq_client->chan, cmdq_handl=
-e);
-> -               mbox_client_txdone(mtk_crtc->cmdq_client->chan, 0);
-> +               mbox_send_message(mtk_crtc->cmdq_client.chan, cmdq_handle=
-);
-> +               mbox_client_txdone(mtk_crtc->cmdq_client.chan, 0);
->         }
->  #endif
->         mtk_crtc->config_updating =3D false;
-> @@ -498,7 +498,7 @@ static void mtk_crtc_ddp_irq(void *data)
->         struct mtk_drm_private *priv =3D crtc->dev->dev_private;
->
->  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> -       if (!priv->data->shadow_register && !mtk_crtc->cmdq_client)
-> +       if (!priv->data->shadow_register && !mtk_crtc->cmdq_client.chan)
->  #else
->         if (!priv->data->shadow_register)
->  #endif
-> @@ -838,17 +838,20 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
->         mutex_init(&mtk_crtc->hw_lock);
->
->  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> -       mtk_crtc->cmdq_client =3D
-> -                       cmdq_mbox_create(mtk_crtc->mmsys_dev,
-> -                                        drm_crtc_index(&mtk_crtc->base))=
-;
-> -       if (IS_ERR(mtk_crtc->cmdq_client)) {
-> +       mtk_crtc->cmdq_client.client.dev =3D mtk_crtc->mmsys_dev;
-> +       mtk_crtc->cmdq_client.client.tx_block =3D false;
-> +       mtk_crtc->cmdq_client.client.knows_txdone =3D true;
-> +       mtk_crtc->cmdq_client.client.rx_callback =3D ddp_cmdq_cb;
-> +       mtk_crtc->cmdq_client.chan =3D
-> +                       mbox_request_channel(&mtk_crtc->cmdq_client.clien=
-t,
-> +                                            drm_crtc_index(&mtk_crtc->ba=
-se));
-> +       if (IS_ERR(mtk_crtc->cmdq_client.chan)) {
->                 dev_dbg(dev, "mtk_crtc %d failed to create mailbox client=
-, writing register by CPU now\n",
->                         drm_crtc_index(&mtk_crtc->base));
-> -               mtk_crtc->cmdq_client =3D NULL;
-> +               mtk_crtc->cmdq_client.chan =3D NULL;
->         }
->
-> -       if (mtk_crtc->cmdq_client) {
-> -               mtk_crtc->cmdq_client->client.rx_callback =3D ddp_cmdq_cb=
-;
-> +       if (mtk_crtc->cmdq_client.chan) {
->                 ret =3D of_property_read_u32_index(priv->mutex_node,
->                                                  "mediatek,gce-events",
->                                                  drm_crtc_index(&mtk_crtc=
-->base),
-> @@ -856,8 +859,8 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
->                 if (ret) {
->                         dev_dbg(dev, "mtk_crtc %d failed to get mediatek,=
-gce-events property\n",
->                                 drm_crtc_index(&mtk_crtc->base));
-> -                       cmdq_mbox_destroy(mtk_crtc->cmdq_client);
-> -                       mtk_crtc->cmdq_client =3D NULL;
-> +                       mbox_free_channel(mtk_crtc->cmdq_client.chan);
-> +                       mtk_crtc->cmdq_client.chan =3D NULL;
->                 }
->         }
->  #endif
-> --
-> 2.18.0
->
+> 
+> > Currently, virtiofs does not support the Inotify API and there are
+> > applications which look for the Inotify support in virtiofs (e.g., Kata
+> > containers).
+> >
+> > However, all the event notification subsystems (Dnotify/Inotify/Fanotify)
+> > are supported by only by local kernel file systems.
+> >
+> > --Proposed solution
+> >
+> > With this RFC patch we add the inotify support to the FUSE kernel module
+> > so that the remote virtiofs file system (based on FUSE) used by a QEMU
+> > guest VM can make use of this feature.
+> >
+> > Specifically, we enhance FUSE to add/modify/delete watches on the FUSE
+> > server and also receive remote inotify events. To achieve this we modify
+> > the fsnotify subsystem so that it calls specific hooks in FUSE when a
+> > remote watch is added/modified/deleted and FUSE calls into fsnotify when
+> > a remote event is received to send the event to user space.
+> >
+> > In our case the FUSE server is virtiofsd.
+> >
+> > We also considered an out of band approach for implementing the remote
+> > notifications (e.g., FAM, Gamin), however this approach would break
+> > applications that are already compatible with inotify, and thus would
+> > require an update.
+> >
+> > These kernel patches depend on the patch series posted by Vivek Goyal:
+> > https://lore.kernel.org/linux-fsdevel/20210930143850.1188628-1-vgoyal@redhat.com/
+> 
+> It would be a shame if remote fsnotify was not added as a generic
+> capability to FUSE filesystems and not only virtiofs.
+> Is there a way to get rid of this dependency?
+
+Agreed. I think currently he has just added support for virtiofs. But
+it should be possible to extend it to other fuse filesystems as well.
+All they need to do is send notification and regular fuse already
+has support for allowing server to send notifications to fuse client
+kernel.
+
+> 
+> >
+> > My PoC Linux kernel patches are here:
+> > https://github.com/iangelak/linux/commits/inotify_v1
+> >
+> > My PoC virtiofsd corresponding patches are here:
+> > https://github.com/iangelak/qemu/commits/inotify_v1
+> >
+> > --Advantages
+> >
+> > 1) Our approach is compatible with existing applications that rely on
+> > Inotify, thus improves portability.
+> >
+> > 2) Everything is implemented in one place (virtiofs and virtiofsd) and
+> > there is no need to run additional processes (daemons) specifically to
+> > handle the remote notifications.
+> >
+> > --Weaknesses
+> >
+> > 1) Both a local (QEMU guest) and a remote (Host/Virtiofsd) watch on the
+> > target inode have to be active at the same time. The local watch
+> > guarantees that events are going to be sent to the guest user space while
+> > the remote watch captures events occurring on the host (and will be sent
+> > to the guest).
+> >
+> > As a result, when an event occures on a inode within the exported
+> > directory by virtiofs, two events will be generated at the same time; a
+> > local event (generated by the guest kernel) and a remote event (generated
+> > by the host), thus the guest will receive duplicate events.
+> >
+> > To account for this issue we implemented two modes; one where local events
+> > function as expected (when virtiofsd does not support the remote
+> > inotify) and one where the local events are suppressed and only the
+> > remote events originating from the host side are let through (when
+> > virtiofsd supports the remote inotify).
+> 
+> Dropping events from the local side would be weird.
+> Avoiding duplicate events is not a good enough reason IMO
+> compared to the problems this could cause.
+> I am not convinced this is worth it.
+
+So what should be done? If we don't drop local events, then application
+will see both local and remote events. And then we will have to build
+this knowledge in API that an event can be either local or remote.
+Application should be able to distinguish between these two and act
+accordingly. That sounds like a lot. And I am not even sure if application
+cares about local events in case of a remote shared filesystem.
+
+I have no experience with inotify/fanotify/fsnotify and what people
+expect from inotify/fanotify API. So we are open to all the ideas
+w.r.t what will be a good design to support this thing on remote
+filesystems. Currently whole infrastructure seems to be written with
+local filesystems in mind.
+
+> 
+> >
+> > 3) The lifetime of the local watch in the guest kernel is very
+> > important. Specifically, there is a possibility that the guest does not
+> > receive remote events on time, if it removes its local watch on the
+> > target or deletes the inode (and thus the guest kernel removes the watch).
+> > In these cases the guest kernel removes the local watch before the
+> > remote events arrive from the host (virtiofsd) and as such the guest
+> > kernel drops all the remote events for the target inode (since the
+> > corresponding local watch does not exist anymore). On top of that,
+> > virtiofsd keeps an open proc file descriptor for each inode that is not
+> > immediately closed on a inode deletion request by the guest. As a result
+> > no IN_DELETE_SELF is generated by virtiofsd and sent to the guest kernel
+> > in this case.
+> >
+> > 4) Because virtiofsd implements additional operations during the
+> > servicing of a request from the guest, additional inotify events might
+> > be generated and sent to the guest other than the ones the guest
+> > expects. However, this is not technically a limitation and it is dependent
+> > on the implementation of the remote file system server (in this case
+> > virtiofsd).
+> >
+> > 5) The current implementation only supports Inotify, due to its
+> > simplicity and not Fanotify. Fanotify's complexity requires support from
+> > virtiofsd that is not currently available. One such example is
+> > Fsnotify's access permission decision capabilities, which could
+> > conflict with virtiofsd's current access permission implementation.
+> 
+> Good example, bad decision.
+> It is perfectly fine for a remote server to provide a "supported event mask"
+> and leave permission events out of the game.
+> 
+> Imagine a remote SMB server, it also does not support all of the events
+> that the local application would like to set.
+> 
+> That should not be a reason to rule out fanotify, only specific
+> fanotify events.
+> 
+> Same goes to FAN_MARK_MOUNT and FAN_MARK_FILESYSTEM
+> remote server may or may not support anything other than watching
+> inode objects, but it should not be a limit of the "remote fsnotify" API.
+
+Agreed. If limited fanotify functionality is acceptable, then it should
+be written in such a way so that one can easily extend it to support
+limited fanotify support.
+
+Thanks
+Vivek
+
