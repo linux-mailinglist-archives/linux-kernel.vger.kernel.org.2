@@ -2,59 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14CC43B7A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EE943B7A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237602AbhJZQ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:56:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237590AbhJZQ4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:56:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B37B601FF;
-        Tue, 26 Oct 2021 16:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635267230;
-        bh=8ZHAjFaWjzftQ0tMBWTtPlq3XYzflHXIiSKtmYcBIWA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MPfsdWbMcP3/Ka30zCA25xKnFSe6bR4Q2r20k6zcNycONHZ1Eizlg4nIk/ML/a4nx
-         pck8w2FgTDE95ucyuZ0AAvJL4f45jTGNPdZcl8AIuOm3a0odY53jdx5ah9zj1/Syzt
-         kHRllOHX3mc+lumN/0rpr1AELGHik0isjAx4IMsdSWLW0z10QnNpkbz8fiQ8MqL1on
-         /L63n20nJdRUYV64wx/dlPVcVqZ49svDIQuYDo7tyCfIryttln9ZEwb3yILEfaAU/0
-         UjiCi/D8lSXJFVQa5ZJT47L3ftgsCJgWWHy44DtH+hfZj6hCyAuKnXazoGfi2X1KwL
-         WDZaPg58hqheg==
-Date:   Tue, 26 Oct 2021 11:53:48 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Anthony Wong <anthony.wong@canonical.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Subject: Re: [PATCH v2 3/3] PCI/ASPM: Add LTR sysfs attributes
-Message-ID: <20211026165348.GA146058@bhelgaas>
+        id S237613AbhJZQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237329AbhJZQ6E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 12:58:04 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31486C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:55:40 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id p16so224726lfa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LP40nYkEbLTRumSDbIOq85aSQOkINlJU3Lvgje0t1Ow=;
+        b=CIA7RDXGOVfr6w+wIEX0zTARG/3oUw7hS1nDA65m5j4EqzU2S3uppECIgYtrZ3onB7
+         tCjEyCUOL3u34a4MtlqnZjoebRIXxZzeNy4QZeA4EjF0MDXWf04W/2qvfFMhIhU8+cbW
+         KWQCsAPRF+u7Khu7QFp6i/hLT5Y62m7+S+ObY9YqB7ZhKy8+sU6lV1YC59dGSzI/Vl3d
+         xAH/HOOC8w4PiOk3EnRbI6q5j9u1B4nrRX8Q0Z9Mv/WZ3hpA99jBaNFIbAlF9q9bnP9B
+         NOrM63SZQbLdbF/mMpywcsgxhDZAOGkhJuh9GwufQ4gblB0rfFmHY6EAF9o1us5W4vM5
+         CVSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LP40nYkEbLTRumSDbIOq85aSQOkINlJU3Lvgje0t1Ow=;
+        b=QLtV/Ae44ILda7jpn0mBfACSFLkVQa7f/uXtfyEVMySbic4yk5C9CBolM7Rdy4LoPz
+         fGX8oZreWLIv/C3QeNjhTVmz23/fvOCRczXPXE1Doj6hZGYTcl1aYiZk+XYwnceEE7EX
+         1tuSj16oltCGg4/hVIS+sPd1rgWwu368QBfutQqK4Ro1m7JlImTZa8Vi3bltyzd4p6g7
+         yib5SirRW8989Mz/GbnwOuOlRgbh8kNCnhkUAefFTYt/xFnB03bKVwa9/lgpmgOCaDz8
+         vlGl8kxNxRhi/QcpNMG9sFcj01XCeFSxEdrCrzNVXiK8+JttGA9LoWYZTfoQimvID850
+         uFWQ==
+X-Gm-Message-State: AOAM530GjftvjDADZfeyWdURVnHJGtVYjoarNBDjENhZqNNDR0dIzzqX
+        qR9537eYOsFJUtYiqxnS/w9IVeo7jgAfkNEj2VZjuyEgObzvwg==
+X-Google-Smtp-Source: ABdhPJw2cxUH8C9WC0nTDyk7WK/wvxQOywxtnc0blf51/N4iPjOxCOzuIu/Tm5j+Xzz4tYrbsQOVE+HZ5M4xLCGvrMw=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr24435501lfb.71.1635267338322;
+ Tue, 26 Oct 2021 09:55:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAd53p7cqnGmySsxSz1xTmUp=_O_vApMuvcg-cBFUHButpva7Q@mail.gmail.com>
+References: <CGME20211022063928epcas1p28a32be208929f9905c80e655736b7a7d@epcas1p2.samsung.com>
+ <20211022063920.2145-1-huijin.park@samsung.com>
+In-Reply-To: <20211022063920.2145-1-huijin.park@samsung.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 26 Oct 2021 18:55:01 +0200
+Message-ID: <CAPDyKFo0FZ04dO-sJwL+Nvs-7JY22+y03VYRCmi80TpwdizxGQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mmc: core: adjust polling interval for CMD1
+To:     Huijin Park <huijin.park@samsung.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huijin Park <bbanghj.park@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:28:38AM +0800, Kai-Heng Feng wrote:
+On Fri, 22 Oct 2021 at 08:39, Huijin Park <huijin.park@samsung.com> wrote:
+>
+> In mmc_send_op_cond(), loops are continuously performed at the same
+> interval of 10 ms.  However the behaviour is not good for some eMMC
+> which can be out from a busy state earlier than 10 ms if normal.
+>
+> Therefore, this patch adjusts the waiting interval time. The interval
+> time starts at 1 ms, but doubles until the range reaches 10 ms for
+> each loop.
+>
+> The reason for adjusting the interval time is that it is important
+> to reduce the eMMC initialization time, especially in devices that
+> use eMMC as rootfs.
+>
+> Test log(eMMC:KLM8G1GETF-B041):
+>
+> before: 12 ms (0.439407 - 0.427186)
+> [0.419407] mmc0: starting CMD0 arg 00000000 flags 000000c0
+> [0.422652] mmc0: starting CMD1 arg 00000000 flags 000000e1
+> [0.424270] mmc0: starting CMD0 arg 00000000 flags 000000c0
+> [0.427186] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
+> [0.439407] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
+> [0.439721] mmc0: starting CMD2 arg 00000000 flags 00000007
+>
+> after: 4 ms (0.431725 - 0.427352)
+> [0.419575] mmc0: starting CMD0 arg 00000000 flags 000000c0
+> [0.422819] mmc0: starting CMD1 arg 00000000 flags 000000e1
+> [0.424435] mmc0: starting CMD0 arg 00000000 flags 000000c0
+> [0.427352] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
+> [0.428913] mmc0: starting CMD1 arg 40000080 flags 000000e1
+> [0.431725] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
+> [0.432038] mmc0: starting CMD2 arg 00000000 flags 00000007
+>
+> Signed-off-by: Huijin Park <huijin.park@samsung.com>
+>
+> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+> index 0c54858e89c0..61b4ffdc89ce 100644
+> --- a/drivers/mmc/core/mmc_ops.c
+> +++ b/drivers/mmc/core/mmc_ops.c
+> @@ -177,6 +177,7 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+>  {
+>         struct mmc_command cmd = {};
+>         int i, err = 0;
+> +       int interval = 1, interval_max = 10;
+>
+>         cmd.opcode = MMC_SEND_OP_COND;
+>         cmd.arg = mmc_host_is_spi(host) ? 0 : ocr;
+> @@ -198,7 +199,9 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+>
+>                 err = -ETIMEDOUT;
+>
+> -               mmc_delay(10);
+> +               mmc_delay(interval);
+> +               if (interval < interval_max)
+> +                       interval = min(interval * 2, interval_max);
 
-> What if we fallback to the original approach and use the VMD driver
-> to enable ASPM and LTR values?  At least I think Intel should be
-> able to provide correct values for their SoC.
+It looks like we should be able to replace the above polling loop with
+__mmc_poll_for_busy(). We would need a callback function and a
+callback data, specific for CMD1, but that looks far better to me, if
+we can get that to work.
 
-Can you post the patches for that?  I'm not sure exactly what the
-original approach was.  Are these the same as the downstream support
-you mention below?
+Would you mind having a look?
 
-> So what other options do we have if we want to enable VMD ASPM while
-> keeping CONFIG_PCIEASPM_DEFAULT=y?  Right now we enabled the VMD
-> ASPM/LTR bits in downstream kernel, but other distro users may want
-> to have upstream support for this.
+>
+>                 /*
+>                  * According to eMMC specification v5.1 section 6.4.3, we
+
+Kind regards
+Uffe
