@@ -2,174 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3CC43B98E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B992C43B992
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236065AbhJZSaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:30:19 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:41723 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbhJZSaI (ORCPT
+        id S235191AbhJZSam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235241AbhJZSak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:30:08 -0400
-Received: by mail-ot1-f49.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so18550570ote.8;
-        Tue, 26 Oct 2021 11:27:44 -0700 (PDT)
+        Tue, 26 Oct 2021 14:30:40 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F431C061745;
+        Tue, 26 Oct 2021 11:28:16 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id o184so507601iof.6;
+        Tue, 26 Oct 2021 11:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a1dt/KdKFMZr2JEFVAnzlosUvMAPKJvNUI3HrMGiVQk=;
+        b=bJLutzcpwGRmim77vYeHLzUMGz30PFRESyTQCEj5tmU+htvTwKeM+kVbBJv9RXhapo
+         g4iLeGYtjuN8HzoMbHI7sw3TMCKi5ISgygHKwkYTBuyAb3JHUe7ACvQ2f+MRh2p97zHl
+         gxMzo9HW3joMB2o0Dg4xUpRKCBL+HNXHDWQbcsTp/FjBN76VxtuVWdN2NSFSxl2uNix1
+         jSpv8i028LGdAmbRuk7oJL6MWp0C1qJHsgkovc/7e82KZRIWZWzDKj0jMWOW4pg6Kjsr
+         CVVpLrVDUeS9P2gU90B2hXYFn2y9n6eVXevRBFbjj2OHymCg/yFECxXR7q7SSdQRT60g
+         S/Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eFp4CK/cIp2DpF9Nk6vMYc4k/uaKBP5Bf1YLZsAxfy8=;
-        b=00NkxEJKPSGLo7KVpbXcVHThJAGIjZf0j6sV2wvSbse8/G3VehtBvhTC1fV/PTpFn5
-         SzNQTElO05kGwFWbIbj88upTYdqdJDr3+bYVRsHBfq/9rfNIdYtaG8kcqoaFpmKLwc+d
-         O4In8eDkTlFHYZ7gKHfw6p5nO8bhextz0F/ZHpnWQBNN/b8JUWJw+AfrFX8X+2lQ8C8l
-         tehufxoh1vZ2XIBUzeXUg6m/O2GkN48j/0yzv0XNzUDcn8xqej5jroWVSyGh2uwwIBPZ
-         GFcjs8RxW6nmsc+NmaWr2icTIKCZfqB6c6BK8koY93jA14aqFOk/U+julh4rh+EIVjYa
-         H+Qw==
-X-Gm-Message-State: AOAM531wBYYC+S8gKtAGXxfcMukTsAsA9OBVLovnIPxhRzeIC3FBrDla
-        36UGqVIrLc/ePuZYGE6RCYsjdX5GtA==
-X-Google-Smtp-Source: ABdhPJwAI3IRkPjjJ3d2IqWje3ojRvX5pfch4KRIpOaHwTTrfF7i8XPhD1CUStoVg+jiE/yJp6STeA==
-X-Received: by 2002:a9d:6c8b:: with SMTP id c11mr4829768otr.50.1635272863827;
-        Tue, 26 Oct 2021 11:27:43 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w9sm4701797otp.64.2021.10.26.11.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:27:43 -0700 (PDT)
-Received: (nullmailer pid 2979460 invoked by uid 1000);
-        Tue, 26 Oct 2021 18:27:41 -0000
-Date:   Tue, 26 Oct 2021 13:27:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Johan Hovold <johan@kernel.org>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        Mark Kettenis <kettenis@openbsd.org>
-Subject: Re: [PATCH v2 3/8] dt-bindings: power: Add apple,pmgr-pwrstate
- binding
-Message-ID: <YXhInb5kWO15YL7W@robh.at.kernel.org>
-References: <20211025144718.157794-1-marcan@marcan.st>
- <20211025144718.157794-4-marcan@marcan.st>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a1dt/KdKFMZr2JEFVAnzlosUvMAPKJvNUI3HrMGiVQk=;
+        b=InxS5KoscmytZL5dTsYY/qrusdcLxPemJ5Z/Ktjg8F1YvACFEdebKKz+KCMHwJiPR3
+         EGqYCLYl92RdHXv57xcTwfFfewN3jSZvB3329JqztfBTcdEYgZOJhq6ipzGfmLHkeviQ
+         clIxoQtYM79QCXEZZeXWP9C8O4xupP4Tq5EOVHp8Sy3lV4l0bQW8E43V1542U5l+IWiy
+         XNtHbuhW8TsnXuWNAraSE18rXxrgC+Ur8tRUstFD0dbbPFfmSou/WcP7RdLVBGyI3yAD
+         UjOcfVp4t12ctWZt/JoaKYVyAcsMoy7sGZWPpnzsQICiHYh0p63xHGD0fnxo5lHnqTXK
+         zmtw==
+X-Gm-Message-State: AOAM531vTf55gwtfsU2kHZVp+RHCv05QNXQpqubVvYFt4omeOntK8stN
+        Ds+wmt2p+v5r3ePWXPbCejajrKMyevu7EuET4zZm11iB
+X-Google-Smtp-Source: ABdhPJzatRdI3S4ueB2AsBYRGKzBpbKL6m4OMwo/V5Ew+YT67C41xvY1ezp4E8qQ5S/S8NU0okbMMnouI4DDqp6COoQ=
+X-Received: by 2002:a5d:8792:: with SMTP id f18mr16199689ion.52.1635272895859;
+ Tue, 26 Oct 2021 11:28:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025144718.157794-4-marcan@marcan.st>
+References: <20211025204634.2517-1-iangelak@redhat.com> <20211025204634.2517-2-iangelak@redhat.com>
+ <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com>
+In-Reply-To: <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 26 Oct 2021 21:28:04 +0300
+Message-ID: <CAOQ4uxj+32zyWNsSVyVO25xCGp+2BjEZtG1S9xmCzjVii4Skiw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] FUSE: Add the fsnotify opcode and in/out structs
+ to FUSE
+To:     Ioannis Angelakopoulos <iangelak@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 11:47:13PM +0900, Hector Martin wrote:
-> This syscon child node represents a single SoC device controlled by the
-> PMGR block. This layout allows us to declare all device power state
-> controls (power/clock gating and reset) in the device tree, including
-> dependencies, instead of hardcoding it into the driver. The register
-> layout is uniform.
-> 
-> Each pmgr-pwrstate node provides genpd and reset features, to be
-> consumed by downstream device nodes.
-> 
-> Future SoCs are expected to use backwards compatible registers, and the
-> "apple,pmgr-pwrstate" represents any such interfaces (possibly with
-> additional features gated by the more specific compatible), allowing
-> them to be bound without driver updates. If a backwards incompatible
-> change is introduced in future SoCs, it will require a new compatible,
-> such as "apple,pmgr-pwrstate-v2".
-> 
-> Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  .../bindings/power/apple,pmgr-pwrstate.yaml   | 69 +++++++++++++++++++
->  1 file changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> new file mode 100644
-> index 000000000000..010f8b641304
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/apple,pmgr-pwrstate.yaml
-> @@ -0,0 +1,69 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/apple,pmgr-pwrstate.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Apple SoC PMGR Power States
-> +
-> +maintainers:
-> +  - Hector Martin <marcan@marcan.st>
-> +
-> +allOf:
-> +  - $ref: "power-domain.yaml#"
-> +
-> +description: |
-> +  Apple SoCs include a PMGR block responsible for power management,
-> +  which can control various clocks, resets, power states, and
-> +  performance features. This binding describes the device power
-> +  state registers, which control power states and resets.
-> +
-> +  Each instance of a power controller within the PMGR syscon node
-> +  represents a generic power domain provider, as documented in
-> +  Documentation/devicetree/bindings/power/power-domain.yaml.
-> +  The provider controls a single SoC block. The power hierarchy is
-> +  represented via power-domains relationships between these nodes.
-> +
-> +  See Documentation/devicetree/bindings/arm/apple/apple,pmgr.yaml
-> +  for the top-level PMGR node documentation.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - apple,t8103-pmgr-pwrstate
-> +      - const: apple,pmgr-pwrstate
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#power-domain-cells":
-> +    const: 0
-> +
-> +  "#reset-cells":
-> +    const: 0
-> +
-> +  power-domains:
-> +    description:
-> +      Reference to parent power domains. A domain may have multiple parents,
-> +      and all will be powered up when it is powered.
-> +    minItems: 1
-> +
-> +  label:
-> +    description: |
-> +      Specifies the name of the SoC domain being controlled. This is used to
-> +      name the power/reset domains.
-> +
-> +  apple,always-on:
-> +    description: |
+On Tue, Oct 26, 2021 at 5:56 PM Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> On Mon, Oct 25, 2021 at 11:47 PM Ioannis Angelakopoulos
+> <iangelak@redhat.com> wrote:
+> >
+> > Since fsnotify is the backend for the inotify subsystem all the backend
+> > code implementation we add is related to fsnotify.
+> >
+> > To support an fsnotify request in FUSE and specifically virtiofs we add a
+> > new opcode for the FSNOTIFY (51) operation request in the "fuse.h" header.
+> >
+> > Also add the "fuse_notify_fsnotify_in" and "fuse_notify_fsnotify_out"
+> > structs that are responsible for passing the fsnotify/inotify related data
+> > to and from the FUSE server.
+> >
+> > Signed-off-by: Ioannis Angelakopoulos <iangelak@redhat.com>
+> > ---
+> >  include/uapi/linux/fuse.h | 23 ++++++++++++++++++++++-
+> >  1 file changed, 22 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+> > index 46838551ea84..418b7fc72417 100644
+> > --- a/include/uapi/linux/fuse.h
+> > +++ b/include/uapi/linux/fuse.h
+> > @@ -186,6 +186,9 @@
+> >   *  - add FUSE_SYNCFS
+> >   *  7.35
+> >   *  - add FUSE_NOTIFY_LOCK
+> > + *  7.36
+> > + *  - add FUSE_HAVE_FSNOTIFY
+> > + *  - add fuse_notify_fsnotify_(in,out)
+> >   */
+> >
+> >  #ifndef _LINUX_FUSE_H
+> > @@ -221,7 +224,7 @@
+> >  #define FUSE_KERNEL_VERSION 7
+> >
+> >  /** Minor version number of this interface */
+> > -#define FUSE_KERNEL_MINOR_VERSION 35
+> > +#define FUSE_KERNEL_MINOR_VERSION 36
+> >
+> >  /** The node ID of the root inode */
+> >  #define FUSE_ROOT_ID 1
+> > @@ -338,6 +341,7 @@ struct fuse_file_lock {
+> >   *                     write/truncate sgid is killed only if file has group
+> >   *                     execute permission. (Same as Linux VFS behavior).
+> >   * FUSE_SETXATTR_EXT:  Server supports extended struct fuse_setxattr_in
+> > + * FUSE_HAVE_FSNOTIFY: remote fsnotify/inotify event subsystem support
+> >   */
+> >  #define FUSE_ASYNC_READ                (1 << 0)
+> >  #define FUSE_POSIX_LOCKS       (1 << 1)
+> > @@ -369,6 +373,7 @@ struct fuse_file_lock {
+> >  #define FUSE_SUBMOUNTS         (1 << 27)
+> >  #define FUSE_HANDLE_KILLPRIV_V2        (1 << 28)
+> >  #define FUSE_SETXATTR_EXT      (1 << 29)
+> > +#define FUSE_HAVE_FSNOTIFY     (1 << 30)
+> >
+> >  /**
+> >   * CUSE INIT request/reply flags
+> > @@ -515,6 +520,7 @@ enum fuse_opcode {
+> >         FUSE_SETUPMAPPING       = 48,
+> >         FUSE_REMOVEMAPPING      = 49,
+> >         FUSE_SYNCFS             = 50,
+> > +       FUSE_FSNOTIFY           = 51,
+> >
+> >         /* CUSE specific operations */
+> >         CUSE_INIT               = 4096,
+> > @@ -532,6 +538,7 @@ enum fuse_notify_code {
+> >         FUSE_NOTIFY_RETRIEVE = 5,
+> >         FUSE_NOTIFY_DELETE = 6,
+> >         FUSE_NOTIFY_LOCK = 7,
+> > +       FUSE_NOTIFY_FSNOTIFY = 8,
+> >         FUSE_NOTIFY_CODE_MAX,
+> >  };
+> >
+> > @@ -571,6 +578,20 @@ struct fuse_getattr_in {
+> >         uint64_t        fh;
+> >  };
+> >
+> > +struct fuse_notify_fsnotify_out {
+> > +       uint64_t inode;
+>
+> 64bit inode is not a good unique identifier of the object.
+> you need to either include the generation in object identifier
+> or much better use the object's nfs file handle, the same way
+> that fanotify stores object identifiers.
+>
+> > +       uint64_t mask;
+> > +       uint32_t namelen;
+> > +       uint32_t cookie;
+>
+> I object to persisting with the two-events-joined-by-cookie design.
+> Any new design should include a single event for rename
+> with information about src and dst.
+>
+> I know this is inconvenient, but we are NOT going to create a "remote inotify"
+> interface, we need to create a "remote fsnotify" interface and if server wants
+> to use inotify, it will need to join the disjoined MOVE_FROM/TO event into
+> a single "remote event", that FUSE will use to call fsnotify_move().
+>
 
-Can drop '|' on these too. Otherwise,
+TBH, the disjoint vs. joint from/to event is an unfinished business
+for fanotify.
+So my objection above is more of a strong wish.
+But I admit that if existing network protocols already encode the disjoint
+from/to events semantics, I may need to fold back on that objection.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> +      Forces this power domain to always be powered up.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#power-domain-cells"
-> +  - "#reset-cells"
-> +  - label
-> +
-> +additionalProperties: false
-> -- 
-> 2.33.0
-> 
-> 
+Thanks,
+Amir.
