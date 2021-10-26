@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75F843B2D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899CF43B2D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbhJZNDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:03:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:10263 "EHLO m43-7.mailgun.net"
+        id S236119AbhJZNFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:05:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236113AbhJZNDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:03:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635253258; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=1k3zGJ4rl06XKaEt7rtFd3UZK/aFUbT8lcdHtHYHL0c=; b=F0eL2IAln6m1iQiHWFECXfqygUyqRVoUbgnbeY7Pq7V5pFH+MUI+w+kuSkfif0AO8LmFM0sb
- ecfHXCYLjy0cfP+EfF8jh2BCmNEujWt5/0LVZjhVkUqo39rUHrVxOunJ2fuSEo0I1USVTbJZ
- KRRKCg0B5J0wOliNMHbCW8uS37A=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6177fbe7b03398c06ce69e25 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 13:00:23
- GMT
-Sender: quic_luoj=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 51B74C43619; Tue, 26 Oct 2021 13:00:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.92.1.38] (unknown [180.166.53.36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S230324AbhJZNFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:05:07 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52593C4338F;
-        Tue, 26 Oct 2021 13:00:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 52593C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-Subject: Re: [PATCH] net: phy: fixed warning: Function parameter not described
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Luo Jie <luoj@codeaurora.org>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
+        by mail.kernel.org (Postfix) with ESMTPSA id 1100860E74;
+        Tue, 26 Oct 2021 13:02:41 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 09:02:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211026102957.17100-1-luoj@codeaurora.org>
- <YXfaAfSfPTaTTpVf@shell.armlinux.org.uk>
-From:   Jie Luo <quic_luoj@quicinc.com>
-Message-ID: <1e2c14d5-0d9c-e288-f2c6-0b29c5ce93e0@quicinc.com>
-Date:   Tue, 26 Oct 2021 21:00:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+Subject: Re: [PATCH V5 06/20] trace/osnoise: Allow multiple instances of the
+ same tracer
+Message-ID: <20211026090239.5ca7d350@gandalf.local.home>
+In-Reply-To: <f30262dc-f1cf-4945-5a7d-5ecf5a0b5cc2@kernel.org>
+References: <cover.1635181938.git.bristot@kernel.org>
+        <69cbbd98cce2515c84127c8827d733dc87b04823.1635181938.git.bristot@kernel.org>
+        <20211025220856.7fef7581@rorschach.local.home>
+        <f30262dc-f1cf-4945-5a7d-5ecf5a0b5cc2@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YXfaAfSfPTaTTpVf@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 26 Oct 2021 10:38:27 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-On 10/26/2021 6:35 PM, Russell King (Oracle) wrote:
-> On Tue, Oct 26, 2021 at 06:29:57PM +0800, Luo Jie wrote:
->> Fixed warning: Function parameter or member 'enable' not
->> described in 'genphy_c45_fast_retrain'
->>
->> Signed-off-by: Luo Jie <luoj@codeaurora.org>
->> ---
->>   drivers/net/phy/phy-c45.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/phy/phy-c45.c b/drivers/net/phy/phy-c45.c
->> index b01180e1f578..db709d30bf84 100644
->> --- a/drivers/net/phy/phy-c45.c
->> +++ b/drivers/net/phy/phy-c45.c
->> @@ -614,6 +614,7 @@ EXPORT_SYMBOL_GPL(genphy_c45_loopback);
->>   /**
->>    * genphy_c45_fast_retrain - configure fast retrain registers
->>    * @phydev: target phy_device struct
->> + * @enable: enable fast retrain or not
->>    *
->>    * Description: If fast-retrain is enabled, we configure PHY as
->>    *   advertising fast retrain capable and THP Bypass Request, then
-> Patch itself is fine, but I wonder why we've started getting
-> Description: prefixes on new functions in this file whereas the
-> bulk of the descriptions in the file do not use that prefix.
 
-Thanks Russell for the review. i see the prefix "Description" is also 
-used in the
+> >>   * osnoise_register_instance - register a new trace instance
+> >>   *
+> >> @@ -2048,6 +2066,16 @@ static int osnoise_workload_start(void)
+> >>  {
+> >>  	int retval;
+> >>  
+> >> +	/*
+> >> +	 * Instances need to be registered after calling workload
+> >> +	 * start. Hence, if there is already an instance, the
+> >> +	 * workload was already registered. Otherwise, this
+> >> +	 * code is on the way to register the first instance,
+> >> +	 * and the workload will start.
+> >> +	 */
+> >> +	if (osnoise_has_registered_instances())
+> >> +		return 0;  
+> > 
+> > Looking at how this is checked before being called, it really should
+> > return -1, as it is an error if this is called with instances active.  
+> 
+> Hum.... maybe my explanation is not good enough. It is not a problem if it is
+> called with active instances. It would be an error if the same instance was
+> already registered at this point, but that was checked before. Here it is
+> checking for other instances that should have enabled the workload.
+> 
+> Does updating the comment with the one below helps?
 
-file phy.c.
+No need.
 
-> In any case, for this patch:
->
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
->
-> Thanks.
->
+
+> >> @@ -2096,7 +2131,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
+> >>  {
+> >>  	int retval;
+> >>  
+> >> -	if (osnoise_has_registered_instances())
+> >> +	/*
+> >> +	 * If the instance is already registered, there is no need to
+> >> +	 * register it again.
+> >> +	 */
+> >> +	if (osnoise_instance_registered(tr))
+
+My eyes missed that you removed the osnoise_has_registered_instances() for
+the osnoise_instance_registered(tr), and thought you were doing the same
+test twice.
+
+My mistake. I need to not review patches at the end of the day when I'm
+ready to go to sleep.
+
+-- Steve
