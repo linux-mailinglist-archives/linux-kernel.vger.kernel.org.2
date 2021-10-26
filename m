@@ -2,127 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6051143A9EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A483243A9F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhJZBxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 21:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbhJZBxm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:53:42 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E94C061745;
-        Mon, 25 Oct 2021 18:51:19 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id o184so18129230iof.6;
-        Mon, 25 Oct 2021 18:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M+TEaQB1KaSOudASCPt2E3PS4ymJyoJAqUYafZ8gI7E=;
-        b=oL8HHOwwrFG5e/LmuN4agIcEJfacHoUr4ai/CCnAQSW/UKvac/ju9Spl9S9IctkdMV
-         u0xR2bACpUqrjpo/d3B+q1N6PyNK5ARQbG4fte2a2ZeidUraP8oLilSHNXEM9gU0CM+I
-         SbO2q5cPvNWPOqMrm+ujryeD7OZDrL2sot8WITIksRGltQ4ED6m5RR4JvhnniPEr0cIJ
-         1JuVaVB6Rv7gWKPXWYUWuUxracYP9X5Yyy77zUMhI1TK6oK1YwDlTQ+j3ASsLa/eokld
-         MkDGJwXZSGj2b87w6vxWYa8EEp7aHhVpWjIf4Q3+7yIsWlT4MlYFozO9j7Xg4hpf4VFu
-         u+jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M+TEaQB1KaSOudASCPt2E3PS4ymJyoJAqUYafZ8gI7E=;
-        b=qfJnDPw8lTYjHE8ocNM48qavwlU/an4GeU2JrC8jppYMH0eSV9jsJ5tOy5puLTrhBc
-         StaW2nJoDs2GVMEeFbQfz8B+7gUNQXd44FcA4gq6DUh7zQHA/bd2pAu7zjOpyITPeAzQ
-         YGPMdxNfxlw66Q100l8glUhizE+I0zGbazaLkFgwsVUGMhMSY21TxZrG+Wj8LndkDdmY
-         SaVmIcVhI3pxe8IYciO9FO2ixEK3xultBy6w+BDsK4y5hkCDOAhA1kbFSXZMBe+rVP+X
-         mfAljVJGJ6NGcgJjNC6L7ckBI/gu1/OXeBIsrWQaRu5/vBKvK7LbLp870yzbrTqxtO4s
-         6FEg==
-X-Gm-Message-State: AOAM530a+IWBGYvHyKT5d5FPDnn5LIOXt6EwDwWzait7qB1l0ui4xsJx
-        5z0Vsh2Qs/Hkq7i90P9askt6bevqr/v3Jd7spwo=
-X-Google-Smtp-Source: ABdhPJzo8Pl2UbPecXV9ZclgT3FzrihDFm7Isxsh4OePzHurnJ+maCBZCvaVaerHAt6wvuSmpFvZzPlkXSA+3EMqRwA=
-X-Received: by 2002:a5d:9493:: with SMTP id v19mr13031702ioj.34.1635213079114;
- Mon, 25 Oct 2021 18:51:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-4-laoar.shao@gmail.com>
- <202110251411.93B477676B@keescook>
-In-Reply-To: <202110251411.93B477676B@keescook>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 26 Oct 2021 09:50:43 +0800
-Message-ID: <CALOAHbBwRcZoRteU7qL7rdip=cbTHc3n6-eJrd6xUoeJ+Win6Q@mail.gmail.com>
-Subject: Re: [PATCH v6 03/12] drivers/connector: make connector comm always
- nul ternimated
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Vladimir Zapolskiy <vzapolskiy@gmail.com>,
-        David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S233434AbhJZByU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:54:20 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:43202 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231971AbhJZByO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 21:54:14 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj2okX3dh6gIgAA--.33960S2;
+        Tue, 26 Oct 2021 09:51:33 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, corbet@lwn.net
+Cc:     akpm@linux-foundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] Do some changes about kprobe and trace
+Date:   Tue, 26 Oct 2021 09:51:27 +0800
+Message-Id: <1635213091-24387-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxj2okX3dh6gIgAA--.33960S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZry7Cry3Kr1xurWfGw15urg_yoW3XFg_Aw
+        s7K3s8Ga4UKrs0gw45Jrs29wsFya13WFyxAw1ktry7Zw47Gwn8Gan5Wrnxuay5ZrZY9FZ2
+        yFsxZrnIqF13XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7IU8xMaUUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 5:14 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Oct 25, 2021 at 08:33:06AM +0000, Yafang Shao wrote:
-> > connector comm was introduced in commit
-> > f786ecba4158 ("connector: add comm change event report to proc connector").
-> > struct comm_proc_event was defined in include/linux/cn_proc.h first and
-> > then been moved into file include/uapi/linux/cn_proc.h in commit
-> > 607ca46e97a1 ("UAPI: (Scripted) Disintegrate include/linux").
-> >
-> > As this is the UAPI code, we can't change it without potentially breaking
-> > things (i.e. userspace binaries have this size built in, so we can't just
-> > change the size). To prepare for the followup change - extending task
-> > comm, we have to use __get_task_comm() to avoid the BUILD_BUG_ON() in
-> > proc_comm_connector().
->
-> I wonder, looking at this again, if it might make more sense to avoid
-> this cn_proc.c change, and instead, adjust get_task_comm() like so:
->
-> #define get_task_comm(buf, tsk)
->         __get_task_comm(buf, __must_be_array(buf) + sizeof(buf), tsk)
->
-> This would still enforce the original goal of making sure
-> get_task_comm() is being used on a char array, and now that
-> __get_task_comm() will truncate & pad, it's safe to use on both
-> too-small and too-big arrays.
->
+This patchset is based on linux-trace.git:
+https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git/ for-next
 
-It Makes sense to me.  I will do it as you suggested.
+v2:
+  -- Update patch #4 to use linux-trace.git for KPROBES and TRACING entries
+
+Tiezhu Yang (4):
+  samples/kretprobes: Fix return value if register_kretprobe() failed
+  docs, kprobes: Remove invalid URL and add new reference
+  test_kprobes: Move it from kernel/ to lib/
+  MAINTAINERS: Update KPROBES and TRACING entries
+
+ Documentation/trace/kprobes.rst     | 2 +-
+ MAINTAINERS                         | 5 ++++-
+ kernel/Makefile                     | 1 -
+ lib/Makefile                        | 1 +
+ {kernel => lib}/test_kprobes.c      | 0
+ samples/kprobes/kretprobe_example.c | 2 +-
+ 6 files changed, 7 insertions(+), 4 deletions(-)
+ rename {kernel => lib}/test_kprobes.c (100%)
 
 -- 
-Thanks
-Yafang
+2.1.0
+
