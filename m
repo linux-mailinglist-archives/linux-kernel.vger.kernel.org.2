@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D242743B44C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E80343B44D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhJZOhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
+        id S236716AbhJZOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236699AbhJZOhr (ORCPT
+        with ESMTP id S235761AbhJZOhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:37:47 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7D3C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:24 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gn3so11129932pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:24 -0700 (PDT)
+        Tue, 26 Oct 2021 10:37:53 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECF5C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:30 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t21so10477162plr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1kI2Rkw6YpdObl6e6myBHLkGBf0+xEZMNOZ2amlFD7c=;
-        b=ALGd9F1OX0rjuViBgsYjqKwKO+0lKaZyL7NzupA7FUVWnKXfciN2bQXNM15S9GA25O
-         jQJAWlrnMR3PBIZ2QYkhbbwG5qGx74jtmQb16MItXwrd8vgeYeLrX0pLjpaoUQdnohT+
-         Tc/12HyhViR7CrN7yYePxJQEU9AjuUA9bLwQ37lomzsz/JYkeVJucnBwZ1C/6X4Uyl7Y
-         ZgZbFkLxwJORTP0KqTVlDdhrgpBpRA07py/Yunzh6zff9TL5cGoxsZOWvptRdsBf4bvx
-         t50rI0zdV7QNv/bsgYE7SzGlwU7YLJyzdN6vQCSA0Bu2atVJO75V6NqNUi4yhT5oQtGv
-         +aig==
+        bh=0H+JeGyJkw7+XsD6B9OKL2nsE7tddxNDSdsOksbRkDw=;
+        b=iYbE6NM2VfivMGfnm0SIojXzDcCB9R4Gx8q7YZSnHsKyyyY0LfmUcMJWYYZjdt9rV8
+         nzpOmbqFbpP5mZlsAY62HTh0TEZ5vA8pBs3Vw2TgkGqU9Vg6x9w1Y2Cl7NsMxej1EnZk
+         Tdso14s1bUbd5xlz+fqP+S9gzW+O36yK2F10TEoYTj16cwycAAbKD1VXgyIoFTRoVjAd
+         WSQn4B2WYNKQf05oenFhwfiPUAfFcpIun2K9oFXmm2DkhEOzJdL2126S9PJsTbQ+dSl+
+         fGrZHcJy5QqxJvR2luSQqVk3QcJmAyG1Y8TF+llwWcVU+dydjZjpAjFmpgLQKSXrlu4i
+         fafQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1kI2Rkw6YpdObl6e6myBHLkGBf0+xEZMNOZ2amlFD7c=;
-        b=EIqJ04/jffY0NnAro+trkv6hr5Wi4aYIvXtO+jYIo/phI6ZWEsuVOyBCOjl77B8owU
-         nzUCqR8MIgoxQVLOsdVYUiwE0ou4Tiz9x4fwRBtlcCIeLdk/07jy/XLliQWdHL9MPsv4
-         rXJqZS2y2VOkzD1ZDbw0n2WWCYzyQl7wiZPXqZ2eAh5Bwdr/jptXHw5M2mQOj395QhRW
-         nbMSut/zTl7zLDYuUBI+sWZ8f6asQzqLC3IwcGZjg5Ro7P3Qjs72vBFVhDccDHRr5IwK
-         8hjQtsYSQ3URAmTeBdbMVR5X9IhUq8kiY614vQKNdKjIALh7ZK5q1AxJ024NAohnicVG
-         TuxA==
-X-Gm-Message-State: AOAM532GOuhmP+biKg4bn8C8pKch50sOunKFwsrCNNZKmYZSAREI1A98
-        j0T/J/n30DDdQ+5TvuSarpRz3CnSbhw=
-X-Google-Smtp-Source: ABdhPJxB73N3d94DgXy/VVd/eYVid4QocOzGkyK7JN0geKdkx3ZgrgWsk/F8uLuYTsZ6n+/q6LpWqA==
-X-Received: by 2002:a17:903:234b:b0:140:4b5d:3051 with SMTP id c11-20020a170903234b00b001404b5d3051mr13851624plh.57.1635258923432;
-        Tue, 26 Oct 2021 07:35:23 -0700 (PDT)
+        bh=0H+JeGyJkw7+XsD6B9OKL2nsE7tddxNDSdsOksbRkDw=;
+        b=RV4IkUzEocEVJ62b/OnV1mVLORxSrhS2bKdXLVucV6BrfqSduZ3XBqFFwN4a9bZGMj
+         HXzuxxP6mcnAc1DcvCIqw98DrSbKTFEuJhDdwyABIqUekQLr0GDDAPTouzgCfROYdeQe
+         JwinKkYVPEOPDM8Tka6GSS9tVMbcWmsUJdna5KYhwCHgItxtWLcWzkFcd7iXlS0ldfoF
+         wkGxah6XJq8J6QZz8hXSvf3MxWJrS/DeLk5t0LZC5QrITsM+xu3HEDLfnFMmWIQ1aYdL
+         9mgTFGhbgcK6t9a3yl3ntaT8OKTkc8z/Tt5Pd0vpn+GQnotJ4rDcopI9Wbq0ewlSiIY6
+         mfxQ==
+X-Gm-Message-State: AOAM533exN1nNZMHPxi5rWwg3wvMuhoj2XvIS9S1k569TUAA8N0Dkn0z
+        9h7zyIrrZAynRO1Fl29hUr2KCiH2/zA=
+X-Google-Smtp-Source: ABdhPJzKBcB65ckjU5QVeM0TLyd+lmCe9qg2F5ldEq7wB4Atjl8lsTTo1fZbfwHOBLJaIXYkfETHng==
+X-Received: by 2002:a17:90b:4c88:: with SMTP id my8mr28875183pjb.49.1635258929462;
+        Tue, 26 Oct 2021 07:35:29 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id t8sm20612699pgk.66.2021.10.26.07.35.22
+        by smtp.gmail.com with ESMTPSA id n9sm2580522pjk.3.2021.10.26.07.35.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:35:23 -0700 (PDT)
+        Tue, 26 Oct 2021 07:35:29 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -56,9 +56,9 @@ Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 30/50] x86/entry: move PUSH_AND_CLEAR_REGS out of paranoid_entry
-Date:   Tue, 26 Oct 2021 22:34:16 +0800
-Message-Id: <20211026143436.19071-5-jiangshanlai@gmail.com>
+Subject: [PATCH V4 31/50] x86/entry: Add the C version ist_switch_to_kernel_cr3()
+Date:   Tue, 26 Oct 2021 22:34:17 +0800
+Message-Id: <20211026143436.19071-6-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,100 +70,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-It is prepared for converting the whole paranoid_entry() into C code.
+It switches the CR3 to kernel CR3 and returns the original CR3, and
+the caller should save the return value.
 
-No functional change intended.
+It is the C version of SAVE_AND_SWITCH_TO_KERNEL_CR3.
+
+Not functional difference intended.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ arch/x86/entry/entry64.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 8d873b778681..c9ee58e8e6d1 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -323,9 +323,6 @@ SYM_CODE_END(ret_from_fork)
-  */
- .macro idtentry_body cfunc has_error_code:req
- 
--	PUSH_AND_CLEAR_REGS
--	ENCODE_FRAME_POINTER
--
- 	/*
- 	 * Call error_entry and switch stack settled by sync_regs().
- 	 *
-@@ -404,6 +401,9 @@ SYM_CODE_START(\asmsym)
- .Lfrom_usermode_no_gap_\@:
- 	.endif
- 
-+	PUSH_AND_CLEAR_REGS
-+	ENCODE_FRAME_POINTER
+diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
+index a8e59ae41794..1d6ed444fee0 100644
+--- a/arch/x86/entry/entry64.c
++++ b/arch/x86/entry/entry64.c
+@@ -35,8 +35,23 @@ static __always_inline void switch_to_kernel_cr3(void)
+ 	if (static_cpu_has(X86_FEATURE_PTI))
+ 		pti_switch_to_kernel_cr3(__native_read_cr3());
+ }
 +
- 	idtentry_body \cfunc \has_error_code
- 
- _ASM_NOKPROBE(\asmsym)
-@@ -456,11 +456,14 @@ SYM_CODE_START(\asmsym)
- 
- 	pushq	$-1			/* ORIG_RAX: no syscall to restart */
- 
-+	PUSH_AND_CLEAR_REGS
-+	ENCODE_FRAME_POINTER
++static __always_inline unsigned long ist_switch_to_kernel_cr3(void)
++{
++	unsigned long cr3 = 0;
 +
- 	/*
- 	 * If the entry is from userspace, switch stacks and treat it as
- 	 * a normal entry.
- 	 */
--	testb	$3, CS-ORIG_RAX(%rsp)
-+	testb	$3, CS(%rsp)
- 	jnz	.Lfrom_usermode_switch_stack_\@
- 
- 	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
-@@ -511,11 +514,14 @@ SYM_CODE_START(\asmsym)
- 	ASM_CLAC
- 	cld
- 
-+	PUSH_AND_CLEAR_REGS
-+	ENCODE_FRAME_POINTER
++	if (static_cpu_has(X86_FEATURE_PTI)) {
++		cr3 = __native_read_cr3();
 +
- 	/*
- 	 * If the entry is from userspace, switch stacks and treat it as
- 	 * a normal entry.
- 	 */
--	testb	$3, CS-ORIG_RAX(%rsp)
-+	testb	$3, CS(%rsp)
- 	jnz	.Lfrom_usermode_switch_stack_\@
- 
- 	/*
-@@ -574,6 +580,9 @@ SYM_CODE_START(\asmsym)
- 	ASM_CLAC
- 	cld
- 
-+	PUSH_AND_CLEAR_REGS
-+	ENCODE_FRAME_POINTER
++		if (cr3 & PTI_USER_PGTABLE_MASK)
++			pti_switch_to_kernel_cr3(cr3);
++	}
 +
- 	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
- 	call	paranoid_entry
- 	UNWIND_HINT_REGS
-@@ -886,8 +895,6 @@ SYM_CODE_END(xen_failsafe_callback)
-  */
- SYM_CODE_START_LOCAL(paranoid_entry)
- 	UNWIND_HINT_FUNC
--	PUSH_AND_CLEAR_REGS save_ret=1
--	ENCODE_FRAME_POINTER 8
++	return cr3;
++}
+ #else
+ static __always_inline void switch_to_kernel_cr3(void) {}
++static __always_inline unsigned long ist_switch_to_kernel_cr3(void) { return 0; }
+ #endif
  
- 	/*
- 	 * Always stash CR3 in %r14.  This value will be restored,
-@@ -1307,6 +1314,9 @@ end_repeat_nmi:
- 	 */
- 	pushq	$-1				/* ORIG_RAX: no syscall to restart */
- 
-+	PUSH_AND_CLEAR_REGS
-+	ENCODE_FRAME_POINTER
-+
- 	/*
- 	 * Use paranoid_entry to handle SWAPGS and CR3.
- 	 */
+ /*
 -- 
 2.19.1.6.gb485710b
 
