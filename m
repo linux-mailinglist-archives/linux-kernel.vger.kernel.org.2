@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CC743B76A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6195F43B76C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237445AbhJZQmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236195AbhJZQmL (ORCPT
+        id S237370AbhJZQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:42:45 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:42054 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230373AbhJZQmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:42:11 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E7DC061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:39:47 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id f11so14824922pfc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:39:47 -0700 (PDT)
+        Tue, 26 Oct 2021 12:42:43 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id E38F21D0D;
+        Tue, 26 Oct 2021 19:40:16 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WxWNa+lAPDWrUIRM78ei9cESplUz+wMsR6fjtR7jUYI=;
-        b=JXJ6Fa5RrschvJo/8A0DRih2MQmteS3PQAhrlYtLguRjZzErL/uTIcB1myeD/jJCI6
-         rRIfin44MaWU3o+Hd9+Js4R3MuzoYBxzoZC843el7eImRcuazffV8ib0mGsy2D/Z8MrW
-         8HnG5Yu1DCenEEd6PVXK61SFnNdiLCzrMzq3ZC/ajEBO8SFtCPmuo2gLxcmbyEgxm8h8
-         2hlxb7eOh4ebIWSjf0K3lEcP5D5x/xswRCEjA+phzi3PT5ZxGlo3CEHm3i92Z6uVtSOv
-         VnSRHxwIp70F6RtpzFBHc5FIko0XdzthgihmFCfVag/fB15mnhO3x/Zu/E05Tk4WaqY2
-         Y8Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WxWNa+lAPDWrUIRM78ei9cESplUz+wMsR6fjtR7jUYI=;
-        b=LlPj5573xmXUP1C2A2qw6MXsY8qsuQ1et08x1NGOB5Lx5Ig7k9viC/4oKjN8RpIcfQ
-         8ffretnWrMcBXll3P5dCmBA/7ysOCfOzkmJQ9klGKPNrmojKX36kEywNNKZFE87USFJo
-         wrUHcurrdT8H9NA4dwct0prwiL+zJpYo8uJZs7VmN11xF/JlLpTBfh/4G4fY0IYDH26G
-         nrXT7qof942cYuFKZ79fWUPsn07463/suKx3m+VJ6V+/3425B1s2gNbRYoCBwdKubomG
-         fpdO9aLZD6W07JqkV9C6Pxh+a9KH1sZNV44aEUJYzscVTzC2nFrX7JcoBp3IPlbaABfU
-         QTaQ==
-X-Gm-Message-State: AOAM532UwRcE/ZgpADnCb41dh2zIiizwIwimjp+pOnXfiGz1Hf3/0/UQ
-        Vfgcov2yAv62OJC2wG+H50eR6Q==
-X-Google-Smtp-Source: ABdhPJxvvXfSS7LanheQGKgqFMP+7gv1q96fj5EDXDf4ZN0IHpo1RuaTCOHgZNGPDckYjKYLc+HHHw==
-X-Received: by 2002:a63:d14:: with SMTP id c20mr19883904pgl.118.1635266386659;
-        Tue, 26 Oct 2021 09:39:46 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id l3sm8278824pff.4.2021.10.26.09.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 09:39:46 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 16:39:42 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kvm: Avoid shadowing a local in search_memslots()
-Message-ID: <YXgvTnhVWZ0gJdFs@google.com>
-References: <20211026151310.42728-1-quic_qiancai@quicinc.com>
- <YXgib3l+sSwy8Sje@google.com>
- <60d32a0d-9c91-8cc5-99bd-7c7a9449f7c1@quicinc.com>
- <7e3fb7c6-265c-d245-dd97-24ab401a8ea3@redhat.com>
+        d=paragon-software.com; s=mail; t=1635266416;
+        bh=sHnbaQw4Aja8R3gW9j+PJGpzrn5GboghqoJ4gVn1PSs=;
+        h=Date:To:CC:From:Subject;
+        b=bj2KAkQgteXcMJAyEdM5mizZAFFjjo307T21h7y/NH3mNvbJDN09nf3Mu3CZAapvF
+         Em5LKLw+OHHsdaFFs7kXK4mwCa2Hrmwd6S9T1FiAzq3rIk+oC87jKyU9t4sQjrN9Oq
+         TiOtbk4WiFR0t5VHkdWWeNNc5N7JE2Sm9YYRQ8UM=
+Received: from [192.168.211.149] (192.168.211.149) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 26 Oct 2021 19:40:16 +0300
+Message-ID: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
+Date:   Tue, 26 Oct 2021 19:40:15 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e3fb7c6-265c-d245-dd97-24ab401a8ea3@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Content-Language: en-US
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <kari.argillander@gmail.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v2 0/4] fs/ntfs3: Various fixes for xattr and files
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.149]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021, Paolo Bonzini wrote:
-> On 26/10/21 18:14, Qian Cai wrote:
-> > > Maybe "pivot"?  Or just "tmp"?  I also vote to hoist the declaration out of the
-> > > loop precisely to avoid potential shadows, and to also associate the variable
-> > > with the "start" and "end" variables, e.g.
-> > Actually, I am a bit more prefer to keep the declaration inside the loop
-> > as it makes the declaration and assignment closer to make it easier to
-> > understand the code. It should be relatively trivial to avoid potential
-> > shadows in the future. It would be interesting to see what Paolo would say.
-> 
-> You both have good arguments, so whoever writes the patch wins. :)
+Various problems were detected by xfstests.
+This series aims to fix them.
 
-LOL, KVM's version of Thunderdome.
+v2:
+  - swap patch 3 and 4;
+  - fixed commit message for patch 1;
+  - fixed compile error in patch 2.
+
+Konstantin Komarov (4):
+  fs/ntfs3: Keep preallocated only if option prealloc enabled
+  fs/ntfs3: Restore ntfs_xattr_get_acl and ntfs_xattr_set_acl functions
+  fs/ntfs3: Update i_ctime when xattr is added
+  fs/ntfs3: Optimize locking in ntfs_save_wsl_perm
+
+ fs/ntfs3/file.c  |   2 +-
+ fs/ntfs3/xattr.c | 123 ++++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 113 insertions(+), 12 deletions(-)
+
+-- 
+2.33.0
+
