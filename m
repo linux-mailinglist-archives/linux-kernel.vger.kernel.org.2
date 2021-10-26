@@ -2,208 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D926043B6EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E74643B6F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237684AbhJZQUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:20:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34684 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234765AbhJZQTP (ORCPT
+        id S237724AbhJZQUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:20:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43847 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237317AbhJZQT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:19:15 -0400
-Date:   Tue, 26 Oct 2021 16:16:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635265010;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 26 Oct 2021 12:19:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635265023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hX+ud+iilBCpj28zSkg7J95MdecEcA3JVD1DgFnRKyk=;
-        b=gRHmdh2bHS1GOvxesoEQnE2ID9NMkLtPWlL0rf4lusodp00+woEQQAGeDQvJt34zvCKf1d
-        Vwq7+TUlF1aQj6QClmEQ/HiwFOOZvac9aKn/UcZluzHwRApbHlLUKOirirJoFymOQ94rXl
-        Jcttj2QEk7rBX6f7qbPVdGJrCRwscIXSW+FwijyKLQq9hWh/0tVG1ZvrlURfQ68EzjSwLI
-        yEDwoGGDDnisgDiHb5t2neQQ1OWshpHaEy33gZU/m7QaVf+PjyG0SANpK8Yr1CV/TgeaMG
-        y5hCm7b+GDMobQDJB0e5UPih0unv1ZQI74WsdjA00Yfvd4+snmZJArPtidydUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635265010;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hX+ud+iilBCpj28zSkg7J95MdecEcA3JVD1DgFnRKyk=;
-        b=MvOd+0WS6UVVNfpnPjEoS2PQ2rmtXmindHwbbsnJowcnkrXijITpOttD+cZOGmMz4x5+Bd
-        UrOoww3OiSJADjDA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] signal: Add an optional check for altstack size
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211021225527.10184-2-chang.seok.bae@intel.com>
-References: <20211021225527.10184-2-chang.seok.bae@intel.com>
+        bh=HrGP2hx/5gqG8KTbScu3FM5mqdfWvd8zWiCw/D9kcnY=;
+        b=Pd5YrAYpkwa/tw+562IPdlNBXS64oZMRqcgA8HzFFAHU957yht3MQfPJCQxQ22H0YTEi/o
+        kArq+BJzWwWoj32Tf5fqHC+8pnaynFubg5YSXOr70HxuaQfbqJoU+Yn9usCgM1mBJjX3Kn
+        TeCODiQ4/IQDjg95GdGNjEta+oWacic=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-ziy_cNYoP6ifkh4jS3Y73g-1; Tue, 26 Oct 2021 12:17:02 -0400
+X-MC-Unique: ziy_cNYoP6ifkh4jS3Y73g-1
+Received: by mail-ed1-f72.google.com with SMTP id g6-20020a056402424600b003dd2b85563bso10838770edb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:17:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HrGP2hx/5gqG8KTbScu3FM5mqdfWvd8zWiCw/D9kcnY=;
+        b=v3K1xY2h/Zv907qHtkL7xWDchlracl26WYX0pTDgSWqMvcCwEr1Lr8h//hGM8YzgKM
+         dOWNU0C8evNnIGYywqHSh7ErdWKLSrAT1J3CNPaA14rVUFkPG39CURvY0S0NTnzKVHAY
+         8bp1+yMmBTnSXG1WGXSHRQ5q3QwnC+DShjtl9ARBfz2BwlZfzSvoStLsMg/blDt9lRoU
+         0yDjpDSmacy21hNL+DVcOWNz4xFWKGrek3SIrYtekxOEoeggAN/jGJWXm+g6bg5x+u7r
+         9bkBpobA1Q6Wdv6DUTWgP4aDHs9pdqP5bIUwsWCTBKZe1vhpMqKojtdzHYs18mmxKtNz
+         LKIg==
+X-Gm-Message-State: AOAM533p5Z6NchDay4K/+hC3ekqGuKZSFc8KpJpxwtNuCyFkC60A47DA
+        okLnhWw1BGQbseD9gj2g8AT7Y08b15a9JnKFGGb+NkIraMpD4r21W9NvqVxAlxUITl3QMs1QARN
+        ElhOdcyGirZusEAg2Zgp9oeOz
+X-Received: by 2002:a17:906:ca18:: with SMTP id jt24mr31355810ejb.325.1635265020751;
+        Tue, 26 Oct 2021 09:17:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCAgaJ1nXM1ocpSePMgU4hrCoy1y+RLuGZFU21qMLu8XFQGQoffuE7NXc4djJHfV0Ccx8NlQ==
+X-Received: by 2002:a17:906:ca18:: with SMTP id jt24mr31355787ejb.325.1635265020563;
+        Tue, 26 Oct 2021 09:17:00 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x6sm468027eds.83.2021.10.26.09.16.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 09:17:00 -0700 (PDT)
+Message-ID: <dabdf154-eba2-f453-1597-fa84d464a106@redhat.com>
+Date:   Tue, 26 Oct 2021 18:16:56 +0200
 MIME-Version: 1.0
-Message-ID: <163526500916.626.2226832710660820873.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH MANUALSEL 5.14 4/5] KVM: SEV-ES: Set guest_state_protected
+ after VMSA update
+Content-Language: en-US
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, kvm@vger.kernel.org
+References: <20211025203828.1404503-1-sashal@kernel.org>
+ <20211025203828.1404503-4-sashal@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211025203828.1404503-4-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fpu branch of tip:
+On 25/10/21 22:38, Sasha Levin wrote:
+> From: Peter Gonda <pgonda@google.com>
+> 
+> [ Upstream commit baa1e5ca172ce7bf9554070139482dd7ea919528 ]
+> 
+> The refactoring in commit bb18a6777465 ("KVM: SEV: Acquire
+> vcpu mutex when updating VMSA") left behind the assignment to
+> svm->vcpu.arch.guest_state_protected; add it back.
+> 
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> [Delta between v2 and v3 of Peter's patch, which had already been
+>   committed; the commit message is my own. - Paolo]
+> Fixes: bb18a6777465 ("KVM: SEV: Acquire vcpu mutex when updating VMSA")
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   arch/x86/kvm/svm/sev.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index cb166bde449b..50dabccd664e 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -619,7 +619,12 @@ static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcpu,
+>   	vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
+>   	vmsa.address = __sme_pa(svm->vmsa);
+>   	vmsa.len = PAGE_SIZE;
+> -	return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
+> +	if (ret)
+> +	  return ret;
+> +
+> +	vcpu->arch.guest_state_protected = true;
+> +	return 0;
+>   }
+>   
+>   static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> 
 
-Commit-ID:     1bdda24c4af64cd2d65dec5192ab624c5fee7ca0
-Gitweb:        https://git.kernel.org/tip/1bdda24c4af64cd2d65dec5192ab624c5fee7ca0
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 21 Oct 2021 15:55:05 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 26 Oct 2021 10:15:12 +02:00
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-signal: Add an optional check for altstack size
+I missed that bb18a677746543e7f5eeb478129c92cedb0f9658 was Cc'd to 
+stable.  Good bot. :)
 
-New x86 FPU features will be very large, requiring ~10k of stack in
-signal handlers.  These new features require a new approach called
-"dynamic features".
+Paolo
 
-The kernel currently tries to ensure that altstacks are reasonably
-sized. Right now, on x86, sys_sigaltstack() requires a size of >=2k.
-However, that 2k is a constant. Simply raising that 2k requirement
-to >10k for the new features would break existing apps which have a
-compiled-in size of 2k.
-
-Instead of universally enforcing a larger stack, prohibit a process from
-using dynamic features without properly-sized altstacks. This must be
-enforced in two places:
-
- * A dynamic feature can not be enabled without an large-enough altstack
-   for each process thread.
- * Once a dynamic feature is enabled, any request to install a too-small
-   altstack will be rejected
-
-The dynamic feature enabling code must examine each thread in a
-process to ensure that the altstacks are large enough. Add a new lock
-(sigaltstack_lock()) to ensure that threads can not race and change
-their altstack after being examined.
-
-Add the infrastructure in form of a config option and provide empty
-stubs for architectures which do not need dynamic altstack size checks.
-
-This implementation will be fleshed out for x86 in a future patch called
-
-  x86/arch_prctl: Add controls for dynamic XSTATE components
-
-  [dhansen: commit message. ]
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20211021225527.10184-2-chang.seok.bae@intel.com
----
- arch/Kconfig           |  3 +++
- include/linux/signal.h |  6 ++++++
- kernel/signal.c        | 35 +++++++++++++++++++++++++++++------
- 3 files changed, 38 insertions(+), 6 deletions(-)
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 8df1c71..af5cf30 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1288,6 +1288,9 @@ config ARCH_HAS_ELFCORE_COMPAT
- config ARCH_HAS_PARANOID_L1D_FLUSH
- 	bool
- 
-+config DYNAMIC_SIGFRAME
-+	bool
-+
- source "kernel/gcov/Kconfig"
- 
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/include/linux/signal.h b/include/linux/signal.h
-index 3f96a63..7d34105 100644
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -464,6 +464,12 @@ int __save_altstack(stack_t __user *, unsigned long);
- 	unsafe_put_user(t->sas_ss_size, &__uss->ss_size, label); \
- } while (0);
- 
-+#ifdef CONFIG_DYNAMIC_SIGFRAME
-+bool sigaltstack_size_valid(size_t ss_size);
-+#else
-+static inline bool sigaltstack_size_valid(size_t size) { return true; }
-+#endif /* !CONFIG_DYNAMIC_SIGFRAME */
-+
- #ifdef CONFIG_PROC_FS
- struct seq_file;
- extern void render_sigset_t(struct seq_file *, const char *, sigset_t *);
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 952741f..9278f52 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -4151,11 +4151,29 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
- 	return 0;
- }
- 
-+#ifdef CONFIG_DYNAMIC_SIGFRAME
-+static inline void sigaltstack_lock(void)
-+	__acquires(&current->sighand->siglock)
-+{
-+	spin_lock_irq(&current->sighand->siglock);
-+}
-+
-+static inline void sigaltstack_unlock(void)
-+	__releases(&current->sighand->siglock)
-+{
-+	spin_unlock_irq(&current->sighand->siglock);
-+}
-+#else
-+static inline void sigaltstack_lock(void) { }
-+static inline void sigaltstack_unlock(void) { }
-+#endif
-+
- static int
- do_sigaltstack (const stack_t *ss, stack_t *oss, unsigned long sp,
- 		size_t min_ss_size)
- {
- 	struct task_struct *t = current;
-+	int ret = 0;
- 
- 	if (oss) {
- 		memset(oss, 0, sizeof(stack_t));
-@@ -4179,19 +4197,24 @@ do_sigaltstack (const stack_t *ss, stack_t *oss, unsigned long sp,
- 				ss_mode != 0))
- 			return -EINVAL;
- 
-+		sigaltstack_lock();
- 		if (ss_mode == SS_DISABLE) {
- 			ss_size = 0;
- 			ss_sp = NULL;
- 		} else {
- 			if (unlikely(ss_size < min_ss_size))
--				return -ENOMEM;
-+				ret = -ENOMEM;
-+			if (!sigaltstack_size_valid(ss_size))
-+				ret = -ENOMEM;
- 		}
--
--		t->sas_ss_sp = (unsigned long) ss_sp;
--		t->sas_ss_size = ss_size;
--		t->sas_ss_flags = ss_flags;
-+		if (!ret) {
-+			t->sas_ss_sp = (unsigned long) ss_sp;
-+			t->sas_ss_size = ss_size;
-+			t->sas_ss_flags = ss_flags;
-+		}
-+		sigaltstack_unlock();
- 	}
--	return 0;
-+	return ret;
- }
- 
- SYSCALL_DEFINE2(sigaltstack,const stack_t __user *,uss, stack_t __user *,uoss)
