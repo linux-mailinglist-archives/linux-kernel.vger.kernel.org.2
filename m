@@ -2,76 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29E443AA15
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821E243AA16
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhJZCHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:07:41 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:56146 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230216AbhJZCHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:07:40 -0400
-Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
-        by Forcepoint Email with ESMTPS id 1D7A79FF81B90FB8BF1C;
-        Tue, 26 Oct 2021 10:05:15 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 26 Oct 2021 10:05:14 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 26 Oct 2021 10:05:14 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Vinod Koul <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dmaengine: sa11x0: Mark PM functions as __maybe_unused
-Date:   Tue, 26 Oct 2021 10:05:07 +0800
-Message-ID: <20211026020508.550-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S232956AbhJZCLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:11:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230216AbhJZCLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 22:11:22 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0272560C49;
+        Tue, 26 Oct 2021 02:08:57 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 22:08:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5 06/20] trace/osnoise: Allow multiple instances of the
+ same tracer
+Message-ID: <20211025220856.7fef7581@rorschach.local.home>
+In-Reply-To: <69cbbd98cce2515c84127c8827d733dc87b04823.1635181938.git.bristot@kernel.org>
+References: <cover.1635181938.git.bristot@kernel.org>
+        <69cbbd98cce2515c84127c8827d733dc87b04823.1635181938.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-EX08.internal.baidu.com (172.31.51.48) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without CONFIG_PM_SLEEP, the runtime suspend/resume functions
-are unused, producing a warning:
+On Mon, 25 Oct 2021 19:40:31 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-../drivers/dma/sa11x0-dma.c:1042:12: error: 'sa11x0_dma_resume' defined but not used
-../drivers/dma/sa11x0-dma.c:1004:12: error: 'sa11x0_dma_suspend' defined but not used
+>  kernel/trace/trace_osnoise.c | 101 +++++++++++++++++++++++++++--------
+>  1 file changed, 78 insertions(+), 23 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+> index 3db506f49a90..8681ffc3817b 100644
+> --- a/kernel/trace/trace_osnoise.c
+> +++ b/kernel/trace/trace_osnoise.c
+> @@ -64,6 +64,24 @@ static bool osnoise_has_registered_instances(void)
+>  					list);
+>  }
+>  
+> +/*
+> + * osnoise_instance_registered - check if a tr is already registered
+> + */
+> +static int osnoise_instance_registered(struct trace_array *tr)
+> +{
+> +	struct osnoise_instance *inst;
+> +	int found = 0;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+> +		if (inst->tr == tr)
+> +			found = 1;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return found;
+> +}
+> +
+>  /*
+>   * osnoise_register_instance - register a new trace instance
+>   *
+> @@ -2048,6 +2066,16 @@ static int osnoise_workload_start(void)
+>  {
+>  	int retval;
+>  
+> +	/*
+> +	 * Instances need to be registered after calling workload
+> +	 * start. Hence, if there is already an instance, the
+> +	 * workload was already registered. Otherwise, this
+> +	 * code is on the way to register the first instance,
+> +	 * and the workload will start.
+> +	 */
+> +	if (osnoise_has_registered_instances())
+> +		return 0;
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/dma/sa11x0-dma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Looking at how this is checked before being called, it really should
+return -1, as it is an error if this is called with instances active.
 
-diff --git a/drivers/dma/sa11x0-dma.c b/drivers/dma/sa11x0-dma.c
-index 38f318b2f80d..a29c13cae716 100644
---- a/drivers/dma/sa11x0-dma.c
-+++ b/drivers/dma/sa11x0-dma.c
-@@ -1001,7 +1001,7 @@ static int sa11x0_dma_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int sa11x0_dma_suspend(struct device *dev)
-+static __maybe_unused int sa11x0_dma_suspend(struct device *dev)
- {
- 	struct sa11x0_dma_dev *d = dev_get_drvdata(dev);
- 	unsigned pch;
-@@ -1039,7 +1039,7 @@ static int sa11x0_dma_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int sa11x0_dma_resume(struct device *dev)
-+static __maybe_unused int sa11x0_dma_resume(struct device *dev)
- {
- 	struct sa11x0_dma_dev *d = dev_get_drvdata(dev);
- 	unsigned pch;
--- 
-2.25.1
+-- Steve
 
+> +
+>  	osn_var_reset_all();
+>  
+>  	retval = osnoise_hook_events();
+> @@ -2075,6 +2103,13 @@ static int osnoise_workload_start(void)
+>   */
+>  static void osnoise_workload_stop(void)
+>  {
+> +	/*
+> +	 * Instances need to be unregistered before calling
+> +	 * stop. Hence, if there is a registered instance, more
+> +	 * than one instance is running, and the workload will not
+> +	 * yet stop. Otherwise, this code is on the way to disable
+> +	 * the last instance, and the workload can stop.
+> +	 */
+>  	if (osnoise_has_registered_instances())
+>  		return;
+>  
+> @@ -2096,7 +2131,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
+>  {
+>  	int retval;
+>  
+> -	if (osnoise_has_registered_instances())
+> +	/*
+> +	 * If the instance is already registered, there is no need to
+> +	 * register it again.
+> +	 */
+> +	if (osnoise_instance_registered(tr))
+>  		return;
+>  
+>  	retval = osnoise_workload_start();
