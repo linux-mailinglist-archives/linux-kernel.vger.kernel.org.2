@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1168A43BC1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7096F43BC1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237207AbhJZVLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:11:16 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:45666 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239452AbhJZVLH (ORCPT
+        id S237166AbhJZVME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:12:04 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:55304 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235666AbhJZVMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:11:07 -0400
-Received: by mail-oi1-f172.google.com with SMTP id z126so432955oiz.12;
-        Tue, 26 Oct 2021 14:08:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NdXK3HgVQA4wG/WIv8xw1PiMsq8Yo/IpQgy8pf9x8cc=;
-        b=RVCSJ3kIngKrBc3vOykFlmToOuUJA3L7kGB0kK8iX9oYo57V4SiIy4MrhO7wPj0WNJ
-         hcC3MMomVbiyNk1UzIUDNR6aicnr1GkKu/n1A3rKUz5zY3kJhuDSru6fgAM0+J02ol9M
-         iFzJCWLvO04ujHpVONrRi1WHoihlteScKVp5Ua09Q3nqNNRiy3EpX7NOK7VEyseTT8td
-         Oe/0cSsqO6iYLImDPOS9JeX4+hMewBdPairvWyyQJ3RcUh/4EOC7sY1VxPyGRYqJNuR3
-         LBEF9mOTtGgYybjChJI6fEhfXJEiRzLBVaYzysp93sdazF7qsCe+wZpoUVU0rfVyxZ11
-         S5ew==
-X-Gm-Message-State: AOAM532dLTHCJltl7ArQNiWKSi15tRi1SpiUDiG8Ej4MMpMgarlrgljL
-        u+rebUN/AW8PQUu6WV6H7Q==
-X-Google-Smtp-Source: ABdhPJxpMg6g9+Q4FWWLYqlTpzb38jgJYimtMXdtH5tO0Yf+Nxl3zn/EL9erbhJya5/MpTAJsSqCog==
-X-Received: by 2002:a05:6808:1246:: with SMTP id o6mr863920oiv.136.1635282522259;
-        Tue, 26 Oct 2021 14:08:42 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o12sm4880729oti.21.2021.10.26.14.08.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:08:41 -0700 (PDT)
-Received: (nullmailer pid 3252847 invoked by uid 1000);
-        Tue, 26 Oct 2021 21:08:40 -0000
-Date:   Tue, 26 Oct 2021 16:08:40 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     phone-devel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Andy Gross <agross@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Nishanth Menon <nm@ti.com>,
-        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Stephen Boyd <sboyd@kernel.org>, Ilia Lin <ilia.lin@kernel.org>
-Subject: Re: [PATCH 2/8] dt-bindings: clk: qcom: msm8996-apcc: Add MSM8996
- Pro compatible
-Message-ID: <YXhuWKZUyT1VqHSV@robh.at.kernel.org>
-References: <20211014083016.137441-1-y.oudjana@protonmail.com>
- <20211014083016.137441-3-y.oudjana@protonmail.com>
+        Tue, 26 Oct 2021 17:12:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635282579; x=1666818579;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3ypMBrk+3j6FxYmtaFh1XZoPQs9JHaCVhfPDEWck3j4=;
+  b=UYOWfUxaokMs5THo/5N2U9L5UDhQ9/kDp6frgCwDUkQBnFVZyPke1UN/
+   uHtrIgX469S7bIlgwTcfGeVCGNbpaYv2D7DC510umiMws7lwVgvIfVIHQ
+   1Dn2mIKksW/XLORlJ83ggULHlGUJlTfEcVA1vJoEeQP9TXSpNlC16tt0J
+   4=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 26 Oct 2021 14:09:38 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 14:09:37 -0700
+Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Tue, 26 Oct 2021 14:09:36 -0700
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
+        Qian Cai <quic_qiancai@quicinc.com>
+Subject: [PATCH] KVM: arm64: Remove unused TRNG_NO_ENTROPY
+Date:   Tue, 26 Oct 2021 17:09:13 -0400
+Message-ID: <20211026210913.57006-1-quic_qiancai@quicinc.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014083016.137441-3-y.oudjana@protonmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 08:32:04 +0000, Yassine Oudjana wrote:
-> Add a compatible string for msm8996pro-apcc.
-> 
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
-> ---
->  Documentation/devicetree/bindings/clock/qcom,msm8996-apcc.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+TRNG_NO_ENTROPY was unused when introduced and now. This is also caught by
+GCC (W=2):
 
-Acked-by: Rob Herring <robh@kernel.org>
+arch/arm64/kvm/trng.c:17: warning: macro "TRNG_NO_ENTROPY" is not used [-Wunused-macros]
+   17 | #define TRNG_NO_ENTROPY   ((unsigned long)-3)
+
+Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+---
+ arch/arm64/kvm/trng.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/kvm/trng.c b/arch/arm64/kvm/trng.c
+index 99bdd7103c9c..6a46b3ac3970 100644
+--- a/arch/arm64/kvm/trng.c
++++ b/arch/arm64/kvm/trng.c
+@@ -14,7 +14,6 @@
+ #define TRNG_SUCCESS			0UL
+ #define TRNG_NOT_SUPPORTED		((unsigned long)-1)
+ #define TRNG_INVALID_PARAMETER		((unsigned long)-2)
+-#define TRNG_NO_ENTROPY			((unsigned long)-3)
+ 
+ #define TRNG_MAX_BITS64			192
+ 
+-- 
+2.30.2
+
