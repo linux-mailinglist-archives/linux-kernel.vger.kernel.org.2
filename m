@@ -2,90 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F09D43AA27
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B7143AA2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhJZCSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhJZCSq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:18:46 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77341C061745;
-        Mon, 25 Oct 2021 19:16:23 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so17690403ott.2;
-        Mon, 25 Oct 2021 19:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=A8iUif2eNgpHekuQNdE5AFgKQxCSdofHA4N+VETV+Y4=;
-        b=CvStISCa6+AoSENJJEelhOiBpMDHCjsjRDIKukdc0bpGlztAi7lER2WEb/2XUcq8S3
-         sbXt3b+WYAK0dpZx6H02ktt3ixbqOXgnb+071f4VuxHhohRkpv3d7d4Wfu2A8Wi5iZsl
-         LHE0DXrpLl2+Y+/77h90uedAdyYd//sBNY73uVUk5r6XBPNEG/KNLr7F0jWPpclOmIBj
-         JZGIENqn0jd09wudJNQwnV9w1jRtOUhY41IvZK0DoPmba9alg8HEMzLjUqWMtZ9Tswpv
-         JQGwkyiUKgdloDRUTcTmMwc2OXGUDpVjNzpYA9emnOmgH/6DE5TCprqIucH577reHDGm
-         astg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=A8iUif2eNgpHekuQNdE5AFgKQxCSdofHA4N+VETV+Y4=;
-        b=EA3hu6Phb0UIojv0gzB9h+MS8FoRUW5cPdcEdVlD8eMZPubF4oF4vZmH3lrFCDAmBS
-         398yFrcWPytxC1LwEipYyULEpv+VfEVjn5LiCqcduPETljMS/tVo2Ofe+1f9jNwgfjO4
-         W4mc7mzB0DKxay35St3bqtVlTfaqXlyz/FNw4lXPKmq8cECaSMvZezowHGJH2vSjOaDd
-         J80l/6FpcgJo5qtKRNXXoDnoYo4fx9bh989cGVyK+gRKKug7RXlgnxM7POMDq0v5ssJ7
-         +RCAqB0U/DCF4wHVuneiuis4Ol7/pwwACge1RiQt5peL89yeUOqNW5WoKQ59KZlLihoY
-         V7zQ==
-X-Gm-Message-State: AOAM5312DqHozIkaZ/cmdPr6uVzt0Ph57pUZFaSZCMoSUy4ncyaX98jh
-        /CJnp2+hJu/cUufQFe6ZN0M=
-X-Google-Smtp-Source: ABdhPJwrMTIesm818UJHjrNjNrfLB+it7usctWXzoRSP7UMMFPj7pUlTdQED6RdX56thGXcFtyVLvg==
-X-Received: by 2002:a9d:60d9:: with SMTP id b25mr17104426otk.378.1635214582846;
-        Mon, 25 Oct 2021 19:16:22 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1? ([2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1])
-        by smtp.gmail.com with ESMTPSA id e9sm4061908otr.25.2021.10.25.19.16.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 19:16:22 -0700 (PDT)
-Message-ID: <4a6a136b-9bbd-5703-9c8f-95ab1b9d64ec@gmail.com>
-Date:   Mon, 25 Oct 2021 19:16:20 -0700
+        id S233574AbhJZCTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230216AbhJZCTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 22:19:42 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BB8360C51;
+        Tue, 26 Oct 2021 02:17:18 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 22:17:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, <mingo@redhat.com>,
+        <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] kselftests: ftrace: limit the executing time by reading
+ from cached trace
+Message-ID: <20211025221717.56daf4e8@rorschach.local.home>
+In-Reply-To: <20211021093131.affc348280aba040f76f769e@kernel.org>
+References: <20211018132616.2234853-1-lizhijian@cn.fujitsu.com>
+        <20211018221636.47157e52@gandalf.local.home>
+        <20211020112027.b01762f2adcfac99e71dcf99@kernel.org>
+        <20211019223454.5da09d74@gandalf.local.home>
+        <20211020115522.75f3e25247c1d30726e9b130@kernel.org>
+        <20211020101659.42360147@gandalf.local.home>
+        <20211021093131.affc348280aba040f76f769e@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 1/3] MIPS: loongson64: Drop call to irq_cpu_offline()
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20211021170414.3341522-1-maz@kernel.org>
- <20211021170414.3341522-2-maz@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211021170414.3341522-2-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 21 Oct 2021 09:31:31 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
+> > > +# Stop tracing while reading the trace file by default, to prevent
+> > > +# the test results while checking it and to avoid taking a long time
+> > > +# to check the result.
+> > > +    [ -f options/pause-on-trace ] && echo 1 > options/pause-on-trace
+> > > +  
+> > 
+> > Is there a way we can save the previous setting and put it back on reset?  
+> 
+> No, since each testcase must be run under the clean state. Would we need to
+> recover the settings?
 
-On 10/21/2021 10:04 AM, Marc Zyngier wrote:
-> Also loongson64 calls irq_cpu_offline(), none of its interrupt
-> controllers implement the .irq_cpu_offline callback.
-> 
-> It is thus obvious that this call only serves the dubious purpose
-> of wasting precious CPU cycles by iterating over all interrupts.
-> 
-> Get rid of the call altogether.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+I would at least put it back to the default. If someone runs the tests,
+it should at least put it back to what it was at boot. Otherwise,
+someone might run the tests, and then wonder why events are being
+dropped when they are reading the trace.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
---
-Florian
+-- Steve
