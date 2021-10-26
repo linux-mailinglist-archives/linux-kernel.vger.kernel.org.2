@@ -2,174 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307CD43BC88
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1323E43BC8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239684AbhJZVjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        id S232386AbhJZVk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239669AbhJZVjI (ORCPT
+        with ESMTP id S231207AbhJZVk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:39:08 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09638C061570;
-        Tue, 26 Oct 2021 14:36:44 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id a6so1031212ybq.9;
-        Tue, 26 Oct 2021 14:36:44 -0700 (PDT)
+        Tue, 26 Oct 2021 17:40:27 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FA6C061570;
+        Tue, 26 Oct 2021 14:38:02 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x27so1713738lfu.5;
+        Tue, 26 Oct 2021 14:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4wNyPqGE0Nzj26+1d7qK2TZKb0WDGW0xR3NS0/Dm8D8=;
-        b=GEmgQETGyiJphS4CkZY+/W+RfT30EWmPhkSALapYdNnp7ZzzxU7W9CBTByYovl3XTu
-         D1o4ToRTb4bN/71ajbmVU8N4Em1c8Q4hc9b461DCLf0F7hqdnyh7jmgeUBgvdAIZ+1bC
-         op5Z2bIVLdcIGRRGO1vIPOWreM5JcGlu2Zvqh6Az3ccghSTHQ146nyhOjZF10Ggu26jO
-         rXO0ZnJElx0VGUpvt4HjxAADRtNFhtk/eHxODAIIYXQDcYfCZ3FHlLMRaCurRUVHtcEP
-         W29TdhkYvTJdTFzCBG/l/3GqQUW0HaFL/z+IMKoU8gCYeLWm4G/AD/MQJ+VLbuyxnQ8I
-         KK6A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TIHrps6JiOzeLQIEPEeB6Myv5l+xHPIBmw2UFFzGFO4=;
+        b=N6EBwUks7cf6mmhJfql0FYYO7bBkJygq2VsYxdIXyyEPnFN9UKc7a5irXSeCBhG+2F
+         rAbQOqlwlK0qx89nlJJ9UoLLK4GYS4n7Akwn+7W9c2aMdcC4m3CjDp+R7itTffIVb5Js
+         9A9mlCvEtgLvZimhvgyUgOfVcDRlDdKxKArVLKHy7Ps1rT1mZiuc3vTI5YkCeQtzS5QD
+         uWlTc/8aW6jwH0E6PVWQjZq6mbMvRZrQUQYhurVxK2SmPq7CSkjzjtve+gF742ECG6OI
+         snhIEABgjA3JCmXN3U62Ry/H0ZoQRCk6JSargL3XbsP30KDABziMxT06V7w72qA7hCJE
+         a/Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4wNyPqGE0Nzj26+1d7qK2TZKb0WDGW0xR3NS0/Dm8D8=;
-        b=7pvWeqUn4/hU2irWQg1J9h4evfmcfyRhmJ7UuKUgwfhJJ1OkvznEMci0pKIQRBFq75
-         3oyd5haCjxRbVcob0IdEuCa9Fxwyn3pwypmqS0i2nzO06H/WFng1pDBz6qYdci7viVy9
-         RmLLjHUWWfNTXqViZRHmVI9/IkaNfZytrR+cN5ZC57HojTMXOEMghEGfm7hDxvD54TRU
-         fx6EPpxE+rP+z6JOg/nMlVA0J0BWqB1+vRhmvROVjT0T3DtEL2ZcigNqFMrWwJB+OX0G
-         ZcROQTtPaNXn8dnrokATeYsCp50Ke5rEmZJJosXUiVbFeUc+mqp2qxx5WPU8mfybu95u
-         KDSQ==
-X-Gm-Message-State: AOAM533MndgV8ZuV+0vYBZGoRlXpKnG28+QeytmXoCX6We9s+n8tda04
-        2sE98VbmzF9/eDR8mPHMl6arXeyXjWNc1d/nBIJatVKqGzk=
-X-Google-Smtp-Source: ABdhPJyYcqrrKYkTH7z5pS2QaoRaP8XhF7TcGKpw4QG6fNwhow0uLaanWQMMefPjJDQjEA4NA6a4x+vUzsD+cW4aFGY=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr25680236ybq.328.1635284203236;
- Tue, 26 Oct 2021 14:36:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TIHrps6JiOzeLQIEPEeB6Myv5l+xHPIBmw2UFFzGFO4=;
+        b=m1Nc0+C4UukkgT3dMZIReYqLESso9s/9NsUeBvkXXxvlyV9fDwUKFqbzhBKrYOncrB
+         mUrsWHFo7tyqNgkLjRmpg0S6P8nXApnbgbZrE7UFd9DobqsNTM9tiliS5cERTefw3csP
+         56nvqGPiR3WndpH/PXYO/Y7L5W8VZNunNxrHKVDgwzjlIy/jhx8+AIiStFrouWOHOjNg
+         qS+y+6CrYXagvZm1LeeMwEkbhTcw/kNSdTlPx0HVHVmucHx1hLWpLakYFdolV7uVnMN2
+         K5LkXxPrx2Hko8lIFKsPfL2WUwZfFOV6yBaF9/PGcNfexoSk2lL1iplXd2W8rQNEvJKS
+         wHCw==
+X-Gm-Message-State: AOAM530fiAd9donQV6Rob4tfvNs17hqxJj92nFeqKWN94BalX7OdFCVu
+        1Mn5ZeBzbEzaDKrWwY8pkWiiArkYDi0=
+X-Google-Smtp-Source: ABdhPJygEa663LGGoKEsOzBLTneQzfW9FEIe8ke8PqQ2pN4pjYP46/zwSwGxpeJn7W1eNR0MM8hEBw==
+X-Received: by 2002:ac2:538d:: with SMTP id g13mr18073540lfh.644.1635284281150;
+        Tue, 26 Oct 2021 14:38:01 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id j15sm2035119lfe.252.2021.10.26.14.38.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 14:38:00 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 00:37:58 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/4] fs/ntfs3: Various fixes for xfstests problems
+Message-ID: <20211026213758.z5f6yuzgrdtedxqr@kari-VirtualBox>
+References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
 MIME-Version: 1.0
-References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210930121630.17449-5-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXHv7H3xxEYFLhfBf+Pun-w=F4k5S2RAYJY6qz75QpxhQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdXHv7H3xxEYFLhfBf+Pun-w=F4k5S2RAYJY6qz75QpxhQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 26 Oct 2021 22:36:17 +0100
-Message-ID: <CA+V-a8uS6fiHAWbJTXtVJgHPqvtDGPf-RupQGaKJv7wWkurLYw@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/4] pinctrl: renesas: pinctrl-rzg2l: Add support to
- get/set drive-strength and output-impedance
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Mon, Oct 25, 2021 at 07:57:30PM +0300, Konstantin Komarov wrote:
+> This series fixes generic/444 generic/092 generic/228 generic/240
 
-Thank you for the review.
+Now that 5.15 is just behind corner we need to start think about stable
+also. Please read [1]. So basically this kind of fixes needs also 
 
-On Thu, Oct 7, 2021 at 6:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Sep 30, 2021 at 2:17 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add support to get/set drive-strength and output-impedance of the pins.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > @@ -47,6 +47,7 @@
-> >  #define PIN_CFG_FILONOFF               BIT(9)
-> >  #define PIN_CFG_FILNUM                 BIT(10)
-> >  #define PIN_CFG_FILCLKSEL              BIT(11)
-> > +#define PIN_CFG_GROUP_B                        BIT(12)
->
-> Perhaps it would be easier to have separate PIN_CFG_IOLH_A and
-> PIN_CFG_IOLH_B flags, instead of a PIN_CFG_IOLH flag and a
-> PIN_CFG_GROUP_B modifier flag?
->
-Agreed will do that.
+Cc: stable@vger.kernel.org
 
-> >
-> >  #define RZG2L_MPXED_PIN_FUNCS          (PIN_CFG_IOLH | \
-> >                                          PIN_CFG_SR | \
->
-> > @@ -484,6 +513,38 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
-> >                 break;
-> >         }
-> >
-> > +       case PIN_CONFIG_OUTPUT_IMPEDANCE:
-> > +       case PIN_CONFIG_DRIVE_STRENGTH: {
-> > +               unsigned int mA[4] = { 2, 4, 8, 12 };
-> > +               unsigned int oi[4] = { 100, 66, 50, 33 };
->
-> static const
->
-agreed.
+to sign-off-area. I know that stable team will try to pick also fixes
+automatically, but this is "right" way. You can add this Cc lable also
+when you make git am, but it is good the be there right away people can
+discuss if it should be stable or not.
 
-> > +
-> > +               if (param == PIN_CONFIG_DRIVE_STRENGTH) {
-> > +                       if (!(cfg & PIN_CFG_IOLH) || groupb_pin)
-> > +                               return -EINVAL;
-> > +               } else {
-> > +                       if (!(cfg & PIN_CFG_IOLH) || !groupb_pin)
-> > +                               return -EINVAL;
-> > +               }
-> > +
-> > +               spin_lock_irqsave(&pctrl->lock, flags);
-> > +
-> > +               /* handle _L/_H for 32-bit register read/write */
-> > +               addr = pctrl->base + IOLH(port);
-> > +               if (bit >= 4) {
-> > +                       bit -= 4;
-> > +                       addr += 4;
-> > +               }
-> > +
-> > +               reg = readl(addr) & (IOLH_MASK << (bit * 8));
-> > +               reg = reg >> (bit * 8);
-> > +               if (param == PIN_CONFIG_DRIVE_STRENGTH)
-> > +                       arg = mA[reg];
-> > +               else
-> > +                       arg = oi[reg];
-> > +               spin_unlock_irqrestore(&pctrl->lock, flags);
->
-> I think you've reached the point where it starts to make sense to
-> have helper functions to read and modify these sub-register fields
-> that may be located into the current or next register.
->
-Ok will add helpers to read and rmw.
+Please also add cc tag to other patch series 1-3 patches.
 
-> And after that, you can split it in two smaller separate cases for
-> drive strength and output impedance.
->
-Agreed.
+[1]: https://www.kernel.org/doc/Documentation/process/stable-kernel-rules.rst
 
-Cheers,
-Prabhakar
-
-> > +               break;
-> > +       }
-> > +
-> >         default:
-> >                 return -ENOTSUPP;
-> >         }
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> Konstantin Komarov (4):
+>   fs/ntfs3: In function ntfs_set_acl_ex do not change inode->i_mode if
+>     called from function ntfs_init_acl
+>   fs/ntfs3: Fix fiemap + fix shrink file size (to remove preallocated
+>     space)
+>   fs/ntfs3: Check new size for limits
+>   fs/ntfs3: Update valid size if -EIOCBQUEUED
+> 
+>  fs/ntfs3/file.c    | 10 ++++++++--
+>  fs/ntfs3/frecord.c | 10 +++++++---
+>  fs/ntfs3/inode.c   |  9 +++++++--
+>  fs/ntfs3/xattr.c   | 13 +++++++------
+>  4 files changed, 29 insertions(+), 13 deletions(-)
+> 
+> -- 
+> 2.33.0
+> 
