@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC3143B499
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BC543B4A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236940AbhJZOqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:46:17 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37952 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236928AbhJZOqN (ORCPT
+        id S236950AbhJZOrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233957AbhJZOrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:46:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5529A1FCA3;
-        Tue, 26 Oct 2021 14:43:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635259428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ePQT19X3SmPjH11bt5aB3Nm5hoxOx1Fk0Lqohn1Wk8=;
-        b=PAi/DyGKz1Mz5H4MHeeXD6ynrnsFc7G/5X2HKstjEcdLp7rpHF3nvMFruGh09Lgvw9OCqH
-        yyE93pclYHHJPiTwHjPe1Mltuzw3nDYYu2R6+IfYCXUql9d2ga5dHGsEZF1JJWAxYASvvf
-        3UvMvc/CrR7r3Tmju3MhwaGBzU7sc7A=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2819EA3BA0;
-        Tue, 26 Oct 2021 14:43:48 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 16:43:47 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     NeilBrown <neilb@suse.de>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Dave Chinner <david@fromorbit.com>,
+        Tue, 26 Oct 2021 10:47:19 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C585C061745;
+        Tue, 26 Oct 2021 07:44:55 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id y17so17535421ilb.9;
+        Tue, 26 Oct 2021 07:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Iy+awNeYow+pZc/iB1UDBBsLq5AXRGWMxqulAP9fDkA=;
+        b=MaFGLlXw8Ugv98OU2Ywa01KZmCS1SMD0hUBKIvK2njSBNmhmhbUUJjHDAubWhhY96/
+         1uoOCR18qWVWXpL4p9ElnAxI9EId8fCBeRaApfRpFvFo6gLUzst4uulZoKVKaKplepD4
+         jbg7SH6E7l6whBKq0FGjBfj0NkQhv1ChdDXnlHXXKmZdX+5srX3YnyeMDQAkAEiTX0SR
+         X/yJEI5JCUjHYiWcPCMqb4tIhsQ1yMU4GJ5taDHufVyh+8DKZAHt7x+GLvpQN3IZd4pG
+         IpXDmjxH3dtrOgMp1sQ1HbTCmtOvkAjr6ZBMH1cfiiFRIcFYuKdSUqGCBK0x0r2vUH/M
+         H7XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Iy+awNeYow+pZc/iB1UDBBsLq5AXRGWMxqulAP9fDkA=;
+        b=7Y7bd/nTf3a8Nw9/vjVlSQUtdco7+Fq87eBdkdlM2xspQiQd2XFmyfkuykg3Xzbgj3
+         8c0XrM/CvrUlz9ngZyW0JTokDVAgDJYy2hDsI8Ka2UjYHpq89dzj1BA5W128X+brycih
+         5jW+CsVPaLcLYbWv57FcLLPbZk18WSAO506pypdoqqf7Rq9B/uhGkvDPwmKXDiZh52qu
+         kg8AA/zOa8Hb52u/w89KgHFeGExfI5DGqdurPX2yByTADneEcEKRCRpIrMobcpa8kpJs
+         pdwcKcvBMcq7+jtJ/gk2YKGM7D0LWp7b7gbEmRyRXCR1b2W82rX+TZwezZbY4/tbCWjQ
+         r/tw==
+X-Gm-Message-State: AOAM533ZUh8eLF/znef7B5lPsmpILOAsdgUR9MoWJhwWyD/DsccfZvn5
+        2ZmoLzloY0vXwcV0bjnRgESRfAB9tH0=
+X-Google-Smtp-Source: ABdhPJyzdApKplVzN7/9JWa4Tw5Xsfjg1GuQfTiTMYS5/pJNyb7FjRJq9TcM98BEdvYLiJcOvsG0yg==
+X-Received: by 2002:a05:6e02:104b:: with SMTP id p11mr15157863ilj.187.1635259495054;
+        Tue, 26 Oct 2021 07:44:55 -0700 (PDT)
+Received: from localhost (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
+        by smtp.gmail.com with ESMTPSA id z26sm10063738ioe.9.2021.10.26.07.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 07:44:54 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 10:44:52 -0400
+From:   Trevor Woerner <twoerner@gmail.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YXgUI33cfWYYrjXw@dhcp22.suse.cz>
-References: <20211020192430.GA1861@pc638.lan>
- <163481121586.17149.4002493290882319236@noble.neil.brown.name>
- <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>
- <20211021104038.GA1932@pc638.lan>
- <163485654850.17149.3604437537345538737@noble.neil.brown.name>
- <20211025094841.GA1945@pc638.lan>
- <163520582122.16092.9250045450947778926@noble.neil.brown.name>
- <YXeraV5idipgWDB+@dhcp22.suse.cz>
- <163524388152.8576.15706993879941541847@noble.neil.brown.name>
- <CA+KHdyWev2RwoO1o9OrAkaE2VdC7iSXnJdBR+qzarqYOse3cXA@mail.gmail.com>
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Yorick de Wid <yorickdewid@users.noreply.github.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
+ macros
+Message-ID: <20211026144452.GA40651@localhost>
+References: <20210423184012.39300-1-twoerner@gmail.com>
+ <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
+ <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
+ <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CA+KHdyWev2RwoO1o9OrAkaE2VdC7iSXnJdBR+qzarqYOse3cXA@mail.gmail.com>
+In-Reply-To: <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26-10-21 16:25:07, Uladzislau Rezki wrote:
-> On Tue, Oct 26, 2021 at 12:24 PM NeilBrown <neilb@suse.de> wrote:
+On Tue 2021-10-26 @ 02:47:12 PM, Miguel Ojeda wrote:
+> On Mon, Oct 25, 2021 at 11:40 PM Trevor Woerner <twoerner@gmail.com> wrote:
 > >
-> > On Tue, 26 Oct 2021, Michal Hocko wrote:
-> > > On Tue 26-10-21 10:50:21, Neil Brown wrote:
-> > > > On Mon, 25 Oct 2021, Uladzislau Rezki wrote:
-> > > > > On Fri, Oct 22, 2021 at 09:49:08AM +1100, NeilBrown wrote:
-> > > > > > However I'm not 100% certain, and the behaviour might change in the
-> > > > > > future.  So having one place (the definition of memalloc_retry_wait())
-> > > > > > where we can change the sleeping behaviour if the alloc_page behavour
-> > > > > > changes, would be ideal.  Maybe memalloc_retry_wait() could take a
-> > > > > > gfpflags arg.
-> > > > > >
-> > > > > At sleeping is required for __get_vm_area_node() because in case of lack
-> > > > > of vmap space it will end up in tight loop without sleeping what is
-> > > > > really bad.
-> > > > >
-> > > > So vmalloc() has two failure modes.  alloc_page() failure and
-> > > > __alloc_vmap_area() failure.  The caller cannot tell which...
-> > > >
-> > > > Actually, they can.  If we pass __GFP_NOFAIL to vmalloc(), and it fails,
-> > > > then it must have been __alloc_vmap_area() which failed.
-> > > > What do we do in that case?
-> > > > Can we add a waitq which gets a wakeup when __purge_vmap_area_lazy()
-> > > > finishes?
-> > > > If we use the spinlock from that waitq in place of free_vmap_area_lock,
-> > > > then the wakeup would be nearly free if no-one was waiting, and worth
-> > > > while if someone was waiting.
-> > >
-> > > Is this really required to be part of the initial support?
+> > ping?
 > >
-> > No.... I was just thinking out-loud.
-> >
-> alloc_vmap_area() has an retry path, basically if it fails the code
-> will try to "purge"
-> areas and repeat it one more time. So we do not need to purge outside some where
-> else.
+> > It doesn't look like this was picked up by trivial? Although, it doesn't look like git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial.git has been used in a while. Is there an alternate (preferred) path for trivial patches?
+> 
+> Jonathan should be able to take it, or perhaps Andrew.
+> 
+> Note that you should put whoever should take it in the To field (I
+> just noticed your original email did not) -- use
+> `scripts/get_maintainer.pl` for getting the relevant people for a
+> patch or path.
 
-I think that Neil was not concerned about the need for purging something
-but rather a waiting event the retry loop could hook into. So that the
-sleep wouldn't have to be a random timeout but something that is
-actually actionable - like somebody freeing an area.
--- 
-Michal Hocko
-SUSE Labs
+Ah, good point. I have a "cccmd" line in my ~/.gitconfig for adding people to
+the CC when I "git send-email", maybe I should switch that to a "tocmd"?
+
+get_maintainer.pl didn't add Andrew back then on my patch and still doesn't
+even now. Maybe the MAINTAINERS file needs an update if Andrew is to be
+included on trivial/documentation patches?
