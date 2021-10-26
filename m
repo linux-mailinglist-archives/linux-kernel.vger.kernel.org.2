@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555EA43B943
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EC343B94B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238161AbhJZSTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        id S238178AbhJZSVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhJZSTt (ORCPT
+        with ESMTP id S233041AbhJZSVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:19:49 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5CAC061745;
-        Tue, 26 Oct 2021 11:17:24 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id k13so251801ljj.12;
-        Tue, 26 Oct 2021 11:17:24 -0700 (PDT)
+        Tue, 26 Oct 2021 14:21:25 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E90CC061745;
+        Tue, 26 Oct 2021 11:19:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id g141so300284wmg.4;
+        Tue, 26 Oct 2021 11:19:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=CbkycfBpiPzNz9mU9kLDzsxQuKQ9vzT3rMC0AKEjNkk=;
-        b=PNi4bZGi9qc5Fq5YyVp5QoxTeUJ4eSQu8LDldDiJBDWYN34lZPCOz3EeFMrhlenKim
-         Fyy/EYZ293+ika4AtxlkXQ4GzvFfrza/RPydEgRtXmV4TDKYnDfTTNwVu3dO6vg5806s
-         EtCO9NN7q75ENNFzuV/qwvS/iKLrwxNbWiQ5oVi2li3YdHqlqCNz+8JOJOdXR5b388D2
-         jM2OW+v/KALLxr5fUHrpIh+Qmujjg56HdN23B/SC5Wg1VLtwiXXwkFbmM+ZwQxL+UEgg
-         DhZO89R+lM/raMYq2nvZ/vQiV9njZ1JzlsG2Y2xpwcnLfjky/Tj5iXNJhN0qBT6mYjWF
-         3PAQ==
+        bh=00zHIy6uxCqtdB4Oe239178KEZy1IyyQbtz2j0P7x2g=;
+        b=lGqgl2GdjeJ8kbl7XTJZ2wHiJB2pCqQ+kbGl/4B47UJgL2Qs+6BNPzIpvNUrzr4YHr
+         FYmJROGSms2KRYx17huGuHcY2X3Qd4UQ7CNOOv7PVovcdEKZq62xauS04xm1ppe/TZI7
+         dhkBbVIg66eJ5W/Ubd1jKYCI3NF9zRZgp1acRMR1rAx2AHHHa5l2I01v7wdfVRTzlQxU
+         s+UIFxMQk9v19nduWT/hP2ZJqqZXTJA0+pT+bMHsihHgKjR28bdNNLliza3yc7/OEtlS
+         s7Jisrv5Bm9IEUwWmI9BhoOoKTMcwUFm23yIUYvvEoTM7BiZQtpOSHBfSOxs8J0RlvNy
+         Lbqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CbkycfBpiPzNz9mU9kLDzsxQuKQ9vzT3rMC0AKEjNkk=;
-        b=5HU5tsoIARgxcOwi/Gds7yaPNspllIB9F4PLmKUPMHGsGUlQQ1ttc23mIbX+LfTxYK
-         lWwuQzGaCnIajAWiJ0getoDLb6auCIJYZv0EbyWQ5vP75QaDQGrMIYKp0ddikivG1KAz
-         uQgTo8zTSGqcr9gXFH6q9RdhXLtdOV4Xdq7Ni1kEyNjvZDHEwobtJKjZLUmk7w1Ohmxd
-         y3f/fnTfBiXmp1epomwbrNYpN18WEGVkOiAIvdWggEDfaD2ugUyIDwWVF7qnUSD3x4IC
-         9ZZcYz7hvnnpBPEatAV0LoyIXVqYRuFNIr8tgPO+hJ6q9b7g3hVRFSJmBbj30aGTU65+
-         /RhA==
-X-Gm-Message-State: AOAM532kvuUMhJOpunlJHz+LVvW+RX0aeFmXeBGjTjBMZoi1yqon4ZGe
-        O2OiDNKEyWS/s59azo4Dsqk=
-X-Google-Smtp-Source: ABdhPJyhMoeGvZPoK9EvZlMCo7em/vPsOoZzfbj4/UKWBmt47d67dHTmk7KQO6SQKGVxSofl3miYrA==
-X-Received: by 2002:a05:651c:617:: with SMTP id k23mr27312236lje.402.1635272243035;
-        Tue, 26 Oct 2021 11:17:23 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id g18sm46711ljl.26.2021.10.26.11.17.22
+        bh=00zHIy6uxCqtdB4Oe239178KEZy1IyyQbtz2j0P7x2g=;
+        b=XaJIxRpCIPSIRH6GXfO/Wh0uTc2K0TXgaR8sbO9eopMKj0nZSfIDecFUNrZP7ntt6D
+         H9ntJNXRarzzmZXKk0rEpQitmLs0h4CtuLrEgjuU0A19cIenxQKxb5dhzC5ygJC/k3mD
+         hQnsnmf+NJCrTTe99jjEyMaIZX5flPwhjt9Q/QC5EwiLY+Kz0UileTbUrAGzxSTz3EDo
+         /Vn89kQwHYeKVtF0IbIfsA3y7vJbpmKKM4lz73vICedCK3+9GSESysoqFUttNlZV+qdf
+         5jKX00MG3fNb74Y+7CqZmQrkte0n5Sl2+Hug2t0RMwcwY+XHJY7yp2vwIVgarHZ7RK7F
+         Aj5Q==
+X-Gm-Message-State: AOAM533SpQd9raNo/Q40J6BFileLaCTvftCHFNDhUnaXkRvgMpqPZLii
+        8Ghg7nE2zFuPsMc/+8x7ugYwJET2Zb8=
+X-Google-Smtp-Source: ABdhPJyPaqUEsCnQ6cCn8GpPkerVMYgZINumNxgXppcC9xeNnHSQYwB31Fca3yPOVREMpp7gFiNAeA==
+X-Received: by 2002:a1c:9803:: with SMTP id a3mr327887wme.180.1635272339688;
+        Tue, 26 Oct 2021 11:18:59 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id h14sm1385917wmq.34.2021.10.26.11.18.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:17:22 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 21:17:20 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Ganapathi Kamath <hgkamath@hotmail.com>
-Subject: Re: [PATCH 1/4] fs/ntfs3: Keep preallocated only if option prealloc
- enabled
-Message-ID: <20211026181720.46jaw46hn2vwtqgk@kari-VirtualBox>
-References: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
- <19b0fc31-a28f-69aa-27dc-e6514a10643e@paragon-software.com>
+        Tue, 26 Oct 2021 11:18:59 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 19:18:57 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/37] 4.19.214-rc1 review
+Message-ID: <YXhGkQqStLJtXo5j@debian>
+References: <20211025190926.680827862@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <19b0fc31-a28f-69aa-27dc-e6514a10643e@paragon-software.com>
+In-Reply-To: <20211025190926.680827862@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 07:40:57PM +0300, Konstantin Komarov wrote:
-> If size of file was reduced, we still kept allocated blocks.
-> This commit makes ntfs3 work as other fs like btrfs.
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=214719
-> Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
-> 
-> Reported-by: Ganapathi Kamath <hgkamath@hotmail.com>
-> Tested-by: Ganapathi Kamath <hgkamath@hotmail.com>
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Hi Greg,
 
-Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+On Mon, Oct 25, 2021 at 09:14:25PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.214 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+> Anything received after that time might be too late.
 
-> ---
->  fs/ntfs3/file.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-> index 43b1451bff53..3ac0482c6880 100644
-> --- a/fs/ntfs3/file.c
-> +++ b/fs/ntfs3/file.c
-> @@ -494,7 +494,7 @@ static int ntfs_truncate(struct inode *inode, loff_t new_size)
->  
->  	down_write(&ni->file.run_lock);
->  	err = attr_set_size(ni, ATTR_DATA, NULL, 0, &ni->file.run, new_size,
-> -			    &new_valid, true, NULL);
-> +			    &new_valid, ni->mi.sbi->options->prealloc, NULL);
->  	up_write(&ni->file.run_lock);
->  
->  	if (new_valid < ni->i_valid)
-> -- 
-> 2.33.0
-> 
-> 
+Build test:
+mips (gcc version 11.2.1 20211012): 63 configs -> no failure
+arm (gcc version 11.2.1 20211012): 116 configs -> no new failure
+arm64 (gcc version 11.2.1 20211012): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/308
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
