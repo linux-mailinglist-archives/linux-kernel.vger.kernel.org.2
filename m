@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B01743BBE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D177343BBEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239315AbhJZU7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhJZU7B (ORCPT
+        id S239331AbhJZU72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:59:28 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:50731 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231396AbhJZU71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:59:01 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B90C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 13:56:37 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id q13so904269uaq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 13:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=W96wNKJ/oV12IDXJo3U4UDqM3lBuBAzeTt/rQoud3cs=;
-        b=FKDM4wiiLWDsPq4IOQNKyXM4hXoDuMx9u+u36fz1A2SWfg52X/ax7bslZ69ogAbaTf
-         m7uAyp/430bhJxNDzlHA6GrCsUTHh+YTySSQnwGAKZiW0+BcJQ+Q7YfQMQwPqxvapAXD
-         d5MMCTMBtFz9YgjboaGM7pkJIetbJqCcCR/WLu2fmDwdsigET4Q1H3qQT30x/0EPC12e
-         3WCiUzU23vfGDaD03LOVSpgVCBLWwvoqgUgY12BA39nPCjBP8euFnZlOHt6ZyihMwql7
-         OFS3wW9PPVxEtEafuct98vKrd2kQkZy9jY5VUDcTSxlAqNciSf7q4rTJVLyphCMrnvZL
-         MNVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=W96wNKJ/oV12IDXJo3U4UDqM3lBuBAzeTt/rQoud3cs=;
-        b=Xnf4QwLC9t0KyYGptwCmBaCNP8RD/z3+84zibbmnC/06gpC7oOQCFTBuhbHmklyZ/k
-         aiiOvz6u5MupAS+jmcjDFGPMMbDKoyEtgXVLH3ixsQ267txQDXh/WGzNqV5SbXuWnKaf
-         ki7MwpFgsPt786rSwULjMbCxmCB/Ihq7ABDd4DrflKadGhpXu940y05egEnHiM7xTVCQ
-         faSm3orezqNnG4CiTc0FMCmVTj7sNFP6bLFU5vWb8ERiLZYG3E/nJbuji6JWhfBjINqJ
-         vZBpEAHi7FV+5sdZrzI6mDmCGvbphD3agX1sREXxP97ktOkkNmL1L5qwYNqDrwVoV8+g
-         aNCQ==
-X-Gm-Message-State: AOAM531XG+B+wx2XI9gv8etZfU2A8eRMpx7yu3yCKuAWhChceio+QKuE
-        p2S7JppA0BDT/tYqEo5O/o5SnwT+ZyhdFC13o3A=
-X-Google-Smtp-Source: ABdhPJzJOuIxCIVHezLVLMMwIUpEfc4WvtkkEjAuM9JhOd9s5ngve0yGOUO2z+kpKeSZpTpBALIyGxt07wh93JP/434=
-X-Received: by 2002:a05:6102:50a7:: with SMTP id bl39mr8896650vsb.32.1635281796569;
- Tue, 26 Oct 2021 13:56:36 -0700 (PDT)
+        Tue, 26 Oct 2021 16:59:27 -0400
+Received: (qmail 1300783 invoked by uid 1000); 26 Oct 2021 16:57:01 -0400
+Date:   Tue, 26 Oct 2021 16:57:01 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: Re: [PATCH] usb: gadget: f_mass_storage: Disable eps during
+ disconnect
+Message-ID: <20211026205701.GA1300692@rowland.harvard.edu>
+References: <20211026004456.23054-1-quic_wcheng@quicinc.com>
+ <20211026144140.GA1288435@rowland.harvard.edu>
+ <81fc3f6d-f747-736b-32db-aecbca77dd31@quicinc.com>
 MIME-Version: 1.0
-Received: by 2002:a59:a3cd:0:b0:237:9538:ce13 with HTTP; Tue, 26 Oct 2021
- 13:56:36 -0700 (PDT)
-From:   "Mrs. Michelle Ryerson" <ununjob1@gmail.com>
-Date:   Tue, 26 Oct 2021 13:56:36 -0700
-Message-ID: <CAEHon=Jq1burqrinh2N_9W+npzUcY=PsSx4SsdDtejX79F9Dfw@mail.gmail.com>
-Subject: Is Ms. Michelle Ryerson
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81fc3f6d-f747-736b-32db-aecbca77dd31@quicinc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dear,
+On Tue, Oct 26, 2021 at 12:40:04PM -0700, Wesley Cheng wrote:
+> Hi Alan,
+> 
+> On 10/26/2021 7:41 AM, Alan Stern wrote:
+> > On Mon, Oct 25, 2021 at 05:44:56PM -0700, Wesley Cheng wrote:
+> >> From: Wesley Cheng <wcheng@codeaurora.org>
+> >>
+> >> When receiving a disconnect event from the UDC, the mass storage
+> >> function driver currently runs the handle_exception() routine
+> >> asynchronously.  For UDCs that support runtime PM, there is a
+> >> possibility the UDC is already suspended by the time the
+> >> do_set_interface() is executed.  This can lead to HW register access
+> >> while the UDC is already suspended.
+> >>
+> >> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> >> ---
+> >>  drivers/usb/gadget/function/f_mass_storage.c | 10 ++++++++++
+> >>  1 file changed, 10 insertions(+)
+> >>
+> >> diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
+> >> index 3cabf7692ee1..752439690fda 100644
+> >> --- a/drivers/usb/gadget/function/f_mass_storage.c
+> >> +++ b/drivers/usb/gadget/function/f_mass_storage.c
+> >> @@ -2342,6 +2342,16 @@ static void fsg_disable(struct usb_function *f)
+> >>  {
+> >>  	struct fsg_dev *fsg = fsg_from_func(f);
+> >>  
+> >> +	/* Disable the endpoints */
+> >> +	if (fsg->bulk_in_enabled) {
+> >> +		usb_ep_disable(fsg->bulk_in);
+> > 
+> > According to the kerneldoc, this routine must be called in process 
+> > context.
+> > 
+> >> +		fsg->bulk_in_enabled = 0;
+> >> +	}
+> >> +	if (fsg->bulk_out_enabled) {
+> >> +		usb_ep_disable(fsg->bulk_out);
+> >> +		fsg->bulk_out_enabled = 0;
+> >> +	}
+> >> +
+> >>  	__raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE, NULL);
+> >>  }
+> > 
+> > Looks like you'll have to find a different way to avoid the problem.  
+> > For example, if an exception is pending then you might prevent the 
+> > gadget from going into runtime suspend until the exception has been 
+> > handled.
+> > 
+> Thanks for the suggestion.  I noticed that a lot of other FDs currently
+> call usb_ep_disable() in the disable/disconnect path as well.  Actually,
+> f_mass_storage seems to be the only one that doesn't do so.  Maybe we
+> should change the kerneldoc :)
 
-I hope you received this message in good health. Please, I am
-contacting you for the purpose of donating my money to you for charity
-work in your city.
+You're right; I don't see any real reason why the usb_ep_{en,dis}able 
+routines can't run in an atomic context.  So if you to make this change 
+to f_mass_storage, you should first submit a patch changing the 
+kerneldoc.
 
-My name is Ms. Michelle Ryerson, I worked with Vedanta Resources
-Limited United Kingdom for Twenty Five years and I retired in the year
-2014. I didn't marry and I have no child of my own.
-
-Presently I'm 72 years old and am suffering from a Cancer disease
-known as Biliary Tract Cancer which has recently spread infections in
-my gallbladder and to other parts of my body, and I am unable to
-breathe well. I have undergone three different surgeries in the past
-and I have been booked for another surgery by next week in Berlin
-Germany. From all consultations by doctors, my condition is really
-deteriorating and is quite obvious that my death is very close to me
-as I can see my life quickly ebbing away. I am an orphan, no parents,
-no brothers, and no sisters, but my city of birth is Arizona. I was
-working with Vedanta Resources Limited in Arizona before I was posted
-to the company's headquarters here in the United Kingdom, where I have
-resided for the past 41years.
-
-However, when I was working with Vedanta Resources Limited, I
-deposited an amount of US$950,000.00 in a bank in Russia for a
-business venture. The name of the bank is Bivety Bank Limited. The
-money is still with the bank but due to my poor health and based on
-the doctor's report, I am scared that my life is almost at the end, so
-I have decided to donate this money to you. Please, I grant you the
-permission to use 20 percent of this fund for your personal use which
-I believe will benefit your family, and then you donate the remaining
-80 percent to any charity organizations in your city.
-
-I know that I have never met you before, I got your email address from
-Google.com and my confidence reposed on you so I decided to contact
-you for this purpose.
-
-Please reply with your name and contact address so I will write to my
-bank to contact you and transfer the fund to you for charity purposes.
-I will cover the cost my bank will request to transfer the
-US$950,000.00 to you.
-
-Send your response to my private email at: myerjvj@yahoo.com
-
-I expect your prompt reply and wish you will put me in your prayers henceforth.
-
-Thanks and God bless you.
-
-Mrs. Michelle Ryerson.
-email: myerjvj@yahoo.com
+Alan Stern
