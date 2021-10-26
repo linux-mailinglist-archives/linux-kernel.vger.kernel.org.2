@@ -2,175 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4469143ABE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F1343ABE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235115AbhJZF4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:56:03 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:15995 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbhJZF4C (ORCPT
+        id S235122AbhJZF5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233736AbhJZF5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:56:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635227619; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7oRZBa8uvbKECbg21UMpUF9P2BubMa4PGmCQdveSgGc=;
- b=HhispHb43rRZ1flifQA61Ys61kM28kUJzdUIzStQQK5OwzLuJJGWYsc0lDSOFQyoctx8jTrd
- 5H20EdYOZtItV6jMRoHTerjoixZKQ1XlxIDZ6Z+GX5Rzq12zkxo/Bf6y/hYp15Ry8zLRjsVE
- SR6xVd+WTe3QPZ33jHX/v8IJQck=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 617797d267f107c61143394e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 05:53:22
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 013E3C4360C; Tue, 26 Oct 2021 05:53:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31240C4338F;
-        Tue, 26 Oct 2021 05:53:21 +0000 (UTC)
+        Tue, 26 Oct 2021 01:57:00 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD401C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 22:54:36 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id o11so21039534ljg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 22:54:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PE12sBEfW/xDgLi19sIkoWTI0DJx+IMAfXlVsyqwOfw=;
+        b=i2FrzE734FAkfYlSLmHM7oRIxndkuIkUapaY7hkkBx7UXDOI5mlLRxAkMK/qWOKbcl
+         x+vK9LzlDnty+S/HVs6IR6jVX1WjgOWANx9AOifF3Hy6lx58R/vuCuE+qGUnOTlmEDQy
+         /BBoVFiosaVw8G9ep0qfp6bHtSrcUN0zKo//FxliB03/his+QwnssIwkGqXrXrr9qzjX
+         o60aXOYVmDgIWyLlZjfNxWi/hTq12EK0KUxsE4zA4XBDpSPQpeYa4ZKgeYAL8fLBWcb8
+         aRxn7v73xsjW8ny+k9hUCF7Y6BdiYFrmv+n8jbazKY/Y6McIDCt9DYhqZygRWGhQ6Cek
+         WXkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PE12sBEfW/xDgLi19sIkoWTI0DJx+IMAfXlVsyqwOfw=;
+        b=rM79a0w2qNL3rTkA0bRoWyHmG5E4s3S+oHDjN8rzrwqWfNdz9TIGbjWrAztC/VxZjD
+         qcq5ZAQsBwDfdKxrMyJNELS3LtSvbdb/btzNvc+yFCCfk643vs3J0Ziw45RY4m2g9Pzp
+         RasQx1uIGNXo3sXd0sWHEx7L6hdk+WRXBYIaJ/rkCoNVf12neY8lOBKoNGZBPFM5IPNi
+         hHlhBVDtrdhini0pnaA2wbTnnNjB/SAlTDm37xU72dWRr0gx6jNykhY6int4x6rLF2Ra
+         2mz5jvrfj0wvfup6qm4IQVtL4Xm8FNmHBNwNlbjOwLGwTVxhRF23J1HNk3gw/z+o2clQ
+         AixQ==
+X-Gm-Message-State: AOAM532J7h6LTL0wPDpOOQUIdQzzquBdHNaKJiwJv45T1hScL6b2tAHo
+        niN7yDnr8F2W9vFANFwzZ82beqQVGAJt6e1lMPMWVg==
+X-Google-Smtp-Source: ABdhPJw6ePvloiWcZWCXpt2q5JBIZkZxUbaHiQVzjp3ZdS+f7lZZ26jasAGHUTQ+79p3jby+F1TA/ZihF56Rpo0Ub4I=
+X-Received: by 2002:a2e:9003:: with SMTP id h3mr13200966ljg.427.1635227675238;
+ Mon, 25 Oct 2021 22:54:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 26 Oct 2021 13:53:21 +0800
-From:   tjiang@codeaurora.org
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-In-Reply-To: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
-References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
-Message-ID: <37ff4532d711face325be2f95d47f960@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211026055010.1569728-1-arnd@kernel.org>
+In-Reply-To: <20211026055010.1569728-1-arnd@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 25 Oct 2021 22:54:23 -0700
+Message-ID: <CALAqxLUG-Fy5B28K43SRV+kui8a9jnEb+WsCW7DTSsOZaE-tEQ@mail.gmail.com>
+Subject: Re: [PATCH] media: v4l2-core: fix VIDIOC_DQEVENT handling on non-x86
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 25, 2021 at 10:50 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> My previous bugfix addressed an API inconsistency found by syzbot,
+> and it correctly fixed the issue on x86-64 machines, which now behave
+> correctly for both native and compat tasks.
+>
+> Unfortunately, John found that the patch broke compat mode on all other
+> architectures, as they can no longer rely on the VIDIOC_DQEVENT_TIME32
+> code from the native handler as a fallback in the compat code.
+>
+> The best way I can see for addressing this is to generalize the
+> VIDIOC_DQEVENT32_TIME32 code from x86 and use that for all architectures,
+> leaving only the VIDIOC_DQEVENT32 variant as x86 specific. The original
+> code was trying to be clever and use the same conversion helper for native
+> 32-bit code and compat mode, but that turned out to be too obscure so
+> even I missed that bit I had introduced myself when I made the fix.
+>
+> Fixes: c344f07aa1b4 ("media: v4l2-core: ignore native time32 ioctls on 64-bit")
+> Reported-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Hi Marcel:
-   could you help review this patch as I resolved all comments from 
-Matthias , thank you for the help.
+Tested-by: John Stultz <john.stultz@linaro.org>
 
-regards.
-tim
-
-
-On 2021-10-22 13:35, tjiang@codeaurora.org wrote:
-> the RF performance of wcn6855 soc chip from different foundries will be
-> difference, so we should use different nvm to configure them.
-> 
-> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
-> ---
->  drivers/bluetooth/btusb.c | 55 
-> +++++++++++++++++++++++++++++++++++------------
->  1 file changed, 41 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 87b71740fad8..a5fe57e7cd7e 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -3195,6 +3195,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
-> hci_dev *hdev,
->  #define QCA_DFU_TIMEOUT		3000
->  #define QCA_FLAG_MULTI_NVM      0x80
-> 
-> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-> +
->  struct qca_version {
->  	__le32	rom_version;
->  	__le32	patch_version;
-> @@ -3226,6 +3229,7 @@ static const struct qca_device_info
-> qca_devices_table[] = {
->  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
->  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
->  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
->  };
-> 
->  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
-> request,
-> @@ -3380,6 +3384,42 @@ static int btusb_setup_qca_load_rampatch(struct
-> hci_dev *hdev,
->  	return err;
->  }
-> 
-> +static void btusb_generate_qca_nvm_name(char *fwname,
-> +					size_t max_size,
-> +					const struct qca_version *ver)
-> +{
-> +	u32 rom_version = le32_to_cpu(ver->rom_version);
-> +	u16 flag = le16_to_cpu(ver->flag);
-> +
-> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> +		u16 board_id = le16_to_cpu(ver->board_id);
-> +		u32 ram_version = le32_to_cpu(ver->ram_version);
-> +		const char *variant = NULL;
-> +
-> +		switch (ram_version) {
-> +		case WCN6855_2_0_RAM_VERSION_GF:
-> +		case WCN6855_2_1_RAM_VERSION_GF:
-> +			variant = "_gf";
-> +			break;
-> +		default:
-> +			variant = "";
-> +			break;
-> +		}
-> +
-> +		if (board_id == 0) {
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
-> +				rom_version, variant);
-> +		} else {
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
-> +				rom_version, variant, board_id);
-> +		}
-> +	} else {
-> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
-> +			rom_version);
-> +	}
-> +
-> +}
-> +
->  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
->  				    struct qca_version *ver,
->  				    const struct qca_device_info *info)
-> @@ -3388,20 +3428,7 @@ static int btusb_setup_qca_load_nvm(struct 
-> hci_dev *hdev,
->  	char fwname[64];
->  	int err;
-> 
-> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> -		/* if boardid equal 0, use default nvm without surfix */
-> -		if (le16_to_cpu(ver->board_id) == 0x0) {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -				 le32_to_cpu(ver->rom_version));
-> -		} else {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-> -				le32_to_cpu(ver->rom_version),
-> -				le16_to_cpu(ver->board_id));
-> -		}
-> -	} else {
-> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -			 le32_to_cpu(ver->rom_version));
-> -	}
-> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
-> 
->  	err = request_firmware(&fw, fwname, &hdev->dev);
->  	if (err) {
+Thanks so much again Arnd!
+-john
