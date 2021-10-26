@@ -2,134 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201E743B7EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB97643B7F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbhJZROi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:14:38 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:33561 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhJZROh (ORCPT
+        id S236268AbhJZRP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhJZRPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:14:37 -0400
-Received: by mail-ua1-f41.google.com with SMTP id s4so6302055uaq.0;
-        Tue, 26 Oct 2021 10:12:13 -0700 (PDT)
+        Tue, 26 Oct 2021 13:15:55 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4E9C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:13:31 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id j2so320868lfg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=adv3DrwpkGGcBynbCZO162xm2hRyNhR/LtXPfxRRi2c=;
+        b=Q72mLxkFvHZe5KYX3sirINKTZoIt5iabZr6TrRHELzPlCcQUBWdWQGpGEkM9WJMppX
+         /olRSlp5+JyE5jje1Fui+MEFgSIsxEnOskfI0h+vrRb5jqJWZQRdbF8ztZXRH//RPm73
+         mN4AvNDXDfCy5dluaC6v+U0iIOId6urJj3c/QKH8L2FnFSolspILU6xmfQxL9HjDdzRh
+         z32YTqHEDbvvJzn4X2+bNxPQ7nt44PYqAzu8RQ8ZTktQAqA2+EEOZk16c/3aDvAaVJqM
+         CUjT7TNiMcNLqybffNhejLLm573rKF0IyqJGVOwDdCrltHFoqslHGdwoElpbzaBMnzxj
+         G4zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AXHONT95KJvkaHI1jvYYaUxOJPvtYl1iFSyJcrCpH7A=;
-        b=722szwjXRC5/3fbyuPDDNMf8huFBx7byBrPMkIQDV2Shb0BDx9ejpAetH6cZ9mxc/J
-         h8/8KTTejjP2PcJjujvZxxkD40eczZRxcRlW8xQYFDCh9/I9lN7EYHKuS9sxw4WtnmnG
-         cm4w3WwIW0ALBT/7/Kw6++m6ULFvMG0OZq47+k7o2wdSXdMS81lZb5wM5Gc/BsHSQQKZ
-         xKIvLRD0wWub4PPShsiWZ84WfvkuFExthobvH6kaG8QzJxRv9yq/TKfS0VBXn6yJ1SyE
-         rqNOWHb61OvWzT6tD1Z8DCEInKMbd7/vxJOlHKCxdi9ylN5bH39cTJmJDRnhiYQpC50v
-         LsOA==
-X-Gm-Message-State: AOAM531plzoe4amZz3dtmJZBLyNDg/iKMPP6bY+SxejiZWLH6UdrBwBC
-        OXjFnY1avS9iRGbdcjemAmav/7SxfUljMg==
-X-Google-Smtp-Source: ABdhPJwHc2vueFIikZdo+UcIckNn/U0rbWZyiWNiqg8BlDCaTihtUY8IDg8Fw7Ksld8MojKvUiIRng==
-X-Received: by 2002:a05:6102:3122:: with SMTP id f2mr12859196vsh.58.1635268332395;
-        Tue, 26 Oct 2021 10:12:12 -0700 (PDT)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id h6sm844725vsc.16.2021.10.26.10.12.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 10:12:12 -0700 (PDT)
-Received: by mail-ua1-f52.google.com with SMTP id e10so30592030uab.3;
-        Tue, 26 Oct 2021 10:12:11 -0700 (PDT)
-X-Received: by 2002:a67:f4c9:: with SMTP id s9mr14009160vsn.35.1635268331701;
- Tue, 26 Oct 2021 10:12:11 -0700 (PDT)
+        bh=adv3DrwpkGGcBynbCZO162xm2hRyNhR/LtXPfxRRi2c=;
+        b=2GWhslGdE+DPa1p2C1/CSvAQlKkAhjPgw4Z64uPgymT2rUJ1kdpRPBH4KfvRTSwCJO
+         2Shzh+meeALjYWoYtj6E3xuP0NTmANaYD2LgIZrb7t57hY1nnhKiiL/WlfXk7PI/eoD6
+         fPiFPZIsGfW0s9icBAPiFqgWL41dKKCH/bFUc/ZWSw8xMKbAe6PuqbqQbLTDGFkKM7XG
+         GDcwEvRva3v4jGlApTRH7vZwzFch4ko9nrmsFI04mzODpz0ToWZ5IFV5pSb2uSk3yl4t
+         GWwV4gfcc21a9bBSh3bu+zyq/FC3SS5bQqzvjXw5WZjD9ky7IWrEr1uztQmRYWUn2j+f
+         GgvA==
+X-Gm-Message-State: AOAM532rpW5zOiZCK7vBXG7j2bpXG153JYhPDpkhiUTVDu6PRAQ+M8Fg
+        nPLynBV0EV0/hfCmhZh+qz/dJR+EJYpObKi+6w/T7Q==
+X-Google-Smtp-Source: ABdhPJxmfm4vxU3hKAAcuoV4xXuInXZ7bkNH4ezbrLDeV7I5CjJYCi5kL5SjIkfEIaLt2GOC0ZhHd4/hE+z2xqwEThI=
+X-Received: by 2002:ac2:44c3:: with SMTP id d3mr20699654lfm.184.1635268409288;
+ Tue, 26 Oct 2021 10:13:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <1635188490-15082-1-git-send-email-george.kennedy@oracle.com>
- <YXcAbXJfg/jKCo5h@kroah.com> <0ddb1c19-64b0-4117-7a92-c3d2fcddfdcf@oracle.com>
- <CAMuHMdWcU7wy1dxa_MXuHoUTWebvq6ShP820Bn_v+8tx7-TEdg@mail.gmail.com>
- <c73402dd-ec3f-4df7-6a16-36fb276a50f4@oracle.com> <CAMuHMdVHt=9N274SG+B7W83JbVVnbz_U5Nkejs_PR2HqvZvJgQ@mail.gmail.com>
- <d2119d59-89e4-34aa-86df-38fee2a0c6ef@oracle.com>
-In-Reply-To: <d2119d59-89e4-34aa-86df-38fee2a0c6ef@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 Oct 2021 19:12:00 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUZq00r7QYeAKGm36UKpGwH_uEGMvwHBzRi9_nxV-dRhg@mail.gmail.com>
-Message-ID: <CAMuHMdUZq00r7QYeAKGm36UKpGwH_uEGMvwHBzRi9_nxV-dRhg@mail.gmail.com>
-Subject: Re: [PATCH] video: fbdev: cirrusfb: check pixclock to avoid divide by zero
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
+In-Reply-To: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 26 Oct 2021 19:12:52 +0200
+Message-ID: <CAPDyKFraMXqC9OBeUTpm=bxjrFZTCopV3ZJQf1TRsA8UeTWdTA@mail.gmail.com>
+Subject: Re: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi George,
++ Jerome
 
-On Tue, Oct 26, 2021 at 5:48 PM George Kennedy
-<george.kennedy@oracle.com> wrote:
-> On 10/26/2021 10:11 AM, Geert Uytterhoeven wrote:
-> > On Tue, Oct 26, 2021 at 3:38 PM George Kennedy
-> > <george.kennedy@oracle.com> wrote:
-> >> On 10/26/2021 4:30 AM, Geert Uytterhoeven wrote:
-> >>> On Mon, Oct 25, 2021 at 9:37 PM George Kennedy
-> >>> <george.kennedy@oracle.com> wrote:
-> >>>> On 10/25/2021 3:07 PM, Greg KH wrote:
-> >>>>> On Mon, Oct 25, 2021 at 02:01:30PM -0500, George Kennedy wrote:
-> >>>>>> Do a sanity check on pixclock value before using it as a divisor.
-> >>>>>>
-> >>>>>> Syzkaller reported a divide error in cirrusfb_check_pixclock.
-> >>>>>>
-> >>>>>> divide error: 0000 [#1] SMP KASAN PTI
-> >>>>>> CPU: 0 PID: 14938 Comm: cirrusfb_test Not tainted 5.15.0-rc6 #1
-> >>>>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2
-> >>>>>> RIP: 0010:cirrusfb_check_var+0x6f1/0x1260
-> >>>>>>
-> >>>>>> Call Trace:
-> >>>>>>     fb_set_var+0x398/0xf90
-> >>>>>>     do_fb_ioctl+0x4b8/0x6f0
-> >>>>>>     fb_ioctl+0xeb/0x130
-> >>>>>>     __x64_sys_ioctl+0x19d/0x220
-> >>>>>>     do_syscall_64+0x3a/0x80
-> >>>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >>>>>>
-> >>>>>> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
-> >>>>>> --- a/drivers/video/fbdev/cirrusfb.c
-> >>>>>> +++ b/drivers/video/fbdev/cirrusfb.c
-> >>>>>> @@ -477,6 +477,9 @@ static int cirrusfb_check_pixclock(const struct fb_var_screeninfo *var,
-> >>>>>>        struct cirrusfb_info *cinfo = info->par;
-> >>>>>>        unsigned maxclockidx = var->bits_per_pixel >> 3;
-> >>>>>>
-> >>>>>> +    if (!var->pixclock)
-> >>>>>> +            return -EINVAL;
-> >>> This is not correct: fbdev drivers should round up invalid values,
-> >>> and only return an error if rounding up cannot yield a valid value.
-> >> What default value would you recommend? Here are examples of some of the
-> >> possible cirrusfb pixclock values:
-> >> 40000: 25MHz
-> >> 20000: 50Mhz
-> >> 12500: 80Mhz
-> > You should pick the lowest supported value.
+On Wed, 6 Oct 2021 at 13:25, H. Nikolaus Schaller <hns@goldelico.com> wrote:
 >
-> In bestclock() the frequency value ("freq") is not allowed to go below 8000.
+> The TiWi 5 WiFi module needs special setup of the sdio
+> interface before it can be probed.
 >
->          if (freq < 8000)
->                  freq = 8000;
+> So far, this is done in omap_hsmmc_init_card() in omap_hsmmc.c
+> which makes it useable only if connected to omap devices
+> which use the omap_hsmmc. The OpenPandora is the most promient
+> example.
 >
-> If pixclock is passed in as zero to cirrusfb_check_pixclock(), is it ok
-> to then set the value of pixclock to 125000, which will result in "freq"
-> being set to 8000 (or adjust the passed in pixclock value to make sure
-> "freq" does not get below 8000)?
+> There are plans to switch to a newer sdhci-omap driver and
+> retire omap_hsmmc. Hence this quirk must be reworked or moved
+> somewhere else. Ideally to some location that is not dependent
+> on the specific SoC mmc host driver.
+>
+> Analysis has shown that omap_hsmmc_init_card() is called
+> through the host->ops->init_card hook which itself
+> is called in three generic locations:
+>
+> mmc_init_card()
+> mmc_sd_init_card()
+> mmc_sdio_init_card()
+>
+> All these functions share a call to mmc_select_card() shortly
+> after running the init hook and therefore I assume that
+> a good place transplanting the special wl1251 handling is
+> mmc_select_card() - unless we want to copy and maintain the
+> code to three different places.
+>
+> After this quirk has been moved there, we can remove
+> omap_hsmmc_init_card() in omap_hsmmc.c in a separate patch.
+> Indeed the plan is to remove omap_hsmmc.c completely.
+>
+> A future development path to generalize could be to make
+> the code not depend on compatible = "ti,wl1251" but check
+> for optional device tree properties (non-std-sdio, bus width,
+> vendor, device, blksize, max_dtr, ocr) which can be defined
+> for any child device of the mmd/sd port needing such special
+> setup.
 
-No, clock rate is the inverse of clock period.
-So the smallest clock period (fb_var_screeninfo.pixclock) corresponds
-to the largest clock rate (freq in bestclock()).
+I wouldn't go that path, simply because it may look like we encourage
+vendors to deviate from the SDIO spec. :-)
 
-Gr{oetje,eeting}s,
+At least for now, matching on the compatible string and applying card
+quirks makes perfect sense to me.
 
-                        Geert
+>
+> Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
+> Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
+> Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # on OpenPandora
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+As a matter of fact, the similar problem that you are looking to
+address (applying card quirks based on DT compatibility strings), is
+partly being taken care of in another series [1], being discussed
+right now. I think the solution for the ti,wl1251 should be based upon
+that too. Please have a look and see if you can play with that!?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kind regards
+Uffe
+
+[1]
+[RFC PATCH 0/2] mmc: allow to rely on the DT to apply quirks
+https://lore.kernel.org/lkml/20211014143031.1313783-1-Jerome.Pouiller@silabs.com/
+
+> ---
+>  drivers/mmc/core/mmc_ops.c | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>
+> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+> index 0c54858e89c0..6f9b96be9fe6 100644
+> --- a/drivers/mmc/core/mmc_ops.c
+> +++ b/drivers/mmc/core/mmc_ops.c
+> @@ -7,6 +7,7 @@
+>
+>  #include <linux/slab.h>
+>  #include <linux/export.h>
+> +#include <linux/of.h>
+>  #include <linux/types.h>
+>  #include <linux/scatterlist.h>
+>
+> @@ -107,6 +108,35 @@ static int _mmc_select_card(struct mmc_host *host, struct mmc_card *card)
+>
+>  int mmc_select_card(struct mmc_card *card)
+>  {
+> +       if (card->type == MMC_TYPE_SDIO || card->type == MMC_TYPE_SD_COMBO) {
+> +               struct device_node *np = card->host->parent->of_node;
+> +
+> +               /*
+> +                * REVISIT: should be made more general
+> +                * e.g. by expanding the DT bindings of child nodes to
+> +                * optionally provide this information:
+> +                * Documentation/devicetree/bindings/mmc/mmc-card.txt
+> +                */
+> +
+> +               np = of_get_compatible_child(np, "ti,wl1251");
+> +               if (np) {
+> +                       /*
+> +                        * We have TI wl1251 attached to this mmc. Pass this
+> +                        * information to the SDIO core because it can't be
+> +                        * probed by normal methods.
+> +                        */
+> +
+> +                       dev_info(card->host->parent, "found wl1251\n");
+> +                       card->quirks |= MMC_QUIRK_NONSTD_SDIO;
+> +                       card->cccr.wide_bus = 1;
+> +                       card->cis.vendor = 0x104c;
+> +                       card->cis.device = 0x9066;
+> +                       card->cis.blksize = 512;
+> +                       card->cis.max_dtr = 24000000;
+> +                       card->ocr = 0x80;
+> +                       of_node_put(np);
+> +               }
+> +       }
+>
+>         return _mmc_select_card(card->host, card);
+>  }
+> --
+> 2.33.0
+>
