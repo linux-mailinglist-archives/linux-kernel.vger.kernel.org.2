@@ -2,197 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E23143AF2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC3C43AF35
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhJZJh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhJZJhz (ORCPT
+        id S233280AbhJZJlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:41:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48648 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230451AbhJZJlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:37:55 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE957C061745;
-        Tue, 26 Oct 2021 02:35:31 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id y7so13767523pfg.8;
-        Tue, 26 Oct 2021 02:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ouPF0FVLzrt8SFto8EmQTQoj67nxkgjY1je88zuqSYk=;
-        b=biaOGTAbaxMEEL0jA1tjz9QWHQmCaj85A3pVxUtMNdLVR4/ZMIoW4tYO4ptl31a95E
-         eXxDtnd5GZA0CmtX40Q2Hdza4WplZfjsTLa1FqBW3SMgb3FBwNRm9JcZ2pl/l1OOMQq/
-         ue4PReZyMKTkxtITVTxrzOhWG69FiTMmRh04uP+j9nWTXIG6QG4rYheV8v0w/TT+y6bR
-         4gFBbTuFNPaGGep1m0S6vUguSvr+lUN8dnDrNKiB22TjcYyViK1FocfXvSAX5JT0+bEa
-         TJa7MfbVAf6bXi7XESWbSFJzhPMW+VtNvKNqwizS2QU6mlxUHN6nDSMNZ42FAayKaJKT
-         1hcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ouPF0FVLzrt8SFto8EmQTQoj67nxkgjY1je88zuqSYk=;
-        b=4EDCY3x/UAOOOxfBGCVq2UbOIOlMeR3gZifRpIdwsEUDx2HRsK2jRMqtiqZ1VOCS6A
-         pSy+KLUo2CaV9lG+OncmmIU69FWGll5oULbabPvVZMoWiHVn24noreCWAmLxmHWvabh4
-         UnTecc3f2/YfGtdP+Xt3uJc9PWymJHPcqTv6IUaMXeayJmXE1zU0OAUz36tmQzdLniUl
-         9NFMcQrQjqIefVniTfeX+j+MVNqZxb8ZPjZDl1hSOd87GH11ulggALwtYwjcexm/UUKk
-         DMoqYVn1mf3A8+6O+bJSy8LfUvlgQkM+kavllVmn63o42DmOBOrGAUG+nx3RpymJqKOd
-         56XQ==
-X-Gm-Message-State: AOAM533K5tcfOjyr2jOeBHH/cdxQPdqtAx6tZR7h9fScgePDE+Evt2AK
-        Lw51gfZeIy6O2j4ycHPpdGjiZbxbYWHBBA==
-X-Google-Smtp-Source: ABdhPJxLtGSEO3n+xLg56CgHFqN4A5UQZwmmPBFiepYDGd+/SPADb/nEgF7iU1LuJZY2f6GgP6j7mA==
-X-Received: by 2002:a05:6a00:1709:b0:44d:faf3:ef2d with SMTP id h9-20020a056a00170900b0044dfaf3ef2dmr24477186pfc.43.1635240931176;
-        Tue, 26 Oct 2021 02:35:31 -0700 (PDT)
-Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id c85sm6899200pfc.146.2021.10.26.02.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 02:35:30 -0700 (PDT)
-Message-ID: <b86b8c1257d535cd03e6ded145aa0467b91929e7.camel@gmail.com>
-Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
- stop working on Microsoft Surface 3
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Tue, 26 Oct 2021 18:35:26 +0900
-In-Reply-To: <552baf68-8fed-9a6f-d18c-5634f93a58f8@redhat.com>
-References: <20211017162337.44860-1-kitakar@gmail.com>
-         <20211017162337.44860-6-kitakar@gmail.com>
-         <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
-         <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-         <552baf68-8fed-9a6f-d18c-5634f93a58f8@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
-MIME-Version: 1.0
+        Tue, 26 Oct 2021 05:41:17 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19Q8Tt2u021400;
+        Tue, 26 Oct 2021 09:38:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=5OchYLqpnnEkWLBWyeS+I/bGHLZdRbYrebYSuBnZaao=;
+ b=nxgIYv02YC7bc8AUu6d2nU0n+t/kqTP73+fSxQQSJNw/d8rMxITaiI8WWShMkpabou94
+ iaqIcwXndpFMowYOgsMD4jE3fQjTkOIxJvCRBolgJrb+dpz/Nf/VcFNfwGqscyi/DZnN
+ L86uyyilDWeBV6jWvYhWOyY4GZfu4N/+Q0qQcBZQT3G0bA39ppyN8vmCfsiv/uPGdfbw
+ BOkiLftG/qTmidGyZkRFkiZOw/a3GwdRCnh/M1sfr4VRnBOXoauFEAPEd7Yt2/rS6D7S
+ dr3CLtjzfXTYApHdsuL5BdsV7/gI7C+Q6qt+BiKb27n56NiZ0iwSqsNPqcSne+6HqUvQ bw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4k87qr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 09:38:52 +0000
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19Q9YBTR032624;
+        Tue, 26 Oct 2021 09:38:51 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4k87qqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 09:38:51 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19Q9bB93024803;
+        Tue, 26 Oct 2021 09:38:50 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 3bx4f5bnhb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 09:38:49 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19Q9WdaI59310504
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Oct 2021 09:32:39 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5ADB5A405E;
+        Tue, 26 Oct 2021 09:38:46 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE160A4055;
+        Tue, 26 Oct 2021 09:38:45 +0000 (GMT)
+Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.51.215])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Oct 2021 09:38:45 +0000 (GMT)
+Subject: Re: [PATCH 11/20] signal/s390: Use force_sigsegv in
+ default_trap_handler
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+References: <87y26nmwkb.fsf@disp2133>
+ <20211020174406.17889-11-ebiederm@xmission.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <7c99f791-4a87-ae52-bee7-cb794b0741d2@de.ibm.com>
+Date:   Tue, 26 Oct 2021 11:38:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <20211020174406.17889-11-ebiederm@xmission.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wOnCrEJWusXWZSSGrMyKIp26j2DdWA-4
+X-Proofpoint-ORIG-GUID: 3Yl_va_89ctxG_rGJ2F6ZiZfzsDC-bwO
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-26_02,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 adultscore=0 mlxlogscore=886 suspectscore=0 priorityscore=1501
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110260053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-10-24 at 10:32 +0200, Hans de Goede wrote:
-> Hi,
+Am 20.10.21 um 19:43 schrieb Eric W. Biederman:
+> Reading the history it is unclear why default_trap_handler calls
+> do_exit.  It is not even menthioned in the commit where the change
+> happened.  My best guess is that because it is unknown why the
+> exception happened it was desired to guarantee the process never
+> returned to userspace.
 > 
-> [...]
+> Using do_exit(SIGSEGV) has the problem that it will only terminate one
+> thread of a process, leaving the process in an undefined state.
 > 
-> <note going a bit offtopic from atomisp here>
-> 
-> Friday I've resized the Android data partition on my Mi Pad 2 Android,
-> 16G eMMC model and installed Fedora 35 in the free space.
-> 
-> And yesterday I've been poking at the Mi Pad 2 the entire day,
-> both under Fedora and under the original Android install to figure
-> out which chips there are and how they are used, etc. This has
-> diverted me from looking into atomisp2 stuff, but it was fun :)
-> 
-> I've also managed to make the i915 driver work. It still gives one
-> warning during boot which I need to look into. But it works now.
-> ATM my i915 fix is just a hack. I plan to turn it into something
-> which I hope I can get upstream, I'll Cc you (Tsuchiya) on the
-> upstream submission of the i915 submission.
+> Use force_sigsegv(SIGSEGV) instead which effectively has the same
+> behavior except that is uses the ordinary signal mechanism and
+> terminates all threads of a process and is generally well defined.
 
-Thank you! I just tried your patch and now mipad2 can boot with GPU!
-So, I tried if I can reproduce touchscreen issue with atomisp, but
-there was no such issue. Touchscreen works regardless of atomisp drivers.
-I guess this is maybe a PMIC difference (mipad2/wcove and surface3/ccove).
+Do I get that right, that programs can not block SIGSEGV from force_sigsegv
+with a signal handler? Thats how I read the code. If this is true
+then
 
-> I've also figured out all the other chips used in the Mi Pad 2
-> and I believe I should be able to get things battery monitoring
-> and switching the USB plug between host <-> device mode to work
-> without too much issues (but it will take some time). This is
-> all pretty similar to all the special handling which I've already
-> added to the kernel for the GPD win / pocket devices which also
-> use the CHT Whiskey Cove PMIC.
-
-Thanks. I haven't looked into anything other than atomisp yet, so I
-can't comment anything but it's really interesting to see how drivers
-are developed :-)
-
-> Here are my notes about all the non standard chips used in the
-> Mi Pad 2:
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
 > 
-> PMIC/charger/fuel-gauge:
-> -The Type-C connector is used as / wired up as a regular micro-USB connector
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: linux-s390@vger.kernel.org
+> Fixes: ca2ab03237ec ("[PATCH] s390: core changes")
+> History Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>   arch/s390/kernel/traps.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> -There is a Cherry Trail Whiskey Cove PMIC on the I2C7 i2c_designware ctrl
->  -This is used for ID pin detection
->  -Charger-type detection does not work though, because the USB-2 data-lines are
->   not connected to it
->  -The 2 GPIOs which are used to enable an external V5 boost converter for
->   Vbus resp Vconn on other designs are both configured as inputs (register value 0x18)
->  -The extcon-intel-cht-wc driver should control the USB mux according to the
->   ID pin, identically to how the extcon-axp288 code does this
->  -The extcon-intel-cht-wc driver should control the Vboost converter in the
->   bq25890 charger IC based on the ID pin 
+> diff --git a/arch/s390/kernel/traps.c b/arch/s390/kernel/traps.c
+> index bcefc2173de4..51729ea2cf8e 100644
+> --- a/arch/s390/kernel/traps.c
+> +++ b/arch/s390/kernel/traps.c
+> @@ -84,7 +84,7 @@ static void default_trap_handler(struct pt_regs *regs)
+>   {
+>   	if (user_mode(regs)) {
+>   		report_user_fault(regs, SIGSEGV, 0);
+> -		do_exit(SIGSEGV);
+> +		force_sigsegv(SIGSEGV);
+>   	} else
+>   		die(regs, "Unknown program exception");
+>   }
 > 
-> -There is a bq25890 charger hanging from the CHT-WC PMIC charger I2C-bus at addr 0x6a
->  -At boot the BIOS clears bit 4 of register 3, disabling charging so the device
->   will still be powered from an external supply, but it will not charge!
->   Linux needs to fix this up
->  -This charger is connected to the USB-2 data-lines and automatically sets its
->   input-current-limit based on the detected charger
->  -Bit 5 of register 3 controls the Vboost converter for sending 5V to attached
->   USB-devices this bit needs to be controller by Linux based on the ID pin
->   detection from the PMIC. The BIOS does leave this enabled when booting with
->   a USB-device plugged in.
-> 
-> -There is a BQ27520 fuel-gauge at address 0x55 of the I2C1 i2c_designware ctrl
-> 
-> I2C1: addr 0x55 BQ27520 fuel-gauge
-> 
-> I2C2: addr 0x0e unknown
-> I2C2: addr 0x1b Realtek 5659 codec ? (not detected by i2cdetect)
-> I2C2: addr 0x2c TI lp855x backlight controller:
->  https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/video/backlight/lp855x_bl.c
-> I2C2: addr 0x34 NXP9890 audio amplifier
-> I2C2: addr 0x37 NXP9890 audio amplifier
-> I2C2: addr 0x3e unknown
-> 
-> I2C3: addr 0x30 KTD2026 RGB LED driver, controlling the status LED
->  https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/leds/leds-ktd2026.c
-> 
-> I2C4: addr 0x36? OVTI5693 camera sensor
-> I2C4: addr 0x37 t3ka3 camera sensor
-> 
-> I2C5: addr 0x5a Motor DRV2604 Driver ? the tablet has no haptic feedback motor!
->       Also nothing seen here by i2c-detect, probably bogus
-
-This must be a motor for the world-facing camera! I see "DW9761" in DSDT.
-Currently, I have no idea if motors are working with the upstreamed
-atomisp because there is no userspace driver for Linux that can use
-motors.
-
-Regards,
-Tsuchiya Yuto
-
-> I2C6: addr 0x38 FTSC touchscreen
-> 
-> I2C7: PMIC bus
-> 
-> -TPS61158: LED controller for menu keys LEDS, driven by PWM controller, max brightness
->  80/255 !!!!
->  https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/leds/leds-tps61158.c
->  Android behavior: light up menu keys for 5 seconds on any human input:
->  -Write a special HID driver for mainline linux to fix the key-events send by the
->   touchscreen and to light up the keys for 5 seconds on any HID input reports
-> 
-> -Sensors (accel, als) through hid-ishtp
-> 
-> -Panel 1536x2048 on card0-DSI-1
->  https://bugs.freedesktop.org/show_bug.cgi?id=108714
-> 
-> -DSDT: Android: OSID == 0x04, Windows OSID == 0x01
-> 
-> Regards,
-> 
-> Hans
-
-
