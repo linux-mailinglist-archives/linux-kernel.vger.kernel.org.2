@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EE943B7A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D1943B7AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237613AbhJZQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        id S237616AbhJZQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237329AbhJZQ6E (ORCPT
+        with ESMTP id S236295AbhJZQ7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:58:04 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31486C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:55:40 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id p16so224726lfa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:55:40 -0700 (PDT)
+        Tue, 26 Oct 2021 12:59:17 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E863C061745;
+        Tue, 26 Oct 2021 09:56:53 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id c4so56095pgv.11;
+        Tue, 26 Oct 2021 09:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LP40nYkEbLTRumSDbIOq85aSQOkINlJU3Lvgje0t1Ow=;
-        b=CIA7RDXGOVfr6w+wIEX0zTARG/3oUw7hS1nDA65m5j4EqzU2S3uppECIgYtrZ3onB7
-         tCjEyCUOL3u34a4MtlqnZjoebRIXxZzeNy4QZeA4EjF0MDXWf04W/2qvfFMhIhU8+cbW
-         KWQCsAPRF+u7Khu7QFp6i/hLT5Y62m7+S+ObY9YqB7ZhKy8+sU6lV1YC59dGSzI/Vl3d
-         xAH/HOOC8w4PiOk3EnRbI6q5j9u1B4nrRX8Q0Z9Mv/WZ3hpA99jBaNFIbAlF9q9bnP9B
-         NOrM63SZQbLdbF/mMpywcsgxhDZAOGkhJuh9GwufQ4gblB0rfFmHY6EAF9o1us5W4vM5
-         CVSQ==
+         :cc:content-transfer-encoding;
+        bh=WgPoDLreotacKgSCxjssM8YVC++au175VVy5gQ/BSV8=;
+        b=LQH2g30TyCkDqZpUSJtZ8Sb1hNOa0JFac2VOJkn5gw1JSXdNp9a6j1j4L9M7SAxT8m
+         i/d7d2lE94vcPT3SJpaonNL+zbfAc3KzKEnbi5H/KvZWAAXKbc3201McS7YRbHigyhX0
+         3Urf7fzqeIQNUb3mMDVy8ZR5WJ/LhTJe75DyNQ6QTCB+lilYbO3gYyvfPinkofj8LyXs
+         98xORT4V3222+b/iW5FvuqZmJbC/fZtZSDO50KZ3rAOveID2Y0KJtBoMOnVVsmhNi/Xg
+         SEET9SDM4dUtDqwvUP+Pynna5u7hifU3iv/eEqA72AaQqjtd2pa7/9fwvUIrhS3VPLiD
+         MWkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LP40nYkEbLTRumSDbIOq85aSQOkINlJU3Lvgje0t1Ow=;
-        b=QLtV/Ae44ILda7jpn0mBfACSFLkVQa7f/uXtfyEVMySbic4yk5C9CBolM7Rdy4LoPz
-         fGX8oZreWLIv/C3QeNjhTVmz23/fvOCRczXPXE1Doj6hZGYTcl1aYiZk+XYwnceEE7EX
-         1tuSj16oltCGg4/hVIS+sPd1rgWwu368QBfutQqK4Ro1m7JlImTZa8Vi3bltyzd4p6g7
-         yib5SirRW8989Mz/GbnwOuOlRgbh8kNCnhkUAefFTYt/xFnB03bKVwa9/lgpmgOCaDz8
-         vlGl8kxNxRhi/QcpNMG9sFcj01XCeFSxEdrCrzNVXiK8+JttGA9LoWYZTfoQimvID850
-         uFWQ==
-X-Gm-Message-State: AOAM530GjftvjDADZfeyWdURVnHJGtVYjoarNBDjENhZqNNDR0dIzzqX
-        qR9537eYOsFJUtYiqxnS/w9IVeo7jgAfkNEj2VZjuyEgObzvwg==
-X-Google-Smtp-Source: ABdhPJw2cxUH8C9WC0nTDyk7WK/wvxQOywxtnc0blf51/N4iPjOxCOzuIu/Tm5j+Xzz4tYrbsQOVE+HZ5M4xLCGvrMw=
-X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr24435501lfb.71.1635267338322;
- Tue, 26 Oct 2021 09:55:38 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WgPoDLreotacKgSCxjssM8YVC++au175VVy5gQ/BSV8=;
+        b=44wRY4iku6K3VzPD2JHbrPyhDHYx3+dOcfNo73Bif9i0Pzktgj09uuU6nSoMVxrrJr
+         j3F0JK9T5t59hUpRrNunoLrQSxb/RhbJauLlXMsXs3GXdHW+WG5NUIUgsc1YPiutMZ5k
+         9jWpxSXjnweIC9l/FzK9JPPEbpwh1yjotjwdRHxjkQXaW7lsY4agO7d+9HcrRw2HoPr1
+         SM7dj5jl5MfSNg5PZBYPKophoVKx25O1Sixkw5Oni+B/buGnPF3OEUwgwsNhGJI4mh4P
+         ZQncUyoD254gKujRT9X8XLT4DXzV9VKtxKDnaUA9cBwwa7SMvfA0buKoeBBh8X8vo1UJ
+         1bfQ==
+X-Gm-Message-State: AOAM533pd7b7D6zgg4ck843gwnQW+kH75DjE+9mbtz8knv1YZlDhG6lj
+        VLeW7H0YkcTELXLxJnAEwRvA/GIy8qvm0IjHZtY=
+X-Google-Smtp-Source: ABdhPJznb/7MirWrwZqR/FWHK5Qwogj97pHu5MaFdHytU2GTAOysA7S1ugsNpGsLmpreiuSAGyHcx1HLBotHqIpqKBA=
+X-Received: by 2002:aa7:8b1a:0:b0:44d:37c7:dbb6 with SMTP id
+ f26-20020aa78b1a000000b0044d37c7dbb6mr27340407pfd.11.1635267412857; Tue, 26
+ Oct 2021 09:56:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20211022063928epcas1p28a32be208929f9905c80e655736b7a7d@epcas1p2.samsung.com>
- <20211022063920.2145-1-huijin.park@samsung.com>
-In-Reply-To: <20211022063920.2145-1-huijin.park@samsung.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 26 Oct 2021 18:55:01 +0200
-Message-ID: <CAPDyKFo0FZ04dO-sJwL+Nvs-7JY22+y03VYRCmi80TpwdizxGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmc: core: adjust polling interval for CMD1
-To:     Huijin Park <huijin.park@samsung.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Huijin Park <bbanghj.park@gmail.com>
+References: <20210922125939.427-1-caihuoqing@baidu.com> <nycvar.YFH.7.76.2110071338010.29107@cbobk.fhfr.pm>
+ <CANRwn3SZagP7uCSHVDGMPMqQiKyUQJSjq143_DA1y0UPvsmkAA@mail.gmail.com>
+ <DB6PR07MB4278FF50AB23B9B69411CA3B9BB19@DB6PR07MB4278.eurprd07.prod.outlook.com>
+ <CANRwn3TTgZ9+T7h81tNShvEB8QWkrbKLPrQSnviFKMHa8Zga_Q@mail.gmail.com>
+ <20211015025815.GA3874@LAPTOP-UKSR4ENP.internal.baidu.com>
+ <CAF8JNhLF8_f1x1K52ay_cmkKqpNiY7P4kMwt=ia6ws9Yd9uoNQ@mail.gmail.com>
+ <nycvar.YFH.7.76.2110181725050.12554@cbobk.fhfr.pm> <CANRwn3Q_LksYwX5x+dKw9OzPcYBQr_N5=5bLpZgNPtd88Zqpfg@mail.gmail.com>
+In-Reply-To: <CANRwn3Q_LksYwX5x+dKw9OzPcYBQr_N5=5bLpZgNPtd88Zqpfg@mail.gmail.com>
+From:   Jason Gerecke <killertofu@gmail.com>
+Date:   Tue, 26 Oct 2021 09:56:41 -0700
+Message-ID: <CANRwn3TGkin=4aEKibUicmH-UtRz_SFz7+S6dAsTwXVxRzzi9g@mail.gmail.com>
+Subject: Re: [PATCH] HID: wacom: Make use of the helper function devm_add_action_or_reset()
+To:     Jiri Kosina <jikos@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Ping Cheng <pinglinux@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linux Input <linux-input@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aaron Skomra <skomra@gmail.com>,
+        "Dickens, Joshua" <joshua.dickens@wacom.com>,
+        Cai Huoqing <caihuoqing@baidu.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Oct 2021 at 08:39, Huijin Park <huijin.park@samsung.com> wrote:
+On Tue, Oct 19, 2021 at 8:36 AM Jason Gerecke <killertofu@gmail.com> wrote:
 >
-> In mmc_send_op_cond(), loops are continuously performed at the same
-> interval of 10 ms.  However the behaviour is not good for some eMMC
-> which can be out from a busy state earlier than 10 ms if normal.
+> On Sun, Oct 17, 2021 at 9:53 PM Dmitry Torokhov <dmitry.torokhov@gmail.co=
+m> wrote:
+>>
+>> I think this is OK, but I would prefer if assignments that alter the
+>>
+>> shared data (i.e. assignment to wacom_wac->shared->pen, etc) would
+>> continue stay under mutex protection, so they need to be pulled up.
 >
-> Therefore, this patch adjusts the waiting interval time. The interval
-> time starts at 1 ms, but doubles until the range reaches 10 ms for
-> each loop.
 >
-> The reason for adjusting the interval time is that it is important
-> to reduce the eMMC initialization time, especially in devices that
-> use eMMC as rootfs.
 >
-> Test log(eMMC:KLM8G1GETF-B041):
+> On Mon, Oct 18, 2021 at 8:26 AM Jiri Kosina <jikos@kernel.org> wrote:
+>>
+>> I don't see any issue with that ordering, but I'd also prefer for clarit=
+y
+>> to keep updating the shared data structure under the mutex protection.
+>>
 >
-> before: 12 ms (0.439407 - 0.427186)
-> [0.419407] mmc0: starting CMD0 arg 00000000 flags 000000c0
-> [0.422652] mmc0: starting CMD1 arg 00000000 flags 000000e1
-> [0.424270] mmc0: starting CMD0 arg 00000000 flags 000000c0
-> [0.427186] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
-> [0.439407] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
-> [0.439721] mmc0: starting CMD2 arg 00000000 flags 00000007
+> The data behind the "shared" struct (e.g. wacom_wac->shared->pen) is not =
+currently under any mutex protection. I don't think mutex protection is nec=
+essary, but we can take a look... I believe all of its members are either f=
+lags (so already atomic) or initialized during probe and then just used as =
+a handle with appropriate NULL checks (but maybe two threads could be simul=
+taneously issuing events to the same device?).
 >
-> after: 4 ms (0.431725 - 0.427352)
-> [0.419575] mmc0: starting CMD0 arg 00000000 flags 000000c0
-> [0.422819] mmc0: starting CMD1 arg 00000000 flags 000000e1
-> [0.424435] mmc0: starting CMD0 arg 00000000 flags 000000c0
-> [0.427352] mmc0: starting CMD1 arg 40000080 flags 000000e1<-start
-> [0.428913] mmc0: starting CMD1 arg 40000080 flags 000000e1
-> [0.431725] mmc0: starting CMD1 arg 40000080 flags 000000e1<-finish
-> [0.432038] mmc0: starting CMD2 arg 00000000 flags 00000007
->
-> Signed-off-by: Huijin Park <huijin.park@samsung.com>
->
-> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-> index 0c54858e89c0..61b4ffdc89ce 100644
-> --- a/drivers/mmc/core/mmc_ops.c
-> +++ b/drivers/mmc/core/mmc_ops.c
-> @@ -177,6 +177,7 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
->  {
->         struct mmc_command cmd = {};
->         int i, err = 0;
-> +       int interval = 1, interval_max = 10;
->
->         cmd.opcode = MMC_SEND_OP_COND;
->         cmd.arg = mmc_host_is_spi(host) ? 0 : ocr;
-> @@ -198,7 +199,9 @@ int mmc_send_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
->
->                 err = -ETIMEDOUT;
->
-> -               mmc_delay(10);
-> +               mmc_delay(interval);
-> +               if (interval < interval_max)
-> +                       interval = min(interval * 2, interval_max);
+> If a patch to add mutex protection to the shared struct is necessary, tha=
+t's going to be a seperate patch that touches a lot more of the driver.
 
-It looks like we should be able to replace the above polling loop with
-__mmc_poll_for_busy(). We would need a callback function and a
-callback data, specific for CMD1, but that looks far better to me, if
-we can get that to work.
+Following up on this. I took a second look at the shared struct, and
+believe that things should work fine during initialization and
+steady-state. There are, however, opportunities for e.g. one
+device/thread to be removed and set e.g. `shared->touch =3D NULL` while
+a second device/thread is attempting to send an event out of that
+device. This is going to be very rare and only on disconnect, which is
+probably why we've never received reports of real-world issues.
 
-Would you mind having a look?
+This shared issue is present with or without the changes by Cai and
+myself. I would ask that these two patches be merged while we look at
+introducing a new mutex to protect the contents of the shared pointer.
 
->
->                 /*
->                  * According to eMMC specification v5.1 section 6.4.3, we
-
-Kind regards
-Uffe
+Jason
+---
+Now instead of four in the eights place /
+you=E2=80=99ve got three, =E2=80=98Cause you added one  /
+(That is to say, eight) to the two,     /
+But you can=E2=80=99t take seven from three,    /
+So you look at the sixty-fours....
