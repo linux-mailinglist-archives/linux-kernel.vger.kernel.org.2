@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB0C43AA53
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DDD43AA56
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhJZCcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:32:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59442 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229998AbhJZCcP (ORCPT
+        id S234233AbhJZCeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhJZCeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:32:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635215392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bK/ePsOXvnwATuPJ538FYYy/I3va7wErG+x6S0m8LPc=;
-        b=VhJZZ5g6OtQiAkdrgxfLgy49izVCiJt6Vi3Y3ol5N8y8nY1PpR0WUqPN6vTBYZMTbOWL2l
-        yuqwEE+7M3HT4nUUbfCd85XNapHuctiJGfHAhnBOnt0vANKR+468d12MaWfCp86TvY2GoS
-        ixZChhVFowxzC8gSqBg6vNMiFsrSnhI=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-557-0oJc5VpQPoKLKotItGw8ZA-1; Mon, 25 Oct 2021 22:29:48 -0400
-X-MC-Unique: 0oJc5VpQPoKLKotItGw8ZA-1
-Received: by mail-lj1-f198.google.com with SMTP id h5-20020a2e9005000000b00210d01099b3so3665389ljg.17
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:29:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bK/ePsOXvnwATuPJ538FYYy/I3va7wErG+x6S0m8LPc=;
-        b=ei+X9ZZ6Z3t3idYEINBODQK20ocl+pqjkmp0Icci890mLUq3gtttjQJaOJL630I6iQ
-         L4X5SH2cIiZyUN4Sq+jRzLyu1HczaGsc2ARedflEflJt/8Ac5tHhA4nAbN+KPiISqtOG
-         UIn7V9TM3vjjk4df+IW6Y/BYcDkmsRyC6CCZsq5+PyM2wUwd8FPj7wTk4YPb/nY9JwG5
-         EBmqSVQ2hXhds6qdCrBaxSwPsupjfiMOxYbS3/NdVnTdJHCVCppIwVPAleHPikNdMhLu
-         0RjXovh7eWqdOblOQGYy7gsZQluCKaoGA57Y9SNVUguiLCEUwBomNBr8uSVxQyMgxThK
-         /uaA==
-X-Gm-Message-State: AOAM530yMuSMK7oQQeh6/EO9G+JWdSibXtyTbhXFugiqoIRqPdqhUbjA
-        HKkCByyVrKhGXZsKMGhkImwrfZV8cvJvZGKDApRyl/D/EL4jnqyG3/TtuFrNElCzJM/GNkmMDFE
-        PZ2dcjV9VyXo4Iepao8fxOApRm5MU6EsVw7W9BUeg
-X-Received: by 2002:a2e:8846:: with SMTP id z6mr1572337ljj.277.1635215386593;
-        Mon, 25 Oct 2021 19:29:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynH2p5Q/d3q8po75eyLScuoBHurmQzxoMQYZvDuVwpXkiyjRKbg3lG4lyNps31IP9RfRnyLeR+hJ3uxAAQOeI=
-X-Received: by 2002:a2e:8846:: with SMTP id z6mr1572308ljj.277.1635215386353;
- Mon, 25 Oct 2021 19:29:46 -0700 (PDT)
+        Mon, 25 Oct 2021 22:34:16 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1D3C061745;
+        Mon, 25 Oct 2021 19:31:53 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HdbS60Sybz4xbW;
+        Tue, 26 Oct 2021 13:31:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635215510;
+        bh=zvI9YbGt0l1BIDQHixb3pb8eAR+Quzgr6H4JpCjIGU4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=n5PT9PMJlCg6nRLxUjSoHEDAwLeK0K1rbi7BlaabqIWYrFx9cKHeeJcKzZmU4I5CE
+         q76Cvv3XSi99C+mLI+dmVkBcIUuh3qs03s9WtrHjRB66BlZo5toMNHYALzYPRZ+G+/
+         upjDINL14HT3RuwOcA3Ez/3TXvBoBod0MZBu5nQsuAu2SVk21TPArKAZYykYVqW43C
+         s/gjyO36njEzwaAO2GE7ku7yCMcwyc2VlOSIRWR+TfSRrM70qRJfC+rTfE4Tgzp7F/
+         vBLs9oUj3JksnUoWQuscrn5+5gBtrTugdaCe7X+rmjHGUrTivayPyeCjNfGcOxChGT
+         7BRMK/wvkXMKA==
+Date:   Tue, 26 Oct 2021 13:31:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Moore <paul@paul-moore.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: linux-next: manual merge of the audit tree with the powerpc tree
+Message-ID: <20211026133147.35d19e00@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211025102240.22801-1-colin.i.king@gmail.com>
-In-Reply-To: <20211025102240.22801-1-colin.i.king@gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 26 Oct 2021 10:29:35 +0800
-Message-ID: <CACGkMEv2UOaf0phkXYsV=L3fn3BCxXUj-Vx3o1MeYQhvY_B-wg@mail.gmail.com>
-Subject: Re: [PATCH][next] virtio_blk: Fix spelling mistake: "advertisted" -> "advertised"
-To:     Colin Ian King <colin.i.king@googlemail.com>
-Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-block@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Ynot28kSkVn5UbErtuc45_Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 6:22 PM Colin Ian King
-<colin.i.king@googlemail.com> wrote:
->
-> There is a spelling mistake in a dev_err error message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
+--Sig_/Ynot28kSkVn5UbErtuc45_Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Hi all,
 
->  drivers/block/virtio_blk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> index c336d9bb9105..9dd0099d2bd2 100644
-> --- a/drivers/block/virtio_blk.c
-> +++ b/drivers/block/virtio_blk.c
-> @@ -560,7 +560,7 @@ static int init_vq(struct virtio_blk *vblk)
->         if (err)
->                 num_vqs = 1;
->         if (!err && !num_vqs) {
-> -               dev_err(&vdev->dev, "MQ advertisted but zero queues reported\n");
-> +               dev_err(&vdev->dev, "MQ advertised but zero queues reported\n");
->                 return -EINVAL;
->         }
->
-> --
-> 2.32.0
->
+Today's linux-next merge of the audit tree got conflicts in:
 
+  arch/powerpc/kernel/audit.c
+  arch/powerpc/kernel/compat_audit.c
+
+between commit:
+
+  566af8cda399 ("powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERI=
+C")
+
+from the powerpc tree and commits:
+
+  42f355ef59a2 ("audit: replace magic audit syscall class numbers with macr=
+os")
+  1c30e3af8a79 ("audit: add support for the openat2 syscall")
+
+from the audit tree.
+
+I fixed it up (I just removed the files like the former commit) and can
+carry the fix as necessary. This is now fixed as far as linux-next is
+concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Ynot28kSkVn5UbErtuc45_Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3aJMACgkQAVBC80lX
+0GyGFwgApMeEPlt9wHRfuDQwvzb5fk0SAh904NgIPmQV9zE8HLQJ/j0LmjDqHHbR
+osGNg2Sdi+zV1430fEqhx8A6yOs0od797zJBtUtDBqLtNOwvSOO8KXtJUUEMCM60
+EC0+nXK5bHPuvownNQMBoDT03s6KZH/SjFraB6V5HMUvnBd7ojYVg+mRX3GUAVYq
+dyoAc6VgQETAzRr9SOvGyCSGYsYmC8JQUA6/orsZQ/yD6TRLlG3KtorZptG7Coqi
+Zn6t3xXb0gRGHrw1sZjPQh2N9OKL5nRSGE3ykYFbL5hNAN6T8fHe/a3NUrln8EA6
+ltgn7nF03w5UPeLO/5kImMr0uqlbUQ==
+=Q3KL
+-----END PGP SIGNATURE-----
+
+--Sig_/Ynot28kSkVn5UbErtuc45_Z--
