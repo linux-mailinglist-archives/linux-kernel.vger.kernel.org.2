@@ -2,127 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BBE43B277
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC51143B271
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235997AbhJZMdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235425AbhJZMdU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:33:20 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD1EC061745;
-        Tue, 26 Oct 2021 05:30:56 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g8so12445885edb.2;
-        Tue, 26 Oct 2021 05:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LpU1v1dCuk7vKXavVtDbZayvAGEHB3SBMD5EXFZtZ6k=;
-        b=fe46ol5lw3cD3afFUi2Umx428YjXhXauuaDDsblgAAw+0aRcBFpXqFGN8XMdJKeeuo
-         KHF9cj6Pkok3CbwZzy/6edsBY5G++LMIOvs73daqx1UiQh/VmFsm1OPd0G/H5Kv0yyAd
-         AxF+97+un7EqZWPCTtNfS0D0kzAGJCZhfx8iGyp2e3PT4xtlKSSe3zLjWghPNm1/O7Zh
-         QlzuaVqJTGHF7A0Pn4aUiRsQNjFUNwQ/EzbMXEQLbzLDzL6Kqm0yhDtWgb7BGwOMU2PM
-         pftDvA69DC+Q15tP5ZMlCilyigE8oGVblNNTzs3ZOk7IHqQMZE5GAx5RJsIIHOTnBQSM
-         ZUAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LpU1v1dCuk7vKXavVtDbZayvAGEHB3SBMD5EXFZtZ6k=;
-        b=U9rvibgnE0ttm1UoLf5XiV6qkLasF6qSEp8FleKWld7QnLlusbYhGcIDn12Lf/65iq
-         7OZy3LMBPL//sRScdYN/nHERbv+RQL9oTeVwlEElpJQUCkW/MLQTamHx13grfY2xqPSv
-         EhC+pWqlPAhBViKhHDKclid7a/Ver2CQRGES0cqrQ8xskS/LYqb0ejRl22zaIXnfOWQO
-         oA5H9Oc0US1rtQW2zfndP0wpFs3Z76M0xgdqiQGeqyU4jYTq+WJBlBVUszmtfx7BLUES
-         wrMccrR/lg8AZPK5Rkd7HrhOGEjTJDT3hW8rzMv/TNF4YMFW/cqjPxxIF4yABvTHfydE
-         3dbQ==
-X-Gm-Message-State: AOAM533zHMhEgYJHFGvvkwQ6Yaw805ZFSG0AmJCGw/RPhm3M107xaum+
-        jm8/cmn1NBMY4YrqmSG4WaL+Cw+YeDRE7f3WyI0=
-X-Google-Smtp-Source: ABdhPJw0HwSHJV1o+S4gqxwSQ2Ruk381U5XPFNCv7XzCLwUlUVolOdGkUhptgIdDY6mQTWN+g8ZKQaN/RBZ1IjUziGY=
-X-Received: by 2002:a05:6402:5194:: with SMTP id q20mr4402850edd.294.1635251437780;
- Tue, 26 Oct 2021 05:30:37 -0700 (PDT)
+        id S235981AbhJZMdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:33:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235425AbhJZMdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:33:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5394960EBD;
+        Tue, 26 Oct 2021 12:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635251454;
+        bh=Sjf7b/oeWGiONyuawgadmBHHVmuErKfTpBabVyn5MPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LPtaD8PAqJ645wMcl9R83O49m5Eo8JqJYW4TP1jHM0+4L1ODZsjyh3B4Kue6MglMu
+         5+sTKd/xW7bNhfpInnlSbZabnai2u5Hz9jX0X5nFA4vxEZ/3hamuafbWqyrBLdhbhm
+         zWDLrrtFGPavjQf+EoTOh66VHUx3JhVUkGkhvsOsBntvYB4C+swA9dKXr2QYnatapo
+         k8/fSk63lb6XO1BH97qxxW0ni8cnsEofqXDNP1d53UJ1EpBT0fU2+6G5VE8LW2F8k2
+         I0HG0cIdfNndlfizE8VN/bLQ81usn6UJcBXWxt6Iqb8O5X0R23eevsqvNSZuv/L7qB
+         70xtS9eEskPqw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mfLbB-0001iB-JL; Tue, 26 Oct 2021 14:30:38 +0200
+Date:   Tue, 26 Oct 2021 14:30:37 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     oneukum@suse.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2] usbnet: fix error return code in usbnet_probe()
+Message-ID: <YXf07WrHVwk8WF2B@hovoldconsulting.com>
+References: <20211026124015.3025136-1-wanghai38@huawei.com>
 MIME-Version: 1.0
-References: <20211026100432.1730393-1-arnd@kernel.org> <20211026100432.1730393-2-arnd@kernel.org>
-In-Reply-To: <20211026100432.1730393-2-arnd@kernel.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Tue, 26 Oct 2021 05:30:26 -0700
-Message-ID: <CAMo8BfLN0Q+_K2fP9KVBPyqAMahtCSZB1MwLBRtQYcK3R35N7Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] futex: remove futex_cmpxchg detection
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-snps-arc@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
-        linux-riscv@lists.infradead.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        linux-um@lists.infradead.org,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026124015.3025136-1-wanghai38@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 3:06 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Now that all architectures have a working futex implementation
-> in any configuration, remove the runtime detection code.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue, Oct 26, 2021 at 08:40:15PM +0800, Wang Hai wrote:
+> Return error code if usb_maxpacket() returns 0 in usbnet_probe()
+> 
+> Fixes: 397430b50a36 ("usbnet: sanity check for maxpacket")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+
+This needs to go to stable as well as the offending patch is being
+backported.
+
+Cc: stable@vger.kernel.org
+Reviewed-by: Johan Hovold <johan@kernel.org>
+
 > ---
->  arch/arc/Kconfig              |  1 -
->  arch/arm/Kconfig              |  1 -
->  arch/arm64/Kconfig            |  1 -
->  arch/csky/Kconfig             |  1 -
->  arch/m68k/Kconfig             |  1 -
->  arch/riscv/Kconfig            |  1 -
->  arch/s390/Kconfig             |  1 -
->  arch/sh/Kconfig               |  1 -
->  arch/um/Kconfig               |  1 -
->  arch/um/kernel/skas/uaccess.c |  1 -
->  arch/xtensa/Kconfig           |  1 -
->  init/Kconfig                  |  8 --------
->  kernel/futex/core.c           | 35 -----------------------------------
->  kernel/futex/futex.h          |  6 ------
->  kernel/futex/syscalls.c       | 22 ----------------------
->  15 files changed, 82 deletions(-)
+> v1->v2: change '-EINVAL' to '-ENODEV'
+>  drivers/net/usb/usbnet.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+> index 80432ee0ce69..a33d7fb82a00 100644
+> --- a/drivers/net/usb/usbnet.c
+> +++ b/drivers/net/usb/usbnet.c
+> @@ -1790,6 +1790,7 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
+>  	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
+>  	if (dev->maxpacket == 0) {
+>  		/* that is a broken device */
+> +		status = -ENODEV;
+>  		goto out4;
+>  	}
 
-For xtensa:
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-
--- 
-Thanks.
--- Max
+Johan
