@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CE043B978
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E436843B977
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbhJZS1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhJZS07 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:26:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D97C061745;
-        Tue, 26 Oct 2021 11:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SKVPRp8QWsSk8ZgHZrLxDGZRN/Q7dRClGxVumXlu1ZY=; b=Teyeqh7Huw8bhKcMXPttBtp+gS
-        837G3HJeGdTiA3TWiiaF5haLIYRjemb4QNAnOiBIPNDPNT5vdroNeVd+fPTz4hLqKjl95jU6kEKB7
-        ul6MNswaA78pepRxTDWjuKNTvZzrheO0pIko4nPDsZf+s7MPQjmZO0ShuR5uapfV+GRO/2I7ZubdB
-        PAIakkdwrraDDIveZyrpXtQF0M83ZrPeSeUsyBpSzM8qgcO6Js7UuodGGvmQ5XMeTHI6brXiuy8CR
-        vAk0SPV5woUbBB9B3jD8PKy4MRNPgkxHwDj6Ieik55P5sKgh28LIo6VTmRFHqdpbaOos8XmjDYZ2X
-        iLFOSolg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfR6p-00H4T7-BN; Tue, 26 Oct 2021 18:23:54 +0000
-Date:   Tue, 26 Oct 2021 19:23:39 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-m68k@lists.linux-m68k.org, anshuman.khandual@arm.com,
-        akpm@linux-foundation.org, william.kucharski@oracle.com,
-        mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
-        schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
-        hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
-        weixugc@google.com, gthelen@google.com
-Subject: Re: [RFC 0/8] Hardening page _refcount
-Message-ID: <YXhHq52jDrU61V4E@casper.infradead.org>
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
+        id S236829AbhJZS0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:26:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231297AbhJZS0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 14:26:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9302360F9D;
+        Tue, 26 Oct 2021 18:24:21 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 19:24:18 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YXhH0sBSyTyz5Eh2@arm.com>
+References: <20211019134204.3382645-1-agruenba@redhat.com>
+ <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com>
+ <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com>
+ <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com>
+ <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026173822.502506-1-pasha.tatashin@soleen.com>
+In-Reply-To: <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 05:38:14PM +0000, Pasha Tatashin wrote:
-> It is hard to root cause _refcount problems, because they usually
-> manifest after the damage has occurred.  Yet, they can lead to
-> catastrophic failures such memory corruptions.
+On Mon, Oct 25, 2021 at 09:00:43PM +0200, Andreas Gruenbacher wrote:
+> On Fri, Oct 22, 2021 at 9:23 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> > On Fri, Oct 22, 2021 at 8:06 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > Probing only the first byte(s) in fault_in() would be ideal, no need to
+> > > go through all filesystems and try to change the uaccess/probing order.
+> >
+> > Let's try that. Or rather: probing just the first page - since there
+> > are users like that btrfs ioctl, and the direct-io path.
 > 
-> Improve debugability by adding more checks that ensure that
-> page->_refcount never turns negative (i.e. double free does not
-> happen, or free after freeze etc).
+> For direct I/O, we actually only want to trigger page fault-in so that
+> we can grab page references with bio_iov_iter_get_pages. Probing for
+> sub-page error domains will only slow things down. If we hit -EFAULT
+> during the actual copy-in or copy-out, we know that the error can't be
+> page fault related. Similarly, in the buffered I/O case, we only
+> really care about the next byte, so any probing beyond that is
+> unnecessary.
 > 
-> - Check for overflow and underflow right from the functions that
->   modify _refcount
-> - Remove set_page_count(), so we do not unconditionally overwrite
->   _refcount with an unrestrained value
-> - Trace return values in all functions that modify _refcount
+> So maybe we should split the sub-page error domain probing off from
+> the fault-in functions. Or at least add an argument to the fault-in
+> functions that specifies the amount of memory to probe.
 
-I think this is overkill.  Won't we get exactly the same protection
-by simply testing that page->_refcount == 0 in set_page_count()?
-Anything which triggers that BUG_ON would already be buggy because
-it can race with speculative gets.
+My preferred option is not to touch fault-in for sub-page faults (though
+I have some draft patches, they need testing).
 
+All this fault-in and uaccess with pagefaults_disabled() is needed to
+avoid a deadlock when the uaccess fault handling would take the same
+lock. With sub-page faults, the kernel cannot fix it up anyway, so the
+arch code won't even attempt call handle_mm_fault() (it is not an mm
+fault). But the problem is the copy_*_user() etc. API that can only
+return the number of bytes not copied. That's what I think should be
+fixed. fault_in() feels like the wrong place to address this when it's
+not an mm fault.
+
+As for fault_in() getting another argument with the amount of sub-page
+probing to do, I think the API gets even more confusing. I was also
+thinking, with your patches for fault_in() now returning size_t, is the
+expectation to be precise in what cannot be copied? We don't have such
+requirement for copy_*_user().
+
+While more intrusive, I'd rather change copy_page_from_iter_atomic()
+etc. to take a pointer where to write back an error code. If it's
+-EFAULT, retry the loop. If it's -EACCES/EPERM just bail out. Or maybe
+simply a bool set if there was an mm fault to be retried. Yet another
+option to return an -EAGAIN if it could not process the mm fault due to
+page faults being disabled.
+
+Happy to give this a try, unless there's a strong preference for the
+fault_in() fix-up (well, I can do both options and post them).
+
+-- 
+Catalin
