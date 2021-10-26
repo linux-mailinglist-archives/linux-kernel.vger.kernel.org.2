@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0B543AE2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305B243AE34
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhJZIhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:37:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232001AbhJZIhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:37:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CDBE60F46;
-        Tue, 26 Oct 2021 08:34:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635237292;
-        bh=QlPHR7ufXmFxgMpPMQTjAd3avsJoYelK6Xz5gGhBaCQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HfEq/lalFrkivwUtuoDMutUydMlIaLLVXIwjXTeD4JMSt35cMz2NlI7ZBa65+NZ3w
-         Dkh/duXWw69za/OMFUt7/AEAegZOP5p9HJrVtiKvUgjpBm6v5s3Rwbp03enNDb8uFc
-         Mrd/FapNtFMPSr/fBt6fPzhGvt0M5jA0/GPCm2ANW1/U+8FTM2z7CE/loCdV2/aAsG
-         S8MSBQBbKKSoZbPBYa65QLJQDa3RHgRtcDb8+7tO3wI9V8D4ndCkAUA2I8/KpMv3v9
-         ORRQ3+USggkLaEBks7OJqMNY1SNdpizG0fmFq4FivqH13EjMCoibINIaRv2iAVdwx3
-         h++bIO8NnOOcw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] dma-buf: st: fix error handling in test_get_fences()
-Date:   Tue, 26 Oct 2021 10:34:37 +0200
-Message-Id: <20211026083448.3471055-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234311AbhJZIkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:40:01 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:25556 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231148AbhJZIjq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:39:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635237442;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=UHIcmmtXAz63qMGGo0D/G7B9h1QgSqadW2ikaM+wM/s=;
+    b=btm+WfmSiWpmmZbicJvsZNNgLsu7laZpDG+W1j/OvmWRW4GCHo+b4Q4oKsN1D/8cvM
+    xSKgg3KGkkE2VCZ02yjrGtmy3LHA3YWG0ymae9dsar31Hl+muY7fjmNlYzNjSndTWeSW
+    HR2XrrH2NtzC61CL8jyqRQxmQTaLZCPN3Edm3DtHMubsMuc0ArTef3eTLVbIrAKJoTT8
+    CjCXjyWU9xvE4OmIamiXQWZMiFZSlBUlgyxOjgO5F8+42DkLFiRBMux5gR/GUnYBRmTS
+    8HYokqhhdIs+m9fS6a2eebkyu/gYsFwbiIcY5knAfp/bx0j2IDWR8oHleGjzOvaSDojO
+    eTBg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id n020a8x9Q8bL20Q
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 26 Oct 2021 10:37:21 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nicolai Stange <nstange@suse.de>
+Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
+Subject: Re: [PATCH 1/6] crypto: DRBG - prepare for more fine-grained tracking of seeding state
+Date:   Tue, 26 Oct 2021 10:37:21 +0200
+Message-ID: <2351272.LuTyyo00Js@positron.chronox.de>
+In-Reply-To: <20211025092525.12805-2-nstange@suse.de>
+References: <20211025092525.12805-1-nstange@suse.de> <20211025092525.12805-2-nstange@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Am Montag, 25. Oktober 2021, 11:25:20 CEST schrieb Nicolai Stange:
 
-The new driver incorrectly unwinds after errors, as clang points out:
+Hi Nicolai,
 
-drivers/dma-buf/st-dma-resv.c:295:7: error: variable 'i' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-                if (r) {
-                    ^
-drivers/dma-buf/st-dma-resv.c:336:9: note: uninitialized use occurs here
-        while (i--)
-               ^
-drivers/dma-buf/st-dma-resv.c:295:3: note: remove the 'if' if its condition is always false
-                if (r) {
-                ^~~~~~~~
-drivers/dma-buf/st-dma-resv.c:288:6: error: variable 'i' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-        if (r) {
-            ^
-drivers/dma-buf/st-dma-resv.c:336:9: note: uninitialized use occurs here
-        while (i--)
-               ^
-drivers/dma-buf/st-dma-resv.c:288:2: note: remove the 'if' if its condition is always false
-        if (r) {
-        ^~~~~~~~
-drivers/dma-buf/st-dma-resv.c:280:10: note: initialize the variable 'i' to silence this warning
-        int r, i;
-                ^
-                 = 0
+> There are two different randomness sources the DRBGs are getting seeded
+> from, namely the jitterentropy source (if enabled) and get_random_bytes().
+> At initial DRBG seeding time during boot, the latter might not have
+> collected sufficient entropy for seeding itself yet and thus, the DRBG
+> implementation schedules a reseed work from a random_ready_callback once
+> that has happened. This is particularly important for the !->pr DRBG
+> instances, for which (almost) no further reseeds are getting triggered
+> during their lifetime.
+>=20
+> Because collecting data from the jitterentropy source is a rather expensi=
+ve
+> operation, the aforementioned asynchronously scheduled reseed work
+> restricts itself to get_random_bytes() only. That is, it in some sense
+> amends the initial DRBG seed derived from jitterentropy output at full
+> (estimated) entropy with fresh randomness obtained from get_random_bytes()
+> once that has been seeded with sufficient entropy itself.
+>=20
+> With the advent of rng_is_initialized(), there is no real need for doing
+> the reseed operation from an asynchronously scheduled work anymore and a
+> subsequent patch will make it synchronous by moving it next to related
+> logic already present in drbg_generate().
+>=20
+> However, for tracking whether a full reseed including the jitterentropy
+> source is required or a "partial" reseed involving only get_random_bytes()
+> would be sufficient already, the boolean struct drbg_state's ->seeded
+> member must become a tristate value.
+>=20
+> Prepare for this by introducing the new enum drbg_seed_state and change
+> struct drbg_state's ->seeded member's type from bool to that type.
+>=20
+> For facilitating review, enum drbg_seed_state is made to only contain
+> two members corresponding to the former ->seeded values of false and true
+> resp. at this point: DRBG_SEED_STATE_UNSEEDED and DRBG_SEED_STATE_FULL. A
+> third one for tracking the intermediate state of "seeded from jitterentro=
+py
+> only" will be introduced with a subsequent patch.
+>=20
+> There is no change in behaviour at this point.
+>=20
+> Signed-off-by: Nicolai Stange <nstange@suse.de>
 
-Skip cleaning up the bits that have not been allocated at this point.
+Reviewed-by: Stephan M=FCller <smueller@chronox.de>
 
-Fixes: 1d51775cd3f5 ("dma-buf: add dma_resv selftest v4")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-I'm not familiar with these interfaces, so I'm just guessing where
-we should jump after an error, please double-check and fix if necessary.
----
- drivers/dma-buf/st-dma-resv.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Ciao
+Stephan
 
-diff --git a/drivers/dma-buf/st-dma-resv.c b/drivers/dma-buf/st-dma-resv.c
-index 6f3ba756da3e..bc32b3eedcb6 100644
---- a/drivers/dma-buf/st-dma-resv.c
-+++ b/drivers/dma-buf/st-dma-resv.c
-@@ -287,7 +287,7 @@ static int test_get_fences(void *arg, bool shared)
- 	r = dma_resv_lock(&resv, NULL);
- 	if (r) {
- 		pr_err("Resv locking failed\n");
--		goto err_free;
-+		goto err_resv;
- 	}
- 
- 	if (shared) {
-@@ -295,7 +295,7 @@ static int test_get_fences(void *arg, bool shared)
- 		if (r) {
- 			pr_err("Resv shared slot allocation failed\n");
- 			dma_resv_unlock(&resv);
--			goto err_free;
-+			goto err_resv;
- 		}
- 
- 		dma_resv_add_shared_fence(&resv, f);
-@@ -336,6 +336,7 @@ static int test_get_fences(void *arg, bool shared)
- 	while (i--)
- 		dma_fence_put(fences[i]);
- 	kfree(fences);
-+err_resv:
- 	dma_resv_fini(&resv);
- 	dma_fence_put(f);
- 	return r;
--- 
-2.29.2
 
