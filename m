@@ -2,180 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF9143BA1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E01D43BA20
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238479AbhJZTE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:04:26 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:22418 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238473AbhJZTEY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:04:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635274920; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=vjlF/u+Qo1jfb6RLOi04YwLQEuDdY/3zfoWoV1ZisBk=;
- b=mgYxWCF8KOCmCIRGRbx9UJMRC7MtEm5JQ7tXflek3t/kH4kdRNXZRBz65yZ8oMhqZFRXRW2T
- qKLAofWb7T9dRlfM/wIcEyED566pfU6sz7EEW65iDh1a9FKTgFC32hVSM9s3ALDN1HSZVFpC
- PD8AdBbN35zpW6pddwCGoqVawuU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 617850a3fd91319f0f557a16 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 19:01:55
- GMT
-Sender: sbillaka=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2456BC4360D; Tue, 26 Oct 2021 19:01:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sbillaka)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A846C4360D;
-        Tue, 26 Oct 2021 19:01:54 +0000 (UTC)
+        id S238487AbhJZTFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:05:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235216AbhJZTE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:04:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73D976103C;
+        Tue, 26 Oct 2021 19:02:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635274955;
+        bh=5i6nLNgMCoqcL3SxcdUlVgyXJBpR3WqcaSdO2QGRI3U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ugLxngwVJuogTj7LaSS08D2iHidf1hIdLCR25TgHRDdSi7klTXn3bVWvoKMWNmwxU
+         DneTpPMmo4z56euWMU0eex9GW0oq3qV9jjRBw7r+OvWMaAgi8Qxh5dv7hgHKuXxNZo
+         VYpfbq5/iNYuxpPYG6DSniWYtLNXpfUnT02iA6aoyyTHlZu7P1wLu1IKkUklWVObAZ
+         /j//RLw8N6JcoX87bZfC7ZNM42wqVHX+/t3PZnTAVl1kYUOmgjkdqr9CLo1FV/I7sI
+         cmZlib592N1Se/aZwZauD0jIyuwiQwbyzMKDdMk0QJanuZxnb2LxK3e/wEsbysIGHM
+         2AZ3jz1NWnQdw==
+Date:   Tue, 26 Oct 2021 12:02:34 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <20211026120234.3408fbcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YXgpgr/BFpbdMLJp@unreal>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+        <YXUhyLXsc2egWNKx@shredder>
+        <YXUtbOpjmmWr71dU@unreal>
+        <YXU5+XLhQ9zkBGNY@shredder>
+        <YXZB/3+IR6I0b2xE@unreal>
+        <YXZl4Gmq6DYSdDM3@shredder>
+        <YXaNUQv8RwDc0lif@unreal>
+        <YXelYVqeqyVJ5HLc@shredder>
+        <YXertDP8ouVbdnUt@unreal>
+        <YXgMK2NKiiVYJhLl@shredder>
+        <YXgpgr/BFpbdMLJp@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 Oct 2021 00:31:54 +0530
-From:   sbillaka@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robdclark@gmail.com, seanpaul@chromium.org,
-        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
-        dianders@chromium.org, khsieh@codeaurora.org,
-        mkrishn@codeaurora.org
-Subject: Re: [PATCH v2 1/2] drm/msm/dp: Add support for SC7280 eDP
-In-Reply-To: <CAE-0n52SjFOWNNFAciOOpKRSnPLqq3zs+qib9jukPkxf0frQTQ@mail.gmail.com>
-References: <1634732051-31282-1-git-send-email-quic_sbillaka@quicinc.com>
- <1634732051-31282-2-git-send-email-quic_sbillaka@quicinc.com>
- <CAE-0n52SjFOWNNFAciOOpKRSnPLqq3zs+qib9jukPkxf0frQTQ@mail.gmail.com>
-Message-ID: <fc847e128d7d95991bc275bd79763440@codeaurora.org>
-X-Sender: sbillaka@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Tue, 26 Oct 2021 19:14:58 +0300 Leon Romanovsky wrote:
+> > By now I have spent more time arguing with you than you spent testing
+> > your patches and it's clear this discussion is not going anywhere.
+> > 
+> > Are you going to send a revert or I will? This is the fourth time I'm
+> > asking you.  
+> 
+> I understand your temptation to send revert, at the end it is the
+> easiest solution. However, I prefer to finish this discussion with
+> decision on how the end result in mlxsw will look like.
+> 
+> Let's hear Jiri and Jakub before we are rushing to revert something that
+> is correct in my opinion. We have whole week till merge window, and
+> revert takes less than 5 minutes, so no need to rush and do it before
+> direction is clear.
 
-On 2021-10-21 23:32, Stephen Boyd wrote:
-> Quoting Sankeerth Billakanti (2021-10-20 05:14:10)
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index 62e75dc..9fea49c 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -1238,9 +1240,21 @@ static int dp_ctrl_link_train(struct 
->> dp_ctrl_private *ctrl,
->>         link_info.capabilities = DP_LINK_CAP_ENHANCED_FRAMING;
->> 
->>         dp_aux_link_configure(ctrl->aux, &link_info);
->> +
->> +       if (dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5) {
-> 
-> Please add a static inline macro in include/drm/drm_dp_helper.h that
-> makes this more readable. Something similar to drm_dp_is_branch() but
-> with a human readable replacement for "is_branch". Maybe drm_dp_ssc()?
-> 
-Okay, I will add a macro, drm_dp_max_downspread (to be consistent with 
-the spec and other macros in the file) in drm_dp_helper.h file.
+Having drivers in a broken state will not be conducive to calm discussions.
+Let's do a quick revert and unbreak the selftests.
 
->> +               ssc = DP_SPREAD_AMP_0_5;
->> +               drm_dp_dpcd_write(ctrl->aux, DP_DOWNSPREAD_CTRL, &ssc, 
->> 1);
->> +       }
->> +
->>         drm_dp_dpcd_write(ctrl->aux, DP_MAIN_LINK_CHANNEL_CODING_SET,
->>                                 &encoding, 1);
->> 
->> +       if (dpcd[DP_EDP_CONFIGURATION_CAP] & 
->> DP_ALTERNATE_SCRAMBLER_RESET_CAP) {
-> 
-> And this one already has a helper,
-> drm_dp_alternate_scrambler_reset_cap().
-> 
-Okay, I will use that.
-
->> +               assr = DP_ALTERNATE_SCRAMBLER_RESET_ENABLE;
->> +               drm_dp_dpcd_write(ctrl->aux, DP_EDP_CONFIGURATION_SET,
->> +                               &assr, 1);
->> +       }
->> +
->>         ret = dp_ctrl_link_train_1(ctrl, training_step);
->>         if (ret) {
->>                 DRM_ERROR("link training #1 failed. ret=%d\n", ret);
->> @@ -1312,9 +1326,11 @@ static int 
->> dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
->>         struct dp_io *dp_io = &ctrl->parser->io;
->>         struct phy *phy = dp_io->phy;
->>         struct phy_configure_opts_dp *opts_dp = &dp_io->phy_opts.dp;
->> +       const u8 *dpcd = ctrl->panel->dpcd;
->> 
->>         opts_dp->lanes = ctrl->link->link_params.num_lanes;
->>         opts_dp->link_rate = ctrl->link->link_params.rate / 100;
->> +       opts_dp->ssc = dpcd[DP_MAX_DOWNSPREAD] & 
->> DP_MAX_DOWNSPREAD_0_5;
->>         dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
->>                                         ctrl->link->link_params.rate * 
->> 1000);
->> 
->> @@ -1406,7 +1422,7 @@ void dp_ctrl_host_deinit(struct dp_ctrl 
->> *dp_ctrl)
->> 
->>  static bool dp_ctrl_use_fixed_nvid(struct dp_ctrl_private *ctrl)
->>  {
->> -       u8 *dpcd = ctrl->panel->dpcd;
->> +       const u8 *dpcd = ctrl->panel->dpcd;
->> 
->>         /*
->>          * For better interop experience, used a fixed NVID=0x8000
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->> b/drivers/gpu/drm/msm/dp/dp_display.c
->> index c867745..c16311b 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -144,8 +144,16 @@ static const struct msm_dp_config sc8180x_dp_cfg 
->> = {
->>         .num_descs = 3,
->>  };
->> 
->> +static const struct msm_dp_config sc7280_dp_cfg = {
->> +       .descs = (struct msm_dp_desc[]) {
-> 
-> const
-> 
-Will add it.
-
->> +               { .io_start = 0x0aea0000, .connector_type = 
->> DRM_MODE_CONNECTOR_eDP },
->> +       },
->> +       .num_descs = 1,
->> +};
->> +
->>  static const struct of_device_id dp_dt_match[] = {
->>         { .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
->> +       { .compatible = "qcom,sc7280-edp", .data = &sc7280_dp_cfg },
->>         { .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
->>         { .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_cfg },
->>         {}
->> @@ -1440,7 +1448,7 @@ void msm_dp_irq_postinstall(struct msm_dp 
->> *dp_display)
->> 
->>         dp_hpd_event_setup(dp);
->> 
->> -       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 100);
->> +       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1);
-> 
-> This has no explanation. What is it?
-Will add explanation for it as a comment.
+Speaking under correction, but the model of operation where we merge
+patches rather quickly necessarily must also mean we are quick to
+revert changes which broke stuff if the fix is not immediately obvious
+or disputed.
