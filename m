@@ -2,107 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE2643AE7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB66043AE7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234798AbhJZJEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:04:35 -0400
-Received: from mga17.intel.com ([192.55.52.151]:37214 "EHLO mga17.intel.com"
+        id S232747AbhJZJFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:05:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234713AbhJZJE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:04:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="210639834"
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="210639834"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 02:02:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="723991278"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.76])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Oct 2021 02:02:04 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 6/6] perf intel-pt: Support itrace d+o option to direct debug log to stdout
-Date:   Tue, 26 Oct 2021 12:01:52 +0300
-Message-Id: <20211026090152.357591-7-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211026090152.357591-1-adrian.hunter@intel.com>
-References: <20211026090152.357591-1-adrian.hunter@intel.com>
+        id S230041AbhJZJFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:05:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AC4A60F0F;
+        Tue, 26 Oct 2021 09:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635238999;
+        bh=V/JirVYmCUw7SwN05d4lRm2+VShv2f/d0tPhnxi0hUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dEu/6IqbSHdkHCR6JISNjQWGwB+MDKOU4LibmVOCD8L7ZYbZs3mx2uN3zjfxe1eQm
+         FsUx9JE5EcPk00PTSu00A/zrfpQXTBoj+aDaESWXpc1kGdIkJS/2Kqpy3jpQQWzPgU
+         6Ax6Ad0COexFwYrEC6bbMiyuqn2/asuuCLE0IBN2G9kVLJrnRTJZxgUvqfH70KE/B8
+         6PNw/CNdKV15lXh/rKBMDWMN10WbU49cWKHXaKtuTo0YrS3CD0IYjBu9LrRgNG0OPM
+         NkLvLSvvA6gON2ZuB8eHG3v3eJXGEdoGKEJCgTKg/pBHSHbIEV7W44aEV9kxXfHRD4
+         UYdKYcfKfggpg==
+Date:   Tue, 26 Oct 2021 12:03:15 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>,
+        Jiri Pirko <jiri@nvidia.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, mbloch@nvidia.com,
+        jinpu.wang@ionos.com, lee.jones@linaro.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-rc] IB/core: fix a UAF for netdev in netdevice_event
+ process
+Message-ID: <YXfEU0nCyw+9Ujpf@unreal>
+References: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
+ <YXZdsyifJVY+jOaH@unreal>
+ <00f99243-919a-d697-646a-0e200c0aef81@huawei.com>
+ <YXaPm6oTI/lk5GoT@unreal>
+ <07239ae2-8994-20a6-1cba-c3018c9b0117@huawei.com>
 MIME-Version: 1.0
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07239ae2-8994-20a6-1cba-c3018c9b0117@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to see debug output in between normal output.
+On Tue, Oct 26, 2021 at 11:14:01AM +0800, Ziyang Xuan (William) wrote:
+> >>>> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
+> >>>> index 68197e576433..063dbe72b7c2 100644
+> >>>> --- a/drivers/infiniband/core/roce_gid_mgmt.c
+> >>>> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
+> >>>> @@ -621,6 +621,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+> >>>>  {
+> >>>>  	struct netdev_event_work *work =
+> >>>>  		container_of(_work, struct netdev_event_work, work);
+> >>>> +	struct net_device *real_dev;
+> >>>>  	unsigned int i;
+> >>>>  
+> >>>>  	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
+> >>>> @@ -628,6 +629,12 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+> >>>>  					 work->cmds[i].filter_ndev,
+> >>>>  					 work->cmds[i].cb,
+> >>>>  					 work->cmds[i].ndev);
+> >>>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].ndev);
+> >>>> +		if (real_dev)
+> >>>> +			dev_put(real_dev);
+> >>>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].filter_ndev);
+> >>>> +		if (real_dev)
+> >>>> +			dev_put(real_dev);
+> >>>>  		dev_put(work->cmds[i].ndev);
+> >>>>  		dev_put(work->cmds[i].filter_ndev);
+> >>>>  	}
+> >>>> @@ -638,9 +645,10 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+> >>>>  static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+> >>>>  				struct net_device *ndev)
+> >>>>  {
+> >>>> -	unsigned int i;
+> >>>>  	struct netdev_event_work *ndev_work =
+> >>>>  		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
+> >>>> +	struct net_device *real_dev;
+> >>>> +	unsigned int i;
+> >>>>  
+> >>>>  	if (!ndev_work)
+> >>>>  		return NOTIFY_DONE;
+> >>>> @@ -653,6 +661,12 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+> >>>>  			ndev_work->cmds[i].filter_ndev = ndev;
+> >>>>  		dev_hold(ndev_work->cmds[i].ndev);
+> >>>>  		dev_hold(ndev_work->cmds[i].filter_ndev);
+> >>>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
+> >>>> +		if (real_dev)
+> >>>> +			dev_hold(real_dev);
+> >>>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].filter_ndev);
+> >>>> +		if (real_dev)
+> >>>> +			dev_hold(real_dev);
+> >>>>  	}
+> >>>>  	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
+> >>>
+> >>> Probably, this is the right change, but I don't know well enough that
+> >>> part of code. What prevents from "real_dev" to disappear right after
+> >>> your call to rdma_vlan_dev_real_dev()?
+> >>>
+> >>
+> >> It is known that free the net_device until its dev_refcnt is one. The
+> >> detail realization see netdev_run_todo().The real_dev's dev_refcnt of
+> >> a vlan net_device will reach one after unregister_netdevice(&real_dev)
+> >> and unregister_vlan_dev(&vlan_ndev, ...) but the dev_refcnt of the vlan
+> >> net_device is bigger than one because netdevice_queue_work() will hold
+> >> the vlan net_device. So my solution is hold the real_dev too in
+> >> netdevice_queue_work().
+> > 
+> >               dev_hold(ndev_work->cmds[i].filter_ndev);
+> >  +            real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
+> >  +            if (real_dev)
+> >                   <------------ real_dev is released here.
+> >  +                    dev_hold(real_dev);
+> 
+> At first, I thought the real_dev's dev_refcnt is bigger than one before
+> NETDEV_UNREGISTER notifier event of the vlan net_device because it calls
+> dev_put(real_dev) after calling unregister_netdevice_queue(dev, head).
+> I thought unregister_netdevice_queue() would issue NETDEV_UNREGISTER
+> notifier event of the vlan net_device, I can hold the real_dev in
+> NETDEV_UNREGISTER notifier event handler netdevice_queue_work().
+> 
+> But I read unregister_vlan_dev() again, found unregister_netdevice_queue()
+> in unregister_vlan_dev() just move the vlan net_device to a list to unregister
+> later. So it is possible the real_dev has been freed when we access in
+> netdevice_queue_work() although the probability is very small.
+> 
+> So the modification need to improve. For example set vlan->real_dev = NULL
+> after dev_put(real_dev) in unregister_vlan_dev() proposed by Jason Gunthorpe.
+> 
+> Do you have any other good ideas?
 
-Add support for AUXTRACE_LOG_FLG_USE_STDOUT to Intel PT.
+It is hard to tell, such implementation existed almost from day one.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/Documentation/perf-intel-pt.txt      | 1 +
- tools/perf/util/intel-pt-decoder/intel-pt-log.c | 8 ++++----
- tools/perf/util/intel-pt.c                      | 5 +++--
- 3 files changed, 8 insertions(+), 6 deletions(-)
+Thanks
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 81dd27be3d09..b94dca105ebd 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -948,6 +948,7 @@ by flags which affect what debug messages will or will not be logged. Each flag
- must be preceded by either '+' or '-'. The flags support by Intel PT are:
- 		-a	Suppress logging of perf events
- 		+a	Log all perf events
-+		+o	Output to stdout instead of "intel_pt.log"
- By default, logged perf events are filtered by any specified time ranges, but
- flag +a overrides that.
- 
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-log.c b/tools/perf/util/intel-pt-decoder/intel-pt-log.c
-index 09feb5b07d32..5f5dfc8753f3 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-log.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-log.c
-@@ -82,10 +82,10 @@ static int intel_pt_log_open(void)
- 	if (f)
- 		return 0;
- 
--	if (!log_name[0])
--		return -1;
--
--	f = fopen(log_name, "w+");
-+	if (log_name[0])
-+		f = fopen(log_name, "w+");
-+	else
-+		f = stdout;
- 	if (!f) {
- 		intel_pt_enable_logging = false;
- 		return -1;
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 57e49b23ad25..793bac850268 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -3659,8 +3659,6 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
- 	if (err)
- 		goto err_free;
- 
--	intel_pt_log_set_name(INTEL_PT_PMU_NAME);
--
- 	if (session->itrace_synth_opts->set) {
- 		pt->synth_opts = *session->itrace_synth_opts;
- 	} else {
-@@ -3675,6 +3673,9 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
- 		pt->synth_opts.thread_stack = opts->thread_stack;
- 	}
- 
-+	if (!(pt->synth_opts.log_plus_flags & AUXTRACE_LOG_FLG_USE_STDOUT))
-+		intel_pt_log_set_name(INTEL_PT_PMU_NAME);
-+
- 	pt->session = session;
- 	pt->machine = &session->machines.host; /* No kvm support */
- 	pt->auxtrace_type = auxtrace_info->type;
--- 
-2.25.1
-
+> 
+> Thank you!
