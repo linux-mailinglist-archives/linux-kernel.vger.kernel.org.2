@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C46143AC4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF8D43AC54
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbhJZGbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 02:31:13 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:25790 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhJZGbL (ORCPT
+        id S233789AbhJZGjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 02:39:00 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:47176
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229635AbhJZGi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 02:31:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635229723;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=0rprKvj5ZesCC1SklrhqP/REbSH/dS08d3sAkdPdbok=;
-    b=idY+SN6CsbTsJT/SJhiwxI1ZY7Jejw/9hXy/9Zn5fcViBKyO6x6vwIm5qqjPQ9iryi
-    64Y1oQxhvDb1+GqeNls/scrpEp12iVd9agO3N2Fz5jUCzYY15L4dSPAdW67SItOlYp4q
-    /RUHvh3w3cry4LpajfuqkqSi11EYz+ynilmHKkhtJEYKk25v1vRU/vi6tcLncmbK8pJF
-    QiMh8fP53OArsctdrNhntfyj7THuFTNs/zaov5UA5gvIV/KUX92Lwevs3eeV6fM9cTqu
-    9gWawk7NnDZc1ZLsO9hVD07IbckDRQ+Z6jM3qCeCiT9/qZUTASJQZ6xVX3l37o4xFMI8
-    hn+A==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLUrKw7/aY="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id 301038x9Q6SgEEx
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 08:28:42 +0200 (CEST)
-Date:   Tue, 26 Oct 2021 08:28:37 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: linux-next: manual merge of the phy-next tree with the gcom tree
-Message-ID: <YXegFbfxh/0nhDmB@gerhold.net>
-References: <20211026154415.3f6c7c28@canb.auug.org.au>
+        Tue, 26 Oct 2021 02:38:58 -0400
+Received: from HP-EliteBook-840-G7.. (1-171-100-18.dynamic-ip.hinet.net [1.171.100.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C40213F195;
+        Tue, 26 Oct 2021 06:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635230194;
+        bh=tyVL8Khx35GxSh5USxkpTSJMjE0JwY000+fItJfnrxU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=cthBGarBDvxiRC3IU3RzEebge3PrWBOT5VJPaD/SVvRp6JoTMB2lOYAQ/IxnC7fT4
+         ayw9MMHWziINlQOWF9xptV2DL/5FQHlMbycfoJZylFVQowOu3+R+o7DwH8KekejRpc
+         jn0NSJaQFtig3AhH9dJ1vH1b1O9sdWkW2N8UktZeaR//emRsvl1TLt81zhtVZAQ8UL
+         ACgdnCONNAvl/6gp6t7GlUESuCq5NmHNTA2SfO34xjc2VbyuT0Jgab4cVbLuay2nWp
+         SW+ynA8bitA8h+CbzGFIbfIAQSMdh6qjcRKH9VKCwjvEy9ayUqL4vq+mqzIyuoN8tw
+         e9/jE2TtdfjzQ==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com
+Cc:     sasha.neftin@intel.com,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] e1000e: Add a delay to let ME unconfigure s0ix when DPG_EXIT_DONE is already flagged
+Date:   Tue, 26 Oct 2021 14:36:23 +0800
+Message-Id: <20211026063623.1363652-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026154415.3f6c7c28@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On some ADL platforms, DPG_EXIT_DONE is always flagged so e1000e resume
+polling logic doesn't wait until ME really unconfigures s0ix.
 
-On Tue, Oct 26, 2021 at 03:44:15PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the phy-next tree got a conflict in:
-> 
->   arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> 
-> between commit:
-> 
->   442ee1fc60c4 ("arm64: dts: qcom: Drop unneeded extra device-specific includes")
-> 
-> from the gcom tree and commit:
-> 
->   956bbf2a94e8 ("arm64: dts: qcom: Add missing vdd-supply for QUSB2 PHY")
-> 
-> from the phy-next tree.
-> 
+So check DPG_EXIT_DONE before issuing EXIT_DPG, and if it's already
+flagged, wait for 1 second to let ME unconfigure s0ix.
 
-Sorry about that.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=214821
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/net/ethernet/intel/e1000e/netdev.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> I fixed it up (the former removed the file, so I did that) and can
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index 44e2dc8328a22..cd81ba00a6bc9 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -6493,14 +6493,21 @@ static void e1000e_s0ix_exit_flow(struct e1000_adapter *adapter)
+ 	u32 mac_data;
+ 	u16 phy_data;
+ 	u32 i = 0;
++	bool dpg_exit_done;
+ 
+ 	if (er32(FWSM) & E1000_ICH_FWSM_FW_VALID) {
++		dpg_exit_done = er32(EXFWSM) & E1000_EXFWSM_DPG_EXIT_DONE;
+ 		/* Request ME unconfigure the device from S0ix */
+ 		mac_data = er32(H2ME);
+ 		mac_data &= ~E1000_H2ME_START_DPG;
+ 		mac_data |= E1000_H2ME_EXIT_DPG;
+ 		ew32(H2ME, mac_data);
+ 
++		if (dpg_exit_done) {
++			e_warn("DPG_EXIT_DONE is already flagged. This is a firmware bug\n");
++			msleep(1000);
++		}
++
+ 		/* Poll up to 2.5 seconds for ME to unconfigure DPG.
+ 		 * If this takes more than 1 second, show a warning indicating a
+ 		 * firmware bug
+-- 
+2.32.0
 
-The commit actually simply moves all of apq8096-db820c.dtsi into
-apq8096-db820c.dts. So we should make sure that the vdd-supply added in
-956bbf2a94e8 ("arm64: dts: qcom: Add missing vdd-supply for QUSB2 PHY")
-ends up in almost the same position in apq8096-db820c.dts instead.
-
-But I'm confused why the arm64 dts commit is in the phy-next tree. There
-is no compile time dependency between it and the related phy commits so
-it could have just been applied to the qcom tree to avoid this conflict.
-
-And actually Vinod wrote 2 minutes after applying this patch that Bjorn
-should take it through the qcom tree:
-
-https://lore.kernel.org/linux-arm-msm/YVwDbUC5WUHmcRJh@matsya/
-
-Vinod, did you apply it accidentally or am I missing something here? :)
-
-Thanks,
-Stephan
