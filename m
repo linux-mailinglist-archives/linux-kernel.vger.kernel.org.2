@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546D343B1B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE84043B1C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234984AbhJZMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:02:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34148 "EHLO mail.kernel.org"
+        id S235606AbhJZMDq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 08:03:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230258AbhJZMCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:02:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 539C5601FC;
-        Tue, 26 Oct 2021 11:59:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635249581;
-        bh=o+N5IbGsPKkryrRuzBEiPgm3mJYskObI6+XvUx6Tjh0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fLa5o+qHF0NpCbB0f5KzhCXqhBqzLxKNXZO0P3n/naL4FPk5Bf42WwaLY+ak06sX9
-         YawG0ahpC4kT5N47xViTrFhsSd2oTHblnEFeezsypXU0nEGfAfmsI/zUwTz7RmqDkg
-         UTdvJUKu58M2ZAkXwZDqNAaWP4ZkKI9V+wCSqsttXmsra+Pd33MH/EX5FAr0TGMn0M
-         GxvrJL8qclWDBYeHxuyvzBpAhIsAjiAbtE5D7LcEyHvSX4+YVhi6di93mLZs35BgTB
-         boTbYEo5rqYc4u+D6l6THg7CHa6RPa9mY6iFv4SDIBVYncz0mNYBB6Jt+Q1qjiq+2U
-         nFcNizBDSxtUQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mfL7C-00CBtT-7P; Tue, 26 Oct 2021 12:59:38 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Hans de Goede" <hdegoede@redhat.com>,
-        "Nable" <nable.maininbox@googlemail.com>,
-        "Tsuchiya Yuto" <kitakar@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH] media: atomisp: fix enum formats logic
-Date:   Tue, 26 Oct 2021 12:59:37 +0100
-Message-Id: <6ce3630152cbd9ab29e02d560c6e80fb72d0fd81.1635249567.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S229786AbhJZMDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:03:45 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 425F3601FC;
+        Tue, 26 Oct 2021 12:01:19 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 08:01:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>, Guo Ren <guoren@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] ftrace: disable preemption when recursion locked
+Message-ID: <20211026080117.366137a5@gandalf.local.home>
+In-Reply-To: <18ba2a71-e12d-33f7-63fe-2857b2db022c@linux.alibaba.com>
+References: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
+        <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+        <alpine.LSU.2.21.2110261128120.28494@pobox.suse.cz>
+        <18ba2a71-e12d-33f7-63fe-2857b2db022c@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 374d62e7aa50 ("media: v4l2-subdev: Verify v4l2_subdev_call() pad config argument")
-added an extra verification for a pads parameter for enum mbus
-format code.
+On Tue, 26 Oct 2021 17:48:10 +0800
+王贇 <yun.wang@linux.alibaba.com> wrote:
 
-Such change broke atomisp, because now the V4L2 core
-refuses to enum MBUS formats if the state is empty.
+> > The two comments should be updated too since Steven removed the "bit == 0" 
+> > trick.  
+> 
+> Could you please give more hint on how will it be correct?
+> 
+> I get the point that bit will no longer be 0, there are only -1 or > 0 now
+> so trace_test_and_set_recursion() will disable preemption on bit > 0 and
+> trace_clear_recursion() will enabled it since it should only be called when
+> bit > 0 (I remember we could use a WARN_ON here now :-P).
+> 
+> >   
+> >> @@ -178,7 +187,7 @@ static __always_inline void trace_clear_recursion(int bit)
+> >>   * tracing recursed in the same context (normal vs interrupt),
+> >>   *
+> >>   * Returns: -1 if a recursion happened.
+> >> - *           >= 0 if no recursion
+> >> + *           > 0 if no recursion.
+> >>   */
+> >>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+> >>  							 unsigned long parent_ip)  
+> > 
+> > And this change would not be correct now.  
+> 
+> I thought it will no longer return 0 so I change it to > 0, isn't that correct?
 
-So, add .which field in order to select the active formats,
-in order to make it work again.
+No it is not. I removed the bit + 1 return value, which means it returns the
+actual bit now. Which is 0 or more.
 
-While here, improve error messages.
-
-Fixes: 374d62e7aa50 ("media: v4l2-subdev: Verify v4l2_subdev_call() pad config argument")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../staging/media/atomisp/pci/atomisp_ioctl.c | 23 ++++++++++++++-----
- 1 file changed, 17 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-index 01c6eda2c3cc..03f53515ce36 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-@@ -773,7 +773,10 @@ static int atomisp_enum_fmt_cap(struct file *file, void *fh,
- 	struct video_device *vdev = video_devdata(file);
- 	struct atomisp_device *isp = video_get_drvdata(vdev);
- 	struct atomisp_sub_device *asd = atomisp_to_video_pipe(vdev)->asd;
--	struct v4l2_subdev_mbus_code_enum code = { 0 };
-+	struct v4l2_subdev_mbus_code_enum code = {
-+		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
-+	};
-+	struct v4l2_subdev *camera;
- 	unsigned int i, fi = 0;
- 	int rval;
- 
-@@ -783,14 +786,20 @@ static int atomisp_enum_fmt_cap(struct file *file, void *fh,
- 		return -EINVAL;
- 	}
- 
-+	camera = isp->inputs[asd->input_curr].camera;
-+	if(!camera) {
-+		dev_err(isp->dev, "%s(): camera is NULL, device is %s\n",
-+			__func__, vdev->name);
-+		return -EINVAL;
-+	}
-+
- 	rt_mutex_lock(&isp->mutex);
--	rval = v4l2_subdev_call(isp->inputs[asd->input_curr].camera, pad,
--				enum_mbus_code, NULL, &code);
-+
-+	rval = v4l2_subdev_call(camera, pad, enum_mbus_code, NULL, &code);
- 	if (rval == -ENOIOCTLCMD) {
- 		dev_warn(isp->dev,
--			 "enum_mbus_code pad op not supported. Please fix your sensor driver!\n");
--		//	rval = v4l2_subdev_call(isp->inputs[asd->input_curr].camera,
--		//				video, enum_mbus_fmt, 0, &code.code);
-+			 "enum_mbus_code pad op not supported by %s. Please fix your sensor driver!\n",
-+			 camera->name);
- 	}
- 	rt_mutex_unlock(&isp->mutex);
- 
-@@ -820,6 +829,8 @@ static int atomisp_enum_fmt_cap(struct file *file, void *fh,
- 		f->pixelformat = format->pixelformat;
- 		return 0;
- 	}
-+	dev_err(isp->dev, "%s(): format for code %x not found.\n",
-+		__func__, code.code);
- 
- 	return -EINVAL;
- }
--- 
-2.31.1
-
+-- Steve
