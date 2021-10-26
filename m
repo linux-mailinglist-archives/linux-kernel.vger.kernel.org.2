@@ -2,144 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F2443AF1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CD343AF20
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbhJZJfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:35:37 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:29047 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhJZJfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:35:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635240790;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=fGDDsDctVaRMHIggoIoP1bVsbZmKxZfSLPjlDlyrLuY=;
-    b=QHTuOfySLdUKrKb6cge7CabKGKPSH3BJgIHoMwi2dCFV9JtcsbIE2h/OekR2OpNzKv
-    BKALMTupQN4Q7UHYVmImrn9W88UmlaHM0sHvN6r/+TAmQPWXnS87OLpOZ5VfyQFd54sk
-    28C0C3DnsbpiMwJMh/KtLdOCNDapouLpPVtfM3caoYCKimjqMZyw7auzyXQQ/Y9uL/Sj
-    ePjSoALwDVzttnYdnaREZjCJ7Rzy9djsIcwNoeTs0RRcOcFSzZiuL4KnBmIiDmn3/MCT
-    g5wvjz10tzjDoqwbRDG64Yn57Sx3A4jpyDhznXPXALXgqLQwXzyCFih1PpkS/kPjnWrL
-    fEOg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id n020a8x9Q9X92OF
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 11:33:09 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolai Stange <nstange@suse.de>
-Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
-Subject: Re: [PATCH 6/6] crypto: DRBG - reseed 'nopr' drbgs periodically from get_random_bytes()
-Date:   Tue, 26 Oct 2021 11:33:08 +0200
-Message-ID: <2978329.31agJDbIcV@positron.chronox.de>
-In-Reply-To: <20211025092525.12805-7-nstange@suse.de>
-References: <20211025092525.12805-1-nstange@suse.de> <20211025092525.12805-7-nstange@suse.de>
+        id S234436AbhJZJgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:36:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:55922 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230226AbhJZJf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:35:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97339101E;
+        Tue, 26 Oct 2021 02:33:34 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.74.144])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A4313F70D;
+        Tue, 26 Oct 2021 02:33:29 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 10:33:19 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        zhengqi.arch@bytedance.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-arch@vger.kernel.org, ardb@kernel.org
+Subject: Re: [PATCH 2/7] stacktrace,sched: Make stack_trace_save_tsk() more
+ robust
+Message-ID: <20211026093319.GA30152@C02TD0UTHF1T.local>
+References: <20211022150933.883959987@infradead.org>
+ <20211022152104.215612498@infradead.org>
+ <202110220919.46F58199D@keescook>
+ <20211022165431.GF86184@C02TD0UTHF1T.local>
+ <20211022170135.GF174703@worktop.programming.kicks-ass.net>
+ <YXcVySsxQO4Iakbq@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXcVySsxQO4Iakbq@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 25. Oktober 2021, 11:25:25 CEST schrieb Nicolai Stange:
+On Mon, Oct 25, 2021 at 10:38:33PM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 22, 2021 at 07:01:35PM +0200, Peter Zijlstra wrote:
+> > On Fri, Oct 22, 2021 at 05:54:31PM +0100, Mark Rutland wrote:
+> > 
+> > > > Pardon my thin understanding of the scheduler, but I assume this change
+> > > > doesn't mean stack_trace_save_tsk() stops working for "current", right?
+> > > > In trying to answer this for myself, I couldn't convince myself what value
+> > > > current->__state have here. Is it one of TASK_(UN)INTERRUPTIBLE ?
+> > > 
+> > > Regardless of that, current->on_rq will be non-zero, so you're right that this
+> > > causes stack_trace_save_tsk() to not work for current, e.g.
+> > > 
+> > > | # cat /proc/self/stack 
+> > > | # wc  /proc/self/stack 
+> > > |         0         0         0 /proc/self/stack
+> > > 
+> > > TBH, I think that (taking a step back from this issue in particular)
+> > > stack_trace_save_tsk() *shouldn't* work for current, and callers *should* be
+> > > forced to explicitly handle current separately from blocked tasks.
+> > 
+> > That..
+> 
+> So I think I'd prefer the following approach to that (and i'm not
+> currently volunteering for it):
+> 
+>  - convert all archs to ARCH_STACKWALK; this gets the semantics out of
+>    arch code and into the single kernel/stacktrace.c file.
+> 
+>  - bike-shed a new/improved stack_trace_save*() API and implement it
+>    *once* in generic code based on arch_stack_walk().
+> 
+>  - convert users; delete old etc..
+> 
+> For now, current users of stack_trace_save_tsk() very much expect
+> tsk==current to work.
 
-Hi Nicolai,
+While I still think it's best to have distinct arch_stack_walk_*()
+functions, I'm perfectly happy to say we need to convert arches to
+ARCH_STACKWALK first, and punt bikeshedding until that's done.
 
-> In contrast to the fully prediction resistant 'pr' DRBGs, the 'nopr'
-> variants get seeded once at boot and reseeded only rarely thereafter,
-> namely only after 2^20 requests have been served each. AFAICT, this
-> reseeding based on the number of requests served is primarily motivated
-> by information theoretic considerations, c.f. NIST SP800-90Ar1,
-> sec. 8.6.8 ("Reseeding").
->=20
-> However, given the relatively large seed lifetime of 2^20 requests, the
-> 'nopr' DRBGs can hardly be considered to provide any prediction resistance
-> whatsoever, i.e. to protect against threats like side channel leaks of the
-> internal DRBG state (think e.g. leaked VM snapshots). This is expected and
-> completely in line with the 'nopr' naming, but as e.g. the
-> "drbg_nopr_hmac_sha512" implementation is potentially being used for
-> providing the "stdrng" and thus, the crypto_default_rng serving the
-> in-kernel crypto, it would certainly be desirable to achieve at least the
-> same level of prediction resistance as get_random_bytes() does.
->=20
-> Note that the chacha20 rngs underlying get_random_bytes() get reseeded
-> every CRNG_RESEED_INTERVAL =3D=3D 5min: the secondary, per-NUMA node rngs=
- from
-> the primary one and the primary rng in turn from the entropy pool, provid=
-ed
-> sufficient entropy is available.
->=20
-> The 'nopr' DRBGs do draw randomness from get_random_bytes() for their
-> initial seed already, so making them to reseed themselves periodically fr=
-om
-> get_random_bytes() in order to let them benefit from the latter's
-> prediction resistance is not such a big change conceptually.
->=20
-> In principle, it would have been also possible to make the 'nopr' DRBGs to
-> periodically invoke a full reseeding operation, i.e. to also consider the
-> jitterentropy source (if enabled) in addition to get_random_bytes() for t=
-he
-> seed value. However, get_random_bytes() is relatively lightweight as
-> compared to the jitterentropy generation process and thus, even though the
-> 'nopr' reseeding is supposed to get invoked infrequently, it's IMO still
-> worthwhile to avoid occasional latency spikes for drbg_generate() and
-> stick to get_random_bytes() only. As an additional remark, note that
-> drawing randomness from the non-SP800-90B-conforming get_random_bytes()
-> only won't adversely affect SP800-90A conformance either: the very same is
-> being done during boot via drbg_seed_from_random() already once
-> rng_is_initialized() flips to true and it follows that if the DRBG
-> implementation does conform to SP800-90A now, it will continue to do so.
->=20
-> Make the 'nopr' DRBGs to reseed themselves periodically from
-> get_random_bytes() every CRNG_RESEED_INTERVAL =3D=3D 5min.
->=20
-> More specifically, introduce a new member ->last_seed_time to struct
-> drbg_state for recording in units of jiffies when the last seeding
-> operation had taken place. Make __drbg_seed() maintain it and let
-> drbg_generate() invoke a reseed from get_random_bytes() via
-> drbg_seed_from_random() if more than 5min have passed by since the last
-> seeding operation. Be careful to not to reseed if in testing mode though,
-> or otherwise the drbg related tests in crypto/testmgr.c would fail to
-> reproduce the expected output.
->=20
-> In order to keep the formatting clean in drbg_generate() wrap the logic
-> for deciding whether or not a reseed is due in a new helper,
-> drbg_nopr_reseed_interval_elapsed().
->=20
-> Signed-off-by: Nicolai Stange <nstange@suse.de>
+> > > So we could fix this in the stacktrace code with:
+> > > 
+> > > | diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
+> > > | index a1cdbf8c3ef8..327af9ff2c55 100644
+> > > | --- a/kernel/stacktrace.c
+> > > | +++ b/kernel/stacktrace.c
+> > > | @@ -149,7 +149,10 @@ unsigned int stack_trace_save_tsk(struct task_struct *tsk, unsigned long *store,
+> > > |                 .skip   = skipnr + (current == tsk),
+> > > |         };
+> > > |  
+> > > | -       task_try_func(tsk, try_arch_stack_walk_tsk, &c);
+> > > | +       if (tsk == current)
+> > > | +               try_arch_stack_walk_tsk(tsk, &c);
+> > > | +       else
+> > > | +               task_try_func(tsk, try_arch_stack_walk_tsk, &c);
+> > > |  
+> > > |         return c.len;
+> > > |  }
+> > > 
+> > > ... and we could rename task_try_func() to blocked_task_try_func(), and
+> > > later push the distinction into higher-level callers.
+> > 
+> > I think I favour this fix if we have to. But that's for next week :-)
+> 
+> I ended up with the below delta to this patch.
 
-=46or the code review:
+With the abov in mind, the below looks good to me!
 
-Reviewed-by: Stephan M=FCller <smueller@chronox.de>
+Thanks,
+Mark.
 
-But with respect to the overall architecture of the seeding in the entire=20
-kernel, this is insufficient (note, I am not saying that this patch series=
-=20
-should and can fix it though). It is insufficient, because:
-
-=2D reseeding does not happen if new data is received by the kernel entropy=
-=20
-gathering functions like the RNDADDENTROPY IOCTL or add_hwgenerator_randomn=
-ess=20
-=2D i.e. externally provided data lingers without being used in the DRBG
-
-=2D reseeding does not consider the amount of entropy added from the entrop=
-y=20
-sources allowing potential pathological weak reseeding operation
-
-=2E.. and other seeding problems in random.c...
-
-Ciao
-Stephan
-
-
+> --- a/kernel/stacktrace.c
+> +++ b/kernel/stacktrace.c
+> @@ -101,7 +101,7 @@ static bool stack_trace_consume_entry_no
+>  }
+>  
+>  /**
+> - * stack_trace_save - Save a stack trace into a storage array
+> + * stack_trace_save - Save a stack trace (of current) into a storage array
+>   * @store:	Pointer to storage array
+>   * @size:	Size of the storage array
+>   * @skipnr:	Number of entries to skip at the start of the stack trace
+> @@ -132,7 +132,7 @@ static int try_arch_stack_walk_tsk(struc
+>  
+>  /**
+>   * stack_trace_save_tsk - Save a task stack trace into a storage array
+> - * @task:	The task to examine
+> + * @task:	The task to examine (current allowed)
+>   * @store:	Pointer to storage array
+>   * @size:	Size of the storage array
+>   * @skipnr:	Number of entries to skip at the start of the stack trace
+> @@ -149,13 +149,25 @@ unsigned int stack_trace_save_tsk(struct
+>  		.skip	= skipnr + (current == tsk),
+>  	};
+>  
+> -	task_try_func(tsk, try_arch_stack_walk_tsk, &c);
+> +	/*
+> +	 * If the task doesn't have a stack (e.g., a zombie), the stack is
+> +	 * empty.
+> +	 */
+> +	if (!try_get_task_stack(tsk))
+> +		return 0;
+> +
+> +	if (tsk == current)
+> +		try_arch_stack_walk_tsk(tsk, &c);
+> +	else
+> +		task_try_func(tsk, try_arch_stack_walk_tsk, &c);
+> +
+> +	put_task_stack(tsk);
+>  
+>  	return c.len;
+>  }
+>  
+>  /**
+> - * stack_trace_save_regs - Save a stack trace based on pt_regs into a storage array
+> + * stack_trace_save_regs - Save a stack trace (of current) based on pt_regs into a storage array
+>   * @regs:	Pointer to pt_regs to examine
+>   * @store:	Pointer to storage array
+>   * @size:	Size of the storage array
