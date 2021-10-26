@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B2643B984
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329AD43B986
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238272AbhJZS3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        id S238285AbhJZS3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234464AbhJZS3c (ORCPT
+        with ESMTP id S238282AbhJZS3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:29:32 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3675C061745;
-        Tue, 26 Oct 2021 11:27:08 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id t184so340890pfd.0;
-        Tue, 26 Oct 2021 11:27:08 -0700 (PDT)
+        Tue, 26 Oct 2021 14:29:40 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D9AC061745;
+        Tue, 26 Oct 2021 11:27:15 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id e4so20857056wrc.7;
+        Tue, 26 Oct 2021 11:27:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q8MHfbr/h/oCaPvOavFxnKFNIvOBGsa++z17VUpzTuY=;
-        b=gNl/g+F2Em5sxOb14g5D+x6Mdr9Xd1fc7Onej5+HHjPWRzRliJIUmqSYvjF5ep4eZP
-         uAhkRaIc+q6ZqGLjUmH4mHqqXBIx1rpCLh9wa4oEsdCs2zLNXVwIAxjnvyvzBsSlJw22
-         RHpX0wODi4uAT8B8V6FqG18lAKQjTEBW/yyvquTJYAA2zwDchL8Tm836c3AX6wjapIi8
-         IxmbMU4JWAVZoTjVfLs++ekSRAby07YstdgG2frUXy571x4LopeSb7umk5ynYOghc1Fi
-         WOiFayj/uz4z41YUWXEQIMUhCKXHCnW9RAmgqVLBArNmv6PnXMRyphlMd2LMTtsf6/JD
-         1sqQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1pL59vjDL5iVhNjSYNHVUm0At7ysQBHo8rmOQiF4OIA=;
+        b=K4ALytQBC+tbHBZPMy9Cx5x74X2xYRxSM5QJZEAuJuB0zNlrPKCgNER/yhnZtCo10U
+         6yXw2pyJgmguWvhz/MyPY6kwL9T8VoemyFrSL9Sh8SKuSLHGkXuUTggHu0V00NTRbDjD
+         twirUCVNf2Ovs6rp2K8rdtgqhE8vjXd3Fpt9Aa6CT0aDGKO84IPxAabixl0Y2s0xHgnD
+         jpMYNsBOf8ZpTpccMfnxgdNlJK7QFfQYCvhVcwpsOAt3qzl5BFQ5rxZF1bc/hFOIBn2T
+         uS2y2mWC2Hp7gmRri5qIQkYX8Iclu2qmBcZPCBejFuVj5APebdSuOf5Rnv5oiNSPS7Xt
+         CK+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q8MHfbr/h/oCaPvOavFxnKFNIvOBGsa++z17VUpzTuY=;
-        b=Jv6GpT61q0Hd1/Y+uT/TutlJAX+liYiJHeiPkad5/Sjh/uNRNppHkBl6uSyJzAL8ZZ
-         22fEL5PYwUSVLgvPc9DWZGh7/BKrm/dyGlhcTeeukkirKC/TOvC0cSRJV/dkHMiD1O10
-         vR5g5n6RrV4q2jAh1pfPH66uJeM6mFh6gpjaoc3+xhAOrLDXw8/TrbhVnp9/O8e5Neta
-         QAeLv+c/7+7Oh6xkLSvPNk/8TuIqHkwvwI7h0YEDAVAxMDjKVSmG7OxPliIdJZ/d29pj
-         gsdj214SQddiZTs+Fj+xpJ6frY4X8i0IMnf1i5NEqdPM11MMZEdIgzv6NNhoPi4neauz
-         eTWA==
-X-Gm-Message-State: AOAM5325yj5nOosD4JrB63y/GYXdlk9Sb1hkRWJK+8PIO58BVm4jN7a6
-        cxym+Ez49rE+HtMCSdjcCRQgvwpk7OYFZncYLGY=
-X-Google-Smtp-Source: ABdhPJz8FhcwmzMHAHU8hhAYz40pRLnbG/B+FdfaCNf5xoa+2kEkXwVqCFSu9bh/KZCts4EZLzHwWKOpM4VrGrnKq98=
-X-Received: by 2002:a63:4f57:: with SMTP id p23mr20260824pgl.376.1635272828098;
- Tue, 26 Oct 2021 11:27:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1pL59vjDL5iVhNjSYNHVUm0At7ysQBHo8rmOQiF4OIA=;
+        b=RCEbm313DGF2P0SIiOy4qs/K4VgYaeL4tCdEBGmDOfMBvUuocAN/ni7cGQJKC/soBx
+         F/NniAeMUq77Z7Byg1SgyL6QZH6JbO4hbGUAKez9DAoH8JrcowOFkvfAemjabhYQ996B
+         wH0ROdyzRbdlrsKP1ed3oOtMhpLLNjvsParMKoKAkRsaKL+q+ZmM0ZtvMlNOdjhvHK7x
+         s2ge1RyiZwl+6kkYPNFistu2jQVrWoF9WGRAp9nbYOVZ7NNIcrdUdtyUb8j9X1V5nxD7
+         1a5hVorlVP8uRLG1QkYOZVI+s9vgmLCOrIMCDbP4Tpnmc22JF7UtTzBtH64BJ8QfcxSD
+         K7bQ==
+X-Gm-Message-State: AOAM533eEwU93HAoiR/6SN+OuaY5GkpacAebtjJB+Lf1PgkvMOGqQoK8
+        GDXYhOldprh5PRxX+vusCSE=
+X-Google-Smtp-Source: ABdhPJyGZWAgkTAGeB35GybjzeKMCbOOlm0bENH5kRHWbzqG4mDGaSJtwIL95UEqgE2D4d2e+ZTOKw==
+X-Received: by 2002:a5d:4a46:: with SMTP id v6mr33241790wrs.262.1635272834387;
+        Tue, 26 Oct 2021 11:27:14 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id l9sm714779wms.40.2021.10.26.11.27.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 11:27:14 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 19:27:12 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/95] 5.10.76-rc1 review
+Message-ID: <YXhIgFOroRyVkp0g@debian>
+References: <20211025190956.374447057@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20211026120132.613201817@infradead.org>
-In-Reply-To: <20211026120132.613201817@infradead.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 26 Oct 2021 11:26:57 -0700
-Message-ID: <CAADnVQJaiHWWnVcaRN43DcNgqktgKs3i1P3uz4Qm8kN7bvPCCg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 5:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Hi,
->
-> These patches rewrite the way retpolines are rewritten. Currently objtool emits
-> alternative entries for most retpoline calls. However trying to extend that led
-> to trouble (ELF files are horrid).
->
-> Therefore completely overhaul this and have objtool emit a .retpoline_sites
-> section that lists all compiler generated retpoline thunk calls. Then the
-> kernel can do with them as it pleases.
->
-> Notably it will:
->
->  - rewrite them to indirect instructions for !RETPOLINE
->  - rewrite them to lfence; indirect; for RETPOLINE_AMD,
->    where size allows (boo clang!)
->
-> Specifically, the !RETPOLINE case can now also deal with the clang-special
-> conditional-indirect-tail-call:
->
->   Jcc __x86_indirect_thunk_\reg.
->
-> Finally, also update the x86 BPF jit to catch up to recent times and do these
-> same things.
->
-> All this should help improve performance by removing an indirection.
->
-> Patches can (soon) be found here:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git objtool/core
->
-> Changes since v2:
->
->  - rewrite the __x86_indirect_thunk_array[] stuff again
->  - rewrite the retpoline,amd rewrite logic, it now also supports
->    rewriting the Jcc case, if the original instruction is long enough, but
->    more importantly, it's simpler code.
->  - bpf label simplification patch
->  - random assorted cleanups
->  - actually managed to get bpf selftests working
+Hi Greg,
 
-Great.
-The patchset didn't go through BPF CI though.
-See
-https://patchwork.kernel.org/project/netdevbpf/patch/20211026120309.658539311@infradead.org/
+On Mon, Oct 25, 2021 at 09:13:57PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.76 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+> Anything received after that time might be too late.
 
-It's a merge conflict. The patchset failed to apply to both bpf and
-bpf-next trees:
+Build test:
+mips (gcc version 11.2.1 20211012): 63 configs -> no new failure
+arm (gcc version 11.2.1 20211012): 105 configs -> no new failure
+arm64 (gcc version 11.2.1 20211012): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
-Cmd('git') failed due to: exit code(128)
-  cmdline: git am -3
-  stdout: 'Applying: objtool: Classify symbols
-Patch failed at 0001 objtool: Classify symbols
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".'
-  stderr: 'error: sha1 information is lacking or useless
-(tools/objtool/check.c).
-error: could not build fake ancestor
-hint: Use 'git am --show-current-patch=diff' to see the failed patch'
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+arm64: Booted on rpi4b (4GB model). No regression. [2]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/310
+[2]. https://openqa.qa.codethink.co.uk/tests/307
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
