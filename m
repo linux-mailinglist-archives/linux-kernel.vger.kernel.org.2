@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C6343AE7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C62943AE7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbhJZJEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:04:25 -0400
+        id S234703AbhJZJE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:04:28 -0400
 Received: from mga17.intel.com ([192.55.52.151]:37214 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234628AbhJZJEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:04:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="210639812"
+        id S234628AbhJZJE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:04:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="210639820"
 X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="210639812"
+   d="scan'208";a="210639820"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 02:02:00 -0700
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 02:02:02 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="723991233"
+   d="scan'208";a="723991253"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.76])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Oct 2021 02:01:59 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 26 Oct 2021 02:02:01 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2 3/6] perf intel-pt: Support itrace A option to approximate IPC
-Date:   Tue, 26 Oct 2021 12:01:49 +0300
-Message-Id: <20211026090152.357591-4-adrian.hunter@intel.com>
+Subject: [PATCH V2 4/6] perf dlfilter: Add dlfilter-show-cycles
+Date:   Tue, 26 Oct 2021 12:01:50 +0300
+Message-Id: <20211026090152.357591-5-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211026090152.357591-1-adrian.hunter@intel.com>
 References: <20211026090152.357591-1-adrian.hunter@intel.com>
@@ -38,120 +38,242 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normally, for cycle-acccurate mode, IPC values are an exact number of
-instructions and cycles. Due to the granularity of timestamps, that happens
-only when a CYC packet correlates to the event.
+Add a new dlfilter to show cycles.
 
-Support the itrace 'A' option, to use instead, the number of cycles
-associated with the current timestamp. This provides IPC information for
-every change of timestamp, but at the expense of accuracy.
+Cycle counts are accumulated per CPU (or per thread if CPU is not recorded)
+from IPC information, and printed together with the change since the last
+print, at the start of each line. Separate counts are kept for branches,
+instructions or other events.
 
-Furthermore, it can be used in conjunction with dlfilter-show-cycles.so
-to provide higher granularity cycle information.
+Note also, the itrace A option can be useful to provide higher granularity
+cycle information.
+
+Example:
+
+ $ perf record -e intel_pt/cyc/u uname
+ Linux
+ [ perf record: Woken up 1 times to write data ]
+ [ perf record: Captured and wrote 0.044 MB perf.data ]
+ $ perf script --itrace=A --call-trace --dlfilter dlfilter-show-cycles.so --deltatime | head
+         0                   perf-exec  8509 [001]     0.000000000:  psb offs: 0
+         0                   perf-exec  8509 [001]     0.000000000:  cbr: 42 freq: 4219 MHz (156%)
+       833        833            uname  8509 [001]     0.000047689: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )        _start
+       833                       uname  8509 [001]     0.000003261: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )            _dl_start
+      2015       1182            uname  8509 [001]     0.000000282: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )            _dl_start
+      2676        661            uname  8509 [001]     0.000002629: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )            _dl_start
+      3612        936            uname  8509 [001]     0.000001232: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )            _dl_start
+      4579        967            uname  8509 [001]     0.000002519: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )            _dl_start
+      6145       1566            uname  8509 [001]     0.000001050: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )                _dl_setup_hash
+      6239         94            uname  8509 [001]     0.000000023: (/usr/lib/x86_64-linux-gnu/ld-2.31.so              )                _dl_sysdep_start
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/Documentation/perf-intel-pt.txt       |  5 +++++
- .../util/intel-pt-decoder/intel-pt-decoder.c     |  1 +
- .../util/intel-pt-decoder/intel-pt-decoder.h     |  1 +
- tools/perf/util/intel-pt.c                       | 16 ++++++++++++----
- 4 files changed, 19 insertions(+), 4 deletions(-)
+ tools/perf/Documentation/perf-intel-pt.txt  |  19 ++-
+ tools/perf/Makefile.perf                    |   2 +-
+ tools/perf/dlfilters/dlfilter-show-cycles.c | 144 ++++++++++++++++++++
+ 3 files changed, 163 insertions(+), 2 deletions(-)
+ create mode 100644 tools/perf/dlfilters/dlfilter-show-cycles.c
 
 diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 184ba62420f0..31f1f373c463 100644
+index 31f1f373c463..81dd27be3d09 100644
 --- a/tools/perf/Documentation/perf-intel-pt.txt
 +++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -157,6 +157,10 @@ of instructions and number of cycles since the last update, and thus represent
- the average IPC since the last IPC for that event type.  Note IPC for "branches"
- events is calculated separately from IPC for "instructions" events.
+@@ -159,7 +159,9 @@ events is calculated separately from IPC for "instructions" events.
  
-+Even with the 'cyc' config term, it is possible to produce IPC information for
-+every change of timestamp, but at the expense of accuracy.  That is selected by
-+specifying the itrace 'A' option.
-+
+ Even with the 'cyc' config term, it is possible to produce IPC information for
+ every change of timestamp, but at the expense of accuracy.  That is selected by
+-specifying the itrace 'A' option.
++specifying the itrace 'A' option.  It may also be useful to use the 'A' option
++in conjunction with dlfilter-show-cycles.so to provide higher granularity cycle
++information.
+ 
  Also note that the IPC instruction count may or may not include the current
  instruction.  If the cycle count is associated with an asynchronous branch
- (e.g. page fault or interrupt), then the instruction count does not include the
-@@ -873,6 +877,7 @@ The letters are:
- 	L	synthesize last branch entries on existing event records
- 	s	skip initial number of events
- 	q	quicker (less detailed) decoding
-+	A	approximate IPC
- 	Z	prefer to ignore timestamps (so-called "timeless" decoding)
+@@ -1077,6 +1079,21 @@ The Z option is equivalent to having recorded a trace without TSC
+ decoding a trace of a virtual machine.
  
- "Instructions" events look like they were recorded by "perf record -e
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index 5ab631702769..5f83937bf8f3 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -608,6 +608,7 @@ static inline void intel_pt_update_sample_time(struct intel_pt_decoder *decoder)
- {
- 	decoder->sample_timestamp = decoder->timestamp;
- 	decoder->sample_insn_cnt = decoder->timestamp_insn_cnt;
-+	decoder->state.cycles = decoder->tot_cyc_cnt;
- }
  
- static void intel_pt_reposition(struct intel_pt_decoder *decoder)
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
-index 4b5e79fcf557..8fd68f7a0963 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
-@@ -218,6 +218,7 @@ struct intel_pt_state {
- 	uint64_t to_ip;
- 	uint64_t tot_insn_cnt;
- 	uint64_t tot_cyc_cnt;
-+	uint64_t cycles;
- 	uint64_t timestamp;
- 	uint64_t est_timestamp;
- 	uint64_t trace_nr;
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 6f852b305e92..57e49b23ad25 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -163,6 +163,7 @@ struct intel_pt_queue {
- 	bool step_through_buffers;
- 	bool use_buffer_pid_tid;
- 	bool sync_switch;
-+	bool sample_ipc;
- 	pid_t pid, tid;
- 	int cpu;
- 	int switch_state;
-@@ -1571,7 +1572,7 @@ static int intel_pt_synth_branch_sample(struct intel_pt_queue *ptq)
- 		sample.branch_stack = (struct branch_stack *)&dummy_bs;
- 	}
++dlfilter-show-cycles.so
++~~~~~~~~~~~~~~~~~~~~~~~
++
++Cycles can be displayed using dlfilter-show-cycles.so in which case the itrace A
++option can be useful to provide higher granularity cycle information:
++
++	perf script --itrace=A --call-trace --dlfilter dlfilter-show-cycles.so
++
++To see a list of dlfilters:
++
++	perf script -v --list-dlfilters
++
++See also linkperf:perf-dlfilters[1]
++
++
+ dump option
+ ~~~~~~~~~~~
  
--	if (ptq->state->flags & INTEL_PT_SAMPLE_IPC)
-+	if (ptq->sample_ipc)
- 		sample.cyc_cnt = ptq->ipc_cyc_cnt - ptq->last_br_cyc_cnt;
- 	if (sample.cyc_cnt) {
- 		sample.insn_cnt = ptq->ipc_insn_cnt - ptq->last_br_insn_cnt;
-@@ -1622,7 +1623,7 @@ static int intel_pt_synth_instruction_sample(struct intel_pt_queue *ptq)
- 	else
- 		sample.period = ptq->state->tot_insn_cnt - ptq->last_insn_cnt;
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 7df13e74450c..e155570cb662 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -362,7 +362,7 @@ ifndef NO_JVMTI
+ PROGRAMS += $(OUTPUT)$(LIBJVMTI)
+ endif
  
--	if (ptq->state->flags & INTEL_PT_SAMPLE_IPC)
-+	if (ptq->sample_ipc)
- 		sample.cyc_cnt = ptq->ipc_cyc_cnt - ptq->last_in_cyc_cnt;
- 	if (sample.cyc_cnt) {
- 		sample.insn_cnt = ptq->ipc_insn_cnt - ptq->last_in_insn_cnt;
-@@ -2198,8 +2199,15 @@ static int intel_pt_sample(struct intel_pt_queue *ptq)
+-DLFILTERS := dlfilter-test-api-v0.so
++DLFILTERS := dlfilter-test-api-v0.so dlfilter-show-cycles.so
+ DLFILTERS := $(patsubst %,$(OUTPUT)dlfilters/%,$(DLFILTERS))
  
- 	ptq->have_sample = false;
- 
--	ptq->ipc_insn_cnt = ptq->state->tot_insn_cnt;
--	ptq->ipc_cyc_cnt = ptq->state->tot_cyc_cnt;
-+	if (pt->synth_opts.approx_ipc) {
-+		ptq->ipc_insn_cnt = ptq->state->tot_insn_cnt;
-+		ptq->ipc_cyc_cnt = ptq->state->cycles;
-+		ptq->sample_ipc = true;
-+	} else {
-+		ptq->ipc_insn_cnt = ptq->state->tot_insn_cnt;
-+		ptq->ipc_cyc_cnt = ptq->state->tot_cyc_cnt;
-+		ptq->sample_ipc = ptq->state->flags & INTEL_PT_SAMPLE_IPC;
+ # what 'all' will build and 'install' will install, in perfexecdir
+diff --git a/tools/perf/dlfilters/dlfilter-show-cycles.c b/tools/perf/dlfilters/dlfilter-show-cycles.c
+new file mode 100644
+index 000000000000..9eccc97bff82
+--- /dev/null
++++ b/tools/perf/dlfilters/dlfilter-show-cycles.c
+@@ -0,0 +1,144 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dlfilter-show-cycles.c: Print the number of cycles at the start of each line
++ * Copyright (c) 2021, Intel Corporation.
++ */
++#include <perf/perf_dlfilter.h>
++#include <string.h>
++#include <stdio.h>
++
++#define MAX_CPU 4096
++
++enum {
++	INSTR_CYC,
++	BRNCH_CYC,
++	OTHER_CYC,
++	MAX_ENTRY
++};
++
++static __u64 cycles[MAX_CPU][MAX_ENTRY];
++static __u64 cycles_rpt[MAX_CPU][MAX_ENTRY];
++
++#define BITS		16
++#define TABLESZ		(1 << BITS)
++#define TABLEMAX	(TABLESZ / 2)
++#define MASK		(TABLESZ - 1)
++
++static struct entry {
++	__u32 used;
++	__s32 tid;
++	__u64 cycles[MAX_ENTRY];
++	__u64 cycles_rpt[MAX_ENTRY];
++} table[TABLESZ];
++
++static int tid_cnt;
++
++static int event_entry(const char *event)
++{
++	if (!event)
++		return OTHER_CYC;
++	if (!strncmp(event, "instructions", 12))
++		return INSTR_CYC;
++	if (!strncmp(event, "branches", 8))
++		return BRNCH_CYC;
++	return OTHER_CYC;
++}
++
++static struct entry *find_entry(__s32 tid)
++{
++	__u32 pos = tid & MASK;
++	struct entry *e;
++
++	e = &table[pos];
++	while (e->used) {
++		if (e->tid == tid)
++			return e;
++		if (++pos == TABLESZ)
++			pos = 0;
++		e = &table[pos];
 +	}
- 
- 	/*
- 	 * Do PEBS first to allow for the possibility that the PEBS timestamp
++
++	if (tid_cnt >= TABLEMAX) {
++		fprintf(stderr, "Too many threads\n");
++		return NULL;
++	}
++
++	tid_cnt += 1;
++	e->used = 1;
++	e->tid = tid;
++	return e;
++}
++
++static void add_entry(__s32 tid, int pos, __u64 cnt)
++{
++	struct entry *e = find_entry(tid);
++
++	if (e)
++		e->cycles[pos] += cnt;
++}
++
++int filter_event_early(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
++{
++	__s32 cpu = sample->cpu;
++	__s32 tid = sample->tid;
++	int pos;
++
++	if (!sample->cyc_cnt)
++		return 0;
++
++	pos = event_entry(sample->event);
++
++	if (cpu >= 0 && cpu < MAX_CPU)
++		cycles[cpu][pos] += sample->cyc_cnt;
++	else if (tid != -1)
++		add_entry(tid, pos, sample->cyc_cnt);
++	return 0;
++}
++
++static void print_vals(__u64 cycles, __u64 delta)
++{
++	if (delta)
++		printf("%10llu %10llu ", cycles, delta);
++	else
++		printf("%10llu %10s ", cycles, "");
++}
++
++int filter_event(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
++{
++	__s32 cpu = sample->cpu;
++	__s32 tid = sample->tid;
++	int pos;
++
++	pos = event_entry(sample->event);
++
++	if (cpu >= 0 && cpu < MAX_CPU) {
++		print_vals(cycles[cpu][pos], cycles[cpu][pos] - cycles_rpt[cpu][pos]);
++		cycles_rpt[cpu][pos] = cycles[cpu][pos];
++		return 0;
++	}
++
++	if (tid != -1) {
++		struct entry *e = find_entry(tid);
++
++		if (e) {
++			print_vals(e->cycles[pos], e->cycles[pos] - e->cycles_rpt[pos]);
++			e->cycles_rpt[pos] = e->cycles[pos];
++			return 0;
++		}
++	}
++
++	printf("%22s", "");
++	return 0;
++}
++
++const char *filter_description(const char **long_description)
++{
++	static char *long_desc = "Cycle counts are accumulated per CPU (or "
++		"per thread if CPU is not recorded) from IPC information, and "
++		"printed together with the change since the last print, at the "
++		"start of each line. Separate counts are kept for branches, "
++		"instructions or other events.";
++
++	*long_description = long_desc;
++	return "Print the number of cycles at the start of each line";
++}
 -- 
 2.25.1
 
