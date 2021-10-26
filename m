@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263E343AE30
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1880943AE24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhJZIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:38:32 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:33879 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232993AbhJZIib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:38:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635237186;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=DNWzDFjYlq2z1lfo6feM5SnahPemPY53FnBM9PiiNoQ=;
-    b=Fuk/CG4k2vVUlZ0s3+R7E9n2BDulVJ9IF6n6DJYCqAsUf7o1AgJYQbx2cuERaZU2eN
-    S+kjHJpG7Yxkor5AG2JXzUoMI3E97EKk7OcR0nZ8Nvm+/VGek3e5JItsOF6B5kDy+MIT
-    7pZcEqTiVxTupdzX//Ga2SkMb+vVOoIp6UuOs6PSPGZo50SL8lg1kV9N8QOjwKTIQ6SL
-    3IVuT07YO1gOg3DHB7l2VjcFAc8z9r8MDjv4Fci66nY7o1Fg9QPOUN2svgNiPPrXaRvl
-    EfW1QHhmIcX7hScHsSCidlq47Diw4pKxtLzF1nWxmo7Zu49pAxcJJxzY+OeNtY8JIyw3
-    8rkg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xm0dNS3JdRcQGaevZhmp"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id n020a8x9Q8X51ym
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 10:33:05 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        id S233162AbhJZIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:35:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233224AbhJZIfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:35:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9F4760F46;
+        Tue, 26 Oct 2021 08:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635237212;
+        bh=QzdqZpiGX5vzH78kafZN2BbBbWTTTjlj04OaCvEnSO4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=R9M5fmXvJV81R3cbYtLS61achVk1fflWq5UM7WAJsoXmeXYqovJFGY+hKKhi/NjOz
+         okDNBwMnoJS8nGkqv94Mw3cmjfKeFa+rutVIvemZyguKtUnvFKhX5N4c22c3zetN6k
+         TVcRYDGeV5+6e6VHypheEiXP5KuPkfcNfFDZ8gSOqziQwpBjzAS7ajqhEFOad9ie3L
+         Wtiju9TeSmJBSh6hIhQuaQuKp6WAxoEZ3qYayR4QE1Lx5zhZK53W/dZzP1IdM+C4cG
+         +9amLZemg9pze/PISe5rYSitGz9U2Txa1tGRy6fCHtAgLtjGB73npXsL4mYw1zXr+m
+         w9fNQ05xDxofA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Nicolai Stange <nstange@suse.de>
-Cc:     Torsten Duwe <duwe@suse.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nicolai Stange <nstange@suse.de>
-Subject: Re: [PATCH 0/6] crypto: DRBG - improve 'nopr' reseeding
-Date:   Tue, 26 Oct 2021 10:33:05 +0200
-Message-ID: <2120606.3HGXcN3vsr@positron.chronox.de>
-In-Reply-To: <20211025092525.12805-1-nstange@suse.de>
-References: <20211025092525.12805-1-nstange@suse.de>
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        YN Chen <YN.Chen@mediatek.com>,
+        Deren Wu <deren.wu@mediatek.com>,
+        Leon Yen <Leon.Yen@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mt76: mt7663s: fix link error with CONFIG_PM=n
+Date:   Tue, 26 Oct 2021 10:33:09 +0200
+Message-Id: <20211026083326.3421663-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 25. Oktober 2021, 11:25:19 CEST schrieb Nicolai Stange:
+From: Arnd Bergmann <arnd@arndb.de>
 
-Hi Nicolai,
+The generic register access functions are compiled conditionally,
+causing a link failure in some randconfig builds:
 
-> Hi all,
-> 
-> this patchset aims at (hopefully) improving the DRBG code related to
-> reseeding from get_random_bytes() a bit:
+ERROR: modpost: "mt76_connac_mcu_reg_wr" [drivers/net/wireless/mediatek/mt76/mt7615/mt7663s.ko] undefined!
+ERROR: modpost: "mt76_connac_mcu_reg_rr" [drivers/net/wireless/mediatek/mt76/mt7615/mt7663s.ko] undefined!
 
-Thanks for sharing your patches.
+Move them out of the #ifdef block.
 
-> - Replace the asynchronous random_ready_callback based DRBG reseeding
->   logic with a synchronous solution leveraging rng_is_initialized().
+Fixes: 02fbf8199f6e ("mt76: mt7663s: rely on mcu reg access utility")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Could you please help me why replacing an async method with a sync method is 
-helpful? Which problems do you see with the async method that are alleviated 
-with the swtich to the sync method? In general, an async method is more 
-powerful, though it requires a bit more code.
-
->   This
->   move simplifies the code IMO and, as a side-effect, would enable DRBG
->   users to rely on wait_for_random_bytes() to sync properly with
->   drbg_generate(), if desired. Implemented by patches 1-5/6.
-> - Make the 'nopr' DRBGs to reseed themselves every 5min from
->   get_random_bytes(). This achieves at least kind of a partial prediction
->   resistance over the time domain at almost no extra cost. Implemented
->   by patch 6/6, the preceding patches in this series are a prerequisite
->   for this.
-
-Just as a side note not against your ideas and patches, but in general: IMHO 
-it is a failure of all of us that the quite sensitive (re)seeding of RNGs and 
-entropy management is handled in multiple places in the kernel - and each case 
-only handles a subset of considerations around that topic. Note, (re)seeding 
-may be needed in other occasions than the elapse of a timer or the reaching of 
-maximum number of generate operations. Seeding belongs to a central place 
-where it is done right once and usable for differnent RNGs as proposed with my 
-LRNG patch set and the published todo list to get rid of the entire seeding 
-logic in the DRBG code base.
-
-That said, your patch of adding the timer-based reseeding seems appropriate 
-and thus should be considered for the current code base.
-
-Ciao
-Stephan
-
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+index 32e25180fc1e..26b4b875dcc0 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
+@@ -2477,6 +2477,7 @@ void mt76_connac_mcu_set_suspend_iter(void *priv, u8 *mac,
+ 	mt76_connac_mcu_set_wow_ctrl(phy, vif, suspend, wowlan);
+ }
+ EXPORT_SYMBOL_GPL(mt76_connac_mcu_set_suspend_iter);
++#endif /* CONFIG_PM */
+ 
+ u32 mt76_connac_mcu_reg_rr(struct mt76_dev *dev, u32 offset)
+ {
+@@ -2505,7 +2506,6 @@ void mt76_connac_mcu_reg_wr(struct mt76_dev *dev, u32 offset, u32 val)
+ 	mt76_mcu_send_msg(dev, MCU_CMD_REG_WRITE, &req, sizeof(req), false);
+ }
+ EXPORT_SYMBOL_GPL(mt76_connac_mcu_reg_wr);
+-#endif /* CONFIG_PM */
+ 
+ MODULE_AUTHOR("Lorenzo Bianconi <lorenzo@kernel.org>");
+ MODULE_LICENSE("Dual BSD/GPL");
+-- 
+2.29.2
 
