@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB56E43B3B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BF243B3C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236429AbhJZOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbhJZOOW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:14:22 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12D8C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:11:58 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id t16so13600188qto.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=QnclSDWEoLjy+T+jAuDo+8q1HVMSCwyY/22eDshYtRU=;
-        b=6GqLsYxV4oYares8v6Q86Xxa4bjF0SBL00dhhSOrLGBI9EsDx9JZIv+5RF+Ao08rJw
-         9l8OcUy5etX3I/Alwi4r3DMH8p2+WQ7c+SsIXtVsLpH4EV2QaIaOOWECJxlZhjafOzJz
-         B1qywLI3Z4rpmUui+dTItKzrZa/B+O4wlTduWNNqZTrTVkZKZS13pnMgnutIb7fThpRs
-         AXwJcKRGsW0aa2n9iSWzRX97pMql7KUommtjtUpsPtLatCLJ0RYhoqDqJHJWzS1lQ0yu
-         j2zybWXG98Ipn0SoWt4xw54KAE05p/NLnePapYQ8tDkESnWWKpF9v5m0xTPH2twgpXTt
-         TIVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=QnclSDWEoLjy+T+jAuDo+8q1HVMSCwyY/22eDshYtRU=;
-        b=MaemRo30rhrQSRnHXDUykKBDeN4M3ZzUmMcus/XFuG7NhqPYSkg3axKwT6eqMEVZhX
-         /0FBhyC38qvraJ+Ok0yOavAtMWvPrrsZiubnq6lim3ewsPshvb64DttK8kQ4z6BvmZdv
-         d/Lzh357x3kv6vh3iV4Wn6NRaKe4aLBNqwMIHkxoozNw8u9lB/Rb9rtsMOCJ4qTj0kJN
-         TtzTM5TAZnyD6A0dRSkBamLKKQ1smrpz5s9tIyiwG0arlsGzRKFnHSKOZcy5aIKdAZxA
-         0t9TnnQSrVFJWb6fipj7ucE8Q2JWB2fMK1ana45m08xxOYBq1S2JWA7MWeUdnD5PB0GT
-         srlQ==
-X-Gm-Message-State: AOAM532M6VrYKCjzhIv5vMuYmy5oB+UAONItz8kcq6pGMogyHhiWyGGI
-        pfl+sCczkg6JlUiST9sOcYngFQ==
-X-Google-Smtp-Source: ABdhPJyk3H55mvkyZF/gT5UmtxxWbTFj4KbzNGO4VZObmertiNf6KAHBvdCoyRMlK4xhQix2poBTAw==
-X-Received: by 2002:ac8:138b:: with SMTP id h11mr24239581qtj.80.1635257518092;
-        Tue, 26 Oct 2021 07:11:58 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id g12sm11206984qtb.3.2021.10.26.07.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 07:11:56 -0700 (PDT)
-Message-ID: <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: docs: dev-decoder: add restrictions about
- CAPTURE buffers
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 26 Oct 2021 10:11:54 -0400
-In-Reply-To: <20211018091427.88468-1-acourbot@chromium.org>
-References: <20211018091427.88468-1-acourbot@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S235453AbhJZOP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:15:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236452AbhJZOPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:15:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C24E6103C;
+        Tue, 26 Oct 2021 14:13:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635257604;
+        bh=xEjjHGXJAboK5YTWBRsXglKxth2kJ86QBuqXxDLsjas=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EKzxtcBSL+1FrQIUiefovFv89wJKwD55jiuXqkgWy579z8UHLvRacSwG4gJEwz8HO
+         5/Ot+bD23auaRFQV7yTf3rYcYczb83v+dpr54HAViR0p20DSLLSgsqL5whROuxxshE
+         gE8FMPzQ0nkQ1l+DQcnPwC02rBcIwDyHfV5K2vOqjvsOxDSYlTNw5aQflsUAOISfFJ
+         rytlFBtHssx4o6GAEb819ME82gmnMYsVMY35J9VpkntoU7k3Ejh3LnAjvjal6WqCak
+         6VLA3Kuwx49P7zgaLAdVOorO59L+iI/BqcG1L49asmeTRTeYgOmiNAVUFWGXiiuYCL
+         un1zQbsqokRwQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-rtc@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Sanket Goswami <Sanket.Goswami@amd.com>,
+        Sachi King <nakato@nakato.io>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: x86: amd-pmc: fix build failure with CONFIG_RTC_SYSTOHC=n
+Date:   Tue, 26 Oct 2021 16:12:15 +0200
+Message-Id: <20211026141317.2999103-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lundi 18 octobre 2021 à 18:14 +0900, Alexandre Courbot a écrit :
-> CAPTURE buffers might be read by the hardware after they are dequeued,
-> which goes against the general idea that userspace has full control over
-> dequeued buffers. Explain why and document the restrictions that this
-> implies for userspace.
-> 
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> ---
->  .../userspace-api/media/v4l/dev-decoder.rst     | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> index 5b9b83feeceb..3cf2b496f2d0 100644
-> --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
-> @@ -752,6 +752,23 @@ available to dequeue. Specifically:
->       buffers are out-of-order compared to the ``OUTPUT`` buffers): ``CAPTURE``
->       timestamps will not retain the order of ``OUTPUT`` timestamps.
->  
-> +.. note::
-> +
-> +   The backing memory of ``CAPTURE`` buffers that are used as reference frames
-> +   by the stream may be read by the hardware even after they are dequeued.
-> +   Consequently, the client should avoid writing into this memory while the
-> +   ``CAPTURE`` queue is streaming. Failure to observe this may result in
-> +   corruption of decoded frames.
-> +
-> +   Similarly, when using a memory type other than ``V4L2_MEMORY_MMAP``, the
-> +   client should make sure that each ``CAPTURE`` buffer is always queued with
-> +   the same backing memory for as long as the ``CAPTURE`` queue is streaming.
-> +   The reason for this is that V4L2 buffer indices can be used by drivers to
-> +   identify frames. Thus, if the backing memory of a reference frame is
-> +   submitted under a different buffer ID, the driver may misidentify it and
-> +   decode a new frame into it while it is still in use, resulting in corruption
-> +   of the following frames.
-> +
+From: Arnd Bergmann <arnd@arndb.de>
 
-I think this is nice addition, but insufficient. We should extend the API with a
-flags that let application know if the buffers are reference or secondary. For
-the context, we have a mix of CODEC that will output usable reference frames and
-needs careful manipulation and many other drivers where the buffers *maybe*
-secondary, meaning they may have been post-processed and modifying these in-
-place may have no impact.
+The newly added logic to set the RTC during suspend from
+platform specific code fails with a link error here:
 
-The problem is the "may", that will depends on the chosen CAPTURE format. I
-believe we should flag this, this flag should be set by the driver, on CAPTURE
-queue. The information is known after S_FMT, so Format Flag, Reqbufs
-capabilities or querybuf flags are candidates. I think the buffer flags are the
-best named flag, though we don't expect this to differ per buffer. Though,
-userspace needs to call querybuf for all buf in order to export or map them.
+drivers/platform/x86/amd-pmc.c:428:30: error: use of undeclared identifier 'CONFIG_RTC_SYSTOHC_DEVICE'
 
-What userspace can do with this is to export the DMABuf as read-only, and signal
-this internally in its own context. This is great to avoid any unwanted side
-effect described here.
+Add an #ifdef so this is only done if the functionality
+is enabled.
 
->  During the decoding, the decoder may initiate one of the special sequences, as
->  listed below. The sequences will result in the decoder returning all the
->  ``CAPTURE`` buffers that originated from all the ``OUTPUT`` buffers processed
+Fixes: 59348401ebed ("platform/x86: amd-pmc: Add special handling for timer based S0i3 wakeup")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/platform/x86/amd-pmc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
+index 678bf6874c63..8bd5de4d9d3a 100644
+--- a/drivers/platform/x86/amd-pmc.c
++++ b/drivers/platform/x86/amd-pmc.c
+@@ -414,6 +414,7 @@ static int amd_pmc_get_os_hint(struct amd_pmc_dev *dev)
+ 	return -EINVAL;
+ }
+ 
++#ifdef CONFIG_RTC_SYSTOHC
+ static int amd_pmc_verify_czn_rtc(struct amd_pmc_dev *pdev, u32 *arg)
+ {
+ 	struct rtc_device *rtc_device;
+@@ -461,6 +462,7 @@ static int amd_pmc_verify_czn_rtc(struct amd_pmc_dev *pdev, u32 *arg)
+ 
+ 	return rc;
+ }
++#endif
+ 
+ static int __maybe_unused amd_pmc_suspend(struct device *dev)
+ {
+@@ -473,12 +475,14 @@ static int __maybe_unused amd_pmc_suspend(struct device *dev)
+ 	amd_pmc_send_cmd(pdev, 0, NULL, SMU_MSG_LOG_RESET, 0);
+ 	amd_pmc_send_cmd(pdev, 0, NULL, SMU_MSG_LOG_START, 0);
+ 
++#ifdef CONFIG_RTC_SYSTOHC
+ 	/* Activate CZN specific RTC functionality */
+ 	if (pdev->cpu_id == AMD_CPU_ID_CZN) {
+ 		rc = amd_pmc_verify_czn_rtc(pdev, &arg);
+ 		if (rc < 0)
+ 			return rc;
+ 	}
++#endif
+ 
+ 	/* Dump the IdleMask before we send hint to SMU */
+ 	amd_pmc_idlemask_read(pdev, dev, NULL);
+-- 
+2.29.2
 
