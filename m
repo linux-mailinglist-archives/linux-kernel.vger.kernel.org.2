@@ -2,407 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D22643AFBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0280A43AFBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235129AbhJZKJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:09:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235127AbhJZKJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:09:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B044F60551;
-        Tue, 26 Oct 2021 10:06:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635242811;
-        bh=/UUpq5yAb9SBJHAGQCwpJ++n+NDCz5SrvkBmQT9f4AM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sVr8uHtfZkNoSIOweaf+O71sFcTtweajZ2yUFEf0k7tTjrr/XnVapzQyhBdTESzpg
-         dPlvZc6JfwlKPbQXRd+uOCce6LL9gAIs8QxdoqD4Dn+io4ZGXXvdBFqV6zDh8+zBIR
-         ILQRg1UQm/8LEOGrruqpzcP8OFu3/sGB8yYXUE34H+v4wT9+UAQ/17/wMB7D7WFIEy
-         RRZDoLcuf5Iw81u3vEqrdA4oStOQLyhAkBAc/esruUB/Buq2VZopf6Yt35koDGwauh
-         LiS/nwKElHYcRW9EzmEyRizGSIShUFMtef8WWGoMXTurXqgHUmo0Y2oI5cTPtLY1+/
-         xQy68IqXxEPlA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-Subject: [PATCH 2/2] futex: remove futex_cmpxchg detection
-Date:   Tue, 26 Oct 2021 12:03:48 +0200
-Message-Id: <20211026100432.1730393-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211026100432.1730393-1-arnd@kernel.org>
-References: <20211026100432.1730393-1-arnd@kernel.org>
+        id S235167AbhJZKJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235127AbhJZKJj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:09:39 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982C7C061745;
+        Tue, 26 Oct 2021 03:07:15 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 12:07:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635242832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fDUks0Y5u8e/cyrEnxYnECXBLNj7/1eacolyIstH2xA=;
+        b=0mloKTcluxG1Y/NJw/3JJZP7nlzWzH0I9ZHAChDZQYpxVyK0ybtnjbscysan1f8Zn2J1kD
+        spdbA0tpXLdg6hQyTLkJp6RPmveg3hpSVYNMksGBZOTRZ0UbYvla6vLhiHuEjHDexB54Q6
+        z12cCyhm6y76w57DHbH6T8UUqLpQfUBs51UbMp9IUzTxVTkOjKJA2O+NB0scr/GURxZC7A
+        SyP/louU0U6PpP739cZUniU3+m8l5wKT1pS/ACK2ioFqKhP2Tm11l2D4bHpJ3ZnfI5y0j8
+        v+VNaJSqgrVZkssmjn4pg15AqIWYoM7+C3VWKP85V/Qw+Wi8clDElSA7dmGqGQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635242832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fDUks0Y5u8e/cyrEnxYnECXBLNj7/1eacolyIstH2xA=;
+        b=fRJnj9EvFWdzEok59wHJqiWk4KDaMIDD6uHo5HUW1MbYsuKCMuQmOni9usQakcpxocWvMT
+        rh8H9zo/hE3W6QAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH net-next v3] net: sched: gred: dynamically allocate
+ tc_gred_qopt_offload
+Message-ID: <20211026100711.nalhttf6mbe6sudx@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+=46rom: Arnd Bergmann <arnd@arndb.de>
 
-Now that all architectures have a working futex implementation
-in any configuration, remove the runtime detection code.
+The tc_gred_qopt_offload structure has grown too big to be on the
+stack for 32-bit architectures after recent changes.
 
+net/sched/sch_gred.c:903:13: error: stack frame size (1180) exceeds limit (=
+1024) in 'gred_destroy' [-Werror,-Wframe-larger-than]
+net/sched/sch_gred.c:310:13: error: stack frame size (1212) exceeds limit (=
+1024) in 'gred_offload' [-Werror,-Wframe-larger-than]
+
+Use dynamic allocation per qdisc to avoid this.
+
+Fixes: 50dc9a8572aa ("net: sched: Merge Qdisc::bstats and Qdisc::cpu_bstats=
+ data types")
+Fixes: 67c9e6270f30 ("net: sched: Protect Qdisc::bstats with u64_stats")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/arc/Kconfig              |  1 -
- arch/arm/Kconfig              |  1 -
- arch/arm64/Kconfig            |  1 -
- arch/csky/Kconfig             |  1 -
- arch/m68k/Kconfig             |  1 -
- arch/riscv/Kconfig            |  1 -
- arch/s390/Kconfig             |  1 -
- arch/sh/Kconfig               |  1 -
- arch/um/Kconfig               |  1 -
- arch/um/kernel/skas/uaccess.c |  1 -
- arch/xtensa/Kconfig           |  1 -
- init/Kconfig                  |  8 --------
- kernel/futex/core.c           | 35 -----------------------------------
- kernel/futex/futex.h          |  6 ------
- kernel/futex/syscalls.c       | 22 ----------------------
- 15 files changed, 82 deletions(-)
+v2=E2=80=A6v3:
+ - drop not needed return statement in gred_offload() (Jakub)
+ - use kzalloc(sizeof(*table->opt) in gred_init() (Eric)
+ - Make the allocation conditional on ->ndo_setup_tc (Jakub).
 
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 248389278e8f..f9413041686f 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -31,7 +31,6 @@ config ARC
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select HAVE_DEBUG_KMEMLEAK
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_IOREMAP_PROT
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZMA
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index bb5d2c45477b..6448d311635d 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -93,7 +93,6 @@ config ARM
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
- 	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
- 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL && !(THUMB2_KERNEL && CC_IS_CLANG)
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
- 	select HAVE_IRQ_TIME_ACCOUNTING
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 0efc501f77aa..6c3c2ff5cef8 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -193,7 +193,6 @@ config ARM64
- 	select HAVE_PERF_USER_STACK_DUMP
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_FUNCTION_ARG_ACCESS_API
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select MMU_GATHER_RCU_TABLE_FREE
- 	select HAVE_RSEQ
- 	select HAVE_STACKPROTECTOR
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 823d3d5a9e11..efd7c5feac8b 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -53,7 +53,6 @@ config CSKY
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_ERROR_INJECTION
--	select HAVE_FUTEX_CMPXCHG if FUTEX && SMP
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZO
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 0b50da08a9c5..15a793c5b2dc 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -20,7 +20,6 @@ config M68K
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
--	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_UID16
- 	select MMU_GATHER_NO_RANGE if MMU
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 77a088d0a7e9..037fea9fac14 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -84,7 +84,6 @@ config RISCV
- 	select HAVE_DMA_CONTIGUOUS if MMU
- 	select HAVE_EBPF_JIT if MMU
- 	select HAVE_FUNCTION_ERROR_INJECTION
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO if MMU && 64BIT
- 	select HAVE_IRQ_TIME_ACCOUNTING
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index f615c3f65f5a..1c9ecf619e04 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -164,7 +164,6 @@ config S390
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO
- 	select HAVE_IOREMAP_PROT if PCI
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 6904f4bdbf00..93195d3368c0 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -34,7 +34,6 @@ config SUPERH
- 	select HAVE_FAST_GUP if MMU
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_HW_BREAKPOINT
- 	select HAVE_IOREMAP_PROT if MMU && !X2TLB
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index c18b45f75d41..c906250d4970 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -14,7 +14,6 @@ config UML
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_UID16
--	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select NO_DMA if !UML_DMA_EMULATION
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index a509be911026..9e37a7c05990 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -348,7 +348,6 @@ EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
-  * 0 - On success
-  * -EFAULT - User access resulted in a page fault
-  * -EAGAIN - Atomic operation was unable to complete due to contention
-- * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
-  */
- 
- int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 0e56bad058fa..8ac599aa6d99 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -31,7 +31,6 @@ config XTENSA
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FUNCTION_TRACER
--	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_PCI
-diff --git a/init/Kconfig b/init/Kconfig
-index c0f55ea5a71f..538688598f2f 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1597,14 +1597,6 @@ config FUTEX_PI
- 	depends on FUTEX && RT_MUTEXES
- 	default y
- 
--config HAVE_FUTEX_CMPXCHG
--	bool
--	depends on FUTEX
--	help
--	  Architectures should select this if futex_atomic_cmpxchg_inatomic()
--	  is implemented and always working. This removes a couple of runtime
--	  checks.
--
- config EPOLL
- 	bool "Enable eventpoll support" if EXPERT
- 	default y
-diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-index 25d8a88b32e5..926c2bb752bc 100644
---- a/kernel/futex/core.c
-+++ b/kernel/futex/core.c
-@@ -41,11 +41,6 @@
- #include "futex.h"
- #include "../locking/rtmutex_common.h"
- 
--#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
--int  __read_mostly futex_cmpxchg_enabled;
--#endif
--
--
- /*
-  * The base of the bucket array and its size are always used together
-  * (after initialization only in futex_hash()), so ensure that they
-@@ -776,9 +771,6 @@ static void exit_robust_list(struct task_struct *curr)
- 	unsigned long futex_offset;
- 	int rc;
- 
--	if (!futex_cmpxchg_enabled)
--		return;
--
- 	/*
- 	 * Fetch the list head (which was registered earlier, via
- 	 * sys_set_robust_list()):
-@@ -874,9 +866,6 @@ static void compat_exit_robust_list(struct task_struct *curr)
- 	compat_long_t futex_offset;
- 	int rc;
- 
--	if (!futex_cmpxchg_enabled)
--		return;
--
- 	/*
- 	 * Fetch the list head (which was registered earlier, via
- 	 * sys_set_robust_list()):
-@@ -950,8 +939,6 @@ static void exit_pi_state_list(struct task_struct *curr)
- 	struct futex_hash_bucket *hb;
- 	union futex_key key = FUTEX_KEY_INIT;
- 
--	if (!futex_cmpxchg_enabled)
--		return;
- 	/*
- 	 * We are a ZOMBIE and nobody can enqueue itself on
- 	 * pi_state_list anymore, but we have to be careful
-@@ -1125,26 +1112,6 @@ void futex_exit_release(struct task_struct *tsk)
- 	futex_cleanup_end(tsk, FUTEX_STATE_DEAD);
- }
- 
--static void __init futex_detect_cmpxchg(void)
--{
--#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
--	u32 curval;
--
--	/*
--	 * This will fail and we want it. Some arch implementations do
--	 * runtime detection of the futex_atomic_cmpxchg_inatomic()
--	 * functionality. We want to know that before we call in any
--	 * of the complex code paths. Also we want to prevent
--	 * registration of robust lists in that case. NULL is
--	 * guaranteed to fault and we get -EFAULT on functional
--	 * implementation, the non-functional ones will return
--	 * -ENOSYS.
--	 */
--	if (futex_cmpxchg_value_locked(&curval, NULL, 0, 0) == -EFAULT)
--		futex_cmpxchg_enabled = 1;
--#endif
--}
--
- static int __init futex_init(void)
+ net/sched/sch_gred.c | 50 ++++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 20 deletions(-)
+
+diff --git a/net/sched/sch_gred.c b/net/sched/sch_gred.c
+index 72de08ef8335e..1073c76d05c45 100644
+--- a/net/sched/sch_gred.c
++++ b/net/sched/sch_gred.c
+@@ -56,6 +56,7 @@ struct gred_sched {
+ 	u32 		DPs;
+ 	u32 		def;
+ 	struct red_vars wred_set;
++	struct tc_gred_qopt_offload *opt;
+ };
+=20
+ static inline int gred_wred_mode(struct gred_sched *table)
+@@ -311,42 +312,43 @@ static void gred_offload(struct Qdisc *sch, enum tc_g=
+red_command command)
  {
- 	unsigned int futex_shift;
-@@ -1163,8 +1130,6 @@ static int __init futex_init(void)
- 					       futex_hashsize, futex_hashsize);
- 	futex_hashsize = 1UL << futex_shift;
- 
--	futex_detect_cmpxchg();
--
- 	for (i = 0; i < futex_hashsize; i++) {
- 		atomic_set(&futex_queues[i].waiters, 0);
- 		plist_head_init(&futex_queues[i].chain);
-diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-index 040ae4277cb0..c264cbeab71c 100644
---- a/kernel/futex/futex.h
-+++ b/kernel/futex/futex.h
-@@ -27,12 +27,6 @@
- #define FLAGS_CLOCKRT		0x02
- #define FLAGS_HAS_TIMEOUT	0x04
- 
--#ifdef CONFIG_HAVE_FUTEX_CMPXCHG
--#define futex_cmpxchg_enabled 1
--#else
--extern int  __read_mostly futex_cmpxchg_enabled;
--#endif
--
- #ifdef CONFIG_FAIL_FUTEX
- extern bool should_fail_futex(bool fshared);
- #else
-diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
-index 6f91a07a6a83..086a22d1adb7 100644
---- a/kernel/futex/syscalls.c
-+++ b/kernel/futex/syscalls.c
-@@ -29,8 +29,6 @@
- SYSCALL_DEFINE2(set_robust_list, struct robust_list_head __user *, head,
- 		size_t, len)
- {
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
- 	/*
- 	 * The kernel knows only one size for now:
- 	 */
-@@ -56,9 +54,6 @@ SYSCALL_DEFINE3(get_robust_list, int, pid,
- 	unsigned long ret;
- 	struct task_struct *p;
- 
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
--
- 	rcu_read_lock();
- 
- 	ret = -ESRCH;
-@@ -103,17 +98,6 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
- 			return -ENOSYS;
+ 	struct gred_sched *table =3D qdisc_priv(sch);
+ 	struct net_device *dev =3D qdisc_dev(sch);
+-	struct tc_gred_qopt_offload opt =3D {
+-		.command	=3D command,
+-		.handle		=3D sch->handle,
+-		.parent		=3D sch->parent,
+-	};
++	struct tc_gred_qopt_offload *opt =3D table->opt;
+=20
+ 	if (!tc_can_offload(dev) || !dev->netdev_ops->ndo_setup_tc)
+ 		return;
+=20
++	memset(opt, 0, sizeof(*opt));
++	opt->command =3D command;
++	opt->handle =3D sch->handle;
++	opt->parent =3D sch->parent;
++
+ 	if (command =3D=3D TC_GRED_REPLACE) {
+ 		unsigned int i;
+=20
+-		opt.set.grio_on =3D gred_rio_mode(table);
+-		opt.set.wred_on =3D gred_wred_mode(table);
+-		opt.set.dp_cnt =3D table->DPs;
+-		opt.set.dp_def =3D table->def;
++		opt->set.grio_on =3D gred_rio_mode(table);
++		opt->set.wred_on =3D gred_wred_mode(table);
++		opt->set.dp_cnt =3D table->DPs;
++		opt->set.dp_def =3D table->def;
+=20
+ 		for (i =3D 0; i < table->DPs; i++) {
+ 			struct gred_sched_data *q =3D table->tab[i];
+=20
+ 			if (!q)
+ 				continue;
+-			opt.set.tab[i].present =3D true;
+-			opt.set.tab[i].limit =3D q->limit;
+-			opt.set.tab[i].prio =3D q->prio;
+-			opt.set.tab[i].min =3D q->parms.qth_min >> q->parms.Wlog;
+-			opt.set.tab[i].max =3D q->parms.qth_max >> q->parms.Wlog;
+-			opt.set.tab[i].is_ecn =3D gred_use_ecn(q);
+-			opt.set.tab[i].is_harddrop =3D gred_use_harddrop(q);
+-			opt.set.tab[i].probability =3D q->parms.max_P;
+-			opt.set.tab[i].backlog =3D &q->backlog;
++			opt->set.tab[i].present =3D true;
++			opt->set.tab[i].limit =3D q->limit;
++			opt->set.tab[i].prio =3D q->prio;
++			opt->set.tab[i].min =3D q->parms.qth_min >> q->parms.Wlog;
++			opt->set.tab[i].max =3D q->parms.qth_max >> q->parms.Wlog;
++			opt->set.tab[i].is_ecn =3D gred_use_ecn(q);
++			opt->set.tab[i].is_harddrop =3D gred_use_harddrop(q);
++			opt->set.tab[i].probability =3D q->parms.max_P;
++			opt->set.tab[i].backlog =3D &q->backlog;
+ 		}
+-		opt.set.qstats =3D &sch->qstats;
++		opt->set.qstats =3D &sch->qstats;
  	}
- 
--	switch (cmd) {
--	case FUTEX_LOCK_PI:
--	case FUTEX_LOCK_PI2:
--	case FUTEX_UNLOCK_PI:
--	case FUTEX_TRYLOCK_PI:
--	case FUTEX_WAIT_REQUEUE_PI:
--	case FUTEX_CMP_REQUEUE_PI:
--		if (!futex_cmpxchg_enabled)
--			return -ENOSYS;
--	}
--
- 	switch (cmd) {
- 	case FUTEX_WAIT:
- 		val3 = FUTEX_BITSET_MATCH_ANY;
-@@ -323,9 +307,6 @@ COMPAT_SYSCALL_DEFINE2(set_robust_list,
- 		struct compat_robust_list_head __user *, head,
- 		compat_size_t, len)
+=20
+-	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, &opt);
++	dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_QDISC_GRED, opt);
+ }
+=20
+ static int gred_offload_dump_stats(struct Qdisc *sch)
+@@ -731,6 +733,7 @@ static int gred_change(struct Qdisc *sch, struct nlattr=
+ *opt,
+ static int gred_init(struct Qdisc *sch, struct nlattr *opt,
+ 		     struct netlink_ext_ack *extack)
  {
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
--
- 	if (unlikely(len != sizeof(*head)))
- 		return -EINVAL;
- 
-@@ -342,9 +323,6 @@ COMPAT_SYSCALL_DEFINE3(get_robust_list, int, pid,
- 	unsigned long ret;
- 	struct task_struct *p;
- 
--	if (!futex_cmpxchg_enabled)
--		return -ENOSYS;
--
- 	rcu_read_lock();
- 
- 	ret = -ESRCH;
--- 
-2.29.2
++	struct gred_sched *table =3D qdisc_priv(sch);
+ 	struct nlattr *tb[TCA_GRED_MAX + 1];
+ 	int err;
+=20
+@@ -754,6 +757,12 @@ static int gred_init(struct Qdisc *sch, struct nlattr =
+*opt,
+ 		sch->limit =3D qdisc_dev(sch)->tx_queue_len
+ 		             * psched_mtu(qdisc_dev(sch));
+=20
++	if (qdisc_dev(sch)->netdev_ops->ndo_setup_tc) {
++		table->opt =3D kzalloc(sizeof(*table->opt), GFP_KERNEL);
++		if (!table->opt)
++			return -ENOMEM;
++	}
++
+ 	return gred_change_table_def(sch, tb[TCA_GRED_DPS], extack);
+ }
+=20
+@@ -910,6 +919,7 @@ static void gred_destroy(struct Qdisc *sch)
+ 			gred_destroy_vq(table->tab[i]);
+ 	}
+ 	gred_offload(sch, TC_GRED_DESTROY);
++	kfree(table->opt);
+ }
+=20
+ static struct Qdisc_ops gred_qdisc_ops __read_mostly =3D {
+--=20
+2.33.1
 
