@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F3443BD18
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D185643BD22
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239873AbhJZWTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 18:19:37 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:37243 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232718AbhJZWTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:19:32 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf5lk1nJQz4xbr;
-        Wed, 27 Oct 2021 09:17:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635286626;
-        bh=DvdDyr1TSw29nQTLtvEiazqeBjIwNYSuHPpJlfGEoCY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=n2/BJYKcPjybhAUKO37IQSaz7J83pvB/SwZs6cl9OgyBxor3zosIyqwBx98IzkvsU
-         2H3688FW4Fa23KDTtaaJWXksz2jUSMotiyv31auhrQIYL4FXxIZ+RKQjO6l38j0pi5
-         +v20KfWtaCwY0k9toW+Cz2+JBksNLaHTYVYbRWVS4TZo7ET9LlvT/ntejdREsZZ0tb
-         7pEwdOMaOcFJCGpsxfigYKZPIGPfvLBYnD+bvUs53klf4IalPeiIyXElJpdIjVViiL
-         Z88G3+1HaX3+ScsiP9fw3jTR0qw1ZynabCfCmbJ8aG3lHhynv4fW6dJTU5HmNXoPow
-         HmbVIAg7gh0BQ==
-Date:   Wed, 27 Oct 2021 09:17:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the perf tree with Linus' tree
-Message-ID: <20211027091705.1e24694e@canb.auug.org.au>
+        id S239928AbhJZWYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:24:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235758AbhJZWYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 18:24:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2BAD60F02;
+        Tue, 26 Oct 2021 22:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635286909;
+        bh=Ti9ROmEWB++H0DVAD/4QLbK3bMpQv6DTgwhjoKZgM3Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PcI2FaCRlJY+KWzLUhYhOcAar43cbCPaiPFaGHtK9GQiTU5oUu5Cg99gBUjLkKFDY
+         tsN2yWVZsuWG3Ldj/Eqxztu7tqHfh7OuGgEb9ljzY1EB3AiFARjrB2lR/PhwkmxHaY
+         istohXv3cDHFL4Oz43TW05RJHlKH4+npN5TIF+kxSxOwART2KIjH3FajjF63TN3Iq5
+         7pIc3qIGTRh/KW7iiKIHsUTid1qRNbfxJJbd5S8tasOWHQ5fLcLUvwQp0l/7lM9KTV
+         uxMaXqC+YxKabTJKA8IM7Q9sguYdy/4/br4qcOeCjOKvp2Tu/6EIjzwfrUpOtrvaV7
+         ghfJpn4scpUdg==
+Date:   Tue, 26 Oct 2021 17:21:47 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: Re: [RESEND v2 4/5] PCI: imx6: Fix the clock reference handling
+ unbalance when link never came up
+Message-ID: <20211026222147.GA173173@bhelgaas>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Kl_5tiGQv+HiJPXr+ZJU55F";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AS8PR04MB867639048E1F4F0AAC2347048C839@AS8PR04MB8676.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Kl_5tiGQv+HiJPXr+ZJU55F
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 25, 2021 at 02:35:36AM +0000, Richard Zhu wrote:
+> > -----Original Message-----
+> > From: Krzysztof Wilczyński <kw@linux.com>
+> > Sent: Saturday, October 23, 2021 5:54 PM
+> > To: Richard Zhu <hongxing.zhu@nxp.com>
+> > Cc: Bjorn Helgaas <helgaas@kernel.org>; l.stach@pengutronix.de;
+> > bhelgaas@google.com; lorenzo.pieralisi@arm.com; linux-pci@vger.kernel.org;
+> > dl-linux-imx <linux-imx@nxp.com>; linux-arm-kernel@lists.infradead.org;
+> > linux-kernel@vger.kernel.org; kernel@pengutronix.de
+> > Subject: Re: [RESEND v2 4/5] PCI: imx6: Fix the clock reference handling
+> > unbalance when link never came up
 
-Hi all,
+> > I hope you don't mind me asking, but how is an empty default case in the
+> > switch statement helping IMX6Q and IMX6QP?  What does it achieve for
+> > these two controllers specifically?
+> > 
+> [Richard Zhu] Never mind. 😊.
+> There might be following building warning if the "default:break" is removed.
+> "  CC      drivers/pci/controller/dwc/pci-imx6.o
+> drivers/pci/controller/dwc/pci-imx6.c: In function ‘imx6_pcie_clk_disable’:
+> drivers/pci/controller/dwc/pci-imx6.c:527:2: warning: enumeration value ‘IMX6Q’ not handled in switch [-Wswitch]
+>   527 |  switch (imx6_pcie->drvdata->variant) {
+>       |  ^~~~~~
+> drivers/pci/controller/dwc/pci-imx6.c:527:2: warning: enumeration value ‘IMX6QP’ not handled in switch [-Wswitch]"
 
-Today's linux-next merge of the perf tree got a conflict in:
+Sorry, I didn't see this until after asking the same question as
+Krzysztof.
 
-  tools/perf/util/session.c
+Sigh.  That's a really annoying gcc warning, but I guess I won't fight
+it ;)
 
-between commit:
-
-  8e820f962345 ("perf report: Output non-zero offset for decompressed recor=
-ds")
-
-from Linus' tree and commit:
-
-  3a3535e67dfd ("perf session: Introduce decompressor in reader object")
-
-from the perf tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/perf/util/session.c
-index 352f16076e01,51bf2efceb7f..000000000000
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@@ -2116,8 -2122,8 +2122,8 @@@ fetch_decomp_event(u64 head, size_t mma
-  static int __perf_session__process_decomp_events(struct perf_session *ses=
-sion)
-  {
-  	s64 skip;
- -	u64 size, file_pos =3D 0;
- +	u64 size;
-- 	struct decomp *decomp =3D session->decomp_last;
-+ 	struct decomp *decomp =3D session->active_decomp->decomp_last;
- =20
-  	if (!decomp)
-  		return 0;
-
---Sig_/Kl_5tiGQv+HiJPXr+ZJU55F
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF4fmEACgkQAVBC80lX
-0GzPhAf/VnPGdVKrtXZYojHLnBzKwujiu9p9U4mTytgNrMo+1eFdNT4KphKH/61I
-3YjN3ZmV7YBQpkxXP7qdqDmTbasaZSDwK1U3wBlOSjsT+CU7jzQcZcuLB86k59ED
-K4xdj4w5dwYffgY2PRdOKjao1x5Wwp2vCGkGZ3RwNRnVlxdBSCBXwX24c5VbEtxa
-Hb2IJWQav9wsqCNTOcUZI4Xj/17Iy5RCTQ7quqVmbefq6SXseVOP4CmTqr7KGeZI
-dwPtGVPQuaaa8WWslZNQSPYPESVR61HRJILsIcUZxeDH3MtRInivw3T1NVlMk0nj
-Q0h9RLkdzZ7hZkCBnmwEM+RF0qBSYw==
-=rZVn
------END PGP SIGNATURE-----
-
---Sig_/Kl_5tiGQv+HiJPXr+ZJU55F--
+Bjorn
