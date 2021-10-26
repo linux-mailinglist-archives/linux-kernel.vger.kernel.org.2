@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2170643BB6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD25C43BB6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239121AbhJZURo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:17:44 -0400
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:38513 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236912AbhJZURl (ORCPT
+        id S231533AbhJZUSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239125AbhJZUSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:17:41 -0400
-Received: by mail-oo1-f48.google.com with SMTP id z11-20020a4a870b000000b002b883011c77so137219ooh.5;
-        Tue, 26 Oct 2021 13:15:14 -0700 (PDT)
+        Tue, 26 Oct 2021 16:18:17 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3BCC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 13:15:53 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id y26so1227742lfa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 13:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=taV1czNtFBk3wgJIw7/elwcYtGkrQv1vUafu2ZhNsNw=;
+        b=R6rNCvUkrnv1vcP2u/6l8kZYVcl8Us6A0UDGpJgmU0GhiKJV6Fu69vxQAqAEpQwoC4
+         t8/eb+qQ7ewIHBZ5bsMBsQO9qPcGtOuzkHTVycZTh2tH6wkeHGpwy+J8lWWhemlcxtgD
+         VGxO/DHJwgoPMtgyy42h7P8f+HL6STQQzF3mbfBDC6LYis3VSIGQWAx8AO55yL38ywIA
+         EYQHv3vziEIoCufRqKRc186y7HE01Ie7ioW88F7ZP9x+zgmRQjlT/9GVabJ0TnAN4Bi/
+         2ZZVsFo0TVD+AMzK+aBK8bDSbW49D6w3w2KZKpR0U66uF1SL11SomckOm+ot0oXStRyW
+         T6eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eChjXqVmD/2S1Kk/P6xJUUmWCCVL/iUhUMXzvw2HvLQ=;
-        b=x9GcBqWhsGJMXCxLlSKNRn5C2J57afV1D0Cf1nztJ+aZCQrtPGVHE/X8sUWi/f+pp3
-         hW1gjYl1dBO8PyYkW0tVhOvjHy8y0jxmFTHIs1Y97SNS5sCt/36FM2fzonFf6jGE+VE7
-         ixdEnTm91SxvvrDAqG+xMUTc0E63Zdf1oEybJOpiUAjzLkg1AnIkIfR/MO35xBAE+wsq
-         wCtyZp51xTP3rsjp2EcrTTtU6o4v7scKhvJdDiEYjNein1OLS1S7LhGuPF5vwE6h3wQA
-         8I+n0ABw/fFRlFUjiYuD6qmERGLBBvIEbPAmhjAUIZTs9ntOfa7nKAte8bGkPCH/P3ut
-         dgPg==
-X-Gm-Message-State: AOAM532RleuOORGEXlHa+3M4iU4BG2zQvp5eSJStbElu1dPxZOnky2z0
-        EPIV6fr7WyXzJudganXJSA==
-X-Google-Smtp-Source: ABdhPJzzqhQIh2vYCnJETmgXjC24lTk9GOpV2O7XyYk2o2VA3IlTFB34WbMrLf+EeYbFvBvtsFY4XQ==
-X-Received: by 2002:a4a:e75a:: with SMTP id n26mr18929530oov.1.1635279314452;
-        Tue, 26 Oct 2021 13:15:14 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id b9sm4806713ots.77.2021.10.26.13.15.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 13:15:13 -0700 (PDT)
-Received: (nullmailer pid 3163764 invoked by uid 1000);
-        Tue, 26 Oct 2021 20:15:12 -0000
-Date:   Tue, 26 Oct 2021 15:15:12 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Markus Niebel <Markus.Niebel@ew.tq-group.com>
-Subject: Re: [PATCH 3/3] ARM: dts: imx6qdl: add TQ-Systems MBa6x device trees
-Message-ID: <YXhh0B3xX3Gx6vTM@robh.at.kernel.org>
-References: <20211013111202.6231-1-matthias.schiffer@ew.tq-group.com>
- <20211013111202.6231-3-matthias.schiffer@ew.tq-group.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=taV1czNtFBk3wgJIw7/elwcYtGkrQv1vUafu2ZhNsNw=;
+        b=XTTWOiEUl4ZlYH86d6tapKnWGnodfDBEjTlBUz/kwrHgGQIaAhtsuJURzNw7ND3imS
+         e2K8thomU31y7UZgMiFDfg++rFsRBjjX8wccIGcvFb5hr944Uthj3ifA7EkuPQO85VYj
+         DFcIX4Sw4qC+9P85j0jS1qcrH6a40dd7agkj6GC3gG5autzPdOIHDwfnE5KZX40cHfqI
+         hRNQnz15ZPaBpp91RLt57nhQRuvfhpj0tIbtmUdRAnjnjrZ1+tHc/wa0PGmGE2SEbEEI
+         lOXYV1QF+smv0EAJg0d/LY+oLqLaVLP563HnpR0qaBSFqa9kuTZ++ybGRYDGVKEi3Ri2
+         nLcw==
+X-Gm-Message-State: AOAM533HI/h3wuiZyKGQY4yv5lXiqOt//SXY9N4qazJUyrFieIRq+mwb
+        MGgbfcipJ0XEr67dybNleYsFV7F2RKlmnq8vcrtFrEllHow=
+X-Google-Smtp-Source: ABdhPJxL0E0JjLhlZY6NAkx4UDDNDg+c6ySvSb5EuEvuDMYABT71GtWsWOlq/d0/Rd2hiLwsUraha2ciMhUb4C3I0Vg=
+X-Received: by 2002:a19:f106:: with SMTP id p6mr16152171lfh.72.1635279351772;
+ Tue, 26 Oct 2021 13:15:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013111202.6231-3-matthias.schiffer@ew.tq-group.com>
+References: <20211026162852.6cf2a2aa@canb.auug.org.au> <DM5PR12MB24064E6B3635CF9EDA7696CBB7849@DM5PR12MB2406.namprd12.prod.outlook.com>
+In-Reply-To: <DM5PR12MB24064E6B3635CF9EDA7696CBB7849@DM5PR12MB2406.namprd12.prod.outlook.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 Oct 2021 22:15:39 +0200
+Message-ID: <CACRpkdZdb1wOY0cG4LqY8-JkDxpwe2fii262A2QVXEYXrv2vuQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the pinctrl tree
+To:     Prathamesh Shete <pshete@nvidia.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Kartik ." <kkartik@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 01:12:02PM +0200, Matthias Schiffer wrote:
-> From: Markus Niebel <Markus.Niebel@ew.tq-group.com>
-> 
-> Add device trees for the MBa6x mainboard with TQMa6Q/QP/DL SoMs.
-> 
-> Files are imported with (GPL-2.0-or-later OR MIT) license where the
-> copyright is held fully by TQ-Systems. Other files with less clear
-> copyright ownership use their original GPL-2.0-or-later license.
+On Tue, Oct 26, 2021 at 2:30 PM Prathamesh Shete <pshete@nvidia.com> wrote:
 
-Thanks for giving it some thought, but I don't think 'or-later' works 
-given imx6dl.dtsi is GPL-2.0-only. It's kind of a mess though:
+> Fixed following warnings and error.
+> Attached the patch that fixes the issue.
+> Please help apply the Patch.
 
-$ git grep -ho 'SPDX.*' arch/arm/boot/dts/imx6dl* | sort -u
-SPDX-License-Identifier: GPL-2.0
-SPDX-License-Identifier: GPL-2.0+
-SPDX-License-Identifier: GPL-2.0-only
-SPDX-License-Identifier: GPL-2.0-only */
-SPDX-License-Identifier: GPL-2.0-or-later
-SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-SPDX-License-Identifier: (GPL-2.0 or MIT)
-SPDX-License-Identifier: GPL-2.0 or MIT
-SPDX-License-Identifier: (GPL-2.0 OR MIT)
-SPDX-License-Identifier: GPL-2.0 OR MIT
-SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-SPDX-License-Identifier: GPL-2.0+ OR MIT
-SPDX-License-Identifier: GPL-2.0 OR X11
+I applied the patch!
 
-The dts files are all too intertwined to be different licenses IMO.
-
-Rob
+Yours,
+Linus Walleij
