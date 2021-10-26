@@ -2,101 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE1843B99F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F0B43B9A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238313AbhJZSd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236131AbhJZSd2 (ORCPT
+        id S238332AbhJZSeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:34:07 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:44805 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231686AbhJZSd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:33:28 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA810C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:31:03 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id e2so310827ljg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OXguLh0WNHEKlfFuQvMTGTJ+7qrh6TUIs5KKrA5WmaA=;
-        b=WoIY+3XdSLW9YQe7GBf/6F1NA6RHYjzIp8j60phOurkXAHlRC8TPVC0LXcErTJfae0
-         NRbIOwv1z+NqQFeyKR8Nk7pF/rFqREGBipIUkO10+CJ+6xScbZ1KpkrW+cM8Zhz3Wrfu
-         hpEoiclGT0yC4qAQrH2iTxrhuwIYk4UpPNbmnolvw4YEXdH5rZJpTkynDvIxx9YWpwN8
-         nXRlBhH/6qQ/8sOfIIfbBSxylC81esVi3rtpGs0/cNdYHbPJ8DDe1jt6fzycHSZhU/ou
-         LxnNyZGXctoRenoSIL+9HxmXDUhOs1zA+56xSstmnqRJ6RPoLvlGTeEcWpZB3M+3tBbI
-         Ffzg==
+        Tue, 26 Oct 2021 14:33:57 -0400
+Received: by mail-ot1-f42.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so21044372otl.11;
+        Tue, 26 Oct 2021 11:31:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OXguLh0WNHEKlfFuQvMTGTJ+7qrh6TUIs5KKrA5WmaA=;
-        b=c4qJ9zO8H0nKWMRLuwvavC77vV/TGF1x1PqbrlPF1d1mOwcENPzwuXpbi+eqqnq6i+
-         mT7f1c67QVym76o6qlPHCOMkQZN2RLZ5yCKp3hPgTIdK29+XaG8VY5sx1sWb47MnXKOF
-         1FADcrcpEAme3mXXG8C/3pCwMsI/GtLRsLUslUE8hxwCpmC5qbIjuJAKFdjWamngC7B4
-         1bhLEBFucOvyGix0WW7j1scsMmOIFjAc58+9HQ5cCx1RlvzpJBtJhVpGDkJZCiBhuVUC
-         apk0KSVoRJbJKt4aOnhzjUsqeDwdq9tVKaobVQAqHT5dmWxY/vH4JuddAfkfekZZx3Ju
-         3vTQ==
-X-Gm-Message-State: AOAM532FYyMTbr3ZCuB+tpSMt2kGgdboUIyLGgWr10ac/6/GdVhRWTBa
-        dZQktIVHYmmAZMUJsPA/pVHJVdQKnfsLldfcfbAR1w==
-X-Google-Smtp-Source: ABdhPJwcHcUxMTqtPzF5w+8vub3atUhPoOQHVlp/Fute42ZIqRwtsKMfstBI1lw8sOTsX8J4z656SBaTKhpsyVvO11E=
-X-Received: by 2002:a2e:9b0e:: with SMTP id u14mr27526325lji.247.1635273062045;
- Tue, 26 Oct 2021 11:31:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S+egWkbJH2Flqgjgy++dVLhNbQ1CPC0WUG5ECT1T2aw=;
+        b=b8vGjrav+cIulND4TaqtPu+5SBpvcFDxiljkgUSpNy3W1g1aGwshRkYvtXEHK2mKwH
+         uXFwTFKVIyIzNXQHzfjf8gu4xx+/Pp5zWaLNHgNCIZDRvcEPFDau7/GOMuoJ5qdrSaVT
+         bLwSrR3uOGypvQn5XDxlVbogQ/P37K0kwoTFQMoRKKM4+pMxOqrDuhE9Cmh8kR6okuCo
+         pica3QHrvSOgkd7PgBtbh4oaHj/rBs3JBJMdovcfUIECxPju3s3lHcKvRwiFtxamaq2/
+         t+b3lsrh4BSgYFdtLSYdfAP8cCJs3jCAUGdLOy8IfY0NIjpBkEp1g59coTsd0mPoLpfM
+         MRgg==
+X-Gm-Message-State: AOAM532LUeXqyEAHI1pzYuLtwrOv1wsYsaQokm/QT9pqceMm7cSOa7Jj
+        S3minHSv14z6NMHmQs1XuQ==
+X-Google-Smtp-Source: ABdhPJxdwZpTZdiE+CGPhdxC5lfxtTSzLOIl1+kyzNOpz/zl6w87999JYr7IBJwuZvHScSrjTMfgEQ==
+X-Received: by 2002:a05:6830:4428:: with SMTP id q40mr21080094otv.184.1635273092635;
+        Tue, 26 Oct 2021 11:31:32 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k4sm4849827oic.48.2021.10.26.11.31.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 11:31:31 -0700 (PDT)
+Received: (nullmailer pid 2986051 invoked by uid 1000);
+        Tue, 26 Oct 2021 18:31:30 -0000
+Date:   Tue, 26 Oct 2021 13:31:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Akhil R <akhilrajeev@nvidia.com>
+Cc:     dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        jonathanh@nvidia.com, kyarlagadda@nvidia.com, ldewangan@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        p.zabel@pengutronix.de, rgumasta@nvidia.com,
+        thierry.reding@gmail.com, vkoul@kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v10 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
+Message-ID: <YXhJgsmUiE69z5n3@robh.at.kernel.org>
+References: <1635180046-15276-1-git-send-email-akhilrajeev@nvidia.com>
+ <1635180046-15276-2-git-send-email-akhilrajeev@nvidia.com>
 MIME-Version: 1.0
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com> <YXhHq52jDrU61V4E@casper.infradead.org>
-In-Reply-To: <YXhHq52jDrU61V4E@casper.infradead.org>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 26 Oct 2021 14:30:25 -0400
-Message-ID: <CA+CK2bBbGEJa4s7HtgQkG_tZmN66UaVcDRovgLz4q+a0VGSqZg@mail.gmail.com>
-Subject: Re: [RFC 0/8] Hardening page _refcount
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        weixugc@google.com, Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635180046-15276-2-git-send-email-akhilrajeev@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 2:24 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Oct 26, 2021 at 05:38:14PM +0000, Pasha Tatashin wrote:
-> > It is hard to root cause _refcount problems, because they usually
-> > manifest after the damage has occurred.  Yet, they can lead to
-> > catastrophic failures such memory corruptions.
-> >
-> > Improve debugability by adding more checks that ensure that
-> > page->_refcount never turns negative (i.e. double free does not
-> > happen, or free after freeze etc).
-> >
-> > - Check for overflow and underflow right from the functions that
-> >   modify _refcount
-> > - Remove set_page_count(), so we do not unconditionally overwrite
-> >   _refcount with an unrestrained value
-> > - Trace return values in all functions that modify _refcount
->
-> I think this is overkill.  Won't we get exactly the same protection
-> by simply testing that page->_refcount == 0 in set_page_count()?
-> Anything which triggers that BUG_ON would already be buggy because
-> it can race with speculative gets.
+On Mon, Oct 25, 2021 at 10:10:43PM +0530, Akhil R wrote:
+> Add DT binding document for Nvidia Tegra GPCDMA controller.
+> 
+> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  .../bindings/dma/nvidia,tegra186-gpc-dma.yaml      | 108 +++++++++++++++++++++
+>  1 file changed, 108 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> new file mode 100644
+> index 0000000..d3f58d8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/nvidia,tegra186-gpc-dma.yaml
+> @@ -0,0 +1,108 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/nvidia,tegra186-gpc-dma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NVIDIA Tegra GPC DMA Controller Device Tree Bindings
+> +
+> +description: |
+> +  The Tegra General Purpose Central (GPC) DMA controller is used for faster
+> +  data transfers between memory to memory, memory to device and device to
+> +  memory.
+> +
+> +maintainers:
+> +  - Jon Hunter <jonathanh@nvidia.com>
+> +  - Rajesh Gumasta <rgumasta@nvidia.com>
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +        - nvidia,tegra186-gpcdma
+> +        - nvidia,tegra194-gpcdma
+> +      - items:
+> +        - const: nvidia,tegra186-gpcdma
+> +        - const: nvidia,tegra194-gpcdma
+> +
+> +  "#dma-cells":
+> +    const: 1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 32
 
-We can't because set_page_count(v) is used for
-1. changing _refcount form a current value to unconstrained v
-2.  initialize _refcount from undefined state to v.
+One per channel or what? You must define what each one is.
 
-In this work we forbid the first case, and reduce the second case to
-initialize only to 1.
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    const: gpcdma
+> +
+> +  iommus:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - resets
+> +  - reset-names
+> +  - "#dma-cells"
+> +  - iommus
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/memory/tegra186-mc.h>
+> +    #include <dt-bindings/reset/tegra186-reset.h>
+> +
+> +    gpcdma:dma-controller@2600000 {
 
-Pasha
+Drop unused labels.
+
+> +        compatible = "nvidia,tegra186-gpcdma";
+> +        reg = <0x2600000 0x0>;
+> +        resets = <&bpmp TEGRA186_RESET_GPCDMA>;
+> +        reset-names = "gpcdma";
+> +        interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
+> +        #dma-cells = <1>;
+> +        iommus = <&smmu TEGRA186_SID_GPCDMA_0>;
+> +        dma-coherent;
+> +    };
+> +...
+> -- 
+> 2.7.4
+> 
+> 
