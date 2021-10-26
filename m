@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4E643BA50
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D151F43BA52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238368AbhJZTJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44918 "EHLO mail.kernel.org"
+        id S238549AbhJZTJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:09:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234008AbhJZTJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:09:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A45610A1;
-        Tue, 26 Oct 2021 19:06:49 +0000 (UTC)
+        id S238380AbhJZTJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:09:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84351610A4;
+        Tue, 26 Oct 2021 19:06:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635275212;
-        bh=DBEx9t2CB+8MmSY7UjuuCdmlBwQL3CUhnAaUE+XYyRQ=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=A60IOoRMMZGy3t3QJ/KgLxG6B68GkrknhmQv60RG9RzcnPF+kGVJLYBZNyaJAbIP7
-         mH0xmyBZ0YOwFw3zFWEbeZ0AfMbrWdViwtX2wIJ/j88Gwlf8J0u+TzDP3JhYn/szgM
-         D6UX937++toP4t4hWIUfesB5c4t/p80Akjnh3NaPMrXCmRi/WhpmawY3qsNsGTQxpf
-         Wl94+wQBPcbmaCaMJl2t9Ul3CyX5E2bBfqXRWVOgRCZYuK5pUCw7F3DV4syn6UL1Nt
-         a5QirX7LtfktYZO3DMw3ITf2tg1Suyn4sSUbnRHiDFcfhz3hLAisSLF+w/IddH3uUL
-         nZwANVZMl/Kpg==
+        s=k20201202; t=1635275216;
+        bh=Gk/E5pK7kTnAy9ngQOvmnvKRnxHL1Xj2ImsmZMQXr68=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=e54RXcWYoR6i1K/7TOTYwCjIjFo7TIBtXnUsM4ATboPpJBNNnr+VaBVYoJECPnkwg
+         epNzwH5IMIVq9F/zSv620iGNRuqZ89TSbDYSG28IrO8OaDKU0F8IpzBVhny4OinQnP
+         aAIv09q4WVDYMwGH39Rxhy+keJ0sSGB3hETkn8sIdKKTi1YGPp7kzAYIPNY+gKFL4a
+         Pb0DR3Us5GfrofDfkFYS47sYzJEU8n92XqDH5wIkNIasXuXYafD7kmqHUfZcEO2ay9
+         XS/Ics2mjOq06Ur0WJbCEgNtsIxdGAJCR/kuvEegpe+Uf43vSYhhP8JTKdxuVRCpz5
+         n17A8c4KVzF9g==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        judyhsiao@chromium.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, bgoswami@codeaurora.org,
-        alsa-devel@alsa-project.org, plai@codeaurora.org,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        tiwai@suse.com, swboyd@chromium.org,
-        srinivas.kandagatla@linaro.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, perex@perex.cz
-In-Reply-To: <1635234188-7746-1-git-send-email-srivasam@codeaurora.org>
-References: <1635234188-7746-1-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v4 0/5] Update Lpass digital codec macro drivers
-Message-Id: <163527520915.2033755.14378859701858526354.b4-ty@kernel.org>
-Date:   Tue, 26 Oct 2021 20:06:49 +0100
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+In-Reply-To: <20211026125722.10220-1-rf@opensource.cirrus.com>
+References: <20211026125722.10220-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 0/2] ASoC: cs42l42: Fixes to power-down
+Message-Id: <163527521527.2033755.16584543049697234503.b4-ty@kernel.org>
+Date:   Tue, 26 Oct 2021 20:06:55 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,29 +39,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 13:13:03 +0530, Srinivasa Rao Mandadapu wrote:
-> This patch set is to add support for lpass sc7280 based targets.
-> Upadate compatible name and change of bulk clock voting to optional
-> clock voting in digital codecs va, rx, tx macro drivers.
+On Tue, 26 Oct 2021 13:57:20 +0100, Richard Fitzgerald wrote:
+> Driver probe and remove were inconsistent in what they did to power-down
+> and neither did all steps. In addition to that, neither function
+> prevented the interrupt handler from running during and after power-down.
 > 
-> Changes Since V3:
->     -- Removed fixes tag.
->     -- Change signedoff by sequence.
-> Changes Since V2:
->     -- Add Tx macro deafults for lpass sc7280
-> Changes Since V1:
->     -- Removed individual clock voting and used bulk clock optional.
->     -- Removed volatile changes and fixed default values.
->     -- Typo errors.
-> Srinivasa Rao Mandadapu (5):
->   ASoC: qcom: Add compatible names in va,wsa,rx,tx codec drivers for
->     sc7280
->   ASoC: qcom: dt-bindings: Add compatible names for lpass sc7280 digital
->     codecs
->   ASoC: codecs: tx-macro: Enable tx top soundwire mic clock
->   ASoC: codecs: tx-macro: Update tx default values
->   ASoC: codecs: Change bulk clock voting to optional voting in digital
->     codecs
+> Richard Fitzgerald (2):
+>   ASoC: cs42l42: Reset and power-down on remove() and failed probe()
+>   ASoC: cs42l42: free_irq() before powering-down on probe() fail
 > 
 > [...]
 
@@ -77,16 +56,10 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: qcom: Add compatible names in va,wsa,rx,tx codec drivers for sc7280
-      commit: 9d8c69814d7d8abf299998dd1d3f4a0b595cddca
-[2/5] ASoC: qcom: dt-bindings: Add compatible names for lpass sc7280 digital codecs
-      commit: 6e3b196e5ad2e4cd23498935ba32cecedae53642
-[3/5] ASoC: codecs: tx-macro: Enable tx top soundwire mic clock
-      commit: 864b9b5856ae74a350933782399934bdde5df989
-[4/5] ASoC: codecs: tx-macro: Update tx default values
-      commit: 7b285c74e422d35b02349650a62d32f8ec78f51d
-[5/5] ASoC: codecs: Change bulk clock voting to optional voting in digital codecs
-      commit: 9f589cf0f91485c8591775acad056c80378a2d34
+[1/2] ASoC: cs42l42: Reset and power-down on remove() and failed probe()
+      commit: 6cb725b8a5cc7b9106d5d6dd5d2ca78c76913775
+[2/2] ASoC: cs42l42: free_irq() before powering-down on probe() fail
+      commit: a10148a8cf561d728c0f57994330b2da1df35577
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
