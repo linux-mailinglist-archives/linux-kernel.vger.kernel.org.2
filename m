@@ -2,124 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C4543BDDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A6D43BDEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237351AbhJZXaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231847AbhJZXaO (ORCPT
+        id S240301AbhJZXfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:35:21 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:37561 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231791AbhJZXfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:30:14 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B05C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:27:49 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 08:27:36 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635290867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dou0MkH9IzpmrM0Gaj9otoUETtwue+Y4C7Lx9KWiIv0=;
-        b=cgFIK8p8UHG1HbEPfVQ9/HfxCT1X84Z2hDdzBj19UOIeuQMK7Jr7SJYyZ0PDrbft+NzuF8
-        g/qwf75T/nUzNvEcn7TsI7+ty/O8aH7agakJ2g1+l+6FCATNazqJnptjfXX58MGKXOa+9v
-        o8sBfHhSOs2MHjLtbQ4ipz4Trtelk6c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Peter Xu <peterx@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Bin Wang <wangbin224@huawei.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
-Message-ID: <20211026232736.GA2704541@u2004>
-References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
- <258d0ddb-6c82-0c95-a15e-b085b59d2142@redhat.com>
- <20211004143228.GA1545442@u2004>
+        Tue, 26 Oct 2021 19:35:15 -0400
+Received: by mail-ot1-f41.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso1038714otl.4;
+        Tue, 26 Oct 2021 16:32:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kSLSvsmgrH+vviFSMmPGSEilGiuI7PFaSyj8CApF5fU=;
+        b=m8vDReP/TXnOHvvV49uo6Rw3NFirB6qO/ZfT3kSsFSxqR5Vlvn4mrV3B4KbNvdMcPU
+         fJaWNk8SATdxkaQ4bgrPt7Xp2kwTU+kXpLBl+x3X6+k1JlL8pnSrjPb92THUyb5hLDzI
+         DVYNwvdjjpRc0FnRW0PeaEJsBpFp2IgW5GSN6sDGV+u1XdMvLAWxK6B+X5daD2GGcbMB
+         k9gP91VJKhWVXqW4aHv1Q2xu/4qydK3YxS2D2/iQ618nqCvd5pA2YxDBZOadwgrNhYJs
+         f1ZNy9c+8MqPY3bcY1bPa63M5HnoS617MGzS9D9YAx0e2x3C7tqe0ApFuUCZCQ/sY65X
+         rCDw==
+X-Gm-Message-State: AOAM533QK92Nqo0ao+CkMo7RQkjtNyYLzLKArIbrA9fdVRJbgEb6Oyf0
+        HGuorCm+spGL7opsAQqDiw==
+X-Google-Smtp-Source: ABdhPJwB98USJC1MLEdS7c69Ku7Zf4yf+11kHPSUyZPG8lunaaHwG07kPy2N58Ow6F4CUnTHOTZ8hg==
+X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr21717179otd.16.1635291169019;
+        Tue, 26 Oct 2021 16:32:49 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id c17sm596350oom.33.2021.10.26.16.32.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 16:32:48 -0700 (PDT)
+Received: (nullmailer pid 3523336 invoked by uid 1000);
+        Tue, 26 Oct 2021 23:32:47 -0000
+Date:   Tue, 26 Oct 2021 18:32:47 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~okias/devicetree@lists.sr.ht
+Subject: Re: [PATCH v4] dt-bindings: net: nfc: nxp,pn544: Convert txt
+ bindings to yaml
+Message-ID: <YXiQH9ssI088xLuM@robh.at.kernel.org>
+References: <20211017160210.85543-1-david@ixit.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211004143228.GA1545442@u2004>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211017160210.85543-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 11:32:28PM +0900, Naoya Horiguchi wrote:
-> On Mon, Oct 04, 2021 at 01:55:30PM +0200, David Hildenbrand wrote:
-> > On 04.10.21 13:50, Naoya Horiguchi wrote:
-...
-> > >
-> > > Hwpoison entry for hugepage is also exposed by this patch. The below
-> > > example shows how pagemap is visible in the case where a memory error
-> > > hit a hugepage mapped to a process.
-> > >
-> > >      $ ./page-types --no-summary --pid $PID --raw --list --addr 0x700000000+0x400
-> > >      voffset offset  len     flags
-> > >      700000000       12fa00  1       ___U_______Ma__H_G_________________f_______1
-> > >      700000001       12fa01  1ff     ___________Ma___TG_________________f_______1
-> > >      700000200       12f800  1       __________B________X_______________f______w_
-> > >      700000201       12f801  1       ___________________X_______________f______w_   // memory failure hit this page
-> > >      700000202       12f802  1fe     __________B________X_______________f______w_
-> > >
-> > > The entries with both of "X" flag (hwpoison flag) and "w" flag (swap
-> > > flag) are considered as hwpoison entries.  So all pages in 2MB range
-> > > are inaccessible from the process.  We can get actual error location
-> > > by page-types in physical address mode.
-> > >
-> > >      $ ./page-types --no-summary --addr 0x12f800+0x200 --raw --list
-> > >      offset  len     flags
-> > >      12f800  1       __________B_________________________________
-> > >      12f801  1       ___________________X________________________
-> > >      12f802  1fe     __________B_________________________________
-> > >
-> > > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > ---
-> > >   fs/proc/task_mmu.c      | 41 ++++++++++++++++++++++++++++++++---------
-> > >   include/linux/swapops.h | 13 +++++++++++++
-> > >   tools/vm/page-types.c   |  7 ++++++-
-> > >   3 files changed, 51 insertions(+), 10 deletions(-)
-> >
-> >
-> > Please also update the documentation located at
-> >
-> > Documentation/admin-guide/mm/pagemap.rst
->
-> I will do this in the next post.
+On Sun, Oct 17, 2021 at 06:02:10PM +0200, David Heidelberg wrote:
+> Convert bindings for NXP PN544 NFC driver to YAML syntax.
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+> v2
+>  - Krzysztof is a maintainer
+>  - pintctrl dropped
+>  - 4 space indent for example
+>  - nfc node name
+> v3
+>  - remove whole pinctrl
+> v4
+>  - drop clock-frequency, which is inherited by i2c bus
+> 
+>  .../bindings/net/nfc/nxp,pn544.yaml           | 56 +++++++++++++++++++
+>  .../devicetree/bindings/net/nfc/pn544.txt     | 33 -----------
+>  2 files changed, 56 insertions(+), 33 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+> new file mode 100644
+> index 000000000000..4592d1194a71
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/nfc/nxp,pn544.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP Semiconductors PN544 NFC Controller
+> +
+> +maintainers:
+> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: nxp,pn544-i2c
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  enable-gpios:
+> +    description: Output GPIO pin used for enabling/disabling the PN544
+> +
+> +  firmware-gpios:
+> +    description: Output GPIO pin used to enter firmware download mode
 
-Reading the document, I found that swap type is already exported so we
-could identify hwpoison entry with it (without new PM_HWPOISON bit).
-One problem is that the format of swap types (like SWP_HWPOISON) depends
-on a few config macros like CONFIG_DEVICE_PRIVATE and CONFIG_MIGRATION,
-so we also need to export how the swap type field is interpreted.
+*-gpios needs to say how many (maxItems: 1). I'll fix when applying.
 
-I thought of adding new interfaces for example under /sys/kernel/mm/swap/type_format/,
-which shows info like below (assuming that all CONFIG_{DEVICE_PRIVATE,MIGRATION,MEMORY_FAILURE}
-is enabled):
-
-  $ ls /sys/kernel/mm/swap/type_format/
-  hwpoison
-  migration_read
-  migration_write
-  device_write
-  device_read
-  device_exclusive_write
-  device_exclusive_read
-  
-  $ cat /sys/kernel/mm/swap/type_format/hwpoison
-  25
-  
-  $ cat /sys/kernel/mm/swap/type_format/device_write
-  28
-
-Does it make sense or any better approach?
-
-Thanks,
-Naoya Horiguchi
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - enable-gpios
+> +  - firmware-gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        nfc@28 {
+> +            compatible = "nxp,pn544-i2c";
+> +            reg = <0x28>;
+> +
+> +            interrupt-parent = <&gpio1>;
+> +            interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +            enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+> +            firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/net/nfc/pn544.txt b/Documentation/devicetree/bindings/net/nfc/pn544.txt
+> deleted file mode 100644
+> index 2bd82562ce8e..000000000000
+> --- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
+> +++ /dev/null
+> @@ -1,33 +0,0 @@
+> -* NXP Semiconductors PN544 NFC Controller
+> -
+> -Required properties:
+> -- compatible: Should be "nxp,pn544-i2c".
+> -- clock-frequency: I²C work frequency.
+> -- reg: address on the bus
+> -- interrupts: GPIO interrupt to which the chip is connected
+> -- enable-gpios: Output GPIO pin used for enabling/disabling the PN544
+> -- firmware-gpios: Output GPIO pin used to enter firmware download mode
+> -
+> -Optional SoC Specific Properties:
+> -- pinctrl-names: Contains only one value - "default".
+> -- pintctrl-0: Specifies the pin control groups used for this controller.
+> -
+> -Example (for ARM-based BeagleBone with PN544 on I2C2):
+> -
+> -&i2c2 {
+> -
+> -
+> -	pn544: pn544@28 {
+> -
+> -		compatible = "nxp,pn544-i2c";
+> -
+> -		reg = <0x28>;
+> -		clock-frequency = <400000>;
+> -
+> -		interrupt-parent = <&gpio1>;
+> -		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+> -
+> -		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+> -		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+> -	};
+> -};
+> -- 
+> 2.33.0
+> 
+> 
