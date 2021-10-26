@@ -2,226 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BB543B414
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDC143B42D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbhJZObc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
+        id S236592AbhJZOcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236595AbhJZObW (ORCPT
+        with ESMTP id S236575AbhJZOct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:31:22 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3402DC06122D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:51 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so2427744pjl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:51 -0700 (PDT)
+        Tue, 26 Oct 2021 10:32:49 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40A9C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:30:25 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id w16so1828703plg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:30:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lurf7pLmFfI8PFqHVx6TDwHnjD6o21b/FbSCQOL4ZwA=;
-        b=kyJREW0kMU2y5W01Tp8hmPQxtDJafRxlr1A/Heu3XNDIF1+OOngkjBp7l/UbHLSSS9
-         WgkFV+hQ+r8y6kI3VijZ6K6AUu3yqvcg+yYjE1hW2pqKZqqvQRigIU/3NV5q8xh2MQAi
-         SAP2MsyjU7+gQQ/3EJitOymtYcpD0VV9q/r2md6ecKZW4QV+iuu3JQ9Qx1SLMfdbQZ4J
-         EhsC+/MfHTU3mQqve40aLRakdwwykEugm/QUsscB9BuWsaHiM/r0VsujGJt3Mz8Gwcz0
-         LYibsNVpHh6hv/WVBTRZOim/Sm8d8jGW5heMoNorhlG/1/x6J5eJavazPg3y7zEZG2ex
-         ZTsg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OuEWxmriGjeR93wdoRYx5BXrqZi0N9S7r5MEKadT8C0=;
+        b=TVbtCkc1lGPGVYp1+zllxowWzOeSu6A7hgUbz2RRiP4gYH7XSu65aaqiMpdgA+qGHJ
+         CVzZGlVJv0MPGCPxGF0ZdP+Ohmey5r2fOxbAX/oW6cBxDaMIjV4TR/EOu6BhjZfFXZGy
+         DE+nFyYC6mO8WCIQz+cgRVnZXa8GQwBnn7mSw4aKu1lfi0J0QpeX6R15TmQqE7IOkdGl
+         /YGrm0fTlz6LI0ayelwzo0Lbp2YQeOHJlm8lX7qGPEhrSN2Y6FWswCarNIGtZxa7WG3+
+         SMhVY7LG1UA1urxTTOmchQ0rgZI/rcSXNqkPAHavVtAist1tPSglPXMfW2EullIIyHVI
+         AYZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lurf7pLmFfI8PFqHVx6TDwHnjD6o21b/FbSCQOL4ZwA=;
-        b=beAOBxr/OT2JEpaH126ZteBclFepQ0Aa6feKC8ayB5xBrUTvhhZoMHpaeH+uIpXhL0
-         Jc2lXrYROM2JB4EP39h68CxdvnYTVRCgBDHoUtpzC4ibYAb4vd6i3cMQxI7H/utnRu/d
-         QsQjikMR1hAU2u9hpqjwSicbI4e7jzlX1fwc3ihzMl854YsV8NJy+vPDnEgPzCNNTPHI
-         o40ScxTNZEcu8ZK97REbd9W4dhiEe2Nzox4Pvj9bEcWeZHKDu5NnfdU4HlOR8+vWpTrG
-         wbHs05rOJKr6zWemhdee0FsD1zkb+rQokBGK2cQcWY3Ej5AmJeZiCkTJ+4PXRCUCnJKS
-         oSVA==
-X-Gm-Message-State: AOAM530ZvReqJkjzJgKeD6I31TaA9BWVEb/RWdPoe667xq7dJovBXOmh
-        dl7gHSHjmNlwIL2NRDihJWbLE40qwgWgthpl8li4iA==
-X-Google-Smtp-Source: ABdhPJzMJdJHE9L/b1rT+cs4ENyPqi8wu9eQIbr7CMebXBLB3zRikOsje5xfnU8hY9nFtgLTr4mWvqH3ADsOiDagAwY=
-X-Received: by 2002:a17:903:183:b0:140:47c1:1f2e with SMTP id
- z3-20020a170903018300b0014047c11f2emr14674517plg.69.1635258530393; Tue, 26
- Oct 2021 07:28:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OuEWxmriGjeR93wdoRYx5BXrqZi0N9S7r5MEKadT8C0=;
+        b=lLgfcZGhkk5wWJm3g73GheBvKYxEp9nCFsh8vvQ6d7VRx9sEnp0rtZTvgd/1pVCPi7
+         npxRk5m7vFUgIBfAybHNl6tKtwW+6hgCFQl23suDgp37Pyp4kGYJSbgdjCKSWZSryu0U
+         mD2QNGyMHiinmHSDErAzh4wLWBGkxIVigG6EDZgC8JLuVSCQppuiWn+9IiUTlABmvvhf
+         jGjkwZWg2kNgn+fVTzmWJ29T9IaDUx8+6LdmTwIPkplKqnk3U8DXJWWVqdW/1YcLCV19
+         lS8AR8wWXqhGJ4Xk+B4PpTXxINJXzc0Pc7E4m1puSK4N/5vkzL6e1X7nkgVmpwIJhmqk
+         /3nA==
+X-Gm-Message-State: AOAM532A0fR7cURGXvIxjHgREJcZLETAwZsuW64l5bXgzN2JCzCBP8oE
+        fHvjmiob84dUxedQ6U/01cDiHb0xoqA=
+X-Google-Smtp-Source: ABdhPJynhNOw6mGJEWR/hLE+YMzQvhxHnnGRO8gjiK1oikaZBca/Qy4jd40s4k5cLz2MzixpL4zkeg==
+X-Received: by 2002:a17:90a:a88c:: with SMTP id h12mr5935760pjq.147.1635258625222;
+        Tue, 26 Oct 2021 07:30:25 -0700 (PDT)
+Received: from localhost ([47.88.5.130])
+        by smtp.gmail.com with ESMTPSA id u23sm26371274pfg.162.2021.10.26.07.30.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:30:24 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH V4 19/50] x86/entry: Switch the stack after error_entry() returns
+Date:   Tue, 26 Oct 2021 22:30:01 +0800
+Message-Id: <20211026143032.18624-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
+References: <20211026141420.17138-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-References: <20211025200852.3002369-1-kaleshsingh@google.com>
- <20211025200852.3002369-8-kaleshsingh@google.com> <20211026214311.583c728d90d41778c38201dd@kernel.org>
-In-Reply-To: <20211026214311.583c728d90d41778c38201dd@kernel.org>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Tue, 26 Oct 2021 07:28:39 -0700
-Message-ID: <CAC_TJvfQQCyuSZqjzC0fuAah84uLgHJv5T+WtR8=9h5fN9nrLA@mail.gmail.com>
-Subject: Re: [PATCH v4 7/8] tracing/selftests: Add tests for hist trigger
- expression parsing
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 5:43 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Hi Kalesh,
->
-> On Mon, 25 Oct 2021 13:08:39 -0700
-> Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> > Add tests for the parsing of hist trigger expressions; and to
-> > validate expression evaluation.
-> >
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > Reviewed-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >
-> > Changes in v3:
-> >   - Remove .sym-offset error check tests
-> >
-> > Changes in v2:
-> >   - Add Namhyung's Reviewed-by
-> >   - Update comment to clarify err_pos in "Too many subexpressions" test
-> >
-> >
-> >  .../testing/selftests/ftrace/test.d/functions |  4 +-
-> >  .../trigger/trigger-hist-expressions.tc       | 72 +++++++++++++++++++
-> >  2 files changed, 74 insertions(+), 2 deletions(-)
-> >  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> >
-> > diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-> > index 000fd05e84b1..1855a63559ad 100644
-> > --- a/tools/testing/selftests/ftrace/test.d/functions
-> > +++ b/tools/testing/selftests/ftrace/test.d/functions
-> > @@ -16,13 +16,13 @@ reset_tracer() { # reset the current tracer
-> >
-> >  reset_trigger_file() {
-> >      # remove action triggers first
-> > -    grep -H ':on[^:]*(' $@ |
-> > +    grep -H ':on[^:]*(' $@ | tac |
-> >      while read line; do
-> >          cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-> >       file=`echo $line | cut -f1 -d:`
-> >       echo "!$cmd" >> $file
-> >      done
-> > -    grep -Hv ^# $@ |
-> > +    grep -Hv ^# $@ | tac |
-> >      while read line; do
-> >          cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-> >       file=`echo $line | cut -f1 -d:`
->
-> If this update has any meaning, please make a separate patch for this part.
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Hi Masami,
+error_entry() calls sync_regs() to settle/copy the pt_regs and switches
+the stack directly after sync_regs().  But because error_entry() is also
+called from entry, the switching has to handle the return address together,
+which causes the behavior tangly.
 
-Thanks for the feedback. The above change is to ensure we remove
-triggers in the reverse order that we created them - important when
-one trigger depends on another. I can split it out into a separate
-patch and will add a README pattern check to the requires tag for
-these tests.
+Switching to the stack after error_entry() makes the code simpler and
+intuitive.
 
-Thanks,
-Kalesh
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/entry/entry_64.S | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
->
-> > diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> > new file mode 100644
-> > index 000000000000..e715641c54d3
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> > @@ -0,0 +1,72 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# description: event trigger - test histogram expression parsing
-> > +# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log
->
-> Hmm, are there any way to check the running kernel supports this feature?
-> Because the latest version of the kselftest is expected to run on the old stable
-> kernel for testing, the testcase should check whether the kernel supports this
-> testing feature or not. (That's why the requires tag supports README pattern check)
->
-> So, at first if you didn't update the <tracefs>/README, please update it first
-> to show the new syntax is supported, and add "SOME-PATTERN":README to the
-> requires tag.
->
-> Thank you,
->
-> > +
-> > +
-> > +fail() { #msg
-> > +    echo $1
-> > +    exit_fail
-> > +}
-> > +
-> > +get_hist_var() { #var_name hist_path
-> > +    hist_output=`grep -m1 "$1: " $2`
-> > +    hitcount=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "hitcount:") print $(i+1)} }'`
-> > +    var_sum=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "'$1':") print $(i+1)} }'`
-> > +    var_val=$(( var_sum / hitcount ))
-> > +    echo $var_val
-> > +}
-> > +
-> > +test_hist_expr() { # test_name expression expected_val
-> > +    reset_trigger
-> > +
-> > +    echo "Test hist trigger expressions - $1"
-> > +
-> > +    echo "hist:keys=common_pid:x=$2" > events/sched/sched_process_fork/trigger
-> > +    echo 'hist:keys=common_pid:vals=$x' >> events/sched/sched_process_fork/trigger
-> > +    for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-> > +
-> > +    actual=`get_hist_var x events/sched/sched_process_fork/hist`
-> > +
-> > +    if [ $actual != $3 ]; then
-> > +        fail "Failed hist trigger expression evaluation: Expression: $2 Expected: $3, Actual: $actual"
-> > +    fi
-> > +
-> > +    reset_trigger
-> > +}
-> > +
-> > +check_error() { # test_name command-with-error-pos-by-^
-> > +    reset_trigger
-> > +
-> > +    echo "Test hist trigger expressions - $1"
-> > +    ftrace_errlog_check 'hist:sched:sched_process_fork' "$2" 'events/sched/sched_process_fork/trigger'
-> > +
-> > +    reset_trigger
-> > +}
-> > +
-> > +test_hist_expr "Variable assignment" "123" "123"
-> > +
-> > +test_hist_expr "Subtraction not associative" "16-8-4-2" "2"
-> > +
-> > +test_hist_expr "Division not associative" "64/8/4/2" "1"
-> > +
-> > +test_hist_expr "Same precedence operators (+,-) evaluated left to right" "16-8+4+2" "14"
-> > +
-> > +test_hist_expr "Same precedence operators (*,/) evaluated left to right" "4*3/2*2" "12"
-> > +
-> > +test_hist_expr "Multiplication evaluated before addition/subtraction" "4+3*2-2" "8"
-> > +
-> > +test_hist_expr "Division evaluated before addition/subtraction" "4+6/2-2" "5"
-> > +
-> > +# Division by zero returns -1
-> > +test_hist_expr "Handles division by zero" "3/0" "-1"
-> > +
-> > +# err pos for "too many subexpressions" is dependent on where
-> > +# the last subexpression was detected. This can vary depending
-> > +# on how the expression tree was generated.
-> > +check_error "Too many subexpressions" 'hist:keys=common_pid:x=32+^10*3/20-4'
-> > +check_error "Too many subexpressions" 'hist:keys=common_pid:x=^1+2+3+4+5'
-> > +
-> > +check_error "Unary minus not supported in subexpression" 'hist:keys=common_pid:x=-(^1)+2'
-> > +
-> > +exit 0
-> > --
-> > 2.33.0.1079.g6e70778dc9-goog
-> >
->
->
-> --
-> Masami Hiramatsu <mhiramat@kernel.org>
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 7f2338c3b676..1af28027a138 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -324,6 +324,8 @@ SYM_CODE_END(ret_from_fork)
+ .macro idtentry_body cfunc has_error_code:req
+ 
+ 	call	error_entry
++	movq	%rax, %rsp			/* switch stack settled by sync_regs() */
++	ENCODE_FRAME_POINTER
+ 	UNWIND_HINT_REGS
+ 
+ 	movq	%rsp, %rdi			/* pt_regs pointer into 1st argument*/
+@@ -987,14 +989,10 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	/* We have user CR3.  Change to kernel CR3. */
+ 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+ 
++	leaq	8(%rsp), %rdi			/* arg0 = pt_regs pointer */
+ .Lerror_entry_from_usermode_after_swapgs:
+ 	/* Put us onto the real thread stack. */
+-	popq	%r12				/* save return addr in %12 */
+-	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
+ 	call	sync_regs
+-	movq	%rax, %rsp			/* switch stack */
+-	ENCODE_FRAME_POINTER
+-	pushq	%r12
+ 	ret
+ 
+ 	/*
+@@ -1027,6 +1025,7 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	 */
+ .Lerror_entry_done_lfence:
+ 	FENCE_SWAPGS_KERNEL_ENTRY
++	leaq	8(%rsp), %rax			/* return pt_regs pointer */
+ 	ret
+ 
+ .Lbstep_iret:
+@@ -1047,12 +1046,9 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	 * Pretend that the exception came from user mode: set up pt_regs
+ 	 * as if we faulted immediately after IRET.
+ 	 */
+-	popq	%r12				/* save return addr in %12 */
+-	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
++	leaq	8(%rsp), %rdi			/* arg0 = pt_regs pointer */
+ 	call	fixup_bad_iret
+-	mov	%rax, %rsp
+-	ENCODE_FRAME_POINTER
+-	pushq	%r12
++	mov	%rax, %rdi
+ 	jmp	.Lerror_entry_from_usermode_after_swapgs
+ SYM_CODE_END(error_entry)
+ 
+-- 
+2.19.1.6.gb485710b
+
