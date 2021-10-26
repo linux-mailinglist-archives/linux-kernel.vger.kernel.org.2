@@ -2,136 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92C243ADC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C14B43ADCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhJZIHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:07:14 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:52348 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233058AbhJZIHM (ORCPT
+        id S233152AbhJZINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhJZINB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:07:12 -0400
-X-UUID: a06a541a01624b4490537ec3abd7a2c1-20211026
-X-UUID: a06a541a01624b4490537ec3abd7a2c1-20211026
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1877048041; Tue, 26 Oct 2021 16:04:46 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 26 Oct 2021 16:04:45 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 26 Oct 2021 16:04:44 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <christian.koenig@amd.com>, <sumit.semwal@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
-        <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <rdunlap@infradead.org>, <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: [PATCH v3] dma-buf: remove restriction of IOCTL:DMA_BUF_SET_NAME
-Date:   Tue, 26 Oct 2021 16:04:51 +0800
-Message-ID: <20211026080451.3763-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211014102551.54983-1-guangming.cao@mediatek.com>
-References: <20211014102551.54983-1-guangming.cao@mediatek.com>
+        Tue, 26 Oct 2021 04:13:01 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D357C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:10:37 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 66FD11F4367C
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     oder_chiou@realtek.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH] ASoC: rt5682-i2c: Use devm_clk_get_optional for optional clock
+Date:   Tue, 26 Oct 2021 10:10:30 +0200
+Message-Id: <20211026081030.422481-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+The mclk clock is optional, but it's currently using devm_clk_get:
+simplify the handling by using devm_clk_get_optional instead.
 
-On Thu, 2021-10-14 at 18:25 +0800, guangming.cao@mediatek.com wrote:
-> From: Guangming Cao <Guangming.Cao@mediatek.com>
-> 
-> In this patch(https://patchwork.freedesktop.org/patch/310349),
-> it add a new IOCTL to support dma-buf user to set debug name.
-> 
-> But it also added a limitation of this IOCTL, it needs the
-> attachments of dmabuf should be empty, otherwise it will fail.
-> 
-> For the original series, the idea was that allowing name change
-> mid-use could confuse the users about the dma-buf.
-> However, the rest of the series also makes sure each dma-buf have a
-> unique
-> inode(https://patchwork.freedesktop.org/patch/310387/), and any
-> accounting
-> should probably use that, without relying on the name as much.
-> 
-> So, removing this restriction will let dma-buf userspace users to use
-> it
-> more comfortably and without any side effect.
-> 
-Hi christian, sumit,
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ sound/soc/codecs/rt5682-i2c.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-Just a gentle ping for this patch, please kindly let me know your comments about this patch.
-Thanks!
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index a30e42932cf7..983347b65127 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -280,14 +280,9 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+ 
+ #ifdef CONFIG_COMMON_CLK
+ 	/* Check if MCLK provided */
+-	rt5682->mclk = devm_clk_get(&i2c->dev, "mclk");
+-	if (IS_ERR(rt5682->mclk)) {
+-		if (PTR_ERR(rt5682->mclk) != -ENOENT) {
+-			ret = PTR_ERR(rt5682->mclk);
+-			return ret;
+-		}
+-		rt5682->mclk = NULL;
+-	}
++	rt5682->mclk = devm_clk_get_optional(&i2c->dev, "mclk");
++	if (IS_ERR(rt5682->mclk))
++		return PTR_ERR(rt5682->mclk);
+ 
+ 	/* Register CCF DAI clock control */
+ 	ret = rt5682_register_dai_clks(rt5682);
+-- 
+2.33.0
 
-Guangming
-
-> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
-> ---
->  drivers/dma-buf/dma-buf.c | 17 +++--------------
->  1 file changed, 3 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 511fe0d217a0..5fbb3a2068a3 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -325,10 +325,8 @@ static __poll_t dma_buf_poll(struct file *file,
-> poll_table *poll)
->  
->  /**
->   * dma_buf_set_name - Set a name to a specific dma_buf to track the
-> usage.
-> - * The name of the dma-buf buffer can only be set when the dma-buf
-> is not
-> - * attached to any devices. It could theoritically support changing
-> the
-> - * name of the dma-buf if the same piece of memory is used for
-> multiple
-> - * purpose between different devices.
-> + * It could support changing the name of the dma-buf if the same
-> + * piece of memory is used for multiple purpose between different
-> devices.
->   *
->   * @dmabuf: [in]     dmabuf buffer that will be renamed.
->   * @buf:    [in]     A piece of userspace memory that contains the
-> name of
-> @@ -341,25 +339,16 @@ static __poll_t dma_buf_poll(struct file *file,
-> poll_table *poll)
->  static long dma_buf_set_name(struct dma_buf *dmabuf, const char
-> __user *buf)
->  {
->  	char *name = strndup_user(buf, DMA_BUF_NAME_LEN);
-> -	long ret = 0;
->  
->  	if (IS_ERR(name))
->  		return PTR_ERR(name);
->  
-> -	dma_resv_lock(dmabuf->resv, NULL);
-> -	if (!list_empty(&dmabuf->attachments)) {
-> -		ret = -EBUSY;
-> -		kfree(name);
-> -		goto out_unlock;
-> -	}
->  	spin_lock(&dmabuf->name_lock);
->  	kfree(dmabuf->name);
->  	dmabuf->name = name;
->  	spin_unlock(&dmabuf->name_lock);
->  
-> -out_unlock:
-> -	dma_resv_unlock(dmabuf->resv);
-> -	return ret;
-> +	return 0;
->  }
->  
->  static long dma_buf_ioctl(struct file *file,
