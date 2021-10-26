@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F076643AD35
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA78E43AD37
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhJZHeJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 03:34:09 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:44625 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhJZHeI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:34:08 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 85D98100002;
-        Tue, 26 Oct 2021 07:31:42 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 09:31:41 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Andreas Oetken <ennoerlangen@gmail.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andreas Oetken <andreas.oetken@siemens-energy.com>
-Subject: Re: [PATCH] drivers: mtd: Fixed breaking list in
- __mtd_del_partition.
-Message-ID: <20211026093141.64be4e38@xps13>
-In-Reply-To: <20211025205724.3306739-1-andreas.oetken@siemens-energy.com>
-References: <20211025205724.3306739-1-andreas.oetken@siemens-energy.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S232781AbhJZHfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:35:00 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:34372 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229540AbhJZHe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 03:34:59 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowADX37_8rndhi+4zBQ--.50197S2;
+        Tue, 26 Oct 2021 15:32:12 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH v2] xen: Fix implicit type conversion
+Date:   Tue, 26 Oct 2021 07:32:11 +0000
+Message-Id: <1635233531-2437704-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowADX37_8rndhi+4zBQ--.50197S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kry8CryDZF4DJrW8Ary8AFb_yoW8Xw4Dpa
+        yjk34UAryrGa4qka4fJr4kuFyfGayDCrWxWwnrt39YvFn8ury0qFyfJ34Y9ryDur4rC3WI
+        vrWqvr17GrsxXrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUh4SOUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+The variable 'i' is defined as UINT.
+However in the for_each_possible_cpu, its value is assigned to -1.
+That doesn't make sense and in the cpumask_next() it is implicitly
+type conversed to INT.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the definition of 'i' from UINT
+to INT.
 
-ennoerlangen@gmail.com wrote on Mon, 25 Oct 2021 22:57:24 +0200:
+Fixes: 3fac101 ("xen: Re-upload processor PM data to hypervisor after S3 resume (v2)")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/xen/xen-acpi-processor.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Not the child partition should be removed from the partition list
-> but the partition itself. Otherwise the partition list gets broken
-> and any subsequent remove operations leads to a kernel panic.
-> 
+diff --git a/drivers/xen/xen-acpi-processor.c b/drivers/xen/xen-acpi-processor.c
+index df7cab8..9cb61db 100644
+--- a/drivers/xen/xen-acpi-processor.c
++++ b/drivers/xen/xen-acpi-processor.c
+@@ -450,7 +450,7 @@ static struct acpi_processor_performance __percpu *acpi_perf_data;
+ 
+ static void free_acpi_perf_data(void)
+ {
+-	unsigned int i;
++	int i;
+ 
+ 	/* Freeing a NULL pointer is OK, and alloc_percpu zeroes. */
+ 	for_each_possible_cpu(i)
+@@ -462,7 +462,7 @@ static void free_acpi_perf_data(void)
+ static int xen_upload_processor_pm_data(void)
+ {
+ 	struct acpi_processor *pr_backup = NULL;
+-	unsigned int i;
++	int i;
+ 	int rc = 0;
+ 
+ 	pr_info("Uploading Xen processor PM info\n");
+@@ -518,7 +518,7 @@ static struct syscore_ops xap_syscore_ops = {
+ 
+ static int __init xen_acpi_processor_init(void)
+ {
+-	unsigned int i;
++	int i;
+ 	int rc;
+ 
+ 	if (!xen_initial_domain())
+-- 
+2.7.4
 
-Can you please Add a couple of Fixes: + Cc: stable tags?
-
-> Signed-off-by: Andreas Oetken <andreas.oetken@siemens-energy.com>
-> ---
->  drivers/mtd/mtdpart.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 95d47422bbf20..5725818fa199f 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -313,7 +313,7 @@ static int __mtd_del_partition(struct mtd_info *mtd)
->  	if (err)
->  		return err;
->  
-> -	list_del(&child->part.node);
-> +	list_del(&mtd->part.node);
->  	free_partition(mtd);
->  
->  	return 0;
-
-
-Thanks,
-Miquèl
