@@ -2,256 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AA643A950
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 02:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811C143A980
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 02:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbhJZAjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 20:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbhJZAjk (ORCPT
+        id S234528AbhJZBAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:00:22 -0400
+Received: from gateway31.websitewelcome.com ([192.185.143.51]:45206 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234374AbhJZBAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 20:39:40 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA44C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:37:17 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id q6so13861849iod.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xQ1OrVCbGCVV5oWohccFx71BLSpPgX7Blm3VuI0GzyM=;
-        b=g3p4boJ1pHhnG+QH8WPAZATY7m761MFfrJO4ifiyWecAougt5n2QvAcQEmx3lfXLkS
-         F684tafJDhiUww16/wKyIfL4XYb9pKtT34K8l+Lk/GdKYp71Z+YhlsPDwwP/aZhtlXZf
-         Zm+XIEOX9MPU4BgAivw6VO/PvH0PaxG1eue1k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xQ1OrVCbGCVV5oWohccFx71BLSpPgX7Blm3VuI0GzyM=;
-        b=lQ3hyRkW0dj6NUZOsfuwFXPmbOofhnTqFIYeT72VqmemOSRFRweo8tfm3H0tZr8w9e
-         DRj3+VKSzh8H4De4UzSHUXW1/FgiD9B9M1lkqmZyNGrLDQ3kOq3WMF4sAc42P2nVNvKR
-         PTt+KPRWAxl+sxZymECwKLRLsNuw0b+bO1xrUKuEtyTHyzPbbktDX2E8vEIKTKZ9WEaT
-         DjMf6atCpsl5nbqiygn0x8DwB4bRNfnM5JleoAp2DekzQCrUT+b1gYJrWW48QRhfq+Nl
-         FpZ7Pf/UEBgAcHOtQN8wmm1VWR5GGOiJEMquBWyirFQ4BiZLnnNWth8VybzwqbvhxIGO
-         LgoQ==
-X-Gm-Message-State: AOAM530nFxvlnHCuBIEndtFylyTVHjt04FDeBZhW6n4gUDwxG64x4hJn
-        lA0XIz9CmblevFwINtCur8FPKdexkOk=
-X-Google-Smtp-Source: ABdhPJyUrLHD+H3ku8aOlzz9zjz/VawZ2pWxuJJg3F3Amu4zQseU4LzMyUW5oOKiaH33cKQzNBKqfQ==
-X-Received: by 2002:a5d:844b:: with SMTP id w11mr12967318ior.209.1635208636216;
-        Mon, 25 Oct 2021 17:37:16 -0700 (PDT)
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
-        by smtp.gmail.com with ESMTPSA id m5sm10066641iow.19.2021.10.25.17.37.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 17:37:15 -0700 (PDT)
-Received: by mail-io1-f42.google.com with SMTP id e144so17932911iof.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 17:37:15 -0700 (PDT)
-X-Received: by 2002:a6b:ee10:: with SMTP id i16mr2460605ioh.98.1635208634774;
- Mon, 25 Oct 2021 17:37:14 -0700 (PDT)
+        Mon, 25 Oct 2021 21:00:19 -0400
+X-Greylist: delayed 1247 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Oct 2021 21:00:19 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id AB29B1034C8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:37:09 -0500 (CDT)
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with SMTP
+        id fASjmmk8wIWzGfASjmwYcm; Mon, 25 Oct 2021 19:37:09 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:
+        Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=MXJyqQhA26LKDF72Wrnv1ROPWPI8gDzTAufAwrckO7o=; b=TmSfcxUK1xUugzT6nQ63ywy/Nz
+        rIrcQAgZM/kaqTH7J5xu5/XOQurH89EIqsgSh35X5hgjd9lrP4bnflIyRXGaFjbSqZbVqYrMyt4Wz
+        XkwrHGWfTULOx/7g1jO2krGMX;
+Received: from c-73-158-190-127.hsd1.ca.comcast.net ([73.158.190.127]:39272 helo=[10.0.1.23])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <re@w6rz.net>)
+        id 1mfASj-004ORv-DX; Mon, 25 Oct 2021 18:37:09 -0600
+Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <830eda64-6e66-c61b-ceaa-57be87783b2c@w6rz.net>
+Date:   Mon, 25 Oct 2021 17:37:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211021122719.1.I56d382006dea67ed8f30729a751fbc75434315b2@changeid>
- <YXHLrnAliqxmrrho@ravnborg.org> <cdcd19de-19e6-83ed-606f-defebdcc0997@intel.com>
- <YXaTJ+bwm7vSTGpv@pendragon.ideasonboard.com> <0e17993d-1e9f-2673-7fee-abf3787de431@intel.com>
-In-Reply-To: <0e17993d-1e9f-2673-7fee-abf3787de431@intel.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 25 Oct 2021 17:37:02 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UVtjz4Bh82PekoiS8VQciWro4ADGxm7R_e+HX8o7rDnw@mail.gmail.com>
-Message-ID: <CAD=FV=UVtjz4Bh82PekoiS8VQciWro4ADGxm7R_e+HX8o7rDnw@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: Fix the bridge chain order for pre_enable / post_disable
-To:     Andrzej Hajda <andrzej.hajda@intel.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Philip Chen <philipchen@chromium.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.158.190.127
+X-Source-L: No
+X-Exim-ID: 1mfASj-004ORv-DX
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-158-190-127.hsd1.ca.comcast.net ([10.0.1.23]) [73.158.190.127]:39272
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 6
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/25/21 8:54 AM, Geert Uytterhoeven wrote:
 
-On Mon, Oct 25, 2021 at 1:12 PM Andrzej Hajda <andrzej.hajda@intel.com> wrote:
+> Hi all,
 >
-> >>>> This can be important when using the DP AUX bus to instantiate a
-> >>>> panel. The DP AUX bus is likely part of a bridge driver and is a
-> >>>> parent of the panel. We'd like the bridge to be pre_enabled before the
-> >>>> panel and the panel to be post_disabled before the
-> >>>> bridge. Specifically, this allows pm_runtime_put_sync_suspend() in a
-> >>>> bridge driver's post_suspend to work properly even a panel is under
-> >>>> it.
-
-So with further thought, I _think_ I actually have a solution to my
-problem at hand (pm_runtime_put_sync_suspend() is returning -EBUSY in
-the ps8640 bridge driver with Philip's most recent patches). I need to
-get access to the hardware to test it, but I suspect that the bridge
-driver just needs this in its probe:
-
-pm_suspend_ignore_children(dev, true);
-
-Basically I think we just need to tell PM Runtime to "butt out" and
-not try to manage power between the bridge driver and the panel even
-though there's a parent-child relationship between them (when you use
-DP AUX bus).
-
-If that works then the urgency of this problem goes _way_ down for me.
-While it still seems like we could run into problems at least they
-won't be affecting me anymore in the short term.
-
-
-> >>>> NOTE: it's entirely possible that this change could break someone who
-> >>>> was relying on the old order. Hopefully this isn't the case, but if
-> >>>> this does break someone it seems like it's better to do it sonner
-> >>>> rather than later so we can fix everyone to handle the order that
-> >>>> makes the most sense.
-> >> It will break for sure. So the question is: if it is worth changing?
-> >>
-> >> New order seems good for eDP, DSI sinks [1], probably other as well.
-> >>
-> >> Old order is better for example for THC63LVD1024 [2 p. 20], I guess for
-> >> many other sinks as well.
-> >>
-> >> I am not even sure if it is protocol specific (LVDS, RGB, HDMI,...), or
-> >> it depends on specific hw pairs (source->sink).
-> >>
-> >> This is why I complain about the bridge chain - assumption that one
-> >> fixed call order will work for all setups seems to me ridiculous.
-> >>
-> >> Going back to the question - changing the order from fixed one to
-> >> another fixed one will not solve general issue.
-> >>
-> >> What can we do then?
-> >>
-> >> 1. Configurable call order? Probably doable: every chain element should
-> >> expose info if it's call should be before or after source, then some
-> >> core helper will create queue of callbacks. Seems quite complicated,
-> >> hides the logic from implementer and not fully flexible (for example,
-> >> there are protocols which require to perform sth on source, then on
-> >> sink, then again on the source).
-> >>
-> >> 2. Stop using bridge chain and call sink ops directly from the source
-> >> (this is what Exynos and VC4 do): is flexible and straightforward, gives
-> >> full control to the source.
-> > And breaks interoperability, because different sources end up calling
-> > operations in different orders. We end up having different sinks that
-> > expect calls in different ways, and divide the world in sink/source
-> > groups that don't interoperate :-(
+> When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
+> the 4th CPU either fails to come online, or the system crashes.
 >
+> This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
+> and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
+>    - unused core has hartid 0 (sifive,e51),
+>    - processor 0 has hartid 1 (sifive,u74-mc),
+>    - processor 1 has hartid 2 (sifive,u74-mc),
+>    - processor 2 has hartid 3 (sifive,u74-mc),
+>    - processor 3 has hartid 4 (sifive,u74-mc).
 >
-> I have an impression you describe current status :) More seriously, it
-> is matter of proper specification/documentation/implementations of the
-> operations. If we really need strict constraints we could try to
-> implement them on protocol level.
+> I assume the same issue is present on the SiFive fu540 and fu740
+> SoCs, but I don't have access to these.  The issue is not present
+> on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
+> hartid 0.
 >
+> arch/riscv/kernel/cpu_ops.c has:
 >
-> >
-> >> 3. Use different abstractions to enforce proper initialization order
-> >> (like extending mipi_dsi_host_ops): requires existence of transport bus
-> >> abstraction (only DSI at the moment(?)).
-> > A real bus seems overkill, but we could have drm_bridge operations
-> > specific to particular hardware interfaces.
-> >
-> >> ... other ideas?
-> > I don't like it because of the amount of work it would require to switch
-> > to such a model, but I'm really starting to think that a variation of
-> > the second option would be best, where the sink controls the source
-> > instead of having the source controlling the sink. It's the sink that
-> > knows about its enabling/disabling sequence, and about how the source
-> > needs to be controlled to match it.
+>      void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
+>      void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
 >
+>      void cpu_update_secondary_bootdata(unsigned int cpuid,
+>                                         struct task_struct *tidle)
+>      {
+>              int hartid = cpuid_to_hartid_map(cpuid);
 >
-> I am afraid it depends on the protocol and cross-calls (source->sink,
-> sink->source) can be hard to avoid in case of some protocols.
-
-I'll continue to point out that I'm wearing a noob hat on my head (so
-take my opinions for what they're worth), but I'm biased towards
-somehow sticking with the existing "bridge chains" just because it
-feels like re-designing everything is not something that will get done
-in a reasonable time frame. I'm not saying that it's not worth doing
-(I have no idea!) and if there's someone who has the vision for it and
-wants to make it work then great! ...but personally it would be a bit
-much.
-
-How about this as a proposal if it's not too ugly:
-
-1. Add two new bridge functions: after_pre_enable() and
-before_post_disable(). Yeah, I don't like the names much either, so
-yell if you have better ones.
-
-2. The existing drm_atomic_bridge_chain_pre_enable() /
-drm_bridge_chain_pre_enable() (until it's deleted) will call BOTH
-pre_enable() and after_pre_enable()
-
-3. The existing drm_atomic_bridge_chain_post_disable() /
-drm_bridge_chain_post_disable() (until it's deleted) will call BOTH
-before_post_disable() and post_disable()
-
-4. The order for calls for after_pre_enable() and
-before_post_disable() will match the "enable" calls.
-
-Writing it out:
-
-pre_enable:          start from connector and move to encoder
-after_pre_enable:    start from encoder and move to connector
-enable:              start from encoder and move to connector
-disable:             start from connector and move to encoder
-before_post_disable: start from encoder and move to connector
-post_disable:        start from encoder and move to connector
-
-Then the eDP panel code would move to using only after_pre_enable() /
-before_post_disable() for powering itself on/off because This is
-saying that for eDP panels that you'd want to power the panel up after
-the connector. ...and if there was some eDP panel that was different
-it wouldn't be too hard to add a quirk for that panel and have it
-power on in pre_enable.
-
-The question is: is the above just a hack to get us out of the current
-situation or is it a reasonable design? Let's think about it. In
-general the above design allows bridges closer to the connector to
-control whether they are powered before or after bridges that are
-farther from the connector. So if we have:
-
-encoder (A) -> bridge (B) -> bridge (C) -> connector (D)
-
-* D is in control of whether it gets powered before or after A/B/C
-* C is in control of whether it gets powered before or after A/B
-* B is in control of whether it gets powered before or after A
-
-Here the encoder has the least flexibility. In much of the discussion
-so far, however, it sounded like the connector was the piece that
-needed the most control, so I think this is right.
-
-Now let's think about if we could do better, like perhaps giving "full
-flexibility" where everything in the chain can request whether they
-get pre_enable() before or after their sources / sinks. Looking at
-this a little, I don't think the "full flexibility" can really work
-and also accomplish interoperability well. You can simply imagine two
-bridges, like (B) and (C) above, where:
-
-* Bridge B says that it needs to be pre_enabled before its output (AKA Bridge C)
-* Bridge C says that it needs to be pre_enabled before its input (AKA Bridge B)
-
-That would simply be impossible to resolve. Trying to figure out what
-to do here and in general all the rules for honoring the requests for
-all the bridges in the chain seems really complex and I'm not
-convinced that the result would be better than the simple "give the
-control to whatever's closer to the connector" that my scheme
-accomplishes.
-
-So I guess I'd summarize by saying that the above proposal, while not
-a panacea, seems like it has real beneficial properties and maybe
-isn't a "hack"?
-
-
--Doug
+>              /* Make sure tidle is updated */
+>              smp_mb();
+>              WRITE_ONCE(__cpu_up_stack_pointer[hartid],
+>                         task_stack_page(tidle) + THREAD_SIZE);
+>              WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
+>
+> The above two writes cause out-of-bound accesses beyond
+> __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
+>
+>      }
+>
+> arch/riscv/kernel/smpboot.c:setup_smp(void) detects CPUs like this:
+>
+>      for_each_of_cpu_node(dn) {
+>              hart = riscv_of_processor_hartid(dn);
+>              if (hart < 0)
+>                      continue;
+>
+>              if (hart == cpuid_to_hartid_map(0)) {
+>                      BUG_ON(found_boot_cpu);
+>                      found_boot_cpu = 1;
+>                      early_map_cpu_to_node(0, of_node_to_nid(dn));
+>                      continue;
+>              }
+>              if (cpuid >= NR_CPUS) {
+>                      pr_warn("Invalid cpuid [%d] for hartid [%d]\n",
+>                              cpuid, hart);
+>                      break;
+>              }
+>
+>              cpuid_to_hartid_map(cpuid) = hart;
+>              early_map_cpu_to_node(cpuid, of_node_to_nid(dn));
+>              cpuid++;
+>      }
+>
+> So cpuid >= CONFIG_NR_CPUS (too many CPU cores) is already rejected.
+>
+> How to fix this?
+>
+> We could skip hartids >= NR_CPUS, but that feels strange to me, as
+> you need NR_CPUS to be larger (much larger if the first usable hartid
+> is a large number) than the number of CPUs used.
+The Ubuntu distro config for HiFive Unmatched set this to CONFIG_NR_CPUS=8.
+>
+> We could store the minimum hartid, and always subtract that when
+> accessing __cpu_up_{stack,pointer}_pointer[] (also in
+> arch/riscv/kernel/head.S), but that means unused cores cannot be in the
+> middle of the hartid range.
+>
+> Are hartids guaranteed to be continuous? If not, we have no choice but
+> to index __cpu_up_{stack,pointer}_pointer[] by cpuid instead, which
+> needs a more expensive conversion in arch/riscv/kernel/head.S.
+>
+> Thanks for your comments!
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
