@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C788D43ADDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE00743ADEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhJZIUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:20:44 -0400
-Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:52363 "EHLO
-        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233575AbhJZIUn (ORCPT
+        id S233719AbhJZIZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:25:53 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.155]:43606 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233551AbhJZIZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:20:43 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id 8CD76BEE82
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:18:19 +0100 (IST)
-Received: (qmail 10978 invoked from network); 26 Oct 2021 08:18:19 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Oct 2021 08:18:19 -0000
-Date:   Tue, 26 Oct 2021 09:18:17 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-Message-ID: <20211026081817.GM3959@techsingularity.net>
-References: <20211021145603.5313-1-mgorman@techsingularity.net>
- <20211021145603.5313-2-mgorman@techsingularity.net>
- <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
- <20211022110534.GJ3959@techsingularity.net>
- <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
+        Tue, 26 Oct 2021 04:25:52 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 8CBBF4023C18C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 03:23:27 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id fHjzm43EFG0jLfHjzm9VUQ; Tue, 26 Oct 2021 03:23:27 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:60752 helo=[10.0.0.35])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1mfHjy-002lOp-DV; Tue, 26 Oct 2021 03:23:26 -0500
+Message-ID: <10c64d17-9db7-eb56-537e-e032b7a14e8e@kernel.org>
+Date:   Tue, 26 Oct 2021 10:23:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH V5 04/20] trace/osnoise: Use start/stop_per_cpu_kthreads()
+ on osnoise_cpus_write()
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635181938.git.bristot@kernel.org>
+ <2b4ea45b1802844cffd98b6a208b22bc4664c795.1635181938.git.bristot@kernel.org>
+ <20211025210843.36fe2829@rorschach.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20211025210843.36fe2829@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.18.63.114
+X-Source-L: No
+X-Exim-ID: 1mfHjy-002lOp-DV
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:60752
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 1
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:35:52AM +0200, Mike Galbraith wrote:
-> On Fri, 2021-10-22 at 12:05 +0100, Mel Gorman wrote:
-> > On Fri, Oct 22, 2021 at 12:26:08PM +0200, Mike Galbraith wrote:
-> >
-> > >
-> > > Patchlet helped hackbench?  That's.. unexpected (at least by me).
-> > >
-> >
-> > I didn't analyse in depth and other machines do not show as dramatic
-> > a difference but it's likely due to timings of tasks getting wakeup
-> > preempted.
+On 10/26/21 03:08, Steven Rostedt wrote:
+> On Mon, 25 Oct 2021 19:40:29 +0200
+> Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 > 
-> Wakeup tracing made those hackbench numbers less surprising. There's
-> tons of wake-many going on. At a glance, it appears to already be bi-
-> directional though, so patchlet helping seemingly means that there's
-> just not quite enough to tickle the heuristic without a little help.
-
-Another possible explanation is that hackbench overloads a machine to
-such an extent that the ratio of bi-directional wakeups is not
-sufficient to trigger the wake-wide logic.
-
-> Question is, is the potential reward of strengthening that heuristic
-> yet again, keeping in mind that "heuristic" tends to not play well with
-> "deterministic", worth the risk?
+>> When writing a new CPU mask via osnoise/cpus, if the tracer is running,
+>> the workload is restarted to follow the new cpumask. The restart is
+>> currently done using osnoise_workload_start/stop(), which disables the
+>> workload *and* the instrumentation. However, disabling the
+>> instrumentation is not necessary.
+>>
+>> Calling start/stop_per_cpu_kthreads() is enough to apply the new
+>> osnoise/cpus config.
+>>
+>> No functional change.
 > 
-> My desktop trace session said distribution improved a bit, but there
-> was no meaningful latency or throughput improvement, making for a
-> pretty clear "nope" to the above question. 
+> I nuked the "No functional change.". You can't have the changes of the
+> above and say there wasn't functional changes, as the first paragraph
+> explains the functional changes.
 
-Another interpretation is that it's simply neutral and does no harm.
+ack, /me takes note.
 
-> It benefiting NUMA box
-> hackbench is a valid indicator, but one that is IMO too disconnected
-> from the real world to carry much weight.
+-- Daniel
+> 
+> -- Steve
 > 
 
-I think if it's not shown to be harmful to a realistic workload but helps
-an overloaded example then it should be ok. While excessive overload is
-rare in a realistic workload, it does happen. There are a few workloads
-I've seen bugs for that were triggered when an excessive number of worker
-threads get spawned and compete for CPU access which in turns leads more
-worker threads get spawned. There are application workarounds for this
-corner case but it still triggers bugs.
-
--- 
-Mel Gorman
-SUSE Labs
