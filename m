@@ -2,223 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430E043B497
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8424E43B442
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbhJZOqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:46:07 -0400
-Received: from mga01.intel.com ([192.55.52.88]:13756 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236906AbhJZOpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:45:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="253467467"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="253467467"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 07:34:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="635200460"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2021 07:34:14 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@google.com>
-Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Jack Pham <jackp@codeaurora.org>,
-        "Gopal, Saranya" <saranya.gopal@intel.com>,
-        "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 4/4] tools: usb: Hideous test tool for USB PD char device
-Date:   Tue, 26 Oct 2021 17:33:52 +0300
-Message-Id: <20211026143352.78387-5-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
-References: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
+        id S236546AbhJZOgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:36:39 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52656
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234211AbhJZOgi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:36:38 -0400
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4BB673F172
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635258853;
+        bh=eDxSkDWuV2Brl7cNvyAavjHeovH27qcvC2ratC3kbv8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=P1L7QojtR3MKwvXvPP2OAz83YqtC3rS09Rs1W3MJjFr7LbxjzGY69bmkcCtmiRrcN
+         XozqnLsoakyM7Qs5B31Uhi+A6iUnJ2DYLV89fPhT39DNiUf6fbfXgpKj8ntVUOfJW6
+         fmJ6zw/gyzpGTAO/FGaHKBxsQKdz7xmb1iM5IhbN+BzryCcHzXnx9ETpS1qmreHC9p
+         8JYyNZHRpCjuI6L6R8dXZkAwYWw78ItzXzYkxemW+jpTkpOxV86t+/dmlArvW/lmzU
+         KK4TkTeGj8mf0VmubSaHt7unxAOOjPAmRp9CPga58+qhb++0Byy62ySYviZ6sfv7Hz
+         Ri9GFDEda8b8A==
+Received: by mail-wm1-f71.google.com with SMTP id y12-20020a1c7d0c000000b0032ccaad73d0so738927wmc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:34:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eDxSkDWuV2Brl7cNvyAavjHeovH27qcvC2ratC3kbv8=;
+        b=DZ5GzIN5JlidHU2l/aGvmV/v2n4yw1VOPfr+HLh+74o72x+qXC7j/s1Ia/Zqh/Qw3e
+         dSLRDRR2Udez7jPoGIztGRYWSHUiJyMCFtGzJII1h25NMCnRMUTvzZxcAS7Wfmr2pkCo
+         fZEyBFEBTCImopYs1gdRREYbvKOMRefjVayIo3jibMJFO6GHkii2T9Yto/GDf4nhGsZB
+         QkvL7SPXRQwU54Uv7lnT6sNP4IYHKUKErpNCGc8UkqdW67gTtY9NeBWYuW3BGLoxlDU/
+         L0ljF9idtGCMY7K1mCtAyRl0s9BEjLlObgnE8dYweygQKuLWw5kX26N0mYGQDvC5Uz6Z
+         sP5A==
+X-Gm-Message-State: AOAM533eK2W263QBIPHxAawdJl/nc0iI5rLhjhng2Qyt2+xWbRoXqOcy
+        aEgptoZBYE9GMkg1xF/BX8+F4QXXpqYWxXnGRuzsfjnRFe3LOWyHBURr4YtR1Hn0+W6j6+1M4OH
+        PqbJ5Qu0jyHocnuNaymQZASPNyplvHwutHOq+Td1+sw==
+X-Received: by 2002:a5d:58ec:: with SMTP id f12mr32833780wrd.24.1635258852983;
+        Tue, 26 Oct 2021 07:34:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwEiliuRm8Od3p070aft+0SzvwyEHzdS3NpXZbNSe6M5MRDCzikoxxtwZ2bnpDR86tzT0wrFA==
+X-Received: by 2002:a5d:58ec:: with SMTP id f12mr32833741wrd.24.1635258852720;
+        Tue, 26 Oct 2021 07:34:12 -0700 (PDT)
+Received: from arighi-desktop.homenet.telecomitalia.it ([151.57.120.224])
+        by smtp.gmail.com with ESMTPSA id p1sm800266wmq.23.2021.10.26.07.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 07:34:12 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/bpf: fix fclose/pclose mismatch
+Date:   Tue, 26 Oct 2021 16:34:09 +0200
+Message-Id: <20211026143409.42666-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Interim.
+Make sure to use pclose() to properly close the pipe opened by popen().
 
-The Makefile needs to be tuned so we can include to correct
-files.
-
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
 ---
- tools/usb/Build     |   1 +
- tools/usb/Makefile  |   8 ++-
- tools/usb/pd-test.c | 123 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 131 insertions(+), 1 deletion(-)
- create mode 100644 tools/usb/pd-test.c
+ tools/testing/selftests/bpf/test_progs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/usb/Build b/tools/usb/Build
-index 2ad6f97458168..7116198533a75 100644
---- a/tools/usb/Build
-+++ b/tools/usb/Build
-@@ -1,2 +1,3 @@
- testusb-y += testusb.o
- ffs-test-y += ffs-test.o
-+pd-test-y += pd-test.o
-diff --git a/tools/usb/Makefile b/tools/usb/Makefile
-index 1b128e551b2e4..e3e41a3397f23 100644
---- a/tools/usb/Makefile
-+++ b/tools/usb/Makefile
-@@ -16,7 +16,7 @@ MAKEFLAGS += -r
- override CFLAGS += -O2 -Wall -Wextra -g -D_GNU_SOURCE -I$(OUTPUT)include -I$(srctree)/tools/include
- override LDFLAGS += -lpthread
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index cc1cd240445d..e3fea6f281e4 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -370,7 +370,7 @@ int extract_build_id(char *build_id, size_t size)
  
--ALL_TARGETS := testusb ffs-test
-+ALL_TARGETS := testusb ffs-test pd-test
- ALL_PROGRAMS := $(patsubst %,$(OUTPUT)%,$(ALL_TARGETS))
+ 	if (getline(&line, &len, fp) == -1)
+ 		goto err;
+-	fclose(fp);
++	pclose(fp);
  
- all: $(ALL_PROGRAMS)
-@@ -36,6 +36,12 @@ $(FFS_TEST_IN): FORCE
- $(OUTPUT)ffs-test: $(FFS_TEST_IN)
- 	$(QUIET_LINK)$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+ 	if (len > size)
+ 		len = size;
+@@ -379,7 +379,7 @@ int extract_build_id(char *build_id, size_t size)
+ 	free(line);
+ 	return 0;
+ err:
+-	fclose(fp);
++	pclose(fp);
+ 	return -1;
+ }
  
-+PD_TEST_IN := $(OUTPUT)pd-test-in.o
-+$(PD_TEST_IN): FORCE
-+	$(Q)$(MAKE) $(build)=pd-test
-+$(OUTPUT)pd-test: $(PD_TEST_IN)
-+	$(QUIET_LINK)$(CC) $(CFLAGS) $< -o $@
-+
- clean:
- 	rm -f $(ALL_PROGRAMS)
- 	find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.d' -delete -o -name '\.*.o.cmd' -delete
-diff --git a/tools/usb/pd-test.c b/tools/usb/pd-test.c
-new file mode 100644
-index 0000000000000..bb38dd4134581
---- /dev/null
-+++ b/tools/usb/pd-test.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * USB Power Delivery device tester.
-+ *
-+ * Copyright (C) 2021 Intel Corporation
-+ * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-+ */
-+
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <linux/types.h>
-+
-+struct pd_message {
-+	__le16 header;
-+	__le32 payload[7];
-+} __attribute__((packed));
-+
-+struct pd_info {
-+	__u8 specification_revision;
-+	__u32 ctrl_msgs_supported;
-+	__u32 data_msgs_supported;
-+	__u32 ext_msgs_supported;
-+} __attribute__((packed));
-+
-+#define USBPDDEV_INFO		_IOR('P', 0x70, struct pd_info)
-+#define USBPDDEV_CONFIGURE	_IOW('P', 0x71, __u32)
-+#define USBPDDEV_PWR_ROLE	_IOR('P', 0x72, int)
-+#define USBPDDEV_GET_MESSAGE	_IOWR('P', 0x73, struct pd_message)
-+#define USBPDDEV_SET_MESSAGE	_IOW('P', 0x74, struct pd_message)
-+#define USBPDDEV_SUBMIT_MESSAGE	_IOWR('P', 0x75, struct pd_message)
-+
-+enum pd_data_msg_type {
-+	/* 0 Reserved */
-+	PD_DATA_SOURCE_CAP = 1,
-+	PD_DATA_REQUEST = 2,
-+	PD_DATA_BIST = 3,
-+	PD_DATA_SINK_CAP = 4,
-+	PD_DATA_BATT_STATUS = 5,
-+	PD_DATA_ALERT = 6,
-+	PD_DATA_GET_COUNTRY_INFO = 7,
-+	PD_DATA_ENTER_USB = 8,
-+	/* 9-14 Reserved */
-+	PD_DATA_VENDOR_DEF = 15,
-+	/* 16-31 Reserved */
-+};
-+
-+int dump_source_pdos(int fd)
-+{
-+	struct pd_message msg = {};
-+	int ret;
-+	int i;
-+
-+	msg.header = PD_DATA_SOURCE_CAP;
-+	ret = ioctl(fd, USBPDDEV_GET_MESSAGE, &msg);
-+	if (ret < 0) {
-+		printf("No cached Source Capabilities %d\n", ret);
-+		return ret;
-+	}
-+
-+	printf("Source Capabilities:\n");
-+
-+	for (i = 0; i < (msg.header >> 12 & 7); i++)
-+		printf("  PDO%d: 0x%08x\n", i + 1, msg.payload[i]);
-+
-+	return 0;
-+}
-+
-+int dump_sink_pdos(int fd)
-+{
-+	struct pd_message msg = {};
-+	int ret;
-+	int i;
-+
-+	msg.header = PD_DATA_SINK_CAP;
-+	ret = ioctl(fd, USBPDDEV_GET_MESSAGE, &msg);
-+	if (ret < 0) {
-+		printf("No cached Sink Capabilities %d\n", ret);
-+		return ret;
-+	}
-+
-+	printf("Sink Capabilities:\n");
-+
-+	for (i = 0; i < (msg.header >> 12 & 7); i++)
-+		printf("  PDO%d: 0x%08x\n", i + 1, msg.payload[i]);
-+
-+	return 0;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	unsigned int role;
-+	int ret;
-+	int fd;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage: %s [DEV]\n"
-+				"       %% %s /dev/pd0/port\n\n",
-+				argv[0], argv[0]);
-+		return -1;
-+	}
-+
-+	fd = open(argv[1], O_RDWR);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = ioctl(fd, USBPDDEV_PWR_ROLE, &role);
-+	if (ret < 0) {
-+		printf("USBPDDEV_PWR_ROLE failed %d\n", ret);
-+		goto err;
-+	}
-+
-+	if (role)
-+		ret = dump_source_pdos(fd);
-+	else
-+		ret = dump_sink_pdos(fd);
-+err:
-+	close(fd);
-+
-+	return ret;
-+}
 -- 
-2.33.0
+2.32.0
 
