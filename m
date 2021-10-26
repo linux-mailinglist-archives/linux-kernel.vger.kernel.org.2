@@ -2,444 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A88043B2F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2A443B2FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhJZNMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:12:42 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:54084 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236128AbhJZNMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:12:40 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD2sp_ndh21EgAA--.34661S2;
-        Tue, 26 Oct 2021 21:10:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v7] test_bpf: Add module parameter test_suite
-Date:   Tue, 26 Oct 2021 21:10:00 +0800
-Message-Id: <1635253800-4459-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxD2sp_ndh21EgAA--.34661S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Cr4rWw1fGFyDXw1fWr1Dtrb_yoWDtw18pF
-        Wjqrn0yF18JF97XF18XF17Aa4FyF40y3y8KrWfJryqyrs5AryUtF48K34Iqrn3Jr40v345
-        Za10vFs8G3W2yaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JU24E_UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S235298AbhJZNNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:13:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:58230 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230324AbhJZNNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:13:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3780D6E;
+        Tue, 26 Oct 2021 06:10:45 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.74.144])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B15BC3F73D;
+        Tue, 26 Oct 2021 06:10:42 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 14:10:39 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v11 0/5] arm64 userspace counter support
+Message-ID: <20211026131039.GC34073@C02TD0UTHF1T.local>
+References: <20211019231907.1009567-1-robh@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019231907.1009567-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
-operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
-there exists segment fault due to the following reason:
+On Tue, Oct 19, 2021 at 06:19:02PM -0500, Rob Herring wrote:
+> Another version of arm64 userspace counter access support.
+> 
+> The arm64 support departs from the x86 implementation by requiring the user
+> to explicitly request user access (via attr.config1) and only enables access
+> for task bound events. Since usage is explicitly requested, access is
+> enabled at perf_event_open() rather than on mmap() as that greatly
+> simplifies the implementation. Rather than trying to lock down the access
+> as the x86 implementation has been doing, we can start with only a limited
+> use case enabled and later expand it if needed.
+> 
+> I've run this version thru Vince's perf tests[13] with arm64 support added.
+> I wish I'd found these tests sooner...
 
-ALU64_MOV_X: all register value magnitudes jited:1
-Break instruction in kernel code[#1]
+When you say "with arm64 support added", do you mean with patches not
+yet upstreamed?
 
-It seems that the related jit implementations of some test cases
-in test_bpf() have problems. At this moment, I do not care about
-the segment fault while I just want to verify the test cases of
-tail calls.
+I took a look at the upstream repo, and there's some existing RDPMC
+support even though upstream never previously supported userspace
+access. That support code uses PMSELR_EL0, which this series adds no
+provisions for.
 
-Based on the above background and motivation, add the following
-module parameter test_suite to the test_bpf.ko:
-test_suite=<string>: only the specified test suite will be run, the
-string can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+Kernel-side, we'll need to either:
 
-If test_suite is not specified, but test_id, test_name or test_range
-is specified, set 'test_bpf' as the default test suite.
+* Document that PMSELR_EL0 is unreliable, and explcitly zero it within
+  the kernel such that it cnanot be used as a covert channel. Get the
+  tests updated to not rely on the never-previously-supported use of
+  PMSELR_EL0.
 
-This is useful to only test the corresponding test suite when specify
-the valid test_suite string.
+* Context switch PMSELR_EL0 (which'll IIUC is unreliable for big.LITTLE,
+  even where the registers exist on each CPU).
 
-Any invalid test suite will result in -EINVAL being returned and no
-tests being run. If the test_suite is not specified or specified as
-empty string, it does not change the current logic, all of the test
-cases will be run.
+Thanks,
+Mark.
 
-Here are some test results:
- # dmesg -c
- # modprobe test_bpf
- # dmesg | grep Summary
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf
- # dmesg | tail -1
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls
- # dmesg
- test_bpf: #0 Tail call leaf jited:0 21 PASS
- [...]
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment
- # dmesg
- test_bpf: #0 gso_with_rx_frags PASS
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_id=1
- # dmesg
- test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
- test_bpf: #1 TXA jited:0 54 51 50 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf test_name=TXA
- # dmesg
- test_bpf: #1 TXA jited:0 54 50 51 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
- # dmesg
- test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment test_id=1
- # dmesg
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
-
-By the way, the above segment fault has been fixed in the latest bpf-next
-tree.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v7:
-  -- Rename prepare_bpf_tests() to prepare_test_range(), remove
-     some unnecessary code, suggested by Johan Almbladh, thank you.
-
-v6:
-  -- Compute the valid range once in the beginning of prepare_bpf_tests(),
-     suggested by Johan Almbladh, thank you.
-
-v5:
-  -- Remove some duplicated code, suggested by Johan Almbladh,
-     thank you.
-  -- Initialize test_range[2] to {0, INT_MAX}.
-  -- If test_suite is specified, but test_range is not specified,
-     set the upper limit of each test_suite to overwrite INT_MAX.
-
-v4:
-  -- Fix the following checkpatch issues:
-     CHECK: Alignment should match open parenthesis
-     CHECK: Please don't use multiple blank lines
-
-     ./scripts/checkpatch.pl --strict *.patch
-     total: 0 errors, 0 warnings, 0 checks, 299 lines checked
-
-     the default max-line-length is 100 in ./scripts/checkpatch.pl,
-     but it seems that the netdev/checkpatch is 80:
-     https://patchwork.hopto.org/static/nipa/559961/12545157/checkpatch/stdout
-
-v3:
-  -- Use test_suite instead of test_type as module parameter
-  -- Make test_id, test_name and test_range selection applied to each test suite
-
-v2:
-  -- Fix typo in the commit message
-  -- Use my private email to send
-
- lib/test_bpf.c | 212 ++++++++++++++++++++++++++++++++++++---------------------
- 1 file changed, 135 insertions(+), 77 deletions(-)
-
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index e5b10fd..749d8c5 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
- static int test_id = -1;
- module_param(test_id, int, 0);
- 
--static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
-+static int test_range[2] = { 0, INT_MAX };
- module_param_array(test_range, int, NULL, 0);
- 
--static __init int find_test_index(const char *test_name)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(tests); i++) {
--		if (!strcmp(tests[i].descr, test_name))
--			return i;
--	}
--	return -1;
--}
--
--static __init int prepare_bpf_tests(void)
--{
--	if (test_id >= 0) {
--		/*
--		 * if a test_id was specified, use test_range to
--		 * cover only that test.
--		 */
--		if (test_id >= ARRAY_SIZE(tests)) {
--			pr_err("test_bpf: invalid test_id specified.\n");
--			return -EINVAL;
--		}
--
--		test_range[0] = test_id;
--		test_range[1] = test_id;
--	} else if (*test_name) {
--		/*
--		 * if a test_name was specified, find it and setup
--		 * test_range to cover only that test.
--		 */
--		int idx = find_test_index(test_name);
--
--		if (idx < 0) {
--			pr_err("test_bpf: no test named '%s' found.\n",
--			       test_name);
--			return -EINVAL;
--		}
--		test_range[0] = idx;
--		test_range[1] = idx;
--	} else {
--		/*
--		 * check that the supplied test_range is valid.
--		 */
--		if (test_range[0] >= ARRAY_SIZE(tests) ||
--		    test_range[1] >= ARRAY_SIZE(tests) ||
--		    test_range[0] < 0 || test_range[1] < 0) {
--			pr_err("test_bpf: test_range is out of bound.\n");
--			return -EINVAL;
--		}
--
--		if (test_range[1] < test_range[0]) {
--			pr_err("test_bpf: test_range is ending before it starts.\n");
--			return -EINVAL;
--		}
--	}
--
--	return 0;
--}
--
--static __init void destroy_bpf_tests(void)
--{
--}
--
- static bool exclude_test(int test_id)
- {
- 	return test_id < test_range[0] || test_id > test_range[1];
-@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
- 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
- 		const struct skb_segment_test *test = &skb_segment_tests[i];
- 
-+		cond_resched();
-+		if (exclude_test(i))
-+			continue;
-+
- 		pr_info("#%d %s ", i, test->descr);
- 
- 		if (test_skb_segment_single(test)) {
-@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 		int ret;
- 
- 		cond_resched();
-+		if (exclude_test(i))
-+			continue;
- 
- 		pr_info("#%d %s ", i, test->descr);
- 		if (!fp) {
-@@ -14966,29 +14909,144 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 	return err_cnt ? -EINVAL : 0;
- }
- 
-+static char test_suite[32];
-+module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
-+
-+static __init int find_test_index(const char *test_name)
-+{
-+	int i;
-+
-+	if (!strcmp(test_suite, "test_bpf")) {
-+		for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+			if (!strcmp(tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_tail_calls")) {
-+		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
-+			if (!strcmp(tail_call_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_skb_segment")) {
-+		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
-+			if (!strcmp(skb_segment_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
-+static __init int prepare_test_range(void)
-+{
-+	int valid_range;
-+
-+	if (!strcmp(test_suite, "test_bpf"))
-+		valid_range = ARRAY_SIZE(tests);
-+	else if (!strcmp(test_suite, "test_tail_calls"))
-+		valid_range = ARRAY_SIZE(tail_call_tests);
-+	else if (!strcmp(test_suite, "test_skb_segment"))
-+		valid_range = ARRAY_SIZE(skb_segment_tests);
-+	else
-+		return 0;
-+
-+	if (test_id >= 0) {
-+		/*
-+		 * if a test_id was specified, use test_range to
-+		 * cover only that test.
-+		 */
-+		if (test_id >= valid_range) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		test_range[0] = test_id;
-+		test_range[1] = test_id;
-+	} else if (*test_name) {
-+		/*
-+		 * if a test_name was specified, find it and setup
-+		 * test_range to cover only that test.
-+		 */
-+		int idx = find_test_index(test_name);
-+
-+		if (idx < 0) {
-+			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
-+			       test_name, test_suite);
-+			return -EINVAL;
-+		}
-+		test_range[0] = idx;
-+		test_range[1] = idx;
-+	} else if (test_range[0] != 0 || test_range[1] != INT_MAX) {
-+		/*
-+		 * check that the supplied test_range is valid.
-+		 */
-+		if (test_range[0] < 0 || test_range[1] >= valid_range) {
-+			pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (test_range[1] < test_range[0]) {
-+			pr_err("test_bpf: test_range is ending before it starts.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int __init test_bpf_init(void)
- {
- 	struct bpf_array *progs = NULL;
- 	int ret;
- 
--	ret = prepare_bpf_tests();
-+	if (strlen(test_suite) &&
-+	    strcmp(test_suite, "test_bpf") &&
-+	    strcmp(test_suite, "test_tail_calls") &&
-+	    strcmp(test_suite, "test_skb_segment")) {
-+		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * if test_suite is not specified, but test_id, test_name or test_range
-+	 * is specified, set 'test_bpf' as the default test suite.
-+	 */
-+	if (!strlen(test_suite) &&
-+	    (test_id != -1 || strlen(test_name) ||
-+	    (test_range[0] != 0 || test_range[1] != INT_MAX))) {
-+		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
-+		strcpy(test_suite, "test_bpf");
-+	}
-+
-+	ret = prepare_test_range();
- 	if (ret < 0)
- 		return ret;
- 
--	ret = test_bpf();
--	destroy_bpf_tests();
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
-+		ret = test_bpf();
-+		if (ret)
-+			return ret;
-+	}
- 
--	ret = prepare_tail_call_tests(&progs);
--	if (ret)
--		return ret;
--	ret = test_tail_calls(progs);
--	destroy_tail_call_tests(progs);
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
-+		ret = prepare_tail_call_tests(&progs);
-+		if (ret)
-+			return ret;
-+		ret = test_tail_calls(progs);
-+		destroy_tail_call_tests(progs);
-+		if (ret)
-+			return ret;
-+	}
- 
--	return test_skb_segment();
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
-+		return test_skb_segment();
-+
-+	return 0;
- }
- 
- static void __exit test_bpf_exit(void)
--- 
-2.1.0
-
+> This originally resurrected Raphael's series[1] to enable userspace counter
+> access on arm64. My previous versions are here[2][3][4][5][6][7][8][9][10][11].
+> A git branch is here[12].
+> 
+> Changes in v11:
+>  - User request for 64-bit counters and userspace access will fail on
+>    open if h/w doesn't support 64-bit counters instead of reporting the
+>    maximum counter size. The open will also fail if not a task bound
+>    event.
+> 
+> Changes in v10:
+>  - Drop changing event_mapped/event_unmapped ops to run on the event's
+>    current CPU. This won't work for x86 where any thread sharing an mm
+>    context will have rdpmc enabled. Instead, simply track user access
+>    events when added to a perf context and use that count.
+>  - Documentation for the sysctl disable
+> 
+> Changes in v9:
+>  - Reworked x86 and perf core to handle user access tracking and call
+>    .event_mapped() and .event_unmapped() on the CPU with the event like
+>    other changes to events.
+>  - Use sysctl instead of sysfs to disable user access.
+> 
+> Changes in v8:
+>  - Restrict user access to thread bound events which simplifies the
+>    implementation. A couple of perf core changes (patches 1 and 2) are
+>    needed to do this.
+>  - Always require the user to request userspace access.
+> 
+> Changes in v7:
+>  - Handling of dirty counter leakage and reworking of context switch and
+>    user access enabling. The .sched_task hook and undef instruction handler
+>    are now utilized. (Patch 3)
+>  - Add a userspace disable switch like x86. (Patch 5)
+> 
+> Changes in v6:
+>  - Reworking of the handling of 64-bit counters and user access. There's
+>    a new config1 flag to request user access. This takes priority over
+>    the 64-bit flag and the user will get the maximum size the h/w
+>    supports without chaining.
+>  - The libperf evsel mmap struct is stored in its own xyarray
+>  - New tests for user 64-bit and 32-bit counters
+>  - Rebase to v5.12-rc2
+> 
+> Changes in v5:
+>  - Limit enabling/disabling access to CPUs associated with the PMU
+>    (supported_cpus) and with the mm_struct matching current->active_mm.
+>    The x86 method of using mm_cpumask doesn't work for arm64 as it is not
+>    updated.
+>  - Only set cap_user_rdpmc if event is on current cpu. See patch 2.
+>  - Create an mmap for every event in an evsel. This results in some changes
+>    to the libperf mmap API from the last version.
+>  - Rebase to v5.11-rc2
+> 
+> Changes in v4:
+>  - Dropped 'arm64: pmu: Add hook to handle pmu-related undefined instructions'.
+>    The onus is on userspace to pin itself to a homogeneous subset of CPUs
+>    and avoid any aborts on heterogeneous systems, so the hook is not needed.
+>  - Make perf_evsel__mmap() take pages rather than bytes for size
+>  - Fix building arm64 heterogeneous test.
+> 
+> Changes in v3:
+>  - Dropped removing x86 rdpmc test until libperf tests can run via 'perf test'
+>  - Added verbose prints for tests
+>  - Split adding perf_evsel__mmap() to separate patch
+> 
+> The following changes to the arm64 support have been made compared to
+> Raphael's last version:
+> 
+> The major change is support for heterogeneous systems with some
+> restrictions. Specifically, userspace must pin itself to like CPUs, open
+> a specific PMU by type, and use h/w specific events. The tests have been
+> reworked to demonstrate this.
+> 
+> Chained events are not supported. The problem with supporting chained
+> events was there's no way to distinguish between a chained event and a
+> native 64-bit counter. We could add some flag, but do self monitoring
+> processes really need that? Native 64-bit counters are supported if the
+> PMU h/w has support. As there's already an explicit ABI to request 64-bit
+> counters, userspace can request 64-bit counters and if user
+> access is not enabled, then it must retry with 32-bit counters.
+> 
+> Prior versions broke the build on arm32 (surprisingly never caught by
+> 0-day). As a result, event_mapped and event_unmapped implementations have
+> been moved into the arm64 code.
+> 
+> There was a bug in that pmc_width was not set in the user page. The tests
+> now check for this.
+> 
+> The documentation has been converted to rST. I've added sections on
+> chained events and heterogeneous.
+> 
+> Rob
+> 
+> [1] https://lore.kernel.org/r/20190822144220.27860-1-raphael.gault@arm.com/
+> [2] https://lore.kernel.org/r/20200707205333.624938-1-robh@kernel.org/
+> [3] https://lore.kernel.org/r/20200828205614.3391252-1-robh@kernel.org/
+> [4] https://lore.kernel.org/r/20200911215118.2887710-1-robh@kernel.org/
+> [5] https://lore.kernel.org/r/20201001140116.651970-1-robh@kernel.org/
+> [6] https://lore.kernel.org/r/20210114020605.3943992-1-robh@kernel.org/
+> [7] https://lore.kernel.org/r/20210311000837.3630499-1-robh@kernel.org/
+> [8] https://lore.kernel.org/r/20210420031511.2348977-1-robh@kernel.org/
+> [9] https://lore.kernel.org/r/20210517195405.3079458-1-robh@kernel.org/
+> [10] https://lore.kernel.org/all/20210806225123.1958497-1-robh@kernel.org/
+> [11] https://lore.kernel.org/all/20210914204800.3945732-1-robh@kernel.org/
+> [12] git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git arm64-user-perf-event-v11
+> [13] https://github.com/deater/perf_event_tests
+> 
+> 
+> Raphael Gault (1):
+>   Documentation: arm64: Document PMU counters access from userspace
+> 
+> Rob Herring (4):
+>   x86: perf: Move RDPMC event flag to a common definition
+>   perf: Add a counter for number of user access events in context
+>   arm64: perf: Add userspace counter access disable switch
+>   arm64: perf: Enable PMU counter userspace access for perf event
+> 
+>  Documentation/admin-guide/sysctl/kernel.rst |  11 ++
+>  Documentation/arm64/perf.rst                |  75 ++++++++++-
+>  arch/arm64/kernel/perf_event.c              | 132 +++++++++++++++++++-
+>  arch/x86/events/core.c                      |  10 +-
+>  arch/x86/events/perf_event.h                |   2 +-
+>  include/linux/perf_event.h                  |  10 ++
+>  kernel/events/core.c                        |   4 +
+>  7 files changed, 231 insertions(+), 13 deletions(-)
+> 
+> -- 
+> 2.32.0
+> 
