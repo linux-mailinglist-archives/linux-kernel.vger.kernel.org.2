@@ -2,104 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F19043AA92
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E75C43AA96
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhJZDBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 23:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhJZDBF (ORCPT
+        id S234540AbhJZDIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 23:08:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48354 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231445AbhJZDIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 23:01:05 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCA8C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:58:42 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id m14so12852856pfc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=10iBP9jh9mkSwxIoTv0VVNQ92fx2y1+MEgwu/CyOFlM=;
-        b=aTG1wyIkDrZ9a0nJBnaMNr5Y9EVfESyq+LWT/zYNIn4PdgLwKfeXd2deQM+k9Kwxra
-         NwgPlB2+QnZ41d34SpIj2GSOMkTGsM5zrEgEPJone1cGqg25FXQNOAIM49LP6qw1lDtp
-         HAz9oURmKZWr4Pp4I7qPuGIKRom23Q8HqoW+2kVtxLcAgvHmeBwQRijBIyi2j93Sc5QG
-         2X9+DwvVjAo76PvwPwxw/WvyOicFe9zq9FvcmQdfIn7FfpYpVEhSEQyH0Ne7c0+ni65e
-         E27gDAlyxDGQEpAd5xB8Q/NbSk4zghtwgCkCXzQhfwgVESvPs9lXLedOhJwxkAeS1+sL
-         poqw==
+        Mon, 25 Oct 2021 23:08:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635217571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bgZfLWj7RPfnAn/W2uAQwfMYaCeUPV0KjyENL3A9vM8=;
+        b=fkdGCEu8pRJYssAtdP76yliyisG568rrUg74isg1KvbpjY/l+9PcGs1pmO6NMVjol3x886
+        Dv15Qlqb5+dPn3J1v5i4+WWnns7+0AwPtE+Po4WQI9m2R+nwD+H6amOQAo/l5uIKRhGwFz
+        qyPI0Xv40Dp9lNm963gw8iWNL4qH+pc=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395--xZXXs4OOKaXB2XYYh5-9w-1; Mon, 25 Oct 2021 23:06:09 -0400
+X-MC-Unique: -xZXXs4OOKaXB2XYYh5-9w-1
+Received: by mail-pf1-f198.google.com with SMTP id y37-20020a056a00182500b0047c102c1ca2so417247pfa.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 20:06:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=10iBP9jh9mkSwxIoTv0VVNQ92fx2y1+MEgwu/CyOFlM=;
-        b=oMo9A5kV4uDIdnAdEDCwaUr2PnBLNNi08Gtk2gkJrGj/vfpEeU8Hp5yRwDUujgRd/l
-         2JB5qsp4OAr+caxy6oqQSgNnU4VBgvAcFBM26SY4/p6o5w867um4wxj4+QfSAu36NsB+
-         Jreib0psRnCOjl/0GxCQtaHCJPizQcoMmt9msHKrq164OMO6k4rlg1pjL6j++XqjtTm0
-         AuPhlJ6MQMz9mH+C9pTGXFIvwMD2NC7pLbkp03QHz1trx+Yx81o88ogZ9bJZ29zOhJYF
-         CMpvCI6g9B/7bXav5Av8Lt81Z7xmxLd8movBiI7pcFlft17aMx+l3RqvHLOKAwMSkkpX
-         73ig==
-X-Gm-Message-State: AOAM533TLwXfgAfKi6xL/bv9d+9NCOm2Ar2H5hXvjJyKvSHVt1mT7ueF
-        8NRKSeC8cs+4KRIE3OmwkJNSbalB3hFMCA==
-X-Google-Smtp-Source: ABdhPJw6guKsVoEp2aATvHsCLrNKLD/Ijd0OJs19x2EcTOpUiplKmQQaF/YTLR7OimDqRjyDSFK0wQ==
-X-Received: by 2002:a05:6a00:198a:b0:44c:ae90:85fc with SMTP id d10-20020a056a00198a00b0044cae9085fcmr22874995pfl.1.1635217122167;
-        Mon, 25 Oct 2021 19:58:42 -0700 (PDT)
-Received: from FVFCG2APL414.bytedance.net ([139.177.225.250])
-        by smtp.gmail.com with ESMTPSA id u3sm5125448pfg.77.2021.10.25.19.58.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Oct 2021 19:58:41 -0700 (PDT)
-From:   Kunkun Li <likunkun@bytedance.com>
-To:     minyard@acm.org, openipmi-developer@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, Kunkun Li <likunkun@bytedance.com>
-Subject: [PATCH] ipmi: ssif: Add msleep in multipart test
-Date:   Tue, 26 Oct 2021 10:58:34 +0800
-Message-Id: <20211026025834.82766-1-likunkun@bytedance.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=bgZfLWj7RPfnAn/W2uAQwfMYaCeUPV0KjyENL3A9vM8=;
+        b=ExuF6VcYKFaUHqV2W5z6QQ6KnOgWLF47XRGLymhixRV0zeGJqj/ERNBwPEnOv9RKFa
+         ZpK1ax4DYlFcmYML5P1wkzUlom57yfhb/IZDmWIhiOjzjIKxgFdZ4rbVCFCj3wN0vGxU
+         3mo/iBNf3gJd14tdZcac8hormS5B8vFbt3iVVqKiYsqrAIu+WXCKwFTZrwtmIaDSOpuE
+         s4nIGzLe3sne+8fwrUZE/g6Lo2bvmEy/zy18jIb/46FeUtRgpN3dJNQVdt3rU0djKTRs
+         69AC1ThzWA6hadCrIg9mDNJAgQkUvJKnyvq9Cp9073EPDVzuNDhulr7kS54h+t+3Zkrn
+         rITw==
+X-Gm-Message-State: AOAM533PL6pYOh7ZZDKgWyUqYjbcSDqXTOwDIQApjw0FlF69zHfiu1UX
+        tEUhG9TcbQwexRSa/mo/xk6WfhacETIMoU7sQAv6ViR6uClep9Bg5C4P0D6oJJZ0V0OL9gKYj4w
+        n1cPLgy+GWaB6d219DqhTY4av7BuerbUAveKCs/Ds/k2n6YwRrwt28GJ/Jgr941bRgQEGli+jUg
+        ==
+X-Received: by 2002:a62:7c0b:0:b0:47b:df8d:816 with SMTP id x11-20020a627c0b000000b0047bdf8d0816mr17489654pfc.11.1635217568078;
+        Mon, 25 Oct 2021 20:06:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxWh1eQlGkKFSiSnyZ955TOkEvRh94YZpScVe05hDhVwUuLUubdbFrXIblKI+fZosICPRUWnQ==
+X-Received: by 2002:a62:7c0b:0:b0:47b:df8d:816 with SMTP id x11-20020a627c0b000000b0047bdf8d0816mr17489613pfc.11.1635217567561;
+        Mon, 25 Oct 2021 20:06:07 -0700 (PDT)
+Received: from [10.72.12.93] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id c4sm23523143pfv.144.2021.10.25.20.06.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 20:06:06 -0700 (PDT)
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+To:     Patrick Donnelly <pdonnell@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>
+Cc:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211020143708.14728-1-lhenriques@suse.de>
+ <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+ <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
+ <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+ <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+ <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+ <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <785d1435-4a2c-95aa-0573-2de54b4e7b6b@redhat.com>
+Date:   Tue, 26 Oct 2021 11:05:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During multipart test, cmd(6,7,8) or cmd(6,7,7) will
-be sent continuously.
 
-The pressure test found some BMC systems cannot process
-messages in time, resulting in read_response continues to receive
-error messages from i2c.
-Retry mechanism will takes 10s, and finally set not support
-multipart transmit.
+On 10/22/21 1:30 AM, Patrick Donnelly wrote:
+> On Thu, Oct 21, 2021 at 12:35 PM Jeff Layton <jlayton@kernel.org> wrote:
+>> On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
+>>> On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+>>>> On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+>>>>> On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
+>>>>>> On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
+>>>>>>> This counter will keep track of the number of remote object copies done on
+>>>>>>> copy_file_range syscalls.  This counter will be filesystem per-client, and
+>>>>>>> can be accessed from the client debugfs directory.
+>>>>>>>
+>>>>>>> Cc: Patrick Donnelly <pdonnell@redhat.com>
+>>>>>>> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+>>>>>>> ---
+>>>>>>> This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+>>>>>>> 100% sure about the usefulness of this patch, or if this is the best way
+>>>>>>> to provide the functionality Patrick requested.  Anyway, this is just to
+>>>>>>> get some feedback, hence the RFC.
+>>>>>>>
+>>>>>>> Cheers,
+>>>>>>> --
+>>>>>>> Luís
+>>>>>>>
+>>>>>>> [0] https://github.com/ceph/ceph/pull/42720
+>>>>>>>
+>>>>>> I think this would be better integrated into the stats infrastructure.
+>>>>>>
+>>>>>> Maybe you could add a new set of "copy" stats to struct
+>>>>>> ceph_client_metric that tracks the total copy operations done, their
+>>>>>> size and latency (similar to read and write ops)?
+>>>>> I think it's a good idea to integrate this into "stats" but I think a
+>>>>> local debugfs file for some counters is still useful. The "stats"
+>>>>> module is immature at this time and I'd rather not build any qa tests
+>>>>> (yet) that rely on it.
+>>>>>
+>>>>> Can we generalize this patch-set to a file named "op_counters" or
+>>>>> similar and additionally add other OSD ops performed by the kclient?
+>>>>>
+>>>>
+>>>> Tracking this sort of thing is the main purpose of the stats code. I'm
+>>>> really not keen on adding a whole separate set of files for reporting
+>>>> this.
+>>> Maybe I'm confused. Is there some "file" which is already used for
+>>> this type of debugging information? Or do you mean the code for
+>>> sending stats to the MDS to support cephfs-top?
+>>>
+>>>> What's the specific problem with relying on the data in debugfs
+>>>> "metrics" file?
+>>> Maybe no problem? I wasn't aware of a "metrics" file.
+>>>
+>> Yes. For instance:
+>>
+>> # cat /sys/kernel/debug/ceph/*/metrics
+>> item                               total
+>> ------------------------------------------
+>> opened files  / total inodes       0 / 4
+>> pinned i_caps / total inodes       5 / 4
+>> opened inodes / total inodes       0 / 4
+>>
+>> item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
+>> -----------------------------------------------------------------------------------
+>> read          0           0               0               0               0
+>> write         5           914013          824797          1092343         103476
+>> metadata      79          12856           1572            114572          13262
+>>
+>> item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
+>> ----------------------------------------------------------------------------------------
+>> read          0           0               0               0               0
+>> write         5           4194304         4194304         4194304         20971520
+>>
+>> item          total           miss            hit
+>> -------------------------------------------------
+>> d_lease       11              0               29
+>> caps          5               68              10702
+>>
+>>
+>> I'm proposing that Luis add new lines for "copy" to go along with the
+>> "read" and "write" ones. The "total" counter should give you a count of
+>> the number of operations.
+> Okay that makes more sense!
+>
+> Side note: I am a bit horrified by how computer-unfriendly that
+> table-formatted data is.
 
-So, to work around this，add msleep after sending cmd 6 and
-cmd 7 respectively. The problem did not appear again in
-pressure test.
+Any suggestion to improve this ?
 
-Signed-off-by: Kunkun Li <likunkun@bytedance.com>
----
- drivers/char/ipmi/ipmi_ssif.c | 2 ++
- 1 file changed, 2 insertions(+)
+How about just make the "metric" file writable like a switch ? And as 
+default it will show the data as above and if tools want the 
+computer-friendly format, just write none-zero to it, then show raw data 
+just like:
 
-diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
-index 20d5af92966d..65841798fafe 100644
---- a/drivers/char/ipmi/ipmi_ssif.c
-+++ b/drivers/char/ipmi/ipmi_ssif.c
-@@ -1453,6 +1453,7 @@ static int start_multipart_test(struct i2c_client *client,
- 	ret = i2c_smbus_write_block_data(client,
- 					 SSIF_IPMI_MULTI_PART_REQUEST_START,
- 					 32, msg);
-+	msleep(SSIF_MSG_MSEC);
- 	if (ret) {
- 		retry_cnt--;
- 		if (retry_cnt > 0)
-@@ -1467,6 +1468,7 @@ static int start_multipart_test(struct i2c_client *client,
- 	ret = i2c_smbus_write_block_data(client,
- 					 SSIF_IPMI_MULTI_PART_REQUEST_MIDDLE,
- 					 32, msg + 32);
-+	msleep(SSIF_MSG_MSEC);
- 	if (ret) {
- 		dev_err(&client->dev, "Could not write multi-part middle, though the BMC said it could handle it.  Just limit sends to one part.\n");
- 		return ret;
--- 
-2.11.0
+# cat /sys/kernel/debug/ceph/*/metrics
+opened_files:0
+pinned_i_caps:5
+opened_inodes:0
+total_inodes:4
+
+read_latency:0,0,0,0,0
+write_latency:5,914013,824797,1092343,103476
+metadata_latency:79,12856,1572,114572,13262
+
+read_size:0,0,0,0,0
+write_size:5,4194304,4194304,4194304,20971520
+
+d_lease:11,0,29
+caps:5,68,10702
+
 
