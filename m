@@ -2,180 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B159943B8D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14E443B8DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhJZSCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:02:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58268 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbhJZSCG (ORCPT
+        id S238004AbhJZSCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238001AbhJZSCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:02:06 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E84AE218B1;
-        Tue, 26 Oct 2021 17:59:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635271180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/IfyzD47ljPw1WkDD65/9cBWHj8bmddldSGi/M6KrnU=;
-        b=idiLTSAt6Udp6++x9MUivgkAKlweWBwhdf4UATnPNYS3Se2F0jllhOpuiYG0GqDhdNWTYf
-        oqJDqAMpSkWsGRHR7Lh0Da/7rAFZDaCF0ExbXAgg16gW6684SAHPPigO6BF6SiocPtx83P
-        icBCNS3hDcgZz+hK6hiZVKWvgrsC/Bg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635271180;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/IfyzD47ljPw1WkDD65/9cBWHj8bmddldSGi/M6KrnU=;
-        b=z1t6M8V0chQGmRZNI8ZOj8wmVXPLNcRQToWQ5DOyvNeDs0D7bJVBDcxX886OAzktZsV7Sa
-        ve28PrkwUZ0zYOCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FC3113EE9;
-        Tue, 26 Oct 2021 17:59:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id myQPJgxCeGGCbwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Tue, 26 Oct 2021 17:59:40 +0000
-Message-ID: <b26491f8-66a4-d532-e866-2dc0ecb922d2@suse.de>
-Date:   Tue, 26 Oct 2021 19:59:40 +0200
+        Tue, 26 Oct 2021 14:02:20 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5513AC061745;
+        Tue, 26 Oct 2021 10:59:56 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id 188so338793iou.12;
+        Tue, 26 Oct 2021 10:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8DfdHsgRGfRYDFyOlx7BhB4eR5HyQPULbChWSwlujqM=;
+        b=DQ2ClPENcpuSWhEkviDxhrir5Owrb+DaQYTA67p5MIxZfgZZ7ycqJ0g2CqeXeZlV/o
+         bm+XkeGEpxX5dLvrTHcTLXEgLbWVOtj7OtfeofGcahgCNRAWKtuaVHEHJOvLaNpSYW+o
+         Y27lmoYmNirPCFfHOR5XeXBsp/tZeJTpAMzrUUi5Fgw9r90KtrEAr0Xj0bxINpyh2Cfl
+         yKxot7jueXi26V7siKtEgRUNKJOM8z16gHNeTKa6hfhdjaRNe9Dc19vAoO3IbqyeH5wz
+         xdBxY0CNOwrrm7DqeZPuZsKm0rdA1OAJib+duimqtw0Q9G6puIk8v4EaUhpkh6op3iBw
+         6LJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8DfdHsgRGfRYDFyOlx7BhB4eR5HyQPULbChWSwlujqM=;
+        b=LzRnspCNtX4E40t99ONUT1pc5LuzazcsqJM+PZwTNcG2rl0J+0n9UH2BUjsna7S9qv
+         BrOPIAy9tEYtsLnE/d0XRdRA+15JBkV7GW2SY20dWosulGFRCmk61YropLEIA55FQu7F
+         iqvUoD7FyXu8nv5kFxPd7oWqA9nAyzRL2fYGKNKgHUcRtLowVdqAZKSgpUr8Eg4TQ11X
+         H71hFZNtlJOtTBcAr+c/u89mO0TH4653f8zpua2s08UW9ZT8UWKL8pnN4T2oRqHDQUgj
+         +vNzNUh2vUR67Ies0l/hAbjMmQtImJE9xCR4xz+PtlEpipZlh38tat6ouI5imkMmkhI7
+         irHA==
+X-Gm-Message-State: AOAM531yPowqefF+yBTKzKq8d7n4wG464HPpaO68aU0A5IeoeRry912U
+        6WdGh9XoKfqNmjLnHj7meYt9gqUKcaYMWDrcTncrCTeD
+X-Google-Smtp-Source: ABdhPJwZWs9j55QGdC+1bdT3TEDdOfMEPHkeNhan/KgmCdvcBSl6zG3reUmczmuBSCNARe6WOAD+Hb2aJCuItKKD558=
+X-Received: by 2002:a02:270c:: with SMTP id g12mr16303054jaa.75.1635271195749;
+ Tue, 26 Oct 2021 10:59:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to
- `drm_gem_fb_get_obj'
-Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        dri-devel@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
- <CA+G9fYvdhk-H8wBDdaPmRMZS_egxndncUkbZ92HCnUFD1g_wSQ@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <CA+G9fYvdhk-H8wBDdaPmRMZS_egxndncUkbZ92HCnUFD1g_wSQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------tCtkVkBO019eIkSFKj0lZ9Pa"
+References: <20211025204634.2517-1-iangelak@redhat.com> <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
+ <YXgqRb21hvYyI69D@redhat.com>
+In-Reply-To: <YXgqRb21hvYyI69D@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 26 Oct 2021 20:59:44 +0300
+Message-ID: <CAOQ4uxhpCKK2MYxSmRJYYMEWaHKy5ezyKgxaM+YAKtpjsZkD-g@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------tCtkVkBO019eIkSFKj0lZ9Pa
-Content-Type: multipart/mixed; boundary="------------8KOyy6PugOrkxvflSSuljoS7";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>,
- dri-devel@lists.freedesktop.org, open list <linux-kernel@vger.kernel.org>,
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>, Andrey Konovalov <andreyknvl@gmail.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>, Arnd Bergmann <arnd@arndb.de>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Daniel Vetter <daniel.vetter@ffwll.ch>
-Message-ID: <b26491f8-66a4-d532-e866-2dc0ecb922d2@suse.de>
-Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to
- `drm_gem_fb_get_obj'
-References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
- <CA+G9fYvdhk-H8wBDdaPmRMZS_egxndncUkbZ92HCnUFD1g_wSQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYvdhk-H8wBDdaPmRMZS_egxndncUkbZ92HCnUFD1g_wSQ@mail.gmail.com>
+On Tue, Oct 26, 2021 at 7:18 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> On Tue, Oct 26, 2021 at 06:23:50PM +0300, Amir Goldstein wrote:
+>
+> [..]
+> > > 3) The lifetime of the local watch in the guest kernel is very
+> > > important. Specifically, there is a possibility that the guest does not
+> > > receive remote events on time, if it removes its local watch on the
+> > > target or deletes the inode (and thus the guest kernel removes the watch).
+> > > In these cases the guest kernel removes the local watch before the
+> > > remote events arrive from the host (virtiofsd) and as such the guest
+> > > kernel drops all the remote events for the target inode (since the
+> > > corresponding local watch does not exist anymore).
+>
+> So this is one of the issues which has been haunting us in virtiofs. If
+> a file is removed, for local events, event is generated first and
+> then watch is removed. But in case of remote filesystems, it is racy.
+> It is possible that by the time event arrives, watch is already gone
+> and application never sees the delete event.
+>
+> Not sure how to address this issue.
 
---------------8KOyy6PugOrkxvflSSuljoS7
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Can you take me through the scenario step by step.
+I am not sure I understand the exact sequence of the race.
+If it is local file removal that causes watch to be removed,
+then don't drop local events and you are good to go.
+Is it something else?
 
-SGkNCg0KQW0gMjUuMTAuMjEgdW0gMTY6MDEgc2NocmllYiBOYXJlc2ggS2FtYm9qdToNCj4g
-T24gTW9uLCAyNSBPY3QgMjAyMSBhdCAxNzo0MywgTmFyZXNoIEthbWJvanUgPG5hcmVzaC5r
-YW1ib2p1QGxpbmFyby5vcmc+IHdyb3RlOg0KPj4NCj4+IFJlZ3Jlc3Npb24gZm91bmQgb24g
-YXJtIGdjYy0xMSBidWlsdCB3aXRoIG11bHRpX3Y1X2RlZmNvbmZpZw0KPj4gRm9sbG93aW5n
-IGJ1aWxkIHdhcm5pbmdzIC8gZXJyb3JzIHJlcG9ydGVkIG9uIGxpbnV4IG5leHQgMjAyMTEw
-MjUuDQo+Pg0KPj4gbWV0YWRhdGE6DQo+PiAgICAgIGdpdF9kZXNjcmliZTogbmV4dC0yMDIx
-MTAyNQ0KPj4gICAgICBnaXRfcmVwbzogaHR0cHM6Ly9naXRsYWIuY29tL0xpbmFyby9sa2Z0
-L21pcnJvcnMvbmV4dC9saW51eC1uZXh0DQo+PiAgICAgIGdpdF9zaG9ydF9sb2c6IDlhZTFm
-YmRlYWJkMyAoXCJBZGQgbGludXgtbmV4dCBzcGVjaWZpYyBmaWxlcyBmb3IgMjAyMTEwMjVc
-IikNCj4+ICAgICAgdGFyZ2V0X2FyY2g6IGFybQ0KPj4gICAgICB0b29sY2hhaW46IGdjYy0x
-MQ0KPj4gICAgICBjb25maWc6IG11bHRpX3Y1X2RlZmNvbmZpZw0KPj4NCj4+IGJ1aWxkIGVy
-cm9yIDoNCj4+IC0tLS0tLS0tLS0tLS0tDQo+PiBhcm0tbGludXgtZ251ZWFiaWhmLWxkOiBk
-cml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2NtYV9oZWxwZXIubzogaW4NCj4+IGZ1bmN0aW9uIGBk
-cm1fZmJfY21hX2dldF9nZW1fb2JqJzoNCj4+IGRyaXZlcnMvZ3B1L2RybS9kcm1fZmJfY21h
-X2hlbHBlci5jOjQ2OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvDQo+PiBgZHJtX2dlbV9mYl9n
-ZXRfb2JqJw0KPj4gYXJtLWxpbnV4LWdudWVhYmloZi1sZDogZHJpdmVycy9ncHUvZHJtL2Ry
-bV9mYl9jbWFfaGVscGVyLmM6NDY6DQo+PiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBkcm1f
-Z2VtX2ZiX2dldF9vYmonDQo+PiBhcm0tbGludXgtZ251ZWFiaWhmLWxkOiBkcml2ZXJzL2dw
-dS9kcm0vZHJtX2ZiX2NtYV9oZWxwZXIuYzo0NjoNCj4+IHVuZGVmaW5lZCByZWZlcmVuY2Ug
-dG8gYGRybV9nZW1fZmJfZ2V0X29iaicNCj4+IGFybS1saW51eC1nbnVlYWJpaGYtbGQ6IGRy
-aXZlcnMvZ3B1L2RybS9kcm1fZmJfY21hX2hlbHBlci5vOiBpbg0KPj4gZnVuY3Rpb24gYGRy
-bV9mYl9jbWFfc3luY19ub25fY29oZXJlbnQnOg0KPj4gZHJpdmVycy9ncHUvZHJtL2RybV9m
-Yl9jbWFfaGVscGVyLmM6MTMzOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvDQo+PiBgZHJtX2F0
-b21pY19oZWxwZXJfZGFtYWdlX2l0ZXJfaW5pdCcNCj4+IGFybS1saW51eC1nbnVlYWJpaGYt
-bGQ6IGRyaXZlcnMvZ3B1L2RybS9kcm1fZmJfY21hX2hlbHBlci5jOjEzNToNCj4+IHVuZGVm
-aW5lZCByZWZlcmVuY2UgdG8gYGRybV9hdG9taWNfaGVscGVyX2RhbWFnZV9pdGVyX25leHQn
-DQo+PiBtYWtlWzFdOiAqKiogW01ha2VmaWxlOjEyNTI6IHZtbGludXhdIEVycm9yIDENCj4+
-IG1ha2VbMV06IFRhcmdldCAnX19hbGwnIG5vdCByZW1hZGUgYmVjYXVzZSBvZiBlcnJvcnMu
-DQo+PiBtYWtlOiAqKiogW01ha2VmaWxlOjIyNjogX19zdWItbWFrZV0gRXJyb3IgMg0KPj4N
-Cj4+IFJlcG9ydGVkLWJ5OiBMaW51eCBLZXJuZWwgRnVuY3Rpb25hbCBUZXN0aW5nIDxsa2Z0
-QGxpbmFyby5vcmc+DQo+IA0KPiBUaGUgYmlzZWN0aW9uIHNjcmlwdCBwb2ludGVkIHRvIHRo
-ZSBmaXJzdCBiYWQgY29tbWl0LA0KPiANCj4gY29tbWl0IDRiMmI1ZTE0MmZmNDk5YTJiZWYy
-YjhkYjAyNzJiYmRhMTA4OGEzZmUNCj4gZHJtOiBNb3ZlIEdFTSBtZW1vcnkgbWFuYWdlcnMg
-aW50byBtb2R1bGVzDQoNCkNvdWxkIHlvdSBwbGVhc2UgdHJ5IHRoZSBwYXRjaCBhdCBbMV0/
-IEl0IGZpeGVzIHRoZSBwcm9ibGVtIGZvciBtZS4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMN
-Cg0KWzFdIGh0dHBzOi8vcGF0Y2h3b3JrLmZyZWVkZXNrdG9wLm9yZy9wYXRjaC80NjE0MjYv
-DQoNCj4gDQo+PiBidWlsZCBsaW5rOg0KPj4gLS0tLS0tLS0tLS0NCj4+IGh0dHBzOi8vYnVp
-bGRzLnR1eGJ1aWxkLmNvbS8xenpnRlpCR2pwUTVSMGxhd1FGVzlpSjM5SHAvYnVpbGQubG9n
-DQo+Pg0KPj4gYnVpbGQgY29uZmlnOg0KPj4gLS0tLS0tLS0tLS0tLQ0KPj4gaHR0cHM6Ly9i
-dWlsZHMudHV4YnVpbGQuY29tLzF6emdGWkJHanBRNVIwbGF3UUZXOWlKMzlIcC9jb25maWcN
-Cj4+DQo+PiAjIFRvIGluc3RhbGwgdHV4bWFrZSBvbiB5b3VyIHN5c3RlbSBnbG9iYWxseQ0K
-Pj4gIyBzdWRvIHBpcDMgaW5zdGFsbCAtVSB0dXhtYWtlDQo+PiB0dXhtYWtlIC0tcnVudGlt
-ZSBwb2RtYW4gLS10YXJnZXQtYXJjaCBhcm0gLS10b29sY2hhaW4gZ2NjLTExDQo+PiAtLWtj
-b25maWcgbXVsdGlfdjVfZGVmY29uZmlnDQo+Pg0KPj4gLS0NCj4+IExpbmFybyBMS0ZUDQo+
-PiBodHRwczovL2xrZnQubGluYXJvLm9yZw0KPiANCj4gLSBOYXJlc2gNCj4gDQoNCi0tIA0K
-VGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29m
-dHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8
-cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQpHZXNjaMOkZnRz
-ZsO8aHJlcjogRmVsaXggSW1lbmTDtnJmZmVyDQo=
-
---------------8KOyy6PugOrkxvflSSuljoS7--
-
---------------tCtkVkBO019eIkSFKj0lZ9Pa
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmF4QgwFAwAAAAAACgkQlh/E3EQov+BG
-Iw/+JTHivG4hZU7vT50hmorrpRLVi03Smcf4MwOcbx07EhFpEpcZqYurS6Cmujuy6L0hACDLW/8h
-4l8/y4vZ5TUyohbBlcJRDz8IJNnnTRn+RmccXsLcfdf8upWR45lrsTjmNOmTtAE1/izgvJ3/T1O1
-JjFSQtRHWA8hnPzcSnmC7X8SytIEUKgLqQuYLBZjyrvLri/J7Cme43cE1Q1q8bR0kyFfcFG9sRAu
-0FS/mOxeRPICg6BJ3pup0nSpXH6bgF4Nt9R4Zk284uS4eVi+1gH3Ao22fj9WStpAsjL4MH4LE3jj
-N2DpG/U3aR+u+AT6bElE3w146UHEMUiDIVIWCfSj4j3rYt8ClTKiWqr8N9xcoTb2j4XNLNLd8Zo8
-YNQidiCVHDB2kVqmGjWbnrpXPJ9AYZHuiqbiC6i3cpFeauA0AYd/VxTmowTDlNAmR3gcY1tt2rkC
-D2PbtrUZksp18kv8tNPmBZN32u1Y8gQvpnTNWsTQRyn3xVjzb5L0JxbtyleyH4KZ+5YQyMVZepRU
-AiA8D83emTzgeXw5dalO8F5GuA09mFlhFnx4YEs069wObi02sdbry/izZQGJ/kbQFy1ciKmoUJzh
-xwvcrgaLtaLnCZtP6X8Gr7vcZOqYNGKoQEVfc/hfjZynxWrm/lGH/DEpjLDNt3Nw4IxOd0AWvAD9
-SPo=
-=ex6E
------END PGP SIGNATURE-----
-
---------------tCtkVkBO019eIkSFKj0lZ9Pa--
+Thanks,
+Amir.
