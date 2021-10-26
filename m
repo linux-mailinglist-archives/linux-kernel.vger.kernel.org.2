@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D64343BC3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A9443BC3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239524AbhJZVWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:22:23 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:38484 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235364AbhJZVWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:22:14 -0400
-Received: by mail-oi1-f172.google.com with SMTP id t4so525662oie.5;
-        Tue, 26 Oct 2021 14:19:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YtuFL+DDjYN57vIvaMf5OxVDuH9t3HGano//L4CGuFY=;
-        b=N2PwtMXtDTOMigwBkWQHzNciuBYg72BBCt9i5COHKUhOcFn1S4/zfX6WMuX18waz7/
-         M5ZDBUy3QUxA+MDp58a8wxCdYfIVoN3VbBAUpLP56sjgwzYmmDSyCXEFHAY9KYPr0axz
-         nAZnz9SVakUSmM9sKLODbK9IQdDymAFYLk8haMZGPJrw9pvrvOsxgfpz95ZdxSLAlU+o
-         G9F+ABmyzzPCUw+inRa3KQZvDuskFi0fZlZ1LozlgAPFQeI5ZGdRAAoOtvvdcR0wOEsf
-         KUsE/y3ihHOERFrt2I7dREkqpWw1RcXBHy39strW84PfdK1irymDmXgXTK0UMPkSYGjR
-         m0Yg==
-X-Gm-Message-State: AOAM531XvuvYQV+C91ZVD1ZbuMe3zbh19r7lLwhDFiaqUUn79Nx9muj1
-        iLwREe4iZrz5UBDe13hnnXrEs0Twxw==
-X-Google-Smtp-Source: ABdhPJz0cDDYFbf7NCIWKBGCBrfhTk4dF7R5uxebjjb175aMZMkPHGOblMWPfqiWinh1L0gGWJSIpg==
-X-Received: by 2002:a05:6808:1910:: with SMTP id bf16mr911438oib.17.1635283189371;
-        Tue, 26 Oct 2021 14:19:49 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q15sm4771394otm.15.2021.10.26.14.19.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:19:48 -0700 (PDT)
-Received: (nullmailer pid 3272618 invoked by uid 1000);
-        Tue, 26 Oct 2021 21:19:47 -0000
-Date:   Tue, 26 Oct 2021 16:19:47 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        git@xilinx.com, Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        monstr@monstr.eu, Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: gpio: zynq: Add power-domains
-Message-ID: <YXhw87Uae2jgYiOI@robh.at.kernel.org>
-References: <655523d7bf9658eb0b8e49a06c8b79a04052e5d5.1634286595.git.michal.simek@xilinx.com>
+        id S239523AbhJZVWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239545AbhJZVWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 17:22:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3418560F6F;
+        Tue, 26 Oct 2021 21:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635283207;
+        bh=nQifvL4+pk6Cow8uPtB2KSsFheh4K34V6u8mJl5LvWo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=OvFp9tZBMpupSHVLFGTRjRftVE1raXlVzFJioIqCnY37RF+ktFDPbq8gPiW0/0SUA
+         0Rob6FDSxvMf0jN1mlzMYPkU95LtxdvtzU/kqBJv3GupR58/kTPBFkXTL6TzjMh3Zb
+         6RFnPIJSc6/lWSbgBII1OwisMNSSzv1nzi6vXdtf3XtaJlnKgqepmvY0Ky1Dh1NIwa
+         PGQ07nP2OiBQX8FsStmP4ZX75Dhv9liBWcEgwfSNXvef1cZ/gsUOrUKybTEJ1bFgRt
+         8VvLok1rkRBmZGv9JWPMZkaDS6f7VEWISSxe6YapB3N5zO5SmbgsFYTSiM7XgFL0KY
+         TAG7E93RwN4wg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2578D60726;
+        Tue, 26 Oct 2021 21:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <655523d7bf9658eb0b8e49a06c8b79a04052e5d5.1634286595.git.michal.simek@xilinx.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: phy: fixed warning: Function parameter not described
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163528320714.24909.13854222540925887393.git-patchwork-notify@kernel.org>
+Date:   Tue, 26 Oct 2021 21:20:07 +0000
+References: <20211026102957.17100-1-luoj@codeaurora.org>
+In-Reply-To: <20211026102957.17100-1-luoj@codeaurora.org>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 10:29:57 +0200, Michal Simek wrote:
-> Describe optional power-domain property to fix dts_check warnings.
-> The similar change was done by commit 8c0aa567146b ("dt-bindings: gpio:
-> fsl-imx-gpio: Add power-domains").
-> 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> 
->  Documentation/devicetree/bindings/gpio/gpio-zynq.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+Hello:
 
-Acked-by: Rob Herring <robh@kernel.org>
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 26 Oct 2021 18:29:57 +0800 you wrote:
+> Fixed warning: Function parameter or member 'enable' not
+> described in 'genphy_c45_fast_retrain'
+> 
+> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+> ---
+>  drivers/net/phy/phy-c45.c | 1 +
+>  1 file changed, 1 insertion(+)
+
+Here is the summary with links:
+  - net: phy: fixed warning: Function parameter not described
+    https://git.kernel.org/netdev/net-next/c/06338ceff925
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
