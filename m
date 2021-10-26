@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E80343B44D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E828D43B44F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236716AbhJZOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        id S236720AbhJZOiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235761AbhJZOhx (ORCPT
+        with ESMTP id S236724AbhJZOh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:37:53 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECF5C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:30 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t21so10477162plr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:30 -0700 (PDT)
+        Tue, 26 Oct 2021 10:37:59 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97115C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:35 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id oa4so11106338pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0H+JeGyJkw7+XsD6B9OKL2nsE7tddxNDSdsOksbRkDw=;
-        b=iYbE6NM2VfivMGfnm0SIojXzDcCB9R4Gx8q7YZSnHsKyyyY0LfmUcMJWYYZjdt9rV8
-         nzpOmbqFbpP5mZlsAY62HTh0TEZ5vA8pBs3Vw2TgkGqU9Vg6x9w1Y2Cl7NsMxej1EnZk
-         Tdso14s1bUbd5xlz+fqP+S9gzW+O36yK2F10TEoYTj16cwycAAbKD1VXgyIoFTRoVjAd
-         WSQn4B2WYNKQf05oenFhwfiPUAfFcpIun2K9oFXmm2DkhEOzJdL2126S9PJsTbQ+dSl+
-         fGrZHcJy5QqxJvR2luSQqVk3QcJmAyG1Y8TF+llwWcVU+dydjZjpAjFmpgLQKSXrlu4i
-         fafQ==
+        bh=/VEIBCWf8eZkwgfgrE3MrvMN5GhRK8VB75123ohWZZA=;
+        b=JHIidcQTgtvRlKoZnFFQ9pFiNKgWZ1jqztS+TLVf9yvD6DmdLgn/hQTNn4qTjk8v0I
+         u/02BwPsNp0+vrm05U2jVHkcpDoryONI8EFxuBRmbuMy4LP5yNE+T/XhTGjf2qhsStjQ
+         lap6KjuXb7sjLYMKJKf8ScStAYOXm0IgCuvFbuw6ERsv6UyDc8qgYaRFLkbpIJ95N//D
+         qxE8XzaAyp4AOpNRESWuWlcrv+sbcSP/o/lhUpBB/XOUe8EoeqU4nuIn4UP7bswXIRUm
+         SSB5+ecttCzx3qoNcvj6sVIU86dNVKiVdpNxTmRcxMr5K/PSa9HwQHi3oMyWPkgYw68n
+         tK3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0H+JeGyJkw7+XsD6B9OKL2nsE7tddxNDSdsOksbRkDw=;
-        b=RV4IkUzEocEVJ62b/OnV1mVLORxSrhS2bKdXLVucV6BrfqSduZ3XBqFFwN4a9bZGMj
-         HXzuxxP6mcnAc1DcvCIqw98DrSbKTFEuJhDdwyABIqUekQLr0GDDAPTouzgCfROYdeQe
-         JwinKkYVPEOPDM8Tka6GSS9tVMbcWmsUJdna5KYhwCHgItxtWLcWzkFcd7iXlS0ldfoF
-         wkGxah6XJq8J6QZz8hXSvf3MxWJrS/DeLk5t0LZC5QrITsM+xu3HEDLfnFMmWIQ1aYdL
-         9mgTFGhbgcK6t9a3yl3ntaT8OKTkc8z/Tt5Pd0vpn+GQnotJ4rDcopI9Wbq0ewlSiIY6
-         mfxQ==
-X-Gm-Message-State: AOAM533exN1nNZMHPxi5rWwg3wvMuhoj2XvIS9S1k569TUAA8N0Dkn0z
-        9h7zyIrrZAynRO1Fl29hUr2KCiH2/zA=
-X-Google-Smtp-Source: ABdhPJzKBcB65ckjU5QVeM0TLyd+lmCe9qg2F5ldEq7wB4Atjl8lsTTo1fZbfwHOBLJaIXYkfETHng==
-X-Received: by 2002:a17:90b:4c88:: with SMTP id my8mr28875183pjb.49.1635258929462;
-        Tue, 26 Oct 2021 07:35:29 -0700 (PDT)
+        bh=/VEIBCWf8eZkwgfgrE3MrvMN5GhRK8VB75123ohWZZA=;
+        b=dz63V63q95M29+GFCIJQCSItOYj39IVdKtzPAtMN0Ga4LZdWAI31eSatKAj5jPwnnJ
+         bWeYpnjfuMhbSyCbOC0oOHscktEva73IvVsQ12bPGuDqv6fzPQUkwKZurRNI940E/dem
+         QtfsEVllA/1cP9TzE9R7l8aU8S3Saq7Ispn0ymACRRjm06DbplJHEKHEXCvWutEfc89X
+         tJZwxfTql0qJTibExWO291e2Wzt145jsrZ+7NcwH9A1v3z8oVYjr41ZpQ0+nA7A3i9yj
+         bUhWiPkHcnPj2kZZs0kIyVZNnjl0qG1XSmfltujjCr8XBc8wZFZi5plWT5xmCwPFFK7U
+         Vv5w==
+X-Gm-Message-State: AOAM531OG3ImfSNuaOk6DKrQv27j3pKIrJAVfVZoVAoiwQUxsKF4otgu
+        WOA4yA5TbjgBW76xj3GeO5wqMBPNRFs=
+X-Google-Smtp-Source: ABdhPJyK5LZdrlPq1YY6VIlGq967YbdZ5zBib/EqkZRt7DUl5Y5j9jia34xK4FOGkBVKA9bp1PTB4Q==
+X-Received: by 2002:a17:90a:488d:: with SMTP id b13mr22776824pjh.152.1635258934976;
+        Tue, 26 Oct 2021 07:35:34 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id n9sm2580522pjk.3.2021.10.26.07.35.28
+        by smtp.gmail.com with ESMTPSA id q18sm25457485pfj.46.2021.10.26.07.35.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:35:29 -0700 (PDT)
+        Tue, 26 Oct 2021 07:35:34 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 31/50] x86/entry: Add the C version ist_switch_to_kernel_cr3()
-Date:   Tue, 26 Oct 2021 22:34:17 +0800
-Message-Id: <20211026143436.19071-6-jiangshanlai@gmail.com>
+Subject: [PATCH V4 32/50] x86/entry: Skip CR3 write when the saved CR3 is kernel CR3 in RESTORE_CR3
+Date:   Tue, 26 Oct 2021 22:34:18 +0800
+Message-Id: <20211026143436.19071-7-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,46 +71,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-It switches the CR3 to kernel CR3 and returns the original CR3, and
-the caller should save the return value.
+When the original CR3 is kernel CR3, paranoid_entry() hasn't changed
+the CR3, so the CR3 doesn't need to restored when paranoid_exit() in
+the this case.
 
-It is the C version of SAVE_AND_SWITCH_TO_KERNEL_CR3.
-
-Not functional difference intended.
-
+Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry64.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/x86/entry/calling.h | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
-index a8e59ae41794..1d6ed444fee0 100644
---- a/arch/x86/entry/entry64.c
-+++ b/arch/x86/entry/entry64.c
-@@ -35,8 +35,23 @@ static __always_inline void switch_to_kernel_cr3(void)
- 	if (static_cpu_has(X86_FEATURE_PTI))
- 		pti_switch_to_kernel_cr3(__native_read_cr3());
- }
-+
-+static __always_inline unsigned long ist_switch_to_kernel_cr3(void)
-+{
-+	unsigned long cr3 = 0;
-+
-+	if (static_cpu_has(X86_FEATURE_PTI)) {
-+		cr3 = __native_read_cr3();
-+
-+		if (cr3 & PTI_USER_PGTABLE_MASK)
-+			pti_switch_to_kernel_cr3(cr3);
-+	}
-+
-+	return cr3;
-+}
- #else
- static __always_inline void switch_to_kernel_cr3(void) {}
-+static __always_inline unsigned long ist_switch_to_kernel_cr3(void) { return 0; }
- #endif
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index 996b041e92d2..9065c31d2875 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -231,14 +231,11 @@ For 32-bit we have the following conventions - kernel is built with
+ .macro RESTORE_CR3 scratch_reg:req save_reg:req
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
  
- /*
+-	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+-
+-	/*
+-	 * KERNEL pages can always resume with NOFLUSH as we do
+-	 * explicit flushes.
+-	 */
++	/* No need to restore when the saved CR3 is kernel CR3. */
+ 	bt	$PTI_USER_PGTABLE_BIT, \save_reg
+-	jnc	.Lnoflush_\@
++	jnc	.Lend_\@
++
++	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+ 
+ 	/*
+ 	 * Check if there's a pending flush for the user ASID we're
+@@ -256,10 +253,6 @@ For 32-bit we have the following conventions - kernel is built with
+ 	SET_NOFLUSH_BIT \save_reg
+ 
+ .Lwrcr3_\@:
+-	/*
+-	 * The CR3 write could be avoided when not changing its value,
+-	 * but would require a CR3 read *and* a scratch register.
+-	 */
+ 	movq	\save_reg, %cr3
+ .Lend_\@:
+ .endm
 -- 
 2.19.1.6.gb485710b
 
