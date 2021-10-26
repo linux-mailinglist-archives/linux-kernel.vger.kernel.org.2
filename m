@@ -2,165 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5391743BA47
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1776B43BA4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238572AbhJZTIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S232924AbhJZTJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhJZTHZ (ORCPT
+        with ESMTP id S230324AbhJZTJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:07:25 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DFCC061237;
-        Tue, 26 Oct 2021 12:04:27 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id f9so574756ioo.11;
-        Tue, 26 Oct 2021 12:04:27 -0700 (PDT)
+        Tue, 26 Oct 2021 15:09:07 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86062C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:06:43 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id t7so438399pgl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=epgv4bLCSWiNF0QcmAnrlx7DUUJfK4f2X6c0gIIsznU=;
-        b=MU7D8hJtzvP31k/XhtvvRV7DYhSzcZuPP0ADtWsyuegOkQlG6lHXGNnZM7A7aEsA9j
-         tjT/4khAInzChJcMUCM3z1L8Mu61dYKWL9kU0khMN7rzlDNC6W6NWRxCt5m740Bo0MPy
-         Mnq9RVKh6sEHRqRdTqHW+jlh58eFdzgdeDjx6gZsHMl4rf9BVLJPN2hslBFKG1Dds42G
-         51dMXNhlfiNZnkyiPkWxfAD2dLRiLIf6JJGJgyyr0bCtsEg9bjdsuHV+SKlgjbZQlGbt
-         ALeYUFoq2lZiuEuGp7DK8q6X4nE6W1yTI95f5bopi9/rec+NFL4ZqmOZMm4YUI/iueM+
-         3b6g==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=EJh7ZcC2grrGO9nq0Nd8wB/2nJ7WWNVSIfZil/98gt8=;
+        b=GjyKWLQJUKh8TkQ6X6zqdLjL711sDfJFgFpKn6UiAKnJvgxgOKP8W03app1FZUphoj
+         XmeMtGlSohmdCVCBRgRsyOqOku3kGYDs/r+IyOCr2Het3vGy7cZxLL/EsgI7kbN7Ptrj
+         kcOFHTywLCsCpFHDeALTx7m4HUaa/McdUF634Ua50ZNZN8QFSFx1vHo4LKSk4QWd/4uG
+         b5m1/PF+F0MC3Q+kmBQlOyC7O14YCmZZcEs4xEc5nwfrxSLL67jyF1k37JG6NYNraGEZ
+         GtZpVTbul5Bdfxkeam3h9oN/cXhlazLB+WD0dNPuF4gLqjHn6M6meqvLvpstQSBSpIEv
+         Bf3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=epgv4bLCSWiNF0QcmAnrlx7DUUJfK4f2X6c0gIIsznU=;
-        b=SyS350Ky76VB4n4p274Z5lmnzN7UFVLDE0rb3+jottDLn5WEbmvl2OzLbFQZhA/wAh
-         VTBHN3Qj9+y/HYatF/4uZkqDBv+Om+jV/o4vuzrhn5iAMokcsdvHuchJSiQFYVqhy9Op
-         QhDfFpR/KZCpVR+Q1kOYziFru8D76A0g7UEaoq2z0/rF9/m7ik3uVr3sMwijimD5nAIX
-         cIG7KUdP4PpPh0cOFYAP85G8DvDMZ4jdMXFsqwqyCndd1isE/OerBeMG+T+mr2yk9KGx
-         mHCi2CZa16Ipdcg1mMqJKdnWfwue5PiDJb22kaCF3W5sOA7vajFDCa6VZsi9z+fc2Fgg
-         s7bg==
-X-Gm-Message-State: AOAM532hkIMV5QjmpmoMR+tGYUl7xIz/9B+FPWiRnhnZgZ69oAqcb2uv
-        O7kNa+z/WlvNpgP6BGuGNOgrdNEhvEYE5Ot4UB0=
-X-Google-Smtp-Source: ABdhPJx25Ggl45TCg2rwU3kFp1iBE/ARGjQ+s87LTmaANuGfIAJBFynMb5ve2pt2Cz7rIj9BkXFJi6NSO/M4GrED/uw=
-X-Received: by 2002:a05:6602:26d2:: with SMTP id g18mr16099209ioo.70.1635275067074;
- Tue, 26 Oct 2021 12:04:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025204634.2517-1-iangelak@redhat.com> <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
- <YXgqRb21hvYyI69D@redhat.com> <CAOQ4uxhpCKK2MYxSmRJYYMEWaHKy5ezyKgxaM+YAKtpjsZkD-g@mail.gmail.com>
- <YXhIm3mOvPsueWab@redhat.com>
-In-Reply-To: <YXhIm3mOvPsueWab@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 26 Oct 2021 22:04:15 +0300
-Message-ID: <CAOQ4uxiYDMXqj2UOVX0Mn5Vp-pSrRNrHn3pnb0UvRF+bcOnqpA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=EJh7ZcC2grrGO9nq0Nd8wB/2nJ7WWNVSIfZil/98gt8=;
+        b=bg3bQ91yP0ylFHsFyvcaol7Tx4jR+f7/j119mYmhFOZ+p//2a2x7jR6sseF2+eGvPS
+         eFQ0K1VQrES7CpDV+x+fc7ZEzZVTb3KiT+ebDemB1kAGuXSVsLt0L+b/uU/K0z7tmWZR
+         v69kWS9szA3jeNlXOzZ04iGSUze9vqZXoKiTnMM+K38CirEul0abuelh3uG2O32Axq95
+         vsJVdA4FyBaQV9hge1gFC9/3opQxX6EzKen5H93ec5rOoqnY3NGBrom/zHo2GxGYpWIs
+         eEBW1NTgGYjVveJra7msQk8r2Jmt2rc6JinCrwSZNWI6jv2u2uf39Ddfjn24D9Cr2amU
+         PZOA==
+X-Gm-Message-State: AOAM531oF+OcWoPde6NMkGB6hFjI6/XaWEOUD+YwUQkavwX111W0KxaT
+        AKdBnmigXcMOlwNzlyYN8fQ=
+X-Google-Smtp-Source: ABdhPJzzPpdTpGuVeS0gC+5ijhnpjBOIJ70BbFzpBC6srcahv8VsxXgZTBY/f1tPPjPuPg+Oj97chA==
+X-Received: by 2002:a63:fb18:: with SMTP id o24mr20405269pgh.8.1635275202596;
+        Tue, 26 Oct 2021 12:06:42 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id h35sm7895669pgh.71.2021.10.26.12.06.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Oct 2021 12:06:42 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v2 2/5] mm: avoid unnecessary flush on change_huge_pmd()
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <435f41f2-ffd4-0278-9f26-fbe2c2c7545c@intel.com>
+Date:   Tue, 26 Oct 2021 12:06:40 -0700
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8BC74789-FF33-403F-B5D7-19034CAC7EE6@gmail.com>
+References: <20211021122112.592634-1-namit@vmware.com>
+ <20211021122112.592634-3-namit@vmware.com>
+ <c415820a-aebb-265c-7f47-e048ee429102@intel.com>
+ <E38AEB97-DE1B-4C91-A959-132EC24812AE@vmware.com>
+ <29E7E8A4-C400-40A5-ACEC-F15C976DDEE0@gmail.com>
+ <435f41f2-ffd4-0278-9f26-fbe2c2c7545c@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 9:27 PM Vivek Goyal <vgoyal@redhat.com> wrote:
->
-> On Tue, Oct 26, 2021 at 08:59:44PM +0300, Amir Goldstein wrote:
-> > On Tue, Oct 26, 2021 at 7:18 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> > >
-> > > On Tue, Oct 26, 2021 at 06:23:50PM +0300, Amir Goldstein wrote:
-> > >
-> > > [..]
-> > > > > 3) The lifetime of the local watch in the guest kernel is very
-> > > > > important. Specifically, there is a possibility that the guest does not
-> > > > > receive remote events on time, if it removes its local watch on the
-> > > > > target or deletes the inode (and thus the guest kernel removes the watch).
-> > > > > In these cases the guest kernel removes the local watch before the
-> > > > > remote events arrive from the host (virtiofsd) and as such the guest
-> > > > > kernel drops all the remote events for the target inode (since the
-> > > > > corresponding local watch does not exist anymore).
-> > >
-> > > So this is one of the issues which has been haunting us in virtiofs. If
-> > > a file is removed, for local events, event is generated first and
-> > > then watch is removed. But in case of remote filesystems, it is racy.
-> > > It is possible that by the time event arrives, watch is already gone
-> > > and application never sees the delete event.
-> > >
-> > > Not sure how to address this issue.
-> >
->
-> > Can you take me through the scenario step by step.
-> > I am not sure I understand the exact sequence of the race.
->
-> Ioannis, please correct me If I get something wrong. You know exact
-> details much more than me.
->
-> A. Say a guest process unlinks a file.
-> B. Fuse sends an unlink request to server (virtiofsd)
-> C. File is unlinked on host. Assume there are no other users so inode
->    will be freed as well. And event will be generated on host and watch
->    removed.
-> D. Now Fuse server will send a unlink request reply. unlink notification
->    might still be in kernel buffers or still be in virtiofsd or could
->    be in virtiofs virtqueue.
-> E. Fuse client will receive unlink reply and remove local watch.
->
-> Fuse reply and notification event are now traveling in parallel on
-> different virtqueues and there is no connection between these two. And
-> it could very well happen that fuse reply comes first, gets processed
-> first and local watch is removed. And notification is processed right
-> after but by then local watch is gone and filesystem will be forced to
-> drop event.
->
-> As of now situation is more complicated in virtiofsd. We don't keep
-> file handle open for file and keep an O_PATH fd open for each file.
-> That means in step D above, inode on host is not freed yet and unlink
-> event is not generated yet. When unlink reply reaches fuse client,
-> it sends FORGET messages to server, and then server closes O_PATH fd
-> and then host generates unlink events. By that time its too late,
-> guest has already remove local watches (and triggered removal of
-> remote watches too).
->
-> This second problem probably can be solved by using file handles, but
-> basic race will still continue to be there.
->
-> > If it is local file removal that causes watch to be removed,
-> > then don't drop local events and you are good to go.
-> > Is it something else?
->
-> - If remote events are enabled, then idea will be that user space gets
->   and event when file is actually removed from server, right? Now it
->   is possible that another VM has this file open and file has not been
->   yet removed. So local event only tells you that file has been removed
->   in guest VM (or locally) but does not tell anything about the state
->   of file on server. (It has been unlinked on server but inode continues
->   to be alive internall).
->
-> - If user receives both local and remote delete event, it will be
->   confusing. I guess if we want to see both the events, then there
->   has to be some sort of info in event which classifies whether event
->   is local or remote. And let application act accordingly.
->
 
-Maybe. Not sure this is the way to go.
 
-There are several options to deal with this situation.
-The thing is that applications cannot usually rely on getting
-DELETE_SELF events for many different reasons that might
-keep the inode reflink elevated also on local filesystems.
+> On Oct 26, 2021, at 11:44 AM, Dave Hansen <dave.hansen@intel.com> =
+wrote:
+>=20
+> On 10/26/21 10:44 AM, Nadav Amit wrote:
+>>> "If software on one logical processor writes to a page while =
+software on
+>>> another logical processor concurrently clears the R/W flag in the
+>>> paging-structure entry that maps the page, execution on some =
+processors may
+>>> result in the entry=E2=80=99s dirty flag being set (due to the write =
+on the first
+>>> logical processor) and the entry=E2=80=99s R/W flag being clear (due =
+to the update
+>>> to the entry on the second logical processor). This will never occur =
+on a
+>>> processor that supports control-flow enforcement technology (CET)=E2=80=
+=9D
+>>>=20
+>>> So I guess that this optimization can only be enabled when CET is =
+enabled.
+>>>=20
+>>> :(
+>> I still wonder whether the SDM comment applies to present bit vs =
+dirty
+>> bit atomicity as well.
+>=20
+> I think it's implicit.  =46rom "4.8 ACCESSED AND DIRTY FLAGS":
+>=20
+> 	"Whenever there is a write to a linear address, the processor
+> 	 sets the dirty flag (if it is not already set) in the paging-
+> 	 structure entry"
+>=20
+> There can't be a "write to a linear address" without a Present=3D1 =
+PTE.
+> If it were a Dirty=3D1,Present=3D1 PTE, there's no race because there =
+might
+> not be a write to the PTE at all.
+>=20
+> There's also this from the "4.10.4.3 Optional Invalidation" section:
+>=20
+> 	"no TLB entry or paging-structure cache entry is created with
+> 	 information from a paging-structure entry in which the P flag
+> 	 is 0."
+>=20
+> That means that we don't have to worry about the TLB doing something
+> bonkers like caching a Dirty=3D1 bit from a Present=3D0 PTE.
+>=20
+> Is that what you were worried about?
 
-Perhaps the only way for FUSE (or any network) client to
-know if object on server was really deleted is to issue a lookup
-request to the file handle and when getting ESTALE.
+Thanks Dave, but no - that is not my concern.
 
-It really sounds to me like DELETE_SELF should not be reported
-at all for the first implementation.
-It is very easy to deal with DELETE_SELF events scenario with
-a filesystem watch, so bare that in mind as a possible application level
-solution.
+To make it very clear - consider the following scenario, in which
+a volatile pointer p is mapped using a certain PTE, which is RW
+(i.e., *p is writable):
 
-Thanks,
-Amir.
+  CPU0				CPU1
+  ----				----
+  x =3D *p
+  [ PTE cached in TLB;=20
+    PTE is not dirty ]
+				clear_pte(PTE)
+  *p =3D x
+  [ needs to set dirty ]
+
+Note that there is no TLB flush in this scenario. The question
+is whether the write access to *p would succeed, setting the
+dirty bit on the clear, non-present entry.
+
+I was under the impression that the hardware AD-assist would
+recheck the PTE atomically as it sets the dirty bit. But, as I
+said, I am not sure anymore whether this is defined architecturally
+(or at least would work in practice on all CPUs modulo the=20
+Knights Landing thingy).
+
