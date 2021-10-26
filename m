@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8123E43BA78
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB60943BA77
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238581AbhJZTRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235650AbhJZTRT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:17:19 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12850C061570;
-        Tue, 26 Oct 2021 12:14:55 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id q124so96761oig.3;
-        Tue, 26 Oct 2021 12:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y+zEz08kHBGhu7R8XTDsBEXzZSWT7wtgKoTDOb5ajPw=;
-        b=c3Zh+1X7UmneHWZsoRehuHIRL0fPB+Oh2m7C1gMeTxMsn5GtMj3ubGru9GUbhpiFie
-         ICxgB2ECUjWXlj3KL0HwVwl48NH7scCv/P9EbUpQbOZ8ZNpFoLRHF1bJHwVO8+UQM4j3
-         Gug2sz0w3Lid/qiZQ2lLp4rseSE4dVVCMsL8ibSx9jk1+fbN7RmmpfSxjje9u9H9oMzM
-         7B3cCKUvMymYp53obuYIbjcBz7nOEjZL+V7a+r1iixCX038YalNev+ncVOoMpsLSA7oc
-         lR88EWkS9EsaTeha9joeU52pm+FH+MWhMtxfP61y34khNwZrvkCQqAs4W7RVFFfN0N98
-         Iylg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=y+zEz08kHBGhu7R8XTDsBEXzZSWT7wtgKoTDOb5ajPw=;
-        b=Z/KA4K5ytnJ3g9ofGfZWU/6Zt2C+QWdtB+ecprPA5mDvyYhJDSCczh8Q6Pfzmc2+td
-         XjKNGZR462v4/37PvJFrY8zgiXsf+3tjHo5kRzvpkzzPphfjFG+flDlJ2KghherKt6de
-         8wwU3KEZrULgHpesB1a/E332uzg+qxj54cpTdHGkHmnkuqg1TfxblSrM4Frt0Xbs2G+H
-         D7zFMDPfD5S6V8Z1K1jXJYDGRGnXM6zumq1NduSNAeyiD8/BGdLT37icj9oByy9TfalJ
-         pEz4LT6aj4vZhpN+5PN12JaXXtdT9Forj1JFubXsfz+eOrkmvugo1EiIMTLEzxN5eyq3
-         K6mA==
-X-Gm-Message-State: AOAM5301ElMseE6iExmMLbyS85T03sl5pjDOSGJnF6/gperT8uFBng0v
-        iY0UEe6/MI6IEDfI2CuhX0g=
-X-Google-Smtp-Source: ABdhPJxmUUy5GSDH9I8l7WmEPlWDuVIPbxYRijNT0y+YZeFKIli/fTQ8lV+EJlpZtt/x9IZ0dYnMIA==
-X-Received: by 2002:a54:4401:: with SMTP id k1mr450772oiw.25.1635275693047;
-        Tue, 26 Oct 2021 12:14:53 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j7sm802613oon.13.2021.10.26.12.14.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 12:14:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 26 Oct 2021 12:14:49 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.9 00/50] 4.9.288-rc1 review
-Message-ID: <20211026191449.GA2014125@roeck-us.net>
-References: <20211025190932.542632625@linuxfoundation.org>
+        id S238564AbhJZTRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:17:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230184AbhJZTRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:17:18 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 897D16108D;
+        Tue, 26 Oct 2021 19:14:53 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 15:14:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 6/8] tracing/histogram: Optimize division by a power
+ of 2
+Message-ID: <20211026151451.7f3e09a4@gandalf.local.home>
+In-Reply-To: <20211025200852.3002369-7-kaleshsingh@google.com>
+References: <20211025200852.3002369-1-kaleshsingh@google.com>
+        <20211025200852.3002369-7-kaleshsingh@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 09:13:47PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.288 release.
-> There are 50 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, 25 Oct 2021 13:08:38 -0700
+Kalesh Singh <kaleshsingh@google.com> wrote:
+
+> == Results ==
 > 
-> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
-> Anything received after that time might be too late.
+> Divisor is a power of 2 (divisor == 32):
 > 
+>    test_hist_field_div_not_optimized  | 8,717,091 cpu-cycles
+>    test_hist_field_div_optimized      | 1,643,137 cpu-cycles
+> 
+> If the divisor is a power of 2, the optimized version is ~5.3x faster.
+> 
+> Divisor is not a power of 2 (divisor == 33):
+> 
+>    test_hist_field_div_not_optimized  | 4,444,324 cpu-cycles
+>    test_hist_field_div_optimized      | 5,497,958 cpu-cycles
 
-Build results:
-	total: 163 pass: 163 fail: 0
-Qemu test results:
-	total: 394 pass: 394 fail: 0
+To optimize this even more, if the divisor is constant, we could make a
+separate function to not do the branch, and just shift or divide.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+And even if it is not a power of 2, for constants, we could implement a
+multiplication and shift, and guarantee an accuracy up to a defined max.
 
-Guenter
+
+If div is a constant, then we can calculate the mult and shift, and max
+dividend. Let's use 20 for shift.
+
+	// This works best for small divisors
+	if (div > max_div) {
+		// only do a real division
+		return;
+	}
+	shift = 20;
+	mult = ((1 << shift) + div - 1) / div;
+	delta = mult * div - (1 << shift);
+	if (!delta) {
+		/* div is a power of 2 */
+		max = -1;
+		return;
+	}
+	max = (1 << shift) / delta;
+
+We would of course need to use 64 bit operations (maybe only do this for 64
+bit machines). And perhaps even use bigger shift values to get a bigger max.
+
+Then we could do:
+
+	if (val1 < max)
+		return (val1 * mult) >> shift;
+
+-- Steve
