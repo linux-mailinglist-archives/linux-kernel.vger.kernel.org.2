@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EFE43AC9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED1543ACAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhJZHJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:09:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhJZHJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:09:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED5D160E8B;
-        Tue, 26 Oct 2021 07:06:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635232005;
-        bh=RQiaWvZxi6P05j9XkrMk/0RKqbNxLYI79zOYLUTn8dc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=T61Hnp6RsutyC52LEy2tcuJcWKRFZ7uzOS/gQLF6Ss0C15fxCyZXz9zZUied95caD
-         BTlhah+hmp5lbIZiqty8gh/KWf2tNdl73D0UdXk2sCsaktK4YNbc6AL8hvcP5oCcJx
-         3/MH1lAXmdaCAL2GpeNFQrXWeKnDnlOx6vy6ni2MgynFwMIMWdVCUHYzWk1tXP3qwK
-         8uPidAZ1xdjSrJoHLM3g3+34EOZTp4oEqpP+iXuSIKEyD65MowLnv9y43ei32v64ar
-         z/f/6GA3LZTCtZ4lY5V1CaQ7590/8WOVn0wi70nmVAB7sYpat1dGjLWEDz0XzpbfO/
-         i0+M5zvOa5NvA==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH -next] mm/damon: fix error return code in damon_reclaim_turn()
-Date:   Tue, 26 Oct 2021 07:06:37 +0000
-Message-Id: <20211026070637.30044-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211025133002.27700-1-sj@kernel.org>
+        id S231224AbhJZHKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:10:44 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51654 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230433AbhJZHKm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 03:10:42 -0400
+X-UUID: c034a33ab7fa4c408a95c9d376f5c907-20211026
+X-UUID: c034a33ab7fa4c408a95c9d376f5c907-20211026
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1373369586; Tue, 26 Oct 2021 15:08:16 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Tue, 26 Oct 2021 15:08:14 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Oct 2021 15:08:13 +0800
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ritesh Harjani <riteshh@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        "Wenbin Mei" <wenbin.mei@mediatek.com>, <stable@vger.kernel.org>
+Subject: [PATCH] mmc: cqhci: clear HALT state after CQE enable
+Date:   Tue, 26 Oct 2021 15:08:12 +0800
+Message-ID: <20211026070812.9359-1-wenbin.mei@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 13:30:02 +0000 SeongJae Park <sj@kernel.org> wrote:
+While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
+cache) and disable cqe, for resume back, we enable CQE and not clear HALT
+state.
+In this case MediaTek mmc host controller will keep the value for HALT
+state after CQE disable/enable flow, so the next CQE transfer after resume
+will be timeout due to CQE is in HALT state, the log as below:
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
 
-> On Mon, 25 Oct 2021 20:45:00 +0800 Yang Yingliang <yangyingliang@huawei.com> wrote:
-> 
-> > If damon_reclaim_new_scheme() fails, it should return
-> > error code in damon_reclaim_turn()
-> > 
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> 
-> Thank you for this fix!
-> 
-> Reviewed-by: SeongJae Park <sj@kernel.org>
+This change check HALT state after CQE enable, if CQE is in HALT state, we
+will clear it.
 
-FWIW, this patch fixes commit 53ab0082dc41 ("mm/damon: introduce DAMON-based
-Reclamation (DAMON_RECLAIM)") in -mm[1].
+Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/mmc/host/cqhci-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-[1] https://github.com/hnaz/linux-mm/commit/53ab0082dc41
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index ca8329d55f43..b0d30c35c390 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -282,6 +282,9 @@ static void __cqhci_enable(struct cqhci_host *cq_host)
+ 
+ 	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+ 
++	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
++		cqhci_writel(cq_host, 0, CQHCI_CTL);
++
+ 	mmc->cqe_on = true;
+ 
+ 	if (cq_host->ops->enable)
+-- 
+2.25.1
 
-
-Thanks,
-SJ
-
-> 
-> 
-> Thanks,
-> SJ
-> 
-> > ---
-> >  mm/damon/reclaim.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/damon/reclaim.c b/mm/damon/reclaim.c
-> > index f5ae4c422555..dc1485044eaf 100644
-> > --- a/mm/damon/reclaim.c
-> > +++ b/mm/damon/reclaim.c
-> > @@ -292,8 +292,10 @@ static int damon_reclaim_turn(bool on)
-> >  
-> >  	/* Will be freed by 'damon_set_schemes()' below */
-> >  	scheme = damon_reclaim_new_scheme();
-> > -	if (!scheme)
-> > +	if (!scheme) {
-> > +		err = -ENOMEM;
-> >  		goto free_region_out;
-> > +	}
-> >  	err = damon_set_schemes(ctx, &scheme, 1);
-> >  	if (err)
-> >  		goto free_scheme_out;
-> > -- 
-> > 2.25.1
-> > 
