@@ -2,221 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CE743B3C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD12143B3CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236483AbhJZORI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S235373AbhJZOUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236467AbhJZORE (ORCPT
+        with ESMTP id S234439AbhJZOUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:17:04 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1919FC061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:14:41 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id lx5-20020a17090b4b0500b001a262880e99so1796303pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:14:41 -0700 (PDT)
+        Tue, 26 Oct 2021 10:20:09 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1373C061243
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:17:45 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id h196so20656819iof.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=d6cSF3siLASOQuNbVIvhuxpwn8ZXjL6+61RmHjLRG8c=;
-        b=Ucl2O9k3psg2jnvS3J6hRGbgDOF4EIUioDWdfxkg4CnBvKahmPqj3OoydGkPn0NR72
-         dfO1NR6Pigcnp1siQCVzfXLC4xemzs+NTfqDLwVmYoAdlfS/mW5jgHg7x30nrXEDQJ94
-         LH6+pJE6+DfghqQTynIB2W3RuRb/ypGMTs7ydiEL+pxEO+o3mJmyc3QuZuWy+9abQ3Ka
-         a5dJyalnHPqU65fL1zyqICOeX3uqNEVsNg9LOe9B95gfLrauPAju9rWKgbd+ipo7VPFV
-         JrvaE5FDM46nTPOcyLdjFRE0OQhQCjzVpBy+c9F3gogMzuLtutIfNKsJO74uUGqgqRzw
-         f51A==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=760ZElop6ZLsQ88z+YqPOpJFTUrugLm2l1ikv3lUPKE=;
+        b=cu/RKYxnwzW3x8m/UFGetYR/dPqlR1mmPEFE7NVkJgedNQX1zAonFkRRMpZkTLXmB6
+         qMWatzgemSDh25dKIXhJQ8jo+IGA7cREO2B88PbhGVzwB57c4lkwu/HNecHtR7i6uubE
+         2By5Ctfba1wIoFYe2rtNrlXkaC7G13kqqhq7g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=d6cSF3siLASOQuNbVIvhuxpwn8ZXjL6+61RmHjLRG8c=;
-        b=hYU3jZg4Q6zD3MNsNfOM7X4OnDW4fXORCYnEb4wgzX0kzowWxzyR1BSzlAXVU84uPV
-         UCe7O6Z57rsfbd1z8O6QYPUlEe9p5Vjjp1aJ37jEqvb8qzyOmGoVCJC/HbJYEGrgsc32
-         51iOPJOS4UoZmAGislvMnmJSjDzaYyiJfzKVLdO3g98mdOaOEnZmxEoMPLJ6wrQzD2L3
-         mWKXG3VU8tcBtiV1tiIHdtCY7aI0p34NKJKZ0UoFBskr06BGhJkVFor0fBIbtFtmp5S1
-         lzPL6Il8+LXaGT+e+gDbaBunCiywNgt4LqppJ0dwJlaOCNjgkvuNtwz1QN6sRCWJc9le
-         rakA==
-X-Gm-Message-State: AOAM533CJ5KohRb/8YuS7463IxHenFFABLavJDy0+xa3nluLAT+MZRjF
-        Te+gHqUMfCUbi7WGf5BRINoNLWpSKOY=
-X-Google-Smtp-Source: ABdhPJzRIJnffX6e9BspyBRHQkB9rRnTeGr8WfylFBrSWNzrM2VJybqn73y0Kg3/38zUXZ2Nv+vcsQ==
-X-Received: by 2002:a17:90b:1e4a:: with SMTP id pi10mr29132607pjb.142.1635257680326;
-        Tue, 26 Oct 2021 07:14:40 -0700 (PDT)
-Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id h10sm926802pfc.104.2021.10.26.07.14.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:14:39 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Juergen Gross <jgross@suse.com>, Peter Anvin <hpa@zytor.com>,
-        xen-devel@lists.xenproject.org, Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: [PATCH V4 04/50] x86/xen: Add xenpv_restore_regs_and_return_to_usermode()
-Date:   Tue, 26 Oct 2021 22:13:34 +0800
-Message-Id: <20211026141420.17138-5-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
-References: <20211026141420.17138-1-jiangshanlai@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=760ZElop6ZLsQ88z+YqPOpJFTUrugLm2l1ikv3lUPKE=;
+        b=37YOXrT+wCb+APsVGFfZJZX4gPmSZOWGzXzlIIjBYnGps0rsPAI/AfFmHoj4bye99Z
+         TK7Vw8Vty/5KA5WoQIQUl+fmIO8z2iwT2AkL/Eet46WJ0wYOaVel84n/4aY7r3/Gvcnv
+         n9CTy/tgpcj+c3HgyMJNRotIY9wcfIy0E3hs8myPT6Mhk7IWmQQlGQMtYx/cZBtIQvmS
+         /yH/HTscVTKSpcYEDnJMlGBOyljJrRlpMjeb9iG6tZGq6t0sj8tV4K3hPpQEg5ftEwYn
+         sXhLb6BXbRRizXiFFcK2Xr57QjJuHQiTtTIFB66aUc+AWmldv4m/d+je1jKL/J3iwZlY
+         T7fA==
+X-Gm-Message-State: AOAM530X4r8GDLdsfjvWRoy5NU6CxRXMuiNxvGhaKSfcSiYP3wITuSFk
+        kCeerBR82V+iUtG+TW60dO8CTM3f8NegOQ==
+X-Google-Smtp-Source: ABdhPJw+vuHb4SnbwrgIFtuOrWJsylVX+xHOd8CFggfyuK3BnxNMbdiCVQJFjmy+HXybBe7wmw0gkg==
+X-Received: by 2002:a05:6638:1505:: with SMTP id b5mr16017331jat.99.1635257865169;
+        Tue, 26 Oct 2021 07:17:45 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id l3sm4682381ilv.46.2021.10.26.07.17.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:17:44 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: net: qcom,ipa: describe IPA v4.5
+ interconnects
+To:     David Heidelberg <david@ixit.cz>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Alex Elder <elder@kernel.org>
+Cc:     ~okias/devicetree@lists.sr.ht, linux-arm-msm@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211020225435.274628-1-david@ixit.cz>
+ <05b2cc69-d8a4-750d-d98d-db8580546a15@ieee.org>
+ <C9217CCA-1A9B-40DC-9A96-13655270BA8F@ixit.cz>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <52362729-032b-e9e2-bbb9-663b1d566b37@ieee.org>
+Date:   Tue, 26 Oct 2021 09:17:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <C9217CCA-1A9B-40DC-9A96-13655270BA8F@ixit.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 10/21/21 5:11 PM, David Heidelberg wrote:
+> Hello Alex,
+> 
+> it's make dtbs_check (for me with ARCH=arm)
+> 
+> David
 
-While in the native case, PER_CPU_VAR(cpu_tss_rw + TSS_sp0) is the
-trampoline stack.  But XEN pv doesn't use trampoline stack, so
-PER_CPU_VAR(cpu_tss_rw + TSS_sp0) is also the kernel stack.  Hence source
-and destination stacks are identical in that case, which means reusing
-swapgs_restore_regs_and_return_to_usermode() in XEN pv would cause %rsp
-to move up to the top of the kernel stack and leave the IRET frame below
-%rsp, which is dangerous to be corrupted if #NMI / #MC hit as either of
-these events occurring in the middle of the stack pushing would clobber
-data on the (original) stack.
+Thank you, I see the errors now.  I am gathering information
+so I can fix the interconnect issue for IPA v4.5 (SDX55).
 
-And swapgs_restore_regs_and_return_to_usermode() pushing the IRET frame
-on to the original address is useless and error-prone when there is any
-future attempt to modify the code.
+Your other suggested change (increasing the allowed number of
+iommus) is the right thing to do, but it seems you need to
+specify "minItems = 1" as well to avoid the error Rob pointed
+out.  You should post version two of that patch (only), or if
+you would prefer I do that, say so.
 
-Fixes: 7f2590a110b8 ("x86/entry/64: Use a per-CPU trampoline stack for IDT entries")
-Cc: Jan Beulich <jbeulich@suse.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Peter Anvin <hpa@zytor.com>
-Cc: xen-devel@lists.xenproject.org>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/entry/entry_64.S        |  9 ++++++---
- arch/x86/entry/entry_64_compat.S |  7 ++++---
- arch/x86/xen/xen-asm.S           | 27 +++++++++++++++++++++++++++
- 3 files changed, 37 insertions(+), 6 deletions(-)
+Another error that shows up is that no "qcom,smp2p" schema
+matches.  I'm pretty sure that's simply because the binding
+"soc/qcom/qcom,smp2p.txt" has not bee converted to YAML.
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 9d468c8877e2..0dde5a253dda 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -119,7 +119,7 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
- 	 * In the Xen PV case we must use iret anyway.
- 	 */
- 
--	ALTERNATIVE "", "jmp	swapgs_restore_regs_and_return_to_usermode", \
-+	ALTERNATIVE "", "jmp xenpv_restore_regs_and_return_to_usermode", \
- 		X86_FEATURE_XENPV
- 
- 	movq	RCX(%rsp), %rcx
-@@ -286,7 +286,8 @@ SYM_CODE_START(ret_from_fork)
- 	UNWIND_HINT_REGS
- 	movq	%rsp, %rdi
- 	call	syscall_exit_to_user_mode	/* returns with IRQs disabled */
--	jmp	swapgs_restore_regs_and_return_to_usermode
-+	ALTERNATIVE "jmp swapgs_restore_regs_and_return_to_usermode",	\
-+		"jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
- 
- 1:
- 	/* kernel thread */
-@@ -566,6 +567,7 @@ __irqentry_text_start:
- __irqentry_text_end:
- 
- SYM_CODE_START_LOCAL(common_interrupt_return)
-+SYM_INNER_LABEL(xenpv_restore_regs_and_return_to_usermode, SYM_L_WEAK) /* placeholder */
- SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
- #ifdef CONFIG_DEBUG_ENTRY
- 	/* Assert that pt_regs indicates user mode. */
-@@ -1055,7 +1057,8 @@ SYM_CODE_START_LOCAL(error_return)
- 	DEBUG_ENTRY_ASSERT_IRQS_OFF
- 	testb	$3, CS(%rsp)
- 	jz	restore_regs_and_return_to_kernel
--	jmp	swapgs_restore_regs_and_return_to_usermode
-+	ALTERNATIVE "jmp swapgs_restore_regs_and_return_to_usermode",	\
-+		"jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
- SYM_CODE_END(error_return)
- 
- /*
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 0051cf5c792d..2a4d9532dfd5 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -139,7 +139,7 @@ SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
- 	call	do_SYSENTER_32
- 	/* XEN PV guests always use IRET path */
- 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
--		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
-+		    "jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
- 	jmp	sysret32_from_system_call
- 
- .Lsysenter_fix_flags:
-@@ -256,7 +256,7 @@ SYM_INNER_LABEL(entry_SYSCALL_compat_after_hwframe, SYM_L_GLOBAL)
- 	call	do_fast_syscall_32
- 	/* XEN PV guests always use IRET path */
- 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
--		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
-+		    "jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
- 
- 	/* Opportunistic SYSRET */
- sysret32_from_system_call:
-@@ -411,5 +411,6 @@ SYM_CODE_START(entry_INT80_compat)
- 
- 	movq	%rsp, %rdi
- 	call	do_int80_syscall_32
--	jmp	swapgs_restore_regs_and_return_to_usermode
-+	ALTERNATIVE "jmp swapgs_restore_regs_and_return_to_usermode",	\
-+		"jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
- SYM_CODE_END(entry_INT80_compat)
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index 220dd9678494..032be1bab113 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -20,6 +20,7 @@
- 
- #include <linux/init.h>
- #include <linux/linkage.h>
-+#include <../entry/calling.h>
- 
- .pushsection .noinstr.text, "ax"
- /*
-@@ -192,6 +193,32 @@ SYM_CODE_START(xen_iret)
- 	jmp hypercall_iret
- SYM_CODE_END(xen_iret)
- 
-+/*
-+ * XEN pv doesn't use trampoline stack, PER_CPU_VAR(cpu_tss_rw + TSS_sp0) is
-+ * also the kernel stack.  Reusing swapgs_restore_regs_and_return_to_usermode()
-+ * in XEN pv would cause %rsp to move up to the top of the kernel stack and
-+ * leave the IRET frame below %rsp, which is dangerous to be corrupted if #NMI
-+ * interrupts. And swapgs_restore_regs_and_return_to_usermode() pushing the IRET
-+ * frame at the same address is useless.
-+ */
-+SYM_CODE_START(xenpv_restore_regs_and_return_to_usermode)
-+	UNWIND_HINT_REGS
-+#ifdef CONFIG_DEBUG_ENTRY
-+	/* Assert that pt_regs indicates user mode. */
-+	testb	$3, CS(%rsp)
-+	jnz	1f
-+	ud2
-+1:
-+#endif
-+	POP_REGS
-+
-+	/* stackleak_erase() can work safely on the kernel stack. */
-+	STACKLEAK_ERASE_NOCLOBBER
-+
-+	addq	$8, %rsp	/* skip regs->orig_ax */
-+	jmp xen_iret
-+SYM_CODE_END(xenpv_restore_regs_and_return_to_usermode)
-+
- /*
-  * Xen handles syscall callbacks much like ordinary exceptions, which
-  * means we have:
--- 
-2.19.1.6.gb485710b
-
+					-Alex
