@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDA843B48C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC3143B499
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236883AbhJZOpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236879AbhJZOpV (ORCPT
+        id S236940AbhJZOqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:46:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37952 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236928AbhJZOqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:45:21 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C918C061348
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:42:57 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id bq11so18199276lfb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IeDPLqe3LBKUpRJz9gheIRoaNjTzo/azi2xTKJ59u4Q=;
-        b=rtTjZwJ3hBs0LVsm1btVhVOPMJ9I5MezaBoSmoqbce3/qjWaQC2+rhDsqRinNFpWQ9
-         XEIv2SKGN2wjW6chPzCLFT9zXOXt09mKGJ/wp/DNysqfz/QAU71tshSVm8II8W/47Zro
-         fFViFfYJTYFIggox35NWeXMsLXyiHz4KJZOhp09/tVEVgiKZNFcmb7ZD3JDtHb1fBhVQ
-         yS2F4rXj6uNpRlrHm4EgqyOu1tCiRlDKS7dy0yVGyj64Vd+6Vc46iZY7ovCpsczbeLZF
-         xEdJJP60JLVtl8SPNzMqy327fFe1kk/K19U6B1zRdDm/RDl/oaOFpQn9GHaOGF5wYdRV
-         5zfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IeDPLqe3LBKUpRJz9gheIRoaNjTzo/azi2xTKJ59u4Q=;
-        b=qBZOFr7CzmqQrUOpagOzanux6s/OAoeUzEcd0p2gdbjxxqbo51gUY/RcHsOFURvvN0
-         So77YoSahFKsm2MVo+w92qmNTMRJdMULiJg7Sg7O5UgBtMIhvy+rOUYe6DWCmHdH4gdB
-         P8fX/ADpaiOOAfX3e4yFlBJDPhOePp1KEhYk22x98ckIrXnR/+ORXAoHJI6lMDd7oFLz
-         zdUpcDAL3r73CpaQnip/May3/GGIoagr6QnDnja9sY8YhABekxE6k8JOaEBiZ5JLJ2jY
-         kduIWdDW87PzBAr/Hj0bu8KpJQiOswRz1px313QGOIE6ftz0AU3o9ksCTAHKpRk/6aqC
-         4Gzg==
-X-Gm-Message-State: AOAM532XRpTvqOsgq34XhfGLC/ncLW/ZolDxWKjAauejS80qxW9P292i
-        bNN/Qz2M5i6amm0wOT8m+F4JzBJI/NmnNg==
-X-Google-Smtp-Source: ABdhPJzbC4V4BOc77PUffVI7AxDyDMkYAgocDN0aDe9m5/bXIjvUGOQ5RhLNx5fCyuk5xWO+M9NHyA==
-X-Received: by 2002:a05:6512:3407:: with SMTP id i7mr24013249lfr.563.1635259375652;
-        Tue, 26 Oct 2021 07:42:55 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id bi9sm2256901lfb.40.2021.10.26.07.42.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:42:55 -0700 (PDT)
-Subject: Re: [PATCH v1 01/15] dt-bindings: add pwrseq device tree bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
- <20211006035407.1147909-2-dmitry.baryshkov@linaro.org>
- <YXf6TbV2IpPbB/0Y@robh.at.kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <37b26090-945f-1e17-f6ab-52552a4b6d89@linaro.org>
-Date:   Tue, 26 Oct 2021 17:42:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 10:46:13 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5529A1FCA3;
+        Tue, 26 Oct 2021 14:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635259428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ePQT19X3SmPjH11bt5aB3Nm5hoxOx1Fk0Lqohn1Wk8=;
+        b=PAi/DyGKz1Mz5H4MHeeXD6ynrnsFc7G/5X2HKstjEcdLp7rpHF3nvMFruGh09Lgvw9OCqH
+        yyE93pclYHHJPiTwHjPe1Mltuzw3nDYYu2R6+IfYCXUql9d2ga5dHGsEZF1JJWAxYASvvf
+        3UvMvc/CrR7r3Tmju3MhwaGBzU7sc7A=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2819EA3BA0;
+        Tue, 26 Oct 2021 14:43:48 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 16:43:47 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     NeilBrown <neilb@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [RFC 2/3] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <YXgUI33cfWYYrjXw@dhcp22.suse.cz>
+References: <20211020192430.GA1861@pc638.lan>
+ <163481121586.17149.4002493290882319236@noble.neil.brown.name>
+ <YXFAkFx8PCCJC0Iy@dhcp22.suse.cz>
+ <20211021104038.GA1932@pc638.lan>
+ <163485654850.17149.3604437537345538737@noble.neil.brown.name>
+ <20211025094841.GA1945@pc638.lan>
+ <163520582122.16092.9250045450947778926@noble.neil.brown.name>
+ <YXeraV5idipgWDB+@dhcp22.suse.cz>
+ <163524388152.8576.15706993879941541847@noble.neil.brown.name>
+ <CA+KHdyWev2RwoO1o9OrAkaE2VdC7iSXnJdBR+qzarqYOse3cXA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YXf6TbV2IpPbB/0Y@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+KHdyWev2RwoO1o9OrAkaE2VdC7iSXnJdBR+qzarqYOse3cXA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2021 15:53, Rob Herring wrote:
-> On Wed, Oct 06, 2021 at 06:53:53AM +0300, Dmitry Baryshkov wrote:
->> Add device tree bindings for the new power sequencer subsystem.
->> Consumers would reference pwrseq nodes using "foo-pwrseq" properties.
->> Providers would use '#pwrseq-cells' property to declare the amount of
->> cells in the pwrseq specifier.
-> 
-> Please use get_maintainers.pl.
-> 
-> This is not a pattern I want to encourage, so NAK on a common binding.
+On Tue 26-10-21 16:25:07, Uladzislau Rezki wrote:
+> On Tue, Oct 26, 2021 at 12:24 PM NeilBrown <neilb@suse.de> wrote:
+> >
+> > On Tue, 26 Oct 2021, Michal Hocko wrote:
+> > > On Tue 26-10-21 10:50:21, Neil Brown wrote:
+> > > > On Mon, 25 Oct 2021, Uladzislau Rezki wrote:
+> > > > > On Fri, Oct 22, 2021 at 09:49:08AM +1100, NeilBrown wrote:
+> > > > > > However I'm not 100% certain, and the behaviour might change in the
+> > > > > > future.  So having one place (the definition of memalloc_retry_wait())
+> > > > > > where we can change the sleeping behaviour if the alloc_page behavour
+> > > > > > changes, would be ideal.  Maybe memalloc_retry_wait() could take a
+> > > > > > gfpflags arg.
+> > > > > >
+> > > > > At sleeping is required for __get_vm_area_node() because in case of lack
+> > > > > of vmap space it will end up in tight loop without sleeping what is
+> > > > > really bad.
+> > > > >
+> > > > So vmalloc() has two failure modes.  alloc_page() failure and
+> > > > __alloc_vmap_area() failure.  The caller cannot tell which...
+> > > >
+> > > > Actually, they can.  If we pass __GFP_NOFAIL to vmalloc(), and it fails,
+> > > > then it must have been __alloc_vmap_area() which failed.
+> > > > What do we do in that case?
+> > > > Can we add a waitq which gets a wakeup when __purge_vmap_area_lazy()
+> > > > finishes?
+> > > > If we use the spinlock from that waitq in place of free_vmap_area_lock,
+> > > > then the wakeup would be nearly free if no-one was waiting, and worth
+> > > > while if someone was waiting.
+> > >
+> > > Is this really required to be part of the initial support?
+> >
+> > No.... I was just thinking out-loud.
+> >
+> alloc_vmap_area() has an retry path, basically if it fails the code
+> will try to "purge"
+> areas and repeat it one more time. So we do not need to purge outside some where
+> else.
 
-
-Could you please spend a few more words, describing what is not 
-encouraged? The whole foo-subsys/#subsys-cells structure?
-
-Or just specifying the common binding?
-
-> 
->>
->> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> ---
->>   .../bindings/power/pwrseq/pwrseq.yaml         | 32 +++++++++++++++++++
->>   1 file changed, 32 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml b/Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml
->> new file mode 100644
->> index 000000000000..4a8f6c0218bf
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/power/pwrseq/pwrseq.yaml
->> @@ -0,0 +1,32 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/power/pwrseq/pwrseq.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Power Sequencer devices
->> +
->> +maintainers:
->> +  - Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> +
->> +properties:
->> +  "#powerseq-cells":
->> +    description:
->> +      Number of cells in a pwrseq specifier.
->> +
->> +patternProperties:
->> +  ".*-pwrseq$":
->> +    description: Power sequencer supply phandle(s) for this node
->> +
->> +additionalProperties: true
->> +
->> +examples:
->> +  - |
->> +    qca_pwrseq: qca-pwrseq {
->> +      #pwrseq-cells = <1>;
->> +    };
->> +
->> +    bluetooth {
->> +      bt-pwrseq = <&qca_pwrseq 1>;
->> +    };
->> +...
->> -- 
->> 2.33.0
->>
->>
-
-
+I think that Neil was not concerned about the need for purging something
+but rather a waiting event the retry loop could hook into. So that the
+sleep wouldn't have to be a random timeout but something that is
+actually actionable - like somebody freeing an area.
 -- 
-With best wishes
-Dmitry
+Michal Hocko
+SUSE Labs
