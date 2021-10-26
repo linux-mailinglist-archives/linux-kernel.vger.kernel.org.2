@@ -2,99 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6BC43B589
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA8843B593
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhJZPaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:30:13 -0400
-Received: from smtprelay0229.hostedemail.com ([216.40.44.229]:51994 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232476AbhJZPaL (ORCPT
+        id S236977AbhJZPab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:30:31 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:30714 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236832AbhJZPaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:30:11 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 1519C184A82B1;
-        Tue, 26 Oct 2021 15:27:47 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 46E3620D751;
-        Tue, 26 Oct 2021 15:27:44 +0000 (UTC)
-Message-ID: <58650d3729a5b3a8bc86037757bccda5cc254e3f.camel@perches.com>
-Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
- macros
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Trevor Woerner <twoerner@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Yorick de Wid <yorickdewid@users.noreply.github.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Date:   Tue, 26 Oct 2021 08:27:43 -0700
-In-Reply-To: <fe86efbd-4e03-76c8-55cf-dabd33e85823@infradead.org>
-References: <20210423184012.39300-1-twoerner@gmail.com>
-         <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
-         <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
-         <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
-         <20211026144452.GA40651@localhost>
-         <CANiq72kf0QZUeO+=U67NLs=WXc=sEtasdv_yaZ5sZedNmzzJBw@mail.gmail.com>
-         <fe86efbd-4e03-76c8-55cf-dabd33e85823@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Tue, 26 Oct 2021 11:30:24 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QAURm1014909;
+        Tue, 26 Oct 2021 11:28:00 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3bx4fav6q5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 11:27:59 -0400
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 19QFRvQZ002791
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Oct 2021 11:27:58 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Tue, 26 Oct 2021 08:27:57 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Tue, 26 Oct 2021 08:27:56 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Tue, 26 Oct 2021 08:27:56 -0700
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.136])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 19QFRptV014798;
+        Tue, 26 Oct 2021 11:27:53 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH 2/2] dt-bindings: iio: frequency: add admv1013 doc
+Date:   Tue, 26 Oct 2021 18:27:44 +0300
+Message-ID: <20211026152744.129065-3-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211026152744.129065-1-antoniu.miclaus@analog.com>
+References: <20211026152744.129065-1-antoniu.miclaus@analog.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 46E3620D751
-X-Spam-Status: No, score=-1.24
-X-Stat-Signature: nu3xzep8u4f9aors41inrambaais4ff4
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/SVfpBUaA3R2tKARvohc5r/nEZqK9kxPg=
-X-HE-Tag: 1635262064-19342
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: Q84t7-W3RyjEoL8MSB7UjAdvcBx2nuvv
+X-Proofpoint-ORIG-GUID: Q84t7-W3RyjEoL8MSB7UjAdvcBx2nuvv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-26_04,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ clxscore=1015 adultscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110260086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-26 at 08:18 -0700, Randy Dunlap wrote:
-> On 10/26/21 8:10 AM, Miguel Ojeda wrote:
-> > On Tue, Oct 26, 2021 at 4:44 PM Trevor Woerner <twoerner@gmail.com> wrote:
-> > > 
-> > > get_maintainer.pl didn't add Andrew back then on my patch and still doesn't
-> > > even now. Maybe the MAINTAINERS file needs an update if Andrew is to be
-> > > included on trivial/documentation patches?
-> > 
-> > I mentioned Andrew because he does the hard job of being a backup for
-> > everything and everyone, but normally you should try to put the actual
-> > maintainer first in the `To` field and/or trivial@kernel.org.
-> 
-> I think that we decided to stop using trivial@kernel.org for new patches
-> a few months ago...
+Add device tree bindings for the ADMV1013 Upconverter.
 
-Dunno who the "we" is but then maybe this is appropriate:
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 ---
- MAINTAINERS | 6 ------
- 1 file changed, 6 deletions(-)
+ .../bindings/iio/frequency/adi,admv1013.yaml  | 110 ++++++++++++++++++
+ 1 file changed, 110 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 869e6cc6366bc..8c933736bb412 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19282,12 +19282,6 @@ W:	https://github.com/srcres258/linux-doc
- T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
- F:	Documentation/translations/zh_TW/
- 
--TRIVIAL PATCHES
--M:	Jiri Kosina <trivial@kernel.org>
--S:	Maintained
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial.git
--K:	^Subject:.*(?i)trivial
--
- TTY LAYER
- M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
- M:	Jiri Slaby <jirislaby@kernel.org>
+diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+new file mode 100644
+index 000000000000..7c22202e1ffd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+@@ -0,0 +1,110 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/frequency/adi,admv1013.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ADMV1013 Microwave Upconverter
++
++maintainers:
++  - Antoniu Miclaus <antoniu.miclaus@analog.com>
++
++description: |
++   Wideband, microwave upconverter optimized for point to point microwave
++   radio designs operating in the 24 GHz to 44 GHz frequency range.
++
++   https://www.analog.com/en/products/admv1013.html
++
++properties:
++  compatible:
++    enum:
++      - adi,admv1013
++
++  reg:
++    maxItems: 1
++
++  spi-max-frequency:
++    maximum: 1000000
++
++  clocks:
++    description:
++      Definition of the external clock.
++    minItems: 1
++
++  clock-names:
++    items:
++      - const: lo_in
++
++  clock-output-names:
++    maxItems: 1
++
++  vcm-supply:
++    description:
++      Analog voltage regulator.
++
++  adi,vga-pd:
++    description:
++      Power Down the Voltage Gain Amplifier Circuit.
++    type: boolean
++
++  adi,mixer-pd:
++    description:
++      Power Down the Mixer Circuit.
++    type: boolean
++
++  adi,quad-pd:
++    description:
++      Power Down the Quadrupler.
++    type: boolean
++
++  adi,bg-pd:
++    description:
++      Power Down the Transmitter Band Gap.
++    type: boolean
++
++  adi,mixer-if-en:
++    description:
++      Enable the Intermediate Frequency Mode.
++    type: boolean
++
++  adi,det-en:
++    description:
++      Enable the Envelope Detector.
++    type: boolean
++
++  adi,quad-se-mode:
++    description:
++      Switch the LO path from differential to single-ended operation.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [6, 9, 12]
++
++  '#clock-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - vcm-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      admv1013@0{
++        compatible = "adi,admv1013";
++        reg = <0>;
++        spi-max-frequency = <1000000>;
++        clocks = <&admv1013_lo>;
++        clock-names = "lo_in";
++        vcm-supply = <&vcm>;
++        adi,quad-se-mode = <12>;
++        adi,mixer-if-en;
++        adi,det-en;
++      };
++    };
++...
+-- 
+2.33.1
 
