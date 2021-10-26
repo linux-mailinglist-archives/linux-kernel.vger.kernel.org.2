@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF9743AC7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A314943AC95
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhJZGye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 02:54:34 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:37488 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232362AbhJZGyY (ORCPT
+        id S229525AbhJZHFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234545AbhJZHFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 02:54:24 -0400
-Received: by mail-wm1-f44.google.com with SMTP id b133-20020a1c808b000000b0032ca4d18aebso1945272wmd.2;
-        Mon, 25 Oct 2021 23:52:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=QfkSZPoMimggynDHL2pT21prgWPy+I2plLgyZXHSGX4=;
-        b=LDfdjJ4maZM/F43dNy16W1jHhbY/TSky8zWOCOkdfjNiY14fO/yDN0tDzmY/W1jeiX
-         /UercdFqHSWO/Wz+L+xe8raVVjiwev0UWkYApOle2MDSs6o5JxzkPAKg3ZwBldaqecW3
-         upBrQQNfy6ulRMd+LUlUwGfWWV9NKw8iK5S9Yh9cMrM7oDo6Iwivyw4OTPUsuxLVJ4Bz
-         73Z2GAI7u5ShvXOGoVEtsApiRdXioCrd9graEugmaSwz8l7zoNzOkk5SEKnmtHvQ0f4P
-         +PJbv4GfUrd62bQ/ewup9tidwdrDvqk5kKL3YXJU1EjzAZsA0T/1ECeWdNWYGBB0o2VY
-         LqUA==
-X-Gm-Message-State: AOAM530YQGHLjaRu+afy+XwER4sqvd+tTuoHY1UEHUi7bvPBTH7MIvwJ
-        qEoLV/16cRcnPRN93H9/tVA=
-X-Google-Smtp-Source: ABdhPJzB6wD/h4ICAeDhAoOhO/a6dSTMsf/apvignhmv2YxCOjIQdkW9AFF/hyHTo0okHPRYyceimA==
-X-Received: by 2002:a05:600c:354c:: with SMTP id i12mr25983545wmq.59.1635231119389;
-        Mon, 25 Oct 2021 23:51:59 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id h1sm17465747wmb.7.2021.10.25.23.51.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 23:51:58 -0700 (PDT)
-Message-ID: <415254a7-dcf2-75d8-2d92-6e3f568fc8b2@kernel.org>
-Date:   Tue, 26 Oct 2021 08:51:57 +0200
+        Tue, 26 Oct 2021 03:05:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB13DC061745;
+        Tue, 26 Oct 2021 00:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yOVnpOO/5xsqTdBpo8mL+Ltjo2bLl6z6mBz9wfQs/DU=; b=ks6XJRXZ5y+5VZcS3b5DVFHuqj
+        R9oUANLsSYe37eQrtvDX126RQYf+lPZEPWmvuhGQ4o356l9iBFF8829wsy8egyeDwSlvnKtazLWAa
+        mCnwksJ2D17DCw8nZDGUolL1V3Q0NGVaY5a7DH0Ydl1Yfyksisj36ZT6ZJkAUI+Dgz11z8HvHK0Ch
+        CqQFlapn7fuBIgJ8k9v0WwRZofbEIP/zn/q0Kj/cAaEMAAwCOmCRopc4wdJA+eMitPQf99ZXJcwWI
+        NnX4/cewNHYkbaDUhtT+Pi8gZPkfljpCLmW+ez/EuIuYXH1FyNa9VRw+k7Vo4H+UO+idBmtkfdTNA
+        Zi8WWM0Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfGQK-00GfiF-3E; Tue, 26 Oct 2021 06:59:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5BB443001BF;
+        Tue, 26 Oct 2021 08:59:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 388392D80369E; Tue, 26 Oct 2021 08:59:01 +0200 (CEST)
+Date:   Tue, 26 Oct 2021 08:59:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        "Paul E . McKenney " <paulmck@kernel.org>,
+        Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, mpe@ellerman.id.au,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [RFC v2 0/3] memory model: Make unlock(A)+lock(B) on the same
+ CPU RCtso
+Message-ID: <YXenNR6SX5Jot5Dt@hirez.programming.kicks-ass.net>
+References: <20211025145416.698183-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 1/3] serial: 8250_pci: Refactor the loop in
- pci_ite887x_init()
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211022135147.70965-1-andriy.shevchenko@linux.intel.com>
- <db3f31f4-46ed-0b6b-89a5-b3cb447e0fa7@kernel.org>
- <YXejtg5qZ3nLeu2S@kroah.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <YXejtg5qZ3nLeu2S@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025145416.698183-1-boqun.feng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26. 10. 21, 8:44, Greg Kroah-Hartman wrote:
-> On Tue, Oct 26, 2021 at 07:26:18AM +0200, Jiri Slaby wrote:
->> On 22. 10. 21, 15:51, Andy Shevchenko wrote:
->>> The loop can be refactored by using ARRAY_SIZE() instead of NULL terminator.
->>> This reduces code base and makes it easier to read and understand.
->>
->> Why don't we have array_for_each() BTW?
->>
->>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>
->> Reviewed-by: Jiri Slaby <jslaby@kernel.org>
-> 
-> And now my emails are bouncing as you typed your address incorrectly :(
+On Mon, Oct 25, 2021 at 10:54:13PM +0800, Boqun Feng wrote:
+> Boqun Feng (3):
+>   tools/memory-model: Provide extra ordering for unlock+lock pair on the
+>     same CPU
+>   tools/memory-model: doc: Describe the requirement of the litmus-tests
+>     directory
+>   tools/memory-model: litmus: Add two tests for unlock(A)+lock(B)
+>     ordering
 
-Sorry for that. My WM currently crashes when I use key shortcuts (key 
-input in plasma is not implemented under wayland). So I had to write 
-those manually and screwed up. Let me improve my workflow now.
+I'm obviously all in favour of this :-)
 
-thanks,
--- 
-js
-suse labs
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
