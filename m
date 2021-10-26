@@ -2,457 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68D443B06D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E498B43AFEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbhJZKr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:47:28 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1626 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231345AbhJZKrT (ORCPT
+        id S233517AbhJZKUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:20:45 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:22111 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhJZKUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:47:19 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QACcFa017652;
-        Tue, 26 Oct 2021 10:43:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=1n7mnSNZ+Rk0qwg17rqm+CEpaTcpDRpPBQdtSjtzAfg=;
- b=UZg426mbNa2HfhwgLchyAFLInF3xseYDCfir5aEB8Okmt6gl9AJUt2Q8qKLPVTi/G79H
- HDV04OexvwBMOf8bu1jf9bKDnWCPXMk+NAi+NRr16KvwTHmAEccjI1HA1EWVxG58664P
- msr2H83cSz30XJQANkIrYBJHOFtm1ogwRbGe2WMMaPmfY05ftkK6obBLMXr4oYmTUlIm
- NdAmZdVmMCij4XfZBNhPNBh7mjaz/MDKmYbjOxleW+bmU5uUvI3/J8ClmcUBBjnECvY9
- zrHNxQU/9UBq2XnL9Msg9QMAHRVQacV3hKGBRPHUfVE03UldLWgyb6smoXot9T+K7+5V 1w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4ygh4c6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 10:43:53 +0000
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19Q9i910024580;
-        Tue, 26 Oct 2021 10:43:52 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4ygh4at-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 10:43:52 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19QAgsw8004676;
-        Tue, 26 Oct 2021 10:43:49 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bx4f14h3g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 10:43:49 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19QAhj9L46268726
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Oct 2021 10:43:45 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8477C4C749;
-        Tue, 26 Oct 2021 10:43:45 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 627E84C74F;
-        Tue, 26 Oct 2021 10:43:43 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.51.215])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Oct 2021 10:43:43 +0000 (GMT)
-Subject: Re: [PATCH 2/2] futex: remove futex_cmpxchg detection
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-References: <20211026100432.1730393-1-arnd@kernel.org>
- <20211026100432.1730393-2-arnd@kernel.org>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <0d188eb1-32ee-aa1b-4f80-e711c11ca7eb@de.ibm.com>
-Date:   Tue, 26 Oct 2021 12:43:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 06:20:43 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211026101817epoutp035f6761147057d0c109cb0f4126938ba7~xjUwkBBE00568805688epoutp030
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:18:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211026101817epoutp035f6761147057d0c109cb0f4126938ba7~xjUwkBBE00568805688epoutp030
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635243497;
+        bh=fBOAYEV5ZWXRogB+3xddWft+s9ZcUj3JwNNwrpChUuI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mQpcOTYusGs0Xzx112JM3e2NF4n1ceN6G9rIvy4KxFp5a+IGnYmVcWhRvq6EHagaa
+         2x/Z0HeCf29OiZgW1pAqIkyqmb3lvOYT91lAA0bsJrLNk1lebdVGW7yG39saU3mrM+
+         S8uQoh2iHaEhHIbbPgQWdqhlUUZ7un3qawZkUL7s=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20211026101817epcas2p19b92431b145b5303c9c8b99a5be2002b~xjUwD_Ipf2948429484epcas2p1h;
+        Tue, 26 Oct 2021 10:18:17 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.98]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4HdnpD6FhBz4x9Q7; Tue, 26 Oct
+        2021 10:18:12 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A6.58.10018.1E5D7716; Tue, 26 Oct 2021 19:18:09 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20211026101809epcas2p413e93be31926b8d356feccf2b5e76b22~xjUoyCCoB0158901589epcas2p46;
+        Tue, 26 Oct 2021 10:18:09 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211026101809epsmtrp115ad242621087a6a64e9c5bf6329ff95~xjUoxBF9Y1793517935epsmtrp1f;
+        Tue, 26 Oct 2021 10:18:09 +0000 (GMT)
+X-AuditID: b6c32a46-a0fff70000002722-22-6177d5e1d87a
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        48.C4.08902.1E5D7716; Tue, 26 Oct 2021 19:18:09 +0900 (KST)
+Received: from perf (unknown [12.36.155.123]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211026101809epsmtip2824a3a8a010d4dec495270a5a33a8944~xjUomgclr1364413644epsmtip2R;
+        Tue, 26 Oct 2021 10:18:09 +0000 (GMT)
+Date:   Tue, 26 Oct 2021 19:45:18 +0900
+From:   Youngmin Nam <youngmin.nam@samsung.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com, kgene@kernel.org
+Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+Message-ID: <20211026104518.GA40630@perf>
 MIME-Version: 1.0
-In-Reply-To: <20211026100432.1730393-2-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jZDzBdCv_0ekg1eKCzJZDVbif86qRHPb
-X-Proofpoint-GUID: sumje8skGt9LY3pfbqlcp7WmcMbc1DYk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_02,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- clxscore=1011 suspectscore=0 adultscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=999 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110260060
+In-Reply-To: <91e926c4-9a3a-196d-1451-d3e7d38fc132@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEJsWRmVeSWpSXmKPExsWy7bCmhe7Dq+WJBm+mmlvM+yxr0bT/ErPF
+        8bWvWS36H79mttj49geTxabH11gtLu+aw2Yx4/w+JovFj1cwWfzrPchosXnTVGYHbo9ZDb1s
+        HptWdbJ53Lm2h83j3blz7B6bl9R79G1ZxejxeZNcAHtUtk1GamJKapFCal5yfkpmXrqtkndw
+        vHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0IlKCmWJOaVAoYDE4mIlfTubovzSklSFjPzi
+        Elul1IKUnALzAr3ixNzi0rx0vbzUEitDAwMjU6DChOyMf2cWsxUcEaqY/+IzawPjH74uRk4O
+        CQETiQ8fTjN1MXJxCAnsYJTov7YWyvnEKDHv0DVmCOcbo8SHloPMMC3bNy2GqtrLKLF/0wdG
+        kISQwCMgZ7M+iM0ioCqx7+FpsAY2AV2JbSf+gdWICFhLHN06HyzOLDCJSeL61EwQW1igSuLa
+        0wVsIDavgKZET+dqFghbUOLkzCdgNqeAo0T/xKvsILaogLLEgW3HwY6QEFjJIXH3/g+o61wk
+        7p3sY4OwhSVeHd/CDmFLSbzsb4Oy6yUWb1vKDNE8gVFi/qYPUAljiVnP2oEu5QC6LkNixpYY
+        EFMCaNmRWywQN/NJdBz+yw4R5pXoaBOCaFST+DVlAyOELSOxe/EKqGs8JHZtOcgICatGFom2
+        G8uZJzDKz0Ly2iyEZbPANuhILNj9iQ0iLC2x/B8HhKkpsX6X/gJG1lWMYqkFxbnpqcVGBUbw
+        uE7Oz93ECE68Wm47GKe8/aB3iJGJg/EQowQHs5II7+V55YlCvCmJlVWpRfnxRaU5qcWHGE2B
+        0TSRWUo0OR+Y+vNK4g1NLA1MzMwMzY1MDcyVxHktRbMThQTSE0tSs1NTC1KLYPqYODilGphy
+        Q5w8+i/Y5guJzt9y60BR6zHzO6fOWzm9SvexnXj93A9+630mrCWvyg0i79wvua0+U/Cp3qd/
+        97kFDV/vNOn4dzRW5O3/Hvk3N7bP3G9bHx7a+VxVMoA349+FEG5Jk/bHbwSfZt1pP+OW8W+5
+        0EHWFyZfjD4d+9HA/KjJVEP3UdviHCbX5eu37b6Yuf2VRmn4vfMB8zftUF3jd4Avs7IiuFPM
+        /HvkmTPvbfbvN+zKZPPvncVf0ydx6aQtz3Mjnn3sIZFytaaiKlqNxanq7gESV90vni5gZGhf
+        K11asHT6Jlte6XKVvUJ1dzZO0DNKUhXpkD/5knflo/cPxGc0PVj33yX+6T7fiKshmxuP9Cqx
+        FGckGmoxFxUnAgAs7qtrRQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNLMWRmVeSWpSXmKPExsWy7bCSvO7Dq+WJBu9+SVrM+yxr0bT/ErPF
+        8bWvWS36H79mttj49geTxabH11gtLu+aw2Yx4/w+JovFj1cwWfzrPchosXnTVGYHbo9ZDb1s
+        HptWdbJ53Lm2h83j3blz7B6bl9R79G1ZxejxeZNcAHsUl01Kak5mWWqRvl0CV0bjysfMBS0C
+        Fd2XVzM1MF7l6WLk5JAQMJHYvmkxUxcjF4eQwG5GiSkTD7JAJGQkbq+8zAphC0vcbznCClH0
+        gFFi1skzzCAJFgFViX0PT4PZbAK6EttO/GMEsUUErCWObp3PDNLALDCJSeJ59wF2kISwQJXE
+        tacL2EBsXgFNiZ7O1SwQUxtZJL403WCCSAhKnJz5BOwMZgEtiRv/XgLFOYBsaYnl/zhAwpwC
+        jhL9E6+CzRQVUJY4sO040wRGwVlIumch6Z6F0L2AkXkVo2RqQXFuem6xYYFhXmq5XnFibnFp
+        Xrpecn7uJkZw/Ghp7mDcvuqD3iFGJg7GQ4wSHMxKIryX55UnCvGmJFZWpRblxxeV5qQWH2KU
+        5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cAkqBezqkh9xYlrtp7FXVEb1T4bda2r0fFX
+        +9N7K3hT++cT/k2l4Qxn73qtnH308/ELHcHx7sEtl72PTdtQ+u3P01lK853aT34Lb+p+wZ24
+        hzNV5KrJOk2PDRvOxjKICSSEzJp63DZmt4qMb92prd+YGxZt2edQ822B1YstZQ3b5AXNJ9xY
+        rm3U/n+akjeb8EtBzZ+/GpSL29xdBX41vzP4/cyU3e+7kuWXl8+NROqUPu2eFxwhr3zz3Y23
+        N1LmfnU9//nA97JVy+4e/teQr1u5LGxFx/b58689Puw/b6rBBM+PL7nvtgRs+J5yzeH25ysi
+        yrKr10SXz1RxWpPK8MNl6umg3UsKl1Xx8s7k8X+spsRSnJFoqMVcVJwIADH37LMOAwAA
+X-CMS-MailID: 20211026101809epcas2p413e93be31926b8d356feccf2b5e76b22
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----Rk3zsqjqUKweF24zVwdvtl2y71nmD2FrmK.R7ke11MfHQlfJ=_60efd_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211021055112epcas2p278145beb21cd6cc4217813a41c1e1407
+References: <20211021061804.39118-1-youngmin.nam@samsung.com>
+        <CGME20211021055112epcas2p278145beb21cd6cc4217813a41c1e1407@epcas2p2.samsung.com>
+        <20211021061804.39118-2-youngmin.nam@samsung.com>
+        <0c5dcdab-7aa3-a98f-e615-acbe98489935@canonical.com>
+        <20211021082650.GA30741@perf>
+        <1b93aaf3-ed64-b105-dec4-07b6f27b385b@canonical.com>
+        <20211022042116.GA30645@perf>
+        <da83de3a-e7a2-f9b2-80f2-25c39717c3e4@canonical.com>
+        <20211026014732.GA45525@perf>
+        <91e926c4-9a3a-196d-1451-d3e7d38fc132@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 26.10.21 um 12:03 schrieb Arnd Bergmann:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Now that all architectures have a working futex implementation
-> in any configuration, remove the runtime detection code.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+------Rk3zsqjqUKweF24zVwdvtl2y71nmD2FrmK.R7ke11MfHQlfJ=_60efd_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 
-s390 part
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+On Tue, Oct 26, 2021 at 09:10:28AM +0200, Krzysztof Kozlowski wrote:
+> On 26/10/2021 03:47, Youngmin Nam wrote:
+> >> If everyone added a new driver to avoid integrating with existing code,
+> >> we would have huge kernel with thousands of duplicated solutions. The
+> >> kernel also would be unmaintained.
+> >>
+> >> Such arguments were brought before several times - "I don't want to
+> >> integrating with existing code", "My use case is different", "I would
+> >> need to test the other cases", "It's complicated for me".
+> >>
+> >> Instead of pushing a new vendor driver you should integrate it with
+> >> existing code.
+> >>
+> > Let me ask you one question.
+> > If we maintain as one driver, how can people who don't have the new MCT test the new driver?
+> 
+> I assume you talk about a case when someone else later changes something
+> in the driver. Such person doesn't necessarily have to test it. The same
+> as in all other cases (Exynos MCT is not special here): just ask for
+> testing on platform one doesn't have.
+> 
+> Even if you submit this as separate driver, there is the exact same
+> problem. People will change the MCTv2 driver without access to hardware.
+> 
+Yes, I can test the new MCT driver if someone ask for testing after modifying the new driver.
+But in this case, we don't need to test the previous MCT driver. We have only to test the new MCT driver.
+> None of these differ for Exynos MCT from other drivers, e.g. mentioned
+> Samsung PMIC drivers, recently modified (by Will and Sam) the SoC clock
+> drivers or the ChipID drivers (changed by Chanho).
+From HW point of view, the previous MCT is almost 10-year-old IP without any major change and
+it will not be used on next new Exynos SoC.
+MCTv2 is the totally newly designed IP and it will replace the Exynos system timer.
+Device driver would be dependent with H/W. We are going to apply a lot of changes for this new MCT.
+For maintenance, I think we should separate the new MCT driver for maintenance.
 
-> ---
->   arch/arc/Kconfig              |  1 -
->   arch/arm/Kconfig              |  1 -
->   arch/arm64/Kconfig            |  1 -
->   arch/csky/Kconfig             |  1 -
->   arch/m68k/Kconfig             |  1 -
->   arch/riscv/Kconfig            |  1 -
->   arch/s390/Kconfig             |  1 -
->   arch/sh/Kconfig               |  1 -
->   arch/um/Kconfig               |  1 -
->   arch/um/kernel/skas/uaccess.c |  1 -
->   arch/xtensa/Kconfig           |  1 -
->   init/Kconfig                  |  8 --------
->   kernel/futex/core.c           | 35 -----------------------------------
->   kernel/futex/futex.h          |  6 ------
->   kernel/futex/syscalls.c       | 22 ----------------------
->   15 files changed, 82 deletions(-)
 > 
-> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-> index 248389278e8f..f9413041686f 100644
-> --- a/arch/arc/Kconfig
-> +++ b/arch/arc/Kconfig
-> @@ -31,7 +31,6 @@ config ARC
->   	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
->   	select HAVE_DEBUG_STACKOVERFLOW
->   	select HAVE_DEBUG_KMEMLEAK
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX
->   	select HAVE_IOREMAP_PROT
->   	select HAVE_KERNEL_GZIP
->   	select HAVE_KERNEL_LZMA
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index bb5d2c45477b..6448d311635d 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -93,7 +93,6 @@ config ARM
->   	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
->   	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
->   	select HAVE_FUNCTION_TRACER if !XIP_KERNEL && !(THUMB2_KERNEL && CC_IS_CLANG)
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX
->   	select HAVE_GCC_PLUGINS
->   	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
->   	select HAVE_IRQ_TIME_ACCOUNTING
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 0efc501f77aa..6c3c2ff5cef8 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -193,7 +193,6 @@ config ARM64
->   	select HAVE_PERF_USER_STACK_DUMP
->   	select HAVE_REGS_AND_STACK_ACCESS_API
->   	select HAVE_FUNCTION_ARG_ACCESS_API
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX
->   	select MMU_GATHER_RCU_TABLE_FREE
->   	select HAVE_RSEQ
->   	select HAVE_STACKPROTECTOR
-> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> index 823d3d5a9e11..efd7c5feac8b 100644
-> --- a/arch/csky/Kconfig
-> +++ b/arch/csky/Kconfig
-> @@ -53,7 +53,6 @@ config CSKY
->   	select HAVE_FUNCTION_TRACER
->   	select HAVE_FUNCTION_GRAPH_TRACER
->   	select HAVE_FUNCTION_ERROR_INJECTION
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX && SMP
->   	select HAVE_FTRACE_MCOUNT_RECORD
->   	select HAVE_KERNEL_GZIP
->   	select HAVE_KERNEL_LZO
-> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-> index 0b50da08a9c5..15a793c5b2dc 100644
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -20,7 +20,6 @@ config M68K
->   	select HAVE_ASM_MODVERSIONS
->   	select HAVE_DEBUG_BUGVERBOSE
->   	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
-> -	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
->   	select HAVE_MOD_ARCH_SPECIFIC
->   	select HAVE_UID16
->   	select MMU_GATHER_NO_RANGE if MMU
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 77a088d0a7e9..037fea9fac14 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -84,7 +84,6 @@ config RISCV
->   	select HAVE_DMA_CONTIGUOUS if MMU
->   	select HAVE_EBPF_JIT if MMU
->   	select HAVE_FUNCTION_ERROR_INJECTION
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX
->   	select HAVE_GCC_PLUGINS
->   	select HAVE_GENERIC_VDSO if MMU && 64BIT
->   	select HAVE_IRQ_TIME_ACCOUNTING
-> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-> index f615c3f65f5a..1c9ecf619e04 100644
-> --- a/arch/s390/Kconfig
-> +++ b/arch/s390/Kconfig
-> @@ -164,7 +164,6 @@ config S390
->   	select HAVE_FUNCTION_ERROR_INJECTION
->   	select HAVE_FUNCTION_GRAPH_TRACER
->   	select HAVE_FUNCTION_TRACER
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX
->   	select HAVE_GCC_PLUGINS
->   	select HAVE_GENERIC_VDSO
->   	select HAVE_IOREMAP_PROT if PCI
-> diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-> index 6904f4bdbf00..93195d3368c0 100644
-> --- a/arch/sh/Kconfig
-> +++ b/arch/sh/Kconfig
-> @@ -34,7 +34,6 @@ config SUPERH
->   	select HAVE_FAST_GUP if MMU
->   	select HAVE_FUNCTION_GRAPH_TRACER
->   	select HAVE_FUNCTION_TRACER
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX
->   	select HAVE_FTRACE_MCOUNT_RECORD
->   	select HAVE_HW_BREAKPOINT
->   	select HAVE_IOREMAP_PROT if MMU && !X2TLB
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index c18b45f75d41..c906250d4970 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -14,7 +14,6 @@ config UML
->   	select HAVE_ARCH_SECCOMP_FILTER
->   	select HAVE_ASM_MODVERSIONS
->   	select HAVE_UID16
-> -	select HAVE_FUTEX_CMPXCHG if FUTEX
->   	select HAVE_DEBUG_KMEMLEAK
->   	select HAVE_DEBUG_BUGVERBOSE
->   	select NO_DMA if !UML_DMA_EMULATION
-> diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-> index a509be911026..9e37a7c05990 100644
-> --- a/arch/um/kernel/skas/uaccess.c
-> +++ b/arch/um/kernel/skas/uaccess.c
-> @@ -348,7 +348,6 @@ EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
->    * 0 - On success
->    * -EFAULT - User access resulted in a page fault
->    * -EAGAIN - Atomic operation was unable to complete due to contention
-> - * -ENOSYS - Function not implemented (only if !HAVE_FUTEX_CMPXCHG)
->    */
->   
->   int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
-> diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-> index 0e56bad058fa..8ac599aa6d99 100644
-> --- a/arch/xtensa/Kconfig
-> +++ b/arch/xtensa/Kconfig
-> @@ -31,7 +31,6 @@ config XTENSA
->   	select HAVE_DMA_CONTIGUOUS
->   	select HAVE_EXIT_THREAD
->   	select HAVE_FUNCTION_TRACER
-> -	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
->   	select HAVE_HW_BREAKPOINT if PERF_EVENTS
->   	select HAVE_IRQ_TIME_ACCOUNTING
->   	select HAVE_PCI
-> diff --git a/init/Kconfig b/init/Kconfig
-> index c0f55ea5a71f..538688598f2f 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1597,14 +1597,6 @@ config FUTEX_PI
->   	depends on FUTEX && RT_MUTEXES
->   	default y
->   
-> -config HAVE_FUTEX_CMPXCHG
-> -	bool
-> -	depends on FUTEX
-> -	help
-> -	  Architectures should select this if futex_atomic_cmpxchg_inatomic()
-> -	  is implemented and always working. This removes a couple of runtime
-> -	  checks.
-> -
->   config EPOLL
->   	bool "Enable eventpoll support" if EXPERT
->   	default y
-> diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-> index 25d8a88b32e5..926c2bb752bc 100644
-> --- a/kernel/futex/core.c
-> +++ b/kernel/futex/core.c
-> @@ -41,11 +41,6 @@
->   #include "futex.h"
->   #include "../locking/rtmutex_common.h"
->   
-> -#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
-> -int  __read_mostly futex_cmpxchg_enabled;
-> -#endif
-> -
-> -
->   /*
->    * The base of the bucket array and its size are always used together
->    * (after initialization only in futex_hash()), so ensure that they
-> @@ -776,9 +771,6 @@ static void exit_robust_list(struct task_struct *curr)
->   	unsigned long futex_offset;
->   	int rc;
->   
-> -	if (!futex_cmpxchg_enabled)
-> -		return;
-> -
->   	/*
->   	 * Fetch the list head (which was registered earlier, via
->   	 * sys_set_robust_list()):
-> @@ -874,9 +866,6 @@ static void compat_exit_robust_list(struct task_struct *curr)
->   	compat_long_t futex_offset;
->   	int rc;
->   
-> -	if (!futex_cmpxchg_enabled)
-> -		return;
-> -
->   	/*
->   	 * Fetch the list head (which was registered earlier, via
->   	 * sys_set_robust_list()):
-> @@ -950,8 +939,6 @@ static void exit_pi_state_list(struct task_struct *curr)
->   	struct futex_hash_bucket *hb;
->   	union futex_key key = FUTEX_KEY_INIT;
->   
-> -	if (!futex_cmpxchg_enabled)
-> -		return;
->   	/*
->   	 * We are a ZOMBIE and nobody can enqueue itself on
->   	 * pi_state_list anymore, but we have to be careful
-> @@ -1125,26 +1112,6 @@ void futex_exit_release(struct task_struct *tsk)
->   	futex_cleanup_end(tsk, FUTEX_STATE_DEAD);
->   }
->   
-> -static void __init futex_detect_cmpxchg(void)
-> -{
-> -#ifndef CONFIG_HAVE_FUTEX_CMPXCHG
-> -	u32 curval;
-> -
-> -	/*
-> -	 * This will fail and we want it. Some arch implementations do
-> -	 * runtime detection of the futex_atomic_cmpxchg_inatomic()
-> -	 * functionality. We want to know that before we call in any
-> -	 * of the complex code paths. Also we want to prevent
-> -	 * registration of robust lists in that case. NULL is
-> -	 * guaranteed to fault and we get -EFAULT on functional
-> -	 * implementation, the non-functional ones will return
-> -	 * -ENOSYS.
-> -	 */
-> -	if (futex_cmpxchg_value_locked(&curval, NULL, 0, 0) == -EFAULT)
-> -		futex_cmpxchg_enabled = 1;
-> -#endif
-> -}
-> -
->   static int __init futex_init(void)
->   {
->   	unsigned int futex_shift;
-> @@ -1163,8 +1130,6 @@ static int __init futex_init(void)
->   					       futex_hashsize, futex_hashsize);
->   	futex_hashsize = 1UL << futex_shift;
->   
-> -	futex_detect_cmpxchg();
-> -
->   	for (i = 0; i < futex_hashsize; i++) {
->   		atomic_set(&futex_queues[i].waiters, 0);
->   		plist_head_init(&futex_queues[i].chain);
-> diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-> index 040ae4277cb0..c264cbeab71c 100644
-> --- a/kernel/futex/futex.h
-> +++ b/kernel/futex/futex.h
-> @@ -27,12 +27,6 @@
->   #define FLAGS_CLOCKRT		0x02
->   #define FLAGS_HAS_TIMEOUT	0x04
->   
-> -#ifdef CONFIG_HAVE_FUTEX_CMPXCHG
-> -#define futex_cmpxchg_enabled 1
-> -#else
-> -extern int  __read_mostly futex_cmpxchg_enabled;
-> -#endif
-> -
->   #ifdef CONFIG_FAIL_FUTEX
->   extern bool should_fail_futex(bool fshared);
->   #else
-> diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
-> index 6f91a07a6a83..086a22d1adb7 100644
-> --- a/kernel/futex/syscalls.c
-> +++ b/kernel/futex/syscalls.c
-> @@ -29,8 +29,6 @@
->   SYSCALL_DEFINE2(set_robust_list, struct robust_list_head __user *, head,
->   		size_t, len)
->   {
-> -	if (!futex_cmpxchg_enabled)
-> -		return -ENOSYS;
->   	/*
->   	 * The kernel knows only one size for now:
->   	 */
-> @@ -56,9 +54,6 @@ SYSCALL_DEFINE3(get_robust_list, int, pid,
->   	unsigned long ret;
->   	struct task_struct *p;
->   
-> -	if (!futex_cmpxchg_enabled)
-> -		return -ENOSYS;
-> -
->   	rcu_read_lock();
->   
->   	ret = -ESRCH;
-> @@ -103,17 +98,6 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
->   			return -ENOSYS;
->   	}
->   
-> -	switch (cmd) {
-> -	case FUTEX_LOCK_PI:
-> -	case FUTEX_LOCK_PI2:
-> -	case FUTEX_UNLOCK_PI:
-> -	case FUTEX_TRYLOCK_PI:
-> -	case FUTEX_WAIT_REQUEUE_PI:
-> -	case FUTEX_CMP_REQUEUE_PI:
-> -		if (!futex_cmpxchg_enabled)
-> -			return -ENOSYS;
-> -	}
-> -
->   	switch (cmd) {
->   	case FUTEX_WAIT:
->   		val3 = FUTEX_BITSET_MATCH_ANY;
-> @@ -323,9 +307,6 @@ COMPAT_SYSCALL_DEFINE2(set_robust_list,
->   		struct compat_robust_list_head __user *, head,
->   		compat_size_t, len)
->   {
-> -	if (!futex_cmpxchg_enabled)
-> -		return -ENOSYS;
-> -
->   	if (unlikely(len != sizeof(*head)))
->   		return -EINVAL;
->   
-> @@ -342,9 +323,6 @@ COMPAT_SYSCALL_DEFINE3(get_robust_list, int, pid,
->   	unsigned long ret;
->   	struct task_struct *p;
->   
-> -	if (!futex_cmpxchg_enabled)
-> -		return -ENOSYS;
-> -
->   	rcu_read_lock();
->   
->   	ret = -ESRCH;
 > 
+> 
+> Best regards,
+> Krzysztof
+> 
+
+------Rk3zsqjqUKweF24zVwdvtl2y71nmD2FrmK.R7ke11MfHQlfJ=_60efd_
+Content-Type: text/plain; charset="utf-8"
+
+
+------Rk3zsqjqUKweF24zVwdvtl2y71nmD2FrmK.R7ke11MfHQlfJ=_60efd_--
