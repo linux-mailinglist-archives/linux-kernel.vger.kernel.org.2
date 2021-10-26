@@ -2,220 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7618543AC96
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EFE43AC9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhJZHGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:06:09 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:49261 "EHLO pegase2.c-s.fr"
+        id S230389AbhJZHJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:09:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229869AbhJZHGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:06:07 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HdjTq17Gtz9sTG;
-        Tue, 26 Oct 2021 09:03:43 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IrCSORaDI6P7; Tue, 26 Oct 2021 09:03:43 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HdjTp6nkvz9sT7;
-        Tue, 26 Oct 2021 09:03:42 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D35F58B76D;
-        Tue, 26 Oct 2021 09:03:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id dVt7rmxv6bai; Tue, 26 Oct 2021 09:03:42 +0200 (CEST)
-Received: from [192.168.203.120] (unknown [192.168.203.120])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 550668B763;
-        Tue, 26 Oct 2021 09:03:42 +0200 (CEST)
-Message-ID: <40347194-fcc6-307b-0ddd-c8a221424dd4@csgroup.eu>
-Date:   Tue, 26 Oct 2021 09:03:41 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 02/10] powerpc/book3e: Fix set_memory_x() and
- set_memory_nx()
-Content-Language: fr-FR
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <33e7fe0f6134c58e044eb63d3925cd34aa120104.1634983809.git.christophe.leroy@csgroup.eu>
- <7e7b0688c907e54f3b11ddfb9a8f44511d475fd7.1634983809.git.christophe.leroy@csgroup.eu>
- <5794f254-0523-7f2f-f9e7-ff64a7fe400d@csgroup.eu>
-In-Reply-To: <5794f254-0523-7f2f-f9e7-ff64a7fe400d@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S229487AbhJZHJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 03:09:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED5D160E8B;
+        Tue, 26 Oct 2021 07:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635232005;
+        bh=RQiaWvZxi6P05j9XkrMk/0RKqbNxLYI79zOYLUTn8dc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=T61Hnp6RsutyC52LEy2tcuJcWKRFZ7uzOS/gQLF6Ss0C15fxCyZXz9zZUied95caD
+         BTlhah+hmp5lbIZiqty8gh/KWf2tNdl73D0UdXk2sCsaktK4YNbc6AL8hvcP5oCcJx
+         3/MH1lAXmdaCAL2GpeNFQrXWeKnDnlOx6vy6ni2MgynFwMIMWdVCUHYzWk1tXP3qwK
+         8uPidAZ1xdjSrJoHLM3g3+34EOZTp4oEqpP+iXuSIKEyD65MowLnv9y43ei32v64ar
+         z/f/6GA3LZTCtZ4lY5V1CaQ7590/8WOVn0wi70nmVAB7sYpat1dGjLWEDz0XzpbfO/
+         i0+M5zvOa5NvA==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH -next] mm/damon: fix error return code in damon_reclaim_turn()
+Date:   Tue, 26 Oct 2021 07:06:37 +0000
+Message-Id: <20211026070637.30044-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211025133002.27700-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 25 Oct 2021 13:30:02 +0000 SeongJae Park <sj@kernel.org> wrote:
+
+> On Mon, 25 Oct 2021 20:45:00 +0800 Yang Yingliang <yangyingliang@huawei.com> wrote:
+> 
+> > If damon_reclaim_new_scheme() fails, it should return
+> > error code in damon_reclaim_turn()
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> 
+> Thank you for this fix!
+> 
+> Reviewed-by: SeongJae Park <sj@kernel.org>
+
+FWIW, this patch fixes commit 53ab0082dc41 ("mm/damon: introduce DAMON-based
+Reclamation (DAMON_RECLAIM)") in -mm[1].
+
+[1] https://github.com/hnaz/linux-mm/commit/53ab0082dc41
 
 
-Le 25/10/2021 à 23:53, Christophe Leroy a écrit :
-> 
-> 
-> On 23/10/2021 13:47, Christophe Leroy wrote:
->> set_memory_x() calls pte_mkexec() which sets _PAGE_EXEC.
->> set_memory_nx() calls pte_exprotec() which clears _PAGE_EXEC.
->>
->> Book3e has 2 bits, UX and SX, which defines the exec rights
->> resp. for user (PR=1) and for kernel (PR=0).
->>
->> _PAGE_EXEC is defined as UX only.
->>
->> An executable kernel page is set with either _PAGE_KERNEL_RWX
->> or _PAGE_KERNEL_ROX, which both have SX set and UX cleared.
->>
->> So set_memory_nx() call for an executable kernel page does
->> nothing because UX is already cleared.
->>
->> And set_memory_x() on a non-executable kernel page makes it
->> executable for the user and keeps it non-executable for kernel.
->>
->> Also, pte_exec() always returns 'false' on kernel pages, because
->> it checks _PAGE_EXEC which doesn't include SX, so for instance
->> the W+X check doesn't work.
->>
->> To fix this:
->> - change tlb_low_64e.S to use _PAGE_BAP_UX instead of _PAGE_USER
->> - sets both UX and SX in _PAGE_EXEC so that pte_user() returns
->> true whenever one of the two bits is set and pte_exprotect()
->> clears both bits.
->> - Define a book3e specific version of pte_mkexec() which sets
->> either SX or UX based on UR.
->>
->> Fixes: 1f9ad21c3b38 ("powerpc/mm: Implement set_memory() routines")
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->> v2: New
-> 
-> pte_mkexec() in nohash/64/pgtable.h conflicts with the one in 
-> nohash/pte_book3e.h
-> 
-> Should guard it with  #ifndef pte_mkexec(), but as pte_book3e is the 
-> only user in 64 bits, then just remove it from there.
-> 
-> Send v3 with only that change compared to v2.
-
-Series v1 was merged into next so I submitted followup series with the 
-three fixes.
-
-Christophe
+Thanks,
+SJ
 
 > 
-> Christophe
 > 
->> ---
->>   arch/powerpc/include/asm/nohash/32/pgtable.h |  2 ++
->>   arch/powerpc/include/asm/nohash/pte-book3e.h | 18 ++++++++++++++----
->>   arch/powerpc/mm/nohash/tlb_low_64e.S         |  8 ++++----
->>   3 files changed, 20 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h 
->> b/arch/powerpc/include/asm/nohash/32/pgtable.h
->> index ac0a5ff48c3a..d6ba821a56ce 100644
->> --- a/arch/powerpc/include/asm/nohash/32/pgtable.h
->> +++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
->> @@ -193,10 +193,12 @@ static inline pte_t pte_wrprotect(pte_t pte)
->>   }
->>   #endif
->> +#ifndef pte_mkexec
->>   static inline pte_t pte_mkexec(pte_t pte)
->>   {
->>       return __pte(pte_val(pte) | _PAGE_EXEC);
->>   }
->> +#endif
->>   #define pmd_none(pmd)        (!pmd_val(pmd))
->>   #define    pmd_bad(pmd)        (pmd_val(pmd) & _PMD_BAD)
->> diff --git a/arch/powerpc/include/asm/nohash/pte-book3e.h 
->> b/arch/powerpc/include/asm/nohash/pte-book3e.h
->> index 813918f40765..f798640422c2 100644
->> --- a/arch/powerpc/include/asm/nohash/pte-book3e.h
->> +++ b/arch/powerpc/include/asm/nohash/pte-book3e.h
->> @@ -48,7 +48,7 @@
->>   #define _PAGE_WRITETHRU    0x800000 /* W: cache write-through */
->>   /* "Higher level" linux bit combinations */
->> -#define _PAGE_EXEC        _PAGE_BAP_UX /* .. and was cache cleaned */
->> +#define _PAGE_EXEC        (_PAGE_BAP_SX | _PAGE_BAP_UX) /* .. and was 
->> cache cleaned */
->>   #define _PAGE_RW        (_PAGE_BAP_SW | _PAGE_BAP_UW) /* User write 
->> permission */
->>   #define _PAGE_KERNEL_RW        (_PAGE_BAP_SW | _PAGE_BAP_SR | 
->> _PAGE_DIRTY)
->>   #define _PAGE_KERNEL_RO        (_PAGE_BAP_SR)
->> @@ -93,11 +93,11 @@
->>   /* Permission masks used to generate the __P and __S table */
->>   #define PAGE_NONE    __pgprot(_PAGE_BASE)
->>   #define PAGE_SHARED    __pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW)
->> -#define PAGE_SHARED_X    __pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW 
->> | _PAGE_EXEC)
->> +#define PAGE_SHARED_X    __pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_RW 
->> | _PAGE_BAP_UX)
->>   #define PAGE_COPY    __pgprot(_PAGE_BASE | _PAGE_USER)
->> -#define PAGE_COPY_X    __pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_EXEC)
->> +#define PAGE_COPY_X    __pgprot(_PAGE_BASE | _PAGE_USER | _PAGE_BAP_UX)
->>   #define PAGE_READONLY    __pgprot(_PAGE_BASE | _PAGE_USER)
->> -#define PAGE_READONLY_X    __pgprot(_PAGE_BASE | _PAGE_USER | 
->> _PAGE_EXEC)
->> +#define PAGE_READONLY_X    __pgprot(_PAGE_BASE | _PAGE_USER | 
->> _PAGE_BAP_UX)
->>   #ifndef __ASSEMBLY__
->>   static inline pte_t pte_mkprivileged(pte_t pte)
->> @@ -113,6 +113,16 @@ static inline pte_t pte_mkuser(pte_t pte)
->>   }
->>   #define pte_mkuser pte_mkuser
->> +
->> +static inline pte_t pte_mkexec(pte_t pte)
->> +{
->> +    if (pte_val(pte) & _PAGE_BAP_UR)
->> +        return __pte((pte_val(pte) & ~_PAGE_BAP_SX) | _PAGE_BAP_UX);
->> +    else
->> +        return __pte((pte_val(pte) & ~_PAGE_BAP_UX) | _PAGE_BAP_SX);
->> +}
->> +#define pte_mkexec pte_mkexec
->> +
->>   #endif /* __ASSEMBLY__ */
->>   #endif /* __KERNEL__ */
->> diff --git a/arch/powerpc/mm/nohash/tlb_low_64e.S 
->> b/arch/powerpc/mm/nohash/tlb_low_64e.S
->> index bf24451f3e71..9235e720e357 100644
->> --- a/arch/powerpc/mm/nohash/tlb_low_64e.S
->> +++ b/arch/powerpc/mm/nohash/tlb_low_64e.S
->> @@ -222,7 +222,7 @@ tlb_miss_kernel_bolted:
->>   tlb_miss_fault_bolted:
->>       /* We need to check if it was an instruction miss */
->> -    andi.    r10,r11,_PAGE_EXEC|_PAGE_BAP_SX
->> +    andi.    r10,r11,_PAGE_BAP_UX|_PAGE_BAP_SX
->>       bne    itlb_miss_fault_bolted
->>   dtlb_miss_fault_bolted:
->>       tlb_epilog_bolted
->> @@ -239,7 +239,7 @@ itlb_miss_fault_bolted:
->>       srdi    r15,r16,60        /* get region */
->>       bne-    itlb_miss_fault_bolted
->> -    li    r11,_PAGE_PRESENT|_PAGE_EXEC    /* Base perm */
->> +    li    r11,_PAGE_PRESENT|_PAGE_BAP_UX    /* Base perm */
->>       /* We do the user/kernel test for the PID here along with the RW 
->> test
->>        */
->> @@ -614,7 +614,7 @@ itlb_miss_fault_e6500:
->>       /* We do the user/kernel test for the PID here along with the RW 
->> test
->>        */
->> -    li    r11,_PAGE_PRESENT|_PAGE_EXEC    /* Base perm */
->> +    li    r11,_PAGE_PRESENT|_PAGE_BAP_UX    /* Base perm */
->>       oris    r11,r11,_PAGE_ACCESSED@h
->>       cmpldi    cr0,r15,0            /* Check for user region */
->> @@ -734,7 +734,7 @@ normal_tlb_miss_done:
->>   normal_tlb_miss_access_fault:
->>       /* We need to check if it was an instruction miss */
->> -    andi.    r10,r11,_PAGE_EXEC
->> +    andi.    r10,r11,_PAGE_BAP_UX
->>       bne    1f
->>       ld    r14,EX_TLB_DEAR(r12)
->>       ld    r15,EX_TLB_ESR(r12)
->>
+> Thanks,
+> SJ
+> 
+> > ---
+> >  mm/damon/reclaim.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/damon/reclaim.c b/mm/damon/reclaim.c
+> > index f5ae4c422555..dc1485044eaf 100644
+> > --- a/mm/damon/reclaim.c
+> > +++ b/mm/damon/reclaim.c
+> > @@ -292,8 +292,10 @@ static int damon_reclaim_turn(bool on)
+> >  
+> >  	/* Will be freed by 'damon_set_schemes()' below */
+> >  	scheme = damon_reclaim_new_scheme();
+> > -	if (!scheme)
+> > +	if (!scheme) {
+> > +		err = -ENOMEM;
+> >  		goto free_region_out;
+> > +	}
+> >  	err = damon_set_schemes(ctx, &scheme, 1);
+> >  	if (err)
+> >  		goto free_scheme_out;
+> > -- 
+> > 2.25.1
+> > 
