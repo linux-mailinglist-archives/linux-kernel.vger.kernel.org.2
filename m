@@ -2,99 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D7E43B7CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F20F43B7D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237677AbhJZREn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:04:43 -0400
-Received: from ixit.cz ([94.230.151.217]:43048 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237663AbhJZREl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:04:41 -0400
-Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 7153320064;
-        Tue, 26 Oct 2021 19:02:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635267734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yr9uhClX24/LPzr3j28xMSkldVyzrS/jPB9TXwItW/Q=;
-        b=Yh5h1/PdyDWYWMmGnNH2FK2FhyIlEnkwGw/C5a4HremTpgkN5mF+shIUq80pTLKyljAKVi
-        0rbvXGc7e4SnG0rbRzaZlDW1ksWR91fy6mltEPxmWSeL0mi77v4wuRJgqzz9y47YhsqY74
-        FYU1fCsxFsOBNdo6eg+N3BR5FASsJJs=
-Date:   Tue, 26 Oct 2021 19:02:07 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH v2] dt-bindings: net: qcom,ipa: IPA does support up to two
- iommus
-To:     Alex Elder <elder@ieee.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alex Elder <elder@kernel.org>, ~okias/devicetree@lists.sr.ht,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <JNGL1R.U8OWUCOV58262@ixit.cz>
-In-Reply-To: <2de53575-af6e-5bb9-e7ad-5d924656867d@ieee.org>
-References: <20211026163240.131052-1-david@ixit.cz>
-        <2de53575-af6e-5bb9-e7ad-5d924656867d@ieee.org>
-X-Mailer: geary/40.0
+        id S237366AbhJZRF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232003AbhJZRF5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:05:57 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3740CC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:03:33 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id y12so18041918eda.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KlJCwudW4JdAfxlVj1A+Q4eygw6OupcvnPw6G6wlIss=;
+        b=Hvfdng1IAEXdt1+uohC+HDlOrI+r3/1Mys/XuA1eh9k/Xbpb3TMdWOXRL9gqDpPwFa
+         6MxinqxgrEa2jINr09R5M+p8cXKSg2cES3iANvTnyw8VmKkYn/STBjyYdFWWKERxdPFB
+         ljBobesnLwDseEkx+8wRe967d54PwImokwCQ/4jYRjx4NzVG2c1kgRMdnuWBknYyFqqg
+         YEuMAWnrvdWbj1tztg+yktEjRfOgZ5cUC3Kl4IdsMnp3u3ixLxLnuc4aAhuVxHDWAF1w
+         eQdoj4LaBB5lG0kXvSkNfpQnohg0WshIb0LmC7N2cljeeOB8bk3W2Wd7i7SNZIK8DP7a
+         7/gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KlJCwudW4JdAfxlVj1A+Q4eygw6OupcvnPw6G6wlIss=;
+        b=RmdGWhCt6+LgOX3B+0EuoKAvn2leAtn2JHQBY3szE/VW5P7pQd+dEnAZhB9/FP2fE0
+         hmpgHK7qZaToL/+IO1ATU4c6NQQgQH+8QD4qagwoMiWJ1WsxJExLSz5hTzD7d7fqovCs
+         NnHjlZ5ktq4GxmGdF9tjNhRsRuYa80pMYGHhv2Mpgm5fN4F1QDFpn/jHL/PLYduPF4NJ
+         yIKqu+3SbxoEgWp2iJSotfr0pVruoRkBJ26PANCbeUQ7bE19tshwlpYhF0BJJ2C9TtA/
+         Feq0xkGqA+CiN7vxS6qyWv3CuvThmu4kzCgDI57NvygjPutduDENNW9gaSvo9M8ebd/o
+         FNKQ==
+X-Gm-Message-State: AOAM532un1D3mIoodH85CBUUPp8UiC0X2f1os9MBm3IlobM+8OFVgeQi
+        cyP4o2V7RuqdOrgxdeBnajTscMUM5CbogScs4fRdag==
+X-Google-Smtp-Source: ABdhPJyHDvq0iyB6XzDK2HyQKxjgoBUggApKU0XBA3zTBCgBdRut2sQ8FOXuUJugLF1nU3Cg1t8w0+5s+2dO7JhqKqo=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr32213219ejc.69.1635267759574;
+ Tue, 26 Oct 2021 10:02:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <20211025190932.542632625@linuxfoundation.org>
+In-Reply-To: <20211025190932.542632625@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 26 Oct 2021 22:32:27 +0530
+Message-ID: <CA+G9fYuMX6nTTWNMLMi8Fw6KG+kisynrZ_98o4TPaoMd_gKbLA@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/50] 4.9.288-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-thanks, I'll try to work on my commit messages :)
+On Tue, 26 Oct 2021 at 00:48, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.288 release.
+> There are 50 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.288-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-David
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-On Tue, Oct 26 2021 at 11:47:46 -0500, Alex Elder <elder@ieee.org> 
-wrote:
-> On 10/26/21 11:32 AM, David Heidelberg wrote:
->> Fix warnings as:
->> arch/arm/boot/dts/qcom-sdx55-mtp.dt.yaml: ipa@1e40000: iommus: [[21, 
->> 1504, 0], [21, 1506, 0]] is too long
->> 	From schema: Documentation/devicetree/bindings/net/qcom,ipa.yaml
->> 
->> Signed-off-by: David Heidelberg <david@ixit.cz>
-> 
-> Looks good to me.  I'm not sure why the minItems is required,
-> unless it's to indicate that it must be at least 1 and can't
-> be missing.  But iommus is also stated to be required elsewhere
-> in the binding.
-> 
-> In the future, it's helpful to indicate the command you
-> used to produce the warning in your commit message.  And
-> furthermore, describing the problem (and not just including
-> the error message) is even more helpful.
-> 
-> Reviewed-by: Alex Elder <elder@linaro.org>
-> 
->> ---
->>   Documentation/devicetree/bindings/net/qcom,ipa.yaml | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->> 
->> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml 
->> b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
->> index b8a0b392b24e..b86edf67ce62 100644
->> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
->> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
->> @@ -64,7 +64,8 @@ properties:
->>         - const: gsi
->>       iommus:
->> -    maxItems: 1
->> +    minItems: 1
->> +    maxItems: 2
->>       clocks:
->>       maxItems: 1
->> 
-> 
+## Build
+* kernel: 4.9.288-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: 668dc542cb3809809a8ed643f9c717f8f5146890
+* git describe: v4.9.287-51-g668dc542cb38
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+87-51-g668dc542cb38
 
+## No regressions (compared to v4.9.287-47-g0e4a453b84fe)
 
+## No fixes (compared to v4.9.287-47-g0e4a453b84fe)
+
+## Test result summary
+total: 66578, pass: 52090, fail: 593, skip: 11947, xfail: 1948
+
+## Build Summary
+* arm: 129 total, 129 passed, 0 failed
+* arm64: 34 total, 34 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 18 total, 18 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 22 total, 22 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-net
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
