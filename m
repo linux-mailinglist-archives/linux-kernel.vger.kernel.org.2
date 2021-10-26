@@ -2,68 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180E943BBB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDCD43BBBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239239AbhJZUlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:41:37 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:43813 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239231AbhJZUlb (ORCPT
+        id S239247AbhJZUoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235537AbhJZUoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:41:31 -0400
-Received: by mail-oi1-f175.google.com with SMTP id o4so343631oia.10;
-        Tue, 26 Oct 2021 13:39:07 -0700 (PDT)
+        Tue, 26 Oct 2021 16:44:00 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF6EC061570;
+        Tue, 26 Oct 2021 13:41:36 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x192so1335830lff.12;
+        Tue, 26 Oct 2021 13:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i9xK3m0+QaW1ytl/BRy95Ub0ZBDl1hcy1DWr+j4fMbg=;
+        b=naRBgU4BXY0RqB9ZsH6oaD+wUpURcaVHycpwSBYJdhst+iNIydG72/38udPfb8eVHh
+         eczs4BYVblPZN0mz9UtHWcOfjEPLcju2JndfOhe2wQyOHjfN+sczAelDaZyFg2QTbIij
+         9NgsUHmpJwqUeb8SuSPlvdtyvveJzwocNvqJE5D6uZC/1ShW7rpEaS2dhd6zCC0euTaj
+         xn5kEKFMimMrmvyR2UZuqc0o6FRbVWv2cVzqXnbgvFzVMbTGfYEDkaWHX8ribejUmtQg
+         P8jea0T68omrrtxbL23VRNmFkuGZ4QGxG8uzSilZ6DawZEcVxmE9Dcd4YVpt9Q0lnJTU
+         mvMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nlTgUp5qItfNiEj5SUL7gvzHOZ7DO4OwjbwHdix/bLs=;
-        b=in29vQQIFRR+BtESS8faUPzm05Wq10FvUDjhcAgSKczrVmFsN69Lizkjr8lsPsA+lm
-         qFRiJrssAuQHCuD63b+0oFUxbwaDUMEa5V4a2UO8N+0ASZ0e0yD05yVVq6cK+dIlvnmH
-         p5WwvwNXLCXwgSRGmF2JRmlYRMJM1ys2oRm2Et3xiQcNPYkzt/FpPPa/rS+1Kic3AC6h
-         paRhKEitbGlkooDxZcdhGbBH0wgw3EKrHtQroc4aKzqlTiPUUO+9jx0GjUftQBSVz2Zv
-         zSpaupkShlgHNhudlKe7z0w6VRqtYh3ePo2f6TWdrTP/cJpxesHnfF/U1DAbsCYXtpfX
-         U+ag==
-X-Gm-Message-State: AOAM530RxFkjKq8IU9mxyUy7ccXc8B4BbjBxr3jZzPeAHWb5rqxrTvUL
-        b6EZNaGvUat2qq2db94nC8SriDEObQ==
-X-Google-Smtp-Source: ABdhPJwulVD4Ce+LCyYWNUj7ujCjfERRm8f5MOIE9nIJV7cBxZ8EIdSw358FwPXw2GI2S2Jdn4rzJA==
-X-Received: by 2002:a05:6808:8f6:: with SMTP id d22mr806869oic.88.1635280746721;
-        Tue, 26 Oct 2021 13:39:06 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id d10sm4170935ooj.24.2021.10.26.13.39.05
+         :mime-version:content-disposition:in-reply-to;
+        bh=i9xK3m0+QaW1ytl/BRy95Ub0ZBDl1hcy1DWr+j4fMbg=;
+        b=2IRYQ4LjKQBQHfSL8/1EDD06YVoMTFP7AShR/DpCVs7Vfhn3Wko2WV6CabaXqQmT5e
+         2pvHtNMgd+YTLthxZ3+maINyyJUU16M2tDL75MQmMd9a8KksJiwY+Bw6ANddF5He9hwv
+         wDS1Nsa8FnfG5JU5FV3G6neIsTlRldnO5X6gWPp6bBXDqIj7MH3yS9hQddGGqVpeAf+s
+         zrhgMk/w/61DWaomtehru7tyZzOktdbp2j1XJoN1siIfU+dOOl41g4Ak86JUlzTF/KBh
+         J+vUyalBf19vV2DXAnjSMeYSPvsRWWADez0In3syx2CNK1AMHdopOK3mPrSoSrbchD5K
+         cunQ==
+X-Gm-Message-State: AOAM532O5eaPQBPIZ1XeG+dQ6MaZcZkgNONZk5ZdiuBgQ/V7eZ1p+WPj
+        OIg3QtsBJaE/uce9nFTjJkOomyBGQ+o=
+X-Google-Smtp-Source: ABdhPJzRYMJPy+zP3RzrrChtN8taT1UDuV/pxPlgKTKbxOCRk4Vd2KUCYi/6DbDzbENatMTmkpjZ1A==
+X-Received: by 2002:a05:6512:31c9:: with SMTP id j9mr5231661lfe.217.1635280894522;
+        Tue, 26 Oct 2021 13:41:34 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id bt20sm2036909lfb.47.2021.10.26.13.41.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 13:39:06 -0700 (PDT)
-Received: (nullmailer pid 3204673 invoked by uid 1000);
-        Tue, 26 Oct 2021 20:39:05 -0000
-Date:   Tue, 26 Oct 2021 15:39:05 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>, pavel@ucw.cz,
-        netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>, robh+dt@kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: leds: Deprecate `linux,default-trigger`
- property
-Message-ID: <YXhnaUOrNm7jcp9l@robh.at.kernel.org>
-References: <20211013204424.10961-1-kabel@kernel.org>
+        Tue, 26 Oct 2021 13:41:33 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 23:41:32 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 3/4] fs/ntfs3: Update i_ctime when xattr is added
+Message-ID: <20211026204132.kyez7uu4qhv7q2wl@kari-VirtualBox>
+References: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
+ <d5482090-67d1-3a54-c351-b756b757a647@paragon-software.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211013204424.10961-1-kabel@kernel.org>
+In-Reply-To: <d5482090-67d1-3a54-c351-b756b757a647@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 22:44:22 +0200, Marek Behún wrote:
-> This property is deprecated in favor of the `function` property.
-> 
-> Signed-off-by: Marek Behún <kabel@kernel.org>
-> ---
->  Documentation/devicetree/bindings/leds/common.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Tue, Oct 26, 2021 at 07:41:50PM +0300, Konstantin Komarov wrote:
+> Ctime wasn't updated after setfacl command.
+> This commit fixes xfstest generic/307
 
-Acked-by: Rob Herring <robh@kernel.org>
+When I run xfstest I get
+
+generic/307		[20:37:41][   21.436315] run fstests generic/307 at 2021-10-26 20:37:41
+[   23.362544]  vdc:
+[failed, exit status 1] [20:37:45]- output mismatch (see /results/ntfs3/results-default/generic/307.out.bad)
+    --- tests/generic/307.out	2021-08-03 00:08:10.000000000 +0000
+    +++ /results/ntfs3/results-default/generic/307.out.bad	2021-10-26 20:37:45.172171949 +0000
+    @@ -1,2 +1,4 @@
+     QA output created by 307
+     Silence is golden
+    +setfacl: symbol lookup error: setfacl: undefined symbol: walk_tree
+    +error: ctime not updated after setfacl
+    ...
+    (Run 'diff -u /root/xfstests/tests/generic/307.out /results/ntfs3/results-default/generic/307.out.bad'  to see the entire diff)
+
+any ideas you get different result?
+
+> Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/xattr.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> index 3ccdb8c2ac0b..157b70aecb4f 100644
+> --- a/fs/ntfs3/xattr.c
+> +++ b/fs/ntfs3/xattr.c
+> @@ -992,6 +992,9 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
+>  	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
+>  
+>  out:
+> +	inode->i_ctime = current_time(inode);
+> +	mark_inode_dirty(inode);
+> +
+>  	return err;
+>  }
+>  
+> -- 
+> 2.33.0
+> 
+> 
