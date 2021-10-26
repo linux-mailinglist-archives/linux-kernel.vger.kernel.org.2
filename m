@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C7A43BC49
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9645E43BC4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239538AbhJZVXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
+        id S239545AbhJZVX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239623AbhJZVXb (ORCPT
+        with ESMTP id S235364AbhJZVX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:23:31 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7D3C061570;
-        Tue, 26 Oct 2021 14:21:07 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id f9so1014517ioo.11;
-        Tue, 26 Oct 2021 14:21:07 -0700 (PDT)
+        Tue, 26 Oct 2021 17:23:57 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C87DC061570;
+        Tue, 26 Oct 2021 14:21:32 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id u11so1685324lfs.1;
+        Tue, 26 Oct 2021 14:21:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3NsbRHAcbqeLB98tL/5OrkvKy4kl3HelWqG3LhV0gE0=;
-        b=OH2Wv2wHn5wZKLgF467oUWhtBrZ2OQWHtq+JN8v6sNGGu42bFAQeKhoU3fvklJFpn4
-         IzdE+KjpqJidy1yFqNIiJu07xtHc4kVrO9OnoN8zjWbK/637NNnZeV0oEqflPpO3X/Aw
-         feIwMHA7xrQnwpEzgtGqM4wv9T2Sh590kIDukEUYQli32jt7bdV30lz+yiE334VTqNCh
-         HNBjXMBq8AjqO7CJiouHnSnU3M43Kzd0m1YHXr+cI3LcQJAHSYWx55qI93T7m541vnjz
-         PphAy2ItY7zwrIEc+jJY98oKfgwgNwY2hKOZOmg78Dc0/H5ekomNI54TQnlh2dmDv1Gh
-         5lEg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c5OBCOayNM+ahOKWFCvMvbMLQyTktxuakOI4SZHS+Q8=;
+        b=NdAfM41w1YbqQtkF8LWRgH8Zaa+v49Pt3WuNqytZiTQqIi7WATGox5KyIy+udKDVvv
+         Y37BYqaJwAfaZEr0zTGVVM49sLFN6kasNPaIMsNZOPS0Dcb2O2RXzWRvUQFcSqzQS0PT
+         l7ObzpdXGhF24KdmvwokP7N4h5wma9BlmDRz12+0DqCNYxgs3KTWiL3O42kCdk5169Jw
+         ltP9xn4ePVDY9jz+baUj2HeQxCprbwOFISQID3qyV2GzS+CGQrW6+7/Q60ZXayUNlVkE
+         p/A+R9GYIia3f3J/SYLU4sTSvIp+aRoylkM7XxyLn5hW7eTcWAPkx5NLk+Wj0WfuEycT
+         72lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3NsbRHAcbqeLB98tL/5OrkvKy4kl3HelWqG3LhV0gE0=;
-        b=wqj8KPKEfhK5aqVHmKRgQnSoVXmiNviQYXoKKOgBUVDys6U5lFlLoJpuEAFSqA1J3Z
-         zoC9VPoLW395t6WmI4r2E2+J6qO35sw/lyoPEQIBLH4i8HeQeEh0klgoN/y5TbhTunz3
-         utcfetWp7X6euwW1+wOPe5+xG08z2Brm6c+BUzZMUyPlTfnsx3oKS0ybtxTWypnyA1LQ
-         SKYLUvihPjVdbsXSsH8HVQt5eMXoYjdgGDO6BmF533KnBPo6k8HkrFYY2SOO3Tya00Kh
-         XGlVghgUwnyNGlLpiU3yD97MK9YL4MZoGWbyv6xoDT8+y3oOqo8XEovPMQ4svRmCvCJ9
-         P2nQ==
-X-Gm-Message-State: AOAM533FPMBzWsYYA39NbMBrX3dqPTYcE03ePv0m3SgphypfKcqJygBw
-        3p8CHrHZGMavvryRYkLrdcU=
-X-Google-Smtp-Source: ABdhPJy3SVZkvA3wIqlfARdTpCeLNj5tcqu7by2mqW9Nzq4fFquD6U7uFVkJZm/f9gL2tu9getYeZA==
-X-Received: by 2002:a5d:8719:: with SMTP id u25mr17015971iom.140.1635283266966;
-        Tue, 26 Oct 2021 14:21:06 -0700 (PDT)
-Received: from localhost (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
-        by smtp.gmail.com with ESMTPSA id z7sm551192ioj.38.2021.10.26.14.21.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:21:06 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 17:21:03 -0400
-From:   Trevor Woerner <twoerner@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Yorick de Wid <yorickdewid@users.noreply.github.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
- macros
-Message-ID: <20211026212103.GA6830@localhost>
-References: <20210423184012.39300-1-twoerner@gmail.com>
- <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
- <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
- <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
- <20211026144452.GA40651@localhost>
- <52c1cd5fa698216734ffda706299d77a102fcb2f.camel@perches.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c5OBCOayNM+ahOKWFCvMvbMLQyTktxuakOI4SZHS+Q8=;
+        b=4lC5sDUMsK4vfHw/AZ6iAWz8AfKkG3plMdaFCdt3LAp0nQA7bsO28EnVLLnYtbVr51
+         xuhR11IxADs2pjQ05Y/u7lY+ttirxSfsKIGEczQFT7vd3Cm9nUAtQhqTS3V1fwM4HJKE
+         0ZQMGkM4rqzgFPqF3od7gb7E6fGpUhFLrgQ5SX+JIubhGMrlksaC+u1dE3jVVugDHPSd
+         AdWZFXqb/2gY5jxLgaYC4ZijILw+vl8slrXOmSAHgFa0gSB/2W0mLwgzJbZsS/Da+VV/
+         Pbib0c+bIq/is2yN5lJa1plOSZkRoS4ta3+nxcanAcSKn8uRpU1sI8K7bB4jQehDn0yH
+         kLCg==
+X-Gm-Message-State: AOAM530MCG4BA7X62uMXP8qtL8CktL1sEDwVx+pxi93+3A9fr3PqB2sZ
+        3Y8n8XPPJKKwSRK55cZ9c7jPqWD2l1Q=
+X-Google-Smtp-Source: ABdhPJxPNfzhptmXfaiLTa79HodQwgyptJ5vN986WIoVIxJ6zwj6xrGO51laa6qMvytsjvn4bw1gcQ==
+X-Received: by 2002:a19:ac4a:: with SMTP id r10mr25258478lfc.393.1635283290515;
+        Tue, 26 Oct 2021 14:21:30 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
+        by smtp.googlemail.com with ESMTPSA id d22sm479076lji.127.2021.10.26.14.21.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 14:21:30 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the pinctrl tree
+To:     Prathamesh Shete <pshete@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     "Kartik ." <kkartik@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20211026162852.6cf2a2aa@canb.auug.org.au>
+ <DM5PR12MB24064E6B3635CF9EDA7696CBB7849@DM5PR12MB2406.namprd12.prod.outlook.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <dad7a9b1-6521-801c-d8b8-75dca8a4bfdd@gmail.com>
+Date:   Wed, 27 Oct 2021 00:21:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <DM5PR12MB24064E6B3635CF9EDA7696CBB7849@DM5PR12MB2406.namprd12.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <52c1cd5fa698216734ffda706299d77a102fcb2f.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe,
-
-On Tue 2021-10-26 @ 08:37:29 AM, Joe Perches wrote:
-> On Tue, 2021-10-26 at 10:44 -0400, Trevor Woerner wrote:
-> > On Tue 2021-10-26 @ 02:47:12 PM, Miguel Ojeda wrote:
-> > > On Mon, Oct 25, 2021 at 11:40 PM Trevor Woerner <twoerner@gmail.com> wrote:
-> > > > ping?
-> []
-> > > Note that you should put whoever should take it in the To field (I
-> > > just noticed your original email did not) -- use
-> > > `scripts/get_maintainer.pl` for getting the relevant people for a
-> > > patch or path.
-> > 
-> > Ah, good point. I have a "cccmd" line in my ~/.gitconfig for adding people to
-> > the CC when I "git send-email", maybe I should switch that to a "tocmd"?
+26.10.2021 15:30, Prathamesh Shete пишет:
+> Fixed following warnings and error.
+> Attached the patch that fixes the issue.
+> Please help apply the Patch.
 > 
-> I use scripts for both.
+> Thanks
+> Prathamesh.
 > 
-> https://lore.kernel.org/all/1473862411.32273.25.camel@perches.com/
+> -----Original Message-----
+> From: Stephen Rothwell <sfr@canb.auug.org.au> 
+> Sent: Tuesday, October 26, 2021 10:59 AM
+> To: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Kartik . <kkartik@nvidia.com>; Prathamesh Shete <pshete@nvidia.com>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-next@vger.kernel.org>
+> Subject: linux-next: build failure after merge of the pinctrl tree
+> 
+> Hi all,
+> 
+> After merging the pinctrl tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+> 
+> drivers/pinctrl/tegra/pinctrl-tegra.c: In function 'tegra_pinctrl_get_group':
+> drivers/pinctrl/tegra/pinctrl-tegra.c:293:12: warning: return discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>   293 |     return &pmx->soc->groups[group];
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/pinctrl/tegra/pinctrl-tegra.c:282:25: warning: unused variable 'g' [-Wunused-variable]
+>   282 |  struct tegra_pingroup *g;
+>       |                         ^
+> drivers/pinctrl/tegra/pinctrl-tegra.c: In function 'tegra_pinctrl_gpio_disable_free':
+> drivers/pinctrl/tegra/pinctrl-tegra.c:341:10: error: 'return' with a value, in function returning void [-Werror=return-type]
+>   341 |   return -EINVAL;
+>       |          ^
+> drivers/pinctrl/tegra/pinctrl-tegra.c:327:13: note: declared here
+>   327 | static void tegra_pinctrl_gpio_disable_free(struct pinctrl_dev *pctldev,
+>       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   a42c7d95d29e ("pinctrl: tegra: Use correct offset for pin group")
+> 
+> I have used the pinctrl tree from next-20211025 for today.
+> 
 
-That is awesome, thanks!
+The tegra_pinctrl_get_group() should return const and not cast the
+pointers. Please make another patch to fix it properly.
