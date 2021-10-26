@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F2943B04A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B1143B05A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbhJZKmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhJZKlz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:41:55 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C770DC061745;
-        Tue, 26 Oct 2021 03:39:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CSROAHvhw5w04DYX+jlRPl3qIkI/9yJmK4yaYJQrjBU=; b=FPY2/dixnDqvt2sK6+2M3o8iGQ
-        9gxAZbT6DWQrPJ9RJ/skGOpjEkhfpnXfsJmJVO6hsaPEUTn+nFv9dDVKcr0lLmK9nriSIBSZFT8UQ
-        pXkrJyUHMtlbTnfSAG3duKw9GUQGCHbjnOv7tOKJpvQgCx+ceKL6fYz+FrIMrk6tLHUEP/voOfsxt
-        H5J6FxlGJIPsCTJYQ0wYWFnE82sMZ3SxTMI6NdZbtuDkU8Ouw59Ho6jmtj8kLAEX4dTT/Glwv8tSU
-        /5Vs5jSVWvG6E8otJ1Tov4KHHC7SohxaRaLCkW4S4nRekHnz/sM3NoyVtwJUlLu1zPcxwO2moq9Pv
-        1feBKTrQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55308)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mfJrB-0005Fq-F7; Tue, 26 Oct 2021 11:39:01 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mfJr4-0006g0-Bh; Tue, 26 Oct 2021 11:38:54 +0100
-Date:   Tue, 26 Oct 2021 11:38:54 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
+        id S234833AbhJZKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:44:29 -0400
+Received: from mout.gmx.net ([212.227.17.22]:39529 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234610AbhJZKo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:44:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635244899;
+        bh=14D6tPu6/w2h5fXF3oe5B5m7qR91fUuAunOnONVlQy4=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=kKGSHttxWvucd27+sltFv4pMJ/ljfSIUQOHt6jiE1Oo6LeiZwqiVdq527BZFXtRQo
+         DggAUQaZjAaU1W8t0VdCo+DLIvbtEHojAt68vVcB/zKvRemr28vhp7BweXotzFLLs6
+         KVTHyoZmqt4Qnput4qlobnHiMk+Ufyg4N49BgKYk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.49.114]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N8GMq-1mjWyJ0l0q-014GmI; Tue, 26
+ Oct 2021 12:41:39 +0200
+Message-ID: <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 2/2] futex: remove futex_cmpxchg detection
-Message-ID: <YXfavr6LY1xGPGCA@shell.armlinux.org.uk>
-References: <20211026100432.1730393-1-arnd@kernel.org>
- <20211026100432.1730393-2-arnd@kernel.org>
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 26 Oct 2021 12:41:36 +0200
+In-Reply-To: <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
+References: <20211021145603.5313-1-mgorman@techsingularity.net>
+         <20211021145603.5313-2-mgorman@techsingularity.net>
+         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
+         <20211022110534.GJ3959@techsingularity.net>
+         <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
+         <20211026081817.GM3959@techsingularity.net>
+         <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026100432.1730393-2-arnd@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+EcfWhzAuOffxc6Ta5wfgEYmzyUCWgibKWaOXJdc5oTpafHOjl9
+ jAQISlBQIxQmwqrHutWFzPUCwMFlZvnqjyHc5HXtWe20OaqksRihJPV851M48a639Cw4XCV
+ Et5kcataonB30hMlVYgPkJyoRGaKMYunc5EUQ1t2bV/1BuCavuYGyHT2Q1I0ivYy4fMpt0i
+ T4xbZevnp+h/MOfa8gg9w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MNrjrNhalXE=:Vtfr79cBl1bZxmqayMgOZU
+ eSNkzRjRqonACYfq5Id9s/3IM2NYE/6Hz4iUp0bgGNf2BRMiv6TM8QaBrzeZqee9PkdhIrssV
+ iM90RAP7Sl1lj9qME0tbWOjjaZr/FlmUSrf6/aaQR7+svo4ro2HmxTzLmGaE4M8D+iPOy90jH
+ bmmEul09tRm1/6/SpjUmgz6vPA3PVtQ86I6quGKToafzZqrhs5eW8iN0cr0HW274bkmIMzre9
+ yVllH8RH8pKzwkGoRhWPfkbqexRsvuf6FLS/1S/++z/wNzhX6YIJ8RG3ua1eEWnw2KiyUpKNM
+ VKS4tYYwQv+MO0nlvoyNOEynW9iKbwniubMAnQwJoi5pY6kkSc8HVyVbh27//3w+14sIYQ1Qc
+ u2uGYIg4On9H5unhyhh3nYibTUc1r03tU5bxLOt0Sc1pypxnO2E3KQ/M8SJC9oOz2mb68VnsZ
+ UyWAKaA0bpZ7x5HG6mn7dUquTnY5O0KrjJD3d1eHfNw0G6Y3sOMQsiCkvL2cTAyB8zH3Tm7tk
+ vCYMqq8nMbPCHCM4sooBMH6CW1BC91IE7gLurL+XUL1zz5JoNxG/3/VNagUCq7g4NIAZN7YgN
+ d5Rzkrr3KL1rpfR8iJE27PILzzO0cnSRKuMviEjPemm4tXjAmkTiISpZ8pxj/eJgJ6sPeKAMl
+ 7uzEHO3Dn9/YELpQ+d+F+PyY5r21AQeOhGqwfJTWMZoZb1fEdFqKdLRGqkqcEpfNrRLRV2BNl
+ i4Zq4vRYjtsFp7Tn+wGWdHpuWk6UAFRH5k1xbV+MiXhM1eE+11baKx+8zydH+ivqqGs8DEP+9
+ 7fNpU1Vrljv48a0cJPM3xjBbjKNUQ0x1H6YR8tDCS055u9lYodBo0R+/cbw2sE9aFvuMN6itw
+ e1v4YzNfW6wd05OeDO+Nxs2ptOmhEvJB57/ZveIo7hyX7lUshCOd68fz7X+JaYa8ZaGFaRG9n
+ /FBf1fph85Ewq4MGfHfkErPsf9/O1nvA4oBuyefmlYuY0agSUKavUcU1iKTXo10y62Cbcu5iO
+ UFSQI0rLWdlNNlz+/MBsElvCxie1AUYH7qojuQa8Exy/EXlbEDkLp1Wd1d0fRxeMoTscnJs2/
+ 0TP+P7PW3ipDoc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 12:03:48PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Now that all architectures have a working futex implementation
-> in any configuration, remove the runtime detection code.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
+On Tue, 2021-10-26 at 12:15 +0200, Mike Galbraith wrote:
+>
+...
 
-For ARM:
+Well now, that interruption didn't go as planned. The briefer edit
+would have been preferred, but you get the drift, so moving on...
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > It benefiting NUMA box
+> > > hackbench is a valid indicator, but one that is IMO too disconnected
+> > > from the real world to carry much weight.
+> > >
+> >
+> > I think if it's not shown to be harmful to a realistic workload but he=
+lps
+> > an overloaded example then it should be ok. While excessive overload i=
+s
+> > rare in a realistic workload, it does happen. There are a few workload=
+s
+> > I've seen bugs for that were triggered when an excessive number of wor=
+ker
+> > threads get spawned and compete for CPU access which in turns leads mo=
+re
+> > worker threads get spawned. There are application workarounds for this
+> > corner case but it still triggers bugs.
+>
 
-As Arnd explained to me what was going on, I'll include it here...
-This patch requires patch 1 which touches other architectures, so
-it is not an independent patch.
+wake_wide()'s proper test environment is NUMA, not a desktop box, so
+patchlet has yet to meet a real world load that qualifies as such.
+That it could detect the test load doing nutty stuff like waking a
+thread pool three times the size of the box is all well and good, but
+not the point.
 
-Patch 1 can be found at:
- https://lore.kernel.org/lkml/20211026100432.1730393-1-arnd@kernel.org/T/#t
+$.02 WRT poor abused hackbench: if it happens to benefit that's fine,
+but I don't think it should ever be considered change validation.  It's
+a useful tool, but the common massive overload use is just nuts IMO.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+	-Mike
