@@ -2,76 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D622D43B51F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359E743B52A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235818AbhJZPK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:10:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231545AbhJZPK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:10:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D60D760200;
-        Tue, 26 Oct 2021 15:08:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635260883;
-        bh=0XC+Ubh1QkWoRD6gJg2T3EnMFPxdPJ1VDdiOnTzCcT4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LzjRGliV/g/PF5CswOAGe1WCK7HafenLr5+7zV3gP4PZ1kvxGpnXlPCsWqiJnSUY7
-         2HBi2KSB1g9Fn6TLAo20n7SgTr/HO9qFEtTbvB0Gw49abqqyjqYPRSp0X/cisf6u1t
-         OYya2vaOB9JB4liNCVFpn4Cn5Wp3huyLuiIx4d5Q=
-Date:   Tue, 26 Oct 2021 17:08:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@google.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Jack Pham <jackp@codeaurora.org>,
-        "Gopal, Saranya" <saranya.gopal@intel.com>,
-        "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/4] usb: typec: Character device for USB Power
- Delivery devices
-Message-ID: <YXgZ0N/eWmmXeoP2@kroah.com>
-References: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
- <20211026143352.78387-3-heikki.krogerus@linux.intel.com>
+        id S234738AbhJZPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234461AbhJZPNK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 11:13:10 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E5FC061745;
+        Tue, 26 Oct 2021 08:10:46 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id o184so20918668iof.6;
+        Tue, 26 Oct 2021 08:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=leS0/NaaYLKtfLrdxPy4xO2Kdcc++8pSTs9bmAMcg3U=;
+        b=eta4hMz9pfoCRtNg/nwYnCVrFsB3FdaaWIkrWuiuo0obFPbdUd2DjZsWQfv81mWidj
+         EGWvd8FqFxqymeuhGRN1KHZIW8x+kijSmcW3KAOfvtK8wSLVH3bOoQUY+4p1HAgNV8+R
+         ZphsXErJauZn2wzzvyA3c50DmSthOXUJ30Hvfhxsoo9P8PI9R1WWLH+uffPq2a8fzilU
+         cBrWEaDNn3owFPey3Y32FVX0Hs+AnPEl9701pR2S4N95DjvjrGRZ2hsT907M6djE4igD
+         qNGMQS1nAMe8JFhI/JV+u+NFr3tlYA9mEqQdWE2HnBWHz7vvdJ9FTyxs27NwsatqYT6K
+         u1uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=leS0/NaaYLKtfLrdxPy4xO2Kdcc++8pSTs9bmAMcg3U=;
+        b=J6kA5XN+aQbDLMOUdxtaD/rHSyp9ccEqwvT+r4/8T1eVdjspSmJ0sMOeHX0FWIFmYr
+         jfAc/qSmMlrKYhYlB0rkoCISfvjwVcH8srYEXIntg7dMTKbKbyp5CfgeAcs1iXI8D7kq
+         TcOGuZdlZNX2aWx3/JIh1Yo5/9bnuKTDASgHeb7JM7u93WBK7iwpv8Wj8NrK7jR60IeX
+         tyPjeAnCyIK41l4iEA4HErzx0/7+BBfNyDiK8lln2SrIXQ/E4CytAeUhusKLOz3B6FM6
+         ZxRzPfQTdTLoSMUDRgUaJwhxMpAL6EdIjuCBfeZF6LGwNllYukDKIzLAwDtzK/E1ckHN
+         p42Q==
+X-Gm-Message-State: AOAM532XnJ9EnFPura7J8nsx2Ql98mpnobUfwa5S8Z/3LSKJztn50qbh
+        UYwnoS6RuR6IghvN6amBHgSBQII6RYLBwwD8gO0=
+X-Google-Smtp-Source: ABdhPJwWbLtW3CT7cBcX4C+TiLUAsmbALUd0+piWbeflsgxf+SHLX+uMRf/ch3Ap1o24Pe/h9qvcBp7QJYtnHFpelwk=
+X-Received: by 2002:a05:6602:2d4e:: with SMTP id d14mr16054823iow.172.1635261045995;
+ Tue, 26 Oct 2021 08:10:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026143352.78387-3-heikki.krogerus@linux.intel.com>
+References: <20210423184012.39300-1-twoerner@gmail.com> <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
+ <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
+ <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com> <20211026144452.GA40651@localhost>
+In-Reply-To: <20211026144452.GA40651@localhost>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 26 Oct 2021 17:10:34 +0200
+Message-ID: <CANiq72kf0QZUeO+=U67NLs=WXc=sEtasdv_yaZ5sZedNmzzJBw@mail.gmail.com>
+Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model macros
+To:     Trevor Woerner <twoerner@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Yorick de Wid <yorickdewid@users.noreply.github.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 05:33:50PM +0300, Heikki Krogerus wrote:
-> Interim.
-> 
-> TODO/ideas:
-> - Figure out a proper magic value for the ioctl and check if
->   the ioctl range is OK.
-> - Register separate PD device for the cdev, and register it
->   only if the device (port, plug or partner) actually
->   supports USB PD (or come up with some other solution?).
-> - Introduce something like
-> 
-> 	struct pd_request {
-> 		struct pd_message request;
-> 		struct pd_message __user *response;
-> 	};
-> 
->   and use it instead of only single struct pd_messages everywhere.
-> 
-> - Add compat support.
+On Tue, Oct 26, 2021 at 4:44 PM Trevor Woerner <twoerner@gmail.com> wrote:
+>
+> get_maintainer.pl didn't add Andrew back then on my patch and still doesn't
+> even now. Maybe the MAINTAINERS file needs an update if Andrew is to be
+> included on trivial/documentation patches?
 
-Ick, no, new ioctls should never need compat support if you create them
-properly.  That is only for "old" ones.
+I mentioned Andrew because he does the hard job of being a backup for
+everything and everyone, but normally you should try to put the actual
+maintainer first in the `To` field and/or trivial@kernel.org.
 
-Also, why not use the miscdev api instead?  That should remove some code
-of yours and make things simpler, if you really want to stick with a
-char device node...
-
-thanks,
-
-greg k-h
+Cheers,
+Miguel
