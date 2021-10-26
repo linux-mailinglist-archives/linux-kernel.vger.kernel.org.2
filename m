@@ -2,120 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC1D43B4DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AA943B4EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhJZOz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:55:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231178AbhJZOz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:55:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F3B60E73;
-        Tue, 26 Oct 2021 14:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635260014;
-        bh=XWVXck4BTc3O6D5MfPddpqYC5tdKxec60b3+5QEzROQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lhifqTNUtFD8nrTJq+H5e70MsMniLlZ/R4K8HpU02g//8sjFRZVkrqLdWhsjxJRLc
-         nfCvXMMz6UkRZZXDGk6CBz9lmbKQieG7B3yY1Ku7OEt68nPb17IWjRF/GAHtmJsRDW
-         E9N/mDX2e0Lo9UfJsFYm3hQvg3CUfu9bbJcO+0bM=
-Date:   Tue, 26 Oct 2021 16:53:32 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     lianzhi chang <changlianzhi@uniontech.com>,
-        linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        jirislaby@kernel.org, 282827961@qq.com
-Subject: Re: [PATCH v7] tty: Fix the keyboard led light display problem
-Message-ID: <YXgWbG30THLgS5zJ@kroah.com>
-References: <20211026024032.15897-1-changlianzhi@uniontech.com>
- <YXgPZw3eluaaVvRc@smile.fi.intel.com>
+        id S235471AbhJZO6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231178AbhJZO6j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:58:39 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74A4C061745;
+        Tue, 26 Oct 2021 07:56:15 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id l13so6044970ilh.3;
+        Tue, 26 Oct 2021 07:56:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R9HURV+keZ8+RC861ppVS61dq4P1A4mNf2+AcYkA9y0=;
+        b=Cv/et1PndkMkn8UTWO3ufwFO3ktYT4DKlDSaO20ZP9zP0iuOIVbhe0ZJPblA2037zi
+         3Xnv7+QiOHayz4gmA3MJOWDz8NleLjcj4QiK+fM1zhQKU9B+sG5zHXSwXeceIRPz9pgV
+         voPxq5YylpBb0OZWuAg7HsKeB06F/xhY924mfGzG5zXsrtXj6wUcTICoSeq6we7rbnIe
+         rTmRSiVv56NUktYKJEt1vzAPhRKcE5owbJblP0e7nxG3N0Q+C3cOU3SLtCQzqZF2nOvS
+         ir9pOzabDhSqgU3QMb4PK0ytwdr4Og6UImCUH2ai30e/K7aZxxdKgt/CyAAmAcfe2Vwi
+         B+NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R9HURV+keZ8+RC861ppVS61dq4P1A4mNf2+AcYkA9y0=;
+        b=2l8tzGdXjeSvml9yGHD5C9ZuZN7Bwgiank+sqm05+b3Ck7meIbxfraSQ7ErfC1neUl
+         H0Zoxl5gsOD31HmPaEJJVnwTlasqlNg3QlMXbHb243s0/FZnyrYLQjPMDm0/3eKg05ay
+         voTo4ZJYd8CamhAyCaWm5IDLpA7t9JHsOxf0eGtpjuh4cwBRBAMJ1ZfjJAtV0JKbDggN
+         9fwbr8zk5aI6PWvtwPS9lWdJri9O9++CFCKUptEhHCa13hL0ecYMUwuiDQtTJWGXtTlH
+         FHLl7Zmp/+dF3lMPH+78YcFhgZOdFRLWGRIoJ2ZpmUjqfjBmDea2kUqMrQKd2j6b/DQy
+         /WZA==
+X-Gm-Message-State: AOAM530ro6OKYSVxFUuPW45tOKRf/rm7hHXiAYoojvRZTlmEU6XVoKKe
+        usbR/eSzcfq6Y/LnMyeDgiI9FpvD5ox+uPhXRz8=
+X-Google-Smtp-Source: ABdhPJyQxAk3RWdnDVx9xb0R6GVIYMqcYvNwcAhAeXE+Y0IjtY12vXvMexhQ8VLMYbkWoW/9FuXedJYwWrcf6YXm1vY=
+X-Received: by 2002:a05:6e02:18cf:: with SMTP id s15mr10170813ilu.198.1635260175196;
+ Tue, 26 Oct 2021 07:56:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXgPZw3eluaaVvRc@smile.fi.intel.com>
+References: <20211025204634.2517-1-iangelak@redhat.com> <20211025204634.2517-2-iangelak@redhat.com>
+In-Reply-To: <20211025204634.2517-2-iangelak@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 26 Oct 2021 17:56:03 +0300
+Message-ID: <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] FUSE: Add the fsnotify opcode and in/out structs
+ to FUSE
+To:     Ioannis Angelakopoulos <iangelak@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 05:23:35PM +0300, Andy Shevchenko wrote:
-> On Tue, Oct 26, 2021 at 10:40:32AM +0800, lianzhi chang wrote:
-> > Switching from the desktop environment to the tty environment,
-> > the state of the keyboard led lights and the state of the keyboard
-> > lock are inconsistent. This is because the attribute kb->kbdmode
-> > of the tty bound in the desktop environment (xorg) is set to
-> 
-> Xorg
-> 
-> I think I already pointed that out.
-> 
-> > VC_OFF, which causes the ledstate and kb->ledflagstate
-> > values of the bound tty to always be 0, which causes the switch
-> > from the desktop When to the tty environment, the LED light
-> > status is inconsistent with the keyboard lock status.
-> 
-> ...
-> 
-> > +static void kbd_update_ledstate(struct input_dev *dev)
-> > +{
-> > +	if (!!test_bit(LED_NUML, dev->led) !=
-> > +	    !!(ledstate & BIT(VC_NUMLOCK)))
-> > +		ledstate ^= BIT(VC_NUMLOCK);
-> > +	if (!!test_bit(LED_CAPSL, dev->led) !=
-> > +	    !!(ledstate & BIT(VC_CAPSLOCK)))
-> > +		ledstate ^= BIT(VC_CAPSLOCK);
-> > +	if (!!test_bit(LED_SCROLLL, dev->led) !=
-> > +	    !!(ledstate & BIT(VC_SCROLLOCK)))
-> > +		ledstate ^= BIT(VC_SCROLLOCK);
-> 
-> This looks ugly.
-
-Agreed, we also have the vc_kbd_led() and friend functions that seem to
-be ignored here :(
-
-> 
-> Since LED_* are part of uAPI and VC_* are not, perhaps
-> makes sense to modify kbd_kern.h and optimize above
-> (disclaimer: compile tested only, no locking or other
->  synchronization have been checked / reviewed / etc):
-> 
-> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-> index c7fbbcdcc346..2b04eaa5c6fd 100644
-> --- a/drivers/tty/vt/keyboard.c
-> +++ b/drivers/tty/vt/keyboard.c
-> @@ -49,6 +49,11 @@
->  
->  #include <asm/irq_regs.h>
->  
-> +/* We rely on these in kbd_update_ledstate() */
-> +static_assert(VC_NUMLOCK == LED_NUML);
-> +static_assert(VC_CAPSLOCK == LED_CAPSL);
-> +static_assert(VC_SCROLLOCK == LED_SCROLLL);
-
-This makes more sense, these should be in sync.
-
-> +
->  /*
->   * Exported functions/variables
+On Mon, Oct 25, 2021 at 11:47 PM Ioannis Angelakopoulos
+<iangelak@redhat.com> wrote:
+>
+> Since fsnotify is the backend for the inotify subsystem all the backend
+> code implementation we add is related to fsnotify.
+>
+> To support an fsnotify request in FUSE and specifically virtiofs we add a
+> new opcode for the FSNOTIFY (51) operation request in the "fuse.h" header.
+>
+> Also add the "fuse_notify_fsnotify_in" and "fuse_notify_fsnotify_out"
+> structs that are responsible for passing the fsnotify/inotify related data
+> to and from the FUSE server.
+>
+> Signed-off-by: Ioannis Angelakopoulos <iangelak@redhat.com>
+> ---
+>  include/uapi/linux/fuse.h | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+> index 46838551ea84..418b7fc72417 100644
+> --- a/include/uapi/linux/fuse.h
+> +++ b/include/uapi/linux/fuse.h
+> @@ -186,6 +186,9 @@
+>   *  - add FUSE_SYNCFS
+>   *  7.35
+>   *  - add FUSE_NOTIFY_LOCK
+> + *  7.36
+> + *  - add FUSE_HAVE_FSNOTIFY
+> + *  - add fuse_notify_fsnotify_(in,out)
 >   */
-> @@ -1130,6 +1135,15 @@ static void kbd_init_leds(void)
->  
->  #endif
->  
-> +static void kbd_update_ledstate(struct input_dev *dev)
-> +{
-> +	unsigned long leds = BIT(LED_NUML) | BIT(LED_CAPSL) | BIT(LED_SCROLLL);
-> +	unsigned long newstate = *dev->led;
-> +
-> +	newstate ^= ledstate;
-> +	ledstate ^= newstate & leds;
+>
+>  #ifndef _LINUX_FUSE_H
+> @@ -221,7 +224,7 @@
+>  #define FUSE_KERNEL_VERSION 7
+>
+>  /** Minor version number of this interface */
+> -#define FUSE_KERNEL_MINOR_VERSION 35
+> +#define FUSE_KERNEL_MINOR_VERSION 36
+>
+>  /** The node ID of the root inode */
+>  #define FUSE_ROOT_ID 1
+> @@ -338,6 +341,7 @@ struct fuse_file_lock {
+>   *                     write/truncate sgid is killed only if file has group
+>   *                     execute permission. (Same as Linux VFS behavior).
+>   * FUSE_SETXATTR_EXT:  Server supports extended struct fuse_setxattr_in
+> + * FUSE_HAVE_FSNOTIFY: remote fsnotify/inotify event subsystem support
+>   */
+>  #define FUSE_ASYNC_READ                (1 << 0)
+>  #define FUSE_POSIX_LOCKS       (1 << 1)
+> @@ -369,6 +373,7 @@ struct fuse_file_lock {
+>  #define FUSE_SUBMOUNTS         (1 << 27)
+>  #define FUSE_HANDLE_KILLPRIV_V2        (1 << 28)
+>  #define FUSE_SETXATTR_EXT      (1 << 29)
+> +#define FUSE_HAVE_FSNOTIFY     (1 << 30)
+>
+>  /**
+>   * CUSE INIT request/reply flags
+> @@ -515,6 +520,7 @@ enum fuse_opcode {
+>         FUSE_SETUPMAPPING       = 48,
+>         FUSE_REMOVEMAPPING      = 49,
+>         FUSE_SYNCFS             = 50,
+> +       FUSE_FSNOTIFY           = 51,
+>
+>         /* CUSE specific operations */
+>         CUSE_INIT               = 4096,
+> @@ -532,6 +538,7 @@ enum fuse_notify_code {
+>         FUSE_NOTIFY_RETRIEVE = 5,
+>         FUSE_NOTIFY_DELETE = 6,
+>         FUSE_NOTIFY_LOCK = 7,
+> +       FUSE_NOTIFY_FSNOTIFY = 8,
+>         FUSE_NOTIFY_CODE_MAX,
+>  };
+>
+> @@ -571,6 +578,20 @@ struct fuse_getattr_in {
+>         uint64_t        fh;
+>  };
+>
+> +struct fuse_notify_fsnotify_out {
+> +       uint64_t inode;
 
-You should document the bit twiddling hack you are doing here just to
-make it easier to understand :)
+64bit inode is not a good unique identifier of the object.
+you need to either include the generation in object identifier
+or much better use the object's nfs file handle, the same way
+that fanotify stores object identifiers.
 
-Also, ledstate is an unsigned int, not unsigned long, perhaps make them
-all u32 for now to make it obvious they are the same?  Or u64?
+> +       uint64_t mask;
+> +       uint32_t namelen;
+> +       uint32_t cookie;
 
-thanks,
+I object to persisting with the two-events-joined-by-cookie design.
+Any new design should include a single event for rename
+with information about src and dst.
 
-greg k-h
+I know this is inconvenient, but we are NOT going to create a "remote inotify"
+interface, we need to create a "remote fsnotify" interface and if server wants
+to use inotify, it will need to join the disjoined MOVE_FROM/TO event into
+a single "remote event", that FUSE will use to call fsnotify_move().
+
+Thanks,
+Amir.
