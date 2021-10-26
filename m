@@ -2,70 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60EF43B809
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145DE43B80D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237696AbhJZRTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhJZRTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:19:14 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC0FC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:16:50 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id d13so113091ljg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=Ya9ktrojC3xaZpi8QIOdcEinlOe+7x83c/XOP9XyrtY=;
-        b=esJwY49Fnhf9Umjj8L8YfGIK20wIioQBZ6NTgxWuJtMmewZ5qFve84x0UsFZecaOqS
-         rSpfOvaNaO1WJ9tF7Phu19oOzFBJGv/AejDarQB401isC9V1PJyzuk8mLjtKtCIdbbiQ
-         3S4zntOphzwhw84cTJYJppRfyX4XpicftH4VMYTbUfe4/FUagWFbb3rKjk1I8R+NJkzo
-         ETg14iLdyF6EUKG+n4k/MRiFo8nZGFArHQuAvruNq4ZpICYS8s4ThBYPLUSb2uGaiPQR
-         7WgohhshyQmqg2nni1MwjsKqDeFCj8JObjvRirlyV4iMaHC8EIhRAY25eIzw58bvVWER
-         VRxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=Ya9ktrojC3xaZpi8QIOdcEinlOe+7x83c/XOP9XyrtY=;
-        b=LNhqGu0y4A8TaAoROdq1wikmY/0Q9xL49Muaa7RoR8t8FDuWA2H+3nZcSSaBDtRYtr
-         6RWpIEYax8vkQUhO5Z1SBnh58Kkk3GWuU/3cGZ5j0Bycr6cwuZ/na/FS8zUx1tNttUET
-         qxGnLk0ck5RG0UV92WDPO7ks2bUF8WGNhsvVsV5a3nfLFqRtRY2EIkVf/RXVaW15GJae
-         950Rzx5YTEY+G1kfuMyyjaFDA0egnxK2fZ6oB54TRVsW7TQUCfhjQjiOBCHw24IDmlkC
-         I3nvLV1BkwyORJWADI0eILqNz76TpXrxdJaExvvIuraCUKRNieJYG56iKjIGEk1n7C1o
-         /QXw==
-X-Gm-Message-State: AOAM531SIqdHZQW/Bm1c82DrjKSn8crRvh9PdDkKHpt6BJWOJhgNCbKW
-        YFFg+QHr7tJ7cu4Bv6O0W4sfPWX1wgDffgxBaXA=
-X-Google-Smtp-Source: ABdhPJwvSpWwxllbGL+wutSUwmHJtkHrE3jmvpl4DUq3OlDDZBAKIzP9stNDsWnc1uZCf6hEuF5UJ5EMOSIYMlOMMhI=
-X-Received: by 2002:a2e:a5c4:: with SMTP id n4mr9697433ljp.72.1635268608734;
- Tue, 26 Oct 2021 10:16:48 -0700 (PDT)
+        id S237647AbhJZRT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:19:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:35174 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237595AbhJZRT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:19:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6AB21FB;
+        Tue, 26 Oct 2021 10:17:34 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78E493F70D;
+        Tue, 26 Oct 2021 10:17:33 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 18:17:28 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Rob Herring <robh@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v15 00/13] Add support for Hikey 970 PCIe
+Message-ID: <20211026171728.GA20609@lpieralisi>
+References: <cover.1634812676.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Sender: usmankabore960@gmail.com
-Received: by 2002:a05:6512:3b1f:0:0:0:0 with HTTP; Tue, 26 Oct 2021 10:16:48
- -0700 (PDT)
-From:   Usman Kabore <usmankaboure09@gmail.com>
-Date:   Tue, 26 Oct 2021 10:16:48 -0700
-X-Google-Sender-Auth: 68-4xVm6Nw4IhhDCpbuKfPQqee8
-Message-ID: <CAE+f5EN1PPQ9B-+gnDz5kyg_+PfXkc0nEVa38XskuBmVbZESQw@mail.gmail.com>
-Subject: ATTENTION PLEASE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1634812676.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Oct 21, 2021 at 11:45:07AM +0100, Mauro Carvalho Chehab wrote:
+> Hi Lorenzo,
+> 
+> I split patch 09/10 from v13 into three patches, in order to have one logical
+> change per patch, adding a proper descriptio to each of them. The final
+> code didn change.
+> 
+> The pcie-kirin PCIe driver contains internally a PHY interface for
+> Kirin 960, but it misses support for Kirin 970. A new PHY driver
+> for it was added at drivers/phy/hisilicon/phy-hi3670-pcie.c
+> (already merged via PHY tree).
+> 
+> Add support for Kirin 970 PHY driver at the pcie-kirin.c.
+> 
+> While here, also add the needed logic to compile it as module and
+> to allow to dynamically remove the driver in runtime.
+> 
+> Tested on HiKey970:
+> 
+>   # lspci -D -PP
+>   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
+>   0000:00:00.0/01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   0000:00:00.0/01:00.0/02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   0000:00:00.0/01:00.0/02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   0000:00:00.0/01:00.0/02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   0000:00:00.0/01:00.0/02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   0000:00:00.0/01:00.0/02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   0000:00:00.0/01:00.0/02:01.0/03:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd Device a809
+>   0000:00:00.0/01:00.0/02:07.0/06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
+> 
+> Tested on HiKey960:
+> 
+>   # lspci -D 
+>   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
+> 
+> ---
+> 
+> v15:
+>   - The power-off fix patch was split into 3, in order to have one logical change
+>     per patch.
+>   -  Removed Fixes: tag from the poweroff patch;
+>   - Adjusted capitalization of two patch summary lines
+>   - No functional changes. The diff of this series is identical to v14.
+> 
+> v14:
+>   - Split a timeout logic from patch 4, placing it on a separate patch;
+>   - Added fixes: and cc: tags to the power_off fixup patch;
+>   - change a typecast from of_data to long, in order to avoid a warning on
+>     some randconfigs;
+>   - removed uneeded brackets at the power_off patch;
+>   - reordered struct device pointers at kirin_pcie_get_resource();
+>   - added a c/c to kishon at the PHY-related patches.
+> 
+> v13:
+>   - Added Xiaowei's ack for the series.
+> 
+> v12:
+>   - Change a comment at patch 1 to not use c99 style.
+> 
+> v11:
+>   - patch 5 changed to use the right PCIe topology
+>   - all other patches are identical to v10.
+> 
+> v10:
+>   - patch 1: dropped magic numbers from PHY driver
+>   - patch 5: allow pcie child nodes without reset-gpios
+>   - all other patches are identical to v9.
+> 
+> v9:
+>   - Did some cleanups at patches 1 and 5
+> 
+> Mauro Carvalho Chehab (13):
+>   PCI: kirin: Reorganize the PHY logic inside the driver
+>   PCI: kirin: Add support for a PHY layer
+>   PCI: kirin: Use regmap for APB registers
+>   PCI: kirin: Add support for bridge slot DT schema
+>   PCI: kirin: Give more time for PERST# reset to finish
+>   PCI: kirin: Add Kirin 970 compatible
+>   PCI: kirin: Add MODULE_* macros
+>   PCI: kirin: Allow building it as a module
+>   PCI: kirin: Add power_off support for Kirin 960 PHY
+>   PCI: kirin: Move the power-off code to a common routine
+>   PCI: kirin: Disable clkreq during poweroff sequence
+>   PCI: kirin: De-init the dwc driver
+>   PCI: kirin: Allow removing the driver
+> 
+>  drivers/pci/controller/dwc/Kconfig      |   2 +-
+>  drivers/pci/controller/dwc/pcie-kirin.c | 643 ++++++++++++++++++------
+>  2 files changed, 497 insertions(+), 148 deletions(-)
 
-I am Mr. Usman Kabore a banker by profession from Burkina Faso. I have
-a very confidential business proposition involving transfer of $
-18,500,000.00 United State Dollars that will be of great benefit to
-both of us. Contact me via my private email below for more details.
+Applied to pci/dwc for v5.16, please have a look at the resulting
+branch and commits. 
 
-Email: usmankaboure09@gmail.com
-
-Best Regards
-Usman Kabore.
+Thanks,
+Lorenzo
