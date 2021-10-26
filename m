@@ -2,92 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC6843BD63
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF1E43BD6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237522AbhJZWqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 18:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233975AbhJZWqY (ORCPT
+        id S240147AbhJZWwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:52:45 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:54458
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240138AbhJZWwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:46:24 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806F4C061570;
-        Tue, 26 Oct 2021 15:44:00 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id fv3so581107pjb.3;
-        Tue, 26 Oct 2021 15:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=pbwaXXHnvCbbtImOhR1XxTruqxYAB5oj9GgtPi3o/qo=;
-        b=pcOQ/l4LI49Ji38qwBDwa7GjQpZZqj2OgmqZFuUC/KFLdqqVPGcCXFoNnomAPoTvWt
-         BSfzgXyRnnR5SM0jXalC4QWYoJOOnQhrb1DzQuEC+x8xXGPIHef8aTGBCRLKzPeml0Ok
-         LjvOjU5Vg/oxQHkGeH3MUTphLHgVdEQnOS7am8QYacoQIseIrTAMzTU6KgboAxBllIfC
-         TfzRVqN+v6li6J4gvhCDvQr4T4p/FSK2USw1syAgw+0XwdhZ8+euUUQYgnWqL5wmScJ3
-         DTHk6tKDTsD0fki40O3UkIhi8Fq7OrahdCyub7R/l0TqU0ji8DK+9nY6PhZKJtmU/smu
-         docw==
+        Tue, 26 Oct 2021 18:52:44 -0400
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B4F623FFF6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 22:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635288618;
+        bh=sOzNLS53TAFKLgxzOh/gf4V4t3blNgwULiltnWEPGMo=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=ggYBtcYQubCCqPso9IwLxp2u6DUMw3jZDhBURG9IzkywMa73N5p+6xoGi9hzDcrsE
+         wiKinxLtTCTank1mmCkE23GHHYstEHjG+MMQm1JYaHzV4XKc0GYkp4GQzsCZ8e3OCX
+         uY5ywqD1hi5AA+jQzSweCPgSUNYUysZ7EcStyRBG2+XL6hT8MYuFZZ61tMUPVRysmF
+         qj6K1rM1IxvUmUc34OmoWOqULAMppNAMr2XPEb78Gu7JFG8c/FrimNtvIkLvD+3l2q
+         A24GwvN7n/9iAKymuMJ61o5m68kd82a41dT43EpiOf4Ksx1z1ppy0/X5EwjILM39gx
+         aaaWnSlaf/CNA==
+Received: by mail-oo1-f69.google.com with SMTP id j11-20020a4ad6cb000000b002b8e10ec93dso83804oot.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:50:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=pbwaXXHnvCbbtImOhR1XxTruqxYAB5oj9GgtPi3o/qo=;
-        b=Kvz/wuw/iu03uggVqyaDkA1RP0ncXcyZttFY9fpeNMOB/3Ycuk2CWvctdK48/bPMhM
-         JOSYw/VNj+PGHEhbYSz3CbLeTl+aFV2rxk0Y1WXA+Ys5mODAXwl31UC9ZQVizszA5klk
-         CFxN739dpcCa801/L7DwdYUlLKxY25kMxMaFSXtpm7DFl6jhEe4zYUh6fSgg+dXg9hYz
-         Zf1C+1DTTKZQ0h+Xdq7/CRgFI4mRPQk8/J6GNBTLgsmUAVwZAQ6dW787Kk/yAnrnC3NH
-         YNdaR8yahzJNF378Jkhi5Yo/pCUo8zMi81q+irkfM92US7ry1pg5BfPv2M0mP/DH8Gb+
-         tBgQ==
-X-Gm-Message-State: AOAM531NODbMWydw4xr6OqGZk934C9r815EHiz7nzGc3oneb3KKdp73y
-        6OFwhX36ghxKcZ8lREveyAY=
-X-Google-Smtp-Source: ABdhPJzjvqg9bEk1OYk+nLzA4QYhy9hiPbv9hwBvX4gMCUsjynoDl4L9hvLJQ+cYPgZbFRES7ms54Q==
-X-Received: by 2002:a17:90a:7e93:: with SMTP id j19mr1824542pjl.172.1635288240053;
-        Tue, 26 Oct 2021 15:44:00 -0700 (PDT)
-Received: from raspberrypi ([49.166.114.232])
-        by smtp.gmail.com with ESMTPSA id d17sm11674985pfj.98.2021.10.26.15.43.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 15:43:59 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 23:43:54 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, austin.kim@lge.com,
-        kernel-team@lge.com
-Subject: [PATCH] ima/evm: mark evm_fixmode as __ro_after_init
-Message-ID: <20211026224354.GA13009@raspberrypi>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sOzNLS53TAFKLgxzOh/gf4V4t3blNgwULiltnWEPGMo=;
+        b=lLvAtb+zDLmol2CVzI0AWhZ6kdBHXfwsGE68Qrd/L+P0K6faJCob8UikEvGYt3ewEJ
+         DVOBEcqjOHMEUVedqOSwcsGOM7zlVVNvbL+Zh16+iwdd41h1Sq0QomL8WckGD/hYXxTz
+         XHoopw4otzotOntkQzxDylFqnTo/KdQQT489gxUE4nFgHhByvTAtWUApwrJyktEC7LPp
+         dVINHIEDsVIGuQ71dikwMNjs/OAIu2NjVZRIb1n3J9cy62jGfBE6i8/+Iw2NixMnThN3
+         CO6grl16KhXaXIZmhjlLkXFObFhLsbWQT8d9T2NJIPM6ydnO70fM19lIIhVMC6v4V3+O
+         nbpg==
+X-Gm-Message-State: AOAM532w2V4DLZOj5ofXtI4cT2oGsiK79y2GVdG9wvcJVVntA9/3tkJK
+        LOdY82W4C8MjycrlJm5eWh1BhfDWNsxl0KsOSj3Rxc4EJtG1JXTR4AByoglWhEUm8QY8KfBW0Uo
+        5R7KP+qXsJZcOCZQZ3dNv9KsVP97otzHbfaG45ZkKa5X0kx3ySMeT8fudpA==
+X-Received: by 2002:a9d:7b49:: with SMTP id f9mr22036767oto.11.1635288617531;
+        Tue, 26 Oct 2021 15:50:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwV2yNIRx9YHLCbw6IWJF7ib5jZpqmK1ebG462GAQN5fW/dna9VhsgWtWnSzFGmM1pgg+IIrfpuqUQizSC0wCc=
+X-Received: by 2002:a9d:7b49:: with SMTP id f9mr22036739oto.11.1635288617200;
+ Tue, 26 Oct 2021 15:50:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211026065112.1366205-1-kai.heng.feng@canonical.com> <04ed8307-ab1f-59d6-4454-c759ce4a453b@intel.com>
+In-Reply-To: <04ed8307-ab1f-59d6-4454-c759ce4a453b@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 27 Oct 2021 06:50:05 +0800
+Message-ID: <CAAd53p69k-2PVw5RpJOAbe=oBh11U_UqzsyMjxHFbo7xqNBDsQ@mail.gmail.com>
+Subject: Re: [PATCH v2] e1000e: Add a delay to let ME unconfigure s0ix when
+ DPG_EXIT_DONE is already flagged
+To:     Sasha Neftin <sasha.neftin@intel.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dima Ruinskiy <dima.ruinskiy@intel.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kraus, NechamaX" <nechamax.kraus@linux.intel.com>,
+        "Fuxbrumer, Devora" <devora.fuxbrumer@intel.com>,
+        "Avivi, Amir" <amir.avivi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
+On Tue, Oct 26, 2021 at 4:48 PM Sasha Neftin <sasha.neftin@intel.com> wrote:
+>
+> On 10/26/2021 09:51, Kai-Heng Feng wrote:
+> > On some ADL platforms, DPG_EXIT_DONE is always flagged so e1000e resume
+> > polling logic doesn't wait until ME really unconfigures s0ix.
+> >
+> > So check DPG_EXIT_DONE before issuing EXIT_DPG, and if it's already
+> > flagged, wait for 1 second to let ME unconfigure s0ix.
+> >
+> > Fixes: 3e55d231716e ("e1000e: Add handshake with the CSME to support S0ix")
+> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=214821
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v2:
+> >   Add missing "Fixes:" tag
+> >
+> >   drivers/net/ethernet/intel/e1000e/netdev.c | 7 +++++++
+> >   1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> > index 44e2dc8328a22..cd81ba00a6bc9 100644
+> > --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> > +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> > @@ -6493,14 +6493,21 @@ static void e1000e_s0ix_exit_flow(struct e1000_adapter *adapter)
+> >       u32 mac_data;
+> >       u16 phy_data;
+> >       u32 i = 0;
+> > +     bool dpg_exit_done;
+> >
+> >       if (er32(FWSM) & E1000_ICH_FWSM_FW_VALID) {
+> > +             dpg_exit_done = er32(EXFWSM) & E1000_EXFWSM_DPG_EXIT_DONE;
+> >               /* Request ME unconfigure the device from S0ix */
+> >               mac_data = er32(H2ME);
+> >               mac_data &= ~E1000_H2ME_START_DPG;
+> >               mac_data |= E1000_H2ME_EXIT_DPG;
+> >               ew32(H2ME, mac_data);
+> >
+> > +             if (dpg_exit_done) {
+> > +                     e_warn("DPG_EXIT_DONE is already flagged. This is a firmware bug\n");
+> > +                     msleep(1000);
+> > +             }
+> Thanks for working on the enablement.
+> The delay approach is fragile. We need to work with CSME folks to
+> understand why _DPG_EXIT_DONE indication is wrong on some ADL platforms.
+> Could you provide CSME/BIOS version? dmidecode -t 0 and cat
+> /sys/class/mei/mei0/fw_ver
 
-evm_fixmode global variable is never modified
-outside initcalls, so declaring it with __ro_after_init is better.
+$ sudo dmidecode -t 0
+# dmidecode 3.2
+Getting SMBIOS data from sysfs.
+SMBIOS 3.4 present.
+# SMBIOS implementations newer than version 3.2.0 are not
+# fully supported by this version of dmidecode.
 
-Signed-off-by: Austin Kim <austin.kim@lge.com>
----
- security/integrity/evm/evm_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Handle 0x0001, DMI type 0, 26 bytes
+BIOS Information
+        Vendor: Dell Inc.
+        Version: 0.12.68
+        Release Date: 10/01/2021
+        ROM Size: 48 MB
+        Characteristics:
+                PCI is supported
+                PNP is supported
+                BIOS is upgradeable
+                BIOS shadowing is allowed
+                Boot from CD is supported
+                Selectable boot is supported
+                EDD is supported
+                Print screen service is supported (int 5h)
+                8042 keyboard services are supported (int 9h)
+                Serial services are supported (int 14h)
+                Printer services are supported (int 17h)
+                ACPI is supported
+                USB legacy is supported
+                BIOS boot specification is supported
+                Function key-initiated network boot is supported
+                Targeted content distribution is supported
+                UEFI is supported
+        BIOS Revision: 0.12
 
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index 1c8435dfabee..08f907382c61 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -78,7 +78,7 @@ static struct xattr_list evm_config_default_xattrnames[] = {
- 
- LIST_HEAD(evm_config_xattrnames);
- 
--static int evm_fixmode;
-+static int evm_fixmode __ro_after_init;
- static int __init evm_set_fixmode(char *str)
- {
- 	if (strncmp(str, "fix", 3) == 0)
--- 
-2.20.1
+$ cat /sys/class/mei/mei0/fw_ver
+0:16.0.15.1518
+0:16.0.15.1518
+0:16.0.15.1518
 
+> >               /* Poll up to 2.5 seconds for ME to unconfigure DPG.
+> >                * If this takes more than 1 second, show a warning indicating a
+> >                * firmware bug
+> >
