@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEFF43B71B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCB543B71D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237357AbhJZQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:27:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43460 "EHLO mail.kernel.org"
+        id S234910AbhJZQ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:28:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237382AbhJZQ1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:27:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B1FA603E9;
-        Tue, 26 Oct 2021 16:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635265491;
-        bh=4grgM8bgYCxXbzH/TXpocp14Y8X0eHTROfsAj7+b4N0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WE5w0qRfqMz7e354YtJvjXI9U6HzP2XulVtvN8g+xZ6IO5KEG4gdBbDP8hw6K5d7j
-         gqPzEa7IR49Ks53UnME1S8R8FRYrNT/9JTySRGvq6uw9iCd5XcrGtOUfJj7BGD2Rnt
-         dxxBy3AssDa7oCO5HoOsmZqcIXUCj6Mnje1x/5ryoZbSNK5bYauR/GQOyrMkFRyBOL
-         0lMsrlTYQ2i9DRD5RH1iSVKiofjwWBaGT8R+nT58okpOIA/yXyAZO/eR2TDFB9Ztjp
-         4nCh/ZK76gf7stqZYNcPxm9njOxwNzQmbWUkGSv8tQ1L2PA9jnk1kFioQ4Zjtl9Vs9
-         Ai5ZbC8lljNsQ==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     viro@zeniv.linux.org.uk
-Cc:     bfields@fieldses.org, linux-fsdevel@vger.kernel.org,
+        id S237672AbhJZQ2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 12:28:41 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E467A603E9;
+        Tue, 26 Oct 2021 16:26:15 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 12:26:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tao Zhou <tao.zhou@linux.dev>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: remove leftover comments from mandatory locking removal
-Date:   Tue, 26 Oct 2021 12:24:49 -0400
-Message-Id: <20211026162449.60283-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.31.1
+Subject: Re: [PATCH V5 08/20] rtla: Helper functions for rtla
+Message-ID: <20211026122614.017844da@gandalf.local.home>
+In-Reply-To: <YXgrLIiK8pwOVsBe@geo.homenetwork>
+References: <cover.1635181938.git.bristot@kernel.org>
+        <bc01018cef80ddb95fd0ccf1ec72963be7e4fc19.1635181938.git.bristot@kernel.org>
+        <YXgrLIiK8pwOVsBe@geo.homenetwork>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stragglers from commit f7e33bdbd6d1 ("fs: remove mandatory file locking
-support").
+On Wed, 27 Oct 2021 00:22:04 +0800
+Tao Zhou <tao.zhou@linux.dev> wrote:
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/namei.c      | 4 +---
- fs/read_write.c | 4 ----
- 2 files changed, 1 insertion(+), 7 deletions(-)
+> > +	do {
+> > +		retval = read(in_fd, buffer, sizeof(buffer));
+> > +		if (read <= 0)  
+> 
+> check "retval" not read. Like:
+> 
+>   if (retval <= 0)
 
-Al, I'll plan to merge this along with my locking changes for v5.16. Let
-me know if you'd prefer it to go in via your vfs tree.
+OUCH! Good check.
 
-Thanks,
-Jeff
+Daniel, did that not produce any warnings??
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 95a881e0552b..b05e6840df74 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3074,9 +3074,7 @@ static int handle_truncate(struct user_namespace *mnt_userns, struct file *filp)
- 	int error = get_write_access(inode);
- 	if (error)
- 		return error;
--	/*
--	 * Refuse to truncate files with mandatory locks held on them.
--	 */
-+
- 	error = security_path_truncate(path);
- 	if (!error) {
- 		error = do_truncate(mnt_userns, path->dentry, 0,
-diff --git a/fs/read_write.c b/fs/read_write.c
-index af057c57bdc6..0074afa7ecb3 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -368,10 +368,6 @@ int rw_verify_area(int read_write, struct file *file, const loff_t *ppos, size_t
- 	if (unlikely((ssize_t) count < 0))
- 		return -EINVAL;
- 
--	/*
--	 * ranged mandatory locking does not apply to streams - it makes sense
--	 * only for files where position has a meaning.
--	 */
- 	if (ppos) {
- 		loff_t pos = *ppos;
- 
--- 
-2.31.1
+-- Steve
 
+
+> 
+> > +			goto out_close;
+> > +
+> > +		retval = write(out_fd, buffer, retval);
+> > +		if (retval < 0)
+> > +			goto out_close;
+> > +	} while (retval > 0);
