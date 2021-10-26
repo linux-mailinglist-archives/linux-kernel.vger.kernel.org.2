@@ -2,199 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686D643B7E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201E743B7EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236446AbhJZRLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbhJZRLR (ORCPT
+        id S236309AbhJZROi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:14:38 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:33561 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhJZROh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:11:17 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D93BC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:08:53 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id s1so16408215edd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qCd7R32fnniXdlIAcpkZUDMU6nES+blfXibgQwBeFfE=;
-        b=PNVEORwix3jGXAq/di7wx1XCFAiv5HJVtDNm4w2xZE5VBcSeFAZQG3E1C4QCLhURRV
-         IiSiT71/H9HVBoIFJwBRsgeZaQnKnw7AD2LCKahIEGTU9Cfx2DP91MWS8e9XVQGDIiJo
-         AvQQvZ/VMKR8dLUWCnW0iEvywPEG86YzsChXnKeHh/ljOi0yiqd0nqi617BDHwUIfq1T
-         LyeGeAePdPgx2k0F/2rqx4EtO4SlL3YUlQ7jtJY3AUqDeJxWDnJh/UAv3ZVUW7qPKria
-         3x+YnoRFslfR1K0wF78EkdUWCNNV/oICHSkVdsuS/Nnrow+r8peFG4DTWMvZKBv/aDK2
-         nTAA==
+        Tue, 26 Oct 2021 13:14:37 -0400
+Received: by mail-ua1-f41.google.com with SMTP id s4so6302055uaq.0;
+        Tue, 26 Oct 2021 10:12:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qCd7R32fnniXdlIAcpkZUDMU6nES+blfXibgQwBeFfE=;
-        b=mhj55pMftQy8KOEiCyTAUvKqGZoVKkMR67Pf56wCmJmyyraq4Q0MI4u9UFFVtxNkQZ
-         C5Jdr/0K5HZtTdGXFdVa8dMA1BzyBL0tf0o19VPvGmXSXmw4UedBXTNmfKlnf0gQzY1b
-         57ZNjHRJxRvFbPQqJcC6BFG+/VnBtrqg6Q7AX95waDxSa9PlXoBY4c5sunZql44VoYkZ
-         pvrfzqIjtftneIjnfGqXKI8VlKYJURxeagbaLV8v4qLsFEudbWy82benBOLv3uLrNN39
-         f6Jqn0BP/EH+TbOsIYXHHXYt5tbhwoHz/RK5CWtr2GSIOu6zDRpg0zto0DVNfzmGpZof
-         Rr3Q==
-X-Gm-Message-State: AOAM5338ns9eaVRT474yB9dwqXeocKE4PDvHjZyPBkaaMSbUqi8KBi6Q
-        O8evqIRfHv+/589OguFkz15d/SSkDBYyrCLX1WcQ9A==
-X-Google-Smtp-Source: ABdhPJwW14K+ib9gu+ZFk7+uWz7H5S4aQtjbRLpLJVjBjbhLHstYHlu3gR/YivB85sE/P+h7nXu9PNnPuu/PzDejHv8=
-X-Received: by 2002:a17:907:7fa7:: with SMTP id qk39mr5058503ejc.384.1635268083956;
- Tue, 26 Oct 2021 10:08:03 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=AXHONT95KJvkaHI1jvYYaUxOJPvtYl1iFSyJcrCpH7A=;
+        b=722szwjXRC5/3fbyuPDDNMf8huFBx7byBrPMkIQDV2Shb0BDx9ejpAetH6cZ9mxc/J
+         h8/8KTTejjP2PcJjujvZxxkD40eczZRxcRlW8xQYFDCh9/I9lN7EYHKuS9sxw4WtnmnG
+         cm4w3WwIW0ALBT/7/Kw6++m6ULFvMG0OZq47+k7o2wdSXdMS81lZb5wM5Gc/BsHSQQKZ
+         xKIvLRD0wWub4PPShsiWZ84WfvkuFExthobvH6kaG8QzJxRv9yq/TKfS0VBXn6yJ1SyE
+         rqNOWHb61OvWzT6tD1Z8DCEInKMbd7/vxJOlHKCxdi9ylN5bH39cTJmJDRnhiYQpC50v
+         LsOA==
+X-Gm-Message-State: AOAM531plzoe4amZz3dtmJZBLyNDg/iKMPP6bY+SxejiZWLH6UdrBwBC
+        OXjFnY1avS9iRGbdcjemAmav/7SxfUljMg==
+X-Google-Smtp-Source: ABdhPJwHc2vueFIikZdo+UcIckNn/U0rbWZyiWNiqg8BlDCaTihtUY8IDg8Fw7Ksld8MojKvUiIRng==
+X-Received: by 2002:a05:6102:3122:: with SMTP id f2mr12859196vsh.58.1635268332395;
+        Tue, 26 Oct 2021 10:12:12 -0700 (PDT)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id h6sm844725vsc.16.2021.10.26.10.12.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 10:12:12 -0700 (PDT)
+Received: by mail-ua1-f52.google.com with SMTP id e10so30592030uab.3;
+        Tue, 26 Oct 2021 10:12:11 -0700 (PDT)
+X-Received: by 2002:a67:f4c9:: with SMTP id s9mr14009160vsn.35.1635268331701;
+ Tue, 26 Oct 2021 10:12:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025190928.054676643@linuxfoundation.org>
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 26 Oct 2021 22:37:52 +0530
-Message-ID: <CA+G9fYtaSe=PrPFLZaoFw1Ama_dC2RF3CO1CZsOjBWEGyBr3Zg@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/44] 4.4.290-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <1635188490-15082-1-git-send-email-george.kennedy@oracle.com>
+ <YXcAbXJfg/jKCo5h@kroah.com> <0ddb1c19-64b0-4117-7a92-c3d2fcddfdcf@oracle.com>
+ <CAMuHMdWcU7wy1dxa_MXuHoUTWebvq6ShP820Bn_v+8tx7-TEdg@mail.gmail.com>
+ <c73402dd-ec3f-4df7-6a16-36fb276a50f4@oracle.com> <CAMuHMdVHt=9N274SG+B7W83JbVVnbz_U5Nkejs_PR2HqvZvJgQ@mail.gmail.com>
+ <d2119d59-89e4-34aa-86df-38fee2a0c6ef@oracle.com>
+In-Reply-To: <d2119d59-89e4-34aa-86df-38fee2a0c6ef@oracle.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Oct 2021 19:12:00 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUZq00r7QYeAKGm36UKpGwH_uEGMvwHBzRi9_nxV-dRhg@mail.gmail.com>
+Message-ID: <CAMuHMdUZq00r7QYeAKGm36UKpGwH_uEGMvwHBzRi9_nxV-dRhg@mail.gmail.com>
+Subject: Re: [PATCH] video: fbdev: cirrusfb: check pixclock to avoid divide by zero
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 00:44, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi George,
+
+On Tue, Oct 26, 2021 at 5:48 PM George Kennedy
+<george.kennedy@oracle.com> wrote:
+> On 10/26/2021 10:11 AM, Geert Uytterhoeven wrote:
+> > On Tue, Oct 26, 2021 at 3:38 PM George Kennedy
+> > <george.kennedy@oracle.com> wrote:
+> >> On 10/26/2021 4:30 AM, Geert Uytterhoeven wrote:
+> >>> On Mon, Oct 25, 2021 at 9:37 PM George Kennedy
+> >>> <george.kennedy@oracle.com> wrote:
+> >>>> On 10/25/2021 3:07 PM, Greg KH wrote:
+> >>>>> On Mon, Oct 25, 2021 at 02:01:30PM -0500, George Kennedy wrote:
+> >>>>>> Do a sanity check on pixclock value before using it as a divisor.
+> >>>>>>
+> >>>>>> Syzkaller reported a divide error in cirrusfb_check_pixclock.
+> >>>>>>
+> >>>>>> divide error: 0000 [#1] SMP KASAN PTI
+> >>>>>> CPU: 0 PID: 14938 Comm: cirrusfb_test Not tainted 5.15.0-rc6 #1
+> >>>>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2
+> >>>>>> RIP: 0010:cirrusfb_check_var+0x6f1/0x1260
+> >>>>>>
+> >>>>>> Call Trace:
+> >>>>>>     fb_set_var+0x398/0xf90
+> >>>>>>     do_fb_ioctl+0x4b8/0x6f0
+> >>>>>>     fb_ioctl+0xeb/0x130
+> >>>>>>     __x64_sys_ioctl+0x19d/0x220
+> >>>>>>     do_syscall_64+0x3a/0x80
+> >>>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>>>>>
+> >>>>>> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> >>>>>> --- a/drivers/video/fbdev/cirrusfb.c
+> >>>>>> +++ b/drivers/video/fbdev/cirrusfb.c
+> >>>>>> @@ -477,6 +477,9 @@ static int cirrusfb_check_pixclock(const struct fb_var_screeninfo *var,
+> >>>>>>        struct cirrusfb_info *cinfo = info->par;
+> >>>>>>        unsigned maxclockidx = var->bits_per_pixel >> 3;
+> >>>>>>
+> >>>>>> +    if (!var->pixclock)
+> >>>>>> +            return -EINVAL;
+> >>> This is not correct: fbdev drivers should round up invalid values,
+> >>> and only return an error if rounding up cannot yield a valid value.
+> >> What default value would you recommend? Here are examples of some of the
+> >> possible cirrusfb pixclock values:
+> >> 40000: 25MHz
+> >> 20000: 50Mhz
+> >> 12500: 80Mhz
+> > You should pick the lowest supported value.
 >
-> This is the start of the stable review cycle for the 4.4.290 release.
-> There are 44 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> In bestclock() the frequency value ("freq") is not allowed to go below 8000.
 >
-> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
-> Anything received after that time might be too late.
+>          if (freq < 8000)
+>                  freq = 8000;
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.290-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> If pixclock is passed in as zero to cirrusfb_check_pixclock(), is it ok
+> to then set the value of pixclock to 125000, which will result in "freq"
+> being set to 8000 (or adjust the passed in pixclock value to make sure
+> "freq" does not get below 8000)?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+No, clock rate is the inverse of clock period.
+So the smallest clock period (fb_var_screeninfo.pixclock) corresponds
+to the largest clock rate (freq in bestclock()).
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Gr{oetje,eeting}s,
 
-## Build
-* kernel: 4.4.290-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.4.y
-* git commit: 7d5d802dae8e729d00633b6608b2183074cd1cba
-* git describe: v4.4.289-45-g7d5d802dae8e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-89-45-g7d5d802dae8e
-
-## No regressions (compared to v4.4.289)
-
-## No fixes (compared to v4.4.289)
-
-## Test result summary
-total: 43390, pass: 34733, fail: 191, skip: 7460, xfail: 1006
-
-## Build Summary
-* arm: 128 total, 128 passed, 0 failed
-* arm64: 33 total, 33 passed, 0 failed
-* i386: 17 total, 17 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 22 total, 22 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 17 total, 17 passed, 0 failed
-
-## Test suites summary
-* fwts
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
+                        Geert
 
 --
-Linaro LKFT
-https://lkft.linaro.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
