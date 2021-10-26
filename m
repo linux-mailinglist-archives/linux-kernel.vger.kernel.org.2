@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D930D43B69D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610AA43B6A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236042AbhJZQNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235165AbhJZQNh (ORCPT
+        id S237219AbhJZQOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:14:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:27829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235340AbhJZQOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:13:37 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C20C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:11:13 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id g141so14626913wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tNvhvS+omTapD0lmRTOHfCi+rtlERIM+Ep5FDBCLxiw=;
-        b=V10uwXBbPFCW4DIAj09kz/W2rvsCVSHTbss1G3lQ4vq/iZwPq3NCT3p4v9Xc0kG4yD
-         Z95BB9lR3KDVX3iB6PMjItUIkFtDJhwFOuIzhshSnWpiIX4m0JYAFos+OkQaP7UwxY2t
-         DdffPWWYCEmKZE8OAyPUYNzzimRVna3axdnr6P9Ql9WnJ1QUr4egcS+wmVPxOYRlflzT
-         c/TTJVrx5hymjXDaOr9qk9/IHWTlo19vtaXFmX872LwDlTBfh7dsRIzZWozfPqvaFYS8
-         L4g1TgxLfGyvVzry3xLr5uUTwxws+41DYQexRnO9v/koq55//dHq92ajjr4o0wrIUmsf
-         j1IA==
+        Tue, 26 Oct 2021 12:14:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635264741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y/8qPSuga2nSdD4ObnPRjMzoPwBrPBTCysCx0s1aic4=;
+        b=HXeh27CV8hJRaETDK6hQOpnP45k3CVN3SmEZGClNq7UYeHDti1sMQE40Q9KP2PP6tyaQ2I
+        orJVQXxUk8U1XN2n6u+a3epp9C/dCkhT5MuzOp8x/Js6W5Za41+LrdIs+yGwZJjYq0362v
+        79f1/BmEa6EFyJMmnSf2RTCKnOJQnls=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-143-_e0-_2_BMsivapR_nWGHQw-1; Tue, 26 Oct 2021 12:12:19 -0400
+X-MC-Unique: _e0-_2_BMsivapR_nWGHQw-1
+Received: by mail-ed1-f69.google.com with SMTP id f21-20020a0564021e9500b003dd77985601so3372020edf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:12:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tNvhvS+omTapD0lmRTOHfCi+rtlERIM+Ep5FDBCLxiw=;
-        b=kojvRy4SHE06WWRMaiwFBtSCI9Yo+dzuwPL6XVdOhu7FS+aynlZQXBRoP2oCJVMVN5
-         raPou2VURlklzcPExp0MVYDXxpn/cVDYGtYYKFY1Pi8rMyVzzn2i6SD6CeuYuiqjQ93P
-         B+X4Axu8LnAXGfT6JQ/qKLVTOtsh13DyxEWCaoLEsOQ2HYrkEVGF/VF+wDwahHxGsoMu
-         cY28gvjiTCGWwJ7KcHoD6ibAXjr+9uNyHv4gRshinoapctHhqnrqmZFNK4dZ8uJxiete
-         bLzMquRkay9sJHZYUwrdlJR3vZ7zpLHb9ghHx+AX963khPp/mqI4kQ9P3Ry+J54PfIBN
-         3grA==
-X-Gm-Message-State: AOAM533vqqYlhA8GUMYMzpRBeedE51K977dFtrwE82dkacZ7RujF+ivm
-        gLtE2CsAifColarbkG1IOTTbSqqhvVrtXbyB4Js=
-X-Google-Smtp-Source: ABdhPJzENddQNKUL/rorx4/R/VFBpK7Kptw0/L0wkjGN9eZg/KMPY70sd/5695/paGBUqIGzFq8S02sBLjSiLNGFbyg=
-X-Received: by 2002:a1c:f316:: with SMTP id q22mr41990131wmq.55.1635264672402;
- Tue, 26 Oct 2021 09:11:12 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=y/8qPSuga2nSdD4ObnPRjMzoPwBrPBTCysCx0s1aic4=;
+        b=2lsXTs2EaHPow8FanpB+/Y287FZBXp1wU7ORVSJblo+Cps5Nh+9b04gHQ3TF2Wzw+O
+         14qpj5UQETdUpiSbWOoEDdS/VqXj9s6U1l0NW5VlSzEah01ZHUt6x85BiGfJfihbd+gV
+         JH3eAuidRJircaeuKH+QsjoNfT9JrmL9SXrwWvM9lqaga1H7pKR4en8meHa4ZyvdTcCt
+         zv/ti2Zjlh4V38aqAIPE70IdyU3lQ2tAU0pXTTvt0EnGnp/hby3QBcPe65cE+9rLuZcK
+         i44F29gQ5VYkVw8g2GT/FMOkWa2BQqO2QLMDZv6SvCsgy57IJvwh6m4oWk1tlg59ffu6
+         zl0A==
+X-Gm-Message-State: AOAM531o6RALE9mu2MxBcEGSTvLR2D6/ui8I16UBKyCjJES4b7BMqXPP
+        vntw+fkA67NRSnJ/IeCwzfAwMcXIU+8eSGoXhzCOajPWZ2/3XpMzuuMcE0h4ZC2NPJKKvmpBVL5
+        iSyh7apsbLq//mQ0+OzdYIdyT
+X-Received: by 2002:aa7:da84:: with SMTP id q4mr36991757eds.371.1635264738786;
+        Tue, 26 Oct 2021 09:12:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwASeQAxYa4SVxx7fzZJcK2OTnFNOTNNHLf+PErJyPRemx/Rf7LwxYWqAfn33dB1Qf24eGGDw==
+X-Received: by 2002:aa7:da84:: with SMTP id q4mr36991714eds.371.1635264738510;
+        Tue, 26 Oct 2021 09:12:18 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n1sm4753815edf.45.2021.10.26.09.12.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 09:12:17 -0700 (PDT)
+Message-ID: <be1cf8c7-ed87-b8eb-1bca-0a6c7505d7f8@redhat.com>
+Date:   Tue, 26 Oct 2021 18:12:06 +0200
 MIME-Version: 1.0
-References: <20211021185335.380810-1-xiehuan09@gmail.com> <20211022180752.0ed07b35@gandalf.local.home>
- <CAEr6+EBq_v+DGSDeiX5Dqc0RgD0sPpbhzpi=T2=r7M2oh90Fpg@mail.gmail.com>
- <20211026104720.03ad26c2@gandalf.local.home> <CAEr6+EDn=g+Q4FfxKn96K5CPcVT9B3FqJA0w4MMfo45DH8oShw@mail.gmail.com>
- <20211026114435.682fe060@gandalf.local.home>
-In-Reply-To: <20211026114435.682fe060@gandalf.local.home>
-From:   Huan Xie <xiehuan09@gmail.com>
-Date:   Wed, 27 Oct 2021 00:11:00 +0800
-Message-ID: <CAEr6+ECnV_a+pTxf857Q3=gA5-bi+awtw-w=tzhBJdgXUq4PMQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] trace: Add trace any kernel object
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, mingo@redhat.com,
-        chenhuacai@kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 10/43] KVM: arm64: Move vGIC v4 handling for WFI out
+ arch callback hook
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-11-seanjc@google.com>
+ <9236e715-c471-e1c8-6117-6f37b908a6bd@redhat.com>
+ <875ytjbxpq.wl-maz@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <875ytjbxpq.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:44 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 26 Oct 2021 23:40:03 +0800
-> Huan Xie <xiehuan09@gmail.com> wrote:
->
-> > > > static void trace_object_trigger(struct event_trigger_data *data,
-> > > > struct trace_buffer *buffer,  void *rec,
-> > > >                    struct ring_buffer_event *event)
-> > >
-> > >
-> > > OK, so let me ask this question. What is it that you want to see?
-> >
-> > Thanks, I got your point now,  my original idea was to just track the
-> > flow of objects.
->
-> Well, the current patch set doesn't really show any flow of objects, as it
-> only records a value that never changes until the next kprobe is hit, and
-> we get that from the kprobe itself.
+On 26/10/21 17:41, Marc Zyngier wrote:
+>> This needs a word on why kvm_psci_vcpu_suspend does not need the
+>> hooks.  Or it needs to be changed to also use kvm_vcpu_wfi in the PSCI
+>> code, I don't know.
+>>
+>> Marc, can you review and/or advise?
+> I was looking at that over the weekend, and that's a pre-existing
+> bug. I would have addressed it independently, but it looks like you
+> already have queued the patch.
 
-My original purpose was to track which functions the (struct bio)
-passed through for the linux block subsystem.
-and which functions the (struct page) passed through for the linux
-memory subsystem.  ;-)
-and I feel this help will be great for learning and developing the linux kernel.
+I have "queued" it, but that's just my queue - it's not on kernel.org 
+and it's not going to be in 5.16, at least not in the first batch.
 
->
-> > >
-> > > And let's say I want to monitor that __bi_cnt while functions are being
-> > > traced. What would be *really cool*, is to mark that value!
-> >
-> > This is really cool to  get the change of the value. And is a good
-> > feature enhancement.
-> >
->
-> Right, and this is what I thought the purpose of your patch was! :-)
->
-> And why I got really excited about it. So I don't see this as a feature
-> enhancement to your patch, but the feature enhancement that your patch can
-> give us.
->
-> -- Steve
+There's plenty of time for me to rebase on top of a fix, if you want to 
+send the fix through your kvm-arm pull request.  Just Cc me so that I 
+understand what's going on.
 
---
-JeffXie
+Thanks,
+
+Paolo
+
