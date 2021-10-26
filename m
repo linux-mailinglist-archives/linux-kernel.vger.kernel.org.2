@@ -2,153 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA19843BB2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5D743BB2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236916AbhJZTp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:45:28 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39468 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234018AbhJZTp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:45:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="210081452"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="210081452"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 12:43:03 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="664683139"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 12:43:01 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfSLJ-001IPm-K4;
-        Tue, 26 Oct 2021 22:42:41 +0300
-Date:   Tue, 26 Oct 2021 22:42:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bitmap: simplify GENMASK(size - 1, 0) lines
-Message-ID: <YXhaMVTymVNzOlGT@smile.fi.intel.com>
-References: <20211026144108.35373-1-quic_qiancai@quicinc.com>
- <YXhOEEOSG+fgEy+t@yury-ThinkPad>
- <YXhVVvG9keoVWJyK@smile.fi.intel.com>
- <YXhW8K7DxadyVgx3@yury-ThinkPad>
+        id S237163AbhJZTsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:48:17 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.108]:23505 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237048AbhJZTsQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:48:16 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id DEEA626A4AD
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:45:50 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id fSOMm9oiIOnCIfSOMmokEd; Tue, 26 Oct 2021 14:45:50 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-18-63-114.retail.telecomitalia.it ([79.18.63.114]:60830 helo=[10.0.0.35])
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1mfSOL-001w8I-1k; Tue, 26 Oct 2021 14:45:49 -0500
+Message-ID: <435460f4-7e69-dc39-109b-a6a777da69d7@kernel.org>
+Date:   Tue, 26 Oct 2021 21:45:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXhW8K7DxadyVgx3@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH V5 08/20] rtla: Helper functions for rtla
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>, Tao Zhou <tao.zhou@linux.dev>
+Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635181938.git.bristot@kernel.org>
+ <bc01018cef80ddb95fd0ccf1ec72963be7e4fc19.1635181938.git.bristot@kernel.org>
+ <YXgrLIiK8pwOVsBe@geo.homenetwork>
+ <20211026122614.017844da@gandalf.local.home>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20211026122614.017844da@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.18.63.114
+X-Source-L: No
+X-Exim-ID: 1mfSOL-001w8I-1k
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-18-63-114.retail.telecomitalia.it ([10.0.0.35]) [79.18.63.114]:60830
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 15
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Greg (see below)
-
-On Tue, Oct 26, 2021 at 12:28:48PM -0700, Yury Norov wrote:
-> On Tue, Oct 26, 2021 at 10:21:58PM +0300, Andy Shevchenko wrote:
-> > On Tue, Oct 26, 2021 at 11:54:16AM -0700, Yury Norov wrote:
-> > > On Tue, Oct 26, 2021 at 10:41:08AM -0400, Qian Cai wrote:
-> > > > Since "size" is an "unsigned int", the rvalue "size - 1" will still be
-> > > > "unsigned int" according to the C standard (3.2.1.5 Usual arithmetic
-> > > > conversions). Therefore, GENMASK(size - 1, 0) will always return 0UL. Those
-> > > > are also caught by GCC (W=2):
-> > > > 
-> > > > ./include/linux/find.h: In function 'find_first_bit':
-> > > > ./include/linux/bits.h:25:22: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
-> > > >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
-> > > >       |                      ^
-> > > > ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
-> > > >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> > > >       |                                                              ^
-> > > > ./include/linux/bits.h:25:3: note: in expansion of macro '__is_constexpr'
-> > > >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
-> > > >       |   ^~~~~~~~~~~~~~
-> > > > ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> > > >    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> > > >       |   ^~~~~~~~~~~~~~~~~~~
-> > > > ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
-> > > >   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
-> > > >       |                               ^~~~~~~
-> > > > ./include/linux/bits.h:25:34: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
-> > > >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
-> > > >       |                                  ^
-> > > > ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
-> > > >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> > > >       |                                                              ^
-> > > > ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> > > >    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> > > >       |   ^~~~~~~~~~~~~~~~~~~
-> > > > ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
-> > > >   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
-> > > >       |                               ^~~~~~~
-> > > > 
-> > > > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> > > > ---
-> > > >  include/linux/find.h | 28 ++++++++--------------------
-> > > >  1 file changed, 8 insertions(+), 20 deletions(-)
-> > > > 
-> > > > diff --git a/include/linux/find.h b/include/linux/find.h
-> > > > index 5bb6db213bcb..5ce2b17aea42 100644
-> > > > --- a/include/linux/find.h
-> > > > +++ b/include/linux/find.h
-> > > > @@ -115,11 +115,8 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
-> > > >  static inline
-> > > >  unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
-> > > >  {
-> > > > -	if (small_const_nbits(size)) {
-> > > > -		unsigned long val = *addr & GENMASK(size - 1, 0);
-> > > > -
-> > > > -		return val ? __ffs(val) : size;
-> > > > -	}
-> > > > +	if (small_const_nbits(size))
-> > > > +		return size;
-> > > >  
-> > > >  	return _find_first_bit(addr, size);
-> > > >  }
-> > > 
-> > > [...]
-> > > 
-> > > Nice catch! I'm a bit concerned that small_const_nbits() will never
-> > > allow GENMASK() to be passed with size == 0, but the patch looks
-> > > good to me overall.
-> > 
-> > Can you explain to me how it is supposed to work?
-> > 
-> > For example,
-> > 
-> >     x = 0xaa55;
-> >     size = 5;
-> > 
-> >     printf("%lu\n", find_first_bit(&x, size));
-> > 
-> > In the resulting code we will always have 5 as the result,
-> > but is it correct one?
+On 10/26/21 18:26, Steven Rostedt wrote:
+> On Wed, 27 Oct 2021 00:22:04 +0800
+> Tao Zhou <tao.zhou@linux.dev> wrote:
 > 
-> I think it would work really bad and fail to load the kernel
-> for many systems, especially those with NR_CPUS == 64 or less.
+>>> +	do {
+>>> +		retval = read(in_fd, buffer, sizeof(buffer));
+>>> +		if (read <= 0)  
+>> check "retval" not read. Like:
+>>
+>>   if (retval <= 0)
+> OUCH! Good check.
 > 
-> That's why I think Apr 1 branch is a good place  for it.
+> Daniel, did that not produce any warnings??
 
-Ah, I have got you. We are on the same page then.
+OUCH OUCH!
 
-Now, I have checked that email appearance in the upstream:
+No warnings, no nothing.
 
-$ git log --oneline --author="quic_qiancai@quicinc.com"
-95cadae320be fortify: strlen: Avoid shadowing previous locals
-94560f6156fe Revert "arm pl011 serial: support multi-irq request"
+The code actually "works" because errors are not common and the next if stops
+the loop.
 
-While first one perhaps okay, although it also refers to W=2,
-I have now doubts if the "Revert" was really thought through
-and not just yet another UMN-like experiment.
+-- Daniel
 
-Greg, what do you think is the best course of actions here?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> -- Steve
+> 
+> 
 
