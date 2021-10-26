@@ -2,164 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0FD43AB6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D2D43AB6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 06:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhJZEsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 00:48:30 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:47510 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233481AbhJZEs2 (ORCPT
+        id S234147AbhJZEtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 00:49:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231801AbhJZEtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 00:48:28 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:35452)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mfELc-00ATX9-JC; Mon, 25 Oct 2021 22:46:04 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34936 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mfELb-004bCG-Is; Mon, 25 Oct 2021 22:46:04 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <87y26nmwkb.fsf@disp2133>
-        <20211020174406.17889-13-ebiederm@xmission.com>
-        <CAHk-=whe-ixeDp_OgSOsC4H+dWTLDSuNDU2a0sE3p8DapNeCuQ@mail.gmail.com>
-        <9416e8d7-5545-4fc4-8ab0-68fddd35520b@kernel.org>
-        <CAHk-=whJETM0MHqWQKCVALBkJX-Th5471z5FW3gFJO5c73L6QA@mail.gmail.com>
-Date:   Mon, 25 Oct 2021 23:45:23 -0500
-In-Reply-To: <CAHk-=whJETM0MHqWQKCVALBkJX-Th5471z5FW3gFJO5c73L6QA@mail.gmail.com>
-        (Linus Torvalds's message of "Mon, 25 Oct 2021 16:15:44 -0700")
-Message-ID: <87o87ctmvw.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 26 Oct 2021 00:49:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635223604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ywFf8Nt0Po4A+AsAVSGAY5OyaS8B6ezXbsiAVAuI/M8=;
+        b=WQrenAprwuxX5LSQFfrExmCHiTsTN9Xsa69Rk5d0wEgRz03hg/XDLAubCp+l8prh5crJDX
+        hdqnmGCdNH2la9qEHtldDBrTZ8ZuRpzbogyNN+lWIw1VnUrEuav6dpgDLAG5lPFeVywBXx
+        L951W4spANHLyp1KX1ffXt8ZM6V0TyA=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-wfoBy_-_PSibvh2p02ecuw-1; Tue, 26 Oct 2021 00:46:43 -0400
+X-MC-Unique: wfoBy_-_PSibvh2p02ecuw-1
+Received: by mail-lf1-f72.google.com with SMTP id t11-20020a056512068b00b003ffb571164dso705105lfe.14
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 21:46:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ywFf8Nt0Po4A+AsAVSGAY5OyaS8B6ezXbsiAVAuI/M8=;
+        b=DbsgKGt0zlYnNb+8rm3lKaNPGPhOpJhscEzSTllve9PEVJoiSGxiI7FGGN96H8xi8n
+         f7rsWDw9/qXSXmyvhyAcQLcNmWTIra9MDqOIcjL9WZUdHNq1qkWnv9JzbxcbSWzpGE9W
+         y6E5ahoS0FL2k/dNTXTXLXnehlnaUE+6nDQma9rIQTZ+4Pzaz8rzEhvQr1NOusuWxrEH
+         m3bI67up4xsgNdn/vbNiCeXDBEReC+TJSauz0viIgMi8Ypqfdd38NswgPoaWG6BqiTnx
+         u4ZYzcWJxeK9tWjVazwtmhq3mvsxScylcGZNeFIklPHTUKCuM3GL2dSukSQMjxjHLG59
+         ge4g==
+X-Gm-Message-State: AOAM532NtK3y0O+yGtG3fsTYHd2bvHdzH9qFraEFP+qvLSmVr+zkFy/h
+        iBfBATcy57vCteoKZQeClJszOy02rTOwx/kEtdIBOSUK9OOkh3dyh9ey4jPj0hvOOYHm8Lp78+B
+        r94lZdbiyI/twslf6dHhX+8T/VqB5YFnAEGHN4Bnp
+X-Received: by 2002:a05:6512:3d11:: with SMTP id d17mr16086970lfv.481.1635223601669;
+        Mon, 25 Oct 2021 21:46:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcLiJzIwVWhMCDF8Td4cRTk/ol0gv9lySImO+vOnYnXqjy15iLtfVFK+Rp3mNhOD4BkEZ4r0ZV/jCqDb/6UC4=
+X-Received: by 2002:a05:6512:3d11:: with SMTP id d17mr16086951lfv.481.1635223601462;
+ Mon, 25 Oct 2021 21:46:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mfELb-004bCG-Is;;;mid=<87o87ctmvw.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18a6D5O+YrTECRKk40/H4Oj2815LtR98b0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4920]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 382 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 5.0 (1.3%), b_tie_ro: 3.5 (0.9%), parse: 1.14
-        (0.3%), extract_message_metadata: 11 (2.9%), get_uri_detail_list: 2.6
-        (0.7%), tests_pri_-1000: 10 (2.6%), tests_pri_-950: 1.04 (0.3%),
-        tests_pri_-900: 0.81 (0.2%), tests_pri_-90: 56 (14.7%), check_bayes:
-        55 (14.3%), b_tokenize: 6 (1.6%), b_tok_get_all: 9 (2.4%),
-        b_comp_prob: 2.2 (0.6%), b_tok_touch_all: 34 (8.8%), b_finish: 0.79
-        (0.2%), tests_pri_0: 285 (74.6%), check_dkim_signature: 0.41 (0.1%),
-        check_dkim_adsp: 2.8 (0.7%), poll_dns_idle: 0.25 (0.1%), tests_pri_10:
-        2.2 (0.6%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 13/20] signal: Implement force_fatal_sig
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+ <cover.1634870456.git.wuzongyong@linux.alibaba.com> <c75b4499f7ead922daa19bf67b32eed6f185d260.1634870456.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEtNECAUtpEvLvEpTFKfbYRC7YQKnHDnjxR3k9Hap1tmig@mail.gmail.com>
+ <20211025024403.GA3684@L-PF27918B-1352.localdomain> <bfb2875b-0da1-27e8-829b-f6b61ea6e326@redhat.com>
+ <20211025062454.GA4832@L-PF27918B-1352.localdomain>
+In-Reply-To: <20211025062454.GA4832@L-PF27918B-1352.localdomain>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 26 Oct 2021 12:46:30 +0800
+Message-ID: <CACGkMEvhRqWY=HXEqJHJUMupmEx+GZRvrzA3bZVoVgf=-r2U1A@mail.gmail.com>
+Subject: Re: [PATCH v6 6/8] virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
-
-> On Mon, Oct 25, 2021 at 3:41 PM Andy Lutomirski <luto@kernel.org> wrote:
->>
->> I'm rather nervous about all this, and I'm also nervous about the
->> existing code.  A quick skim is finding plenty of code paths that assume
->> force_sigsegv (or a do_exit that this series touches) are genuinely
->> unrecoverable.
+On Mon, Oct 25, 2021 at 2:25 PM Wu Zongyong
+<wuzongyong@linux.alibaba.com> wrote:
 >
-> I was going to say "what are you talking about", because clearly Eric
-> kept it all fatal.
+> On Mon, Oct 25, 2021 at 12:45:44PM +0800, Jason Wang wrote:
+> >
+> > =E5=9C=A8 2021/10/25 =E4=B8=8A=E5=8D=8810:44, Wu Zongyong =E5=86=99=E9=
+=81=93:
+> > > On Mon, Oct 25, 2021 at 10:22:30AM +0800, Jason Wang wrote:
+> > > > On Fri, Oct 22, 2021 at 10:45 AM Wu Zongyong
+> > > > <wuzongyong@linux.alibaba.com> wrote:
+> > > > > For the devices which implement the get_vq_num_min callback, the =
+driver
+> > > > > should not negotiate with virtqueue size with the backend vdpa de=
+vice if
+> > > > > the value returned by get_vq_num_min equals to the value returned=
+ by
+> > > > > get_vq_num_max.
+> > > > > This is useful for vdpa devices based on legacy virtio specficati=
+on.
+> > > > >
+> > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > > > ---
+> > > > >   drivers/virtio/virtio_vdpa.c | 21 ++++++++++++++++-----
+> > > > >   1 file changed, 16 insertions(+), 5 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio=
+_vdpa.c
+> > > > > index 72eaef2caeb1..e42ace29daa1 100644
+> > > > > --- a/drivers/virtio/virtio_vdpa.c
+> > > > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > > > @@ -145,7 +145,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vd=
+ev, unsigned int index,
+> > > > >          /* Assume split virtqueue, switch to packed if necessary=
+ */
+> > > > >          struct vdpa_vq_state state =3D {0};
+> > > > >          unsigned long flags;
+> > > > > -       u32 align, num;
+> > > > > +       u32 align, max_num, min_num =3D 0;
+> > > > > +       bool may_reduce_num =3D true;
+> > > > >          int err;
+> > > > >
+> > > > >          if (!name)
+> > > > > @@ -163,22 +164,32 @@ virtio_vdpa_setup_vq(struct virtio_device *=
+vdev, unsigned int index,
+> > > > >          if (!info)
+> > > > >                  return ERR_PTR(-ENOMEM);
+> > > > >
+> > > > > -       num =3D ops->get_vq_num_max(vdpa);
+> > > > > -       if (num =3D=3D 0) {
+> > > > > +       max_num =3D ops->get_vq_num_max(vdpa);
+> > > > > +       if (max_num =3D=3D 0) {
+> > > > >                  err =3D -ENOENT;
+> > > > >                  goto error_new_virtqueue;
+> > > > >          }
+> > > > >
+> > > > > +       if (ops->get_vq_num_min)
+> > > > > +               min_num =3D ops->get_vq_num_min(vdpa);
+> > > > > +
+> > > > > +       may_reduce_num =3D (max_num =3D=3D min_num) ? false : tru=
+e;
+> > > > > +
+> > > > >          /* Create the vring */
+> > > > >          align =3D ops->get_vq_align(vdpa);
+> > > > > -       vq =3D vring_create_virtqueue(index, num, align, vdev,
+> > > > > -                                   true, true, ctx,
+> > > > > +       vq =3D vring_create_virtqueue(index, max_num, align, vdev=
+,
+> > > > > +                                   true, may_reduce_num, ctx,
+> > > > >                                      virtio_vdpa_notify, callback=
+, name);
+> > > > >          if (!vq) {
+> > > > >                  err =3D -ENOMEM;
+> > > > >                  goto error_new_virtqueue;
+> > > > >          }
+> > > > >
+> > > > > +       if (virtqueue_get_vring_size(vq) < min_num) {
+> > > > > +               err =3D -EINVAL;
+> > > > > +               goto err_vq;
+> > > > > +       }
+> > > > I wonder under which case can we hit this?
+> > > >
+> > > > Thanks
+> > > If min_vq_num < max_vq_num, may_reduce_num should be true, then it is
+> > > possible to allocate a virtqueue with a small size which value is les=
+s
+> > > than the min_vq_num since we only set the upper bound for virtqueue s=
+ize
+> > > when creating virtqueue.
+> > >
+> > > Refers to vring_create_virtqueue_split in driver/virtio/virtio_vring.=
+c:
+> > >
+> > >     for (; num && vring_size(num, vring_align) > PAGE_SIZE; num /=3D =
+2) {
+> > >             queue =3D vring_alloc_queue(vdev, vring_size(num, vring_a=
+lign),
+> > >                                       &dma_addr,
+> > >                                       GFP_KERNEL|__GFP_NOWARN|__GFP_Z=
+ERO);
+> > >             if (queue)
+> > >                     break;
+> > >             if (!may_reduce_num)
+> > >                     return NULL;
+> > >     }
+> >
+> >
+> > It looks to me it's better to fix this function instead of checking it =
+in
+> > the caller?
 >
-> But then looked at that patch a bit more before I claimed you were wrong.
+> Or we can simply remove that code since this case only exists in theory, =
+and
+> there is no real usecase for now.
+
+(Adding list back)
+
+Somehow, it can't happen if you stick to a 256 as both min and max.
+
+Another question, can ENI support vring size which is less than 256?
+
+Thanks
+
 >
-> And yeah, Eric's force_fatal_sig() is completely broken.
+> >
+> >
+> > >
+> > > BTW, I have replied this mail on Nov.18, have you ever received it?
+> >
+> >
+> > For some reason I dont' get that.
+> >
+> > Thanks
+> >
+> >
+> > > > > +
+> > > > >          /* Setup virtqueue callback */
+> > > > >          cb.callback =3D virtio_vdpa_virtqueue_cb;
+> > > > >          cb.private =3D info;
+> > > > > --
+> > > > > 2.31.1
+> > > > >
 >
-> It claims to force a fatal signal, but doesn't actually do that at
-> all, and is completely misnamed.
->
-> It just uses "force_sig_info_to_task()", which still allows user space
-> to catch signals - so it's not "fatal" in the least. It only punches
-> through SIG_IGN and blocked signals.
->
-> So yeah, that's broken.
->
-> I do still think that that could the behavior we possibly want for
-> that "can't write updated vm86 state back" situation, but for
-> something that is called "fatal", it really needs to be fatal.
-
-Once the code gets as far as force_sig_info_to_task the only
-bit that is really missing is to make the signals fatal is:
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 6a5e1802b9a2..fde043f1e59d 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1048,7 +1048,6 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
-                /*
-                 * This signal will be fatal to the whole group.
-                 */
--               if (!sig_kernel_coredump(sig)) {
-                        /*
-                         * Start a group exit and wake everybody up.
-                         * This way we don't have other threads
-@@ -1065,7 +1064,6 @@ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
-                                signal_wake_up(t, 1);
-                        } while_each_thread(p, t);
-                        return;
--               }
-        }
- 
-        /*
-
-AKA the only real bit missing is the interaction with the coredump code.
-
-Now we can't just delete sig_kernel_coredump a replacement has to be
-written.   And the easiest replacement depends on my other set of
-changes that are already in linux-next to make coredumps per
-signal_struct instead of per mm.
-
-Which means that in a release or two force_fatal_sig will reliably do
-what the name says.
-
-
-
-
-So the question is: Should I name force_fatal_sig to something else in
-the meantime?  What should I name it?
-
-
-
-
-I do intend to fix that bit in complete_signal, as well as updating the
-code in force_siginfo_to_task so that it doesn't need to change the
-blocked state or the signal handler.
-
-These special cases have been annoying me for years and now Andy has
-found how they are actually hurting us.  So I do intend to fix that code
-as quickly as being careful and code review allows.  Which I think means
-one additional development cycle after this one.
-
-Eric
 
