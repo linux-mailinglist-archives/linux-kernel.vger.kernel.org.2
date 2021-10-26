@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB74243B831
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AEE43B838
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237813AbhJZReH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
+        id S237833AbhJZRfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbhJZRdv (ORCPT
+        with ESMTP id S237815AbhJZRfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:33:51 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9F4C061348
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:31:27 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id l7so33471iln.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:31:27 -0700 (PDT)
+        Tue, 26 Oct 2021 13:35:08 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC40C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:32:44 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id u13so17294681edy.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LDEJDKLvwHDItOMunXyLHz+P+5cXsosFxrbxb74ZMLI=;
-        b=RSOVR55vPMX+8xX0b6bWnCO9BdeYQDButlg1o8kXKtMn39Kc2ddjkY5N+F8Pnm+Ktm
-         iY35TCR/p1WNOd6CshX0EMB6r5PEje0luDwmK6VV4a5dWcQva9V462OZZBd0B2uAvPxH
-         PRR6Yeo7fs2q5ouVwjBOBgZzsfM1W6dfKlk1c=
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=VmdSeOz3tGynEfdRHSi/l2aNe64eCuVaGO+sKEKzIEs=;
+        b=lFV1Kn9YSWpfRCXDLTgIzTtK5Onr2mc2xw8HrdtAXKgEOa8JSMMOp+98zvouEDwNbi
+         LECWd36JYV6hYOh7pSs09hzFodgLMAqbeBHPUtLI/OFMrjklw1ze+9RsWJc4Xgdp9Ycd
+         yJTFVP46RJ66WeBfZCYfQMJEURfUi08jaTynqLog1wiWpN+BJlzeGq8LVpxQcSDWERUS
+         qM60ROO/o+LXmKhmPFYjeXtKCW0UwXGUikQW6NXM9WL/B9T12Nxna/LMwG/bxJL2xc7n
+         VoDp+86dk9OienrE3chWVnqRzRfEiJuoGS0a7iR/SClLyg08YfRidoWz2vOvZaTRqH4f
+         vWtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LDEJDKLvwHDItOMunXyLHz+P+5cXsosFxrbxb74ZMLI=;
-        b=XLS0wDOygMBO8qMMLwl2Ixsvc0U9Orc48ZtuBti3XNOm5B/1djIVEaz+fn4hUxJ8uN
-         ie4FhSqMsKPsaXeiaWnqaXJ7spwiPKWEiSvc2q6iMIdZBirbzgjs5n0id7KKShtX63cC
-         D+R4pFhqVgeMu7kmMK5NvFCtUYQXCTiyNUw7pgjvPDnSAnpPjf51kIJ3aOe4lu3iGLwu
-         Vp9e2ygoD9HDnRVSKr3EVf95gxDVuqg48nSUJ1TWRj+pzOnlSHGLCw3ySljPX5XPlzWS
-         J8vy81gBk7VSw20lRK0uEINsKJ7ADi5JGbnVqpD2pV8/ONRSG2LU0J2kcTMgnxrNq+ZB
-         EAoA==
-X-Gm-Message-State: AOAM5305EwMfgIZ1+qgITOR2VIbN49UEc3/05yHW03rkBaMvPgS/EiBA
-        nSmnzK9lTL+uxrmXToC7Dnx4ag==
-X-Google-Smtp-Source: ABdhPJx+ZbzTje2Lk+q/f1XfJlRFHshEQShihGEstV0dQ92fNBO1s+rkGTMy+EUParF3/3Do+P7b+w==
-X-Received: by 2002:a92:d706:: with SMTP id m6mr14712252iln.155.1635269486913;
-        Tue, 26 Oct 2021 10:31:26 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c3sm10947236ili.33.2021.10.26.10.31.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 10:31:26 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/44] 4.4.290-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211025190928.054676643@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <4ff70939-7126-88ca-e55e-bc744c5b4ad6@linuxfoundation.org>
-Date:   Tue, 26 Oct 2021 11:31:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=VmdSeOz3tGynEfdRHSi/l2aNe64eCuVaGO+sKEKzIEs=;
+        b=Ve/enKlO00LXxEgpUadGb+EZT31R0cKJpj2IdkKPpf+wWe2K2+uBzVFq/jIusENHbZ
+         SkDkp3+cZEULReK8WU8eznYvrje6CgWTfnlQwlpvNfTPUt57tcd7vqUwRu8dFrINKF4o
+         24g0vroi7wkuWOuMkO9PL9Gs72I7bI12rEF0bwRMNA4x2U7KEId3wQBvwSC5abBLrMiH
+         er5IHKM9GWzJqQyq3aT2qpfqPeO+Z6bOvOi8uk5Rlue9mqguUTXvy5O6+ihT6XFnmu44
+         nOX8M01yDfIhBOQaiN09Xkn19egRlofvhLYoAyQIq090EZZELOAgw6+iDQRHnPLXBYiy
+         dQMg==
+X-Gm-Message-State: AOAM530b/xemtP/BhvxFF8aq8fuNBYhk6ZssaylvcywK0b9nkYA24Ldv
+        eWG8/1MqnL2e7JOdhqz47+DaOWxvv+lUAMu2+59PlqkrjB5WFw==
+X-Google-Smtp-Source: ABdhPJzOdAE7OzEdd31gDoFVlnoaXRqLqGfNn3B0fTL1hI5KdSaeQgNdrCI+0YkElhBcHgyE5wnKl4iwKHdUpBckXGc=
+X-Received: by 2002:a05:6402:5255:: with SMTP id t21mr36568076edd.103.1635269555221;
+ Tue, 26 Oct 2021 10:32:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211025190928.054676643@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 26 Oct 2021 23:02:24 +0530
+Message-ID: <CA+G9fYtFTjVz-hN=HdF56vKYpY5LhKoscyWTv7gQxzjoboHzwQ@mail.gmail.com>
+Subject: s390: {standard input}:11: Error: Unrecognized opcode: `pushq'
+To:     linux-s390@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 1:13 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.290 release.
-> There are 44 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.290-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+[Please ignore this email if it is already reported ]
 
-Compiled and booted on my test system. No dmesg regressions.
+Regression found on s390 gcc-8/9/10 and gcc-11 built with defconfig
+Following build warnings / errors reported on linux next 20211025.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+metadata:
+    git_describe: next-20211025
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    git_short_log: 9ae1fbdeabd3 (\"Add linux-next specific files for 20211025\")
+    target_arch: s390
+    toolchain: gcc-10
 
-Upgrading to Ubuntu 21.10 caused issues with the boot related to
-zstd compression which is the default initramfs.conf for 21.10
+build error :
+--------------
+<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
+{standard input}: Assembler messages:
+{standard input}:11: Error: Unrecognized opcode: `pushq'
+{standard input}:12: Error: Unrecognized opcode: `movq'
+{standard input}:13: Error: Unrecognized opcode: `pushq'
+{standard input}:14: Error: Unrecognized opcode: `movq'
+{standard input}:15: Error: Unrecognized opcode: `call'
+{standard input}:16: Error: Unrecognized opcode: `popq'
+{standard input}:17: Error: Unrecognized opcode: `leave'
+{standard input}:18: Error: Unrecognized opcode: `ret'
+make[3]: *** [/builds/linux/scripts/Makefile.build:288:
+samples/ftrace/ftrace-direct-multi.o] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [/builds/linux/scripts/Makefile.build:571: samples/ftrace] Error 2
 
-If others run into this:
 
-Changing the default to lz4 is the answer for 4.4
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-thanks,
--- Shuah
+build link:
+-----------
+https://builds.tuxbuild.com/1zzgG8V6qSBH9457ca0kOcQR756/build.log
 
+build config:
+-------------
+https://builds.tuxbuild.com/1zzgG8V6qSBH9457ca0kOcQR756/config
+
+# To install tuxmake on your system globally
+# sudo pip3 install -U tuxmake
+tuxmake --runtime podman --target-arch s390 --toolchain gcc-10
+--kconfig defconfig
+
+--
+Linaro LKFT
+https://lkft.linaro.org
