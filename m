@@ -2,71 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BA843B348
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D74D43B35D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbhJZNmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:42:03 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14866 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhJZNmD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:42:03 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HdtGW3JsZz90Th;
-        Tue, 26 Oct 2021 21:39:31 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 26 Oct 2021 21:39:30 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 26 Oct
- 2021 21:39:30 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <jasowang@redhat.com>, <mst@redhat.com>
-Subject: [PATCH -next] virtio-pci: fix error return code in vp_legacy_probe()
-Date:   Tue, 26 Oct 2021 21:47:25 +0800
-Message-ID: <20211026134725.345020-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S236271AbhJZNu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:50:58 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:39369 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233751AbhJZNu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:50:57 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4HdtSv29bWz9s33;
+        Tue, 26 Oct 2021 15:48:31 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jEubgNQj05Kl; Tue, 26 Oct 2021 15:48:31 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4HdtSs65MJz9s2p;
+        Tue, 26 Oct 2021 15:48:29 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19QDmTSo008371
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 15:48:29 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19QDmTEb008370;
+        Tue, 26 Oct 2021 15:48:29 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v3] powerpc/boot: Set LC_ALL=C in wrapper script
+Date:   Tue, 26 Oct 2021 15:48:29 +0200
+Message-Id: <a9ff3bc98035f63b122c051f02dc47c7aed10430.1635256089.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1635256108; l=2449; s=20211009; h=from:subject:message-id; bh=xZ0rGjGP56sOdSPMSs1kgCpiDc1GM8DbeevvhKq0/uE=; b=Z6mpj2Pdaog41vslEG+aG0Glmbja4AIHN4KNRNegZIhSvulWH0b0+YxZESRB38O7+h8pcjoseybB xsrpqvRBDIzhGd5dpG3sqXAewXx0CmSmsyOZ07EpKG6FkFATAWe4
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return error code if pci_iomap() fails in vp_legacy_probe()
+While trying to build a simple Image for ACADIA platform, I got the
+following error:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: c3ca8a3eeb54 ("virtio-pci: introduce legacy device module")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+	  WRAP    arch/powerpc/boot/simpleImage.acadia
+	INFO: Uncompressed kernel (size 0x6ae7d0) overlaps the address of the wrapper(0x400000)
+	INFO: Fixing the link_address of wrapper to (0x700000)
+	powerpc64-linux-gnu-ld : mode d'émulation non reconnu : -T
+	Émulations prises en charge : elf64ppc elf32ppc elf32ppclinux elf32ppcsim elf64lppc elf32lppc elf32lppclinux elf32lppcsim
+	make[1]: *** [arch/powerpc/boot/Makefile:424 : arch/powerpc/boot/simpleImage.acadia] Erreur 1
+	make: *** [arch/powerpc/Makefile:285 : simpleImage.acadia] Erreur 2
+
+Trying again with V=1 shows the following command
+
+	powerpc64-linux-gnu-ld -m -T arch/powerpc/boot/zImage.lds -Ttext 0x700000 --no-dynamic-linker -o arch/powerpc/boot/simpleImage.acadia -Map wrapper.map arch/powerpc/boot/fixed-head.o arch/powerpc/boot/simpleboot.o ./zImage.3278022.o arch/powerpc/boot/wrapper.a
+
+The argument of '-m' is missing.
+
+This is due to the wrapper script calling 'objdump -p vmlinux' and
+looking for 'file format', whereas the output of objdump is:
+
+	vmlinux:     format de fichier elf32-powerpc
+
+	En-tête de programme:
+	    LOAD off    0x00010000 vaddr 0xc0000000 paddr 0x00000000 align 2**16
+	         filesz 0x0069e1d4 memsz 0x006c128c flags rwx
+	    NOTE off    0x0064591c vaddr 0xc063591c paddr 0x0063591c align 2**2
+	         filesz 0x00000054 memsz 0x00000054 flags ---
+
+Add LC_ALL=C at the beginning of the wrapper script in order to get the
+output expected by the script:
+
+	vmlinux:     file format elf32-powerpc
+
+	Program Header:
+	    LOAD off    0x00010000 vaddr 0xc0000000 paddr 0x00000000 align 2**16
+	         filesz 0x0069e1d4 memsz 0x006c128c flags rwx
+	    NOTE off    0x0064591c vaddr 0xc063591c paddr 0x0063591c align 2**2
+	         filesz 0x00000054 memsz 0x00000054 flags ---
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/virtio/virtio_pci_legacy_dev.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+v3: Also change patch's subject:
+v2: Use LC_ALL=C per Segher
+---
+ arch/powerpc/boot/wrapper | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/virtio/virtio_pci_legacy_dev.c b/drivers/virtio/virtio_pci_legacy_dev.c
-index 9b97680dd02b..4ca3ef38d3bf 100644
---- a/drivers/virtio/virtio_pci_legacy_dev.c
-+++ b/drivers/virtio/virtio_pci_legacy_dev.c
-@@ -45,8 +45,10 @@ int vp_legacy_probe(struct virtio_pci_legacy_device *ldev)
- 		return rc;
+diff --git a/arch/powerpc/boot/wrapper b/arch/powerpc/boot/wrapper
+index 1cd82564c996..9184eda780fd 100755
+--- a/arch/powerpc/boot/wrapper
++++ b/arch/powerpc/boot/wrapper
+@@ -26,6 +26,8 @@
+ # Stop execution if any command fails
+ set -e
  
- 	ldev->ioaddr = pci_iomap(pci_dev, 0, 0);
--	if (!ldev->ioaddr)
-+	if (!ldev->ioaddr) {
-+		rc = -ENOMEM;
- 		goto err_iomap;
-+	}
- 
- 	ldev->isr = ldev->ioaddr + VIRTIO_PCI_ISR;
- 
++export LC_ALL=C
++
+ # Allow for verbose output
+ if [ "$V" = 1 ]; then
+     set -x
 -- 
-2.25.1
+2.31.1
 
