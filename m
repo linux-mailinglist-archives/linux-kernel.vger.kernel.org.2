@@ -2,52 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C22A43A9A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6670F43A9A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 03:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236090AbhJZBQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 21:16:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236078AbhJZBQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 21:16:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF66360F70;
-        Tue, 26 Oct 2021 01:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635210826;
-        bh=uSvaxn3OqBenc7AUPkVLvTX9oMoOkdGbitLstJuS6Mg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J9ws8Nu9lYWHW1cOvBYkbxTuKM7qXbfb98XNE/e4UJyaYyYf2YUOr7HmsieqO0us0
-         MEa6930amdtwxhbyxNnqy73z96jfoLqDZwbO7zeU6LytkIwMmpCaaunyQivmdFbT0d
-         OBfuclkY0xLyjOCk0+dIs21u1Fk+ob1sayu67Dj7ewgajLzlrkxB4JBGVsgnEmcmJU
-         twSFXToZCA+QsQgM2x2JKh+xT9qho+XG19PjHugHNohfUBGshwA9mOmduF/aowUy9m
-         C6OhsWxS601YsC9lekQ7YN1XiH4+pCpiOxAOgnTOJGk372dHQvzVICU/bwuNEKlT91
-         PX5iRfj0cbVrg==
-Date:   Mon, 25 Oct 2021 18:13:45 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rakesh Babu <rsaladi2@marvell.com>
-Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        Harman Kalra <hkalra@marvell.com>,
-        Bhaskara Budiredla <bbudiredla@marvell.com>
-Subject: Re: [net-next PATCH 2/3] octeontx2-af: cn10k: debugfs for dumping
- lmtst map table
-Message-ID: <20211025181345.64b1ff66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211025191442.10084-3-rsaladi2@marvell.com>
-References: <20211025191442.10084-1-rsaladi2@marvell.com>
-        <20211025191442.10084-3-rsaladi2@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S234665AbhJZBQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 21:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236078AbhJZBQw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 21:16:52 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0185FC061745;
+        Mon, 25 Oct 2021 18:14:28 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id f11so12599902pfc.12;
+        Mon, 25 Oct 2021 18:14:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=M8BDgiMgTEEdzwj24tM/1izVkkyLZ+QZWEpP9NWhiJk=;
+        b=TX0DGP3jtOW+0fxffC5fuuU47iwSFChikEMnvL5CjuXMGdNge1Rl55OV4SpTD2rNZw
+         DHuJBn089S5/W/SvyAr3Eg+qhf09agnkLa1pY7OY47CVZqPsQPaKrJrk6rbwWl2Sjewk
+         YwtIZJSn9KfZ1PNKXpqdCf7jRqpF1xomy6Xmc+PkDgN8Xql/lqIzdXOawYdiZaDFzYg2
+         p4umiUa81YSGvgu4noUKNs9fUqBJgfPhGHA/A1uo4RDtaFNVzbGhrHaxn+G93NB6I/C+
+         dAMleFI6GlccDJC6aO9DC5zw6EJgX8wP44BAUjGBokzT8Qruyb8mxindr2fB9Y2Zldpt
+         sahw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=M8BDgiMgTEEdzwj24tM/1izVkkyLZ+QZWEpP9NWhiJk=;
+        b=hn+8UhfF6+jkF/uQx0ZYmpSG/mStlk5vuy2KUoEcE8GUQPz1/2TjtgpXiKY5d7qgEg
+         XdYOp7ztCqCluW+MXPejQL8or/1ksN0tKR/Wr9/LZUmq/xQKSc6Yplocci9qWZCq0+xv
+         n/zyhVvA8IITtyDVREhfISrz96hSaXgq9htPdNN8IfrKQTPFbvU6usPFbUnW3QVuHf0T
+         jf5UwD3W082FflMRVxO8GtFNw7TiW/+l8B3gKy+AOmBEeeMDVu2D8OJtxI9Gi/nEfAM3
+         Tg/yry5Cw3VQBHtVKpauh0gNDcjllg48NJXi+angudW4611fdoEBSfEOjC/Eiwz0YPeM
+         B9Ww==
+X-Gm-Message-State: AOAM533KPPqDg4n+Hf4T4g2Oztl/H5g9fy795sefG2dgGw4Covaaw783
+        uyHp1CPxFH6s5GLFxLA1v9gdobld/BbLkcimKBA=
+X-Google-Smtp-Source: ABdhPJzkRBpwN7yCVSqrmo1d+OTl0QuQudO58cwSd190OeX449mCxBlWUeXVx1hhBHvgLF1MdhQ6Ag==
+X-Received: by 2002:a63:2361:: with SMTP id u33mr16273070pgm.369.1635210867005;
+        Mon, 25 Oct 2021 18:14:27 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id x5sm3940658pfh.153.2021.10.25.18.14.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 18:14:26 -0700 (PDT)
+Message-ID: <61775672.1c69fb81.f2d13.a494@mx.google.com>
+Date:   Mon, 25 Oct 2021 18:14:26 -0700 (PDT)
+X-Google-Original-Date: Tue, 26 Oct 2021 01:14:25 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/95] 5.10.76-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 00:44:41 +0530 Rakesh Babu wrote:
-> Implemented a new debugfs entry for dumping lmtst map
-> table present on CN10K, as this might be very useful to debug any issue
-> in case of shared lmtst region among multiple pcifuncs.
+On Mon, 25 Oct 2021 21:13:57 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.76 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.76-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Please add an explanation what "lmtst map table" is to the commit
-message.
+5.10.76-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
+
