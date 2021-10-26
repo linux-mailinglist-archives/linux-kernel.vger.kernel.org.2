@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E097C43BDD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068CA43BDD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236228AbhJZX1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:27:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:2360 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236208AbhJZX1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:27:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217208563"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="217208563"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 16:25:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="597123564"
-Received: from lkp-server01.sh.intel.com (HELO 072b454ebba8) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 26 Oct 2021 16:25:17 -0700
-Received: from kbuild by 072b454ebba8 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mfVoi-0000bl-Ov; Tue, 26 Oct 2021 23:25:16 +0000
-Date:   Wed, 27 Oct 2021 07:25:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- 07d1c025abb36637f8b80106097b6a7654ee48f2
-Message-ID: <61788e58.23lH8VFhKfdk+Jtz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S240277AbhJZX1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:27:52 -0400
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:41706 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240276AbhJZX1u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 19:27:50 -0400
+Received: by mail-oo1-f49.google.com with SMTP id t201-20020a4a3ed2000000b002b8c98da3edso291807oot.8;
+        Tue, 26 Oct 2021 16:25:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=COX6qcOMv7vPVSkX300sUvDrTEmMuSLBZS7S2513Mmw=;
+        b=MzKaAIoInez/5e9tHYr3sRvemPIHNB8M79eJ/f3yRxfzhY1jRzhuCHGlo0JcsvXHKk
+         tnt7HngAYsAGy2ki3QlslmDegQwrUPh0LaNyrH8UllSx3+5ru0c7uR2ugVrWyxNV1vKc
+         fkSYah1KV3q+kvZA7Ku0c0Dv7opPfvTOzUTvJdIfkcne31v+JNGXuj7ZzNJmID8KiFwB
+         +xhwX5RkSo2KDhb/PQzjtL4fS5a3uP3ddwlgFBXfcPMglHvcFGZIeSO8MGwpPgU3iDuZ
+         LOEfBinHr6HiFG9Afa3BUVz9GDY5PD7i0htZpj23E6gwcrgRojI4L4RXjLmJeTLpQkBf
+         c4Sg==
+X-Gm-Message-State: AOAM530cDORcd6SnksgTB8bfOjWsb85Wi1qo7JYLst2oCK38uEJ/UYHs
+        NGiMexMVIF/qyrHh//jHwepdC3PwHA==
+X-Google-Smtp-Source: ABdhPJw9VIQP4mMuRqaMaqZ94kJ7Cn/A9ZuKO3RqfD8xOl9Aii/KrvmCGlr+NhlOlRcgW3g58iI8lA==
+X-Received: by 2002:a4a:d0cd:: with SMTP id u13mr19392608oor.49.1635290725253;
+        Tue, 26 Oct 2021 16:25:25 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 16sm5171704oty.20.2021.10.26.16.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 16:25:24 -0700 (PDT)
+Received: (nullmailer pid 3510703 invoked by uid 1000);
+        Tue, 26 Oct 2021 23:25:22 -0000
+Date:   Tue, 26 Oct 2021 18:25:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hector Martin <marcan@marcan.st>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Document
+ role-switch-reset-quirk
+Message-ID: <YXiOYvnKmXNaLnoJ@robh.at.kernel.org>
+References: <20211017125904.69076-1-sven@svenpeter.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20211017125904.69076-1-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
-branch HEAD: 07d1c025abb36637f8b80106097b6a7654ee48f2  Merge branch 'tip-x86-sev' into tip-master
+On Sun, Oct 17, 2021 at 02:59:03PM +0200, Sven Peter wrote:
+> The dwc3 controller on the Apple M1 must be reset whenever a
+> device is unplugged from the root port and triggers a role
+> switch notification. Document the quirk to enable this behavior.
+> 
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> index 25ac2c93dc6c..9635e20cab68 100644
+> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> @@ -226,6 +226,12 @@ properties:
+>        avoid -EPROTO errors with usbhid on some devices (Hikey 970).
+>      type: boolean
+>  
+> +  snps,role-switch-reset-quirk:
+> +    description:
+> +      When set, DWC3 will be reset and reinitialized whenever a role switch
+> +      is performed.
+> +    type: boolean
 
-elapsed time: 1790m
+This binding is a example of why we don't do a property per quirk. We 
+end up with a gazillion of them.
 
-configs tested: 52
-configs skipped: 3
+Imply this from the SoC specific compatible (I don't recall seeing one 
+for the M1, so that's a problem).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Rob
