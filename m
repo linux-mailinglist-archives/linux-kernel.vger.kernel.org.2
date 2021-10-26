@@ -2,157 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6B743B77A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F48743B780
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237513AbhJZQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:44:45 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:54317 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234249AbhJZQoo (ORCPT
+        id S236290AbhJZQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232034AbhJZQro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:44:44 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id D398B82240;
-        Tue, 26 Oct 2021 19:42:16 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1635266536;
-        bh=IjeT8cKFVkmsNvbWpOOmmiH68Y2cE+w6uPiAlQbq6cM=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=txkLAxFs1VhwsuwNiJzEeG4W7uxz274rgMMgag8jUCeokgxKhfxvY0l+U+oyiK0BE
-         oFi4MqV8OPOUUnJoSzea2LL2vzdbNfVDGKfTUIdSl88TOb1MZ5EYet1Qf+jGuEtcWr
-         0fzwiaTvi1ktXE6AEJqclehZZNkuNLzKeuI4ZnZA=
-Received: from [192.168.211.149] (192.168.211.149) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 26 Oct 2021 19:42:16 +0300
-Message-ID: <d8ea9103-27d7-0217-297a-57aac6b0a5dc@paragon-software.com>
-Date:   Tue, 26 Oct 2021 19:42:15 +0300
+        Tue, 26 Oct 2021 12:47:44 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C41BC061745;
+        Tue, 26 Oct 2021 09:45:20 -0700 (PDT)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mfPZb-0008Q8-6Q; Tue, 26 Oct 2021 18:45:15 +0200
+Message-ID: <390b1b40-6798-5215-914c-d75a9cf20dae@leemhuis.info>
+Date:   Tue, 26 Oct 2021 18:45:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: [PATCH 4/4] fs/ntfs3: Optimize locking in ntfs_save_wsl_perm
-Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <kari.argillander@gmail.com>
-References: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
-In-Reply-To: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
+ Thunderbird/91.2.0
+Content-Language: en-BS
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635152553.git.linux@leemhuis.info>
+ <27105768dc19b395e7c8e7a80d056d1ff9c570d0.1635152553.git.linux@leemhuis.info>
+ <20211025210536.hlmkpjwf3nll6mlm@meerkat.local> <87wnlzeqgr.fsf@meer.lwn.net>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [PATCH v3 1/1] docs: submitting-patches: make section about the
+ Link: tag more explicit
+In-Reply-To: <87wnlzeqgr.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.149]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1635266720;25ed95c4;
+X-HE-SMSGID: 1mfPZb-0008Q8-6Q
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now in ntfs_save_wsl_perm we lock/unlock 4 times.
-This commit fixes this situation.
-We add "locked" argument to ntfs_set_ea.
-
-Suggested-by: Kari Argillander <kari.argillander@gmail.com>
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/xattr.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 157b70aecb4f..6d8b1cd7681d 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -259,7 +259,7 @@ static int ntfs_get_ea(struct inode *inode, const char *name, size_t name_len,
- 
- static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 				size_t name_len, const void *value,
--				size_t val_size, int flags)
-+				size_t val_size, int flags, bool locked)
- {
- 	struct ntfs_inode *ni = ntfs_i(inode);
- 	struct ntfs_sb_info *sbi = ni->mi.sbi;
-@@ -278,7 +278,8 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 	u64 new_sz;
- 	void *p;
- 
--	ni_lock(ni);
-+	if (!locked)
-+		ni_lock(ni);
- 
- 	run_init(&ea_run);
- 
-@@ -467,7 +468,8 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
- 	mark_inode_dirty(&ni->vfs_inode);
- 
- out:
--	ni_unlock(ni);
-+	if (!locked)
-+		ni_unlock(ni);
- 
- 	run_close(&ea_run);
- 	kfree(ea_all);
-@@ -595,7 +597,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
- 		flags = 0;
- 	}
- 
--	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
-+	err = ntfs_set_ea(inode, name, name_len, value, size, flags, 0);
- 	if (err == -ENODATA && !size)
- 		err = 0; /* Removing non existed xattr. */
- 	if (!err)
-@@ -989,7 +991,7 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
- 	}
- #endif
- 	/* Deal with NTFS extended attribute. */
--	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
-+	err = ntfs_set_ea(inode, name, name_len, value, size, flags, 0);
- 
- out:
- 	inode->i_ctime = current_time(inode);
-@@ -1007,35 +1009,37 @@ int ntfs_save_wsl_perm(struct inode *inode)
- {
- 	int err;
- 	__le32 value;
-+	struct ntfs_inode *ni = ntfs_i(inode);
- 
--	/* TODO: refactor this, so we don't lock 4 times in ntfs_set_ea */
-+	ni_lock(ni);
- 	value = cpu_to_le32(i_uid_read(inode));
- 	err = ntfs_set_ea(inode, "$LXUID", sizeof("$LXUID") - 1, &value,
--			  sizeof(value), 0);
-+			  sizeof(value), 0, true); /* true == already locked. */
- 	if (err)
- 		goto out;
- 
- 	value = cpu_to_le32(i_gid_read(inode));
- 	err = ntfs_set_ea(inode, "$LXGID", sizeof("$LXGID") - 1, &value,
--			  sizeof(value), 0);
-+			  sizeof(value), 0, true);
- 	if (err)
- 		goto out;
- 
- 	value = cpu_to_le32(inode->i_mode);
- 	err = ntfs_set_ea(inode, "$LXMOD", sizeof("$LXMOD") - 1, &value,
--			  sizeof(value), 0);
-+			  sizeof(value), 0, true);
- 	if (err)
- 		goto out;
- 
- 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
- 		value = cpu_to_le32(inode->i_rdev);
- 		err = ntfs_set_ea(inode, "$LXDEV", sizeof("$LXDEV") - 1, &value,
--				  sizeof(value), 0);
-+				  sizeof(value), 0, true);
- 		if (err)
- 			goto out;
- 	}
- 
- out:
-+	ni_unlock(ni);
- 	/* In case of error should we delete all WSL xattr? */
- 	return err;
- }
--- 
-2.33.0
 
 
+On 26.10.21 17:49, Jonathan Corbet wrote:
+> Konstantin Ryabitsev <konstantin@linuxfoundation.org> writes:
+> 
+>> On Mon, Oct 25, 2021 at 11:06:35AM +0200, Thorsten Leemhuis wrote:
+>>> +If related discussions or any other background information behind the change
+>>> +can be found on the web, add 'Link:' tags pointing to it. In case your patch
+>>> +for example fixes a bug, add a tag with a URL referencing the report in the
+>>> +mailing list archives or a bug tracker; if the patch is a result of some
+>>> +earlier mailing list discussion or something documented on the web, point to
+>>> +it.
+>>
+>> The "for example" is splitting the sentence awkwardly, so I would move it to
+>> the beginning of the sentence:
+>>
+>> "For example, in case your patch fixes a bug, add ..." etc
+>>
+>> Otherwise,
+>>
+>> Reviewed-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+
+BTW: thx, Konstantin, good idea.
+
+> I tweaked things along these lines and applied the patch, thanks.
+
+Great, many thx Jon!
+
+Ciao, Thorsten
