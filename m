@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A44F43AF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F095843AF1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhJZJac convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 05:30:32 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:35628 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233688AbhJZJab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:30:31 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mfIkT-0004nO-E1; Tue, 26 Oct 2021 11:28:01 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     re@w6rz.net, linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
-Date:   Tue, 26 Oct 2021 11:28:00 +0200
-Message-ID: <1714720.9tEa3Li8Nu@diego>
-In-Reply-To: <CAMuHMdW7NCC3siVp6avaTRffrdFr+OMXvLeGzdHZJOg+B5aGJw@mail.gmail.com>
-References: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com> <2328512.Zi2KH1A685@diego> <CAMuHMdW7NCC3siVp6avaTRffrdFr+OMXvLeGzdHZJOg+B5aGJw@mail.gmail.com>
+        id S233780AbhJZJe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:34:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52452 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhJZJez (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:34:55 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CD3CC218C8;
+        Tue, 26 Oct 2021 09:32:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635240750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9qilr721qCba8tJ1cy2UrgK3xQhoGmYpIzbQkugFRss=;
+        b=LZGdo1ptByXCmq9WADo71rP+xgGMyEnbY67v8flwtPL3BZi0dSgvb9WzxvxQN4P58jxDfd
+        eugoXc3pAFV4LaO04qYEEACMx3WQB4t3xzowF7q4yZU1SpQMO5EWrtSiDldItqGNEKhJs4
+        z3s3uXuaJfVHqi7cYgWq76oIXqbEckw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635240750;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9qilr721qCba8tJ1cy2UrgK3xQhoGmYpIzbQkugFRss=;
+        b=jfeX8QM/GK2iidt7b/J/yevHgs0tHyzxLKPvf2O5+Okjv9kRMOwTdjmSgyVYeZ151TN9sp
+        HRZdn5jH5eeF9IAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C12013E4F;
+        Tue, 26 Oct 2021 09:32:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gYd8Bi7Ld2GtdQAAMHmgww
+        (envelope-from <dkirjanov@suse.de>); Tue, 26 Oct 2021 09:32:30 +0000
+Subject: Re: [PATCH][next] gve: Fix spelling mistake "droping" -> "dropping"
+To:     Colin Ian King <colin.i.king@googlemail.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Catherine Sullivan <csully@google.com>,
+        David Awogbemila <awogbemila@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211026092239.208781-1-colin.i.king@gmail.com>
+From:   Denis Kirjanov <dkirjanov@suse.de>
+Message-ID: <a7155c22-c487-9a76-d3b3-628c0e27d3b0@suse.de>
+Date:   Tue, 26 Oct 2021 12:32:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20211026092239.208781-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: ru
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 26. Oktober 2021, 10:57:26 CEST schrieb Geert Uytterhoeven:
-> Hi Heiko,
+
+
+10/26/21 12:22 PM, Colin Ian King пишет:
+> There is a spelling mistake in a netdev_warn message. Fix it.
 > 
-> On Tue, Oct 26, 2021 at 10:53 AM Heiko St�bner <heiko@sntech.de> wrote:
-> > Am Dienstag, 26. Oktober 2021, 08:44:31 CEST schrieb Geert Uytterhoeven:
-> > > On Tue, Oct 26, 2021 at 2:37 AM Ron Economos <re@w6rz.net> wrote:
-> > > > On 10/25/21 8:54 AM, Geert Uytterhoeven wrote:
-> > > > > When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
-> > > > > the 4th CPU either fails to come online, or the system crashes.
-> > > > >
-> > > > > This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
-> > > > > and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
-> > > > >    - unused core has hartid 0 (sifive,e51),
-> > > > >    - processor 0 has hartid 1 (sifive,u74-mc),
-> > > > >    - processor 1 has hartid 2 (sifive,u74-mc),
-> > > > >    - processor 2 has hartid 3 (sifive,u74-mc),
-> > > > >    - processor 3 has hartid 4 (sifive,u74-mc).
-> > > > >
-> > > > > I assume the same issue is present on the SiFive fu540 and fu740
-> > > > > SoCs, but I don't have access to these.  The issue is not present
-> > > > > on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
-> > > > > hartid 0.
-> > > > >
-> > > > > arch/riscv/kernel/cpu_ops.c has:
-> > > > >
-> > > > >      void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
-> > > > >      void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
-> > > > >
-> > > > >      void cpu_update_secondary_bootdata(unsigned int cpuid,
-> > > > >                                         struct task_struct *tidle)
-> > > > >      {
-> > > > >              int hartid = cpuid_to_hartid_map(cpuid);
-> > > > >
-> > > > >              /* Make sure tidle is updated */
-> > > > >              smp_mb();
-> > > > >              WRITE_ONCE(__cpu_up_stack_pointer[hartid],
-> > > > >                         task_stack_page(tidle) + THREAD_SIZE);
-> > > > >              WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
-> > > > >
-> > > > > The above two writes cause out-of-bound accesses beyond
-> > > > > __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
-> > > > >
-> > > > >      }
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+you could fix the second instance as well:
+
+grep -nri droping drivers/net/
+drivers/net/wireless/mac80211_hwsim.c:1279:		/* Droping until WARN_QUEUE 
+level */
+drivers/net/ethernet/google/gve/gve_rx.c:441:				    "RX fragment error: 
+packet_buffer_size=%d, frag_size=%d, droping packet.",
+
+
+> ---
+>   drivers/net/ethernet/google/gve/gve_rx.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > > https://riscv.org/wp-content/uploads/2017/05/riscv-privileged-v1.10.pdf
-> > > says:
-> > >
-> > >     Hart IDs might not necessarily be numbered contiguously in a
-> > >     multiprocessor system, but at least one hart must have a hart
-> > >     ID of zero.
-> > >
-> > > Which means indexing arrays by hart ID is a no-go?
-> >
-> > Isn't that also similar on aarch64?
-> >
-> > On a rk3399 you get 0-3 and 100-101 and with the paragraph above
-> > something like this could very well exist on some riscv cpu too I guess.
+> diff --git a/drivers/net/ethernet/google/gve/gve_rx.c b/drivers/net/ethernet/google/gve/gve_rx.c
+> index c8500babbd1d..ef4aa6487c55 100644
+> --- a/drivers/net/ethernet/google/gve/gve_rx.c
+> +++ b/drivers/net/ethernet/google/gve/gve_rx.c
+> @@ -438,7 +438,7 @@ static bool gve_rx_ctx_init(struct gve_rx_ctx *ctx, struct gve_rx_ring *rx)
+>   		if (frag_size > rx->packet_buffer_size) {
+>   			packet_size_error = true;
+>   			netdev_warn(priv->dev,
+> -				    "RX fragment error: packet_buffer_size=%d, frag_size=%d, droping packet.",
+> +				    "RX fragment error: packet_buffer_size=%d, frag_size=%d, dropping packet.",
+>   				    rx->packet_buffer_size, be16_to_cpu(desc->len));
+>   		}
+>   		page_info = &rx->data.page_info[idx];
 > 
-> Yes, it looks like hart IDs are similar to MPIDRs on ARM.
-
-and they have the set_cpu_logical_map construct to map hwids
-to a continuous list of cpu-ids.
-
-So with hartids not being necessarily continuous this looks like
-riscv would need a similar mechanism.
-
-
