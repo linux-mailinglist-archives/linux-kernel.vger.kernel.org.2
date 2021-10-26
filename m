@@ -2,71 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9648B43B23D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CC843B245
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235896AbhJZMWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:22:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235883AbhJZMWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:22:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B4EB661057;
-        Tue, 26 Oct 2021 12:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635250806;
-        bh=40fY76V4SlvvS83hpSYE6HKAN0YPV+WRGoLc/HDIkmI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ThoO8NsEq/hCWGl+OprwJoQ6qFpYtn/vdo1ip+z883V7NB8kGoMecNokxtTr/SY8i
-         ALyDO1YrJExG/xJ163pDiEB0JJzIGxrpivnKdYbiFcWlDRLWDmeKmXOKkgvRr8czix
-         bptg9ajpkWYKYcRp7A5Da8xZF3qpE0mdqJB5MNMPXqDgCKaITHOaPMU53nuVwgfw3I
-         lUt+knM7RU9W+s2wH7NBuu2tCC63HZQ6yn6nnB9n8U841P4NNiseI0LgUwpMD0SBPG
-         UGMKwNPoJge1bHYIwJyZW5i1lPBYXaGP3VdSNfGh/2tvFZo+EqcyTU6IFmZQ7bkrw0
-         TXrvopQsGu5Ag==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A8F44609CC;
-        Tue, 26 Oct 2021 12:20:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235915AbhJZMW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:22:57 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53308 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234335AbhJZMWx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:22:53 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 400B71FD42;
+        Tue, 26 Oct 2021 12:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635250827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nRDIrKl4b/w/2mxvlJtABbHIbMj6KnRgbfHbqHDEfHk=;
+        b=I+7KbVf2VmGpWy+RevMBI+VBV2XOlTmM89mSKyESsX5rMwMiE+7NNdX6+OkhiDJhxcUMhn
+        TBfBhvX3KErpqi7dpfBzd60p7BSg7LxQJau8KugBBw4iaHKZ+y4gSIxkxrl3HoiIZrpba/
+        JdTMWEeXOWrgyUydozWCkRGIht6Nvs8=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D497CA3B8E;
+        Tue, 26 Oct 2021 12:20:26 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 14:20:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH 3/4] mm/vmalloc: be more explicit about supported gfp
+ flags.
+Message-ID: <YXfyhzutoR1q85wt@dhcp22.suse.cz>
+References: <20211025150223.13621-1-mhocko@kernel.org>
+ <20211025150223.13621-4-mhocko@kernel.org>
+ <163520436674.16092.18372437960890952300@noble.neil.brown.name>
+ <YXep1ctN1wPP+1a8@dhcp22.suse.cz>
+ <163524499768.8576.4634415079916744478@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next v1] tcp: don't free a FIN sk_buff in tcp_remove_empty_skb()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163525080668.27254.5317697458188609155.git-patchwork-notify@kernel.org>
-Date:   Tue, 26 Oct 2021 12:20:06 +0000
-References: <20211024235903.371430-1-jmaxwell37@gmail.com>
-In-Reply-To: <20211024235903.371430-1-jmaxwell37@gmail.com>
-To:     Jon Maxwell <jmaxwell37@gmail.com>
-Cc:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163524499768.8576.4634415079916744478@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon, 25 Oct 2021 10:59:03 +1100 you wrote:
-> v1: Implement a more general statement as recommended by Eric Dumazet. The
-> sequence number will be advanced, so this check will fix the FIN case and
-> other cases.
+On Tue 26-10-21 21:43:17, Neil Brown wrote:
+> On Tue, 26 Oct 2021, Michal Hocko wrote:
+> > On Tue 26-10-21 10:26:06, Neil Brown wrote:
+> > > On Tue, 26 Oct 2021, Michal Hocko wrote:
+> > > > From: Michal Hocko <mhocko@suse.com>
+> > > > 
+> > > > The core of the vmalloc allocator __vmalloc_area_node doesn't say
+> > > > anything about gfp mask argument. Not all gfp flags are supported
+> > > > though. Be more explicit about constrains.
+> > > > 
+> > > > Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > > > ---
+> > > >  mm/vmalloc.c | 12 ++++++++++--
+> > > >  1 file changed, 10 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > index 602649919a9d..2199d821c981 100644
+> > > > --- a/mm/vmalloc.c
+> > > > +++ b/mm/vmalloc.c
+> > > > @@ -2980,8 +2980,16 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> > > >   * @caller:		  caller's return address
+> > > >   *
+> > > >   * Allocate enough pages to cover @size from the page level
+> > > > - * allocator with @gfp_mask flags.  Map them into contiguous
+> > > > - * kernel virtual space, using a pagetable protection of @prot.
+> > > > + * allocator with @gfp_mask flags. Please note that the full set of gfp
+> > > > + * flags are not supported. GFP_KERNEL would be a preferred allocation mode
+> > > > + * but GFP_NOFS and GFP_NOIO are supported as well. Zone modifiers are not
+> > > 
+> > > In what sense is GFP_KERNEL "preferred"??
+> > > The choice of GFP_NOFS, when necessary, isn't based on preference but
+> > > on need.
+> > > 
+> > > I understand that you would prefer no one ever used GFP_NOFs ever - just
+> > > use the scope API.  I even agree.  But this is not the place to make
+> > > that case. 
+> > 
+> > Any suggestion for a better wording?
 > 
-> A customer reported sockets stuck in the CLOSING state. A Vmcore revealed that
-> the write_queue was not empty as determined by tcp_write_queue_empty() but the
-> sk_buff containing the FIN flag had been freed and the socket was zombied in
-> that state. Corresponding pcaps show no FIN from the Linux kernel on the wire.
+>  "GFP_KERNEL, GFP_NOFS, and GFP_NOIO are all supported".
+
+OK. Check the incremental update at the end of the email
+
+> > > > + * supported. From the reclaim modifiers__GFP_DIRECT_RECLAIM is required (aka
+> > > > + * GFP_NOWAIT is not supported) and only __GFP_NOFAIL is supported (aka
+> > > 
+> > > I don't think "aka" is the right thing to use here.  It is short for
+> > > "also known as" and there is nothing that is being known as something
+> > > else.
+> > > It would be appropriate to say (i.e. GFP_NOWAIT is not supported).
+> > > "i.e." is short for the Latin "id est" which means "that is" and
+> > > normally introduces an alternate description (whereas aka introduces an
+> > > alternate name).
+> > 
+> > OK
+> >  
+> > > > + * __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported).
+> > > 
+> > > Why do you think __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported.
+> > 
+> > Because they cannot be passed to the page table allocator. In both cases
+> > the allocation would fail when system is short on memory. GFP_KERNEL
+> > used for ptes implicitly doesn't behave that way.
 > 
-> [...]
+> Could you please point me to the particular allocation which uses
+> GFP_KERNEL rather than the flags passed to __vmalloc_node()?  I cannot
+> find it.
+> 
 
-Here is the summary with links:
-  - [net-next,v1] tcp: don't free a FIN sk_buff in tcp_remove_empty_skb()
-    https://git.kernel.org/netdev/net-next/c/cf12e6f91246
+It is dug 
+__vmalloc_area_node
+  vmap_pages_range
+    vmap_pages_range_noflush
+      vmap_range_noflush || vmap_small_pages_range_noflush
+        vmap_p4d_range
+	  p4d_alloc_track
+	    __p4d_alloc
+	      p4d_alloc_one
+	        get_zeroed_page(GFP_KERNEL_ACCOUNT)
 
-You are awesome, thank you!
+the same applies for all other levels of page tables.
+
+This is what I have currently
+commit ae7fc6c2ef6949a76d697fc61bb350197dfca330
+Author: Michal Hocko <mhocko@suse.com>
+Date:   Tue Oct 26 14:16:32 2021 +0200
+
+    fold me "mm/vmalloc: be more explicit about supported gfp flags."
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 2ddaa9410aee..82a07b04317e 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2981,12 +2981,14 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+  *
+  * Allocate enough pages to cover @size from the page level
+  * allocator with @gfp_mask flags. Please note that the full set of gfp
+- * flags are not supported. GFP_KERNEL would be a preferred allocation mode
+- * but GFP_NOFS and GFP_NOIO are supported as well. Zone modifiers are not
+- * supported. From the reclaim modifiers__GFP_DIRECT_RECLAIM is required (aka
+- * GFP_NOWAIT is not supported) and only __GFP_NOFAIL is supported (aka
+- * __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported).
+- * __GFP_NOWARN can be used to suppress error messages about failures.
++ * flags are not supported. GFP_KERNEL, GFP_NOFS, and GFP_NOIO are all
++ * supported.
++ * Zone modifiers are not supported. From the reclaim modifiers
++ * __GFP_DIRECT_RECLAIM is required (aka GFP_NOWAIT is not supported)
++ * and only __GFP_NOFAIL is supported (i.e. __GFP_NORETRY and 
++ * __GFP_RETRY_MAYFAIL are not supported).
++ *
++ * __GFP_NOWARN can be used to suppress failures messages.
+  * 
+  * Map them into contiguous kernel virtual space, using a pagetable
+  * protection of @prot.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Michal Hocko
+SUSE Labs
