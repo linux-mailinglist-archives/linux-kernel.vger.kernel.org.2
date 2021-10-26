@@ -2,78 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E01D43BA20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFBB43BA24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhJZTFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:05:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235216AbhJZTE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:04:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73D976103C;
-        Tue, 26 Oct 2021 19:02:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635274955;
-        bh=5i6nLNgMCoqcL3SxcdUlVgyXJBpR3WqcaSdO2QGRI3U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ugLxngwVJuogTj7LaSS08D2iHidf1hIdLCR25TgHRDdSi7klTXn3bVWvoKMWNmwxU
-         DneTpPMmo4z56euWMU0eex9GW0oq3qV9jjRBw7r+OvWMaAgi8Qxh5dv7hgHKuXxNZo
-         VYpfbq5/iNYuxpPYG6DSniWYtLNXpfUnT02iA6aoyyTHlZu7P1wLu1IKkUklWVObAZ
-         /j//RLw8N6JcoX87bZfC7ZNM42wqVHX+/t3PZnTAVl1kYUOmgjkdqr9CLo1FV/I7sI
-         cmZlib592N1Se/aZwZauD0jIyuwiQwbyzMKDdMk0QJanuZxnb2LxK3e/wEsbysIGHM
-         2AZ3jz1NWnQdw==
-Date:   Tue, 26 Oct 2021 12:02:34 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
-Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
- traps on probe/remove device
-Message-ID: <20211026120234.3408fbcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YXgpgr/BFpbdMLJp@unreal>
-References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
-        <YXUhyLXsc2egWNKx@shredder>
-        <YXUtbOpjmmWr71dU@unreal>
-        <YXU5+XLhQ9zkBGNY@shredder>
-        <YXZB/3+IR6I0b2xE@unreal>
-        <YXZl4Gmq6DYSdDM3@shredder>
-        <YXaNUQv8RwDc0lif@unreal>
-        <YXelYVqeqyVJ5HLc@shredder>
-        <YXertDP8ouVbdnUt@unreal>
-        <YXgMK2NKiiVYJhLl@shredder>
-        <YXgpgr/BFpbdMLJp@unreal>
+        id S238494AbhJZTF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236947AbhJZTFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:05:22 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BB8C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:02:58 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id b9so127937ybc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5L3NweT3WPaAhbnyD6WsMkziixFdgFckJuSxCTQJug8=;
+        b=l0QpRlsuyjAiD2JKUtg4qYGjk/EHm4JDHoWsRaQ6YYdxRC2jJ+SB5MOUuC/fhQBdXR
+         iwpP3kdXxKiLLSkXR6os09z73mhZ7ayH+dXNYDCxKexWzUHCnCS2pBgGQCZKYW+GtoUF
+         kbRE9ZsqoRNQGY8U+okXUtMSxUo40rG3nKl+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5L3NweT3WPaAhbnyD6WsMkziixFdgFckJuSxCTQJug8=;
+        b=16GfyZdKYD/rf61anXai5HzZBmclRPv137xSUJfL2oiYAWyCHWhYK29+xLhBCeagNb
+         V+H8CWMspX0oHs1xqkIwR++QvoONNQK69sqaDP01jvQlO5vWne8yU0Pyxfjuqwl7Grnt
+         1bNB12H/h8LSsa0m9QbrYwzpoXf3egVVyLAgqfo4ZWEixcAssE3favlEAPZzpgAY67Xq
+         iLD6bJ+51yz9nCDgDWqFScptvbLlyNFG95Q6LSpcYVblbXfl/WezgdHBaTPie+ebdMX5
+         4KK80LdYzXWAOsQGqxokwqL61wG3P8JQI5YGCT0BcVeqYGCACKu7WE4l1ooxDAhD67ah
+         6y2Q==
+X-Gm-Message-State: AOAM531opD2riosE6rUWhOhpf0ZcB9YRQ4d4/AR9Xtx37mcXEHevC0O2
+        MPV55ksIRVLIisdUZxfWMba79k752EOtwA7TkXaGYA==
+X-Google-Smtp-Source: ABdhPJzOBEFRxTBiSQhUxPe/HnGVVKVilz0M99d1Ba9vdf2gbBSJgmrn/SQqYt1r2uNjvGCVNZKyZ+TpxEK1zr8c9JQ=
+X-Received: by 2002:a25:cf07:: with SMTP id f7mr25652281ybg.100.1635274977398;
+ Tue, 26 Oct 2021 12:02:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211021140552.v2.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
+ <20211021140552.v2.2.I3ed2a84c58d9e81965f497d587f735eea56c1684@changeid> <CAE-0n52UdhHwM0rViVdyE4wO3sw8DzU5fEFp_aKTQBwLfR-qgA@mail.gmail.com>
+In-Reply-To: <CAE-0n52UdhHwM0rViVdyE4wO3sw8DzU5fEFp_aKTQBwLfR-qgA@mail.gmail.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Tue, 26 Oct 2021 12:02:46 -0700
+Message-ID: <CA+cxXh=Rqtqp701rf0c8cVWOWsjrVi-HcoA5H0E_SqxX7B=5NA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drm/bridge: parade-ps8640: Populate devices on aux-bus
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, dianders@chromium.org,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 19:14:58 +0300 Leon Romanovsky wrote:
-> > By now I have spent more time arguing with you than you spent testing
-> > your patches and it's clear this discussion is not going anywhere.
-> > 
-> > Are you going to send a revert or I will? This is the fourth time I'm
-> > asking you.  
-> 
-> I understand your temptation to send revert, at the end it is the
-> easiest solution. However, I prefer to finish this discussion with
-> decision on how the end result in mlxsw will look like.
-> 
-> Let's hear Jiri and Jakub before we are rushing to revert something that
-> is correct in my opinion. We have whole week till merge window, and
-> revert takes less than 5 minutes, so no need to rush and do it before
-> direction is clear.
+Hi,
 
-Having drivers in a broken state will not be conducive to calm discussions.
-Let's do a quick revert and unbreak the selftests.
+On Mon, Oct 25, 2021 at 1:10 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Philip Chen (2021-10-21 14:06:00)
+> > diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > index 220ca3b03d24..f99a2e0808b7 100644
+> > --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> > +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> > @@ -149,6 +150,23 @@ static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
+> >         return container_of(aux, struct ps8640, aux);
+> >  }
+> >
+> > +static bool ps8640_of_panel_on_aux_bus(struct device *dev)
+> > +{
+> > +       struct device_node *bus, *panel;
+> > +
+> > +       bus = of_get_child_by_name(dev->of_node, "aux-bus");
+> > +       if (!bus)
+> > +               return false;
+> > +       of_node_put(bus);
+>
+> This should come after the next line...
+>
+> > +
+> > +       panel = of_get_child_by_name(bus, "panel");
+>
+> here, so that 'bus' can't go away before getting children nodes. It
+> doesn't actually matter in this case because 'device' holds the aux-bus,
+> but we shouldn't add anti-patterns to the code lest someone copies it
+> where it actually matters.
+Thanks for pointing it out.
+I will fix it in v3.
 
-Speaking under correction, but the model of operation where we merge
-patches rather quickly necessarily must also mean we are quick to
-revert changes which broke stuff if the fix is not immediately obvious
-or disputed.
+>
+> > +       if (!panel)
+> > +               return false;
+> > +       of_node_put(panel);
+> > +
+> > +       return true;
+> > +}
+> > +
+> >  static void ps8640_ensure_hpd(struct ps8640 *ps_bridge)
+> >  {
+> >         struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
+>
+> Otherwise
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
