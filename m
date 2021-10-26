@@ -2,69 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBE343BB09
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0AB43BB0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236951AbhJZTi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:38:28 -0400
-Received: from mail-oo1-f52.google.com ([209.85.161.52]:43784 "EHLO
-        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbhJZThr (ORCPT
+        id S237001AbhJZTi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238874AbhJZTit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:37:47 -0400
-Received: by mail-oo1-f52.google.com with SMTP id w9-20020a4adec9000000b002b696945457so91621oou.10;
-        Tue, 26 Oct 2021 12:35:23 -0700 (PDT)
+        Tue, 26 Oct 2021 15:38:49 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54497C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:36:25 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id t4so161731oie.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=/L9zxAjJJySGUMIg0XED9nw/dqrOKwLK8zXSIkYpfT0=;
+        b=jzMLcW5uA2WnsQKrrF5mFUfrtYgp6gV61oiLCj1oIaEQWo5Z3oL7OXyru1NPaPDc1x
+         H1p75JvahzCvKeYA3Fi0Hx9Pp+UYo02xLDL5vHVzSHyOYpgej5eNcdE8gnEvbPjYfEo3
+         4ULX53Wk7w8A/k9E2u/PC5eBFNJjtgJlRs+R8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cuWCHHaxpGzZ+RLHdReFqP8G1KbQl7FUnQlYA5RdMHo=;
-        b=CD6L0wzofWKx5tAGIlyQP7mZfbsSgMyRRb3iT9ckx7dGU/ex/h2hKC5fxOC5vCVi6+
-         dpHXaHDbnLzi3GtaTTqReCgrH0W93Tvu18lS0abcS2xdE0jFZge9D3mY/DukDvgzpi17
-         TV37ixsCMeV9RU7A8OuO4eYUL9NmztEjht8Enjli9WKlJ6AZRFKdvtLpkdQlIHP2Mjfg
-         JELWk6d4ExZv7qzwodnGX+MT1ZYbH39oqflsRNBOlolMBIhB70D9567glbyaHKPZY3s6
-         ncxI1uCXWs7zVPt9ls489gNe/LTsddCzevbmWQNJ/uI9esiXSB/KeL5GFX/R/Ndu7q9Z
-         B2lQ==
-X-Gm-Message-State: AOAM531226CUSmiYrWbdhjF2NzVurRVsPCSBc1+os9rRW1I3j+YgSo7W
-        aDEVm6A0Bo4OMrGeeIKZiQ==
-X-Google-Smtp-Source: ABdhPJzQ2i57R1fwkX0bvqTZxhQM361+dMED+ZfgS6kHAZqfRaU3DV5TopReaYlNX8wntMv3LmXlNA==
-X-Received: by 2002:a4a:d5c8:: with SMTP id a8mr18735869oot.18.1635276923035;
-        Tue, 26 Oct 2021 12:35:23 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l1sm4993196oic.30.2021.10.26.12.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 12:35:22 -0700 (PDT)
-Received: (nullmailer pid 3097732 invoked by uid 1000);
-        Tue, 26 Oct 2021 19:35:21 -0000
-Date:   Tue, 26 Oct 2021 14:35:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Suman Anna <s-anna@ti.com>, Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH] dt-bindings: sram: Allow numbers in sram region node name
-Message-ID: <YXhYeVIkL60ePHrp@robh.at.kernel.org>
-References: <20211012154833.14111-1-nm@ti.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=/L9zxAjJJySGUMIg0XED9nw/dqrOKwLK8zXSIkYpfT0=;
+        b=otUen6T3v3/Obkx6NwV3TuHte9iJk/rqBe9hHi64jXUt1g0zrmuOtsfLR+lqx5iii7
+         Bc0wyk+J4NJBGTJcTvfUjUz5BkBAoBySPxDV/qAtTjPDok8coDv+Lzv6oBbGJ0GjcWMr
+         pvBVBko7GvL1QX5C6AaG45rJh931EfsIOa15d4HxoHrBtQdPiq5YU6B5XFPi76ChAbq+
+         yUGKD8cUd0qIpy5SZPFsEWN74qzpz3Rt7c9pY4Q8+CyK3Tc96vAIOOmGTnUeDXtsJpBh
+         JKYaKWFQziaMM+z8Skq0H71PYBXbyb7yJwdURa1mEvv4QzyDr9Gtee1MfQVZQYhDhX35
+         u1zQ==
+X-Gm-Message-State: AOAM531p0hXiEeF1AwVEilQQ/WDPoVPFujBoCdyAMDN6sJ/jSZOFIeQV
+        E2y8jnDtO83L87sxJl9alWwYck2ObJm9GOQxxZ42sy3Ypzc=
+X-Google-Smtp-Source: ABdhPJyi8T0lV7Ybo4JQXXI6MrAlS2+rpxwjPPjxwdN3D/0+4+YM1H1L1xzczkm5DKsF7JHdhMZQxOyHCMEWvLDZ6nM=
+X-Received: by 2002:a05:6808:1d9:: with SMTP id x25mr567814oic.64.1635276984552;
+ Tue, 26 Oct 2021 12:36:24 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 26 Oct 2021 12:36:24 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012154833.14111-1-nm@ti.com>
+In-Reply-To: <20211026121058.v3.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
+References: <20211026121058.v3.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 26 Oct 2021 12:36:24 -0700
+Message-ID: <CAE-0n50C82He9KCyXRTQGwQxqS6CWhm3w6Vv-5ayKYEfZyt-jg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] drm/bridge: parade-ps8640: Enable runtime power management
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>
+Cc:     dianders@chromium.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 10:48:33 -0500, Nishanth Menon wrote:
-> Sram regions node name describes the region of reserved memory and can
-> be names such as l3cache@1000. Permit numbers to be used as part of the
-> reserved memory node name.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+Quoting Philip Chen (2021-10-26 12:11:09)
+> Fit ps8640 driver into runtime power management framework:
+>
+> First, break _poweron() to 3 parts: (1) turn on power and wait for
+> ps8640's internal MCU to finish init (2) check panel HPD (which is
+> proxied by GPIO9) (3) the other configs. As runtime_resume() can be
+> called before panel is powered, we only add (1) to _resume() and leave
+> (2)(3) to _pre_enable(). We also add (2) to _aux_transfer() as we want
+> to ensure panel HPD is asserted before we start AUX CH transactions.
+>
+> Second, the original driver has a mysterious delay of 50 ms between (2)
+> and (3). Since Parade's support can't explain what the delay is for,
+> and we don't see removing the delay break any boards at hand, remove
+> the delay to fit into this driver change.
+>
+> In addition, rename "powered" to "pre_enabled" and don't check for it
+> in the pm_runtime calls. The pm_runtime calls are already refcounted
+> so there's no reason to check there. The other user of "powered",
+> _get_edid(), only cares if pre_enable() has already been called.
+>
+> Lastly, change some existing DRM_...() logging to dev_...() along the
+> way, since DRM_...() seem to be deprecated in [1].
+>
+> [1] https://patchwork.freedesktop.org/patch/454760/
+>
+> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  Documentation/devicetree/bindings/sram/sram.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+>
+> Changes in v3:
+> - Fix typo/wording in the commit message.
+> - Add ps8640_aux_transfer_msg() for AUX operation. In
+>   ps8640_aux_transfer(), wrap around ps8640_aux_transfer_msg()
+>   with PM operations and HPD check.
+> - Document why autosuspend_delay is set to 500ms.
+>
+>  drivers/gpu/drm/bridge/parade-ps8640.c | 186 +++++++++++++++----------
+>  1 file changed, 115 insertions(+), 71 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+> index 3aaa90913bf8..ac42a3473770 100644
+> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
+> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+>  #include <linux/of_graph.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/regmap.h>
+>  #include <linux/regulator/consumer.h>
+>
+> @@ -100,7 +101,7 @@ struct ps8640 {
+>         struct regulator_bulk_data supplies[2];
+>         struct gpio_desc *gpio_reset;
+>         struct gpio_desc *gpio_powerdown;
+> -       bool powered;
+> +       bool pre_enabled;
+>  };
+>
+>  static const struct regmap_config ps8640_regmap_config[] = {
+> @@ -148,8 +149,29 @@ static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
+>         return container_of(aux, struct ps8640, aux);
+>  }
+>
+> -static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
+> -                                  struct drm_dp_aux_msg *msg)
+> +static void ps8640_ensure_hpd(struct ps8640 *ps_bridge)
 
-Applied, thanks!
+static int ps8640_ensure_hpd?
+
+> +{
+> +       struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
+> +       struct device *dev = &ps_bridge->page[PAGE2_TOP_CNTL]->dev;
+> +       int status;
+> +       int ret;
+> +
+> +       /*
+> +        * Apparently something about the firmware in the chip signals that
+> +        * HPD goes high by reporting GPIO9 as high (even though HPD isn't
+> +        * actually connected to GPIO9).
+> +        */
+> +       ret = regmap_read_poll_timeout(map, PAGE2_GPIO_H, status,
+> +                               status & PS_GPIO9, 20 * 1000, 200 * 1000);
+> +
+> +       if (ret < 0)
+> +               dev_warn(dev, "HPD didn't go high: %d\n", ret);
+> +
+> +       return ret;
+> +}
+> +
+> +static ssize_t ps8640_aux_transfer_msg(struct drm_dp_aux *aux,
+> +                                      struct drm_dp_aux_msg *msg)
+>  {
+>         struct ps8640 *ps_bridge = aux_to_ps8640(aux);
+>         struct regmap *map = ps_bridge->regmap[PAGE0_DP_CNTL];
+
+Otherwise
+
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
