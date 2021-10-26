@@ -2,127 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606F843AE67
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5111E43AE64
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbhJZIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:55:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39324 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234512AbhJZIzM (ORCPT
+        id S234511AbhJZIzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:55:05 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:52210 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231404AbhJZIzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:55:12 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19Q73qBY004234;
-        Tue, 26 Oct 2021 08:52:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=zJN69bfYk5hk1V/sV3CAdS2aj+/MyIKIFZx5fllE52w=;
- b=sVRwj1ijPu4dI+HL1ehz1M2i8g/4mIDQnbMIp4/5uBvqnM9QOGj7WEcIK+CngrTzoJyB
- sLWzAI/tiFsEblUAWakkUjrV5j3OJ/BJWgUBKG0cLyCqBwG1O5X2pwMH1qus+mdAkB0N
- OoxbO2mZnWiItamr8Ytf/FFRY7ivVuDfNh67fDMo823FVDhtMkPoYjc1I2SG8kRsXJOk
- A4KUBsgn1jG1C4z9vz2YnlkxRtFfCDpNMA4dDM6YUnf+Ea1RgqxC4PjBLQ4FcjqEbOLD
- Ik8FJ62eIGpXHLLZGn0aDsJCINdSq0Eh4LSY7SG9L4vstQJwWVCdc18CUFedHPX90pOu 5g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx56wntxu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 08:52:48 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19Q8YkLT006329;
-        Tue, 26 Oct 2021 08:52:47 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx56wntwu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 08:52:47 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19Q8ngcq017635;
-        Tue, 26 Oct 2021 08:52:45 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bx4edkmex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 08:52:44 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19Q8qfHa55378314
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Oct 2021 08:52:41 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD03CA4060;
-        Tue, 26 Oct 2021 08:52:41 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09647A4064;
-        Tue, 26 Oct 2021 08:52:41 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.51.215])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Oct 2021 08:52:40 +0000 (GMT)
-Subject: Re: [PATCH 3/3] KVM: s390: clear kicked_mask if not idle after set
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, farman@linux.ibm.com,
-        kvm@vger.kernel.org
-References: <20211019175401.3757927-1-pasic@linux.ibm.com>
- <20211019175401.3757927-4-pasic@linux.ibm.com>
- <c5c84a99-c56a-2232-7574-a6d207d7c11f@de.ibm.com>
- <20211020095208.5e34679a.pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <e4e21f7a-ee60-c00a-c8d9-32a6ebe195b7@de.ibm.com>
-Date:   Tue, 26 Oct 2021 10:52:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 04:55:04 -0400
+X-UUID: 948bcc1d34534473aba2297d7f7dc96a-20211026
+X-UUID: 948bcc1d34534473aba2297d7f7dc96a-20211026
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1795022158; Tue, 26 Oct 2021 16:52:37 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 26 Oct 2021 16:52:36 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 26 Oct 2021 16:52:35 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <daniel@ffwll.ch>
+CC:     <christian.koenig@amd.com>, <ckoenig.leichtzumerken@gmail.com>,
+        <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: Re: [Linaro-mm-sig] [PATCH] dma-buf: add attachments empty check for dma_buf_release
+Date:   Tue, 26 Oct 2021 16:52:41 +0800
+Message-ID: <20211026085241.5116-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YW80iakRm5jWjIUp@phenom.ffwll.local>
+References: <YW80iakRm5jWjIUp@phenom.ffwll.local>
 MIME-Version: 1.0
-In-Reply-To: <20211020095208.5e34679a.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qGLl-JjD4FpEopENE2JmiTg-ATGxRPHy
-X-Proofpoint-GUID: 9LY2un2UzZo2vnIoEE_NnlxicvMKH7rI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_02,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=932 malwarescore=0 phishscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 bulkscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110260048
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-
-Am 20.10.21 um 09:52 schrieb Halil Pasic:
-> On Tue, 19 Oct 2021 23:35:25 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+On Tue, 2021-10-19 at 23:11 +0200, Daniel Vetter wrote:
+> On Tue, Oct 19, 2021 at 05:37:27PM +0200, Christian K鰊ig wrote:
+> > 
+> > 
+> > Am 19.10.21 um 14:41 schrieb Daniel Vetter:
+> > > On Tue, Oct 19, 2021 at 08:23:45PM +0800, 
+> > > guangming.cao@mediatek.com wrote:
+> > > > From: Guangming Cao <Guangming.Cao@mediatek.com>
+> > > > 
+> > > > Since there is no mandatory inspection for attachments in
+> > > > dma_buf_release.
+> > > > There will be a case that dma_buf already released but
+> > > > attachment is still
+> > > > in use, which can points to the dmabuf, and it maybe cause
+> > > > some unexpected issues.
+> > > > 
+> > > > With IOMMU, when this cases occurs, there will have IOMMU
+> > > > address
+> > > > translation fault(s) followed by this warning,
+> > > > I think it's useful for dma devices to debug issue.
+> > > > 
+> > > > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+> > > 
+> > > This feels a lot like hand-rolling kobject debugging. If you want
+> > > to do
+> > > this then I think adding kobject debug support to
+> > > dma_buf/dma_buf_attachment would be better than hand-rolling
+> > > something
+> > > bespoke here.
+> > 
+> > Well I would call that overkill.
 > 
->>> @@ -426,6 +426,7 @@ static void __unset_cpu_idle(struct kvm_vcpu *vcpu)
->>>    {
->>>    	kvm_s390_clear_cpuflags(vcpu, CPUSTAT_WAIT);
->>>    	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.idle_mask);
->>> +	clear_bit(vcpu->vcpu_idx, vcpu->kvm->arch.gisa_int.kicked_mask);
+> I think if done right the object debug stuff should be able to give
+> you a
+> backtrace. Which might be useful if you have a dma-buf heaps design
+> where
+> you really have no clue why a buffer was allocated/attached without
+> some
+> hints.
+Well, I think it's the finally solution, for current thinking, it maybe bring a high
+overloading. Just as this revert patch: 
+https://lore.kernel.org/lkml/CA+wgaPMHA+8+LxfGNL+q4=XrdXqfu4TXoWLX7e28z9Z7kPsf-w@mail.gmail.com/
+So, we need to find a lightweight way to do this.
+
+Guangming
 > 
-> BTW, do you know are bit-ops garanteed to be serialized as seen by
-> another cpu even when acting on a different byte? I mean
-> could the kick_single_vcpu() set the clear of the kicked_mask bit but
-> not see the clear of the idle mask?
+> > > Also on the patch itself: You don't need the trylock. For
+> > > correctly
+> > > working code non one else can get at the dma-buf, so no locking
+> > > needed to
+> > > iterate through the attachment list. For incorrect code the
+> > > kernel will be
+> > > on fire pretty soon anyway, trying to do locking won't help :-)
+> > > And
+> > > without the trylock we can catch more bugs (e.g. if you also
+> > > forgot to
+> > > unlock and not just forgot to detach).
 
-clear_bit explicitely says.
-  * This is a relaxed atomic operation (no implied memory barriers).
+Yes, It's also a error case, I will remove to lock at next version patch. Thanks!
 
-so if we really need the ordering, then we need to add a barrier.
+Guangming
 
+> > 
+> > You also don't need the WARN(!list_empty...) because a few line
+> > below we
+> > already have a "WARN_ON(!list_empty(&dmabuf->attachments));".
+
+Sorry, could you tell me wich function will check it?
+I didn't found it so I submit this patch.
+
+Guangming
 > 
-> If that is not true we may need some barriers, or possibly merging the
-> two bitmasks like idle bit, kick bit alterating to ensure there
-> absolutely ain't no race.
+> Yeah this patch here alone isn't really that useful I think. Maybe we
+> could add the dmabuf->exp_name or so to that warning, but otherwise
+> the
+> info printed here isn't all that useful for debugging. Grabbing a
+
+I also printed dmabuf->exp_name in warn message.
+
+The reason adding it here is that some users on ANDROID of dma-buf is not familiar
+with linux dma-buf or maybe write some problematic code, add this check can find
+who lost call get_dma_buf or any other api can let let the dma-buf lifecycle is
+under users' expectation.
+Add it just like check in dma-fence:
+https://github.com/torvalds/linux/blob/master/drivers/dma-buf/dma-fence.c#L519
+
+Do you have any suggestion to debug this part?
+
+Guangming
+
+> backtrace of the allocator or attacher otoh should fairly immedialy
+> point
+> at the buggy code.
+> -Daniel
+> 
+> > 
+> > Christian.
+> > 
+> > > -Daniel
+> > > 
+> > > > ---
+> > > >   drivers/dma-buf/dma-buf.c | 23 +++++++++++++++++++++++
+> > > >   1 file changed, 23 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-
+> > > > buf.c
+> > > > index 511fe0d217a0..672404857d6a 100644
+> > > > --- a/drivers/dma-buf/dma-buf.c
+> > > > +++ b/drivers/dma-buf/dma-buf.c
+> > > > @@ -74,6 +74,29 @@ static void dma_buf_release(struct dentry
+> > > > *dentry)
+> > > >   	 */
+> > > >   	BUG_ON(dmabuf->cb_shared.active || dmabuf-
+> > > > >cb_excl.active);
+> > > > +	/* attachment check */
+> > > > +	if (dma_resv_trylock(dmabuf->resv) &&
+> > > > WARN(!list_empty(&dmabuf->attachments),
+> > > > +	    "%s err, inode:%08lu size:%08zu name:%s exp_name:%s
+> > > > flags:0x%08x mode:0x%08x, %s\n",
+> > > > +	    __func__, file_inode(dmabuf->file)->i_ino, dmabuf-
+> > > > >size,
+> > > > +	    dmabuf->name, dmabuf->exp_name,
+> > > > +	    dmabuf->file->f_flags, dmabuf->file->f_mode,
+> > > > +	    "Release dmabuf before detach all attachments, dump
+> > > > attach:\n")) {
+> > > > +		int attach_cnt = 0;
+> > > > +		dma_addr_t dma_addr;
+> > > > +		struct dma_buf_attachment *attach_obj;
+> > > > +		/* dump all attachment info */
+> > > > +		list_for_each_entry(attach_obj, &dmabuf-
+> > > > >attachments, node) {
+> > > > +			dma_addr = (dma_addr_t)0;
+> > > > +			if (attach_obj->sgt)
+> > > > +				dma_addr =
+> > > > sg_dma_address(attach_obj->sgt->sgl);
+> > > > +			pr_err("attach[%d]: dev:%s
+> > > > dma_addr:0x%-12lx\n",
+> > > > +			       attach_cnt, dev_name(attach_obj-
+> > > > >dev), dma_addr);
+> > > > +			attach_cnt++;
+> > > > +		}
+> > > > +		pr_err("Total %d devices attached\n\n",
+> > > > attach_cnt);
+> > > > +		dma_resv_unlock(dmabuf->resv);
+> > > > +	}
+> > > > +
+> > > >   	dmabuf->ops->release(dmabuf);
+> > > >   	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+> > > > -- 
+> > > > 2.17.1
+> > > > 
+> 
 > 
