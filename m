@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA6743B352
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B7C43B359
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbhJZNp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhJZNpY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:45:24 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE911C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:43:00 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id b188so20404663iof.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qTlTd46dRtGZKgQnaFBate7PwykvNlQSoJCu3YoEGrI=;
-        b=m3caVgs7454VMuD9t6QOA6F90Hs388L42LRXNKjPounHzakQ/xtoNuUzxoaebh4Gxl
-         IV77BJ92W++eGo9OIIBay6zUWMXJRFfESczm83Hy2hq7Htly7pE18XlojFzG8Vy5fVBK
-         9dxfuvG7MYuZD/mfk43DSyJ9qDMVBZUyfvCWg7I1riWWBibXDmsk/0ZYVygEZ9jp3Vs7
-         G+2Estx7IYbcuIUjv3FO+0qn2jnayc0R3VSpYtBI438uYLj392291TLFochATEMfo5bi
-         RhT0Zm8zoQ4aw0yqOfpxWOxpHD3kPYa3SH0O0BukRKblVrUtEDSDvW8WAXUsZfodI3uA
-         jMUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qTlTd46dRtGZKgQnaFBate7PwykvNlQSoJCu3YoEGrI=;
-        b=RBiBxoBIFvXZ9XmP1bnh5bMh0Wb6jAdNAOMlRCmlbfDHbADjo2VkEMoDYo/4PFGfRK
-         N7VMxBCY9CYxwViXJYamwdRW5fOlukYRNA7V9Gsb74ZRk6FRu0On+sGk4FWtVQTlKdgP
-         X1JyUHYZtD7W6om7j0OoZfUjvmZyplgBygT0nFHO6FEI/tmHsB7dTdkGZOiFOc0kanTt
-         qKzAziPkSvDGCeibZ+y0dqOOAgN4G2h++9JcMRCp8vXahQN7qn1Ddw/4PQNsLRFLOY5j
-         Xspj+DXPR42PRdgv/Lht7F7s0BwSLovb3LbfKBzU0tOoK5H1S9xC9nmHdccdT6uh7ZGh
-         vmfA==
-X-Gm-Message-State: AOAM530ahQfUI2Lk4Thf0qmoVx4ZBt3TkXaLFDK/cgs2MG31EcwzSDHS
-        GiTRV9RmzaeuLYXkwsXjFq47Lw==
-X-Google-Smtp-Source: ABdhPJyynMcY9Qlon9nxLX84kYs/j3RLw3kLJXFR0+d+n2OOjj4m3Ui6RaRh90xC+x5QzSKTq6CcJg==
-X-Received: by 2002:a05:6638:2b5:: with SMTP id d21mr7276768jaq.133.1635255780313;
-        Tue, 26 Oct 2021 06:43:00 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id k9sm4568557ilo.40.2021.10.26.06.42.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 06:42:59 -0700 (PDT)
-Subject: Re: [PATCH] soc: qcom: qmi: add a prompt to QCOM_QMI_HELPERS
-To:     Janusz Dziedzic <janusz.dziedzic@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-soc@vger.kernel.org
-References: <20211025163121.2189630-1-janusz.dziedzic@gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <39561c73-732e-bc38-e250-a0bdf51b09f9@linaro.org>
-Date:   Tue, 26 Oct 2021 08:42:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233751AbhJZNsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:48:14 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:64830 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236274AbhJZNsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:48:12 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4HdtPj2vm6z9s33;
+        Tue, 26 Oct 2021 15:45:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id OIkVzqmB5DZX; Tue, 26 Oct 2021 15:45:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.149])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by pegase1.c-s.fr (Postfix) with ESMTPS id 4HdtPj1Brcz9s2p;
+        Tue, 26 Oct 2021 15:45:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19QDjisC008082
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 15:45:44 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19QDjGSL008051;
+        Tue, 26 Oct 2021 15:45:16 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v2] powerpc/boot: Set LANG=C in wrapper script
+Date:   Tue, 26 Oct 2021 15:45:15 +0200
+Message-Id: <3e19eba55da250b6cdb4753b6eb0a1fbc44365e6.1635255903.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20211025163121.2189630-1-janusz.dziedzic@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1635255914; l=2415; s=20211009; h=from:subject:message-id; bh=KCIcUl2jQvofbybmMV+kTeemiMBLMWNPIfXhCCAegRg=; b=0WJty1Wmf+LkGiOF2a/cnffT6sfLzHFArT7vpI9/NSOzN20U720vJMb5V02TrCDWGN9qvKKQXtJV GHtdvNibDpiHQ0REp1tySTR9aCCIbkfs5AmeJCfEikbeSbmCjTqa
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 11:31 AM, Janusz Dziedzic wrote:
-> From: Alex Elder <elder@linaro.org>
-> 
-> Add a prompt to the "tristate" attribute in the Kconfig file in
-> which QCOM_QMI_HELPERS is defined; I find it doesn't get selected
-> without it.
+While trying to build a simple Image for ACADIA platform, I got the
+following error:
 
-This was a *long* time ago!
-   https://lore.kernel.org/all/20180427140358.30839-1-elder@linaro.org/
+	  WRAP    arch/powerpc/boot/simpleImage.acadia
+	INFO: Uncompressed kernel (size 0x6ae7d0) overlaps the address of the wrapper(0x400000)
+	INFO: Fixing the link_address of wrapper to (0x700000)
+	powerpc64-linux-gnu-ld : mode d'émulation non reconnu : -T
+	Émulations prises en charge : elf64ppc elf32ppc elf32ppclinux elf32ppcsim elf64lppc elf32lppc elf32lppclinux elf32lppcsim
+	make[1]: *** [arch/powerpc/boot/Makefile:424 : arch/powerpc/boot/simpleImage.acadia] Erreur 1
+	make: *** [arch/powerpc/Makefile:285 : simpleImage.acadia] Erreur 2
 
-The discussion that followed indicated that the thing that needs
-QCOM_QMI_HELPERS should *select* it rather than *depend on it.
+Trying again with V=1 shows the following command
 
-Will this not work for you?
+	powerpc64-linux-gnu-ld -m -T arch/powerpc/boot/zImage.lds -Ttext 0x700000 --no-dynamic-linker -o arch/powerpc/boot/simpleImage.acadia -Map wrapper.map arch/powerpc/boot/fixed-head.o arch/powerpc/boot/simpleboot.o ./zImage.3278022.o arch/powerpc/boot/wrapper.a
 
-					-Alex
+The argument of '-m' is missing.
 
-> We need it in OpenWRT project, when using WiFi backports
-> and build ath11k driver. While ath11k driver depends on
-> QCOM_QMI_HELPERS we need way to enable this option in
-> our kernel.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@gmail.com>
-> ---
->   drivers/soc/qcom/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> index fe3c486ae32d..16fb8e286015 100644
-> --- a/drivers/soc/qcom/Kconfig
-> +++ b/drivers/soc/qcom/Kconfig
-> @@ -92,7 +92,7 @@ config QCOM_PDR_HELPERS
->   	select QCOM_QMI_HELPERS
->   
->   config QCOM_QMI_HELPERS
-> -	tristate
-> +	tristate "Qualcomm QMI Helpers"
->   	depends on NET
->   
->   config QCOM_RMTFS_MEM
-> 
+This is due to the wrapper script calling 'objdump -p vmlinux' and
+looking for 'file format', whereas the output of objdump is:
+
+	vmlinux:     format de fichier elf32-powerpc
+
+	En-tête de programme:
+	    LOAD off    0x00010000 vaddr 0xc0000000 paddr 0x00000000 align 2**16
+	         filesz 0x0069e1d4 memsz 0x006c128c flags rwx
+	    NOTE off    0x0064591c vaddr 0xc063591c paddr 0x0063591c align 2**2
+	         filesz 0x00000054 memsz 0x00000054 flags ---
+
+Add LC_ALL=C at the beginning of the wrapper script in order to get the
+output expected by the script:
+
+	vmlinux:     file format elf32-powerpc
+
+	Program Header:
+	    LOAD off    0x00010000 vaddr 0xc0000000 paddr 0x00000000 align 2**16
+	         filesz 0x0069e1d4 memsz 0x006c128c flags rwx
+	    NOTE off    0x0064591c vaddr 0xc063591c paddr 0x0063591c align 2**2
+	         filesz 0x00000054 memsz 0x00000054 flags ---
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v2: Use LC_ALL=C per Segher
+---
+ arch/powerpc/boot/wrapper | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/powerpc/boot/wrapper b/arch/powerpc/boot/wrapper
+index 1cd82564c996..9184eda780fd 100755
+--- a/arch/powerpc/boot/wrapper
++++ b/arch/powerpc/boot/wrapper
+@@ -26,6 +26,8 @@
+ # Stop execution if any command fails
+ set -e
+ 
++export LC_ALL=C
++
+ # Allow for verbose output
+ if [ "$V" = 1 ]; then
+     set -x
+-- 
+2.31.1
 
