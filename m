@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DD743B305
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E80543B306
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236185AbhJZNOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:14:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230324AbhJZNOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:14:40 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18A7360C49;
-        Tue, 26 Oct 2021 13:12:13 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 09:12:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
- task comm size change
-Message-ID: <20211026091211.569a7ba2@gandalf.local.home>
-In-Reply-To: <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
-        <20211025083315.4752-9-laoar.shao@gmail.com>
-        <202110251421.7056ACF84@keescook>
-        <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235420AbhJZNP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230324AbhJZNPZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:15:25 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA70C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:13:01 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id b4so16839891uaq.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
+        b=ecxHRvGL1heRLTghRmeWFsWZypvWXL4uG+nWYMf9nGoORmrCepJ+TyOzdkA8zijmXa
+         YvQCOLvnHOVMnK+tuHcjqzTbvxqek0HwGbMXr/dZOMQYxAUDkUeZuzkf/6iX05laGhvn
+         xZ5icNmk/GGfa2edtHtzUv7evRmQbzO2fOo4sMnAmGPyNjfK+x8yKjtLpzR/gZbmqexi
+         g/ZMcpeBs5mnQrUITFaqCymaaXHL4MNe4cNZmytVVnakwuozVtQ6/jQofWpJloi29tHA
+         J8fUN4vt2zVjSRrLHJhJMGSh3kdkhC/f4QK3xtGaIkcV8IR3yyvq6Ky+hhi2BQ8parq/
+         vxGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
+        b=PKHs52hlXhBfxKvXCndjnTNWxAr0h+frohRd7Ufa6ebjvTNbcOZvVZNpUBIUxP0Uzc
+         eiu1lEpX2hGOi83YMgvWkXqayLjxLV7TdOIfnVmadngE871vTavRkNbMWVtur3N0SLsA
+         uc0nD7liKVPjSLuFash3p4uYCpWB89PIFz4rWXLYHFQvL1UjMWIilnu8kBfRSC6/3eoU
+         tK4tNpRNZlWC07dLt5COdj2QaYshXwYrz6Q1wkCg02lh6ocLkJXUbqn4X2aVKjDv2Wqe
+         GCKblCTht6rNim4Niq3AJWzBciAxAUzhelbueXY5Zssz3gBSZDsDXsC7Dy4zu1pgUPQe
+         Se7Q==
+X-Gm-Message-State: AOAM533j39Yk8KoUyAgeTc85ErcZ1hmTJLkYViE004KM0CNFp+f9gWRD
+        zOsH5kmRH6IGSaiAtVHapaaWZ2eonf1ZOcL0Uc8=
+X-Google-Smtp-Source: ABdhPJwQ/R0smRG/duGclBFUGc+RvIwXy8j84N3gSmw1OH/jpKsJW1pcgVzhyF15/C3E4Ji9TjiLHUBNPutbWamQR8E=
+X-Received: by 2002:ab0:4adc:: with SMTP id t28mr22749715uae.4.1635253980083;
+ Tue, 26 Oct 2021 06:13:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a59:d99a:0:b0:238:32b6:5c7a with HTTP; Tue, 26 Oct 2021
+ 06:12:59 -0700 (PDT)
+Reply-To: ms.lisahugh000@gmail.com
+From:   Ms Lisa Hugh <lisahugh531@gmail.com>
+Date:   Tue, 26 Oct 2021 15:12:59 +0200
+Message-ID: <CAFnQ+S5ERW2ajxWCDDPL8qNubqHXqgtCry6VpzAb8O-J=BNoyQ@mail.gmail.com>
+Subject: QUICK REPLY AND DETAILS >>MS LISA HUGH.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 10:18:51 +0800
-Yafang Shao <laoar.shao@gmail.com> wrote:
+Dear Friend,
 
-> > So, if we're ever going to copying these buffers out of the kernel (I
-> > don't know what the object lifetime here in bpf is for "e", etc), we
-> > should be zero-padding (as get_task_comm() does).
-> >
-> > Should this, instead, be using a bounce buffer?  
-> 
-> The comment in bpf_probe_read_kernel_str_common() says
-> 
->   :      /*
->   :       * The strncpy_from_kernel_nofault() call will likely not fill the
->   :       * entire buffer, but that's okay in this circumstance as we're probing
->   :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
->   :       * as well probe the stack. Thus, memory is explicitly cleared
->   :       * only in error case, so that improper users ignoring return
->   :       * code altogether don't copy garbage; otherwise length of string
->   :       * is returned that can be used for bpf_perf_event_output() et al.
->   :       */
-> 
-> It seems that it doesn't matter if the buffer is filled as that is
-> probing arbitrary memory.
-> 
-> >
-> > get_task_comm(comm, task->group_leader);  
-> 
-> This helper can't be used by the BPF programs, as it is not exported to BPF.
-> 
-> > bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
+I am Ms Lisa Hugh accountant and files keeping by profession with the bank.
 
-I guess Kees is worried that e.comm will have something exported to user
-space that it shouldn't. But since e is part of the BPF program, does the
-BPF JIT take care to make sure everything on its stack is zero'd out, such
-that a user BPF couldn't just read various items off its stack and by doing
-so, see kernel memory it shouldn't be seeing?
+I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
+bank account with your co-operation for both of us benefit.
 
-I'm guessing it does, otherwise this would be a bigger issue than this
-patch series.
-
--- Steve
+Please send the follow below,
+1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
+Thanks.
+Ms Lisa Hugh
