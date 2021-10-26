@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8E343BD27
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D0E43BD35
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239979AbhJZWZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 18:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        id S237280AbhJZW33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237280AbhJZWZs (ORCPT
+        with ESMTP id S239993AbhJZW3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:25:48 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA60C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:23:23 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id o26so1373124ljj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:23:23 -0700 (PDT)
+        Tue, 26 Oct 2021 18:29:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BB9C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:26:58 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id bq11so1874987lfb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:26:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5yAbsSDTyXKCbmRqx6GfGJ70j5TRIGVZvHi15gEjZWk=;
-        b=WwJ04lDbV4WtjPG362zKNVes5Zgq6jhK5f+cv5F1qrZSm9cyeJ5Bmf3Pe0QyNKWyKQ
-         qCPtT9ZuZGN28UcLHc5snwkn329H1tWgqF2HU56yvDBNRbWd8ae/ihD6sAClbDOknFwn
-         TEuDKdG9/a+G6HhT5Z/GreNwRGKds+QFkrWneycisHf14Jwr1SfSGL590J8qulBw7ZLO
-         C3KAEfcs6p3zs8gMdDvzY+JhTF7AsBGoZai7H6OZ/PE4SbZYb7LQh4ynZS1Ab3nMhmsR
-         zckHHJm2gjCUG5UcpUl5+bEBJHvVY6H7R4jJ+CSOP/7GU1uDljeKqcw+NJf6WnNr90C8
-         bQDg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4v28znH3ilP2dY+qktW1gaanvklLYwkJDiEGKPadfko=;
+        b=g83eg0nDZaoDqbwau4PfYXiKLyApLtNQQZjgkFI2uJT4wRoBdiBcPsQWJrwHRtBqw/
+         U72PT+Lsa5nbGS1RgRlfoMNVeUEw1poXMnFXI+llKwbD6jRD0AvzN3LlUUlic2VHqNJM
+         wwSLDLHxj8mz6iu2Q0ojGZUtLrRfG2jX7McF9grT9aJG6UUDer1p2mnevW7mtM6Cdvon
+         t9WcCNTe0mJmwqRHHVSuYG9QlH/w0RAXwmwS1Xg5QekVOzFQtgJzXWQbrOnyUZktxjgy
+         DzRXGIpIcQb6rw1dXdNinj+6faePaRQhrtlYpGfKsjwOaMdVUzgUrA8cvnOlc27GOXB2
+         XDvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5yAbsSDTyXKCbmRqx6GfGJ70j5TRIGVZvHi15gEjZWk=;
-        b=VDZFTaTtCdIyeeRbNkzyDrGy03aSvuK4R+OdzO7WbnzXusKldeS/vN2KdQZxvw6atb
-         qMWBc/eksqyn3GCMiopROaLTSfsd5z4Jl/I9tlHXpPo+53iW4EVXEWUfACMR+/MxqQZU
-         jNlmldVD1KRmGZ2ZR/u7sR2DHp1ZXF5PWxhHFujM1V4SS9BRiY7pbI+p9/7BS/KPjn6p
-         tV5djzY4U6QTt1xLIJ7mkRq346gQI55IKnYXTjEY/9eooivnbbRObAwOwyACiDdP1uv1
-         YG9+SCuJ95OxgwCv7FFssD72OwNcxHulIqfIyCArLXF/1D+4VYEhUA9MvMgQq48hfqUO
-         +PvQ==
-X-Gm-Message-State: AOAM533P9aG8WF7WLJDTHGnjnpBxlY3y07b9AeYGe8jSDqa/d7ZJXBbQ
-        sP9pp4xpP3FGgugOyUVgwbTyaWR5yR+XNaNhpsFNLg==
-X-Google-Smtp-Source: ABdhPJxXnc1aAE8cvYRQfGD1NVe+gcg9BWkSLoFndt3NsWEOhwj2NAPZEpVXct6hSZ4d6c+wt4EyHAHK0yGxguSvD9c=
-X-Received: by 2002:a2e:8ed0:: with SMTP id e16mr9323697ljl.171.1635287002099;
- Tue, 26 Oct 2021 15:23:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4v28znH3ilP2dY+qktW1gaanvklLYwkJDiEGKPadfko=;
+        b=PhSQ47jPMLtoSTi1aqX6WUkrvPLwJglkKJoYiObcSpg+GiAAq+rSvpNqKqwj9W3o8g
+         PU+PFLT1I82X1rthFWCMHsK95r7CPeZuPvY9uIfNBwWN6SYj3a19fSVLLJ6IQRNzQupt
+         ezAla6aIee7KsjrwwXb7A7jjtCM4tjenoZ65YS07adkO2lBk1a/0Q8COTvnMQqEZZj37
+         FXgneHqMV9vioB0Ugz3gHDJJoFl0qcHEJcZoyhiULtspwqZv1rIEnxkOwLGyoM9bOnNe
+         hmPWxB3JlHMCN9PfmusGHaa0a4bL4k54aPkCcbBbCbyjoIie/t1fF88ZNarbXQp/NFoD
+         FaZQ==
+X-Gm-Message-State: AOAM5339PHLsJE4Q/Tp7pMGHFiRTZ2Zitzy9W4mhttUAFDgDntErYQX9
+        B+MFIJsPQnVXKXanXpWINvrZKA==
+X-Google-Smtp-Source: ABdhPJwzvk4FW4H7re68fFiY28R3LYk0CfvwdIfxKZJste2wqi2lNxLbAoljso4qwy0hmcnrtLLhoQ==
+X-Received: by 2002:ac2:4bc1:: with SMTP id o1mr25286148lfq.553.1635287216613;
+        Tue, 26 Oct 2021 15:26:56 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id bp13sm790352lfb.100.2021.10.26.15.26.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 15:26:55 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Kevin Hilman <khilman@kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime PM is disabled
+Date:   Wed, 27 Oct 2021 00:26:26 +0200
+Message-Id: <20211026222626.39222-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211026220635.35187-1-mike.kravetz@oracle.com>
-In-Reply-To: <20211026220635.35187-1-mike.kravetz@oracle.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 26 Oct 2021 18:22:45 -0400
-Message-ID: <CA+CK2bD+US7K+MDdQu7JxheNKpZuD3hi5v7YzOPrP124o8w2hw@mail.gmail.com>
-Subject: Re: [PATCH] hugetlb: remove unnecessary set_page_count in prep_compound_gigantic_page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 6:06 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> In commit 7118fc2906e29 ("hugetlb: address ref count racing in
-> prep_compound_gigantic_page"), page_ref_freeze is used to atomically
-> zero the ref count of tail pages iff they are 1.  The unconditional
-> call to set_page_count(0) was left in the code.  This call is after
-> page_ref_freeze so it is really a noop.
->
-> Remove redundant and unnecessary set_page_count call.
->
-> Fixes: 7118fc2906e29 ("hugetlb: address ref count racing in prep_compound_gigantic_page")
-> Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+During system suspend, the PM core sets dev->power.is_suspended for the
+device that is being suspended. This flag is also being used in
+rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
+PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
+device.
 
-Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+To make this behaviour a bit more useful, let's drop the check for the
+dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
+be limited to this anyway.
 
-Thanks,
-Pasha
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/base/power/runtime.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+index ec94049442b9..fadc278e3a66 100644
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
+  repeat:
+ 	if (dev->power.runtime_error)
+ 		retval = -EINVAL;
+-	else if (dev->power.disable_depth == 1 && dev->power.is_suspended
+-	    && dev->power.runtime_status == RPM_ACTIVE)
++	else if (dev->power.disable_depth > 0 &&
++		dev->power.runtime_status == RPM_ACTIVE)
+ 		retval = 1;
+ 	else if (dev->power.disable_depth > 0)
+ 		retval = -EACCES;
+-- 
+2.25.1
+
