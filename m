@@ -2,199 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF5E43B5CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C28B43B5DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237030AbhJZPnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        id S237118AbhJZPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237026AbhJZPml (ORCPT
+        with ESMTP id S237093AbhJZPnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:42:41 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3916EC061243
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:16 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id p14so14053492wrd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:16 -0700 (PDT)
+        Tue, 26 Oct 2021 11:43:32 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDBFC061224
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:48 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c28so17045892lfv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gePi6+TPmZdDYlmQwiKRPa1IXCbfIXiDKVvUp0KV1dk=;
-        b=kE1rxiespvWKMp6929B+b7VBTV3OwweARXdocrjgmW0eNMH39Re6H+to/46iAB2k3E
-         ST7TvPIGaMA4KG2iiHivUFFrjuTf7UZb19vsGPCwI0BuPfpVwTC/MTs1LGVRWBel3Aoq
-         jySzkHqVYvIBXCuAc0hec6mqrxHEUsLSJXkKCd7P6v5gxqv6nnqFB4O2hIUS+vshY43c
-         k07zV94SfiXalv34wAHkUXr+NJMLmRFFyjUC669lYj7JZekyKxvBrXgjFGpd55Jk2DA7
-         BQCrJAgwVhdkuVPqMkRRbofzkadbF6Kqp8aSQbcNJvitB3GP66RAgmsgDd9KdZ4rPejw
-         PtRg==
+        bh=1JXoWXHtBWdFbfIWUv0KF+B9dMJXWd2f8ajP40zMzQI=;
+        b=N4tHnrxwkxS4Sc5sl/f/0SEe3Pp4vVuZ6s/k7hmHGNL551PiE4wHKyW4zy0hyGhhxo
+         7QfTutXPaLHG3wKzcERDrA9JFL+LDQ8KHVTTun06JGw0CAdG5AZPK0D3UjLdly4KSPNc
+         KWHJEfJnAs2hYsXMBgE+/71CwyuMx/CKc24GcHVFfJG51QRSSpnFej+iLnMXD/7XvmQ3
+         P+Vqrn/17Y4lLbyi5M9Rv8yShy+sOIfniIOwk8H5H9RO0uj1/i72pA9LSazmfilg9eXz
+         S9yqfJaDxOHLYR6QYmA1/9lFih3SMGBoe/cEQ/oa8Z3tybZPv+BQdgMCxYkBjoBrYh84
+         sqqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gePi6+TPmZdDYlmQwiKRPa1IXCbfIXiDKVvUp0KV1dk=;
-        b=HS/3FJnCBSVPJoRAticJKaWJOesZTawoBrqdnv/LmHxvZxT9jmPlbfe8XEZJt/r4Qq
-         hsx7hmL1ktA06YNHM7JND+OvkqB8JZzN5kqAWqZUHmDNujIaiJv1yU8NGz12RL4pfb8s
-         X4p5s+eRQXyrgGRgq3Oo3PIu4Y/OH9W83qDryPKmmsb7PDaly0Ze+DwCnpAtGkWdxWvU
-         4Rc3LX3xNnYNNzG7LkUhqTDBnMlVPcxjvjxo36PRwUCzAt5fn6Kv7vfTZnV0cThcQEbx
-         6U3V3kk4JoMne9BAiQOQqTxhlBO5D/UtgbOKCpL5XYX8mEiVG4aXLmjyGsl2OfJtWnLE
-         j2fg==
-X-Gm-Message-State: AOAM532T4e4TVBwXizypCd3hysuMItGBprggFYOs51mjBW5CVmZuHpUI
-        jdQ1v2j1iYwo5kvwSR+W1p2lbgQXitM7uWtM2JLHAzHJBFW0liqS
-X-Google-Smtp-Source: ABdhPJxb0G4Gc1+Dty2VsaBtrIR7fYPcBPLKjsmZk9+J6COKJ0nz3k1HS/jiG8Jc9esfOQM6Osc9MxogrSsRAqAkfRA=
-X-Received: by 2002:a05:6000:144c:: with SMTP id v12mr32626851wrx.142.1635262815445;
- Tue, 26 Oct 2021 08:40:15 -0700 (PDT)
+        bh=1JXoWXHtBWdFbfIWUv0KF+B9dMJXWd2f8ajP40zMzQI=;
+        b=S8Ro4tP30bliKiqmzKoLYzwPYtnGVtUpCt2kzYILRxIgP6Q0zIo/lM7YBm/0YP11lR
+         MUH5iPexflo9fo9kHLdR9GZvt83TSiuAfVxu9dRvyHxFrPXXQuGAnBQslCdVZ1KMC7m9
+         3VTMEtHtY7ZDVCYYKPzroYunDY3sL3SOpcZaJ0Wqy2+5dvbs1r1kE2k6mW4Nc5AATE+g
+         MReIh086WAL1A8sjaphLplBlXfU96BUZIgrq1hoxf9yNli2vsBrprq3sTTS2kLHWYRY4
+         DYtA09Q7EAAlDgtAU80ciWCdaY2SLaxmIFtu89bP1OCeWnL+Z2YM/3DSiOVP8SefMkaV
+         hV/w==
+X-Gm-Message-State: AOAM532KjJUg1NyEQj0eOYfacQmJ6ocEGQYmh6k4lQZqhooq9WMSqubA
+        CicNksbvRRPgdjmHoRNKKxRJ0Wx+ZyIEeS7v+Xjy+g==
+X-Google-Smtp-Source: ABdhPJz0FROLqXnyvZDXkAxN66AoCpWZjjmuKAfVBWLsqoaGSihYESsDj1l/RfrrIUnuyC77oIROLEwnaeVTC0+swUU=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr24048209lfb.71.1635262846881;
+ Tue, 26 Oct 2021 08:40:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021185335.380810-1-xiehuan09@gmail.com> <20211022180752.0ed07b35@gandalf.local.home>
- <CAEr6+EBq_v+DGSDeiX5Dqc0RgD0sPpbhzpi=T2=r7M2oh90Fpg@mail.gmail.com> <20211026104720.03ad26c2@gandalf.local.home>
-In-Reply-To: <20211026104720.03ad26c2@gandalf.local.home>
-From:   Huan Xie <xiehuan09@gmail.com>
-Date:   Tue, 26 Oct 2021 23:40:03 +0800
-Message-ID: <CAEr6+EDn=g+Q4FfxKn96K5CPcVT9B3FqJA0w4MMfo45DH8oShw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] trace: Add trace any kernel object
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, mingo@redhat.com,
-        chenhuacai@kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>
+References: <20211025115608.5287-1-johan@kernel.org>
+In-Reply-To: <20211025115608.5287-1-johan@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 26 Oct 2021 17:40:09 +0200
+Message-ID: <CAPDyKFoeqp2Ztw9AE3nMju2kav-04Ahd_F_H9tiyZchsNSjrvQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: vub300: fix control-message timeouts
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:47 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 25 Oct 2021 at 13:56, Johan Hovold <johan@kernel.org> wrote:
 >
-> On Tue, 26 Oct 2021 16:50:46 +0800
-> Huan Xie <xiehuan09@gmail.com> wrote:
+> USB control-message timeouts are specified in milliseconds and should
+> specifically not vary with CONFIG_HZ.
 >
-> > > > +static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
-> > > > +                              unsigned long object)
-> > > > +{
-> > > > +
-> > > > +     struct trace_buffer *buffer;
-> > > > +     struct ring_buffer_event *event;
-> > > > +     struct trace_object_entry *entry;
-> > > > +     int pc;
-> > > > +
-> > > > +     pc = preempt_count();
-> > > > +     event = trace_event_buffer_lock_reserve(&buffer, &event_trace_file,
-> > > > +                     TRACE_OBJECT, sizeof(*entry), pc);
-> > > > +     if (!event)
-> > > > +             return;
-> > > > +     entry   = ring_buffer_event_data(event);
-> > > > +     entry->ip                       = ip;
-> > > > +     entry->parent_ip                = parent_ip;
-> > > > +     entry->object                   = object;
-> > >
-> > > So here we are just recording the value we saw at the kprobe (not very
-> > > interesting).
-> > >
-> > > I think we want the content of the object:
-> > >
-> > >         long val;
-> > >
-> > >         ret = copy_from_kernel_nofault(&val, object, sizeof(val));
-> > >         if (ret)
-> > >                 val = 0;
-> >
-> > This place is the only thing I don't understand, don't know  why and
-> > where to use the copy_from_kernel_nofault.
->
->
-> If we have the address of the symbol, we want to read what's at that
-> address, right?
->
-> >
-> > we can only get the struct pt_regs from the  __kprobe_trace_fun() ,
-> > and use it on the  trace_object_trigger() ,
-> > so need to save the pt_regs using a struct:
-> >
-> > struct object_trigger_param {
-> >         struct pt_regs *regs;
-> >         int param;
-> > };
-> >
-> > /* Kprobe handler */
-> > static nokprobe_inline void __kprobe_trace_func(struct trace_kprobe
-> > *tk, struct pt_regs *regs,
-> >                     struct trace_event_file *trace_file)
-> >
-> >
-> > static void trace_object_trigger(struct event_trigger_data *data,
-> > struct trace_buffer *buffer,  void *rec,
-> >                    struct ring_buffer_event *event)
->
->
-> OK, so let me ask this question. What is it that you want to see?
+> Fixes: 88095e7b473a ("mmc: Add new VUB300 USB-to-SD/SDIO/MMC driver")
+> Cc: stable@vger.kernel.org      # 3.0
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
-Thanks, I got your point now,  my original idea was to just track the
-flow of objects.
+Applied for fixes, thanks!
 
-> If we have (using your example):
->
-> int bio_add_page(struct bio *bio, struct page *page,
->                                 unsigned int len, unsigned int offset)
->
-> And we want to trace "bio" right?
->
-> Doing:
->
->   echo 'p bio_add_page arg1=$arg1' > kprobe_events
->
-> Will make "arg1" be assigned the pointer that was passed in.
->
->   0xffff888102a4b900
->
-> Which is a local variable that holds an address to some structure bio.
->
-> Your current example just keeps showing us that same pointer address and
-> not the content of bio, and will never change until the bio_add_page
-> function is called again, in which case, you will now be tracing the
-> next address of the structure that was passed into the function. There's
-> nothing more to learn from this over just tracing that function and giving
-> us the address passed in.
->
-> Now if I look at struct bio, I see:
->
-> struct bio {
->         [..]
->         atomic_t                __bi_cnt;       /* pin count */
->         [..]
-> };
->
-> And let's say I want to monitor that __bi_cnt while functions are being
-> traced. What would be *really cool*, is to mark that value!
+Kind regards
+Uffe
 
-This is really cool to  get the change of the value. And is a good
-feature enhancement.
 
+> ---
+>  drivers/mmc/host/vub300.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 >
-> // find the offset of __bi_cnt in struct bio:
-> $ gdb vmlinux
-> (gdb) p &((struct bio *)0)->__bi_cnt
-> $1 = (atomic_t *) 0x64
+> diff --git a/drivers/mmc/host/vub300.c b/drivers/mmc/host/vub300.c
+> index 4950d10d3a19..97beece62fec 100644
+> --- a/drivers/mmc/host/vub300.c
+> +++ b/drivers/mmc/host/vub300.c
+> @@ -576,7 +576,7 @@ static void check_vub300_port_status(struct vub300_mmc_host *vub300)
+>                                 GET_SYSTEM_PORT_STATUS,
+>                                 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+>                                 0x0000, 0x0000, &vub300->system_port_status,
+> -                               sizeof(vub300->system_port_status), HZ);
+> +                               sizeof(vub300->system_port_status), 1000);
+>         if (sizeof(vub300->system_port_status) == retval)
+>                 new_system_port_status(vub300);
+>  }
+> @@ -1241,7 +1241,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
+>                                                 SET_INTERRUPT_PSEUDOCODE,
+>                                                 USB_DIR_OUT | USB_TYPE_VENDOR |
+>                                                 USB_RECIP_DEVICE, 0x0000, 0x0000,
+> -                                               xfer_buffer, xfer_length, HZ);
+> +                                               xfer_buffer, xfer_length, 1000);
+>                         kfree(xfer_buffer);
+>                         if (retval < 0)
+>                                 goto copy_error_message;
+> @@ -1284,7 +1284,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
+>                                                 SET_TRANSFER_PSEUDOCODE,
+>                                                 USB_DIR_OUT | USB_TYPE_VENDOR |
+>                                                 USB_RECIP_DEVICE, 0x0000, 0x0000,
+> -                                               xfer_buffer, xfer_length, HZ);
+> +                                               xfer_buffer, xfer_length, 1000);
+>                         kfree(xfer_buffer);
+>                         if (retval < 0)
+>                                 goto copy_error_message;
+> @@ -1991,7 +1991,7 @@ static void __set_clock_speed(struct vub300_mmc_host *vub300, u8 buf[8],
+>                 usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+>                                 SET_CLOCK_SPEED,
+>                                 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+> -                               0x00, 0x00, buf, buf_array_size, HZ);
+> +                               0x00, 0x00, buf, buf_array_size, 1000);
+>         if (retval != 8) {
+>                 dev_err(&vub300->udev->dev, "SET_CLOCK_SPEED"
+>                         " %dkHz failed with retval=%d\n", kHzClock, retval);
+> @@ -2013,14 +2013,14 @@ static void vub300_mmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+>                 usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+>                                 SET_SD_POWER,
+>                                 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+> -                               0x0000, 0x0000, NULL, 0, HZ);
+> +                               0x0000, 0x0000, NULL, 0, 1000);
+>                 /* must wait for the VUB300 u-proc to boot up */
+>                 msleep(600);
+>         } else if ((ios->power_mode == MMC_POWER_UP) && !vub300->card_powered) {
+>                 usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+>                                 SET_SD_POWER,
+>                                 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+> -                               0x0001, 0x0000, NULL, 0, HZ);
+> +                               0x0001, 0x0000, NULL, 0, 1000);
+>                 msleep(600);
+>                 vub300->card_powered = 1;
+>         } else if (ios->power_mode == MMC_POWER_ON) {
+> @@ -2275,14 +2275,14 @@ static int vub300_probe(struct usb_interface *interface,
+>                                 GET_HC_INF0,
+>                                 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+>                                 0x0000, 0x0000, &vub300->hc_info,
+> -                               sizeof(vub300->hc_info), HZ);
+> +                               sizeof(vub300->hc_info), 1000);
+>         if (retval < 0)
+>                 goto error5;
+>         retval =
+>                 usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+>                                 SET_ROM_WAIT_STATES,
+>                                 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+> -                               firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
+> +                               firmware_rom_wait_states, 0x0000, NULL, 0, 1000);
+>         if (retval < 0)
+>                 goto error5;
+>         dev_info(&vub300->udev->dev,
+> @@ -2297,7 +2297,7 @@ static int vub300_probe(struct usb_interface *interface,
+>                                 GET_SYSTEM_PORT_STATUS,
+>                                 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+>                                 0x0000, 0x0000, &vub300->system_port_status,
+> -                               sizeof(vub300->system_port_status), HZ);
+> +                               sizeof(vub300->system_port_status), 1000);
+>         if (retval < 0) {
+>                 goto error4;
+>         } else if (sizeof(vub300->system_port_status) == retval) {
+> --
+> 2.32.0
 >
->  # echo 'objfilter:0x64(arg1) if comm == "cat"' > ./trigger
->
-> Which would then read that arg1=0xffff888102a4b900 and offset it by 0x64,
-> and give me the value at that location:
->
->   *(0xffff888102a4b900 + 0x64)
->
-> at every function. Then I could watch the __bi_cnt change over time. But to
-> dereference memory safely, we need to use copy_from_kernel_nofault()
-> because that address "0xffff888102a4b900 + 0x64" could point to nothing
-> and fault / crash the kernel.
->
->         obj = arg1 + 0x64
->         if (copy_from_kernel_nofault(&val, arg1 + 0x64, sizeof(val)))
->                 // faulted
->                 return;
->
-> Now val has the content of __bi_cnt and we can print that!
->
-> -- Steve
->
->
->
-> >
-> > > Then we can see what changed during this time.
