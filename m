@@ -2,102 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59643B918
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA92443B919
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236674AbhJZSNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:13:23 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:40503 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235040AbhJZSNW (ORCPT
+        id S238096AbhJZSNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235040AbhJZSNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:13:22 -0400
-Received: by mail-oi1-f178.google.com with SMTP id n63so21836213oif.7;
-        Tue, 26 Oct 2021 11:10:57 -0700 (PDT)
+        Tue, 26 Oct 2021 14:13:43 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0F4C061767;
+        Tue, 26 Oct 2021 11:11:18 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id bi35so584157lfb.9;
+        Tue, 26 Oct 2021 11:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ok/6IMhjWObzEGTvSkZe4AMKwm0LpNlb/4Kte4oUun0=;
+        b=XYxQXf9vr1K88j0vZznYNkRdyV4d4xKn6hBNRnE4qxeGOJT6zFsJApBWWUeZxeOYbU
+         qKpJy7Dr85HDb6jPAVymoOYDyCu4lmYznbo81zW4dTwN1DOCAeT52ECSjemvmFZdqRbb
+         pI6AAEVrZ43jAeDnaOryFbFWXJvAVTixdfQ4lN+pZnL8QgpfgxrfXY9wXaNeEKUWAbWV
+         QBkZneU1k5g5kp5WHDUalix2YeKkluV7r6JEKZTOmywtXTcgZxMNELoNjPkJ+K2iJgg8
+         Jf9AKacGH63TKkn/aHbOJgulRUyKw8UaBYn7ScZtNmZgzayF3wiZVIVoHY7UEA4tgl0q
+         3CAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LwN+X4PEi3Ouq9X6OKykFlJGA9GO8zaZsDpJ3nIh2IU=;
-        b=Qi/2+Pr5/cT8G69/r6fgXaQN/XXtP1TrdIN6IQGPhoSsiS2aUmlAOuR6BQbvIueYNY
-         IXFpVqC0HZhbJJis2BO3gj2H9aZNVhD/OckUuuGQQlpDrWvdhuZjVwaClt/UgOayoAee
-         8gVA7HTI2OnDgG7BOXyAvb2/oucX9caWAgAJAroS+RYYs7AnEABzgYTbyQ0/LE1ou72y
-         Y/d1XElEPyTXbCDxBKau0Pbnk10zFVRSRfFylAzQqNsss8JjiqIx2pqzYbyCkouA0ezp
-         wRgrn27qpW4lYLFEcNL1RUN+v99v8LeGQEa6uVv6HmbEFwEOqqEgwz+QFxAI/bIiY0hp
-         4DDg==
-X-Gm-Message-State: AOAM533lapW0SyullYYVKPtb5hgsczF2oMRMpLI0ES1L+zNxuX4pSy8Z
-        cKMYxgXzcTkNDAJ5CwIvvg==
-X-Google-Smtp-Source: ABdhPJxO0G7gdDH3/w0eJlvozSh7pEFCagRG5POucla9GUeZ9R93VkMIf59HbJp1MZLXLSpbSBydTQ==
-X-Received: by 2002:aca:240e:: with SMTP id n14mr239723oic.52.1635271857578;
-        Tue, 26 Oct 2021 11:10:57 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bk8sm5045827oib.57.2021.10.26.11.10.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:10:56 -0700 (PDT)
-Received: (nullmailer pid 2952060 invoked by uid 1000);
-        Tue, 26 Oct 2021 18:10:54 -0000
-Date:   Tue, 26 Oct 2021 13:10:54 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Brad Larson <brad@pensando.io>
-Cc:     linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        broonie@kernel.org, fancer.lancer@gmail.com,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org, olof@lixom.net,
-        linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/11] dt-bindings: mmc: Add Pensando Elba SoC binding
-Message-ID: <YXhErvvSfKIBvHae@robh.at.kernel.org>
-References: <20211025015156.33133-1-brad@pensando.io>
- <20211025015156.33133-4-brad@pensando.io>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ok/6IMhjWObzEGTvSkZe4AMKwm0LpNlb/4Kte4oUun0=;
+        b=mx6I6k/4Qvu+FTllWx/UkqLgTGLLNrg0OQjkOhtO5uEvSrbLuM8bLePQsxtlIx9HhJ
+         v+o9aUIdBRRwqVtKKbsq43ze5g85Ul9uPonnQlbPGV3UmoViQuxRFn+sfQ/CAi6RKmEO
+         TwtAKijZnQbB7Kfa0lDeYvodkM78tDbhdaMmiVb6R4vdHDfLGyLInb/NzqOhzMuBbhyi
+         5FS7vk0Ig/3C6Cf10cCgOwxrm9fMIj5mQvSc4oRb72mLzAnoihTo8mxDdJHcHY3/C58/
+         t4bnl/+lQVnEQmwPWW3eKCm9m3B/PfUPJASybYSPs6ejKnGQzE/z03KOlwba800NxwiS
+         2DxQ==
+X-Gm-Message-State: AOAM533MRqgsoih6i/9moMyLhEV3MFLJGb8nCi1SfaJ8oizcFb7XQsqz
+        UnMtcCkPDplSh5VhnjcbQd2NhcR/8kcbE1GRGrXTvHQkGmI=
+X-Google-Smtp-Source: ABdhPJxTHUjTNieaDHYCHH3QCBBLFzO432EBunLJcLB5IrNdgNq5owdsB46QzeYRKQigWRq/JkD/IjMEbUEanorv96g=
+X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr23076108lfb.189.1635271876655;
+ Tue, 26 Oct 2021 11:11:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025015156.33133-4-brad@pensando.io>
+References: <20211025163121.2189630-1-janusz.dziedzic@gmail.com> <39561c73-732e-bc38-e250-a0bdf51b09f9@linaro.org>
+In-Reply-To: <39561c73-732e-bc38-e250-a0bdf51b09f9@linaro.org>
+From:   Janusz Dziedzic <janusz.dziedzic@gmail.com>
+Date:   Tue, 26 Oct 2021 20:11:05 +0200
+Message-ID: <CAFED-jkGhX=z49T0UrgqsttXXLFJDFyh8JmftwpWmW9zH9aVaA@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: qmi: add a prompt to QCOM_QMI_HELPERS
+To:     Alex Elder <elder@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 06:51:48PM -0700, Brad Larson wrote:
-> Pensando Elba ARM 64-bit SoC is integrated with this IP and
-> explicitly controls byte-lane enables resulting in an additional
-> reg property resource.
-> 
-> Signed-off-by: Brad Larson <brad@pensando.io>
-> ---
->  .../devicetree/bindings/mmc/cdns,sdhci.yaml         | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> index af7442f73881..6c68b7b5abec 100644
-> --- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> @@ -15,13 +15,16 @@ allOf:
->  
->  properties:
->    compatible:
-> -    items:
-> -      - enum:
-> -          - socionext,uniphier-sd4hc
-> -      - const: cdns,sd4hc
-> +    oneOf:
-> +      - items:
-> +        - enum:
-> +            - socionext,uniphier-sd4hc
-> +            - pensando,elba-emmc
-> +        - const: cdns,sd4hc
->  
->    reg:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 2
+wt., 26 pa=C5=BA 2021 o 15:43 Alex Elder <elder@linaro.org> napisa=C5=82(a)=
+:
+>
+> On 10/25/21 11:31 AM, Janusz Dziedzic wrote:
+> > From: Alex Elder <elder@linaro.org>
+> >
+> > Add a prompt to the "tristate" attribute in the Kconfig file in
+> > which QCOM_QMI_HELPERS is defined; I find it doesn't get selected
+> > without it.
+>
+> This was a *long* time ago!
+>    https://lore.kernel.org/all/20180427140358.30839-1-elder@linaro.org/
+>
+> The discussion that followed indicated that the thing that needs
+> QCOM_QMI_HELPERS should *select* it rather than *depend on it.
+>
+> Will this not work for you?
+>
+This don't work, we can't run select from backports.
+Backports drivers - ath11k for this case - build out of the tree as a
+separate modules.
+Eg. Today we are using kernel 5.10
+and backports generated from kernel 5.15.
+So our kernel 5.10 don't check CONFIG_ATH11K
+This is what I see from our kernel:
 
-If there is more than 1, then you need to describe what each entry is.
+Selected by [n]:
+ATH11K [=3Dn] && NETDEVICES [=3Dy] && WLAN [=3Dy] && WLAN_VENDOR_ATH [=3Dn]=
+ &&
+MAC80211 [=3Dn] && HAS_DMA [=3Dy] && CRYPTO_MICHAEL_MIC [=3Dn]
 
->  
->    interrupts:
->      maxItems: 1
-> -- 
-> 2.17.1
-> 
-> 
+But we build backports/ath11k module which has:
+depends on QCOM_QMI_HELPERS
+
+
+To enable backports/ath11k build we need kernel that have
+QCOM_QMI_HELPERS enabled.
+Because of that we need this configurable.
+
+BR
+Janusz
+
+
+>                                         -Alex
+>
+> > We need it in OpenWRT project, when using WiFi backports
+> > and build ath11k driver. While ath11k driver depends on
+> > QCOM_QMI_HELPERS we need way to enable this option in
+> > our kernel.
+> >
+> > Signed-off-by: Alex Elder <elder@linaro.org>
+> > Signed-off-by: Janusz Dziedzic <janusz.dziedzic@gmail.com>
+> > ---
+> >   drivers/soc/qcom/Kconfig | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> > index fe3c486ae32d..16fb8e286015 100644
+> > --- a/drivers/soc/qcom/Kconfig
+> > +++ b/drivers/soc/qcom/Kconfig
+> > @@ -92,7 +92,7 @@ config QCOM_PDR_HELPERS
+> >       select QCOM_QMI_HELPERS
+> >
+> >   config QCOM_QMI_HELPERS
+> > -     tristate
+> > +     tristate "Qualcomm QMI Helpers"
+> >       depends on NET
+> >
+> >   config QCOM_RMTFS_MEM
+> >
+>
+
+
+--=20
+Janusz Dziedzic
