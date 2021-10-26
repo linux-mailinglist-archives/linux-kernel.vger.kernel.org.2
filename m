@@ -2,41 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899CF43B2D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A5143B2DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbhJZNFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:05:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55098 "EHLO mail.kernel.org"
+        id S236126AbhJZNGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:06:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230324AbhJZNFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:05:07 -0400
+        id S230324AbhJZNGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:06:32 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1100860E74;
-        Tue, 26 Oct 2021 13:02:41 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 09:02:39 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id E07DE60F6F;
+        Tue, 26 Oct 2021 13:04:07 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 09:04:06 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 06/20] trace/osnoise: Allow multiple instances of the
- same tracer
-Message-ID: <20211026090239.5ca7d350@gandalf.local.home>
-In-Reply-To: <f30262dc-f1cf-4945-5a7d-5ecf5a0b5cc2@kernel.org>
-References: <cover.1635181938.git.bristot@kernel.org>
-        <69cbbd98cce2515c84127c8827d733dc87b04823.1635181938.git.bristot@kernel.org>
-        <20211025220856.7fef7581@rorschach.local.home>
-        <f30262dc-f1cf-4945-5a7d-5ecf5a0b5cc2@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        mingo@redhat.com, corbet@lwn.net, akpm@linux-foundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] MAINTAINERS: Update KPROBES and TRACING entries
+Message-ID: <20211026090406.4c26967a@gandalf.local.home>
+In-Reply-To: <20211026172842.cb6fc83f888ade50d0b6046c@kernel.org>
+References: <1635213091-24387-1-git-send-email-yangtiezhu@loongson.cn>
+        <1635213091-24387-5-git-send-email-yangtiezhu@loongson.cn>
+        <20211026172842.cb6fc83f888ade50d0b6046c@kernel.org>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -45,55 +37,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 10:38:27 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+On Tue, 26 Oct 2021 17:28:42 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-
-> >>   * osnoise_register_instance - register a new trace instance
-> >>   *
-> >> @@ -2048,6 +2066,16 @@ static int osnoise_workload_start(void)
-> >>  {
-> >>  	int retval;
-> >>  
-> >> +	/*
-> >> +	 * Instances need to be registered after calling workload
-> >> +	 * start. Hence, if there is already an instance, the
-> >> +	 * workload was already registered. Otherwise, this
-> >> +	 * code is on the way to register the first instance,
-> >> +	 * and the workload will start.
-> >> +	 */
-> >> +	if (osnoise_has_registered_instances())
-> >> +		return 0;  
-> > 
-> > Looking at how this is checked before being called, it really should
-> > return -1, as it is an error if this is called with instances active.  
+> This looks good to me for kprobe section.
 > 
-> Hum.... maybe my explanation is not good enough. It is not a problem if it is
-> called with active instances. It would be an error if the same instance was
-> already registered at this point, but that was checked before. Here it is
-> checking for other instances that should have enabled the workload.
-> 
-> Does updating the comment with the one below helps?
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-No need.
+Thanks, I'll pull this into my queue.
 
-
-> >> @@ -2096,7 +2131,11 @@ static void osnoise_tracer_start(struct trace_array *tr)
-> >>  {
-> >>  	int retval;
-> >>  
-> >> -	if (osnoise_has_registered_instances())
-> >> +	/*
-> >> +	 * If the instance is already registered, there is no need to
-> >> +	 * register it again.
-> >> +	 */
-> >> +	if (osnoise_instance_registered(tr))
-
-My eyes missed that you removed the osnoise_has_registered_instances() for
-the osnoise_instance_registered(tr), and thought you were doing the same
-test twice.
-
-My mistake. I need to not review patches at the end of the day when I'm
-ready to go to sleep.
 
 -- Steve
