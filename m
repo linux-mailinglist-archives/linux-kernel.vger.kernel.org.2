@@ -2,91 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1E743BB05
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBE343BB09
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhJZTh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238874AbhJZThA (ORCPT
+        id S236951AbhJZTi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:38:28 -0400
+Received: from mail-oo1-f52.google.com ([209.85.161.52]:43784 "EHLO
+        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234403AbhJZThr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:37:00 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53057C061235
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:34:31 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso4189133wmd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l5F4vx0AkZXpsFveRw1mgakCBS1yTrfmQWwkFAyxoJk=;
-        b=h6cRGWDDMndhFqDU+VxYwQIuMq09S7Yz1BmE6h4kA3AFZcosvD174mYt5UTLrY4R6w
-         0MSzdoaPeidADEqUzPhjAJvzcXN51u9T/CUpoTnpnIYcn/vBGjMEAf9KtP5m5w2/JpJd
-         +pkhLVFYdbwkfbdeg9WAa9ur/hRxbTm/ZFxlQsu0WFoPql9thj1F2ajyXytLkrHpNei9
-         en3qKlV6A60Phj8XxaiqlmYh2pGwNcQk0RU1GIh4XJoyeXdqsnnqoLs86j6nLWtVEDN6
-         ueVuSo6V+HCwH0BNNUj9KdPm0g0wcBW23S+8D3M2fRuxLwwcZHRY5Ye2uYS7Ix8kEMAk
-         ecyA==
+        Tue, 26 Oct 2021 15:37:47 -0400
+Received: by mail-oo1-f52.google.com with SMTP id w9-20020a4adec9000000b002b696945457so91621oou.10;
+        Tue, 26 Oct 2021 12:35:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l5F4vx0AkZXpsFveRw1mgakCBS1yTrfmQWwkFAyxoJk=;
-        b=FxYt/+0nxbbE3uRboUHsdmJEEtVDYqKtBOWsmEPsJBnhfZwilwRoOrh0WE8VpvbNoz
-         n/JTG9NbZrhIFLDX7QMCbbWBedv3tB4OnKOHH12dTmv98P6XCFwPgCeHHl2LNhH63iIo
-         RQJyQ07AaVXtIncLxKl6Ry4jKqY9K4hHa2wVpl2ubZD+QUD+xlUwK5y2uyOh6cTSEPCn
-         LkO0IepMOQ7eEX/NPgIeejNs7Rt7IMHwHgcdmUpzqwrlHCEsatPEHnbk77c+r1mJTx/9
-         73FmKuxZ7XfDL+G8Uxgn3RKRk7BLWpVuXGIBVBCYTvzLvZxqNhcIXPYYY/zc1tyZeOz0
-         XAAw==
-X-Gm-Message-State: AOAM530ZmNy0ZDFNdo/+feHAKcKojlS2gVhTPArsiWI+mEncsBiCrDp5
-        NSCvPtoGdGlO2NUtODbuMqeBvA==
-X-Google-Smtp-Source: ABdhPJxmbWyIAsI7MI/43OP+WBu0p58TWdJOybmOiVLe296pRgKDBrvmoQB0t00t+mS+rxF1belH6w==
-X-Received: by 2002:a05:600c:ac2:: with SMTP id c2mr742197wmr.194.1635276869996;
-        Tue, 26 Oct 2021 12:34:29 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id s18sm17676123wrb.95.2021.10.26.12.34.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cuWCHHaxpGzZ+RLHdReFqP8G1KbQl7FUnQlYA5RdMHo=;
+        b=CD6L0wzofWKx5tAGIlyQP7mZfbsSgMyRRb3iT9ckx7dGU/ex/h2hKC5fxOC5vCVi6+
+         dpHXaHDbnLzi3GtaTTqReCgrH0W93Tvu18lS0abcS2xdE0jFZge9D3mY/DukDvgzpi17
+         TV37ixsCMeV9RU7A8OuO4eYUL9NmztEjht8Enjli9WKlJ6AZRFKdvtLpkdQlIHP2Mjfg
+         JELWk6d4ExZv7qzwodnGX+MT1ZYbH39oqflsRNBOlolMBIhB70D9567glbyaHKPZY3s6
+         ncxI1uCXWs7zVPt9ls489gNe/LTsddCzevbmWQNJ/uI9esiXSB/KeL5GFX/R/Ndu7q9Z
+         B2lQ==
+X-Gm-Message-State: AOAM531226CUSmiYrWbdhjF2NzVurRVsPCSBc1+os9rRW1I3j+YgSo7W
+        aDEVm6A0Bo4OMrGeeIKZiQ==
+X-Google-Smtp-Source: ABdhPJzQ2i57R1fwkX0bvqTZxhQM361+dMED+ZfgS6kHAZqfRaU3DV5TopReaYlNX8wntMv3LmXlNA==
+X-Received: by 2002:a4a:d5c8:: with SMTP id a8mr18735869oot.18.1635276923035;
+        Tue, 26 Oct 2021 12:35:23 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l1sm4993196oic.30.2021.10.26.12.35.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 12:34:29 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     mchehab@kernel.org, hverkuil@xs4all.nl, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v3 14/14] staging: media: zoran: DC30 encoder is not adv7175
-Date:   Tue, 26 Oct 2021 19:34:16 +0000
-Message-Id: <20211026193416.1176797-15-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211026193416.1176797-1-clabbe@baylibre.com>
-References: <20211026193416.1176797-1-clabbe@baylibre.com>
+        Tue, 26 Oct 2021 12:35:22 -0700 (PDT)
+Received: (nullmailer pid 3097732 invoked by uid 1000);
+        Tue, 26 Oct 2021 19:35:21 -0000
+Date:   Tue, 26 Oct 2021 14:35:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Suman Anna <s-anna@ti.com>, Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] dt-bindings: sram: Allow numbers in sram region node name
+Message-ID: <YXhYeVIkL60ePHrp@robh.at.kernel.org>
+References: <20211012154833.14111-1-nm@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012154833.14111-1-nm@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DC30 uses a non-i2c ITT MSE3000 encoder and not an adv7175 as stated
-in the card list.
-So remove adv7175 from DC30.
+On Tue, 12 Oct 2021 10:48:33 -0500, Nishanth Menon wrote:
+> Sram regions node name describes the region of reserved memory and can
+> be names such as l3cache@1000. Permit numbers to be used as part of the
+> reserved memory node name.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+>  Documentation/devicetree/bindings/sram/sram.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/staging/media/zoran/zoran_card.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index 59df1e7691f9..a9b0316cd688 100644
---- a/drivers/staging/media/zoran/zoran_card.c
-+++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -472,8 +472,6 @@ static struct card_info zoran_cards[NUM_CARDS] = {
- 		.name = "DC30",
- 		.i2c_decoder = "vpx3220a",
- 		.addrs_decoder = vpx3220_addrs,
--		.i2c_encoder = "adv7175",
--		.addrs_encoder = adv717x_addrs,
- 		.video_codec = CODEC_TYPE_ZR36050,
- 		.video_vfe = CODEC_TYPE_ZR36016,
- 
--- 
-2.32.0
-
+Applied, thanks!
