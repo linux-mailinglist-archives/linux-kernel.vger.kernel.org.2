@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213F943AA65
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5385943AA64
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhJZCnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:43:42 -0400
-Received: from smtpbguseast3.qq.com ([54.243.244.52]:60815 "EHLO
-        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234249AbhJZCnf (ORCPT
+        id S234332AbhJZCnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234320AbhJZCnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Oct 2021 22:43:35 -0400
-X-QQ-mid: bizesmtp48t1635216062tovaigxx
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 26 Oct 2021 10:40:50 +0800 (CST)
-X-QQ-SSF: B1400000002000B0E000B00A0000000
-X-QQ-FEAT: Zj+KTj18N39ISsjL3T66XEgEMKYIrQ2ZjjUW3GxEpkiz582AFrWGBipd0La81
-        8ZPuTcPIYVaAIXQcqOS9+A9/WXlSc9HqFR5+wAzuVLvVnYE3roSo79/0ioxwLtAejBA5Z4T
-        KmXm3uz4A2cUCQgvHqlEvTLQZPBWOyx5x5C++W4ijoq2xuvzA3ZDdpQ2gtKShbv4Jbs9VKI
-        xDAtqFVMOnel1HlS92xmY6irQE14vv1IwFQ9qJZ8MLLJOqULtfgoWMrF/ujhc96JD2QKY7x
-        tnn1DYJUu5ukggPfXphU0IN5bSEcfVmUPmET4pAgO9TObGGUn2g+6RGPNbzfguetxKYUVMy
-        SSHzz+YsYA9C8f0/tdWXC/rZYcgNA==
-X-QQ-GoodBg: 2
-From:   lianzhi chang <changlianzhi@uniontech.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        282827961@qq.com, lianzhi chang <changlianzhi@uniontech.com>
-Subject: [PATCH v7] tty: Fix the keyboard led light display problem
-Date:   Tue, 26 Oct 2021 10:40:32 +0800
-Message-Id: <20211026024032.15897-1-changlianzhi@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E48C061745;
+        Mon, 25 Oct 2021 19:41:11 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id d20so3568023qvm.4;
+        Mon, 25 Oct 2021 19:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=olfw8MNAxV9RiRyvuemdxMNUZP8mSE+fs0tsZ8n0qPM=;
+        b=YA5WvYmAQhn/0pKAze8tjs/siZkxdq2ZfMSjjCFdDX7nEFW+ENuEOkP85T5RGZDaYS
+         MSNsvnEvUCrUVdUgm+Pe9Zms3j95F2aFlJC0aWzlEqYD2M6fLjnlWu4wKbmAJ1zq6Lo+
+         c6ESl49xAD4d0E6gw5xhyZgsgYYuqMLeVdli0C7YbYgRz3t7C4nuaHNzOIaAXrlwBrRT
+         fSyIyir1Fk8F5pijI1Qy+rryPvChqqKA5cQ1eUAQxV8nb0E+YE/uRtvPstvrnLAyHpwx
+         mf0RhmDwaD771dWVAqlB6I/RRH+fqAs3IFNeMQNa7SN01T5AK6aSkoF3RV68fElowlzM
+         xZ8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=olfw8MNAxV9RiRyvuemdxMNUZP8mSE+fs0tsZ8n0qPM=;
+        b=ao6kLSS+c+jff0pBVkjPGwy88PLogNL4TXRw2SY89yu3QywnicdrNyDv2uPY7agP1g
+         rKdnfAmbG+ps9D6phi11ewT/5kIq7udscTvmrZk9Sxiovlgw2L9Go6cyY9bDrGyc88V8
+         4o8EDjrxkVV3570Q09NhPf9Q6YAQrjeQoNG24tzHO6YWnP8KguTnkP0OOnUkazi0kng8
+         seOkB3dKtQ76ylp906tm/VoKiwQ09hsHqKySMI73PJrdhLNbwITaA/71KQ534gppB5J1
+         2/kfE33u4QaeE7dVJVsEFi9Oq1VioZpQ/y9ymznMNgaSXQ1SRgWQY/j9PY4vApgnBwi8
+         yaUw==
+X-Gm-Message-State: AOAM532qqST0Una9jfU/K2g9GG8eHKK75SpxOjYV5aX1dbgrtr6oYElq
+        xpxDkNIOYKgfX5/ZL3uOYxs=
+X-Google-Smtp-Source: ABdhPJzB4jzQ5Q8eV7KGcnpT5+B6qtzxijfQQmTzr6q8HUPV8PhQFzrquV1D7WEttQ0TMPfK3v2fhQ==
+X-Received: by 2002:ad4:5188:: with SMTP id b8mr29984qvp.24.1635216071052;
+        Mon, 25 Oct 2021 19:41:11 -0700 (PDT)
+Received: from ?IPV6:2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1? ([2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1])
+        by smtp.gmail.com with ESMTPSA id b13sm9572169qtq.69.2021.10.25.19.41.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 19:41:10 -0700 (PDT)
+Message-ID: <d5152935-bab1-314c-baf3-3e623882dc3a@gmail.com>
+Date:   Mon, 25 Oct 2021 19:41:08 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 3/3] genirq: Hide irq_cpu_{on,off}line() behind a
+ deprecated option
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20211021170414.3341522-1-maz@kernel.org>
+ <20211021170414.3341522-4-maz@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20211021170414.3341522-4-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switching from the desktop environment to the tty environment,
-the state of the keyboard led lights and the state of the keyboard
-lock are inconsistent. This is because the attribute kb->kbdmode
-of the tty bound in the desktop environment (xorg) is set to
-VC_OFF, which causes the ledstate and kb->ledflagstate
-values of the bound tty to always be 0, which causes the switch
-from the desktop When to the tty environment, the LED light
-status is inconsistent with the keyboard lock status.
 
-Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
----
- v6-->v7:
- Delete the casting in the kbd_update_ledstate function, and the
- new code no longer needs casting.
- 
- drivers/tty/vt/keyboard.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
 
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index c7fbbcdcc346..e2cf40d06483 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -1130,6 +1130,19 @@ static void kbd_init_leds(void)
- 
- #endif
- 
-+static void kbd_update_ledstate(struct input_dev *dev)
-+{
-+	if (!!test_bit(LED_NUML, dev->led) !=
-+	    !!(ledstate & BIT(VC_NUMLOCK)))
-+		ledstate ^= BIT(VC_NUMLOCK);
-+	if (!!test_bit(LED_CAPSL, dev->led) !=
-+	    !!(ledstate & BIT(VC_CAPSLOCK)))
-+		ledstate ^= BIT(VC_CAPSLOCK);
-+	if (!!test_bit(LED_SCROLLL, dev->led) !=
-+	    !!(ledstate & BIT(VC_SCROLLOCK)))
-+		ledstate ^= BIT(VC_SCROLLOCK);
-+}
-+
- /*
-  * The leds display either (i) the status of NumLock, CapsLock, ScrollLock,
-  * or (ii) whatever pattern of lights people want to show using KDSETLED,
-@@ -1247,9 +1260,14 @@ void vt_kbd_con_stop(unsigned int console)
-  */
- static void kbd_bh(struct tasklet_struct *unused)
- {
-+	struct kbd_struct *kb;
- 	unsigned int leds;
- 	unsigned long flags;
- 
-+	kb = kbd_table + fg_console;
-+	if (kb->kbdmode == VC_OFF)
-+		return;
-+
- 	spin_lock_irqsave(&led_lock, flags);
- 	leds = getleds();
- 	leds |= (unsigned int)kbd->lockstate << 8;
-@@ -1524,6 +1542,9 @@ static void kbd_event(struct input_handle *handle, unsigned int event_type,
- 	/* We are called with interrupts disabled, just take the lock */
- 	spin_lock(&kbd_event_lock);
- 
-+	if (test_bit(EV_LED, handle->dev->evbit))
-+		kbd_update_ledstate(handle->dev);
-+
- 	if (event_type == EV_MSC && event_code == MSC_RAW &&
- 			kbd_is_hw_raw(handle->dev))
- 		kbd_rawcode(value);
+On 10/21/2021 10:04 AM, Marc Zyngier wrote:
+> irq_cpu_{on,off}line() are now only used by the Octeon platform.
+> Make their use conditional on this plaform being enabled, and
+> otherwise hidden away.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.20.1
-
-
-
+Florian
