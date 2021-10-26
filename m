@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF14643BD9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E9B43BDA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 01:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240182AbhJZXI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 19:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
+        id S240213AbhJZXLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 19:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235278AbhJZXI6 (ORCPT
+        with ESMTP id S235166AbhJZXLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 19:08:58 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E7CC061570;
-        Tue, 26 Oct 2021 16:06:33 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so972618otk.3;
-        Tue, 26 Oct 2021 16:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=qhfQLJOgDvln9IuLBpMPA2NZUQIrC6XLO3bbkhnZKr0=;
-        b=T643XUt+TfuKOqk++crkBs0mWZBOYPKhmUKYurHK5hzbDKBydx1CC+kdvwwI1CN9OX
-         kEhTFhYFdQi8nuVhkrXaOkkVKDL75G0DziDM8Sz4EXtQtmPt+5JWJkmG9tpFIgB8G6l1
-         Uh0MlsSKvDeCOZ5293/wHFBQDF6gMsv/Erxwe5+nupQf1NNnr7SPJTo0Tcy5grjOWwIt
-         fg2oCXVsMvV9K/jw44KR1Fv3tASYFCYd8fzDuBwADRQrSRaTE9AbqyrRDTQbIhffI6mG
-         x7EA2rNhjX2qWKpop7dl8pMAB1IdaWrmVLECUmeVXrxNwDd0f115RrN5C7i6h+k4vfsz
-         7cTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=qhfQLJOgDvln9IuLBpMPA2NZUQIrC6XLO3bbkhnZKr0=;
-        b=MsONGzam8R7tk353O2KbCrkd+EG+Y1384eWirLe/HCAxwyxwDC0+Bs2kAuCW8ozpQX
-         3+vXHVBLbJR/MEt4xC9HWT1NTVbol3pyUrBiunKjFSeixYQI90HB1FOX0xnRGH/IMrbE
-         zsbgukT7GjEWQgtLFyW0hBkYtjrmZkN7NC8X6EtPIagvOSm4epyrtAxtnch8novT88QH
-         dpqHnyemOf27pvzySofKL2GJjrI1lDPLIqDMXemhtfAHhzx1rVqvDWjirNMWvdF1JzkM
-         STI3CCfTOhQsHFQR4bF4toOwJlYnRk9DuUZxY2naggH307AIVxeuL+aPd1jD7ZLYMiPV
-         H+BA==
-X-Gm-Message-State: AOAM530SUrHsevkakN4Cyy+um9kseWBBHIJ7X7sPcaNEvhAl60j3sQcZ
-        P4WleYEfU3LC7kcIBt8QcAs=
-X-Google-Smtp-Source: ABdhPJxk6iZqCbzxcHk7Me3XEtCBaRWXbeKaRStoVgRfFy2huR++yNlXSHMZ8oIa7PPzrdXllnng3A==
-X-Received: by 2002:a05:6830:153:: with SMTP id j19mr14207194otp.375.1635289592966;
-        Tue, 26 Oct 2021 16:06:32 -0700 (PDT)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id bn13sm79256oib.37.2021.10.26.16.06.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 16:06:32 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 20:06:10 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the perf tree with Linus' tree
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20211027091705.1e24694e@canb.auug.org.au>
-References: <20211027091705.1e24694e@canb.auug.org.au>
-Message-ID: <9FB29D99-7F54-428E-912A-A9B025FD7CF3@gmail.com>
+        Tue, 26 Oct 2021 19:11:16 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A075C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 16:08:52 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5B9B0A24;
+        Wed, 27 Oct 2021 01:08:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1635289728;
+        bh=sFnKz5DtEFUq5qfMzQgCabdLelQTcznSum5JniYZDfY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WUEDZLANeJ4AGFP/B+NkliDMyPAkI/hKa9iiGmCIwY2ah8F0+tNGZjDfZBRHx1uKf
+         /W+m2gsSClJfHZ+LPwPRvkXINSfITEhBwQTPMZZRQjDcRUOyhCgDJXyaasu9ryPMPn
+         9M0G7Xwc23LL/aN8qekRvuLl/7q2F/53doZj4mj8=
+Date:   Wed, 27 Oct 2021 02:08:25 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     robert.foss@linaro.org, narmstrong@baylibre.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        jagan@amarulasolutions.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm: bridge: fix unmet dependency on DRM_KMS_HELPER
+ for DRM_PANEL_BRIDGE
+Message-ID: <YXiKaQTCcQIS/+4y@pendragon.ideasonboard.com>
+References: <20211026023638.41646-1-julianbraha@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211026023638.41646-1-julianbraha@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Julian,
 
+Thank you for the patch.
 
-On October 26, 2021 7:17:05 PM GMT-03:00, Stephen Rothwell <sfr@canb=2Eauu=
-g=2Eorg=2Eau> wrote:
->Hi all,
->
->Today's linux-next merge of the perf tree got a conflict in:
->
->  tools/perf/util/session=2Ec
->
->between commit:
->
->  8e820f962345 ("perf report: Output non-zero offset for decompressed rec=
-ords")
->
->from Linus' tree and commit:
->
->  3a3535e67dfd ("perf session: Introduce decompressor in reader object")
->
->from the perf tree=2E
->
->I fixed it up (see below) and can carry the fix as necessary=2E This
->is now fixed as far as linux-next is concerned, but any non trivial
->conflicts should be mentioned to your upstream maintainer when your tree
->is submitted for merging=2E  You may also want to consider cooperating
->with the maintainer of the conflicting tree to minimise any particularly
->complex conflicts=2E
->
+On Mon, Oct 25, 2021 at 10:36:38PM -0400, Julian Braha wrote:
+> When DRM_CHIPONE_ICN6211 is selected, and DRM_KMS_HELPER is not selected,
+> Kbuild gives the following warning:
+> 
+> WARNING: unmet direct dependencies detected for DRM_PANEL_BRIDGE
+>   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && DRM_KMS_HELPER [=n]
+>   Selected by [y]:
+>   - DRM_CHIPONE_ICN6211 [=y] && HAS_IOMEM [=y] && DRM [=y] && DRM_BRIDGE [=y] && OF [=y]
+> 
+> This is because DRM_CHIPONE_ICN6211 selects DRM_PANEL_BRIDGE
+> without depending on or selecting DRM_KMS_HELPER,
+> despite DRM_PANEL_BRIDGE depending on DRM_KMS_HELPER.
+> 
+> This unmet dependency bug was detected by Kismet,
+> a static analysis tool for Kconfig.
+> Please advise if this is not the appropriate solution.
+> 
+> v2:
+> - changed from "select" to "depends on"
+> 
+> Fixes: ce517f18944e ("drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge")
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> ---
+>  drivers/gpu/drm/bridge/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index 431b6e12a81f..a630cb8fd1c8 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -30,6 +30,7 @@ config DRM_CDNS_DSI
+>  config DRM_CHIPONE_ICN6211
+>  	tristate "Chipone ICN6211 MIPI-DSI/RGB Converter bridge"
+>  	depends on OF
+> +  depends on DRM_KMS_HELPER
 
+With spaces replaced by tabs for indentation,
 
-Fixed locally, will publish tomorrow after regression tests finish=2E
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-- Arnaldo
+>  	select DRM_MIPI_DSI
+>  	select DRM_PANEL_BRIDGE
+>  	help
+
+-- 
+Regards,
+
+Laurent Pinchart
