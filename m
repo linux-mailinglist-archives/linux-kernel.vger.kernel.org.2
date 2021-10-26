@@ -2,126 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD5743B792
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A92043B796
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237552AbhJZQwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235947AbhJZQwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:52:36 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9807C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:50:12 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id b12so14137518qtq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wERXcRAQ/I//djLVS+exIHaSTMibkMB6iC5nNkVNg9E=;
-        b=Ys6OqEsUFnubgTs3A45NkfIy1d3Osj2cXDYYiwJRPjNovs39ZFHCkKwqRY8LuRbjDW
-         B7JFj4j+ggpykOgO5q4JtCApWYjipzJOndmZBjkE7IPkjmji/A1QchKW/jWeQrxfaShf
-         TzWsCh8DNBx+GzQ0m2rwU66vz0bAIknVsygPxNH76F/LOm96kJ5vmYUBWgpwbgyaV6Ue
-         oe8wcnJZiUOktP5yjuFxp8QGc972QlM711cvKTm8eS3axB/4r4b3e9gKBqME6SpDEluP
-         IB/nptRnUFOG9sxZB5L3kEI2y/zHku0GOM/5ihe/W0pwgMMWMOVN+2jf17KxapxVte6T
-         ScUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=wERXcRAQ/I//djLVS+exIHaSTMibkMB6iC5nNkVNg9E=;
-        b=kEQ1GEQiq6V2RngXhJwLd6VZaGKKuYRJG6+vtCQ6goMKD6xaG9nVp8WHKcytriwv9U
-         Bsrxm7oLLeDntLCJWJpbGoGpik5paUUEpON+BdkMUnj2BotxujTYL2XD9OLwCplLjDcr
-         cgLaIheKBRNjPzVmoCDhNqfHqpsbi2GgDQaUH8d2vm04wf6r2W0SEl28JFD7nrVeBgW3
-         nF5FWI4HiGBfYx1Ii9zcLGtS05vMsZSUJwNPX6Htk+EAjjeQJ+Zx51CAkuVgXdYS+gX5
-         HXYOMxX+3fZ30prAjI4dG0eVpyKPn39edpbaeuvg+ogFve62n/vE8WqyTKyxF8mSXrBR
-         YEzQ==
-X-Gm-Message-State: AOAM530Ihg3nc3WnKwoq+GHwUpNS3LQE450QIe+UgpJFBrtv6Lv4DrXK
-        tbhBF/qEqLLCc2nCfZe/kl2+1SOhkQ==
-X-Google-Smtp-Source: ABdhPJwpl6zcPrsn0PotBJMlEXnjRTbMzCIc7iIUCnGSxC56T/JU6yCg8Fvbtpf0Iv5e9CnjgRsehA==
-X-Received: by 2002:a05:622a:83:: with SMTP id o3mr26312912qtw.17.1635267011819;
-        Tue, 26 Oct 2021 09:50:11 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id c8sm11288834qtb.29.2021.10.26.09.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 09:50:11 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:ad7f:7a7f:3b9a:4eab])
-        by serve.minyard.net (Postfix) with ESMTPSA id 4C6B91800B4;
-        Tue, 26 Oct 2021 16:50:10 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 11:50:09 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Kunkun Li <likunkun@bytedance.com>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipmi: ssif: Add msleep in multipart test
-Message-ID: <20211026165009.GD2744412@minyard.net>
-Reply-To: minyard@acm.org
-References: <20211026025834.82766-1-likunkun@bytedance.com>
+        id S237551AbhJZQxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:53:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:34910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232410AbhJZQxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 12:53:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DB061FB;
+        Tue, 26 Oct 2021 09:50:50 -0700 (PDT)
+Received: from [192.168.185.184] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34BA03F70D;
+        Tue, 26 Oct 2021 09:50:44 -0700 (PDT)
+Subject: Re: [PATCH v2 1/5] arch_topology: Introduce thermal pressure update
+ function
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        thara.gopinath@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org
+References: <20211015144550.23719-1-lukasz.luba@arm.com>
+ <20211015144550.23719-2-lukasz.luba@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <431230a5-00e9-0211-0731-035eab5fa3f6@arm.com>
+Date:   Tue, 26 Oct 2021 18:51:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211015144550.23719-2-lukasz.luba@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211026025834.82766-1-likunkun@bytedance.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:58:34AM +0800, Kunkun Li wrote:
-> During multipart test, cmd(6,7,8) or cmd(6,7,7) will
-> be sent continuously.
-
-This is not useful information, we don't have access to your tests, so
-this is meaningless to us.
-
+On 15/10/2021 16:45, Lukasz Luba wrote:
+> The thermal pressure is a mechanism which is used for providing
+> information about reduced CPU performance to the scheduler. Usually code
+> has to convert the value from frequency units into capacity units,
+> which are understandable by the scheduler. Create a common conversion code
+> which can be just used via a handy API.
 > 
-> The pressure test found some BMC systems cannot process
-> messages in time, resulting in read_response continues to receive
-> error messages from i2c.
-> Retry mechanism will takes 10s, and finally set not support
-> multipart transmit.
-> 
-> So, to work around this，add msleep after sending cmd 6 and
-> cmd 7 respectively. The problem did not appear again in
-> pressure test.
-
-No, you can't slow down everyone because you have one dodgy BMC.  You
-need to detect that this is a BMC that has the problem and only do it
-for those BMCs.
-
--corey
-
-> 
-> Signed-off-by: Kunkun Li <likunkun@bytedance.com>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 > ---
->  drivers/char/ipmi/ipmi_ssif.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  arch/arm/include/asm/topology.h   |  1 +
+>  arch/arm64/include/asm/topology.h |  1 +
+>  drivers/base/arch_topology.c      | 36 ++++++++++++++++++++++++++++++-
+>  include/linux/arch_topology.h     |  3 +++
+>  include/linux/sched/topology.h    |  7 ++++++
+>  5 files changed, 47 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
-> index 20d5af92966d..65841798fafe 100644
-> --- a/drivers/char/ipmi/ipmi_ssif.c
-> +++ b/drivers/char/ipmi/ipmi_ssif.c
-> @@ -1453,6 +1453,7 @@ static int start_multipart_test(struct i2c_client *client,
->  	ret = i2c_smbus_write_block_data(client,
->  					 SSIF_IPMI_MULTI_PART_REQUEST_START,
->  					 32, msg);
-> +	msleep(SSIF_MSG_MSEC);
->  	if (ret) {
->  		retry_cnt--;
->  		if (retry_cnt > 0)
-> @@ -1467,6 +1468,7 @@ static int start_multipart_test(struct i2c_client *client,
->  	ret = i2c_smbus_write_block_data(client,
->  					 SSIF_IPMI_MULTI_PART_REQUEST_MIDDLE,
->  					 32, msg + 32);
-> +	msleep(SSIF_MSG_MSEC);
->  	if (ret) {
->  		dev_err(&client->dev, "Could not write multi-part middle, though the BMC said it could handle it.  Just limit sends to one part.\n");
->  		return ret;
-> -- 
-> 2.11.0
-> 
+> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+> index 470299ee2fba..aee6c456c085 100644
+> --- a/arch/arm/include/asm/topology.h
+> +++ b/arch/arm/include/asm/topology.h
+> @@ -24,6 +24,7 @@
+>  /* Replace task scheduler's default thermal pressure API */
+>  #define arch_scale_thermal_pressure topology_get_thermal_pressure
+>  #define arch_set_thermal_pressure   topology_set_thermal_pressure
+> +#define arch_thermal_pressure_update	topology_thermal_pressure_update
+>  
+>  #else
+>  
+> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+> index ec2db3419c41..c997015402bc 100644
+> --- a/arch/arm64/include/asm/topology.h
+> +++ b/arch/arm64/include/asm/topology.h
+> @@ -33,6 +33,7 @@ void update_freq_counters_refs(void);
+>  /* Replace task scheduler's default thermal pressure API */
+>  #define arch_scale_thermal_pressure topology_get_thermal_pressure
+>  #define arch_set_thermal_pressure   topology_set_thermal_pressure
+> +#define arch_thermal_pressure_update	topology_thermal_pressure_update
+
+s/thermal_pressure_update/update_thermal_pressure ?
+
+The scheme seems to be {arch|topology}_*foo*_thermal_pressure
+
+But ...
+
+>  
+>  #include <asm-generic/topology.h>
+>  
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 43407665918f..1fa28b5afdb2 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -25,6 +25,7 @@
+>  static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+>  static struct cpumask scale_freq_counters_mask;
+>  static bool scale_freq_invariant;
+> +static DEFINE_PER_CPU(u32, freq_factor) = 1;
+>  
+>  static bool supports_scale_freq_counters(const struct cpumask *cpus)
+>  {
+> @@ -168,6 +169,40 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
+>  }
+>  EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
+>  
+> +/**
+> + * topology_thermal_pressure_update() - Update thermal pressure for CPUs
+> + * @cpus	: The related CPUs for which capacity has been reduced
+> + * @capped_freq	: The maximum allowed frequency that CPUs can run at
+> + *
+> + * Update the value of thermal pressure for all @cpus in the mask. The
+> + * cpumask should include all (online+offline) affected CPUs, to avoid
+> + * operating on stale data when hot-plug is used for some CPUs. The
+> + * @capped_freq must be less or equal to the max possible frequency and
+> + * reflects the currently allowed max CPUs frequency due to thermal capping.
+> + * The @capped_freq must be provided in kHz.
+> + */
+> +void topology_thermal_pressure_update(const struct cpumask *cpus,
+> +				      unsigned long capped_freq)
+> +{
+
+... why not just s/unsigned long th_pressure/unsigned long capped_freq
+in existing topology_set_thermal_pressure() and move code the
+frequency/capacity conversion in there? The patch set will become
+considerably smaller.
+
+ void topology_set_thermal_pressure(const struct cpumask *cpus,
+-                              unsigned long th_pressure)
++                              unsigned long capped_freq)
+ {
++       unsigned long max_capacity, capacity;
+        int cpu;
+
+-       for_each_cpu(cpu, cpus)
+-               WRITE_ONCE(per_cpu(thermal_pressure, cpu), th_pressure);
++       if (!cpus)
++               return;
++
++       cpu = cpumask_first(cpus);
++       max_capacity = arch_scale_cpu_capacity(cpu);
++
++       /* Convert to MHz scale which is used in 'freq_factor' */
++       capped_freq /= 1000;
++
++       capacity = mult_frac(capped_freq, max_capacity,
++                            per_cpu(freq_factor, cpu));
++
++       for_each_cpu(cpu, cpus) {
++               WRITE_ONCE(per_cpu(thermal_pressure, cpu),
++                          max_capacity - capacity);
++       }
+ }
+ EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
+
+And a user like [drivers/thermal/cpufreq_cooling.c] can call
+arch_set_thermal_pressure(cpus, frequency).
+
+[...]
