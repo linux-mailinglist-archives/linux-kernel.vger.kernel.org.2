@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C9443B40E
+	by mail.lfdr.de (Postfix) with ESMTP id C1B5A43B40F
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236565AbhJZObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        id S236550AbhJZObY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236581AbhJZObD (ORCPT
+        with ESMTP id S236604AbhJZObJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:31:03 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CA4C061348
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:39 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 83so8088745pgc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:39 -0700 (PDT)
+        Tue, 26 Oct 2021 10:31:09 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84088C061224
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:44 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id lx5-20020a17090b4b0500b001a262880e99so1836067pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:28:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qVUwb6qJNDu/CeEak3yLPHW/+QDV/ly9Tbge8nu9b0Q=;
-        b=fLeLVsAbEKbSu/pW6wu8oLLi+Tq6/oN/NUkxkREUp1Ikt9h9uUgzizrL6JnO9JIgpJ
-         r8tnABUaG71gGGkJk2/OTkrxmRZ5k5KTglp4YCHX7dclrp7HyrMvTF5atqIEbF1oYB6K
-         eJRFr7KkumPHNnJgKGk6SJqD+cu0kFli8M7ISjPUbDVYkcRmw6ebIIngEzHo8VIH/y4k
-         bBYLdBJ35LbE7HYXQ3kQGhPcS4qdWOK9vYCn0tTkaKSEV1KeMLJZziD2hF9vlXPZiKmb
-         PDIfn5UQxGnLCwNTPMdWd06ZTUEpXPLlmPxfpKwh1fe7sKQhT5Ux5N3BOSugtoTEN+OB
-         L3mg==
+        bh=3kMfdZR7u3SGVAlrTiFoKn2/xZAEuhY7vC7t+axQgCY=;
+        b=mYh6Ur38+KcKTY2kh7RNV36y3KogCi1bV69Xn81by9+Iq3gBGmCXhD6ntYXvbBlhgj
+         xYi4BWYsLQ4+H+BokkYXmCnQ/27r4sY8t5us41Q4+6Js7r634FDRFIlfJ1RsYb7EvtFC
+         x47whYvUHvp0m34sZ3/p5JVlgUwmPeBaTPgKxPpHBPt9JgbJxVxHaBoY7DG7z1iDcNYx
+         VzbniPUPM5nGDpaQ0NyT3RqwtHansbkm6kBeqJxAGm4+Q54/jS4DfFqVf6J3CbkrLF1Y
+         X4p61scn770LXiP+53lY1XFF3OrqANJLmTHzSYXl9efkAAMjKOheu9L+qnJHOxgvdNht
+         hLww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qVUwb6qJNDu/CeEak3yLPHW/+QDV/ly9Tbge8nu9b0Q=;
-        b=PTDQOrdowninn4W+ZDCuZ3xN4DmLXoBCdGISn/Hq8EGcK02pIitZAVRn60A62eaw6n
-         uLzl5RUq7X4XGLUVp9n7UyC56/OftKrB1zPmDf+YiIX9qIKNA2vcPxbs0n+tXIuBBDXz
-         qbZeNNCWfippqKbW47tXSpLLYr/HJXT0kdsQNtgrVf5MzhkHZk6gV6pafxuRZUmT7dHO
-         ne0kTMV6WnlV94Wo606kUyu1yajq17fdMdl3bgnIvIFTleuMXmJg0RuFonTsCNuJ1Tuh
-         cYDBkfomrTuJUMJd7xopAQxWs5Rrd32v3DQ2D97/fCSh8O268SJMTkm6g0rzODFq/OFi
-         yF5A==
-X-Gm-Message-State: AOAM531K2IQgJlgdKGWz5Ndg0jg2/+rFkcbLla9Ikya2ZXi/NQaEmFSC
-        YALU8DpYMh93Zx4PT99sacoT/zQ3JQw=
-X-Google-Smtp-Source: ABdhPJxbHHFZoetxSmMzAhPk8qZs2CO/bhPeyAABQ9ly+NkQrPO5FWL4xCAMsV9BKsmH5EdgsJ5uxg==
-X-Received: by 2002:a63:7506:: with SMTP id q6mr19083570pgc.349.1635258518629;
-        Tue, 26 Oct 2021 07:28:38 -0700 (PDT)
+        bh=3kMfdZR7u3SGVAlrTiFoKn2/xZAEuhY7vC7t+axQgCY=;
+        b=0vWhezpk40xcWf/n6uxpQuEsKoEI2aDB3UR/etOitfFq5RBd3OrdqqU+SbvcFkSrDm
+         rxKQrKgTSheEXvRWzgbphdw6FzCaf4y4Dk4/1/zft5z+/waOv5lBLr85qize3I98UQro
+         s0pLrJ48w7qqYtrUOdtrIFNl6OVwFID3FoQNSWQCNw1b+tH/7BxKXKpPYxVjhYaYjNdg
+         oGDRSsuKnT07aVXohcqvLZM8Pu2+0iXn13u70Zh/opMzOl2Tj2bYsVnbPJHhFFLzExPC
+         zZ3znn4YzMh/2UxD8LhPgr72UIzDRV5g+aokuCCkY+a3xR+R371K9fqSNEMCHtSIr+7f
+         41YA==
+X-Gm-Message-State: AOAM531GVns7CFHcGUpgWGJ99GHK3Eu7zmPS8yzFeS+c4jZicYMPzv8D
+        Y1XFVt7H+MrUSr+Uz3K44oR5k+tSHBc=
+X-Google-Smtp-Source: ABdhPJymq1mRT2yJPvB4IR2vllLVnLcE8bIOQlOyMSlQ1/99sd3gnVzgiuU9GxDXAxo6fBDFPX8BnA==
+X-Received: by 2002:a17:90b:4b06:: with SMTP id lx6mr42923042pjb.220.1635258523985;
+        Tue, 26 Oct 2021 07:28:43 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id m15sm1102915pjf.49.2021.10.26.07.28.37
+        by smtp.gmail.com with ESMTPSA id a25sm3608351pfl.115.2021.10.26.07.28.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:28:38 -0700 (PDT)
+        Tue, 26 Oct 2021 07:28:43 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -56,9 +56,9 @@ Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 14/50] x86/entry: Expose the address of .Lgs_change to entry64.c
-Date:   Tue, 26 Oct 2021 22:27:46 +0800
-Message-Id: <20211026142824.18362-4-jiangshanlai@gmail.com>
+Subject: [PATCH V4 15/50] x86/entry: Add C verion of SWITCH_TO_KERNEL_CR3 as switch_to_kernel_cr3()
+Date:   Tue, 26 Oct 2021 22:27:47 +0800
+Message-Id: <20211026142824.18362-5-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,53 +70,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The address of .Lgs_change will be used in traps.c in later patch when
-some entry code is implemented in entry64.c.  So the address of .Lgs_change
-is exposed to traps.c for preparation.
+The C version switch_to_kernel_cr3() implements SWITCH_TO_KERNEL_CR3().
 
-The label .Lgs_change is still needed in ASM code for extable due to it
-can not use asm_load_gs_index_gs_change.  Otherwise:
-
-	warning: objtool: __ex_table+0x0: don't know how to handle
-	non-section reloc symbol asm_load_gs_index_gs_change
+No functional difference intended.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry64.c  | 2 ++
- arch/x86/entry/entry_64.S | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/entry/entry64.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
-index 762595603ce7..9813a30dbadb 100644
+index 9813a30dbadb..9a5c535b1ddf 100644
 --- a/arch/x86/entry/entry64.c
 +++ b/arch/x86/entry/entry64.c
-@@ -12,3 +12,5 @@
-  * is PTI user CR3 or both.
-  */
+@@ -14,3 +14,27 @@
  #include <asm/traps.h>
-+
-+extern unsigned char asm_load_gs_index_gs_change[];
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index c8f7b740a9f1..daaeeb8acd22 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -731,6 +731,7 @@ _ASM_NOKPROBE(common_interrupt_return)
- SYM_FUNC_START(asm_load_gs_index)
- 	FRAME_BEGIN
- 	swapgs
-+SYM_INNER_LABEL(asm_load_gs_index_gs_change, SYM_L_GLOBAL)
- .Lgs_change:
- 	movl	%edi, %gs
- 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
-@@ -1009,7 +1010,7 @@ SYM_CODE_START_LOCAL(error_entry)
- 	movl	%ecx, %eax			/* zero extend */
- 	cmpq	%rax, RIP+8(%rsp)
- 	je	.Lbstep_iret
--	cmpq	$.Lgs_change, RIP+8(%rsp)
-+	cmpq	$asm_load_gs_index_gs_change, RIP+8(%rsp)
- 	jne	.Lerror_entry_done_lfence
  
- 	/*
+ extern unsigned char asm_load_gs_index_gs_change[];
++
++#ifdef CONFIG_PAGE_TABLE_ISOLATION
++static __always_inline void pti_switch_to_kernel_cr3(unsigned long user_cr3)
++{
++	/*
++	 * Clear PCID and "PAGE_TABLE_ISOLATION bit", point CR3
++	 * at kernel pagetables:
++	 */
++	unsigned long cr3 = user_cr3 & ~PTI_USER_PGTABLE_AND_PCID_MASK;
++
++	if (static_cpu_has(X86_FEATURE_PCID))
++		cr3 |= X86_CR3_PCID_NOFLUSH;
++
++	native_write_cr3(cr3);
++}
++
++static __always_inline void switch_to_kernel_cr3(void)
++{
++	if (static_cpu_has(X86_FEATURE_PTI))
++		pti_switch_to_kernel_cr3(__native_read_cr3());
++}
++#else
++static __always_inline void switch_to_kernel_cr3(void) {}
++#endif
 -- 
 2.19.1.6.gb485710b
 
