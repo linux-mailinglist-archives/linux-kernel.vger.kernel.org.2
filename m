@@ -2,271 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D036543BC66
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBEFD43BC6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbhJZVbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
+        id S239631AbhJZVeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239627AbhJZVbm (ORCPT
+        with ESMTP id S235155AbhJZVeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:31:42 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E2FC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:29:18 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t21so481829plr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:29:18 -0700 (PDT)
+        Tue, 26 Oct 2021 17:34:22 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81939C061570;
+        Tue, 26 Oct 2021 14:31:57 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id o26so1184674ljj.2;
+        Tue, 26 Oct 2021 14:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X1yvw8v24V21j1qpd79GOJAEoT3+gpiT6E0yn3IC3aQ=;
-        b=HREgEwX3YODOMwk/WNLZ7ZIO2/xIygXyA8hdxDnbBKI+Iussc5tpqWaujep5MCHTKP
-         pFhEYZZOAkBEBO6pfKukEL7+TEwDeN9OHUiBIS255udGXxSOrE27K5avVtBi/XkUjgGa
-         ti36HIpRS43TWHhk2yUcRFL4cgXLkdqXlzqc99aE/uRdpE6U9efsqR2Sh6RDo7jUG8UO
-         1q+rEkuyyX0vQe/4b4fZQ5ARUuwYg6ccePdTSm2n4NdGPrzRZ+w6Si82jGRXpgpbPNnm
-         DKs6slEjNbhMPdSMEECbCvpp9nbygugjZAyrf4p+YSKbdAsSdydHB9Us7HSP0Lkakzlt
-         Brtg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fR7CmyWv5j/v1IBM1zaUeENIEHE69zbCNQCCs0KINhw=;
+        b=OLPbJWTQvzIytBcnxLg7hdFhZTtJ3vuvNqWj1H5Y30VuslQWa5cZ6Qv4FX/qZYHjCm
+         RCniammk3sg3VZRydZKlxdlNAl5Nb0WJUjgfknoQZSMrcY9tSUtx+rvmHbsujipJ4HuH
+         YiW6jB++ULQn+/QNLVh/ybCdvEwzeQty9B6bjshTenQrYpQfprI/uJn6e5QasczPXbz5
+         n3Sw3g1wLgWyZYyncfx07nqhjtm+0g18RQ+DRcRQedlLZiMEX0ClMWA09ZFpb4GywWBs
+         Haq2rv0ZLke7JrOC9oDGldTxdUixcTjdIJt72mXL0No33w7Bk9aOtI/L32KmNI7CYeYf
+         m+kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=X1yvw8v24V21j1qpd79GOJAEoT3+gpiT6E0yn3IC3aQ=;
-        b=3aELI3qTRZXqazPjlSF03XZQUYEe0CwvDPmWqVgWRrksD4APBjoWgCvQIgy2sgym3g
-         jeieIu3pXTLZ3oPVITwIEVod46ShFYQ/5HaaG5kVxEL1R1SLXdD2+YZBhmwYLmcxWRrK
-         KX282anjqhqiylf41YNZLFP8QPn0SPjGUFkDOcKatWZQ2M53h66zrnRLpClyhgQ12AlG
-         RYfxzU2rlHXMB5/7ffEgi/JX2hkw+kxeSjDMvi5meLJOCVISRuGlOEpKkL3mGh/SCK4R
-         f6kPieT2kbB6vQfIZi7DUprMP4vqjconliz20Tc6+7sEMgHbwotSzhMs1nHRYb4pPntT
-         QEPw==
-X-Gm-Message-State: AOAM532heQWpNSY1hqmWGj4mLOjRvPJBNkDbVn9vNIUglkkL458isen4
-        oNMCgJs4ywGJZTKWuG3G7DN4CA==
-X-Google-Smtp-Source: ABdhPJwCyMI37tlKgyWmHooK2rsZ7SwWPtD6Ua1Foe/rbIK89fOyQw/XJiD6R2idUIMZifknivljFw==
-X-Received: by 2002:a17:902:8690:b0:13f:ffd6:6c63 with SMTP id g16-20020a170902869000b0013fffd66c63mr24777918plo.23.1635283757728;
-        Tue, 26 Oct 2021 14:29:17 -0700 (PDT)
-Received: from localhost ([2620:0:1000:5e10:676c:ab93:f48d:23ae])
-        by smtp.gmail.com with ESMTPSA id p9sm23030680pfn.7.2021.10.26.14.29.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fR7CmyWv5j/v1IBM1zaUeENIEHE69zbCNQCCs0KINhw=;
+        b=z3MREkZSIyCkE1bjP4Wt/PUUoX1r7TSiujRmZgdi9TG+2lT/oNMp+DALZDQrrveL5w
+         i+mdA8259ynhsnZa2zsecR41sLOZqJYudSPGEMkLh2aSOWwnugRw248BjoIOkdn2BHEF
+         gQhCjRVJPlw7W7oZlbGXCY/8CBoPhAegAtvf+72S7y0X27Emzln5PginQJHyY9mj9Xpz
+         x1gMAE4LxdtmdrXVlxKX8SNe/e48UaKp3rZ71NLPgpEAXeR2KYpIx05kNKwidUGuwWA1
+         AorbnC9llFerAErt2d3ltypgMjsF3bfvfO76osVA748/bfUiLxPO5RYTdB5ZqcGV0JwC
+         AnJQ==
+X-Gm-Message-State: AOAM533Csk43BkVSLPxHenH2iEpkgDjt9AK9zhN5zv5pyJFqp6TtBtBX
+        diYWHdDKU1EhXl2AP2RPLxg7X0ahNcE=
+X-Google-Smtp-Source: ABdhPJxZ3ABgW93W0StdcJXHOsH4hoaYokn3owkLAFUmTXPn9NBwbdnKx4Y3uXuGjdVeCKFxsvlulQ==
+X-Received: by 2002:a2e:8719:: with SMTP id m25mr30385496lji.90.1635283915886;
+        Tue, 26 Oct 2021 14:31:55 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id s19sm2102009ljp.115.2021.10.26.14.31.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:29:17 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 14:29:17 -0700 (PDT)
-X-Google-Original-Date: Sat, 23 Oct 2021 16:23:32 PDT (-0700)
-Subject:     Re: [PATCH v7 1/3] riscv: Introduce CONFIG_RELOCATABLE
-In-Reply-To: <a6223864-7263-5450-0890-0f05a137d8c2@ghiti.fr>
-CC:     alexandre.ghiti@canonical.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-4d503326-d18d-4155-a595-91dc15cfb4f1@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Tue, 26 Oct 2021 14:31:55 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 00:31:53 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 4/4] fs/ntfs3: Update valid size if -EIOCBQUEUED
+Message-ID: <20211026213153.yvddqfglffaojbqm@kari-VirtualBox>
+References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
+ <600c92df-35e9-2686-52f3-5129ccf30e5e@paragon-software.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <600c92df-35e9-2686-52f3-5129ccf30e5e@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 09 Oct 2021 10:20:20 PDT (-0700), alex@ghiti.fr wrote:
-> Arf, I have sent this patchset with the wrong email address. @Palmer
-> tell me if you want me to resend it correctly.
+On Mon, Oct 25, 2021 at 07:59:56PM +0300, Konstantin Komarov wrote:
+> Update valid size if write is still in I/O queue.
+> Fixes xfstest generic/240
 
-Sorry for being kind of slow here.  It's fine: there's a "From:" in the 
-patch, and git picks those up so it'll match the signed-off-by line.  I 
-send pretty much all my patches that way, as I never managed to get my 
-Google address working correctly.
+generic/240		[21:23:16][   17.933690] run fstests generic/240 at 2021-10-26 21:23:16
+ [21:23:18] 2s
+Ran: generic/240
+Passed all 1 tests
 
->
-> Thanks,
->
-> Alex
->
-> On 10/9/21 7:12 PM, Alexandre Ghiti wrote:
->> From: Alexandre Ghiti <alex@ghiti.fr>
->>
->> This config allows to compile 64b kernel as PIE and to relocate it at
->> any virtual address at runtime: this paves the way to KASLR.
->> Runtime relocation is possible since relocation metadata are embedded into
->> the kernel.
+> Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/inode.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+> index 859951d785cb..c211c64e6b17 100644
+> --- a/fs/ntfs3/inode.c
+> +++ b/fs/ntfs3/inode.c
+> @@ -757,6 +757,7 @@ static ssize_t ntfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>  	loff_t vbo = iocb->ki_pos;
+>  	loff_t end;
+>  	int wr = iov_iter_rw(iter) & WRITE;
+> +	size_t iter_count = iov_iter_count(iter);
+>  	loff_t valid;
+>  	ssize_t ret;
+>  
+> @@ -770,10 +771,14 @@ static ssize_t ntfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>  				 wr ? ntfs_get_block_direct_IO_W
+>  				    : ntfs_get_block_direct_IO_R);
+>  
+> -	if (ret <= 0)
+> +	if (ret > 0)
+> +		end = vbo + ret;
+> +	else if (wr && -EIOCBQUEUED == ret)
 
-IMO this should really be user selectable, at a bare minimum so it's testable.
-I just sent along a patch to do that (my power's off at home, so email is a bit
-wacky right now).
+ret == -EIOCBQUEUED 
 
-I haven't put this on for-next yet as I'm not sure if you had a fix for the
-kasan issue (which IIUC would conflict with this).
+> +		end = vbo + iter_count;
 
->> Note that relocating at runtime introduces an overhead even if the
->> kernel is loaded at the same address it was linked at and that the compiler
->> options are those used in arm64 which uses the same RELA relocation
->> format.
->>
->> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->> ---
->>  arch/riscv/Kconfig              | 12 ++++++++
->>  arch/riscv/Makefile             |  7 +++--
->>  arch/riscv/kernel/vmlinux.lds.S |  6 ++++
->>  arch/riscv/mm/Makefile          |  4 +++
->>  arch/riscv/mm/init.c            | 54 ++++++++++++++++++++++++++++++++-
->>  5 files changed, 80 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index ea16fa2dd768..043ba92559fa 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -213,6 +213,18 @@ config PGTABLE_LEVELS
->>  config LOCKDEP_SUPPORT
->>  	def_bool y
->>
->> +config RELOCATABLE
->> +	bool
->> +	depends on MMU && 64BIT && !XIP_KERNEL
->> +	help
->> +          This builds a kernel as a Position Independent Executable (PIE),
->> +          which retains all relocation metadata required to relocate the
->> +          kernel binary at runtime to a different virtual address than the
->> +          address it was linked at.
->> +          Since RISCV uses the RELA relocation format, this requires a
->> +          relocation pass at runtime even if the kernel is loaded at the
->> +          same address it was linked at.
->> +
->>  source "arch/riscv/Kconfig.socs"
->>  source "arch/riscv/Kconfig.erratas"
->>
->> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
->> index 0eb4568fbd29..2f509915f246 100644
->> --- a/arch/riscv/Makefile
->> +++ b/arch/riscv/Makefile
->> @@ -9,9 +9,12 @@
->>  #
->>
->>  OBJCOPYFLAGS    := -O binary
->> -LDFLAGS_vmlinux :=
->> +ifeq ($(CONFIG_RELOCATABLE),y)
->> +	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext -z norelro
->> +	KBUILD_CFLAGS += -fPIE
->> +endif
->>  ifeq ($(CONFIG_DYNAMIC_FTRACE),y)
->> -	LDFLAGS_vmlinux := --no-relax
->> +	LDFLAGS_vmlinux += --no-relax
->>  	KBUILD_CPPFLAGS += -DCC_USING_PATCHABLE_FUNCTION_ENTRY
->>  	CC_FLAGS_FTRACE := -fpatchable-function-entry=8
->>  endif
->> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
->> index 5104f3a871e3..862a8c09723c 100644
->> --- a/arch/riscv/kernel/vmlinux.lds.S
->> +++ b/arch/riscv/kernel/vmlinux.lds.S
->> @@ -133,6 +133,12 @@ SECTIONS
->>
->>  	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
->>
->> +	.rela.dyn : ALIGN(8) {
->> +		__rela_dyn_start = .;
->> +		*(.rela .rela*)
->> +		__rela_dyn_end = .;
->> +	}
->> +
->>  #ifdef CONFIG_EFI
->>  	. = ALIGN(PECOFF_SECTION_ALIGNMENT);
->>  	__pecoff_data_virt_size = ABSOLUTE(. - __pecoff_text_end);
->> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
->> index 7ebaef10ea1b..2d33ec574bbb 100644
->> --- a/arch/riscv/mm/Makefile
->> +++ b/arch/riscv/mm/Makefile
->> @@ -1,6 +1,10 @@
->>  # SPDX-License-Identifier: GPL-2.0-only
->>
->>  CFLAGS_init.o := -mcmodel=medany
->> +ifdef CONFIG_RELOCATABLE
->> +CFLAGS_init.o += -fno-pie
->> +endif
->> +
->>  ifdef CONFIG_FTRACE
->>  CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
->>  CFLAGS_REMOVE_cacheflush.o = $(CC_FLAGS_FTRACE)
->> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->> index c0cddf0fc22d..42041c12d496 100644
->> --- a/arch/riscv/mm/init.c
->> +++ b/arch/riscv/mm/init.c
->> @@ -20,6 +20,9 @@
->>  #include <linux/dma-map-ops.h>
->>  #include <linux/crash_dump.h>
->>  #include <linux/hugetlb.h>
->> +#ifdef CONFIG_RELOCATABLE
->> +#include <linux/elf.h>
->> +#endif
->>
->>  #include <asm/fixmap.h>
->>  #include <asm/tlbflush.h>
->> @@ -103,7 +106,7 @@ static void __init print_vm_layout(void)
->>  	print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
->>  		  (unsigned long)high_memory);
->>  #ifdef CONFIG_64BIT
->> -	print_mlm("kernel", (unsigned long)KERNEL_LINK_ADDR,
->> +	print_mlm("kernel", (unsigned long)kernel_map.virt_addr,
->>  		  (unsigned long)ADDRESS_SPACE_END);
->>  #endif
->>  }
->> @@ -518,6 +521,44 @@ static __init pgprot_t pgprot_from_va(uintptr_t va)
->>  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
->>  #endif
->>
->> +#ifdef CONFIG_RELOCATABLE
->> +extern unsigned long __rela_dyn_start, __rela_dyn_end;
->> +
->> +static void __init relocate_kernel(void)
->> +{
->> +	Elf64_Rela *rela = (Elf64_Rela *)&__rela_dyn_start;
->> +	/*
->> +	 * This holds the offset between the linked virtual address and the
->> +	 * relocated virtual address.
->> +	 */
->> +	uintptr_t reloc_offset = kernel_map.virt_addr - KERNEL_LINK_ADDR;
->> +	/*
->> +	 * This holds the offset between kernel linked virtual address and
->> +	 * physical address.
->> +	 */
->> +	uintptr_t va_kernel_link_pa_offset = KERNEL_LINK_ADDR - kernel_map.phys_addr;
->> +
->> +	for ( ; rela < (Elf64_Rela *)&__rela_dyn_end; rela++) {
->> +		Elf64_Addr addr = (rela->r_offset - va_kernel_link_pa_offset);
->> +		Elf64_Addr relocated_addr = rela->r_addend;
->> +
->> +		if (rela->r_info != R_RISCV_RELATIVE)
->> +			continue;
->> +
->> +		/*
->> +		 * Make sure to not relocate vdso symbols like rt_sigreturn
->> +		 * which are linked from the address 0 in vmlinux since
->> +		 * vdso symbol addresses are actually used as an offset from
->> +		 * mm->context.vdso in VDSO_OFFSET macro.
->> +		 */
->> +		if (relocated_addr >= KERNEL_LINK_ADDR)
->> +			relocated_addr += reloc_offset;
->> +
->> +		*(Elf64_Addr *)addr = relocated_addr;
->> +	}
->> +}
->> +#endif /* CONFIG_RELOCATABLE */
->> +
->>  #ifdef CONFIG_XIP_KERNEL
->>  static void __init create_kernel_page_table(pgd_t *pgdir,
->>  					    __always_unused bool early)
->> @@ -625,6 +666,17 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>  	BUG_ON((kernel_map.virt_addr + kernel_map.size) > ADDRESS_SPACE_END - SZ_4K);
->>  #endif
->>
->> +#ifdef CONFIG_RELOCATABLE
->> +	/*
->> +	 * Early page table uses only one PGDIR, which makes it possible
->> +	 * to map PGDIR_SIZE aligned on PGDIR_SIZE: if the relocation offset
->> +	 * makes the kernel cross over a PGDIR_SIZE boundary, raise a bug
->> +	 * since a part of the kernel would not get mapped.
->> +	 */
->> +	BUG_ON(PGDIR_SIZE - (kernel_map.virt_addr & (PGDIR_SIZE - 1)) < kernel_map.size);
->> +	relocate_kernel();
->> +#endif
->> +
->>  	pt_ops.alloc_pte = alloc_pte_early;
->>  	pt_ops.get_pte_virt = get_pte_virt_early;
->>  #ifndef __PAGETABLE_PMD_FOLDED
+Use iov_iter_count() instead of tmp var?
+
+> +	else {
+
+Take brackets off.
+
+>  		goto out;
+> +	}
+>  
+> -	end = vbo + ret;
+>  	valid = ni->i_valid;
+>  	if (wr) {
+>  		if (end > valid && !S_ISBLK(inode->i_mode)) {
+> -- 
+> 2.33.0
+> 
+> 
+> 
