@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F0E43B6F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC5743B6F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237535AbhJZQUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:20:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28594 "EHLO
+        id S236195AbhJZQVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:21:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41753 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237542AbhJZQTo (ORCPT
+        by vger.kernel.org with ESMTP id S237343AbhJZQUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:19:44 -0400
+        Tue, 26 Oct 2021 12:20:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635265039;
+        s=mimecast20190719; t=1635265086;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3jgSUASYWyT5tYVtpdVqMRt2uKiCafnLlQ6NZfT7RQo=;
-        b=FSjsOYfVE/KoKC9WQe/bd2vWMV8NOFlUSOFpBXmG+HTlHaq2uiYfZ4lCsitvIFfMbTzWfg
-        Kz0QThOWgmSLB70s8++eG3zZ8jqmi3nuUStl1pyv28HnlzGWMLtUDuLxZ8SgqjME9qmcDD
-        xUB6uP4NSM7TQFeaeZCYG3GnleE+wvE=
+        bh=rtrZ02+a7Y6c2uG+Rvt1nh9ebvVZMP9HOLLjO1Lvlk4=;
+        b=Q79sFFXPNNYJI0QtLSqUL/qN67tJpNWB5kEWKK3zJ1X8JIz8PIInRN850mXqG8y+hEzOI4
+        zjclXq1BDGYTsYJgoXiMtxSDfd6G6smHfPkFuHh3ZNxVvQ+Fh/dgHpnOCUXeeeQxPXaGjR
+        VZfriYzn/f2mWQDFJ8wAT12uZw91zhw=
 Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
  [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-94-O4U-1WW3Pni_0Y58mWYRKw-1; Tue, 26 Oct 2021 12:17:15 -0400
-X-MC-Unique: O4U-1WW3Pni_0Y58mWYRKw-1
-Received: by mail-ed1-f69.google.com with SMTP id q6-20020a056402518600b003dd81fc405eso2677325edd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:17:14 -0700 (PDT)
+ us-mta-511-yIf2vdnnNGeEN73pg4WJLQ-1; Tue, 26 Oct 2021 12:18:05 -0400
+X-MC-Unique: yIf2vdnnNGeEN73pg4WJLQ-1
+Received: by mail-ed1-f69.google.com with SMTP id x13-20020a05640226cd00b003dd4720703bso7595514edd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:18:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=3jgSUASYWyT5tYVtpdVqMRt2uKiCafnLlQ6NZfT7RQo=;
-        b=pk3h2BK3ECj+P1MdQZKOEzgD5dUvzmJmzhqCTHU9uuMTJukT8zPuOuOa/Bic77VX0W
-         KtEufVdUSjcMtXvZJhv8fpY1wi2+GpKwewkAhbtUN/uvtYZq6kOeq4LKNRblvuSUvMfo
-         s0PdGnuCj5Lor9lNCDyrXusEL6mKIuY4hBsyFt2l3T2SJ94RMdzc44GmaokG/rWQj7js
-         K/KTvjoPrcf+7vXb0vY27rQ+jHbIm24GsqmrH22ORD3c0p/j2I7Oyd7Gkj7pwY/tWWeK
-         M5mMROyemtGKB0TDJo8NkPBxb/WGw9dUT8zeS8AB7o2PRnRdn/wzM6EX306/2L9TdZkq
-         Rl1Q==
-X-Gm-Message-State: AOAM533ErtJKUkne3gvtv5jdHfQuXBWntp/rVkYaq8a+X/Sx0ecA0168
-        hIS21kDwizuLQELGuwDsQn+Cse8mTHQ4ltPU5znu/rGfuNVaywcqs3cBgyvfF5wNmImnFHlCXrB
-        cilji9xHNRMELff90JMSMXxxv
-X-Received: by 2002:a17:906:b184:: with SMTP id w4mr31291861ejy.418.1635265032943;
-        Tue, 26 Oct 2021 09:17:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0CHq+n59DAZ2qwoWG3v25yTG1EA+fzNL7P1VBFbJ8j5wzwu7ibo4hUT23/l+2O/v0fOKE0A==
-X-Received: by 2002:a17:906:b184:: with SMTP id w4mr31291837ejy.418.1635265032719;
-        Tue, 26 Oct 2021 09:17:12 -0700 (PDT)
+        bh=rtrZ02+a7Y6c2uG+Rvt1nh9ebvVZMP9HOLLjO1Lvlk4=;
+        b=K4l6npfmxNtS9q1vMKqg3lUhicOzNbtUijH89N3S1GiC+/i3puGo68+ptmCMZ1hEeA
+         EzCG/sw7pKX3Rh4OyYCMO7CgNtohERsBKkOC1pA9GttC5ka4h/FvVXsPc4H/4/f7bJcT
+         NsNXYrMsunroleLiLwVDsWFsHAm8jmE+RdHwKgHd93LwGrvEqydluti8c0N7WD8gQ8sq
+         YixI4Xg3Uyj29ZcdQYbFaJZmILl6AUPQU2QuiubR/zgstRhV4VB9BbAny0na/pdywz68
+         O+1zLW/OoKY2R0Du2BFYwZF35Pe+K4J5kzERcXnQV2af2/SYb9kqDFfRyT28+t78KG41
+         QnNQ==
+X-Gm-Message-State: AOAM530+lek3U4arlLFc1Kn55BGIil44MPFmKn/H9Nsdz0+eIsPmiTBO
+        CG+LPBzc1TEMunDlwzTBUR32WE0BdmdFJVetPpB9y9LvZZFoKm20YwBHjFleoQWmiSDigWIlkyP
+        PrGvkdHqIMqZ8mfJMdG4EZI0f
+X-Received: by 2002:a17:907:2071:: with SMTP id qp17mr1252069ejb.284.1635265083447;
+        Tue, 26 Oct 2021 09:18:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUxAVnxfpnlov0+lOdcRwDqyC6BZ9EUFd/Acu3BIsW9KtyvlZtiHR+/eTmsV9k5nuSJEYMUg==
+X-Received: by 2002:a17:907:2071:: with SMTP id qp17mr1252035ejb.284.1635265083192;
+        Tue, 26 Oct 2021 09:18:03 -0700 (PDT)
 Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id nd22sm10019205ejc.98.2021.10.26.09.17.10
+        by smtp.gmail.com with ESMTPSA id j11sm4679905edt.49.2021.10.26.09.18.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 09:17:12 -0700 (PDT)
-Message-ID: <54842867-9d40-5b8d-ea24-3ce32c8137ac@redhat.com>
-Date:   Tue, 26 Oct 2021 18:17:09 +0200
+        Tue, 26 Oct 2021 09:18:02 -0700 (PDT)
+Message-ID: <7e3fb7c6-265c-d245-dd97-24ab401a8ea3@redhat.com>
+Date:   Tue, 26 Oct 2021 18:18:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.0
-Subject: Re: [PATCH MANUALSEL 5.14 5/5] KVM: MMU: Reset mmu->pkru_mask to
- avoid stale data
+Subject: Re: [PATCH] kvm: Avoid shadowing a local in search_memslots()
 Content-Language: en-US
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, huaitong.han@intel.com,
-        guangrong.xiao@linux.intel.com, kvm@vger.kernel.org
-References: <20211025203828.1404503-1-sashal@kernel.org>
- <20211025203828.1404503-5-sashal@kernel.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211026151310.42728-1-quic_qiancai@quicinc.com>
+ <YXgib3l+sSwy8Sje@google.com>
+ <60d32a0d-9c91-8cc5-99bd-7c7a9449f7c1@quicinc.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211025203828.1404503-5-sashal@kernel.org>
+In-Reply-To: <60d32a0d-9c91-8cc5-99bd-7c7a9449f7c1@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/21 22:38, Sasha Levin wrote:
-> From: Chenyi Qiang <chenyi.qiang@intel.com>
-> 
-> [ Upstream commit a3ca5281bb771d8103ea16f0a6a8a5df9a7fb4f3 ]
-> 
-> When updating mmu->pkru_mask, the value can only be added but it isn't
-> reset in advance. This will make mmu->pkru_mask keep the stale data.
-> Fix this issue.
-> 
-> Fixes: 2d344105f57c ("KVM, pkeys: introduce pkru_mask to cache conditions")
-> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
-> Message-Id: <20211021071022.1140-1-chenyi.qiang@intel.com>
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   arch/x86/kvm/mmu/mmu.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c268fb59f779..6719a8041f59 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4465,10 +4465,10 @@ static void update_pkru_bitmask(struct kvm_mmu *mmu)
->   	unsigned bit;
->   	bool wp;
->   
-> -	if (!is_cr4_pke(mmu)) {
-> -		mmu->pkru_mask = 0;
-> +	mmu->pkru_mask = 0;
-> +
-> +	if (!is_cr4_pke(mmu))
->   		return;
-> -	}
->   
->   	wp = is_cr0_wp(mmu);
->   
-> 
+On 26/10/21 18:14, Qian Cai wrote:
+>> Maybe "pivot"?  Or just "tmp"?  I also vote to hoist the declaration out of the
+>> loop precisely to avoid potential shadows, and to also associate the variable
+>> with the "start" and "end" variables, e.g.
+> Actually, I am a bit more prefer to keep the declaration inside the loop
+> as it makes the declaration and assignment closer to make it easier to
+> understand the code. It should be relatively trivial to avoid potential
+> shadows in the future. It would be interesting to see what Paolo would say.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+You both have good arguments, so whoever writes the patch wins. :)
+
+Paolo
 
