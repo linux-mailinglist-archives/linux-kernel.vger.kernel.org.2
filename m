@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E299243ABA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCEA43ABA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234929AbhJZFX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:23:29 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:46667 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234915AbhJZFX1 (ORCPT
+        id S234337AbhJZF00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230501AbhJZF0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:23:27 -0400
-Received: by mail-wm1-f48.google.com with SMTP id 83-20020a1c0456000000b0032cb02544aaso901935wme.5;
-        Mon, 25 Oct 2021 22:21:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KpIMXljSkpWfrVfYZnrE4DEBfDZICSQQe+jQVt49vfU=;
-        b=BEKUv8y+3aeMVQVjM6VHRzEzQEln7WOeuj3fkRGWKB0icOkTZfNERuZTlm6yDcd+xr
-         ONFfgjsT3ujVHD1Ebt0yTbxube2+0M5doU0poK0gbm/Cv+v5vd2zmJegBHvKk+Zzt6PY
-         ockzhjmih8gUhkSQ91dimEOJe59V7QCtOvrU1Uns+UcEOgHVmhW6OFZzbAwZOcKy4sIv
-         8QhCmT6T1kwmMjeKn52EhIgo3K/IXQOxDiErjbMxyS3pqrl4TovlnorLpoMLIcTLxtJp
-         VNHsqEumQhKUy4UvpdElvJbedK1jzh5TQKKpzzGDHQvxxzEHtq/QS8JwzWv9dhyrYH4u
-         p5Kw==
-X-Gm-Message-State: AOAM530WFH2jmJ7Y+/LCNfP8494Tqr1NikI4eyt0Pny0fhQU0+Ut2frv
-        BUEvVVPclRZ3ulrUfnT4k4I=
-X-Google-Smtp-Source: ABdhPJxRFff+9Q9aHTGZ2pfZO8yqlEIyxpLr0fOcwEOeU78Q/kRTdtAtBr7KNzCaca/0fvx3Vhq5tg==
-X-Received: by 2002:a7b:c1cc:: with SMTP id a12mr24944988wmj.23.1635225663198;
-        Mon, 25 Oct 2021 22:21:03 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id k17sm1065883wmj.0.2021.10.25.22.21.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 22:21:02 -0700 (PDT)
-Message-ID: <3ea8b7f1-292c-8710-e094-55ed409f0a37@kernel.org>
-Date:   Tue, 26 Oct 2021 07:21:01 +0200
+        Tue, 26 Oct 2021 01:26:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C9AC061745;
+        Mon, 25 Oct 2021 22:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=plVWDLn7kPJQFEKfT8/7o3CqD6r6OVtsqab9yP+KjBU=; b=4wMqJo3PGbg3IbF6ylQxYeHeUt
+        sIsxI0L39G1XTAX/fnsTuLKdDriDi8VCDU9Om/OGCREp6aFTsHSGvvL8qAmTPy8DXbFZiqwdcuHwC
+        yA8yq46fynherC+vf02tW2jXsrldSLPAQLLMjjYTIE6fJzVH7qOq5yOInYz+yrkKVncE01GcLi8AK
+        hX5RHCEr30j7fEhIyqE8oyEnABTfMU1cBok4aH5ZPM6XnnWEl9vTPVVpftDKldbtdDIoSIkfxfUfT
+        I5iX+Xy0hgT6eSmFsPqsD5Ki10sbNxu01tdRrzvURTRreDbh6rS8pAzzDOVo20sn0TZpm6ApUSsWr
+        fDOUSlnQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfEwI-000fMv-Fv; Tue, 26 Oct 2021 05:23:58 +0000
+Subject: Re: [PATCH] scsi: ufs: clean up the Kconfig file
+To:     Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <20211024064332.16360-1-rdunlap@infradead.org>
+ <8578e393-2a25-bc52-65ea-599d071387e9@acm.org>
+ <5b13f32c-0cdb-26de-2bb7-af56a099b0b2@infradead.org>
+ <b3344662-03a7-43ca-21ea-7e2c4f0f658a@acm.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <25efc8f3-d360-d6bd-47db-34e6c88481e3@infradead.org>
+Date:   Mon, 25 Oct 2021 22:23:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 2/3] serial: 8250_pci: Get rid of redundant 'else'
- keyword
+In-Reply-To: <b3344662-03a7-43ca-21ea-7e2c4f0f658a@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211022135147.70965-1-andriy.shevchenko@linux.intel.com>
- <20211022135147.70965-2-andriy.shevchenko@linux.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20211022135147.70965-2-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22. 10. 21, 15:51, Andy Shevchenko wrote:
-> The 'else' keyword is not needed when previous conditional branch returns
-> to the upper layer. Get rid of redundant 'else' keyword in such cases.
+Hi Bart--
+
+On 10/24/21 6:17 PM, Bart Van Assche wrote:
+> On 10/24/21 16:35, Randy Dunlap wrote:
+>> On 10/24/21 2:29 PM, Bart Van Assche wrote:
+>>> On 10/23/21 23:43, Randy Dunlap wrote:
+>>>>         sure that you know the name of your UFS host adapter (the card
+>>>>         inside your computer that "speaks" the UFS protocol, also
+>>>>         called UFS Host Controller), because you will be asked for it.
+>>>> @@ -51,7 +50,7 @@ config SCSI_UFSHCD
+>>>>         (the one containing the directory /) is located on a UFS device.
+>>>>   config SCSI_UFSHCD_PCI
+>>>> -    tristate "PCI bus based UFS Controller support"
+>>>> +    tristate "PCI bus-based UFS Controller support"
+>>>
+>>> Even with this change applied capitalization is inconsistent.
+>>
+>> I don't doubt it, but could you be more explicit about
+>> which word(s) you mean, please?
+>>
+>> I see one "pci" in the Kconfig file.
+
+I changed that one. ^^^
+
+>> I see several "Controller" vs. "controller."
+>> I see a few of "Support" vs. "support."
+>>
+>> Which are you referring to? (or something else)
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> I was referring to the word "Controller". Although English is not my native
+> language, shouldn't "UFS Controller" be changed into "UFS controller" since
+> neither "bus-based" nor "support" are capitalized?
 
-Reviewed-by: Jiri Slaby <jslaby@kernel.org>
+That's not so clear to me, but then I don't have access to the UFS specs.
 
-> ---
-> v2: avoided changes in Pericom code for now (it makes sense to split support
->      to a separate driver)
->   drivers/tty/serial/8250/8250_pci.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index 8a2f42507c18..463b2c71da6f 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -515,7 +515,7 @@ static int pci_siig_init(struct pci_dev *dev)
->   
->   	if (type == 0x1000)
->   		return pci_siig10x_init(dev);
-> -	else if (type == 0x2000)
-> +	if (type == 0x2000)
->   		return pci_siig20x_init(dev);
->   
->   	moan_device("Unknown SIIG card", dev);
-> @@ -792,9 +792,9 @@ static int pci_netmos_9900_setup(struct serial_private *priv,
->   		bar = 3 * idx;
->   
->   		return setup_port(priv, port, bar, 0, board->reg_shift);
-> -	} else {
-> -		return pci_default_setup(priv, board, port, idx);
->   	}
-> +
-> +	return pci_default_setup(priv, board, port, idx);
->   }
->   
->   /* the 99xx series comes with a range of device IDs and a variety
-> 
+This help text:
+	  UFS host adapter (the card
+	  inside your computer that "speaks" the UFS protocol, also
+	  called UFS Host Controller)
 
+might imply that the spec calls it "UFS Host Controller", but I can't
+read it (AFAIK). OTOH, if that's just a common (non-spec) name for it,
+then yes, it should be in lower case ("controller").
 
+I'm leaning towards using "controller" everywhere -- or not changing
+any of them. :)
+Oh well.
+
+Do you have any insights into this?
+
+thanks.
 -- 
-js
-suse labs
+~Randy
