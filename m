@@ -2,70 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311E643BC80
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307CD43BC88
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239670AbhJZVil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239682AbhJZViZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:38:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E71860E8B;
-        Tue, 26 Oct 2021 21:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635284161;
-        bh=huHOq3qPce2MozjKdd043JAI+SHWVUUw15CzyMPZhJM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=aAdJL3R6ihlnTL7eSG/MT6fP9CtWwOm9xv5cZXuQWA8aKLL7JqoQP1KXEeA3nmpnv
-         w3gtEtbuZLdp5k0PCB8lgC8PafetVmtwVnWS51X6seHCAWhlhbIbCTtsit1sDO5mwq
-         VfN3Ww8PPq24ztxXK4RWEosiyCXR69XJC5FzuZswK0TPmSIhK/pgOGqNfrVQe0hr/n
-         18SRBCTtjKUQzDjrFvBH1N0rMWahfBK1yTsg/Yr4P3hZkgd1FZ+mltioZTNdDig69K
-         Xpd2DJRwXPUJ/xN5uuqFMI8goDt4neOvYnidqDLj+X4/KXMzI/IM+l4+N3JrDZ31XY
-         ZPppp79qdwlcA==
-Date:   Tue, 26 Oct 2021 16:35:59 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Remove redundant initialization of variable rc
-Message-ID: <20211026213559.GA169971@bhelgaas>
+        id S239684AbhJZVjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239669AbhJZVjI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 17:39:08 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09638C061570;
+        Tue, 26 Oct 2021 14:36:44 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id a6so1031212ybq.9;
+        Tue, 26 Oct 2021 14:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4wNyPqGE0Nzj26+1d7qK2TZKb0WDGW0xR3NS0/Dm8D8=;
+        b=GEmgQETGyiJphS4CkZY+/W+RfT30EWmPhkSALapYdNnp7ZzzxU7W9CBTByYovl3XTu
+         D1o4ToRTb4bN/71ajbmVU8N4Em1c8Q4hc9b461DCLf0F7hqdnyh7jmgeUBgvdAIZ+1bC
+         op5Z2bIVLdcIGRRGO1vIPOWreM5JcGlu2Zvqh6Az3ccghSTHQ146nyhOjZF10Ggu26jO
+         rXO0ZnJElx0VGUpvt4HjxAADRtNFhtk/eHxODAIIYXQDcYfCZ3FHlLMRaCurRUVHtcEP
+         W29TdhkYvTJdTFzCBG/l/3GqQUW0HaFL/z+IMKoU8gCYeLWm4G/AD/MQJ+VLbuyxnQ8I
+         KK6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4wNyPqGE0Nzj26+1d7qK2TZKb0WDGW0xR3NS0/Dm8D8=;
+        b=7pvWeqUn4/hU2irWQg1J9h4evfmcfyRhmJ7UuKUgwfhJJ1OkvznEMci0pKIQRBFq75
+         3oyd5haCjxRbVcob0IdEuCa9Fxwyn3pwypmqS0i2nzO06H/WFng1pDBz6qYdci7viVy9
+         RmLLjHUWWfNTXqViZRHmVI9/IkaNfZytrR+cN5ZC57HojTMXOEMghEGfm7hDxvD54TRU
+         fx6EPpxE+rP+z6JOg/nMlVA0J0BWqB1+vRhmvROVjT0T3DtEL2ZcigNqFMrWwJB+OX0G
+         ZcROQTtPaNXn8dnrokATeYsCp50Ke5rEmZJJosXUiVbFeUc+mqp2qxx5WPU8mfybu95u
+         KDSQ==
+X-Gm-Message-State: AOAM533MndgV8ZuV+0vYBZGoRlXpKnG28+QeytmXoCX6We9s+n8tda04
+        2sE98VbmzF9/eDR8mPHMl6arXeyXjWNc1d/nBIJatVKqGzk=
+X-Google-Smtp-Source: ABdhPJyYcqrrKYkTH7z5pS2QaoRaP8XhF7TcGKpw4QG6fNwhow0uLaanWQMMefPjJDQjEA4NA6a4x+vUzsD+cW4aFGY=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr25680236ybq.328.1635284203236;
+ Tue, 26 Oct 2021 14:36:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910161417.91001-1-colin.king@canonical.com>
+References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210930121630.17449-5-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXHv7H3xxEYFLhfBf+Pun-w=F4k5S2RAYJY6qz75QpxhQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdXHv7H3xxEYFLhfBf+Pun-w=F4k5S2RAYJY6qz75QpxhQ@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 26 Oct 2021 22:36:17 +0100
+Message-ID: <CA+V-a8uS6fiHAWbJTXtVJgHPqvtDGPf-RupQGaKJv7wWkurLYw@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/4] pinctrl: renesas: pinctrl-rzg2l: Add support to
+ get/set drive-strength and output-impedance
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 05:14:17PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable rc is being initialized with a value that is never read, it
-> is being updated later on. The assignment is redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Hi Geert,
 
-Applied with Krzysztof's reviewed-by to pci/misc for v5.16, thanks!
+Thank you for the review.
 
-> ---
->  drivers/pci/pci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index ce2ab62b64cf..cd8cb94cc450 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -5288,7 +5288,7 @@ const struct attribute_group pci_dev_reset_method_attr_group = {
->   */
->  int __pci_reset_function_locked(struct pci_dev *dev)
->  {
-> -	int i, m, rc = -ENOTTY;
-> +	int i, m, rc;
->  
->  	might_sleep();
->  
-> -- 
-> 2.32.0
-> 
+On Thu, Oct 7, 2021 at 6:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Thu, Sep 30, 2021 at 2:17 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add support to get/set drive-strength and output-impedance of the pins.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> > @@ -47,6 +47,7 @@
+> >  #define PIN_CFG_FILONOFF               BIT(9)
+> >  #define PIN_CFG_FILNUM                 BIT(10)
+> >  #define PIN_CFG_FILCLKSEL              BIT(11)
+> > +#define PIN_CFG_GROUP_B                        BIT(12)
+>
+> Perhaps it would be easier to have separate PIN_CFG_IOLH_A and
+> PIN_CFG_IOLH_B flags, instead of a PIN_CFG_IOLH flag and a
+> PIN_CFG_GROUP_B modifier flag?
+>
+Agreed will do that.
+
+> >
+> >  #define RZG2L_MPXED_PIN_FUNCS          (PIN_CFG_IOLH | \
+> >                                          PIN_CFG_SR | \
+>
+> > @@ -484,6 +513,38 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
+> >                 break;
+> >         }
+> >
+> > +       case PIN_CONFIG_OUTPUT_IMPEDANCE:
+> > +       case PIN_CONFIG_DRIVE_STRENGTH: {
+> > +               unsigned int mA[4] = { 2, 4, 8, 12 };
+> > +               unsigned int oi[4] = { 100, 66, 50, 33 };
+>
+> static const
+>
+agreed.
+
+> > +
+> > +               if (param == PIN_CONFIG_DRIVE_STRENGTH) {
+> > +                       if (!(cfg & PIN_CFG_IOLH) || groupb_pin)
+> > +                               return -EINVAL;
+> > +               } else {
+> > +                       if (!(cfg & PIN_CFG_IOLH) || !groupb_pin)
+> > +                               return -EINVAL;
+> > +               }
+> > +
+> > +               spin_lock_irqsave(&pctrl->lock, flags);
+> > +
+> > +               /* handle _L/_H for 32-bit register read/write */
+> > +               addr = pctrl->base + IOLH(port);
+> > +               if (bit >= 4) {
+> > +                       bit -= 4;
+> > +                       addr += 4;
+> > +               }
+> > +
+> > +               reg = readl(addr) & (IOLH_MASK << (bit * 8));
+> > +               reg = reg >> (bit * 8);
+> > +               if (param == PIN_CONFIG_DRIVE_STRENGTH)
+> > +                       arg = mA[reg];
+> > +               else
+> > +                       arg = oi[reg];
+> > +               spin_unlock_irqrestore(&pctrl->lock, flags);
+>
+> I think you've reached the point where it starts to make sense to
+> have helper functions to read and modify these sub-register fields
+> that may be located into the current or next register.
+>
+Ok will add helpers to read and rmw.
+
+> And after that, you can split it in two smaller separate cases for
+> drive strength and output impedance.
+>
+Agreed.
+
+Cheers,
+Prabhakar
+
+> > +               break;
+> > +       }
+> > +
+> >         default:
+> >                 return -ENOTSUPP;
+> >         }
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
