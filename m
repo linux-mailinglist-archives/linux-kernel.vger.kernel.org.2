@@ -2,485 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79DC43AFEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD6843AFF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhJZKUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:20:54 -0400
-Received: from mail-mw2nam10on2048.outbound.protection.outlook.com ([40.107.94.48]:36289
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230467AbhJZKUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:20:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U3NxjzD4hG0VFa3WdJ+Ak7A7CmcZV8vw8Ifn4mJHyMP5VTO+8MKz72GCFkND0TQnBqLxALo5BACh/UBCSw8hFwDukPnIlLYgmLR55cYDLrEgsP2gaSraUUul1hPxmh/c+y0Kk3IQXX4EMOsbbyo2fMve3EMeTnpcZwwsu9erUuvoO8ylRoSgC7cWZCXWmWPzhNPpnetCwJ3iTlNR/n7QVITu4BKxyFFORX+zCNhPpsd0D0fVDOtEDklrl5rcylfv8NkyM7BaBKlJvZORtyydoGJIvz58mRhu+2y01j1ZcFMv53qdb4Wc6ur8s8pDJFF2uR9qWbasqJJ82lNtONhQ2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=94/GuxMyqhWjNu9S4fXUr/9D+JlmOqJsiQTUspWOH1U=;
- b=Z9NPDDL9ICH0DxRhFXPnoZnTaGI7+1h1vaD9XPPzBuXrwBRPS0qoQUoSkbRdBlT/Lv/kM0PBb1f6s8I2Vp8WFPU7kZKquebhSpboT9soOY2xTy5AkdsyuzVDdb2ZZt6FfGGizT2TpQrlPV5N3P0l1dNUSU0pvK0POBvPspYiI3olwmYkUixWSgBcpMfHCL7kca2R/sx/yWB+v3fN3rHfo9U/pr77e7DiV0qZDpTjPp+Vh3d6xDpggXvrhi2bDaHXMywKGJWYvdFkS+uPspGtHUzezsR0uLywEs6EeHx5Nk7ch9Fmr0Jk1KSzs83YTTyxQcS06iK7nGsXSMuO1/y4ag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=94/GuxMyqhWjNu9S4fXUr/9D+JlmOqJsiQTUspWOH1U=;
- b=JUQrH0c3bQrXwiUMIl/2Mdr2Cf08hDNbFJWVtrKCpI+fGozJRiYGcFBfqNLHLnruldSqGJmTGII2OjHbNfa3c9SeM8VdMPrAmthRUrUXne/3igFq4F6eA1sSC338IN8plU02yHJ+/PQtoBvJ7JbkbSwQqUrMnYGe+ujLtSYxbkc=
-Received: from BY5PR02MB6916.namprd02.prod.outlook.com (2603:10b6:a03:234::18)
- by BY5PR02MB6100.namprd02.prod.outlook.com (2603:10b6:a03:1f8::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.20; Tue, 26 Oct
- 2021 10:18:18 +0000
-Received: from BY5PR02MB6916.namprd02.prod.outlook.com
- ([fe80::c8a:dfb7:e411:9ad]) by BY5PR02MB6916.namprd02.prod.outlook.com
- ([fe80::c8a:dfb7:e411:9ad%7]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
- 10:18:18 +0000
-From:   Anand Ashok Dumbre <ANANDASH@xilinx.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        git <git@xilinx.com>, Michal Simek <michals@xilinx.com>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Manish Narani <MNARANI@xilinx.com>
-Subject: RE: [PATCH v7 2/4] iio: adc: Add Xilinx AMS driver
-Thread-Topic: [PATCH v7 2/4] iio: adc: Add Xilinx AMS driver
-Thread-Index: AQHXxPztLE/r+aVUT0W7KtDOJosftqvdTWcAgAfLT5A=
-Date:   Tue, 26 Oct 2021 10:18:17 +0000
-Message-ID: <BY5PR02MB6916B1D4F3FB8D88C222973CA9849@BY5PR02MB6916.namprd02.prod.outlook.com>
-References: <20211019152048.28983-1-anand.ashok.dumbre@xilinx.com>
-        <20211019152048.28983-3-anand.ashok.dumbre@xilinx.com>
- <20211021120626.56cf1b8d@jic23-huawei>
-In-Reply-To: <20211021120626.56cf1b8d@jic23-huawei>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fa15e727-19d8-4d05-360d-08d99869edf8
-x-ms-traffictypediagnostic: BY5PR02MB6100:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-microsoft-antispam-prvs: <BY5PR02MB6100C45A2536210E02593E0AA9849@BY5PR02MB6100.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oiWQiifHRftOrjIH+6TQnfSq3IulrLBmIgw4uq+BIYKflQE3ErstD0SNu+KGmKflLrykM0Mc9A5/nFEBG9309wKt4xcYbuIyzK8mojnn4XxduY1khG9stMOPVXV/Dl09WWYz+xmLHXchcXqD4oXEIGfkJZc9uTn9Mao0K7HR3BSWjKXuRsLQ2h5qEPvdITJ9ZEcaoxEU8G/DIw/aMBLvQ6JDso+SPhQb0vrDntHBWCiN+4C2g0p7xqGTxkvFw8BR26EjpVMjge38Ex1xEGL2Tz6ctfABEy8qwqdqTt4yEcpbwKpgeVIiXCRlDdQWrWM6EnNGPxNtiKS6h+Vwi3iWg0XuKeYTRIyRR45gB/HTzqm4vInUMhzZZhpMQRk33kNAgsgx9h37iS0arkk1uT2KV5BqBB9CRXL9QcIWAxyzK65jWA1jaUFnFchq6u4W3KW4VKr248XhkGtModS6BSl1mUaZJ3i5hUXjSQLNFakyQAguuJzn7fQsQr5QCGs5H5+kemg/RtJfKklEkEZAHxaM5KQ3d6f8sS01PJyE32rL23IrVxcqm8+OnGsjc826zrNBJY7tN5pc1oWDgLpJV4ZLyIW8ZmWRsCL+nuHcR4EV9pWjH0PPAMYr7SYx21Ayzbd7bJcmxe2Fux7YIBIYdxYWx+Okopg1MFFKGgU2zKTXqAVXqP+isJJvlhhNmRp0QE/sLnhyWSmKU5CbgzDtydGXsAWY+mAuseY5i8FMeUrOixsM/fpyDKVdM6gjEILdnJP7YB6PZShyghbpPVxQ1+UYhoLwzYAwAGdiTlll9Nn4Lz8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6916.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52536014)(26005)(55016002)(6506007)(64756008)(66446008)(66946007)(5660300002)(4326008)(2906002)(186003)(9686003)(107886003)(966005)(71200400001)(38100700002)(8936002)(54906003)(508600001)(86362001)(6916009)(83380400001)(122000001)(8676002)(33656002)(66476007)(38070700005)(316002)(7696005)(66556008)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ndp+B9zjyh7CIT03aj+CJozljh/L31BtFQFaY4IIciJH3hvKRMCXAoPfflVl?=
- =?us-ascii?Q?C550vP1JrXAJ9bEAmEz2acSlRZmc8bLowvheCZ5TSCtoDd//cpTN4xIcCMbo?=
- =?us-ascii?Q?9duq7XPcz7/OCFnKTE7PKhowb1t0aqEQGDil0YML6nEobQxLWDG7HVZEOM9E?=
- =?us-ascii?Q?DV8jmwDRzGBObXFGzPZ1twQilZHpn8vgDmiKOwj5p1Pc2G0chSfXrl1ON0xm?=
- =?us-ascii?Q?362iyOiVx35e/nmyDZgJY8XaimDRHm2B9mDcOxLo2vt8tlm6QpMfbUOjINQF?=
- =?us-ascii?Q?1M7cedvGiwybnMtSDYgIHYP6/pDy5L9RELmy2xct2yRbs+pgfN1QSeu1ISfH?=
- =?us-ascii?Q?wrTwNbVKUhhline3ktKEsmoGmf40+3oJhFHgm9iGmTOAPi1JWD5MmtyeglAH?=
- =?us-ascii?Q?yOR0qMvtrL4ET35wrBOyr9EtpGJPyyreW3D6riaVGfMwwwXr2Lz2nghcp1QW?=
- =?us-ascii?Q?jOelGE+KxkoVMX9k4txK973f4N8fYgmP1fxC/hhSqSLtEg2pqsOhY74chnaQ?=
- =?us-ascii?Q?lSsGYICzq146ZBIxAKYINqJ9n6Zgc1quZdb4CHCn/dNPdGuAm+8SMEsqLh4Q?=
- =?us-ascii?Q?Vt72qvUA7jg3kjbQVSJqmqndf+R4wlhoEVRdrachuGuewoyXwMtUmEoL1Dl8?=
- =?us-ascii?Q?2BqHvTVWqxkrG4faAGANv37oHeTQ8jCU+0cFzW1HEhX87bP6/MvFR/DhPHJv?=
- =?us-ascii?Q?bp91qHJo9q8FM8W2vV6WbO555cfh0nNeJvN3TDl7WefnLXq/chGmpJ9aSeMa?=
- =?us-ascii?Q?kM1F68HVdCSw9KAxpruMGtULbrXhWNwKAc2YH6ZinObrxeZAkHH+QEEkejY4?=
- =?us-ascii?Q?I67a8hwCB/RqNdvYo6I436t+W1+3uQptwb9bwYr3UMNod52FNhrKXsEh7z7E?=
- =?us-ascii?Q?6fdklZeTFe6KhTD1WqAXLZUee7ESd8qcaALxbD65tirZI//6oglYZEiygXPq?=
- =?us-ascii?Q?PfUVxZjf+NLJoGulU9MGN+9nndzhbrWviUYbiNBbh/ivEzQhN8f2XzeJPlWL?=
- =?us-ascii?Q?xM2/m4eSo8c0PQKxRnUJl08LYaWo5+8tt1bh+AmkNgLCD+k0QeZ7v9mJCik4?=
- =?us-ascii?Q?ifiqQcrH23dSenEXWraLI3RwSJI3dn9Og2Bw31JQ4Sq/LnBOoeyVWr5URwJe?=
- =?us-ascii?Q?JRrgzXpiOfYEsi3c4TR1TlL5kdxwi88wsfQZJ8l0fpl7dKBYRCfDonOIqi+b?=
- =?us-ascii?Q?6BunKabIbLAH92x2VBWQ6rrTjCxOYD67aDURdw70OUnpBDH5m6g4T+Cs4HmH?=
- =?us-ascii?Q?u6mloMX7Qi9hWnKWhAwO+8eWqzGp4MwZ+Kje+nZjmjysMdsJIu7bnvZxWVhF?=
- =?us-ascii?Q?IxzS52R62ltNfEymWeajBC3qlPp0yFqluSrjmJThZkk/I1jdFgyFmK5tHZbj?=
- =?us-ascii?Q?/IpZhLCp1w6T4LtARjZSMrYM/JEOCPW+FSD1Z0LacuxJhun8nvMIufUmSGJZ?=
- =?us-ascii?Q?aK/1CJDAh//cK9NCOjqEjlKHHiuzfbpbwntLG1Daj7ucjwSGYAnI5T70Q+Lx?=
- =?us-ascii?Q?7itLo5Cm0A7dic1a4geXvlCZv8IRn/2443lmhGF8G6smsO44Ri6zqC3GHZuy?=
- =?us-ascii?Q?XOaRc1toISg80v+GTKRy69FDnqYWRTXireN7z1vl0xW9W+hjmppmdcFzwrpO?=
- =?us-ascii?Q?zA6ChWWpQNhk+jDvaIIsv9k=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232336AbhJZKY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:24:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54538 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229687AbhJZKYZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 06:24:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635243721;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fwG+pbc/RX0UtcP7zmAqWBtlccSZoVrnTVcmaM/OGoo=;
+        b=PJm/YYiMu/vo/Ir0hLt6Ia0d+iusiWxXytz/UQYE9V7NhCacfxkRsocWiUGpVB/1mKeKGe
+        03DNu7ijHUtG6XkMvO+6XVKHE6speGzh9ZNJ/IBAR5mCztqGAzJDFRf087RPNzp6HOQEMm
+        QXoFIGBcXAVCDWiU5Mp/va6k7uJQZ2Q=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-np6SfI2NNA6kNs-h0cR3Cg-1; Tue, 26 Oct 2021 06:21:59 -0400
+X-MC-Unique: np6SfI2NNA6kNs-h0cR3Cg-1
+Received: by mail-lf1-f71.google.com with SMTP id z7-20020a0565120c0700b003ffb3da4283so488393lfu.23
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 03:21:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fwG+pbc/RX0UtcP7zmAqWBtlccSZoVrnTVcmaM/OGoo=;
+        b=SwMMZc/4sghYQd8KZSjOt3Zr6tfTVkZzhf+RHTMQ2tsobj52qzkr2C8sd0qza5jKze
+         lUmnI+8RfmuyU3s4WhmYIGQ+MO4Sg6s3aOIY7tzXphfKobsI9AHs3/QW4LTu5OQEre0U
+         3zS1MeBerPfKOt+uwqajZ88bRiD8AGRxAbcIQxwuj29tp3kM8YPFYCvreTI0FVNbaSzj
+         Dro6sXCjICXELwbbbp04W0KOX9TDrZ5ReZWka0uq95010xHndyBI4irwplSdgCD3m2j+
+         iwoGolNBGAHL7aR9DPZrc16Wv4wnTQxNfpbLLIi+zhzqAfyzwmt2vt4xlz/MMfyBUV3W
+         eBLA==
+X-Gm-Message-State: AOAM530hL4Enr6D5fwUCmU6eJkKTdA0Dc+JqRJAhRbsNND7ohakxSaut
+        eVLmJ3fZhCr1usz0B3txLZtZAJrhr/fOzQM/L3ZnmOM8ZRagOYC0CCQFjsUu6sX1B3NPD5VnVq3
+        zviRX23q1p4c3KKi3yKgTAaWxtUeHeyTWn3Tqvu6x
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr22929108lfg.498.1635243717958;
+        Tue, 26 Oct 2021 03:21:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRi7eDA7VNK2NZZvjOTAi7iKncvVwBcSyj0I/WsPXPEK8+uGW2NAe1yK0dNgSsnT1GGqJ206I8AuI2ZWl/F7w=
+X-Received: by 2002:a05:6512:32c1:: with SMTP id f1mr22929089lfg.498.1635243717653;
+ Tue, 26 Oct 2021 03:21:57 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6916.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa15e727-19d8-4d05-360d-08d99869edf8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2021 10:18:17.9547
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2JEgvzTgZGESGbT1dtwPhjX893pPar/krDEGZHe1W6Ie3GQBhoqQd5XjKKOH1/8XDCVLAZwS3SerCZ4pby58qQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6100
+References: <20211026072000.8699-1-jasowang@redhat.com> <20211026072000.8699-2-jasowang@redhat.com>
+ <20211026053741-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211026053741-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 26 Oct 2021 18:21:46 +0800
+Message-ID: <CACGkMEv64WkTB22CTy_Y_0VPLjT+YLCx6Ea8+Lg2ZDCKOid8UQ@mail.gmail.com>
+Subject: Re: [PATCH V4 1/4] virtio_ring: validate used buffer length
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Jonathan,
-
-Thanks for the review.=20
-
-> On Tue, 19 Oct 2021 16:20:46 +0100
-> Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com> wrote:
->=20
-> > The AMS includes an ADC as well as on-chip sensors that can be used to
-> > sample external voltages and monitor on-die operating conditions, such
-> > as temperature and supply voltage levels. The AMS has two SYSMON
-> blocks.
-> > PL-SYSMON block is capable of monitoring off chip voltage and
-> > temperature.
-> > PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
-> > from external master. Out of these interface currently only DRP is
-> > supported.
-> > Other block PS-SYSMON is memory mapped to PS.
-> > The AMS can use internal channels to monitor voltage and temperature
-> > as well as one primary and up to 16 auxiliary channels for measuring
-> > external voltages.
-> > The voltage and temperature monitoring channels also have event
-> > capability which allows to generate an interrupt when their value
-> > falls below or raises above a set threshold.
+On Tue, Oct 26, 2021 at 5:44 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Tue, Oct 26, 2021 at 03:19:57PM +0800, Jason Wang wrote:
+> > This patch validate the used buffer length provided by the device
+> > before trying to use it. This is done by record the in buffer length
+> > in a new field in desc_state structure during virtqueue_add(), then we
+> > can fail the virtqueue_get_buf() when we find the device is trying to
+> > give us a used buffer length which is greater than the in buffer
+> > length.
 > >
-> > Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-> > Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
->=20
-> It would be good at some point to move away from of specific firmware
-> property reading, but on a platform like this I guess you can be fairly s=
-ure no
-> one will be using ACPI or other firmware description options so I'm not g=
-oing
-> to insist on it for an initial merge.
->=20
-> Other comment I have are fairly minor but we need to leave some time for
-> other reviews and in particular DT binding review.
+> > Since some drivers have already done the validation by themselves,
+> > this patch tries to makes the core validation optional. For the driver
+> > that doesn't want the validation, it can set the validate_used to be
+> > true (which could be overridden by force_used_validation). To be more
+>
+> This description is now out of date. it's suppress_used_validation.
 
-Sure. I will wait for the DT binding review before I send my fixes.
+Yes, do you want me to post a new version or do you want to fix it for me?
 
->=20
+Thanks
+
+>
+> > efficient, a dedicate array is used for storing the validate used
+> > length, this helps to eliminate the cache stress if validation is done
+> > by the driver.
+> >
+> > Signed-off-by: Jason Wang <jasowang@redhat.com>
 > > ---
-> >  drivers/iio/adc/Kconfig      |   13 +
-> >  drivers/iio/adc/Makefile     |    1 +
-> >  drivers/iio/adc/xilinx-ams.c | 1341
-> > ++++++++++++++++++++++++++++++++++
-> >  3 files changed, 1355 insertions(+)
-> >  create mode 100644 drivers/iio/adc/xilinx-ams.c
->=20
-> ...
->=20
-> > diff --git a/drivers/iio/adc/xilinx-ams.c
-> > b/drivers/iio/adc/xilinx-ams.c new file mode 100644 index
-> > 000000000000..597cdda8a618
-> > --- /dev/null
-> > +++ b/drivers/iio/adc/xilinx-ams.c
-> > @@ -0,0 +1,1341 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Xilinx AMS driver
-> > + *
-> > + *  Copyright (C) 2021 Xilinx, Inc.
-> > + *
-> > + *  Manish Narani <mnarani@xilinx.com>
-> > + *  Rajnikant Bhojani <rajnikant.bhojani@xilinx.com>  */
+> >  drivers/virtio/virtio_ring.c | 60 ++++++++++++++++++++++++++++++++++++
+> >  include/linux/virtio.h       |  2 ++
+> >  2 files changed, 62 insertions(+)
+> >
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index 4c0ec82cef56..a6e5a3b94337 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -14,6 +14,9 @@
+> >  #include <linux/spinlock.h>
+> >  #include <xen/xen.h>
+> >
+> > +static bool force_used_validation = false;
+> > +module_param(force_used_validation, bool, 0444);
 > > +
-> > +#include <linux/clk.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/iopoll.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> #include <linux/mod_devicetable.h> for the of_device_id structure
-> defintion.
->=20
-Will add it in the next series.
+> >  #ifdef DEBUG
+> >  /* For development, we want to crash whenever the ring is screwed. */
+> >  #define BAD_RING(_vq, fmt, args...)                          \
+> > @@ -182,6 +185,9 @@ struct vring_virtqueue {
+> >               } packed;
+> >       };
+> >
+> > +     /* Per-descriptor in buffer length */
+> > +     u32 *buflen;
+> > +
+> >       /* How to notify other side. FIXME: commonalize hcalls! */
+> >       bool (*notify)(struct virtqueue *vq);
+> >
+> > @@ -490,6 +496,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+> >       unsigned int i, n, avail, descs_used, prev, err_idx;
+> >       int head;
+> >       bool indirect;
+> > +     u32 buflen = 0;
+> >
+> >       START_USE(vq);
+> >
+> > @@ -571,6 +578,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+> >                                                    VRING_DESC_F_NEXT |
+> >                                                    VRING_DESC_F_WRITE,
+> >                                                    indirect);
+> > +                     buflen += sg->length;
+> >               }
+> >       }
+> >       /* Last one doesn't continue. */
+> > @@ -610,6 +618,10 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+> >       else
+> >               vq->split.desc_state[head].indir_desc = ctx;
+> >
+> > +     /* Store in buffer length if necessary */
+> > +     if (vq->buflen)
+> > +             vq->buflen[head] = buflen;
+> > +
+> >       /* Put entry in available array (but don't update avail->idx until they
+> >        * do sync). */
+> >       avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+> > @@ -784,6 +796,11 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+> >               BAD_RING(vq, "id %u is not a head!\n", i);
+> >               return NULL;
+> >       }
+> > +     if (vq->buflen && unlikely(*len > vq->buflen[i])) {
+> > +             BAD_RING(vq, "used len %d is larger than in buflen %u\n",
+> > +                     *len, vq->buflen[i]);
+> > +             return NULL;
+> > +     }
+> >
+> >       /* detach_buf_split clears data, so grab it now. */
+> >       ret = vq->split.desc_state[i].data;
+> > @@ -1062,6 +1079,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+> >       unsigned int i, n, err_idx;
+> >       u16 head, id;
+> >       dma_addr_t addr;
+> > +     u32 buflen = 0;
+> >
+> >       head = vq->packed.next_avail_idx;
+> >       desc = alloc_indirect_packed(total_sg, gfp);
+> > @@ -1091,6 +1109,8 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+> >                       desc[i].addr = cpu_to_le64(addr);
+> >                       desc[i].len = cpu_to_le32(sg->length);
+> >                       i++;
+> > +                     if (n >= out_sgs)
+> > +                             buflen += sg->length;
+> >               }
+> >       }
+> >
+> > @@ -1144,6 +1164,10 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+> >       vq->packed.desc_state[id].indir_desc = desc;
+> >       vq->packed.desc_state[id].last = id;
+> >
+> > +     /* Store in buffer length if necessary */
+> > +     if (vq->buflen)
+> > +             vq->buflen[id] = buflen;
+> > +
+> >       vq->num_added += 1;
+> >
+> >       pr_debug("Added buffer head %i to %p\n", head, vq);
+> > @@ -1179,6 +1203,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+> >       __le16 head_flags, flags;
+> >       u16 head, id, prev, curr, avail_used_flags;
+> >       int err;
+> > +     u32 buflen = 0;
+> >
+> >       START_USE(vq);
+> >
+> > @@ -1258,6 +1283,8 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+> >                                       1 << VRING_PACKED_DESC_F_AVAIL |
+> >                                       1 << VRING_PACKED_DESC_F_USED;
+> >                       }
+> > +                     if (n >= out_sgs)
+> > +                             buflen += sg->length;
+> >               }
+> >       }
+> >
+> > @@ -1277,6 +1304,10 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+> >       vq->packed.desc_state[id].indir_desc = ctx;
+> >       vq->packed.desc_state[id].last = prev;
+> >
+> > +     /* Store in buffer length if necessary */
+> > +     if (vq->buflen)
+> > +             vq->buflen[id] = buflen;
+> > +
+> >       /*
+> >        * A driver MUST NOT make the first descriptor in the list
+> >        * available before all subsequent descriptors comprising
+> > @@ -1463,6 +1494,11 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
+> >               BAD_RING(vq, "id %u is not a head!\n", id);
+> >               return NULL;
+> >       }
+> > +     if (vq->buflen && unlikely(*len > vq->buflen[id])) {
+> > +             BAD_RING(vq, "used len %d is larger than in buflen %u\n",
+> > +                     *len, vq->buflen[id]);
+> > +             return NULL;
+> > +     }
+> >
+> >       /* detach_buf_packed clears data, so grab it now. */
+> >       ret = vq->packed.desc_state[id].data;
+> > @@ -1668,6 +1704,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
+> >       struct vring_virtqueue *vq;
+> >       struct vring_packed_desc *ring;
+> >       struct vring_packed_desc_event *driver, *device;
+> > +     struct virtio_driver *drv = drv_to_virtio(vdev->dev.driver);
+> >       dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
+> >       size_t ring_size_in_bytes, event_size_in_bytes;
+> >
+> > @@ -1757,6 +1794,15 @@ static struct virtqueue *vring_create_virtqueue_packed(
+> >       if (!vq->packed.desc_extra)
+> >               goto err_desc_extra;
+> >
+> > +     if (!drv->suppress_used_validation || force_used_validation) {
+> > +             vq->buflen = kmalloc_array(num, sizeof(*vq->buflen),
+> > +                                        GFP_KERNEL);
+> > +             if (!vq->buflen)
+> > +                     goto err_buflen;
+> > +     } else {
+> > +             vq->buflen = NULL;
+> > +     }
+> > +
+> >       /* No callback?  Tell other side not to bother us. */
+> >       if (!callback) {
+> >               vq->packed.event_flags_shadow = VRING_PACKED_EVENT_FLAG_DISABLE;
+> > @@ -1769,6 +1815,8 @@ static struct virtqueue *vring_create_virtqueue_packed(
+> >       spin_unlock(&vdev->vqs_list_lock);
+> >       return &vq->vq;
+> >
+> > +err_buflen:
+> > +     kfree(vq->packed.desc_extra);
+> >  err_desc_extra:
+> >       kfree(vq->packed.desc_state);
+> >  err_desc_state:
+> > @@ -2176,6 +2224,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> >                                       void (*callback)(struct virtqueue *),
+> >                                       const char *name)
+> >  {
+> > +     struct virtio_driver *drv = drv_to_virtio(vdev->dev.driver);
+> >       struct vring_virtqueue *vq;
+> >
+> >       if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
+> > @@ -2235,6 +2284,15 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> >       if (!vq->split.desc_extra)
+> >               goto err_extra;
+> >
+> > +     if (!drv->suppress_used_validation || force_used_validation) {
+> > +             vq->buflen = kmalloc_array(vring.num, sizeof(*vq->buflen),
+> > +                                        GFP_KERNEL);
+> > +             if (!vq->buflen)
+> > +                     goto err_buflen;
+> > +     } else {
+> > +             vq->buflen = NULL;
+> > +     }
+> > +
+> >       /* Put everything in free lists. */
+> >       vq->free_head = 0;
+> >       memset(vq->split.desc_state, 0, vring.num *
+> > @@ -2245,6 +2303,8 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> >       spin_unlock(&vdev->vqs_list_lock);
+> >       return &vq->vq;
+> >
+> > +err_buflen:
+> > +     kfree(vq->split.desc_extra);
+> >  err_extra:
+> >       kfree(vq->split.desc_state);
+> >  err_state:
+> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > index 41edbc01ffa4..44d0e09da2d9 100644
+> > --- a/include/linux/virtio.h
+> > +++ b/include/linux/virtio.h
+> > @@ -152,6 +152,7 @@ size_t virtio_max_dma_size(struct virtio_device *vdev);
+> >   * @feature_table_size: number of entries in the feature table array.
+> >   * @feature_table_legacy: same as feature_table but when working in legacy mode.
+> >   * @feature_table_size_legacy: number of entries in feature table legacy array.
+> > + * @suppress_used_validation: set to not have core validate used length
+> >   * @probe: the function to call when a device is found.  Returns 0 or -errno.
+> >   * @scan: optional function to call after successful probe; intended
+> >   *    for virtio-scsi to invoke a scan.
+> > @@ -168,6 +169,7 @@ struct virtio_driver {
+> >       unsigned int feature_table_size;
+> >       const unsigned int *feature_table_legacy;
+> >       unsigned int feature_table_size_legacy;
+> > +     bool suppress_used_validation;
+> >       int (*validate)(struct virtio_device *dev);
+> >       int (*probe)(struct virtio_device *dev);
+> >       void (*scan)(struct virtio_device *dev);
+> > --
+> > 2.25.1
+>
 
-> > +#include <linux/of_address.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/slab.h>
-> > +
-> > +#include <linux/iio/events.h>
-> > +#include <linux/iio/iio.h>
-> > +#include <linux/iio/sysfs.h>
-> > +
-> ...
->=20
-> > +/**
-> > + * struct ams - Driver data for xilinx-ams
-> > + * @base: physical base address of device
-> > + * @ps_base: physical base address of PS device
-> > + * @pl_base: physical base address of PL device
-> > + * @clk: clocks associated with the device
-> > + * @dev: pointer to device struct
-> > + * @lock: to handle multiple user interaction
-> > + * @intr_lock: to protect interrupt mask values
-> > + * @masked_alarm: currently masked due to alarm
-> > + * @alarm_mask: alarm configuration
-> > + * @interrupt_mask: interrupt configuration
-> > + * @irq: interrupt number of the sysmon
-> > + * @ams_unmask_work: re-enables event once the event condition
-> > +disappears
-> > + *
-> > + * This structure contains necessary state for Sysmon driver to
-> > +operate  */ struct ams {
-> > +	void __iomem *base;
-> > +	void __iomem *ps_base;
-> > +	void __iomem *pl_base;
-> > +	struct clk *clk;
-> > +	struct device *dev;
-> > +	/* check kernel doc above */
-> > +	struct mutex lock;
-> > +	/* check kernel doc above */
-> > +	spinlock_t intr_lock;
-> > +	unsigned int alarm_mask;
-> Docs should be same order as the fields.
-> > +	unsigned int masked_alarm;
-> > +	u64 intr_mask;
->=20
-> That's not the name in the docs.  Run kernel-doc script over this and fix=
- all the
-> errors / warnings.
->=20
-Will do it before I send next series.
-Will fix the error.
-
-> > +	int irq;
-> > +	struct delayed_work ams_unmask_work; };
-> > +
->=20
-> ...
->=20
-> > +
-> > +static irqreturn_t ams_irq(int irq, void *data) {
-> > +	struct iio_dev *indio_dev =3D data;
-> > +	struct ams *ams =3D iio_priv(indio_dev);
-> > +	u32 isr0;
-> > +
-> > +	spin_lock(&ams->intr_lock);
-> > +
-> > +	isr0 =3D readl(ams->base + AMS_ISR_0);
-> > +
-> > +	/* only process alarms that are not masked */
-> > +	isr0 &=3D ~((ams->intr_mask & AMS_ISR0_ALARM_MASK) |
-> > +ams->masked_alarm);
-> > +
-> > +	if (!isr0)
->=20
-> lock held.
-
-Will fix.
-
->=20
-> > +		return IRQ_NONE;
-> > +
-> > +	/* clear interrupt */
-> > +	writel(isr0, ams->base + AMS_ISR_0);
-> > +
-> > +	/* Mask the alarm interrupts until cleared */
-> > +	ams->masked_alarm |=3D isr0;
-> > +	ams_update_intrmask(ams, 0, 0);
-> > +
-> > +	ams_handle_events(indio_dev, isr0);
-> > +
-> > +	schedule_delayed_work(&ams->ams_unmask_work,
-> > +			      msecs_to_jiffies(AMS_UNMASK_TIMEOUT_MS));
-> > +
-> > +	spin_unlock(&ams->intr_lock);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
->=20
-> ...
->=20
-> > +
-> > +static int ams_parse_dt(struct iio_dev *indio_dev, struct
-> > +platform_device *pdev) {
-> > +	struct ams *ams =3D iio_priv(indio_dev);
-> > +	struct iio_chan_spec *ams_channels, *dev_channels;
-> > +	struct device_node *child_node =3D NULL, *np =3D pdev->dev.of_node;
-> > +	int ret, vol_ch_cnt =3D 0, temp_ch_cnt =3D 0, i, rising_off, falling_=
-off;
-> > +	unsigned int num_channels =3D 0;
-> > +
-> > +	/* Initialize buffer for channel specification */
-> > +	ams_channels =3D kzalloc(sizeof(ams_ps_channels) +
-> > +			       sizeof(ams_pl_channels) +
-> > +			       sizeof(ams_ctrl_channels), GFP_KERNEL);
-> > +	if (!ams_channels)
-> > +		return -ENOMEM;
-> > +
-> > +	if (of_device_is_available(np)) {
-> > +		ret =3D ams_init_module(indio_dev, np, ams_channels);
-> > +		if (ret < 0)
-> > +			goto err;
-> > +
-> > +		num_channels +=3D ret;
-> > +	}
-> > +
-> > +	for_each_child_of_node(np, child_node) {
-> > +		if (of_device_is_available(child_node)) {
-> > +			ret =3D ams_init_module(indio_dev, child_node,
-> > +					      ams_channels + num_channels);
-> > +			if (ret < 0)
-> > +				goto err;
->=20
-> for_each_child_of_node() holds a reference if we jump out of the loop
-> before it terminates.
-> https://elixir.bootlin.com/linux/latest/source/drivers/of/base.c#L715
-> is where it ultimately releases that reference when the loop is terminati=
-ng.
-> Her you need to do it manually with an of_node_put() call
->=20
-Correct. Will fix this.=20
-> > +
-> > +			num_channels +=3D ret;
-> > +		}
-> > +	}
-> > +
-> > +	for (i =3D 0; i < num_channels; i++) {
-> > +		if (ams_channels[i].type =3D=3D IIO_VOLTAGE)
-> > +			ams_channels[i].channel =3D vol_ch_cnt++;
-> > +		else
-> > +			ams_channels[i].channel =3D temp_ch_cnt++;
-> > +
-> > +		if (ams_channels[i].scan_index < (AMS_PS_SEQ_MAX * 3)) {
-> > +			/* set threshold to max and min for each channel */
-> > +			falling_off =3D
-> > +
-> 	ams_get_alarm_offset(ams_channels[i].scan_index,
-> > +						     IIO_EV_DIR_FALLING);
-> > +			rising_off =3D
-> > +
-> 	ams_get_alarm_offset(ams_channels[i].scan_index,
-> > +						     IIO_EV_DIR_RISING);
-> > +			if (ams_channels[i].scan_index >=3D
-> AMS_PS_SEQ_MAX) {
-> > +				writel(AMS_ALARM_THR_MIN,
-> > +				       ams->pl_base + falling_off);
-> > +				writel(AMS_ALARM_THR_MAX,
-> > +				       ams->pl_base + rising_off);
-> > +			} else {
-> > +				writel(AMS_ALARM_THR_MIN,
-> > +				       ams->ps_base + falling_off);
-> > +				writel(AMS_ALARM_THR_MAX,
-> > +				       ams->ps_base + rising_off);
-> > +			}
-> > +		}
-> > +	}
-> > +
-> > +	dev_channels =3D devm_kzalloc(&pdev->dev, sizeof(*dev_channels) *
-> > +				    num_channels, GFP_KERNEL);
-> > +	if (!dev_channels) {
-> > +		ret =3D -ENOMEM;
-> > +		goto err;
-> > +	}
->=20
-> We now have the option of devm_krealloc()   If you used that in conjuncti=
-on
-> with devm_kzalloc to replace the kzalloc above, you could avoid this need=
- to
-> copy.  Not important though if you prefer doing this manual version.
->=20
-For now I will leave this as is. But will update after initial check-in.
-
-> > +
-> > +	memcpy(dev_channels, ams_channels,
-> > +	       sizeof(*ams_channels) * num_channels);
-> > +	indio_dev->channels =3D dev_channels;
-> > +	indio_dev->num_channels =3D num_channels;
-> > +
-> > +	ret =3D 0;
-> > +err:
-> > +	kfree(ams_channels);
-> > +
-> > +	return ret;
-> > +}
-> > +
->=20
-> ...
->=20
-> > +static int ams_probe(struct platform_device *pdev) {
-> > +	struct iio_dev *indio_dev;
-> > +	struct ams *ams;
-> > +	int ret;
-> > +
-> > +	if (!pdev->dev.of_node)
-> > +		return -ENODEV;
-> > +
-> > +	indio_dev =3D devm_iio_device_alloc(&pdev->dev, sizeof(*ams));
-> > +	if (!indio_dev)
-> > +		return -ENOMEM;
-> > +
-> > +	ams =3D iio_priv(indio_dev);
-> > +	mutex_init(&ams->lock);
-> > +	spin_lock_init(&ams->intr_lock);
-> > +
-> > +	indio_dev->name =3D "xilinx-ams";
-> > +
-> > +	indio_dev->info =3D &iio_ams_info;
-> > +	indio_dev->modes =3D INDIO_DIRECT_MODE;
-> > +
-> > +	ams->base =3D devm_platform_ioremap_resource(pdev, 0);
-> > +	if (IS_ERR(ams->base))
-> > +		return PTR_ERR(ams->base);
-> > +
-> > +	ams->clk =3D devm_clk_get(&pdev->dev, NULL);
-> > +	if (IS_ERR(ams->clk))
-> > +		return PTR_ERR(ams->clk);
-> > +	clk_prepare_enable(ams->clk);
-> > +	devm_add_action_or_reset(&pdev->dev,
-> ams_clk_disable_unprepare,
-> > +				 ams->clk);
-> > +
-> > +	INIT_DELAYED_WORK(&ams->ams_unmask_work,
-> ams_unmask_worker);
-> > +	devm_add_action_or_reset(&pdev->dev,
-> ams_cancel_delayed_work,
-> > +				 &ams->ams_unmask_work);
-> > +
-> > +	ret =3D ams_init_device(ams);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "failed to initialize AMS\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret =3D ams_parse_dt(indio_dev, pdev);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "failure in parsing DT\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ams_enable_channel_sequence(indio_dev);
-> > +
-> > +	ams->irq =3D platform_get_irq(pdev, 0);
-> > +	if (ams->irq =3D=3D -EPROBE_DEFER) {
-> > +		ret =3D -EPROBE_DEFER;
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret =3D devm_request_irq(&pdev->dev, ams->irq, &ams_irq, 0, "ams-
-> irq",
-> > +			       indio_dev);
-> > +	if (ret < 0) {
-> > +		dev_err(&pdev->dev, "failed to register interrupt\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	platform_set_drvdata(pdev, indio_dev);
-> > +
-> > +	ret =3D devm_iio_device_register(&pdev->dev, indio_dev);
-> > +
->=20
-> return devm_...
->=20
-Will do.
-
-> > +	return ret;
-> > +}
-> > +
->=20
-
-Thanks,
-Anand
