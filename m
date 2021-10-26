@@ -2,109 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6A343B350
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC0843B353
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbhJZNoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:44:44 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:33554 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhJZNoj (ORCPT
+        id S236273AbhJZNph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhJZNpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:44:39 -0400
-Received: by mail-ot1-f51.google.com with SMTP id 107-20020a9d0a74000000b00553bfb53348so2141053otg.0;
-        Tue, 26 Oct 2021 06:42:15 -0700 (PDT)
+        Tue, 26 Oct 2021 09:45:35 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473E5C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:43:12 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d9so14395314pfl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JwzvnEtQyFzINH8lrQUN82IVP9LOJxQIr47i06O+OtU=;
+        b=HdYCeMf81a8N+pUWVFHfIQSCcxlHrwBfZlUQeZ4JyooMtF9ug68RWnwbg8WZPsuF6A
+         u7m1fyfzrReBF93Sl6ssvbnhYSlmlJebvX5420PBgCreVLAwDHGTtkpukUjmu+l7UZ2y
+         YPH/pj/RqZCTrPNFmjnB+t9WdHrG4vBj9z96O9movWQuZMv2qBIBnqmWGeimYUDpR9ZX
+         DeP3+cJslFQEQPtLR4//9HtQGhOarmEGeWUF3s+A4fy281NvM2KeNV1AQnYgddaPXWk5
+         21IEFfgQvJWLHfVsP17imCowSUlf7d44DpibSAGCHRsomCgQbLJ7+m99s6YDNWA1tVJI
+         T5fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZLF/RSQc/WiflaSY0ZupsORfhON+Yiy4zLK9+j5ymtI=;
-        b=sI7ve687dTXw0k6/yy4Sj6sZVx69m0YJ/ex+sOc1wZyDqDj4cVQRKZdkBQK86Zqfdp
-         9+DjBNIkt/+21v5wx4xqyClixqzmqHSo26uU3GjPPluXU71lgJEDaG5dtx5zBc5tULX9
-         pUVtyL/VBO1KG8exaIpfT4lxNZ2dLsYr0JWqgLfhxzMOL4MID4gtcfoAYVw8Ai4ZmKpy
-         KjdxRXlckjamlT7gJey2N3SsqUjKiVWQ21XJsM8wsEi2w+s3KNnpzTOBS3fpXpt+UGsn
-         4/mYgfywMAqp7PhAJFrEv5NEJZDNHB+TdQ6ijPwPlZuVFtxLaFRUKPt4XqqmmTasrg5g
-         iFKw==
-X-Gm-Message-State: AOAM533TsXvi8KWoJ9dJN1aT6LAHWHGULqr9AaiFsgt3G2BB2vo/wgdx
-        YfYJJTNWEZp7+d+bdt0w/cW7ybEUNvYYiWDMKGw=
-X-Google-Smtp-Source: ABdhPJxGD/GRph7GnjGJpYV5SHMstOTxDb52gzL4qpypFSKXy7VQrJk1KlQhvVV5EYbQSOx1DwxlEBnjwSpL8mZkAU4=
-X-Received: by 2002:a9d:65c1:: with SMTP id z1mr19082692oth.198.1635255735613;
- Tue, 26 Oct 2021 06:42:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JwzvnEtQyFzINH8lrQUN82IVP9LOJxQIr47i06O+OtU=;
+        b=U8TmYfmL5Zhf4KHVThIZcxziVRKpM5ZbgcJ721nTACpEzSsr4dtbr//apkWuUPhkgF
+         Z/Oc/ZuNkrqPtDeXBDlBeKtAX6fdvEizGxaSUATOis4xityOR1PP/xiPQ9xO/59zAVFp
+         ucyMBlcSOXwdwsjbN14ZNenGvsjc4xFxH10ACRl4wMrgdlUHTxbFCmVsHnAS7mcuyQh8
+         ZKPMxaERR/UGfA5TgD4+zlInuURcggIWuEHTicM1yKDjuo3ZMGiZpGwELb6XKHFraBaX
+         DBnPxILDsX4AQaHokwt38Uj0sYJlm7sXdRw3eeXlk7o3Se04rSXWAv0abtUZu3pY8vuI
+         qc6Q==
+X-Gm-Message-State: AOAM532f3kOVl1KkfJdao8P6hsGSf2wBCncdKi5jk8juAIyBt+DhNkLM
+        d7Qkh7GuAzKke5l9kEHh0JI=
+X-Google-Smtp-Source: ABdhPJzoj0kvpHRxoTcjkPZO9BW2iW8gCKlYY/TxwhYww0PmpXsQ/bpgiVYkIeOJMqAZA/Yl3bPrTw==
+X-Received: by 2002:a63:9d0b:: with SMTP id i11mr16378932pgd.429.1635255791737;
+        Tue, 26 Oct 2021 06:43:11 -0700 (PDT)
+Received: from kushal ([2401:4900:1d67:6055:69c2:a862:1f6e:c9e4])
+        by smtp.gmail.com with ESMTPSA id m10sm1000844pjs.21.2021.10.26.06.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 06:43:11 -0700 (PDT)
+From:   Kushal Kothari <kushalkothari285@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, hdegoede@redhat.com,
+        marcocesati@gmail.com, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mike.rapoport@gmail.com,
+        kushalkothari2850@gmail.com
+Cc:     Kushal Kothari <kushalkothari285@gmail.com>
+Subject: [PATCH v2] staging: rtl8723bs: core: Refactor nested if-else
+Date:   Tue, 26 Oct 2021 19:12:53 +0530
+Message-Id: <20211026134253.7868-1-kushalkothari285@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <4369779.LvFx2qVVIh@kreacher> <3338400.QJadu78ljV@kreacher> <21252081.EfDdHjke4D@kreacher>
-In-Reply-To: <21252081.EfDdHjke4D@kreacher>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 26 Oct 2021 15:41:59 +0200
-Message-ID: <CAJZ5v0gOUdM64FqkeXmGd+Zyc5a_u=RBC6S2rxM4F5oTJ57wNw@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] perf: qcom_l2_pmu: ACPI: Use ACPI_COMPANION() directly
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 6:16 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
-> macro and the ACPI handle produced by the former comes from the
-> ACPI device object produced by the latter, so it is way more
-> straightforward to evaluate the latter directly instead of passing
-> the handle produced by the former to acpi_bus_get_device().
->
-> Modify l2_cache_pmu_probe_cluster() accordingly (no intentional
-> functional impact).
->
-> While at it, rename the ACPI device pointer to adev for more
-> clarity.
->
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Refactor nested if-else to avoid deep indentations. There is no change
+in the logic of the new code, however, now it is simple because it gets
+rid of five unnecessary else conditionals and it combines nested if into
+single if-else-if. This refactor also leads to fix warning detected by
+checkpatch.pl:
+WARNING: Too many leading tabs - consider code refactoring
 
-If nobody nas any concerns regarding this patch, I will queue it up
-for 5.16 in the ACPI tree, because it is requisite for further
-changes.
+Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
+---
 
-Thanks!
+Changes in v2: Fix the bug of not handling properly the else logic
+when p is not null in else-if. Also, reword the subject line and break 
+it up at 72 columns.
 
-> ---
->
-> v1 -> v2:
->    * Resend with a different From and S-o-b address.  No other changes.
->
-> ---
->  drivers/perf/qcom_l2_pmu.c |    7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->
-> Index: linux-pm/drivers/perf/qcom_l2_pmu.c
-> ===================================================================
-> --- linux-pm.orig/drivers/perf/qcom_l2_pmu.c
-> +++ linux-pm/drivers/perf/qcom_l2_pmu.c
-> @@ -840,17 +840,14 @@ static int l2_cache_pmu_probe_cluster(st
->  {
->         struct platform_device *pdev = to_platform_device(dev->parent);
->         struct platform_device *sdev = to_platform_device(dev);
-> +       struct acpi_device *adev = ACPI_COMPANION(dev);
->         struct l2cache_pmu *l2cache_pmu = data;
->         struct cluster_pmu *cluster;
-> -       struct acpi_device *device;
->         unsigned long fw_cluster_id;
->         int err;
->         int irq;
->
-> -       if (acpi_bus_get_device(ACPI_HANDLE(dev), &device))
-> -               return -ENODEV;
-> -
-> -       if (kstrtoul(device->pnp.unique_id, 10, &fw_cluster_id) < 0) {
-> +       if (!adev || kstrtoul(adev->pnp.unique_id, 10, &fw_cluster_id) < 0) {
->                 dev_err(&pdev->dev, "unable to read ACPI uid\n");
->                 return -ENODEV;
->         }
->
->
->
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 69 ++++++++-----------
+ 1 file changed, 29 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 0f82f5031c43..267d853b1514 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -1192,50 +1192,39 @@ unsigned int OnAssocReq(struct adapter *padapter, union recv_frame *precv_frame)
+ 		p = pframe + WLAN_HDR_A3_LEN + ie_offset; ie_len = 0;
+ 		for (;;) {
+ 			p = rtw_get_ie(p, WLAN_EID_VENDOR_SPECIFIC, &ie_len, pkt_len - WLAN_HDR_A3_LEN - ie_offset);
+-			if (p) {
+-				if (!memcmp(p+2, WMM_IE, 6)) {
+-
+-					pstat->flags |= WLAN_STA_WME;
+-
+-					pstat->qos_option = 1;
+-					pstat->qos_info = *(p+8);
+-
+-					pstat->max_sp_len = (pstat->qos_info>>5)&0x3;
+-
+-					if ((pstat->qos_info&0xf) != 0xf)
+-						pstat->has_legacy_ac = true;
+-					else
+-						pstat->has_legacy_ac = false;
+-
+-					if (pstat->qos_info&0xf) {
+-						if (pstat->qos_info&BIT(0))
+-							pstat->uapsd_vo = BIT(0)|BIT(1);
+-						else
+-							pstat->uapsd_vo = 0;
+-
+-						if (pstat->qos_info&BIT(1))
+-							pstat->uapsd_vi = BIT(0)|BIT(1);
+-						else
+-							pstat->uapsd_vi = 0;
+-
+-						if (pstat->qos_info&BIT(2))
+-							pstat->uapsd_bk = BIT(0)|BIT(1);
+-						else
+-							pstat->uapsd_bk = 0;
+-
+-						if (pstat->qos_info&BIT(3))
+-							pstat->uapsd_be = BIT(0)|BIT(1);
+-						else
+-							pstat->uapsd_be = 0;
+-
+-					}
+-
+-					break;
++			if (p && memcmp(p+2, WMM_IE, 6)) {
++				p = p + ie_len + 2;
++			} else if (p && !memcmp(p+2, WMM_IE, 6)) {
++				pstat->flags |= WLAN_STA_WME;
++				pstat->qos_option = 1;
++				pstat->qos_info = *(p+8);
++				pstat->max_sp_len = (pstat->qos_info>>5)&0x3;
++
++				pstat->has_legacy_ac = false;
++				if ((pstat->qos_info&0xf) != 0xf)
++					pstat->has_legacy_ac = true;
++
++				if (pstat->qos_info&0xf) {
++					pstat->uapsd_vo = 0;
++					if (pstat->qos_info&BIT(0))
++						pstat->uapsd_vo = BIT(0)|BIT(1);
++
++					pstat->uapsd_vi = 0;
++					if (pstat->qos_info&BIT(1))
++						pstat->uapsd_vi = BIT(0)|BIT(1);
++
++					pstat->uapsd_bk = 0;
++					if (pstat->qos_info&BIT(2))
++						pstat->uapsd_bk = BIT(0)|BIT(1);
++
++					pstat->uapsd_be = 0;
++					if (pstat->qos_info&BIT(3))
++						pstat->uapsd_be = BIT(0)|BIT(1);
+ 				}
++				break;
+ 			} else {
+ 				break;
+ 			}
+-			p = p + ie_len + 2;
+ 		}
+ 	}
+ 
+-- 
+2.25.1
+
