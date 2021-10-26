@@ -2,153 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D1143B3B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB56E43B3B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhJZOO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:14:28 -0400
-Received: from mail-vk1-f169.google.com ([209.85.221.169]:41963 "EHLO
-        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236432AbhJZOOZ (ORCPT
+        id S236429AbhJZOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235260AbhJZOOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:14:25 -0400
-Received: by mail-vk1-f169.google.com with SMTP id 20so4403097vkc.8;
-        Tue, 26 Oct 2021 07:12:02 -0700 (PDT)
+        Tue, 26 Oct 2021 10:14:22 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12D8C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:11:58 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id t16so13600188qto.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=QnclSDWEoLjy+T+jAuDo+8q1HVMSCwyY/22eDshYtRU=;
+        b=6GqLsYxV4oYares8v6Q86Xxa4bjF0SBL00dhhSOrLGBI9EsDx9JZIv+5RF+Ao08rJw
+         9l8OcUy5etX3I/Alwi4r3DMH8p2+WQ7c+SsIXtVsLpH4EV2QaIaOOWECJxlZhjafOzJz
+         B1qywLI3Z4rpmUui+dTItKzrZa/B+O4wlTduWNNqZTrTVkZKZS13pnMgnutIb7fThpRs
+         AXwJcKRGsW0aa2n9iSWzRX97pMql7KUommtjtUpsPtLatCLJ0RYhoqDqJHJWzS1lQ0yu
+         j2zybWXG98Ipn0SoWt4xw54KAE05p/NLnePapYQ8tDkESnWWKpF9v5m0xTPH2twgpXTt
+         TIVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CRfQV5P44DJIIjFOVODNH7vxAWsLcKoctro6Rd4M6L0=;
-        b=JhMD9WqBBDNoS5sxFMKvFw+hlp08fIm1aVe6StXjPCPgahqyFFexrsK9u9Dxh0frbv
-         nOHFv9h1lKBMNuYceWS1rfxNDaV7era6ukWMJMGJGKqdZ1rOsnRB5wV26H88UyZxPNJO
-         NZ+QOiCjgqXxQ5TAM9R+d/dSPanpcKblx1SX8RcXzRPz0BKfC/8gKOL8y+PMDYklvZOS
-         pa56UVoDVNkkmj7fE40FwRUq6K3mtW3EL5mrHTKRdp1E2PC1YAfsL2ytZb5pz8L3K2dW
-         OhDt3+JQhMRDS10+P3fdd8Qvqxrrgjo8QJxcKNy66dm8CQFxKBjBVPb5ej0QFCa86DgC
-         Jwig==
-X-Gm-Message-State: AOAM530vZYQ1zjIHBK2G5ejU8o/UYCcSVr+V+ug7kQdVmNQ3xQ82uFxZ
-        CoxVMtkfVtAeYasI3HTP+qFoOfbV7LZBSw==
-X-Google-Smtp-Source: ABdhPJyVPVJuFctm/b0earWTs2EGfmwgb0+E1r5spWPoT3GmPEA2cWxiGb2SnxjM+ZtFbV3JSPLI+g==
-X-Received: by 2002:a1f:5c46:: with SMTP id q67mr23295370vkb.24.1635257521000;
-        Tue, 26 Oct 2021 07:12:01 -0700 (PDT)
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
-        by smtp.gmail.com with ESMTPSA id s23sm3115777vss.33.2021.10.26.07.12.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:12:00 -0700 (PDT)
-Received: by mail-vk1-f181.google.com with SMTP id n201so6967349vkn.12;
-        Tue, 26 Oct 2021 07:12:00 -0700 (PDT)
-X-Received: by 2002:a1f:1604:: with SMTP id 4mr22564190vkw.11.1635257520204;
- Tue, 26 Oct 2021 07:12:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <1635188490-15082-1-git-send-email-george.kennedy@oracle.com>
- <YXcAbXJfg/jKCo5h@kroah.com> <0ddb1c19-64b0-4117-7a92-c3d2fcddfdcf@oracle.com>
- <CAMuHMdWcU7wy1dxa_MXuHoUTWebvq6ShP820Bn_v+8tx7-TEdg@mail.gmail.com> <c73402dd-ec3f-4df7-6a16-36fb276a50f4@oracle.com>
-In-Reply-To: <c73402dd-ec3f-4df7-6a16-36fb276a50f4@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 Oct 2021 16:11:48 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVHt=9N274SG+B7W83JbVVnbz_U5Nkejs_PR2HqvZvJgQ@mail.gmail.com>
-Message-ID: <CAMuHMdVHt=9N274SG+B7W83JbVVnbz_U5Nkejs_PR2HqvZvJgQ@mail.gmail.com>
-Subject: Re: [PATCH] video: fbdev: cirrusfb: check pixclock to avoid divide by zero
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=QnclSDWEoLjy+T+jAuDo+8q1HVMSCwyY/22eDshYtRU=;
+        b=MaemRo30rhrQSRnHXDUykKBDeN4M3ZzUmMcus/XFuG7NhqPYSkg3axKwT6eqMEVZhX
+         /0FBhyC38qvraJ+Ok0yOavAtMWvPrrsZiubnq6lim3ewsPshvb64DttK8kQ4z6BvmZdv
+         d/Lzh357x3kv6vh3iV4Wn6NRaKe4aLBNqwMIHkxoozNw8u9lB/Rb9rtsMOCJ4qTj0kJN
+         TtzTM5TAZnyD6A0dRSkBamLKKQ1smrpz5s9tIyiwG0arlsGzRKFnHSKOZcy5aIKdAZxA
+         0t9TnnQSrVFJWb6fipj7ucE8Q2JWB2fMK1ana45m08xxOYBq1S2JWA7MWeUdnD5PB0GT
+         srlQ==
+X-Gm-Message-State: AOAM532M6VrYKCjzhIv5vMuYmy5oB+UAONItz8kcq6pGMogyHhiWyGGI
+        pfl+sCczkg6JlUiST9sOcYngFQ==
+X-Google-Smtp-Source: ABdhPJyk3H55mvkyZF/gT5UmtxxWbTFj4KbzNGO4VZObmertiNf6KAHBvdCoyRMlK4xhQix2poBTAw==
+X-Received: by 2002:ac8:138b:: with SMTP id h11mr24239581qtj.80.1635257518092;
+        Tue, 26 Oct 2021 07:11:58 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id g12sm11206984qtb.3.2021.10.26.07.11.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 07:11:56 -0700 (PDT)
+Message-ID: <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: docs: dev-decoder: add restrictions about
+ CAPTURE buffers
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 26 Oct 2021 10:11:54 -0400
+In-Reply-To: <20211018091427.88468-1-acourbot@chromium.org>
+References: <20211018091427.88468-1-acourbot@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi George,
+Le lundi 18 octobre 2021 à 18:14 +0900, Alexandre Courbot a écrit :
+> CAPTURE buffers might be read by the hardware after they are dequeued,
+> which goes against the general idea that userspace has full control over
+> dequeued buffers. Explain why and document the restrictions that this
+> implies for userspace.
+> 
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> ---
+>  .../userspace-api/media/v4l/dev-decoder.rst     | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst b/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> index 5b9b83feeceb..3cf2b496f2d0 100644
+> --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
+> @@ -752,6 +752,23 @@ available to dequeue. Specifically:
+>       buffers are out-of-order compared to the ``OUTPUT`` buffers): ``CAPTURE``
+>       timestamps will not retain the order of ``OUTPUT`` timestamps.
+>  
+> +.. note::
+> +
+> +   The backing memory of ``CAPTURE`` buffers that are used as reference frames
+> +   by the stream may be read by the hardware even after they are dequeued.
+> +   Consequently, the client should avoid writing into this memory while the
+> +   ``CAPTURE`` queue is streaming. Failure to observe this may result in
+> +   corruption of decoded frames.
+> +
+> +   Similarly, when using a memory type other than ``V4L2_MEMORY_MMAP``, the
+> +   client should make sure that each ``CAPTURE`` buffer is always queued with
+> +   the same backing memory for as long as the ``CAPTURE`` queue is streaming.
+> +   The reason for this is that V4L2 buffer indices can be used by drivers to
+> +   identify frames. Thus, if the backing memory of a reference frame is
+> +   submitted under a different buffer ID, the driver may misidentify it and
+> +   decode a new frame into it while it is still in use, resulting in corruption
+> +   of the following frames.
+> +
 
-On Tue, Oct 26, 2021 at 3:38 PM George Kennedy
-<george.kennedy@oracle.com> wrote:
-> On 10/26/2021 4:30 AM, Geert Uytterhoeven wrote:
-> > On Mon, Oct 25, 2021 at 9:37 PM George Kennedy
-> > <george.kennedy@oracle.com> wrote:
-> >> On 10/25/2021 3:07 PM, Greg KH wrote:
-> >>> On Mon, Oct 25, 2021 at 02:01:30PM -0500, George Kennedy wrote:
-> >>>> Do a sanity check on pixclock value before using it as a divisor.
-> >>>>
-> >>>> Syzkaller reported a divide error in cirrusfb_check_pixclock.
-> >>>>
-> >>>> divide error: 0000 [#1] SMP KASAN PTI
-> >>>> CPU: 0 PID: 14938 Comm: cirrusfb_test Not tainted 5.15.0-rc6 #1
-> >>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2
-> >>>> RIP: 0010:cirrusfb_check_var+0x6f1/0x1260
-> >>>>
-> >>>> Call Trace:
-> >>>>    fb_set_var+0x398/0xf90
-> >>>>    do_fb_ioctl+0x4b8/0x6f0
-> >>>>    fb_ioctl+0xeb/0x130
-> >>>>    __x64_sys_ioctl+0x19d/0x220
-> >>>>    do_syscall_64+0x3a/0x80
-> >>>>    entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >>>>
-> >>>> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+I think this is nice addition, but insufficient. We should extend the API with a
+flags that let application know if the buffers are reference or secondary. For
+the context, we have a mix of CODEC that will output usable reference frames and
+needs careful manipulation and many other drivers where the buffers *maybe*
+secondary, meaning they may have been post-processed and modifying these in-
+place may have no impact.
 
-> >>>> --- a/drivers/video/fbdev/cirrusfb.c
-> >>>> +++ b/drivers/video/fbdev/cirrusfb.c
-> >>>> @@ -477,6 +477,9 @@ static int cirrusfb_check_pixclock(const struct fb_var_screeninfo *var,
-> >>>>       struct cirrusfb_info *cinfo = info->par;
-> >>>>       unsigned maxclockidx = var->bits_per_pixel >> 3;
-> >>>>
-> >>>> +    if (!var->pixclock)
-> >>>> +            return -EINVAL;
-> > This is not correct: fbdev drivers should round up invalid values,
-> > and only return an error if rounding up cannot yield a valid value.
->
-> What default value would you recommend? Here are examples of some of the
-> possible cirrusfb pixclock values:
-> 40000: 25MHz
-> 20000: 50Mhz
-> 12500: 80Mhz
+The problem is the "may", that will depends on the chosen CAPTURE format. I
+believe we should flag this, this flag should be set by the driver, on CAPTURE
+queue. The information is known after S_FMT, so Format Flag, Reqbufs
+capabilities or querybuf flags are candidates. I think the buffer flags are the
+best named flag, though we don't expect this to differ per buffer. Though,
+userspace needs to call querybuf for all buf in order to export or map them.
 
-You should pick the lowest supported value.
+What userspace can do with this is to export the DMABuf as read-only, and signal
+this internally in its own context. This is great to avoid any unwanted side
+effect described here.
 
-> We can plug in a default value, but I believe it is just covering up the
-> fact that an incorrect value has been copied in.
+>  During the decoding, the decoder may initiate one of the special sequences, as
+>  listed below. The sequences will result in the decoder returning all the
+>  ``CAPTURE`` buffers that originated from all the ``OUTPUT`` buffers processed
 
-Passing zero is not incorrect.  The driver is supposed to round it
-up to a valid value.
 
-> I would think we would want to keep this driver consistent with the
-> other fb drivers that return failure with the incorrect value.
-
-I disagree: non-conformant behavior should be fixed, not copied.
-
-> >>> Shouldn't you be checking further up the call chain where this got set
-> >>> to 0?
-> >> The same pixclock check is done in these fb drivers:
-> >>
-> >> arch/arm/mach-rpc/include/mach/acornfb.h:    if (!var->pixclock)
-> >> drivers/video/fbdev/asiliantfb.c:    if (!var->pixclock)
-> >> drivers/video/fbdev/clps711x-fb.c:    if (!var->pixclock)
-> >> drivers/video/fbdev/core/fbmon.c:    if (!var->pixclock)
-> >> drivers/video/fbdev/core/modedb.c:    if (!var->pixclock)
-> >> drivers/video/fbdev/cirrusfb.c:    if (!var->pixclock)
-> >> drivers/video/fbdev/kyro/fbdev.c:    if (!var->pixclock)
-> >> drivers/video/fbdev/riva/fbdev.c:    if (!var->pixclock)
-> >> drivers/video/fbdev/uvesafb.c:    if (!var->pixclock)
-> >>
-> >>> What logic allows this to be a valid value?  What about all other fb
-> >>> drivers?
-> >> The "check_var" function, which is set into the ".fb_check_var" element
-> >> of the fb_ops struct, should do the check, but in the case of cirrusfb,
-> >> that is not being done.
-> >>
-> >> All this patch does is add the same pixclock check that the other above
-> >> fb drivers do.
-> > Indeed, several drivers are not following the rounding rules.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
