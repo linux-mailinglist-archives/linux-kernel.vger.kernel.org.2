@@ -2,91 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7A943B609
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B912F43B61F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237093AbhJZPvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:51:04 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43190 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236994AbhJZPvA (ORCPT
+        id S235640AbhJZPzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237168AbhJZPyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:51:00 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QFC8TH014888;
-        Tue, 26 Oct 2021 17:48:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=selector1;
- bh=Z4tfzYw9eG2voXHJI5ARvyFBLH00E40u2YN2hzN5tg8=;
- b=VQ5nMSkpJtvX3Z/QafgaV8pPl1N/XYcPzuK29C80bQRADauKVHjo7m6sWzDeGnp4lzwc
- EsgMvP0R1RYf9PFNIiW4KyXSFU5LGSzhWspUD7nZ4ix9gW2SK6vME6EzIoPlYooOM5gl
- Gc/t7t5sxWlj6fjsBJ/qGqKoofNUIEsJU49UxkRDAXD2EwE4JBozoOAu+DqfkG38Camz
- domycwJsTx+CO1Dogr/3j/CoYkJxnQhpfANweJr34cQCB3uh6XV37O10pybb7+WUQ50Z
- uBz4Ih1L4MdvlLtOrC8PBJ62o4vv6gRIdJGNyM9dn65mGvGETN4NxoZ7X36sdBn3MMaL dA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bxm40r8hm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 17:48:19 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 67987100034;
-        Tue, 26 Oct 2021 17:48:18 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5F39524FDE1;
-        Tue, 26 Oct 2021 17:48:18 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 26 Oct 2021 17:48:18
- +0200
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [PATCH 1/1] phy: stm32: fix st,slow-hs-slew-rate with st,decrease-hs-slew-rate
-Date:   Tue, 26 Oct 2021 17:48:17 +0200
-Message-ID: <20211026154817.198937-1-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 26 Oct 2021 11:54:39 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907CDC061348;
+        Tue, 26 Oct 2021 08:52:12 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id g8so14365936edb.2;
+        Tue, 26 Oct 2021 08:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dPVlSd43MaGLNnv2bHAgLRIpF45DjHAQcAaR9piQZVw=;
+        b=mL1u3WabTdo6TubLxq+VUVT7yFq5GGUdgPYcF7n8IlsDSrQNG0Ug76qmuYYJ7QiVum
+         E4jqz6ajdkVD9jLrd7X8Ui9LfYUDf4yp2FTkiy/bv71WJbQUVFfzstzUwKolNlPlFE+F
+         Q78qkSFEpvVHrcFqu7VLfrSei2neTDiIoreLkUFHW8+oFW8ZTAASekwr7sN43NHaLVKN
+         CzfkcXDS1X38syzFULd+WLOxJbRE72xfW/2+653wvqexvSE7bAaWMXE1C730dOCGgMTy
+         g4RkQHPFq6Utpb3L2MIyc7F8P9GVZLMPp1r7fj/6e6uHtjmSIi48ydZrl2qByDegCWqx
+         w4vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dPVlSd43MaGLNnv2bHAgLRIpF45DjHAQcAaR9piQZVw=;
+        b=mRZ/X39ua9rKQF1fwR0l7WND+7UObnTbSEXLxgU/XmNrUGjpO0ICLNKk6pJWTyxcSd
+         /q6zDx787GFErHTeR2A5AO/TttpEqipiNK73Lh2n9vHu9M6Ni8TEM0S5pnJST1NGby+K
+         7jsMdvRRtz86ITdqRVpvQOWbW4cjDul9sBbWxc/NTESWHfpGFq9C/TaYAKi54txUdJs0
+         kLo1mJrRvVkv4pnFZvySbfRINnj7zf3AbqN5JUXLUXCEpHz4fUnj2IExNz0CzYz/dQIy
+         YQJv8CupLnPWeuarKXesB9AsHjtDOxSqCxL1+R+ZE0y1o+6tfvcfmef4QurlzutDBpk4
+         YOvQ==
+X-Gm-Message-State: AOAM532dsdDE7mSKo1LFjCvsKhRnETu7Wsf/mpKHHYXn9tC2gEITKFYv
+        wklQvWvWp9IQiyxTFuEkrCGdY1PZHdfRQnNRTTEAlMIfK5/mYQ==
+X-Google-Smtp-Source: ABdhPJxqIn1UxV+0bZlUbnyq6SqlrKSdHvqrBtSN0t8LXMbFZdTV/iOwOHH1bsLWVmn9c4H5Ign0HOLUzi5MW/KlTi4=
+X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr36360121edc.106.1635263323553;
+ Tue, 26 Oct 2021 08:48:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_04,2021-10-26_01,2020-04-07_01
+References: <20211025150223.13621-1-mhocko@kernel.org> <20211025150223.13621-3-mhocko@kernel.org>
+In-Reply-To: <20211025150223.13621-3-mhocko@kernel.org>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Tue, 26 Oct 2021 17:48:32 +0200
+Message-ID: <CA+KHdyVqOuKny7bT+CtrCk8BrnARYz744Ze6cKMuy2BXo5e7jw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-st,decrease-hs-slew-rate is described in phy-stm32-usbphyc.yaml. Then
-fix the property name in driver.
+> From: Michal Hocko <mhocko@suse.com>
+>
+> Dave Chinner has mentioned that some of the xfs code would benefit from
+> kvmalloc support for __GFP_NOFAIL because they have allocations that
+> cannot fail and they do not fit into a single page.
+>
+> The larg part of the vmalloc implementation already complies with the
+> given gfp flags so there is no work for those to be done. The area
+> and page table allocations are an exception to that. Implement a retry
+> loop for those.
+>
+> Add a short sleep before retrying. 1 jiffy is a completely random
+> timeout. Ideally the retry would wait for an explicit event - e.g.
+> a change to the vmalloc space change if the failure was caused by
+> the space fragmentation or depletion. But there are multiple different
+> reasons to retry and this could become much more complex. Keep the retry
+> simple for now and just sleep to prevent from hogging CPUs.
+>
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> ---
+>  mm/vmalloc.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index c6cc77d2f366..602649919a9d 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2941,8 +2941,12 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>         else if ((gfp_mask & (__GFP_FS | __GFP_IO)) == 0)
+>                 flags = memalloc_noio_save();
+>
+> -       ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+> +       do {
+> +               ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+>                         page_shift);
+> +               if (ret < 0)
+> +                       schedule_timeout_uninterruptible(1);
+> +       } while ((gfp_mask & __GFP_NOFAIL) && (ret < 0));
+>
 
-Fixes: 2f5e9f815a2f ("phy: stm32: add phy tuning support")
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
----
- drivers/phy/st/phy-stm32-usbphyc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1.
+After that change a below code:
 
-diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index 7df6a63ad37b..e4f4a9be5132 100644
---- a/drivers/phy/st/phy-stm32-usbphyc.c
-+++ b/drivers/phy/st/phy-stm32-usbphyc.c
-@@ -478,7 +478,7 @@ static void stm32_usbphyc_phy_tuning(struct stm32_usbphyc *usbphyc,
- 	if (!of_property_read_bool(np, "st,no-lsfs-fb-cap"))
- 		usbphyc_phy->tune |= LFSCAPEN;
- 
--	if (of_property_read_bool(np, "st,slow-hs-slew-rate"))
-+	if (of_property_read_bool(np, "st,decrease-hs-slew-rate"))
- 		usbphyc_phy->tune |= HSDRVSLEW;
- 
- 	ret = of_property_read_u32(np, "st,tune-hs-dc-level", &val);
+<snip>
+if (ret < 0) {
+    warn_alloc(orig_gfp_mask, NULL,
+        "vmalloc error: size %lu, failed to map pages",
+        area->nr_pages * PAGE_SIZE);
+    goto fail;
+}
+<snip>
+
+does not make any sense anymore.
+
+2.
+Can we combine two places where we handle __GFP_NOFAIL into one place?
+That would look like as more sorted out.
+
 -- 
-2.25.1
-
+Uladzislau Rezki
