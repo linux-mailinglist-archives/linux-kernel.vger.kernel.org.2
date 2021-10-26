@@ -2,151 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0313243BABA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5339843BAC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238697AbhJZT2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:28:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38986 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238684AbhJZT2A (ORCPT
+        id S238707AbhJZT32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236282AbhJZT3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:28:00 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QFXFGr025840;
-        Tue, 26 Oct 2021 12:25:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=dQJW8O2XY8jkDsVc+lZdeXxbE6tLNOjWgC+8Z99liIU=;
- b=WST8PDYyXlYbNa94PStYIri7EEcU+VLL7HuaS9MTKhKO3kIutnhJzIZWWoaVnMPQJq1M
- NPVoea9OAbh+nUpHhmGmZC4uumAw+X98VBoXXUb3j3WB1Hn/AwWF7dKXL1ATblOs+2IE
- jW0pyTYuY0dhY7OgblJ8iH8FID8dpSDNiVU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bx4e7qsdb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Oct 2021 12:25:35 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 26 Oct 2021 12:25:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Uq3XABm4LQBLAIPT2WzvIFDWOKFlX/fdEq0V7TRCLbxGvzxiFk2xTCMjCTuPSeD7DI8z0IHUyjw5ajmv6dV0lvMQYsUOk7OQrXXrzkZcft46A6ErZU7rw+R0MhQKM686OlIAtYkzilU34EVonGoqpq70aa3ietNCe6ajt9u+pbOYAkF2F7gOD3lnqWbev1Y1uilSXFj/f9moKQrbTuDC8+0whRTpQW5CJvkfWH/+sfgVTeurKFfvgZqA/lB8lrvVo13/NCiAyXYGM7TyLlwCc6pY4I5Er1+MpiCd/kD5xZ6QN6X0N1iaPOAcFWkWleVxQDjD7gjVMQQSIJu3mKhNWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dQJW8O2XY8jkDsVc+lZdeXxbE6tLNOjWgC+8Z99liIU=;
- b=ZBcIS54dOYrzpkcaKJKbyGoSvH1uP2cOhcBmlESgQePPJeBuCtgy20Hhh0HKCqJIpY2qJwvec+BffEI0tRhydGzz+Li7PPnmQ0K+mgMkPpIdF2l1PCLjUseLm5vG73uslzH25klTkKgknsdal/n9gOdN+9HoZEuIm2WwipJQwl3SHJ3ncoUlZsgOqeAEdpg9KduzQGMYecqfMx5D2aklJYg2p6qUnUAFgAzFGFn03EkEGwgaUvOPDRs5MWM9eqi2ch7Y3r1LrTpxHlFh9siOKGIrZ5UbvbVR3uWfJP+G2e0r6nTranjb4HV5UXabQ+pb0MRVMKdW1aJGZ5gSNXIyLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SN6PR15MB2240.namprd15.prod.outlook.com (2603:10b6:805:22::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Tue, 26 Oct
- 2021 19:25:33 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160%7]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
- 19:25:33 +0000
-Date:   Tue, 26 Oct 2021 12:25:30 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Tejun Heo <tj@kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: Move BPF_MAP_TYPE for INODE_STORAGE and
- TASK_STORAGE outside of CONFIG_NET
-Message-ID: <20211026192530.jogbgykrgra5ic4v@kafai-mbp.dhcp.thefacebook.com>
-References: <YXG1cuuSJDqHQfRY@slm.duckdns.org>
- <20211026191933.as4tk6vclw4q2fsg@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211026191933.as4tk6vclw4q2fsg@kafai-mbp.dhcp.thefacebook.com>
-X-ClientProxiedBy: MW4P222CA0016.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::21) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        Tue, 26 Oct 2021 15:29:25 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62179C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:27:01 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id c28so945907lfv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tb8F7ypwNh/ccIQWIcT0YthA9rXh1673rz3hH/DXVqs=;
+        b=YfqoGxifi+mBR+7/Mz10ODvp8GfD6ugGv0Eu6C3bn8ocaQdbvpEgozjw2/8hQLQIR7
+         co1WBDdovhDNtbMl1sd2lyKH7nuUbJlOEUoqbeDJbOyNYabbW4Les4ws0UG7PTpQKV6Q
+         t+o0LuGq8WsipY7G+uOttXQ3OJwml3wgrGzKQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tb8F7ypwNh/ccIQWIcT0YthA9rXh1673rz3hH/DXVqs=;
+        b=4iQ1wvozvTrlPooeSekHG/HV2zdk/Mt1sIdiEKD/IMcMvpJevAkVcB0eAcEHUm6hwz
+         womxpDWb2/Vh3lXqWl3ujbPoEcMNC7iV5UBECq/A3YlhJdKzCgSnNJbWOPPGZLE2yZor
+         /SqkDskoiwlp6B6UFLAMN2xVSkQJs6InKg+M66zRq5AUK5Vp1XKRC+7KE0Oi1IRWlkQl
+         B5k5I/ZzaZO7jRp7sJ0x5JYHVzJPtOyVLpq51zURTGiTnL0YSdBurDs8prZ/q1zyqWkw
+         0UcixOgYrBV1IS1OuufPGq2wtq/o9lBVzh31nrN03Jh9EXfLNXrgxDdz5JpkF3U25Dyr
+         lH0w==
+X-Gm-Message-State: AOAM533nrPVVwY6QPa273z3ZQ66DJe0neZl3DacY+84XsnbQHNlwoIpr
+        48UIgtrxpi04RIGyAY1sCJsZsvZ2ViJdUgocfAZZOQ==
+X-Google-Smtp-Source: ABdhPJwyP+Yu/V1vJZk5sAZ/p9xSqZa+cHLXITs+ykY7LjYVT4XwYM5c42m56pBV0PTTH1vmEdd4NVJ3t0dS1sXNHDc=
+X-Received: by 2002:a05:6512:12c9:: with SMTP id p9mr25472977lfg.236.1635276419590;
+ Tue, 26 Oct 2021 12:26:59 -0700 (PDT)
 MIME-Version: 1.0
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:bf3a) by MW4P222CA0016.NAMP222.PROD.OUTLOOK.COM (2603:10b6:303:114::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.22 via Frontend Transport; Tue, 26 Oct 2021 19:25:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f0dda061-923b-4ef5-0bec-08d998b6614e
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2240:
-X-Microsoft-Antispam-PRVS: <SN6PR15MB22407952726A5C4F0B2FAAB9D5849@SN6PR15MB2240.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9aeJqyZSsuNKQYTUHppNeeJ5Ht7FatAcj/b15vJAujexcd8/xQ64QeGMa4iZJseXupP4iYjf1MxGWrxeo/ztEdjuCdbBKpZOpTcl5wNvIO0cdq7j8EJSCbD2nxpKGTZtrHXbUMumoalpquKmARh2qk8UoMRDp8Im8VzUAfLiDFvnDDqc8hcyxw49QMaXrZa8Won4rL/wRDhn1xed0VpgZH1FcaU66KUZy6nsnXb7irFPLKaO1iN34JHdSWu/1dD+1UtQrvCdLkA5ZZIycy/QOq0tsG9+zShYXBjRAIfN/RPl3nPC0kDFwwiJPiE/4JT0C848xtIqrhs/e5sWBUv789MPLDQRqywz1CbHxT3T+2pl5Gbi6nlbljsoEPWWHP/hds7Ty1s9oBDmM8gnHfH9+YtBdaGNvxRvDU0AUNXC+Y7l1dFR9nr80Nrptlaioi+227fHTWH+bo30P+LQIVFtLAy9nZFwwZAm+cewuA3kaDmcQHckY2nEDYW30lzMAYtHIiYS+LUCRtXD1yog4U1QAEYjaRzzpFudxpCBW2Taz3EtvG9f78PF2Wa2U3UxnSyxBpJ3sW1zfDiOOEtW6pTwRUmoszRItAOXtccRAPtvq+dhrumnMSfZS+RXsx83ATS+GoEHd8RIGm+qxzgQeGVmqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(86362001)(186003)(4326008)(6916009)(52116002)(6506007)(316002)(54906003)(55016002)(9686003)(2906002)(7696005)(66946007)(4744005)(66476007)(5660300002)(66556008)(508600001)(83380400001)(8936002)(8676002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AMtpaT052vry/eClhl6YfQwY2VkLRGGsC0hRNhGEUV2nDdw4ZBXlC5UUWBka?=
- =?us-ascii?Q?bnXtpu8v8W46QN4ho/a/j5fQNCksRp+9JJradKPMQiTZ5WmXzn2l8fi5iHCF?=
- =?us-ascii?Q?E0NAMb8UEQjFc9UNtBIuZWFDGoEojNYQJQ0f/MbaRpvWxHpa5g+xdSw1SNLu?=
- =?us-ascii?Q?mSxK0cSWKpItZrI+tTY92UF2WxAk31Pah9aTn8X4kB2Ma2VT+WTKD5xL5pFX?=
- =?us-ascii?Q?9q32NJQ7VlnnIuVWaOhj8ABab+uRHTixZlupLfXKVPG0MRL1SQdXdamMCn42?=
- =?us-ascii?Q?PYPDJ0kAuyAWb7w42nUPxX+Uz/p3M0hV8zFXGcRohSv6QUqpbAbdz5+oVvWf?=
- =?us-ascii?Q?pSmf9eVekwB2jbaOa6P2LIIpxQhfFWlxbnBv3cZIkj39k3CXQyzvl2S44DEt?=
- =?us-ascii?Q?0FwPIeKydh5lkXJdO0TyGKgFGapw1t65PxPTfBVGnrt6pYsvq0CAzpfAYOHG?=
- =?us-ascii?Q?tZXDhN37VV8qd4NR/QMY5jY6PVRnvKZSLfyZJYboBSWiCV2KsyN76gFRAYNL?=
- =?us-ascii?Q?e4ZnIXdQUMGAauIUxsxIrNBlZ2aQfpP9c7AmliToiWVlRDUFWfdqDO4o7dCV?=
- =?us-ascii?Q?2+OCOJXZOo+RS4JBLtCN91SG1gSZLJTF+pLg77QS927zLxK2/ci8m8+R2JIG?=
- =?us-ascii?Q?M9FayU0KcaTMYNxH65v+FFrFrKeEXNo96FwasCeEmkWzDqJ4FwDCzcM0WabE?=
- =?us-ascii?Q?vwRkZgejA67DuhgsImELeQakm7hC4cKmn9QsWbtRNG6N3e4NjPNrD1ojVcdP?=
- =?us-ascii?Q?nf0n10Ot6eDPh8oK8vld6WUjMwkST3myhCDbsgtpIWE34Gw4YJqp/W/zye5e?=
- =?us-ascii?Q?Qmk5RdoHgHo23f3wjPvCVXNMbOQVNuAcN9IoRjkAam0GL3tys+EiSdzyxlEz?=
- =?us-ascii?Q?yimc1enfQyz3vo4R2O5/X4JJjejZ7ntAw28UCzf8xUt2MiiFGHSOOkZU/0ww?=
- =?us-ascii?Q?mdvZWomwk5ZElaimwEqtyEuDSm78XkrFUXMZ54Vgvp6sQQpDlXGhnfZrjnQR?=
- =?us-ascii?Q?HWeKvH1UYHJrCm6q3bpccPyEriMYfIcY/13OKhh95Z3kp+jlAgH6kfhZEJUd?=
- =?us-ascii?Q?5dD5tIG0i5g641HLB+A30y9eB4ndo86eBqoifEJISYmd49LIOKkJsTIUzL9g?=
- =?us-ascii?Q?Wu/X6j5+quJgXJMhM4EacskuUSGFiY4t7z/IGlsJPCxLLT0ApQBpEjHDJ3jy?=
- =?us-ascii?Q?5Xk/mogsbPwI13kDVkOWWFx5b9gCxKsxuxW+5tahDJxQGhPmxdIhX3ymhBjB?=
- =?us-ascii?Q?0aeAoqTRGMohyIuW+8gX7VMFozCcF2VNRQ2eVkiUxXIyqSydp1/FL3iSsA6j?=
- =?us-ascii?Q?cTcLpb03noEzBpI4PR3wuoYGwRnv4Si5MnLOinVbYaOd2R3dl2+W5amWKyjK?=
- =?us-ascii?Q?iEnxAB9wkScvoAHpUwdTGbPuEC0HyOiGfM62FX+pboAC0DRxcQ0SIPFNzILr?=
- =?us-ascii?Q?9vycKDZMsjf8WiDAut5zCchxqj42zDHdx3o7GeRPBVIOcFA2FHrxJ8zqYDgp?=
- =?us-ascii?Q?JWKJGVMvyNlK5C6qH1+aQ46BInDxkrAn27WpObky61wU2Use1xahFJyvxRV0?=
- =?us-ascii?Q?gtcGe41O4mLzHxVQUkhaPWqJpTTr4N6AXHhzekCs2B7BtQSpw+5cIswTeeso?=
- =?us-ascii?Q?og=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0dda061-923b-4ef5-0bec-08d998b6614e
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2021 19:25:33.4586
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7Lcmd+HKO3J4N9q6GkqmltKiPWXH0/Fwyd905ZA/xiHI7mBEwfFzwUcyHXo5T0ED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2240
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: LMvRBsLa9iYLmtnNYiDwenGUvI5Xp8hq
-X-Proofpoint-ORIG-GUID: LMvRBsLa9iYLmtnNYiDwenGUvI5Xp8hq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_05,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1015 mlxscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=690
- phishscore=0 impostorscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110260108
-X-FB-Internal: deliver
+References: <20210929194012.3433306-1-markyacoub@chromium.org>
+ <20211013181228.1578201-1-markyacoub@chromium.org> <cb482b45-d98c-1860-6cf2-313b831e6066@molgen.mpg.de>
+ <CAJUqKUoLYogBbUKoVVDMQErdx3tFEpLBtKDfgYtHSPOVDnEs0Q@mail.gmail.com>
+In-Reply-To: <CAJUqKUoLYogBbUKoVVDMQErdx3tFEpLBtKDfgYtHSPOVDnEs0Q@mail.gmail.com>
+From:   Mark Yacoub <markyacoub@chromium.org>
+Date:   Tue, 26 Oct 2021 15:26:48 -0400
+Message-ID: <CAJUqKUoT3vid8ZmJw4tp8WqYFH31hYhn7Ad+dQDMLMj-bFt+YA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm: Add Gamma and Degamma LUT sizes props to
+ drm_crtc to validate.
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     seanpaul@chromium.org, harry.wentland@amd.com,
+        Mark Yacoub <markyacoub@google.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 12:19:36PM -0700, Martin KaFai Lau wrote:
-> On Thu, Oct 21, 2021 at 08:46:10AM -1000, Tejun Heo wrote:
-> > bpf_types.h has BPF_MAP_TYPE_INODE_STORAGE and BPF_MAP_TYPE_TASK_STORAGE
-> > declared inside #ifdef CONFIG_NET although they are built regardless of
-> > CONFIG_NET. So, when CONFIG_BPF_SYSCALL && !CONFIG_NET, they are built
-> > without the declarations leading to spurious build failures and not
-> > registered to bpf_map_types making them unavailable.
-> > 
-> > Fix it by moving the BPF_MAP_TYPE for the two map types outside of
-> > CONFIG_NET.
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+new patch: https://patchwork.freedesktop.org/series/96314/
 
-btw, this should be the fix tag that has both task and inode storage.
-Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs")
+On Tue, Oct 26, 2021 at 3:24 PM Mark Yacoub <markyacoub@chromium.org> wrote:
+>
+> On Tue, Oct 26, 2021 at 8:02 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+> >
+> > Dear Mark,
+> >
+> >
+> > Thank you for your patch.
+> >
+> > On 13.10.21 20:12, Mark Yacoub wrote:
+> > > From: Mark Yacoub <markyacoub@google.com>
+> > >
+> > > [Why]
+> > > 1. drm_atomic_helper_check doesn't check for the LUT sizes of either Gamma
+> > > or Degamma props in the new CRTC state, allowing any invalid size to
+> > > be passed on.
+> > > 2. Each driver has its own LUT size, which could also be different for
+> > > legacy users.
+> >
+> > How can the problem be reproduced?
+> It was caught using igt@kms_color@pipe-A-invalid-gamma-lut-sizes.
+> it validates that drivers will only LUTs of their expected size not
+> any random (smaller or larger) number.
+> >
+> > > [How]
+> > > 1. Create |degamma_lut_size| and |gamma_lut_size| to save the LUT sizes
+> > > assigned by the driver when it's initializing its color and CTM
+> > > management.
+> > > 2. Create drm_atomic_helper_check_crtc which is called by
+> > > drm_atomic_helper_check to check the LUT sizes saved in drm_crtc that
+> > > they match the sizes in the new CRTC state.
+> > > 3. Rename older lut checks that test for the color channels to indicate
+> > > it's a channel check. It's not included in drm_atomic_helper_check_crtc
+> > > as it's hardware specific and is to be called by the driver.
+> > > 4. As the LUT size check now happens in drm_atomic_helper_check, remove
+> > > the lut check in intel_color.c
+> > >
+> > > Fixes: igt@kms_color@pipe-A-invalid-gamma-lut-sizes on MTK
+> >
+> > If I am not mistaken, the Fixes tag is used for commits I believe. Maybe
+> > use Resolves or something similar?
+> fixed!
+> >
+> > > Tested on Zork(amdgpu) and Jacuzzi(mediatek), volteer(TGL)
+> >
+> > Please add a space before the (.
+my apologies i missed this. I'll update it if another version is
+needed or if the committer can do it for me when they apply it.
+> >
+> > How did you test this?
+> smoke test on both MTK and TGL devices along with running
+> igt@kms_color on both devices.
+> >
+> > > v1:
+> > > 1. Fix typos
+> > > 2. Remove the LUT size check from intel driver
+> > > 3. Rename old LUT check to indicate it's a channel change
+> > >
+> > > Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+> > > ---
+> > >   drivers/gpu/drm/drm_atomic_helper.c        | 60 ++++++++++++++++++++++
+> > >   drivers/gpu/drm/drm_color_mgmt.c           | 14 ++---
+> > >   drivers/gpu/drm/i915/display/intel_color.c | 14 ++---
+> > >   include/drm/drm_atomic_helper.h            |  1 +
+> > >   include/drm/drm_color_mgmt.h               |  7 +--
+> > >   include/drm/drm_crtc.h                     | 11 ++++
+> > >   6 files changed, 89 insertions(+), 18 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> > > index bc3487964fb5e..5feb2ad0209c3 100644
+> > > --- a/drivers/gpu/drm/drm_atomic_helper.c
+> > > +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> > > @@ -929,6 +929,62 @@ drm_atomic_helper_check_planes(struct drm_device *dev,
+> > >   }
+> > >   EXPORT_SYMBOL(drm_atomic_helper_check_planes);
+> > >
+> > > +/**
+> > > + * drm_atomic_helper_check_crtcs - validate state object for CRTC changes
+> > > + * @state: the driver state object
+> > > + *
+> > > + * Check the CRTC state object such as the Gamma/Degamma LUT sizes if the new
+> > > + * state holds them.
+> > > + *
+> > > + * RETURNS:
+> > > + * Zero for success or -errno
+> > > + */
+> > > +int drm_atomic_helper_check_crtcs(struct drm_atomic_state *state)
+> > > +{
+> > > +     struct drm_crtc *crtc;
+> > > +     struct drm_crtc_state *new_crtc_state;
+> > > +     int i;
+> > > +
+> > > +     for_each_new_crtc_in_state (state, crtc, new_crtc_state, i) {
+> > > +             if (new_crtc_state->color_mgmt_changed &&
+> > > +                 new_crtc_state->gamma_lut) {
+> > > +                     uint64_t supported_lut_size = crtc->gamma_lut_size;
+> > > +                     uint32_t supported_legacy_lut_size = crtc->gamma_size;
+> > > +                     uint32_t new_state_lut_size =
+> > > +                             drm_color_lut_size(new_crtc_state->gamma_lut);
+> > > +
+> > > +                     if (new_state_lut_size != supported_lut_size &&
+> > > +                         new_state_lut_size != supported_legacy_lut_size) {
+> > > +                             drm_dbg_state(
+> > > +                                     state->dev,
+> > > +                                     "Invalid Gamma LUT size. Should be %u (or %u for legacy) but got %u.\n",
+> > > +                                     supported_lut_size,
+> > > +                                     supported_legacy_lut_size,
+> > > +                                     new_state_lut_size);
+> > > +                             return -EINVAL;
+> > > +                     }
+> > > +             }
+> > > +
+> > > +             if (new_crtc_state->color_mgmt_changed &&
+> > > +                 new_crtc_state->degamma_lut) {
+> > > +                     uint32_t new_state_lut_size =
+> > > +                             drm_color_lut_size(new_crtc_state->degamma_lut);
+> > > +                     uint64_t supported_lut_size = crtc->degamma_lut_size;
+> > > +
+> > > +                     if (new_state_lut_size != supported_lut_size) {
+> > > +                             drm_dbg_state(
+> > > +                                     state->dev,
+> > > +                                     "Invalid Degamma LUT size. Should be %u but got %u.\n",
+> > > +                                     supported_lut_size, new_state_lut_size);
+> > > +                             return -EINVAL;
+> > > +                     }
+> > > +             }
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +EXPORT_SYMBOL(drm_atomic_helper_check_crtcs);
+> > > +
+> > >   /**
+> > >    * drm_atomic_helper_check - validate state object
+> > >    * @dev: DRM device
+> > > @@ -974,6 +1030,10 @@ int drm_atomic_helper_check(struct drm_device *dev,
+> > >       if (ret)
+> > >               return ret;
+> > >
+> > > +     ret = drm_atomic_helper_check_crtcs(state);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > >       if (state->legacy_cursor_update)
+> > >               state->async_update = !drm_atomic_helper_async_check(dev, state);
+> > >
+> > > diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
+> > > index bb14f488c8f6c..e5b820ce823bf 100644
+> > > --- a/drivers/gpu/drm/drm_color_mgmt.c
+> > > +++ b/drivers/gpu/drm/drm_color_mgmt.c
+> > > @@ -166,6 +166,7 @@ void drm_crtc_enable_color_mgmt(struct drm_crtc *crtc,
+> > >       struct drm_mode_config *config = &dev->mode_config;
+> > >
+> > >       if (degamma_lut_size) {
+> > > +             crtc->degamma_lut_size = degamma_lut_size;
+> > >               drm_object_attach_property(&crtc->base,
+> > >                                          config->degamma_lut_property, 0);
+> > >               drm_object_attach_property(&crtc->base,
+> > > @@ -178,6 +179,7 @@ void drm_crtc_enable_color_mgmt(struct drm_crtc *crtc,
+> > >                                          config->ctm_property, 0);
+> > >
+> > >       if (gamma_lut_size) {
+> > > +             crtc->gamma_lut_size = gamma_lut_size;
+> > >               drm_object_attach_property(&crtc->base,
+> > >                                          config->gamma_lut_property, 0);
+> > >               drm_object_attach_property(&crtc->base,
+> > > @@ -585,17 +587,17 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+> > >   EXPORT_SYMBOL(drm_plane_create_color_properties);
+> > >
+> > >   /**
+> > > - * drm_color_lut_check - check validity of lookup table
+> > > + * drm_color_lut_channels_check - check validity of the channels in the lookup table
+> > >    * @lut: property blob containing LUT to check
+> > >    * @tests: bitmask of tests to run
+> > >    *
+> > > - * Helper to check whether a userspace-provided lookup table is valid and
+> > > - * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
+> > > - * the tests in &drm_color_lut_tests should be performed.
+> > > + * Helper to check whether each color channel of userspace-provided lookup table is valid and
+> > > + * satisfies hardware requirements. Drivers pass a bitmask indicating which of in
+> > > + * &drm_color_lut_channels_tests should be performed.
+> > >    *
+> > >    * Returns 0 on success, -EINVAL on failure.
+> > >    */
+> > > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+> > > +int drm_color_lut_channels_check(const struct drm_property_blob *lut, u32 tests)
+> > >   {
+> > >       const struct drm_color_lut *entry;
+> > >       int i;
+> > > @@ -625,4 +627,4 @@ int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+> > >
+> > >       return 0;
+> > >   }
+> > > -EXPORT_SYMBOL(drm_color_lut_check);
+> > > +EXPORT_SYMBOL(drm_color_lut_channels_check);
+> > > diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
+> > > index dab892d2251ba..a308fe52746ac 100644
+> > > --- a/drivers/gpu/drm/i915/display/intel_color.c
+> > > +++ b/drivers/gpu/drm/i915/display/intel_color.c
+> > > @@ -1285,7 +1285,7 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+> > >       const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
+> > >       const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
+> > >       int gamma_length, degamma_length;
+> > > -     u32 gamma_tests, degamma_tests;
+> > > +     u32 gamma_channels_tests, degamma_channels_tests;
+> > >
+> > >       /* Always allow legacy gamma LUT with no further checking. */
+> > >       if (crtc_state_is_legacy_gamma(crtc_state))
+> > > @@ -1300,15 +1300,11 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+> > >
+> > >       degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
+> > >       gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
+> > > -     degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+> > > -     gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+> > > +     degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+> > > +     gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+> > >
+> > > -     if (check_lut_size(degamma_lut, degamma_length) ||
+> > > -         check_lut_size(gamma_lut, gamma_length))
+> > > -             return -EINVAL;
+> > > -
+> > > -     if (drm_color_lut_check(degamma_lut, degamma_tests) ||
+> > > -         drm_color_lut_check(gamma_lut, gamma_tests))
+> > > +     if (drm_color_lut_channels_check(degamma_lut, degamma_channels_tests) ||
+> > > +         drm_color_lut_channels_check(gamma_lut, gamma_channels_tests))
+> > >               return -EINVAL;
+> > >
+> > >       return 0;
+> > > diff --git a/include/drm/drm_atomic_helper.h b/include/drm/drm_atomic_helper.h
+> > > index 4045e2507e11c..a22d32a7a8719 100644
+> > > --- a/include/drm/drm_atomic_helper.h
+> > > +++ b/include/drm/drm_atomic_helper.h
+> > > @@ -38,6 +38,7 @@ struct drm_atomic_state;
+> > >   struct drm_private_obj;
+> > >   struct drm_private_state;
+> > >
+> > > +int drm_atomic_helper_check_crtcs(struct drm_atomic_state *state);
+> > >   int drm_atomic_helper_check_modeset(struct drm_device *dev,
+> > >                               struct drm_atomic_state *state);
+> > >   int drm_atomic_helper_check_plane_state(struct drm_plane_state *plane_state,
+> > > diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+> > > index 81c298488b0c8..cb1bf361ad3e3 100644
+> > > --- a/include/drm/drm_color_mgmt.h
+> > > +++ b/include/drm/drm_color_mgmt.h
+> > > @@ -94,12 +94,12 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+> > >                                     enum drm_color_range default_range);
+> > >
+> > >   /**
+> > > - * enum drm_color_lut_tests - hw-specific LUT tests to perform
+> > > + * enum drm_color_lut_channels_tests - hw-specific LUT tests to perform
+> > >    *
+> > >    * The drm_color_lut_check() function takes a bitmask of the values here to
+> > >    * determine which tests to apply to a userspace-provided LUT.
+> > >    */
+> > > -enum drm_color_lut_tests {
+> > > +enum drm_color_lut_channels_tests {
+> > >       /**
+> > >        * @DRM_COLOR_LUT_EQUAL_CHANNELS:
+> > >        *
+> > > @@ -119,5 +119,6 @@ enum drm_color_lut_tests {
+> > >       DRM_COLOR_LUT_NON_DECREASING = BIT(1),
+> > >   };
+> > >
+> > > -int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
+> > > +int drm_color_lut_channels_check(const struct drm_property_blob *lut,
+> > > +                              u32 tests);
+> > >   #endif
+> > > diff --git a/include/drm/drm_crtc.h b/include/drm/drm_crtc.h
+> > > index 2deb15d7e1610..cabd3ef1a6e32 100644
+> > > --- a/include/drm/drm_crtc.h
+> > > +++ b/include/drm/drm_crtc.h
+> > > @@ -1072,6 +1072,17 @@ struct drm_crtc {
+> > >       /** @funcs: CRTC control functions */
+> > >       const struct drm_crtc_funcs *funcs;
+> > >
+> > > +     /**
+> > > +      * @degamma_lut_size: Size of degamma LUT.
+> > > +      */
+> > > +     uint32_t degamma_lut_size;
+> > > +
+> > > +     /**
+> > > +      * @gamma_lut_size: Size of Gamma LUT. Not used by legacy userspace such as
+> > > +      * X, which doesn't support large lut sizes.
+> > > +      */
+> > > +     uint32_t gamma_lut_size;
+> > > +
+> > >       /**
+> > >        * @gamma_size: Size of legacy gamma ramp reported to userspace. Set up
+> > >        * by calling drm_mode_crtc_set_gamma_size().
+> > >
+> >
+> > Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> >
+> >
+> > Kind regards,
+> >
+> > Paul
