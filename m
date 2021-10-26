@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDCD43BBBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BF143BBC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239247AbhJZUoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235537AbhJZUoA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:44:00 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF6EC061570;
-        Tue, 26 Oct 2021 13:41:36 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id x192so1335830lff.12;
-        Tue, 26 Oct 2021 13:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i9xK3m0+QaW1ytl/BRy95Ub0ZBDl1hcy1DWr+j4fMbg=;
-        b=naRBgU4BXY0RqB9ZsH6oaD+wUpURcaVHycpwSBYJdhst+iNIydG72/38udPfb8eVHh
-         eczs4BYVblPZN0mz9UtHWcOfjEPLcju2JndfOhe2wQyOHjfN+sczAelDaZyFg2QTbIij
-         9NgsUHmpJwqUeb8SuSPlvdtyvveJzwocNvqJE5D6uZC/1ShW7rpEaS2dhd6zCC0euTaj
-         xn5kEKFMimMrmvyR2UZuqc0o6FRbVWv2cVzqXnbgvFzVMbTGfYEDkaWHX8ribejUmtQg
-         P8jea0T68omrrtxbL23VRNmFkuGZ4QGxG8uzSilZ6DawZEcVxmE9Dcd4YVpt9Q0lnJTU
-         mvMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i9xK3m0+QaW1ytl/BRy95Ub0ZBDl1hcy1DWr+j4fMbg=;
-        b=2IRYQ4LjKQBQHfSL8/1EDD06YVoMTFP7AShR/DpCVs7Vfhn3Wko2WV6CabaXqQmT5e
-         2pvHtNMgd+YTLthxZ3+maINyyJUU16M2tDL75MQmMd9a8KksJiwY+Bw6ANddF5He9hwv
-         wDS1Nsa8FnfG5JU5FV3G6neIsTlRldnO5X6gWPp6bBXDqIj7MH3yS9hQddGGqVpeAf+s
-         zrhgMk/w/61DWaomtehru7tyZzOktdbp2j1XJoN1siIfU+dOOl41g4Ak86JUlzTF/KBh
-         J+vUyalBf19vV2DXAnjSMeYSPvsRWWADez0In3syx2CNK1AMHdopOK3mPrSoSrbchD5K
-         cunQ==
-X-Gm-Message-State: AOAM532O5eaPQBPIZ1XeG+dQ6MaZcZkgNONZk5ZdiuBgQ/V7eZ1p+WPj
-        OIg3QtsBJaE/uce9nFTjJkOomyBGQ+o=
-X-Google-Smtp-Source: ABdhPJzRYMJPy+zP3RzrrChtN8taT1UDuV/pxPlgKTKbxOCRk4Vd2KUCYi/6DbDzbENatMTmkpjZ1A==
-X-Received: by 2002:a05:6512:31c9:: with SMTP id j9mr5231661lfe.217.1635280894522;
-        Tue, 26 Oct 2021 13:41:34 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id bt20sm2036909lfb.47.2021.10.26.13.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 13:41:33 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 23:41:32 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 3/4] fs/ntfs3: Update i_ctime when xattr is added
-Message-ID: <20211026204132.kyez7uu4qhv7q2wl@kari-VirtualBox>
-References: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
- <d5482090-67d1-3a54-c351-b756b757a647@paragon-software.com>
+        id S239261AbhJZUoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:44:21 -0400
+Received: from mout.gmx.net ([212.227.17.22]:58335 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235537AbhJZUoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 16:44:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635280906;
+        bh=v+XY08vZpQVeYCTLMobBSviFEDs9CwqOP/SAnjIBBL8=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=QEv6Dto0WCSib72OloIbko36ITuSrvUjOXLZrsURjstxi3b+/bk4cZGwEFcdS5bsP
+         KBMWA4dlcyngM80OkyXTfazyZPStjRB1k/YwIkOJ8qQ12iIU2dbpR1wd+skvFNWSlA
+         pHZJJN0JBnspvL21ZT4zwx6QR5gdGCf9wmupH45E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.fritz.box ([62.216.209.136]) by mail.gmx.net
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MG9g4-1mR9Ow0tgq-00GZK6; Tue, 26 Oct 2021 22:41:46 +0200
+From:   Peter Seiderer <ps.report@gmx.net>
+To:     linux-wireless@vger.kernel.org
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Felix Fietkau <nbd@nbd.name>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [RFC v1] mac80211: minstrel_ht: respect RTS threshold setting
+Date:   Tue, 26 Oct 2021 22:41:44 +0200
+Message-Id: <20211026204144.29250-1-ps.report@gmx.net>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5482090-67d1-3a54-c351-b756b757a647@paragon-software.com>
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:pR+qU758i91AxY7933p+jceGVA+yXismQySMPccxp7XPI/i2JVy
+ CpQNLcy8mBk+1xdHrXS+ZQT2/fhzWNQNPts81tvZTvWBLmh5ZfUEvM9CFQk8TPUd5rH+LO+
+ xffPoHK09y9irptrajUuIeai9/XHPz03J0RJjg3HaaTQ4AdLwmchCVYUcTpPLV0rUby8MsM
+ trLV3PrIP03Hflgvd/FiQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IYD0AfuUPHQ=:WWOuUupcMAInMVdcYeCvWi
+ PAYfa271PiPntCblNjnQywoqEZBotHhRCEFzcTX8JCAleMjp/oonaZAiRfe7HsMIzORHty0E6
+ NhxqtWaTT79VbUgH48dZotd0q2QOP/qPoMT3m8M+vS6yNyt9VFJ2BOlQu4AdUpSZN9zH3TOwx
+ XjD4XKBTDo84DuaS24r/36I/vcnz4pwy2JcENAN17FCS1sy0bgaEXzvZuAs12UNG/q5hN/tfN
+ RR9OREmEAbxqCeIKGdzV9skERIgnhhPC8G4ic/EmPyfW/xW1Bhjylc7YDXQQ4umQoL4xkmBNC
+ fNRMzeFMr8KNjsNUAeY0xTOes8x6saQkAaBenJZU2uZSfMtoWqXevrJ/9wXVHmAuw7RtzzAR7
+ OXpqT4RchBkzVCUeJeLjp95PKQk3+FzlDzWBF/Lnw2LjeJy9aatqPTnWP1zQbngaMiFlFeyHO
+ YDMaY3Y8XDl6nHaiLKtOFh41C+0SLyDDCbxH4bgORCHk1EHwMnmbO4F30kGlj9KqwdAY1M9T3
+ LjBI8e/igD/Zj2BrYjlsiunv8tcM+qdKE2aadBBAnzcGvUmhmDLjT+AHuXEycwyrAYYbeqBOI
+ oJ4Y49FoYf2pALKD2lZqBfWYIB0/pC9KuOtY5RPZYI7kF4aPkXyFmBoaWAWAYOcc78hBxAsUc
+ awDusDfoeUhHANUu/eBNm6PAwozx1lQOrHue+LJMZxgfEkH6mlN3gZktsQgDqUyD8oECzx/+I
+ PFkFRWeVaGOPrVkN5M3NEvnje/hpQIznQH9otJE8YHeiVQ/4znZ1HWlyYl/5heVagItdub8QQ
+ z4aNTUrxqoiYMo+HbEzHQhTDf2N3o4ldzXF+4E3yOZ3n92UW2YEU3qk7/zWiqbJL3fcy2eq3G
+ AxoxS5ipm5t6rVdJR26tj+aaF4db/gBizUfSAHWf/7xMKvLBNCh79aI8cscZjTnO4DZnQYrK7
+ CvkNVXJovEFYGlG+3C0z2cUShZ95zitVR6j8Ma8Vj5TV5aTiUbM3967lZ9IHcA8vdWGEDJP1M
+ kRpV8sOKIx99jfwOqCxfc+WJetqSqk+IE6XZn+TQT69GqUOpibJDGgfa41uT0SI7gCAOznS5U
+ 4pLnseQ6RkQK4E=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 07:41:50PM +0300, Konstantin Komarov wrote:
-> Ctime wasn't updated after setfacl command.
-> This commit fixes xfstest generic/307
-
-When I run xfstest I get
-
-generic/307		[20:37:41][   21.436315] run fstests generic/307 at 2021-10-26 20:37:41
-[   23.362544]  vdc:
-[failed, exit status 1] [20:37:45]- output mismatch (see /results/ntfs3/results-default/generic/307.out.bad)
-    --- tests/generic/307.out	2021-08-03 00:08:10.000000000 +0000
-    +++ /results/ntfs3/results-default/generic/307.out.bad	2021-10-26 20:37:45.172171949 +0000
-    @@ -1,2 +1,4 @@
-     QA output created by 307
-     Silence is golden
-    +setfacl: symbol lookup error: setfacl: undefined symbol: walk_tree
-    +error: ctime not updated after setfacl
-    ...
-    (Run 'diff -u /root/xfstests/tests/generic/307.out /results/ntfs3/results-default/generic/307.out.bad'  to see the entire diff)
-
-any ideas you get different result?
-
-> Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
-> 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/xattr.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-> index 3ccdb8c2ac0b..157b70aecb4f 100644
-> --- a/fs/ntfs3/xattr.c
-> +++ b/fs/ntfs3/xattr.c
-> @@ -992,6 +992,9 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
->  	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
->  
->  out:
-> +	inode->i_ctime = current_time(inode);
-> +	mark_inode_dirty(inode);
-> +
->  	return err;
->  }
->  
-> -- 
-> 2.33.0
-> 
-> 
+RGVzcGl0ZSB0aGUgJ1JUUyB0aHI6b2ZmJyBzZXR0aW5nIGEgd2lyZXNoYXJrIHRyYWNlIG9mIElC
+U1MKdHJhZmZpYyB3aXRoIEhUNDAgbW9kZSBlbmFibGVkIGJldHdlZW4gdHdvIGF0aDlrIGNhcmRz
+IHJldmVhbGVkCnNvbWUgUlRTL0NUUyB0cmFmZmljLgoKRGVidWcgYW5kIGNvZGUgYW5hbHlzaXMg
+c2hvd2VkIHRoYXQgbW9zdCBwbGFjZXMgc2V0dGluZwpJRUVFODAyMTFfVFhfUkNfVVNFX1JUU19D
+VFMgcmVzcGVjdCB0aGUgUlRTIHN0cmF0ZWd5IGJ5CmV2YWx1YXRpbmcgcnRzX3RocmVzaG9sZCwg
+ZS5nLiBuZXQvbWFjODAyMTEvdHguYzoKCiA2OTggICAgICAgICAvKiBzZXQgdXAgUlRTIHByb3Rl
+Y3Rpb24gaWYgZGVzaXJlZCAqLwogNjk5ICAgICAgICAgaWYgKGxlbiA+IHR4LT5sb2NhbC0+aHcu
+d2lwaHktPnJ0c190aHJlc2hvbGQpIHsKIDcwMCAgICAgICAgICAgICAgICAgdHhyYy5ydHMgPSB0
+cnVlOwogNzAxICAgICAgICAgfQogNzAyCiA3MDMgICAgICAgICBpbmZvLT5jb250cm9sLnVzZV9y
+dHMgPSB0eHJjLnJ0czsKCm9yIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay94bWl0LmMK
+CjEyMzggICAgICAgICAgICAgICAgIC8qCjEyMzkgICAgICAgICAgICAgICAgICAqIEhhbmRsZSBS
+VFMgdGhyZXNob2xkIGZvciB1bmFnZ3JlZ2F0ZWQgSFQgZnJhbWVzLgoxMjQwICAgICAgICAgICAg
+ICAgICAgKi8KMTI0MSAgICAgICAgICAgICAgICAgaWYgKGJmX2lzYW1wZHUoYmYpICYmICFiZl9p
+c2FnZ3IoYmYpICYmCjEyNDIgICAgICAgICAgICAgICAgICAgICAocmF0ZXNbaV0uZmxhZ3MgJiBJ
+RUVFODAyMTFfVFhfUkNfTUNTKSAmJgoxMjQzICAgICAgICAgICAgICAgICAgICAgdW5saWtlbHko
+cnRzX3RocmVzaCAhPSAodTMyKSAtMSkpIHsKMTI0NCAgICAgICAgICAgICAgICAgICAgICAgICBp
+ZiAoIXJ0c190aHJlc2ggfHwgKGxlbiA+IHJ0c190aHJlc2gpKQoxMjQ1ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgcnRzID0gdHJ1ZTsKMTI0NiAgICAgICAgICAgICAgICAgfQoKVGhl
+IG9ubHkgcGxhY2Ugc2V0dGluZyBJRUVFODAyMTFfVFhfUkNfVVNFX1JUU19DVFMgdW5jb25kaXRp
+b25hbGx5CndhcyBmb3VuZCBpbiBuZXQvbWFjODAyMTEvcmM4MDIxMV9taW5zdHJlbF9odC5jLgoK
+Rml4IHRoaXMgYnkgcHJvcGFnYXRpbmcgdGhlIGNhbGN1bGF0ZWQgdXNlX3J0cyB2YWx1ZSB0byB0
+aGUKbWluc3RyZWxfaHRfc2V0X3JhdGUoKSBmdW5jdGlvbiBhbmQgZXZhbHVhdGUgaXQgYWNjb3Jk
+aW5nbHkKYmVmb3JlIHNldHRpbmcgSUVFRTgwMjExX1RYX1JDX1VTRV9SVFNfQ1RTLgoKU2lnbmVk
+LW9mZi1ieTogUGV0ZXIgU2VpZGVyZXIgPHBzLnJlcG9ydEBnbXgubmV0PgotLS0KIG5ldC9tYWM4
+MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMgfCAyMSArKysrKysrKysrKystLS0tLS0tLS0KIDEg
+ZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL25ldC9tYWM4MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMgYi9uZXQvbWFjODAyMTEvcmM4
+MDIxMV9taW5zdHJlbF9odC5jCmluZGV4IDcyYjQ0ZDRjNDJkMC4uZjUyZWRlZjQ0M2ZhIDEwMDY0
+NAotLS0gYS9uZXQvbWFjODAyMTEvcmM4MDIxMV9taW5zdHJlbF9odC5jCisrKyBiL25ldC9tYWM4
+MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMKQEAgLTI3Niw3ICsyNzYsOCBAQCBzdGF0aWMgY29u
+c3QgdTggbWluc3RyZWxfc2FtcGxlX3NlcVtdID0gewogfTsKIAogc3RhdGljIHZvaWQKLW1pbnN0
+cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5z
+dHJlbF9odF9zdGEgKm1pKTsKK21pbnN0cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1Y3QgbWluc3Ry
+ZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5zdHJlbF9odF9zdGEgKm1pLAorCQkJIGJvb2wgdXNlX3J0
+cyk7CiAKIC8qCiAgKiBTb21lIFZIVCBNQ1NlcyBhcmUgaW52YWxpZCAod2hlbiBOZGJwcyAvIE5l
+cyBpcyBub3QgYW4gaW50ZWdlcikKQEAgLTEyNTQsNyArMTI1NSw3IEBAIG1pbnN0cmVsX2h0X3R4
+X3N0YXR1cyh2b2lkICpwcml2LCBzdHJ1Y3QgaWVlZTgwMjExX3N1cHBvcnRlZF9iYW5kICpzYmFu
+ZCwKIAl9CiAKIAlpZiAodXBkYXRlKQotCQltaW5zdHJlbF9odF91cGRhdGVfcmF0ZXMobXAsIG1p
+KTsKKwkJbWluc3RyZWxfaHRfdXBkYXRlX3JhdGVzKG1wLCBtaSwgaW5mby0+Y29udHJvbC51c2Vf
+cnRzKTsKIH0KIAogc3RhdGljIHZvaWQKQEAgLTEzMTksNyArMTMyMCw4IEBAIG1pbnN0cmVsX2Nh
+bGNfcmV0cmFuc21pdChzdHJ1Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5zdHJlbF9o
+dF9zdGEgKm1pLAogCiBzdGF0aWMgdm9pZAogbWluc3RyZWxfaHRfc2V0X3JhdGUoc3RydWN0IG1p
+bnN0cmVsX3ByaXYgKm1wLCBzdHJ1Y3QgbWluc3RyZWxfaHRfc3RhICptaSwKLSAgICAgICAgICAg
+ICAgICAgICAgIHN0cnVjdCBpZWVlODAyMTFfc3RhX3JhdGVzICpyYXRldGJsLCBpbnQgb2Zmc2V0
+LCBpbnQgaW5kZXgpCisJCSAgICAgc3RydWN0IGllZWU4MDIxMV9zdGFfcmF0ZXMgKnJhdGV0Ymws
+IGludCBvZmZzZXQsIGludCBpbmRleCwKKwkJICAgICBib29sIHVzZV9ydHMpCiB7CiAJaW50IGdy
+b3VwX2lkeCA9IE1JX1JBVEVfR1JPVVAoaW5kZXgpOwogCWNvbnN0IHN0cnVjdCBtY3NfZ3JvdXAg
+Kmdyb3VwID0gJm1pbnN0cmVsX21jc19ncm91cHNbZ3JvdXBfaWR4XTsKQEAgLTEzNTcsNyArMTM1
+OSw3IEBAIG1pbnN0cmVsX2h0X3NldF9yYXRlKHN0cnVjdCBtaW5zdHJlbF9wcml2ICptcCwgc3Ry
+dWN0IG1pbnN0cmVsX2h0X3N0YSAqbWksCiAJICogIC0gaWYgc3RhdGlvbiBpcyBpbiBkeW5hbWlj
+IFNNUFMgKGFuZCBzdHJlYW1zID4gMSkKIAkgKiAgLSBmb3IgZmFsbGJhY2sgcmF0ZXMsIHRvIGlu
+Y3JlYXNlIGNoYW5jZXMgb2YgZ2V0dGluZyB0aHJvdWdoCiAJICovCi0JaWYgKG9mZnNldCA+IDAg
+fHwKKwlpZiAoKG9mZnNldCA+IDAgJiYgdXNlX3J0cykgfHwKIAkgICAgKG1pLT5zdGEtPnNtcHNf
+bW9kZSA9PSBJRUVFODAyMTFfU01QU19EWU5BTUlDICYmCiAJICAgICBncm91cC0+c3RyZWFtcyA+
+IDEpKSB7CiAJCXJhdGV0YmwtPnJhdGVbb2Zmc2V0XS5jb3VudCA9IHJhdGV0YmwtPnJhdGVbb2Zm
+c2V0XS5jb3VudF9ydHM7CkBAIC0xNDI2LDcgKzE0MjgsOCBAQCBtaW5zdHJlbF9odF9nZXRfbWF4
+X2Ftc2R1X2xlbihzdHJ1Y3QgbWluc3RyZWxfaHRfc3RhICptaSkKIH0KIAogc3RhdGljIHZvaWQK
+LW1pbnN0cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVj
+dCBtaW5zdHJlbF9odF9zdGEgKm1pKQorbWluc3RyZWxfaHRfdXBkYXRlX3JhdGVzKHN0cnVjdCBt
+aW5zdHJlbF9wcml2ICptcCwgc3RydWN0IG1pbnN0cmVsX2h0X3N0YSAqbWksCisJCQkgYm9vbCB1
+c2VfcnRzKQogewogCXN0cnVjdCBpZWVlODAyMTFfc3RhX3JhdGVzICpyYXRlczsKIAlpbnQgaSA9
+IDA7CkBAIC0xNDM2LDE1ICsxNDM5LDE1IEBAIG1pbnN0cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1
+Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5zdHJlbF9odF9zdGEgKm1pKQogCQlyZXR1
+cm47CiAKIAkvKiBTdGFydCB3aXRoIG1heF90cF9yYXRlWzBdICovCi0JbWluc3RyZWxfaHRfc2V0
+X3JhdGUobXAsIG1pLCByYXRlcywgaSsrLCBtaS0+bWF4X3RwX3JhdGVbMF0pOworCW1pbnN0cmVs
+X2h0X3NldF9yYXRlKG1wLCBtaSwgcmF0ZXMsIGkrKywgbWktPm1heF90cF9yYXRlWzBdLCB1c2Vf
+cnRzKTsKIAogCWlmIChtcC0+aHctPm1heF9yYXRlcyA+PSAzKSB7CiAJCS8qIEF0IGxlYXN0IDMg
+dHggcmF0ZXMgc3VwcG9ydGVkLCB1c2UgbWF4X3RwX3JhdGVbMV0gbmV4dCAqLwotCQltaW5zdHJl
+bF9odF9zZXRfcmF0ZShtcCwgbWksIHJhdGVzLCBpKyssIG1pLT5tYXhfdHBfcmF0ZVsxXSk7CisJ
+CW1pbnN0cmVsX2h0X3NldF9yYXRlKG1wLCBtaSwgcmF0ZXMsIGkrKywgbWktPm1heF90cF9yYXRl
+WzFdLCB1c2VfcnRzKTsKIAl9CiAKIAlpZiAobXAtPmh3LT5tYXhfcmF0ZXMgPj0gMikgewotCQlt
+aW5zdHJlbF9odF9zZXRfcmF0ZShtcCwgbWksIHJhdGVzLCBpKyssIG1pLT5tYXhfcHJvYl9yYXRl
+KTsKKwkJbWluc3RyZWxfaHRfc2V0X3JhdGUobXAsIG1pLCByYXRlcywgaSsrLCBtaS0+bWF4X3By
+b2JfcmF0ZSwgdXNlX3J0cyk7CiAJfQogCiAJbWktPnN0YS0+bWF4X3JjX2Ftc2R1X2xlbiA9IG1p
+bnN0cmVsX2h0X2dldF9tYXhfYW1zZHVfbGVuKG1pKTsKQEAgLTE3MDUsNyArMTcwOCw3IEBAIG1p
+bnN0cmVsX2h0X3VwZGF0ZV9jYXBzKHZvaWQgKnByaXYsIHN0cnVjdCBpZWVlODAyMTFfc3VwcG9y
+dGVkX2JhbmQgKnNiYW5kLAogCiAJLyogY3JlYXRlIGFuIGluaXRpYWwgcmF0ZSB0YWJsZSB3aXRo
+IHRoZSBsb3dlc3Qgc3VwcG9ydGVkIHJhdGVzICovCiAJbWluc3RyZWxfaHRfdXBkYXRlX3N0YXRz
+KG1wLCBtaSk7Ci0JbWluc3RyZWxfaHRfdXBkYXRlX3JhdGVzKG1wLCBtaSk7CisJbWluc3RyZWxf
+aHRfdXBkYXRlX3JhdGVzKG1wLCBtaSwgZmFsc2UpOwogfQogCiBzdGF0aWMgdm9pZAotLSAKMi4z
+My4xCgo=
