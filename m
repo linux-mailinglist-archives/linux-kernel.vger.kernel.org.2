@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B038443BAA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9C743BAA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237058AbhJZTYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:24:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:54678 "EHLO mga03.intel.com"
+        id S238672AbhJZTZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:25:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235162AbhJZTYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:24:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="229942638"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="229942638"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 12:22:19 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="486323056"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 12:22:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfS1G-001IBg-Au;
-        Tue, 26 Oct 2021 22:21:58 +0300
-Date:   Tue, 26 Oct 2021 22:21:58 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bitmap: simplify GENMASK(size - 1, 0) lines
-Message-ID: <YXhVVvG9keoVWJyK@smile.fi.intel.com>
-References: <20211026144108.35373-1-quic_qiancai@quicinc.com>
- <YXhOEEOSG+fgEy+t@yury-ThinkPad>
+        id S235162AbhJZTZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:25:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74BD960EFF;
+        Tue, 26 Oct 2021 19:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635276156;
+        bh=+nJ6uC+6Wlo9SRX97zlx3q28QZTQWwdv1xNrqnJgLP8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LtzCE42cRGMnvTIpqUWicASA8oUTPKAt75z/IgnIKTZyYIkLIjg31ozJMibPkKkZ3
+         OKBLGiPzc5HFJiqTIyOMha2t087q2pOrzdL3DfIUhznxqvv06UJs0u0s55mDfCmvfe
+         VG1TjFBtJjG3myKXL7CJg8lJL/Sc+D52TgUiuAroZ7zxwsrkX04OQWx9TIMTJqeCKX
+         8sDur7Njl0BWj/hCoL9QxHPtrx354W9UCeMILO6dOrEr0KCStIyvKo5FqDV2IJaqmv
+         sDyzQqBlSrsgLui/rC4lzD0c+F2HK/VX/Zmpz1wNAwOxa24DYKJe99fiGtRlqysiwG
+         /ZXZEf8SLSgBA==
+Date:   Tue, 26 Oct 2021 22:22:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Edwin Peer <edwin.peer@broadcom.com>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Michael Chan <michael.chan@broadcom.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXhVd16heaHCegL1@unreal>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+ <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
+ <YXeYjXx92wKdPe02@unreal>
+ <CAKOOJTyrzosizeKpfYcu4jMn6SRYrqxU0BzMf8qudAk5e74R9g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXhOEEOSG+fgEy+t@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAKOOJTyrzosizeKpfYcu4jMn6SRYrqxU0BzMf8qudAk5e74R9g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:54:16AM -0700, Yury Norov wrote:
-> On Tue, Oct 26, 2021 at 10:41:08AM -0400, Qian Cai wrote:
-> > Since "size" is an "unsigned int", the rvalue "size - 1" will still be
-> > "unsigned int" according to the C standard (3.2.1.5 Usual arithmetic
-> > conversions). Therefore, GENMASK(size - 1, 0) will always return 0UL. Those
-> > are also caught by GCC (W=2):
-> > 
-> > ./include/linux/find.h: In function 'find_first_bit':
-> > ./include/linux/bits.h:25:22: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
-> >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
-> >       |                      ^
-> > ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
-> >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >       |                                                              ^
-> > ./include/linux/bits.h:25:3: note: in expansion of macro '__is_constexpr'
-> >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
-> >       |   ^~~~~~~~~~~~~~
-> > ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >       |   ^~~~~~~~~~~~~~~~~~~
-> > ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
-> >   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
-> >       |                               ^~~~~~~
-> > ./include/linux/bits.h:25:34: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
-> >    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
-> >       |                                  ^
-> > ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
-> >    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >       |                                                              ^
-> > ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >       |   ^~~~~~~~~~~~~~~~~~~
-> > ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
-> >   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
-> >       |                               ^~~~~~~
-> > 
-> > Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> > ---
-> >  include/linux/find.h | 28 ++++++++--------------------
-> >  1 file changed, 8 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/include/linux/find.h b/include/linux/find.h
-> > index 5bb6db213bcb..5ce2b17aea42 100644
-> > --- a/include/linux/find.h
-> > +++ b/include/linux/find.h
-> > @@ -115,11 +115,8 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
-> >  static inline
-> >  unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
-> >  {
-> > -	if (small_const_nbits(size)) {
-> > -		unsigned long val = *addr & GENMASK(size - 1, 0);
-> > -
-> > -		return val ? __ffs(val) : size;
-> > -	}
-> > +	if (small_const_nbits(size))
-> > +		return size;
-> >  
-> >  	return _find_first_bit(addr, size);
-> >  }
+On Tue, Oct 26, 2021 at 10:34:39AM -0700, Edwin Peer wrote:
+> On Mon, Oct 25, 2021 at 10:56 PM Leon Romanovsky <leon@kernel.org> wrote:
 > 
-> [...]
+> > > Could we also revert 82465bec3e97 ("devlink: Delete reload
+> > > enable/disable interface")?
+> >
+> > Absolutely not.
 > 
-> Nice catch! I'm a bit concerned that small_const_nbits() will never
-> allow GENMASK() to be passed with size == 0, but the patch looks
-> good to me overall.
+> Although the following patch doesn't affect bnxt_en directly, I
+> believe the change that will ultimately cause regressions are the
+> patches of the form:
+> 
+> 64ea2d0e7263 ("net/mlx5: Accept devlink user input after driver
+> initialization complete")
+> 
+> Removing the reload enable interface is merely the reason you're
+> moving devlink_register() later here, but it's the swapping of the
+> relative order of devlinqk_register() and register_netdev() which is
+> the problem.
 
-Can you explain to me how it is supposed to work?
+At least in mlx5 case, reload_enable() was before register_netdev().
+It stayed like this after swapping it with devlink_register().
 
-For example,
+> 
+> Our proposed devlink reload depends on the netdev being registered.
+> This was previously gated by reload enable, but that is a secondary
+> issue. The real question is whether you now require devlink_register()
+> to go last in general? If so, that's a problem because we'll race with
+> user space. User visible regressions will definitely follow.
 
-    x = 0xaa55;
-    size = 5;
+No, it is not requirement, but my suggestion. You need to be aware that
+after call to devlink_register(), the device will be fully open for devlink
+netlink access. So it is strongly advised to put devlink_register to be the
+last command in PCI initialization sequence.
 
-    printf("%lu\n", find_first_bit(&x, size));
+It is exactly like it was before, but instead of one _reload_ interface
+which had extra enable/disable logic, we are protecting all other set/get
+commands. Before the change, you was able to send any devlink netlink commands
+and crash unprotected driver.
 
-In the resulting code we will always have 5 as the result,
-but is it correct one?
+> 
+> The bnxt_en driver was only saved from such regressions because you
+> did not carry out the same change there as you've done here.
+> Otherwise, you would have broken bnxt_en as a consequence. I'm
+> obviously not as familiar with mlx5, but I think you may have already
+> broken it. I imagine the only reason customers haven't complained
+> about this change yet is that few, if any, are running the net-next
+> code.
 
--- 
-With Best Regards,
-Andy Shevchenko
+This is not how mlx5 is implemented at all. We use auxiliary bus to
+separate PCI core driver and eth netdev driver.
 
+And yes, we have customers who rely on upstream code and test it
+methodically.
 
+> 
+> > In a nutshell, latest devlink_register() implementation is better
+> > implementation of previously existed "reload enable/disable" boolean.
+> >
+> > You don't need to reorder whole devlink logic, just put a call to
+> > devlink_register() in the place where you wanted to put your
+> > devlink_reload_enable().
+> 
+> We can't though, because of the two patches I pointed out previously.
+> Moving devlink_register() to the existing devlink_reload_enable()
+> location puts it after register_netdev(). That will cause a regression
+> with udev and phys port name. We already have the failing test case
+> and customer bug report for this. That is why devlink_register() was
+> moved earlier in bnxt_en. We can't now do the opposite and move it
+> later.
+
+You obviously need to fix your code. Upstream version of bnxt driver
+doesn't have reload_* support, so all this regression blaming it not
+relevant here.
+
+In upstream code, devlink_register() doesn't accept ops like it was
+before and position of that call does only one thing - opens devlink
+netlink access. All kernel devlink APIs continue to be accessible even
+before devlink_register.
+
+It looks like your failure is in backport code.
+
+Thanks
