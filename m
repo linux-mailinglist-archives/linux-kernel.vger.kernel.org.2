@@ -2,56 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD9843B7BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAAF43B7E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237706AbhJZRDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53588 "EHLO mail.kernel.org"
+        id S236400AbhJZRIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:08:23 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36431 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237690AbhJZRDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:03:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1FB260F56;
-        Tue, 26 Oct 2021 17:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635267651;
-        bh=N6mR0nlTyP972P3SDjcUELwCXA7yQW09NYrXCt3cNP0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j9cJElx7TbZRVKmslx3nX/2j52TV7RP0OzseU83Aa//zyUqdfPhyvvp2G6siUmNDr
-         uONKV6BqBwe9EmAPDX6enH3cD7c6fz09eaJY8za/FOdWp6jOB7VUrbCfu2lGlc0WLl
-         /wn9T914dIdDshexgKmKmBETBG9xY1KJ1YQ76Y4Oxw9cxD+zVv68hHsLxlSFeGGDmZ
-         rl6pMFIwKAPtAgo4Qqs63e6LRgDDfTpTcMIdEEd27W+mAS5OkjdMLCBfIpWsWhCCUm
-         jtaMP4ux8I0SB0IqjFCfPgTIgfgCh42BSakDcINgNfn3nbnB/IqH8raHN5kvP1mTNo
-         WQA2yfYjl+HeQ==
-Date:   Tue, 26 Oct 2021 12:05:44 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3] docs: deprecated.rst: Clarify open-coded arithmetic
- with literals
-Message-ID: <20211026170544.GA1457721@embeddedor>
-References: <20210925143455.21221-1-len.baker@gmx.com>
- <871r47g59t.fsf@meer.lwn.net>
+        id S234147AbhJZRIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:08:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217135873"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="217135873"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 10:05:50 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="465385992"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 10:05:50 -0700
+Date:   Tue, 26 Oct 2021 10:05:49 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        bp@alien8.de, james.morse@arm.com, lenb@kernel.org,
+        rjw@rjwysocki.net, zhangliguang@linux.alibaba.com,
+        zhuo.song@linux.alibaba.com
+Subject: Re: [PATCH v3] ACPI, APEI, EINJ: Relax platform response timeout to
+ 1 second.
+Message-ID: <YXg1bWBKja/tqScg@agluck-desk2.amr.corp.intel.com>
+References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
+ <20211026072829.94262-1-xueshuai@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871r47g59t.fsf@meer.lwn.net>
+In-Reply-To: <20211026072829.94262-1-xueshuai@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 09:44:14AM -0600, Jonathan Corbet wrote:
-[..]
-> >  - Reword the sentence to comunicate better (Jonathan Corbet).
-> >
-> > The previous version can be found here [1].
-> >
-> > [1] https://lore.kernel.org/linux-hardening/20210829144716.2931-1-len.baker@gmx.com/
+On Tue, Oct 26, 2021 at 03:28:29PM +0800, Shuai Xue wrote:
+> When injecting an error into the platform, the OSPM executes an
+> EXECUTE_OPERATION action to instruct the platform to begin the injection
+> operation. And then, the OSPM busy waits for a while by continually
+> executing CHECK_BUSY_STATUS action until the platform indicates that the
+> operation is complete. More specifically, the platform is limited to
+> respond within 1 millisecond right now. This is too strict for some
+> platforms.
 > 
-> Applied, thanks.
+> For example, in Arm platform, when injecting a Processor Correctable error,
+> the OSPM will warn:
+>     Firmware does not respond in time.
+> 
+> And a message is printed on the console:
+>     echo: write error: Input/output error
+> 
+> We observe that the waiting time for DDR error injection is about 10 ms and
+> that for PCIe error injection is about 500 ms in Arm platform.
+> 
+> In this patch, we relax the response timeout to 1 second.
+> 
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
 
-Thanks, Jonathan.
---
-Gustavo
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+
+Rafael: Do you want to take this in the acpi tree? If not, I can
+apply it to the RAS tree (already at -rc7, so in next merge cycle
+after 5.16-rc1 comes out).
+
+> ---
+> Changelog v2 -> v3:
+> - Implemented the timeout in usleep_range instead of msleep.
+> - Dropped command line interface of timeout.
+> - Link to the v1 patch: https://lkml.org/lkml/2021/10/14/1402
+> ---
+>  drivers/acpi/apei/einj.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
+> index 133156759551..6e1ff4b62a8f 100644
+> --- a/drivers/acpi/apei/einj.c
+> +++ b/drivers/acpi/apei/einj.c
+> @@ -28,9 +28,10 @@
+>  #undef pr_fmt
+>  #define pr_fmt(fmt) "EINJ: " fmt
+>  
+> -#define SPIN_UNIT		100			/* 100ns */
+> -/* Firmware should respond within 1 milliseconds */
+> -#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
+> +#define SLEEP_UNIT_MIN		1000			/* 1ms */
+> +#define SLEEP_UNIT_MAX		5000			/* 5ms */
+> +/* Firmware should respond within 1 seconds */
+> +#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
+>  #define ACPI5_VENDOR_BIT	BIT(31)
+>  #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
+>  				ACPI_EINJ_MEMORY_UNCORRECTABLE | \
+> @@ -171,13 +172,13 @@ static int einj_get_available_error_type(u32 *type)
+>  
+>  static int einj_timedout(u64 *t)
+>  {
+> -	if ((s64)*t < SPIN_UNIT) {
+> +	if ((s64)*t < SLEEP_UNIT_MIN) {
+>  		pr_warn(FW_WARN "Firmware does not respond in time\n");
+>  		return 1;
+>  	}
+> -	*t -= SPIN_UNIT;
+> -	ndelay(SPIN_UNIT);
+> -	touch_nmi_watchdog();
+> +	*t -= SLEEP_UNIT_MIN;
+> +	usleep_range(SLEEP_UNIT_MIN, SLEEP_UNIT_MAX);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.20.1.12.g72788fdb
+> 
