@@ -2,220 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF5843B7FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E5643B803
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237370AbhJZRQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:16:21 -0400
-Received: from mail-bn1nam07on2080.outbound.protection.outlook.com ([40.107.212.80]:36283
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236498AbhJZRQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:16:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NEnxgrtZfrEb28uVAFbytEa2dtBFPxXDx3q534Y3dg59tunzI+BJEL1p8+zVCkSmgUBR2QISN+B6SvG6lGC/HcIy0k9cT9jAjHT2IL4twYSgEwasZPcmu0aSHWmPRmbafHuRhzsWco+OpF+egb65ecsWm+jifcgr6+078EV2kkrttFkbzr90GFfqvvTXRgqy22FQO3XZP9nc2cN6NvC5AbZl6FAXMKY6G5T8yeBK0e4iuFuQk1KxDBkAowird8fjEYzFwRnQbHuqN/rM/umDbm3ipCZ0bsHVMxKDFAP0JoC3+sW4UZpHzZxUaA0IiWdxyDuBscTpQb0ly4IkzBfm5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2OQ/bJZcqK2yPJv1amDsFSzdXLGa1Vx+yU8BFPZkchA=;
- b=cbEaoGUogpLyvlMSxP01CesAj3ZNqh3pBxo8hmJWEPAnuLf6VRb26UU9H+Q5lB3zHtikoTNbGH3ZLcMhr+6wuK3SDqRFWnmCiRiQVOHW4Ku0zfnlK5FwIFDNoM273GsxjPyvNhEEVbLwzSUmnZXvYQ38NjwcGQ1+A5JEvMtHoCR5PBUchG1c865RQazsh/f0jtn6EMKxtV86LdpSh4Ihv38yNna1LYRIq8XTdbnnUKMVfdZyzfOXsURpDhwS0VKtjs+ckeyX4BrlcO2p50b5WxPthRX7O7cBcWhuDk5y2F6gBcfDfJ8ikkzA4b9bsNkgB6vTbsATqd+2N3O1S7QmDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2OQ/bJZcqK2yPJv1amDsFSzdXLGa1Vx+yU8BFPZkchA=;
- b=msbK+hYTCQceL7bI2k+8U15Qckv6kJD7KyyTywlv2L5IEQT3nYsb+D1i/0LuDagHreuGUzLnt1M6lr8Ft8jp91khzRUl8aavpSPZppvXaBC3YyltYfZpFOpuiPX1k2XBw/eoqKqJ6Sxavuj3sr4mi3SQeo6KtsZj9rqR5rmnn0s=
-Received: from BN9P222CA0021.NAMP222.PROD.OUTLOOK.COM (2603:10b6:408:10c::26)
- by MN2PR12MB4222.namprd12.prod.outlook.com (2603:10b6:208:19a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Tue, 26 Oct
- 2021 17:13:36 +0000
-Received: from BN8NAM11FT017.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:10c:cafe::6) by BN9P222CA0021.outlook.office365.com
- (2603:10b6:408:10c::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend
- Transport; Tue, 26 Oct 2021 17:13:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT017.mail.protection.outlook.com (10.13.177.93) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4628.16 via Frontend Transport; Tue, 26 Oct 2021 17:13:35 +0000
-Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 26 Oct
- 2021 12:13:31 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-CC:     "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Joerie de Gram <j.de.gram@gmail.com>
-Subject: [PATCH v4 2/2] pinctrl: amd: Fix wakeups when IRQ is shared with SCI
-Date:   Tue, 26 Oct 2021 12:13:13 -0500
-Message-ID: <20211026171313.50-2-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211026171313.50-1-mario.limonciello@amd.com>
-References: <20211026171313.50-1-mario.limonciello@amd.com>
+        id S236363AbhJZRRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhJZRRx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:17:53 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD0AC061745;
+        Tue, 26 Oct 2021 10:15:29 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f131c005b0c7ba9fa303376.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:1c00:5b0c:7ba9:fa30:3376])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 00EBB1EC05D6;
+        Tue, 26 Oct 2021 19:15:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635268527;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=FO4cs2yK2aOHZmwCs+eplkvcELqzW5qJSg1ryHvi0gA=;
+        b=G3kaVMD3ZsBlYSmv6zLVGThlHAc3j4F33iKu51Di9gE1QLnj01bPSnuPShC9iTp4G1W30B
+        nRUrsluxHNtOqy035nWI/jTBUygh9QOehcBE8WdLHxyrjFIL16E2BRVWTEu0eSUi+SzUjf
+        XiQkUxpOOmHG0mC4cHWf5zj4NgIbneE=
+Date:   Tue, 26 Oct 2021 19:15:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Koralahalli Channabasappa, Smita" <skoralah@amd.com>
+Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
+Subject: Re: [PATCH v2 2/5] x86/mce/inject: Warn the user on a not set valid
+ bit in MCA_STATUS
+Message-ID: <YXg3rIump+CAtgs6@zn.tnic>
+References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20211019233641.140275-3-Smita.KoralahalliChannabasappa@amd.com>
+ <YXfSGW1i5dLsiX84@zn.tnic>
+ <00f4a0ab-f241-6674-f37f-623f3d9a8337@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2676d792-a936-4b49-88a5-08d998a3f204
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4222:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB422205F066110EE0048C0116E2849@MN2PR12MB4222.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q/LgYrKXiRGpgLaLZphRMSPpMKKwt9L+i7TNUx7Zjdi5OHHKrKoU5OmsoUjK6Ljqb9rexbi+2ssxD1nfirWV+eUd3XoFvmxOnIQ416kT+thBGTQnB/mZts8gE4vPbbpAFRu39o4KLYcX5yIyRO1AknT9gP22juCLgztyq0TLbfpmrY9EBqwocJ7Qea05Vqtu8Yk4hX1lFp9gHnkzRvIYivrK/rTrzAeJt5/4gjmhQHGCCoiIebHQ3HVNo3Z+117xvfI7gFW5hQeoeoqvZtn9ybfofh4k9hCsuehfdOJHxKRmRyjDXeRCP1kaOWimLFRROCFD0vOzVETAkcaaLgJVORH/ccdehkXdbmwMNwUN7nDL8Wp0Bx2giObwT4GfgftzDfSwWaGiogk007EbrLOipSrCNxWOqGcqKOaZgQwIBFfRfOMVb6z3kVLmTBiuK9TKhRF1mW2b/4DQf5FSoTA2dAAtWJ6LukCs5b3tLITejQUnVcIy55NI2u0Qg3M2YhlEKSVIGXHF658j16K5MiJBwFeG/uu/dfBd3Dlfda1NExkIhXkIAQ+Pk072XRdhQylLBYGSlrnwowuelZL3W4Wxc73cuoAnqSQ8Lzm/hOaLtO50Dz1Qo+lQ71c/+AvbrkH6EgTr43TBz2UuXZ8sb2ee/A/FjzUCN2fP531LZCa7j1ZknUkPgrB1IblIsgiIOiF9F9/mJMqb+iAmk0Yxsf6nh/myRsWT+w6x4ymcH8zJkKg=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(966005)(4326008)(36756003)(6666004)(336012)(8676002)(8936002)(81166007)(2616005)(7696005)(5660300002)(6636002)(2906002)(356005)(426003)(83380400001)(1076003)(44832011)(70206006)(82310400003)(186003)(47076005)(54906003)(110136005)(86362001)(26005)(16526019)(316002)(70586007)(36860700001)(508600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2021 17:13:35.6680
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2676d792-a936-4b49-88a5-08d998a3f204
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT017.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4222
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <00f4a0ab-f241-6674-f37f-623f3d9a8337@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some Lenovo AMD Gen2 platforms the IRQ for the SCI and pinctrl drivers
-are shared.  Due to how the s2idle loop handling works, this case needs
-an extra explicit check whether the interrupt was caused by SCI or by
-the GPIO controller.
+On Tue, Oct 26, 2021 at 11:58:58AM -0500, Koralahalli Channabasappa, Smita wrote:
+> Like how it was done here?
+> https://lkml.kernel.org/r/20210915232739.6367-3-Smita.KoralahalliChannabasappa@amd.com
 
-To fix this rework the existing IRQ handler function to function as a
-checker and an IRQ handler depending on the calling arguments.
+Whoops, sorry about that.
 
-BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1738
-Reported-by: Joerie de Gram <j.de.gram@gmail.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-Note:
- This is *possibly* a fix from fdde0ff8590b, 56b991849009 or other
- changes in the acpi_s2idle_wake handling, but AMD didn't support
- s2idle across the kernel widely until 5.14 or later. This is the
- reason for lack of a fixes tag.
-Changes from v3->v4:
- * Adjust to reverse xmas for newly added variable
- * Add a debugging line to show the values in the register that caused system
-   wake to allow for debugging of spurious wakeups
-Changes from v2->v3:
- * Add new precursor patch for fixing missing ACPI function stubs
- * Add __maybe_unused for unused function when set with COMPILE_TEST
-Changes from v1->v2:
- * drop Kconfig changes to drop COMPILE_TEST, instead #ifdef CONFIG_ACPI
- * fix a logic error during wakeup
- * Use IRQ_RETVAL()
+So let's analyze this properly - there are two cases:
 
- drivers/pinctrl/pinctrl-amd.c | 31 ++++++++++++++++++++++++++++---
- 1 file changed, 28 insertions(+), 3 deletions(-)
+1. warn if VAL=0: what does that bring us? The person doing the injection
+will simply have to set the valid bit and repeat the injection.
 
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index d19974aceb2e..f15d6435a4c9 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -598,14 +598,14 @@ static struct irq_chip amd_gpio_irqchip = {
- 
- #define PIN_IRQ_PENDING	(BIT(INTERRUPT_STS_OFF) | BIT(WAKE_STS_OFF))
- 
--static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
-+static bool _amd_gpio_irq_handler(int irq, void *dev_id)
- {
- 	struct amd_gpio *gpio_dev = dev_id;
- 	struct gpio_chip *gc = &gpio_dev->gc;
--	irqreturn_t ret = IRQ_NONE;
- 	unsigned int i, irqnr;
- 	unsigned long flags;
- 	u32 __iomem *regs;
-+	bool ret = false;
- 	u32  regval;
- 	u64 status, mask;
- 
-@@ -627,6 +627,16 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 		/* Each status bit covers four pins */
- 		for (i = 0; i < 4; i++) {
- 			regval = readl(regs + i);
-+			/* called from resume context on a shared IRQ, just
-+			 * checking wake source.
-+			 */
-+			if (irq < 0 && (regval & BIT(WAKE_STS_OFF))) {
-+				dev_dbg(&gpio_dev->pdev->dev,
-+					"Waking due to GPIO register 0x%p: 0x%x",
-+					regs + i, regval);
-+				return true;
-+			}
-+
- 			if (!(regval & PIN_IRQ_PENDING) ||
- 			    !(regval & BIT(INTERRUPT_MASK_OFF)))
- 				continue;
-@@ -652,9 +662,12 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 			}
- 			writel(regval, regs + i);
- 			raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
--			ret = IRQ_HANDLED;
-+			ret = true;
- 		}
- 	}
-+	/* called from resume context on shared IRQ but didn't cause wake */
-+	if (irq < 0)
-+		return false;
- 
- 	/* Signal EOI to the GPIO unit */
- 	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
-@@ -666,6 +679,16 @@ static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
-+static irqreturn_t amd_gpio_irq_handler(int irq, void *dev_id)
-+{
-+	return IRQ_RETVAL(_amd_gpio_irq_handler(irq, dev_id));
-+}
-+
-+static bool __maybe_unused amd_gpio_check_wake(void *dev_id)
-+{
-+	return _amd_gpio_irq_handler(-1, dev_id);
-+}
-+
- static int amd_get_groups_count(struct pinctrl_dev *pctldev)
- {
- 	struct amd_gpio *gpio_dev = pinctrl_dev_get_drvdata(pctldev);
-@@ -1004,6 +1027,7 @@ static int amd_gpio_probe(struct platform_device *pdev)
- 		goto out2;
- 
- 	platform_set_drvdata(pdev, gpio_dev);
-+	acpi_register_wakeup_handler(gpio_dev->irq, amd_gpio_check_wake, gpio_dev);
- 
- 	dev_dbg(&pdev->dev, "amd gpio driver loaded\n");
- 	return ret;
-@@ -1021,6 +1045,7 @@ static int amd_gpio_remove(struct platform_device *pdev)
- 	gpio_dev = platform_get_drvdata(pdev);
- 
- 	gpiochip_remove(&gpio_dev->gc);
-+	acpi_unregister_wakeup_handler(amd_gpio_check_wake, gpio_dev);
- 
- 	return 0;
- }
+I guess "maybe the user wants to inject with Val not set" doesn't make a
+whole lot of sense because nothing will happen - error will get ignored.
+
+So we can do all the warning we want - it will be useless and in some
+cases the user might not even see it.
+
+So it sounds to me like setting the valid bit directly makes a lot more
+sense.
+
+2. Automatically set VAL=1 to correct any VAL=0 injections.
+
+Yes, we force the VAL bit to 1 and that is not what the user injected
+but the user injecting with VAL=0 will get ignored, i.e., it will be
+pointless.
+
+So we "help" here and set the valid bit.
+
+Anything else I'm missing?
+
+Sorry again for being back'n'forth on this.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
