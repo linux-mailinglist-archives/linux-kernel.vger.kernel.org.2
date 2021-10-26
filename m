@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BED243B317
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AA343B31A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236181AbhJZNWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbhJZNWG (ORCPT
+        id S236189AbhJZNXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:23:31 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:2950 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231178AbhJZNXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:22:06 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7188C061745;
-        Tue, 26 Oct 2021 06:19:42 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n12so5640875plc.2;
-        Tue, 26 Oct 2021 06:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VzCWxXxK9TdDs8vtpTG3m2qg1k4LCb22yH40yBeN194=;
-        b=iAIwAL+itZzmAG/PxuRn0efFaRUSfd9e5rOMTCoNN+4qLc3H0Q8iuLh9nKBHDgU+G+
-         qmBMdI2B3hQPMWAHa31SY4Az56+T/RGNR4ppy2ui6VjIf50HqnrAECVvqWLlQSV5X9nP
-         Gtw347BTcEdbDJjo0n+oma0GF/rohUVqQLQx3O2ppEM1/5rT4oUfyLyxYZr12yj6E3dS
-         MIxRGgU3IHdaSBtD3tQONEy1sRT259J1bTHlzLjw+9GqL3v0dmGb+Y+40GsTdF/r6XQK
-         P/H1sAzssiePrQc4PZY39vmdgVj8aIDoYhI7a38mG5POc1aWPhCySI1FiHNba5/XDq+P
-         nHWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VzCWxXxK9TdDs8vtpTG3m2qg1k4LCb22yH40yBeN194=;
-        b=Wj+GMCdKO4yVjdJP+0+5HAHA0ErmS72Q5D6bZzZ21FD7ThUfmgK0c06I4ZEXYgXQe7
-         xGBKfa+dqHELDAtR61pSDcfk4N+/rJhxobMd0Xk4wWGd7UKEHAm6dVRxpeB2p2wfurkn
-         nL7oV1Gko+0ahtBpCh6KIGochqvxcXUA51+7TfirOyXN6vmHAzKrN0yNR9AoXo2ubn92
-         6MXig6NjOT+loi1rHeq7601EX874HUzhD7kCU6wT7ZpMX/bBkmdG0dJGdoVWCY46XUcZ
-         /7h/F0NrPF/HoPATbiXJ6X0Q50pDTQiNpmqpOH4s7J4pwl9D3rKCE+aFQPpcfcfXzCu0
-         Sb+g==
-X-Gm-Message-State: AOAM531MYxpX/wojk+uxJU3cO/W7c9jzdTWOwY1+71bnYMuoCkXpbedr
-        UX9Fp023/dOhGCLvvElPRyQ=
-X-Google-Smtp-Source: ABdhPJxUNeYPuoYMIofoYzM3+5yUuwUhxMCQsVBUyKHvPYld780i9L/QH4Wj30RO0PsH0iTP2G+8+g==
-X-Received: by 2002:a17:902:b40a:b0:13d:cbcd:2e64 with SMTP id x10-20020a170902b40a00b0013dcbcd2e64mr22527791plr.18.1635254382283;
-        Tue, 26 Oct 2021 06:19:42 -0700 (PDT)
-Received: from localhost.localdomain ([103.112.79.202])
-        by smtp.gmail.com with ESMTPSA id d17sm9501560pfv.204.2021.10.26.06.19.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 06:19:41 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     davem@davemloft.net, kuba@kernel.org, alobakin@pm.me,
-        jonathan.lemon@gmail.com, willemb@google.com, pabeni@redhat.com,
-        vvs@virtuozzo.com, cong.wang@bytedance.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>
-Subject: [PATCH net] net: gro: set the last skb->next to NULL when it get merged
-Date:   Tue, 26 Oct 2021 21:18:59 +0800
-Message-Id: <20211026131859.59114-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Tue, 26 Oct 2021 09:23:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635254466; x=1666790466;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+B0okMOOzcOhjz3TGoccFG745L17Bg3X75cyIf9gkXQ=;
+  b=Qi+9efMswg6fNdbY9YNtM2qgO9SKUItJKN7+PZ3dDGqUxRIfxH8H75wH
+   BZ+NEowylByKz4qMEORZLJwKn8iAASF+7yGJ0i0Ut3zcKowe7xUgAT311
+   mLcxcIl/ESMB7m2jM7ZuyMmPRXvdedAgCJm6aRIebHjZAiiQWBr+b8uR/
+   MLdwrFdrM7fXRdsUZGDG+CfdGougqqKxkPX+xPHOh7wafa7GSkb4CdVDz
+   yqNq9Y9wrSgg2NMIpDHqkCZPSraZkneDL62exVoB2G6kPGfEHLgdFRrxd
+   IEI3yYgDWimg7vm9QnbHgUUG19QC43z51JdIad9WgUZr4cIRJPZfWiJ2k
+   A==;
+IronPort-SDR: zSe+/AVIdjSh8dFU380kdj9tlrs3EYo/2LL4xdSTNv9V5eMtGjPaLqcEUwgHgfrXRMBDJZza1y
+ UKFfVDoCpP/uOc1fOFhRZCaDSwzNw/jOxYO/WIS8H33ZefAhKZnNmxmGDGWsy/ErnxXcFSwxHX
+ YsM/+A41i4rc0SURq3Ska7OaNBHLa4m2Hq2n37p9GlTmwUxspg+cmFD7v2Sc+NAGpb8cYnQgWe
+ Vi0P6YBL2iHP92/dVkrQUB+c+qVVjzw55ZUxCxd/4uN7CGKcjdBZ3MtntQ5cJYuhGixh3mIE7Y
+ uSmFtWuH5d7IrHgCiuIpg4vf
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="134392532"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Oct 2021 06:21:05 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 26 Oct 2021 06:21:05 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 26 Oct 2021 06:21:00 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <devicetree@vger.kernel.org>
+CC:     <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <eugen.hristev@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Mihai Sain <mihai.sain@microchip.com>
+Subject: [PATCH] ARM: dts: at91: sama5d2_xplained: remove PA11__SDMMC0_VDDSEL from pinctrl
+Date:   Tue, 26 Oct 2021 16:20:34 +0300
+Message-ID: <20211026132034.678655-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+From: Mihai Sain <mihai.sain@microchip.com>
 
-Setting the @next of the last skb to NULL to prevent the panic in future
-when someone does something to the last of the gro list but its @next is
-invalid.
+I/O voltage for eMMC is always 3.3V because PA11__SDMMC0_VDDSEL is
+tied with 10K resistor to GND. U13 switch S1 is always selected as
+voltage rail of 3.3V for VCCQ power pin from MPU controller and eMMC flash.
+Removing PA11 from pinctrl because it remains unused.
 
-For example, without the fix (commit: ece23711dd95), a panic could happen
-with the clsact loaded when skb is redirected and then validated in
-validate_xmit_skb_list() which could access the error addr of the @next
-of the last skb. Thus, "general protection fault" would appear after that.
-
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
 ---
- net/core/skbuff.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 2170bea..7b248f1 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4396,6 +4396,7 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
- 		skb_shinfo(p)->frag_list = skb;
- 	else
- 		NAPI_GRO_CB(p)->last->next = skb;
-+	skb->next = NULL;
- 	NAPI_GRO_CB(p)->last = skb;
- 	__skb_header_release(skb);
- 	lp = p;
+diff --git a/arch/arm/boot/dts/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+index b1e854f658de..9bf2ec0ba3e2 100644
+--- a/arch/arm/boot/dts/at91-sama5d2_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d2_xplained.dts
+@@ -66,7 +66,7 @@ sdmmc0: sdio-host@a0000000 {
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&pinctrl_sdmmc0_default>;
+ 			non-removable;
+-			mmc-ddr-1_8v;
++			mmc-ddr-3_3v;
+ 			status = "okay";
+ 		};
+ 
+@@ -619,10 +619,9 @@ cmd_data {
+ 						bias-disable;
+ 					};
+ 
+-					ck_cd_rstn_vddsel {
++					ck_cd_rstn {
+ 						pinmux = <PIN_PA0__SDMMC0_CK>,
+ 							 <PIN_PA10__SDMMC0_RSTN>,
+-							 <PIN_PA11__SDMMC0_VDDSEL>,
+ 							 <PIN_PA13__SDMMC0_CD>;
+ 						bias-disable;
+ 					};
 -- 
-1.8.3.1
+2.25.1
 
