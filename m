@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF48543BD07
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3850F43BD0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239943AbhJZWMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 18:12:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239926AbhJZWLw (ORCPT
+        id S236220AbhJZWNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240225AbhJZWNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:11:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635286167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+zTpBMvFXVwp0cVfmRszlrLDuyQaiT/zVOksqphYoeg=;
-        b=WFG9tiJZBwkGKodq6sXIcy3+mKTouGoMiSVzfBbo1SU7cwfTLqVO/MLLrznqc0bWJpahJZ
-        6CbDaBGOmkQfiDB9roXK9hdw6Hs5r0sqaEia+NbPRloFXUZJCmi6HCEUsJ1y8YEEysjaQX
-        IE0NunUzQLDLVoYePhjOQmWCHvtpy+k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-37-CahLCpE6McmEdyi7ovFeQw-1; Tue, 26 Oct 2021 18:09:24 -0400
-X-MC-Unique: CahLCpE6McmEdyi7ovFeQw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 426D5CF982;
-        Tue, 26 Oct 2021 22:09:20 +0000 (UTC)
-Received: from emerald.lyude.net (unknown [10.22.18.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 803B35F4E0;
-        Tue, 26 Oct 2021 22:09:18 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org
-Cc:     Satadru Pramanik <satadru@gmail.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 5/5] drm/i915: Clarify probing order in intel_dp_aux_init_backlight_funcs()
-Date:   Tue, 26 Oct 2021 18:08:48 -0400
-Message-Id: <20211026220848.439530-6-lyude@redhat.com>
-In-Reply-To: <20211026220848.439530-1-lyude@redhat.com>
-References: <20211026220848.439530-1-lyude@redhat.com>
+        Tue, 26 Oct 2021 18:13:31 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671DAC061229
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:10:49 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id q16so1322034ljg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FeJxrETo5kkHC6yy5/z3/zb2XGiSNYC+KlW60qSUBa4=;
+        b=IGRo583RkjYHRXrdCbB2VtjMRMnIkzIotxUIb344Yg0+X2k+LZZ44x9PLWUupfLfXM
+         aa3MfmufNZMIOtCn8Sdx5GErCS334lOiLPg1xe2O/saDViWnOiPfN9te4fJnYGSdlobZ
+         bc8VUKmmke2U/XMI2xp3OP4iKKpxdAsC50gE5o2J7Q405Y0U6u11DbxbRDn33b4wZw1V
+         pVpwzAtXUR8FSIeKPCX1b5dCdSQUt8eV6aAze1TLGfHbpRYWMImBTG0zXCQcY2d2Mj4h
+         N8M1/sJrEiQ9QqRdk574feqFG1xLRk+DgKLBN9B/BmTVnNMA78leWGosbuID7PkPx07T
+         JZFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FeJxrETo5kkHC6yy5/z3/zb2XGiSNYC+KlW60qSUBa4=;
+        b=1I5BTGjfUkCQYHQ8Kcj3oEllq4+Oq/BP4GDyGyDnH+EiUJo9hWN9d+Y5iSX8A+AHRq
+         b4a5ONNT5fH0JiK5BYJd4xsaSYbKeSwv7eFsLN65lCiKRP34G230qKfqjFtMeEtfnM1u
+         H/T6eV5pHYUxpjhyXzIf9bkJvhKgrwAQpfrRJj+FS4hgf9JR48uHzuDyiW7WFJ4IbOTn
+         lfq55gbkNbsbzvNPPzo29nCqghkL9a4+5aRMgYer6inXBZuygPUY10WAhPKYhmKuDJeV
+         zeDER4DzmRLnLCO/o99wV2qXvYigyis/eRmVJs215IseTRaJE5hUHgxKzKRImW405ntE
+         YpcQ==
+X-Gm-Message-State: AOAM533oZHqZUweBqzbWZ2kGc87eEI4EqX9UTd1fVMIo+NjF/acCqrZw
+        /F9qsR4kWRwhwbtYFJk9SmO0lcZ8Ku4BgiPxD13tCg==
+X-Google-Smtp-Source: ABdhPJzMiEfUftf3AQCYeJTd8EgA3PuLtgAofwFO1J7XgnTbj+hNXjSb/i3L0yrGwvrWcwZe6l9j1qocEPmvn5WPDNY=
+X-Received: by 2002:a05:651c:111:: with SMTP id a17mr28176160ljb.145.1635286247771;
+ Tue, 26 Oct 2021 15:10:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20211026171313.50-1-mario.limonciello@amd.com>
+In-Reply-To: <20211026171313.50-1-mario.limonciello@amd.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 27 Oct 2021 00:10:36 +0200
+Message-ID: <CACRpkdYAv5w5AfKPQgCqXgKSYnS7wvCkE3qTj_Q9hyvOS=xsvQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] ACPI: Add stubs for wakeup handler functions
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hooray! We've managed to hit enough bugs upstream that I've been able to
-come up with a pretty solid explanation for how backlight controls are
-actually supposed to be detected and used these days. As well, having the
-rest of the PWM bits in VESA's backlight interface implemented seems to
-have fixed all of the problematic brightness controls laptop panels that
-we've hit so far.
+On Tue, Oct 26, 2021 at 7:13 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
 
-So, let's actually document this instead of just calling the laptop panels
-liars. As well, I would like to formally apologize to all of the laptop
-panels I called liars. I'm sorry laptop panels, hopefully you can all
-forgive me and we can move past this~
+> The commit ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+> added new functions for drivers to use during the s2idle wakeup path, but
+> didn't add stubs for when CONFIG_ACPI wasn't set.
+>
+> Add those stubs in for other drivers to be able to use.
+>
+> Fixes: ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Acked-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
----
- .../drm/i915/display/intel_dp_aux_backlight.c    | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+I need an ACK from an ACPI maintainer to take this with the
+other fix into the pinctrl tree.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-index 96fe3eaba44a..8b9c925c4c16 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-@@ -456,11 +456,17 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *connector)
- 	}
- 
- 	/*
--	 * A lot of eDP panels in the wild will report supporting both the
--	 * Intel proprietary backlight control interface, and the VESA
--	 * backlight control interface. Many of these panels are liars though,
--	 * and will only work with the Intel interface. So, always probe for
--	 * that first.
-+	 * Since Intel has their own backlight control interface, the majority of machines out there
-+	 * using DPCD backlight controls with Intel GPUs will be using this interface as opposed to
-+	 * the VESA interface. However, other GPUs (such as Nvidia's) will always use the VESA
-+	 * interface. This means that there's quite a number of panels out there that will advertise
-+	 * support for both interfaces, primarily systems with Intel/Nvidia hybrid GPU setups.
-+	 *
-+	 * There's a catch to this though: on many panels that advertise support for both
-+	 * interfaces, the VESA backlight interface will stop working once we've programmed the
-+	 * panel with Intel's OUI - which is also required for us to be able to detect Intel's
-+	 * backlight interface at all. This means that the only sensible way for us to detect both
-+	 * interfaces is to probe for Intel's first, and VESA's second.
- 	 */
- 	if (try_intel_interface && intel_dp_aux_supports_hdr_backlight(connector)) {
- 		drm_dbg_kms(dev, "Using Intel proprietary eDP backlight controls\n");
--- 
-2.31.1
+Alternatively both can be merged into the ACPI tree.
 
+Should these two patches be tagged for stable?
+
+Yours,
+Linus Walleij
