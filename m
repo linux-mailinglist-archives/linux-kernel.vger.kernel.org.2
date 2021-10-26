@@ -2,158 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9BC43B90C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C674B43B90F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238076AbhJZSLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:11:31 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:24024 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhJZSL2 (ORCPT
+        id S238086AbhJZSLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:11:48 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:49436 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238080AbhJZSLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:11:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635271724;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=74t1mRAJSitLug010w0F1NW8drDiZWZJSwlgKAAwYPI=;
-    b=NIWrYrscnOR/x9mpeRFH6NMUQkRWah+6dtDPHFXz3fhE2c+jeI2EAiuUHVM+fOOJ9I
-    aWaGC9M7f4gHYCucgPCtRPj0rAOEDgI5sewSpGVsT/y6Qy8rxE72mBbjm6ZMaO8YJJim
-    clXUC2zSIqwWF3gSKGrqmJct+GufrKT5t8BMqNzwTDgR7RosccHy6IHPSm4fY1tY45Ka
-    kvSBi4PsXig0C4AVV8UYm1A34dV0F5eZl5n872rJpMCm25cwM5/ZombCvkLQ1GM8AkEi
-    CmIIv2xM1UBCGiW8/lCzH5P9lMrWNZTZVsv/OWrA1il1NymoQ9B1FBRdqi/Kmj9ulCrQ
-    ZB+Q==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8J+"
-X-RZG-CLASS-ID: mo00
-Received: from mbp-13-nikolaus.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 SBL|AUTH)
-    with ESMTPSA id d01d1fx9QI8hyjg
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 26 Oct 2021 20:08:43 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired
- omap_hsmmc
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CAPDyKFraMXqC9OBeUTpm=bxjrFZTCopV3ZJQf1TRsA8UeTWdTA@mail.gmail.com>
-Date:   Tue, 26 Oct 2021 20:08:42 +0200
-Cc:     Jerome Pouiller <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Tony Lindgren <tony@atomide.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <80C6A8DD-183B-4FDD-B203-D3108C106043@goldelico.com>
-References: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
- <CAPDyKFraMXqC9OBeUTpm=bxjrFZTCopV3ZJQf1TRsA8UeTWdTA@mail.gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Tue, 26 Oct 2021 14:11:47 -0400
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id fQssm4KE0BazofQsxmL3wM; Tue, 26 Oct 2021 20:09:22 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Tue, 26 Oct 2021 20:09:22 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Matt Kline <matt@bitbashing.io>
+Subject: [RFC PATCH v1] can: m_can: m_can_read_fifo: fix memory leak in error branch
+Date:   Wed, 27 Oct 2021 03:09:09 +0900
+Message-Id: <20211026180909.1953355-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uf,
+In m_can_read_fifo(), if the second call to m_can_fifo_read() fails,
+the function jump to the out_fail label and returns without calling
+m_can_receive_skb(). This means that the skb previously allocated by
+alloc_can_skb() is not freed. In other terms, this is a memory leak.
 
-+ Tony, linux-omap list
+This patch adds a new goto statement: out_receive_skb and do some
+small code refactoring to fix the issue.
 
-> Am 26.10.2021 um 19:12 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
->=20
-> + Jerome
->=20
-> On Wed, 6 Oct 2021 at 13:25, H. Nikolaus Schaller <hns@goldelico.com> =
-wrote:
->>=20
->> The TiWi 5 WiFi module needs special setup of the sdio
->> interface before it can be probed.
->>=20
->> So far, this is done in omap_hsmmc_init_card() in omap_hsmmc.c
->> which makes it useable only if connected to omap devices
->> which use the omap_hsmmc. The OpenPandora is the most promient
->> example.
->>=20
->> There are plans to switch to a newer sdhci-omap driver and
->> retire omap_hsmmc. Hence this quirk must be reworked or moved
->> somewhere else. Ideally to some location that is not dependent
->> on the specific SoC mmc host driver.
->>=20
->> Analysis has shown that omap_hsmmc_init_card() is called
->> through the host->ops->init_card hook which itself
->> is called in three generic locations:
->>=20
->> mmc_init_card()
->> mmc_sd_init_card()
->> mmc_sdio_init_card()
->>=20
->> All these functions share a call to mmc_select_card() shortly
->> after running the init hook and therefore I assume that
->> a good place transplanting the special wl1251 handling is
->> mmc_select_card() - unless we want to copy and maintain the
->> code to three different places.
->>=20
->> After this quirk has been moved there, we can remove
->> omap_hsmmc_init_card() in omap_hsmmc.c in a separate patch.
->> Indeed the plan is to remove omap_hsmmc.c completely.
->>=20
->> A future development path to generalize could be to make
->> the code not depend on compatible =3D "ti,wl1251" but check
->> for optional device tree properties (non-std-sdio, bus width,
->> vendor, device, blksize, max_dtr, ocr) which can be defined
->> for any child device of the mmd/sd port needing such special
->> setup.
->=20
-> I wouldn't go that path, simply because it may look like we encourage
-> vendors to deviate from the SDIO spec. :-)
+* Appendix: how the issue was found *
 
-Well, that ti,wl1251 chip is so old [1] that probably the SDIO spec did
-deviate from what the vendor thought it will look like :)
+This issue was found using GCC's static analysis tool: -fanalyzer:
+https://gcc.gnu.org/onlinedocs/gcc/Static-Analyzer-Options.html
 
-[1] https://www.ti.com/lit/ml/swmt009a/swmt009a.pdf
+The step to reproduce are:
 
-> At least for now, matching on the compatible string and applying card
-> quirks makes perfect sense to me.
+  1. Install GCC 11.
 
-Yes, that is how it already was in the omal_hsmmc driver quirks.
+  2. Hack the kernel's Makefile to add the -fanalyzer flag (we leave
+  it as an exercise for the reader to figure out the details of how to
+  do so).
 
->=20
->>=20
->> Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for =
-special init of wl1251 to get rid of pandora_wl1251_init_card")
->> Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove =
-openpandora quirks for mmc3 and wl1251")
->> Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add =
-wifi support")
->> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # on OpenPandora
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->=20
-> As a matter of fact, the similar problem that you are looking to
-> address (applying card quirks based on DT compatibility strings), is
-> partly being taken care of in another series [1], being discussed
-> right now. I think the solution for the ti,wl1251 should be based upon
-> that too. Please have a look and see if you can play with that!?
+  3. Decorate the function alloc_can_skb() with
+  __attribute__((__malloc__ (dealloc, netif_rx))). This step helps the
+  static analyzer to figure out the constructor/destructor pairs (not
+  something it can deduce by himself).
 
-That is interesting.
-Yes, maybe it can be the basis. At least for finding the chip and =
-driver.
+  4. Compile.
 
-BR and thanks,
-Nikolaus
+The compiler then throws below warning:
 
->=20
-> Kind regards
-> Uffe
->=20
-> [1]
-> [RFC PATCH 0/2] mmc: allow to rely on the DT to apply quirks
-> =
-https://lore.kernel.org/lkml/20211014143031.1313783-1-Jerome.Pouiller@sila=
-bs.com/
+| drivers/net/can/m_can/m_can.c: In function 'm_can_read_fifo':
+| drivers/net/can/m_can/m_can.c:537:9: warning: leak of 'skb' [CWE-401] [-Wanalyzer-malloc-leak]
+|   537 |         return err;
+|       |         ^~~~~~
+|   'm_can_rx_handler': events 1-6
+|     |
+|     |  899 | static int m_can_rx_handler(struct net_device *dev, int quota)
+|     |      |            ^~~~~~~~~~~~~~~~
+|     |      |            |
+|     |      |            (1) entry to 'm_can_rx_handler'
+|     |......
+|     |  907 |         if (!irqstatus)
+|     |      |            ~
+|     |      |            |
+|     |      |            (2) following 'false' branch (when 'irqstatus != 0')...
+|     |......
+|     |  920 |         if (cdev->version <= 31 && irqstatus & IR_MRAF &&
+|     |      |         ~~
+|     |      |         |
+|     |      |         (3) ...to here
+|     |......
+|     |  939 |         if (irqstatus & IR_RF0N) {
+|     |      |            ~
+|     |      |            |
+|     |      |            (4) following 'true' branch...
+|     |  940 |                 rx_work_or_err = m_can_do_rx_poll(dev, (quota - work_done));
+|     |      |                 ~~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|     |      |                 |                |
+|     |      |                 |                (6) calling 'm_can_do_rx_poll' from 'm_can_rx_handler'
+|     |      |                 (5) ...to here
+|     |
+|     +--> 'm_can_do_rx_poll': events 7-8
+|            |
+|            |  540 | static int m_can_do_rx_poll(struct net_device *dev, int quota)
+|            |      |            ^~~~~~~~~~~~~~~~
+|            |      |            |
+|            |      |            (7) entry to 'm_can_do_rx_poll'
+|            |......
+|            |  548 |         if (!(rxfs & RXFS_FFL_MASK)) {
+|            |      |            ~
+|            |      |            |
+|            |      |            (8) following 'false' branch...
+|            |
+|          'm_can_do_rx_poll': event 9
+|            |
+|            |cc1:
+|            | (9): ...to here
+|            |
+|          'm_can_do_rx_poll': events 10-12
+|            |
+|            |  553 |         while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
+|            |      |                ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+|            |      |                                       |
+|            |      |                                       (10) following 'true' branch...
+|            |  554 |                 err = m_can_read_fifo(dev, rxfs);
+|            |      |                 ~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~
+|            |      |                 |     |
+|            |      |                 |     (12) calling 'm_can_read_fifo' from 'm_can_do_rx_poll'
+|            |      |                 (11) ...to here
+|            |
+|            +--> 'm_can_read_fifo': events 13-24
+|                   |
+|                   |  470 | static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+|                   |      |            ^~~~~~~~~~~~~~~
+|                   |      |            |
+|                   |      |            (13) entry to 'm_can_read_fifo'
+|                   |......
+|                   |  484 |         if (err)
+|                   |      |            ~
+|                   |      |            |
+|                   |      |            (14) following 'false' branch...
+|                   |......
+|                   |  487 |         if (fifo_header.dlc & RX_BUF_FDF)
+|                   |      |         ~~ ~
+|                   |      |         |  |
+|                   |      |         |  (16) following 'true' branch...
+|                   |      |         (15) ...to here
+|                   |  488 |                 skb = alloc_canfd_skb(dev, &cf);
+|                   |      |                 ~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~
+|                   |      |                 |     |
+|                   |      |                 |     (18) allocated here
+|                   |      |                 (17) ...to here
+|                   |......
+|                   |  491 |         if (!skb) {
+|                   |      |            ~
+|                   |      |            |
+|                   |      |            (19) assuming 'skb' is non-NULL
+|                   |      |            (20) following 'false' branch (when 'skb' is non-NULL)...
+|                   |......
+|                   |  496 |         if (fifo_header.dlc & RX_BUF_FDF)
+|                   |      |         ~~
+|                   |      |         |
+|                   |      |         (21) ...to here
+|                   |......
+|                   |  519 |                 if (err)
+|                   |      |                    ~
+|                   |      |                    |
+|                   |      |                    (22) following 'true' branch...
+|                   |  520 |                         goto out_fail;
+|                   |      |                         ~~~~
+|                   |      |                         |
+|                   |      |                         (23) ...to here
+|                   |......
+|                   |  537 |         return err;
+|                   |      |         ~~~~~~
+|                   |      |         |
+|                   |      |         (24) 'skb' leaks here; was allocated at (18)
+|                   |
+
+Fixes: e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
+CC: Matt Kline <matt@bitbashing.io>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+ drivers/net/can/m_can/m_can.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 2470c47b2e31..4e81ff9dd5c6 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -476,7 +476,7 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 	struct id_and_dlc fifo_header;
+ 	u32 fgi;
+ 	u32 timestamp = 0;
+-	int err;
++	int err = 0;
+ 
+ 	/* calculate the fifo get index for where to read data */
+ 	fgi = FIELD_GET(RXFS_FGI_MASK, rxfs);
+@@ -517,7 +517,7 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 		err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA,
+ 				      cf->data, DIV_ROUND_UP(cf->len, 4));
+ 		if (err)
+-			goto out_fail;
++			goto out_receive_skb;
+ 	}
+ 
+ 	/* acknowledge rx fifo 0 */
+@@ -528,12 +528,12 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 
+ 	timestamp = FIELD_GET(RX_BUF_RXTS_MASK, fifo_header.dlc);
+ 
++out_receive_skb:
+ 	m_can_receive_skb(cdev, skb, timestamp);
+ 
+-	return 0;
+-
+ out_fail:
+-	netdev_err(dev, "FIFO read returned %d\n", err);
++	if (err)
++		netdev_err(dev, "FIFO read returned %d\n", err);
+ 	return err;
+ }
+ 
+-- 
+2.32.0
 
