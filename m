@@ -2,153 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4B343B1B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6C843B175
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbhJZL7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:59:45 -0400
-Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:25635 "EHLO
-        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbhJZL7n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:59:43 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 07:59:42 EDT
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
- (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 26 Oct
- 2021 19:42:14 +0800
-Received: from [10.89.154.55] (123.139.80.25) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 26 Oct
- 2021 19:42:13 +0800
-Date:   Tue, 26 Oct 2021 19:42:12 +0800
-From:   <tonywwang-oc@zhaoxin.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     <a.zummo@towertech.it>, <linux-rtc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
-        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
-        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <YanchenSun@zhaoxin.com>
-Subject: Re: [PATCH] rtc: Fix set RTC time delay 500ms on some Zhaoxin SOCs
-User-Agent: K-9 Mail for Android
-In-Reply-To: <F4869089-9792-4C4F-B984-553662B03E91@zhaoxin.com>
-References: <1629121638-3246-1-git-send-email-TonyWWang-oc@zhaoxin.com> <YRogod0HB4d7Og4E@piout.net> <a4b6b0b4-9aa5-9a75-e523-0fd7656b82cf@zhaoxin.com> <YRpb4Fey2lM3aOAw@piout.net> <7EA395FF-EB66-4274-9EDE-EC28450A0259@zhaoxin.com> <YRu3v0pb/Z54XxWJ@piout.net> <F4869089-9792-4C4F-B984-553662B03E91@zhaoxin.com>
-Message-ID: <2DAA636C-A992-4FC7-BB53-3E68342437F9@zhaoxin.com>
+        id S235544AbhJZLpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:45:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:61072 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233543AbhJZLpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 07:45:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="290719658"
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="290719658"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 04:43:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="664513549"
+Received: from lkp-server01.sh.intel.com (HELO 9372cb945ed7) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 26 Oct 2021 04:43:19 -0700
+Received: from kbuild by 9372cb945ed7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mfKrO-0000Qv-Id; Tue, 26 Oct 2021 11:43:18 +0000
+Date:   Tue, 26 Oct 2021 19:43:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sev] BUILD SUCCESS
+ 007faec014cb5d26983c1f86fd08c6539b41392e
+Message-ID: <6177e9d1.N1AtVKlSi+IM0mn4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [123.139.80.25]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/sev
+branch HEAD: 007faec014cb5d26983c1f86fd08c6539b41392e  x86/sev: Expose sev_es_ghcb_hv_call() for use by HyperV
 
+elapsed time: 1088m
 
-On August 18, 2021 11:54:20 AM GMT+08:00, tonywwang-oc@zhaoxin.com wrote:
->
->
->On August 17, 2021 9:21:03 PM GMT+08:00, Alexandre Belloni
-><alexandre.belloni@bootlin.com> wrote:
->>On 17/08/2021 19:09:28+0800, tonywwang-oc@zhaoxin.com wrote:
->>> 
->>> 
->>> On August 16, 2021 8:36:48 PM GMT+08:00, Alexandre Belloni
->><alexandre.belloni@bootlin.com> wrote:
->>> >On 16/08/2021 18:03:13+0800, Tony W Wang-oc wrote:
->>> >> 
->>> >> On 16/08/2021 16:24, Alexandre Belloni wrote:
->>> >> > Hello,
->>> >> > 
->>> >> > On 16/08/2021 21:47:18+0800, Tony W Wang-oc wrote:
->>> >> >> When the RTC divider is changed from reset to an operating
->time
->>> >base,
->>> >> >> the first update cycle should be 500ms later. But on some
->>Zhaoxin
->>> >SOCs,
->>> >> >> this first update cycle is one second later.
->>> >> >>
->>> >> >> So set RTC time on these Zhaoxin SOCs will causing 500ms
->delay.
->>> >> >>
->>> >> > 
->>> >> > Can you explain what is the relationship between writing the
->>> >divider and
->>> >> > the 500ms delay?
->>> >> >> Isn't the issue that you are using systohc and set_offset_nsec
->>is
->>> >set to
->>> >> > NSEC_PER_SEC / 2 ?
->>> >> > 
->>> >> No.
->>> >> When using #hwclock -s to set RTC time and set_offset_nsec is
->>> >> NSEC_PER_SEC / 2, the function mc146818_set_time() requires the
->>first
->>> >> update cycle after RTC divider be changed from reset to an
->>operating
->>> >> mode is 500ms as the MC146818A spec specified. But on some
->Zhaoxin
->>> >SOCs,
->>> >> the first update cycle of RTC is one second later after RTC
->>divider
->>> >be
->>> >> changed from reset to an operating mode. So the first update
->cycle
->>> >after
->>> >> RTC divider be changed from reset to an operation mode on These
->>SOCs
->>> >> will causing 500ms delay with current mc146818_set_time()
->>> >implementation.
->>> >> 
->>> >
->>> >What happens with hwclock --delay=0 -s ?
->>> 
->>> With "hwclock --delay=0 -s" still have this problem. Actually, this
->>500ms delay caused by writing the RTC time on these Zhaoxin SOCs.
->>> As I've tested, with hwclock --delay=0 -w can fix it too. 
->>> 
->>
->>Both -s and -w end up calling set_hardware_clock_exact() so both
->should
->>end up with the correct time. If this is not the case, then hwclock
->>needs to be fixed.
->
->I checked Util-linux-2.37.2, hwclock -w will call
->set_hardware_clock_exact() and hwclock -s will not.
->Please correct me if I'm wrong.
->
->Sincerely
->TonyWWang-oc
+configs tested: 43
+configs skipped: 82
 
-As explained before, the root cause of this problem is: these Zhaoxin SOCs
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-which belong to X86 architecture do not meet the requirement of
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-MC146818A compatible RTC about “When the divider is changed from reset
-
-to an operating time base, the first update cycle is one-half second later”.
-
-Actually the first update cycle on these Zhaoxin SOCs is one second later in
-
-this case.
-
- 
-
-This problem is not only happened when running “hwclock -w”. On X86 platform,
-
-the 0.5s delay is default for both “hwclock –w” and NTP driver’s invoke of
-
-sync_cmos_clock().  So set RTC time caused by NTP driver also has this problem.
-
- 
-
-As have been test pass, skip operate the RTC_REG_A (which divider-control bits in)
-
-with these Zhaoxin SOCs in function mc146818_set_time() can  fix this problem.
-
-I think this patch seems appropriate.
-
-Sincerely
-TonyWWang-oc
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
