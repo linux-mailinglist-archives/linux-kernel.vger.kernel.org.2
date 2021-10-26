@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE6943BB88
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CDD43BB8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239168AbhJZU3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:29:13 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:39558 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239166AbhJZU2x (ORCPT
+        id S239179AbhJZUbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:31:37 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:35525 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231545AbhJZUbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:28:53 -0400
-Date:   Tue, 26 Oct 2021 16:26:27 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 2/2] futex: remove futex_cmpxchg detection
-Message-ID: <20211026202625.GU7074@brightrain.aerifal.cx>
-References: <20211026100432.1730393-1-arnd@kernel.org>
- <20211026100432.1730393-2-arnd@kernel.org>
+        Tue, 26 Oct 2021 16:31:32 -0400
+Received: by mail-ot1-f48.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so444563ott.2;
+        Tue, 26 Oct 2021 13:29:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OmISPFoW2kKwNI1TC2eM1qAir9vtpVAUyXH+lQynzN4=;
+        b=EK11dpG1B9UyzyutHU8b0sq3/FJPD8F2zvUWEx/AlsJLZRo7Ew5lYUjt6sEQ9Ece7l
+         ek1IiXhw/nxJ8ucjPRP78BEpFcFYUW+WrpsRD3NubnQB1cyBF41UuQjoe2l5iqhaRl3P
+         zJa+DVifjiMXbHsrq7eqW/ESK43vH0ck5K6uIdZNmBFSaoxTugFf6jVO8WfUPkdGZ9td
+         IAqppJ4T+v8AJcuAMAEEC9V4ivmcmLpkQQG53+kf31pxGjRCBEPmxgVbUW4J800YhqdP
+         mR0LkPPiys3C4Su6efsK44JD4wvSHA9iecQPeL8kgdKcuUM544mSzCfnQ3SrU0P6q47J
+         fNiA==
+X-Gm-Message-State: AOAM533PKXtO9FgE+ImtGYKg/P3sHULOMXnw5MuRnQrai+aC8mqIu+3y
+        9gCbz06ttYZPfgNRXbtnmfwx7fbEfQ==
+X-Google-Smtp-Source: ABdhPJxa1Qf7mE8H2HOq9PzWv+ncjFiya+dmd5h24+FoLrFuZgGY9RuWPmOj82/jdHjF1V1OZruUtA==
+X-Received: by 2002:a9d:bab:: with SMTP id 40mr22055684oth.274.1635280147490;
+        Tue, 26 Oct 2021 13:29:07 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l1sm5041092oic.30.2021.10.26.13.29.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 13:29:05 -0700 (PDT)
+Received: (nullmailer pid 3187225 invoked by uid 1000);
+        Tue, 26 Oct 2021 20:29:05 -0000
+Date:   Tue, 26 Oct 2021 15:29:05 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     peda@axentia.se, peter.korsgaard@barco.com,
+        lars.povlsen@microchip.com, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: i2c-mux-gpio: Add optional DT property
+Message-ID: <YXhlEYr2zygThVsj@robh.at.kernel.org>
+References: <20211013141003.2388495-1-horatiu.vultur@microchip.com>
+ <20211013141003.2388495-2-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026100432.1730393-2-arnd@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20211013141003.2388495-2-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 12:03:48PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Oct 13, 2021 at 04:10:02PM +0200, Horatiu Vultur wrote:
+> Add optional property 'select-delay' DT property. In case this is set
+> then a delay is added when changing mux state. The value is specified in
+> usec.
 > 
-> Now that all architectures have a working futex implementation
-> in any configuration, remove the runtime detection code.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > ---
->  arch/arc/Kconfig              |  1 -
->  arch/arm/Kconfig              |  1 -
->  arch/arm64/Kconfig            |  1 -
->  arch/csky/Kconfig             |  1 -
->  arch/m68k/Kconfig             |  1 -
->  arch/riscv/Kconfig            |  1 -
->  arch/s390/Kconfig             |  1 -
->  arch/sh/Kconfig               |  1 -
->  arch/um/Kconfig               |  1 -
->  arch/um/kernel/skas/uaccess.c |  1 -
->  arch/xtensa/Kconfig           |  1 -
->  init/Kconfig                  |  8 --------
->  kernel/futex/core.c           | 35 -----------------------------------
->  kernel/futex/futex.h          |  6 ------
->  kernel/futex/syscalls.c       | 22 ----------------------
->  15 files changed, 82 deletions(-)
+>  Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt b/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
+> index d4cf10582a26..d0dacbad491a 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-gpio.txt
+> @@ -28,6 +28,7 @@ Required properties:
+>  Optional properties:
+>  - idle-state: value to set the muxer to when idle. When no value is
+>    given, it defaults to the last value used.
+> +- select-delay: GPIO settle delay when changing mux state. In usec.
 
-Acked-by: Rich Felker <dalias@libc.org>
+Seems generally useful. Can we add this first to the mux control 
+binding, then use it here (or better yet, use the mux binding if you 
+can instead).
 
+Also, properties with units need a standard unit suffix.
+
+>  
+>  For each i2c child node, an I2C child bus will be created. They will
+>  be numbered based on their order in the device tree.
+> -- 
+> 2.33.0
+> 
+> 
