@@ -2,35 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B7F43AE26
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABA943AE2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbhJZIg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56110 "EHLO mail.kernel.org"
+        id S233877AbhJZIg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:36:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233353AbhJZIg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:36:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B32FA60E75;
-        Tue, 26 Oct 2021 08:34:02 +0000 (UTC)
+        id S232001AbhJZIgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:36:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C8B360FE8;
+        Tue, 26 Oct 2021 08:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635237243;
-        bh=KhCKgXvLcov+EFdzf9jDKXqDhuGa1G79WzeoutDBO6I=;
+        s=k20201202; t=1635237268;
+        bh=aqX/BUKmfRta3pa2yzNOCRTmiB629p+qvxg28trH85k=;
         h=From:To:Cc:Subject:Date:From;
-        b=CaXii8800WZSoF23eIYDmA7cfV9mylwV8iQfy1vaZ8vkIRAqjqH50N4ctyYllVGdA
-         zYgqyIaPQKVw8W41zfqj5jFyZprrSOaFZLoyBQ0lDWDa1m6v6UbwHolEfH7AxTnE6d
-         NEBR5EkR176h+e+uhbVxEilFaOsz9zxn9QnSYum2I6UbQ6PrWvpRHKEgArWftyXoYb
-         o9zaPvDWyZNcvM2khqlzGbM0k//2q+/83E+yyE6weQTaXUCeZ14m/xMERcXm2/eSWv
-         tPF1eYGSIvWV9BD09Sc0Xid0emLxD6Mcgdqwu31WCC01SiH9P4MijSP3O3SiRUMv/S
-         mVsgx7cCIxu6A==
+        b=iNJHjft9O86KkRz1OcOu6OlAUgJTcpntFvQIEV3zRcSmiDlHR9wHIh2oKUmeftdmZ
+         fDZvWx4W/ZgFPMiM0fLzo+s8oD4uw6V2/VxrhDCicRY1czWpHU6VtwVcOL4uZ+L952
+         Y3PJcyLBWwrxQP+MbLX3jnNmjqCn8eksHoYTKgW6JBbh9X84YW5nJYIgX+4xcEKy3X
+         T3XpgTNXz9Tr1GMgom3opfnJ9F/WTpluH0aTyEq4Yd+DBbujOsqhIJKfob2LLB6q6d
+         JyrFWvbQmabjCL5a+M1rcn++qxb8dwe9k3cYNyaZQ+LT+iDcx7/boLm52YFmb1Hd+D
+         8r32CVf7MC1KQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Marc Bonnici <marc.bonnici@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware: arm_ffa: remove unused 'compat_version' variable
-Date:   Tue, 26 Oct 2021 10:33:50 +0200
-Message-Id: <20211026083400.3444946-1-arnd@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Auld <matthew.auld@intel.com>,
+        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/i915/dmabuf: include asm/smp.h for cache operations
+Date:   Tue, 26 Oct 2021 10:34:16 +0200
+Message-Id: <20211026083423.3461555-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,30 +51,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The newly added ffa_compatible_version_find() function causes a
-build warning because of a variable that is never used:
+The x86 low-level cache management operations are declared in
+asm/smp.h, so drivers that call into this code need to include
+the header:
 
-drivers/firmware/arm_ffa/driver.c:180:6: error: unused variable 'compat_version' [-Werror,-Wunused-variable]
-        u32 compat_version;
+drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c:248:3: error: implicit declaration of function 'wbinvd_on_all_cpus' [-Werror,-Wimplicit-function-declaration]
+                wbinvd_on_all_cpus();
+                ^
 
-Fixes: 8e3f9da608f1 ("firmware: arm_ffa: Handle compatibility with different firmware versions")
+Fixes: a035154da45d ("drm/i915/dmabuf: add paranoid flush-on-acquire")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/firmware/arm_ffa/driver.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index 12f4c87c4555..14f900047ac0 100644
---- a/drivers/firmware/arm_ffa/driver.c
-+++ b/drivers/firmware/arm_ffa/driver.c
-@@ -177,7 +177,6 @@ static struct ffa_drv_info *drv_info;
-  */
- static u32 ffa_compatible_version_find(u32 version)
- {
--	u32 compat_version;
- 	u16 major = MAJOR_VERSION(version), minor = MINOR_VERSION(version);
- 	u16 drv_major = MAJOR_VERSION(FFA_DRIVER_VERSION);
- 	u16 drv_minor = MINOR_VERSION(FFA_DRIVER_VERSION);
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+index 1adcd8e02d29..853a989fcb9b 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+@@ -7,6 +7,7 @@
+ #include <linux/dma-buf.h>
+ #include <linux/highmem.h>
+ #include <linux/dma-resv.h>
++#include <asm/smp.h>
+ 
+ #include "i915_drv.h"
+ #include "i915_gem_object.h"
 -- 
 2.29.2
 
