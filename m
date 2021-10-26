@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F1343ABE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2247343ABEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbhJZF5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbhJZF5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:57:00 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD401C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 22:54:36 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id o11so21039534ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 22:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PE12sBEfW/xDgLi19sIkoWTI0DJx+IMAfXlVsyqwOfw=;
-        b=i2FrzE734FAkfYlSLmHM7oRIxndkuIkUapaY7hkkBx7UXDOI5mlLRxAkMK/qWOKbcl
-         x+vK9LzlDnty+S/HVs6IR6jVX1WjgOWANx9AOifF3Hy6lx58R/vuCuE+qGUnOTlmEDQy
-         /BBoVFiosaVw8G9ep0qfp6bHtSrcUN0zKo//FxliB03/his+QwnssIwkGqXrXrr9qzjX
-         o60aXOYVmDgIWyLlZjfNxWi/hTq12EK0KUxsE4zA4XBDpSPQpeYa4ZKgeYAL8fLBWcb8
-         aRxn7v73xsjW8ny+k9hUCF7Y6BdiYFrmv+n8jbazKY/Y6McIDCt9DYhqZygRWGhQ6Cek
-         WXkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PE12sBEfW/xDgLi19sIkoWTI0DJx+IMAfXlVsyqwOfw=;
-        b=rM79a0w2qNL3rTkA0bRoWyHmG5E4s3S+oHDjN8rzrwqWfNdz9TIGbjWrAztC/VxZjD
-         qcq5ZAQsBwDfdKxrMyJNELS3LtSvbdb/btzNvc+yFCCfk643vs3J0Ziw45RY4m2g9Pzp
-         RasQx1uIGNXo3sXd0sWHEx7L6hdk+WRXBYIaJ/rkCoNVf12neY8lOBKoNGZBPFM5IPNi
-         hHlhBVDtrdhini0pnaA2wbTnnNjB/SAlTDm37xU72dWRr0gx6jNykhY6int4x6rLF2Ra
-         2mz5jvrfj0wvfup6qm4IQVtL4Xm8FNmHBNwNlbjOwLGwTVxhRF23J1HNk3gw/z+o2clQ
-         AixQ==
-X-Gm-Message-State: AOAM532J7h6LTL0wPDpOOQUIdQzzquBdHNaKJiwJv45T1hScL6b2tAHo
-        niN7yDnr8F2W9vFANFwzZ82beqQVGAJt6e1lMPMWVg==
-X-Google-Smtp-Source: ABdhPJw6ePvloiWcZWCXpt2q5JBIZkZxUbaHiQVzjp3ZdS+f7lZZ26jasAGHUTQ+79p3jby+F1TA/ZihF56Rpo0Ub4I=
-X-Received: by 2002:a2e:9003:: with SMTP id h3mr13200966ljg.427.1635227675238;
- Mon, 25 Oct 2021 22:54:35 -0700 (PDT)
+        id S235186AbhJZF6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:58:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:26648 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235129AbhJZF6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:58:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="210610785"
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="210610785"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 22:56:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="485998194"
+Received: from lkp-server01.sh.intel.com (HELO 979d88847c63) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 25 Oct 2021 22:56:20 -0700
+Received: from kbuild by 979d88847c63 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mfFRb-0000Ms-94; Tue, 26 Oct 2021 05:56:19 +0000
+Date:   Tue, 26 Oct 2021 13:55:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 55409ac5c371c6403012d5f4df5e7c6cf0e7dce6
+Message-ID: <6177985c.xhiUSCqa6+Ymga7c%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20211026055010.1569728-1-arnd@kernel.org>
-In-Reply-To: <20211026055010.1569728-1-arnd@kernel.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 25 Oct 2021 22:54:23 -0700
-Message-ID: <CALAqxLUG-Fy5B28K43SRV+kui8a9jnEb+WsCW7DTSsOZaE-tEQ@mail.gmail.com>
-Subject: Re: [PATCH] media: v4l2-core: fix VIDIOC_DQEVENT handling on non-x86
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 10:50 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> My previous bugfix addressed an API inconsistency found by syzbot,
-> and it correctly fixed the issue on x86-64 machines, which now behave
-> correctly for both native and compat tasks.
->
-> Unfortunately, John found that the patch broke compat mode on all other
-> architectures, as they can no longer rely on the VIDIOC_DQEVENT_TIME32
-> code from the native handler as a fallback in the compat code.
->
-> The best way I can see for addressing this is to generalize the
-> VIDIOC_DQEVENT32_TIME32 code from x86 and use that for all architectures,
-> leaving only the VIDIOC_DQEVENT32 variant as x86 specific. The original
-> code was trying to be clever and use the same conversion helper for native
-> 32-bit code and compat mode, but that turned out to be too obscure so
-> even I missed that bit I had introduced myself when I made the fix.
->
-> Fixes: c344f07aa1b4 ("media: v4l2-core: ignore native time32 ioctls on 64-bit")
-> Reported-by: John Stultz <john.stultz@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 55409ac5c371c6403012d5f4df5e7c6cf0e7dce6  sched,x86: Fix L2 cache mask
 
-Tested-by: John Stultz <john.stultz@linaro.org>
+elapsed time: 3040m
 
-Thanks so much again Arnd!
--john
+configs tested: 106
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211025
+nios2                            alldefconfig
+arm                       mainstone_defconfig
+mips                          rb532_defconfig
+arm                           sunxi_defconfig
+powerpc                   bluestone_defconfig
+arc                      axs103_smp_defconfig
+powerpc                      obs600_defconfig
+mips                          rm200_defconfig
+arm                           h5000_defconfig
+arm                          pxa3xx_defconfig
+nios2                         3c120_defconfig
+powerpc                        warp_defconfig
+arm                        mvebu_v7_defconfig
+arm                            dove_defconfig
+mips                          ath79_defconfig
+arm                  randconfig-c002-20211025
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+s390                             allmodconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a013-20211025
+x86_64               randconfig-a015-20211025
+x86_64               randconfig-a011-20211025
+x86_64               randconfig-a014-20211025
+x86_64               randconfig-a016-20211025
+x86_64               randconfig-a012-20211025
+i386                 randconfig-a012-20211025
+i386                 randconfig-a013-20211025
+i386                 randconfig-a011-20211025
+i386                 randconfig-a016-20211025
+i386                 randconfig-a015-20211025
+i386                 randconfig-a014-20211025
+x86_64               randconfig-a002-20211024
+x86_64               randconfig-a004-20211024
+x86_64               randconfig-a005-20211024
+x86_64               randconfig-a006-20211024
+x86_64               randconfig-a001-20211024
+x86_64               randconfig-a003-20211024
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+riscv                randconfig-c006-20211025
+powerpc              randconfig-c003-20211025
+arm                  randconfig-c002-20211025
+x86_64               randconfig-c007-20211025
+mips                 randconfig-c004-20211025
+i386                 randconfig-c001-20211025
+s390                 randconfig-c005-20211025
+x86_64               randconfig-a002-20211025
+x86_64               randconfig-a004-20211025
+x86_64               randconfig-a005-20211025
+x86_64               randconfig-a006-20211025
+x86_64               randconfig-a001-20211025
+x86_64               randconfig-a003-20211025
+i386                 randconfig-a003-20211025
+i386                 randconfig-a004-20211025
+i386                 randconfig-a002-20211025
+i386                 randconfig-a005-20211025
+i386                 randconfig-a001-20211025
+i386                 randconfig-a006-20211025
+hexagon              randconfig-r045-20211025
+hexagon              randconfig-r041-20211025
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
