@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA92443B919
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FE743B91A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238096AbhJZSNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
+        id S238108AbhJZSNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235040AbhJZSNn (ORCPT
+        with ESMTP id S238100AbhJZSNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Oct 2021 14:13:43 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0F4C061767;
-        Tue, 26 Oct 2021 11:11:18 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id bi35so584157lfb.9;
-        Tue, 26 Oct 2021 11:11:18 -0700 (PDT)
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D36C061348
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:11:19 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id j10so209094ilu.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:11:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ok/6IMhjWObzEGTvSkZe4AMKwm0LpNlb/4Kte4oUun0=;
-        b=XYxQXf9vr1K88j0vZznYNkRdyV4d4xKn6hBNRnE4qxeGOJT6zFsJApBWWUeZxeOYbU
-         qKpJy7Dr85HDb6jPAVymoOYDyCu4lmYznbo81zW4dTwN1DOCAeT52ECSjemvmFZdqRbb
-         pI6AAEVrZ43jAeDnaOryFbFWXJvAVTixdfQ4lN+pZnL8QgpfgxrfXY9wXaNeEKUWAbWV
-         QBkZneU1k5g5kp5WHDUalix2YeKkluV7r6JEKZTOmywtXTcgZxMNELoNjPkJ+K2iJgg8
-         Jf9AKacGH63TKkn/aHbOJgulRUyKw8UaBYn7ScZtNmZgzayF3wiZVIVoHY7UEA4tgl0q
-         3CAQ==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ec0ioldJ1MBK4OIaEodzymVJ5K5JCkhpNEzS0/+6PX8=;
+        b=XENdqGEOI6q/3fTuCm1zORtXhArpH26Og19ebJ3o0efUBrBil9QnMWHr6RsFUMQXoG
+         Ik/7XiVDMxBMnNFacFpI/9OqPplMtgo0KQXhADaZpkyaUCpwpJSNBmDkp5MHASD37jeZ
+         YTOcehkIllzDGzkRAwoiIlVBbZ9JahIrAS5bZ+YI5kvFQ3RppxwOhHXUaehovNOtZKUE
+         fBpZLw3qbczqBYD0gK8VziXzoXzBpM0lQzmV7ulpaqLyA+2G9kwzW/CDJu47L2AcNzU0
+         ovWQWPO1Zd2xj/jmkuR7jmV0i3hhtDFbk/fXZKFx7LDVNUAJn00Q962bsC3KRK4OLmwY
+         nL9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ok/6IMhjWObzEGTvSkZe4AMKwm0LpNlb/4Kte4oUun0=;
-        b=mx6I6k/4Qvu+FTllWx/UkqLgTGLLNrg0OQjkOhtO5uEvSrbLuM8bLePQsxtlIx9HhJ
-         v+o9aUIdBRRwqVtKKbsq43ze5g85Ul9uPonnQlbPGV3UmoViQuxRFn+sfQ/CAi6RKmEO
-         TwtAKijZnQbB7Kfa0lDeYvodkM78tDbhdaMmiVb6R4vdHDfLGyLInb/NzqOhzMuBbhyi
-         5FS7vk0Ig/3C6Cf10cCgOwxrm9fMIj5mQvSc4oRb72mLzAnoihTo8mxDdJHcHY3/C58/
-         t4bnl/+lQVnEQmwPWW3eKCm9m3B/PfUPJASybYSPs6ejKnGQzE/z03KOlwba800NxwiS
-         2DxQ==
-X-Gm-Message-State: AOAM533MRqgsoih6i/9moMyLhEV3MFLJGb8nCi1SfaJ8oizcFb7XQsqz
-        UnMtcCkPDplSh5VhnjcbQd2NhcR/8kcbE1GRGrXTvHQkGmI=
-X-Google-Smtp-Source: ABdhPJxTHUjTNieaDHYCHH3QCBBLFzO432EBunLJcLB5IrNdgNq5owdsB46QzeYRKQigWRq/JkD/IjMEbUEanorv96g=
-X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr23076108lfb.189.1635271876655;
- Tue, 26 Oct 2021 11:11:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ec0ioldJ1MBK4OIaEodzymVJ5K5JCkhpNEzS0/+6PX8=;
+        b=q3CWi3JdQrCt1o94vB/KO2B9A1qMYwNZXQ2Nk7fOoV9YlGKO4B9LSRdNDOMRXFqZxh
+         WYgNNNMQSgcc6RsSGiH19/odttQJyKsx0ok6PTsd56/CaUxmactgCUZKUeCt5DzR4z/X
+         FFMnGrW5jJMea3KbGo147HwcCzZ828r+Q9ZBXsJf+w4fUL4sfJh5jI6KAN6Ka2jtOK/v
+         wjCA1HsS3BwXBfgDQGMitC6bheB6UHxMaFYaTRHeo1m/TNhLIxQXna7hEY+PoNLRm4Yr
+         Ofh4NT5plIEXua4Hrd2h2nME1ImNOo64ohTm5Pqx0HKG1xmM6JYujzUQphYr05XrMkJ9
+         Mjlg==
+X-Gm-Message-State: AOAM5310CvP2zRnqCgemH033KyJZuwWrO0+DHs7EhY3kth5eS3grw71q
+        LLyaZZzqRz8iR+YjBPhAnnZga03zd0HCSA==
+X-Google-Smtp-Source: ABdhPJyBBRZz81aeo9jQ0KExdvISBeYDtg0EGuoaiipzzQglxYC3kuSjoUIy9vVK3zvin+lcCvoTpA==
+X-Received: by 2002:a05:6e02:18cf:: with SMTP id s15mr10944331ilu.198.1635271879075;
+        Tue, 26 Oct 2021 11:11:19 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id g13sm10272017ilc.54.2021.10.26.11.11.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 11:11:18 -0700 (PDT)
+Subject: Re: [PATCH] mm: move more expensive part of XA setup out of mapping
+ check
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <49f67983-b802-8929-edab-d807f745c9ca@kernel.dk>
+ <YXhEAZMf9Qrsev82@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6a9e41c1-0608-1ba8-788e-8aa402d8a0cb@kernel.dk>
+Date:   Tue, 26 Oct 2021 12:11:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20211025163121.2189630-1-janusz.dziedzic@gmail.com> <39561c73-732e-bc38-e250-a0bdf51b09f9@linaro.org>
-In-Reply-To: <39561c73-732e-bc38-e250-a0bdf51b09f9@linaro.org>
-From:   Janusz Dziedzic <janusz.dziedzic@gmail.com>
-Date:   Tue, 26 Oct 2021 20:11:05 +0200
-Message-ID: <CAFED-jkGhX=z49T0UrgqsttXXLFJDFyh8JmftwpWmW9zH9aVaA@mail.gmail.com>
-Subject: Re: [PATCH] soc: qcom: qmi: add a prompt to QCOM_QMI_HELPERS
-To:     Alex Elder <elder@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YXhEAZMf9Qrsev82@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 26 pa=C5=BA 2021 o 15:43 Alex Elder <elder@linaro.org> napisa=C5=82(a)=
-:
->
-> On 10/25/21 11:31 AM, Janusz Dziedzic wrote:
-> > From: Alex Elder <elder@linaro.org>
-> >
-> > Add a prompt to the "tristate" attribute in the Kconfig file in
-> > which QCOM_QMI_HELPERS is defined; I find it doesn't get selected
-> > without it.
->
-> This was a *long* time ago!
->    https://lore.kernel.org/all/20180427140358.30839-1-elder@linaro.org/
->
-> The discussion that followed indicated that the thing that needs
-> QCOM_QMI_HELPERS should *select* it rather than *depend on it.
->
-> Will this not work for you?
->
-This don't work, we can't run select from backports.
-Backports drivers - ath11k for this case - build out of the tree as a
-separate modules.
-Eg. Today we are using kernel 5.10
-and backports generated from kernel 5.15.
-So our kernel 5.10 don't check CONFIG_ATH11K
-This is what I see from our kernel:
+On 10/26/21 12:08 PM, Matthew Wilcox wrote:
+> On Tue, Oct 26, 2021 at 10:01:20AM -0600, Jens Axboe wrote:
+>> The fast path here is not needing any writeback, yet we spend time setting
+>> up the xarray lookup data upfront. Move the part that actually needs to
+>> iterate the address space mapping into a separate helper, saving ~30% of
+>> the time here.
+> 
+> No objection to this patch, but it did remind me that I never saw an answer to
+> https://lore.kernel.org/all/CAHk-=wg_-EwefQ_3Osz4iJxTrTk3tfrV53Z7-jaGg=tm9i5TXg@mail.gmail.com/
+> (and nor did lore)
 
-Selected by [n]:
-ATH11K [=3Dn] && NETDEVICES [=3Dy] && WLAN [=3Dy] && WLAN_VENDOR_ATH [=3Dn]=
- &&
-MAC80211 [=3Dn] && HAS_DMA [=3Dy] && CRYPTO_MICHAEL_MIC [=3Dn]
+Totally missed that, and yes there could be cases where that lookup is
+going to be way too slow. I'll take a look.
 
-But we build backports/ath11k module which has:
-depends on QCOM_QMI_HELPERS
+-- 
+Jens Axboe
 
-
-To enable backports/ath11k build we need kernel that have
-QCOM_QMI_HELPERS enabled.
-Because of that we need this configurable.
-
-BR
-Janusz
-
-
->                                         -Alex
->
-> > We need it in OpenWRT project, when using WiFi backports
-> > and build ath11k driver. While ath11k driver depends on
-> > QCOM_QMI_HELPERS we need way to enable this option in
-> > our kernel.
-> >
-> > Signed-off-by: Alex Elder <elder@linaro.org>
-> > Signed-off-by: Janusz Dziedzic <janusz.dziedzic@gmail.com>
-> > ---
-> >   drivers/soc/qcom/Kconfig | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> > index fe3c486ae32d..16fb8e286015 100644
-> > --- a/drivers/soc/qcom/Kconfig
-> > +++ b/drivers/soc/qcom/Kconfig
-> > @@ -92,7 +92,7 @@ config QCOM_PDR_HELPERS
-> >       select QCOM_QMI_HELPERS
-> >
-> >   config QCOM_QMI_HELPERS
-> > -     tristate
-> > +     tristate "Qualcomm QMI Helpers"
-> >       depends on NET
-> >
-> >   config QCOM_RMTFS_MEM
-> >
->
-
-
---=20
-Janusz Dziedzic
