@@ -2,194 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3011F43BD0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B67343BCDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239972AbhJZWNF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 18:13:05 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:24893 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239970AbhJZWMI (ORCPT
+        id S237303AbhJZWJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:09:34 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:61160 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234834AbhJZWJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:12:08 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-O3WKBLXnMEyl7PqH1H_rJQ-1; Tue, 26 Oct 2021 18:09:38 -0400
-X-MC-Unique: O3WKBLXnMEyl7PqH1H_rJQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EB92100C62D;
-        Tue, 26 Oct 2021 22:09:37 +0000 (UTC)
-Received: from x1.com (unknown [10.22.32.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 93F9160BF1;
-        Tue, 26 Oct 2021 22:09:28 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V6 20/20] rtla: Add rtla timerlat hist documentation
-Date:   Wed, 27 Oct 2021 00:06:31 +0200
-Message-Id: <373043cb663619d03737db8b8da33acf40a0fc4e.1635284863.git.bristot@kernel.org>
-In-Reply-To: <cover.1635284863.git.bristot@kernel.org>
-References: <cover.1635284863.git.bristot@kernel.org>
+        Tue, 26 Oct 2021 18:09:25 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QL5CxL007140;
+        Tue, 26 Oct 2021 22:06:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=wpJaVM73rY/OMeAOivsT+xjIS5v+jJbjnF5fVTXiYew=;
+ b=YADW7jG/t9CLFEQlJBxwmYKgjy8nE2JWefDYLklDAmBe/v8hgsHzZ0QX6vRhM30EoBDn
+ +qu3LA2rDF4OfTliCcKRT7Mr1dgL6L6sIUnI97c7Vb/p+mXXniL/5ED0B/+cVAK7b5Sg
+ wXk+MKUxTn7wj7E6km/gmX/+rZvJWz9uUuZnuc/GN+u/oHEuTc0EXolcBcb/dztddult
+ 2I+6F4flsoVzWGZ7lJ4J2DFd9m5xMSkGM4GVGGhZrrOFqWAQ7Is0AKIIttfC6AJ/BGvY
+ smRH8S7GYHUcAKu+tTH752qSGVF9KyCjv1Xnoj5i6cKHVr22YPKB+R6AUve1oJhBC0Jv SQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4fhyhwm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Oct 2021 22:06:54 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19QM1wka015492;
+        Tue, 26 Oct 2021 22:06:53 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+        by userp3030.oracle.com with ESMTP id 3bx4h1ce2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Oct 2021 22:06:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n8C+Gv1INAOuLpEhWqvkACCId95DpDtKf8HFc5TbkSx88a31rBfangUVUDwNmo4mdjQOGertP1O6KeadZoDXOJ8ZPwe2Iz6p3D3D5do66hIzSdS7cDBVroTliJZ4V+G9pVBIbImqTzVEdDzcXIa0Pj+eZ2G4pCXNxf/ac004bqROmTIT4ClFNtNS3Gl6f11vLZQwTfIYYvyJUE15agAiJMErn5/mhiFMpTrYfGm2uAfhzx7ld//xw+H5030zptYyCrqEUrNpsuF01w5+K46hA0vH1s8pUd0qMq73ICuvy2IxaFdUjq/QxvCWm3oUIuyrrP9quyddxj9NDpAfEju3uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wpJaVM73rY/OMeAOivsT+xjIS5v+jJbjnF5fVTXiYew=;
+ b=lh7G9yc3Ng+WgNQ46PQEMMeloL9MzRisT3ktG2elsbGc9ctjCVtxmnFwWQEvHViQZLRbfEBY7jZarOciOfxbaZyJiJm6Ga4RoxZopdc8qu+c/eUek4C/83hlUAbdq0KEP8gBZYoqveO0iZME4qH0DtehdZV3QzPDSdLPT015IBU1e+9FkV04LR1bHvJShX2a6rVUHYv6IneTmrpnhTUlbrpZcgEh3LLKjevpKcMi0iasLHreaxeg1tFWFJTr2sF2cIg/e6h7g6ju+Ou8Adb/sPEB/4IuE899Ah709C/BaD5fttTp/3MN1UtczQNzweOoQhcWKY6F0Q+5/dyK07MAuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wpJaVM73rY/OMeAOivsT+xjIS5v+jJbjnF5fVTXiYew=;
+ b=xqRj9yJaIA7oT9SmdJuI0Zod9RKDNjlf4ZuFVM2FUN5sLYv1EbidVJATjkrNgMbTNevFdnE+DsNR2kGSQ/8nylWIe38yDKN8w9CRJWAolMK41rRVsEOa4gXQYPlOhVzt1azR9LsIK9SGEbNzF2ksBom4Qqn6C4S24/efOHRRaeA=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BYAPR10MB2614.namprd10.prod.outlook.com (2603:10b6:a02:b0::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Tue, 26 Oct
+ 2021 22:06:51 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5%8]) with mapi id 15.20.4608.025; Tue, 26 Oct 2021
+ 22:06:51 +0000
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>
+Subject: [PATCH] hugetlb: remove unnecessary set_page_count in prep_compound_gigantic_page
+Date:   Tue, 26 Oct 2021 15:06:35 -0700
+Message-Id: <20211026220635.35187-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR04CA0200.namprd04.prod.outlook.com
+ (2603:10b6:303:86::25) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Received: from monkey.oracle.com (50.38.35.18) by MW4PR04CA0200.namprd04.prod.outlook.com (2603:10b6:303:86::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Tue, 26 Oct 2021 22:06:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95d8d82f-4403-49fd-6066-08d998cce975
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2614:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB2614C9394FDC91378C37C3D5E2849@BYAPR10MB2614.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:366;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WDjvaWkL6Fu3H/hJw1v3cD3kJNWlmDFRuD86Xg6YbuKteybEY6xIT3O0X+ER8B1L6cEavcVSv2uAsFTEF4UsWAL2RysaZr9ViQOiQLmCqdtqZvsrPYq0UupOk+S95Q+3ofH+JCaY5gsKhNyEs3FSYb8p5MlmUDMqbwSC79o2l658jbr1cY5E/K+Nb9gbHTDAcaSZ40wIHmv137Yb30N0t7C+aSou8wZ0xcL0239ZNGF2Aam4a9bfiuT5W0K+DJW+Ts9t4KjuPrG6hIaiAN14Dkxp1sNN/5leCtTm9y+1OzjPqKuPVuM30EXbwIuJ4rGCiXIU5/bHm5XXRfhXfS03oQz4mg6p/dJvOPvbpJrXut3oxpYmfHgVRKMkIVRs0e1RPCJHdA5deQQ2ygdqWgXJw8gNJqekljowhGM+yz3xRApCvjGU8ERY5fzeUf5X92MLHJiYsw5MbQBAmi+foKg3/9GK3hnAlnX+7AJXIr/q5tm9VGl2SJGv43WBZWJeb4ee88yAD+r1NBIs4aO+F7+uz7Z/9vOfjOPTCxYO7dwBp8607yrCdUR5DCH1HtFYWQI6th7xjqltcEd07sCsyIOZEJrXWYX1xS6CL5NuWH+dzQhw1hFEF563j/qBFEZ/KqDxcMtSynnr/YsrvguUzAUGUJSQ2VISJNrzg8bXdY1+bLIevXFLOZpz/+LqigGoviMx4LiMDEC2NzrzgJsEbMrvRQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(66556008)(54906003)(66476007)(316002)(186003)(2616005)(26005)(956004)(36756003)(44832011)(38100700002)(38350700002)(6666004)(86362001)(4744005)(52116002)(83380400001)(8936002)(4326008)(1076003)(2906002)(6486002)(8676002)(7696005)(508600001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NUbMs2xwtUyWrZv9aBfN/NORurXXFLDxDDl27HDMYEVm2L4+sXi5y1t7brvL?=
+ =?us-ascii?Q?4MpLeFfDOLZMO784Rhj1PHiKcU4jvmbSXGGr6vIXX95+ldeMHSwbEuPffH3f?=
+ =?us-ascii?Q?s9lmBDZwNNcoTCB0u3+pOpRPoVNtgLmx6O2rQihdOM9HBRcUFZBcLkS6dfoi?=
+ =?us-ascii?Q?DHlpckGNAWHDLA9DOBsZt0EV7PFhVa1xtSKM8IqUNAPw19vTmxC3pkuYCOau?=
+ =?us-ascii?Q?UVUxM8G4LlICtmB2VvWY4pZyRTJayvVwzoCvIr7ZsUZq3TPk/L0ChOsRemTq?=
+ =?us-ascii?Q?Qa8UhXdtOJnR+H0SyDqvdV7XSgEukbM/68ijkbZ/taj4uup2pz+sNMy1phtj?=
+ =?us-ascii?Q?8eebLTNgw38dAiIieTKw9yxyRp+DpTYDynNReJcgUyTwsEsjJeXYiXF/SgbK?=
+ =?us-ascii?Q?fADYFp9rz9FWwygrLmA1utEPRyruTmReoX5R/gl6hhejWq8Uam6sk73sMFzp?=
+ =?us-ascii?Q?UHEb5t2RRRZCCr1tvcMrMm2e7vCoYPS4N2P6DkZb/DV3ugKraq8qVdHR6n8C?=
+ =?us-ascii?Q?moXa68wUuP4eNaFXFpnHFp0dMPIlB96lm/KTwDkqlT1KbmFzBg2eJCLvePKJ?=
+ =?us-ascii?Q?yoO8nqpqxhZajJrHaB2zewDC7LIyqeucA0HYwqJmRF9/yNv+PyO/uvIKHPqr?=
+ =?us-ascii?Q?o8LMHfZCVTi6gVM1haZ83gswLrhx784/RmoMZ4F7zOU2NIkZsVNNQ9PgsAN9?=
+ =?us-ascii?Q?wcqg2xpRuyfotck4YNc+JZoums37kNAUdl6DbogBZv+8dS6fGRibLR1jq5gu?=
+ =?us-ascii?Q?/btH0iT93pBdN63v7tAPSujsPeE95SrzUBko+OaLBtW9VrKuNuZ41gMX0Nhp?=
+ =?us-ascii?Q?o4U/unBxhjTNr/80QYK/Ezl03OERvCCL5jBSs2BEw/KCPGeX5B06SbOw0R5Q?=
+ =?us-ascii?Q?vLT9fiDMwMOlhPA2DdlQzWfQjvR2TQwhZWBGgaWrJKdiBd17xPloUPzv/tXB?=
+ =?us-ascii?Q?ImMKkg8GvMr8KteZyE3B4cY6Dbrk56BtZwWAeVZgdMElGqqBT0PvUPl7eqcQ?=
+ =?us-ascii?Q?9sCw3v1gBF901ZHKmYhQ6a7qGsMFJJhY/p8q3SDRooR1PHdlgtzN2rMwwjxs?=
+ =?us-ascii?Q?gBNA15uZKV563Ge4pYagF2Y1huIHtPKKKgK4fGaRb1gV3crQWu5731eKi/dw?=
+ =?us-ascii?Q?/82BXBaxx8dPjl7J6l8DyFf1qkhhCwKqjuXP8nxynshTxYJYg/OUQmN337h9?=
+ =?us-ascii?Q?bwdJ1YfvJ/dmfzxNIgMgeIdwpRuSgZvyVGdPivt6ckaZ57YtUjxPDcLfHdYi?=
+ =?us-ascii?Q?h8c++/a9Hhk5fFm2Rk64XnSv/onrG9de0L7Li6jccV7SmeQxM06yYLBnYJ6x?=
+ =?us-ascii?Q?aU9P9hkTYIOYk7Afu7I8DFa7H7cEczAs0fVwxpO/u0hq9TiEtaCzehuJk8Ka?=
+ =?us-ascii?Q?uYFoSA8zoz+JbybYVqsDCFqiJg8tNZUGTzCvdtZ/BubWvoxH+VdURYhZQlu+?=
+ =?us-ascii?Q?on/P9Ptl4HJ8fywvvwWLluWemUX4MLNruadLwlybArni7uZNXvMxU1qUThXD?=
+ =?us-ascii?Q?t9op+ByjGz+L8sDCvOa7NsKWqhzCZcQH3NECmgNrb5OBvAnh6Nj6rXukRl03?=
+ =?us-ascii?Q?7h98fmEk63K/BzKheP2Eef4L0TqpBf80urEdWhfPbhOEcoI8ce3RBGVlR/s+?=
+ =?us-ascii?Q?FuaMGeoeAXjjXwMKB/eCxHE=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95d8d82f-4403-49fd-6066-08d998cce975
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2021 22:06:50.9370
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Oo7NO9gVRo0nHgRAJD5x8e6B9zTwS6Opnm2eogoh3usI6qui03shoZAfjGAVM8wDQwwMf45fCUMzdBf/sYpc9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2614
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10149 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110260120
+X-Proofpoint-GUID: H-6fUObRQT237FW62UftXAz4tetqxZ63
+X-Proofpoint-ORIG-GUID: H-6fUObRQT237FW62UftXAz4tetqxZ63
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Man page for rtla timerlat hist mode.
+In commit 7118fc2906e29 ("hugetlb: address ref count racing in
+prep_compound_gigantic_page"), page_ref_freeze is used to atomically
+zero the ref count of tail pages iff they are 1.  The unconditional
+call to set_page_count(0) was left in the code.  This call is after
+page_ref_freeze so it is really a noop.
 
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Remove redundant and unnecessary set_page_count call.
+
+Fixes: 7118fc2906e29 ("hugetlb: address ref count racing in prep_compound_gigantic_page")
+Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- .../tools/rtla/rtla-timerlat-hist.rst         | 106 ++++++++++++++++++
- 1 file changed, 106 insertions(+)
- create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+ mm/hugetlb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/tools/rtla/rtla-timerlat-hist.rst b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-new file mode 100644
-index 000000000000..e12eae1f3301
---- /dev/null
-+++ b/Documentation/tools/rtla/rtla-timerlat-hist.rst
-@@ -0,0 +1,106 @@
-+=====================
-+rtla-timerlat-hist
-+=====================
-+------------------------------------------------
-+Histograms of the operating system timer latency
-+------------------------------------------------
-+
-+:Manual section: 1
-+
-+SYNOPSIS
-+========
-+**rtla timerlat hist** [*OPTIONS*] ...
-+
-+DESCRIPTION
-+===========
-+
-+.. include:: common_timerlat_description.rst
-+
-+The **rtla timerlat hist** displays a histogram of each tracer event
-+occurrence. This tool uses the periodic information, and the
-+**osnoise:** tracepoints are enabled when using the **-T** option.
-+
-+OPTIONS
-+=======
-+
-+.. include:: common_timerlat_options.rst
-+
-+.. include:: common_hist_options.rst
-+
-+.. include:: common_options.rst
-+
-+EXAMPLE
-+=======
-+In the example below, **rtla timerlat hist** is set to run for *10* minutes,
-+in the cpus *0-4*, *skipping zero* only lines. Moreover, **rtla timerlat
-+hist** will change the priority of the *timelat* threads to run under
-+*SCHED_DEADLINE* priority, with a *10us* runtime every *1ms* period. The
-+*1ms* period is also passed to the *timerlat* tracer::
-+
-+  [root@alien ~]# timerlat hist -d 10m -c 0-4 -P d:100us:1ms -p 1ms
-+  # RTLA timerlat histogram
-+  # Time unit is microseconds (us)
-+  # Duration:   0 00:10:00
-+  Index   IRQ-000   Thr-000   IRQ-001   Thr-001   IRQ-002   Thr-002   IRQ-003   Thr-003   IRQ-004   Thr-004
-+  0        276489         0    206089         0    466018         0    481102         0    205546         0
-+  1        318327     35487    388149     30024     94531     48382     83082     71078    388026     55730
-+  2          3282    122584      4019    126527     28231    109012     23311     89309      4568     98739
-+  3           940     11815       837      9863      6209     16227      6895     17196       910      9780
-+  4           444     17287       424     11574      2097     38443      2169     36736       462     13476
-+  5           206     43291       255     25581      1223    101908      1304    101137       236     28913
-+  6           132    101501        96     64584       635    213774       757    215471        99     73453
-+  7            74    169347        65    124758       350     57466       441     53639        69    148573
-+  8            53     85183        31    156751       229      9052       306      9026        39    139907
-+  9            22     10387        12     42762       161      2554       225      2689        19     26192
-+  10           13      1898         8      5770       114      1247       128      1405        13      3772
-+  11            9       560         9       924        71       686        76       765         8       713
-+  12            4       256         2       360        50       411        64       474         3       278
-+  13            2       167         2       172        43       256        53       350         4       180
-+  14            1        88         1       116        15       198        42       223         0       115
-+  15            2        63         3        94        11       139        20       150         0        58
-+  16            2        37         0        56         5        78        10       102         0        39
-+  17            0        18         0        28         4        57         8        80         0        15
-+  18            0         8         0        17         2        50         6        56         0        12
-+  19            0         9         0         5         0        19         0        48         0        18
-+  20            0         4         0         8         0        11         2        27         0         4
-+  21            0         2         0         3         1         9         1        18         0         6
-+  22            0         1         0         3         1         7         0         3         0         5
-+  23            0         2         0         4         0         2         0         7         0         2
-+  24            0         2         0         2         1         3         0         3         0         5
-+  25            0         0         0         1         0         1         0         1         0         3
-+  26            0         1         0         0         0         2         0         2         0         0
-+  27            0         0         0         3         0         1         0         0         0         1
-+  28            0         0         0         3         0         0         0         1         0         0
-+  29            0         0         0         2         0         2         0         1         0         3
-+  30            0         1         0         0         0         0         0         0         0         0
-+  31            0         1         0         0         0         0         0         2         0         2
-+  32            0         0         0         1         0         2         0         0         0         0
-+  33            0         0         0         2         0         0         0         0         0         1
-+  34            0         0         0         0         0         0         0         0         0         2
-+  35            0         1         0         1         0         0         0         0         0         1
-+  36            0         1         0         0         0         1         0         1         0         0
-+  37            0         0         0         1         0         0         0         0         0         0
-+  40            0         0         0         0         0         1         0         1         0         0
-+  41            0         0         0         0         0         0         0         0         0         1
-+  42            0         0         0         0         0         0         0         0         0         1
-+  44            0         0         0         0         0         1         0         0         0         0
-+  46            0         0         0         0         0         0         0         1         0         0
-+  47            0         0         0         0         0         0         0         0         0         1
-+  50            0         0         0         0         0         0         0         0         0         1
-+  54            0         0         0         1         0         0         0         0         0         0
-+  58            0         0         0         1         0         0         0         0         0         0
-+  over:         0         0         0         0         0         0         0         0         0         0
-+  count:   600002    600002    600002    600002    600002    600002    600002    600002    600002    600002
-+  min:          0         1         0         1         0         1         0         1         0         1
-+  avg:          0         5         0         5         0         4         0         4         0         5
-+  max:         16        36        15        58        24        44        21        46        13        50
-+
-+SEE ALSO
-+========
-+**rtla-timerlat**\(1), **rtla-timerlat-top**\(1)
-+
-+*timerlat* tracer documentation: <https://www.kernel.org/doc/html/latest/trace/timerlat-tracer.html>
-+
-+AUTHOR
-+======
-+Written by Daniel Bristot de Oliveira <bristot@kernel.org>
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 906fe8a3b93d..88047a367080 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1795,7 +1795,6 @@ static bool __prep_compound_gigantic_page(struct page *page, unsigned int order,
+ 		} else {
+ 			VM_BUG_ON_PAGE(page_count(p), p);
+ 		}
+-		set_page_count(p, 0);
+ 		set_compound_head(p, page);
+ 	}
+ 	atomic_set(compound_mapcount_ptr(page), -1);
 -- 
 2.31.1
 
