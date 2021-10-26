@@ -2,134 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145DE43B80D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF1F43B80F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237647AbhJZRT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:19:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:35174 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237595AbhJZRT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:19:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6AB21FB;
-        Tue, 26 Oct 2021 10:17:34 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78E493F70D;
-        Tue, 26 Oct 2021 10:17:33 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 18:17:28 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v15 00/13] Add support for Hikey 970 PCIe
-Message-ID: <20211026171728.GA20609@lpieralisi>
-References: <cover.1634812676.git.mchehab+huawei@kernel.org>
+        id S237736AbhJZRUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:20:37 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:34315 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237595AbhJZRUa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:20:30 -0400
+Received: by mail-ot1-f53.google.com with SMTP id z5-20020a9d4685000000b005537cbe6e5aso14068853ote.1;
+        Tue, 26 Oct 2021 10:18:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9hWW0ySj1nWGdlJxyeRRqOVJEjSmeEjqAFoipUfzw0Q=;
+        b=pdSwhQTs3i+Qv2oVLkXDt4RpBfFVJQgyO7xjJVLtn9Tp7EsQJNfW1BMaBJ79JMo7kM
+         vXioPfZvwfkZa/vhPR/gtbAWjAyYqjDWpsAnMLOiN3yatH/qkoudWCGqX475irrg3qLo
+         wwk/BevNmEEBGztU367m9Amx65l78F5EY/iNu4PrkLDGxU8axwRzT0eqb0lnS6WyGUqy
+         I9Val1Sigi9iF8oRRUtzbDSTVoW3XqYRjUXltewdFfOY1KC9XLcgn2wGl6HOUPIJFyAq
+         HuwEC0hJf/nyxShUnt1iXaFWSkY4ZWu8d5q9xXoRoxkKQKo7ivLIyspn3RAB4yUO591i
+         uRcQ==
+X-Gm-Message-State: AOAM532BUT2Ylf/uSl5KXADVo/WOZnvGumrB2WPWaLsKZj2wp6tM5ZHA
+        qt/HBYiJWjHX9idt+9Wf2SETWG3KdA==
+X-Google-Smtp-Source: ABdhPJw26TimrRWayhm6ou3Jq7zIrieSAAYTnmRa+m4JN1MlGQd3W/KvLTcBP4vfe9sQFoqP1K/8Dg==
+X-Received: by 2002:a05:6830:1c64:: with SMTP id s4mr19877414otg.174.1635268686126;
+        Tue, 26 Oct 2021 10:18:06 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id c37sm4894553otu.36.2021.10.26.10.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 10:18:05 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] dt-bindings: Add a help message when dtschema tools are missing
+Date:   Tue, 26 Oct 2021 12:18:04 -0500
+Message-Id: <20211026171804.2867369-1-robh@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1634812676.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:45:07AM +0100, Mauro Carvalho Chehab wrote:
-> Hi Lorenzo,
-> 
-> I split patch 09/10 from v13 into three patches, in order to have one logical
-> change per patch, adding a proper descriptio to each of them. The final
-> code didn change.
-> 
-> The pcie-kirin PCIe driver contains internally a PHY interface for
-> Kirin 960, but it misses support for Kirin 970. A new PHY driver
-> for it was added at drivers/phy/hisilicon/phy-hi3670-pcie.c
-> (already merged via PHY tree).
-> 
-> Add support for Kirin 970 PHY driver at the pcie-kirin.c.
-> 
-> While here, also add the needed logic to compile it as module and
-> to allow to dynamically remove the driver in runtime.
-> 
-> Tested on HiKey970:
-> 
->   # lspci -D -PP
->   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
->   0000:00:00.0/01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
->   0000:00:00.0/01:00.0/02:01.0/03:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd Device a809
->   0000:00:00.0/01:00.0/02:07.0/06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
-> 
-> Tested on HiKey960:
-> 
->   # lspci -D 
->   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
-> 
-> ---
-> 
-> v15:
->   - The power-off fix patch was split into 3, in order to have one logical change
->     per patch.
->   -  Removed Fixes: tag from the poweroff patch;
->   - Adjusted capitalization of two patch summary lines
->   - No functional changes. The diff of this series is identical to v14.
-> 
-> v14:
->   - Split a timeout logic from patch 4, placing it on a separate patch;
->   - Added fixes: and cc: tags to the power_off fixup patch;
->   - change a typecast from of_data to long, in order to avoid a warning on
->     some randconfigs;
->   - removed uneeded brackets at the power_off patch;
->   - reordered struct device pointers at kirin_pcie_get_resource();
->   - added a c/c to kishon at the PHY-related patches.
-> 
-> v13:
->   - Added Xiaowei's ack for the series.
-> 
-> v12:
->   - Change a comment at patch 1 to not use c99 style.
-> 
-> v11:
->   - patch 5 changed to use the right PCIe topology
->   - all other patches are identical to v10.
-> 
-> v10:
->   - patch 1: dropped magic numbers from PHY driver
->   - patch 5: allow pcie child nodes without reset-gpios
->   - all other patches are identical to v9.
-> 
-> v9:
->   - Did some cleanups at patches 1 and 5
-> 
-> Mauro Carvalho Chehab (13):
->   PCI: kirin: Reorganize the PHY logic inside the driver
->   PCI: kirin: Add support for a PHY layer
->   PCI: kirin: Use regmap for APB registers
->   PCI: kirin: Add support for bridge slot DT schema
->   PCI: kirin: Give more time for PERST# reset to finish
->   PCI: kirin: Add Kirin 970 compatible
->   PCI: kirin: Add MODULE_* macros
->   PCI: kirin: Allow building it as a module
->   PCI: kirin: Add power_off support for Kirin 960 PHY
->   PCI: kirin: Move the power-off code to a common routine
->   PCI: kirin: Disable clkreq during poweroff sequence
->   PCI: kirin: De-init the dwc driver
->   PCI: kirin: Allow removing the driver
-> 
->  drivers/pci/controller/dwc/Kconfig      |   2 +-
->  drivers/pci/controller/dwc/pcie-kirin.c | 643 ++++++++++++++++++------
->  2 files changed, 497 insertions(+), 148 deletions(-)
+The dtschema version check works, but is not that clear when dtschema is
+neither installed nor in the PATH. Add a separate check and message if
+dt-doc-validate is not found.
 
-Applied to pci/dwc for v5.16, please have a look at the resulting
-branch and commits. 
+Cc: Luca Ceresoli <luca@lucaceresoli.net>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks,
-Lorenzo
+diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
+index 8d6d912c6a6a..001b4f62b741 100644
+--- a/Documentation/devicetree/bindings/Makefile
++++ b/Documentation/devicetree/bindings/Makefile
+@@ -9,6 +9,10 @@ DT_SCHEMA_MIN_VERSION = 2021.2.1
+ 
+ PHONY += check_dtschema_version
+ check_dtschema_version:
++	@which $(DT_DOC_CHECKER) >/dev/null || \
++		{ echo "Error: '$(DT_DOC_CHECKER)' not found!" \
++		"\nEnsure dtschema python package is installed and in your PATH." \
++		"\nCurrent PATH is:\n$$PATH\n" >&2; false; }
+ 	@{ echo $(DT_SCHEMA_MIN_VERSION); \
+ 	$(DT_DOC_CHECKER) --version 2>/dev/null || echo 0; } | sort -Vc >/dev/null || \
+ 	{ echo "ERROR: dtschema minimum version is v$(DT_SCHEMA_MIN_VERSION)" >&2; false; }
+-- 
+2.32.0
+
