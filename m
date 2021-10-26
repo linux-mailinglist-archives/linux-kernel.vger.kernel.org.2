@@ -2,90 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529AA43B951
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E4543B958
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238200AbhJZSV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:21:59 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:36540 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238181AbhJZSV6 (ORCPT
+        id S238236AbhJZSWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238181AbhJZSWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:21:58 -0400
+        Tue, 26 Oct 2021 14:22:04 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53E1C061220;
+        Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id h196so515953iof.2;
+        Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635272375; x=1666808375;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=oRl19oj7wMvXCaYc6Y80gCnG7GztQIUdbpmo+In0/Mk=;
-  b=qV59A8ZI0bhP9jT85PRn0hrebEob9Xoy5vf5OJ9k0axAswgyjeb3GZM1
-   10N1Y8kNjT81yBFZJkefDgVz5vUSKvD2EvoWgQDuTfofJXl0Sm6nGtNVF
-   n/JnBS7Cjo6JK4/wxIfu1+fVcdtVQm8zaRf7gtqtAudNotoVw5vooiSC/
-   Q=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 26 Oct 2021 11:19:34 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 11:19:33 -0700
-Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Tue, 26 Oct 2021 11:19:32 -0700
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     Sean Christopherson <seanjc@google.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Qian Cai <quic_qiancai@quicinc.com>
-Subject: [PATCH v2] kvm: Avoid shadowing a local in search_memslots()
-Date:   Tue, 26 Oct 2021 14:19:15 -0400
-Message-ID: <20211026181915.48652-1-quic_qiancai@quicinc.com>
-X-Mailer: git-send-email 2.30.2
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wf19AOmnfmju4KLabUVTp8hRay8Ue8otowCzGjfToKY=;
+        b=f8GEAYf83UxpdIyaGi4NEiPx6VBACSIK+KCjfr29ACQW3Ni7YME/QAHX/FaCJvYA1z
+         BXpzhqqyPl3FNkJf72KJm7HNZcc/5koHdO0sx+gC8w8Qn5CuBm1A7DIq4i2YU7wCeurf
+         GIjcg5mKGjjUtly5lQSbPNmI+0ym6RGIcZjJI6rD/XmLbYJ8t/tIH4VQ7QlXiNS994vJ
+         QgHuA7cBCoMXf7zVfid/pC63JqWgdp05kdgiG+bXRmyAFJOo6sJMDGfckOL0BPhoO6Kq
+         DK4laQX0ohqnC5vLWy0667CiXe7/MiZEjPxOfuuGC5Q8x85L8K8Mz5rz1+v1N/WCe9MH
+         6Okg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wf19AOmnfmju4KLabUVTp8hRay8Ue8otowCzGjfToKY=;
+        b=aog8Bko3YEuGFrJS4fekMXmtK7F75Ujyj5dPBWy13LyacEoTFsD1V/Gy1CSa2mXv2v
+         f1rKrvtY7vhU5K4dUPTsWxGkwA4YsMjdnuOJF/NSG8zl+5wvnAfJ9MuHhnV14ru9SRCo
+         nBDEqMcAK5wk7PeBYPqMsnPwMt+se33XroZyRzZq8vNNyi2YGKLijdeQR5ZkFfafwwfe
+         h7aEhOCia6d61rxusbDwDhRsY5QC9P/b4RhuGVYso/IdKWJXEGgmAWHkmyWaIotR/BC4
+         fKSckcyRnopoftxsZe3sc5SIi0CSbfE/8KFC/HvTF8zGafMz+XCXymZhif0fYxVfUHR1
+         nDEg==
+X-Gm-Message-State: AOAM531jxRsFiwCyhjq7Ykunpceth1QkNctPsNU5P8g9C7U0f9ikPEoo
+        6H52EK3U4yfSeYWm5GXNi/l8+D7VoXBHxHLS+28=
+X-Google-Smtp-Source: ABdhPJy9QDP7JK7UoD4tu8AP8q/8LOod4R0KCnSSLL3b++YNrijIXcOdrlZ5jZOgR2D2SCDi8EtKCwCx1ze4jILD5/E=
+X-Received: by 2002:a5d:8792:: with SMTP id f18mr16171056ion.52.1635272379360;
+ Tue, 26 Oct 2021 11:19:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <20211025204634.2517-1-iangelak@redhat.com> <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
+ <YXgkTirm5O04xEm5@redhat.com>
+In-Reply-To: <YXgkTirm5O04xEm5@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 26 Oct 2021 21:19:28 +0300
+Message-ID: <CAOQ4uxgmrhMN5smT29mtSC3iV2ht_0a_Z7_ZGyPbA2=yzRG1uQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is less error-prone to use a different variable name from the existing
-one in a wider scope. This is also flagged by GCC (W=2):
+> > > As a result, when an event occures on a inode within the exported
+> > > directory by virtiofs, two events will be generated at the same time; a
+> > > local event (generated by the guest kernel) and a remote event (generated
+> > > by the host), thus the guest will receive duplicate events.
+> > >
+> > > To account for this issue we implemented two modes; one where local events
+> > > function as expected (when virtiofsd does not support the remote
+> > > inotify) and one where the local events are suppressed and only the
+> > > remote events originating from the host side are let through (when
+> > > virtiofsd supports the remote inotify).
+> >
+> > Dropping events from the local side would be weird.
+> > Avoiding duplicate events is not a good enough reason IMO
+> > compared to the problems this could cause.
+> > I am not convinced this is worth it.
+>
+> So what should be done? If we don't drop local events, then application
+> will see both local and remote events. And then we will have to build
+> this knowledge in API that an event can be either local or remote.
+> Application should be able to distinguish between these two and act
+> accordingly. That sounds like a lot. And I am not even sure if application
+> cares about local events in case of a remote shared filesystem.
+>
 
-./include/linux/kvm_host.h: In function 'search_memslots':
-./include/linux/kvm_host.h:1246:7: warning: declaration of 'slot' shadows a previous local [-Wshadow]
- 1246 |   int slot = start + (end - start) / 2;
-      |       ^~~~
-./include/linux/kvm_host.h:1240:26: note: shadowed declaration is here
- 1240 |  struct kvm_memory_slot *slot;
-      |                          ^~~~
+I am not completely ruling out the S_NONOTIFY inode flag, but I am not
+yet convinced that it is needed.
+So what if applications get duplicate events? What's the worst thing that
+could happen?
+And once again, merging most of the duplicate events is pretty easy
+and fanotify does that already.
 
-Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
----
- include/linux/kvm_host.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> I have no experience with inotify/fanotify/fsnotify and what people
+> expect from inotify/fanotify API. So we are open to all the ideas
+> w.r.t what will be a good design to support this thing on remote
+> filesystems. Currently whole infrastructure seems to be written with
+> local filesystems in mind.
+>
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 60a35d9fe259..9a62c0e52519 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1243,12 +1243,12 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn, int *index)
- 		return NULL;
- 
- 	while (start < end) {
--		int slot = start + (end - start) / 2;
-+		int pivot = start + (end - start) / 2;
- 
--		if (gfn >= memslots[slot].base_gfn)
--			end = slot;
-+		if (gfn >= memslots[pivot].base_gfn)
-+			end = pivot;
- 		else
--			start = slot + 1;
-+			start = pivot + 1;
- 	}
- 
- 	slot = try_get_memslot(slots, start, gfn);
--- 
-2.30.2
+I have no control of what users expect from inotify/fanotify
+but I do know that some users' expectations are misaligned with
+how inotify/fanotify actually works.
 
+For example, some users may expect events not to be reordered,
+but there is no such guarantee.
+
+Some inotify users would expect to find a file with the filename
+in the event without realizing that this is a snapshot of a past
+filename, that may now not exist or be a completely different object.
+
+Those are some misconceptions that we tried to address with
+the fanotify FAN_REPORT_DFID_NAME APIs and hopefully we also
+documented the expectations better in the man page.
+
+The use of NFS file handles to identify objects in the FAN_REPORT_FID
+modes enables getting events also for already dead objects
+(without keeping the inode alive like inotify).
+
+I didn't want to complicate Ioannis in this early stage, but I think
+that FUSE fsnotify should be tied to LOOKUP_HANDLE.
+All FUSE remote objects should be described by file handles
+which is the same manner in which network protocols work
+and file handles should be used to describe objects in
+fsnotify FUSE events.
+
+But I am getting ahead of myself with a lot of hand waving....
+
+Thanks,
+Amir.
