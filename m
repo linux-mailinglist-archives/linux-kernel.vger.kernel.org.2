@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3850F43BD0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F3443BD18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 00:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbhJZWNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 18:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240225AbhJZWNb (ORCPT
+        id S239873AbhJZWTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 18:19:37 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:37243 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232718AbhJZWTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 18:13:31 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671DAC061229
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:10:49 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id q16so1322034ljg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 15:10:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FeJxrETo5kkHC6yy5/z3/zb2XGiSNYC+KlW60qSUBa4=;
-        b=IGRo583RkjYHRXrdCbB2VtjMRMnIkzIotxUIb344Yg0+X2k+LZZ44x9PLWUupfLfXM
-         aa3MfmufNZMIOtCn8Sdx5GErCS334lOiLPg1xe2O/saDViWnOiPfN9te4fJnYGSdlobZ
-         bc8VUKmmke2U/XMI2xp3OP4iKKpxdAsC50gE5o2J7Q405Y0U6u11DbxbRDn33b4wZw1V
-         pVpwzAtXUR8FSIeKPCX1b5dCdSQUt8eV6aAze1TLGfHbpRYWMImBTG0zXCQcY2d2Mj4h
-         N8M1/sJrEiQ9QqRdk574feqFG1xLRk+DgKLBN9B/BmTVnNMA78leWGosbuID7PkPx07T
-         JZFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FeJxrETo5kkHC6yy5/z3/zb2XGiSNYC+KlW60qSUBa4=;
-        b=1I5BTGjfUkCQYHQ8Kcj3oEllq4+Oq/BP4GDyGyDnH+EiUJo9hWN9d+Y5iSX8A+AHRq
-         b4a5ONNT5fH0JiK5BYJd4xsaSYbKeSwv7eFsLN65lCiKRP34G230qKfqjFtMeEtfnM1u
-         H/T6eV5pHYUxpjhyXzIf9bkJvhKgrwAQpfrRJj+FS4hgf9JR48uHzuDyiW7WFJ4IbOTn
-         lfq55gbkNbsbzvNPPzo29nCqghkL9a4+5aRMgYer6inXBZuygPUY10WAhPKYhmKuDJeV
-         zeDER4DzmRLnLCO/o99wV2qXvYigyis/eRmVJs215IseTRaJE5hUHgxKzKRImW405ntE
-         YpcQ==
-X-Gm-Message-State: AOAM533oZHqZUweBqzbWZ2kGc87eEI4EqX9UTd1fVMIo+NjF/acCqrZw
-        /F9qsR4kWRwhwbtYFJk9SmO0lcZ8Ku4BgiPxD13tCg==
-X-Google-Smtp-Source: ABdhPJzMiEfUftf3AQCYeJTd8EgA3PuLtgAofwFO1J7XgnTbj+hNXjSb/i3L0yrGwvrWcwZe6l9j1qocEPmvn5WPDNY=
-X-Received: by 2002:a05:651c:111:: with SMTP id a17mr28176160ljb.145.1635286247771;
- Tue, 26 Oct 2021 15:10:47 -0700 (PDT)
+        Tue, 26 Oct 2021 18:19:32 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf5lk1nJQz4xbr;
+        Wed, 27 Oct 2021 09:17:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635286626;
+        bh=DvdDyr1TSw29nQTLtvEiazqeBjIwNYSuHPpJlfGEoCY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=n2/BJYKcPjybhAUKO37IQSaz7J83pvB/SwZs6cl9OgyBxor3zosIyqwBx98IzkvsU
+         2H3688FW4Fa23KDTtaaJWXksz2jUSMotiyv31auhrQIYL4FXxIZ+RKQjO6l38j0pi5
+         +v20KfWtaCwY0k9toW+Cz2+JBksNLaHTYVYbRWVS4TZo7ET9LlvT/ntejdREsZZ0tb
+         7pEwdOMaOcFJCGpsxfigYKZPIGPfvLBYnD+bvUs53klf4IalPeiIyXElJpdIjVViiL
+         Z88G3+1HaX3+ScsiP9fw3jTR0qw1ZynabCfCmbJ8aG3lHhynv4fW6dJTU5HmNXoPow
+         HmbVIAg7gh0BQ==
+Date:   Wed, 27 Oct 2021 09:17:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the perf tree with Linus' tree
+Message-ID: <20211027091705.1e24694e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211026171313.50-1-mario.limonciello@amd.com>
-In-Reply-To: <20211026171313.50-1-mario.limonciello@amd.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 27 Oct 2021 00:10:36 +0200
-Message-ID: <CACRpkdYAv5w5AfKPQgCqXgKSYnS7wvCkE3qTj_Q9hyvOS=xsvQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] ACPI: Add stubs for wakeup handler functions
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Kl_5tiGQv+HiJPXr+ZJU55F";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 7:13 PM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
+--Sig_/Kl_5tiGQv+HiJPXr+ZJU55F
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> The commit ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
-> added new functions for drivers to use during the s2idle wakeup path, but
-> didn't add stubs for when CONFIG_ACPI wasn't set.
->
-> Add those stubs in for other drivers to be able to use.
->
-> Fixes: ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Hi all,
 
-I need an ACK from an ACPI maintainer to take this with the
-other fix into the pinctrl tree.
+Today's linux-next merge of the perf tree got a conflict in:
 
-Alternatively both can be merged into the ACPI tree.
+  tools/perf/util/session.c
 
-Should these two patches be tagged for stable?
+between commit:
 
-Yours,
-Linus Walleij
+  8e820f962345 ("perf report: Output non-zero offset for decompressed recor=
+ds")
+
+from Linus' tree and commit:
+
+  3a3535e67dfd ("perf session: Introduce decompressor in reader object")
+
+from the perf tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/perf/util/session.c
+index 352f16076e01,51bf2efceb7f..000000000000
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@@ -2116,8 -2122,8 +2122,8 @@@ fetch_decomp_event(u64 head, size_t mma
+  static int __perf_session__process_decomp_events(struct perf_session *ses=
+sion)
+  {
+  	s64 skip;
+ -	u64 size, file_pos =3D 0;
+ +	u64 size;
+- 	struct decomp *decomp =3D session->decomp_last;
++ 	struct decomp *decomp =3D session->active_decomp->decomp_last;
+ =20
+  	if (!decomp)
+  		return 0;
+
+--Sig_/Kl_5tiGQv+HiJPXr+ZJU55F
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF4fmEACgkQAVBC80lX
+0GzPhAf/VnPGdVKrtXZYojHLnBzKwujiu9p9U4mTytgNrMo+1eFdNT4KphKH/61I
+3YjN3ZmV7YBQpkxXP7qdqDmTbasaZSDwK1U3wBlOSjsT+CU7jzQcZcuLB86k59ED
+K4xdj4w5dwYffgY2PRdOKjao1x5Wwp2vCGkGZ3RwNRnVlxdBSCBXwX24c5VbEtxa
+Hb2IJWQav9wsqCNTOcUZI4Xj/17Iy5RCTQ7quqVmbefq6SXseVOP4CmTqr7KGeZI
+dwPtGVPQuaaa8WWslZNQSPYPESVR61HRJILsIcUZxeDH3MtRInivw3T1NVlMk0nj
+Q0h9RLkdzZ7hZkCBnmwEM+RF0qBSYw==
+=rZVn
+-----END PGP SIGNATURE-----
+
+--Sig_/Kl_5tiGQv+HiJPXr+ZJU55F--
