@@ -2,241 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D94D43AD06
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9E243AD08
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbhJZHUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232875AbhJZHUX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:20:23 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8FAC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 00:18:00 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id g10so9674483edj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 00:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nPXOg67+1qkEmMEuDjAeRK21qCbtEpnDes6fvwObkJ8=;
-        b=PQ1hvyltDPUqtB3D9Y1UJLdF2Gxgw3j58Ghl71H3nnGJYKPJq6iYC2dPMNmLwM7hgG
-         3dSG6u8bATQffQgI6AZr1p7RVRjbSzIgTtntLHIVcMUSAJiSxEp1vcUWV1dLT0bNdDw/
-         RfV60lrhnHb93NCqPQ8r3dwztC9/jsSiTAI1qTa9JwCuWQGwL5vgR8x+oayfhFOttZnR
-         FtjvURlyV0AgWdpx5tn/fQyCqtCmv4M4Pjvtj6g7mSlSxScVLUKWRxEHPtA8rFinJmCx
-         MD9/jBkVVUwjXO68k163ZOQid9BxZd8cxMNenBzrjxPCi/vxhyiVu96mdjM+0wJz/ihh
-         KaFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nPXOg67+1qkEmMEuDjAeRK21qCbtEpnDes6fvwObkJ8=;
-        b=nITp+SoeoamQXeqC+vTaXgdb4rkGtaZiwHJXVqAe5c5WGLoRJIETOlqLudIaiNC0cP
-         rEszzfgt9SjVs0gYasMtIK5fcnTj2s/1yJBuOaSxIuG1gYd8sxJjtlJNb83Eg5znJ1oe
-         WBEsABfm9C6AkOqxbefKkHsYMl/b/bXULF8ClVvgTg6o/Jsi+izbt5UW6QpTq0AH/huK
-         wskfgMV0NapW9nihghJTe/yzSRns+veid5WN5nvM04rQcerDTBr85yoKIPBcERh6zK8z
-         UzWRvPy2Qytxfw7hEZ/1+nhelTukyhGBFM33TRqKqVIwo3VIyqRHpdxNZndXuAo6lgAk
-         6Iig==
-X-Gm-Message-State: AOAM531XW225seH4kSfxIIO/mr9qFXbm2eVXZ9qy4GsWbL95NwI5+MF5
-        JiSJi6sj3I7DwzRQNnQYNjqeVJp8ldDLIRiLuGHM/w==
-X-Google-Smtp-Source: ABdhPJwHEV5vn6V+f9cA2qrhEKGqnDJGuAaesAhHrnMe0zKzVKgMMZOikd90Gu74qsfhBAKti2AdUreEX1aG67EKeKo=
-X-Received: by 2002:a17:907:206f:: with SMTP id qp15mr16739093ejb.493.1635232678687;
- Tue, 26 Oct 2021 00:17:58 -0700 (PDT)
+        id S233927AbhJZHUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232346AbhJZHUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 03:20:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E74560F70;
+        Tue, 26 Oct 2021 07:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635232696;
+        bh=CdUMdfRcqWDhNwmQAj36vhLVojZNQHy9lT5K/KjKYMA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IMpKhDTgk6qqXvEK8Vgym2DSX6Naz4rVly5Do50+AOuPPaIlLj9qBJzG7D36obCd8
+         TN+SXW3iqrLtZMG6sQfE/i3h/zSKqW5GcBbkvHZWk0fGNPKLUo/dv67/CTQRxTrQcq
+         L4EZIp0z0o3CcP59cYH/+leLWRH1MeqVZzGf06Psc3QlBZGyeLnIrzoy3BdMfD+uE2
+         QtLg65RaI+w6n27LgCUUxgbOCgDfWTeEOOY5u9Pyw1MEZXcI6P3nlH8stw9Oq2UjMi
+         a0c55bWAv9y2MfdX2k7Cx3W/7iwQUPuc+dsE6Ft2+w3on8OvcNsQTgQm9jlLcVj3yb
+         21hrdM24YswBg==
+Date:   Tue, 26 Oct 2021 10:18:12 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXertDP8ouVbdnUt@unreal>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+ <YXUtbOpjmmWr71dU@unreal>
+ <YXU5+XLhQ9zkBGNY@shredder>
+ <YXZB/3+IR6I0b2xE@unreal>
+ <YXZl4Gmq6DYSdDM3@shredder>
+ <YXaNUQv8RwDc0lif@unreal>
+ <YXelYVqeqyVJ5HLc@shredder>
 MIME-Version: 1.0
-References: <20211025190956.374447057@linuxfoundation.org>
-In-Reply-To: <20211025190956.374447057@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 26 Oct 2021 12:47:32 +0530
-Message-ID: <CA+G9fYvoub6khvCVNObitqz11Z=7ig1y5AXztmvVnDSw0CAHEA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/95] 5.10.76-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXelYVqeqyVJ5HLc@shredder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 01:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.76 release.
-> There are 95 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 27 Oct 2021 19:07:44 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.76-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Oct 26, 2021 at 09:51:13AM +0300, Ido Schimmel wrote:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+<...>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > 
+> > Can you please explain why is it so important to touch devlink SW
+> > objects, reallocate them again and again on every reload in mlxsw?
+> 
+> Because that's how reload was defined and implemented. A complete
+> reload. We are not changing the semantics 4 years later.
 
-## Build
-* kernel: 5.10.76-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: e2430f94799e6bf1f96aeaca998817fed82e9afe
-* git describe: v5.10.75-96-ge2430f94799e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.75-96-ge2430f94799e
+Please put your emotions aside and explain me technically why are you
+must to do it?
 
-## No regressions (compared to v5.10.75-88-g629133650a80)
+The proposed semantics was broken for last 4 years, it can even seen as
+dead on arrival, because it never worked for us in real production.
 
-## No fixes (compared to v5.10.75-88-g629133650a80)
+So I'm fixing bugs without relation to when they were introduced.
 
-## Test result summary
-total: 88300, pass: 74672, fail: 525, skip: 12272, xfail: 831
+For example, this fix from Jiri [1] for basic design flow was merged almost
+two years later after devlink reload was introduced [2], or this patch from
+Parav [3] that fixed an issue introduced year before [4].
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 289 total, 289 passed, 0 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 38 total, 38 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 37 total, 37 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
+[1] 
+commit 5a508a254bed9a2e36a5fb96c9065532a6bf1e9c
+Author: Jiri Pirko <jiri@mellanox.com>
+Date:   Sat Nov 9 11:29:46 2019 +0100
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+    devlink: disallow reload operation during device cleanup
+    
+[2] 
+commit 2d8dc5bbf4e7603747875eb5cadcd67c1fa8b1bb
+Author: Arkadi Sharshevsky <arkadis@mellanox.com>
+Date:   Mon Jan 15 08:59:04 2018 +0100
 
---
-Linaro LKFT
-https://lkft.linaro.org
+    devlink: Add support for reload
+
+[3]
+commit a7b43649507dae4e55ff0087cad4e4dd1c6d5b99
+Author: Parav Pandit <parav@nvidia.com>
+Date:   Wed Nov 25 11:16:20 2020 +0200
+
+    devlink: Make sure devlink instance and port are in same net namespace
+
+[4]
+commit 070c63f20f6c739a3c534555f56c7327536bfcc2
+Author: Jiri Pirko <jiri@mellanox.com>
+Date:   Thu Oct 3 11:49:39 2019 +0200
+
+    net: devlink: allow to change namespaces during reload
+
+Thanks
