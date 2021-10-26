@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61D143ADD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF06843ADD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233661AbhJZIP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:15:26 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:49788 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233330AbhJZIPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:15:22 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowAB3fKh3uHdhdvM0BQ--.56608S2;
-        Tue, 26 Oct 2021 16:12:39 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] md/raid5: Fix implicit type conversion
-Date:   Tue, 26 Oct 2021 08:12:37 +0000
-Message-Id: <1635235957-2446919-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowAB3fKh3uHdhdvM0BQ--.56608S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JrW5tr1ftw1rury8ZrWrXwb_yoWDXrXEkr
-        1fXr1Yqr9Yqrn2vw13Ww1fCryS93WkWws2va4FgrsIvw1Fqa13Wr1vg34rXr17CrZ8ZF4q
-        qryDtwn3Zry8WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbckFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUIzuXUUUUU=
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S233692AbhJZIRD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 04:17:03 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:52335 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233152AbhJZIRC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:17:02 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MsZBb-1myBKY0QI7-00tzsY; Tue, 26 Oct 2021 10:14:37 +0200
+Received: by mail-wm1-f41.google.com with SMTP id j2-20020a1c2302000000b0032ca9b0a057so1313645wmj.3;
+        Tue, 26 Oct 2021 01:14:36 -0700 (PDT)
+X-Gm-Message-State: AOAM530HFpbmx0M5xFRRNg222kDCtTJXEdfWMWGM5BlXvFtVE8LE7jdp
+        yzLEi9XxyHFJI5UBkCtkcNz1vQWtDBStTyvIkb4=
+X-Google-Smtp-Source: ABdhPJwxpyDihyUqL4uFyUbZysPYeSEn9UV7W6yiXZ0Tf3UTjf7qxT/vxk6HTOzYZCTvSrEZWD+SqTwJCKRRzsEy/xE=
+X-Received: by 2002:a7b:ce93:: with SMTP id q19mr12919303wmj.98.1635236076761;
+ Tue, 26 Oct 2021 01:14:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211026080426.2444756-1-geert@linux-m68k.org>
+In-Reply-To: <20211026080426.2444756-1-geert@linux-m68k.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 26 Oct 2021 10:14:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3hfQpOh5WJpE+xL-gcp6mpZHOJeJThzzjSp_tnKh2q2g@mail.gmail.com>
+Message-ID: <CAK8P3a3hfQpOh5WJpE+xL-gcp6mpZHOJeJThzzjSp_tnKh2q2g@mail.gmail.com>
+Subject: Re: [PATCH] serial: sunzilog: Mark sunzilog_putchar() __maybe_unused
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:Y+CwRgjyeQBogGWSkDvxqsVljVLX9QxJVNKPcuv+Ix9iSTmiHi3
+ Jo+AO2IEXN5FNeg9w2j/hqsb0o90IN7WHPoGUmD1x8jz1tGz1GGUVQeppE544lBx5A9AIFH
+ 7msXzCQWhKY9bgL2696NB3JFs1Vpvs/f4p1T8VN07Uu+5/L4j35WhEsLhlZXWf5mWs78N6o
+ s4SjNf4kQTUI/M7DuFl1Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CxuRPf8P+Is=:tbS/bu8I+kxkPusiSYjyJc
+ gTKVr+J06XEEUuonQZ9bv3pPsJNJxYq8X/HS0abpa+LRaQsqggZOmMhU7wrVQ0SxVuX5gQfPw
+ 9b2cex5s4Z5+O4DkVu3EwZfjeZ6eI2NaydF8Nz0mrRNcracrO2Amug2zFzxhjwAJZc5xMDcrp
+ B0buwQWtnWueTOzjObSR3SLw52LTz1/CrKlvJWO4U4JSoDP+NY9rmzq5kGg7dKLNk633w+wEY
+ DuoL8V3icUav36197erovnRfqdCEJ4wWZ/bJol7cUXMQwlvXmqSVbBuAmuKr/B9sDHjK8KT7m
+ 7JY+MO2Cc/8pUNYMtA2yibWqWJckmah7IapD3alYSlPx1xjGzeGBZZb/OPwyLZB9R+cUaDFmr
+ Avq9p0ZnNw3HcfNxOvkqOwWhp6sn7BWJLXhMrMG2S8BMbyhmLbTTOT0H/gXyG7TaUvgo1tsvE
+ PGPzHJSOV/e3oYtXOC/v2ZFgeE1ji+noxW0pzIh6IF3EyW/wAKQgWqO+tCOMeIBJHRNfHX8TG
+ pKTBPusIYQGG5RJlZKsxmDAeheJY1ojpoXNOOKO5BrmbIXyhQEemAcGaoZ3lkN2Le6onptaNK
+ 6niFuQvBHpHBHW1zfwwk3fMfWhXthpcjHB6m8B0ekUPMSPU8pgHDKhHfLmBqblpVqWV0LmBH4
+ IzDOfJ2QKyzt71sDHWnm7a8pqxEKjEkjOCTneTi+9R4SAEYkDp/Pxwzp30AKREDBjw6c=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'cpu' is defined as ULONG.
-However in the for_each_present_cpu, its value is assigned to -1.
-That doesn't make sense and in the cpumask_next() it is implicitly
-type conversed to INT.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to change the definition of 'cpu' from UINT
-to INT.
+On Tue, Oct 26, 2021 at 10:04 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> If CONSOLE_POLL=n, CONFIG_SERIAL_SUNZILOG_CONSOLE=n, and CONFIG_SERIO=m:
+>
+>     drivers/tty/serial/sunzilog.c:1128:13: error: ‘sunzilog_putchar’ defined but not used [-Werror=unused-function]
+>      1128 | static void sunzilog_putchar(struct uart_port *port, int ch)
+>           |             ^~~~~~~~~~~~~~~~
+>
+> Fix this by marking sunzilog_putchar() __maybe_unused.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Fixes: 738a273 ("md/raid5: fix allocation of 'scribble' array.")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- drivers/md/raid5.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good to me
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 7d4ff8a..c7b88eb 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2425,7 +2425,7 @@ static int scribble_alloc(struct raid5_percpu *percpu,
- 
- static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
- {
--	unsigned long cpu;
-+	int cpu;
- 	int err = 0;
- 
- 	/*
--- 
-2.7.4
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
