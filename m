@@ -2,138 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D72B43BA04
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A944643BA16
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238415AbhJZS45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhJZS4o (ORCPT
+        id S238486AbhJZTDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:03:14 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:48810 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231592AbhJZTCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:56:44 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92CAC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:54:19 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id o133so343173pfg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:54:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=98AuoV5EOm7w9afvzWFd/lBCk8d+YMD1OZyUExE9f8o=;
-        b=WbB115zh3Pc4McLFM1UKNsYNGwgnt1gxCcSxE3/YZYxBybxiP0vkd8DbNsaRNcfII2
-         ykEVJ4qfMngvkn6nZtsrPyjiRRT9dyMbg3EBvXdGlApl++fpN2gS7J/sBMnj+AwT6YDZ
-         NN8qTddXiPre52pjAH9FFeU7HPc8ckatGlyXHMEMz2Uo3I+eUdN0lkULZaMLy4MZDuez
-         1ApabZ6QTkYXvv+hfHDdmEy1JXKfu9Au5FkaQUQoHmOd+GzMngHs91CzPgE31chDSuvQ
-         qbcElUa1JV3mBNAjwxvh3NQhVyXRGxGieNH4N5fJrW0GtAanzzYb7xnSjHoq7dXSmTg5
-         7ONw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=98AuoV5EOm7w9afvzWFd/lBCk8d+YMD1OZyUExE9f8o=;
-        b=zNWJZUKa8jonqbYhiEt+SVUHUXIVIfw+uKPJq3+4RkeenYEL3Y3cMBiQrGkVOveA1P
-         DVezX4OKMbbPMvRdf+b46KmTXp0jPR+WLZtRAdb5o88FniEK6fjD9HQ3nJcaEJaWEcKK
-         cwMysC7gU1RKQto6i+tI+hCIXEBhmQ5G9kTdWwro04zwe7fks1X04ZrR+wCh9KMaaI/a
-         Ynec1N+qhlJ/woZhPYf8oDUeIY/MaLiuyKnmkdTP4lwLEYeFn7BaZWDyivCDb3iizROn
-         Pt6guKWzIOgikJPN3T8A3My5P6Z0figrSgxzya15YuHoehcuTeSzsWz+sbMr16kEb6Mr
-         ss+w==
-X-Gm-Message-State: AOAM531taO0/+4Ui70pAT45peJXxYL5pHDylKWBenvLePcgBNfDx6RdF
-        Q5OGUYUTnP5ySFOoOEDNwZI=
-X-Google-Smtp-Source: ABdhPJzNfB+dh4mvUY+7Txk+tr61n9by1tEsPBh6XNPLZ5lZVrAtRUZuxbETb9VZpDNc7jqdD16tJw==
-X-Received: by 2002:a63:370c:: with SMTP id e12mr20425350pga.359.1635274459154;
-        Tue, 26 Oct 2021 11:54:19 -0700 (PDT)
-Received: from localhost (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id j5sm1616737pjs.2.2021.10.26.11.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:54:18 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 11:54:16 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Qian Cai <quic_qiancai@quicinc.com>
+        Tue, 26 Oct 2021 15:02:48 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id db9042bec48cd122; Tue, 26 Oct 2021 21:00:18 +0200
+Received: from kreacher.localnet (unknown [213.134.187.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id C30BF66A9F8;
+        Tue, 26 Oct 2021 21:00:17 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bitmap: simplify GENMASK(size - 1, 0) lines
-Message-ID: <YXhOEEOSG+fgEy+t@yury-ThinkPad>
-References: <20211026144108.35373-1-quic_qiancai@quicinc.com>
+        Hans de Goede <hdegoede@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v1 1/2] ACPI: scan: Do not add device IDs from _CID if _HID is not valid
+Date:   Tue, 26 Oct 2021 20:57:31 +0200
+Message-ID: <5768704.lOV4Wx5bFT@kreacher>
+In-Reply-To: <11860508.O9o76ZdvQC@kreacher>
+References: <11860508.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026144108.35373-1-quic_qiancai@quicinc.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.187.81
+X-CLIENT-HOSTNAME: 213.134.187.81
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefkedguddtfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepteffueegudelgeeikeelffeftdettedvkedvtdeijeeuffegheevteduheejffeinecuffhomhgrihhnpehuvghfihdrohhrghenucfkphepvddufedrudefgedrudekjedrkedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudekjedrkedupdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihihrdhshhgvvhgthhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehhuggvghhovgguvgesrhgvughhrghtrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhn
+ vghlrdhorhhgpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:41:08AM -0400, Qian Cai wrote:
-> Since "size" is an "unsigned int", the rvalue "size - 1" will still be
-> "unsigned int" according to the C standard (3.2.1.5 Usual arithmetic
-> conversions). Therefore, GENMASK(size - 1, 0) will always return 0UL. Those
-> are also caught by GCC (W=2):
-> 
-> ./include/linux/find.h: In function 'find_first_bit':
-> ./include/linux/bits.h:25:22: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
->    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
->       |                      ^
-> ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
->    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
->       |                                                              ^
-> ./include/linux/bits.h:25:3: note: in expansion of macro '__is_constexpr'
->    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
->       |   ^~~~~~~~~~~~~~
-> ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
->    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
->       |   ^~~~~~~~~~~~~~~~~~~
-> ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
->   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
->       |                               ^~~~~~~
-> ./include/linux/bits.h:25:34: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
->    25 |   __is_constexpr((l) > (h)), (l) > (h), 0)))
->       |                                  ^
-> ./include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
->    16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
->       |                                                              ^
-> ./include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
->    38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
->       |   ^~~~~~~~~~~~~~~~~~~
-> ./include/linux/find.h:119:31: note: in expansion of macro 'GENMASK'
->   119 |   unsigned long val = *addr & GENMASK(size - 1, 0);
->       |                               ^~~~~~~
-> 
-> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> ---
->  include/linux/find.h | 28 ++++++++--------------------
->  1 file changed, 8 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/linux/find.h b/include/linux/find.h
-> index 5bb6db213bcb..5ce2b17aea42 100644
-> --- a/include/linux/find.h
-> +++ b/include/linux/find.h
-> @@ -115,11 +115,8 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
->  static inline
->  unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
->  {
-> -	if (small_const_nbits(size)) {
-> -		unsigned long val = *addr & GENMASK(size - 1, 0);
-> -
-> -		return val ? __ffs(val) : size;
-> -	}
-> +	if (small_const_nbits(size))
-> +		return size;
->  
->  	return _find_first_bit(addr, size);
->  }
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[...]
+Section 6.1.2 of ACPI 6.4 explicitly requires _HID to be present for
+_CID to be defined, so don't add device IDs from _CID to the device
+IDs list of a device if _HID is not valid.
 
-Nice catch! I'm a bit concerned that small_const_nbits() will never
-allow GENMASK() to be passed with size == 0, but the patch looks
-good to me overall.
+Link: https://uefi.org/specs/ACPI/6.4/06_Device_Configuration/Device_Configuration.html#cid-compatible-id
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/scan.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-It's too late to merge it in 5.15, so I will add it in a spring merge
-window - most probably in a bitmap branch for 5.17 or 5.18:
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -1338,11 +1338,11 @@ static void acpi_set_pnp_ids(acpi_handle
+ 		if (info->valid & ACPI_VALID_HID) {
+ 			acpi_add_id(pnp, info->hardware_id.string);
+ 			pnp->type.platform_id = 1;
+-		}
+-		if (info->valid & ACPI_VALID_CID) {
+-			cid_list = &info->compatible_id_list;
+-			for (i = 0; i < cid_list->count; i++)
+-				acpi_add_id(pnp, cid_list->ids[i].string);
++			if (info->valid & ACPI_VALID_CID) {
++				cid_list = &info->compatible_id_list;
++				for (i = 0; i < cid_list->count; i++)
++					acpi_add_id(pnp, cid_list->ids[i].string);
++			}
+ 		}
+ 		if (info->valid & ACPI_VALID_ADR) {
+ 			pnp->bus_address = info->address;
 
-https://github.com/norov/linux/tree/bitmap-2022-Apr-01
 
-Thanks,
-Yury
+
