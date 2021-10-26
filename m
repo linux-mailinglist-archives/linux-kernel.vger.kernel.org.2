@@ -2,96 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4EC43AAA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DEB43AAAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbhJZDQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 23:16:37 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:42305 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234561AbhJZDQb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 23:16:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0UtjJcAa_1635218041;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtjJcAa_1635218041)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 Oct 2021 11:14:03 +0800
-To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Michael Wang <yun.wang@linux.alibaba.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Subject: [PATCH v5 0/2] fix & prevent the missing preemption disabling
-Message-ID: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
-Date:   Tue, 26 Oct 2021 11:14:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S233864AbhJZDRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 23:17:20 -0400
+Received: from mga06.intel.com ([134.134.136.31]:56614 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232702AbhJZDRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 23:17:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="290647681"
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="290647681"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 20:14:55 -0700
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="497101919"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.71]) ([10.238.2.71])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2021 20:14:52 -0700
+Message-ID: <ce42bf75-7c19-e1e2-80e3-e7729d9beab9@intel.com>
+Date:   Tue, 26 Oct 2021 11:14:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.2.1
+Subject: Re: [PATCH v5 0/7] KVM: PKS Virtualization support
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210811101126.8973-1-chenyi.qiang@intel.com>
+ <6ccc8ee5-264b-8341-0af7-bbc6731e93a8@redhat.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+In-Reply-To: <6ccc8ee5-264b-8341-0af7-bbc6731e93a8@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The testing show that perf_ftrace_function_call() are using smp_processor_id()
-with preemption enabled, all the checking on CPU could be wrong after preemption.
 
-As Peter point out, the section between ftrace_test_recursion_trylock/unlock()
-pair require the preemption to be disabled as 'Documentation/trace/ftrace-uses.rst'
-explained, but currently the work is done outside of the helpers.
 
-And since the internal using of trace_test_and_set_recursion()
-and trace_clear_recursion() also require preemption to be disabled, we
-can just merge the logical together.
+On 10/25/2021 11:12 PM, Paolo Bonzini wrote:
+> On 11/08/21 12:11, Chenyi Qiang wrote:
+>> This patch series is based on top of kernel patchset:
+>> https://lore.kernel.org/lkml/20210804043231.2655537-1-ira.weiny@intel.com/ 
+>>
+>>
+>> To help patches review, one missing info in SDM is that PKSR will be
+>> cleared on Powerup/INIT/RESET, which should be listed in Table 9.1
+>> "IA-32 and Intel 64 Processor States Following Power-up, Reset, or INIT"
+>>
+>> ---
+>>
+>> Protection Keys for Supervisor Pages(PKS) is a feature that extends the
+>> Protection Keys architecture to support thread-specific permission
+>> restrictions on supervisor pages.
+>>
+>> PKS works similar to an existing feature named PKU(protecting user 
+>> pages).
+>> They both perform an additional check after normal paging permission
+>> checks are done. Access or Writes can be disabled via a MSR update
+>> without TLB flushes when permissions changes. If violating this
+>> addional check, #PF occurs and PFEC.PK bit will be set.
+>>
+>> PKS introduces MSR IA32_PKRS to manage supervisor protection key
+>> rights. The MSR contains 16 pairs of ADi and WDi bits. Each pair
+>> advertises on a group of pages with the same key which is set in the
+>> leaf paging-structure entries(bits[62:59]). Currently, IA32_PKRS is not
+>> supported by XSAVES architecture.
+>>
+>> This patchset aims to add the virtualization of PKS in KVM. It
+>> implemented PKS CPUID enumeration, vmentry/vmexit configuration, MSR
+>> exposure, nested supported etc. Currently, PKS is not yet supported for
+>> shadow paging.
+>>
+>> Detailed information about PKS can be found in the latest Intel 64 and
+>> IA-32 Architectures Software Developer's Manual.
+> 
+> Hi Chenyi,
+> 
+> pkrs_cache does not yet exist in Linux 5.15.  What is the state of the 
+> bare-metal support for PKS?
+> 
+> Thanks,
+> 
+> Paolo
+> 
 
-Patch 1/2 will make sure preemption disabled when recursion lock succeed,
-patch 2/2 will do smp_processor_id() checking after trylock() to address the
-issue.
+Hi Paolo,
 
-v1: https://lore.kernel.org/all/8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com/
-v2: https://lore.kernel.org/all/b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com/
-v3: https://lore.kernel.org/all/609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com/
-V4: https://lore.kernel.org/all/32a36348-69ee-6464-390c-3a8d6e9d2b53@linux.alibaba.com/
+The latest version is still at
+https://lore.kernel.org/lkml/20210804043231.2655537-1-ira.weiny@intel.com/
 
-Michael Wang (2):
-  ftrace: disable preemption when recursion locked
-  ftrace: do CPU checking after preemption disabled
+Ira is working on the next version but doesn't have concrete schedule.
 
- arch/csky/kernel/probes/ftrace.c     |  2 --
- arch/parisc/kernel/ftrace.c          |  2 --
- arch/powerpc/kernel/kprobes-ftrace.c |  2 --
- arch/riscv/kernel/probes/ftrace.c    |  2 --
- arch/x86/kernel/kprobes/ftrace.c     |  2 --
- include/linux/trace_recursion.h      | 11 ++++++++++-
- kernel/livepatch/patch.c             | 13 +++++++------
- kernel/trace/ftrace.c                | 15 +++++----------
- kernel/trace/trace_event_perf.c      |  6 +++---
- kernel/trace/trace_functions.c       |  5 -----
- 10 files changed, 25 insertions(+), 35 deletions(-)
+Thanks
+Chenyi
 
--- 
-1.8.3.1
-
+>>
+>> ---
+>>
+>> Changelogs:
+>>
+>> v4->v5
+>> - Make setting of MSR intercept/vmcs control bits not dependent on 
+>> guest.CR4.PKS.
+>>    And set them if PKS is exposed to guest. (Suggested by Sean)
+>> - Add pkrs to standard register caching mechanism to help update
+>>    vcpu->arch.pkrs on demand. Add related helper functions. (Suggested 
+>> by Sean)
+>> - Do the real pkrs update in VMCS field in vmx_vcpu_reset and
+>>    vmx_sync_vmcs_host_state(). (Sean)
+>> - Add a new mmu_role cr4_pks instead of smushing PKU and PKS together.
+>>    (Sean & Paolo)
+>> - v4: 
+>> https://lore.kernel.org/lkml/20210205083706.14146-1-chenyi.qiang@intel.com/ 
+>>
+>>
+>> v3->v4
+>> - Make the MSR intercept and load-controls setting depend on CR4.PKS 
+>> value
+>> - shadow the guest pkrs and make it usable in PKS emultion
+>> - add the cr4_pke and cr4_pks check in pkr_mask update
+>> - squash PATCH 2 and PATCH 5 to make the dependencies read more clear
+>> - v3: 
+>> https://lore.kernel.org/lkml/20201105081805.5674-1-chenyi.qiang@intel.com/ 
+>>
+>>
+>> v2->v3:
+>> - No function changes since last submit
+>> - rebase on the latest PKS kernel support:
+>>    
+>> https://lore.kernel.org/lkml/20201102205320.1458656-1-ira.weiny@intel.com/ 
+>>
+>> - add MSR_IA32_PKRS to the vmx_possible_passthrough_msrs[]
+>> - RFC v2: 
+>> https://lore.kernel.org/lkml/20201014021157.18022-1-chenyi.qiang@intel.com/ 
+>>
+>>
+>> v1->v2:
+>> - rebase on the latest PKS kernel support:
+>>    https://github.com/weiny2/linux-kernel/tree/pks-rfc-v3
+>> - add a kvm-unit-tests for PKS
+>> - add the check in kvm_init_msr_list for PKRS
+>> - place the X86_CR4_PKS in mmu_role_bits in kvm_set_cr4
+>> - add the support to expose VM_{ENTRY, EXIT}_LOAD_IA32_PKRS in nested
+>>    VMX MSR
+>> - RFC v1: 
+>> https://lore.kernel.org/lkml/20200807084841.7112-1-chenyi.qiang@intel.com/ 
+>>
+>>
+>> ---
+>>
+>> Chenyi Qiang (7):
+>>    KVM: VMX: Introduce PKS VMCS fields
+>>    KVM: VMX: Add proper cache tracking for PKRS
+>>    KVM: X86: Expose IA32_PKRS MSR
+>>    KVM: MMU: Rename the pkru to pkr
+>>    KVM: MMU: Add support for PKS emulation
+>>    KVM: VMX: Expose PKS to guest
+>>    KVM: VMX: Enable PKS for nested VM
+>>
+>>   arch/x86/include/asm/kvm_host.h | 17 ++++---
+>>   arch/x86/include/asm/vmx.h      |  6 +++
+>>   arch/x86/kvm/cpuid.c            |  2 +-
+>>   arch/x86/kvm/kvm_cache_regs.h   |  7 +++
+>>   arch/x86/kvm/mmu.h              | 25 +++++----
+>>   arch/x86/kvm/mmu/mmu.c          | 68 ++++++++++++++-----------
+>>   arch/x86/kvm/vmx/capabilities.h |  6 +++
+>>   arch/x86/kvm/vmx/nested.c       | 41 ++++++++++++++-
+>>   arch/x86/kvm/vmx/vmcs.h         |  1 +
+>>   arch/x86/kvm/vmx/vmcs12.c       |  2 +
+>>   arch/x86/kvm/vmx/vmcs12.h       |  4 ++
+>>   arch/x86/kvm/vmx/vmx.c          | 89 ++++++++++++++++++++++++++++++---
+>>   arch/x86/kvm/vmx/vmx.h          |  7 ++-
+>>   arch/x86/kvm/x86.c              |  6 ++-
+>>   arch/x86/kvm/x86.h              |  8 +++
+>>   arch/x86/mm/pkeys.c             |  6 +++
+>>   include/linux/pkeys.h           |  5 ++
+>>   17 files changed, 243 insertions(+), 57 deletions(-)
+>>
+> 
