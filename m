@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2828043B67A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA08E43B681
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhJZQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
+        id S235674AbhJZQKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhJZQKF (ORCPT
+        with ESMTP id S234522AbhJZQKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:10:05 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA86C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:07:41 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id h7so4688614ede.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:07:41 -0700 (PDT)
+        Tue, 26 Oct 2021 12:10:46 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2455C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:08:22 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id w12so9829858edd.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:08:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LFIfrPhDzMtnbpEZVPATV5Kch9wCoKpxpC7Ie87gFbI=;
-        b=bs16QmQOkeJH5M96StGB5D0kKi6yFSOn6Bb9Z1JxuWPs8n7m9DKoVvOrnj02v/zFzP
-         xDOoHIzz+zeajJzCemByRC4cUhlUVLJVjRbHpcKMUnYABP7tE+tsTgFM1I0SHu8abRc8
-         ODiLRcwwLBdfek+yo1znmX1Q9TEwfSC5fNtbn5wv1OaBbxTqRsgloUZ+TK0SbXmiGJc6
-         G1GHBYDlnnzrXk8efngJ4GTPAToixurpJzxE7zWSYia37K7y1+/QPLPRYdE4AahOmGMH
-         lbGNyaSdDwcEo4G2rc2sREnoAaA4RLoLBKyH/sIz8xNUN6PVFS8Z3UgSMF4X9vhzAjci
-         1gnw==
+        bh=ajewXwLh6uwl+3oBu0hbZUbC19wx0AYb/I/F6COPjeM=;
+        b=U3N/q9FFvFCmmrpMt2cjbyrZGTWLI8aYWMuWlxVKon2BNKrVOdefe0pZcid+IOAgdh
+         IHy6lv/3TRCGg/Iqh7kmoF4Fg4rHa+NqfAzaz9wRaL6CVBUvECbpOFAZU6RJESEkB98/
+         Y5I9Oq4rdHccg0GEvwvD4whjflY43q2BjErpYMUBRbu2Lwf235S4qZ7o16ywxoHfpuxR
+         gx0iLhzdsYDcnbF20A2x+L0EFGx8biMJmfAr6ix03XlJ+JOMk21G6/ZtFcdflkylF4KG
+         uXX49KX7gu0kYMlocuPThS66RnoOFnmwRXxDBNs5db/f6mKW8ocFNgIKUqNmy+spVuvX
+         O8Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=LFIfrPhDzMtnbpEZVPATV5Kch9wCoKpxpC7Ie87gFbI=;
-        b=tDyCKdcYGhetrJB5H3DP065LmNI12gsAk2SIvc5ov6i7iNhT0zTQDy2/qW85WZW4zc
-         2keNdasPE1i2lFnsenYEAJ60pmm0n/n/3azm6rkU5G2vISueNxiOz+2IbUh1BToTlUqg
-         J0vJe493nIHMbHX127gHWO0slKf3haaZd8NYAWrcsyB5BSLQjFz966Wv9pk5qaVMAx3V
-         KjnJOB3JoN1HKBEfxmP8ZtaSIwqveoNOBRVzJraPcefZNhtMuShGvpWY95tWN1XKRtAu
-         qML/xseDRN0vMcHsOLSp5wBSQz+yROmJ8P4JX9bVDKinoCrj8qqieQqzNWBqf/l/awAD
-         a3nA==
-X-Gm-Message-State: AOAM531iW3lWMbNbxNizNilfu5AcfU1zygyIy+pruhoz10JoNIhahCYl
-        wzLQZiLSsphbvjFlqOU2Wm0=
-X-Google-Smtp-Source: ABdhPJyDWvPDbHKN80B2wI0HUdKZkTQtxYSe3AhrmMT52rr89emWm0qnYTKAFM1mwoDlbefou8hA/Q==
-X-Received: by 2002:a05:6402:486:: with SMTP id k6mr11970130edv.315.1635264321080;
+        bh=ajewXwLh6uwl+3oBu0hbZUbC19wx0AYb/I/F6COPjeM=;
+        b=1DQcVXOe/DBi2T27EF+B5AHqkG9J0tuFBKWzAB4nVMO+6COEF0/LRMnGMEpkRHiR2X
+         gfnaqF3JssI3/WX9TxEd5r00YyB2qLWgbtmef/9DkkY16OWbTOKdWI/eVbXK+/Eqi3mi
+         CFuFvdtj259AUsJ720JwbqLG9hDG30pFXPWrAhsqWaobN0aln6OlWRTEYk/9HL5KHJQt
+         NFts4PJmRKTm6gZzhgx4QElV9dW/gy6TrEYDFIauiAV18eQjOg9GOXLpNDQP4mUkDv4c
+         SjktCr7z0Pzj8EgVuyngWU4FdgETy0vN0mTXrQt+mHtZJVPucnIGST85KMiRWzVrzw0a
+         Tjng==
+X-Gm-Message-State: AOAM5307DlGjKpCkggo4ZtTG2yp04jVFYmdJygV56mAfCJQR5XrM4SQJ
+        2H0V0RaG0rCLD7V872+6Ra8mXJ9t9ZY=
+X-Google-Smtp-Source: ABdhPJyrh0WP1ZENmH/Ydn3rieWDW8GYW8YWGEy1yCC5roMzqs86ACi1TObo2NcZ97xR3N7TTReTvQ==
+X-Received: by 2002:a05:6402:2808:: with SMTP id h8mr36760367ede.394.1635264321764;
         Tue, 26 Oct 2021 09:05:21 -0700 (PDT)
 Received: from otyshchenko.router ([212.22.223.21])
-        by smtp.gmail.com with ESMTPSA id eu9sm4025195ejc.14.2021.10.26.09.05.20
+        by smtp.gmail.com with ESMTPSA id eu9sm4025195ejc.14.2021.10.26.09.05.21
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 09:05:20 -0700 (PDT)
+        Tue, 26 Oct 2021 09:05:21 -0700 (PDT)
 From:   Oleksandr Tyshchenko <olekstysh@gmail.com>
-To:     xen-devel@lists.xenproject.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
 Cc:     Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
         Julien Grall <julien@xen.org>
-Subject: [PATCH V2 2/4] arm/xen: Switch to use gnttab_setup_auto_xlat_frames() for DT
-Date:   Tue, 26 Oct 2021 19:05:10 +0300
-Message-Id: <1635264312-3796-3-git-send-email-olekstysh@gmail.com>
+Subject: [PATCH V2 3/4] xen/unpopulated-alloc: Add mechanism to use Xen resource
+Date:   Tue, 26 Oct 2021 19:05:11 +0300
+Message-Id: <1635264312-3796-4-git-send-email-olekstysh@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1635264312-3796-1-git-send-email-olekstysh@gmail.com>
 References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com>
@@ -66,117 +66,212 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 
-Read the start address of the grant table space from DT
-(region 0).
+The main reason of this change is that unpopulated-alloc
+code cannot be used in its current form on Arm, but there
+is a desire to reuse it to avoid wasting real RAM pages
+for the grant/foreign mappings.
 
-This patch mostly restores behaviour before commit 3cf4095d7446
-("arm/xen: Use xen_xlate_map_ballooned_pages to setup grant table")
-but trying not to break the ACPI support added after that commit.
-So the patch touches DT part only and leaves the ACPI part with
-xen_xlate_map_ballooned_pages().
+The problem is that system "iomem_resource" is used for
+the address space allocation, but the really unallocated
+space can't be figured out precisely by the domain on Arm
+without hypervisor involvement. For example, not all device
+I/O regions are known by the time domain starts creating
+grant/foreign mappings. And following the advise from
+"iomem_resource" we might end up reusing these regions by
+a mistake. So, the hypervisor which maintains the P2M for
+the domain is in the best position to provide unused regions
+of guest physical address space which could be safely used
+to create grant/foreign mappings.
 
-This is a preparation for using Xen extended region feature
-where unused regions of guest physical address space (provided
-by the hypervisor) will be used to create grant/foreign/whatever
-mappings instead of wasting real RAM pages from the domain memory
-for establishing these mappings.
+Introduce new helper arch_xen_unpopulated_init() which purpose
+is to create specific Xen resource based on the memory regions
+provided by the hypervisor to be used as unused space for Xen
+scratch pages.
 
-The immediate benefit of this change:
-- Avoid superpage shattering in Xen P2M when establishing
-  stage-2 mapping (GFN <-> MFN) for the grant table space
-- Avoid wasting real RAM pages (reducing the amount of memory
-  usuable) for mapping grant table space
-- The grant table space is always mapped at the exact
-  same place (region 0 is reserved for the grant table)
+If arch doesn't implement arch_xen_unpopulated_init() to
+initialize Xen resource the default "iomem_resource" will be used.
+So the behavior on x86 won't be changed.
+
+Also fall back to allocate xenballooned pages (steal real RAM
+pages) if we do not have any suitable resource to work with and
+as the result we won't be able to provide unpopulated pages.
 
 Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 ---
 Changes RFC -> V2:
-   - new patch
+   - new patch, instead of
+    "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide unallocated space"
 ---
- arch/arm/xen/enlighten.c | 32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+ drivers/xen/unpopulated-alloc.c | 89 +++++++++++++++++++++++++++++++++++++++--
+ include/xen/xen.h               |  2 +
+ 2 files changed, 88 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-index 7f1c106b..dea46ec 100644
---- a/arch/arm/xen/enlighten.c
-+++ b/arch/arm/xen/enlighten.c
-@@ -59,6 +59,9 @@ unsigned long xen_released_pages;
- struct xen_memory_region xen_extra_mem[XEN_EXTRA_MEM_MAX_REGIONS] __initdata;
+diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
+index a03dc5b..1f1d8d8 100644
+--- a/drivers/xen/unpopulated-alloc.c
++++ b/drivers/xen/unpopulated-alloc.c
+@@ -8,6 +8,7 @@
  
- static __read_mostly unsigned int xen_events_irq;
-+static phys_addr_t xen_grant_frames;
+ #include <asm/page.h>
+ 
++#include <xen/balloon.h>
+ #include <xen/page.h>
+ #include <xen/xen.h>
+ 
+@@ -15,13 +16,29 @@ static DEFINE_MUTEX(list_lock);
+ static struct page *page_list;
+ static unsigned int list_count;
+ 
++static struct resource *target_resource;
++static struct resource xen_resource = {
++	.name = "Xen unused space",
++};
 +
-+#define GRANT_TABLE_INDEX   0
- 
- uint32_t xen_start_flags;
- EXPORT_SYMBOL(xen_start_flags);
-@@ -303,6 +306,7 @@ static void __init xen_acpi_guest_init(void)
- static void __init xen_dt_guest_init(void)
++/*
++ * If arch is not happy with system "iomem_resource" being used for
++ * the region allocation it can provide it's own view by initializing
++ * "xen_resource" with unused regions of guest physical address space
++ * provided by the hypervisor.
++ */
++int __weak arch_xen_unpopulated_init(struct resource *res)
++{
++	return -ENOSYS;
++}
++
+ static int fill_list(unsigned int nr_pages)
  {
- 	struct device_node *xen_node;
-+	struct resource res;
+ 	struct dev_pagemap *pgmap;
+-	struct resource *res;
++	struct resource *res, *tmp_res = NULL;
+ 	void *vaddr;
+ 	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
+-	int ret = -ENOMEM;
++	int ret;
  
- 	xen_node = of_find_compatible_node(NULL, NULL, "xen,xen");
- 	if (!xen_node) {
-@@ -310,6 +314,12 @@ static void __init xen_dt_guest_init(void)
- 		return;
+ 	res = kzalloc(sizeof(*res), GFP_KERNEL);
+ 	if (!res)
+@@ -30,7 +47,7 @@ static int fill_list(unsigned int nr_pages)
+ 	res->name = "Xen scratch";
+ 	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+ 
+-	ret = allocate_resource(&iomem_resource, res,
++	ret = allocate_resource(target_resource, res,
+ 				alloc_pages * PAGE_SIZE, 0, -1,
+ 				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
+ 	if (ret < 0) {
+@@ -38,6 +55,31 @@ static int fill_list(unsigned int nr_pages)
+ 		goto err_resource;
  	}
  
-+	if (of_address_to_resource(xen_node, GRANT_TABLE_INDEX, &res)) {
-+		pr_err("Xen grant table region is not found\n");
-+		return;
-+	}
-+	xen_grant_frames = res.start;
++	/*
++	 * Reserve the region previously allocated from Xen resource to avoid
++	 * re-using it by someone else.
++	 */
++	if (target_resource != &iomem_resource) {
++		tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
++		if (!res) {
++			ret = -ENOMEM;
++			goto err_insert;
++		}
 +
- 	xen_events_irq = irq_of_parse_and_map(xen_node, 0);
++		tmp_res->name = res->name;
++		tmp_res->start = res->start;
++		tmp_res->end = res->end;
++		tmp_res->flags = res->flags;
++
++		ret = insert_resource(&iomem_resource, tmp_res);
++		if (ret < 0) {
++			pr_err("Cannot insert IOMEM resource [%llx - %llx]\n",
++			       tmp_res->start, tmp_res->end);
++			kfree(tmp_res);
++			goto err_insert;
++		}
++	}
++
+ 	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+ 	if (!pgmap) {
+ 		ret = -ENOMEM;
+@@ -95,12 +137,40 @@ static int fill_list(unsigned int nr_pages)
+ err_memremap:
+ 	kfree(pgmap);
+ err_pgmap:
++	if (tmp_res) {
++		release_resource(tmp_res);
++		kfree(tmp_res);
++	}
++err_insert:
+ 	release_resource(res);
+ err_resource:
+ 	kfree(res);
+ 	return ret;
  }
  
-@@ -317,16 +327,20 @@ static int __init xen_guest_init(void)
- {
- 	struct xen_add_to_physmap xatp;
- 	struct shared_info *shared_info_page = NULL;
--	int cpu;
-+	int rc, cpu;
- 
- 	if (!xen_domain())
- 		return 0;
- 
- 	if (!acpi_disabled)
- 		xen_acpi_guest_init();
--	else
-+	else {
- 		xen_dt_guest_init();
- 
-+		if (!xen_grant_frames)
-+			return -ENODEV;
-+	}
++static void unpopulated_init(void)
++{
++	static bool inited = false;
++	int ret;
 +
- 	if (!xen_events_irq) {
- 		pr_err("Xen event channel interrupt not found\n");
- 		return -ENODEV;
-@@ -370,12 +384,16 @@ static int __init xen_guest_init(void)
- 	for_each_possible_cpu(cpu)
- 		per_cpu(xen_vcpu_id, cpu) = cpu;
++	if (inited)
++		return;
++
++	/*
++	 * Try to initialize Xen resource the first and fall back to default
++	 * resource if arch doesn't offer one.
++	 */
++	ret = arch_xen_unpopulated_init(&xen_resource);
++	if (!ret)
++		target_resource = &xen_resource;
++	else if (ret == -ENOSYS)
++		target_resource = &iomem_resource;
++	else
++		pr_err("Cannot initialize Xen resource\n");
++
++	inited = true;
++}
++
+ /**
+  * xen_alloc_unpopulated_pages - alloc unpopulated pages
+  * @nr_pages: Number of pages
+@@ -112,6 +182,16 @@ int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+ 	unsigned int i;
+ 	int ret = 0;
  
--	xen_auto_xlat_grant_frames.count = gnttab_max_grant_frames();
--	if (xen_xlate_map_ballooned_pages(&xen_auto_xlat_grant_frames.pfn,
--					  &xen_auto_xlat_grant_frames.vaddr,
--					  xen_auto_xlat_grant_frames.count)) {
-+	if (!acpi_disabled) {
-+		xen_auto_xlat_grant_frames.count = gnttab_max_grant_frames();
-+		rc = xen_xlate_map_ballooned_pages(&xen_auto_xlat_grant_frames.pfn,
-+										   &xen_auto_xlat_grant_frames.vaddr,
-+										   xen_auto_xlat_grant_frames.count);
-+	} else
-+		rc = gnttab_setup_auto_xlat_frames(xen_grant_frames);
-+	if (rc) {
- 		free_percpu(xen_vcpu_info);
--		return -ENOMEM;
-+		return rc;
- 	}
- 	gnttab_init();
++	unpopulated_init();
++
++	/*
++	 * Fall back to default behavior if we do not have any suitable resource
++	 * to allocate required region from and as the result we won't be able to
++	 * construct pages.
++	 */
++	if (!target_resource)
++		return alloc_xenballooned_pages(nr_pages, pages);
++
+ 	mutex_lock(&list_lock);
+ 	if (list_count < nr_pages) {
+ 		ret = fill_list(nr_pages - list_count);
+@@ -159,6 +239,9 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+ {
+ 	unsigned int i;
  
++	if (!target_resource)
++		return free_xenballooned_pages(nr_pages, pages);
++
+ 	mutex_lock(&list_lock);
+ 	for (i = 0; i < nr_pages; i++) {
+ 		pages[i]->zone_device_data = page_list;
+diff --git a/include/xen/xen.h b/include/xen/xen.h
+index 43efba0..55d2ef8 100644
+--- a/include/xen/xen.h
++++ b/include/xen/xen.h
+@@ -55,6 +55,8 @@ extern u64 xen_saved_max_mem_size;
+ #ifdef CONFIG_XEN_UNPOPULATED_ALLOC
+ int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
++struct resource;
++int arch_xen_unpopulated_init(struct resource *res);
+ #else
+ #define xen_alloc_unpopulated_pages alloc_xenballooned_pages
+ #define xen_free_unpopulated_pages free_xenballooned_pages
 -- 
 2.7.4
 
