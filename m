@@ -2,100 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CCD43B1E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD5943B1FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbhJZMJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:09:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37244 "EHLO mail.kernel.org"
+        id S234422AbhJZMMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:12:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55180 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233838AbhJZMJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:09:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E88960E05;
-        Tue, 26 Oct 2021 12:07:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635250032;
-        bh=5UPpA3J3tlAokOz6B34fDtDFsO0+mmeco3ZVTn3rKOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a6mfWS66LrSGEjYVEif3tz+5FEp0/Y3oKJopxn5uS7/SH0k5SnfJSm04RJOEOk8fk
-         6KG6qPkzoRcF6JCwd0M0mrp1YSs0QAuqBR6B0X/OpeyT07njShauhD7ocDmpw55O+5
-         IErBq4AFG+C64i9xRDN9ODPUbT+vUFUMsYewbLxAqcVfyYP5PgGZ70aLXonTCxzvHd
-         KdLmjZ6I/DW2tnrtkxSWWz/jTUFybwj9xTQllfW9fgOq9t3/TKnsiO8AY8F47nc70W
-         /fht8AbY0nwFBhP1mHY00++qb5bOw22i43yAshblzPShk4vKirskrb6nac9PB0poBS
-         g4IBREQ0dIq+A==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mfLEF-0001fI-Ns; Tue, 26 Oct 2021 14:06:56 +0200
-Date:   Tue, 26 Oct 2021 14:06:55 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] media: uvcvideo: fix division by zero at stream start
-Message-ID: <YXfvXzgnvPVqwqZs@hovoldconsulting.com>
-References: <20211026095511.26673-1-johan@kernel.org>
- <163524570516.1184428.14632987312253060787@Monstersaurus>
- <YXfjSJ+fm+LV/m+M@pendragon.ideasonboard.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXfjSJ+fm+LV/m+M@pendragon.ideasonboard.com>
+        id S232378AbhJZMMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:12:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635250190; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Wi2g9oaHJT7mM82NA73R8R3pp1Mfzb/U/GZ9dKT5FOc=; b=gtByeK1NEYSSAh7+LX1S0Mtr722ufa/OX4SANYYTfv23SJnf1D7tOzIPnp4rnDqaGKjjSeOZ
+ /NPMEXn6PO9cZhHRZMPPMadIpCPz9BXgGZlPbdhay4OoT6ywWDxFzxB+aBfc2VrzN4yBBLbb
+ 3kxsywAC3UCmp408MwHAIwR2POw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6177f002b03398c06cb31c3f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 12:09:38
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4B978C4338F; Tue, 26 Oct 2021 12:09:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE3DDC4338F;
+        Tue, 26 Oct 2021 12:09:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org AE3DDC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linus.walleij@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        dianders@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v2 1/2] pinctrl: qcom: Add egpio feature support
+Date:   Tue, 26 Oct 2021 17:37:35 +0530
+Message-Id: <1635250056-20274-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 02:15:20PM +0300, Laurent Pinchart wrote:
-> On Tue, Oct 26, 2021 at 11:55:05AM +0100, Kieran Bingham wrote:
-> > Quoting Johan Hovold (2021-10-26 10:55:11)
-> > > Add the missing bulk-endpoint max-packet sanity check to probe() to
-> > > avoid division by zero in uvc_alloc_urb_buffers() in case a malicious
-> > > device has broken descriptors (or when doing descriptor fuzz testing).
-> > > 
-> > > Note that USB core will reject URBs submitted for endpoints with zero
-> > > wMaxPacketSize but that drivers doing packet-size calculations still
-> > > need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
-> > > endpoint descriptors with maxpacket=0")).
-> > > 
-> > > Fixes: c0efd232929c ("V4L/DVB (8145a): USB Video Class driver")
-> > > Cc: stable@vger.kernel.org      # 2.6.26
-> > > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > > ---
-> > >  drivers/media/usb/uvc/uvc_video.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > > index e16464606b14..85ac5c1081b6 100644
-> > > --- a/drivers/media/usb/uvc/uvc_video.c
-> > > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > > @@ -1958,6 +1958,10 @@ static int uvc_video_start_transfer(struct uvc_streaming *stream,
-> > >                 if (ep == NULL)
-> > >                         return -EIO;
-> > >  
-> > > +               /* Reject broken descriptors. */
-> > > +               if (usb_endpoint_maxp(&ep->desc) == 0)
-> > > +                       return -EIO;
-> > 
-> > Is there any value in identifying this with a specific return code like
-> > -ENODATA?
-> 
-> Going one step further, wouldn't it be better to fail probe() for those
-> devices ?
+From: Prasad Sodagudi <psodagud@codeaurora.org>
 
-This is not how the driver works today. Look at the "return -EIO" just
-above in case the expected endpoint is missing. And similarly for the
-isochronous case for which zero wMaxPacket isn't handled until
-uvc_video_start_transfer() either (a few lines further up still).
+egpio is a scheme which allows special power Island Domain IOs
+(LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+TLMM functions with Island Domain functions.
+With this scheme, an IO can be controlled both by the cpu running
+linux and the Island processor. This provides great flexibility to
+re-purpose the Island IOs for regular TLMM usecases.
 
-Note however the copy-paste error in the commit message mentioning
-probe(), which is indeed where this would typically be handled.
+2 new bits are added to ctl_reg, egpio_present is a read only bit
+which shows if egpio feature is available or not on a given gpio.
+egpio_enable is the read/write bit and only effective if egpio_present
+is 1. Once its set, the Island IO is controlled from Chip TLMM.
+egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
 
-Do you want me to resend or can you change
+To support this we add a new function 'egpio' which can be used to
+set the egpio_enable to 0, for any other TLMM controlled functions
+we set the egpio_enable to 1.
 
-	s/probe()/uvc_video_start_transfer()/
+Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+---
+ drivers/pinctrl/qcom/pinctrl-msm.c | 17 +++++++++++++++--
+ drivers/pinctrl/qcom/pinctrl-msm.h |  4 ++++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
 
-in the commit message when applying if you think this is acceptable as
-is?
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+index 8476a8a..bfdba3a 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -185,6 +185,7 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+ 	unsigned int irq = irq_find_mapping(gc->irq.domain, group);
+ 	struct irq_data *d = irq_get_irq_data(irq);
+ 	unsigned int gpio_func = pctrl->soc->gpio_func;
++	unsigned int egpio_func = pctrl->soc->egpio_func;
+ 	const struct msm_pingroup *g;
+ 	unsigned long flags;
+ 	u32 val, mask;
+@@ -218,8 +219,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+ 	raw_spin_lock_irqsave(&pctrl->lock, flags);
+ 
+ 	val = msm_readl_ctl(pctrl, g);
+-	val &= ~mask;
+-	val |= i << g->mux_bit;
++
++	if (egpio_func && i == egpio_func) {
++		if (val & BIT(g->egpio_present))
++			val &= ~BIT(g->egpio_enable);
++		else
++			return -EINVAL;
++	} else {
++		val &= ~mask;
++		val |= i << g->mux_bit;
++		/* Check if egpio present and enable that feature */
++		if (egpio_func && (val & BIT(g->egpio_present)))
++			val |= BIT(g->egpio_enable);
++	}
++
+ 	msm_writel_ctl(val, pctrl, g);
+ 
+ 	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
+index e31a516..b7110ac 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.h
++++ b/drivers/pinctrl/qcom/pinctrl-msm.h
+@@ -77,6 +77,8 @@ struct msm_pingroup {
+ 	unsigned drv_bit:5;
+ 
+ 	unsigned od_bit:5;
++	unsigned egpio_enable:5;
++	unsigned egpio_present:5;
+ 	unsigned oe_bit:5;
+ 	unsigned in_bit:5;
+ 	unsigned out_bit:5;
+@@ -119,6 +121,7 @@ struct msm_gpio_wakeirq_map {
+  *                            to be aware that their parent can't handle dual
+  *                            edge interrupts.
+  * @gpio_func: Which function number is GPIO (usually 0).
++ * @egpio_func: Which function number is eGPIO
+  */
+ struct msm_pinctrl_soc_data {
+ 	const struct pinctrl_pin_desc *pins;
+@@ -136,6 +139,7 @@ struct msm_pinctrl_soc_data {
+ 	unsigned int nwakeirq_map;
+ 	bool wakeirq_dual_edge_errata;
+ 	unsigned int gpio_func;
++	unsigned int egpio_func;
+ };
+ 
+ extern const struct dev_pm_ops msm_pinctrl_dev_pm_ops;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-Johan
