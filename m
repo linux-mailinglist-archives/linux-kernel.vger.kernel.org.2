@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00B043B72A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7DF43B730
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236389AbhJZQac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:30:32 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9090 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231321AbhJZQab (ORCPT
+        id S235674AbhJZQbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:31:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45304 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231791AbhJZQbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:30:31 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QFh5gZ016444;
-        Tue, 26 Oct 2021 16:27:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=SYH5WxAvH1Y2Pd9TuoSzFwdl/tPpenjf9p1diJ5iutQ=;
- b=HLct2dbKP9TsAHu8g27mNusEwhm6ox8m+iXxM+/StIyxMLueSRWfiyYSwLZxT4M0qaf2
- 7dZay4G7XqWMMNEYsymfHiT+hzQqMHHHiJ6Ep/vjpyJ/QB4LY9RCeD7yHz6fLrXl3Z0K
- RWpiivGfR8n2PWiKxbq0s1sB2KFmATEMBnSkISer5Pa1d9aiSIgYhRwtsbbAKetwzUeg
- G1xNd2U+I7AhRISYLJYpaxO8OWIuLvIndWz8bTwOHX+Fa7sKhdenHmbgpe0ju9azG3ff
- 9+yjUUZEvemgXxmDYVO0/9BxRjUKh3B+Nk+yEMVSVoleOK9YkGzkcEI8Evl8jyP+pJ2Y hA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4k2xu9v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 16:27:48 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19QFwEan031056;
-        Tue, 26 Oct 2021 16:27:47 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4k2xu8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 16:27:47 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19QGINX3011068;
-        Tue, 26 Oct 2021 16:27:45 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bx4esye7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 16:27:45 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19QGRg1W36307452
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Oct 2021 16:27:43 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D36E9A4054;
-        Tue, 26 Oct 2021 16:27:42 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80FB5A405C;
-        Tue, 26 Oct 2021 16:27:42 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.63.253])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Oct 2021 16:27:42 +0000 (GMT)
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] powerpc/watchdog: ensure watchdog data accesses are protected
-Date:   Tue, 26 Oct 2021 18:27:40 +0200
-Message-Id: <20211026162740.16283-3-ldufour@linux.ibm.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211026162740.16283-1-ldufour@linux.ibm.com>
-References: <20211026162740.16283-1-ldufour@linux.ibm.com>
+        Tue, 26 Oct 2021 12:31:21 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E34AA1FD40;
+        Tue, 26 Oct 2021 16:28:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635265736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ep7pk0RtKoliHV+b3g2iUpg/poji2IQmV1gzXO0qnWE=;
+        b=kMmZWqueBhX5qkInokZ0o0l7RV2i28bXS0DpgOS83UQYcXZHCreURWmgclPYO371JUJLW3
+        maBub2+sDCUdnWOZC2rTlQF/1iwp/WKVPW/sEurcKN5vImo2WagqHHR2yAzr/Xhz4JXlxS
+        O8tdi4PAUG5EqN6QIA0YaivsXY4YJBA=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B326FA3B81;
+        Tue, 26 Oct 2021 16:28:56 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 18:28:52 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <YXgsxF/NRlHjH+Ng@dhcp22.suse.cz>
+References: <20211025150223.13621-1-mhocko@kernel.org>
+ <20211025150223.13621-3-mhocko@kernel.org>
+ <CA+KHdyVqOuKny7bT+CtrCk8BrnARYz744Ze6cKMuy2BXo5e7jw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WBIB5yYChCURyv5OkRgzdCYwaw2fAUpB
-X-Proofpoint-ORIG-GUID: OoGTz4rVZgBiM1b6hRuP6s9xieQEyj8o
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_05,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 spamscore=0 bulkscore=0 impostorscore=0
- suspectscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110260088
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+KHdyVqOuKny7bT+CtrCk8BrnARYz744Ze6cKMuy2BXo5e7jw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wd_smp_cpus_pending CPU mask should be accessed under the protection of
-the __wd_smp_lock.
+On Tue 26-10-21 17:48:32, Uladzislau Rezki wrote:
+> > From: Michal Hocko <mhocko@suse.com>
+> >
+> > Dave Chinner has mentioned that some of the xfs code would benefit from
+> > kvmalloc support for __GFP_NOFAIL because they have allocations that
+> > cannot fail and they do not fit into a single page.
+> >
+> > The larg part of the vmalloc implementation already complies with the
+> > given gfp flags so there is no work for those to be done. The area
+> > and page table allocations are an exception to that. Implement a retry
+> > loop for those.
+> >
+> > Add a short sleep before retrying. 1 jiffy is a completely random
+> > timeout. Ideally the retry would wait for an explicit event - e.g.
+> > a change to the vmalloc space change if the failure was caused by
+> > the space fragmentation or depletion. But there are multiple different
+> > reasons to retry and this could become much more complex. Keep the retry
+> > simple for now and just sleep to prevent from hogging CPUs.
+> >
+> > Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > ---
+> >  mm/vmalloc.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index c6cc77d2f366..602649919a9d 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -2941,8 +2941,12 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> >         else if ((gfp_mask & (__GFP_FS | __GFP_IO)) == 0)
+> >                 flags = memalloc_noio_save();
+> >
+> > -       ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+> > +       do {
+> > +               ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+> >                         page_shift);
+> > +               if (ret < 0)
+> > +                       schedule_timeout_uninterruptible(1);
+> > +       } while ((gfp_mask & __GFP_NOFAIL) && (ret < 0));
+> >
+> 
+> 1.
+> After that change a below code:
+> 
+> <snip>
+> if (ret < 0) {
+>     warn_alloc(orig_gfp_mask, NULL,
+>         "vmalloc error: size %lu, failed to map pages",
+>         area->nr_pages * PAGE_SIZE);
+>     goto fail;
+> }
+> <snip>
+> 
+> does not make any sense anymore.
 
-This prevents false alarm to be raised when the system is under an heavy
-stress. This has been seen while doing LPM on large system with a big
-workload.
+Why? Allocations without __GFP_NOFAIL can still fail, no?
 
-Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
----
- arch/powerpc/kernel/watchdog.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+> 2.
+> Can we combine two places where we handle __GFP_NOFAIL into one place?
+> That would look like as more sorted out.
 
-diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
-index bc7411327066..8d7a1a86187e 100644
---- a/arch/powerpc/kernel/watchdog.c
-+++ b/arch/powerpc/kernel/watchdog.c
-@@ -203,12 +203,13 @@ static void watchdog_smp_panic(int cpu, u64 tb)
- 
- static void wd_smp_clear_cpu_pending(int cpu, u64 tb)
- {
-+	unsigned long flags;
-+
-+	wd_smp_lock(&flags);
- 	if (!cpumask_test_cpu(cpu, &wd_smp_cpus_pending)) {
- 		if (unlikely(cpumask_test_cpu(cpu, &wd_smp_cpus_stuck))) {
- 			struct pt_regs *regs = get_irq_regs();
--			unsigned long flags;
- 
--			wd_smp_lock(&flags);
- 			cpumask_clear_cpu(cpu, &wd_smp_cpus_stuck);
- 			wd_smp_unlock(&flags);
- 
-@@ -219,22 +220,23 @@ static void wd_smp_clear_cpu_pending(int cpu, u64 tb)
- 				show_regs(regs);
- 			else
- 				dump_stack();
-+			return;
- 		}
-+
-+		wd_smp_unlock(&flags);
- 		return;
- 	}
-+
- 	cpumask_clear_cpu(cpu, &wd_smp_cpus_pending);
- 	if (cpumask_empty(&wd_smp_cpus_pending)) {
--		unsigned long flags;
--
--		wd_smp_lock(&flags);
- 		if (cpumask_empty(&wd_smp_cpus_pending)) {
- 			wd_smp_last_reset_tb = tb;
- 			cpumask_andnot(&wd_smp_cpus_pending,
- 					&wd_cpus_enabled,
- 					&wd_smp_cpus_stuck);
- 		}
--		wd_smp_unlock(&flags);
- 	}
-+	wd_smp_unlock(&flags);
- }
- 
- static void watchdog_timer_interrupt(int cpu)
+I have to admit I am not really fluent at vmalloc code so I wanted to
+make the code as simple as possible. How would I unwind all the allocated
+memory (already allocated as GFP_NOFAIL) before retrying at
+__vmalloc_node_range (if that is what you suggest). And isn't that a
+bit wasteful?
+
+Or did you have anything else in mind?
 -- 
-2.33.1
-
+Michal Hocko
+SUSE Labs
