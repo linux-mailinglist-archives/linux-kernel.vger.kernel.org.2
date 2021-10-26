@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAAF43B7E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5F143B7E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236400AbhJZRIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:08:23 -0400
-Received: from mga02.intel.com ([134.134.136.20]:36431 "EHLO mga02.intel.com"
+        id S236422AbhJZRJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:09:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:35102 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234147AbhJZRIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:08:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217135873"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="217135873"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 10:05:50 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="465385992"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 10:05:50 -0700
-Date:   Tue, 26 Oct 2021 10:05:49 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        bp@alien8.de, james.morse@arm.com, lenb@kernel.org,
-        rjw@rjwysocki.net, zhangliguang@linux.alibaba.com,
-        zhuo.song@linux.alibaba.com
-Subject: Re: [PATCH v3] ACPI, APEI, EINJ: Relax platform response timeout to
- 1 second.
-Message-ID: <YXg1bWBKja/tqScg@agluck-desk2.amr.corp.intel.com>
-References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
- <20211026072829.94262-1-xueshuai@linux.alibaba.com>
+        id S234147AbhJZRJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 13:09:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7246F1FB;
+        Tue, 26 Oct 2021 10:06:49 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F07683F70D;
+        Tue, 26 Oct 2021 10:06:47 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 18:06:41 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Songxiaowei <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v14 05/11] PCI: kirin: give more time for PERST# reset to
+ finish
+Message-ID: <20211026170641.GA20573@lpieralisi>
+References: <cover.1634622716.git.mchehab+huawei@kernel.org>
+ <9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org>
+ <20211022151624.mgsgobjsjgyevnyt@pali>
+ <20211023103059.6add00e6@sal.lan>
+ <20211025102511.GA10529@lpieralisi>
+ <20211025114011.0eca7ccc@sal.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211026072829.94262-1-xueshuai@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211025114011.0eca7ccc@sal.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 03:28:29PM +0800, Shuai Xue wrote:
-> When injecting an error into the platform, the OSPM executes an
-> EXECUTE_OPERATION action to instruct the platform to begin the injection
-> operation. And then, the OSPM busy waits for a while by continually
-> executing CHECK_BUSY_STATUS action until the platform indicates that the
-> operation is complete. More specifically, the platform is limited to
-> respond within 1 millisecond right now. This is too strict for some
-> platforms.
+On Mon, Oct 25, 2021 at 11:40:11AM +0100, Mauro Carvalho Chehab wrote:
+> Em Mon, 25 Oct 2021 11:25:11 +0100
+> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
 > 
-> For example, in Arm platform, when injecting a Processor Correctable error,
-> the OSPM will warn:
->     Firmware does not respond in time.
+> > On Sat, Oct 23, 2021 at 10:30:59AM +0100, Mauro Carvalho Chehab wrote:
+> > > Hi Pali,
+> > > 
+> > > Em Fri, 22 Oct 2021 17:16:24 +0200
+> > > Pali Rohár <pali@kernel.org> escreveu:
+> > >   
+> > > > On Tuesday 19 October 2021 07:06:42 Mauro Carvalho Chehab wrote:  
+> > > > > Before code refactor, the PERST# signals were sent at the
+> > > > > end of the power_on logic. Then, the PCI core would probe for
+> > > > > the buses and add them.
+> > > > > 
+> > > > > The new logic changed it to send PERST# signals during
+> > > > > add_bus operation. That altered the timings.
+> > > > > 
+> > > > > Also, HiKey 970 require a little more waiting time for
+> > > > > the PCI bridge - which is outside the SoC - to finish
+> > > > > the PERST# reset, and then initialize the eye diagram.    
+> > > > 
+> > > > Hello! Which PCIe port do you mean by PCI bridge device? Do you mean
+> > > > PCIe Root Port? Or upstream port on some external PCIe switch connected
+> > > > via PCIe bus to the PCIe Root Port? Because all of these (virtual) PCIe
+> > > > devices are presented as PCI bridge devices, so it is not clear to which
+> > > > device it refers.  
+> > > 
+> > > HiKey 970 uses an external PCI bridge chipset (a Broadcom PEX 8606[1]),
+> > > with 3 elements connected to the bus: an Ethernet card, a M.2 slot and
+> > > a mini PCIe slot. It seems HiKey 970 is unique with regards to PERST# signal,
+> > > as there are 4 independent PERST# signals there:
+> > > 
+> > > 	- one for PEX 8606 (the PCIe root port);
+> > > 	- one for Ethernet;
+> > > 	- one for M.2;
+> > > 	- one for mini-PCIe.
+> > > 
+> > > After sending the PCIe PERST# signals, the device has to wait for 21 ms
+> > > before adjusting the eye diagram.
+> > > 
+> > > [1] https://docs.broadcom.com/docs/PEX_8606_AIC_RDK_HRM_v1.3_06Aug10.pdf
+> > >   
+> > > > Normally PERST# signal is used to reset endpoint card, other end of PCIe
+> > > > link and so PERST# signal should not affect PCIe Root Port at all.  
+> > > 
+> > > That's not the case, as PEX 8606 needs to complete its reset sequence
+> > > for the rest of the devices to be visible. If the wait time is reduced
+> > > or removed, the devices behind it won't be detected.  
+> > 
+> > These pieces of information should go into the commit log (or I can add
+> > a Link: tag to this discussion) - it is fundamental to understand these
+> > changes.
+> > 
+> > I believe we can merge this series but we have to document this
+> > discussion appropriately.
 > 
-> And a message is printed on the console:
->     echo: write error: Input/output error
+> IMO, the best is to add a Link: to the discussion:
 > 
-> We observe that the waiting time for DDR error injection is about 10 ms and
-> that for PCIe error injection is about 500 ms in Arm platform.
+> Link: https://lore.kernel.org/all/9a365cffe5af9ec5a1f79638968c3a2efa979b65.1634622716.git.mchehab+huawei@kernel.org/
 > 
-> In this patch, we relax the response timeout to 1 second.
-> 
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> But if you prefer otherwise and want me to re-submit the series, please
+> let me know.
 
-Reviewed-by: Tony Luck <tony.luck@intel.com>
+I will squash this patch with the previous one (that describes
+the bridge PERST# requirements) and add the Link above to the
+commit log.
 
-Rafael: Do you want to take this in the acpi tree? If not, I can
-apply it to the RAS tree (already at -rc7, so in next merge cycle
-after 5.16-rc1 comes out).
-
-> ---
-> Changelog v2 -> v3:
-> - Implemented the timeout in usleep_range instead of msleep.
-> - Dropped command line interface of timeout.
-> - Link to the v1 patch: https://lkml.org/lkml/2021/10/14/1402
-> ---
->  drivers/acpi/apei/einj.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-> index 133156759551..6e1ff4b62a8f 100644
-> --- a/drivers/acpi/apei/einj.c
-> +++ b/drivers/acpi/apei/einj.c
-> @@ -28,9 +28,10 @@
->  #undef pr_fmt
->  #define pr_fmt(fmt) "EINJ: " fmt
->  
-> -#define SPIN_UNIT		100			/* 100ns */
-> -/* Firmware should respond within 1 milliseconds */
-> -#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
-> +#define SLEEP_UNIT_MIN		1000			/* 1ms */
-> +#define SLEEP_UNIT_MAX		5000			/* 5ms */
-> +/* Firmware should respond within 1 seconds */
-> +#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
->  #define ACPI5_VENDOR_BIT	BIT(31)
->  #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
->  				ACPI_EINJ_MEMORY_UNCORRECTABLE | \
-> @@ -171,13 +172,13 @@ static int einj_get_available_error_type(u32 *type)
->  
->  static int einj_timedout(u64 *t)
->  {
-> -	if ((s64)*t < SPIN_UNIT) {
-> +	if ((s64)*t < SLEEP_UNIT_MIN) {
->  		pr_warn(FW_WARN "Firmware does not respond in time\n");
->  		return 1;
->  	}
-> -	*t -= SPIN_UNIT;
-> -	ndelay(SPIN_UNIT);
-> -	touch_nmi_watchdog();
-> +	*t -= SLEEP_UNIT_MIN;
-> +	usleep_range(SLEEP_UNIT_MIN, SLEEP_UNIT_MAX);
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.20.1.12.g72788fdb
-> 
+Lorenzo
