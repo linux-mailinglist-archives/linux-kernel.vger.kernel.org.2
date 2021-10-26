@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C17143B9FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D990943B9F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236853AbhJZSxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236886AbhJZSxK (ORCPT
+        id S236892AbhJZSxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:53:02 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:20282 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236853AbhJZSw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:53:10 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2809C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:50:44 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id j2so882384lfg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BP4NAe7ddaJVYhsIxokjyZQ5JW8fdTP3tJwi3u/Bta8=;
-        b=OT/TeaF5L09lQEvDVMETii9ZF1FekcmI9FniessxiwaCY0/2c1/fU9X5X2m68fW9/U
-         qzQVQDMGq77TMKFFikymTD2XE2u05CbKQGlQpbNI/BWvyvPveGGs3ngxEM5n2QOBeTHl
-         mwF0G1HhAq6spGex+GCN3LXQEQ6VP23pvpQmFaEr/rN1tsQZ8Yqi/dZx6ZCN+kUbjYIx
-         vEXsauZp23Pe2R112F8jObaUOfG3GygDQTUzRtanX4RtuwliVgXLR1IntFRHfOlF1pUk
-         9dWQEtfBQTmHBrfKOPbY+vAeLSCf02bKk8pvLZk56yE4XTzHWKfi2qJK9H0uCUmhkA5i
-         Zkdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BP4NAe7ddaJVYhsIxokjyZQ5JW8fdTP3tJwi3u/Bta8=;
-        b=Y/mhUzTXspa+PlWhB8GCkfYOG3hrsMzE9pCrWgAUf6QCPMb0YeFZMyiwAgsczvzMPh
-         JoeM4Xx6X7Fvj6WLI4Thgnd0CqEyVhxPSrs4dJD9xGpJBCvTP7TZ/sDgERCz2dtJNZAT
-         ldoayU/hfkvx11pEERkjy/xhBsNlno2nVX2+A9NHgmQxjSExYDaqS1WAFxCedtFCXhwh
-         NxQ2EV/SzJlmtc5WyKkWCS2rtYrQynfka+8XuRHGFSScEbl5gE91lwThvrqz+Mm0/6Ez
-         XUIQDA2LKz20fX6d8+bbBiNn05QNyzoVvx6smy/SrUpqq2/q1xlFxBn7Er62f16ruXYu
-         D94Q==
-X-Gm-Message-State: AOAM533bdMGvrw1wbsXaVhR6p3qhp8NUm5SPTrKlSV3cEtS9gE70n0+w
-        IXg1dpOrv8hGxzOLJwvkKIaHfmt9cMy8Xi23gHSBMg==
-X-Google-Smtp-Source: ABdhPJzK4Dha/q6HSrHHxcz81bIchY+vvTwR3f0p68xpNbHqCeDhn3qKld2X233U664gN+hNMB3NXO/CSZIYQpq8xAo=
-X-Received: by 2002:ac2:59cc:: with SMTP id x12mr7735816lfn.501.1635274243249;
- Tue, 26 Oct 2021 11:50:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <20211026173822.502506-3-pasha.tatashin@soleen.com> <57fbf167-b2e8-69f6-7f79-8e989162c889@oracle.com>
-In-Reply-To: <57fbf167-b2e8-69f6-7f79-8e989162c889@oracle.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 26 Oct 2021 14:50:06 -0400
-Message-ID: <CA+CK2bBuU5_8PrT8zd-bAJ-zJW29+9MncnBMAyoJ+JwDHp=WyQ@mail.gmail.com>
-Subject: Re: [RFC 2/8] mm/hugetlb: remove useless set_page_count()
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com, Vlastimil Babka <vbabka@suse.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        weixugc@google.com, Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 26 Oct 2021 14:52:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635274220;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=7ft8Vn6lPZYMUJ7yRwsizM95snAuobtCtLzV7BieLtc=;
+    b=VEeFuwU6xodp2KD9GwJYEFXdI8WK8H+EoJeJyq93OkvqxMux0LdEzq28FwuWs6Eye8
+    UCLVyE3y6a7pPyg/rUV9XqEs2hzlwNcwF+QlAf6E8sg4rMWXVDGLIOWC0OOdzYZyMzqI
+    cGFcWWLbbpXQt/4M2RIXtHFheVtBaCr5f3FC0MkyHIiw8tjZnCU3rz7O27RR3hJwHutT
+    MutBTYuH3GxjK8nYf78thTCgGPOToC46gZSeLanmMe20UoC6Mp8ypB8GOHy82ACtHGmH
+    L0kUOf+FEHzgQAIekjPLgG0hW5M69gYBczzg5/8sVYZHgpNjxl0ejz0lDZvScjKbnbof
+    SMHQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8J+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 SBL|AUTH)
+    with ESMTPSA id d01d1fx9QIoJynM
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 26 Oct 2021 20:50:19 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RESEND PATCH v3 0/6] drm/ingenic: Various improvements v3
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20211026181240.213806-1-paul@crapouillou.net>
+Date:   Tue, 26 Oct 2021 20:50:19 +0200
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <4CBF748C-DA58-4E8B-A6E4-A7CE653F2C52@goldelico.com>
+References: <20211026181240.213806-1-paul@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 2:45 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 10/26/21 10:38 AM, Pasha Tatashin wrote:
-> > prep_compound_gigantic_page() calls set_page_count(0, p), but it is not
-> > needed because page_ref_freeze(p, 1) already sets refcount to 0.
-> >
-> > Using, set_page_count() is dangerous, because it unconditionally resets
-> > refcount from the current value to unrestrained value, and therefore
-> > should be minimized.
-> >
-> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
->
-> Thanks!
->
-> My bad for not removing the set_page_count when adding the page_ref_freeze.
->
-> FYI, there have been additional changes to this routine in Andrew's
-> tree.  Not really sure if we want/need the VM_BUG_ON_PAGE as that would
-> only check if there was a 'bug' in page_ref_freeze.
+Hi Paul,
 
-I would like to keep it. Part of the idea of this series is to reduce
-reliance on comments such as:
+> Am 26.10.2021 um 20:12 schrieb Paul Cercueil <paul@crapouillou.net>:
+> 
+> Hi,
+> 
+> I resend the V3 of my patchset for drm/ingenic, verbatim.
+> 
+> The previous submission of my V3 received a lot of replies, but none of
+> these replies were actually talking about the patches themselves.
 
-/* No worries, refcount is A therefore we can do B */
+Indeed. And since we have finally managed to add jz4780 HDMI support
+(I didn't find to work in the latest comments) on top of the series as is,
+please go ahead and add my
 
-And instead enforce that via VM_BUG_ON().  It should be able to
-prevent existing and future _refcount related bugs from manifesting as
-memory corruptions.
+tested-by: Nikolaus Schaller <hns@goldelico.com>
 
-Pasha
+BR and thanks,
+Nikolaus
 
->
-> --
-> Mike Kravetz
->
-> > ---
-> >  mm/hugetlb.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 95dc7b83381f..7e3996c8b696 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1707,7 +1707,7 @@ static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
-> >                       pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
-> >                       goto out_error;
-> >               }
-> > -             set_page_count(p, 0);
-> > +             VM_BUG_ON_PAGE(page_count(p), p);
-> >               set_compound_head(p, page);
-> >       }
-> >       atomic_set(compound_mapcount_ptr(page), -1);
-> >
+> 
+> Cheers,
+> -Paul
+> 
+> 
+> Paul Cercueil (6):
+>  drm/ingenic: Simplify code by using hwdescs array
+>  drm/ingenic: Add support for private objects
+>  drm/ingenic: Move IPU scale settings to private state
+>  drm/ingenic: Set DMA descriptor chain register when starting CRTC
+>  drm/ingenic: Upload palette before frame
+>  drm/ingenic: Attach bridge chain to encoders
+> 
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 278 +++++++++++++++++-----
+> drivers/gpu/drm/ingenic/ingenic-ipu.c     | 127 ++++++++--
+> 2 files changed, 333 insertions(+), 72 deletions(-)
+> 
+> -- 
+> 2.33.0
+> 
+
