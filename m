@@ -2,124 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8A643B0AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8B543B0B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 13:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235279AbhJZLAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 07:00:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232840AbhJZLAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 07:00:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10A8F60C4A;
-        Tue, 26 Oct 2021 10:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635245899;
-        bh=VJI5lKGLCEnHTM2XKYq5kpokq1eyOKv3nZvB6oSX6iI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c0nDHmUZYJu1sh0KaumGV8/WwXUe2hnA6se9sTtEb2P/q1ZBrxQC/citRv//6N7J5
-         5ZZxXaklOn8vawrgdtxvw31SWmCmMsm7zSVYLqaiG+5unri3xlhPioZxMHGkZKKEN7
-         9FtyqSOjYtFzSQQRbpYRf00gsSiWKRKxSdtUqK0G301JRPiBsvZNg/1q1V/oLaDA6e
-         PrQG2QJX1l0VC9u6PYHbDd81vXLUf4Qc1HKn/U7IL50qmS8MxAFkYdt6FBPlHksWhu
-         4Z9j0CU53oJeBkDVfJatFxBoOFYjB6XkxSdQyBs8DHbatbg4kuF38OQw0O8/dXy/sj
-         0V2bhGfhzsUrw==
-Date:   Tue, 26 Oct 2021 11:58:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: Re: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link never
- came up
-Message-ID: <YXffRmvPYwetsg3L@sirena.org.uk>
-References: <1634886750-13861-1-git-send-email-hongxing.zhu@nxp.com>
- <1634886750-13861-4-git-send-email-hongxing.zhu@nxp.com>
- <20211025111312.GA31419@francesco-nb.int.toradex.com>
- <YXaTxDJjhpcj5XBV@sirena.org.uk>
- <AS8PR04MB8676A0F3DA3248C6A27801148C849@AS8PR04MB8676.eurprd04.prod.outlook.com>
+        id S235392AbhJZLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:03:29 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43762
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235357AbhJZLDV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 07:03:21 -0400
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E0AF33F173
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:00:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635246053;
+        bh=saCQu9EKQs4I6SKXkv5FjAbPTAvRNyG3cbYVa3bkKDU=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Z6cJ2pbbSnIn9uVxehdiOgI61pnh3GkFannE2EWHWf5bvqVeJLcFi8seGsGXtvYne
+         O6D7tI3wFUlcpSpqsZuwSkaF2vZFQ3Ajb68lmDNYIlLBv/8YWNCB7LWwNQnTG0sqK5
+         /UDOOZSBtq+x2ZPb42R49kcMtiH2mc9JdDgUdcXHJgvbwcmXgUZQdDMeoPVutH67EK
+         Vbc11/35yFp66kftX76j/qV+pCL1geZyhcJYkLxTdMMaMRxl/hpL5KkcsA3HgL+TH1
+         hNmpYSzgI0+Gt1fb+SBOIA0+TywovvBNuRuHsYphkC+6Ij0unZqr6oZmFac2aiXHeW
+         gZOMcjmb/Ga6g==
+Received: by mail-lj1-f199.google.com with SMTP id d24-20020a2eb058000000b00211892e18f2so1236776ljl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 04:00:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=saCQu9EKQs4I6SKXkv5FjAbPTAvRNyG3cbYVa3bkKDU=;
+        b=u4Wv0JuKurj3/Y+/IysUCkNZwyfHHk7Da47sQ7suluTlMjYjYT0k0g+q7fln38huav
+         m+SD5jlqwZ3L0bYaoVmqdu7PLljB5xWeyPqNw16pXXBCU5ib63cQKzkripcgr0zHpnCs
+         w/77hxsHmLtFAbKx0/y9QfF5/9494alvT+HoiBKkJE4b8YPmgst98incKcd1g8v7UvL1
+         ysJ79tuoynSGUeNADBXRdfHL0Nz3lP1gnUvWYY6cvsjdTzO+EkYy1XnZuWxUmSz8A8oy
+         CsMcs6nT5p+RUtGoe3oN5ReSpcDZLXfXHBlBWwHOANpkUUcsLC2pcJPqDP8C554E5QW3
+         /ALw==
+X-Gm-Message-State: AOAM533+wq+Q3Txms/9clwN50xm+kU63EgwDHga1M314gfhfh+fCj9qU
+        OnXlpRXIlhOVrgh9t6OPqPOtomT9ZBmB65k25Limmzf+KMFLOh/J659EE37QHIJ3buJ2fw7j6lh
+        ImRMG75D6uWB6CWIgXBk2GamJp8g5NTYwkrNTp9kbhA==
+X-Received: by 2002:a2e:8605:: with SMTP id a5mr6639004lji.107.1635246053199;
+        Tue, 26 Oct 2021 04:00:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxu6cel0oQC1BuMesrfNH59P19SIT7Z0msL6k//HhV+BZ9TfGDzQ+R+3+GvGDhor/q3GvReFQ==
+X-Received: by 2002:a2e:8605:: with SMTP id a5mr6638964lji.107.1635246052925;
+        Tue, 26 Oct 2021 04:00:52 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id n7sm1985531ljg.47.2021.10.26.04.00.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 04:00:52 -0700 (PDT)
+To:     Youngmin Nam <youngmin.nam@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, daniel.lezcano@linaro.org
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com, kgene@kernel.org
+References: <20211021061804.39118-1-youngmin.nam@samsung.com>
+ <CGME20211021055112epcas2p278145beb21cd6cc4217813a41c1e1407@epcas2p2.samsung.com>
+ <20211021061804.39118-2-youngmin.nam@samsung.com>
+ <0c5dcdab-7aa3-a98f-e615-acbe98489935@canonical.com>
+ <20211021082650.GA30741@perf>
+ <1b93aaf3-ed64-b105-dec4-07b6f27b385b@canonical.com>
+ <20211022042116.GA30645@perf>
+ <da83de3a-e7a2-f9b2-80f2-25c39717c3e4@canonical.com>
+ <20211026014732.GA45525@perf>
+ <91e926c4-9a3a-196d-1451-d3e7d38fc132@canonical.com>
+ <20211026104518.GA40630@perf>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+Message-ID: <cb5bd5a3-1c23-0dc5-9f77-112befd7269c@canonical.com>
+Date:   Tue, 26 Oct 2021 13:00:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CM9V7cdtbJ/epuLB"
-Content-Disposition: inline
-In-Reply-To: <AS8PR04MB8676A0F3DA3248C6A27801148C849@AS8PR04MB8676.eurprd04.prod.outlook.com>
-X-Cookie: Times approximate.
+In-Reply-To: <20211026104518.GA40630@perf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/10/2021 12:45, Youngmin Nam wrote:
+> On Tue, Oct 26, 2021 at 09:10:28AM +0200, Krzysztof Kozlowski wrote:
+>> On 26/10/2021 03:47, Youngmin Nam wrote:
+>>>> If everyone added a new driver to avoid integrating with existing code,
+>>>> we would have huge kernel with thousands of duplicated solutions. The
+>>>> kernel also would be unmaintained.
+>>>>
+>>>> Such arguments were brought before several times - "I don't want to
+>>>> integrating with existing code", "My use case is different", "I would
+>>>> need to test the other cases", "It's complicated for me".
+>>>>
+>>>> Instead of pushing a new vendor driver you should integrate it with
+>>>> existing code.
+>>>>
+>>> Let me ask you one question.
+>>> If we maintain as one driver, how can people who don't have the new MCT test the new driver?
+>>
+>> I assume you talk about a case when someone else later changes something
+>> in the driver. Such person doesn't necessarily have to test it. The same
+>> as in all other cases (Exynos MCT is not special here): just ask for
+>> testing on platform one doesn't have.
+>>
+>> Even if you submit this as separate driver, there is the exact same
+>> problem. People will change the MCTv2 driver without access to hardware.
+>>
+> Yes, I can test the new MCT driver if someone ask for testing after modifying the new driver.
+> But in this case, we don't need to test the previous MCT driver. We have only to test the new MCT driver.
 
---CM9V7cdtbJ/epuLB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Like with everything in Linux kernel. We merge instead of duplicate.
+It's not an argument.
 
-On Tue, Oct 26, 2021 at 02:18:18AM +0000, Richard Zhu wrote:
+>> None of these differ for Exynos MCT from other drivers, e.g. mentioned
+>> Samsung PMIC drivers, recently modified (by Will and Sam) the SoC clock
+>> drivers or the ChipID drivers (changed by Chanho).
+> From HW point of view, the previous MCT is almost 10-year-old IP without any major change and
+> it will not be used on next new Exynos SoC.
+> MCTv2 is the totally newly designed IP and it will replace the Exynos system timer.
+> Device driver would be dependent with H/W. We are going to apply a lot of changes for this new MCT.
+> For maintenance, I think we should separate the new MCT driver for maintenance.
+> 
 
-> > I should probably also say that the check for the regulator looks buggy=
- as well,
-> > regulators should only be optional if they can be physically absent whi=
-ch does
-> > not seem likely for PCI devices.  If the driver is not doing something =
-to
-> > reconfigure the hardware to account for a missing supply this is genera=
-lly a big
-> > warning sign.
-> >=20
-> > I really don't understand why regulator support is so frequently proble=
-matic
-> > for PCI controllers.  :(
+There are several similarities which actually suggest that you
+exaggerate the differences.
 
-> [Richard Zhu] Hi Mark:
-> The _enabled check is used because that this regulator is optional in the=
- HW design.
-> To make the codes clean and aligned on different HW boards, the _enabled =
-check is added.
+The number of interrupts is the same (4+8 in older one, 12 in new one...).
+You assign the MCT priority also as higher than Architected Timer
+(+Cc Will and Mark - is it ok for you?)
+    evt->rating = 500;      /* use value higher than ARM arch timer *
 
-I would be really surprised to see PCI hardware that was able to support
-a supply being physically absent, and this use of _is_enabled() is quite
-simply not how any of this is supposed to work in the regulator API even
-for regulators that can be optional.
+All these point that block is not different. Again, let me repeat, we
+support old Samsung PMICs with new Samsung PMICs in one driver. Even
+though the "old one" won't be changed, as you mentioned here. The same
+Samsung SoC clock drivers are used for old Exynos and for new ones...
+Similarly to pinctrl drivers. The same ChipId.
 
-> The root cause is that the error return is not handled properly by the co=
-ntroller driver.
-> I.MX PCIe controller doesn't support the Hot-Plug, and it would return -1=
-10 error
-> when PCIe link never came up. Thus, the _probe would be failed in the end.
-> The clocks/regulator usage balance should be considered by i.MX PCIe cont=
-roller, that's all.
-> It's not a general case, and the problem is not caused by the regulator s=
-upport.
+Everywhere we follow the same concept of unification instead of
+duplication. Maybe Exynos MCT timer is an exception but you did not
+provide any arguments supporting this. Why Exynos MCTv2 should be
+treated differently than Exynos850 clocks, chipid, pinctrl and other blocks?
 
-Perhaps it's not causing problems in this design but if the supply is
-ever shared with anything else then the software will run into trouble.
-There will also be problems with the error handling on a system where
-the regulator needs to be controlled.
+Daniel,
+Any preferences from you? Integrating MCT into existing driver (thus
+growing it) or having a new one?
 
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
---CM9V7cdtbJ/epuLB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF330UACgkQJNaLcl1U
-h9A2rAf/TXfjNuS1ZmCvM9JPsvkTyS9t0JH1Y8KuUtNmbOh51YbCBVZ8o/toaYJ8
-3VZy5Ptw8l/2KnbYlSEaFFGbiJpIcVkOw6Qo7nKSnArIMJIB/uM+Jb/1YRnXXdF5
-SE+AIC+vPcUPWSGQsljXr1jttE954+U6sCO6QhWlRWjIP7O+sxpL+7v6uw3SBpYp
-9HEJF3oeXJMRqkhyC4YKZ1emojKPHT3sVWUaQyRDRQD3m+7QjLGIWJ+JNB/gEcXv
-2r8yXKuijwOmrTP7niPOLXez48txft/1ojj8Fb6bbaHlPlQp9c3kWgO6/RoCAwf9
-8lqP9o/zPqn8jhq+wb4DCHrE5hOi5w==
-=f1Cl
------END PGP SIGNATURE-----
-
---CM9V7cdtbJ/epuLB--
+Best regards,
+Krzysztof
