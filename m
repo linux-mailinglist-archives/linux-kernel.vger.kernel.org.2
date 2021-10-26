@@ -2,179 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D2043B719
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEFF43B71B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbhJZQ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237482AbhJZQ1A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 12:27:00 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA6DC061235
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:24:34 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id k26so14827850pfi.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:24:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q7Maw+sMF3Q6N+ptoNDxzqCK96vnCGLnGzCFF2robfg=;
-        b=GrlvUUDsDZCc4Noh/EpeKHDMxftQ31Xq7/gSooGwllD3Sl0nKzM5Otw5mVQyM3dqDR
-         6h2SAjkMi0yojVE0Z9F0/IpE5nu5RnWJt33MQ1XpOj/Y8KkCLObUYsJjnJjX/SCSnvEb
-         j0OBM7vNTetfxokbGlBbCwLr//JdztO7pwWMc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q7Maw+sMF3Q6N+ptoNDxzqCK96vnCGLnGzCFF2robfg=;
-        b=HkazbZqfc0WAlk1hBYuqfl14eUafbT7RJKkpBihTH+4NK+yaX5U0IoX3d+q/jNZvXm
-         IYFRb/EzjpoLO3QREBBTbu/K6vMNlpLGMfDXd74KrFNpuFPVApCq8ega/cUi6zJhiTyB
-         5iJB0DEDBLSE53J51la2+2tRn+XnyE2unTApN3lMhhYu7jA2ze9xVywv9zAY+XYkW8sB
-         +sVPlNDPfNH53rIKIVbyR8pp57ozFx5xWiC/mcFCC9h5oKi6x2HnlOPYxD0RUJG9nFVu
-         vGGj6O7PU/99Sesla/gvzrEi7F2MXaN8SZWglYHxx1yZQA2GGrk7w4LpcUdrZ2CZ1HXo
-         DBMw==
-X-Gm-Message-State: AOAM532F9yfqtLhuNSGOMAkM8I5pBv9EgaLC0XX/EWY2QPYo03oUiFxL
-        d4X9guv3cq2dc9VVQNjGPvf6og==
-X-Google-Smtp-Source: ABdhPJyCY1M7KA9vxuG5wk3czomxfeK9zodk1ezqbTLfWzkoa0cpMyKyH69tTww+DJIHrT6KxsicOQ==
-X-Received: by 2002:a63:8c4f:: with SMTP id q15mr15040959pgn.225.1635265473926;
-        Tue, 26 Oct 2021 09:24:33 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:8854:dee7:f36d:b5da])
-        by smtp.gmail.com with UTF8SMTPSA id q6sm19344307pgc.1.2021.10.26.09.24.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 09:24:33 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 09:24:32 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     tjiang@codeaurora.org
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-Message-ID: <YXgrwKUZwUWuWfG4@google.com>
-References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
+        id S237357AbhJZQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:27:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237382AbhJZQ1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 12:27:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B1FA603E9;
+        Tue, 26 Oct 2021 16:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635265491;
+        bh=4grgM8bgYCxXbzH/TXpocp14Y8X0eHTROfsAj7+b4N0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WE5w0qRfqMz7e354YtJvjXI9U6HzP2XulVtvN8g+xZ6IO5KEG4gdBbDP8hw6K5d7j
+         gqPzEa7IR49Ks53UnME1S8R8FRYrNT/9JTySRGvq6uw9iCd5XcrGtOUfJj7BGD2Rnt
+         dxxBy3AssDa7oCO5HoOsmZqcIXUCj6Mnje1x/5ryoZbSNK5bYauR/GQOyrMkFRyBOL
+         0lMsrlTYQ2i9DRD5RH1iSVKiofjwWBaGT8R+nT58okpOIA/yXyAZO/eR2TDFB9Ztjp
+         4nCh/ZK76gf7stqZYNcPxm9njOxwNzQmbWUkGSv8tQ1L2PA9jnk1kFioQ4Zjtl9Vs9
+         Ai5ZbC8lljNsQ==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     viro@zeniv.linux.org.uk
+Cc:     bfields@fieldses.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: remove leftover comments from mandatory locking removal
+Date:   Tue, 26 Oct 2021 12:24:49 -0400
+Message-Id: <20211026162449.60283-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 01:35:38PM +0800, tjiang@codeaurora.org wrote:
-> the RF performance of wcn6855 soc chip from different foundries will be
-> difference, so we should use different nvm to configure them.
-> 
-> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
-> ---
->  drivers/bluetooth/btusb.c | 55
-> +++++++++++++++++++++++++++++++++++------------
->  1 file changed, 41 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 87b71740fad8..a5fe57e7cd7e 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -3195,6 +3195,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev
-> *hdev,
->  #define QCA_DFU_TIMEOUT		3000
->  #define QCA_FLAG_MULTI_NVM      0x80
-> 
-> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-> +
->  struct qca_version {
->  	__le32	rom_version;
->  	__le32	patch_version;
-> @@ -3226,6 +3229,7 @@ static const struct qca_device_info
-> qca_devices_table[] = {
->  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
->  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
->  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
->  };
-> 
->  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-> @@ -3380,6 +3384,42 @@ static int btusb_setup_qca_load_rampatch(struct
-> hci_dev *hdev,
->  	return err;
->  }
-> 
-> +static void btusb_generate_qca_nvm_name(char *fwname,
-> +					size_t max_size,
-> +					const struct qca_version *ver)
-> +{
-> +	u32 rom_version = le32_to_cpu(ver->rom_version);
-> +	u16 flag = le16_to_cpu(ver->flag);
-> +
-> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> +		u16 board_id = le16_to_cpu(ver->board_id);
-> +		u32 ram_version = le32_to_cpu(ver->ram_version);
-> +		const char *variant = NULL;
+Stragglers from commit f7e33bdbd6d1 ("fs: remove mandatory file locking
+support").
 
-This assignement was introduced in v3, it isn't really useful since the
-variable is always assigned to a value in the switch statement below.
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/namei.c      | 4 +---
+ fs/read_write.c | 4 ----
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-btw, why did you reset the patch version numbers, earlier they went up
-to v11? This is confusing, e.g. when someone mentions v3 of this patch,
-are they referring to this version or to
-https://patchwork.kernel.org/project/bluetooth/patch/1628758216-3201-1-git-send-email-zijuhu@codeaurora.org/?
+Al, I'll plan to merge this along with my locking changes for v5.16. Let
+me know if you'd prefer it to go in via your vfs tree.
 
-> +
-> +		switch (ram_version) {
-> +		case WCN6855_2_0_RAM_VERSION_GF:
-> +		case WCN6855_2_1_RAM_VERSION_GF:
-> +			variant = "_gf";
-> +			break;
-> +		default:
-> +			variant = "";
-> +			break;
-> +		}
-> +
-> +		if (board_id == 0) {
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
-> +				rom_version, variant);
-> +		} else {
-> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
-> +				rom_version, variant, board_id);
-> +		}
-> +	} else {
-> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
-> +			rom_version);
-> +	}
-> +
-> +}
-> +
->  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
->  				    struct qca_version *ver,
->  				    const struct qca_device_info *info)
-> @@ -3388,20 +3428,7 @@ static int btusb_setup_qca_load_nvm(struct hci_dev
-> *hdev,
->  	char fwname[64];
->  	int err;
-> 
-> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> -		/* if boardid equal 0, use default nvm without surfix */
-> -		if (le16_to_cpu(ver->board_id) == 0x0) {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -				 le32_to_cpu(ver->rom_version));
-> -		} else {
-> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-> -				le32_to_cpu(ver->rom_version),
-> -				le16_to_cpu(ver->board_id));
-> -		}
-> -	} else {
-> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-> -			 le32_to_cpu(ver->rom_version));
-> -	}
-> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
-> 
->  	err = request_firmware(&fw, fwname, &hdev->dev);
->  	if (err) {
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a
-> Linux Foundation Collaborative Project
+Thanks,
+Jeff
+
+diff --git a/fs/namei.c b/fs/namei.c
+index 95a881e0552b..b05e6840df74 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -3074,9 +3074,7 @@ static int handle_truncate(struct user_namespace *mnt_userns, struct file *filp)
+ 	int error = get_write_access(inode);
+ 	if (error)
+ 		return error;
+-	/*
+-	 * Refuse to truncate files with mandatory locks held on them.
+-	 */
++
+ 	error = security_path_truncate(path);
+ 	if (!error) {
+ 		error = do_truncate(mnt_userns, path->dentry, 0,
+diff --git a/fs/read_write.c b/fs/read_write.c
+index af057c57bdc6..0074afa7ecb3 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -368,10 +368,6 @@ int rw_verify_area(int read_write, struct file *file, const loff_t *ppos, size_t
+ 	if (unlikely((ssize_t) count < 0))
+ 		return -EINVAL;
+ 
+-	/*
+-	 * ranged mandatory locking does not apply to streams - it makes sense
+-	 * only for files where position has a meaning.
+-	 */
+ 	if (ppos) {
+ 		loff_t pos = *ppos;
+ 
+-- 
+2.31.1
+
