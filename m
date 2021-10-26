@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1793043AD2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C22843AD33
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhJZH3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:29:30 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:40391 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229540AbhJZH33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:29:29 -0400
-Received: from [192.168.0.2] (ip5f5aef5c.dynamic.kabel-deutschland.de [95.90.239.92])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 01C9F61E6478B;
-        Tue, 26 Oct 2021 09:27:04 +0200 (CEST)
-Message-ID: <5e3271cb-ea53-496a-1fd7-341e9c57c3a8@molgen.mpg.de>
-Date:   Tue, 26 Oct 2021 09:27:04 +0200
+        id S231611AbhJZHbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:31:00 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:49375 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229540AbhJZHa6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 03:30:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Utl7RCh_1635233311;
+Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Utl7RCh_1635233311)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 Oct 2021 15:28:32 +0800
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
+        lenb@kernel.org, rjw@rjwysocki.net
+Cc:     xueshuai@linux.alibaba.com, zhangliguang@linux.alibaba.com,
+        zhuo.song@linux.alibaba.com
+Subject: [PATCH v3] ACPI, APEI, EINJ: Relax platform response timeout to 1 second.
+Date:   Tue, 26 Oct 2021 15:28:29 +0800
+Message-Id: <20211026072829.94262-1-xueshuai@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
+References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [Intel-wired-lan] [PATCH v2] e1000e: Add a delay to let ME
- unconfigure s0ix when DPG_EXIT_DONE is already flagged
-Content-Language: en-US
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        acelan.kao@canonical.com, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dima Ruinskiy <dima.ruinskiy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com
-References: <20211026065112.1366205-1-kai.heng.feng@canonical.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20211026065112.1366205-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Kai-Heng,
+When injecting an error into the platform, the OSPM executes an
+EXECUTE_OPERATION action to instruct the platform to begin the injection
+operation. And then, the OSPM busy waits for a while by continually
+executing CHECK_BUSY_STATUS action until the platform indicates that the
+operation is complete. More specifically, the platform is limited to
+respond within 1 millisecond right now. This is too strict for some
+platforms.
 
+For example, in Arm platform, when injecting a Processor Correctable error,
+the OSPM will warn:
+    Firmware does not respond in time.
 
-On 26.10.21 08:51, Kai-Heng Feng wrote:
+And a message is printed on the console:
+    echo: write error: Input/output error
 
-In the commit message summary, maybe write:
+We observe that the waiting time for DDR error injection is about 10 ms and
+that for PCIe error injection is about 500 ms in Arm platform.
 
-> e1000e: Add 1 s delay …
+In this patch, we relax the response timeout to 1 second.
 
+Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+---
+Changelog v2 -> v3:
+- Implemented the timeout in usleep_range instead of msleep.
+- Dropped command line interface of timeout.
+- Link to the v1 patch: https://lkml.org/lkml/2021/10/14/1402
+---
+ drivers/acpi/apei/einj.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-> On some ADL platforms, DPG_EXIT_DONE is always flagged so e1000e resume
-> polling logic doesn't wait until ME really unconfigures s0ix.
+diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
+index 133156759551..6e1ff4b62a8f 100644
+--- a/drivers/acpi/apei/einj.c
++++ b/drivers/acpi/apei/einj.c
+@@ -28,9 +28,10 @@
+ #undef pr_fmt
+ #define pr_fmt(fmt) "EINJ: " fmt
+ 
+-#define SPIN_UNIT		100			/* 100ns */
+-/* Firmware should respond within 1 milliseconds */
+-#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
++#define SLEEP_UNIT_MIN		1000			/* 1ms */
++#define SLEEP_UNIT_MAX		5000			/* 5ms */
++/* Firmware should respond within 1 seconds */
++#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
+ #define ACPI5_VENDOR_BIT	BIT(31)
+ #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
+ 				ACPI_EINJ_MEMORY_UNCORRECTABLE | \
+@@ -171,13 +172,13 @@ static int einj_get_available_error_type(u32 *type)
+ 
+ static int einj_timedout(u64 *t)
+ {
+-	if ((s64)*t < SPIN_UNIT) {
++	if ((s64)*t < SLEEP_UNIT_MIN) {
+ 		pr_warn(FW_WARN "Firmware does not respond in time\n");
+ 		return 1;
+ 	}
+-	*t -= SPIN_UNIT;
+-	ndelay(SPIN_UNIT);
+-	touch_nmi_watchdog();
++	*t -= SLEEP_UNIT_MIN;
++	usleep_range(SLEEP_UNIT_MIN, SLEEP_UNIT_MAX);
++
+ 	return 0;
+ }
+ 
+-- 
+2.20.1.12.g72788fdb
 
-Please list one broken system. The log message says, it’s a firmware 
-bug. Please elaborate.
-
-> So check DPG_EXIT_DONE before issuing EXIT_DPG, and if it's already
-> flagged, wait for 1 second to let ME unconfigure s0ix.
-
-Where did you get the one second from?
-
-> Fixes: 3e55d231716e ("e1000e: Add handshake with the CSME to support S0ix")
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=214821
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v2:
->   Add missing "Fixes:" tag
-> 
->   drivers/net/ethernet/intel/e1000e/netdev.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-> index 44e2dc8328a22..cd81ba00a6bc9 100644
-> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
-> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-> @@ -6493,14 +6493,21 @@ static void e1000e_s0ix_exit_flow(struct e1000_adapter *adapter)
->   	u32 mac_data;
->   	u16 phy_data;
->   	u32 i = 0;
-> +	bool dpg_exit_done;
->   
->   	if (er32(FWSM) & E1000_ICH_FWSM_FW_VALID) {
-> +		dpg_exit_done = er32(EXFWSM) & E1000_EXFWSM_DPG_EXIT_DONE;
->   		/* Request ME unconfigure the device from S0ix */
->   		mac_data = er32(H2ME);
->   		mac_data &= ~E1000_H2ME_START_DPG;
->   		mac_data |= E1000_H2ME_EXIT_DPG;
->   		ew32(H2ME, mac_data);
->   
-> +		if (dpg_exit_done) {
-> +			e_warn("DPG_EXIT_DONE is already flagged. This is a firmware bug\n");
-
-What firmware exactly? Management Engine?
-
-> +			msleep(1000);
-
-One second is quite long. Can some bit be polled instead?
-
-> +		}
-> +
->   		/* Poll up to 2.5 seconds for ME to unconfigure DPG.
->   		 * If this takes more than 1 second, show a warning indicating a
->   		 * firmware bug
-> 
-
-
-Kind regards,
-
-Paul
