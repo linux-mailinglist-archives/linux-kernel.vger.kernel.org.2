@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7386343AADE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02A143AADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbhJZD4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 23:56:34 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:57500
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234019AbhJZD4d (ORCPT
+        id S234604AbhJZD6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 23:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234019AbhJZD6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 23:56:33 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4C4A44029B
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 03:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635220449;
-        bh=kZhcWeItYaRn2Q+IUotz7XPZmZ0X9JIZ6LR4JyyCG6I=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=tTDulzASt3/eOzKhHqGvw3YcJz5V5bD/Ar0WvVCzyI3uFiskhOaBb4NnWSqmCitN+
-         e0r5OBsnudTrsHljzJSivnoc/ihtB4OVlbmViZ+rZSuG2K64USAsAIHkV/ozjEE16c
-         bpqdQlPoFavZf9QXvmT6naELsgq1Ef5PbRSGIWrapqga/IyXf3nVEwYae3XgrT/BEX
-         /8A7VyRmvPql6qo3Y1ua5JmmHqLmpVhrVn72F8Gpw4RvLSgaWOo4RXppgVkByFoS2w
-         tofoTAAJPUw1j2kuFW838aKKkZmAG8rSyWhk0AsWTF5LN5pdX/Q6beiUDwyd8WdQqD
-         0aCbob9UnfL1g==
-Received: by mail-oi1-f197.google.com with SMTP id s125-20020acac283000000b00299f2f36eb2so3362425oif.22
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 20:54:09 -0700 (PDT)
+        Mon, 25 Oct 2021 23:58:17 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D77C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 20:55:54 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id y1so9352379plk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 20:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=jT56R8thic/ZxbSI8kRsJDsnZUfYJtsBr78ZdkZB++g=;
+        b=KTXsGqDUekb/etDelz3qvN9JZR/TMLaUheLzeZvpokHqY+rDelz+x8QQqMnuSxo8vx
+         IahoSrHuzbmRjQvRie7WfRxB/bBQHTgBYDcYDrbayZlydlPEK9iCfjXmHJHuVxU51YS+
+         3ZhH3UZNITCYZDcg4fh6rQwE6KjQ12f5sOakxfv4YGHKCjkea8VmZ9ZJW3yabbP7uFxr
+         FFPgIC6YpffjvJSi55IoTT7aOpg+E6V1cwjJxDs6AZFmuYtYdYuItkSmCGmjxvGLDHQY
+         RNH7RPOsH35KEqcMIOsAG+x5AwP7hUipnQyUlYbYjQooJIKU/zoVUFT6r8XWMqR9P/aW
+         lY2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kZhcWeItYaRn2Q+IUotz7XPZmZ0X9JIZ6LR4JyyCG6I=;
-        b=VBa/2XCVncnKueQ5jN5JMw8Y6zeKF9cI5v6hvqGzcl+7YLxYM47QIgkqroxWo65L6B
-         Fve5RwjWG8wkaeWAW2nySaDCK17FuetRxw/UkJhg3Riz4LgNzzQIjeivQiKu05Ox9faC
-         TrcfOWYhEK9z6E/KC3k1AfHGinfza1dtOHwKKe9bsMNxSXsDis6h6pux436xV/docRGB
-         hhQeiwJxsnti/A4YV10W8MZ0MOn3azxH9y05FTtN7H1PoGS7+Er8/TsA793Sh0dJwMBI
-         nKNJt5l9putXqr/iiTHXEcK9Lh+FF5yUVwswKDJ9R/pTAG3ab3237yJcLi6WDM6UNzbZ
-         KfCw==
-X-Gm-Message-State: AOAM531CDcfw/261jPFxLZIcPdNzcIylyilbZo7t/6CteisVf9V+uhxH
-        OwICzHsmCz9RSGeNpd4NqgWdQop+bNZwkC4hN3s6C/im/WXZwZftmpeL3h8Xca2imb0GPmlPEgU
-        olxM5aruoUqlSwuVF4/44ma5geDWvhCwStW3X7rOjf6JhJDIqyl/Sgbs8wA==
-X-Received: by 2002:a05:6830:1f55:: with SMTP id u21mr17726423oth.233.1635220448142;
-        Mon, 25 Oct 2021 20:54:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzDNWrIRoaXDuL/UzlYuaqCo7n4hiSiCoSfk+ehSUmXeWJblkVKdUJowBaTHmvH57YUmnxSB1e7qALZKTOymuw=
-X-Received: by 2002:a05:6830:1f55:: with SMTP id u21mr17726410oth.233.1635220447919;
- Mon, 25 Oct 2021 20:54:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=jT56R8thic/ZxbSI8kRsJDsnZUfYJtsBr78ZdkZB++g=;
+        b=M9H4unSpXRVP4m9DNWMP3WiECkHEm7UT1tXGK4+iH/BJGvf0QWKYffNUldKSqeAuJo
+         YH0kxKxTOkoRUJGl08iHahQuEgPnfDwLlYML/P3SpfFzLz/Q9io7nuSRVlrrRhTiBFrP
+         ZOOgHNUpCv5JU3lsLDprpNaizDcsTYzsQQ2v5DoMYiTaRha4wQwbkoTbqvAOehvDp5kw
+         WLgCK7USlqsE5V5L6DoZ3tYeCgvsNBcxXMWkH5UDCTX3jlOuQIM6qXx/SzRgCQ6Ct+lw
+         ejKN0Q2aXHw67rakTbqkpzCI0df1Isf7O7/FE1t9h/FDwc06Kn0WyRaj7ur+e4FfrdrY
+         hgkg==
+X-Gm-Message-State: AOAM530A0eK+voyYYAJDqgzsYr2BfBi5RYCM0tb8P7HOhlM6xdvHCaxB
+        CSy73MT4AuGkL/n3Gp3p8CM=
+X-Google-Smtp-Source: ABdhPJx/tbq495MTTzwmabiKX0Rxbwvklp7Cbb+CJPJE5IPtAdBBLA/Y0DNZDBiyWzY0pKSuAfuljw==
+X-Received: by 2002:a17:902:7e4b:b0:13d:b90d:cdc1 with SMTP id a11-20020a1709027e4b00b0013db90dcdc1mr20615321pln.72.1635220553779;
+        Mon, 25 Oct 2021 20:55:53 -0700 (PDT)
+Received: from Sauravs-MacBook-Air.local ([59.95.95.35])
+        by smtp.gmail.com with ESMTPSA id t40sm5167291pfg.142.2021.10.25.20.55.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 20:55:53 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 09:25:45 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove the goto from
+ rtw_IOL_accquire_xmit_frame
+Message-ID: <YXd8QdhiNX3B1nqe@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
-References: <20211016075442.650311-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20211016075442.650311-1-kai.heng.feng@canonical.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Tue, 26 Oct 2021 11:53:56 +0800
-Message-ID: <CAAd53p5tOveDd_dFm=EOyc4z3wMhHcOXVx7WQZpSuAaeDLCysQ@mail.gmail.com>
-Subject: Re: [RFC] [PATCH net-next v7 0/4] r8169: Implement dynamic ASPM
- mechanism for recent 1.0/2.5Gbps Realtek NICs
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Anthony Wong <anthony.wong@canonical.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiner,
+Remove the goto statement from rtw_IOL_accquire_xmit_frame(). In this
+function goto can be replace by return statement. As on goto label
+exit, function only return it is not performing any cleanup. Avoiding
+goto will improve the function readability.
 
-On Sat, Oct 16, 2021 at 3:54 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> The purpose of the series is to get comments and reviews so we can merge
-> and test the series in downstream kernel.
->
-> The latest Realtek vendor driver and its Windows driver implements a
-> feature called "dynamic ASPM" which can improve performance on it's
-> ethernet NICs.
->
-> Heiner Kallweit pointed out the potential root cause can be that the
-> buffer is to small for its ASPM exit latency.
->
-> So bring the dynamic ASPM to r8169 so we can have both nice performance
-> and powersaving at the same time.
->
-> For the slow/fast alternating traffic pattern, we'll need some real
-> world test to know if we need to lower the dynamic ASPM interval.
+Remove the assignment of NULL to local variable xmit_frame just before
+return of function. As function return, local variable will be not
+available on memory. So assigning a NULL value to local variable just
+before function return does not required.
 
-Do you think we can include this to downstream kernel in its current form?
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_iol.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Kai-Heng
+diff --git a/drivers/staging/r8188eu/core/rtw_iol.c b/drivers/staging/r8188eu/core/rtw_iol.c
+index fe6078864158..7e78b47c1284 100644
+--- a/drivers/staging/r8188eu/core/rtw_iol.c
++++ b/drivers/staging/r8188eu/core/rtw_iol.c
+@@ -13,15 +13,14 @@ struct xmit_frame	*rtw_IOL_accquire_xmit_frame(struct adapter  *adapter)
+ 	xmit_frame = rtw_alloc_xmitframe(pxmitpriv);
+ 	if (!xmit_frame) {
+ 		DBG_88E("%s rtw_alloc_xmitframe return null\n", __func__);
+-		goto exit;
++		return NULL;
+ 	}
 
->
-> v6:
-> https://lore.kernel.org/netdev/20211007161552.272771-1-kai.heng.feng@canonical.com/
->
-> v5:
-> https://lore.kernel.org/netdev/20210916154417.664323-1-kai.heng.feng@canonical.com/
->
-> v4:
-> https://lore.kernel.org/netdev/20210827171452.217123-1-kai.heng.feng@canonical.com/
->
-> v3:
-> https://lore.kernel.org/netdev/20210819054542.608745-1-kai.heng.feng@canonical.com/
->
-> v2:
-> https://lore.kernel.org/netdev/20210812155341.817031-1-kai.heng.feng@canonical.com/
->
-> v1:
-> https://lore.kernel.org/netdev/20210803152823.515849-1-kai.heng.feng@canonical.com/
->
-> Kai-Heng Feng (4):
->   PCI/ASPM: Add pcie_aspm_capable()
->   r8169: Enable chip-specific ASPM regardless of PCIe ASPM status
->   r8169: Use mutex to guard config register locking
->   r8169: Implement dynamic ASPM mechanism
->
->  drivers/net/ethernet/realtek/r8169_main.c | 70 ++++++++++++++++++++---
->  drivers/pci/pcie/aspm.c                   | 11 ++++
->  include/linux/pci.h                       |  2 +
->  3 files changed, 74 insertions(+), 9 deletions(-)
->
-> --
-> 2.32.0
->
+ 	xmitbuf = rtw_alloc_xmitbuf(pxmitpriv);
+ 	if (!xmitbuf) {
+ 		DBG_88E("%s rtw_alloc_xmitbuf return null\n", __func__);
+ 		rtw_free_xmitframe(pxmitpriv, xmit_frame);
+-		xmit_frame = NULL;
+-		goto exit;
++		return NULL;
+ 	}
+
+ 	xmit_frame->frame_tag = MGNT_FRAMETAG;
+@@ -35,7 +34,7 @@ struct xmit_frame	*rtw_IOL_accquire_xmit_frame(struct adapter  *adapter)
+ 	pattrib->subtype = WIFI_BEACON;
+ 	pattrib->pktlen = 0;
+ 	pattrib->last_txcmdsz = 0;
+-exit:
++
+ 	return xmit_frame;
+ }
+
+--
+2.33.0
+
