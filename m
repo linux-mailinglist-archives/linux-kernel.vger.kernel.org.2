@@ -2,158 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1776B43BA4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4E643BA50
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhJZTJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhJZTJH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:09:07 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86062C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:06:43 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t7so438399pgl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=EJh7ZcC2grrGO9nq0Nd8wB/2nJ7WWNVSIfZil/98gt8=;
-        b=GjyKWLQJUKh8TkQ6X6zqdLjL711sDfJFgFpKn6UiAKnJvgxgOKP8W03app1FZUphoj
-         XmeMtGlSohmdCVCBRgRsyOqOku3kGYDs/r+IyOCr2Het3vGy7cZxLL/EsgI7kbN7Ptrj
-         kcOFHTywLCsCpFHDeALTx7m4HUaa/McdUF634Ua50ZNZN8QFSFx1vHo4LKSk4QWd/4uG
-         b5m1/PF+F0MC3Q+kmBQlOyC7O14YCmZZcEs4xEc5nwfrxSLL67jyF1k37JG6NYNraGEZ
-         GtZpVTbul5Bdfxkeam3h9oN/cXhlazLB+WD0dNPuF4gLqjHn6M6meqvLvpstQSBSpIEv
-         Bf3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=EJh7ZcC2grrGO9nq0Nd8wB/2nJ7WWNVSIfZil/98gt8=;
-        b=bg3bQ91yP0ylFHsFyvcaol7Tx4jR+f7/j119mYmhFOZ+p//2a2x7jR6sseF2+eGvPS
-         eFQ0K1VQrES7CpDV+x+fc7ZEzZVTb3KiT+ebDemB1kAGuXSVsLt0L+b/uU/K0z7tmWZR
-         v69kWS9szA3jeNlXOzZ04iGSUze9vqZXoKiTnMM+K38CirEul0abuelh3uG2O32Axq95
-         vsJVdA4FyBaQV9hge1gFC9/3opQxX6EzKen5H93ec5rOoqnY3NGBrom/zHo2GxGYpWIs
-         eEBW1NTgGYjVveJra7msQk8r2Jmt2rc6JinCrwSZNWI6jv2u2uf39Ddfjn24D9Cr2amU
-         PZOA==
-X-Gm-Message-State: AOAM531oF+OcWoPde6NMkGB6hFjI6/XaWEOUD+YwUQkavwX111W0KxaT
-        AKdBnmigXcMOlwNzlyYN8fQ=
-X-Google-Smtp-Source: ABdhPJzzPpdTpGuVeS0gC+5ijhnpjBOIJ70BbFzpBC6srcahv8VsxXgZTBY/f1tPPjPuPg+Oj97chA==
-X-Received: by 2002:a63:fb18:: with SMTP id o24mr20405269pgh.8.1635275202596;
-        Tue, 26 Oct 2021 12:06:42 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id h35sm7895669pgh.71.2021.10.26.12.06.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 12:06:42 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v2 2/5] mm: avoid unnecessary flush on change_huge_pmd()
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <435f41f2-ffd4-0278-9f26-fbe2c2c7545c@intel.com>
-Date:   Tue, 26 Oct 2021 12:06:40 -0700
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8BC74789-FF33-403F-B5D7-19034CAC7EE6@gmail.com>
-References: <20211021122112.592634-1-namit@vmware.com>
- <20211021122112.592634-3-namit@vmware.com>
- <c415820a-aebb-265c-7f47-e048ee429102@intel.com>
- <E38AEB97-DE1B-4C91-A959-132EC24812AE@vmware.com>
- <29E7E8A4-C400-40A5-ACEC-F15C976DDEE0@gmail.com>
- <435f41f2-ffd4-0278-9f26-fbe2c2c7545c@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S238368AbhJZTJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:09:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234008AbhJZTJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:09:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A45610A1;
+        Tue, 26 Oct 2021 19:06:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635275212;
+        bh=DBEx9t2CB+8MmSY7UjuuCdmlBwQL3CUhnAaUE+XYyRQ=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=A60IOoRMMZGy3t3QJ/KgLxG6B68GkrknhmQv60RG9RzcnPF+kGVJLYBZNyaJAbIP7
+         mH0xmyBZ0YOwFw3zFWEbeZ0AfMbrWdViwtX2wIJ/j88Gwlf8J0u+TzDP3JhYn/szgM
+         D6UX937++toP4t4hWIUfesB5c4t/p80Akjnh3NaPMrXCmRi/WhpmawY3qsNsGTQxpf
+         Wl94+wQBPcbmaCaMJl2t9Ul3CyX5E2bBfqXRWVOgRCZYuK5pUCw7F3DV4syn6UL1Nt
+         a5QirX7LtfktYZO3DMw3ITf2tg1Suyn4sSUbnRHiDFcfhz3hLAisSLF+w/IddH3uUL
+         nZwANVZMl/Kpg==
+From:   Mark Brown <broonie@kernel.org>
+To:     lgirdwood@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
+        judyhsiao@chromium.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, bgoswami@codeaurora.org,
+        alsa-devel@alsa-project.org, plai@codeaurora.org,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        tiwai@suse.com, swboyd@chromium.org,
+        srinivas.kandagatla@linaro.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, perex@perex.cz
+In-Reply-To: <1635234188-7746-1-git-send-email-srivasam@codeaurora.org>
+References: <1635234188-7746-1-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v4 0/5] Update Lpass digital codec macro drivers
+Message-Id: <163527520915.2033755.14378859701858526354.b4-ty@kernel.org>
+Date:   Tue, 26 Oct 2021 20:06:49 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 26 Oct 2021 13:13:03 +0530, Srinivasa Rao Mandadapu wrote:
+> This patch set is to add support for lpass sc7280 based targets.
+> Upadate compatible name and change of bulk clock voting to optional
+> clock voting in digital codecs va, rx, tx macro drivers.
+> 
+> Changes Since V3:
+>     -- Removed fixes tag.
+>     -- Change signedoff by sequence.
+> Changes Since V2:
+>     -- Add Tx macro deafults for lpass sc7280
+> Changes Since V1:
+>     -- Removed individual clock voting and used bulk clock optional.
+>     -- Removed volatile changes and fixed default values.
+>     -- Typo errors.
+> Srinivasa Rao Mandadapu (5):
+>   ASoC: qcom: Add compatible names in va,wsa,rx,tx codec drivers for
+>     sc7280
+>   ASoC: qcom: dt-bindings: Add compatible names for lpass sc7280 digital
+>     codecs
+>   ASoC: codecs: tx-macro: Enable tx top soundwire mic clock
+>   ASoC: codecs: tx-macro: Update tx default values
+>   ASoC: codecs: Change bulk clock voting to optional voting in digital
+>     codecs
+> 
+> [...]
 
+Applied to
 
-> On Oct 26, 2021, at 11:44 AM, Dave Hansen <dave.hansen@intel.com> =
-wrote:
->=20
-> On 10/26/21 10:44 AM, Nadav Amit wrote:
->>> "If software on one logical processor writes to a page while =
-software on
->>> another logical processor concurrently clears the R/W flag in the
->>> paging-structure entry that maps the page, execution on some =
-processors may
->>> result in the entry=E2=80=99s dirty flag being set (due to the write =
-on the first
->>> logical processor) and the entry=E2=80=99s R/W flag being clear (due =
-to the update
->>> to the entry on the second logical processor). This will never occur =
-on a
->>> processor that supports control-flow enforcement technology (CET)=E2=80=
-=9D
->>>=20
->>> So I guess that this optimization can only be enabled when CET is =
-enabled.
->>>=20
->>> :(
->> I still wonder whether the SDM comment applies to present bit vs =
-dirty
->> bit atomicity as well.
->=20
-> I think it's implicit.  =46rom "4.8 ACCESSED AND DIRTY FLAGS":
->=20
-> 	"Whenever there is a write to a linear address, the processor
-> 	 sets the dirty flag (if it is not already set) in the paging-
-> 	 structure entry"
->=20
-> There can't be a "write to a linear address" without a Present=3D1 =
-PTE.
-> If it were a Dirty=3D1,Present=3D1 PTE, there's no race because there =
-might
-> not be a write to the PTE at all.
->=20
-> There's also this from the "4.10.4.3 Optional Invalidation" section:
->=20
-> 	"no TLB entry or paging-structure cache entry is created with
-> 	 information from a paging-structure entry in which the P flag
-> 	 is 0."
->=20
-> That means that we don't have to worry about the TLB doing something
-> bonkers like caching a Dirty=3D1 bit from a Present=3D0 PTE.
->=20
-> Is that what you were worried about?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks Dave, but no - that is not my concern.
+Thanks!
 
-To make it very clear - consider the following scenario, in which
-a volatile pointer p is mapped using a certain PTE, which is RW
-(i.e., *p is writable):
+[1/5] ASoC: qcom: Add compatible names in va,wsa,rx,tx codec drivers for sc7280
+      commit: 9d8c69814d7d8abf299998dd1d3f4a0b595cddca
+[2/5] ASoC: qcom: dt-bindings: Add compatible names for lpass sc7280 digital codecs
+      commit: 6e3b196e5ad2e4cd23498935ba32cecedae53642
+[3/5] ASoC: codecs: tx-macro: Enable tx top soundwire mic clock
+      commit: 864b9b5856ae74a350933782399934bdde5df989
+[4/5] ASoC: codecs: tx-macro: Update tx default values
+      commit: 7b285c74e422d35b02349650a62d32f8ec78f51d
+[5/5] ASoC: codecs: Change bulk clock voting to optional voting in digital codecs
+      commit: 9f589cf0f91485c8591775acad056c80378a2d34
 
-  CPU0				CPU1
-  ----				----
-  x =3D *p
-  [ PTE cached in TLB;=20
-    PTE is not dirty ]
-				clear_pte(PTE)
-  *p =3D x
-  [ needs to set dirty ]
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Note that there is no TLB flush in this scenario. The question
-is whether the write access to *p would succeed, setting the
-dirty bit on the clear, non-present entry.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I was under the impression that the hardware AD-assist would
-recheck the PTE atomically as it sets the dirty bit. But, as I
-said, I am not sure anymore whether this is defined architecturally
-(or at least would work in practice on all CPUs modulo the=20
-Knights Landing thingy).
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
