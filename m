@@ -2,228 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4279B43AA76
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB5643AA80
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbhJZCs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbhJZCst (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:48:49 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB99C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:46:26 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id l10-20020a056830154a00b00552b74d629aso17741576otp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 19:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fNJEWmbc5F3iZTFtMpvuRuP6v2KdIvW972u1Kqe/0GM=;
-        b=hLA76FBAWKCorHaVgR34RZkpRLv4fqLHBF4RTe+TqR3UxiFAlEx8aRJXKHOq67tZTe
-         ep7GMAc3Qviokz3G3gpvTy3OgWAqkJ4ZpvafVJLQ8abzHFztYsWYFIHNHAaQ8ODzB4Ze
-         nkI69DUHB+NZjAAYbKGdnGpiCFFUOWp/k5+dhyjfJi1sSrAZbj4m2dFC97SLu4HUI6/0
-         4oU6JMtnH+o7KaJWMbijAcmWYUt2eDLCFRyATQkfUIqbtzHFv9ZsQe0cdJNahtUdFap0
-         iemEXRRz1F6QEdFA3uKbUiwKdVLDRpe7c2xJoS0P0SDCdcNKuO0iT9KgIpymazWOXFXM
-         5oqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fNJEWmbc5F3iZTFtMpvuRuP6v2KdIvW972u1Kqe/0GM=;
-        b=kUB+OV72GDWimpc8v8qm/8QVzhTALSxg/kAAFr38gjdGJNppXwB+30wOx++4cIpzZN
-         hvRpfGmJf3NXFBpBxpr+n2QwVlZOMUo2JPY7GQwsmNaq6VdjyEk9mP/HW5I5Wgayf01z
-         dErBtZHPLXvLikYVYfbSXpPB0iB3EtxkS4kpx2Buw2ltpQz7Ya7/Ansv1Ah4Ujwmq8/x
-         sHwIrPvud9KgXSAMHeE93f5TJ4WDTXB69QrFey2iz19ORa93P8rptYqS30ZSJMJ1hRsY
-         k3WNO/N+kJVBRmndWJsb7rQfSWhDHClcHmx+XexqWufl2vJ0RqYEXlmEoCfYbKpEOvfr
-         qHUA==
-X-Gm-Message-State: AOAM530ko6VuwQw55Pyo+laZOZF5FAjgPenIgDDkHw9Rr4XflWJG8opY
-        9ChyiIASc41NN4aWy6OJLgJKcQ==
-X-Google-Smtp-Source: ABdhPJzZnGPL7jx+BaO7sWh6d98A+NYjtnR3AXtmeSyrTFZYCLlkqdQBDdPoJS6MLunFyYkgz6Jn0A==
-X-Received: by 2002:a9d:611b:: with SMTP id i27mr16648120otj.323.1635216385800;
-        Mon, 25 Oct 2021 19:46:25 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id w28sm3469138ooc.3.2021.10.25.19.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 19:46:25 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 19:48:02 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd
- bindings for dwc3 qcom
-Message-ID: <YXdsYlLWnjopyMn/@ripper>
-References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
- <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
- <YXcBK7zqny0s4gd4@ripper>
- <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
- <YXck+xCJQBRGqTCw@ripper>
- <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
+        id S233396AbhJZCyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:54:51 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:42204 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233160AbhJZCyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Oct 2021 22:54:50 -0400
+Received: from BC-Mail-Ex03.internal.baidu.com (unknown [172.31.51.43])
+        by Forcepoint Email with ESMTPS id BBBEA738998FB97B3C6D;
+        Tue, 26 Oct 2021 10:52:05 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex03.internal.baidu.com (172.31.51.43) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Tue, 26 Oct 2021 10:52:05 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 26 Oct 2021 10:52:05 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
+ BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
+ 15.01.2308.014; Tue, 26 Oct 2021 10:52:05 +0800
+From:   "Cai,Huoqing" <caihuoqing@baidu.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: RE: [vkoul-dmaengine:next 45/56] drivers/dma/sa11x0-dma.c:1042:12:
+ error: 'sa11x0_dma_resume' defined but not used
+Thread-Topic: [vkoul-dmaengine:next 45/56] drivers/dma/sa11x0-dma.c:1042:12:
+ error: 'sa11x0_dma_resume' defined but not used
+Thread-Index: AQHXycl8vzSywhs4xEayD7d5gEIgCavklLGQ
+Date:   Tue, 26 Oct 2021 02:52:05 +0000
+Message-ID: <5a998ca9abdf4f9a8c4cefe68d392ead@baidu.com>
+References: <202110260143.yuQw4AO0-lkp@intel.com>
+In-Reply-To: <202110260143.yuQw4AO0-lkp@intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.21.146.48]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25 Oct 15:41 PDT 2021, Stephen Boyd wrote:
-
-> Quoting Bjorn Andersson (2021-10-25 14:43:23)
-> > On Mon 25 Oct 13:17 PDT 2021, Stephen Boyd wrote:
-> >
-> > > Quoting Bjorn Andersson (2021-10-25 12:10:35)
-> > > > On Mon 25 Oct 02:07 PDT 2021, Sandeep Maheswaram wrote:
-> > > >
-> > > > > Add multi pd bindings to set performance state for cx domain
-> > > > > to maintain minimum corner voltage for USB clocks.
-> > > > >
-> > > > > Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-> > > > > ---
-> > > > > v2:
-> > > > > Make cx domain mandatory.
-> > > > >
-> > > > >  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 8 +++++++-
-> > > > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > > index 2bdaba0..fd595a8 100644
-> > > > > --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> > > > > @@ -42,7 +42,13 @@ properties:
-> > > > >
-> > > > >    power-domains:
-> > > > >      description: specifies a phandle to PM domain provider node
-> > > > > -    maxItems: 1
-> > > > > +    minItems: 2
-> > > > > +    items:
-> > > > > +      - description: cx power domain
-> > > > > +      - description: USB gdsc power domain
-> > > > > +
-> > > > > +  required-opps:
-> > > > > +    description: specifies the performance state to power domain
-> > > >
-> > > > I'm still worried about the fact that we can't just rely on the USB GDSC
-> > > > being a subdomin of CX in order to just "turn on" CX.
-> > > >
-> > > > Afaict accepting this path forward means that for any device that sits
-> > > > in a GDSC power domain we will have to replicate this series for the
-> > > > related driver.
-> > > >
-> > >
-> > > I suspect the problem is that it's not just "turn on" but wanting to
-> > > turn it on and then set the performance state to some value based on the
-> > > clk frequency.
-> >
-> > I don't see an opp-table involved, just the required-opps for the
-> > purpose of turning CX on a little bit more. Perhaps I'm missing
-> > something here though.
-> 
-> Indeed. There's only one clk frequency for USB so only one performance
-> state/required-opps is used. In general that isn't the case and so we'll
-> eventually need to map some GDSC on/off state to the clk frequency of
-> whatever clk domain is associated with CX for a device.
-> 
-
-Makes sense, just because we don't use opp-tables to scale the frequency
-and performance_state, the issue remains the same.
-
-> >
-> > > Maybe the simplest version of that could be supported
-> > > somehow by having dev_pm_opp_set_rate() figure out that the 'level'
-> > > applies to the parent power domain instead of the child one?
-> >
-> > Having the performance_state request cascade up through the GDSC sounds
-> > like a nice solution; I've not looked at the code to see if this is
-> > feasible though.
-> 
-> When the binding was introduced I recall we punted on the parent child
-> conversion stuff. One problem at a time. There's also the possibility
-> for a power domain to be parented by multiple power domains so
-> translation tables need to account for that.
-> 
-
-But for this case - and below display case - the subdomain (the device's
-power-domain) is just a dumb gate. So there is no translation, the given
-performance_state applies to the parent. Or perhaps such implicitness
-will come back and bite us?
-
-I don't think we allow a power-domain to be a subdomain of two
-power-domains - and again it's not applicable to USB or display afaict.
-
-> >
-> > > Or we may need to make another part of the OPP binding to indicate the
-> > > relationship between the power domain and the OPP and the parent of
-> > > the power domain.
-> >
-> > I suspect this would be useful if a power-domain provider needs to
-> > translate a performance_state into a different supply-performance_state.
-> > Not sure if we have such case currently; these examples are all an
-> > adjustable power-domain with "gating" subdomains.
-> 
-> Even for this case, we should be able to have the GDSC map the on state
-> to some performance state in the parent domain. Maybe we need to add
-> some code to the gdsc.c file to set a performance state on the parent
-> domain when it is turned on. I'm not sure where the value for that perf
-> state comes from. I guess we can hardcode it in the driver for now and
-> if it needs to be multiple values based on the clk frequency we can push
-> it out to an OPP table or something like that.
-> 
-
-For the GDSC I believe we only have 1:1 mapping, so implementing
-set_performance_state to just pass that on to the parent might do the
-trick (although I haven't thought this through).
-
-Conceptually I guess this would be like calling clk_set_rate() on a
-clock gate, relying on it being propagated upwards. The problem here is
-that the performance_state is just a "random" integer without a well
-defined unit.
-
-
-
-The one case where I believe we talked about having different mapping
-between the performance_state levels was in the relationship between CX
-and MX. But I don't think we ever did anything about that...
-
-> >
-> >
-> > PS. I think we have the same problem in the display subsystem, the
-> > sub-blocks are powered by MDSS_GDSC, which is a subdomain of MMCX. We
-> > trust the parent mdss node to keep the GDSC powered and specify MMCX as
-> > the power-domain for the children, so that we can affect their levels by
-> > respective opp-table.
-> >
-> 
-> Yes, a GDSC is really a gate on a parent power domain like CX or MMCX,
-> etc. Is the display subsystem an example of different clk frequencies
-> wanting to change the perf state of CX? If so it's a good place to work
-> out the translation scheme for devices that aren't listing the CX power
-> domain in DT.
-
-Yes, the various display components sits in MDSS_GDSC but the opp-tables
-needs to change the performance_state of MDSS_GDSC->parent (i.e. CX or
-MMCX, depending on platform).
-
-As I said, today we hack this by trusting that the base drm/msm driver
-will keep MDSS_GDSC on and listing MMCX (or CX) as power-domain for each
-of these components.
-
-
-So if we solve this, then that seems to directly map to the static case
-for USB as well.
-
-Regards,
-Bjorn
+SGVsbG8sDQpUaGlzIHBhdGNoIGZpeCBpdC4NCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwv
+MjAyMTEwMjYwMjA1MDguNTUwLTEtY2FpaHVvcWluZ0BiYWlkdS5jb20vDQoNCj4gLS0tLS1Pcmln
+aW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5j
+b20+DQo+IFNlbnQ6IDIwMjHE6jEw1MIyNsjVIDE6NTUNCj4gVG86IENhaSxIdW9xaW5nDQo+IENj
+OiBrYnVpbGQtYWxsQGxpc3RzLjAxLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsg
+Vmlub2QgS291bA0KPiBTdWJqZWN0OiBbdmtvdWwtZG1hZW5naW5lOm5leHQgNDUvNTZdIGRyaXZl
+cnMvZG1hL3NhMTF4MC1kbWEuYzoxMDQyOjEyOg0KPiBlcnJvcjogJ3NhMTF4MF9kbWFfcmVzdW1l
+JyBkZWZpbmVkIGJ1dCBub3QgdXNlZA0KPiANCj4gdHJlZTogICBodHRwczovL2dpdC5rZXJuZWwu
+b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC92a291bC9kbWFlbmdpbmUuZ2l0IG5leHQNCj4g
+aGVhZDogICA5ODFiNDM0MzRiMjhjZmY5ZGRjNDkwZTIxMmY0OWU5MDVjMThiZGExDQo+IGNvbW1p
+dDogNzc4OWUzNDY0Y2I2MTBjYjg5MjVjZDg2MDViYzBhYTlkMDg4MjgwZCBbNDUvNTZdIGRtYWVu
+Z2luZToNCj4gc2ExMXgwOiBNYWtlIHVzZSBvZiB0aGUgaGVscGVyIG1hY3JvIFNFVF9OT0lSUV9T
+WVNURU1fU0xFRVBfUE1fT1BTKCkNCj4gY29uZmlnOiBwYXJpc2MtYWxseWVzY29uZmlnIChhdHRh
+Y2hlZCBhcyAuY29uZmlnKQ0KPiBjb21waWxlcjogaHBwYS1saW51eC1nY2MgKEdDQykgMTEuMi4w
+DQo+IHJlcHJvZHVjZSAodGhpcyBpcyBhIFc9MSBidWlsZCk6DQo+ICAgICAgICAgd2dldCBodHRw
+czovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vaW50ZWwvbGtwLQ0KPiB0ZXN0cy9tYXN0ZXIv
+c2Jpbi9tYWtlLmNyb3NzIC1PIH4vYmluL21ha2UuY3Jvc3MNCj4gICAgICAgICBjaG1vZCAreCB+
+L2Jpbi9tYWtlLmNyb3NzDQo+ICAgICAgICAgIw0KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1
+Yi9zY20vbGludXgva2VybmVsL2dpdC92a291bC9kbWFlbmdpbmUuZ2l0L2NvbW1pdC8/aQ0KPiBk
+PTc3ODllMzQ2NGNiNjEwY2I4OTI1Y2Q4NjA1YmMwYWE5ZDA4ODI4MGQNCj4gICAgICAgICBnaXQg
+cmVtb3RlIGFkZCB2a291bC1kbWFlbmdpbmUNCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
+c2NtL2xpbnV4L2tlcm5lbC9naXQvdmtvdWwvZG1hZW5naW5lLmdpdA0KPiAgICAgICAgIGdpdCBm
+ZXRjaCAtLW5vLXRhZ3MgdmtvdWwtZG1hZW5naW5lIG5leHQNCj4gICAgICAgICBnaXQgY2hlY2tv
+dXQgNzc4OWUzNDY0Y2I2MTBjYjg5MjVjZDg2MDViYzBhYTlkMDg4MjgwZA0KPiAgICAgICAgICMg
+c2F2ZSB0aGUgYXR0YWNoZWQgLmNvbmZpZyB0byBsaW51eCBidWlsZCB0cmVlDQo+ICAgICAgICAg
+Q09NUElMRVJfSU5TVEFMTF9QQVRIPSRIT01FLzBkYXkgQ09NUElMRVI9Z2NjLTExLjIuMA0KPiBt
+YWtlLmNyb3NzIEFSQ0g9cGFyaXNjDQo+IA0KPiBJZiB5b3UgZml4IHRoZSBpc3N1ZSwga2luZGx5
+IGFkZCBmb2xsb3dpbmcgdGFnIGFzIGFwcHJvcHJpYXRlDQo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwg
+dGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gDQo+IEFsbCBlcnJvcnMgKG5ldyBvbmVzIHBy
+ZWZpeGVkIGJ5ID4+KToNCj4gDQo+ID4+IGRyaXZlcnMvZG1hL3NhMTF4MC1kbWEuYzoxMDQyOjEy
+OiBlcnJvcjogJ3NhMTF4MF9kbWFfcmVzdW1lJyBkZWZpbmVkIGJ1dA0KPiBub3QgdXNlZCBbLVdl
+cnJvcj11bnVzZWQtZnVuY3Rpb25dDQo+ICAgICAxMDQyIHwgc3RhdGljIGludCBzYTExeDBfZG1h
+X3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICAgICAgICAgIHwgICAgICAgICAgICBefn5+
+fn5+fn5+fn5+fn5+fg0KPiA+PiBkcml2ZXJzL2RtYS9zYTExeDAtZG1hLmM6MTAwNDoxMjogZXJy
+b3I6ICdzYTExeDBfZG1hX3N1c3BlbmQnIGRlZmluZWQNCj4gYnV0IG5vdCB1c2VkIFstV2Vycm9y
+PXVudXNlZC1mdW5jdGlvbl0NCj4gICAgIDEwMDQgfCBzdGF0aWMgaW50IHNhMTF4MF9kbWFfc3Vz
+cGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICAgICAgICAgIHwgICAgICAgICAgICBefn5+fn5+
+fn5+fn5+fn5+fn4NCj4gICAgY2MxOiBhbGwgd2FybmluZ3MgYmVpbmcgdHJlYXRlZCBhcyBlcnJv
+cnMNCj4gDQo+IA0KPiB2aW0gKy9zYTExeDBfZG1hX3Jlc3VtZSArMTA0MiBkcml2ZXJzL2RtYS9z
+YTExeDAtZG1hLmMNCj4gDQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5
+ICAxMDAzDQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5IEAxMDA0ICBz
+dGF0aWMgaW50DQo+IHNhMTF4MF9kbWFfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+IDYz
+NjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDA1ICB7DQo+IDYzNjViZWFk
+MjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDA2ICAJc3RydWN0IHNhMTF4MF9kbWFf
+ZGV2ICpkID0NCj4gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3Nl
+bGwgS2luZyAyMDEyLTAxLTA5ICAxMDA3ICAJdW5zaWduZWQgcGNoOw0KPiA2MzY1YmVhZDI1ZWZj
+OCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTAwOA0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxs
+IEtpbmcgMjAxMi0wMS0wOSAgMTAwOSAgCWZvciAocGNoID0gMDsgcGNoIDwNCj4gTlJfUEhZX0NI
+QU47IHBjaCsrKSB7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAx
+MDEwICAJCXN0cnVjdA0KPiBzYTExeDBfZG1hX3BoeSAqcCA9ICZkLT5waHlbcGNoXTsNCj4gNjM2
+NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwMTEgIAkJdTMyIGRjc3IsIHNh
+dmVkX2Rjc3I7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDEy
+DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDEzICAJCWRjc3Ig
+PSBzYXZlZF9kY3NyID0NCj4gcmVhZGxfcmVsYXhlZChwLT5iYXNlICsgRE1BX0RDU1JfUik7DQo+
+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDE0ICAJCWlmIChkY3Ny
+ICYgRENTUl9SVU4pIHsNCj4gNjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkg
+IDEwMTUNCj4gCXdyaXRlbChEQ1NSX1JVTiB8IERDU1JfSUUsIHAtPmJhc2UgKyBETUFfRENTUl9D
+KTsNCj4gNjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwMTYgIAkJCWRj
+c3IgPQ0KPiByZWFkbF9yZWxheGVkKHAtPmJhc2UgKyBETUFfRENTUl9SKTsNCj4gNjM2NWJlYWQy
+NWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwMTcgIAkJfQ0KPiA2MzY1YmVhZDI1ZWZj
+OCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTAxOA0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxs
+IEtpbmcgMjAxMi0wMS0wOSAgMTAxOSAgCQlzYXZlZF9kY3NyICY9DQo+IERDU1JfUlVOIHwgRENT
+Ul9JRTsNCj4gNjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwMjAgIAkJ
+aWYgKGRjc3IgJiBEQ1NSX0JJVSkgew0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAx
+Mi0wMS0wOSAgMTAyMSAgCQkJcC0+ZGJzWzBdID0NCj4gcmVhZGxfcmVsYXhlZChwLT5iYXNlICsg
+RE1BX0RCU0IpOw0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTAy
+MiAgCQkJcC0+ZGJ0WzBdID0NCj4gcmVhZGxfcmVsYXhlZChwLT5iYXNlICsgRE1BX0RCVEIpOw0K
+PiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTAyMyAgCQkJcC0+ZGJz
+WzFdID0NCj4gcmVhZGxfcmVsYXhlZChwLT5iYXNlICsgRE1BX0RCU0EpOw0KPiA2MzY1YmVhZDI1
+ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTAyNCAgCQkJcC0+ZGJ0WzFdID0NCj4gcmVh
+ZGxfcmVsYXhlZChwLT5iYXNlICsgRE1BX0RCVEEpOw0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxs
+IEtpbmcgMjAxMi0wMS0wOSAgMTAyNSAgCQkJc2F2ZWRfZGNzciB8PQ0KPiAoZGNzciAmIERDU1Jf
+U1RSVEEgPyBEQ1NSX1NUUlRCIDogMCkgfA0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcg
+MjAxMi0wMS0wOSAgMTAyNg0KPiAoZGNzciAmIERDU1JfU1RSVEIgPyBEQ1NSX1NUUlRBIDogMCk7
+DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDI3ICAJCX0gZWxz
+ZSB7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDI4ICAJCQlw
+LT5kYnNbMF0gPQ0KPiByZWFkbF9yZWxheGVkKHAtPmJhc2UgKyBETUFfREJTQSk7DQo+IDYzNjVi
+ZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDI5ICAJCQlwLT5kYnRbMF0gPQ0K
+PiByZWFkbF9yZWxheGVkKHAtPmJhc2UgKyBETUFfREJUQSk7DQo+IDYzNjViZWFkMjVlZmM4IFJ1
+c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDMwICAJCQlwLT5kYnNbMV0gPQ0KPiByZWFkbF9yZWxh
+eGVkKHAtPmJhc2UgKyBETUFfREJTQik7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAy
+MDEyLTAxLTA5ICAxMDMxICAJCQlwLT5kYnRbMV0gPQ0KPiByZWFkbF9yZWxheGVkKHAtPmJhc2Ug
+KyBETUFfREJUQik7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAx
+MDMyICAJCQlzYXZlZF9kY3NyIHw9DQo+IGRjc3IgJiAoRENTUl9TVFJUQSB8IERDU1JfU1RSVEIp
+Ow0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTAzMyAgCQl9DQo+
+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDM0ICAJCXAtPmRjc3Ig
+PSBzYXZlZF9kY3NyOw0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAg
+MTAzNQ0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTAzNiAgCQl3
+cml0ZWwoRENTUl9TVFJUQSB8DQo+IERDU1JfU1RSVEIsIHAtPmJhc2UgKyBETUFfRENTUl9DKTsN
+Cj4gNjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwMzcgIAl9DQo+IDYz
+NjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDM4DQo+IDYzNjViZWFkMjVl
+ZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDM5ICAJcmV0dXJuIDA7DQo+IDYzNjViZWFk
+MjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDQwICB9DQo+IDYzNjViZWFkMjVlZmM4
+IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDQxDQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwg
+S2luZyAyMDEyLTAxLTA5IEAxMDQyICBzdGF0aWMgaW50DQo+IHNhMTF4MF9kbWFfcmVzdW1lKHN0
+cnVjdCBkZXZpY2UgKmRldikNCj4gNjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEt
+MDkgIDEwNDMgIHsNCj4gNjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEw
+NDQgIAlzdHJ1Y3Qgc2ExMXgwX2RtYV9kZXYgKmQgPQ0KPiBkZXZfZ2V0X2RydmRhdGEoZGV2KTsN
+Cj4gNjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwNDUgIAl1bnNpZ25l
+ZCBwY2g7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDQ2DQo+
+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDQ3ICAJZm9yIChwY2gg
+PSAwOyBwY2ggPA0KPiBOUl9QSFlfQ0hBTjsgcGNoKyspIHsNCj4gNjM2NWJlYWQyNWVmYzggUnVz
+c2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwNDggIAkJc3RydWN0DQo+IHNhMTF4MF9kbWFfcGh5ICpw
+ID0gJmQtPnBoeVtwY2hdOw0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0w
+OSAgMTA0OSAgCQlzdHJ1Y3QNCj4gc2ExMXgwX2RtYV9kZXNjICp0eGQgPSBOVUxMOw0KPiA2MzY1
+YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTA1MCAgCQl1MzIgZGNzciA9DQo+
+IHJlYWRsX3JlbGF4ZWQocC0+YmFzZSArIERNQV9EQ1NSX1IpOw0KPiA2MzY1YmVhZDI1ZWZjOCBS
+dXNzZWxsIEtpbmcgMjAxMi0wMS0wOSAgMTA1MQ0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtp
+bmcgMjAxMi0wMS0wOSAgMTA1MiAgCQlXQVJOX09OKGRjc3IgJg0KPiAoRENTUl9CSVUgfCBEQ1NS
+X1NUUlRBIHwgRENTUl9TVFJUQiB8IERDU1JfUlVOKSk7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3Nl
+bGwgS2luZyAyMDEyLTAxLTA5ICAxMDUzDQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAy
+MDEyLTAxLTA5ICAxMDU0ICAJCWlmIChwLT50eGRfZG9uZSkNCj4gNjM2NWJlYWQyNWVmYzggUnVz
+c2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwNTUgIAkJCXR4ZCA9IHAtDQo+ID50eGRfZG9uZTsNCj4g
+NjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwNTYgIAkJZWxzZSBpZiAo
+cC0+dHhkX2xvYWQpDQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAx
+MDU3ICAJCQl0eGQgPSBwLQ0KPiA+dHhkX2xvYWQ7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwg
+S2luZyAyMDEyLTAxLTA5ICAxMDU4DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEy
+LTAxLTA5ICAxMDU5ICAJCWlmICghdHhkKQ0KPiA2MzY1YmVhZDI1ZWZjOCBSdXNzZWxsIEtpbmcg
+MjAxMi0wMS0wOSAgMTA2MCAgCQkJY29udGludWU7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwg
+S2luZyAyMDEyLTAxLTA5ICAxMDYxDQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEy
+LTAxLTA5ICAxMDYyICAJCXdyaXRlbF9yZWxheGVkKHR4ZC0NCj4gPmRkYXIsIHAtPmJhc2UgKyBE
+TUFfRERBUik7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDYz
+DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDY0ICAJCXdyaXRl
+bF9yZWxheGVkKHAtDQo+ID5kYnNbMF0sIHAtPmJhc2UgKyBETUFfREJTQSk7DQo+IDYzNjViZWFk
+MjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDY1ICAJCXdyaXRlbF9yZWxheGVkKHAt
+DQo+ID5kYnRbMF0sIHAtPmJhc2UgKyBETUFfREJUQSk7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3Nl
+bGwgS2luZyAyMDEyLTAxLTA5ICAxMDY2ICAJCXdyaXRlbF9yZWxheGVkKHAtDQo+ID5kYnNbMV0s
+IHAtPmJhc2UgKyBETUFfREJTQik7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEy
+LTAxLTA5ICAxMDY3ICAJCXdyaXRlbF9yZWxheGVkKHAtDQo+ID5kYnRbMV0sIHAtPmJhc2UgKyBE
+TUFfREJUQik7DQo+IDYzNjViZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDY4
+ICAJCXdyaXRlbF9yZWxheGVkKHAtPmRjc3IsDQo+IHAtPmJhc2UgKyBETUFfRENTUl9TKTsNCj4g
+NjM2NWJlYWQyNWVmYzggUnVzc2VsbCBLaW5nIDIwMTItMDEtMDkgIDEwNjkgIAl9DQo+IDYzNjVi
+ZWFkMjVlZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDcwDQo+IDYzNjViZWFkMjVlZmM4
+IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDcxICAJcmV0dXJuIDA7DQo+IDYzNjViZWFkMjVl
+ZmM4IFJ1c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDcyICB9DQo+IDYzNjViZWFkMjVlZmM4IFJ1
+c3NlbGwgS2luZyAyMDEyLTAxLTA5ICAxMDczDQo+IA0KPiA6Ojo6OjogVGhlIGNvZGUgYXQgbGlu
+ZSAxMDQyIHdhcyBmaXJzdCBpbnRyb2R1Y2VkIGJ5IGNvbW1pdA0KPiA6Ojo6OjogNjM2NWJlYWQy
+NWVmYzg0YTRjZjRhYTliMGE3NjM4ZjhhOTcwY2RmZiBETUE6IHNhMTF4MDogYWRkIFNBLTExeDAN
+Cj4gRE1BIGRyaXZlcg0KPiANCj4gOjo6Ojo6IFRPOiBSdXNzZWxsIEtpbmcgPHJtaytrZXJuZWxA
+YXJtLmxpbnV4Lm9yZy51az4NCj4gOjo6Ojo6IENDOiBSdXNzZWxsIEtpbmcgPHJtaytrZXJuZWxA
+YXJtLmxpbnV4Lm9yZy51az4NCj4gDQo+IC0tLQ0KPiAwLURBWSBDSSBLZXJuZWwgVGVzdCBTZXJ2
+aWNlLCBJbnRlbCBDb3Jwb3JhdGlvbg0KPiBodHRwczovL2xpc3RzLjAxLm9yZy9oeXBlcmtpdHR5
+L2xpc3Qva2J1aWxkLWFsbEBsaXN0cy4wMS5vcmcNCg==
