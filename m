@@ -2,114 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A4743B892
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940C643B899
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbhJZRtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S237947AbhJZRwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237903AbhJZRtw (ORCPT
+        with ESMTP id S235152AbhJZRww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:49:52 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C473C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:47:28 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id w15so108803ilv.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:47:28 -0700 (PDT)
+        Tue, 26 Oct 2021 13:52:52 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60730C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:50:28 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id v65so368942ioe.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:50:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C9tFGpLMa5xrDmXDxO7ju81p1Vqq09mwTmj1zWjZSPA=;
-        b=WrpIcyns/rrvy6sy/Uu4SBiLUFp4VSA19rXS16RPf7+hIvg2l9cLNyCz8gUu9s1s4I
-         EZmCdP3BHLTSNgYGw8rynX43/r0qkv7Dv8M/hYGXq4ym2mR/A7DYzukfrShsqYIrj6NS
-         uDb9JzSmUZaovLW0n2H5mJMXIGUNz/ao41mCY=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=55Wiuk+vhFEgZhWSKqhr8aUkCrc+H/l8H2FxgeE5N1M=;
+        b=K9pKZk0C5IuwGpuBt3P8vlDuOIoL2vOXpa4HXaUHePCmealB43zHzS9+Abd804Gou5
+         AX1Ko0Hgr+IqrHTHlDpPvZyWwd+IHOwkRNGe7sWr+tlqO+qnhGQBXnoi35g7DhUboVdw
+         jEE8031QquN7g17K4I7/vnj+ZHRtelq3SlCn8oZ8/UTlKNOLYWgM7tClJsAooXWCwOM5
+         eg0erGB9Km5hSC0T2+FhmppSX3AukPqDcEUOWatA7MzYZRw4zabKa6ZaMH14zL7y8iWt
+         j4xtTAC5UcS3J3DTseib3xOYME0gcib9b1rtSRmqx+LGWtwfSA/ROovpzcOUYVLUKnxt
+         d5Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C9tFGpLMa5xrDmXDxO7ju81p1Vqq09mwTmj1zWjZSPA=;
-        b=vAW3NTwTqaWMTvz8ftuC9ifFfP/ADrhYVuHDEBvvXtzlf0eqfqh1nheOKDa/bEAGmh
-         vbwsbEO2DEE2WVbqHNff4yh+MtvQl+4y0FMr1f/5ILlpFMvxIgxZ7u4Y/roY43/58JM4
-         fKDdQndfoJM+p3rfKIq2Pf2zfhNGHnDrqLGMiUYwJQc+wZEhb84gt2ku7rdK16D6av0e
-         QMcu0fF1RN5XAqe0USoESgerZa0MczGjR51526FfrubT1LX8fKIOfakg79KJ43QrVbDn
-         nsxtNWVxGQ9rpc3QzPRBKRcG9KRoqpdM4unvGlj2vgNHLKoE1ZVMx0Qi/KFLEEdMNL16
-         4Gpg==
-X-Gm-Message-State: AOAM532juVKqpKS3j0eNLzELfniQKQT+X7pv/vS6Lu/cgyLsRrt7VO/o
-        KArvMUZHsFd0YyW2H0bbHgspE9GExPbZ4w==
-X-Google-Smtp-Source: ABdhPJyZfrtMqU0bdcrMtX289RaYYgKkZvZ/cXE7jIlL4iq8P59U1UkVLcFOaycwBEOBddApgReW4w==
-X-Received: by 2002:a92:ca07:: with SMTP id j7mr15141191ils.119.1635270447357;
-        Tue, 26 Oct 2021 10:47:27 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r24sm10467666ioa.5.2021.10.26.10.47.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 10:47:26 -0700 (PDT)
-Subject: Re: [PATCH] selftests/bpf: fix fclose/pclose mismatch
-To:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211026143409.42666-1-andrea.righi@canonical.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ce41c5da-2952-e800-54be-51cbcc7a0ada@linuxfoundation.org>
-Date:   Tue, 26 Oct 2021 11:47:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=55Wiuk+vhFEgZhWSKqhr8aUkCrc+H/l8H2FxgeE5N1M=;
+        b=PtI4evxIPIGQ66koh3r6wsNK0UdGl24pBdvOqZLN6NYeYas9JuOzdFFTPW6Ap8NghV
+         ZjEIKC1hotHwt4TCwQy5dWMcW6bh3BVdd3T93wKsIaw3ulN9Ik8Ihjcp41lhGLD34M0J
+         JdVPspJd8meqYjxV8DmsQBY3RqAdR4c9f3rm+oYOs3/HXrDmBBHA9mtcUe6oN3n05Yln
+         anv/5PMOgREcF4dwYBxSsQMBJG6HcFNGIay/SzNVzFDiM10z2ZhHg5yXhjrMB1OqLsOq
+         8NrxbvlkLNGlU1qaQcA66ocYKTZJ7tnycPt7iB6Ji3rt1THsF4ZfNamz+TigtRg+GkNg
+         4IVg==
+X-Gm-Message-State: AOAM530lSBFV7pDT8kOe70O2hNFitApaNAoDEsVERtf3fYKOw+ib3iAR
+        7FCO8iFdsGhRKrhPsy9YxSyAVxpUJqWFB9djXLZqvg==
+X-Google-Smtp-Source: ABdhPJxveY0oywA1uEFOsixzZAWNxGoGo9GT3NayQjT+kzpJD6taj+8m/BPE1pbuTZZr1AsC5LrElvmVs4XKlZpQs/8=
+X-Received: by 2002:a05:6638:d84:: with SMTP id l4mr16445923jaj.30.1635270627599;
+ Tue, 26 Oct 2021 10:50:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211026143409.42666-1-andrea.righi@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210929000735.585237-1-saravanak@google.com> <20210929000735.585237-3-saravanak@google.com>
+ <CAMi1Hd0HvPOT277mx8hNTU9NQH2ti7h5qc5+rxOkRWwbfrhyQQ@mail.gmail.com>
+ <CAGETcx_YZOd05Gg53ZR8mfVhFUzwQWo4MrrWF8JHF_DCwEtunw@mail.gmail.com>
+ <CAMi1Hd3M--+V6jPTV=psYGpOqi3UeQBs_FHqOg=oUf1hH-EU4w@mail.gmail.com> <CAGETcx9U130Oq-umrvXME4JhEpO0Wadoki3kNxx=0-YvTR6PtQ@mail.gmail.com>
+In-Reply-To: <CAGETcx9U130Oq-umrvXME4JhEpO0Wadoki3kNxx=0-YvTR6PtQ@mail.gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 26 Oct 2021 23:19:50 +0530
+Message-ID: <CAMi1Hd1gR0nRqQ9CKopc=veQXjtaS-CUxz-j48KEs8pHC6Ni=w@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] drivers: bus: Delete CONFIG_SIMPLE_PM_BUS
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-arm-kernel@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>, linux-oxnas@groups.io,
+        linux-renesas-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/21 8:34 AM, Andrea Righi wrote:
-> Make sure to use pclose() to properly close the pipe opened by popen().
-> 
-> Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> ---
->   tools/testing/selftests/bpf/test_progs.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index cc1cd240445d..e3fea6f281e4 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -370,7 +370,7 @@ int extract_build_id(char *build_id, size_t size)
->   
->   	if (getline(&line, &len, fp) == -1)
->   		goto err;
-> -	fclose(fp);
-> +	pclose(fp);
->   
->   	if (len > size)
->   		len = size;
-> @@ -379,7 +379,7 @@ int extract_build_id(char *build_id, size_t size)
->   	free(line);
->   	return 0;
->   err:
-> -	fclose(fp);
-> +	pclose(fp);
->   	return -1;
->   }
->   
-> 
+On Tue, 26 Oct 2021 at 06:00, Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Fri, Oct 22, 2021 at 10:00 AM Amit Pundir <amit.pundir@linaro.org> wrote:
+> >
+> > On Fri, 22 Oct 2021 at 05:13, Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Thu, Oct 21, 2021 at 4:21 AM Amit Pundir <amit.pundir@linaro.org> wrote:
+> > > >
+> > > > Hi Saravana,
+> > > >
+> > > > This patch broke v5.15-rc6 on RB5 (sm8250 | qcom/qrb5165-rb5.dts).
+> > > > I can't boot past this point https://www.irccloud.com/pastebin/raw/Nv6ZwHmW.
+> > >
+> > > Amit top posting? How did that happen? :)
+> > >
+> > > The fact you are seeing this issue is super strange though. The driver
+> > > literally does nothing other than allowing some sync_state() callbacks
+> > > to happen. I also grepped for the occurence of "simple-bus" in
+> > > arch/arm64/boot/dts/qcom/ and the only instance for 8250 is for the
+> > > soc node.
+> > >
+> > > The only thing I can think of is that without my patch some
+> > > sync_state() callbacks weren't getting called and maybe it was masking
+> > > some other issue.
+> > >
+> > > Can you try to boot with this log (see log patch below) and see if the
+> > > device hangs right after a sync_state() callback? Also, looking at the
+> > > different sync_state() implementations in upstream, I'm guessing one
+> > > of the devices isn't voting for interconnect bandwidth when it should
+> > > have.
+> > >
+> > > Another thing you could do is boot without the simple-bus changes and
+> > > then look for all instances of "state_synced" in /sys/devices and then
+> > > see if any of them has the value "0" after boot up is complete.
+> >
+> > Turned out RB5 is not even reaching up to
+> > device_links_flush_sync_list() and seem to be stuck somewhere in
+> > device_links_driver_bound(). So I added more print logs to narrow down
+> > to any specific lock state but those additional prints seem to have
+> > added enough delay to unblock that particular driver (Serial:
+> > 8250/16550 driver if I understood the logs correctly) and I eventually
+> > booted to UI.
+>
+> Ugh... I think I know what's going on. It popped into my head over the weekend.
+>
+> Couple of ways to confirm my theory:
+> 1. After it finishes booting in both cases, can you compare the output
+> of the command below? I'm expecting to see a significant drop in the
+> number of device links.
+> ls -l /sys/class/devlink | wc -l
+>
 
-Thank you for the patch. The return logic could be simpler
-doing out handling common for error and success path with
-just one call to close. Not related to this change though.
+On a successful boot with debug prints:
+rb5:/ $ ls -l /sys/class/devlink | wc -l
+245
 
-Adding bpf maintainers to the thread
+Booting with this SIMPLE_PM_BUS patch reverted:
+rb5:/ $ ls -l /sys/class/devlink | wc -l
+248
 
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+> 2. Can you try out this terrible hack patch (not final fix, no code
+> reviews please) on top of Tot to see if it fixes your issue without
+> having to add hacky logs?
+>
 
-thanks,
--- Shuah
+No luck booting with the following hack patch either.
+
+Regards,
+Amit Pundir
+
+
+> Thanks,
+> Saravana
+>
+> --- a/drivers/bus/simple-pm-bus.c
+> +++ b/drivers/bus/simple-pm-bus.c
+> @@ -38,10 +38,12 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
+>          * a device that has a more specific driver.
+>          */
+>         if (match && match->data) {
+> -               if (of_property_match_string(np, "compatible",
+> match->compatible) == 0)
+> +               if (of_property_match_string(np, "compatible",
+> match->compatible) == 0) {
+> +                       of_platform_populate(np, NULL, lookup, &pdev->dev);
+>                         return 0;
+> -               else
+> +               } else {
+>                         return -ENODEV;
+> +               }
+>         }
