@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2256943B8A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B8843B8B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 19:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237986AbhJZR5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 13:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
+        id S236708AbhJZR7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 13:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhJZR52 (ORCPT
+        with ESMTP id S236589AbhJZR7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 13:57:28 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1130C061745;
-        Tue, 26 Oct 2021 10:55:04 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c4so69093plg.13;
-        Tue, 26 Oct 2021 10:55:04 -0700 (PDT)
+        Tue, 26 Oct 2021 13:59:13 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE370C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:56:48 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id bi35so498558lfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 10:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=225l4SA1OGtdUSNrI/zTvcHrB7dEaQw3+UttA1rDb8E=;
-        b=BZFrlCMj/rV6HcmWYv8j/HdU0pdqvvR1cBDAoJhSUU3QKaCbApIPAdOIBovnSdIszu
-         mpLhbZcAy+S+AKwZtafdpdwfyex82nE9S/EL+ALUkZFCE/H6F5dEWzr2xOFiWcB5jETw
-         zJNM0H9wgriHQSZSHhAwY67pYq1dPiNKZfZDsWLpvnmwIMkpq+IgrZn+nMYQ1QfDosJN
-         wnd648K6iDkOfuJNDHALSLeQ2HFmad/7sLL5OPieaCnBLvT2yWh2MZ+/z02lJOJBWYyj
-         Jj8lCcbPczk93iKvd4CfVje1Uw7njLUSFXFrI/IhGgG2fjLsWvW20RpeqFDC8kABnWo8
-         BO8g==
+        bh=uXHfZ86odio1b4QPRjCoCHQLyWLuNFoC6/YMvOwKHbk=;
+        b=iSryYreFEEivvuynGghPKji0V27StpxuxQV81oxzdKf7oPUM82JVS5MutIo+tu0jFV
+         L+VfHnxo/J+4VSjBHMziRFkse0SiEpcXYeLNR3WNLL/KSyVTiRihRjZzTDzcWKd/V1Sn
+         agEHLEzzT/2rHIdhJY8NpiIcG6kZG2LgYZV08mn+Hc8bpXuyCXauRJR6rOKe7U2T+son
+         gF+GWZvW3RnffEzPZZN4b3sKKS+8N2Np/tML8o5Kmta+8FxHQYaaCVlolVuOemfd3Rp6
+         D0djKcWReIheSG1A5UICHh47rrjiBtzBp4MqDGlPAkbo9f6tqiea0X60V9TNE9Z6Bu28
+         Bp1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=225l4SA1OGtdUSNrI/zTvcHrB7dEaQw3+UttA1rDb8E=;
-        b=pWlBohf9hoUYcZ6qg6WaGClgRI9Fr0GqjJVNwHFAHcA2zkAS3R5tUaFf4rdAVhXO0Y
-         PqGvDb65iNrEaKvVY4GaaRdcDjmTmfhgKUQFLimbTt6o06KzGsjLfR/213iM5hR5p4zj
-         9F47jAewwMApXlHH5OPuVlQqT7SIeoHVl6MNr860vIR7uvq7cMweQXK3g066wNr0Zufp
-         9Oilt26XhIvarqENu1p5IuIgFO6r3X9kwXVV/sgg3/efjtfh8Gs0Bfhn2lh0Lh+7XwBU
-         ugwPr2vpBbclsZScbfl+xsh7GeRICrJ2BxUzfkRbbg+0sL9WJsBNWCOYNhMGeevlNP5y
-         2EBw==
-X-Gm-Message-State: AOAM530LjWusczm9uAriRVzZvSRiCd9c/X3RfMtiHTlYbCkqfU/f0Kyg
-        jK0QXM0VtqvzPvB+mNeK9LvjgKcEiDIkGEesnrlE170/z38=
-X-Google-Smtp-Source: ABdhPJxgeIN2LvtNpZZLac6UfKv3uZ72O0a4OseZVAu4guZ5UKoE5Pg9rL/JeVT/0beVAo//wgKjPGPUQIv6I7RQhNU=
-X-Received: by 2002:a17:902:8211:b0:13f:afe5:e4fb with SMTP id
- x17-20020a170902821100b0013fafe5e4fbmr23969092pln.20.1635270904246; Tue, 26
- Oct 2021 10:55:04 -0700 (PDT)
+        bh=uXHfZ86odio1b4QPRjCoCHQLyWLuNFoC6/YMvOwKHbk=;
+        b=rNWysTkoZ639whZ+t3Vuk+sU6gG6cobfsi+6g+yWkbB2VmWyUEdcC5UCaCWnAWv8cQ
+         vqKVB/pd6JEWUUdnBZlIIHC74Js3bcjmdQ7Jzje2Ujc28ZUKX0w/x+eBUltJ77uUnKCZ
+         Euc/82U7EW/vLUf0RVcg9prvALMfhZCAADzXcq+ButaRrNZyiwlPErV5QWwH/i5pEbid
+         NoD86nx79FRM+uYCzrnSUQAHqqVuLzNRsy/TRbuC4pEEiQzIe1oLV5kMAGLHNSK5h26u
+         EGBMpwzZYUFetA+Dv7WUfoh2kQN5K2nqIGpiBPrxsbpokeWl1xbBgxNGCFPZ8UivMoJQ
+         M5IA==
+X-Gm-Message-State: AOAM531t/y8a5XpBxuiMVZORECaXc01C0MKf/+hLuuoty03xtaUoSexg
+        t8/gP4xWFZpiENueXL8gbwZEvGiwoXbpGhDHr+I=
+X-Google-Smtp-Source: ABdhPJxd9EPqnGWJhhp7pr+ysGJmauvoQPXQHrcaTI4Vg6ZicUI/FwgvLc3Z9OiQooRf7CHujdCFr3QEQ1xvPm6l1k8=
+X-Received: by 2002:a19:6742:: with SMTP id e2mr23660988lfj.568.1635271007226;
+ Tue, 26 Oct 2021 10:56:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026143409.42666-1-andrea.righi@canonical.com> <ce41c5da-2952-e800-54be-51cbcc7a0ada@linuxfoundation.org>
-In-Reply-To: <ce41c5da-2952-e800-54be-51cbcc7a0ada@linuxfoundation.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 26 Oct 2021 10:54:53 -0700
-Message-ID: <CAADnVQK_LWcafdVwB+7aFr2Ow3yOd03e8D6-d13JbMB8=a+QQw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: fix fclose/pclose mismatch
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20211014190503.717830-1-daeho43@gmail.com> <e8b106fb-2878-2fa9-788f-965eef179a85@kernel.org>
+ <CACOAw_yupuz+Xx-z9V0UaExuARHd8H9rruWCa2yj5-mgkeuUtQ@mail.gmail.com>
+ <3ddb4013-8d63-7c00-6fdd-1f21752bd60c@kernel.org> <CACOAw_wjhr8j=-qEDHP_H+_7cTh_ep7Wix4=JC+5x5zp-zpUFA@mail.gmail.com>
+ <c93106ef-b567-b973-7241-ea2fcef84855@kernel.org>
+In-Reply-To: <c93106ef-b567-b973-7241-ea2fcef84855@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Tue, 26 Oct 2021 10:56:36 -0700
+Message-ID: <CACOAw_xOOcoTCYnxtSq9Sqn0aUvt=F_6UgUwWeh9RkS5Oj-RDg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: remove circular locking between
+ sb_internal and fs_reclaim
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:47 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> Yes, I doubt the problem may also happen in f2fs_evict_inode() with below
+> callpath:
 >
-> On 10/26/21 8:34 AM, Andrea Righi wrote:
-> > Make sure to use pclose() to properly close the pipe opened by popen().
-> >
-> > Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > ---
-> >   tools/testing/selftests/bpf/test_progs.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> > index cc1cd240445d..e3fea6f281e4 100644
-> > --- a/tools/testing/selftests/bpf/test_progs.c
-> > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > @@ -370,7 +370,7 @@ int extract_build_id(char *build_id, size_t size)
-> >
-> >       if (getline(&line, &len, fp) == -1)
-> >               goto err;
-> > -     fclose(fp);
-> > +     pclose(fp);
-> >
-> >       if (len > size)
-> >               len = size;
-> > @@ -379,7 +379,7 @@ int extract_build_id(char *build_id, size_t size)
-> >       free(line);
-> >       return 0;
-> >   err:
-> > -     fclose(fp);
-> > +     pclose(fp);
-> >       return -1;
-> >   }
-> >
-> >
+> - evict_inode
+>   - dquot_initialize failed
+>   - sb_start_intwrite
+>   - f2fs_truncate
+>    - dquot_initialize lock dqio_sem
 >
-> Thank you for the patch. The return logic could be simpler
-> doing out handling common for error and success path with
-> just one call to close. Not related to this change though.
+> How about this?
 >
-> Adding bpf maintainers to the thread
 
-Ohh. That's odd.
-I see the patch in:
-https://patchwork.kernel.org/project/netdevbpf/list/?delegate=121173
-but not in my gmail.
-vger is probably slow.
+Got it~
+Then we need this in both f2fs_evict_inode() and f2fs_drop_inode().
+
+Thanks,
+
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> old mode 100644
+> new mode 100755
+> index b24b9bc..0e49593
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -728,6 +728,7 @@ enum {
+>       FI_ENABLE_COMPRESS,    /* enable compression in "user" compression mode */
+>       FI_COMPRESS_RELEASED,    /* compressed blocks were released */
+>       FI_ALIGNED_WRITE,    /* enable aligned write */
+> +    FI_QUOTA_INIT_FAIL,    /* inidicate failed to initialize quota in drop_inode()/evict_inode() */
+>       FI_MAX,            /* max flag, never be used */
+>   };
+>
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> old mode 100644
+> new mode 100755
+> index 13deae0..2fb53f54
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -789,9 +789,11 @@ int f2fs_truncate(struct inode *inode)
+>           return -EIO;
+>       }
+>
+> -    err = dquot_initialize(inode);
+> -    if (err)
+> -        return err;
+> +    if (!is_inode_flag_set(inode, FI_QUOTA_INIT_FAIL)) {
+> +        err = dquot_initialize(inode);
+> +        if (err)
+> +            return err;
+> +    }
+>
+>       /* we should check inline_data size */
+>       if (!f2fs_may_inline_data(inode)) {
+> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+> old mode 100644
+> new mode 100755
+> index 1213f15..16cf50c
+> --- a/fs/f2fs/inode.c
+> +++ b/fs/f2fs/inode.c
+> @@ -758,6 +758,7 @@ void f2fs_evict_inode(struct inode *inode)
+>       if (err) {
+>           err = 0;
+>           set_sbi_flag(sbi, SBI_QUOTA_NEED_REPAIR);
+> +        set_inode_flag(inode, FI_QUOTA_INIT_FAIL);
+>       }
+>
+>       f2fs_remove_ino_entry(sbi, inode->i_ino, APPEND_INO);
+> @@ -770,6 +771,8 @@ void f2fs_evict_inode(struct inode *inode)
+>   retry:
+>       if (F2FS_HAS_BLOCKS(inode))
+>           err = f2fs_truncate(inode);
+> +    if (is_inode_flag_set(inode, FI_QUOTA_INIT_FAIL))
+> +        clear_inode_flag(inode, FI_QUOTA_INIT_FAIL);
+>
+>       if (time_to_inject(sbi, FAULT_EVICT_INODE)) {
+>           f2fs_show_injection_info(sbi, FAULT_EVICT_INODE);
+>
+> Thanks,
+>
+>
+> > In fact, I picked up the idea from here.
+> >
+> >          err = dquot_initialize(inode);
+> >          if (err) {
+> >                  err = 0;
+> >                  set_sbi_flag(sbi, SBI_QUOTA_NEED_REPAIR);
+> >          }
+> >
+> >          f2fs_remove_ino_entry(sbi, inode->i_ino, APPEND_INO);
+> >          f2fs_remove_ino_entry(sbi, inode->i_ino, UPDATE_INO);
+> >          f2fs_remove_ino_entry(sbi, inode->i_ino, FLUSH_INO);
+> >
+> >          sb_start_intwrite(inode->i_sb);
+> >          set_inode_flag(inode, FI_NO_ALLOC);
+> >          i_size_write(inode, 0);
+> > retry:
+> >          if (F2FS_HAS_BLOCKS(inode))
+> >                  err = f2fs_truncate(inode);
+> >
