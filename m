@@ -2,81 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02A243B214
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CCA43B218
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235767AbhJZMP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:15:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39646 "EHLO mail.kernel.org"
+        id S235786AbhJZMQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:16:51 -0400
+Received: from mout.gmx.net ([212.227.15.18]:60623 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232736AbhJZMP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:15:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 161976103C;
-        Tue, 26 Oct 2021 12:13:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635250414;
-        bh=uGeTLpo0qu3n1h2jtUvkHLDzxgn66b6O4QqW8m5VBQ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ufLV54Z0sifyPvhuJLBnjsGihoYAvYx1xkPEgy1wDPFXxSgp3X+2GbXbdE7O3cN+E
-         Wh39T0tV5HJiu4KTbpY0wCRH5OuBIFDgWfE2Uonac7QdNMiA1+xqJW89ouY4JJYF3e
-         +GeejNlR39OKuo7Y7VXfsXTAemMOoS2kkn2VBioNrf9GLxV/9UA5mW8ZX8WcnP8kQ2
-         K2q8pGYXHR/VkyD8O8jS1QMpntEqH34LYajEvYdtdyi4tDNJvsN69btSeMFQI5ockM
-         Lmoshd5BQ19wse2n2huHLj5XX/R3clL+ozskD/pTj/dbW3mMc2mCEtG/4Aj/mGfNd2
-         ZvOrNyN3j9xbQ==
-Date:   Tue, 26 Oct 2021 21:13:31 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, <mingo@redhat.com>,
-        <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] kselftests: ftrace: limit the executing time by reading
- from cached trace
-Message-Id: <20211026211331.8496340b0011127e6505b5ff@kernel.org>
-In-Reply-To: <20211025221717.56daf4e8@rorschach.local.home>
-References: <20211018132616.2234853-1-lizhijian@cn.fujitsu.com>
-        <20211018221636.47157e52@gandalf.local.home>
-        <20211020112027.b01762f2adcfac99e71dcf99@kernel.org>
-        <20211019223454.5da09d74@gandalf.local.home>
-        <20211020115522.75f3e25247c1d30726e9b130@kernel.org>
-        <20211020101659.42360147@gandalf.local.home>
-        <20211021093131.affc348280aba040f76f769e@kernel.org>
-        <20211025221717.56daf4e8@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232736AbhJZMQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:16:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635250442;
+        bh=D54vBj7zBa0qDjwEMwm5/aDp3wpgxYB6CDJ65tFesnE=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=A9mFsGc9na0ynIrenG53MfVHvH6ORFdn6PmMalkuxoM6MXLpEGwean4l2H/FGjQ3G
+         CkvQGutTsCoMGmA39avq6G4K4/A1S6mxswjCLJjoXRix4mP5/cznlS+bquFnrLeiqq
+         2ccyEdzUFiaR8G/YFjdOBnoCIX088VyRxbIB1PZM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.49.114]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N8ob6-1mhqJD3XR0-015oKi; Tue, 26
+ Oct 2021 14:14:01 +0200
+Message-ID: <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 26 Oct 2021 14:13:59 +0200
+In-Reply-To: <20211026115707.GN3959@techsingularity.net>
+References: <20211021145603.5313-1-mgorman@techsingularity.net>
+         <20211021145603.5313-2-mgorman@techsingularity.net>
+         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
+         <20211022110534.GJ3959@techsingularity.net>
+         <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
+         <20211026081817.GM3959@techsingularity.net>
+         <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
+         <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
+         <20211026115707.GN3959@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:zuQuZuAjL4j6FmV1uoyZ/yLg5IiKyv1HpQRuEfBaG4qWipFeeAx
+ wvtSe1FzrEqsDg24MhyuOK1nuBIslx5UQ0aOikrJQivBcj+TVyZvewOvxg0zBVduKh1HJCJ
+ NylwZdhQosFCdMIYeoCt0Og+btjmWPTp1YthBrrWXoPGMUHsM/wRji/jWdrMj8CTaUkVlv0
+ JLQ2RS8SSd+qYG074nm9g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gGSr6IPCVcI=:tui0gFrKZi8Xc0p2MSa2q2
+ 97WpWXmiO/WxqNfq9TXZjsvXJqXL1dRIByc+yPS7bGT3nY1xpEhzaw1f0VznqYwZlDtJZl2+i
+ Rn9MsKA7sAayHKNLAFKqaPgkgbqTa6Xoq3gisqz9p1T/Ayw9nJRw8J9GfitabwaDndSur/Wj3
+ o0XZsoMNTBNEHBKDNKg3HEXkUTFl5UdYkCwkRV8eVPfiBzpS+fcnWudo+FUvqbtc+AkTpSEyf
+ qXB474QV519YCPnUfsfmJYtCjqd27WOs7gd6lM8C5AyVN+gsAW1GCKkuJ09EeoLPE2wv2INJH
+ VAyaxuAzqFRGpHaYvKO5GykDyhVvs3OwToTzbSeGf4yYTus/Xgw9KGCijv1jj7RbCB29RaF/e
+ 74I9lBhljz+u480gPuiu5P/xPpzHBd2iSYSN3tTCwgR6osztjRAWqTfh/uTmrcZyeH8HpPJWZ
+ aD6Bqpz2dEveztWrxV98UHrJwp0BVORla+h2YNTrVwbcjQoMdsV14IijA2id2g+SSqNJq3OKw
+ 1sDxTkYGJUfs5Wd34A/yb5kl0b7YfIU1PF+V2xfcvNtY6xGwwBSsAfhnx47EHUk/PFW2v4zAT
+ HcIdFrcrtU4CIQe4RmTQC6li09t6vJTl/eOKS4rlClC5s/CJkjFHim2LvtOmMZDM0OZN21npg
+ SYJljZr92eksWi7n23phapeQvJFmSXrmaA98iwbUnIZiDDVfaDU6MLYnSsHlvWItutLnPof09
+ +WNNV2yFCZaXyhIvXjXMXD8SEROIue3eDcS1Y/T4aR6+F8K9t4aM5jsE7XUaxrN2ENoDwPukM
+ uXRFB92BqJ2vPs7mNEFxthvEqqtkT18XprYoWsSozBmbZtzOmg2okzddIucBNJxqFajxW8iHm
+ MGFffr/cTYaJGWb5ydxUIleVRg1XCxNwibQXaqqWA7oKLu3gseqHKZtk6Wz5Y4zrTJV8suYAa
+ YgUUpj7dEjWXfEowi8U/rcCTX2gD/EFKM/4e6hKzzvQMo0aAno7mFVnM6eyAaR90PAg9M9hd+
+ Gg091WSvSRQ4ml5Vz2oujt+1IIdLutsZ6xPA7FB9GrAGwr1xrab/y/iBsqLk7iJt+YxpEDbLh
+ 4EDrMRolQAu0b8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 22:17:17 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Thu, 21 Oct 2021 09:31:31 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > > > +# Stop tracing while reading the trace file by default, to prevent
-> > > > +# the test results while checking it and to avoid taking a long time
-> > > > +# to check the result.
-> > > > +    [ -f options/pause-on-trace ] && echo 1 > options/pause-on-trace
-> > > > +  
-> > > 
-> > > Is there a way we can save the previous setting and put it back on reset?  
-> > 
-> > No, since each testcase must be run under the clean state. Would we need to
-> > recover the settings?
-> 
-> I would at least put it back to the default. If someone runs the tests,
-> it should at least put it back to what it was at boot. Otherwise,
-> someone might run the tests, and then wonder why events are being
-> dropped when they are reading the trace.
-
-Umm, we may need to have a knob to reset the ftrace options...
-Can we warn such user that if the ftracetest finds that the current
-value is not the same what it sets?
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+T24gVHVlLCAyMDIxLTEwLTI2IGF0IDEyOjU3ICswMTAwLCBNZWwgR29ybWFuIHdyb3RlOg0KPiAN
+Cj4gVGhlIHBhdGNoIGluIHF1ZXN0aW9uIHdhcyBhbHNvIHRlc3RlZCBvbiBvdGhlciB3b3JrbG9h
+ZHMgb24gTlVNQQ0KPiBtYWNoaW5lcy4gRm9yIGEgMi1zb2NrZXQgbWFjaGluZSAoMjAgY29yZXMs
+IEhUIGVuYWJsZWQgc28gNDAgQ1BVcykNCj4gcnVubmluZyBzcGVjamJiIDIwMDUgd2l0aCBvbmUg
+SlZNIHBlciBOVU1BIG5vZGUsIHRoZSBwYXRjaCBhbHNvIHNjYWxlZA0KPiByZWFzb25hYmx5IHdl
+bGwNCg0KVGhhdCdzIHdheSBtb3JlIG1vcmUgaW50ZXJlc3RpbmcuICBObyBpZGVhIHdoYXQgdGhp
+cyB0aGluZyBkb2VzIHVuZGVyDQp0aGUgaG9vZCB0aHVzIHdoZXRoZXIgaXQgc2hvdWxkIGJlIGhl
+bHBlZCBvciBub3QsIGJ1dCBhdCBsZWFzdCBpdCdzIGENCnJlYWwgZGVhbCBiZW5jaG1hcmsgdnMg
+YSBrZXJuZWwgaGFja2VyIHRvb2wuDQoNCj4gc3BlY2piYg0KPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDUuMTUuMC1yYzPCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgNS4xNS4wLXJjMw0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHZhbmlsbGHCoCBzY2hlZC13
+YWtlZWZsaXBzLXYxcjENCj4gSG1lYW7CoMKgwqDCoCB0cHV0LTHCoMKgwqDCoCA1MDA0NC40OCAo
+wqDCoCAwLjAwJSnCoMKgwqAgNTM5NjkuMDAgKsKgwqAgNy44NCUqDQo+IEhtZWFuwqDCoMKgwqAg
+dHB1dC0ywqDCoMKgIDEwNjA1MC4zMSAowqDCoCAwLjAwJSnCoMKgIDExMzU4MC43OCAqwqDCoCA3
+LjEwJSoNCj4gSG1lYW7CoMKgwqDCoCB0cHV0LTPCoMKgwqAgMTU2NzAxLjQ0ICjCoMKgIDAuMDAl
+KcKgwqAgMTY0ODU3LjAwICrCoMKgIDUuMjAlKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtNMKgwqDC
+oCAxOTY1MzguNzUgKMKgwqAgMC4wMCUpwqDCoCAyMTgzNzMuNDIgKsKgIDExLjExJSoNCj4gSG1l
+YW7CoMKgwqDCoCB0cHV0LTXCoMKgwqAgMjQ3NTY2LjE2ICjCoMKgIDAuMDAlKcKgwqAgMjY3MTcz
+LjA5ICrCoMKgIDcuOTIlKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtNsKgwqDCoCAyODQ5ODEuNDYg
+KMKgwqAgMC4wMCUpwqDCoCAzMTEwMDcuMTQgKsKgwqAgOS4xMyUqDQo+IEhtZWFuwqDCoMKgwqAg
+dHB1dC03wqDCoMKgIDMyODg4Mi40OCAowqDCoCAwLjAwJSnCoMKgIDM1OTM3My44OSAqwqDCoCA5
+LjI3JSoNCj4gSG1lYW7CoMKgwqDCoCB0cHV0LTjCoMKgwqAgMzY2OTQxLjI0ICjCoMKgIDAuMDAl
+KcKgwqAgMzkzMjQ0LjM3ICrCoMKgIDcuMTclKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtOcKgwqDC
+oCA0MDIzODYuNzQgKMKgwqAgMC4wMCUpwqDCoCA0MzMwMTAuNDMgKsKgwqAgNy42MSUqDQo+IEht
+ZWFuwqDCoMKgwqAgdHB1dC0xMMKgwqAgNDM3NTUxLjA1ICjCoMKgIDAuMDAlKcKgwqAgNDc1NzU2
+LjA4ICrCoMKgIDguNzMlKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtMTHCoMKgIDQ4MTM0OS40MSAo
+wqDCoCAwLjAwJSnCoMKgIDUxOTgyNC41NCAqwqDCoCA3Ljk5JSoNCj4gSG1lYW7CoMKgwqDCoCB0
+cHV0LTEywqDCoCA1MzMxNDguNDUgKMKgwqAgMC4wMCUpwqDCoCA1NjUwNzAuMjEgKsKgwqAgNS45
+OSUqDQo+IEhtZWFuwqDCoMKgwqAgdHB1dC0xM8KgwqAgNTcwNTYzLjk3ICjCoMKgIDAuMDAlKcKg
+wqAgNjA5NDk5LjA2ICrCoMKgIDYuODIlKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtMTTCoMKgIDYw
+MTExNy45NyAowqDCoCAwLjAwJSnCoMKgIDY0Nzg3Ni4wNSAqwqDCoCA3Ljc4JSoNCj4gSG1lYW7C
+oMKgwqDCoCB0cHV0LTE1wqDCoCA2MzkwOTYuMzggKMKgwqAgMC4wMCUpwqDCoCA2OTA4NTQuNDYg
+KsKgwqAgOC4xMCUqDQo+IEhtZWFuwqDCoMKgwqAgdHB1dC0xNsKgwqAgNjgyNjQ0LjkxICjCoMKg
+IDAuMDAlKcKgwqAgNzIyODI2LjA2ICrCoMKgIDUuODklKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQt
+MTfCoMKgIDczMjI0OC45NiAowqDCoCAwLjAwJSnCoMKgIDc1ODgwNS4xNyAqwqDCoCAzLjYzJSoN
+Cj4gSG1lYW7CoMKgwqDCoCB0cHV0LTE4wqDCoCA3NjI3NzEuMzMgKMKgwqAgMC4wMCUpwqDCoCA3
+OTEyMTEuNjYgKsKgwqAgMy43MyUqDQo+IEhtZWFuwqDCoMKgwqAgdHB1dC0xOcKgwqAgNzgwNTgy
+LjkyICjCoMKgIDAuMDAlKcKgwqAgODE5MDY0LjE5ICrCoMKgIDQuOTMlKg0KPiBIbWVhbsKgwqDC
+oMKgIHRwdXQtMjDCoMKgIDgxMjE4My45NSAowqDCoCAwLjAwJSnCoMKgIDgzNjY2NC44NyAqwqDC
+oCAzLjAxJSoNCj4gSG1lYW7CoMKgwqDCoCB0cHV0LTIxwqDCoCA4MjE0MTUuNDggKMKgwqAgMC4w
+MCUpwqDCoCA4MzM3MzQuMjMgKMKgwqAgMS41MCUpDQo+IEhtZWFuwqDCoMKgwqAgdHB1dC0yMsKg
+wqAgODE1NDU3LjY1ICjCoMKgIDAuMDAlKcKgwqAgODQ0MzkzLjk4ICrCoMKgIDMuNTUlKg0KPiBI
+bWVhbsKgwqDCoMKgIHRwdXQtMjPCoMKgIDgxOTI2My42MyAowqDCoCAwLjAwJSnCoMKgIDg0NjEw
+OS4wNyAqwqDCoCAzLjI4JSoNCj4gSG1lYW7CoMKgwqDCoCB0cHV0LTI0wqDCoCA4MTc5NjIuOTUg
+KMKgwqAgMC4wMCUpwqDCoCA4Mzk2ODIuOTIgKsKgwqAgMi42NiUqDQo+IEhtZWFuwqDCoMKgwqAg
+dHB1dC0yNcKgwqAgODA3ODE0LjY0ICjCoMKgIDAuMDAlKcKgwqAgODQxODI2LjUyICrCoMKgIDQu
+MjElKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtMjbCoMKgIDgxMTc1NS44OSAowqDCoCAwLjAwJSnC
+oMKgIDgzODU0My4wOCAqwqDCoCAzLjMwJSoNCj4gSG1lYW7CoMKgwqDCoCB0cHV0LTI3wqDCoCA3
+OTkzNDEuNzUgKMKgwqAgMC4wMCUpwqDCoCA4MzM0ODcuMjYgKsKgwqAgNC4yNyUqDQo+IEhtZWFu
+wqDCoMKgwqAgdHB1dC0yOMKgwqAgODAzNDM0Ljg5ICjCoMKgIDAuMDAlKcKgwqAgODI5MDIyLjUw
+ICrCoMKgIDMuMTglKg0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtMjnCoMKgIDgwMzIzMy4yNSAowqDC
+oCAwLjAwJSnCoMKgIDgyNjYyMi4zNyAqwqDCoCAyLjkxJSoNCj4gSG1lYW7CoMKgwqDCoCB0cHV0
+LTMwwqDCoCA4MDA0NjUuMTIgKMKgwqAgMC4wMCUpwqDCoCA4MjQzNDcuNDIgKsKgwqAgMi45OCUq
+DQo+IEhtZWFuwqDCoMKgwqAgdHB1dC0zMcKgwqAgNzkxMjg0LjM5ICjCoMKgIDAuMDAlKcKgwqAg
+NzkxNTc1LjY3ICjCoMKgIDAuMDQlKQ0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtMzLCoMKgIDc4MTkz
+MC4wNyAowqDCoCAwLjAwJSnCoMKgIDgwNTcyNS44MCAowqDCoCAzLjA0JSkNCj4gSG1lYW7CoMKg
+wqDCoCB0cHV0LTMzwqDCoCA3ODUxOTQuMzEgKMKgwqAgMC4wMCUpwqDCoCA4MDQ3OTUuNDQgKMKg
+wqAgMi41MCUpDQo+IEhtZWFuwqDCoMKgwqAgdHB1dC0zNMKgwqAgNzgxMzI1LjY3ICjCoMKgIDAu
+MDAlKcKgwqAgODAwMDY3LjUzICjCoMKgIDIuNDAlKQ0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtMzXC
+oMKgIDc3NzcxNS45MiAowqDCoCAwLjAwJSnCoMKgIDc1MzkyNi4zMiAowqAgLTMuMDYlKQ0KPiBI
+bWVhbsKgwqDCoMKgIHRwdXQtMzbCoMKgIDc3MDUxNi44NSAowqDCoCAwLjAwJSnCoMKgIDc4MzMy
+OC4zMiAowqDCoCAxLjY2JSkNCj4gSG1lYW7CoMKgwqDCoCB0cHV0LTM3wqDCoCA3NTgwNjcuMjYg
+KMKgwqAgMC4wMCUpwqDCoCA3NzIyNDMuMTggKsKgwqAgMS44NyUqDQo+IEhtZWFuwqDCoMKgwqAg
+dHB1dC0zOMKgwqAgNzY0ODE1LjQ1ICjCoMKgIDAuMDAlKcKgwqAgNzY5MTU2LjMyICjCoMKgIDAu
+NTclKQ0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtMznCoMKgIDc1Nzg4NS40MSAowqDCoCAwLjAwJSnC
+oMKgIDc1NzY3MC41OSAowqAgLTAuMDMlKQ0KPiBIbWVhbsKgwqDCoMKgIHRwdXQtNDDCoMKgIDc1
+MDE0MC4xNSAowqDCoCAwLjAwJSnCoMKgIDc2MDczOS4xMyAowqDCoCAxLjQxJSkNCj4gDQo+IFRo
+ZSBsYXJnZXN0IHJlZ3Jlc3Npb24gd2FzIHdpdGhpbiBub2lzZS4gTW9zdCByZXN1bHRzIHdlcmUg
+b3V0c2lkZSB0aGUNCj4gbm9pc2UuDQo+IA0KPiBTb21lIEhQQyB3b3JrbG9hZHMgc2hvd2VkIGxp
+dHRsZSBkaWZmZXJlbmNlIGJ1dCB0aGV5IGRvIG5vdCBjb21tdW5pY2F0ZQ0KPiB0aGF0IGhlYXZp
+bHkuIHJlZGlzIG1pY3JvYmVuY2htYXJrIHNob3dlZCBtb3N0bHkgbmV1dHJhbCByZXN1bHRzLg0K
+PiBzY2hiZW5jaCAoZmFjZWJvb2sgc2ltdWxhdG9yIHdvcmtsb2FkIHRoYXQgaXMgbGF0ZW5jeSBz
+ZW5zaXRpdmUpIHNob3dlZCBhDQo+IG1peCBvZiByZXN1bHRzLCBidXQgaGVscGVkIG1vcmUgdGhh
+biBpdCBodXJ0LiBFdmVuIHRoZSBtYWNoaW5lIHdpdGggdGhlDQo+IHdvcnN0IHJlc3VsdHMgZm9y
+IHNjaGJlbmNoIHNob3dlZCBpbXByb3ZlZCB3YWtldXAgbGF0ZW5jaWVzIGF0IHRoZSA5OXRoDQo+
+IHBlcmNlbnRpbGUuIFRoZXNlIHdlcmUgYWxsIG9uIE5VTUEgbWFjaGluZXMuDQo+IA0KDQo=
