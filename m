@@ -2,178 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D499843AF5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0809943AF60
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhJZJr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:47:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32148 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235070AbhJZJrK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:47:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635241485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xaM9TTYxS+zHZ2czT8usDFfzNg+0Vbk9+uFHYAEJF0k=;
-        b=BVJUfSXsQ1d6Flk63m8DcRXItAOROGzHperpYOG55uubc/XwSEHnHBpXdFKn6OczRASQ6I
-        xPxgXLePxSi+2andItOfceEtVzHggMs5+iLQNFTzhxT/MKZUDADHFYhSpszt6/Pp8amb/7
-        Wo9m0AdcPtWLmd2Eh3p7cYfrerCI6nw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-saoAI_GvNBugHIjyLU4dsQ-1; Tue, 26 Oct 2021 05:44:42 -0400
-X-MC-Unique: saoAI_GvNBugHIjyLU4dsQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0955887950D;
-        Tue, 26 Oct 2021 09:44:40 +0000 (UTC)
-Received: from max.com (unknown [10.40.193.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D9B8419C79;
-        Tue, 26 Oct 2021 09:44:31 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-Date:   Tue, 26 Oct 2021 11:44:30 +0200
-Message-Id: <20211026094430.3669156-1-agruenba@redhat.com>
-In-Reply-To: <YXeOVZqer+GFBkXO@mit.edu>
-References: <YXeOVZqer+GFBkXO@mit.edu> <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com> <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com> <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com> <YXL9tRher7QVmq6N@arm.com> <CAHc6FU6JC4ZOwA8t854WbNdmuiNL9DPq0FPga8guATaoCtvsaw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S234315AbhJZJrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:47:55 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:58870 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230431AbhJZJrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:47:48 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowACniOUizndhFLj+BA--.21179S2;
+        Tue, 26 Oct 2021 17:45:06 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     andraprs@amazon.com, lexnv@amazon.com, alcioa@amazon.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] nitro_enclaves: Fix implicit type conversion
+Date:   Tue, 26 Oct 2021 09:45:04 +0000
+Message-Id: <1635241504-2591251-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowACniOUizndhFLj+BA--.21179S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFy5GFyktw1kuw4xuF1ftFb_yoWktFg_Cr
+        n8Xr409r9Fkrn2vF17CF4fArWaka45WF4aqayagrn3Z34IvF43uwn2vryjvr1xW3y5ZFsx
+        ZFy7tw1rZryxWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8uwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUIhFcUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ted,
+The variable 'cpu' is defined as unsigned int.
+However in the for_each_cpu, its value is assigned to -1.
+That doesn't make sense and in the cpumask_next() it is implicitly
+type conversed to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the definition of 'cpu' from
+unsigned int to int.
 
-here's an updated version of Dave Hansen's original commit, but note
-that generic/208 won't run on ext4 with data journaling enabled:
-
-  $ MOUNT_OPTIONS='-o data=journal' TEST_DIR=/mnt/test TEST_DEV=/dev/vdb ./tests/generic/208
-  QA output created by 208
-  208 not run: ext4 data journaling doesn't support O_DIRECT
-
-Thanks,
-Andreas
-
---
-
-Based on commit 998ef75ddb57 ("fs: do not prefault sys_write() user
-buffer pages") by Dave Hansen <dave.hansen@linux.intel.com>, but:
-
-* Fix generic_perform_write as well as iomap_write_iter.
-
-* copy_page_from_iter_atomic() doesn't trigger page faults, so there's no need
-  to disable page faults around it [see commit 9e8c2af96e0d ("callers of
-  iov_copy_from_user_atomic() don't need pagecache_disable()")].
-
-* If fault_in_iov_iter_readable() fails to fault in the entire buffer,
-  we still want to read everything up to the fault position.  This depends on
-  commit a6294593e8a1 ("iov_iter: Turn iov_iter_fault_in_readable into
-  fault_in_iov_iter_readable").
-
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: ff8a4d3 ("nitro_enclaves: Add logic for setting an enclave vCPU")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- fs/iomap/buffered-io.c | 20 +++++++-------------
- mm/filemap.c           | 20 +++++++-------------
- 2 files changed, 14 insertions(+), 26 deletions(-)
+ drivers/virt/nitro_enclaves/ne_misc_dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 1753c26c8e76..d8809cd9ab31 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -744,17 +744,6 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
- 		if (bytes > length)
- 			bytes = length;
- 
--		/*
--		 * Bring in the user page that we'll copy from _first_.
--		 * Otherwise there's a nasty deadlock on copying from the
--		 * same page as we're writing to, without it being marked
--		 * up-to-date.
--		 */
--		if (unlikely(fault_in_iov_iter_readable(i, bytes))) {
--			status = -EFAULT;
--			break;
--		}
--
- 		status = iomap_write_begin(iter, pos, bytes, &page);
- 		if (unlikely(status))
- 			break;
-@@ -777,9 +766,14 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
- 			 * halfway through, might be a race with munmap,
- 			 * might be severe memory pressure.
- 			 */
--			if (copied)
-+			if (copied) {
- 				bytes = copied;
--			goto again;
-+				goto again;
-+			}
-+			if (fault_in_iov_iter_readable(i, bytes) != bytes)
-+				goto again;
-+			status = -EFAULT;
-+			break;
- 		}
- 		pos += status;
- 		written += status;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 4dd5edcd39fd..467cdb7d086d 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3751,17 +3751,6 @@ ssize_t generic_perform_write(struct file *file,
- 						iov_iter_count(i));
- 
- again:
--		/*
--		 * Bring in the user page that we will copy from _first_.
--		 * Otherwise there's a nasty deadlock on copying from the
--		 * same page as we're writing to, without it being marked
--		 * up-to-date.
--		 */
--		if (unlikely(fault_in_iov_iter_readable(i, bytes))) {
--			status = -EFAULT;
--			break;
--		}
--
- 		if (fatal_signal_pending(current)) {
- 			status = -EINTR;
- 			break;
-@@ -3794,9 +3783,14 @@ ssize_t generic_perform_write(struct file *file,
- 			 * halfway through, might be a race with munmap,
- 			 * might be severe memory pressure.
- 			 */
--			if (copied)
-+			if (copied) {
- 				bytes = copied;
--			goto again;
-+				goto again;
-+			}
-+			if (fault_in_iov_iter_readable(i, bytes) != bytes)
-+				goto again;
-+			status = -EFAULT;
-+			break;
- 		}
- 		pos += status;
- 		written += status;
+diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+index e21e1e8..38d1fd9 100644
+--- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
++++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+@@ -168,7 +168,7 @@ static bool ne_check_enclaves_created(void)
+ static int ne_setup_cpu_pool(const char *ne_cpu_list)
+ {
+ 	int core_id = -1;
+-	unsigned int cpu = 0;
++	int cpu = 0;
+ 	cpumask_var_t cpu_pool;
+ 	unsigned int cpu_sibling = 0;
+ 	unsigned int i = 0;
 -- 
-2.26.3
+2.7.4
 
