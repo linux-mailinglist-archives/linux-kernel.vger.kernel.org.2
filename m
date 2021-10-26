@@ -2,152 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDD143AB8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E878343AB8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 07:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhJZFKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 01:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhJZFKO (ORCPT
+        id S233289AbhJZFNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 01:13:21 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:42734 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhJZFNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 01:10:14 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94394C061745;
-        Mon, 25 Oct 2021 22:07:51 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hdfw551Ypz4xbW;
-        Tue, 26 Oct 2021 16:07:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635224869;
-        bh=InKQ0DK/m1dZfRPN8DerRTzYLI1WiyY3zGlp9Yut7As=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bqpgZkdonVqQ9WvlveH6I8pLt/sWtqANV6rLx8ixHl1Pa0NW7vE4xvrEaSQZHcG4f
-         kh6JrANEFPreXkzo33evFxd4Uc5huPXy1SVvWJO8CY0/Fa0GtFLOOWwFoPBCibGSQ4
-         MSdRYamIj7BbH/gFL0pLuwYkPdYvFcPyEFIUTrPz3giZsbGuIGiskoA6+2VV0sWu4i
-         VrAVeJsBHLqacOewJ0s8eZGbNNG19me3JIjahxctdUxAQDv4wsFaTSeb4SCiZpakle
-         jyvgRNmlnAvSiA1NMMo51CS17SzFdT+9KqnCHgHknPN3jV9jbnp1zkGfZlrQguWWdi
-         eA8mxjHQGBBVQ==
-Date:   Tue, 26 Oct 2021 16:07:48 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Qing Wang <wangqing@vivo.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the dmaengine tree
-Message-ID: <20211026160748.67012c44@canb.auug.org.au>
-In-Reply-To: <20211026160657.63ceb380@canb.auug.org.au>
-References: <20211026160657.63ceb380@canb.auug.org.au>
+        Tue, 26 Oct 2021 01:13:20 -0400
+Received: by mail-wr1-f48.google.com with SMTP id v17so15532382wrv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Oct 2021 22:10:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=P3Zc6yeCZnILUVTPl/gZcYbGqf9vc97cwBNzsoT0q3g=;
+        b=30B5uFW3LEKKoRDZ+JxbNxI+am8eOrKyYXeolKCIf/kxdfiy0jNyb+6UTOGlBQUhQf
+         hJGWYmUAggclaHa/eqPdc2O4r3hRWlg0isRQ/pb69pCnTqYPpbUHsn1mhsCmRZDNCerc
+         JjtdSQqozjLtSP5FTW+FcRSluztpTtw+4jGqmtwnzI9nJg/iCc2UnBrwWeMRdShjqUlG
+         dUdqzB+bt547rulpmWkVQQPnTakMdgumalgeIwWjxnRks34DOrp2up0pDdGuX6e3GTDr
+         UEltcbC7c+Lt8Rg1DGgze9Ukh7t67R3a47UUkinqGVG1MQySQeOcNGQvVTpdMyDZvO9C
+         iYvQ==
+X-Gm-Message-State: AOAM532Lg4hDFC6hkfuamFIOplsoDhpdbI8SINwQAAA3lu0RCrKabhqj
+        m6vKdk//k2GzKx55RVNaKc0=
+X-Google-Smtp-Source: ABdhPJx6PQGIVmdcNUmalhy4yPmH8boj2Cllr+IVnA7VjjuLDIUjtctTj8Wo0XiYE0gbxFgNFMuSzQ==
+X-Received: by 2002:a5d:6c65:: with SMTP id r5mr28856932wrz.26.1635225055992;
+        Mon, 25 Oct 2021 22:10:55 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id n11sm8532947wrs.14.2021.10.25.22.10.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Oct 2021 22:10:55 -0700 (PDT)
+Message-ID: <208f7a41-a9fa-630c-cb44-c37c503f3a72@kernel.org>
+Date:   Tue, 26 Oct 2021 07:10:54 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xmJHXYVMWXDNa8FrbnMkdC.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v11 2/3] tty: hvc: pass DMA capable memory to put_chars()
+Content-Language: en-US
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
+        gregkh@linuxfoundation.org, amit@kernel.org, arnd@arndb.de,
+        osandov@fb.com
+Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+ <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xmJHXYVMWXDNa8FrbnMkdC.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 15. 10. 21, 4:46, Xianting Tian wrote:
+> @@ -151,9 +142,11 @@ static uint32_t vtermnos[MAX_NR_HVC_CONSOLES] =
+>   static void hvc_console_print(struct console *co, const char *b,
+>   			      unsigned count)
+>   {
+> -	char c[N_OUTBUF] __ALIGNED__;
+> +	char *c;
+>   	unsigned i = 0, n = 0;
+>   	int r, donecr = 0, index = co->index;
+> +	unsigned long flags;
+> +	struct hvc_struct *hp;
+>   
+>   	/* Console access attempt outside of acceptable console range. */
+>   	if (index >= MAX_NR_HVC_CONSOLES)
+> @@ -163,6 +156,13 @@ static void hvc_console_print(struct console *co, const char *b,
+>   	if (vtermnos[index] == -1)
+>   		return;
+>   
+> +	hp = cons_hvcs[index];
+> +	if (!hp)
+> +		return;
 
-Hi all,
+You effectively make the console unusable until someone calls 
+hvc_alloc() for this device, correct? This doesn't look right. Neither 
+you describe this change of behaviour in the commit log.
 
-On Tue, 26 Oct 2021 16:06:57 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Hi all,
->=20
-> After merging the dmaengine tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-
-drivers/message/fusion/mptbase.c: In function 'PrimeIocFifos':
-drivers/message/fusion/mptbase.c:4446:35: error: passing argument 1 of 'dma=
-_set_mask_and_coherent' from incompatible pointer type [-Werror=3Dincompati=
-ble-pointer-types]
- 4446 |    if (!dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(32))) {
-      |                                   ^~~~~~~~~~~~
-      |                                   |
-      |                                   struct pci_dev **
-In file included from include/linux/pci-dma-compat.h:8,
-                 from include/linux/pci.h:2443,
-                 from drivers/message/fusion/mptbase.c:56:
-include/linux/dma-mapping.h:442:60: note: expected 'struct device *' but ar=
-gument is of type 'struct pci_dev **'
-  442 | static inline int dma_set_mask_and_coherent(struct device *dev, u64=
- mask)
-      |                                             ~~~~~~~~~~~~~~~^~~
-drivers/message/fusion/mptbase.c:4454:31: error: passing argument 1 of 'dma=
-_set_mask_and_coherent' from incompatible pointer type [-Werror=3Dincompati=
-ble-pointer-types]
- 4454 |     dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(64));
-      |                               ^~~~~~~~~~~~
-      |                               |
-      |                               struct pci_dev **
-In file included from include/linux/pci-dma-compat.h:8,
-                 from include/linux/pci.h:2443,
-                 from drivers/message/fusion/mptbase.c:56:
-include/linux/dma-mapping.h:442:60: note: expected 'struct device *' but ar=
-gument is of type 'struct pci_dev **'
-  442 | static inline int dma_set_mask_and_coherent(struct device *dev, u64=
- mask)
-      |                                             ~~~~~~~~~~~~~~~^~~
-drivers/message/fusion/mptbase.c:4590:33: error: passing argument 1 of 'dma=
-_set_mask_and_coherent' from incompatible pointer type [-Werror=3Dincompati=
-ble-pointer-types]
- 4590 |      !dma_set_mask_and_coherent(&ioc->pcidev, ioc->dma_mask))
-      |                                 ^~~~~~~~~~~~
-      |                                 |
-      |                                 struct pci_dev **
-In file included from include/linux/pci-dma-compat.h:8,
-                 from include/linux/pci.h:2443,
-                 from drivers/message/fusion/mptbase.c:56:
-include/linux/dma-mapping.h:442:60: note: expected 'struct device *' but ar=
-gument is of type 'struct pci_dev **'
-  442 | static inline int dma_set_mask_and_coherent(struct device *dev, u64=
- mask)
-      |                                             ~~~~~~~~~~~~~~~^~~
-drivers/message/fusion/mptbase.c:4614:33: error: passing argument 1 of 'dma=
-_set_mask_and_coherent' from incompatible pointer type [-Werror=3Dincompati=
-ble-pointer-types]
- 4614 |      !dma_set_mask_and_coherent(&ioc->pcidev, DMA_BIT_MASK(64)))
-      |                                 ^~~~~~~~~~~~
-      |                                 |
-      |                                 struct pci_dev **
-In file included from include/linux/pci-dma-compat.h:8,
-                 from include/linux/pci.h:2443,
-                 from drivers/message/fusion/mptbase.c:56:
-include/linux/dma-mapping.h:442:60: note: expected 'struct device *' but ar=
-gument is of type 'struct pci_dev **'
-  442 | static inline int dma_set_mask_and_coherent(struct device *dev, u64=
- mask)
-      |                                             ~~~~~~~~~~~~~~~^~~
-
-> Caused by commit
->=20
->   981b43434b28 ("message: fusion: switch from 'pci_' to 'dma_' API")
->=20
-> I have used the dmaengine tree from next-20211025 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/xmJHXYVMWXDNa8FrbnMkdC.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF3jSQACgkQAVBC80lX
-0GzvjAf/ZN7x/gv4ks6TVZgBNPwlsGl9fT7DaauwWkFhev0k4xxjsmNgFRvJLua/
-YHUuzpurWtQebU9ebgZctYWhbEfMcENPHZme/Tb3oTWFnsrgU+M91sN11XRbHKdP
-twOKJofLCNbezLJFgrsVj8qDsGy4Bj29lom9IwCdQhaeqqwXuzxr1dlZ0YE066nq
-x9+O1Jpmbki0w0rdcEeBneIDwtkwRRPwC1BxCtTRjLzuId86BkiVju4UP3bXy062
-YKHY+4J7zw/YOE+uDHILX8L7zG+awDUEQWa9T33X1wWUE/MQpwsK3IGxtcVUD9UU
-j4iYv77utNa7HwfLl75xeTYY5SD/rA==
-=yIZs
------END PGP SIGNATURE-----
-
---Sig_/xmJHXYVMWXDNa8FrbnMkdC.--
+regards,
+-- 
+js
+suse labs
