@@ -2,47 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF21B43B27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C695D43B282
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236019AbhJZMei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:34:38 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:53496 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhJZMeh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:34:37 -0400
-Received: from localhost (unknown [149.11.102.75])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id B07194F61C55A;
-        Tue, 26 Oct 2021 05:32:11 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 13:32:04 +0100 (BST)
-Message-Id: <20211026.133204.846263172227760543.davem@davemloft.net>
-To:     geert@linux-m68k.org
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org, arnd@arndb.de,
-        sparclinux@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: sunzilog: Mark sunzilog_putchar()
- __maybe_unused
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20211026080426.2444756-1-geert@linux-m68k.org>
-References: <20211026080426.2444756-1-geert@linux-m68k.org>
-X-Mailer: Mew version 6.8 on Emacs 27.2
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-7
-Content-Transfer-Encoding: base64
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 26 Oct 2021 05:32:13 -0700 (PDT)
+        id S235791AbhJZMgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:36:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231224AbhJZMgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:36:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D19460EBD;
+        Tue, 26 Oct 2021 12:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635251653;
+        bh=OgXTpTqGy+Puhv4DfZesA7ODv5bRJ4Hhhmq8mNydSYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UIuWKZ5B4Yqs5ADcEeVsg2EKfFDwtukCsjYhTxnxGoDOR+kfBHhpZbxOqnwxFqm/3
+         EcXK/xMg19Pgy0gp8hU1cC0U+szZgAt4w3OZVajA2+hLSI6uvw1DuCK0xnVSqSZMsA
+         QJ8AVXz5y/PIBhKFQjF6gyF/jjkII2IahuVzngghZTy8TcuheJivukuXIfB4VPUnYd
+         ztz0eJ4PMVlSu6KOGbFhdmYKOUpONik7cI1TIRDSXb4H3QiwFW50YqHmYEpTE+b5Ph
+         D/GO1Y6G2DCI5JoJYuiAKH09ReLKSMV7gfEcLizcdz6Ozy7rzL5cNFPpxfnHS4Kmhr
+         0tVEVQIbNB9nQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mfLeP-0001j9-Bo; Tue, 26 Oct 2021 14:33:57 +0200
+Date:   Tue, 26 Oct 2021 14:33:57 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Oliver Neukum <oneukum@suse.com>,
+        syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 5.14 165/169] usbnet: sanity check for maxpacket
+Message-ID: <YXf1tdKi0b0M4XCx@hovoldconsulting.com>
+References: <20211025191017.756020307@linuxfoundation.org>
+ <20211025191038.360463849@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025191038.360463849@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4NCkRhdGU6IFR1
-ZSwgMjYgT2N0IDIwMjEgMTA6MDQ6MjYgKzAyMDANCg0KPiBJZiBDT05TT0xFX1BPTEw9biwgQ09O
-RklHX1NFUklBTF9TVU5aSUxPR19DT05TT0xFPW4sIGFuZCBDT05GSUdfU0VSSU89bToNCj4gDQo+
-ICAgICBkcml2ZXJzL3R0eS9zZXJpYWwvc3Vuemlsb2cuYzoxMTI4OjEzOiBlcnJvcjogoXN1bnpp
-bG9nX3B1dGNoYXKiIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV2Vycm9yPXVudXNlZC1mdW5jdGlv
-bl0NCj4gICAgICAxMTI4IHwgc3RhdGljIHZvaWQgc3Vuemlsb2dfcHV0Y2hhcihzdHJ1Y3QgdWFy
-dF9wb3J0ICpwb3J0LCBpbnQgY2gpDQo+IAkgIHwgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fn5+
-fg0KPiANCj4gRml4IHRoaXMgYnkgbWFya2luZyBzdW56aWxvZ19wdXRjaGFyKCkgX19tYXliZV91
-bnVzZWQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxp
-bnV4LW02OGsub3JnPg0KDQpBY2tlZC1ieTogRGF2aWQgUy4gTWlsbGVyIDxkYXZlbUBkYXZlbWxv
-ZnQubmV0Pg0K
+On Mon, Oct 25, 2021 at 09:15:46PM +0200, Greg Kroah-Hartman wrote:
+> From: Oliver Neukum <oneukum@suse.com>
+> 
+> commit 397430b50a363d8b7bdda00522123f82df6adc5e upstream.
+> 
+> maxpacket of 0 makes no sense and oopses as we need to divide
+> by it. Give up.
+> 
+> V2: fixed typo in log and stylistic issues
+> 
+> Signed-off-by: Oliver Neukum <oneukum@suse.com>
+> Reported-by: syzbot+76bb1d34ffa0adc03baa@syzkaller.appspotmail.com
+> Reviewed-by: Johan Hovold <johan@kernel.org>
+> Link: https://lore.kernel.org/r/20211021122944.21816-1-oneukum@suse.com
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Please drop this one from all stable queues until
+
+	https://lore.kernel.org/r/20211026124015.3025136-1-wanghai38@huawei.com
+
+has landed.
+
+> ---
+>  drivers/net/usb/usbnet.c |    4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> --- a/drivers/net/usb/usbnet.c
+> +++ b/drivers/net/usb/usbnet.c
+> @@ -1788,6 +1788,10 @@ usbnet_probe (struct usb_interface *udev
+>  	if (!dev->rx_urb_size)
+>  		dev->rx_urb_size = dev->hard_mtu;
+>  	dev->maxpacket = usb_maxpacket (dev->udev, dev->out, 1);
+> +	if (dev->maxpacket == 0) {
+> +		/* that is a broken device */
+> +		goto out4;
+> +	}
+>  
+>  	/* let userspace know we have a random address */
+>  	if (ether_addr_equal(net->dev_addr, node_id))
+
+Johan
