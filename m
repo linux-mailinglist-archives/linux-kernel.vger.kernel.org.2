@@ -2,184 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6B143B5C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47F143B5C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237012AbhJZPks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:40:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22000 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234080AbhJZPkq (ORCPT
+        id S235733AbhJZPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:42:31 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:39744 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235012AbhJZPm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:40:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635262702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tgrWJ8PuEoolrBiVCHFpjBP16xO1n7Kff2hc+CcZab4=;
-        b=CdhfQH7wnQ5SwFWCJ/I8zP+kAho342gESSs3rNICZdgShibhWPRnxJdVX1uvunNkDlpu/Q
-        uow4V+yAlr/c5d/LkiEoMdxtTDgqke5r8Vvl7rsd7SLl39o6CgpcK1WHtIUBBqaDwvwguG
-        oA+ZPReuQCvwSJxw9zaTprBDR9PAn8I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-k3ShljxvN-6wEqVIly0DxQ-1; Tue, 26 Oct 2021 11:38:19 -0400
-X-MC-Unique: k3ShljxvN-6wEqVIly0DxQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 216881017968;
-        Tue, 26 Oct 2021 15:38:18 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.17.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C8B665DF21;
-        Tue, 26 Oct 2021 15:38:17 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 419D22204A5; Tue, 26 Oct 2021 11:38:17 -0400 (EDT)
-Date:   Tue, 26 Oct 2021 11:38:17 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [RFC PATCH 5/7] Fsnotify: Add a wrapper around the fsnotify
- function
-Message-ID: <YXgg6VkAqe24Isgt@redhat.com>
-References: <20211025204634.2517-1-iangelak@redhat.com>
- <20211025204634.2517-6-iangelak@redhat.com>
- <CAOQ4uxikoipcS9g6ShSovBUN+N=+CZGeKc0J27YQO3LYqcdLnA@mail.gmail.com>
+        Tue, 26 Oct 2021 11:42:28 -0400
+Received: by mail-ot1-f46.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so20384999ote.6;
+        Tue, 26 Oct 2021 08:40:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LHJn05dFrFSrzp6BE8p0Ogvc76VnimFelZpRceN/kow=;
+        b=lLXwhAsOgpqGIYoXU8XCfKpwMjznt7Gj1JqaA3qqWbOQhPDph1bXdUaCWcklRGfl6z
+         XbaMn1+FW0lnFuxoBTgXgANDf8A3z70cq5iU8pmlScM0t6VGPfYM30Iy33r2gGPPfBrn
+         +5OS9n5j8DbFwWuORtP+zNBI+K40xYfzB31wlg1BRQsh0T8enwe8D2HhXSFD9JHxTQQd
+         8nAjuk3T0/8u4sMZT1NtYHvmVSxYJF2iiLNvM4GwO6Wnnd0KZceawdal5rSCrnYL7z6e
+         VloMvsWcNlB79FGzdjCvFev8Q7M9PMB0XCy2q61Ip3jXgasWqrtN4NVYGa0n8xR2C4CA
+         Jcjw==
+X-Gm-Message-State: AOAM530ptno6A2itGvRU6dW/m3HNiqID6UmMv08eWfZCpkOLaCr4O4c5
+        KsrRQnNCm9quE0uGZDc7s5pyNTa3h9tuvg7dYrrG/jFP
+X-Google-Smtp-Source: ABdhPJwT64HxGvetYBeeAQcCBsq8AdGDlgIRoZ+S8FjnUW77a5Gc2RmixdTVJabKk60LXzUhxJLE6KiCZ/UmVVhMQzc=
+X-Received: by 2002:a05:6830:90b:: with SMTP id v11mr20131207ott.254.1635262804497;
+ Tue, 26 Oct 2021 08:40:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxikoipcS9g6ShSovBUN+N=+CZGeKc0J27YQO3LYqcdLnA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20211025070155.2995-1-chunfeng.yun@mediatek.com>
+In-Reply-To: <20211025070155.2995-1-chunfeng.yun@mediatek.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Oct 2021 17:39:53 +0200
+Message-ID: <CAJZ5v0gb6vN9kHeQbgjRQXvOCNaFK8ur7bLDeAVjDqdT2=a+-g@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] PM / wakeirq: support enabling wake-up irq after
+ runtime_suspend called
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 05:37:55PM +0300, Amir Goldstein wrote:
-> On Mon, Oct 25, 2021 at 11:47 PM Ioannis Angelakopoulos
-> <iangelak@redhat.com> wrote:
-> >
-> > Generally, inotify events are generated locally by calling the "fsnotify"
-> > function in fs/notify/fsnotify.c and various helper functions. However, now
-> > we expect events to arrive from the FUSE server. Thus, without any
-> > intervention a user space application will receive two events. One event is
-> > generated locally and one arrives from the server.
-> >
-> > Hence, to avoid duplicate events we need to "suppress" the local events
-> > generated by the guest kernel for FUSE inodes. To achieve this we add a
-> > wrapper around the "fsnotify" function in fs/notify/fsnotify.c that
-> > checks if the remote inotify is enabled and based on the check either it
-> > "suppresses" or lets through a local event.
-> >
-> > The wrapper will be called in the place of the original "fsnotify" call
-> > that is responsible for the event notification (now renamed as
-> > "__fsnotify").
-> >
-> > When the remote inotify is not enabled, all local events will be let
-> > through as expected. This process is completely transparent to user space.
-> >
-> > Signed-off-by: Ioannis Angelakopoulos <iangelak@redhat.com>
-> > ---
-> >  fs/notify/fsnotify.c             | 35 ++++++++++++++++++++++++++++++--
-> >  include/linux/fsnotify_backend.h | 14 ++++++++++++-
-> >  2 files changed, 46 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-> > index 963e6ce75b96..848a824c29c4 100644
-> > --- a/fs/notify/fsnotify.c
-> > +++ b/fs/notify/fsnotify.c
-> > @@ -440,7 +440,7 @@ static void fsnotify_iter_next(struct fsnotify_iter_info *iter_info)
-> >  }
-> >
-> >  /*
-> > - * fsnotify - This is the main call to fsnotify.
-> > + * __fsnotify - This is the main call to fsnotify.
-> >   *
-> >   * The VFS calls into hook specific functions in linux/fsnotify.h.
-> >   * Those functions then in turn call here.  Here will call out to all of the
-> > @@ -459,7 +459,7 @@ static void fsnotify_iter_next(struct fsnotify_iter_info *iter_info)
-> >   *             if both are non-NULL event may be reported to both.
-> >   * @cookie:    inotify rename cookie
-> >   */
-> > -int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
-> > +int __fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
-> >              const struct qstr *file_name, struct inode *inode, u32 cookie)
-> >  {
-> >         const struct path *path = fsnotify_data_path(data, data_type);
-> > @@ -552,6 +552,37 @@ int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
-> >
-> >         return ret;
-> >  }
-> > +
-> > +/*
-> > + * Wrapper around fsnotify. The main functionality is to filter local events in
-> > + * case the inode belongs to a filesystem that supports remote events
-> > + */
-> > +int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir,
-> > +            const struct qstr *file_name, struct inode *inode, u32 cookie)
-> > +{
-> > +
-> > +       if (inode != NULL || dir != NULL) {
-> > +               /*
-> > +                * Check if the fsnotify_event operation is available which
-> > +                * will let the remote inotify events go through and suppress
-> > +                * the local events
-> > +                */
-> > +               if (inode && inode->i_op->fsnotify_event) {
-> > +                       return inode->i_op->fsnotify_event(mask, data,
-> > +                                                          data_type, dir,
-> > +                                                          file_name, inode,
-> > +                                                          cookie);
-> > +               }
-> > +               if (dir && dir->i_op->fsnotify_event) {
-> > +                       return dir->i_op->fsnotify_event(mask, data,
-> > +                                                        data_type, dir,
-> > +                                                        file_name, inode,
-> > +                                                        cookie);
-> > +               }
-> > +       }
-> > +
-> 
-> That's not the way to accomplish what you want to do.
-> 
-> Assuming that we agree to let filesystem silence VFS fsnotify hooks
-> it should be done using an inode flag, similar to file flag FMODE_NONOTIFY.
+On Mon, Oct 25, 2021 at 9:02 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> When the dedicated wake IRQ is level trigger, and it uses the
+> device's low-power status as the wakeup source, that means if the
+> device is not in low-power state, the wake IRQ will be triggered
+> if enabled; For this case, need enable the wake IRQ after running
+> the device's ->runtime_suspend() which make it enter low-power state.
+>
+> e.g.
+> Assume the wake IRQ is a low level trigger type, and the wakeup
+> signal comes from the low-power status of the device.
+> The wakeup signal is low level at running time (0), and becomes
+> high level when the device enters low-power state (runtime_suspend
+> (1) is called), a wakeup event at (2) make the device exit low-power
+> state, then the wakeup signal also becomes low level.
+>
+>                 ------------------
+>                |           ^     ^|
+> ----------------           |     | --------------
+>  |<---(0)--->|<--(1)--|   (3)   (2)    (4)
+>
+> if enable the wake IRQ before running runtime_suspend during (0),
+> a wake IRQ will arise, it causes resume immediately;
+> it works if enable wake IRQ ( e.g. at (3) or (4)) after running
+> ->runtime_suspend().
+>
+> This patch introduces a new status WAKE_IRQ_DEDICATED_REVERSE to
+> optionally support enabling wake IRQ after running ->runtime_suspend().
+>
+> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-Ok, so basically define a new flag say FMODE_FOO and check that in
-fsnotify() and ignore event if flag is set. And filesystem can set
-that flag if remote events are enabled. And then vfs will ignore
-local events. Sounds reasonable.
+I don't really have anything to add regarding the code.
 
-> 
-> But the reason you want to do that seems a bit odd.
+The kerneldoc comments could be improved, but I can take care of this
+when applying the patch.
 
-I gave this idea to Ioannis. But defining a inode flag probably is
-much cheaper as comapred to inode operation.
+Please collect ACKs for the remaining 2 patches in the series and I
+will pick up all three.
 
-> Duplicate events are going to be merged with fanotify and I think that
-> you ruled out fanotify for the wrong reasons
-> (you should have only ruled out permission events)
+Thanks!
 
-Ioannis was looking at fanoity and wondering if fanotify can be supported
-as well. fanotify seemed to be much more powerful as compared to inotify
-and some of the things looked like not feasible to be supported for
-remote filesystems.
-
-But if it is acceptable to support only limited functionality/events, then
-it probably is a good idea to keep fanotify in mind and somebody can extend
-it for fanotify as well.
-
-Ideally it will be nice to support fanoity as well (as much as possible).
-Just that it seemed more complicated. So we thought that let us start
-with a simpler API (inotify) and try to implement that first.
-
-I don't understand "Duplicate events are going to be merged with
-fanotify". So fanotiy has something to figure out there are duplicate
-events and merge these and user space never sees duplicate events.
-
-Vivek
-
+> ---
+> v4: changes according to Rafael's suggestions
+>     1. rename new flag as WAKE_IRQ_DEDICATED_REVERSE;
+>     2. add __dev_pm_set_dedicated_wake_irq() with flag parameter, then
+>        rebuild dev_pm_set_dedicated_wake_irq() and add new api
+>        dev_pm_set_dedicated_wake_irq_reverse();
+>     3. rename the new added parameter as cond_disable in
+>        dev_pm_disable_wake_irq_check(), and also simplify its flow;
+>     4. modify some comments
+>
+> v3: add new status suggested by Rafael
+>
+> v2: add more commit message
+>
+>   Use the falling edge trigger interrupt suggested by Ikjoon [1], it
+> works well at firstly when only use this related wakeup source, but
+> encounter issues if use other wakeup sources to wakeup platform as
+> below steps:
+> 1. use another wakeup source to wake up the suspended system;
+> 2. the consumer's resume() will be called, and exits sleep state;
+> 3. the consumer's wakeup signal will fall into low level, due to
+>    currently the wakeup irq is disabled, the wake-irq is pending;
+> 4. the consumer tries to enter runtime suspend, but there is a
+>    pending wakeup irq, so will resume again, this will repeat
+>    endlessly.
+>
+>   Send out the patch again for further discussion.
+>
+> [1]: https://patchwork.kernel.org/patch/12190407
+>
+> ---
+>  drivers/base/power/power.h   |   7 ++-
+>  drivers/base/power/runtime.c |   6 ++-
+>  drivers/base/power/wakeirq.c | 101 +++++++++++++++++++++++++++--------
+>  include/linux/pm_wakeirq.h   |   9 +++-
+>  4 files changed, 96 insertions(+), 27 deletions(-)
+>
+> diff --git a/drivers/base/power/power.h b/drivers/base/power/power.h
+> index 54292cdd7808..0eb7f02b3ad5 100644
+> --- a/drivers/base/power/power.h
+> +++ b/drivers/base/power/power.h
+> @@ -25,8 +25,10 @@ extern u64 pm_runtime_active_time(struct device *dev);
+>
+>  #define WAKE_IRQ_DEDICATED_ALLOCATED   BIT(0)
+>  #define WAKE_IRQ_DEDICATED_MANAGED     BIT(1)
+> +#define WAKE_IRQ_DEDICATED_REVERSE     BIT(2)
+>  #define WAKE_IRQ_DEDICATED_MASK                (WAKE_IRQ_DEDICATED_ALLOCATED | \
+> -                                        WAKE_IRQ_DEDICATED_MANAGED)
+> +                                        WAKE_IRQ_DEDICATED_MANAGED | \
+> +                                        WAKE_IRQ_DEDICATED_REVERSE)
+>
+>  struct wake_irq {
+>         struct device *dev;
+> @@ -39,7 +41,8 @@ extern void dev_pm_arm_wake_irq(struct wake_irq *wirq);
+>  extern void dev_pm_disarm_wake_irq(struct wake_irq *wirq);
+>  extern void dev_pm_enable_wake_irq_check(struct device *dev,
+>                                          bool can_change_status);
+> -extern void dev_pm_disable_wake_irq_check(struct device *dev);
+> +extern void dev_pm_disable_wake_irq_check(struct device *dev, bool cond_disable);
+> +extern void dev_pm_enable_wake_irq_complete(struct device *dev);
+>
+>  #ifdef CONFIG_PM_SLEEP
+>
+> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> index ec94049442b9..d504cd4ab3cb 100644
+> --- a/drivers/base/power/runtime.c
+> +++ b/drivers/base/power/runtime.c
+> @@ -645,6 +645,8 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+>         if (retval)
+>                 goto fail;
+>
+> +       dev_pm_enable_wake_irq_complete(dev);
+> +
+>   no_callback:
+>         __update_runtime_status(dev, RPM_SUSPENDED);
+>         pm_runtime_deactivate_timer(dev);
+> @@ -690,7 +692,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
+>         return retval;
+>
+>   fail:
+> -       dev_pm_disable_wake_irq_check(dev);
+> +       dev_pm_disable_wake_irq_check(dev, true);
+>         __update_runtime_status(dev, RPM_ACTIVE);
+>         dev->power.deferred_resume = false;
+>         wake_up_all(&dev->power.wait_queue);
+> @@ -873,7 +875,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
+>
+>         callback = RPM_GET_CALLBACK(dev, runtime_resume);
+>
+> -       dev_pm_disable_wake_irq_check(dev);
+> +       dev_pm_disable_wake_irq_check(dev, false);
+>         retval = rpm_callback(callback, dev);
+>         if (retval) {
+>                 __update_runtime_status(dev, RPM_SUSPENDED);
+> diff --git a/drivers/base/power/wakeirq.c b/drivers/base/power/wakeirq.c
+> index b91a3a9bf9f6..76c163a89104 100644
+> --- a/drivers/base/power/wakeirq.c
+> +++ b/drivers/base/power/wakeirq.c
+> @@ -142,24 +142,7 @@ static irqreturn_t handle_threaded_wake_irq(int irq, void *_wirq)
+>         return IRQ_HANDLED;
+>  }
+>
+> -/**
+> - * dev_pm_set_dedicated_wake_irq - Request a dedicated wake-up interrupt
+> - * @dev: Device entry
+> - * @irq: Device wake-up interrupt
+> - *
+> - * Unless your hardware has separate wake-up interrupts in addition
+> - * to the device IO interrupts, you don't need this.
+> - *
+> - * Sets up a threaded interrupt handler for a device that has
+> - * a dedicated wake-up interrupt in addition to the device IO
+> - * interrupt.
+> - *
+> - * The interrupt starts disabled, and needs to be managed for
+> - * the device by the bus code or the device driver using
+> - * dev_pm_enable_wake_irq() and dev_pm_disable_wake_irq()
+> - * functions.
+> - */
+> -int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+> +static int __dev_pm_set_dedicated_wake_irq(struct device *dev, int irq, unsigned int flag)
+>  {
+>         struct wake_irq *wirq;
+>         int err;
+> @@ -197,7 +180,7 @@ int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+>         if (err)
+>                 goto err_free_irq;
+>
+> -       wirq->status = WAKE_IRQ_DEDICATED_ALLOCATED;
+> +       wirq->status = WAKE_IRQ_DEDICATED_ALLOCATED | flag;
+>
+>         return err;
+>
+> @@ -210,8 +193,57 @@ int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+>
+>         return err;
+>  }
+> +
+> +
+> +/**
+> + * dev_pm_set_dedicated_wake_irq - Request a dedicated wake-up interrupt
+> + * @dev: Device entry
+> + * @irq: Device wake-up interrupt
+> + *
+> + * Unless your hardware has separate wake-up interrupts in addition
+> + * to the device IO interrupts, you don't need this.
+> + *
+> + * Sets up a threaded interrupt handler for a device that has
+> + * a dedicated wake-up interrupt in addition to the device IO
+> + * interrupt.
+> + *
+> + * The interrupt starts disabled, and needs to be managed for
+> + * the device by the bus code or the device driver using
+> + * dev_pm_enable_wake_irq*() and dev_pm_disable_wake_irq*()
+> + * functions.
+> + */
+> +int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+> +{
+> +       return __dev_pm_set_dedicated_wake_irq(dev, irq, 0);
+> +}
+>  EXPORT_SYMBOL_GPL(dev_pm_set_dedicated_wake_irq);
+>
+> +/**
+> + * dev_pm_set_dedicated_wake_irq_reverse - Request a dedicated wake-up interrupt
+> + *       with setting flag WAKE_IRQ_DEDICATED_REVERSE
+> + * @dev: Device entry
+> + * @irq: Device wake-up interrupt
+> + *
+> + * Unless your hardware has separate wake-up interrupts in addition
+> + * to the device IO interrupts, you don't need this.
+> + *
+> + * Sets up a threaded interrupt handler for a device that has a dedicated
+> + * wake-up interrupt in addition to the device IO interrupt. It sets
+> + * the status of WAKE_IRQ_DEDICATED_REVERSE to tell rpm_suspend()
+> + * to enable dedicated wake-up interrupt after running the
+> + * ->runtime_suspend()
+> + *
+> + * The interrupt starts disabled, and needs to be managed for
+> + * the device by the bus code or the device driver using
+> + * dev_pm_enable_wake_irq*() and dev_pm_disable_wake_irq*()
+> + * functions.
+> + */
+> +int dev_pm_set_dedicated_wake_irq_reverse(struct device *dev, int irq)
+> +{
+> +       return __dev_pm_set_dedicated_wake_irq(dev, irq, WAKE_IRQ_DEDICATED_REVERSE);
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_set_dedicated_wake_irq_reverse);
+> +
+>  /**
+>   * dev_pm_enable_wake_irq - Enable device wake-up interrupt
+>   * @dev: Device
+> @@ -282,27 +314,54 @@ void dev_pm_enable_wake_irq_check(struct device *dev,
+>         return;
+>
+>  enable:
+> -       enable_irq(wirq->irq);
+> +       if (!can_change_status || !(wirq->status & WAKE_IRQ_DEDICATED_REVERSE))
+> +               enable_irq(wirq->irq);
+>  }
+>
+>  /**
+>   * dev_pm_disable_wake_irq_check - Checks and disables wake-up interrupt
+>   * @dev: Device
+> + * @cond_disable: if set, also check WAKE_IRQ_DEDICATED_REVERSE
+>   *
+>   * Disables wake-up interrupt conditionally based on status.
+>   * Should be only called from rpm_suspend() and rpm_resume() path.
+>   */
+> -void dev_pm_disable_wake_irq_check(struct device *dev)
+> +void dev_pm_disable_wake_irq_check(struct device *dev, bool cond_disable)
+>  {
+>         struct wake_irq *wirq = dev->power.wakeirq;
+>
+>         if (!wirq || !(wirq->status & WAKE_IRQ_DEDICATED_MASK))
+>                 return;
+>
+> +       if (cond_disable && (wirq->status & WAKE_IRQ_DEDICATED_REVERSE))
+> +               return;
+> +
+>         if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED)
+>                 disable_irq_nosync(wirq->irq);
+>  }
+>
+> +/**
+> + * dev_pm_enable_wake_irq_complete - enable wake IRQ not enabled before
+> + * @dev: Device using the wake IRQ
+> + *
+> + * Enable wake IRQ conditionally based on status, mainly used if want to
+> + * enable wake IRQ after running ->runtime_suspend() which depends on
+> + * WAKE_IRQ_DEDICATED_REVERSE.
+> + *
+> + * Should be only called from rpm_suspend() path.
+> + */
+> +void dev_pm_enable_wake_irq_complete(struct device *dev)
+> +{
+> +       struct wake_irq *wirq = dev->power.wakeirq;
+> +
+> +       if (!wirq || !(wirq->status & WAKE_IRQ_DEDICATED_MASK))
+> +               return;
+> +
+> +       if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED &&
+> +           wirq->status & WAKE_IRQ_DEDICATED_REVERSE)
+> +               enable_irq(wirq->irq);
+> +}
+> +
+>  /**
+>   * dev_pm_arm_wake_irq - Arm device wake-up
+>   * @wirq: Device wake-up interrupt
+> diff --git a/include/linux/pm_wakeirq.h b/include/linux/pm_wakeirq.h
+> index cd5b62db9084..e63a63aa47a3 100644
+> --- a/include/linux/pm_wakeirq.h
+> +++ b/include/linux/pm_wakeirq.h
+> @@ -17,8 +17,8 @@
+>  #ifdef CONFIG_PM
+>
+>  extern int dev_pm_set_wake_irq(struct device *dev, int irq);
+> -extern int dev_pm_set_dedicated_wake_irq(struct device *dev,
+> -                                        int irq);
+> +extern int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq);
+> +extern int dev_pm_set_dedicated_wake_irq_reverse(struct device *dev, int irq);
+>  extern void dev_pm_clear_wake_irq(struct device *dev);
+>  extern void dev_pm_enable_wake_irq(struct device *dev);
+>  extern void dev_pm_disable_wake_irq(struct device *dev);
+> @@ -35,6 +35,11 @@ static inline int dev_pm_set_dedicated_wake_irq(struct device *dev, int irq)
+>         return 0;
+>  }
+>
+> +static inline int dev_pm_set_dedicated_wake_irq_reverse(struct device *dev, int irq)
+> +{
+> +       return 0;
+> +}
+> +
+>  static inline void dev_pm_clear_wake_irq(struct device *dev)
+>  {
+>  }
+> --
+> 2.18.0
+>
