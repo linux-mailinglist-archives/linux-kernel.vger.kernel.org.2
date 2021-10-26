@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA5D43BACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA09143BAD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238748AbhJZTcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:32:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51146 "EHLO mail.kernel.org"
+        id S238755AbhJZTcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:32:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238731AbhJZTcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:32:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B6C260F39;
-        Tue, 26 Oct 2021 19:29:48 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 15:29:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 8/8] ftrace/samples: Add multi direct interface test
- module
-Message-ID: <20211026152946.55a77e97@gandalf.local.home>
-In-Reply-To: <20211026192309.GA2038767@roeck-us.net>
-References: <20211008091336.33616-1-jolsa@kernel.org>
-        <20211008091336.33616-9-jolsa@kernel.org>
-        <20211026192309.GA2038767@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S237035AbhJZTcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:32:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C393860F39;
+        Tue, 26 Oct 2021 19:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635276627;
+        bh=bOwO8Sa/kL0hdYVpHz8UOKXMdhBoAOuuSMYGNOyio1c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V2B0g/1dzYST1mP0xRlEqaXKXTZ7GkmF7qRPX1PV77JseNDaSBY/yqY6lRtZDW2s7
+         aHhKxthZe1qqZFvHF5AFTQp2POu15Jvm4yiE3wYwK2w8Sc1vXejUUwQh10dguzSZ0P
+         +Fn4mtJVbUobP228GKJttmijdELfktKlPW9cTVH7CkwjNQSGicXnCLEjfHy27JfV82
+         tlurBo1IInWrCf1Ceh7WbUXkwb7D+RsdI2rl6d+EwbaWdqCunLgGophcq48NCeEiXb
+         kkZb1blghDOMwZbN+ASGJTtdc8ap5/XMpPEUpKqwuGFaWOeuuq+/0wqh8vXQDixd7f
+         oHsjSn7EjkWCg==
+Date:   Tue, 26 Oct 2021 22:30:23 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXhXT/u9bFADwEIo@unreal>
+References: <YXUtbOpjmmWr71dU@unreal>
+ <YXU5+XLhQ9zkBGNY@shredder>
+ <YXZB/3+IR6I0b2xE@unreal>
+ <YXZl4Gmq6DYSdDM3@shredder>
+ <YXaNUQv8RwDc0lif@unreal>
+ <YXelYVqeqyVJ5HLc@shredder>
+ <YXertDP8ouVbdnUt@unreal>
+ <YXgMK2NKiiVYJhLl@shredder>
+ <YXgpgr/BFpbdMLJp@unreal>
+ <20211026120234.3408fbcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026120234.3408fbcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 12:23:09 -0700
-Guenter Roeck <linux@roeck-us.net> wrote:
-
-> On Fri, Oct 08, 2021 at 11:13:36AM +0200, Jiri Olsa wrote:
-> > Adding simple module that uses multi direct interface:
+On Tue, Oct 26, 2021 at 12:02:34PM -0700, Jakub Kicinski wrote:
+> On Tue, 26 Oct 2021 19:14:58 +0300 Leon Romanovsky wrote:
+> > > By now I have spent more time arguing with you than you spent testing
+> > > your patches and it's clear this discussion is not going anywhere.
+> > > 
+> > > Are you going to send a revert or I will? This is the fourth time I'm
+> > > asking you.  
 > > 
-> >   register_ftrace_direct_multi
-> >   unregister_ftrace_direct_multi
+> > I understand your temptation to send revert, at the end it is the
+> > easiest solution. However, I prefer to finish this discussion with
+> > decision on how the end result in mlxsw will look like.
 > > 
-> > The init function registers trampoline for 2 functions,
-> > and exit function unregisters them.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>  
+> > Let's hear Jiri and Jakub before we are rushing to revert something that
+> > is correct in my opinion. We have whole week till merge window, and
+> > revert takes less than 5 minutes, so no need to rush and do it before
+> > direction is clear.
 > 
-> Building s390:defconfig ... failed
-> --------------
-> Error log:
-> <stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
-> {standard input}: Assembler messages:
-> {standard input}:11: Error: Unrecognized opcode: `pushq'
-> {standard input}:12: Error: Unrecognized opcode: `movq'
-> {standard input}:13: Error: Unrecognized opcode: `pushq'
-> {standard input}:14: Error: Unrecognized opcode: `movq'
-> {standard input}:15: Error: Unrecognized opcode: `call'
-> {standard input}:16: Error: Unrecognized opcode: `popq'
-> {standard input}:17: Error: Unrecognized opcode: `leave'
-> {standard input}:18: Error: Unrecognized opcode: `ret'
-> make[3]: *** [scripts/Makefile.build:288: samples/ftrace/ftrace-direct-multi.o] Error 1
-> make[2]: *** [scripts/Makefile.build:571: samples/ftrace] Error 2
-> make[1]: *** [Makefile:1993: samples] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:226: __sub-make] Error 2
+> Having drivers in a broken state will not be conducive to calm discussions.
+> Let's do a quick revert and unbreak the selftests.
+
+No problem, I'll send a revert now, but what is your take on the direction?
+IMHO, the mlxsw layering should be fixed. All this recursive devlink re-entry
+looks horrible and adds unneeded complexity.
+
 > 
->
-
-  https://lore.kernel.org/all/YXAqZ%2FEszRisunQw@osiris/
-
--- Steve
+> Speaking under correction, but the model of operation where we merge
+> patches rather quickly necessarily must also mean we are quick to
+> revert changes which broke stuff if the fix is not immediately obvious
+> or disputed.
