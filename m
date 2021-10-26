@@ -2,93 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4F443B5E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E4443B5E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237151AbhJZPoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:44:20 -0400
-Received: from smtpbg701.qq.com ([203.205.195.86]:59960 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237078AbhJZPns (ORCPT
+        id S235780AbhJZPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:44:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35189 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237134AbhJZPoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:43:48 -0400
-X-QQ-GoodBg: 1
-X-QQ-SSF: B0400000000000F0
-X-QQ-FEAT: Ut0pB98mtT8SKuSiSEUVnmSK2Is7AdsnLZeIFAIqwNjZnfqOEf0MYhXJwBGxa
-        AWlE1UcBi/jwn8VmLbDKlSR5Zfio3O0orTz4lx0Gu5cdmh6DvnkcmekaluKyyGEpiOe+W76
-        TmeDtjAAu57pmubAIcfP4k8Gl2J2LQwtCPZ+6+jhOBJmdGCLdl2cc70zCUpke1XVv8oDxvG
-        TdfWBe+hyrczp9sL6NAbH5kD1cgbkuPJ5jv/m/OD75pGng4baTYG8LUVnYF7jlTTCOO58sK
-        PD+30RyldnlMfSFPUo9HqEowXe0VEaADsxrA0526qkxUjON2jsHUVa7TV2yDh4n1yGzuili
-        JO8XdG8EVE3H7vQzVT8eyzaoSxEjg==
-X-QQ-BUSINESS-ORIGIN: 2
-X-Originating-IP: 58.19.91.105
-X-QQ-STYLE: 
-X-QQ-mid: logic531t1635262877t4121530
-From:   "=?utf-8?B?5bi45buJ5b+X?=" <changlianzhi@uniontech.com>
-To:     "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
-        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
-        <andriy.shevchenko@linux.intel.com>
-Cc:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>,
-        "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>,
-        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
-        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
-Subject: Re: [PATCH v7] tty: Fix the keyboard led light display problem
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Tue, 26 Oct 2021 23:41:17 +0800
-X-Priority: 3
-Message-ID: <tencent_6F6E7845648EC1B76421AE7A@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20211026024032.15897-1-changlianzhi@uniontech.com>
-        <YXgPZw3eluaaVvRc@smile.fi.intel.com>
-        <YXgWbG30THLgS5zJ@kroah.com>
-In-Reply-To: <YXgWbG30THLgS5zJ@kroah.com>
-X-QQ-ReplyHash: 1789936889
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-        by smtp.qq.com (ESMTP) with SMTP
-        id ; Tue, 26 Oct 2021 23:41:18 +0800 (CST)
-Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign6
-X-QQ-Bgrelay: 1
+        Tue, 26 Oct 2021 11:44:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635262901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HydBjt21gCt95Cro1vJ7cdlFUf1FAfNM+p1sttBY83E=;
+        b=XHvShInSnkAAf/gs7cniFx9v7fzsde1QTP/5cEGG2nBwVfuDJ0Xjroq+5iwD6loc6PZl3J
+        LUOqtL3eWYrGwwyajwjIhR/Dv5K9GzluEUkTeQD6Am1rygWLSHW4GTXP4qNLsQQm1Ii/do
+        tVxpH+ZZ/ZinH4/+0jT1TVpVz+gi678=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-Z-3p5UTsMuGPIko9Kan3fA-1; Tue, 26 Oct 2021 11:41:40 -0400
+X-MC-Unique: Z-3p5UTsMuGPIko9Kan3fA-1
+Received: by mail-ed1-f71.google.com with SMTP id k28-20020a508adc000000b003dd5e21da4bso5820643edk.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:41:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HydBjt21gCt95Cro1vJ7cdlFUf1FAfNM+p1sttBY83E=;
+        b=K2S0/kVCvAChOmgiIzEcFGAavRdUMDESjVmbqgnlSsio9fIoMtVNBF7AgWO+yB8vST
+         hSQBie+13Uni6POpsuNZ9yWczJsH7hOsWFoN95cSw5elhFiLOTRWXKNZwQifzLPSnj0K
+         LWFEnMlLierhODHsu2MU3mvlUSmulONjyAU2CEEgUah8FAfToQD2NZzy47aQ0C6Tvfqu
+         wGMGMKi0bDe4p7Ng4MYkuQ071AJyXFYMdGyXWoUn0jc0DxovOcUPckGbTPP0WfSiTgS2
+         ArD6CBolA+3kpmimCIIL8hnPrQMJ7TpaYVUKFt1W82N4r7IZiTZ7RrtNdpVTC28Mv0zV
+         HUtw==
+X-Gm-Message-State: AOAM533sAEouxcG+OtxAsKhKDRr8rXHS8b9jdLgYKPEVy+w/9Jklv6qz
+        utS3uGnri0uCJoyuYGkPT0ICkIOZRFoHh3hprgLm0rvPeL5vLlGoBojoVSsE7tbnCS5yuis2g7b
+        zc51gCIpTW0fQX2N0eZrwv3Jm
+X-Received: by 2002:a17:906:2cc9:: with SMTP id r9mr31749410ejr.138.1635262898738;
+        Tue, 26 Oct 2021 08:41:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw03ITfTsgc75NlWimPviwxZVatCIiP6szDTI6PMKXZ/yZz3i/0FjBNCWVTfQsJ+w62pLBEiw==
+X-Received: by 2002:a17:906:2cc9:: with SMTP id r9mr31749374ejr.138.1635262898493;
+        Tue, 26 Oct 2021 08:41:38 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id h10sm11133550edf.85.2021.10.26.08.41.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 08:41:38 -0700 (PDT)
+Message-ID: <4da3cd96-33ee-fd6e-9405-9047d2f39545@redhat.com>
+Date:   Tue, 26 Oct 2021 17:41:37 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
+ stop working on Microsoft Surface 3
+Content-Language: en-US
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211017162337.44860-1-kitakar@gmail.com>
+ <20211017162337.44860-6-kitakar@gmail.com>
+ <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
+ <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
+ <552baf68-8fed-9a6f-d18c-5634f93a58f8@redhat.com>
+ <b86b8c1257d535cd03e6ded145aa0467b91929e7.camel@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <b86b8c1257d535cd03e6ded145aa0467b91929e7.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCBPY3QgMjYsIDIwMjEgYXQgMDU6MjM6MzVQTSArMDMwMCwgQW5keSBTaGV2Y2hl
-bmtvIHdyb3RlOg0KPiBPbiBUdWUsIE9jdCAyNiwgMjAyMSBhdCAxMDo0MDozMkFNICswODAw
-LCBsaWFuemhpIGNoYW5nIHdyb3RlOg0KPiA+IFN3aXRjaGluZyBmcm9tIHRoZSBkZXNrdG9w
-IGVudmlyb25tZW50IHRvIHRoZSB0dHkgZW52aXJvbm1lbnQsDQo+ID4gdGhlIHN0YXRlIG9m
-IHRoZSBrZXlib2FyZCBsZWQgbGlnaHRzIGFuZCB0aGUgc3RhdGUgb2YgdGhlIGtleWJvYXJk
-DQo+ID4gbG9jayBhcmUgaW5jb25zaXN0ZW50LiBUaGlzIGlzIGJlY2F1c2UgdGhlIGF0dHJp
-YnV0ZSBrYi0+a2JkbW9kZQ0KPiA+IG9mIHRoZSB0dHkgYm91bmQgaW4gdGhlIGRlc2t0b3Ag
-ZW52aXJvbm1lbnQgKHhvcmcpIGlzIHNldCB0bw0KPg0KPiBYb3JnDQo+DQo+IEkgdGhpbmsg
-SSBhbHJlYWR5IHBvaW50ZWQgdGhhdCBvdXQuDQo+DQo+ID4gVkNfT0ZGLCB3aGljaCBjYXVz
-ZXMgdGhlIGxlZHN0YXRlIGFuZCBrYi0+bGVkZmxhZ3N0YXRlDQo+ID4gdmFsdWVzIG9mIHRo
-ZSBib3VuZCB0dHkgdG8gYWx3YXlzIGJlIDAsIHdoaWNoIGNhdXNlcyB0aGUgc3dpdGNoDQo+
-ID4gZnJvbSB0aGUgZGVza3RvcCBXaGVuIHRvIHRoZSB0dHkgZW52aXJvbm1lbnQsIHRoZSBM
-RUQgbGlnaHQNCj4gPiBzdGF0dXMgaXMgaW5jb25zaXN0ZW50IHdpdGggdGhlIGtleWJvYXJk
-IGxvY2sgc3RhdHVzLg0KPg0KPiAuLi4NCj4NCj4gPiArc3RhdGljIHZvaWQga2JkX3VwZGF0
-ZV9sZWRzdGF0ZShzdHJ1Y3QgaW5wdXRfZGV2ICpkZXYpDQo+ID4gK3sNCj4gPiArIGlmICgh
-IXRlc3RfYml0KExFRF9OVU1MLCBkZXYtPmxlZCkgIT0NCj4gPiArICAgICAhIShsZWRzdGF0
-ZSAmIEJJVChWQ19OVU1MT0NLKSkpDQo+ID4gKyBsZWRzdGF0ZSBePSBCSVQoVkNfTlVNTE9D
-Syk7DQo+ID4gKyBpZiAoISF0ZXN0X2JpdChMRURfQ0FQU0wsIGRldi0+bGVkKSAhPQ0KPiA+
-ICsgICAgICEhKGxlZHN0YXRlICYgQklUKFZDX0NBUFNMT0NLKSkpDQo+ID4gKyBsZWRzdGF0
-ZSBePSBCSVQoVkNfQ0FQU0xPQ0spOw0KPiA+ICsgaWYgKCEhdGVzdF9iaXQoTEVEX1NDUk9M
-TEwsIGRldi0+bGVkKSAhPQ0KPiA+ICsgICAgICEhKGxlZHN0YXRlICYgQklUKFZDX1NDUk9M
-TE9DSykpKQ0KPiA+ICsgbGVkc3RhdGUgXj0gQklUKFZDX1NDUk9MTE9DSyk7DQo+DQo+IFRo
-aXMgbG9va3MgdWdseS4NCg0KSSB0aGluayBpdCBjYW4gYmUgZG9uZSBsaWtlIHRoaXM6DQog
-c3RhdGljIHZvaWQga2JkX3VwZGF0ZV9sZWRzdGF0ZShzdHJ1Y3QgaW5wdXRfZGV2ICpkZXYp
-DQogew0KICAgIGxlZHN0YXRlID0gKHRlc3RfYml0KExFRF9TQ1JPTEwsZGV2LT5sZWQpIO+8
-nzEg77yaMO+8iQ0KICAgICAgICAgfCAodGVzdF9iaXQoTEVEX05VTUwsZGV2LT5sZWQpIO+8
-nzIg77yaMO+8iQ0KICAgICAgICAgfCAodGVzdF9iaXQoTEVEX0NBUFNMLGRldi0+bGVkKSDv
-vJ8zIO+8mjDvvIkNCiB9DQoNCklmIHRoaXMgY2hhbmdlIGRvZXMgbm90IHdvcmssIHBsZWFz
-ZSByZXBseSB0byBtZS4gSSBoYXZlIG5vdCANCnVuZGVyc3Rvb2QgdGhlIG90aGVyIGNvbnRl
-bnQuIEl0IGlzIHRvbyBsYXRlIHRvZGF5LCBJIHdpbGwgY29udGludWUgdG9tb3Jyb3chDQoN
-ClRoYW5rcy4NCi0tDQpsaWFuemhpIGNoYW5n
+Hi,
+
+On 10/26/21 11:35, Tsuchiya Yuto wrote:
+> On Sun, 2021-10-24 at 10:32 +0200, Hans de Goede wrote:
+>> Hi,
+>>
+>> [...]
+>>
+>> <note going a bit offtopic from atomisp here>
+>>
+>> Friday I've resized the Android data partition on my Mi Pad 2 Android,
+>> 16G eMMC model and installed Fedora 35 in the free space.
+>>
+>> And yesterday I've been poking at the Mi Pad 2 the entire day,
+>> both under Fedora and under the original Android install to figure
+>> out which chips there are and how they are used, etc. This has
+>> diverted me from looking into atomisp2 stuff, but it was fun :)
+>>
+>> I've also managed to make the i915 driver work. It still gives one
+>> warning during boot which I need to look into. But it works now.
+>> ATM my i915 fix is just a hack. I plan to turn it into something
+>> which I hope I can get upstream, I'll Cc you (Tsuchiya) on the
+>> upstream submission of the i915 submission.
+> 
+> Thank you! I just tried your patch and now mipad2 can boot with GPU!
+
+I'm happy to hear that it works for you to, is it ok if I add
+a "Tested-by: Tsuchiya Yuto <kitakar@gmail.com>" to the next version
+of the patch?
+
+> So, I tried if I can reproduce touchscreen issue with atomisp, but
+> there was no such issue. Touchscreen works regardless of atomisp drivers.
+> I guess this is maybe a PMIC difference (mipad2/wcove and surface3/ccove).
+
+Yeah, I actually bought a 2nd hand Surface 3 this weekend so that
+I have the same platforms as you to test on as we work on improving
+the atomisp2 driver. I've not run any atomisp tests on either device
+yet, but I hope to get around to that soon. Then I should also be
+able to see if I can reproduce the touchscreen issue and try to
+debug it.
+
+>> I've also figured out all the other chips used in the Mi Pad 2
+>> and I believe I should be able to get things battery monitoring
+>> and switching the USB plug between host <-> device mode to work
+>> without too much issues (but it will take some time). This is
+>> all pretty similar to all the special handling which I've already
+>> added to the kernel for the GPD win / pocket devices which also
+>> use the CHT Whiskey Cove PMIC.
+> 
+> Thanks. I haven't looked into anything other than atomisp yet, so I
+> can't comment anything but it's really interesting to see how drivers
+> are developed :-)
+> 
+>> Here are my notes about all the non standard chips used in the
+>> Mi Pad 2:
+>>
+>> PMIC/charger/fuel-gauge:
+>> -The Type-C connector is used as / wired up as a regular micro-USB connector
+>>
+>> -There is a Cherry Trail Whiskey Cove PMIC on the I2C7 i2c_designware ctrl
+>>  -This is used for ID pin detection
+>>  -Charger-type detection does not work though, because the USB-2 data-lines are
+>>   not connected to it
+>>  -The 2 GPIOs which are used to enable an external V5 boost converter for
+>>   Vbus resp Vconn on other designs are both configured as inputs (register value 0x18)
+>>  -The extcon-intel-cht-wc driver should control the USB mux according to the
+>>   ID pin, identically to how the extcon-axp288 code does this
+>>  -The extcon-intel-cht-wc driver should control the Vboost converter in the
+>>   bq25890 charger IC based on the ID pin 
+>>
+>> -There is a bq25890 charger hanging from the CHT-WC PMIC charger I2C-bus at addr 0x6a
+>>  -At boot the BIOS clears bit 4 of register 3, disabling charging so the device
+>>   will still be powered from an external supply, but it will not charge!
+>>   Linux needs to fix this up
+>>  -This charger is connected to the USB-2 data-lines and automatically sets its
+>>   input-current-limit based on the detected charger
+>>  -Bit 5 of register 3 controls the Vboost converter for sending 5V to attached
+>>   USB-devices this bit needs to be controller by Linux based on the ID pin
+>>   detection from the PMIC. The BIOS does leave this enabled when booting with
+>>   a USB-device plugged in.
+>>
+>> -There is a BQ27520 fuel-gauge at address 0x55 of the I2C1 i2c_designware ctrl
+>>
+>> I2C1: addr 0x55 BQ27520 fuel-gauge
+>>
+>> I2C2: addr 0x0e unknown
+>> I2C2: addr 0x1b Realtek 5659 codec ? (not detected by i2cdetect)
+>> I2C2: addr 0x2c TI lp855x backlight controller:
+>>  https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/video/backlight/lp855x_bl.c
+>> I2C2: addr 0x34 NXP9890 audio amplifier
+>> I2C2: addr 0x37 NXP9890 audio amplifier
+>> I2C2: addr 0x3e unknown
+>>
+>> I2C3: addr 0x30 KTD2026 RGB LED driver, controlling the status LED
+>>  https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/leds/leds-ktd2026.c
+>>
+>> I2C4: addr 0x36? OVTI5693 camera sensor
+>> I2C4: addr 0x37 t3ka3 camera sensor
+>>
+>> I2C5: addr 0x5a Motor DRV2604 Driver ? the tablet has no haptic feedback motor!
+>>       Also nothing seen here by i2c-detect, probably bogus
+> 
+> This must be a motor for the world-facing camera! I see "DW9761" in DSDT.
+
+Interesting I checked and the world facing camera indeed has
+a variable focus length. But the VCM (Voice Coil Motor) for this likely
+sits on the same bus as the sensors.
+
+> Currently, I have no idea if motors are working with the upstreamed
+> atomisp because there is no userspace driver for Linux that can use
+> motors.
+
+No the code attaching to the DRV2604 ACPI ID really is a motor driver
+for haptic feedback, see:
+https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/misc/tspdrv/ImmVibeSPI.c
+
+(never mind the SPI in the name it is actually an I2C driver).
+
+I also noticed that the driver is using an enable GPIO, but even
+if I drive that high i2cdetect still does not see anything and
+AFAIK the Mi Pad 2 does not have haptics / a buzzer motor.
+
+Regards,
+
+Hans
 
 
+> 
+> Regards,
+> Tsuchiya Yuto
+> 
+>> I2C6: addr 0x38 FTSC touchscreen
+>>
+>> I2C7: PMIC bus
+>>
+>> -TPS61158: LED controller for menu keys LEDS, driven by PWM controller, max brightness
+>>  80/255 !!!!
+>>  https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/latte-l-oss/drivers/leds/leds-tps61158.c
+>>  Android behavior: light up menu keys for 5 seconds on any human input:
+>>  -Write a special HID driver for mainline linux to fix the key-events send by the
+>>   touchscreen and to light up the keys for 5 seconds on any HID input reports
+>>
+>> -Sensors (accel, als) through hid-ishtp
+>>
+>> -Panel 1536x2048 on card0-DSI-1
+>>  https://bugs.freedesktop.org/show_bug.cgi?id=108714
+>>
+>> -DSDT: Android: OSID == 0x04, Windows OSID == 0x01
+>>
+>> Regards,
+>>
+>> Hans
+> 
+> 
 
