@@ -2,57 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D265043B52D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4683843B52F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbhJZPNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:13:43 -0400
-Received: from mga06.intel.com ([134.134.136.31]:15154 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234890AbhJZPNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:13:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="290772296"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="290772296"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 08:11:17 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="447153418"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 08:11:16 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfO6J-0019XK-8U;
-        Tue, 26 Oct 2021 18:10:55 +0300
-Date:   Tue, 26 Oct 2021 18:10:55 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bitmap: simplify GENMASK(size - 1, 0) lines
-Message-ID: <YXgafyMzK+o9FYkN@smile.fi.intel.com>
-References: <20211026144108.35373-1-quic_qiancai@quicinc.com>
+        id S236251AbhJZPNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235044AbhJZPNv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 11:13:51 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E9DC061348
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:11:27 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:441:6c1a:bc30:46e])
+        by xavier.telenet-ops.be with bizsmtp
+        id AfBR260132hfXWm01fBRfN; Tue, 26 Oct 2021 17:11:25 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mfO6n-0084pC-BV; Tue, 26 Oct 2021 17:11:25 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mfO6m-00DLmj-Ck; Tue, 26 Oct 2021 17:11:24 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/3] ASoC: amd: acp: Dependency cleanup
+Date:   Tue, 26 Oct 2021 17:11:20 +0200
+Message-Id: <cover.1635260849.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026144108.35373-1-quic_qiancai@quicinc.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:41:08AM -0400, Qian Cai wrote:
-> Since "size" is an "unsigned int", the rvalue "size - 1" will still be
-> "unsigned int" according to the C standard (3.2.1.5 Usual arithmetic
-> conversions). Therefore, GENMASK(size - 1, 0) will always return 0UL.
+	Hi all,
 
-Huh?!
+This patch series cleans up the dependencies of the various
+configuration symbols related to AMD Audio-Coprocessor support.
 
-Have you run test_bitmap et al., btw?
+Feel free to squash into a single patch if you prefer that.
+
+Thanks!
+
+Geert Uytterhoeven (3):
+  ASoC: amd: acp: Wrap AMD Audio ACP components in
+    SND_SOC_AMD_ACP_COMMON
+  ASoC: amd: acp: SND_SOC_AMD_{LEGACY_MACH,SOF_MACH} should depend on
+    X86 && PCI && I2C
+  ASoC: amd: acp: SND_SOC_AMD_ACP_COMMON should depend on X86 && PCI
+
+ sound/soc/amd/acp/Kconfig | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
 
+Gr{oetje,eeting}s,
 
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
