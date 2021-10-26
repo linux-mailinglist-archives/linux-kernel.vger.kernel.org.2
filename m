@@ -2,150 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C5543AC1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50B343AC24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhJZGQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 02:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
+        id S235236AbhJZGSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 02:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhJZGQY (ORCPT
+        with ESMTP id S235221AbhJZGSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 02:16:24 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9573C061745;
-        Mon, 25 Oct 2021 23:14:00 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id h20so14007055qko.13;
-        Mon, 25 Oct 2021 23:14:00 -0700 (PDT)
+        Tue, 26 Oct 2021 02:18:05 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D43FC061745;
+        Mon, 25 Oct 2021 23:15:42 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id y11so12497399qtn.13;
+        Mon, 25 Oct 2021 23:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rZXleyp133hD3PRG1ySuktNjNOVf4N0QRMg8i2MUjj8=;
-        b=LNvIh7FX6R9EV3OLzv6fzhVQTLBn51dDro8PX6kJuVzAv5XqtoS3DnJHzuhivfl9Ml
-         0hrHjrLDZi5QNSJqzJq9IEJSgMeM4q3gx7dSPK9hWFPCigj/txfOD1r0BtypV18OzC1G
-         QCWYkNwNpaWTbrXb5PgHBixv0JWEDhVzmKu9uKLthjaGur0bwb132RnieRBsd6u+ZTbu
-         q+Y7RIqQ/Ya0mnoWx2edbSwoqiZRpYQkOFi23+QQ6fNxXWUSeC+BarlhthsaG0fFFALs
-         xjsvGAtare0YK2btnY7dnPSLdc/fD+ObrvfsPbcQNJ6k9sQzaS0t3PQGBTt+goTQYpXE
-         sDUw==
+        bh=D/dur7Sn2ZYzb23rhe+lhXmkmVlrpP62SVIG02l086Y=;
+        b=aeMt714LaHa+SG1Xpln7wKEpu7YaAu3RlCvOBNQ5ZNJHUaTrZDegZyPVfR1k6EBzk2
+         WwoxrqON094LB4Y0fOvQtY6H9KWqB+Y3qmrrGm5rvPb4bvtlvvjPvHnrrUgN8XW193ce
+         gcJpBikDv0KgNZkj8SfRPWlYHpDwnQWl8Uauc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rZXleyp133hD3PRG1ySuktNjNOVf4N0QRMg8i2MUjj8=;
-        b=O9iAL7bAPEw3cTDOqXbz1cwSiT92HduCMboRGDkuE6orXkF0UMPbFEfYTsdyh3QZX4
-         fBm8CMGGAq9fRXDNkLZUL7eGyn+hoRnH3s2Dt+2ZonbHT2aCT+iYVdgayxQS0XTVcYXE
-         h1Mz3OzgdpD/T/X4Y7PYgJpWb5jC1Q5YKziLxzCZbRSZxGiHEYGGCYhg+L5y+G4OUQ17
-         mbbY0q7oldajy5n9yqxqAxrtdUAEADfOs2zHUA8xFAAGnpt3ok4kSnBPbaFwPQe1voWk
-         Q0GWx8WBhsOvAxfKgRPVHXITfCb4rbgCIDd1EflomJISn0NS2LhccglVpNJFU6aCEDBq
-         4Z7Q==
-X-Gm-Message-State: AOAM532SXOj/isbS0L1mkF9GwBcgoKio/Rwlzxiwc0mca6StIx62lpD/
-        vgW3cbA8SrWcpq/OQwh08/7ST0IbW2vjIMcco8Y=
-X-Google-Smtp-Source: ABdhPJyJyhDRhA/s2PfHrkLVXtWBzw7Z8bx6p6vXCG7jdg8/04eVgc3/u0W5VDd0A6K8q2EJgn+6gCM8RrWRhPoDF1A=
-X-Received: by 2002:a37:a93:: with SMTP id 141mr17376294qkk.443.1635228839907;
- Mon, 25 Oct 2021 23:13:59 -0700 (PDT)
+        bh=D/dur7Sn2ZYzb23rhe+lhXmkmVlrpP62SVIG02l086Y=;
+        b=TAVlYFHsQ+q6ps5bnusgvWrECZijwMy/kK+J04ZlvuWKOpGHDOgGMcBqtHFCIxu4NI
+         YVnOcPBNnaAxi0bo9fXht/htdm9dV6L5Ikn4mPqmVlR466N6FSGPj2xhY05rZ3sYYKY0
+         pmGUSmLjdNaOIx7TVEnn/7MS5TEwPeBQZMC22tVjOXAVX/FV/49YJWIxIX3x1SbPD2jX
+         YjzeKK0bJpKUnS+vbWaqDjvfEGEQZ1tR3NTnsjsOzamvDVOUprUuNDLf+Td22ZiOvaPj
+         IHoFPPrfNQOkHcaIN8BhX/HjBt9TquKmC+u+yN0sCbwgBrjKQ+tOfpE0wbSBqOvJROhX
+         OQQA==
+X-Gm-Message-State: AOAM533RM4hVvdQjvcAmaGZo/TaIKLySwMlPpHR+RxaSTjkAfTnKOtYp
+        ydLYuSIOimkGL9aVaBQQOHjJ9BZOI03OshlYNlo=
+X-Google-Smtp-Source: ABdhPJwLpix2QoCyq66ckF90hg3QuitUesuv8mX2KdKU7ghjQW3WVqC0qjEWMswKGAXpcrK0KX/K0Gr7JDf80WzpCNA=
+X-Received: by 2002:a05:622a:180b:: with SMTP id t11mr2167219qtc.25.1635228941623;
+ Mon, 25 Oct 2021 23:15:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025115910.2595-1-xingwu.yang@gmail.com> <707b5fb3-6b61-c53-e983-bc1373aa2bf@ssi.bg>
- <CA+7U5JsSuwqP7eHj1tMHfsb+EemwrhZEJ2b944LFWTroxAnQRQ@mail.gmail.com> <1190ef60-3ad9-119e-5336-1c62522aec81@ssi.bg>
-In-Reply-To: <1190ef60-3ad9-119e-5336-1c62522aec81@ssi.bg>
-From:   yangxingwu <xingwu.yang@gmail.com>
-Date:   Tue, 26 Oct 2021 14:13:48 +0800
-Message-ID: <CA+7U5JvvsNejgOifAwDdjddkLHUL30JPXSaDBTwysSL7dhphuA@mail.gmail.com>
-Subject: Re: [PATCH] ipvs: Fix reuse connection if RS weight is 0
-To:     Julian Anastasov <ja@ssi.bg>
-Cc:     Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        kadlec@netfilter.org, fw@strlen.de,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, corbet@lwn.net
+References: <20211026103939.136dc73b@canb.auug.org.au>
+In-Reply-To: <20211026103939.136dc73b@canb.auug.org.au>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 26 Oct 2021 06:15:29 +0000
+Message-ID: <CACPK8XfS+Gy1dhL-_uWKhW1D4++6LdWM-SdXtnsEV15OUhiK1w@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the arm-soc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Chia-Wei Wang <chiawei_wang@aspeedtech.com>,
+        Oskar Senft <osk@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-thanks Julian
+On Mon, 25 Oct 2021 at 23:39, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the arm-soc tree, today's linux-next build (htmldocs)
+> produced this warning:
+>
+> Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing:2: WARNING: Inline emphasis start-string without end-string.
+>
+> Introduced by commit
+>
+>   c6807970c3bc ("soc: aspeed: Add UART routing support")
+>
+> The problem is (probably) the '*'s on the previous line.
 
-yes, I know that the one-second delay issue has been fixed by commit
-f0a5e4d7a594e0fe237d3dfafb069bb82f80f42f if we set conn_reuse_mode to
-1
-
-BUT  it's still NOT what we expected with sysctl settings
-(conn_reuse_mode == 0 && expire_nodest_conn == 1).
-
-We run kubernetes in extremely diverse environments and this issue
-happens a lot.
-
-On Tue, Oct 26, 2021 at 1:44 PM Julian Anastasov <ja@ssi.bg> wrote:
->
->
->         Hello,
->
-> On Tue, 26 Oct 2021, yangxingwu wrote:
->
-> > thanks julian
-> >
-> > What happens in this situation is that if we set the wait of the
-> > realserver to 0 and do NOT remove the weight zero realserver with
-> > sysctl settings (conn_reuse_mode == 0 && expire_nodest_conn == 1), and
-> > the client reuses its source ports, the kernel will constantly
-> > reuse connections and send the traffic to the weight 0 realserver.
->
->         Yes, this is expected when conn_reuse_mode=0.
->
-> > you may check the details from
-> > https://github.com/kubernetes/kubernetes/issues/81775
->
->         What happens if you try conn_reuse_mode=1? The
-> one-second delay in previous kernels should be corrected with
->
-> commit f0a5e4d7a594e0fe237d3dfafb069bb82f80f42f
-> Date:   Wed Jul 1 18:17:19 2020 +0300
->
->     ipvs: allow connection reuse for unconfirmed conntrack
->
-> > On Tue, Oct 26, 2021 at 2:12 AM Julian Anastasov <ja@ssi.bg> wrote:
-> > >
-> > > On Mon, 25 Oct 2021, yangxingwu wrote:
-> > >
-> > > > Since commit dc7b3eb900aa ("ipvs: Fix reuse connection if real server is
-> > > > dead"), new connections to dead servers are redistributed immediately to
-> > > > new servers.
-> > > >
-> > > > Then commit d752c3645717 ("ipvs: allow rescheduling of new connections when
-> > > > port reuse is detected") disable expire_nodest_conn if conn_reuse_mode is
-> > > > 0. And new connection may be distributed to a real server with weight 0.
-> > >
-> > >         Your change does not look correct to me. At the time
-> > > expire_nodest_conn was created, it was not checked when
-> > > weight is 0. At different places different terms are used
-> > > but in short, we have two independent states for real server:
-> > >
-> > > - inhibited: weight=0 and no new connections should be served,
-> > >         packets for existing connections can be routed to server
-> > >         if it is still available and packets are not dropped
-> > >         by expire_nodest_conn.
-> > >         The new feature is that port reuse detection can
-> > >         redirect the new TCP connection into a new IPVS conn and
-> > >         to expire the existing cp/ct.
-> > >
-> > > - unavailable (!IP_VS_DEST_F_AVAILABLE): server is removed,
-> > >         can be temporary, drop traffic for existing connections
-> > >         but on expire_nodest_conn we can select different server
-> > >
-> > >         The new conn_reuse_mode flag allows port reuse to
-> > > be detected. Only then expire_nodest_conn has the
-> > > opportunity with commit dc7b3eb900aa to check weight=0
-> > > and to consider the old traffic as finished. If a new
-> > > server is selected, any retrans from previous connection
-> > > would be considered as part from the new connection. It
-> > > is a rapid way to switch server without checking with
-> > > is_new_conn_expected() because we can not have many
-> > > conns/conntracks to different servers.
->
-> Regards
->
-> --
-> Julian Anastasov <ja@ssi.bg>
+Chai-Wei, are you able to send a fix for this issue?
