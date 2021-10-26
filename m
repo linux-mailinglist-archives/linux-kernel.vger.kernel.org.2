@@ -2,133 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885F443AEE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294F243AEC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbhJZJVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:21:40 -0400
-Received: from mga06.intel.com ([134.134.136.31]:51120 "EHLO mga06.intel.com"
+        id S234095AbhJZJQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:16:39 -0400
+Received: from mga07.intel.com ([134.134.136.100]:37610 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234428AbhJZJVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:21:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="290696171"
+        id S231459AbhJZJQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:16:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="293322058"
 X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="290696171"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 02:19:02 -0700
+   d="scan'208";a="293322058"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 02:14:12 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="635058551"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2021 02:19:01 -0700
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, tglx@linutronix.de, dave.hansen@linux.intel.com,
-        arjan@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com
-Subject: [PATCH] Documentation/x86: Add documentation for using dynamic XSTATE features
-Date:   Tue, 26 Oct 2021 02:11:57 -0700
-Message-Id: <20211026091157.16711-1-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YXXNa4FcvbGfCrxr@zn.tnic>
-References: <YXXNa4FcvbGfCrxr@zn.tnic>
+   d="scan'208";a="497232899"
+Received: from lkp-server01.sh.intel.com (HELO 9372cb945ed7) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 26 Oct 2021 02:14:10 -0700
+Received: from kbuild by 9372cb945ed7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mfIX4-0000FD-7Y; Tue, 26 Oct 2021 09:14:10 +0000
+Date:   Tue, 26 Oct 2021 17:13:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/core] BUILD SUCCESS
+ a8da61cee95e627ed3d4274861428013aa9604ea
+Message-ID: <6177c6cb.zvoyYhA+m7wlIL6U%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explain how dynamic XSTATE features can be enabled via the
-architecture-specific prctl() along with dynamic sigframe size and
-first use trap handling.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+branch HEAD: a8da61cee95e627ed3d4274861428013aa9604ea  Merge tag 'timers-v5.16-rc1' into timers/core
 
-Originally-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+elapsed time: 2472m
+
+configs tested: 187
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20211025
+sh                         ap325rxa_defconfig
+powerpc                      pcm030_defconfig
+mips                     decstation_defconfig
+powerpc                      arches_defconfig
+sh                            migor_defconfig
+powerpc                      pmac32_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                           viper_defconfig
+sh                     magicpanelr2_defconfig
+powerpc                      walnut_defconfig
+m68k                         amcore_defconfig
+arc                        nsim_700_defconfig
+powerpc                        cell_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                     davinci_all_defconfig
+mips                     loongson2k_defconfig
+powerpc64                           defconfig
+arm                           sama7_defconfig
+s390                          debug_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sh                           se7751_defconfig
+xtensa                          iss_defconfig
+powerpc                 mpc837x_rdb_defconfig
+nios2                            alldefconfig
+arm                       mainstone_defconfig
+mips                          rb532_defconfig
+arm                           sunxi_defconfig
+xtensa                generic_kc705_defconfig
+arm                           h3600_defconfig
+mips                      bmips_stb_defconfig
+mips                        vocore2_defconfig
+sh                        sh7757lcr_defconfig
+mips                         bigsur_defconfig
+sh                              ul2_defconfig
+arm                         socfpga_defconfig
+powerpc                      mgcoge_defconfig
+arm                           sama5_defconfig
+powerpc                      katmai_defconfig
+arm                        neponset_defconfig
+powerpc                 mpc836x_mds_defconfig
+i386                             alldefconfig
+sparc                       sparc32_defconfig
+sparc64                          alldefconfig
+sh                        sh7785lcr_defconfig
+openrisc                    or1ksim_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                    mvme5100_defconfig
+sh                        sh7763rdp_defconfig
+mips                         tb0226_defconfig
+powerpc                     tqm8560_defconfig
+arm                        multi_v7_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                            xcep_defconfig
+powerpc                     kmeter1_defconfig
+openrisc                         alldefconfig
+powerpc                     tqm8548_defconfig
+arm                       spear13xx_defconfig
+mips                 decstation_r4k_defconfig
+riscv                               defconfig
+powerpc                   bluestone_defconfig
+nios2                         3c120_defconfig
+arc                      axs103_smp_defconfig
+powerpc                      obs600_defconfig
+mips                          rm200_defconfig
+arm                           h5000_defconfig
+powerpc                         ps3_defconfig
+sh                          rsk7269_defconfig
+sparc                            alldefconfig
+xtensa                       common_defconfig
+ia64                            zx1_defconfig
+arm                    vt8500_v6_v7_defconfig
+sh                   sh7724_generic_defconfig
+mips                           ci20_defconfig
+sh                          lboxre2_defconfig
+arm                          pxa3xx_defconfig
+powerpc                        warp_defconfig
+arm                        mvebu_v7_defconfig
+arm                            dove_defconfig
+mips                          ath79_defconfig
+mips                           ip28_defconfig
+sh                           se7206_defconfig
+sh                                  defconfig
+sh                             espt_defconfig
+powerpc                         wii_defconfig
+mips                    maltaup_xpa_defconfig
+arm                          ep93xx_defconfig
+mips                           ip32_defconfig
+arm                  randconfig-c002-20211025
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20211024
+x86_64               randconfig-a004-20211024
+x86_64               randconfig-a005-20211024
+x86_64               randconfig-a006-20211024
+x86_64               randconfig-a001-20211024
+x86_64               randconfig-a003-20211024
+i386                 randconfig-a003-20211024
+i386                 randconfig-a004-20211024
+i386                 randconfig-a002-20211024
+i386                 randconfig-a005-20211024
+i386                 randconfig-a006-20211024
+i386                 randconfig-a001-20211024
+x86_64               randconfig-a013-20211025
+x86_64               randconfig-a015-20211025
+x86_64               randconfig-a011-20211025
+x86_64               randconfig-a014-20211025
+x86_64               randconfig-a016-20211025
+x86_64               randconfig-a012-20211025
+i386                 randconfig-a012-20211025
+i386                 randconfig-a013-20211025
+i386                 randconfig-a011-20211025
+i386                 randconfig-a016-20211025
+i386                 randconfig-a015-20211025
+i386                 randconfig-a014-20211025
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+riscv                randconfig-c006-20211025
+powerpc              randconfig-c003-20211025
+arm                  randconfig-c002-20211025
+x86_64               randconfig-c007-20211025
+mips                 randconfig-c004-20211025
+i386                 randconfig-c001-20211025
+s390                 randconfig-c005-20211025
+x86_64               randconfig-a002-20211025
+x86_64               randconfig-a004-20211025
+x86_64               randconfig-a005-20211025
+x86_64               randconfig-a006-20211025
+x86_64               randconfig-a001-20211025
+x86_64               randconfig-a003-20211025
+i386                 randconfig-a003-20211025
+i386                 randconfig-a004-20211025
+i386                 randconfig-a002-20211025
+i386                 randconfig-a005-20211025
+i386                 randconfig-a001-20211025
+i386                 randconfig-a006-20211025
+hexagon              randconfig-r045-20211025
+hexagon              randconfig-r041-20211025
+
 ---
- Documentation/x86/index.rst  |  1 +
- Documentation/x86/xstate.rst | 66 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 67 insertions(+)
- create mode 100644 Documentation/x86/xstate.rst
-
-diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
-index 383048396336..f498f1d36cd3 100644
---- a/Documentation/x86/index.rst
-+++ b/Documentation/x86/index.rst
-@@ -37,3 +37,4 @@ x86-specific Documentation
-    sgx
-    features
-    elf_auxvec
-+   xstate
-diff --git a/Documentation/x86/xstate.rst b/Documentation/x86/xstate.rst
-new file mode 100644
-index 000000000000..d02e9f10919e
---- /dev/null
-+++ b/Documentation/x86/xstate.rst
-@@ -0,0 +1,66 @@
-+Using XSTATE features in user space applications
-+================================================
-+
-+The x86 architecture supports floating-point extensions which are
-+enumerated via CPUID. Applications consult CPUID and use XGETBV to
-+evaluate which features have been enabled by the kernel XCR0.
-+
-+Up to AVX-512 and PKRU states, these features are automatically enabled by
-+the kernel if available. Features like AMX TILE_DATA (XSTATE component 18)
-+are enabled by XCR0 as well, but the first use of related instruction is
-+trapped by the kernel because by default the required large XSTATE buffers
-+are not allocated automatically.
-+
-+Using dynamically enabled XSTATE features in user space applications
-+-------------------------------------------------------------------
-+
-+The kernel provides an arch_prctl(2) based mechanism for applications to
-+request the usage of such features. The arch_prctl(2) options related to
-+this are:
-+
-+-ARCH_GET_XCOMP_SUPP
-+
-+ arch_prctl(ARCH_GET_XCOMP_SUPP, &features);
-+
-+ ARCH_GET_XCOMP_SUPP stores the supported features in userspace storage of
-+ type uint64_t. The second argument is a pointer to that storage.
-+
-+-ARCH_GET_XCOMP_PERM
-+
-+ arch_prctl(ARCH_GET_XCOMP_PERM, &features);
-+
-+ ARCH_GET_XCOMP_PERM stores the features for which the userspace process
-+ has permission in userspace storage of type uint64_t. The second argument
-+ is a pointer to that storage.
-+
-+-ARCH_REQ_XCOMP_PERM
-+
-+ arch_prctl(ARCH_REQ_XCOMP_PERM, feature_nr);
-+
-+ ARCH_REQ_XCOMP_PERM allows to request permission for a dynamically enabled
-+ feature or a feature set. A feature set can be mapped to a facility, e.g.
-+ AMX, and can require one or more XSTATE components to be enabled.
-+
-+ The feature argument is the number of the highest XSTATE component which
-+ is required for a facility to work.
-+
-+When requesting permission for a feature, the kernel checks the
-+availability. The kernel ensures that sigaltstacks in the process's tasks
-+are large enough to accommodate the resulting large signal frame. It
-+enforces this both during ARCH_REQ_XCOMP_SUPP and during any subsequent
-+sigaltstack(2) calls. If an installed sigaltstack is smaller than the
-+resulting sigframe size, ARCH_REQ_XCOMP_SUPP results in -ENOSUPP. Also,
-+sigaltstack(2) results in -ENOMEM if the requested altstack is too small
-+for the permitted features.
-+
-+Permission, when granted, is valid per process. Permissions are inherited
-+on fork(2) and cleared on exec(3).
-+
-+The first use of an instruction related to a dynamically enabled feature is
-+trapped by the kernel. The trap handler checks whether the process has
-+permission to use the feature. If the process has no permission then the
-+kernel sends SIGILL to the application. If the process has permission then
-+the handler allocates a larger xstate buffer for the task so the large
-+state can be context switched. In the unlikely cases that the allocation
-+fails, the kernel sends SIGSEGV.
-+
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
