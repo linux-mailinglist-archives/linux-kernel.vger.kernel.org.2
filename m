@@ -2,66 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB7243B30E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BED243B317
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236147AbhJZNSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:18:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235298AbhJZNSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:18:00 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43F1460E96;
-        Tue, 26 Oct 2021 13:15:36 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 09:15:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, <mingo@redhat.com>,
-        <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] kselftests: ftrace: limit the executing time by reading
- from cached trace
-Message-ID: <20211026091534.4ef376e0@gandalf.local.home>
-In-Reply-To: <20211026211331.8496340b0011127e6505b5ff@kernel.org>
-References: <20211018132616.2234853-1-lizhijian@cn.fujitsu.com>
-        <20211018221636.47157e52@gandalf.local.home>
-        <20211020112027.b01762f2adcfac99e71dcf99@kernel.org>
-        <20211019223454.5da09d74@gandalf.local.home>
-        <20211020115522.75f3e25247c1d30726e9b130@kernel.org>
-        <20211020101659.42360147@gandalf.local.home>
-        <20211021093131.affc348280aba040f76f769e@kernel.org>
-        <20211025221717.56daf4e8@rorschach.local.home>
-        <20211026211331.8496340b0011127e6505b5ff@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236181AbhJZNWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231178AbhJZNWG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:22:06 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7188C061745;
+        Tue, 26 Oct 2021 06:19:42 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id n12so5640875plc.2;
+        Tue, 26 Oct 2021 06:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VzCWxXxK9TdDs8vtpTG3m2qg1k4LCb22yH40yBeN194=;
+        b=iAIwAL+itZzmAG/PxuRn0efFaRUSfd9e5rOMTCoNN+4qLc3H0Q8iuLh9nKBHDgU+G+
+         qmBMdI2B3hQPMWAHa31SY4Az56+T/RGNR4ppy2ui6VjIf50HqnrAECVvqWLlQSV5X9nP
+         Gtw347BTcEdbDJjo0n+oma0GF/rohUVqQLQx3O2ppEM1/5rT4oUfyLyxYZr12yj6E3dS
+         MIxRGgU3IHdaSBtD3tQONEy1sRT259J1bTHlzLjw+9GqL3v0dmGb+Y+40GsTdF/r6XQK
+         P/H1sAzssiePrQc4PZY39vmdgVj8aIDoYhI7a38mG5POc1aWPhCySI1FiHNba5/XDq+P
+         nHWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VzCWxXxK9TdDs8vtpTG3m2qg1k4LCb22yH40yBeN194=;
+        b=Wj+GMCdKO4yVjdJP+0+5HAHA0ErmS72Q5D6bZzZ21FD7ThUfmgK0c06I4ZEXYgXQe7
+         xGBKfa+dqHELDAtR61pSDcfk4N+/rJhxobMd0Xk4wWGd7UKEHAm6dVRxpeB2p2wfurkn
+         nL7oV1Gko+0ahtBpCh6KIGochqvxcXUA51+7TfirOyXN6vmHAzKrN0yNR9AoXo2ubn92
+         6MXig6NjOT+loi1rHeq7601EX874HUzhD7kCU6wT7ZpMX/bBkmdG0dJGdoVWCY46XUcZ
+         /7h/F0NrPF/HoPATbiXJ6X0Q50pDTQiNpmqpOH4s7J4pwl9D3rKCE+aFQPpcfcfXzCu0
+         Sb+g==
+X-Gm-Message-State: AOAM531MYxpX/wojk+uxJU3cO/W7c9jzdTWOwY1+71bnYMuoCkXpbedr
+        UX9Fp023/dOhGCLvvElPRyQ=
+X-Google-Smtp-Source: ABdhPJxUNeYPuoYMIofoYzM3+5yUuwUhxMCQsVBUyKHvPYld780i9L/QH4Wj30RO0PsH0iTP2G+8+g==
+X-Received: by 2002:a17:902:b40a:b0:13d:cbcd:2e64 with SMTP id x10-20020a170902b40a00b0013dcbcd2e64mr22527791plr.18.1635254382283;
+        Tue, 26 Oct 2021 06:19:42 -0700 (PDT)
+Received: from localhost.localdomain ([103.112.79.202])
+        by smtp.gmail.com with ESMTPSA id d17sm9501560pfv.204.2021.10.26.06.19.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Oct 2021 06:19:41 -0700 (PDT)
+From:   kerneljasonxing@gmail.com
+To:     davem@davemloft.net, kuba@kernel.org, alobakin@pm.me,
+        jonathan.lemon@gmail.com, willemb@google.com, pabeni@redhat.com,
+        vvs@virtuozzo.com, cong.wang@bytedance.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>
+Subject: [PATCH net] net: gro: set the last skb->next to NULL when it get merged
+Date:   Tue, 26 Oct 2021 21:18:59 +0800
+Message-Id: <20211026131859.59114-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 21:13:31 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+From: Jason Xing <xingwanli@kuaishou.com>
 
-> > > No, since each testcase must be run under the clean state. Would we need to
-> > > recover the settings?  
-> > 
-> > I would at least put it back to the default. If someone runs the tests,
-> > it should at least put it back to what it was at boot. Otherwise,
-> > someone might run the tests, and then wonder why events are being
-> > dropped when they are reading the trace.  
-> 
-> Umm, we may need to have a knob to reset the ftrace options...
-> Can we warn such user that if the ftracetest finds that the current
-> value is not the same what it sets?
+Setting the @next of the last skb to NULL to prevent the panic in future
+when someone does something to the last of the gro list but its @next is
+invalid.
 
-You mean before we set pause-on-trace, make sure that it was cleared?
+For example, without the fix (commit: ece23711dd95), a panic could happen
+with the clsact loaded when skb is redirected and then validated in
+validate_xmit_skb_list() which could access the error addr of the @next
+of the last skb. Thus, "general protection fault" would appear after that.
 
-That could work too, and then just set everything back to what we expected
-it to be at the start.
+Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+---
+ net/core/skbuff.c | 1 +
+ 1 file changed, 1 insertion(+)
 
--- Steve
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 2170bea..7b248f1 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4396,6 +4396,7 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
+ 		skb_shinfo(p)->frag_list = skb;
+ 	else
+ 		NAPI_GRO_CB(p)->last->next = skb;
++	skb->next = NULL;
+ 	NAPI_GRO_CB(p)->last = skb;
+ 	__skb_header_release(skb);
+ 	lp = p;
+-- 
+1.8.3.1
+
