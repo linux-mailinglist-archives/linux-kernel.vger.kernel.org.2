@@ -2,142 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E37E43B253
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D82343B258
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235931AbhJZMZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:25:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233913AbhJZMZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:25:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11CFD60C51;
-        Tue, 26 Oct 2021 12:22:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635250963;
-        bh=VVITy1iXeMmu2uvVQFJGl7MtIbpBSaPSA2mMIaPRLlk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=BxoNJ10crovHoCJmrFcz3yOXtg5LDyxI4XEEnMX6NT9+mYJfmxuAFfdRVB53gAM1l
-         0/+T9vzAfiajGuj0mpqgkrcNhD3b91ebo+U3NJoWOFIGIWbZaYCMTWFr5SUyUNictm
-         6jTEcglSYm0y1wxkQ1hch/MNPUu30Z0Awq5na1bYcRCoJfbewpeu+McfETJM1lusVc
-         y2yb5O78ITXOx1PloV6tKcbcO2sDXTe9Wc7d5wi3Av0pTyPChcElQAVnnYZEy1g2kI
-         ae4ZAR890oSzkWYBMOvF/hAIfEd3sFX39VhI1OjUQMdlPViOfPBLUPOkooPPRf5DZx
-         nDr0tMJTanKjg==
-Message-ID: <0bcf4c3c831f8e4ebb872aaa409077eea40ceb67.camel@kernel.org>
-Subject: Re: [RFC PATCH v2] ceph: add remote object copy counter to fs
- client metrics
-From:   Jeff Layton <jlayton@kernel.org>
-To:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Patrick Donnelly <pdonnell@redhat.com>
-Date:   Tue, 26 Oct 2021 08:22:41 -0400
-In-Reply-To: <20211025150042.1677-1-lhenriques@suse.de>
-References: <20211025150042.1677-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S234444AbhJZMZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:25:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33594 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234899AbhJZMZ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:25:58 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9AB3A212C0;
+        Tue, 26 Oct 2021 12:23:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635251013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ag1WYrKgf7O+uS5MAQ9kuHiEe3JugxwL2psMaHfGAI=;
+        b=OdzS67F9XXi9aZf2JlXLYFAKkcabf3eI66g2bLe8q2i+iNazdT6GLx70IWRRWBQ4PW7WVQ
+        jg/5ExTWnbTwpFuDVSWrny8wTfh2tn248Rg38UqjbDni+mvgQIH+6Qdu5plUWX7VzJGzsZ
+        JPM7kNiwXyBXgJ+MvccUgGTIWok8rzg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 69994A3B81;
+        Tue, 26 Oct 2021 12:23:33 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 14:23:32 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH 4/4] mm: allow !GFP_KERNEL allocations for kvmalloc
+Message-ID: <YXfzRNIwE2q/hKgO@dhcp22.suse.cz>
+References: <20211025150223.13621-1-mhocko@kernel.org>
+ <20211025150223.13621-5-mhocko@kernel.org>
+ <163520487423.16092.18303917539436351482@noble.neil.brown.name>
+ <YXerCVllHB9g+JnI@dhcp22.suse.cz>
+ <163524528594.8576.8070122002785265336@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163524528594.8576.8070122002785265336@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-25 at 16:00 +0100, Luís Henriques wrote:
-> This counter will keep track of the number of remote object copies done on
-> copy_file_range syscalls.  This counter will be kept using the metrics
-> infrastructure and thus accessible through debugfs.  For now, this counter
-> won't be sent to the MDS.
+On Tue 26-10-21 21:48:05, Neil Brown wrote:
+> On Tue, 26 Oct 2021, Michal Hocko wrote:
+[...]
+> > > GFP_NOWAIT is not a modifier.  It is a base value that can be modified.
+> > > I think you mean that
+> > >     __GFP_NORETRY is not supported and __GFP_DIRECT_RECLAIM is required
+> > 
+> > I thought naming the higher level gfp mask would be more helpful here.
+> > Most people do not tend to think in terms of __GFP_DIRECT_RECLAIM but
+> > rather GFP_NOWAIT or GFP_ATOMIC.
 > 
-> Cc: Patrick Donnelly <pdonnell@redhat.com>
-> Signed-off-by: Luís Henriques <lhenriques@suse.de>
-> ---
-> Hi!
+> Maybe it would.  But the text says "Reclaim modifiers" and then lists
+> one modifier and one mask.  That is confusing.
+> If you want to mention both, keep them separate.
 > 
-> So, here's v2 of this RFC.  Now, I guess that Patrick's idea of adding
-> this counter was to validate the test results, isn't that right?  If so,
-> this has to be done from within the fstest code and not from teuthology
-> test.  The reason is that fstests mount and unmount the filesystems under
-> test, which effectively wipe the metrics on the client.
+>   GFP_NOWAIT and GFP_ATOMIC are not supported, neither is the
+>   __GFP_NORETRY modifier.
 > 
-> So, the follow-up to this patch would be changes to the corresponding
-> fstests so that they would access this debugfs file and check the counter
-> is set to the expected value.
-> 
-> Cheers,
-> --
-> Luís
-> 
->  fs/ceph/debugfs.c | 6 ++++++
->  fs/ceph/file.c    | 1 +
->  fs/ceph/metric.c  | 2 ++
->  fs/ceph/metric.h  | 2 ++
->  4 files changed, 11 insertions(+)
-> 
-> diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-> index 38b78b45811f..9f1a09816541 100644
-> --- a/fs/ceph/debugfs.c
-> +++ b/fs/ceph/debugfs.c
-> @@ -235,6 +235,12 @@ static int metric_show(struct seq_file *s, void *p)
->  		   percpu_counter_sum(&m->i_caps_mis),
->  		   percpu_counter_sum(&m->i_caps_hit));
->  
-> +	seq_printf(s, "\n");
-> +	seq_printf(s, "item          total\n");
-> +	seq_printf(s, "-------------------\n");
-> +	seq_printf(s, "%-14s%-16lld\n", "copy-from",
-> +		   atomic64_read(&m->total_copyfrom));
-> +
->  	return 0;
->  }
->  
-> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-> index e61018d9764e..b36a7b9c1ab8 100644
-> --- a/fs/ceph/file.c
-> +++ b/fs/ceph/file.c
-> @@ -2253,6 +2253,7 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off
->  				bytes = ret;
->  			goto out;
->  		}
-> +		atomic64_inc(&fsc->mdsc->metric.total_copyfrom);
->  		len -= object_size;
->  		bytes += object_size;
->  		*src_off += object_size;
-> diff --git a/fs/ceph/metric.c b/fs/ceph/metric.c
-> index 04d5df29bbbf..a8a9f96c56a8 100644
-> --- a/fs/ceph/metric.c
-> +++ b/fs/ceph/metric.c
-> @@ -278,6 +278,8 @@ int ceph_metric_init(struct ceph_client_metric *m)
->  	if (ret)
->  		goto err_total_inodes;
->  
-> +	atomic64_set(&m->total_copyfrom, 0);
-> +
->  	m->session = NULL;
->  	INIT_DELAYED_WORK(&m->delayed_work, metric_delayed_work);
->  
-> diff --git a/fs/ceph/metric.h b/fs/ceph/metric.h
-> index 0133955a3c6a..a1e2cd46de6b 100644
-> --- a/fs/ceph/metric.h
-> +++ b/fs/ceph/metric.h
-> @@ -169,6 +169,8 @@ struct ceph_client_metric {
->  	struct percpu_counter opened_inodes;
->  	struct percpu_counter total_inodes;
->  
-> +	atomic64_t total_copyfrom;
-> +
->  	struct ceph_mds_session *session;
->  	struct delayed_work delayed_work;  /* delayed work */
->  };
+> or something like that.
 
+Fair enough. I went with this
+commit fb93996c217cea864a3b3ffa8a8cd482bf0a1f62
+Author: Michal Hocko <mhocko@suse.com>
+Date:   Tue Oct 26 14:23:00 2021 +0200
 
-I know the main interest currently is just the count of ops, but I do
-think that we'll want a full set of stats like we track for
-reads/writes, and I'd rather not rev the file format any more than we
-need to.
+    fold me "mm: allow !GFP_KERNEL allocations for kvmalloc"
 
-Could you extend struct ceph_client_metric with a full set of copy stats
-and plumb in the places to record and report them? It should be pretty
-similar to how reads/writes are tracked.
+diff --git a/mm/util.c b/mm/util.c
+index fdec6b4b1267..1fb6dd907bb0 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -549,7 +549,7 @@ EXPORT_SYMBOL(vm_mmap);
+  * Uses kmalloc to get the memory but if the allocation fails then falls back
+  * to the vmalloc allocator. Use kvfree for freeing the memory.
+  *
+- * Reclaim modifiers - __GFP_NORETRY and GFP_NOWAIT are not supported.
++ * GFP_NOWAIT and GFP_ATOMIC are not supported, neither is the __GFP_NORETRY modifier.
+  * __GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
+  * preferable to the vmalloc fallback, due to visible performance drawbacks.
+  *
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Michal Hocko
+SUSE Labs
