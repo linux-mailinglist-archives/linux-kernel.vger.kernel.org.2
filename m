@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88AB43B0A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8A643B0AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbhJZK6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:58:45 -0400
-Received: from mga03.intel.com ([134.134.136.65]:8096 "EHLO mga03.intel.com"
+        id S235279AbhJZLAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 07:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234007AbhJZK6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:58:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="229823312"
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="229823312"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 03:56:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
-   d="scan'208";a="724084101"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Oct 2021 03:56:15 -0700
-Subject: Re: [PATCH] mmc: cqhci: clear HALT state after CQE enable
-To:     Wenbin Mei <wenbin.mei@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Ritesh Harjani <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        stable@vger.kernel.org
-References: <20211026070812.9359-1-wenbin.mei@mediatek.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <8d096ff5-4266-815f-d050-1f3f0cddeba8@intel.com>
-Date:   Tue, 26 Oct 2021 13:56:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S232840AbhJZLAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 07:00:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10A8F60C4A;
+        Tue, 26 Oct 2021 10:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635245899;
+        bh=VJI5lKGLCEnHTM2XKYq5kpokq1eyOKv3nZvB6oSX6iI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c0nDHmUZYJu1sh0KaumGV8/WwXUe2hnA6se9sTtEb2P/q1ZBrxQC/citRv//6N7J5
+         5ZZxXaklOn8vawrgdtxvw31SWmCmMsm7zSVYLqaiG+5unri3xlhPioZxMHGkZKKEN7
+         9FtyqSOjYtFzSQQRbpYRf00gsSiWKRKxSdtUqK0G301JRPiBsvZNg/1q1V/oLaDA6e
+         PrQG2QJX1l0VC9u6PYHbDd81vXLUf4Qc1HKn/U7IL50qmS8MxAFkYdt6FBPlHksWhu
+         4Z9j0CU53oJeBkDVfJatFxBoOFYjB6XkxSdQyBs8DHbatbg4kuF38OQw0O8/dXy/sj
+         0V2bhGfhzsUrw==
+Date:   Tue, 26 Oct 2021 11:58:14 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: Re: [PATCH v3 3/7] PCI: imx6: Fix the regulator dump when link never
+ came up
+Message-ID: <YXffRmvPYwetsg3L@sirena.org.uk>
+References: <1634886750-13861-1-git-send-email-hongxing.zhu@nxp.com>
+ <1634886750-13861-4-git-send-email-hongxing.zhu@nxp.com>
+ <20211025111312.GA31419@francesco-nb.int.toradex.com>
+ <YXaTxDJjhpcj5XBV@sirena.org.uk>
+ <AS8PR04MB8676A0F3DA3248C6A27801148C849@AS8PR04MB8676.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20211026070812.9359-1-wenbin.mei@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CM9V7cdtbJ/epuLB"
+Content-Disposition: inline
+In-Reply-To: <AS8PR04MB8676A0F3DA3248C6A27801148C849@AS8PR04MB8676.eurprd04.prod.outlook.com>
+X-Cookie: Times approximate.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2021 10:08, Wenbin Mei wrote:
-> While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
-> cache) and disable cqe, for resume back, we enable CQE and not clear HALT
-> state.
-> In this case MediaTek mmc host controller will keep the value for HALT
-> state after CQE disable/enable flow, so the next CQE transfer after resume
-> will be timeout due to CQE is in HALT state, the log as below:
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
-> <4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
-> 
-> This change check HALT state after CQE enable, if CQE is in HALT state, we
-> will clear it.
-> 
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> Cc: stable@vger.kernel.org
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+--CM9V7cdtbJ/epuLB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/mmc/host/cqhci-core.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-> index ca8329d55f43..b0d30c35c390 100644
-> --- a/drivers/mmc/host/cqhci-core.c
-> +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -282,6 +282,9 @@ static void __cqhci_enable(struct cqhci_host *cq_host)
->  
->  	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
->  
-> +	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
-> +		cqhci_writel(cq_host, 0, CQHCI_CTL);
-> +
->  	mmc->cqe_on = true;
->  
->  	if (cq_host->ops->enable)
-> 
+On Tue, Oct 26, 2021 at 02:18:18AM +0000, Richard Zhu wrote:
 
+> > I should probably also say that the check for the regulator looks buggy=
+ as well,
+> > regulators should only be optional if they can be physically absent whi=
+ch does
+> > not seem likely for PCI devices.  If the driver is not doing something =
+to
+> > reconfigure the hardware to account for a missing supply this is genera=
+lly a big
+> > warning sign.
+> >=20
+> > I really don't understand why regulator support is so frequently proble=
+matic
+> > for PCI controllers.  :(
+
+> [Richard Zhu] Hi Mark:
+> The _enabled check is used because that this regulator is optional in the=
+ HW design.
+> To make the codes clean and aligned on different HW boards, the _enabled =
+check is added.
+
+I would be really surprised to see PCI hardware that was able to support
+a supply being physically absent, and this use of _is_enabled() is quite
+simply not how any of this is supposed to work in the regulator API even
+for regulators that can be optional.
+
+> The root cause is that the error return is not handled properly by the co=
+ntroller driver.
+> I.MX PCIe controller doesn't support the Hot-Plug, and it would return -1=
+10 error
+> when PCIe link never came up. Thus, the _probe would be failed in the end.
+> The clocks/regulator usage balance should be considered by i.MX PCIe cont=
+roller, that's all.
+> It's not a general case, and the problem is not caused by the regulator s=
+upport.
+
+Perhaps it's not causing problems in this design but if the supply is
+ever shared with anything else then the software will run into trouble.
+There will also be problems with the error handling on a system where
+the regulator needs to be controlled.
+
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
+
+--CM9V7cdtbJ/epuLB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF330UACgkQJNaLcl1U
+h9A2rAf/TXfjNuS1ZmCvM9JPsvkTyS9t0JH1Y8KuUtNmbOh51YbCBVZ8o/toaYJ8
+3VZy5Ptw8l/2KnbYlSEaFFGbiJpIcVkOw6Qo7nKSnArIMJIB/uM+Jb/1YRnXXdF5
+SE+AIC+vPcUPWSGQsljXr1jttE954+U6sCO6QhWlRWjIP7O+sxpL+7v6uw3SBpYp
+9HEJF3oeXJMRqkhyC4YKZ1emojKPHT3sVWUaQyRDRQD3m+7QjLGIWJ+JNB/gEcXv
+2r8yXKuijwOmrTP7niPOLXez48txft/1ojj8Fb6bbaHlPlQp9c3kWgO6/RoCAwf9
+8lqP9o/zPqn8jhq+wb4DCHrE5hOi5w==
+=f1Cl
+-----END PGP SIGNATURE-----
+
+--CM9V7cdtbJ/epuLB--
