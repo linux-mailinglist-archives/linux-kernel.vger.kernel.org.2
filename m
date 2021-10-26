@@ -2,166 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BE643B07B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2445843B083
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 12:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235206AbhJZKun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 06:50:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57292 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbhJZKui (ORCPT
+        id S235195AbhJZKxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 06:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231345AbhJZKxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 06:50:38 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 714D221954;
-        Tue, 26 Oct 2021 10:48:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635245292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 26 Oct 2021 06:53:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C989C061745;
+        Tue, 26 Oct 2021 03:51:07 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 12:51:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635245465;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Dx6hgE8dCAMGrTJldNwNzdTARa/RAij/+n/eTsUcDvU=;
-        b=pRNhmR5uhIJ10FzdEdtNIbiYu10HA8z0qf7HtIcUga5r6/ac+96Oi8qMEVL9t8zOrW3whK
-        bKVfDiOtb+uU6g3ImiZesH/txUVP4O5yp9IENGmiVwhumRVx0skWhtNFzb4+wZLR1fLpGe
-        1UwJIpUvQLsL8Zee4/Pt+spfF2dyIDo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635245292;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        bh=YR554zZNX+8KqrAZj/mvDyDMz4vqSs1+lugDdR5VM9o=;
+        b=EqKd9SIGW+8KPrTEN9KdzL/ayXZncODZUFKi8XacggL2s/HIYgtCPjkZz2dfkaceEHKInl
+        nJzhZZ8qLAa8WLeLTG2uUF7LfDxzSnBWI69Ltey1B4TwR5NU7ma6TADYZmYUIT9+h2LlbM
+        HvmlymcQxB509oQQ8wvPq5wtCJ30ONxfyFWcLdyz1ZdwkkyZnDUA/C0ejARfxi77IkVUhy
+        WKEXm/016JTbB7pjSJ0uCKevmWutL7RM/2ztYuar6eIalTapvkytH8wfW13Vdcax4GkCxI
+        MsIgAgmGlA86159eRNsFqi05Gc4XKURSu4S2whv+Fw3f7ii61OVgkKiXmz2IHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635245465;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Dx6hgE8dCAMGrTJldNwNzdTARa/RAij/+n/eTsUcDvU=;
-        b=3EJlcgepH4Kg85IOlUbJiUAB+Exb9mHxQGDE1+lYiq5l5IMntXdXRr5o5PQL/mbBxMGBf5
-        3yIaPwuwcAlEo/DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B58413D43;
-        Tue, 26 Oct 2021 10:48:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uSdrLejcd2HNHgAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 26 Oct 2021 10:48:08 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        bh=YR554zZNX+8KqrAZj/mvDyDMz4vqSs1+lugDdR5VM9o=;
+        b=i5ZBkH/6gh1/sfXgbDyOdY4YFPeYExSuuQCDhYHpZ93zDdR5rOCv8SkT7yoibP3m+VG345
+        FQQ/Y9aTa9tHxNCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Denis Kirjanov <dkirjanov@suse.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH net-next v3] net: sched: gred: dynamically allocate
+ tc_gred_qopt_offload
+Message-ID: <20211026105104.vhfxrwisqcbvsxiq@linutronix.de>
+References: <20211026100711.nalhttf6mbe6sudx@linutronix.de>
+ <3bf1e148-14fc-98f6-5319-78046a7b9565@suse.de>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Michal Hocko" <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, "Dave Chinner" <david@fromorbit.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Uladzislau Rezki" <urezki@gmail.com>,
-        linux-fsdevel@vger.kernel.org,
-        "LKML" <linux-kernel@vger.kernel.org>,
-        "Ilya Dryomov" <idryomov@gmail.com>,
-        "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH 4/4] mm: allow !GFP_KERNEL allocations for kvmalloc
-In-reply-to: <YXerCVllHB9g+JnI@dhcp22.suse.cz>
-References: <20211025150223.13621-1-mhocko@kernel.org>,
- <20211025150223.13621-5-mhocko@kernel.org>,
- <163520487423.16092.18303917539436351482@noble.neil.brown.name>,
- <YXerCVllHB9g+JnI@dhcp22.suse.cz>
-Date:   Tue, 26 Oct 2021 21:48:05 +1100
-Message-id: <163524528594.8576.8070122002785265336@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3bf1e148-14fc-98f6-5319-78046a7b9565@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021, Michal Hocko wrote:
-> On Tue 26-10-21 10:34:34, Neil Brown wrote:
-> > On Tue, 26 Oct 2021, Michal Hocko wrote:
-> > > From: Michal Hocko <mhocko@suse.com>
-> > >=20
-> > > A support for GFP_NO{FS,IO} and __GFP_NOFAIL has been implemented
-> > > by previous patches so we can allow the support for kvmalloc. This
-> > > will allow some external users to simplify or completely remove
-> > > their helpers.
-> > >=20
-> > > GFP_NOWAIT semantic hasn't been supported so far but it hasn't been
-> > > explicitly documented so let's add a note about that.
-> > >=20
-> > > ceph_kvmalloc is the first helper to be dropped and changed to
-> > > kvmalloc.
-> > >=20
-> > > Signed-off-by: Michal Hocko <mhocko@suse.com>
-> > > ---
-> > >  include/linux/ceph/libceph.h |  1 -
-> > >  mm/util.c                    | 15 ++++-----------
-> > >  net/ceph/buffer.c            |  4 ++--
-> > >  net/ceph/ceph_common.c       | 27 ---------------------------
-> > >  net/ceph/crypto.c            |  2 +-
-> > >  net/ceph/messenger.c         |  2 +-
-> > >  net/ceph/messenger_v2.c      |  2 +-
-> > >  net/ceph/osdmap.c            | 12 ++++++------
-> > >  8 files changed, 15 insertions(+), 50 deletions(-)
-> > >=20
-> > > diff --git a/include/linux/ceph/libceph.h b/include/linux/ceph/libceph.h
-> > > index 409d8c29bc4f..309acbcb5a8a 100644
-> > > --- a/include/linux/ceph/libceph.h
-> > > +++ b/include/linux/ceph/libceph.h
-> > > @@ -295,7 +295,6 @@ extern bool libceph_compatible(void *data);
-> > > =20
-> > >  extern const char *ceph_msg_type_name(int type);
-> > >  extern int ceph_check_fsid(struct ceph_client *client, struct ceph_fsi=
-d *fsid);
-> > > -extern void *ceph_kvmalloc(size_t size, gfp_t flags);
-> > > =20
-> > >  struct fs_parameter;
-> > >  struct fc_log;
-> > > diff --git a/mm/util.c b/mm/util.c
-> > > index bacabe446906..fdec6b4b1267 100644
-> > > --- a/mm/util.c
-> > > +++ b/mm/util.c
-> > > @@ -549,13 +549,10 @@ EXPORT_SYMBOL(vm_mmap);
-> > >   * Uses kmalloc to get the memory but if the allocation fails then fal=
-ls back
-> > >   * to the vmalloc allocator. Use kvfree for freeing the memory.
-> > >   *
-> > > - * Reclaim modifiers - __GFP_NORETRY and __GFP_NOFAIL are not supporte=
-d.
-> > > + * Reclaim modifiers - __GFP_NORETRY and GFP_NOWAIT are not supported.
-> >=20
-> > GFP_NOWAIT is not a modifier.  It is a base value that can be modified.
-> > I think you mean that
-> >     __GFP_NORETRY is not supported and __GFP_DIRECT_RECLAIM is required
->=20
-> I thought naming the higher level gfp mask would be more helpful here.
-> Most people do not tend to think in terms of __GFP_DIRECT_RECLAIM but
-> rather GFP_NOWAIT or GFP_ATOMIC.
+On 2021-10-26 13:42:24 [+0300], Denis Kirjanov wrote:
+> > diff --git a/net/sched/sch_gred.c b/net/sched/sch_gred.c
+> > index 72de08ef8335e..1073c76d05c45 100644
+> > --- a/net/sched/sch_gred.c
+> > +++ b/net/sched/sch_gred.c
+> > @@ -311,42 +312,43 @@ static void gred_offload(struct Qdisc *sch, enum tc_gred_command command)
+> >   {
+> >   	struct gred_sched *table = qdisc_priv(sch);
+> >   	struct net_device *dev = qdisc_dev(sch);
+> > -	struct tc_gred_qopt_offload opt = {
+> > -		.command	= command,
+> > -		.handle		= sch->handle,
+> > -		.parent		= sch->parent,
+> > -	};
+> > +	struct tc_gred_qopt_offload *opt = table->opt;
+> >   	if (!tc_can_offload(dev) || !dev->netdev_ops->ndo_setup_tc)
+> >   		return;
+> > +	memset(opt, 0, sizeof(*opt));
+> 
+> It's zeroed in kzalloc()
 
-Maybe it would.  But the text says "Reclaim modifiers" and then lists
-one modifier and one mask.  That is confusing.
-If you want to mention both, keep them separate.
+but it is not limited to a single invocation?
 
-  GFP_NOWAIT and GFP_ATOMIC are not supported, neither is the
-  __GFP_NORETRY modifier.
-
-or something like that.
-
-Thanks,
-NeilBrown
-
-
->=20
-> > But I really cannot see why either of these statements are true.
->=20
-> The reason is same as why vmalloc do not support neither of them.
->=20
-> > Before your patch, __GFP_NORETRY would have forced use of kmalloc, so
-> > that would mean it isn't really supported.  But that doesn't happen any m=
-ore.
->=20
-> __GFP_NORETRY is used internaly by kvmalloc but that doesn't mean it is
-> supported by the caller. In fact __GFP_NORETRY is used to implement a
-> higher level logic of the prioritization between kmalloc and vmalloc
-> fallback because some users would rather see vmalloc fallback even for
-> smaller allocations which do not really fail otherwise (e.g. < order-4).
-> --=20
-> Michal Hocko
-> SUSE Labs
->=20
->=20
+Sebastian
