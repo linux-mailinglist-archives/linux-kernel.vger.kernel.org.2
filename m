@@ -2,141 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1075343B9C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2B143B9B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238352AbhJZSnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235794AbhJZSnD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:43:03 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949EDC061745;
-        Tue, 26 Oct 2021 11:40:39 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id bq11so740436lfb.10;
-        Tue, 26 Oct 2021 11:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2B7Nuk56PYtXZAcRZA0VYMCuyr74J58C1m8umyHIOaU=;
-        b=ZNeeUJBEHOBELTBzEakgjoftW/Sv91UOnDWRS1R8U0bonwBGmn3exCfmJzAPs16VwJ
-         H3XmoA2iNbwuXpgzss4J2YzVzXg+ZSH04wZ5Q6T2U6pPpMD+2ALMelSEccXDqIzKc1ee
-         JE0nnu2YDRcI6b7Y3v6X/MFy6GUKl2VWwfMhKOQDkM5xh7BUTmbkah+W5aqZNrEKARtA
-         d2sX045a1z/WaBbkGNPIrmNooX4xVtoDxkpHue+L+AiDs7bWqJYr1FnK1dB8o+wMXpld
-         r0Aw4uZHLOw2+Aqq/K9FYEVpMrpz6HNhV4/BAvCevLpTN7g1GLShmt0uv0Rfv4gWtjj+
-         r4hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2B7Nuk56PYtXZAcRZA0VYMCuyr74J58C1m8umyHIOaU=;
-        b=f+fQzWW8HykWfaDy9prChtlOG7jKli6951nPBBSBwHNIugH6Ufocl6qWmLFVSrp7eH
-         vFZwueaIVjhsd61I7wTXyhvP5beqWsraOVseMufyWIZpDAPYH5zHt34kuFQKC9aJjJYJ
-         8eJiev5FMgZHZRU30G13jgdtGNsjXVTuGz1QPGf9R3al0MeSwOvCmwCPH8xquR4bIym3
-         EtbGhDQc4lOU5813EtHML5yi2tDWvCHGliAXXA28iHhiBlNNKl4SlhtjFuXGzm12kFZv
-         JXAEk3Kc+V9dtJC7c5ytWbgQLMZYwPXdMFSTvt7d9nuEERO32ARTtPsAI+6/BnqRw0A2
-         cf4w==
-X-Gm-Message-State: AOAM531GaMzNssJn2g+Gzm5V045srr0Sfu+XsMAAqsP0gCFGMT2q7r0Y
-        qWxyEj9xAjwxYvQ0Mno5DJg=
-X-Google-Smtp-Source: ABdhPJwwtAabAKXq8k0TcRyNcUuYLOLsZi/bFhBN5H6Trb/Lr2poDcp2o599QFZ8mkBI4XbNhEJ9tg==
-X-Received: by 2002:a05:6512:2386:: with SMTP id c6mr15352362lfv.55.1635273637533;
-        Tue, 26 Oct 2021 11:40:37 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id s18sm2012983lfg.27.2021.10.26.11.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:40:37 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 21:40:35 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 1/4] fs/ntfs3: In function ntfs_set_acl_ex do not change
- inode->i_mode if called from function ntfs_init_acl
-Message-ID: <20211026184035.jkopoeaqukeofmye@kari-VirtualBox>
-References: <25b9a1b5-7738-7b36-7ead-c8faa7cacc87@paragon-software.com>
- <67d0c9ca-2531-8a8a-ea0b-270dc921e271@paragon-software.com>
+        id S238331AbhJZSje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:39:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230225AbhJZSjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 14:39:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D25DF60E05;
+        Tue, 26 Oct 2021 18:37:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635273428;
+        bh=1xQXVhbF8/BGLuvjiPQZc83KtW2+s7akCS60PQNrPZg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g30x3pZvp/LbCs0Ax/nHYsd74I1JEAOKbTMArMvXnNkfibGEYWkLJSFx4Zytob6Bl
+         F1iMT7y2fiD6zrj/XCf6jOAgGtDVvBg5gxOJcaZMoMO6MCAm4MmSWUh7cNAbG0hsWp
+         ki9rEZgjxnq43vVD/BUU2qEJX3Evz4S9ttVDkFK5xVQsAiZq/r0lA/ptW4GANCPQmO
+         raVqRcux30VB2ahlzI9+PnTXjazdX0SySkBbWjXHYc1MDw4zw2Xo5ABQvPpKr6Afoi
+         koSXsza+Ospt210rf7g2WHLxvkljZOkaszX1Tkkr38o4AWaSI2FRkH0Wty5/q27pIJ
+         iGjvwPiqXqKPQ==
+Date:   Tue, 26 Oct 2021 13:42:01 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Haren Myneni <haren@linux.ibm.com>,
+        linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] powerpc/vas: Fix potential NULL pointer dereference
+Message-ID: <20211026184201.GB1457721@embeddedor>
+References: <20211015050345.GA1161918@embeddedor>
+ <97c42e43-15b9-5db6-d460-dbb16f31954d@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <67d0c9ca-2531-8a8a-ea0b-270dc921e271@paragon-software.com>
+In-Reply-To: <97c42e43-15b9-5db6-d460-dbb16f31954d@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe little too long subject line.
-
-On Mon, Oct 25, 2021 at 07:58:26PM +0300, Konstantin Komarov wrote:
-> ntfs_init_acl sets mode. ntfs_init_acl calls ntfs_set_acl_ex.
-> ntfs_set_acl_ex must not change this mode.
-> Fixes xfstest generic/444
-> Fixes: 83e8f5032e2d ("fs/ntfs3: Add attrib operations")
-
-Where does this commit id come from? Seems wrong to me.
-
+On Mon, Oct 18, 2021 at 02:09:31PM -0700, Tyrel Datwyler wrote:
+> On 10/14/21 10:03 PM, Gustavo A. R. Silva wrote:
+> > (!ptr && !ptr->foo) strikes again. :)
+> > 
+> > The expression (!ptr && !ptr->foo) is bogus and in case ptr is NULL,
+> > it leads to a NULL pointer dereference: ptr->foo.
+> > 
+> > Fix this by converting && to ||
+> > 
+> > This issue was detected with the help of Coccinelle, and audited and
+> > fixed manually.
+> > 
+> > Fixes: 1a0d0d5ed5e3 ("powerpc/vas: Add platform specific user window operations")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Looking at the usage pattern it is obvious that if we determine !ptr attempting
+> to also confirm !ptr->ops is going to blow up.
 > 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/xattr.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+> LGTM.
 > 
-> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-> index 2143099cffdf..97b5f8417d85 100644
-> --- a/fs/ntfs3/xattr.c
-> +++ b/fs/ntfs3/xattr.c
-> @@ -538,7 +538,7 @@ struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
->  
->  static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
->  				    struct inode *inode, struct posix_acl *acl,
-> -				    int type)
-> +				    int type, int init_acl)
+> Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-Like Joe say. Bool here and use true/false
+I think I'll take this in my tree.
 
->  {
->  	const char *name;
->  	size_t size, name_len;
-> @@ -551,8 +551,9 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
->  
->  	switch (type) {
->  	case ACL_TYPE_ACCESS:
-> -		if (acl) {
-> -			umode_t mode = inode->i_mode;
-> +		/* Do not change i_mode if we are in init_acl */
-> +		if (acl && !init_acl) {
-> +			umode_t mode;
->  
->  			err = posix_acl_update_mode(mnt_userns, inode, &mode,
->  						    &acl);
-> @@ -613,7 +614,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
->  int ntfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  		 struct posix_acl *acl, int type)
->  {
-> -	return ntfs_set_acl_ex(mnt_userns, inode, acl, type);
-> +	return ntfs_set_acl_ex(mnt_userns, inode, acl, type, 0);
->  }
->  
->  /*
-> @@ -633,7 +634,7 @@ int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  
->  	if (default_acl) {
->  		err = ntfs_set_acl_ex(mnt_userns, inode, default_acl,
-> -				      ACL_TYPE_DEFAULT);
-> +				      ACL_TYPE_DEFAULT, 1);
->  		posix_acl_release(default_acl);
->  	} else {
->  		inode->i_default_acl = NULL;
-> @@ -644,7 +645,7 @@ int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  	else {
->  		if (!err)
->  			err = ntfs_set_acl_ex(mnt_userns, inode, acl,
-> -					      ACL_TYPE_ACCESS);
-> +					      ACL_TYPE_ACCESS, 1);
->  		posix_acl_release(acl);
->  	}
->  
-> -- 
-> 2.33.0
-> 
+Thanks, Tyrel.
+--
+Gustavo
