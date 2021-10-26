@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4276B43AF6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D9A43AF6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhJZJuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:50:14 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:53920
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234974AbhJZJtv (ORCPT
+        id S233805AbhJZJuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:50:11 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40092
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234374AbhJZJtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:49:51 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        Tue, 26 Oct 2021 05:49:45 -0400
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 95A603FFF8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:47:26 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1FFDD3F170
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 09:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635241646;
-        bh=rL7wDI9BhVHC252CW+CxxpCQUhhfA8amv8WUbteCqVg=;
+        s=20210705; t=1635241640;
+        bh=sbYrCs8J0Q0Rz6cp+rkJ/lhh0zXOz8q9lqlVQx/f+TQ=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=I4xrG7cFUuVFPxYscuJIyVVTvzcg0w2TXZ9iPpO1GTdWPBi9rtTUoy8oYpIWWCsQH
-         al9tn1CRei6UYnZZZYyCnvtfI7LU89IeyjwYPnMSQe9jYpXS6HIXmFZGPgjTBQN9Fe
-         L+aqHa97Ng7yqoLRgGJTO9coGrIBSMIugDb7evk8CzKleZ2L19OyJkKT4WE4mjqZSz
-         ko/jARznL0pUyf1CgMEL/5beHYg9bgNbzBdVNzl9wv8U1rdhLJjxOaAtMK7hzecsWR
-         BJHDeanz+VYP791IUyaz4FngRu0UJLq/mL8dCvviCtbyyuDfPPLyVv1Qj7f8Oi8cvI
-         LboW2PRxKNOTg==
-Received: by mail-ed1-f69.google.com with SMTP id c25-20020a056402143900b003dc19782ea8so12593215edx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 02:47:26 -0700 (PDT)
+        b=oSUyqdjSFPWbKqjYHTQOPhgq1OfgbyJtFHp9J4lQ+zmmUoSSeSYwszSthnfkwjZRf
+         Ink2K78bwqR3oCywgNX4G0ANBcKBDTjCoEIBAM0NQkBHUofOQGmG155jwCgjq74fb0
+         3ySjWJzHWEi3V/h5UpEPhNaFVKPW3rKx/dQ7+EEYS9AT1cIigJYrjytGb3Lm0KtVZ+
+         dVD07q0QI5iuLgUo2nXBojfHPvJSCRUf/+U2Q+1tBAVvwHASkfjSUVX/pZAHkAZGNO
+         sUM5SxSfI+J/gPbOW2qyVTHKUHs334MsDCiQxaK9d/JN3c50xWstiawuZtQvDjn08W
+         lrmmgLK+J0wGg==
+Received: by mail-lj1-f198.google.com with SMTP id t7-20020a2e7807000000b00210dad8b167so4069153ljc.22
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 02:47:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rL7wDI9BhVHC252CW+CxxpCQUhhfA8amv8WUbteCqVg=;
-        b=axtZ7jQ5ob+ONtvcM1AAj5qCiRZMIyj86X8FhHumZpMKiCKpKySfpQOwZb3pVst9S5
-         D751e5y9jDKGDBTZxP+or28ZDu1g7zjkEj3FOeNVxuoycc2F2BZ65SnDnDjQTQpMsOGh
-         1wD104QyIHwBOvowvrH0SfC+NGHEEw7O48UNMPpPtrYcp/twHhO84HicucwT7jpHlIlC
-         85hnasB8xyxP52nJts7/9NhIxczxo8FsILwxBiCuGfHwTmSq09RxhDsf9MT1iqjGJL9C
-         w8+2AeH1W2NySJwBaG/GUIbhzAtcKTI+WiYMlYkzePyabyRw5IaDpxui0v2hJc/tIssU
-         y+Sw==
-X-Gm-Message-State: AOAM532wvxsJnEjS4MjoNLG8catmnWT3CPsMKTeEOviNCaYeKKxlHWff
-        bFSmyi71PcQVTth25D/idIex5t0P0uQJCK08/vpTDMlrTYHFb4jG7otJHxmhjWs0RNOpa+kStR1
-        hfOxzMN55N133f6Pfy0xquThfRSIKviepkKlYzJuf8Q==
-X-Received: by 2002:a17:906:c009:: with SMTP id e9mr29552866ejz.509.1635241645742;
-        Tue, 26 Oct 2021 02:47:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyj15dtEVfN26R0cv7huGEYK/rYbVAl8R0+VUld7zFjW27HL1TfRHGuG6Mr78Cler2U3kJh2A==
-X-Received: by 2002:a05:6512:1190:: with SMTP id g16mr21983643lfr.609.1635241635178;
-        Tue, 26 Oct 2021 02:47:15 -0700 (PDT)
+        bh=sbYrCs8J0Q0Rz6cp+rkJ/lhh0zXOz8q9lqlVQx/f+TQ=;
+        b=BnC7FFH4FLltWNhsSSkx2h5jIn/zA1vYFRE61hAlSbquMV9ZBwctzbCm4auZzQHWll
+         0ewstcqkfCAtoaqAD2gKR0Q5wZXHn24mO8eZzR7nl7+mvbcHAJMCnYspfALQoNZxb5i4
+         NJDoEA7fRd2g7AYy8qmcBcZdTWTi/LjpI16D1QNT8p9EjaBTAQw86tgaPTVcJ6X2KwLx
+         w+Nx4tpsX/DKR6sCcdWqKzpcYa3csei5eA9ohVgDq/WU9KUAMCKg87c3XKYsgyY42TXP
+         AIKt5Un4VMNn+R7eZ8o/opCp52TTE1vhfN+Ue5wlIASWCOx0LP8hqDiACGiIXLFpci2m
+         6tQA==
+X-Gm-Message-State: AOAM530eNFx94omuqt5SLfMIxuofOgwO8GzjhJjkwPMFHG7Ti+aGuFaU
+        WGUd4KSjLW3Oj+jFN/6Z5txvQmPNhTxKUq0n9BoiXq4FT3A5Q9iCY9Ffv3jyqmm7sxcNJKzCsVD
+        G5CwlK2wzTJWz178GY3gquzYtXrQB7R3Oz1ZJbxbUyw==
+X-Received: by 2002:a2e:7304:: with SMTP id o4mr886883ljc.385.1635241636727;
+        Tue, 26 Oct 2021 02:47:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzKSsLVNoJZPREVg5VqEAatQtzjWaBPxJNdTK1B4zkn7s0ddrcueJak0ah7O3ADQwivq+qDAQ==
+X-Received: by 2002:a2e:7304:: with SMTP id o4mr886837ljc.385.1635241636293;
+        Tue, 26 Oct 2021 02:47:16 -0700 (PDT)
 Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id v17sm113794lfo.167.2021.10.26.02.47.14
+        by smtp.gmail.com with ESMTPSA id v17sm113794lfo.167.2021.10.26.02.47.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 02:47:14 -0700 (PDT)
+        Tue, 26 Oct 2021 02:47:15 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
         arm@kernel.org, soc@kernel.org
@@ -61,9 +61,9 @@ Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL] ARM: dts: samsung: dts for v5.16
-Date:   Tue, 26 Oct 2021 11:47:07 +0200
-Message-Id: <20211026094709.75692-3-krzysztof.kozlowski@canonical.com>
+Subject: [GIT PULL] arm64: dts: samsung: exynos for v5.16
+Date:   Tue, 26 Oct 2021 11:47:08 +0200
+Message-Id: <20211026094709.75692-4-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211026094709.75692-1-krzysztof.kozlowski@canonical.com>
 References: <20211026094709.75692-1-krzysztof.kozlowski@canonical.com>
@@ -81,42 +81,32 @@ Best regards,
 Krzysztof
 
 
-The following changes since commit 7ec804d6025c952e3122ad7fe768178efca3300e:
+The following changes since commit 2b663ae7152f785732d35ce38ad20ad10aca3116:
 
-  ARM: dts: exynos: use spaces instead of tabs around '=' (2021-09-30 13:45:55 +0200)
+  arm64: dts: exynos: add minimal support for exynosautov9 sadk board (2021-10-12 14:20:57 +0200)
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt-5.16-2
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt64-5.16-2
 
-for you to fetch changes up to 7b06c1ad884ee80e43604ba2a0bbc5f8ef3524e1:
+for you to fetch changes up to b2f217cc7fbd3e6a097021b8b663328a649ea232:
 
-  ARM: dts: s5pv210: add 'chassis-type' property (2021-10-19 10:57:40 +0200)
-
-----------------------------------------------------------------
-Samsung DTS ARM changes for v5.16, part two
-
-Add chassis-type property.
+  arm64: dts: exynos: add chipid node for exynosautov9 SoC (2021-10-26 09:17:42 +0200)
 
 ----------------------------------------------------------------
-Krzysztof Kozlowski (2):
-      ARM: dts: exynos: add 'chassis-type' property
-      ARM: dts: s5pv210: add 'chassis-type' property
+Samsung DTS ARM64 changes for v5.16, part two
 
- arch/arm/boot/dts/exynos3250-rinato.dts         | 1 +
- arch/arm/boot/dts/exynos4210-i9100.dts          | 1 +
- arch/arm/boot/dts/exynos4210-trats.dts          | 1 +
- arch/arm/boot/dts/exynos4210-universal_c210.dts | 1 +
- arch/arm/boot/dts/exynos4412-i9300.dts          | 1 +
- arch/arm/boot/dts/exynos4412-i9305.dts          | 1 +
- arch/arm/boot/dts/exynos4412-n710x.dts          | 1 +
- arch/arm/boot/dts/exynos4412-p4note-n8010.dts   | 1 +
- arch/arm/boot/dts/exynos4412-trats2.dts         | 1 +
- arch/arm/boot/dts/exynos5250-snow-rev5.dts      | 1 +
- arch/arm/boot/dts/exynos5250-snow.dts           | 1 +
- arch/arm/boot/dts/exynos5250-spring.dts         | 1 +
- arch/arm/boot/dts/exynos5420-peach-pit.dts      | 1 +
- arch/arm/boot/dts/exynos5800-peach-pi.dts       | 1 +
- arch/arm/boot/dts/s5pv210-fascinate4g.dts       | 1 +
- arch/arm/boot/dts/s5pv210-galaxys.dts           | 1 +
- 16 files changed, 16 insertions(+)
+1. Add chassis-type property.
+2. Add ChipID node to ExynosAutov9 DTSI.
+
+----------------------------------------------------------------
+Chanho Park (1):
+      arm64: dts: exynos: add chipid node for exynosautov9 SoC
+
+Krzysztof Kozlowski (1):
+      arm64: dts: exynos: add 'chassis-type' property
+
+ arch/arm64/boot/dts/exynos/exynos5433-tm2.dts  | 1 +
+ arch/arm64/boot/dts/exynos/exynos5433-tm2e.dts | 1 +
+ arch/arm64/boot/dts/exynos/exynosautov9.dtsi   | 5 +++++
+ 3 files changed, 7 insertions(+)
