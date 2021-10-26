@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A4A43B32D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199DE43B33C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236231AbhJZNdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:33:45 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:59299 "EHLO smtp2.axis.com"
+        id S236247AbhJZNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:38:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236223AbhJZNde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:33:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1635255071;
-  x=1666791071;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gkSOykQ017HN5drBxdrfHBInMC214kQ3rsTxq8LMJzk=;
-  b=KUd/1o55q44d825TVjQqiezCth2l+RfOHiDelv6DyoEJHBuOqXxUTMBd
-   Rlvg+mxdLbd9rbICZ87QjvOfkUaJlCokkibZckyog0gpZH7fTFsu+hUWf
-   6QugZsZ8IQD4JLMG+m9G3+WdDVwSI1+ekWNqc7e4Rvxtp032UObw4Rcbm
-   2rnjJABcLVrPGppw77o5am6XXGZ2x/N8jgCqDNecuQKg1ONyM3a5QGI9B
-   MlRrH30fA0TDXYJSF09+noViQEzIM5jKkSN9DKiWo4uQRNQ0+zbyQV6wX
-   L8Z0tnFUB3C5d6H7P260VpGc6ku3t+jDmYRjVdLLRhlBDpPf/q0CHY9eA
-   g==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] virtio-ring: fix DMA metadata flags
-Date:   Tue, 26 Oct 2021 15:31:00 +0200
-Message-ID: <20211026133100.17541-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
+        id S230285AbhJZNiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 09:38:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 887F760EC0;
+        Tue, 26 Oct 2021 13:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635255358;
+        bh=GQ+yDzgA2vcbE0+K5hXW5DwWQFmuJ2lxO3v/1xD0kqY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dmGr8/aDCCOrqqKw4knAZf8feV2W8qtoeZpRrNKwTlPOujTYd4cbxtZtLtV5OCCkQ
+         VGYs6OUCNQeI969BVc1fVT6BVVlFAYjOBlWOoVVSbzV5tTVdDCcPvJW7M+zLlp3hjn
+         uE7FfWony7cKnuHUAvz3ifsmL7WSJwfYzNibvpwn5661x1qQFjILBua2JrC/kbVpGU
+         zoUFEkJVnEl3e/F5z/P3EwcQzL9HPO8zeHZKdGAD1+FIcO852pqTYi2jqCljn2TDEd
+         qel2NaiNV7Tn/1sPXWO0GbobCpXBGGzAI7zixU67aLjKfTBHHhfJkLyzPtmLOEkYes
+         cIhvLr+cG9NPQ==
+Received: by mail-ed1-f53.google.com with SMTP id s1so13913051edd.3;
+        Tue, 26 Oct 2021 06:35:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531GcCkxwJ6wh4wbBBj+jH6oLIxPFF7cu9y/130M6JPBDuZT4Nu8
+        BM8sLjkvwr5Y76fXAtkuIjcGdeBwB/dMZyX32g==
+X-Google-Smtp-Source: ABdhPJy26qFbzewnIKR+cGC5EF6zEzbM9xrEV2Eo10i80J/7NA0tKo3J7Uri4jQR0jAmeszts3tdQq9gGOYCEbG+vDo=
+X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr14828933ejc.466.1635255287180;
+ Tue, 26 Oct 2021 06:34:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20211019231907.1009567-1-robh@kernel.org> <20211026131039.GC34073@C02TD0UTHF1T.local>
+In-Reply-To: <20211026131039.GC34073@C02TD0UTHF1T.local>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 26 Oct 2021 08:34:35 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+JLcWESzGzjsmrir+gCFEO88YMYdj+FOBhjZgSBNOeVA@mail.gmail.com>
+Message-ID: <CAL_Jsq+JLcWESzGzjsmrir+gCFEO88YMYdj+FOBhjZgSBNOeVA@mail.gmail.com>
+Subject: Re: [PATCH v11 0/5] arm64 userspace counter support
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The flags are currently overwritten, leading to the wrong direction
-being passed to the DMA unmap functions.
+On Tue, Oct 26, 2021 at 8:10 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Tue, Oct 19, 2021 at 06:19:02PM -0500, Rob Herring wrote:
+> > Another version of arm64 userspace counter access support.
+> >
+> > The arm64 support departs from the x86 implementation by requiring the user
+> > to explicitly request user access (via attr.config1) and only enables access
+> > for task bound events. Since usage is explicitly requested, access is
+> > enabled at perf_event_open() rather than on mmap() as that greatly
+> > simplifies the implementation. Rather than trying to lock down the access
+> > as the x86 implementation has been doing, we can start with only a limited
+> > use case enabled and later expand it if needed.
+> >
+> > I've run this version thru Vince's perf tests[13] with arm64 support added.
+> > I wish I'd found these tests sooner...
+>
+> When you say "with arm64 support added", do you mean with patches not
+> yet upstreamed?
 
-Fixes: 72b5e8958738aaa4 ("virtio-ring: store DMA metadata in desc_extra for split virtqueue")
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/virtio/virtio_ring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Correct.
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index dd95dfd85e98..3035bb6f5458 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -576,7 +576,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 	/* Last one doesn't continue. */
- 	desc[prev].flags &= cpu_to_virtio16(_vq->vdev, ~VRING_DESC_F_NEXT);
- 	if (!indirect && vq->use_dma_api)
--		vq->split.desc_extra[prev & (vq->split.vring.num - 1)].flags =
-+		vq->split.desc_extra[prev & (vq->split.vring.num - 1)].flags &=
- 			~VRING_DESC_F_NEXT;
- 
- 	if (indirect) {
--- 
-2.28.0
+> I took a look at the upstream repo, and there's some existing RDPMC
+> support even though upstream never previously supported userspace
+> access. That support code uses PMSELR_EL0, which this series adds no
+> provisions for.
+>
+> Kernel-side, we'll need to either:
+>
+> * Document that PMSELR_EL0 is unreliable, and explcitly zero it within
+>   the kernel such that it cnanot be used as a covert channel. Get the
+>   tests updated to not rely on the never-previously-supported use of
+>   PMSELR_EL0.
+>
+> * Context switch PMSELR_EL0 (which'll IIUC is unreliable for big.LITTLE,
+>   even where the registers exist on each CPU).
 
+Whether we support userspace using PMSELR_EL0 or not, we just need to
+zero it when userspace access is enabled (like the dirty counters).
+When there's a context switch, the read sequence is going to be
+incremented and PMSELR_EL0 will need to be written to again.
+
+Rob
