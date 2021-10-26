@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B8143AA2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020EA43AA2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 04:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbhJZCUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 22:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhJZCUA (ORCPT
+        id S233673AbhJZCUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 22:20:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14864 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230216AbhJZCUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 22:20:00 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C98C061745;
-        Mon, 25 Oct 2021 19:17:37 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso17680588otl.4;
-        Mon, 25 Oct 2021 19:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=qfRMaVYmCV2VsHs2qfoz6Q6uR7yY0g0PWaRhVOpqSeo=;
-        b=VVjtniV7Faw7CQunvrciifhXoxqEAv/df8qR2jYZh9bHrwnh7iHQKd7B5naXQSWomG
-         ztj35r+M5r7QG/rwhGfyg5pRMg2j4kgVoUWiyKvf3kB7Ec8QuwQaPeB8HLd93yCsAoXm
-         fR8CfhJUR9vhqHzhX1uJjOX6YLyu6u5DIJVACBpZKjPfZyvFEUR0Lp8376p8fNP3bOup
-         tAyvUqNk5mDwS7mt8j4nMUELZils7/1/2imc91ryCTO37IInNKOLFNZUUA0Nsz8Ivgwr
-         IM9fXjcZ7B3J2CA2midAoQs4CtUiYVvE9CTNmUCvpJbfCLMe3m7DBIo1CrBicATOD/XR
-         JLKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=qfRMaVYmCV2VsHs2qfoz6Q6uR7yY0g0PWaRhVOpqSeo=;
-        b=VAcbnU2/Bn/uiD3vG2/yi+L+l8u0SrkcNfeVKm/TWBj5/k2Gdmp8NkZqiwvw8VqtaB
-         dlTQ4MeDGThz8FcE4ovAMb6cSTrvWRVnH2M7f7yIzU5aQh7w4sr20APKXe8qJZeQYwRZ
-         R7b1e27w78H0Z6XeCoTh0xMzW/fsJRuO8xWHWKyYRQISeUSc3lQe+JILsqoLd4Sgfp7V
-         oWOjL+Rp2bx4DSeRXmlDwudsmCDd0jN/P7/EUHmxvOaWlUfsNccXJhGQ2+8GK1eaRffb
-         ZYNOS1GscIs5blKUBHizYyi/tB2E3q/xcpdMkPr29OqmsTDDWl+9Hp0wDCogtIor7cQU
-         JjGQ==
-X-Gm-Message-State: AOAM533MiSFy8a7W8yZu7mDR3Yu6uosisVdhTktKnzG9w5Hk0XfNXm+m
-        rkGLm01Ny2/F8fCUoDjmQWwUndUiEVcLEA==
-X-Google-Smtp-Source: ABdhPJwPK2KtZ5BYywShbb7Q7x4TfGhDgkRXbAPfkzjbChviC/pLMRWrCP4Vh+LBVYKp0SE87OlHxA==
-X-Received: by 2002:a9d:6c91:: with SMTP id c17mr16199151otr.114.1635214656820;
-        Mon, 25 Oct 2021 19:17:36 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1? ([2600:1700:dfe0:49f0:f0b4:bed7:bbf6:a2b1])
-        by smtp.gmail.com with ESMTPSA id m13sm3384170oou.25.2021.10.25.19.17.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Oct 2021 19:17:36 -0700 (PDT)
-Message-ID: <fca3586f-bb7e-a1f7-0f02-97218afcc56d@gmail.com>
-Date:   Mon, 25 Oct 2021 19:17:34 -0700
+        Mon, 25 Oct 2021 22:20:39 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hdb8M2cNzz90R4;
+        Tue, 26 Oct 2021 10:18:11 +0800 (CST)
+Received: from kwepemm600015.china.huawei.com (7.193.23.52) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 26 Oct 2021 10:18:13 +0800
+Received: from [10.174.176.52] (10.174.176.52) by
+ kwepemm600015.china.huawei.com (7.193.23.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 26 Oct 2021 10:18:12 +0800
+Subject: Re: [PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount
+ concurrency
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <viro@zeniv.linux.org.uk>, <stable@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dhowells@redhat.com>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+        <zhangxiaoxu5@huawei.com>
+References: <20211013095101.641329-1-chenxiaosong2@huawei.com>
+ <YWawy0J9JfStEku0@kroah.com>
+ <429d87b0-3a53-052a-a304-0afa8d51900d@huawei.com>
+ <860c36c4-3668-1388-66d1-a07d463c2ad9@huawei.com>
+ <YXAL7K88XGWXckWe@kroah.com>
+From:   "chenxiaosong (A)" <chenxiaosong2@huawei.com>
+Message-ID: <209361bb-9e15-ebaf-2ff8-5846d5bfbbc2@huawei.com>
+Date:   Tue, 26 Oct 2021 10:18:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 2/3] irqchip/mips-gic: Get rid of the reliance on
- irq_cpu_online()
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20211021170414.3341522-1-maz@kernel.org>
- <20211021170414.3341522-3-maz@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211021170414.3341522-3-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YXAL7K88XGWXckWe@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.52]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600015.china.huawei.com (7.193.23.52)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/21/2021 10:04 AM, Marc Zyngier wrote:
-> The MIPS GIC driver uses irq_cpu_online() to go and program the
-> per-CPU interrupts. However, this method iterates over all IRQs
-> in the system, despite only 3 per-CPU interrupts being of interest.
+在 2021/10/20 20:30, Greg KH 写道:
+> On Wed, Oct 13, 2021 at 06:49:06PM +0800, chenxiaosong (A) wrote:
+>> 在 2021/10/13 18:38, chenxiaosong (A) 写道:
+>>> 在 2021/10/13 18:11, Greg KH 写道:
+>>>> On Wed, Oct 13, 2021 at 05:51:01PM +0800, ChenXiaoSong wrote:
+>>>>> If two processes mount same superblock, memory leak occurs:
+>>>>>
+>>>>> CPU0               |  CPU1
+>>>>> do_new_mount       |  do_new_mount
+>>>>>     fs_set_subtype   |    fs_set_subtype
+>>>>>       kstrdup        |
+>>>>>                      |      kstrdup
+>>>>>       memrory leak   |
+>>>>>
+>>>>> Fix this by adding a write lock while calling fs_set_subtype.
+>>>>>
+>>>>> Linus's tree already have refactoring patchset [1], one of them
+>>>>> can fix this bug:
+>>>>>           c30da2e981a7 (fuse: convert to use the new mount API)
+>>>>>
+>>>>> Since we did not merge the refactoring patchset in this branch,
+>>>>> I create this patch.
+>>>>>
+>>>>> [1] https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/
+>>>>>
+>>>>>
+>>>>> Fixes: 79c0b2df79eb (add filesystem subtype support)
+>>>>> Cc: David Howells <dhowells@redhat.com>
+>>>>> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
+>>>>> ---
+>>>>> v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk
+>>>>> memory leak caused by mount concurrency)
+>>>>> v2: Use write lock while writing superblock
+>>>>>
+>>>>>    fs/namespace.c | 9 ++++++---
+>>>>>    1 file changed, 6 insertions(+), 3 deletions(-)
+>>>>
+>>>> As you are referring to a fuse-only patch above, why are you trying to
+>>>> resolve this issue in the core namespace code instead?
+>>>>
+>>>> How does fuse have anything to do with this?
+>>>>
+>>>> confused,
+>>>>
+>>>> greg k-h
+>>>> .
+>>>>
+>>>
+>>> Now, only `fuse_fs_type` and `fuseblk_fs_type` has `FS_HAS_SUBTYPE` flag
+>>> in kernel code, but maybe there is a filesystem module(`struct
+>>> file_system_type` has `FS_HAS_SUBTYPE` flag). And only mounting fuseblk
+>>> filesystem(e.g. ntfs) will occur memory leak now.
+>>
+>> How about updating the subject as: VFS: Fix memory leak caused by mounting
+>> fs with subtype concurrency?
 > 
-> Let's be terribly bold and do the iteration ourselves. To ensure
-> mutual exclusion, hold the gic_lock spinlock that is otherwise
-> taken while dealing with these interrupts.
+> That would be a better idea, but still, this is not obvious that this is
+> the correct fix at all...
+> .
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Why is this patch not correct? Can you tell me more about it? Thanks.
