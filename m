@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09FD43BBAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5769243BBAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239228AbhJZUkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:40:40 -0400
-Received: from mga14.intel.com ([192.55.52.115]:53333 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239221AbhJZUkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:40:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="230283429"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="230283429"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 13:38:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="597074381"
-Received: from lkp-server01.sh.intel.com (HELO 072b454ebba8) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 26 Oct 2021 13:38:12 -0700
-Received: from kbuild by 072b454ebba8 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mfTD1-0000RI-QY; Tue, 26 Oct 2021 20:38:11 +0000
-Date:   Wed, 27 Oct 2021 04:37:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/Wcast-function-type] BUILD SUCCESS
- 3f0f618fe3c11db0fe698e91a769a3c0291e75af
-Message-ID: <61786715.OYWdQxdL0wwH9y4T%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S239218AbhJZUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:40:33 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:33685 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231169AbhJZUkc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 16:40:32 -0400
+Received: by mail-oi1-f176.google.com with SMTP id q129so449102oib.0;
+        Tue, 26 Oct 2021 13:38:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cQAy+ch/uXL0enK+MtdMfdJNuhvgB4pFrD8BNcOrG1A=;
+        b=SeJMbKTHVkr0BDeKcDPSJDcUXoRIxPqUMdxRWsiVkrwjgiQQsg+EuJT7f6tBHY72W2
+         scDwymhz16fAVf6mhzz1aAiP4GIaHERp9gd74L03tBNocKCV4G2EKcCfX45b6Opj0pL3
+         AMY4LBcrLm+H0Wf61xibCnzKtsAnF40cjwAYFMY145y0pALeE+ZpwzvKyJSnUodPJ7Bz
+         Y7gUdqWaU0h5gi66QHjLKrZFt7haYk39lFdngFNJ3ZEkms19/gRK7YuZhho7xqG3YO/b
+         WgtB0glGGoMPi7N3VtzvUMiLNvJq38Ml1BEo0P63lFm6DU61xq3aY8GHcV4aVGtdrm41
+         /2wA==
+X-Gm-Message-State: AOAM533LlGa++jQ4CqLxti1NIENJ9O1TAIRXUtyF91ptU4PLdOzqiNN/
+        lkqN6CohHfN/zv3Q3XVoEg==
+X-Google-Smtp-Source: ABdhPJzauTHPSFI/P4AXq1Lb+Cgj5u3xsLCqIk3BpGpme6R4fCMv6FXhMoQpXBkiuqzHK27I78Rb8g==
+X-Received: by 2002:a05:6808:1cc:: with SMTP id x12mr780989oic.88.1635280687533;
+        Tue, 26 Oct 2021 13:38:07 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id c5sm935744oiw.13.2021.10.26.13.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 13:38:07 -0700 (PDT)
+Received: (nullmailer pid 3202845 invoked by uid 1000);
+        Tue, 26 Oct 2021 20:38:06 -0000
+Date:   Tue, 26 Oct 2021 15:38:06 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     hminas@synopsys.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        devicetree@vger.kernel.org, amelie.delaunay@foss.st.com,
+        alexandre.torgue@foss.st.com
+Subject: Re: [PATCH] dt-bindings: usb: dwc2: document the port when
+ usb-role-switch is used
+Message-ID: <YXhnLh9OYxUz8dIC@robh.at.kernel.org>
+References: <1634144026-3326-1-git-send-email-fabrice.gasnier@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1634144026-3326-1-git-send-email-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/Wcast-function-type
-branch HEAD: 3f0f618fe3c11db0fe698e91a769a3c0291e75af  Makefile: Enable -Wcast-function-type
+On Wed, Oct 13, 2021 at 06:53:46PM +0200, Fabrice Gasnier wrote:
+> Document the "port" property, which is used with "usb-role-switch"
+> to describe the bus connector.
+> Definition is inspired from mediatek,mtu3.yaml.
+> 
+> This fixes some errors seen when running "make dtbs_check":
+> ... 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+>         From schema: ... Documentation/devicetree/bindings/usb/dwc2.yaml
+> 
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> ---
+>  Documentation/devicetree/bindings/usb/dwc2.yaml | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+> index 10c7d9b..7d1aa53 100644
+> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
+> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+> @@ -130,6 +130,16 @@ properties:
+>      description: If present indicates that we need to reset the PHY when we 
+>        detect a wakeup. This is due to a hardware errata.
+>  
+> +  port:
+> +    description:
+> +      Any connector to the data bus of this controller should be modelled
+> +      using the OF graph bindings specified, if the "usb-role-switch"
+> +      property is used. See graph.txt
 
-elapsed time: 1210m
+Drop 'See graph.txt'
 
-configs tested: 52
-configs skipped: 3
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +
+> +dependencies:
+> +  port: [ 'usb-role-switch' ]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+usb-role-switch without port is valid or both must be present. In case 
+of the latter, you need to add:
 
-gcc tested configs:
-arm                              allmodconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+usb-role-switch: [ port ]
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Also, you don't need quotes.
+
+> +
+>  required:
+>    - compatible
+>    - reg
+> -- 
+> 2.7.4
+> 
+> 
