@@ -2,205 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5111E43AE64
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC34A43AE68
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234511AbhJZIzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:55:05 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:52210 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231404AbhJZIzE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:55:04 -0400
-X-UUID: 948bcc1d34534473aba2297d7f7dc96a-20211026
-X-UUID: 948bcc1d34534473aba2297d7f7dc96a-20211026
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1795022158; Tue, 26 Oct 2021 16:52:37 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 26 Oct 2021 16:52:36 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 26 Oct 2021 16:52:35 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <daniel@ffwll.ch>
-CC:     <christian.koenig@amd.com>, <ckoenig.leichtzumerken@gmail.com>,
-        <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
-        <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: Re: [Linaro-mm-sig] [PATCH] dma-buf: add attachments empty check for dma_buf_release
-Date:   Tue, 26 Oct 2021 16:52:41 +0800
-Message-ID: <20211026085241.5116-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YW80iakRm5jWjIUp@phenom.ffwll.local>
-References: <YW80iakRm5jWjIUp@phenom.ffwll.local>
+        id S234227AbhJZI4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:56:14 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:35290 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233877AbhJZI4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:56:13 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mfIDE-0004cp-SN; Tue, 26 Oct 2021 10:53:40 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     re@w6rz.net, linux-riscv@lists.infradead.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
+Date:   Tue, 26 Oct 2021 10:53:40 +0200
+Message-ID: <2328512.Zi2KH1A685@diego>
+In-Reply-To: <CAMuHMdU+jgNK8QCEysHnURkpUcazPOoepK32XzV8UGwVQdL5tw@mail.gmail.com>
+References: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com> <830eda64-6e66-c61b-ceaa-57be87783b2c@w6rz.net> <CAMuHMdU+jgNK8QCEysHnURkpUcazPOoepK32XzV8UGwVQdL5tw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-MTK:  N
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
-
-On Tue, 2021-10-19 at 23:11 +0200, Daniel Vetter wrote:
-> On Tue, Oct 19, 2021 at 05:37:27PM +0200, Christian K鰊ig wrote:
-> > 
-> > 
-> > Am 19.10.21 um 14:41 schrieb Daniel Vetter:
-> > > On Tue, Oct 19, 2021 at 08:23:45PM +0800, 
-> > > guangming.cao@mediatek.com wrote:
-> > > > From: Guangming Cao <Guangming.Cao@mediatek.com>
-> > > > 
-> > > > Since there is no mandatory inspection for attachments in
-> > > > dma_buf_release.
-> > > > There will be a case that dma_buf already released but
-> > > > attachment is still
-> > > > in use, which can points to the dmabuf, and it maybe cause
-> > > > some unexpected issues.
-> > > > 
-> > > > With IOMMU, when this cases occurs, there will have IOMMU
-> > > > address
-> > > > translation fault(s) followed by this warning,
-> > > > I think it's useful for dma devices to debug issue.
-> > > > 
-> > > > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
-> > > 
-> > > This feels a lot like hand-rolling kobject debugging. If you want
-> > > to do
-> > > this then I think adding kobject debug support to
-> > > dma_buf/dma_buf_attachment would be better than hand-rolling
-> > > something
-> > > bespoke here.
-> > 
-> > Well I would call that overkill.
+Am Dienstag, 26. Oktober 2021, 08:44:31 CEST schrieb Geert Uytterhoeven:
+> On Tue, Oct 26, 2021 at 2:37 AM Ron Economos <re@w6rz.net> wrote:
+> > On 10/25/21 8:54 AM, Geert Uytterhoeven wrote:
+> > > When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
+> > > the 4th CPU either fails to come online, or the system crashes.
+> > >
+> > > This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
+> > > and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
+> > >    - unused core has hartid 0 (sifive,e51),
+> > >    - processor 0 has hartid 1 (sifive,u74-mc),
+> > >    - processor 1 has hartid 2 (sifive,u74-mc),
+> > >    - processor 2 has hartid 3 (sifive,u74-mc),
+> > >    - processor 3 has hartid 4 (sifive,u74-mc).
+> > >
+> > > I assume the same issue is present on the SiFive fu540 and fu740
+> > > SoCs, but I don't have access to these.  The issue is not present
+> > > on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
+> > > hartid 0.
+> > >
+> > > arch/riscv/kernel/cpu_ops.c has:
+> > >
+> > >      void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
+> > >      void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
+> > >
+> > >      void cpu_update_secondary_bootdata(unsigned int cpuid,
+> > >                                         struct task_struct *tidle)
+> > >      {
+> > >              int hartid = cpuid_to_hartid_map(cpuid);
+> > >
+> > >              /* Make sure tidle is updated */
+> > >              smp_mb();
+> > >              WRITE_ONCE(__cpu_up_stack_pointer[hartid],
+> > >                         task_stack_page(tidle) + THREAD_SIZE);
+> > >              WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
+> > >
+> > > The above two writes cause out-of-bound accesses beyond
+> > > __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
+> > >
+> > >      }
+> > >
+> > > arch/riscv/kernel/smpboot.c:setup_smp(void) detects CPUs like this:
+> > >
+> > >      for_each_of_cpu_node(dn) {
+> > >              hart = riscv_of_processor_hartid(dn);
+> > >              if (hart < 0)
+> > >                      continue;
+> > >
+> > >              if (hart == cpuid_to_hartid_map(0)) {
+> > >                      BUG_ON(found_boot_cpu);
+> > >                      found_boot_cpu = 1;
+> > >                      early_map_cpu_to_node(0, of_node_to_nid(dn));
+> > >                      continue;
+> > >              }
+> > >              if (cpuid >= NR_CPUS) {
+> > >                      pr_warn("Invalid cpuid [%d] for hartid [%d]\n",
+> > >                              cpuid, hart);
+> > >                      break;
+> > >              }
+> > >
+> > >              cpuid_to_hartid_map(cpuid) = hart;
+> > >              early_map_cpu_to_node(cpuid, of_node_to_nid(dn));
+> > >              cpuid++;
+> > >      }
+> > >
+> > > So cpuid >= CONFIG_NR_CPUS (too many CPU cores) is already rejected.
+> > >
+> > > How to fix this?
+> > >
+> > > We could skip hartids >= NR_CPUS, but that feels strange to me, as
+> > > you need NR_CPUS to be larger (much larger if the first usable hartid
+> > > is a large number) than the number of CPUs used.
+> > The Ubuntu distro config for HiFive Unmatched set this to CONFIG_NR_CPUS=8.
 > 
-> I think if done right the object debug stuff should be able to give
-> you a
-> backtrace. Which might be useful if you have a dma-buf heaps design
-> where
-> you really have no clue why a buffer was allocated/attached without
-> some
-> hints.
-Well, I think it's the finally solution, for current thinking, it maybe bring a high
-overloading. Just as this revert patch: 
-https://lore.kernel.org/lkml/CA+wgaPMHA+8+LxfGNL+q4=XrdXqfu4TXoWLX7e28z9Z7kPsf-w@mail.gmail.com/
-So, we need to find a lightweight way to do this.
-
-Guangming
+> I know. Same for most defconfigs in Linux.  But we do not tend to
+> work around buffer overflows by changing config values.  Besides,
+> those configs will still experience the issue when run on e.g. an
+> 8+1 core processor where the cores used by Linux have hartids 1-8.
 > 
-> > > Also on the patch itself: You don't need the trylock. For
-> > > correctly
-> > > working code non one else can get at the dma-buf, so no locking
-> > > needed to
-> > > iterate through the attachment list. For incorrect code the
-> > > kernel will be
-> > > on fire pretty soon anyway, trying to do locking won't help :-)
-> > > And
-> > > without the trylock we can catch more bugs (e.g. if you also
-> > > forgot to
-> > > unlock and not just forgot to detach).
-
-Yes, It's also a error case, I will remove to lock at next version patch. Thanks!
-
-Guangming
-
-> > 
-> > You also don't need the WARN(!list_empty...) because a few line
-> > below we
-> > already have a "WARN_ON(!list_empty(&dmabuf->attachments));".
-
-Sorry, could you tell me wich function will check it?
-I didn't found it so I submit this patch.
-
-Guangming
+> I noticed because I started with a starlight config with
+> CONFIG_NR_CPUS=2 (which gave me only one core), changed that to
+> CONFIG_NR_CPUS=4, and got a kernel that didn't boot at all (no output
+> without earlycon).I know. Same for most defconfigs in Linux.  But we
+> do not tend to
+> work around buffer overflows by changing config values.  Besides,
+> those configs will still experience the issue when run on e.g. an
+> 8+1 core processor where the cores used by Linux have hartids 1-8.
 > 
-> Yeah this patch here alone isn't really that useful I think. Maybe we
-> could add the dmabuf->exp_name or so to that warning, but otherwise
-> the
-> info printed here isn't all that useful for debugging. Grabbing a
-
-I also printed dmabuf->exp_name in warn message.
-
-The reason adding it here is that some users on ANDROID of dma-buf is not familiar
-with linux dma-buf or maybe write some problematic code, add this check can find
-who lost call get_dma_buf or any other api can let let the dma-buf lifecycle is
-under users' expectation.
-Add it just like check in dma-fence:
-https://github.com/torvalds/linux/blob/master/drivers/dma-buf/dma-fence.c#L519
-
-Do you have any suggestion to debug this part?
-
-Guangming
-
-> backtrace of the allocator or attacher otoh should fairly immedialy
-> point
-> at the buggy code.
-> -Daniel
+> > > We could store the minimum hartid, and always subtract that when
+> > > accessing __cpu_up_{stack,pointer}_pointer[] (also in
+> > > arch/riscv/kernel/head.S), but that means unused cores cannot be in the
+> > > middle of the hartid range.
+> > >
+> > > Are hartids guaranteed to be continuous? If not, we have no choice but
+> > > to index __cpu_up_{stack,pointer}_pointer[] by cpuid instead, which
+> > > needs a more expensive conversion in arch/riscv/kernel/head.S.
 > 
-> > 
-> > Christian.
-> > 
-> > > -Daniel
-> > > 
-> > > > ---
-> > > >   drivers/dma-buf/dma-buf.c | 23 +++++++++++++++++++++++
-> > > >   1 file changed, 23 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-
-> > > > buf.c
-> > > > index 511fe0d217a0..672404857d6a 100644
-> > > > --- a/drivers/dma-buf/dma-buf.c
-> > > > +++ b/drivers/dma-buf/dma-buf.c
-> > > > @@ -74,6 +74,29 @@ static void dma_buf_release(struct dentry
-> > > > *dentry)
-> > > >   	 */
-> > > >   	BUG_ON(dmabuf->cb_shared.active || dmabuf-
-> > > > >cb_excl.active);
-> > > > +	/* attachment check */
-> > > > +	if (dma_resv_trylock(dmabuf->resv) &&
-> > > > WARN(!list_empty(&dmabuf->attachments),
-> > > > +	    "%s err, inode:%08lu size:%08zu name:%s exp_name:%s
-> > > > flags:0x%08x mode:0x%08x, %s\n",
-> > > > +	    __func__, file_inode(dmabuf->file)->i_ino, dmabuf-
-> > > > >size,
-> > > > +	    dmabuf->name, dmabuf->exp_name,
-> > > > +	    dmabuf->file->f_flags, dmabuf->file->f_mode,
-> > > > +	    "Release dmabuf before detach all attachments, dump
-> > > > attach:\n")) {
-> > > > +		int attach_cnt = 0;
-> > > > +		dma_addr_t dma_addr;
-> > > > +		struct dma_buf_attachment *attach_obj;
-> > > > +		/* dump all attachment info */
-> > > > +		list_for_each_entry(attach_obj, &dmabuf-
-> > > > >attachments, node) {
-> > > > +			dma_addr = (dma_addr_t)0;
-> > > > +			if (attach_obj->sgt)
-> > > > +				dma_addr =
-> > > > sg_dma_address(attach_obj->sgt->sgl);
-> > > > +			pr_err("attach[%d]: dev:%s
-> > > > dma_addr:0x%-12lx\n",
-> > > > +			       attach_cnt, dev_name(attach_obj-
-> > > > >dev), dma_addr);
-> > > > +			attach_cnt++;
-> > > > +		}
-> > > > +		pr_err("Total %d devices attached\n\n",
-> > > > attach_cnt);
-> > > > +		dma_resv_unlock(dmabuf->resv);
-> > > > +	}
-> > > > +
-> > > >   	dmabuf->ops->release(dmabuf);
-> > > >   	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
-> > > > -- 
-> > > > 2.17.1
-> > > > 
+> https://riscv.org/wp-content/uploads/2017/05/riscv-privileged-v1.10.pdf
+> says:
 > 
+>     Hart IDs might not necessarily be numbered contiguously in a
+>     multiprocessor system, but at least one hart must have a hart
+>     ID of zero.
 > 
+> Which means indexing arrays by hart ID is a no-go?
+
+Isn't that also similar on aarch64?
+
+On a rk3399 you get 0-3 and 100-101 and with the paragraph above
+something like this could very well exist on some riscv cpu too I guess.
+
+
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+
+
+
+
