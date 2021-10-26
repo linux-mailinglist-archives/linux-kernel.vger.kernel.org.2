@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D69343AE0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DF043AE10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbhJZIeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
+        id S234452AbhJZIeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234311AbhJZIeJ (ORCPT
+        with ESMTP id S234341AbhJZIeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:34:09 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90D2C061348
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:31:45 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id s19so14293550ljj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:31:45 -0700 (PDT)
+        Tue, 26 Oct 2021 04:34:10 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9730C061224
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:31:46 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id r6so14233040ljg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hvjBpS0WQUpHH6xnR9S7oADkbGeXX564pPdc4gb5058=;
-        b=VZcjvQUL5lvIUQb7JbjlWotIYeRbEvfm5KDsiTM3mSpS4I5z/RcS3NbV75bZbHlTp7
-         LQcIJRuiLdhEklLz2y7Ca8kne37wZk5Ruqr9O+IePFhNMcaSi+9kdW4NDTTmcMeacCnR
-         l9XQ+tFYGPMNyI9obP1G/xDghH4J4bgVe533MjaSFxH2XxPVItbqio9DpAhbzDfG61iP
-         sgbPcY+WBijIyh8ymmeOjSAvNOMtaVSiXyFKy/y9uw/OpyRJiZ5rDQsTceQrnI4gMoDK
-         4H2fMckERh/J+BnK8QwmWie/zThPezP0IRy0Gn238hR1xAKPlWUm1cqA3NKGCmUjJ1fr
-         cMvg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nJY8BVmSGkgTm20CsRqOlZqDh54ZnLLnIcGJozAZVtQ=;
+        b=x6wpGGZ4t4jpHZXbOtVtiqY9J28NnXCjPP+t+zbf5ZLXQknU6PZKpyIRv59OjvwQ2L
+         MRo/9tRg1j8RtVI36taOo+vMSkONJCGbZLhgQR2ky+H3wgoIrtxKgwPRfRDuYH4b0kJd
+         6oJ9070IcWTB1lHteM3ZY8CxxFYGSQOdHy9wWT0k9qaZwqNaaaTeyc9wwa7lBVkJUqPw
+         h4eHCwnV5+QV0/LOFhVTce8PPxgVFdQppiKF+IZFE5tfR5T8FIPtOHG4dDtvNlBUgDhi
+         nCzHiQn1rqkewJ4aojuBVjmIU4nTIWNl9ouEOGngtC7Hh/BKZzMwIjjBWQhqeyHRSK7X
+         FXew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hvjBpS0WQUpHH6xnR9S7oADkbGeXX564pPdc4gb5058=;
-        b=FtVBOD88LfiBR7CAs+NDzhFTbt1ob8Qum4TeOHGIJ13s/uy4PAz5ZWMZEniqsv16qP
-         +mm2aNAWXqocl0GmYmHbPHY9IbjMVOjfRU2rUhhtn5SzZrIvD8pfmO+Z3/Avd+bp8OuL
-         AP6nLqTHIpmNHEd2AxR6vbIe7NOpt1nnCfTmpRIWKGRnW06s7IURcXLOWrBEkPUYVzT8
-         BE3HmiQW563faOl9fX0vaJ0PkhY8IgMSR+pNeNxkqlJ1T2uy7tyG5ECPj4/LS3eArX9v
-         jLOwc0LouR9djhh5BT1Yw0QctEeTsJ7tnFe4uV7Tm68pzZp4PqpB8vP+sjAqY9UmbB+n
-         LiRw==
-X-Gm-Message-State: AOAM532ILv+PGg65dznlAMcsc0MDKJbbZF3Qb9a/qEcpEAkXX61MlC7/
-        IL9mTXjM33nIvPkcapH5uA0pZ7KrFnmsnc1S
-X-Google-Smtp-Source: ABdhPJzsA7vMWo/V630/oC1Bt0cC2WhkKii/4cRJucj3IpqEe90SIEX/iuuHl24z8jwZtEvJNccrHA==
-X-Received: by 2002:a05:651c:1506:: with SMTP id e6mr24696526ljf.129.1635237104122;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nJY8BVmSGkgTm20CsRqOlZqDh54ZnLLnIcGJozAZVtQ=;
+        b=Od865LhP2d7pjN0fiQ1aeUxmmR5p4OrcZ9ZgAsh+ADy7Jk9fsdDe4OAx3F7DmmcH4U
+         f35DCzk9B+M+Pssie+UaO2HFtlpzpRnIIcFpcFqV3ix51sOOebh0YE7CRW1fddeUhN2s
+         MExkY2flE/QJZGKLtNd+IzCMFTLlxbxpQLpXH0+30cPMIvU/HbZnQulhMcqQ8r8YYSkk
+         piIt5UkDSnHKPKC9/SMeEwdJ6/l1eyjU2vZvLq8fAMr7Vzogl4/FEoObXvdwB/9rl2kH
+         Exp1PQBpcBKddSUQhnqJMrdLmG4u9mMNUSoK1IvcOozSeaOG6lm76RRxr0cZ/F7m1i7j
+         INlA==
+X-Gm-Message-State: AOAM533I8Q8Ti0EYz9o8DpoKXNnMj2XYzBZBPid8LwokMf0GInwBuNc5
+        SL7bX+Sq9Ojh9donlA2M0CSDdOGiM1qgvDuY
+X-Google-Smtp-Source: ABdhPJz62lWImbRbMZBUEEDsRT6QZPET/1jm/lqlcEQjVChDZ2sw0LXS3GpvH1ezJVF85rwv+zTBfg==
+X-Received: by 2002:a05:651c:1aa:: with SMTP id c10mr24290846ljn.222.1635237104897;
         Tue, 26 Oct 2021 01:31:44 -0700 (PDT)
 Received: from jade.urgonet (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
-        by smtp.gmail.com with ESMTPSA id e4sm1944598ljn.131.2021.10.26.01.31.43
+        by smtp.gmail.com with ESMTPSA id e4sm1944598ljn.131.2021.10.26.01.31.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 01:31:43 -0700 (PDT)
+        Tue, 26 Oct 2021 01:31:44 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org,
@@ -61,117 +61,69 @@ Cc:     Jerome Forissier <jerome@forissier.org>,
         Ard Biesheuvel <ardb@kernel.org>,
         Marc Zyngier <maz@kernel.org>, jens.vankeirsbilck@kuleuven.be,
         Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH v7 0/6] Asynchronous notifications from secure world
-Date:   Tue, 26 Oct 2021 10:31:32 +0200
-Message-Id: <20211026083138.1818705-1-jens.wiklander@linaro.org>
+Subject: [PATCH v7 1/6] docs: staging/tee.rst: add a section on OP-TEE notifications
+Date:   Tue, 26 Oct 2021 10:31:33 +0200
+Message-Id: <20211026083138.1818705-2-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211026083138.1818705-1-jens.wiklander@linaro.org>
+References: <20211026083138.1818705-1-jens.wiklander@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Adds a section on notifications used by OP-TEE, synchronous and
+asynchronous.
 
-This adds support for asynchronous notifications from OP-TEE in secure
-world to the OP-TEE driver. This allows a design with a top half and bottom
-half type of driver where the top half runs in secure interrupt context and
-a notifications tells normal world to schedule a yielding call to do the
-bottom half processing.
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+---
+ Documentation/staging/tee.rst | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-An edge-triggered interrupt is used to notify the driver that there are
-asynchronous notifications pending.
-
-Only the SMC based ABI of the OP-TEE driver gains asynchronous
-notifications. Future support for asynchronous notifications in the FF-A
-based ABI will rely on APIs which are expected to be provided by the FF-A
-driver in a not too distant future.
-
-Most of the patches here are well reviewed, but the last patch "optee: add
-asynchronous notifications" could do with some more attention.
-
-This patchset is also available at
-https://git.linaro.org/people/jens.wiklander/linux-tee.git/log/?h=async_notif_v7
-
-v6->v7:
-* Rebased on 4615e5a34b95 ("optee: add FF-A support") in
-  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git with
-  34f3c67b8178 ("optee: smc_abi.c: add missing #include <linux/mm.h>")
-  cherry-picked on top. This allows to resolve the conflicts with
-  pull request "[GIT PULL] OP-TEE FF-A for V5.16"
-* Factored out the interrupt handling added in "optee: add asynchronous
-  notifications" to only go into smb_abi.c. A different approach is
-  expected with FF-A once it has asynchronous notifications.
-* Addressed review comments from Sumit Garg:
-  - Replaced 0 and 1 with the macros GIC_SPI and IRQ_TYPE_EDGE_RISING in
-    the example in the bindings.
-  - Replaced the magic number to optee_notif_init() with
-    OPTEE_DEFAULT_MAX_NOTIF_VALUE in the commit "optee: separate notification
-    functions"
-  - Switched back to tagged error path in optee_probe()
-  - Fixed a few nits in "optee: add asynchronous notifications"
-  - Applied Sumit's Reviewed-by on all commits but the last,
-    "optee: add asynchronous notifications"
-
-v5->v6:
-* Rebased on v5.15-rc2
-* Replaced "tee: add tee_dev_open_helper() primitive" with "tee: export
-  teedev_open() and teedev_close_context()" since it turned out that the
-  normal teedev functions could be used instead as noted by Sumit.
-* Changed "optee: add asynchronous notifications" to use the exported
-  teedev_open() and teedev_close_context() functions instead.
-
-v4->v5:
-* Rebased on v5.14-rc7
-* Updated documentation to clarify that one interrupt may represent multiple
-  notifications as requested.
-* Applied Marc's and Rob's tags
-
-v3->v4:
-* Clarfied the expected type of interrypt is edge-triggered, both in
-  the normal documentation and in the DT bindings as requested.
-
-v2->v3:
-* Rebased on v5.14-rc2 which made the patch "dt-bindings: arm: Convert
-  optee binding to json-schema" from the V2 patch set obsolete.
-* Applied Ard's Acked-by on "optee: add asynchronous notifications"
-
-v1->v2:
-* Added documentation
-* Converted optee bindings to json-schema and added interrupt property
-* Configure notification interrupt from DT instead of getting it
-  from secure world, suggested by Ard Biesheuvel <ardb@kernel.org>.
-
-Thanks,
-Jens
-
-
-
-Jens Wiklander (6):
-  docs: staging/tee.rst: add a section on OP-TEE notifications
-  dt-bindings: arm: optee: add interrupt property
-  tee: fix put order in teedev_close_context()
-  tee: export teedev_open() and teedev_close_context()
-  optee: separate notification functions
-  optee: add asynchronous notifications
-
- .../arm/firmware/linaro,optee-tz.yaml         |   7 +
- Documentation/staging/tee.rst                 |  30 +++
- drivers/tee/optee/Makefile                    |   1 +
- drivers/tee/optee/core.c                      |   2 +-
- drivers/tee/optee/ffa_abi.c                   |   6 +-
- drivers/tee/optee/notif.c                     | 125 +++++++++
- drivers/tee/optee/optee_msg.h                 |   9 +
- drivers/tee/optee/optee_private.h             |  28 ++-
- drivers/tee/optee/optee_rpc_cmd.h             |  31 +--
- drivers/tee/optee/optee_smc.h                 |  75 +++++-
- drivers/tee/optee/rpc.c                       |  71 +-----
- drivers/tee/optee/smc_abi.c                   | 238 +++++++++++++++---
- drivers/tee/tee_core.c                        |  10 +-
- include/linux/tee_drv.h                       |  14 ++
- 14 files changed, 522 insertions(+), 125 deletions(-)
- create mode 100644 drivers/tee/optee/notif.c
-
+diff --git a/Documentation/staging/tee.rst b/Documentation/staging/tee.rst
+index 4d4b5f889603..3c63d8dcd61e 100644
+--- a/Documentation/staging/tee.rst
++++ b/Documentation/staging/tee.rst
+@@ -184,6 +184,36 @@ order to support device enumeration. In other words, OP-TEE driver invokes this
+ application to retrieve a list of Trusted Applications which can be registered
+ as devices on the TEE bus.
+ 
++OP-TEE notifications
++--------------------
++
++There are two kinds of notifications that secure world can use to make
++normal world aware of some event.
++
++1. Synchronous notifications delivered with ``OPTEE_RPC_CMD_NOTIFICATION``
++   using the ``OPTEE_RPC_NOTIFICATION_SEND`` parameter.
++2. Asynchronous notifications delivered with a combination of a non-secure
++   edge-triggered interrupt and a fast call from the non-secure interrupt
++   handler.
++
++Synchronous notifications are limited by depending on RPC for delivery,
++this is only usable when secure world is entered with a yielding call via
++``OPTEE_SMC_CALL_WITH_ARG``. This excludes such notifications from secure
++world interrupt handlers.
++
++An asynchronous notification is delivered via a non-secure edge-triggered
++interrupt to an interrupt handler registered in the OP-TEE driver. The
++actual notification value are retrieved with the fast call
++``OPTEE_SMC_GET_ASYNC_NOTIF_VALUE``. Note that one interrupt can represent
++multiple notifications.
++
++One notification value ``OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_BOTTOM_HALF`` has a
++special meaning. When this value is received it means that normal world is
++supposed to make a yielding call ``OPTEE_MSG_CMD_DO_BOTTOM_HALF``. This
++call is done from the thread assisting the interrupt handler. This is a
++building block for OP-TEE OS in secure world to implement the top half and
++bottom half style of device drivers.
++
+ AMD-TEE driver
+ ==============
+ 
 -- 
 2.31.1
 
