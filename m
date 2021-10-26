@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED64B43BA8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9551043BA8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238649AbhJZTTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235577AbhJZTTM (ORCPT
+        id S238655AbhJZTTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:19:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35600 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234841AbhJZTTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:19:12 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3A4C061570;
-        Tue, 26 Oct 2021 12:16:48 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so83731otq.12;
-        Tue, 26 Oct 2021 12:16:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5auenMtHc6ZhDj10YEioF4UYZccWVNPzfdTx0p6WPEk=;
-        b=af4Flfgoz3OO0kmf7ZHOC7oj+EeBJ6KGoEYdZtNoZBS/iQIbT6nqq/wOog7nFVXJ7f
-         z0zPSLaY6jeonmW+tpF6+7MW0QffWm6tPXghpgfG1qGFDKw8lU7r30ki0MTBkv8t5Agn
-         9fCsnhJsHos0HCNw9fLhd88TJ96sBz/p82NbLB1E06JpsS2QXxIpY5mWDS4s48dajVCI
-         UvNqSBKbXNTrY3+c05pLlCN8zbhbEtkmEVGwXY9mZxRWDL0xBVUB8xGGHPogxW0wzCEP
-         5Ya9efPGJTEFvkqEV7EqGSj04QRgfJO7A4p5KChmOvBsdQk7eLNeAd7vUBeoW5RaaB/C
-         ifkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5auenMtHc6ZhDj10YEioF4UYZccWVNPzfdTx0p6WPEk=;
-        b=ZOwEl4IwniqqY/S3ojJmg+ESmhW4hnTnhqjyt599vmTtbu4dOhiUjoOLHw5QZJcD+q
-         FJQU6usHAgAc0RIwFK2a/XSkoFWG69Kjud0DcN8DqkfHkbiVP0GJBTsCvNKZC49ng+yR
-         BxW4o7Xg0rdoeAtjKxJD/JuyAQ/bv75g5feLTzsKhfShD4v8ouk0RhPZeybrfxCBtmt6
-         d1f5w+eLgRcIJOk02ZejCmojxpZkQoTa2N2QccFIm7C10Fc+KSmdXzBF3JPLZpPKMHYw
-         vg2TQ1wAwUdk7u5r3Io8y8VzAXfYFPUJ3ZgetuPKVu/fAF1+E9IA4bADlYielHFel9p+
-         A6nA==
-X-Gm-Message-State: AOAM533inZHzqPtTg+GbXl9C5z5yemiZaQerEUXaCAhgGE5KWxdExQDZ
-        xtOBBThpG2rt9z2Y4bEjv28=
-X-Google-Smtp-Source: ABdhPJwNZjkKE5UF7/j3CuwU+vft2V01jhvnLlVqgDrKt8S5uqJNvLXFLeeH2GullUnKPtSMMJDeRA==
-X-Received: by 2002:a05:6830:14d5:: with SMTP id t21mr21195180otq.341.1635275807747;
-        Tue, 26 Oct 2021 12:16:47 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y5sm4827377otg.52.2021.10.26.12.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 12:16:47 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 26 Oct 2021 12:16:46 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/169] 5.14.15-rc1 review
-Message-ID: <20211026191646.GF2014125@roeck-us.net>
-References: <20211025191017.756020307@linuxfoundation.org>
+        Tue, 26 Oct 2021 15:19:19 -0400
+Date:   Tue, 26 Oct 2021 19:16:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635275812;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mvf9A+VpmAK/81H7m3DxamyZbj9rH42BDQ1I0Ad68tw=;
+        b=4HWxd7hKIbUur4+OrUs0JYY4AwVEAsoUuVeW/ccMl6Cnbc8pgSHZjEvjpWtL41znnzAr6i
+        uHGQudQeBB4zlcSy2CdfH/lkFEFxc1NFWDiwhTxaw2kC/ZhBDSSjHxNCdxCfHuL8bmvAwq
+        Z2u0HNoi5IPldPlir0E2bT/fzBdZyS0hDlo9bz/hru8m6eSStrDWlMBRJoMBfCke2US4hQ
+        WaXUy3xVHVbfU9RRXSmb3nQqS/46yIBzDIsV8EduCLsb2qDCIaJsDjvrMCdmyg62EGm2PB
+        qcWFupoxB+t3CTbIa+zh//Kq6CGgF4VD014sItOyN0JYYEXYdalhwzlPWh2KTQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635275812;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mvf9A+VpmAK/81H7m3DxamyZbj9rH42BDQ1I0Ad68tw=;
+        b=hGih5IsW5CVZ+bFbHbhS2bcrp8l+Q+40tj+F20ieWNSVq/8wqhlePYLmTmzIxRJBwd9cRt
+        wJqRSfdi8Ilx1nBg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] x86: Fix __get_wchan() for !STACKTRACE
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211022152104.137058575@infradead.org>
+References: <20211022152104.137058575@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+Message-ID: <163527581141.626.3323791861027345987.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 09:13:01PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.15 release.
-> There are 169 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 27 Oct 2021 19:08:09 +0000.
-> Anything received after that time might be too late.
-> 
+The following commit has been merged into the sched/core branch of tip:
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+Commit-ID:     5d1ceb3969b6b2e47e2df6d17790a7c5a20fcbb4
+Gitweb:        https://git.kernel.org/tip/5d1ceb3969b6b2e47e2df6d17790a7c5a20fcbb4
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Fri, 22 Oct 2021 16:53:02 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 26 Oct 2021 21:10:12 +02:00
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+x86: Fix __get_wchan() for !STACKTRACE
 
-Guenter
+Use asm/unwind.h to implement wchan, since we cannot always rely on
+STACKTRACE=y.
+
+Fixes: bc9bbb81730e ("x86: Fix get_wchan() to support the ORC unwinder")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lkml.kernel.org/r/20211022152104.137058575@infradead.org
+---
+ arch/x86/kernel/process.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index a69885a..8fb6bd4 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -43,6 +43,7 @@
+ #include <asm/io_bitmap.h>
+ #include <asm/proto.h>
+ #include <asm/frame.h>
++#include <asm/unwind.h>
+ 
+ #include "process.h"
+ 
+@@ -944,10 +945,20 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
+  */
+ unsigned long __get_wchan(struct task_struct *p)
+ {
+-	unsigned long entry = 0;
++	struct unwind_state state;
++	unsigned long addr = 0;
+ 
+-	stack_trace_save_tsk(p, &entry, 1, 0);
+-	return entry;
++	for (unwind_start(&state, p, NULL, NULL); !unwind_done(&state);
++	     unwind_next_frame(&state)) {
++		addr = unwind_get_return_address(&state);
++		if (!addr)
++			break;
++		if (in_sched_functions(addr))
++			continue;
++		break;
++	}
++
++	return addr;
+ }
+ 
+ long do_arch_prctl_common(struct task_struct *task, int option,
