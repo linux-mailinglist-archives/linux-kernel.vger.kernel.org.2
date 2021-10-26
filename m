@@ -2,274 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC74343B3A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46ED443B3A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbhJZOLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:11:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:59598 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236390AbhJZOKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:10:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF7E2D6E;
-        Tue, 26 Oct 2021 07:08:27 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F3423F73D;
-        Tue, 26 Oct 2021 07:08:26 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 15:08:20 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Xuesong Chen <xuesong.chen@linux.alibaba.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] PCI: MCFG: Consolidate the separate PCI MCFG
- table entry list
-Message-ID: <20211026140820.GA19689@lpieralisi>
-References: <YW5OdIyFkTYo0h3W@Dennis-MBP.local>
- <CAJZ5v0g=+_fATmSrLWiTirmr0MkihKpy7wp-9aFpWVK_RLhp6g@mail.gmail.com>
+        id S236401AbhJZOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:12:20 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:36031 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234708AbhJZOMT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:12:19 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 302545C02BD;
+        Tue, 26 Oct 2021 10:09:55 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 26 Oct 2021 10:09:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=1pi7Dn
+        yCJxHjq8VFuSFfU9Tcfpd1EhkRMUL4XIaIqYk=; b=QrlahmCTIPku+TP0CjDAAC
+        cVGIUYQvrGptvPkk7O/1KKAaIJIDTaY8GRVDKnYMDTQ3qnSvgNl7sFhAdggwUi+F
+        NYM4BE1nFppQxVtILS7bIM/ne67+av4iT6Ess6Io2igVN9+TfpqavbokfvhyOZYt
+        f/xWZE72+UB632sWSs8FM14YpLOzQSHYT1JHaMv96d5WR43AC9R/PY7ChgS+GWjg
+        ToQW2DJXzxOomQ5G6SQTTDfM+oW5rpoWQrPOgvmK1Zb16cv5I4A3SVlC98qawDDP
+        jROwpB85dJe/nFs8hdx3UScUWg5cWKiUIiYTds+pOnqr7L5fazhAl73VbGs1wJ1A
+        ==
+X-ME-Sender: <xms:Mgx4YUXqdnjA4d40DuLCAFi0eJVmY8pKuvAEkn7MjPXeE8OX0SqwFw>
+    <xme:Mgx4YYnZrTY6CshOQ8YLWM5NsM03FgiBVM0l32FEl-_6sDNglMYGW56hojby6OyJu
+    SOFLXqZSV75grk>
+X-ME-Received: <xmr:Mgx4YYYNI8looNiqBB5ewVOvB7-QAwHKHmpyIQAwBU5ALUq7OJKDsXadFnJ0Ok6DeQDZhjVASn3rPk_a5bGfqQflWAPVMw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdefkedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeehhfdthfduueehgfekkefhhedutddvveefteehteekleevgfegteevueelheek
+    ueenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:Mgx4YTWSfhIpGkJ_2CmQzudvWEF9mCdNOS25hRR3jfnFWpp2UImS4Q>
+    <xmx:Mgx4YemiX5K6-qdX0VNQYtmnXgxnqdpEYeFd8EwX2Rj29arhfgH4vQ>
+    <xmx:Mgx4YYdPyPyDBlLWjuYUVqN11FRm01eXf9BIHFyxONF8OeeWaD5q0A>
+    <xmx:Mwx4YVt9NO7G7av2i2tEkFfg2ANjrjWACGktSFHCAOdtJz5LPF5YNA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Oct 2021 10:09:53 -0400 (EDT)
+Date:   Tue, 26 Oct 2021 17:09:47 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXgMK2NKiiVYJhLl@shredder>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+ <YXUtbOpjmmWr71dU@unreal>
+ <YXU5+XLhQ9zkBGNY@shredder>
+ <YXZB/3+IR6I0b2xE@unreal>
+ <YXZl4Gmq6DYSdDM3@shredder>
+ <YXaNUQv8RwDc0lif@unreal>
+ <YXelYVqeqyVJ5HLc@shredder>
+ <YXertDP8ouVbdnUt@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0g=+_fATmSrLWiTirmr0MkihKpy7wp-9aFpWVK_RLhp6g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YXertDP8ouVbdnUt@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 03:14:37PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Oct 19, 2021 at 6:50 AM Xuesong Chen
-> <xuesong.chen@linux.alibaba.com> wrote:
-> >
-> > The PCI MCFG entry list is discrete on x86 and other arches like ARM64
-> > in current implementation, this list variable can be consolidated for
-> > unnecessary duplication and other purposes, for example, we can remove
-> > some of the arch-specific codes in the APEI/EINJ module and re-implement
-> > it in a more common arch-agnostic way.
-> >
-> > To reduce the redundancy, it:
-> >   - Moves the "struct pci_mmcfg_region" definition from
-> >     arch/x86/include/asm/pci_x86.h to include/linux/pci.h, where it
-> >     can be shared across arches.
-> >
-> >   - Moves pci_mmcfg_list (a list of pci_mmcfg_region structs) from
-> >     arch/x86/pci/mmconfig-shared.c to drivers/pci/pci.c, where it can
-> >     be shared across arches.
-> >
-> >   - On x86 (which does not enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
-> >     built in arch/x86/pci/mmconfig-shared.c as before.
-> >
-> >   - Removes the "struct mcfg_entry" from drivers/acpi/pci_mcfg.c.
-> >
-> >   - Replaces pci_mcfg_list (previously a list of mcfg_entry structs)
-> >     in drivers/acpi/pci_mcfg.c with the newly-shared pci_mmcfg_list (a
-> >     list of pci_mmcfg_region structs).
-> >
-> >   - On ARM64 (which does enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
-> >     built in drivers/acpi/pci_mcfg.c.
-> >
-> > Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
-> > Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+On Tue, Oct 26, 2021 at 10:18:12AM +0300, Leon Romanovsky wrote:
+> On Tue, Oct 26, 2021 at 09:51:13AM +0300, Ido Schimmel wrote:
 > 
-> I'm guessing that I'm expected to pick up this one?
+> <...>
+> 
+> > > 
+> > > Can you please explain why is it so important to touch devlink SW
+> > > objects, reallocate them again and again on every reload in mlxsw?
+> > 
+> > Because that's how reload was defined and implemented. A complete
+> > reload. We are not changing the semantics 4 years later.
+> 
+> Please put your emotions aside and explain me technically why are you
+> must to do it?
 
-I did not provide a Reviewed-by: tag for this patch (and I don't
-think Bjorn provided his either).
+Already did. The current semantics are "devlink-reload provides
+mechanism to reinit driver entities, applying devlink-params and
+devlink-resources new values. It also provides mechanism to activate
+firmware."
 
-That's valid also for patch 2:
+And this is exactly what netdevsim and mlxsw are doing. Driver entities
+are re-initialized. Your patch breaks that as entities are not
+re-initialized, which results in user space breakage. You simply cannot
+introduce such regressions.
 
-https://lore.kernel.org/linux-pci/20211019150405.GA2338201@bhelgaas
+> 
+> The proposed semantics was broken for last 4 years, it can even seen as
+> dead on arrival,
 
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: James Morse <james.morse@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Rafael. J. Wysocki <rafael@kernel.org>
-> > Cc: Tony Luck <tony.luck@intel.com>
-> > Cc: Tomasz Nowicki <tn@semihalf.com>
-> > ---
-> >  arch/x86/include/asm/pci_x86.h | 17 +----------------
-> >  arch/x86/pci/mmconfig-shared.c |  2 --
-> >  drivers/acpi/pci_mcfg.c        | 34 +++++++++++++---------------------
-> >  drivers/pci/pci.c              |  2 ++
-> >  include/linux/pci.h            | 17 +++++++++++++++++
-> >  5 files changed, 33 insertions(+), 39 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
-> > index 490411d..1f4257c 100644
-> > --- a/arch/x86/include/asm/pci_x86.h
-> > +++ b/arch/x86/include/asm/pci_x86.h
-> > @@ -146,20 +146,7 @@ static inline int  __init pci_acpi_init(void)
-> >  extern void pcibios_fixup_irqs(void);
-> >
-> >  /* pci-mmconfig.c */
-> > -
-> > -/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
-> > -#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
-> > -
-> > -struct pci_mmcfg_region {
-> > -       struct list_head list;
-> > -       struct resource res;
-> > -       u64 address;
-> > -       char __iomem *virt;
-> > -       u16 segment;
-> > -       u8 start_bus;
-> > -       u8 end_bus;
-> > -       char name[PCI_MMCFG_RESOURCE_NAME_LEN];
-> > -};
-> > +struct pci_mmcfg_region;
-> >
-> >  extern int __init pci_mmcfg_arch_init(void);
-> >  extern void __init pci_mmcfg_arch_free(void);
-> > @@ -174,8 +161,6 @@ extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int start,
-> >
-> >  extern struct list_head pci_mmcfg_list;
-> >
-> > -#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
-> > -
-> >  /*
-> >   * On AMD Fam10h CPUs, all PCI MMIO configuration space accesses must use
-> >   * %eax.  No other source or target registers may be used.  The following
-> > diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-> > index 758cbfe..0b961fe6 100644
-> > --- a/arch/x86/pci/mmconfig-shared.c
-> > +++ b/arch/x86/pci/mmconfig-shared.c
-> > @@ -31,8 +31,6 @@
-> >  static DEFINE_MUTEX(pci_mmcfg_lock);
-> >  #define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
-> >
-> > -LIST_HEAD(pci_mmcfg_list);
-> > -
-> >  static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
-> >  {
-> >         if (cfg->res.parent)
-> > diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-> > index 53cab97..d9506b0 100644
-> > --- a/drivers/acpi/pci_mcfg.c
-> > +++ b/drivers/acpi/pci_mcfg.c
-> > @@ -13,14 +13,7 @@
-> >  #include <linux/pci-acpi.h>
-> >  #include <linux/pci-ecam.h>
-> >
-> > -/* Structure to hold entries from the MCFG table */
-> > -struct mcfg_entry {
-> > -       struct list_head        list;
-> > -       phys_addr_t             addr;
-> > -       u16                     segment;
-> > -       u8                      bus_start;
-> > -       u8                      bus_end;
-> > -};
-> > +extern struct list_head pci_mmcfg_list;
-> >
-> >  #ifdef CONFIG_PCI_QUIRKS
-> >  struct mcfg_fixup {
-> > @@ -214,16 +207,13 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
-> >  #endif
-> >  }
-> >
-> > -/* List to save MCFG entries */
-> > -static LIST_HEAD(pci_mcfg_list);
-> > -
-> >  int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
-> >                     const struct pci_ecam_ops **ecam_ops)
-> >  {
-> >         const struct pci_ecam_ops *ops = &pci_generic_ecam_ops;
-> >         struct resource *bus_res = &root->secondary;
-> >         u16 seg = root->segment;
-> > -       struct mcfg_entry *e;
-> > +       struct pci_mmcfg_region *e;
-> >         struct resource res;
-> >
-> >         /* Use address from _CBA if present, otherwise lookup MCFG */
-> > @@ -233,10 +223,10 @@ int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
-> >         /*
-> >          * We expect the range in bus_res in the coverage of MCFG bus range.
-> >          */
-> > -       list_for_each_entry(e, &pci_mcfg_list, list) {
-> > -               if (e->segment == seg && e->bus_start <= bus_res->start &&
-> > -                   e->bus_end >= bus_res->end) {
-> > -                       root->mcfg_addr = e->addr;
-> > +       list_for_each_entry(e, &pci_mmcfg_list, list) {
-> > +               if (e->segment == seg && e->start_bus <= bus_res->start &&
-> > +                   e->end_bus >= bus_res->end) {
-> > +                       root->mcfg_addr = e->address;
-> >                 }
-> >
-> >         }
-> > @@ -268,7 +258,7 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
-> >  {
-> >         struct acpi_table_mcfg *mcfg;
-> >         struct acpi_mcfg_allocation *mptr;
-> > -       struct mcfg_entry *e, *arr;
-> > +       struct pci_mmcfg_region *e, *arr;
-> >         int i, n;
-> >
-> >         if (header->length < sizeof(struct acpi_table_mcfg))
-> > @@ -285,10 +275,12 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
-> >
-> >         for (i = 0, e = arr; i < n; i++, mptr++, e++) {
-> >                 e->segment = mptr->pci_segment;
-> > -               e->addr =  mptr->address;
-> > -               e->bus_start = mptr->start_bus_number;
-> > -               e->bus_end = mptr->end_bus_number;
-> > -               list_add(&e->list, &pci_mcfg_list);
-> > +               e->address =  mptr->address;
-> > +               e->start_bus = mptr->start_bus_number;
-> > +               e->end_bus = mptr->end_bus_number;
-> > +               e->res.start = e->address + PCI_MMCFG_BUS_OFFSET(e->start_bus);
-> > +               e->res.end = e->address + PCI_MMCFG_BUS_OFFSET(e->end_bus + 1) - 1;
-> > +               list_add(&e->list, &pci_mmcfg_list);
-> >         }
-> >
-> >  #ifdef CONFIG_PCI_QUIRKS
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index ce2ab62..899004e 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -47,6 +47,8 @@
-> >  int pci_pci_problems;
-> >  EXPORT_SYMBOL(pci_pci_problems);
-> >
-> > +LIST_HEAD(pci_mmcfg_list);
-> > +
-> >  unsigned int pci_pm_d3hot_delay;
-> >
-> >  static void pci_pme_list_scan(struct work_struct *work);
-> > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > index cd8aa6f..71e4c06 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -55,6 +55,23 @@
-> >  #define PCI_RESET_PROBE                true
-> >  #define PCI_RESET_DO_RESET     false
-> >
-> > +#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
-> > +
-> > +/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
-> > +#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
-> > +
-> > +/* pci mcfg region */
-> > +struct pci_mmcfg_region {
-> > +       struct list_head list;
-> > +       struct resource res;
-> > +       u64 address;
-> > +       char __iomem *virt;
-> > +       u16 segment;
-> > +       u8 start_bus;
-> > +       u8 end_bus;
-> > +       char name[PCI_MMCFG_RESOURCE_NAME_LEN];
-> > +};
-> > +
-> >  /*
-> >   * The PCI interface treats multi-function devices as independent
-> >   * devices.  The slot/function address of each device is encoded
-> > --
-> > 1.8.3.1
-> >
+Again with the bombastic statements. It was "dead on arrival" like the
+notifications were "impossible"?
+
+> because it never worked for us in real production.
+
+Who is "us"? mlx5 that apparently decided to do its own thing?
+
+We are using reload in mlxsw on a daily basis and users are using it to
+re-partition ASIC resources and activate firmware. There are tests over
+netdevsim implementation that anyone can run for testing purposes. We
+also made sure to integrate it into syzkaller:
+
+https://github.com/google/syzkaller/commit/5b49e1f605a770e8f8fcdcbd1a8ff85591fc0c8e
+https://github.com/google/syzkaller/commit/04ca72cd45348daab9d896bbec8ea4c2d13455ac
+https://github.com/google/syzkaller/commit/6930bbef3b671ae21f74007f9e59efb9b236b93f
+https://github.com/google/syzkaller/commit/d45a4d69d83f40579e74fb561e1583db1be0e294
+https://github.com/google/syzkaller/commit/510951950dc0ee69cfdaf746061d3dbe31b49fd8
+
+Which is why the regressions you introduced were discovered so quickly.
+
+> 
+> So I'm fixing bugs without relation to when they were introduced.
+
+We all do
+
+> 
+> For example, this fix from Jiri [1] for basic design flow was merged almost
+> two years later after devlink reload was introduced [2], or this patch from
+> Parav [3] that fixed an issue introduced year before [4].
+
+What is your point? That code has bugs?
+
+By now I have spent more time arguing with you than you spent testing
+your patches and it's clear this discussion is not going anywhere.
+
+Are you going to send a revert or I will? This is the fourth time I'm
+asking you.
