@@ -2,145 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECBF43BA98
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA6A43BA9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbhJZTWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:22:06 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38100 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233551AbhJZTWE (ORCPT
+        id S237103AbhJZTXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233551AbhJZTXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:22:04 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QFXF56025856;
-        Tue, 26 Oct 2021 12:19:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=V8tS16xkBhPZbysHmyfh1/yLR7z+HY1gnHzk5tGKhdA=;
- b=lVxviE8OWD4hbHjwOMOpvDJZ7f5gsCRq3Qa/lG/kGz9ElOexlDlF2LAoVkLP3nBear9n
- 0t4RIkS3Pf2mqucsGl0BDwnDoSqO16vquTRTbOn5vDBy9BWJc8dvP60S7gSFOzLxDJ7C
- vQKMmBzWfG6P44JY9h1jWCrOXFZtVrFC0hI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bx4e7qr9x-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Oct 2021 12:19:40 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 26 Oct 2021 12:19:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dn14NpNZwZ3pdiuXS2rr1ByHdMebdPX+BKYmYWlRp/gxFU3V6kfB5mmkycogIxdvcvfYPBTamUPhBAcu92QY2H10XrTnwVIP3k6RISuBCd84vKwetGFU/WoNthnxXgYlpRkQCyjJlLFMnPqcIt2jKZYKFLk29U0rp5MYoQR6qvZ4nx5YoP31ojL4nPdonLt3IZV/80diQVzMRQSjsh4bnlf58dE/oLYzpQS+K0g6jVtPLuI3R0ZuXteNMR1AIOIcSs+Qe+m/9236h9jPoA0PkG5WzM6o7AZYd4JI+6vOsBz2qiopxGtxMppl7zoha7MMqu+6AlmkCTgqDmikV/R/ZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V8tS16xkBhPZbysHmyfh1/yLR7z+HY1gnHzk5tGKhdA=;
- b=TACvpy5byJ61yfKpndr8Mh4RoFvIY/G36UtGE/G0O07lLhrarW7J5QqmIp9FVHIwp0O7VRG2e2ZtflNqZIkFGqU3l46wHk/KLAT0vtgBfRFsxPD6nye+wrM3YMKgOlGALfEsV6xTjyxlg8tJ+a1lUQDVCD895+0ilPuqnFyS1zywa8WJ/hFovsjjtzarluNt9XABNQwy9ZONPugTvYpGvjTBVPLgQvDaxf09foeRv9dTu5Y6EVytiGExhefMQrRcIc40FTyyzUOAI7UoXZu4l20cpO+0rxI8tzP8XEBXS958JhiPUKR45V8F3aP4PhG0BQCL49W78D8cNekUFK8jZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SA0PR15MB3758.namprd15.prod.outlook.com (2603:10b6:806:81::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Tue, 26 Oct
- 2021 19:19:36 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::6c34:bcb:51af:6160%7]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
- 19:19:36 +0000
-Date:   Tue, 26 Oct 2021 12:19:33 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Tejun Heo <tj@kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: Move BPF_MAP_TYPE for INODE_STORAGE and
- TASK_STORAGE outside of CONFIG_NET
-Message-ID: <20211026191933.as4tk6vclw4q2fsg@kafai-mbp.dhcp.thefacebook.com>
-References: <YXG1cuuSJDqHQfRY@slm.duckdns.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YXG1cuuSJDqHQfRY@slm.duckdns.org>
-X-ClientProxiedBy: MW4PR03CA0347.namprd03.prod.outlook.com
- (2603:10b6:303:dc::22) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        Tue, 26 Oct 2021 15:23:32 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C8CC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:21:08 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id y11so214190qtn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=127m+2Fwn/io7KvRr/KOS7xqYguoXNnwDnCZDuDXMls=;
+        b=RjhlVtWGRH4NjzWs8qEsffk9kM4I6eskC3WyXwXekquU/6FsHhbHoDWqRQ38FJhFj3
+         OVKmUSkhG6dYmEXVnhONtOqwcfox1NOnxhpB5SyqTHS8vqpmAtEDeKS6Yv22i/k1TPDq
+         Opcyro3k6lKG+TnIb7/tD9lpHOawtLLtfNAr8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=127m+2Fwn/io7KvRr/KOS7xqYguoXNnwDnCZDuDXMls=;
+        b=OHb1OJJY9vYmehbNDTFIUEnMl3aEeFDCnVUge24kDMbvIleeasmLWqRnHltSafz2j8
+         cQ4DNAPL5NsEhxiupwb++8bfME2vnfPG+Zl0Jxw4GeMrEqG6M7CH7Xjf4LRI4dnXkdas
+         FESrKps1EBkLDhLWSWN1LETHhJxfawbPUT/XIvxWcSmRoeyJ72PCRN7otsDLm6H8yJBH
+         UeHRPWukmaQpAefYYzJa1S01G0hk5oYwr1vJnuE9plAtBCkWACxUdGydN55K3uda8s41
+         O8Kc7dGrcAK6G+VrSgSX1yZHg8JtfQOEMILWiCpDDMs6Yq6daUxW9G+tuCIQ+1C3BDdw
+         ZMiw==
+X-Gm-Message-State: AOAM532oqZWT9MWjSyvavwPBaghpi3CIit6/EKidRXVMfvN2pNVdeX9V
+        agR0rJiinplLVE7X9eAJw6emzg==
+X-Google-Smtp-Source: ABdhPJxIvSKMXHMgOqR+0IzuDBjRv51mc+McEVmOd74PDkMDAluxSEORKPdsy6BHd6I0NnJCw5RNHQ==
+X-Received: by 2002:ac8:7087:: with SMTP id y7mr3457600qto.112.1635276067936;
+        Tue, 26 Oct 2021 12:21:07 -0700 (PDT)
+Received: from markyacoub.nyc.corp.google.com ([2620:0:1003:314:6c5e:8134:a5e1:b63b])
+        by smtp.gmail.com with ESMTPSA id c13sm2284643qtc.42.2021.10.26.12.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 12:21:07 -0700 (PDT)
+From:   Mark Yacoub <markyacoub@chromium.org>
+Cc:     seanpaul@chromium.org, pmenzel@molgen.mpg.de,
+        Mark Yacoub <markyacoub@google.com>,
+        Mark Yacoub <markyacoub@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: [PATCH v3 1/3] drm: Rename lut check functions to lut channel checks
+Date:   Tue, 26 Oct 2021 15:21:00 -0400
+Message-Id: <20211026192104.1860504-1-markyacoub@chromium.org>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:bf3a) by MW4PR03CA0347.namprd03.prod.outlook.com (2603:10b6:303:dc::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18 via Frontend Transport; Tue, 26 Oct 2021 19:19:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0a72ebb2-bf7e-4e91-3aef-08d998b58ca8
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3758:
-X-Microsoft-Antispam-PRVS: <SA0PR15MB3758CCD48DC3797F9F80FF18D5849@SA0PR15MB3758.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lVmX198THfHSvMuLyjWiNKUBikTjqWLh0gr6TEpM7kBIHlKy3K1hsToV7PkKg5h5zO9py//NK1qyatOHOnnX2JjFA2sFpOxGtfiLaNF25WjAdgtlo1ssazu2dH6cCqJY+Cg2HQuE1es0G+6mnuUunYJ12VZeYM6gT49qoH9tytk++s+g7f9BZ1StjPegsTki1zLPsapJf4058vMBcGH//NqykFOgBcO3OhvYmwM6G3WuRlcqIcQt8eOz34sg29DjSuObucaozBEkyt72G3MQS2QOLlKf3+nv1PuE2Y8NOo1IyMISvMscieFVIoxjkl+B0x1zNHZulG5es3McggdGMp9d4MaNUeuvO6KDTFyyeGJZk192vxQ7OFCurwHvb/sCHcSvFYDVocWwq5fcBCFNK8m25YDu96zMMd3ZnwmE4K5PHcneUYm7F4KgZv4bPVjuABxE46iGh/eUxcxAJH2SxBezUpukCgrIR1H3eDQQzZ6thzLOvHutHSeAujKlnRslku5EuVbDxPH/gyf+9U28PfhrxuH/CbZvLW2cpO3ByD16AnLBvc3jOE/nVxARnhXjxELUg8l/vFAx22dWSB52pzgpGIX66zgDXhYFElbdjg5htLTTATmGUBmovHqjvTJ31qEpescN7fZra4SEqufYxA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(8676002)(4326008)(66556008)(2906002)(66476007)(1076003)(186003)(508600001)(66946007)(5660300002)(6916009)(83380400001)(38100700002)(4744005)(9686003)(316002)(55016002)(54906003)(86362001)(6506007)(52116002)(7696005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3i9jxJnLUhE92/mBoKCiMpkLJW7F2pEaZA0HmAoNKNfCkDan78cdStWbfmFT?=
- =?us-ascii?Q?NE80XexN6OWR80ipt5jnI0NaA4p09hNdUOohuYFfRj4FUAm0ZCBhlo6z1FPK?=
- =?us-ascii?Q?LKuk1Rg1dj1wACua38Tr8AUOlE0OVEHcWguPc8HRdH4kBhRMaAaZFUcCIGWs?=
- =?us-ascii?Q?GabGb9fY8fSvM5bjVemlQsjDfgkZt7Juv7YA3p4PDGtCZEOLQLN/y9hDYmnQ?=
- =?us-ascii?Q?oLuJaEvzk6CKgVUV1yQtLm3AoqZKzmuqwK7dCSruRRkYzip/hUn/N9TLytEN?=
- =?us-ascii?Q?QdCpPIxz9UquqTrSz5Z4B7PjFYimHW38IlGs4Q83ZHoU1L/5/ZYfbdggKDS0?=
- =?us-ascii?Q?5azMvdPndBXHVyLX7rKngXFGXMxySlvMnDgH/3SOMBfuGXIJT4cr/avThFRW?=
- =?us-ascii?Q?jtlzRZjRVLvLhLhM+By4RPEf1JlS9l3KzzH3qi/5xpsMKPlvGFYVJ5VNic3i?=
- =?us-ascii?Q?zMMi0O21TcmgXaw+pKvszHzDyP8QV3RxyO1gdLgG7FiCrVBOSTc0JNQGexIt?=
- =?us-ascii?Q?wZWGtygolu0zYNodBx6CR+Ob3y8+xDxsR2UUlCgOLDmV2JXfXF9HbhcjNmAb?=
- =?us-ascii?Q?wQ7PhLhNgGgZmp9KIDGFvoY1DJ3ZcOCyU574OSNqCEi6tEoNrUjinjyfdQf4?=
- =?us-ascii?Q?P7hglHe7vE3fQ1sywANMoZYQzCg5zUVHwTWf0SYKcdlWjCUzrhC1PrSTNCgC?=
- =?us-ascii?Q?3KZZSBrWID3Jkk1l+o3YfCVg/l9hyxzm1wcBUlwi0Ua1c2fG98lgaS4NYa+S?=
- =?us-ascii?Q?dR5vn6KZU6sGyad/FW83NzCqE6tluXiUojrCHcJ566uhac45T6cAwxEAl8LY?=
- =?us-ascii?Q?/hHnEljQHPQZVrPGAXcmUbP5kTYGBHLr0FdKgA3rjFx0BLIFuYzu9RFiuBLO?=
- =?us-ascii?Q?qJ0QCucBgE+fz0Q9A15BCHO9ooUfrKRrjQ9B6bTY35YA5jmsNJt/NXtpfyRz?=
- =?us-ascii?Q?mr5tbNf8wDaeLkBtyiNT4JiwEqAG+QpPCZmKqYDncEhd+d0YiQSZkHbA3wKJ?=
- =?us-ascii?Q?+JAon3WxCWkuswq+4Kifdem7BtTxcw5HfosXUxcSexK5E75rTPxatz5mAAry?=
- =?us-ascii?Q?7/BV3apdK4kyW1jO6k1tS9JIqSNLMsh30HmFq2jQXz7D1tBqhoj3qVT8iodZ?=
- =?us-ascii?Q?USKixkokyF1mhm/ps51TQJSPY7YgkEpNwnEs0A2M3Fi8Gs6HRN1WqbsWcIPX?=
- =?us-ascii?Q?N9G6otcOCRhrwkqm0FD8b5pMN0zqFAtLo6Lk3AVaRVZIbQBtlLjzThrxMoVH?=
- =?us-ascii?Q?WXvbOMh9uGLzduvudYT1pGLOsDbYbPtRbaXFDPoPyEUzs3qcKakzrUQDrbe7?=
- =?us-ascii?Q?KXfWD4y+1zHIeWT+jzjKgb6o7T67i3619r2Yh4nBv70caFaxdYlE5f0DBR3j?=
- =?us-ascii?Q?oMdPJO+u2oNW5KxtR+5ure8+kBD15ySp6+RSiIMpntj2n0r2R0Hq9aKZYZjB?=
- =?us-ascii?Q?gFQHY3AR/5UJY7I7O2ISuiCUVkO4bUyAaftU/JJMXtJvr0UeCBJXWjRrrj9v?=
- =?us-ascii?Q?zVIkkBnucIsveKXCcHe0lWOR+39nnoB0BYDPS4NG1UXm3azH7NFjAQbpgg8M?=
- =?us-ascii?Q?3VTErudPItM4PqXAXjN3gputQt8VKsqUkkKmbKzI?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a72ebb2-bf7e-4e91-3aef-08d998b58ca8
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2021 19:19:36.7905
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: We6wZbPadr9cFmgutR0PoVveYJ//Pj4TXNs5xcTZxh844dBWwWiFSE1ksHEw7cFi
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3758
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: nSglMvK-7EylXlC8Be6FpqurTEG_vTVe
-X-Proofpoint-ORIG-GUID: nSglMvK-7EylXlC8Be6FpqurTEG_vTVe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_05,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1015 mlxscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=780
- phishscore=0 impostorscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110260107
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 08:46:10AM -1000, Tejun Heo wrote:
-> bpf_types.h has BPF_MAP_TYPE_INODE_STORAGE and BPF_MAP_TYPE_TASK_STORAGE
-> declared inside #ifdef CONFIG_NET although they are built regardless of
-> CONFIG_NET. So, when CONFIG_BPF_SYSCALL && !CONFIG_NET, they are built
-> without the declarations leading to spurious build failures and not
-> registered to bpf_map_types making them unavailable.
-> 
-> Fix it by moving the BPF_MAP_TYPE for the two map types outside of
-> CONFIG_NET.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+From: Mark Yacoub <markyacoub@google.com>
+
+[Why]
+This function and enum do not do generic checking on the luts but they
+test color channels in the LUTs.
+Keeping the name explicit as more generic LUT checks will follow.
+
+Tested on Eldrid ChromeOS (TGL).
+
+Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+---
+ drivers/gpu/drm/drm_color_mgmt.c           | 12 ++++++------
+ drivers/gpu/drm/i915/display/intel_color.c | 10 +++++-----
+ include/drm/drm_color_mgmt.h               |  7 ++++---
+ 3 files changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
+index bb14f488c8f6c..6f4e04746d90f 100644
+--- a/drivers/gpu/drm/drm_color_mgmt.c
++++ b/drivers/gpu/drm/drm_color_mgmt.c
+@@ -585,17 +585,17 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+ EXPORT_SYMBOL(drm_plane_create_color_properties);
+ 
+ /**
+- * drm_color_lut_check - check validity of lookup table
++ * drm_color_lut_channels_check - check validity of the channels in the lookup table
+  * @lut: property blob containing LUT to check
+  * @tests: bitmask of tests to run
+  *
+- * Helper to check whether a userspace-provided lookup table is valid and
+- * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
+- * the tests in &drm_color_lut_tests should be performed.
++ * Helper to check whether each color channel of userspace-provided lookup table is valid and
++ * satisfies hardware requirements. Drivers pass a bitmask indicating which of in
++ * &drm_color_lut_channels_tests should be performed.
+  *
+  * Returns 0 on success, -EINVAL on failure.
+  */
+-int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
++int drm_color_lut_channels_check(const struct drm_property_blob *lut, u32 tests)
+ {
+ 	const struct drm_color_lut *entry;
+ 	int i;
+@@ -625,4 +625,4 @@ int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(drm_color_lut_check);
++EXPORT_SYMBOL(drm_color_lut_channels_check);
+diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
+index dab892d2251ba..4bb1bc76c4de9 100644
+--- a/drivers/gpu/drm/i915/display/intel_color.c
++++ b/drivers/gpu/drm/i915/display/intel_color.c
+@@ -1285,7 +1285,7 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+ 	const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
+ 	const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
+ 	int gamma_length, degamma_length;
+-	u32 gamma_tests, degamma_tests;
++	u32 gamma_channels_tests, degamma_channels_tests;
+ 
+ 	/* Always allow legacy gamma LUT with no further checking. */
+ 	if (crtc_state_is_legacy_gamma(crtc_state))
+@@ -1300,15 +1300,15 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+ 
+ 	degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
+ 	gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
+-	degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+-	gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
++	degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
++	gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+ 
+ 	if (check_lut_size(degamma_lut, degamma_length) ||
+ 	    check_lut_size(gamma_lut, gamma_length))
+ 		return -EINVAL;
+ 
+-	if (drm_color_lut_check(degamma_lut, degamma_tests) ||
+-	    drm_color_lut_check(gamma_lut, gamma_tests))
++	if (drm_color_lut_channels_check(degamma_lut, degamma_channels_tests) ||
++	    drm_color_lut_channels_check(gamma_lut, gamma_channels_tests))
+ 		return -EINVAL;
+ 
+ 	return 0;
+diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+index 81c298488b0c8..cb1bf361ad3e3 100644
+--- a/include/drm/drm_color_mgmt.h
++++ b/include/drm/drm_color_mgmt.h
+@@ -94,12 +94,12 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+ 				      enum drm_color_range default_range);
+ 
+ /**
+- * enum drm_color_lut_tests - hw-specific LUT tests to perform
++ * enum drm_color_lut_channels_tests - hw-specific LUT tests to perform
+  *
+  * The drm_color_lut_check() function takes a bitmask of the values here to
+  * determine which tests to apply to a userspace-provided LUT.
+  */
+-enum drm_color_lut_tests {
++enum drm_color_lut_channels_tests {
+ 	/**
+ 	 * @DRM_COLOR_LUT_EQUAL_CHANNELS:
+ 	 *
+@@ -119,5 +119,6 @@ enum drm_color_lut_tests {
+ 	DRM_COLOR_LUT_NON_DECREASING = BIT(1),
+ };
+ 
+-int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
++int drm_color_lut_channels_check(const struct drm_property_blob *lut,
++				 u32 tests);
+ #endif
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
