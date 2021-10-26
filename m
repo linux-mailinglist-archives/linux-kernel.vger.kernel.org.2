@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F8F43BB29
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2243A43BB2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238962AbhJZTnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:43:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239054AbhJZTnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:43:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6B0D60F6F;
-        Tue, 26 Oct 2021 19:40:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635277255;
-        bh=6kptRF7T18sW7ZNzM84KDRvLY2wHILPGV96SE3YEtIo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rdKklo7wRg6PaasIzZVb3gQlH3Zoyi6qoGsOvKca0q40/CNFg/zEM/lCZ8nNkiL6e
-         rS424suQGR6oIG5SZq+2DT72ak+8aSOrbxjMxXGSfNZZhZLkYuzBkhGjM3t8qM8MhL
-         blIz9jFiZO7MQVAaKC0CYprtym3m/M+LOONgSlN7F5SOmJk2ffSoEos06yoqdamdWF
-         AXqOoFyY+arxOqxtX48xGHlUQGOL64SiePzZ77SwU3P4qrpeeodwrKWaJNeXHys8YV
-         2PJRCWlw1wzGLgeeECgNemsUBsb/Gslwjn5X+iaCAGCn3sfrotOB7CPbBvXp48dEu2
-         XWLyJmKfvIqMQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next 2/2] Revert "devlink: Remove not-executed trap policer notifications"
-Date:   Tue, 26 Oct 2021 22:40:42 +0300
-Message-Id: <21da54798e7eebdb43fa8db5ca1910f83f11a007.1635276828.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1635276828.git.leonro@nvidia.com>
-References: <cover.1635276828.git.leonro@nvidia.com>
+        id S237117AbhJZToX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236916AbhJZToW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 15:44:22 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AE2C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:41:58 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id h133so257209vke.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=nXYqn585dN+I/gZgqMnG98Soo2HbySM8r78G1snsjhE=;
+        b=KWVful5H3VtG2pwL45jzVBsX+G88pCZ40ZMdLUKizxtaUmMpe/nWvsNYmXck5Shf6J
+         +RZ4oYkP7XZjbMDNnfQd+o7wFw/TVPAzmHJSowBamb8bYrLWBqhwxHmsd12uQrrG1YIp
+         mbPR6WBdtsmRGUN8Hu+99Wxj/HY0PKLBlxX7nzMDTFak/9KVCtcoDXzdNK0ilHP7dY1Q
+         HZbMgDDqCCPaFN9X/nDDzIZHtO9L1R2MJehu3N1GD+5V/3/OQLF+HG1l7Oe53lU6mSl2
+         N0N+XcoChp/VtGyVO50MMLWgCar1Vd1++UFG+3TLbebsUs0HeRbKuFVSZsKOCzUeX8lE
+         KF8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=nXYqn585dN+I/gZgqMnG98Soo2HbySM8r78G1snsjhE=;
+        b=xB1SG4BwBdZhVWXUMo9B58T0VJ4sOSWlCxLQPwxxcMjQdn/TvBOD2JIs9Lvf0sOjix
+         /9WJyRKEj92zvOIkF8WTZR+N/CJ5n90bIuha4F1x+MuxjKIl1uRURMUduP5syU/OEepO
+         DRu3VmqUjLXydGHYAGP2PkM+Y6rfAKBHVYcyRb88PL4a9Nxn2vLE9VzrA5ck6765SGiW
+         RPUKhRL/e+3S+hJw0iLtFel91rKGWeNfvjf/bcwIE2bbKD8s8NUiTu9Hd5exahmJ/aXw
+         mRrSAnVXLcuXLJ/DRpxDaK8bPVl9XlEq9FZnTKPR+Yc3zJPlv8R2tAr2uuP15YNhR897
+         7HLA==
+X-Gm-Message-State: AOAM532ZylqpL6X87XSjg+zcTCQnDOtnHeRimaSeZP5YPgzyDwcP+Klm
+        SjX/kfQvH85TFt6uvEoYpSzeNJeXtfQslC5f77Q=
+X-Google-Smtp-Source: ABdhPJz2F/Obu8RidPbI1mi/hUR0SbZzCDj5MA1W9/XdCGgRfzSSP0j7sBMDKmE/3c2ZJtGKl5EoGd0NBBK5ae3Nloc=
+X-Received: by 2002:a1f:324d:: with SMTP id y74mr25168367vky.20.1635277316401;
+ Tue, 26 Oct 2021 12:41:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a67:b248:0:0:0:0:0 with HTTP; Tue, 26 Oct 2021 12:41:55
+ -0700 (PDT)
+Reply-To: barrmarkbarret@gmail.com
+From:   Mark Barret <00013lsaa@gmail.com>
+Date:   Tue, 26 Oct 2021 12:41:55 -0700
+Message-ID: <CAAzf_a3YpheZR2qKXowKQJ3UGcDUZKK2vSP7jJ+ivqdUDpF6Vg@mail.gmail.com>
+Subject: My Pleasure
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Dear Friend,
 
-This reverts commit 22849b5ea5952d853547cc5e0651f34a246b2a4f as it
-revealed that mlxsw and netdevsim (copy/paste from mlxsw) reregisters
-devlink objects during another devlink user triggered command.
+My name is Mr.Mark Barret, an attorney in our branch office here in
+Republic of Togo in West Africa. A deceased client of mine, business
+man and also own a gold Mining Company, from your country died along
+with his family many years ago without a WILL or next of kin.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- net/core/devlink.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+He had a fixed deposit valued at the sum of money left behind before
+he met his end. I contacted you so that I can present you as my late
+client next of kin, so that the money can be transferred to your
+account, and we will share the funds equally, 50/50% to both parties.
 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 4dac53c77842..0de679c4313c 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -11180,7 +11180,8 @@ devlink_trap_policer_notify(struct devlink *devlink,
- 
- 	WARN_ON_ONCE(cmd != DEVLINK_CMD_TRAP_POLICER_NEW &&
- 		     cmd != DEVLINK_CMD_TRAP_POLICER_DEL);
--	ASSERT_DEVLINK_REGISTERED(devlink);
-+	if (!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED))
-+		return;
- 
- 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
- 	if (!msg)
-@@ -11222,6 +11223,9 @@ devlink_trap_policer_register(struct devlink *devlink,
- 	}
- 
- 	list_add_tail(&policer_item->list, &devlink->trap_policer_list);
-+	devlink_trap_policer_notify(devlink, policer_item,
-+				    DEVLINK_CMD_TRAP_POLICER_NEW);
-+
- 	return 0;
- 
- err_policer_init:
-@@ -11239,6 +11243,8 @@ devlink_trap_policer_unregister(struct devlink *devlink,
- 	if (WARN_ON_ONCE(!policer_item))
- 		return;
- 
-+	devlink_trap_policer_notify(devlink, policer_item,
-+				    DEVLINK_CMD_TRAP_POLICER_DEL);
- 	list_del(&policer_item->list);
- 	if (devlink->ops->trap_policer_fini)
- 		devlink->ops->trap_policer_fini(devlink, policer);
-@@ -11260,8 +11266,6 @@ devlink_trap_policers_register(struct devlink *devlink,
- {
- 	int i, err;
- 
--	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
--
- 	mutex_lock(&devlink->lock);
- 	for (i = 0; i < policers_count; i++) {
- 		const struct devlink_trap_policer *policer = &policers[i];
-@@ -11303,8 +11307,6 @@ devlink_trap_policers_unregister(struct devlink *devlink,
- {
- 	int i;
- 
--	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
--
- 	mutex_lock(&devlink->lock);
- 	for (i = policers_count - 1; i >= 0; i--)
- 		devlink_trap_policer_unregister(devlink, &policers[i]);
--- 
-2.31.1
-
+Regards,
+Mark Barret
