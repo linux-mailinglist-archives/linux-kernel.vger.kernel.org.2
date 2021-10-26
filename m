@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2275B43B44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6CE43B44B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhJZOhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S236704AbhJZOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236696AbhJZOhf (ORCPT
+        with ESMTP id S236710AbhJZOhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:37:35 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C10C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:12 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso2428568pjm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:12 -0700 (PDT)
+        Tue, 26 Oct 2021 10:37:41 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB97C061348
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:18 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id n12so5792286plc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:35:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tNtCgf+VFHUlZGEKV4gLDOxA8WQx4O5hZ8JXpTy4mIY=;
-        b=Se0gBBeoajcNu+dE+eH19bhUO+AoeRjvw3ioZV0GMOwHpfQrb9ACEdCHxZW/NiW669
-         FTZYtz2j1zPzdZt72IPx+6Wu7cvdImZtusTpIdzR9bzH0xh5NWrIkCBKrmV/jBX6wh0x
-         hFr9RuEBkhrQk5kzVfxF6SAT+/VGGzOLHryGzXNewuzXANYhl6pNHomwFYsoR68K7BC8
-         mAYZDBdiUAi7W2qEkiw4I0x4635PNYaLosq6/sht+h3trdv/r1ql/cxwSzGbdewkE/ex
-         X5YtxQK3+tT9vr8HIV1CSWmUniIM3T8lVld1dj4dvMg4ln8Myu10jZ/tPAw6Emq/ie4J
-         Y3hw==
+        bh=2lhQrUUxc7kLVqNyEu//dKP6He8ZHxMSI107NCUgfsQ=;
+        b=XXqyFh9TsXGyVqBT+cjiPNuZf1BOPdrErU27osHoEj3Ey8yZCk/h766YDo4xHli/V2
+         lPhjd+dWILy6bnvpbwQMsKcTxYqpaTZSAFq1zVluvlo8TeP06C0Smfo0/Is+rdN7Tzeh
+         gYS7kSHme/AZpRFY2+u2kuc568uWa/5Uh6p93Hw+fDbr382HlCyKWZnEBfdAgac+iiYu
+         hcralk6HtPTK/5THbbjVQX9Igr0amtExuaPwIlblY3YQO/dvEyq+7jz/jnwL+mmlFNNr
+         jRQKmBsVgQUkDBpaot0GgX1EPj5f6o+0r5qCSEVnv3MGrUm/3TIUI1stH4AGAzMs1vYF
+         bKIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tNtCgf+VFHUlZGEKV4gLDOxA8WQx4O5hZ8JXpTy4mIY=;
-        b=6HWfRtMOM1JswPPGK4aK/aYU7yPwtFsf8yZl5EwMQ4BmoZ9ZSIqmQHR4QQgO6STFzo
-         XZvoFz6J9jozFoZANtusMMFEyT61rdTZVzGa8rMns5qP53cdM3LNj/koKsDM2amRW74c
-         VHi6lqRr6AWzKHCELgha0ZNigL2lASW55VUcjmnZ1OOPQ8MPYjnbmiUwi4W25tY9N6Zg
-         dfAjy6nkddu+OcG3TQ9vhIfM+eBonArTrhIeUACBjXSwbpaEB9lmBV6weNIh2U0BkFXw
-         0byk0Ucz3MkK/7df6DoOWMnQPo6Rx7dnh17t1cocycqTRyXsaadgaRECVaWtONS3K1vj
-         2Zdg==
-X-Gm-Message-State: AOAM531VWjZpmClvIc3Aw3ipizalmgA3XrOVCHdBqQl6EXqXbPP0PZRb
-        nFy29kC8ZAb3RG47biIB/7ylU/WE0l8=
-X-Google-Smtp-Source: ABdhPJyslmyU+SQde4kWh4CvWVR/sR6JfiAdwQPO0e8ffawXLjiBDLX6NAVhxTmUnCkpLuqn7QdOuw==
-X-Received: by 2002:a17:90a:a8f:: with SMTP id 15mr29361182pjw.229.1635258911601;
-        Tue, 26 Oct 2021 07:35:11 -0700 (PDT)
+        bh=2lhQrUUxc7kLVqNyEu//dKP6He8ZHxMSI107NCUgfsQ=;
+        b=3wJuVrWmQrADOZ++f/Qnac/s6AyWJoBwBFFPZiSApwLNuJBiEGCFQkyxnAk4nMCQKL
+         wKbaFzYwkc/kxM3f3oCXc78HOzu7wpSzmyZKKV6fneMvVCjheQmk5JMTY3UPiOL19Toq
+         izR25r/vD/NAxRBm/EnUoV6sGowPBGLCrpuOSLbASGhjhRQxWlY1NReMxw+S3W6ZZ901
+         1pnPLVKq37cgQwY0NR61e9ZvxhfSRLEcsF9vR6TtUeHcKX7LCwTT/U2DpgB7v0YL6ELf
+         UIAfWOBd5pSqKDlLflOaHVJulLIM0d2RZvdv/0dcTYGEwv0oKZEHdXtjeyay0PHCA9Mv
+         h/3A==
+X-Gm-Message-State: AOAM533uWUQdqyDu38sQOUWzoVbjPqRiaUNZuQVY4bnj5+JI08KRGq6l
+        eKmS2kB+IiSu3XxGODPMC+ma2IAELOc=
+X-Google-Smtp-Source: ABdhPJyqHXFlw+x8jlbKKgFISP7xYLn/WtQKzVW9/Uy/RcW0iBPLN9wJ9XSPvX9WAAKbSCGfW7k2Og==
+X-Received: by 2002:a17:90b:ec9:: with SMTP id gz9mr3211937pjb.218.1635258917280;
+        Tue, 26 Oct 2021 07:35:17 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id m10sm19185184pfk.78.2021.10.26.07.35.10
+        by smtp.gmail.com with ESMTPSA id j16sm3457583pfj.16.2021.10.26.07.35.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:35:11 -0700 (PDT)
+        Tue, 26 Oct 2021 07:35:17 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -56,9 +56,9 @@ Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 28/50] x86/entry: Make paranoid_exit() callable
-Date:   Tue, 26 Oct 2021 22:34:14 +0800
-Message-Id: <20211026143436.19071-3-jiangshanlai@gmail.com>
+Subject: [PATCH V4 29/50] x86/entry: Call paranoid_exit() in asm_exc_nmi()
+Date:   Tue, 26 Oct 2021 22:34:15 +0800
+Message-Id: <20211026143436.19071-4-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,82 +70,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Move the last JMP out of paranoid_exit() and make it callable.
-
-Allow paranoid_exit() to be re-written in C later and also allow
-asm_exc_nmi() to call it to avoid duplicated code.
+The code between "call exc_nmi" and nmi_restore is as the same as
+paranoid_exit(), so we can just use paranoid_exit() instead of the open
+duplicated code.
 
 No functional change intended.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ arch/x86/entry/entry_64.S | 34 +++++-----------------------------
+ 1 file changed, 5 insertions(+), 29 deletions(-)
 
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 79934c5ee9a1..8790bf41edd4 100644
+index 8790bf41edd4..8d873b778681 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -472,7 +472,8 @@ SYM_CODE_START(\asmsym)
+@@ -959,8 +959,7 @@ SYM_CODE_END(paranoid_entry)
  
- 	call	\cfunc
+ /*
+  * "Paranoid" exit path from exception stack.  This is invoked
+- * only on return from non-NMI IST interrupts that came
+- * from kernel space.
++ * only on return from IST interrupts that came from kernel space.
+  *
+  * We may be returning to very strange contexts (e.g. very early
+  * in syscall entry), so checking for preemption here would
+@@ -1309,11 +1308,7 @@ end_repeat_nmi:
+ 	pushq	$-1				/* ORIG_RAX: no syscall to restart */
  
--	jmp	paranoid_exit
-+	call	paranoid_exit
-+	jmp	restore_regs_and_return_to_kernel
- 
- 	/* Switch to the regular task stack and use the noist entry point */
- .Lfrom_usermode_switch_stack_\@:
-@@ -550,7 +551,8 @@ SYM_CODE_START(\asmsym)
- 	 * identical to the stack in the IRET frame or the VC fall-back stack,
- 	 * so it is definitely mapped even with PTI enabled.
- 	 */
--	jmp	paranoid_exit
-+	call	paranoid_exit
-+	jmp	restore_regs_and_return_to_kernel
- 
- 	/* Switch to the regular task stack */
- .Lfrom_usermode_switch_stack_\@:
-@@ -581,7 +583,8 @@ SYM_CODE_START(\asmsym)
- 	movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
- 	call	\cfunc
- 
--	jmp	paranoid_exit
-+	call	paranoid_exit
-+	jmp	restore_regs_and_return_to_kernel
- 
- _ASM_NOKPROBE(\asmsym)
- SYM_CODE_END(\asmsym)
-@@ -974,7 +977,7 @@ SYM_CODE_END(paranoid_entry)
-  *     Y        User space GSBASE, must be restored unconditionally
-  */
- SYM_CODE_START_LOCAL(paranoid_exit)
--	UNWIND_HINT_REGS
-+	UNWIND_HINT_REGS offset=8
  	/*
- 	 * The order of operations is important. RESTORE_CR3 requires
- 	 * kernel GSBASE.
-@@ -990,16 +993,17 @@ SYM_CODE_START_LOCAL(paranoid_exit)
+-	 * Use paranoid_entry to handle SWAPGS, but no need to use paranoid_exit
+-	 * as we should not be calling schedule in NMI context.
+-	 * Even with normal interrupts enabled. An NMI should not be
+-	 * setting NEED_RESCHED or anything that normal interrupts and
+-	 * exceptions might do.
++	 * Use paranoid_entry to handle SWAPGS and CR3.
+ 	 */
+ 	call	paranoid_entry
+ 	UNWIND_HINT_REGS
+@@ -1322,31 +1317,12 @@ end_repeat_nmi:
+ 	movq	$-1, %rsi
+ 	call	exc_nmi
  
- 	/* With FSGSBASE enabled, unconditionally restore GSBASE */
- 	wrgsbase	%rbx
--	jmp		restore_regs_and_return_to_kernel
-+	ret
+-	/* Always restore stashed CR3 value (see paranoid_entry) */
+-	RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
+-
+ 	/*
+-	 * The above invocation of paranoid_entry stored the GSBASE
+-	 * related information in R/EBX depending on the availability
+-	 * of FSGSBASE.
+-	 *
+-	 * If FSGSBASE is enabled, restore the saved GSBASE value
+-	 * unconditionally, otherwise take the conditional SWAPGS path.
++	 * Use paranoid_exit to handle SWAPGS and CR3, but no need to use
++	 * restore_regs_and_return_to_kernel as we must handle nested NMI.
+ 	 */
+-	ALTERNATIVE "jmp nmi_no_fsgsbase", "", X86_FEATURE_FSGSBASE
+-
+-	wrgsbase	%rbx
+-	jmp	nmi_restore
+-
+-nmi_no_fsgsbase:
+-	/* EBX == 0 -> invoke SWAPGS */
+-	testl	%ebx, %ebx
+-	jnz	nmi_restore
+-
+-nmi_swapgs:
+-	swapgs
++	call	paranoid_exit
  
- .Lparanoid_exit_checkgs:
- 	/* On non-FSGSBASE systems, conditionally do SWAPGS */
- 	testl		%ebx, %ebx
--	jnz		restore_regs_and_return_to_kernel
-+	jnz		.Lparanoid_exit_done
+-nmi_restore:
+ 	POP_REGS
  
- 	/* We are returning to a context with user GSBASE */
- 	swapgs
--	jmp		restore_regs_and_return_to_kernel
-+.Lparanoid_exit_done:
-+	ret
- SYM_CODE_END(paranoid_exit)
- 
- SYM_CODE_START_LOCAL(error_return)
+ 	/*
 -- 
 2.19.1.6.gb485710b
 
