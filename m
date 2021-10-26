@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D0043B3D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A909B43B3DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhJZOXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
+        id S236491AbhJZOYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233382AbhJZOXq (ORCPT
+        with ESMTP id S235492AbhJZOYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:23:46 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABB0C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:21:23 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id f11so14454278pfc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:21:23 -0700 (PDT)
+        Tue, 26 Oct 2021 10:24:07 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC38DC061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:21:43 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id c4so14280346pgv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WM4SI+rtjUFkOGpOJr9Dhig9XU1Hwa4x+tSGFkHYC9Y=;
-        b=oYvKh6bEDYow/5SRWY/ESW/BxLi1waI1mBLazQDizpU9qdWWKtWlsGOTnRX+QNljoN
-         p8V2+ek9qDVRT9+upy/5oaxRUEkpF8Z+eI2p+BdIJEXdG6UX5+nvP/33tj8XvoLma1se
-         9MdeaFRYsi+1VRShROGbkSmxOuJZPBnI01NeC91JXqIRsyUDFleb1QhkW2QybNJu+z3c
-         7sWxUE0A0zmTJK1sY4eUWI2i2e+6SbjPDhp6+WaWEP2uWrjUTsRXhIeo8vlGLljM7Sqd
-         mhVha6J/IdvGqp+cREmRDQDIWif6vFJ0jNLtN/fS6ZbSwnRHF2fSPwCG+tPZznDLrj8l
-         NfAA==
+        bh=Yohk6bB6weZvIQ6DqBBBe5OJOa5DqldDKQ6ZoRfyBW8=;
+        b=TI5LxOXH+Ej34Xgd61KMUpF77i7dYBG+Cu4msQfkRqWG1WwJTRKcJlAKinREbHC3l5
+         WKibpY+0MxJR6OOgW9OqXyNzHGpBPyDrjoARbt/NIFSB7VDo8tSn/qXOjX/dqiMgmMgC
+         ZyzaH9fSS93RUG6qzOMtL6SGfJCu/QBOXU8nNdzS56Rgxm2jPsr/fynBVakzKO1lOnim
+         LHmPkoGAg3h+7cquVZX0W43ZV1K24d5KNs4TElYCK+zK32UiNjtVAVMd2FngxhWldxpI
+         Oj4HritkXFuLSuR9rVPFOaWr3Ifxpe887kbZAyyyT0y1OJkm4gAcBkz9P06hQ9aHtLRj
+         2jVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WM4SI+rtjUFkOGpOJr9Dhig9XU1Hwa4x+tSGFkHYC9Y=;
-        b=JamuQKuI7UyHoBV3god5Em4hAoTlW1MVlHk4oxq4jk1f3smWwF8Mi/3wcZC5zlFyXV
-         lL4Xfs/joE0+3zXJ2gafitdRFmkAdfkFMfdS2zhUOZ7PumXTE+0u71NH6fCpBPvQ33kl
-         N+up9xA88EcKIfzbro+WKryvn5BfsZKcL0GTK8seUNn1iZCdKTu+7HN1EJADcXc3mU9/
-         oz5NxKFQZLmc1nuN0zhVqrZ7l9ZZQX+pk2A5y2UyaAJmq9d32X2lloFEpwtTL4Mqzzmf
-         LbeiVPDoyKlQv75Ha44qatF8aT+y3SIW7yRltVWQaj+WArWf4vpF2cqiAxyNCXi3spse
-         8jEQ==
-X-Gm-Message-State: AOAM531BoleOhQMltVWF+71XeYGlZ2vaHFmrjAotU9FfHxu8uSkwsZQW
-        ShwtNmt+uOQ0dIKFtoJJdZGsfRqAgBo=
-X-Google-Smtp-Source: ABdhPJzYn/8ymrJei+rXtZ4NJaUI33F92xojqAhlpo8byGuwDZjNbwG01rFPXp3wHoK8OfMMRi9mXA==
-X-Received: by 2002:a62:e310:0:b0:47b:d6c1:2c65 with SMTP id g16-20020a62e310000000b0047bd6c12c65mr22307723pfh.21.1635258082522;
-        Tue, 26 Oct 2021 07:21:22 -0700 (PDT)
+        bh=Yohk6bB6weZvIQ6DqBBBe5OJOa5DqldDKQ6ZoRfyBW8=;
+        b=26RTJVLYbG6GD3adgDbKDTZ9CTN2Z1ZXvlt2n/6C24r0PhZtPMb2Ps+dC2Z+u1nD0U
+         Qfs12muXJ3bWCDQieQ3woarAfjuIu7grhN9Z39H5WIi4VtuBl9vWm1Wn9+iExKjERfvf
+         DXSssjgaZuqgZRxwZurDnjS4jVQ0sYKJwGzsXF+qD9qNa8y4S1EIAZL+cS+GUOSFhJR4
+         e+2knoUq9nZLso749zG2ou7cY7/qUvvlHm/t9BpVb8Uouu3lYoDRFIeCm+4Lj1NcTJzU
+         BZSiQndzv2EpCPYzRj/vrQLrFZz1Vqbld9JQOrkkAurnHiaa7P95+trcLcpH+FGUY3m9
+         Cocw==
+X-Gm-Message-State: AOAM531BV6A5nX8H0kEv4vp28ExtkW5Z+OQsqQnTVvz3CPU78/nMLj9k
+        1bCh53bCWYbPgHU1Ze8+a24v3J+TnWs=
+X-Google-Smtp-Source: ABdhPJz94dXR/eCC95AiDMGVBvVPY1nZLSnTTwi1SxBRS1ftARMvgGfZPKpfdwQZC/7cdiv9UzgnnQ==
+X-Received: by 2002:a62:e514:0:b0:47c:12f6:3aae with SMTP id n20-20020a62e514000000b0047c12f63aaemr3635707pff.26.1635258103256;
+        Tue, 26 Oct 2021 07:21:43 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id b3sm20993437pfm.54.2021.10.26.07.21.21
+        by smtp.gmail.com with ESMTPSA id h24sm23429671pfn.180.2021.10.26.07.21.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Oct 2021 07:21:22 -0700 (PDT)
+        Tue, 26 Oct 2021 07:21:42 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V4 05/50] x86/entry: Use swapgs and native_iret directly in swapgs_restore_regs_and_return_to_usermode
-Date:   Tue, 26 Oct 2021 22:20:13 +0800
-Message-Id: <20211026142058.17702-1-jiangshanlai@gmail.com>
+        Borislav Petkov <bp@alien8.de>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH V4 06/50] compiler_types.h: Add __noinstr_section() for noinstr
+Date:   Tue, 26 Oct 2021 22:20:14 +0800
+Message-Id: <20211026142058.17702-2-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211026141420.17138-1-jiangshanlai@gmail.com>
 References: <20211026141420.17138-1-jiangshanlai@gmail.com>
@@ -70,30 +76,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-swapgs_restore_regs_and_return_to_usermode() is used in natvie code
-(non-xenpv) only now, so it doesn't need the PV-aware SWAPGS and
-INTERRUPT_RETURN.
+And it will be extended for C entry code.
 
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/compiler_types.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 0dde5a253dda..c8f7b740a9f1 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -606,8 +606,8 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index b6ff83a714ca..df6f7252047e 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -208,9 +208,11 @@ struct ftrace_likely_data {
+ #endif
  
- 	/* Restore RDI. */
- 	popq	%rdi
--	SWAPGS
--	INTERRUPT_RETURN
-+	swapgs
-+	jmp	native_iret
+ /* Section for code which can't be instrumented at all */
+-#define noinstr								\
+-	noinline notrace __attribute((__section__(".noinstr.text")))	\
+-	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage
++#define __noinstr_section(section)				\
++	noinline notrace __section(section) __no_profile	\
++	__no_kcsan __no_sanitize_address __no_sanitize_coverage
++
++#define noinstr __noinstr_section(".noinstr.text")
  
+ #endif /* __KERNEL__ */
  
- SYM_INNER_LABEL(restore_regs_and_return_to_kernel, SYM_L_GLOBAL)
 -- 
 2.19.1.6.gb485710b
 
