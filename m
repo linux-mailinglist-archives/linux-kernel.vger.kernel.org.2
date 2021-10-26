@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D82343B258
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5479A43B1DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhJZMZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:25:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33594 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234899AbhJZMZ6 (ORCPT
+        id S235749AbhJZMI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:08:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25313 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235730AbhJZMIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:25:58 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9AB3A212C0;
-        Tue, 26 Oct 2021 12:23:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635251013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ag1WYrKgf7O+uS5MAQ9kuHiEe3JugxwL2psMaHfGAI=;
-        b=OdzS67F9XXi9aZf2JlXLYFAKkcabf3eI66g2bLe8q2i+iNazdT6GLx70IWRRWBQ4PW7WVQ
-        jg/5ExTWnbTwpFuDVSWrny8wTfh2tn248Rg38UqjbDni+mvgQIH+6Qdu5plUWX7VzJGzsZ
-        JPM7kNiwXyBXgJ+MvccUgGTIWok8rzg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 69994A3B81;
-        Tue, 26 Oct 2021 12:23:33 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 14:23:32 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH 4/4] mm: allow !GFP_KERNEL allocations for kvmalloc
-Message-ID: <YXfzRNIwE2q/hKgO@dhcp22.suse.cz>
-References: <20211025150223.13621-1-mhocko@kernel.org>
- <20211025150223.13621-5-mhocko@kernel.org>
- <163520487423.16092.18303917539436351482@noble.neil.brown.name>
- <YXerCVllHB9g+JnI@dhcp22.suse.cz>
- <163524528594.8576.8070122002785265336@noble.neil.brown.name>
+        Tue, 26 Oct 2021 08:08:00 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hdr4m0DZ8zbhFs;
+        Tue, 26 Oct 2021 20:00:56 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Tue, 26 Oct 2021 20:05:34 +0800
+Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
+ (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Tue, 26 Oct
+ 2021 20:05:33 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <wojciech.drewek@intel.com>, <dan.nowlin@intel.com>
+CC:     <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] ice: fix error return code in ice_get_recp_frm_fw()
+Date:   Tue, 26 Oct 2021 20:23:33 +0800
+Message-ID: <20211026122333.3017952-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163524528594.8576.8070122002785265336@noble.neil.brown.name>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26-10-21 21:48:05, Neil Brown wrote:
-> On Tue, 26 Oct 2021, Michal Hocko wrote:
-[...]
-> > > GFP_NOWAIT is not a modifier.  It is a base value that can be modified.
-> > > I think you mean that
-> > >     __GFP_NORETRY is not supported and __GFP_DIRECT_RECLAIM is required
-> > 
-> > I thought naming the higher level gfp mask would be more helpful here.
-> > Most people do not tend to think in terms of __GFP_DIRECT_RECLAIM but
-> > rather GFP_NOWAIT or GFP_ATOMIC.
-> 
-> Maybe it would.  But the text says "Reclaim modifiers" and then lists
-> one modifier and one mask.  That is confusing.
-> If you want to mention both, keep them separate.
-> 
->   GFP_NOWAIT and GFP_ATOMIC are not supported, neither is the
->   __GFP_NORETRY modifier.
-> 
-> or something like that.
+Return error code if devm_kmemdup() fails in ice_get_recp_frm_fw()
 
-Fair enough. I went with this
-commit fb93996c217cea864a3b3ffa8a8cd482bf0a1f62
-Author: Michal Hocko <mhocko@suse.com>
-Date:   Tue Oct 26 14:23:00 2021 +0200
+Fixes: fd2a6b71e300 ("ice: create advanced switch recipe")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/net/ethernet/intel/ice/ice_switch.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-    fold me "mm: allow !GFP_KERNEL allocations for kvmalloc"
-
-diff --git a/mm/util.c b/mm/util.c
-index fdec6b4b1267..1fb6dd907bb0 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -549,7 +549,7 @@ EXPORT_SYMBOL(vm_mmap);
-  * Uses kmalloc to get the memory but if the allocation fails then falls back
-  * to the vmalloc allocator. Use kvfree for freeing the memory.
-  *
-- * Reclaim modifiers - __GFP_NORETRY and GFP_NOWAIT are not supported.
-+ * GFP_NOWAIT and GFP_ATOMIC are not supported, neither is the __GFP_NORETRY modifier.
-  * __GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
-  * preferable to the vmalloc fallback, due to visible performance drawbacks.
-  *
+diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
+index 2742e1c1e33..373bcb5e4f4 100644
+--- a/drivers/net/ethernet/intel/ice/ice_switch.c
++++ b/drivers/net/ethernet/intel/ice/ice_switch.c
+@@ -1177,8 +1177,10 @@ ice_get_recp_frm_fw(struct ice_hw *hw, struct ice_sw_recipe *recps, u8 rid,
+ 	recps[rid].root_buf = devm_kmemdup(ice_hw_to_dev(hw), tmp,
+ 					   recps[rid].n_grp_count * sizeof(*recps[rid].root_buf),
+ 					   GFP_KERNEL);
+-	if (!recps[rid].root_buf)
++	if (!recps[rid].root_buf) {
++		status = ICE_ERR_NO_MEMORY;
+ 		goto err_unroll;
++	}
+ 
+ 	/* Copy result indexes */
+ 	bitmap_copy(recps[rid].res_idxs, result_bm, ICE_MAX_FV_WORDS);
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
