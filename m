@@ -2,231 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468FE43B294
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AAE43B298
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 14:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234908AbhJZMpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 08:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233344AbhJZMpP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 08:45:15 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA06C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 05:42:51 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id bp15so19346004lfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 05:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HuPXxQ3Dx5OU5hbFOWVQiDy9S2Ab/pqOebTTCbBX458=;
-        b=yp/FjIP2ZykqVytABuEpEZO1uJnOPB/r5RSZXjwbbGVBknnnCJfGJQWPwFNhzbdWPx
-         5b0kfYV+PNchKANblo/AR1ip8GVyob81fsovi0Seo2WABuCQICdFeaudXFmfExFdFG+V
-         vObP8NA2YVpVe/PTSjnGvAnp5xI0ba/iq0RzglKYLQwkak+gTB+X/V98elp1ND8v/hmj
-         X0p+SnQmWdwr0VDaP1vCO6RbHkUkp2EC7S2H4hUoeLdabKo9lVnUhC3mSHjiYBx9j8DS
-         GqaG7gfuZpk7F5dsJE0ISRS6s48eNw/ffU02WhE6I6mUPjU0OcLCph0+shE4xvcCFSSA
-         eUgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HuPXxQ3Dx5OU5hbFOWVQiDy9S2Ab/pqOebTTCbBX458=;
-        b=S2TPv/7oe2MtxSTgZ8/Y8Gg/IsSIQ0Mm5jEyH1A/gFt/O6XhQyuAOE76ujYiSKYmki
-         1TFKoI40DgcQcGC7ZPWVrpQ7UQRfEyGWLGeRsXSvqDLrFahCqWT+GKgXQYb3q0ayYCxc
-         UbvT/mnYUqw372T28zKYGeNpV2zhcjBtviIDh68BTYEuzzD7bSYsXnOGuP88NWcy4L/7
-         JWVIUzrqPSEPf2dDjTDuNS+ubYIj42bkiLrjiIcPRhF6l7ijp5rAKUlhdXeeq1VWK7UY
-         a0Y3s6lTLNKqwu309QeeAb48sJuumB3YED1sU243f8rocgqIcLWVGSKhcvgkUGJaHrQL
-         k6qw==
-X-Gm-Message-State: AOAM532lAoxQM/aRj/fEampGElvyuDyGWXcp7YHOsysfFc/+Q3DBOwJq
-        DBgY474punWGCfskSCbyPRwbbw==
-X-Google-Smtp-Source: ABdhPJwtr6cFDc91FwGgkx11o3XI6XVYbNqXOl252C5qhPNnoAkCmQISNhEGbYqHen0kRK1NV8MKuw==
-X-Received: by 2002:a05:6512:108e:: with SMTP id j14mr23034146lfg.274.1635252170309;
-        Tue, 26 Oct 2021 05:42:50 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id o26sm2017103ljg.92.2021.10.26.05.42.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 05:42:49 -0700 (PDT)
-Subject: Re: [PATCH v12 2/5] arm64: dts: qcom: sc7280: Add PCIe and PHY
- related nodes
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        linux-pci@vger.kernel.org
-References: <1633628923-25047-1-git-send-email-pmaliset@codeaurora.org>
- <1633628923-25047-3-git-send-email-pmaliset@codeaurora.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <70502702-3f55-46f2-46e4-d3dda4f0294d@linaro.org>
-Date:   Tue, 26 Oct 2021 15:42:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <1633628923-25047-3-git-send-email-pmaliset@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+        id S235891AbhJZMpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 08:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235791AbhJZMpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 08:45:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CA4F60F39;
+        Tue, 26 Oct 2021 12:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635252200;
+        bh=YBc8Em5aUfRy4S1XWYzleN8bqGvlhMEwzsJsr5FHZgE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hk0OKeyyuA7z30tq4mnnLwUA/7RwBEpM8Z6pze3MEa/coy292optjdVFL+ZgFOKEx
+         XJnqi+Qegm5O4SxAqMaNnW6IPjgBklgqBshc92/HzWf+OKKoPuuebdiuoVCTgEIIZP
+         xmVtDmDRuppwwQ6AGS/VBMsuRnjfVrldtchXp2dtLtGzSvr3xJTCuvL0YyzfxJOgY6
+         f1iISu4u9KNNUmBKAjaTCC7ibFpoaFfmRquY1M6p9lZnFqwNk6HiOqoGQIFKLHEmI7
+         aGki21GL9hF2+Ae1C0tbcU4/9c6WQ6XVafjMHDspxbzdK+9ILag9EMHZwOo4tr9szq
+         3Dj71IfqCx3Dg==
+Date:   Tue, 26 Oct 2021 21:43:11 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 7/8] tracing/selftests: Add tests for hist trigger
+ expression parsing
+Message-Id: <20211026214311.583c728d90d41778c38201dd@kernel.org>
+In-Reply-To: <20211025200852.3002369-8-kaleshsingh@google.com>
+References: <20211025200852.3002369-1-kaleshsingh@google.com>
+        <20211025200852.3002369-8-kaleshsingh@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 20:48, Prasad Malisetty wrote:
-> Add PCIe controller and PHY nodes for sc7280 SOC.
+Hi Kalesh,
+
+On Mon, 25 Oct 2021 13:08:39 -0700
+Kalesh Singh <kaleshsingh@google.com> wrote:
+
+> Add tests for the parsing of hist trigger expressions; and to
+> validate expression evaluation.
 > 
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> Reviewed-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->   arch/arm64/boot/dts/qcom/sc7280.dtsi | 118 +++++++++++++++++++++++++++++++++++
->   1 file changed, 118 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 39635da..cde814f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -1563,6 +1563,117 @@
->   			qcom,bcm-voters = <&apps_bcm_voter>;
->   		};
->   
-> +		pcie1: pci@1c08000 {
-> +			compatible = "qcom,pcie-sc7280";
-> +			reg = <0 0x01c08000 0 0x3000>,
-> +			      <0 0x40000000 0 0xf1d>,
-> +			      <0 0x40000f20 0 0xa8>,
-> +			      <0 0x40001000 0 0x1000>,
-> +			      <0 0x40100000 0 0x100000>;
-> +
-> +			reg-names = "parf", "dbi", "elbi", "atu", "config";
-> +			device_type = "pci";
-> +			linux,pci-domain = <1>;
-> +			bus-range = <0x00 0xff>;
-> +			num-lanes = <2>;
-> +
-> +			#address-cells = <3>;
-> +			#size-cells = <2>;
-> +
-> +			ranges = <0x01000000 0x0 0x40200000 0x0 0x40200000 0x0 0x100000>,
-> +				 <0x02000000 0x0 0x40300000 0x0 0x40300000 0x0 0x1fd00000>;
-> +
-> +			interrupts = <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "msi";
-> +			#interrupt-cells = <1>;
-> +			interrupt-map-mask = <0 0 0 0x7>;
-> +			interrupt-map = <0 0 0 1 &intc 0 434 IRQ_TYPE_LEVEL_HIGH>,
-> +					<0 0 0 2 &intc 0 435 IRQ_TYPE_LEVEL_HIGH>,
-> +					<0 0 0 3 &intc 0 438 IRQ_TYPE_LEVEL_HIGH>,
-> +					<0 0 0 4 &intc 0 439 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +			clocks = <&gcc GCC_PCIE_1_PIPE_CLK>,
-> +				 <&gcc GCC_PCIE_1_PIPE_CLK_SRC>,
-> +				 <&pcie1_lane 0>,
+> Changes in v3:
+>   - Remove .sym-offset error check tests
+> 
+> Changes in v2:
+>   - Add Namhyung's Reviewed-by
+>   - Update comment to clarify err_pos in "Too many subexpressions" test
+> 
+> 
+>  .../testing/selftests/ftrace/test.d/functions |  4 +-
+>  .../trigger/trigger-hist-expressions.tc       | 72 +++++++++++++++++++
+>  2 files changed, 74 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
+> index 000fd05e84b1..1855a63559ad 100644
+> --- a/tools/testing/selftests/ftrace/test.d/functions
+> +++ b/tools/testing/selftests/ftrace/test.d/functions
+> @@ -16,13 +16,13 @@ reset_tracer() { # reset the current tracer
+>  
+>  reset_trigger_file() {
+>      # remove action triggers first
+> -    grep -H ':on[^:]*(' $@ |
+> +    grep -H ':on[^:]*(' $@ | tac |
+>      while read line; do
+>          cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
+>  	file=`echo $line | cut -f1 -d:`
+>  	echo "!$cmd" >> $file
+>      done
+> -    grep -Hv ^# $@ |
+> +    grep -Hv ^# $@ | tac |
+>      while read line; do
+>          cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
+>  	file=`echo $line | cut -f1 -d:`
 
-This should be just <&pcie1_lane>, as the phy doesn't have clock cells.
+If this update has any meaning, please make a separate patch for this part.
 
-> +				 <&rpmhcc RPMH_CXO_CLK>,
-> +				 <&gcc GCC_PCIE_1_AUX_CLK>,
-> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
-> +				 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
-> +				 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
-> +				 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>,
-> +				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
-> +				 <&gcc GCC_DDRSS_PCIE_SF_CLK>;
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> new file mode 100644
+> index 000000000000..e715641c54d3
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+> @@ -0,0 +1,72 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: event trigger - test histogram expression parsing
+> +# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log
+
+Hmm, are there any way to check the running kernel supports this feature?
+Because the latest version of the kselftest is expected to run on the old stable
+kernel for testing, the testcase should check whether the kernel supports this
+testing feature or not. (That's why the requires tag supports README pattern check)
+
+So, at first if you didn't update the <tracefs>/README, please update it first
+to show the new syntax is supported, and add "SOME-PATTERN":README to the
+requires tag.
+
+Thank you,
+
 > +
-> +			clock-names = "pipe",
-> +				      "pipe_mux",
-> +				      "phy_pipe",
-> +				      "ref",
-> +				      "aux",
-> +				      "cfg",
-> +				      "bus_master",
-> +				      "bus_slave",
-> +				      "slave_q2a",
-> +				      "tbu",
-> +				      "ddrss_sf_tbu";
 > +
-> +			assigned-clocks = <&gcc GCC_PCIE_1_AUX_CLK>;
-> +			assigned-clock-rates = <19200000>;
+> +fail() { #msg
+> +    echo $1
+> +    exit_fail
+> +}
 > +
-> +			resets = <&gcc GCC_PCIE_1_BCR>;
-> +			reset-names = "pci";
+> +get_hist_var() { #var_name hist_path
+> +    hist_output=`grep -m1 "$1: " $2`
+> +    hitcount=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "hitcount:") print $(i+1)} }'`
+> +    var_sum=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "'$1':") print $(i+1)} }'`
+> +    var_val=$(( var_sum / hitcount ))
+> +    echo $var_val
+> +}
 > +
-> +			power-domains = <&gcc GCC_PCIE_1_GDSC>;
+> +test_hist_expr() { # test_name expression expected_val
+> +    reset_trigger
 > +
-> +			phys = <&pcie1_lane>;
-> +			phy-names = "pciephy";
+> +    echo "Test hist trigger expressions - $1"
 > +
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&pcie1_clkreq_n>;
+> +    echo "hist:keys=common_pid:x=$2" > events/sched/sched_process_fork/trigger
+> +    echo 'hist:keys=common_pid:vals=$x' >> events/sched/sched_process_fork/trigger
+> +    for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
 > +
-> +			iommus = <&apps_smmu 0x1c80 0x1>;
+> +    actual=`get_hist_var x events/sched/sched_process_fork/hist`
 > +
-> +			iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
-> +				    <0x100 &apps_smmu 0x1c81 0x1>;
+> +    if [ $actual != $3 ]; then
+> +        fail "Failed hist trigger expression evaluation: Expression: $2 Expected: $3, Actual: $actual"
+> +    fi
 > +
-> +			status = "disabled";
-> +		};
+> +    reset_trigger
+> +}
 > +
-> +		pcie1_phy: phy@1c0e000 {
-> +			compatible = "qcom,sm8250-qmp-gen3x2-pcie-phy";
-> +			reg = <0 0x01c0e000 0 0x1c0>;
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			ranges;
-> +			clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
-> +				 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
-> +				 <&gcc GCC_PCIE_CLKREF_EN>,
-> +				 <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
-> +			clock-names = "aux", "cfg_ahb", "ref", "refgen";
+> +check_error() { # test_name command-with-error-pos-by-^
+> +    reset_trigger
 > +
-> +			resets = <&gcc GCC_PCIE_1_PHY_BCR>;
-> +			reset-names = "phy";
+> +    echo "Test hist trigger expressions - $1"
+> +    ftrace_errlog_check 'hist:sched:sched_process_fork' "$2" 'events/sched/sched_process_fork/trigger'
 > +
-> +			assigned-clocks = <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
-> +			assigned-clock-rates = <100000000>;
+> +    reset_trigger
+> +}
 > +
-> +			status = "disabled";
+> +test_hist_expr "Variable assignment" "123" "123"
 > +
-> +			pcie1_lane: lanes@1c0e200 {
-> +				reg = <0 0x01c0e200 0 0x170>,
-> +				      <0 0x01c0e400 0 0x200>,
-> +				      <0 0x01c0ea00 0 0x1f0>,
-> +				      <0 0x01c0e600 0 0x170>,
-> +				      <0 0x01c0e800 0 0x200>,
-> +				      <0 0x01c0ee00 0 0xf4>;
-> +				clocks = <&gcc GCC_PCIE_1_PIPE_CLK>;
-> +				clock-names = "pipe0";
+> +test_hist_expr "Subtraction not associative" "16-8-4-2" "2"
 > +
-> +				#phy-cells = <0>;
-> +				#clock-cells = <1>;
-> +				clock-output-names = "pcie_1_pipe_clk";
-> +			};
-> +		};
+> +test_hist_expr "Division not associative" "64/8/4/2" "1"
 > +
->   		ipa: ipa@1e40000 {
->   			compatible = "qcom,sc7280-ipa";
->   
-> @@ -2676,6 +2787,13 @@
->   			gpio-ranges = <&tlmm 0 0 175>;
->   			wakeup-parent = <&pdc>;
->   
-> +			pcie1_clkreq_n: pcie1-clkreq-n {
-> +				pins = "gpio79";
-> +				function = "pcie1_clkreqn";
-> +				drive-strength = <2>;
-> +				bias-pull-up;
-> +			};
+> +test_hist_expr "Same precedence operators (+,-) evaluated left to right" "16-8+4+2" "14"
 > +
->   			qspi_clk: qspi-clk {
->   				pins = "gpio14";
->   				function = "qspi_clk";
+> +test_hist_expr "Same precedence operators (*,/) evaluated left to right" "4*3/2*2" "12"
+> +
+> +test_hist_expr "Multiplication evaluated before addition/subtraction" "4+3*2-2" "8"
+> +
+> +test_hist_expr "Division evaluated before addition/subtraction" "4+6/2-2" "5"
+> +
+> +# Division by zero returns -1
+> +test_hist_expr "Handles division by zero" "3/0" "-1"
+> +
+> +# err pos for "too many subexpressions" is dependent on where
+> +# the last subexpression was detected. This can vary depending
+> +# on how the expression tree was generated.
+> +check_error "Too many subexpressions" 'hist:keys=common_pid:x=32+^10*3/20-4'
+> +check_error "Too many subexpressions" 'hist:keys=common_pid:x=^1+2+3+4+5'
+> +
+> +check_error "Unary minus not supported in subexpression" 'hist:keys=common_pid:x=-(^1)+2'
+> +
+> +exit 0
+> -- 
+> 2.33.0.1079.g6e70778dc9-goog
 > 
 
 
 -- 
-With best wishes
-Dmitry
+Masami Hiramatsu <mhiramat@kernel.org>
