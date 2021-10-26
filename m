@@ -2,125 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59DA43B970
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CE043B978
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236781AbhJZSY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53588 "EHLO
+        id S236900AbhJZS1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236001AbhJZSY4 (ORCPT
+        with ESMTP id S231297AbhJZS07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:24:56 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4FBC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:22:31 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id w23so327794lje.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 11:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65K7xPMB5++D+E7Bfsj7avhsV6qayGu5o858lBV5Elw=;
-        b=UFCHSPeXcQuOwM5lLBzpQb7MmItFB4AO1roGO3y4q5yr/hBmA5lT1VpaEAmhdJ8z/+
-         VYkqEAMbuPAv1Cp8LsRycDDHtNvQeQFx8ipOaDHKl6uW/BQM+UY8gkxeKK1rD6gGr5b5
-         UAPtkFa0BJoq6WvAzcEI5zbTFwjaDAQ8x976/sWxF14aJK3ZMtLOU5YZnYmTm2KtHcma
-         4yfclS5UycC8vhPriGnuQqwzjvOB6HwPARWPA5QDSSGLIZFoGvvzuROAIiV0JbwyFpH2
-         9ePnPpndZLepd6EXRifaI8NVaGxubCB3QnHbqqrjvdu4maqR49+vJ1T4iBJe7KGvwG0v
-         ZgHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65K7xPMB5++D+E7Bfsj7avhsV6qayGu5o858lBV5Elw=;
-        b=7WBj0pxLuwSS/8dMkTrSErcY3BL0lzJgBYPoJULWI4wKJGkJfpgGIHocz58GecdI8o
-         O6VQYFUYAUxoFqX1ccpLCGngNXh9pHDguk+/O4XliVKc3E1c7/cGolsb1Ah7uWaygxHy
-         KBI5FzvVhnJ0aZoQku26N1UPIxzz51+sz2TkdUKeNaMs3nFFIBBCKEY+DOzDG1A8vIe/
-         J88FtjXfO0QQ+MF5DQcGPgoHrWVqlfr+NIyMoUKaNQbBWr5hbQLerOzS8pJboKPLFJm+
-         YBPf2dP1fLqB+MTT24sIgebdmlT/HDVqa2lu340blgc7zsPVbpQNmSyMYoP+vnDeiHdg
-         1ClQ==
-X-Gm-Message-State: AOAM532E/ZtKaTxTV95UrkNkDsN0gz0248T8BCzgE/U32DIzgMgh0rtU
-        ejT74rvQfmGAhTmah8XYZJ/3ViMn1t/vF9W1dt9Tkg==
-X-Google-Smtp-Source: ABdhPJx2JuH49fJWhpgoI/t0B9ikgzBgjsyHaYVav9e1A/WZ3jrkA/+aZNOAoOH5hm2JJV0+jzgrKdz/brNyOdRDdIo=
-X-Received: by 2002:a2e:b794:: with SMTP id n20mr149553ljo.313.1635272550203;
- Tue, 26 Oct 2021 11:22:30 -0700 (PDT)
-MIME-Version: 1.0
+        Tue, 26 Oct 2021 14:26:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D97C061745;
+        Tue, 26 Oct 2021 11:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SKVPRp8QWsSk8ZgHZrLxDGZRN/Q7dRClGxVumXlu1ZY=; b=Teyeqh7Huw8bhKcMXPttBtp+gS
+        837G3HJeGdTiA3TWiiaF5haLIYRjemb4QNAnOiBIPNDPNT5vdroNeVd+fPTz4hLqKjl95jU6kEKB7
+        ul6MNswaA78pepRxTDWjuKNTvZzrheO0pIko4nPDsZf+s7MPQjmZO0ShuR5uapfV+GRO/2I7ZubdB
+        PAIakkdwrraDDIveZyrpXtQF0M83ZrPeSeUsyBpSzM8qgcO6Js7UuodGGvmQ5XMeTHI6brXiuy8CR
+        vAk0SPV5woUbBB9B3jD8PKy4MRNPgkxHwDj6Ieik55P5sKgh28LIo6VTmRFHqdpbaOos8XmjDYZ2X
+        iLFOSolg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfR6p-00H4T7-BN; Tue, 26 Oct 2021 18:23:54 +0000
+Date:   Tue, 26 Oct 2021 19:23:39 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-m68k@lists.linux-m68k.org, anshuman.khandual@arm.com,
+        akpm@linux-foundation.org, william.kucharski@oracle.com,
+        mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
+        schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
+        hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
+        weixugc@google.com, gthelen@google.com
+Subject: Re: [RFC 0/8] Hardening page _refcount
+Message-ID: <YXhHq52jDrU61V4E@casper.infradead.org>
 References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <20211026173822.502506-4-pasha.tatashin@soleen.com> <7b131cb1-68d8-6746-f9c1-2b01d4838869@nvidia.com>
-In-Reply-To: <7b131cb1-68d8-6746-f9c1-2b01d4838869@nvidia.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 26 Oct 2021 14:21:53 -0400
-Message-ID: <CA+CK2bD6x01PevPqshzYqkO3aokjP2jBbt_4e5H5U3DVEdcJ5Q@mail.gmail.com>
-Subject: Re: [RFC 3/8] mm: Avoid using set_page_count() in set_page_recounted()
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        weixugc@google.com, Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026173822.502506-1-pasha.tatashin@soleen.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On Tue, Oct 26, 2021 at 05:38:14PM +0000, Pasha Tatashin wrote:
+> It is hard to root cause _refcount problems, because they usually
+> manifest after the damage has occurred.  Yet, they can lead to
+> catastrophic failures such memory corruptions.
+> 
+> Improve debugability by adding more checks that ensure that
+> page->_refcount never turns negative (i.e. double free does not
+> happen, or free after freeze etc).
+> 
+> - Check for overflow and underflow right from the functions that
+>   modify _refcount
+> - Remove set_page_count(), so we do not unconditionally overwrite
+>   _refcount with an unrestrained value
+> - Trace return values in all functions that modify _refcount
 
-Thank you for looking at this series.
+I think this is overkill.  Won't we get exactly the same protection
+by simply testing that page->_refcount == 0 in set_page_count()?
+Anything which triggers that BUG_ON would already be buggy because
+it can race with speculative gets.
 
-> >   static inline void set_page_refcounted(struct page *page)
-> >   {
-> > +     int refcnt;
-> > +
-> >       VM_BUG_ON_PAGE(PageTail(page), page);
-> >       VM_BUG_ON_PAGE(page_ref_count(page), page);
-> > -     set_page_count(page, 1);
-> > +     refcnt = page_ref_inc_return(page);
-> > +     VM_BUG_ON_PAGE(refcnt != 1, page);
-
-
-> I am acutely uncomfortable with this change, because it changes the
-> meaning and behavior of the function to something completely different,
-> while leaving the function name unchanged. Furthermore, in relies upon
-> debug assertions, rather than a return value (for example) to verify
-> that all is well.
-
-
-It must return the same thing, if it does not we have a bug in our
-kernel which may lead to memory corruptions and security holes.
-
-So today we have this:
-   VM_BUG_ON_PAGE(page_ref_count(page), page); -> check ref_count is 0
-   < What if something modified here? Hmm..>
-   set_page_count(page, 1); -> Yet we reset it to 1.
-
-With my proposed change:
-   VM_BUG_ON_PAGE(page_ref_count(page), page); -> check ref_count is 0
-   refcnt = page_ref_inc_return(page);  -> ref_count better be 1.
-   VM_BUG_ON_PAGE(refcnt != 1, page); -> Verify that it is 1.
-
->
-> I understand where this patchset is going, but this intermediate step is
-> not a good move.
->
-> Also, for the overall series, if you want to change from
-> "set_page_count()" to "inc_and_verify_val_equals_one()", then the way to
-> do that is *not* to depend solely on VM_BUG*() to verify. Instead,
-> return something like -EBUSY if incrementing the value results in a
-> surprise, and let the caller decide how to handle it.
-
-Actually, -EBUSY would be OK if the problems were because we failed to
-modify refcount for some reason, but if we modified refcount and got
-an unexpected value (i.e underflow/overflow) we better report it right
-away instead of waiting for memory corruption to happen.
-
-Thanks,
-Pasha
