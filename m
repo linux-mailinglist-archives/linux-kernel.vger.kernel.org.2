@@ -2,161 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3A743B38C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD42543B387
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhJZOFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhJZOFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:05:36 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0E2C061745;
-        Tue, 26 Oct 2021 07:03:12 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id y67so20530792iof.10;
-        Tue, 26 Oct 2021 07:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jiKBRIJ90WYjcORFiV3ORltYZSK2q2sAgdSrdSfFfbc=;
-        b=B5oi/7UCVk36Kltqk5jv0UWKsgnlcJbT+p8jfJZ/39b+wWQ3ihMQCSae2vo2AfNYOV
-         rGFEUlC++DoWLCCqPMJWHJOt1HSJyZFJtvVv49eAiawK7btNdoGSa1NDCwrmtXk1QKNU
-         vSBGb2llMudk+OZOc4MAqtj9ZyDt/GRG5Xmh0lZMLJUQfXLqcWmfnbKyPUvZsUevSp7r
-         Uav5pLsgxuo7NBSBiLlXImmOZ8jx2FcsOPxBS44VwbmHXKYUQ4BPjNlZX9zlsc+Tru3f
-         yRRWGvhcXHKmK3hoxpjQGpduRdkJH6Mb3jiEyDSm0HHk/BZg1ycg8Ak+iPaRmnDBUB5W
-         DujA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jiKBRIJ90WYjcORFiV3ORltYZSK2q2sAgdSrdSfFfbc=;
-        b=JKmwxkkuMTKXFa90Thvjdh0ADxxPITJbFnr9TxxQpGIOeClQzQjWpmyC4sAWRawLGJ
-         UzNthgk5zd74rGJTOH4bwhuOUsDDsU9rLlXtFXsONRNuIj7CDlSnkPYa8b7+1aQ9fMtB
-         OrZFOKemdfjfg5j6h9d3S9/2stCoILE7UY9qmrNlefSP8xOQW+7eN+34/rAYuFK0Xg7N
-         wtDu695kVwfiwmpjHz5x5PzL14+HUbZm7YXbtxD7+0ZqIW6+UnH5QIOqCgToqHfTBs/N
-         JKu0W7Rv1zVFpMJr6+a5pqcfKQrrq8mAMv7Ix4Q2u85hVOPFyYHwXpRox4Z9AvacDDiG
-         i3QQ==
-X-Gm-Message-State: AOAM531ZEV9xo19PMmyMOejzjjpz5FduXyXAymyzOSyTQctKxHvf3xsQ
-        4Sh6s3VSDgjC5PogcEDBQm8eDakQ8rVMUrAAtog=
-X-Google-Smtp-Source: ABdhPJxnJMo1zj33+9fiUewOfzyLCzx56/LSGr86u1/7PYep88hWbWvGY1Pv8LiKwv9ITmco8NPZCwRW9GVoSd8560c=
-X-Received: by 2002:a05:6638:2257:: with SMTP id m23mr249515jas.139.1635256992171;
- Tue, 26 Oct 2021 07:03:12 -0700 (PDT)
+        id S235321AbhJZOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:05:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230119AbhJZOFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:05:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D4260D07;
+        Tue, 26 Oct 2021 14:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635256966;
+        bh=jf046iBN2pgX9ep9EdmfiHHDhGaD9VLYXiqA222lDBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pcYmtMmA+B6622uCVjok524Q7axWOqq/F+FL96MUvTsTW0dyHIQncKyWnjcI3cxRA
+         TJOIcgvOAl38iiVftPP9TCymnjc+5rzfFD41prwn27/kvOQ53iZD6aqUcbNxbwgHmi
+         11LMU4juimXbloLghA57nk2I45iBw5Yw1fed9Ah0MgNpxu0G4i4LEbSb5BFTbCZL51
+         pTohkzjOHOfdZc8tcGyR2oZzxmCDYe18Lm57/e6LG4YiFM4KqefcyBgierFYfu3MuW
+         u3sMdOJ8uYZSyBxGDYVVUcZsjdzBtiUd4w5UjBuTELmHALggvfyqbg2xPOBszQkluz
+         Z8fxmnr00/SbA==
+Date:   Tue, 26 Oct 2021 07:02:41 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Nick Terrell' <terrelln@fb.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Subject: Re: [PATCH] lib: zstd: Add cast to silence clang's
+ -Wbitwise-instead-of-logical
+Message-ID: <YXgKgQMHQzvQgE4J@archlinux-ax161>
+References: <20211021202353.2356400-1-nathan@kernel.org>
+ <4245BD7A-4B12-4172-B4EE-76A99C717C7D@fb.com>
+ <d21e97487ba3447194538ccf0e88ead9@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-9-laoar.shao@gmail.com>
- <202110251421.7056ACF84@keescook> <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
- <20211026091211.569a7ba2@gandalf.local.home> <CALOAHbBAKqbZEMvk5PVMrqFR_kjbi_kotGTNTGEW+=JWnC+_uA@mail.gmail.com>
-In-Reply-To: <CALOAHbBAKqbZEMvk5PVMrqFR_kjbi_kotGTNTGEW+=JWnC+_uA@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 26 Oct 2021 22:02:36 +0800
-Message-ID: <CALOAHbAa-iMD4k2DEOun+RivUXiSMKR6ndCsqGZMseUbX_9+ww@mail.gmail.com>
-Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
- task comm size change
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d21e97487ba3447194538ccf0e88ead9@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 9:55 PM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> On Tue, Oct 26, 2021 at 9:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Tue, 26 Oct 2021 10:18:51 +0800
-> > Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > > > So, if we're ever going to copying these buffers out of the kernel (I
-> > > > don't know what the object lifetime here in bpf is for "e", etc), we
-> > > > should be zero-padding (as get_task_comm() does).
-> > > >
-> > > > Should this, instead, be using a bounce buffer?
+On Tue, Oct 26, 2021 at 10:34:31AM +0000, David Laight wrote:
+> From: Nick Terrell
+> > Sent: 26 October 2021 02:18
+> > 
+> > > On Oct 21, 2021, at 1:23 PM, Nathan Chancellor <nathan@kernel.org> wrote:
 > > >
-> > > The comment in bpf_probe_read_kernel_str_common() says
+> > > A new warning in clang warns that there is an instance where boolean
+> > > expressions are being used with bitwise operators instead of logical
+> > > ones:
 > > >
-> > >   :      /*
-> > >   :       * The strncpy_from_kernel_nofault() call will likely not fill the
-> > >   :       * entire buffer, but that's okay in this circumstance as we're probing
-> > >   :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
-> > >   :       * as well probe the stack. Thus, memory is explicitly cleared
-> > >   :       * only in error case, so that improper users ignoring return
-> > >   :       * code altogether don't copy garbage; otherwise length of string
-> > >   :       * is returned that can be used for bpf_perf_event_output() et al.
-> > >   :       */
+> > > lib/zstd/decompress/huf_decompress.c:890:25: warning: use of bitwise '&' with boolean operands [-
+> > Wbitwise-instead-of-logical]
+> > >                        (BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished)
+> > >                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > > >
-> > > It seems that it doesn't matter if the buffer is filled as that is
-> > > probing arbitrary memory.
-> > >
-> > > >
-> > > > get_task_comm(comm, task->group_leader);
-> > >
-> > > This helper can't be used by the BPF programs, as it is not exported to BPF.
-> > >
-> > > > bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
-> >
-> > I guess Kees is worried that e.comm will have something exported to user
-> > space that it shouldn't. But since e is part of the BPF program, does the
-> > BPF JIT take care to make sure everything on its stack is zero'd out, such
-> > that a user BPF couldn't just read various items off its stack and by doing
-> > so, see kernel memory it shouldn't be seeing?
-> >
->
+> > > zstd does this frequently to help with performance, as logical operators
+> > > have branches whereas bitwise ones do not.
+> ...
+> > > The first U32 cast is to silence an instance of -Wshorten-64-to-32
+> > > because __builtin_expect() returns long so it cannot be moved.
+> 
+> Isn't enabling that warning completely stupid?
+> The casts required to silence it could easily cause more problems
+> - by hiding more important bugs. And seriously affect code readability.
 
-Ah, you mean the BPF JIT has already avoided leaking information to user.
-I will check the BPF JIT code first.
+Which warning?
 
-> Understood.
-> It can leak information to the user if the user buffer is large enough.
->
->
-> > I'm guessing it does, otherwise this would be a bigger issue than this
-> > patch series.
-> >
->
-> I will think about how to fix it.
-> At first glance, it seems we'd better introduce a new BPF helper like
-> bpf_probe_read_kernel_str_pad().
->
-> --
-> Thanks
-> Yafang
+-Wbitwise-instead-of-logical is included in clang's -Wall and I do not
+think it should be disabled; this is the first instance of the warning
+that has been silenced with a cast.
 
+-Wshorten-64-to-32 will never be enabled for Linux but zstd is a
+separate project that can be built for a variety of operating systems so
+that has to be considered when developing changes for the kernel because
+the kernel changes need to go upstream eventually if they touch core
+zstd code, otherwise they will just get blown away on the next import.
+Specifically, this warning was enabled on iOS:
+https://github.com/facebook/zstd/pull/2062
 
+> ...c
+> > > index 05570ed5f8be..5105e59ac04a 100644
+> > > --- a/lib/zstd/decompress/huf_decompress.c
+> > > +++ b/lib/zstd/decompress/huf_decompress.c
+> > > @@ -886,7 +886,7 @@ HUF_decompress4X2_usingDTable_internal_body(
+> > >             HUF_DECODE_SYMBOLX2_0(op2, &bitD2);
+> > >             HUF_DECODE_SYMBOLX2_0(op3, &bitD3);
+> > >             HUF_DECODE_SYMBOLX2_0(op4, &bitD4);
+> > > -            endSignal = (U32)LIKELY(
+> > > +            endSignal = (U32)LIKELY((U32)
+> > >                         (BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished)
+> > >                       & (BIT_reloadDStreamFast(&bitD2) == BIT_DStream_unfinished)
+> > >                       & (BIT_reloadDStreamFast(&bitD3) == BIT_DStream_unfinished)
+> 
+> Isn't that the same as:
+> 	((BIT_reload() & BIT_reload() & BIT_reload()) == BIT_DStream_unfinished)
+> which will generate much better code.
+> Especially on cpu without 'seteq' instructions.
 
--- 
-Thanks
-Yafang
+I don't think so. Feel free to double check my math.
+
+BIT_reloadDStreamFast() can return either BIT_DStream_unfinished (0) or
+BIT_DStream_overflow (3). Let's say the second call returns
+BIT_DStream_overflow but the others return BIT_DStream_unfinished.
+
+Current code:
+
+(BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished) &
+(BIT_reloadDStreamFast(&bitD2) == BIT_DStream_unfinished) &
+(BIT_reloadDStreamFast(&bitD3) == BIT_DStream_unfinished)
+
+(BIT_DStream_unfinished == BIT_DStream_unfinished) &
+(BIT_DStream_overflow == BIT_DStream_unfinished) &
+(BIT_DStream_unfinished == BIT_DStream_unfinished)
+
+(1 & 0 & 1)
+
+Final result: 0
+
+Your suggestion:
+
+(BIT_reloadDStreamFast(&bitD1) &
+ BIT_reloadDStreamFast(&bitD2) &
+ BIT_reloadDStreamFast(&bitD3)) == BIT_DStream_unfinished
+
+(BIT_DStream_unfinished &
+ BIT_DStream_overflow &
+ BIT_DStream_unfinished) == BIT_DStream_unfinished
+
+(0 & 3 & 0) == 0
+
+(0) == 0
+
+Final result: 1
+
+Clang 13.0.0 and GCC 11.2.0 appear agree with me:
+
+https://godbolt.org/z/M78s1TTEx
+
+Cheers,
+Nathan
