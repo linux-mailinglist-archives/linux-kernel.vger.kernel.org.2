@@ -2,186 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6427D43AE6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8897D43AE6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 10:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhJZI5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 04:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhJZI5p (ORCPT
+        id S234411AbhJZI6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 04:58:48 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:30467 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229863AbhJZI6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:57:45 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007A7C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:55:22 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id i9so33004516ybi.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 01:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CM37jlaMXkRsHHkG1O7ZYac0cUBSPl49tFExN0NplIM=;
-        b=ePr5qFxPNz+cniKDjqjnxTGizBNacE6tIlNCdgYWlexoJLScoR+dgcPTt3/6ANGC6Z
-         GuCDWMkE91ICPc0oAUOnuRwKuX2Jx0PCyqQ/5dSHPqQtTPYsw9REBW95uMBOTtubTXYV
-         quUXqBfSoBisaHnI6gvg7TD9nRxVoyZtj+Xjk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CM37jlaMXkRsHHkG1O7ZYac0cUBSPl49tFExN0NplIM=;
-        b=VLEMkT5Hu+NY2KLr+5wTnr0uYPYyfA/i7iga29dTjrA8kSQOAGXeKtRtzjCjnl3x8w
-         PIW24uKxxcSqUM6s45Iglelv/ZZmIT9oB4bHSCKbtlPrAQHm5WOd50OekmZQ+7vz5/kw
-         JFX3TweSJ1N6PJX6ISU8Gy2tpG77KtCjgIUmAK5nmQ0zOEQHFzecbROM5TIxu0Ce1rfa
-         Y1+7pssH2L97DHQUVvRXDStNya0XiaCnP8TF/UgETRJn5yNZP48zJJK+cjbfNQOTn1XS
-         6nA4Rfa5O/55dJ3enexdoI/FcZZzibM5iSljRafrw0jBesyjmmfe/triLaDjPWBxEC/l
-         qMBg==
-X-Gm-Message-State: AOAM5321+l84D0sDd8Lsp/c6n0X44uTgr/UMkIRYP3Dj42ZFcbRDtOOQ
-        ALZIzgW7AjMsi8wmJfBpCuIf6zX0WRCVW/UgHvUJ
-X-Google-Smtp-Source: ABdhPJyB73vh77mBkUQ0IhhABQewwC71dOMraIlg9euM8NVn/OxFSf32kB1GyZ07r4ay527SKk53DNhM85XoMR8rxIQ=
-X-Received: by 2002:a05:6902:601:: with SMTP id d1mr1602196ybt.481.1635238520302;
- Tue, 26 Oct 2021 01:55:20 -0700 (PDT)
+        Tue, 26 Oct 2021 04:58:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635238584; x=1666774584;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=r2ndaKt5+ORqLluT9rI7+4mckCDoBTiYuZ1y7YGtxgk=;
+  b=vAxDRp4QtJlWvwGvkt0y9+OMlD2ujOLm5tM3nCMHnoyZ8zyyN1x2CjxH
+   i3WQKzEtOnS9Fbb2Oo1OkiUcfioiKrSCDZy3FmTovuuaWgC6x9YqDmhvU
+   4/4nm/JiOGbI/yJ3hQx88WtytME+Uk5L4wX6WxiqSLAP8hQSDJheykYph
+   mzav+7fwv9OYA3GePd4g1t/LS+bus25hoSFygVh42lCwMQAcUH/bI2F0O
+   TDwmxW/OkIzmcUk3LAVFRfLG6Opw7VaGNl4DXTB9/hkk4KscCavBfqBjl
+   qRX4mYVLDERGJJspE6FyypRo7D3QmHDLmPdh2gzvY7UGkCek8Ffj1L9l7
+   g==;
+IronPort-SDR: l+xCzogN1lLowpwQk84Mbgvp17OdrLaXaTYWxQ0HjA3PZpCyzb6CvZp/itpc3c0BkIXArgA6NM
+ 9NEkKjgYe8qfX9xxpg9orGnp3oIJjrY3HzyWgf3o0Mit776aROWsynkr0KGLoo4/LVL58ypCGw
+ tJMehgHK6/FxzlwQn1IHw1Ay+Pn+NruLEih9TMlQ5Ysf/DP6vRSiDeBI8J0Cjlto+Q0RXpTKqb
+ BAQ4DuFLQitKjd4oHjkrC69LiPYGNKNv1L/U0OdCbFKIwjSLTTjP0MRPKlznicGf5t8m7x+IGJ
+ FTZkpRJq8E7smMTJ7jBd+xph
+X-IronPort-AV: E=Sophos;i="5.87,182,1631602800"; 
+   d="scan'208";a="141082505"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Oct 2021 01:56:23 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 26 Oct 2021 01:56:23 -0700
+Received: from chelti64410lx.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 26 Oct 2021 01:56:19 -0700
+From:   Balamanikandan Gunasundar 
+        <balamanikandan.gunasundar@microchip.com>
+To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Balamanikandan Gunasundar 
+        <balamanikandan.gunasundar@microchip.com>,
+        "Dan Sneddon" <dan.sneddon@microchip.com>
+Subject: [PATCH] usb: gadget: at91_udc: Convert to GPIO descriptors
+Date:   Tue, 26 Oct 2021 14:26:10 +0530
+Message-ID: <20211026085610.25264-1-balamanikandan.gunasundar@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUPWOjJfJohxLJefHOrJBtXZ0xfHQt4=hXpUXnasiN+AQ@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 26 Oct 2021 01:55:09 -0700
-Message-ID: <CAOnJCULgjUsnb__QrUFdop3Nr9t6G5WtSsG+EE2d4_e+b7Dy5Q@mail.gmail.com>
-Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 8:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi all,
->
-> When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
-> the 4th CPU either fails to come online, or the system crashes.
->
-> This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
-> and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
->   - unused core has hartid 0 (sifive,e51),
->   - processor 0 has hartid 1 (sifive,u74-mc),
->   - processor 1 has hartid 2 (sifive,u74-mc),
->   - processor 2 has hartid 3 (sifive,u74-mc),
->   - processor 3 has hartid 4 (sifive,u74-mc).
->
-> I assume the same issue is present on the SiFive fu540 and fu740
-> SoCs, but I don't have access to these.  The issue is not present
-> on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
-> hartid 0.
->
-> arch/riscv/kernel/cpu_ops.c has:
->
->     void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
->     void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
->
->     void cpu_update_secondary_bootdata(unsigned int cpuid,
->                                        struct task_struct *tidle)
->     {
->             int hartid = cpuid_to_hartid_map(cpuid);
->
->             /* Make sure tidle is updated */
->             smp_mb();
->             WRITE_ONCE(__cpu_up_stack_pointer[hartid],
->                        task_stack_page(tidle) + THREAD_SIZE);
->             WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
->
-> The above two writes cause out-of-bound accesses beyond
-> __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
->
->     }
->
+Replace the legacy GPIO APIs with gpio descriptor consumer
+interface. Remove all gpio inversion(active low) flags as it is
+already handled by the gpiod_set_value() and gpiod_get_value()
+functions.
 
-Thanks for reporting this. We need to fix this and definitely shouldn't hide it
-using configs. I guess I never tested with lower values (2 or 4) for
-CONFIG_NR_CPUS which explains how this bug was not noticed until now.
+Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+Reviewed-by: Dan Sneddon <dan.sneddon@microchip.com>
+---
+ drivers/usb/gadget/udc/at91_udc.c | 67 +++++++++++--------------------
+ drivers/usb/gadget/udc/at91_udc.h |  8 ++--
+ 2 files changed, 27 insertions(+), 48 deletions(-)
 
-
-> arch/riscv/kernel/smpboot.c:setup_smp(void) detects CPUs like this:
->
->     for_each_of_cpu_node(dn) {
->             hart = riscv_of_processor_hartid(dn);
->             if (hart < 0)
->                     continue;
->
->             if (hart == cpuid_to_hartid_map(0)) {
->                     BUG_ON(found_boot_cpu);
->                     found_boot_cpu = 1;
->                     early_map_cpu_to_node(0, of_node_to_nid(dn));
->                     continue;
->             }
->             if (cpuid >= NR_CPUS) {
->                     pr_warn("Invalid cpuid [%d] for hartid [%d]\n",
->                             cpuid, hart);
->                     break;
->             }
->
->             cpuid_to_hartid_map(cpuid) = hart;
->             early_map_cpu_to_node(cpuid, of_node_to_nid(dn));
->             cpuid++;
->     }
->
-> So cpuid >= CONFIG_NR_CPUS (too many CPU cores) is already rejected.
->
-> How to fix this?
->
-> We could skip hartids >= NR_CPUS, but that feels strange to me, as
-> you need NR_CPUS to be larger (much larger if the first usable hartid
-> is a large number) than the number of CPUs used.
->
-> We could store the minimum hartid, and always subtract that when
-> accessing __cpu_up_{stack,pointer}_pointer[] (also in
-> arch/riscv/kernel/head.S), but that means unused cores cannot be in the
-> middle of the hartid range.
-
-Yeah. Both of the above proposed solutions are not ideal.
-
->
-> Are hartids guaranteed to be continuous? If not, we have no choice but
-> to index __cpu_up_{stack,pointer}_pointer[] by cpuid instead, which
-> needs a more expensive conversion in arch/riscv/kernel/head.S.
->
-
-This will work for ordered booting with SBI HSM extension. However, it may
-fail for spinwait booting because cpuid_to_hartid_map might not have setup
-depending on when secondary harts are jumping to linux.
-
-Ideally, the size of the __cpu_up_{stack,task}_pointer[] should be the maximum
-hartid possible. How about adding a config for that ?
-
-We also need sanity checks cpu_update_secondary_bootdata to make sure
-that the hartid is within the bounds to avoid issues due to the
-suboptimal config value.
-
-> Thanks for your comments!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
-
+diff --git a/drivers/usb/gadget/udc/at91_udc.c b/drivers/usb/gadget/udc/at91_udc.c
+index eede5cedacb4..21365f185b94 100644
+--- a/drivers/usb/gadget/udc/at91_udc.c
++++ b/drivers/usb/gadget/udc/at91_udc.c
+@@ -25,7 +25,7 @@
+ #include <linux/usb/ch9.h>
+ #include <linux/usb/gadget.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/platform_data/atmel.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
+@@ -1510,7 +1510,6 @@ static irqreturn_t at91_udc_irq (int irq, void *_udc)
+ 
+ static void at91_vbus_update(struct at91_udc *udc, unsigned value)
+ {
+-	value ^= udc->board.vbus_active_low;
+ 	if (value != udc->vbus)
+ 		at91_vbus_session(&udc->gadget, value);
+ }
+@@ -1521,7 +1520,7 @@ static irqreturn_t at91_vbus_irq(int irq, void *_udc)
+ 
+ 	/* vbus needs at least brief debouncing */
+ 	udelay(10);
+-	at91_vbus_update(udc, gpio_get_value(udc->board.vbus_pin));
++	at91_vbus_update(udc, gpiod_get_value(udc->board.vbus_pin));
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1531,7 +1530,7 @@ static void at91_vbus_timer_work(struct work_struct *work)
+ 	struct at91_udc *udc = container_of(work, struct at91_udc,
+ 					    vbus_timer_work);
+ 
+-	at91_vbus_update(udc, gpio_get_value_cansleep(udc->board.vbus_pin));
++	at91_vbus_update(udc, gpiod_get_value_cansleep(udc->board.vbus_pin));
+ 
+ 	if (!timer_pending(&udc->vbus_timer))
+ 		mod_timer(&udc->vbus_timer, jiffies + VBUS_POLL_TIMEOUT);
+@@ -1595,7 +1594,6 @@ static void at91udc_shutdown(struct platform_device *dev)
+ static int at91rm9200_udc_init(struct at91_udc *udc)
+ {
+ 	struct at91_ep *ep;
+-	int ret;
+ 	int i;
+ 
+ 	for (i = 0; i < NUM_ENDPOINTS; i++) {
+@@ -1615,32 +1613,23 @@ static int at91rm9200_udc_init(struct at91_udc *udc)
+ 		}
+ 	}
+ 
+-	if (!gpio_is_valid(udc->board.pullup_pin)) {
++	if (!udc->board.pullup_pin) {
+ 		DBG("no D+ pullup?\n");
+ 		return -ENODEV;
+ 	}
+ 
+-	ret = devm_gpio_request(&udc->pdev->dev, udc->board.pullup_pin,
+-				"udc_pullup");
+-	if (ret) {
+-		DBG("D+ pullup is busy\n");
+-		return ret;
+-	}
+-
+-	gpio_direction_output(udc->board.pullup_pin,
+-			      udc->board.pullup_active_low);
++	gpiod_direction_output(udc->board.pullup_pin,
++			       gpiod_is_active_low(udc->board.pullup_pin));
+ 
+ 	return 0;
+ }
+ 
+ static void at91rm9200_udc_pullup(struct at91_udc *udc, int is_on)
+ {
+-	int active = !udc->board.pullup_active_low;
+-
+ 	if (is_on)
+-		gpio_set_value(udc->board.pullup_pin, active);
++		gpiod_set_value(udc->board.pullup_pin, 1);
+ 	else
+-		gpio_set_value(udc->board.pullup_pin, !active);
++		gpiod_set_value(udc->board.pullup_pin, 0);
+ }
+ 
+ static const struct at91_udc_caps at91rm9200_udc_caps = {
+@@ -1783,20 +1772,20 @@ static void at91udc_of_init(struct at91_udc *udc, struct device_node *np)
+ {
+ 	struct at91_udc_data *board = &udc->board;
+ 	const struct of_device_id *match;
+-	enum of_gpio_flags flags;
+ 	u32 val;
+ 
+ 	if (of_property_read_u32(np, "atmel,vbus-polled", &val) == 0)
+ 		board->vbus_polled = 1;
+ 
+-	board->vbus_pin = of_get_named_gpio_flags(np, "atmel,vbus-gpio", 0,
+-						  &flags);
+-	board->vbus_active_low = (flags & OF_GPIO_ACTIVE_LOW) ? 1 : 0;
++	board->vbus_pin = gpiod_get_from_of_node(np, "atmel,vbus-gpio", 0,
++						 GPIOD_IN, "udc_vbus");
++	if (IS_ERR(board->vbus_pin))
++		board->vbus_pin = NULL;
+ 
+-	board->pullup_pin = of_get_named_gpio_flags(np, "atmel,pullup-gpio", 0,
+-						  &flags);
+-
+-	board->pullup_active_low = (flags & OF_GPIO_ACTIVE_LOW) ? 1 : 0;
++	board->pullup_pin = gpiod_get_from_of_node(np, "atmel,pullup-gpio", 0,
++						   GPIOD_ASIS, "udc_pullup");
++	if (IS_ERR(board->pullup_pin))
++		board->pullup_pin = NULL;
+ 
+ 	match = of_match_node(at91_udc_dt_ids, np);
+ 	if (match)
+@@ -1884,22 +1873,14 @@ static int at91udc_probe(struct platform_device *pdev)
+ 		goto err_unprepare_iclk;
+ 	}
+ 
+-	if (gpio_is_valid(udc->board.vbus_pin)) {
+-		retval = devm_gpio_request(dev, udc->board.vbus_pin,
+-					   "udc_vbus");
+-		if (retval) {
+-			DBG("request vbus pin failed\n");
+-			goto err_unprepare_iclk;
+-		}
+-
+-		gpio_direction_input(udc->board.vbus_pin);
++	if (udc->board.vbus_pin) {
++		gpiod_direction_input(udc->board.vbus_pin);
+ 
+ 		/*
+ 		 * Get the initial state of VBUS - we cannot expect
+ 		 * a pending interrupt.
+ 		 */
+-		udc->vbus = gpio_get_value_cansleep(udc->board.vbus_pin) ^
+-			udc->board.vbus_active_low;
++		udc->vbus = gpiod_get_value_cansleep(udc->board.vbus_pin);
+ 
+ 		if (udc->board.vbus_polled) {
+ 			INIT_WORK(&udc->vbus_timer_work, at91_vbus_timer_work);
+@@ -1908,7 +1889,7 @@ static int at91udc_probe(struct platform_device *pdev)
+ 				  jiffies + VBUS_POLL_TIMEOUT);
+ 		} else {
+ 			retval = devm_request_irq(dev,
+-					gpio_to_irq(udc->board.vbus_pin),
++					gpiod_to_irq(udc->board.vbus_pin),
+ 					at91_vbus_irq, 0, driver_name, udc);
+ 			if (retval) {
+ 				DBG("request vbus irq %d failed\n",
+@@ -1986,8 +1967,8 @@ static int at91udc_suspend(struct platform_device *pdev, pm_message_t mesg)
+ 		enable_irq_wake(udc->udp_irq);
+ 
+ 	udc->active_suspend = wake;
+-	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled && wake)
+-		enable_irq_wake(udc->board.vbus_pin);
++	if (udc->board.vbus_pin && !udc->board.vbus_polled && wake)
++		enable_irq_wake(gpiod_to_irq(udc->board.vbus_pin));
+ 	return 0;
+ }
+ 
+@@ -1996,9 +1977,9 @@ static int at91udc_resume(struct platform_device *pdev)
+ 	struct at91_udc *udc = platform_get_drvdata(pdev);
+ 	unsigned long	flags;
+ 
+-	if (gpio_is_valid(udc->board.vbus_pin) && !udc->board.vbus_polled &&
++	if (udc->board.vbus_pin && !udc->board.vbus_polled &&
+ 	    udc->active_suspend)
+-		disable_irq_wake(udc->board.vbus_pin);
++		disable_irq_wake(gpiod_to_irq(udc->board.vbus_pin));
+ 
+ 	/* maybe reconnect to host; if so, clocks on */
+ 	if (udc->active_suspend)
+diff --git a/drivers/usb/gadget/udc/at91_udc.h b/drivers/usb/gadget/udc/at91_udc.h
+index fd58c5b81826..28c1042f8623 100644
+--- a/drivers/usb/gadget/udc/at91_udc.h
++++ b/drivers/usb/gadget/udc/at91_udc.h
+@@ -109,11 +109,9 @@ struct at91_udc_caps {
+ };
+ 
+ struct at91_udc_data {
+-	int	vbus_pin;		/* high == host powering us */
+-	u8	vbus_active_low;	/* vbus polarity */
+-	u8	vbus_polled;		/* Use polling, not interrupt */
+-	int	pullup_pin;		/* active == D+ pulled up */
+-	u8	pullup_active_low;	/* true == pullup_pin is active low */
++	struct gpio_desc  *vbus_pin;		/* high == host powering us */
++	u8	          vbus_polled;		/* Use polling, not interrupt */
++	struct gpio_desc  *pullup_pin;		/* active == D+ pulled up */
+ };
+ 
+ /*
 -- 
-Regards,
-Atish
+2.25.1
+
