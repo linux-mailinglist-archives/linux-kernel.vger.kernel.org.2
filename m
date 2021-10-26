@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D23E43BB2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4FD43BB10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238926AbhJZTnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237071AbhJZTnc (ORCPT
+        id S235088AbhJZTkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:40:42 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:37687 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232476AbhJZTkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:43:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D92C061570;
-        Tue, 26 Oct 2021 12:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6rfHuZsBNMziMsqcuQ1ZvaqRNzhO0dLy0a/xN09cyHY=; b=GNO9pHnS7oYlpU+YWWUI0EPiCI
-        L8a3PkUz8rH3KNan5t4wQ3gzsaU23Be4c1hiTdkgitcsl/96tzZdGz0BoVLnbcB/ZKL5YO/Tp5ge8
-        x5bGbIFqZ/xoouafMKd6AenJQV3I/gAYN89IswX2y9+osvAwCUKhQmEQbbxY73JaZJT0+a0bMl0cd
-        O6LG0DEiOIhnT0Q1Rta8+5TyGTRU5xseip5XulLOl+lWf9RlI7aXpQQPbWyl+4g+CKR62MZQHGSma
-        +IojYOcfbM7GxqOTl1SOTS52Pu13iFPvGVynVxaSsBw8q2sMwu//bqSxBwzg94JD7B02e1zLsY4Zs
-        tqVHYXIg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfSH0-00H79p-Mi; Tue, 26 Oct 2021 19:38:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3C4163002AE;
-        Tue, 26 Oct 2021 21:38:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 27EB72BC9DBD8; Tue, 26 Oct 2021 21:38:13 +0200 (CEST)
-Date:   Tue, 26 Oct 2021 21:38:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org, paulmck@kernel.org,
-        rostedt@goodmis.org, x86@kernel.org
-Subject: Re: [RFC][PATCH v2 11/11] context_tracking,x86: Fix text_poke_sync()
- vs NOHZ_FULL
-Message-ID: <YXhZJZmUHVGa1aUr@hirez.programming.kicks-ass.net>
-References: <20210929151723.162004989@infradead.org>
- <20210929152429.186930629@infradead.org>
- <20211021183935.GA9071@fuller.cnet>
- <20211021192543.GV174703@worktop.programming.kicks-ass.net>
- <20211021195709.GA22422@fuller.cnet>
- <20211021201859.GX174703@worktop.programming.kicks-ass.net>
- <20211026181911.GA178890@fuller.cnet>
+        Tue, 26 Oct 2021 15:40:40 -0400
+Received: by mail-ot1-f47.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso234036otl.4;
+        Tue, 26 Oct 2021 12:38:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7anbp20VhpEFISp7BgAsV6EJPG6+J1HMLEmCYOo/hT0=;
+        b=8PoJ93xPP/Vvz26/w0VYELsmQHCqMVMLi0FJb/snliKAtqnK5INQggQ/Ula0Tm/nhY
+         xBN2oQdutEKPW/AQ0+QZKWk5OhbsXY0e9YkbDmJjGM2TnDEH/5OXZ+NnzPkxP05jwoNV
+         tOg8FHpiaNHTZdL6kVcSGMRTX39n5/FPFPdAQrg30ZTbWYwkoyTwWb6BRGByJS0JvwCz
+         4bQxlR64uXlbg0oUnR2kbKlhM86bPkixmhuQ1CnnPVrB0AHtSjQprRzy+z2QSaTQ05MI
+         0LxyWN9sYT9XlpNlNufM6+3ez+N46iBdPlsp+18ZfCyeJCCbiZuouq6pPHYfHtwip5SI
+         gf3w==
+X-Gm-Message-State: AOAM530dOUYevMH1notnkrgFHKVKUFGOvQTLOnl7RwyR1dXPp6qTPhjz
+        NlqUeI1ePeGOuyTsWUyeJw==
+X-Google-Smtp-Source: ABdhPJwTt1pkFtye7CZvJrO0zF7kPvPNQfmV3RlknuymPSTwxN9abcq5ilMolzT2PWa7uM55vMhopw==
+X-Received: by 2002:a9d:4b94:: with SMTP id k20mr21059144otf.203.1635277096250;
+        Tue, 26 Oct 2021 12:38:16 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 16sm4962498oty.20.2021.10.26.12.38.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 12:38:15 -0700 (PDT)
+Received: (nullmailer pid 3102541 invoked by uid 1000);
+        Tue, 26 Oct 2021 19:38:14 -0000
+Date:   Tue, 26 Oct 2021 14:38:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     George Song <georgesong0119@gmail.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        george.song@maximintegrated.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "george.song" <george.song@analog.com>
+Subject: Re: [PATCH 1/2] ALSA SoC MAX98520 dt-bindings : Added device tree
+ binding for max98520 Signed-off-by: George Song
+ <george.song@maximintegrated.com>
+Message-ID: <YXhZJiXmT/duNu/M@robh.at.kernel.org>
+References: <20211013060441.18177-1-georgesong0119@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026181911.GA178890@fuller.cnet>
+In-Reply-To: <20211013060441.18177-1-georgesong0119@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 03:19:11PM -0300, Marcelo Tosatti wrote:
-> On Thu, Oct 21, 2021 at 10:18:59PM +0200, Peter Zijlstra wrote:
-> > On Thu, Oct 21, 2021 at 04:57:09PM -0300, Marcelo Tosatti wrote:
-> > > > Pretty much everything in noinstr is magical, we just have to think
-> > > > harder there (and possibly start writing more comments there).
-> > > 
-> > > mds_user_clear_cpu_buffers happens after sync_core, in your patchset, 
-> > > if i am not mistaken.
-> > 
-> > Of course it does, mds_user_clear_cpu_buffers() is on exit, the
-> > sync_core() is on entry.
+On Wed, Oct 13, 2021 at 03:04:41PM +0900, George Song wrote:
+> From: "george.song" <george.song@analog.com>
+
+Patches must have an author name, commit message, and a Signed-off-by. 
+Please use checkpatch.pl which will point out some of this.
+
 > 
->                                                                   static_key enable/disable
+> ---
+>  .../bindings/sound/maxim,max98520.yaml        | 35 +++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98520.yaml
 > 
-> __exit_to_user_mode ->                                            context_tracking_set_cpu_work(cpu, work)
->    user_enter_irqoff ->                                                  preempt_disable();
->    __context_tracking_enter(CONTEXT_USER);                               seq = atomic_read(&ct->seq);
->       ct_seq_user_enter(raw_cpu_ptr(&context_tracking));                 if (__context_tracking_seq_in_user(seq)) {
->       {                                                                          /* ctrl-dep */
->         arch_atomic_set(&ct->work, 0);                                           atomic_or(work, &ct->work);
->         return arch_atomic_add_return(CT_SEQ_USER, &ct->seq);                    ret = atomic_try_cmpxchg(&ct->seq, &seq, seq|CT_SEQ_WORK);
->                                                                          }
->       }                                                                  preempt_enable();
->    arch_exit_to_user_mode()
->    mds_user_clear_cpu_buffers();  <--- sync_core work queued,
->                                        but not executed.
->                                        i-cache potentially stale?
+> diff --git a/Documentation/devicetree/bindings/sound/maxim,max98520.yaml b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+> new file mode 100644
+> index 000000000000..02481428e2ed
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+> @@ -0,0 +1,35 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/maxim,max98520.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Maxim Integrated MAX98520 Speaker Amplifier Driver
+> +
+> +maintainers:
+> +  - Goerge Song <George.song@maximintegrated.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: maxim,max98520
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: I2C address of the device.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      max98520: amplifier@38 {
+> +        compatible = "maxim,max98520";
+> +        reg = <0x38>;
+> +      };
+> +    };
+> -- 
+> 2.25.1
 > 
-> ct_seq_user_enter should happen _after_ all possible static_key users?
-
-Right, so this one is actually okay, because that branch is *never*
-changed after boot.
-
-I'm not quite sure why it isn't an alternative(). At some point I
-proposed static_call_lock() [1] and the corrolary is static_branch_lock(),
-which I suppose could be employed here. But I'm not sure that actually
-helps much with auditing all that.
-
-
-[1] https://lkml.kernel.org/r/20210904105529.GA5106@worktop.programming.kicks-ass.net
+> 
