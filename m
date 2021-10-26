@@ -2,506 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FD643AC36
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146AD43AC37
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 08:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhJZGVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 02:21:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21580 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230344AbhJZGVe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 02:21:34 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19Q2mAtR020925;
-        Tue, 26 Oct 2021 06:18:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iWV+ctYp61+7QYTWJETDtl8/6NC4kYW2SrhiAs5mG3U=;
- b=frYY1Y/k533/B81eFsU4YY2Yyau/v3SO3Lqa60EgAjUacieqS2DoAR5vopdT3iMP8bNS
- t8F4433P/yp4xEveIFyjYALRrXCsXsacxPproqRljeQLdrPcmUlkYAD6o891+W9U4ad2
- kTPW0G+JLWYrJhkGYOiV78cCdFbZZpkuYWTU4iITgkRvHBY1fEjJ/L2SUZUyhCQajbTC
- RHz503RcYZmHIemUVl7eiEqBOR+Saw7LLW2eqd6BiNc7NLi6erSNhM/GCFbOU6ECTh0e
- fVzr4zmZhFCMWrE2rPDfaMmik83TlO9GxSQL1eShSEkADP0bmx7t+Sfqtd2PErwkqrUr 6A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx5ex192h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 06:18:38 +0000
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19Q5opmu028367;
-        Tue, 26 Oct 2021 06:18:37 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx5ex191c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 06:18:37 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19Q6ELZk030844;
-        Tue, 26 Oct 2021 06:18:35 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bx4este07-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 06:18:34 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19Q6IVfS62718218
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Oct 2021 06:18:31 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80FE8A4059;
-        Tue, 26 Oct 2021 06:18:31 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5ADDA4069;
-        Tue, 26 Oct 2021 06:18:19 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.120.209])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Oct 2021 06:18:19 +0000 (GMT)
-Subject: Re: [PATCH v2 04/21] perf pmu: Make pmu_event tables const.
-To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrew Kilroy <andrew.kilroy@arm.com>
-Cc:     Stephane Eranian <eranian@google.com>
-References: <20211015172132.1162559-1-irogers@google.com>
- <20211015172132.1162559-5-irogers@google.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <b2de056d-7741-32cf-22e9-a4fe8b9bd06d@linux.ibm.com>
-Date:   Tue, 26 Oct 2021 11:48:18 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232776AbhJZGVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 02:21:42 -0400
+Received: from mail-eopbgr1400098.outbound.protection.outlook.com ([40.107.140.98]:12384
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233057AbhJZGVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 02:21:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NADruFMB1CB0IG6bX0jRZjWePsUu76UCSbCr0woU23aRCjXHjCeZeHF0ChwXiia5jLm3iJCsHN5o+DiC504RE23UiNz8gIDKdfBk+0K6u0vds9WrhkbDVGyLZH2OTZDzsWekqpNRGgeFIOyRkZ/Suzu6Vwhf/v1zlXkb8Z7y4+UQ2awf00ub3vDeF/USGAzojuHqBQgNRt+HuPaeuezirrLND50nnnZZT/jatXENLMWnRvpM90AMrz+/zkG+aHLHw8t2xwKhNp9Q3DADPPxNgqFwDXnwABBwG9tU8iK31CXboi4Nnauku9i5Aa4KRFiJw7LnLnxwKmBdc4zCtLm6Cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bRrLq1Je6AGq8qesvcmNlnr2/i8eRijVnDGTAuTI/ZY=;
+ b=epzw2mMtpbnqLJwqDf8IODb4Xj7kpNLikvnUzsbf/vj245LHhS07LkzMeWd4DkBY3XDIJvuiiWIgML12ATE81X1hr0clHpndIrqVnUV6Iy5fvFD9Gwfi8PRvKDU1Rt+mEzgtihxbzkdgP2Jm6ZzTpM62mQSe9PuFyV571+IlSeuCDlxoLsjn0LknDYiPb2QFVVVneWFwoWCxHwaIC+D/5i2WOBZRj+eHNXaCVELA83eCZ7TVXuJcYCUETuMNLUB8jIhPdoFSJe2yB+L/AkvWezuP9IOHCsehyvcZNTcRefydkwnFABgufAiU7d6NV7yGSG+tpKiI3U59C4XanWlNyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRrLq1Je6AGq8qesvcmNlnr2/i8eRijVnDGTAuTI/ZY=;
+ b=xGepfSt7vfvSnkvLEdaEdFVjv/54QBHTaumkJBp9gHIuFpqfPw/6DGWHLPb8wGhGn0xG/6BHDZ7g45fh5cWBUWlyUiN6FY18XMIstmF38ZA/7gXJcLUDjPzze8t/EVlmvcSajMrdKyOwZLUPOIH8p5MSloaHtoDQpLovfXWwjLM=
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYYP286MB1376.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:dc::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.18; Tue, 26 Oct 2021 06:19:15 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%7]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
+ 06:19:15 +0000
+From:   YE Chengfeng <cyeaa@connect.ust.hk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: drivers/char: suspected null-pointer dereference problem in
+ handle_control_message
+Thread-Topic: drivers/char: suspected null-pointer dereference problem in
+ handle_control_message
+Thread-Index: AdfKMVj5VkiFjZ1BTj2eYvsZgM9Y2g==
+Date:   Tue, 26 Oct 2021 06:19:15 +0000
+Message-ID: <TYCP286MB1188D6426E281A0947B3E51C8A849@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=connect.ust.hk;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 61edf487-214b-4dcd-04fc-08d998488949
+x-ms-traffictypediagnostic: TYYP286MB1376:
+x-microsoft-antispam-prvs: <TYYP286MB137636E5F25F69A5E7FA78708A849@TYYP286MB1376.JPNP286.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Jrcuw4P/nOmPgOqp5Vi3GLEH+7NeREV7YupPd4ziQxmTneUpXexBrfuWe7Mv/WMXlrhopmVZa4peGbUxzPQ+Zrfow3wH8ewZlfFirVw1AhWXun+W1nTbFrWMz2x9cldsp+8ysYjWS0YA8ouQva3/hhdJqyJ2kDd1uwJrsal9gSDJf8hELzeb2SGaVSINMjJy8pCXa4nVzS6uhuD8dz72NipGKTm4bUQnFBgI0sXooWaLW4j2dSHaiggg2bkEfmEAFry5DC0gyOlgQkQ4hmRJ8fg4F+XRxVdqxry5oNH4zHWDR4Y3+RwhzsRNlKytL+xmVe7VotygueZdNXrqQ3YHj2C7Bw0PH4FiLP1ZV4rwkJWAu9KH0uQRs7jq2GqpLZ1DDs8E0NH1Q2o2Dofv9PBUqcl4sMd86F9hcuC5TqTNuGL7eJ7jGcMXJvyz1nOv0j0z4mprMlmTv6JHiZDJePnQ3l18CPHuRnW33tySoUDR+ShW9maww4nvTRAMyP712HBatjvO8IvBrTB1MkngGsWfirLQJLDYP79CKlh65TvV1vLS9GsBgdlkdn9isWhJhvKC1XOv702xFFej0eBiTNA9RX3tRnf6sQzhPl/4qNuLn3pPMyeNws2eMUZTrdA6NXVvofkRElV8rAcKPrVkjU4vH0xsl9qlZ8A6J3dMvV0v7lLhbnAmZFCIf3AP3Q2cYKhWBxlzcyPC8eOUx6svMl/7CNO/Hmkw6iynN7QaHQvYwUFVailxcQOZtHjrRkdJx8h5uV8HwW78h7qkgFHz5gnGcsFiJQvPIax+sUCwVwYhCZ8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(66446008)(64756008)(38100700002)(33656002)(76116006)(71200400001)(66556008)(66476007)(52536014)(86362001)(966005)(26005)(83380400001)(8936002)(55016002)(5660300002)(6506007)(2906002)(122000001)(786003)(508600001)(186003)(38070700005)(6916009)(8676002)(66946007)(4744005)(7696005)(316002)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?kjRwFKjAeF8meQnvJNPlQmmmqeL4EgbqKaGYsCAiDcWazXSGleCFqBTzzp/O?=
+ =?us-ascii?Q?FXFJkmXjY9spJFqBOZ+0prAoyBkWZyNsakdKOAncZBnPFJH2vqGmrvexaY5G?=
+ =?us-ascii?Q?6MTu5aWlIVyW8hfS+3Uby/fZuLgzUj38+VFr2JU/F/NKcpmCG7hCwTsHlUfE?=
+ =?us-ascii?Q?Y+0L2OjCLy9UdXjW24vhDnEm41PUO1uhBCvWG0yt1bCXr5IQjIQT7QYZDJ2B?=
+ =?us-ascii?Q?I67Sy9XcudCdRoNaF9xBzs5L3GTervwJkcn2sM04AS7dzJYHg/orsQbq8SMC?=
+ =?us-ascii?Q?4G16j/OJ3g9UBKe1EMEQrLmqNJGwuHklLVGOa1VIRseoAwxKr46EyddP6p0E?=
+ =?us-ascii?Q?Je6TDD0ccRiR/S1KcKeG9dLSVowk3CZXN9vsDrFItYWt1z3wuR7YyB92mCSy?=
+ =?us-ascii?Q?21hwyNNFBI7u9w/jz3Ij+Uvq3Lqc1Rd5/0iCV7jdgREmDpBNPyt58aKQaxbz?=
+ =?us-ascii?Q?gvggF23yUwLB0zxI0AsRoQoNzHiM7O3Qoroh+IPn3QywwuhPL3rucHd15J6B?=
+ =?us-ascii?Q?dGbjBkpo9P07c3Dp/BQKjOHSzhf60AD0Ooy3YOsO8L/CCAGgLxJfhhePtDgz?=
+ =?us-ascii?Q?YveX07BKtFtQk4TLRsPwjN5hD7VVbJoowL6vg99afJE2UHaL7bq2EG5435TA?=
+ =?us-ascii?Q?DK3oFZadzaScYw9PAfMHMj8vM83XqGcLRMNvWbYSqez5ROgbobt9AQSv/mTs?=
+ =?us-ascii?Q?fwtQkdpINEJUDQaf5aVEAePeYc4o4iLnvoUlt/9SVpFrNrYkrgaEPXPmmjtL?=
+ =?us-ascii?Q?3R1Z1t1ZffA7EKcCs63U1IqAMCdsd4ccw7+0W5jhdGk7F0zQeOQWkTOtnswY?=
+ =?us-ascii?Q?avGOPSDSRiHP5XjIT+mesyoZ/5HOi3pEZALAWqg3PgnZk3AH04OnQoY3sFVr?=
+ =?us-ascii?Q?2YffodikfsswTq0SdXHUvLvIk2I5NI18ryCRK/EA1mrKG0DIh7E5T4cWb6DI?=
+ =?us-ascii?Q?/jJQL9oX/PwH91eYBCMEyXj9BcZRi7BpecWl/nYdZlqJdwhm//533M9YHBQ8?=
+ =?us-ascii?Q?/w7m11z2/CK7xj7RWYqgiwCpZ1x3o3aaAt/T+2eIYT446+zLVC3r/8NhNNjk?=
+ =?us-ascii?Q?JF/w1UK3p6HnQgUvwL1znK0AnhXkTv0OMylutEX2AFYB4Ak5QfpnM7Tp54NF?=
+ =?us-ascii?Q?ImOgXTh0kr8NDM0TmZus8xAZDRFVmwJ8a7SU89JPWZLgJACInIFnWnqrLzzj?=
+ =?us-ascii?Q?55sFgVs4aBuVi4JizdknSCymw5YcdpOWmzI+cFb/cdoBu7whHeeho38XXpkz?=
+ =?us-ascii?Q?yvrwZOZ4clpGxnNmqJTAPGbs1ycaqi45rnFOLAx3LKi6tfKNFvTIHp6Qaq8i?=
+ =?us-ascii?Q?TGQnBewHoiZjBEToibQLU81xPx4GM7pmLUPjNwn4D9pgWUl/V2U9y2AEoRu/?=
+ =?us-ascii?Q?QGaH79lB4FrQCXxxP6N3eeEOmyk1K0scXLPQsKA/xaZ0SlA/sAO5H8QVa83N?=
+ =?us-ascii?Q?NiHxCoGm4zyXMbzCYu1p8UJgCyDz29X+VgVmt/lwKE2GvUeJL0B4JpO7lGhd?=
+ =?us-ascii?Q?KS+of0o6XZNFYAhKit9KulaVeso4gLw1XcoPf7+1Q51UlPLwu6D8ugfUNTDR?=
+ =?us-ascii?Q?QTLkfGcwlgGpxx8qKTs3+k7OJ00+Jn12K33qVlVLeERNsqbGQo6Qup81vBB9?=
+ =?us-ascii?Q?kKC5WsUJi5Dppf/Bc4NxJHM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20211015172132.1162559-5-irogers@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BA2kN-xP1WIPBdiYbC_3X3G8syA25qwg
-X-Proofpoint-ORIG-GUID: 1PrHs8_icPUphkXHCJUXLn72aurmbi26
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_08,2021-10-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110260033
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61edf487-214b-4dcd-04fc-08d998488949
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2021 06:19:15.5955
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /RavjeYk0Mm7OwVp2YP1wApXCX2zxIUFpfuZrdTaq0vpj6MglubXq6RWcjtV2Vr1a0Tq73QkFsyCn6ONz3yBWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYP286MB1376
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+https://github.com/torvalds/linux/blob/master/drivers/bus/hisi_lpc.c#L483
 
-On 10/15/21 10:51 PM, Ian Rogers wrote:
-> Make lookup nature of data structures clearer through their type. Reduce
-> scope of architecture specific pmu_event tables by making them static.
-> 
-> Suggested-by: John Garry <john.garry@huawei.com>
-> Acked-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/arch/powerpc/util/header.c |  2 +-
->  tools/perf/pmu-events/jevents.c       |  2 +-
->  tools/perf/pmu-events/pmu-events.h    |  4 +--
->  tools/perf/tests/pmu-events.c         | 16 ++++++------
->  tools/perf/util/metricgroup.c         | 36 +++++++++++++--------------
->  tools/perf/util/metricgroup.h         |  6 ++---
->  tools/perf/util/pmu.c                 |  8 +++---
->  tools/perf/util/pmu.h                 |  2 +-
->  tools/perf/util/s390-sample-raw.c     |  2 +-
->  9 files changed, 39 insertions(+), 39 deletions(-)
+Our experimental static analysis tool detects a null-ptr-reference problem.=
+ It could be false positive, we report this to you just in case.
 
-Patch looks good to me.
+Null check is missing for the return pointer of ACPI_COMPANION at line 483 =
+and line 504. It seems that there could be potential null-ptr-dereference p=
+roblem at line 488 and line 509. Could you spare some time to have a look a=
+t it?
 
-Reviewed-by: kajol Jain<kjain@linux.ibm.com>
+Thanks so much,
+Chengfeng
 
-Thanks,
-Kajol Jain
-
-> 
-> diff --git a/tools/perf/arch/powerpc/util/header.c b/tools/perf/arch/powerpc/util/header.c
-> index 58b2d610aadb..e8fe36b10d20 100644
-> --- a/tools/perf/arch/powerpc/util/header.c
-> +++ b/tools/perf/arch/powerpc/util/header.c
-> @@ -40,7 +40,7 @@ get_cpuid_str(struct perf_pmu *pmu __maybe_unused)
->  	return bufp;
->  }
->  
-> -int arch_get_runtimeparam(struct pmu_event *pe)
-> +int arch_get_runtimeparam(const struct pmu_event *pe)
->  {
->  	int count;
->  	char path[PATH_MAX] = "/devices/hv_24x7/interface/";
-> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> index a31de0f77097..5ed1abedb724 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -362,7 +362,7 @@ static int close_table;
->  
->  static void print_events_table_prefix(FILE *fp, const char *tblname)
->  {
-> -	fprintf(fp, "struct pmu_event %s[] = {\n", tblname);
-> +	fprintf(fp, "static const struct pmu_event %s[] = {\n", tblname);
->  	close_table = 1;
->  }
->  
-> diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
-> index f6c9c9fc4ab2..6efe73976440 100644
-> --- a/tools/perf/pmu-events/pmu-events.h
-> +++ b/tools/perf/pmu-events/pmu-events.h
-> @@ -41,12 +41,12 @@ struct pmu_events_map {
->  	const char *cpuid;
->  	const char *version;
->  	const char *type;		/* core, uncore etc */
-> -	struct pmu_event *table;
-> +	const struct pmu_event *table;
->  };
->  
->  struct pmu_sys_events {
->  	const char *name;
-> -	struct pmu_event *table;
-> +	const struct pmu_event *table;
->  };
->  
->  /*
-> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> index c0f8b61871c8..cc5cea141beb 100644
-> --- a/tools/perf/tests/pmu-events.c
-> +++ b/tools/perf/tests/pmu-events.c
-> @@ -256,7 +256,7 @@ static const struct pmu_events_map *__test_pmu_get_events_map(void)
->  	return NULL;
->  }
->  
-> -static struct pmu_event *__test_pmu_get_sys_events_table(void)
-> +static const struct pmu_event *__test_pmu_get_sys_events_table(void)
->  {
->  	const struct pmu_sys_events *tables = &pmu_sys_event_tables[0];
->  
-> @@ -268,7 +268,7 @@ static struct pmu_event *__test_pmu_get_sys_events_table(void)
->  	return NULL;
->  }
->  
-> -static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
-> +static int compare_pmu_events(const struct pmu_event *e1, const struct pmu_event *e2)
->  {
->  	if (!is_same(e1->name, e2->name)) {
->  		pr_debug2("testing event e1 %s: mismatched name string, %s vs %s\n",
-> @@ -420,9 +420,9 @@ static int compare_alias_to_test_event(struct perf_pmu_alias *alias,
->  /* Verify generated events from pmu-events.c are as expected */
->  static int test_pmu_event_table(void)
->  {
-> -	struct pmu_event *sys_event_tables = __test_pmu_get_sys_events_table();
-> +	const struct pmu_event *sys_event_tables = __test_pmu_get_sys_events_table();
->  	const struct pmu_events_map *map = __test_pmu_get_events_map();
-> -	struct pmu_event *table;
-> +	const struct pmu_event *table;
->  	int map_events = 0, expected_events;
->  
->  	/* ignore 3x sentinels */
-> @@ -774,7 +774,7 @@ static int check_parse_id(const char *id, struct parse_events_error *error,
->  	return ret;
->  }
->  
-> -static int check_parse_cpu(const char *id, bool same_cpu, struct pmu_event *pe)
-> +static int check_parse_cpu(const char *id, bool same_cpu, const struct pmu_event *pe)
->  {
->  	struct parse_events_error error = { .idx = 0, };
->  
-> @@ -838,7 +838,7 @@ static int resolve_metric_simple(struct expr_parse_ctx *pctx,
->  		all = true;
->  		hashmap__for_each_entry_safe(pctx->ids, cur, cur_tmp, bkt) {
->  			struct metric_ref *ref;
-> -			struct pmu_event *pe;
-> +			const struct pmu_event *pe;
->  
->  			pe = metricgroup__find_metric(cur->key, map);
->  			if (!pe)
-> @@ -887,7 +887,7 @@ static int test_parsing(void)
->  {
->  	const struct pmu_events_map *cpus_map = pmu_events_map__find();
->  	const struct pmu_events_map *map;
-> -	struct pmu_event *pe;
-> +	const struct pmu_event *pe;
->  	int i, j, k;
->  	int ret = 0;
->  	struct expr_parse_ctx *ctx;
-> @@ -1028,7 +1028,7 @@ static int metric_parse_fake(const char *str)
->  static int test_parsing_fake(void)
->  {
->  	const struct pmu_events_map *map;
-> -	struct pmu_event *pe;
-> +	const struct pmu_event *pe;
->  	unsigned int i, j;
->  	int err = 0;
->  
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 74ea0a3540ce..b60ccbbf0829 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -427,7 +427,7 @@ static bool match_metric(const char *n, const char *list)
->  	return false;
->  }
->  
-> -static bool match_pe_metric(struct pmu_event *pe, const char *metric)
-> +static bool match_pe_metric(const struct pmu_event *pe, const char *metric)
->  {
->  	return match_metric(pe->metric_group, metric) ||
->  	       match_metric(pe->metric_name, metric);
-> @@ -511,7 +511,7 @@ static void metricgroup__print_strlist(struct strlist *metrics, bool raw)
->  		putchar('\n');
->  }
->  
-> -static int metricgroup__print_pmu_event(struct pmu_event *pe,
-> +static int metricgroup__print_pmu_event(const struct pmu_event *pe,
->  					bool metricgroups, char *filter,
->  					bool raw, bool details,
->  					struct rblist *groups,
-> @@ -586,14 +586,14 @@ struct metricgroup_print_sys_idata {
->  	bool details;
->  };
->  
-> -typedef int (*metricgroup_sys_event_iter_fn)(struct pmu_event *pe, void *);
-> +typedef int (*metricgroup_sys_event_iter_fn)(const struct pmu_event *pe, void *);
->  
->  struct metricgroup_iter_data {
->  	metricgroup_sys_event_iter_fn fn;
->  	void *data;
->  };
->  
-> -static int metricgroup__sys_event_iter(struct pmu_event *pe, void *data)
-> +static int metricgroup__sys_event_iter(const struct pmu_event *pe, void *data)
->  {
->  	struct metricgroup_iter_data *d = data;
->  	struct perf_pmu *pmu = NULL;
-> @@ -612,7 +612,7 @@ static int metricgroup__sys_event_iter(struct pmu_event *pe, void *data)
->  	return 0;
->  }
->  
-> -static int metricgroup__print_sys_event_iter(struct pmu_event *pe, void *data)
-> +static int metricgroup__print_sys_event_iter(const struct pmu_event *pe, void *data)
->  {
->  	struct metricgroup_print_sys_idata *d = data;
->  
-> @@ -624,7 +624,7 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
->  			bool raw, bool details)
->  {
->  	const struct pmu_events_map *map = pmu_events_map__find();
-> -	struct pmu_event *pe;
-> +	const struct pmu_event *pe;
->  	int i;
->  	struct rblist groups;
->  	struct rb_node *node, *next;
-> @@ -756,7 +756,7 @@ static void metricgroup___watchdog_constraint_hint(const char *name, bool foot)
->  		   "    echo 1 > /proc/sys/kernel/nmi_watchdog\n");
->  }
->  
-> -static bool metricgroup__has_constraint(struct pmu_event *pe)
-> +static bool metricgroup__has_constraint(const struct pmu_event *pe)
->  {
->  	if (!pe->metric_constraint)
->  		return false;
-> @@ -770,7 +770,7 @@ static bool metricgroup__has_constraint(struct pmu_event *pe)
->  	return false;
->  }
->  
-> -int __weak arch_get_runtimeparam(struct pmu_event *pe __maybe_unused)
-> +int __weak arch_get_runtimeparam(const struct pmu_event *pe __maybe_unused)
->  {
->  	return 1;
->  }
-> @@ -785,7 +785,7 @@ struct metricgroup_add_iter_data {
->  };
->  
->  static int __add_metric(struct list_head *metric_list,
-> -			struct pmu_event *pe,
-> +			const struct pmu_event *pe,
->  			bool metric_no_group,
->  			int runtime,
->  			struct metric **mp,
-> @@ -909,10 +909,10 @@ static int __add_metric(struct list_head *metric_list,
->  		    (match_metric(__pe->metric_group, __metric) ||	\
->  		     match_metric(__pe->metric_name, __metric)))
->  
-> -struct pmu_event *metricgroup__find_metric(const char *metric,
-> -					   const struct pmu_events_map *map)
-> +const struct pmu_event *metricgroup__find_metric(const char *metric,
-> +						 const struct pmu_events_map *map)
->  {
-> -	struct pmu_event *pe;
-> +	const struct pmu_event *pe;
->  	int i;
->  
->  	map_for_each_event(pe, i, map) {
-> @@ -968,7 +968,7 @@ static int recursion_check(struct metric *m, const char *id, struct expr_id **pa
->  }
->  
->  static int add_metric(struct list_head *metric_list,
-> -		      struct pmu_event *pe,
-> +		      const struct pmu_event *pe,
->  		      bool metric_no_group,
->  		      struct metric **mp,
->  		      struct expr_id *parent,
-> @@ -993,7 +993,7 @@ static int __resolve_metric(struct metric *m,
->  		all = true;
->  		hashmap__for_each_entry(m->pctx->ids, cur, bkt) {
->  			struct expr_id *parent;
-> -			struct pmu_event *pe;
-> +			const struct pmu_event *pe;
->  
->  			pe = metricgroup__find_metric(cur->key, map);
->  			if (!pe)
-> @@ -1040,7 +1040,7 @@ static int resolve_metric(bool metric_no_group,
->  }
->  
->  static int add_metric(struct list_head *metric_list,
-> -		      struct pmu_event *pe,
-> +		      const struct pmu_event *pe,
->  		      bool metric_no_group,
->  		      struct metric **m,
->  		      struct expr_id *parent,
-> @@ -1070,7 +1070,7 @@ static int add_metric(struct list_head *metric_list,
->  	return ret;
->  }
->  
-> -static int metricgroup__add_metric_sys_event_iter(struct pmu_event *pe,
-> +static int metricgroup__add_metric_sys_event_iter(const struct pmu_event *pe,
->  						  void *data)
->  {
->  	struct metricgroup_add_iter_data *d = data;
-> @@ -1102,7 +1102,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->  				   const struct pmu_events_map *map)
->  {
->  	struct expr_ids ids = { .cnt = 0, };
-> -	struct pmu_event *pe;
-> +	const struct pmu_event *pe;
->  	struct metric *m;
->  	LIST_HEAD(list);
->  	int i, ret;
-> @@ -1286,7 +1286,7 @@ int metricgroup__parse_groups_test(struct evlist *evlist,
->  bool metricgroup__has_metric(const char *metric)
->  {
->  	const struct pmu_events_map *map = pmu_events_map__find();
-> -	struct pmu_event *pe;
-> +	const struct pmu_event *pe;
->  	int i;
->  
->  	if (!map)
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-> index c931596557bf..88ba939a3082 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -43,8 +43,8 @@ int metricgroup__parse_groups(const struct option *opt,
->  			      bool metric_no_group,
->  			      bool metric_no_merge,
->  			      struct rblist *metric_events);
-> -struct pmu_event *metricgroup__find_metric(const char *metric,
-> -					   const struct pmu_events_map *map);
-> +const struct pmu_event *metricgroup__find_metric(const char *metric,
-> +						 const struct pmu_events_map *map);
->  int metricgroup__parse_groups_test(struct evlist *evlist,
->  				   const struct pmu_events_map *map,
->  				   const char *str,
-> @@ -55,7 +55,7 @@ int metricgroup__parse_groups_test(struct evlist *evlist,
->  void metricgroup__print(bool metrics, bool groups, char *filter,
->  			bool raw, bool details);
->  bool metricgroup__has_metric(const char *metric);
-> -int arch_get_runtimeparam(struct pmu_event *pe __maybe_unused);
-> +int arch_get_runtimeparam(const struct pmu_event *pe __maybe_unused);
->  void metricgroup__rblist_exit(struct rblist *metric_events);
->  
->  int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index c04a89cc7cef..cdd6c3f6caf1 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -315,7 +315,7 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
->  }
->  
->  static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
-> -				 char *desc, char *val, struct pmu_event *pe)
-> +				 char *desc, char *val, const struct pmu_event *pe)
->  {
->  	struct parse_events_term *term;
->  	struct perf_pmu_alias *alias;
-> @@ -834,7 +834,7 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
->  	i = 0;
->  	while (1) {
->  		const char *cpu_name = is_arm_pmu_core(name) ? name : "cpu";
-> -		struct pmu_event *pe = &map->table[i++];
-> +		const struct pmu_event *pe = &map->table[i++];
->  		const char *pname = pe->pmu ? pe->pmu : cpu_name;
->  
->  		if (!pe->name) {
-> @@ -882,7 +882,7 @@ void pmu_for_each_sys_event(pmu_sys_event_iter_fn fn, void *data)
->  			break;
->  
->  		while (1) {
-> -			struct pmu_event *pe = &event_table->table[j++];
-> +			const struct pmu_event *pe = &event_table->table[j++];
->  			int ret;
->  
->  			if (!pe->name && !pe->metric_group && !pe->metric_name)
-> @@ -900,7 +900,7 @@ struct pmu_sys_event_iter_data {
->  	struct perf_pmu *pmu;
->  };
->  
-> -static int pmu_add_sys_aliases_iter_fn(struct pmu_event *pe, void *data)
-> +static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe, void *data)
->  {
->  	struct pmu_sys_event_iter_data *idata = data;
->  	struct perf_pmu *pmu = idata->pmu;
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index dd5cdde6a3d0..cc9f9e001347 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -127,7 +127,7 @@ const struct pmu_events_map *pmu_events_map__find(void);
->  bool pmu_uncore_alias_match(const char *pmu_name, const char *name);
->  void perf_pmu_free_alias(struct perf_pmu_alias *alias);
->  
-> -typedef int (*pmu_sys_event_iter_fn)(struct pmu_event *pe, void *data);
-> +typedef int (*pmu_sys_event_iter_fn)(const struct pmu_event *pe, void *data);
->  void pmu_for_each_sys_event(pmu_sys_event_iter_fn fn, void *data);
->  int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
->  
-> diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-sample-raw.c
-> index 13f33d1ddb78..cd3a34840389 100644
-> --- a/tools/perf/util/s390-sample-raw.c
-> +++ b/tools/perf/util/s390-sample-raw.c
-> @@ -140,7 +140,7 @@ static const char *get_counter_name(int set, int nr, const struct pmu_events_map
->  	int rc, event_nr, wanted = get_counterset_start(set) + nr;
->  
->  	if (map) {
-> -		struct pmu_event *evp = map->table;
-> +		const struct pmu_event *evp = map->table;
->  
->  		for (; evp->name || evp->event || evp->desc; ++evp) {
->  			if (evp->name == NULL || evp->event == NULL)
-> 
