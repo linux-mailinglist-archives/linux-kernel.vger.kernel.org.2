@@ -2,145 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD42543B387
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E0643B38F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 16:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhJZOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 10:05:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230119AbhJZOFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D4260D07;
-        Tue, 26 Oct 2021 14:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635256966;
-        bh=jf046iBN2pgX9ep9EdmfiHHDhGaD9VLYXiqA222lDBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pcYmtMmA+B6622uCVjok524Q7axWOqq/F+FL96MUvTsTW0dyHIQncKyWnjcI3cxRA
-         TJOIcgvOAl38iiVftPP9TCymnjc+5rzfFD41prwn27/kvOQ53iZD6aqUcbNxbwgHmi
-         11LMU4juimXbloLghA57nk2I45iBw5Yw1fed9Ah0MgNpxu0G4i4LEbSb5BFTbCZL51
-         pTohkzjOHOfdZc8tcGyR2oZzxmCDYe18Lm57/e6LG4YiFM4KqefcyBgierFYfu3MuW
-         u3sMdOJ8uYZSyBxGDYVVUcZsjdzBtiUd4w5UjBuTELmHALggvfyqbg2xPOBszQkluz
-         Z8fxmnr00/SbA==
-Date:   Tue, 26 Oct 2021 07:02:41 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Nick Terrell' <terrelln@fb.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: Re: [PATCH] lib: zstd: Add cast to silence clang's
- -Wbitwise-instead-of-logical
-Message-ID: <YXgKgQMHQzvQgE4J@archlinux-ax161>
-References: <20211021202353.2356400-1-nathan@kernel.org>
- <4245BD7A-4B12-4172-B4EE-76A99C717C7D@fb.com>
- <d21e97487ba3447194538ccf0e88ead9@AcuMS.aculab.com>
+        id S236342AbhJZOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 10:06:24 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50734
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234584AbhJZOGW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 10:06:22 -0400
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 074943F172
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635257036;
+        bh=x/vUBlyAiuA+avFtBriAudT3vNCXe1kaXbEyrRvMHFE=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Vkx1If1uUsRhmGsUvmSvh/54GYIbzsUbEVWQVzuZtI8lUfxe4143eihtfcf9LAKun
+         Ejmvc2ezD+Qj3FpeeCjJmJLNkQ+Grx3glgF/5+5jGUHg5A86EMKFokpkmSnEaTz+mS
+         GEnr+7afYEXIRiUOs2u5nRHANm6s/WZm/12yHYcjNJylM9GxPFOCzkRBM3O026LWxP
+         NipCEItrUTLq2MmoPbbaKCIeSP/2AybaDyNQrVV+8UaJkJnv6zrnAW1wglZVVWjgq+
+         1UatKP6cc6+p/kuBZibR9I6fy+A3XQ1wamL5D2353UcU5NqjHiS3wHCOPUTIrlDjhe
+         +gUfffrb6YhmA==
+Received: by mail-lj1-f199.google.com with SMTP id r13-20020a2e970d000000b00211a01c5f3fso25548lji.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 07:03:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x/vUBlyAiuA+avFtBriAudT3vNCXe1kaXbEyrRvMHFE=;
+        b=HTS8cxUWjgyBYkioKfAOObCBT75W0b2380SjxPMiOqWMBDmN5QaPclfTi4UGeowY+z
+         qW1JmHFp4v7GfjmPX9qjI8m2skeSx25MvOc9zFXWAzLe97K07Cah0SuA/VT12WURxVGo
+         cb14Q++2cCq+ZWPpflQ+jAh/rxuso3ZvqemBZTXsSJEX45xEW6SsmBp07fOgFo6kz1wH
+         lvyY9KDMa0TkUxyrlYdttQC2Z8/9FxIU0OJbPu2uCVEn/5x0Bx9lhptOyaw6pd+HIatu
+         9k+suQATt9VlpjstvH67WMgP0zCGZA9E8RN0b6JuQdFrz9TFEpMBV82q5yd4QXnvhIea
+         fRAQ==
+X-Gm-Message-State: AOAM53328Pzq1vrsBHXW+PuUrUhE7sb2jwDd5883jiRqFcrsonbEJh+G
+        DQicW01IiN980yRH7F9gEC7UWHPl+PGkqNseVVBgSeagONhlk+a31SAozY0b1Yba2uhqFLezFAC
+        DmpsaUd4S3XyuGq2GZoyU4wTCiZ9N8etw7lh8/neHyA==
+X-Received: by 2002:a05:6512:23a0:: with SMTP id c32mr23741125lfv.166.1635257035250;
+        Tue, 26 Oct 2021 07:03:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4ERI9ISaFm/R3JZzdG9KW96YbtJuIMYMGTR4liFkJVPAhW2hMHHCatdrqNwv3us4qWXTLYA==
+X-Received: by 2002:a05:6512:23a0:: with SMTP id c32mr23741093lfv.166.1635257035008;
+        Tue, 26 Oct 2021 07:03:55 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id bq37sm1423133lfb.166.2021.10.26.07.03.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 07:03:54 -0700 (PDT)
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <20211026115916.31553-1-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH] arm64: Kconfig: Enable MCT timer for ARCH_EXYNOS
+Message-ID: <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
+Date:   Tue, 26 Oct 2021 16:03:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d21e97487ba3447194538ccf0e88ead9@AcuMS.aculab.com>
+In-Reply-To: <20211026115916.31553-1-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:34:31AM +0000, David Laight wrote:
-> From: Nick Terrell
-> > Sent: 26 October 2021 02:18
-> > 
-> > > On Oct 21, 2021, at 1:23 PM, Nathan Chancellor <nathan@kernel.org> wrote:
-> > >
-> > > A new warning in clang warns that there is an instance where boolean
-> > > expressions are being used with bitwise operators instead of logical
-> > > ones:
-> > >
-> > > lib/zstd/decompress/huf_decompress.c:890:25: warning: use of bitwise '&' with boolean operands [-
-> > Wbitwise-instead-of-logical]
-> > >                        (BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished)
-> > >                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >
-> > > zstd does this frequently to help with performance, as logical operators
-> > > have branches whereas bitwise ones do not.
-> ...
-> > > The first U32 cast is to silence an instance of -Wshorten-64-to-32
-> > > because __builtin_expect() returns long so it cannot be moved.
+On 26/10/2021 13:59, Sam Protsenko wrote:
+> Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
+> Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
+> is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
+> it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
+> for ARM64 Exynos SoCs.
 > 
-> Isn't enabling that warning completely stupid?
-> The casts required to silence it could easily cause more problems
-> - by hiding more important bugs. And seriously affect code readability.
-
-Which warning?
-
--Wbitwise-instead-of-logical is included in clang's -Wall and I do not
-think it should be disabled; this is the first instance of the warning
-that has been silenced with a cast.
-
--Wshorten-64-to-32 will never be enabled for Linux but zstd is a
-separate project that can be built for a variety of operating systems so
-that has to be considered when developing changes for the kernel because
-the kernel changes need to go upstream eventually if they touch core
-zstd code, otherwise they will just get blown away on the next import.
-Specifically, this warning was enabled on iOS:
-https://github.com/facebook/zstd/pull/2062
-
-> ...c
-> > > index 05570ed5f8be..5105e59ac04a 100644
-> > > --- a/lib/zstd/decompress/huf_decompress.c
-> > > +++ b/lib/zstd/decompress/huf_decompress.c
-> > > @@ -886,7 +886,7 @@ HUF_decompress4X2_usingDTable_internal_body(
-> > >             HUF_DECODE_SYMBOLX2_0(op2, &bitD2);
-> > >             HUF_DECODE_SYMBOLX2_0(op3, &bitD3);
-> > >             HUF_DECODE_SYMBOLX2_0(op4, &bitD4);
-> > > -            endSignal = (U32)LIKELY(
-> > > +            endSignal = (U32)LIKELY((U32)
-> > >                         (BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished)
-> > >                       & (BIT_reloadDStreamFast(&bitD2) == BIT_DStream_unfinished)
-> > >                       & (BIT_reloadDStreamFast(&bitD3) == BIT_DStream_unfinished)
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  arch/arm64/Kconfig.platforms | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Isn't that the same as:
-> 	((BIT_reload() & BIT_reload() & BIT_reload()) == BIT_DStream_unfinished)
-> which will generate much better code.
-> Especially on cpu without 'seteq' instructions.
 
-I don't think so. Feel free to double check my math.
++CC Marek, Marc, Mark and Chanwoo,
+Looks like duplicated:
+https://lore.kernel.org/lkml/20181018095708.1527-7-m.szyprowski@samsung.com/
 
-BIT_reloadDStreamFast() can return either BIT_DStream_unfinished (0) or
-BIT_DStream_overflow (3). Let's say the second call returns
-BIT_DStream_overflow but the others return BIT_DStream_unfinished.
+The topic stalled and I think this particular patch did not make sense
+on its own, without rest of changes from Marek. I am not sure, though...
 
-Current code:
-
-(BIT_reloadDStreamFast(&bitD1) == BIT_DStream_unfinished) &
-(BIT_reloadDStreamFast(&bitD2) == BIT_DStream_unfinished) &
-(BIT_reloadDStreamFast(&bitD3) == BIT_DStream_unfinished)
-
-(BIT_DStream_unfinished == BIT_DStream_unfinished) &
-(BIT_DStream_overflow == BIT_DStream_unfinished) &
-(BIT_DStream_unfinished == BIT_DStream_unfinished)
-
-(1 & 0 & 1)
-
-Final result: 0
-
-Your suggestion:
-
-(BIT_reloadDStreamFast(&bitD1) &
- BIT_reloadDStreamFast(&bitD2) &
- BIT_reloadDStreamFast(&bitD3)) == BIT_DStream_unfinished
-
-(BIT_DStream_unfinished &
- BIT_DStream_overflow &
- BIT_DStream_unfinished) == BIT_DStream_unfinished
-
-(0 & 3 & 0) == 0
-
-(0) == 0
-
-Final result: 1
-
-Clang 13.0.0 and GCC 11.2.0 appear agree with me:
-
-https://godbolt.org/z/M78s1TTEx
-
-Cheers,
-Nathan
+Best regards,
+Krzysztof
