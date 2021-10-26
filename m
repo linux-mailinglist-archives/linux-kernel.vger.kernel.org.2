@@ -2,142 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BF143BBC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1A343BBC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 22:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239261AbhJZUoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 16:44:21 -0400
-Received: from mout.gmx.net ([212.227.17.22]:58335 "EHLO mout.gmx.net"
+        id S239271AbhJZUqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 16:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235537AbhJZUoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 16:44:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635280906;
-        bh=v+XY08vZpQVeYCTLMobBSviFEDs9CwqOP/SAnjIBBL8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=QEv6Dto0WCSib72OloIbko36ITuSrvUjOXLZrsURjstxi3b+/bk4cZGwEFcdS5bsP
-         KBMWA4dlcyngM80OkyXTfazyZPStjRB1k/YwIkOJ8qQ12iIU2dbpR1wd+skvFNWSlA
-         pHZJJN0JBnspvL21ZT4zwx6QR5gdGCf9wmupH45E=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.fritz.box ([62.216.209.136]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MG9g4-1mR9Ow0tgq-00GZK6; Tue, 26 Oct 2021 22:41:46 +0200
-From:   Peter Seiderer <ps.report@gmx.net>
-To:     linux-wireless@vger.kernel.org
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Felix Fietkau <nbd@nbd.name>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [RFC v1] mac80211: minstrel_ht: respect RTS threshold setting
-Date:   Tue, 26 Oct 2021 22:41:44 +0200
-Message-Id: <20211026204144.29250-1-ps.report@gmx.net>
-X-Mailer: git-send-email 2.33.1
+        id S239267AbhJZUqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 16:46:12 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A19460F24;
+        Tue, 26 Oct 2021 20:43:45 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 16:43:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Robin H. Johnson" <robbat2@gentoo.org>,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        rjohnson@digitalocean.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
+Message-ID: <20211026164343.2e1754bd@gandalf.local.home>
+In-Reply-To: <20211007092358.65152792@gandalf.local.home>
+References: <20210831043723.13481-1-robbat2@gentoo.org>
+        <20210907212426.73ed81d1@rorschach.local.home>
+        <20211007071151.GL174703@worktop.programming.kicks-ass.net>
+        <20211007092358.65152792@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:pR+qU758i91AxY7933p+jceGVA+yXismQySMPccxp7XPI/i2JVy
- CpQNLcy8mBk+1xdHrXS+ZQT2/fhzWNQNPts81tvZTvWBLmh5ZfUEvM9CFQk8TPUd5rH+LO+
- xffPoHK09y9irptrajUuIeai9/XHPz03J0RJjg3HaaTQ4AdLwmchCVYUcTpPLV0rUby8MsM
- trLV3PrIP03Hflgvd/FiQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IYD0AfuUPHQ=:WWOuUupcMAInMVdcYeCvWi
- PAYfa271PiPntCblNjnQywoqEZBotHhRCEFzcTX8JCAleMjp/oonaZAiRfe7HsMIzORHty0E6
- NhxqtWaTT79VbUgH48dZotd0q2QOP/qPoMT3m8M+vS6yNyt9VFJ2BOlQu4AdUpSZN9zH3TOwx
- XjD4XKBTDo84DuaS24r/36I/vcnz4pwy2JcENAN17FCS1sy0bgaEXzvZuAs12UNG/q5hN/tfN
- RR9OREmEAbxqCeIKGdzV9skERIgnhhPC8G4ic/EmPyfW/xW1Bhjylc7YDXQQ4umQoL4xkmBNC
- fNRMzeFMr8KNjsNUAeY0xTOes8x6saQkAaBenJZU2uZSfMtoWqXevrJ/9wXVHmAuw7RtzzAR7
- OXpqT4RchBkzVCUeJeLjp95PKQk3+FzlDzWBF/Lnw2LjeJy9aatqPTnWP1zQbngaMiFlFeyHO
- YDMaY3Y8XDl6nHaiLKtOFh41C+0SLyDDCbxH4bgORCHk1EHwMnmbO4F30kGlj9KqwdAY1M9T3
- LjBI8e/igD/Zj2BrYjlsiunv8tcM+qdKE2aadBBAnzcGvUmhmDLjT+AHuXEycwyrAYYbeqBOI
- oJ4Y49FoYf2pALKD2lZqBfWYIB0/pC9KuOtY5RPZYI7kF4aPkXyFmBoaWAWAYOcc78hBxAsUc
- awDusDfoeUhHANUu/eBNm6PAwozx1lQOrHue+LJMZxgfEkH6mlN3gZktsQgDqUyD8oECzx/+I
- PFkFRWeVaGOPrVkN5M3NEvnje/hpQIznQH9otJE8YHeiVQ/4znZ1HWlyYl/5heVagItdub8QQ
- z4aNTUrxqoiYMo+HbEzHQhTDf2N3o4ldzXF+4E3yOZ3n92UW2YEU3qk7/zWiqbJL3fcy2eq3G
- AxoxS5ipm5t6rVdJR26tj+aaF4db/gBizUfSAHWf/7xMKvLBNCh79aI8cscZjTnO4DZnQYrK7
- CvkNVXJovEFYGlG+3C0z2cUShZ95zitVR6j8Ma8Vj5TV5aTiUbM3967lZ9IHcA8vdWGEDJP1M
- kRpV8sOKIx99jfwOqCxfc+WJetqSqk+IE6XZn+TQT69GqUOpibJDGgfa41uT0SI7gCAOznS5U
- 4pLnseQ6RkQK4E=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVzcGl0ZSB0aGUgJ1JUUyB0aHI6b2ZmJyBzZXR0aW5nIGEgd2lyZXNoYXJrIHRyYWNlIG9mIElC
-U1MKdHJhZmZpYyB3aXRoIEhUNDAgbW9kZSBlbmFibGVkIGJldHdlZW4gdHdvIGF0aDlrIGNhcmRz
-IHJldmVhbGVkCnNvbWUgUlRTL0NUUyB0cmFmZmljLgoKRGVidWcgYW5kIGNvZGUgYW5hbHlzaXMg
-c2hvd2VkIHRoYXQgbW9zdCBwbGFjZXMgc2V0dGluZwpJRUVFODAyMTFfVFhfUkNfVVNFX1JUU19D
-VFMgcmVzcGVjdCB0aGUgUlRTIHN0cmF0ZWd5IGJ5CmV2YWx1YXRpbmcgcnRzX3RocmVzaG9sZCwg
-ZS5nLiBuZXQvbWFjODAyMTEvdHguYzoKCiA2OTggICAgICAgICAvKiBzZXQgdXAgUlRTIHByb3Rl
-Y3Rpb24gaWYgZGVzaXJlZCAqLwogNjk5ICAgICAgICAgaWYgKGxlbiA+IHR4LT5sb2NhbC0+aHcu
-d2lwaHktPnJ0c190aHJlc2hvbGQpIHsKIDcwMCAgICAgICAgICAgICAgICAgdHhyYy5ydHMgPSB0
-cnVlOwogNzAxICAgICAgICAgfQogNzAyCiA3MDMgICAgICAgICBpbmZvLT5jb250cm9sLnVzZV9y
-dHMgPSB0eHJjLnJ0czsKCm9yIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGg5ay94bWl0LmMK
-CjEyMzggICAgICAgICAgICAgICAgIC8qCjEyMzkgICAgICAgICAgICAgICAgICAqIEhhbmRsZSBS
-VFMgdGhyZXNob2xkIGZvciB1bmFnZ3JlZ2F0ZWQgSFQgZnJhbWVzLgoxMjQwICAgICAgICAgICAg
-ICAgICAgKi8KMTI0MSAgICAgICAgICAgICAgICAgaWYgKGJmX2lzYW1wZHUoYmYpICYmICFiZl9p
-c2FnZ3IoYmYpICYmCjEyNDIgICAgICAgICAgICAgICAgICAgICAocmF0ZXNbaV0uZmxhZ3MgJiBJ
-RUVFODAyMTFfVFhfUkNfTUNTKSAmJgoxMjQzICAgICAgICAgICAgICAgICAgICAgdW5saWtlbHko
-cnRzX3RocmVzaCAhPSAodTMyKSAtMSkpIHsKMTI0NCAgICAgICAgICAgICAgICAgICAgICAgICBp
-ZiAoIXJ0c190aHJlc2ggfHwgKGxlbiA+IHJ0c190aHJlc2gpKQoxMjQ1ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgcnRzID0gdHJ1ZTsKMTI0NiAgICAgICAgICAgICAgICAgfQoKVGhl
-IG9ubHkgcGxhY2Ugc2V0dGluZyBJRUVFODAyMTFfVFhfUkNfVVNFX1JUU19DVFMgdW5jb25kaXRp
-b25hbGx5CndhcyBmb3VuZCBpbiBuZXQvbWFjODAyMTEvcmM4MDIxMV9taW5zdHJlbF9odC5jLgoK
-Rml4IHRoaXMgYnkgcHJvcGFnYXRpbmcgdGhlIGNhbGN1bGF0ZWQgdXNlX3J0cyB2YWx1ZSB0byB0
-aGUKbWluc3RyZWxfaHRfc2V0X3JhdGUoKSBmdW5jdGlvbiBhbmQgZXZhbHVhdGUgaXQgYWNjb3Jk
-aW5nbHkKYmVmb3JlIHNldHRpbmcgSUVFRTgwMjExX1RYX1JDX1VTRV9SVFNfQ1RTLgoKU2lnbmVk
-LW9mZi1ieTogUGV0ZXIgU2VpZGVyZXIgPHBzLnJlcG9ydEBnbXgubmV0PgotLS0KIG5ldC9tYWM4
-MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMgfCAyMSArKysrKysrKysrKystLS0tLS0tLS0KIDEg
-ZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
-dCBhL25ldC9tYWM4MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMgYi9uZXQvbWFjODAyMTEvcmM4
-MDIxMV9taW5zdHJlbF9odC5jCmluZGV4IDcyYjQ0ZDRjNDJkMC4uZjUyZWRlZjQ0M2ZhIDEwMDY0
-NAotLS0gYS9uZXQvbWFjODAyMTEvcmM4MDIxMV9taW5zdHJlbF9odC5jCisrKyBiL25ldC9tYWM4
-MDIxMS9yYzgwMjExX21pbnN0cmVsX2h0LmMKQEAgLTI3Niw3ICsyNzYsOCBAQCBzdGF0aWMgY29u
-c3QgdTggbWluc3RyZWxfc2FtcGxlX3NlcVtdID0gewogfTsKIAogc3RhdGljIHZvaWQKLW1pbnN0
-cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5z
-dHJlbF9odF9zdGEgKm1pKTsKK21pbnN0cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1Y3QgbWluc3Ry
-ZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5zdHJlbF9odF9zdGEgKm1pLAorCQkJIGJvb2wgdXNlX3J0
-cyk7CiAKIC8qCiAgKiBTb21lIFZIVCBNQ1NlcyBhcmUgaW52YWxpZCAod2hlbiBOZGJwcyAvIE5l
-cyBpcyBub3QgYW4gaW50ZWdlcikKQEAgLTEyNTQsNyArMTI1NSw3IEBAIG1pbnN0cmVsX2h0X3R4
-X3N0YXR1cyh2b2lkICpwcml2LCBzdHJ1Y3QgaWVlZTgwMjExX3N1cHBvcnRlZF9iYW5kICpzYmFu
-ZCwKIAl9CiAKIAlpZiAodXBkYXRlKQotCQltaW5zdHJlbF9odF91cGRhdGVfcmF0ZXMobXAsIG1p
-KTsKKwkJbWluc3RyZWxfaHRfdXBkYXRlX3JhdGVzKG1wLCBtaSwgaW5mby0+Y29udHJvbC51c2Vf
-cnRzKTsKIH0KIAogc3RhdGljIHZvaWQKQEAgLTEzMTksNyArMTMyMCw4IEBAIG1pbnN0cmVsX2Nh
-bGNfcmV0cmFuc21pdChzdHJ1Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5zdHJlbF9o
-dF9zdGEgKm1pLAogCiBzdGF0aWMgdm9pZAogbWluc3RyZWxfaHRfc2V0X3JhdGUoc3RydWN0IG1p
-bnN0cmVsX3ByaXYgKm1wLCBzdHJ1Y3QgbWluc3RyZWxfaHRfc3RhICptaSwKLSAgICAgICAgICAg
-ICAgICAgICAgIHN0cnVjdCBpZWVlODAyMTFfc3RhX3JhdGVzICpyYXRldGJsLCBpbnQgb2Zmc2V0
-LCBpbnQgaW5kZXgpCisJCSAgICAgc3RydWN0IGllZWU4MDIxMV9zdGFfcmF0ZXMgKnJhdGV0Ymws
-IGludCBvZmZzZXQsIGludCBpbmRleCwKKwkJICAgICBib29sIHVzZV9ydHMpCiB7CiAJaW50IGdy
-b3VwX2lkeCA9IE1JX1JBVEVfR1JPVVAoaW5kZXgpOwogCWNvbnN0IHN0cnVjdCBtY3NfZ3JvdXAg
-Kmdyb3VwID0gJm1pbnN0cmVsX21jc19ncm91cHNbZ3JvdXBfaWR4XTsKQEAgLTEzNTcsNyArMTM1
-OSw3IEBAIG1pbnN0cmVsX2h0X3NldF9yYXRlKHN0cnVjdCBtaW5zdHJlbF9wcml2ICptcCwgc3Ry
-dWN0IG1pbnN0cmVsX2h0X3N0YSAqbWksCiAJICogIC0gaWYgc3RhdGlvbiBpcyBpbiBkeW5hbWlj
-IFNNUFMgKGFuZCBzdHJlYW1zID4gMSkKIAkgKiAgLSBmb3IgZmFsbGJhY2sgcmF0ZXMsIHRvIGlu
-Y3JlYXNlIGNoYW5jZXMgb2YgZ2V0dGluZyB0aHJvdWdoCiAJICovCi0JaWYgKG9mZnNldCA+IDAg
-fHwKKwlpZiAoKG9mZnNldCA+IDAgJiYgdXNlX3J0cykgfHwKIAkgICAgKG1pLT5zdGEtPnNtcHNf
-bW9kZSA9PSBJRUVFODAyMTFfU01QU19EWU5BTUlDICYmCiAJICAgICBncm91cC0+c3RyZWFtcyA+
-IDEpKSB7CiAJCXJhdGV0YmwtPnJhdGVbb2Zmc2V0XS5jb3VudCA9IHJhdGV0YmwtPnJhdGVbb2Zm
-c2V0XS5jb3VudF9ydHM7CkBAIC0xNDI2LDcgKzE0MjgsOCBAQCBtaW5zdHJlbF9odF9nZXRfbWF4
-X2Ftc2R1X2xlbihzdHJ1Y3QgbWluc3RyZWxfaHRfc3RhICptaSkKIH0KIAogc3RhdGljIHZvaWQK
-LW1pbnN0cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVj
-dCBtaW5zdHJlbF9odF9zdGEgKm1pKQorbWluc3RyZWxfaHRfdXBkYXRlX3JhdGVzKHN0cnVjdCBt
-aW5zdHJlbF9wcml2ICptcCwgc3RydWN0IG1pbnN0cmVsX2h0X3N0YSAqbWksCisJCQkgYm9vbCB1
-c2VfcnRzKQogewogCXN0cnVjdCBpZWVlODAyMTFfc3RhX3JhdGVzICpyYXRlczsKIAlpbnQgaSA9
-IDA7CkBAIC0xNDM2LDE1ICsxNDM5LDE1IEBAIG1pbnN0cmVsX2h0X3VwZGF0ZV9yYXRlcyhzdHJ1
-Y3QgbWluc3RyZWxfcHJpdiAqbXAsIHN0cnVjdCBtaW5zdHJlbF9odF9zdGEgKm1pKQogCQlyZXR1
-cm47CiAKIAkvKiBTdGFydCB3aXRoIG1heF90cF9yYXRlWzBdICovCi0JbWluc3RyZWxfaHRfc2V0
-X3JhdGUobXAsIG1pLCByYXRlcywgaSsrLCBtaS0+bWF4X3RwX3JhdGVbMF0pOworCW1pbnN0cmVs
-X2h0X3NldF9yYXRlKG1wLCBtaSwgcmF0ZXMsIGkrKywgbWktPm1heF90cF9yYXRlWzBdLCB1c2Vf
-cnRzKTsKIAogCWlmIChtcC0+aHctPm1heF9yYXRlcyA+PSAzKSB7CiAJCS8qIEF0IGxlYXN0IDMg
-dHggcmF0ZXMgc3VwcG9ydGVkLCB1c2UgbWF4X3RwX3JhdGVbMV0gbmV4dCAqLwotCQltaW5zdHJl
-bF9odF9zZXRfcmF0ZShtcCwgbWksIHJhdGVzLCBpKyssIG1pLT5tYXhfdHBfcmF0ZVsxXSk7CisJ
-CW1pbnN0cmVsX2h0X3NldF9yYXRlKG1wLCBtaSwgcmF0ZXMsIGkrKywgbWktPm1heF90cF9yYXRl
-WzFdLCB1c2VfcnRzKTsKIAl9CiAKIAlpZiAobXAtPmh3LT5tYXhfcmF0ZXMgPj0gMikgewotCQlt
-aW5zdHJlbF9odF9zZXRfcmF0ZShtcCwgbWksIHJhdGVzLCBpKyssIG1pLT5tYXhfcHJvYl9yYXRl
-KTsKKwkJbWluc3RyZWxfaHRfc2V0X3JhdGUobXAsIG1pLCByYXRlcywgaSsrLCBtaS0+bWF4X3By
-b2JfcmF0ZSwgdXNlX3J0cyk7CiAJfQogCiAJbWktPnN0YS0+bWF4X3JjX2Ftc2R1X2xlbiA9IG1p
-bnN0cmVsX2h0X2dldF9tYXhfYW1zZHVfbGVuKG1pKTsKQEAgLTE3MDUsNyArMTcwOCw3IEBAIG1p
-bnN0cmVsX2h0X3VwZGF0ZV9jYXBzKHZvaWQgKnByaXYsIHN0cnVjdCBpZWVlODAyMTFfc3VwcG9y
-dGVkX2JhbmQgKnNiYW5kLAogCiAJLyogY3JlYXRlIGFuIGluaXRpYWwgcmF0ZSB0YWJsZSB3aXRo
-IHRoZSBsb3dlc3Qgc3VwcG9ydGVkIHJhdGVzICovCiAJbWluc3RyZWxfaHRfdXBkYXRlX3N0YXRz
-KG1wLCBtaSk7Ci0JbWluc3RyZWxfaHRfdXBkYXRlX3JhdGVzKG1wLCBtaSk7CisJbWluc3RyZWxf
-aHRfdXBkYXRlX3JhdGVzKG1wLCBtaSwgZmFsc2UpOwogfQogCiBzdGF0aWMgdm9pZAotLSAKMi4z
-My4xCgo=
+On Thu, 7 Oct 2021 09:23:58 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Thu, 7 Oct 2021 09:11:51 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > > > +++ b/kernel/trace/trace_event_perf.c
+> > > > @@ -400,7 +400,8 @@ void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp)
+> > > >  	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
+> > > >  
+> > > >  	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
+> > > > -		      "perf buffer not large enough"))
+> > > > +		      "perf buffer not large enough, wanted %d, have %d",
+> > > > +		      size, PERF_MAX_TRACE_SIZE))    
+> > 
+> > Priting a constant seems daft.. why is any of this important in any way?  
+> 
+> I see your point, but it can be useful if you changed it, and want to know
+> if you are running the kernel with the change or not.
+> 
+> I've done daft things were I changed a const and was running a kernel
+> without the change and couldn't understand why it wasn't working ;-)
+
+Peter,
+
+Do you have any real issue if I just take this patch set through my tree?
+
+-- Steve
