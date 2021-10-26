@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7615D43BC75
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9F943BC79
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 23:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239649AbhJZVfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 17:35:54 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:39910 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbhJZVfw (ORCPT
+        id S239657AbhJZVhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 17:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239651AbhJZVhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 17:35:52 -0400
-Received: by mail-oi1-f172.google.com with SMTP id s9so560911oiw.6;
-        Tue, 26 Oct 2021 14:33:28 -0700 (PDT)
+        Tue, 26 Oct 2021 17:37:20 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D27C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:34:56 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id o11so1117024ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 14:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g6bRc3hEdmoyhbDnFfzjpCbgpj5AnIIMpxpQWkoEAPc=;
+        b=Q4c50WAkXBkEgY6gvfcvo5e8MhJnvWwBTJNOzFIu/Getb0WstjIXLdG5eqbfR8JHCO
+         E6Y0rOmp5bYSVo1Q9PcxShZiHfhSraEdNL+WfcryfjngLxGyqGCsA5mFOURH3O99GL/i
+         KVy9PC23hRaZpo6bFOq801aVnJMORPKPAlnrqhhYhS6shRWe6cLbC0zIajMFQL8Rjy+Y
+         9c1nn6cpFy+B2gmYUl2It8YpTn+2JQ5ZHX22aV2hXltq1IDGBQO1f7LThO574E+8qUnV
+         crYxEAr25H0V5ROMUrRin0hi1zM0AlaD7yMwLRHVEEVtJLGIPpPI2022dKE11PYdtY6s
+         4Pvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q5ipuM9JztsEYfEdCfwiDc6VyfHQLb5SVFaXPyhJGCE=;
-        b=qeaV7FuDCsKWWxJj3cFbn07yJRHixB/1dSNiosURSLD9i8KJ/qg2mJ2HWJ4QncfKVR
-         nedxzaBBMHcQ6XsHvprRH0TX7i8Ym+UqoPXft8j27sBTxlg76ajy8QmzP4rV6uKBwrlD
-         Ok/AsifCFyoGFRD02xo04EoG/dg7PF3Paz3M5uK5RCbpOLmJOQbGqTvq5jdscdfc8aYN
-         TxYxltisvBzBYXBmWLcCycJWBu5ahexfKvUPwZ6PC5A555j6PAlcYe9l5lP9lIo2BENg
-         z725nv95V1fTUR7u3CNvoG6PtqXRggWghP2A7vbHT+/gj6JmulciWnKd6VB+yBiJwA/G
-         I/gg==
-X-Gm-Message-State: AOAM533tZAVggPSrG+fo2x+0hE4tklP9tn2R3nh5FSsKN47Tv8S5d+sN
-        Px0s+5aR3zeu9HrR9vSlPw==
-X-Google-Smtp-Source: ABdhPJwX/o2BKh61aO10pJ8j2Igz1nCJ9i6GDWL95opy4gu85HlenUnPT8sohds/u9p8HlRSJ5UN4g==
-X-Received: by 2002:a54:4d89:: with SMTP id y9mr979301oix.22.1635284008112;
-        Tue, 26 Oct 2021 14:33:28 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id b9sm4891096ots.77.2021.10.26.14.33.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 14:33:27 -0700 (PDT)
-Received: (nullmailer pid 3296251 invoked by uid 1000);
-        Tue, 26 Oct 2021 21:33:26 -0000
-Date:   Tue, 26 Oct 2021 16:33:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Suman Anna <s-anna@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCHv2] dt-bindings: bus: ti-sysc: Update to use yaml binding
-Message-ID: <YXh0JtEnB6uKR/my@robh.at.kernel.org>
-References: <20211015113350.35830-1-tony@atomide.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g6bRc3hEdmoyhbDnFfzjpCbgpj5AnIIMpxpQWkoEAPc=;
+        b=TY/lZpUyFSsuUqq3bZru8oUITWudPg02CUzRohW2hkUr8E3F9G/Cx383JaH3mdOs2m
+         UEqr06DlQ8tXYgKYUbtgfzJdHNqI+Fb4rs0Dy1M91aeq/n6SxmQxJYeROGtD0kpaA5GF
+         PVfBjHGjq9v6XnFt9Lv7h0QCkJqugYH37pHziXPiGxZ4fmKZCKhMKkYKil7cMZRwjYga
+         HnfZltVVohWhHrH9YoOgy572Y+zXntj4SDTu9+hrgD/eNet+Ts/8zTu8bhgfFNy788+L
+         GxwI+NZ4dUKkVhXFw0zNT13tpt1oPqDil3/80nUUEqH+UBZ8Ab8lRMu1cDpp1ooOYFi0
+         P3NA==
+X-Gm-Message-State: AOAM532SwOcaiQOCOgQeE83BvZ1bV8FBAhiXKqgR7zT6AKKUqaLVfF71
+        MgZyw/t1nx3fYfvOYFL3PS8tp+8+QNA5JRNKgLoGaA==
+X-Google-Smtp-Source: ABdhPJyq6ZHqYiDS8wM3KDSM1FRUj5xGQE4Nq6PhjHX04LBcqXGgXrhGvXWB7NaICqxAg2MRMZNWWZ7nPiqdXVQhY5o=
+X-Received: by 2002:a2e:a0d7:: with SMTP id f23mr29374831ljm.422.1635284094799;
+ Tue, 26 Oct 2021 14:34:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015113350.35830-1-tony@atomide.com>
+References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
+ <20211026173822.502506-2-pasha.tatashin@soleen.com> <YXhbq/6OIpIAr7Tx@casper.infradead.org>
+In-Reply-To: <YXhbq/6OIpIAr7Tx@casper.infradead.org>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 26 Oct 2021 17:34:18 -0400
+Message-ID: <CA+CK2bCZO5J-NRqavWFKXt+yB1u17dFA9VrW48HLBepiQLJtcA@mail.gmail.com>
+Subject: Re: [RFC 1/8] mm: add overflow and underflow checks for page->_refcount
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        william.kucharski@oracle.com,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
+        weixugc@google.com, Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 14:33:50 +0300, Tony Lindgren wrote:
-> Update the binding for ti-sysc interconnect target module driver to yaml
-> format.
-> 
-> Note that the old binding was never updated for the need to always specify
-> also the generic compatible "ti,sysc". This is needed for the auxdata
-> for platform clockdomain autoidle related functions.
-> 
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
-> 
-> Changes since v1:
-> 
-> - Update based on comments from Rob
-> 
-> ---
->  .../devicetree/bindings/bus/ti-sysc.txt       | 139 ----------
->  .../devicetree/bindings/bus/ti-sysc.yaml      | 242 ++++++++++++++++++
->  2 files changed, 242 insertions(+), 139 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/bus/ti-sysc.txt
->  create mode 100644 Documentation/devicetree/bindings/bus/ti-sysc.yaml
-> 
+On Tue, Oct 26, 2021 at 3:50 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Oct 26, 2021 at 05:38:15PM +0000, Pasha Tatashin wrote:
+> >  static inline void page_ref_add(struct page *page, int nr)
+> >  {
+> > -     atomic_add(nr, &page->_refcount);
+> > +     int ret;
+> > +
+> > +     VM_BUG_ON(nr <= 0);
+> > +     ret = atomic_add_return(nr, &page->_refcount);
+> > +     VM_BUG_ON_PAGE(ret <= 0, page);
+>
+> This isn't right.  _refcount is allowed to overflow into the negatives.
+> See page_ref_zero_or_close_to_overflow() and the conversations that led
+> to it being added.
 
-I reworked the reg-names and clock-names to be more concise and applied. 
-Like this:
+#define page_ref_zero_or_close_to_overflow(page) \
+1204   ((unsigned int) page_ref_count(page) + 127u <= 127u)
 
-  clock-names:
-    description:
-      Target module clock names like "fck", "ick", "optck1", "optck2"
-      if the clocks are configurable.
-    oneOf:
-      - enum: [ ick, fck, sys_clk ]
-      - items:
-          - const: fck
-          - enum: [ ick. dbclk, osc, sys_clk, dss_clk, ahclkx ]
-      - items:
-          - const: fck
-          - const: phy-clk
-          - const: phy-clk-div
-      - items:
-          - const: fck
-          - const: hdmi_clk
-          - const: sys_clk
-          - const: tv_clk
-      - items:
-          - const: fck
-          - const: ahclkx
-          - const: ahclkr
 
+Uh, right, I saw the macro but did not realize there was an (unsigned int) cast.
+
+OK, I think we can move this macro inside:
+include/linux/page_ref.h
+
+modify it to something like this:
+#define page_ref_zero_or_close_to_overflow(page) \
+   ((unsigned int) page_ref_count(page) + v + 127u <= v + 127u)
+
+The sub/dec can also be fixed to ensure that we do not underflow but
+still working with the fact that we use all 32bits of _refcount.
+
+Pasha
