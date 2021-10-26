@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D77543B713
+	by mail.lfdr.de (Postfix) with ESMTP id E662D43B714
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 18:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237503AbhJZQ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 12:26:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42202 "EHLO mail.kernel.org"
+        id S236249AbhJZQ0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 12:26:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234516AbhJZQ0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234584AbhJZQ0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Oct 2021 12:26:14 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52A516109E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D559610A5;
         Tue, 26 Oct 2021 16:23:49 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mfPEq-000qQ6-Di;
+        id 1mfPEq-000qQe-Jj;
         Tue, 26 Oct 2021 12:23:48 -0400
-Message-ID: <20211026162348.251960008@goodmis.org>
+Message-ID: <20211026162348.446188876@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 26 Oct 2021 12:23:20 -0400
+Date:   Tue, 26 Oct 2021 12:23:21 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -34,7 +34,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         x86@kernel.org, linux-doc@vger.kernel.org
-Subject: [for-next][PATCH 05/12] tracing/doc: Fix typos on the timerlat tracer documentation
+Subject: [for-next][PATCH 06/12] trace/osnoise: Add migrate-disabled field to the osnoise header
 References: <20211026162315.297389528@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,9 +44,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-Fixes a series of typos in the timerlat doc.
+Since "54357f0c9149 tracing: Add migrate-disabled counter to tracing
+output," the migrate disabled field is also printed in the !PREEMPR_RT
+kernel config. While this information was added to the vast majority of
+tracers, osnoise and timerlat were not updated (because they are new
+tracers).
 
-Link: https://lkml.kernel.org/r/d3763eb376603890baab908141de6660ba18fff8.1634308385.git.bristot@kernel.org
+Fix osnoise header by adding the information about migrate disabled.
+
+Link: https://lkml.kernel.org/r/9cb3d54e29e0588dbba12e81486bd8a09adcd8ca.1634308385.git.bristot@kernel.org
 
 Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
@@ -58,74 +64,43 @@ Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: x86@kernel.org
 Cc: linux-doc@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Fixes: a955d7eac177 ("trace: Add timerlat tracer")
+Fixes: 54357f0c9149 ("tracing: Add migrate-disabled counter to tracing output.")
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/trace/timerlat-tracer.rst | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ kernel/trace/trace_osnoise.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/trace/timerlat-tracer.rst b/Documentation/trace/timerlat-tracer.rst
-index c7cbb557aee7..64d1fe6e9b93 100644
---- a/Documentation/trace/timerlat-tracer.rst
-+++ b/Documentation/trace/timerlat-tracer.rst
-@@ -3,7 +3,7 @@ Timerlat tracer
- ###############
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index c4f14fb98aaa..34f26c632442 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -294,19 +294,19 @@ static void print_osnoise_headers(struct seq_file *s)
+ 	seq_puts(s, "#                                _-----=> irqs-off\n");
+ 	seq_puts(s, "#                               / _----=> need-resched\n");
+ 	seq_puts(s, "#                              | / _---=> hardirq/softirq\n");
+-	seq_puts(s, "#                              || / _--=> preempt-depth     ");
+-	seq_puts(s, "                       MAX\n");
+-
+-	seq_puts(s, "#                              || /                         ");
++	seq_puts(s, "#                              || / _--=> preempt-depth\n");
++	seq_puts(s, "#                              ||| / _-=> migrate-disable     ");
++	seq_puts(s, "                    MAX\n");
++	seq_puts(s, "#                              |||| /     delay               ");
+ 	seq_puts(s, "                    SINGLE      Interference counters:\n");
  
- The timerlat tracer aims to help the preemptive kernel developers to
--find souces of wakeup latencies of real-time threads. Like cyclictest,
-+find sources of wakeup latencies of real-time threads. Like cyclictest,
- the tracer sets a periodic timer that wakes up a thread. The thread then
- computes a *wakeup latency* value as the difference between the *current
- time* and the *absolute time* that the timer was set to expire. The main
-@@ -50,14 +50,14 @@ The second is the *timer latency* observed by the thread. The ACTIVATION
- ID field serves to relate the *irq* execution to its respective *thread*
- execution.
+-	seq_puts(s, "#                              ||||               RUNTIME   ");
++	seq_puts(s, "#                              |||||               RUNTIME   ");
+ 	seq_puts(s, "   NOISE  %% OF CPU  NOISE    +-----------------------------+\n");
  
--The *irq*/*thread* splitting is important to clarify at which context
-+The *irq*/*thread* splitting is important to clarify in which context
- the unexpected high value is coming from. The *irq* context can be
--delayed by hardware related actions, such as SMIs, NMIs, IRQs
--or by a thread masking interrupts. Once the timer happens, the delay
-+delayed by hardware-related actions, such as SMIs, NMIs, IRQs,
-+or by thread masking interrupts. Once the timer happens, the delay
- can also be influenced by blocking caused by threads. For example, by
--postponing the scheduler execution via preempt_disable(), by the
--scheduler execution, or by masking interrupts. Threads can
--also be delayed by the interference from other threads and IRQs.
-+postponing the scheduler execution via preempt_disable(), scheduler
-+execution, or masking interrupts. Threads can also be delayed by the
-+interference from other threads and IRQs.
+-	seq_puts(s, "#           TASK-PID      CPU# ||||   TIMESTAMP    IN US    ");
++	seq_puts(s, "#           TASK-PID      CPU# |||||   TIMESTAMP    IN US    ");
+ 	seq_puts(s, "   IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD\n");
  
- Tracer options
- ---------------------
-@@ -68,14 +68,14 @@ directory. The timerlat configs are:
- 
-  - cpus: CPUs at which a timerlat thread will execute.
-  - timerlat_period_us: the period of the timerlat thread.
-- - osnoise/stop_tracing_us: stop the system tracing if a
-+ - stop_tracing_us: stop the system tracing if a
-    timer latency at the *irq* context higher than the configured
-    value happens. Writing 0 disables this option.
-  - stop_tracing_total_us: stop the system tracing if a
--   timer latency at the *thread* context higher than the configured
-+   timer latency at the *thread* context is higher than the configured
-    value happens. Writing 0 disables this option.
-- - print_stack: save the stack of the IRQ ocurrence, and print
--   it afte the *thread context* event".
-+ - print_stack: save the stack of the IRQ occurrence, and print
-+   it after the *thread context* event".
- 
- timerlat and osnoise
- ----------------------------
-@@ -95,7 +95,7 @@ For example::
-       timerlat/5-1035    [005] .......   548.771104: #402268 context thread timer_latency     39960 ns
- 
- In this case, the root cause of the timer latency does not point to a
--single cause, but to multiple ones. Firstly, the timer IRQ was delayed
-+single cause but to multiple ones. Firstly, the timer IRQ was delayed
- for 13 us, which may point to a long IRQ disabled section (see IRQ
- stacktrace section). Then the timer interrupt that wakes up the timerlat
- thread took 7597 ns, and the qxl:21 device IRQ took 7139 ns. Finally,
+-	seq_puts(s, "#              | |         |   ||||      |           |      ");
++	seq_puts(s, "#              | |         |   |||||      |           |      ");
+ 	seq_puts(s, "       |    |            |      |      |      |      |      |\n");
+ }
+ #endif /* CONFIG_PREEMPT_RT */
 -- 
 2.33.0
