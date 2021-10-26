@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6FA43AAA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4EC43AAA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 05:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbhJZDQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Oct 2021 23:16:31 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:26121 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbhJZDQ3 (ORCPT
+        id S234610AbhJZDQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Oct 2021 23:16:37 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:42305 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234561AbhJZDQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Oct 2021 23:16:29 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HdcLc1H5Xz1DHrc;
-        Tue, 26 Oct 2021 11:12:08 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Tue, 26 Oct 2021 11:14:01 +0800
-Subject: Re: [PATCH rdma-rc] IB/core: fix a UAF for netdev in netdevice_event
- process
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <dledford@redhat.com>, <jgg@ziepe.ca>, <mbloch@nvidia.com>,
-        <jinpu.wang@ionos.com>, <lee.jones@linaro.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
- <YXZdsyifJVY+jOaH@unreal> <00f99243-919a-d697-646a-0e200c0aef81@huawei.com>
- <YXaPm6oTI/lk5GoT@unreal>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <07239ae2-8994-20a6-1cba-c3018c9b0117@huawei.com>
+        Mon, 25 Oct 2021 23:16:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0UtjJcAa_1635218041;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtjJcAa_1635218041)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 Oct 2021 11:14:03 +0800
+To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Michael Wang <yun.wang@linux.alibaba.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Subject: [PATCH v5 0/2] fix & prevent the missing preemption disabling
+Message-ID: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
 Date:   Tue, 26 Oct 2021 11:14:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <YXaPm6oTI/lk5GoT@unreal>
-Content-Type: text/plain; charset="gbk"
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
->>>> index 68197e576433..063dbe72b7c2 100644
->>>> --- a/drivers/infiniband/core/roce_gid_mgmt.c
->>>> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
->>>> @@ -621,6 +621,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
->>>>  {
->>>>  	struct netdev_event_work *work =
->>>>  		container_of(_work, struct netdev_event_work, work);
->>>> +	struct net_device *real_dev;
->>>>  	unsigned int i;
->>>>  
->>>>  	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
->>>> @@ -628,6 +629,12 @@ static void netdevice_event_work_handler(struct work_struct *_work)
->>>>  					 work->cmds[i].filter_ndev,
->>>>  					 work->cmds[i].cb,
->>>>  					 work->cmds[i].ndev);
->>>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].ndev);
->>>> +		if (real_dev)
->>>> +			dev_put(real_dev);
->>>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].filter_ndev);
->>>> +		if (real_dev)
->>>> +			dev_put(real_dev);
->>>>  		dev_put(work->cmds[i].ndev);
->>>>  		dev_put(work->cmds[i].filter_ndev);
->>>>  	}
->>>> @@ -638,9 +645,10 @@ static void netdevice_event_work_handler(struct work_struct *_work)
->>>>  static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
->>>>  				struct net_device *ndev)
->>>>  {
->>>> -	unsigned int i;
->>>>  	struct netdev_event_work *ndev_work =
->>>>  		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
->>>> +	struct net_device *real_dev;
->>>> +	unsigned int i;
->>>>  
->>>>  	if (!ndev_work)
->>>>  		return NOTIFY_DONE;
->>>> @@ -653,6 +661,12 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
->>>>  			ndev_work->cmds[i].filter_ndev = ndev;
->>>>  		dev_hold(ndev_work->cmds[i].ndev);
->>>>  		dev_hold(ndev_work->cmds[i].filter_ndev);
->>>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
->>>> +		if (real_dev)
->>>> +			dev_hold(real_dev);
->>>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].filter_ndev);
->>>> +		if (real_dev)
->>>> +			dev_hold(real_dev);
->>>>  	}
->>>>  	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
->>>
->>> Probably, this is the right change, but I don't know well enough that
->>> part of code. What prevents from "real_dev" to disappear right after
->>> your call to rdma_vlan_dev_real_dev()?
->>>
->>
->> It is known that free the net_device until its dev_refcnt is one. The
->> detail realization see netdev_run_todo().The real_dev's dev_refcnt of
->> a vlan net_device will reach one after unregister_netdevice(&real_dev)
->> and unregister_vlan_dev(&vlan_ndev, ...) but the dev_refcnt of the vlan
->> net_device is bigger than one because netdevice_queue_work() will hold
->> the vlan net_device. So my solution is hold the real_dev too in
->> netdevice_queue_work().
-> 
->               dev_hold(ndev_work->cmds[i].filter_ndev);
->  +            real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
->  +            if (real_dev)
->                   <------------ real_dev is released here.
->  +                    dev_hold(real_dev);
+The testing show that perf_ftrace_function_call() are using smp_processor_id()
+with preemption enabled, all the checking on CPU could be wrong after preemption.
 
-At first, I thought the real_dev's dev_refcnt is bigger than one before
-NETDEV_UNREGISTER notifier event of the vlan net_device because it calls
-dev_put(real_dev) after calling unregister_netdevice_queue(dev, head).
-I thought unregister_netdevice_queue() would issue NETDEV_UNREGISTER
-notifier event of the vlan net_device, I can hold the real_dev in
-NETDEV_UNREGISTER notifier event handler netdevice_queue_work().
+As Peter point out, the section between ftrace_test_recursion_trylock/unlock()
+pair require the preemption to be disabled as 'Documentation/trace/ftrace-uses.rst'
+explained, but currently the work is done outside of the helpers.
 
-But I read unregister_vlan_dev() again, found unregister_netdevice_queue()
-in unregister_vlan_dev() just move the vlan net_device to a list to unregister
-later. So it is possible the real_dev has been freed when we access in
-netdevice_queue_work() although the probability is very small.
+And since the internal using of trace_test_and_set_recursion()
+and trace_clear_recursion() also require preemption to be disabled, we
+can just merge the logical together.
 
-So the modification need to improve. For example set vlan->real_dev = NULL
-after dev_put(real_dev) in unregister_vlan_dev() proposed by Jason Gunthorpe.
+Patch 1/2 will make sure preemption disabled when recursion lock succeed,
+patch 2/2 will do smp_processor_id() checking after trylock() to address the
+issue.
 
-Do you have any other good ideas?
+v1: https://lore.kernel.org/all/8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com/
+v2: https://lore.kernel.org/all/b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com/
+v3: https://lore.kernel.org/all/609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com/
+V4: https://lore.kernel.org/all/32a36348-69ee-6464-390c-3a8d6e9d2b53@linux.alibaba.com/
 
-Thank you!
+Michael Wang (2):
+  ftrace: disable preemption when recursion locked
+  ftrace: do CPU checking after preemption disabled
+
+ arch/csky/kernel/probes/ftrace.c     |  2 --
+ arch/parisc/kernel/ftrace.c          |  2 --
+ arch/powerpc/kernel/kprobes-ftrace.c |  2 --
+ arch/riscv/kernel/probes/ftrace.c    |  2 --
+ arch/x86/kernel/kprobes/ftrace.c     |  2 --
+ include/linux/trace_recursion.h      | 11 ++++++++++-
+ kernel/livepatch/patch.c             | 13 +++++++------
+ kernel/trace/ftrace.c                | 15 +++++----------
+ kernel/trace/trace_event_perf.c      |  6 +++---
+ kernel/trace/trace_functions.c       |  5 -----
+ 10 files changed, 25 insertions(+), 35 deletions(-)
+
+-- 
+1.8.3.1
+
