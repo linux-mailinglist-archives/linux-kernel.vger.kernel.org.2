@@ -2,189 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AB543B907
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9BC43B90C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 20:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238064AbhJZSKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 14:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhJZSKr (ORCPT
+        id S238076AbhJZSLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 14:11:31 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:24024 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233729AbhJZSL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:10:47 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61608C061745;
-        Tue, 26 Oct 2021 11:08:23 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j2so643239lfg.3;
-        Tue, 26 Oct 2021 11:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BjjiSjsAp73g3DvM4e31qhxfRCOib7dJHrxo3nfDN8Q=;
-        b=Xnnp0iCGRdNgmch3N1nk7p7CZDLwPgTxIVb5Ka7n/T9tgwNcNjPXj9AElmVbTN7vFw
-         EBpzXznIsDANAG82QF9yt4Gf5uFO/tCl9pJCM+nuhOQlCIRZFb2H9Hxmaj2q7j+A/AWu
-         C3TFRbvQtE28cX6F40dO7IdKO2YFoA8cstRz0ykfhLjt68qjcIB1j6ssZFPi7Scut3U8
-         pNZ/3LVPKIn8/SZ2LiaP5V2qQJe+OB+ypNT3MkQxdRaSZMzGe3uFtWEisJ3sW+avQEdD
-         5/9NfjF0/oUMHoP8Pvj3ysxp0f8O0rSLjg9TbMoiCxxzeRVvMcQexsuQSfXJ6muhNPex
-         kkig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BjjiSjsAp73g3DvM4e31qhxfRCOib7dJHrxo3nfDN8Q=;
-        b=v69bVwCRU1b9NSDiXaBY+Ivb3ZYj/5pU15Y1xx4f5J0IWhqcjKzihKOcKZGmvdcID9
-         UF4MCu/F99DLi6W/pxa8GKCUmrDWWfIFR9JJeGtARGKAGu66l3AeuJb4uOciu09LvxZ0
-         mnpEIfXQeumqK0f+GIfmlLP5QFJPWidk9hRIp7GXfEo4vhM+kmkU7QHxApPvHP1QPpr7
-         kO8NOJSkYvfwReVyJjgaPMveCzUuindqztHxFag0BPFhwJeGDwKWlrCwu+5SoTVZXR62
-         ILEXfY8TK+5Dy5s4WW2/Y+9okuCJmwKsS3Txg2pCr4pYUARnEyv+b0V2fAJr0c6QyFO6
-         CU5Q==
-X-Gm-Message-State: AOAM5324jSl+9zCZs3QJzSMfa97OtSzMlq+bhtmBlgmnfyFFCi6pqMmH
-        X08+Z/72gdEsNTySwiT2ClU=
-X-Google-Smtp-Source: ABdhPJzE3ohlvUaf06ODOZjOnsj6PLdMvdy5mQ/mHKk/XrJDyLrUYoRuZeymwW4Tu2KTPVyHBAsjpw==
-X-Received: by 2002:a19:fc1a:: with SMTP id a26mr8893955lfi.332.1635271701734;
-        Tue, 26 Oct 2021 11:08:21 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id w40sm1268545lfu.48.2021.10.26.11.08.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:08:21 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 21:08:19 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 4/4] fs/ntfs3: Optimize locking in ntfs_save_wsl_perm
-Message-ID: <20211026180819.yk6hqcgvtujytyem@kari-VirtualBox>
-References: <a57c1c49-4ef3-15ee-d2cd-d77fb4246b3c@paragon-software.com>
- <d8ea9103-27d7-0217-297a-57aac6b0a5dc@paragon-software.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8ea9103-27d7-0217-297a-57aac6b0a5dc@paragon-software.com>
+        Tue, 26 Oct 2021 14:11:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635271724;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=74t1mRAJSitLug010w0F1NW8drDiZWZJSwlgKAAwYPI=;
+    b=NIWrYrscnOR/x9mpeRFH6NMUQkRWah+6dtDPHFXz3fhE2c+jeI2EAiuUHVM+fOOJ9I
+    aWaGC9M7f4gHYCucgPCtRPj0rAOEDgI5sewSpGVsT/y6Qy8rxE72mBbjm6ZMaO8YJJim
+    clXUC2zSIqwWF3gSKGrqmJct+GufrKT5t8BMqNzwTDgR7RosccHy6IHPSm4fY1tY45Ka
+    kvSBi4PsXig0C4AVV8UYm1A34dV0F5eZl5n872rJpMCm25cwM5/ZombCvkLQ1GM8AkEi
+    CmIIv2xM1UBCGiW8/lCzH5P9lMrWNZTZVsv/OWrA1il1NymoQ9B1FBRdqi/Kmj9ulCrQ
+    ZB+Q==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8J+"
+X-RZG-CLASS-ID: mo00
+Received: from mbp-13-nikolaus.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 SBL|AUTH)
+    with ESMTPSA id d01d1fx9QI8hyjg
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 26 Oct 2021 20:08:43 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired
+ omap_hsmmc
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAPDyKFraMXqC9OBeUTpm=bxjrFZTCopV3ZJQf1TRsA8UeTWdTA@mail.gmail.com>
+Date:   Tue, 26 Oct 2021 20:08:42 +0200
+Cc:     Jerome Pouiller <Jerome.Pouiller@silabs.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Tony Lindgren <tony@atomide.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <80C6A8DD-183B-4FDD-B203-D3108C106043@goldelico.com>
+References: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
+ <CAPDyKFraMXqC9OBeUTpm=bxjrFZTCopV3ZJQf1TRsA8UeTWdTA@mail.gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 07:42:15PM +0300, Konstantin Komarov wrote:
-> Right now in ntfs_save_wsl_perm we lock/unlock 4 times.
-> This commit fixes this situation.
-> We add "locked" argument to ntfs_set_ea.
-> 
-> Suggested-by: Kari Argillander <kari.argillander@gmail.com>
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Hi Uf,
 
-Add tag if you fix Joes nit.
++ Tony, linux-omap list
 
-Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+> Am 26.10.2021 um 19:12 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
+>=20
+> + Jerome
+>=20
+> On Wed, 6 Oct 2021 at 13:25, H. Nikolaus Schaller <hns@goldelico.com> =
+wrote:
+>>=20
+>> The TiWi 5 WiFi module needs special setup of the sdio
+>> interface before it can be probed.
+>>=20
+>> So far, this is done in omap_hsmmc_init_card() in omap_hsmmc.c
+>> which makes it useable only if connected to omap devices
+>> which use the omap_hsmmc. The OpenPandora is the most promient
+>> example.
+>>=20
+>> There are plans to switch to a newer sdhci-omap driver and
+>> retire omap_hsmmc. Hence this quirk must be reworked or moved
+>> somewhere else. Ideally to some location that is not dependent
+>> on the specific SoC mmc host driver.
+>>=20
+>> Analysis has shown that omap_hsmmc_init_card() is called
+>> through the host->ops->init_card hook which itself
+>> is called in three generic locations:
+>>=20
+>> mmc_init_card()
+>> mmc_sd_init_card()
+>> mmc_sdio_init_card()
+>>=20
+>> All these functions share a call to mmc_select_card() shortly
+>> after running the init hook and therefore I assume that
+>> a good place transplanting the special wl1251 handling is
+>> mmc_select_card() - unless we want to copy and maintain the
+>> code to three different places.
+>>=20
+>> After this quirk has been moved there, we can remove
+>> omap_hsmmc_init_card() in omap_hsmmc.c in a separate patch.
+>> Indeed the plan is to remove omap_hsmmc.c completely.
+>>=20
+>> A future development path to generalize could be to make
+>> the code not depend on compatible =3D "ti,wl1251" but check
+>> for optional device tree properties (non-std-sdio, bus width,
+>> vendor, device, blksize, max_dtr, ocr) which can be defined
+>> for any child device of the mmd/sd port needing such special
+>> setup.
+>=20
+> I wouldn't go that path, simply because it may look like we encourage
+> vendors to deviate from the SDIO spec. :-)
 
-> ---
->  fs/ntfs3/xattr.c | 24 ++++++++++++++----------
->  1 file changed, 14 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-> index 157b70aecb4f..6d8b1cd7681d 100644
-> --- a/fs/ntfs3/xattr.c
-> +++ b/fs/ntfs3/xattr.c
-> @@ -259,7 +259,7 @@ static int ntfs_get_ea(struct inode *inode, const char *name, size_t name_len,
->  
->  static noinline int ntfs_set_ea(struct inode *inode, const char *name,
->  				size_t name_len, const void *value,
-> -				size_t val_size, int flags)
-> +				size_t val_size, int flags, bool locked)
->  {
->  	struct ntfs_inode *ni = ntfs_i(inode);
->  	struct ntfs_sb_info *sbi = ni->mi.sbi;
-> @@ -278,7 +278,8 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
->  	u64 new_sz;
->  	void *p;
->  
-> -	ni_lock(ni);
-> +	if (!locked)
-> +		ni_lock(ni);
->  
->  	run_init(&ea_run);
->  
-> @@ -467,7 +468,8 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
->  	mark_inode_dirty(&ni->vfs_inode);
->  
->  out:
-> -	ni_unlock(ni);
-> +	if (!locked)
-> +		ni_unlock(ni);
->  
->  	run_close(&ea_run);
->  	kfree(ea_all);
-> @@ -595,7 +597,7 @@ static noinline int ntfs_set_acl_ex(struct user_namespace *mnt_userns,
->  		flags = 0;
->  	}
->  
-> -	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
-> +	err = ntfs_set_ea(inode, name, name_len, value, size, flags, 0);
->  	if (err == -ENODATA && !size)
->  		err = 0; /* Removing non existed xattr. */
->  	if (!err)
-> @@ -989,7 +991,7 @@ static noinline int ntfs_setxattr(const struct xattr_handler *handler,
->  	}
->  #endif
->  	/* Deal with NTFS extended attribute. */
-> -	err = ntfs_set_ea(inode, name, name_len, value, size, flags);
-> +	err = ntfs_set_ea(inode, name, name_len, value, size, flags, 0);
+Well, that ti,wl1251 chip is so old [1] that probably the SDIO spec did
+deviate from what the vendor thought it will look like :)
 
-Did you miss Joes comment or is there another reason why there is still
-is (true|0) arguments?
+[1] https://www.ti.com/lit/ml/swmt009a/swmt009a.pdf
 
-https://lore.kernel.org/ntfs3/adcb168fc78f62583f8d925bcadbbcda9ba7da20.camel@perches.com/
+> At least for now, matching on the compatible string and applying card
+> quirks makes perfect sense to me.
 
-  argillander
+Yes, that is how it already was in the omal_hsmmc driver quirks.
 
->  
->  out:
->  	inode->i_ctime = current_time(inode);
-> @@ -1007,35 +1009,37 @@ int ntfs_save_wsl_perm(struct inode *inode)
->  {
->  	int err;
->  	__le32 value;
-> +	struct ntfs_inode *ni = ntfs_i(inode);
->  
-> -	/* TODO: refactor this, so we don't lock 4 times in ntfs_set_ea */
-> +	ni_lock(ni);
->  	value = cpu_to_le32(i_uid_read(inode));
->  	err = ntfs_set_ea(inode, "$LXUID", sizeof("$LXUID") - 1, &value,
-> -			  sizeof(value), 0);
-> +			  sizeof(value), 0, true); /* true == already locked. */
->  	if (err)
->  		goto out;
->  
->  	value = cpu_to_le32(i_gid_read(inode));
->  	err = ntfs_set_ea(inode, "$LXGID", sizeof("$LXGID") - 1, &value,
-> -			  sizeof(value), 0);
-> +			  sizeof(value), 0, true);
->  	if (err)
->  		goto out;
->  
->  	value = cpu_to_le32(inode->i_mode);
->  	err = ntfs_set_ea(inode, "$LXMOD", sizeof("$LXMOD") - 1, &value,
-> -			  sizeof(value), 0);
-> +			  sizeof(value), 0, true);
->  	if (err)
->  		goto out;
->  
->  	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
->  		value = cpu_to_le32(inode->i_rdev);
->  		err = ntfs_set_ea(inode, "$LXDEV", sizeof("$LXDEV") - 1, &value,
-> -				  sizeof(value), 0);
-> +				  sizeof(value), 0, true);
->  		if (err)
->  			goto out;
->  	}
->  
->  out:
-> +	ni_unlock(ni);
->  	/* In case of error should we delete all WSL xattr? */
->  	return err;
->  }
-> -- 
-> 2.33.0
-> 
-> 
-> 
+>=20
+>>=20
+>> Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for =
+special init of wl1251 to get rid of pandora_wl1251_init_card")
+>> Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove =
+openpandora quirks for mmc3 and wl1251")
+>> Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add =
+wifi support")
+>> Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # on OpenPandora
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>=20
+> As a matter of fact, the similar problem that you are looking to
+> address (applying card quirks based on DT compatibility strings), is
+> partly being taken care of in another series [1], being discussed
+> right now. I think the solution for the ti,wl1251 should be based upon
+> that too. Please have a look and see if you can play with that!?
+
+That is interesting.
+Yes, maybe it can be the basis. At least for finding the chip and =
+driver.
+
+BR and thanks,
+Nikolaus
+
+>=20
+> Kind regards
+> Uffe
+>=20
+> [1]
+> [RFC PATCH 0/2] mmc: allow to rely on the DT to apply quirks
+> =
+https://lore.kernel.org/lkml/20211014143031.1313783-1-Jerome.Pouiller@sila=
+bs.com/
+
