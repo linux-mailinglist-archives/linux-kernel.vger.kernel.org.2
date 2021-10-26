@@ -2,188 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A5D43B2E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9AD43B2EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236138AbhJZNJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhJZNJ0 (ORCPT
+        id S236140AbhJZNLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:11:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3834 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230324AbhJZNLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:09:26 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D0AC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:07:02 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id q39-20020a4a962a000000b002b8bb100791so547321ooi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 06:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=forshee.me; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bMO9aIZEjMzj+cHlABoe9RIyr+B9KaScU7qbVDmoSBU=;
-        b=gs+ZGXEQlgMQw8l++1hUpXPBydjgeiTLOcEr0x4UZ0P2YBtOQW9Pb5DYjoj927k+1Y
-         UXJRhbTriWliVVTFJvK74OWPMlbtHkV2JNvTzb2hrL6lMlsXU5zPqhh4nWb8JVqP1WBk
-         s7XUR1HjdezHpAHa/CMU9f4ie2pcjajdxfM1X/HrRdmubWp7a1TXILI0+rIhkPtU/Ibi
-         fVosNqtj1En3V0Ay3W6wlulz9tCiHPzjafhEyLM5o/rcko1cIQURuOfgPmZKmwFwgKcK
-         zazGD0jmRxOX29lLM3blPnUgaAAWNeopcqSyMbmTqF6nTkhsFHIBX++x1/mxdn/6Dqn1
-         rBcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bMO9aIZEjMzj+cHlABoe9RIyr+B9KaScU7qbVDmoSBU=;
-        b=eeOJvRNlFM7ORFf6mujJQbKWhbaLWAMNCD3BOjc6GKL0GQY8qJhYzb0gIimq2gwT5O
-         ic9JCUBv0d2SXcroZUB//6YOiIIJ4Ik0aQIgZCq/Tjb54SnBEYhWnhFWnrk/+ANRXrLB
-         BsImO+0lh24H7fAb5YR5tyJ5PV2zHN1uVPApbArbfAm4JAQeGhTiSiPYKpQ5Rh6LY6qO
-         lIh3JJvD2PoGJikw0BweNtNnLoG/5fvaNmQhwStRRu31QA7BsAEm7bxe7VH0UjA2gUua
-         wl837Yyb9C54RE8zriq/0Yruv4Wd3z5vdmab+Nq9b4rxV0EIiJCOqMMve3MI94STex5n
-         fWlQ==
-X-Gm-Message-State: AOAM533wuSFAgsoNP5mwQ6XVLUlKZMOxbxEw5Oku5Dr3dmd9l7m3S2Ay
-        wLcVUd/hTniMy2EQfpC9l5mNew==
-X-Google-Smtp-Source: ABdhPJy2sHrfFA8jSlyLkeDUjCM5YfHBMuAAeutWAaVoHL1TBQCxYc1Q2cMU7HbI3XKbr/GzEzi76Q==
-X-Received: by 2002:a05:6820:35a:: with SMTP id m26mr17338095ooe.45.1635253621041;
-        Tue, 26 Oct 2021 06:07:01 -0700 (PDT)
-Received: from localhost ([2605:a601:ac0f:820:fca3:95d3:b064:21ae])
-        by smtp.gmail.com with ESMTPSA id bq10sm3090209oib.25.2021.10.26.06.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 06:07:00 -0700 (PDT)
-From:   Seth Forshee <seth@forshee.me>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: sch: eliminate unnecessary RCU waits in mini_qdisc_pair_swap()
-Date:   Tue, 26 Oct 2021 08:06:59 -0500
-Message-Id: <20211026130700.121189-1-seth@forshee.me>
-X-Mailer: git-send-email 2.32.0
+        Tue, 26 Oct 2021 09:11:13 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QCH26B025394;
+        Tue, 26 Oct 2021 13:08:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=/xKjX7zeq971INJvr0YNpESJxm9aAQToNy2FujCIzE4=;
+ b=NGtmOg2G+ZIp4mWj40sNUXExjKP4CmvUvmSl7oSGcMcBV50q0TFbQCV68XwILo2m0M1m
+ G3raEkGL2egiV7XfPWJRkz1nVBppzBRZ78fbN5SWDA+f4aIyiUwvng/v5Ix+rpN8Toxu
+ OznP/t+hlpqLKnC9KPQv8YBZAwvqgHCinG8kGxoIzAp+bCw6SaVJWw3cIXb4wpqn47p8
+ 14quNNzNwT6F2hchPhzXgbZBfsYV1YFk46KcyUYK9DI3ROuGegw7MYU70ZV0HogePkFQ
+ Ky7uEp6tKEs0KgBcnIa+33ngHb0rv71CAPXND93OI00VSnviYKgf0vYTDX2hJPPe6t33 1g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx596x846-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 13:08:40 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19QBkR4R021388;
+        Tue, 26 Oct 2021 13:08:40 GMT
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx596x83n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 13:08:40 +0000
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19QCvlDX011481;
+        Tue, 26 Oct 2021 13:08:39 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01wdc.us.ibm.com with ESMTP id 3bx4efbupq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 13:08:39 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19QD8cfv48693634
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Oct 2021 13:08:38 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 98FEEBE05A;
+        Tue, 26 Oct 2021 13:08:38 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6E031BE065;
+        Tue, 26 Oct 2021 13:08:38 +0000 (GMT)
+Received: from localhost (unknown [9.211.49.177])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Oct 2021 13:08:38 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     Hill Ma <maahiuzeon@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2] macintosh/via-pmu-led: make disk activity usage a
+ parameter.
+In-Reply-To: <20211026033254.1052-1-maahiuzeon@gmail.com>
+References: <20211026033254.1052-1-maahiuzeon@gmail.com>
+Date:   Tue, 26 Oct 2021 08:08:38 -0500
+Message-ID: <87fssox7ah.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6aO6ediL6HTYrQHIwSlnY5kSvANXx6ix
+X-Proofpoint-GUID: 0Jj02Gc0AyomDLd7w1-3ui-6PXWErbaf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-26_02,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 impostorscore=0 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110260076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seth Forshee <sforshee@digitalocean.com>
+Hello,
 
-Currently rcu_barrier() is used to ensure that no readers of the
-inactive mini_Qdisc buffer remain before it is reused. This waits for
-any pending RCU callbacks to complete, when all that is actually
-required is to wait for one RCU grace period to elapse after the buffer
-was made inactive. This means that using rcu_barrier() may result in
-unnecessary waits.
+Hill Ma <maahiuzeon@gmail.com> writes:
+> Whether to use the LED as a disk activity is a user preference.
+> Some like this usage while others find the LED too bright. So it
+> might be a good idea to make this choice a runtime parameter rather
+> than compile-time config.
 
-To improve this, store the current RCU state when a buffer is made
-inactive and use poll_state_synchronize_rcu() to check whether a full
-grace period has elapsed before reusing it. If a full grace period has
-not elapsed, wait for a grace period to elapse, and in the non-RT case
-use synchronize_rcu_expedited() to hasten it.
+Users already have the ability to change the LED behavior at runtime
+already, correct? I.e. they can do:
 
-Since this approach eliminates the RCU callback it is no longer
-necessary to synchronize_rcu() in the tp_head==NULL case. However, the
-RCU state should still be saved for the previously active buffer.
+  echo none > /sys/class/leds/pmu-led::front/trigger
 
-Before this change I would typically see mini_qdisc_pair_swap() take
-tens of milliseconds to complete. After this change it typcially
-finishes in less than 1 ms, and often it takes just a few microseconds.
+in their boot scripts. Granted, a kernel built with ADB_PMU_LED_DISK=y
+will blink the LED on disk activity until user space is running. Is this
+unsatisfactory?
 
-Thanks to Paul for walking me through the options for improving this.
+> The default is set to disabled as OS X does not use the LED as a
+> disk activity indicator.
 
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Seth Forshee <sforshee@digitalocean.com>
----
-v2:
- - Rebase to net-next
+This is long-standing behavior in Linux and OS X has been EOL on this
+architecture for a decade, so this isn't much of a consideration at this
+point. Seems more important to avoid surprising existing users and
+distributions with a behavior change that makes additional work for
+them. See below.
 
- include/net/sch_generic.h |  2 +-
- net/sched/sch_generic.c   | 38 +++++++++++++++++++-------------------
- 2 files changed, 20 insertions(+), 20 deletions(-)
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 43dc35fe5bc0..a656a51ba0a8 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -250,6 +250,12 @@
+>  			Use timer override. For some broken Nvidia NF5 boards
+>  			that require a timer override, but don't have HPET
+>  
+> +	adb_pmu_led_disk [PPC]
+> +			Use front LED as disk LED by default. Only applies to
+> +			PowerBook, iBook, PowerMac 7,2/7,3.
+> +			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
+> +			Default: disabled
+> +
+>  	add_efi_memmap	[EFI; X86] Include EFI memory map in
+>  			kernel's map of available physical RAM.
+>  
+> diff --git a/drivers/macintosh/Kconfig b/drivers/macintosh/Kconfig
+> index 5cdc361da37c..243215de563c 100644
+> --- a/drivers/macintosh/Kconfig
+> +++ b/drivers/macintosh/Kconfig
+> @@ -78,16 +78,6 @@ config ADB_PMU_LED
+>  	  behaviour of the old CONFIG_BLK_DEV_IDE_PMAC_BLINK, select this
+>  	  and the disk LED trigger and configure appropriately through sysfs.
+>  
+> -config ADB_PMU_LED_DISK
+> -	bool "Use front LED as DISK LED by default"
+> -	depends on ADB_PMU_LED
+> -	depends on LEDS_CLASS
+> -	select LEDS_TRIGGERS
+> -	select LEDS_TRIGGER_DISK
+> -	help
+> -	  This option makes the front LED default to the disk trigger
+> -	  so that it blinks on disk activity.
+> -
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index ada02c4a4f51..22179b2fda72 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -1302,7 +1302,7 @@ struct mini_Qdisc {
- 	struct tcf_block *block;
- 	struct gnet_stats_basic_sync __percpu *cpu_bstats;
- 	struct gnet_stats_queue	__percpu *cpu_qstats;
--	struct rcu_head rcu;
-+	unsigned long rcu_state;
- };
- 
- static inline void mini_qdisc_bstats_cpu_update(struct mini_Qdisc *miniq,
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index b0ff0dff2773..24899efc51be 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1487,10 +1487,6 @@ void psched_ppscfg_precompute(struct psched_pktrate *r, u64 pktrate64)
- }
- EXPORT_SYMBOL(psched_ppscfg_precompute);
- 
--static void mini_qdisc_rcu_func(struct rcu_head *head)
--{
--}
--
- void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
- 			  struct tcf_proto *tp_head)
- {
-@@ -1503,28 +1499,30 @@ void mini_qdisc_pair_swap(struct mini_Qdisc_pair *miniqp,
- 
- 	if (!tp_head) {
- 		RCU_INIT_POINTER(*miniqp->p_miniq, NULL);
--		/* Wait for flying RCU callback before it is freed. */
--		rcu_barrier();
--		return;
--	}
-+	} else {
-+		miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
-+			&miniqp->miniq1 : &miniqp->miniq2;
- 
--	miniq = !miniq_old || miniq_old == &miniqp->miniq2 ?
--		&miniqp->miniq1 : &miniqp->miniq2;
-+		/* We need to make sure that readers won't see the miniq
-+		 * we are about to modify. So ensure that at least one RCU
-+		 * grace period has elapsed since the miniq was made
-+		 * inactive.
-+		 */
-+		if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+			cond_synchronize_rcu(miniq->rcu_state);
-+		else if (!poll_state_synchronize_rcu(miniq->rcu_state))
-+			synchronize_rcu_expedited();
- 
--	/* We need to make sure that readers won't see the miniq
--	 * we are about to modify. So wait until previous call_rcu callback
--	 * is done.
--	 */
--	rcu_barrier();
--	miniq->filter_list = tp_head;
--	rcu_assign_pointer(*miniqp->p_miniq, miniq);
-+		miniq->filter_list = tp_head;
-+		rcu_assign_pointer(*miniqp->p_miniq, miniq);
-+	}
- 
- 	if (miniq_old)
--		/* This is counterpart of the rcu barriers above. We need to
-+		/* This is counterpart of the rcu sync above. We need to
- 		 * block potential new user of miniq_old until all readers
- 		 * are not seeing it.
- 		 */
--		call_rcu(&miniq_old->rcu, mini_qdisc_rcu_func);
-+		miniq_old->rcu_state = start_poll_synchronize_rcu();
- }
- EXPORT_SYMBOL(mini_qdisc_pair_swap);
- 
-@@ -1543,6 +1541,8 @@ void mini_qdisc_pair_init(struct mini_Qdisc_pair *miniqp, struct Qdisc *qdisc,
- 	miniqp->miniq1.cpu_qstats = qdisc->cpu_qstats;
- 	miniqp->miniq2.cpu_bstats = qdisc->cpu_bstats;
- 	miniqp->miniq2.cpu_qstats = qdisc->cpu_qstats;
-+	miniqp->miniq1.rcu_state = get_state_synchronize_rcu();
-+	miniqp->miniq2.rcu_state = miniqp->miniq1.rcu_state;
- 	miniqp->p_miniq = p_miniq;
- }
- EXPORT_SYMBOL(mini_qdisc_pair_init);
--- 
-2.30.2
+So, if I've been relying on CONFIG_ADB_PMU_LED_DISK=y and I upgrade to a
+newer kernel with the proposed change, from my point of view the disk
+activity LED has stopped working and I need to alter the bootloader
+config or init scripts to restore the expected behavior. That seems
+undesirable to me.
 
+I don't think we rigidly enforce Kconfig backward compatibility, but
+when it comes to a user-visible function on a legacy platform where
+users and distros likely have their configurations figured out already,
+it's probably best to avoid such changes.
