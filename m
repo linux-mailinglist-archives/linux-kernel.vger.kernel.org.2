@@ -2,154 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9AD43B2EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F27043B2F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 15:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhJZNLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 09:11:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3834 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230324AbhJZNLN (ORCPT
+        id S236147AbhJZNM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 09:12:28 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:38697 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230324AbhJZNM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 09:11:13 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QCH26B025394;
-        Tue, 26 Oct 2021 13:08:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=/xKjX7zeq971INJvr0YNpESJxm9aAQToNy2FujCIzE4=;
- b=NGtmOg2G+ZIp4mWj40sNUXExjKP4CmvUvmSl7oSGcMcBV50q0TFbQCV68XwILo2m0M1m
- G3raEkGL2egiV7XfPWJRkz1nVBppzBRZ78fbN5SWDA+f4aIyiUwvng/v5Ix+rpN8Toxu
- OznP/t+hlpqLKnC9KPQv8YBZAwvqgHCinG8kGxoIzAp+bCw6SaVJWw3cIXb4wpqn47p8
- 14quNNzNwT6F2hchPhzXgbZBfsYV1YFk46KcyUYK9DI3ROuGegw7MYU70ZV0HogePkFQ
- Ky7uEp6tKEs0KgBcnIa+33ngHb0rv71CAPXND93OI00VSnviYKgf0vYTDX2hJPPe6t33 1g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx596x846-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 13:08:40 +0000
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19QBkR4R021388;
-        Tue, 26 Oct 2021 13:08:40 GMT
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bx596x83n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 13:08:40 +0000
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19QCvlDX011481;
-        Tue, 26 Oct 2021 13:08:39 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01wdc.us.ibm.com with ESMTP id 3bx4efbupq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Oct 2021 13:08:39 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19QD8cfv48693634
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Oct 2021 13:08:38 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 98FEEBE05A;
-        Tue, 26 Oct 2021 13:08:38 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6E031BE065;
-        Tue, 26 Oct 2021 13:08:38 +0000 (GMT)
-Received: from localhost (unknown [9.211.49.177])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Oct 2021 13:08:38 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     Hill Ma <maahiuzeon@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] macintosh/via-pmu-led: make disk activity usage a
- parameter.
-In-Reply-To: <20211026033254.1052-1-maahiuzeon@gmail.com>
-References: <20211026033254.1052-1-maahiuzeon@gmail.com>
-Date:   Tue, 26 Oct 2021 08:08:38 -0500
-Message-ID: <87fssox7ah.fsf@linux.ibm.com>
+        Tue, 26 Oct 2021 09:12:26 -0400
+Received: by mail-ot1-f43.google.com with SMTP id l10-20020a056830154a00b00552b74d629aso19707533otp.5;
+        Tue, 26 Oct 2021 06:10:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z9PrHpMnBVtvWr00+icxRV4av+NKqhl73Kg/aCTsavk=;
+        b=lQT20vlzl1Ff2fFK4rfN1FZipKO1Ly7t1knjRSK6yHfoiqHosbRnwexZ2jK0QocNqC
+         Sn7mOtq3/ZZVIIIAIxEBXwpOWuWz7UgIpDgBOfOMi3wbfzgh6Qta/7dPMyZoXuGELVXU
+         V9XnjZgCJMKbql1bnJH/UqxG3E7GeJBKg49vFn9wUUz0CXiLeAkUSR6Sg0Tj6FIb4eV4
+         l7H/wlUMEjv/XpINnoH1vHwwD+A9iqnjbVYEFoTJWw+9YxUeUcFrLbm2yCTDnwuy0I58
+         Q/K/rbb9ZmE9pLDOY/q2O++Ch4YMKbV8sM0AKh3c4cpc9c25n2m+yEmYcO980AGv0QV1
+         86yQ==
+X-Gm-Message-State: AOAM5301NMpEkYy8kFM3CB1gxpsPdbzYwNRpMw/Rr1ita6SPoqKawkXF
+        qa1ehwyw4kbP4Q7TQLCrPR0/llXnMB2+3pm4MJs=
+X-Google-Smtp-Source: ABdhPJyhl16PtCJ+HSjPyqHkqzZ9nwX8Zpr5Oo2rkx14ciXc+GlrGiEh6rYdrqKtNPiQ5x6XYX0v1USyfvuNcD0FcgA=
+X-Received: by 2002:a9d:65c1:: with SMTP id z1mr18935202oth.198.1635253802151;
+ Tue, 26 Oct 2021 06:10:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6aO6ediL6HTYrQHIwSlnY5kSvANXx6ix
-X-Proofpoint-GUID: 0Jj02Gc0AyomDLd7w1-3ui-6PXWErbaf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-26_02,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- mlxlogscore=999 phishscore=0 adultscore=0 impostorscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110260076
+References: <60a16c62-d14d-6943-f163-b2cc3d05c3b0@linaro.org>
+In-Reply-To: <60a16c62-d14d-6943-f163-b2cc3d05c3b0@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Oct 2021 15:09:45 +0200
+Message-ID: <CAJZ5v0imARUv4-eQZFzhxsA-J1DcNuLZOL-AcUoe4Fevmuqg_Q@mail.gmail.com>
+Subject: Re: [GIT PULL] thermal for v5.16
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        liuyun01@kylinos.cn, Johan Jonker <jbx6244@gmail.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Yuanzheng Song <songyuanzheng@huawei.com>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 22, 2021 at 4:32 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
+>
+>   Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
+>
+> are available in the Git repository at:
+>
+>
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+> tags/thermal-v5.16-rc1
+>
+> for you to fetch changes up to a67a46af4ad6342378e332b7420c1d1a2818c53f:
+>
+>   thermal/core: Deprecate changing cooling device state from userspace
+> (2021-10-21 17:35:11 +0200)
 
-Hill Ma <maahiuzeon@gmail.com> writes:
-> Whether to use the LED as a disk activity is a user preference.
-> Some like this usage while others find the LED too bright. So it
-> might be a good idea to make this choice a runtime parameter rather
-> than compile-time config.
+Pulled and pushed into linux-pm.git/thermal
 
-Users already have the ability to change the LED behavior at runtime
-already, correct? I.e. they can do:
-
-  echo none > /sys/class/leds/pmu-led::front/trigger
-
-in their boot scripts. Granted, a kernel built with ADB_PMU_LED_DISK=y
-will blink the LED on disk activity until user space is running. Is this
-unsatisfactory?
-
-> The default is set to disabled as OS X does not use the LED as a
-> disk activity indicator.
-
-This is long-standing behavior in Linux and OS X has been EOL on this
-architecture for a decade, so this isn't much of a consideration at this
-point. Seems more important to avoid surprising existing users and
-distributions with a behavior change that makes additional work for
-them. See below.
-
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 43dc35fe5bc0..a656a51ba0a8 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -250,6 +250,12 @@
->  			Use timer override. For some broken Nvidia NF5 boards
->  			that require a timer override, but don't have HPET
->  
-> +	adb_pmu_led_disk [PPC]
-> +			Use front LED as disk LED by default. Only applies to
-> +			PowerBook, iBook, PowerMac 7,2/7,3.
-> +			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
-> +			Default: disabled
-> +
->  	add_efi_memmap	[EFI; X86] Include EFI memory map in
->  			kernel's map of available physical RAM.
->  
-> diff --git a/drivers/macintosh/Kconfig b/drivers/macintosh/Kconfig
-> index 5cdc361da37c..243215de563c 100644
-> --- a/drivers/macintosh/Kconfig
-> +++ b/drivers/macintosh/Kconfig
-> @@ -78,16 +78,6 @@ config ADB_PMU_LED
->  	  behaviour of the old CONFIG_BLK_DEV_IDE_PMAC_BLINK, select this
->  	  and the disk LED trigger and configure appropriately through sysfs.
->  
-> -config ADB_PMU_LED_DISK
-> -	bool "Use front LED as DISK LED by default"
-> -	depends on ADB_PMU_LED
-> -	depends on LEDS_CLASS
-> -	select LEDS_TRIGGERS
-> -	select LEDS_TRIGGER_DISK
-> -	help
-> -	  This option makes the front LED default to the disk trigger
-> -	  so that it blinks on disk activity.
-> -
-
-So, if I've been relying on CONFIG_ADB_PMU_LED_DISK=y and I upgrade to a
-newer kernel with the proposed change, from my point of view the disk
-activity LED has stopped working and I need to alter the bootloader
-config or init scripts to restore the expected behavior. That seems
-undesirable to me.
-
-I don't think we rigidly enforce Kconfig backward compatibility, but
-when it comes to a user-visible function on a legacy platform where
-users and distros likely have their configurations figured out already,
-it's probably best to avoid such changes.
+Thank you!
