@@ -2,170 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFEE43AD99
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AE943AD9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 09:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbhJZH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 03:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
+        id S233583AbhJZH54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 03:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbhJZH5O (ORCPT
+        with ESMTP id S233200AbhJZH5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:57:14 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0C5C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 00:54:51 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id x3so8165190uar.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 00:54:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nathanrossi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7KThsVsJ0ORwtbbILrkIHcQVvOXxtniaD63wKOd53qk=;
-        b=HnvJ4vvoBGWPejDQnm/ceHOouktHbMPYb2NVqm8X890uLYuhTntSkXmPPrfeXPUxFf
-         JaV8TxThiaayueFvWeFtc7E5kZRxffOdqIDgYnawrTS77/V2nCdJXJQLIW3UjwIUd5PK
-         PoezPScg2qx0ovlwPBRS3QbxEwCQ3qQEE0n7miqUGqf+QRuID0gmWS+YmqKyowfwxUqa
-         TEw0jBSG6oL3BH7IsdFPy1p7oHtarhL+e4cERUZMn/2Yb3w+zyUslD1AQ65WMu5jf422
-         sE1v6m683vV+buas/UyPtz8IEzH08wLrjA8XA0dX7DhXBLdMQl+RRmD3Mn7hKV3p6+JW
-         XxFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7KThsVsJ0ORwtbbILrkIHcQVvOXxtniaD63wKOd53qk=;
-        b=wc9jH3JQh/3iPGZM2CdrNPxGmWPo8+akFkOPzYJTf5IhKINO/EX0gQ6a7kiLXZP3Fv
-         oTJa0V4tP0pRxAOunMMdUPsgwqPIVmQWsfZrbzEDbiEvR/k3IjxH4V5IEqcGxAK/Zk85
-         Vvh5ewtFjuV47KK2+kbRtn2iUoz5tRKl3TZuheGEBlomse6IdFyCy1x0OA5BXxitX6L5
-         6QWYR5pkMLuVfeKQkN8v0JrPSPwOlx67er1qIv4fxzykKkyRMBpEsPkN92vmlPgWGBrs
-         zfjoxLwSxCEm6Dxq/pL0vG1yeL2Je1NU7JRHIeUf0MCM3+CRA1a2+vlYoMExgeKwFyLf
-         nNbw==
-X-Gm-Message-State: AOAM530Jh+u4InjMSY4IkZR9fD5u+jXkJH1SBOPxxXm606lXSpvKDNUe
-        UVYNNInMHN1Z/arHwFhH2fi7LS5oP7vA1TFZrPamYQ==
-X-Google-Smtp-Source: ABdhPJwA8HUnvfBBeHEMaTCPWBYGAi9sB4Mm+usDOw4yuTD8raJr2E0KRF4gRS78GU5/ltQS8MgS2XLSeiXqnOeISEE=
-X-Received: by 2002:a67:f1ca:: with SMTP id v10mr18800145vsm.55.1635234890581;
- Tue, 26 Oct 2021 00:54:50 -0700 (PDT)
+        Tue, 26 Oct 2021 03:57:49 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D6BC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 00:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x9EV8p+NAc9sje+bBFNf8CFaMsrZWmsIgVDf3QEenKY=; b=fOFRN5nmT5MXiYaUAdPNYehCrR
+        08WQkxQen3CJExvxVF2Zqw50RMCzOiUFhHuTpTL/FY1/WWgu1tnMVOQiXUAXCvYhUFfG88QSQu72B
+        nJtl9n3qtABmwVbHwM2Eec+Pkk2UkpkwBkod8kIZkyIRDoy/w7z+/X6Iq+s+1abG6Un7ZVfjl/Q6h
+        fdkPhE3W8xEsFvp21787SEkwPtzPA6xwNumMzH1fRPbsUH8k9f+FI/AFcbCsycCX/cWFoEsZnFay3
+        YNMpZlRWfoHFPYokryq1Eg1jL+s9mnmYANLCbagDyvT/trDvJ0I8/+i3hfhDbvRrpbqXR84aNFnGq
+        0Kzc4EZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfHIi-00CJno-Jw; Tue, 26 Oct 2021 07:55:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91D1E3001BF;
+        Tue, 26 Oct 2021 09:55:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7CB38203C8A8D; Tue, 26 Oct 2021 09:55:15 +0200 (CEST)
+Date:   Tue, 26 Oct 2021 09:55:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH v2 01/14] objtool: Tag retpoline thunk symbols
+Message-ID: <YXe0Yyb6C2TwlqSR@hirez.programming.kicks-ass.net>
+References: <20211020104442.021802560@infradead.org>
+ <20211020105842.557458476@infradead.org>
+ <20211020151714.sf3wq4d7wuya5jbj@treble>
 MIME-Version: 1.0
-References: <20211025025805.618566-0-nathan@nathanrossi.com>
- <20211025025805.618566-2-nathan@nathanrossi.com> <7297bf4c-2f8e-f217-0153-c2224a1c56b3@roeck-us.net>
- <CA+aJhH0yPZ=3LEPDm0GkWx9bLtHJ+QRbRo33HiCXM5FH6nzPFA@mail.gmail.com> <2f5aecd2-55a1-9382-46eb-f4ff48663b30@roeck-us.net>
-In-Reply-To: <2f5aecd2-55a1-9382-46eb-f4ff48663b30@roeck-us.net>
-From:   Nathan Rossi <nathan@nathanrossi.com>
-Date:   Tue, 26 Oct 2021 17:54:39 +1000
-Message-ID: <CA+aJhH0RDXPE4m2yEa2ROEW2L3fnq20XTgPrxhO5k2gSa5_XdA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] hwmon: Driver for Texas Instruments INA238
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nathan Rossi <nathan.rossi@digi.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020151714.sf3wq4d7wuya5jbj@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 01:45, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 10/24/21 11:27 PM, Nathan Rossi wrote:
-> [ ... ]
-> >> Is there reason to believe that the shunt register value needs to be visible
-> >> and writeable with sysfs attributes ? This is quite unusual nowadays.
-> >> If so, please provide a use case.
-> >
-> > I do not have a specific use case for being able to change the shunt
-> > resistor at run time. The only reason this behaviour is here is to
-> > mirror the api that is provided by the ina2xx driver. Since as you
-> > mention its unusual should I remove the write and leave the read?
-> > Being able to determine the resistor value is useful if manually using
-> > the shunt voltage. Though the shunt information could be obtained from
-> > the device tree node?
-> >
->
-> Please drop the attribute. There is already probe noise displaying it,
-> and it is contained in the devicetree data. If there is a use case,
-> the attribute can always be added later.
->
-> [ ... ]
->
-> >> Those preinitializations make me wonder if there should be devicetree
-> >> properties for at least some of the data.
-> >
-> > Yes, I did consider adding configuration for the conversion time and
-> > sampling average as device tree properties. The existing ina2xx driver
-> > handles configuring sampling average via the "update_interval" sysfs
-> > attribute. Our use case does not require changing these at runtime so
-> > did not implement the update_interval and was unsure if changes to
-> > device tree bindings would make sense. Should these be device tree
-> > properties? If yes, should the other ina drivers be updated to support
-> > the properties?
-> >
->
-> I wasn't specifically thinking about conversion time or sampling average,
-> but I do think it would be desirable to be able to configure all those
-> values via devicetree. The datasheet says "... allows for robust operation
-> in a variety of noisy environments", and that is definitely a system property.
-> ADCRANGE should also be configurable via devicetree. The same applies to MODE,
+On Wed, Oct 20, 2021 at 08:17:14AM -0700, Josh Poimboeuf wrote:
+> On Wed, Oct 20, 2021 at 12:44:43PM +0200, Peter Zijlstra wrote:
+> > In order to avoid calling arch_is_retpoline() (which does a strcmp)
+> > over and over on symbols, tag them once upfront.
+> > 
+> > XXX do we also want to do __fentry__ ?
+> 
+> Might as well.
+> 
+> > XXX do we want an enum instead of a bunch of bools ?
+> 
+> Maybe, or convert the bools to bit fields.
 
-I will add a property "ti,shunt-gain". Since the ina209, ina219,
-ina220 use the PGA term which is the actual function being provided,
-where ADCRANGE=0 is a /4 PGA for ina238 and the other devices have /1,
-/2, /4, /8.
+Like so then...
 
-> but that would add some complexity so I am not sure if you'd want to get
-> into that (it would require per-channel entries in devicetree to be able
-> to enable/disable each channel). FWIW, you _could_ also do that with
-> standard sysfs attributes if you want to ({in,curr,temp}X_enable, or
-> hwmon_{temp,in,curr}_enable in the with_info API). That can also be added
-> later if needed, so there is no need to do it now if it is not required
-> for your use case.
->
-> As for other ina drivers - that is a different question. I would not touch
-> those unless you have a use case (and a means to test the code). I'd also
-> consider it more important to convert those drivers to use the _with_info
-> API before implementing any other changes. There is also the added
-> complexity that we already have two drivers for those other chips (see
-> drivers/iio/adc/ina2xx-adc.c), and I'd rather have a better API
-> between IIO and HWMON and drop drivers/hwmon/ina2xx.c entirely than
-> making changes to it.
->
-> Can you possibly send me a register dump for the INA238 ? That would
-> enable me to write a module test for the driver.
+---
+Subject: objtool: Classify symbols
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Wed Oct 20 10:05:55 CEST 2021
 
-Dump of registers below. Other notes, upper two bits are ignored so
-the address space wraps at 0x40, etc. The undocumented/unused
-registers between 0x11 and 0x3e are 0xffff.
+In order to avoid calling str*cmp() on symbol names, over and over, do
+them all once upfront and store the result.
 
-power on, before probe:
-0x00: 0x0000
-0x01: 0xfb68
-0x02: 0x1000
-0x03: 0xffff
-0x04: 0x087c
-0x05: 0x0e77
-0x06: 0x0f10
-0x07: 0x087c
-0x08: 0x01eac3
-0x09: 0xffff
-0x10: 0x7ff0
-0x11: 0xffff
-0x3e: 0x5449
-0x3f: 0x2381
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ tools/objtool/check.c               |   34 ++++++++++++++++++++++------------
+ tools/objtool/include/objtool/elf.h |    5 ++++-
+ 2 files changed, 26 insertions(+), 13 deletions(-)
 
-after probe, actual state of device ~10mV shunt voltage, 20 mOhm
-shunt, ~12V bus, ~6W power, ~30C temperature
-0x00: 0x0000
-0x01: 0xfb6a
-0x02: 0x4000
-0x03: 0xffff
-0x04: 0x087c
-0x05: 0x0e77
-0x06: 0x0f10
-0x07: 0x087c
-0x08: 0x01eac3
-0x09: 0xffff
-0x10: 0x7ff0
-0x11: 0xffff
-0x3e: 0x5449
-0x3f: 0x2381
-
-Thanks,
-Nathan
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1012,8 +1012,7 @@ static void add_call_dest(struct objtool
+ 	 * so they need a little help, NOP out any KCOV calls from noinstr
+ 	 * text.
+ 	 */
+-	if (insn->sec->noinstr &&
+-	    !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
++	if (insn->sec->noinstr && insn->call_dest->kcov) {
+ 		if (reloc) {
+ 			reloc->type = R_NONE;
+ 			elf_write_reloc(file->elf, reloc);
+@@ -1027,7 +1026,7 @@ static void add_call_dest(struct objtool
+ 		insn->type = sibling ? INSN_RETURN : INSN_NOP;
+ 	}
+ 
+-	if (mcount && !strcmp(insn->call_dest->name, "__fentry__")) {
++	if (mcount && insn->call_dest->fentry) {
+ 		if (sibling)
+ 			WARN_FUNC("Tail call to __fentry__ !?!?", insn->sec, insn->offset);
+ 
+@@ -1077,7 +1076,7 @@ static int add_jump_destinations(struct
+ 		} else if (reloc->sym->type == STT_SECTION) {
+ 			dest_sec = reloc->sym->sec;
+ 			dest_off = arch_dest_reloc_offset(reloc->addend);
+-		} else if (arch_is_retpoline(reloc->sym)) {
++		} else if (reloc->sym->retpoline_thunk) {
+ 			/*
+ 			 * Retpoline jumps are really dynamic jumps in
+ 			 * disguise, so convert them accordingly.
+@@ -1218,7 +1217,7 @@ static int add_call_destinations(struct
+ 
+ 			add_call_dest(file, insn, dest, false);
+ 
+-		} else if (arch_is_retpoline(reloc->sym)) {
++		} else if (reloc->sym->retpoline_thunk) {
+ 			/*
+ 			 * Retpoline calls are really dynamic calls in
+ 			 * disguise, so convert them accordingly.
+@@ -1919,17 +1918,28 @@ static int read_intra_function_calls(str
+ 	return 0;
+ }
+ 
+-static int read_static_call_tramps(struct objtool_file *file)
++static int classify_symbols(struct objtool_file *file)
+ {
+ 	struct section *sec;
+ 	struct symbol *func;
+ 
+ 	for_each_sec(file, sec) {
+ 		list_for_each_entry(func, &sec->symbol_list, list) {
+-			if (func->bind == STB_GLOBAL &&
+-			    !strncmp(func->name, STATIC_CALL_TRAMP_PREFIX_STR,
++			if (func->bind != STB_GLOBAL)
++				continue;
++
++			if (!strncmp(func->name, STATIC_CALL_TRAMP_PREFIX_STR,
+ 				     strlen(STATIC_CALL_TRAMP_PREFIX_STR)))
+ 				func->static_call_tramp = true;
++
++			if (arch_is_retpoline(func))
++				func->retpoline_thunk = true;
++
++			if (!strcmp(func->name, "__fentry__"))
++				func->fentry = true;
++
++			if (!strncmp(func->name, "__sanitizer_cov_", 16))
++				func->kcov = true;
+ 		}
+ 	}
+ 
+@@ -1995,7 +2005,7 @@ static int decode_sections(struct objtoo
+ 	/*
+ 	 * Must be before add_{jump_call}_destination.
+ 	 */
+-	ret = read_static_call_tramps(file);
++	ret = classify_symbols(file);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2053,9 +2063,9 @@ static int decode_sections(struct objtoo
+ 
+ static bool is_fentry_call(struct instruction *insn)
+ {
+-	if (insn->type == INSN_CALL && insn->call_dest &&
+-	    insn->call_dest->type == STT_NOTYPE &&
+-	    !strcmp(insn->call_dest->name, "__fentry__"))
++	if (insn->type == INSN_CALL &&
++	    insn->call_dest &&
++	    insn->call_dest->fentry)
+ 		return true;
+ 
+ 	return false;
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -55,7 +55,10 @@ struct symbol {
+ 	unsigned int len;
+ 	struct symbol *pfunc, *cfunc, *alias;
+ 	bool uaccess_safe;
+-	bool static_call_tramp;
++	u8 static_call_tramp : 1;
++	u8 retpoline_thunk   : 1;
++	u8 fentry            : 1;
++	u8 kcov              : 1;
+ 	struct list_head pv_target;
+ };
+ 
