@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A318443BA90
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B139E43BAAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 21:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236993AbhJZTTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 15:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
+        id S235965AbhJZT1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 15:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234841AbhJZTTf (ORCPT
+        with ESMTP id S231424AbhJZT1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 15:19:35 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43587C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:17:11 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id y205-20020a1c7dd6000000b0032cc8c2800fso3242113wmc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:17:11 -0700 (PDT)
+        Tue, 26 Oct 2021 15:27:12 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BC9C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:24:48 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u21so996124lff.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:24:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cDQ6bg74xOCdLA37iiERl6+sKcKIWp7PrPN6h+6m8jk=;
-        b=2UhQjMk+z9O1DWLNFDSUaWGe4pFE9/k/5WrMgI6BgJt8MEXqav12cvy7/b+zfVp51l
-         jgkf/UyX9ElkmwqLEVncXPTrkDTdu9x0kAQhd2kKhGdjyRh/83FVJjWx2xz0LjKrDilD
-         WvocIJOGQ11drv6L/Mdj1hO/qw1nuuec/QdrHoEludiTIvNOVUu79gt0+SWbmQUs6CWL
-         tli/idp+i4sq62Mtl36VhKID1wzOBHnMqq9SjVRZfxofH82/rriFBP4afI3mBG+kVGxu
-         N73oOuieMzYZACgBK4k+DyG01vJyudmvC+gMOmb2ecr2E5QNGZKe51xx/DwfT2QyeqZY
-         /zDQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VZmINpwcYY7kcvI7sKLaSgNG7WCxmd5BZ4iNpf7lS1s=;
+        b=OsqaCKMuKFeRuWXmhZzecH1PFurN3y1S2AB1+cEKAaxcheLMIwVa1+mU9xaI+48tSD
+         hDW/GsZ40FpWHVKK/6DfQVSTBtioB3fbYc70ILsRQJsX9ufj7I2BdNObVy9O6WfiMW1v
+         DiUsn9LYY/9cPMqSPRQHNfkJU6lnB2qdNQ6Us=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cDQ6bg74xOCdLA37iiERl6+sKcKIWp7PrPN6h+6m8jk=;
-        b=smbYZQGXmRbmmOn/V2rtVWt9XK66z38Zu9Mbn1ImhGygiFT4oCeAYSY2SWpV8DsRxe
-         bSrzeyPMHLK266WGQgadZnZ319RTy8r4i0hB/rlJVzvrRKc3cU5M5HrNi6eWr/F6Biqz
-         S0b7s8jQ6C7ZzJYvzPAjXJzmYlKzx58P8P3GqQI8HDxp2qs99hY6aAm3RzPyESRpn3lS
-         R8fVk978b288Dh4Gi5eTQHl+TzzsLfTXP5dUw35EpJoR+19kewzoLzrDKceDKZ+W220H
-         aSPV4Sd0FqgZYyP+xFEx6NRjjKjW9Mim8ciX7W+WYz7HN7ZSrHZ7lYrjY0m9Y40jIBY/
-         rWhQ==
-X-Gm-Message-State: AOAM532smCLfCBm6ejnyhIImhLtSv2P4dSlQau62Dqf3/ILHKtPm/7DW
-        PH7VbbhpCT6iJMmMzT/+geAoUXhbY8G+Hw==
-X-Google-Smtp-Source: ABdhPJx2poGNP3xgh1lD28zcknAufRW6o2N9vY5fv+hetN1i39tVxS26VSMytlGeCIkzRdl73ASx9w==
-X-Received: by 2002:a05:600c:4e91:: with SMTP id f17mr635618wmq.180.1635275829829;
-        Tue, 26 Oct 2021 12:17:09 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id o194sm1584509wme.40.2021.10.26.12.17.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 12:17:09 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, kuba@kernel.org, linus.walleij@linaro.org,
-        ulli.kroll@googlemail.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] net: ethernet: cortina: permit to set mac address in DT
-Date:   Tue, 26 Oct 2021 19:17:03 +0000
-Message-Id: <20211026191703.1174086-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VZmINpwcYY7kcvI7sKLaSgNG7WCxmd5BZ4iNpf7lS1s=;
+        b=GtZC9TPYr/gj3TTNA8l6ym+BvVwW2lu+4HZ5sSnlGuCnXD6J/yjv9uZGL4pQuTIWJU
+         06eBZayyaSwpVdvcrHnOZBkJoZREXWRDr8Dqztv5qQRcQHs9p8fshHjOqESuHJZ0zZd+
+         6NYbf/7hGGuw9ZNTXrkSz0OHHHFhPOqJ7fhnR6jiXvRljjZ/HSZDdy+mGPfiM6iJWR62
+         xMayrHybGwGoi2Ua/1O0ZzIDnPWjYBSX3YHJXQtlkKZmIrNeizhhEauNKrc+OkNW0c0x
+         MJGN8DBXy7ePvAHQWKw/GtalYfmEvc8fOF3WfMzhlxl1PABWFeqeTXMyPIB3simrjP22
+         bUvw==
+X-Gm-Message-State: AOAM53015tWFJLLWwgeer8mO1C8G9iI6hjXNUS2UBDQU0ziDo0y3iHsX
+        OcvE37rXjRArmpw9hroTKjsfQ083df+1erwS
+X-Google-Smtp-Source: ABdhPJz+EkAGJoTwBAFTL6rMKV8oJlPpjLmQo1teITWw1yrKh0s0SbAat+a5nKVqH5gg+FzU566oQA==
+X-Received: by 2002:a05:6512:2111:: with SMTP id q17mr5250759lfr.338.1635276286250;
+        Tue, 26 Oct 2021 12:24:46 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id n16sm428342ljc.137.2021.10.26.12.24.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 12:24:46 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id k13so559725ljj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 12:24:46 -0700 (PDT)
+X-Received: by 2002:a2e:bc24:: with SMTP id b36mr28005819ljf.95.1635275910507;
+ Tue, 26 Oct 2021 12:18:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com> <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 26 Oct 2021 12:18:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjm9XwkeqWRy4+OvmdmDojghNSYbu81PxYMoPDJKS_j3A@mail.gmail.com>
+Message-ID: <CAHk-=wjm9XwkeqWRy4+OvmdmDojghNSYbu81PxYMoPDJKS_j3A@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ability of setting mac address in DT for cortina ethernet driver.
+On Tue, Oct 26, 2021 at 11:50 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Because for _most_ cases of "copy_to/from_user()" and friends by far,
+> the only thing we look for is "zero for success".
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/net/ethernet/cortina/gemini.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Gaah. Looking around, I almost immediately found some really odd
+exceptions to this.
 
-diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
-index 941f175fb911..f6aa2387a1af 100644
---- a/drivers/net/ethernet/cortina/gemini.c
-+++ b/drivers/net/ethernet/cortina/gemini.c
-@@ -2356,12 +2356,14 @@ static void gemini_port_save_mac_addr(struct gemini_ethernet_port *port)
- static int gemini_ethernet_port_probe(struct platform_device *pdev)
- {
- 	char *port_names[2] = { "ethernet0", "ethernet1" };
-+	struct device_node *np = pdev->dev.of_node;
- 	struct gemini_ethernet_port *port;
- 	struct device *dev = &pdev->dev;
- 	struct gemini_ethernet *geth;
- 	struct net_device *netdev;
- 	struct device *parent;
- 	unsigned int id;
-+	u8 mac[ETH_ALEN];
- 	int irq;
- 	int ret;
- 
-@@ -2466,6 +2468,12 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
- 	netif_napi_add(netdev, &port->napi, gmac_napi_poll,
- 		       DEFAULT_NAPI_WEIGHT);
- 
-+	ret = of_get_mac_address(np, mac);
-+	if (!ret) {
-+		dev_info(dev, "Setting macaddr from DT %pM\n", mac);
-+		memcpy(port->mac_addr, mac, ETH_ALEN);
-+	}
-+
- 	if (is_valid_ether_addr((void *)port->mac_addr)) {
- 		eth_hw_addr_set(netdev, (u8 *)port->mac_addr);
- 	} else {
--- 
-2.32.0
+Like parse_write_buffer_into_params() in amdgpu_dm_debugfs.c, which does
 
+        r = copy_from_user(wr_buf_ptr, buf, wr_buf_size);
+
+                /* r is bytes not be copied */
+        if (r >= wr_buf_size) {
+                DRM_DEBUG_DRIVER("user data not be read\n");
+                return -EINVAL;
+        }
+
+and allows a partial copy to justy silently succeed, because all the
+callers have pre-cleared the wr_buf_ptr buffer.
+
+I have no idea why the code does that - it seems to imply that user
+space could give an invalid 'size' parameter and mean to write only
+the part that didn't succeed.
+
+Adding AMD GPU driver people just to point out that this code not only
+has odd whitespace, but that the pattern for "couldn't copy from user
+space" should basically always be
+
+        if (copy_from_user(wr_buf_ptr, buf, wr_buf_size))
+                return -EFAULT;
+
+because if user-space passes in a partially invalid buffer, you
+generally really shouldn't say "ok, I got part of it and will use that
+part"
+
+There _are_ exceptions. We've had situations where user-space only
+passes in the pointer to the buffer, but not the size. Bad interface,
+but it historically happens for the 'mount()' system call 'data'
+pointer. So then we'll copy "up to a page size".
+
+Anyway, there are clearly some crazy users, and converting them all to
+also check for negative error returns might be more painful than I
+thought it would be.
+
+                 Linus
