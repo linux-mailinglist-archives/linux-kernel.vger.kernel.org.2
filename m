@@ -2,118 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DFC43B5B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB19843B5B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 17:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236893AbhJZPjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 11:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236963AbhJZPjK (ORCPT
+        id S236998AbhJZPkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 11:40:05 -0400
+Received: from smtprelay0207.hostedemail.com ([216.40.44.207]:42672 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236963AbhJZPkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 11:39:10 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422A2C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:36:46 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y18-20020a25a092000000b005bddb39f160so22967521ybh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 08:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ojODAjLfRn1Lf+4i6CRGTfXa2Pbtlhx1DNx7kELm9pE=;
-        b=CozQzRWoQnVrztxALVJ1BzDa678ehPrMv8oKOOS8xxgpJsuDHKmPiwdlVPJEhDTD+o
-         A7tQpaw1PZikjLMiWhDaGBSCRjb/LhuL21JklXhtEJrHKwb/ra/OtJ3s0mwJtetlL/1D
-         8s/0dzuYHhfQZvDNqZVwYuG/oEN+gMsGBn6NAJQaFtOBcbAgSbD9EOiG6JYsIYAzAkXO
-         77o24ogRcNw0oNiwlrOEzHY7SwUxwDcETniACjzrM3EDUtCKFA12sIqqqCvl7auraKe1
-         6gYK9dtUUXH6gCajY1kKiy3fqYXHrK35HQoe1Cnl7CImi5+LyuF3e/MCFFIxqD/1dPIx
-         tqyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ojODAjLfRn1Lf+4i6CRGTfXa2Pbtlhx1DNx7kELm9pE=;
-        b=m50a8yzUR0w7aLhkrbKnfOjjs3p42nMEjFq783TLMNaROEbSXgL1LYsjBEZ7/Yu34X
-         FxDf0bCgtVsdPZdXCPe/o89T4PIPwqRFi/soYOtgJRWhuLRk0RkvY5mBdtAD9KFalxQV
-         D4EDS1ixran2gpY4qfeY1NiRFJTY0lQEXiufckUWHX+nag9Hhka9qQHf527husnslewO
-         5JGJbsfo3/HtwJLsjT0LByOgIcRIfuXae0eUMhM5H1hREtcwpwpGl6lqK3oswqP6vXSO
-         D1Z/kQoBsWEogEay56YoHw2cqb8a2nAe1ItIvY/aVva7V7J09rHBgzHU2id9SkL9GEh+
-         Xkgg==
-X-Gm-Message-State: AOAM530VcdD55B7fa3m6EuLDUgJjig31j2fxuG6heq5SrhjY6d6vhyol
-        14/wXTDu0cRPnosKXtdaa/RZYcFhy712qQ==
-X-Google-Smtp-Source: ABdhPJyxj/d0EOrqXaqoO4qUvMk4Qh9ib6ShPlLenahXqtHevjSwpDY5SFjzvcdz2soobWRVGTTRo7hx6ZfvGw==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:d5d6:b5d1:7203:e1a2])
- (user=dlatypov job=sendgmr) by 2002:a25:3189:: with SMTP id
- x131mr13354941ybx.27.1635262605440; Tue, 26 Oct 2021 08:36:45 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 08:36:38 -0700
-Message-Id: <20211026153638.3857452-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH] Documentation: kunit: remove claims that kunit is a mocking framework
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 26 Oct 2021 11:40:00 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1CC1218128067;
+        Tue, 26 Oct 2021 15:37:33 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 971472448B9;
+        Tue, 26 Oct 2021 15:37:30 +0000 (UTC)
+Message-ID: <52c1cd5fa698216734ffda706299d77a102fcb2f.camel@perches.com>
+Subject: Re: [PATCH] coding-style.rst: trivial: fix location of driver model
+ macros
+From:   Joe Perches <joe@perches.com>
+To:     Trevor Woerner <twoerner@gmail.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Yorick de Wid <yorickdewid@users.noreply.github.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Date:   Tue, 26 Oct 2021 08:37:29 -0700
+In-Reply-To: <20211026144452.GA40651@localhost>
+References: <20210423184012.39300-1-twoerner@gmail.com>
+         <CANiq72mUBh+76iy5uCAGHpKHDnTGRVyQduMngEWDMCF6kRySJA@mail.gmail.com>
+         <CAHUNapQfFBcqrX7MvUvq8qbPgk2bPu-h3+9NxAUFpRtpOGFODw@mail.gmail.com>
+         <CANiq72=iDhHiFKBzud6sj6reCS=pEYxFn5x4b=VfNLMxva-RuA@mail.gmail.com>
+         <20211026144452.GA40651@localhost>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 971472448B9
+X-Spam-Status: No, score=-1.36
+X-Stat-Signature: f5wh9ftqskmbjsgudt7zcqyycmeceps3
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19BGWKjLVK8sFLYXduqBtSM80M23Qj+zGQ=
+X-HE-Tag: 1635262650-355530
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KUnit does not have any first party support for "mocking".
+On Tue, 2021-10-26 at 10:44 -0400, Trevor Woerner wrote:
+> On Tue 2021-10-26 @ 02:47:12 PM, Miguel Ojeda wrote:
+> > On Mon, Oct 25, 2021 at 11:40 PM Trevor Woerner <twoerner@gmail.com> wrote:
+> > > ping?
+[]
+> > Note that you should put whoever should take it in the To field (I
+> > just noticed your original email did not) -- use
+> > `scripts/get_maintainer.pl` for getting the relevant people for a
+> > patch or path.
+> 
+> Ah, good point. I have a "cccmd" line in my ~/.gitconfig for adding people to
+> the CC when I "git send-email", maybe I should switch that to a "tocmd"?
 
-The original RFC had some, but the code got dropped.
-However, the documentation patches never got updated. This fixes that.
+I use scripts for both.
 
-https://kunit.dev/mocking.html has a current writeup on the status quo
-and will hopefully be eventually folded into the in-kernel
-Documentation.
+https://lore.kernel.org/all/1473862411.32273.25.camel@perches.com/
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- Documentation/dev-tools/kunit/api/index.rst | 3 +--
- Documentation/dev-tools/kunit/api/test.rst  | 3 +--
- Documentation/dev-tools/kunit/index.rst     | 2 +-
- 3 files changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/dev-tools/kunit/api/index.rst b/Documentation/dev-tools/kunit/api/index.rst
-index b33ad72bcf0b..3006cadcf44a 100644
---- a/Documentation/dev-tools/kunit/api/index.rst
-+++ b/Documentation/dev-tools/kunit/api/index.rst
-@@ -12,5 +12,4 @@ following sections:
- 
- Documentation/dev-tools/kunit/api/test.rst
- 
-- - documents all of the standard testing API excluding mocking
--   or mocking related features.
-+ - documents all of the standard testing API
-diff --git a/Documentation/dev-tools/kunit/api/test.rst b/Documentation/dev-tools/kunit/api/test.rst
-index aaa97f17e5b3..c5eca423e8b6 100644
---- a/Documentation/dev-tools/kunit/api/test.rst
-+++ b/Documentation/dev-tools/kunit/api/test.rst
-@@ -4,8 +4,7 @@
- Test API
- ========
- 
--This file documents all of the standard testing API excluding mocking or mocking
--related features.
-+This file documents all of the standard testing API.
- 
- .. kernel-doc:: include/kunit/test.h
-    :internal:
-diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
-index cacb35ec658d..7af7dec83646 100644
---- a/Documentation/dev-tools/kunit/index.rst
-+++ b/Documentation/dev-tools/kunit/index.rst
-@@ -19,7 +19,7 @@ KUnit - Unit Testing for the Linux Kernel
- What is KUnit?
- ==============
- 
--KUnit is a lightweight unit testing and mocking framework for the Linux kernel.
-+KUnit is a lightweight unit testing framework for the Linux kernel.
- 
- KUnit is heavily inspired by JUnit, Python's unittest.mock, and
- Googletest/Googlemock for C++. KUnit provides facilities for defining unit test
-
-base-commit: 2ab5d5e67f7ab2d2ecf67b8855ac65691f4e4b4d
--- 
-2.33.0.1079.g6e70778dc9-goog
 
