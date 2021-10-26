@@ -2,120 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DE643AF26
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6754443AF2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Oct 2021 11:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhJZJhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 05:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhJZJhF (ORCPT
+        id S234784AbhJZJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 05:37:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52672 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhJZJhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:37:05 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338EEC061745;
-        Tue, 26 Oct 2021 02:34:42 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id m42so13430362wms.2;
-        Tue, 26 Oct 2021 02:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=pe5ItmrqZlQWe+ghkVLJnFdsnauuXZw4/ir5F3P/i6c=;
-        b=bELRZxWKOhPIeulHBAJfhROm5Yvmgruhg7V8v28/Al9et0dX214LFCwgQfHGlP3oRS
-         LdrAQhHARoNzzAOCGkEqA/aNUjMWjY9nT3kEZpyt4CzTkpgWth6cfQdi5jxsBxgMQ4I0
-         cE2p3CqzGsQB2h8q43EqNF25mJZmykkNQgXriqtXILTELqOwsQY39AR3SNXWmRybfAeS
-         hNcPu85X85+lcNjvxLVfgKBR6pOvSIsE0c8xqysYSdDLVCPuYh5lmhRdgBG9bLJ8KoR8
-         jP5kiwQBURG7DikgtXpFF6N/P0pmpJ81ZLuXB50qvDuWL1pjVIUp976y0zFc9hw7ROvo
-         Twdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=pe5ItmrqZlQWe+ghkVLJnFdsnauuXZw4/ir5F3P/i6c=;
-        b=tCm3Chu295+acRQNf+5GaA8D/4VK//qH1vP/a+koiupi/B4HRedjQEVSJbOt7MXRos
-         1X2I5ckGSZWKUDxkjkaEOdMHmdwfZSorMoYnLtyc+rmNP1eWtMAZTzarPxcTCMrvonjl
-         clEjRki3j86kgyo/V3DjukI8Sts+4qqpC5CDRzghzrS8xfWFkh+ZeezCFZ1atQuXRXDA
-         C2gRgOfAJdwz0gSd+03CtqjmvD10p/1mnOtNtV76AFSSvkkQ+TBvhVMExZjH1mwzDfkE
-         KniXr+e+WHFZDS/7qjfxtL7Hp9Kg6de9IcPmXcJKB4rEjBHdzWuK+ZyGkluCEVtOQGKu
-         H0IQ==
-X-Gm-Message-State: AOAM530Rwcg7NBMl2e/eHsiVEbll+tRDb34A6rbNxk8otik0p9YY9lB7
-        pJ2NCsFk+kEKrw==
-X-Google-Smtp-Source: ABdhPJw0o9LbUcRUKEKv46C1/vUL7D+hbu2nfG6Rhg+nbB3edMts38NG4cYpb2vclIzsiaVtXQq3lA==
-X-Received: by 2002:a7b:cb82:: with SMTP id m2mr20452683wmi.11.1635240880702;
-        Tue, 26 Oct 2021 02:34:40 -0700 (PDT)
-Received: from [192.168.0.209] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id b8sm1403194wri.53.2021.10.26.02.34.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 02:34:40 -0700 (PDT)
-From:   "Colin King (gmail)" <colin.i.king@googlemail.com>
-X-Google-Original-From: "Colin King (gmail)" <colin.i.king@gmail.com>
-Message-ID: <0ed0b3bd-05ab-d357-56a3-e2ce33169030@gmail.com>
-Date:   Tue, 26 Oct 2021 10:34:38 +0100
+        Tue, 26 Oct 2021 05:37:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CD07021957;
+        Tue, 26 Oct 2021 09:35:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635240917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0B4KOzLh0SzQ324Nbkzza+/yS3xupOET/Cg+lBufZUI=;
+        b=rw+fG9VAu+8kRC9wTlBf3rcyz3Kf3ZCAjBJINdd8QZW/j3p+2ahcfvCnSj8OuOuJqkx02V
+        GTi8IJ3HcUBXayzm3HUW+kf8zSfRse0QcnIbB2v1NyPMTBdz9wPJ0PnGR36r6X7vSW0okN
+        kRpnoYVmTXHa91qm+5pJr77RUdNgugk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635240917;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0B4KOzLh0SzQ324Nbkzza+/yS3xupOET/Cg+lBufZUI=;
+        b=qgOIyawzyHE9pTOjD50nMXsKDtve0Cel3ya97cAgrn/VbL62UicJFGeCHbZLrb2CyTyimO
+        0vfvl2IWd2suabBg==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 06EF6A3B83;
+        Tue, 26 Oct 2021 09:35:16 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 11:35:16 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     =?ISO-2022-JP?Q?=1B$B2&lV=1B=28J?= <yun.wang@linux.alibaba.com>
+cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] ftrace: disable preemption when recursion
+ locked
+In-Reply-To: <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.21.2110261128120.28494@pobox.suse.cz>
+References: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com> <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH][next] gve: Fix spelling mistake "droping" -> "dropping"
-Content-Language: en-US
-To:     Denis Kirjanov <dkirjanov@suse.de>,
-        Colin Ian King <colin.i.king@googlemail.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Catherine Sullivan <csully@google.com>,
-        David Awogbemila <awogbemila@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211026092239.208781-1-colin.i.king@gmail.com>
- <a7155c22-c487-9a76-d3b3-628c0e27d3b0@suse.de>
-In-Reply-To: <a7155c22-c487-9a76-d3b3-628c0e27d3b0@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2021 10:32, Denis Kirjanov wrote:
-> 
-> 
-> 10/26/21 12:22 PM, Colin Ian King пишет:
->> There is a spelling mistake in a netdev_warn message. Fix it.
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> 
-> you could fix the second instance as well:
+Hi,
 
-Will do. Thanks for noting that :-)
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+> index abe1a50..2bc1522 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -135,6 +135,9 @@ static __always_inline int trace_get_context_bit(void)
+>  # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+>  #endif
+> 
+> +/*
+> + * Preemption is promised to be disabled when return bit > 0.
+> + */
+>  static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+>  							int start)
+>  {
+> @@ -162,11 +165,17 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+>  	current->trace_recursion = val;
+>  	barrier();
+> 
+> +	preempt_disable_notrace();
+> +
+>  	return bit;
+>  }
+> 
+> +/*
+> + * Preemption will be enabled (if it was previously enabled).
+> + */
+>  static __always_inline void trace_clear_recursion(int bit)
+>  {
+> +	preempt_enable_notrace();
+>  	barrier();
+>  	trace_recursion_clear(bit);
+>  }
 
-> 
-> grep -nri droping drivers/net/
-> drivers/net/wireless/mac80211_hwsim.c:1279:        /* Droping until 
-> WARN_QUEUE level */
-> drivers/net/ethernet/google/gve/gve_rx.c:441:                    "RX 
-> fragment error: packet_buffer_size=%d, frag_size=%d, droping packet.",
-> 
-> 
->> ---
->>   drivers/net/ethernet/google/gve/gve_rx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/google/gve/gve_rx.c 
->> b/drivers/net/ethernet/google/gve/gve_rx.c
->> index c8500babbd1d..ef4aa6487c55 100644
->> --- a/drivers/net/ethernet/google/gve/gve_rx.c
->> +++ b/drivers/net/ethernet/google/gve/gve_rx.c
->> @@ -438,7 +438,7 @@ static bool gve_rx_ctx_init(struct gve_rx_ctx 
->> *ctx, struct gve_rx_ring *rx)
->>           if (frag_size > rx->packet_buffer_size) {
->>               packet_size_error = true;
->>               netdev_warn(priv->dev,
->> -                    "RX fragment error: packet_buffer_size=%d, 
->> frag_size=%d, droping packet.",
->> +                    "RX fragment error: packet_buffer_size=%d, 
->> frag_size=%d, dropping packet.",
->>                       rx->packet_buffer_size, be16_to_cpu(desc->len));
->>           }
->>           page_info = &rx->data.page_info[idx];
->>
+The two comments should be updated too since Steven removed the "bit == 0" 
+trick.
 
+> @@ -178,7 +187,7 @@ static __always_inline void trace_clear_recursion(int bit)
+>   * tracing recursed in the same context (normal vs interrupt),
+>   *
+>   * Returns: -1 if a recursion happened.
+> - *           >= 0 if no recursion
+> + *           > 0 if no recursion.
+>   */
+>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+>  							 unsigned long parent_ip)
+
+And this change would not be correct now.
+
+Regards
+Miroslav
