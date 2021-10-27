@@ -2,165 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F014443D5B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC09B43D596
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhJ0Va4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233715AbhJ0Vaf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:30:35 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CD8C0431B7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:22:26 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so3102536pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xc/Ast+KV0V+8bSAPuAHdixgIXnPuRbN0YHRGdpcxXo=;
-        b=f5hvHSRetT45O3UxIL1kMb2dMj9wGCIFtKwmoP0RZpjxQHK4++R5e1HzGlhXAFJrKg
-         w/91j323bKPK4M2C33YVXi5g1H8lqU9JE0fVjg1sRRzNJ626EJbgUwq2yf0aODJiBENU
-         3vsKCaoEbHxPYPrlH3sPqECE6CMapfED39lwC8WA36zIj/peheyUUv6xvqrXUF9vN1q1
-         UzpmZgwX+ZLc+jNuQDUJ43Y8KshGsngIlLOLpR/4dKW8Wu83M2jBEsdtkFLU+DqBkKp5
-         P1hW2Yo23r3yatT/a3fCBiJCQX8KJfqY05HcKadmpOkcuVphpwXih4PEYuhjVKT/xJep
-         FfMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Xc/Ast+KV0V+8bSAPuAHdixgIXnPuRbN0YHRGdpcxXo=;
-        b=uLDNs3yomUShuQ37w3ZM/2Qq10ESpE9x96dM3NfqPAnhkGmQvUbML0/6F87SR3aKDD
-         Z2E9EmHY+RqMfsN0rJytZI1Mwq6DKXtIsiyTsDpRfUH4o9/jjHzZs5zLxgal8THWVpQY
-         CBwBA6ODKCSvjxL+MCH/NFVjxZd/ydciGWDWeMPOHglHA8M/6RADVsCLzE6GP4rWMi3L
-         qY/60KDE6Ccrek6PFJT/9wxiM+FIsKTja+NJD1rUbkTeqo0hwiOCEB3NqgNYmn5+E1Kq
-         Ez9sNHUdYUArzyMIWud4Zs3aUmdhsFqcClnWfqwG4UFrOxnOla2Y0jM7RZNVMzMgJfAi
-         44YA==
-X-Gm-Message-State: AOAM5301CAZURpM0169UUeOJL3KqhHLn3hWmSMpnZAY8+4hjTwSNs1DA
-        TgwiKGGy0QmBCoOzL64AAfvdAl3NubGrcunv
-X-Google-Smtp-Source: ABdhPJxU7ztJ7EYetBA4CpM7AQeHzHBfd6L84gm3zgJk/LxLo27YprSadcc+JwCmAojqGzj1ssbmyQ==
-X-Received: by 2002:a17:90a:1d0b:: with SMTP id c11mr128695pjd.207.1635369745925;
-        Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
-Received: from localhost ([2620:0:1000:5e10:d96b:421d:2a73:9190])
-        by smtp.gmail.com with ESMTPSA id p13sm671181pgr.27.2021.10.27.14.22.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
-X-Google-Original-Date: Wed, 27 Oct 2021 14:22:10 PDT (-0700)
-Subject:     Re: [PATCH 13/15] irq: riscv: perform irqentry in entry code
-In-Reply-To: <20211021180236.37428-14-mark.rutland@arm.com>
-CC:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
-        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        mark.rutland@arm.com, Marc Zyngier <maz@kernel.org>,
-        nickhu@andestech.com, paulmck@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, peterz@infradead.org,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, Linus Torvalds <torvalds@linux-foundation.org>,
-        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     mark.rutland@arm.com
-Message-ID: <mhng-8062da5e-6052-4722-ba26-c0a407747ca6@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S231542AbhJ0V3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:29:08 -0400
+Received: from mout.perfora.net ([74.208.4.196]:52859 "EHLO mout.perfora.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236746AbhJ0V2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 17:28:11 -0400
+Received: from toolbox.cardiotech.int ([194.191.235.54]) by mrelay.perfora.net
+ (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id 0MNa9c-1mZono1QFO-007BhL;
+ Wed, 27 Oct 2021 23:25:14 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Maxime Ripard <mripard@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: [PATCH v2] drm: import DMA_BUF module namespace
+Date:   Wed, 27 Oct 2021 23:25:05 +0200
+Message-Id: <20211027212506.3418521-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:/EW1KHq6JOS45VcqOsIkE6SaDE6tPSUuItgHgntq/Eo7T8y418u
+ DLncPtwYU3quKjvGFC7pJ1PXofJed2tHxjT/ohX5akjVujoHnXaKGhQNWDi6Bb6vRf3VhyO
+ ptPtaOGiUfgdst50xRSGABOig9tMxTO2DJayOx91DQajyzdO8D53uIj12xXO5Hkmh46ntsd
+ 2EFpKfxw6bbqh+EAwrFjQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:T/4P8uXEbB4=:WPqN5r5fs2uVwzAGtuvEJY
+ zBsZMlGXCb1HwJNr7smGq5KFTIeu/mpnAt4oGwP/g06QnArYDCLKOYeuCBG5lHFrjZ9e4+3Ql
+ KarH9kTwqWuc9SW8qQUOZGQns9VdE9m0shNXPCkZwp4QdYuN5JZyArIxDGrN7Y2CKhZx4sGmI
+ ToxX6j/QuAWgB7/lEInRI4ta9Gyukdw4XzMxT/vnsqO4b4sGXI2mi3HAMMeQ6aDntW+hOg8Jn
+ k5jWxDtZA1vIU6TVsZvWK1Z6WnDJ0GiCm5q2yA93sRORUNuPPF82cyCyk/w5Roi4fFqTcig+8
+ /ssAasetbvuioF1RBG6q9bbF7Z/TpbJH1oMuACttCHApQQ1S/FaZWZJNqd4HUlOnSraWHKwa2
+ K+Bzry+OhztoF8wg/QtUw2LF/eeASxbpp/yu9DTX2e/Q88zhhI1tXlxmaVIQLuAOqbKSAPdxz
+ oURMd9VG9RUGkkxu8uySBgtVx4m55cW/VOWYiO1Ra3asuZtgtRYNjUnofKfagHwLTSVET4Rx4
+ Sq+x4XrEwcqo5VAfagwzVTm9wDIIY9dZ06ReScZAdMGeBIWFnZ128Li6r3SypW062mqSzSxh7
+ j/v6kRRGzbqi3x9+2hMn7ANPaoxx6yB1LjF6K2wGhOaHXymrvZCdKQFvI/LJgEr5BXik+FDd+
+ uHle0yfrEVee6CZ57RlNgEd3uPQb3bdItJ6e84w0r4vUtXsxq8IELPv8Bj+qq+1GatkI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 11:02:34 PDT (-0700), mark.rutland@arm.com wrote:
-> In preparation for removing HANDLE_DOMAIN_IRQ_IRQENTRY, have arch/riscv
-> perform all the irqentry accounting in its entry code. As arch/riscv
-> uses GENERIC_IRQ_MULTI_HANDLER, we can use generic_handle_arch_irq() to
-> do so.
->
-> Since generic_handle_arch_irq() handles the irq entry and setting the
-> irq regs, and happens before the irqchip code calls handle_IPI(), we can
-> remove the redundant irq entry and irq regs manipulation from
-> handle_IPI().
->
-> There should be no functional change as a result of this patch.
->
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/riscv/Kconfig        | 1 -
->  arch/riscv/kernel/entry.S | 3 +--
->  arch/riscv/kernel/smp.c   | 9 +--------
->  3 files changed, 2 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 740653063a56..301a54233c7e 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -63,7 +63,6 @@ config RISCV
->  	select GENERIC_SMP_IDLE_THREAD
->  	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
->  	select HANDLE_DOMAIN_IRQ
-> -	select HANDLE_DOMAIN_IRQ_IRQENTRY
->  	select HAVE_ARCH_AUDITSYSCALL
->  	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
->  	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
-> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-> index 98f502654edd..64236f7efde5 100644
-> --- a/arch/riscv/kernel/entry.S
-> +++ b/arch/riscv/kernel/entry.S
-> @@ -130,8 +130,7 @@ skip_context_tracking:
->
->  	/* Handle interrupts */
->  	move a0, sp /* pt_regs */
-> -	la a1, handle_arch_irq
-> -	REG_L a1, (a1)
-> +	la a1, generic_handle_arch_irq
->  	jr a1
->  1:
->  	/*
-> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-> index 921d9d7df400..2f6da845c9ae 100644
-> --- a/arch/riscv/kernel/smp.c
-> +++ b/arch/riscv/kernel/smp.c
-> @@ -140,12 +140,9 @@ void arch_irq_work_raise(void)
->
->  void handle_IPI(struct pt_regs *regs)
->  {
-> -	struct pt_regs *old_regs = set_irq_regs(regs);
->  	unsigned long *pending_ipis = &ipi_data[smp_processor_id()].bits;
->  	unsigned long *stats = ipi_data[smp_processor_id()].stats;
->
-> -	irq_enter();
-> -
->  	riscv_clear_ipi();
->
->  	while (true) {
-> @@ -156,7 +153,7 @@ void handle_IPI(struct pt_regs *regs)
->
->  		ops = xchg(pending_ipis, 0);
->  		if (ops == 0)
-> -			goto done;
-> +			return;
->
->  		if (ops & (1 << IPI_RESCHEDULE)) {
->  			stats[IPI_RESCHEDULE]++;
-> @@ -189,10 +186,6 @@ void handle_IPI(struct pt_regs *regs)
->  		/* Order data access and bit testing. */
->  		mb();
->  	}
-> -
-> -done:
-> -	irq_exit();
-> -	set_irq_regs(old_regs);
->  }
->
->  static const char * const ipi_names[] = {
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Today's -next fails building arm64 defconfig as follows:
 
-I'm assuming you want to keep these togther.
+ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vunmap from
+ namespace DMA_BUF, but does not import it.
+ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vmap from
+ namespace DMA_BUF, but does not import it.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Fixes: commit 4b2b5e142ff4 ("drm: Move GEM memory managers into modules")
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+
+---
+
+Changes in v2:
+- After consulting the documentation move it to the bottom of the file
+  where the other MODULE statements are as suggested by Thomas.
+- Also move it down there for the drm_gem_shmem_helper.c file.
+
+ drivers/gpu/drm/drm_gem_cma_helper.c   | 1 +
+ drivers/gpu/drm/drm_gem_shmem_helper.c | 3 +--
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+index 6f7b3f8ec04d3..2a34241fee025 100644
+--- a/drivers/gpu/drm/drm_gem_cma_helper.c
++++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+@@ -581,4 +581,5 @@ drm_gem_cma_prime_import_sg_table_vmap(struct drm_device *dev,
+ EXPORT_SYMBOL(drm_gem_cma_prime_import_sg_table_vmap);
+ 
+ MODULE_DESCRIPTION("DRM CMA memory-management helpers");
++MODULE_IMPORT_NS(DMA_BUF);
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+index f7324582afe71..a5b743a83ce99 100644
+--- a/drivers/gpu/drm/drm_gem_shmem_helper.c
++++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+@@ -22,8 +22,6 @@
+ #include <drm/drm_prime.h>
+ #include <drm/drm_print.h>
+ 
+-MODULE_IMPORT_NS(DMA_BUF);
+-
+ /**
+  * DOC: overview
+  *
+@@ -779,4 +777,5 @@ drm_gem_shmem_prime_import_sg_table(struct drm_device *dev,
+ EXPORT_SYMBOL_GPL(drm_gem_shmem_prime_import_sg_table);
+ 
+ MODULE_DESCRIPTION("DRM SHMEM memory-management helpers");
++MODULE_IMPORT_NS(DMA_BUF);
+ MODULE_LICENSE("GPL v2");
+-- 
+2.26.2
+
