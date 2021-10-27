@@ -2,138 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D80543C022
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CB543C024
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238480AbhJ0CpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238210AbhJ0CpG (ORCPT
+        id S238541AbhJ0Cpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:45:47 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:31861 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238210AbhJ0Cpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:45:06 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3847AC061570;
-        Tue, 26 Oct 2021 19:42:42 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g10so4530210edj.1;
-        Tue, 26 Oct 2021 19:42:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1CEbUbWOhQSqqOGE19xqh9rkRH8otndDTOABWkoBG0A=;
-        b=iUCh//iTlainZark1GEBDt7mbEnmNwF/ebiApqKXkVVaFOKG4UvLUBOlHeN2Ukj+3I
-         m+joeM3Gj5SVnTm8ERqJ5tq25qKV2W6bh+vArU56GOB7wNCI6EqacKsNKKS2UuGeKj09
-         SofgfJ2g+2L1/N9CkbbcOmHuvtlZx8ZVx+iDwtUkOrhRBcZ+riMExomk40O85XX7eMXl
-         gqztk/7oFbzOxd0EEnOHBHZw+l0aIIR8gPEZGUpqKod2/pUcCFy2P9WdICP+PX6GQl9i
-         63S6+beQ+tAHwQ518y8fdrSGWG2uI0c4IAM1KeKepWXvRWQxZHcLF9pKNPG9TKVxSukG
-         2mcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1CEbUbWOhQSqqOGE19xqh9rkRH8otndDTOABWkoBG0A=;
-        b=r36NbTorjnlE3lMTo6mx3zFSRmaA4l9ZUbO5oEwoRGlCQB3ku0JYcwI6N887UcoA6o
-         tuMoXdDt0GvFKYYTnXhbs8rI7Np2iSn9jytSpPcEoN7m7A9B/M/QXmrBpaxGY2H6e61I
-         xzwFxzR5Bqem84E+f4J8mzVk6RJLrQsJPR5BXGeLZHY2gEX2XZwckQUVWlun5ixxYpYo
-         SufxCFuqzu1qOMuOahIDBU4Be9ue/IcWPabKYLDhf9stya2+65ScR7Iu4NXcbw0UmbiP
-         waLtG5eda5XPPOlWnaVj1PU2iJs2Aoc7pQ/mdhNCCuSG5/gWNpHh/7TYw7Rzql0ATvns
-         Ti/g==
-X-Gm-Message-State: AOAM533ks9U8JW+MequFRhC1XIol4pmsFl4MF6peiHTn/Fzgw9MchwP+
-        hcOLq2h6uvXk11D4aaWiD4+QzXIsIAN8h0Tdk8M=
-X-Google-Smtp-Source: ABdhPJwHv3koXe+a6zrtuXCVXs1KTc55Halh3VLIoGK5KqSLaDBVVii7yYDtttA3ZLvhH8TmpbQIrfZCII7/3/sz1LM=
-X-Received: by 2002:a17:906:26ce:: with SMTP id u14mr35488141ejc.559.1635302560832;
- Tue, 26 Oct 2021 19:42:40 -0700 (PDT)
+        Tue, 26 Oct 2021 22:45:46 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 19R2KqK6028146;
+        Wed, 27 Oct 2021 10:20:52 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Oct
+ 2021 10:43:17 +0800
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5] media: aspeed: add debugfs
+Date:   Wed, 27 Oct 2021 10:43:22 +0800
+Message-ID: <20211027024322.20996-1-jammy_huang@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <972a5c1b-6721-ac20-cec5-617af67e617d@redhat.com>
- <20211026235808.34168-1-21cnbao@gmail.com> <f795f8be-a184-408a-0b5a-553d26061385@redhat.com>
- <CAGsJ_4wZJyKh+FUsmL8TMaCHofmr9J5UCzk3YYEYckD8ZWZW+w@mail.gmail.com> <4637ebd4-61ef-5ad6-d2bd-976663f5c4a1@redhat.com>
-In-Reply-To: <4637ebd4-61ef-5ad6-d2bd-976663f5c4a1@redhat.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 27 Oct 2021 15:42:29 +1300
-Message-ID: <CAGsJ_4y__nBDpLo6pmEHeTJQMQFtHmQhNLTsFFunBJLknChQsA@mail.gmail.com>
-Subject: Re: [PATCH RFC] cpuset: Make cpusets get restored on hotplug
-To:     Waiman Long <longman@redhat.com>
-Cc:     Amit Pundir <amit.pundir@linaro.org>, cgroups@vger.kernel.org,
-        Dmitry Shmidt <dimitrysh@google.com>, groeck@chromium.org,
-        hannes@cmpxchg.org, joel@joelfernandes.org, jsbarnes@google.com,
-        kernel-team@android.com, Greg Kerr <kerrnel@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, lizefan@huawei.com,
-        Peter Zijlstra <peterz@infradead.org>, sonnyrao@google.com,
-        Tejun Heo <tj@kernel.org>, vpillai@digitalocean.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 19R2KqK6028146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 3:35 PM Waiman Long <longman@redhat.com> wrote:
->
-> On 10/26/21 10:21 PM, Barry Song wrote:
-> > On Wed, Oct 27, 2021 at 2:06 PM Waiman Long <longman@redhat.com> wrote:
-> >>
-> >> On 10/26/21 7:58 PM, Barry Song wrote:
-> >>>> I think Tejun is concerned about a change in the default behavior of
-> >>>> cpuset v1.
-> >>>>
-> >>>> There is a special v2 mode for cpuset that is enabled by the mount
-> >>>> option "cpuset_v2_mode". This causes the cpuset v1 to adopt some of the
-> >>>> v2 behavior. I introduced this v2 mode a while back to address, I think,
-> >>>> a similar concern. Could you try that to see if it is able to address
-> >>>> your problem? If not, you can make some code adjustment within the
-> >>>> framework of the v2 mode. As long as it is an opt-in, I think we are
-> >>>> open to further change.
-> >>> I am also able to reproduce on Ubuntu 21.04 LTS.
-> >>>
-> >>> all docker will be put in this cgroups and its child cgroups:
-> >>> /sys/fs/cgroup/cpuset/docker
-> >>>
-> >>> disabling and enabling SMT by:
-> >>> echo off > /sys/devices/system/cpu/smt/control
-> >>> echo on > /sys/devices/system/cpu/smt/control
-> >>>
-> >>> or unpluging and pluging CPUs by:
-> >>> echo 0 > /sys/devices/system/cpu/cpuX/online
-> >>> echo 1 > /sys/devices/system/cpu/cpuX/online
-> >>>
-> >>> then all docker images will lose some CPUs.
-> >>>
-> >>> So should we document the broken behaviours somewhere?
-> >> Is the special cpuset_v2_mode mount option able to fix the issue?
-> >>
-> >> This mode is documented in
-> >>
-> >> Documentation/admin-guide/cgroup-v1/cpuset.rst:
-> >>
-> >> The cpuset.effective_cpus and cpuset.effective_mems files are
-> >> normally read-only copies of cpuset.cpus and cpuset.mems files
-> >> respectively.  If the cpuset cgroup filesystem is mounted with the
-> >> special "cpuset_v2_mode" option, the behavior of these files will become
-> >> similar to the corresponding files in cpuset v2.  In other words, hotplug
-> >> events will not change cpuset.cpus and cpuset.mems.  Those events will
-> >> only affect cpuset.effective_cpus and cpuset.effective_mems which show
-> >> the actual cpus and memory nodes that are currently used by this cpuset.
-> >> See Documentation/admin-guide/cgroup-v2.rst for more information about
-> >> cpuset v2 behavior.
-> >>
-> >> Maybe we can make it more visible.
-> > Is it possible to make cpuset_v2_mode true in default? not quite sure if
-> > it will harm something.
->
-> The cpuset_v2_mode is a change in v1 behavior and that is why it is an
-> opt-in as we don't want to break existing applications that have a
-> dependency on the current v1 behavior. If users switch to use cgroup v2,
-> they get the new behavior. Alternately, they can modify the system
-> startup script to use the v2 behavior by using the mount option. I don't
-> think we are going to change the v1 default behavior.
+A debugfs file, /sys/kernel/debug/aspeed-video, will be created. You can
+read it to get video real-time information as below:
 
-ok, understood.
+Capture:
+  Signal              : Lock
+  Width               : 1920
+  Height              : 1080
+  FRC                 : 60
 
-the old behaviour seems quite odd and linux distributions don't realize it.
-for example, ubuntu is simply losing cpu for docker.
+Performance:
+  Frame#              : 38
+  Frame Duration(ms)  :
+    Now               : 21
+    Min               : 21
+    Max               : 21
+  FPS                 : 47
 
->
-> Cheers,
-> Longman
+Change-Id: Idff3f38a814d47fbbf19ed7df721f10fe222bf54
+Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+---
+v5:
+  - correct log
+  - update commit message
+v4:
+  - use void as aspeed_video_debugfs_create()'s return type
+  - update commit message
+v3:
+ - let struct, aspeed_video_debugfs_ops, be const
+v2:
+ - Change the style of debugfs information
+ - Use Min/Max to remove test and branch cases
+---
+ drivers/media/platform/aspeed-video.c | 94 +++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-Thanks
-barry
+diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+index 8b3939b8052d..81876fc28f16 100644
+--- a/drivers/media/platform/aspeed-video.c
++++ b/drivers/media/platform/aspeed-video.c
+@@ -21,6 +21,8 @@
+ #include <linux/videodev2.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
++#include <linux/debugfs.h>
++#include <linux/ktime.h>
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-dev.h>
+ #include <media/v4l2-device.h>
+@@ -203,6 +205,14 @@ struct aspeed_video_buffer {
+ 	struct list_head link;
+ };
+ 
++struct aspeed_video_perf {
++	ktime_t last_sample;
++	u32 totaltime;
++	u32 duration;
++	u32 duration_min;
++	u32 duration_max;
++};
++
+ #define to_aspeed_video_buffer(x) \
+ 	container_of((x), struct aspeed_video_buffer, vb)
+ 
+@@ -241,6 +251,8 @@ struct aspeed_video {
+ 	unsigned int frame_left;
+ 	unsigned int frame_right;
+ 	unsigned int frame_top;
++
++	struct aspeed_video_perf perf;
+ };
+ 
+ #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
+@@ -444,6 +456,16 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+ 		readl(video->base + reg));
+ }
+ 
++static void update_perf(struct aspeed_video_perf *p)
++{
++	p->duration =
++		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
++	p->totaltime += p->duration;
++
++	p->duration_max = max(p->duration, p->duration_max);
++	p->duration_min = min(p->duration, p->duration_min);
++}
++
+ static int aspeed_video_start_frame(struct aspeed_video *video)
+ {
+ 	dma_addr_t addr;
+@@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+ 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+ 			    VE_INTERRUPT_COMP_COMPLETE);
+ 
++	video->perf.last_sample = ktime_get();
++
+ 	aspeed_video_update(video, VE_SEQ_CTRL, 0,
+ 			    VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
+ 
+@@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+ 		u32 frame_size = aspeed_video_read(video,
+ 						   VE_JPEG_COMP_SIZE_READ_BACK);
+ 
++		update_perf(&video->perf);
++
+ 		spin_lock(&video->lock);
+ 		clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+ 		buf = list_first_entry_or_null(&video->buffers,
+@@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+ 	det->width = MIN_WIDTH;
+ 	det->height = MIN_HEIGHT;
+ 	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
++	memset(&video->perf, 0, sizeof(video->perf));
+ 
+ 	do {
+ 		if (tries) {
+@@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
+ 	struct aspeed_video *video = vb2_get_drv_priv(q);
+ 
+ 	video->sequence = 0;
++	video->perf.duration_max = 0;
++	video->perf.duration_min = 0xffffffff;
+ 
+ 	rc = aspeed_video_start_frame(video);
+ 	if (rc) {
+@@ -1517,6 +1546,67 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
+ 	.buf_queue =  aspeed_video_buf_queue,
+ };
+ 
++#ifdef CONFIG_DEBUG_FS
++static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
++{
++	struct aspeed_video *v = s->private;
++
++	seq_puts(s, "\n");
++
++	seq_puts(s, "Capture:\n");
++	seq_printf(s, "  %-20s:\t%s\n", "Signal",
++		   v->v4l2_input_status ? "Unlock" : "Lock");
++	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
++	seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
++	seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
++
++	seq_puts(s, "\n");
++
++	seq_puts(s, "Performance:\n");
++	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
++	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
++	seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
++	seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
++	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
++	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
++
++
++	return 0;
++}
++
++int aspeed_video_proc_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, aspeed_video_debugfs_show, inode->i_private);
++}
++
++static const struct file_operations aspeed_video_debugfs_ops = {
++	.owner   = THIS_MODULE,
++	.open    = aspeed_video_proc_open,
++	.read    = seq_read,
++	.llseek  = seq_lseek,
++	.release = single_release,
++};
++
++static struct dentry *debugfs_entry;
++
++static void aspeed_video_debugfs_remove(struct aspeed_video *video)
++{
++	debugfs_remove_recursive(debugfs_entry);
++}
++
++static void aspeed_video_debugfs_create(struct aspeed_video *video)
++{
++	debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL, video,
++					    &aspeed_video_debugfs_ops);
++}
++#else
++static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
++static int aspeed_video_debugfs_create(struct aspeed_video *video)
++{
++	return 0;
++}
++#endif /* CONFIG_DEBUG_FS */
++
+ static int aspeed_video_setup_video(struct aspeed_video *video)
+ {
+ 	const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
+@@ -1708,6 +1798,8 @@ static int aspeed_video_probe(struct platform_device *pdev)
+ 		return rc;
+ 	}
+ 
++	aspeed_video_debugfs_create(video);
++
+ 	return 0;
+ }
+ 
+@@ -1719,6 +1811,8 @@ static int aspeed_video_remove(struct platform_device *pdev)
+ 
+ 	aspeed_video_off(video);
+ 
++	aspeed_video_debugfs_remove(video);
++
+ 	clk_unprepare(video->vclk);
+ 	clk_unprepare(video->eclk);
+ 
+-- 
+2.25.1
+
