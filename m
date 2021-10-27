@@ -2,233 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F24F43CA39
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C976643CA3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242051AbhJ0NAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235978AbhJ0NAu (ORCPT
+        id S242055AbhJ0NCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:02:44 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:13474 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235978AbhJ0NCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:00:50 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D590C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:58:25 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id br18so2309805qkb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:58:25 -0700 (PDT)
+        Wed, 27 Oct 2021 09:02:42 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RCThjx023019;
+        Wed, 27 Oct 2021 13:00:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=X3TQ78hrD55J4dSEd5tXdmdstbmPGtogtES+IsQjVWg=;
+ b=DPw+HS3VetPZdkGoQkZcLc1aDblZylDTW9nHAa9RdEbo1OjQosc5kVwOlzyEFSTJctCz
+ j4VNm9EZE/Ot/CbvHsLQviXChS3V2jDdtB1n9XOW3U3o8DV6hhFdKpEpHTwxes9CMw1u
+ Gjbifqu+fDs9IWKbfr/VE5Jgw3ifcGr6MmIm/mbkwTFNup7Of80c4Y6DD60ukSbjfEd+
+ sCDar+RyB1Glrivd+NaP1MnBqAQGdo/U2rGoULhN5CulszjKFfy+hmUKxe2vWhJHXHOM
+ /rilrPV9nCyfue8Qf9euGZMDuU86mY2HlOGwUfxaTaDaywWlTZ+FmdK0VbPGcIPLc8UO 1Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4g19r0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 13:00:06 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19RCtG7p051618;
+        Wed, 27 Oct 2021 12:59:51 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by aserp3030.oracle.com with ESMTP id 3bx4g9vmqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 12:59:51 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AAMlYLCM0S18kpXAvMhJE5+JzLXqXwub4DhC8mtea9rNRnfxHh09WUMn0v82+J7m2Kkr5O/5q2Bd+k9QW75jz5ZyrbwTj9K0uL36B1YwbgEHicB2LO1sbKwlrPXcDsG1XrUYfNuRtoNObpZpw4I+REjG5UZEZZLhKIGoX4aDJV/v1lpbRF2Y0oHm7S3Idc7eyBvk5dxygg0cpW04OI9h6CggEvs9c5jQHonvhc3sXTwPN1B1JOGRAInUYAihgiHd582U0u8XbRRWhRJ38lBq5SBkZ9ImesMT5EkbD4ZGO6Pv/IpR2m5I4sthfja4NvZqp16mT1TmjFjzZFl+YVoREw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X3TQ78hrD55J4dSEd5tXdmdstbmPGtogtES+IsQjVWg=;
+ b=awHgM634+LdGfkBhL4EgIT0lyOZjW+Bv3Puee6dJmHEIAr3IdzWOnFi8T6iMz4d+gDORnLu1xguGyyevOXfBlG2z6hUwDZjLfsu2Va4K4zrrEGxEJVzPMPQGceV33X8wmECRWJSKLq2VIKv/0bPTf/Bw1cKsErUdn3JMwdJsOMhI3GCe+XuDmSpH30m4AguIAnVF0m9vdKq8dMrl0DRt9/PdMf+yiWe14OIjVjNzuqeuEUaIJENi15QSNklY4sovzA93ygVshZn1297mL7nAvjDP9o1709D5ZA6p0Kln/wJRF1tmtW8sRLITHNcd6Z+RT2rw+pucXBwm5NcTnrrfIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bluespec-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iZIEhrM5Xg4JMkN+j+ydaHItGi0m/Y15lfuP7u4Lxr0=;
-        b=nH0DKYQFwd9lTsJcaWkuTZvQ6JuIQa7MJ/YR44rR4T+pDKuu8TvSlmmDoQK8tAvmIz
-         9cTuOWvGUBIUgWAGbESd0mBpnmto2gYZgVNFFWkeQAo2c5z+fpJLii4kpi7IQnbX8dqm
-         tq+Gp43GYTrTXIGe/jqDAR19THGU0DjVaZpymqxTEJmB+FaWWkED+LxjsCJ5n3NBCVhN
-         S6AV11Q4S0aLCQ9w+tpUlwiAY+sd3l1EIbX8IY2FrB7t5ivolXcOm01ZKdpyYrDQDBKk
-         UcA0gpOplD9A0gGrQwzlsMGSDeLcf5o6M6ZZxO7cOZo4IwtYU54DdpKMy2yEEHQ7d3pX
-         /z9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=iZIEhrM5Xg4JMkN+j+ydaHItGi0m/Y15lfuP7u4Lxr0=;
-        b=05KDoKxYY51gg0abS2HLoFO7lJqsXyWhCOYXwkf1CCt2breII6EfPC6mjg7z2qz8XP
-         EuHXVkT1u4JfWFobqnCCbfX+u259w9mIXemrSlgsBcC+JvjZcla0MxycxZs93YwD17nn
-         JLUcI8FY6+guRqtcZtzTW9ZJ8jZ5pE2Poi6764V0G8W+i302M3MsW0D+1GIHPAPPy9S/
-         4kZ2338ekrFfiW03r9xUZsuzuZ0vL0vhUFABjchUl0p+eVO4EB99sk2SvV/SblxVYQc8
-         lv9cy0nvj8Va7QcXGYLONLJaFeP9/nWFeP6LrRI8roRhe7I1pyvDK/Wc9F0yKjJAy2Zd
-         gTNw==
-X-Gm-Message-State: AOAM530d3SSUznVkM0fBXbz84BAYywcSmwQblAgNGwKuPue65toNUOjE
-        1wNiR/ALQqMp5seHJbFpJVc6/qQjXgPy
-X-Google-Smtp-Source: ABdhPJxAplQVToUab2rh+aoWt0sbS4SpO8Yf+M4Wcr6jSnCrGc2v5oShu7WFk7SV329UmwgzFBrhTQ==
-X-Received: by 2002:a37:bd01:: with SMTP id n1mr24119608qkf.274.1635339504150;
-        Wed, 27 Oct 2021 05:58:24 -0700 (PDT)
-Received: from bruce.bluespec.com ([154.3.44.94])
-        by smtp.gmail.com with ESMTPSA id h13sm2578923qko.27.2021.10.27.05.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 05:58:22 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 08:58:20 -0400
-From:   Darius Rad <darius@bluespec.com>
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Subject: Re: [RFC PATCH v8 09/21] riscv: Add task switch support for vector
-Message-ID: <YXlM7Ipsrz0bgv47@bruce.bluespec.com>
-Mail-Followup-To: Greentime Hu <greentime.hu@sifive.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-References: <YVRp5uWFGQrwBpgf@bruce.bluespec.com>
- <CAHCEeh+dA9243=PwNtYvyU1Myu_E8YO2g4UNACxRogQ=6UavLQ@mail.gmail.com>
- <YVxZspMO7rAvtMBS@bruce.bluespec.com>
- <3c9797f6-2fd3-5530-ba34-6e4c4deec984@sifive.com>
- <YXFGAqTzHMeQA+R+@bruce.bluespec.com>
- <CABvJ_xjMyZ3HDLinMvY88HtKywb=cwhQNOOCZYTEeL407Gyz2A@mail.gmail.com>
- <YXKVLtT2U2g3JDrm@bruce.bluespec.com>
- <CAHCEehKpA=d1phuAM1tdeyrp-CYQRmFxGTpvuJqWNMjRCMpWfw@mail.gmail.com>
- <YXbZtTR7TBHvdqck@bruce.bluespec.com>
- <CAHCEeh++tAWVkhg7uEeWGdwp6UDWqShxn8ACWMvApCkiGfgZgQ@mail.gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X3TQ78hrD55J4dSEd5tXdmdstbmPGtogtES+IsQjVWg=;
+ b=Q++DSuQ8x5nYCY3lUw16DduvgNky1+o2resN0P9w7bBxQEqyxaJT2mhLjvmz+S0c3OkyqmuNX5jfFmbU8H+4OMCuSxyEXlOMrDr14cYTzFysrpAHCagwvCpf7OvHUQKZ44gK1vbj3Ivz5oR4oPBAdC6qqPiw7FmPWFmPSfvGZZ4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB3757.namprd10.prod.outlook.com (2603:10b6:208:182::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Wed, 27 Oct
+ 2021 12:59:49 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329%6]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
+ 12:59:49 +0000
+Message-ID: <71ce7c97-1d08-9fdf-b217-53eb914a29a6@oracle.com>
+Date:   Wed, 27 Oct 2021 08:59:43 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH v5] xen-pciback: allow compiling on other archs than x86
+Content-Language: en-US
+To:     Oleksandr Andrushchenko <andr2000@gmail.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     jgross@suse.com, julien@xen.org, sstabellini@kernel.org,
+        jbeulich@suse.com,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+References: <20210928073501.433559-1-andr2000@gmail.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+In-Reply-To: <20210928073501.433559-1-andr2000@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0047.namprd04.prod.outlook.com
+ (2603:10b6:806:120::22) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHCEeh++tAWVkhg7uEeWGdwp6UDWqShxn8ACWMvApCkiGfgZgQ@mail.gmail.com>
+Received: from [10.74.107.92] (138.3.200.28) by SN7PR04CA0047.namprd04.prod.outlook.com (2603:10b6:806:120::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Wed, 27 Oct 2021 12:59:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b47a38ff-065f-45c7-a5ac-08d99949a8aa
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3757:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB37576298A904C4C08FA6DE898A859@MN2PR10MB3757.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UIOkF6QwnqDI9q/OUC/xW67/EJI9i7EPPFJ23qTrCDBODcF4GkHbQJkR8FLatk+9k4mwDFlHdmt8gfGz1w/HJ+UpRKXNYgWeQThtp/mSS4dcNaQCmBL70Tl0YeTVw/owsDVxR/kkTaZaTdUXmbyxec86gV+X/3FzXBfMreHnQia9oLoTtjUxrT2aTZUlbCuXfrKb0ytEPSYha4Rnmii8J5ZrH3fhuUkdR6oYCMKOu+vKiqjLnXd8qCyC0xOk9C0bX2j5F+AICachRUz+gwUP45gmOBXTkWOHQxjafvR00CwSvne29Tae2YrjpHSrbCwpbjWc5JkthDZrOGk6cUUCHPCEY1kfWajOQOvQwAQUVZRLkToexxBgtAqOp4Of5DA7SsY1gw5d8wCiHrkx6/dvh9/sJ3SAL9uCwU4AVz/ecqQCAGbYCOjvXiDs05oDp2h4/gMh4c7P+koRXo3O0LdZoyJHYrHzVwBYyYIHpmf9YJF7BpANPSkAuD/ibjP5rJifu4weWFd4JcwWO20K4bxM9GAoqKBrGntgkZfEiuF9CkpZ8qI6rUN36gnF/feWMURVV+ftfJ5TqeXZOXtKwM2PjeJ3giBb4wfQ8i/24BnprVL+3XTQrjtinmPkY6xOPlrcLYZCo6WSf5/dzkOnF0J61Ly+nki1JVgSDIPxDA+6ZvGlUeNbPFlpWaRziVD3EWO/xu81rZqAC8mM4aPJE0q93A8TNVroCudra3H3c4E0AUQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31686004)(66946007)(66556008)(66476007)(38100700002)(83380400001)(8676002)(86362001)(31696002)(956004)(2616005)(36756003)(44832011)(8936002)(5660300002)(186003)(26005)(6666004)(508600001)(53546011)(4326008)(16576012)(54906003)(316002)(6486002)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Zi9HMm1ROG1aRSt6ZTJCaDhpdnFIK0F1RXlvRUx2OVZ3UmllOTZ0RlRPNURY?=
+ =?utf-8?B?RWpWdTVaZnZucVg0Ujl5cTNyaDIxdlVQTGZkRkM4UmFOZlR3YTRackRYanFX?=
+ =?utf-8?B?NFNxN1d0ay9HeEo5TXFqOTBQZXBQVEVQTjhOeTdmVGcxZnB4Mk03OGFzdm9N?=
+ =?utf-8?B?Vk9Jd3NMdGg5WDlGNzRaYXJtY2tzdyt3UjlpVTNDNG15QjRxRW95NFMrZjZ1?=
+ =?utf-8?B?NTl5TWg5NGJJdHhJOXUxZ0RNZFlTL2RFNWZ0dkx6Znc0VWo1bXNkSHluUGU3?=
+ =?utf-8?B?TC83N0dGSnFyKzJlaEcxKzlMVGJWU2VtZy9sVFkvZHhjN0tOR2dRNWFKUEFl?=
+ =?utf-8?B?Ym1Ra0g1MnZDaW85UlBMVUFpOFBFdit6TnlCUFJmcHZ6blZmQ09nSDcrSmRT?=
+ =?utf-8?B?cm5TU2x2Q0ZOdlloK2JRcEh3SEZyai82SXNUR0tGWUpxME1WTTBaTEg1eWpC?=
+ =?utf-8?B?L3J5SGROVmNGQndDazZrdG5GT09USzZGTy84TFk4eVFxOXR1aGZpVDRtaWY1?=
+ =?utf-8?B?Wk94NGtlUU40dlVHVE5Ka3hXWklFUG16ZnMySXgxZFBNSFZpcTE0NHdhTFFJ?=
+ =?utf-8?B?S05jd0VkelpaSE4zTkd3K2o0cGJQVXZoSzNxeFJidFE0VWdVR1ZBWFcyNnY4?=
+ =?utf-8?B?aGZnY0kxUFdQWTJ5U0VMWk9XR1plRUFYRjVTV2JzWldjMk5hYXJ0WjFzekIy?=
+ =?utf-8?B?TEk5NUZVZUZJSk54U2krbGhFMUMwRVBHT25CTmJxdEhlSUNTNjlpUzJCRThz?=
+ =?utf-8?B?cEcwblFHbWxjZWtwOHloaDBldGFmVWJmUGtQZ0h6S2RrUW9zLzgyeU93czh1?=
+ =?utf-8?B?OVk2TXBBZVZjVWF2V2hmaGxFVzhrOUx6dU5CNTF6VW1OSC92M1dlL29TRWFZ?=
+ =?utf-8?B?ckJ6aWdBSU43MjdQOEZ4b1JyZ0dKZmV3OXhQWUFPWkZUM09RRGdCb2NZbjYv?=
+ =?utf-8?B?NFE2WjVqb0pFc0ZPQ1FQbVZkU2hRUjdBbUhiU1ExVVRuN0Fna0x5QXUra05G?=
+ =?utf-8?B?TCtob0ZHSmdXaDRkYXhlelBKREkrUWppV3BLT1BKY2UvWEc5eitmWXY4YkZH?=
+ =?utf-8?B?aFYvNndna2k3eW1QTHdnandPRW01WEpENnd1ZXlnVDBEZ3dOZzNLK1NwQjd3?=
+ =?utf-8?B?UWZic2NHWkVhMTdyNXExRkRNNzNoZnJmRmhSeGZDMWw2cjNWbHV1bXJhM0hq?=
+ =?utf-8?B?Vk5jend4Z0lZRjRQc2lyVXlic0E4V3ppdVV1azhFV2VjWkp4VTk4ZVUwNndO?=
+ =?utf-8?B?eXZZd09OWW5NdHliajM2TkxnVlllRktVaGlDenMrVXJSMmliU2l3bTR3MG52?=
+ =?utf-8?B?TElsTUh3WEx0WU5SRmFhdndQSVpSYXo1QUtuZFdxNFRyck9iYVlDbTRnSmRJ?=
+ =?utf-8?B?dllnMUduUUFQSmhRUzVCM0ZvNytMQUJiekFWeVpQTk5HYzlaQitUMVd4YWNn?=
+ =?utf-8?B?ZjF5TlVjUlBic0QvRExGazI2RnlWOUJ0NEI0b2M1ZFRZc1ZmYlp1YXlydURx?=
+ =?utf-8?B?VE4renVuYmQ1N2JvMjJSS1krWGsvbUUxbmJ1bnNSV1Q4ZCsxc2h4eGhBdGVH?=
+ =?utf-8?B?MEZ2RGwrSi9Cd29LOEFuSE5BTGZtL1VMS2ZLd3dQS1d2dkQ2M3E3YXozV3c3?=
+ =?utf-8?B?Wm1XbFM2elhxQmZVVDdlQzZNRkVTWWFTL1l4TDFRL252eEtkVjZSVVdreUtl?=
+ =?utf-8?B?L1VDWkdjMG9xbEE5SHNRbDZDWEx6bVY5Y1ViUndkZk14WjlDZVc0ekVhakgz?=
+ =?utf-8?B?QW42UEtzUFBIcWdoeFBuRndHcllLQVQxTHMzL2trQVBZVHRJdlFESGEyTkFr?=
+ =?utf-8?B?cVgzTFlqcEJCTDR6VjRxZGFEMjc3NVY2ckRHbWlrTkVYNHh4d0tobjhLZVdm?=
+ =?utf-8?B?ck5wYnVIWG8ySnR2KzRaV2hKYzdzN2YwUCsrOURiYnY0c2w3eWpKTFlIN3hr?=
+ =?utf-8?B?SWtrMytVQkhJZ3hEc1Y0Ky9tUXNnRXJEaURQYWlQSldzMjRVOURlZmhBUUhq?=
+ =?utf-8?B?c1c5bUJjZHZnc0NqalViRWxDYURDOWdTTHl4YUVXY3djMm9NbCtnc25BOWRP?=
+ =?utf-8?B?TnBucktubWlMNEZ6Q016Z2dGdndJMUR5a3JIdENnWkEwWStQRGNvRlR5cVVY?=
+ =?utf-8?B?TE1xUEVnMjNEakpuU3hQMURkdTNLZ0tSeERsd0lSRTY2VFR0czhTak1aN2xV?=
+ =?utf-8?B?Sld1S1EvQkl0L2pVem9YYXdQTE5tbS9meFozRnVSZ2dRcTlENWVLOWtYamtN?=
+ =?utf-8?B?SlpUU24xaEhBUnF4V3h3OFdrT3R3PT0=?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b47a38ff-065f-45c7-a5ac-08d99949a8aa
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 12:59:49.5394
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CAWkgY1loPKCi7SzMG6bDlAnHCPj3BMSO4GJo6xrm/egnbQeRzCsGd3t8hle/TFdNBoM86t9Wf6+fAo8EgVyrrh/FReq+Fm2q/kZH4dDLHw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3757
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10149 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110270079
+X-Proofpoint-ORIG-GUID: 7lkM7CfiKkEAy04K_2Em4FMfmi7OZfDI
+X-Proofpoint-GUID: 7lkM7CfiKkEAy04K_2Em4FMfmi7OZfDI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 12:44:31PM +0800, Greentime Hu wrote:
-> Darius Rad <darius@bluespec.com> 於 2021年10月26日 週二 上午12:22寫道：
-> >
-> > On Mon, Oct 25, 2021 at 12:47:49PM +0800, Greentime Hu wrote:
-> > > Darius Rad <darius@bluespec.com> 於 2021年10月22日 週五 下午6:40寫道：
-> > > >
-> > > > On Fri, Oct 22, 2021 at 11:52:01AM +0800, Vincent Chen wrote:
-> > > > > On Thu, Oct 21, 2021 at 6:50 PM Darius Rad <darius@bluespec.com> wrote:
-> > > > > >
-> > > > > > On Wed, Oct 20, 2021 at 06:01:31PM -0700, Paul Walmsley wrote:
-> > > > > > > Hello Darius,
-> > > > > > >
-> > > > > > > On Tue, 5 Oct 2021, Darius Rad wrote:
-> > > > > > >
-> > > > > > > > On Mon, Oct 04, 2021 at 08:36:30PM +0800, Greentime Hu wrote:
-> > > > > > > > > Darius Rad <darius@bluespec.com> 於 2021年9月29日 週三 下午9:28寫道：
-> > > > > > > > > >
-> > > > > > > > > > On Tue, Sep 28, 2021 at 10:56:52PM +0800, Greentime Hu wrote:
-> > > > > > > > > > > Darius Rad <darius@bluespec.com> 於 2021年9月13日 週一 下午8:21寫道：
-> > > > > > > > > > > >
-> > > > > > > > > > > > On 9/8/21 1:45 PM, Greentime Hu wrote:
-> > > > > > > > > > > > > This patch adds task switch support for vector. It supports partial lazy
-> > > > > > > > > > > > > save and restore mechanism. It also supports all lengths of vlen.
-> > > > > > >
-> > > > > > > [ ... ]
-> > > > > > >
-> > > > > > > > > > > > So this will unconditionally enable vector instructions, and allocate
-> > > > > > > > > > > > memory for vector state, for all processes, regardless of whether vector
-> > > > > > > > > > > > instructions are used?
-> > > > > > > > > > >
-> > > > > > > > > > > Yes, it will enable vector if has_vector() is true. The reason that we
-> > > > > > > > > > > choose to enable and allocate memory for user space program is because
-> > > > > > > > > > > we also implement some common functions in the glibc such as memcpy
-> > > > > > > > > > > vector version and it is called very often by every process. So that
-> > > > > > > > > > > we assume if the user program is running in a CPU with vector ISA
-> > > > > > > > > > > would like to use vector by default. If we disable it by default and
-> > > > > > > > > > > make it trigger the illegal instruction, that might be a burden since
-> > > > > > > > > > > almost every process will use vector glibc memcpy or something like
-> > > > > > > > > > > that.
-> > > > > > > > > >
-> > > > > > > > > > Do you have any evidence to support the assertion that almost every process
-> > > > > > > > > > would use vector operations?  One could easily argue that the converse is
-> > > > > > > > > > true: no existing software uses the vector extension now, so most likely a
-> > > > > > > > > > process will not be using it.
-> > > > > > > > >
-> > > > > > > > > Glibc ustreaming is just starting so you didn't see software using the
-> > > > > > > > > vector extension now and this patchset is testing based on those
-> > > > > > > > > optimized glibc too. Vincent Chen is working on the glibc vector
-> > > > > > > > > support upstreaming and we will also upstream the vector version glibc
-> > > > > > > > > memcpy, memcmp, memchr, memmove, memset, strcmp, strlen. Then we will
-> > > > > > > > > see platform with vector support can use vector version mem* and str*
-> > > > > > > > > functions automatically based on ifunc and platform without vector
-> > > > > > > > > will use the original one automatically. These could be done to select
-> > > > > > > > > the correct optimized glibc functions by ifunc mechanism.
-> > > > > > >
-> > > > > > > In your reply, I noticed that you didn't address Greentime's response
-> > > > > > > here.  But this looks like the key issue.  If common library functions are
-> > > > > > > vector-accelerated, wouldn't it make sense that almost every process would
-> > > > > > > wind up using vector instructions?  And thus there wouldn't be much point
-> > > > > > > to skipping the vector context memory allocation?
-> > > > > > >
-> > > > > >
-> > > > > > This issue was addressed in the thread regarding Intel AMX I linked to in a
-> > > > > > previous message.  I don't agree that this is the key issue; it is one of a
-> > > > > > number of issues.  What if I don't want to take the potential
-> > > > > > power/frequency hit for the vector unit for a workload that, at best, uses
-> > > > > > it for the occasional memcpy?  What if the allocation fails, how will that
-> > > > >
-> > > > > Hi Darius,
-> > > > > The memcpy function seems not to be occasionally used in the programs
-> > > > > because many functions in Glibc use memcpy() to complete the memory
-> > > > > copy. I use the following simple case as an example.
-> > > > > test.c
-> > > > > void main(void) {
-> > > > >     return;
-> > > > > }
-> > > > > Then, we compile it by "gcc test.c -o a.out" and execute it. In the
-> > > > > execution, the memcpy() has been called unexpectedly. It is because
-> > > > > many libc initialized functions will be executed before entering the
-> > > > > user-defined main function. One of the example is __libc_setup_tls(),
-> > > > > which is called by __libc_start_main(). The __libc_setup_tls() will
-> > > > > use memcpy() during the process of creating the Dynamic Thread Vector
-> > > > > (DTV).
-> > > > >
-> > > > > Therefore, I think the memcpy() is widely used in most programs.
-> > > > >
-> > > >
-> > > > You're missing my point.  Not every (any?) program spends a majority of the
-> > > > time doing memcpy(), and even if a program did, all of my points are still
-> > > > valid.
-> > > >
-> > > > Please read the discussion in the thread I referenced and the questions in
-> > > > my prior message.
-> > > >
-> > >
-> > > Hi Darius,
-> > >
-> > > As I mentioned before, we want to treat vector ISA like a general ISA
-> > > instead of a specific IP. User program should be able to use it
-> > > transparently just like FPU.
-> > > It seems that the use case you want is asking user to use vector like
-> > > a specific IP, user program should ask kernel before they use it and
-> > > that is not what we want to do in this patchset.
-> > >
-> >
-> > Hi Greentime,
-> >
-> > Right.
-> >
-> > But beyond what I want to do or what you want to do, is what *should* Linux
-> > do?  I have attempted to provide evidence to support my position.  You have
-> > not responded to or addressed the majority of my questions, which is
-> > concerning to me.
-> 
-> Hi Darius,
-> 
-> What is your majority questions?
-> 
 
-1. How will memory allocation failures for context state memory be reported
-to user space?
+On 9/28/21 3:35 AM, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>
+> Xen-pciback driver was designed to be built for x86 only. But it
+> can also be used by other architectures, e.g. Arm.
+>
+> Currently PCI backend implements multiple functionalities at a time,
+> such as:
+> 1. It is used as a database for assignable PCI devices, e.g. xl
+>     pci-assignable-{add|remove|list} manipulates that list. So, whenever
+>     the toolstack needs to know which PCI devices can be passed through
+>     it reads that from the relevant sysfs entries of the pciback.
+> 2. It is used to hold the unbound PCI devices list, e.g. when passing
+>     through a PCI device it needs to be unbound from the relevant device
+>     driver and bound to pciback (strictly speaking it is not required
+>     that the device is bound to pciback, but pciback is again used as a
+>     database of the passed through PCI devices, so we can re-bind the
+>     devices back to their original drivers when guest domain shuts down)
+> 3. Device reset for the devices being passed through
+> 4. Para-virtualised use-cases support
+>
+> The para-virtualised part of the driver is not always needed as some
+> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
+> model for PCI device passthrough.
+>
+> For such use-cases make the very first step in splitting the
+> xen-pciback driver into two parts: Xen PCI stub and PCI PV backend
+> drivers.
+>
+> For that add new configuration options CONFIG_XEN_PCI_STUB and
+> CONFIG_XEN_PCIDEV_STUB, so the driver can be limited in its
+> functionality, e.g. no support for para-virtualised scenario.
+> x86 platform will continue using CONFIG_XEN_PCIDEV_BACKEND for the
+> fully featured backend driver.
+>
+> Please note, that CONFIG_XEN_PCIDEV_BACKEND and CONFIG_XEN_PCIDEV_STUB
+> are mutually exclusive.
+>
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
+> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
 
-2. How will a system administrator (i.e., the user) be able to effectively
-manage a system where the vector unit, which could have a considerable area
-and/or power impact to the system, has one or more of the following
-properties:
 
-  a. A single vector unit shared among two or more harts,
+Oleksandr,
 
-  b. Additional power consumption when the vector unit is enabled and idle
-versus not being enabled at all,
 
-  c. For a system which supports variable operating frequency, a reduction
-in the maximum frequency when the vector unit is enabled, and/or
 
-  d. The inability to enter low power states and/or delays to low power
-states transitions when the vector unit is enabled.
+Can you please rebase this on top of 5.15-rc7? There is a bunch of conflicts due to cae7d81a3730dfe08623f8c1083230c8d0987639.
 
-3. You contend that the RISC-V V-extension resembles ARM SVE/SVE2, at least
-more than Intel AMX.  I do not agree, but nevertheless, why then does this
-patchset not behave similar to SVE?  On arm64, SVE is only enabled and
-memory is only allocated on first use, *not* unconditionally for all tasks.
 
-// darius
+Thanks.
+
+-boris
 
