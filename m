@@ -2,86 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D539843C4DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120D643C4E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240897AbhJ0IQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240838AbhJ0IQX (ORCPT
+        id S238816AbhJ0IR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:17:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21750 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238821AbhJ0IRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:16:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB56C0613B9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:13:58 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id n18so1471056plc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=Ft1XPxFVIbWJTs4Ecpf/2qUoKof8ssQDsFByWw2TlxA=;
-        b=b+TWZuMA3dQsZIvTqQlQzEzzGSp7Z8UP80iKDVUP3dPYfXh+xfxCfsIJx7ibBZvLWa
-         6aEqHSo5ZztXCeHBtl0Hux+FMfSTpe3pBUhrhoZ2uGxzb0L+3KiwDh40zCYkKkj1wfbe
-         loKf6Ez4dD0WM699a9enAQO5yTXfqU4OoQlSbwHtyrlzNmNvNRtZ1wAqPaD08hZYch9P
-         KgLoOoWWvUTpBdbM/4Y9n3e4iKEpPfj/dpE9idriu7bzd4c/2uQAqGeCyNJty1iKvffp
-         Y8GqU7D04BxbjHHDEsDiNIfjd7wKy+jHKzSESIFfNjIiJO4pWqcU1gR6IW2WzrMJhH+B
-         FWQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=Ft1XPxFVIbWJTs4Ecpf/2qUoKof8ssQDsFByWw2TlxA=;
-        b=YGv+uymzHd5sx63uQ4yPQQMngfzG4gZz/uO1hD4yP7uOx8BVkyGPfraUUgE9CovUdZ
-         ULX8nE1dXl7bRReX498pvlyIXjPxyHstyVwp3G0m5qDrd42aB+sHVdbhTFhmcsylmnmW
-         tnloDtK8OnGePn3J7icyH+3UD79uy6LUF0p74aVFUBtZxAyUXoo6qwHcqD5JND2BjNCx
-         OL6w8y/3ZFu3YqMOucHFydplOeOdKNYxFXp9x3VzH9ysLePP8250Aijdqt4ersNQVmaA
-         j9/O2NtYTzCPHHR51hy+NXkuLk5d+Xnqs5eI9vpUEIpTUnd4A7JGiSZ50DzcXlbIKK3B
-         xHBw==
-X-Gm-Message-State: AOAM530/qVzaOpEYL5HTOdIchVJ1DzoNLWVAJKcZwUyOIjEWWcRfYMbg
-        EwTyKVeVeFBcNrpOtBfRelC5g5n3RGISKFcJqCY=
-X-Google-Smtp-Source: ABdhPJxqTAFdj4xwRybxNDcnBHmxCVpbsb1EBOtYLIzJXgoRflds0tPSzDeltozIwJg7qIkM9OAv2cSCRis8Fzg3XL0=
-X-Received: by 2002:a17:903:1110:b0:13f:d25c:eac5 with SMTP id
- n16-20020a170903111000b0013fd25ceac5mr27782561plh.5.1635322438192; Wed, 27
- Oct 2021 01:13:58 -0700 (PDT)
+        Wed, 27 Oct 2021 04:17:55 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19R6NiM8010667;
+        Wed, 27 Oct 2021 08:15:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=REmhyH977aSmduvzyGxYccWFWjTuSZ1JicmOk/oQceU=;
+ b=MKMYT2z6MlwPcZHvZSd5i+XWdYQXu3GGx1slmn2CRaDPz4Bzu3sRGEVhSrIpOdEsNin8
+ ojkT0fdQ6Opkpq8JF8p9hg6Q/wj4++owaSjPDoEh16iO8Kg4HfJtWjqpkABK2jnUVCZr
+ 2z9hJmY5LRTy1Y2GW18mtiZ5oCkoHj5M+4SKDdk79G6HNVUXVvIi/5322hH0AXOoUSR6
+ DejcbJTrdpw3wsjWVSFRQ1r5t6aoOp3sgSPMJ43Jt+CJhDo6amcZns/9Mm7QCFG7a34M
+ iZjar7Ke5PF8WWt0SNkU2ss4ZYz+G2ClZcAbzP4SsSYttlbJvabJ0/Hp30rplXmppc9I 6Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3by1f8218e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 08:15:05 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19R7eHIs025849;
+        Wed, 27 Oct 2021 08:15:05 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3by1f8216t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 08:15:05 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19R8BnFI009930;
+        Wed, 27 Oct 2021 08:15:01 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bx4edvsqt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 08:15:00 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19R8Ew8S53477732
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 08:14:58 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0972DAE056;
+        Wed, 27 Oct 2021 08:14:58 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BFE69AE045;
+        Wed, 27 Oct 2021 08:14:57 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.77.240])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 27 Oct 2021 08:14:57 +0000 (GMT)
+Subject: Re: [PATCH 1/2] powerpc/watchdog: prevent printk and send IPI while
+ holding the wd lock
+To:     Nicholas Piggin <npiggin@gmail.com>, benh@kernel.crashing.org,
+        mpe@ellerman.id.au, paulus@samba.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20211026162740.16283-1-ldufour@linux.ibm.com>
+ <20211026162740.16283-2-ldufour@linux.ibm.com>
+ <1635303699.wgz87uxy4c.astroid@bobo.none>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <33e15005-d342-5270-9b9d-64750f8794a7@linux.ibm.com>
+Date:   Wed, 27 Oct 2021 10:14:57 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Sender: florentmarois953@gmail.com
-Received: by 2002:a05:6a20:1d06:b0:51:c25f:a855 with HTTP; Wed, 27 Oct 2021
- 01:13:57 -0700 (PDT)
-From:   "Dr. Hamza Kabore" <hamzakabore97@gmail.com>
-Date:   Wed, 27 Oct 2021 01:13:57 -0700
-X-Google-Sender-Auth: ZMEEp9HYAUYcaJS07ukqcbFtrOg
-Message-ID: <CAAHQvRexDycVhRnZ8wTvEvDPsPHWZ2CxjnWCpM6pUn6z9quDdw@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1635303699.wgz87uxy4c.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AcoByQLg3K9eWGmLBkq27NYptffJ_uUy
+X-Proofpoint-ORIG-GUID: GoL5SOeyY_mqUWxSmD4LKnruQMbJag3W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_02,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
+ adultscore=0 suspectscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110270048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello,
+Le 27/10/2021 à 05:29, Nicholas Piggin a écrit :
+> Excerpts from Laurent Dufour's message of October 27, 2021 2:27 am:
+>> When handling the Watchdog interrupt, long processing should not be done
+>> while holding the __wd_smp_lock. This prevents the other CPUs to grab it
+>> and to process Watchdog timer interrupts. Furhtermore, this could lead to
+>> the following situation:
+>>
+>> CPU x detect lockup on CPU y and grab the __wd_smp_lock
+>>        in watchdog_smp_panic()
+>> CPU y caught the watchdog interrupt and try to grab the __wd_smp_lock
+>>        in soft_nmi_interrupt()
+>> CPU x wait for CPU y to catch the IPI for 1s in __smp_send_nmi_ipi()
+> 
+> CPU y should get the IPI here if it's a NMI IPI (which will be true for
+>> = POWER9 64s).
+> 
+> That said, not all platforms support it and the console lock problem
+> seems real, so okay.
+> 
+>> CPU x will timeout and so has spent 1s waiting while holding the
+>>        __wd_smp_lock.
+>>
+>> A deadlock may also happen between the __wd_smp_lock and the console_owner
+>> 'lock' this way:
+>> CPU x grab the console_owner
+>> CPU y grab the __wd_smp_lock
+>> CPU x catch the watchdog timer interrupt and needs to grab __wd_smp_lock
+>> CPU y wants to print something and wait for console_owner
+>> -> deadlock
+>>
+>> Doing all the long processing without holding the _wd_smp_lock prevents
+>> these situations.
+> 
+> The intention was to avoid logs getting garbled e.g., if multiple
+> different CPUs fire at once.
+> 
+> I wonder if instead we could deal with that by protecting the IPI
+> sending and printing stuff with a trylock, and if you don't get the
+> trylock then just return, and you'll come back with the next timer
+> interrupt.
 
-Greetings and hope this email finds you well?
+That sounds a bit risky to me, especially on large system when system goes 
+wrong, all the CPU may try lock here.
+Furthermore, now operation done under the lock protection are quite fast, there 
+is no more spinning like the delay loop done when sending an IPI.
 
-I am Dr. Hamza Kabore, the  chief Medical consultant at a reputable
-clinic here in Ouagadougou, Burkina Faso and I have a Patient who
-hails from the Republic of philippines but unfortunately is in Coma
-right now due to complications from a Cancer disease and she has the
-sum of $10.7 Million United States (Ten Million seven Hundred
-Thousand) Dollars she wants me to guide you on, so that her Bank can
-transfer it to you for charity purposes.
+Protecting the IPI sending is a nightmare, if the target CPU is later play with 
+the lock we are taking during the IPI processing, furthermore, if the target CPU 
+is not responding the sending CPU is waiting for 1s, which slows all the system 
+due to the lock held.
+Since I do a copy of the pending CPU mask and clear it under the lock 
+protection, the IPI sending is safe while done without holding the lock.
 
-Please, I will like you to contact me on this email
-(hamzakabore97@gmail.com) for further details as this is a very
-sensitive issue that needs urgent attention from you and I want to
-maintain the promised I made to the woman before she entered Coma,
-never to betray her by looking for another person other than you that
-she choosed and selected for the offer among the people she got their
-email contacts in her quest for an honest person oversea to help her
-wholeheartedly in handling this project to fulfill her wish.
+Regarding the interleaved traces, I don't think this has to be managed down 
+here, but rather in the printk/console path.
 
-Best Regards,
+Cheers,
+Laurent.
 
-Dr. Hamza Kabore on behalf of
-Mrs. Sismer Shirley Acojedo
+> 
+> Thanks,
+> Nick
+> 
+>>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> ---
+>>   arch/powerpc/kernel/watchdog.c | 31 +++++++++++++++++--------------
+>>   1 file changed, 17 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+>> index f9ea0e5357f9..bc7411327066 100644
+>> --- a/arch/powerpc/kernel/watchdog.c
+>> +++ b/arch/powerpc/kernel/watchdog.c
+>> @@ -149,6 +149,8 @@ static void set_cpu_stuck(int cpu, u64 tb)
+>>   
+>>   static void watchdog_smp_panic(int cpu, u64 tb)
+>>   {
+>> +	cpumask_t cpus_pending_copy;
+>> +	u64 last_reset_tb_copy;
+>>   	unsigned long flags;
+>>   	int c;
+>>   
+>> @@ -161,29 +163,32 @@ static void watchdog_smp_panic(int cpu, u64 tb)
+>>   	if (cpumask_weight(&wd_smp_cpus_pending) == 0)
+>>   		goto out;
+>>   
+>> +	cpumask_copy(&cpus_pending_copy, &wd_smp_cpus_pending);
+>> +	last_reset_tb_copy = wd_smp_last_reset_tb;
+>> +
+>> +	/* Take the stuck CPUs out of the watch group */
+>> +	set_cpumask_stuck(&wd_smp_cpus_pending, tb);
+>> +
+>> +	wd_smp_unlock(&flags);
+>> +
+>>   	pr_emerg("CPU %d detected hard LOCKUP on other CPUs %*pbl\n",
+>> -		 cpu, cpumask_pr_args(&wd_smp_cpus_pending));
+>> +		 cpu, cpumask_pr_args(&cpus_pending_copy));
+>>   	pr_emerg("CPU %d TB:%lld, last SMP heartbeat TB:%lld (%lldms ago)\n",
+>> -		 cpu, tb, wd_smp_last_reset_tb,
+>> -		 tb_to_ns(tb - wd_smp_last_reset_tb) / 1000000);
+>> +		 cpu, tb, last_reset_tb_copy,
+>> +		 tb_to_ns(tb - last_reset_tb_copy) / 1000000);
+>>   
+>>   	if (!sysctl_hardlockup_all_cpu_backtrace) {
+>>   		/*
+>>   		 * Try to trigger the stuck CPUs, unless we are going to
+>>   		 * get a backtrace on all of them anyway.
+>>   		 */
+>> -		for_each_cpu(c, &wd_smp_cpus_pending) {
+>> +		for_each_cpu(c, &cpus_pending_copy) {
+>>   			if (c == cpu)
+>>   				continue;
+>>   			smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
+>>   		}
+>>   	}
+>>   
+>> -	/* Take the stuck CPUs out of the watch group */
+>> -	set_cpumask_stuck(&wd_smp_cpus_pending, tb);
+>> -
+>> -	wd_smp_unlock(&flags);
+>> -
+>>   	if (sysctl_hardlockup_all_cpu_backtrace)
+>>   		trigger_allbutself_cpu_backtrace();
+>>   
+>> @@ -204,6 +209,8 @@ static void wd_smp_clear_cpu_pending(int cpu, u64 tb)
+>>   			unsigned long flags;
+>>   
+>>   			wd_smp_lock(&flags);
+>> +			cpumask_clear_cpu(cpu, &wd_smp_cpus_stuck);
+>> +			wd_smp_unlock(&flags);
+>>   
+>>   			pr_emerg("CPU %d became unstuck TB:%lld\n",
+>>   				 cpu, tb);
+>> @@ -212,9 +219,6 @@ static void wd_smp_clear_cpu_pending(int cpu, u64 tb)
+>>   				show_regs(regs);
+>>   			else
+>>   				dump_stack();
+>> -
+>> -			cpumask_clear_cpu(cpu, &wd_smp_cpus_stuck);
+>> -			wd_smp_unlock(&flags);
+>>   		}
+>>   		return;
+>>   	}
+>> @@ -267,6 +271,7 @@ DEFINE_INTERRUPT_HANDLER_NMI(soft_nmi_interrupt)
+>>   			return 0;
+>>   		}
+>>   		set_cpu_stuck(cpu, tb);
+>> +		wd_smp_unlock(&flags);
+>>   
+>>   		pr_emerg("CPU %d self-detected hard LOCKUP @ %pS\n",
+>>   			 cpu, (void *)regs->nip);
+>> @@ -277,8 +282,6 @@ DEFINE_INTERRUPT_HANDLER_NMI(soft_nmi_interrupt)
+>>   		print_irqtrace_events(current);
+>>   		show_regs(regs);
+>>   
+>> -		wd_smp_unlock(&flags);
+>> -
+>>   		if (sysctl_hardlockup_all_cpu_backtrace)
+>>   			trigger_allbutself_cpu_backtrace();
+>>   
+>> -- 
+>> 2.33.1
+>>
+>>
+
