@@ -2,155 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3488643C824
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9506C43C826
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239782AbhJ0K6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        id S231473AbhJ0K7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbhJ0K6r (ORCPT
+        with ESMTP id S239786AbhJ0K7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:58:47 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B043C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 03:56:22 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 205so3948394ljf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 03:56:22 -0700 (PDT)
+        Wed, 27 Oct 2021 06:59:16 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388F1C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 03:56:51 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x192so5201898lff.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 03:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VcwIbDXyqxOVXmwhFTh3M4U8pwTWBcfpjA1gKThuQwM=;
-        b=DOleeR66hVCWRUSE1vVRgpe8SJwg3hXoPhnYGSWr2h/1QsY59933hT503CxAL7bTNk
-         iAmCUx0TWh3pVoqWNx9NfD3cn8DWC6uQYvCRUH8Mze9MIUaGAlJOWh9Rs6Jb+LYtgoST
-         cjvI7vr2NNcKcaTXT3/tV9MElrGguJ5w9z+JbcXFX/2ofZN8/UsF+gKVIIl+ByuNaQ8Y
-         yPsk8wPrbdfXVROwTXzZuSRkjgb9arBztxSpf3SmGhRUuRLcpdrnjYCpgT+j4EHzVgHA
-         DYQvE5KXJ/1CnQ6ufOLPUW7E3xStkYgXY4qDSJNfLOpWZV1eVezITj1sM6bh3c8kXPLb
-         DFOg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s2N13FmOEYQNpt6BncLBbaLCyj4beMEaWW0ResefSLU=;
+        b=QpZeNjrwXoUDv74u/Vt5/yjPKeirdC3bBtjTbxCLXEgpnFL5FB+VvtY34BzU5HyMHe
+         hZHDg6g/jeHqhqz6uFKt5DqSegxzFMb2Xh+qgMVzE7IYFf+q15FLmjHv8/nyepgvmKrL
+         UCvJBPZlT0/Iiw63lffWsd9vq8O7c402Z0uveQ9IgA7JeGjooiFcfhmZePC2haYszhL4
+         Iy0SbilmB2ER3y9LOXsXX+uDFY+p9C+Sev/GARJvcOpepoM2OL+0pE0Z2iS49/C0t03t
+         3bD08RzOYP4MPy9OF16Jcd4hUUDJ16LT/775pU2KCCGBtsChv7FtnwRmxEXRDEdPwhbH
+         jkdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VcwIbDXyqxOVXmwhFTh3M4U8pwTWBcfpjA1gKThuQwM=;
-        b=cUX06ntAL8p70FV44GpwnLVd0jOYQ8Otq2vDPoxOZ/u8O1I1OKyATXh2m5sJjW970g
-         11O38gBEavkDxKhh61NBng9MbUB1F71Exieb3+z9rh7Sop0OH+3wKiiD7WYugb3MA87t
-         ZtSRLGPHnFUNkNd8RueM+FJ8oNGajTGpZhi6404giDJLRCJPIqpRZ7LbDN2xMCyC0AtC
-         ksrTaydv7ymPwnCpz/mTcCbyLuNd3OTrG6AIWfhNI5VzP8c30gUjl8uuZ2shqSrd8kBX
-         iZTHv2FHlhxnZwuFC2DDg9ImAc9a/0wg0TMrAebP5MoCayw83IFdoCCQCoBoEtESF36J
-         LzHA==
-X-Gm-Message-State: AOAM531KkFosGYrUCnZS9Cg3U2LOoTFMVHqY0V5f5bl0s1XgvyrcK2F9
-        8K1yn9NV13lil6nzBPk5e+twZnZbav1EsYxxQFcI2g==
-X-Google-Smtp-Source: ABdhPJy1h3NelpYd9TSvKaUHWrMYA+ZVL3fwLTcVJEPZpatCHhPdaElqmnb17Fr40bMDmvrRBl+JpTVBgGxcDMAKBTQ=
-X-Received: by 2002:a2e:b550:: with SMTP id a16mr32975194ljn.229.1635332180469;
- Wed, 27 Oct 2021 03:56:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s2N13FmOEYQNpt6BncLBbaLCyj4beMEaWW0ResefSLU=;
+        b=x9MkNKtsYiszoZaC8dpH+1uh+CeVTkE4LjOu/1XOK3AONCcUseZBNVrfdKrs9YPxMA
+         O/RgGA21l2cLV8tmm5dDWm0iXLDBUr4yLpQ8idwne1HijpeDEgJBA/1twitXcy3dJxta
+         63B/Kg6cu1BbGGVnrBzt6wtBGdCJIiZSH/WZSdgd34tjnduMAPWEuKICJkp6+i62yToe
+         tgQ0T6AHdXJgGZwj3p882L/d7iIj28OVnfK5b1ORnRmqd9nD6epf8Y0rAsyuzRV+6nQX
+         ZoMNr+BRN80MQHciAuX/lhw32mMEi1Y2neLCyJp/LEafP04SHm3Tk+RjH0ow1qqJEdak
+         t6BQ==
+X-Gm-Message-State: AOAM533P4pDx+juIn/0T8MEtHgEsxlsUKsZlEIfsKofZh2GJndgh2CXL
+        G5wfrk3MeXrISTf76HP8llc=
+X-Google-Smtp-Source: ABdhPJyikWVwet80BXAhvtjDXrRAgcazYpwGuvo/ChrFMpFKJnR81d4QzubW2YP3JIFxkKvtPDNaew==
+X-Received: by 2002:ac2:4352:: with SMTP id o18mr28410983lfl.48.1635332209590;
+        Wed, 27 Oct 2021 03:56:49 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id a6sm816098lfs.115.2021.10.27.03.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 03:56:48 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     apw@canonical.com, joe@perches.com
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev
+Subject: [PATCH v2] checkpatch: Improve CVS revision marker check
+Date:   Wed, 27 Oct 2021 13:56:36 +0300
+Message-Id: <20211027105636.29571-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211026222626.39222-1-ulf.hansson@linaro.org> <20211027020235.GA1306582@rowland.harvard.edu>
-In-Reply-To: <20211027020235.GA1306582@rowland.harvard.edu>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 27 Oct 2021 12:55:43 +0200
-Message-ID: <CAPDyKFpgHJA-duQSA2uqhccrDxFqWXO1R1DJxo=aOkT5FyX+Ag@mail.gmail.com>
-Subject: Re: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime
- PM is disabled
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Kevin Hilman <khilman@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 04:02, Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Wed, Oct 27, 2021 at 12:26:26AM +0200, Ulf Hansson wrote:
-> > During system suspend, the PM core sets dev->power.is_suspended for the
-> > device that is being suspended. This flag is also being used in
-> > rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
-> > PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
-> > device.
-> >
-> > To make this behaviour a bit more useful, let's drop the check for the
-> > dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
-> > be limited to this anyway.
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >  drivers/base/power/runtime.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > index ec94049442b9..fadc278e3a66 100644
-> > --- a/drivers/base/power/runtime.c
-> > +++ b/drivers/base/power/runtime.c
-> > @@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
-> >   repeat:
-> >       if (dev->power.runtime_error)
-> >               retval = -EINVAL;
-> > -     else if (dev->power.disable_depth == 1 && dev->power.is_suspended
-> > -         && dev->power.runtime_status == RPM_ACTIVE)
-> > +     else if (dev->power.disable_depth > 0 &&
-> > +             dev->power.runtime_status == RPM_ACTIVE)
->
-> IIRC there was a good reason why the original code checked for
-> disable_depth == 1 rather than > 0.  But I don't remember exactly what
-> the reason was.  Maybe it had something to do with the fact that during
-> a system sleep __device_suspend_late calls __pm_runtime_disable, and the
-> code was checking that there were no other disables in effect.
+This check gives false alarms at least in fs/ntfs3/ as there $LogFile is
+used quite lot because it is name of file which logs NTFS metadata. This
+improves check so it does not false alarm so easily.
 
-The check was introduced in the below commit:
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+---
+v2:
+	- Just improve checking. Thank for Jow Perches for regex.
+v1:
+Link: lore.kernel.org/ntfs3/20211026231637.3750-1-kari.argillander@gmail.com
+---
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Commit 6f3c77b040fc
-Author: Kevin Hilman <khilman@ti.com>
-Date:   Fri Sep 21 22:47:34 2012 +0000
-PM / Runtime: let rpm_resume() succeed if RPM_ACTIVE, even when disabled, v2
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 461d4221e4a4..a45c6274fcb4 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4018,7 +4018,7 @@ sub process {
+ 		}
+ 
+ # check for RCS/CVS revision markers
+-		if ($rawline =~ /^\+.*\$(Revision|Log|Id)(?:\$|)/) {
++		if ($rawline =~ /^\+.*\$(?:Revision|Log|Id)(?::.*)?\$/) {
+ 			WARN("CVS_KEYWORD",
+ 			     "CVS style keyword markers, these will _not_ be updated\n". $herecurr);
+ 		}
+-- 
+2.30.2
 
-By reading the commit message it's pretty clear to me that the check
-was added to cover only one specific use case, during system suspend.
-
-That is, that a driver may want to call pm_runtime_get_sync() from a
-late/noirq callback (when the PM core has disabled runtime PM), to
-understand whether the device is still powered on and accessible.
-
-> This is
-> related to the documented behavior of rpm_resume (it's supposed to fail
-> with -EACCES if the device is disabled for runtime PM, no matter what
-> power state the device is in).
->
-> That probably is also the explanation for why dev->power.is_suspended
-> gets checked: It's how the code tells whether a system sleep is in
-> progress.
-
-Yes, you are certainly correct about the current behaviour. It's there
-for a reason.
-
-On the other hand I would be greatly surprised if this change would
-cause any issues. Of course, I can't make guarantees, but I am, of
-course, willing to help to fix problems if those happen.
-
-As a matter of fact, I think the current behaviour looks quite
-inconsistent, as it depends on whether the device is being system
-suspended.
-
-Moreover, for syscore devices (dev->power.syscore is set for them),
-the PM core doesn't set the "is_suspended" flag. Those can benefit
-from a common behaviour.
-
-Finally, I think the "is_suspended" flag actually needs to be
-protected by a lock when set by the PM core, as it's being used in two
-separate execution paths. Although, rather than adding a lock for
-protection, we can just rely on the "disable_depth" in rpm_resume().
-It would be easier and makes the behaviour consistent too.
-
->
-> So overall, I suspect this change should not be made.  But some other
-> improvement (like a nice comment) might be in order.
->
-> Alan Stern
-
-Thanks for reviewing!
-
-Kind regards
-Uffe
