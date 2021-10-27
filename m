@@ -2,174 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911F943D20D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D896143D214
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243775AbhJ0UFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:05:38 -0400
-Received: from mail-qt1-f171.google.com ([209.85.160.171]:46939 "EHLO
-        mail-qt1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234274AbhJ0UFh (ORCPT
+        id S243784AbhJ0UJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:09:40 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:49046 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243780AbhJ0UJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:05:37 -0400
-Received: by mail-qt1-f171.google.com with SMTP id s1so2261161qta.13;
-        Wed, 27 Oct 2021 13:03:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/SWvUdWh7RB6nbUdLFqXl01g3YGeIacnxrMCZVf1wSk=;
-        b=DM5e14cJFfe4S5iVykSY2crn1Hq/Tfkj8I+Mx7qsoMURNQYMNRqaCtmHd3bbSON2Xy
-         smEu0YpReeN7M9IZK+8mzWHT0Ke+aKohOCrkqNqnl02ew93L2Zs2wbbm4LxGxBcckKRa
-         9t3e1nZwq1z1IcXJdEylmN15MN+gMKM00jmG9gXRzk85YDw480yFevSlF/CSIxgHa7Fn
-         WopPZhlXNo2De4TB+JFaC5zV+qYAEpO8513KurnNgSOcKhE3UvxtShrtyhtBHyPfvDhx
-         Zc+l2AJGMBejhz8T4svsI/LF3tEEG6Vhw+ww21dPns+N9lyxHs5xSZ5pJHna3w+RGq+i
-         OcDQ==
-X-Gm-Message-State: AOAM532FxZN9L+oEaVLdBr9QoaO4xycKtlhYTp+NVcsbPeatnR0zMvc9
-        i/6ki6eWClnyFVmt16dwepw=
-X-Google-Smtp-Source: ABdhPJxGl9mc+4PqRC619Jvlz0sLBMnd3PTIaiwhtiXp8zS/c0mq5LBMH8L1aHbMOApHVxyi24vr8w==
-X-Received: by 2002:ac8:58d6:: with SMTP id u22mr33720707qta.7.1635364991315;
-        Wed, 27 Oct 2021 13:03:11 -0700 (PDT)
-Received: from mfe-desktop.dimonoffinc.intra (ipagstaticip-ad9375f2-382c-b511-8ac1-9541f69fe50f.sdsl.bell.ca. [142.116.33.166])
-        by smtp.googlemail.com with ESMTPSA id f3sm638540qko.32.2021.10.27.13.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 13:03:10 -0700 (PDT)
-From:   ferlandm@amotus.ca
-To:     johan@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Ferland <ferlandm@amotus.ca>
-Subject: [PATCH] USB: serial: simple: add sierra wireless xm1210 gnss receiver
-Date:   Wed, 27 Oct 2021 16:02:23 -0400
-Message-Id: <20211027200223.72701-1-ferlandm@amotus.ca>
-X-Mailer: git-send-email 2.30.2
+        Wed, 27 Oct 2021 16:09:37 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7D73120A5C64;
+        Wed, 27 Oct 2021 13:07:10 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7D73120A5C64
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1635365231;
+        bh=BGo/Dtg7YwC8q+RFxuQcteIV/YmgEHdRFKrKDWOW+zM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=GFFcGMtfPsb7c/cwQ8Bs8gXv83qw86n+XfEOD5DCkazvHXeY3soocMGmFANA8g44+
+         GKuU9BHNGKPokRjr1ZWDQI8ZXb+tccj/Q3E6aO1dYD01iKpzkfh11+o59n00bMzpbI
+         TQh3WVZMWYu5tcXheJo/g0DQlrYdvUTmtiB9mxYI=
+Subject: Re: [PATCH v10 08/11] arm64: Rename unwinder functions, prevent them
+ from being traced and kprobed
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
+ <20211015025847.17694-1-madvenka@linux.microsoft.com>
+ <20211015025847.17694-9-madvenka@linux.microsoft.com>
+ <20211027175325.GC58503@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <88b9f9fb-155f-da97-b8ef-755eaf2a4af9@linux.microsoft.com>
+Date:   Wed, 27 Oct 2021 15:07:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211027175325.GC58503@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Ferland <ferlandm@amotus.ca>
 
-Add device id for the Sierra Wireless XM1210 Multi-GNSS module.
 
-https://www.sierrawireless.com/iot-solutions/products/xm1210/
+On 10/27/21 12:53 PM, Mark Rutland wrote:
+> On Thu, Oct 14, 2021 at 09:58:44PM -0500, madvenka@linux.microsoft.com wrote:
+>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>
+>> Rename unwinder functions for consistency and better naming.
+>>
+>> 	- Rename start_backtrace() to unwind_start().
+>> 	- Rename unwind_frame() to unwind_next().
+>> 	- Rename walk_stackframe() to unwind().
+> 
+> This looks good to me.
+> 
 
-$ lsusb -vd 1199:b000
+Thanks.
 
-Bus 002 Device 003: ID 1199:b000 Sierra Wireless, Inc. Sierra Wireless_GNSS
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass            0
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0        64
-  idVendor           0x1199 Sierra Wireless, Inc.
-  idProduct          0xb000
-  bcdDevice            0.01
-  iManufacturer           1 Sierra-wireless
-  iProduct                2 Sierra Wireless_GNSS
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength       0x0020
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower               50mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass         0
-      bInterfaceSubClass      0
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval             255
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval             255
-can't get debug descriptor: Resource temporarily unavailable
-Device Status:     0x0001
-  Self Powered
+> Could we split this from the krpbes/tracing changes? I think this stands
+> on it's own, and (as below) the kprobes/tracing changes need some more
+> explanation, and would make sense as a separate patch.
+> 
 
-Device is also working correctly with:
+OK. I will split the patches.
 
-$ echo 0x1199 0xb000 > /sys/bus/usb-serial/drivers/generic/new_id
+>> Prevent the following unwinder functions from being traced:
+>>
+>> 	- unwind_start()
+>> 	- unwind_next()
+>>
+>> 	unwind() is already prevented from being traced.
+> 
+> This could do with an explanation in the commis message as to why we
+> need to do this. If this is fixing a latent issue, it should be in a
+> preparatory patch that we can backport.
+> 
+> I dug into this a bit, and from taking a look, we prohibited ftrace in commit:
+> 
+>   0c32706dac1b0a72 ("arm64: stacktrace: avoid tracing arch_stack_walk()")
+> 
+> ... which is just one special case of graph return stack unbalancing,
+> and should be addressed by using HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so
+> with the patch making us use HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, that's
+> no longer necessary.
+> 
+> So we no longer seem to have a specific reason to prohibit ftrace
+> here.
+> 
 
-Signed-off-by: Marc Ferland <ferlandm@amotus.ca>
----
- drivers/usb/serial/Kconfig             | 1 +
- drivers/usb/serial/usb-serial-simple.c | 7 +++++++
- 2 files changed, 8 insertions(+)
+OK, I will think about this and add a comment.
 
-diff --git a/drivers/usb/serial/Kconfig b/drivers/usb/serial/Kconfig
-index de5c01257060..8008c8cbaaa0 100644
---- a/drivers/usb/serial/Kconfig
-+++ b/drivers/usb/serial/Kconfig
-@@ -68,6 +68,7 @@ config USB_SERIAL_SIMPLE
- 		- Motorola Tetra devices
- 		- Novatel Wireless GPS receivers
- 		- Siemens USB/MPI adapter.
-+		- Sierra Wireless GPS receiver.
- 		- ViVOtech ViVOpay USB device.
- 		- Infineon Modem Flashloader USB interface
- 		- ZIO Motherboard USB serial interface
-diff --git a/drivers/usb/serial/usb-serial-simple.c b/drivers/usb/serial/usb-serial-simple.c
-index bd23a7cb1be2..9ffd24c7fb33 100644
---- a/drivers/usb/serial/usb-serial-simple.c
-+++ b/drivers/usb/serial/usb-serial-simple.c
-@@ -112,6 +112,11 @@ DEVICE(suunto, SUUNTO_IDS);
- 	{ USB_DEVICE(0x908, 0x0004) }
- DEVICE(siemens_mpi, SIEMENS_IDS);
- 
-+/* Sierra Wireless_GNSS driver */
-+#define SIERRA_IDS()		\
-+	{ USB_DEVICE(0x1199, 0xb000) }
-+DEVICE(sierra, SIERRA_IDS);
-+
- /* All of the above structures mushed into two lists */
- static struct usb_serial_driver * const serial_drivers[] = {
- 	&carelink_device,
-@@ -127,6 +132,7 @@ static struct usb_serial_driver * const serial_drivers[] = {
- 	&hp4x_device,
- 	&suunto_device,
- 	&siemens_mpi_device,
-+	&sierra_device,
- 	NULL
- };
- 
-@@ -144,6 +150,7 @@ static const struct usb_device_id id_table[] = {
- 	HP4X_IDS(),
- 	SUUNTO_IDS(),
- 	SIEMENS_IDS(),
-+	SIERRA_IDS(),
- 	{ },
- };
- MODULE_DEVICE_TABLE(usb, id_table);
--- 
-2.30.2
+>> Prevent the following unwinder functions from being kprobed:
+>>
+>> 	- unwind_start()
+>>
+>> 	unwind_next() and unwind() are already prevented from being kprobed.
+> 
+> Likewise, I think this needs some explanation. From diggin, we
+> prohibited kprobes in commit:
+> 
+>   ee07b93e7721ccd5 ("arm64: unwind: Prohibit probing on return_address()")
+> 
+> ... and the commit message says we need to do this because this is
+> (transitively) called by trace_hardirqs_off(), which is kprobes
+> blacklisted, but doesn't explain the actual problem this results in.
+> 
 
+OK. I will think about this and add a comment.
+
+> AFAICT x86 directly uses __builtin_return_address() here, but that won't
+> recover rewritten addresses, which seems like a bug (or at least a
+> limitation) on x86, assuming I've read that correctly.
+> 
+
+OK.
+
+Thanks,
+
+Madhavan
