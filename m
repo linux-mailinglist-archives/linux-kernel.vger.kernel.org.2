@@ -2,95 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119E943C332
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857F543C334
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240100AbhJ0Gsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:48:55 -0400
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:40893 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhJ0Gsw (ORCPT
+        id S240074AbhJ0GtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240153AbhJ0GtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:48:52 -0400
-Received: by mail-ua1-f54.google.com with SMTP id e2so2983680uax.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 23:46:27 -0700 (PDT)
+        Wed, 27 Oct 2021 02:49:00 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80375C061745;
+        Tue, 26 Oct 2021 23:46:34 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id x1-20020a17090a530100b001a1efa4ebe6so2780550pjh.0;
+        Tue, 26 Oct 2021 23:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y7gwGiASJEFrbmc+5fzAPURspTpeBi4FYZUcQ7WbVCE=;
+        b=N24vFHm16eCHZXvMd10Rk/AiC7bRqCz2UF3LvMw7JIBAU+2a/031pPXIZtSSZuex/F
+         i7MSPaGtGROlLOycu7B4PXVWRGI9fSikrQlIXZeWLnpSChFqKNX+YYrcRFaT6IwsPe74
+         kZx0ZMv6PpEsoRroH7D7Vqs1pRcKhiJpM7xuHgX6W+oS3CsreKFBmZ10bGWFf3giWjFt
+         C9K29Aq4zdUZUARtFhovytBHo3OJ6MCQDzEUnNQhjcz3J3IFKelUZzPjPDyLQI+kaKAQ
+         l7FAD2xVKj5wVj7BgxeUDSmA+hgMYn/8778iEDhlVu9byUXiM3joGc/Wac9y+2fTMNrt
+         uN+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R3OYuluJJxgLVvFCzRNdVWcBJVm4Oc75q+PDZtzI47A=;
-        b=KXLGZ25iho11SUvbNIttyGZzTRHnctmmaL94g8J5AQt3DI4MolqsaOfcFPIq5lhE1u
-         Tqb7uCQNgEyYAxV2m1+T01mzLF+w5Wgc8QNYJYVUMsfmrxlqQIR8X2/eku63jXxb33+k
-         dTGi77lLijRT8PuD5S12ivOL+kOfevswdJnP7U/hGobol3JQiiX+DRUEKaFs5ecW2yqu
-         4cd5y9F77XWggoNAPQQLU2F1Ct2amncZ8sJXMaePXU80hGEEu5i3oqqMcFk0JhT3jsan
-         gYVgKg0L5Pr+lFkasRtGSSgi/Z+nMv6lK/HpNu8vhqz0IbQCswbUU9gTNP6MZqayb2NQ
-         wfXQ==
-X-Gm-Message-State: AOAM5325jWEurqNKZnHL5KbHquBmX39kF6uQW0x75LlNwcwYqjwJ9pFN
-        DSGmVbqAMpBOyns6jMbO/wdH5yL4J5/O5Q==
-X-Google-Smtp-Source: ABdhPJymJYlzYgynBxyflK6CY9iioAYjTQ4oIp8GbPomc5LD7LMf30ia5jCRzmZs5y1o12YYrOhw7A==
-X-Received: by 2002:a05:6102:a8d:: with SMTP id n13mr29081341vsg.17.1635317186472;
-        Tue, 26 Oct 2021 23:46:26 -0700 (PDT)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id y19sm10891812vsi.17.2021.10.26.23.46.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 23:46:25 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id e10so3040474uab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 23:46:25 -0700 (PDT)
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr29056379vsl.9.1635317185074;
- Tue, 26 Oct 2021 23:46:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y7gwGiASJEFrbmc+5fzAPURspTpeBi4FYZUcQ7WbVCE=;
+        b=QKvO3YWaKIFYBsfCUt84fcfhmsiseq5FvqeL01wsBUAzht0ONMDY3YOwOcso9dzhG3
+         3n+F4mMe4s6vyqFjGAOAekav+eZ/5f/Aak9tG9pZRpV1Oi/97sAMH7KM7gWv/uiYUNvx
+         HuB99utMJz7dtSIvhyp313rCy5rbgNUW8Jb3EEaoQVqtXbae6BfWqSMiS55UMDmy6UG7
+         HdnTgjiNQx4ns0QDvD59dYeaNlWw/tMhdLg7zlhUkWlvMhXQnj8reifXlZvgSrjFiT4J
+         uLdv3xsq7Dn5TlP168/HIFqqASxzcSYav+VX7m8XR7SZLmDbJ9+iE4CMvmxtMofUMVQW
+         vFzA==
+X-Gm-Message-State: AOAM530mGwjZnZ385SCHV06ElMJzQ4jKaqWp2tuKwUcPH6r/91ZHswyf
+        gMxZFTifncec5+5vFDwesJQYa4xD3OY=
+X-Google-Smtp-Source: ABdhPJy9JMOrQk+HJ5YEpSCz+4qPlUg2ZzA4ItTlUN3Ca4s+cQHYdts7GkiwHkLAyVx2V6pg1whOUw==
+X-Received: by 2002:a17:902:6544:b0:13e:dd16:bd5b with SMTP id d4-20020a170902654400b0013edd16bd5bmr27190310pln.61.1635317193986;
+        Tue, 26 Oct 2021 23:46:33 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id a135sm13813710pfd.96.2021.10.26.23.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 23:46:33 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 15:46:29 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] docs: counter: add unit timer sysfs attributes
+Message-ID: <YXj1xc6DdeOrUKjW@shinobu>
+References: <20211017013343.3385923-1-david@lechnology.com>
+ <20211017013343.3385923-5-david@lechnology.com>
 MIME-Version: 1.0
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com> <20211026173822.502506-7-pasha.tatashin@soleen.com>
-In-Reply-To: <20211026173822.502506-7-pasha.tatashin@soleen.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Oct 2021 08:46:13 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWWKY=R8=RGfHosSq_YcvsB1Ub8VURJ=uwHCJidAJN5EA@mail.gmail.com>
-Message-ID: <CAMuHMdWWKY=R8=RGfHosSq_YcvsB1Ub8VURJ=uwHCJidAJN5EA@mail.gmail.com>
-Subject: Re: [RFC 6/8] mm: rename init_page_count() -> page_ref_init()
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        weixugc@google.com, gthelen@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="P6cTM9CQv3NfngqX"
+Content-Disposition: inline
+In-Reply-To: <20211017013343.3385923-5-david@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 7:38 PM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
-> Now, that set_page_count() is not called from outside anymore and about
-> to be removed, init_page_count() is the only function that is going to
-> be used to unconditionally set _refcount, however it is restricted to set
-> it only to 1.
->
-> Make init_page_count() aligned with the other page_ref_*
-> functions by renaming it.
->
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
->  arch/m68k/mm/motorola.c  |  2 +-
+--P6cTM9CQv3NfngqX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Sat, Oct 16, 2021 at 08:33:39PM -0500, David Lechner wrote:
+> This documents new unit timer sysfs attributes for the counter
+> subsystem.
+>=20
+> Signed-off-by: David Lechner <david@lechnology.com>
 
-Gr{oetje,eeting}s,
+Hello David,
 
-                        Geert
+The unit timer is effectively a Count in its own right, so instead of
+introducing new sysfs attributes you can just implement it as another
+Count in the driver. Count 0 is "QPOSCNT", so set the name of this new
+Count 1 as "Unit Timer" (or the datasheet naming if more apt) to
+differentiate the Counts. You can then provide the "unit_timer_enable",
+"unit_timer_period", and "unit_timer_time" functionalities as respective
+Count 1 extensions ("enable" and "period") and Count 1 "count".
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+If you believe it appropriate, you can provide the raw timer ticks via
+the Count 1 "count" while a nanoseconds interface is provided via a
+Count 1 extension "timeout" (or something similar).
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+William Breathitt Gray
+
+> ---
+>  Documentation/ABI/testing/sysfs-bus-counter | 24 +++++++++++++++++++++
+>  drivers/counter/ti-eqep.c                   |  2 +-
+>  2 files changed, 25 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/=
+ABI/testing/sysfs-bus-counter
+> index 06c2b3e27e0b..37d960a8cb1b 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-counter
+> +++ b/Documentation/ABI/testing/sysfs-bus-counter
+> @@ -218,6 +218,9 @@ What:		/sys/bus/counter/devices/counterX/signalY/cabl=
+e_fault_enable_component_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler_=
+component_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_componen=
+t_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_compon=
+ent_id
+> +What:		/sys/bus/counter/devices/unit_timer_enable_component_id
+> +What:		/sys/bus/counter/devices/unit_timer_period_component_id
+> +What:		/sys/bus/counter/devices/unit_timer_time_component_id
+>  KernelVersion:	5.16
+>  Contact:	linux-iio@vger.kernel.org
+>  Description:
+> @@ -345,3 +348,24 @@ Description:
+>  			via index_polarity. The index function (as enabled via
+>  			preset_enable) is performed synchronously with the
+>  			quadrature clock on the active level of the index input.
+> +
+> +What:		/sys/bus/counter/devices/unit_timer_enable
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Read/write attribute that starts or stops the unit timer. Valid
+> +		values are boolean.
+> +
+> +What:		/sys/bus/counter/devices/unit_timer_period
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Read/write attribute that selects the unit timer timeout in
+> +		nanoseconds.
+> +
+> +What:		/sys/bus/counter/devices/unit_timer_time
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Read/write attribute that indicates the current time of the
+> +		unit timer in nanoseconds.
+> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+> index a4a5a4486329..1ba7f3c7cb7e 100644
+> --- a/drivers/counter/ti-eqep.c
+> +++ b/drivers/counter/ti-eqep.c
+> @@ -680,7 +680,7 @@ static int ti_eqep_probe(struct platform_device *pdev)
+>  	pm_runtime_get_sync(dev);
+> =20
+>  	/*
+> -	 * We can end up with an interupt infinite loop (interrupts triggered
+> +	 * We can end up with an interrupt infinite loop (interrupts triggered
+>  	 * as soon as they are cleared) if we leave these at the default value
+>  	 * of 0 and events are enabled.
+>  	 */
+> --=20
+> 2.25.1
+>=20
+
+--P6cTM9CQv3NfngqX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmF49bsACgkQhvpINdm7
+VJIsxQ/+NlqGyom3rHdIRp5zS/p1NHrDS9ip4Guwu+o2vs/pL/q4i8kIAdtHqMRt
+QUor8ZKVecm62TkgeHgognLnDWqzNeCpfHxJa2+pYbJHAtWZ5+0kSvYywI9sO54O
+d43Rgx87uwOlUaNo6qLOjqLAuyJb8X5ZSxazkk1zAnL+bpXoWTEkxWA5w9OKNbRF
+duW9uSsudT4dYbmxDiXOyZkppEH91ZazClbolG8Sg5aAHxrA92GcFODpWoIOYf8A
+adjpXeWtadJcH+V/+YxKcH//aQKPwm4JKnzgJKWixdQ7gBNc+R5Kzxe7wmN/aLaL
+g15tuuZzf0D5LF2if0d2uFZrojhh+WVgPDmA7ZW9D9h9yQbCtIhZGuyzRCODHqgt
+OvzhQEtjSDBLpMZ/LOYe/zQUgkeF7InTQdl9tHu2mjuUW8r+dYCim6tvwX8fuGwu
+AVSLDTklNgY+QhrLv4hURxtjIVms1mde/+7BcTgNzNAWOPirztqZg/kdulPUeHNF
+VZgWFK0e6/fzpdVXJgpBOHvpAezpjtZPLOyCBYrTXF/clEeyqiZ4FaTZoCZ6Mk0w
+ANMaTZHRLJ1B+a1CA7bSmyPLFFP12EhZ9eNV8VC/k3MTta+AAlUoL8ehkmArSEx0
+nqcufqFU9JTT+Fv6ulpQEt5dFCWpF7K+mvrQJHEdTdaJ3s8JkVQ=
+=SYqP
+-----END PGP SIGNATURE-----
+
+--P6cTM9CQv3NfngqX--
