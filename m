@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF42443CE85
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F17F43CE8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237987AbhJ0QTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51198 "EHLO mail.kernel.org"
+        id S239263AbhJ0QUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:20:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhJ0QTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:19:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3618B60E76;
-        Wed, 27 Oct 2021 16:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635351430;
-        bh=v9grbAI3FqILUGkhSIP/vSoCHHwEZ9+rzbFCCMlHXt0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HvLJllQ7zhY2L5pvjRiZzVDgl+lbFR18tGeBCo8QHsJLRY5IlUCCWz6LLokuIPQ9R
-         Vp3gfEDrVK2uoh/XoNZkJvljDcDxx28AJUsyv/ygbEHwAHMVZFr5m/5pEUMiyodeqF
-         wmKrgvodNGrKZV745B6BFhINSskRX71blVzPsvG0=
-Date:   Wed, 27 Oct 2021 18:17:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chen Huang <chenhuang5@huawei.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        stable@vger.kernel.org, linux-mm@kvack.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 5.10.y] arm64: Avoid premature usercopy failure
-Message-ID: <YXl7hEc9TA4ikpSe@kroah.com>
-References: <20211027014047.2317325-1-chenhuang5@huawei.com>
+        id S238167AbhJ0QUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 12:20:19 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B26460F92;
+        Wed, 27 Oct 2021 16:17:51 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 12:17:49 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>, Guo Ren <guoren@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Abaci <abaci@linux.alibaba.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Wang <yun.wang@linux.alibaba.com>
+Subject: Re: [for-next][PATCH 14/15] ftrace: disable preemption when
+ recursion locked
+Message-ID: <20211027121749.43036285@gandalf.local.home>
+In-Reply-To: <20211027161002.350042850@goodmis.org>
+References: <20211027160940.084904334@goodmis.org>
+        <20211027161002.350042850@goodmis.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027014047.2317325-1-chenhuang5@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:40:47AM +0000, Chen Huang wrote:
-> From: Robin Murphy <robin.murphy@arm.com>
-> 
-> commit 295cf156231ca3f9e3a66bde7fab5e09c41835e0 upstream.
-> 
-> Al reminds us that the usercopy API must only return complete failure
-> if absolutely nothing could be copied. Currently, if userspace does
-> something silly like giving us an unaligned pointer to Device memory,
-> or a size which overruns MTE tag bounds, we may fail to honour that
-> requirement when faulting on a multi-byte access even though a smaller
-> access could have succeeded.
-> 
-> Add a mitigation to the fixup routines to fall back to a single-byte
-> copy if we faulted on a larger access before anything has been written
-> to the destination, to guarantee making *some* forward progress. We
-> needn't be too concerned about the overall performance since this should
-> only occur when callers are doing something a bit dodgy in the first
-> place. Particularly broken userspace might still be able to trick
-> generic_perform_write() into an infinite loop by targeting write() at
-> an mmap() of some read-only device register where the fault-in load
-> succeeds but any store synchronously aborts such that copy_to_user() is
-> genuinely unable to make progress, but, well, don't do that...
-> 
-> CC: stable@vger.kernel.org
-> Reported-by: Chen Huang <chenhuang5@huawei.com>
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> Link: https://lore.kernel.org/r/dc03d5c675731a1f24a62417dba5429ad744234e.1626098433.git.robin.murphy@arm.com
-> Signed-off-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
-> ---
->  arch/arm64/lib/copy_from_user.S | 13 ++++++++++---
->  arch/arm64/lib/copy_in_user.S   | 21 ++++++++++++++-------
->  arch/arm64/lib/copy_to_user.S   | 14 +++++++++++---
->  3 files changed, 35 insertions(+), 13 deletions(-)
+On Wed, 27 Oct 2021 12:09:54 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Both now queued up, thanks.
+> From: =?UTF-8?q?=E7=8E=8B=E8=B4=87?= <yun.wang@linux.alibaba.com>
 
-greg k-h
+This is just a artifact from my scripts that use quilt to send the email
+(quilt is at fault here). But my git repo has it correctly encoded.
+
+-- Steve
