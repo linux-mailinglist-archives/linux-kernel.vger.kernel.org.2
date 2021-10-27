@@ -2,643 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38A143D386
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC0743D38B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239301AbhJ0VIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244200AbhJ0VIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:08:17 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA3AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:05:50 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id bq11so8897374lfb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KObaixjsgVBrLjZTUjFxxroEHG8hmrt4d+fhJZU3iOo=;
-        b=tQ2q1WZmZFq3YnGevoJw/9fW0lgdTTMIgdVK12bOrki62gT4Zm3IFM1QOJD3ZmnhRj
-         amMEfCi3RARMQ7N37UfOIMp1WfIiomyV3fX0VMSJ+2AJCZwc5fBhvmn3oIUKqn947BBM
-         i2pdRnb2ewZ1+TbogzqQZEHqtyiG7bN05g9/n3ltUo+1hn7/ptfS5DRfhj3uCUOh5znD
-         W/ZwYRID0gY7huzmToFxRc8TdctcAgp07Fuiu5j3ldx6XAq16vKK4DFIlub+xyDuXDsV
-         Vo6mN7wpAkjOhJKu5UEfKNanH6+jSgPD0vWB6WfGwcBnwJwHjFw5UzCtfuiVkKQGgkgS
-         XcQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KObaixjsgVBrLjZTUjFxxroEHG8hmrt4d+fhJZU3iOo=;
-        b=GnfhGHxZmiVoWuDKFUY06MxxchpAXcnmZWJ2zWGY55q4mYnbxDzc/b5VqmUZXXYum1
-         dl0nqBQqz1nIvy+F5dhlPGHhLL9WIxav15IGXn6SOgIoFdp0NwFhi+kIW2yYVRwoKmV9
-         ypPSKbKGUesiXh3MGrc0ImXZHgLPthxdUzNkF2QZPK4C2wGDTeBVO7nFLlJ+SQJ9Eeay
-         E5ARKHy/7mpthGMiCJj4lsQvWgwPS/Pgs8OYTPZN5U1gA4P3RWjVh1xEgc18oW3p7R2K
-         VY39x1NnbA2XxeBu1mL2n1jMcKmLLZMcYHArBM0lOItobgs8ZF5ZOq5Dy8eqBg6pBgFi
-         R4fg==
-X-Gm-Message-State: AOAM530sWev3hrNWwX2uAo8ndp/dTdLx24CIUydRugxh8hzlFKRFWs+E
-        8zPDInXdDIo8/gmLBw/tC/GTVnH0cIdtUFnTU7z7Og==
-X-Google-Smtp-Source: ABdhPJygeYubWBt7wBMPmbapVbUfqVCC8fxcab68YH7vNxG3J6qnNkDDsYVAlluNH+U7Hkx0OktdiG5XQm67EdNwRrs=
-X-Received: by 2002:ac2:538d:: with SMTP id g13mr57851lfh.644.1635368748772;
- Wed, 27 Oct 2021 14:05:48 -0700 (PDT)
+        id S244189AbhJ0VLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:11:16 -0400
+Received: from mail-dm6nam12on2079.outbound.protection.outlook.com ([40.107.243.79]:63176
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235939AbhJ0VLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 17:11:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lKmOImfeV+mRR9iWUj+7twxl/Vey3putNowEH7zwrs6AlOa/57VR21HvF7ZS5SK0R17kOWxyJ6alPah9oSkV3IetQ60TDWunB5CVIwTu/9YVoU0aokq/3Q2XcTH5cSu1QKB+jAILKSIZB3JXeGDAPm5NSyEC/pnnwoY0n9RoaAWg5WNlnZPckZl0e0JPvoTweUBdmMzx5GyvUeVLRFFmzsWEHBU6+CEvLB/oCDle5o9Z3R2mHAplrvay4aEDWnnUi/mk3VwuGy204XiN7bfIZpbMRwCBrRUMO8PRJ1JsvUSJGwHsIzXodal6o346+xtu5OCHkoahxRSVCinRdnkWKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mN+o/As8jrv8ry1ylm65zpwdKYoUJEhTimx0FIgUO3Q=;
+ b=cLwvTX4BT3KK7+c79s9P7sJHMAk3mR//Sa/yi4SgKhHVWNTHw3AGGD3ooFuGm953J1bYoN5CsZ7gjE1K1aeFgfCxoUs0Nn8zd0iCx5TtKHB+puUcQBfPSokh2WO5AOwOh2u4+iyE4eNNYJ1Mma+HCvCK0VYY1lB+Hewn0Cifbd0TnKz/DG5aqgC5n0WSWj1ALi7FZtB5Xtuij92yLAU7+IquxHV/TjHz/20Cr7GiktQOOB3lo5lgJ3MCRd5U5+BNEDZE7jk0+4rLLP63jYDpCW52AwyuTzUmsLfdxHL0WpqRVoVMi3GY8Fzu4TyDjmczm0oJOECk2Od+XzVur96S0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mN+o/As8jrv8ry1ylm65zpwdKYoUJEhTimx0FIgUO3Q=;
+ b=hn/0bS2XDStHKihmjCIv9EgYBmHjc3YczlGE/DYGt4QENgJgh6CJcjmnOeq0rL2RTwDHRvDfVYUnelAdXIyQGJqo34frk6aMdgXBJuoMnw39Nc0pazvwrK4dFN2j/HWvTuc6aaCfS3cl4ciw3xwCtigbfkBuTVun+B+7XL5zC/w=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN8PR12MB2948.namprd12.prod.outlook.com (2603:10b6:408:6d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
+ 2021 21:08:46 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::d075:22bc:12ee:e73e]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::d075:22bc:12ee:e73e%7]) with mapi id 15.20.4608.018; Wed, 27 Oct 2021
+ 21:08:46 +0000
+Date:   Wed, 27 Oct 2021 21:08:35 +0000
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, bp@alien8.de, mingo@redhat.com,
+        mchehab@kernel.org, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v5 3/5] EDAC/amd64: Extend family ops functions
+Message-ID: <YXm/0wBVvplOzFva@yaz-ubuntu>
+References: <20211025145018.29985-1-nchatrad@amd.com>
+ <20211025145018.29985-4-nchatrad@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025145018.29985-4-nchatrad@amd.com>
+X-ClientProxiedBy: BL0PR02CA0096.namprd02.prod.outlook.com
+ (2603:10b6:208:51::37) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-References: <20211008180453.462291-1-brijesh.singh@amd.com>
- <20211008180453.462291-41-brijesh.singh@amd.com> <CAMkAt6rPVsJpvdzwG3Keu3gv=n0hmYdDpYJMVoDP7XgwzvH7vQ@mail.gmail.com>
- <bf55b53c-cc3d-f2c3-cf21-df6fb4882e13@amd.com> <CAMkAt6pCSNZiB7zVXp=70fF-qORZT0D5KCSY=GrJU0iiLZN_Mw@mail.gmail.com>
- <943a1b7d-d867-5daa-e2e7-f0d91de37103@amd.com>
-In-Reply-To: <943a1b7d-d867-5daa-e2e7-f0d91de37103@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Wed, 27 Oct 2021 15:05:36 -0600
-Message-ID: <CAMkAt6qPHtOy8ONBtjn4V28P5F5qqQtnP2sD5YrBjbe_Uwkdcg@mail.gmail.com>
-Subject: Re: [PATCH v6 40/42] virt: Add SEV-SNP guest driver
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, Marc Orr <marcorr@google.com>,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from yaz-ubuntu (165.204.25.250) by BL0PR02CA0096.namprd02.prod.outlook.com (2603:10b6:208:51::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Wed, 27 Oct 2021 21:08:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eabaf3ac-0f39-4dca-8150-08d9998df715
+X-MS-TrafficTypeDiagnostic: BN8PR12MB2948:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB2948A06E6AAD8926F08A54EFF8859@BN8PR12MB2948.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kaSgkiJL19DBPkIhJlJDPCJirUeUdd7i3GliCQ1yzhjxsCMJVRJIZbGGByEtM0HIlyFJUAF/reYt+ndoFXK0RCqyDZG6ygCx6k1NqbnZiSif5v5eoXadiSqopwQ3wNK/t5LUnTMQR2loY5MIJ+ggSpPmVMBLM0nRZsvg34PCvzah4kKen1EVFNI7TL6FaXWDBFxXMwWU/UFHqxaicHIu+q6UNWYvAmq38hF8kk5RIOCf43bFm1L1lO9rugCK+7ajMGsohB61DVBv01AsmyU4wCWc8IA+pwVm1nKsPqfqtoW3wLeSWKt2fBBt2LDWhMJV/xTBzbGbUCu7+6KQrnmz4WIGGzcyaWpp98T0azpSXxeAMzRg80+kl3F6nlHtM3GWrzjmlOZtlKd8pDpJwDzCka1deZIuF7Ae6XZTvhob22yxAnWtEvHRuHD34O13OOBmQp4PeBx5FHZi9/eVWiIKMaqqlST2H1/dxN6d2chQ/9g2waZan1r8I1XmDW/yhgTtxg457FuhdOLhnFLUcojYGnP6eANS+8VkOYNHm/rIEHP96+sSTC1bVCkxOh56qWI/8PQUKGnFCTQijafgRuD3vFQBSl+wjEVmAnXD7CnsIL40CrjiJMuvxa3ivdFU5Inpw625LZTrx68nbYdnVYGouw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(66476007)(9686003)(5660300002)(4326008)(2906002)(316002)(55016002)(8936002)(33716001)(66946007)(6862004)(44832011)(6666004)(86362001)(66556008)(83380400001)(956004)(8676002)(6496006)(6636002)(508600001)(26005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rTir4ar9ilakWh7RqxI4GHSkV1LFskCq59SGgE4IqCXxIjM557t8iOcViaJ5?=
+ =?us-ascii?Q?tQLizkqGI++dSeM50k+LxQAKIdRFd72zwqCNY/Dp4/AGSQsYHJXPUrZU3xU0?=
+ =?us-ascii?Q?X95CEV9iYWXJXbgFu3yX40TnZF3wwgDCZrlWA0i6MM+sQq5H5TEZIhaaze0A?=
+ =?us-ascii?Q?yeMohIoT7KupPBnjTgCh+g0dnlAWvHIki+1ezYIaRADkcBxrlTC5moT5i3GR?=
+ =?us-ascii?Q?L1dZvDhqaWnIEjCimFMxXkGZtndxGxaFbvNe0fAvSL9zSYWjPcF0TqN3/gfa?=
+ =?us-ascii?Q?L4Uy6dCZ86Da74mHBzy45qC7dcwcRQ7hkjBohZ1BQOXHSNOk0bt56D6x/l5Z?=
+ =?us-ascii?Q?/pF72WvNExNS17jNF58kTgwqzGLT0bcbVrAdG8t+pU4V7s4jgYVwOV3kyoKw?=
+ =?us-ascii?Q?BwyCqcszeTaELk3WcRvhXZRlqQSxUZMmbgNgAENLf6VsJT5v0YG5Ln/6rtvP?=
+ =?us-ascii?Q?UZfVwmb0NywGdenJhsuOMOE2+2HTdj8/AbfEsfxGdkcAf81ixhrWsYH9QUs2?=
+ =?us-ascii?Q?nP0E63O9dHtHAzev8whXxOyFQDwHVebEWWnDqLzdqO6wBAA+uW3umZ/hIR33?=
+ =?us-ascii?Q?7Pfzt3ZOxK7e1fnqnaFBa8RtEE59Dw0w8+RcrPUWgVeIoDwWFQxQIl0O1jYx?=
+ =?us-ascii?Q?Wgz5SFhyEsxuKF59rail6OI4x4T/Sr34l9OG7NlJT9JAjke+y8vn3HyNTFi2?=
+ =?us-ascii?Q?j7NOFfFwukw2o01FqFhDLRC3bhryXAz4bnhQ7ZoM3df9NUgs32L+uf7xx9hJ?=
+ =?us-ascii?Q?bjcuV2i0LWV2P8JRqfXAV13ZQNu8peQIAZhRXmCRrpyVBU+4xm8FZBF/pfT0?=
+ =?us-ascii?Q?dZe2Yn2XxCvv7ySoAcn+GDxASr+/q3fVrtzFWJg+Yk3CWdPhSWmJg3h9c2Dx?=
+ =?us-ascii?Q?hdTmLRj3T9zXwwidNm3UCUQZEH7QQb5CCRmzzaxuAE77XSr+X6XPZ80OJPGP?=
+ =?us-ascii?Q?L0ZAobWOOhV3F4XwqY4iE5b2rL4Sxi5V1oeiPIWjRgtFB4R8PN68kTrg4elc?=
+ =?us-ascii?Q?IcOzYOyoa5owpvV1ODqYo/MGIJaxhbosV8m6t1BJ4f/48Zw9EU+wp0X8Rdr7?=
+ =?us-ascii?Q?edNEZ5AHVnmTpzjE7m2K0CTyWkWEwF1C+n7P4NLJjFFms8NlsPbE9dvz2OK7?=
+ =?us-ascii?Q?6TmEvIoK0HpeO4l3Sea3e1plu8NEFpGe+xOtdri98e7BzeJlqssywPGe3Wao?=
+ =?us-ascii?Q?ImvkbcNLZSy71/rSTJiPUPoTLSJ5VZtJbw/Jt166Fz+iOkhe7kwrIYD3szoe?=
+ =?us-ascii?Q?RgVDTWI13LVNNHjVwPhNRDfDFRY/m142WhdyiqDkiZrEC6GWjOsHDlg3nM/E?=
+ =?us-ascii?Q?BL1LUKVdUBxY0G0UsI2NVEL0xLfUV4ntNeagsrLD9MhxfWngR2/m22Qe1SH8?=
+ =?us-ascii?Q?F4FIn4yEXx9J2amj2HsZpH+3eAUuFRJ9SPOa/Y2+u8nXPqDMiJTucuiP6gEW?=
+ =?us-ascii?Q?GIdjIqgqb91971hTF07zDkDGJqH5VO11+BYRrTlDViqv5lvAEfp1mzEpjvTq?=
+ =?us-ascii?Q?6y2vr5mciRmyNui1m6GclLr+5ZXcekYx+GPDo6vePa4GtH2egZjEgaGosXay?=
+ =?us-ascii?Q?8fwTrza76Mb0qNq1PhCSHaoneRPHLAMHXC68AajL1XaarS+H6E2uN+lI6eYF?=
+ =?us-ascii?Q?MNEq5h4aLcVj8gA7gh2yDHw=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eabaf3ac-0f39-4dca-8150-08d9998df715
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 21:08:46.6324
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YcjxwwOOKJwWRshoyN+C12CSagX9Neio+F/AzjF2DhFUTRIuYdNg3SkERuXg0348cXJUe9i/cqleeDfCFblYHA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2948
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 2:48 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
->
->
-> On 10/27/21 3:10 PM, Peter Gonda wrote:
-> > On Wed, Oct 27, 2021 at 10:08 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
-> >>
-> >> Hi Peter,
-> >>
-> >> Somehow this email was filtered out as spam and never reached to my
-> >> inbox. Sorry for the delay in the response.
-> >>
-> >> On 10/20/21 4:33 PM, Peter Gonda wrote:
-> >>> On Fri, Oct 8, 2021 at 12:06 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
-> >>>>
-> >>>> SEV-SNP specification provides the guest a mechanisum to communicate with
-> >>>> the PSP without risk from a malicious hypervisor who wishes to read, alter,
-> >>>> drop or replay the messages sent. The driver uses snp_issue_guest_request()
-> >>>> to issue GHCB SNP_GUEST_REQUEST or SNP_EXT_GUEST_REQUEST NAE events to
-> >>>> submit the request to PSP.
-> >>>>
-> >>>> The PSP requires that all communication should be encrypted using key
-> >>>> specified through the platform_data.
-> >>>>
-> >>>> The userspace can use SNP_GET_REPORT ioctl() to query the guest
-> >>>> attestation report.
-> >>>>
-> >>>> See SEV-SNP spec section Guest Messages for more details.
-> >>>>
-> >>>> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> >>>> ---
-> >>>>    Documentation/virt/coco/sevguest.rst  |  77 ++++
-> >>>>    drivers/virt/Kconfig                  |   3 +
-> >>>>    drivers/virt/Makefile                 |   1 +
-> >>>>    drivers/virt/coco/sevguest/Kconfig    |   9 +
-> >>>>    drivers/virt/coco/sevguest/Makefile   |   2 +
-> >>>>    drivers/virt/coco/sevguest/sevguest.c | 561 ++++++++++++++++++++++++++
-> >>>>    drivers/virt/coco/sevguest/sevguest.h |  98 +++++
-> >>>>    include/uapi/linux/sev-guest.h        |  44 ++
-> >>>>    8 files changed, 795 insertions(+)
-> >>>>    create mode 100644 Documentation/virt/coco/sevguest.rst
-> >>>>    create mode 100644 drivers/virt/coco/sevguest/Kconfig
-> >>>>    create mode 100644 drivers/virt/coco/sevguest/Makefile
-> >>>>    create mode 100644 drivers/virt/coco/sevguest/sevguest.c
-> >>>>    create mode 100644 drivers/virt/coco/sevguest/sevguest.h
-> >>>>    create mode 100644 include/uapi/linux/sev-guest.h
-> >>>>
-> >>>> diff --git a/Documentation/virt/coco/sevguest.rst b/Documentation/virt/coco/sevguest.rst
-> >>>> new file mode 100644
-> >>>> index 000000000000..002c90946b8a
-> >>>> --- /dev/null
-> >>>> +++ b/Documentation/virt/coco/sevguest.rst
-> >>>> @@ -0,0 +1,77 @@
-> >>>> +.. SPDX-License-Identifier: GPL-2.0
-> >>>> +
-> >>>> +===================================================================
-> >>>> +The Definitive SEV Guest API Documentation
-> >>>> +===================================================================
-> >>>> +
-> >>>> +1. General description
-> >>>> +======================
-> >>>> +
-> >>>> +The SEV API is a set of ioctls that are used by the guest or hypervisor
-> >>>> +to get or set certain aspect of the SEV virtual machine. The ioctls belong
-> >>>> +to the following classes:
-> >>>> +
-> >>>> + - Hypervisor ioctls: These query and set global attributes which affect the
-> >>>> +   whole SEV firmware.  These ioctl are used by platform provision tools.
-> >>>> +
-> >>>> + - Guest ioctls: These query and set attributes of the SEV virtual machine.
-> >>>> +
-> >>>> +2. API description
-> >>>> +==================
-> >>>> +
-> >>>> +This section describes ioctls that can be used to query or set SEV guests.
-> >>>> +For each ioctl, the following information is provided along with a
-> >>>> +description:
-> >>>> +
-> >>>> +  Technology:
-> >>>> +      which SEV techology provides this ioctl. sev, sev-es, sev-snp or all.
-> >>>> +
-> >>>> +  Type:
-> >>>> +      hypervisor or guest. The ioctl can be used inside the guest or the
-> >>>> +      hypervisor.
-> >>>> +
-> >>>> +  Parameters:
-> >>>> +      what parameters are accepted by the ioctl.
-> >>>> +
-> >>>> +  Returns:
-> >>>> +      the return value.  General error numbers (ENOMEM, EINVAL)
-> >>>> +      are not detailed, but errors with specific meanings are.
-> >>>> +
-> >>>> +The guest ioctl should be issued on a file descriptor of the /dev/sev-guest device.
-> >>>> +The ioctl accepts struct snp_user_guest_request. The input and output structure is
-> >>>> +specified through the req_data and resp_data field respectively. If the ioctl fails
-> >>>> +to execute due to a firmware error, then fw_err code will be set.
-> >>>> +
-> >>>> +::
-> >>>> +        struct snp_guest_request_ioctl {
-> >>>> +                /* Request and response structure address */
-> >>>> +                __u64 req_data;
-> >>>> +                __u64 resp_data;
-> >>>> +
-> >>>> +                /* firmware error code on failure (see psp-sev.h) */
-> >>>> +                __u64 fw_err;
-> >>>> +        };
-> >>>> +
-> >>>> +2.1 SNP_GET_REPORT
-> >>>> +------------------
-> >>>> +
-> >>>> +:Technology: sev-snp
-> >>>> +:Type: guest ioctl
-> >>>> +:Parameters (in): struct snp_report_req
-> >>>> +:Returns (out): struct snp_report_resp on success, -negative on error
-> >>>> +
-> >>>> +The SNP_GET_REPORT ioctl can be used to query the attestation report from the
-> >>>> +SEV-SNP firmware. The ioctl uses the SNP_GUEST_REQUEST (MSG_REPORT_REQ) command
-> >>>> +provided by the SEV-SNP firmware to query the attestation report.
-> >>>> +
-> >>>> +On success, the snp_report_resp.data will contains the report. The report
-> >>>> +will contain the format described in the SEV-SNP specification. See the SEV-SNP
-> >>>> +specification for further details.
-> >>>> +
-> >>>> +
-> >>>> +Reference
-> >>>> +---------
-> >>>> +
-> >>>> +SEV-SNP and GHCB specification: developer.amd.com/sev
-> >>>> +
-> >>>> +The driver is based on SEV-SNP firmware spec 0.9 and GHCB spec version 2.0.
-> >>>> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-> >>>> index 8061e8ef449f..e457e47610d3 100644
-> >>>> --- a/drivers/virt/Kconfig
-> >>>> +++ b/drivers/virt/Kconfig
-> >>>> @@ -36,4 +36,7 @@ source "drivers/virt/vboxguest/Kconfig"
-> >>>>    source "drivers/virt/nitro_enclaves/Kconfig"
-> >>>>
-> >>>>    source "drivers/virt/acrn/Kconfig"
-> >>>> +
-> >>>> +source "drivers/virt/coco/sevguest/Kconfig"
-> >>>> +
-> >>>>    endif
-> >>>> diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
-> >>>> index 3e272ea60cd9..9c704a6fdcda 100644
-> >>>> --- a/drivers/virt/Makefile
-> >>>> +++ b/drivers/virt/Makefile
-> >>>> @@ -8,3 +8,4 @@ obj-y                           += vboxguest/
-> >>>>
-> >>>>    obj-$(CONFIG_NITRO_ENCLAVES)   += nitro_enclaves/
-> >>>>    obj-$(CONFIG_ACRN_HSM)         += acrn/
-> >>>> +obj-$(CONFIG_SEV_GUEST)                += coco/sevguest/
-> >>>> diff --git a/drivers/virt/coco/sevguest/Kconfig b/drivers/virt/coco/sevguest/Kconfig
-> >>>> new file mode 100644
-> >>>> index 000000000000..96190919cca8
-> >>>> --- /dev/null
-> >>>> +++ b/drivers/virt/coco/sevguest/Kconfig
-> >>>> @@ -0,0 +1,9 @@
-> >>>> +config SEV_GUEST
-> >>>> +       tristate "AMD SEV Guest driver"
-> >>>> +       default y
-> >>>> +       depends on AMD_MEM_ENCRYPT && CRYPTO_AEAD2
-> >>>> +       help
-> >>>> +         The driver can be used by the SEV-SNP guest to communicate with the PSP to
-> >>>> +         request the attestation report and more.
-> >>>> +
-> >>>> +         If you choose 'M' here, this module will be called sevguest.
-> >>>> diff --git a/drivers/virt/coco/sevguest/Makefile b/drivers/virt/coco/sevguest/Makefile
-> >>>> new file mode 100644
-> >>>> index 000000000000..b1ffb2b4177b
-> >>>> --- /dev/null
-> >>>> +++ b/drivers/virt/coco/sevguest/Makefile
-> >>>> @@ -0,0 +1,2 @@
-> >>>> +# SPDX-License-Identifier: GPL-2.0-only
-> >>>> +obj-$(CONFIG_SEV_GUEST) += sevguest.o
-> >>>> diff --git a/drivers/virt/coco/sevguest/sevguest.c b/drivers/virt/coco/sevguest/sevguest.c
-> >>>> new file mode 100644
-> >>>> index 000000000000..2d313fb2ffae
-> >>>> --- /dev/null
-> >>>> +++ b/drivers/virt/coco/sevguest/sevguest.c
-> >>>> @@ -0,0 +1,561 @@
-> >>>> +// SPDX-License-Identifier: GPL-2.0-only
-> >>>> +/*
-> >>>> + * AMD Secure Encrypted Virtualization Nested Paging (SEV-SNP) guest request interface
-> >>>> + *
-> >>>> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> >>>> + *
-> >>>> + * Author: Brijesh Singh <brijesh.singh@amd.com>
-> >>>> + */
-> >>>> +
-> >>>> +#include <linux/module.h>
-> >>>> +#include <linux/kernel.h>
-> >>>> +#include <linux/types.h>
-> >>>> +#include <linux/mutex.h>
-> >>>> +#include <linux/io.h>
-> >>>> +#include <linux/platform_device.h>
-> >>>> +#include <linux/miscdevice.h>
-> >>>> +#include <linux/set_memory.h>
-> >>>> +#include <linux/fs.h>
-> >>>> +#include <crypto/aead.h>
-> >>>> +#include <linux/scatterlist.h>
-> >>>> +#include <linux/psp-sev.h>
-> >>>> +#include <uapi/linux/sev-guest.h>
-> >>>> +#include <uapi/linux/psp-sev.h>
-> >>>> +
-> >>>> +#include <asm/svm.h>
-> >>>> +#include <asm/sev.h>
-> >>>> +
-> >>>> +#include "sevguest.h"
-> >>>> +
-> >>>> +#define DEVICE_NAME    "sev-guest"
-> >>>> +#define AAD_LEN                48
-> >>>> +#define MSG_HDR_VER    1
-> >>>> +
-> >>>> +struct snp_guest_crypto {
-> >>>> +       struct crypto_aead *tfm;
-> >>>> +       u8 *iv, *authtag;
-> >>>> +       int iv_len, a_len;
-> >>>> +};
-> >>>> +
-> >>>> +struct snp_guest_dev {
-> >>>> +       struct device *dev;
-> >>>> +       struct miscdevice misc;
-> >>>> +
-> >>>> +       struct snp_guest_crypto *crypto;
-> >>>> +       struct snp_guest_msg *request, *response;
-> >>>> +       struct snp_secrets_page_layout *layout;
-> >>>> +       struct snp_req_data input;
-> >>>> +       u32 *os_area_msg_seqno;
-> >>>> +};
-> >>>> +
-> >>>> +static u32 vmpck_id;
-> >>>> +module_param(vmpck_id, uint, 0444);
-> >>>> +MODULE_PARM_DESC(vmpck_id, "The VMPCK ID to use when communicating with the PSP.");
-> >>>> +
-> >>>> +static DEFINE_MUTEX(snp_cmd_mutex);
-> >>>> +
-> >>>> +static inline u64 __snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
-> >>>> +{
-> >>>> +       u64 count;
-> >>>> +
-> >>>> +       /* Read the current message sequence counter from secrets pages */
-> >>>> +       count = *snp_dev->os_area_msg_seqno;
-> >>>> +
-> >>>> +       return count + 1;
-> >>>> +}
-> >>>> +
-> >>>> +/* Return a non-zero on success */
-> >>>> +static u64 snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
-> >>>> +{
-> >>>> +       u64 count = __snp_get_msg_seqno(snp_dev);
-> >>>> +
-> >>>> +       /*
-> >>>> +        * The message sequence counter for the SNP guest request is a  64-bit
-> >>>> +        * value but the version 2 of GHCB specification defines a 32-bit storage
-> >>>> +        * for the it. If the counter exceeds the 32-bit value then return zero.
-> >>>> +        * The caller should check the return value, but if the caller happen to
-> >>>> +        * not check the value and use it, then the firmware treats zero as an
-> >>>> +        * invalid number and will fail the  message request.
-> >>>> +        */
-> >>>> +       if (count >= UINT_MAX) {
-> >>>> +               pr_err_ratelimited("SNP guest request message sequence counter overflow\n");
-> >>>> +               return 0;
-> >>>> +       }
-> >>>> +
-> >>>> +       return count;
-> >>>> +}
-> >>>> +
-> >>>> +static void snp_inc_msg_seqno(struct snp_guest_dev *snp_dev)
-> >>>> +{
-> >>>> +       /*
-> >>>> +        * The counter is also incremented by the PSP, so increment it by 2
-> >>>> +        * and save in secrets page.
-> >>>> +        */
-> >>>> +       *snp_dev->os_area_msg_seqno += 2;
-> >>>> +}
-> >>>> +
-> >>>> +static inline struct snp_guest_dev *to_snp_dev(struct file *file)
-> >>>> +{
-> >>>> +       struct miscdevice *dev = file->private_data;
-> >>>> +
-> >>>> +       return container_of(dev, struct snp_guest_dev, misc);
-> >>>> +}
-> >>>> +
-> >>>> +static struct snp_guest_crypto *init_crypto(struct snp_guest_dev *snp_dev, u8 *key, size_t keylen)
-> >>>> +{
-> >>>> +       struct snp_guest_crypto *crypto;
-> >>>> +
-> >>>> +       crypto = kzalloc(sizeof(*crypto), GFP_KERNEL_ACCOUNT);
-> >>>> +       if (!crypto)
-> >>>> +               return NULL;
-> >>>> +
-> >>>> +       crypto->tfm = crypto_alloc_aead("gcm(aes)", 0, 0);
-> >>>> +       if (IS_ERR(crypto->tfm))
-> >>>> +               goto e_free;
-> >>>> +
-> >>>> +       if (crypto_aead_setkey(crypto->tfm, key, keylen))
-> >>>> +               goto e_free_crypto;
-> >>>> +
-> >>>> +       crypto->iv_len = crypto_aead_ivsize(crypto->tfm);
-> >>>> +       if (crypto->iv_len < 12) {
-> >>>> +               dev_err(snp_dev->dev, "IV length is less than 12.\n");
-> >>>> +               goto e_free_crypto;
-> >>>> +       }
-> >>>> +
-> >>>> +       crypto->iv = kmalloc(crypto->iv_len, GFP_KERNEL_ACCOUNT);
-> >>>> +       if (!crypto->iv)
-> >>>> +               goto e_free_crypto;
-> >>>> +
-> >>>> +       if (crypto_aead_authsize(crypto->tfm) > MAX_AUTHTAG_LEN) {
-> >>>> +               if (crypto_aead_setauthsize(crypto->tfm, MAX_AUTHTAG_LEN)) {
-> >>>> +                       dev_err(snp_dev->dev, "failed to set authsize to %d\n", MAX_AUTHTAG_LEN);
-> >>>> +                       goto e_free_crypto;
-> >>>> +               }
-> >>>> +       }
-> >>>> +
-> >>>> +       crypto->a_len = crypto_aead_authsize(crypto->tfm);
-> >>>> +       crypto->authtag = kmalloc(crypto->a_len, GFP_KERNEL_ACCOUNT);
-> >>>> +       if (!crypto->authtag)
-> >>>> +               goto e_free_crypto;
-> >>>> +
-> >>>> +       return crypto;
-> >>>> +
-> >>>> +e_free_crypto:
-> >>>> +       crypto_free_aead(crypto->tfm);
-> >>>> +e_free:
-> >>>> +       kfree(crypto->iv);
-> >>>> +       kfree(crypto->authtag);
-> >>>> +       kfree(crypto);
-> >>>> +
-> >>>> +       return NULL;
-> >>>> +}
-> >>>> +
-> >>>> +static void deinit_crypto(struct snp_guest_crypto *crypto)
-> >>>> +{
-> >>>> +       crypto_free_aead(crypto->tfm);
-> >>>> +       kfree(crypto->iv);
-> >>>> +       kfree(crypto->authtag);
-> >>>> +       kfree(crypto);
-> >>>> +}
-> >>>> +
-> >>>> +static int enc_dec_message(struct snp_guest_crypto *crypto, struct snp_guest_msg *msg,
-> >>>> +                          u8 *src_buf, u8 *dst_buf, size_t len, bool enc)
-> >>>> +{
-> >>>> +       struct snp_guest_msg_hdr *hdr = &msg->hdr;
-> >>>> +       struct scatterlist src[3], dst[3];
-> >>>> +       DECLARE_CRYPTO_WAIT(wait);
-> >>>> +       struct aead_request *req;
-> >>>> +       int ret;
-> >>>> +
-> >>>> +       req = aead_request_alloc(crypto->tfm, GFP_KERNEL);
-> >>>> +       if (!req)
-> >>>> +               return -ENOMEM;
-> >>>> +
-> >>>> +       /*
-> >>>> +        * AEAD memory operations:
-> >>>> +        * +------ AAD -------+------- DATA -----+---- AUTHTAG----+
-> >>>> +        * |  msg header      |  plaintext       |  hdr->authtag  |
-> >>>> +        * | bytes 30h - 5Fh  |    or            |                |
-> >>>> +        * |                  |   cipher         |                |
-> >>>> +        * +------------------+------------------+----------------+
-> >>>> +        */
-> >>>> +       sg_init_table(src, 3);
-> >>>> +       sg_set_buf(&src[0], &hdr->algo, AAD_LEN);
-> >>>> +       sg_set_buf(&src[1], src_buf, hdr->msg_sz);
-> >>>> +       sg_set_buf(&src[2], hdr->authtag, crypto->a_len);
-> >>>> +
-> >>>> +       sg_init_table(dst, 3);
-> >>>> +       sg_set_buf(&dst[0], &hdr->algo, AAD_LEN);
-> >>>> +       sg_set_buf(&dst[1], dst_buf, hdr->msg_sz);
-> >>>> +       sg_set_buf(&dst[2], hdr->authtag, crypto->a_len);
-> >>>> +
-> >>>> +       aead_request_set_ad(req, AAD_LEN);
-> >>>> +       aead_request_set_tfm(req, crypto->tfm);
-> >>>> +       aead_request_set_callback(req, 0, crypto_req_done, &wait);
-> >>>> +
-> >>>> +       aead_request_set_crypt(req, src, dst, len, crypto->iv);
-> >>>> +       ret = crypto_wait_req(enc ? crypto_aead_encrypt(req) : crypto_aead_decrypt(req), &wait);
-> >>>> +
-> >>>> +       aead_request_free(req);
-> >>>> +       return ret;
-> >>>> +}
-> >>>> +
-> >>>> +static int __enc_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
-> >>>> +                        void *plaintext, size_t len)
-> >>>> +{
-> >>>> +       struct snp_guest_crypto *crypto = snp_dev->crypto;
-> >>>> +       struct snp_guest_msg_hdr *hdr = &msg->hdr;
-> >>>> +
-> >>>> +       memset(crypto->iv, 0, crypto->iv_len);
-> >>>> +       memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-> >>>> +
-> >>>> +       return enc_dec_message(crypto, msg, plaintext, msg->payload, len, true);
-> >>>> +}
-> >>>> +
-> >>>> +static int dec_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
-> >>>> +                      void *plaintext, size_t len)
-> >>>> +{
-> >>>> +       struct snp_guest_crypto *crypto = snp_dev->crypto;
-> >>>> +       struct snp_guest_msg_hdr *hdr = &msg->hdr;
-> >>>> +
-> >>>> +       /* Build IV with response buffer sequence number */
-> >>>> +       memset(crypto->iv, 0, crypto->iv_len);
-> >>>> +       memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-> >>>> +
-> >>>> +       return enc_dec_message(crypto, msg, msg->payload, plaintext, len, false);
-> >>>> +}
-> >>>> +
-> >>>> +static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload, u32 sz)
-> >>>> +{
-> >>>> +       struct snp_guest_crypto *crypto = snp_dev->crypto;
-> >>>> +       struct snp_guest_msg *resp = snp_dev->response;
-> >>>> +       struct snp_guest_msg *req = snp_dev->request;
-> >>>> +       struct snp_guest_msg_hdr *req_hdr = &req->hdr;
-> >>>> +       struct snp_guest_msg_hdr *resp_hdr = &resp->hdr;
-> >>>> +
-> >>>> +       dev_dbg(snp_dev->dev, "response [seqno %lld type %d version %d sz %d]\n",
-> >>>> +               resp_hdr->msg_seqno, resp_hdr->msg_type, resp_hdr->msg_version, resp_hdr->msg_sz);
-> >>>> +
-> >>>> +       /* Verify that the sequence counter is incremented by 1 */
-> >>>> +       if (unlikely(resp_hdr->msg_seqno != (req_hdr->msg_seqno + 1)))
-> >>>> +               return -EBADMSG;
-> >>>> +
-> >>>> +       /* Verify response message type and version number. */
-> >>>> +       if (resp_hdr->msg_type != (req_hdr->msg_type + 1) ||
-> >>>> +           resp_hdr->msg_version != req_hdr->msg_version)
-> >>>> +               return -EBADMSG;
-> >>>> +
-> >>>> +       /*
-> >>>> +        * If the message size is greater than our buffer length then return
-> >>>> +        * an error.
-> >>>> +        */
-> >>>> +       if (unlikely((resp_hdr->msg_sz + crypto->a_len) > sz))
-> >>>> +               return -EBADMSG;
-> >>>> +
-> >>>> +       return dec_payload(snp_dev, resp, payload, resp_hdr->msg_sz + crypto->a_len);
-> >>>> +}
-> >>>> +
-> >>>> +static bool enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8 type,
-> >>>> +                       void *payload, size_t sz)
-> >>>> +{
-> >>>> +       struct snp_guest_msg *req = snp_dev->request;
-> >>>> +       struct snp_guest_msg_hdr *hdr = &req->hdr;
-> >>>> +
-> >>>> +       memset(req, 0, sizeof(*req));
-> >>>> +
-> >>>> +       hdr->algo = SNP_AEAD_AES_256_GCM;
-> >>>> +       hdr->hdr_version = MSG_HDR_VER;
-> >>>> +       hdr->hdr_sz = sizeof(*hdr);
-> >>>> +       hdr->msg_type = type;
-> >>>> +       hdr->msg_version = version;
-> >>>> +       hdr->msg_seqno = seqno;
-> >>>> +       hdr->msg_vmpck = vmpck_id;
-> >>>> +       hdr->msg_sz = sz;
-> >>>> +
-> >>>> +       /* Verify the sequence number is non-zero */
-> >>>> +       if (!hdr->msg_seqno)
-> >>>> +               return -ENOSR;
-> >>>> +
-> >>>> +       dev_dbg(snp_dev->dev, "request [seqno %lld type %d version %d sz %d]\n",
-> >>>> +               hdr->msg_seqno, hdr->msg_type, hdr->msg_version, hdr->msg_sz);
-> >>>> +
-> >>>> +       return __enc_payload(snp_dev, req, payload, sz);
-> >>>> +}
-> >>>> +
-> >>>> +static int handle_guest_request(struct snp_guest_dev *snp_dev, u64 exit_code, int msg_ver,
-> >>>> +                               u8 type, void *req_buf, size_t req_sz, void *resp_buf,
-> >>>> +                               u32 resp_sz, __u64 *fw_err)
-> >>>> +{
-> >>>> +       unsigned long err;
-> >>>> +       u64 seqno;
-> >>>> +       int rc;
-> >>>> +
-> >>>> +       /* Get message sequence and verify that its a non-zero */
-> >>>> +       seqno = snp_get_msg_seqno(snp_dev);
-> >>>> +       if (!seqno)
-> >>>> +               return -EIO;
-> >>>> +
-> >>>> +       memset(snp_dev->response, 0, sizeof(*snp_dev->response));
-> >>>> +
-> >>>> +       /* Encrypt the userspace provided payload */
-> >>>> +       rc = enc_payload(snp_dev, seqno, msg_ver, type, req_buf, req_sz);
-> >>>> +       if (rc)
-> >>>> +               return rc;
-> >>>> +
-> >>>> +       /* Call firmware to process the request */
-> >>>> +       rc = snp_issue_guest_request(exit_code, &snp_dev->input, &err);
-> >>>> +       if (fw_err)
-> >>>> +               *fw_err = err;
-> >>>> +
-> >>>> +       if (rc)
-> >>>> +               return rc;
-> >>>> +
-> >>>> +       rc = verify_and_dec_payload(snp_dev, resp_buf, resp_sz);
-> >>>> +       if (rc)
-> >>>> +               return rc;
-> >>>> +
-> >>>> +       /* Increment to new message sequence after the command is successful. */
-> >>>> +       snp_inc_msg_seqno(snp_dev);
-> >>>
-> >>> Thanks for updating this sequence number logic. But I still have some
-> >>> concerns. In verify_and_dec_payload() we check the encryption header
-> >>> but all these fields are accessible to the hypervisor, meaning it can
-> >>> change the header and cause this sequence number to not get
-> >>> incremented. We then will reuse the sequence number for the next
-> >>> command, which isn't great for AES GCM. It seems very hard to tell if
-> >>> the FW actually got our request and created a response there by
-> >>> incrementing the sequence number by 2, or if the hypervisor is acting
-> >>> in bad faith. It seems like to be safe we need to completely stop
-> >>> using this vmpck if we cannot confirm the PSP has gotten our request
-> >>> and created a response. Thoughts?
-> >>>
-> >>
-> >> Very good point, I think we can detect this condition by rearranging the
-> >> checks. The verify_and_dec_payload() is called only after the command is
-> >> succesful and does the following checks
-> >>
-> >> 1) Verifies the header
-> >> 2) Decrypts the payload
-> >> 3) Later we increment the sequence
-> >>
-> >> If we arrange to the below order then we can avoid this condition.
-> >> 1) Decrypt the payload
-> >> 2) Increment the sequence number
-> >> 3) Verify the header
-> >>
-> >> The descryption will succeed only if PSP constructed the payload.
-> >>
-> >> Does this make sense ?
-> >
-> > Either ordering seems fine to me. I don't think it changes much though
-> > since the header (bytes 30-50 according to the spec) are included in
-> > the authenticated data of the encryption. So any hypervisor modictions
-> > will lead to a decryption failure right?
-> >
-> > Either case if we do fail the decryption, what are your thoughts on
-> > not allowing further use of that VMPCK?
-> >
->
-> We have limited number of VMPCK (total 3). I am not sure switching to
-> different will change much. HV can quickly exaust it. Once we have SVSM
-> in-place then its possible that SVSM may use of the VMPCK. If the
-> decryption failed, then maybe its safe to erase the key from the secrets
-> page (in other words guest OS cannot use that key for any further
-> communication). A guest can reload the driver will different VMPCK id
-> and try again.
+On Mon, Oct 25, 2021 at 08:20:16PM +0530, Naveen Krishna Chatradhi wrote:
+...
+> @@ -3106,8 +3141,9 @@ static void read_mc_regs(struct amd64_pvt *pvt)
+>  		edac_dbg(0, "  TOP_MEM2 disabled\n");
+>  	}
+>  
+> -	if (pvt->umc) {
+> -		__read_mc_regs_df(pvt);
+> +	if (pvt->ops->get_mc_regs) {
+> +		pvt->ops->get_mc_regs(pvt);
 
-SNP cannot really cover DOS at all since the VMM could just never
-schedule the VM. In this case we know that the hypervisor is trying to
-mess with the guest, so my preference would be to stop sending guest
-messages to prevent that duplicated IV usage. If one caller gets an
-EBADMSG it knows its in this case but the rest of userspace has no
-idea. Maybe log an error?
+This entire read_mc_regs() function can be split up like how you've done the
+others. So get_mc_regs() is set for all family types. The common code can be
+split out into another function.
 
+> +
+>  		amd64_read_pci_cfg(pvt->F0, DF_DHAR, &pvt->dhar);
+>  
+>  		goto skip;
+> @@ -3154,7 +3190,10 @@ static void read_mc_regs(struct amd64_pvt *pvt)
+>  	}
+>  
+>  skip:
+> -	read_dct_base_mask(pvt);
+> +	pvt->ops->prep_chip_select(pvt);
+> +
+> +	if (pvt->ops->get_base_mask)
+
+This check is redundant since it's done below in per_family_init().
+
+...
+> @@ -3703,6 +3739,20 @@ static struct amd64_family_type *per_family_init(struct amd64_pvt *pvt)
+>  		return NULL;
+>  	}
+>  
+> +	/* ops required for all the families */
+> +	if (!pvt->ops->early_channel_count || !pvt->ops->dbam_to_cs ||
+> +	    !pvt->ops->prep_chip_select || !pvt->ops->get_base_mask ||
+> +	    !pvt->ops->display_misc_regs || !pvt->ops->populate_csrows) {
+> +		edac_dbg(1, "Common helper routines not defined.\n");
+> +		return NULL;
+> +	}
+> +
+> +	/* ops required for families 17h and later */
+> +	if (pvt->fam >= 0x17 && (!pvt->ops->get_umc_err_info || !pvt->ops->get_mc_regs)) {
+> +		edac_dbg(1, "Platform specific helper routines not defined.\n");
+> +		return NULL;
+> +	}
+> +
+>  	return fam_type;
+>  }
 >
-> thanks
+
+Thanks,
+Yazen  
