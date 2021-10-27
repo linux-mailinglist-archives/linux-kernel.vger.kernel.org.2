@@ -2,671 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D441E43BFE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9969A43BFEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237976AbhJ0Cgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236738AbhJ0Cge (ORCPT
+        id S238401AbhJ0Cgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:36:47 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39469 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238344AbhJ0Cgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:36:34 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D929BC061767
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:34:09 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 188so2163695ljj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mtXdMllJLXMaEjheU6K3G/2jubwRFfjSpJ7eK+nEscg=;
-        b=VrQosecdJz9/Wq0xkfXftq59Ujp+ITJl/fQpmitZhKplBSBweYQevRBj6BuvQ8y45V
-         pRQTXh6kNI49X+Z6x7QMPn0gmvFWF8kcpJMQ/t2ITLOStYIgqQQeb9DqLJKs1daiTFJw
-         KH+Zt85xdzMAnbJ03q5UIirC+QQO1ARgtZ8fetJVenCOW5zlNZB6MGVWP1M0R65je6va
-         iwba4cuZhL8/gsK5380rWgbwPnkxupTndEEoWAlP0ikTcpV//QeqjHUoZuuKuSXcl79q
-         9AzD3YejtgojJv8VNNyN126vrCtXn1j6fI/Ce2Z2lEM0GLDtqRUavbPG4HbZ4R+oCiH2
-         xmAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mtXdMllJLXMaEjheU6K3G/2jubwRFfjSpJ7eK+nEscg=;
-        b=bnVnnk2wdlu4H5KU+7CsBNLeQndpssVYdPR4pfTmekBdiuokh7FO2ZvK0qkFiIjG6l
-         kks5+sVMaeJZkz55oL0/5HTir83mO2PfEqKfX+z3Q9/5tMuvv+qX029Bbxk/xTw7mbCv
-         6v2LroON75nkK+2GqN3NSx1pbldlNWH36h9vDOnKLp8HaiXvUwuY8EvmzTV4eD2B4YxL
-         eTQDOVl6aG1Rn5vnWqHVa1l+w9L8fMpXut0sRsNKaoAx3+ZVauCEnzeYEGt/TIVkXinx
-         ZJgC55WTXKuSqhml+tyNqPQFVk+coo4hAeR4AdYs24VSTiVT4tK7RhhyEGtCTyVa5RHK
-         MAjw==
-X-Gm-Message-State: AOAM532dGX4vSnnAUE+S0JWTB9pN74LAtVNn96BCNI9XVj62zAvK24ea
-        nkvhfGLZPsSofTVUw7ThbhHB8g==
-X-Google-Smtp-Source: ABdhPJzF4c7jlaJiWQ8iSooCm5pDNH7A4qQxEVi4vb+Wjdu83U8X88g3rP5yM7rziuxu6lnkvxOGEA==
-X-Received: by 2002:a2e:9e4e:: with SMTP id g14mr22297560ljk.261.1635302048065;
-        Tue, 26 Oct 2021 19:34:08 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id q2sm1757639lfu.191.2021.10.26.19.34.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 19:34:07 -0700 (PDT)
-Subject: Re: [PATCH V2 3/3] thermal: qcom: add support for PMIC5 Gen2 ADCTM
-To:     Jishnu Prakash <quic_jprakash@quicinc.com>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        mka@chromium.org, robh+dt@kernel.org, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net,
-        manivannan.sadhasivam@linaro.org, linus.walleij@linaro.org,
-        quic_kgunda@quicinc.com, quic_aghayal@quicinc.com,
-        daniel.lezcano@linaro.org, rui.zhang@intel.com,
-        quic_subbaram@quicinc.com, jic23@kernel.org,
-        Jonathan.Cameron@huawei.com, amitk@kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-arm-msm-owner@vger.kernel.org, linux-iio@vger.kernel.org
-References: <1635264275-12530-1-git-send-email-quic_jprakash@quicinc.com>
- <1635264275-12530-4-git-send-email-quic_jprakash@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <e4099135-d453-3f16-5330-1925d38617aa@linaro.org>
-Date:   Wed, 27 Oct 2021 05:34:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 22:36:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtpPEDH_1635302053;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtpPEDH_1635302053)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 10:34:15 +0800
+Subject: [PATCH v6 1/2] ftrace: disable preemption when recursion locked
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <df8e9b3e-504c-635d-4e92-99cdf9f05479@linux.alibaba.com>
+Message-ID: <78c95844-16b7-8904-b48d-3b2ccd76a352@linux.alibaba.com>
+Date:   Wed, 27 Oct 2021 10:34:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <1635264275-12530-4-git-send-email-quic_jprakash@quicinc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <df8e9b3e-504c-635d-4e92-99cdf9f05479@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2021 19:04, Jishnu Prakash wrote:
-> Add support for PMIC5 Gen2 ADC_TM, used on PMIC7 chips. It is a
-> close counterpart of PMIC7 ADC and has the same functionality as
-> PMIC5 ADC_TM, for threshold monitoring and interrupt generation.
-> It is present on PMK8350 alone, like PMIC7 ADC and can be used
-> to monitor up to 8 ADC channels, from any of the PMIC7 PMICs
-> having ADC on a target, through PBS(Programmable Boot Sequence).
-> 
-> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
-> ---
->   drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 418 +++++++++++++++++++++++++++++--
->   1 file changed, 399 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> index 8494cc0..cdc4405 100644
-> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> @@ -71,6 +71,60 @@
->   #define ADC_TM5_M_HIGH_THR_INT_EN			BIT(1)
->   #define ADC_TM5_M_LOW_THR_INT_EN			BIT(0)
->   
-> +#define ADC_TM_GEN2_STATUS1				0x08
-> +#define ADC_TM_GEN2_STATUS_LOW_SET		0x09
-> +#define ADC_TM_GEN2_STATUS_LOW_CLR		0x0a
-> +#define ADC_TM_GEN2_STATUS_HIGH_SET		0x0b
-> +#define ADC_TM_GEN2_STATUS_HIGH_CLR		0x0c
-> +
-> +#define ADC_TM_GEN2_CFG_HS_SET			0x0d
-> +#define ADC_TM_GEN2_CFG_HS_FLAG			BIT(0)
-> +#define ADC_TM_GEN2_CFG_HS_CLR			0x0e
-> +
-> +#define ADC_TM_GEN2_SID				0x40
-> +
-> +#define ADC_TM_GEN2_CH_CTL			0x41
-> +#define ADC_TM_GEN2_TM_CH_SEL			GENMASK(7, 5)
-> +#define ADC_TM_GEN2_MEAS_INT_SEL		GENMASK(3, 2)
-> +
-> +#define ADC_TM_GEN2_ADC_DIG_PARAM		0x42
-> +#define ADC_TM_GEN2_CTL_CAL_SEL			GENMASK(5, 4)
-> +#define ADC_TM_GEN2_CTL_DEC_RATIO_MASK		GENMASK(3, 2)
-> +
-> +#define ADC_TM_GEN2_FAST_AVG_CTL		0x43
-> +#define ADC_TM_GEN2_FAST_AVG_EN			BIT(7)
-> +
-> +#define ADC_TM_GEN2_ADC_CH_SEL_CTL		0x44
-> +
-> +#define ADC_TM_GEN2_DELAY_CTL			0x45
-> +#define ADC_TM_GEN2_HW_SETTLE_DELAY		GENMASK(3, 0)
-> +
-> +#define ADC_TM_GEN2_EN_CTL1			0x46
-> +#define ADC_TM_GEN2_EN				BIT(7)
-> +
-> +#define ADC_TM_GEN2_CONV_REQ			0x47
-> +#define ADC_TM_GEN2_CONV_REQ_EN			BIT(7)
-> +
-> +#define ADC_TM_GEN2_LOW_THR0			0x49
-> +#define ADC_TM_GEN2_LOW_THR1			0x4a
-> +#define ADC_TM_GEN2_HIGH_THR0			0x4b
-> +#define ADC_TM_GEN2_HIGH_THR1			0x4c
-> +#define ADC_TM_GEN2_LOWER_MASK(n)		((n) & GENMASK(7, 0))
-> +#define ADC_TM_GEN2_UPPER_MASK(n)		(((n) & GENMASK(15, 8)) >> 8)
-> +
-> +#define ADC_TM_GEN2_MEAS_IRQ_EN			0x4d
-> +#define ADC_TM_GEN2_MEAS_EN			BIT(7)
-> +#define ADC_TM5_GEN2_HIGH_THR_INT_EN		BIT(1)
-> +#define ADC_TM5_GEN2_LOW_THR_INT_EN		BIT(0)
-> +
-> +#define ADC_TM_GEN2_MEAS_INT_LSB		0x50
-> +#define ADC_TM_GEN2_MEAS_INT_MSB		0x51
-> +#define ADC_TM_GEN2_MEAS_INT_MODE		0x52
-> +
-> +#define ADC_TM_GEN2_Mn_DATA0(n)			((n * 2) + 0xa0)
-> +#define ADC_TM_GEN2_Mn_DATA1(n)			((n * 2) + 0xa1)
-> +#define ADC_TM_GEN2_DATA_SHIFT			8
-> +
->   enum adc5_timer_select {
->   	ADC5_TIMER_SEL_1 = 0,
->   	ADC5_TIMER_SEL_2,
-> @@ -78,10 +132,10 @@ enum adc5_timer_select {
->   	ADC5_TIMER_SEL_NONE,
->   };
->   
-> -struct adc_tm5_data {
-> -	const u32	full_scale_code_volt;
-> -	unsigned int	*decimation;
-> -	unsigned int	*hw_settle;
-> +enum adc5_gen {
-> +	ADC_TM5,
-> +	ADC_TM5_GEN2,
-> +	ADC_TM5_MAX
->   };
->   
->   enum adc_tm5_cal_method {
-> @@ -91,6 +145,19 @@ enum adc_tm5_cal_method {
->   };
->   
->   struct adc_tm5_chip;
-> +struct adc_tm5_channel;
-> +
-> +struct adc_tm5_data {
-> +	const u32	full_scale_code_volt;
-> +	unsigned int	*decimation;
-> +	unsigned int	*hw_settle;
-> +	int (*disable_channel)(struct adc_tm5_channel *channel);
-> +	int (*configure)(struct adc_tm5_channel *channel, int low,
-> +					int high);
-> +	irqreturn_t (*isr)(int irq, void *data);
-> +	char *irq_name;
-> +	int gen;
-> +};
->   
->   /**
->    * struct adc_tm5_channel - ADC Thermal Monitoring channel data.
-> @@ -100,6 +167,12 @@ struct adc_tm5_chip;
->    * @prescale: channel scaling performed on the input signal.
->    * @hw_settle_time: the time between AMUX being configured and the
->    *	start of conversion.
-> + * @decimation: sampling rate supported for the channel.
-> + * @avg_samples: ability to provide single result from the ADC
-> + *	that is an average of multiple measurements.
-> + * @high_thr_en: channel upper voltage threshold enable state.
-> + * @low_thr_en: channel lower voltage threshold enable state.
-> + * @meas_en: recurring measurement enable state
->    * @iio: IIO channel instance used by this channel.
->    * @chip: ADC TM chip instance.
->    * @tzd: thermal zone device used by this channel.
-> @@ -110,6 +183,11 @@ struct adc_tm5_channel {
->   	enum adc_tm5_cal_method	cal_method;
->   	unsigned int		prescale;
->   	unsigned int		hw_settle_time;
-> +	unsigned int		decimation;	/* For Gen2 ADC_TM */
-> +	unsigned int		avg_samples;	/* For Gen2 ADC_TM */
-> +	bool			high_thr_en;		/* For Gen2 ADC_TM */
-> +	bool			low_thr_en;		/* For Gen2 ADC_TM */
-> +	bool			meas_en;		/* For Gen2 ADC_TM */
->   	struct iio_channel	*iio;
->   	struct adc_tm5_chip	*chip;
->   	struct thermal_zone_device *tzd;
-> @@ -123,9 +201,12 @@ struct adc_tm5_channel {
->    * @channels: array of ADC TM channel data.
->    * @nchannels: amount of channels defined/allocated
->    * @decimation: sampling rate supported for the channel.
-> + *      Applies to all channels, used only on Gen1 ADC_TM.
->    * @avg_samples: ability to provide single result from the ADC
-> - *	that is an average of multiple measurements.
-> + *      that is an average of multiple measurements. Applies to all
-> + *      channels, used only on Gen1 ADC_TM.
->    * @base: base address of TM registers.
-> + * @adc_mutex_lock: ADC_TM mutex lock.
+As the documentation explained, ftrace_test_recursion_trylock()
+and ftrace_test_recursion_unlock() were supposed to disable and
+enable preemption properly, however currently this work is done
+outside of the function, which could be missing by mistake.
 
-Please specify that it is used only for gen2 and that it keeps written 
-and cached channel setup in sync (feel free to correct this description 
-according to your understanding, I might be wrong here).
+And since the internal using of trace_test_and_set_recursion()
+and trace_clear_recursion() also require preemption disabled, we
+can just merge the logical.
 
->    */
->   struct adc_tm5_chip {
->   	struct regmap		*regmap;
-> @@ -136,14 +217,15 @@ struct adc_tm5_chip {
->   	unsigned int		decimation;
->   	unsigned int		avg_samples;
->   	u16			base;
-> +	struct mutex		adc_mutex_lock;
->   };
->   
-> -static const struct adc_tm5_data adc_tm5_data_pmic = {
-> -	.full_scale_code_volt = 0x70e4,
-> -	.decimation = (unsigned int []) { 250, 420, 840 },
-> -	.hw_settle = (unsigned int []) { 15, 100, 200, 300, 400, 500, 600, 700,
-> -					 1000, 2000, 4000, 8000, 16000, 32000,
-> -					 64000, 128000 },
-> +enum adc_tm_gen2_time_select {
-> +	MEAS_INT_50MS = 0,
-> +	MEAS_INT_100MS,
-> +	MEAS_INT_1S,
-> +	MEAS_INT_SET,
-> +	MEAS_INT_NONE,
->   };
+This patch will make sure the preemption has been disabled when
+trace_test_and_set_recursion() return bit >= 0, and
+trace_clear_recursion() will enable the preemption if previously
+enabled.
 
-Move this enum to the top, closer to the rest of definitions.
+CC: Petr Mladek <pmladek@suse.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
+CC: Miroslav Benes <mbenes@suse.cz>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ arch/csky/kernel/probes/ftrace.c     |  2 --
+ arch/parisc/kernel/ftrace.c          |  2 --
+ arch/powerpc/kernel/kprobes-ftrace.c |  2 --
+ arch/riscv/kernel/probes/ftrace.c    |  2 --
+ arch/x86/kernel/kprobes/ftrace.c     |  2 --
+ include/linux/trace_recursion.h      | 13 ++++++++++++-
+ kernel/livepatch/patch.c             | 13 +++++++------
+ kernel/trace/ftrace.c                | 15 +++++----------
+ kernel/trace/trace_functions.c       |  5 -----
+ 9 files changed, 24 insertions(+), 32 deletions(-)
 
->   
->   static int adc_tm5_read(struct adc_tm5_chip *adc_tm, u16 offset, u8 *data, int len)
-> @@ -210,6 +292,61 @@ static irqreturn_t adc_tm5_isr(int irq, void *data)
->   	return IRQ_HANDLED;
->   }
->   
-> +static irqreturn_t adc_tm5_gen2_isr(int irq, void *data)
-> +{
-> +	struct adc_tm5_chip *chip = data;
-> +	u8 status_low, status_high;
-> +	int ret, i;
-> +
-> +	ret = adc_tm5_read(chip, ADC_TM_GEN2_STATUS_LOW_CLR, &status_low, sizeof(status_low));
-> +	if (ret) {
-> +		dev_err(chip->dev, "read status_low failed: %d\n", ret);
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	ret = adc_tm5_read(chip, ADC_TM_GEN2_STATUS_HIGH_CLR, &status_high, sizeof(status_high));
-> +	if (ret) {
-> +		dev_err(chip->dev, "read status_high failed: %d\n", ret);
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_STATUS_LOW_CLR, &status_low, sizeof(status_low));
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "clear status low failed with %d\n", ret);
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_STATUS_HIGH_CLR, &status_high, sizeof(status_high));
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "clear status high failed with %d\n", ret);
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	for (i = 0; i < chip->nchannels; i++) {
-> +		bool upper_set = false, lower_set = false;
-> +		unsigned int ch = chip->channels[i].channel;
-> +
-> +		/* No TZD, we warned at the boot time */
-> +		if (!chip->channels[i].tzd)
-> +			continue;
-> +
-> +		if (!chip->channels[i].meas_en)
-> +			continue;
-> +
-> +		lower_set = (status_low & BIT(ch)) &&
-> +			(chip->channels[i].low_thr_en);
-> +
-> +		upper_set = (status_high & BIT(ch)) &&
-> +			(chip->channels[i].high_thr_en);
-> +
-> +		if (upper_set || lower_set)
-> +			thermal_zone_device_update(chip->channels[i].tzd,
-> +						   THERMAL_EVENT_UNSPECIFIED);
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->   static int adc_tm5_get_temp(void *data, int *temp)
->   {
->   	struct adc_tm5_channel *channel = data;
-> @@ -240,6 +377,104 @@ static int adc_tm5_disable_channel(struct adc_tm5_channel *channel)
->   				  0);
->   }
->   
-> +#define ADC_TM_GEN2_POLL_DELAY_MIN_US		100
-> +#define ADC_TM_GEN2_POLL_DELAY_MAX_US		110
-> +#define ADC_TM_GEN2_POLL_RETRY_COUNT			3
-> +
-> +static int32_t adc_tm5_gen2_conv_req(struct adc_tm5_chip *chip)
-> +{
-> +	int ret = 0;
-> +	u8 data = 0;
-> +	unsigned int count;
-> +
-> +	data = ADC_TM_GEN2_EN;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_EN_CTL1, &data, 1);
-> +	if (ret < 0) {
-> +		pr_err("adc-tm enable failed with %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	data = ADC_TM_GEN2_CFG_HS_FLAG;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_CFG_HS_SET, &data, 1);
-> +	if (ret < 0) {
-> +		pr_err("adc-tm handshake failed with %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	data = ADC_TM_GEN2_CONV_REQ_EN;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_CONV_REQ, &data, 1);
-> +	if (ret < 0) {
-> +		pr_err("adc-tm request conversion failed with %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * SW sets a handshake bit and waits for PBS to clear it
-> +	 * before the next conversion request can be queued.
-> +	 */
-> +
-> +	for (count = 0; count < ADC_TM_GEN2_POLL_RETRY_COUNT; count++) {
-> +		ret = adc_tm5_read(chip, ADC_TM_GEN2_CFG_HS_SET, &data, sizeof(data));
-> +		if (ret < 0) {
-> +			pr_err("adc-tm read failed with %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		if (!(data & ADC_TM_GEN2_CFG_HS_FLAG))
-> +			return ret;
-> +		usleep_range(ADC_TM_GEN2_POLL_DELAY_MIN_US,
-> +			ADC_TM_GEN2_POLL_DELAY_MAX_US);
-> +	}
-> +
-> +	pr_err("adc-tm conversion request handshake timed out\n");
-> +
-> +	return -ETIMEDOUT;
-> +}
-> +
-> +static int adc_tm5_gen2_disable_channel(struct adc_tm5_channel *channel)
-> +{
-> +	struct adc_tm5_chip *chip = channel->chip;
-> +	int ret;
-> +	u8 val;
-> +
-> +	mutex_lock(&chip->adc_mutex_lock);
-> +
-> +	channel->meas_en = false;
-> +	channel->high_thr_en = false;
-> +	channel->low_thr_en = false;
-> +
-> +	ret = adc_tm5_read(chip, ADC_TM_GEN2_CH_CTL, &val, sizeof(val));
-> +	if (ret < 0) {
-> +		pr_err("adc-tm block read failed with %d\n", ret);
-> +		goto disable_fail;
-> +	}
-> +
-> +	val &= ~ADC_TM_GEN2_TM_CH_SEL;
-> +	val |= FIELD_PREP(ADC_TM_GEN2_TM_CH_SEL, channel->channel);
-> +
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_CH_CTL, &val, 1);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "adc-tm channel disable failed with %d\n", ret);
-> +		goto disable_fail;
-> +	}
-> +
-> +	val = 0;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_MEAS_IRQ_EN, &val, 1);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "adc-tm interrupt disable failed with %d\n", ret);
-> +		goto disable_fail;
-> +	}
-> +
-> +
-> +	ret = adc_tm5_gen2_conv_req(channel->chip);
-> +	if (ret < 0)
-> +		dev_err(chip->dev, "adc-tm channel configure failed with %d\n", ret);
-> +
-> +disable_fail:
-> +	mutex_unlock(&chip->adc_mutex_lock);
-> +	return ret;
-> +}
-> +
->   static int adc_tm5_enable(struct adc_tm5_chip *chip)
->   {
->   	int ret;
-> @@ -320,6 +555,86 @@ static int adc_tm5_configure(struct adc_tm5_channel *channel, int low, int high)
->   	return adc_tm5_enable(chip);
->   }
->   
-> +static int adc_tm5_gen2_configure(struct adc_tm5_channel *channel, int low, int high)
-> +{
-> +	struct adc_tm5_chip *chip = channel->chip;
-> +	int ret;
-> +	u8 buf[14];
-> +	u16 adc_code;
-> +
-> +	mutex_lock(&chip->adc_mutex_lock);
-> +
-> +	channel->meas_en = true;
-> +
-> +	ret = adc_tm5_read(chip, ADC_TM_GEN2_SID, buf, sizeof(buf));
-> +	if (ret < 0) {
-> +		pr_err("adc-tm block read failed with %d\n", ret);
-> +		goto config_fail;
-> +	}
-> +
-> +	/* Set SID from virtual channel number */
-> +	buf[0] = channel->adc_channel >> 8;
-> +
-> +	/* Set TM channel number used and measurement interval */
-> +	buf[1] &= ~ADC_TM_GEN2_TM_CH_SEL;
-> +	buf[1] |= FIELD_PREP(ADC_TM_GEN2_TM_CH_SEL, channel->channel);
-> +	buf[1] &= ~ADC_TM_GEN2_MEAS_INT_SEL;
-> +	buf[1] |= FIELD_PREP(ADC_TM_GEN2_MEAS_INT_SEL, MEAS_INT_1S);
-> +
-> +	buf[2] &= ~ADC_TM_GEN2_CTL_DEC_RATIO_MASK;
-> +	buf[2] |= FIELD_PREP(ADC_TM_GEN2_CTL_DEC_RATIO_MASK, channel->decimation);
-> +	buf[2] &= ~ADC_TM_GEN2_CTL_CAL_SEL;
-> +	buf[2] |= FIELD_PREP(ADC_TM_GEN2_CTL_CAL_SEL, channel->cal_method);
-> +
-> +	buf[3] = channel->avg_samples | ADC_TM_GEN2_FAST_AVG_EN;
-> +
-> +	buf[4] = channel->adc_channel & 0xff;
-> +
-> +	buf[5] = channel->hw_settle_time & ADC_TM_GEN2_HW_SETTLE_DELAY;
-> +
-> +	/* High temperature corresponds to low voltage threshold */
-> +	if (high != INT_MAX) {
-> +		channel->low_thr_en = true;
-> +		adc_code = qcom_adc_tm5_gen2_temp_res_scale(high);
-> +
-> +		buf[9] = adc_code & 0xff;
-> +		buf[10] = adc_code >> 8;
-> +	} else {
-> +		channel->low_thr_en = false;
-> +	}
-> +
-> +	/* Low temperature corresponds to high voltage threshold */
-> +	if (low != -INT_MAX) {
-> +		channel->high_thr_en = true;
-> +		adc_code = qcom_adc_tm5_gen2_temp_res_scale(low);
-> +
-> +		buf[11] = adc_code & 0xff;
-> +		buf[12] = adc_code >> 8;
-> +	} else {
-> +		channel->high_thr_en = false;
-> +	}
-> +
-> +	buf[13] = ADC_TM_GEN2_MEAS_EN;
-> +	if (channel->high_thr_en)
-> +		buf[13] |= ADC_TM5_GEN2_HIGH_THR_INT_EN;
-> +	if (channel->low_thr_en)
-> +		buf[13] |= ADC_TM5_GEN2_LOW_THR_INT_EN;
-> +
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_SID, buf, sizeof(buf));
-> +	if (ret) {
-> +		dev_err(chip->dev, "channel %d params write failed: %d\n", channel->channel, ret);
-> +		goto config_fail;
-> +	}
-> +
-> +	ret = adc_tm5_gen2_conv_req(channel->chip);
-> +	if (ret < 0)
-> +		dev_err(chip->dev, "adc-tm channel configure failed with %d\n", ret);
-> +
-> +config_fail:
-> +	mutex_unlock(&chip->adc_mutex_lock);
-> +	return ret;
-> +}
-> +
->   static int adc_tm5_set_trips(void *data, int low, int high)
->   {
->   	struct adc_tm5_channel *channel = data;
-> @@ -334,14 +649,14 @@ static int adc_tm5_set_trips(void *data, int low, int high)
->   		channel->channel, low, high);
->   
->   	if (high == INT_MAX && low <= -INT_MAX)
-> -		ret = adc_tm5_disable_channel(channel);
-> +		ret = chip->data->disable_channel(channel);
->   	else
-> -		ret = adc_tm5_configure(channel, low, high);
-> +		ret = chip->data->configure(channel, low, high);
->   
->   	return ret;
->   }
->   
-> -static struct thermal_zone_of_device_ops adc_tm5_ops = {
-> +static struct thermal_zone_of_device_ops adc_tm5_thermal_ops = {
->   	.get_temp = adc_tm5_get_temp,
->   	.set_trips = adc_tm5_set_trips,
->   };
-> @@ -357,7 +672,7 @@ static int adc_tm5_register_tzd(struct adc_tm5_chip *adc_tm)
->   		tzd = devm_thermal_zone_of_sensor_register(adc_tm->dev,
->   							   adc_tm->channels[i].channel,
->   							   &adc_tm->channels[i],
-> -							   &adc_tm5_ops);
-> +							   &adc_tm5_thermal_ops);
->   		if (IS_ERR(tzd)) {
->   			if (PTR_ERR(tzd) == -ENODEV) {
->   				dev_warn(adc_tm->dev, "thermal sensor on channel %d is not used\n",
-> @@ -395,6 +710,11 @@ static int adc_tm5_init(struct adc_tm5_chip *chip)
->   		}
->   	}
->   
-> +	if (chip-->data->gen == ADC_TM5_GEN2) {
-> +		mutex_init(&chip->adc_mutex_lock);
-> +		return ret;
-> +	}
-> +
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index b388228..834cffc 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -17,7 +17,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
 
-Just init the mutex always, there is no need to be so picky in the init 
-code.
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (!p) {
+ 		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
+@@ -57,7 +56,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 7d14242..90c4345 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -210,7 +210,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
 
->   	buf[0] = chip->decimation;
->   	buf[1] = chip->avg_samples | ADC_TM5_FAST_AVG_EN;
->   	buf[2] = ADC_TM5_TIMER1;
-> @@ -415,7 +735,7 @@ static int adc_tm5_get_dt_channel_data(struct adc_tm5_chip *adc_tm,
->   				       struct device_node *node)
->   {
->   	const char *name = node->name;
-> -	u32 chan, value, varr[2];
-> +	u32 chan, value, adc_channel, varr[2];
->   	int ret;
->   	struct device *dev = adc_tm->dev;
->   	struct of_phandle_args args;
-> @@ -445,7 +765,11 @@ static int adc_tm5_get_dt_channel_data(struct adc_tm5_chip *adc_tm,
->   	}
->   	of_node_put(args.np);
->   
-> -	if (args.args_count != 1 || args.args[0] >= ADC5_MAX_CHANNEL) {
-> +	adc_channel = args.args[0];
-> +	if (adc_tm->data->gen == ADC_TM5_GEN2)
-> +		adc_channel &= 0xff;
-> +
-> +	if (args.args_count != 1 || adc_channel >= ADC5_MAX_CHANNEL) {
->   		dev_err(dev, "%s: invalid ADC channel number %d\n", name, chan);
->   		return -EINVAL;
->   	}
-> @@ -491,9 +815,61 @@ static int adc_tm5_get_dt_channel_data(struct adc_tm5_chip *adc_tm,
->   	else
->   		channel->cal_method = ADC_TM5_ABSOLUTE_CAL;
->   
-> +	if (adc_tm->data->gen == ADC_TM5_GEN2) {
-> +		ret = of_property_read_u32(node, "qcom,decimation", &value);
-> +		if (!ret) {
-> +			ret = qcom_adc5_decimation_from_dt(value, adc_tm->data->decimation);
-> +			if (ret < 0) {
-> +				dev_err(dev, "invalid decimation %d\n", value);
-> +				return ret;
-> +			}
-> +			channel->decimation = ret;
-> +		} else {
-> +			channel->decimation = ADC5_DECIMATION_DEFAULT;
-> +		}
-> +
-> +		ret = of_property_read_u32(node, "qcom,avg-samples", &value);
-> +		if (!ret) {
-> +			ret = qcom_adc5_avg_samples_from_dt(value);
-> +			if (ret < 0) {
-> +				dev_err(dev, "invalid avg-samples %d\n", value);
-> +				return ret;
-> +			}
-> +			channel->avg_samples = ret;
-> +		} else {
-> +			channel->avg_samples = VADC_DEF_AVG_SAMPLES;
-> +		}
-> +	}
-> +
->   	return 0;
->   }
->   
-> +static const struct adc_tm5_data adc_tm5_data_pmic = {
-> +	.full_scale_code_volt = 0x70e4,
-> +	.decimation = (unsigned int []) { 250, 420, 840 },
-> +	.hw_settle = (unsigned int []) { 15, 100, 200, 300, 400, 500, 600, 700,
-> +					 1000, 2000, 4000, 8000, 16000, 32000,
-> +					 64000, 128000 },
-> +	.disable_channel = adc_tm5_disable_channel,
-> +	.configure = adc_tm5_configure,
-> +	.isr = adc_tm5_isr,
-> +	.irq_name = "pm-adc-tm5",
-> +	.gen = ADC_TM5,
-> +};
-> +
-> +static const struct adc_tm5_data adc_tm5_gen2_data_pmic = {
-> +	.full_scale_code_volt = 0x70e4,
-> +	.decimation = (unsigned int []) { 85, 340, 1360 },
-> +	.hw_settle = (unsigned int []) { 15, 100, 200, 300, 400, 500, 600, 700,
-> +					 1000, 2000, 4000, 8000, 16000, 32000,
-> +					 64000, 128000 },
-> +	.disable_channel = adc_tm5_gen2_disable_channel,
-> +	.configure = adc_tm5_gen2_configure,
-> +	.isr = adc_tm5_gen2_isr,
-> +	.irq_name = "pm-adc-tm5-gen2",
-> +	.gen = ADC_TM5_GEN2,
-> +};
-> +
->   static int adc_tm5_get_dt_data(struct adc_tm5_chip *adc_tm, struct device_node *node)
->   {
->   	struct adc_tm5_channel *channels;
-> @@ -603,8 +979,8 @@ static int adc_tm5_probe(struct platform_device *pdev)
->   		return ret;
->   	}
->   
-> -	return devm_request_threaded_irq(dev, irq, NULL, adc_tm5_isr,
-> -					 IRQF_ONESHOT, "pm-adc-tm5", adc_tm);
-> +	return devm_request_threaded_irq(dev, irq, NULL, adc_tm->data->isr,
-> +			IRQF_ONESHOT, adc_tm->data->irq_name, adc_tm);
->   }
->   
->   static const struct of_device_id adc_tm5_match_table[] = {
-> @@ -612,6 +988,10 @@ static const struct of_device_id adc_tm5_match_table[] = {
->   		.compatible = "qcom,spmi-adc-tm5",
->   		.data = &adc_tm5_data_pmic,
->   	},
-> +	{
-> +		.compatible = "qcom,spmi-adc-tm5-gen2",
-> +		.data = &adc_tm5_gen2_data_pmic,
-> +	},
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(of, adc_tm5_match_table);
-> 
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -239,7 +238,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	}
+ 	__this_cpu_write(current_kprobe, NULL);
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+index 7154d58..072ebe7 100644
+--- a/arch/powerpc/kernel/kprobes-ftrace.c
++++ b/arch/powerpc/kernel/kprobes-ftrace.c
+@@ -26,7 +26,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		return;
 
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)nip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -61,7 +60,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+index aab85a8..7142ec4 100644
+--- a/arch/riscv/kernel/probes/ftrace.c
++++ b/arch/riscv/kernel/probes/ftrace.c
+@@ -15,7 +15,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
 
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -52,7 +51,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index 596de2f..dd2ec14 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -25,7 +25,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -59,7 +58,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index abe1a50..64c03ee 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -135,6 +135,9 @@ static __always_inline int trace_get_context_bit(void)
+ # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+ #endif
+
++/*
++ * Preemption is promised to be disabled when return bit >= 0.
++ */
+ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+ 							int start)
+ {
+@@ -162,11 +165,19 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+ 	current->trace_recursion = val;
+ 	barrier();
+
++	preempt_disable_notrace();
++
+ 	return bit;
+ }
+
++/*
++ * Preemption will be enabled (if it was previously enabled).
++ */
+ static __always_inline void trace_clear_recursion(int bit)
+ {
++	WARN_ON_ONCE(bit < 0);
++
++	preempt_enable_notrace();
+ 	barrier();
+ 	trace_recursion_clear(bit);
+ }
+@@ -178,7 +189,7 @@ static __always_inline void trace_clear_recursion(int bit)
+  * tracing recursed in the same context (normal vs interrupt),
+  *
+  * Returns: -1 if a recursion happened.
+- *           >= 0 if no recursion
++ *           >= 0 if no recursion.
+  */
+ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+ 							 unsigned long parent_ip)
+diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+index e8029ae..b8d75fb 100644
+--- a/kernel/livepatch/patch.c
++++ b/kernel/livepatch/patch.c
+@@ -49,14 +49,16 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+
+ 	ops = container_of(fops, struct klp_ops, fops);
+
++	/*
++	 *
++	 * The ftrace_test_recursion_trylock() will disable preemption,
++	 * which is required for the variant of synchronize_rcu() that is
++	 * used to allow patching functions where RCU is not watching.
++	 * See klp_synchronize_transition() for more details.
++	 */
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (WARN_ON_ONCE(bit < 0))
+ 		return;
+-	/*
+-	 * A variant of synchronize_rcu() is used to allow patching functions
+-	 * where RCU is not watching, see klp_synchronize_transition().
+-	 */
+-	preempt_disable_notrace();
+
+ 	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+ 				      stack_node);
+@@ -120,7 +122,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+ 	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+
+ unlock:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index b7be1df..7392bc7 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -7198,16 +7198,15 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 	struct ftrace_ops *op;
+ 	int bit;
+
++	/*
++	 * The ftrace_test_and_set_recursion() will disable preemption,
++	 * which is required since some of the ops may be dynamically
++	 * allocated, they must be freed after a synchronize_rcu().
++	 */
+ 	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START);
+ 	if (bit < 0)
+ 		return;
+
+-	/*
+-	 * Some of the ops may be dynamically allocated,
+-	 * they must be freed after a synchronize_rcu().
+-	 */
+-	preempt_disable_notrace();
+-
+ 	do_for_each_ftrace_op(op, ftrace_ops_list) {
+ 		/* Stub functions don't need to be called nor tested */
+ 		if (op->flags & FTRACE_OPS_FL_STUB)
+@@ -7231,7 +7230,6 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 		}
+ 	} while_for_each_ftrace_op(op);
+ out:
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+
+@@ -7279,12 +7277,9 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
+ 		op->func(ip, parent_ip, op, fregs);
+
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+ NOKPROBE_SYMBOL(ftrace_ops_assist_func);
+diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
+index 1f0e63f..9f1bfbe 100644
+--- a/kernel/trace/trace_functions.c
++++ b/kernel/trace/trace_functions.c
+@@ -186,7 +186,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		return;
+
+ 	trace_ctx = tracing_gen_ctx();
+-	preempt_disable_notrace();
+
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+@@ -194,7 +193,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		trace_function(tr, ip, parent_ip, trace_ctx);
+
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ #ifdef CONFIG_UNWINDER_ORC
+@@ -298,8 +296,6 @@ static inline void process_repeats(struct trace_array *tr,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+ 	if (atomic_read(&data->disabled))
+@@ -324,7 +320,6 @@ static inline void process_repeats(struct trace_array *tr,
+
+ out:
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ static void
 -- 
-With best wishes
-Dmitry
+1.8.3.1
+
