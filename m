@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EB743CC9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3EE43CCA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhJ0Oqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:46:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229447AbhJ0Oqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:46:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E01E660F21;
-        Wed, 27 Oct 2021 14:44:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635345862;
-        bh=QkaH8i/IP3CIgA/bCVNmnPGWHjIMocsRPHDcPlLjhtw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QBDnQxRc9qXNWz75JROWosZmxmOsmsNEGEaXVE8jUNBYf26QeTA7w36x4CegZq8kX
-         3e0PmaUOkOTztgiWGxzYGAYj/nSNZWmPMxeDvJRNfNSw0oxD/r3iFzJByDP+KnpeA+
-         iBAnX/vQA3SFskmA1l5OjwZPDJbZBvNjJN0YHq72gfOzoSwt9XZ5vlOJPTMfM0IegE
-         cbA7g5Xfx6sZ9kfI7gPh6dqbVEZecZBvFkOg7WBqTT4QChasCZfq81728KLS0xm/Ed
-         Nrt8BvohV87fehXxiTjwR+b/GjrRbPnP9ZNdVjNThODvjzLr3955aWuISrUCK8eID2
-         tVaxKUDb4Lv+A==
-Received: by mail-ed1-f45.google.com with SMTP id m17so10848442edc.12;
-        Wed, 27 Oct 2021 07:44:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530DRu/A9tEkI609X7JWG0CyjPzvoxt8ZJNdZQoxuJasO69pvzmv
-        zHHlxGONvQBJAkSvn5+aeXdqNIr8J6zNWxr4eQ==
-X-Google-Smtp-Source: ABdhPJzZb8un3hSlLPdikzo4LyAdNxP2rheUbz80i2Mi4iVmyOfTj91TmAOW+jBpNU7/41eeL8Fqjsu/ZlGUzLGLsIQ=
-X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr23065885ejc.466.1635345846542;
- Wed, 27 Oct 2021 07:44:06 -0700 (PDT)
+        id S238900AbhJ0OsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:48:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58976 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhJ0OsF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:48:05 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DF69C1FD43;
+        Wed, 27 Oct 2021 14:45:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635345938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PAxvQ4J2xp0slx6QeJiS9IdJxoMa7jLPPdGR/h4z5Ss=;
+        b=WVisAploP76FGRtxAYQHYCg1KfLQGjfyJBmZZxTdltJIUQ1TgMV7dFl5mj+Qe+lrz2fDwS
+        EDRVSseNymFxVSvcfCiBJRCv+KMDZ67+CMmSaPYDIOoQIYm5BkmsqKTUb+ozzOPrB1bX99
+        lGJHkUoLlsf/9AHHeYLU1snhL1oO0cY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635345938;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PAxvQ4J2xp0slx6QeJiS9IdJxoMa7jLPPdGR/h4z5Ss=;
+        b=tCgb9kgMG4zacd2VksoNMkCiFIENHrCqkDtExxTpLQy+ZRgkmpZ5vRoYSj+ptZ/UKeAswJ
+        YwkldXDwHPcgIOAA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id CA11AA3B83;
+        Wed, 27 Oct 2021 14:45:38 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 839F91E1973; Wed, 27 Oct 2021 16:45:38 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 16:45:38 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Miklos Szeredi <mszeredi@redhat.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: reiserfs: remove useless new_opts in reiserfs_remount
+Message-ID: <20211027144538.GA19815@quack2.suse.cz>
+References: <20211027143445.4156459-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-References: <20211025144718.157794-1-marcan@marcan.st> <20211025144718.157794-3-marcan@marcan.st>
- <YXhINE00HG6hbQI4@robh.at.kernel.org> <c0f2587c-ab69-8194-e618-ce7919c1aeb1@marcan.st>
-In-Reply-To: <c0f2587c-ab69-8194-e618-ce7919c1aeb1@marcan.st>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 27 Oct 2021 09:43:54 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJbVcqy8n0EroV=nFZoJ_WAr+JbrDf-c1jso856NghC2A@mail.gmail.com>
-Message-ID: <CAL_JsqJbVcqy8n0EroV=nFZoJ_WAr+JbrDf-c1jso856NghC2A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/8] dt-bindings: arm: apple: Add apple,pmgr binding
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Johan Hovold <johan@kernel.org>, devicetree@vger.kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Mark Kettenis <kettenis@openbsd.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027143445.4156459-1-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 10:38 PM Hector Martin <marcan@marcan.st> wrote:
->
-> On 27/10/2021 03.25, Rob Herring wrote:
-> > On Mon, Oct 25, 2021 at 11:47:12PM +0900, Hector Martin wrote:
-> >> +  compatible:
-> >> +    items:
-> >> +      - enum:
-> >> +          - apple,t8103-pmgr
-> >> +          - apple,t8103-minipmgr
-> >> +      - const: apple,pmgr
-> >> +      - const: syscon
-> >> +      - const: simple-mfd
-> >
-> >
-> > 'simple-mfd' means 'there's nothing in this node that any of the child
-> > nodes depend on'. You should be somewhat certain as dropping it later
-> > creates compatibility issues.
->
-> Hmm, I see simple-mfd turns this into a bus which I guess allows child
-> nodes to be probed without the parent node doing anything special (then
-> we use syscon_node_to_regmap to get the syscon instantiated). Do you
-> have a example use case for doing this without simple-mfd?
+On Wed 27-10-21 22:34:41, Dongliang Mu wrote:
+> Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
+> if not using generic_show_options") eliminates replace_mount_options
+> in reiserfs_remount, but does not handle the allocated new_opts,
+> it will cause memory leak in the reiserfs_remount.
+> 
+> Because new_opts is useless in reiserfs_mount, so we fix this bug by
+> removing the useless new_opts in reiserfs_remount.
+> 
+> Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 
-Drivers calling of_platform_populate or devm_of_platform_populate.
+Thanks. I've added the patch to my tree.
 
-That of course does mean you need a driver. We could probably make the
-syscon driver call these if needed.
+								Honza
 
-> At this point I can't think of anything we'd need from the parent node,
-> especially if we end up using this syscon strictly for pwrstate subnodes
-> (which seems likely at this point). One thing that comes to mind is
-> telling the PMP (a coprocessor in charge of power metrics/management)
-> about some domains being turned on/off, which is apparently a thing, but
-> that wouldn't even be in this node; that'd have to be a phandle property
-> in the child nodes referencing a PMP/coprocessor node elsewhere (none of
-> which is implemented right now, and which should be backwards compatible
-> once it is).
->
-> If it turns out we do have a dep of some sort in the end, could we just
-> have the child node driver return -EPROBE_DEFER until the parent is
-> probed and has made whatever service available? That would allow us to
-> keep simple-mfd, right?
-
-That would have saved you, but deferred probe is now a fallback to
-fw_devlink and it makes sure parent driver probes first. That works
-unless there isn't a parent driver which is often the case for
-simple-bus[1]. I think you are okay since 'syscon' means there is a
-driver.
-
-> If it works for you, I'll also just squash the two bindings into one
-> commit for the next spin, since there is a direct dependency at this
-> point and it should make things easier. Otherwise, I can just swap the
-> order if you prefer it that way.
-
-Just swapping seems like less work, but either way.
-
-Rob
-
-[1] https://lore.kernel.org/all/CAL_JsqJcsqjJBe8aULYYMkFtx8OTj2wHANZ=83VMMyJ=AEgReg@mail.gmail.com/
+> ---
+>  fs/reiserfs/super.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+> index 58481f8d63d5..f7b05c6b3dcf 100644
+> --- a/fs/reiserfs/super.c
+> +++ b/fs/reiserfs/super.c
+> @@ -1437,7 +1437,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+>  	unsigned long safe_mask = 0;
+>  	unsigned int commit_max_age = (unsigned int)-1;
+>  	struct reiserfs_journal *journal = SB_JOURNAL(s);
+> -	char *new_opts;
+>  	int err;
+>  	char *qf_names[REISERFS_MAXQUOTAS];
+>  	unsigned int qfmt = 0;
+> @@ -1445,10 +1444,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+>  	int i;
+>  #endif
+>  
+> -	new_opts = kstrdup(arg, GFP_KERNEL);
+> -	if (arg && !new_opts)
+> -		return -ENOMEM;
+> -
+>  	sync_filesystem(s);
+>  	reiserfs_write_lock(s);
+>  
+> @@ -1599,7 +1594,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+>  out_err_unlock:
+>  	reiserfs_write_unlock(s);
+>  out_err:
+> -	kfree(new_opts);
+>  	return err;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
