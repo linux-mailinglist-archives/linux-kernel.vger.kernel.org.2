@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3EE43CCA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DAC43CCAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238900AbhJ0OsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:48:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58976 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhJ0OsF (ORCPT
+        id S239102AbhJ0Ot1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:49:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44937 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239033AbhJ0OtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:48:05 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DF69C1FD43;
-        Wed, 27 Oct 2021 14:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635345938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 27 Oct 2021 10:49:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635346013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PAxvQ4J2xp0slx6QeJiS9IdJxoMa7jLPPdGR/h4z5Ss=;
-        b=WVisAploP76FGRtxAYQHYCg1KfLQGjfyJBmZZxTdltJIUQ1TgMV7dFl5mj+Qe+lrz2fDwS
-        EDRVSseNymFxVSvcfCiBJRCv+KMDZ67+CMmSaPYDIOoQIYm5BkmsqKTUb+ozzOPrB1bX99
-        lGJHkUoLlsf/9AHHeYLU1snhL1oO0cY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635345938;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PAxvQ4J2xp0slx6QeJiS9IdJxoMa7jLPPdGR/h4z5Ss=;
-        b=tCgb9kgMG4zacd2VksoNMkCiFIENHrCqkDtExxTpLQy+ZRgkmpZ5vRoYSj+ptZ/UKeAswJ
-        YwkldXDwHPcgIOAA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id CA11AA3B83;
-        Wed, 27 Oct 2021 14:45:38 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 839F91E1973; Wed, 27 Oct 2021 16:45:38 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 16:45:38 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Miklos Szeredi <mszeredi@redhat.com>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: reiserfs: remove useless new_opts in reiserfs_remount
-Message-ID: <20211027144538.GA19815@quack2.suse.cz>
-References: <20211027143445.4156459-1-mudongliangabcd@gmail.com>
+        bh=2qYSlrAKosDph82rxsiEzXsE5XvhQyE8fCwSEfLlqVs=;
+        b=ggc/KW4MZshSLWng6TuBX5BMmt7YiHtqq6koVo7+5qB42Lg751fYvVjvP7DGS1CSxCGISe
+        J6tUl7Q27dW+UcIjYM2V8Bi+YKO+1663psmd5GcQ8WQReIiVDIAkQdcabza/70+WGDdWWU
+        EHUPGfniRMBWBPqaB78LiySTrNw1Ix0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-3bmBenbzNJ6u5q4NMmEIWA-1; Wed, 27 Oct 2021 10:46:50 -0400
+X-MC-Unique: 3bmBenbzNJ6u5q4NMmEIWA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6798A9F92C;
+        Wed, 27 Oct 2021 14:46:46 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 52BDC60843;
+        Wed, 27 Oct 2021 14:46:35 +0000 (UTC)
+Message-ID: <e1f8c3d685c43f519927664c1743bc9503773bb1.camel@redhat.com>
+Subject: Re: [PATCH v2 17/43] KVM: x86: Directly block (instead of
+ "halting") UNINITIALIZED vCPUs
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Wed, 27 Oct 2021 17:46:34 +0300
+In-Reply-To: <20211009021236.4122790-18-seanjc@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-18-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027143445.4156459-1-mudongliangabcd@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-10-21 22:34:41, Dongliang Mu wrote:
-> Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
-> if not using generic_show_options") eliminates replace_mount_options
-> in reiserfs_remount, but does not handle the allocated new_opts,
-> it will cause memory leak in the reiserfs_remount.
+On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> Go directly to kvm_vcpu_block() when handling the case where userspace
+> attempts to run an UNINITIALIZED vCPU.  The vCPU is not halted, nor is it
+> likely that halt-polling will be successful in this case.
 > 
-> Because new_opts is useless in reiserfs_mount, so we fix this bug by
-> removing the useless new_opts in reiserfs_remount.
-> 
-> Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-
-Thanks. I've added the patch to my tree.
-
-								Honza
-
+> Reviewed-by: David Matlack <dmatlack@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  fs/reiserfs/super.c | 6 ------
->  1 file changed, 6 deletions(-)
+>  arch/x86/kvm/x86.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
-> index 58481f8d63d5..f7b05c6b3dcf 100644
-> --- a/fs/reiserfs/super.c
-> +++ b/fs/reiserfs/super.c
-> @@ -1437,7 +1437,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
->  	unsigned long safe_mask = 0;
->  	unsigned int commit_max_age = (unsigned int)-1;
->  	struct reiserfs_journal *journal = SB_JOURNAL(s);
-> -	char *new_opts;
->  	int err;
->  	char *qf_names[REISERFS_MAXQUOTAS];
->  	unsigned int qfmt = 0;
-> @@ -1445,10 +1444,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
->  	int i;
->  #endif
->  
-> -	new_opts = kstrdup(arg, GFP_KERNEL);
-> -	if (arg && !new_opts)
-> -		return -ENOMEM;
-> -
->  	sync_filesystem(s);
->  	reiserfs_write_lock(s);
->  
-> @@ -1599,7 +1594,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
->  out_err_unlock:
->  	reiserfs_write_unlock(s);
->  out_err:
-> -	kfree(new_opts);
->  	return err;
->  }
->  
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e6c17bbed25c..cd51f100e906 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10133,7 +10133,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>  			r = -EINTR;
+>  			goto out;
+>  		}
+> -		kvm_vcpu_halt(vcpu);
+> +		kvm_vcpu_block(vcpu);
+>  		if (kvm_apic_accept_events(vcpu) < 0) {
+>  			r = 0;
+>  			goto out;
+
+
+Makes sense.
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+
+Best regards,
+	Maxim levitsky
+
