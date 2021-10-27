@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E947D43CFFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3BF43CFFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238263AbhJ0RsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:48:13 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:59030 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238542AbhJ0RsI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:48:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=2Ya959eOTabpNxgua7bS61RrrdJDd5kKyfHDoHIUf3o=; b=i42/9HxsLxU72AjwCb/X3TDyO6
-        MEJuPDe6AT+3ndwsNHg4ajvMMlhBudDwlAvgxUedLigFbpTQ2CqTR/5KsCJy3PjXORKkSnTlJmvfl
-        XwlcUw2Q95X+oWqJBlyPr8fohW180pfEINEhFibQo/dcdRSCEzrmM5N5x7RFK51FTTVa6aBxK/RTF
-        WFRvQU1Ze/r0oDsk9Kq8Hq8cqELBg5ZTbOV2wA5703iWX91Y6S7xsLPGkTNR9gh4NcLShFcMRMRK0
-        X0AV1B7p7K/4e1lP8JAQjyRHWOE094yyzgMvNQhZsavpFCle6iY6dRQahr5DJP1MHvhv3Vb7i9BEn
-        84Gt82KA==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <logang@deltatee.com>)
-        id 1mfmzc-000koE-V3; Wed, 27 Oct 2021 11:45:42 -0600
-To:     Marshall Midden <marshallmidden@gmail.com>
-Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org
-References: <CAD2CkAWjS8=kKwEEN4cgVNjyFORUibzEiCUA-X+SMtbo0JoMmA@mail.gmail.com>
- <d8434a1a-b813-958f-69d7-34007faa49b7@deltatee.com>
- <CAD2CkAV8fWVPdtoxzf5w-q_411Zw_Rwm1QGuz3-Li7eFXehktw@mail.gmail.com>
- <3747d7c3-0cb1-c9b7-8eb8-4d0b167e03fb@deltatee.com>
- <CAD2CkAVvgZU_nFYyjhg6ArNjgxfRvzGbVo0WPHf5+NyaVASJzg@mail.gmail.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <31cb0f0d-93d1-d017-ec9f-1405ce97fa30@deltatee.com>
-Date:   Wed, 27 Oct 2021 11:45:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S243367AbhJ0RsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:48:15 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48230 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243378AbhJ0RsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:48:10 -0400
+Received: from zn.tnic (p200300ec2f161500c684d7dcfa146303.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1500:c684:d7dc:fa14:6303])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 55A791EC05D4;
+        Wed, 27 Oct 2021 19:45:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635356744;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TFZpJ306vv31pBniXWJi6Tw4yimAtEnxP/vp0xT3/RY=;
+        b=RS97Uen5A6zEtgQDEsRKox0WJjevM8jx/9F8ZVTFdtckQ4/+NPMkyAiXpmDaYOT4ZQYeWq
+        5QfOtep7Uf4cUmszoziMa8avlTA1SMypcov44hpwgLnHjVqAcUV/JM59LwWhnklb+Ug4X8
+        pbS2eoY8B0fyRPslcRQiUuBkSfMfokc=
+Date:   Wed, 27 Oct 2021 19:45:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, X86 ML <x86@kernel.org>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] x86/xstate: Make AVX512 status tracking more
+ accurate
+Message-ID: <YXmQSG7BYCcZ6jqZ@zn.tnic>
+References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
+ <20211027162615.1989004-1-goldstein.w.n@gmail.com>
+ <20211027162615.1989004-2-goldstein.w.n@gmail.com>
+ <YXmIP2EPg12N7foP@zn.tnic>
+ <CAFUsyf+Y76TxLnxMSfHiNqY3OOZPtBR4m_EbTcow=N65nvGdKA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD2CkAVvgZU_nFYyjhg6ArNjgxfRvzGbVo0WPHf5+NyaVASJzg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, will@kernel.org, joro@8bytes.org, marshallmidden@gmail.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: v5.15-rc7 AMD no kernel dump, spews "scsi_dma_map failed: request
- for 36 bytes!"
-X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Disposition: inline
+In-Reply-To: <CAFUsyf+Y76TxLnxMSfHiNqY3OOZPtBR4m_EbTcow=N65nvGdKA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 27, 2021 at 12:37:16PM -0500, Noah Goldstein wrote:
+> What about just splitting off a field for 'AVX512_ZMM_Hi256'?
 
+Let's please not perpetuate this into what it cannot become anyway. The
+more stuff we add to it, the more people will start using it and we're
+stuck with it forever. And soon that thing will be worthless anyway.
 
+So what's the point...
 
-On 2021-10-27 11:44 a.m., Marshall Midden wrote:
-> Try number 2 with plain text definitely selected.
-> 
-> Forgot to cut and paste -- interruption occurred. The
-> "vmcore-dmesg-incomplete.txt" (this file is created before the vmcore
-> is taken, and then later in the process, the vmcore-dmesg.txt file is
-> created).
-> 
-> AMD machine after taking dump and rebooting:
->     /media/parsecdata/crash/127.0.0.1-2021-10-27-12:06:53:
->     -rw------- 1 root root 5410206160 Oct 27 12:06 vmcore
->     -rw-r--r-- 1 root root          0 Oct 27 12:06 vmcore-dmesg-incomplete.txt
-> 
-> Intel machine:
->     /media/parsecdata/crash/127.0.0.1-2021-10-27-12:12:33:
->     -rw------- 1 root root 5482529464 Oct 27 12:12 vmcore
->     -rw-r--r-- 1 root root     236525 Oct 27 12:12 vmcore-dmesg.txt
-> 
+-- 
+Regards/Gruss,
+    Boris.
 
-Ah, so some kind of issue with the testing infrastructure you are using?
-Not something we need to be concerned about.
-
-Logan
+https://people.kernel.org/tglx/notes-about-netiquette
