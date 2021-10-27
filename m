@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82A843D623
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD7E43D63D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhJ0WBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 18:01:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229830AbhJ0WBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 18:01:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F01A3610A6;
-        Wed, 27 Oct 2021 21:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635371934;
-        bh=R8YhZO5s1uz5ekNzWYz3BaLvSkHoIbKUHbDXl3Jhvwk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m25vswBwUn9xA7vOoqQN3oL5TwZz4VDAvswlOUoiw1Ssx5b44Me+jdaZfdpoP8V8f
-         9sLi0dML9i3lDn68cwc62Z3fHin5Cmfqe2mP7gMDQ2SlryyZWsxoRDNeoIGe9RdqfH
-         iZ9MS76NQsiOk5PB0c5g1Kyk9hA6wJzvxoaIWeuW8zTIo3r5u5AI6p1ct31XaX57Z0
-         eMXLcMXnGF4b1FhFFMWMN7gg4ElbgZIPJ/zmq0+nZmcEN79PyfQnySTOYiSfV3JBFC
-         7wipp0cJjjDnrnL+6q5to7nTXAK8qMhi1CIx+e9wvqcW969yDcSnhxI6uoEMpeDg1Y
-         CVIWguIXjuOxQ==
-Date:   Thu, 28 Oct 2021 06:58:49 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/3] tracing/kselftests: Remove triggers with references
- before their definitions
-Message-Id: <20211028065849.76b1bd7151e440881298b523@kernel.org>
-In-Reply-To: <20211027205919.1648553-3-kaleshsingh@google.com>
-References: <20211027205919.1648553-1-kaleshsingh@google.com>
-        <20211027205919.1648553-3-kaleshsingh@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229699AbhJ0WGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 18:06:22 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:39807 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhJ0WGT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 18:06:19 -0400
+Received: by mail-oi1-f170.google.com with SMTP id s190so4714693oie.6;
+        Wed, 27 Oct 2021 15:03:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HwCdZSodtvLkyfWWv4aoM6TtcXNL3x8BBvrixERndQI=;
+        b=7uRHLYrN3RSGZnIoPaNMfunRqfRPKV1j2W451i8o8XzqPjmaME/f99QYLLHo/iboih
+         3sQlOqj/TYQVIv+KOS0JocRTnLdOATB8wLk9VuoJDu2v+juP8uZKJphY5Lg8Mrzxr1Y0
+         TrfI7tTIdivR/pd9FO7GzoAW7CTpE8cXJdGp43gXQ6bbrLA65ADUUafIA1KCF3/XCOFN
+         XbIvBq9ez7pJxq7YqiVKYcnTSq395XokAbcfTvKyObnYKT2JQrmwWFnmoisJnSMqJwga
+         ig3rTpbsPP+R2Zw1soXqFGZMMy4KRrhMaGIXlZDXrpeFyAntrMYn8Nq1SGtvMIgntoud
+         FJbA==
+X-Gm-Message-State: AOAM531EmcX+QUfi2BaKo6ni/druNV54kcuWndYgw6VoohLU9IS5mNN7
+        0ukj0HBoMYiOreDhfN0QTQ==
+X-Google-Smtp-Source: ABdhPJwhAqhMiSOGICDeao9e3Uvovr/4CVgqZChnKufwCP091o04QifT1B/0u7uUX+ckIH+hwm1Nnw==
+X-Received: by 2002:a05:6808:17a7:: with SMTP id bg39mr180967oib.70.1635372233675;
+        Wed, 27 Oct 2021 15:03:53 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id j15sm469441ots.58.2021.10.27.15.03.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 15:03:52 -0700 (PDT)
+Received: (nullmailer pid 2256435 invoked by uid 1000);
+        Wed, 27 Oct 2021 22:03:51 -0000
+Date:   Wed, 27 Oct 2021 17:03:51 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Cc:     devicetree@vger.kernel.org, kishon@ti.com, heiko@sntech.de,
+        linux-arm-kernel@lists.infradead.org, vkoul@kernel.org,
+        cl@rock-chips.com, linux-phy@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        michael.riesch@wolfvision.net
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: rockchip: Add Naneng combo PHY
+ bindings
+Message-ID: <YXnMxyuH/aGAvYAY@robh.at.kernel.org>
+References: <20211025080632.32063-1-yifeng.zhao@rock-chips.com>
+ <20211025080632.32063-2-yifeng.zhao@rock-chips.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025080632.32063-2-yifeng.zhao@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kalesh,
-
-On Wed, 27 Oct 2021 13:59:09 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
-
-> If an event trigger references a variable defined in another trigger, it
-> has to be removed before the trigger that defines the variable is
-> removed.
+On Mon, 25 Oct 2021 16:06:30 +0800, Yifeng Zhao wrote:
+> Add the compatible strings for the Naneng combo PHY found on rockchip SoC.
 > 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
 > ---
->  tools/testing/selftests/ftrace/test.d/functions | 9 +++++++++
->  1 file changed, 9 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-> index 000fd05e84b1..bd9e85f4d626 100644
-> --- a/tools/testing/selftests/ftrace/test.d/functions
-> +++ b/tools/testing/selftests/ftrace/test.d/functions
-> @@ -22,6 +22,15 @@ reset_trigger_file() {
->  	file=`echo $line | cut -f1 -d:`
->  	echo "!$cmd" >> $file
->      done
-> +
-> +    # remove triggers with references next
-> +    grep -H '\$' $@ |
-> +    while read line; do
-> +        cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-> +	file=`echo $line | cut -f1 -d:`
-> +	echo "!$cmd" >> $file
-> +    done
-> +
-
-Why don't you use 'tac'? I love that idea :)
-Did you find any issue?
-
-I think the function which cleaning up the tracing file should use
-the 'tac' rollback method, because it is natural, simple and robust.
-Then the first loop for removing action triggers is not needed anymore.
-
-Thank you,
-
->      grep -Hv ^# $@ |
->      while read line; do
->          cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-> -- 
-> 2.33.0.1079.g6e70778dc9-goog
+> Changes in v3: None
+> Changes in v2:
+> - Fix dtschema/dtc warnings/errors
+> 
+>  .../phy/phy-rockchip-naneng-combphy.yaml      | 98 +++++++++++++++++++
+>  1 file changed, 98 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/phy-rockchip-naneng-combphy.yaml
 > 
 
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
