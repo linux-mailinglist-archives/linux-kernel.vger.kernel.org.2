@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E691943CEB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739B343CEBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239460AbhJ0Q2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        id S239298AbhJ0Qal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238291AbhJ0Q2w (ORCPT
+        with ESMTP id S236805AbhJ0Qaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:28:52 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C437C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:26:27 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id l13so3588398ilh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:26:27 -0700 (PDT)
+        Wed, 27 Oct 2021 12:30:39 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67286C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:28:14 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id bp7so2938114qkb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=o7brrv2eIdGkldhIc125Crlzlu+dhxRGy8607dg5Bag=;
-        b=JFbTnmL3UiwOGwjPJHVv4VqyFe938jK/h0hVMmpEFoxkT9pwbaAervknsSV/+gTi+1
-         qpIL+UV+8qpuzOHvDIXGQyVo0fmy4wbVGropatq7TrdW2fcvWLDY8v8ZV7euTt9FWDkw
-         x8kQkS0HiWP8nZQ03UfN5LX0FxGlnYh3Xz4QQguEjam1AAxbkrPcb2yC2ELOmDm8mvOL
-         YCUC3inPByaeUoDPU+n1Ek54U+Ijzh5+ChnLKvPpi1w+grYlCqnJRTh3NWdxkUATLkKQ
-         Vj0yMqxMjn96qtbt6I32ZfoPRTQh+aTjEDYi89o8NO2RY3y1W+DMLArp7iHPFMxgxiiH
-         bJEA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kcaw11fIjDklEqqCtjykwfsrJvW1LW9AxQoWbgSjC4M=;
+        b=Ua/sCb/y9VDGpUgeNnsC/TY1iozBS8HSs8sB4TzNnEPa+6427LOWQi6WL9uSP+9r0f
+         KGOwJodnrSB2fiQhxLQFuuW8O4HKPNi3pVV1x8cV2XHk8wFzt0Z2GsjSi96dOsDPs1pd
+         jAq2oO9A9mstmfyKZ9gWU7sZY5Lj5IMLSkyfA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o7brrv2eIdGkldhIc125Crlzlu+dhxRGy8607dg5Bag=;
-        b=FwJpLT28Ncku6px9kZf8PLGT6hNwXXCaqLzuKPZuJSbfD272ckWFpL+DfPwmAOAZi4
-         dMxxho+Bu30sZfYU7lOn7wB3gQddINHKc0p7rcVgQvzPBBsCVsMdzReT9XnjN6fLqxUv
-         mAy+IcwRPJCjs/fN2wLdGusVQ/EFh62siOAziDK2xnvVuSrLMnC8kzsbFHYOuVuw/0pi
-         G79Xctq5M1fig96HmfA0oVm4PV4fMcl440W76+dMGvKNZiVZLtu7yi454yLnjQIh24lz
-         km2O4CfQv31Bl09vAeGO5Ce2PHxIWPwzBEkn8SVMDEIiuFKEEC3uZkzCrMitvWIWdfxf
-         DtRA==
-X-Gm-Message-State: AOAM533BC7k0kwFU4untsSonIvkMs8hOsz3goz3qL2sKyBkOgCUIqOuV
-        P8ttC5rsGDNyIaKhLAM+2J8=
-X-Google-Smtp-Source: ABdhPJxl3GloT/1VjH31rmaHT6WrBzBhJU6C0QKo85VWnd8UK9ShGdq6NrkrXXGiJzyib67WJxAl/A==
-X-Received: by 2002:a05:6e02:1a4d:: with SMTP id u13mr13622705ilv.118.1635351986586;
-        Wed, 27 Oct 2021 09:26:26 -0700 (PDT)
-Received: from localhost.localdomain ([2600:1008:b008:ef4c:5fd0:5407:cbca:b181])
-        by smtp.googlemail.com with ESMTPSA id f4sm182318ioc.15.2021.10.27.09.26.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kcaw11fIjDklEqqCtjykwfsrJvW1LW9AxQoWbgSjC4M=;
+        b=vcs5OBrJGW+IPcpIznHW9LKaeKaNTQlu1MFpI4S6UJfiNzxAB3t5Yw9MxxvB7uncnC
+         ELDLQ95nZVNp8CkUVgQg9G0yq28XQ7jXkWlhrp7S88tTgOHKlC0f9I2P2Ogwl/Xbq734
+         8Fc8QXvyYFYuJtU7daMrO4vq+TUzjvz55PrFs8ZbEdRTUQFpjbbHUhu8YdVRQlUCiLxd
+         K1+zWz9QuvEo6h7M2RQ1zkmUlfU5DhubaCb0jqi2N0R/6rzCVFklVr3SA3wmQWHyRZo2
+         N23u9KlMsGlU+XknMh2LNkM54TT/HAewF/LH+yyQfc0Ze58Vj8rIin/jkLJI0V6czx/A
+         JqZA==
+X-Gm-Message-State: AOAM533CVAZyEqG6oCcSMNBdXRsPD7fUpDn91hVdCPWV3v3ycIkmEW4a
+        eE8DkG7Ffn9RySH5u6x73sIiJA==
+X-Google-Smtp-Source: ABdhPJzvDL/hbW8x3WlZ9XGRkGRqMyNVExMy38ru/QmkZqYlZSlc0XaIiKT5o4RWmWJvhzMO0AsrYA==
+X-Received: by 2002:a05:620a:1035:: with SMTP id a21mr8908441qkk.354.1635352093630;
+        Wed, 27 Oct 2021 09:28:13 -0700 (PDT)
+Received: from markyacoub.nyc.corp.google.com ([2620:0:1003:314:121e:94ae:f1a6:940c])
+        by smtp.gmail.com with ESMTPSA id i22sm311589qkn.80.2021.10.27.09.28.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 09:26:26 -0700 (PDT)
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     goldstein.w.n@gmail.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] x86/xstate: Make AVX512 status tracking more accurate
-Date:   Wed, 27 Oct 2021 11:26:15 -0500
-Message-Id: <20211027162615.1989004-2-goldstein.w.n@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211027162615.1989004-1-goldstein.w.n@gmail.com>
-References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
- <20211027162615.1989004-1-goldstein.w.n@gmail.com>
+        Wed, 27 Oct 2021 09:28:13 -0700 (PDT)
+From:   Mark Yacoub <markyacoub@chromium.org>
+Cc:     seanpaul@chromium.org, Mark Yacoub <markyacoub@google.com>,
+        Mark Yacoub <markyacoub@chromium.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/mediatek: Set the default value of rotation to DRM_MODE_ROTATE_0
+Date:   Wed, 27 Oct 2021 12:27:51 -0400
+Message-Id: <20211027162806.2014022-1-markyacoub@chromium.org>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -66,143 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch splits the timestamps for tracking the AVX512 status into
-'avx512_ZMM_Hi256_timestamp' and 'avx512_Hi16_ZMM_timestamp'. They are
-used for tracking XFEATURE_ZMM_Hi256 and XFEATURE_Hi16_ZMM use
-respectively.
+From: Mark Yacoub <markyacoub@google.com>
 
-The purpose of tracking the AVX512 status is to convey information
-about possible frequency throttling. The current implementation has
-false positives on XFEATURE_OPMASK use and any usage of the hi16 xmm
-and ymm registers which are included in the XFEATURE_Hi16_ZMM set as
-neither will cause frequency throttling.
+At the reset hook, call __drm_atomic_helper_plane_reset which is
+called at the initialization of the plane and sets the default value of
+rotation on all planes to DRM_MODE_ROTATE_0 which is equal to 1.
 
-This patches implementation avoids to add more clarity to the
-output. The 'avx512_ZMM_Hi256_timestamp' will not have false positives
-so its value will at least be indicative frequency throttling. Since
-'avx512_Hi16_ZMM_timestamp' can still indicate frequency throttling
-from zmm16...zmm31 use though had false positives it is separated.
+Tested on Jacuzzi (MTK).
+Resolves IGT@kms_properties@plane-properties-{legacy,atomic}
 
-Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
+Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
 ---
- arch/x86/include/asm/fpu/types.h | 16 ++++++++--
- arch/x86/kernel/fpu/xstate.c     | 53 +++++++++++++++++++++++++++-----
- 2 files changed, 58 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index f5a38a5f3ae1..cb10909fa3da 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -330,11 +330,21 @@ struct fpu {
- 	unsigned int			last_cpu;
- 
- 	/*
--	 * @avx512_timestamp:
-+	 * @avx512_ZMM_Hi256_timestamp:
- 	 *
--	 * Records the timestamp of AVX512 use during last context switch.
-+	 * Records the timestamp of AVX512 use in the ZMM_Hi256 xfeature
-+	 * set. This include zmm0...zmm15.
- 	 */
--	unsigned long			avx512_timestamp;
-+	unsigned long			avx512_ZMM_Hi256_timestamp;
-+
-+	/*
-+	 * @avx512_Hi16_ZMM_timestamp:
-+	 *
-+	 * Records the timestamp of AVX512 use in the Hi16_ZMM xfeature
-+	 * set. This includes usage of any of the hi16 xmm, ymm, or zmm
-+	 * registers.
-+	 */
-+	unsigned long			avx512_Hi16_ZMM_timestamp;
- 
- 	/*
- 	 * @state:
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 00b495914be2..3bb1a425ce56 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1246,7 +1246,7 @@ void xrstors(struct xregs_state *xstate, u64 mask)
- }
- 
- /*
-- * Track of the state of desired avx architecture features.
-+ * Track of the state of desired avx related xfeatures.
-  */
- void fpu_update_avx_timestamp(struct fpu *fpu)
- {
-@@ -1254,18 +1254,28 @@ void fpu_update_avx_timestamp(struct fpu *fpu)
- 	 * AVX512 state is tracked here because its use is known to slow
- 	 * the max clock speed of the core.
- 	 */
--	if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
--		fpu->avx512_timestamp = jiffies;
-+
-+	/*
-+	 * Store a separate state for ZMM_Hi256 and Hi16_ZMM xfeature use.
-+	 * If ZMM_Hi256 is used the machine has certainly used a zmm
-+	 * register.  Hi16_ZMM, however, has false positives on usage of
-+	 * hi16 xmm and ymm registers.
-+	 */
-+	if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_ZMM_Hi256)
-+		fpu->avx512_ZMM_Hi256_timestamp = jiffies;
-+	if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_Hi16_ZMM)
-+		fpu->avx512_Hi16_ZMM_timestamp = jiffies;
- }
- 
-+
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
-+
- /*
-- * Report the amount of time elapsed in millisecond since last AVX512
-- * use in the task.
-+ * Helper function for computing proper output for avx512_status
-+ * timestamp.
-  */
--static void avx512_status(struct seq_file *m, struct task_struct *task)
-+static long avx_status_compute_delta(unsigned long timestamp)
- {
--	unsigned long timestamp = READ_ONCE(task->thread.fpu.avx512_timestamp);
- 	long delta;
- 
- 	if (!timestamp) {
-@@ -1282,8 +1292,35 @@ static void avx512_status(struct seq_file *m, struct task_struct *task)
- 			delta = LONG_MAX;
- 		delta = jiffies_to_msecs(delta);
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+index e6dcb34d30522..accd26481b9fb 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+@@ -44,9 +44,10 @@ static void mtk_plane_reset(struct drm_plane *plane)
+ 		state = kzalloc(sizeof(*state), GFP_KERNEL);
+ 		if (!state)
+ 			return;
+-		plane->state = &state->base;
  	}
-+	return delta;
-+}
  
--	seq_put_decimal_ll(m, "AVX512_elapsed_ms:\t", delta);
-+/*
-+ * Report the amount of time elapsed in millisecond since last AVX512
-+ * use in the task.
-+ */
-+static void avx512_status(struct seq_file *m, struct task_struct *task)
-+{
-+	unsigned long timestamp;
-+	long delta_ZMM_Hi256, delta_Hi16_ZMM, delta_unified;
++	__drm_atomic_helper_plane_reset(plane, &state->base);
 +
-+	timestamp = READ_ONCE(task->thread.fpu.avx512_ZMM_Hi256_timestamp);
-+	delta_ZMM_Hi256 = avx_status_compute_delta(timestamp);
-+
-+	timestamp = READ_ONCE(task->thread.fpu.avx512_Hi16_ZMM_timestamp);
-+	delta_Hi16_ZMM = avx_status_compute_delta(timestamp);
-+
-+	/*
-+	 * Report unified delta of most recent AVX512 usage from either
-+	 * Hi16_ZMM or ZMM_Hi256 xfeature sets.
-+	 */
-+	delta_unified = timestamp ? delta_Hi16_ZMM : delta_ZMM_Hi256;
-+
-+	seq_put_decimal_ll(m, "AVX512_elapsed_ms:\t", delta_unified);
-+	seq_putc(m, '\n');
-+	seq_put_decimal_ll(m, "AVX512_ZMM_Hi256_elapsed_ms:\t", delta_ZMM_Hi256);
-+	seq_putc(m, '\n');
-+	seq_put_decimal_ll(m, "AVX512_Hi16_ZMM_elapsed_ms:\t", delta_Hi16_ZMM);
- 	seq_putc(m, '\n');
+ 	state->base.plane = plane;
+ 	state->pending.format = DRM_FORMAT_RGB565;
  }
- 
 -- 
-2.25.1
+2.33.0.1079.g6e70778dc9-goog
 
