@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDFC43CE2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D60243CE35
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242862AbhJ0QBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        id S242898AbhJ0QEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242884AbhJ0QBu (ORCPT
+        with ESMTP id S242890AbhJ0QEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:01:50 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479B1C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:59:25 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so4255033otk.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:59:25 -0700 (PDT)
+        Wed, 27 Oct 2021 12:04:05 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E471C061348
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:01:39 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 17so2346122ljq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:01:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JDGhLnAjGcemyGOmhvCllnpzPG1c1ebcma9GtpslLK8=;
-        b=gXvpY2rj4x+6ro0u4u+WkiU6Owx0jrPe7Oj5sXe99VRLCxTCzzNdp2L0QtH6vGPE5T
-         OxFrov2Ej359v/Wsbj7BYROPEeHN9vq80ZDU7uvB7KxzxokxJ8FYg4rQIimk9JBSnIE8
-         ZZIuPo/+GV2UEWwdSvRujkzdeNsdKPCp57AFefkoDXkf+cLGgbuSeUbbpFDTrXQjwv+o
-         Nv8KulaLUW0sI0fLmdhzrRgLsbWLfCRGv3L/3TNvjiU3mhW5Og77m+QVcVlKWcEXSP09
-         u8jGF9OkVmmy4VUsIaG9Fv5qcxS07Xq/l+8kNxjQg4V7jWNUDtdQ90wIGNrJJaGpH2G0
-         kcIw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tkCgQJkUSUXPKa9PPaG98xGW8ORLrJoeUL+lFNuAKlI=;
+        b=JuXVzxzuz+qv/oGJh4H3FGcoT4i1PRfFmZGPc6lEW/N9sVUHQywzVSA6QOXoew8eMN
+         2VuWytyylFxvVVv4NHBnyfc0Qf66xZSXHV0PNkrxsRogr/txx31V1QIsqMYUDW3/lS/Q
+         puLCWl/i68QH+uN4xJWqYNAHxq8s/ABltDsTffJInX/ueXsemQ/gPVFmTZ93Ha2IFRxA
+         fbB3/Ci3reBmhbmZLY5Agp3ldPGxwIMR97E/B9IL/d5CWC5Xg4LcOyrcEsyeLsDfw7q4
+         1r0gIxWuTyvt/wIwtmEfq/EQYkL7wpbE/0EDTKaVxaRJS8WIN0jvlGqgTJ1Igaa+L78p
+         ZceQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JDGhLnAjGcemyGOmhvCllnpzPG1c1ebcma9GtpslLK8=;
-        b=73CxdWLhiXrw0s/YJG3nWzv29IP6M/ydPlN6jdZKg857n1BEViDnttZDv9RQvIkGlE
-         vU80OFKeUJ03Wuo+XbRTmEBcQTXzH70T7pK7TbyiduvhCBzYB/gKLUwkcvWWhh5p1b7e
-         AyiKQ9IYwWGr3n1l8JcyASPHU+lpsDiGtGS4x4bJDSZ4R+u0l5phH8WDDq6yxpyXATvN
-         HuZQJYYol6FF4ktecXzCsaWHj83E6ahh6QHXPvRsLUNSAg28YJZS82++7l2xpZBGhP7b
-         udODWghzB8SQu/02x0OOxEx/oO7m/5MH4hCz/Bgi9xu4k0aVfP5wmaD5YAbX9BJ3t7sC
-         FO6A==
-X-Gm-Message-State: AOAM532DJRW4GkGdxpdXrApW0Hhr1QHqeDLRDwQ+TuDFgVtMh2KGbHtY
-        UECNYDhEv2b8/0f4gT0WNdc=
-X-Google-Smtp-Source: ABdhPJxJ1qES9romQLNWwbkLhJuQ+1GVlbrTUSnpuhDk1WhYt+AqMhF7rH8bXBtdVDY2Nm56a0B8xQ==
-X-Received: by 2002:a9d:6346:: with SMTP id y6mr26685096otk.154.1635350364648;
-        Wed, 27 Oct 2021 08:59:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v9sm118175oth.62.2021.10.27.08.59.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 08:59:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: fix out of bounds write
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Thelford Williams <tdwilliamsiv@gmail.com>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-References: <20211027143945.GA1947580@roeck-us.net>
- <8205a660-6990-9007-48c9-453117d16f72@amd.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <fb5ee1a9-8cdb-3aab-c3ac-e4d03421fb85@roeck-us.net>
-Date:   Wed, 27 Oct 2021 08:59:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tkCgQJkUSUXPKa9PPaG98xGW8ORLrJoeUL+lFNuAKlI=;
+        b=z59tFBydjje93K8ft9nOx3HW0XM7sEWo1JCf7OzoOgPU2fMxyNumBaOlQPTb6gwqtm
+         LGrwc3yz57To0bfMty2K9uL2ta7rueekG5BkxqpqyMTuyLiQehuAhX3TWXhEjcvK2aQV
+         h4JzKwC9djfT0zg4+GeYTvWXfmiSUXFeUOTzdRbWoLFbPlDmORJP3BzocHwx0GOTA108
+         K/QfC8TPgh0pkaRLPiNGQQU43A07sqgZAvpsL0TGf/LS/wAd9wMCe0G5MhBvT1UTnW3K
+         1ngwiwIR5L2+EfV47B396n9gxPdewcvUX+LOntjsluL1jyvKEArImBusnGhkrKPZdzeM
+         LHNA==
+X-Gm-Message-State: AOAM532QT4f0pDlslqxMxK/RW7jUcCqEmlJ0riFERLL0KYB8wpUTDN16
+        VD4gb92ILdg9u01IDXgonBk84Gqs4Sje4NbvXBy2Kw==
+X-Google-Smtp-Source: ABdhPJyLTmxvQZ0j5lQGHsFYcydy71+PhRmg+SxpLEXAm87AnzbFNmKI1TyiM271I2tAbjx+BOKyohjDU7jCER0qQM4=
+X-Received: by 2002:a2e:5c45:: with SMTP id q66mr22976435ljb.273.1635350497549;
+ Wed, 27 Oct 2021 09:01:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8205a660-6990-9007-48c9-453117d16f72@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211025224032.21012-1-digetx@gmail.com>
+In-Reply-To: <20211025224032.21012-1-digetx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 Oct 2021 18:01:01 +0200
+Message-ID: <CAPDyKFrA2Jcb5BmaFmajtdUCmpwoPjAAvPC_MhoWwjDXJynD=w@mail.gmail.com>
+Subject: Re: [PATCH v14 00/39] NVIDIA Tegra power management patches for 5.17
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-clk@vger.kernel.org, David Heidelberg <david@ixit.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 8:22 AM, Harry Wentland wrote:
-> On 2021-10-27 10:39, Guenter Roeck wrote:
->> On Wed, Oct 13, 2021 at 04:04:13PM -0400, Thelford Williams wrote:
->>> Size can be any value and is user controlled resulting in overwriting the
->>> 40 byte array wr_buf with an arbitrary length of data from buf.
->>>
->>> Signed-off-by: Thelford Williams <tdwilliamsiv@gmail.com>
->>> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
->>
->> The fix works, but unless I am missing something it is incomplete.
->> parse_write_buffer_into_params() is called several times, and the
->> size parameter is always wrong. This patch only fixes one of several
->> instances of the problem.
->>
-> 
-> Patrik sent a patch that covers all cases:
-> https://patchwork.freedesktop.org/patch/461554/?series=96341&rev=2
-> 
-> Harry
-> 
-Thanks!
+On Tue, 26 Oct 2021 at 00:45, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> This series adds runtime PM support to Tegra drivers and enables core
+> voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
+>
+> All patches in this series are interdependent and should go via Tegra tree
+> for simplicity.
+>
+> Changelog:
+>
+> v14: - Fixed missing runtime PM syncing on removal of drivers, which was
+>        spotted by Ulf Hansson in v13.
+>
+>      - clk-device driver now resumes RPM on system suspend instead of
+>        preparing clock which it backs. This was suggested by Ulf Hansson.
+>
+>      - clk-device driver now syncs power domain performance unconditionally
+>        during driver's probe time since GENPD API allows to do this now.
+>        It was spotted by Ulf Hansson.
+>
+>      - Added new "Enable runtime PM during OPP state-syncing" patch, which
+>        allows drivers to sync state at any time. Previously drivers were
+>        obligated to take care of enabling RPM at the "right" time.
+>
+>      - Moved runtime PM initialization/uninitialization of DRM drivers that
+>        use host1x channel to host1x client init/deinit phase. I noticed that
+>        there is UAF problem because RPM-suspend callback waits until channel
+>        is idling and channel is already released/freed during driver's removal
+>        phase.
+>
+>      - Added system suspend support to the new NVDEC DRM driver.
+>
+>      - Added missing pm_runtime_mark_last_busy() to DRM driver.
+>
+>      - Corrected VDE GENPD patch which previously made video decoder clock
+>        always-enabled by mistake if legacy PD code path was used. It was
+>        spotted while we were testing VDE on Tegra114 that doesn't support
+>        GENPD yet.
+>
+>      - Added ack from Peter Chen to the USB patch that he gave to v13.
+>
+>      - Changed OPP table names in accordance to the new naming scheme
+>        required by the recent core OPP binding.
+>
+>      - Added 500MHz memory OPP entry used by ASUS Transformer tablets.
 
-Guenter
+Besides those minor nitpicks/questions that I have sent for patch1 and
+patch29, the series looks good to me!
 
->> Guenter
->>
->>> ---
->>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
->>> index 814f67d86a3c..9b3ad56607bb 100644
->>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
->>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
->>> @@ -264,7 +264,7 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
->>>   	if (!wr_buf)
->>>   		return -ENOSPC;
->>>   
->>> -	if (parse_write_buffer_into_params(wr_buf, size,
->>> +	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
->>>   					   (long *)param, buf,
->>>   					   max_param_num,
->>>   					   &param_nums)) {
->>> -- 
->>> 2.33.0
-> 
+Feel free to add, for the whole series:
 
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
