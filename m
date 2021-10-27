@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E176143C569
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEF543C56E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239528AbhJ0Iq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
+        id S240962AbhJ0IrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235205AbhJ0Iq4 (ORCPT
+        with ESMTP id S239549AbhJ0IrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:46:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBE3C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:44:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=A+zmKdPo93Lq9OnWGjUdHfAZF2hxhxCY/Mux3Z85l+M=; b=DFwgecAr0lYfidnkySqNXUHF2S
-        Os6vT0yYT0mVwTddp9nWduKSFf34bW2/Z3EguLbP8ht/xT0odTArGNbqIXsXWRKkKDDvMsP742NLk
-        oZx242HNAZir7zdLQOA9vPd+etvg7DSC1pgcWJHrSYXq0wVcBhi6JnSKxqbHxXUkbRN/nbW0IANKH
-        WjPO51z8f0dDaNjkNkwrcOvZnMlJLzvHM1+SbA9FPtsJTMn0cFVkmySKM8zj+W3DDosTcZlHVssFb
-        ZOstHBeA5zelbfFfbfdeR76ymD8JyESIV4q+YS6jAe8NMnPpLTYuBiDY1tWHFY5V2rgcJ9OAMlqP2
-        NzPB/Nkw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfeWp-00HVw6-6I; Wed, 27 Oct 2021 08:43:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E783F3001BF;
-        Wed, 27 Oct 2021 10:43:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C7013236E43E5; Wed, 27 Oct 2021 10:43:21 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 10:43:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     valentin.schneider@arm.com, mingo@kernel.org, namit@vmware.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpumask: Fix implicit type conversion
-Message-ID: <YXkRKe7ovUFVvzqd@hirez.programming.kicks-ass.net>
-References: <1635317123-2716894-1-git-send-email-jiasheng@iscas.ac.cn>
+        Wed, 27 Oct 2021 04:47:19 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF235C061570;
+        Wed, 27 Oct 2021 01:44:53 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id l13so4587457lfg.6;
+        Wed, 27 Oct 2021 01:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=zMWK8hvpGJbXGsvO9RmIPb4Vp8Zoi5fIPTWz4fMTBMw=;
+        b=lbp34rNa/A5IA66pNvQbVeLii9gDFaqxoc8T1ixMhEQ9u0s6rc9lz5UznqFulj10j9
+         3HjPSYEC3cLm01QHECPUwJU3i7J5jXygj4E8S7xOFxgloAeqCYOl6GbXYHEhdYYtMV8v
+         8NgMv3vE658xpSc1jtV+UY/jU8Wx5F++mGGHh74Emr1qyy7LO+0j8w0vQBBwHDiQ8LKx
+         CrTibSTE3yvkc7H1qFQIn6mYmQUKRdIQTlaA0XdVP8GFD7tGW2wLCDndW2QyitVDB8VQ
+         uN2jWh1VBHNWr/7EP+sx28ZxiR5ARAG2G/nAlnkf0x1++0qFIEEV8kzFFiH6Fo5oBWjN
+         cJlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=zMWK8hvpGJbXGsvO9RmIPb4Vp8Zoi5fIPTWz4fMTBMw=;
+        b=VyIECKDXWhEhBwpCzEWJWteTb0OIlVHspAJoIrUL1CXiMRBJvD4u+DSmCS5qzS+LXG
+         mkfl0bDWasxWmboPiHdocjn/aw9kIkzjHrw9yoM4Wm+4q0bx66Hpsgo9NbyYscd6M82L
+         MoL+tmZep9OJjldNeiD6SRNLdweiifb9Ms/uQg22Mx/T3wPNXdbd0ZwJaUnwxBXJc8nY
+         /CRq8X/oI8DT1uZKgnUrgBq2nhr4+FAQI9Hty5T4ab/JG2mLhgIsCOtwn/Ei1e2CH7BM
+         orfrQoLF4kJ/vjD5Ig2OkMPlc1KfjgD6TB3/pUCoRCPcjK+5G0sZf/cgKh4MmSR5WVv7
+         woIA==
+X-Gm-Message-State: AOAM533yqE4bOKYU/v2WFCPlC/TyVv7t6IVoesJ6b0mJwzOnkhTuvTTF
+        TGQ+F9Ir6Jf84mGScc6OyXkubJuHcE+q3g==
+X-Google-Smtp-Source: ABdhPJyolc92grZUbacq8NFy/dsIGCz8Kges8hMolhaRfnor8WtDO4jgVL1W8bGkP3K22LfHLBuHnA==
+X-Received: by 2002:ac2:5ed9:: with SMTP id d25mr4652910lfq.197.1635324292149;
+        Wed, 27 Oct 2021 01:44:52 -0700 (PDT)
+Received: from [10.0.0.115] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id d12sm793838lft.214.2021.10.27.01.44.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 01:44:51 -0700 (PDT)
+Message-ID: <3d825723-6bed-75e0-492b-a9ec1c9e4994@gmail.com>
+Date:   Wed, 27 Oct 2021 11:45:16 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635317123-2716894-1-git-send-email-jiasheng@iscas.ac.cn>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Content-Language: en-US
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+References: <20211027055625.11150-1-kishon@ti.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [RESEND PATCH v2 0/2] dmaengine: ti: k3-udma: Fix NULL pointer
+ dereference error
+In-Reply-To: <20211027055625.11150-1-kishon@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 06:45:23AM +0000, Jiasheng Jiang wrote:
-> Since the 'nr_cpu_ids' is unsigned int, then we can assume its
-> value is (2^32 - 1).
-> Also, the 'cpu' is unsigned int.
-> As the number of cycles increases, the value of 'cpu' can be
-> (2^31 - 1).
-> Although in the cpumask_next() 'cpu' is implicitly casted to int,
-> its actual value is also (2^31 - 1).
-> However, the return value of cpumask_next(), the updated value of
-> 'cpu', is (2^31).
-> That means the restriction 'cpu < nr_cpu_ids' is still statisfied
-> and in cpumask_next() when 'cpu' is implicitly casted to int, its
-> actual value is (-2^31).
-> Obviously, it is illegal and dangerous for cpumask_next(), as well
+Hi Kishon,
 
-It is not illegal, police will not come for you.
+On 27/10/2021 08:56, Kishon Vijay Abraham I wrote:
+> NULL pointer de-reference error was observed when all the PCIe endpoint
+> functions (22 function in J721E) request a DMA channel. The issue was
+> specfically observed in BCDMA (Block copy DMA) but the issue is
+> applicable in PKTDMA as well.
 
-> as others.
-> Therefore, we should fix the macro description of 'cpu' that remove
-> the '(optionally unsigned)' and restrict the value of 'cpu' to be
-> non-negative integer.
-> Moreover, all the existing issues should be dealed with.
+Nice catch, interesting that it did not materialized before.
+
+Can you re-word the patch subjects and commit messages accordingly?
+
+This is not really BCDMA/PKTDMA issue but a missed uc->Xchan = NULL;
+which would cause the de-reference error.
+
+> Changes from v1:
+> 1) Split the patch for BCDMA and PKTDMA separately
+> 2) Fixed the return value of udma_get_rflow() to 0.
+> 3) Removed the fixes tag as the patches does not directly apply to the
+> commits.
 > 
-> Fixes: c743f0a ("sched/fair, cpumask: Export for_each_cpu_wrap()")
-> Fixes: 8bd93a2 ("rcu: Accelerate grace period if last non-dynticked CPU")
-> Fixes: 984f2f3 ("cpumask: introduce new API, without changing anything, v3")
-
-There is no actual bug, Fixes tag is unwarranted.
-
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->  include/linux/cpumask.h | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> v1 => https://lore.kernel.org/r/20210209090036.30832-1-kishon@ti.com
 > 
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index bfc4690..8a8e59f 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -232,7 +232,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
->  
->  /**
->   * for_each_cpu - iterate over every cpu in a mask
-> - * @cpu: the (optionally unsigned) integer iterator
-> + * @cpu: the integer iterator
->   * @mask: the cpumask pointer
->   *
->   * After the loop, cpu is >= nr_cpu_ids.
-> @@ -240,11 +240,11 @@ int cpumask_any_distribute(const struct cpumask *srcp);
->  #define for_each_cpu(cpu, mask)				\
->  	for ((cpu) = -1;				\
->  		(cpu) = cpumask_next((cpu), (mask)),	\
-> -		(cpu) < nr_cpu_ids;)
-> +		(cpu) < nr_cpu_ids && (cpu) >= 0;)
+> Kishon Vijay Abraham I (2):
+>   dmaengine: ti: k3-udma: Fix NULL pointer dereference error for BCDMA
 
-So now you're generating worse code for no actual gain?
+dmaengine: ti: k3-udma: Set bchan to NULL if a channel request fail
+
+>   dmaengine: ti: k3-udma: Fix NULL pointer dereference error for PKTDMA
+
+dmaengine: ti: k3-udma: Set rchan/tchan to NULL if a channel request fail
+
+This is also applicable for UDMA which only have rchan and tchan.
+
+> 
+>  drivers/dma/ti/k3-udma.c | 32 ++++++++++++++++++++++++++------
+>  1 file changed, 26 insertions(+), 6 deletions(-)
+> 
+
+-- 
+Péter
