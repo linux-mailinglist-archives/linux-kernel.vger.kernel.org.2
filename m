@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8C243C901
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB0E43C907
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237010AbhJ0L7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232793AbhJ0L7t (ORCPT
+        id S240234AbhJ0MAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:00:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53634 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236185AbhJ0MAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:59:49 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BC3C061570;
-        Wed, 27 Oct 2021 04:57:24 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id bp15so5642837lfb.4;
-        Wed, 27 Oct 2021 04:57:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=YXg0m4/fJ//WGjGcJyxQ/if/yQiYorndqx8ywLLIUxc=;
-        b=jThNapv4PN8aFz+XjA3tDVZi4wprRuBhHugJZuBZP/DlIxvP+7fAyNaCpZfMarEbNr
-         32z6q58YY8ApfMWn6WvDE/kcNYwITYRTkN9HyeXEsDEsQTUe74ZXWQHzvkqtfGGj17Qo
-         ynN7dn4s3aT1IyjCygoNmPf4h3n+nJe+wc6ms7nrmnKXEULCUyFAj1iT+7tuuCqedvOG
-         YOG9Fxav3t2/PAu9/eNGwnbEsLMY0Y+hMxJlEUS/winNQX8Y5womyGufSRlz72jTdk4S
-         lRYJkL0mrCi584gmxe06pmVG97mROw8QBmN04nFVOppFqz5rwzzCy/6IidXzwYpfVPtV
-         9ibQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=YXg0m4/fJ//WGjGcJyxQ/if/yQiYorndqx8ywLLIUxc=;
-        b=a7M1yZ/bymPVoeu4/tZzMsCnz7PD521oSI0LYp2SYccmdVjuhKATV5OK+/c1pnKtlB
-         RZJnot2xP+LDnqbJADvtNYl3rcmSzL4FAbEm+U9fLNFjRUJHP3HZu2nJQo2hxTcVdeUI
-         EmIamg//Bajr9XVL6Li/nX4Jqv+zP53L60HtX0o2nNG+jx2vhTSZg4OZBqi4f0uK8rKi
-         myazQ8p6T9AIUSf9/MWOU7/BeimezovIwhnAHOVB2LxFZEO6A9q0AD2ppW0nJdNbVra4
-         DJkzdvWSoh1s+QNANR7xjFtGqWHWVHj/dFdoOaOIaTlTXjrb2OQ6MFB/4sx+RaVqzZwD
-         pIPg==
-X-Gm-Message-State: AOAM530JU7H5srF2MevS5DIw+YXvy6RXbi1IufID2WfKlvWBn/9jH0LT
-        nc1YaRTehRq5+25k4S+bSd0=
-X-Google-Smtp-Source: ABdhPJzG06ZKCx25ZsvM2ShhEKwT6MB3ORkQuYBX2CgoUoilCJl3p64N9h9V/iWAX2ORJiz4HBy9oA==
-X-Received: by 2002:a05:6512:1284:: with SMTP id u4mr2381577lfs.226.1635335842638;
-        Wed, 27 Oct 2021 04:57:22 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.235.8])
-        by smtp.gmail.com with ESMTPSA id p9sm1118651lfu.121.2021.10.27.04.57.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 04:57:22 -0700 (PDT)
-Message-ID: <e4922538-1a57-1d21-9079-e954d742d844@gmail.com>
-Date:   Wed, 27 Oct 2021 14:57:20 +0300
+        Wed, 27 Oct 2021 08:00:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F3553218A9;
+        Wed, 27 Oct 2021 11:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635335861; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ucBNwEUgb9vfxRGYPNg2vK2KIsHfBEZtfWM5PBLmWd4=;
+        b=ixKOohmvkDm9di9WwT1GMQZWLO+1J5exOJdPzx47qKyKz4qoIdYInX4NfHCljwMY0bJv8a
+        abmLoHEox6YYTy8VwN+l0Kqpy1SIaSGJ5Abc9yjjdrV+ff9a/C3OCjakbves78nrZX56Ec
+        ywlaS6QGVZ5ZlgYwUNCO6+iqpQLUZu8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635335861;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ucBNwEUgb9vfxRGYPNg2vK2KIsHfBEZtfWM5PBLmWd4=;
+        b=GT8Z/FqWRSbORgwN9CbSBLyNojeiC1sbBLzmQKxC1Cf6eampRug0s4xOjQeTPXUWB+gO3z
+        C4lfQOp5KFaopiAQ==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 78673A3B81;
+        Wed, 27 Oct 2021 11:57:40 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 13:57:40 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+cc:     Ming Lei <ming.lei@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Petr Mladek <pmladek@suse.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+In-Reply-To: <YXg0dFZ+6qHw7d0g@bombadil.infradead.org>
+Message-ID: <alpine.LSU.2.21.2110271343290.3655@pobox.suse.cz>
+References: <YW3LuzaPhW96jSBK@bombadil.infradead.org> <YW4uwep3BCe9Vxq8@T590> <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz> <YW6OptglA6UykZg/@T590> <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz> <YW/KEsfWJMIPnz76@T590> <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
+ <YW/q70dLyF+YudyF@T590> <YXfA0jfazCPDTEBw@alley> <YXgguuAY5iEUIV0u@T590> <YXg0dFZ+6qHw7d0g@bombadil.infradead.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] WARNING in batadv_v_ogm_free
-Content-Language: en-US
-To:     syzbot <syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com>,
-        a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
-        sven@narfation.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
-References: <00000000000010317a05cee52016@google.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <00000000000010317a05cee52016@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 02:19, syzbot wrote:
-> Hello,
+On Tue, 26 Oct 2021, Luis Chamberlain wrote:
+
+> On Tue, Oct 26, 2021 at 11:37:30PM +0800, Ming Lei wrote:
+> > On Tue, Oct 26, 2021 at 10:48:18AM +0200, Petr Mladek wrote:
+> > > Livepatch code never called kobject_del() under a lock. It would cause
+> > > the obvious deadlock.
 > 
-> syzbot found the following issue on:
+> Never?
+
+kobject_put() to be precise.
+
+When I started working on the support for module/live patches removal, 
+calling kobject_put() under our klp_mutex lock was the obvious first 
+choice given how the code was structured, but I ran into problems with 
+deadlocks immediately. So it was changed to async approach with the 
+workqueue. Thus the mainline code has never suffered from this, but we 
+knew about the issues.
+ 
+> > > The historic code only waited in the
+> > > module_exit() callback until the sysfs interface was removed.
+> > 
+> > OK, then Luis shouldn't consider livepatching as one such issue to solve
+> > with one generic solution.
 > 
-> HEAD commit:    2f111a6fd5b5 Merge tag 'ceph-for-5.15-rc7' of git://github..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=121d909f300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d95853dad8472c91
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b6a62d5cb9fe05a0e3a3
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+> It's not what I was told when the deadlock was found with zram, so I was
+> informed quite the contrary.
+
+From my perspective, it is quite easy to get it wrong due to either a lack 
+of generic support, or missing rules/documentation. So if this thread 
+leads to "do not share locks between a module removal and a sysfs 
+operation" strict rule, it would be at least something. In the same 
+manner as Luis proposed to document try_module_get() expectations.
+ 
+> I'm working on a generic coccinelle patch which hunts for actual cases
+> using iteration (a feature of coccinelle for complex searches). The
+> search is pretty involved, so I don't think I'll have an answer to this
+> soon.
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> Since the question of how generic this deadlock is remains questionable,
+> I think it makes sense to put the generic deadlock fix off the table for
+> now, and we address this once we have a more concrete search with
+> coccinelle.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com
+> But to say we *don't* have drivers which can cause this is obviously
+> wrong as well, from a cursory search so far. But let's wait and see how
+> big this list actually is.
 > 
+> I'll drop the deadlock generic fixes and move on with at least a starter
+> kernfs / sysfs tests.
 
-Looks like bug on error handling path in batadv_mesh_init(). Must be 
-fixed by my batman-adv patch.
+It makes sense to me.
 
-#syz fix: net: batman-adv: fix error handling
+Thanks, Luis, for pursuing it.
 
-
-
-
-With regards,
-Pavel Skripkin
+Miroslav
