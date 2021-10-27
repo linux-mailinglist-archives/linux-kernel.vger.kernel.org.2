@@ -2,222 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7FA43CC3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF4E43CC3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238437AbhJ0Oae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242551AbhJ0Oac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:30:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C5A5603E5;
-        Wed, 27 Oct 2021 14:28:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635344886;
-        bh=Mmj309Iy00lc7nVQhNjWfw27f7+Uk5zEEgQ6LZXj8C8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tFP77WS2hf+g0F5rKeQ0Zoiv3yj/buZpIz06DhSh3R42tqS0LcuMIdtFRL31Rcm06
-         P38iBrcOtLjAGuCizAVCbPzdYBc9qAeb7E/zoJQcmD4a7zX7DdTIGVLjqdMy3CA1e4
-         YRygVSgrnhRKpluAGhvXWOzQ2wWAd+iWaLpckioAdJ98eeUzEYaOis6jGCC10ouOFj
-         tD1MW4eAGxcdm/tqOVEtkQWT3ns0dBq230Y+LYkVXBJ3K9zEE7o/tAkdKgPTc/RaQt
-         PeFm9cZhWOg8XY/dD4FFsCWns8EOfcR1zNQ1HeYQ3UefzmKse2FtjKMmArpEVJtE1/
-         h//iJPDRCYQ6Q==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <swboyd@chromium.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Revert "firmware: qcom: scm: Add support for MC boot address API"
-Date:   Wed, 27 Oct 2021 16:27:40 +0200
-Message-Id: <20211027142802.2060425-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S242574AbhJ0Oag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242556AbhJ0Oad (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:30:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A83BC061570;
+        Wed, 27 Oct 2021 07:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1KiXvZSEv7u0TMNxDkm/8GeTyuUOS2eLIKnX1ZpOfDU=; b=raBwmGRGud2Nulo6ceSvmmFwxW
+        765wjTHu35TF/PK97lqZlBigzDF0BesGgPJBxXHTFPhVHqwVMCxbbpc/axD2wxN5QkGHRlFfWe75u
+        Vi/uDG6hPXh3o69NhQEd3aNW62Hpb5ovqPBifM+Alunt1AcfBZSDhGaba0wsKfa68ttzsuT0sOlZS
+        D9YmborK2KVSDHFIAGXBMSAUTk5axrvJvSTdhseh9MXkOzRSr25d/LCUOQw7WpoP5AGd0fvxrig4u
+        Ub2+MYpgmXtvQySsHJ0Wf0Bi/eSvLkYsz0GI9EDSNcEkyLBGmfK/9x8o3+AuavxpZO8nQaushinyG
+        X6LqMnTg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfju8-00579x-Pc; Wed, 27 Oct 2021 14:27:48 +0000
+Date:   Wed, 27 Oct 2021 07:27:48 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Petr Mladek <pmladek@suse.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YXlh5K7FyeBXNafM@bombadil.infradead.org>
+References: <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
+ <YW6OptglA6UykZg/@T590>
+ <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
+ <YW/KEsfWJMIPnz76@T590>
+ <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
+ <YW/q70dLyF+YudyF@T590>
+ <YXfA0jfazCPDTEBw@alley>
+ <YXgguuAY5iEUIV0u@T590>
+ <YXg0dFZ+6qHw7d0g@bombadil.infradead.org>
+ <alpine.LSU.2.21.2110271343290.3655@pobox.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2110271343290.3655@pobox.suse.cz>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Oct 27, 2021 at 01:57:40PM +0200, Miroslav Benes wrote:
+> On Tue, 26 Oct 2021, Luis Chamberlain wrote:
+> 
+> > On Tue, Oct 26, 2021 at 11:37:30PM +0800, Ming Lei wrote:
+> > > OK, then Luis shouldn't consider livepatching as one such issue to solve
+> > > with one generic solution.
+> > 
+> > It's not what I was told when the deadlock was found with zram, so I was
+> > informed quite the contrary.
+> 
+> From my perspective, it is quite easy to get it wrong due to either a lack 
+> of generic support, or missing rules/documentation.
 
-This reverts commits 55845f46df03 and c50031f03dfe, since this still
-causes a build failure when QCOM_SCM is a loadable module, or when
-CONFIG_SMP is disabled:
+Indeed. I agree some level of guidence is needed, even if subtle, rather
+than tribal knowledge. I'll start off with the test_sysfs demo'ing what
+not to do and documenting this there. I don't think it makes sense to
+formalize yet documentation for "though shalt not do this" generically
+until a full depth search is done with Coccinelle.
 
-ERROR: modpost: "cpu_logical_map" [drivers/firmware/qcom-scm.ko] undefined!
+> So if this thread 
+> leads to "do not share locks between a module removal and a sysfs 
+> operation" strict rule, it would be at least something.
 
-This be done better for 5.17, but it's too late now to rework
-properly.
+I think that's where we are at. I'll wait to complete my coccinelle
+deadlock hunt patch to complete the full search, and that could be
+useful to *warn* aboute new use cases, so to prevent this deadlock
+in the future. Until then I agree that the complexity introduced is
+not worth it given the evidence of users, but the full evidence of
+actual users still remains to be determined. A perfect job left to
+advances with Coccinelle.
 
-Fixes: c50031f03dfe ("firmware: qcom: scm: Don't break compile test on non-ARM platforms")
-Fixes: 55845f46df03 ("firmware: qcom: scm: Add support for MC boot address API")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
+> In the same 
+> manner as Luis proposed to document try_module_get() expectations.
 
-I've applied this revert to the arm/drivers branch now
+Right and so sysfs ops using try_module_get() *still* remains safe,
+and so will keep that patch in my next iteration because there *are*
+*many* uses cases for that.
 
- drivers/firmware/qcom_scm.c | 94 +++++++------------------------------
- drivers/firmware/qcom_scm.h |  4 --
- 2 files changed, 17 insertions(+), 81 deletions(-)
-
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 11464f6502be..7db8066b19fd 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -17,10 +17,6 @@
- #include <linux/reset-controller.h>
- #include <linux/arm-smccc.h>
- 
--#if defined(CONFIG_ARM) || defined(CONFIG_ARM64)
--#include <asm/smp_plat.h>
--#endif
--
- #include "qcom_scm.h"
- 
- static bool download_mode = IS_ENABLED(CONFIG_QCOM_SCM_DOWNLOAD_MODE_DEFAULT);
-@@ -264,44 +260,15 @@ static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
- 	return ret ? false : !!res.result[0];
- }
- 
--#if defined(CONFIG_ARM) || defined(CONFIG_ARM64)
--static int __qcom_scm_set_boot_addr_mc(void *entry, const cpumask_t *cpus,
--				       unsigned int flags)
--{
--	struct qcom_scm_desc desc = {
--		.svc = QCOM_SCM_SVC_BOOT,
--		.cmd = QCOM_SCM_BOOT_SET_ADDR_MC,
--		.owner = ARM_SMCCC_OWNER_SIP,
--		.arginfo = QCOM_SCM_ARGS(6),
--	};
--	unsigned int cpu;
--	u64 map;
--
--	/* Need a device for DMA of the additional arguments */
--	if (!__scm || __get_convention() == SMC_CONVENTION_LEGACY)
--		return -EOPNOTSUPP;
--
--	desc.args[0] = virt_to_phys(entry);
--	for_each_cpu(cpu, cpus) {
--		map = cpu_logical_map(cpu);
--		desc.args[1] |= BIT(MPIDR_AFFINITY_LEVEL(map, 0));
--		desc.args[2] |= BIT(MPIDR_AFFINITY_LEVEL(map, 1));
--		desc.args[3] |= BIT(MPIDR_AFFINITY_LEVEL(map, 2));
--	}
--	desc.args[4] = ~0ULL; /* Reserved for affinity level 3 */
--	desc.args[5] = flags;
--
--	return qcom_scm_call(__scm->dev, &desc, NULL);
--}
--#else
--static inline int __qcom_scm_set_boot_addr_mc(void *entry, const cpumask_t *cpus,
--					      unsigned int flags)
--{
--	return -EINVAL;
--}
--#endif
--
--static int __qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus)
-+/**
-+ * qcom_scm_set_warm_boot_addr() - Set the warm boot address for cpus
-+ * @entry: Entry point function for the cpus
-+ * @cpus: The cpumask of cpus that will use the entry point
-+ *
-+ * Set the Linux entry point for the SCM to transfer control to when coming
-+ * out of a power down. CPU power down may be executed on cpuidle or hotplug.
-+ */
-+int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus)
- {
- 	int ret;
- 	int flags = 0;
-@@ -337,28 +304,17 @@ static int __qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(qcom_scm_set_warm_boot_addr);
- 
- /**
-- * qcom_scm_set_warm_boot_addr() - Set the warm boot address for cpus
-+ * qcom_scm_set_cold_boot_addr() - Set the cold boot address for cpus
-  * @entry: Entry point function for the cpus
-  * @cpus: The cpumask of cpus that will use the entry point
-  *
-- * Set the Linux entry point for the SCM to transfer control to when coming
-- * out of a power down. CPU power down may be executed on cpuidle or hotplug.
-+ * Set the cold boot address of the cpus. Any cpu outside the supported
-+ * range would be removed from the cpu present mask.
-  */
--int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus)
--{
--	if (!cpus || cpumask_empty(cpus))
--		return -EINVAL;
--
--	if (__qcom_scm_set_boot_addr_mc(entry, cpus, QCOM_SCM_BOOT_MC_FLAG_WARMBOOT))
--		/* Fallback to old SCM call */
--		return __qcom_scm_set_warm_boot_addr(entry, cpus);
--	return 0;
--}
--EXPORT_SYMBOL(qcom_scm_set_warm_boot_addr);
--
--static int __qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
-+int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
- {
- 	int flags = 0;
- 	int cpu;
-@@ -375,6 +331,9 @@ static int __qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
- 		.owner = ARM_SMCCC_OWNER_SIP,
- 	};
- 
-+	if (!cpus || cpumask_empty(cpus))
-+		return -EINVAL;
-+
- 	for_each_cpu(cpu, cpus) {
- 		if (cpu < ARRAY_SIZE(scm_cb_flags))
- 			flags |= scm_cb_flags[cpu];
-@@ -387,25 +346,6 @@ static int __qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
- 
- 	return qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
- }
--
--/**
-- * qcom_scm_set_cold_boot_addr() - Set the cold boot address for cpus
-- * @entry: Entry point function for the cpus
-- * @cpus: The cpumask of cpus that will use the entry point
-- *
-- * Set the cold boot address of the cpus. Any cpu outside the supported
-- * range would be removed from the cpu present mask.
-- */
--int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
--{
--	if (!cpus || cpumask_empty(cpus))
--		return -EINVAL;
--
--	if (__qcom_scm_set_boot_addr_mc(entry, cpus, QCOM_SCM_BOOT_MC_FLAG_COLDBOOT))
--		/* Fallback to old SCM call */
--		return __qcom_scm_set_cold_boot_addr(entry, cpus);
--	return 0;
--}
- EXPORT_SYMBOL(qcom_scm_set_cold_boot_addr);
- 
- /**
-diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-index 2a6a87b75231..d92156ceb3ac 100644
---- a/drivers/firmware/qcom_scm.h
-+++ b/drivers/firmware/qcom_scm.h
-@@ -78,12 +78,8 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- #define QCOM_SCM_BOOT_SET_ADDR		0x01
- #define QCOM_SCM_BOOT_TERMINATE_PC	0x02
- #define QCOM_SCM_BOOT_SET_DLOAD_MODE	0x10
--#define QCOM_SCM_BOOT_SET_ADDR_MC	0x11
- #define QCOM_SCM_BOOT_SET_REMOTE_STATE	0x0a
- #define QCOM_SCM_FLUSH_FLAG_MASK	0x3
--#define QCOM_SCM_BOOT_MC_FLAG_AARCH64	BIT(0)
--#define QCOM_SCM_BOOT_MC_FLAG_COLDBOOT	BIT(1)
--#define QCOM_SCM_BOOT_MC_FLAG_WARMBOOT	BIT(2)
- 
- #define QCOM_SCM_SVC_PIL		0x02
- #define QCOM_SCM_PIL_PAS_INIT_IMAGE	0x01
--- 
-2.29.2
-
+  Luis
