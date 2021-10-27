@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFEB43D33A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BE743D33C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244083AbhJ0Uzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:55:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
+        id S244103AbhJ0U4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234080AbhJ0Uzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:55:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E192660720;
-        Wed, 27 Oct 2021 20:53:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635368008;
-        bh=lR4BUuybzYA05P+MmciU7UFrNU2jug/xDcDUahEPscw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aK5lTPJhNP7O5M8SRf4tlz12iShtHHSDbSrCZz0cRCHjDGx5qpk2F09b5oE6C3K38
-         ap+MitTKVRq4mzQwwBmgg8JwsjblqwDuEXUAsM40tBDpiDQaqm3vHrFyLjHOn5qogx
-         TaYJtXwOZgygWr5IQ7faO+723pmoapjQvOEgfNk5YIEE0lcpbcbW/FI2Kdwq6R+AmU
-         UJehgWb2Fk8W6H3+6LYzyaBZOtEtlxkkdHf+rYPewSbaFQ5c5nvFWUc9QY176LaWco
-         oxpgLk1cRacK+BIFtTJR1BC4p+75BTHOJAdyJ+wAxI6zEVbPLpuW+I2Cr1aRiHTfwM
-         aKqrmKtzT65Uw==
-Date:   Wed, 27 Oct 2021 13:53:27 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     cgel.zte@gmail.com
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ran jianping <ran.jianping@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH xfs] xfs: remove duplicate include in xfs_super.c
-Message-ID: <20211027205327.GC24307@magnolia>
-References: <20211027081652.1946-1-ran.jianping@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027081652.1946-1-ran.jianping@zte.com.cn>
+        id S244084AbhJ0Uz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 16:55:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA91D6109E;
+        Wed, 27 Oct 2021 20:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1635368011;
+        bh=zdJMv/mcj2CSAz9FcD1BLV11LsawzqVlhl6XTfTo+yU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aBN6tBRiJHK7zgB6g4Onng7fU3uF0uidbUnpgzP53zxq/tXivVzJgRl1j62oYPSGf
+         Jrod8DKfnHR6VnSJdnrG96os3vY9iXIilyp305YLdHGhmw4CoxpU002qA6DabhnZfm
+         SXz5GWAOKHoIq144LxnUYWzEGZ+KseHoHI2W29fk=
+Date:   Wed, 27 Oct 2021 13:53:28 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>, Hugh Dickins <hughd@google.com>,
+        "sunhao.th@gmail.com" <sunhao.th@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "andrea.righi@canonical.com" <andrea.righi@canonical.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] mm: khugepaged: skip huge page collapse for special
+ files
+Message-Id: <20211027135328.001e4582a9535e8e4be785bb@linux-foundation.org>
+In-Reply-To: <CAHbLzkqTW9U3VvTu1Ki5v_cLRC9gHW+znBukg_ycergE0JWj-A@mail.gmail.com>
+References: <20211027195221.3825-1-shy828301@gmail.com>
+        <C8C6E50C-D300-40D4-AA5C-490F673BADFE@fb.com>
+        <CAHbLzkqTW9U3VvTu1Ki5v_cLRC9gHW+znBukg_ycergE0JWj-A@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 08:16:52AM +0000, cgel.zte@gmail.com wrote:
-> From: ran jianping <ran.jianping@zte.com.cn>
-> 
-> 'xfs_btree.h ' included in 'fs/xfs/xfs_super.c'
->  is duplicated.It is also included on the 40 line.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
+On Wed, 27 Oct 2021 13:44:37 -0700 Yang Shi <shy828301@gmail.com> wrote:
 
-How is this different from the identical patch posted two days ago?
-
---D
-
-> ---
->  fs/xfs/xfs_super.c | 1 -
->  1 file changed, 1 deletion(-)
+> > > --- a/mm/khugepaged.c
+> > > +++ b/mm/khugepaged.c
+> > > @@ -445,22 +445,25 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
+> > >       if (!transhuge_vma_enabled(vma, vm_flags))
+> > >               return false;
+> > >
+> > > -     /* Enabled via shmem mount options or sysfs settings. */
+> > > -     if (shmem_file(vma->vm_file) && shmem_huge_enabled(vma)) {
+> > > +     if (vma->vm_file)
+> > >               return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+> > >                               HPAGE_PMD_NR);
+> >
+> > Am I misreading this? If we return here for vma->vm_file, the following
+> > logic (shmem_file(), etc.) would be skipped, no?
 > 
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index f4c508428aad..e21459f9923a 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -37,7 +37,6 @@
->  #include "xfs_reflink.h"
->  #include "xfs_pwork.h"
->  #include "xfs_ag.h"
-> -#include "xfs_btree.h"
->  #include "xfs_defer.h"
->  
->  #include <linux/magic.h>
-> -- 
-> 2.25.1
+> Oh, yes, you are right. My mistake.
 > 
+> Andrew,
+> 
+> Could you please apply the below fix?
+
+um, how well tested are these changes?
