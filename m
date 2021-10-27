@@ -2,149 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6B743C76D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0E443C77E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241321AbhJ0KQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:16:18 -0400
-Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:33513 "EHLO
-        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235484AbhJ0KQQ (ORCPT
+        id S239161AbhJ0KUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231910AbhJ0KUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:16:16 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id 73EA51C3766
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:13:49 +0100 (IST)
-Received: (qmail 13566 invoked from network); 27 Oct 2021 10:13:49 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Oct 2021 10:13:48 -0000
-Date:   Wed, 27 Oct 2021 11:13:46 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/8] Remove dependency on congestion_wait in mm/
-Message-ID: <20211027101346.GQ3959@techsingularity.net>
-References: <20211019090108.25501-1-mgorman@techsingularity.net>
- <163486531001.17149.13533181049212473096@noble.neil.brown.name>
- <20211022083927.GI3959@techsingularity.net>
- <163490199006.17149.17259708448207042563@noble.neil.brown.name>
- <20211022131732.GK3959@techsingularity.net>
- <163529540259.8576.9186192891154927096@noble.neil.brown.name>
+        Wed, 27 Oct 2021 06:20:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06956C061570;
+        Wed, 27 Oct 2021 03:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kjEt7cLdB7cPY697Uxk7dOM1bUF1hgkDJORd+L3Zemw=; b=EjvrI8xmrCQvizKIITT1kd5sfX
+        Cwh5JtTCAqtPJJENlQ9U04/4v8GsIXNQvHTW3qFvxwiccJAMJV50vqxuAjtELdXSD/BWkC9DGCeQu
+        5GjyaEsphuI6PG2zbE4fI3p0JZHAYsehpR2XfgzX5HIduZLhYsGphLQs+z1XPKTIouDXUfXfIx2LZ
+        hhIVSi1Sc8xcJMHcl9b5hxp6B7FpSzmYhUvJ8p9FDyLaI3AeWuO6j+To0Y2ZHLEYzEXZWhxI91SRU
+        KwSD/LJ1/7N1s4cBUGMFzrntaq83hbtPtk7PsBSszHjxg/j4Q1EY+iYYZd00cz7nxC0QpdGsgdR/A
+        xJxXMVlw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mffzm-00CX9d-Lr; Wed, 27 Oct 2021 10:17:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 50F2D30031A;
+        Wed, 27 Oct 2021 12:17:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 355282B41AF5C; Wed, 27 Oct 2021 12:17:21 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 12:17:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <YXknMVcB1tWaPtoU@hirez.programming.kicks-ass.net>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <7ebed28b73bb48cd9b69e9097f0aa613@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163529540259.8576.9186192891154927096@noble.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7ebed28b73bb48cd9b69e9097f0aa613@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:43:22AM +1100, NeilBrown wrote:
-> On Sat, 23 Oct 2021, Mel Gorman wrote:
-> > On Fri, Oct 22, 2021 at 10:26:30PM +1100, NeilBrown wrote:
-> > > On Fri, 22 Oct 2021, Mel Gorman wrote:
-> > > > On Fri, Oct 22, 2021 at 12:15:10PM +1100, NeilBrown wrote:
-> > > > 
-> > > > > In general, I still don't like the use of wake_up_all(), though it won't
-> > > > > cause incorrect behaviour.
-> > > > > 
-> > > > 
-> > > > Removing wake_up_all would be tricky.
-> > > 
-> > > I think there is a misunderstanding.  Removing wake_up_all() is as
-> > > simple as
-> > >    s/wake_up_all/wake_up/
-> > > 
-> > > If you used prepare_to_wait_exclusive(), then wake_up() would only wake
-> > > one waiter, while wake_up_all() would wake all of them.
-> > > As you use prepare_to_wait(), wake_up() will wake all waiters - as will
-> > > wake_up_all(). 
-> > > 
+On Wed, Oct 27, 2021 at 10:02:56AM +0000, David Laight wrote:
+> From: Peter Zijlstra
+> > Sent: 26 October 2021 21:16
 > > 
-> > Ok, yes, there was a misunderstanding. I thought you were suggesting a
-> > move to exclusive wakeups. I felt that the wake_up_all was explicit in
-> > terms of intent and that I really meant for all tasks to wake instead of
-> > one at a time.
+> > On Wed, Oct 13, 2021 at 11:16:43AM -0700, Sami Tolvanen wrote:
+> > > This series adds support for Clang's Control-Flow Integrity (CFI)
+> > > checking to x86_64. With CFI, the compiler injects a runtime
+> > > check before each indirect function call to ensure the target is
+> > > a valid function with the correct static type. This restricts
+> > > possible call targets and makes it more difficult for an attacker
+> > > to exploit bugs that allow the modification of stored function
+> > > pointers. For more details, see:
+> > >
+> > >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> > 
+> > So, if I understand this right, the compiler emits, for every function
+> > two things: 1) the actual funcion and 2) a jump-table entry.
+> > 
+> > Then, every time the address of a function is taken, 2) is given instead
+> > of the expected 1), right?
+> > 
+> > But how does this work with things like static_call(), which we give a
+> > function address (now a jump-table entry) and use that to write direct
+> > call instructions?
+> > 
+> > Should not this jump-table thingy get converted to an actual function
+> > address somewhere around arch_static_call_transform() ? This also seems
+> > relevant for arm64 (which already has CLANG_CFI supported) given:
+> > 
+> >   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
+> > 
+> > Or am I still not understanding this CFI thing?
 > 
-> Fair enough.  Thanks for changing it :-)
-> 
-> But this prompts me to wonder if exclusive wakeups would be a good idea
-> - which is a useful springboard to try to understand the code better.
-> 
-> For VMSCAN_THROTTLE_ISOLATED they probably are.
-> One pattern for reliable exclusive wakeups is for any thread that
-> received a wake-up to then consider sending a wake up.
-> 
-> Two places receive VMSCAN_THROTTLE_ISOLATED wakeups and both then call
-> too_many_isolated() which - on success - sends another wakeup - before
-> the caller has had a chance to isolate anything.  If, instead, the
-> wakeup was sent sometime later, after pages were isolated by before the
-> caller (isoloate_migratepages_block() or shrink_inactive_list())
-> returned, then we would get an orderly progression of threads running
-> through that code.
-> 
+> From what I remember the compiler adds code prior to every jump indirect
+> to check that the function address is in the list of valid functions
+> (with a suitable prototype - or some similar check).
 
-That should work as the throttling condition is straight-forward. It
-might even reduce a race condition where waking all throttled tasks all
-then trigger the same "too many isolated" condition.
+It definitely mucks about with the address too; see here:
 
-> For VMSCAN_THROTTLE_WRITEBACK is a little less straight forward.
-> There are two different places that wait for the wakeup, and a wake_up
-> is sent to all waiters after a time proportional to the number of
-> waiters. It might make sense to wake one thread per time unit?
+  https://lkml.kernel.org/r/YW6a67fGzM2AyHot@hirez.programming.kicks-ass.net
 
-I'd avoid time as a wakeup condition other than the timeout which is
-there to guarantee forward progress. I assume you mean "one thread per
-SWAP_CLUSTER_MAX completions".
-
-> That might work well for do_writepages - every SWAP_CLUSTER_MAX writes
-> triggers one wakeup.
-> I'm less sure that it would work for shrink_node().  Maybe the
-> shrink_node() waiters could be non-exclusive so they get woken as soon a
-> SWAP_CLUSTER_MAX writes complete, while do_writepages are exclusive and
-> get woken one at a time.
-> 
-
-It should work for either with the slight caveat that the last waiter
-may not see SWAP_CLUSTER_MAX completions.
-
-> For VMSCAN_THROTTLE_NOPROGRESS .... I don't understand.
-> If one zone isn't making "enough" progress, we throttle before moving on
-> to the next zone.  So we delay processing of the next zone, and only
-> indirectly delay re-processing of the current congested zone.
-> Maybe it make sense, but I don't see it yet.  I note that the commit
-> message says "it's messy".  I can't argue with that!
-> 
-
-Yes, we delay the processing of the next zone when a given zone cannot
-make progress. The thinking is that circumstances that cause one zone to
-fail to make progress could spill over to other zones in the absense of
-any throttling. Where it might cause problems is where the preferred zone
-is very small. If a bug showed up like that, a potential fix would be to
-avoid throttling if the preferred zone is very small relative to the total
-amount of memory local to the node or total memory (preferably local node).
-
-> I'll follow up with patches to clarify what I am thinking about the
-> first two.  I'm not proposing the patches, just presenting them as part
-> of improving my understanding.
-> 
-
-If I'm cc'd, I'll review and if I think they're promising, I'll run them
-through the same tests and machines.
-
--- 
-Mel Gorman
-SUSE Labs
+I'm thinking static_call() wants the real actual function address before
+it writes instructions.
