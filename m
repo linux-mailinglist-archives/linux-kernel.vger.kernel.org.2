@@ -2,52 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F16643C4B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3910F43C4B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240773AbhJ0ILG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240767AbhJ0ILF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:11:05 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2538C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:08:39 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 7DA64452; Wed, 27 Oct 2021 10:08:38 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 10:08:37 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Martin =?utf-8?Q?Povi=C5=A1er?= <povik@protonmail.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Hector Martin <marcan@marcan.st>,
-        Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/dart: Initialize DART_STREAMS_ENABLE
-Message-ID: <YXkJBXCnzZ/MgYFV@8bytes.org>
-References: <20211019162253.45919-1-sven@svenpeter.dev>
+        id S240777AbhJ0IMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:12:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235660AbhJ0IMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 04:12:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29478610FC;
+        Wed, 27 Oct 2021 08:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635322217;
+        bh=pZvXI80W6+vcTE+C0hBwqRQn3h1YSRyRrBOR6CINgcU=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=FVPdiVkwXDWl9+3ivgiZBU/HdqvwMiB0F8kE50S97GdUJZFH1jjo7B4qNz2/Kirqw
+         Epbi64kR5VqgA4vFPW3FqVw8ux5aCXW6/hmJtKJpd6t40sde0LWfqu8aevfOcUi0DM
+         kJss1SmM+ntq2LTOoYQDpYNKRNbtz1uJBMF5+cc7FuR83w/vIr+JV5vxF99jX7JOQo
+         xznEIWuDu0JXNe09U6paL1Akk5TIkndQNYUiC4wHNpElZmyOD/A8KMOg8jzXi3YRUw
+         PMfHHhmcteEOMHRre7Y7yc0c3anlp9x+DemCzTPXv8uTilhO7qbUvlkIsCYIIDt4/A
+         lcYVYQbxCoD/Q==
+Date:   Wed, 27 Oct 2021 10:10:14 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+cc:     linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
+        =?ISO-8859-15?Q?Jonathan_Neusch=E4fer?= <j.ne@posteo.net>,
+        =?ISO-8859-2?Q?Barnab=E1s_P=F5cze?= <pobrn@protonmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        "Daniel J . Ogorchock" <djogorchock@gmail.com>
+Subject: Re: [PATCH v4 0/5] HID: nintendo: Add support for the Wii U
+ gamepad
+In-Reply-To: <20211019110418.26874-1-linkmauve@linkmauve.fr>
+Message-ID: <nycvar.YFH.7.76.2110271009410.12554@cbobk.fhfr.pm>
+References: <20210519085924.1636-1-linkmauve@linkmauve.fr> <20211019110418.26874-1-linkmauve@linkmauve.fr>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211019162253.45919-1-sven@svenpeter.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 06:22:53PM +0200, Sven Peter wrote:
-> DART has an additional global register to control which streams are
-> isolated. This register is a bit redundant since DART_TCR can already
-> be used to control isolation and is usually initialized to DART_STREAM_ALL
-> by the time we get control. Some DARTs (namely the one used for the audio
-> controller) however have some streams disabled initially. Make sure those
-> work by initializing DART_STREAMS_ENABLE during reset.
-> 
-> Reported-by: Martin Povišer <povik@protonmail.com>
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
-> ---
+On Tue, 19 Oct 2021, Emmanuel Gil Peyrot wrote:
 
-Applied, thanks.
+> This driver is for the DRC (wireless gamepad) when plugged to the DRH of
+> the Wii U, a chip exposing it as a USB device.
+> 
+> I tried to use this driver on master over usbip on my laptop, but usbip
+> disconnects the device right after the driver created the
+> /dev/input/event* files, so instead I have only tested this driver on
+> the 4.19 branch of the linux-wiiu[1] downstream.
+> 
+> Other than that, pretty much all of the HID parts of the gamepad work,
+> it’s only missing microphone, camera and NFC input now but those are
+> mostly standard (read require quirks) and pertain to other subsystems,
+> so I felt like this can be upstreamed already.
+
+Now that proper hid.git#for-5.16/nintendo branch exists, could you please 
+fix up the issues reported by the kernel build bot and resubmit?
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
 
