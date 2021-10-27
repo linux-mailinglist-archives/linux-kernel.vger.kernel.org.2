@@ -2,108 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC4C43CB8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E62943CB90
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242400AbhJ0OJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:09:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242392AbhJ0OJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:09:27 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D544260F38;
-        Wed, 27 Oct 2021 14:07:00 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 10:06:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 6/8] tracing/histogram: Optimize division by a power
- of 2
-Message-ID: <20211027100659.00ec702b@gandalf.local.home>
-In-Reply-To: <CAC_TJveyKhZ3jyTZ33jbxSKTxxJ1WG+NUUUbf11pJ8Gqk7UeaQ@mail.gmail.com>
-References: <20211025200852.3002369-1-kaleshsingh@google.com>
-        <20211025200852.3002369-7-kaleshsingh@google.com>
-        <20211026151451.7f3e09a4@gandalf.local.home>
-        <CAC_TJveHgsPZw7p7BWOgQw6h8GNU_Pv_WUjNmw3AUq+wnSzk6Q@mail.gmail.com>
-        <20211026201846.08990d1d@rorschach.local.home>
-        <CAC_TJve-mKSojaXtukdFeQKvPz-8TQtS=pgGD0Z18Wt6yJi7dg@mail.gmail.com>
-        <20211026211511.403d76ca@rorschach.local.home>
-        <CAC_TJvdwqQAKrVs3w6NcQNBT+bAgdyqR+8Zt_An7R9AQSSthGA@mail.gmail.com>
-        <20211026222123.5e206fcf@rorschach.local.home>
-        <20211026231557.1eedad9b@rorschach.local.home>
-        <CAC_TJveyKhZ3jyTZ33jbxSKTxxJ1WG+NUUUbf11pJ8Gqk7UeaQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S242406AbhJ0OJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:09:59 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11736 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230160AbhJ0OJ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:09:58 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RDHf6W032778;
+        Wed, 27 Oct 2021 14:07:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=2HhZ1iSB06fU1gQUbee7ylyzdJtktEf57Zt5XEr4R1M=;
+ b=ZhPch7hJgClbPZDeLFHfaFZ86e+IZBt7jX8Ln8pLhKrBcxFQkGP8DI5c55BziRIToAtK
+ be5asmE/hArUk/6uiSpALWJbklPhnozzunOq0KHOFL2/LeabpCd/eYyGcWK2gAS1udgR
+ ll4v9Wna/vJpL3140STzQMSwhd3nUtLb8O8QsFk54NO9JPcUlruSB3aVGWCC3AL+VfIc
+ ydehHQ2UcSBLKWZscsvcLmPYjc4zjoJY8SDhd2oWbyuLkV116W1j0xaRAmwrFEiKUQKc
+ cElrKOQ5dwJbaj95sWmQj/JwH5sJUUVEIaps9tbYcLk+cR+6t6RliXOY68zZNBaUl5fs +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3by7hb983y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 14:07:32 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19RDufam021267;
+        Wed, 27 Oct 2021 14:07:32 GMT
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3by7hb9838-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 14:07:32 +0000
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19RE3Xqk021716;
+        Wed, 27 Oct 2021 14:07:30 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01dal.us.ibm.com with ESMTP id 3bx4fabwfg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 14:07:30 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19RE71xC7799416
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 14:07:01 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2A522806E;
+        Wed, 27 Oct 2021 14:07:00 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D28C28066;
+        Wed, 27 Oct 2021 14:07:00 +0000 (GMT)
+Received: from [9.160.124.65] (unknown [9.160.124.65])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 27 Oct 2021 14:07:00 +0000 (GMT)
+Message-ID: <83c63ace-3277-cf8a-8fd1-88d8d28113db@linux.ibm.com>
+Date:   Wed, 27 Oct 2021 10:07:00 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] KVM: s390x: add debug statement for diag 318 CPNC data
+Content-Language: en-US
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com
+References: <20211027025451.290124-1-walling@linux.ibm.com>
+ <5f91eed7-993a-cb76-8a9f-0c17438cd064@de.ibm.com>
+From:   Collin Walling <walling@linux.ibm.com>
+In-Reply-To: <5f91eed7-993a-cb76-8a9f-0c17438cd064@de.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0LtBPSX_8woc1nUMBvczgXB7UiZC6wdQ
+X-Proofpoint-ORIG-GUID: 2mMEelC8xQ84Bb5TGHUqy9rPUDGOP0jf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_04,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999
+ spamscore=0 priorityscore=1501 malwarescore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110270086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 21:04:29 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
-
-> On Tue, Oct 26, 2021 at 8:16 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Tue, 26 Oct 2021 22:21:23 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >  
-> > > I'm sure there's an algorithm somewhere that can give as the real max.  
-> >
-> > You got me playing with this more ;-)
-> >
-> > OK, I added the rounding in the wrong place. I found that we can make
-> > the max_div to be the same as the shift! The bigger the shift, the
-> > bigger the max!  
+On 10/27/21 01:41, Christian Borntraeger wrote:
+> Am 27.10.21 um 04:54 schrieb Collin Walling:
+>> The diag 318 data contains values that denote information regarding the
+>> guest's environment. Currently, it is unecessarily difficult to observe
+>> this value (either manually-inserted debug statements, gdb stepping, mem
+>> dumping etc). It's useful to observe this information to obtain an
+>> at-a-glance view of the guest's environment, so lets add a simple VCPU
+>> event that prints the CPNC to the s390dbf logs.
+>>
+>> Signed-off-by: Collin Walling <walling@linux.ibm.com>
 > 
-> Nice! :)
-> >
-> >         mult = (1 << shift) / div;
-> >         max_div = (1 << shift)
-> >
-> > But the rounding needs to be with the mult / shift:
-> >
-> >         return (val * mult + ((1 << shift) - 1)) >> shift;
-> >
-> >
-> > When val goes pass 1 << shift, then the error will be off by more than
-> > one.  
-> Did you mean, val should be such that when we do the (val * mult) we
-> only get rounding errors less than (1 << shift)?
-
-We get rounding errors when val is greater than (1 << shift) because then
-it exposes the bits that are not shifted out.
-
+> applied and queued
+>> ---
+>>   arch/s390/kvm/kvm-s390.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>> index 6a6dd5e1daf6..da3ff24eabd0 100644
+>> --- a/arch/s390/kvm/kvm-s390.c
+>> +++ b/arch/s390/kvm/kvm-s390.c
+>> @@ -4254,6 +4254,7 @@ static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
+>>       if (kvm_run->kvm_dirty_regs & KVM_SYNC_DIAG318) {
+>>           vcpu->arch.diag318_info.val = kvm_run->s.regs.diag318;
+>>           vcpu->arch.sie_block->cpnc = vcpu->arch.diag318_info.cpnc;
+>> +        VCPU_EVENT(vcpu, 2, "setting cpnc to %d",
+>> vcpu->arch.diag318_info.cpnc);
 > 
-> I think we also need to flip the delta now since we round down initially:
-> 
->     delta =  (1 << shift) - (mult * div)
-> 
+> After comparing this with the other events I think level==3 is better.
+> Changed when applying.
+>>       }
+>>       /*
+>>        * If userspace sets the riccb (e.g. after migration) to a valid
+>> state,
+>>
 
-Actually, we don't need the delta at all. Just what I showed above.
-
-Pick some arbitrary shift (let's say 20 as that seems to be commonly used,
-and works for 32 bit as well) and then we figure out the multiplier.
-
-	mult = (1 << shift) / div;
+Thanks!
 
 
-No delta needed. Our max is going to be 1 << shift, and then all we need is:
+-- 
+Regards,
+Collin
 
-	if (val < (1 << shift))
-		return (val * mult + ((1 << shift) - 1)) >> shift;
-	else
-		return val / div;
-
-All we need to save to do the operation is the shift, the constant div and
-the calculated constant mult.
-
--- Steve
+Stay safe and stay healthy
