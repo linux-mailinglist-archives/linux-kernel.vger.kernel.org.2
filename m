@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD29143C3F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1DB43C3FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240494AbhJ0HfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:35:11 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:21084 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240489AbhJ0HfJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:35:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635319965; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=O93Caq1JW1KMAEIKVZ6rP7UqQ9VTvsuojA8a/yFs0ZU=;
- b=is+08FVc0R32WshlfGY/WThGLINxnkTKyxyiHgCb2tagTekpyJfueclBrfuE7+2MuwFEiodl
- okii+a/78Xvoy15jXDHGSby819Zk6d4ABXm/iUSGASkpCa/T8biAwfbxwjnZpwkiOTYfxzSj
- kImy2KXjy39ld/niZZoKihWoqHc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 617900995ca800b6c1c5fff2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 07:32:41
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 13DB4C4361B; Wed, 27 Oct 2021 07:32:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        id S240419AbhJ0HhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:37:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234080AbhJ0Hg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:36:58 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F3F1C4338F;
-        Wed, 27 Oct 2021 07:32:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0F3F1C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        by mail.kernel.org (Postfix) with ESMTPSA id 880B060C4A;
+        Wed, 27 Oct 2021 07:34:33 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mfdSB-001qke-G2; Wed, 27 Oct 2021 08:34:31 +0100
 MIME-Version: 1.0
+Date:   Wed, 27 Oct 2021 08:34:31 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Avoid shadowing a previous local
+In-Reply-To: <20211027024212.64842-1-quic_qiancai@quicinc.com>
+References: <20211027024212.64842-1-quic_qiancai@quicinc.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <da6be00d39c37ad26bfad9e75e814cb1@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2 wireless-drivers 1/2] libertas_tf: Fix possible memory
- leak
- in probe and disconnect
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211020120345.2016045-2-wanghai38@huawei.com>
-References: <20211020120345.2016045-2-wanghai38@huawei.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     <briannorris@chromium.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <shenyang39@huawei.com>, <marcelo@kvack.org>,
-        <linville@tuxdriver.com>, <luisca@cozybit.com>,
-        <libertas-dev@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163531995539.30745.14828002876650574898.kvalo@codeaurora.org>
-Date:   Wed, 27 Oct 2021 07:32:41 +0000 (UTC)
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: quic_qiancai@quicinc.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wang Hai <wanghai38@huawei.com> wrote:
-
-> I got memory leak as follows when doing fault injection test:
+On 2021-10-27 03:42, Qian Cai wrote:
+> It is less-prone to have a different variable name from the one in a 
+> wider
+> scope. This is also flagged by GCC (W=2):
 > 
-> unreferenced object 0xffff88810a2ddc00 (size 512):
->   comm "kworker/6:1", pid 176, jiffies 4295009893 (age 757.220s)
->   hex dump (first 32 bytes):
->     00 50 05 18 81 88 ff ff 00 00 00 00 00 00 00 00  .P..............
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
->     [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
->     [<ffffffffa02a1530>] if_usb_probe+0x60/0x37c [libertas_tf_usb]
->     [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
->     [<ffffffff82b59630>] really_probe+0x190/0x480
->     [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
->     [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
->     [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
->     [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
->     [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
->     [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
->     [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
->     [<ffffffff82b52e49>] device_add+0x829/0x1300
->     [<ffffffffa02229b1>] usb_set_configuration+0xb01/0xcc0 [usbcore]
->     [<ffffffffa0235c4e>] usb_generic_driver_probe+0x6e/0x90 [usbcore]
->     [<ffffffffa022641f>] usb_probe_device+0x6f/0x130 [usbcore]
+> In file included from ./include/linux/kvm_host.h:39,
+>                  from arch/arm64/kvm/arm.c:12:
+> arch/arm64/kvm/arm.c: In function 'kvm_arch_vcpu_ioctl_run':
+> ./arch/arm64/include/asm/kvm_host.h:638:26: warning: declaration of
+> 'ret' shadows a previous local [-Wshadow]
+>   638 |   typeof(f(__VA_ARGS__)) ret;    \
+>       |                          ^~~
+> arch/arm64/kvm/arm.c:852:9: note: in expansion of macro 
+> 'kvm_call_hyp_ret'
+>   852 |   ret = kvm_call_hyp_ret(__kvm_vcpu_run, vcpu);
+>       |         ^~~~~~~~~~~~~~~~
+> arch/arm64/kvm/arm.c:773:6: note: shadowed declaration is here
+>   773 |  int ret;
+>       |      ^~~
 > 
-> cardp is missing being freed in the error handling path of the probe
-> and the path of the disconnect, which will cause memory leak.
+> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> This patch adds the missing kfree().
+> diff --git a/arch/arm64/include/asm/kvm_host.h
+> b/arch/arm64/include/asm/kvm_host.h
+> index 4be8486042a7..4693d84ccd95 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -635,16 +635,16 @@ void kvm_arm_resume_guest(struct kvm *kvm);
 > 
-> Fixes: c305a19a0d0a ("libertas_tf: usb specific functions")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>  #define kvm_call_hyp_ret(f, ...)					\
+>  	({								\
+> -		typeof(f(__VA_ARGS__)) ret;				\
+> +		typeof(f(__VA_ARGS__)) __ret;				\
+>  									\
+>  		if (has_vhe()) {					\
+> -			ret = f(__VA_ARGS__);				\
+> +			__ret = f(__VA_ARGS__);				\
+>  			isb();						\
+>  		} else {						\
+> -			ret = kvm_call_hyp_nvhe(f, ##__VA_ARGS__);	\
+> +			__ret = kvm_call_hyp_nvhe(f, ##__VA_ARGS__);	\
+>  		}							\
+>  									\
+> -		ret;							\
+> +		__ret;							\
+>  	})
+>  #else /* __KVM_NVHE_HYPERVISOR__ */
+>  #define kvm_call_hyp(f, ...) f(__VA_ARGS__)
 
-2 patches applied to wireless-drivers-next.git, thanks.
+I don't think this makes much sense. This is bound to eventually clash
+with another variable, and you're back to square one.
 
-d549107305b4 libertas_tf: Fix possible memory leak in probe and disconnect
-9692151e2fe7 libertas: Fix possible memory leak in probe and disconnect
+Thanks,
 
+         M.
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211020120345.2016045-2-wanghai38@huawei.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Jazz is not dead. It just smells funny...
