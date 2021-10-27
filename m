@@ -2,109 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A9D43C2E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5908143C2E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238552AbhJ0GX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:23:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49949 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239979AbhJ0GXW (ORCPT
+        id S238542AbhJ0GXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:23:53 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:32523 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236961AbhJ0GXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:23:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635315657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y5IbjGZT6ncLji1412wTNCgblKToa0KMNUhBknTBoOE=;
-        b=fyIhbyY+5do4asd2R+68O/0Xo+ekWMOaRhZ7rS9HwinyTKHQ8vH0BCeutNzw90AyeNMo13
-        nq/pOFd9CBY/BlWQ+e36tnBGQUfkod/8Rbu8erQRzHDa14uD6svRLPaQrD61me3jbZ05ig
-        cOk7wpqBJ/bz5ZANnSqHcbNk75Y+AXQ=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-IOq2owo0NkOO0LMwvyx6dw-1; Wed, 27 Oct 2021 02:20:55 -0400
-X-MC-Unique: IOq2owo0NkOO0LMwvyx6dw-1
-Received: by mail-ed1-f70.google.com with SMTP id t1-20020a056402524100b003dd9a419eb5so1356393edd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 23:20:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y5IbjGZT6ncLji1412wTNCgblKToa0KMNUhBknTBoOE=;
-        b=Afd5gAgsURqfKcfco8qbTfK2GpT1FZu1PFvFaRNpA7VB7qYE7tlVDFNYFzbscbCvzw
-         tgyl/vqhgM6dejTUSqIJ4oW/JWdYTnz3aFOQ8DxZlwF0vD0w6IqXrUXA+NseL1JYWDah
-         waZNdznEXZ1Snvv190i4itkxA9jyAq1Odhkg5jXdF8qLis2Cj/Wcbn2halN9wF505cDz
-         4RcVr8+YzKveXff62NA0KnDvryPXyKc/Ytc8l1OjS48M+4p/hNCxRXWIP8FecWO5MPpO
-         gxbcThUexzNJdp5GSn4+nfBJ/VFvnv8aRoMnTSPTAT9YBRaPPz53Olq5VL2jmFLbrN8t
-         SpxA==
-X-Gm-Message-State: AOAM5306wRGEZZ3o6EnZoEaBbI4h9vlaXBc9OynBdEt1tpNpifau2aas
-        MUGs7yahD70XGCGJJzNZUpL2Gre8SBYpUxd9Vfsja77r3aU3anb7LMj7QFmbdtwPuvqQi6OTUcX
-        NBp3CkonfCBIxtyR50uX4IGnC
-X-Received: by 2002:aa7:d34f:: with SMTP id m15mr42149453edr.40.1635315654698;
-        Tue, 26 Oct 2021 23:20:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxL1weoF88I/0V+Lz+k0kuNgr3cDwX0UE1tb2DCxFcXqabkq8zk5Ay5zmfolyIHuRIgkMJmNQ==
-X-Received: by 2002:aa7:d34f:: with SMTP id m15mr42149436edr.40.1635315654540;
-        Tue, 26 Oct 2021 23:20:54 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id s12sm343243edc.48.2021.10.26.23.20.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 23:20:53 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: Re: [PATCH net-next] xdp: Remove redundant warning
-To:     Yajun Deng <yajun.deng@linux.dev>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com
-References: <20211027013856.1866-1-yajun.deng@linux.dev>
-Message-ID: <095fa222-824a-b38c-3432-35bdb61bab88@redhat.com>
-Date:   Wed, 27 Oct 2021 08:20:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 27 Oct 2021 02:23:52 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 26 Oct 2021 23:21:28 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Oct 2021 23:21:26 -0700
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.83.180])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 27 Oct 2021 11:51:15 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 2EE0220F0C; Wed, 27 Oct 2021 11:51:14 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [PATCH] venus: correct low power frequency calculation for encoder
+Date:   Wed, 27 Oct 2021 11:51:12 +0530
+Message-Id: <20211027062112.11380-1-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <20211027013856.1866-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In exististing implimentation, in min_loaded_core() for low_power
+vpp frequency value is considering as vpp_freq instead of low_power_freq.
+Fixed this by correcting vpp frequency calculation for encoder.
 
-On 27/10/2021 03.38, Yajun Deng wrote:
-> There is a warning in xdp_rxq_info_unreg_mem_model() when reg_state isn't
-> equal to REG_STATE_REGISTERED, so the warning in xdp_rxq_info_unreg() is
-> redundant.
- >
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Fixes: 3cfe5815ce0e (media: venus: Enable low power setting for encoder)
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+---
+ drivers/media/platform/qcom/venus/pm_helpers.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
-I guess/wonder if we should mark this as a fix for:
-
-Fixes: dce5bd6140a4 ("xdp: export xdp_rxq_info_unreg_mem_model")
-
-> ---
->   net/core/xdp.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index cc92ccb38432..5ddc29f29bad 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -143,8 +143,6 @@ void xdp_rxq_info_unreg(struct xdp_rxq_info *xdp_rxq)
->   	if (xdp_rxq->reg_state == REG_STATE_UNUSED)
->   		return;
->   
-> -	WARN(!(xdp_rxq->reg_state == REG_STATE_REGISTERED), "Driver BUG");
-> -
->   	xdp_rxq_info_unreg_mem_model(xdp_rxq);
->   
->   	xdp_rxq->reg_state = REG_STATE_UNREGISTERED;
-> 
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+index cedc664ba755..184f0cea2fdb 100644
+--- a/drivers/media/platform/qcom/venus/pm_helpers.c
++++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+@@ -587,8 +587,8 @@ min_loaded_core(struct venus_inst *inst, u32 *min_coreid, u32 *min_load, bool lo
+ 		if (inst->session_type == VIDC_SESSION_TYPE_DEC)
+ 			vpp_freq = inst_pos->clk_data.vpp_freq;
+ 		else if (inst->session_type == VIDC_SESSION_TYPE_ENC)
+-			vpp_freq = low_power ? inst_pos->clk_data.vpp_freq :
+-				inst_pos->clk_data.low_power_freq;
++			vpp_freq = low_power ? inst_pos->clk_data.low_power_freq :
++				inst_pos->clk_data.vpp_freq;
+ 		else
+ 			continue;
+ 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
