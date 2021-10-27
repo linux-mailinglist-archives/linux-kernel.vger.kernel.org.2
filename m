@@ -2,128 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F49E43C1C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BE443C1C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236620AbhJ0ElX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 00:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbhJ0ElV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 00:41:21 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BF0C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:38:56 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id c4so1093618plg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:38:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=BahrkLo1cG01RdfeU2V63voiQNUDlACSWrU7M72tqUM=;
-        b=XuVyzKpLU9Y1f7B2wa/lQrHHemNi2MGMKVkZ5gsl3UvdLuOhUQLIobFrJsugJraNE/
-         8FjTtXtegOZo/fcLn/hRxp4yLeinmG1OwlgKdMJ2QMjihbe/4m3ryqOGSta4jSJCR221
-         qBBZ3yuakPbL8vGbwqCjAeLuIecnMuOBB3S9PKOOQQsuwObJTULZT/GWsU8H7M/Kn71a
-         vODuQ+bKI6EgvfS1Zmx+AVdeBB1X/K4Ie/SRlWFHxtLqA1oV7J6e3/R/UyKLSm0jDQte
-         II1SczZAm1C5FW8TfaGLnn+cLrclzXWzig7jLFV/lVnEqji+kGhvF7AB+2jgF8M5izKC
-         1+Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=BahrkLo1cG01RdfeU2V63voiQNUDlACSWrU7M72tqUM=;
-        b=0ZbpKyMpCfS8i1/H5eQpsKyOBsQzcCaPTWRsUAEgL5jhaQACPCQzmrtdJPs8Mw24Zf
-         KjApg+R/QD+5LVyU6caMBX/n24DU3HCszTNiObKDAJ8MuxTt8XSpOeB/RyGLBCJvXyyP
-         CxcYQkT5xVCwvWliQt765drP2wIKdr40gAOPvg01jrNQL4Gzht53FiDgwswhUIW1IA3m
-         aeuhGDiPhnTdfIvYgTzToBB+uxDBTDtGHUnx5VYEPOdTAOqrGIDK0mSpBwE7aYUirk56
-         R7WZ5o2brlShzEKPZXjkVm4yYzPnHdEgMU3d/iFmjfyhH/jFsed9zvbxRdoUH023CPIM
-         M8kw==
-X-Gm-Message-State: AOAM532EShERxNqyXgtFhTaWtgiOcCIjih4v10yFjlaB5ShOdtG6gz56
-        wb7voxP+VDGzP+5NRfwiFMo=
-X-Google-Smtp-Source: ABdhPJxyxSWGbdnXnq9Vklcicy3xOXljcJl/Tqhk+55byjJgDZ/t0Qtwq+dP/X7Ik5Afkepa3Ay6eQ==
-X-Received: by 2002:a17:902:bb01:b0:13e:a6e6:9a53 with SMTP id im1-20020a170902bb0100b0013ea6e69a53mr26176466plb.4.1635309535768;
-        Tue, 26 Oct 2021 21:38:55 -0700 (PDT)
-Received: from Sauravs-Air.domain.name ([2001:4490:4409:d5:1c27:7aae:179:bb91])
-        by smtp.gmail.com with ESMTPSA id k6sm9249704pfu.161.2021.10.26.21.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 21:38:55 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 10:08:08 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: hal: remove goto statement and local
- variable
-Message-ID: <YXjXsChOpaTThkxT@Sauravs-Air.domain.name>
+        id S237656AbhJ0Elt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 00:41:49 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:50961 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231386AbhJ0Elq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 00:41:46 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HfGDm3WfKz9sSp;
+        Wed, 27 Oct 2021 06:39:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Icct1xCAegu7; Wed, 27 Oct 2021 06:39:20 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HfGDm2KTkz9sSX;
+        Wed, 27 Oct 2021 06:39:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 325108B76D;
+        Wed, 27 Oct 2021 06:39:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id BCzKBFszAYKY; Wed, 27 Oct 2021 06:39:20 +0200 (CEST)
+Received: from [192.168.203.162] (unknown [192.168.203.162])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 932158B763;
+        Wed, 27 Oct 2021 06:39:19 +0200 (CEST)
+Message-ID: <8e2c89a4-e2e9-e441-b75d-f27bd75221fc@csgroup.eu>
+Date:   Wed, 27 Oct 2021 06:39:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/3] powerpc/nohash: Fix __ptep_set_access_flags() and
+ ptep_set_wrprotect()
+Content-Language: fr-FR
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <922bdab3a220781bae2360ff3dd5adb7fe4d34f1.1635226743.git.christophe.leroy@csgroup.eu>
+ <1635308538.6vye6lbbh8.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <1635308538.6vye6lbbh8.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the goto statement from FillH2CCmd_88E(). In this function goto
-can be replace by return statement. As on goto label exit, function
-only return it is not performing any cleanup. Avoiding goto will
-improve the function readability. After replacing the goto statement
-local variable ret is also not needed. So remove the ret local variable.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/hal/rtl8188e_cmd.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-index c5f9353fe3e6..de88e9ee532d 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-@@ -53,19 +53,14 @@ static s32 FillH2CCmd_88E(struct adapter *adapt, u8 ElementID, u32 CmdLen, u8 *p
- 	u8 cmd_idx, ext_cmd_len;
- 	u32 h2c_cmd = 0;
- 	u32 h2c_cmd_ex = 0;
--	s32 ret = _FAIL;
+Le 27/10/2021 à 06:23, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of October 26, 2021 3:39 pm:
+>> Commit 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+>> changed those two functions to use pte helpers to determine which
+>> bits to clear and which bits to set.
+>>
+>> This change was based on the assumption that bits to be set/cleared
+>> are always the same and can be determined by applying the pte
+>> manipulation helpers on __pte(0).
+>>
+>> But on platforms like book3e, the bits depend on whether the page
+>> is a user page or not.
+>>
+>> For the time being it more or less works because of _PAGE_EXEC being
+>> used for user pages only and exec right being set at all time on
+>> kernel page. But following patch will clean that and output of
+>> pte_mkexec() will depend on the page being a user or kernel page.
+>>
+>> Instead of trying to make an even more complicated helper where bits
+>> would become dependent on the final pte value, come back to a more
+>> static situation like before commit 26973fa5ac0e ("powerpc/mm: use
+>> pte helpers in generic code"), by introducing an 8xx specific
+>> version of __ptep_set_access_flags() and ptep_set_wrprotect().
+> 
+> What is this actually fixing? Does it change anything itself, or
+> just a preparation patch?
 
- 	if (!adapt->bFWReady) {
- 		DBG_88E("FillH2CCmd_88E(): return H2C cmd because fw is not ready\n");
--		return ret;
-+		return _FAIL;
- 	}
+Just a preparation patch I think.
 
--	if (!pCmdBuffer)
--		goto exit;
--	if (CmdLen > RTL88E_MAX_CMD_LEN)
--		goto exit;
--	if (adapt->bSurpriseRemoved)
--		goto exit;
-+	if (!pCmdBuffer || CmdLen > RTL88E_MAX_CMD_LEN || adapt->bSurpriseRemoved)
-+		return _FAIL;
+I didn't flag it for stable.
 
- 	/* pay attention to if  race condition happened in  H2C cmd setting. */
- 	do {
-@@ -73,7 +68,7 @@ static s32 FillH2CCmd_88E(struct adapter *adapt, u8 ElementID, u32 CmdLen, u8 *p
+Once patch 2 is applied, __ptep_set_access_flags() doesn't work anymore 
+without this patch, because then pte_mkexec(__pte(0)) sets SX and clears 
+UX while pte_mkexec(__pte(~0)) sets UX and clears SX
 
- 		if (!_is_fw_read_cmd_down(adapt, h2c_box_num)) {
- 			DBG_88E(" fw read cmd failed...\n");
--			goto exit;
-+			return _FAIL;
- 		}
+Christophe
 
- 		*(u8 *)(&h2c_cmd) = ElementID;
-@@ -102,11 +97,7 @@ static s32 FillH2CCmd_88E(struct adapter *adapt, u8 ElementID, u32 CmdLen, u8 *p
 
- 	} while ((!bcmd_down) && (retry_cnts--));
-
--	ret = _SUCCESS;
--
--exit:
--
--	return ret;
-+	return _SUCCESS;
- }
-
- u8 rtl8188e_set_raid_cmd(struct adapter *adapt, u32 mask)
---
-2.33.0
-
+> 
+> Thanks,
+> Nick
+> 
+>>
+>> Fixes: 26973fa5ac0e ("powerpc/mm: use pte helpers in generic code")
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>> v3: No change
+>> v2: New
+>> ---
+>>   arch/powerpc/include/asm/nohash/32/pgtable.h | 17 +++++++--------
+>>   arch/powerpc/include/asm/nohash/32/pte-8xx.h | 22 ++++++++++++++++++++
+>>   2 files changed, 30 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+>> index 34ce50da1850..11c6849f7864 100644
+>> --- a/arch/powerpc/include/asm/nohash/32/pgtable.h
+>> +++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+>> @@ -306,30 +306,29 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
+>>   }
+>>   
+>>   #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+>> +#ifndef ptep_set_wrprotect
+>>   static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+>>   				      pte_t *ptep)
+>>   {
+>> -	unsigned long clr = ~pte_val(pte_wrprotect(__pte(~0)));
+>> -	unsigned long set = pte_val(pte_wrprotect(__pte(0)));
+>> -
+>> -	pte_update(mm, addr, ptep, clr, set, 0);
+>> +	pte_update(mm, addr, ptep, _PAGE_RW, 0, 0);
+>>   }
+>> +#endif
+>>   
+>> +#ifndef __ptep_set_access_flags
+>>   static inline void __ptep_set_access_flags(struct vm_area_struct *vma,
+>>   					   pte_t *ptep, pte_t entry,
+>>   					   unsigned long address,
+>>   					   int psize)
+>>   {
+>> -	pte_t pte_set = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(0)))));
+>> -	pte_t pte_clr = pte_mkyoung(pte_mkdirty(pte_mkwrite(pte_mkexec(__pte(~0)))));
+>> -	unsigned long set = pte_val(entry) & pte_val(pte_set);
+>> -	unsigned long clr = ~pte_val(entry) & ~pte_val(pte_clr);
+>> +	unsigned long set = pte_val(entry) &
+>> +			    (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_RW | _PAGE_EXEC);
+>>   	int huge = psize > mmu_virtual_psize ? 1 : 0;
+>>   
+>> -	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
+>> +	pte_update(vma->vm_mm, address, ptep, 0, set, huge);
+>>   
+>>   	flush_tlb_page(vma, address);
+>>   }
+>> +#endif
+>>   
+>>   static inline int pte_young(pte_t pte)
+>>   {
+>> diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+>> index fcc48d590d88..1a89ebdc3acc 100644
+>> --- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+>> +++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+>> @@ -136,6 +136,28 @@ static inline pte_t pte_mkhuge(pte_t pte)
+>>   
+>>   #define pte_mkhuge pte_mkhuge
+>>   
+>> +static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, pte_t *p,
+>> +				     unsigned long clr, unsigned long set, int huge);
+>> +
+>> +static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
+>> +{
+>> +	pte_update(mm, addr, ptep, 0, _PAGE_RO, 0);
+>> +}
+>> +#define ptep_set_wrprotect ptep_set_wrprotect
+>> +
+>> +static inline void __ptep_set_access_flags(struct vm_area_struct *vma, pte_t *ptep,
+>> +					   pte_t entry, unsigned long address, int psize)
+>> +{
+>> +	unsigned long set = pte_val(entry) & (_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_EXEC);
+>> +	unsigned long clr = ~pte_val(entry) & _PAGE_RO;
+>> +	int huge = psize > mmu_virtual_psize ? 1 : 0;
+>> +
+>> +	pte_update(vma->vm_mm, address, ptep, clr, set, huge);
+>> +
+>> +	flush_tlb_page(vma, address);
+>> +}
+>> +#define __ptep_set_access_flags __ptep_set_access_flags
+>> +
+>>   static inline unsigned long pgd_leaf_size(pgd_t pgd)
+>>   {
+>>   	if (pgd_val(pgd) & _PMD_PAGE_8M)
+>> -- 
+>> 2.31.1
+>>
+>>
