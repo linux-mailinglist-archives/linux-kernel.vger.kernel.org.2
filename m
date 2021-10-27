@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F1143D72A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDE043D736
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhJ0XIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S230216AbhJ0XKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhJ0XIv (ORCPT
+        with ESMTP id S229987AbhJ0XKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:08:51 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C48C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:06:25 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id h193so4501984pgc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:06:25 -0700 (PDT)
+        Wed, 27 Oct 2021 19:10:24 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D954DC061570;
+        Wed, 27 Oct 2021 16:07:58 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id b12so2315866wrh.4;
+        Wed, 27 Oct 2021 16:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qq3Zte+b3gvW8aVUSoj11hufNXWtcNy5WKvRt4opsbo=;
-        b=7y5UZL3rxbZp4tvqsYjA0PSihfwGo2dxmv9dANT4KDkwtKlsd4EoZH5BgFjkxWwrJE
-         2/gCrvWOjjaEVpOr6/JrF6H+ZzfKQox2Vg9ZHvu9PXip1qdGjyF8mUGSQEqhxy/YUnBa
-         IrpRZJuZPA/8znNDIcvJBYFnlOS8M6mdo1HVcNspkw2G737P6sBVl923LGfWRi2k1/OK
-         jQfkqKacsO5o+iNweytFnLyVs6V9iBR3RnJ6zjCInvvzrw4SAFPkJ2VIpeLXj1Yc5ome
-         Tp6cF3kgiluFW/TayK9FlC+IsK/GJwSP9fnxFwx97BTeLHMDp1HvQAch5PPeqqY/cv6M
-         ImcA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=shjT1Lwvq5Pacm8Ep0rHg4FBAZ03jqRawXUWiHiX5AA=;
+        b=fX3TS9RxmgUQ4rb9iXoV7Ug8bv7uI+xiX/56cAZSrLThLbRor07/5DAXKpBcxd5eW5
+         sKleuKmzJfPck/YSQhn3UxocZE9XeIaOn7pItp6FiR7flTZrwpES+9EkTdgwlc1vOwD6
+         Fxg9dcBNdp0VFSqNej8GcfaGUdshcEtoxDMGoXr04rLSpb+DoO0fTx909qgPBoA3jRJn
+         2bctUo4wD1iNHhkcW2pStwm7fZ9xrO1oDRj3zitoK2u1hgF2LGL4MKrOMJ1XevG4xzRA
+         1LvW1d3Mc3nE3rMt6c2B4EajnGhR14A1P4KV1gY+o1S1ELc8z8u6N5nPI2FW+BRDMk8N
+         8o/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=qq3Zte+b3gvW8aVUSoj11hufNXWtcNy5WKvRt4opsbo=;
-        b=UxmUlrnHiairgiHHQoKISulUpbFCXnMK8N5SKIX+Z59tFoxAbM7SlIoNV0EXAyPwlO
-         UnhbHKa7yk2RlSXLaBWKZgwiUhCTklGj04lAjy9RFlDCOT/lLZQs9MFLEM03FMRsrb8h
-         nce2cbfqVXMv3osE1a19TE0zgS6XVFMCiHKXrO+qbNjSek3GXepUiT7O9BnEX12gXHGN
-         PwnwgQsI4mToYB1kpWG13eXasfnADrwiicOhzCoTrf6c9zWXqlBTeE2bxbaeZbSkzYZV
-         6ZMFvAapFYeiDO3eU60hSvbEf+RdyperKgHnpA72mmwEU5hlYAWIj6EhOsK3lgbzTYi4
-         WwbQ==
-X-Gm-Message-State: AOAM531uHAzFlz0MhAW4kPQLyWac1hwwLHykG4VrAB+yNU2O9rmFPMx6
-        SyjiMcRhbG9e5yKBcBt25vMm3g==
-X-Google-Smtp-Source: ABdhPJyEhOalg4/dY/3KpRqiR/tNPNHZi5ofV+HXu1SYzAcPhIDj9GCXCztUYI7qBkfpEe/S5DxTVQ==
-X-Received: by 2002:a63:84c6:: with SMTP id k189mr479739pgd.245.1635375984652;
-        Wed, 27 Oct 2021 16:06:24 -0700 (PDT)
-Received: from localhost ([2620:0:1000:5e10:60fc:a50:6d27:9fd3])
-        by smtp.gmail.com with ESMTPSA id j1sm751742pgb.5.2021.10.27.16.06.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=shjT1Lwvq5Pacm8Ep0rHg4FBAZ03jqRawXUWiHiX5AA=;
+        b=jSTxhgOhOUmNZbk4tF6eWagRiJ9TjdFGZe+SBJPx0JSSsD9hguoVWeT0IQsdLJvAOH
+         4Q5V7ZWdJzbteGMCGyW7rJ3hb2OUmb6D/vQcnBfn0u2maNXCUPDeW7DZeW8IdKj9c5pP
+         V8mI8lMcMtKQBeqHIsmHWGxMuAcPWS8CfMIj8TpGY1QusxtXPlkgAilGyFRSISG/Omxi
+         2rsewo/QRHaN4fOQwhKcQKHXE8UAVIoblUD/G4pDWCcnTojNhsjQgvgIGM5nvWQ7sXub
+         vDQnXBLOmHAyEmUdJ7WAS4KBi8bj9PKg84PpNSufdkWTdG7OkA+CywZWBkiYghA41QJd
+         1wQw==
+X-Gm-Message-State: AOAM533dEK6LuBPHXJHn7zyqn4IBEsAKzVIrICngoHU+Eg5nkPfIlEQR
+        QSsbiOghmOY8by50/wTCK7yStkLzyNU=
+X-Google-Smtp-Source: ABdhPJyFdw6CQgcYWV0qqu0K2OrcdZSfy6/iB5er1Di/rP0WkDDwVDItvJTzE2WVQJojzq6z7SG9wQ==
+X-Received: by 2002:a5d:4845:: with SMTP id n5mr736144wrs.251.1635376077451;
+        Wed, 27 Oct 2021 16:07:57 -0700 (PDT)
+Received: from localhost (195-70-108-137.stat.salzburg-online.at. [195.70.108.137])
+        by smtp.gmail.com with ESMTPSA id a2sm1208727wru.82.2021.10.27.16.07.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 16:06:24 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 16:06:24 -0700 (PDT)
-X-Google-Original-Date: Wed, 27 Oct 2021 16:06:21 PDT (-0700)
-Subject:     Re: [PATCH 1/2] riscv: Fix asan-stack clang build
-In-Reply-To: <20211027045843.1770770-1-alexandre.ghiti@canonical.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        alexandre.ghiti@canonical.com, nathan@kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alexandre.ghiti@canonical.com
-Message-ID: <mhng-41b64d3e-5a5a-4d59-86fc-80f2148823e8@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Wed, 27 Oct 2021 16:07:56 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 01:07:56 +0200
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Slade Watkins <slade@sladewatkins.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Lijun Pan <lijunp213@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: Unsubscription Incident
+Message-ID: <YXnbzE9bjVS73g7H@localhost>
+References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
+ <YXcGPLau1zvfTIot@unknown>
+ <CA+pv=HPK+7JVM2d=C2B6iBY+joW7T9RWrPGDd-VXm09yaWsQYg@mail.gmail.com>
+ <1d5ccba0-d607-aabc-6bd1-0e7c754c8379@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d5ccba0-d607-aabc-6bd1-0e7c754c8379@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
-> Kconfig, it prevents asan-stack from getting disabled with clang even
-> when CONFIG_KASAN_STACK is disabled: fix this by defining the
-> corresponding config.
->
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
-> ---
->  arch/riscv/Kconfig             | 6 ++++++
->  arch/riscv/include/asm/kasan.h | 3 +--
->  arch/riscv/mm/kasan_init.c     | 3 +++
->  3 files changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index c1abbc876e5b..79250b1ed54e 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -162,6 +162,12 @@ config PAGE_OFFSET
->  	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
->  	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
->
-> +config KASAN_SHADOW_OFFSET
-> +	hex
-> +	depends on KASAN_GENERIC
-> +	default 0xdfffffc800000000 if 64BIT
-> +	default 0xffffffff if 32BIT
+On Wed, Oct 27, 2021 at 12:29:34PM -0700, Randy Dunlap wrote:
+> Then you should try <postmaster@vger.kernel.org> for assistance.
 
-I thought I posted this somewhere, but this is exactly what my first 
-guess was.  The problem is that it's hanging on boot for me.  I don't 
-really have anything exotic going on, it's just a defconfig with 
-CONFIG_KASAN=y running in QEMU.
+Hm, are you that isn't connected to /dev/null?
 
-Does this boot for you?
+Last time I wrote to the postmaster (not about present issue), I
+didn't get any response at all.
 
-> +
->  config ARCH_FLATMEM_ENABLE
->  	def_bool !NUMA
->
-> diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
-> index a2b3d9cdbc86..b00f503ec124 100644
-> --- a/arch/riscv/include/asm/kasan.h
-> +++ b/arch/riscv/include/asm/kasan.h
-> @@ -30,8 +30,7 @@
->  #define KASAN_SHADOW_SIZE	(UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
->  #define KASAN_SHADOW_START	KERN_VIRT_START
->  #define KASAN_SHADOW_END	(KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
-> -#define KASAN_SHADOW_OFFSET	(KASAN_SHADOW_END - (1ULL << \
-> -					(64 - KASAN_SHADOW_SCALE_SHIFT)))
-> +#define KASAN_SHADOW_OFFSET	_AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
->
->  void kasan_init(void);
->  asmlinkage void kasan_early_init(void);
-> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> index d7189c8714a9..8175e98b9073 100644
-> --- a/arch/riscv/mm/kasan_init.c
-> +++ b/arch/riscv/mm/kasan_init.c
-> @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
->  	uintptr_t i;
->  	pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
->
-> +	BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
-> +		KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
-> +
->  	for (i = 0; i < PTRS_PER_PTE; ++i)
->  		set_pte(kasan_early_shadow_pte + i,
->  			mk_pte(virt_to_page(kasan_early_shadow_page),
+Thanks,
+Richard
