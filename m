@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E243A43C85F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9B543C865
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241614AbhJ0LRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:17:55 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50582 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237402AbhJ0LRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:17:54 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4C114218ED;
-        Wed, 27 Oct 2021 11:15:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635333327; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkxJPQN9liKoaICizGCBGi8W3K8sU2vxUXZo9t/rlgg=;
-        b=oBdLTDqTh8rLJ32djlyxuwri6hdSouIAD1FOFvKp/KH1J0xXOpIvQslk2qgpyiBq9I+MX0
-        5vguduZMMvjudda7RTHit5bUHY/0/tbJQZH3x7bc/hNKOcQrMZyszpXsT4FKoUZhtcGUB8
-        MBNSdRfLj90KHU5Ip7s6In/CdyBWCxI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635333327;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkxJPQN9liKoaICizGCBGi8W3K8sU2vxUXZo9t/rlgg=;
-        b=lYXZL+DalL8MYbrH1mJXZN1j6xevEn6Qk9KcXbxXj8eTQhwTkrYl4BiMWLuyxuZyfHIpd2
-        irJhEz5VkAXHYBDg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 384EBA3B81;
-        Wed, 27 Oct 2021 11:15:27 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1607A1F2C66; Wed, 27 Oct 2021 13:15:27 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 13:15:27 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Yu Kuai <yukuai3@huawei.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        reiserfs-devel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fs: reiserfs: free new_opts in reiserfs_remount
-Message-ID: <20211027111527.GD28650@quack2.suse.cz>
-References: <20211027033947.3992059-1-mudongliangabcd@gmail.com>
- <20211027094644.GA28650@quack2.suse.cz>
- <CAD-N9QW48LDX7++chFjeZwr0Q1HX+D0+e=6BcXKxPx=i+DgmUA@mail.gmail.com>
+        id S241625AbhJ0LTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:19:40 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48362 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237402AbhJ0LTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:19:38 -0400
+Received: from zn.tnic (p200300ec2f1615002935f4cf24b5c3ba.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1500:2935:f4cf:24b5:c3ba])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C06CA1EC0622;
+        Wed, 27 Oct 2021 13:17:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635333431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=stNjoo2XJVbCmOdEgRU5yFEgbX9ASxd3JdeLr48Zahs=;
+        b=ebK1cCm9TusIIJya8AsuEOa2C3nQXceCim+lTIqBQiXlDB1x/eNW5KTm2nrR7tb97mQhQS
+        vnvCswmbz10LpK/Kw8nzXp85LtQ568h2zkaEyr3nXmArdt3dd3cOUNBshF/UW+o8mvILwa
+        acBETot9fx4OESPek0YesL84jKRUcrY=
+Date:   Wed, 27 Oct 2021 13:17:11 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YXk1N6ApJA8PgkwM@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+ <YW3IdfMs61191qnU@zn.tnic>
+ <20211020161023.hzbj53ehmzjrt4xd@amd.com>
+ <YXF+WjMHW/dd0Wb6@zn.tnic>
+ <20211021204149.pof2exhwkzy2zqrg@amd.com>
+ <YXaPKsicNYFZe84I@zn.tnic>
+ <20211025163518.rztqnngwggnbfxvs@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAD-N9QW48LDX7++chFjeZwr0Q1HX+D0+e=6BcXKxPx=i+DgmUA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211025163518.rztqnngwggnbfxvs@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-10-21 18:19:00, Dongliang Mu wrote:
-> On Wed, Oct 27, 2021 at 5:46 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Wed 27-10-21 11:39:25, Dongliang Mu wrote:
-> > > Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
-> > > if not using generic_show_options") eliminates replace_mount_options
-> > > in reiserfs, but did not handle the allocated new_opts,
-> > > it will cause memory leak in the reiserfs_remount.
-> > >
-> > > Fix this by freeing new_opts in the reiserfs_remount temporarily.
-> > >
-> > > Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
-> > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> >
-> > Thanks for the patch but I can see that new_opts is not actually used at
-> > all in reiserfs_remount() so we should perhaps just remove them (including
-> > kstrdup() et al).
-> 
-> That's also a plan. Since I am not sure if maintainers will use
-> new_opts anymore, So I propose a temporary patch to fix this memory
-> leak.
-> 
-> If you think new_opts is not used anymore, let's remove all the code
-> related to new_opts.
+On Mon, Oct 25, 2021 at 11:35:18AM -0500, Michael Roth wrote:
+> As counter-intuitive as it sounds, it actually doesn't buy us if the CPUID
+> table is part of the PSP attestation report, since:
 
-If it is ever needed again, we can always add it. Please just remove it.
-Thanks!
+Thanks for taking the time to explain in detail - I think I know now
+what's going on, and David explained some additional stuff to me
+yesterday.
 
-								Honza
+So, to cut to the chase:
+
+ - yeah, ok, I guess guest owner attestation is what should happen.
+
+ - as to the boot detection, I think you should do in sme_enable(), in
+pseudo:
+
+	bool snp_guest_detected;
+
+        if (CPUID page address) {
+                read SEV_STATUS;
+
+                snp_guest_detected = SEV_STATUS & MSR_AMD64_SEV_SNP_ENABLED;
+        }
+
+        /* old SME/SEV detection path */
+        read 0x8000_001F_EAX and look at bits SME and SEV, yadda yadda.
+
+        if (snp_guest_detected && (!SME || !SEV))
+                /*
+		 * HV is lying to me, do something there, dunno what. I guess we can
+		 * continue booting unencrypted so that the guest owner knows that
+		 * detection has failed and maybe the HV didn't want us to force SNP.
+		 * This way, attestation will fail and the user will know why.
+		 * Or something like that.
+		 */
+
+
+        /* normal feature detection continues. */
+
+How does that sound?
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
