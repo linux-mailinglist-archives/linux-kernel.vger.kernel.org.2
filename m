@@ -2,93 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C2243D17B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D8B43D180
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240612AbhJ0TPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:15:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240552AbhJ0TPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:15:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EAE960EB4;
-        Wed, 27 Oct 2021 19:13:04 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 20:13:01 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-Message-ID: <YXmkvfL9B+4mQAIo@arm.com>
-References: <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
- <YXBFqD9WVuU8awIv@arm.com>
- <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
- <YXCbv5gdfEEtAYo8@arm.com>
- <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
- <YXL9tRher7QVmq6N@arm.com>
- <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
- <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
- <YXhH0sBSyTyz5Eh2@arm.com>
- <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+        id S240639AbhJ0TRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:17:00 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43700 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240526AbhJ0TQ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 15:16:59 -0400
+Received: from kbox (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6E44820A5C61;
+        Wed, 27 Oct 2021 12:14:33 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6E44820A5C61
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1635362073;
+        bh=0up9HDY1ud1cNjZdsG8dJiMycYEcONBTeIzk10Rrlc0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dKK2gqdO2G7vAfTphyxiO7FUkJV6KmfrkwdkmTiGm9GK6431eDndREqvF4nrG5Qjw
+         VD+wTWEeXSv1aKJEPX0vsXOUXScIK1wqJ8g1HsvZ0PzlLCr3XAEp7Ca2s3JxaMX/ff
+         O4W3OmfGmgF9ryEKob6nTyagsUDvPFdQZz2BxOM4=
+Date:   Wed, 27 Oct 2021 12:14:28 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH v3] user_events: Enable user processes to create and
+ write to trace events
+Message-ID: <20211027191428.GA1462@kbox>
+References: <20211018230957.3032-1-beaub@linux.microsoft.com>
+ <20211022223811.d0b5f03a7eee147c619d0202@kernel.org>
+ <20211022224202.GA27683@kbox>
+ <20211025104006.a322e4a5b4a56cdf3552ebac@kernel.org>
+ <20211025172655.GA27927@kbox>
+ <20211026172602.55843a03c5a5ba049b567b5a@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+In-Reply-To: <20211026172602.55843a03c5a5ba049b567b5a@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:50:04AM -0700, Linus Torvalds wrote:
-> On Tue, Oct 26, 2021 at 11:24 AM Catalin Marinas
-> <catalin.marinas@arm.com> wrote:
-> > While more intrusive, I'd rather change copy_page_from_iter_atomic()
-> > etc. to take a pointer where to write back an error code.
-[...]
-> That said, the fact that these sub-page faults are always
-> non-recoverable might be a hint to a solution to the problem: maybe we
-> could extend the existing return code with actual negative error
-> numbers.
+On Tue, Oct 26, 2021 at 05:26:02PM +0900, Masami Hiramatsu wrote:
+> > > > > > +	} else if (strstr(field, "flag ") == field) {
+> > > > > > +		field += sizeof("flag");
+> > > > > > +
+> > > > > > +		if (!strcmp(field, "bpf_iter"))
+> > > > > > +			user->flags |= FLAG_BPF_ITER;
+> > > > > > +
+> > > > > 
+> > > > > What is this flag?
+> > > > > 
+> > > > We want to enable certain sensitive events the ability to mark that
+> > > > there should never be a buffer copy. When FLAG_BPF_ITER is used the raw
+> > > > iovecs are exposed out to eBPF instead of any sort of copy to reduce
+> > > > latency. We run user_events in some highly performant code and want to
+> > > > monitor things with the least amount of overhead possible.
+> > > 
+> > > Would you mean the event with this flag is only available from eBPF?
+> > > 
+> > It means that if eBPF attaches we will honor the users request to make
+> > the data as cheap as possible to them. If a user with proper access
+> > enables ftrace or perf on these high performant events they will still
+> > come through (we don't want to hide them).
+> > 
+> > We will not be able to do that at all if we copy to heap or stack. At
+> > that point we've lost the ability to delay copy/probing up until the
+> > eBPF states it is actually required.
 > 
-> Because for _most_ cases of "copy_to/from_user()" and friends by far,
-> the only thing we look for is "zero for success".
+> I think the bpf optimization should be discussed in the other thread.
 > 
-> We could extend the "number of bytes _not_ copied" semantics to say
-> "negative means fatal", and because there are fairly few places that
-> actually look at non-zero values, we could have a coccinelle script
-> that actually marks those places.
 
-As you already replied, there are some odd places where the returned
-uncopied of bytes is used. Also for some valid cases like
-copy_mount_options(), it's likely that it will fall back to
-byte-at-a-time with MTE since it's a good chance it would hit a fault in
-a 4K page (not a fast path though). I'd have to go through all the cases
-and check whether the return value is meaningful. The iter_iov.c
-functions and their callers also seem to make use of the bytes copied in
-case they need to call iov_iter_revert() (though I suppose the
-iov_iter_iovec_advance() would skip the update in case of an error).
+Yep
 
-As an alternative, you mentioned earlier that a per-thread fault status
-was not feasible on x86 due to races. Was this only for the hw poison
-case? I think the uaccess is slightly different.
+> Anyway, here I would like to know is that the syntax of this flag. 
+> If the flag is for the user event itself, it would be better to add the flag
+> with a special separator, not the "flag", so that user puts the flags
+> after fieldN.
+> 
+> name[:FLAG1[,FLAG2...]] [field1[;field2...]] 
+> 
 
-We can add a current->non_recoverable_uaccess variable cleared on
-pagefault_disable(), only set by uaccess faults and checked by the fs
-code before re-attempting the fault_in(). An interrupt shouldn't do a
-uaccess (well, if it does a _nofault one, we can detect in_interrupt()
-in the MTE exception handler). Last time I looked at io_uring it was
-running in a separate kernel thread, not sure whether this was changed.
-I don't see what else would be racing with such
-current->non_recoverable_uaccess variable. If that's doable, I think
-it's the least intrusive approach.
+Agreed, will do that.
 
--- 
-Catalin
+> > > > I also ran with CONFIG_PROVE_RCU and didn't see anything show up in
+> > > > dmesg.
+> > > 
+> > > Hmm, that's strange, because copy_from_iter(user) may cause a fault
+> > > and yielded. Isn't it an iovec?
+> > > 
+> > Yeah, likely I just haven't hit a page fault case. I'll try to force one
+> > in our testing to ensure this case is properly covered and doesn't cause
+> > issues.
+> 
+> If you can suppress the fault (just skip copying when the fault occurs),
+> I think it is OK. e.g. copy_from_user_nofault().
+> 
+
+We want to handle faults in these paths, which means handling them
+outside of preemption disabled. This limits where we can have the buffer.
+
+> > > > > > +				/*
+> > > > > > +				 * Probes advance the iterator so we
+> > > > > > +				 * need to have a copy for each probe.
+> > > > > > +				 */
+> > > > > > +				copy = *i;
+> > > > > > +
+> > > > > > +				probe_func = probe_func_ptr->func;
+> > > > > > +				tpdata = probe_func_ptr->data;
+> > > > > > +				probe_func(user, &copy, tpdata);
+> > > > > 
+> > > > > You seems to try to copy in from user space in each probe func, but
+> > > > > please copy it here to the temporary buffer and pass it to the
+> > > > > each probe function. Such performacne optimization can postpone.
+> > > > > Start with simple implementation.
+> > > > > 
+> > > > Yes, this avoids double copying of the data in the normal paths. Moving
+> > > > to a temp buffer only really changes 1 line in the probe functions
+> > > > (copy_from_iter to copy_from_user).
+> > > > 
+> > > > If I were to create a temp buffer for simplicity I guess I would have to
+> > > > kmalloc on each call or move to a per-cpu buffer or use stack memory and
+> > > > limit how much data can be copied.
+> > > 
+> > > Anyway, it should be limited. You can not write more than 1 page, and
+> > > do you really need it? And allocating kmalloc object is relatively low
+> > > cost compared with a system call.
+> > > 
+> > Really, it's that low?
+> > 
+> > We are tracking cycles counts to compare user_events with other
+> > telemetry data we have. Some people care a lot about that number, some
+> > don't.
+> 
+> OK, then you can use a static per-cpu buffer for copying.
+> 
+
+I can only use static per-cpu buffers if preemption is disabled during
+the copy. This limits to not being able to fault in data. For example
+simple migration disabled could still see another user_event getting
+traced on the same processor and corrupt / partial fill that per-CPU
+buffer.
+
+For the simple version I will use kmalloc and then we can talk on the
+other threads about better ways to go about it.
+
+Thanks,
+-Beau
