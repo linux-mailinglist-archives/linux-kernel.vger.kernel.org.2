@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAED043C8DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD7043C8DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241730AbhJ0LxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:53:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:42440 "EHLO foss.arm.com"
+        id S239913AbhJ0LyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:54:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:33800 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240073AbhJ0LxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:53:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9AD31FB;
-        Wed, 27 Oct 2021 04:50:51 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51AF43F73D;
-        Wed, 27 Oct 2021 04:50:47 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 12:50:43 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Tong Tiangen <tongtiangen@huawei.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next,v3] riscv, bpf: Add BPF exception tables
-Message-ID: <20211027115043.GB54628@C02TD0UTHF1T.local>
-References: <20211027111822.3801679-1-tongtiangen@huawei.com>
+        id S234994AbhJ0LyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:54:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="290977338"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="290977338"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 04:51:39 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497831225"
+Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 04:51:34 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Dan =?utf-8?Q?Hor=C3=A1k?= <dan@danny.cz>,
+        "Justin M . Forbes" <jforbes@fedoraproject.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm: Make DRM_FBDEV_EMULATION deps more robust to fix linker errors
+In-Reply-To: <20211027072044.4105113-1-javierm@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211027072044.4105113-1-javierm@redhat.com>
+Date:   Wed, 27 Oct 2021 14:51:31 +0300
+Message-ID: <875ytiit30.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027111822.3801679-1-tongtiangen@huawei.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:18:22AM +0000, Tong Tiangen wrote:
-> When a tracing BPF program attempts to read memory without using the
-> bpf_probe_read() helper, the verifier marks the load instruction with
-> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
-> this flag it falls back to the interpreter.
-> 
-> Add support for BPF_PROBE_MEM, by appending an exception table to the
-> BPF program. If the load instruction causes a data abort, the fixup
-> infrastructure finds the exception table and fixes up the fault, by
-> clearing the destination register and jumping over the faulting
-> instruction.
-> 
-> A more generic solution would add a "handler" field to the table entry,
-> like on x86 and s390.
-> 
-> The same issue in ARM64 is fixed in:
-> commit 800834285361 ("bpf, arm64: Add BPF exception tables")
+On Wed, 27 Oct 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
+> Enabling the CONFIG_DRM_FBDEV_EMULATION Kconfig symbol can lead to linker
+> errors, if CONFIG_DRM_KMS_HELPER is built-in but CONFIG_FB as a module.
+>
+> Because in that case the drm_kms_helper.o object will have references to
+> symbols that are defined in the fb.ko module, i.e:
+>
+>   $ make bzImage modules
+>     DESCEND objtool
+>     CALL    scripts/atomic/check-atomics.sh
+>     CALL    scripts/checksyscalls.sh
+>     CHK     include/generated/compile.h
+>     GEN     .version
+>     CHK     include/generated/compile.h
+>     UPD     include/generated/compile.h
+>     CC      init/version.o
+>     AR      init/built-in.a
+>     LD      vmlinux.o
+>     MODPOST vmlinux.symvers
+>     MODINFO modules.builtin.modinfo
+>     GEN     modules.builtin
+>     LD      .tmp_vmlinux.kallsyms1
+>   ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_resume_worker':
+>   drm_fb_helper.c:(.text+0x2a0): undefined reference to `fb_set_suspend'
+>   ...
+>
+> To prevent this, make following changes to the config option dependencies:
+>
+>   * Depend on FB && !(DRM_KMS_HELPER=y && FB=m), to avoid invalid configs.
+>   * Depend on DRM_KMS_HELPER instead selecting it, to avoid circular deps.
+>
+> Reported-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-> +#ifdef CONFIG_BPF_JIT
-> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
-> +#endif
-> +
->  int fixup_exception(struct pt_regs *regs)
->  {
->  	const struct exception_table_entry *fixup;
->  
->  	fixup = search_exception_tables(regs->epc);
-> -	if (fixup) {
-> -		regs->epc = fixup->fixup;
-> -		return 1;
-> -	}
-> -	return 0;
-> +	if (!fixup)
-> +		return 0;
-> +
-> +#ifdef CONFIG_BPF_JIT
-> +	if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
-> +		return rv_bpf_fixup_exception(fixup, regs);
-> +#endif
-> +
-> +	regs->epc = fixup->fixup;
-> +	return 1;
->  }
+Please see [1]. I think it's a big mess. I don't think this is the fix
+either.
 
-As a heads-up, on the extable front, both arm64 and x86 are moving to
-having an enumerated "type" field to select the handler:
+BR,
+Jani.
 
-x86:
+[1] https://lore.kernel.org/r/878ryeit9i.fsf@intel.com
 
-  https://lore.kernel.org/lkml/20210908132525.211958725@linutronix.de/
+> ---
+>
+> This fixes linker errors found when building the Fedora kernel package
+> for the s390x architecture:
+>
+> https://kojipkgs.fedoraproject.org//work/tasks/9849/77859849/build.log
+>
+>  drivers/gpu/drm/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index cea777ae7fb9..9a21e57b4a0d 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -103,8 +103,8 @@ config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
+>  config DRM_FBDEV_EMULATION
+>  	bool "Enable legacy fbdev support for your modesetting driver"
+>  	depends on DRM
+> -	depends on FB
+> -	select DRM_KMS_HELPER
+> +	depends on FB && !(DRM_KMS_HELPER=y && FB=m)
+> +	depends on DRM_KMS_HELPER
+>  	select FB_CFB_FILLRECT
+>  	select FB_CFB_COPYAREA
+>  	select FB_CFB_IMAGEBLIT
 
-arm64:
-
-  https://lore.kernel.org/linux-arm-kernel/20211019160219.5202-11-mark.rutland@arm.com/
-
-... and going forwards, riscv might want to do likewise.
-
-Thanks,
-Mark.
+-- 
+Jani Nikula, Intel Open Source Graphics Center
