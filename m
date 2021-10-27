@@ -2,100 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8394043D76B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB4043D76D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhJ0XUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhJ0XUf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:20:35 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D2EC061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:18:09 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id gt5-20020a17090af2c500b001a218bb02b0so4472258pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=UqOACvA/GAkBlx6nI88hGu6zlyCJ7sQcYLTjddCacic=;
-        b=qIJBnjiVYU+VbQ9QVyiZwIzZ4VV1R58qP7+8LI2fJOCdwSO6LQdnY2JohZX+a56DQV
-         Uj0jTqY+BagZiJoclE3pFYBTvkiaU008xsdPlruovpG0WDRKldh5SXu6TpFCJXxzj4c0
-         iTZcH3PqZsOSAYgJEVT5GTrwL2Ey+DIFNPDSdahqmJ5U2dWcQn3Oe2YPhriazosUi/uT
-         IkQo+m7VieGPdrUFJ4q3sS8LwhtB6WE6w+iyt5Okd29h/BOrbS0zoUmtmGRaC7xbHka2
-         tUYZT+mcAO7JhUjijw5DVp3W8rOryaw2Sh7P2/Pa4g64hjrYtkN7iczxtHUM2hLQrmvE
-         AKXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=UqOACvA/GAkBlx6nI88hGu6zlyCJ7sQcYLTjddCacic=;
-        b=kwVa2eEPOP1jamXg5o0OHRsx+/meXBbxQtfsI1xImajvdPbeIGD/Ki6S5myFrESJ+t
-         KnMwI+TTUjoHBvuKK6wNGDC+5CfbvgJyumDxIUpLsjG5bzzbokC8/98bcmzjczhqGazR
-         yRoW65XZ9WEvtt0fy+nbUW5NNK+8zxuLNoViG7IHBvD+2QU+6A7SKqrpmedI3cZBge5F
-         5QRIbSFB43GVJg9WktgWJU8Ixvf0ot2qS56eePIqoaE6tOyaW/2SosJFzmhXB+cBNHJs
-         JP9a/Vjcl6oEnZa/xZvJZKrclIQIJECxxKmrtgdgdtwYFq6Ztki4y58pqFQDS87w2z/c
-         yByQ==
-X-Gm-Message-State: AOAM530u3iSA8yZLHtI8AJDv5leq1Oo2t+l+wR2HkC6ur/401+rSWBZx
-        mGs4sCzekV3zEEnDGJZJrc8J7w9qokfCAQ==
-X-Google-Smtp-Source: ABdhPJw4QylC3Ps+oNmTML3fbSxd7m/TYjApDzns2/MnfhSbCUkBSzqeFl1LTdfMByzlviPIFnV7n72HrjbqQA==
-X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:b1])
- (user=cmllamas job=sendgmr) by 2002:a62:3808:0:b0:47b:d1da:e734 with SMTP id
- f8-20020a623808000000b0047bd1dae734mr686437pfa.2.1635376689115; Wed, 27 Oct
- 2021 16:18:09 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 23:18:02 +0000
-Message-Id: <20211027231802.2844313-1-cmllamas@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH net] ptp: fix code indentation issues
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>, netdev@vger.kernel.org,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        Carlos Llamas <cmllamas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230274AbhJ0XXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:23:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229836AbhJ0XXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 19:23:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B0E861073;
+        Wed, 27 Oct 2021 23:20:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635376840;
+        bh=k51HWgvuPMXlDX7Sellc5w3QqqhkKNP2bx5vba1UD9M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OGhC4wFjIl4sCZZdbPpuWrUnoc9Da8pN9FkT7U0YSKu4kTthujnEd+ijBwiSGHsEL
+         Dd1XY1TiNu6CHhjz9UZ0wwk6hSK01Ak4K05yDlZhqzKBCocif1EUe+IeGgq33hV1k6
+         /qhLJaFVeJFVnylannrAUab3kQ3P6xi0E7NmYiDxTfkGAmec2E/B8/4dXeuAs4WbVv
+         r6YYKpzqamwGFvG6CTq2Rl0z8r8q6SpWrRrD6+wBfWR/Ad4k11DU0nx6o3QJ54iBsf
+         DlG3s0nuhHJ24LGcz8Omb5GGIHrxW9Yv4qF3s2ylFQPTdl2A4XVido1pbSUnl9Oygf
+         wQQOVfJ8CXUpQ==
+Date:   Thu, 28 Oct 2021 01:20:38 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH 1/2] sched: isolation: cpu isolation handles for cpuset
+Message-ID: <20211027232038.GB73746@lothringen>
+References: <20211027204319.22697-1-paul.gortmaker@windriver.com>
+ <20211027204319.22697-2-paul.gortmaker@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027204319.22697-2-paul.gortmaker@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the following checkpatch.pl errors:
+On Wed, Oct 27, 2021 at 04:43:18PM -0400, Paul Gortmaker wrote:
+> Assuming we want to drive isolation from cpuset and not something
+> like /sys/devices/system/cpu/cpu*/hotplug/isolation then we'll
+> need some kind of handle for cpuset to drive it from.
+> 
+> These would also serve as a collection point for all the isolation
+> related operations - current and future.  While only RCU nocb toggle
+> is currently deployed, I've left some guesses at what is probably to
+> come in the future.
+> 
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> [PG: RFC code - not for merge]
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> ---
+>  include/linux/sched/isolation.h |  4 ++++
+>  kernel/sched/isolation.c        | 22 ++++++++++++++++++++++
+>  2 files changed, 26 insertions(+)
+> 
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index cc9f393e2a70..3ab9c667c441 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -25,6 +25,8 @@ extern bool housekeeping_enabled(enum hk_flags flags);
+>  extern void housekeeping_affine(struct task_struct *t, enum hk_flags flags);
+>  extern bool housekeeping_test_cpu(int cpu, enum hk_flags flags);
+>  extern void __init housekeeping_init(void);
+> +extern void isolate_cpu(int cpu);
+> +extern void deisolate_cpu(int cpu);
 
-ERROR: code indent should use tabs where possible
-+^I        if (ptp->pps_source)$
+I first read "desolate_cpu()". That gives me ideas to rename nohz_full.
 
-ERROR: code indent should use tabs where possible
-+^I                pps_unregister_source(ptp->pps_source);$
+>  
+>  #else
+>  
+> @@ -46,6 +48,8 @@ static inline bool housekeeping_enabled(enum hk_flags flags)
+>  static inline void housekeeping_affine(struct task_struct *t,
+>  				       enum hk_flags flags) { }
+>  static inline void housekeeping_init(void) { }
+> +static void isolate_cpu(int cpu) { }
+> +static void deisolate_cpu(int cpu) { }
+>  #endif /* CONFIG_CPU_ISOLATION */
+>  
+>  static inline bool housekeeping_cpu(int cpu, enum hk_flags flags)
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 7f06eaf12818..57b105d42632 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -63,6 +63,28 @@ bool housekeeping_test_cpu(int cpu, enum hk_flags flags)
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+>  
+> +void isolate_cpu(int cpu)
+> +{
+> +	pr_info("Isolating core %d\n", cpu);
+> +	if (rcu_nocb_cpu_offload(cpu))
+> +		pr_warn("RCU; unable to nocb offload CPU %d\n", cpu);
+> +#if 0	/* TODO */
+> +	housekeeping_clear_cpu(cpu);
+> +	tick_nohz_full_add_cpus_to(cpumask_of(cpu));
+> +#endif
+> +}
+> +
+> +void deisolate_cpu(int cpu)
+> +{
+> +	pr_info("Deisolating core %d\n", cpu);
+> +#if 0	/* TODO */
+> +	tick_nohz_full_clear_cpus_from(cpumask_of(cpu));
+> +	housekeeping_add_cpu(cpu);
+> +#endif
+> +	if (rcu_nocb_cpu_deoffload(cpu))
+> +		pr_warn("RCU: unable to nocb reload CPU %d\n", cpu);
+> +}
 
-ERROR: code indent should use tabs where possible
-+^I                kthread_destroy_worker(ptp->kworker);$
+In my series I'm eventually splitting housekeeping cpumasks so that we
+can modify HK_FLAG_RCU without modifying the others.
 
-Fixes: 4225fea1cb28 ("ptp: Fix possible memory leak in ptp_clock_register()")
-Signed-off-by: Carlos Llamas <cmllamas@google.com>
----
- drivers/ptp/ptp_clock.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks.
 
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index f9b2d66b0443..0e4bc8b9329d 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -284,11 +284,11 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	/* Create a posix clock and link it to the device. */
- 	err = posix_clock_register(&ptp->clock, &ptp->dev);
- 	if (err) {
--	        if (ptp->pps_source)
--	                pps_unregister_source(ptp->pps_source);
-+		if (ptp->pps_source)
-+			pps_unregister_source(ptp->pps_source);
- 
- 		if (ptp->kworker)
--	                kthread_destroy_worker(ptp->kworker);
-+			kthread_destroy_worker(ptp->kworker);
- 
- 		put_device(&ptp->dev);
- 
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+> +
+>  void __init housekeeping_init(void)
+>  {
+>  	if (!housekeeping_flags)
+> -- 
+> 2.15.0
+> 
