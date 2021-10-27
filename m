@@ -2,154 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE05F43D780
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7DE43D781
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbhJ0XbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhJ0XbP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:31:15 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0B1C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:28:49 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id w4-20020a1709029a8400b00138e222b06aso1783600plp.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:28:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=uDDw3N5CBHxN32c5VspvkYKtdupefenssD38+djE0Js=;
-        b=P4EX9mgT725zotWLAJ/xneDIPXR7OXLeYE3WwQOc1ez7NAdyFSe2zdkFoV2RUn1ekO
-         x/AM6panIleqYWTm/gdai2XwFoI86mCR4WlEusAdMmva5OqUUR6XcErRMtXXevGQsFIs
-         4Y4hog8D/58ddpF3SO0kNMp5ZqudZJQ2QKckK+BKEJlC0enHbIT5I7aVR5lsbogINcP/
-         PAoc5OCUeDqPs+ebz23t+sSvSm80ClDVgMhV4+6ADCl8bkDyp8hz5LF6PfY06jLlVZ3b
-         8j8NvTOHNkf7PLDMMsoNTNcVPrLwR5NmoPVleTYR1SSvmslc/G7lwrarOkzsCeyJW1RN
-         Rcow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=uDDw3N5CBHxN32c5VspvkYKtdupefenssD38+djE0Js=;
-        b=oKsC0sxHTPu6nDhatk1V8tEBo/1P08kKeLxvXAi9Y5MnR7I975qeKIJM3zKt6myWtV
-         SgPQKzZRvN5PaOaKO4RW57UoLGAqRxJfTx56SUVrb7KjMtn6rUTsZhZ+v9cGgEwOvMKY
-         nJXfdVjA+XFWIeSUXYK8S1BbVuVjjzp9vOj9MWkGytZjH9DWdiPLP2NhD0eXb0Qa3p3N
-         KujFM/L/OQ3WGZhzIfzadiW1HvQHtYYHn9U7DG45FUoBMSNL6sNiMtcbvGkMHk2sW442
-         M0CZTgJeDgKP9458ajvc08QK9YsisZXsOzNccMExpxiEMvz8BDb3gviGnGPEsdiIg7HU
-         tLXA==
-X-Gm-Message-State: AOAM532uo+pcDowTxuI/ij3tPurIjyOGHk3H3lC0ld/V2XJQUZCFmMcM
-        0lQ+AK7U021iPsgM1chHZW5m67jwZijr1tVxYfxMMTywPOTb6ShEZb0CqjU/9H9tgwckm9sLgBb
-        u4Ixz7xjzfDAw8sMSwORYEDDVq9+4P0j/i2Cknvp871irRzPFS0RMkA6x6B+OIuSDaeaXIzfxc4
-        qCD7UT
-X-Google-Smtp-Source: ABdhPJzJ5RBmiXPjmxwdl42/6rP2XbtDgS1nAYiRfySTAv6J2WD6YhiumB1hStV06KTkCIqs1A7c0p+w1I01z3fy
-X-Received: from nehir.kir.corp.google.com ([2620:15c:29:204:9e0:c169:7f1:2eaa])
- (user=erdemaktas job=sendgmr) by 2002:a05:6a00:1897:b0:47c:3554:52eb with
- SMTP id x23-20020a056a00189700b0047c355452ebmr712483pfh.22.1635377329353;
- Wed, 27 Oct 2021 16:28:49 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 16:28:28 -0700
-Message-Id: <20211027232828.2043569-1-erdemaktas@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [RFC] Add DMA_API support for Virtio devices earlier than VirtIO 1.0
-From:   Erdem Aktas <erdemaktas@google.com>
-To:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Cc:     Erdem Aktas <erdemaktas@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
+        id S229484AbhJ0XdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:33:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhJ0XdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 19:33:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1E7D610E5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:30:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635377448;
+        bh=Tn75VzarQbc5QgLHek0RK4HW2XH2u4J1JDqisUkgpqY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UJekR0JZaL9yDHPomHOW1TXTbkxwC8wWAMo9qu2ELak/JzDOgggi4ow3k2KFciFjS
+         JaXYwfLmT1zMZEAZ8uHScJtnHoTRG5ZxgKCwitOQpHftd6KDjD0tR9OrNWTZ0YS+yI
+         OG3ZGmBj5YAjVYL3acF9GyXkwXsbTOmVi1dEDh5OsaqEKv5zXYLA3xyPjuCsuZ82s1
+         0kD4uioaNCUNSZGhz5VllceNEBMKM3dlaLFJYygYoBYjhliGgCvpliwAkJ3QIDs2R7
+         V/EeuwdSHMa2zIe89HRo+Zbc0UCLcN9MSpcPXevZXFrBoGdVGFSMGx9zD1PbSTqEmz
+         5/cyuhbW2Xvuw==
+Received: by mail-ed1-f50.google.com with SMTP id 5so16484990edw.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:30:48 -0700 (PDT)
+X-Gm-Message-State: AOAM530YdgK6JQkw+B8d+OqsE/LJ2Kn6UkpdN8gtJqUeTH9UgXTHVd8O
+        kYpcFQu2alZ6IyHS4lY9LZUXJ6KtmCrGseGJcQ==
+X-Google-Smtp-Source: ABdhPJzUHykGHts37AdltmTcOjjKPYdJdGgU/ReeYi6xz9u0NbxyDwQULshIj1Ado65mhw4sC4r/wUEqBnoJ9X7sBhw=
+X-Received: by 2002:a50:ff0a:: with SMTP id a10mr1131395edu.357.1635377447059;
+ Wed, 27 Oct 2021 16:30:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211027021857.20816-1-jason-jh.lin@mediatek.com> <20211027021857.20816-6-jason-jh.lin@mediatek.com>
+In-Reply-To: <20211027021857.20816-6-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 28 Oct 2021 07:30:35 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_85V6HHaK4LT+jUyJ9-0dh4KgtLfS-ZBconLja0_S2wbg@mail.gmail.com>
+Message-ID: <CAAOTY_85V6HHaK4LT+jUyJ9-0dh4KgtLfS-ZBconLja0_S2wbg@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] drm/mediatek: Add mbox_free_channel in mtk_drm_crtc_destroy
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable DMA_API for any VirtIO device earlier than Virtio 1.0 which
-is the only way for those devices to be configured correctly when
-memory access is retricted.
+Hi, Jason:
 
-Virtio devices can use DMA_API to translate guest phsical addresses to
-device physical addresses if VIRTIO_F_ACCESS_PLATFORM feature is set
-while the device is being initialized. VIRTIO_F_ACCESS_PLATFORM
-feature is only supported in VirtIO 1.0 and later devices. This prevents
-any device using an earlier VirtIO version than Virtio 1.0 to be
-attached when memory access is restricted ie memory encryption features
-(AMD SEV [ES/SNP], Intel TDX, etc..) are enabled.
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=88=
+27=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8810:19=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Add mbox_free_channel in mtk_drm_crtc_destroy.
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index ffa54b416ca7..31f05efc1bc0 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -156,6 +156,10 @@ static void mtk_drm_crtc_destroy(struct drm_crtc *cr=
+tc)
+>         mtk_mutex_put(mtk_crtc->mutex);
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>         mtk_drm_cmdq_pkt_destroy(&mtk_crtc->cmdq_handle);
+> +
+> +       if (mtk_crtc->cmdq_client.chan)
+> +               mbox_free_channel(mtk_crtc->cmdq_client.chan);
+> +                                 mtk_crtc->cmdq_client.chan =3D NULL;
 
-Signed-off-by: Erdem Aktas <erdemaktas@google.com>
----
-I have tested the this patch using linux-stable.git head, 5.15.0-rc6
-kernel and scsi disk with virtio 0.95 version with legacy VM and
-Confidential VM (AMD SEV). I want to get feedback if
-there is any risk or downside of enabling DMA_API on older virtio
-drivers when memory encrytion is enabled.
+Except the indent,
 
- drivers/virtio/virtio.c       |  7 ++-----
- include/linux/virtio_config.h | 22 ++++++++++++++--------
- 2 files changed, 16 insertions(+), 13 deletions(-)
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-index 236081afe9a2..71115ba85d07 100644
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -179,11 +179,8 @@ int virtio_finalize_features(struct virtio_device *dev)
- 	if (ret) {
- 		if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1)) {
- 			dev_warn(&dev->dev,
--				 "device must provide VIRTIO_F_VERSION_1\n");
--			return -ENODEV;
--		}
--
--		if (!virtio_has_feature(dev, VIRTIO_F_ACCESS_PLATFORM)) {
-+				 "device does not provide VIRTIO_F_VERSION_1 while restricted memory access is enabled!.\n");
-+		} else if (!virtio_has_feature(dev, VIRTIO_F_ACCESS_PLATFORM)) {
- 			dev_warn(&dev->dev,
- 				 "device must provide VIRTIO_F_ACCESS_PLATFORM\n");
- 			return -ENODEV;
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 8519b3ae5d52..6eacb4d43318 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -170,6 +170,15 @@ static inline bool virtio_has_feature(const struct virtio_device *vdev,
- 	return __virtio_test_bit(vdev, fbit);
- }
- 
-+#ifdef CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
-+int arch_has_restricted_virtio_memory_access(void);
-+#else
-+static inline int arch_has_restricted_virtio_memory_access(void)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS */
-+
- /**
-  * virtio_has_dma_quirk - determine whether this device has the DMA quirk
-  * @vdev: the device
-@@ -180,6 +189,11 @@ static inline bool virtio_has_dma_quirk(const struct virtio_device *vdev)
- 	 * Note the reverse polarity of the quirk feature (compared to most
- 	 * other features), this is for compatibility with legacy systems.
- 	 */
-+	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1) &&
-+	   arch_has_restricted_virtio_memory_access())
-+		return false;
-+
-+
- 	return !virtio_has_feature(vdev, VIRTIO_F_ACCESS_PLATFORM);
- }
- 
-@@ -558,13 +572,5 @@ static inline void virtio_cwrite64(struct virtio_device *vdev,
- 		_r;							\
- 	})
- 
--#ifdef CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
--int arch_has_restricted_virtio_memory_access(void);
--#else
--static inline int arch_has_restricted_virtio_memory_access(void)
--{
--	return 0;
--}
--#endif /* CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS */
- 
- #endif /* _LINUX_VIRTIO_CONFIG_H */
--- 
-2.30.2
-
+>  #endif
+>         drm_crtc_cleanup(crtc);
+>  }
+> --
+> 2.18.0
+>
