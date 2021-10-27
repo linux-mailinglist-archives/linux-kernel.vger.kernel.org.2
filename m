@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF1943CCE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FEE43CCE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237445AbhJ0PAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237416AbhJ0PAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:00:21 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S237524AbhJ0PB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:01:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41676 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237464AbhJ0PB5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:01:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635346771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dmMAXlBbydUPcO3WhWZ8PkBNlDfdb7R7qupK88yQ1m8=;
+        b=ccimaOP9JQjTK3gvp7cSQWnquAdZ/tutxffC2Qd+QSvBfMEKhKxqLzbhoiLaVx2TcSCpdN
+        8T+Ygz1CBCku9gJIU3M0NeiByVbLvO07mv65u9AtJLMxcq9+x/5H11RYKJ7DPwYucRjZI8
+        F9hBQF5Tqq9Ih3I60Wgd/189RA51hzQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-E56qGJLRP3erriuCDy46wA-1; Wed, 27 Oct 2021 10:59:28 -0400
+X-MC-Unique: E56qGJLRP3erriuCDy46wA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54C4960724;
-        Wed, 27 Oct 2021 14:57:55 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 10:57:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v2] bootconfig: Initialize ret in xbc_parse_tree()
-Message-ID: <20211027105753.6ab9da5f@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43C2910B3942;
+        Wed, 27 Oct 2021 14:59:27 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D065060862;
+        Wed, 27 Oct 2021 14:59:26 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, Marc Orr <marcorr@google.com>
+Subject: [PATCH] KVM: SEV-ES: fix another issue with string I/O VMGEXITs
+Date:   Wed, 27 Oct 2021 10:59:26 -0400
+Message-Id: <20211027145926.2873481-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+If the guest requests string I/O from the hypervisor via VMGEXIT,
+SW_EXITINFO2 will contain the REP count.  However, sev_es_string_io
+was incorrectly treating it as the size of the GHCB buffer in
+bytes.
 
-The do while loop continues while ret is zero, but ret is never
-initialized. The check for ret in the loop at the while should always be
-initialized, but if an empty string were to be passed in, q would be NULL
-and p would be '\0', and it would break out of the loop without ever
-setting ret.
+This fixes the "outsw" test in the experimental SEV tests of
+kvm-unit-tests.
 
-Set ret to zero, and then xbc_verify_tree() would be called and catch that
-it is an empty tree and report the proper error.
-
-Fixes: bdac5c2b243f ("bootconfig: Allocate xbc_data inside xbc_init()")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: stable@vger.kernel.org
+Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
+Reported-by: Marc Orr <marcorr@google.com>
+Tested-by: Marc Orr <marcorr@google.com>
+Reviewed-by: Marc Orr <marcorr@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
-Changes since v1:
-   https://lkml.kernel.org/r/20211027095512.3da02311@gandalf.local.home
-   - Just updated the Fixes tag and removed Cc to stable
+ arch/x86/kvm/svm/sev.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-
- lib/bootconfig.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index a10ab25f6fcc..70e0d52ffd24 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -836,7 +836,7 @@ static int __init xbc_verify_tree(void)
- static int __init xbc_parse_tree(void)
- {
- 	char *p, *q;
--	int ret, c;
-+	int ret = 0, c;
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index e672493b5d8d..efd207fd335e 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -2579,11 +2579,20 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
  
- 	last_parent = NULL;
- 	p = xbc_data;
+ int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in)
+ {
+-	if (!setup_vmgexit_scratch(svm, in, svm->vmcb->control.exit_info_2))
++	int count;
++	int bytes;
++
++	if (svm->vmcb->control.exit_info_2 > INT_MAX)
++		return -EINVAL;
++
++	count = svm->vmcb->control.exit_info_2;
++	if (unlikely(check_mul_overflow(count, size, &bytes)))
++		return -EINVAL;
++
++	if (!setup_vmgexit_scratch(svm, in, bytes))
+ 		return -EINVAL;
+ 
+-	return kvm_sev_es_string_io(&svm->vcpu, size, port,
+-				    svm->ghcb_sa, svm->ghcb_sa_len / size, in);
++	return kvm_sev_es_string_io(&svm->vcpu, size, port, svm->ghcb_sa, count, in);
+ }
+ 
+ void sev_es_init_vmcb(struct vcpu_svm *svm)
 -- 
-2.31.1
+2.27.0
 
