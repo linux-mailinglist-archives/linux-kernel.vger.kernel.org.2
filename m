@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A6043C3FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CE043C402
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238704AbhJ0HiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238700AbhJ0HiL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:38:11 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A04C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:35:46 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j9so4222548lfu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qGjKGeSuDUaZDoV5/uNfrSoQiktZrWO+lzRzUgpx3qs=;
-        b=hubUU1WknuKm0XwNFCVG5hORUOZqYI5pSnqYMcFzd607mo+Zbo5SDG3vWSGCbP5TlX
-         /cNM4hzGsKHODA3ytUBfMw7NJaBAV3biCFSfVUCRecXhOIyLyG7sAoO0FGXBZMmR5tsw
-         i12fYLnQknZpvg5fuB+hObbgUWMoyRdPhUeP56rV56k50yujXUZonnLO3GsU8aqatE2F
-         kj6YZKYMASZQ/B8/jyS8a+fncx5Ofj24Q5y+CC1W4yHCO66xup+uoj2YkJaD+i18Pog0
-         PB16jAbTpXl/pT5JpH9gjjd+EjDCEBCkZiLxJH2qoACTvWDFrzd73Vjjp98mC1tWSqkS
-         HJRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qGjKGeSuDUaZDoV5/uNfrSoQiktZrWO+lzRzUgpx3qs=;
-        b=5AJZZx1oNZZVdi25COoj/CYQi7nVopleUX7x+PjSLP7jV19nqcD1Q2uwrAj2WkzXoZ
-         8eoY/EWZm8+pX8vpxSSNfn9GUjopFQQR05b7O3N4Z4uxwyGWb1ukwC/Gy+XiBdKXL2yo
-         WG8hQ0v/uvty5Q4JY4oaAwH7nduiEBWSKTyIbBs5HC+SZ4bEIKbf+4aSDAR/pfRkInAe
-         b3zPLUddjHimwysQCIqn+LMcSuEsPMqihZWBXTNXAsMLgD4BiWYfqnFpeXsROczPkJ0i
-         JUsGYkA2sVwlIgqiDQuRoSIl/sUZWfPtuQBaPAzXTGCO3FztS675F5/2bNOrfyR6GBRR
-         coTw==
-X-Gm-Message-State: AOAM533mDzwCH+uEA2qRbI0CQVUR8dQgkq3x40O/7+R2OQxT33AajIfT
-        x5hWiFwOPfTW3IehIMV1smw=
-X-Google-Smtp-Source: ABdhPJxNV1qQ4uB3VOFu44HLiUFl+Jqwo9RzBEA61kZvsfy2ItmC7RU5ybFH+slIgTNvF1/P8mCuhA==
-X-Received: by 2002:a05:6512:1304:: with SMTP id x4mr26741097lfu.591.1635320144608;
-        Wed, 27 Oct 2021 00:35:44 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id g35sm957015lfv.248.2021.10.27.00.35.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 00:35:44 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 10:35:42 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     apw@canonical.com, dwaipayanray1@gmail.com,
-        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev
-Subject: Re: [PATCH] checkpatch: Remove cvs keyword check
-Message-ID: <20211027073542.qxbu236cg2wic25n@kari-VirtualBox>
-References: <20211026231637.3750-1-kari.argillander@gmail.com>
- <868c29d45172a151b6a751de4ba32165cbf7a4cc.camel@perches.com>
+        id S240504AbhJ0Hip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:38:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:47140 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230437AbhJ0Hio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:38:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635320179; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=DhgE9qd3mMClfnqgNcCoaossn7plN44yxoUK9BoXGJE=;
+ b=aBlcULMUTp65Ch5+hGZkAgea42fuNO7mqsXogC7Agxeo9kweGdXcd7aNaDQb1fAr8Cw2V5oX
+ G7sB+BkR0DgQvUklMlTiD+u/obbkGV+gGQ6IL9zMfpj0OShY2EFK3kCxD2oFGV572vbBjcxl
+ 5vJCt1g0V7KI8VsDzuJus2oaFYE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6179016b308e0dd33018f48e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 07:36:11
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A19C8C43616; Wed, 27 Oct 2021 07:36:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10675C43460;
+        Wed, 27 Oct 2021 07:36:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 10675C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <868c29d45172a151b6a751de4ba32165cbf7a4cc.camel@perches.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH V2] rtw89: fix error function parameter
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211021042035.1042463-1-lv.ruyi@zte.com.cn>
+References: <20211021042035.1042463-1-lv.ruyi@zte.com.cn>
+To:     cgel.zte@gmail.com
+Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163532016426.30745.11685925568812414606.kvalo@codeaurora.org>
+Date:   Wed, 27 Oct 2021 07:36:10 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 05:26:21PM -0700, Joe Perches wrote:
-> On Wed, 2021-10-27 at 02:16 +0300, Kari Argillander wrote:
-> > Time has pass and we do not need these anymore as almost all people are
-> > using git now days. Those who use cvs for kernel development probably
-> > will handle cvs pretty well already so this check is not needed anymore.
-> 
-> I think it's a relatively harmless thing to keep.
-> 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -4017,12 +4017,6 @@ sub process {
-> >  			}
-> >  		}
-> >  
-> > -# check for RCS/CVS revision markers
-> > -		if ($rawline =~ /^\+.*\$(Revision|Log|Id)(?:\$|)/) {
-> 
-> Looks like this would be better using
-> 
-> 		if ($rawline =~ /^\+.*\b\$(?:Revision|Log|Id)\$?\b/) {
+cgel.zte@gmail.com wrote:
 
-As I say before I do not know much about cvs or perl regex, but I do not
-get any match with your suggestion. Test strings which I have tested:
-
-/* $Log: frob.c,v $ */
-/* $Log: frob.c,v$ */
-/* $Log$ */
-
-But these can be wrong as I do not fully understand how cvs keywords
-works.
-
+> From: Lv Ruyi <lv.ruyi@zte.com.cn>
 > 
-> > -			WARN("CVS_KEYWORD",
-> > -			     "CVS style keyword markers, these will _not_ be updated\n". $herecurr);
+> This patch fixes the following Coccinelle warning:
+> drivers/net/wireless/realtek/rtw89/rtw8852a.c:753:
+> WARNING  possible condition with no effect (if == else)
 > 
-> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+dea857700a75 rtw89: fix error function parameter
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20211021042035.1042463-1-lv.ruyi@zte.com.cn/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
