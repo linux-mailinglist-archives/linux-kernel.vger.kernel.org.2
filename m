@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5281443CB82
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC4C43CB8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242375AbhJ0OH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237451AbhJ0OHZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:07:25 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19DCC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:04:59 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id e200-20020a4a55d1000000b002b8bedf08cdso966660oob.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VntufPEXWFWBoEDKmzIiyo/GIHA3Qut0nsI1RRSquPQ=;
-        b=b1UGX9rErTp6W+4QIxehwiD2vWEVnO96A45hsBlatKYdl7QbrI9WKakB84huYPAA2w
-         JYUJdbu1vtNCj2vv/XnjFio/MNRKVxv0jYJA3sy56eGrEAqqE4X/xSdj81dBbHmY5KJi
-         j4OkPBAufm+jKunkkyK7mDNwpKCezsbDmPS2IcgRImLC7Qxh6SX9cFaOxswfxMzVcFFK
-         95H9bsaUc0bpJbZbyjpZFZCziskFTMWhLC4vSVPW5k0xv6ujYE/s6E6W/auOa2e7OGBg
-         B8AvE0RYLfATlhqRhvVlpS73eW20bEIuCXxIaeGopdOswiP+vau3eFKGk2+CSG0EvpHS
-         r8wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VntufPEXWFWBoEDKmzIiyo/GIHA3Qut0nsI1RRSquPQ=;
-        b=eg6lhStWcXthtGBK+yVODDpxK9zOOtkiYvfrrggwV9v+Svu0kvRMCYf7wjmpyGtsee
-         B/86uPOl0Rz7XjH3AtWnXVQL7FxFdjmlmc/cIAHFBIy82LAAipPkTaTRHdlwLjolWdWu
-         g5QxLmu6dZ44rDFl9b8FAhcsb7obgm+a57HRZZ41iayOBMqX8SAES2zr9sbf0dBgAhCP
-         BJ5h8L+B/CB9nEEly6iwAfRhKcwHC6qj6KvzIC3RE+bSN+tdeL2c99Lk4EzigrAfJBzG
-         E+kEyueNlJCePv/DnUSoHXoEvJzjtOefhe4oNmP16mpMAMJTAq9Lz0hwpPJ+HhxTdppe
-         WsMw==
-X-Gm-Message-State: AOAM533uAfPmpgHrJPJXfCXBd1n+fbRGTYn6vu6HxmcVfLiAtan6P5rA
-        cjh60akNVyogKsmeTwFBvdTsmA==
-X-Google-Smtp-Source: ABdhPJyn5syHeDgk5I1YEs92D7gGAaJtHbLqnyK3p9VdwN3sOi7j7PgsxuQuGYkzVcRWjuTLOsK9QQ==
-X-Received: by 2002:a4a:de94:: with SMTP id v20mr22599573oou.77.1635343499224;
-        Wed, 27 Oct 2021 07:04:59 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id i28sm31734ood.23.2021.10.27.07.04.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 07:04:58 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 07:06:51 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH v7 2/3] drm/bridge: ti-sn65dsi86: Use regmap_bulk_write
- API
-Message-ID: <YXlc+7BzbADe/p4A@ripper>
-References: <20211025170925.3096444-1-bjorn.andersson@linaro.org>
- <20211025170925.3096444-2-bjorn.andersson@linaro.org>
- <CAG3jFysN4pFqTrF8tGTVapCzysPkvO=MpYosAJnErY-AW7BqgQ@mail.gmail.com>
+        id S242400AbhJ0OJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:09:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242392AbhJ0OJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:09:27 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D544260F38;
+        Wed, 27 Oct 2021 14:07:00 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 10:06:59 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 6/8] tracing/histogram: Optimize division by a power
+ of 2
+Message-ID: <20211027100659.00ec702b@gandalf.local.home>
+In-Reply-To: <CAC_TJveyKhZ3jyTZ33jbxSKTxxJ1WG+NUUUbf11pJ8Gqk7UeaQ@mail.gmail.com>
+References: <20211025200852.3002369-1-kaleshsingh@google.com>
+        <20211025200852.3002369-7-kaleshsingh@google.com>
+        <20211026151451.7f3e09a4@gandalf.local.home>
+        <CAC_TJveHgsPZw7p7BWOgQw6h8GNU_Pv_WUjNmw3AUq+wnSzk6Q@mail.gmail.com>
+        <20211026201846.08990d1d@rorschach.local.home>
+        <CAC_TJve-mKSojaXtukdFeQKvPz-8TQtS=pgGD0Z18Wt6yJi7dg@mail.gmail.com>
+        <20211026211511.403d76ca@rorschach.local.home>
+        <CAC_TJvdwqQAKrVs3w6NcQNBT+bAgdyqR+8Zt_An7R9AQSSthGA@mail.gmail.com>
+        <20211026222123.5e206fcf@rorschach.local.home>
+        <20211026231557.1eedad9b@rorschach.local.home>
+        <CAC_TJveyKhZ3jyTZ33jbxSKTxxJ1WG+NUUUbf11pJ8Gqk7UeaQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG3jFysN4pFqTrF8tGTVapCzysPkvO=MpYosAJnErY-AW7BqgQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27 Oct 01:29 PDT 2021, Robert Foss wrote:
+On Tue, 26 Oct 2021 21:04:29 -0700
+Kalesh Singh <kaleshsingh@google.com> wrote:
 
-> Hey Bjorn,
+> On Tue, Oct 26, 2021 at 8:16 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Tue, 26 Oct 2021 22:21:23 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >  
+> > > I'm sure there's an algorithm somewhere that can give as the real max.  
+> >
+> > You got me playing with this more ;-)
+> >
+> > OK, I added the rounding in the wrong place. I found that we can make
+> > the max_div to be the same as the shift! The bigger the shift, the
+> > bigger the max!  
 > 
-> On Mon, 25 Oct 2021 at 19:07, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
+> Nice! :)
 > >
-> > The multi-register u16 write operation can use regmap_bulk_write()
-> > instead of two separate regmap_write() calls.
+> >         mult = (1 << shift) / div;
+> >         max_div = (1 << shift)
 > >
-> > It's uncertain if this has any effect on the actual updates of the
-> > underlying registers, but this at least gives the hardware the
-> > opportunity and saves us one transation on the bus.
+> > But the rounding needs to be with the mult / shift:
 > >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >         return (val * mult + ((1 << shift) - 1)) >> shift;
+> >
+> >
+> > When val goes pass 1 << shift, then the error will be off by more than
+> > one.  
+> Did you mean, val should be such that when we do the (val * mult) we
+> only get rounding errors less than (1 << shift)?
+
+We get rounding errors when val is greater than (1 << shift) because then
+it exposes the bits that are not shifted out.
+
 > 
-> Did you miss including Dougs R-B from v6? As far as I can tell nothing
-> else changed between v6 & v7.
+> I think we also need to flip the delta now since we round down initially:
+> 
+>     delta =  (1 << shift) - (mult * div)
 > 
 
-Yes, I missed adding Doug's R-b from v6. I also missed fixing the
-spelling of transaction (transation) in the commit message.
+Actually, we don't need the delta at all. Just what I showed above.
 
-Would you be willing to correct these two items as you apply the
-patches?
+Pick some arbitrary shift (let's say 20 as that seems to be commonly used,
+and works for 32 bit as well) and then we figure out the multiplier.
 
-Thanks,
-Bjorn
+	mult = (1 << shift) / div;
 
-> > ---
-> >
-> > Changes since v6:
-> > - None
-> >
-> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > index 6154bed0af5b..5b59d8dd3acd 100644
-> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> > @@ -193,8 +193,9 @@ static const struct regmap_config ti_sn65dsi86_regmap_config = {
-> >  static void ti_sn65dsi86_write_u16(struct ti_sn65dsi86 *pdata,
-> >                                    unsigned int reg, u16 val)
-> >  {
-> > -       regmap_write(pdata->regmap, reg, val & 0xFF);
-> > -       regmap_write(pdata->regmap, reg + 1, val >> 8);
-> > +       u8 buf[2] = { val & 0xff, val >> 8 };
-> > +
-> > +       regmap_bulk_write(pdata->regmap, reg, buf, ARRAY_SIZE(buf));
-> >  }
-> >
-> >  static u32 ti_sn_bridge_get_dsi_freq(struct ti_sn65dsi86 *pdata)
-> > --
-> > 2.29.2
-> >
+
+No delta needed. Our max is going to be 1 << shift, and then all we need is:
+
+	if (val < (1 << shift))
+		return (val * mult + ((1 << shift) - 1)) >> shift;
+	else
+		return val / div;
+
+All we need to save to do the operation is the shift, the constant div and
+the calculated constant mult.
+
+-- Steve
