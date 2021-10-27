@@ -2,68 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A19C43C954
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0B343C956
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241813AbhJ0MPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:15:38 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57306 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbhJ0MPh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:15:37 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id D6CF71F44425
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     apronin@chromium.org, peterhuewe@gmx.de, jarkko@kernel.org,
-        jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [RESEND PATCH] tpm: tpm_tis_spi_cr50: Add default RNG quality
-Date:   Wed, 27 Oct 2021 14:12:58 +0200
-Message-Id: <20211027121258.2501124-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.0
+        id S241812AbhJ0MQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:16:05 -0400
+Received: from mga02.intel.com ([134.134.136.20]:45538 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232242AbhJ0MQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:16:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217317215"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="217317215"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 05:13:38 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497841528"
+Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 05:13:33 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+In-Reply-To: <878ryeit9i.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local> <878ryeit9i.fsf@intel.com>
+Date:   Wed, 27 Oct 2021 15:13:29 +0300
+Message-ID: <8735omis2e.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To allow this device to fill the kernel's entropy pool at boot,
-setup a default quality for the hwrng found in Cr50.
+On Wed, 27 Oct 2021, Jani Nikula <jani.nikula@linux.intel.com> wrote:
+> On Thu, 30 Sep 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
+>> On Mon, Sep 27, 2021 at 09:23:45AM -0700, Kees Cook wrote:
+>>> On Mon, Sep 27, 2021 at 04:28:02PM +0200, Arnd Bergmann wrote:
+>>> > From: Arnd Bergmann <arnd@arndb.de>
+>>> > 
+>>> > With CONFIG_FB=m and CONFIG_DRM=y, we get a link error in the fb helper:
+>>> > 
+>>> > aarch64-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
+>>> > (.text+0x10cc): undefined reference to `framebuffer_alloc'
+>>> > 
+>>> > Tighten the dependency so it is only allowed in the case that DRM can
+>>> > link against FB.
+>>> > 
+>>> > Fixes: f611b1e7624c ("drm: Avoid circular dependencies for CONFIG_FB")
+>>> > Link: https://lore.kernel.org/all/20210721152211.2706171-1-arnd@kernel.org/
+>>> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>> 
+>>> Thanks for fixing this!
+>>> 
+>>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>>
+>> Stuffed into drm-misc-next.
+>
+> The problem is, I don't think the patch is semantically correct.
+>
+> drm_fb_helper.o is not part of drm.ko, it's part of
+> drm_kms_helper.ko. This adds some sort of indirect dependency via DRM
+> which might work, maybe by coincidence, maybe not - but it's certainly
+> not obvious.
+>
+> The likely culprit is, again, the overuse of select, and in this case
+> select DRM_KMS_HELPER. And DRM_KMS_HELPER should depend on FB if
+> DRM_FBDEV_EMULATION=y. That's the problem.
 
-After some testing with rngtest and dieharder it was, in short,
-discovered that the RNG produces fair quality randomness, giving
-around 99.93% successes in rngtest FIPS140-2.
+Almost all of the recurring Kconfig related dependency issues would go
+away by following Documentation/kbuild/kconfig-language.rst:
 
-Notably, though, when testing with dieharder it was noticed that
-the p-values distribution wasn't uniform in all the cases, so a
-conservative quality value was chosen.
+  Note:
+	select should be used with care. select will force
+	a symbol to a value without visiting the dependencies.
+	By abusing select you are able to select a symbol FOO even
+	if FOO depends on BAR that is not set.
+	In general use select only for non-visible symbols
+	(no prompts anywhere) and for symbols with no dependencies.
+	That will limit the usefulness but on the other hand avoid
+	the illegal configurations all over.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
+If the kconfig parser had a lint mode to issue a warning for all of
+those uses, and someone persistent enough followed through with fixing
+them, we'd all be better off.
 
-Sorry for the resend, I forgot to include linux-kernel@vger.kernel.org the
-first time.
+Oh, and maybe the menuconfig tools also need better ways to recursively
+enable config options with dependencies, because one of the reasons
+people like select is the convenience of just enabling a config option,
+and it selects everything that's needed (albeit with the occasional
+dependency issues). With dependencies, you need to start with the leaf
+dependencies and work your way up to what you need, and it's not easy.
 
- drivers/char/tpm/tpm_tis_spi_cr50.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/tpm/tpm_tis_spi_cr50.c b/drivers/char/tpm/tpm_tis_spi_cr50.c
-index ea759af25634..d6195fb58036 100644
---- a/drivers/char/tpm/tpm_tis_spi_cr50.c
-+++ b/drivers/char/tpm/tpm_tis_spi_cr50.c
-@@ -264,6 +264,7 @@ int cr50_spi_probe(struct spi_device *spi)
- 	phy = &cr50_phy->spi_phy;
- 	phy->flow_control = cr50_spi_flow_control;
- 	phy->wake_after = jiffies;
-+	phy->priv.rng_quality = 700;
- 	init_completion(&phy->ready);
- 
- 	cr50_phy->access_delay = CR50_NOIRQ_ACCESS_DELAY;
+BR,
+Jani.
+
+
+>
+> All of the drm Kconfigs could use an overhaul to be semantically
+> correct, but that's a hill nobody wants to die on. Instead we keep
+> piling up tweaks to paper over the issues, ad infinitum.
+>
+> (And this ties to a previous comment I had about the organization of
+> files under drm/, a hundred files in one big lump that belong to
+> different modules, and it's not helping people figure out the
+> dependencies.)
+>
+>
+> BR,
+> Jani.
+>
+>
+> PS. I was brought here via [1] which is another complicated "fix" to the
+> same problem.
+>
+>
+> [1] https://lore.kernel.org/r/20211027072044.4105113-1-javierm@redhat.com
+
 -- 
-2.33.0
-
+Jani Nikula, Intel Open Source Graphics Center
