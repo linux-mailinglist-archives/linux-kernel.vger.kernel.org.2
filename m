@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FF043BFDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA75843BFDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238283AbhJ0CfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:35:14 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:56719 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232221AbhJ0CfM (ORCPT
+        id S238311AbhJ0CfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:35:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45999 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232221AbhJ0CfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:35:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtpxLVt_1635301961;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtpxLVt_1635301961)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 10:32:43 +0800
-To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Subject: [PATCH v6 0/2] fix & prevent the missing preemption disabling
-Message-ID: <df8e9b3e-504c-635d-4e92-99cdf9f05479@linux.alibaba.com>
-Date:   Wed, 27 Oct 2021 10:32:41 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 26 Oct 2021 22:35:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635301979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FpY57pN68hypRn3VPWxfGVMWd/Evtah6Ooz3LxnRlCk=;
+        b=f6G5ozQStwr4ftPf7BPrRU35OZrKuVeJ/EExyLkxp4wCdfhRSONrX9Vh04DsRSTNqSanl+
+        hCa58xJsZeB7VHZEeAt2GQPft0Qa3RqTWbQu03Y9Kk+QR44bO8ZLP4wk9S2NiOk58/R96G
+        wdkMYrZ/7TD5PgWk29eHF8M+1mi+H5g=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-4pW-Dj7pMQWCg-UnAHZbFA-1; Tue, 26 Oct 2021 22:32:58 -0400
+X-MC-Unique: 4pW-Dj7pMQWCg-UnAHZbFA-1
+Received: by mail-lf1-f69.google.com with SMTP id b12-20020a0565120b8c00b003ffa7050931so646292lfv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:32:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FpY57pN68hypRn3VPWxfGVMWd/Evtah6Ooz3LxnRlCk=;
+        b=gvFuZI1TrcGyu+AAq3tsF6tTHJ6FtNlLomqL9Ix2Zy6HEvdzWKNbsznJAu72HVwPUy
+         +y/g1rhGKVQYFlwr896jrd3WRHwlBpg496+NKyKi5bDn/xQZTVLlSoY86u/MvBmSlovi
+         RGPZlqTQCTXidlg7uRzcvDOlyV/vVIUh2Dym3B0izzR1MfZYyhEpuvQG7lhtbFWB3OeH
+         UW2INkc3Yzo+HQEPgbyPhr4PN3InlMchIiLZsi1/XYGcVCiG+PD4gILsCx/KwMN0GxGy
+         OLBYOfZasbuk2lk8Sw0yyOQSo1C67Fqv9nXh0Na6hfpjB18o7PCkpwka3ylSY4otg5hx
+         m2GQ==
+X-Gm-Message-State: AOAM530XgyPhvGW9Im9oQBDbyLydR75n2s4K2W7EmAgsEGVEz/g9OHVu
+        pvnO5VEz8rQoTHZ7dbhPeHCVAfp0VOEgRd/jCCiIGK6Dr1ssBmAbk8tWTMMR1oLLi4KP/pNHI4G
+        leRHC9U+exP2IBbXcZPG7McYF0gGqRsPtzlqrZSmV
+X-Received: by 2002:a05:6512:3d11:: with SMTP id d17mr21981073lfv.481.1635301976726;
+        Tue, 26 Oct 2021 19:32:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcJzUayQqKMB7n4AC/Y6wG3Ef/heoMjTsB0jO3MjkD2lJ2F5C2jP8JhzR4d7qnIl4V2PhHCNZrWDAvoaUcqvA=
+X-Received: by 2002:a05:6512:3d11:: with SMTP id d17mr21981052lfv.481.1635301976517;
+ Tue, 26 Oct 2021 19:32:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211026133100.17541-1-vincent.whitchurch@axis.com>
+In-Reply-To: <20211026133100.17541-1-vincent.whitchurch@axis.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 27 Oct 2021 10:32:45 +0800
+Message-ID: <CACGkMEvV2HkXyv4RfB3pfmeaG8Nv4=XBG2Y1c+7mi0OnOUCWNA@mail.gmail.com>
+Subject: Re: [PATCH] virtio-ring: fix DMA metadata flags
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>, kernel@axis.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The testing show that perf_ftrace_function_call() are using smp_processor_id()
-with preemption enabled, all the checking on CPU could be wrong after preemption.
+On Tue, Oct 26, 2021 at 9:31 PM Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
+>
+> The flags are currently overwritten, leading to the wrong direction
+> being passed to the DMA unmap functions.
+>
+> Fixes: 72b5e8958738aaa4 ("virtio-ring: store DMA metadata in desc_extra for split virtqueue")
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-As Peter point out, the section between ftrace_test_recursion_trylock/unlock()
-pair require the preemption to be disabled as 'Documentation/trace/ftrace-uses.rst'
-explained, but currently the work is done outside of the helpers.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-And since the internal using of trace_test_and_set_recursion()
-and trace_clear_recursion() also require preemption to be disabled, we
-can just merge the logical together.
+Thanks
 
-Patch 1/2 will make sure preemption disabled when recursion lock succeed,
-patch 2/2 will do smp_processor_id() checking after trylock() to address the
-issue.
-
-v1: https://lore.kernel.org/all/8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com/
-v2: https://lore.kernel.org/all/b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com/
-v3: https://lore.kernel.org/all/609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com/
-V4: https://lore.kernel.org/all/32a36348-69ee-6464-390c-3a8d6e9d2b53@linux.alibaba.com/
-V5: https://lore.kernel.org/all/3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com/
-
-Michael Wang (2):
-  ftrace: disable preemption when recursion locked
-  ftrace: do CPU checking after preemption disabled
-
- arch/csky/kernel/probes/ftrace.c     |  2 --
- arch/parisc/kernel/ftrace.c          |  2 --
- arch/powerpc/kernel/kprobes-ftrace.c |  2 --
- arch/riscv/kernel/probes/ftrace.c    |  2 --
- arch/x86/kernel/kprobes/ftrace.c     |  2 --
- include/linux/trace_recursion.h      | 13 ++++++++++++-
- kernel/livepatch/patch.c             | 13 +++++++------
- kernel/trace/ftrace.c                | 15 +++++----------
- kernel/trace/trace_event_perf.c      |  6 +++---
- kernel/trace/trace_functions.c       |  5 -----
- 10 files changed, 27 insertions(+), 35 deletions(-)
-
--- 
-1.8.3.1
+> ---
+>  drivers/virtio/virtio_ring.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index dd95dfd85e98..3035bb6f5458 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -576,7 +576,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+>         /* Last one doesn't continue. */
+>         desc[prev].flags &= cpu_to_virtio16(_vq->vdev, ~VRING_DESC_F_NEXT);
+>         if (!indirect && vq->use_dma_api)
+> -               vq->split.desc_extra[prev & (vq->split.vring.num - 1)].flags =
+> +               vq->split.desc_extra[prev & (vq->split.vring.num - 1)].flags &=
+>                         ~VRING_DESC_F_NEXT;
+>
+>         if (indirect) {
+> --
+> 2.28.0
+>
 
