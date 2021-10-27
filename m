@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CF343CA08
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE5943CA1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240364AbhJ0MuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:50:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:42982 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231542AbhJ0MuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:50:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 046931FB;
-        Wed, 27 Oct 2021 05:47:50 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08DC73F73D;
-        Wed, 27 Oct 2021 05:47:46 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 13:47:44 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
-Message-ID: <20211027124744.GE54628@C02TD0UTHF1T.local>
-References: <20211025122102.46089-3-frederic@kernel.org>
- <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net>
- <CAMj1kXELqoVp5zBcQ8g+0O56sBq9qAEDO-7OTenDkpRcb7oeQQ@mail.gmail.com>
- <YXa85OTw7i3Bg9yj@hirez.programming.kicks-ass.net>
- <YXbC3NRWDDfsW6DG@hirez.programming.kicks-ass.net>
- <CAMj1kXEKASsYJMHHNA=uNGTnLMoXO_4BP0--1k7cEfZZupdsog@mail.gmail.com>
- <YXbHJCtkBdMP/bF6@hirez.programming.kicks-ass.net>
- <CAMj1kXHYXzU=pW6tUJB61QW5VBL7WKBhT7BkNJ970FQdHz1VVw@mail.gmail.com>
- <20211026103655.GB30152@C02TD0UTHF1T.local>
- <7d807624275a4938871f8e433e510e3c@AcuMS.aculab.com>
+        id S242027AbhJ0My0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233019AbhJ0MyZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:54:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25A5C061570;
+        Wed, 27 Oct 2021 05:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Cgkvcdwq0dJTP6ir5a7HxudmZPEOWaKKsMrUIHRFI/o=; b=og3HchErpvnTFHKZlelb9+dlvq
+        8ru+KFjDxKagLEYcb5toOiS1A84QArMCc7LwLJOekz0CPZm1sIlbDt5AiMedG9k8OjqwxnikmOW0a
+        vpDBzYunxz51QUU+4Jzzh3St53MewLvV6rsqC2o4D8B7w0bjHWKeJa3nafRLrdub8lhEn5Qf2rSUE
+        ac133ljKr5WuUTzLLt0X7sQSPcUY0wewP+o6ZgIntI3Pgm72i84DOrr2LVwcWAq68ddvMutW1dvYH
+        SJDA6flr6cV7yl3J+EBS0sHE6O89v9tNOXGgnqUqsqTpQpmvLUlz1kOVQIWnLduvDOMKDpLW8E63A
+        s+PKQECg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfiMQ-0003D7-0b; Wed, 27 Oct 2021 12:49:28 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 566C598629C; Wed, 27 Oct 2021 14:48:52 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 14:48:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7d807624275a4938871f8e433e510e3c@AcuMS.aculab.com>
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:06:11AM +0000, David Laight wrote:
-> From: Mark Rutland
-> > Sent: 26 October 2021 11:37
-> ...
-> > My preference overall is to keep the trampoline self-contained, and I'd
-> > prefer to keep the RET inline in the trampoline rather than trying to
-> > factor it out so that all the control-flow is clearly in one place.
-> > 
-> > So I'd prefer that we have the sequence as-is:
-> > 
-> > | 0:	.quad 0x0
-> > | 	bti	c
-> > | 	< insn >
-> > | 	ldr	x16, 0b
-> > | 	cbz	x16, 1f
-> > | 	br	x16
-> > | 1:	ret
-> 
-> What is wrong with:
-> 0:	.quad 1f
-> 	bti	c
-> 	< insn >
-> 	ldr	x16, 0b
-> 	br	x16
-> 1:	bti	c
-> 	ret
-> 
-> Self-contained and reasonably easy to read.
+On Wed, Oct 27, 2021 at 02:22:27PM +0200, Ard Biesheuvel wrote:
+> On Wed, 27 Oct 2021 at 14:05, Mark Rutland <mark.rutland@arm.com> wrote:
 
-FWIW, that would work for me too.
+> > > Should not this jump-table thingy get converted to an actual function
+> > > address somewhere around arch_static_call_transform() ? This also seems
+> > > relevant for arm64 (which already has CLANG_CFI supported) given:
+> > >
+> > >   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
+> >
+> > Ugh, yeah, we'll need to do the function_nocfi() dance somewhere...
+> >
+> 
+> Sadly, that only works on symbol names, so we cannot use it to strip
+> CFI-ness from void *func arguments passed into the static call API,
+> unfortunately.
 
-Thanks,
-Mark.
+Right, and while mostly static_call_update() is used, whcih is a macro
+and could possibly be used to wrap this, we very much rely on
+__static_call_update() also working without that wrapper and then we're
+up a creek without no paddles.
+
