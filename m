@@ -2,201 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BEC43C879
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6408A43C88A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239662AbhJ0LZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:25:09 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:45532 "EHLO gloria.sntech.de"
+        id S234681AbhJ0L3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:29:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:42242 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234141AbhJ0LZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:25:06 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mfh0c-0002rs-6H; Wed, 27 Oct 2021 13:22:18 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Stephen Boyd <sboyd@kernel.org>, linux-riscv@lists.infradead.org
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>
-Subject: Re: [PATCH v2 06/16] clk: starfive: Add JH7100 clock generator driver
-Date:   Wed, 27 Oct 2021 13:22:16 +0200
-Message-ID: <8431982.yxsUHB6BNW@diego>
-In-Reply-To: <CANBLGcx0Udhaa3S+uSffFcB_KFHXQiMOvn8Fd7ogj+RFxQNAfQ@mail.gmail.com>
-References: <20211021174223.43310-1-kernel@esmil.dk> <163529604399.15791.378104318036812951@swboyd.mtv.corp.google.com> <CANBLGcx0Udhaa3S+uSffFcB_KFHXQiMOvn8Fd7ogj+RFxQNAfQ@mail.gmail.com>
+        id S229869AbhJ0L3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:29:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E4191FB;
+        Wed, 27 Oct 2021 04:27:11 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6CBE3F73D;
+        Wed, 27 Oct 2021 04:27:09 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 12:26:58 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org
+Subject: Re: [PATCH] arm64: Select POSIX_CPU_TIMERS_TASK_WORK
+Message-ID: <20211027112658.GA54628@C02TD0UTHF1T.local>
+References: <20211018144713.873464-1-nsaenzju@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018144713.873464-1-nsaenzju@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 27. Oktober 2021, 12:24:07 CEST schrieb Emil Renner Berthing:
-> On Wed, 27 Oct 2021 at 02:54, Stephen Boyd <sboyd@kernel.org> wrote:
-> > Quoting Emil Renner Berthing (2021-10-26 15:35:36)
-> > > On Tue, 26 Oct 2021 at 22:20, Stephen Boyd <sboyd@kernel.org> wrote:
-> > > > Quoting Emil Renner Berthing (2021-10-21 10:42:13)
-> > > > > +};
-> > > > > +
-> > > > > +struct clk_starfive_jh7100_priv {
-> > > > > +       /* protect registers against overlapping read-modify-write */
-> > > > > +       spinlock_t rmw_lock;
-> > > >
-> > > > Does overlapping mean concurrent?
-> > >
-> > > Yes, sorry.
-> > >
-> > > > Do different clks share the same registers?
-> > >
-> > > No, each clock has their own register, but they use that register both
-> > > to gate the clock and other configuration. The Locking chapter of
-> > > Documentation/driver-api/clk.rst talks about the prepare lock and the
-> > > enable lock and then says:
-> > > "However, access to resources that are shared between operations of
-> > > the two groups needs to be protected by the drivers. An example of
-> > > such a resource would be a register that controls both the clock rate
-> > > and the clock enable/disable state."
-> >
-> > Alright got it. Maybe say "protect clk enable and set rate from
-> > happening at the same time".
-> >
-> > >
-> > > > > +               return ERR_PTR(-EINVAL);
-> > > > > +       }
-> > > > > +
-> > > > > +       if (idx >= JH7100_CLK_PLL0_OUT)
-> > > > > +               return priv->pll[idx - JH7100_CLK_PLL0_OUT];
-> > > > > +
-> > > > > +       return &priv->reg[idx].hw;
-> > > > > +}
-> > > > > +
-> > > > > +static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
-> > > >
-> > > > Drop __init as this can be called after kernel init is over.
-> > >
-> > > Oh interesting, I'd like to know when that can happen. The comment for
-> > > the builtin_platform_driver macro says it's just a wrapper for
-> >
-> > I thought this was using module_platform_driver() macro?
-> >
-> > > device_initcall.
-> > >
-> > > Won't we then need to remove all the __initconst tags too since the
-> > > probe function walks through jh7100_clk_data which eventually
-> > > references all __initconst data?
-> >
-> > Yes. If it's builtin_platform_driver() it can't be a module/tristate
-> > Kconfig, in which case all the init markings can stay.
+[adding Marc Z to Cc, since this affects KVM]
+
+On Mon, Oct 18, 2021 at 04:47:13PM +0200, Nicolas Saenz Julienne wrote:
+> With 6caa5812e2d1 ("KVM: arm64: Use generic KVM xfer to guest work
+> function") all arm64 exit paths are properly equipped to handle the
+> POSIX timers' task work.
 > 
-> Yes, it's already bool in the Kconfig file. After looking into this I
-> think it's better to do like the rockchip drivers and use
-> builtin_platform_driver_probe to make sure the probe function only
-> called at kernel init time:
+> Deferring timer callbacks to thread context, not only limits the amount
+> of time spent in hard interrupt context, but is a safer
+> implementation[1], and will allow PREEMPT_RT setups to use KVM[2].
 > 
-> static struct platform_driver clk_starfive_jh7100_driver = {
->         .driver = {
->                 .name = "clk-starfive-jh7100",
->                 .of_match_table = clk_starfive_jh7100_match,
->                 .suppress_bind_attrs = true,
->         },
-> };
-> builtin_platform_driver_probe(clk_starfive_jh7100_driver,
-> clk_starfive_jh7100_probe);
+> So let's enable POSIX_CPU_TIMERS_TASK_WORK on arm64.
 > 
-> @Andy: is the supress_bind_attrs what you were asking about?
+> [1] https://lore.kernel.org/all/20200716201923.228696399@linutronix.de/
+> [2] https://www.spinics.net/lists/linux-rt-users/msg24860.html
+
+Trivial nit: could we please make that second link:
+
+  https://lore.kernel.org/linux-rt-users/87v92bdnlx.ffs@tglx/
+
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+
+Regardless, this makes sense to me, and given you've tested it:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Thanks,
+Mark.
+
 > 
-> > > > > +
-> > > > > +               clk->hw.init = &init;
-> > > > > +               clk->idx = idx;
-> > > > > +               clk->max = jh7100_clk_data[idx].max;
-> > > > > +
-> > > > > +               ret = clk_hw_register(priv->dev, &clk->hw);
-> > > >
-> > > > Why not use devm_clk_hw_register()?
-> > >
-> > > I probably could. Just for my understanding that's just to avoid the
-> > > loop on error below, because as a builtin driver the device won't
-> > > otherwise go away, right?
-> >
-> > Yes
-> >
-> > >
-> > > > > +               if (ret)
-> > > > > +                       goto err;
-> > > > > +       }
-> > > > > +
-> > > > > +       ret = devm_of_clk_add_hw_provider(priv->dev, clk_starfive_jh7100_get, priv);
-> > > > > +       if (ret)
-> > > > > +               goto err;
-> > > > > +
-> > > > > +       return 0;
-> > > > > +err:
-> > > > > +       while (idx)
-> > > > > +               clk_hw_unregister(&priv->reg[--idx].hw);
-> > > > > +       return ret;
-> > > > > +}
-> > > > > +
-> > > > > +static const struct of_device_id clk_starfive_jh7100_match[] = {
-> > > > > +       { .compatible = "starfive,jh7100-clkgen" },
-> > > > > +       { /* sentinel */ }
-> > > > > +};
-> > > >
-> > > > Please add MODULE_DEVICE_TABLE()
-> > >
-> > > Will do!
-> >
-> > If it's never going to be a module then don't add any module_* things.
+> ---
 > 
-> So does that just mean no MODULE_DEVICE_TABLE or should I also remove
-> MODULE_DESCRIPTION, MODULE_AUTHOR and MODULE_LICENSE? I'm just double
-> checking because the rockchip drivers seem to have MODULE_DESCRIPTION
-> and MODULE_LICENSE lines.
-
-reading this I realized that the current implementation on the Rockchip side
-is faulty :-) .
-
-For one, there recently was a change for 5.16 that moved this to use
-module_platform_driver, while keeping the initdata, which suggest that
-the change was actually not tested at all in that context.
-
-And secondly the kconfig is wrong to actually use tristate and should instead
-use bool.
-
-Of course this is also influenced by the recent GKI discussion [0] ;-)
-
-I'm going to revert the one change and also adapt the kconfig to use bool
-again.
-
-
-Heiko
-
-[0] https://lwn.net/Articles/872209/
-
-
+> This was tested by running all relevant kernel timer self-tests and
+> making sure KVM still works as expected.
+> 
+>  arch/arm64/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 789036cf74f5..ce0d0d254542 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -191,6 +191,7 @@ config ARM64
+>  	select HAVE_PERF_REGS
+>  	select HAVE_PERF_USER_STACK_DUMP
+>  	select HAVE_REGS_AND_STACK_ACCESS_API
+> +	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
+>  	select HAVE_FUNCTION_ARG_ACCESS_API
+>  	select HAVE_FUTEX_CMPXCHG if FUTEX
+>  	select MMU_GATHER_RCU_TABLE_FREE
+> -- 
+> 2.32.0
+> 
