@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20C643D3AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E1F43D3B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244256AbhJ0VRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S244257AbhJ0VSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240846AbhJ0VRd (ORCPT
+        with ESMTP id S244278AbhJ0VST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:17:33 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A19C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:07 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id d23so5625179ljj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:07 -0700 (PDT)
+        Wed, 27 Oct 2021 17:18:19 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6D0C061745
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:51 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id l7so4465559iln.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hiXmABk2yLJcTBwV/OV64LUSAMHnd37fHZz79FC6JvU=;
-        b=ZWNMOoSkuRaQ/lv8qizXhk55H0ec5K7RYuCkQOMY0yln4tyxGOGFp3Gs+/CZY7p6bT
-         3CZlT/Neco4TP12/d9wLKcFuseqO24iEpPL6jwtGtY8MUiJAI9mKP12Z7SKjitGg++uj
-         lH3CUAw1rGdqhKUixiRRtsMf0iuWhbOzVZTJw=
+        bh=lm0+nNU7+O9MfXmzPflhpy32QYmyc8kaxNev2lDAAEs=;
+        b=QkZG2K8bVwvVE7egaAt2KoM2ozNWqnXnRYCDiO58eC/yTXl8qb52o9wIZwiEo5g82G
+         bccuMjBMX6s2/H00mP+Fr4qT57h9Uvc53WJXiMmwn/o5rOlpjbPpRCkoq6lDMvFiLf5M
+         Mn5WuZvMESLsr+yShl4950U8mxzBbei0DvPwtD4+tGwSShXC7YBnfa4bwCxG8yzvVmD9
+         ZWQzhlnZgrRF38+as+UM1Z5B3CgzFBucx490mDEgN/LQQOr5EPSwcVKAwJjxaors8Y2R
+         Rw7IGFcGLS8D7eew/S4U2b8sGZ7yETg9YaMlTaGrL0Kw4t4XBNIT+7a4JOw/7ThIseQ4
+         4gIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hiXmABk2yLJcTBwV/OV64LUSAMHnd37fHZz79FC6JvU=;
-        b=eGT8kfrSp5X/fv7CAGde4Oq7i6d9f0F4B/OoiYiAaIBkh1338gitnhxy/isWF48dES
-         iL1LbbwWn1fcif/YFUGStH+KoOa8Avyoju0AEnJl0Ktp+wfuhkZyJMgPwXah3kPsqRJQ
-         JR+iqjiom3DrxT6CTJSPeZfCML3CpKlP1rJ2BqKkqlQuBz0dKsJRBWwdH+LgeYXEO3jh
-         lpPbnT2z686uEcteecNiCXzfbUEn0WcuKnMB0GF6f0wz3XY4FmPKfIhrqoiQ5rWnFJ2I
-         9lhHXUN79q4QBvSdcNVmnHgXQHB+348MG04VrdA00ph0CnaGRwY3iVOv+HMc3ROYAunu
-         iLtQ==
-X-Gm-Message-State: AOAM530j06qS6+ye5v6YopxOCnOwhe+MJUl7lAv2W7RCJEcZngfF5Ccy
-        Lkm0EB/uHCqPFJhLgNLGNT67xJKDZHFACJh6
-X-Google-Smtp-Source: ABdhPJymC8UySUey5hTUdgdPZ5GY/XMniuKo27bmSUTakvDB0/TfTPjsy89eMqcskXc6SQbtQP7ztg==
-X-Received: by 2002:a2e:9acf:: with SMTP id p15mr279272ljj.377.1635369306002;
-        Wed, 27 Oct 2021 14:15:06 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id i6sm103952lfr.163.2021.10.27.14.15.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 14:15:05 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id bp15so8999672lfb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:04 -0700 (PDT)
-X-Received: by 2002:a19:f619:: with SMTP id x25mr90493lfe.141.1635369304547;
- Wed, 27 Oct 2021 14:15:04 -0700 (PDT)
+        bh=lm0+nNU7+O9MfXmzPflhpy32QYmyc8kaxNev2lDAAEs=;
+        b=wyK2Fsc9ah3uS78jec/ryZWmnHh7BmBVDUxrB5l3k4MJM+/f8JdBNy4QNLOCMAN7lw
+         U88yg0RBsrKCW7KXLb0L94keX02fPMzSsM7nrXpHq2EYuMggrvlof4bHlzOs+yK4YxLQ
+         tvS6N9stZfBefLvlVumQfsCuzU70ru0BvPX+JTiH3kwLhLAYRCdly4jJSNWlM77uwnzU
+         5BktFwRFowj92zv3fWzTsHC/bBPybDoO0f121cvaWzklVrfLH1OGMZ8DmWVgOKeBE6sV
+         OIdNlW43fl25c35z5zMFQ9expUdh15qupL3/rzNiPAqcipjarg5JLI85ZbNWvdcNllp6
+         vEwg==
+X-Gm-Message-State: AOAM532MSxYaxxbHzCD/zthhzYCvXe5rLt+qu6KNBNeuTPRhR4gBVRjC
+        0uEAvW5dBlh+HsDZiCKojr/HeSZdfo+k2vpcZg9zow==
+X-Google-Smtp-Source: ABdhPJwFlVdGBs6/ghTfnA4EXQvfoHz1gslNeIB/tO5KGqaiLemu7UQV0bF5r1t7c+peB8KbFaYyT1obO1kHcSnGPSg=
+X-Received: by 2002:a92:2812:: with SMTP id l18mr181346ilf.239.1635369350499;
+ Wed, 27 Oct 2021 14:15:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
- <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
- <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
- <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
- <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
- <YXhH0sBSyTyz5Eh2@arm.com> <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
- <YXmkvfL9B+4mQAIo@arm.com>
-In-Reply-To: <YXmkvfL9B+4mQAIo@arm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 27 Oct 2021 14:14:48 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
-Message-ID: <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20210930212309.4001967-1-axelrasmussen@google.com>
+ <20210930212309.4001967-3-axelrasmussen@google.com> <CAJHvVcj9FpJgC5EsB1_6yfgDA8p5-=Oakccg+TUrGUWZB5nHzA@mail.gmail.com>
+ <YXDCagVgh2O2YdIW@xz-m1.local>
+In-Reply-To: <YXDCagVgh2O2YdIW@xz-m1.local>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 27 Oct 2021 14:15:13 -0700
+Message-ID: <CAJHvVchb1XyQiu6=0d+viG04Qe4LV3Z6dmCLRxGNqKPxriULFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd/selftests: fix feature support detection
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 12:13 PM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
+On Wed, Oct 20, 2021 at 6:29 PM Peter Xu <peterx@redhat.com> wrote:
 >
-> As an alternative, you mentioned earlier that a per-thread fault status
-> was not feasible on x86 due to races. Was this only for the hw poison
-> case? I think the uaccess is slightly different.
+> On Wed, Oct 20, 2021 at 11:28:49AM -0700, Axel Rasmussen wrote:
+> > Just a friendly bump for review. :) Peter, any objections to this
+> > version? I think it fairly closely matches your suggestions from v1.
+>
+> Isn't the whole patchset already queued by Andrew? :)
 
-It's not x86-specific, it's very generic.
+Ah, true, but I was worried he might hold it there until it got a R-B?
+The process is still a bit fuzzy to me. :) Thanks for taking a look in
+any case!
 
-If we set some flag in the per-thread status, we'll need to be careful
-about not overwriting it if we then have a subsequent NMI that _also_
-takes a (completely unrelated) page fault - before we then read the
-per-thread flag.
 
-Think 'perf' and fetching backtraces etc.
-
-Note that the NMI page fault can easily also be a pointer coloring
-fault on arm64, for exactly the same reason that whatever original
-copy_from_user() code was. So this is not a "oh, pointer coloring
-faults are different". They have the same re-entrancy issue.
-
-And both the "pagefault_disable" and "fault happens in interrupt
-context" cases are also the exact same 'faulthandler_disabled()'
-thing. So even at fault time they look very similar.
-
-So we'd have to have some way to separate out only the one we care about.
-
-               Linus
+>
+> Anyway,
+>
+> Reviewed-by: Peter Xu <peterx@redhat.com>
+>
+> Thanks for the change!
+>
+> --
+> Peter Xu
+>
