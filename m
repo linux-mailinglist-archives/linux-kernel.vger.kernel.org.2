@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A91B43C3C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA5143C3C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240465AbhJ0HYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:24:05 -0400
-Received: from mail-ua1-f47.google.com ([209.85.222.47]:36846 "EHLO
-        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240471AbhJ0HYD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:24:03 -0400
-Received: by mail-ua1-f47.google.com with SMTP id e10so3175095uab.3;
-        Wed, 27 Oct 2021 00:21:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XEkFa+Ku/oXy3Y71Wa/RXXm6+I0giMexz18AaglX7hA=;
-        b=250+CIzlUU/59Sd+f3UO1OhOlITbP+7hy0Qhi8HsOyTbfPDvrzRublON81n1DVl5O5
-         l0t6VErruzxoQnNpoyUx9m3UByOgIyhGfIpqxpPuvhFIOb3y8posdsosa7DC3f1loxVn
-         9SZ38pDMvGJ0ZFEqrFN7jyPwHy/hlnWdMg6OeAcVe5LthZOLCOFp/lo16s8mmyhQwqVj
-         7u58eAPxQsJXonwjo5fnEx+dR9KwrZGPerDI0C/oy6vvF7VnCKJFVmKC3zX1wzRdV+pD
-         c5qIee0Vc54TdwehRMKOnY0Q69nyJJKk+BWN1yqHOLaICAOA9HQYLGvZm0hj+UQyPn/m
-         af4w==
-X-Gm-Message-State: AOAM53347eBIECn7xtVyEgz1kKJbQyzt3VTPZi8fEvY4fEQMLYEIo5sZ
-        XnHd6Q6qKIozzlE3hCv7X6ACTtD7Cxum7w==
-X-Google-Smtp-Source: ABdhPJw6IL68kkowHN7Yu0essb69SRPCBVccgeJ+WNljMxXXHKCcC5zM0h3UsdoOsuhcE8Y+eldzBw==
-X-Received: by 2002:a05:6102:cd2:: with SMTP id g18mr28671857vst.25.1635319297590;
-        Wed, 27 Oct 2021 00:21:37 -0700 (PDT)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id m34sm10655938uad.5.2021.10.27.00.21.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 00:21:36 -0700 (PDT)
-Received: by mail-ua1-f44.google.com with SMTP id ba32so3138073uab.6;
-        Wed, 27 Oct 2021 00:21:36 -0700 (PDT)
-X-Received: by 2002:a05:6102:3a0e:: with SMTP id b14mr747714vsu.41.1635319295910;
- Wed, 27 Oct 2021 00:21:35 -0700 (PDT)
+        id S240446AbhJ0HX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:23:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240455AbhJ0HX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:23:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 992126109E;
+        Wed, 27 Oct 2021 07:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635319291;
+        bh=AuW3QkBS5Hsr9hfHspFW41KpdMXremTDQB0r9HDoJaE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mSBQVwGMA7izM44EQzRy8mm+KTKEdV0ECmckETRGFgcE4kFc6c8F/Si04HwfSvLhE
+         +uDP6GLqYe3//wsn0JZ5LXg6McgZ+ouoSJRmOi24D4oTCZ+cACVHCvsgajxD8AlMWs
+         rsc5WHO35KFA0xDGtwIV0uj/+eGEXAJ9IoKDVQx9VxqMlZyBrKzQxrsz8jta7tTk/A
+         8xezZ0ljK2HWvi1G/4vUVVSaKsrfmnzYcNevx4WWHq/jU25Md7OnMhTN5xCRUsS4Ay
+         VAbRzjDkauWYK2vq2HXGY4QwHTKijYRWve1VY2QSWE1Xb1qjc1ze95ptEGTB/rw0x0
+         C+mrxTa+s5CWg==
+Date:   Wed, 27 Oct 2021 08:21:26 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] clk: fix the need of booking clk_ignore_unused=true
+ on embedded devs
+Message-ID: <20211027082126.57dab8fc@sal.lan>
+In-Reply-To: <cover.1633607765.git.mchehab+huawei@kernel.org>
+References: <cover.1633607765.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211025205631.21151-6-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUjsVRwB0_TH5HD8CrPsM15K1RLatP_ABODMe2bQ4C2ow@mail.gmail.com>
-In-Reply-To: <CAMuHMdUjsVRwB0_TH5HD8CrPsM15K1RLatP_ABODMe2bQ4C2ow@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Oct 2021 09:21:24 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX4HfLUfDk2eZkBugP_ysL3w+qvZqKSR3e47HG4RTggXw@mail.gmail.com>
-Message-ID: <CAMuHMdX4HfLUfDk2eZkBugP_ysL3w+qvZqKSR3e47HG4RTggXw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/7] memory: renesas-rpc-if: Return error in case
- devm_ioremap_resource() fails
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Chris Brandt <Chris.Brandt@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 9:17 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Oct 25, 2021 at 10:57 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Make sure we return error in case devm_ioremap_resource() fails for dirmap
-> > resource.
-> >
-> > Fixes: ca7d8b980b67 ("memory: add Renesas RPC-IF driver")
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/memory/renesas-rpc-if.c
-> > +++ b/drivers/memory/renesas-rpc-if.c
-> > @@ -243,7 +243,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
-> >         res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
-> >         rpc->dirmap = devm_ioremap_resource(&pdev->dev, res);
-> >         if (IS_ERR(rpc->dirmap))
-> > -               rpc->dirmap = NULL;
-> > +               return PTR_ERR(rpc->dirmap);
->
-> IIRC, it was intentional to make the dirmap optional (because the
-> device can be used without and/or because some variants on other SoCs
-> lack it?).  Unfortunately this is not reflected in the DT bindings
-> (yet?).  All code using the dirmap does check if rpc->dirmap is
-> valid first.
->
-> >         rpc->size = resource_size(res);
+Stephen/Michael,
 
-Of course this will crash if the dirmap is not present, so for now it's better
-to just bail out.
+Gentile ping.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Regards,
+Mauro
 
-> >
-> >         rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+Em Thu,  7 Oct 2021 14:06:53 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Currently, the only way to boot a Kernel with drivers built as modules on embedded 
+> devices like HiKey 970 is to pass clk_ignore_unused=true as a modprobe parameter.
+> 
+> There are two separate issues:
+> 
+> 1. the clk's core calls clk_disable_unused() too early. By the time this
+>    function is called, only the builtin drivers were already probed/initialized.
+>    Drivers built as modules will only be probed afterwards.
+> 
+>    This cause a race condition and boot instability, as the clk core will try
+>    to disable clocks while the drivers built as modules are still being
+>    probed and initialized.
+> 
+>    I suspect that the same problem used to happen at the regulator's core,
+>    as there's a code that waits for 30 seconds before disabling unused
+>    regulators;
+> 
+> 2. there are some gate clocks defined at HiKey 970 that should always be on,
+>    as otherwise the system will hang, or the filesystem I/O will stop.
+> 
+> Ps.: 
+>   I submitted already 3 or 4 versions of patches for HiKey 970 clock, but
+>   they're all unreliable, due to the race conditions at the clk core due to (1).
+>    
+> Patch 1 solves the issue with the clk core.
+> Patch 2 solves the HiKey 970 specific issues.
+> 
+> Mauro Carvalho Chehab (2):
+>   clk: wait for extra time before disabling unused clocks
+>   clk: clk-hi3670: mark some clocks as CLK_IS_CRITICAL
+> 
+>  drivers/clk/clk.c                  | 51 +++++++++++++++++++-----------
+>  drivers/clk/hisilicon/clk-hi3670.c | 24 +++++++-------
+>  2 files changed, 44 insertions(+), 31 deletions(-)
+> 
