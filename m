@@ -2,143 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711B043C2DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C092943C2DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238502AbhJ0GWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:22:33 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:35169 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhJ0GWc (ORCPT
+        id S238509AbhJ0GWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:22:43 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:53990 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhJ0GWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:22:32 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MHoVE-1mU2mB3bJW-00EwGO; Wed, 27 Oct 2021 08:20:05 +0200
-Received: by mail-wr1-f45.google.com with SMTP id p14so2129738wrd.10;
-        Tue, 26 Oct 2021 23:20:05 -0700 (PDT)
-X-Gm-Message-State: AOAM533fassirFhq1tEZK7fBE4e19OjGc3h7ORD1Hbsg3kQtG3G9ZJ4e
-        0c3qt88SkP1Vp2MsJ98wTKd6X8kue+odFWcroN4=
-X-Google-Smtp-Source: ABdhPJyy7nMJ2AqnRxxIsziFa0nrcomvSIh2Cl1eTfL7Cca9Sa5hYBCRHYi7xeYQozcc/3b5PTQdRRvxP40Y1dTgIRA=
-X-Received: by 2002:adf:b1c4:: with SMTP id r4mr37906808wra.428.1635315605492;
- Tue, 26 Oct 2021 23:20:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
- <857ab1a9-0175-2b2c-e729-2620d0221e1e@suse.de> <6862b109-ea12-6ffa-c82b-b23ee26aa5b2@infradead.org>
-In-Reply-To: <6862b109-ea12-6ffa-c82b-b23ee26aa5b2@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 27 Oct 2021 08:19:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0wG8dKnuQMOL=bKmBHuSkWcu6OfvhTP-86rpLdr7_5CA@mail.gmail.com>
-Message-ID: <CAK8P3a0wG8dKnuQMOL=bKmBHuSkWcu6OfvhTP-86rpLdr7_5CA@mail.gmail.com>
-Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to `drm_gem_fb_get_obj'
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wed, 27 Oct 2021 02:22:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635315615; h=Content-Type: MIME-Version: Message-ID: Date:
+ References: In-Reply-To: Subject: Cc: To: From: Sender;
+ bh=ps8/xgtg5gAKrPPoVBISwY+vty6tFr8afONeYrw77Eg=; b=UcBxF9svUb0n236P3VfJBYe1IALtKuiqFwIckadXpeNh6UDYwO3VGG35rhtk/Dj56AzanNaj
+ cikDfLXcyUmyhHs0GO+BqBwgfy+VrfAv2YhNF7+z6dlqi1wLlB9CZVmkJZpTR6dqx6dz48H2
+ VGOKDI5a/47KvYfEDUC7wma9NGk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6178ef9a321f2400513e92fb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 06:20:10
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C7AB5C43617; Wed, 27 Oct 2021 06:20:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 253AFC4338F;
+        Wed, 27 Oct 2021 06:20:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 253AFC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:yBcXJFPn8Y6xWw62wbkCtGBqdGJ/n5rB9HPooT4fcehRZrYbt/X
- 8Kd0q/LUJkfO3fhmyJDED/em8GbQ3VA8CaOSsmPv9IfWbNggxPSYe6Y59jdGDMEM9OFsqRY
- jKDm2Uz2bwuonKTKvK+hlpCexqkBUnnUd0P2d15qseuN8HwzUvvqbvOAETkGjXJfFtl3dV3
- Q2yUZl/CEZ1yIscx4f8Kg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BkCGmcLK+tE=:SIyL9ZXsHcyOxz7sB1XQPc
- QI+KkO+1/zEJBJGLqRU2okF2/LxB1P9UxNw4gRZmAzHDlyB9ZvNc4KB7cYmb0N+xBe4xsu9Xw
- I5uBK1izN0Ppnegydwoavbf5IKebfVaT/JRzO0scGiAG6mnJSEooKvWDpPhrygPrhKlAbrnZ+
- Xd/kk8ue90XdTiOnkv8aKjJBsdPn72HT5bXmmMZf2NZcswU6i2fPKWtcmu9D8qNUKs9ZeiWfB
- ZMkLZPIVR5r75QL5i7fEGvqe+O/POHqIcBotIjVBhb4pz8/Kjg9pTJq3s/ZOdPAbwKuKm4mnc
- EXMyUxiBfCXSvrdQYLLq0hs2mhMk0GoC7KXIAActbA5l2EhrrEX1fEtwEBSu/AwuKBa8LtlEI
- gi8ITTb4tk8XgUX3IdcYmcSvfJQHj6v9faIStWgdOfw0/gCH8AeWYJxyrkLkv95Oo/ndV/LdC
- fXrwroKCrpvL+QaMOABj6kB71/NALXturk0wJtp5mTeM9ShyLew7onrQIphcITa3clgrTh3Y1
- f6WRCq/CNp9Y9Nlambok+ZgfBfV4oj6Pm7bFV6AIr/CakL8fEfeyfFHzdqMpSNdaMioObD0LM
- paDNea9c/DgPm+8wn/y4Qk2N0WYo/Ws1ztv9pO7XC47mwcl0gECs8JdCVq9mb15vK0MZUrraA
- fl9tL9IiHUWnMAObDisxp0TCnF3n2xqpglIVulmgGLO9BuTX5zIoumhWGUgph5j5/HHg=
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        YN Chen <YN.Chen@mediatek.com>,
+        Deren Wu <deren.wu@mediatek.com>,
+        Leon Yen <Leon.Yen@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt76: mt7663s: fix link error with CONFIG_PM=n
+In-Reply-To: <20211026083326.3421663-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Tue, 26 Oct 2021 10:33:09 +0200")
+References: <20211026083326.3421663-1-arnd@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Wed, 27 Oct 2021 09:20:03 +0300
+Message-ID: <874k939egc.fsf@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 2:58 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+Arnd Bergmann <arnd@kernel.org> writes:
 
-> >
-> > Looking at this config, there is:
-> >
-> > CONFIG_DRM=y
-> > # CONFIG_DRM_DP_AUX_CHARDEV is not set
-> > # CONFIG_DRM_DEBUG_MM is not set
-> > # CONFIG_DRM_DEBUG_SELFTEST is not set
-> > CONFIG_DRM_KMS_HELPER=m
-> > # CONFIG_DRM_LOAD_EDID_FIRMWARE is not set
-> > # CONFIG_DRM_DP_CEC is not set
-> > CONFIG_DRM_GEM_CMA_HELPER=y
-> > CONFIG_DRM_KMS_CMA_HELPER=y
-> >
-> > GEM_CMA_HELPER depends on KMS_HELPER, but the latter is a module. That's probably the cause of the problem. Is it intentionally set this way?
-> >
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> The only drivers that select DRM_KMS_HELPER are both =m, so that's how
-> DRM_KMS_HELPER is set also.
+> The generic register access functions are compiled conditionally,
+> causing a link failure in some randconfig builds:
 >
-> Symbol: DRM_KMS_HELPER [=m]
-> Type : tristate
-> Defined at drivers/gpu/drm/Kconfig:82
-> Depends on: HAS_IOMEM [=y] && DRM [=y]
-> Selected by [m]:
-> - DRM_ATMEL_HLCDC [=m] && HAS_IOMEM [=y] && DRM [=y] && OF [=y] && COMMON_CLK [=y] && MFD_ATMEL_HLCDC [=y] && ARM [=y]
-> - DRM_ASPEED_GFX [=m] && HAS_IOMEM [=y] && DRM [=y] && OF [=y] && (COMPILE_TEST [=n] || ARCH_ASPEED [=y]) && MMU [=y]
+> ERROR: modpost: "mt76_connac_mcu_reg_wr" [drivers/net/wireless/mediatek/mt76/mt7615/mt7663s.ko] undefined!
+> ERROR: modpost: "mt76_connac_mcu_reg_rr" [drivers/net/wireless/mediatek/mt76/mt7615/mt7663s.ko] undefined!
 >
+> Move them out of the #ifdef block.
 >
-> I did the ARM cross-build and also see the linker error.
-> I didn't understand why -- and still don't, but here is a little
-> speculation:
->
-> In the past (e.g. 10 years ago), we have to move some .o files
-> in lib/ from lib-y to obj-y so that they would always be included
-> in the final object file and not cause their user/caller object
-> files to suffer from undefined references.
-> These happened because unused functions(?) in lib-y files are
-> stripped out of the final object files.
-> The same thing could be happening here (still just guessing).
->
-> Does that help any?  I dunno.
->
-> Adding Arnd to Cc: to see if he has any ideas...
+> Fixes: 02fbf8199f6e ("mt76: mt7663s: rely on mcu reg access utility")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-From all I can tell, the problem is that DRM_KMS_CMA_HELPER is a 'bool'
-symbol, so if it gets selected by a '=m' driver, it turns into '=y', which
-then selects DRM_GEM_CMA_HELPER=y, but that one cannot link
-against DRM_KMS_HELPER=m code.
+Felix already submitted an identical patch:
 
-This trivial change makes it all build:
+https://patchwork.kernel.org/project/linux-wireless/patch/20211023112407.26448-1-nbd@nbd.name/
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index c08860db2520..699f434ce813 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -218,7 +218,7 @@ config DRM_GEM_CMA_HELPER
-          Choose this if you need the GEM CMA helper functions
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
- config DRM_KMS_CMA_HELPER
--       bool
-+       tristate
-        depends on DRM
-        select DRM_GEM_CMA_HELPER
-        help
-
-but this needs some more testing to make sure it doesn't add
-any other regressions.
-
-Interestingly, I never hit the problem in randconfig testing since
-there is always some '=y' driver that selects DRM_KMS_HELPER.
-
-        Arnd
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
