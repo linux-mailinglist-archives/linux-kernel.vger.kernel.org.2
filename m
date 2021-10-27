@@ -2,208 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F2E43CBAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB4043CBB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238060AbhJ0ONT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:13:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238108AbhJ0ONP (ORCPT
+        id S242437AbhJ0OO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:14:59 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:40545 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242406AbhJ0OO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:13:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635343850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cVoa83Mt37o7LxzLcjDlhV+CHKfwNHfJj/XpdkZn+wM=;
-        b=d308hwnv7O0t+sslPO+fxl/hQlG8c3iNdqeNNE6UPmyW2xOBrD9jAm5wI6adYhIugAbD+u
-        3lwJWGeqdwbgOF9VH7UIoNFBNhcAHvvf2q8NWWYhonIMhax88y9pcnicQQ3nzaZgfSy80F
-        cZJ6/STI7aNlm6TIRgaz9AT+Sf0t9DM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-HHU7zf4COr2mtmPfjcXavw-1; Wed, 27 Oct 2021 10:10:45 -0400
-X-MC-Unique: HHU7zf4COr2mtmPfjcXavw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A6B619251DC;
-        Wed, 27 Oct 2021 14:10:24 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C89B45DF36;
-        Wed, 27 Oct 2021 14:10:07 +0000 (UTC)
-Message-ID: <363479dd55760979da208cacf015a6f7fe2afd69.camel@redhat.com>
-Subject: Re: [PATCH v2 12/43] KVM: x86: Tweak halt emulation helper names to
- free up kvm_vcpu_halt()
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Wed, 27 Oct 2021 17:10:06 +0300
-In-Reply-To: <20211009021236.4122790-13-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-13-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Wed, 27 Oct 2021 10:14:57 -0400
+Received: by mail-oi1-f169.google.com with SMTP id n63so3610817oif.7;
+        Wed, 27 Oct 2021 07:12:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=vfM2rth3vQBvi54BPZNfTBIvZz8fdXl3sKPEL8Q3JAA=;
+        b=Uy8w/eB6eaUrCyb54E6DujTAisy/P54RT6YWm2KHgw1IGiT29iroYITmPDV52K08+J
+         Ie4MhBa1j8wZCtCjp9Um+00PX0OQ42wpCVHYV2Ws0+2tb+gF1WcB0JpQHusPyud9avdz
+         UldFkzZTSnjOWPjHDUpWErPA3ZaIiNyP4K96yDcfaNfQCqjlIObcvc51wq8dANrmSIxw
+         o2DMtGztW+O7BKXX1JQ9fxuJm+3xkd68rVSMlIV0B2nwIB7uAXEzlhfiqpNoSQvc/Snj
+         QFApZBMEXFlj0MW6ICi0JIdKDLlDvolmERl1xr8weErgdCzRAuYuOm1khfu00p/DeiUw
+         YAyw==
+X-Gm-Message-State: AOAM531JkA4t0us7Xx8I2vZyalF7mGtD6NU/Ya32GAlpy1nzCmUO1eWV
+        16f/MwhQQUjcjo1UQjO4f7RxZz8sDQ==
+X-Google-Smtp-Source: ABdhPJwPCdmnTBRsRL+SPwp3S47duSdyQhf973QacpbBr22I+oVye5RueNfagxE+iyIwYk9wGrav/g==
+X-Received: by 2002:a54:4f1d:: with SMTP id e29mr3785660oiy.179.1635343951319;
+        Wed, 27 Oct 2021 07:12:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id f14sm16805ots.51.2021.10.27.07.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 07:12:30 -0700 (PDT)
+Received: (nullmailer pid 862173 invoked by uid 1000);
+        Wed, 27 Oct 2021 14:12:28 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Nathan Rossi <nathan@nathanrossi.com>
+Cc:     Nathan Rossi <nathan.rossi@digi.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20211027074212.690611-2-nathan@nathanrossi.com>
+References: <20211027074212.690611-0-nathan@nathanrossi.com> <20211027074212.690611-2-nathan@nathanrossi.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: hwmon: ti,ina2xx: Add ti,shunt-gain property
+Date:   Wed, 27 Oct 2021 09:12:28 -0500
+Message-Id: <1635343948.059457.862172.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Rename a variety of HLT-related helpers to free up the function name
-> "kvm_vcpu_halt" for future use in generic KVM code, e.g. to differentiate
-> between "block" and "halt".
+On Wed, 27 Oct 2021 07:42:12 +0000, Nathan Rossi wrote:
+> From: Nathan Rossi <nathan.rossi@digi.com>
 > 
-> No functional change intended.
+> Add a property to the binding to define the selected shunt voltage gain.
+> This specifies the range and accuracy that applies to the shunt circuit.
+> This property only applies to devices that have a selectable shunt
+> voltage range via PGA or ADCRANGE register configuration.
 > 
-> Reviewed-by: David Matlack <dmatlack@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
 > ---
->  arch/x86/include/asm/kvm_host.h |  2 +-
->  arch/x86/kvm/vmx/nested.c       |  2 +-
->  arch/x86/kvm/vmx/vmx.c          |  4 ++--
->  arch/x86/kvm/x86.c              | 13 +++++++------
->  4 files changed, 11 insertions(+), 10 deletions(-)
+> Changes in v2:
+> - Added binding for shunt-gain
+> ---
+>  Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 7aafc27ce7a9..328103a520d3 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1689,7 +1689,7 @@ int kvm_emulate_monitor(struct kvm_vcpu *vcpu);
->  int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
->  int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
->  int kvm_emulate_halt(struct kvm_vcpu *vcpu);
-> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
-> +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu);
->  int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
->  int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
->  
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index af1bbb73430a..d0237a441feb 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3619,7 +3619,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->  		    !(nested_cpu_has(vmcs12, CPU_BASED_INTR_WINDOW_EXITING) &&
->  		      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
->  			vmx->nested.nested_run_pending = 0;
-> -			return kvm_vcpu_halt(vcpu);
-> +			return kvm_emulate_halt_noskip(vcpu);
->  		}
->  		break;
->  	case GUEST_ACTIVITY_WAIT_SIPI:
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 1c8b2b6e7ed9..5517893f12fc 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4741,7 +4741,7 @@ static int handle_rmode_exception(struct kvm_vcpu *vcpu,
->  		if (kvm_emulate_instruction(vcpu, 0)) {
->  			if (vcpu->arch.halt_request) {
->  				vcpu->arch.halt_request = 0;
-> -				return kvm_vcpu_halt(vcpu);
-> +				return kvm_emulate_halt_noskip(vcpu);
 
-Could you elaborate on why you choose _noskip suffix? 
- 
-As far as I see, kvm_vcpu_halt just calls __kvm_vcpu_halt with new VCPU run state/exit reason,
-which is used only when local apic is not in the kernel (which is these days not that
-supported configuration).
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Other user of __kvm_vcpu_halt is something SEV related.
- 
-Best regards,
-	Maxim Levitsky
+yamllint warnings/errors:
 
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml: properties:ti,shunt-gain: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	Additional properties are not allowed ('enum' was unexpected)
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml: properties:ti,shunt-gain: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	1 is not of type 'string'
+		hint: A vendor string property with exact values has an implicit type
+	2 is not of type 'string'
+		hint: A vendor string property with exact values has an implicit type
+	4 is not of type 'string'
+		hint: A vendor string property with exact values has an implicit type
+	8 is not of type 'string'
+		hint: A vendor string property with exact values has an implicit type
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml: ignoring, error in schema: properties: ti,shunt-gain
+warning: no schema found in file: ./Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+Documentation/devicetree/bindings/hwmon/ti,ina2xx.example.dt.yaml:0:0: /example-0/i2c/power-sensor@44: failed to match any schema with compatible: ['ti,ina220']
 
->  			}
->  			return 1;
->  		}
-> @@ -5415,7 +5415,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
->  
->  		if (vcpu->arch.halt_request) {
->  			vcpu->arch.halt_request = 0;
-> -			return kvm_vcpu_halt(vcpu);
-> +			return kvm_emulate_halt_noskip(vcpu);
->  		}
->  
->  		/*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 4a52a08707de..9c23ae1d483d 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8649,7 +8649,7 @@ void kvm_arch_exit(void)
->  #endif
->  }
->  
-> -static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
-> +static int __kvm_emulate_halt(struct kvm_vcpu *vcpu, int state, int reason)
->  {
->  	++vcpu->stat.halt_exits;
->  	if (lapic_in_kernel(vcpu)) {
-> @@ -8661,11 +8661,11 @@ static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
->  	}
->  }
->  
-> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
-> +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu)
->  {
-> -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
-> +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
->  }
-> -EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
-> +EXPORT_SYMBOL_GPL(kvm_emulate_halt_noskip);
->  
->  int kvm_emulate_halt(struct kvm_vcpu *vcpu)
->  {
-> @@ -8674,7 +8674,7 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
->  	 * TODO: we might be squashing a GUESTDBG_SINGLESTEP-triggered
->  	 * KVM_EXIT_DEBUG here.
->  	 */
-> -	return kvm_vcpu_halt(vcpu) && ret;
-> +	return kvm_emulate_halt_noskip(vcpu) && ret;
->  }
->  EXPORT_SYMBOL_GPL(kvm_emulate_halt);
->  
-> @@ -8682,7 +8682,8 @@ int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
->  {
->  	int ret = kvm_skip_emulated_instruction(vcpu);
->  
-> -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
-> +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD,
-> +					KVM_EXIT_AP_RESET_HOLD) && ret;
->  }
->  EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
->  
+doc reference errors (make refcheckdocs):
 
+See https://patchwork.ozlabs.org/patch/1546789
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
