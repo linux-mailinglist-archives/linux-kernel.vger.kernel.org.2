@@ -2,65 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83D243CCFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8BB43CD01
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241999AbhJ0PIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:08:20 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28324 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237614AbhJ0PIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:08:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="217091214"
-X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
-   d="scan'208";a="217091214"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 08:05:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
-   d="scan'208";a="537613134"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2021 08:05:51 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 78D84107; Wed, 27 Oct 2021 18:05:51 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v1 1/1] generic-radix-tree: Replace kernel.h with the necessary inclusions
-Date:   Wed, 27 Oct 2021 18:05:48 +0300
-Message-Id: <20211027150548.80042-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S242383AbhJ0PIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242007AbhJ0PIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:08:39 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588B1C061745
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:06:14 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id r5so2225974pls.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iJaFedjfgO3mNmh/C96uSOhUiL4aNQtn0C47wpwNS5I=;
+        b=iVVFlAopGMkcd0hJu+/aKOZS9/FSNpWdZd1kDncujnrTaRWMIl4ygVplZCmy9QgKZY
+         I60D6XySDqyzSLBmYS64MiRD/W1141i3Koe9x3WFMJkNZDwhu1wfkDN4AZwudkqyFN7m
+         pma05zVPG7QH+a+O3TABH235+3jkQOClywd2PcOC/N8yhIkGXdRzjDq+NkWBdWIijNvf
+         hvNhmtJedQXRIOfkXU6o+ipaxeoec2FfSS+rw9QunswdHWxq0wQiE5ZX5HyC2zUYUsYw
+         j9JwyHMVAIHJgV+EbqwSBsYKGgdoSsvi5pHctY2zP3UgOTJqOC5faTpATZjOXE+DUhxR
+         aC3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iJaFedjfgO3mNmh/C96uSOhUiL4aNQtn0C47wpwNS5I=;
+        b=YtLrn2Kfn1kAY0JspxS5nYcns0vHtV01kd4ybTlFD1TeMBx9Dq4huk8Sm0UJCl5lht
+         MC6k+NBVeQj0PF1ER8/LK1zpWzwMzuDeNpZsLrsjrT95BO6A3r0DhSDPjxdxvumjESgs
+         vT5IrxHKiJyYESKQ1xGtJfP4LmeZs/iwj6foTVxzqxDWk5MSlcSK9MHJX/6VDdg9RLF3
+         9f+zhbswKJUNak2Dgi1cMjqnBwPNswNvcZuFezoM/MMnL5aC4FqbHo/PG7ndP3blhc0H
+         PnCiAaEjaF0NlqwXJPUjij0SZgnWndETSshGNkQ6athYwS2Qv8n78ECcbRjTtwh0194/
+         dtPg==
+X-Gm-Message-State: AOAM533ZUpWB4/P+QmS9gNM7mbP55ArvodvQfUFINDhMIPejKUOQjTs4
+        iwyoVimphp5mJXa142n55WEAj5qs22+f0SQtjaAvYQ==
+X-Google-Smtp-Source: ABdhPJz8vpePzqPS0evtX4SnKhe7a/3eMQYQVPtaOBsulrZNJ4aqXPW9jO9ulnVJfxyOzxk45EsJg44EwOI93DtlxXM=
+X-Received: by 2002:a17:90b:4c0d:: with SMTP id na13mr6380872pjb.232.1635347173756;
+ Wed, 27 Oct 2021 08:06:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211025170925.3096444-1-bjorn.andersson@linaro.org> <65243a98-61b9-3311-f41d-fa4782448baa@kali.org>
+In-Reply-To: <65243a98-61b9-3311-f41d-fa4782448baa@kali.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 27 Oct 2021 17:06:02 +0200
+Message-ID: <CAG3jFytmcFcA5W3vmcpWTWrc36-YFMPZ1wAB8gAJfiHHLWmaCA@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] pwm: Introduce single-PWM of_xlate function
+To:     Steev Klimaszewski <steev@kali.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kernel.h is used in the headers it adds a lot into dependency hell,
-especially when there are circular dependencies are involved.
+On Tue, 26 Oct 2021 at 19:21, Steev Klimaszewski <steev@kali.org> wrote:
+>
+>
+> On 10/25/21 12:09 PM, Bjorn Andersson wrote:
+> > The existing pxa driver and the upcoming addition of PWM support in the
+> > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
+> > thereby a need for a of_xlate function with the period as its single
+> > argument.
+> >
+> > Introduce a common helper function in the core that can be used as
+> > of_xlate by such drivers and migrate the pxa driver to use this.
+> >
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> > Tested-by: Steev Klimaszewski <steev@kali.org>
+> > ---
+> >
+> > Changes since v6:
+> > - None
+> >
+> >   drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
+> >   drivers/pwm/pwm-pxa.c | 16 +---------------
+> >   include/linux/pwm.h   |  2 ++
+> >   3 files changed, 29 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> > index 4527f09a5c50..2c6b155002a2 100644
+> > --- a/drivers/pwm/core.c
+> > +++ b/drivers/pwm/core.c
+> > @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const=
+ struct of_phandle_args *args)
+> >   }
+> >   EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
+> >
+> > +struct pwm_device *
+> > +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args =
+*args)
+> > +{
+> > +     struct pwm_device *pwm;
+> > +
+> > +     if (pc->of_pwm_n_cells < 1)
+> > +             return ERR_PTR(-EINVAL);
+> > +
+> > +     /* validate that one cell is specified, optionally with flags */
+> > +     if (args->args_count !=3D 1 && args->args_count !=3D 2)
+> > +             return ERR_PTR(-EINVAL);
+> > +
+> > +     pwm =3D pwm_request_from_chip(pc, 0, NULL);
+> > +     if (IS_ERR(pwm))
+> > +             return pwm;
+> > +
+> > +     pwm->args.period =3D args->args[0];
+> > +     pwm->args.polarity =3D PWM_POLARITY_NORMAL;
+> > +
+> > +     if (args->args_count =3D=3D 2 && args->args[2] & PWM_POLARITY_INV=
+ERTED)
+> > +             pwm->args.polarity =3D PWM_POLARITY_INVERSED;
+> > +
+> > +     return pwm;
+> > +}
+> > +EXPORT_SYMBOL_GPL(of_pwm_single_xlate);
+> > +
+> >   static void of_pwmchip_add(struct pwm_chip *chip)
+> >   {
+> >       if (!chip->dev || !chip->dev->of_node)
+> > diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
+> > index a9efdcf839ae..238ec88c130b 100644
+> > --- a/drivers/pwm/pwm-pxa.c
+> > +++ b/drivers/pwm/pwm-pxa.c
+> > @@ -148,20 +148,6 @@ static const struct platform_device_id *pxa_pwm_ge=
+t_id_dt(struct device *dev)
+> >       return id ? id->data : NULL;
+> >   }
+> >
+> > -static struct pwm_device *
+> > -pxa_pwm_of_xlate(struct pwm_chip *pc, const struct of_phandle_args *ar=
+gs)
+> > -{
+> > -     struct pwm_device *pwm;
+> > -
+> > -     pwm =3D pwm_request_from_chip(pc, 0, NULL);
+> > -     if (IS_ERR(pwm))
+> > -             return pwm;
+> > -
+> > -     pwm->args.period =3D args->args[0];
+> > -
+> > -     return pwm;
+> > -}
+> > -
+> >   static int pwm_probe(struct platform_device *pdev)
+> >   {
+> >       const struct platform_device_id *id =3D platform_get_device_id(pd=
+ev);
+> > @@ -187,7 +173,7 @@ static int pwm_probe(struct platform_device *pdev)
+> >       pc->chip.npwm =3D (id->driver_data & HAS_SECONDARY_PWM) ? 2 : 1;
+> >
+> >       if (IS_ENABLED(CONFIG_OF)) {
+> > -             pc->chip.of_xlate =3D pxa_pwm_of_xlate;
+> > +             pc->chip.of_xlate =3D of_pwm_single_xlate;
+> >               pc->chip.of_pwm_n_cells =3D 1;
+> >       }
+> >
+> > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+> > index 725c9b784e60..dd51d4931fdc 100644
+> > --- a/include/linux/pwm.h
+> > +++ b/include/linux/pwm.h
+> > @@ -414,6 +414,8 @@ struct pwm_device *pwm_request_from_chip(struct pwm=
+_chip *chip,
+> >
+> >   struct pwm_device *of_pwm_xlate_with_flags(struct pwm_chip *pc,
+> >               const struct of_phandle_args *args);
+> > +struct pwm_device *of_pwm_single_xlate(struct pwm_chip *pc,
+> > +                                    const struct of_phandle_args *args=
+);
+> >
+> >   struct pwm_device *pwm_get(struct device *dev, const char *con_id);
+> >   struct pwm_device *of_pwm_get(struct device *dev, struct device_node =
+*np,
+>
+> v7 of the series is tested by me on the Lenovo Yoga C630
+>
+> Tested-By: Steev Klimaszewski <steev@kali.org>
+>
 
-Replace kernel.h inclusion with the list of what is really being used.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/generic-radix-tree.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/generic-radix-tree.h b/include/linux/generic-radix-tree.h
-index bfd00320c7f3..89c68df213dd 100644
---- a/include/linux/generic-radix-tree.h
-+++ b/include/linux/generic-radix-tree.h
-@@ -38,8 +38,8 @@
- 
- #include <asm/page.h>
- #include <linux/bug.h>
--#include <linux/kernel.h>
- #include <linux/log2.h>
-+#include <linux/types.h>
- 
- struct genradix_root;
- 
--- 
-2.33.0
-
+Applied to drm-misc-next.
