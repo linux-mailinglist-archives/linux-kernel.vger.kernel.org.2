@@ -2,159 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7186043D657
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B0443D658
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhJ0WO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230061AbhJ0WPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 18:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhJ0WO6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Oct 2021 18:14:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230063AbhJ0WO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 18:14:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED54B60E75;
-        Wed, 27 Oct 2021 22:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635372751;
-        bh=qDYo3qUo7XfTZD0MoKBSQuJOm3bh9eM3O0CK7xq0y4M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FTPoSM+NFFoCPZQle5PvcjGOM5OOYZM2caCgZb8ftod6yw1Rfn2FSwmO5IgVOlSnx
-         P2upKErThXMT5mtRZ4Rvyn4FxfFTvmaFgvmEROAcd4IgD1m8uxzGIqi5IRJU0SJFGK
-         AEns2ks5yw8ECdPUfKWmRj6KjmlLPAzFiI0bbQQaxZ4pPzsrEpA2T3WjBqqkfZMdil
-         eleeJyNL+J57Ge2FLrOmfGHakLHxacbKB4l4ofyn8LX7IfFELEMt+CnM6ajeXULLR/
-         86wNADmxJyKOajO4lLmyCT+7hLrBLCNmvnmHJjYOSeTKyEUslLsER5oUSaNqD8vFkj
-         1uvc4mWH93DCQ==
-Date:   Thu, 28 Oct 2021 07:12:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] tracing/selftests: Add tests for hist trigger
- expression parsing
-Message-Id: <20211028071226.9d1d0bd1f4a5d04999c1a9f0@kernel.org>
-In-Reply-To: <20211027205919.1648553-4-kaleshsingh@google.com>
-References: <20211027205919.1648553-1-kaleshsingh@google.com>
-        <20211027205919.1648553-4-kaleshsingh@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DC8C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 15:12:32 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id l203so4069683pfd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 15:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jtJ9mg6mkCM+HyrDKkQPfKHujvrubHvnFkuczrG0f/A=;
+        b=QA2fDubt5NaeGhrWm07+haXkSxZJhyCdcj21Eb4WlFrgc01AqnujVk23mCJV9laDho
+         MC6Uf1sny7w3wVylEiC14zzEOL4YXypzokzBi9lXvq8cWfceuSYo/GsqycUycrKzNE0c
+         ZCO+cznB9wY82LJxTVtGup8imD2JiIiZfJj5R9w84XTfC7FrBZDhExGd350jWyvGhX4i
+         HAc85WleWILO9PuOH4YlqtBYVPKhhOQVwRpPpx9I5C6+xNdJ6v2CweyeGJ+4AxP+/XTu
+         B0pjyWNcgggv2yhZGinGixQadSrCpbfU49Mi/+SjT5zSvskh1WykthGG7R/4HK7NuaQU
+         fgvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=jtJ9mg6mkCM+HyrDKkQPfKHujvrubHvnFkuczrG0f/A=;
+        b=8Nw1QKqdBQQFSIA9Uiv73PENiwMmLbVIvO+vmxftcXsK2mqt4AqJJdbvObzo4sb+Ov
+         zHIyvOV4yvH9LN8D03Bv2HvZCrccQZvkgrweTf/vG7k6j0IzjNA8tDb9FWqZvZcWa71y
+         yVhEUcsyY3pSn/2k767DxPBdC4LzTbNzVpKYOHwzUoXAQZOWsfphd3vZHRklO3Gfhd4w
+         qvpLpxa5Uv62EFQwL6BBMwzRoY9umvzRc9/Kb8Zy8Okig+uaWuvL8sVO29XhmSgsbj6X
+         T6oyauNZxctFcVhgDiBfkcbV92EchrBkMltICMwovfYIEe269PimDxgYh8jvCfABDJKm
+         Xn1Q==
+X-Gm-Message-State: AOAM533C5WM9fnV+PJLKc/PmrbOe10JhOXUllQXU5xaCIOhImn6kPGLo
+        DYldWPA02NliyARdg7mG9U5OfQ==
+X-Google-Smtp-Source: ABdhPJwpI8y3nmvTnJXqOogIABbrz/ln1LK+9cVYlo5HciH5w8jSWsImVENT3vlg6zCh2DvtDvFuiQ==
+X-Received: by 2002:a65:62d1:: with SMTP id m17mr333092pgv.370.1635372751485;
+        Wed, 27 Oct 2021 15:12:31 -0700 (PDT)
+Received: from localhost ([2620:0:1000:5e10:d96b:421d:2a73:9190])
+        by smtp.gmail.com with ESMTPSA id o22sm952535pfu.50.2021.10.27.15.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 15:12:30 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 15:12:30 -0700 (PDT)
+X-Google-Original-Date: Wed, 27 Oct 2021 14:34:17 PDT (-0700)
+Subject:     Re: [PATCH 1/3] RISC-V: Enable KVM in RV64 and RV32 defconfigs as a module
+In-Reply-To: <20211026170136.2147619-2-anup.patel@wdc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        pbonzini@redhat.com, Atish Patra <Atish.Patra@wdc.com>,
+        anup@brainfault.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     Anup Patel <Anup.Patel@wdc.com>
+Message-ID: <mhng-1044c135-bede-498b-b244-9f9c5f5ea89b@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 13:59:10 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
+On Tue, 26 Oct 2021 10:01:34 PDT (-0700), Anup Patel wrote:
+> Let's enable KVM RISC-V in RV64 and RV32 defconfigs as module
+> so that it always built along with the default kernel image.
 
-> Add tests for the parsing of hist trigger expressions; and to
-> validate expression evaluation.
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Turning on KVM in the defconfigs seems like the right way to go, but 
+this has more diff than just that.  Not sure if that's all just 
+savedefconfig stuff, I usually try and split out the non-functional 
+changes from anything that makes a change.
 
-This looks good to me :)
+If you checked then
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Thanks!
+assuming you want to keep these together.  LMK if you want me to take 
+this on its own (I'll split it up if you do).
 
+>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
 > ---
-> Changes in v5:
->   - Add README pattern to requires tag, per Masami
-> 
-> Changes in v3:
->   - Remove .sym-offset error check tests
-> 
-> Changes in v2:
->   - Add Namhyung's Reviewed-by
->   - Update comment to clarify err_pos in "Too many subexpressions" test
-> 
->  .../trigger/trigger-hist-expressions.tc       | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> 
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> new file mode 100644
-> index 000000000000..9690f9f809e7
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> @@ -0,0 +1,72 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +# description: event trigger - test histogram expression parsing
-> +# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log "<var1>=<field|var_ref|numeric_literal>":README
-> +
-> +
-> +fail() { #msg
-> +    echo $1
-> +    exit_fail
-> +}
-> +
-> +get_hist_var() { #var_name hist_path
-> +    hist_output=`grep -m1 "$1: " $2`
-> +    hitcount=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "hitcount:") print $(i+1)} }'`
-> +    var_sum=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "'$1':") print $(i+1)} }'`
-> +    var_val=$(( var_sum / hitcount ))
-> +    echo $var_val
-> +}
-> +
-> +test_hist_expr() { # test_name expression expected_val
-> +    reset_trigger
-> +
-> +    echo "Test hist trigger expressions - $1"
-> +
-> +    echo "hist:keys=common_pid:x=$2" > events/sched/sched_process_fork/trigger
-> +    echo 'hist:keys=common_pid:vals=$x' >> events/sched/sched_process_fork/trigger
-> +    for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-> +
-> +    actual=`get_hist_var x events/sched/sched_process_fork/hist`
-> +
-> +    if [ $actual != $3 ]; then
-> +        fail "Failed hist trigger expression evaluation: Expression: $2 Expected: $3, Actual: $actual"
-> +    fi
-> +
-> +    reset_trigger
-> +}
-> +
-> +check_error() { # test_name command-with-error-pos-by-^
-> +    reset_trigger
-> +
-> +    echo "Test hist trigger expressions - $1"
-> +    ftrace_errlog_check 'hist:sched:sched_process_fork' "$2" 'events/sched/sched_process_fork/trigger'
-> +
-> +    reset_trigger
-> +}
-> +
-> +test_hist_expr "Variable assignment" "123" "123"
-> +
-> +test_hist_expr "Subtraction not associative" "16-8-4-2" "2"
-> +
-> +test_hist_expr "Division not associative" "64/8/4/2" "1"
-> +
-> +test_hist_expr "Same precedence operators (+,-) evaluated left to right" "16-8+4+2" "14"
-> +
-> +test_hist_expr "Same precedence operators (*,/) evaluated left to right" "4*3/2*2" "12"
-> +
-> +test_hist_expr "Multiplication evaluated before addition/subtraction" "4+3*2-2" "8"
-> +
-> +test_hist_expr "Division evaluated before addition/subtraction" "4+6/2-2" "5"
-> +
-> +# Division by zero returns -1
-> +test_hist_expr "Handles division by zero" "3/0" "-1"
-> +
-> +# err pos for "too many subexpressions" is dependent on where
-> +# the last subexpression was detected. This can vary depending
-> +# on how the expression tree was generated.
-> +check_error "Too many subexpressions" 'hist:keys=common_pid:x=32+^10*3/20-4'
-> +check_error "Too many subexpressions" 'hist:keys=common_pid:x=^1+2+3+4+5'
-> +
-> +check_error "Unary minus not supported in subexpression" 'hist:keys=common_pid:x=-(^1)+2'
-> +
-> +exit 0
-> -- 
-> 2.33.0.1079.g6e70778dc9-goog
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+>  arch/riscv/configs/defconfig      | 15 +++++++--------
+>  arch/riscv/configs/rv32_defconfig |  8 ++++----
+>  2 files changed, 11 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index 4ebc80315f01..40506dfab5cf 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
+>  CONFIG_POSIX_MQUEUE=y
+>  CONFIG_NO_HZ_IDLE=y
+>  CONFIG_HIGH_RES_TIMERS=y
+> +CONFIG_BPF_SYSCALL=y
+>  CONFIG_IKCONFIG=y
+>  CONFIG_IKCONFIG_PROC=y
+>  CONFIG_CGROUPS=y
+> @@ -13,12 +14,14 @@ CONFIG_USER_NS=y
+>  CONFIG_CHECKPOINT_RESTORE=y
+>  CONFIG_BLK_DEV_INITRD=y
+>  CONFIG_EXPERT=y
+> -CONFIG_BPF_SYSCALL=y
+> +# CONFIG_SYSFS_SYSCALL is not set
+> +CONFIG_SOC_MICROCHIP_POLARFIRE=y
+>  CONFIG_SOC_SIFIVE=y
+>  CONFIG_SOC_VIRT=y
+> -CONFIG_SOC_MICROCHIP_POLARFIRE=y
+>  CONFIG_SMP=y
+>  CONFIG_HOTPLUG_CPU=y
+> +CONFIG_VIRTUALIZATION=y
+> +CONFIG_KVM=m
+>  CONFIG_JUMP_LABEL=y
+>  CONFIG_MODULES=y
+>  CONFIG_MODULE_UNLOAD=y
+> @@ -68,14 +71,12 @@ CONFIG_HW_RANDOM=y
+>  CONFIG_HW_RANDOM_VIRTIO=y
+>  CONFIG_SPI=y
+>  CONFIG_SPI_SIFIVE=y
+> +# CONFIG_PTP_1588_CLOCK is not set
+>  CONFIG_GPIOLIB=y
+>  CONFIG_GPIO_SIFIVE=y
+> -# CONFIG_PTP_1588_CLOCK is not set
+> -CONFIG_POWER_RESET=y
+>  CONFIG_DRM=y
+>  CONFIG_DRM_RADEON=y
+>  CONFIG_DRM_VIRTIO_GPU=y
+> -CONFIG_FRAMEBUFFER_CONSOLE=y
+>  CONFIG_USB=y
+>  CONFIG_USB_XHCI_HCD=y
+>  CONFIG_USB_XHCI_PLATFORM=y
+> @@ -85,10 +86,10 @@ CONFIG_USB_OHCI_HCD=y
+>  CONFIG_USB_OHCI_HCD_PLATFORM=y
+>  CONFIG_USB_STORAGE=y
+>  CONFIG_USB_UAS=y
+> +CONFIG_MMC=y
+>  CONFIG_MMC_SDHCI=y
+>  CONFIG_MMC_SDHCI_PLTFM=y
+>  CONFIG_MMC_SDHCI_CADENCE=y
+> -CONFIG_MMC=y
+>  CONFIG_MMC_SPI=y
+>  CONFIG_RTC_CLASS=y
+>  CONFIG_VIRTIO_PCI=y
+> @@ -139,5 +140,3 @@ CONFIG_RCU_EQS_DEBUG=y
+>  # CONFIG_FTRACE is not set
+>  # CONFIG_RUNTIME_TESTING_MENU is not set
+>  CONFIG_MEMTEST=y
+> -# CONFIG_SYSFS_SYSCALL is not set
+> -CONFIG_EFI=y
+> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
+> index 434ef5b64599..44022e048efd 100644
+> --- a/arch/riscv/configs/rv32_defconfig
+> +++ b/arch/riscv/configs/rv32_defconfig
+> @@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
+>  CONFIG_POSIX_MQUEUE=y
+>  CONFIG_NO_HZ_IDLE=y
+>  CONFIG_HIGH_RES_TIMERS=y
+> +CONFIG_BPF_SYSCALL=y
+>  CONFIG_IKCONFIG=y
+>  CONFIG_IKCONFIG_PROC=y
+>  CONFIG_CGROUPS=y
+> @@ -13,12 +14,14 @@ CONFIG_USER_NS=y
+>  CONFIG_CHECKPOINT_RESTORE=y
+>  CONFIG_BLK_DEV_INITRD=y
+>  CONFIG_EXPERT=y
+> -CONFIG_BPF_SYSCALL=y
+> +# CONFIG_SYSFS_SYSCALL is not set
+>  CONFIG_SOC_SIFIVE=y
+>  CONFIG_SOC_VIRT=y
+>  CONFIG_ARCH_RV32I=y
+>  CONFIG_SMP=y
+>  CONFIG_HOTPLUG_CPU=y
+> +CONFIG_VIRTUALIZATION=y
+> +CONFIG_KVM=m
+>  CONFIG_JUMP_LABEL=y
+>  CONFIG_MODULES=y
+>  CONFIG_MODULE_UNLOAD=y
+> @@ -67,11 +70,9 @@ CONFIG_HW_RANDOM_VIRTIO=y
+>  CONFIG_SPI=y
+>  CONFIG_SPI_SIFIVE=y
+>  # CONFIG_PTP_1588_CLOCK is not set
+> -CONFIG_POWER_RESET=y
+>  CONFIG_DRM=y
+>  CONFIG_DRM_RADEON=y
+>  CONFIG_DRM_VIRTIO_GPU=y
+> -CONFIG_FRAMEBUFFER_CONSOLE=y
+>  CONFIG_USB=y
+>  CONFIG_USB_XHCI_HCD=y
+>  CONFIG_USB_XHCI_PLATFORM=y
+> @@ -130,4 +131,3 @@ CONFIG_RCU_EQS_DEBUG=y
+>  # CONFIG_FTRACE is not set
+>  # CONFIG_RUNTIME_TESTING_MENU is not set
+>  CONFIG_MEMTEST=y
+> -# CONFIG_SYSFS_SYSCALL is not set
