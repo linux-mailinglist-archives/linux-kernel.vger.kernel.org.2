@@ -2,134 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA9843BFD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D940F43BFD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237995AbhJ0CcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhJ0CcS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:32:18 -0400
-Received: from out10.migadu.com (out10.migadu.com [IPv6:2001:41d0:2:e8e3::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD57C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:29:53 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 11:29:37 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635301789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nQGDOP/LiQ5qzBi3yIx/uAb2j3FzvKGJHPlYNIgLsaI=;
-        b=iArym7oen0t74ifKxfuMX6gQLNj3u84i6EINnK5MlGKMIWEoRAAeLUYUlWA2Hm2YSR4QI+
-        uSaQf4JgCWzDAe3VSuqff8w9xmpP+xgQh+p8pGjEbtcNEIPZfudnANO58dJKEK2WLrvuXo
-        i59u53fcevjv2Rva6VXt1I2SOjRhwwA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Ding Hui <dinghui@sangfor.com.cn>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 4/4] mm/hwpoison: fix unpoison_memory()
-Message-ID: <20211027022937.GB2707645@u2004>
-References: <20211025232634.GA2651726@u2004>
- <0d83410a-4377-35ee-66ec-0dbeb5e8801f@sangfor.com.cn>
+        id S238020AbhJ0Ccy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230493AbhJ0Ccw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 22:32:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 188576103C;
+        Wed, 27 Oct 2021 02:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635301827;
+        bh=8jfjUOtLlxe1Xc4nIX3DS+wXCQH4UmC6cRfApye30ew=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lQ88DKTfET9VPgoo7bj4HF9AIg8fkFwu1V9yt58FgYGuGNXJg/Yuv9HngrNE+SbBq
+         dc9aQhcCXXDCq4NEsBTx6qvJXvkOsdJ2lwEeQqdBIUdgn/slFkaigH/pZRvqX6aEs2
+         mkNUE75+CYcVbviuw9NoGGfD3PTduW5S/2SFoRrJO6b0my4qPI37Ru4Jr1nIAGeem9
+         S8PmFraPsy3rmY47cFuormXDVMwIPAvWvDUiYPWAuPG7c1qf3ePR/TQ6Ty5wnBv5uE
+         xMK6AaY8EVQgIW9Er7ntE9Nr227wmrojlXe57zIkG2zdpz3J9qlnKP2qiTFxd1AYkh
+         r1rwGJOQPVWiQ==
+Message-ID: <d5ac2754-85a3-8935-d1f8-829539664ca0@kernel.org>
+Date:   Wed, 27 Oct 2021 10:30:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0d83410a-4377-35ee-66ec-0dbeb5e8801f@sangfor.com.cn>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH] f2fs: compress: disallow disabling compress on non-empty
+ compressed file
+Content-Language: en-US
+To:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <CGME20211025140526epcas1p3b4a59df0935297572c6417c841a4c514@epcas1p3.samsung.com>
+ <20211025140517.14741-1-hj514.kim@samsung.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20211025140517.14741-1-hj514.kim@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 09:26:08AM +0800, Ding Hui wrote:
-> On 2021/10/26 7:27, Naoya Horiguchi wrote:
-> > (Please ignore previous patch 4/4 which leaves the replied message at
-> > the end of body, this was due to my wrong manual edit, sorry about noise.
-> > I resend 4/4.)
-> > 
-> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > 
-> > After recent soft-offline rework, error pages can be taken off from
-> > buddy allocator, but the existing unpoison_memory() does not properly
-> > undo the operation.  Moreover, due to the recent change on
-> > __get_hwpoison_page(), get_page_unless_zero() is hardly called for
-> > hwpoisoned pages.  So __get_hwpoison_page() highly likely returns zero
-> 
-> Sorry, can you explain that __get_hwpoison_page() likely go which branch to
-> return zero for hwpoisoned pages ?
-> 
-> not returns -EBUSY because HWPoisonHandlable() is false ?
+On 2021/10/25 22:05, Hyeong-Jun Kim wrote:
+> Compresse file and normal file has differ in i_addr addressing,
+> specifically addrs per inode/block. So, we will face data loss, if we
+> disable the compression flag on non-empty files. Therefore we should
+> disallow not only enabling but disabling the compression flag on
+> non-empty files. >
 
-Sorry, you're right, the return value mentioned here was changed since v1,
-so I should have updated the description.
+Hi Hyeong-Jun,
 
-...
-> > @@ -1958,9 +2023,7 @@ int unpoison_memory(unsigned long pfn)
-> >   {
-> >   	struct page *page;
-> >   	struct page *p;
-> > -	int freeit = 0;
-> > -	int ret = 0;
-> > -	unsigned long flags = 0;
-> > +	int ret = -EBUSY;
-> >   	static DEFINE_RATELIMIT_STATE(unpoison_rs, DEFAULT_RATELIMIT_INTERVAL,
-> >   					DEFAULT_RATELIMIT_BURST);
-> > @@ -1996,24 +2059,27 @@ int unpoison_memory(unsigned long pfn)
-> >   		goto unlock_mutex;
-> >   	}
-> > -	if (!get_hwpoison_page(p, flags)) {
-> > -		if (TestClearPageHWPoison(p))
-> > -			num_poisoned_pages_dec();
-> > -		unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
-> > -				 pfn, &unpoison_rs);
-> > +	if (PageSlab(page))
-> 
-> As I reported before [1], get refcount to a PageTable(page) is not safe,
-> maybe let huge_pmd_unshare() go to wrong branch, so can you also avoid
-> PageTable(page) here ?
-> 
-> [1]: https://lore.kernel.org/linux-mm/271d0f41-0599-9d5d-0555-47189f476243@sangfor.com.cn/
+I think this makes sense.
 
-Sure, I'll add it.
+But one more case may bypass below condition, could you please take a look
+at this case:
 
-> 
-> >   		goto unlock_mutex;
-> > -	}
-> > -	if (TestClearPageHWPoison(page)) {
-> > -		unpoison_pr_info("Unpoison: Software-unpoisoned page %#lx\n",
-> > -				 pfn, &unpoison_rs);
-> > -		num_poisoned_pages_dec();
-> > -		freeit = 1;
-> > -	}
-> > +	ret = get_hwpoison_page(p, MF_UNPOISON);
-> > +	if (!ret) {
-> > +		ret = clear_page_hwpoison(&unpoison_rs, p);
-> 
-> in this case, the page p has zero refcount, with HWPoison flag, but without
-> MAGIC_HWPOISON, where it come from ? race condition or normal case ? Is
-> there any examples please ?
+touch file
+chattr +c file
+f2fs_io pinfile set file
+fallocate file -o 0 -l 16384 -n
+chattr -c file
 
-memory_failure() could set HWPoison flag at any time, so if a memory error happens
-on a page which a just being freed, that could be linked to buddy freelist with
-HWPoison flag.
+So it's better to check F2FS_HAS_BLOCKS() as well in the condition?
 
-Another example is hugetlb's case, if memory_failrue() is called for a free hugetlb
-page and somehow dissolve_free_huge_page() fails in handling path, the hugepage
-remains with HWPoison flag set and refcount 0.
-BTW, considering this case, I found that clear_page_hwpoison() should be called
-for "page" instead of "p", which will be fixed in the next version.
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
 
 Thanks,
-Naoya Horiguchi
+
+> Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
+> Signed-off-by: Hyeong-Jun Kim <hj514.kim@samsung.com>
+> ---
+>   fs/f2fs/f2fs.h | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index b8e8f8c716b0..19146c834abd 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -4177,8 +4177,7 @@ static inline bool f2fs_disable_compressed_file(struct inode *inode)
+>   
+>   	if (!f2fs_compressed_file(inode))
+>   		return true;
+> -	if (S_ISREG(inode->i_mode) &&
+> -		(get_dirty_pages(inode) || atomic_read(&fi->i_compr_blocks)))
+> +	if (S_ISREG(inode->i_mode) && inode->i_size)
+>   		return false;
+>   
+>   	fi->i_flags &= ~F2FS_COMPR_FL;
+> 
