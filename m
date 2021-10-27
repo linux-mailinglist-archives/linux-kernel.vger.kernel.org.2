@@ -2,221 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0281943CE50
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0DB43CE52
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242899AbhJ0QLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S242931AbhJ0QLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242911AbhJ0QK7 (ORCPT
+        with ESMTP id S242932AbhJ0QL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:10:59 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF51C061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:08:33 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id o12so7646758ybk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:08:33 -0700 (PDT)
+        Wed, 27 Oct 2021 12:11:29 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85768C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:09:02 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id s3so3579581ild.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+7yM+AHVg6/RWwPVXoUMFU+BAoYxNZ6FELdoFv8vPVY=;
-        b=jam13Ei0ZH0rmnEJQGz2oG7g5UJE6hddfGqNF9ht5JQ+AMTvawIvs2IlZEP15mrB8I
-         4Vb2WELl2sb+a8KiVkJxo21BQb8RmLmCXaAG3RZVsaWXnfLYRZBgE+NYnDb7fylVrVW+
-         aVveT6W+Z5ExMRWMYTo1j2GEkQK+b6zBHkgEzEB6XwHBRw98PDkazY5vkMfnt/uKBgJ+
-         k+ZG/MFiLjtd8w4m1+CBAn413mqp2pPJrigcXqzuwjTfe1S0J8GMx5VqnQWaMknlleuX
-         pTHNvzis3he35IfamTHEUyzyNdSqAOGalCHjxrvlRJ2iQ6AaYVWgIBi7JdokemJnsocR
-         h6dA==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=uER/nNyzqjkZUffE1EOgclTHd/4X5D8gQ4iPUJk3S1c=;
+        b=iJdaqrbPSzb24NEcTO++4OhQn9tPDw54F9iXhvtbj/6Kc7NpXQFPVYWr6KGTNm/zRL
+         bRgTo3OHOvxMsFSt/jariYPeMF/pIKpUJeGyAiQrwBBbUIg7geEVeb0XLrezAxQuCiO/
+         //7teXlfQmfAPk7++uImejWM/AzFtckU4zDbtkpaRk2dFWi3Cdb1S+v0+DB6zNJ4/8pC
+         WQgTTluyUeBWd8A4fm8kY+kir2w+laZx2ZfK//fGKhEvxjNBxjJPzGthGe//EWHSQ0oA
+         Q81z6bQUACAPCBz5RazHnlpvICvr59jDKqmQbZ1RX8iUP9oRy64QzlzdjkIqwDxHosgQ
+         Zgng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+7yM+AHVg6/RWwPVXoUMFU+BAoYxNZ6FELdoFv8vPVY=;
-        b=necuMKq/+m5IWy3jSzlec9z9WBVXHCsnhzrZ+NHr2JBDwgERVhZ8Vo6egyLv06sd/g
-         kXC4EAG7+ceR556+tmvprx2sFErf73vDwbw06LnbUi/V9p+ifiEv+CMCsOvqoJy+Hhuj
-         wwk1TP6Ws5GsTZpHBtzbOpFzp99OmZOBNSDQWqzlsufKgKPOwx9VSiwbETpuo/FZU4cR
-         Y1jIuzY4Vd7HFOIXA8rS1upWLtLVnH6qqRHjbggdtNSZX0/gAZe4FhLnWEOlOqt0ag10
-         33EumjU7IddvNN8bdg/O9RE/Wpk+qYOqic+3eC9wajFnB9WkDv3gBNlpj6M0QKvrt85C
-         xQmg==
-X-Gm-Message-State: AOAM532Vbbk1VtITcKBTnIIus8cIW+4jIW3PQyzmLyh/0b4MKqIIBCrU
-        ioFelKqA1g4ielGOSP/ap9C1Kbok/spggFscm83M2g==
-X-Google-Smtp-Source: ABdhPJw/n7XwHkFkI9fOQmbZIV5nvoItVjlZ5jw4xeYJ3ZltRS5KLuUCkRrnZKnwCUWhrxfvAaiFxm6E/iWN3dKdn7k=
-X-Received: by 2002:a25:8411:: with SMTP id u17mr33162493ybk.376.1635350912546;
- Wed, 27 Oct 2021 09:08:32 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=uER/nNyzqjkZUffE1EOgclTHd/4X5D8gQ4iPUJk3S1c=;
+        b=nX+MsIzRqImarj2SsneWlNRckg9gNCyh+53jfTfq+gnNt2mNqULnDU4PEWYBifx2m+
+         O1gehDZVA80wW/2HzlpDXnDXaAbgeBj5hsIFA59USY7YiQKcXpgrurrpFODNrxOL0LXG
+         W9/MEf/irZSO3Y6VRlLkjkWFzGLyW0rk4bw6bzuSSS8g3dUdE9gVnLPKx0bsp7DOf44i
+         sDNkQFiohPeeh4TPB2dn8KFCzNdBH5zaHQpfAF1SbUKQLkid0JL/J5Yi5nXyC19kSDKf
+         dc7FMn4MMIG8UHcKE7x/D2hkOeJphC5a0u8kzxN2Zt6OBNFCanV/J5I0fHBlzGS9XJ5N
+         XL+g==
+X-Gm-Message-State: AOAM530tIgFzl9nCzIUZRde7CW0uLM72roqB27+rRqrVeraTcAcZwwvZ
+        gYSOSUzoNpLXcX1YktG+Fh1J7t+TYy19M31pKx1kAFZq/V0=
+X-Google-Smtp-Source: ABdhPJy7avNz37kjKvFCNYMd3Z0vuXPj41lIP9oXLnSPB9jPfC60oepcMec1+LDHIP/K+Q7WDxN8wrUbrNX1g7YkO1M=
+X-Received: by 2002:a05:6e02:1d8b:: with SMTP id h11mr14550029ila.274.1635350941877;
+ Wed, 27 Oct 2021 09:09:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 27 Oct 2021 09:08:21 -0700
-Message-ID: <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
+From:   Marshall Midden <marshallmidden@gmail.com>
+Date:   Wed, 27 Oct 2021 11:08:51 -0500
+Message-ID: <CAD2CkAWjS8=kKwEEN4cgVNjyFORUibzEiCUA-X+SMtbo0JoMmA@mail.gmail.com>
+Subject: v5.15-rc7 AMD no kernel dump, spews "scsi_dma_map failed: request for
+ 36 bytes!"
+To:     logang@deltatee.com, joro@8bytes.org, will@kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:38 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Fri, Oct 22, 2021 at 1:03 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
-> > > Race between process_mrelease and exit_mmap, where free_pgtables is
-> > > called while __oom_reap_task_mm is in progress, leads to kernel crash
-> > > during pte_offset_map_lock call. oom-reaper avoids this race by setting
-> > > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
-> > > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
-> > > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
-> > > fix this race, however that would be considered a hack. Fix this race
-> > > by elevating mm->mm_users and preventing exit_mmap from executing until
-> > > process_mrelease is finished. Patch slightly refactors the code to adapt
-> > > for a possible mmget_not_zero failure.
-> > > This fix has considerable negative impact on process_mrelease performance
-> > > and will likely need later optimization.
-> >
-> > I am not sure there is any promise that process_mrelease will run in
-> > parallel with the exiting process. In fact the primary purpose of this
-> > syscall is to provide a reliable way to oom kill from user space. If you
-> > want to optimize process exit resp. its exit_mmap part then you should
-> > be using other means. So I would be careful calling this a regression.
-> >
-> > I do agree that taking the reference count is the right approach here. I
-> > was wrong previously [1] when saying that pinning the mm struct is
-> > sufficient. I have completely forgot about the subtle sync in exit_mmap.
-> > One way we can approach that would be to take exclusive mmap_sem
-> > throughout the exit_mmap unconditionally.
->
-> I agree, that would probably be the cleanest way.
->
-> > There was a push back against
-> > that though so arguments would have to be re-evaluated.
->
-> I'll review that discussion to better understand the reasons for the
-> push back. Thanks for the link.
+v5.15-rc7 AMD no kernel dump, spews "scsi_dma_map failed: request for 36 bytes!"
 
-Adding Kirill and Andrea.
+With v5.15-rc (1 through 7), AMD processor kernel crash dumps do not occur,
+instead spews:
+        "scsci_dma_map failed: request for 36 bytes!"
+Works on Intel machines, and in v5.14.0 (and v5.14.14) - as well as previous
+kernels (down to v5.3.x.)
+git bisect torvalds repository shows: dabb16f67215918c48cf3ff1fc4bc36ca421da2b
+Reverse patch to tag v5.15-rc7 allows kernel crash dumps to occur/happen.
 
-I had some time to dig some more. The latency increase is definitely
-coming due to process_mrelease calling the last mmput and exit_aio is
-especially problematic. So, currently process_mrelease not only
-releases memory but does more, including waiting for io to finish.
+Extra details in github repository:
+    https://github.com/marshallmidden/m4.git
+    Directory AMD-cdrash-2021-10-27
+        Z.config.2021-10-27_10-27-15
+        Z.dabb16f67215918c48cf3ff1fc4bc36ca421da2b
+        Z.df-fstab
+        Z.dmesg.2021-10-27_10-26-34
+        Z.lspci-vmmD.2021-10-27_10-29-58
+        rpviewer(5).png
 
-Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
-to me the most semantically correct way forward and the pushback is on
-the basis of regressing performance of the exit path. I would like to
-measure that regression to confirm this. I don't have access to a big
-machine but will ask someone in another Google team to try the test
-Michal wrote here
-https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
-a server with and without a custom patch.
-If the regression is real, then I think we could keep the "if
-(unlikely(mm_is_oom_victim(mm)))" condition but wrap free_pgtables
-with conditional mmap_write_lock. To me this is cleaner because it
-clearly shows that we are trying to prevent free_pgtables from racing
-with any mm readers (current mmap_write_lock(); mmap_write_unlock()
-sequence needs a comment section to explain why this is needed). In
-that case I would need to reuse MMF_OOM_VICTIM in process_mrelease to
-avoid postponing the exit_mmap, like oom-reaper does. Maybe we could
-rename MMF_OOM_VICTIM / MMF_OOM_SKIP to something like MMF_RELEASING /
-MMF_RELEASED to make them more generic and allow their use outside of
-oom-killer? Again, this is a fallback plan in case unconditional
-mmap_write_lock indeed regresses the exit path.
-Any comments/suggestions?
+Reproduce via:
+    echo c > /proc/sysrq-trigger
 
+git bisect of linux from torvalds repository shows:
+    commit dabb16f67215918c48cf3ff1fc4bc36ca421da2b
+    Author: Logan Gunthorpe <logang@deltatee.com>
+    Date:   Thu Jul 29 14:15:22 2021 -0600
 
->
-> >
-> > [1] http://lkml.kernel.org/r/YQzZqFwDP7eUxwcn@dhcp22.suse.cz
-> >
-> > That being said
-> > Acked-by: Michal Hocko <mhocko@suse.com>
->
-> Thanks!
->
-> >
-> > Thanks!
-> >
-> > > Fixes: 884a7e5964e0 ("mm: introduce process_mrelease system call")
-> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > > ---
-> > >  mm/oom_kill.c | 23 ++++++++++++-----------
-> > >  1 file changed, 12 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> > > index 831340e7ad8b..989f35a2bbb1 100644
-> > > --- a/mm/oom_kill.c
-> > > +++ b/mm/oom_kill.c
-> > > @@ -1150,7 +1150,7 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> > >       struct task_struct *task;
-> > >       struct task_struct *p;
-> > >       unsigned int f_flags;
-> > > -     bool reap = true;
-> > > +     bool reap = false;
-> > >       struct pid *pid;
-> > >       long ret = 0;
-> > >
-> > > @@ -1177,15 +1177,15 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> > >               goto put_task;
-> > >       }
-> > >
-> > > -     mm = p->mm;
-> > > -     mmgrab(mm);
-> > > -
-> > > -     /* If the work has been done already, just exit with success */
-> > > -     if (test_bit(MMF_OOM_SKIP, &mm->flags))
-> > > -             reap = false;
-> > > -     else if (!task_will_free_mem(p)) {
-> > > -             reap = false;
-> > > -             ret = -EINVAL;
-> > > +     if (mmget_not_zero(p->mm)) {
-> > > +             mm = p->mm;
-> > > +             if (task_will_free_mem(p))
-> > > +                     reap = true;
-> > > +             else {
-> > > +                     /* Error only if the work has not been done already */
-> > > +                     if (!test_bit(MMF_OOM_SKIP, &mm->flags))
-> > > +                             ret = -EINVAL;
-> > > +             }
-> > >       }
-> > >       task_unlock(p);
-> > >
-> > > @@ -1201,7 +1201,8 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> > >       mmap_read_unlock(mm);
-> > >
-> > >  drop_mm:
-> > > -     mmdrop(mm);
-> > > +     if (mm)
-> > > +             mmput(mm);
-> > >  put_task:
-> > >       put_task_struct(task);
-> > >  put_pid:
-> > > --
-> > > 2.33.0.1079.g6e70778dc9-goog
-> >
-> > --
-> > Michal Hocko
-> > SUSE Labs
+    iommu/dma: return error code from iommu_dma_map_sg()
+
+    Return appropriate error codes EINVAL or ENOMEM from
+    iommup_dma_map_sg(). If lower level code returns ENOMEM, then we
+    return it, other errors are coalesced into EINVAL.
+
+    iommu_dma_map_sg_swiotlb() returns -EIO as its an unknown error
+    from a call that returns DMA_MAPPING_ERROR.
+
+    Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+    Cc: Joerg Roedel <joro@8bytes.org>
+    Cc: Will Deacon <will@kernel.org>
+    Signed-off-by: Christoph Hellwig <hch@lst.de>
+------------------------------------------------------------------------------
+[root@parsec torvalds-linux]# awk -f scripts/ver_linux
+    Linux parsec 5.15.0-rc4+ #22 SMP Tue Oct 26 18:50:50 CDT 2021
+x86_64 x86_64 x86_64 GNU/Linux
+
+    GNU C                       11.1.0
+    GNU Make                    3.82
+    Binutils                    2.36.1
+    Util-linux                  2.23.2
+    Mount                       2.23.2
+    Module-init-tools           20
+    E2fsprogs                   1.42.9
+    Xfsprogs                    4.5.0
+    Quota-tools                 4.01
+    Nfs-utils                   1.3.0
+    Bison                       3.0.4
+    Flex                        2.5.37
+    Linux C++ Library           6.0.19
+    Linux C Library             2.17
+    Dynamic linker (ldd)        2.17
+    Procps                      3.3.10
+    Net-tools                   2.10
+    Kbd                         1.15.5
+    Console-tools               1.15.5
+    Sh-utils                    8.22
+    Udev                        219
+    Modules Loaded              iscsi_target_mod qla2xxx
+target_core_file target_core_iblock target_core_mod target_core_pscsi
+tcm_fc tcm_loop tcm_qla2xxx
+
+[root@parsec torvalds-linux]# perl scripts/get_maintainer.pl -f
+drivers/iommu/dma-iommu.c
+    Joerg Roedel <joro@8bytes.org> (maintainer:IOMMU DRIVERS)
+    Will Deacon <will@kernel.org> (maintainer:IOMMU DRIVERS)
+    iommu@lists.linux-foundation.org (open list:IOMMU DRIVERS)
+    linux-kernel@vger.kernel.org (open list)
+------------------------------------------------------------------------------
+commit dabb16f67215918c48cf3ff1fc4bc36ca421da2b
+Author: Logan Gunthorpe <logang@deltatee.com>
+Date:   Thu Jul 29 14:15:22 2021 -0600
+
+    iommu/dma: return error code from iommu_dma_map_sg()
+
+    Return appropriate error codes EINVAL or ENOMEM from
+    iommup_dma_map_sg(). If lower level code returns ENOMEM, then we
+    return it, other errors are coalesced into EINVAL.
+
+    iommu_dma_map_sg_swiotlb() returns -EIO as its an unknown error
+    from a call that returns DMA_MAPPING_ERROR.
+
+    Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+    Cc: Joerg Roedel <joro@8bytes.org>
+    Cc: Will Deacon <will@kernel.org>
+    Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 98ba927..168434c 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -972,7 +972,7 @@ static int iommu_dma_map_sg_swiotlb(struct device
+*dev, struct scatterlist *sg,
+
+ out_unmap:
+        iommu_dma_unmap_sg_swiotlb(dev, sg, i, dir, attrs |
+DMA_ATTR_SKIP_CPU_SYNC);
+-       return 0;
++       return -EIO;
+ }
+
+ /*
+@@ -993,11 +993,13 @@ static int iommu_dma_map_sg(struct device *dev,
+struct scatterlist *sg,
+        dma_addr_t iova;
+        size_t iova_len = 0;
+        unsigned long mask = dma_get_seg_boundary(dev);
++       ssize_t ret;
+        int i;
+
+-       if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
+-           iommu_deferred_attach(dev, domain))
+-               return 0;
++       if (static_branch_unlikely(&iommu_deferred_attach_enabled)) {
++               ret = iommu_deferred_attach(dev, domain);
++               goto out;
++       }
+
+        if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+                iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
+@@ -1045,14 +1047,17 @@ static int iommu_dma_map_sg(struct device
+*dev, struct scatterlist *sg,
+        }
+
+        iova = iommu_dma_alloc_iova(domain, iova_len, dma_get_mask(dev), dev);
+-       if (!iova)
++       if (!iova) {
++               ret = -ENOMEM;
+                goto out_restore_sg;
++       }
+
+        /*
+         * We'll leave any physical concatenation to the IOMMU driver's
+         * implementation - it knows better than we do.
+         */
+-       if (iommu_map_sg_atomic(domain, iova, sg, nents, prot) < iova_len)
++       ret = iommu_map_sg_atomic(domain, iova, sg, nents, prot);
++       if (ret < iova_len)
+                goto out_free_iova;
+
+        return __finalise_sg(dev, sg, nents, iova);
+@@ -1061,7 +1066,10 @@ static int iommu_dma_map_sg(struct device *dev,
+struct scatterlist *sg,
+        iommu_dma_free_iova(cookie, iova, iova_len, NULL);
+ out_restore_sg:
+        __invalidate_sg(sg, nents);
+-       return 0;
++out:
++       if (ret != -ENOMEM)
++               return -EINVAL;
++       return ret;
+ }
+
+  static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
