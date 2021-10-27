@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297CF43D30E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF1A43D4D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244016AbhJ0UpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241017AbhJ0Uow (ORCPT
+        id S232208AbhJ0VYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:24:19 -0400
+Received: from unknown-3-146.windriver.com ([147.11.3.146]:10400 "EHLO
+        mail1.wrs.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241252AbhJ0VXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:44:52 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B941AC061570;
-        Wed, 27 Oct 2021 13:42:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hfgby4y8Fz4xbr;
-        Thu, 28 Oct 2021 07:42:22 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635367343;
-        bh=vmDS/GWkMu1yFl4fOJkChcYqAokt1FKesRPIJ1VXgqo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vI8Ef+XvokvfhFTALu/+MUI7HVGlw/Rwd68tNDj3rQ01LSnm10J9eiQ6v/ysQ4YEv
-         j6+W61wkNbcPbPvuB6iJmGKQXEWiwN+txzSyA+5OTRaN/63kyrerLoJSmeUfPuiKS6
-         hfn2DHKzPTA4YRMvuZJK9QpRdxsq+JkTKgQrLSFVEj81pVB/nSTZI23A3mIbLL/rjF
-         pnAtSRtee4MFTa2iKThLW7CY7tURB6T1SS/KCzZ5RWYB8OkAv0W88foRHMx38+8W7W
-         seclNP5Kl6maq3PmyVSMejBNNPrKeux0Jn0iwmllFySZ4DjPGq9PcTZSQupPJUf16k
-         dyMUhvUhABSaQ==
-Date:   Thu, 28 Oct 2021 07:42:20 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Jie Wang <wangjie125@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the net tree
-Message-ID: <20211028074220.7ac95b03@canb.auug.org.au>
+        Wed, 27 Oct 2021 17:23:03 -0400
+X-Greylist: delayed 2057 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Oct 2021 17:22:58 EDT
+Received: from mail.windriver.com (mail.wrs.com [147.11.1.11])
+        by mail1.wrs.com (8.15.2/8.15.2) with ESMTPS id 19RKhmKw001394
+        (version=TLSv1.1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Wed, 27 Oct 2021 13:43:54 -0700
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.corp.ad.wrs.com [147.11.82.252])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 19RKhUEV028289
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Oct 2021 13:43:36 -0700 (PDT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 27 Oct 2021 13:43:30 -0700
+Received: from yow-pgortmak-d1.wrs.com (128.224.56.57) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2242.12 via Frontend Transport; Wed, 27 Oct 2021 13:43:29 -0700
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        "Frederic Weisbecker" <frederic@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: [PATCH 0/2] bind rcu offload (nohz_full/isolation) into cpuset
+Date:   Wed, 27 Oct 2021 16:43:17 -0400
+Message-ID: <20211027204319.22697-1-paul.gortmaker@windriver.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nZM+.0Lr.zeWxp+ZNqq3=DZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nZM+.0Lr.zeWxp+ZNqq3=DZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+One of the earlier pre-mainline RCU nocb patchsets had a temporary sysfs
+knob in /sys/devices/system/cpu/cpu*/hotplug/nocb for testing[1].
 
-Hi all,
+That not-for-merge commit from Frederic said:
 
-In commit
+  This is only intended for those who want to test this patchset. The
+  real interfaces will be cpuset/isolation and rcutorture.
 
-  6754614a787c ("net: hns3: add more string spaces for dumping packets numb=
-er of queue info in debugfs")
+We've had rcutorture as the one and only mainline user of nocb toggle
+for a while now[2], and so I thought I'd take a crack at what Frederic
+had in mind for cpuset with some code vs. asking 100 random questions.
 
-Fixes tag
+Note that I intentionally didn't Cc any cgroup/cpuset people (yet),
+since at this point this is only my guess on what things were to look
+like based on a single sentence fragment.  So this is really early
+"Not-for-Merge", but truly just RFC -- to start a conversation.
 
-  Fixes: e44c495d95e ("net: hns3: refactor queue info of debugfs")
+It won't be really useful until we adjust tick/housekeeping in addition
+to nocb, but I think we can develop the interface in parallel to that?
+And maybe use this to expand testing at the same time if it is layered
+on top of those future work/patchsets?  I don't know...
 
-has these problem(s):
+We'll also have to look at corner cases - like whether we want to treat
+the root cpuset differently; whether we want to sync boot arg values
+with the cpuset's initial isol flag value, whether we un-isolate cores
+when an isolation cpuset is rmdir/removed, etc etc.
 
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
+But as a proof of concept, it "works" as can be seen in the 2nd commit.
 
---=20
-Cheers,
-Stephen Rothwell
+Paul.
+--
 
---Sig_/nZM+.0Lr.zeWxp+ZNqq3=DZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
 
------BEGIN PGP SIGNATURE-----
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git/commit/?h=rcu/nocb&id=6abe8408307e
+    part of https://lwn.net/Articles/820544/
+            https://lwn.net/Articles/832031/   <------ v2
+            https://lwn.net/Articles/835039/   <------ v3
+            https://lwn.net/Articles/837128/   <------ v4
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF5uawACgkQAVBC80lX
-0GzLPggAoI5ERsPjk++Pv4yVIY1E/jflslz+1s2UCqPWopyxPMf30VYm+0RyjQ9S
-0hGVWo9DXYNVQH0RQXtcVm5Ldiu1fMTk6KSyI18GAFgcw6Wr+ho4H0m4eSETlzrJ
-L1zrWCczw0cpeKYyfTUFNY0uzGG6rceDLqdBYt+wxMu8+cpIFZcuYJIYYGMyaLe5
-bbX1V0o37tQajk7gqID5SF4NL6/OIRSGOR5ClgUB8fH5cLla1BeOY+zGGubL+5mu
-3qDDkp5idLkQvVAx5CDFhjzgXQ7+YPLoNzoapEN+9hfdYDxSR85xXGvuYMd1G5rb
-quGCPc/J+67Te0MaQ+URcjME95LMEQ==
-=xOe7
------END PGP SIGNATURE-----
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d97b078182406
 
---Sig_/nZM+.0Lr.zeWxp+ZNqq3=DZ--
+
+Paul Gortmaker (2):
+  sched: isolation: cpu isolation handles for cpuset
+  cpuset: add binding to CPU isolation
+
+ include/linux/sched/isolation.h |  4 ++++
+ kernel/cgroup/cpuset.c          | 42 +++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/isolation.c        | 22 +++++++++++++++++++++
+ 3 files changed, 68 insertions(+)
+
+-- 
+2.15.0
+
