@@ -2,189 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FCD43BF4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0666043BF4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237837AbhJ0CLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:11:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46219 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237733AbhJ0CLi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:11:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635300553;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qcm5Q4Ovs8CHRPn2mWRVm4wu22bHWN0cLhSQGwpxEDE=;
-        b=UIDPLLwqa4jPs+GctzvRwZrO2OsHeFgrIYKF9kPG93P+3tbvvc9BR4VDn4/63OBrNP0azt
-        +uG/lvTkkMnoyhTTQoOIxq6bgdHe6V13rrBi1uVE+Ai2TjthFmQfydqEVJXeWJQgJt6alf
-        e7aTbZcBDIowJNQtGgsFO0C0Nh2LGQI=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-UVMeNFSvNtyJBDAviMG1Vg-1; Tue, 26 Oct 2021 22:09:12 -0400
-X-MC-Unique: UVMeNFSvNtyJBDAviMG1Vg-1
-Received: by mail-pf1-f197.google.com with SMTP id w13-20020a62dd0d000000b0047bce3ae63bso735046pff.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:09:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qcm5Q4Ovs8CHRPn2mWRVm4wu22bHWN0cLhSQGwpxEDE=;
-        b=7Eqx/5uf25uDqIO4Fave4qrNKXYtriMIDHA001AaLBHUiHH0fkFp8jxL4pR62px56U
-         /4YMZ+JyCK7P5Izj0u5mgACSW8dZV2TVIeOUuKsepVXww/fmWZXlQhlRNHXzeP9nRvde
-         WW2UczsAvStar/Ec7p+xRVpZOxP/1Wlj6EmgKGWt9q9PKuQkpwPQPNC59cKvuo137usF
-         iRa/MEe6+fUO1RXC8etXONCXHBz3lkhOdMylFmb8aG1iZ6BBWvqLX7ph/rGzXPOAmIbm
-         anG4N7DnioUwURWeI/q6Rqna/GaufGGVWO+nbxTSlYbmr5EvT+BzwrRC/F2p3Y6XkuRF
-         sRhQ==
-X-Gm-Message-State: AOAM533cl/WomNY19xMzs5NQVq3hPBB3K8roBs6shg4zIwfJJq0JOFvN
-        ECljw+7R8jyuGvhrdEAamQudSB3xoYU9r222B6gv/XUY2AYSxIyFT08A+hOcHnDFwuAKcnZ4+wb
-        EtPSSkmJTavWPS9HdhTo0sbI4
-X-Received: by 2002:a05:6a00:23d5:b0:47c:236d:65b4 with SMTP id g21-20020a056a0023d500b0047c236d65b4mr2581991pfc.52.1635300550859;
-        Tue, 26 Oct 2021 19:09:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOhUbOwgnNQ/gXrlZ5/SKrkDBkzTfSumNM5GaK2aTsmco/xZazNKgSrwS9NnkH+OZ6m7FM6w==
-X-Received: by 2002:a05:6a00:23d5:b0:47c:236d:65b4 with SMTP id g21-20020a056a0023d500b0047c236d65b4mr2581919pfc.52.1635300549857;
-        Tue, 26 Oct 2021 19:09:09 -0700 (PDT)
-Received: from xz-m1.local ([191.101.132.60])
-        by smtp.gmail.com with ESMTPSA id z8sm20508403pgc.53.2021.10.26.19.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 19:09:08 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 10:09:03 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Matt Mackall <mpm@selenic.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Bin Wang <wangbin224@huawei.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
-Message-ID: <YXi0v9DHCl+aiogP@xz-m1.local>
-References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
- <258d0ddb-6c82-0c95-a15e-b085b59d2142@redhat.com>
- <20211004143228.GA1545442@u2004>
- <20211026232736.GA2704541@u2004>
+        id S237905AbhJ0CMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:12:13 -0400
+Received: from mout.gmx.net ([212.227.15.15]:48663 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237733AbhJ0CMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 22:12:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635300556;
+        bh=t3N4s8BqgINsIMwqgt6Xj6XVcIuAbT8uwVkTjCl+hiI=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=LRQ7Rr+oJ1fdSA0WMx6FVR/x1T/qsxTsRdfY2GhMxVNg1VoCZhFXb1YZaMWCoh6Y5
+         1sHjkfBO4063nBW01XezttC2NKxcHfI7832E0dkQplLFpreymkE7XaJe7dRNqZHykF
+         h+/VkrBW+3CTwgc85PPnwwjeiy9HPFBPxTZKP7P4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.126]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6KYl-1mhuuz2cUj-016dGt; Wed, 27
+ Oct 2021 04:09:16 +0200
+Message-ID: <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 27 Oct 2021 04:09:12 +0200
+In-Reply-To: <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
+References: <20211021145603.5313-1-mgorman@techsingularity.net>
+         <20211021145603.5313-2-mgorman@techsingularity.net>
+         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
+         <20211022110534.GJ3959@techsingularity.net>
+         <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
+         <20211026081817.GM3959@techsingularity.net>
+         <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
+         <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
+         <20211026115707.GN3959@techsingularity.net>
+         <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211026232736.GA2704541@u2004>
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:+yH4pzpBzwaAXIay7LACX+uySQ3d8a81Ieqz1254ArHR7ZTntmW
+ TXxVqvBTQjQadMR5R9wpjFI/3YTCbXutGMyQYX9kIQ0xUZ7v7YJjmzKlPQ3coh69SbH9atC
+ C45mInLyjP3F8cYy4Ped8svCWHjVCfzUG8ZLqX5uM+W6CF8XiImB4qRsHeDYwVMKFMCYTSX
+ AKBZTu0Lm6/gMTyaLvxqA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7LKFkNonaEw=:ltz2/iimljT+l9a9fHdVkZ
+ 1sWYIkha7UCt6E+TptXhzxuSh8ZjBQLvExmevKM3W3s0GJjT/Ks+Ep+sgTz7F+XR9TRSMnRX4
+ n0S8llpfjyzTcPafSIbB4mTJJ/x4rGEQm7WcQMFM2LJOoKSdyBL1jZQCq1Z0MKDkTAj8kz+Pp
+ 9FEHDWXNdAtj3Z2qnZF1ur3jWjAI/VPah7DBKsSCLA4Mj213O4f+WihXOjm3vAFFn77IIs0WJ
+ cMpz+3U0bIxoA6QPER2O+N77Jsyq+v6w/aaZ0oYbMllcC01NP9aeNmE0i2X5syqx5XpsU14aV
+ D/wLHliT96ihqnMVtfR3snhgmkrJwfo6m7yiM1fEVTx3n7ovB2GWGaEjni20apTZm/ehF91gy
+ d4fY/ngceSRHFYvKu5AbO4F/tfO9lTpmP7SXfi6rbbS2uLOAASvPcuuuWG4HGrpjspiP100xR
+ uFHd7CbD+d6CFUuGS0SmZtUjtjimTATGAnbXVcCHMc1/lj/n9Z0XDPdv9I/Z4U2qC09qbne9C
+ eKBZLNPaM1I8ef8d1WexTUEubAFMs94KCWEXpyF5tUkHmidz0MdunK+BZDkrWKZfUN5kPwuJe
+ focWVZ94Vm/Qy5SJG2ZuT8IoJHudGiJnT07oB3MEC5ds33MLjyRVIVMRjHE4xLL1Mjgcur6ba
+ jm8/eQhQUDvdRioEu/5YcKHLgPiZS7Ytchu74Mnif6LtEXpb+rJAJAaDn7rg8kF89OdUPihiM
+ eLAO8+7NF5TI4w4PDEPHYiuopYKYz465Ye7mJZIE4Imo/NUs6g7xMuXi1MH0lf8wfrXm/eK+L
+ zF9GLbeNRrhQ3KGtU+FHWetDRFT15Fl1rI3D97Wm0c2eVrn1ktPlw5PoZMj2rJHpLppukKL32
+ eHEM7Od0hpAOKjIPs4LPHCicbla1VTrR6nZMvrew5I3w4ZO1yBLWQwCj73NJe1RAjgXyCnJjL
+ y/1NBjNL1WmDLrwxdVmtHpLlSrKPvg8XP2MJ6SPvecLmtD+QHOxEE3QQS7oiyndtGY6GHwWO7
+ 6KJ4C9AbEYNvgzcQEDxDD7DMXq/P8bVeZdY/SyhMbsbihJQ4Zgr2vgO7maAvsBHv7n+XMArBR
+ mHVcQcrRD+0uP4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 08:27:36AM +0900, Naoya Horiguchi wrote:
-> On Mon, Oct 04, 2021 at 11:32:28PM +0900, Naoya Horiguchi wrote:
-> > On Mon, Oct 04, 2021 at 01:55:30PM +0200, David Hildenbrand wrote:
-> > > On 04.10.21 13:50, Naoya Horiguchi wrote:
-> ...
-> > > >
-> > > > Hwpoison entry for hugepage is also exposed by this patch. The below
-> > > > example shows how pagemap is visible in the case where a memory error
-> > > > hit a hugepage mapped to a process.
-> > > >
-> > > >      $ ./page-types --no-summary --pid $PID --raw --list --addr 0x700000000+0x400
-> > > >      voffset offset  len     flags
-> > > >      700000000       12fa00  1       ___U_______Ma__H_G_________________f_______1
-> > > >      700000001       12fa01  1ff     ___________Ma___TG_________________f_______1
-> > > >      700000200       12f800  1       __________B________X_______________f______w_
-> > > >      700000201       12f801  1       ___________________X_______________f______w_   // memory failure hit this page
-> > > >      700000202       12f802  1fe     __________B________X_______________f______w_
-> > > >
-> > > > The entries with both of "X" flag (hwpoison flag) and "w" flag (swap
-> > > > flag) are considered as hwpoison entries.  So all pages in 2MB range
-> > > > are inaccessible from the process.  We can get actual error location
-> > > > by page-types in physical address mode.
-> > > >
-> > > >      $ ./page-types --no-summary --addr 0x12f800+0x200 --raw --list
-> > > >      offset  len     flags
-> > > >      12f800  1       __________B_________________________________
-> > > >      12f801  1       ___________________X________________________
-> > > >      12f802  1fe     __________B_________________________________
-> > > >
-> > > > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > > ---
-> > > >   fs/proc/task_mmu.c      | 41 ++++++++++++++++++++++++++++++++---------
-> > > >   include/linux/swapops.h | 13 +++++++++++++
-> > > >   tools/vm/page-types.c   |  7 ++++++-
-> > > >   3 files changed, 51 insertions(+), 10 deletions(-)
-> > >
-> > >
-> > > Please also update the documentation located at
-> > >
-> > > Documentation/admin-guide/mm/pagemap.rst
-> >
-> > I will do this in the next post.
-> 
-> Reading the document, I found that swap type is already exported so we
-> could identify hwpoison entry with it (without new PM_HWPOISON bit).
-> One problem is that the format of swap types (like SWP_HWPOISON) depends
-> on a few config macros like CONFIG_DEVICE_PRIVATE and CONFIG_MIGRATION,
-> so we also need to export how the swap type field is interpreted.
-
-I had similar question before.. though it was more on the generic swap entries
-not the special ones yet.
-
-The thing is I don't know how the userspace could interpret normal swap device
-indexes out of reading pagemap, say if we have two swap devices with "swapon
--s" then I've no idea how do we know which device has which swap type index
-allocated.  That seems to be a similar question asked above on special swap
-types - the interface seems to be incomplete, if not unused at all.
-
-AFAIU the information on "this page is swapped out to device X on offset Y" is
-not reliable too, because the pagein/pageout from kernel is transparent to the
-userspace and not under control of userspace at all.  IOW, if the user reads
-that swap entry, then reads data upon the disk of that offset out and put it
-somewhere else, then it means the data read could already be old if kernel
-paged in the page after userspace reading the pagemap but before it reading the
-disk, and I don't see any way to make it right unless the userspace could stop
-the kernel from page-in a swap entry.  That's why I really wonder whether we
-should expose normal swap entry at all, as I don't know how it could be helpful
-and used in the 100% right way.
-
-Special swap entries seem a bit different - at least for is_pfn_swap_entry()
-typed swap entries we can still expose the PFN which might be helpful, which I
-can't tell.
-
-I used to send an email to Matt Mackall <mpm@selenic.com> and Dave Hansen
-<dave.hansen@linux.intel.com> asking about above but didn't get a reply. Ccing
-again this time with the list copied.
-
-> 
-> I thought of adding new interfaces for example under /sys/kernel/mm/swap/type_format/,
-> which shows info like below (assuming that all CONFIG_{DEVICE_PRIVATE,MIGRATION,MEMORY_FAILURE}
-> is enabled):
-> 
->   $ ls /sys/kernel/mm/swap/type_format/
->   hwpoison
->   migration_read
->   migration_write
->   device_write
->   device_read
->   device_exclusive_write
->   device_exclusive_read
->   
->   $ cat /sys/kernel/mm/swap/type_format/hwpoison
->   25
->   
->   $ cat /sys/kernel/mm/swap/type_format/device_write
->   28
-> 
-> Does it make sense or any better approach?
-
-Then I'm wondering whether we care about the rest of the normal swap devices
-too with pagemap so do we need to expose some information there too (only if
-there's a real use case, though..)?  Or... should we just don't expose swap
-entries at all, at least generic swap entries?  We can still expose things like
-hwpoison via PM_* bits well defined in that case.
-
-Thanks,
-
--- 
-Peter Xu
-
+T24gVHVlLCAyMDIxLTEwLTI2IGF0IDE0OjEzICswMjAwLCBNaWtlIEdhbGJyYWl0aCB3cm90ZToN
+Cj4gT24gVHVlLCAyMDIxLTEwLTI2IGF0IDEyOjU3ICswMTAwLCBNZWwgR29ybWFuIHdyb3RlOg0K
+PiA+IA0KPiA+IFRoZSBwYXRjaCBpbiBxdWVzdGlvbiB3YXMgYWxzbyB0ZXN0ZWQgb24gb3RoZXIg
+d29ya2xvYWRzIG9uIE5VTUENCj4gPiBtYWNoaW5lcy4gRm9yIGEgMi1zb2NrZXQgbWFjaGluZSAo
+MjAgY29yZXMsIEhUIGVuYWJsZWQgc28gNDAgQ1BVcykNCj4gPiBydW5uaW5nIHNwZWNqYmIgMjAw
+NSB3aXRoIG9uZSBKVk0gcGVyIE5VTUEgbm9kZSwgdGhlIHBhdGNoIGFsc28NCj4gPiBzY2FsZWQN
+Cj4gPiByZWFzb25hYmx5IHdlbGwNCj4gDQo+IFRoYXQncyB3YXkgbW9yZSBtb3JlIGludGVyZXN0
+aW5nLsKgIE5vIGlkZWEgd2hhdCB0aGlzIHRoaW5nIGRvZXMgdW5kZXINCj4gdGhlIGhvb2QgdGh1
+cyB3aGV0aGVyIGl0IHNob3VsZCBiZSBoZWxwZWQgb3Igbm90LCBidXQgYXQgbGVhc3QgaXQncyBh
+DQo+IHJlYWwgZGVhbCBiZW5jaG1hcmsgdnMgYSBrZXJuZWwgaGFja2VyIHRvb2wuDQoNCi4uLg0K
+SW5zdGFsbGluZyB0ZXN0IHNwZWNqYmINCnNwZWNqdm0taW5zdGFsbDogRmV0Y2hpbmcgZnJvbSBt
+aXJyb3INCmh0dHA6Ly9tY3AvbW10ZXN0cy1taXJyb3Ivc3BlYy9TUEVDamJiMjAwNV9raXR2MS4w
+Ny50YXIuZ3oNCnNwZWNqdm0taW5zdGFsbDogRmV0Y2hpbmcgZnJvbSBpbnRlcm5ldA0KTk9UX0FW
+QUlMQUJMRS9TUEVDamJiMjAwNV9raXR2MS4wNy50YXIuZ3oNCnNwZWNqdm0taW5zdGFsbDogRmV0
+Y2hpbmcgZnJvbSBhbHQgaW50ZXJuZXQNCi9TUEVDamJiMjAwNV9raXR2MS4wNy50YXIuZ3oNCkZB
+VEFMIHNwZWNqdm0taW5zdGFsbDogc3BlY2p2bS1pbnN0YWxsOiBDb3VsZCBub3QgZG93bmxvYWQN
+Ci9TUEVDamJiMjAwNV9raXR2MS4wNy50YXIuZ3oNCkZBVEFMIHNwZWNqYmItYmVuY2g6IHNwZWNq
+YmIgaW5zdGFsbCBzY3JpcHQgcmV0dXJuZWQgZXJyb3INCkZBVEFMOiBzcGVjamJiIHJldHVybmVk
+IGZhaWx1cmUsIHVuYWJsZSB0byBjb250aW51ZQ0KRkFUQUw6IEluc3RhbGxhdGlvbiBzdGVwIGZh
+aWxlZCBmb3Igc3BlY2piYg0KDQpIb2h1bSwgc28gbXVjaCBmb3IgdHJ5aW5nIHRvIHRha2UgYSBw
+ZWVrLg0KDQpBdCBhbnkgcmF0ZSwgdW5saWtlIHRoZSB0YmVuY2ggbnVtYmVycywgdGhlc2UgaGF2
+ZSB0aGUgbG9vayBvZiBzaWduYWwNCnJhdGhlciB0aGFuIHRlc3QgamlnIG5vaXNlLCBhbmQgcHJl
+dHR5IHN0cm9uZyBzaWduYWwgYXQgdGhhdCwgc28gbWF5YmUNCnBhdGNobGV0IHNob3VsZCBmbHku
+IEF0IHRoZSB2ZXJ5IGxlYXN0LCBpdCBhcHBlYXJzIHRvIGJlIHNheWluZyB0aGF0DQp0aGVyZSBp
+cyBzaWduaWZpY2FudCBwZXJmb3JtYW5jZSB0byBiZSBoYWQgYnkgc29tZSBtZWFucy4NCg0KQmFo
+LCBmbHkgb3IgZGllIGxpdHRsZSBwYXRjaGxldC4gIEVpdGhlciB3YXkgdGhlcmUgd2lsbCBiZSB3
+aW5uZXJzIGFuZA0KbG9zZXJzLCB0aGF0J3MganVzdCB0aGUgd2F5IGl0IHdvcmtzIGlmIHlvdSdy
+ZSBub3Qgc2hhdmluZyBjeWNsZXMuDQoNCj4gPiBzcGVjamJiDQo+ID4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA1LjE1LjAtcmMzwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIDUuMTUuMC1yYzMNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHZhbmlsbGHCoCBz
+Y2hlZC13YWtlZWZsaXBzLXYxcjENCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMcKgwqDCoMKgIDUw
+MDQ0LjQ4ICjCoMKgIDAuMDAlKcKgwqDCoCA1Mzk2OS4wMCAqwqDCoCA3Ljg0JSoNCj4gPiBIbWVh
+bsKgwqDCoMKgIHRwdXQtMsKgwqDCoCAxMDYwNTAuMzEgKMKgwqAgMC4wMCUpwqDCoCAxMTM1ODAu
+NzggKsKgwqAgNy4xMCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTPCoMKgwqAgMTU2NzAxLjQ0
+ICjCoMKgIDAuMDAlKcKgwqAgMTY0ODU3LjAwICrCoMKgIDUuMjAlKg0KPiA+IEhtZWFuwqDCoMKg
+wqAgdHB1dC00wqDCoMKgIDE5NjUzOC43NSAowqDCoCAwLjAwJSnCoMKgIDIxODM3My40MiAqwqAg
+MTEuMTElKg0KPiA+IEhtZWFuwqDCoMKgwqAgdHB1dC01wqDCoMKgIDI0NzU2Ni4xNiAowqDCoCAw
+LjAwJSnCoMKgIDI2NzE3My4wOSAqwqDCoCA3LjkyJSoNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQt
+NsKgwqDCoCAyODQ5ODEuNDYgKMKgwqAgMC4wMCUpwqDCoCAzMTEwMDcuMTQgKsKgwqAgOS4xMyUq
+DQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTfCoMKgwqAgMzI4ODgyLjQ4ICjCoMKgIDAuMDAlKcKg
+wqAgMzU5MzczLjg5ICrCoMKgIDkuMjclKg0KPiA+IEhtZWFuwqDCoMKgwqAgdHB1dC04wqDCoMKg
+IDM2Njk0MS4yNCAowqDCoCAwLjAwJSnCoMKgIDM5MzI0NC4zNyAqwqDCoCA3LjE3JSoNCj4gPiBI
+bWVhbsKgwqDCoMKgIHRwdXQtOcKgwqDCoCA0MDIzODYuNzQgKMKgwqAgMC4wMCUpwqDCoCA0MzMw
+MTAuNDMgKsKgwqAgNy42MSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTEwwqDCoCA0Mzc1NTEu
+MDUgKMKgwqAgMC4wMCUpwqDCoCA0NzU3NTYuMDggKsKgwqAgOC43MyUqDQo+ID4gSG1lYW7CoMKg
+wqDCoCB0cHV0LTExwqDCoCA0ODEzNDkuNDEgKMKgwqAgMC4wMCUpwqDCoCA1MTk4MjQuNTQgKsKg
+wqAgNy45OSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTEywqDCoCA1MzMxNDguNDUgKMKgwqAg
+MC4wMCUpwqDCoCA1NjUwNzAuMjEgKsKgwqAgNS45OSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0
+LTEzwqDCoCA1NzA1NjMuOTcgKMKgwqAgMC4wMCUpwqDCoCA2MDk0OTkuMDYgKsKgwqAgNi44MiUq
+DQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE0wqDCoCA2MDExMTcuOTcgKMKgwqAgMC4wMCUpwqDC
+oCA2NDc4NzYuMDUgKsKgwqAgNy43OCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE1wqDCoCA2
+MzkwOTYuMzggKMKgwqAgMC4wMCUpwqDCoCA2OTA4NTQuNDYgKsKgwqAgOC4xMCUqDQo+ID4gSG1l
+YW7CoMKgwqDCoCB0cHV0LTE2wqDCoCA2ODI2NDQuOTEgKMKgwqAgMC4wMCUpwqDCoCA3MjI4MjYu
+MDYgKsKgwqAgNS44OSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE3wqDCoCA3MzIyNDguOTYg
+KMKgwqAgMC4wMCUpwqDCoCA3NTg4MDUuMTcgKsKgwqAgMy42MyUqDQo+ID4gSG1lYW7CoMKgwqDC
+oCB0cHV0LTE4wqDCoCA3NjI3NzEuMzMgKMKgwqAgMC4wMCUpwqDCoCA3OTEyMTEuNjYgKsKgwqAg
+My43MyUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE5wqDCoCA3ODA1ODIuOTIgKMKgwqAgMC4w
+MCUpwqDCoCA4MTkwNjQuMTkgKsKgwqAgNC45MyUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTIw
+wqDCoCA4MTIxODMuOTUgKMKgwqAgMC4wMCUpwqDCoCA4MzY2NjQuODcgKsKgwqAgMy4wMSUqDQo+
+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTIxwqDCoCA4MjE0MTUuNDggKMKgwqAgMC4wMCUpwqDCoCA4
+MzM3MzQuMjMgKMKgwqAgMS41MCUpDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTIywqDCoCA4MTU0
+NTcuNjUgKMKgwqAgMC4wMCUpwqDCoCA4NDQzOTMuOTggKsKgwqAgMy41NSUqDQo+ID4gSG1lYW7C
+oMKgwqDCoCB0cHV0LTIzwqDCoCA4MTkyNjMuNjMgKMKgwqAgMC4wMCUpwqDCoCA4NDYxMDkuMDcg
+KsKgwqAgMy4yOCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI0wqDCoCA4MTc5NjIuOTUgKMKg
+wqAgMC4wMCUpwqDCoCA4Mzk2ODIuOTIgKsKgwqAgMi42NiUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0
+cHV0LTI1wqDCoCA4MDc4MTQuNjQgKMKgwqAgMC4wMCUpwqDCoCA4NDE4MjYuNTIgKsKgwqAgNC4y
+MSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI2wqDCoCA4MTE3NTUuODkgKMKgwqAgMC4wMCUp
+wqDCoCA4Mzg1NDMuMDggKsKgwqAgMy4zMCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI3wqDC
+oCA3OTkzNDEuNzUgKMKgwqAgMC4wMCUpwqDCoCA4MzM0ODcuMjYgKsKgwqAgNC4yNyUqDQo+ID4g
+SG1lYW7CoMKgwqDCoCB0cHV0LTI4wqDCoCA4MDM0MzQuODkgKMKgwqAgMC4wMCUpwqDCoCA4Mjkw
+MjIuNTAgKsKgwqAgMy4xOCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI5wqDCoCA4MDMyMzMu
+MjUgKMKgwqAgMC4wMCUpwqDCoCA4MjY2MjIuMzcgKsKgwqAgMi45MSUqDQo+ID4gSG1lYW7CoMKg
+wqDCoCB0cHV0LTMwwqDCoCA4MDA0NjUuMTIgKMKgwqAgMC4wMCUpwqDCoCA4MjQzNDcuNDIgKsKg
+wqAgMi45OCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTMxwqDCoCA3OTEyODQuMzkgKMKgwqAg
+MC4wMCUpwqDCoCA3OTE1NzUuNjcgKMKgwqAgMC4wNCUpDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0
+LTMywqDCoCA3ODE5MzAuMDcgKMKgwqAgMC4wMCUpwqDCoCA4MDU3MjUuODAgKMKgwqAgMy4wNCUp
+DQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTMzwqDCoCA3ODUxOTQuMzEgKMKgwqAgMC4wMCUpwqDC
+oCA4MDQ3OTUuNDQgKMKgwqAgMi41MCUpDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTM0wqDCoCA3
+ODEzMjUuNjcgKMKgwqAgMC4wMCUpwqDCoCA4MDAwNjcuNTMgKMKgwqAgMi40MCUpDQo+ID4gSG1l
+YW7CoMKgwqDCoCB0cHV0LTM1wqDCoCA3Nzc3MTUuOTIgKMKgwqAgMC4wMCUpwqDCoCA3NTM5MjYu
+MzIgKMKgIC0zLjA2JSkNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMzbCoMKgIDc3MDUxNi44NSAo
+wqDCoCAwLjAwJSnCoMKgIDc4MzMyOC4zMiAowqDCoCAxLjY2JSkNCj4gPiBIbWVhbsKgwqDCoMKg
+IHRwdXQtMzfCoMKgIDc1ODA2Ny4yNiAowqDCoCAwLjAwJSnCoMKgIDc3MjI0My4xOCAqwqDCoCAx
+Ljg3JSoNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMzjCoMKgIDc2NDgxNS40NSAowqDCoCAwLjAw
+JSnCoMKgIDc2OTE1Ni4zMiAowqDCoCAwLjU3JSkNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMznC
+oMKgIDc1Nzg4NS40MSAowqDCoCAwLjAwJSnCoMKgIDc1NzY3MC41OSAowqAgLTAuMDMlKQ0KPiA+
+IEhtZWFuwqDCoMKgwqAgdHB1dC00MMKgwqAgNzUwMTQwLjE1ICjCoMKgIDAuMDAlKcKgwqAgNzYw
+NzM5LjEzICjCoMKgIDEuNDElKQ0KPiA+IA0KPiA+IFRoZSBsYXJnZXN0IHJlZ3Jlc3Npb24gd2Fz
+IHdpdGhpbiBub2lzZS4gTW9zdCByZXN1bHRzIHdlcmUgb3V0c2lkZSB0aGUNCj4gPiBub2lzZS4N
+Cj4gPiANCj4gPiBTb21lIEhQQyB3b3JrbG9hZHMgc2hvd2VkIGxpdHRsZSBkaWZmZXJlbmNlIGJ1
+dCB0aGV5IGRvIG5vdCBjb21tdW5pY2F0ZQ0KPiA+IHRoYXQgaGVhdmlseS4gcmVkaXMgbWljcm9i
+ZW5jaG1hcmsgc2hvd2VkIG1vc3RseSBuZXV0cmFsIHJlc3VsdHMuDQo+ID4gc2NoYmVuY2ggKGZh
+Y2Vib29rIHNpbXVsYXRvciB3b3JrbG9hZCB0aGF0IGlzIGxhdGVuY3kgc2Vuc2l0aXZlKSBzaG93
+ZWQgYQ0KPiA+IG1peCBvZiByZXN1bHRzLCBidXQgaGVscGVkIG1vcmUgdGhhbiBpdCBodXJ0LiBF
+dmVuIHRoZSBtYWNoaW5lIHdpdGggdGhlDQo+ID4gd29yc3QgcmVzdWx0cyBmb3Igc2NoYmVuY2gg
+c2hvd2VkIGltcHJvdmVkIHdha2V1cCBsYXRlbmNpZXMgYXQgdGhlIDk5dGgNCj4gPiBwZXJjZW50
+aWxlLiBUaGVzZSB3ZXJlIGFsbCBvbiBOVU1BIG1hY2hpbmVzLg0KPiA+IA0KPiANCg0K
