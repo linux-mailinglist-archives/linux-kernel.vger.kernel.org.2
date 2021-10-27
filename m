@@ -2,150 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E7643C39F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B736C43C3A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240377AbhJ0HSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhJ0HR4 (ORCPT
+        id S240384AbhJ0HSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:18:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43773 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231203AbhJ0HSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:17:56 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5B8C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:15:31 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id n11so1370431plf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=BrgA9c28QOGeeuFZcFiP9JX0d9wvOLCyQTdMEuVMSaY=;
-        b=TNyowIxNgDg6fWKBNMxfF8yLZ5/E1Rwok12Gbm5pwvP/T5/iGvCAKcpzDivygE7dDx
-         XNZpARfzrMjm4+57wTXA5+ph76n/YCU127thh7QcxIQ+AZYX5EptekgSqLXucaUgybd/
-         ixca0yPQVbJn3E04wxhjfPHzct6xgKHgQb5P3JfeRxZ07cRX/gvf6H6/1sn3mzIHlOlg
-         +R57ZqnN5MAMkFHB+jIkS2LE0rEn0DE6LP13xbUH0NpHGffbclc0WKG+Uj6G0FjqrV0E
-         49jWSm5PXYXMJKlcww9vIf6W20tzbSGLLXMwW5pUfSxcWFje33x4LmmKKpQbUGZQ3xV5
-         POqA==
+        Wed, 27 Oct 2021 03:18:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635318940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vh20uhPE29DGhh1j6gWUyV6ou+awoh0PfjpAQqQ+7uY=;
+        b=W2c17gvOTz2VrBAx1LY7sKa9Fr+YNl/tS7jU+aXXWYStXT85Fw/2NWqjJUy64XqpsI5ZvG
+        bFaeA7gQoa3rn2csUAR8x033h6HWVRXuO2ttRGSv5aEXcsTT/WxHnAEoULViUY1gOaK14l
+        g7JSh6K++82NhQKgX8X84q11wmvX8k8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-256-msJfAkhOMP-V0WNfsRBIaQ-1; Wed, 27 Oct 2021 03:15:38 -0400
+X-MC-Unique: msJfAkhOMP-V0WNfsRBIaQ-1
+Received: by mail-wm1-f72.google.com with SMTP id o22-20020a1c7516000000b0030d6f9c7f5fso866050wmc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:15:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=BrgA9c28QOGeeuFZcFiP9JX0d9wvOLCyQTdMEuVMSaY=;
-        b=S+DCgfr7ehbZiRLVqV8sWkUKkLHM4dPC0mZP0dy4y9ITStziKWkrvyXVoru1yy82n9
-         vFVdMx784mlo+J21WQSQ/MEbk3WehOth2gFUEal1mywIDEcMK2qAiPZ8oVkRKL8iAicz
-         gPzeAO6PKT1UEQeX07RGCsHN9V6QSlvrM5+MPhW6sT+Y+XPsnFaCzVY/msEVuYYutZaM
-         YNZ77rAUKv7xXcP4kJooOKYLVDwmR1CBsdwN5btlcCGJgAnnps78y1B994V4+zPiyIKC
-         8SqvW94PbYf+WAvQLbRMrWkAD+OKc1z6v60MRTw/SAJtnrcLLjdJP8knN2fDnC+4veqd
-         IQ/g==
-X-Gm-Message-State: AOAM533On4B2xNkJCOY99/BVddFWvDTp619SJfIHDvKRuYIyhocvuRMZ
-        HxTTIfds0tZhB9uHtMagEv4=
-X-Google-Smtp-Source: ABdhPJyODz3k88mGyXbKIDNO/njOaRcuRJguMccK5DezoXhS77F3xZrjNmMb2a5MdygFC4FEdOUz+A==
-X-Received: by 2002:a17:902:b193:b029:11a:a179:453a with SMTP id s19-20020a170902b193b029011aa179453amr26389558plr.69.1635318931276;
-        Wed, 27 Oct 2021 00:15:31 -0700 (PDT)
-Received: from localhost ([118.208.159.180])
-        by smtp.gmail.com with ESMTPSA id f21sm27424616pfc.203.2021.10.27.00.15.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 00:15:30 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 17:15:26 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 2/3] powerpc/book3e: Fix set_memory_x() and
- set_memory_nx()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <922bdab3a220781bae2360ff3dd5adb7fe4d34f1.1635226743.git.christophe.leroy@csgroup.eu>
-        <c41100f9c144dc5b62e5a751b810190c6b5d42fd.1635226743.git.christophe.leroy@csgroup.eu>
-        <1635309296.3vv9pb80wz.astroid@bobo.none>
-        <063e72e1-fc05-7783-9f42-f681dd08a4b2@csgroup.eu>
-        <1635312355.da7w1oggf1.astroid@bobo.none>
-        <8ccb9629-43fc-2f36-c9e4-61d6898fb80d@csgroup.eu>
-In-Reply-To: <8ccb9629-43fc-2f36-c9e4-61d6898fb80d@csgroup.eu>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=Vh20uhPE29DGhh1j6gWUyV6ou+awoh0PfjpAQqQ+7uY=;
+        b=nh/4NSJ5Ht/OO198pLYEjeF3a71IxDkym5y9Lm/F2acQk2X0uMX21+F6TFKziH8+J4
+         uUG7GqxpDVdwnqRJBpCfeFi0ObmtBy0kTfimcrXqEdwICABIoAmdMuZAcgKKjhPKpudI
+         GPtgzwtgRa36oNopWKCEOJYvsFHpwZsDJ65Pd8UhXQTFmGB56LW1JV+vF1RDsJUoDL3i
+         e3oIdBXzorjpkO6d3rFk1YWWqnLYj4mffPEBPDfnBmykpUjrpcYRabXOwjRwZ3YikiV3
+         s8lWdxMv67v5s49HS3ZVK60CO66yMycvIOBXxN2T7jiySOgUZ2CKvMFq8D4ioCS6yBF0
+         Rkzw==
+X-Gm-Message-State: AOAM531TsDC8lqZ02QpS855l2+A9a4zvWEg9RCondb4Uao9WQTFY0ZD2
+        tnwMaB+QVRvNB6jjp1BhK5snBR1lZMimdYIyXfNJsrGZfS/OohCX8uMhvTJcTBCF29S2Sk9Qh9E
+        DuU8NcQxyFy4nuboMvnNChuD1
+X-Received: by 2002:a05:6000:2c7:: with SMTP id o7mr29471933wry.95.1635318937350;
+        Wed, 27 Oct 2021 00:15:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznZvp77gBBcxv93V3obOyC558qd/Xvo19RDEgI1SmBqRTcw1j72Qn8OGv/YD42ghFdv+fN9g==
+X-Received: by 2002:a05:6000:2c7:: with SMTP id o7mr29471900wry.95.1635318937026;
+        Wed, 27 Oct 2021 00:15:37 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23d76.dip0.t-ipconnect.de. [79.242.61.118])
+        by smtp.gmail.com with ESMTPSA id g10sm3089353wmq.13.2021.10.27.00.15.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 00:15:36 -0700 (PDT)
+Message-ID: <c7b8e28d-cca0-93c7-c1cb-5a9b07e2332d@redhat.com>
+Date:   Wed, 27 Oct 2021 09:15:35 +0200
 MIME-Version: 1.0
-Message-Id: <1635318589.wequaidvbx.astroid@bobo.none>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Bin Wang <wangbin224@huawei.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
+ <258d0ddb-6c82-0c95-a15e-b085b59d2142@redhat.com>
+ <20211004143228.GA1545442@u2004> <20211026232736.GA2704541@u2004>
+ <YXi0v9DHCl+aiogP@xz-m1.local> <20211027064513.GA2717516@u2004>
+ <YXj5mTFBnuJS3tvT@xz-m1.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <YXj5mTFBnuJS3tvT@xz-m1.local>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of October 27, 2021 3:50 pm:
->=20
->=20
-> Le 27/10/2021 =C3=A0 07:27, Nicholas Piggin a =C3=A9crit=C2=A0:
->> Excerpts from Christophe Leroy's message of October 27, 2021 2:55 pm:
->>>
->>>
->>> Le 27/10/2021 =C3=A0 06:44, Nicholas Piggin a =C3=A9crit=C2=A0:
->>>> Excerpts from Christophe Leroy's message of October 26, 2021 3:39 pm:
->>>>> set_memory_x() calls pte_mkexec() which sets _PAGE_EXEC.
->>>>> set_memory_nx() calls pte_exprotec() which clears _PAGE_EXEC.
+On 27.10.21 09:02, Peter Xu wrote:
+> On Wed, Oct 27, 2021 at 03:45:13PM +0900, Naoya Horiguchi wrote:
+>> On Wed, Oct 27, 2021 at 10:09:03AM +0800, Peter Xu wrote:
+>>> On Wed, Oct 27, 2021 at 08:27:36AM +0900, Naoya Horiguchi wrote:
+>>>> On Mon, Oct 04, 2021 at 11:32:28PM +0900, Naoya Horiguchi wrote:
+>>>>> On Mon, Oct 04, 2021 at 01:55:30PM +0200, David Hildenbrand wrote:
+>>>>>> On 04.10.21 13:50, Naoya Horiguchi wrote:
+>>>> ...
+>>>>>>>
+>>>>>>> Hwpoison entry for hugepage is also exposed by this patch. The below
+>>>>>>> example shows how pagemap is visible in the case where a memory error
+>>>>>>> hit a hugepage mapped to a process.
+>>>>>>>
+>>>>>>>      $ ./page-types --no-summary --pid $PID --raw --list --addr 0x700000000+0x400
+>>>>>>>      voffset offset  len     flags
+>>>>>>>      700000000       12fa00  1       ___U_______Ma__H_G_________________f_______1
+>>>>>>>      700000001       12fa01  1ff     ___________Ma___TG_________________f_______1
+>>>>>>>      700000200       12f800  1       __________B________X_______________f______w_
+>>>>>>>      700000201       12f801  1       ___________________X_______________f______w_   // memory failure hit this page
+>>>>>>>      700000202       12f802  1fe     __________B________X_______________f______w_
+>>>>>>>
+>>>>>>> The entries with both of "X" flag (hwpoison flag) and "w" flag (swap
+>>>>>>> flag) are considered as hwpoison entries.  So all pages in 2MB range
+>>>>>>> are inaccessible from the process.  We can get actual error location
+>>>>>>> by page-types in physical address mode.
+>>>>>>>
+>>>>>>>      $ ./page-types --no-summary --addr 0x12f800+0x200 --raw --list
+>>>>>>>      offset  len     flags
+>>>>>>>      12f800  1       __________B_________________________________
+>>>>>>>      12f801  1       ___________________X________________________
+>>>>>>>      12f802  1fe     __________B_________________________________
+>>>>>>>
+>>>>>>> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+>>>>>>> ---
+>>>>>>>   fs/proc/task_mmu.c      | 41 ++++++++++++++++++++++++++++++++---------
+>>>>>>>   include/linux/swapops.h | 13 +++++++++++++
+>>>>>>>   tools/vm/page-types.c   |  7 ++++++-
+>>>>>>>   3 files changed, 51 insertions(+), 10 deletions(-)
+>>>>>>
+>>>>>>
+>>>>>> Please also update the documentation located at
+>>>>>>
+>>>>>> Documentation/admin-guide/mm/pagemap.rst
 >>>>>
->>>>> Book3e has 2 bits, UX and SX, which defines the exec rights
->>>>> resp. for user (PR=3D1) and for kernel (PR=3D0).
->>>>>
->>>>> _PAGE_EXEC is defined as UX only.
->>>>>
->>>>> An executable kernel page is set with either _PAGE_KERNEL_RWX
->>>>> or _PAGE_KERNEL_ROX, which both have SX set and UX cleared.
->>>>>
->>>>> So set_memory_nx() call for an executable kernel page does
->>>>> nothing because UX is already cleared.
->>>>>
->>>>> And set_memory_x() on a non-executable kernel page makes it
->>>>> executable for the user and keeps it non-executable for kernel.
->>>>>
->>>>> Also, pte_exec() always returns 'false' on kernel pages, because
->>>>> it checks _PAGE_EXEC which doesn't include SX, so for instance
->>>>> the W+X check doesn't work.
->>>>>
->>>>> To fix this:
->>>>> - change tlb_low_64e.S to use _PAGE_BAP_UX instead of _PAGE_USER
->>>>> - sets both UX and SX in _PAGE_EXEC so that pte_user() returns
->>>>> true whenever one of the two bits is set
+>>>>> I will do this in the next post.
 >>>>
->>>> I don't understand this change. Which pte_user() returns true after
->>>> this change? Or do you mean pte_exec()?
+>>>> Reading the document, I found that swap type is already exported so we
+>>>> could identify hwpoison entry with it (without new PM_HWPOISON bit).
+>>>> One problem is that the format of swap types (like SWP_HWPOISON) depends
+>>>> on a few config macros like CONFIG_DEVICE_PRIVATE and CONFIG_MIGRATION,
+>>>> so we also need to export how the swap type field is interpreted.
 >>>
->>> Oops, yes, I mean pte_exec()
+>>> I had similar question before.. though it was more on the generic swap entries
+>>> not the special ones yet.
 >>>
->>> Unless I have to re-spin, can Michael eventually fix that typo while
->>> applying ?
+>>> The thing is I don't know how the userspace could interpret normal swap device
+>>> indexes out of reading pagemap, say if we have two swap devices with "swapon
+>>> -s" then I've no idea how do we know which device has which swap type index
+>>> allocated.  That seems to be a similar question asked above on special swap
+>>> types - the interface seems to be incomplete, if not unused at all.
+>>>
+>>> AFAIU the information on "this page is swapped out to device X on offset Y" is
+>>> not reliable too, because the pagein/pageout from kernel is transparent to the
+>>> userspace and not under control of userspace at all.  IOW, if the user reads
+>>> that swap entry, then reads data upon the disk of that offset out and put it
+>>> somewhere else, then it means the data read could already be old if kernel
+>>> paged in the page after userspace reading the pagemap but before it reading the
+>>> disk, and I don't see any way to make it right unless the userspace could stop
+>>> the kernel from page-in a swap entry.  That's why I really wonder whether we
+>>> should expose normal swap entry at all, as I don't know how it could be helpful
+>>> and used in the 100% right way.
+>>
+>> Thank you for the feedback.
+>>
+>> I think that a process interested in controlling swap-in/out behavior in its own
+>> typically calls mincore() to get current status and madvise() to trigger swap-in/out.
+>> That's not 100% solution for the same reason, but it mostly works well because
+>> calling madvise(MADV_PAGEOUT) to already swapped out is not a big issue (although
+>> some CPU/memory resource is wasted, but the amount of the waste is small if the
+>> returned info is new enough). 
+>> So my point is that the concern around information newness might be more generic
+>> issue rather than just for pagemap.  If we need 100% accurate in-kernel info,
+>> maybe it had better be done in kernel (or some cooler stuff like eBPF)?
+> 
+> I fully agree the solution you mentioned with mincore() and madvise(), that is
+> very sane and working approach.  Though IMHO the major thing I wanted to point
+> out is for generic swap devices we exposed (disk_index, disk_offset) tuple as
+> the swap entry (besides "whether this page is swapped out or not"; that's
+> PM_SWAP, and as you mentioned people'll need to rely on mincore() to make it
+> right for shmem), though to use it we need to either record the index/offset or
+> read/write data from it.  However none of them will make sense, IMHO..  So I
+> think exposing PM_SWAP makes sense, not the swap entries on swap devices.
+> 
+>>
+>>>
+>>> Special swap entries seem a bit different - at least for is_pfn_swap_entry()
+>>> typed swap entries we can still expose the PFN which might be helpful, which I
+>>> can't tell.
+>>
+>> I'm one who think it helpful for testing, although I know testing might not be
+>> considered as a real usecase.
+> 
+> I think testing is valid use case too.
+> 
+>>
+>>>
+>>> I used to send an email to Matt Mackall <mpm@selenic.com> and Dave Hansen
+>>> <dave.hansen@linux.intel.com> asking about above but didn't get a reply. Ccing
+>>> again this time with the list copied.
 >>>
 >>>>
->>>> Does this filter through in some cases at least for kernel executable
->>>> PTEs will get both bits set? Seems cleaner to distinguish user and
->>>> kernel exec for that but maybe it's a lot of churn?
+>>>> I thought of adding new interfaces for example under /sys/kernel/mm/swap/type_format/,
+>>>> which shows info like below (assuming that all CONFIG_{DEVICE_PRIVATE,MIGRATION,MEMORY_FAILURE}
+>>>> is enabled):
+>>>>
+>>>>   $ ls /sys/kernel/mm/swap/type_format/
+>>>>   hwpoison
+>>>>   migration_read
+>>>>   migration_write
+>>>>   device_write
+>>>>   device_read
+>>>>   device_exclusive_write
+>>>>   device_exclusive_read
+>>>>   
+>>>>   $ cat /sys/kernel/mm/swap/type_format/hwpoison
+>>>>   25
+>>>>   
+>>>>   $ cat /sys/kernel/mm/swap/type_format/device_write
+>>>>   28
+>>>>
+>>>> Does it make sense or any better approach?
 >>>
->>> Didn't understand what you mean.
->>>
->>> I did it like that to be able to continue using _PAGE_EXEC for checking
->>> executability regardless of whether this is user or kernel, and then
->>> continue using the generic nohash pte_exec() helper.
->>>
->>> Other solution would be to get rid of _PAGE_EXEC completely for book3e
->>> and implement both pte_exec() and pte_mkexec() with _PAGE_BAP_UX and
->>> _PAGE_BAP_SX, but I'm not sure it is worth the churn as you say. It
->>> would also mean different helpers for book3s/32 when it is using 32 bit=
-s
->>> PTE (CONFIG_PTE_64BIT=3Dn)
->>=20
->> That's basically what I mean. And _PAGE_KERNEL_ROX etc would then not
->> set the UX bit. But at least for now it seems to be an improvement.
->>=20
->=20
-> That's already the case:
->=20
-> #define _PAGE_KERNEL_RWX	(_PAGE_BAP_SW | _PAGE_BAP_SR | _PAGE_DIRTY |=20
-> _PAGE_BAP_SX)
-> #define _PAGE_KERNEL_ROX	(_PAGE_BAP_SR | _PAGE_BAP_SX)
+>>> Then I'm wondering whether we care about the rest of the normal swap devices
+>>> too with pagemap so do we need to expose some information there too (only if
+>>> there's a real use case, though..)?  Or... should we just don't expose swap
+>>> entries at all, at least generic swap entries?  We can still expose things like
+>>> hwpoison via PM_* bits well defined in that case.
+>>
+>> I didn't think about normal swap devices for no reason. I'm OK to stop exposing
+>> normal swap device part.  I don't have strong option yet about which approach
+>> (in swaptype or PM_HWPOISON) I'll suggest next (so wait a little more for feedback).
+> 
+> No strong opinion here too. It's just that the new interface proposed reminded
+> me that it's partially complete if considering we're also exposing swap entries
+> on swap devices, so the types didn't cover those entries.  However it's more
+> like a pure question because I never figured out how those entries will work
+> anyway.  I'd be willing to know whether Dave Hanson would comment on this.
+> 
+> While the PM_HWPOISON approach looks always sane to me.
 
-So it is, I was looking at the wrong header.
+I consider that somehow cleaner, because how HWPOISON entries are
+implemented ("fake swap entries") is somewhat an internal implementation
+detail.
 
-Looks okay to me then, for what it's worth.
+(I also agree that PM_SWAP makes sense, but maybe really only when we're
+actually dealing with something that has been/is currently being swapped
+out. Maybe we should just not expose fake swap entries via PM_SWAP and
+instead use proper PM_ types for that. PM_MIGRATION, PM_HWPOISON, ...)
 
+-- 
 Thanks,
-Nick
+
+David / dhildenb
+
