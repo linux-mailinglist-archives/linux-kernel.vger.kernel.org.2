@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5C943D21A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E842343D220
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243793AbhJ0ULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:11:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238558AbhJ0ULB (ORCPT
+        id S243805AbhJ0UMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:12:30 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:58109 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238558AbhJ0UM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:11:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635365315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=VJyQQirrZwuNXLBhFZlxTeutqhrfo+TWoiIbs1ysy2s=;
-        b=AUyKUHu1Rtv5sX5J2buxGUl5QHgZFsBvyDC7ZecjAZAmY0vCX7FjfuXgWGFR6y6gr/FxSP
-        eYScXfNxn9jLADuJHwnbZK4Vp6FZZPNWDoOCx8AKBinorLxKqxv47gQyzYK4V9cFfX430s
-        UiiQxcORdYraFc2V/mJiYcX76+vzvYw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-k8S4jPYmN2eOqVwlSbgNhA-1; Wed, 27 Oct 2021 16:08:34 -0400
-X-MC-Unique: k8S4jPYmN2eOqVwlSbgNhA-1
-Received: by mail-ed1-f71.google.com with SMTP id q6-20020a056402518600b003dd81fc405eso3429502edd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 13:08:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=VJyQQirrZwuNXLBhFZlxTeutqhrfo+TWoiIbs1ysy2s=;
-        b=L2SMmRB31kFxiDTc1gdic0pHUaGEsLT8QmTIMRiiaeZGkglRYH4w4vC4iUChCznYL+
-         f59kj9LfsIptZ1JfeSTIyR4pn89WiBoDGXYY3QZfNVHzWJ9Y3LGR3QwNb/zq9VvbYlvN
-         jN34LlTVWxKfo0fDQ07YVyJAA6a5mqV2S/VnYV72bZu4Aga25UEyQ0I4JYpqcWRossim
-         JJi5dYhstjadOtHUQzgO6cp3Rr7T7whmNVc5Ua5B+jVM/G8Lv5LblHyXQWzZ070njs+D
-         Abqzg4E8c+GIQtE4WbDsdmOshaeVOuD/uXNyHe7JIohWM5ih7BkAgpm4OjM/6Xz3I9iG
-         B7TQ==
-X-Gm-Message-State: AOAM532wfEcaubDiXCBO4WSWvjRpSkiu1S3YdCYhpOmg8+ZddmcCzv6+
-        o736JU/czZ13vezFi9Jbj40ubX0oKn8ZN9kygXrIqd/F7Ng5VvVIFnVk0Au5mTKJGMeko/wb+t3
-        U2XbiqeZavIJYPtfcAy8/jzYo
-X-Received: by 2002:a17:906:c18d:: with SMTP id g13mr40156604ejz.518.1635365312935;
-        Wed, 27 Oct 2021 13:08:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpFHN76pLgh4LdmFOeHgtbBOiaO/TarBKKy+bAQpZOaQQRa5m1hagk9YBfjHLP3LAg3Zp+BQ==
-X-Received: by 2002:a17:906:c18d:: with SMTP id g13mr40156577ejz.518.1635365312743;
-        Wed, 27 Oct 2021 13:08:32 -0700 (PDT)
-Received: from redhat.com ([2.55.137.59])
-        by smtp.gmail.com with ESMTPSA id u9sm253017edf.47.2021.10.27.13.08.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 13:08:32 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 16:08:29 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jasowang@redhat.com, mst@redhat.com, vincent.whitchurch@axis.com,
-        xieyongji@bytedance.com
-Subject: [GIT PULL] virtio: last minute fixes
-Message-ID: <20211027160829-mutt-send-email-mst@kernel.org>
+        Wed, 27 Oct 2021 16:12:28 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id A99D62B01443;
+        Wed, 27 Oct 2021 16:10:00 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 27 Oct 2021 16:10:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
+        174Tv2ikzgiRBSTtownAlIa8Hc51jyjcuiG0KQ+hbd4=; b=klhpQktTVF61lxXN
+        z6RCvTo2tny/dJjRuxboJyG1CMUDkRlJEpybOBXpRKDEODVD4d9xuW1WYDpYdx+C
+        KulO2TB5DowEHlq8mZyvDiTPBqGYri8i3hOikVl1Dib0hjseyPj2m3Jt7bhpv1bW
+        CWBUOATejnIDgEb1BPneBdBQvHKxNzrQiB9yMhfeXmh614FK6O8NTbYvmv58qVWo
+        kLHHu2KwNA0kV70AXZQz/s8Wfk/6u1v2trJzo98j9ldksC3Cd3tfTYuG99vf2iSy
+        PrfZAJvoFLz8S5HIw5k2pKVN+ELyy9aVSKOtCZXKh7vKXVKhw8rcGRZgPatdVVxn
+        k8u44A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=174Tv2ikzgiRBSTtownAlIa8Hc51jyjcuiG0KQ+hb
+        d4=; b=axByOoFcgh/+Az9kxCAWrpeZ+pr1oBtjvspPcqjQDmggOrhT6eQp5dOyQ
+        f+dBmGLg57skwzqsyfsNvnC/IkfJ40ghAzlNUXnxt9O/vOAYx91mb3sA4e5kyp1G
+        9iRhLuNtAfD9cIKOT0z2snPjGjH+vMdZyvg9UAXfBAVLl2o/kB1jbxxblWbMc43I
+        8piqXiFWnD/ytNrYWExKS4Q47PiaG+MAcUTJVMIcq2D2esDjbdemR6Y1q2yt58qb
+        DGaTP5EEN+f4UcWsYvq3tQsPSH9q2VENRNQHyBqhk2QTV+Hj1ACJgfMETs7ssbVK
+        2uap3uKjqzPMG5qGJ4XSjKfvhMCUg==
+X-ME-Sender: <xms:E7J5YdAY0n9flJiRx5R0OECAz0MRM-T0-3OXKy0Besh0Rcrt8zH7Ow>
+    <xme:E7J5YbiMdbYr7gJWxYbszTBZxteZRqJaBXd0iTVipXlI-OLPv_XMOk7uW-pqhnxJw
+    ef3aMxyYLCY5hapZf4>
+X-ME-Received: <xmr:E7J5YYmSeo1YK4dfYwkF0CatVXGEjyK5u8Ec-hv0lu_pERSVwncofednqCWir9U0focRTQ0fGoHuY_EplfHuh7oHEXYVykjrXiUGe5qO>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdegtddguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgig
+    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
+    grthhtvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfef
+    geeikeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:E7J5YXzmBoYwJDS2qv2M1HB3Uma-QDNHhBuH_lLh6v9Be4Bch1ji6g>
+    <xmx:E7J5YSRPl4I1q8F6RqB0KEMDScNFcGyKk2pIpURIof-etyvcqXKfcQ>
+    <xmx:E7J5YaamnTlyH3tkt3g4lPSW_1pfw3CaS4xPO9rlVqR_kLDTbNL5dg>
+    <xmx:GLJ5YWwe5m9gr5x4nWinl-9JeTHzLO56Nqf2In0qEr3XLcz6bnvpKQCWZ8Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Oct 2021 16:09:55 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Sean Paul <sean@poorly.run>, Inki Dae <inki.dae@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Chen Feng <puck.chen@hisilicon.com>,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>
+Subject: Re: (subset) [PATCH v6 01/21] drm/bridge: adv7533: Switch to devm MIPI-DSI helpers
+Date:   Wed, 27 Oct 2021 22:09:32 +0200
+Message-Id: <163532324662.18245.12411673920991418196.b4-ty@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211025151536.1048186-2-maxime@cerno.tech>
+References: <20211025151536.1048186-1-maxime@cerno.tech> <20211025151536.1048186-2-maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 64222515138e43da1fcf288f0289ef1020427b87:
+On Mon, 25 Oct 2021 17:15:16 +0200, Maxime Ripard wrote:
+> Let's switch to the new devm MIPI-DSI function to register and attach
+> our secondary device. This also avoids leaking the device when we detach
+> the bridge.
+> 
+> 
 
-  Merge tag 'drm-fixes-2021-10-22' of git://anongit.freedesktop.org/drm/drm (2021-10-21 19:06:08 -1000)
+Applied to drm/drm-misc (drm-misc-next).
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-
-for you to fetch changes up to 890d33561337ffeba0d8ba42517e71288cfee2b6:
-
-  virtio-ring: fix DMA metadata flags (2021-10-27 15:54:34 -0400)
-
-----------------------------------------------------------------
-virtio: last minute fixes
-
-A couple of fixes that seem important enough to pick at the last moment.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Vincent Whitchurch (1):
-      virtio-ring: fix DMA metadata flags
-
-Xie Yongji (2):
-      vduse: Disallow injecting interrupt before DRIVER_OK is set
-      vduse: Fix race condition between resetting and irq injecting
-
- drivers/vdpa/vdpa_user/vduse_dev.c | 29 +++++++++++++++++++++++++----
- drivers/virtio/virtio_ring.c       |  2 +-
- 2 files changed, 26 insertions(+), 5 deletions(-)
-
+Thanks!
+Maxime
