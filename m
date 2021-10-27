@@ -2,157 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B764543D6C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C697943D6C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhJ0WjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 18:39:02 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:41100 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhJ0WjB (ORCPT
+        id S229877AbhJ0Wki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 18:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhJ0Wkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 18:39:01 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211027223633epoutp026e3d0b84fe12f3a14a189a10ddd107de~yBCn-BzD30115301153epoutp02s
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:36:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211027223633epoutp026e3d0b84fe12f3a14a189a10ddd107de~yBCn-BzD30115301153epoutp02s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635374193;
-        bh=dRzUM7qo4C+5CUwqX2psGsQ+m68DYYRc41OJ7o055vs=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=FhG3qRqzlEzLt3J81UtNATnNiJPv1vtNdTXj6kLveL2T2QVtUztW0RAHT3NMqWcry
-         N20XfYkqyQqUWCWyZVj9/XEvoXdnNFlkotHfEW/MbzKWnKxMhaMSqb25NU+V7IlzfW
-         /GdzLv/L6RbrJTln/9i9iZCuKJHI9jTApqINdv+U=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20211027223632epcas2p18cdc62a75b8919c3e6c8a2628252a0c9~yBCm9eQL00292902929epcas2p1W;
-        Wed, 27 Oct 2021 22:36:32 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.100]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Hfk7S26DHz4x9Pr; Wed, 27 Oct
-        2021 22:36:20 +0000 (GMT)
-X-AuditID: b6c32a46-a25ff70000002722-76-6179d4631d28
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        67.65.10018.364D9716; Thu, 28 Oct 2021 07:36:20 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Keoseong Park <keosung.park@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-Date:   Thu, 28 Oct 2021 07:36:19 +0900
-X-CMS-MailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIJsWRmVeSWpSXmKPExsWy7bCmhW7KlcpEg2lTmC0ezNvGZvHy51U2
-        i2kffjJbvDykabHqQbjFnLMNTBaLbmxjsjh+8h2jxeVdc9gsuq/vYLNYfvwfkwO3x+Ur3h47
-        Z91l95iw6ACjx8ent1g8+rasYvT4vEnOo/1AN1MAe1S2TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8
-        c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QhUoKZYk5pUChgMTiYiV9O5ui/NKSVIWM/OIS
-        W6XUgpScAvMCveLE3OLSvHS9vNQSK0MDAyNToMKE7IyFLx6wFZwWrPi1fRtLA+Npvi5GTg4J
-        AROJOc1PWLoYuTiEBHYwSnTfecXcxcjBwSsgKPF3hzBIjbCAk0Tj9smsILaQgJLE+ouz2CHi
-        ehK3Hq5hBLHZBHQkpp+4zw4yR0TgDZPE0oNHWUASzAJ1Ervn/GGDWMYrMaP9KQuELS2xfflW
-        RghbQ+LHsl5mCFtU4ubqt+ww9vtj86FqRCRa752FqhGUePBzN1RcUuLY7g9MEHa9xNY7vxhB
-        jpAQ6GGUOLzzFitEQl/iWsdGsMW8Ar4S21tPgdksAqoSyx9ehRrkIrF07R9WiKPlJba/nQMO
-        CGYBTYn1u/RBTAkBZYkjt1hgXmnY+Jsdnc0swCfRcfgvXHzHvCdQp6lJrPu5nglijIzErXmM
-        ExiVZiECehaStbMQ1i5gZF7FKJZaUJybnlpsVGAEj9vk/NxNjOC0quW2g3HK2w96hxiZOBgP
-        MUpwMCuJ8F6eV54oxJuSWFmVWpQfX1Sak1p8iNEU6OGJzFKiyfnAxJ5XEm9oYmlgYmZmaG5k
-        amCuJM5rKZqdKCSQnliSmp2aWpBaBNPHxMEp1cDkN+dY4jeltQpfjOTvhk8tUlJeVl4wwSLy
-        ZUi3kKDF9dQFQpJzauqthZ5I/vTsn8bx3zB16zHeHVtfe3KEd87wv97CFLTiO4O8Q7f6lLi8
-        Hrvog/xNrRXPblRNLDO6W8bYciHBL1PSkmWlp9z+549+lB8Wj4v9NW1Ca0zHW4lPFmcvyXB+
-        lvi277H6qXaGjyGbdXRP6WZkX5evs25v3XBpLrNozrLPeVu+Ce+9HB/b53xtlrfjvovz7Bht
-        /p75zCKZtf1QcuXenYpxl5eyxszjvfFF2uUS66q452rdz0WjZki0N3c4uDz89qL23J/bFwpT
-        LdpzD/30m15n8XluX0OzzpvX7oEfuGOXaFimflJiKc5INNRiLipOBADoXoNKNAQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
-References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+        Wed, 27 Oct 2021 18:40:36 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC19EC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 15:38:10 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id i65so10295715ybb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 15:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9oSytowWKNwBBfMwPK2z8OUTJ/DV6Vi07ePItefhWPA=;
+        b=avoig4YK8GBf9CAkkiPstN495H8ufgsgLmycuwhIIcKQlChKBArOq3T7H08ISwbkZP
+         b1PMg4Ox60dyWE6lCMObvITqTxbOWx7qItChFwJt3dxA05vzHSH6OFMuG9qobd7E+HeY
+         IUlvslIN37ITjz9mW0+IcwO9HlspVWj1T2Dhk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9oSytowWKNwBBfMwPK2z8OUTJ/DV6Vi07ePItefhWPA=;
+        b=1WIc7woEEB8uiLI2ULe0xLqpuDEOr9mN/XNL/hNIkEgL0tX2f1uDA4SYe7JUNSIfGE
+         wCDd3ghXbeMAESpsOiPKxcJLHdl0hNvFpASkj8f9SpfZYqQnOBCFBZGOLch0A1JjBKhi
+         RIgkRXuT/HiXQ4luGB2Nxg3jMZSXW6i+pkjdAarkXL3oKQPpqJwQiQZ4INyUYXGh97z1
+         RQ3Ze/tUiI7e1rVwu0JzzPdKYpVj5hxWCaVJ1Cd9hiIEmE32pA+i+ySufZvTh7Ky6yNn
+         Iol1smKUDA0jhLcPjwTymWh3w+HAsctwWkCscboWQyuA/dvWP9vI5gewv1LOrJRqiwrO
+         0jVw==
+X-Gm-Message-State: AOAM532x10y6gaD8dwAn0Xx7DcQpM+20B1mjvEao8FmglrRn8C7QzgMw
+        ZbRCl28J98PR8P3pw6JAev6zjDkJTgmIv/j3x67TRg==
+X-Google-Smtp-Source: ABdhPJxB2cf0ejh1JrlD28UAn2KzuQGKwVaIkvK+lcXb819vEQtQoI7Rgsm+YxiVyRZXgYvOxJs7inAaTHHEdJmaQwA=
+X-Received: by 2002:a25:23cc:: with SMTP id j195mr506259ybj.508.1635374290200;
+ Wed, 27 Oct 2021 15:38:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211026145622.v4.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
+ <CAD=FV=WTQG_zdQVDFPe7u8_350Nwr9tSeWjtQO7FD-3N-JMjuQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=WTQG_zdQVDFPe7u8_350Nwr9tSeWjtQO7FD-3N-JMjuQ@mail.gmail.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Wed, 27 Oct 2021 15:37:59 -0700
+Message-ID: <CA+cxXh=pxw7iPnmfs998fd=OZ1QHDRtc913GFOXpLzKF8ZkOeA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] drm/bridge: parade-ps8640: Enable runtime power management
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch addresses the issue of using the wrong API to create a
-pre_request for HPB READ.
-HPB READ candidate that require a pre-request will try to allocate a
-pre-request only during request_timeout_ms (default: 0). Otherwise, it is
-passed as normal READ, so deadlock problem can be resolved.
+Hi Doug,
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufshpb.c | 11 +++++------
- drivers/scsi/ufs/ufshpb.h |  1 +
- 2 files changed, 6 insertions(+), 6 deletions(-)
+On Wed, Oct 27, 2021 at 3:08 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Tue, Oct 26, 2021 at 2:56 PM Philip Chen <philipchen@chromium.org> wrote:
+> >
+> > Fit ps8640 driver into runtime power management framework:
+> >
+> > First, break _poweron() to 3 parts: (1) turn on power and wait for
+> > ps8640's internal MCU to finish init (2) check panel HPD (which is
+> > proxied by GPIO9) (3) the other configs. As runtime_resume() can be
+> > called before panel is powered, we only add (1) to _resume() and leave
+> > (2)(3) to _pre_enable(). We also add (2) to _aux_transfer() as we want
+> > to ensure panel HPD is asserted before we start AUX CH transactions.
+> >
+> > Second, the original driver has a mysterious delay of 50 ms between (2)
+> > and (3). Since Parade's support can't explain what the delay is for,
+> > and we don't see removing the delay break any boards at hand, remove
+> > the delay to fit into this driver change.
+> >
+> > In addition, rename "powered" to "pre_enabled" and don't check for it
+> > in the pm_runtime calls. The pm_runtime calls are already refcounted
+> > so there's no reason to check there. The other user of "powered",
+> > _get_edid(), only cares if pre_enable() has already been called.
+> >
+> > Lastly, change some existing DRM_...() logging to dev_...() along the
+> > way, since DRM_...() seem to be deprecated in [1].
+> >
+> > [1] https://patchwork.freedesktop.org/patch/454760/
+> >
+> > Signed-off-by: Philip Chen <philipchen@chromium.org>
+> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> > In v3, I also added pm_suspend_ignore_children() in the ps8640_probe()
+> > but forgot to mention that in the v3 change log.
+> >
+> > Changes in v4:
+> > - Make ps8640_ensure_hpd() return int (This change was mis-added to
+> >   another patch [2] in this patch series:
+> >   [2] https://patchwork.kernel.org/project/dri-devel/patch/20211026121058.v3.2.I09899dea340f11feab97d719cb4b62bef3179e4b@changeid/)
+> >
+> > Changes in v3:
+> > - Fix typo/wording in the commit message.
+> > - Add ps8640_aux_transfer_msg() for AUX operation. In
+> >   ps8640_aux_transfer(), wrap around ps8640_aux_transfer_msg()
+> >   with PM operations and HPD check.
+> > - Document why autosuspend_delay is set to 500ms.
+> >
+> >  drivers/gpu/drm/bridge/parade-ps8640.c | 186 +++++++++++++++----------
+> >  1 file changed, 115 insertions(+), 71 deletions(-)
+>
+> Unfortunately, your patch no longer applies to drm-misc/drm-misc-next.
+> Commit 7abbc26fd667 ("drm/bridge: ps8640: Register and attach our DSI
+> device at probe") landed and that causes a merge conflict. Can you
+> rebase and resend?
+Yes, I will rebase and resend.
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 02fb51ae8b25..3117bd47d762 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
- 				 read_id);
- 	rq->cmd_len = scsi_command_size(rq->cmd);
- 
--	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
--		return -EAGAIN;
-+	blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
- 
- 	hpb->stats.pre_req_cnt++;
- 
-@@ -2315,19 +2314,19 @@ struct attribute_group ufs_sysfs_hpb_param_group = {
- static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
- {
- 	struct ufshpb_req *pre_req = NULL, *t;
--	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
- 	int i;
- 
- 	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
- 
--	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
--	hpb->throttle_pre_req = qd;
-+	hpb->pre_req = kcalloc(HPB_INFLIGHT_PRE_REQ, sizeof(struct ufshpb_req),
-+			       GFP_KERNEL);
-+	hpb->throttle_pre_req = HPB_INFLIGHT_PRE_REQ;
- 	hpb->num_inflight_pre_req = 0;
- 
- 	if (!hpb->pre_req)
- 		goto release_mem;
- 
--	for (i = 0; i < qd; i++) {
-+	for (i = 0; i < HPB_INFLIGHT_PRE_REQ; i++) {
- 		pre_req = hpb->pre_req + i;
- 		INIT_LIST_HEAD(&pre_req->list_req);
- 		pre_req->req = NULL;
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index a79e07398970..411a6d625f53 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -50,6 +50,7 @@
- #define HPB_RESET_REQ_RETRIES			10
- #define HPB_MAP_REQ_RETRIES			5
- #define HPB_REQUEUE_TIME_MS			0
-+#define HPB_INFLIGHT_PRE_REQ			4
- 
- #define HPB_SUPPORT_VERSION			0x200
- #define HPB_SUPPORT_LEGACY_VERSION		0x100
--- 
-2.25.1
+>
+> This will also cause a conflict when Sam's change lands [1] so I guess
+> we can see whose lands first. Let me review that now and maybe you add
+> a Tested-by? If it lands that'll make it easier and you can just
+> rebase on both of them?
+As per your latest reply, I'll just rebase atop drm-misc-next for now.
 
+>
+>
+> > +       pm_runtime_enable(dev);
+> > +       /*
+> > +        * In practice, ps8640_aux_transfer_msg() takes ~300ms to complete in
+> > +        * the worst case. Set autosuspend_delay to 500ms.
+> > +        */
+> > +       pm_runtime_set_autosuspend_delay(dev, 500);
+>
+> To be a little nitpicky, this makes it sound as if the 500 ms needs to
+> be greater than the 300 ms for correctness. That's not _really_ the
+> case. During the whole ps8640_aux_transfer_msg() we're holding a PM
+> Runtime reference (so it won't autosuspend no matter what) and at the
+> end of it we mark that we were busy so the timer won't start ticking
+> until then.
+Yeah....sorry, looking again, I agree the comment I added in v3 is
+pretty misleading.
+I think autosuspend_delay just needs to be consistently longer than
+the interval between each aux_transfer call during EDID read.
+I'll measure the interval and add the number to the comment.
+
+>
+> Really the 500 ms is because we're quite slow to power up (~300 ms)
+> and so we want to avoid powering down and powering up constantly. We
+> definitely need to avoid a power down / power up when reading the EDID
+> and an EDID read involves _several_ calls in a row to the AUX transfer
+> function. We also expect that after userspace reads the EDID it will
+> call us again "soon" to turn the power on and it's nice to not have to
+> wait the 300 ms again. The 500 ms here is really just a number that's
+> not too short but not too long. I suppose it's roughly related to the
+> 300 ms because that's the delay we're trying to avoid, but otherwise
+> they are unrelated. NOTE: the code will still be _correct_ if we miss
+> the 500 ms window, it'll just be a lot slower.
+>
+> [1] https://lore.kernel.org/r/20211020181901.2114645-2-sam@ravnborg.org
+>
+> -Doug
