@@ -2,143 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D74743D08C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C945D43D08F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240217AbhJ0SUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:20:49 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:38562 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238569AbhJ0SUn (ORCPT
+        id S240259AbhJ0SWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:22:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50150 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236965AbhJ0SWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:20:43 -0400
-Received: by mail-ot1-f49.google.com with SMTP id l10-20020a056830154a00b00552b74d629aso4862157otp.5;
-        Wed, 27 Oct 2021 11:18:18 -0700 (PDT)
+        Wed, 27 Oct 2021 14:22:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635358813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fHL8U/ZQJJWFEflWR8JykfHUlV09wWEBVk/S1a/68vE=;
+        b=YYOZirjkisX39lxhIeMLfYyaKTOxZ+3ji+lBfgu1OAY6Mef7+R50ZvDfX2mYJWW3SC4Bgu
+        RteGhyzvUzOmMMIXxEnJ2m5Y5UqEbjclBDMQW/Uutmf/tXtnYfelQCojsptuJQsVBXeeQg
+        mkKZ0oIbMp0+QoZbP89Fn+t+fcIhlUY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-5BVVy3BrM1OGC4mQQzYN_A-1; Wed, 27 Oct 2021 14:20:11 -0400
+X-MC-Unique: 5BVVy3BrM1OGC4mQQzYN_A-1
+Received: by mail-wr1-f70.google.com with SMTP id t6-20020a5d6906000000b0016d956560d3so990514wru.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:20:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wi1wqWtLknR9Z1R3U2RuJ5z/q7VnpnEhDqj4vPi01CM=;
-        b=wBvcm3Ib0tpmxFA+B6azASuFgWzQKbBcQ1GqQ/XsTqbAG7hWcX4UmY8Qfs9I9I0uVQ
-         4Y4mK/iuc62bVWTP4z5JSwdFr1NDIX/eXwWatUp0izraM2FQ6CH/wHLW1tMUUulbTUbJ
-         ee3oaNOUghhG4LBktNbD/WtCkH/2o+JjcPNju7yb/1ffzUpxe246Mb9ZygNAyMWxX+1+
-         3OzBOaHOIEe/qSXgd+cDrThckkuzg61RmWAEInmK33xcXcVasHURTUUO4Sk2IBBH5AWG
-         FaJtFci9HBey1vyQ485wvsEw4Omsw8A4QDXALrqxl6E2d5IhwYIo6Uc7/cRKxhvhOd6U
-         2rlA==
-X-Gm-Message-State: AOAM532s7JbMJjsqAmsdf12Tq+ugu/DiPNTjxWvv9gP1bm9rxho/I+nr
-        LMbf6PkqB3+RUNLElrw/cmi4uQ4HgI2dhtLwKtA=
-X-Google-Smtp-Source: ABdhPJzezqrxkQeB36YsHtO3kRV91J7I/BVeBnpyGKPb5HJJgIvb1MFdF0Iutk9p6ODYzgp7cuOT8jt0B68JgK/2H/4=
-X-Received: by 2002:a9d:65c1:: with SMTP id z1mr25532059oth.198.1635358697104;
- Wed, 27 Oct 2021 11:18:17 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=fHL8U/ZQJJWFEflWR8JykfHUlV09wWEBVk/S1a/68vE=;
+        b=CIlqUK3rfRLlF3R3Dwer91IF8pYTmp2kJs40qX9hplmq7asL1cRjVeJx2Q8KLSayEz
+         T99PulAvHpAEZJS8sydIfJdQN45fo7MbEDp5rh66FpVFnMrhb/Ke3XATFoQAbqAaLij+
+         9iQq3S5uq+1j0lkyy6We0cMxmFsmRJyXTazaU1Jc+fItf+ZyMkfcWlKC/1nYQKCDoX1j
+         3n3V0Q+NqqEpgT12oP3wGI87ary+5jUL4tSLyAMQ+v6BMA7waLypgWgMD4QRU92lrHSJ
+         tVezG+wR5neufQX760dn6e9LzLrtPOmnhG9tSZv5KBcel9CBAC4XsUFjkFvfiQsRL2zV
+         dPNw==
+X-Gm-Message-State: AOAM533yfWK9BguJMhA2ElBTfHQ+BGZiUj6Jk4gJyWh1N1Q8XckSGpeT
+        6FxXlKENGvSUDSppuG90u9/5qyLhhXrFse9tQGTNjpCt84IY1eFpVESlnCBVS9XU8oK4bs351/Y
+        TQ+Bjks1I5vsHbCmHHhmzCJa/
+X-Received: by 2002:a5d:614d:: with SMTP id y13mr43766550wrt.199.1635358810391;
+        Wed, 27 Oct 2021 11:20:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywlSOhKpI8SvbmuEboOoMaeDgerhBBvtAQkWnNqvPZZpw6tCGPccHyjl4kAG23JmGd3fU5BA==
+X-Received: by 2002:a5d:614d:: with SMTP id y13mr43766508wrt.199.1635358810124;
+        Wed, 27 Oct 2021 11:20:10 -0700 (PDT)
+Received: from [192.168.100.42] ([82.142.14.190])
+        by smtp.gmail.com with ESMTPSA id p18sm535005wmq.4.2021.10.27.11.20.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 11:20:09 -0700 (PDT)
+Message-ID: <1c0652f7-bb1b-99e1-7e8b-0613cc764ddd@redhat.com>
+Date:   Wed, 27 Oct 2021 20:20:08 +0200
 MIME-Version: 1.0
-References: <11860508.O9o76ZdvQC@kreacher> <YXhX/cTjH/H9UOnQ@smile.fi.intel.com>
- <YXmNuKIXjnhOx/Gi@smile.fi.intel.com> <YXmRgymVxl837yP0@smile.fi.intel.com>
-In-Reply-To: <YXmRgymVxl837yP0@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 27 Oct 2021 20:18:06 +0200
-Message-ID: <CAJZ5v0jMeKo6HhtxL4iFjc44qae_J2C6B8qy+m8RSjL9hxLwqQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] ACPI: scan: Honor certain device identification rules
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in copy_data
+Content-Language: en-US
+From:   Laurent Vivier <lvivier@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com>,
+        davem@davemloft.net, herbert@gondor.apana.org.au, jiri@nvidia.com,
+        kuba@kernel.org, leonro@nvidia.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mpm@selenic.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000a4cd2105cf441e76@google.com>
+ <eab57f0e-d3c6-7619-97cc-9bc3a7a07219@redhat.com>
+ <CACT4Y+amyT9dk-6iVqru-wQnotmwW=bt4VwaysgzjH9=PkxGww@mail.gmail.com>
+ <20211027111300-mutt-send-email-mst@kernel.org>
+ <589f86e0-af0e-c172-7ec6-72148ba7b3b0@redhat.com>
+ <8b5fb6ae-ab66-607f-b7c8-993c483846ca@redhat.com>
+In-Reply-To: <8b5fb6ae-ab66-607f-b7c8-993c483846ca@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 8:11 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Oct 27, 2021 at 08:34:49PM +0300, Andy Shevchenko wrote:
-> > On Tue, Oct 26, 2021 at 10:33:17PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Oct 26, 2021 at 08:51:49PM +0200, Rafael J. Wysocki wrote:
-> > > > Hi All,
-> > > >
-> > > > There are some rules in the ACPI spec regarding which device identification
-> > > > objects can be used together etc., but they are not followed by the kernel
-> > > > code.
-> > > >
-> > > > This series modifies the code to follow the spec more closely (see patch
-> > > > changelogs for details).
-> > >
-> > > I understand the motivation, but afraid about consequences on the OEM cheap
-> > > devices that are not always follow letter of the specification.
-> > >
-> > > As per Intel platforms I would look into Baytrail / Cherrytrail devices for
-> > > the past (I think Hans may help here a lot) and into Elkhart Lake in the
-> > > present (for the letter I mostly refer to CSRT + DSDT cooperation to get
-> > > GP DMA devices enumerated, so I _hope_ DSDT shouldn't have _ADR and _HID
-> > > together).
-> > >
-> > > Hence, from the code perspective
-> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > >
-> > > From the practice I would wait for some tests. I will try to find any new
-> > > information about latest firmware tables on Elkhart Lake machines.
-> >
-> > So, what I see in Elkhart Lake
-> >
-> > Case 1 - Sound Wire devices (2 times):
-> >
-> >     Name (_ADR, 0x40000000)  // _ADR: Address
-> >     Name (_CID, Package (0x02)  // _CID: Compatible ID
-> >     {
-> >         "PRP00001",
-> >         "PNP0A05" /* Generic Container Device */
-> >     })
-> >
-> > Case 2 - GP DMA devices (3 times):
-> >
-> >     Name (_ADR, 0x001D0003)  // _ADR: Address
-> >     Name (_HID, "80864BB4")  // _HID: Hardware ID
-> >
-> > Case 3 - Camera PMIC devices (5 x 2 (CLPn/DSCn) + 1 (PMIC) times = 11x):
-> >
-> >     Name (_ADR, Zero)  // _ADR: Address
-> >     Name (_HID, "INT3472")  // _HID: Hardware ID
-> >     Name (_CID, "INT3472")  // _CID: Compatible ID
-> >
-> > Case 4 - LNK devices (6 times):
-> >
-> >     Name (_ADR, Zero)  // _ADR: Address
-> >     ...
-> >
-> >     Name (_UID, One)  // _UID: Unique ID
-> >     Method (_HID, 0, NotSerialized)  // _HID: Hardware ID
-> >     {
-> >         Return (HCID (One))
-> >     }
-> >
-> > Case 5 - Camera sensors (2 times):
-> >
-> >     Name (_ADR, Zero)  // _ADR: Address
-> >     Name (_HID, "INT34xx")  // _HID: Hardware ID
-> >     Name (_CID, "INT34xx")  // _CID: Compatible ID
-> >
-> >
-> > I have no idea about cameras or audio devices, but what I'm worrying about
-> > is GP DMA. This kind of devices are PCI, but due to Microsoft hack, called
-> > CSRT, we have to have a possibility to match DSDT with CSRT ot retrieve
-> > the crucial information from the latter while being enumerated by the former.
-> >
-> > While it may be against the specification, there is no other way to achieve
-> > that as far as I understand (without either breaking things in Linux or
-> > getting yellow bang in Windows).
-> >
-> > Can you confirm that your change won't modify behaviour for these devices?
->
-> Okay, I have looked into acpi_dma_parse_resource_group() and I don't see that
-> we actually use _HID there. We definitely use _CRS. However, _HID is used in
-> case when device is ACPI-enumerated (drivers/dma/dw/platform.c). Seems like
-> firmware should provide this part runtime (either _HID or _ADR, but not both).
+On 27/10/2021 19:03, Laurent Vivier wrote:
+> On 27/10/2021 18:25, Laurent Vivier wrote:
+>> On 27/10/2021 17:28, Michael S. Tsirkin wrote:
+>>> On Wed, Oct 27, 2021 at 03:36:19PM +0200, Dmitry Vyukov wrote:
+>>>> On Wed, 27 Oct 2021 at 15:11, Laurent Vivier <lvivier@redhat.com> wrote:
+>>>>>
+>>>>> On 26/10/2021 18:39, syzbot wrote:
+>>>>>> Hello,
+>>>>>>
+>>>>>> syzbot found the following issue on:
+>>>>>>
+>>>>>> HEAD commit:    9ae1fbdeabd3 Add linux-next specific files for 20211025
+>>>>>> git tree:       linux-next
+>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1331363cb00000
+>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=aeb17e42bc109064
+>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
+>>>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for 
+>>>>>> Debian) 2.35.2
+>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116ce954b00000
+>>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132fcf62b00000
+>>>>>>
+>>>>>> The issue was bisected to:
+>>>>>>
+>>>>>> commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
+>>>>>> Author: Leon Romanovsky <leonro@nvidia.com>
+>>>>>> Date:   Thu Oct 21 14:16:14 2021 +0000
+>>>>>>
+>>>>>>       devlink: Remove not-executed trap policer notifications
+>>>>>>
+>>>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137d8bfcb00000
+>>>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10fd8bfcb00000
+>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=177d8bfcb00000
+>>>>>>
+>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>>> Reported-by: syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com
+>>>>>> Fixes: 22849b5ea595 ("devlink: Remove not-executed trap policer notifications")
+>>>>>>
+>>>>>> ==================================================================
+>>>>>> BUG: KASAN: slab-out-of-bounds in memcpy include/linux/fortify-string.h:225 [inline]
+>>>>>> BUG: KASAN: slab-out-of-bounds in copy_data+0xf3/0x2e0 
+>>>>>> drivers/char/hw_random/virtio-rng.c:68
+>>>>>> Read of size 64 at addr ffff88801a7a1580 by task syz-executor989/6542
+>>>>>>
+>>>>>
+>>>>> I'm not able to reproduce the problem with next-20211026 and the C reproducer.
+>>>>>
+>>>>> And reviewing the code in copy_data() I don't see any issue.
+>>>>>
+>>>>> Is it possible to know what it the VM configuration used to test it?
+>>>>
+>>>> Hi Laurent,
+>>>>
+>>>> syzbot used e2-standard-2 GCE VM when that happened.
+>>>> You can see some info about these VMs under the "VM info" link on the dashboard.
+>>>
+>>> Could you pls confirm whether reverting
+>>> caaf2874ba27b92bca6f0298bf88bad94067ec37 addresses this?
+>>>
+>>
+>> I've restarted the syzbot on top of "hwrng: virtio - don't wait on cleanup" [1] and the 
+>> problem has not been triggered.
+>>
+>> See https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
+> 
+> The problem seems to be introduced by the last patch:
+> 
+> "hwrng: virtio - always add a pending request"
 
-Right.
+I think I understand the problem.
 
-So after patch [2/2] _HID will always be used for the enumeration in
-such cases which may not be what happens now - and what happens now
-depends on the ordering in which the objects in question are seen
-during the namespace walk.  If the DMA device is seen before the PCI
-host bridge, it will be enumerated using the _HID.
+As we check data_avail != 0 before waiting on the completion, we can have a data_idx != 0.
+
+The following change fixes the problem for me:
+
+--- a/drivers/char/hw_random/virtio-rng.c
++++ b/drivers/char/hw_random/virtio-rng.c
+@@ -52,6 +52,8 @@ static void request_entropy(struct virtrng_info *vi)
+         struct scatterlist sg;
+
+         reinit_completion(&vi->have_data);
++       vi->data_avail = 0;
++       vi->data_idx = 0;
+
+         sg_init_one(&sg, vi->data, sizeof(vi->data));
+
+
+MST, do you update the patch or do you want I send a new version?
+
+Thanks,
+Laurent
+
