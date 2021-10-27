@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6075143C8E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C0B43C8E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239997AbhJ0Lyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:54:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45224 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234994AbhJ0Lyi (ORCPT
+        id S240047AbhJ0LzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234994AbhJ0LzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:54:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5C9D11FD45;
-        Wed, 27 Oct 2021 11:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635335532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OZA4QayrfGUEeoPIVBit6eRMtFYI12/UjxAdPE6yC4Q=;
-        b=oD/xKTG2Diq7WbDJERf2kL7fCfdfrx9a7op0gsVHPtqYIx3AofMr3/+k7yiSuTrQrdPNDG
-        MZ6BwxZAMJTI38oFJvfjLlEXW5uQftuY0+T/WXLpg49i4TMU2Jwij2TzBgm9NV2ocPi+ol
-        RRmnn8FDOmAAzMPsXWQ+eSuIDYreP1I=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EA183A3B87;
-        Wed, 27 Oct 2021 11:52:11 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 13:52:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm: have kswapd only reclaiming use min protection
- on memcg
-Message-ID: <YXk9a3X62vNTyvGE@dhcp22.suse.cz>
-References: <1635318110-1905-1-git-send-email-huangzhaoyang@gmail.com>
- <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz>
- <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
- <YXkNJjD4axYlmqQ5@dhcp22.suse.cz>
- <CAGWkznHrZ=Y3kG5j5aYdTV2294QGrQbM6251zcdGphzCGUP6dw@mail.gmail.com>
+        Wed, 27 Oct 2021 07:55:18 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBE3C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 04:52:53 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id n67so3239370iod.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 04:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LUKCzvVf4bXMMkokBp2PkhgLaFYfU3uMR3npGHmCjps=;
+        b=S+AZHrXbZYuVm/Pvz2+GEB3Dq08Hv1ZTWk+8AtAkG3JzlWxGRkELa3CCqB5wrHNV7m
+         sgTlzgeM2avBO+EIryce7pol/pO9L/u71f1vT85fXHWtVSIm7ZkqxDK5BJ2/XROsl23y
+         T0mG6VfkWYknfiRWel7YZzAebkoAoP8KMjS61gd3oAsoamc3WCs8kcbvSXPelKTvgkVL
+         eukECa3mPDrKGLGBByGyFL41jg3iSrZQR2VNuyD0fXkwz8yX1kFd+TUMovjeMyuKzzCc
+         yyPPtyR3wK+qx9jvBKYYeQiWMJnFHEIpOg5RkgIyCJoftmJqbUgqOTaq+09LV+nJPV0L
+         KQPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LUKCzvVf4bXMMkokBp2PkhgLaFYfU3uMR3npGHmCjps=;
+        b=1QNIVkueasHPtCD4Q3ftz/GRP9ql3MlMmnoC+zAAE3h5su3RhcsVRFur9PRsWSgWmX
+         4edxJsj6pOBE11QlhDWyZwjLQWCQjDu7e4R64NlRaIAzGmLuOU+lIgGV7AABD//DDZge
+         p1HTXvGr64JQakmPabQdfdpzScycOZv6xyhZqYqhtRuZ6pcU56ZoaOiUFPHUuyC5eWKW
+         PfX0IpygZqpaOBAH/sIkEOS8U35XxMY3Zuo/Flpe34cjlW+p5Q+MIhJON/Q2uANtgUAz
+         Qa5C+jFCvS38j5q9zqZqEMvngiE8uD9iRXAtzZK56Ehx1Kwy8WbdmGQlwNIJsN29snFl
+         WjKw==
+X-Gm-Message-State: AOAM533TG1ZyvZx8VwqYl5dVaObETW65bTOFjPXIQvF/y7/Z5zztFUVH
+        ZPTQO+xyDlVdY8w5FtLApYYi1ffg43NCMEsdamo=
+X-Google-Smtp-Source: ABdhPJxPPfIjl8Vb3xYFawL0A4Wm+67crjeINhgcrBDxtML+NKASWhwbWZDEq+uks/n3myKbcZgM0VbcULR5c1ou55E=
+X-Received: by 2002:a05:6602:3417:: with SMTP id n23mr19560633ioz.205.1635335572794;
+ Wed, 27 Oct 2021 04:52:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznHrZ=Y3kG5j5aYdTV2294QGrQbM6251zcdGphzCGUP6dw@mail.gmail.com>
+Received: by 2002:a4f:410:0:0:0:0:0 with HTTP; Wed, 27 Oct 2021 04:52:52 -0700 (PDT)
+Reply-To: mllchrist0574@gmail.com
+From:   Christiane <judith443.uriah@gmail.com>
+Date:   Wed, 27 Oct 2021 13:52:52 +0200
+Message-ID: <CAGOAMFrkgfD=jwd1qtAVnxWBWM5RZCR2OG0ToXnBG1FChWQRBw@mail.gmail.com>
+Subject: HOSPITAL MESSAGE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-10-21 17:19:56, Zhaoyang Huang wrote:
-> On Wed, Oct 27, 2021 at 4:26 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 27-10-21 15:46:19, Zhaoyang Huang wrote:
-> > > On Wed, Oct 27, 2021 at 3:20 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Wed 27-10-21 15:01:50, Huangzhaoyang wrote:
-> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > >
-> > > > > For the kswapd only reclaiming, there is no chance to try again on
-> > > > > this group while direct reclaim has. fix it by judging gfp flag.
-> > > >
-> > > > There is no problem description (same as in your last submissions. Have
-> > > > you looked at the patch submission documentation as recommended
-> > > > previously?).
-> > > >
-> > > > Also this patch doesn't make any sense. Both direct reclaim and kswapd
-> > > > use a gfp mask which contains __GFP_DIRECT_RECLAIM (see balance_pgdat
-> > > > for the kswapd part)..
-> > > ok, but how does the reclaiming try with memcg's min protection on the
-> > > alloc without __GFP_DIRECT_RECLAIM?
-> >
-> > I do not follow. There is no need to protect memcg if the allocation
-> > request doesn't have __GFP_DIRECT_RECLAIM because that would fail the
-> > charge if a hard limit is reached, see try_charge_memcg and
-> > gfpflags_allow_blocking check.
-> >
-> > Background reclaim, on the other hand never breaches reclaim protection.
-> >
-> > What is the actual problem you want to solve?
-> Imagine there is an allocation with gfp_mask & ~GFP_DIRECT_RECLAIM and
-> all processes are under cgroups. Kswapd is the only hope here which
-> however has a low efficiency of get_scan_count. I would like to have
-> kswapd work as direct reclaim in 2nd round which will have
-> protection=memory.min.
-
-Do you have an example where this would be a practical problem? Atomic
-allocations should be rather rare.
-
 -- 
-Michal Hocko
-SUSE Labs
+my humble regards,
+
+Dear friend how are you, I have a charitable donation fund that I want
+to donate by helping you. Please try to get back to me for more
+information. I will tell you more about myself and my plans with this
+money when I hear from you.
+
+Awaiting your reply to me to give you more details.
