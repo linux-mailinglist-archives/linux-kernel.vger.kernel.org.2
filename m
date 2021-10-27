@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD8443C97C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D691F43C984
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241833AbhJ0MX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:23:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:42740 "EHLO foss.arm.com"
+        id S241855AbhJ0MZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237238AbhJ0MX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:23:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 10D541FB;
-        Wed, 27 Oct 2021 05:21:02 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 360BE3F73D;
-        Wed, 27 Oct 2021 05:20:59 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 13:20:56 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v11 0/5] arm64 userspace counter support
-Message-ID: <20211027122056.GD54628@C02TD0UTHF1T.local>
-References: <20211019231907.1009567-1-robh@kernel.org>
- <20211026131039.GC34073@C02TD0UTHF1T.local>
- <CAL_Jsq+JLcWESzGzjsmrir+gCFEO88YMYdj+FOBhjZgSBNOeVA@mail.gmail.com>
+        id S237408AbhJ0MZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 027F0610A5;
+        Wed, 27 Oct 2021 12:22:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635337360;
+        bh=KrKaQqKbbs7fp0tX/5B2QBFkr3zbaPH6N//I03icq24=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ao9WbRSQAymJBRKUQbYazQ5RSOSI2vIb6XrGwWk0hPl4q51jMvh7TQ9cqCasKBzV/
+         9xUtimn4Qz30W69d96vo+tln64ib8+OHRfWEadE0ZsUn5x7DEaQqKMpLpGmf3xZdKI
+         7GYvEydp4YbyNWCdeJgWG3MNYCY4zRfJeX9NPBEdpBzYmGWHAItssW2FENkz0TnQoh
+         cJ4+YSoxsgc7Gwfb2dz84CMXKN+9Zxyr/s9z5z0EDdNaDhheCc8w1Gw4mNAhUaIsk8
+         e6F/nhIExzQt/4keODrgRI9kLEOA7GbDNLiXWQdtuMilGbaWhOQ8Qz4NSGWnGSk+9F
+         hhoJ4bN0PzA1w==
+Received: by mail-ot1-f51.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso3320964otl.4;
+        Wed, 27 Oct 2021 05:22:39 -0700 (PDT)
+X-Gm-Message-State: AOAM530K7kAYMGoMFLYISekb1QzCVe24E18vvq9B1gf9QkA/5sPy7tBS
+        71CY6bcsvBs/ucNeFd4I+2qezT4mXkBqxMxAGB0=
+X-Google-Smtp-Source: ABdhPJzVX/seCAE8zMFUTrmcCl1ksiUWfoUg3beE0jMfsnuGwfY2cGApv5OTKHT/FXGbFtKlxXNBzniBhk1jb7R49p4=
+X-Received: by 2002:a05:6830:1018:: with SMTP id a24mr25527047otp.112.1635337359227;
+ Wed, 27 Oct 2021 05:22:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+JLcWESzGzjsmrir+gCFEO88YMYdj+FOBhjZgSBNOeVA@mail.gmail.com>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net> <20211027120515.GC54628@C02TD0UTHF1T.local>
+In-Reply-To: <20211027120515.GC54628@C02TD0UTHF1T.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 27 Oct 2021 14:22:27 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+Message-ID: <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 08:34:35AM -0500, Rob Herring wrote:
-> On Tue, Oct 26, 2021 at 8:10 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Tue, Oct 19, 2021 at 06:19:02PM -0500, Rob Herring wrote:
-> > > Another version of arm64 userspace counter access support.
+On Wed, 27 Oct 2021 at 14:05, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Tue, Oct 26, 2021 at 10:16:22PM +0200, Peter Zijlstra wrote:
+> > On Wed, Oct 13, 2021 at 11:16:43AM -0700, Sami Tolvanen wrote:
+> > > This series adds support for Clang's Control-Flow Integrity (CFI)
+> > > checking to x86_64. With CFI, the compiler injects a runtime
+> > > check before each indirect function call to ensure the target is
+> > > a valid function with the correct static type. This restricts
+> > > possible call targets and makes it more difficult for an attacker
+> > > to exploit bugs that allow the modification of stored function
+> > > pointers. For more details, see:
 > > >
-> > > The arm64 support departs from the x86 implementation by requiring the user
-> > > to explicitly request user access (via attr.config1) and only enables access
-> > > for task bound events. Since usage is explicitly requested, access is
-> > > enabled at perf_event_open() rather than on mmap() as that greatly
-> > > simplifies the implementation. Rather than trying to lock down the access
-> > > as the x86 implementation has been doing, we can start with only a limited
-> > > use case enabled and later expand it if needed.
-> > >
-> > > I've run this version thru Vince's perf tests[13] with arm64 support added.
-> > > I wish I'd found these tests sooner...
+> > >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
 > >
-> > When you say "with arm64 support added", do you mean with patches not
-> > yet upstreamed?
-> 
-> Correct.
-
-Did that require significant changes? I'd like to be able to run the
-tests locally if possible.
-
-> > I took a look at the upstream repo, and there's some existing RDPMC
-> > support even though upstream never previously supported userspace
-> > access. That support code uses PMSELR_EL0, which this series adds no
-> > provisions for.
+> > So, if I understand this right, the compiler emits, for every function
+> > two things: 1) the actual funcion and 2) a jump-table entry.
 > >
-> > Kernel-side, we'll need to either:
+> > Then, every time the address of a function is taken, 2) is given instead
+> > of the expected 1), right?
+>
+> Yes, and we had to bodge around this with function_nocfi() to get the
+> actual function address.
+>
+> Really there should be a compiler intrinsic or attribute for this, given
+> the compiler has all the releveant information available. On arm64 we
+> had to us inine asm to generate the addres...
+>
+> Taking a step back, it'd be nicer if we didn't have the jump-table shim
+> at all, and had some SW landing pad (e.g. a NOP with some magic bytes)
+> in the callees that the caller could check for. Then function pointers
+> would remain callable in call cases, and we could explcitly add landing
+> pads to asm to protect those. I *think* that's what the grsecurity folk
+> do, but I could be mistaken.
+>
+> > But how does this work with things like static_call(), which we give a
+> > function address (now a jump-table entry) and use that to write direct
+> > call instructions?
 > >
-> > * Document that PMSELR_EL0 is unreliable, and explcitly zero it within
-> >   the kernel such that it cnanot be used as a covert channel. Get the
-> >   tests updated to not rely on the never-previously-supported use of
-> >   PMSELR_EL0.
+> > Should not this jump-table thingy get converted to an actual function
+> > address somewhere around arch_static_call_transform() ? This also seems
+> > relevant for arm64 (which already has CLANG_CFI supported) given:
 > >
-> > * Context switch PMSELR_EL0 (which'll IIUC is unreliable for big.LITTLE,
-> >   even where the registers exist on each CPU).
-> 
-> Whether we support userspace using PMSELR_EL0 or not, we just need to
-> zero it when userspace access is enabled (like the dirty counters).
+> >   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
+>
+> Ugh, yeah, we'll need to do the function_nocfi() dance somewhere...
+>
 
-Sure; doing that in armv8pmu_enable_user_access() makes sense to me,
-given it's not exposed to userspace otherwise, and the kernel itself
-doesn't care.
+Sadly, that only works on symbol names, so we cannot use it to strip
+CFI-ness from void *func arguments passed into the static call API,
+unfortunately.
 
-If we do that, I think that we should document that it may be zero'd
-arbitrarily from userspace's PoV. That should only need a sentence or
-two in the documentation added in the final patch.
-
-Thanks,
-Mark.
+Also, function_nocfi() seems broken in the sense that it relies on the
+symbol existing in the global namespace, which may not be true for
+function symbols with static linkage, as they can be optimized away
+entirely. I think the same might apply to function symbols with
+external linkage under LTO.
