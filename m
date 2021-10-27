@@ -2,139 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA0C43D1E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0115543D1E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240395AbhJ0Tyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33868 "EHLO
+        id S243750AbhJ0Tyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhJ0Tyu (ORCPT
+        with ESMTP id S231656AbhJ0Tyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:54:50 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B139DC061570;
-        Wed, 27 Oct 2021 12:52:24 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso5998839pjm.4;
-        Wed, 27 Oct 2021 12:52:24 -0700 (PDT)
+        Wed, 27 Oct 2021 15:54:53 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942E2C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 12:52:27 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id l186so3999493pge.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 12:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5sUNlB/oeM7v7Lajc1viu0P4O/wTbw1CkB2X041cqCg=;
-        b=kN+rFpi6Xvrq4I1a0elUch1TmP+0VipuO4agksFf6bPJaJ44eZ7R8sLkFRm1/jEuht
-         EB/9egA/hDHzDWAP9vIdLzBgs/TwmiPpnhSO9DgIStJ8eupi2EGvHzIu5MDpYTcJz4/D
-         jIOVplfvUDIZFXG7UhrrIhFo5lCHm8YJF35wKGev+i+ldz6sY3qOPtufj9Pf53IRNIyV
-         OFNFY9VcHXYBJoMZh9Z0J9IRP1zl5LULq6GpkjFajonSfmIN4gg59HqEVT6yOCoq3b0u
-         m9jadSPrK+pYgArBn4D0PrBCDoUDJL3zt+U6YZgJqtv/EQ3d+P7pSHa1uN4RAVxSy4IM
-         gOuQ==
+        bh=bSeqm2vFVgD0HsDYrqeR0xtWPQ5r0M1XHRu+rF4K7d8=;
+        b=bryM6u/8Tef5/jCCnk6o5l6gfH5RHYrSd1LCAAgsfJlGUiDxXBzaIypwDPv4NPTRp8
+         g7k86a1+mSPMeAPVGl+8xKEr1r0fq2y6+s0BFMHL0Z7A7FB6smqfWRXtPO1grvrkShYG
+         jRrNroQxGdmRXLFg/rAdj/s3n6UdVVHKa9rIBs94a9/2SBjNNx/7ge1C0jn+CyPwDRbq
+         MixqdvM6NQZJNLDvYQktosmJxJp+4BV9UCqCoimlkJfg67j60fRpIzriXld5Ba7+v/Ap
+         /VEwvSPsytDMXszkNzmdyTwPhQy6bdRVPF/MPEIgndg7QqdKNDfVhEW1Sf1rbB71t7Dn
+         EHjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5sUNlB/oeM7v7Lajc1viu0P4O/wTbw1CkB2X041cqCg=;
-        b=yt/6lsOkXnw1m0QwbfLlsJMOG05JaaGRPck3Xly3nqdVRZFwyrGdzOsZ85ZnaFeKdD
-         k3T2iOFVrW4IuSMqpU0reKnA+FsM1rhyiLJPwdlR9sEB9D2+VIUpPnW+s/VI8B84mVwX
-         hJb493GlDFJvMJqBxWtL15yyVFbaSJilgKgImvUatr9ZcA0cgpsloRdqUvOQw3NnCu/4
-         x4ks7bZH6d4VYzZ7Af6fTzY19yw+21qAZZ3dB81uFwBa1Cl6Y2jRtRBz5HhPbSAP6Df4
-         j4We178mddDjqJCzDczxjxc0/YJFp9zIBD23YKzmbDl7rwZgkUeb9oer+FW2D3iun7bu
-         LGRg==
-X-Gm-Message-State: AOAM530flJbrz/MfCipNdf4Y1FOlIAer/jnL9UwAyaCPGEPGeJmI4bD1
-        ymDanWg5l6z8GgDMjs7Vkng=
-X-Google-Smtp-Source: ABdhPJxnhGGhyOcAl898TGV06elPp3eS65A6ugFkxNlpR9hmUWsA3aFLPh0FJumtdnL263vo43m+6Q==
-X-Received: by 2002:a17:903:1cd:b0:140:43f0:353c with SMTP id e13-20020a17090301cd00b0014043f0353cmr23652935plh.81.1635364344086;
-        Wed, 27 Oct 2021 12:52:24 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id nr14sm509433pjb.24.2021.10.27.12.52.22
+        bh=bSeqm2vFVgD0HsDYrqeR0xtWPQ5r0M1XHRu+rF4K7d8=;
+        b=Zu6jB8cbVaDSbLizt9HNedt/U7LV/sg/u46x/6s13gz0qsoyISfkXqHBILd4lPzctF
+         fnaGEcfk8juR3xhkE3w6NcAW7HqKbrkrg4xTUo7I58Gjs9qxI/ZkuNlrKSqK2iOs4K92
+         VH0sost8OWgSqbUw80nh81kXDpDcJX8Rrcscz7RK0PxHoEaBJhQoGOnjSKXUtJJ6mGjr
+         BAEiSriY7YO/bAcDEfeDwbab84vaxDXy7C56PENrM5VpFjQNBQ+6F9jLPJtDglpNPYBA
+         PrDJwQNh8o1qlfnwvmchvmU1JYO/wRosm2zUatdxlSwjxze5jN/g+agcRketnTK/bzAi
+         muhg==
+X-Gm-Message-State: AOAM533XgMh8Fx1/mSD83TFNIGg4gh4xOYryuvRPYXi1NxhwSlUj82wf
+        +kS5Ej+5EzPo+HZjaCTiylBBdUrPmUHmaQ==
+X-Google-Smtp-Source: ABdhPJyLEYAoib3Y6ZBD2HwcZVwzxz0Dq07uLW47IEE7HFMgHVbdNLYRkWMaOecw8v93qYfdoHq3uw==
+X-Received: by 2002:a63:9212:: with SMTP id o18mr25778861pgd.392.1635364347024;
+        Wed, 27 Oct 2021 12:52:27 -0700 (PDT)
+Received: from p14s.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id x9sm5050899pjp.50.2021.10.27.12.52.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 12:52:23 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     hughd@google.com, sunhao.th@gmail.com, willy@infradead.org,
-        kirill.shutemov@linux.intel.com, songliubraving@fb.com,
-        andrea.righi@canonical.com, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH] mm: khugepaged: skip huge page collapse for special files
-Date:   Wed, 27 Oct 2021 12:52:21 -0700
-Message-Id: <20211027195221.3825-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 27 Oct 2021 12:52:25 -0700 (PDT)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL v3] Coresight changes for v5.16
+Date:   Wed, 27 Oct 2021 13:52:24 -0600
+Message-Id: <20211027195224.4005465-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The read-only THP for filesystems would collapse THP for file opened
-readonly and mapped with VM_EXEC, the intended usecase is to avoid TLB
-miss for large text segment.  But it doesn't restrict the file types so
-THP could be collapsed for non-regular file, for example, block device,
-if it is opened readonly and mapped with EXEC permission.  This may
-cause bugs, like [1] and [2].
+The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
 
-This is definitely not intended usecase, so just collapsing THP for regular
-file in order to close the attack surface.
+  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
 
-[1] https://lore.kernel.org/lkml/CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com/
-[2] https://lore.kernel.org/linux-mm/000000000000c6a82505ce284e4c@google.com/
+are available in the Git repository at:
 
-Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Reported-by: syzbot+aae069be1de40fb11825@syzkaller.appspotmail.com
-Cc: Hao Sun <sunhao.th@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Andrea Righi <andrea.righi@canonical.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
-The patch is basically based off the proposal from Hugh
-(https://lore.kernel.org/linux-mm/a07564a3-b2fc-9ffe-3ace-3f276075ea5c@google.com/).
-It seems Hugh is too busy to prepare the patch for formal submission (I
-didn't hear from him by pinging him a couple of times on mailing list),
-so I prepared the patch and added his SOB.
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git tags/coresight-next-v5.16.v3
 
- mm/khugepaged.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+for you to fetch changes up to 561ced0bb90a4be298b7db5fb54f29731d74a3f6:
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..e91b7271275e 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -445,22 +445,25 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
- 	if (!transhuge_vma_enabled(vma, vm_flags))
- 		return false;
- 
--	/* Enabled via shmem mount options or sysfs settings. */
--	if (shmem_file(vma->vm_file) && shmem_huge_enabled(vma)) {
-+	if (vma->vm_file)
- 		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
- 				HPAGE_PMD_NR);
--	}
-+
-+	/* Enabled via shmem mount options or sysfs settings. */
-+	if (shmem_file(vma->vm_file))
-+		return shmem_huge_enabled(vma);
- 
- 	/* THP settings require madvise. */
- 	if (!(vm_flags & VM_HUGEPAGE) && !khugepaged_always())
- 		return false;
- 
--	/* Read-only file mappings need to be aligned for THP to work. */
-+	/* Only regular file is valid */
- 	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
--	    !inode_is_open_for_write(vma->vm_file->f_inode) &&
- 	    (vm_flags & VM_EXEC)) {
--		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
--				HPAGE_PMD_NR);
-+		struct inode *inode = vma->vm_file->f_inode;
-+
-+		return !inode_is_open_for_write(inode) &&
-+			S_ISREG(inode->i_mode);
- 	}
- 
- 	if (!vma->anon_vma || vma->vm_ops)
--- 
-2.26.2
+  arm64: errata: Enable TRBE workaround for write to out-of-range address (2021-10-27 11:46:06 -0600)
 
+----------------------------------------------------------------
+Coresight changes for v5.16
+
+- A new option to make coresight cpu-debug capabilities available as early
+as possible in the kernel boot process.
+
+- Make trace sessions more enduring by coping with scenarios where events
+are scheduled on CPUs that can't reach the selected sink.
+
+- A set of improvement to make the TMC-ETR driver more efficient.
+
+- Enhancements to the TRBE driver to correct several errata.
+
+- An enhancement to make the AXI burts size configurable for TMC devices
+that can't work with the default value.
+
+- A fix in the CTI module to use the correct device when calling
+pm_runtime_put()
+
+- The addition of the Kryo-5xx device to the list of support ETMs.
+
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+----------------------------------------------------------------
+Brian Norris (1):
+      coresight: cpu-debug: Control default behavior via Kconfig
+
+James Clark (1):
+      coresight: Don't immediately close events that are run on invalid CPU/sink combos
+
+Leo Yan (5):
+      coresight: tmc-etr: Add barrier after updating AUX ring buffer
+      coresight: tmc-etf: Add comment for store ordering
+      coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer
+      coresight: Update comments for removing cs_etm_find_snapshot()
+      coresight: tmc-etr: Speed up for bounce buffer in flat mode
+
+Suzuki K Poulose (28):
+      arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
+      arm64: errata: Add detection for TRBE overwrite in FILL mode
+      arm64: errata: Add workaround for TSB flush failures
+      arm64: errata: Add detection for TRBE write to out-of-range
+      coresight: etm4x: Save restore TRFCR_EL1
+      coresight: etm4x: Use Trace Filtering controls dynamically
+      coresight: etm-pmu: Ensure the AUX handle is valid
+      coresight: trbe: Ensure the format flag is always set
+      coresight: trbe: Drop duplicate TRUNCATE flags
+      coresight: trbe: Unify the enabling sequence
+      coresight: trbe: irq handler: Do not disable TRBE if no action is needed
+      coresight: trbe: Fix handling of spurious interrupts
+      coresight: trbe: Do not truncate buffer on IRQ
+      coresight: trbe: End the AUX handle on truncation
+      coresight: trbe: Prohibit trace before disabling TRBE
+      coresight: trbe: Fix incorrect access of the sink specific data
+      coresight: trbe: Defer the probe on offline CPUs
+      coresight: trbe: Add a helper to calculate the trace generated
+      coresight: trbe: Add a helper to pad a given buffer area
+      coresight: trbe: Decouple buffer base from the hardware base
+      coresight: trbe: Allow driver to choose a different alignment
+      coresight: trbe: Add infrastructure for Errata handling
+      coresight: trbe: Workaround TRBE errata overwrite in FILL mode
+      coresight: trbe: Add a helper to determine the minimum buffer size
+      coresight: trbe: Make sure we have enough space
+      coresight: trbe: Work around write to out of range
+      arm64: errata: Enable workaround for TRBE overwrite in FILL mode
+      arm64: errata: Enable TRBE workaround for write to out-of-range address
+
+Tanmay Jagdale (2):
+      dt-bindings: coresight: Add burst size for TMC
+      coresight: tmc: Configure AXI write burst size
+
+Tao Zhang (2):
+      coresight: cti: Correct the parameter for pm_runtime_put
+      coresight: etm4x: Add ETM PID for Kryo-5XX
+
+ Documentation/arm64/silicon-errata.rst             |  12 +
+ .../devicetree/bindings/arm/coresight.txt          |   5 +
+ arch/arm64/Kconfig                                 | 111 +++++
+ arch/arm64/include/asm/barrier.h                   |  16 +-
+ arch/arm64/include/asm/cputype.h                   |   4 +
+ arch/arm64/kernel/cpu_errata.c                     |  64 +++
+ arch/arm64/tools/cpucaps                           |   3 +
+ drivers/hwtracing/coresight/Kconfig                |  13 +
+ drivers/hwtracing/coresight/coresight-cpu-debug.c  |   2 +-
+ drivers/hwtracing/coresight/coresight-cti-core.c   |   2 +-
+ drivers/hwtracing/coresight/coresight-etb10.c      |   5 +-
+ drivers/hwtracing/coresight/coresight-etm-perf.c   |  56 ++-
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 101 +++-
+ drivers/hwtracing/coresight/coresight-etm4x.h      |   9 +-
+ .../coresight/coresight-self-hosted-trace.h        |  33 ++
+ drivers/hwtracing/coresight/coresight-tmc-core.c   |  21 +-
+ drivers/hwtracing/coresight/coresight-tmc-etf.c    |  10 +-
+ drivers/hwtracing/coresight/coresight-tmc-etr.c    |  52 +-
+ drivers/hwtracing/coresight/coresight-tmc.h        |   6 +-
+ drivers/hwtracing/coresight/coresight-trbe.c       | 534 +++++++++++++++++----
+ 20 files changed, 905 insertions(+), 154 deletions(-)
+ create mode 100644 drivers/hwtracing/coresight/coresight-self-hosted-trace.h
