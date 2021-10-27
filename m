@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D5C43D393
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3A543D397
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244205AbhJ0VLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:11:44 -0400
-Received: from ink.ssi.bg ([178.16.128.7]:36507 "EHLO ink.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244195AbhJ0VLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:11:43 -0400
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id E1AE43C0332;
-        Thu, 28 Oct 2021 00:09:12 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 19RL999a042887;
-        Thu, 28 Oct 2021 00:09:10 +0300
-Date:   Thu, 28 Oct 2021 00:09:09 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     yangxingwu <xingwu.yang@gmail.com>
-cc:     Simon Horman <horms@verge.net.au>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] ipvs: Fix reuse connection if RS weight is 0
-In-Reply-To: <CA+7U5Jta_g2vCXiwScVVwLZppWp51TDOB7LxUxeundkPxNZYnA@mail.gmail.com>
-Message-ID: <35e6215-4fb3-5149-a888-67aa6fae958f@ssi.bg>
-References: <20211025115910.2595-1-xingwu.yang@gmail.com> <707b5fb3-6b61-c53-e983-bc1373aa2bf@ssi.bg> <CA+7U5JsSuwqP7eHj1tMHfsb+EemwrhZEJ2b944LFWTroxAnQRQ@mail.gmail.com> <1190ef60-3ad9-119e-5336-1c62522aec81@ssi.bg> <CA+7U5JvvsNejgOifAwDdjddkLHUL30JPXSaDBTwysSL7dhphuA@mail.gmail.com>
- <CA+7U5Jta_g2vCXiwScVVwLZppWp51TDOB7LxUxeundkPxNZYnA@mail.gmail.com>
+        id S240833AbhJ0VOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:14:44 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:45014 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238586AbhJ0VOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 17:14:43 -0400
+Received: by mail-oi1-f182.google.com with SMTP id y207so5275202oia.11;
+        Wed, 27 Oct 2021 14:12:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k3QbaEEwsED/cBYuJpMYmPOuATHo/hhXNN4M6qAU9G4=;
+        b=cFQDCbl8GOSSH05hpW3JhSUswCO2bfHo8BAL1QFFVygDtNehaV3UpbRicYGumcMBeA
+         XJccUseRfVSbiV4hSRtEGCl6CAv00i/M1okTRNCboWCc1jwiOFl+GbAW4V9eJGtbUfnB
+         qMrjbdJh3CU8U3k/+p7cME04apjKZr1180+j4HQ3pprDZQQlyaMbMf+03enRbaci47+V
+         5iExKJFbD21jGXk8rnnUYUAM7Svh7l5KFe80Ia+HOlnJx1M4RcuJr6+eVP0AuiDIwvDf
+         wnRJk0sy5UzO5XPi5Z2WfDkZvgOJa/9zNtxHO8EuKWNl9SmEmNLYLHXwGHS9q/pEtnvu
+         Zg4Q==
+X-Gm-Message-State: AOAM531gwH8LkASd7OlQzQpvOSbTYI4q3FJoAgioi5BfYd4GRYuNI54/
+        /nLSxG1Q29leFYyyQUFi6gNvLxcvvA==
+X-Google-Smtp-Source: ABdhPJxe2ua1/gV81De27mOC9lJwqcKmxLbHs05qHWaf/qz4cHIdZnnQ1ssNAf0BJpeFxKvm5ffOhg==
+X-Received: by 2002:a05:6808:2189:: with SMTP id be9mr40292oib.145.1635369137058;
+        Wed, 27 Oct 2021 14:12:17 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l7sm381352oog.22.2021.10.27.14.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 14:12:16 -0700 (PDT)
+Received: (nullmailer pid 2169171 invoked by uid 1000);
+        Wed, 27 Oct 2021 21:12:15 -0000
+Date:   Wed, 27 Oct 2021 16:12:15 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kishon@ti.com, vkoul@kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: phy: Add the Amlogic Meson8 HDMI TX
+ PHY bindings
+Message-ID: <YXnAr0nIuzeKFhLm@robh.at.kernel.org>
+References: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
+ <20211020195107.1564533-2-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020195107.1564533-2-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-	Hello,
-
-On Wed, 27 Oct 2021, yangxingwu wrote:
-
-> what we want is if RS weight is 0, then no new connections should be
-> served even if conn_reuse_mode is 0, just as commit dc7b3eb900aa
-> ("ipvs: Fix reuse connection if real server is
-> dead") trying to do
+On Wed, 20 Oct 2021 21:51:06 +0200, Martin Blumenstingl wrote:
+> Amlogic Meson8, Meson8b and Meson8m2 all include an identical (or at
+> least very similar) HDMI TX PHY. The PHY registers are part of the HHI
+> register area.
 > 
-> Pls let me know if there are any other issues of concern
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  .../phy/amlogic,meson8-hdmi-tx-phy.yaml       | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/amlogic,meson8-hdmi-tx-phy.yaml
+> 
 
-	My concern is with the behaviour people expect
-from each sysctl var: conn_reuse_mode decides if port reuse
-is considered for rescheduling and expire_nodest_conn
-should have priority only for unavailable servers (nodest means
-No Destination), not in this case.
-
-	We don't know how people use the conn_reuse_mode=0
-mode, one may bind to a local port and try to send multiple
-connections in a row with the hope they will go to same real
-server, i.e. as part from same "session", even while weight=0.
-If they do not want such behaviour (99% of the cases), they
-will use the default conn_reuse_mode=1. OTOH, you have different
-expectations for mode 0, not sure why but you do not want to use
-the default mode=1 which is safer to use. May be the setups
-forget to stay with conn_reuse_mode=1 on kernels 5.9+ and
-set the var to 0 ?
-
-	The problem with mentioned commit dc7b3eb900aa is that
-it breaks FTP and persistent connections while the goal of
-weight=0 is graceful inhibition of the server. We made
-the mistake to add priority for expire_nodest_conn when weight=0.
-This can be fixed with a !cp->control check. We do not want
-expire_nodest_conn to kill every connection during the
-graceful period.
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+Reviewed-by: Rob Herring <robh@kernel.org>
