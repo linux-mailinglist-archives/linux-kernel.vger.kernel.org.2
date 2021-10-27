@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F9A43D5B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F014443D5B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhJ0Va6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        id S232661AbhJ0Va4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbhJ0Vaf (ORCPT
+        with ESMTP id S233715AbhJ0Vaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Oct 2021 17:30:35 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459D5C0431B6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id h193so4274044pgc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CD8C0431B7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:22:26 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so3102536pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:22:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=Cg/j8P5uXcrTRk8plQU0l3GmOiPBDd+Pj7xWYOIDOEI=;
-        b=VBNZsF6NQ/ixkGxYASj3KC/GEuP/y6W6CeLxaRis7vuzluAaL6G/w5E5vMRHPhrx8i
-         dld3o18CI4Dc4Zdty9h7juuD08X/s7KtxKBElkdClTA46jAqYTo/OX6cybIMvoYsCMtk
-         SF0aZUSuBjvp/yyjfTdF+qzqoZpOF2aTTy2QrugdZU7sWsaJspce9kW6CPrQ0WgQzFSM
-         ponX13Hk+O+ndH/cBZk8LL66ZTm+IEdY/ZTN34X1GsodG71xjzY2Nu47zvqqzsiOSrxf
-         OzWnl42d5ZveG2FvNY7uBIzZG4JD6Zzp0bmBPnQQsZ/guIHwtGo8VyH14B6kY1c5CSB9
-         Ywng==
+        bh=Xc/Ast+KV0V+8bSAPuAHdixgIXnPuRbN0YHRGdpcxXo=;
+        b=f5hvHSRetT45O3UxIL1kMb2dMj9wGCIFtKwmoP0RZpjxQHK4++R5e1HzGlhXAFJrKg
+         w/91j323bKPK4M2C33YVXi5g1H8lqU9JE0fVjg1sRRzNJ626EJbgUwq2yf0aODJiBENU
+         3vsKCaoEbHxPYPrlH3sPqECE6CMapfED39lwC8WA36zIj/peheyUUv6xvqrXUF9vN1q1
+         UzpmZgwX+ZLc+jNuQDUJ43Y8KshGsngIlLOLpR/4dKW8Wu83M2jBEsdtkFLU+DqBkKp5
+         P1hW2Yo23r3yatT/a3fCBiJCQX8KJfqY05HcKadmpOkcuVphpwXih4PEYuhjVKT/xJep
+         FfMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=Cg/j8P5uXcrTRk8plQU0l3GmOiPBDd+Pj7xWYOIDOEI=;
-        b=AgqK1UCL39ReNMHOmZ90+fNitPiqlP/ne0iyk+k0Delpf8G1IEWGEQK+Gr6ojeYUwm
-         hSgRASVUeWJjbH6pMiSPiI41qiKepHzmbwV/z0MAheiM8MsuMxW1KTs+K68+H9LyyoJb
-         vlfUXTp3RZGQuUu+RsBa9llN3FoEXTwSPsH/k+SgepA/ue+v9ObDIll7obnhlDwX1OBQ
-         12cOhry9QO8AO1AqufuEtOZo2/v0D2swzNminti6cCqvq4ER4EqQu4tF2iIdG46Ud/5/
-         njOCM4AgH1SB4hgzoQKkRW2qM9PMFiuvESQyHNEd8yH/yJCqFzq+AwbdSk349cr5Q+28
-         vgKA==
-X-Gm-Message-State: AOAM530S+CYpGxmUO5xnej6QngPYC0zz48mKPSKmATeOHRjp7rHGXAM4
-        hKRZtwYV3gD4+KFeiJKiJQYmdw==
-X-Google-Smtp-Source: ABdhPJwlysZ71JpZ1NP3hVtYloRcJHriqqc67RvJogbCqmKB8hmG0g5dJe7cBf/N99WVwxSAx5uJ6g==
-X-Received: by 2002:a05:6a00:1945:b0:44c:a955:35ea with SMTP id s5-20020a056a00194500b0044ca95535eamr99825pfk.85.1635369744673;
-        Wed, 27 Oct 2021 14:22:24 -0700 (PDT)
+        bh=Xc/Ast+KV0V+8bSAPuAHdixgIXnPuRbN0YHRGdpcxXo=;
+        b=uLDNs3yomUShuQ37w3ZM/2Qq10ESpE9x96dM3NfqPAnhkGmQvUbML0/6F87SR3aKDD
+         Z2E9EmHY+RqMfsN0rJytZI1Mwq6DKXtIsiyTsDpRfUH4o9/jjHzZs5zLxgal8THWVpQY
+         CBwBA6ODKCSvjxL+MCH/NFVjxZd/ydciGWDWeMPOHglHA8M/6RADVsCLzE6GP4rWMi3L
+         qY/60KDE6Ccrek6PFJT/9wxiM+FIsKTja+NJD1rUbkTeqo0hwiOCEB3NqgNYmn5+E1Kq
+         Ez9sNHUdYUArzyMIWud4Zs3aUmdhsFqcClnWfqwG4UFrOxnOla2Y0jM7RZNVMzMgJfAi
+         44YA==
+X-Gm-Message-State: AOAM5301CAZURpM0169UUeOJL3KqhHLn3hWmSMpnZAY8+4hjTwSNs1DA
+        TgwiKGGy0QmBCoOzL64AAfvdAl3NubGrcunv
+X-Google-Smtp-Source: ABdhPJxU7ztJ7EYetBA4CpM7AQeHzHBfd6L84gm3zgJk/LxLo27YprSadcc+JwCmAojqGzj1ssbmyQ==
+X-Received: by 2002:a17:90a:1d0b:: with SMTP id c11mr128695pjd.207.1635369745925;
+        Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
 Received: from localhost ([2620:0:1000:5e10:d96b:421d:2a73:9190])
-        by smtp.gmail.com with ESMTPSA id z22sm928252pfe.1.2021.10.27.14.22.23
+        by smtp.gmail.com with ESMTPSA id p13sm671181pgr.27.2021.10.27.14.22.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:22:24 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 14:22:24 -0700 (PDT)
-X-Google-Original-Date: Wed, 27 Oct 2021 14:12:08 PDT (-0700)
-Subject:     Re: [PATCH] riscv: fix misalgned trap vector base address
-In-Reply-To: <20211018052238.522905-1-181250012@smail.nju.edu.cn>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        alex@ghiti.fr, vitaly.wool@konsulko.com, anup@brainfault.org,
-        seanga2@gmail.com, wangkefeng.wang@huawei.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        yuzihao@ict.ac.cn, 181250012@smail.nju.edu.cn
+        Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 14:22:25 -0700 (PDT)
+X-Google-Original-Date: Wed, 27 Oct 2021 14:22:10 PDT (-0700)
+Subject:     Re: [PATCH 13/15] irq: riscv: perform irqentry in entry code
+In-Reply-To: <20211021180236.37428-14-mark.rutland@arm.com>
+CC:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
+        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        mark.rutland@arm.com, Marc Zyngier <maz@kernel.org>,
+        nickhu@andestech.com, paulmck@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, peterz@infradead.org,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tglx@linutronix.de, Linus Torvalds <torvalds@linux-foundation.org>,
+        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     181250012@smail.nju.edu.cn
-Message-ID: <mhng-fca625ce-8f29-4e27-8f66-bc70e7cff555@palmerdabbelt-glaptop>
+To:     mark.rutland@arm.com
+Message-ID: <mhng-8062da5e-6052-4722-ba26-c0a407747ca6@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -67,29 +72,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Oct 2021 22:22:38 PDT (-0700), 181250012@smail.nju.edu.cn wrote:
-> * The trap vector marked by label .Lsecondary_park should align on a
->   4-byte boundary. If not, CSR_TVEC may be set to an incorrect address.
-> * This bug is introduced at commit e011995e826f8 ("RISC-V: Move relocate
->   and few other functions out of __init").
-> * This bug is exposed with an educational emualtor.
+On Thu, 21 Oct 2021 11:02:34 PDT (-0700), mark.rutland@arm.com wrote:
+> In preparation for removing HANDLE_DOMAIN_IRQ_IRQENTRY, have arch/riscv
+> perform all the irqentry accounting in its entry code. As arch/riscv
+> uses GENERIC_IRQ_MULTI_HANDLER, we can use generic_handle_arch_irq() to
+> do so.
 >
-> Signed-off-by: Chen Lu <181250012@smail.nju.edu.cn>
+> Since generic_handle_arch_irq() handles the irq entry and setting the
+> irq regs, and happens before the irqchip code calls handle_IPI(), we can
+> remove the redundant irq entry and irq regs manipulation from
+> handle_IPI().
+>
+> There should be no functional change as a result of this patch.
+>
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
 > ---
->  arch/riscv/kernel/head.S | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/riscv/Kconfig        | 1 -
+>  arch/riscv/kernel/entry.S | 3 +--
+>  arch/riscv/kernel/smp.c   | 9 +--------
+>  3 files changed, 2 insertions(+), 11 deletions(-)
 >
-> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-> index fce5184b22c3..52c5ff9804c5 100644
-> --- a/arch/riscv/kernel/head.S
-> +++ b/arch/riscv/kernel/head.S
-> @@ -193,6 +193,7 @@ setup_trap_vector:
->  	csrw CSR_SCRATCH, zero
->  	ret
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 740653063a56..301a54233c7e 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -63,7 +63,6 @@ config RISCV
+>  	select GENERIC_SMP_IDLE_THREAD
+>  	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+>  	select HANDLE_DOMAIN_IRQ
+> -	select HANDLE_DOMAIN_IRQ_IRQENTRY
+>  	select HAVE_ARCH_AUDITSYSCALL
+>  	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+>  	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index 98f502654edd..64236f7efde5 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -130,8 +130,7 @@ skip_context_tracking:
 >
-> +.align 2
->  .Lsecondary_park:
->  	/* We lack SMP support or have too many harts, so park this hart */
->  	wfi
+>  	/* Handle interrupts */
+>  	move a0, sp /* pt_regs */
+> -	la a1, handle_arch_irq
+> -	REG_L a1, (a1)
+> +	la a1, generic_handle_arch_irq
+>  	jr a1
+>  1:
+>  	/*
+> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+> index 921d9d7df400..2f6da845c9ae 100644
+> --- a/arch/riscv/kernel/smp.c
+> +++ b/arch/riscv/kernel/smp.c
+> @@ -140,12 +140,9 @@ void arch_irq_work_raise(void)
+>
+>  void handle_IPI(struct pt_regs *regs)
+>  {
+> -	struct pt_regs *old_regs = set_irq_regs(regs);
+>  	unsigned long *pending_ipis = &ipi_data[smp_processor_id()].bits;
+>  	unsigned long *stats = ipi_data[smp_processor_id()].stats;
+>
+> -	irq_enter();
+> -
+>  	riscv_clear_ipi();
+>
+>  	while (true) {
+> @@ -156,7 +153,7 @@ void handle_IPI(struct pt_regs *regs)
+>
+>  		ops = xchg(pending_ipis, 0);
+>  		if (ops == 0)
+> -			goto done;
+> +			return;
+>
+>  		if (ops & (1 << IPI_RESCHEDULE)) {
+>  			stats[IPI_RESCHEDULE]++;
+> @@ -189,10 +186,6 @@ void handle_IPI(struct pt_regs *regs)
+>  		/* Order data access and bit testing. */
+>  		mb();
+>  	}
+> -
+> -done:
+> -	irq_exit();
+> -	set_irq_regs(old_regs);
+>  }
+>
+>  static const char * const ipi_names[] = {
 
-Thanks, this is on fixes (with some commit message cleanups).
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+
+I'm assuming you want to keep these togther.
