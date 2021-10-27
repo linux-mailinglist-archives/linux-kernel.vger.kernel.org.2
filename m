@@ -2,170 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3983D43BEC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CDE43BEC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbhJ0BIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhJ0BIg (ORCPT
+        id S236811AbhJ0BJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:09:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38325 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231388AbhJ0BJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 21:08:36 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652A3C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:06:11 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id m17so3539657edc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NPnUcmJPzNpCJmNXKCtVtKSaoCA98/bc9kV85ZHfaes=;
-        b=XJ09VHpESCkBAhdldJec7DvCtjMADGQMfzgfBYZ6uWOzxyrYhRV4eYoragSCgUmwW3
-         UVw347B0XFDFJeqI9wax7oGzTZOnUmzCS9sqJs4nEFGHGu73wU1iz4m0NBtl8z6GvR8L
-         EZyVkrkQF0Bc05pCR6vIgfXvEAb0L0Kbd+sYSOd1JZZw9zYH3mSvhb0BZ13F9kLqefs2
-         AbhfA5okotf6IIxHb+cVjxMpzL7b9XlI8+0bsU0fHHUrO/ETNcA6eT0i76nbqqb+sDe6
-         rDBnAQHWzW1XCGfxn96IR5Fqwv7z+1/oMCVeHx84y2MTNRMEpVrgrBn48dWZEckvqxRr
-         FeDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NPnUcmJPzNpCJmNXKCtVtKSaoCA98/bc9kV85ZHfaes=;
-        b=3Wistwz6mkLGF4fqEIKPO1Xr+mB4w8kvljpTOXdxPw2/ZXL4EpVhhV1E7bu89x8dRW
-         NCJH5TKTpkWLQ2PNFWioFhO/D2FqTJ7ETal8+p980RzBk6lyECMDAxYEPWAGyaneRNXT
-         qSwZuvaQpkIx+n0RU4GQ57Cy0xZuJ8jncGIbBD067aNa8cTA0Xr5fVA379VWBLwkdPnu
-         f4rRKC4F4VOkiUCVdJkpNVPIJZyPWuaUUGGOpX7fPNq4r/4djXcMpF4OixnhNjzF89xg
-         s+/8vL9y87c2NsUAbva64+Yp+DguQ8+d5XvTwYKIocl/MNOcRqXv6jbrH/3yL58i+BAs
-         1fgQ==
-X-Gm-Message-State: AOAM531KtoVqpiO+q7yFJWo9+BtWhrX/akFE+Ur4YHm7b1JrP4qd2Nyg
-        70+CGRCQ8SfZpzTeDVflUGia0aqgqWo3XzPWKRA=
-X-Google-Smtp-Source: ABdhPJyYlUgv07QHHv4dW6RoVdU5DdRP0hixAlGaLsxi29olLji1br9tTKT9PkJBOidiy1eJChMuh3+ofIUcO6nKFX8=
-X-Received: by 2002:a17:907:3f83:: with SMTP id hr3mr34792062ejc.555.1635296770056;
- Tue, 26 Oct 2021 18:06:10 -0700 (PDT)
+        Tue, 26 Oct 2021 21:09:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635296815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d0sd05fNlpWtdgtTRa/aTogQfojInzQIx5Zn8GaYdz8=;
+        b=IdvJpgCBPT/Hg8z0rosHQzW7l1Yw6kwunTcI2jJQp4dMki6GJlw4m3Hn3c+zNaWh5rapWI
+        GoJxD8gojE8jKScAFEAkpNSF7i40LoSukInC+8s28r6mqpUCry848mloY4so3jD6eiRf6X
+        8HuuMtV8CbLN0+MMYJoOi3fKZIpmWnk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-lRAYJofHMV2SNMI6IBGqTQ-1; Tue, 26 Oct 2021 21:06:52 -0400
+X-MC-Unique: lRAYJofHMV2SNMI6IBGqTQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6C46801AE8;
+        Wed, 27 Oct 2021 01:06:49 +0000 (UTC)
+Received: from llong.remote.csb (unknown [10.22.18.130])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 84C115F4EE;
+        Wed, 27 Oct 2021 01:06:47 +0000 (UTC)
+Subject: Re: [PATCH RFC] cpuset: Make cpusets get restored on hotplug
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     amit.pundir@linaro.org, cgroups@vger.kernel.org,
+        dimitrysh@google.com, groeck@chromium.org, hannes@cmpxchg.org,
+        joel@joelfernandes.org, jsbarnes@google.com,
+        kernel-team@android.com, kerrnel@google.com,
+        linux-kernel@vger.kernel.org, lizefan@huawei.com,
+        peterz@infradead.org, sonnyrao@google.com, tj@kernel.org,
+        vpillai@digitalocean.com
+References: <972a5c1b-6721-ac20-cec5-617af67e617d@redhat.com>
+ <20211026235808.34168-1-21cnbao@gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Message-ID: <f795f8be-a184-408a-0b5a-553d26061385@redhat.com>
+Date:   Tue, 26 Oct 2021 21:06:47 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211025230503.2650970-1-naoya.horiguchi@linux.dev> <20211025231120.GA2651146@u2004>
-In-Reply-To: <20211025231120.GA2651146@u2004>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 26 Oct 2021 18:05:58 -0700
-Message-ID: <CAHbLzkr=h3U9tVS=Xz0wQMypMAK2SXrhuY-WazJVAkbCDxfh6g@mail.gmail.com>
-Subject: Re: [PATCH 3/4] mm/hwpoison: remove MF_MSG_BUDDY_2ND and MF_MSG_POISONED_HUGE
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Ding Hui <dinghui@sangfor.com.cn>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211026235808.34168-1-21cnbao@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 4:14 PM Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
->
-> (I failed to send patch 3/4 and 4/4 due to the ratelimit of linux.dev,
-> so I switched mail server...)
->
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
->
-> These action_page_types are no longer used, so remove them.
->
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-Acked-by: Yang Shi <shy828301@gmail.com>
+On 10/26/21 7:58 PM, Barry Song wrote:
+>> I think Tejun is concerned about a change in the default behavior of
+>> cpuset v1.
+>>
+>> There is a special v2 mode for cpuset that is enabled by the mount
+>> option "cpuset_v2_mode". This causes the cpuset v1 to adopt some of the
+>> v2 behavior. I introduced this v2 mode a while back to address, I think,
+>> a similar concern. Could you try that to see if it is able to address
+>> your problem? If not, you can make some code adjustment within the
+>> framework of the v2 mode. As long as it is an opt-in, I think we are
+>> open to further change.
+> I am also able to reproduce on Ubuntu 21.04 LTS.
+>
+> all docker will be put in this cgroups and its child cgroups:
+> /sys/fs/cgroup/cpuset/docker
+>
+> disabling and enabling SMT by:
+> echo off > /sys/devices/system/cpu/smt/control
+> echo on > /sys/devices/system/cpu/smt/control
+>
+> or unpluging and pluging CPUs by:
+> echo 0 > /sys/devices/system/cpu/cpuX/online
+> echo 1 > /sys/devices/system/cpu/cpuX/online
+>
+> then all docker images will lose some CPUs.
+>
+> So should we document the broken behaviours somewhere?
 
-> ---
->  include/linux/mm.h      | 2 --
->  include/ras/ras_event.h | 2 --
->  mm/memory-failure.c     | 2 --
->  3 files changed, 6 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a3229f609856..71d886470d71 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3246,7 +3246,6 @@ enum mf_action_page_type {
->         MF_MSG_KERNEL_HIGH_ORDER,
->         MF_MSG_SLAB,
->         MF_MSG_DIFFERENT_COMPOUND,
-> -       MF_MSG_POISONED_HUGE,
->         MF_MSG_HUGE,
->         MF_MSG_FREE_HUGE,
->         MF_MSG_NON_PMD_HUGE,
-> @@ -3261,7 +3260,6 @@ enum mf_action_page_type {
->         MF_MSG_CLEAN_LRU,
->         MF_MSG_TRUNCATED_LRU,
->         MF_MSG_BUDDY,
-> -       MF_MSG_BUDDY_2ND,
->         MF_MSG_DAX,
->         MF_MSG_UNSPLIT_THP,
->         MF_MSG_UNKNOWN,
-> diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
-> index 0bdbc0d17d2f..d0337a41141c 100644
-> --- a/include/ras/ras_event.h
-> +++ b/include/ras/ras_event.h
-> @@ -358,7 +358,6 @@ TRACE_EVENT(aer_event,
->         EM ( MF_MSG_KERNEL_HIGH_ORDER, "high-order kernel page" )       \
->         EM ( MF_MSG_SLAB, "kernel slab page" )                          \
->         EM ( MF_MSG_DIFFERENT_COMPOUND, "different compound page after locking" ) \
-> -       EM ( MF_MSG_POISONED_HUGE, "huge page already hardware poisoned" )      \
->         EM ( MF_MSG_HUGE, "huge page" )                                 \
->         EM ( MF_MSG_FREE_HUGE, "free huge page" )                       \
->         EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )           \
-> @@ -373,7 +372,6 @@ TRACE_EVENT(aer_event,
->         EM ( MF_MSG_CLEAN_LRU, "clean LRU page" )                       \
->         EM ( MF_MSG_TRUNCATED_LRU, "already truncated LRU page" )       \
->         EM ( MF_MSG_BUDDY, "free buddy page" )                          \
-> -       EM ( MF_MSG_BUDDY_2ND, "free buddy page (2nd try)" )            \
->         EM ( MF_MSG_DAX, "dax page" )                                   \
->         EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )                        \
->         EMe ( MF_MSG_UNKNOWN, "unknown page" )
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index a47b741ca04b..09f079987928 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -723,7 +723,6 @@ static const char * const action_page_types[] = {
->         [MF_MSG_KERNEL_HIGH_ORDER]      = "high-order kernel page",
->         [MF_MSG_SLAB]                   = "kernel slab page",
->         [MF_MSG_DIFFERENT_COMPOUND]     = "different compound page after locking",
-> -       [MF_MSG_POISONED_HUGE]          = "huge page already hardware poisoned",
->         [MF_MSG_HUGE]                   = "huge page",
->         [MF_MSG_FREE_HUGE]              = "free huge page",
->         [MF_MSG_NON_PMD_HUGE]           = "non-pmd-sized huge page",
-> @@ -738,7 +737,6 @@ static const char * const action_page_types[] = {
->         [MF_MSG_CLEAN_LRU]              = "clean LRU page",
->         [MF_MSG_TRUNCATED_LRU]          = "already truncated LRU page",
->         [MF_MSG_BUDDY]                  = "free buddy page",
-> -       [MF_MSG_BUDDY_2ND]              = "free buddy page (2nd try)",
->         [MF_MSG_DAX]                    = "dax page",
->         [MF_MSG_UNSPLIT_THP]            = "unsplit thp",
->         [MF_MSG_UNKNOWN]                = "unknown page",
-> --
-> 2.25.1
->
->
->
->
->
->
->
->
->
->
->
->
-> From: Naoya Horiguchi <nao.horiguchi@gmail.com>
-> To:
-> Cc:
-> Bcc: nao.horiguchi@gmail.com
-> Subject:
-> Reply-To:
->
+Is the special cpuset_v2_mode mount option able to fix the issue?
+
+This mode is documented in
+
+Documentation/admin-guide/cgroup-v1/cpuset.rst:
+
+The cpuset.effective_cpus and cpuset.effective_mems files are
+normally read-only copies of cpuset.cpus and cpuset.mems files
+respectively.  If the cpuset cgroup filesystem is mounted with the
+special "cpuset_v2_mode" option, the behavior of these files will become
+similar to the corresponding files in cpuset v2.  In other words, hotplug
+events will not change cpuset.cpus and cpuset.mems.  Those events will
+only affect cpuset.effective_cpus and cpuset.effective_mems which show
+the actual cpus and memory nodes that are currently used by this cpuset.
+See Documentation/admin-guide/cgroup-v2.rst for more information about
+cpuset v2 behavior.
+
+Maybe we can make it more visible.
+
+Cheers,
+Longman
+
