@@ -2,282 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F67F43C9C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2781443C9D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240185AbhJ0MhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236419AbhJ0MhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:37:01 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0516FC061767
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:34:35 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:441:6c1a:bc30:46e])
-        by andre.telenet-ops.be with bizsmtp
-        id B0aa260012hfXWm010aaqv; Wed, 27 Oct 2021 14:34:34 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mfi8X-008TuV-O2; Wed, 27 Oct 2021 14:34:33 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mfi8X-00DsSS-Ah; Wed, 27 Oct 2021 14:34:33 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Subject: [PATCH v3] dt-bindings: mfd: bd9571mwv: Convert to json-schema
-Date:   Wed, 27 Oct 2021 14:34:32 +0200
-Message-Id: <76fdd209e6a2dada7ff50b8ad03eb14e7f3547a6.1635338031.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S241930AbhJ0Mkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:40:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236394AbhJ0Mke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:40:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02D5F60F02;
+        Wed, 27 Oct 2021 12:38:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635338289;
+        bh=0EJwjFr8tsSalutM0b22CAYufXNK4KFNQQ/YmgpEHP8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jpZana94uewjwJaj0LiycIVs6foie/uAG0wuQoUpaJJxwnDR09Ev/MYoVzOm0JIFe
+         K7X4R2lf2DAHdX5jnDvxpPNThd3AXLEd+qy3tr56ZoSvu8mAZqhXqrT7TwaDOp5Udx
+         JK4C4mNh4EJq6s6UhHukHoiMcgekpK2w/jBCOIsLy5bQ1Tja/XFz1aboabsSJ8t1zu
+         S35GEZURcegxFULuvpsuV/nHEi/HBoIn6Qht4l1gkHd9OldeHzyUpSzlSPe00MwC23
+         Ux7vUW3sb/XDXQhsfNqr+7QuVLhcxQAwBdFHNOiZg2l4aesWIpDj6Bib+f3t3zuxih
+         VyNoJmpN7o7Qw==
+Date:   Wed, 27 Oct 2021 14:38:06 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [patch v5 2/8] add prctl task isolation prctl docs and samples
+Message-ID: <20211027123806.GA70141@lothringen>
+References: <20211019152431.885037499@fedora.localdomain>
+ <20211019154210.706067872@fedora.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019154210.706067872@fedora.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the ROHM BD9571MWV/BD9574MWF Power Management Integrated Circuit
-(PMIC) Device Tree binding documentation to json-schema.
+On Tue, Oct 19, 2021 at 12:24:33PM -0300, Marcelo Tosatti wrote:
+> +===============================
+> +Task isolation prctl interface
+> +===============================
+> +
+> +Certain types of applications benefit from running uninterrupted by
+> +background OS activities. Realtime systems and high-bandwidth networking
+> +applications with user-space drivers can fall into the category.
+> +
+> +To create an OS noise free environment for the application, this
+> +interface allows userspace to inform the kernel the start and
+> +end of the latency sensitive application section (with configurable
+> +system behaviour for that section).
+> +
+> +Note: the prctl interface is independent of nohz_full=.
+> +
+> +The prctl options are:
+> +
+> +
+> +        - PR_ISOL_FEAT_GET: Retrieve supported features.
+> +        - PR_ISOL_CFG_GET: Retrieve task isolation configuration.
+> +        - PR_ISOL_CFG_SET: Set task isolation configuration.
+> +        - PR_ISOL_ACTIVATE_GET: Retrieve task isolation activation state.
+> +        - PR_ISOL_ACTIVATE_SET: Set task isolation activation state.
+> +
+> +Summary of terms:
+> +
+> +
+> +- feature:
+> +
+> +        A distinct attribute or aspect of task isolation. Examples of
+> +        features could be logging, new operating modes (eg: syscalls disallowed),
+> +        userspace notifications, etc. The only feature currently available is quiescing.
+> +
+> +- configuration:
+> +
+> +        A specific choice from a given set
+> +        of possible choices that dictate how the particular feature
+> +        in question should behave.
+> +
+> +- activation state:
+> +
+> +        The activation state (whether activate/inactive) of the task
 
-Make the "regulators" subnode optional, as not all users describe the
-regulators.
+active/inactive ?
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-I have listed Marek as the maintainer, as he wrote the original
-bindings.  Marek: Please scream if this is inappropriate ;-)
+> +        isolation features (features must be configured before
+> +        being activated).
+> +
+[...]
+> +Feature description
+> +--------------------
+> +
+> +        - ``ISOL_F_QUIESCE``
+> +
+> +        This feature allows quiescing select kernel activities on
 
-v3:
-  - Add Acked-by,
+selected?
 
-v2:
-  - Add Reviewed-by.
----
- .../devicetree/bindings/mfd/bd9571mwv.txt     |  69 ----------
- .../bindings/mfd/rohm,bd9571mwv.yaml          | 127 ++++++++++++++++++
- 2 files changed, 127 insertions(+), 69 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mfd/bd9571mwv.txt
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9571mwv.yaml
+> +        return from system calls.
+> +
+> +
+[...]
+> +        - ``I_CFG_INHERIT``:
+> +                Set inheritance configuration when a new task
+> +                is created via fork and clone.
+> +
+> +                The ``(int *)arg4`` argument is a pointer to::
+> +
+> +                        struct task_isol_inherit_control {
+> +                                __u8    inherit_mask;
+> +                                __u8    pad[7];
+> +                        };
+> +
+> +                inherit_mask is a bitmask that specifies which part
+> +                of task isolation should be inherited:
+> +
+> +                - Bit ISOL_INHERIT_CONF: Inherit task isolation configuration.
+> +                  This is the stated written via prctl(PR_ISOL_CFG_SET, ...).
 
-diff --git a/Documentation/devicetree/bindings/mfd/bd9571mwv.txt b/Documentation/devicetree/bindings/mfd/bd9571mwv.txt
-deleted file mode 100644
-index 1d6413e96c376e4b..0000000000000000
---- a/Documentation/devicetree/bindings/mfd/bd9571mwv.txt
-+++ /dev/null
-@@ -1,69 +0,0 @@
--* ROHM BD9571MWV/BD9574MWF Power Management Integrated Circuit (PMIC) bindings
--
--Required properties:
-- - compatible		: Should be "rohm,bd9571mwv" or "rohm,bd9574mwf".
-- - reg			: I2C slave address.
-- - interrupts		: The interrupt line the device is connected to.
-- - interrupt-controller	: Marks the device node as an interrupt controller.
-- - #interrupt-cells	: The number of cells to describe an IRQ, should be 2.
--			    The first cell is the IRQ number.
--			    The second cell is the flags, encoded as trigger
--			    masks from ../interrupt-controller/interrupts.txt.
-- - gpio-controller      : Marks the device node as a GPIO Controller.
-- - #gpio-cells          : Should be two.  The first cell is the pin number and
--                            the second cell is used to specify flags.
--                            See ../gpio/gpio.txt for more information.
-- - regulators:          : List of child nodes that specify the regulator
--                            initialization data. Child nodes must be named
--                            after their hardware counterparts:
--			     - vd09
--			     - vd18
--			     - vd25
--			     - vd33
--			     - dvfs
--			    Each child node is defined using the standard
--			    binding for regulators.
--
--Optional properties:
--  - rohm,ddr-backup-power : Value to use for DDR-Backup Power (default 0).
--			    This is a bitmask that specifies which DDR power
--			    rails need to be kept powered when backup mode is
--			    entered, for system suspend:
--			      - bit 0: DDR0
--			      - bit 1: DDR1
--			      - bit 2: DDR0C
--			      - bit 3: DDR1C
--			    These bits match the KEEPON_DDR* bits in the
--			    documentation for the "BKUP Mode Cnt" register.
--  - rohm,rstbmode-level: The RSTB signal is configured for level mode, to
--			 accommodate a toggle power switch (the RSTBMODE pin is
--			 strapped low).
--  - rohm,rstbmode-pulse: The RSTB signal is configured for pulse mode, to
--			 accommodate a momentary power switch (the RSTBMODE pin
--			 is strapped high).
--			 The two properties above are mutually exclusive.
--
--Example:
--
--	pmic: pmic@30 {
--		compatible = "rohm,bd9571mwv";
--		reg = <0x30>;
--		interrupt-parent = <&gpio2>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
--		interrupt-controller;
--		#interrupt-cells = <2>;
--		gpio-controller;
--		#gpio-cells = <2>;
--		rohm,ddr-backup-power = <0xf>;
--		rohm,rstbmode-pulse;
--
--		regulators {
--			dvfs: dvfs {
--				regulator-name = "dvfs";
--				regulator-min-microvolt = <750000>;
--				regulator-max-microvolt = <1030000>;
--				regulator-boot-on;
--				regulator-always-on;
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd9571mwv.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd9571mwv.yaml
-new file mode 100644
-index 0000000000000000..89f9efee465b8ed0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/rohm,bd9571mwv.yaml
-@@ -0,0 +1,127 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/rohm,bd9571mwv.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ROHM BD9571MWV/BD9574MWF Power Management Integrated Circuit (PMIC)
-+
-+maintainers:
-+  - Marek Vasut <marek.vasut@gmail.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rohm,bd9571mwv
-+      - rohm,bd9574mwf
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  '#interrupt-cells':
-+    const: 2
-+
-+  gpio-controller: true
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  rohm,ddr-backup-power:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0x0
-+    maximum: 0xf
-+    description: |
-+      Value to use for DDR-Backup Power (default 0).
-+      This is a bitmask that specifies which DDR power rails need to be kept
-+      powered when backup mode is entered, for system suspend:
-+        - bit 0: DDR0
-+        - bit 1: DDR1
-+        - bit 2: DDR0C
-+        - bit 3: DDR1C
-+      These bits match the KEEPON_DDR* bits in the documentation for the "BKUP
-+      Mode Cnt" register.
-+
-+  rohm,rstbmode-level:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      The RSTB signal is configured for level mode, to accommodate a toggle
-+      power switch (the RSTBMODE pin is strapped low).
-+
-+  rohm,rstbmode-pulse:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      The RSTB signal is configured for pulse mode, to accommodate a momentary
-+      power switch (the RSTBMODE pin is strapped high).
-+
-+  regulators:
-+    type: object
-+    description:
-+      List of child nodes that specify the regulator initialization data.
-+      Child nodes must be named after their hardware counterparts.
-+
-+    patternProperties:
-+      "^(vd09|vd18|vd25|vd33|dvfs)$":
-+        type: object
-+        $ref: ../regulator/regulator.yaml#
-+
-+        properties:
-+          regulator-name:
-+            pattern: "^(vd09|vd18|vd25|vd33|dvfs)$"
-+
-+        unevaluatedProperties: false
-+
-+    additionalProperties: false
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - '#interrupt-cells'
-+  - gpio-controller
-+  - '#gpio-cells'
-+
-+oneOf:
-+  - required:
-+      - rohm,rstbmode-level
-+  - required:
-+      - rohm,rstbmode-pulse
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          pmic: pmic@30 {
-+                  compatible = "rohm,bd9571mwv";
-+                  reg = <0x30>;
-+                  interrupt-parent = <&gpio2>;
-+                  interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+                  interrupt-controller;
-+                  #interrupt-cells = <2>;
-+                  gpio-controller;
-+                  #gpio-cells = <2>;
-+                  rohm,ddr-backup-power = <0xf>;
-+                  rohm,rstbmode-pulse;
-+
-+                  regulators {
-+                          dvfs: dvfs {
-+                                  regulator-name = "dvfs";
-+                                  regulator-min-microvolt = <750000>;
-+                                  regulator-max-microvolt = <1030000>;
-+                                  regulator-boot-on;
-+                                  regulator-always-on;
-+                          };
-+                  };
-+          };
-+    };
--- 
-2.25.1
+state
 
+> +
+> +                - Bit ISOL_INHERIT_ACTIVE: Inherit task isolation activation
+> +                  (requires ISOL_INHERIT_CONF to be set). The new task
+> +                  should behave, after fork/clone, in the same manner
+> +                  as the parent task after it executed:
+> +
+> +                        prctl(PR_ISOL_ACTIVATE_SET, &mask, ...);
+> +
+> +**PR_ISOL_ACTIVATE_GET**:
+> +
+> +        Retrieve task isolation activation state.
+> +
+> +        The general format is::
+> +
+> +                prctl(PR_ISOL_ACTIVATE_GET, pmask, arg3, arg4, arg5);
+> +
+> +        'pmask' specifies the location of a feature mask, where
+> +        the current active mask will be copied. See PR_ISOL_ACTIVATE_SET
+> +        for description of individual bits.
+> +
+> +
+> +**PR_ISOL_ACTIVATE_SET**:
+> +
+> +        Set task isolation activation state (activates/deactivates
+> +        task isolation).
+> +
+> +        The general format is::
+> +
+> +                prctl(PR_ISOL_ACTIVATE_SET, pmask, arg3, arg4, arg5);
+> +
+> +
+> +        The 'pmask' argument specifies the location of an 8 byte mask
+> +        containing which features should be activated. Features whose
+> +        bits are cleared will be deactivated. The possible
+> +        bits for this mask are:
+> +
+> +                - ``ISOL_F_QUIESCE``:
+> +
+> +                Activate quiescing of background kernel activities.
+> +                Quiescing happens on return to userspace from this
+> +                system call, and on return from subsequent
+> +                system calls (unless quiesce_oneshot_mask is configured,
+> +                see below).
+> +
+> +        If the arg3 argument is non-zero, it specifies a pointer to::
+> +
+> +         struct task_isol_activate_control {
+> +                 __u64 flags;
+> +                 __u64 quiesce_oneshot_mask;
+
+So you are using an entire argument here to set a single feature (ISOL_F_QUIESCE).
+It looks like the oneshot VS every syscall behaviour should be defined at
+configuration time for individual ISOL_F_QUIESCE features.
+
+Also do we want that to always apply to all syscalls? Should we expect corner
+cases with some of them? What about exceptions and interrupts?
+
+My wild guess is that we need to leave room for future flexibility. Either open
+some configuration space on ISOL_F_QUIESCE for that or create a seperate
+ISOL_F_QUIESCE_ONESHOT.
+
+Other than that, the general interface looks good! Now time for me to
+look at the implementation...
+
+Thanks.
