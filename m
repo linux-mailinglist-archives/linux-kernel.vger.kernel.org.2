@@ -2,311 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB60743C378
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD0D43C37A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238310AbhJ0HGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:06:53 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:32923 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231656AbhJ0HGv (ORCPT
+        id S240248AbhJ0HIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231656AbhJ0HI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:06:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UtrKJQp_1635318264;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UtrKJQp_1635318264)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 15:04:24 +0800
-Date:   Wed, 27 Oct 2021 15:04:23 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH v6 8/8] eni_vdpa: add vDPA driver for Alibaba ENI
-Message-ID: <20211027070423.GA29957@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
- <cover.1634870456.git.wuzongyong@linux.alibaba.com>
- <6496b76a64303a3e23ea19e3e279644608de36fb.1634870456.git.wuzongyong@linux.alibaba.com>
- <CACGkMEvi7505ZOSLP6gMMvhC=Zfdt=nPK4WEYe7=VVbq3GmxCQ@mail.gmail.com>
- <20211025032146.GC3684@L-PF27918B-1352.localdomain>
- <51e9be5b-4bb2-b82b-a152-ffc37803410c@redhat.com>
- <20211027024700.GA23409@L-PF27918B-1352.localdomain>
- <CACGkMEt=ywKYQPhyUYjucEmW7hszNWWrRDYgRB_eyqci4uMO=w@mail.gmail.com>
+        Wed, 27 Oct 2021 03:08:29 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45819C061570;
+        Wed, 27 Oct 2021 00:06:04 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id m14so1830898pfc.9;
+        Wed, 27 Oct 2021 00:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=u5MIYd+O5hYq/ovFrZ8EB6uv6EHBwk1t2oUT+vqCmdk=;
+        b=PKKiAviweRIkeGOXg+k99xLQYU0hND1oyvi/fu609NPXLjKQA9WeeWm1FPvARbPZjV
+         HBiWY4HtSokG90jZcD7uSOIFen53hG6zyg7tJpMlcqQWbQmHu+KGmFRpqPEzxSs+k352
+         7QrkbzYbHQgxNlQtb/cGajXtsYvno8yvaRaamGtOncoN0JVz62zxY7aBESSDPm4Ubpnj
+         eoNVf+GBbghhIOO0tQHGbLSzv0iT7MtlKECa6JvIrGSZr93OulENxjbjwWThC9NZylSX
+         2Br5WUupaHXhnljonHfbC6ZCRss3Zf07XEXpqSi8quxiNhnDHJN8NCXM/+IMof62QP1+
+         Xd5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=u5MIYd+O5hYq/ovFrZ8EB6uv6EHBwk1t2oUT+vqCmdk=;
+        b=2coLuJ/UETliDMr+hxoZ+3SpdYztgZYRUxjk33OBDC9PfENgXIqb1KdGeU1FzC1aff
+         EJOT1MWt9tzQriw1InxUq9xESLIiyMqBg5fPpwGZoY4koy0i9impg9aOBMi5/NNiFuBv
+         n3eErQF7G2drbG5J/2TtDLqyvhIeWI4lZIxkvifuuPp3Yl/0qEEKaNTrQ/CULKPfG/xI
+         fkbq8xxlzvnWOYT/W7QiPo5+JgVY4+tWqDXOBwY8gPI4KWNXJEtrq39Xv37xtdI4pvgU
+         IWfWgBeGhaXqkA5mlhQXpwQWofppgwHaYHL44plNOv8pzEFE/lWQflF42ULc9JmUmXZ+
+         I5Sg==
+X-Gm-Message-State: AOAM530OXocCdpm3FhIga8d+eM0ysCe1LVQTVhhe+AIrsRKk9mKR8/Sb
+        9FuI+0B1B7lkmuAfsjE59vVM+W5PzfX3pw==
+X-Google-Smtp-Source: ABdhPJybHXPnSmGSka+1MoR/ets4gn1VHoOZag3l2n7NzsVqdTwcF4M/3GxCCZmmvvLX507ILpamrg==
+X-Received: by 2002:a63:e446:: with SMTP id i6mr23180230pgk.288.1635318363356;
+        Wed, 27 Oct 2021 00:06:03 -0700 (PDT)
+Received: from [172.18.2.138] ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id a8sm7572790pgd.8.2021.10.27.00.06.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 00:06:02 -0700 (PDT)
+Subject: Re: [PATCH] io-wq: Remove unnecessary rcu_read_lock/unlock() in raw
+ spinlock critical section
+To:     Jens Axboe <axboe@kernel.dk>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20211026032304.30323-1-qiang.zhang1211@gmail.com>
+ <CAMZfGtUXq=nQyijktRaP7xp=sAmVCryTjU4Jo5Z=ufed8arnKQ@mail.gmail.com>
+ <0efbce2d-1f63-82a7-6479-d8ef062aa90d@kernel.dk>
+From:   Zqiang <qiang.zhang1211@gmail.com>
+Message-ID: <c4bcf2fa-b72a-5e3a-efe9-544457a9816a@gmail.com>
+Date:   Wed, 27 Oct 2021 15:06:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Disposition: inline
+In-Reply-To: <0efbce2d-1f63-82a7-6479-d8ef062aa90d@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACGkMEt=ywKYQPhyUYjucEmW7hszNWWrRDYgRB_eyqci4uMO=w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:55:05AM +0800, Jason Wang wrote:
-> On Wed, Oct 27, 2021 at 10:47 AM Wu Zongyong
-> <wuzongyong@linux.alibaba.com> wrote:
-> >
-> > On Mon, Oct 25, 2021 at 12:40:41PM +0800, Jason Wang wrote:
-> > >
-> > > ÔÚ 2021/10/25 ÉÏÎç11:21, Wu Zongyong Ð´µÀ:
-> > > > On Mon, Oct 25, 2021 at 10:27:31AM +0800, Jason Wang wrote:
-> > > > > On Fri, Oct 22, 2021 at 10:44 AM Wu Zongyong
-> > > > > <wuzongyong@linux.alibaba.com> wrote:
-> > > > > > This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
-> > > > > > Interface) which is build upon virtio 0.9.5 specification.
-> > > > > > And this driver doesn't support to run on BE host.
-> > > > > >
-> > > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > > > > > ---
-> > > > > >   drivers/vdpa/Kconfig            |   8 +
-> > > > > >   drivers/vdpa/Makefile           |   1 +
-> > > > > >   drivers/vdpa/alibaba/Makefile   |   3 +
-> > > > > >   drivers/vdpa/alibaba/eni_vdpa.c | 553 ++++++++++++++++++++++++++++++++
-> > > > > >   4 files changed, 565 insertions(+)
-> > > > > >   create mode 100644 drivers/vdpa/alibaba/Makefile
-> > > > > >   create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > >
-> > > > > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> > > > > > index 3d91982d8371..c0232a2148a7 100644
-> > > > > > --- a/drivers/vdpa/Kconfig
-> > > > > > +++ b/drivers/vdpa/Kconfig
-> > > > > > @@ -78,4 +78,12 @@ config VP_VDPA
-> > > > > >          help
-> > > > > >            This kernel module bridges virtio PCI device to vDPA bus.
-> > > > > >
-> > > > > > +config ALIBABA_ENI_VDPA
-> > > > > > +       tristate "vDPA driver for Alibaba ENI"
-> > > > > > +       select VIRTIO_PCI_LEGACY_LIB
-> > > > > > +       depends on PCI_MSI && !CPU_BIG_ENDIAN
-> > > > > > +       help
-> > > > > > +         VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
-> > > > > > +         virtio 0.9.5 specification.
-> > > > > > +
-> > > > > >   endif # VDPA
-> > > > > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-> > > > > > index f02ebed33f19..15665563a7f4 100644
-> > > > > > --- a/drivers/vdpa/Makefile
-> > > > > > +++ b/drivers/vdpa/Makefile
-> > > > > > @@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
-> > > > > >   obj-$(CONFIG_IFCVF)    += ifcvf/
-> > > > > >   obj-$(CONFIG_MLX5_VDPA) += mlx5/
-> > > > > >   obj-$(CONFIG_VP_VDPA)    += virtio_pci/
-> > > > > > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
-> > > > > > diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..ef4aae69f87a
-> > > > > > --- /dev/null
-> > > > > > +++ b/drivers/vdpa/alibaba/Makefile
-> > > > > > @@ -0,0 +1,3 @@
-> > > > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > > > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
-> > > > > > +
-> > > > > > diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..6a09f157d810
-> > > > > > --- /dev/null
-> > > > > > +++ b/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > > @@ -0,0 +1,553 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > > +/*
-> > > > > > + * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
-> > > > > > + *
-> > > > > > + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
-> > > > > > + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > > > > > + *
-> > > > > > + */
-> > > > > > +
-> > > > > > +#include "linux/bits.h"
-> > > > > > +#include <linux/interrupt.h>
-> > > > > > +#include <linux/module.h>
-> > > > > > +#include <linux/pci.h>
-> > > > > > +#include <linux/vdpa.h>
-> > > > > > +#include <linux/virtio.h>
-> > > > > > +#include <linux/virtio_config.h>
-> > > > > > +#include <linux/virtio_ring.h>
-> > > > > > +#include <linux/virtio_pci.h>
-> > > > > > +#include <linux/virtio_pci_legacy.h>
-> > > > > > +#include <uapi/linux/virtio_net.h>
-> > > > > > +
-> > > > > > +#define ENI_MSIX_NAME_SIZE 256
-> > > > > > +
-> > > > > > +#define ENI_ERR(pdev, fmt, ...)        \
-> > > > > > +       dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> > > > > > +#define ENI_DBG(pdev, fmt, ...)        \
-> > > > > > +       dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> > > > > > +#define ENI_INFO(pdev, fmt, ...) \
-> > > > > > +       dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> > > > > > +
-> > > > > > +struct eni_vring {
-> > > > > > +       void __iomem *notify;
-> > > > > > +       char msix_name[ENI_MSIX_NAME_SIZE];
-> > > > > > +       struct vdpa_callback cb;
-> > > > > > +       int irq;
-> > > > > > +};
-> > > > > > +
-> > > > > > +struct eni_vdpa {
-> > > > > > +       struct vdpa_device vdpa;
-> > > > > > +       struct virtio_pci_legacy_device ldev;
-> > > > > > +       struct eni_vring *vring;
-> > > > > > +       struct vdpa_callback config_cb;
-> > > > > > +       char msix_name[ENI_MSIX_NAME_SIZE];
-> > > > > > +       int config_irq;
-> > > > > > +       int queues;
-> > > > > > +       int vectors;
-> > > > > > +};
-> > > > > > +
-> > > > > > +static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
-> > > > > > +{
-> > > > > > +       return container_of(vdpa, struct eni_vdpa, vdpa);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
-> > > > > > +{
-> > > > > > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> > > > > > +
-> > > > > > +       return &eni_vdpa->ldev;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
-> > > > > > +{
-> > > > > > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > > > > > +       u64 features = vp_legacy_get_features(ldev);
-> > > > > > +
-> > > > > > +       features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
-> > > > > > +       features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
-> > > > > > +
-> > > > > > +       return features;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
-> > > > > > +{
-> > > > > > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > > > > > +
-> > > > > > +       if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
-> > > > > > +               ENI_ERR(ldev->pci_dev,
-> > > > > > +                       "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
-> > > > > > +               return -EINVAL;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       vp_legacy_set_features(ldev, (u32)features);
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > So my comments have not been addressed since v4. Please address or
-> > > > > answer the questions before posting a new version.
-> > > > >
-> > > > > Thanks
-> > > > Sorry, I forgot to reply the comments on this patch.
-> > > >
-> > > >
-> > > > > > +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
-> > > > > > +{
-> > > > > > +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > > > > > +     u64 features = vp_legacy_get_features(ldev);
-> > > > > > +
-> > > > > > +     features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
-> > > > > > +     features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
-> > > > > VERSION_1 is also needed?
-> > > > >
-> > > > No, queue align of legacy devices should be 4096,
-> > >
-> > >
-> > > Let's use VIRTIO_PCI_VRING_ALIGN instead of PAGE_SIZE in get_vq_align then
-> > > since PAGE_SIZE is not necessarily 4096.
-> >
-> > I will fix it.
-> > >
-> > >
-> > > >   but queue align of
-> > > > devices with VERSION_1 are SMP_CACHE_BYTES which may not equals to
-> > > > 4096.
-> > > > If we set the VERSION_1, ENI will not work due to the queue align.
-> > >
-> > >
-> > > Interesting, so I think it can only be used with legacy virtio drivers in
-> > > the guest.
-> > Yes, ENI can only work well with legacy virtio drivers in the guest from
-> > my test.
-> >
-> > >
-> > > One major drawbacks is that guest can only see 32 feature bits which means
-> > > we can't advertise VIRTIO_F_ACCESS_PLATFORM and VIRTIO_F_ORDER_PLATFORM to
-> > > guest:
-> > >
-> > > /* virtio config->get_features() implementation */
-> > > static u64 vp_get_features(struct virtio_device *vdev)
-> > > {
-> > >         struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > >
-> > >         /* When someone needs more than 32 feature bits, we'll need to
-> > >          * steal a bit to indicate that the rest are somewhere else. */
-> > >         return ioread32(vp_dev->ioaddr + VIRTIO_PCI_HOST_FEATURES);
-> > > }
-> > >
-> > > For VIRTIO_F_ACCESS_PLATFORM, it should be fine. But how about
-> > > VIRTIO_F_ORDER_PLATFORM?
-> > >
-> > Is it necessary to advertise these two bits?
-> > ENI works well without these two bits regardless of bare metal or virtual
-> > machine.
-> 
-> For VIRTIO_F_ACCESS_PLATFORM. When using with virtio-vDPA it should be
-> fine since it will be negotiated. When using with vhost-vDPA, it can't
-> be advertised to the guest, so vIOMMU will be bypassed.
-> 
-> For VITIO_F_ORDER_PLATFORM, it's basically a question that whether
-> platform specific barrier (DMA barrier) is needed, see virtio_rmb():
-> 
-> static inline void virtio_rmb(bool weak_barriers)
-> {
->         if (weak_barriers)
->                 virt_rmb();
->         else
->                 dma_rmb();
-> }
-> 
-> So it looks to me x86 should be fine, but for others platform it might
-> not. Maybe we can enable this driver for x86 first.
 
-It's okay for me to enable it only for x86 via Kconfig since ENI can
-only be used in x86 machines on Alibaba Cloud for now.
+On 2021/10/26 ä¸‹åˆ10:47, Jens Axboe wrote:
+> On 10/26/21 4:32 AM, Muchun Song wrote:
+>> On Tue, Oct 26, 2021 at 11:23 AM Zqiang <qiang.zhang1211@gmail.com> wrote:
+>>> Due to raw_spin_lock/unlock() contains preempt_disable/enable() action,
+>>> already regarded as RCU critical region, so remove unnecessary
+>>> rcu_read_lock/unlock().
+>>>
+>>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>>> ---
+>>>   fs/io-wq.c | 2 --
+>>>   1 file changed, 2 deletions(-)
+>>>
+>>> diff --git a/fs/io-wq.c b/fs/io-wq.c
+>>> index cd88602e2e81..401be005d089 100644
+>>> --- a/fs/io-wq.c
+>>> +++ b/fs/io-wq.c
+>>> @@ -855,9 +855,7 @@ static void io_wqe_enqueue(struct io_wqe *wqe, struct io_wq_work *work)
+>>>          io_wqe_insert_work(wqe, work);
+>>>          clear_bit(IO_ACCT_STALLED_BIT, &acct->flags);
+>>>
+>>> -       rcu_read_lock();
+>> Add a comment like:
+>> /* spin_lock can serve as an RCU read-side critical section. */
+> Note that it's a raw spinlock. Honestly I'd probably prefer if we just leave
+> it as-is. There are plans to improve the io-wq locking, and a rcu lock/unlock
+> is pretty cheap.
+>
+> That said, if resend with a comment fully detailing why it's OK currently,
+> then I'd be fine with that as well.
+>
+Thanks Jens Axboe, Muchun
 
-> 
-> Thanks
-> 
-> > >
-> > > >
-> > > > > > +
-> > > > > > +     return features;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
-> > > > > > +{
-> > > > > > +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> > > > > > +
-> > > > > > +     if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
-> > > > > > +             ENI_ERR(ldev->pci_dev,
-> > > > > > +                     "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
-> > > > > > +             return -EINVAL;
-> > > > > Do we need to make sure FEATURE_OK is not set in this case or the ENI can do
-> > > > > this for us?
-> > > > Why we need to check this? I don't get what you worried about.
-> > >
-> > >
-> > > I thought the plan is to advertise the VERSION_1, so failing when without
-> > > mrg_rxbuf is a must. But looks like I was wrong, and there's no need to
-> > > mandate mrg_rxbuf in future versions.
-> >
-> > I think it is necessary to check F_MRG_RXBUF here, since ENI will not
-> > work when use qemu with mrx_rxbuf=off.
-> > >
-> > > Thanks
-> > >
-> > >
-> > > >
-> > > > > Other looks good.
-> > > > >
-> > > > > Thanks
-> >
+ Â IÂ  willÂ  add a comment fully detailing and resend.
+
+
+
