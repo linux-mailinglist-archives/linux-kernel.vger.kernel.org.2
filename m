@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698DA43C9DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C32B43C9DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241957AbhJ0MmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:42:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240237AbhJ0MmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:42:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B304561052;
-        Wed, 27 Oct 2021 12:39:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635338377;
-        bh=Qt0jh0o6SaMbTSaV3+4wFbGetToVeiL/RlWAnp9etIg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AJZrIcNwgjxHUDKKBMTGoCxrAGa3dyGExtHtO3Q9e2nDWQLYRjkGNV6soboXK+v+6
-         ma4Fk5R26Ru//1369lWqDfIM17TM4TEiVDdHjH/D1Y8qKjeWFKqZfgk65fltFnHtLV
-         fa82x5nPLfT3HbH/UNHDxuI1Jv3+FJCm1nHr5gIUXXfahlNvmBEkYNFba+EKtv2ZSV
-         wmYca/5MO36KHkSmxuA/YjaPtcaShp1L0SuH7Xjt15LSgMGDlBolpqbZr0LheyVYyy
-         Xv6Nysf749noyHS1/b33kJINAZyEIKHiZLHadlE2P9DevFqCi2DISkSdJonFR2coob
-         SV/MwdyyEsegQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D6FD5410A1; Wed, 27 Oct 2021 09:39:34 -0300 (-03)
-Date:   Wed, 27 Oct 2021 09:39:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        peterz@infradead.org, mingo@redhat.com, stable@vger.kernel.org
-Subject: Re: [PATCH] perf-script: check session->header.env.arch before using
- it
-Message-ID: <YXlIhneZVyihywLt@kernel.org>
-References: <20211004053238.514936-1-songliubraving@fb.com>
+        id S241961AbhJ0MnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:43:10 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25317 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236267AbhJ0MnJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:43:09 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HfSpp48y9zbhMX;
+        Wed, 27 Oct 2021 20:36:02 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 27 Oct 2021 20:40:41 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.15; Wed, 27 Oct
+ 2021 20:40:41 +0800
+Subject: Re: [PATCH net] net: gro: set the last skb->next to NULL when it get
+ merged
+To:     Jason Xing <kerneljasonxing@gmail.com>,
+        David Miller <davem@davemloft.net>, <kuba@kernel.org>,
+        <alobakin@pm.me>, <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>, <pabeni@redhat.com>,
+        <vvs@virtuozzo.com>, <cong.wang@bytedance.com>
+CC:     netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jason Xing <xingwanli@kuaishou.com>
+References: <20211026131859.59114-1-kerneljasonxing@gmail.com>
+ <CAL+tcoC487AF=HAiNVhKO6kA0yhjT+hmp5DQSdaGBnJEtGgqPA@mail.gmail.com>
+ <CAL+tcoAD+iiEFbvMnaHjg_-42_r7ukxDt8CveYW7pE4arcdKsg@mail.gmail.com>
+ <CAL+tcoAUwEx3ZJ5ysu_+-1eYfuL82JoV0fk7305dSOSo6J80-w@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <31e181c7-7268-877a-f061-cdea06c0459e@huawei.com>
+Date:   Wed, 27 Oct 2021 20:40:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004053238.514936-1-songliubraving@fb.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAL+tcoAUwEx3ZJ5ysu_+-1eYfuL82JoV0fk7305dSOSo6J80-w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Oct 03, 2021 at 10:32:38PM -0700, Song Liu escreveu:
-> When perf.data is not written cleanly, we would like to process existing
-> data as much as possible (please see f_header.data.size == 0 condition
-> in perf_session__read_header). However, perf.data with partial data may
-> crash perf. Specifically, we see crash in perf-script for NULL
-> session->header.env.arch.
+On 2021/10/27 16:56, Jason Xing wrote:
+> On Wed, Oct 27, 2021 at 4:07 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
+>>
+>> On Wed, Oct 27, 2021 at 3:23 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
+>>>
+>>> On Tue, Oct 26, 2021 at 9:19 PM <kerneljasonxing@gmail.com> wrote:
+>>>>
+>>>> From: Jason Xing <xingwanli@kuaishou.com>
+>>>>
+>>>> Setting the @next of the last skb to NULL to prevent the panic in future
+>>>> when someone does something to the last of the gro list but its @next is
+>>>> invalid.
+>>>>
+>>>> For example, without the fix (commit: ece23711dd95), a panic could happen
+>>>> with the clsact loaded when skb is redirected and then validated in
+>>>> validate_xmit_skb_list() which could access the error addr of the @next
+>>>> of the last skb. Thus, "general protection fault" would appear after that.
+>>>>
+>>>> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+>>>> ---
+>>>>  net/core/skbuff.c | 1 +
+>>>>  1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>>>> index 2170bea..7b248f1 100644
+>>>> --- a/net/core/skbuff.c
+>>>> +++ b/net/core/skbuff.c
+>>>> @@ -4396,6 +4396,7 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
+>>>>                 skb_shinfo(p)->frag_list = skb;
+>>>>         else
+>>>>                 NAPI_GRO_CB(p)->last->next = skb;
+>>>> +       skb->next = NULL;
+>>>>         NAPI_GRO_CB(p)->last = skb;
+>>>
+>>> Besides, I'm a little bit confused that this operation inserts the
+>>> newest skb into the tail of the flow, so the tail of flow is the
+>>> newest, head oldest. The patch (commit: 600adc18) introduces the flush
+>>> of the oldest when the flow is full to lower the latency, but actually
+>>> it fetches the tail of the flow. Do I get something wrong here? I feel
+>>
+>> I have to update this part. The commit 600adc18 evicts and flushes the
+>> oldest flow. But for the current kernel, when
+>> "napi->gro_hash[hash].count >= MAX_GRO_SKBS" happens, the
+>> gro_flush_oldest() flushes the oldest skb of one certain flow,
+>> actually it is the newest skb because it is at the end of the list.
+
+it seems the below is more matched with the gro_flush_oldest() instead
+of the above code block:
+https://elixir.bootlin.com/linux/v5.15-rc3/source/net/core/dev.c#L6118
+
 > 
-> Fix this by checking session->header.env.arch before using it to determine
-> native_arch. Also split the if condition so it is easier to read.
+> I just submitted another patch to explain how it happens, please help
+> me review both patches.
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->  tools/perf/builtin-script.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+> Link: https://lore.kernel.org/lkml/20211027084944.4508-1-kerneljasonxing@gmail.com/
 > 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index 6211d0b84b7a6..7821f6740ac1d 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -4039,12 +4039,17 @@ int cmd_script(int argc, const char **argv)
->  		goto out_delete;
->  
->  	uname(&uts);
-> -	if (data.is_pipe ||  /* assume pipe_mode indicates native_arch */
-> -	    !strcmp(uts.machine, session->header.env.arch) ||
-> -	    (!strcmp(uts.machine, "x86_64") &&
-> -	     !strcmp(session->header.env.arch, "i386")))
-> +	if (data.is_pipe)  /* assume pipe_mode indicates native_arch */
->  		native_arch = true;
->  
-> +	if (session->header.env.arch) {
-
-Shouldn't the above be:
-
-	else if (session->header.env.arch) {
-
-?
-
-> +		if (!strcmp(uts.machine, session->header.env.arch))
-> +			native_arch = true;
-> +		else if (!strcmp(uts.machine, "x86_64") &&
-> +			 !strcmp(session->header.env.arch, "i386"))
-> +			native_arch = true;
-> +	}
-> +
->  	script.session = session;
->  	script__setup_sample_type(&script);
->  
-> -- 
-> 2.30.2
-
--- 
-
-- Arnaldo
+> Thanks again,
+> Jason
+> 
+>>
+>>> it is really odd.
+>>>
+>>> Thanks,
+>>> Jason
+>>>
+>>>>         __skb_header_release(skb);
+>>>>         lp = p;
+>>>> --
+>>>> 1.8.3.1
+>>>>
+> .
+> 
