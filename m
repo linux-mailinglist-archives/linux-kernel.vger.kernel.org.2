@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9621F43C6E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E301243C73F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238849AbhJ0JzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:55:09 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26197 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235583AbhJ0JzH (ORCPT
+        id S239214AbhJ0KDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241317AbhJ0KD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:55:07 -0400
-Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HfP8h6XbRz8tt7;
-        Wed, 27 Oct 2021 17:51:16 +0800 (CST)
-Received: from huawei.com (10.67.189.2) by dggeme762-chm.china.huawei.com
- (10.3.19.108) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Wed, 27
- Oct 2021 17:52:38 +0800
-From:   Lexi Shao <shaolexi@huawei.com>
-To:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <acme@kernel.org>, <mark.rutland@arm.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <shaolexi@huawei.com>,
-        <qiuxi1@huawei.com>, <nixiaoming@huawei.com>,
-        <wangbing6@huawei.com>
-Subject: [PATCH] perf symbol: ignore $a/$d symbols for ARM modules
-Date:   Wed, 27 Oct 2021 17:52:35 +0800
-Message-ID: <20211027095235.123358-1-shaolexi@huawei.com>
-X-Mailer: git-send-email 2.12.3
+        Wed, 27 Oct 2021 06:03:26 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACE2C061237;
+        Wed, 27 Oct 2021 03:00:19 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id j35-20020a05600c1c2300b0032caeca81b7so2609977wms.0;
+        Wed, 27 Oct 2021 03:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=sVL40Dal23g+oTbNPT/e2XPj/Wo7WL5CwzUJYNKbLdw=;
+        b=CxfHDOj6sDUACNtdKs4jVTqIEmS01m02gbVy/3TKFUkBUpWF9wPAgXDIQayPUDqCEh
+         hgEVMSI3ES4LJ1GO6mIqbk6zwFo8qSRHF0o/eAb6Oy6BEGkBaRwS73YqYkZ2kvmuhnWX
+         o2g8tyh1Cck19wiPg4opeNaV+gYX3hsgxNcwQF0Ot51IyRoSt8rJXDJeX5Em/kY1U6XT
+         SHuTsDAzsQyO4vGZSR8VxuJwVy7SpP3FQxXNFjjPoA+MnJKfE/JdJff+q2zIdln/DYfl
+         t6DF5VQl70qHFeshd8yBzgEDlprwpjRysWsrVcEPWSExBk/0poOVPRdnpMc/vH/7Yo2q
+         KSGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=sVL40Dal23g+oTbNPT/e2XPj/Wo7WL5CwzUJYNKbLdw=;
+        b=B4XUHykRENiHR9w4kmOKaAB+hiFbqRs/cNYJkNS4S9L3GJGaDSM7j00juZ8+jCJreL
+         9waWk6+q8IP8x0oOe6X6hFTn0mhRiLv86icTPmuuOjWAECgj3TsSEfJGGrwdpw958U+Y
+         4OzC5luDQRKOsKOcV3srqJTc44erHSPJ0oncRIrgUYTGFKrl0eUz2G7dJycs24nwrcFa
+         oBTQBrDkOXcWI/DIHamJkPerKw0yahAVGJGbNaSSd2yiiIeVLvSIxbJuwJBhswd5UCA9
+         hdKB9SqS/PjR6hKTVLgFpZ6FZMelGjRLy0kcvAI7iIQnFb/8m6YSrTkzAT5b6D63uo23
+         Nt1Q==
+X-Gm-Message-State: AOAM5321MxKGYhnL8V7G0f2JlWhlUv0sYwQAIKvhNdrzTrWDhtnhGfzk
+        Nwk9hmpe9aSLgGpZv0/hfgI=
+X-Google-Smtp-Source: ABdhPJyguHvObOm7lVDICq2QVmWS9gg3Gwx7YYLpgE+5/TsBcILHLhOKLVWquOQjDv3An1qomMYuoQ==
+X-Received: by 2002:a7b:cc11:: with SMTP id f17mr4779203wmh.122.1635328818497;
+        Wed, 27 Oct 2021 03:00:18 -0700 (PDT)
+Received: from [192.168.8.198] ([148.252.132.100])
+        by smtp.gmail.com with ESMTPSA id u13sm21998993wri.50.2021.10.27.03.00.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 03:00:18 -0700 (PDT)
+Message-ID: <27d0d7bd-a5c3-27ca-03b3-ea3c5c363380@gmail.com>
+Date:   Wed, 27 Oct 2021 10:56:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.2]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme762-chm.china.huawei.com (10.3.19.108)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] io_uring: fix a GCC warning in wq_list_for_each()
+Content-Language: en-US
+To:     Qian Cai <quic_qiancai@quicinc.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211025145906.71955-1-quic_qiancai@quicinc.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20211025145906.71955-1-quic_qiancai@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On ARM machine, kernel symbols from modules can be resolved to $a
-instead of printing the actual symbol name. Ignore symbols starting with
-"$" when building kallsyms rbtree.
+On 10/25/21 15:59, Qian Cai wrote:
+> fs/io_uring.c: In function '__io_submit_flush_completions':
+> fs/io_uring.c:2367:33: warning: variable 'prev' set but not used
+> [-Wunused-but-set-variable]
+>   2367 |  struct io_wq_work_node *node, *prev;
+>        |                                 ^~~~
+> 
+> Fixed it by open-coded the wq_list_for_each() without an unused previous
+> node pointer.
 
-A sample stacktrace is shown as follows:
+That's intentional, the var is optimised out and it's better to
+not hand code it (if possible).
 
-c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
-bf4a66d8 $a+0x78 ([test_module])
-c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
-c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
 
-On ARM machine, $a/$d symbols are used by the compiler to mark the
-beginning of code/data part in code section. These symbols are filtered
-out when linking vmlinux(see scripts/kallsyms.c ignored_prefixes), but
-are left on modules. So there are $a symbols in /proc/kallsyms which
-share the same addresses with the actual module symbols and confuses perf
-when resolving symbols.
+> Fixes: 6f33b0bc4ea4 ("io_uring: use slist for completion batching")
+> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+> ---
+>   fs/io_uring.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 23641d9e0871..b8968bd43e3f 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -2361,11 +2361,11 @@ static void io_free_batch_list(struct io_ring_ctx *ctx,
+>   static void __io_submit_flush_completions(struct io_ring_ctx *ctx)
+>   	__must_hold(&ctx->uring_lock)
+>   {
+> -	struct io_wq_work_node *node, *prev;
+> +	struct io_wq_work_node *node;
+>   	struct io_submit_state *state = &ctx->submit_state;
+>   
+>   	spin_lock(&ctx->completion_lock);
+> -	wq_list_for_each(node, prev, &state->compl_reqs) {
+> +	for (node = state->compl_reqs.first; node; node = node->next) {
+>   		struct io_kiocb *req = container_of(node, struct io_kiocb,
+>   						    comp_list);
+>   
+> 
 
-After this patch, the module symbol name is printed:
-
-c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
-bf4a66d8 test_func+0x78 ([test_module])
-c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
-c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
-
-Signed-off-by: Lexi Shao <shaolexi@huawei.com>
----
- tools/perf/util/symbol.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 0fc9a5410739..35116aed74eb 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -702,6 +702,10 @@ static int map__process_kallsym_symbol(void *arg, const char *name,
- 	if (!symbol_type__filter(type))
- 		return 0;
- 
-+	/* Ignore local symbols for ARM modules */
-+	if (name[0] == '$')
-+		return 0;
-+
- 	/*
- 	 * module symbols are not sorted so we add all
- 	 * symbols, setting length to 0, and rely on
 -- 
-2.12.3
-
+Pavel Begunkov
