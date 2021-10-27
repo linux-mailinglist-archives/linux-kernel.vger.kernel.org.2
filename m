@@ -2,82 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B004D43D64A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33AA43D651
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhJ0WLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 18:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhJ0WLc (ORCPT
+        id S229703AbhJ0WMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 18:12:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40236 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229792AbhJ0WMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 18:11:32 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE49C061570;
-        Wed, 27 Oct 2021 15:09:02 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfjWw4rzpz4xbP;
-        Thu, 28 Oct 2021 09:09:00 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635372541;
-        bh=E9vVZjugBxglNf6mi6b6L+lVqqoYk5z7JFagTw04whQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=scASQ9Ug6DFtYELD9ZZ2S49iOPriP9YMcrQAt3L2xBRaCOo5Mt+8V535+hXdHZYd0
-         /Qut292kAVwJd5BHAtIfYs8RT7RoTp5wvxmjm2XgZx9zoTCE4m0X+rT/7rXydgmiC1
-         CLPu0zYuK5xAHYq6kRl7Pq4HUNQ2+EKAEqzE8vsn6yhBo+HW6n2D4iIYgQUrAjo/A2
-         iaPzjcZ4kAGUZnewakyhkCo32imuys97NBnj8aCKN5/OyWhK5bklQEr1L8hjCwl6I0
-         Cfz6wGDmEdP3zeOoEniD37zxpywAoeNhhte26AzX5thUWL2ouW9Tig0cWIb7WfG4m3
-         Ww+PDf+KCNmGw==
-Date:   Thu, 28 Oct 2021 09:08:58 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the net-next tree
-Message-ID: <20211028090858.138ece92@canb.auug.org.au>
+        Wed, 27 Oct 2021 18:12:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635372587;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vPTDsq9RY16fTCCoMhEcqKhkYxR/hT5AGgzHMhJ6ojY=;
+        b=GW84Vw7pza+og6AlQkSStDCr+1P5nspQ7TtvSEueKXYKAkG62c75otaTSgTDcHmZeCWVfT
+        uwTNQTOGQCU7TvhtCZdIIeGUW18IXf5YInxnS1/X/q/y1v6tUSxRouck3/RjgSajycTUij
+        gK+XzfOD7Ppyo2nzL6zjKY+Izr8o0ZI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-604-4klXvBO4NxeINm1YwrfHNA-1; Wed, 27 Oct 2021 18:09:45 -0400
+X-MC-Unique: 4klXvBO4NxeINm1YwrfHNA-1
+Received: by mail-ed1-f70.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso3609657edj.20
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 15:09:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=vPTDsq9RY16fTCCoMhEcqKhkYxR/hT5AGgzHMhJ6ojY=;
+        b=DHcVY1YQzLtziC4hDuV9vnEuuTqtwxUKLvtgAq5rXJ1r5tgaBhU2heXVwQmrEgLm15
+         p4SihdYIYBUsJ3ImMuIgppJ4DZpNQoeWsPTjQCftkKT8mvR3PofG0Oi6rWsD9QjGwGL/
+         ZFUYTPCw/75b9WdrL+JS35YD66oPGO97zeg8Jv0T0fvuA56F8kOkgexgVC2AlM8Dh2E4
+         4f43CYm2IqIupYJmD+FUie37DMfxvAEpVGV0Qxu/1gbmrc2Z1VLVEYQ6JtaKa3R1+Bxn
+         GCvg6Fh780vUi12KCcB21qOj61qHCX2H5Oh5TJ2ghZsrtzFkTQUixERbYC7YjL5r7UL5
+         /TbA==
+X-Gm-Message-State: AOAM533ItJYvde2gS1xoYmSX/K4LePKgGNwAOrU4BScsMjbjjHUwFcUE
+        k/4NQIaiHg67p+lFvL2Sz/uPRl7umHkz3tEU8mmlJwVmX/EKOAFJal++Z6PHcJ1rJf7ELrClOnG
+        +k+GCBzEaACdt2YPWux018/po
+X-Received: by 2002:a17:906:3f95:: with SMTP id b21mr341849ejj.368.1635372584297;
+        Wed, 27 Oct 2021 15:09:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxoBx4vKjR30o+Kgjfdb4KsDUE6yjTUINxxdU8F5+6sRGk01DyvRy4bEl13EnJPgWSCV29mNQ==
+X-Received: by 2002:a17:906:3f95:: with SMTP id b21mr341810ejj.368.1635372584078;
+        Wed, 27 Oct 2021 15:09:44 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id a9sm675279edm.31.2021.10.27.15.09.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 15:09:43 -0700 (PDT)
+Message-ID: <fdf90c2f-81c8-513b-2e06-a90959f4cd89@redhat.com>
+Date:   Thu, 28 Oct 2021 00:09:25 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hG=c7RxsV1BQlc5BrNzc+qA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 39/43] KVM: VMX: Don't do full kick when triggering
+ posted interrupt "fails"
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-40-seanjc@google.com>
+ <335822ac-b98b-1eec-4911-34e4d0e99907@redhat.com>
+ <YXl4mK7CyUBnPaQV@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YXl4mK7CyUBnPaQV@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hG=c7RxsV1BQlc5BrNzc+qA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 27/10/21 18:04, Sean Christopherson wrote:
+>>> +		/*
+>>> +		 * The smp_wmb() in kvm_make_request() pairs with the smp_mb_*()
+>>> +		 * after setting vcpu->mode in vcpu_enter_guest(), thus the vCPU
+>>> +		 * is guaranteed to see the event request if triggering a posted
+>>> +		 * interrupt "fails" because vcpu->mode != IN_GUEST_MODE.
+>>
+>> What this smp_wmb() pair with, is the smp_mb__after_atomic in
+>> kvm_check_request(KVM_REQ_EVENT, vcpu).
+>
+> I don't think that's correct.  There is no kvm_check_request() in the relevant path.
+> kvm_vcpu_exit_request() uses kvm_request_pending(), which is just a READ_ONCE()
+> without a barrier.
 
-Hi all,
+Ok, we are talking about two different set of barriers.  This is mine:
 
-Commit
+- smp_wmb() in kvm_make_request() pairs with the smp_mb__after_atomic() in
+kvm_check_request(); it ensures that everything before the request
+(in this case, pi_pending = true) is seen by inject_pending_event.
 
-  8ca9caee851c ("net/mlx5: Lag, Make mlx5_lag_is_multipath() be static inli=
-ne")
+- pi_test_and_set_on() orders the write to ON after the write to PIR,
+pairing with vmx_sync_pir_to_irr and ensuring that the bit in the PIR is
+seen.
 
-is missing a Signed-off-by from its committer.
+And this is yours:
 
---=20
-Cheers,
-Stephen Rothwell
+- pi_test_and_set_on() _also_ orders the write to ON before the read of
+vcpu->mode, pairing with vcpu_enter_guest()
 
---Sig_/hG=c7RxsV1BQlc5BrNzc+qA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+- kvm_make_request() however does _not_ order the write to
+vcpu->requests before the read of vcpu->mode, even though it's needed.
+Usually that's handled by kvm_vcpu_exiting_guest_mode(), but in this case
+vcpu->mode is read in kvm_vcpu_trigger_posted_interrupt.
 
------BEGIN PGP SIGNATURE-----
+So vmx_deliver_nested_posted_interrupt() is missing a smp_mb__after_atomic().
+It's documentation only for x86, but still easily done in v3.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF5zfoACgkQAVBC80lX
-0Gz0dggAh0vYgmI8g3kbbr6S1C39+SeVfTpwP2iuvEh9wzLSYtXVce3ukR59kqPf
-hMQ0YNAaaVTfDKHj0pEjS4Ie39XBrasZquwsrhjzX3ZW51cziU84Eq2XCLb+Lcw8
-YfAX6Cx6DzF74sllppO9BtHstppzvfyTVaLt6AaHJo3+dek17B6g7eud/O4mFVZO
-J23Vl3NydBa9/8Ybwn93KxPAqKr4wuMu96ef9Gi/5bofYMJkm4ePBHz6Tf8b/9QE
-29gjkAXpTFMLRKC5w0wyeRxQRAaXy3Ha83zc956XIe8mgrPAPpuPwp8qkOI07XLw
-fXPnYB6WonmcOM0neh7kJmxL/DoQtw==
-=HDX9
------END PGP SIGNATURE-----
+Paolo
 
---Sig_/hG=c7RxsV1BQlc5BrNzc+qA--
