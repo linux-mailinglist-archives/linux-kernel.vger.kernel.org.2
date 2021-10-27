@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D810643C346
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B133D43C347
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238379AbhJ0Gwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhJ0Gwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:52:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DDAC061570;
-        Tue, 26 Oct 2021 23:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yjuWgGmhQsdJLTs6v2WuNddPxXE6Sp4DzBaIzpvmDxI=; b=C5iwMARf+IMLZdYCmk6ZUrqOkO
-        8BwoK3oTNJDlvSjeimyONSspbVA1scvfDU+66PFDD3dLzT6NFr3opsayEOwR2nXD/UQNuiKmxo1Y8
-        9VcCSxCnK4544hxrLn1Q+6+3xqaFirt088Fy912wVD5q14DRRDCT6srIfw1ruVTyctXhFZZhiFiiF
-        v3k4kTFZf60t1bQi5bkepl9c7guEHtbzZrmP2UDqOqIcHSJmlbb9ssd+eqmErkz5Oam+1MMNKVMbU
-        tl3E0Q/zIWt1tEbckfFO0WIFCqAS2kD/IXbdMRtpnXHodSv/GpTla3Ask2eTyW0X1NaJU8B3iaS/N
-        JRm0MBZg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfcl5-0043Vr-Rj; Wed, 27 Oct 2021 06:49:59 +0000
-Date:   Tue, 26 Oct 2021 23:49:59 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <YXj2lwrxRxHdr4hb@infradead.org>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+        id S240038AbhJ0Gw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:52:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238398AbhJ0Gw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 02:52:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E85B610A5;
+        Wed, 27 Oct 2021 06:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635317432;
+        bh=fPqvyH9rDu7XomCHe97HHXFmx1217+zIxqi7oPNos1Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xQf8y0/8rejCdmnUbr+A3jC74BQD9wIuIj1lvHHSZKI8l+8D7VuAL3BG9OZCHiHmS
+         GH/G0rFCS4dc9c3ImjBkQOsbVvthXgwCyCkvzmSqFc84qiV0xbmvdzRKfzjjhswHtY
+         f5qfyZvhQCaWRVEcPfOMVOzwqrU9ZBAXHzF7t8O0=
+Date:   Wed, 27 Oct 2021 08:50:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL v2] Coresight changes for v5.16
+Message-ID: <YXj2trHe8XA0QtFO@kroah.com>
+References: <20211026195545.3951306-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20211026195545.3951306-1-mathieu.poirier@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote:
-> Thanks - I try to be honest.  As far as I can tell, the argument
-> about the flag is a philosophical argument between two views.
-> One view assumes design based on perfect hardware, and media error
-> belongs to the category of brokenness. Another view sees media
-> error as a build-in hardware component and make design to include
-> dealing with such errors.
+On Tue, Oct 26, 2021 at 01:55:45PM -0600, Mathieu Poirier wrote:
+> The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
+> 
+>   Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git tags/coresight-next-v5.16
 
-No, I don't think so.  Bit errors do happen in all media, which is
-why devices are built to handle them.  It is just the Intel-style
-pmem interface to handle them which is completely broken.  
+Better but I get the following errors when my scripts try to merge them.
+Note, the linux-next scripts will give you the same complaint, so this
+isn't a new thing:
 
-> errors in mind from start.  I guess I'm trying to articulate why
-> it is acceptable to include the RWF_DATA_RECOVERY flag to the
-> existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
-> and its slow path (w/ error clearing) is faster than other alternative.
-> Other alternative being 1 system call to clear the poison, and
-> another system call to run the fast pwrite for recovery, what
-> happens if something happened in between?
+Commit 6871138a7ab9 ("coresight: etm4x: Add ETM PID for Kryo-5XX")
+	committer Signed-off-by missing
+	author email:    quic_taozha@quicinc.com
+	committer email: mathieu.poirier@linaro.org
+	Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+	Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Well, my point is doing recovery from bit errors is by definition not
-the fast path.  Which is why I'd rather keep it away from the pmem
-read/write fast path, which also happens to be the (much more important)
-non-pmem read/write path.
+Commit 202d403ae3a9 ("coresight: Don't immediately close events that are run on invalid CPU/sink combos")
+	committer Signed-off-by missing
+	author email:    james.clark@arm.com
+	committer email: mathieu.poirier@linaro.org
+	Signed-off-by: James Clark <james.clark@arm.com>
+	Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Commit ef095e61dc8f ("coresight: Update comments for removing cs_etm_find_snapshot()")
+	committer Signed-off-by missing
+	author email:    leo.yan@linaro.org
+	committer email: mathieu.poirier@linaro.org
+	Signed-off-by: Leo Yan <leo.yan@linaro.org>
+	Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Commit 7be15eef996f ("coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer")
+	committer Signed-off-by missing
+	author email:    leo.yan@linaro.org
+	committer email: mathieu.poirier@linaro.org
+	Signed-off-by: Leo Yan <leo.yan@linaro.org>
+	Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Commit 60067d5ab339 ("coresight: tmc-etf: Add comment for store ordering")
+	committer Signed-off-by missing
+	author email:    leo.yan@linaro.org
+	committer email: mathieu.poirier@linaro.org
+	Signed-off-by: Leo Yan <leo.yan@linaro.org>
+	Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Commit 7c202525ff8c ("coresight: tmc-etr: Add barrier after updating AUX ring buffer")
+	committer Signed-off-by missing
+	author email:    leo.yan@linaro.org
+	committer email: mathieu.poirier@linaro.org
+	Signed-off-by: Leo Yan <leo.yan@linaro.org>
+	Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Errors in tree with Signed-off-by, please fix!
+
+
+Is there some reason you are committing changes to your tree and not signing
+off on them?  That's not really a good idea :(
+
+thanks,
+
+greg k-h
