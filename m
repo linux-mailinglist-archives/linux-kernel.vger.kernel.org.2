@@ -2,59 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABCC43CA2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE4743CA2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242038AbhJ0M5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:57:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242037AbhJ0M5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B661A61052;
-        Wed, 27 Oct 2021 12:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635339297;
-        bh=S53tmzfO64af4LFeF9wll6hR3ZlFA+BpMaW8MGlR+Cg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R300E1foo1du5sbZ8+MPTKVk5ubTU02dEsSkRBQM7vppokvrWnfCx69aFi6afXX8Q
-         dHFt4zJCkSXn7rW7EuKkQbgN3e9qAzuIKv3Md5F6DJr8ipEWxpIea8bxKbZb8IPeBt
-         hPqdC/CeR2rA/vG38Q7u+/RT3HkE8Rv52dD/r7z0=
-Date:   Wed, 27 Oct 2021 14:54:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>
-Subject: Re: linux-next: Tree for Oct 25
-Message-ID: <YXlMHoxvj1Mn26H4@kroah.com>
-References: <20211025204921.73cb3011@canb.auug.org.au>
- <20211027224231.1634cc6c@canb.auug.org.au>
+        id S242037AbhJ0M5r convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Oct 2021 08:57:47 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:60511 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235988AbhJ0M5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:57:46 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-253-wPONUwz2OL6lc0R2QWVEYg-1; Wed, 27 Oct 2021 13:55:18 +0100
+X-MC-Unique: wPONUwz2OL6lc0R2QWVEYg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Wed, 27 Oct 2021 13:55:17 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Wed, 27 Oct 2021 13:55:17 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mark Rutland' <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Sami Tolvanen <samitolvanen@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "ardb@kernel.org" <ardb@kernel.org>
+Subject: RE: [PATCH v5 00/15] x86: Add support for Clang CFI
+Thread-Topic: [PATCH v5 00/15] x86: Add support for Clang CFI
+Thread-Index: AQHXyyrmFu1L74SRSES6mpaoExEoXavmyV5Q
+Date:   Wed, 27 Oct 2021 12:55:17 +0000
+Message-ID: <456321a9fc5245408fc0d2798e497fe0@AcuMS.aculab.com>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
+In-Reply-To: <20211027120515.GC54628@C02TD0UTHF1T.local>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027224231.1634cc6c@canb.auug.org.au>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 10:42:31PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Mon, 25 Oct 2021 20:49:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > There seems to be something amiss with cnosole output in today's release
-> > (at least on my ppc qemu boot tests).
-> 
-> The console output seems to be back today.  I assume its repair had
-> something to do with commit
-> 
->   60f41e848492 ("Revert "tty: hvc: pass DMA capable memory to put_chars()"")
+From: Mark Rutland
+> Sent: 27 October 2021 13:05
+...
+> Taking a step back, it'd be nicer if we didn't have the jump-table shim
+> at all, and had some SW landing pad (e.g. a NOP with some magic bytes)
+> in the callees that the caller could check for. Then function pointers
+> would remain callable in call cases, and we could explcitly add landing
+> pads to asm to protect those. I *think* that's what the grsecurity folk
+> do, but I could be mistaken.
 
-Probably, sorry about that, don't have ppc hardware to test this mess
-on.  I would have thought that the patch authors would have done so...
+It doesn't need to be a 'landing pad'.
+The 'magic value' could be at 'label - 8'.
 
-thanks,
+Provided you can generate the required value it could be added
+to asm functions.
+(Or you could patch it at startup by stealing the value from
+a C function.)
 
-greg k-h
+Depending on the threat model, you may even want the called function
+to do some sanity checks on the caller.
+
+I suspect that anything you do is easy to subvert by anything that
+can actually write asm.
+So if the real threat is overwritten function tables then something
+relatively simple is adequate.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
