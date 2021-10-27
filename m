@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612D043CA07
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CF343CA08
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242021AbhJ0Mtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235726AbhJ0Mtk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:49:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015CCC061570;
-        Wed, 27 Oct 2021 05:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=07scw71Qfs4SI4ir9McWtaQKp2wLsiaRGVZmK2PzJ8k=; b=K7i9raGDP7DMyO3RzzHOftf1y7
-        tfwaocRSisRWhzUVRSLRUdSlMyJEP9lCWDhEGEvWHzDqW68jgKutVNhzQFXv6nxMbI/bxGqCI9bZg
-        xRZxDbETguyVyOxmQBD/CbAychhPQf9HRTwrWky+5erfju+jTp1JPBlConAJlBcFUQzJngYIjyWNJ
-        aPbzg+buloRgfGWGUWUonZZeJXMGNZBJFYThPJsxa8vghmoi+M2MGC3LEtCEcS3vRbbXznJB59ot0
-        vSAyLdKZAZRI17yQCnLx2Ht+66HkapompInFKqzLGI0QOqATCn6iAf6PIQfszE7kGWMvmRHNZDPZS
-        HbMMmLyg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfiKQ-00CYVg-IL; Wed, 27 Oct 2021 12:46:50 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 695C298629C; Wed, 27 Oct 2021 14:46:49 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 14:46:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, ardb@kernel.org
-Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
-Message-ID: <20211027124649.GJ174703@worktop.programming.kicks-ass.net>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211026201622.GG174703@worktop.programming.kicks-ass.net>
- <20211027120515.GC54628@C02TD0UTHF1T.local>
+        id S240364AbhJ0MuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:50:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:42982 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231542AbhJ0MuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:50:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 046931FB;
+        Wed, 27 Oct 2021 05:47:50 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08DC73F73D;
+        Wed, 27 Oct 2021 05:47:46 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 13:47:44 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
+Message-ID: <20211027124744.GE54628@C02TD0UTHF1T.local>
+References: <20211025122102.46089-3-frederic@kernel.org>
+ <YXa3q2AOH0T+smFy@hirez.programming.kicks-ass.net>
+ <CAMj1kXELqoVp5zBcQ8g+0O56sBq9qAEDO-7OTenDkpRcb7oeQQ@mail.gmail.com>
+ <YXa85OTw7i3Bg9yj@hirez.programming.kicks-ass.net>
+ <YXbC3NRWDDfsW6DG@hirez.programming.kicks-ass.net>
+ <CAMj1kXEKASsYJMHHNA=uNGTnLMoXO_4BP0--1k7cEfZZupdsog@mail.gmail.com>
+ <YXbHJCtkBdMP/bF6@hirez.programming.kicks-ass.net>
+ <CAMj1kXHYXzU=pW6tUJB61QW5VBL7WKBhT7BkNJ970FQdHz1VVw@mail.gmail.com>
+ <20211026103655.GB30152@C02TD0UTHF1T.local>
+ <7d807624275a4938871f8e433e510e3c@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027120515.GC54628@C02TD0UTHF1T.local>
+In-Reply-To: <7d807624275a4938871f8e433e510e3c@AcuMS.aculab.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:05:15PM +0100, Mark Rutland wrote:
-> On Tue, Oct 26, 2021 at 10:16:22PM +0200, Peter Zijlstra wrote:
-> > On Wed, Oct 13, 2021 at 11:16:43AM -0700, Sami Tolvanen wrote:
-> > > This series adds support for Clang's Control-Flow Integrity (CFI)
-> > > checking to x86_64. With CFI, the compiler injects a runtime
-> > > check before each indirect function call to ensure the target is
-> > > a valid function with the correct static type. This restricts
-> > > possible call targets and makes it more difficult for an attacker
-> > > to exploit bugs that allow the modification of stored function
-> > > pointers. For more details, see:
-> > > 
-> > >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+On Tue, Oct 26, 2021 at 11:06:11AM +0000, David Laight wrote:
+> From: Mark Rutland
+> > Sent: 26 October 2021 11:37
+> ...
+> > My preference overall is to keep the trampoline self-contained, and I'd
+> > prefer to keep the RET inline in the trampoline rather than trying to
+> > factor it out so that all the control-flow is clearly in one place.
 > > 
-> > So, if I understand this right, the compiler emits, for every function
-> > two things: 1) the actual funcion and 2) a jump-table entry.
+> > So I'd prefer that we have the sequence as-is:
 > > 
-> > Then, every time the address of a function is taken, 2) is given instead
-> > of the expected 1), right?
+> > | 0:	.quad 0x0
+> > | 	bti	c
+> > | 	< insn >
+> > | 	ldr	x16, 0b
+> > | 	cbz	x16, 1f
+> > | 	br	x16
+> > | 1:	ret
 > 
-> Yes, and we had to bodge around this with function_nocfi() to get the
-> actual function address.
+> What is wrong with:
+> 0:	.quad 1f
+> 	bti	c
+> 	< insn >
+> 	ldr	x16, 0b
+> 	br	x16
+> 1:	bti	c
+> 	ret
+> 
+> Self-contained and reasonably easy to read.
 
-The patch set under consideration seems to have forgotten to provide one
-for x86 :/
+FWIW, that would work for me too.
 
-> Really there should be a compiler intrinsic or attribute for this, given
-> the compiler has all the releveant information available. On arm64 we
-> had to us inine asm to generate the addres...
-
-Agreed, this *really* shouldn't be an arch asm hack trying to undo
-something the compiler did.
-
+Thanks,
+Mark.
