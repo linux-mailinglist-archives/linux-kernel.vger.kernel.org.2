@@ -2,49 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D921F43C1FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC2943C201
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238160AbhJ0FE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 01:04:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53466 "EHLO mail.kernel.org"
+        id S238222AbhJ0FFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:05:47 -0400
+Received: from muru.com ([72.249.23.125]:48920 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhJ0FE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:04:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3765060F21;
-        Wed, 27 Oct 2021 05:02:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635310922;
-        bh=wg2RNG7Fk6M43nRwVMIjou4UKMRQPMXmVEw6LZZ3p44=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OOCwXYtLidTIun78mfD71bjvQM+xj6hxNp529AHSZKIqjF31Z/F64L8YPsbLtwk27
-         1RK8grKv8pB3+zX/MK0jUeUBzf6lhiOMWk1UBBKNwu9/oQ5pPRmgq7ByWn81Qd455y
-         EP2qtjzVPJByc/msCAuIPSWKL554WuDaO0MUyZV0=
-Date:   Wed, 27 Oct 2021 07:01:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Gaston Gonzalez <gascoar@gmail.com>
-Cc:     linux-staging@lists.linux.dev, nsaenz@kernel.org,
-        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: vchiq_core: get rid of typedef
-Message-ID: <YXjdRYCoqlx26MZq@kroah.com>
-References: <20211026212756.25557-1-gascoar@gmail.com>
+        id S230349AbhJ0FFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 01:05:46 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 968AB80CD;
+        Wed, 27 Oct 2021 05:03:54 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 08:03:18 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Suman Anna <s-anna@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCHv2] dt-bindings: bus: ti-sysc: Update to use yaml binding
+Message-ID: <YXjdloMA02XtIGZ4@atomide.com>
+References: <20211015113350.35830-1-tony@atomide.com>
+ <YXh0JtEnB6uKR/my@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026212756.25557-1-gascoar@gmail.com>
+In-Reply-To: <YXh0JtEnB6uKR/my@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 06:27:56PM -0300, Gaston Gonzalez wrote:
-> Get rid of typedef and use proper kernel type instead.
+* Rob Herring <robh@kernel.org> [211026 21:34]:
+> I reworked the reg-names and clock-names to be more concise and applied. 
 
-which typedef?  Please be specific.
+OK thanks.
 
-thanks,
+> Like this:
+> 
+>   clock-names:
+>     description:
+>       Target module clock names like "fck", "ick", "optck1", "optck2"
+>       if the clocks are configurable.
+>     oneOf:
+>       - enum: [ ick, fck, sys_clk ]
+>       - items:
+>           - const: fck
+>           - enum: [ ick. dbclk, osc, sys_clk, dss_clk, ahclkx ]
+...
 
-greg k-h
+Looks good to me :)
+
+Tony
