@@ -2,132 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D0B43D747
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116FC43D74B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhJ0XLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhJ0XLe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:11:34 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE70DC061225
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:09:08 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so6436333pje.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:09:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XJfFTW9EjYJeHoclf1SeEwj25PLenE7ts5EFTr8vzec=;
-        b=vYjyS+8EH3CfIBezSrdmSEFFSJc1bpK8IsDLNwp4SIdgzIr0qhB73jSdQ+tZtt+gKe
-         gLRCAnofL8DMkcE7vLBKcZfntvEYsCybXJMFIekVgyaoqoB4d2yoy2/fxl6NKOgXIYmd
-         GMEiLNFKg0iVmrnBvlpV4pv/PV+nqVeQwlB1PLBrwM8b8vjtjZjGvc3MJRrAfuUoDBNo
-         ViaF9lo0gQuECLSnf0dUVzQmZPRvjI+cvfCWgH2cYeMbb2VhrXJlj9sEs5Y4vYC263de
-         h2wbGwEHNdbZkGS/4AP/MxQ7HKYBbqiVTjD7lo6//33sqHBHnP35ISg1TmvMKaMznq9A
-         cKAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=XJfFTW9EjYJeHoclf1SeEwj25PLenE7ts5EFTr8vzec=;
-        b=N53z9tJeoEaJ9wtxPi8joiiS/297KpELBzGtbvV7ZRNYz9F+Qa6CIvQvUO+KKesJrU
-         ccfDorCRQ0jbKN7wyKNQ37qHwSrAYoubYv3EuKAEGwDeQLONGQaN1iBYwkDtn5XHqPOx
-         yZkLh+LRxW9zu7fKwkFZfsZfbLnHgxK9vpC27IGCr7PCrs3ksuMTxHOZGC/6z14uyw8X
-         bLOo5QzYJrf902RB6TcCrcKATa9NyzIaaJnWCXLf8kMhzDYxKQgTkaYT7tlpvI8NI3uJ
-         cz6jr6Dr1lFLqTx4B7Z8Y1zOYfczno3kjAyAV05TYmVCq8t1mrcq51r3PDqNnSBS4MIN
-         Mt0A==
-X-Gm-Message-State: AOAM531yxLjps5XOjanCWBjitGBXuTWpZ2nXVo4wdg0CPrQaB4+oWm2b
-        fptQ55zZEelrB7u39eLZGN8j2Q==
-X-Google-Smtp-Source: ABdhPJxUJYglQ4uyqyrvUHQJ2HBzLbAnkI4OfP0sJtC8YPLND6BbQ0gKrpcxmED13rpzsyQoceaG3g==
-X-Received: by 2002:a17:903:246:b0:13f:2ff9:8b93 with SMTP id j6-20020a170903024600b0013f2ff98b93mr652035plh.54.1635376148047;
-        Wed, 27 Oct 2021 16:09:08 -0700 (PDT)
-Received: from localhost ([2620:0:1000:5e10:60fc:a50:6d27:9fd3])
-        by smtp.gmail.com with ESMTPSA id bg15sm739067pjb.15.2021.10.27.16.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 16:09:07 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 16:09:07 -0700 (PDT)
-X-Google-Original-Date: Wed, 27 Oct 2021 16:09:01 PDT (-0700)
-Subject:     Re: [PATCH v2 18/45] riscv: Use do_kernel_power_off()
-In-Reply-To: <20211027211715.12671-19-digetx@gmail.com>
-CC:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        lee.jones@linaro.org, rafael@kernel.org, broonie@kernel.org,
-        akpm@linux-foundation.org, linux@roeck-us.net,
-        linux@armlinux.org.uk, daniel.lezcano@linaro.org,
-        andriy.shevchenko@linux.intel.com, ulf.hansson@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
-        geert@linux-m68k.org, gerg@linux-m68k.org, funaho@jurai.org,
-        tsbogend@alpha.franken.de, nickhu@andestech.com,
-        green.hu@gmail.com, deanbo422@gmail.com,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, ysato@users.sourceforge.jp, dalias@libc.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, lenb@kernel.org, ssantosh@kernel.org,
-        krzysztof.kozlowski@canonical.com, linus.walleij@linaro.org,
-        wens@csie.org, j.neuschaefer@gmx.net, tony@atomide.com,
-        lgirdwood@gmail.com, p.zabel@pengutronix.de, vz@mleia.com,
-        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        pavel@ucw.cz, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-omap@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     digetx@gmail.com
-Message-ID: <mhng-fd8f451c-4860-4b0c-a155-6f65891cd276@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S230299AbhJ0XMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:12:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230196AbhJ0XMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 19:12:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E4AE961040;
+        Wed, 27 Oct 2021 23:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635376208;
+        bh=TMOjPuBi30omm3OUP+u3FY5YEYx/Fers7Q3speDYL70=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ewjnVUVSADGqvovFoOISngvEzer+/1cRAF+JPrAc2UBw+XlZQ6k5ewnNE+OJEorrZ
+         RXEPFxuWzxGKGmam8ryq8cDviPzqa52XbanzGmAocOXKT7wHF8WDu36mJQa7RhCTWR
+         WaqS2L18p/ZkmiM7OuAWdtrNCAPoQeyudbIIUnH/Y7BlwtxMsFP7NkZUOOM3mPZ0bv
+         pW4Ao8tElfgL4SAXIcKU4/PGgsD35EdxX0Iol5yLOQEKhr5TM6VifXE62DaVFUiSqj
+         JI11+q1V3r9VKT7TQXMIrKmU7qbmG1+Ly2Sth9Ruq4CXfnh78Myyp5WXgxN8fLzmRl
+         tPYednYtvvymA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D3F7F60A17;
+        Wed, 27 Oct 2021 23:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next,v3] riscv, bpf: Add BPF exception tables
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163537620786.14362.5033693418821355895.git-patchwork-notify@kernel.org>
+Date:   Wed, 27 Oct 2021 23:10:07 +0000
+References: <20211027111822.3801679-1-tongtiangen@huawei.com>
+In-Reply-To: <20211027111822.3801679-1-tongtiangen@huawei.com>
+To:     tongtiangen <tongtiangen@huawei.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        palmerdabbelt@google.com, aou@eecs.berkeley.edu, bjorn@kernel.org,
+        luke.r.nels@gmail.com, xi.wang@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 14:16:48 PDT (-0700), digetx@gmail.com wrote:
-> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-> that invokes chained power-off handlers. It also invokes legacy
-> pm_power_off() for now, which will be removed once all drivers will
-> be converted to the new power-off API.
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  arch/riscv/kernel/reset.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/riscv/kernel/reset.c b/arch/riscv/kernel/reset.c
-> index 9c842c41684a..912288572226 100644
-> --- a/arch/riscv/kernel/reset.c
-> +++ b/arch/riscv/kernel/reset.c
-> @@ -23,16 +23,12 @@ void machine_restart(char *cmd)
->
->  void machine_halt(void)
->  {
-> -	if (pm_power_off != NULL)
-> -		pm_power_off();
-> -	else
-> -		default_power_off();
-> +	do_kernel_power_off();
-> +	default_power_off();
->  }
->
->  void machine_power_off(void)
->  {
-> -	if (pm_power_off != NULL)
-> -		pm_power_off();
-> -	else
-> -		default_power_off();
-> +	do_kernel_power_off();
-> +	default_power_off();
->  }
+Hello:
 
-Acked-by: Palmer Dabbelt <palmer@dabbelt.com>
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Wed, 27 Oct 2021 11:18:22 +0000 you wrote:
+> When a tracing BPF program attempts to read memory without using the
+> bpf_probe_read() helper, the verifier marks the load instruction with
+> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
+> this flag it falls back to the interpreter.
+> 
+> Add support for BPF_PROBE_MEM, by appending an exception table to the
+> BPF program. If the load instruction causes a data abort, the fixup
+> infrastructure finds the exception table and fixes up the fault, by
+> clearing the destination register and jumping over the faulting
+> instruction.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v3] riscv, bpf: Add BPF exception tables
+    https://git.kernel.org/bpf/bpf-next/c/252c765bd764
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
