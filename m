@@ -2,111 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6513343CACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79EC43CACF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242204AbhJ0Ni6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242196AbhJ0Ni5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:38:57 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B743FC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:36:31 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 107-20020a9d0a74000000b00553bfb53348so3688622otg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wRt8TSJKf2XFyfF6HeRRA8Fcsjf8RvgcXHZHz2hidKE=;
-        b=d07KZTCZN/Z5SvZwb0834lF3mfuutMvQSe69XLJcUm7SPUOE0oCjFwKxlj5HysGvCh
-         lZqRkcSS4l39MPFuPTLU+wBYqWkKSDVHNzViNBpFF8cBYQed06csp4uCp/9p5qS5s7mv
-         GWGmALsnysYM7mGByPvjKi6CfItRMEaomk8AhCwMNzje7KyeUaKiUgGtoT2iyqMkUdDp
-         SIOLX1P14F2AEnKtnSFBLtCABht5v6ZTNPtxksx1WYF+EDCuOq82hhhNoosaUrDs/DaO
-         MjTXEbstG08hcG7+3WJJiac35lc6hNrCjKK6rWVVSLzS5Z7o5411up7yyrfR/Kter7aE
-         vx7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wRt8TSJKf2XFyfF6HeRRA8Fcsjf8RvgcXHZHz2hidKE=;
-        b=7D0guvcLxTMdC6lQgmmScgGXO8SE67Oc+6MiGm9uWd8dLWDW0IUfVl/m7htrK/+zql
-         WOpaa0m3on2HsSxHDpjHuXqhEu/Z95tcFNkvw11E60UET0IahWj+ETZlPQgTk6YCyjoZ
-         O01yPgbUAxE4uZNIirCRNRIDedQz2m49zNG7EEcquIz9tyd0gaJ7ZXIfWFTYIOA9q0eF
-         QtUtyTD/VHM/T4qGZPc6VbGsmxS+aX4iVHgV9JTH0VSejoQ+SrHsOQaqimEGk4OzbYft
-         K5Zad+/++pA0810FBitxiBq/qwLlzfHx7kualKGR/CtGykMzA/CtSzGp7WPqPIDHjO1j
-         GFog==
-X-Gm-Message-State: AOAM533p8PUueJN0svVN5ZQBQIsxhL5jhe6bZFcRzt35P+swPCf1gqSN
-        jv3jdKfsPbOC7MJP14lNRJwl4aiG/jlHnFEwMReP5g==
-X-Google-Smtp-Source: ABdhPJw+wufOf2shJ+/efTDa2p/cH5pukOwDKDaqX0k/t88m8qXv09E2sslzGnwgBBvMmNVzu8vz2c+MEdkQn9p8OKo=
-X-Received: by 2002:a9d:44a:: with SMTP id 68mr2739395otc.319.1635341790830;
- Wed, 27 Oct 2021 06:36:30 -0700 (PDT)
+        id S242150AbhJ0Nk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:40:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235710AbhJ0Nk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:40:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF92560C51;
+        Wed, 27 Oct 2021 13:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635341882;
+        bh=qJlE+rKByLhXWxjO8K8LqV6oWJBIM5IZCXPlGnIR17E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eQ0CjDxFPeUX0sLIGqwTPaNTMXs6BXGBvqNoEixrrFJKhrB+7hjmyK8ev+6YVncjf
+         Gg1dRy4J8wo19vughwzMLFcRpnZxvqPoXKNi9yl8sycXsWXFx1OKQSu2T09IxzPL42
+         pcCbVu6xsb8iop0IUJnNFLSJW/70VPw8xweTz44IAEqbCWINl+KXWEoc6W+GSg2R9l
+         OUdk4oqbgUIZBposr/AwUfBt15wYFpY7wmzT8kM7BEp8rXNBzG39rQSDqjEv0MouMC
+         UhavlWj8r94/0F5KYJqSOZorXcvXYTDsQGt847ENo4mDfVKkCNUS9XNTgr4O/Lo/QM
+         mceSf4ZSHXYpQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mfj7i-0001cL-H5; Wed, 27 Oct 2021 15:37:47 +0200
+Date:   Wed, 27 Oct 2021 15:37:46 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Himadri Pandya <himadrispandya@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] USB: serial: ch314: use usb_control_msg_recv()
+ and usb_control_msg_send()
+Message-ID: <YXlWKuuYVeSWXNXR@hovoldconsulting.com>
+References: <20211001065720.21330-1-himadrispandya@gmail.com>
+ <20211001065720.21330-2-himadrispandya@gmail.com>
+ <YXlOSQXdZra5sYbe@hovoldconsulting.com>
+ <CAOY-YVmtt4XTet4hU43nfD4pj2W008ab-VRhBMs-One4kpEEug@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000a4cd2105cf441e76@google.com> <eab57f0e-d3c6-7619-97cc-9bc3a7a07219@redhat.com>
-In-Reply-To: <eab57f0e-d3c6-7619-97cc-9bc3a7a07219@redhat.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 27 Oct 2021 15:36:19 +0200
-Message-ID: <CACT4Y+amyT9dk-6iVqru-wQnotmwW=bt4VwaysgzjH9=PkxGww@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in copy_data
-To:     Laurent Vivier <lvivier@redhat.com>
-Cc:     syzbot <syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com>,
-        davem@davemloft.net, herbert@gondor.apana.org.au, jiri@nvidia.com,
-        kuba@kernel.org, leonro@nvidia.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mpm@selenic.com, mst@redhat.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOY-YVmtt4XTet4hU43nfD4pj2W008ab-VRhBMs-One4kpEEug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 15:11, Laurent Vivier <lvivier@redhat.com> wrote:
->
-> On 26/10/2021 18:39, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    9ae1fbdeabd3 Add linux-next specific files for 20211025
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1331363cb00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=aeb17e42bc109064
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116ce954b00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132fcf62b00000
-> >
-> > The issue was bisected to:
-> >
-> > commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
-> > Author: Leon Romanovsky <leonro@nvidia.com>
-> > Date:   Thu Oct 21 14:16:14 2021 +0000
-> >
-> >      devlink: Remove not-executed trap policer notifications
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137d8bfcb00000
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=10fd8bfcb00000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=177d8bfcb00000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com
-> > Fixes: 22849b5ea595 ("devlink: Remove not-executed trap policer notifications")
-> >
-> > ==================================================================
-> > BUG: KASAN: slab-out-of-bounds in memcpy include/linux/fortify-string.h:225 [inline]
-> > BUG: KASAN: slab-out-of-bounds in copy_data+0xf3/0x2e0 drivers/char/hw_random/virtio-rng.c:68
-> > Read of size 64 at addr ffff88801a7a1580 by task syz-executor989/6542
-> >
->
-> I'm not able to reproduce the problem with next-20211026 and the C reproducer.
->
-> And reviewing the code in copy_data() I don't see any issue.
->
-> Is it possible to know what it the VM configuration used to test it?
+On Wed, Oct 27, 2021 at 03:28:42PM +0200, Himadri Pandya wrote:
+> On Wed, Oct 27, 2021 at 3:04 PM Johan Hovold <johan@kernel.org> wrote:
+> > On Fri, Oct 01, 2021 at 08:57:19AM +0200, Himadri Pandya wrote:
 
-Hi Laurent,
+> > > @@ -287,23 +277,18 @@ static int ch341_set_handshake(struct usb_device *dev, u8 control)
+> > >  static int ch341_get_status(struct usb_device *dev, struct ch341_private *priv)
+> > >  {
+> > >       const unsigned int size = 2;
+> > > -     char *buffer;
+> > > +     u8 buffer[2];
+> > >       int r;
+> > >       unsigned long flags;
+> > >
+> > > -     buffer = kmalloc(size, GFP_KERNEL);
+> > > -     if (!buffer)
+> > > -             return -ENOMEM;
+> > > -
+> > >       r = ch341_control_in(dev, CH341_REQ_READ_REG, 0x0706, 0, buffer, size);
+> > > -     if (r < 0)
+> > > -             goto out;
+> > > +     if (r)
+> > > +             return r;
+> > >
+> > >       spin_lock_irqsave(&priv->lock, flags);
+> > >       priv->msr = (~(*buffer)) & CH341_BITS_MODEM_STAT;
+> > >       spin_unlock_irqrestore(&priv->lock, flags);
+> > >
+> > > -out: kfree(buffer);
+> > >       return r;
+> >
+> > This should now be
+> >
+> >         return 0;
+> >
+> 
+> Yes. The function was returning the negative error value before the
+> change. But now it doesn't need to as we are already taking care of it
+> in the wrapper.
 
-syzbot used e2-standard-2 GCE VM when that happened.
-You can see some info about these VMs under the "VM info" link on the dashboard.
+It has more to do with the fact that we now return early on errors so r
+will always be zero here. It's better to be explicit about that.
+ 
+> > >  }
+> > >
+> > > @@ -312,30 +297,25 @@ out:    kfree(buffer);
+> > >  static int ch341_configure(struct usb_device *dev, struct ch341_private *priv)
+> > >  {
+> > >       const unsigned int size = 2;
+> > > -     char *buffer;
+> > > +     u8 buffer[2];
+> > >       int r;
+> > >
+> > > -     buffer = kmalloc(size, GFP_KERNEL);
+> > > -     if (!buffer)
+> > > -             return -ENOMEM;
+> > > -
+> > >       /* expect two bytes 0x27 0x00 */
+> > >       r = ch341_control_in(dev, CH341_REQ_READ_VERSION, 0, 0, buffer, size);
+> > > -     if (r < 0)
+> > > -             goto out;
+> > > +     if (r)
+> > > +             return r;
+> > >       dev_dbg(&dev->dev, "Chip version: 0x%02x\n", buffer[0]);
+> > >
+> > >       r = ch341_control_out(dev, CH341_REQ_SERIAL_INIT, 0, 0);
+> > > -     if (r < 0)
+> > > -             goto out;
+> > > +     if (r)
+> > > +             return r;
+> >
+> > Now an unrelated change.
+> 
+> I think it is a related change because we are removing the out label.
+
+Sorry, I meant that the (r < 0) change was unrelated since you're no
+longer touching ch341_control_out(). The return is indeed still needed.
+ 
+> > > @@ -647,23 +611,19 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
+> > >       struct ch341_private *priv = usb_get_serial_port_data(port);
+> > >       int r;
+> > >       uint16_t reg_contents;
+> > > -     uint8_t *break_reg;
+> > > +     uint8_t break_reg[2];
+> > >
+> > >       if (priv->quirks & CH341_QUIRK_SIMULATE_BREAK) {
+> > >               ch341_simulate_break(tty, break_state);
+> > >               return;
+> > >       }
+> > >
+> > > -     break_reg = kmalloc(2, GFP_KERNEL);
+> > > -     if (!break_reg)
+> > > -             return;
+> > > -
+> > >       r = ch341_control_in(port->serial->dev, CH341_REQ_READ_REG,
+> > >                       ch341_break_reg, 0, break_reg, 2);
+> > > -     if (r < 0) {
+> > > +     if (r) {
+> > >               dev_err(&port->dev, "%s - USB control read error (%d)\n",
+> > >                               __func__, r);
+> > > -             goto out;
+> > > +             return;
+> > >       }
+> > >       dev_dbg(&port->dev, "%s - initial ch341 break register contents - reg1: %x, reg2: %x\n",
+> > >               __func__, break_reg[0], break_reg[1]);
+> > > @@ -681,11 +641,9 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
+> > >       reg_contents = get_unaligned_le16(break_reg);
+> > >       r = ch341_control_out(port->serial->dev, CH341_REQ_WRITE_REG,
+> > >                       ch341_break_reg, reg_contents);
+> > > -     if (r < 0)
+> > > +     if (r)
+> >
+> > Now also an unrelated change.
+> >
+> 
+> Maybe I misunderstood your comments on v2. I thought you asked to get
+> rid of the out labels in callers.
+
+Yes, but as above I'm referring to the (r < 0) change for
+ch341_control_out() which is now unrelated to the rest of the patch.
+
+Johan
