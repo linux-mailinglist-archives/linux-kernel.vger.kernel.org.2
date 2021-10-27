@@ -2,102 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB5A43D0DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A0A43D0E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240246AbhJ0Sj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:39:58 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:38757 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235990AbhJ0Sj4 (ORCPT
+        id S240353AbhJ0SlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:41:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24446 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240281AbhJ0SlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:39:56 -0400
-Received: by mail-oi1-f181.google.com with SMTP id t4so4707545oie.5;
-        Wed, 27 Oct 2021 11:37:31 -0700 (PDT)
+        Wed, 27 Oct 2021 14:41:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635359927;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XMEXe0ICv6BgWp98rw/aHq8v8AFBOl4vDkhRVIL80bM=;
+        b=Cf+eilEk6I/qHCq0VZGva3yy/wcczIeUUS57T79r/dWWkSynzLbB9doLca+UUKOHbaJTfi
+        kz9eJ/xz3lVtKdQNEYv+hgoLZQEDoQqDgP8xlw6xPTr4xWqYmOYySseyhUgMH6AkVEU9Mq
+        CsYH0UA9QTDFBJR31vrgz90H91vIQ8M=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-T3F-S-8HMHy3x4-r8xmYQg-1; Wed, 27 Oct 2021 14:38:46 -0400
+X-MC-Unique: T3F-S-8HMHy3x4-r8xmYQg-1
+Received: by mail-ed1-f69.google.com with SMTP id t1-20020a056402524100b003dd9a419eb5so3187726edd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:38:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hVPuTQqP6aEFqO2fyoc1su/oe5Az3LSwCS4uRf5/p08=;
-        b=sVhUQg/eXrcpXfdBOGFDK2xbtpeqz9aty74kKqmAkYFRx8B5LPd+MkGOhXG7Gd+tNw
-         IEuOKB2KaAWbYJpwEV29VYnoqSFIXTPJziq47l9GE+UnrZneAsMnGiHHCMmw8xc8jpYD
-         xialbxW16djho7NNe6umvtwMkQScIdUsSZALdJ0xIZMgbyf2fflbfqsHFGAOXy7PTgUH
-         UBJtMd6Tmol65RQGzhowMQCyfIRboeUiwgNtl5lalPgD4AYum0mTAHS38JfLwSVOoHwA
-         nCJekGOeXydHQhbBxGAQqFi7TUGURkjk7StCt7jBMdqlmsNptx691zDsz31f6m1cX7Do
-         jNXw==
-X-Gm-Message-State: AOAM530a03+t8RUZ7KPBJ2QF9m3kiPJ7hSxx+1UHZY5Cqio+Y4TxmIBN
-        tFMvK2RgMYSRD086KGWa7YmYAsy3DVgLxsmlmNw=
-X-Google-Smtp-Source: ABdhPJzutzJ7/Yj893mdq8no4/lj/5r4vF4oW8JGvIk2VWf04ta96JHBQadGGsCMKVkQFFaoWhZrYdUCMLWXmITeCQE=
-X-Received: by 2002:aca:5c5:: with SMTP id 188mr4840138oif.154.1635359850793;
- Wed, 27 Oct 2021 11:37:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XMEXe0ICv6BgWp98rw/aHq8v8AFBOl4vDkhRVIL80bM=;
+        b=sTZYCPdTNiTZlFawX8dOUVCVtfGtyQJTRbzw0rIENQvn5jzSEeHYvu2CGIc1eYXSwU
+         K0R/HtbfZ3KN/Do0aOKM50dbfjFS4V6ohsYCQmFj58uz9kYiKcsMDyaX4JPSfYcJmfec
+         tlqjG/oLhMfSl3RMj+yHfU3MTiy5o+bEzkJ0nVDrHLQ69oEw8O/qGtPrOI/mf39IydJF
+         F+8XMWFj4blEZZYzAjUs49q4kPKP7PRhpQaw0Y57hkUA0A3pRLGCGpkNFj9Hv1jIw3Qb
+         PYg7BqDJvFsImR7rH7mqzzYjZP+aVtRHagjRYOcHtnkUespMdO8o9Zuu6zxXBc5l+Dll
+         Xspw==
+X-Gm-Message-State: AOAM533MdTzZjJbsVjs4MzHPKa1lmWk2ynrbju4SW120sdeRyBJFvTgc
+        QFtiNrjXmU8yhOv0bgPK0cHrbsL+T4b57sVWNNRvhFzDFW5XffyWDhUwDKbrM5HG6fVj0ifpUfN
+        LsLsrQPo9QlVucyuytOhyxFk+
+X-Received: by 2002:a05:6402:55:: with SMTP id f21mr46840910edu.8.1635359924974;
+        Wed, 27 Oct 2021 11:38:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwC2QbEl1fxg0PA8S9t6oT7SWCQwA5E14QqU1vajgt4oMNCvV6kahxQF1AxcAISTiTWcUH4uA==
+X-Received: by 2002:a05:6402:55:: with SMTP id f21mr46840891edu.8.1635359924798;
+        Wed, 27 Oct 2021 11:38:44 -0700 (PDT)
+Received: from redhat.com ([2.55.137.59])
+        by smtp.gmail.com with ESMTPSA id g8sm324197ejt.104.2021.10.27.11.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 11:38:44 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 14:38:39 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Laurent Vivier <lvivier@redhat.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com>,
+        davem@davemloft.net, herbert@gondor.apana.org.au, jiri@nvidia.com,
+        kuba@kernel.org, leonro@nvidia.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mpm@selenic.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in copy_data
+Message-ID: <20211027143801-mutt-send-email-mst@kernel.org>
+References: <000000000000a4cd2105cf441e76@google.com>
+ <eab57f0e-d3c6-7619-97cc-9bc3a7a07219@redhat.com>
+ <CACT4Y+amyT9dk-6iVqru-wQnotmwW=bt4VwaysgzjH9=PkxGww@mail.gmail.com>
+ <20211027111300-mutt-send-email-mst@kernel.org>
+ <589f86e0-af0e-c172-7ec6-72148ba7b3b0@redhat.com>
+ <8b5fb6ae-ab66-607f-b7c8-993c483846ca@redhat.com>
+ <1c0652f7-bb1b-99e1-7e8b-0613cc764ddd@redhat.com>
 MIME-Version: 1.0
-References: <20211027065438.1742175-1-hch@lst.de>
-In-Reply-To: <20211027065438.1742175-1-hch@lst.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 27 Oct 2021 20:37:20 +0200
-Message-ID: <CAJZ5v0jYmrV7bMV0b9wB8L-bX6PU+yCDrK8s+jCJh1x3xCi_Rg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: APEI: mark apei_hest_parse
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Robert Moore <robert.moore@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1c0652f7-bb1b-99e1-7e8b-0613cc764ddd@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 8:54 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> apei_hest_parse is only used in hest.c, so mark it static.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/acpi/apei/hest.c | 5 +++--
->  include/acpi/apei.h      | 3 ---
->  2 files changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-> index 277f00b288d14..0edc1ed476737 100644
-> --- a/drivers/acpi/apei/hest.c
-> +++ b/drivers/acpi/apei/hest.c
-> @@ -86,7 +86,9 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
->         return len;
->  };
->
-> -int apei_hest_parse(apei_hest_func_t func, void *data)
-> +typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
-> +
-> +static int apei_hest_parse(apei_hest_func_t func, void *data)
->  {
->         struct acpi_hest_header *hest_hdr;
->         int i, rc, len;
-> @@ -121,7 +123,6 @@ int apei_hest_parse(apei_hest_func_t func, void *data)
->
->         return 0;
->  }
-> -EXPORT_SYMBOL_GPL(apei_hest_parse);
->
->  /*
->   * Check if firmware advertises firmware first mode. We need FF bit to be set
-> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
-> index 680f80960c3dc..ece0a8af2bae7 100644
-> --- a/include/acpi/apei.h
-> +++ b/include/acpi/apei.h
-> @@ -37,9 +37,6 @@ void __init acpi_hest_init(void);
->  static inline void acpi_hest_init(void) { return; }
->  #endif
->
-> -typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
-> -int apei_hest_parse(apei_hest_func_t func, void *data);
-> -
->  int erst_write(const struct cper_record_header *record);
->  ssize_t erst_get_record_count(void);
->  int erst_get_record_id_begin(int *pos);
-> --
+On Wed, Oct 27, 2021 at 08:20:08PM +0200, Laurent Vivier wrote:
+> On 27/10/2021 19:03, Laurent Vivier wrote:
+> > On 27/10/2021 18:25, Laurent Vivier wrote:
+> > > On 27/10/2021 17:28, Michael S. Tsirkin wrote:
+> > > > On Wed, Oct 27, 2021 at 03:36:19PM +0200, Dmitry Vyukov wrote:
+> > > > > On Wed, 27 Oct 2021 at 15:11, Laurent Vivier <lvivier@redhat.com> wrote:
+> > > > > > 
+> > > > > > On 26/10/2021 18:39, syzbot wrote:
+> > > > > > > Hello,
+> > > > > > > 
+> > > > > > > syzbot found the following issue on:
+> > > > > > > 
+> > > > > > > HEAD commit:    9ae1fbdeabd3 Add linux-next specific files for 20211025
+> > > > > > > git tree:       linux-next
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1331363cb00000
+> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=aeb17e42bc109064
+> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
+> > > > > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1
+> > > > > > > 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116ce954b00000
+> > > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132fcf62b00000
+> > > > > > > 
+> > > > > > > The issue was bisected to:
+> > > > > > > 
+> > > > > > > commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
+> > > > > > > Author: Leon Romanovsky <leonro@nvidia.com>
+> > > > > > > Date:   Thu Oct 21 14:16:14 2021 +0000
+> > > > > > > 
+> > > > > > >       devlink: Remove not-executed trap policer notifications
+> > > > > > > 
+> > > > > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137d8bfcb00000
+> > > > > > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=10fd8bfcb00000
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=177d8bfcb00000
+> > > > > > > 
+> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com
+> > > > > > > Fixes: 22849b5ea595 ("devlink: Remove not-executed trap policer notifications")
+> > > > > > > 
+> > > > > > > ==================================================================
+> > > > > > > BUG: KASAN: slab-out-of-bounds in memcpy include/linux/fortify-string.h:225 [inline]
+> > > > > > > BUG: KASAN: slab-out-of-bounds in
+> > > > > > > copy_data+0xf3/0x2e0
+> > > > > > > drivers/char/hw_random/virtio-rng.c:68
+> > > > > > > Read of size 64 at addr ffff88801a7a1580 by task syz-executor989/6542
+> > > > > > > 
+> > > > > > 
+> > > > > > I'm not able to reproduce the problem with next-20211026 and the C reproducer.
+> > > > > > 
+> > > > > > And reviewing the code in copy_data() I don't see any issue.
+> > > > > > 
+> > > > > > Is it possible to know what it the VM configuration used to test it?
+> > > > > 
+> > > > > Hi Laurent,
+> > > > > 
+> > > > > syzbot used e2-standard-2 GCE VM when that happened.
+> > > > > You can see some info about these VMs under the "VM info" link on the dashboard.
+> > > > 
+> > > > Could you pls confirm whether reverting
+> > > > caaf2874ba27b92bca6f0298bf88bad94067ec37 addresses this?
+> > > > 
+> > > 
+> > > I've restarted the syzbot on top of "hwrng: virtio - don't wait on
+> > > cleanup" [1] and the problem has not been triggered.
+> > > 
+> > > See https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
+> > 
+> > The problem seems to be introduced by the last patch:
+> > 
+> > "hwrng: virtio - always add a pending request"
+> 
+> I think I understand the problem.
+> 
+> As we check data_avail != 0 before waiting on the completion, we can have a data_idx != 0.
+> 
+> The following change fixes the problem for me:
+> 
+> --- a/drivers/char/hw_random/virtio-rng.c
+> +++ b/drivers/char/hw_random/virtio-rng.c
+> @@ -52,6 +52,8 @@ static void request_entropy(struct virtrng_info *vi)
+>         struct scatterlist sg;
+> 
+>         reinit_completion(&vi->have_data);
+> +       vi->data_avail = 0;
+> +       vi->data_idx = 0;
+> 
+>         sg_init_one(&sg, vi->data, sizeof(vi->data));
+> 
+> 
+> MST, do you update the patch or do you want I send a new version?
+> 
+> Thanks,
+> Laurent
 
-Applied as 5.16 material, thanks!
+New version of the patchset pls, and note in the changelog
+that just this patch changed.
+
+-- 
+MST
+
