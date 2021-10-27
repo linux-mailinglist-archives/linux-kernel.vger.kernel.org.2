@@ -2,962 +2,649 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621E243CE1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C472643CE25
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242874AbhJ0P72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242850AbhJ0P71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:59:27 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C47C061570;
-        Wed, 27 Oct 2021 08:57:02 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id q39-20020a4a962a000000b002b8bb100791so1094778ooi.0;
-        Wed, 27 Oct 2021 08:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R4Tgjy0R9+NuNxN+5grAOonWTUZ22oVG3TDQLtPG8Rk=;
-        b=iKyXn10KFwg2GYwC1hOqGQvowA9lCHwDrRlICOVtnRng2O/0+XvKupp/HijgXLYV9J
-         jHDGqM7j8B2n4PM1f1mPd1aNHNMUUakd4nsdFHYOA9trriEyIQw299vYVZVx4BpqqY1d
-         gFKlS8707uBuu9cVQK0LZrylxlo6SWAjD8ht67VppyomqTZgNd5m0iWso4m2/r0mrp4R
-         UHqnl53UuL1kDujeY6jhG9rUI+sI/nAaw3dtxhZEd1YSoQ+kxPY1/9ERuozE5ApoXox0
-         nPsbg5G6BoDIPe7l/8PHZ2KP8NJLc4WUT/YleFAtxWBN0Es2QKtQHJCScXTc4UZht3Pv
-         /t4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R4Tgjy0R9+NuNxN+5grAOonWTUZ22oVG3TDQLtPG8Rk=;
-        b=sYm6ySB+dUxfuDkAUZOCC1ol88xrg3fCsryqfg1JLx83Bp3HKT+494qjroIZU5hqxH
-         A9E79kpauMXiKvDhkw+LmHUKGNlpl+eSZezv7jDjL2C8UzJKiKxQE7Nx9m28q0pqUefe
-         Q1VcNgR8Ci9KmVo1jl7BCBe+vnrn8A1ZpDBHRBSot0O//gJxlovhhW8dBxGb2nI/XNPk
-         yRstTILrre/fy/lSKRiSIDXu52Q8ZvlKKaV0m7NFZ3Q1cSQoi2o+6Jxvtitv7xMFNt2j
-         z3Jh/UYbWxixWDWNKenvOUpAukNAg6m3b/zCPePmDeUVGa6xcJLl0is+ZZsqQH1EsXmo
-         zHnQ==
-X-Gm-Message-State: AOAM530WlotcPCbDDH84WrOa86foAQfUUgR3Lq3tS8pidHXVSchKCjC4
-        Z8ubEzV+kfnTWdGASMojj78=
-X-Google-Smtp-Source: ABdhPJwitxLyZ/P2RBEER17qb6REPeSKym0HQRgAia1Oo5kDf1VxfR/efJPle81IWyjoqi9ojzRBYw==
-X-Received: by 2002:a4a:6412:: with SMTP id o18mr22805093ooc.79.1635350221125;
-        Wed, 27 Oct 2021 08:57:01 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g15sm102877oiy.8.2021.10.27.08.56.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 08:57:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Nathan Rossi <nathan@nathanrossi.com>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Nathan Rossi <nathan.rossi@digi.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <20211027074212.690611-0-nathan@nathanrossi.com>
- <20211027074212.690611-3-nathan@nathanrossi.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 3/3] hwmon: Driver for Texas Instruments INA238
-Message-ID: <1e38449d-f70f-1b66-e1a8-dca47fe2c1a3@roeck-us.net>
-Date:   Wed, 27 Oct 2021 08:56:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237613AbhJ0QBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:01:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:1293 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234164AbhJ0QB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 12:01:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="217365574"
+X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
+   d="gz'50?scan'50,208,50";a="217365574"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 08:57:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
+   d="gz'50?scan'50,208,50";a="497924073"
+Received: from lkp-server01.sh.intel.com (HELO 3b851179dbd8) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 27 Oct 2021 08:57:51 -0700
+Received: from kbuild by 3b851179dbd8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mflJG-0000i4-Nk; Wed, 27 Oct 2021 15:57:50 +0000
+Date:   Wed, 27 Oct 2021 23:57:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Robin Chen <po-tchen@amd.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Anthony Koo <Anthony.Koo@amd.com>, linux-doc@vger.kernel.org
+Subject: [agd5f:drm-next 102/152]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_psr.c:231: warning: This
+ comment starts with '/**', but isn't a kernel-doc comment. Refer
+ Documentation/doc-guide/kernel-doc.rst
+Message-ID: <202110272321.6fMwH1KM-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211027074212.690611-3-nathan@nathanrossi.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="lrZ03NoBR/3+SXJZ"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 12:42 AM, Nathan Rossi wrote:
-> From: Nathan Rossi <nathan.rossi@digi.com>
-> 
-> The INA238 is a I2C power monitor similar to other INA2xx devices,
-> providing shunt voltage, bus voltage, current, power and temperature
-> measurements.
-> 
-> Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
-> ---
-> Changes in v2:
-> - Add ina238 documentation to hwmon/index
-> - Remove unused header includes and sort
-> - Set regmap_config max_register in struct initialization
-> - Remove shunt-resistor attribute and associated functions
-> - Rename crit/lcrit attributes to max/min
-> - Rework to use the hwmon_chip_info API
-> - Add max_alarm and min_alarm channels and associated alert/alarm config
-> - Add device tree ti,shunt-gain property use and ADCRANGE setup
-> ---
->   Documentation/hwmon/ina238.rst |  56 ++++
->   Documentation/hwmon/index.rst  |   1 +
->   drivers/hwmon/Kconfig          |  12 +
->   drivers/hwmon/Makefile         |   1 +
->   drivers/hwmon/ina238.c         | 672 +++++++++++++++++++++++++++++++++++++++++
->   5 files changed, 742 insertions(+)
->   create mode 100644 Documentation/hwmon/ina238.rst
->   create mode 100644 drivers/hwmon/ina238.c
-> 
-> diff --git a/Documentation/hwmon/ina238.rst b/Documentation/hwmon/ina238.rst
-> new file mode 100644
-> index 0000000000..d9f4799844
-> --- /dev/null
-> +++ b/Documentation/hwmon/ina238.rst
-> @@ -0,0 +1,56 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +
-> +Kernel driver ina238
-> +====================
-> +
-> +Supported chips:
-> +
-> +  * Texas Instruments INA238
-> +
-> +    Prefix: 'ina238'
-> +
-> +    Addresses: I2C 0x40 - 0x4f
-> +
-> +    Datasheet:
-> +	https://www.ti.com/lit/gpn/ina238
-> +
-> +Author: Nathan Rossi <nathan.rossi@digi.com>
-> +
-> +Description
-> +-----------
-> +
-> +The INA238 is a current shunt, power and temperature monitor with an I2C
-> +interface. It includes a number of programmable functions including alerts,
-> +conversion rate, sample averaging and selectable shunt voltage accuracy.
-> +
-> +The shunt value in micro-ohms can be set via platform data or device tree at
-> +compile-time or via the shunt_resistor attribute in sysfs at run-time. Please
-> +refer to the Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml for bindings
-> +if the device tree is used.
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +======================= =======================================================
-> +in0_input		Shunt voltage (mV)
-> +in0_min			Minimum shunt voltage threshold (mV)
-> +in0_min_alarm		Minimum shunt voltage alarm
-> +in0_max			Maximum shunt voltage threshold (mV)
-> +in0_max_alarm		Maximum shunt voltage alarm
-> +
-> +in1_input		Bus voltage (mV)
-> +in1_min			Minimum bus voltage threshold (mV)
-> +in1_min_alarm		Minimum shunt voltage alarm
-> +in1_max			Maximum bus voltage threshold (mV)
-> +in1_max_alarm		Maximum shunt voltage alarm
-> +
-> +power1_input		Power measurement (uW)
-> +power1_max		Maximum power threshold (uW)
-> +power1_max_alarm	Maximum power alarm
-> +
-> +curr1_input		Current measurement (mA)
-> +
-> +temp1_input		Die temperature measurement (mC)
-> +temp1_max		Maximum die temperature threshold (mC)
-> +temp1_max_alarm		Maximum die temperature alarm
-> +======================= =======================================================
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 7046bf1870..6f30c8c9c7 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -76,6 +76,7 @@ Hardware Monitoring Kernel Drivers
->      ibmpowernv
->      ina209
->      ina2xx
-> +   ina238
->      ina3221
->      intel-m10-bmc-hwmon
->      ir35221
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 7fde4c6e1e..21aff4cef7 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1872,6 +1872,18 @@ config SENSORS_INA2XX
->   	  This driver can also be built as a module. If so, the module
->   	  will be called ina2xx.
->   
-> +config SENSORS_INA238
-> +	tristate "Texas Instruments INA238"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	help
-> +	  If you say yes here you get support for the INA238 power monitor
-> +	  chip. This driver supports voltage, current, power and temperature
-> +	  measurements as well as alarm configuration.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called ina238.
-> +
->   config SENSORS_INA3221
->   	tristate "Texas Instruments INA3221 Triple Power Monitor"
->   	depends on I2C
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index baee6a8d4d..1ddb26f57a 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -90,6 +90,7 @@ obj-$(CONFIG_SENSORS_IBMPOWERNV)+= ibmpowernv.o
->   obj-$(CONFIG_SENSORS_IIO_HWMON) += iio_hwmon.o
->   obj-$(CONFIG_SENSORS_INA209)	+= ina209.o
->   obj-$(CONFIG_SENSORS_INA2XX)	+= ina2xx.o
-> +obj-$(CONFIG_SENSORS_INA238)	+= ina238.o
->   obj-$(CONFIG_SENSORS_INA3221)	+= ina3221.o
->   obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
->   obj-$(CONFIG_SENSORS_IT87)	+= it87.o
-> diff --git a/drivers/hwmon/ina238.c b/drivers/hwmon/ina238.c
-> new file mode 100644
-> index 0000000000..f9d031bdfe
-> --- /dev/null
-> +++ b/drivers/hwmon/ina238.c
-> @@ -0,0 +1,672 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Driver for Texas Instruments INA238 power monitor chip
-> + * Datasheet: https://www.ti.com/product/ina238
-> + *
-> + * Copyright (C) 2021 Nathan Rossi <nathan.rossi@digi.com>
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/hwmon-sysfs.h>
 
-Unnecessary.
+--lrZ03NoBR/3+SXJZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +#include <linux/hwmon.h>
-> +#include <linux/i2c.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <linux/platform_data/ina2xx.h>
-> +
-> +/* INA238 register definitions */
-> +#define INA238_CONFIG			0x0
-> +#define INA238_ADC_CONFIG		0x1
-> +#define INA238_SHUNT_CALIBRATION	0x2
-> +#define INA238_SHUNT_VOLTAGE		0x4
-> +#define INA238_BUS_VOLTAGE		0x5
-> +#define INA238_DIE_TEMP			0x6
-> +#define INA238_CURRENT			0x7
-> +#define INA238_POWER			0x8
-> +#define INA238_DIAG_ALERT		0xb
-> +#define INA238_SHUNT_OVER_VOLTAGE	0xc
-> +#define INA238_SHUNT_UNDER_VOLTAGE	0xd
-> +#define INA238_BUS_OVER_VOLTAGE		0xe
-> +#define INA238_BUS_UNDER_VOLTAGE	0xf
-> +#define INA238_TEMP_LIMIT		0x10
-> +#define INA238_POWER_LIMIT		0x11
-> +#define INA238_DEVICE_ID		0x3f
-> +
-> +#define INA238_CONFIG_ADCRANGE		BIT(4)
-> +
-> +#define INA238_DIAG_ALERT_TMPOL		BIT(7)
-> +#define INA238_DIAG_ALERT_SHNTOL	BIT(6)
-> +#define INA238_DIAG_ALERT_SHNTUL	BIT(5)
-> +#define INA238_DIAG_ALERT_BUSOL		BIT(4)
-> +#define INA238_DIAG_ALERT_BUSUL		BIT(3)
-> +#define INA238_DIAG_ALERT_POL		BIT(2)
-> +
-> +#define INA238_REGISTERS		0x11
-> +
-> +#define INA238_RSHUNT_DEFAULT		10000 /* uOhm */
-> +
-> +/* Default configuration of device on reset. */
-> +#define INA238_CONFIG_DEFAULT		0
-> +/* 16 sample averaging, 1052us conversion time, continuous mode */
-> +#define INA238_ADC_CONFIG_DEFAULT	0xfb6a
-> +/* Configure alerts to be based on averaged value (SLOWALERT) */
-> +#define INA238_DIAG_ALERT_DEFAULT	0x2000
-> +/*
-> + * This driver uses a fixed calibration value in order to scale current/power
-> + * based on a fixed shunt resistor value. This allows for conversion within the
-> + * device to avoid integer limits whilst current/power accuracy is scaled
-> + * relative to the shunt resistor value within the driver. This is similar to
-> + * how the ina2xx driver handles current/power scaling.
-> + *
-> + * The end result of this is that increasing shunt values (from a fixed 20 mOhm
-> + * shunt) increase the effective current/power accuracy whilst limiting the
-> + * range and decreasing shunt values decrease the effective accuracy but
-> + * increase the range.
-> + *
-> + * The value of the Current register is calculated given the following:
-> + *   Current (A) = (shunt voltage register * 5) * calibration / 81920
-> + *
-> + * The maximum shunt voltage is 163.835 mV (0x7fff, ADC_RANGE = 0, gain = 4).
-> + * With the maximum current value of 0x7fff and a fixed shunt value results in
-> + * a calibration value of 16384 (0x4000).
-> + *
-> + *   0x7fff = (0x7fff * 5) * calibration / 81920
-> + *   calibration = 0x4000
-> + *
-> + * Equivalent calibration is applied for the Power register (maximum value for
-> + * bus voltage is 102396.875 mV, 0x7fff), where the maximum power that can
-> + * occur is ~16776192 uW (register value 0x147a8):
-> + *
-> + * This scaling means the resulting values for Current and Power registers need
-> + * to be scaled by the difference between the fixed shunt resistor and the
-> + * actual shunt resistor:
-> + *
-> + *  shunt = 0x4000 / (819.2 * 10^6) / 0.001 = 20000 uOhms (with 1mA/lsb)
-> + *
-> + *  Current (mA) = register value * 20000 / rshunt / 4 * gain
-> + *  Power (W) = 0.2 * register value * 20000 / rshunt / 4 * gain
-> + */
-> +#define INA238_CALIBRATION_VALUE	16384
-> +#define INA238_FIXED_SHUNT		20000
-> +
-> +#define INA238_SHUNT_VOLTAGE_LSB	5 /* 5 uV/lsb */
-> +#define INA238_BUS_VOLTAGE_LSB		3125 /* 3.125 mV/lsb */
-> +#define INA238_DIE_TEMP_LSB		125 /* 125 mC/lsb */
-> +
-> +static struct regmap_config ina238_regmap_config = {
-> +	.max_register = INA238_REGISTERS,
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +};
-> +
-> +struct ina238_data {
-> +	struct i2c_client *client;
-> +	struct mutex config_lock;
-> +	struct regmap *regmap;
-> +	u32 rshunt;
-> +	u32 gain;
-> +};
-> +
-> +static int ina238_read_reg24(const struct i2c_client *client, u8 reg, u32 *val)
-> +{
-> +	u8 data[3];
-> +	int err;
-> +
-> +	/* 24-bit register read */
-> +	err = i2c_smbus_read_i2c_block_data(client, reg, 3, data);
-> +	if (err != 3)
-> +		return err;
+tree:   https://gitlab.freedesktop.org/agd5f/linux.git drm-next
+head:   e0fc01bc689906a1b4ab9ae54af28bc9fe4ce104
+commit: 92b319cfe8404f041eb301a0f12782d20cc78c47 [102/152] drm/amd/display: dc_link_set_psr_allow_active refactoring
+config: ia64-randconfig-r032-20211027 (attached as .config)
+compiler: ia64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        git remote add agd5f https://gitlab.freedesktop.org/agd5f/linux.git
+        git fetch --no-tags agd5f drm-next
+        git checkout 92b319cfe8404f041eb301a0f12782d20cc78c47
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=ia64 
 
-i2c_smbus_read_i2c_block_data() can return 1 or 2, which should be reported as error.
-You need something like
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-	if (err < 0)
-		return err;
-	if (err != 3)
-		return -EIO;
+All warnings (new ones prefixed by >>):
 
-> +	*val = (data[0] << 16) | (data[1] << 8) | data[2];
-> +
-> +	return 0;
-> +}
-> +
-> +static int ina238_read_in(struct device *dev, u32 attr, int channel,
-> +			  long *val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	int reg, mask;
-> +	int regval;
-> +	int err;
-> +
-> +	switch (channel) {
-> +	case 0:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			reg = INA238_SHUNT_VOLTAGE;
-> +			break;
-> +		case hwmon_in_max:
-> +			reg = INA238_SHUNT_OVER_VOLTAGE;
-> +			break;
-> +		case hwmon_in_min:
-> +			reg = INA238_SHUNT_UNDER_VOLTAGE;
-> +			break;
-> +		case hwmon_in_max_alarm:
-> +			reg = INA238_DIAG_ALERT;
-> +			mask = INA238_DIAG_ALERT_SHNTOL;
-> +			break;
-> +		case hwmon_in_min_alarm:
-> +			reg = INA238_DIAG_ALERT;
-> +			mask = INA238_DIAG_ALERT_SHNTUL;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	case 1:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			reg = INA238_BUS_VOLTAGE;
-> +			break;
-> +		case hwmon_in_max:
-> +			reg = INA238_BUS_OVER_VOLTAGE;
-> +			break;
-> +		case hwmon_in_min:
-> +			reg = INA238_BUS_UNDER_VOLTAGE;
-> +			break;
-> +		case hwmon_in_max_alarm:
-> +			reg = INA238_DIAG_ALERT;
-> +			mask = INA238_DIAG_ALERT_BUSOL;
-> +			break;
-> +		case hwmon_in_min_alarm:
-> +			reg = INA238_DIAG_ALERT;
-> +			mask = INA238_DIAG_ALERT_BUSUL;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	err = regmap_read(data->regmap, reg, &regval);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	switch (attr) {
-> +	case hwmon_in_input:
-> +	case hwmon_in_max:
-> +	case hwmon_in_min:
-> +		/* signed register, value in mV */
-> +		if (channel == 0)
-> +			/* gain of 1 -> LSB / 4 */
-> +			*val = div_s64((s16)regval * INA238_SHUNT_VOLTAGE_LSB,
-> +				       1000 * (4 - data->gain + 1));
-> +		else
-> +			*val = div_s64((s16)regval * INA238_BUS_VOLTAGE_LSB,
-> +				       1000);
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_psr.c:231: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Set PSR power optimization flags.
 
-Pleae check the use of 64-bit divide operations. The above operations
-never overflow a long, not even a 32-bit long, and div_s64() is therefore
-unencessary. I am quite sure the same applies to current read operations,
-though I didn't check.
 
-> +		break;
-> +	case hwmon_in_max_alarm:
-> +	case hwmon_in_min_alarm:
-> +		*val = regval & mask ? 1 : 0;
+vim +231 drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_psr.c
 
-		*val = !!(regval & mask);
+   229	
+   230	/**
+ > 231	 * Set PSR power optimization flags.
+   232	 */
+   233	static void dmub_psr_set_power_opt(struct dmub_psr *dmub, unsigned int power_opt)
+   234	{
+   235		union dmub_rb_cmd cmd;
+   236		struct dc_context *dc = dmub->ctx;
+   237	
+   238		memset(&cmd, 0, sizeof(cmd));
+   239		cmd.psr_set_power_opt.header.type = DMUB_CMD__PSR;
+   240		cmd.psr_set_power_opt.header.sub_type = DMUB_CMD__SET_PSR_POWER_OPT;
+   241		cmd.psr_set_power_opt.header.payload_bytes = sizeof(struct dmub_cmd_psr_set_power_opt_data);
+   242		cmd.psr_set_power_opt.psr_set_power_opt_data.power_opt = power_opt;
+   243	
+   244		dc_dmub_srv_cmd_queue(dc->dmub_srv, &cmd);
+   245		dc_dmub_srv_cmd_execute(dc->dmub_srv);
+   246		dc_dmub_srv_wait_idle(dc->dmub_srv);
+   247	}
+   248	
 
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ina238_write_in(struct device *dev, u32 attr, int channel,
-> +			   long val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	int regval;
-> +
-> +	if (attr != hwmon_in_max && attr != hwmon_in_min)
-> +		return -EOPNOTSUPP;
-> +
-> +	/* convert decimal to register value */
-> +	switch (channel) {
-> +	case 0:
-> +		/* signed */
-> +		regval = div_s64((s64)val * 1000LL * (4 - data->gain + 1),
-> +				 INA238_SHUNT_VOLTAGE_LSB);
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-I am quite sure the typecast is unnecessary here. Also, if you'd use clamp_val()
-prior to the multiply/divide operation, I am quite sure you would not need
-to use 64-bit divide operations.
+--lrZ03NoBR/3+SXJZ
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-> +		if (regval > S16_MAX || regval < S16_MIN)
-> +			return -EINVAL;
+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
 
-We usually handle limit writes out of range with clamp_val() and
-do not expect users to find the valid range for a given chip.
-
-		regval = clamp_val(regval, S16_MIN, S16_MAX);
-
-> +
-> +		switch (attr) {
-> +		case hwmon_in_max:
-> +			return regmap_write(data->regmap,
-> +					    INA238_SHUNT_OVER_VOLTAGE, regval);
-> +		case hwmon_in_min:
-> +			return regmap_write(data->regmap,
-> +					    INA238_SHUNT_UNDER_VOLTAGE, regval);
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +	case 1:
-> +		regval = div_u64((u64)val * 1000ULL, INA238_BUS_VOLTAGE_LSB);
-
-This converts -1 to a really large value, which then overflows before being divided.
-The result is more or less random. I think you'll need to use clamp_val first here.
-
-> +		if (regval > U16_MAX || regval < 0)
-> +			return -EINVAL;
-
-		regval = clamp_val(regval, 0, U16_MAX);
-
-> +
-> +		switch (attr) {
-> +		case hwmon_in_max:
-> +			return regmap_write(data->regmap,
-> +					    INA238_BUS_OVER_VOLTAGE, regval);
-> +		case hwmon_in_min:
-> +			return regmap_write(data->regmap,
-> +					    INA238_BUS_UNDER_VOLTAGE, regval);
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int ina238_read_current(struct device *dev, u32 attr, int channel,
-> +			       long *val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	int regval;
-> +	int err;
-> +
-> +	if (channel != 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	switch (attr) {
-> +	case hwmon_curr_input:
-> +		err = regmap_read(data->regmap, INA238_CURRENT, &regval);
-> +		if (err < 0)
-> +			return err;
-> +
-> +		/* Signed register, fixed 1mA current lsb. result in mA */
-> +		*val = div_s64((s16)regval * INA238_FIXED_SHUNT * data->gain,
-> +			       data->rshunt * 4);
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ina238_read_power(struct device *dev, u32 attr, int channel,
-> +			     long *val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	long long power;
-> +	int regval;
-> +	int err;
-> +
-> +	if (channel != 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	switch (attr) {
-> +	case hwmon_power_input:
-> +		err = ina238_read_reg24(data->client, INA238_POWER, &regval);
-> +		if (err)
-> +			return err;
-> +
-> +		/* Fixed 1mA lsb, scaled by 1000000 to have result in uW */
-> +		power = div_u64(regval * 1000ULL * INA238_FIXED_SHUNT *
-> +				data->gain, 20 * data->rshunt);
-> +		/* Clamp value to maximum value of long */
-> +		*val = clamp_val(power, 0, LONG_MAX);
-> +		break;
-> +	case hwmon_power_max:
-> +		err = regmap_read(data->regmap, INA238_POWER_LIMIT, &regval);
-> +		if (err)
-> +			return err;
-> +
-> +		/*
-> +		 * Truncated 24-bit compare register, lower 8-bits are
-> +		 * truncated. Same conversion to/from uW as POWER register.
-> +		 */
-> +		power = div_u64((regval << 8) * 1000ULL * INA238_FIXED_SHUNT *
-> +			       data->gain, 20 * data->rshunt);
-> +		/* Clamp value to maximum value of long */
-> +		*val = clamp_val(power, 0, LONG_MAX);
-> +		break;
-> +	case hwmon_power_max_alarm:
-> +		err = regmap_read(data->regmap, INA238_DIAG_ALERT, &regval);
-> +		if (err)
-> +			return err;
-> +
-> +		*val = regval & INA238_DIAG_ALERT_POL ? 1 : 0;
-
-		*val = !!(regval & INA238_DIAG_ALERT_POL);
-
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ina238_write_power(struct device *dev, u32 attr, int channel,
-> +			      long val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	int regval;
-> +
-> +	if (channel != 0 || attr != hwmon_power_max)
-> +		return -EOPNOTSUPP;
-> +
-> +	/*
-> +	 * Compared against the 24-bit power register, lower 8-bits are
-> +	 * truncated. Same conversion to/from uW as POWER register.
-> +	 */
-> +	regval = div_u64((u64)val * 20ULL * data->rshunt,
-> +			 1000ULL * INA238_FIXED_SHUNT * (u64)data->gain);
-
-Same problem as above - negative values of val will have in unpredictable results.
-The last typecat should be unnecessary.
-
-> +	regval = regval >> 8;
-> +	if (regval > U16_MAX || regval < 0)
-> +		return -EINVAL;
-
-	regval = clamp_val(...);
-
-> +
-> +	return regmap_write(data->regmap, INA238_POWER_LIMIT, regval);
-> +}
-> +
-> +static int ina238_read_temp(struct device *dev, u32 attr, int channel,
-> +			    long *val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	int regval;
-> +	int err;
-> +
-> +	if (channel != 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		err = regmap_read(data->regmap, INA238_DIE_TEMP, &regval);
-> +		if (err)
-> +			return err;
-> +
-> +		/* Signed, bits 15-4 of register, result in mC */
-> +		*val = ((s16)regval >> 4) * INA238_DIE_TEMP_LSB;
-> +		break;
-> +	case hwmon_temp_max:
-> +		err = regmap_read(data->regmap, INA238_TEMP_LIMIT, &regval);
-> +		if (err)
-> +			return err;
-> +
-> +		/* Signed, bits 15-4 of register, result in mC */
-> +		*val = ((s16)regval >> 4) * INA238_DIE_TEMP_LSB;
-> +		break;
-> +	case hwmon_temp_max_alarm:
-> +		err = regmap_read(data->regmap, INA238_DIAG_ALERT, &regval);
-> +		if (err)
-> +			return err;
-> +
-> +		*val = regval & INA238_DIAG_ALERT_TMPOL ? 1 : 0;
-
-		*val = !!(regval & INA238_DIAG_ALERT_TMPOL);
-
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ina238_write_temp(struct device *dev, u32 attr, int channel,
-> +			     long val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	int regval;
-> +
-> +	if (channel != 0 || attr != hwmon_temp_max)
-> +		return -EOPNOTSUPP;
-> +
-> +	/* Signed, bits 15-4 of register */
-> +	regval = (div_s64(val, INA238_DIE_TEMP_LSB) << 4);
-> +	if (regval > S16_MAX || regval < S16_MIN)
-> +		return -EINVAL;
-
-	regval = clamp_val(regval, S16_MIN, S16_MAX) & 0xfff0;
-
-> +	regval = regval & 0xfff0;
-> +
-> +	return regmap_write(data->regmap, INA238_TEMP_LIMIT, regval);
-> +}
-> +
-> +static int ina238_read(struct device *dev, enum hwmon_sensor_types type,
-> +		       u32 attr, int channel, long *val)
-> +{
-> +	switch (type) {
-> +	case hwmon_in:
-> +		return ina238_read_in(dev, attr, channel, val);
-> +	case hwmon_curr:
-> +		return ina238_read_current(dev, attr, channel, val);
-> +	case hwmon_power:
-> +		return ina238_read_power(dev, attr, channel, val);
-> +	case hwmon_temp:
-> +		return ina238_read_temp(dev, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int ina238_write(struct device *dev, enum hwmon_sensor_types type,
-> +		       u32 attr, int channel, long val)
-> +{
-> +	struct ina238_data *data = dev_get_drvdata(dev);
-> +	int err;
-> +
-> +	mutex_lock(&data->config_lock);
-> +
-> +	switch (type) {
-> +	case hwmon_in:
-> +		err = ina238_write_in(dev, attr, channel, val);
-> +		break;
-> +	case hwmon_power:
-> +		err = ina238_write_power(dev, attr, channel, val);
-> +		break;
-> +	case hwmon_temp:
-> +		err = ina238_write_temp(dev, attr, channel, val);
-> +		break;
-> +	default:
-> +		err = -EOPNOTSUPP;
-> +		break;
-> +	}
-> +
-> +	mutex_unlock(&data->config_lock);
-> +	return err;
-> +}
-> +
-> +static umode_t ina238_is_visible(const void *drvdata,
-> +				 enum hwmon_sensor_types type,
-> +				 u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_in:
-> +		if (channel != 0 && channel != 1)
-> +			return 0;
-
-FWIW, channel checks are not really needed.
-
-> +
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +		case hwmon_in_max_alarm:
-> +		case hwmon_in_min_alarm:
-> +			return 0444;
-> +		case hwmon_in_max:
-> +		case hwmon_in_min:
-> +			return 0644;
-> +		default:
-> +			return 0;
-> +		}
-> +	case hwmon_curr:
-> +		if (channel != 0)
-> +			return 0;
-> +
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +			return 0444;
-> +		default:
-> +			return 0;
-> +		}
-> +	case hwmon_power:
-> +		if (channel != 0)
-> +			return 0;
-> +
-> +		switch (attr) {
-> +		case hwmon_power_input:
-> +		case hwmon_power_max_alarm:
-> +			return 0444;
-> +		case hwmon_power_max:
-> +			return 0644;
-> +		default:
-> +			return 0;
-> +		}
-> +	case hwmon_temp:
-> +		if (channel != 0)
-> +			return 0;
-> +
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +		case hwmon_temp_max_alarm:
-> +			return 0444;
-> +		case hwmon_temp_max:
-> +			return 0644;
-> +		default:
-> +			return 0;
-> +		}
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +#define INA238_HWMON_IN_CONFIG (HWMON_I_INPUT | \
-> +				HWMON_I_MAX | HWMON_I_MAX_ALARM | \
-> +				HWMON_I_MIN | HWMON_I_MIN_ALARM)
-> +
-> +static const struct hwmon_channel_info *ina238_info[] = {
-> +	HWMON_CHANNEL_INFO(in,
-> +			   /* 0: shunt voltage */
-> +			   INA238_HWMON_IN_CONFIG,
-> +			   /* 1: bus voltage */
-> +			   INA238_HWMON_IN_CONFIG),
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   /* 0: current through shunt */
-> +			   HWMON_C_INPUT),
-> +	HWMON_CHANNEL_INFO(power,
-> +			   /* 0: power */
-> +			   HWMON_P_INPUT | HWMON_P_MAX | HWMON_P_MAX_ALARM),
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   /* 0: die temperature */
-> +			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MAX_ALARM),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops ina238_hwmon_ops = {
-> +	.is_visible = ina238_is_visible,
-> +	.read = ina238_read,
-> +	.write = ina238_write,
-> +};
-> +
-> +static const struct hwmon_chip_info ina238_chip_info = {
-> +	.ops = &ina238_hwmon_ops,
-> +	.info = ina238_info,
-> +};
-> +
-> +static int ina238_probe(struct i2c_client *client)
-> +{
-> +	struct ina2xx_platform_data *pdata = dev_get_platdata(&client->dev);
-> +	struct device *dev = &client->dev;
-> +	struct device *hwmon_dev;
-> +	struct ina238_data *data;
-> +	int config;
-> +	int ret;
-> +
-> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->client = client;
-> +	/* set the device type */
-
-Pointless comment. I don't even understand what it is supposed to mean.
-
-> +	mutex_init(&data->config_lock);
-> +
-> +	data->regmap = devm_regmap_init_i2c(client, &ina238_regmap_config);
-> +	if (IS_ERR(data->regmap)) {
-> +		dev_err(dev, "failed to allocate register map\n");
-> +		return PTR_ERR(data->regmap);
-> +	}
-> +
-> +	/* load shunt value */
-> +	data->rshunt = INA238_RSHUNT_DEFAULT;
-> +	if (device_property_read_u32(dev, "shunt-resistor", &data->rshunt) < 0 &&
-> +	    pdata)
-
-Drop the continuation line. Lines longer than 80 columns are fine when
-improving readability, and that is definitely the case here.
-
-> +		data->rshunt = pdata->shunt_uohms;
-> +	if (data->rshunt == 0) {
-> +		dev_err(dev, "invalid shunt resister value %u\n", data->rshunt);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* load shunt gain value */
-> +	if (device_property_read_u32(dev, "ti,shunt-gain", &data->gain) < 0)
-> +		data->gain = 4; /* Default of ADCRANGE = 0 */
-> +	if (data->gain != 1 && data->gain != 4) {
-> +		dev_err(dev, "invalid shunt gain value %u\n", data->gain);
-> +		return -EINVAL;
-> +	}
-
-I think ti,shunt-gain needs a better explanation in the .yaml file, for
-people writing devicetree files to understand how the gain value converts
-to a register value.
-
-> +
-> +	/* Setup CONFIG register */
-> +	config = INA238_CONFIG_DEFAULT;
-> +	if (data->gain == 1)
-> +		config |= INA238_CONFIG_ADCRANGE; /* ADCRANGE = 1 is /1 */
-> +	ret = regmap_write(data->regmap, INA238_CONFIG, config);
-> +	if (ret < 0) {
-> +		dev_err(dev, "error configuring the device: %d\n", ret);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/* Setup ADC_CONFIG register */
-> +	ret = regmap_write(data->regmap, INA238_ADC_CONFIG,
-> +			   INA238_ADC_CONFIG_DEFAULT);
-> +	if (ret < 0) {
-> +		dev_err(dev, "error configuring the device: %d\n", ret);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/* Setup SHUNT_CALIBRATION register with fixed value */
-> +	ret = regmap_write(data->regmap, INA238_SHUNT_CALIBRATION,
-> +			   INA238_CALIBRATION_VALUE);
-> +	if (ret < 0) {
-> +		dev_err(dev, "error configuring the device: %d\n", ret);
-> +		return -ENODEV;
-> +	}
-> +
-> +	/* Setup alert/alarm configuration */
-> +	ret = regmap_write(data->regmap, INA238_DIAG_ALERT,
-> +			   INA238_DIAG_ALERT_DEFAULT);
-> +	if (ret < 0) {
-> +		dev_err(dev, "error configuring the device: %d\n", ret);
-> +		return -ENODEV;
-> +	}
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name, data,
-> +							 &ina238_chip_info,
-> +							 NULL);
-> +	if (IS_ERR(hwmon_dev))
-> +		return PTR_ERR(hwmon_dev);
-> +
-> +	dev_info(dev, "power monitor %s (Rshunt = %u uOhm, gain = %u)\n",
-> +		 client->name, data->rshunt, data->gain);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id ina238_id[] = {
-> +	{ "ina238", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, ina238_id);
-> +
-> +static const struct of_device_id __maybe_unused ina238_of_match[] = {
-> +	{ .compatible = "ti,ina238" },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, ina238_of_match);
-> +
-> +static struct i2c_driver ina238_driver = {
-> +	.class		= I2C_CLASS_HWMON,
-> +	.driver = {
-> +		.name	= "ina238",
-> +		.of_match_table = of_match_ptr(ina238_of_match),
-> +	},
-> +	.probe_new	= ina238_probe,
-> +	.id_table	= ina238_id,
-> +};
-> +
-> +module_i2c_driver(ina238_driver);
-> +
-> +MODULE_AUTHOR("Nathan Rossi <nathan.rossi@digi.com>");
-> +MODULE_DESCRIPTION("ina238 driver");
-> +MODULE_LICENSE("GPL");
-> ---
-> 2.33.0
-> 
-
+--lrZ03NoBR/3+SXJZ--
