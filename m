@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C9B43C90E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7732343C92C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237273AbhJ0MAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:00:47 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14868 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236185AbhJ0MAp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:00:45 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HfRz82jdBz90Lv;
-        Wed, 27 Oct 2021 19:58:12 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Wed, 27 Oct 2021 19:58:15 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <jgg@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] net: vlan: fix a UAF in vlan_dev_real_dev()
-Date:   Wed, 27 Oct 2021 20:16:06 +0800
-Message-ID: <20211027121606.3300860-1-william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S240351AbhJ0MHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:07:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:42596 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237257AbhJ0MHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:07:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 892C31FB;
+        Wed, 27 Oct 2021 05:05:21 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 71BEA3F73D;
+        Wed, 27 Oct 2021 05:05:18 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 13:05:15 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, ardb@kernel.org
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <20211027120515.GC54628@C02TD0UTHF1T.local>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026201622.GG174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The real_dev of a vlan net_device may be freed after
-unregister_vlan_dev(). Access the real_dev continually by
-vlan_dev_real_dev() will trigger the UAF problem for the
-real_dev like following:
+On Tue, Oct 26, 2021 at 10:16:22PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 13, 2021 at 11:16:43AM -0700, Sami Tolvanen wrote:
+> > This series adds support for Clang's Control-Flow Integrity (CFI)
+> > checking to x86_64. With CFI, the compiler injects a runtime
+> > check before each indirect function call to ensure the target is
+> > a valid function with the correct static type. This restricts
+> > possible call targets and makes it more difficult for an attacker
+> > to exploit bugs that allow the modification of stored function
+> > pointers. For more details, see:
+> > 
+> >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> 
+> So, if I understand this right, the compiler emits, for every function
+> two things: 1) the actual funcion and 2) a jump-table entry.
+> 
+> Then, every time the address of a function is taken, 2) is given instead
+> of the expected 1), right?
 
-==================================================================
-BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
-Call Trace:
- kasan_report.cold+0x83/0xdf
- vlan_dev_real_dev+0xf9/0x120
- is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
- is_eth_port_of_netdev_filter+0x28/0x40
- ib_enum_roce_netdev+0x1a3/0x300
- ib_enum_all_roce_netdevs+0xc7/0x140
- netdevice_event_work_handler+0x9d/0x210
-...
+Yes, and we had to bodge around this with function_nocfi() to get the
+actual function address.
 
-Freed by task 9288:
- kasan_save_stack+0x1b/0x40
- kasan_set_track+0x1c/0x30
- kasan_set_free_info+0x20/0x30
- __kasan_slab_free+0xfc/0x130
- slab_free_freelist_hook+0xdd/0x240
- kfree+0xe4/0x690
- kvfree+0x42/0x50
- device_release+0x9f/0x240
- kobject_put+0x1c8/0x530
- put_device+0x1b/0x30
- free_netdev+0x370/0x540
- ppp_destroy_interface+0x313/0x3d0
-...
+Really there should be a compiler intrinsic or attribute for this, given
+the compiler has all the releveant information available. On arm64 we
+had to us inine asm to generate the addres...
 
-Set vlan->real_dev to NULL after dev_put(real_dev) in
-unregister_vlan_dev(). Check real_dev is not NULL before
-access it in vlan_dev_real_dev().
+Taking a step back, it'd be nicer if we didn't have the jump-table shim
+at all, and had some SW landing pad (e.g. a NOP with some magic bytes)
+in the callees that the caller could check for. Then function pointers
+would remain callable in call cases, and we could explcitly add landing
+pads to asm to protect those. I *think* that's what the grsecurity folk
+do, but I could be mistaken.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
----
- net/8021q/vlan.c      | 1 +
- net/8021q/vlan_core.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+> But how does this work with things like static_call(), which we give a
+> function address (now a jump-table entry) and use that to write direct
+> call instructions?
+> 
+> Should not this jump-table thingy get converted to an actual function
+> address somewhere around arch_static_call_transform() ? This also seems
+> relevant for arm64 (which already has CLANG_CFI supported) given:
+> 
+>   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
 
-diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
-index 55275ef9a31a..1106da84e725 100644
---- a/net/8021q/vlan.c
-+++ b/net/8021q/vlan.c
-@@ -126,6 +126,7 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
- 
- 	/* Get rid of the vlan's reference to real_dev */
- 	dev_put(real_dev);
-+	vlan->real_dev = NULL;
- }
- 
- int vlan_check_real_dev(struct net_device *real_dev,
-diff --git a/net/8021q/vlan_core.c b/net/8021q/vlan_core.c
-index 59bc13b5f14f..343f34479d8b 100644
---- a/net/8021q/vlan_core.c
-+++ b/net/8021q/vlan_core.c
-@@ -103,7 +103,7 @@ struct net_device *vlan_dev_real_dev(const struct net_device *dev)
- {
- 	struct net_device *ret = vlan_dev_priv(dev)->real_dev;
- 
--	while (is_vlan_dev(ret))
-+	while (ret && is_vlan_dev(ret))
- 		ret = vlan_dev_priv(ret)->real_dev;
- 
- 	return ret;
--- 
-2.25.1
+Ugh, yeah, we'll need to do the function_nocfi() dance somewhere...
 
+Thanks,
+Mark.
