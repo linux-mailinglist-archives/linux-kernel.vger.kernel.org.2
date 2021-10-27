@@ -2,189 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3244843CB98
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A3443CB9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242421AbhJ0OKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:10:54 -0400
-Received: from mx0b-0039f301.pphosted.com ([148.163.137.242]:64140 "EHLO
-        mx0b-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237728AbhJ0OKx (ORCPT
+        id S242425AbhJ0OLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:11:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36568 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237672AbhJ0OLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:10:53 -0400
-Received: from pps.filterd (m0174681.ppops.net [127.0.0.1])
-        by mx0b-0039f301.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RD4HSf006746;
-        Wed, 27 Oct 2021 14:08:20 GMT
-Received: from eur04-db3-obe.outbound.protection.outlook.com (mail-db3eur04lp2056.outbound.protection.outlook.com [104.47.12.56])
-        by mx0b-0039f301.pphosted.com with ESMTP id 3by7awra5w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 14:08:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sd/utTyXvWs1bztXD0rO3lRI9iceTJTgjIL9V9VPw2xM+h6//o4wx3NCSd/tb6t4kVA9tJkXT6/Sb78fpcdj2psdzvQF1/4snMMIcFVyNFcVDg8WTau7E14CsxjumpDfRbV5+B46Ih7SGVJcGfRU2dk8c28rKBGaMoXHLLX73xogxz/Y8fmjJ6ppgmEC/7/BMn8iawoY13x5j1ZR6MEbobh3bq0P9tv0owsn4OKR2w1g7yskkVXnLVs1qq7RA6sEPfwJQNT73LuKkl5kY93ohSuFcBj9exikPZNixFShHsVhv4oM5vrlJFn9bu4ichgcelmf6qKD2RnaR0l30IsHNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rn3I5RN5vIvThW5WWjLNL3MsWJiUA8D8v+CAnC/faGI=;
- b=Bqscu/bBNOzT/Hhfz2SmyyCiC2meGxNdmQ2ZmQvweCXAXHagR/gFokX5tjPuUnBYHmib6afvcmPq2EjFWWJA1tpZ33bQGDK0p4RDopJBo0QdaiBIcr8EmuZbZsTM97XGmVqqIIGiy0nvLO2MNyQAmgbPhEsH/wYNblqgt5R5I/BuvqSco2+VnTR9VWAgC7XDiwptiI/0Nfe5JcagUqQE9nuYjlIC4FKjFqIEaz2d0uxmk+a1Bf51eEeu7DYI9A+7m755SybRwB6FiyI5pVEtcTLX+VVmmP2fJddYVtNUZZiTAQtbyUNwpluj2Dh0ELx22Kxe3xVoXME5Bl6KThZYxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
- dkim=pass header.d=epam.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rn3I5RN5vIvThW5WWjLNL3MsWJiUA8D8v+CAnC/faGI=;
- b=eGmSP/umu01mvC9s6YF6YUhYAEZnm6/NDweKP83EJ1vWqQn+LfHRGvAo2F9QkQFhCorawBVrQtei698TM/b7LpWkcwiH8tZTW2oFuVkjFtCnPrX1bdK0pD1l0aiV1h6p6LqmbIeyvGd3ZsFMXWzZz0sRWj5OlVSP5LJTqZOe32HS/ZsmwBITATpIqw2zo8aunI35Tuisi0xqzN6lXP9kC3yilyNq89v7iju+wZS0UeJBvPJJWMTOtjQpHZ08ssaG3/3uy3HZuWHdWR8RAtNtuEec39VA9qTFEM8x2dR5kqpo//adBAeb1zcM8ta+WnP+gujwDJ3DrxdX/eLaVwCt2g==
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
- by AM0PR03MB4881.eurprd03.prod.outlook.com (2603:10a6:208:100::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
- 2021 14:08:14 +0000
-Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::c038:e032:595a:651]) by AM0PR03MB6324.eurprd03.prod.outlook.com
- ([fe80::c038:e032:595a:651%9]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 14:08:13 +0000
-From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "jgross@suse.com" <jgross@suse.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
-        Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-Subject: Re: [PATCH v5] xen-pciback: allow compiling on other archs than x86
-Thread-Topic: [PATCH v5] xen-pciback: allow compiling on other archs than x86
-Thread-Index: AQHXtDtdCEW9atNFMk2qqaldf5A98Kvm/I6AgAATI4A=
-Date:   Wed, 27 Oct 2021 14:08:13 +0000
-Message-ID: <a54ab50a-f35c-26b9-3907-20c014a1120a@epam.com>
-References: <20210928073501.433559-1-andr2000@gmail.com>
- <71ce7c97-1d08-9fdf-b217-53eb914a29a6@oracle.com>
-In-Reply-To: <71ce7c97-1d08-9fdf-b217-53eb914a29a6@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1ecf37fa-9219-4632-6d55-08d99953375a
-x-ms-traffictypediagnostic: AM0PR03MB4881:
-x-microsoft-antispam-prvs: <AM0PR03MB4881045FCF2A12E99B49E8A4E7859@AM0PR03MB4881.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kKDTZuZ1a+MTcICOGfBfs8L/pfO28kZAzLf8wysiYz/N5eMC804N6RRBFaM4a1beTBUdX839bob7Uxro9J/7+gxAeR8IcVSjgK0RJBJCkL2MDwv/v3FPHWtT77qrwXFS655/lymAUGZFLnj6Smdn9Wi0AMgXQJpxBg38bfwLYSA9gjzwM+T5d3eu+9S4iCMaSm1nyrHQoyHRIuhBIweteiHL8t7FxRBnPuckKOMoq0G3TgdtPo9L7JEzif7LevJw7KHfsIHFcfqBAGVTYUbk/0ykKmp5srjuRXgvD4ITCq0zMVXlDEWWkul0zvnCIb3ketzZpZYlCGaJAH6KWpqSVFjy593y7eE9YqqVhbtNC3qnxDAyXn44YEasubGY3ULz95xMti0equUNYjKaoyVyI2bUXhplE4DIm+MILgkFdkmgRcdpnt7WL2LWbLwIag52NOIuZ42b8ZtfOL3cpyZYSsu+F2RVPLrgA0OXWLHvU2xg132tcRhw52ECkk06BtwoJcjdfTNQOxxHqHQv3lhPqMDr/zLXRMeKUPh6syFbFRBCWxq4O3pZkVVl3RKlwnp4L2Tnb+SPtKV8sUx6Ep0g2xThG1FRZxvVjgryENTW0k3xtdgmhZLqCuVf7iBE1FlZTQQ36ao/Nf89tzVwyAFn5ildFYZ3+MiwvVrHaaUX7j56CB7Vp1mlOweS4jLq5GniCwis7uT2zYdct+E7RIqY6XV1oWmp0HPjyOp1vOe4HGi1RCqRCD1uq6zAAZ9wK7RD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(2616005)(122000001)(36756003)(107886003)(54906003)(38100700002)(31686004)(31696002)(38070700005)(316002)(6512007)(110136005)(5660300002)(86362001)(6486002)(508600001)(2906002)(4326008)(71200400001)(66946007)(66446008)(66476007)(64756008)(91956017)(76116006)(66556008)(6506007)(53546011)(186003)(83380400001)(26005)(8936002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U0lJS0Q2MWdNQk93Ryt4R1RkN2tFNkNjR1hLTU15S2N6cXQ5OHVqYVpZZ1cx?=
- =?utf-8?B?cVlHOThKV3VHT0RXRnVDbzFVZG1DWWdSM3J1STNXVjBmYUtpMGFXa3VlRW9B?=
- =?utf-8?B?c2hDMC83Vm9tWXdDRWVJbzllYXBRMnZJMEdKZkhpclRpRWJLdklsbDIwRG9D?=
- =?utf-8?B?MHpsTUo3SEc2bFE2eWZQZXF3S1VYS2JLZ2F4ZmFIMWxOL3lTam5HU2FRSVU5?=
- =?utf-8?B?czlGQXJIQkxxakRaOTFpalRMR3NId2hqMmxQNUVSaVBaV1hoUnd0SmhXNEEw?=
- =?utf-8?B?bFVJalBROXhpN2tKV2krQk5WOTJZY0crTVNsaEt6QUloTGREUDVOZGdySktT?=
- =?utf-8?B?QzB4VzY1VkdQekw5ejZTKzkzRm41aTRGT1hiY1B4UitTZ0wxZktpQWYrcUlr?=
- =?utf-8?B?OXVRQjErb3JIcHEzeHYzOVFkQmNKbmROVVJCZXU2TExkQnhUcTZZR1hNN3Vs?=
- =?utf-8?B?dzVNQ1JwSG9tenFBZVBMb0M4NXZvZExUbEJPMlo3VFl3MWZMU1lRTk4rTnZk?=
- =?utf-8?B?QTRpM0FwZ1RZLzVDeUxEZnB1UG03aUtwOUFwMFBlQjFvVm80amF6d25HdlNU?=
- =?utf-8?B?cXZMZUhNR1R4d0JCanE4ZFhocDRhTERKYk5KRTRRWjQ1TDVPRmdENHdBbytm?=
- =?utf-8?B?M3hEUk5jWnBqR1M5U2JITndpVUY5aDRzVUZOaGgwUU1BLzQvNlZ0Ujhyemly?=
- =?utf-8?B?WFhlWTdZZ0hoNWwwV0lQY2Z0QmUzcFlXcFYzeXZ4Wkw5LzFXRjl2bWp0VWZM?=
- =?utf-8?B?MkExQmpJdVlNbnN4L0Nrb2tzQU9YQ1l4TWhWblFYWGpDYlhCOFdZb0t5RmVs?=
- =?utf-8?B?Q3V3Zi9Ob09janZJZ1BtZEdrOEtjU2o1M29ncVhxTitRTjdXRGt1UzdyZzVr?=
- =?utf-8?B?VnhCYzlpVWhXL0R0Mll3dGFYdThjcEduWjF4T2YrVkRRV2I5cUk3bVJoaDdJ?=
- =?utf-8?B?bHVsTmRyeis4VFV1ZFRIUm8wNTFEWjRlSGNKUGRXRG5lc0tWdEsvLzFsZHhy?=
- =?utf-8?B?Zkt2eThWdUJRbHU3VHFabVJiTlFYZ2p5Y0hPL2tTNHZreVBUUEZhZW16VGhF?=
- =?utf-8?B?VnJiMTdrcU5oVU8wYkVPa0Z6YkowcUxzTVdiU0dvUURWeEZURWpERzZkYllR?=
- =?utf-8?B?dEJ2bVJnck1yOTM0dENjZzBZSzRCU2xsZW5wM2RNT1pUeUpDZlErbm1zRHBn?=
- =?utf-8?B?UDlRc29tUDlmY2MzN0dtOUNFSU13NGdveVVwS09MZ2puRGx1M0J6MVJsWDRZ?=
- =?utf-8?B?SFZOVkhhSlRQcW1qODh2alBjbHpwcWk2NE42Z0d1YWx0c1U4RjAyT2R2TUY0?=
- =?utf-8?B?ei9ob0gzM012eU4rYlYvbTQyTlJDVVIwaHdrcDhDSWtzMldyZnFHbCtmOWw5?=
- =?utf-8?B?VVE0RUxCdmFZZlZyQUprSmhBcm55QXd4VGZGMU1PL09pclQzVWh1ZUdDdXRR?=
- =?utf-8?B?SmpEdlJFWXgyRmpGQ0g4L3Z0OGhKQ2haK2l3aFZuM09ad1ZnZDEraTE4dmFZ?=
- =?utf-8?B?eDh2a1psNzZtdEhha25ieXNQV1JVaU1XQzdZemRmTU9oUlRBQXBnUHFOL0ow?=
- =?utf-8?B?YkxFMFJnc0RqMnc3d3JGN1ZYbFoyNjJTcE1ERWdHYkpLeWJOK3RnVjBsWW5M?=
- =?utf-8?B?ajI3UFZDcFFJSUFGOUs1VWFrb3N5SmJZTElqMi9oRGwwRC92aDhPTUwwSHVF?=
- =?utf-8?B?bDYyZzREVVN3Tm9pNkhjbWNQdlo3ZE5MYy84MVBkNWw1Q25KblYrVU5MYzBB?=
- =?utf-8?B?TjFRM2N4T3EzRm5ETjNKampKQy9GMDZHaTNXNFhibFBNellQdEZwbE5WcU0w?=
- =?utf-8?B?YnpQNXE3UEVqL1h5NlJiSS9sQXVjc2VLYmFyakNwcGVZazZQVldYZ2tYTVNx?=
- =?utf-8?B?VjVXZ05xeW5pQTVmQ0ZGd1JKS3NqMHFnZE1QMmhqQnlHSFJYZHBNUEhxZ2NC?=
- =?utf-8?B?UlVxZU9BVzJDaGlpdlg5dDhlaWFVMUlMeGVCQmJTNnEzbmk1bmRMR3FHZVIz?=
- =?utf-8?B?bU8yaW84ek9zNE1mNkVVT0ZVUjcvOGJLL0YvcXZwZjFhcTZIUWdxVVdUVFlx?=
- =?utf-8?B?Z0JDeENJN0k5VGZjcjliMkRDQ0FrbEh2WVROVXFST3pNd1R0NVlaVHMxeWlu?=
- =?utf-8?B?elpkMUF4bUp2M1lRSk53TTVUNk1ocVltelh2TjZWUnE0MEd5WkxlTWhVZk9V?=
- =?utf-8?B?WkpxNTJzV1EreU9vVWJTeFVDeHlVMEFtbVQ2R1IvcnBpYlk4bmJVWVlhOFh0?=
- =?utf-8?B?RmlYQ3N6MUFNV2ZuWTJYVS96dmNBa2VLWTNOUjJ0Y29pNm9weGluN1dQK2ow?=
- =?utf-8?B?QXZuOVRhUnZJRldEMWdRd1NXeVJaNGhsTEd5UVE2a1djTUd6NFluQT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <63AC4E6A6599E646A8110B071D4793C1@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 27 Oct 2021 10:11:18 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 90D1C212C3;
+        Wed, 27 Oct 2021 14:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635343732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=vTEZK4Z28044YwpJME/9KvLWOyf6J+iw93DBKB2ic7M=;
+        b=pB7PpGxy3Rc2ONHyE2vZPLcGexhgvL5KrSKMha1io13/p9FUfXJrrIHMF4YEY4euHAZ6KG
+        yyiH0SrEQsWjy+V0KvJE958Z0kS/rpra4DEK8szQwS6tLvJQGRA7HwbK5Rs5pa3udFUrln
+        FnO2X2GK9PHxpRqF6wSX2O05+/KytfM=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4A68CA3B88;
+        Wed, 27 Oct 2021 14:08:52 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 16:08:52 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     "chunlei.wang" <Chunlei.wang@mediatek.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] printk: ringbuffer: Improve prb_next_seq() performance
+Message-ID: <YXlddJxLh77DKfIO@alley>
 MIME-Version: 1.0
-X-OriginatorOrg: epam.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ecf37fa-9219-4632-6d55-08d99953375a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2021 14:08:13.8529
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4LBRjLfEQZBabVc7SHcdH05vEDqlNy9lljYGqYdGKPwPalIvGs+weq4iJ1gCjrphTTkzC7e17h8etUxt/PD2/PtA3kz/SgOq0eBSdP1LToB60KC5jbTX8MJMiiEVE5Iv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB4881
-X-Proofpoint-GUID: -GGOC06-1D2eJXhRrbBJgsySY5UCtfVZ
-X-Proofpoint-ORIG-GUID: -GGOC06-1D2eJXhRrbBJgsySY5UCtfVZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_04,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270086
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEJvcmlzIQ0KDQpPbiAyNy4xMC4yMSAxNTo1OSwgQm9yaXMgT3N0cm92c2t5IHdyb3RlOg0K
-Pg0KPiBPbiA5LzI4LzIxIDM6MzUgQU0sIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOg0K
-Pj4gRnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtv
-QGVwYW0uY29tPg0KPj4NCj4+IFhlbi1wY2liYWNrIGRyaXZlciB3YXMgZGVzaWduZWQgdG8gYmUg
-YnVpbHQgZm9yIHg4NiBvbmx5LiBCdXQgaXQNCj4+IGNhbiBhbHNvIGJlIHVzZWQgYnkgb3RoZXIg
-YXJjaGl0ZWN0dXJlcywgZS5nLiBBcm0uDQo+Pg0KPj4gQ3VycmVudGx5IFBDSSBiYWNrZW5kIGlt
-cGxlbWVudHMgbXVsdGlwbGUgZnVuY3Rpb25hbGl0aWVzIGF0IGEgdGltZSwNCj4+IHN1Y2ggYXM6
-DQo+PiAxLiBJdCBpcyB1c2VkIGFzIGEgZGF0YWJhc2UgZm9yIGFzc2lnbmFibGUgUENJIGRldmlj
-ZXMsIGUuZy4geGwNCj4+IMKgwqDCoCBwY2ktYXNzaWduYWJsZS17YWRkfHJlbW92ZXxsaXN0fSBt
-YW5pcHVsYXRlcyB0aGF0IGxpc3QuIFNvLCB3aGVuZXZlcg0KPj4gwqDCoMKgIHRoZSB0b29sc3Rh
-Y2sgbmVlZHMgdG8ga25vdyB3aGljaCBQQ0kgZGV2aWNlcyBjYW4gYmUgcGFzc2VkIHRocm91Z2gN
-Cj4+IMKgwqDCoCBpdCByZWFkcyB0aGF0IGZyb20gdGhlIHJlbGV2YW50IHN5c2ZzIGVudHJpZXMg
-b2YgdGhlIHBjaWJhY2suDQo+PiAyLiBJdCBpcyB1c2VkIHRvIGhvbGQgdGhlIHVuYm91bmQgUENJ
-IGRldmljZXMgbGlzdCwgZS5nLiB3aGVuIHBhc3NpbmcNCj4+IMKgwqDCoCB0aHJvdWdoIGEgUENJ
-IGRldmljZSBpdCBuZWVkcyB0byBiZSB1bmJvdW5kIGZyb20gdGhlIHJlbGV2YW50IGRldmljZQ0K
-Pj4gwqDCoMKgIGRyaXZlciBhbmQgYm91bmQgdG8gcGNpYmFjayAoc3RyaWN0bHkgc3BlYWtpbmcg
-aXQgaXMgbm90IHJlcXVpcmVkDQo+PiDCoMKgwqAgdGhhdCB0aGUgZGV2aWNlIGlzIGJvdW5kIHRv
-IHBjaWJhY2ssIGJ1dCBwY2liYWNrIGlzIGFnYWluIHVzZWQgYXMgYQ0KPj4gwqDCoMKgIGRhdGFi
-YXNlIG9mIHRoZSBwYXNzZWQgdGhyb3VnaCBQQ0kgZGV2aWNlcywgc28gd2UgY2FuIHJlLWJpbmQg
-dGhlDQo+PiDCoMKgwqAgZGV2aWNlcyBiYWNrIHRvIHRoZWlyIG9yaWdpbmFsIGRyaXZlcnMgd2hl
-biBndWVzdCBkb21haW4gc2h1dHMgZG93bikNCj4+IDMuIERldmljZSByZXNldCBmb3IgdGhlIGRl
-dmljZXMgYmVpbmcgcGFzc2VkIHRocm91Z2gNCj4+IDQuIFBhcmEtdmlydHVhbGlzZWQgdXNlLWNh
-c2VzIHN1cHBvcnQNCj4+DQo+PiBUaGUgcGFyYS12aXJ0dWFsaXNlZCBwYXJ0IG9mIHRoZSBkcml2
-ZXIgaXMgbm90IGFsd2F5cyBuZWVkZWQgYXMgc29tZQ0KPj4gYXJjaGl0ZWN0dXJlcywgZS5nLiBB
-cm0gb3IgeDg2IFBWSCBEb20wLCBhcmUgbm90IHVzaW5nIGJhY2tlbmQtZnJvbnRlbmQNCj4+IG1v
-ZGVsIGZvciBQQ0kgZGV2aWNlIHBhc3N0aHJvdWdoLg0KPj4NCj4+IEZvciBzdWNoIHVzZS1jYXNl
-cyBtYWtlIHRoZSB2ZXJ5IGZpcnN0IHN0ZXAgaW4gc3BsaXR0aW5nIHRoZQ0KPj4geGVuLXBjaWJh
-Y2sgZHJpdmVyIGludG8gdHdvIHBhcnRzOiBYZW4gUENJIHN0dWIgYW5kIFBDSSBQViBiYWNrZW5k
-DQo+PiBkcml2ZXJzLg0KPj4NCj4+IEZvciB0aGF0IGFkZCBuZXcgY29uZmlndXJhdGlvbiBvcHRp
-b25zIENPTkZJR19YRU5fUENJX1NUVUIgYW5kDQo+PiBDT05GSUdfWEVOX1BDSURFVl9TVFVCLCBz
-byB0aGUgZHJpdmVyIGNhbiBiZSBsaW1pdGVkIGluIGl0cw0KPj4gZnVuY3Rpb25hbGl0eSwgZS5n
-LiBubyBzdXBwb3J0IGZvciBwYXJhLXZpcnR1YWxpc2VkIHNjZW5hcmlvLg0KPj4geDg2IHBsYXRm
-b3JtIHdpbGwgY29udGludWUgdXNpbmcgQ09ORklHX1hFTl9QQ0lERVZfQkFDS0VORCBmb3IgdGhl
-DQo+PiBmdWxseSBmZWF0dXJlZCBiYWNrZW5kIGRyaXZlci4NCj4+DQo+PiBQbGVhc2Ugbm90ZSwg
-dGhhdCBDT05GSUdfWEVOX1BDSURFVl9CQUNLRU5EIGFuZCBDT05GSUdfWEVOX1BDSURFVl9TVFVC
-DQo+PiBhcmUgbXV0dWFsbHkgZXhjbHVzaXZlLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IE9sZWtz
-YW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNvbT4NCj4+
-IFNpZ25lZC1vZmYtYnk6IEFuYXN0YXNpaWEgTHVraWFuZW5rbyA8YW5hc3Rhc2lpYV9sdWtpYW5l
-bmtvQGVwYW0uY29tPg0KPj4gUmV2aWV3ZWQtYnk6IFN0ZWZhbm8gU3RhYmVsbGluaSA8c3N0YWJl
-bGxpbmlAa2VybmVsLm9yZz4NCj4NCj4NCj4gT2xla3NhbmRyLA0KPg0KPg0KPg0KPiBDYW4geW91
-IHBsZWFzZSByZWJhc2UgdGhpcyBvbiB0b3Agb2YgNS4xNS1yYzc/IFRoZXJlIGlzIGEgYnVuY2gg
-b2YgY29uZmxpY3RzIGR1ZSB0byBjYWU3ZDgxYTM3MzBkZmUwODYyM2Y4YzEwODMyMzBjOGQwOTg3
-NjM5Lg0KPg0KSSdsbCB0cnkgdG8gZG8gdGhhdCBBU0FQICh3aGF0IGlzIHRoZSBkZWFkbGluZSBm
-b3IgdGhhdD8pDQo+DQo+IFRoYW5rcy4NCj4NCj4gLWJvcmlzDQo+DQpUaGFuayB5b3UsDQpPbGVr
-c2FuZHI=
+prb_next_seq() always iterates from the first known sequence number.
+In the worst case, it might loop 8k times for 256kB buffer,
+15k times for 512kB buffer, and 64k times for 2MB buffer.
+
+It was reported that pooling and reading using syslog interface
+might occupy 50% of CPU.
+
+Speedup the search by storing @id of the last finalized descriptor.
+
+The loop is still needed because the @id is stored and read in the best
+effort way. An atomic variable is used to keep the @id consistent.
+But the stores and reads are not serialized against each other.
+The descriptor could get reused in the meantime. The related sequence
+number will be used only when it is still valid.
+
+An invalid value should be read _only_ when there is a flood of messages
+and the ringbuffer is rapidly reused. The performance is the least
+problem in this case.
+
+Reported-by: Chunlei Wang <chunlei.wang@mediatek.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+Changes against v1:
+
+  + Read @seq by the last finalized @id directly in prb_next_seq() (John)
+
+ kernel/printk/printk_ringbuffer.c | 49 ++++++++++++++++++++++++++++---
+ kernel/printk/printk_ringbuffer.h |  2 ++
+ 2 files changed, 47 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+index 8a7b7362c0dd..24f47fbefbb5 100644
+--- a/kernel/printk/printk_ringbuffer.c
++++ b/kernel/printk/printk_ringbuffer.c
+@@ -474,8 +474,10 @@ static enum desc_state desc_read(struct prb_desc_ring *desc_ring,
+ 	 * state has been re-checked. A memcpy() for all of @desc
+ 	 * cannot be used because of the atomic_t @state_var field.
+ 	 */
+-	memcpy(&desc_out->text_blk_lpos, &desc->text_blk_lpos,
+-	       sizeof(desc_out->text_blk_lpos)); /* LMM(desc_read:C) */
++	if (desc_out) {
++		memcpy(&desc_out->text_blk_lpos, &desc->text_blk_lpos,
++		       sizeof(desc_out->text_blk_lpos)); /* LMM(desc_read:C) */
++	}
+ 	if (seq_out)
+ 		*seq_out = info->seq; /* also part of desc_read:C */
+ 	if (caller_id_out)
+@@ -1449,6 +1451,9 @@ static void desc_make_final(struct prb_desc_ring *desc_ring, unsigned long id)
+ 
+ 	atomic_long_cmpxchg_relaxed(&d->state_var, prev_state_val,
+ 			DESC_SV(id, desc_finalized)); /* LMM(desc_make_final:A) */
++
++	/* Best effort to remember the last finalized @id. */
++	atomic_long_set(&desc_ring->last_finalized_id, id);
+ }
+ 
+ /**
+@@ -1657,7 +1662,12 @@ void prb_commit(struct prb_reserved_entry *e)
+  */
+ void prb_final_commit(struct prb_reserved_entry *e)
+ {
++	struct prb_desc_ring *desc_ring = &e->rb->desc_ring;
++
+ 	_prb_commit(e, desc_finalized);
++
++	/* Best effort to remember the last finalized @id. */
++	atomic_long_set(&desc_ring->last_finalized_id, e->id);
+ }
+ 
+ /*
+@@ -2005,9 +2015,39 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
+  */
+ u64 prb_next_seq(struct printk_ringbuffer *rb)
+ {
+-	u64 seq = 0;
++	struct prb_desc_ring *desc_ring = &rb->desc_ring;
++	enum desc_state d_state;
++	unsigned long id;
++	u64 seq;
++
++	/* Check if the cached @id still points to a valid @seq. */
++	id = atomic_long_read(&desc_ring->last_finalized_id);
++	d_state = desc_read(desc_ring, id, NULL, &seq, NULL);
+ 
+-	/* Search forward from the oldest descriptor. */
++	if (d_state == desc_finalized || d_state == desc_reusable) {
++		/*
++		 * Begin searching after the last finalized record.
++		 *
++		 * On 0, the search must begin at 0 because of hack#2
++		 * of the bootstrapping phase it is not known if a
++		 * record at index 0 exists.
++		 */
++		if (seq != 0)
++			seq++;
++	} else {
++		/*
++		 * The information about the last finalized sequence number
++		 * has gone. It should happen only when there is a flood of
++		 * new messages and the ringbuffer is rapidly recycled.
++		 * Give up and start from the beginning.
++		 */
++		seq = 0;
++	}
++
++	/*
++	 * The information about the last finalized @seq might be inaccurate.
++	 * Search forward to find the current one.
++	 */
+ 	while (_prb_read_valid(rb, &seq, NULL, NULL))
+ 		seq++;
+ 
+@@ -2044,6 +2084,7 @@ void prb_init(struct printk_ringbuffer *rb,
+ 	rb->desc_ring.infos = infos;
+ 	atomic_long_set(&rb->desc_ring.head_id, DESC0_ID(descbits));
+ 	atomic_long_set(&rb->desc_ring.tail_id, DESC0_ID(descbits));
++	atomic_long_set(&rb->desc_ring.last_finalized_id, DESC0_ID(descbits));
+ 
+ 	rb->text_data_ring.size_bits = textbits;
+ 	rb->text_data_ring.data = text_buf;
+diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+index 73cc80e01cef..18cd25e489b8 100644
+--- a/kernel/printk/printk_ringbuffer.h
++++ b/kernel/printk/printk_ringbuffer.h
+@@ -75,6 +75,7 @@ struct prb_desc_ring {
+ 	struct printk_info	*infos;
+ 	atomic_long_t		head_id;
+ 	atomic_long_t		tail_id;
++	atomic_long_t		last_finalized_id;
+ };
+ 
+ /*
+@@ -258,6 +259,7 @@ static struct printk_ringbuffer name = {							\
+ 		.infos		= &_##name##_infos[0],						\
+ 		.head_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
+ 		.tail_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
++		.last_finalized_id = ATOMIC_INIT(DESC0_ID(descbits)),				\
+ 	},											\
+ 	.text_data_ring = {									\
+ 		.size_bits	= (avgtextbits) + (descbits),					\
+-- 
+2.26.2
+
