@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1935A43C6B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDD543C6B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241264AbhJ0JqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:46:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43740 "EHLO mail.kernel.org"
+        id S238827AbhJ0Jq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:46:56 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1592 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236282AbhJ0JqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:46:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3748B60EDF;
-        Wed, 27 Oct 2021 09:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635327834;
-        bh=VamiCDRY2Jm6wCsoF7Ul2LuA4UNUxvU1NzDgcC1N/XA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SijhGI3zQ4BfXjr5omvlexqH9vB+MKLh3V80St9yLNZDaEJAxOCtd6qtOzHuXieHo
-         seJIDXIikcfIcwRY9lqPocqV4K/Jvwjc7YuQPu8C+artADBP7yAyzkgMSNdMpc7nNs
-         jKG6Vl4TIm5TdButDhTHostAI1ZxCiZiMjJ/WSs7YYidMLYiYfhUxEKnxeHy6uEKqJ
-         28ViZ0IVHiRtKqxGvJmwZRawU3dWq2py8O3g9iJYprZxhdsR8tgScH1lSmlL1aJghH
-         hGna+APpSbGfWCfZxL5jwpp3od9EZsSS9SqDrZFwzzrWlI9rtv+5mOwpAEo/lf5hbB
-         bWv1CUmAFQbEw==
-Date:   Wed, 27 Oct 2021 12:43:50 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Edwin Peer <edwin.peer@broadcom.com>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
-        Michael Chan <michael.chan@broadcom.com>
-Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
- traps on probe/remove device
-Message-ID: <YXkfVuthd6G75L/S@unreal>
-References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
- <YXUhyLXsc2egWNKx@shredder>
- <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
- <YXeYjXx92wKdPe02@unreal>
- <CAKOOJTyrzosizeKpfYcu4jMn6SRYrqxU0BzMf8qudAk5e74R9g@mail.gmail.com>
- <YXhVd16heaHCegL1@unreal>
- <CAKOOJTzrQYz4FTDU_d_R0RLA4u6pfK9=+=E_uKMr4VCNbmF_kA@mail.gmail.com>
- <YXj1J/Z8HYvBWC6Y@unreal>
- <CAKOOJTyrUUydu9aNJSB4S_5dfqjkc6Y-14up4-V+aNcQ7TWVdQ@mail.gmail.com>
+        id S236282AbhJ0Jqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 05:46:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="316327046"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="316327046"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 02:44:30 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="447142485"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 02:44:28 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mffTd-001Qek-2N;
+        Wed, 27 Oct 2021 12:44:09 +0300
+Date:   Wed, 27 Oct 2021 12:44:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bitmap: simplify GENMASK(size - 1, 0) lines
+Message-ID: <YXkfaGlmbkXXJGih@smile.fi.intel.com>
+References: <20211026144108.35373-1-quic_qiancai@quicinc.com>
+ <YXhOEEOSG+fgEy+t@yury-ThinkPad>
+ <YXhVVvG9keoVWJyK@smile.fi.intel.com>
+ <YXhW8K7DxadyVgx3@yury-ThinkPad>
+ <YXhaMVTymVNzOlGT@smile.fi.intel.com>
+ <031fe271-7fc3-0d95-3547-edbe0c975cbb@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKOOJTyrUUydu9aNJSB4S_5dfqjkc6Y-14up4-V+aNcQ7TWVdQ@mail.gmail.com>
+In-Reply-To: <031fe271-7fc3-0d95-3547-edbe0c975cbb@quicinc.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:46:44AM -0700, Edwin Peer wrote:
-> On Tue, Oct 26, 2021 at 11:43 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Tue, Oct 26, 2021 at 03:54:26PM -0400, Qian Cai wrote:
+> On 10/26/21 3:42 PM, Andy Shevchenko wrote:
+> > Now, I have checked that email appearance in the upstream:
+> > 
+> > $ git log --oneline --author="quic_qiancai@quicinc.com"
+> > 95cadae320be fortify: strlen: Avoid shadowing previous locals
+> > 94560f6156fe Revert "arm pl011 serial: support multi-irq request"
+> > 
+> > While first one perhaps okay, although it also refers to W=2,
+> > I have now doubts if the "Revert" was really thought through
+> > and not just yet another UMN-like experiment.
+> > 
+> > Greg, what do you think is the best course of actions here?
 > 
-> > In our case, the eth driver is part of mlx5_core module, so at the
-> > device creation phase that module is already loaded and driver/core
-> > will try to autoprobe it.
+> Perhaps, a little sympathy towards a stranger might get us a better
+> community.
+
+Agree, but you see a problem here, W=2, for example, is high due to
+a lot of non-sense (or very little sense) noise. The warning you got
+is hidden on purpose. On top of that, the code has not been thought
+through at all, despite missed test run. This is easy to catch.
+
+What I expect from "a stranger" who is in doubt (obviously) how this
+code works to ask and then decide how to act.
+
+And on top of all these, we used to have UMN case which makes me
+first think of bad experiments on the community (I really haven't
+believed that this patch was sent consciously).
+
+So, please be careful next time and better ask first before acting,
+if in doubt.
+
+> Feel free to audit my previous works.
 > 
-> > However, the last step is not always performed and controlled by the
-> > userspace. Users can disable driver autoprobe and bind manually. This
-> > is pretty standard practice in the SR-IOV or VFIO modes.
-> 
-> While you say the netdev will not necessarily be bound, that still
-> sounds like the netdev will indeed be presented to user space before
-> devlink_register() when it is auto-probed?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=author&q=Qian+Cai
 
-And it is ok, there is no binding between netdev and devlink. They are
-independent. For example, IB cards have devlink through mlx5_core, but
-without netdev at all.
+Yes, after above patch these all in doubt (to me personally), but
+I have no time to revisit all of them, esp. they do not touched my
+area of interests in the Linux kernel.
 
-> 
-> > This is why devlink has monitor mode where you can see devlink device
-> > addition and removal. It is user space job to check that device is
-> > ready.
-> 
-> Isn't it more a question of what existing user space _does_ rather
-> than what user space _should_ do?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-No, because races of kernel vs. user space always existed and every time,
-the answer was the same - it is user space job to avoid race. Kernel
-needs to protect itself and we successfully did it here.
 
-Latest example of such programming model can be seen in VFIO too:
-https://lore.kernel.org/kvm/20211026090605.91646-1-yishaih@nvidia.com/T/#m89ef326da9405dcefe482bd5a6a54aff7e0b90bc
-"Yes. If the userspace races ioctls they get a deserved mess.
-
-This race exists no matter what we do, as soon as the unlock happens a
-racing reset ioctl could run in during the system call exit path.
-
-The purpose of the locking is to protect the kernel from hostile
-userspace, not to allow userspace to execute concurrent ioctl's in a
-sensible way."
-
-> 
-> > > This isn't about kernel API. This is precisely about existing user
-> > > space that expects devlink to work immediately after the netdev
-> > > appears.
-> >
-> > Can you please share open source project that has such assumption?
-> 
-> I'm no python expert, but it looks like
-> https://github.com/openstack-charmers/mlnx-switchdev-mode/ might.
-
-No, it is not.
-
-> We've certainly had implicit user space assumptions trip over
-> registration order before, hence the change we made in January last
-> year to move devlink registration earlier. Granted, upon deeper
-> analysis, that specific case pertained to phys port name via sysfs,
-> which technically only needs port attrs via ndo_get_devlink_port, not
-> devlink_register(). That said, I'm certainly not confident that there
-> are no other existing users that might expect to be able to invoke
-> devlink in ifup scripts.
-
-It is not what your change did, you moved devlink ops registration logic
-to be before register_netdev(), this is continue to be in upstream code.
-We are registering ops in devlink_alloc() and that function stays to be
-at the same place.
-
-> 
-> > > What do you suggest instead?
-> >
-> > Fix your test respect devlink notifications and don't ignore them.
-> 
-> That's not very helpful. The test case does what the user in the field
-> did to break it. We can't assume users have always been using our APIs
-> the way we intended.
-
-There is no API here.
-
-Thanks
-
-> 
-> Regards,
-> Edwin Peer
