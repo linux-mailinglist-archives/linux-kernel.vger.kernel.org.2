@@ -2,144 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ACE43BE7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 02:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23F743BE82
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 02:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbhJ0AgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 20:36:07 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:59409 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233975AbhJ0AgG (ORCPT
+        id S235640AbhJ0Ahm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 20:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233257AbhJ0Ahk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 20:36:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf8nJ1rqnz4xbM;
-        Wed, 27 Oct 2021 11:33:40 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1635294820;
-        bh=O3XGDoaskA0/eghgUkL7IhHse34zdf+k1dTb0Ycr8Tg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=cja1ODRnYrVDWSEKyN0on9xo2nXEZEif7Wd5i+HjiIxOcNT2AigwJ5paEINk5o0Fy
-         gE1u1cIo4EFV8yk2T1OULNyOkKDgSwwhYRsfPqJAhWqITaLcEJE+Mbp6QVgv1AbyhL
-         M/rEH8B7ZznsgDIynTYkDxwiWF8Z20U1NaqeroaB7Qz3Guq8lxQUYqtRvO6hMeuA/m
-         mUGn3gMFYqLjm6DkfoKDTTm9M6uke+GWynyZgbvrwbgiHgy0BmCLgMW6zFgxsM+zf5
-         AZEhHFHi7QxPdg9xokc5WXntEBugja69S22D8w9laMLjoXhB9o79SUm2viBqGPg/Qo
-         uopCptrxiLBWw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Hill Ma <maahiuzeon@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] macintosh/via-pmu-led: make disk activity usage a
- parameter.
-In-Reply-To: <CABpQrUMcCKbgSTnTB4BeUUVwq5jkOw7pGbUC53SGe-4DEVnUag@mail.gmail.com>
-References: <20211026033254.1052-1-maahiuzeon@gmail.com>
- <87fssox7ah.fsf@linux.ibm.com>
- <CABpQrUMcCKbgSTnTB4BeUUVwq5jkOw7pGbUC53SGe-4DEVnUag@mail.gmail.com>
-Date:   Wed, 27 Oct 2021 11:33:37 +1100
-Message-ID: <87ee87b926.fsf@mpe.ellerman.id.au>
+        Tue, 26 Oct 2021 20:37:40 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19024C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 17:35:16 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id o26-20020a4abe9a000000b002b74bffdef0so330003oop.12
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 17:35:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=4FClTT0c0lvTH4JvJKAi1wapScSyCR6IqIG1AROPiHc=;
+        b=ZWTciEqzi5wtqjaGi+5y7xUDXMKQhz0uBfuDli4XelI0LC9YGT5GThcMlpmcVvaFr4
+         nH7c7q8qIZcHfnQO5ZTwDF3FvO6x3kx660lAU0L2KZRWkJwI68GBUhURPzZGJIMcMZw5
+         2TaLjLeSKlNwxzlEnOEgOC4M335FgM6rd4Yew=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=4FClTT0c0lvTH4JvJKAi1wapScSyCR6IqIG1AROPiHc=;
+        b=5YFioZMmN2XzE8IilIDs6KIXgJx7P6gyHAKDdibjgDuEUlSblNaJzS8Y6yu1H9PSqo
+         LRwQSLno6jge1BxDtdYFPYUUdgmnbXOrKMUJZpCotollKlNcZJDtKgUjt7feOHtwcUiR
+         ejjNEo1FYG3GD4r+17m4bhPFx8zDz3cviHAPlfgq2c07or3RpwOmsCDIclwbs2aITIBu
+         2xSZvClT48ct4BIUjGR7jkNapSf2RfMVv+0bCvNp3IclFpbOsD5+5PAsfjV/TeFJRd0V
+         xUuAsYxbGjbNV8LhhspWU3vOKAgCsF8Li3sjbRVNFsEyRsmZ7e3fgEkV4Ue0qrllLZ3h
+         9bsg==
+X-Gm-Message-State: AOAM531/24uGC/ENg/vuiF2rKcSGxpeXM1D0e8pSqUqFobbGvSq8XJ3B
+        f+qa4xpgZgDN7juL8ygWdR5DZCKvf2D8RYbTZhzeXQ==
+X-Google-Smtp-Source: ABdhPJy6mMGiH/4mhV1zeYiLkU0FjIaPiTalCzJfDsWWHTrffDxp2XcIfSQ7in9s5qQrHRg8AfC/WoHwHRiEm5krydE=
+X-Received: by 2002:a4a:e75a:: with SMTP id n26mr19787082oov.1.1635294914676;
+ Tue, 26 Oct 2021 17:35:14 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 26 Oct 2021 17:35:14 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1635272372-9982-2-git-send-email-quic_c_sanm@quicinc.com>
+References: <1635272372-9982-1-git-send-email-quic_c_sanm@quicinc.com> <1635272372-9982-2-git-send-email-quic_c_sanm@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 26 Oct 2021 17:35:14 -0700
+Message-ID: <CAE-0n50oV7rV1+9yoxciOpcB1FrtmC07Fp1U=QktxrOwtLtL7g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: usb: usb-xhci: Add bindings for
+ usb-skip-phy-init property
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hill Ma <maahiuzeon@gmail.com> writes:
-> Thanks for the review.
->
-> On Tue, Oct 26, 2021 at 6:08 AM Nathan Lynch <nathanl@linux.ibm.com> wrote:
->>
->> Hello,
->>
->> Hill Ma <maahiuzeon@gmail.com> writes:
->> > Whether to use the LED as a disk activity is a user preference.
->> > Some like this usage while others find the LED too bright. So it
->> > might be a good idea to make this choice a runtime parameter rather
->> > than compile-time config.
->>
->> Users already have the ability to change the LED behavior at runtime
->> already, correct? I.e. they can do:
->>
->>   echo none > /sys/class/leds/pmu-led::front/trigger
->>
->> in their boot scripts. Granted, a kernel built with ADB_PMU_LED_DISK=y
->> will blink the LED on disk activity until user space is running. Is this
->> unsatisfactory?
->
-> Yes, indeed. As someone who does not like this behavior on iBooks.
->
->> > The default is set to disabled as OS X does not use the LED as a
->> > disk activity indicator.
->>
->> This is long-standing behavior in Linux and OS X has been EOL on this
->> architecture for a decade, so this isn't much of a consideration at this
->> point. Seems more important to avoid surprising existing users and
->> distributions with a behavior change that makes additional work for
->> them. See below.
->>
->> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->> > index 43dc35fe5bc0..a656a51ba0a8 100644
->> > --- a/Documentation/admin-guide/kernel-parameters.txt
->> > +++ b/Documentation/admin-guide/kernel-parameters.txt
->> > @@ -250,6 +250,12 @@
->> >                       Use timer override. For some broken Nvidia NF5 boards
->> >                       that require a timer override, but don't have HPET
->> >
->> > +     adb_pmu_led_disk [PPC]
->> > +                     Use front LED as disk LED by default. Only applies to
->> > +                     PowerBook, iBook, PowerMac 7,2/7,3.
->> > +                     Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
->> > +                     Default: disabled
->> > +
->> >       add_efi_memmap  [EFI; X86] Include EFI memory map in
->> >                       kernel's map of available physical RAM.
->> >
->> > diff --git a/drivers/macintosh/Kconfig b/drivers/macintosh/Kconfig
->> > index 5cdc361da37c..243215de563c 100644
->> > --- a/drivers/macintosh/Kconfig
->> > +++ b/drivers/macintosh/Kconfig
->> > @@ -78,16 +78,6 @@ config ADB_PMU_LED
->> >         behaviour of the old CONFIG_BLK_DEV_IDE_PMAC_BLINK, select this
->> >         and the disk LED trigger and configure appropriately through sysfs.
->> >
->> > -config ADB_PMU_LED_DISK
->> > -     bool "Use front LED as DISK LED by default"
->> > -     depends on ADB_PMU_LED
->> > -     depends on LEDS_CLASS
->> > -     select LEDS_TRIGGERS
->> > -     select LEDS_TRIGGER_DISK
->> > -     help
->> > -       This option makes the front LED default to the disk trigger
->> > -       so that it blinks on disk activity.
->> > -
->>
->> So, if I've been relying on CONFIG_ADB_PMU_LED_DISK=y and I upgrade to a
->> newer kernel with the proposed change, from my point of view the disk
->> activity LED has stopped working and I need to alter the bootloader
->> config or init scripts to restore the expected behavior. That seems
->> undesirable to me.
->>
->> I don't think we rigidly enforce Kconfig backward compatibility, but
->> when it comes to a user-visible function on a legacy platform where
->> users and distros likely have their configurations figured out already,
->> it's probably best to avoid such changes.
->
-> I actually asked some distributions that still ship PowerPC BE
-> architectures to unset it.
-> https://github.com/void-ppc/void-packages/pull/48
-> https://github.com/void-linux/void-packages/pull/33275
-> https://git.adelielinux.org/adelie/packages/-/merge_requests/607
->
-> And Debian, which still has PowerPC BE architectures as ports, does
-> not turn it on.
-> https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/config/kernelarch-powerpc/config
+Quoting Sandeep Maheswaram (2021-10-26 11:19:30)
+> Adding bindings for usb-skip-phy-init property.
 
-Looks like all three distros have it disabled.
+Yes, but why?
 
-So let's drop the config option, make it disabled by default, and anyone
-who wants to turn it on can do so in their initramfs or init scripts.
+>
+> Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/usb/usb-xhci.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.yaml b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+> index 965f87f..69a757b 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+> @@ -25,6 +25,10 @@ properties:
+>      description: Set if the controller has broken port disable mechanism
+>      type: boolean
+>
+> +  usb-skip-phy-init:
+> +    description: Set if the phy initiazation is managed by controller
 
-cheers
+s/initiazation/initialization/
+
+> +    type: boolean
+> +
+>    imod-interval-ns:
+>      description: Interrupt moderation interval
+>      default: 5000
