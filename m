@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E082143D757
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2415B43D75D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhJ0XOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229989AbhJ0XOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:14:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72E8460FC0;
-        Wed, 27 Oct 2021 23:12:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635376346;
-        bh=CLgz+BVrkml9MB9rQ4pnX111YaTQ4GX7f2ZA2ydTKpc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mswwpVag0G8YBwRHQIQoouc8z9pUPZU6j+uAjkBzTdgWlVrbfHmZK2qBNKIOtEc0W
-         0yCyomplxEYXfzvBX793o1ap9jNxBRvHf2c7lbLwpDs2FcwlBMAQjQH0NgJLJeV/5w
-         ejFfmW4VqTjL8AMq/u6SqZCT4rE9URjEnxTAsX7Nz827rVrjAtdPWM9tI+jkPuAFDX
-         wbolJ8tjTbhQS0No7icI/AScRnzle9jEBaz/3pF8XvctbeorhHjLBY/IOltuI3mAii
-         nm2ag422MAbZCNdJ5UOYFrMIPS97hNg9HeiHLKeIIn8NQaGJyfmgPypSgZ9BFE+ao5
-         K2HJ8/VYvtwgQ==
-Date:   Thu, 28 Oct 2021 01:12:23 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH 0/2] bind rcu offload (nohz_full/isolation) into cpuset
-Message-ID: <20211027231223.GA73746@lothringen>
-References: <20211027204319.22697-1-paul.gortmaker@windriver.com>
+        id S230329AbhJ0XPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhJ0XPt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 19:15:49 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0978C061745
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:13:23 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id v65so5766222ioe.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rl0KiyZVmnRa9RIsZlZ/dKBg5oxrwgNJJclLrbASD8g=;
+        b=HjFzfoLJ+HriIHgi6MmL9orHjnaLdbN7A06ITgUTPEL1Gnfof/gyL4GBHhc6Fepxwb
+         8vZrGwr+DOoKI8CPHpsQpT4Ksl/Adasiqn7vJ52uqBFWis6zN6KqTLNnZLwWoesiX0wa
+         Rogrcleh20EWM10gudKnGxlNQELGWDArr4k3M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rl0KiyZVmnRa9RIsZlZ/dKBg5oxrwgNJJclLrbASD8g=;
+        b=VRsxevAhTh1iNlnVRIw23SBspefL3l0gJ3m/7HJtaSRlhYzUk9UyHcE+7FpnqHECl7
+         gFeWyZn3LPsWgdy6HyghDcONngEc7bBvOFoX3INOOLtU2bwhsGHxISQr7kPO6M7abB8x
+         j5ha2N2n6cU99Zc+o7HTwVIFJKzvfizNt5WdqIvsQotCW196lf7C1Rq9ElCHRB4jfig/
+         WUGKmEnIPgSz0fiwrXQ0+lU/LDblgcZHF2abHbpxZFgRec22w3GwkCcYG8aGRKxqL3hH
+         BLFCjh7JGmAhHAsOdTj65oA3yqGzuQI6r2PiIRp2U8EDCKjX2DMxRjo0yc/fh3p242Kz
+         KalA==
+X-Gm-Message-State: AOAM531S+a1J3eUvEayXkY3ik5EtrJqbgEmA6XrFavUndwHYJM88XwzQ
+        ylPaFaa5hhZJcwTUEXBy6ZXpVB55qA8LGQ==
+X-Google-Smtp-Source: ABdhPJyR29HrpsRxIVgc1t/RRDIyrMtdBpeJFylBJR/Mj7gEwo8wYRNobWflAAD0YBPSEp3aW1rXHw==
+X-Received: by 2002:a02:cf1b:: with SMTP id q27mr537227jar.93.1635376402799;
+        Wed, 27 Oct 2021 16:13:22 -0700 (PDT)
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com. [209.85.166.45])
+        by smtp.gmail.com with ESMTPSA id c3sm685652ili.33.2021.10.27.16.13.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 16:13:22 -0700 (PDT)
+Received: by mail-io1-f45.google.com with SMTP id n67so5717362iod.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:13:21 -0700 (PDT)
+X-Received: by 2002:a05:6638:13d2:: with SMTP id i18mr549944jaj.3.1635376401029;
+ Wed, 27 Oct 2021 16:13:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027204319.22697-1-paul.gortmaker@windriver.com>
+References: <20210929153553.1.Ib44c2ac967833d7a3f51452d44d15b7b8d23c1f0@changeid>
+ <86b0d847ddf06c1b445f3dbac9c771a9@codeaurora.org> <CAD=FV=WnMnEckHdu0DG3U8MnyjwQ42aybFxq35nWSLG=vs=LGA@mail.gmail.com>
+ <YXTY6BdmKBa+jPeN@builder.lan>
+In-Reply-To: <YXTY6BdmKBa+jPeN@builder.lan>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 27 Oct 2021 16:13:08 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Ue-OUOOQTZnvtW1-88+NhzUp5nOo80OKT9Pgx27L0VkA@mail.gmail.com>
+Message-ID: <CAD=FV=Ue-OUOOQTZnvtW1-88+NhzUp5nOo80OKT9Pgx27L0VkA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: pmk8350: Make RTC disabled by default;
+ enable on sc7280-idp
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     satya priya <skakit@codeaurora.org>, Vinod Koul <vkoul@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 04:43:17PM -0400, Paul Gortmaker wrote:
-> One of the earlier pre-mainline RCU nocb patchsets had a temporary sysfs
-> knob in /sys/devices/system/cpu/cpu*/hotplug/nocb for testing[1].
-> 
-> That not-for-merge commit from Frederic said:
-> 
->   This is only intended for those who want to test this patchset. The
->   real interfaces will be cpuset/isolation and rcutorture.
-> 
-> We've had rcutorture as the one and only mainline user of nocb toggle
-> for a while now[2], and so I thought I'd take a crack at what Frederic
-> had in mind for cpuset with some code vs. asking 100 random questions.
-> 
-> Note that I intentionally didn't Cc any cgroup/cpuset people (yet),
-> since at this point this is only my guess on what things were to look
-> like based on a single sentence fragment.  So this is really early
-> "Not-for-Merge", but truly just RFC -- to start a conversation.
-> 
-> It won't be really useful until we adjust tick/housekeeping in addition
-> to nocb, but I think we can develop the interface in parallel to that?
-> And maybe use this to expand testing at the same time if it is layered
-> on top of those future work/patchsets?  I don't know...
-> 
-> We'll also have to look at corner cases - like whether we want to treat
-> the root cpuset differently; whether we want to sync boot arg values
-> with the cpuset's initial isol flag value, whether we un-isolate cores
-> when an isolation cpuset is rmdir/removed, etc etc.
-> 
-> But as a proof of concept, it "works" as can be seen in the 2nd commit.
+Hi,
 
-I'm working on the same thing :o)
+On Sat, Oct 23, 2021 at 8:54 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 18 Oct 16:45 CDT 2021, Doug Anderson wrote:
+>
+> > Bjorn,
+> >
+> > On Wed, Sep 29, 2021 at 9:00 PM <skakit@codeaurora.org> wrote:
+> > >
+> > > On 2021-09-30 04:08, Douglas Anderson wrote:
+> > > > The RTC on the pmk8350 is not useful on all boards. Some boards may
+> > > > not provide backup power to the PMIC but might have another RTC on the
+> > > > board that does have backup power. In this case it's better to not use
+> > > > the RTC on the PMIC.
+> > > >
+> > > > At the moment, the only boards that includes this PMIC are sc7280-idp
+> > > > and sc7280-idp2. On sc7280-idp I'm not aware of any other RTCs, but
+> > > > sc7280-idp2 has a Chrome OS EC on it and this is intended to provide
+> > > > the RTC for the AP.
+> > > >
+> > > > Let's do what we normally do for hardware that's not used by all
+> > > > boards and set it to a default status of "disabled" and then enable it
+> > > > on the boards that need it.
+> > > >
+> > > > NOTE: for sc7280-idp it's _possible_ we might also want to add
+> > > > `allow-set-time;`. That could be the subject of a future patch if it
+> > > > is indeed true.
+> > > >
+> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > ---
+> > > >
+> > >
+> > > Reviewed-by: Satya Priya <skakit@codeaurora.org>
+> >
+> > If you're still accepting patches for 5.16, it'd be keen if you'd
+> > consider taking this one. Thanks!
+> >
+>
+> I've picked the patch and hope to get it included in v5.16.
+>
+> I do however not understand why the commit message so clearly defines
+> that the only device including pmk8350 is the sc7280 idp when the
+> sm8350-mtp.dts contains the following line:
+>
+> #include "pmk8350.dtsi"
+>
+>
+> Perhaps I'm missing something obvious, but I took the liberty of also
+> enabling the RTC in the SM8350 MTP.
 
-With quite a rework of housekeeping core behind (WIP):
+Thank you for fixing this up. I must have just glazed over that part
+of things. :( Glad you caught and fixed it.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	isolation/split
-
-It's not yet ready either and I'm glad you posted this, it shows I'm not
-the only one interested in it.
-
-One thing about cpuset: I arranged to implement it only on cgroup v2 and
-exclusively mutable on root partition (which doesn't mean only _the_ root
-partition but also those whose cpuset.cpus.partition == "root". This way
-I make sure the set of cpus is exclusive. I didn't want to bother with
-intersecting cpusets with different nocb values.
-
-Thanks.
-
-> Paul.
-> --
-> 
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git/commit/?h=rcu/nocb&id=6abe8408307e
->     part of https://lwn.net/Articles/820544/
->             https://lwn.net/Articles/832031/   <------ v2
->             https://lwn.net/Articles/835039/   <------ v3
->             https://lwn.net/Articles/837128/   <------ v4
-> 
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d97b078182406
-> 
-> 
-> Paul Gortmaker (2):
->   sched: isolation: cpu isolation handles for cpuset
->   cpuset: add binding to CPU isolation
-> 
->  include/linux/sched/isolation.h |  4 ++++
->  kernel/cgroup/cpuset.c          | 42 +++++++++++++++++++++++++++++++++++++++++
->  kernel/sched/isolation.c        | 22 +++++++++++++++++++++
->  3 files changed, 68 insertions(+)
-> 
-> -- 
-> 2.15.0
-> 
+-Doug
