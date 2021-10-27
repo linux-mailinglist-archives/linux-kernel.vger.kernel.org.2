@@ -2,70 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FB443D5FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E29F43D604
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbhJ0Vos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:44:48 -0400
-Received: from mail-oo1-f51.google.com ([209.85.161.51]:43848 "EHLO
-        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhJ0Vop (ORCPT
+        id S229589AbhJ0Vsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:48:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229540AbhJ0Vsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:44:45 -0400
-Received: by mail-oo1-f51.google.com with SMTP id x135-20020a4a418d000000b002b961605657so734847ooa.10;
-        Wed, 27 Oct 2021 14:42:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3ZN6Gv8dEcW1STN8Y2wfeq1p+xH2xHX+YM1iSvc+i+g=;
-        b=pJBl845a8EFQQCI/4ReJyLOs5ki5lAAZr35SvzQskOn2rtmaEdi4Mg8jvkratLh8s9
-         ozRCM+5TQRIct2p+nlrfQKZLKBNLas4vL+V2f5+KCroZGDz8knzK1VGhYWRAj64cLWnp
-         w31Bwhl+G8AcACq+B2lkmsv0grGGkTQ5xxftSJp976ySI6VA2oy63k23YYG1gTJNWTaP
-         zful9bIPCHvI5A6+1pLK+pXp9hOXwLO+qh5cnlyUxcbR/kEmuUweUcGhheKNHJ4xrhD1
-         gaCIy1QX5oqLMPcvuH3HQaftjvbZszjg3VrLTO9JAFHEseSSROYF4NbWTCUEiCsZWyWc
-         5jnA==
-X-Gm-Message-State: AOAM530Wb2HrrufB7bmdoWvB3/MHNYZgBL0xD/Cx3phMWo+kB1AH64ET
-        MDyd8CG15T8AvgeM/paccQ==
-X-Google-Smtp-Source: ABdhPJy8CB+owYFlIjx4OeQ8acjoEEhZ2gt1lUZamqU0YdKU0HTcA07RQOmqMgTczHc9zBnIQAp4Iw==
-X-Received: by 2002:a4a:9204:: with SMTP id f4mr152062ooh.87.1635370939410;
-        Wed, 27 Oct 2021 14:42:19 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v22sm520079ott.80.2021.10.27.14.42.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:42:18 -0700 (PDT)
-Received: (nullmailer pid 2219669 invoked by uid 1000);
-        Wed, 27 Oct 2021 21:42:17 -0000
-Date:   Wed, 27 Oct 2021 16:42:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Brad Larson <brad@pensando.io>
-Cc:     arnd@arndb.de, bgolaszewski@baylibre.com,
-        devicetree@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        broonie@kernel.org, olof@lixom.net, linux-gpio@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        fancer.lancer@gmail.com
-Subject: Re: [PATCH v3 05/11] spi: dw: Add Pensando Elba SoC SPI Controller
- bindings
-Message-ID: <YXnHuRi264DkxLML@robh.at.kernel.org>
-References: <20211025015156.33133-1-brad@pensando.io>
- <20211025015156.33133-6-brad@pensando.io>
+        Wed, 27 Oct 2021 17:48:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635371170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PpY3g+kdd2h/bCGlCR7H75yg2a+8geFMUXDx9cFt3tY=;
+        b=It1gUL4BKWNVH8RIvL2BiHfWnzY/Eqkr84sBF7xV4q1rAzjcIhpHRr9SDyQNgU7Ql93NZO
+        O/2beV/TShtt9jBC2ZqALTThoxJ1LfTvnSO1VKQaRrRgzBXUGy7r3yA9++RP8tfU3IQt7h
+        rLJlax7F5EP8nZQPHNIPXxdhS9e6T1k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-423-wtTguOCmM9K5PjTvdJexfA-1; Wed, 27 Oct 2021 17:46:04 -0400
+X-MC-Unique: wtTguOCmM9K5PjTvdJexfA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9204C10A8E00;
+        Wed, 27 Oct 2021 21:46:03 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.34.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C5CBF607CB;
+        Wed, 27 Oct 2021 21:46:00 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 554A7220562; Wed, 27 Oct 2021 17:46:00 -0400 (EDT)
+Date:   Wed, 27 Oct 2021 17:46:00 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: [RFC PATCH 1/7] FUSE: Add the fsnotify opcode and in/out structs
+ to FUSE
+Message-ID: <YXnImHp1QfZYZ1OU@redhat.com>
+References: <20211025204634.2517-1-iangelak@redhat.com>
+ <20211025204634.2517-2-iangelak@redhat.com>
+ <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211025015156.33133-6-brad@pensando.io>
+In-Reply-To: <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Oct 2021 18:51:50 -0700, Brad Larson wrote:
-> The Pensando Elba SoC has integrated the DW APB SPI Controller
+On Tue, Oct 26, 2021 at 05:56:03PM +0300, Amir Goldstein wrote:
+> On Mon, Oct 25, 2021 at 11:47 PM Ioannis Angelakopoulos
+> <iangelak@redhat.com> wrote:
+> >
+> > Since fsnotify is the backend for the inotify subsystem all the backend
+> > code implementation we add is related to fsnotify.
+> >
+> > To support an fsnotify request in FUSE and specifically virtiofs we add a
+> > new opcode for the FSNOTIFY (51) operation request in the "fuse.h" header.
+> >
+> > Also add the "fuse_notify_fsnotify_in" and "fuse_notify_fsnotify_out"
+> > structs that are responsible for passing the fsnotify/inotify related data
+> > to and from the FUSE server.
+> >
+> > Signed-off-by: Ioannis Angelakopoulos <iangelak@redhat.com>
+> > ---
+> >  include/uapi/linux/fuse.h | 23 ++++++++++++++++++++++-
+> >  1 file changed, 22 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+> > index 46838551ea84..418b7fc72417 100644
+> > --- a/include/uapi/linux/fuse.h
+> > +++ b/include/uapi/linux/fuse.h
+> > @@ -186,6 +186,9 @@
+> >   *  - add FUSE_SYNCFS
+> >   *  7.35
+> >   *  - add FUSE_NOTIFY_LOCK
+> > + *  7.36
+> > + *  - add FUSE_HAVE_FSNOTIFY
+> > + *  - add fuse_notify_fsnotify_(in,out)
+> >   */
+> >
+> >  #ifndef _LINUX_FUSE_H
+> > @@ -221,7 +224,7 @@
+> >  #define FUSE_KERNEL_VERSION 7
+> >
+> >  /** Minor version number of this interface */
+> > -#define FUSE_KERNEL_MINOR_VERSION 35
+> > +#define FUSE_KERNEL_MINOR_VERSION 36
+> >
+> >  /** The node ID of the root inode */
+> >  #define FUSE_ROOT_ID 1
+> > @@ -338,6 +341,7 @@ struct fuse_file_lock {
+> >   *                     write/truncate sgid is killed only if file has group
+> >   *                     execute permission. (Same as Linux VFS behavior).
+> >   * FUSE_SETXATTR_EXT:  Server supports extended struct fuse_setxattr_in
+> > + * FUSE_HAVE_FSNOTIFY: remote fsnotify/inotify event subsystem support
+> >   */
+> >  #define FUSE_ASYNC_READ                (1 << 0)
+> >  #define FUSE_POSIX_LOCKS       (1 << 1)
+> > @@ -369,6 +373,7 @@ struct fuse_file_lock {
+> >  #define FUSE_SUBMOUNTS         (1 << 27)
+> >  #define FUSE_HANDLE_KILLPRIV_V2        (1 << 28)
+> >  #define FUSE_SETXATTR_EXT      (1 << 29)
+> > +#define FUSE_HAVE_FSNOTIFY     (1 << 30)
+> >
+> >  /**
+> >   * CUSE INIT request/reply flags
+> > @@ -515,6 +520,7 @@ enum fuse_opcode {
+> >         FUSE_SETUPMAPPING       = 48,
+> >         FUSE_REMOVEMAPPING      = 49,
+> >         FUSE_SYNCFS             = 50,
+> > +       FUSE_FSNOTIFY           = 51,
+> >
+> >         /* CUSE specific operations */
+> >         CUSE_INIT               = 4096,
+> > @@ -532,6 +538,7 @@ enum fuse_notify_code {
+> >         FUSE_NOTIFY_RETRIEVE = 5,
+> >         FUSE_NOTIFY_DELETE = 6,
+> >         FUSE_NOTIFY_LOCK = 7,
+> > +       FUSE_NOTIFY_FSNOTIFY = 8,
+> >         FUSE_NOTIFY_CODE_MAX,
+> >  };
+> >
+> > @@ -571,6 +578,20 @@ struct fuse_getattr_in {
+> >         uint64_t        fh;
+> >  };
+> >
+> > +struct fuse_notify_fsnotify_out {
+> > +       uint64_t inode;
 > 
-> Signed-off-by: Brad Larson <brad@pensando.io>
-> ---
->  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+> 64bit inode is not a good unique identifier of the object.
 
-Acked-by: Rob Herring <robh@kernel.org>
+I think he wants to store 64bit nodeid (internal to fuse so that client
+and server can figure out which inode they are talking about). But I 
+think you are concerned about what happens if an event arrived for an
+inode after inode has been released and nodeid possibly used for some
+other inode. And then we will find that new inode in guest cache and
+end up associating event with wrong inode.
+
+Generation number will help in the sense that server has a chance
+to always update generation number on lookup. So even if nodeid
+is reused, generation number will make make sure we don't end
+up associating this event with reused node id inode. I guess
+makes sense.
+
+> you need to either include the generation in object identifier
+> or much better use the object's nfs file handle, the same way
+> that fanotify stores object identifiers.
+
+I think nfs file handle is much more complicated and its a separate
+project altogether. I am assuming we are talking about persistent
+nfs file handle as generated by host. I think biggest issue we faced
+with that is that guest is untrusted and we don't want to resolve
+file handle provided by guest on host otherwise guest can craft
+file handles and possibly be able to open other files on same filesystem
+outside shared dir. 
+
+> 
+> > +       uint64_t mask;
+> > +       uint32_t namelen;
+> > +       uint32_t cookie;
+> 
+> I object to persisting with the two-events-joined-by-cookie design.
+> Any new design should include a single event for rename
+> with information about src and dst.
+> 
+> I know this is inconvenient, but we are NOT going to create a "remote inotify"
+> interface, we need to create a "remote fsnotify" interface and if server wants
+> to use inotify, it will need to join the disjoined MOVE_FROM/TO event into
+> a single "remote event", that FUSE will use to call fsnotify_move().
+
+man inotify says following.
+
+"       Matching up the IN_MOVED_FROM and IN_MOVED_TO event pair  generated  by
+       rename(2)  is thus inherently racy.  (Don't forget that if an object is
+       renamed outside of a monitored directory, there  may  not  even  be  an
+       IN_MOVED_TO  event.)"
+
+So if guest is no monitoring target dir of renamed file, then we will not
+even get IN_MOVED_TO. In that case we can't merge two events into one.
+
+And this sounds like inotify/fanotify interface needs to come up with
+an merged event and in that case remote filesystem will simply propagate
+that event. (Instead of coming up with a new event only for remote
+filesystems. Sounds like this is not a problem limited to remote
+filesystems only).
+
+Thanks
+Vivek
+
