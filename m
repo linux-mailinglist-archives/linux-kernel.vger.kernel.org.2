@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C7F43CFD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C709E43CFC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243309AbhJ0RgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:36:12 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:54126 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243307AbhJ0RgL (ORCPT
+        id S236974AbhJ0RfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhJ0RfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:36:11 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RFo9Xx011395;
-        Wed, 27 Oct 2021 10:33:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=L+NlKhelSvgM9MtD5+jKKXS80K0DFKDQ+yOpHQYMv3w=;
- b=eRnPz1c1fYh35uwnSGq3w30mueypok3Rf5y6pg0cUNCOVLJ9M/xvWKwR7bo2cGC6qrqR
- +tAcBfsDXEnG0DQ+9BkDR85H7GqpHbypYTCeqh+vhg/zUnRUkvvb5U2LpNvPTsvdJoUZ
- /AAk7XCoRFJOzTXCgZAllR0uSbQJRp2SPrKpsE/Kv+1sq01Y+lX6UBsCYteHTar0IbmX
- 7RLxGWWUTtVhYjYT0zA/0awvnJibzrR7JL5QB/rX0IF3qQB7fAQIuvCtWWY+1IMfyU0p
- TGvGjw0o//14UXrc9GCHObecShmVPM0NYpCNTaukGtRfigWkmVdHxrs0kmTt9Bf/5QQy Dw== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3by9rtrfmp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 10:33:44 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct
- 2021 10:33:43 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Wed, 27 Oct 2021 10:33:43 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 39CA33F709D;
-        Wed, 27 Oct 2021 10:33:37 -0700 (PDT)
-From:   Rakesh Babu Saladi <rsaladi2@marvell.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        Rakesh Babu Saladi <rsaladi2@marvell.com>
-Subject: [net PATCH v3 3/3] octeontx2-af: Fix possible null pointer dereference.
-Date:   Wed, 27 Oct 2021 23:02:34 +0530
-Message-ID: <20211027173234.23559-4-rsaladi2@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211027173234.23559-1-rsaladi2@marvell.com>
-References: <20211027173234.23559-1-rsaladi2@marvell.com>
+        Wed, 27 Oct 2021 13:35:22 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F4CC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:32:56 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id r4so13054243edi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:32:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XuOlL+WlhxFREjULrbNCzcikysHZz3+YPdS+RvWZfUo=;
+        b=c4KKAVWMDFDHdzGcuWzrk10Xnrm2SRrpxNNb/S2HmpT+FywEuTMooMePKQ0AjuXPs/
+         /cM5Yg/FIowQgbY51NlN2jfvG7tDHsf8Xnm8W6LMVDe/u81UQR5SIi+X83Xk7WxvUEie
+         x8Ye3JJNmsZIsJN+xaM6SaAs0ivtBkcFxQCXlJ4ehELzn2eSfRTlMBilLwIdT9tY4X5K
+         SJGcOUxtWcAi4lwoOFFiR4glQRpkxedUFTDj9tcYyT7DPsv2q1IpR3gGMDIerQKrD2w2
+         m/mOwW/xImz1Z6lTgs2qN4MUNPmTpisuBa0stfHs3+WehK57x5v5gGF/kvfLV2MvCbWX
+         sGyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XuOlL+WlhxFREjULrbNCzcikysHZz3+YPdS+RvWZfUo=;
+        b=LCTYqBjcjvm7gv9437rzX9jjciQpMtRvS8M5Tu5P+LmK5MUnpDxv7fZVXyinXo6Dny
+         VDblDoCW6elLYRFRBY3MmC3oT6vZ7qaTgid2BYmIgSyuYHIzi3DkykIx+aKbn1Y6m5Wt
+         YhGU920wLzhm8wfUVqN0RtIEagOcxoXKH6TBmrERfzgSKLwxI7TZ++CXMQ7zvVSqDg0f
+         mC03L1stQnq2MHsNGsjyhjU7j3QvrdcinHbphxjG6jjMS0Hbvx1i3ddkQaOUziVcQaeA
+         oTWXPqYbxCYgmEx8kcLOevAFi2aqM73kb+CDaDRdmkFRgIoMci/PNv+TDoClNV+E8eCa
+         gmsA==
+X-Gm-Message-State: AOAM533j4fTNhOLSCocr1eGlOx4YMGyOA97wNlSznZNuxL14elh4o8+9
+        sHla92UsblDrh0pBGuI5BE4bWR6mNCTEAcYsFg/wmaMvGf4=
+X-Google-Smtp-Source: ABdhPJwMYvuaNNgqFocoQJYPD33Ldz/Pq6TA+N37frKX/f379Ky8+VSiqUf+I6Ba2Qi7OOx9YtrDa9NzHrGVxBey4wM=
+X-Received: by 2002:a50:da4e:: with SMTP id a14mr46853368edk.154.1635355975260;
+ Wed, 27 Oct 2021 10:32:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: DDBBY3navrn6Zsz_sjhrZpoNeHl5u3G4
-X-Proofpoint-GUID: DDBBY3navrn6Zsz_sjhrZpoNeHl5u3G4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_05,2021-10-26_01,2020-04-07_01
+References: <20211026195545.3951306-1-mathieu.poirier@linaro.org> <YXj2trHe8XA0QtFO@kroah.com>
+In-Reply-To: <YXj2trHe8XA0QtFO@kroah.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Wed, 27 Oct 2021 11:32:43 -0600
+Message-ID: <CANLsYkwcUbV-kX3yZt6K0rK9PBUpkW=fp2_Y5Bd3+fCgxZr4EA@mail.gmail.com>
+Subject: Re: [GIT PULL v2] Coresight changes for v5.16
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes possible null pointer dereference in files
-"rvu_debugfs.c" and "rvu_nix.c"
+On Wed, 27 Oct 2021 at 00:50, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Oct 26, 2021 at 01:55:45PM -0600, Mathieu Poirier wrote:
+> > The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
+> >
+> >   Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
+> >
+> > are available in the Git repository at:
+> >
+> >   git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git tags/coresight-next-v5.16
+>
+> Better but I get the following errors when my scripts try to merge them.
+> Note, the linux-next scripts will give you the same complaint, so this
+> isn't a new thing:
 
-Fixes: 8756828a8148 ("octeontx2-af: Add NPA aura and pool contexts to debugfs")
-Fixes: 9a946def264d ("octeontx2-af: Modify nix_vtag_cfg mailbox to support TX VTAG entries")
-Signed-off-by: Rakesh Babu Saladi <rsaladi2@marvell.com>
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c | 2 +-
- drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c     | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+Can you point me to the linux-next script you are referring to above?
+Usually when that happens I get an email but this time I didn't get
+anything.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index c7e12464c243..49d822a98ada 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -578,7 +578,7 @@ static ssize_t rvu_dbg_qsize_write(struct file *filp,
- 	if (cmd_buf)
- 		ret = -EINVAL;
- 
--	if (!strncmp(subtoken, "help", 4) || ret < 0) {
-+	if (ret < 0 || !strncmp(subtoken, "help", 4)) {
- 		dev_info(rvu->dev, "Use echo <%s-lf > qsize\n", blk_string);
- 		goto qsize_write_done;
- 	}
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-index 9ef4e942e31e..6970540dc470 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -2507,6 +2507,9 @@ static void nix_free_tx_vtag_entries(struct rvu *rvu, u16 pcifunc)
- 		return;
- 
- 	nix_hw = get_nix_hw(rvu->hw, blkaddr);
-+	if (!nix_hw)
-+		return;
-+
- 	vlan = &nix_hw->txvlan;
- 
- 	mutex_lock(&vlan->rsrc_lock);
--- 
-2.17.1
+>
+> Commit 6871138a7ab9 ("coresight: etm4x: Add ETM PID for Kryo-5XX")
+>         committer Signed-off-by missing
+>         author email:    quic_taozha@quicinc.com
+>         committer email: mathieu.poirier@linaro.org
+>         Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> Commit 202d403ae3a9 ("coresight: Don't immediately close events that are run on invalid CPU/sink combos")
+>         committer Signed-off-by missing
+>         author email:    james.clark@arm.com
+>         committer email: mathieu.poirier@linaro.org
+>         Signed-off-by: James Clark <james.clark@arm.com>
+>         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> Commit ef095e61dc8f ("coresight: Update comments for removing cs_etm_find_snapshot()")
+>         committer Signed-off-by missing
+>         author email:    leo.yan@linaro.org
+>         committer email: mathieu.poirier@linaro.org
+>         Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> Commit 7be15eef996f ("coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer")
+>         committer Signed-off-by missing
+>         author email:    leo.yan@linaro.org
+>         committer email: mathieu.poirier@linaro.org
+>         Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> Commit 60067d5ab339 ("coresight: tmc-etf: Add comment for store ordering")
+>         committer Signed-off-by missing
+>         author email:    leo.yan@linaro.org
+>         committer email: mathieu.poirier@linaro.org
+>         Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> Commit 7c202525ff8c ("coresight: tmc-etr: Add barrier after updating AUX ring buffer")
+>         committer Signed-off-by missing
+>         author email:    leo.yan@linaro.org
+>         committer email: mathieu.poirier@linaro.org
+>         Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> Errors in tree with Signed-off-by, please fix!
+>
+>
+> Is there some reason you are committing changes to your tree and not signing
+> off on them?  That's not really a good idea :(
+>
 
+Not sure why sarcasm is required here - simply pointing out the
+problem would have been sufficient.
+
+These patches were committed by Suzuki who co-maintains the subsystem
+with me.  The committer information likely got transferred when I
+cherry-picked the patches when putting the pull request together.
+
+> thanks,
+>
+> greg k-h
