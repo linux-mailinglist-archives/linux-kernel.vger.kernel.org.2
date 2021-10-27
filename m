@@ -2,121 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B517543D727
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F1143D72A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhJ0XIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:08:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35521 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230080AbhJ0XIP (ORCPT
+        id S230178AbhJ0XIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229987AbhJ0XIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:08:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635375949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fSEXEHxW0XKJ3A0RuRyJ3sw6tXP96RKh+PO7m5ry7Bs=;
-        b=R7LPsrqNqhzlYxxwwFk8C3/PNv1VU7ulKfY1WanzXggOnerZKysHYLKV5jIo9GTz1yXR2P
-        EjkOaWBUgnk7/s4KHlbF0Gh9bi3QTubZ4d5Ir0yrOySaPYTqj5FE9qViPPdLGDVgzp1KaB
-        wejPn0ZVtVz+r/5YZ6MWdwsmOuUtamQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-41idCAuGM4-fWbQACjNl8A-1; Wed, 27 Oct 2021 19:05:46 -0400
-X-MC-Unique: 41idCAuGM4-fWbQACjNl8A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 257C88026AD;
-        Wed, 27 Oct 2021 23:05:44 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.22.9.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E9FB15C1C5;
-        Wed, 27 Oct 2021 23:05:36 +0000 (UTC)
-Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20211018143619.205065-1-longman@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-Message-ID: <55402d20-c23e-bb56-6a7a-6e208c08280a@redhat.com>
-Date:   Wed, 27 Oct 2021 19:05:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211018143619.205065-1-longman@redhat.com>
+        Wed, 27 Oct 2021 19:08:51 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C48C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:06:25 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id h193so4501984pgc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qq3Zte+b3gvW8aVUSoj11hufNXWtcNy5WKvRt4opsbo=;
+        b=7y5UZL3rxbZp4tvqsYjA0PSihfwGo2dxmv9dANT4KDkwtKlsd4EoZH5BgFjkxWwrJE
+         2/gCrvWOjjaEVpOr6/JrF6H+ZzfKQox2Vg9ZHvu9PXip1qdGjyF8mUGSQEqhxy/YUnBa
+         IrpRZJuZPA/8znNDIcvJBYFnlOS8M6mdo1HVcNspkw2G737P6sBVl923LGfWRi2k1/OK
+         jQfkqKacsO5o+iNweytFnLyVs6V9iBR3RnJ6zjCInvvzrw4SAFPkJ2VIpeLXj1Yc5ome
+         Tp6cF3kgiluFW/TayK9FlC+IsK/GJwSP9fnxFwx97BTeLHMDp1HvQAch5PPeqqY/cv6M
+         ImcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=qq3Zte+b3gvW8aVUSoj11hufNXWtcNy5WKvRt4opsbo=;
+        b=UxmUlrnHiairgiHHQoKISulUpbFCXnMK8N5SKIX+Z59tFoxAbM7SlIoNV0EXAyPwlO
+         UnhbHKa7yk2RlSXLaBWKZgwiUhCTklGj04lAjy9RFlDCOT/lLZQs9MFLEM03FMRsrb8h
+         nce2cbfqVXMv3osE1a19TE0zgS6XVFMCiHKXrO+qbNjSek3GXepUiT7O9BnEX12gXHGN
+         PwnwgQsI4mToYB1kpWG13eXasfnADrwiicOhzCoTrf6c9zWXqlBTeE2bxbaeZbSkzYZV
+         6ZMFvAapFYeiDO3eU60hSvbEf+RdyperKgHnpA72mmwEU5hlYAWIj6EhOsK3lgbzTYi4
+         WwbQ==
+X-Gm-Message-State: AOAM531uHAzFlz0MhAW4kPQLyWac1hwwLHykG4VrAB+yNU2O9rmFPMx6
+        SyjiMcRhbG9e5yKBcBt25vMm3g==
+X-Google-Smtp-Source: ABdhPJyEhOalg4/dY/3KpRqiR/tNPNHZi5ofV+HXu1SYzAcPhIDj9GCXCztUYI7qBkfpEe/S5DxTVQ==
+X-Received: by 2002:a63:84c6:: with SMTP id k189mr479739pgd.245.1635375984652;
+        Wed, 27 Oct 2021 16:06:24 -0700 (PDT)
+Received: from localhost ([2620:0:1000:5e10:60fc:a50:6d27:9fd3])
+        by smtp.gmail.com with ESMTPSA id j1sm751742pgb.5.2021.10.27.16.06.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 16:06:24 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 16:06:24 -0700 (PDT)
+X-Google-Original-Date: Wed, 27 Oct 2021 16:06:21 PDT (-0700)
+Subject:     Re: [PATCH 1/2] riscv: Fix asan-stack clang build
+In-Reply-To: <20211027045843.1770770-1-alexandre.ghiti@canonical.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        alexandre.ghiti@canonical.com, nathan@kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alexandre.ghiti@canonical.com
+Message-ID: <mhng-41b64d3e-5a5a-4d59-86fc-80f2148823e8@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 10:36 AM, Waiman Long wrote:
-> v8:
->   - Reorganize the patch series and rationalize the features and
->     constraints of a partition.
->   - Update patch descriptions and documentation accordingly.
+On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+> Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
+> Kconfig, it prevents asan-stack from getting disabled with clang even
+> when CONFIG_KASAN_STACK is disabled: fix this by defining the
+> corresponding config.
 >
-> v7:
->   - Simplify the documentation patch (patch 5) as suggested by Tejun.
->   - Fix a typo in patch 2 and improper commit log in patch 3.
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+> ---
+>  arch/riscv/Kconfig             | 6 ++++++
+>  arch/riscv/include/asm/kasan.h | 3 +--
+>  arch/riscv/mm/kasan_init.c     | 3 +++
+>  3 files changed, 10 insertions(+), 2 deletions(-)
 >
-> v6:
->   - Remove duplicated tmpmask from update_prstate() which should fix the
->     frame size too large problem reported by kernel test robot.
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index c1abbc876e5b..79250b1ed54e 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -162,6 +162,12 @@ config PAGE_OFFSET
+>  	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+>  	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
 >
-> This patchset makes four enhancements to the cpuset v2 code.
->
->   Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
->
->   Patch 2: Refining the features and constraints of a cpuset partition
->   clarifying what changes are allowed.
->
->   Patch 3: Add a new partition state "isolated" to create a partition
->   root without load balancing. This is for handling intermitten workloads
->   that have a strict low latency requirement.
->
->   Patch 4: Enable the "cpuset.cpus.partition" file to show the reason
->   that causes invalid partition like "root invalid (No cpu available
->   due to hotplug)".
->
-> Patch 5 updates the cgroup-v2.rst file accordingly. Patch 6 adds a new
-> cpuset test to test the new cpuset partition code.
->
-> Waiman Long (6):
->    cgroup/cpuset: Allow no-task partition to have empty
->      cpuset.cpus.effective
->    cgroup/cpuset: Refining features and constraints of a partition
->    cgroup/cpuset: Add a new isolated cpus.partition type
->    cgroup/cpuset: Show invalid partition reason string
->    cgroup/cpuset: Update description of cpuset.cpus.partition in
->      cgroup-v2.rst
->    kselftest/cgroup: Add cpuset v2 partition root state test
->
->   Documentation/admin-guide/cgroup-v2.rst       | 153 ++--
->   kernel/cgroup/cpuset.c                        | 393 +++++++----
->   tools/testing/selftests/cgroup/Makefile       |   5 +-
->   .../selftests/cgroup/test_cpuset_prs.sh       | 664 ++++++++++++++++++
->   tools/testing/selftests/cgroup/wait_inotify.c |  87 +++
->   5 files changed, 1115 insertions(+), 187 deletions(-)
->   create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
->   create mode 100644 tools/testing/selftests/cgroup/wait_inotify.c
+> +config KASAN_SHADOW_OFFSET
+> +	hex
+> +	depends on KASAN_GENERIC
+> +	default 0xdfffffc800000000 if 64BIT
+> +	default 0xffffffff if 32BIT
 
-Any feedback on this patch series?
+I thought I posted this somewhere, but this is exactly what my first 
+guess was.  The problem is that it's hanging on boot for me.  I don't 
+really have anything exotic going on, it's just a defconfig with 
+CONFIG_KASAN=y running in QEMU.
 
-Thanks,
-Longman
+Does this boot for you?
 
+> +
+>  config ARCH_FLATMEM_ENABLE
+>  	def_bool !NUMA
+>
+> diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
+> index a2b3d9cdbc86..b00f503ec124 100644
+> --- a/arch/riscv/include/asm/kasan.h
+> +++ b/arch/riscv/include/asm/kasan.h
+> @@ -30,8 +30,7 @@
+>  #define KASAN_SHADOW_SIZE	(UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
+>  #define KASAN_SHADOW_START	KERN_VIRT_START
+>  #define KASAN_SHADOW_END	(KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
+> -#define KASAN_SHADOW_OFFSET	(KASAN_SHADOW_END - (1ULL << \
+> -					(64 - KASAN_SHADOW_SCALE_SHIFT)))
+> +#define KASAN_SHADOW_OFFSET	_AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+>
+>  void kasan_init(void);
+>  asmlinkage void kasan_early_init(void);
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index d7189c8714a9..8175e98b9073 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
+>  	uintptr_t i;
+>  	pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
+>
+> +	BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
+> +		KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
+> +
+>  	for (i = 0; i < PTRS_PER_PTE; ++i)
+>  		set_pte(kasan_early_shadow_pte + i,
+>  			mk_pte(virt_to_page(kasan_early_shadow_page),
