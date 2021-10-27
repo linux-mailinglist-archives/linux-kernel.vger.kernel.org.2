@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE39443CF7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E483043CF7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243174AbhJ0RMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:12:22 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:54286 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhJ0RMR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:12:17 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 53458F4076F; Wed, 27 Oct 2021 19:09:50 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 19:09:49 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        rw-r-r-0644 <r.r.qwertyuiop.r.r@gmail.com>,
-        Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH] rtc: nintendo: Add a RTC driver for the GameCube, Wii
- and Wii U
-Message-ID: <20211027170949.kaalftusbukhwzq3@luna>
-Jabber-ID: linkmauve@linkmauve.fr
-References: <20211014220524.9988-1-linkmauve@linkmauve.fr>
- <YXmCQnJTujtak+Qy@piout.net>
- <20211027170527.za6xlwvmzmulgqoa@luna>
+        id S243197AbhJ0RN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:13:59 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43052 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243191AbhJ0RN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:13:57 -0400
+Received: from zn.tnic (p200300ec2f161500c684d7dcfa146303.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1500:c684:d7dc:fa14:6303])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C90DF1EC05C4;
+        Wed, 27 Oct 2021 19:11:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635354690;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=wRvDnISiSsKN1BSrMx8qv/icMew8LYCnI9QO3WNbOC4=;
+        b=I1fygnzMThGiGetuYBJaTCszYYBPQIMkImlNcNtMYGmZZH0n4yl04XeRvhY1nvAKu1BuoP
+        tifuEBoIS1DaeNHq9BUPc6NVyVXrptnUvcXqH8nXlNfV/69xGAIB4QBhQsh8hvtndclktH
+        tqG1sZZBYO5AxYpulEqUVG1l46761kE=
+Date:   Wed, 27 Oct 2021 19:11:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, luto@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] x86/xstate: Make AVX512 status tracking more
+ accurate
+Message-ID: <YXmIP2EPg12N7foP@zn.tnic>
+References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
+ <20211027162615.1989004-1-goldstein.w.n@gmail.com>
+ <20211027162615.1989004-2-goldstein.w.n@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="d7jl2ukwggmnu2gg"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211027170527.za6xlwvmzmulgqoa@luna>
+In-Reply-To: <20211027162615.1989004-2-goldstein.w.n@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 27, 2021 at 11:26:15AM -0500, Noah Goldstein wrote:
+> diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
+> index f5a38a5f3ae1..cb10909fa3da 100644
+> --- a/arch/x86/include/asm/fpu/types.h
+> +++ b/arch/x86/include/asm/fpu/types.h
+> @@ -330,11 +330,21 @@ struct fpu {
+>  	unsigned int			last_cpu;
+>  
+>  	/*
+> -	 * @avx512_timestamp:
+> +	 * @avx512_ZMM_Hi256_timestamp:
+>  	 *
+> -	 * Records the timestamp of AVX512 use during last context switch.
+> +	 * Records the timestamp of AVX512 use in the ZMM_Hi256 xfeature
+> +	 * set. This include zmm0...zmm15.
+>  	 */
+> -	unsigned long			avx512_timestamp;
+> +	unsigned long			avx512_ZMM_Hi256_timestamp;
+> +
+> +	/*
+> +	 * @avx512_Hi16_ZMM_timestamp:
+> +	 *
+> +	 * Records the timestamp of AVX512 use in the Hi16_ZMM xfeature
+> +	 * set. This includes usage of any of the hi16 xmm, ymm, or zmm
+> +	 * registers.
+> +	 */
+> +	unsigned long			avx512_Hi16_ZMM_timestamp;
 
---d7jl2ukwggmnu2gg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No, not more of this but less.
 
-On Wed, Oct 27, 2021 at 07:05:27PM +0200, Emmanuel Gil Peyrot wrote:
-> On Wed, Oct 27, 2021 at 06:45:54PM +0200, Alexandre Belloni wrote:
-[=E2=80=A6]
-> > >  drivers/rtc/rtc-nintendo.c | 305 +++++++++++++++++++++++++++++++++++=
-++
-> >=20
-> > I'm not convinced this is a good name, seeing that the switch will
-> > certainly not use this driver (neither is the snes mini).
->=20
-> Other subsystem maintainers have requested this to be changed, so I
-> reflected it here too.  For instance hid requested a Wii=C2=A0U-specific
-> driver to be merged with the Switch one.
->=20
-> Would rtc-gamecube be fine then?  So far I have only tested on Wii=C2=A0U,
-> but this driver is expected to support all three generations of
-> GameCube, Wii and Wii=C2=A0U.
->=20
+That was a bad idea to begin with as exposing this to userspace would
+cause exactly this: but but, I need to track my special use case more
+precisely.
 
-Another thing to note is that the Switch would be a Nvidia platform, and
-the NES Mini an Allwinner platform.  This would leave the DS/DSi/3DS to
-be a custom SoC with their own RTC implementation different from this
-one.
+But the feature mask can't give you that precision so it'll be only an
+approximation no matter what you do.
 
---=20
-Emmanuel Gil Peyrot
+And I'm being told future cores won't have this "problem" so on them
+that file becomes actively misleading.
 
---d7jl2ukwggmnu2gg
-Content-Type: application/pgp-signature; name="signature.asc"
+If you really wanna track performance drop precisely or AVX use or
+whatnot, there's performance counters for that which can give you
+exactly what you wanna know.
 
------BEGIN PGP SIGNATURE-----
+So I'll take a simple patch carving out that into a function and which
+removes the opmask and otherwise let that thing die. And on future cores
+which are not affected, that thing will report only 0 anyway.
 
-iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmF5h90ACgkQOWgfYkb2
-LpBnrQf/WxHZRnVbc+R68ha+65o4XEfkVbLJK+jJQMFntI9dRroTzLCT2CxIa/tK
-o1NU13YdVQagWAujor3uznAQdxPgNloG0B+bwpU2VF4P/3Cczch/rg9vLHak0ILn
-7gV8r5JD3KYrnJEzxFEowHMip/DrR+wGjVkcTCQKEgouvN0bigE7NJaZB2eJLmGe
-SKdgv0IpREvgHs9XNMKcdNHOXVK7ouoqKmwxh2qKKX5GfhO00uSIybLzO1jDrXR+
-4m597A/ROiNY+K9kTMCyhiHpLpYToGSeP0r8+hRPzIBD7UPtMQ4ISuIdpEq95hOj
-pb+RIxjxk6iSQKFv1H8soKZxjDE/ew==
-=FuBV
------END PGP SIGNATURE-----
+Thx.
 
---d7jl2ukwggmnu2gg--
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
