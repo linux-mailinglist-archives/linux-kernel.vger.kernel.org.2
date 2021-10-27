@@ -2,70 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE81A43CCB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F0543CCBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242497AbhJ0Ov5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230406AbhJ0Ovy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:51:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF41C60EDF;
-        Wed, 27 Oct 2021 14:49:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635346168;
-        bh=rkdpGsPtgaMRwYC4OAq4kL/RZZMCGxrm7Vs+XCO5Lh4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gmx96FEVG67Xaiv2oOjpavozw0grFh07hy4GDJJeOernma3rTQSmGmafUpc2fnbSW
-         r+EQtKT1wa7AO47NJusMOvK7DAFkJykCGuNgm73UuO46pXm9QSoS4hD3DIqLGNdhc2
-         6Ec5MAfUqqzX8TTL6SHQ2cwzK2WUQ6UBFs4RuIttgF46qUpawlHOoLj5EGNMLIFAvu
-         T0ZqpKe9cgWXtTASNSH35uQE2zrmibuHcPv/MIYMZ9nsx1iH3GwbatW1Vxn/AWA9wV
-         KWrFa9+iOjx389yCWDMwzd7NBtgf+1DruqMVsIc6Z0h9Pmja/B+uAnQKpXs1JrIwWU
-         LIgJoUpJ14Ydw==
-Date:   Wed, 27 Oct 2021 23:49:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bootconfig: Fix to initialize 'ret' local variable
-Message-Id: <20211027234926.c5660ecfb09dd0958c3f60d0@kernel.org>
-In-Reply-To: <20211027101909.7dde903e@gandalf.local.home>
-References: <163534286875.793799.13298849524607405594.stgit@devnote2>
-        <20211027100126.58769bf9@gandalf.local.home>
-        <20211027231646.cf5333aa08f70fe7f167e4d5@kernel.org>
-        <20211027101909.7dde903e@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S242545AbhJ0Oxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:53:41 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:60064 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhJ0OxN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:53:13 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4HfWp413gwz1rk5Y;
+        Wed, 27 Oct 2021 16:50:36 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4HfWp4017Qz1qqkD;
+        Wed, 27 Oct 2021 16:50:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id mvw_Vf1g8ae4; Wed, 27 Oct 2021 16:50:34 +0200 (CEST)
+X-Auth-Info: uyeUEsOYKs8g0PlgbxUncJma1HMUm74E4sgRZWggIapnCF9LPFgALkqIfuqoYU9Q
+Received: from igel.home (ppp-46-244-163-205.dynamic.mnet-online.de [46.244.163.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Wed, 27 Oct 2021 16:50:34 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id C36B92C28AC; Wed, 27 Oct 2021 16:50:33 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Saleem Abdulrasool <abdulras@google.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3] riscv: explicitly use symbol offsets for VDSO
+References: <20210804173214.1027994-1-abdulras@google.com>
+X-Yow:  I've got to get these SNACK CAKES to NEWARK by DAWN!!
+Date:   Wed, 27 Oct 2021 16:50:33 +0200
+In-Reply-To: <20210804173214.1027994-1-abdulras@google.com> (Saleem
+        Abdulrasool's message of "Wed, 4 Aug 2021 17:32:14 +0000")
+Message-ID: <874k92a5dy.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 10:19:09 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Aug 04 2021, Saleem Abdulrasool wrote:
 
-> On Wed, 27 Oct 2021 23:16:46 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > > 
-> > > I'm fine taking yours instead. But I'd like to update the text explaining
-> > > how the ret can be uninitialized and what happens if we set it to zero.  
-> > 
-> > Yeah, I'm also good for both, but the Fixes tag must be updated.
-> 
-> OK, I'll take mine then and update the fixes tag. Care to reply with a
-> Reviewed-by tag?
+> The current implementation of the `__rt_sigaction` reference computed an
+> absolute offset relative to the mapped base of the VDSO.  While this can
+> be handled in the medlow model, the medany model cannot handle this as
+> it is meant to be position independent.  The current implementation
+> relied on the BFD linker relaxing the PC-relative relocation into an
+> absolute relocation as it was a near-zero address allowing it to be
+> referenced relative to `zero`.
+>
+> We now extract the offsets and create a generated header allowing the
+> build with LLVM and lld to succeed as we no longer depend on the linker
+> rewriting address references near zero.  This change was largely
+> modelled after the ARM64 target which does something similar.
+>
+> Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
 
-Yes, sure, I sent it:)
+I think this broke out-of-tree module builds.
 
-> 
-> Thanks,
-> 
-> -- Steve
-> 
+https://build.opensuse.org/package/live_build_log/openSUSE:Factory:RISCV/rtl8812au/standard/riscv64
 
++ make -j4
+make ARCH=riscv CROSS_COMPILE= -C /usr/src/linux-obj/riscv64/default M=/home/abuild/rpmbuild/BUILD/rtl8812au-5.9.3.2+git20210427.6ef5d8f/obj/default  modules
+make[1]: Entering directory '/usr/src/linux-5.14.14-1-obj/riscv64/default'
+mkdir: cannot create directory 'arch/riscv/kernel': Permission denied
+  LDS     arch/riscv/kernel/vdso/vdso.lds
+  AS      arch/riscv/kernel/vdso/rt_sigreturn.o
+  CC      arch/riscv/kernel/vdso/vgettimeofday.o
+  AS      arch/riscv/kernel/vdso/getcpu.o
+mkdir: cannot create directory 'arch/riscv/kernel': Permission denied
+  LDS     arch/riscv/kernel/vdso/vdso.lds
+  AS      arch/riscv/kernel/vdso/rt_sigreturn.o
+  CC      arch/riscv/kernel/vdso/vgettimeofday.o
+  AS      arch/riscv/kernel/vdso/getcpu.o
+cc1: fatal error: opening output file arch/riscv/kernel/vdso/vdso.lds: No such file or directory
+compilation terminated.
+make[3]: *** [/usr/src/linux-5.14.14-1/scripts/Makefile.build:366: arch/riscv/kernel/vdso/vdso.lds] Error 1
+
+Andreas.
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
