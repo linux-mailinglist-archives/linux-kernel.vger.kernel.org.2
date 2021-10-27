@@ -2,164 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9157443CA6E
+	by mail.lfdr.de (Postfix) with ESMTP id DA7C743CA6F
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242092AbhJ0NUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242074AbhJ0NUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:20:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0450A60F90;
-        Wed, 27 Oct 2021 13:18:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635340686;
-        bh=gYKkav877VAg4ZzNKbkrv8KDnbZA1+6U9iXG52v/XDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IncU+GrwvZHjSItIr1ur5CtmqCwYbIyoLLyeeRu/gFR0krBk+3tFxBc0Y5/smuCBX
-         Trc0/c1Jf1CBLWmTiC/6V4806VFPhguq8vOJ7ORgH7N6kx0DKGx1HBZ8Y0tsZe4ODe
-         mC3HYTau2KPsDZZldOJH4skg2/cS767cKXOu7pvgSYfbNIoUfSh0R0QLNqilMB6IQb
-         sLBKPyrm805GFWNH0mDciYa2cDyLJ2xxfmWWEubj2m84cnf9+Kwjib/3FTsidxtEbB
-         qR07+bCEDXuYoDBzD1bfENyYTBYdjJlPkTfzou77Q+uQbcQ+/B6tQaPTeU/MLMs0kf
-         1McAupDhd/Q2Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mfioQ-0004gB-IB; Wed, 27 Oct 2021 15:17:50 +0200
-Date:   Wed, 27 Oct 2021 15:17:50 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] USB: serial: cp210x: use usb_control_msg_recv()
- and usb_control_msg_send()
-Message-ID: <YXlRfsv6L53ZaaA7@hovoldconsulting.com>
-References: <20211001065720.21330-1-himadrispandya@gmail.com>
- <20211001065720.21330-3-himadrispandya@gmail.com>
+        id S242090AbhJ0NUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:20:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57437 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242081AbhJ0NUg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:20:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635340690;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T0knKn4vlSSXJNLziODRiT1VCKABnqaDy5uuDBcVhuU=;
+        b=R23NAdCrOUN6asoivg6xqFbbZoqmAjEg3mpo97PyQuhxOqMATgi+BQQUi9qnxUmYW9sIzr
+        xlGau06jAsUTiLhyoJ6115l3+R3mePsA6bqiF2nLj10vrJmVv43wtiWFT9aUw2w3s5u8fG
+        oJvz/Am5MDhxmUX5vI0syLe7A8QDRiM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-77DGL579OHCuOSGS4fIKFA-1; Wed, 27 Oct 2021 09:18:06 -0400
+X-MC-Unique: 77DGL579OHCuOSGS4fIKFA-1
+Received: by mail-wm1-f71.google.com with SMTP id z137-20020a1c7e8f000000b0030cd1800d86so1258339wmc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:18:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=T0knKn4vlSSXJNLziODRiT1VCKABnqaDy5uuDBcVhuU=;
+        b=2oRhtk4xswdmgbph7YVUinR9MisEBgjXxccz3AZ8Wg0sY5zIkEvuHTPjzpuKEUiII/
+         xmrq426t1BZQtP7/MAgKxPkwaLg8mtQ1Oej8X/OdLjg3Y/rLzrtCi/LVBTDp8dYdJKg8
+         GtDZQI32uOu4oxcPZo45Rs/OD933NZrw8pmfKc6klSTjC88SW2oEl9gGs4lPZOqiBd89
+         Xpx+MznPQJgnyBaEDQ354dydMyfliDi4ln635chXAE7uhzgsIA0ISXAL2jbKlNH2E4bs
+         kNN1EsmG/wIEdcRLA+J5UHGP2wcNT8OI7P4vQttHl9cT13QP7MiUWkLJDmI1Raqao1A+
+         24qQ==
+X-Gm-Message-State: AOAM533RUuA3HoDL+VkTE0AwhYpZ97u1A+xaOX7pmkDkAaEZZucTkLMg
+        DTyVzMgdeFAKs3F53pFk+64c/z48VVyc0bQfu5Frcvp+DnPWvOx7vkYh/Cm2dkqTbARr/dFqWKF
+        /qBLzgbkHYTJVnkJMJSdCXvTa
+X-Received: by 2002:adf:f904:: with SMTP id b4mr40692308wrr.403.1635340685718;
+        Wed, 27 Oct 2021 06:18:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkN+ouoRwZcIXIo4nO3GPnaT6BwP+6Gy2W0VoJk+RIw7SPLg61t2NykMicE+Lxtab8AZLmqQ==
+X-Received: by 2002:adf:f904:: with SMTP id b4mr40692273wrr.403.1635340685540;
+        Wed, 27 Oct 2021 06:18:05 -0700 (PDT)
+Received: from [192.168.1.128] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id o1sm1872624wrp.95.2021.10.27.06.18.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 06:18:04 -0700 (PDT)
+Message-ID: <76763f5e-8c37-c36a-8f64-af3efe0da254@redhat.com>
+Date:   Wed, 27 Oct 2021 15:18:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001065720.21330-3-himadrispandya@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+Content-Language: en-US
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210927142816.2069269-1-arnd@kernel.org>
+ <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local>
+ <878ryeit9i.fsf@intel.com>
+ <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
+ <3604fb90-f6c3-0fa2-c864-7f1795caee1e@redhat.com> <87zgquhbjx.fsf@intel.com>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <87zgquhbjx.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 08:57:20AM +0200, Himadri Pandya wrote:
-> The new wrapper functions for usb_control_msg() can accept data from
-> stack and treat short reads as error. Hence use the wrappers functions.
-> Please note that because of this change, cp210x_read_reg_block() will no
-> longer log the length of short reads.
+On 10/27/21 14:55, Jani Nikula wrote:
+
+[snip]
+
+>> Why the dependency has to be in a user-visible symbol? What could be the
+>> problem with having something like:
+>>
+>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+>> index cea777ae7fb9..f80b404946ca 100644
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -82,6 +82,7 @@ config DRM_DEBUG_SELFTEST
+>>  config DRM_KMS_HELPER
+>>         tristate
+>>         depends on DRM
+>> +       depends on (DRM_FBDEV_EMULATION && FB) || !DRM_FBDEV_EMULATION
 > 
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
-> Changes in v3:
->  - Rephrase the commit message
->  - Explicitly mention that short reads don't log length now
-> 
-> Changes in v2:
->  - Drop unrelated style fixes
+> To me, this seems like the right solution. Depend on FB if
+> DRM_FBDEV_EMULATION is enabled. That's exactly what the relationship is.
+>
 
-This looks good now, but I did do some minor style changes described
-below.
+The problem as Arnd explained is that then this relationship will have to
+be expressed in all the Kconfig symbols that select DRM_KMS_HELPER.
 
-> ---
->  drivers/usb/serial/cp210x.c | 106 ++++++++++--------------------------
->  1 file changed, 30 insertions(+), 76 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> index 189279869a8b..3c3ca46b0b82 100644
-> --- a/drivers/usb/serial/cp210x.c
-> +++ b/drivers/usb/serial/cp210x.c
-> @@ -631,29 +631,19 @@ static int cp210x_read_reg_block(struct usb_serial_port *port, u8 req,
->  {
->  	struct usb_serial *serial = port->serial;
->  	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
-> -	void *dmabuf;
->  	int result;
->  
-> -	dmabuf = kmalloc(bufsize, GFP_KERNEL);
-> -	if (!dmabuf)
-> -		return -ENOMEM;
->  
-> -	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-> -			req, REQTYPE_INTERFACE_TO_HOST, 0,
-> -			port_priv->bInterfaceNumber, dmabuf, bufsize,
-> -			USB_CTRL_GET_TIMEOUT);
-> -	if (result == bufsize) {
-> -		memcpy(buf, dmabuf, bufsize);
-> -		result = 0;
-> -	} else {
-> +	result = usb_control_msg_recv(serial->dev, 0, req,
-> +				      REQTYPE_INTERFACE_TO_HOST, 0,
-> +				      port_priv->bInterfaceNumber, buf,
-> +				      bufsize, USB_CTRL_SET_TIMEOUT,
-> +				      GFP_KERNEL);
+Otherwise the symbol will happily select the wrong state and even when a
+warning is printed by Kconfig, it will just set an invalid configuration.
 
-The indentation style of this driver is a bit inconsistent but there's
-no need to change to the open-parenthesis alignment style when you can
-avoid it (it's mostly just "checkpacth.pl --subjective" that insists on
-it).
+For example with CONFIG_FB=m (that led to the linker errors if the symbol
+is also not CONFIG_DRM_KMS_HELPER=m) and CONFIG_SIMPLEDRM=y (that selects
+CONFIG_DRM_KMS_HELPER), this would cause the following unmet dependencies:
 
-Indenting continuation lines two tabs is just fine and avoids excessive
-indentation and having to realign arguments when symbol names change.
+$ make prepare modules_prepare
+WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
+  Depends on [m]: HAS_IOMEM [=y] && DRM [=y] && (DRM_FBDEV_EMULATION [=y] && FB [=m] || !DRM_FBDEV_EMULATION [=y])
+  Selected by [y]:
+  - DRM_SIMPLEDRM [=y] && HAS_IOMEM [=y] && DRM [=y]
+  Selected by [m]:
+  - DRM_I915 [=m] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y]
+  - DRM_VIRTIO_GPU [=m] && HAS_IOMEM [=y] && DRM [=y] && VIRTIO_MENU [=y] && MMU [=y]
 
-> +	if (result) {
->  		dev_err(&port->dev, "failed get req 0x%x size %d status: %d\n",
->  				req, bufsize, result);
-> -		if (result >= 0)
-> -			result = -EIO;
->  	}
->  
-> -	kfree(dmabuf);
-> -
->  	return result;
+so CONFIG_DRM_KMS_HELPER will wrongly set to =y which will cause the issue.
 
-I changed this to explicit zero and return an error above instead.
+Best regards,
+-- 
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
-> @@ -952,27 +915,18 @@ static int cp210x_get_tx_queue_byte_count(struct usb_serial_port *port,
->  {
->  	struct usb_serial *serial = port->serial;
->  	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
-> -	struct cp210x_comm_status *sts;
-> +	struct cp210x_comm_status sts;
->  	int result;
->  
-> -	sts = kmalloc(sizeof(*sts), GFP_KERNEL);
-> -	if (!sts)
-> -		return -ENOMEM;
-> -
-> -	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-> -			CP210X_GET_COMM_STATUS, REQTYPE_INTERFACE_TO_HOST,
-> -			0, port_priv->bInterfaceNumber, sts, sizeof(*sts),
-> -			USB_CTRL_GET_TIMEOUT);
-> -	if (result == sizeof(*sts)) {
-> -		*count = le32_to_cpu(sts->ulAmountInOutQueue);
-> -		result = 0;
-> -	} else {
-> +	result = usb_control_msg_recv(serial->dev, 0, CP210X_GET_COMM_STATUS,
-> +				      REQTYPE_INTERFACE_TO_HOST, 0,
-> +				      port_priv->bInterfaceNumber, &sts,
-> +				      sizeof(sts), USB_CTRL_GET_TIMEOUT,
-> +				      GFP_KERNEL);
-> +	if (result == 0)
-> +		*count = le32_to_cpu(sts.ulAmountInOutQueue);
-> +	else
->  		dev_err(&port->dev, "failed to get comm status: %d\n", result);
-> -		if (result >= 0)
-> -			result = -EIO;
-> -	}
-> -
-> -	kfree(sts);
-
-The above is now also better handled with an explicit error check and
-early return and the doing the *count assignment in the success path.
-
->  
->  	return result;
->  }
-
-Now applied with the above changes. The result is here:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/commit/?h=usb-next&id=f5cfbecb0a162319464c9408420282d22ed69721
-
-Johan
