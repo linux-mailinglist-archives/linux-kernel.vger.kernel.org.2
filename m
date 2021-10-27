@@ -2,167 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5961443BEBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E38443BEC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236535AbhJ0BGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59154 "EHLO
+        id S236674AbhJ0BIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbhJ0BGw (ORCPT
+        with ESMTP id S231916AbhJ0BIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 21:06:52 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF752C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:04:27 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g10so3764967edj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rDz/i6IyMh6CO7idWG+/4e+s/eK8ViVHThqmRp1kNZQ=;
-        b=mNkUJb2Y99kLVttKo3d4dZoUgtl+5Bt0KuxH3ZXJ5Ynr10kVpkyfEU6mLZyxXYWXpv
-         cuAaslsqOiCV8D5FZLWgY90IBoBAGKsTu1RQY64Q6bzq2HGA1qPNIEJsdawZePOl6SlK
-         KVpx8DdcBaW2hM/DiQfGAs+87oE3Pg0bGs+8cAjZUs1/94/WlTpduAl0FXASThH8rr+R
-         GBeJ07LbdDMbMc66i/KzYEUsiEcpNUzUqkjZA3mErsoPvw5LOQy+3t36la12qlH2Ifmr
-         wpQz1HyYADWgEEsMNwIfBiwh/OkN1ZxkBZIkoV/N+SCKHwTaivvd45DqWwut1tb9aZGx
-         tg1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rDz/i6IyMh6CO7idWG+/4e+s/eK8ViVHThqmRp1kNZQ=;
-        b=3dgw1SUrpGUeY7R1ylc23dfgaPohZ0cjU7+ZRGgg3I5Oz9Ulyxttdy2FHoeiFvRhdu
-         1NS8f7sGfMmZIydtlUqxiBtqADIdxdTayypNb/76ot8hcwMeMbOwolGV/IGhXRmUgovi
-         aQzP8Bd9NXCHpjkaP4GiV65qVUutHHli341tX9iI4Tm3xmcutp6KzgMKam4Is23HfB9t
-         Ox4J9vDsTP/tdSPJczIa7rqVOew5Q6a+gPx24zCnvGMLwOH1kikSt33fA7N/vU/+dnJM
-         qkUI6ym/nnrsdxqM0aJG8Xw5jD5eAklAZkP0yHnwLajOXFOCWvm2JERh1Yflst3Kn6Id
-         ffNg==
-X-Gm-Message-State: AOAM533Ba28sNLyBDIK6iKJGLcRbQc6Knprm8XAruAwW2fKY30CB3qJB
-        jmzdzKIBaWKsIRqU53A89BoR3KzTyDkLT01vmM8=
-X-Google-Smtp-Source: ABdhPJwWMdtrUfTPamyfGICTc6BTJiO46PSUDvMyp5nAXWPvA1mvU1PY3Jf8sMoaPVusDJen1ABaQcfY69f9jdTVw4w=
-X-Received: by 2002:a17:907:3f83:: with SMTP id hr3mr34783494ejc.555.1635296665941;
- Tue, 26 Oct 2021 18:04:25 -0700 (PDT)
+        Tue, 26 Oct 2021 21:08:06 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F480C061570;
+        Tue, 26 Oct 2021 18:05:42 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hf9VC32cdz4xZ1;
+        Wed, 27 Oct 2021 12:05:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635296739;
+        bh=CCY1wV509qQFuRHJrOFAfSQZUkfQ1ZtYO8PioZA0GbA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=K4XBk/SAltBPTyrrhypP4IfhTic46fyZE/kizSLDU33Fv93cFOuv+H11FtUpDjNd3
+         bEE9+KcYerKDbNroCpIx2QAd6omGPzcSIvID6593eotTcPiuQLkNakI+jVeGDmXD/f
+         IH0hGgqgSbkVobhlKZVSfAgQtABynCRMAETCcx2rY6earXZk2lhfsNi2f6T2B97bek
+         PqvF63y6k+Rc1t4E7IlrAV7+dcEQuede3K6Zdzbyllad8gmOkWwcVYhTscoDxTsFV7
+         J2EztQB4yQxKM1j7F6O9+0Xc5lLZ7Xqms3LFki/BFSrGVrRIOjoTciU0GiSIsuJ72Z
+         zQgShGA6ZZbpg==
+Date:   Wed, 27 Oct 2021 12:05:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Jude Shih <shenshih@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Fangzhi Zuo <Jerry.Zuo@amd.com>, Wayne Lin <Wayne.Lin@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Subject: linux-next: build failures after merge of the amdgpu tree
+Message-ID: <20211027120538.3cb76465@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211025230503.2650970-1-naoya.horiguchi@linux.dev> <20211025230503.2650970-3-naoya.horiguchi@linux.dev>
-In-Reply-To: <20211025230503.2650970-3-naoya.horiguchi@linux.dev>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 26 Oct 2021 18:04:13 -0700
-Message-ID: <CAHbLzkrUb4YcnuXY9MYs+afRCFSfNdTmJAYyqHPxnqrEdFehhA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] mm/hwpoison: remove race consideration
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Ding Hui <dinghui@sangfor.com.cn>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/98ETBO7.+81Wr3AtYHa7lpL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 4:06 PM Naoya Horiguchi
-<naoya.horiguchi@linux.dev> wrote:
->
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
->
-> Now memory_failure() and unpoison_memory() are protected by mf_mutex,
-> so no need to explicitly check races between them.  So remove them.
+--Sig_/98ETBO7.+81Wr3AtYHa7lpL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It seems this patch could be folded into patch #1. Some "unlock_mutex"
-were added by patch #1 then they were removed by this patch
-immediately, it seems a bit of a waste and this patch is actually the
-by-product of patch #1.
+Hi all,
 
->
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> ---
->  mm/memory-failure.c | 37 -------------------------------------
->  1 file changed, 37 deletions(-)
->
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 97297edfbd8e..a47b741ca04b 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1507,14 +1507,6 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
->         lock_page(head);
->         page_flags = head->flags;
->
-> -       if (!PageHWPoison(head)) {
-> -               pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
-> -               num_poisoned_pages_dec();
-> -               unlock_page(head);
-> -               put_page(head);
-> -               return 0;
-> -       }
-> -
->         /*
->          * TODO: hwpoison for pud-sized hugetlb doesn't work right now, so
->          * simply disable it. In order to make it work properly, we need
-> @@ -1789,16 +1781,6 @@ int memory_failure(unsigned long pfn, int flags)
->          */
->         page_flags = p->flags;
->
-> -       /*
-> -        * unpoison always clear PG_hwpoison inside page lock
-> -        */
-> -       if (!PageHWPoison(p)) {
-> -               pr_err("Memory failure: %#lx: just unpoisoned\n", pfn);
-> -               num_poisoned_pages_dec();
-> -               unlock_page(p);
-> -               put_page(p);
-> -               goto unlock_mutex;
-> -       }
->         if (hwpoison_filter(p)) {
->                 if (TestClearPageHWPoison(p))
->                         num_poisoned_pages_dec();
-> @@ -2016,17 +1998,6 @@ int unpoison_memory(unsigned long pfn)
->                 goto unlock_mutex;
->         }
->
-> -       /*
-> -        * unpoison_memory() can encounter thp only when the thp is being
-> -        * worked by memory_failure() and the page lock is not held yet.
-> -        * In such case, we yield to memory_failure() and make unpoison fail.
-> -        */
-> -       if (!PageHuge(page) && PageTransHuge(page)) {
-> -               unpoison_pr_info("Unpoison: Memory failure is now running on %#lx\n",
-> -                                pfn, &unpoison_rs);
-> -               goto unlock_mutex;
-> -       }
-> -
->         if (!get_hwpoison_page(p, flags)) {
->                 if (TestClearPageHWPoison(p))
->                         num_poisoned_pages_dec();
-> @@ -2035,20 +2006,12 @@ int unpoison_memory(unsigned long pfn)
->                 goto unlock_mutex;
->         }
->
-> -       lock_page(page);
-> -       /*
-> -        * This test is racy because PG_hwpoison is set outside of page lock.
-> -        * That's acceptable because that won't trigger kernel panic. Instead,
-> -        * the PG_hwpoison page will be caught and isolated on the entrance to
-> -        * the free buddy page pool.
-> -        */
->         if (TestClearPageHWPoison(page)) {
->                 unpoison_pr_info("Unpoison: Software-unpoisoned page %#lx\n",
->                                  pfn, &unpoison_rs);
->                 num_poisoned_pages_dec();
->                 freeit = 1;
->         }
-> -       unlock_page(page);
->
->         put_page(page);
->         if (freeit && !(pfn == my_zero_pfn(0) && page_count(p) == 1))
-> --
-> 2.25.1
->
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'd=
+m_dmub_hw_init':
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:1111:38: error:=
+ 'struct dc_debug_options' has no member named 'dpia_debug'
+ 1111 |    hw_params.disable_dpia =3D dc->debug.dpia_debug.bits.disable_dpi=
+a;
+      |                                      ^
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'a=
+mdgpu_dm_atomic_check':
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:10728:34: error=
+: unused variable 'mgr' [-Werror=3Dunused-variable]
+10728 |  struct drm_dp_mst_topology_mgr *mgr;
+      |                                  ^~~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:10727:36: error=
+: unused variable 'mst_state' [-Werror=3Dunused-variable]
+10727 |  struct drm_dp_mst_topology_state *mst_state;
+      |                                    ^~~~~~~~~
+cc1: all warnings being treated as errors
+
+Caused by commits
+
+  df91b2adc24a ("drm/amd/display: Add DP 2.0 MST DM Support")
+  707021dc0e16 ("drm/amd/display: Enable dpia in dmub only for DCN31 B0")
+
+CONFIG_DRM_AMD_DC_DCN is not set for this build.
+
+I have used the amdgpu tree frm next-20211026 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/98ETBO7.+81Wr3AtYHa7lpL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF4peIACgkQAVBC80lX
+0GyZowf/WME9hXOdhAJmYF+P8NfejK4lf40+cxLAlm9L1BK9G34m8i/YceTFMvpM
+/XzPgTDspTQysQkLR8WUCPdnHZkK+LJ2Bw5vm7E905DNBrY5GN0OK4XTOWY3AGcm
+HVANvT7nyV66oT1jSuhBtx3aTizC/V7uzfETkRLcVr9RjYiBZKrtqurQCDiNpcJd
+D1zOPspIHrO2G0saViYytT2jDNyeLXk73RM1IKTlpDxfHx3rew7kqNTNWKTWveV/
+tiZ/RmfX1q/dKrd6GjFebfMFexNrK7e9WXtzoiqfy06aDS/K7qgH5JDBGmFwYlwo
+GsLsiCDbMWhxsuPl5TVTSQHCNB6Tzw==
+=Wg2M
+-----END PGP SIGNATURE-----
+
+--Sig_/98ETBO7.+81Wr3AtYHa7lpL--
