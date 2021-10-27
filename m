@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A957D43D0D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7D043D0D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243574AbhJ0Sgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        id S243590AbhJ0Shf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237117AbhJ0Sgo (ORCPT
+        with ESMTP id S243575AbhJ0ShT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:36:44 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5449CC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:34:18 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u5so6220596ljo.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:34:18 -0700 (PDT)
+        Wed, 27 Oct 2021 14:37:19 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4D2C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:34:53 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id g184so3782104pgc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:34:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oMasC2rgckEWdCe4DVz6in+O9oEmCriK7Q/BDKT8+60=;
-        b=BU9c4Kt2klb9pGlGYSH6N2/niQ4oNqfLZ0U1NjtsaTgg7k2zPmvXxZMNe4LsT/a25Y
-         FIhGhLYGlcZIbZ5j7j/wImxQN0EpLG2rhMuMjkY2ZOZtzRN9RqqqM2Z5uaL0wHre6mWM
-         X7XRH+g6SO72fi7HbBdQdNVRGP6vVPJBwpQNB051MQ98oMp8EsGzZR8rkERWdlg/ct9o
-         ddJXJKuqCo1GoTk5cB29k6H24t/jtwCG/qx/JiEgo0fh9G2BeRlLJWBsA8+ncOvhsWK7
-         4aJySPcTUrOnoJ4Ah5b9ngmkz6HfI8+bB1S/leVgn/9yzaNvwSOGDWeh+h8NSiDjQk22
-         DXhQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=rZ1FB3CWtcfDgjKcIVRiQbXOzmz1nIz649iaBjymSHo=;
+        b=mrbbF+vgf43ds9NpeoL/+XuV3Xfrdr6jd3L521mLardiqMytamE3RyxWtCFwhN/0Ft
+         wHgvxePuJ/275+kqYouKBlRHPAApF9e6vLWbVAGo26/rB+YWRlHJvoF9tg8mPSc997O1
+         fJiDIHm7ytyi+X+p6ScerhojaTKizMdoKurHDzHAUDpiLJkqHk9DF+MmlOguCUSGSEgy
+         4NtDDd5NWoBZHCJZv6Oou0GMlYh/Hb5nX4FYCZb4Q+AmcYgVeJl/rGbB6y5JqAT2n4fP
+         ML/q1PkhKWOQ2aVt6E5gwLzysXU7j+JUBVqPaXw7EVN+zd/Je4g5qP31PVnt6b8ehaZ3
+         zVGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oMasC2rgckEWdCe4DVz6in+O9oEmCriK7Q/BDKT8+60=;
-        b=e0wvH41rq5maFdsTDvXCKCTTrXL3YvUNNaDH2S8EkDONmiGLHUnau6HrlTr15tqm4x
-         bDgWAkCtOLaZWruXTdBHxZuQMkp5iEytZ3avsaruOdcHC/9hBOopcrfOUaZ7OPq+lM3F
-         tbE4wmp+M8lT9MYxShwM1xu5WtOt3nTGcY5oohy4QQaanTPX0iUGRgSk+JFbYEHOFIuY
-         rck7Rv/GLCFu5dB8zsDg3zezO2eBjnlgtuGz4iMNCVoTCQUmEU2A4LUSaudueTKJKdKA
-         03tqK7hQNiU1DLPSS73j0zeJuuWPKRKqTqnDZ2fv4+dzVUXS4z/OwnLqTSG3JgJk2WIr
-         /kDQ==
-X-Gm-Message-State: AOAM5311FSMzyO/FUTEWg+EX/vtf+rADx6tHM9hQjmi4NPDKZvUsocLP
-        hQsbhopYgY/Q5GyKCY69xjUIc2vyc1JuP1Up+c+upA==
-X-Google-Smtp-Source: ABdhPJydr0p5R5kOrBi0cKjyUtJDjfb0NxbOwZhHcj6m+H19kxZT9BRZop/bB7yZsgjxXgCMaOYdHA2FjRV6asLzles=
-X-Received: by 2002:a05:651c:389:: with SMTP id e9mr14617679ljp.61.1635359656666;
- Wed, 27 Oct 2021 11:34:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=rZ1FB3CWtcfDgjKcIVRiQbXOzmz1nIz649iaBjymSHo=;
+        b=U/yNE+wX2Z9OqI2f3mrq9uzXKOilVOUsl84/92KfbVoKvFbKnAVN4996pdjj+UGmbW
+         3JVs6ovhj8ORpNi7bHu5fQKBBCylRNHPuMJCOrtdPa0qTa3AkpkVoYqyJYJimuvcGBJ9
+         oVWGlet8unReTlKcybSyYpTu6tGqSFst7fyEZbG+5EkGehTASUG2qOi85gZweRvfD8zJ
+         kFPdisURv5veFJ7rQ7ytxODwGXo+I98JHudCGxwKM2gknqTkNzrj0H6Wu8VeuWKPjoFO
+         9MATE5kJ7wi61w0EgUO4VzaHdCBmPAZ8X0wqACCgw4kps2T/aasaiNrWX5Yhgg+PdKoB
+         XdIQ==
+X-Gm-Message-State: AOAM5332qn9qPsKpEuJQBAEPhberbedtlDDQzsx9UzsWQTTOIlhTEY5H
+        qAMaBlae0r/E7qAGJI5HKac=
+X-Google-Smtp-Source: ABdhPJyGnmA2pc2Astk74/frWI2/SMTiF094cWxXNalcN9sUhHtVsSOPu/xxYGoE57wt6MqhIHVOuQ==
+X-Received: by 2002:a63:2cd8:: with SMTP id s207mr25375160pgs.312.1635359692896;
+        Wed, 27 Oct 2021 11:34:52 -0700 (PDT)
+Received: from Sauravs-MacBook-Air.local ([59.95.83.133])
+        by smtp.gmail.com with ESMTPSA id k14sm419556pji.45.2021.10.27.11.34.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 11:34:51 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 00:04:43 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
+        will+git@drnd.me, mitaliborkar810@gmail.com,
+        eduard.vintila47@gmail.com, saurav.girepunje@gmail.com,
+        zhaoxiao@uniontech.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8192e: remove condition with no effect
+Message-ID: <YXmap8VIxfOpqeEY@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
-References: <20211025151536.1048186-1-maxime@cerno.tech> <20211025151536.1048186-21-maxime@cerno.tech>
-In-Reply-To: <20211025151536.1048186-21-maxime@cerno.tech>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 27 Oct 2021 11:34:05 -0700
-Message-ID: <CALAqxLXG5R2ZN9gfFsGTLfdY8mhNhh=o8f1w5Axo8NSw8QanAQ@mail.gmail.com>
-Subject: Re: [PATCH v6 20/21] drm/kirin: dsi: Adjust probe order
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-arm-msm@vger.kernel.org,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Sean Paul <sean@poorly.run>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 8:16 AM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Without proper care and an agreement between how DSI hosts and devices
-> drivers register their MIPI-DSI entities and potential components, we can
-> end up in a situation where the drivers can never probe.
->
-> Most drivers were taking evasive maneuvers to try to workaround this,
-> but not all of them were following the same conventions, resulting in
-> various incompatibilities between DSI hosts and devices.
->
-> Now that we have a sequence agreed upon and documented, let's convert
-> kirin to it.
->
-> Tested-by: John Stultz <john.stultz@linaro.org>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Remove the if and else code section for variable pHTInfo->bRegBW40MHz.
+Just before the if condition variable is assign with value 1.
+So if condition check for pHTInfo->bRegBW40MHz is always true.
 
-For this patch, and any others in this series folks see fit:
-   Acked-by: John Stultz <john.stultz@linaro.org>
+Similarly for the variable pHTInfo->SelfMimoPs value '3' is assign.
+So if condition check with value '2' will never be true. Remove the
+if condition check for pHTInfo->SelfMimoPs.
 
-thanks
--john
+Remove the extra blank lines from HTUpdateDefaultSetting function.
+
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
+
+diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+index 3b8efaf9b88c..6925654dbc03 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+@@ -72,34 +72,20 @@ void HTUpdateDefaultSetting(struct rtllib_device *ieee)
+ 	struct rt_hi_throughput *pHTInfo = ieee->pHTInfo;
+
+ 	pHTInfo->bAcceptAddbaReq = 1;
+-
+ 	pHTInfo->bRegShortGI20MHz = 1;
+ 	pHTInfo->bRegShortGI40MHz = 1;
+-
+ 	pHTInfo->bRegBW40MHz = 1;
+-
+-	if (pHTInfo->bRegBW40MHz)
+-		pHTInfo->bRegSuppCCK = 1;
+-	else
+-		pHTInfo->bRegSuppCCK = true;
+-
++	pHTInfo->bRegSuppCCK = 1;
+ 	pHTInfo->nAMSDU_MaxSize = 7935UL;
+ 	pHTInfo->bAMSDU_Support = 0;
+-
+ 	pHTInfo->bAMPDUEnable = 1;
+ 	pHTInfo->AMPDU_Factor = 2;
+ 	pHTInfo->MPDU_Density = 0;
+-
+ 	pHTInfo->SelfMimoPs = 3;
+-	if (pHTInfo->SelfMimoPs == 2)
+-		pHTInfo->SelfMimoPs = 3;
+ 	ieee->bTxDisableRateFallBack = 0;
+ 	ieee->bTxUseDriverAssingedRate = 0;
+-
+ 	ieee->bTxEnableFwCalcDur = 1;
+-
+ 	pHTInfo->bRegRT2RTAggregation = 1;
+-
+ 	pHTInfo->bRegRxReorderEnable = 1;
+ 	pHTInfo->RxReorderWinSize = 64;
+ 	pHTInfo->RxReorderPendingTime = 30;
+--
+2.33.0
+
