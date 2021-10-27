@@ -2,155 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4643143CA56
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE26043CA5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242059AbhJ0NKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234339AbhJ0NKk (ORCPT
+        id S237051AbhJ0NNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:13:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236927AbhJ0NNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:10:40 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36379C061570;
-        Wed, 27 Oct 2021 06:08:15 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id s14so1167366wrb.3;
-        Wed, 27 Oct 2021 06:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uJds+IVoNkUWmdu46LtTG9grpI87Lx0MMvC2+LXmgro=;
-        b=Aju+1WNhnANTfLfuP1d2JmIn+yn/9MYcrflKZCDaRh8YD/iAYKvYArd3rXHHGktyo+
-         B2woyjjsVYhOGT9aB2GZc7YJ7YosfhJjj5fZDlWTjlKcjdHOrNsFW7rXaMC5bER/KbcY
-         R03WM6dSl8vbqDnOmFHkw/hlp9NqgOXvXQ31cmF+NKYrX+Q+rrZuI2c9IA1E8AdA4VRr
-         +qf7Wg2s2pkgytswTPzJme02TqxyDiFL2h/LuiJM1MtQq/NSok8bZQkX8TBQ0B3zYkRa
-         o3uy8B+L3Ikx+2YTwrpEwBUtvMC4UlNbwqoz9VesBTRkEi04QIiKpXwYMHGpW/YL3hlN
-         YPYQ==
+        Wed, 27 Oct 2021 09:13:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635340266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IWYKdmA4eUJEUsGe3mptr98qqwVK7XBGAcGwuVBZe7o=;
+        b=bIZwgie8pg38MTj8LwgIn4ELW/pmrEV+FYAETTnjlUuO2CETjTfgITgXZdvw6tymktxWpV
+        f3zBJ5Dzzu+cqOsNQntvzZM97osv5S4puN52J90erpp1xvU8WbfvFHfWGegVxSib/k5PKc
+        Hy/ZkVni01Ryq4/b9WC+06VH2EzqXcY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-Jofr1NH4M_Kec2g9KF2CPw-1; Wed, 27 Oct 2021 09:11:05 -0400
+X-MC-Unique: Jofr1NH4M_Kec2g9KF2CPw-1
+Received: by mail-wm1-f71.google.com with SMTP id p18-20020a05600c205200b0032ccb9d9f76so1157752wmg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:11:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=uJds+IVoNkUWmdu46LtTG9grpI87Lx0MMvC2+LXmgro=;
-        b=1zkdGzWSHPhayrHDZc1xKs5BrqIa1r3/Oo9w/M593u64qwitq0ndXMUwdeGl7LU58B
-         Hf7g9Y0i7IVxE4WQkXHWfYJYaSeDWLlJlVFYk8QrKh0ci6+0BxOrQNRKu7FWYGbsoe2t
-         wY5ysUSvQlxcHNOn9P6EoTCgCTrcd8qJa3O2Tr6S+XeqyTRyROps7irGwDd/gQt19Uio
-         aaUALNlcLMP6PNH7Xk9kF2Ani9s4PRjdtlodPf1Owxwmsdyh9VhYZBt0XQ3XxMtzocU/
-         cJBJnx6t5GhcIH7xr4iSlgvbmtOw33Kp0kIB1VU/ROhtyVAhyyAaca9pl/VkPFNVBlov
-         9p3w==
-X-Gm-Message-State: AOAM532z1k+qbv1iFROgPVnciiyI+HetaBeZPYZB0aZKbaqdD8G5SD+n
-        aunZEvAoz3fJ1w==
-X-Google-Smtp-Source: ABdhPJwz40kCBYqsoaPbVFPwg7+k2JSxN80ok3URyhQazdOUZLjwUzSQjFzLtt7Ki5Gx4IzoMMuW0g==
-X-Received: by 2002:a5d:6e8d:: with SMTP id k13mr40133468wrz.295.1635340093805;
-        Wed, 27 Oct 2021 06:08:13 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id z5sm4279192wmp.26.2021.10.27.06.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 06:08:13 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mmc: dw_mmc: exynos: Fix spelling mistake "candiates" -> candidates
-Date:   Wed, 27 Oct 2021 14:08:12 +0100
-Message-Id: <20211027130812.426373-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        bh=IWYKdmA4eUJEUsGe3mptr98qqwVK7XBGAcGwuVBZe7o=;
+        b=XmEgrYi+679lsGpp7mb1uwAYjBg7kvIi7gtUTVFG8tvSQlyCZi2SOce+GMnY4Day8v
+         JwITF9dk41B74TP6WHrD3CVRQOz9lsI3R2MbMHSKSLRkx3MBdxT0A00szgaenLghs2ig
+         K2+69T4TCxPSWRvrWmWLMJz0rbT2VJ8BKx1cAecjmIqS/HUeUQa3wwh47CFgUeVyEYUE
+         zarU4VDKt7ERgTshSkzefY1T0nq4S71nv5EeWoJXdbKejSHaYfViNCZooW61HvT0gVqf
+         0CCO/G/i2BaZR7IefSUwk7SysBLbyRkXItlIOvytt8x/vdtcDX9qSe8AWAzaqEkuOXH8
+         YnXA==
+X-Gm-Message-State: AOAM532MSadfF9wDQxp2LF4dPG6THPuAI5OLsYheUnCEzprh6pUvqJ8q
+        PfLMrRS2ASt7dDmfXLf45u6Xvm9rJmsQnArbEzDgS0wRD+8qU/BArEDmlhT50jnFyRLpP4hwN30
+        sgeuDZwYlFGBBWir5qUjVcbHN
+X-Received: by 2002:a05:6000:18af:: with SMTP id b15mr38755694wri.359.1635340264015;
+        Wed, 27 Oct 2021 06:11:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzjUjZddIUlCrumNutOY9tavd1hZf4C85p9ozzn0zyY1ymdGYMDfidxui06HqTzb2IhpmXTA==
+X-Received: by 2002:a05:6000:18af:: with SMTP id b15mr38755662wri.359.1635340263764;
+        Wed, 27 Oct 2021 06:11:03 -0700 (PDT)
+Received: from [192.168.100.42] ([82.142.14.190])
+        by smtp.gmail.com with ESMTPSA id o26sm3436083wmc.17.2021.10.27.06.11.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 06:11:03 -0700 (PDT)
+Message-ID: <eab57f0e-d3c6-7619-97cc-9bc3a7a07219@redhat.com>
+Date:   Wed, 27 Oct 2021 15:11:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in copy_data
+Content-Language: en-US
+To:     syzbot <syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com>,
+        davem@davemloft.net, herbert@gondor.apana.org.au, jiri@nvidia.com,
+        kuba@kernel.org, leonro@nvidia.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mpm@selenic.com, mst@redhat.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000a4cd2105cf441e76@google.com>
+From:   Laurent Vivier <lvivier@redhat.com>
+In-Reply-To: <000000000000a4cd2105cf441e76@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several spelling mistakes in variable names and in a dev_warn
-message. Fix these.
+On 26/10/2021 18:39, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    9ae1fbdeabd3 Add linux-next specific files for 20211025
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1331363cb00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=aeb17e42bc109064
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116ce954b00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132fcf62b00000
+> 
+> The issue was bisected to:
+> 
+> commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
+> Author: Leon Romanovsky <leonro@nvidia.com>
+> Date:   Thu Oct 21 14:16:14 2021 +0000
+> 
+>      devlink: Remove not-executed trap policer notifications
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137d8bfcb00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10fd8bfcb00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=177d8bfcb00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com
+> Fixes: 22849b5ea595 ("devlink: Remove not-executed trap policer notifications")
+> 
+> ==================================================================
+> BUG: KASAN: slab-out-of-bounds in memcpy include/linux/fortify-string.h:225 [inline]
+> BUG: KASAN: slab-out-of-bounds in copy_data+0xf3/0x2e0 drivers/char/hw_random/virtio-rng.c:68
+> Read of size 64 at addr ffff88801a7a1580 by task syz-executor989/6542
+> 
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/mmc/host/dw_mmc-exynos.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+I'm not able to reproduce the problem with next-20211026 and the C reproducer.
 
-diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-exynos.c
-index 1f8a3c0ddfe1..c2dd29ef45c6 100644
---- a/drivers/mmc/host/dw_mmc-exynos.c
-+++ b/drivers/mmc/host/dw_mmc-exynos.c
-@@ -442,14 +442,14 @@ static inline u8 dw_mci_exynos_move_next_clksmpl(struct dw_mci *host)
- 	return sample;
- }
- 
--static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
-+static s8 dw_mci_exynos_get_best_clksmpl(u8 candidates)
- {
- 	const u8 iter = 8;
- 	u8 __c;
- 	s8 i, loc = -1;
- 
- 	for (i = 0; i < iter; i++) {
--		__c = ror8(candiates, i);
-+		__c = ror8(candidates, i);
- 		if ((__c & 0xc7) == 0xc7) {
- 			loc = i;
- 			goto out;
-@@ -457,7 +457,7 @@ static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
- 	}
- 
- 	for (i = 0; i < iter; i++) {
--		__c = ror8(candiates, i);
-+		__c = ror8(candidates, i);
- 		if ((__c & 0x83) == 0x83) {
- 			loc = i;
- 			goto out;
-@@ -466,11 +466,11 @@ static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
- 
- 	/*
- 	 * If there is no cadiates value, then it needs to return -EIO.
--	 * If there are candiates values and don't find bset clk sample value,
--	 * then use a first candiates clock sample value.
-+	 * If there are candidates values and don't find bset clk sample value,
-+	 * then use a first candidates clock sample value.
- 	 */
- 	for (i = 0; i < iter; i++) {
--		__c = ror8(candiates, i);
-+		__c = ror8(candidates, i);
- 		if ((__c & 0x1) == 0x1) {
- 			loc = i;
- 			goto out;
-@@ -485,7 +485,7 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
- 	struct dw_mci *host = slot->host;
- 	struct dw_mci_exynos_priv_data *priv = host->priv;
- 	struct mmc_host *mmc = slot->mmc;
--	u8 start_smpl, smpl, candiates = 0;
-+	u8 start_smpl, smpl, candidates = 0;
- 	s8 found;
- 	int ret = 0;
- 
-@@ -496,18 +496,18 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
- 		smpl = dw_mci_exynos_move_next_clksmpl(host);
- 
- 		if (!mmc_send_tuning(mmc, opcode, NULL))
--			candiates |= (1 << smpl);
-+			candidates |= (1 << smpl);
- 
- 	} while (start_smpl != smpl);
- 
--	found = dw_mci_exynos_get_best_clksmpl(candiates);
-+	found = dw_mci_exynos_get_best_clksmpl(candidates);
- 	if (found >= 0) {
- 		dw_mci_exynos_set_clksmpl(host, found);
- 		priv->tuned_sample = found;
- 	} else {
- 		ret = -EIO;
- 		dev_warn(&mmc->class_dev,
--			"There is no candiates value about clksmpl!\n");
-+			"There is no candidates value about clksmpl!\n");
- 	}
- 
- 	return ret;
--- 
-2.32.0
+And reviewing the code in copy_data() I don't see any issue.
+
+Is it possible to know what it the VM configuration used to test it?
+
+Thanks,
+Laurent
 
