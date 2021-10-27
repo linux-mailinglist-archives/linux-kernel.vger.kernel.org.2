@@ -2,114 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786A943C1D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785B143C1DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237637AbhJ0EvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 00:51:20 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41585 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbhJ0EvT (ORCPT
+        id S238002AbhJ0Eze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 00:55:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237990AbhJ0Ezd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 00:51:19 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfGRc47Kwz4xbC;
-        Wed, 27 Oct 2021 15:48:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635310124;
-        bh=Qv+oot2a6GtzL8PFiesl4PSukLPc4LQRRD/sYU0S3Pc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XhIUvo/PPzI4iJE/IBGBNFOuJ8QYguKFE4I3B2H1yhuIdcJq5wxRX/C5hdQaXhbzp
-         q61lByYDFS/EpCw487p8CHgi0dFdwVqj1Zx3VIk8CAK3sGn89s8VRKiY/8DYXFzkGK
-         KpSuT3fnQMrDnDuqmirAQxALNJN4pimFtItLe9n6CSZHUpu8k2JmRRNwFH2IcDGQv5
-         NFw9vb7TMe1fQ2E24KY7Ydpq9T/AmTtZW/Ug0me76tpqbLwhHIdD6oMxIn0aH7t250
-         0bb2s2jySdAE2dZ2D98E0hsxe4fZQMsPyZkdlRCyzCjsO2BKma+hhG1VIQjU/RKLJr
-         8RSa9kGfU/oeA==
-Date:   Wed, 27 Oct 2021 15:48:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the char-misc tree
-Message-ID: <20211027154843.622961fd@canb.auug.org.au>
+        Wed, 27 Oct 2021 00:55:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635310388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hMNq/owOA2RIyXlYkDseh4SPVudn754hwbkRS5+V1fg=;
+        b=agny9uEymA0l2LBhVv8DNTV0H529MK4wDdTgT1DVQURXgFxO04lzbqxy/2d+vAwIO5yqyw
+        IRg+YXcS3aVr8LD3PafNWmGh4DEeUXyV1ZTX7LBKPFBNWF3T+LEolI17JSCaxsE3ceN22V
+        FIf8YesVqgQUfY61eDgqVsRK41fIaeE=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-352lY9TvP6GdGqh0tFLugA-1; Wed, 27 Oct 2021 00:53:06 -0400
+X-MC-Unique: 352lY9TvP6GdGqh0tFLugA-1
+Received: by mail-pl1-f200.google.com with SMTP id v14-20020a170902e8ce00b0013fcb85c0ebso689733plg.22
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:53:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hMNq/owOA2RIyXlYkDseh4SPVudn754hwbkRS5+V1fg=;
+        b=1c+a9vvs0Z2se15VmZHEuVtSAnW3Vk0HhWqjdoPS1kUZuKNNrPZkazPmK3RG1af+xV
+         GsXYYRHkmAWno32iDSeZVzE/hWbk1Pf9Ab/mPkWUe4HTxcJ4mi+FRQQ90a7flVEQhfUa
+         RwqMp2vEQ3jSyU214ZNpArnBPQciYw++TnvZnVgxVc8uuAgh01HW1RDo5epdzWnlj44Z
+         Vt9hKwELcIpOAa9a6Jikx4puAK5gboavbJnIzneFjYrr5g3gj4bPJnybTehhd+zHGiE+
+         zgASmX/wZE/WGIhI6OnftG0Z2/8clFN4mNr1V6x+8Bb1QYx+IJBTVjYigTIWV/M82jqa
+         ecZQ==
+X-Gm-Message-State: AOAM530rXZbNEngZzpbc0S3kQxrHUcQm8jtKlX0ke2aKEsnuQu0A8PdH
+        Jb11fviXNzOYBmQptAqcVRGumGKndxoPReWnPWEIoYWn7b2xBykFiaq/x6zViFTz8CK4rjbChsy
+        NMfPoh2sepf3OYEdoJnkHL+yBz2cTiT7k7eh/uHrjWvsMudCYZ2p/VFSGE1QARDIE6dANVOmMZQ
+        ==
+X-Received: by 2002:a62:6d86:0:b0:448:152d:83a4 with SMTP id i128-20020a626d86000000b00448152d83a4mr29995126pfc.38.1635310385227;
+        Tue, 26 Oct 2021 21:53:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz0/EPCoyg/+ydg2EuF4StJbrpg6jG8RPYCSYSCQ5LhCWdNQY9/f6ImsKUzIBNEZ5mXotvSdw==
+X-Received: by 2002:a62:6d86:0:b0:448:152d:83a4 with SMTP id i128-20020a626d86000000b00448152d83a4mr29995083pfc.38.1635310384766;
+        Tue, 26 Oct 2021 21:53:04 -0700 (PDT)
+Received: from [10.72.12.93] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id g11sm20724281pgn.41.2021.10.26.21.53.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 21:53:04 -0700 (PDT)
+Subject: Re: [RFC PATCH] ceph: add remote object copy counter to fs client
+To:     Jeff Layton <jlayton@kernel.org>,
+        Patrick Donnelly <pdonnell@redhat.com>
+Cc:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211020143708.14728-1-lhenriques@suse.de>
+ <34e379f9dec1cbdf09fffd8207f6ef7f4e1a6841.camel@kernel.org>
+ <CA+2bHPbqeH_rmmxcnQ9gq0K8gqtE4q69a8cFnherSJCxSwXV5Q@mail.gmail.com>
+ <99209198dd9d8634245f153a90e4091851635a16.camel@kernel.org>
+ <CA+2bHPZTazVGtZygdbthQ-AWiC3AN_hsYouhVVs=PDo5iowgTw@mail.gmail.com>
+ <e5627f7d9eb9cf2b753136e1187d5d6ff7789389.camel@kernel.org>
+ <CA+2bHPYacg5yjO9otP5wUVxgwxw+d4hroVQod5VeFUTJNosQ9w@mail.gmail.com>
+ <785d1435-4a2c-95aa-0573-2de54b4e7b6b@redhat.com>
+ <604199ed389d9286e3fdab6b5acdf65c421df45d.camel@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <67fdba23-a91d-9ddb-4af5-8098b3e804b8@redhat.com>
+Date:   Wed, 27 Oct 2021 12:52:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L2jv/qu73mp00DLZHTtR4TT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <604199ed389d9286e3fdab6b5acdf65c421df45d.camel@kernel.org>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/L2jv/qu73mp00DLZHTtR4TT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 10/26/21 7:40 PM, Jeff Layton wrote:
+> On Tue, 2021-10-26 at 11:05 +0800, Xiubo Li wrote:
+>> On 10/22/21 1:30 AM, Patrick Donnelly wrote:
+>>> On Thu, Oct 21, 2021 at 12:35 PM Jeff Layton <jlayton@kernel.org> wrote:
+>>>> On Thu, 2021-10-21 at 12:18 -0400, Patrick Donnelly wrote:
+>>>>> On Thu, Oct 21, 2021 at 11:44 AM Jeff Layton <jlayton@kernel.org> wrote:
+>>>>>> On Thu, 2021-10-21 at 09:52 -0400, Patrick Donnelly wrote:
+>>>>>>> On Wed, Oct 20, 2021 at 12:27 PM Jeff Layton <jlayton@kernel.org> wrote:
+>>>>>>>> On Wed, 2021-10-20 at 15:37 +0100, Luís Henriques wrote:
+>>>>>>>>> This counter will keep track of the number of remote object copies done on
+>>>>>>>>> copy_file_range syscalls.  This counter will be filesystem per-client, and
+>>>>>>>>> can be accessed from the client debugfs directory.
+>>>>>>>>>
+>>>>>>>>> Cc: Patrick Donnelly <pdonnell@redhat.com>
+>>>>>>>>> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+>>>>>>>>> ---
+>>>>>>>>> This is an RFC to reply to Patrick's request in [0].  Note that I'm not
+>>>>>>>>> 100% sure about the usefulness of this patch, or if this is the best way
+>>>>>>>>> to provide the functionality Patrick requested.  Anyway, this is just to
+>>>>>>>>> get some feedback, hence the RFC.
+>>>>>>>>>
+>>>>>>>>> Cheers,
+>>>>>>>>> --
+>>>>>>>>> Luís
+>>>>>>>>>
+>>>>>>>>> [0] https://github.com/ceph/ceph/pull/42720
+>>>>>>>>>
+>>>>>>>> I think this would be better integrated into the stats infrastructure.
+>>>>>>>>
+>>>>>>>> Maybe you could add a new set of "copy" stats to struct
+>>>>>>>> ceph_client_metric that tracks the total copy operations done, their
+>>>>>>>> size and latency (similar to read and write ops)?
+>>>>>>> I think it's a good idea to integrate this into "stats" but I think a
+>>>>>>> local debugfs file for some counters is still useful. The "stats"
+>>>>>>> module is immature at this time and I'd rather not build any qa tests
+>>>>>>> (yet) that rely on it.
+>>>>>>>
+>>>>>>> Can we generalize this patch-set to a file named "op_counters" or
+>>>>>>> similar and additionally add other OSD ops performed by the kclient?
+>>>>>>>
+>>>>>> Tracking this sort of thing is the main purpose of the stats code. I'm
+>>>>>> really not keen on adding a whole separate set of files for reporting
+>>>>>> this.
+>>>>> Maybe I'm confused. Is there some "file" which is already used for
+>>>>> this type of debugging information? Or do you mean the code for
+>>>>> sending stats to the MDS to support cephfs-top?
+>>>>>
+>>>>>> What's the specific problem with relying on the data in debugfs
+>>>>>> "metrics" file?
+>>>>> Maybe no problem? I wasn't aware of a "metrics" file.
+>>>>>
+>>>> Yes. For instance:
+>>>>
+>>>> # cat /sys/kernel/debug/ceph/*/metrics
+>>>> item                               total
+>>>> ------------------------------------------
+>>>> opened files  / total inodes       0 / 4
+>>>> pinned i_caps / total inodes       5 / 4
+>>>> opened inodes / total inodes       0 / 4
+>>>>
+>>>> item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)
+>>>> -----------------------------------------------------------------------------------
+>>>> read          0           0               0               0               0
+>>>> write         5           914013          824797          1092343         103476
+>>>> metadata      79          12856           1572            114572          13262
+>>>>
+>>>> item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)
+>>>> ----------------------------------------------------------------------------------------
+>>>> read          0           0               0               0               0
+>>>> write         5           4194304         4194304         4194304         20971520
+>>>>
+>>>> item          total           miss            hit
+>>>> -------------------------------------------------
+>>>> d_lease       11              0               29
+>>>> caps          5               68              10702
+>>>>
+>>>>
+>>>> I'm proposing that Luis add new lines for "copy" to go along with the
+>>>> "read" and "write" ones. The "total" counter should give you a count of
+>>>> the number of operations.
+>>> Okay that makes more sense!
+>>>
+>>> Side note: I am a bit horrified by how computer-unfriendly that
+>>> table-formatted data is.
+>> Any suggestion to improve this ?
+>>
+>> How about just make the "metric" file writable like a switch ? And as
+>> default it will show the data as above and if tools want the
+>> computer-friendly format, just write none-zero to it, then show raw data
+>> just like:
+>>
+>> # cat /sys/kernel/debug/ceph/*/metrics
+>> opened_files:0
+>> pinned_i_caps:5
+>> opened_inodes:0
+>> total_inodes:4
+>>
+>> read_latency:0,0,0,0,0
+>> write_latency:5,914013,824797,1092343,103476
+>> metadata_latency:79,12856,1572,114572,13262
+>>
+>> read_size:0,0,0,0,0
+>> write_size:5,4194304,4194304,4194304,20971520
+>>
+>> d_lease:11,0,29
+>> caps:5,68,10702
+>>
+>>
+> I'd rather not multiplex the output of this file based on some input.
+> That would also be rather hard to do -- write() and read() are two
+> different syscalls, so you'd need to track a bool (or something) across
+> them somehow.
+>
+> Currently, I doubt there are many scripts in the field that scrape this
+> info and debugfs is specifically excluded from ABI concerns. If we want
+> to make it more machine-readable (which sounds like a good thing), then
+> I suggest we just change the output to something like what you have
+> above and not worry about preserving the "legacy" output.
 
-After merging the char-misc tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+Sound good to me.
 
-ERROR: modpost: module drm_shmem_helper uses symbol dma_buf_vunmap from nam=
-espace DMA_BUF, but does not import it.
-ERROR: modpost: module drm_shmem_helper uses symbol dma_buf_mmap from names=
-pace DMA_BUF, but does not import it.
-ERROR: modpost: module drm_shmem_helper uses symbol dma_buf_vmap from names=
-pace DMA_BUF, but does not import it.
 
-Caused by commit
-
-  16b0314aa746 ("dma-buf: move dma-buf symbols into the DMA_BUF module name=
-space")
-
-I have applied the following patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 27 Oct 2021 15:44:18 +1100
-Subject: [PATCH] fix for "dma-buf: move dma-buf symbols into the DMA_BUF
- module namespace"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/drm_gem_shmem_helper.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_g=
-em_shmem_helper.c
-index 57ceecb3f4d8..f7324582afe7 100644
---- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-+++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -22,6 +22,8 @@
- #include <drm/drm_prime.h>
- #include <drm/drm_print.h>
-=20
-+MODULE_IMPORT_NS(DMA_BUF);
-+
- /**
-  * DOC: overview
-  *
---=20
-2.33.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/L2jv/qu73mp00DLZHTtR4TT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF42isACgkQAVBC80lX
-0Gw3XAgAoFO4/kBV5lhDraVh8oG8qfFfF+lCcB3F7iz/vF7FZ9BMmKtnDuRCykAz
-vruBaiF+pAIEc0G2mznlHFuwNGxtuTJtXwMHUAt+ZStUzz7frRHeDAC4uAwllqWj
-0lV0YXHpkY245+RjU1roZT6pt23Gem1ci9KgMcsaiLx6uo567MgSmu5PyZ8Dygg8
-R+KVtLS+m/GU5hX3t2mwBl2faOxa4YBZiM5sRcCUFNr0vbm/DCU9TroozlG4mXMi
-70zwypI1aLKz7qIOqvmuWhZ7JoAM5QGKsrH/rEObBggrJzhaEC+q9hIym8NBjsTp
-fennb64sQUo1bwQQ/VylLm21fiOLiA==
-=hQZJ
------END PGP SIGNATURE-----
-
---Sig_/L2jv/qu73mp00DLZHTtR4TT--
