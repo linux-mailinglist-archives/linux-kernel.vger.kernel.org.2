@@ -2,183 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BFC43CFAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DC843CFAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243250AbhJ0RbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbhJ0RbL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:31:11 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1F5C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:28:46 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id w10-20020a4a274a000000b002b6e972caa1so1156131oow.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wrZxhnpBVF+cF2MH+4hpGESknGnknZIvvFiYbEODzhk=;
-        b=BPKmV1ZB5ebCw1S2IavTQsPuOPDm4WBZVvPMl8xkIMlg/OWb74QDL9Gl9wChwhEQ2r
-         2wVgumPw/XQfIRncXfDOoiB+yINE59H6kZ5TaLp12p/OPl9kmtSY+dQIk7nygvKH8JeJ
-         mla8QoY1HSDBbYn8sQwcErupLJi14EX3UUAgIljetwlliKtGtX06hd/YJA7DLK/azxmx
-         nbYmsf85H72Tf5W7QEfa+X8/kFnTUys831ZX6RG3trxvc1AVSDI44kFGoFpZ0ROjxVeR
-         oIc6oNGbuKNdTPdSv4oNqwlT9CEaLJ+q7hbETGhChOYkhhmfLQPx26MsaM31djQWr2pK
-         RYIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wrZxhnpBVF+cF2MH+4hpGESknGnknZIvvFiYbEODzhk=;
-        b=2nlHOUrbw4pWxmmx+2MWsasSs4JL2Guhm0TvWzd0BvtepqRhTg7i4FUIfyzfygfL05
-         7Q23N8cnSyfB6u2h5x+S2nMe48898zfP3EBbuLMT1vTd3IQdGURcVYRlRnIp98KRhJP/
-         rxG0SSok6X6X+43r70JdTU1FTmvKvN683XdH5FILxiAI+IESq38oC9ZB2nn/9+v7x15K
-         xvb+NY09ecLzy4eV+XUcl4u+HlxFbktQaiUE/UiRx6mVZxuiWcAZ5iTVHEQ+fwzsNd31
-         bawhJUxsM0hgyNU2Wxb8x9WcY95nvIDaoEm6SC13gjSwC5u0Aq0twod/pZjmrxWf3SaO
-         aYhA==
-X-Gm-Message-State: AOAM531ZlpoTfoYqub4uI3dB51N5EPIDsmuPWrcNO6M64TCcaDlUvrPR
-        kvkaCxKDYh2c1Nl4h4vWCjmw4btcPNc1u3shNeQ=
-X-Google-Smtp-Source: ABdhPJym6erSPEWJi1GKR1ra3PnGgufMkBKXgAkuizRFvk+0fbhMwySLArEFu+scGYoFci8xM0rNFjPMYcpXO2GU4k8=
-X-Received: by 2002:a4a:8508:: with SMTP id k8mr5473333ooh.23.1635355724247;
- Wed, 27 Oct 2021 10:28:44 -0700 (PDT)
+        id S243255AbhJ0RbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:31:18 -0400
+Received: from vern.gendns.com ([98.142.107.122]:58190 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243248AbhJ0RbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:31:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=V6YBYmqWPDZRGNpxkzTVUo3BWCaC29ab9Uud4jWzHqM=; b=PEc48O5plZ6Po9zcDCKmskBM+p
+        J4wlJByW6REhCurhGpEOed+4Lq0zvK5QLRLvhVwnTi2YNR3JDZZNwbiJuto+fmeT2q2UuCbzfIXFb
+        KBnYLrTxKOMaBT5/X+99UHBL8KJNBYoh2k47lwM1WaG2YYZfl2haBg3H7Srb+bdXC4Ak+AwUt8vkK
+        IHIR+la2a9Y5P5H4W6ZzIbVTn2xFHDI58t+eGzVTI+cL7grFf7po8hI5Be+quTDlayBPKzk1sn5I2
+        F/f//kOrL2y8xyFJqAnSlbhPttaSDenzjY9UWx8wf82kHmZqk/sbmMv/w3fOc9Ud7VHMTh3BqaAkL
+        0yF2VYYQ==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:45486 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <david@lechnology.com>)
+        id 1mfmj9-0004To-Td; Wed, 27 Oct 2021 13:28:47 -0400
+Subject: Re: [PATCH 7/8] counter/ti-eqep: add support for edge capture unit
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20211017013343.3385923-1-david@lechnology.com>
+ <20211017013343.3385923-8-david@lechnology.com> <YXkMheVhVp9psPDD@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <c0464d2a-2e65-ac43-1724-80f45d857753@lechnology.com>
+Date:   Wed, 27 Oct 2021 12:28:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <7a5123b0-6370-59dc-f0c2-8be5b370d9ba@molgen.mpg.de>
- <0cfccc44-6cc6-98f5-ecd6-2f376839ec18@gmail.com> <bc7142a1-82d3-43bf-dee2-25f9297e7182@arm.com>
- <3c2de089-8f80-3644-7735-7df1c6151d70@molgen.mpg.de> <82fccb9d-43e8-4485-0ddb-7ff260f3ed32@arm.com>
- <CADnq5_NiigOVnahNWrro+ur2aejcHLTLJMH5ndUyg3cO8E+NRw@mail.gmail.com>
-In-Reply-To: <CADnq5_NiigOVnahNWrro+ur2aejcHLTLJMH5ndUyg3cO8E+NRw@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 27 Oct 2021 13:28:32 -0400
-Message-ID: <CADnq5_O6KfZKJBDTPn6jJrFg12bRssHAvx1u9m39xiGvu=_dhw@mail.gmail.com>
-Subject: Re: I got an IOMMU IO page fault. What to do now?
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>, X86 ML <x86@kernel.org>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        it+linux-iommu@molgen.mpg.de, Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Content-Type: multipart/mixed; boundary="000000000000074a4b05cf58ed5e"
+In-Reply-To: <YXkMheVhVp9psPDD@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000074a4b05cf58ed5e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 10/27/21 3:23 AM, William Breathitt Gray wrote:
+> On Sat, Oct 16, 2021 at 08:33:42PM -0500, David Lechner wrote:
+>> This adds support for the Edge Capture Unit to the TI eQEP counter
+>> driver. This just adds the minimum required features to measure speed
+>> using the Unit Timer and the Edge Capture unit. Additional features can
+>> be added in the future if needed.
+>>
+>> This adds 4 new device-level attributes:
+>> - edge_capture_unit_prescaler: selects a prescalar for the Counter count
+>> 	coming into the Edge Capture Unit
+>> - edge_capture_unit_max_period: selects the max time period that can be
+>> 	measured by the Edge Capture Unit
+> 
+> What happens if a trigger occurs after the max period has elapsed; is
+> the latched period value invalid in that scenario?
 
-On Wed, Oct 27, 2021 at 1:24 PM Alex Deucher <alexdeucher@gmail.com> wrote:
->
-> On Wed, Oct 27, 2021 at 1:20 PM Robin Murphy <robin.murphy@arm.com> wrote=
-:
-> >
-> > On 27/10/2021 5:45 pm, Paul Menzel wrote:
-> > > Dear Robin,
-> > >
-> > >
-> > > On 25.10.21 18:01, Robin Murphy wrote:
-> > >> On 2021-10-25 12:23, Christian K=C3=B6nig wrote:
-> > >
-> > >>> not sure how the IOMMU gives out addresses, but the printed ones lo=
-ok
-> > >>> suspicious to me. Something like we are using an invalid address li=
-ke
-> > >>> -1 or similar.
-> > >>
-> > >> FWIW those look like believable DMA addresses to me, assuming that t=
-he
-> > >> DMA mapping APIs are being backed iommu_dma_ops and the device has a
-> > >> 40-bit DMA mask, since the IOVA allocator works top-down.
-> > >>
-> > >> Likely causes are either a race where the dma_unmap_*() call happens
-> > >> before the hardware has really stopped accessing the relevant
-> > >> addresses, or the device's DMA mask has been set larger than it shou=
-ld
-> > >> be, and thus the upper bits have been truncated in the round-trip
-> > >> through the hardware.
-> > >>
-> > >> Given the addresses involved, my suspicions would initially lean
-> > >> towards the latter case - the faults are in the very topmost pages
-> > >> which imply they're the first things mapped in that range. The other
-> > >> contributing factor being the trick that the IOVA allocator plays fo=
-r
-> > >> PCI devices, where it tries to prefer 32-bit addresses. Thus you're
-> > >> only likely to see this happen once you already have ~3.5-4GB of liv=
-e
-> > >> DMA-mapped memory to exhaust the 32-bit IOVA space (minus some
-> > >> reserved areas) and start allocating from the full DMA mask. You
-> > >> should be able to check that with a 5.13 or newer kernel by booting
-> > >> with "iommu.forcedac=3D1" and seeing if it breaks immediately
-> > >> (unfortunately with an older kernel you'd have to manually hack
-> > >> iommu_dma_alloc_iova() to the same effect).
-> > >
-> > > I booted Linux 5.15-rc7 with `iommu.forcedac=3D1` and the system boot=
-ed,
-> > > and I could log in remotely over SSH. Please find the Linux kernel
-> > > messages attached. (The system logs say lightdm failed to start, but =
-it
-> > > might be some other issue due to a change in the operating system.)
-> >
-> > OK, that looks like it's made the GPU blow up straight away, which is
-> > what I was hoping for (and also appears to reveal another bug where it'=
-s
-> > not handling probe failure very well - possibly trying to remove a
-> > non-existent audio device?). Lightdm presumably fails to start because
-> > it doesn't find any display devices, since amdgpu failed to probe.
-> >
-> > If you can boot the same kernel without "iommu.forcedac" and get a
-> > successful probe and working display, that will imply that it is
-> > managing to work OK with 32-bit DMA addresses, at which point I'd have
-> > to leave it to Christian and Alex to figure out exactly where DMA
-> > addresses are getting mangled. The only thing that stands out to me is
-> > the reference to "gfx_v6_0", which makes me wonder whether it's related
-> > to gmc_v6_0_sw_init() where a 44-bit DMA mask gets set. If so, that
-> > would suggest that either this particular model of GPU is more limited
-> > than expected, or that SoC only has 40 bits of address wired up between
-> > the PCI host bridge and the IOMMU.
->
-> That device only has a 40 bit DMA mask.  It looks like the code is wrong =
-there.
 
-The attached patch should fix it.
+This period is essentially selecting prescalars, so if we get rid of
+the time aspect and treat everything as counts this will change a bit.
 
-Alex
+But the question is still valid. I don't recall off-hand what happens
+so I will have to test it the next time I am working on this. It seems
+though that I was able to somehow detect when this was the case.
 
---000000000000074a4b05cf58ed5e
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-drm-amdgpu-gmc6-fix-DMA-mask.patch"
-Content-Disposition: attachment; 
-	filename="0001-drm-amdgpu-gmc6-fix-DMA-mask.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kv9ske4n0>
-X-Attachment-Id: f_kv9ske4n0
+> 
+>> - edge_capture_unit_latched_period: gets the period that was measured
+>> 	when the event selected by the latch_mode attribute is triggered
+> 
+> Is this period value essentially the current latch count minus the
+> previous latch count?
+> 
 
-RnJvbSAzOTczNWY3NjEyMzRmYTQ4MGQzOTNiMTQ3N2RkOWQ0MDA2NzgzZjM0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5j
-b20+CkRhdGU6IFdlZCwgMjcgT2N0IDIwMjEgMTM6MjY6MTkgLTA0MDAKU3ViamVjdDogW1BBVENI
-XSBkcm0vYW1kZ3B1L2dtYzY6IGZpeCBETUEgbWFzawoKVGhlIERNQSBtYXNrIG9uIFNJIHBhcnRz
-IGlzIDQwIGJpdHMgbm90IDQ0LiAgTG9va3MgbGlrZSBhIGNvcHkKcGFzdGUgdHlwby4KClNpZ25l
-ZC1vZmYtYnk6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KLS0tCiBk
-cml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9nbWNfdjZfMC5jIHwgMiArLQogMSBmaWxlIGNoYW5n
-ZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
-cHUvZHJtL2FtZC9hbWRncHUvZ21jX3Y2XzAuYyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1
-L2dtY192Nl8wLmMKaW5kZXggMGU4MWUwM2U5YjQ5Li5hOTM1NGNiMmQ2MzkgMTAwNjQ0Ci0tLSBh
-L2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2dtY192Nl8wLmMKKysrIGIvZHJpdmVycy9ncHUv
-ZHJtL2FtZC9hbWRncHUvZ21jX3Y2XzAuYwpAQCAtODQxLDcgKzg0MSw3IEBAIHN0YXRpYyBpbnQg
-Z21jX3Y2XzBfc3dfaW5pdCh2b2lkICpoYW5kbGUpCiAKIAlhZGV2LT5nbWMubWNfbWFzayA9IDB4
-ZmZmZmZmZmZmZlVMTDsKIAotCXIgPSBkbWFfc2V0X21hc2tfYW5kX2NvaGVyZW50KGFkZXYtPmRl
-diwgRE1BX0JJVF9NQVNLKDQ0KSk7CisJciA9IGRtYV9zZXRfbWFza19hbmRfY29oZXJlbnQoYWRl
-di0+ZGV2LCBETUFfQklUX01BU0soNDApKTsKIAlpZiAocikgewogCQlkZXZfd2FybihhZGV2LT5k
-ZXYsICJObyBzdWl0YWJsZSBETUEgYXZhaWxhYmxlLlxuIik7CiAJCXJldHVybiByOwotLSAKMi4z
-MS4xCgo=
---000000000000074a4b05cf58ed5e--
+No, the period is the amount of time that elapsed between counts.
+
+>>   static struct counter_comp ti_eqep_device_ext[] = {
+>> +	COUNTER_COMP_DEVICE_BOOL("edge_capture_unit_enable",
+>> +				 ti_eqep_edge_capture_unit_enable_read,
+>> +				 ti_eqep_edge_capture_unit_enable_write),
+>> +	COUNTER_COMP_DEVICE_U64("edge_capture_unit_latched_period",
+>> +				ti_eqep_edge_capture_unit_latched_period_read,
+>> +				NULL),
+>> +	COUNTER_COMP_DEVICE_U64("edge_capture_unit_max_period",
+>> +				ti_eqep_edge_capture_unit_max_period_read,
+>> +				ti_eqep_edge_capture_unit_max_period_write),
+>> +	COUNTER_COMP_DEVICE_ENUM("edge_capture_unit_prescaler",
+>> +				 ti_eqep_edge_capture_unit_prescaler_read,
+>> +				 ti_eqep_edge_capture_unit_prescaler_write,
+>> +				 ti_eqep_edge_capture_unit_prescaler_available),
+> 
+> Would it make sense for these to be Count 0 extensions so that they're
+> alongside the "latched_count" extension; or do these extensions also
+> represent values related to "latched_time" for the unit timer?
+> 
+
+They are related to both.
