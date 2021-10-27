@@ -2,98 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A6F43D01C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCBC43D021
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243367AbhJ0Rv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:51:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
+        id S239995AbhJ0Rz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:55:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:46012 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhJ0RvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:51:16 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF74A6109D;
-        Wed, 27 Oct 2021 17:48:44 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 18:53:10 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jishnu Prakash <quic_jprakash@quicinc.com>
-Cc:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <devicetree@vger.kernel.org>, <mka@chromium.org>,
-        <dmitry.baryshkov@linaro.org>, <robh+dt@kernel.org>,
-        <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <manivannan.sadhasivam@linaro.org>, <linus.walleij@linaro.org>,
-        <quic_kgunda@quicinc.com>, <quic_aghayal@quicinc.com>,
-        <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
-        <quic_subbaram@quicinc.com>, <Jonathan.Cameron@huawei.com>,
-        <amitk@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm-owner@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH V2 2/3] iio: adc: qcom-vadc-common: add reverse scaling
- for PMIC5 Gen2 ADC_TM
-Message-ID: <20211027185310.25552207@jic23-huawei>
-In-Reply-To: <1635264275-12530-3-git-send-email-quic_jprakash@quicinc.com>
-References: <1635264275-12530-1-git-send-email-quic_jprakash@quicinc.com>
-        <1635264275-12530-3-git-send-email-quic_jprakash@quicinc.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231252AbhJ0Rz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:55:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED5E21FB;
+        Wed, 27 Oct 2021 10:53:29 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D85F3F70D;
+        Wed, 27 Oct 2021 10:53:28 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 18:53:25 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     madvenka@linux.microsoft.com
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 08/11] arm64: Rename unwinder functions, prevent them
+ from being traced and kprobed
+Message-ID: <20211027175325.GC58503@C02TD0UTHF1T.local>
+References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
+ <20211015025847.17694-1-madvenka@linux.microsoft.com>
+ <20211015025847.17694-9-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015025847.17694-9-madvenka@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 21:34:34 +0530
-Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
-
-> Add reverse scaling function for PMIC5 Gen2 ADC_TM, to convert
-> temperature to raw ADC code, for setting thresholds for
-> thermistor channels.
+On Thu, Oct 14, 2021 at 09:58:44PM -0500, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 > 
-> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
-This little utility function looks fine to me.
+> Rename unwinder functions for consistency and better naming.
+> 
+> 	- Rename start_backtrace() to unwind_start().
+> 	- Rename unwind_frame() to unwind_next().
+> 	- Rename walk_stackframe() to unwind().
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+This looks good to me.
 
+Could we split this from the krpbes/tracing changes? I think this stands
+on it's own, and (as below) the kprobes/tracing changes need some more
+explanation, and would make sense as a separate patch.
+
+> Prevent the following unwinder functions from being traced:
+> 
+> 	- unwind_start()
+> 	- unwind_next()
+> 
+> 	unwind() is already prevented from being traced.
+
+This could do with an explanation in the commis message as to why we
+need to do this. If this is fixing a latent issue, it should be in a
+preparatory patch that we can backport.
+
+I dug into this a bit, and from taking a look, we prohibited ftrace in commit:
+
+  0c32706dac1b0a72 ("arm64: stacktrace: avoid tracing arch_stack_walk()")
+
+... which is just one special case of graph return stack unbalancing,
+and should be addressed by using HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so
+with the patch making us use HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, that's
+no longer necessary.
+
+So we no longer seem to have a specific reason to prohibit ftrace
+here.
+
+> Prevent the following unwinder functions from being kprobed:
+> 
+> 	- unwind_start()
+> 
+> 	unwind_next() and unwind() are already prevented from being kprobed.
+
+Likewise, I think this needs some explanation. From diggin, we
+prohibited kprobes in commit:
+
+  ee07b93e7721ccd5 ("arm64: unwind: Prohibit probing on return_address()")
+
+... and the commit message says we need to do this because this is
+(transitively) called by trace_hardirqs_off(), which is kprobes
+blacklisted, but doesn't explain the actual problem this results in.
+
+AFAICT x86 directly uses __builtin_return_address() here, but that won't
+recover rewritten addresses, which seems like a bug (or at least a
+limitation) on x86, assuming I've read that correctly.
+
+Thanks,
+Mark.
+
+> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
 > ---
->  drivers/iio/adc/qcom-vadc-common.c       | 11 +++++++++++
->  include/linux/iio/adc/qcom-vadc-common.h |  2 ++
->  2 files changed, 13 insertions(+)
+>  arch/arm64/kernel/stacktrace.c | 34 +++++++++++++++++++---------------
+>  1 file changed, 19 insertions(+), 15 deletions(-)
 > 
-> diff --git a/drivers/iio/adc/qcom-vadc-common.c b/drivers/iio/adc/qcom-vadc-common.c
-> index 1472389..194d7c3 100644
-> --- a/drivers/iio/adc/qcom-vadc-common.c
-> +++ b/drivers/iio/adc/qcom-vadc-common.c
-> @@ -677,6 +677,17 @@ u16 qcom_adc_tm5_temp_volt_scale(unsigned int prescale_ratio,
+> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> index 7d32cee9ef4b..f4f3575f71fd 100644
+> --- a/arch/arm64/kernel/stacktrace.c
+> +++ b/arch/arm64/kernel/stacktrace.c
+> @@ -33,8 +33,8 @@
+>   */
+>  
+>  
+> -static void start_backtrace(struct stackframe *frame, unsigned long fp,
+> -			    unsigned long pc)
+> +static void notrace unwind_start(struct stackframe *frame, unsigned long fp,
+> +				 unsigned long pc)
+>  {
+>  	frame->fp = fp;
+>  	frame->pc = pc;
+> @@ -45,7 +45,7 @@ static void start_backtrace(struct stackframe *frame, unsigned long fp,
+>  	/*
+>  	 * Prime the first unwind.
+>  	 *
+> -	 * In unwind_frame() we'll check that the FP points to a valid stack,
+> +	 * In unwind_next() we'll check that the FP points to a valid stack,
+>  	 * which can't be STACK_TYPE_UNKNOWN, and the first unwind will be
+>  	 * treated as a transition to whichever stack that happens to be. The
+>  	 * prev_fp value won't be used, but we set it to 0 such that it is
+> @@ -56,6 +56,8 @@ static void start_backtrace(struct stackframe *frame, unsigned long fp,
+>  	frame->prev_type = STACK_TYPE_UNKNOWN;
 >  }
->  EXPORT_SYMBOL(qcom_adc_tm5_temp_volt_scale);
 >  
-> +u16 qcom_adc_tm5_gen2_temp_res_scale(int temp)
-> +{
-> +	int64_t resistance;
+> +NOKPROBE_SYMBOL(unwind_start);
 > +
-> +	resistance = qcom_vadc_map_temp_voltage(adcmap7_100k,
-> +		ARRAY_SIZE(adcmap7_100k), temp);
-> +
-> +	return div64_s64(resistance * RATIO_MAX_ADC7, resistance + R_PU_100K);
-> +}
-> +EXPORT_SYMBOL(qcom_adc_tm5_gen2_temp_res_scale);
-> +
->  int qcom_adc5_hw_scale(enum vadc_scale_fn_type scaletype,
->  		    unsigned int prescale_ratio,
->  		    const struct adc5_data *data,
-> diff --git a/include/linux/iio/adc/qcom-vadc-common.h b/include/linux/iio/adc/qcom-vadc-common.h
-> index 33f60f4..598a5d2 100644
-> --- a/include/linux/iio/adc/qcom-vadc-common.h
-> +++ b/include/linux/iio/adc/qcom-vadc-common.h
-> @@ -161,6 +161,8 @@ int qcom_adc5_hw_scale(enum vadc_scale_fn_type scaletype,
->  u16 qcom_adc_tm5_temp_volt_scale(unsigned int prescale_ratio,
->  				 u32 full_scale_code_volt, int temp);
+>  /*
+>   * Unwind from one frame record (A) to the next frame record (B).
+>   *
+> @@ -63,8 +65,8 @@ static void start_backtrace(struct stackframe *frame, unsigned long fp,
+>   * records (e.g. a cycle), determined based on the location and fp value of A
+>   * and the location (but not the fp value) of B.
+>   */
+> -static int notrace unwind_frame(struct task_struct *tsk,
+> -				struct stackframe *frame)
+> +static int notrace unwind_next(struct task_struct *tsk,
+> +			       struct stackframe *frame)
+>  {
+>  	unsigned long fp = frame->fp;
+>  	struct stack_info info;
+> @@ -104,7 +106,7 @@ static int notrace unwind_frame(struct task_struct *tsk,
 >  
-> +u16 qcom_adc_tm5_gen2_temp_res_scale(int temp);
-> +
->  int qcom_adc5_prescaling_from_dt(u32 num, u32 den);
+>  	/*
+>  	 * Record this frame record's values and location. The prev_fp and
+> -	 * prev_type are only meaningful to the next unwind_frame() invocation.
+> +	 * prev_type are only meaningful to the next unwind_next() invocation.
+>  	 */
+>  	frame->fp = READ_ONCE_NOCHECK(*(unsigned long *)(fp));
+>  	frame->pc = READ_ONCE_NOCHECK(*(unsigned long *)(fp + 8));
+> @@ -132,28 +134,30 @@ static int notrace unwind_frame(struct task_struct *tsk,
 >  
->  int qcom_adc5_hw_settle_time_from_dt(u32 value, const unsigned int *hw_settle);
-
+>  	return 0;
+>  }
+> -NOKPROBE_SYMBOL(unwind_frame);
+>  
+> -static void notrace walk_stackframe(struct task_struct *tsk,
+> -				    unsigned long fp, unsigned long pc,
+> -				    bool (*fn)(void *, unsigned long),
+> -				    void *data)
+> +NOKPROBE_SYMBOL(unwind_next);
+> +
+> +static void notrace unwind(struct task_struct *tsk,
+> +			   unsigned long fp, unsigned long pc,
+> +			   bool (*fn)(void *, unsigned long),
+> +			   void *data)
+>  {
+>  	struct stackframe frame;
+>  
+> -	start_backtrace(&frame, fp, pc);
+> +	unwind_start(&frame, fp, pc);
+>  
+>  	while (1) {
+>  		int ret;
+>  
+>  		if (!fn(data, frame.pc))
+>  			break;
+> -		ret = unwind_frame(tsk, &frame);
+> +		ret = unwind_next(tsk, &frame);
+>  		if (ret < 0)
+>  			break;
+>  	}
+>  }
+> -NOKPROBE_SYMBOL(walk_stackframe);
+> +
+> +NOKPROBE_SYMBOL(unwind);
+>  
+>  static bool dump_backtrace_entry(void *arg, unsigned long where)
+>  {
+> @@ -208,7 +212,7 @@ noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
+>  		fp = thread_saved_fp(task);
+>  		pc = thread_saved_pc(task);
+>  	}
+> -	walk_stackframe(task, fp, pc, consume_entry, cookie);
+> +	unwind(task, fp, pc, consume_entry, cookie);
+>  
+>  }
+>  
+> -- 
+> 2.25.1
+> 
