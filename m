@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCF343D1D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1468A43D1DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243727AbhJ0Tmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
+        id S243737AbhJ0TpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhJ0Tmu (ORCPT
+        with ESMTP id S231656AbhJ0TpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:42:50 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A26C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 12:40:25 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so6024584pje.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 12:40:25 -0700 (PDT)
+        Wed, 27 Oct 2021 15:45:08 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A307C061570;
+        Wed, 27 Oct 2021 12:42:42 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 17so3423091ljq.0;
+        Wed, 27 Oct 2021 12:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=UKvxmgEWSbJ2Hm18qUpQARw9Aprrt+YRAWy21QT8WZI=;
-        b=RbJLS7cY1vfWFcaIrMiu5eE5ss/0VJ6P+HKlx0W5Z+UfNOLqEtoWdHZ51AbCiksXag
-         UUEKma217Y76jbX7DNQ+LZHBCENHOuB8ThtEzzEr+YKwEPw8kJP0MTDWuS7L3ufEoDGh
-         GuoqZKihZYjAwzY121ux3xRDLydaE0DEP/cN7+iVyyCTd+CVk+/OtIfPsEuWNEaa2EV4
-         rJ4u4T328xmqjOZTkCbOTyJb8G78saIRSSOd598QKYoBXibD+XrJZbW6spVgJmAKSn61
-         gPrKwOzLXOIXYO6ePoZJp6TRGX7EGBl7AcOWlfIh22CfRIhrLcJKuLNHkSEX0vEMoknY
-         NGeA==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lMrIGDyxX8Zy9n5Qfaorgc1V0f7+eeLTleV6gBWprQs=;
+        b=EpcfosP+IsCdHIOo4g9lQWA3Dt1mvkaa2S1lXNcMJ+wAv70XvIlAza40HBE97tgQSR
+         IkfIOp4xJgtTffYGkAODDYFJUZj25zWXktUjS8WptldLXdmHDvPyX9mlbT0mLS1M3dXX
+         vUj4Del4y/UjFwXSQBiS0m51FgS+KELr7DJbgRJsAD/6braCFNhttH/KC80FJLOUhVUT
+         XfbMBVd+oQ2hJle6n3br/BePBAtqcauPVqovMypm7aya3CAfvvL8qtYTm6PKzR8w5vVX
+         22lLwx9nfxESrOYG2VjBRQJktOLAAIQCePAjr6ylcuwqDGPz2+ysUeVsBLBoQzGs0iWt
+         nJuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=UKvxmgEWSbJ2Hm18qUpQARw9Aprrt+YRAWy21QT8WZI=;
-        b=3+/+Dwwp/ltQxbAnA5osaZhOddGzw7j2iyl18rMEJVJuTtmK+jV3+MbLouTdpdfTKj
-         kXYQXFPAHIl8xFuJdvxfd7RFfAWAdyHaQxwD1IJzZuNm5oTTV6n8aWTJpFsy4RFv/fCd
-         GBNIazPIWBNd3Ng6hHpaNNSVomRlytFh+ocF7a8bC8gRvsP2+2PNoxfRA+a/LztxPUtP
-         DFYVNBNrb8/cS6r1Dq55cpx2JHOYl0ccBCfB5U7eYGbK/NDX+LGn6QKrzvTdui92B6KQ
-         gVBV4MC6oxvSW9sWLk4r4R57F11S7ZIModMPFEcZm1fnoXeaWXrcdw02yLbfw0yaWsJ0
-         kGLg==
-X-Gm-Message-State: AOAM532Xx98pRA0GRz3FNE34EcF2LNtVQiIblftXuIX3O9fIkyOOI8lg
-        FeR0M3+Qna0eThRnxTXM8PYX9g==
-X-Google-Smtp-Source: ABdhPJxpj+imBC8EEuIT1jIjYqQ5tNGOiZr4IKw3CFnjtsPq1CLe/QExxyoZRskePRhKkdHXWcuPSg==
-X-Received: by 2002:a17:90b:17d2:: with SMTP id me18mr7931427pjb.132.1635363624831;
-        Wed, 27 Oct 2021 12:40:24 -0700 (PDT)
-Received: from [192.168.0.14] ([50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id h12sm738874pfv.117.2021.10.27.12.40.24
+        bh=lMrIGDyxX8Zy9n5Qfaorgc1V0f7+eeLTleV6gBWprQs=;
+        b=u8oweZ26UHmgHHGh/v81E2HTEa0EJGrShkUbfkEDLE/H8x/L9VCiPjcbj5C+KeCnmN
+         mbIyaSHSr+PaNMftdbtexOz0R2U9Yw67yjDERe1ajmtzXmwsijd0KTfHdXTel3EvHByz
+         0DXbkg2ysx/mUNWwUAsOiwGtA/7zAqRIrvNmlx2NZRpvZZ2hC/tQc8ZgO1WxowU4he6/
+         um56cwS5s+JhkKugQ2muHjVnuq506dqlrN38W+Gqd8ncWdrvcvs9X6mO1slURrEQ8Q+G
+         PhbPRPGVJTiN4ti+2jqBQs9hgOsex1b5q3Moh4YKVE5CwOFgUiWk2bMvX6VGWApOsn5D
+         RDcA==
+X-Gm-Message-State: AOAM532Xx3TFi7QdHOMnFEe4BmN/dfQaqsW151rv/1ztjnd988eIvr0o
+        YjRKZnXeSykQA94b34dUvds=
+X-Google-Smtp-Source: ABdhPJxS+SO4cZo9cpkl8K0LznK+P9fYpGRd1oswPP0T1GAwpmwlx8un9r9DrfnHA/QNv1WaeAvq9A==
+X-Received: by 2002:a05:651c:4cf:: with SMTP id e15mr34624456lji.139.1635363760555;
+        Wed, 27 Oct 2021 12:42:40 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
+        by smtp.googlemail.com with ESMTPSA id o14sm71771ljh.62.2021.10.27.12.42.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 12:40:24 -0700 (PDT)
-Message-ID: <3d076307-5a85-8db7-ae42-fd696f79519b@pensando.io>
-Date:   Wed, 27 Oct 2021 12:40:23 -0700
+        Wed, 27 Oct 2021 12:42:40 -0700 (PDT)
+Subject: Re: [PATCH v14 00/39] NVIDIA Tegra power management patches for 5.17
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-clk@vger.kernel.org, David Heidelberg <david@ixit.cz>
+References: <20211025224032.21012-1-digetx@gmail.com>
+ <CAPDyKFrA2Jcb5BmaFmajtdUCmpwoPjAAvPC_MhoWwjDXJynD=w@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <98072124-c196-5a5a-7fa6-9c8e465f9878@gmail.com>
+Date:   Wed, 27 Oct 2021 22:42:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: Unsubscription Incident
+In-Reply-To: <CAPDyKFrA2Jcb5BmaFmajtdUCmpwoPjAAvPC_MhoWwjDXJynD=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>,
-        John 'Warthog9' Hawley <warthog19@eaglescrag.net>
-Cc:     Slade Watkins <slade@sladewatkins.com>,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Lijun Pan <lijunp213@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
- <CA+h21hqrX32qBmmdcNiNkp6_QvzsX61msyJ5_g+-FFJazxLgDw@mail.gmail.com>
- <YXY15jCBCAgB88uT@d3>
- <CA+pv=HPyCEXvLbqpAgWutmxTmZ8TzHyxf3U3UK_KQ=ePXSigBQ@mail.gmail.com>
- <61f29617-1334-ea71-bc35-0541b0104607@pensando.io>
- <20211027123408.0d4f36f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Shannon Nelson <snelson@pensando.io>
-In-Reply-To: <20211027123408.0d4f36f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 12:34 PM, Jakub Kicinski wrote:
-> On Mon, 25 Oct 2021 11:34:28 -0700 Shannon Nelson wrote:
->>>> It happened to a bunch of people on gmail:
->>>> https://lore.kernel.org/netdev/1fd8d0ac-ba8a-4836-59ab-0ed3b0321775@mojatatu.com/t/#u
->>> I can at least confirm that this didn't happen to me on my hosted
->>> Gmail through Google Workspace. Could be wrong, but it seems isolated
->>> to normal @gmail.com accounts.
->>>
->>> Best,
->>>                -slade
->> Alternatively, I can confirm that my pensando.io address through gmail
->> was affected until I re-subscribed.
-> Did it just work after re-subscribing again? Without cleaning the inbox?
-> John indicated off list that Gmail started returning errors related to
-> quota, no idea what that translates to in reality maybe they added some
-> heuristic on too many emails from one source?
+27.10.2021 19:01, Ulf Hansson пишет:
+> On Tue, 26 Oct 2021 at 00:45, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> This series adds runtime PM support to Tegra drivers and enables core
+>> voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
+>>
+>> All patches in this series are interdependent and should go via Tegra tree
+>> for simplicity.
+>>
+>> Changelog:
+>>
+>> v14: - Fixed missing runtime PM syncing on removal of drivers, which was
+>>        spotted by Ulf Hansson in v13.
+>>
+>>      - clk-device driver now resumes RPM on system suspend instead of
+>>        preparing clock which it backs. This was suggested by Ulf Hansson.
+>>
+>>      - clk-device driver now syncs power domain performance unconditionally
+>>        during driver's probe time since GENPD API allows to do this now.
+>>        It was spotted by Ulf Hansson.
+>>
+>>      - Added new "Enable runtime PM during OPP state-syncing" patch, which
+>>        allows drivers to sync state at any time. Previously drivers were
+>>        obligated to take care of enabling RPM at the "right" time.
+>>
+>>      - Moved runtime PM initialization/uninitialization of DRM drivers that
+>>        use host1x channel to host1x client init/deinit phase. I noticed that
+>>        there is UAF problem because RPM-suspend callback waits until channel
+>>        is idling and channel is already released/freed during driver's removal
+>>        phase.
+>>
+>>      - Added system suspend support to the new NVDEC DRM driver.
+>>
+>>      - Added missing pm_runtime_mark_last_busy() to DRM driver.
+>>
+>>      - Corrected VDE GENPD patch which previously made video decoder clock
+>>        always-enabled by mistake if legacy PD code path was used. It was
+>>        spotted while we were testing VDE on Tegra114 that doesn't support
+>>        GENPD yet.
+>>
+>>      - Added ack from Peter Chen to the USB patch that he gave to v13.
+>>
+>>      - Changed OPP table names in accordance to the new naming scheme
+>>        required by the recent core OPP binding.
+>>
+>>      - Added 500MHz memory OPP entry used by ASUS Transformer tablets.
+> 
+> Besides those minor nitpicks/questions that I have sent for patch1 and
+> patch29, the series looks good to me!
+> 
+> Feel free to add, for the whole series:
+> 
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-I have two separate accounts through gmail, both of which got dropped:
-snelson@pensando.io
-shannon.lee.nelson@gmail.com
+Thank you, Ulf!
 
-All I did to restore service was resubscribe to the mailing list for 
-both of these accounts.
-
-Neither account has any issue with quota or available storage space that 
-I am aware of.
-
-sln
-
+I'll wait for more comments and re-spin v15 with minor improvements
+around the end of the upcoming merge window.
