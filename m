@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB51543CC58
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB45F43CC73
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242593AbhJ0OjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:39:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47690 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238800AbhJ0OjQ (ORCPT
+        id S236687AbhJ0Ol7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238888AbhJ0Olx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:39:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635345410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0gXXVZ1M1SPzD/8mviUXXiKMlrNVIcsqsHOKxhlwRek=;
-        b=c4F+9GIthu5ISpXu3Nm2pmZ/veI+Hq1JYJWG1+Eh9JjFtthMAsuzAdi585aR4TosBzppBa
-        1pdyaOJsfWTwOxT9C96H8Z7e+EDVAB4MHTvsVIjqaNu29Md1CeLZqs3ckV4JiXvTD7rTJQ
-        m71vTaLzaMK+EnDIS7DpxH2KvOudwjU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-UU3N_ykSOO6SiL7u12Utfg-1; Wed, 27 Oct 2021 10:36:46 -0400
-X-MC-Unique: UU3N_ykSOO6SiL7u12Utfg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1095C112C391;
-        Wed, 27 Oct 2021 14:35:56 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 83585794A9;
-        Wed, 27 Oct 2021 14:35:46 +0000 (UTC)
-Message-ID: <3a0c3397302d59ea313e079435a18bf1b9a43474.camel@redhat.com>
-Subject: Re: [PATCH v2 16/43] KVM: Don't redo ktime_get() when calculating
- halt-polling stop/deadline
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Wed, 27 Oct 2021 17:35:45 +0300
-In-Reply-To: <0072221e-02e8-4d60-9b0f-80d8c423bf4e@redhat.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-17-seanjc@google.com>
-         <0072221e-02e8-4d60-9b0f-80d8c423bf4e@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 27 Oct 2021 10:41:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0315C061745;
+        Wed, 27 Oct 2021 07:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/Z1LSjjxATuKspxn0VwS+AddSpEQQEMWAwB+9QtWo/A=; b=OkNK9AR8pr9DWcIIViUg3PoK7z
+        ZN0B2w5boSWWwN6Pv2E3KJDa3jJmRoBxmD5N2OHm+fh3nbYsSC4m5xq6i0lYRXIcmtlHdD74xMx8d
+        zC+Cu707kT1SV28DvUjI8isbTV4AflPhaCA1TdxQEgEQSRMhao1X4IEpc8dlw56AGJaSQmL4SOl/N
+        NDE5rQddQjZdBy47v/LRWuw+f+Si9QvLNbzXPbenigugnR4niiVstnAlVj/OMAyxZI7bNKSV1um7E
+        GJwoV3OzVI5ahq+eM2nzdXE6spkSb60F8NqA1pm/rkkgmOwg2RmvwFg1LQLir/g/mY9FnGHGxeYnc
+        V4XvcUNg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfk2p-0006rV-7L; Wed, 27 Oct 2021 14:36:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D41BF30018E;
+        Wed, 27 Oct 2021 16:36:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8B7762BF47876; Wed, 27 Oct 2021 16:36:45 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 16:36:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <YXlj/WaCIz4Nr/Fv@hirez.programming.kicks-ass.net>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+ <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+ <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+ <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
+ <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-25 at 16:26 +0200, Paolo Bonzini wrote:
-> On 09/10/21 04:12, Sean Christopherson wrote:
-> > Calculate the halt-polling "stop" time using "cur" instead of redoing
-> > ktime_get().  In the happy case where hardware correctly predicts
-> > do_halt_poll, "cur" is only a few cycles old.  And if the branch is
-> > mispredicted, arguably that extra latency should count toward the
-> > halt-polling time.
-> > 
-> > In all likelihood, the numbers involved are in the noise and either
-> > approach is perfectly ok.
-> 
-> Using "start" makes the change even more obvious, so:
-> 
->      Calculate the halt-polling "stop" time using "start" instead of redoing
->      ktime_get().  In practice, the numbers involved are in the noise (e.g.,
->      in the happy case where hardware correctly predicts do_halt_poll and
->      there are no interrupts, "start" is probably only a few cycles old)
->      and either approach is perfectly ok.  But it's more precise to count
->      any extra latency toward the halt-polling time.
-> 
-> Paolo
-> 
-Agreed.
+On Wed, Oct 27, 2021 at 04:18:17PM +0200, Ard Biesheuvel wrote:
+> On Wed, 27 Oct 2021 at 16:03, Peter Zijlstra <peterz@infradead.org> wrote:
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > /*
+> >  * Turns a Clang CFI jump-table entry into an actual function pointer.
+> >  * These jump-table entries are simply jmp.d32 instruction with their
+> >  * relative offset pointing to the actual function, therefore decode the
+> >  * instruction to find the real function.
+> >  */
+> > static __always_inline void *nocfi_ptr(void *func)
+> > {
+> >         union text_poke_insn insn = *(union text_poke_insn *)func;
 
+also, probably, for the paranoid amongst us:
 
+	if (WARN_ON_ONCE(insn.opcode != JMP32_INSN_OPCODE))
+		return func;
+
+> >         return func + sizeof(insn) + insn.disp;
+> > }
+> >
+> > But really, that wants to be a compiler intrinsic.
+> 
+> Agreed. We could easily do something similar on arm64, but I'd prefer
+> to avoid that too.
+
+Right, because on x86 CET-IBT will force that entry to have a different
+form (and size), similar on arm64 with BTI.
+
+I was thinking the compiler really should implicitly do this conversion
+when a function pointer is cast to an integer type. But barring that, we
+really need an intrinsic to perform this.
+
+Also, perhaps the compiler should admit it's doing dodgy crap and
+introduce the notion of address spaces and use the type system to
+separate these two forms.
