@@ -2,276 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D11643CFEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E08D43CFF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243351AbhJ0RpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S243367AbhJ0Rpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243325AbhJ0RpH (ORCPT
+        with ESMTP id S229887AbhJ0Rpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:45:07 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68194C0613B9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:42:41 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id y80so8212573ybe.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:42:41 -0700 (PDT)
+        Wed, 27 Oct 2021 13:45:35 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42FFC061570;
+        Wed, 27 Oct 2021 10:43:09 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so4643322otq.12;
+        Wed, 27 Oct 2021 10:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kBCZKPDNQAHmIZq7XduSwhYmuOetWWPl476PrH0YNN0=;
-        b=c1yWnQHxZHmMmNhoUfzo1TMFW/D1F1/UZAPStMR8kK2shT1bIlw4Vz87gK7e2W7C5d
-         qZyapuNaU8LqKQ7yqG6aDFRV+/6fDIgicnSOt3MVoQv473UjZ4sNsN4GIxWCZwq8cvz/
-         aXmvuWfYbWB3uoKmZf1L4BOJHgIU1r0S7jpDyMini7wC2QsiwWXh8jlTuABGzgvarTKU
-         /PrRXTDJJn3cYwR7jGGdjH6OTWA1VuF5N24mb12ryhSfQelkF94CPVK+/s519yEvWEjG
-         Yhp5wZgFsroCt/Ds03/trmCuPE988KKx9V74jYCqtKI/RerFz/T6u7PNkcYkzyvbUlou
-         AfYw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x8T3iKaajnLQ50SzCr8FSJA5lHkizBtciDyKyGwL3bg=;
+        b=A2EpsjmCuwAVXT3+W6sy6uzLsf3wZcjOG9ruZHlzrg5SoijB+uTHr+m771vYBq1hgf
+         5qAeUc0oyC/oe2vS43NteSInZ76MGJJxIXkfQ3HE3V6Pl3p1NDKX2a0+AbdofoNB0l/P
+         rpYAbSL9VHbb0vI0RNZtJbzP/OOo5v/MEyJOTcvqUwmBPTyfdDCAP+TGTAruCnW1dK39
+         MSvDaIIbLBDdYj0JqxxhDrKY6dL2+8+ZN1OjTXlpssImD7UqagvBFljOD5iIO1eGa9Ke
+         naelecwjNEV9fUvAMC/8h847iB08zynNqhbr7D+PE2fTcpwnqpVTvVx84j3JcUr7bE8x
+         OIyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kBCZKPDNQAHmIZq7XduSwhYmuOetWWPl476PrH0YNN0=;
-        b=ZD+B5BE0CG6INR3pAxUoyS0hlv2ovwovTL5VAhDTI1ScGvvdD26BveWe09yH3bawOx
-         eU36qs4PlqREKGzrKNDHemRxPn/jL8OX4WWpGPACEr/pPbx252QzmxQDiKRvAAmvgI/2
-         F6TN3Ejb+4aOkuTegAbu33p2PeY0fbxi4wlwya16+834z+va0dz98oUkPQj3o7DKuhsI
-         BFuw6R6g97CbVZvuZJ/VgZQOMsl29DCqUbA7BoUVBCuvDtFYpiYiV7VsZ71q8x6h3dC3
-         1gSZmSRP6CvvlVylvk/xtgNWsqOPTrHJUiGICs+ljnI5mZQYFjokpPgV6Wr6oElSlPb6
-         57Xg==
-X-Gm-Message-State: AOAM532a9P20gNlBxF4apoG2L1GCrluX3yYdX82So3E6mkZgUPouWDDT
-        zShhOs5GIopM8QBCnEYfAS71YiVjbBEORzI7mTlmhw==
-X-Google-Smtp-Source: ABdhPJyzyQR0M+no29qupLGsoz3t3Qt4vFELy82tvV2wN2FrbWSg0TFPJJgUZMaYPBh3o4cyCdgrlqUnK/2uL8vDe4c=
-X-Received: by 2002:a25:30b:: with SMTP id 11mr33445740ybd.202.1635356560450;
- Wed, 27 Oct 2021 10:42:40 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=x8T3iKaajnLQ50SzCr8FSJA5lHkizBtciDyKyGwL3bg=;
+        b=TXU4UtGXceqWN0ymmb9zUQ7aVkNixveIpb+gfJwPjevfhx2Bh5sd/yZATWBHcReTSF
+         y9FYOp+difnr8OR8j61OB9kojrHR6ZKj7ABDhTW5QBu+MVe5TgfXIWgfHpVsEEmkDj/o
+         +roeQfaJZlnGVP+CUngfLI5ThW4a6lxVtFRN6b8yxPrtr+Aw8NpRZCjNFtuRUEqdbjHH
+         JW7TtBdaYa/R8wlBu67n3D1FIE68a0dADxqKVRLZkeD4kDat8ZQqWs7IobH2eb35OaKE
+         ll7l5Jsu38a/CMMyYZ3pPO98MQdCP9f479LdbMyR7aJ4gPxNXzGiTKskHURf2Erfh7ko
+         lWNg==
+X-Gm-Message-State: AOAM532VAnPQz9whI+yZNBcvVllZSWCKW2XLXsxFe5xJqTU+u8r0+2tm
+        juuEkZHEO2giDNwz3CgrL8bzAKIRRVY=
+X-Google-Smtp-Source: ABdhPJwAZC2YzlblMqm+i3WO8/xXFn/RpvP+KaDaMNHmcr7F+PjblbAum/KrZ2J8gFJ1xKw8ahrthA==
+X-Received: by 2002:a05:6830:1442:: with SMTP id w2mr24473307otp.76.1635356589069;
+        Wed, 27 Oct 2021 10:43:09 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bf3sm277264oib.34.2021.10.27.10.43.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 10:43:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 27 Oct 2021 10:43:07 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Oskar Senft <osk@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v8 1/2] dt-bindings: hwmon: Add nct7802 bindings
+Message-ID: <20211027174307.GA2751517@roeck-us.net>
+References: <20211020164213.174597-1-osk@google.com>
 MIME-Version: 1.0
-References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com> <YXmNaoV4dBTOJ3+w@casper.infradead.org>
-In-Reply-To: <YXmNaoV4dBTOJ3+w@casper.infradead.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 27 Oct 2021 10:42:29 -0700
-Message-ID: <CAJuCfpFP-57JkWhDAN4T6VtPboSV4LGqipHMU4j+wJKU45yjYg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Liam R. Howlett" <liam.howlett@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020164213.174597-1-osk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 10:35 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Oct 27, 2021 at 09:08:21AM -0700, Suren Baghdasaryan wrote:
-> > Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
-> > to me the most semantically correct way forward and the pushback is on
-> > the basis of regressing performance of the exit path. I would like to
-> > measure that regression to confirm this. I don't have access to a big
-> > machine but will ask someone in another Google team to try the test
-> > Michal wrote here
-> > https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
-> > a server with and without a custom patch.
->
-> Sorry to hijack this, but could you ask that team to also test this
-> patch?  I think there's probably a good-sized win here, but I have no
-> profiles to share at this point.  I've only done light testing, and
-> it may have bugs.
->
-> NB: I only did the exit() path here.  fork() conversion is left as an
-> exercise for the reader^W^W Liam.
+On Wed, Oct 20, 2021 at 12:42:12PM -0400, Oskar Senft wrote:
+> This change documents the device tree bindings for the Nuvoton
+> NCT7802Y driver.
+> 
+> Signed-off-by: Oskar Senft <osk@google.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-To clarify, this patch does not change the mmap_write_lock portion of
-exit_mmap. Do you want to test it in isolation or with the locking
-changes in exit_mmap I mentioned?
+Applied.
 
->
-> From 5f9daa14a5e58c86a73eccf59abe23d131004926 Mon Sep 17 00:00:00 2001
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Date: Wed, 27 Oct 2021 13:28:35 -0400
-> Subject: [PATCH] mm: Add vmavec
->
-> The vmavec lets us allocate and free batches of VMAs instead of
-> one at a time.  Should improve fork() and exit() performance.
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Thanks,
+Guenter
+
 > ---
->  include/linux/vmavec.h | 38 ++++++++++++++++++++++++++++++++++++++
->  kernel/fork.c          | 17 +++++++++++++++++
->  mm/mmap.c              | 30 ++++++++++++++++++++++--------
->  3 files changed, 77 insertions(+), 8 deletions(-)
->  create mode 100644 include/linux/vmavec.h
->
-> diff --git a/include/linux/vmavec.h b/include/linux/vmavec.h
+> Changes from PATCH v7:
+> - Implemented review comments:
+>   - Added blank lines to increase readability.
+>   - Moved "additionalProperties" up to increase readability.
+> 
+> Changes from PATCH v6:
+> - Fixed formatting error reported by yamllint
+> 
+> Changes from PATCH v5:
+> - Refactored to use patternProperties.
+> - Added validation for sensor-type and temperature-mode.
+> ---
+>  .../bindings/hwmon/nuvoton,nct7802.yaml       | 145 ++++++++++++++++++
+>  1 file changed, 145 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
 > new file mode 100644
-> index 000000000000..8a324e2e1258
+> index 000000000000..2f0620ecccc9
 > --- /dev/null
-> +++ b/include/linux/vmavec.h
-> @@ -0,0 +1,38 @@
-> +/*
-> + * A vma vector is an array of vm_area_structs, with a counter.
-> + */
+> +++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+> @@ -0,0 +1,145 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
 > +
-> +struct vm_area_struct;
+> +$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7802.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +#define VMAVEC_SIZE    15
+> +title: Nuvoton NCT7802Y Hardware Monitoring IC
 > +
-> +struct vmavec {
-> +       unsigned char nr;
-> +       void *vmas[VMAVEC_SIZE];
-> +};
+> +maintainers:
+> +  - Guenter Roeck <linux@roeck-us.net>
 > +
-> +#define VMAVEC(name)   struct vmavec name = { }
+> +description: |
+> +  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
+> +  5 remote temperature sensors with SMBus interface.
 > +
-> +static inline bool vmavec_full(struct vmavec *vmavec)
-> +{
-> +       return vmavec->nr == VMAVEC_SIZE;
-> +}
+> +  Datasheets:
+> +    https://www.nuvoton.com/export/resource-files/Nuvoton_NCT7802Y_Datasheet_V12.pdf
 > +
-> +static inline bool vmavec_empty(struct vmavec *vmavec)
-> +{
-> +       return vmavec->nr == 0;
-> +}
+> +additionalProperties: false
 > +
-> +static inline
-> +void vmavec_push(struct vmavec *vmavec, struct vm_area_struct *vma)
-> +{
-> +       vmavec->vmas[vmavec->nr++] = vma;
-> +}
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nuvoton,nct7802
 > +
-> +static inline struct vm_area_struct *vmavec_pop(struct vmavec *vmavec)
-> +{
-> +       return vmavec->vmas[--vmavec->nr];
-> +}
+> +  reg:
+> +    maxItems: 1
 > +
-> +void vm_area_free_vec(struct vmavec *vmavec);
-> +void vm_area_alloc_vec(struct mm_struct *mm, struct vmavec *vmavec);
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 38681ad44c76..ea7e8bd00be8 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -97,6 +97,7 @@
->  #include <linux/scs.h>
->  #include <linux/io_uring.h>
->  #include <linux/bpf.h>
-> +#include <linux/vmavec.h>
->
->  #include <asm/pgalloc.h>
->  #include <linux/uaccess.h>
-> @@ -375,6 +376,22 @@ void vm_area_free(struct vm_area_struct *vma)
->         kmem_cache_free(vm_area_cachep, vma);
->  }
->
-> +void vm_area_alloc_vec(struct mm_struct *mm, struct vmavec *vmavec)
-> +{
-> +       int i;
+> +  "#address-cells":
+> +    const: 1
 > +
-> +       vmavec->nr = kmem_cache_alloc_bulk(vm_area_cachep, GFP_KERNEL,
-> +                               VMAVEC_SIZE, vmavec->vmas);
-> +       for (i = 0; i < vmavec->nr; i++)
-> +               vma_init(vmavec->vmas[i], mm);
-> +}
+> +  "#size-cells":
+> +    const: 0
 > +
-> +void vm_area_free_vec(struct vmavec *vmavec)
-> +{
-> +       kmem_cache_free_bulk(vm_area_cachep, vmavec->nr, vmavec->vmas);
-> +       vmavec->nr = 0;
-> +}
+> +patternProperties:
+> +  "^channel@[0-3]$":
+> +    type: object
 > +
->  static void account_kernel_stack(struct task_struct *tsk, int account)
->  {
->         void *stack = task_stack_page(tsk);
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 88dcc5c25225..bff4e94eec8c 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -47,6 +47,7 @@
->  #include <linux/pkeys.h>
->  #include <linux/oom.h>
->  #include <linux/sched/mm.h>
-> +#include <linux/vmavec.h>
->
->  #include <linux/uaccess.h>
->  #include <asm/cacheflush.h>
-> @@ -172,19 +173,24 @@ void unlink_file_vma(struct vm_area_struct *vma)
->         }
->  }
->
-> -/*
-> - * Close a vm structure and free it, returning the next.
-> - */
-> -static struct vm_area_struct *remove_vma(struct vm_area_struct *vma)
-> +static void __remove_vma(struct vm_area_struct *vma)
->  {
-> -       struct vm_area_struct *next = vma->vm_next;
-> -
->         might_sleep();
->         if (vma->vm_ops && vma->vm_ops->close)
->                 vma->vm_ops->close(vma);
->         if (vma->vm_file)
->                 fput(vma->vm_file);
->         mpol_put(vma_policy(vma));
-> +}
+> +    additionalProperties: false
 > +
-> +/*
-> + * Close a vm structure and free it, returning the next.
-> + */
-> +static struct vm_area_struct *remove_vma(struct vm_area_struct *vma)
-> +{
-> +       struct vm_area_struct *next = vma->vm_next;
+> +    properties:
+> +      reg:
+> +        items:
+> +          - enum:
+> +              - 0    # Local Temperature Sensor ("LTD")
+> +              - 1    # Remote Temperature Sensor or Voltage Sensor 1 ("RTD1")
+> +              - 2    # Remote Temperature Sensor or Voltage Sensor 2 ("RTD2")
+> +              - 3    # Remote Temperature Sensor or Voltage Sensor 3 ("RTD3")
 > +
-> +       __remove_vma(vma);
->         vm_area_free(vma);
->         return next;
->  }
-> @@ -3125,6 +3131,7 @@ void exit_mmap(struct mm_struct *mm)
->  {
->         struct mmu_gather tlb;
->         struct vm_area_struct *vma;
-> +       VMAVEC(vmavec);
->         unsigned long nr_accounted = 0;
->
->         /* mm's last user has gone, and its about to be pulled down */
-> @@ -3179,9 +3186,16 @@ void exit_mmap(struct mm_struct *mm)
->         while (vma) {
->                 if (vma->vm_flags & VM_ACCOUNT)
->                         nr_accounted += vma_pages(vma);
-> -               vma = remove_vma(vma);
-> -               cond_resched();
-> +               __remove_vma(vma);
-> +               vmavec_push(&vmavec, vma);
-> +               vma = vma->vm_next;
-> +               if (vmavec_full(&vmavec)) {
-> +                       vm_area_free_vec(&vmavec);
-> +                       cond_resched();
-> +               }
->         }
-> +       if (!vmavec_empty(&vmavec))
-> +               vm_area_free_vec(&vmavec);
->         vm_unacct_memory(nr_accounted);
->  }
->
-> --
-> 2.33.0
->
+> +      sensor-type:
+> +        items:
+> +          - enum:
+> +              - temperature
+> +              - voltage
+> +
+> +      temperature-mode:
+> +        items:
+> +          - enum:
+> +              - thermistor
+> +              - thermal-diode
+> +
+> +    required:
+> +      - reg
+> +
+> +    allOf:
+> +      # For channels RTD1, RTD2 and RTD3, require sensor-type to be set.
+> +      # Otherwise (for all other channels), do not allow temperature-mode to be
+> +      # set.
+> +      - if:
+> +          properties:
+> +            reg:
+> +              items:
+> +                - enum:
+> +                    - 1
+> +                    - 2
+> +                    - 3
+> +        then:
+> +          required:
+> +            - sensor-type
+> +        else:
+> +          not:
+> +            required:
+> +              - sensor-type
+> +
+> +      # For channels RTD1 and RTD2 and if sensor-type is "temperature", require
+> +      # temperature-mode to be set. Otherwise (for all other channels or
+> +      # sensor-type settings), do not allow temperature-mode to be set
+> +      - if:
+> +          properties:
+> +            reg:
+> +              items:
+> +                - enum:
+> +                    - 1
+> +                    - 2
+> +            sensor-type:
+> +              items:
+> +                - enum:
+> +                    - temperature
+> +        then:
+> +          required:
+> +            - temperature-mode
+> +        else:
+> +          not:
+> +            required:
+> +              - temperature-mode
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        nct7802@28 {
+> +            compatible = "nuvoton,nct7802";
+> +            reg = <0x28>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            channel@0 { /* LTD */
+> +              reg = <0>;
+> +            };
+> +
+> +            channel@1 { /* RTD1 */
+> +              reg = <1>;
+> +              sensor-type = "voltage";
+> +            };
+> +
+> +            channel@2 { /* RTD2 */
+> +              reg = <2>;
+> +              sensor-type = "temperature";
+> +              temperature-mode = "thermal-diode";
+> +            };
+> +
+> +            channel@3 { /* RTD3 */
+> +              reg = <3>;
+> +              sensor-type = "temperature";
+> +            };
+> +        };
+> +    };
