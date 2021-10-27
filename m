@@ -2,97 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543E343C099
+	by mail.lfdr.de (Postfix) with ESMTP id 0B40D43C095
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238936AbhJ0DQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 23:16:30 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39699 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237793AbhJ0DQ1 (ORCPT
+        id S237806AbhJ0DQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:16:26 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:41894 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233962AbhJ0DQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 23:16:27 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtqDHde_1635304435;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtqDHde_1635304435)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 11:13:56 +0800
-To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Subject: [PATCH v7 0/2] fix & prevent the missing preemption disabling
-Message-ID: <ecd56129-faed-3b30-5552-7fa1e09bc408@linux.alibaba.com>
-Date:   Wed, 27 Oct 2021 11:13:55 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 26 Oct 2021 23:16:25 -0400
+Received: by mail-ot1-f45.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so1663369ote.8;
+        Tue, 26 Oct 2021 20:14:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QZsgutcYXburh6Om3gxFfVkZQgm5rcUqHCp1VMGBB+c=;
+        b=DD85eIA19kt/W1rYc1LnhNG4e71DeR4hgZYzzyIX1U5IfToP+paDESEVJZXluTs3wE
+         Btdhco5IhmoLtSr9yFZ91J9Gems8iY0jtyHFEyEa4og7vh3v0lTdjrcwED82z/U8YfCh
+         auClgKkap7sHuOhYLYvG1tptpJB00hk+JjRuVgGCLvxINexsUMcLybVbR3pKW0SWaBc9
+         IkFhmOTqVst1ymeR9oTq4pBpFoq5M4/uIgLnKyO6vLxSi8IgBLQpmAWU6PjyLKRCEb/w
+         c+oKMjMv1QnPvDmAl8aTxgd1A8og99xB6r9FvK1n/Du7OChKo8e3TGWwNF5QPag7hZ+p
+         OSKw==
+X-Gm-Message-State: AOAM530PqF3CVv6ts4JAvOtgsocT/o15Dqhhe3DpVO2GdvZH9EymdVFy
+        l9AQWyeFVMwrGEY0zKf5dQ==
+X-Google-Smtp-Source: ABdhPJwsYa2fg2xp4ZMiq9mRoWd9HVle2S+Y17/gYBC7E9sJazBCcIUaMe9RAMjnpV09dzXgvdCOfA==
+X-Received: by 2002:a05:6830:30a1:: with SMTP id g1mr22610662ots.54.1635304440594;
+        Tue, 26 Oct 2021 20:14:00 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r131sm1199208oib.27.2021.10.26.20.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 20:13:59 -0700 (PDT)
+Received: (nullmailer pid 3948938 invoked by uid 1000);
+        Wed, 27 Oct 2021 03:13:58 -0000
+Date:   Tue, 26 Oct 2021 22:13:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     p.zabel@pengutronix.de, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: reset: lan966x phy reset driver bindings
+Message-ID: <YXjD9o8ws5KWlafb@robh.at.kernel.org>
+References: <20211019115205.1516311-1-horatiu.vultur@microchip.com>
+ <20211019115205.1516311-2-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019115205.1516311-2-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The testing show that perf_ftrace_function_call() are using smp_processor_id()
-with preemption enabled, all the checking on CPU could be wrong after preemption.
+On Tue, Oct 19, 2021 at 01:52:04PM +0200, Horatiu Vultur wrote:
+> Document the lan966x phy reset device driving bindings.
+> It is using register access for the internal PHYs and toggles
+> GPIO for external PHYs.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  .../bindings/reset/lan966x-phy,rst.yaml       | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml b/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
+> new file mode 100644
+> index 000000000000..35a32458cafe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/reset/lan966x-phy,rst.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Microchip Lan966x PHY Reset
+> +
+> +maintainers:
+> +  - Horatiu Vultur <horatiu.vultur@microchip.com>
+> +
+> +description: |
+> +  The Microchip Lan966x Switch provides 2 internal PHY which needs to be
+> +  released from reset before they can be accessed. Also it might have external
+> +  PHYs which requires to toggle a GPIO before the access to the PHYs.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^phy-reset@[0-9a-f]+$"
 
-As Peter point out, the section between ftrace_test_recursion_trylock/unlock()
-pair require the preemption to be disabled as 'Documentation/trace/ftrace-uses.rst'
-explained, but currently the work is done outside of the helpers.
+^reset-controller@[0-9a-f]+$
 
-And since the internal using of trace_test_and_set_recursion()
-and trace_clear_recursion() also require preemption to be disabled, we
-can just merge the logical together.
+> +
+> +  compatible:
+> +    const: microchip,lan966x-phy-reset
+> +
+> +  reg:
+> +    items:
+> +      - description: internal phy reset registers
 
-Patch 1/2 will make sure preemption disabled when recursion lock succeed,
-patch 2/2 will do smp_processor_id() checking after trylock() to address the
-issue.
+Just: maxItems: 1
 
-v1: https://lore.kernel.org/all/8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com/
-v2: https://lore.kernel.org/all/b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com/
-v3: https://lore.kernel.org/all/609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com/
-V4: https://lore.kernel.org/all/32a36348-69ee-6464-390c-3a8d6e9d2b53@linux.alibaba.com/
-V5: https://lore.kernel.org/all/3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com/
-V6: https://lore.kernel.org/all/df8e9b3e-504c-635d-4e92-99cdf9f05479@linux.alibaba.com/
+> +
+> +  reg-names:
+> +    const: phy
 
-Michael Wang (2):
-  ftrace: disable preemption when recursion locked
-  ftrace: do CPU checking after preemption disabled
+Not all that useful with only 1 entry.
 
- arch/csky/kernel/probes/ftrace.c     |  2 --
- arch/parisc/kernel/ftrace.c          |  2 --
- arch/powerpc/kernel/kprobes-ftrace.c |  2 --
- arch/riscv/kernel/probes/ftrace.c    |  2 --
- arch/x86/kernel/kprobes/ftrace.c     |  2 --
- include/linux/trace_recursion.h      | 11 ++++++++++-
- kernel/livepatch/patch.c             | 13 +++++++------
- kernel/trace/ftrace.c                | 15 +++++----------
- kernel/trace/trace_event_perf.c      |  6 +++---
- kernel/trace/trace_functions.c       |  5 -----
- 10 files changed, 25 insertions(+), 35 deletions(-)
+> +
+> +  "#reset-cells":
+> +    const: 1
+> +
+> +  external-phy-reset-gpios:
+> +    description: used for release of reset of the external PHY
+> +    maxItems: 1
 
--- 
-1.8.3.1
+This belongs in the external PHY's node.
 
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - "#reset-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    phy_reset: phy-reset@e2010010 {
+> +        compatible = "microchip,lan966x-phy-reset";
+> +        reg = <0xe2010010 0x14>;
+> +        reg-names = "phy";
+> +        #reset-cells = <1>;
+> +    };
+> -- 
+> 2.33.0
+> 
+> 
