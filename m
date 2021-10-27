@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1DB43C3FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33F343C3FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240419AbhJ0HhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:37:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36720 "EHLO mail.kernel.org"
+        id S238692AbhJ0Hhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:37:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234080AbhJ0Hg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:36:58 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 880B060C4A;
-        Wed, 27 Oct 2021 07:34:33 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mfdSB-001qke-G2; Wed, 27 Oct 2021 08:34:31 +0100
+        id S230494AbhJ0Hh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:37:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A02E86109E;
+        Wed, 27 Oct 2021 07:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635320104;
+        bh=vb5/UUmGuytMVQ4VOJsav4ATysXUmZVjZbbtwRDmqdA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sBAhtDYuLPTb0VW4inS89PEVfNVDqk/owmfiYVgUit6DOFXiC+DvpGdAsLIEkqQ83
+         U/i9gOF0yqD6OCaiKIda+RoNji+igQtEf94iaWZW0eZ9R6E8AMKN1fo6ZBpjY3Qh0c
+         AqhEaPsKd34we+35+ifseVtRirdfKeebQfH1ukQ8XQjtJbMgRp/K5ypZFBgrxCLnAR
+         tDj+LJb9seQMpbOTMgO0EORT7UbBoJrqJKYg0RagbiCdvuDeNNa765QxP90Yunl7hX
+         WWmGvGcH5X/YTrGhe4btqUVbFnq25IVvEncoE+QKuzAcaznFKaZOM4XxhC8FXewf+8
+         AOHRiZNQkpc7w==
+Date:   Wed, 27 Oct 2021 08:34:58 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Youngmin Nam <youngmin.nam@samsung.com>
+Cc:     krzysztof.kozlowski@canonical.com, mark.rutland@arm.com,
+        daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com, kgene@kernel.org
+Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+Message-ID: <20211027073458.GA22231@willie-the-truck>
+References: <20211021082650.GA30741@perf>
+ <1b93aaf3-ed64-b105-dec4-07b6f27b385b@canonical.com>
+ <20211022042116.GA30645@perf>
+ <da83de3a-e7a2-f9b2-80f2-25c39717c3e4@canonical.com>
+ <20211026014732.GA45525@perf>
+ <91e926c4-9a3a-196d-1451-d3e7d38fc132@canonical.com>
+ <20211026104518.GA40630@perf>
+ <cb5bd5a3-1c23-0dc5-9f77-112befd7269c@canonical.com>
+ <CGME20211027011125epcas2p2916524051416ede854b750c91a19073b@epcas2p2.samsung.com>
+ <20211027013709.GA17353@perf>
 MIME-Version: 1.0
-Date:   Wed, 27 Oct 2021 08:34:31 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Avoid shadowing a previous local
-In-Reply-To: <20211027024212.64842-1-quic_qiancai@quicinc.com>
-References: <20211027024212.64842-1-quic_qiancai@quicinc.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <da6be00d39c37ad26bfad9e75e814cb1@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: quic_qiancai@quicinc.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027013709.GA17353@perf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-27 03:42, Qian Cai wrote:
-> It is less-prone to have a different variable name from the one in a 
-> wider
-> scope. This is also flagged by GCC (W=2):
+On Wed, Oct 27, 2021 at 10:38:37AM +0900, Youngmin Nam wrote:
+> On Tue, Oct 26, 2021 at 01:00:51PM +0200, Krzysztof Kozlowski wrote:
+> > On 26/10/2021 12:45, Youngmin Nam wrote:
+> > > On Tue, Oct 26, 2021 at 09:10:28AM +0200, Krzysztof Kozlowski wrote:
+> > >> On 26/10/2021 03:47, Youngmin Nam wrote:
+> > >>>> If everyone added a new driver to avoid integrating with existing code,
+> > >>>> we would have huge kernel with thousands of duplicated solutions. The
+> > >>>> kernel also would be unmaintained.
+> > >>>>
+> > >>>> Such arguments were brought before several times - "I don't want to
+> > >>>> integrating with existing code", "My use case is different", "I would
+> > >>>> need to test the other cases", "It's complicated for me".
+> > >>>>
+> > >>>> Instead of pushing a new vendor driver you should integrate it with
+> > >>>> existing code.
+> > >>>>
+> > >>> Let me ask you one question.
+> > >>> If we maintain as one driver, how can people who don't have the new MCT test the new driver?
+> > >>
+> > >> I assume you talk about a case when someone else later changes something
+> > >> in the driver. Such person doesn't necessarily have to test it. The same
+> > >> as in all other cases (Exynos MCT is not special here): just ask for
+> > >> testing on platform one doesn't have.
+> > >>
+> > >> Even if you submit this as separate driver, there is the exact same
+> > >> problem. People will change the MCTv2 driver without access to hardware.
+> > >>
+> > > Yes, I can test the new MCT driver if someone ask for testing after modifying the new driver.
+> > > But in this case, we don't need to test the previous MCT driver. We have only to test the new MCT driver.
+> > 
+> > Like with everything in Linux kernel. We merge instead of duplicate.
+> > It's not an argument.
+> > 
+> > >> None of these differ for Exynos MCT from other drivers, e.g. mentioned
+> > >> Samsung PMIC drivers, recently modified (by Will and Sam) the SoC clock
+> > >> drivers or the ChipID drivers (changed by Chanho).
+> > > From HW point of view, the previous MCT is almost 10-year-old IP without any major change and
+> > > it will not be used on next new Exynos SoC.
+> > > MCTv2 is the totally newly designed IP and it will replace the Exynos system timer.
+> > > Device driver would be dependent with H/W. We are going to apply a lot of changes for this new MCT.
+> > > For maintenance, I think we should separate the new MCT driver for maintenance.
+> > > 
+> > 
+> > There are several similarities which actually suggest that you
+> > exaggerate the differences.
+> > 
+> > The number of interrupts is the same (4+8 in older one, 12 in new one...).
 > 
-> In file included from ./include/linux/kvm_host.h:39,
->                  from arch/arm64/kvm/arm.c:12:
-> arch/arm64/kvm/arm.c: In function 'kvm_arch_vcpu_ioctl_run':
-> ./arch/arm64/include/asm/kvm_host.h:638:26: warning: declaration of
-> 'ret' shadows a previous local [-Wshadow]
->   638 |   typeof(f(__VA_ARGS__)) ret;    \
->       |                          ^~~
-> arch/arm64/kvm/arm.c:852:9: note: in expansion of macro 
-> 'kvm_call_hyp_ret'
->   852 |   ret = kvm_call_hyp_ret(__kvm_vcpu_run, vcpu);
->       |         ^~~~~~~~~~~~~~~~
-> arch/arm64/kvm/arm.c:773:6: note: shadowed declaration is here
->   773 |  int ret;
->       |      ^~~
+> I didn't "exaggerate" at all.
+> The numer of interrups is the same. But their usage is completely different.
+> The type of each timer is different.
+> And previous MCT can only support upto 8 cores.
 > 
-> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> * MCTv1 (Let me call previous MCT as MCTv1)
+>  - 4 global timer + 8 local timer
+>  - Global timer and local timer are totally different.
+>  - 4 global timer have only one 64bit FRC that serves as the "up-counter" with 4 "comparators"
+>  - 8 local timer have 8 of 32bit FRC that serves as the "down-counter" without any "comparators".(just expire timer)
+>  - local timer can be used as per-cpu event timer, so it can only support upto 8 cores.
 > 
-> diff --git a/arch/arm64/include/asm/kvm_host.h
-> b/arch/arm64/include/asm/kvm_host.h
-> index 4be8486042a7..4693d84ccd95 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -635,16 +635,16 @@ void kvm_arm_resume_guest(struct kvm *kvm);
+> * MCTv2
+>  - There are no global timer and local timer anymore.
+>  - 1 of 64bit FRC that serves as "up-counter" (just counter without "comparators")
+>  - 12 comaprators (These are not "counter") can be used as per-cpu event timer so that it can support upto 12 cores.
+>  - RTC source can be used as backup source.
 > 
->  #define kvm_call_hyp_ret(f, ...)					\
->  	({								\
-> -		typeof(f(__VA_ARGS__)) ret;				\
-> +		typeof(f(__VA_ARGS__)) __ret;				\
->  									\
->  		if (has_vhe()) {					\
-> -			ret = f(__VA_ARGS__);				\
-> +			__ret = f(__VA_ARGS__);				\
->  			isb();						\
->  		} else {						\
-> -			ret = kvm_call_hyp_nvhe(f, ##__VA_ARGS__);	\
-> +			__ret = kvm_call_hyp_nvhe(f, ##__VA_ARGS__);	\
->  		}							\
->  									\
-> -		ret;							\
-> +		__ret;							\
->  	})
->  #else /* __KVM_NVHE_HYPERVISOR__ */
->  #define kvm_call_hyp(f, ...) f(__VA_ARGS__)
+> > You assign the MCT priority also as higher than Architected Timer
+> > (+Cc Will and Mark - is it ok for you?)
+> >     evt->rating = 500;      /* use value higher than ARM arch timer *
+> > 
+> Yes, this is absolutely correct on event timer.
+> We cannot use arm arch timer which is operating based on PPI as per-cpu event timer because of poewr mode.
 
-I don't think this makes much sense. This is bound to eventually clash
-with another variable, and you're back to square one.
+You should be able to now that I've added support for per-cpu wakeup timers.
 
-Thanks,
+As long as the Arm arch timer is marked as C3STOP (e.g. by sticking the
+"local-timer-stop" property in the DT notes), then the MCT will be used
+as the wakeup source if you set the CLOCK_EVT_FEAT_PERCPU feature flag.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Give it a try.
+
+Will
