@@ -2,148 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7829F43C2F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6C343C2FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238579AbhJ0G2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
+        id S239783AbhJ0G37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhJ0G2m (ORCPT
+        with ESMTP id S230342AbhJ0G36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:28:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2DFC061570;
-        Tue, 26 Oct 2021 23:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Rqg3stQt4XtdbZ4gHdaa4uO9gPGzOkCoc22v00/z/Gc=; b=fIjDTjmZe9z1PVOTUxtvlWNG54
-        yUcznJwM474rbgpbZgTiSY3WPtnRYLk1XpQslyCwnpRqaDmSJZ6gFF4Yr2g23GDHReOIMBHd8BMA4
-        kt8GwSHzC59W7we2rBshuWtdr1y410iTGcQoDJtvXtt7LP0daBAbYIeX9ougGKfGTNOltfuiyQLzu
-        zFtllP3Y1x2nqxX4gT7TT98Il3XYv4FWIAdJK2hpOKXu7jwwl3qZdHk2IF0ieBqA+IPJK5MJub8Z6
-        PNWQBYlxvDdFVQjaHvfchuN4ZavN7ZPj57OwKFsb/mH0FkaaCOLGVcTdNCJPnitxOq7TZwZpcWoTP
-        mqEaT1kA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfcO0-0041fE-VR; Wed, 27 Oct 2021 06:26:09 +0000
-Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to
- `drm_gem_fb_get_obj'
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
- <857ab1a9-0175-2b2c-e729-2620d0221e1e@suse.de>
- <6862b109-ea12-6ffa-c82b-b23ee26aa5b2@infradead.org>
- <CAK8P3a0wG8dKnuQMOL=bKmBHuSkWcu6OfvhTP-86rpLdr7_5CA@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <61f14f2b-b1cd-b9df-86fd-8fcc4b9eb738@infradead.org>
-Date:   Tue, 26 Oct 2021 23:26:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 27 Oct 2021 02:29:58 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B374C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 23:27:33 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso2208048otl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 23:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B5MA0nKaJS7rcKDOA11AogxOix+nFaUOE1ImuxJcYDA=;
+        b=dhBwKbOwAYMYUz8ceeSMwYnJ2lR/PGywrlD85bksuK1tiAvOCsz5t7EUX3S55FZL7S
+         NXmERTWq28ZYUbGMQgpqMWmYOmpdBwB6RCyFKRzxoe8kUGfcPzOABUiFKPQabVVoJS82
+         bDPe9hX/D2BrGGon2yVji4Sw4lObhibBHcOzmgwScrLLMloNkUC1XqgvyAD7UuHbIGNV
+         UZBeunMcN8aNQRTbfFgkAC0BMZ92ZesLNIt2zRy32nhHA+11LmajHRjqgrMjE/Avtynj
+         /xcsEJV7uL/jozYEJRXrPVgHFNYCR3G9FPcYjqJVM9FtaekepPuofAeYuESJUq5ztK+S
+         MA0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B5MA0nKaJS7rcKDOA11AogxOix+nFaUOE1ImuxJcYDA=;
+        b=pW3JY2J5YBP/Y2+2rDqJYWtHg1OWzAIb8N1FNTx/BM/z9sxNvXbmFnZBXTi+BNLUvI
+         4UFICcrxJ6PdJuO78K4suqHMX74c4P/8xezYLAo9jO510sBEICiSBg2n/mCFvVXYeqRZ
+         MUnyspwkjyRup2vzPaRjvwGItxmwEBFJ2ARQF/4NjKahKdgk/Mr/C4azl0nmCpf6udo3
+         YvGNkOHpq8heABbRTPRh+iOUGVjQvYx5rShdEYTD9KBHJDOV58Ae/i7CJYS55WnIiznX
+         2lfkfmnpj1eD8WRW37Ag+7ct4Wg+0uFN9tOP/3epS8Z2qAyksFKW+YOmhyqZwch/UkFv
+         /fNw==
+X-Gm-Message-State: AOAM533d3sMxnI0xV4Gjam/hymOT4rta3Ah7tPPALEa8CARMYEEZUDKL
+        J+FFlaiyiz0gfckJ1cjIRmMz62dC0r3R1CjEQne+pg==
+X-Google-Smtp-Source: ABdhPJy2xK1uraUN/Ksh8TjZCc0phOz1L3tGsEYpRQ7MnWJpQbgphMlWiHyYTyBBsJeRe1zFo7HaIOtHHY2HTKDnUGw=
+X-Received: by 2002:a05:6830:1acc:: with SMTP id r12mr3925895otc.196.1635316052608;
+ Tue, 26 Oct 2021 23:27:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0wG8dKnuQMOL=bKmBHuSkWcu6OfvhTP-86rpLdr7_5CA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000c87fc005cef26865@google.com> <ade6c05e-fe82-c61a-bf02-8c8fcd918a75@suse.com>
+In-Reply-To: <ade6c05e-fe82-c61a-bf02-8c8fcd918a75@suse.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 27 Oct 2021 08:27:21 +0200
+Message-ID: <CACT4Y+ZQOrbeT5_Z+DnUskQkX94ztc+bQ0O=SYa1LgV0mswBAg@mail.gmail.com>
+Subject: Re: [syzbot] INFO: task hung in sisusb_open
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     syzbot <syzbot+fd9d03311cdce9a9ec36@syzkaller.appspotmail.com>,
+        andreyknvl@google.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, thomas@winischhofer.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/21 11:19 PM, Arnd Bergmann wrote:
-> On Wed, Oct 27, 2021 at 2:58 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
->>>
->>> Looking at this config, there is:
->>>
->>> CONFIG_DRM=y
->>> # CONFIG_DRM_DP_AUX_CHARDEV is not set
->>> # CONFIG_DRM_DEBUG_MM is not set
->>> # CONFIG_DRM_DEBUG_SELFTEST is not set
->>> CONFIG_DRM_KMS_HELPER=m
->>> # CONFIG_DRM_LOAD_EDID_FIRMWARE is not set
->>> # CONFIG_DRM_DP_CEC is not set
->>> CONFIG_DRM_GEM_CMA_HELPER=y
->>> CONFIG_DRM_KMS_CMA_HELPER=y
->>>
->>> GEM_CMA_HELPER depends on KMS_HELPER, but the latter is a module. That's probably the cause of the problem. Is it intentionally set this way?
->>>
->>
->> The only drivers that select DRM_KMS_HELPER are both =m, so that's how
->> DRM_KMS_HELPER is set also.
->>
->> Symbol: DRM_KMS_HELPER [=m]
->> Type : tristate
->> Defined at drivers/gpu/drm/Kconfig:82
->> Depends on: HAS_IOMEM [=y] && DRM [=y]
->> Selected by [m]:
->> - DRM_ATMEL_HLCDC [=m] && HAS_IOMEM [=y] && DRM [=y] && OF [=y] && COMMON_CLK [=y] && MFD_ATMEL_HLCDC [=y] && ARM [=y]
->> - DRM_ASPEED_GFX [=m] && HAS_IOMEM [=y] && DRM [=y] && OF [=y] && (COMPILE_TEST [=n] || ARCH_ASPEED [=y]) && MMU [=y]
->>
->>
->> I did the ARM cross-build and also see the linker error.
->> I didn't understand why -- and still don't, but here is a little
->> speculation:
->>
->> In the past (e.g. 10 years ago), we have to move some .o files
->> in lib/ from lib-y to obj-y so that they would always be included
->> in the final object file and not cause their user/caller object
->> files to suffer from undefined references.
->> These happened because unused functions(?) in lib-y files are
->> stripped out of the final object files.
->> The same thing could be happening here (still just guessing).
->>
->> Does that help any?  I dunno.
->>
->> Adding Arnd to Cc: to see if he has any ideas...
-> 
->  From all I can tell, the problem is that DRM_KMS_CMA_HELPER is a 'bool'
-> symbol, so if it gets selected by a '=m' driver, it turns into '=y', which
-> then selects DRM_GEM_CMA_HELPER=y, but that one cannot link
-> against DRM_KMS_HELPER=m code.
-> 
-> This trivial change makes it all build:
-> 
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index c08860db2520..699f434ce813 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -218,7 +218,7 @@ config DRM_GEM_CMA_HELPER
->            Choose this if you need the GEM CMA helper functions
-> 
->   config DRM_KMS_CMA_HELPER
-> -       bool
-> +       tristate
->          depends on DRM
->          select DRM_GEM_CMA_HELPER
->          help
-> 
-> but this needs some more testing to make sure it doesn't add
-> any other regressions.
-> 
-> Interestingly, I never hit the problem in randconfig testing since
-> there is always some '=y' driver that selects DRM_KMS_HELPER.
-> 
->          Arnd
-> 
+On Mon, 25 Oct 2021 at 16:40, 'Oliver Neukum' via syzkaller-bugs
+<syzkaller-bugs@googlegroups.com> wrote:
+>
+>
+> On 22.10.21 17:10, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    2f111a6fd5b5 Merge tag 'ceph-for-5.15-rc7' of git://github..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15a3aaf0b00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=61f4d9af07d3bbdf
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=fd9d03311cdce9a9ec36
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d4e9fcb00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1444ada4b00000
+>
+> Hi,
+>
+> do I understand the reproducer correctly in that it just creates a
+> device and then
+> does nothing?
 
-Hi Arnd,
-Thomas had posted a patch that also fixes the problem.
-Somehow I missed seeing that the first time around.
+Hi Oliver,
 
-Thanks.
--- 
-~Randy
+Yes, it looks like it connects some device and executes some handshake
+sequence and then does nothing beyond that.
