@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB3D43C459
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B6343C45D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240654AbhJ0HvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:51:09 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:45668 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240653AbhJ0HvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:51:08 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-03 (Coremail) with SMTP id rQCowACniOVEBHlh5MUkBQ--.5600S2;
-        Wed, 27 Oct 2021 15:48:20 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] clocksource: Fix implicit type conversion
-Date:   Wed, 27 Oct 2021 07:48:19 +0000
-Message-Id: <1635320899-2742957-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowACniOVEBHlh5MUkBQ--.5600S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryDAFWftw4xCFW8ZF4DXFb_yoW8XFy8pr
-        WUC34UJrs5Xa42vayqq39rCr93Cw4vvr1S9ayDJrySyF13tw18XFZrJ343WFWUKF4kWr1a
-        vFyfXw4j9anrZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUh4SOUUUUU=
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S240658AbhJ0Hvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:51:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37961 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237077AbhJ0Hvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:51:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635320953; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=8GMdHbbqAULcs7zIj12mg8RI8efLCizjjiOsYZymurY=; b=fqDJEdvOZoskzf8EfSNQAaW0LR67iwEaUcyiLu7Bv9K5iuyihuJ98JT9JKfM49jh/V3rhZbW
+ Xw+UNSuzJaVnXDUp94qU3rWS4zq0xvKEz+teLs3XaCzhJR6bWtIiGQ1dKkOHTdUDpwak4C4/
+ WSjSoLf5nTyPEFtaS63bpPniWw4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 61790469bd6886bdf713ba24 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 07:48:57
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CD049C4338F; Wed, 27 Oct 2021 07:48:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.242.143.72] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 99EA1C43616;
+        Wed, 27 Oct 2021 07:48:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 99EA1C43616
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 3/3] pinctrl: qcom: Add SC7280 lpass pin configuration
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+        bjorn.andersson@linaro.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, judyhsiao@chromium.org,
+        lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
+        robh+dt@kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, tiwai@suse.com
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1633614519-26680-1-git-send-email-srivasam@codeaurora.org>
+ <1633614519-26680-4-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n53SqOHKDpMQicrFNmZ1YxAPesTAk4j6kJVi3xMV8re4-w@mail.gmail.com>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <1d951b30-8298-b739-51c4-13cb2de741b9@codeaurora.org>
+Date:   Wed, 27 Oct 2021 13:18:49 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <CAE-0n53SqOHKDpMQicrFNmZ1YxAPesTAk4j6kJVi3xMV8re4-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the type of 'next_cpu' is int, its value is range from (-2^31)
-to (2^31 - 1).
-But the return type of cpumask_next() is unsigned int, whose value
-is range from 0 to (2^32 - 1).
-Suppose that the return value of cpumask_next() is (2^31), as it is
-impicitly casted to int, the actual value of 'next_cpu' is (-2^31).
-Also since the type of 'nr_cpu_ids' is unsigned int, we suppose the
-value of 'nr_cpu_ids' is (2^32 - 1).
-Therefore, the restriction 'next_cpu >= nr_cpu_ids' isn't statisfied
-because 'next_cpu' is impicitly casted to unsigned int, whose value
-is (2^31).
-As a result, the value of 'next_cpu' in add_timer_on() is (-2^31)
-that is obviouly illegal and dangerous.
-To avoid the risk, it might be better to add the check which can
-prevent the illegal input for add_timer_on().
 
-Fixes: 5db0e1e ("cpumask: replace for_each_cpu_mask_nr with for_each_cpu in kernel/time/")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- kernel/time/clocksource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 10/7/2021 11:24 PM, Stephen Boyd wrote:
+> Quoting Srinivasa Rao Mandadapu (2021-10-07 06:48:39)
+>> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+>> index c0117c5..0b68065 100644
+>> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+>> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+>> @@ -237,6 +264,15 @@ static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
+>>          .nfunctions = ARRAY_SIZE(lpass_functions),
+>>   };
+>>
+>> +static struct lpi_pinctrl_variant_data sc7280_lpi_data = {
+> Can this variant data be const?
+Okay. Will change accordingly.
+>> +       .pins = lpass_lpi_pins,
+>> +       .npins = ARRAY_SIZE(lpass_lpi_pins),
+>> +       .groups = sc7280_groups,
+>> +       .ngroups = ARRAY_SIZE(sc7280_groups),
+>> +       .functions = lpass_functions,
+>> +       .nfunctions = ARRAY_SIZE(lpass_functions),
+>> +};
+>> +
+>>   static int lpi_gpio_read(struct lpi_pinctrl *state, unsigned int pin,
+>>                           unsigned int addr)
+>>   {
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 2cd9025..6237f18 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -291,7 +291,7 @@ static void clocksource_watchdog(struct timer_list *unused)
- 	 * to each other.
- 	 */
- 	next_cpu = cpumask_next(raw_smp_processor_id(), cpu_online_mask);
--	if (next_cpu >= nr_cpu_ids)
-+	if (next_cpu < 0 || next_cpu >= nr_cpu_ids)
- 		next_cpu = cpumask_first(cpu_online_mask);
- 
- 	/*
 -- 
-2.7.4
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
