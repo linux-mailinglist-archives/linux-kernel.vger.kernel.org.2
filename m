@@ -2,153 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2663443CBC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5324543CBCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242497AbhJ0OS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:18:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27428 "EHLO
+        id S242467AbhJ0OT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:19:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40245 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242400AbhJ0OQS (ORCPT
+        by vger.kernel.org with ESMTP id S242446AbhJ0ORU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:16:18 -0400
+        Wed, 27 Oct 2021 10:17:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635344032;
+        s=mimecast20190719; t=1635344094;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ly0sD9mgKwi2cWXq7KBfTQkletnFH+Zj3US/GhzOwog=;
-        b=P9DJWeOaJbwWF8vGQn6e1+OVeQLjJcGHAdic7DgWHsPbEvmRwaMvbBcfjKqCLAa9Jl6FvK
-        NJH1NE0pWCru4rDohQeShIxxmJto9ujTbRyIlEWGR/NGhmqm4cO5vMrn+WXjqsRgTB7ngt
-        r8GAPny9D/9BAronk1Ud05vzqBW+kNA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-bMAVpT6-O0y8PYhLrVaGLA-1; Wed, 27 Oct 2021 10:13:51 -0400
-X-MC-Unique: bMAVpT6-O0y8PYhLrVaGLA-1
-Received: by mail-ed1-f69.google.com with SMTP id s12-20020a50dacc000000b003dbf7a78e88so2463640edj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:13:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Ly0sD9mgKwi2cWXq7KBfTQkletnFH+Zj3US/GhzOwog=;
-        b=jkMabvbmxnxFvmpUcUX6784oqThIvz02gyKMwN3kZtL6RW4IocaqXim3mevCdKnO8Z
-         4HGiai9Jiad5wjwJVApSeJL9P3DLVp9LZBj2KMtrIEZtkH90jeNYEhPOdWy25mMFymLe
-         oJ098xQVznciWb79oexHVLGgc584yf6RRbNrD6WFviNW2LGb4+wO5p9J2Sl5Wkp1Kv4p
-         Kn8/p8ThBcle+FOZ4am66BLkKyAbIgzs65XF8VwyIiuQT5RMstSIgBeV66C3ijjPxoq/
-         BnXr+EOYllUmUkB4/8LI5U1sr7ysdUwycYimdk4P4bIjvD5pPNPMqFEATF62jmy40Imu
-         Z+4Q==
-X-Gm-Message-State: AOAM532lZWH1tdXyiY9gsQEtEhjEWXdSFZzRhO7jfV0bWMuEmtF4AB+f
-        Q+VRFsmTPZpB+VCotM7RO9zouhOf8vokiGEPZVpi88czwQfwNHoa+wLvjd/+NFkeMP/4k3VPOiX
-        Uk0u6GVRG+gj//iarUehWuaqi
-X-Received: by 2002:a17:907:7f14:: with SMTP id qf20mr40217442ejc.110.1635344030317;
-        Wed, 27 Oct 2021 07:13:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhfsndShbnezsDO1DlbWsk4fvaAvz0NLTi/X0SlJMSKLND7a07wjt2biOBqpjREWJIAkIgVA==
-X-Received: by 2002:a17:907:7f14:: with SMTP id qf20mr40217423ejc.110.1635344030155;
-        Wed, 27 Oct 2021 07:13:50 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id p25sm86107edt.23.2021.10.27.07.13.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 07:13:49 -0700 (PDT)
-Message-ID: <d14456e0-9df3-7239-7598-9181cf807215@redhat.com>
-Date:   Wed, 27 Oct 2021 16:13:49 +0200
+        bh=hJrML/RRrYOCcLcaDpLc5DyYFDVAJz2ir0815yDh2Js=;
+        b=JaRW1soB9llkss5+C2fIC7esGFk1ATY6gC1dte8XyM/aZmz959zzDbTcsAIwBmsTvYkACY
+        110YpoGCeMUz1L7+UoCDguQWVsiHSdoypdKA7Jn9HQAhCAmZ8WVRWo9d0maNzvGrsUN7mG
+        FmgOUJqjcF5S+LKmCe1UMs8F/+eD9RE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-AyFWpsHFNxWvgDJNk17mcw-1; Wed, 27 Oct 2021 10:14:51 -0400
+X-MC-Unique: AyFWpsHFNxWvgDJNk17mcw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DAFF1129581;
+        Wed, 27 Oct 2021 14:14:49 +0000 (UTC)
+Received: from ceranb (unknown [10.40.193.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0781419D9F;
+        Wed, 27 Oct 2021 14:14:46 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 16:14:40 +0200
+From:   Ivan Vecera <ivecera@redhat.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+Cc:     netdev@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Henrik Bjoernlund <henrik.bjoernlund@microchip.com>,
+        "moderated list:ETHERNET BRIDGE" <bridge@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: bridge: fix uninitialized variables when
+ BRIDGE_CFM is disabled
+Message-ID: <20211027161440.00cb1107@ceranb>
+In-Reply-To: <a9b7d8d2-da03-42f0-bd16-3446cdcaecc8@nvidia.com>
+References: <20211027134926.1412459-1-ivecera@redhat.com>
+        <a9b7d8d2-da03-42f0-bd16-3446cdcaecc8@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: touchscreen_dmi.c Patch for Viglen Connect 10
-Content-Language: en-US
-To:     Mark Stamp <stamp497@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org
-References: <67f9a3603a52aeb8fd1463fd5786ed544e79ed05.camel@googlemail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <67f9a3603a52aeb8fd1463fd5786ed544e79ed05.camel@googlemail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Wed, 27 Oct 2021 16:54:39 +0300
+Nikolay Aleksandrov <nikolay@nvidia.com> wrote:
 
-On 10/27/21 04:11, Mark Stamp wrote:
-> Hello. 
+> On 27/10/2021 16:49, Ivan Vecera wrote:
+> > Function br_get_link_af_size_filtered() calls br_cfm_{,peer}_mep_count()
+> > but does not check their return value. When BRIDGE_CFM is not enabled
+> > these functions return -EOPNOTSUPP but do not modify count parameter.
+> > Calling function then works with uninitialized variables.
+> > 
+> > Fixes: b6d0425b816e ("bridge: cfm: Netlink Notifications.")
+> > Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> > ---
+> >  net/bridge/br_netlink.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+> > index 5c6c4305ed23..12d602495ea0 100644
+> > --- a/net/bridge/br_netlink.c
+> > +++ b/net/bridge/br_netlink.c
+> > @@ -126,8 +126,10 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
+> >  		return vinfo_sz;
+> >  
+> >  	/* CFM status info must be added */
+> > -	br_cfm_mep_count(br, &num_cfm_mep_infos);
+> > -	br_cfm_peer_mep_count(br, &num_cfm_peer_mep_infos);
+> > +	if (br_cfm_mep_count(br, &num_cfm_mep_infos) < 0)
+> > +		num_cfm_mep_infos = 0;
+> > +	if (br_cfm_peer_mep_count(br, &num_cfm_peer_mep_infos) < 0)
+> > +		num_cfm_peer_mep_infos = 0;
+> >  
+> >  	vinfo_sz += nla_total_size(0);	/* IFLA_BRIDGE_CFM */
+> >  	/* For each status struct the MEP instance (u32) is added */
+> >   
 > 
-> I previously spoke with you on a touchscreen issue
+> Hi,
+> Could you please rather update the EOPNOTSUPP helpers to set these infos to 0 before
+> returning? Someone else might decide to use them and hit the same bug.
 > 
-> https://github.com/onitake/gsl-firmware/issues/178
+> E.g.
+> static inline int br_cfm_mep_count(struct net_bridge *br, u32 *count)
+> {
+> 	*count = 0;
+>         return -EOPNOTSUPP;
+> }
 > 
-> With regard to that, I made a patch for touchscreen_dmi.c. It adds
-> parameters for the Viglen Connect 10 tablet to get its touchscreen and
-> home button working.
+> We already do the same for br_allowed_ingress, nbp_vlan_add() etc.
 > 
-> Signed-off-by: Mark Stamp <stamp497@googlemail.com>
-
-Thank you for your patch.
-
-Unfortunately your email program has wrapped some long lines:
-
-> 
-> --- touchscreen_dmi.c.orig	2021-10-27 01:26:47.842668712 +0100
-> +++ touchscreen_dmi.c	2021-10-27 01:27:06.426298127 +0100
-> @@ -938,6 +938,26 @@ static const struct ts_dmi_data trekstor
->  	.properties	= trekstor_surftab_wintron70_props,
->  };
->  
-> +static const struct property_entry viglen_connect_10_props[] = {
-> +	//PROPERTY_ENTRY_U32("touchscreen-min-x", 20),
-> +	PROPERTY_ENTRY_U32("touchscreen-min-x", 0),
-> +	PROPERTY_ENTRY_U32("touchscreen-min-y", 0),
-> +	PROPERTY_ENTRY_U32("touchscreen-size-x", 1890),
-> +	PROPERTY_ENTRY_U32("touchscreen-size-y", 1280),
-> +	PROPERTY_ENTRY_U32("touchscrken-fuzz-x", 8),
-> +	PROPERTY_ENTRY_U32("touchscreen-fuzz-y", 6),
-> +	PROPERTY_ENTRY_BOOL("touchscreen-swapped-x-y"),
-> +	PROPERTY_ENTRY_STRING("firmware-name", "gsl3680-viglen-
-> connect-10.fw"),
-> +	PROPERTY_ENTRY_U32("silead,max-fingers", 10),
-> +	PROPERTY_ENTRY_BOOL("silead,home-button"),
-> +	{ }
-> +};
-> +
-> +static const struct ts_dmi_data viglen_connect_10_data = {
-> +	.acpi_name	= "MSSL1680:00",
-> +	.properties	= viglen_connect_10_props,
-> +};
-> +
->  static const struct property_entry vinga_twizzle_j116_props[] = {
->  	PROPERTY_ENTRY_U32("touchscreen-size-x", 1920),
->  	PROPERTY_ENTRY_U32("touchscreen-size-y", 1280),
-> @@ -1522,6 +1542,14 @@ const struct dmi_system_id touchscreen_d
->  		},
->  	},
->  	{
-> +		/* Viglen Connect 10 */
-> +		.driver_data = (void *)&viglen_connect_10_data,
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "Viglen Ltd."),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Connect 10''
-> Tablet PC"),
-
-And at least for this line I'm not sure how to unwrap it (does there
-need to be a space there or not ?).
-
-
-> +		},
-> +	},
-> +	{
->  		/* Vinga Twizzle J116 */
->  		.driver_data = (void *)&vinga_twizzle_j116_data,
->  		.matches = {
-> 
+> Thanks,
+>  Nik
 > 
 
+Ok, Nik... works for me.
 
-Can you resend this using git send-email (preferred), or send the
-diff as attachment instead of inlining it?
-
-Regards,
-
-Hans
+Thanks,
+Ivan
 
