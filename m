@@ -2,242 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECA643CC1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF59943CC15
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238437AbhJ0O17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238415AbhJ0O1y (ORCPT
+        id S238358AbhJ0O1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:27:23 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:40200 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238272AbhJ0O1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:27:54 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41322C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:25:28 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id k13so4934718ljj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WNAMDt0ADcK+n3RsR7jtkIgpfhbhOoaoKp+bIVUXzCo=;
-        b=ox50lX+eprZt1V6nglRNBzkFkP9BY6+LFieoj8+/IXJkU7HwHZSE6HKntwtP0qW6Po
-         llsnguVNK7I+uCHSLGEm7j52FncoKeR89sGDLEJdNsKvNVhkWV5LGBb6ExNKqJng/cir
-         hMoIIUg97fyCHt6127zqJRZlfm++CictFvuO2QiKcrkfUpNYnG2Dl2J97hFlnjz3CUND
-         brS4N6M03ATDJkPH8OPtIn4f4O6kOXbl2dJQyugs6ROQi7muJknUmDmzOxHx6hMwEY+r
-         IjYovE2eI/1UAYT8Dpjjfj/l4LvtzD/nOyjVNqBoU348DwT6fZ5tBRKcC2gbv3e95Qn2
-         6VwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WNAMDt0ADcK+n3RsR7jtkIgpfhbhOoaoKp+bIVUXzCo=;
-        b=N7J2Evl3HvHMF8n6fAatLdAZUXXEosm3xNlF6EPkjZ2bO0bCdwCJ5U/5honDaA3BR1
-         kkBOHjm8XQmP/XqoZMjJlTl2CmbCzEgtfkiSGy3Zf91VVgMj8Y3rjAuXVcPGlHruqIWU
-         XzKUJHbjXlw6VWYxtZRaAcUa5/W2gQQhbrV3jLbPXPSFTbcyqnSx3NjqCNVbzUr8sfPU
-         8wBZNF+7ETCnPYNgB4LyDvtbCN0OT+xCMQjO+R6VC3fQZQBNbDkehMYLHBq1W2Rhr8yJ
-         0J+MGrvwL66GHuRyA7mmhbtGbA06f7w56cYxEAJyVp8ylVK8sIWbgEcGe1JT/M0bJLO2
-         /DJQ==
-X-Gm-Message-State: AOAM531M3qo629ApDtXbD2mCJDVS174lWL5JB3o+CVXXcl+lry77QHxL
-        XyE4XsVIfGSEIk/txq+q21cUiArd+pLkoJuXBnn3Rw==
-X-Google-Smtp-Source: ABdhPJy6HDilhtMJ4mWprnuUa4gEBr21bSJphH24YDGc1eAc5GIF49QKqAbykfnywK/pWXjBK7lgAhjvv/hVR4Mj3tk=
-X-Received: by 2002:a2e:b550:: with SMTP id a16mr34038341ljn.229.1635344726453;
- Wed, 27 Oct 2021 07:25:26 -0700 (PDT)
+        Wed, 27 Oct 2021 10:27:21 -0400
+Date:   Wed, 27 Oct 2021 10:24:51 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Subject: Re: [PATCH 06/20] signal/sh: Use force_sig(SIGKILL) instead of
+ do_group_exit(SIGKILL)
+Message-ID: <20211027142450.GV7074@brightrain.aerifal.cx>
+References: <87y26nmwkb.fsf@disp2133>
+ <20211020174406.17889-6-ebiederm@xmission.com>
+ <CAHk-=whjqWwo16jtLduxb+0nbNetp8jNAz+go01wB4HGKX=jEQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
- <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
- <YXcBK7zqny0s4gd4@ripper> <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
- <YXck+xCJQBRGqTCw@ripper> <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
- <YXdsYlLWnjopyMn/@ripper> <CAE-0n51C4dm6bhds=ZZyje-Pcejxjm4MMa3m-VHjFgq7GZGrLw@mail.gmail.com>
- <YXjbs3Bv6Y3d87EC@yoga>
-In-Reply-To: <YXjbs3Bv6Y3d87EC@yoga>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 27 Oct 2021 16:24:49 +0200
-Message-ID: <CAPDyKFrWQdvZX4ukHZoGz73JPfQSgqVrG_4ShMp_GrxL0NKLvg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
- for dwc3 qcom
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whjqWwo16jtLduxb+0nbNetp8jNAz+go01wB4HGKX=jEQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 06:55, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Tue 26 Oct 19:48 CDT 2021, Stephen Boyd wrote:
->
-> > +Rajendra
+On Wed, Oct 20, 2021 at 09:57:58AM -1000, Linus Torvalds wrote:
+> On Wed, Oct 20, 2021 at 7:44 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
 > >
-> > Quoting Bjorn Andersson (2021-10-25 19:48:02)
-> > > On Mon 25 Oct 15:41 PDT 2021, Stephen Boyd wrote:
-> > >
-> > > >
-> > > > When the binding was introduced I recall we punted on the parent child
-> > > > conversion stuff. One problem at a time. There's also the possibility
-> > > > for a power domain to be parented by multiple power domains so
-> > > > translation tables need to account for that.
-> > > >
-> > >
-> > > But for this case - and below display case - the subdomain (the device's
-> > > power-domain) is just a dumb gate. So there is no translation, the given
-> > > performance_state applies to the parent. Or perhaps such implicitness
-> > > will come back and bite us?
-> >
-> > In the gate case I don't see how the implicitness will ever be a
-> > problem.
-> >
-> > >
-> > > I don't think we allow a power-domain to be a subdomain of two
-> > > power-domains - and again it's not applicable to USB or display afaict.
-> >
-> > Ah maybe. I always confuse power domains and genpd.
-> >
-> > >
-> > > > >
-> > > > > > Or we may need to make another part of the OPP binding to indicate the
-> > > > > > relationship between the power domain and the OPP and the parent of
-> > > > > > the power domain.
-> > > > >
-> > > > > I suspect this would be useful if a power-domain provider needs to
-> > > > > translate a performance_state into a different supply-performance_state.
-> > > > > Not sure if we have such case currently; these examples are all an
-> > > > > adjustable power-domain with "gating" subdomains.
-> > > >
-> > > > Even for this case, we should be able to have the GDSC map the on state
-> > > > to some performance state in the parent domain. Maybe we need to add
-> > > > some code to the gdsc.c file to set a performance state on the parent
-> > > > domain when it is turned on. I'm not sure where the value for that perf
-> > > > state comes from. I guess we can hardcode it in the driver for now and
-> > > > if it needs to be multiple values based on the clk frequency we can push
-> > > > it out to an OPP table or something like that.
-> > > >
-> > >
-> > > For the GDSC I believe we only have 1:1 mapping, so implementing
-> > > set_performance_state to just pass that on to the parent might do the
-> > > trick (although I haven't thought this through).
-> > >
-> > > Conceptually I guess this would be like calling clk_set_rate() on a
-> > > clock gate, relying on it being propagated upwards. The problem here is
-> > > that the performance_state is just a "random" integer without a well
-> > > defined unit.
-> > >
-> >
-> > Right. Ideally it would be in the core code somehow so that if there
-> > isn't a set_performance_state function we go to the parent or some
-> > special return value from the function says "call it on my parent". The
-> > translation scheme could come later so we can translate the "random"
-> > integer between parent-child domains.
->
-> As a proof of concept it should be sufficient to just add an
-> implementation of sc->pd.set_performance_state in gdsc.c. But I agree
-> that it would be nice to push this into some framework code, perhaps
-> made opt-in by some GENPD_FLAG_xyz.
->
-> > At the end of the day the device
-> > driver wants to set a frequency or runtime pm get the device and let the
-> > OPP table or power domain code figure out what the level is supposed to
-> > be.
-> >
->
-> Yes and this is already working for the non-nested case - where the
-> single power-domain jumps between performance states as the opp code
-> switches from one opp to another.
->
-> So if we can list only the child power-domain (i.e. the GDSC) and have
-> the performance_stat requests propagate up to the parent rpmhpd resource
-> I think we're good.
->
->
-> Let's give this a spin and confirm that this is the case...
->
-> > >
-> > >
-> > > The one case where I believe we talked about having different mapping
-> > > between the performance_state levels was in the relationship between CX
-> > > and MX. But I don't think we ever did anything about that...
-> >
-> > Hmm alright. I think there's a constraint but otherwise nobody really
-> > wants to change both at the same time.
-> >
-> > > >
-> > > > Yes, a GDSC is really a gate on a parent power domain like CX or MMCX,
-> > > > etc. Is the display subsystem an example of different clk frequencies
-> > > > wanting to change the perf state of CX? If so it's a good place to work
-> > > > out the translation scheme for devices that aren't listing the CX power
-> > > > domain in DT.
-> > >
-> > > Yes, the various display components sits in MDSS_GDSC but the opp-tables
-> > > needs to change the performance_state of MDSS_GDSC->parent (i.e. CX or
-> > > MMCX, depending on platform).
-> > >
-> > > As I said, today we hack this by trusting that the base drm/msm driver
-> > > will keep MDSS_GDSC on and listing MMCX (or CX) as power-domain for each
-> > > of these components.
-> > >
-> > >
-> > > So if we solve this, then that seems to directly map to the static case
-> > > for USB as well.
-> > >
-> >
-> > Got it. So in this case we could have the various display components
-> > that are in the mdss gdsc domain set their frequency via OPP and then
-> > have that translate to a level in CX or MMCX. How do we parent the power
-> > domains outside of DT? I'm thinking that we'll need to do that if MMCX
-> > is parented by CX or something like that and the drivers for those two
-> > power domains are different. Is it basic string matching?
->
-> In one way or another we need to invoke pm_genpd_add_subdomain() to link
-> the two power-domains (actually genpds) together, like what was done in
-> 3652265514f5 ("clk: qcom: gdsc: enable optional power domain support").
->
-> In the case of MMCX and CX, my impression of the documentation is that
-> they are independent - but if we need to express that CX is parent of
-> MMCX, they are both provided by rpmhpd which already supports this by
-> just specifying .parent on mmcx to point to cx.
+> > +                       force_sig(SIGKILL);
+> 
+> I wonder if SIGFPE would be a more intuitive thing.
+> 
+> Doesn't really matter, this is a "doesn't happen" event anyway, but
+> that was just my reaction to reading the patch.
 
-I was trying to follow the discussion, but it turned out to be a bit
-complicated to catch up and answer all things. In any case, let me
-just add a few overall comments, perhaps that can help to move things
-forward.
+I think SIGKILL makes more sense unless there's a way the process
+could handle the resulting SIGFPE and recover. I'd actually like to
+see the lazy allocation of FPU state just removed (the amount of space
+saved is tiny relative to the complexity cost and the negative aspects
+of unrecoverable late failure) but for now let's just go with this.
 
-First, one domain can have two parent domains. Both from DT and from
-genpd point of view, just to make this clear.
-
-Although, it certainly looks questionable to me, to hook up the USB
-device to two separate power domains, one to control power and one to
-control performance. Especially, if it's really the same piece of HW
-that is managing both things. Additionally, if it's correct to model
-the USB GDSC power domain as a child to the CX power domain from HW
-point of view, we should likely do that.
-
-From the performance states point of view, genpd supports propagating
-performance states to parent domains, via a 1:1 mapping of the
-performance state. Note that, we have also quite recently made genpd's
-->set_performance_state() callback to be optional. A vote for a
-performance state will be propagated to the parent domain, even if the
-child domain would lack the ->set_performance_state() callback.  This
-should be useful, where a child domain relies on its parent domain for
-performance state management, which seems to be the case for the USB
-GDSC/CX power domains, right?
-
-In regards to the parsing of the "required-opps" DT binding for a
-device node, I think that should work for cases like these, too. Or is
-there something missing around this?
-
-Kind regards
-Uffe
+Rich
