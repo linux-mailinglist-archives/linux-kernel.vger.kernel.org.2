@@ -2,208 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A856B43CBD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1B543CBD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242469AbhJ0OVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242437AbhJ0OUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:20:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58F2D60F9D;
-        Wed, 27 Oct 2021 14:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635344310;
-        bh=Ci0lo29N8P5kyUfw16N1daeiwbEtGaYvfxpqWpHCONk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kPx7lW7H5ZT2/17cstsUGQuXbbGHVXvQ/bpdLYt0a0sMpaHMLEIYT4NCxgNe0Y2eP
-         6nhfUt5zAKC54gh326+pA4nrg0XG/rYnlVSwnlOd2OFHWKIqPs7gNoABolbkuYEJUI
-         0GN/XoUoVdJD+8Rz52gAGH02DEHXg2MFoIeL+DHQAmStebLsFhZXry1x/XRlZ/FyTm
-         3Z5UbeB/yQkLu4Db6GKCLdCRiMmz5WByWXoeLfYfMqxaObuxmTvuk9rb04eBbl7dfZ
-         UBTyEGJAdP76AoH5A55xEKLLvAT8SMES+8oLbv/ub7E/WFAmV8BITiegOgJjceYI6E
-         djrSvewbY8hPQ==
-Received: by mail-ot1-f45.google.com with SMTP id 107-20020a9d0a74000000b00553bfb53348so3865356otg.0;
-        Wed, 27 Oct 2021 07:18:30 -0700 (PDT)
-X-Gm-Message-State: AOAM532DAPoIjgZrBUTLCiMksOK3b1RtQ9+UbiuPteybVJO8A639YheK
-        j+SWQuOfSRTT3Y5z3ySOnMJOK8GvvvQr4qmQjxM=
-X-Google-Smtp-Source: ABdhPJx4tQtaDau6R3fvO+InG6marcYPTepOAy7CXoyb9NdCVPXTAYirMAEZ5+HPZk/wOk7DcCMrv5/blLlAPjb6s1s=
-X-Received: by 2002:a9d:5911:: with SMTP id t17mr25145832oth.30.1635344309561;
- Wed, 27 Oct 2021 07:18:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211026201622.GG174703@worktop.programming.kicks-ass.net>
- <20211027120515.GC54628@C02TD0UTHF1T.local> <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
- <20211027124852.GK174703@worktop.programming.kicks-ass.net>
- <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net> <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
- <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 27 Oct 2021 16:18:17 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
-Message-ID: <CAMj1kXECTdDLVMk2JduU5mV2TR0Cv=hZ9QOpYRsRM1jfvvNikw@mail.gmail.com>
-Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
+        id S242484AbhJ0OVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:21:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58062 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235380AbhJ0OVN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:21:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635344327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tBSPA7SFj6S0l15DFmmTz29aiCenNhw8/4n7QaHyqGY=;
+        b=FoIwbpjEU9RDfcqDKaMrOAvPF0B7uHviFTjjzq6XLjGqMlzlG6S2XkgGzHttlMMOkwCMFT
+        +N/KTwLBwLV0VUuWS1iT8jpexuTudW/nZt2LJ/eas09etldymeHHotH1vEGFwb6VZdDsHS
+        h8xqrpttIkMnbNRTdO15ALhFMd6zQ5A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-EGGnys3PO8eSwUAtseuBvQ-1; Wed, 27 Oct 2021 10:18:44 -0400
+X-MC-Unique: EGGnys3PO8eSwUAtseuBvQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46F7487320A;
+        Wed, 27 Oct 2021 14:18:40 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 714835C1B4;
+        Wed, 27 Oct 2021 14:18:31 +0000 (UTC)
+Message-ID: <e04b75455437da29fb009668e60b5be1732a183b.camel@redhat.com>
+Subject: Re: [PATCH v2 12/43] KVM: x86: Tweak halt emulation helper names to
+ free up kvm_vcpu_halt()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Wed, 27 Oct 2021 17:18:30 +0300
+In-Reply-To: <363479dd55760979da208cacf015a6f7fe2afd69.camel@redhat.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-13-seanjc@google.com>
+         <363479dd55760979da208cacf015a6f7fe2afd69.camel@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 16:03, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Oct 27, 2021 at 03:30:11PM +0200, Ard Biesheuvel wrote:
->
-> > As far as I can tell from playing around with Clang, the stubs can
-> > actually be executed directly,
->
-> I had just finished reading the clang docs which suggest as much and was
-> about to try what the compiler actually generates.
->
-> > they just jumps to the actual function.
-> > The compiler simply generates a jump table for each prototype that
-> > appears in the code as the target of an indirect jump, and checks
-> > whether the target appears in the list.
-> >
-> > E.g., the code below
-> >
-> > void foo(void) {}
-> > void bar(int) {}
-> > void baz(int) {}
-> > void (* volatile fn1)(void) = foo;
-> > void (* volatile fn2)(int) = bar;
-> >
-> > int main(int argc, char *argv[])
-> > {
-> >   fn1();
-> >   fn2 = baz;
-> >   fn2(-1);
-> > }
-> >
-> > produces
-> >
-> > 0000000000400594 <foo.cfi>:
-> >   400594: d65f03c0 ret
-> >
-> > 0000000000400598 <bar.cfi>:
-> >   400598: d65f03c0 ret
-> >
-> > 000000000040059c <baz.cfi>:
-> >   40059c: d65f03c0 ret
->
-> Right, so these are the actual functions ^.
->
-> > 00000000004005a0 <main>:
-> >   4005a0: a9bf7bfd stp x29, x30, [sp, #-16]!
-> >
-> > // First indirect call
-> >   4005a4: b0000088 adrp x8, 411000 <__libc_start_main@GLIBC_2.17>
-> >   4005a8: f9401508 ldr x8, [x8, #40]
-> >   4005ac: 90000009 adrp x9, 400000 <__abi_tag-0x278>
-> >   4005b0: 91182129 add x9, x9, #0x608
-> >   4005b4: 910003fd mov x29, sp
-> >   4005b8: eb09011f cmp x8, x9
-> >   4005bc: 54000241 b.ne 400604 <main+0x64>  // b.any
-> >   4005c0: d63f0100 blr x8
->
-> That's impenetrable to me, sorry.
->
+On Wed, 2021-10-27 at 17:10 +0300, Maxim Levitsky wrote:
+> On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> > Rename a variety of HLT-related helpers to free up the function name
+> > "kvm_vcpu_halt" for future use in generic KVM code, e.g. to differentiate
+> > between "block" and "halt".
+> > 
+> > No functional change intended.
+> > 
+> > Reviewed-by: David Matlack <dmatlack@google.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/include/asm/kvm_host.h |  2 +-
+> >  arch/x86/kvm/vmx/nested.c       |  2 +-
+> >  arch/x86/kvm/vmx/vmx.c          |  4 ++--
+> >  arch/x86/kvm/x86.c              | 13 +++++++------
+> >  4 files changed, 11 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 7aafc27ce7a9..328103a520d3 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1689,7 +1689,7 @@ int kvm_emulate_monitor(struct kvm_vcpu *vcpu);
+> >  int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
+> >  int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
+> >  int kvm_emulate_halt(struct kvm_vcpu *vcpu);
+> > -int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
+> > +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu);
+> >  int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
+> >  int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
+> >  
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index af1bbb73430a..d0237a441feb 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -3619,7 +3619,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+> >  		    !(nested_cpu_has(vmcs12, CPU_BASED_INTR_WINDOW_EXITING) &&
+> >  		      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
+> >  			vmx->nested.nested_run_pending = 0;
+> > -			return kvm_vcpu_halt(vcpu);
+> > +			return kvm_emulate_halt_noskip(vcpu);
+> >  		}
+> >  		break;
+> >  	case GUEST_ACTIVITY_WAIT_SIPI:
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 1c8b2b6e7ed9..5517893f12fc 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -4741,7 +4741,7 @@ static int handle_rmode_exception(struct kvm_vcpu *vcpu,
+> >  		if (kvm_emulate_instruction(vcpu, 0)) {
+> >  			if (vcpu->arch.halt_request) {
+> >  				vcpu->arch.halt_request = 0;
+> > -				return kvm_vcpu_halt(vcpu);
+> > +				return kvm_emulate_halt_noskip(vcpu);
+> 
+> Could you elaborate on why you choose _noskip suffix? 
+>  
+> As far as I see, kvm_vcpu_halt just calls __kvm_vcpu_halt with new VCPU run state/exit reason,
+> which is used only when local apic is not in the kernel (which is these days not that
+> supported configuration).
+> 
+> Other user of __kvm_vcpu_halt is something SEV related.
+>  
+> Best regards,
+> 	Maxim Levitsky
+> 
+> 
+> >  			}
+> >  			return 1;
+> >  		}
+> > @@ -5415,7 +5415,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
+> >  
+> >  		if (vcpu->arch.halt_request) {
+> >  			vcpu->arch.halt_request = 0;
+> > -			return kvm_vcpu_halt(vcpu);
+> > +			return kvm_emulate_halt_noskip(vcpu);
+> >  		}
+> >  
+> >  		/*
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 4a52a08707de..9c23ae1d483d 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -8649,7 +8649,7 @@ void kvm_arch_exit(void)
+> >  #endif
+> >  }
+> >  
+> > -static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+> > +static int __kvm_emulate_halt(struct kvm_vcpu *vcpu, int state, int reason)
+> >  {
+> >  	++vcpu->stat.halt_exits;
+> >  	if (lapic_in_kernel(vcpu)) {
+> > @@ -8661,11 +8661,11 @@ static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+> >  	}
+> >  }
+> >  
+> > -int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+> > +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu)
+> >  {
+> > -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
+> > +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
+> >  }
+> > -EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
+> > +EXPORT_SYMBOL_GPL(kvm_emulate_halt_noskip);
+> >  
+> >  int kvm_emulate_halt(struct kvm_vcpu *vcpu)
+> >  {
+> > @@ -8674,7 +8674,7 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
+> >  	 * TODO: we might be squashing a GUESTDBG_SINGLESTEP-triggered
+> >  	 * KVM_EXIT_DEBUG here.
+> >  	 */
+> > -	return kvm_vcpu_halt(vcpu) && ret;
+> > +	return kvm_emulate_halt_noskip(vcpu) && ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvm_emulate_halt);
+> >  
+> > @@ -8682,7 +8682,8 @@ int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
+> >  {
+> >  	int ret = kvm_skip_emulated_instruction(vcpu);
+> >  
+> > -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
+> > +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD,
+> > +					KVM_EXIT_AP_RESET_HOLD) && ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
+> >  
 
-This loads the value of fn1 in x8, and takes the address of the jump
-table in x9. Since it is only one entry long, it does a simple compare
-to check whether x8 appears in the jump table, and branches to the BRK
-at the end if they are different.
+Also while at it, why not to use say '__kvm_emulate_hlt' ('hlt' instead of 'halt') to 
+put emphasis on the fact that we are emulating a cpu instruction?
 
-> > // Assignment of fn2
-> >   4005c4: 90000009 adrp x9, 400000 <__abi_tag-0x278>
-> >   4005c8: b0000088 adrp x8, 411000 <__libc_start_main@GLIBC_2.17>
-> >   4005cc: 91184129 add x9, x9, #0x610
-> >   4005d0: f9001909 str x9, [x8, #48]
->
-> I'm struggling here, x9 points to the branch at 400610, but then what?
->
-> x8 is in .data somewhere?
->
+Best regards,
+	Maxim Levitsky
+ 
 
-This takes the address of the jump table entry of 'baz' in x9, and
-stores it in fn2 whose address is taken in x8.
-
-
-> > // Second indirect call
-> >   4005d4: f9401908 ldr x8, [x8, #48]
-> >   4005d8: 90000009 adrp x9, 400000 <__abi_tag-0x278>
-> >   4005dc: 91183129 add x9, x9, #0x60c
-> >   4005e0: cb090109 sub x9, x8, x9
-> >   4005e4: 93c90929 ror x9, x9, #2
-> >   4005e8: f100053f cmp x9, #0x1
-> >   4005ec: 540000c8 b.hi 400604 <main+0x64>  // b.pmore
-> >   4005f0: 12800000 mov w0, #0xffffffff            // #-1
-> >   4005f4: d63f0100 blr x8
-> >
-> >
-> >   4005f8: 2a1f03e0 mov w0, wzr
-> >   4005fc: a8c17bfd ldp x29, x30, [sp], #16
-> >   400600: d65f03c0 ret
-> >   400604: d4200020 brk #0x1
->
->
-> > 0000000000400608 <__typeid__ZTSFvvE_global_addr>:
-> >   400608: 17ffffe3 b 400594 <foo.cfi>
-> >
-> > 000000000040060c <__typeid__ZTSFviE_global_addr>:
-> >   40060c: 17ffffe3 b 400598 <bar.cfi>
-> >   400610: 17ffffe3 b 40059c <baz.cfi>
->
-> And these are the stubs per type.
->
-> > So it looks like taking the address is fine, although not optimal due
-> > to the additional jump.
->
-> Right.
->
-
-... although it does seem that function_nocfi() doesn't actually work
-as expected, given that we want the address of <func>.cfi and not the
-address of the stub.
-
-> > We could fudge around that by checking the
-> > opcode at the target of the call, or token paste ".cfi" after the
-> > symbol name in the static_call_update() macro, but it doesn't like
-> > like anything is terminally broken tbh.
->
-> Agreed, since the jump table entries are actually executable it 'works'.
->
-> I really don't like that extra jump though, so I think I really do want
-> that nocfi_ptr() thing. And going by:
->
->   https://clang.llvm.org/docs/ControlFlowIntegrityDesign.html#forward-edge-cfi-for-indirect-function-calls
->
-> and the above, that might be possible (on x86) with something like:
->
-> /*
->  * Turns a Clang CFI jump-table entry into an actual function pointer.
->  * These jump-table entries are simply jmp.d32 instruction with their
->  * relative offset pointing to the actual function, therefore decode the
->  * instruction to find the real function.
->  */
-> static __always_inline void *nocfi_ptr(void *func)
-> {
->         union text_poke_insn insn = *(union text_poke_insn *)func;
->
->         return func + sizeof(insn) + insn.disp;
-> }
->
-> But really, that wants to be a compiler intrinsic.
-
-Agreed. We could easily do something similar on arm64, but I'd prefer
-to avoid that too.
