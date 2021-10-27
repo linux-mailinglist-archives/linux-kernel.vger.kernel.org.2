@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7936C43C8BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C86243C8BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241682AbhJ0Lne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:43:34 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:51776 "EHLO mail.skyhub.de"
+        id S241697AbhJ0Lni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:43:38 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:35313 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230336AbhJ0Lnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:43:33 -0400
-Received: from zn.tnic (p200300ec2f161500de850afe3c1188c4.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1500:de85:afe:3c11:88c4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EB7671EC061D;
-        Wed, 27 Oct 2021 13:41:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635334867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=8AFb4PMAeHttwC3qS0esrlJfGzXNEM1Moimt2WNSlzU=;
-        b=QyYiPlHM3SDI0E3QPXTszPfzfejgQnMuXfb1uv/NcQcTzDappkqng30GR78Djhb+HY9s5b
-        sbmK9dbaJxXdAb6QAOSa7puPB04FkN8xoOG2XCARHtcLdYocFWc9JoS0IQD6Kf9y5ikaxv
-        YdPFxjDBcULwBAD79AqjYyHzEiqrW44=
-Date:   Wed, 27 Oct 2021 13:41:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH v2 3/5] x86/mce: Use mca_msr_reg() in prepare_msrs()
-Message-ID: <YXk6z9xWvS4B7eRP@zn.tnic>
-References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
- <20211019233641.140275-4-Smita.KoralahalliChannabasappa@amd.com>
+        id S230336AbhJ0Lng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:43:36 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HfRbV2BBhz9sSg;
+        Wed, 27 Oct 2021 13:41:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1CyGxDHopVgI; Wed, 27 Oct 2021 13:41:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HfRbV1Hjrz9sRr;
+        Wed, 27 Oct 2021 13:41:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 16CD68B778;
+        Wed, 27 Oct 2021 13:41:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4A3tr9kP0AiX; Wed, 27 Oct 2021 13:41:10 +0200 (CEST)
+Received: from [192.168.232.182] (unknown [192.168.232.182])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 720E18B776;
+        Wed, 27 Oct 2021 13:41:09 +0200 (CEST)
+Message-ID: <2012df5e-62ec-06fb-9f4d-e27dde184a3f@csgroup.eu>
+Date:   Wed, 27 Oct 2021 13:41:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211019233641.140275-4-Smita.KoralahalliChannabasappa@amd.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: linux-next: manual merge of the audit tree with the powerpc tree
+Content-Language: fr-FR
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Richard Guy Briggs <rgb@redhat.com>
+References: <20211026133147.35d19e00@canb.auug.org.au>
+ <87k0i0awdl.fsf@mpe.ellerman.id.au>
+ <CAHC9VhTj7gn3iAOYctVRKvv_Bk1iQMrmkA8FVJtYzdvBjqFmvg@mail.gmail.com>
+ <87tuh2aepp.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <87tuh2aepp.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 06:36:39PM -0500, Smita Koralahalli wrote:
-> Replace MCx_{STATUS, ADDR, MISC} macros with mca_msr_reg().
 
-And this is where your commit message and patch should end. It is a bad
-idea to do textual replacements *and* functional changes in a single
-patch: it is hard to review and debug if there are possible issues. So
-you do the textual replacements in the first one and then the functional
-changes in subsequent patches.
 
-> Also, restructure the code to avoid multiple initializations for MCA
-> registers.
-
-What multiple initializations?
-
-> SMCA machines define a different set of MSRs for MCA registers
-> and mca_msr_reg() returns the proper MSR address for SMCA and legacy
-> processors.
+Le 27/10/2021 à 13:29, Michael Ellerman a écrit :
+> Paul Moore <paul@paul-moore.com> writes:
+>> On Tue, Oct 26, 2021 at 6:55 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+>>>> Hi all,
+>>>>
+>>>> Today's linux-next merge of the audit tree got conflicts in:
+>>>>
+>>>>    arch/powerpc/kernel/audit.c
+>>>>    arch/powerpc/kernel/compat_audit.c
+>>>>
+>>>> between commit:
+>>>>
+>>>>    566af8cda399 ("powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERIC")
+>>>>
+>>>> from the powerpc tree and commits:
+>>>>
+>>>>    42f355ef59a2 ("audit: replace magic audit syscall class numbers with macros")
+>>>>    1c30e3af8a79 ("audit: add support for the openat2 syscall")
+>>>>
+>>>> from the audit tree.
+>>>
+>>> Thanks.
+>>>
+>>> I guess this is OK, unless the audit folks disagree. I could revert the
+>>> powerpc commit and try it again later.
+>>>
+>>> If I don't hear anything I'll leave it as-is.
+>>
+>> Hi Michael,
+>>
+>> Last I recall from the powerpc/audit thread there were still some
+>> issues with audit working properly in your testing, has that been
+>> resolved?
 > 
-> Initialize MCA_MISC and MCA_SYND registers at the end after initializing
-> MCx_{STATUS, DESTAT} which is further explained in the next patch.
+> No.
+> 
+> There's one test failure both before and after the conversion to use the
+> generic code.
+> 
+>> If nothing else, -rc7 seems a bit late for this to hit -next for me to
+>> feel comfortable about this.
+> 
+> OK. I'll revert the patch in my tree.
+> 
 
-And this should be *in* the next patch.
+But it's been in the pipe since end of August and no one reported any 
+issue other issue than the pre-existing one, so what's the new issue 
+that prevents us to merge it two monthes later, and how do we walk 
+forward then ?
 
-Also, there's no concept of "next patch" when you do git log on the
-upstream tree and use different sorting etc. So a patch should be
-self-contained and do one change only.
-
-There's very good documentation in Documentation/process/, expecially
-Documentation/process/submitting-patches.rst, which explains how a patch
-should look like.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks
+Christophe
