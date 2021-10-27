@@ -2,81 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4233B43D1B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A464A43D1BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243688AbhJ0Tdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:33:41 -0400
-Received: from mga04.intel.com ([192.55.52.120]:61830 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231623AbhJ0Tdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:33:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="229000407"
-X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
-   d="scan'208";a="229000407"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 12:31:14 -0700
-X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
-   d="scan'208";a="723502170"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 12:31:12 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfodQ-001ZEu-Fx;
-        Wed, 27 Oct 2021 22:30:52 +0300
-Date:   Wed, 27 Oct 2021 22:30:52 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 1/1] kernel.h: split out instruction pointer accessors
-Message-ID: <YXmo7C4qLCySmW8s@smile.fi.intel.com>
-References: <20211027154623.82223-1-andriy.shevchenko@linux.intel.com>
- <202110280217.A2FUrtxH-lkp@intel.com>
+        id S243707AbhJ0TfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243694AbhJ0TfD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 15:35:03 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA123C061570;
+        Wed, 27 Oct 2021 12:32:37 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so8447098lfu.5;
+        Wed, 27 Oct 2021 12:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OTBdPJFa+ah3P9FuQhKUL9RznqjaKHz1+CuZIYV3wsc=;
+        b=agih9qYZmYcntiWOtjjpqFInO/NVgVrWGE905q2yfSEyyV2BoggudSRC0uWF+1avff
+         7h8uADNMgxE72KU5FMyuapAtk8t88XRt2jfl54CZfqYvfnhCV75du+zNwvIkpk3yCgVL
+         5o9kX2dk8r96+D9juLvJdGhh7jbf4BxzAJXKAEQRsRoc3C6FmbCmEAsyjnlucSt2pWtU
+         83u5VeuC3bsmPi7byNO1u5d3lYPRedAvTMiCRtXBDeyQCqpUwvSHd2PVm0VgcshYs06T
+         bsc+rK79JJB2gmNcE8cTUf426Ht1SndEa2i1Np6mV8Ss5aEDyzIPzgP6y8adlqO2cjBC
+         Qp1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OTBdPJFa+ah3P9FuQhKUL9RznqjaKHz1+CuZIYV3wsc=;
+        b=swytmm9GqTNoiVEB0sjt8W1+egJtPJWbQlQQ+sgQGn414UHhJljPu3+4A0QgiX2nL8
+         qcPVDUqRkOiAJ0lmpJdQzDGyMXMH0bTdh8rLYoBoLU4Fd4VCaid51z68mjFH1JLEE2BZ
+         8drkT9jab2dwT76tT7SxEfnv0WkKwoXo/BHJP6aFo1VwlK3vCYY6TkHJeXtZSKifHz70
+         IrkEl7v7yu0at4dvkU/sPVUztIk/GjpK1aTN9rHfe+qYxIsjQJRuUxnlVm2RW7+lodOy
+         KHvBQITrRd1zMBEGay9y0afhUqaLG3LrKCBhZFGjb9lM3M+renxA05LUS8Qbe/IUeFA5
+         s/+g==
+X-Gm-Message-State: AOAM533JRFbYKM07uXdLww7TrNVEsJj78b53DFNv+nRkbzGv0CuAgPGv
+        Mu+Fmyfrhsp4YlCfF1HprWk=
+X-Google-Smtp-Source: ABdhPJyaiRz/Ui6iA1xiTx91a3t+RwtvYGxJT3StDDfm32LrCKRStVdKsTDTbJW/siFtx98e9FjJ2w==
+X-Received: by 2002:a05:6512:1510:: with SMTP id bq16mr31326351lfb.268.1635363156058;
+        Wed, 27 Oct 2021 12:32:36 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
+        by smtp.googlemail.com with ESMTPSA id t3sm81030lfc.216.2021.10.27.12.32.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 12:32:35 -0700 (PDT)
+Subject: Re: [PATCH v14 01/39] soc/tegra: Enable runtime PM during OPP
+ state-syncing
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-clk@vger.kernel.org, David Heidelberg <david@ixit.cz>
+References: <20211025224032.21012-1-digetx@gmail.com>
+ <20211025224032.21012-2-digetx@gmail.com>
+ <CAPDyKFr7VY73cQugSA5n-p_oXf43o1M-7s3-M+fnk0656h25UA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8076eee8-ac8b-90a7-b87a-35e40d7300fb@gmail.com>
+Date:   Wed, 27 Oct 2021 22:32:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110280217.A2FUrtxH-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAPDyKFr7VY73cQugSA5n-p_oXf43o1M-7s3-M+fnk0656h25UA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 02:09:48AM +0800, kernel test robot wrote:
-> Hi Andy,
+27.10.2021 18:06, Ulf Hansson пишет:
+> On Tue, 26 Oct 2021 at 00:45, Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> GENPD core now can set up domain's performance state properly while device
+>> is RPM-suspended. Runtime PM of a device must be enabled during setup
+>> because GENPD checks whether device is suspended and check doesn't work
+>> while RPM is disabled. Instead of replicating the boilerplate RPM-enable
+>> code around OPP helper for each driver, let's make OPP helper to take care
+>> of enabling it.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > 
-> Thank you for the patch! Yet something to improve:
+> Just a minor nitpick, see below. Nevertheless feel free to add:
 > 
-> [auto build test ERROR on next-20211026]
-> [cannot apply to linus/master v5.15-rc7 v5.15-rc6 v5.15-rc5 v5.15-rc7]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 > 
-> url:    https://github.com/0day-ci/linux/commits/Andy-Shevchenko/kernel-h-split-out-instruction-pointer-accessors/20211027-235208
-> base:    2376e5fe91bcad74b997d2cc0535abff79ec73c5
-> config: i386-tinyconfig (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://github.com/0day-ci/linux/commit/9fc7130c986cccb5765165dd9f7fc77a4935892c
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Andy-Shevchenko/kernel-h-split-out-instruction-pointer-accessors/20211027-235208
->         git checkout 9fc7130c986cccb5765165dd9f7fc77a4935892c
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         make W=1 O=build_dir ARCH=i386 prepare
+> Kind regards
+> Uffe
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>>  drivers/soc/tegra/common.c | 16 ++++++++++++++++
+>>  1 file changed, 16 insertions(+)
+>>
+>> diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
+>> index cd33e99249c3..d930a2b4facc 100644
+>> --- a/drivers/soc/tegra/common.c
+>> +++ b/drivers/soc/tegra/common.c
+>> @@ -10,6 +10,7 @@
+>>  #include <linux/export.h>
+>>  #include <linux/of.h>
+>>  #include <linux/pm_opp.h>
+>> +#include <linux/pm_runtime.h>
+>>
+>>  #include <soc/tegra/common.h>
+>>  #include <soc/tegra/fuse.h>
+>> @@ -43,6 +44,7 @@ static int tegra_core_dev_init_opp_state(struct device *dev)
+>>  {
+>>         unsigned long rate;
+>>         struct clk *clk;
+>> +       bool rpm_enabled;
+>>         int err;
+>>
+>>         clk = devm_clk_get(dev, NULL);
+>> @@ -57,8 +59,22 @@ static int tegra_core_dev_init_opp_state(struct device *dev)
+>>                 return -EINVAL;
+>>         }
+>>
+>> +       /*
+>> +        * Runtime PM of the device must be enabled in order to set up
+>> +        * GENPD's performance properly because GENPD core checks whether
+>> +        * device is suspended and this check doesn't work while RPM is
+>> +        * disabled.
+>> +        */
+>> +       rpm_enabled = pm_runtime_enabled(dev);
+>> +       if (!rpm_enabled)
+>> +               pm_runtime_enable(dev);
+> 
+> This makes sure the OPP vote below gets cached in genpd for the
+> device. Instead, the vote is done the next time the device gets
+> runtime resumed.
 
-Thanks!
-Something went wrong when I fixed the typos...
+Thanks, I'll extend the code's comment with this text in v15.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I also noticed that won't hurt to add extra sanity check of whether RPM
+indeed got enabled since it could be disabled multiple times in a
+nesting fashion.
 
+> I don't have an issue doing it like this, but at the same time it does
+> remove some flexibility for the drivers/subsystem that calls
+> tegra_core_dev_init_opp_state().
+> 
+> Isn't it better to leave this to be flexible - or you prefer to have
+> it done like this for everybody?
 
+All the current users of the helper function want this behaviour by
+default. It's unlikely that we will ever have a user that will want
+different bahaviour, but even then it won't be a problem to add extra
+flag to struct tegra_core_opp_params to specify that special case.
