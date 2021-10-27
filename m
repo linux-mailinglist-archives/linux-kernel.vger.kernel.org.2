@@ -2,209 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8942943CD72
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E81743CD74
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242740AbhJ0PZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:25:49 -0400
-Received: from vern.gendns.com ([98.142.107.122]:57718 "EHLO vern.gendns.com"
+        id S242712AbhJ0P2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:28:50 -0400
+Received: from mout.perfora.net ([74.208.4.194]:49395 "EHLO mout.perfora.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237959AbhJ0PZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:25:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JPkBCqgYVIGboIjbJlTu2+TTRW22j5I9RNJDnQc/zOw=; b=EFvcRqkoYf0Grkn1S+Avb9oGyy
-        2z6XItdZN+CPjSMFEgeyTIvLieAOJc0TuJS06VIOpXwJTd3hlmbdYGAA5OWWyAOHrv05gKFJ0zKjd
-        ccZfOjLoyf0EQaHVJm93c1d9BorFBDRKk7U7JzN8FLK4t6Vb392XyeGN4ssGubH235pHdV7JTm+p5
-        sWf+5shv8bNe8LVRV9Y5st3vFTzq37ViaCF2cxvq1XeQiCWDr9PZck5JH66ZMWfPvcEy/EcbTnsGV
-        mIxp5H22clVwGahareHer1Rihr+Y/UEiMnYAbPnrcpQ5O/e/vsFBCoCnvNkCyb6PMA0yFytWUHKHT
-        T1NrQqOA==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:42722 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1mfkle-00005U-As; Wed, 27 Oct 2021 11:23:14 -0400
-Subject: Re: [PATCH 1/8] counter/ti-eqep: implement over/underflow events
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20211017013343.3385923-1-david@lechnology.com>
- <20211017013343.3385923-2-david@lechnology.com> <YXZZCn9O4xSTHMx5@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <1d9f37b9-8600-1d8c-09ff-b9d9cc592b26@lechnology.com>
-Date:   Wed, 27 Oct 2021 10:23:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237820AbhJ0P2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:28:49 -0400
+Received: from toolbox.cardiotech.int ([194.191.235.54]) by mrelay.perfora.net
+ (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id 0M0fUG-1mwrBg1nTC-00uuPU;
+ Wed, 27 Oct 2021 17:25:42 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Maxime Ripard <mripard@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: [PATCH v1] drm: import DMA_BUF module namespace
+Date:   Wed, 27 Oct 2021 17:25:34 +0200
+Message-Id: <20211027152534.3366799-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YXZZCn9O4xSTHMx5@shinobu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:Bl5t3lSPLC2ho7JrhNFfE+Mz2QikL3xU5MGZYbgo/rT3YQWwu/H
+ Aktrk+pIqxAdQG37K73bbvCQyf+Oj1szWKgs7pLxr8gNdrbecyBVwdI4GZcltKzXnU6Kh2o
+ 57exL4Pa/C8CVet8SbO1s2k+ry1nT+aIlceX5zk8uXbSINtaC5C6Rs63bHwipB1fulM2RA5
+ A20AZqjcfKUVY5w3EsWhg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MsSoRz00lj0=:BlWzqHevXYA4mqX4PpmhkD
+ ouVrY7HI9FkLYI1LM3IA5p7Xf5rJ966a91jwxScT/gCK9tfbRyUJOIdXg+Q1Emo54HzFXJ+JK
+ AdS5qWRnUBeTxOKszxzwjCDiy1HJ5q2UYeyTXkQSHHjO1bHQ4dc8xeijPeLBP1laDVNirQSNW
+ LOef1DGdVOMkEglHyLmY6w4foMoplUC5OndxT5AZNcNy/UJwWPdQWeSfjupp+euY521w8MULV
+ cXnfgPhTRUQOcVX2inSVyWjmMFTy5isroamL7Muw1DmsjCsLNnZm2StGwBk7eAAtJN9pSTuaa
+ SNdRSHa3cOM+/UW1JJr4j3wACBrUEC8TqGuNksX1nx3buCkasqZbGqiu/nlToKnBekY1fTk5K
+ N5ENUpi9SOO5q9uSWcXrSGzp+5v72M90Wf0UFvOqqzOawGwOhGBrQrMx3u+Eo3dMNfnrdj0nL
+ LIa7GC31RdL9L8huJGyTgtY9ojqz2NAbwJxJSdATANC86c5YxeXZ1TPp+MJs5+SbVOGLhE0Tc
+ AuTlV5+rgIak2M3TdzqufhYeUhhwKGkRYq/5TdRV5C9yeC1WYbrqXFovUxjTm0BS2Wu5tBrQJ
+ F7N6kusdUx8+18l7N8O8TrkuwMzOiQVnH3I/XpC/7bQusw+55Al8fXZDd0FOS5Tysy4wko5UB
+ Oryfs7S1BaS17nqKxJs6f+cc07DCXflP/0JqbnSBiXV/99rnXBWBd2SfU9DQOPxhkzFM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/21 2:13 AM, William Breathitt Gray wrote:
-> On Sat, Oct 16, 2021 at 08:33:36PM -0500, David Lechner wrote:
->> This adds support to the TI eQEP counter driver for subscribing to
->> overflow and underflow events using the counter chrdev interface.
->>
->> Since this is the first event added, this involved adding an irq
->> handler. Also, additional range checks had to be added to the ceiling
->> attribute to avoid infinite interrupts.
->>
->> Signed-off-by: David Lechner <david@lechnology.com>
-> 
-> Hi David,
-> 
-> This looks functionally okay, but I have a couple minor comments inline.
-> 
->> ---
->>   drivers/counter/ti-eqep.c | 119 +++++++++++++++++++++++++++++++++++++-
->>   1 file changed, 117 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
->> index 09817c953f9a..b7c79435e127 100644
->> --- a/drivers/counter/ti-eqep.c
->> +++ b/drivers/counter/ti-eqep.c
->> @@ -7,6 +7,7 @@
->>   
->>   #include <linux/bitops.h>
->>   #include <linux/counter.h>
->> +#include <linux/interrupt.h>
->>   #include <linux/kernel.h>
->>   #include <linux/mod_devicetable.h>
->>   #include <linux/module.h>
->> @@ -67,6 +68,44 @@
->>   #define QEPCTL_UTE		BIT(1)
->>   #define QEPCTL_WDE		BIT(0)
->>   
->> +#define QEINT_UTO		BIT(11)
->> +#define QEINT_IEL		BIT(10)
->> +#define QEINT_SEL		BIT(9)
->> +#define QEINT_PCM		BIT(8)
->> +#define QEINT_PCR		BIT(7)
->> +#define QEINT_PCO		BIT(6)
->> +#define QEINT_PCU		BIT(5)
->> +#define QEINT_WTO		BIT(4)
->> +#define QEINT_QDC		BIT(3)
->> +#define QEINT_PHE		BIT(2)
->> +#define QEINT_PCE		BIT(1)
->> +
->> +#define QFLG_UTO		BIT(11)
->> +#define QFLG_IEL		BIT(10)
->> +#define QFLG_SEL		BIT(9)
->> +#define QFLG_PCM		BIT(8)
->> +#define QFLG_PCR		BIT(7)
->> +#define QFLG_PCO		BIT(6)
->> +#define QFLG_PCU		BIT(5)
->> +#define QFLG_WTO		BIT(4)
->> +#define QFLG_QDC		BIT(3)
->> +#define QFLG_PHE		BIT(2)
->> +#define QFLG_PCE		BIT(1)
->> +#define QFLG_INT		BIT(0)
->> +
->> +#define QCLR_UTO		BIT(11)
->> +#define QCLR_IEL		BIT(10)
->> +#define QCLR_SEL		BIT(9)
->> +#define QCLR_PCM		BIT(8)
->> +#define QCLR_PCR		BIT(7)
->> +#define QCLR_PCO		BIT(6)
->> +#define QCLR_PCU		BIT(5)
->> +#define QCLR_WTO		BIT(4)
->> +#define QCLR_QDC		BIT(3)
->> +#define QCLR_PHE		BIT(2)
->> +#define QCLR_PCE		BIT(1)
->> +#define QCLR_INT		BIT(0)
->> +
->>   /* EQEP Inputs */
->>   enum {
->>   	TI_EQEP_SIGNAL_QEPA,	/* QEPA/XCLK */
->> @@ -233,12 +272,46 @@ static int ti_eqep_action_read(struct counter_device *counter,
->>   	}
->>   }
->>   
->> +static int ti_eqep_events_configure(struct counter_device *counter)
->> +{
->> +	struct ti_eqep_cnt *priv = counter->priv;
->> +	struct counter_event_node *event_node;
->> +	u32 qeint = 0;
->> +
->> +	list_for_each_entry(event_node, &counter->events_list, l) {
->> +		switch (event_node->event) {
->> +		case COUNTER_EVENT_OVERFLOW:
->> +			qeint |= QEINT_PCO;
->> +			break;
->> +		case COUNTER_EVENT_UNDERFLOW:
->> +			qeint |= QEINT_PCU;
->> +			break;
->> +		}
->> +	}
->> +
->> +	return regmap_write_bits(priv->regmap16, QEINT, ~0, qeint);
->> +}
->> +
->> +static int ti_eqep_watch_validate(struct counter_device *counter,
->> +				  const struct counter_watch *watch)
->> +{
->> +	switch (watch->event) {
->> +	case COUNTER_EVENT_OVERFLOW:
->> +	case COUNTER_EVENT_UNDERFLOW:
->> +		return 0;
->> +	default:
->> +		return -EINVAL;
->> +	}
->> +}
->> +
->>   static const struct counter_ops ti_eqep_counter_ops = {
->>   	.count_read	= ti_eqep_count_read,
->>   	.count_write	= ti_eqep_count_write,
->>   	.function_read	= ti_eqep_function_read,
->>   	.function_write	= ti_eqep_function_write,
->>   	.action_read	= ti_eqep_action_read,
->> +	.events_configure = ti_eqep_events_configure,
->> +	.watch_validate	= ti_eqep_watch_validate,
->>   };
->>   
->>   static int ti_eqep_position_ceiling_read(struct counter_device *counter,
->> @@ -260,11 +333,17 @@ static int ti_eqep_position_ceiling_write(struct counter_device *counter,
->>   					  u64 ceiling)
->>   {
->>   	struct ti_eqep_cnt *priv = counter->priv;
->> +	u32 qposmax = ceiling;
->>   
->> -	if (ceiling != (u32)ceiling)
->> +	/* ensure that value fits in 32-bit register */
->> +	if (qposmax != ceiling)
->>   		return -ERANGE;
->>   
->> -	regmap_write(priv->regmap32, QPOSMAX, ceiling);
->> +	/* protect against infinite overflow interrupts */
->> +	if (qposmax == 0)
->> +		return -EINVAL;
-> 
-> Would you be able to explain this scenario a bit further? My expectation
-> would be that an overflow event would only occur if the position
-> increased past the ceiling (i.e. increased to greater than 0). Of
-> course, running the device with a ceiling of 0 effectively guarantees
-> overflow eventss with every movement, but I would expect a stationary
-> device to sit with a position of 0 and thus no overflow events.
-> 
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-This is just the way the hardware works. I discovered this the first
-time I enabled interrupts. Even if you clear the interrupt, it is
-triggered again immediately when QPOSMAX == 0.
+Today's -next fails building arm64 defconfig as follows:
+
+ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vunmap from
+ namespace DMA_BUF, but does not import it.
+ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vmap from
+ namespace DMA_BUF, but does not import it.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Fixes: commit 4b2b5e142ff4 ("drm: Move GEM memory managers into modules")
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+
+---
+
+ drivers/gpu/drm/drm_gem_cma_helper.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+index 6f7b3f8ec04d3..69f8564ad11cd 100644
+--- a/drivers/gpu/drm/drm_gem_cma_helper.c
++++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+@@ -23,6 +23,8 @@
+ #include <drm/drm_gem_cma_helper.h>
+ #include <drm/drm_vma_manager.h>
+ 
++MODULE_IMPORT_NS(DMA_BUF);
++
+ /**
+  * DOC: cma helpers
+  *
+-- 
+2.26.2
+
