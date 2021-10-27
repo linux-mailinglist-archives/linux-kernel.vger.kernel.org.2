@@ -2,165 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF26843CF6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9B243CF73
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243163AbhJ0RGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:06:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20680 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238216AbhJ0RGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:06:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635354244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rTAZF8r+TFqRNwTv8HewNHfpavSVFjmpiDqPZBBTd9c=;
-        b=GjGZ7aqRfdAhqWfcxRnEThM+XpLRB7nll24I77I5R0qyf0mXkw13NT8ATdwCQQIdZRbJNV
-        zpVmpZfc1sT6jl4KKSJC44Hge7oCqS8FIupZPTzl6chSCSEjrPpxnFD5C+sxcJIeulmPXs
-        5eC1XHbr56RRTBxfZpoeqH/xEjMe6Eg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-n2gyQKKwPpK8nWhVZwru9g-1; Wed, 27 Oct 2021 13:04:02 -0400
-X-MC-Unique: n2gyQKKwPpK8nWhVZwru9g-1
-Received: by mail-wr1-f70.google.com with SMTP id f2-20020a5d50c2000000b00167f5c0a206so904912wrt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:04:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=rTAZF8r+TFqRNwTv8HewNHfpavSVFjmpiDqPZBBTd9c=;
-        b=bfS//Frtb3VeQ+88Lli7zaD8cqu+e+pAlJoRf3BDzNWmGHiR19vrmNCEfUb+C6UNwg
-         rHdVk6yAE5IVssNAnjJ6g4TCzXPcxYTlZQwgrUznSKK+E1my/xaDD46xvV90GRJCktYe
-         KLERjAo6I4HL5n9t7agMwsqvCrpTsusftqqXlzvkmP1KUJCGa1klrX4xEI7kyYcZdOb8
-         m05ddP6fdfrY2ZghrQAE/MmX7gYN4E3kEhu5bOQ1wqB9sCZARg0RnB2W8EesffvaXo+V
-         OkKONQpjNCIe3akocD/2FxJNYJkkPp5exsmyyL6Ib5xEy4kipFEVvdfHboWN8hHmlY76
-         ZsWw==
-X-Gm-Message-State: AOAM533X8uUTvwWZfSwKHiA05wDoHqINMnqs8Wm011UkKxYwsFHKMWXz
-        p0jZVNSJr/9+6q4VBNX39pLcjKZpPBNQ6WHOZtnKTxjg2VZqQllbmPadOjKchuwLYVi5IeGld2v
-        I8JRB/DaS3b49IGBlalNKwCwj
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr6931387wmg.35.1635354241250;
-        Wed, 27 Oct 2021 10:04:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/UPN0VVE4tAb3UN0yDI+71apndaQMXqM5UDEuJD4h6Pvaa/WHZ+M444Zi2IZzGUjPpILneA==
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr6931361wmg.35.1635354241008;
-        Wed, 27 Oct 2021 10:04:01 -0700 (PDT)
-Received: from [192.168.100.42] ([82.142.14.190])
-        by smtp.gmail.com with ESMTPSA id j9sm384612wrt.96.2021.10.27.10.03.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 10:04:00 -0700 (PDT)
-Message-ID: <8b5fb6ae-ab66-607f-b7c8-993c483846ca@redhat.com>
-Date:   Wed, 27 Oct 2021 19:03:58 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in copy_data
+        id S243141AbhJ0RH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:07:29 -0400
+Received: from mail-bn8nam12on2048.outbound.protection.outlook.com ([40.107.237.48]:57850
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235317AbhJ0RH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:07:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GHlhByQivMT98/ojTP4Nz+b6hCMe6dr3DXvs/hsS1yOnkrsmck3xpf58dgVsQV8stltrypz21ESLod8502DfA3CyIGWq33wPad6pTxrB5SNlIwdD9EgNUDrP8ov73/ZcO4F8VoKzgxqrHLdd+dKn8rqpRhqIXUIsvBfM7V26KvuKqAjByCLeAfDmKvnHyzbLzSKO5n+IY0LXUZk0mS1Zhmz1xm9F/iKxFJzZvDrNZCLzDHhRSMpt19/r2pzks0Gk8GVATR3sQnz7r1Vp3P4koKuRILRdlyRRC5Uf7zE7645jUG5OkLQYCxRKw2WiWEesiROALDnzrcO8sU4FmtiPDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y8f8IX+i5Fg3Ga3YQ1TrmzzH4AnceDQA7y/FisDK6xQ=;
+ b=OrYVyw0psjZZdMgXqKo25gpFvyp92yEMRSGQl+/wU5iSktAckBVXimyHOeBH+XjRhg/2bJrK07KSAYtjyiD1uDToOcfePZj6gEy3N0TCN137F7jMg7mIsbQu07GXn5u8jxXl2S7LHfg5WspRgmozrsugESvZVmJdC0PZvnzhM9yhObaBZincosujBEcrTcoNm4x0Qe8vxtEyX79i7X3JE/g/286Ytusqg3NDMTdYPK8D7mWABqO1StxgFkHNyWhNIZh49Nm1pyppAS1Haid0IsYBcHekx64jpxUsBemBhoc6QcQwJ4Ud9H10XzPaFLNn246C5yqqmjhyFwWEhSWmsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y8f8IX+i5Fg3Ga3YQ1TrmzzH4AnceDQA7y/FisDK6xQ=;
+ b=uaH/wujQ8vnj1nXHb99pCPM/dqalAji6mDCPiSTMRrKk09O2n13zEA48HQsS6xrdzuBt2RvHihwiKPuzvonhjNyVHWPX51XhZc8/U3jdrYRn1MIysE8Y25kuQe1Av/+IFmQ2MKR8UETeBZGI3yAneqZcFgkUcfrJZ0RtBjGa28w=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM8PR12MB5477.namprd12.prod.outlook.com (2603:10b6:8:35::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
+ 2021 17:04:58 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9%7]) with mapi id 15.20.4628.020; Wed, 27 Oct 2021
+ 17:04:58 +0000
+Subject: Re: [PATCH v2] x86/sme: Explicitly map new EFI memmap table as
+ encrypted
+To:     Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>
+References: <8afff0c64feb6b96db36112cb865243f4ae280ca.1634922135.git.thomas.lendacky@amd.com>
+ <c997e8a2-b364-2a8e-d247-438e9d937a1e@amd.com>
+ <CAMj1kXGH7aGR==o1L2dnA9U9L==gM0__10UGznnyZwkHrT84sw@mail.gmail.com>
+ <YXmEo8iMNIn1esYC@zn.tnic>
+ <CAMj1kXEZkw99MPssHWFRL_k0okeGF47VYL+o8p72hBWkqW927g@mail.gmail.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <f939e968-149f-1caf-c1fb-5939eafae31c@amd.com>
+Date:   Wed, 27 Oct 2021 12:04:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <CAMj1kXEZkw99MPssHWFRL_k0okeGF47VYL+o8p72hBWkqW927g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com>,
-        davem@davemloft.net, herbert@gondor.apana.org.au, jiri@nvidia.com,
-        kuba@kernel.org, leonro@nvidia.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mpm@selenic.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000a4cd2105cf441e76@google.com>
- <eab57f0e-d3c6-7619-97cc-9bc3a7a07219@redhat.com>
- <CACT4Y+amyT9dk-6iVqru-wQnotmwW=bt4VwaysgzjH9=PkxGww@mail.gmail.com>
- <20211027111300-mutt-send-email-mst@kernel.org>
- <589f86e0-af0e-c172-7ec6-72148ba7b3b0@redhat.com>
-In-Reply-To: <589f86e0-af0e-c172-7ec6-72148ba7b3b0@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0401CA0011.namprd04.prod.outlook.com
+ (2603:10b6:803:21::21) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
+MIME-Version: 1.0
+Received: from office-ryzen.texastahm.com (67.79.209.213) by SN4PR0401CA0011.namprd04.prod.outlook.com (2603:10b6:803:21::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Wed, 27 Oct 2021 17:04:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 622b9600-a044-49bc-9a24-08d9996be813
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5477:
+X-Microsoft-Antispam-PRVS: <DM8PR12MB5477A84BF6DF67F063888B8CEC859@DM8PR12MB5477.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pFFRSDNMkej/+PtywX1hwYZgC29orlwPzRyAeOK/vsnmHH3m44/atm+wl3lMDLHzbKLwSnFftoPMSMgIofxR26jnqpfWj1hGFY4GZ1TBszuhnHmnhPQKi17k7rAw5D+caAiH8iEpyOusGu9JDAB/OHy+Un02S49b81BMxRkfbXzPeVBwurB03xE38SioWqR8ZPkE1GvTkFLc44L+hZ+ItySm9ffGegWJ821nwX9ticP5drhpFrkRcfw+weHAxj6EkBXwxyl0/pi/Oev/PQHGhZnQlS5+Y14GvFm0IIlJO/2cXcCzVGCt5VumcDPU9+/VE+7u/s1YsESHL3mK3h78uWCELA6wmzTi9SE8DPwQEehTqLDW9zaD0cCFZl2jwkBvGe6lA/8ySluWpqPQKJUpKonFulRa53FrSGtA7SzjCC+qbgJQozIjmxQcKNi030Yl0rpDzLHfieYk4xnAuWqJ0gGxa6Ud3NdYAPcb1lnlHCBUtWqm8pg4Q1NcUNkM0cTzrKBhrcFXYAINWDK58tUk3GtHFGXQJGD+EOTjqZmxNmfocfRTQTwJ4yVplSDYNJUtaY+Nvhrtc5fP9S2BHCfJR9DQrXtFKVBwSaechDRD2WiqEGdgS6j3PScW8konKKcEcCc04SebKQMv5DyOLJCeSXvelXQs++OwjXLcpY71hQLmhWZp7e/xGcvvlDw4jMSzuGKupBD+aYRw7FL0BEr5jU6IjAMn+EqrLyazIAN9Avo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(5660300002)(6486002)(66556008)(508600001)(8936002)(83380400001)(66946007)(7416002)(31686004)(31696002)(956004)(38100700002)(6512007)(2616005)(26005)(186003)(54906003)(110136005)(316002)(2906002)(8676002)(86362001)(4744005)(4326008)(36756003)(6506007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SFJxMjRFTGV4eWM5c0ZKa2lCWFBYaEhRQ0hDeENmOTdCVVN6YlBPTU0rSWtR?=
+ =?utf-8?B?elYvTGJVb2crbG5zM29NdDY1Vlg4ZHVFc3J0c24vdXR2SEVOdVNUbXBHYVdZ?=
+ =?utf-8?B?NjVWbk5FL3NxS1RGU1ozRktrUUZxbUh6ektqam0wajhHZ0pHa3RYQUY2bjlr?=
+ =?utf-8?B?MFpFL3JKcnUrM0QrVDdNYm5jbTcvTmo0MW4yaWJyQ1hWcVFWcTh4OC9yV2ZZ?=
+ =?utf-8?B?cno5SWJtbWRoUHdoazhrVVlqcklhbkNpR09ZeGRjZ0JjdlBQaWp5MWI2c1pQ?=
+ =?utf-8?B?Q2Q4cTdVTGExNGJUQmtadm1VSmhseHZUbmw0dWlyc3g5M3FrODR2QnU2SWJS?=
+ =?utf-8?B?RzJhWEpjbmhWeFhmaCtTcGxDR3BmamVhdGFTK1FXUlB3Uzl5K09IOVMrSmxB?=
+ =?utf-8?B?b0pyRzRQck1NUytkVGd4NFl1YWMzTE5Jcjk4eml5V2cyTFhFY3FIaDZrVTJt?=
+ =?utf-8?B?VkxLaExhL0JUQ2VJQnFRVlRNNnhodkJWdVlDSmkyWUpVRk93Zmt6cU5ZMmxz?=
+ =?utf-8?B?MkVxenlPNEF5OUFBZGp6UkRYV3JBK1pHbWlwN2hiZ1QvSm50ZzUwWFJRT2hT?=
+ =?utf-8?B?eXhYV0lCMllOOHJ2YVh2bzVtVjFtd1o5dElUVUxoclpIQU94ajBnTlBVWDBU?=
+ =?utf-8?B?MktWMjk1ZDhRYXAxTXAxNWd6eWJsMEpTMmNsaTdoaVBqU3REazBhc3NBRVNJ?=
+ =?utf-8?B?SUVFcW9aalFWMUZrNkpMMUhzbVZoUEMzajFtb21DQXd1VzVTVzBjWlB6VktF?=
+ =?utf-8?B?MWIvVlNCWFp4N29RSmRPY2gyRkVkWlpsTUxBRVY3NERwWUxCTU0yRENVdDBH?=
+ =?utf-8?B?UlBoTFhQQU1SVi9PdncyWHA2RjRvQ3JZY08yUTZRTlFOTm1HbDdaSks3OWxu?=
+ =?utf-8?B?bTlVL2FBU2dpcHF6MW9DNTJKdGlSMDIzclFKV1lrV2F0bU1NVGJJZExIbE52?=
+ =?utf-8?B?RUtSTDhVRnlhRktGUnJ1a3hYaEVVUGtlQmw0UzVoZnpoZ1dRVFQySHJNOGR5?=
+ =?utf-8?B?YnJCVTltUlJSTTZVclRwOTdEcUV5ZGxKTDBhRWNKOFk1dVhoZ3B2anloMUVj?=
+ =?utf-8?B?dGtOSGdMbC9pWitJbFQxMVZWeGZjbG11cFFVNlBVV2tqcURkdVNkaXhka1Az?=
+ =?utf-8?B?RHQveFM1WitnRm9KSU43SFlWblVib2F0ZnV4MjFVZE4vL2RxVWhLakV1QmxO?=
+ =?utf-8?B?emY1WExua0pKaWxLNnc4TlpBNzhMcjduTzhIRDZKMTZTbGxnYXRpTFJFNFEz?=
+ =?utf-8?B?NFU2dlZDWGkwY1RBQTJmOG5JSVdDMTBNdTNkbFhjRUxQcURyeXM1cGt1L3NC?=
+ =?utf-8?B?b1NqZVRoM0ZGam9GOFN1VmVYNFEwY2Z5alJvRE95dWtKZTdQOTlGRW1FYVdW?=
+ =?utf-8?B?RlJJN001bG1US0JzT1NHL25rUm9lTi9pR2FaaWU5N28xRUpqL3daaHUzNkNX?=
+ =?utf-8?B?dkpuYjhTT241OEZab0hRallmVjlNbEN0WGJWanlJazdmQUVHTlFDTWpZUFkz?=
+ =?utf-8?B?T0JCWFJiOGFsRS9JcGJyWWJuMjFNQlZWYzNkcXBhd3hoZURmaFhHQTNzQVdP?=
+ =?utf-8?B?aEkwbnU3MjNUQ3V6YzV4bHc4VFFzbk9zUXFLV2FiaW56aHJ2b1BiMExnMGdx?=
+ =?utf-8?B?WktXMkNLT2JyUGp1S1I2ZkhMQjdWY2tLS0szTEN5NGp4MUJyTW5IMG4wVWp3?=
+ =?utf-8?B?ZFNkekNkRmRzanlYWFRCWVFCNG1CNk54V1YwUmloakg5SG1UM2l0cTF2VE93?=
+ =?utf-8?B?dHJQd1pmZW1hYkhydUNNai9QZzNpZDlyUEJGRExucVlvSDZwNnR5eDluWVZu?=
+ =?utf-8?B?UVFjQ3NxWmJUbFQzUzY5RU1LSVpDdkFocTE4VmRwVGFzR3dEcXc5MlE3NWJP?=
+ =?utf-8?B?QUw0TFhrZHZoaGdVb1R2cFNUMkU0SmpFZEFTNzVOSnNWeHdhUys2WlIyNDVQ?=
+ =?utf-8?B?bmVNaWMzVDVYVVZJcnM5N2hQN2p5NGNOTWx2SXY3UzlOZ2p4TXpXMmJXR29F?=
+ =?utf-8?B?MUFpUjZyVFJ3MENlM3lOdng0eDBhK0l5RFVjZzgrbTRicTI2bFh2R2diZnV4?=
+ =?utf-8?B?M1FtUnpLVnZIZ2YvaTVPTkVHMWVaUjZRLzFtVFo0YjVEakxIcFVQNE9CbFZx?=
+ =?utf-8?B?ZS96dnp3VEdycTJWaUR2RmlkMFVHMGdzZ1ZEUDRiSnQvMmNzWUFxM2JBZHd0?=
+ =?utf-8?Q?gPLx+7YtF53kPhDKAU4VPtU=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 622b9600-a044-49bc-9a24-08d9996be813
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 17:04:58.5527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Adb1jcZCRR7K9itwVpwQ2WcbG+f/cef6eoBnBu/fiM4AVwGV7uZ7PWRynybv0crA9YxuUIArLK2WZXqvm02ICg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5477
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2021 18:25, Laurent Vivier wrote:
-> On 27/10/2021 17:28, Michael S. Tsirkin wrote:
->> On Wed, Oct 27, 2021 at 03:36:19PM +0200, Dmitry Vyukov wrote:
->>> On Wed, 27 Oct 2021 at 15:11, Laurent Vivier <lvivier@redhat.com> wrote:
->>>>
->>>> On 26/10/2021 18:39, syzbot wrote:
->>>>> Hello,
->>>>>
->>>>> syzbot found the following issue on:
->>>>>
->>>>> HEAD commit:    9ae1fbdeabd3 Add linux-next specific files for 20211025
->>>>> git tree:       linux-next
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1331363cb00000
->>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=aeb17e42bc109064
->>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
->>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for 
->>>>> Debian) 2.35.2
->>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116ce954b00000
->>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132fcf62b00000
->>>>>
->>>>> The issue was bisected to:
->>>>>
->>>>> commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
->>>>> Author: Leon Romanovsky <leonro@nvidia.com>
->>>>> Date:   Thu Oct 21 14:16:14 2021 +0000
->>>>>
->>>>>       devlink: Remove not-executed trap policer notifications
->>>>>
->>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137d8bfcb00000
->>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10fd8bfcb00000
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=177d8bfcb00000
->>>>>
->>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>> Reported-by: syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com
->>>>> Fixes: 22849b5ea595 ("devlink: Remove not-executed trap policer notifications")
->>>>>
->>>>> ==================================================================
->>>>> BUG: KASAN: slab-out-of-bounds in memcpy include/linux/fortify-string.h:225 [inline]
->>>>> BUG: KASAN: slab-out-of-bounds in copy_data+0xf3/0x2e0 
->>>>> drivers/char/hw_random/virtio-rng.c:68
->>>>> Read of size 64 at addr ffff88801a7a1580 by task syz-executor989/6542
->>>>>
->>>>
->>>> I'm not able to reproduce the problem with next-20211026 and the C reproducer.
->>>>
->>>> And reviewing the code in copy_data() I don't see any issue.
->>>>
->>>> Is it possible to know what it the VM configuration used to test it?
->>>
->>> Hi Laurent,
->>>
->>> syzbot used e2-standard-2 GCE VM when that happened.
->>> You can see some info about these VMs under the "VM info" link on the dashboard.
+
+
+On 10/27/21 11:59 AM, Ard Biesheuvel wrote:
+> On Wed, 27 Oct 2021 at 18:56, Borislav Petkov <bp@alien8.de> wrote:
 >>
->> Could you pls confirm whether reverting
->> caaf2874ba27b92bca6f0298bf88bad94067ec37 addresses this?
+>> On Wed, Oct 27, 2021 at 05:14:35PM +0200, Ard Biesheuvel wrote:
+>>> I could take it, but since it will ultimately go through -tip anyway,
+>>> perhaps better if they just take it directly? (This will change after
+>>> the next -rc1 though)
+>>>
+>>> Boris?
+>>
+>> Yeah, I'm being told this is not urgent enough to rush in now so you
+>> could queue it into your fixes branch for 5.16 once -rc1 is out and send
+>> it to Linus then. The stable tag is just so it gets backported to the
+>> respective trees.
+>>
+>> But if you prefer I should take it, then I can queue it after -rc1.
+>> It'll boil down to the same thing though.
 >>
 > 
-> I've restarted the syzbot on top of "hwrng: virtio - don't wait on cleanup" [1] and the 
-> problem has not been triggered.
+> No, in that case, I can take it myself.
 > 
-> See https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
+> Tom, does that work for you?
 
-The problem seems to be introduced by the last patch:
+Yup, that works for me. Thanks guys!
 
-"hwrng: virtio - always add a pending request"
-
-not
-
-"hwrng: virtio - don't waste entropy"
-
-Thanks,
-Laurent
+Tom
 
 > 
-> Thanks,
-> Laurent
-> 
-> [1]
-> d721abbeb145 hwrng: virtio - don't wait on cleanup
-> bb768beb0a5f hwrng: virtio - add an internal buffer
-> d25f27432f80 (origin/master, origin/HEAD, master) Merge tag 'arm-soc-fixes-5.15-3' of 
-> git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-> 
-
