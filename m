@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E3A43D71B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE3C43D759
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhJ0XFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhJ0XFX (ORCPT
+        id S230303AbhJ0XPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:15:00 -0400
+Received: from straum.hexapodia.org ([216.252.162.53]:47748 "EHLO
+        straum.hexapodia.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhJ0XO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:05:23 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A6BC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:02:57 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id p14so6700839wrd.10
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DkNDhiEnUBFd5g6Q7nEnrcdTNYozC6sABi5j39jJUF8=;
-        b=O57Zy/hgeucXgevrTxtL8Wv4sU2LKVUiZQ68zd/yTuraAcKI9j4ZpvMgxRU2jfJF6L
-         1rh56ESO/dUOk7Wi2e+OpC3mrxyxrzVQ3TxRjLTzx0BGas/reMb9hVgpmFh0/khc2P7M
-         ZVa1qUPybjco2VRP7TiTOagAaCUc7QG7Z6dS648ZstOlb3HqJ/1O/gf/dVVyyNFdxNjv
-         DMi2hHGtTJb7hWtn3/Gpd3SaCtrTVdPE1jyicUQtktSj25G2XHfxb3claF160a41FPap
-         zLX4XtOTPFVRpDJ+NpZXkhKIdHPWjJXxFoVC/PywSnVjM55edlzrxbZ6U8OB7bhMkcGy
-         n/cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DkNDhiEnUBFd5g6Q7nEnrcdTNYozC6sABi5j39jJUF8=;
-        b=gdi7p9EWXDo/z5uBdspDYh5fIJeAU/QlgLCqESkAytZt693WkkzKu9FBVyhuh90mH8
-         XYapHR927Ide7kzN8xHTqfOUfJoqa5u0n40oywAI7ylKf1j3VNBdiAhxS/uR1U2nsDvc
-         r+9IKKBX9g3v6p02DkL69d9nhI9PcRxoUk3uQbNxSZhvsLgYiEJMpfhWDYlJK4mIWmhJ
-         I7xGVtN7n9cvGI4M1u9ERJ1f5s2s/Yd9+mRZzSFJPOsUvKIr+0PmXBC2J0qz3wj967UE
-         P45FR8MxE6UefxcB8agkopTgkXmtDtuvjIHs4a+z8ngLs1ge2ZR/uyFgN21Z0yPJLUGf
-         BTHg==
-X-Gm-Message-State: AOAM530uQ2oNuHINuNlVMVzf7e6tleOC/OdQCHGUyIrEJWLvQG6F/Fxd
-        uXPyQyw6LAfsLCD4N0D1clYSGcag5mekTEMdfHHezw==
-X-Google-Smtp-Source: ABdhPJyO1vwvDrD3z/hjTZUkPwoCJGxlHZGp1P4reZ7iy0UtXE2yq8mDVVpaGENP60V2gmhuJF8PbiES4vM1e/WK3qE=
-X-Received: by 2002:adf:d0c3:: with SMTP id z3mr789158wrh.44.1635375776246;
- Wed, 27 Oct 2021 16:02:56 -0700 (PDT)
+        Wed, 27 Oct 2021 19:14:59 -0400
+X-Greylist: delayed 448 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Oct 2021 19:14:59 EDT
+Received: by straum.hexapodia.org (Postfix, from userid 22448)
+        id 845D94070D; Wed, 27 Oct 2021 16:05:05 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 16:05:05 -0700
+From:   Andy Isaacson <adi@hexapodia.org>
+To:     linux-mmc@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: mmc: update maintainer name and URL
+Message-ID: <20211027230505.GA23994@hexapodia.org>
 MIME-Version: 1.0
-References: <20211027013702.2039566-1-davidgow@google.com> <CAGS_qxo2=NmXEnEnkg4E_1k-DXwniGK8xFZi08nKZZkb8otXzQ@mail.gmail.com>
-In-Reply-To: <CAGS_qxo2=NmXEnEnkg4E_1k-DXwniGK8xFZi08nKZZkb8otXzQ@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 28 Oct 2021 07:02:45 +0800
-Message-ID: <CABVgOSnQ73ZqnF=Y7Wg-rO_wp-ttSbK8=p2EXUbh7ogGpDPUfA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] kunit: tool: Do not error on tests without test plans
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+X-Old-GPG-Fingerprint: 1914 0645 FD53 C18E EEEF C402 4A69 B1F3 68D2 A63F
+X-GPG-Fingerprint: A5FC 6141 F76D B6B1 C81F  0FB7 AFA0 A45F ED3D 116D
+X-GPG-Key-URL: http://web.hexapodia.org/~adi/gpg.txt
+X-Domestic-Surveillance: money launder bomb tax evasion
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 6:13 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Tue, Oct 26, 2021 at 6:37 PM David Gow <davidgow@google.com> wrote:
-> >
-> > The (K)TAP spec encourages test output to begin with a 'test plan': a
-> > count of the number of tests being run of the form:
-> > 1..n
-> >
-> > However, some test suites might not know the number of subtests in
-> > advance (for example, KUnit's parameterised tests use a generator
-> > function). In this case, it's not possible to print the test plan in
-> > advance.
-> >
-> > kunit_tool already parses test output which doesn't contain a plan, but
-> > reports an error. Since we want to use nested subtests with KUnit
-> > paramterised tests, remove this error.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
->
-> Reviewed-by: Daniel Latypov <dlatypov@google.com>
->
-> This looks to be unchanged from v1.
+The mmc-utils repo is no longer in /cjb/ and Ulf has taken over 
+maintenance.
 
-Yeah, the changes in v2 were all in the new patches.
+Signed-off-by: Andy Isaacson <adi@hexapodia.org>
 
--- David
+---
+ Documentation/driver-api/mmc/mmc-tools.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/driver-api/mmc/mmc-tools.rst b/Documentation/driver-api/mmc/mmc-tools.rst
+index a231e9644351..eee1c2ccfa8f 100644
+--- a/Documentation/driver-api/mmc/mmc-tools.rst
++++ b/Documentation/driver-api/mmc/mmc-tools.rst
+@@ -2,10 +2,10 @@
+ MMC tools introduction
+ ======================
+ 
+-There is one MMC test tools called mmc-utils, which is maintained by Chris Ball,
++There is one MMC test tools called mmc-utils, which is maintained by Ulf Hansson,
+ you can find it at the below public git repository:
+ 
+-	https://git.kernel.org/cgit/linux/kernel/git/cjb/mmc-utils.git/
++	https://git.kernel.org/pub/scm/utils/mmc/mmc-utils.git
+ 
+ Functions
+ =========
+-- 
+2.20.1
+
