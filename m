@@ -2,825 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A7A43CB6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CC943CB7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242363AbhJ0OEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:04:32 -0400
-Received: from out2.migadu.com ([188.165.223.204]:20534 "EHLO out2.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233226AbhJ0OEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:04:31 -0400
-Date:   Wed, 27 Oct 2021 22:02:46 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635343323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ncneftcvnREFUV8AcrbISWccMJkli7iBYmji5B1IeOw=;
-        b=Ff4RDDOHjdnhIHLejBcOH1VOiNSCIg1igUOmt1QMXV2xuflBz7XTMF03efIz5XloSNWn97
-        fNq0bFk+ZXTBTajHUpFeUwpPBfSFrHQ7cCXV/rKyDECQRHb1riLzJhhDg21aQU5sxV9oxf
-        RaVg8MXlpBqF0Hs0wrG89m+3Rtf0j4k=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V6 08/20] rtla: Helper functions for rtla
-Message-ID: <YXlcBhnqiKVxV4UX@geo.homenetwork>
-References: <cover.1635284863.git.bristot@kernel.org>
- <183637700a31169e5d6d1c8a827c5365599ec806.1635284863.git.bristot@kernel.org>
+        id S242371AbhJ0OGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237581AbhJ0OGT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:06:19 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD30C061570;
+        Wed, 27 Oct 2021 07:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rZFyHeRVZKV32ARO4cmxe/axEb+Rr/x9yD53+sl/OlY=; b=phKT767jvGh32MVsAxMl47EP5P
+        wwCM3/H9RzMOVVZA4ft6XzYW0e6WaC0I6Rv4mhVT5fTAgn0yby2N+wb1MTi6OQQr4EfPzwxaBW7ph
+        acuxsIrP+a7pulqN6j2acgdoK7qxYotO7BtbciWoPZ/ZlqTT5XFaQh6oXS7IJbdr5ojYP5udZljfF
+        SgYGwV7Td9B2DehJC62rCILdXkZLJQpPjaxXUt4OC9P2ZCW6U/1uSl05L1M+hak9MUl1rW2D3hEE1
+        pQN8LydhRrFUCBYsFjfeXd8srrHEKWxF5Ft7rrIsXEELTfdjvI2fN5HCWR4OQiqn1y8dMlvEZsQOI
+        I265IATA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfjWe-00CZ1O-0S; Wed, 27 Oct 2021 14:03:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7CED530018E;
+        Wed, 27 Oct 2021 16:03:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 610572C8E6567; Wed, 27 Oct 2021 16:03:30 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 16:03:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <YXlcMluaysPBF92J@hirez.programming.kicks-ass.net>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+ <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+ <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <183637700a31169e5d6d1c8a827c5365599ec806.1635284863.git.bristot@kernel.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+In-Reply-To: <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Wed, Oct 27, 2021 at 03:30:11PM +0200, Ard Biesheuvel wrote:
 
-On Wed, Oct 27, 2021 at 12:06:19AM +0200, Daniel Bristot de Oliveira wrote:
+> As far as I can tell from playing around with Clang, the stubs can
+> actually be executed directly, 
 
-> This is a set of utils and tracer helper functions. They are used by
-> rtla mostly to parse config, display data and some trace operations that
-> are not part of libtracefs (because they are only useful it for this
-> case).
+I had just finished reading the clang docs which suggest as much and was
+about to try what the compiler actually generates.
+
+> they just jumps to the actual function.
+> The compiler simply generates a jump table for each prototype that
+> appears in the code as the target of an indirect jump, and checks
+> whether the target appears in the list.
 > 
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Tom Zanussi <zanussi@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Clark Williams <williams@redhat.com>
-> Cc: John Kacur <jkacur@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-> Cc: linux-rt-users@vger.kernel.org
-> Cc: linux-trace-devel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> ---
->  tools/tracing/rtla/src/trace.c | 192 +++++++++++++++
->  tools/tracing/rtla/src/trace.h |  27 ++
->  tools/tracing/rtla/src/utils.c | 433 +++++++++++++++++++++++++++++++++
->  tools/tracing/rtla/src/utils.h |  56 +++++
->  4 files changed, 708 insertions(+)
->  create mode 100644 tools/tracing/rtla/src/trace.c
->  create mode 100644 tools/tracing/rtla/src/trace.h
->  create mode 100644 tools/tracing/rtla/src/utils.c
->  create mode 100644 tools/tracing/rtla/src/utils.h
+> E.g., the code below
 > 
-> diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
-> new file mode 100644
-> index 000000000000..ab11c29cdcc2
-> --- /dev/null
-> +++ b/tools/tracing/rtla/src/trace.c
-> @@ -0,0 +1,192 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE
-> +#include <sys/sendfile.h>
-> +#include <tracefs.h>
-> +#include <signal.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +
-> +#include "trace.h"
-> +#include "utils.h"
-> +
-> +/*
-> + * enable_tracer_by_name - enable a tracer on the given instance
-> + */
-> +int enable_tracer_by_name(struct tracefs_instance *inst, const char *tracer)
-> +{
-> +	enum tracefs_tracers t;
-> +	int retval;
-> +
-> +	t = TRACEFS_TRACER_CUSTOM;
-> +
-> +	debug_msg("enabling %s tracer\n", tracer);
-> +
-> +	retval = tracefs_tracer_set(inst, t, tracer);
-> +	if (retval < 0) {
-> +		if (errno == ENODEV)
-> +			err_msg("tracer %s not found!\n", tracer);
-> +
-> +		err_msg("failed to enable the tracer %s\n", tracer);
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * disable_tracer - set nop tracer to the insta
-> + */
-> +void disable_tracer(struct tracefs_instance *inst)
-> +{
-> +	enum tracefs_tracers t = TRACEFS_TRACER_NOP;
-> +	int retval;
-> +
-> +	retval = tracefs_tracer_set(inst, t);
-> +	if (retval < 0)
-> +		err_msg("oops, error disabling tracer\n");
-> +}
-> +
-> +/*
-> + * create_instance - create a trace instance with *instance_name
-> + */
-> +struct tracefs_instance *create_instance(char *instance_name)
-> +{
-> +	return tracefs_instance_create(instance_name);
-> +}
-> +
-> +/*
-> + * destroy_instance - remove a trace instance and free the data
-> + */
-> +void destroy_instance(struct tracefs_instance *inst)
-> +{
-> +	tracefs_instance_destroy(inst);
-> +	tracefs_instance_free(inst);
-> +}
-> +
-> +/*
-> + * save_trace_to_file - save the trace output of the instance to the file
-> + */
-> +int save_trace_to_file(struct tracefs_instance *inst, const char *filename)
-> +{
-> +	const char *file = "trace";
-> +	mode_t mode = 0644;
-> +	char *buffer[4096];
-> +	int out_fd, in_fd;
-> +	int retval = -1;
-> +
-> +	in_fd = tracefs_instance_file_open(inst, file, O_RDONLY);
-> +	if (in_fd < 0) {
-> +		err_msg("Failed to open trace file\n");
-> +		return -1;
-> +	}
-> +
-> +	out_fd = creat(filename, mode);
-> +	if (out_fd < 0) {
-> +		err_msg("Failed to create output file %s\n", filename);
-> +		goto out_close_in;
-> +	}
-> +
-> +	do {
-> +		retval = read(in_fd, buffer, sizeof(buffer));
-> +		if (retval <= 0)
-> +			goto out_close;
-> +
-> +		retval = write(out_fd, buffer, retval);
-> +		if (retval < 0)
-> +			goto out_close;
-> +	} while (retval > 0);
-> +
-> +	retval = 0;
-> +out_close:
-> +	close(out_fd);
-> +out_close_in:
-> +	close(in_fd);
-> +	return retval;
-> +}
-> +
-> +/*
-> + * collect_registered_events - call the existing callback function for the event
-> + *
-> + * If an event has a registered callback function, call it.
-> + * Otherwise, ignore the event.
-> + */
-> +int
-> +collect_registered_events(struct tep_event *event, struct tep_record *record,
-> +			  int cpu, void *context)
-> +{
-> +	struct trace_instance *trace = context;
-> +	struct trace_seq *s = trace->seq;
-> +
-> +	if (!event->handler)
-> +		return 0;
-> +
-> +	event->handler(s, record, event, context);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * trace_instance_destroy - destroy and free a rtla trace instance
-> + */
-> +void trace_instance_destroy(struct trace_instance *trace)
-> +{
-> +	if (trace->inst) {
-> +		disable_tracer(trace->inst);
-> +		destroy_instance(trace->inst);
-> +	}
-> +
-> +	if (trace->seq)
-> +		free(trace->seq);
-> +
-> +	if (trace->tep)
-> +		tep_free(trace->tep);
-> +}
-> +
-> +/*
-> + * trace_instance_init - create an rtla trace instance
-> + *
-> + * It is more than the tracefs instance, as it contains other
-> + * things required for the tracing, such as the local events and
-> + * a seq file.
-> + *
-> + * Note that the trace instance is returned disabled. This allows
-> + * the tool to apply some other configs, like setting priority
-> + * to the kernel threads, before starting generating trace entries.
-> + */
-> +int trace_instance_init(struct trace_instance *trace, char *tool_name)
-> +{
-> +	trace->seq = calloc(1, sizeof(*trace->seq));
-> +	if (!trace->seq)
-> +		goto out_err;
-> +
-> +	trace_seq_init(trace->seq);
-> +
-> +	trace->inst = create_instance(tool_name);
-> +	if (!trace->inst)
-> +		goto out_err;
-> +
-> +	trace->tep = tracefs_local_events(NULL);
-> +	if (!trace->tep)
-> +		goto out_err;
-> +
-> +	/*
-> +	 * Let the main enable the record after setting some other
-> +	 * things such as the priority of the tracer's threads.
-> +	 */
-> +	tracefs_trace_off(trace->inst);
-> +
-> +	return 0;
-> +
-> +out_err:
-> +	trace_instance_destroy(trace);
-> +	return 1;
-> +}
-> +
-> +/*
-> + * trace_instance_start - start tracing a given rtla instance
-> + */
-> +int trace_instance_start(struct trace_instance *trace)
-> +{
-> +	return tracefs_trace_on(trace->inst);
-> +}
-> diff --git a/tools/tracing/rtla/src/trace.h b/tools/tracing/rtla/src/trace.h
-> new file mode 100644
-> index 000000000000..7c3930909b70
-> --- /dev/null
-> +++ b/tools/tracing/rtla/src/trace.h
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <tracefs.h>
-> +#include <stddef.h>
-> +
-> +struct trace_instance {
-> +	struct tracefs_instance		*inst;
-> +	struct tep_handle		*tep;
-> +	struct trace_seq		*seq;
-> +};
-> +
-> +int trace_instance_init(struct trace_instance *trace, char *tool_name);
-> +int trace_instance_start(struct trace_instance *trace);
-> +void trace_instance_destroy(struct trace_instance *trace);
-> +
-> +struct trace_seq *get_trace_seq(void);
-> +int enable_tracer_by_name(struct tracefs_instance *inst, const char *tracer);
-> +void disable_tracer(struct tracefs_instance *inst);
-> +
-> +int enable_osnoise(struct trace_instance *trace);
-> +int enable_timerlat(struct trace_instance *trace);
-> +
-> +struct tracefs_instance *create_instance(char *instance_name);
-> +void destroy_instance(struct tracefs_instance *inst);
-> +
-> +int save_trace_to_file(struct tracefs_instance *inst, const char *filename);
-> +int collect_registered_events(struct tep_event *tep, struct tep_record *record,
-> +			      int cpu, void *context);
-> diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-> new file mode 100644
-> index 000000000000..4a35e62b1514
-> --- /dev/null
-> +++ b/tools/tracing/rtla/src/utils.c
-> @@ -0,0 +1,433 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-> + */
-> +
-> +#include <proc/readproc.h>
-> +#include <stdarg.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <ctype.h>
-> +#include <errno.h>
-> +#include <sched.h>
-> +#include <stdio.h>
-> +
-> +#include "utils.h"
-> +
-> +#define MAX_MSG_LENGTH	1024
-> +int config_debug;
-> +
-> +/*
-> + * err_msg - print an error message to the stderr
-> + */
-> +void err_msg(const char *fmt, ...)
-> +{
-> +	char message[MAX_MSG_LENGTH];
-> +	va_list ap;
-> +
-> +	va_start(ap, fmt);
-> +	vsnprintf(message, sizeof(message), fmt, ap);
-> +	va_end(ap);
-> +
-> +	fprintf(stderr, "%s", message);
-> +}
-> +
-> +/*
-> + * debug_msg - print a debug message to stderr if debug is set
-> + */
-> +void debug_msg(const char *fmt, ...)
-> +{
-> +	char message[MAX_MSG_LENGTH];
-> +	va_list ap;
-> +
-> +	if (!config_debug)
-> +		return;
-> +
-> +	va_start(ap, fmt);
-> +	vsnprintf(message, sizeof(message), fmt, ap);
-> +	va_end(ap);
-> +
-> +	fprintf(stderr, "%s", message);
-> +}
-> +
-> +/*
-> + * get_long_from_str - get a long int from a string
-> + */
-> +long get_long_from_str(char *start)
-> +{
-> +	long value;
-> +	char *end;
-> +
-> +	errno = 0;
-> +	value = strtol(start, &end, 10);
-> +	if (errno || start == end)
-> +		return -1;
-> +
-> +	return value;
-> +}
-> +
-> +/*
-> + * get_duration - fill output with a human readable duration since start_time
-> + */
-> +void get_duration(time_t start_time, char *output, int output_size)
-> +{
-> +	time_t now = time(NULL);
-> +	struct tm *tm_info;
-> +	time_t duration;
-> +
-> +	duration = difftime(now, start_time);
-> +	tm_info = localtime(&duration);
-> +
-> +	snprintf(output, output_size, "%3d %02d:%02d:%02d",
-> +			tm_info->tm_yday,
-> +			tm_info->tm_hour - 1,
-> +			tm_info->tm_min,
-> +			tm_info->tm_sec);
-> +}
-> +
-> +/*
-> + * parse_cpu_list - parse a cpu_list filling a char vector with cpus set
-> + *
-> + * Receives a cpu list, like 1-3,5 (cpus 1, 2, 3, 5), and then set the char
-> + * in the monitored_cpus.
-> + *
-> + * XXX: convert to a bitmask.
-> + */
-> +int parse_cpu_list(char *cpu_list, char **monitored_cpus)
-> +{
-> +	char *mon_cpus;
-> +	const char *p;
-> +	int end_cpu;
-> +	int nr_cpus;
-> +	int cpu;
-> +	int i;
-> +
-> +	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
-> +
-> +	mon_cpus = malloc(nr_cpus * sizeof(char));
-> +	memset(mon_cpus, 0, (nr_cpus * sizeof(char)));
-> +
-> +	for (p = cpu_list; *p; ) {
-> +		cpu = atoi(p);
-> +		if (cpu < 0 || (!cpu && *p != '0') || cpu >= nr_cpus)
-> +			goto err;
-> +
-> +		while (isdigit(*p))
-> +			p++;
-> +		if (*p == '-') {
-> +			p++;
-> +			end_cpu = atoi(p);
-> +			if (end_cpu < cpu || (!end_cpu && *p != '0') || end_cpu >= nr_cpus)
-> +				goto err;
-> +			while (isdigit(*p))
-> +				p++;
-> +		} else
-> +			end_cpu = cpu;
-> +
-> +		if (cpu == end_cpu) {
-> +			debug_msg("cpu_list: adding cpu %d\n", cpu);
-> +			mon_cpus[cpu] = 1;
-> +		} else {
-> +			for (i = cpu; i <= end_cpu; i++) {
-> +				debug_msg("cpu_list: adding cpu %d\n", i);
-> +				mon_cpus[i] = 1;
-> +			}
-> +		}
-> +
-> +		if (*p == ',')
-> +			p++;
-> +	}
-> +
-> +	*monitored_cpus = mon_cpus;
-> +
-> +	return 0;
-> +
-> +err:
-> +	debug_msg("Error parsing the cpu list %s", cpu_list);
-> +	return 1;
-> +}
-> +
-> +/*
-> + * parse_duration - parse duration with s/m/h/d suffix converting it to seconds
-> + */
-> +long parse_seconds_duration(char *val)
-> +{
-> +	char *end;
-> +	long t;
-> +
-> +	t = strtol(val, &end, 10);
-> +
-> +	if (end) {
-> +		switch (*end) {
-> +		case 's':
-> +		case 'S':
-> +			break;
-> +		case 'm':
-> +		case 'M':
-> +			t *= 60;
-> +			break;
-> +		case 'h':
-> +		case 'H':
-> +			t *= 60 * 60;
-> +			break;
-> +
-> +		case 'd':
-> +		case 'D':
-> +			t *= 24 * 60 * 60;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return t;
-> +}
-> +
-> +/*
-> + * parse_ns_duration - parse duration with ns/us/ms/s converting it to nanoseconds
-> + */
-> +long parse_ns_duration(char *val)
-> +{
-> +	char *end;
-> +	long t;
-> +
-> +	t = strtol(val, &end, 10);
-> +
-> +	if (end) {
-> +		if (!strncmp(end, "ns", 2)) {
-> +			return t;
-> +		} else if (!strncmp(end, "us", 2)) {
-> +			t *= 1000;
-> +			return t;
-> +		} else if (!strncmp(end, "ms", 2)) {
-> +			t *= 1000 * 1000;
-> +			return t;
-> +		} else if (!strncmp(end, "s", 1)) {
-> +			t *= 1000 * 1000 * 100;
-                               ^^^
-Ah, 1000 not 100. 
+> void foo(void) {}
+> void bar(int) {}
+> void baz(int) {}
+> void (* volatile fn1)(void) = foo;
+> void (* volatile fn2)(int) = bar;
+> 
+> int main(int argc, char *argv[])
+> {
+>   fn1();
+>   fn2 = baz;
+>   fn2(-1);
+> }
+> 
+> produces
+> 
+> 0000000000400594 <foo.cfi>:
+>   400594: d65f03c0 ret
+> 
+> 0000000000400598 <bar.cfi>:
+>   400598: d65f03c0 ret
+> 
+> 000000000040059c <baz.cfi>:
+>   40059c: d65f03c0 ret
+
+Right, so these are the actual functions ^.
+
+> 00000000004005a0 <main>:
+>   4005a0: a9bf7bfd stp x29, x30, [sp, #-16]!
+> 
+> // First indirect call
+>   4005a4: b0000088 adrp x8, 411000 <__libc_start_main@GLIBC_2.17>
+>   4005a8: f9401508 ldr x8, [x8, #40]
+>   4005ac: 90000009 adrp x9, 400000 <__abi_tag-0x278>
+>   4005b0: 91182129 add x9, x9, #0x608
+>   4005b4: 910003fd mov x29, sp
+>   4005b8: eb09011f cmp x8, x9
+>   4005bc: 54000241 b.ne 400604 <main+0x64>  // b.any
+>   4005c0: d63f0100 blr x8
+
+That's impenetrable to me, sorry.
+
+> // Assignment of fn2
+>   4005c4: 90000009 adrp x9, 400000 <__abi_tag-0x278>
+>   4005c8: b0000088 adrp x8, 411000 <__libc_start_main@GLIBC_2.17>
+>   4005cc: 91184129 add x9, x9, #0x610
+>   4005d0: f9001909 str x9, [x8, #48]
+
+I'm struggling here, x9 points to the branch at 400610, but then what?
+
+x8 is in .data somewhere?
+
+> // Second indirect call
+>   4005d4: f9401908 ldr x8, [x8, #48]
+>   4005d8: 90000009 adrp x9, 400000 <__abi_tag-0x278>
+>   4005dc: 91183129 add x9, x9, #0x60c
+>   4005e0: cb090109 sub x9, x8, x9
+>   4005e4: 93c90929 ror x9, x9, #2
+>   4005e8: f100053f cmp x9, #0x1
+>   4005ec: 540000c8 b.hi 400604 <main+0x64>  // b.pmore
+>   4005f0: 12800000 mov w0, #0xffffffff            // #-1
+>   4005f4: d63f0100 blr x8
+> 
+> 
+>   4005f8: 2a1f03e0 mov w0, wzr
+>   4005fc: a8c17bfd ldp x29, x30, [sp], #16
+>   400600: d65f03c0 ret
+>   400604: d4200020 brk #0x1
 
 
-Thanks,
-Tao
-> +		}
-> +		return -1;
-> +	}
-> +
-> +	return t;
-> +}
-> +
-> +/*
-> + * This is a set of helper functions to use SCHED_DEADLINE.
-> + */
-> +#ifdef __x86_64__
-> +# define __NR_sched_setattr	314
-> +# define __NR_sched_getattr	315
-> +#elif __i386__
-> +# define __NR_sched_setattr	351
-> +# define __NR_sched_getattr	352
-> +#elif __arm__
-> +# define __NR_sched_setattr	380
-> +# define __NR_sched_getattr	381
-> +#elif __aarch64__
-> +# define __NR_sched_setattr	274
-> +# define __NR_sched_getattr	275
-> +#elif __powerpc__
-> +# define __NR_sched_setattr	355
-> +# define __NR_sched_getattr	356
-> +#elif __s390x__
-> +# define __NR_sched_setattr	345
-> +# define __NR_sched_getattr	346
-> +#endif
-> +
-> +#define SCHED_DEADLINE		6
-> +
-> +static inline int sched_setattr(pid_t pid, const struct sched_attr *attr,
-> +				unsigned int flags) {
-> +	return syscall(__NR_sched_setattr, pid, attr, flags);
-> +}
-> +
-> +static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
-> +				unsigned int size, unsigned int flags)
-> +{
-> +	return syscall(__NR_sched_getattr, pid, attr, size, flags);
-> +}
-> +
-> +int __set_sched_attr(int pid, struct sched_attr *attr)
-> +{
-> +	int flags = 0;
-> +	int retval;
-> +
-> +	retval = sched_setattr(pid, attr, flags);
-> +	if (retval < 0) {
-> +		err_msg("boost_with_deadline failed to boost pid %d: %s\n",
-> +			pid, strerror(errno));
-> +		return 1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +/*
-> + * set_comm_sched_attr - set sched params to threads starting with char *comm
-> + *
-> + * This function uses procps to list the currently running threads and then
-> + * set the sched_attr *attr to the threads that start with char *comm. It is
-> + * mainly used to set the priority to the kernel threads created by the
-> + * tracers.
-> + */
-> +int set_comm_sched_attr(const char *comm, struct sched_attr *attr)
-> +{
-> +	int flags = PROC_FILLCOM | PROC_FILLSTAT;
-> +	PROCTAB *ptp;
-> +	proc_t task;
-> +	int retval;
-> +
-> +	ptp = openproc(flags);
-> +	if (!ptp) {
-> +		err_msg("error openproc()\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	memset(&task, 0, sizeof(task));
-> +
-> +	while (readproc(ptp, &task)) {
-> +		retval = strncmp(comm, task.cmd, strlen(comm));
-> +		if (retval)
-> +			continue;
-> +		retval = __set_sched_attr(task.tid, attr);
-> +		if (retval)
-> +			goto out_err;
-> +	}
-> +
-> +	closeproc(ptp);
-> +	return 0;
-> +
-> +out_err:
-> +	closeproc(ptp);
-> +	return 1;
-> +}
-> +
-> +#define INVALID_VAL	(~0L)
-> +static long get_long_ns_after_colon(char *start)
-> +{
-> +	long val = INVALID_VAL;
-> +
-> +	/* find the ":" */
-> +	start = strstr(start, ":");
-> +	if (!start)
-> +		return -1;
-> +
-> +	/* skip ":" */
-> +	start++;
-> +	val = parse_ns_duration(start);
-> +
-> +	return val;
-> +}
-> +
-> +static long get_long_after_colon(char *start)
-> +{
-> +	long val = INVALID_VAL;
-> +
-> +	/* find the ":" */
-> +	start = strstr(start, ":");
-> +	if (!start)
-> +		return -1;
-> +
-> +	/* skip ":" */
-> +	start++;
-> +	val = get_long_from_str(start);
-> +
-> +	return val;
-> +}
-> +
-> +/*
-> + * parse priority in the format:
-> + * SCHED_OTHER:
-> + *		o:<prio>
-> + *		O:<prio>
-> + * SCHED_RR:
-> + *		r:<prio>
-> + *		R:<prio>
-> + * SCHED_FIFO:
-> + *		f:<prio>
-> + *		F:<prio>
-> + * SCHED_DEADLINE:
-> + *		d:runtime:period
-> + *		D:runtime:period
-> + */
-> +int parse_prio(char *arg, struct sched_attr *sched_param)
-> +{
-> +	long prio;
-> +	long runtime;
-> +	long period;
-> +
-> +	memset(sched_param, 0, sizeof(*sched_param));
-> +	sched_param->size = sizeof(*sched_param);
-> +
-> +	switch (arg[0]) {
-> +	case 'd':
-> +	case 'D':
-> +		/* d:runtime:period */
-> +		if (strlen(arg) < 4)
-> +			return -1;
-> +
-> +		runtime = get_long_ns_after_colon(arg);
-> +		if (runtime == INVALID_VAL)
-> +			return -1;
-> +
-> +		period = get_long_ns_after_colon(&arg[2]);
-> +		if (period == INVALID_VAL)
-> +			return -1;
-> +
-> +		if (runtime > period)
-> +			return -1;
-> +
-> +		sched_param->sched_policy   = SCHED_DEADLINE;
-> +		sched_param->sched_runtime  = runtime;
-> +		sched_param->sched_deadline = period;
-> +		sched_param->sched_period   = period;
-> +		break;
-> +	case 'f':
-> +	case 'F':
-> +		/* f:prio */
-> +		prio = get_long_after_colon(arg);
-> +		if (prio == INVALID_VAL)
-> +			return -1;
-> +
-> +		if (prio < sched_get_priority_min(SCHED_FIFO))
-> +			return -1;
-> +		if (prio > sched_get_priority_max(SCHED_FIFO))
-> +			return -1;
-> +
-> +		sched_param->sched_policy   = SCHED_FIFO;
-> +		sched_param->sched_priority = prio;
-> +		break;
-> +	case 'r':
-> +	case 'R':
-> +		/* r:prio */
-> +		prio = get_long_after_colon(arg);
-> +		if (prio == INVALID_VAL)
-> +			return -1;
-> +
-> +		if (prio < sched_get_priority_min(SCHED_RR))
-> +			return -1;
-> +		if (prio > sched_get_priority_max(SCHED_RR))
-> +			return -1;
-> +
-> +		sched_param->sched_policy   = SCHED_RR;
-> +		sched_param->sched_priority = prio;
-> +		break;
-> +	case 'o':
-> +	case 'O':
-> +		/* o:prio */
-> +		prio = get_long_after_colon(arg);
-> +		if (prio == INVALID_VAL)
-> +			return -1;
-> +
-> +		if (prio < sched_get_priority_min(SCHED_OTHER))
-> +			return -1;
-> +		if (prio > sched_get_priority_max(SCHED_OTHER))
-> +			return -1;
-> +
-> +		sched_param->sched_policy   = SCHED_OTHER;
-> +		sched_param->sched_priority = prio;
-> +		break;
-> +	default:
-> +		return -1;
-> +	}
-> +	return 0;
-> +}
-> diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
-> new file mode 100644
-> index 000000000000..2bce867387b4
-> --- /dev/null
-> +++ b/tools/tracing/rtla/src/utils.h
-> @@ -0,0 +1,56 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdint.h>
-> +#include <time.h>
-> +
-> +/*
-> + * '18446744073709551615\0'
-> + */
-> +#define BUFF_U64_STR_SIZE	24
-> +
-> +#define container_of(ptr, type, member)({			\
-> +	const typeof(((type *)0)->member) *__mptr = (ptr);	\
-> +	(type *)((char *)__mptr - offsetof(type, member)) ; })
-> +
-> +extern int config_debug;
-> +void debug_msg(const char *fmt, ...);
-> +void err_msg(const char *fmt, ...);
-> +
-> +long parse_seconds_duration(char *val);
-> +void get_duration(time_t start_time, char *output, int output_size);
-> +
-> +int parse_cpu_list(char *cpu_list, char **monitored_cpus);
-> +long get_long_from_str(char *start);
-> +
-> +static inline void
-> +update_min(unsigned long long *a, unsigned long long *b)
-> +{
-> +	if (*a > *b)
-> +		*a = *b;
-> +}
-> +
-> +static inline void
-> +update_max(unsigned long long *a, unsigned long long *b)
-> +{
-> +	if (*a < *b)
-> +		*a = *b;
-> +}
-> +
-> +static inline void
-> +update_sum(unsigned long long *a, unsigned long long *b)
-> +{
-> +	*a += *b;
-> +}
-> +
-> +struct sched_attr {
-> +	uint32_t size;
-> +	uint32_t sched_policy;
-> +	uint64_t sched_flags;
-> +	int32_t sched_nice;
-> +	uint32_t sched_priority;
-> +	uint64_t sched_runtime;
-> +	uint64_t sched_deadline;
-> +	uint64_t sched_period;
-> +};
-> +
-> +int parse_prio(char *arg, struct sched_attr *sched_param);
-> +int set_comm_sched_attr(const char *comm, struct sched_attr *attr);
-> -- 
-> 2.31.1
+> 0000000000400608 <__typeid__ZTSFvvE_global_addr>:
+>   400608: 17ffffe3 b 400594 <foo.cfi>
+> 
+> 000000000040060c <__typeid__ZTSFviE_global_addr>:
+>   40060c: 17ffffe3 b 400598 <bar.cfi>
+>   400610: 17ffffe3 b 40059c <baz.cfi>
+
+And these are the stubs per type.
+
+> So it looks like taking the address is fine, although not optimal due
+> to the additional jump.
+
+Right.
+
+> We could fudge around that by checking the
+> opcode at the target of the call, or token paste ".cfi" after the
+> symbol name in the static_call_update() macro, but it doesn't like
+> like anything is terminally broken tbh.
+
+Agreed, since the jump table entries are actually executable it 'works'.
+
+I really don't like that extra jump though, so I think I really do want
+that nocfi_ptr() thing. And going by:
+
+  https://clang.llvm.org/docs/ControlFlowIntegrityDesign.html#forward-edge-cfi-for-indirect-function-calls
+
+and the above, that might be possible (on x86) with something like:
+
+/*
+ * Turns a Clang CFI jump-table entry into an actual function pointer.
+ * These jump-table entries are simply jmp.d32 instruction with their
+ * relative offset pointing to the actual function, therefore decode the
+ * instruction to find the real function.
+ */
+static __always_inline void *nocfi_ptr(void *func)
+{
+	union text_poke_insn insn = *(union text_poke_insn *)func;
+
+	return func + sizeof(insn) + insn.disp;
+}
+
+But really, that wants to be a compiler intrinsic.
