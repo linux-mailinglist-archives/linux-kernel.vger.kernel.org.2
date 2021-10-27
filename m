@@ -2,127 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B5D43CA97
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F7143CA9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242133AbhJ0N3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:29:22 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25318 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242135AbhJ0N3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:29:20 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HfTr45YthzbhN1;
-        Wed, 27 Oct 2021 21:22:12 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 21:26:40 +0800
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 21:26:39 +0800
-Subject: Re: [PATCH bpf-next,v3] riscv, bpf: Add BPF exception tables
-To:     Mark Rutland <mark.rutland@arm.com>
-References: <20211027111822.3801679-1-tongtiangen@huawei.com>
- <20211027115043.GB54628@C02TD0UTHF1T.local>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-From:   tongtiangen <tongtiangen@huawei.com>
-Message-ID: <8ad6338b-b02c-8488-c725-f522435c8916@huawei.com>
-Date:   Wed, 27 Oct 2021 21:26:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S242135AbhJ0NaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:30:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237433AbhJ0NaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:30:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF32260E8B;
+        Wed, 27 Oct 2021 13:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635341258;
+        bh=qGGtvga8O1y2g6sWEld8AJp0sUrc5VDqNDJOBbnVFRA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tx4BDkkYm1SRvdcDon9KgichU1wvJJaXGNP3U7ewpBTsSMFErXR32NiRSIovtbqmo
+         iUdK02QhRwrxWR7gImHML3L8nJ3Hu3DmGLx2Tp0CGZXfZP8oulQwxznvmmSZWLv053
+         s8yspSHvgs2T0bryjeX1TUt6hHbeZE2OFLuM3Hu8P5jsRpe9WzAutzBnODMUFZUl88
+         JlLaatbU8csbbXYqQpraLQYEqRtXyxgV7bjxROkkdz0ixS95td5p8zNTTy3cBHcxKb
+         vS2nkdJoQlyIL2gdYgYeuqzld55B7kU7LZCjF3lolqJf5h6mmkDDo7YVZZbBUwQmPw
+         kxSUhjiP5weAQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-fbdev@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] fbdev: rework FB_DDC dependencies
+Date:   Wed, 27 Oct 2021 15:27:12 +0200
+Message-Id: <20211027132732.3993279-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20211027115043.GB54628@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+Selecting FB_DDC currently turns on CONFIG_I2C implicitly,
+which is often not desired and can lead to circular dependencies.
 
-On 2021/10/27 19:50, Mark Rutland wrote:
-> On Wed, Oct 27, 2021 at 11:18:22AM +0000, Tong Tiangen wrote:
->> When a tracing BPF program attempts to read memory without using the
->> bpf_probe_read() helper, the verifier marks the load instruction with
->> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
->> this flag it falls back to the interpreter.
->>
->> Add support for BPF_PROBE_MEM, by appending an exception table to the
->> BPF program. If the load instruction causes a data abort, the fixup
->> infrastructure finds the exception table and fixes up the fault, by
->> clearing the destination register and jumping over the faulting
->> instruction.
->>
->> A more generic solution would add a "handler" field to the table entry,
->> like on x86 and s390.
->>
->> The same issue in ARM64 is fixed in:
->> commit 800834285361 ("bpf, arm64: Add BPF exception tables")
->
->> +#ifdef CONFIG_BPF_JIT
->> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
->> +#endif
->> +
->>  int fixup_exception(struct pt_regs *regs)
->>  {
->>  	const struct exception_table_entry *fixup;
->>
->>  	fixup = search_exception_tables(regs->epc);
->> -	if (fixup) {
->> -		regs->epc = fixup->fixup;
->> -		return 1;
->> -	}
->> -	return 0;
->> +	if (!fixup)
->> +		return 0;
->> +
->> +#ifdef CONFIG_BPF_JIT
->> +	if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
->> +		return rv_bpf_fixup_exception(fixup, regs);
->> +#endif
->> +
->> +	regs->epc = fixup->fixup;
->> +	return 1;
->>  }
->
-> As a heads-up, on the extable front, both arm64 and x86 are moving to
-> having an enumerated "type" field to select the handler:
->
-> x86:
->
->   https://lore.kernel.org/lkml/20210908132525.211958725@linutronix.de/
->
-> arm64:
->
->   https://lore.kernel.org/linux-arm-kernel/20211019160219.5202-11-mark.rutland@arm.com/
->
-> ... and going forwards, riscv might want to do likewise.
->
-> Thanks,
-> Mark.
-> .
->
+Change this to a 'depends on' and change all drivers that
+rely on FB_DDC to have an appropriate I2C dependency as well.
 
-Thanks mark, I'm very interested in this change.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/video/fbdev/Kconfig | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index 6ed5e608dd04..c187a93c9a16 100644
+--- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -62,9 +62,8 @@ config FIRMWARE_EDID
+ 
+ config FB_DDC
+ 	tristate
+-	depends on FB
++	depends on FB && I2C
+ 	select I2C_ALGOBIT
+-	select I2C
+ 
+ config FB_BOOT_VESA_SUPPORT
+ 	bool
+@@ -356,6 +355,7 @@ config FB_CYBER2000
+ config FB_CYBER2000_DDC
+ 	bool "DDC for CyberPro support"
+ 	depends on FB_CYBER2000
++	depends on I2C=y || I2C=FB_CYBER2000
+ 	select FB_DDC
+ 	default y
+ 	help
+@@ -894,6 +894,7 @@ config FB_NVIDIA
+ config FB_NVIDIA_I2C
+ 	bool "Enable DDC Support"
+ 	depends on FB_NVIDIA
++	depends on I2C=y || I2C=FB_NVIDIA
+ 	select FB_DDC
+ 	help
+ 	  This enables I2C support for nVidia Chipsets.  This is used
+@@ -940,6 +941,7 @@ config FB_RIVA
+ config FB_RIVA_I2C
+ 	bool "Enable DDC Support"
+ 	depends on FB_RIVA
++	depends on I2C=y || I2C=FB_RIVA
+ 	select FB_DDC
+ 	help
+ 	  This enables I2C support for nVidia Chipsets.  This is used
+@@ -967,7 +969,7 @@ config FB_RIVA_BACKLIGHT
+ 
+ config FB_I740
+ 	tristate "Intel740 support"
+-	depends on FB && PCI
++	depends on FB && PCI && I2C
+ 	select FB_MODE_HELPERS
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+@@ -1021,6 +1023,7 @@ config FB_I810_GTF
+ config FB_I810_I2C
+ 	bool "Enable DDC Support"
+ 	depends on FB_I810 && FB_I810_GTF
++	depends on I2C=y || I2C=FB_I810
+ 	select FB_DDC
+ 	help
+ 	  Add DDC/I2C support for i810fb.  This will allow the driver to get
+@@ -1076,6 +1079,7 @@ config FB_INTEL_DEBUG
+ config FB_INTEL_I2C
+ 	bool "DDC/I2C for Intel framebuffer support"
+ 	depends on FB_INTEL
++	depends on I2C=y || I2C=FB_INTEL
+ 	select FB_DDC
+ 	default y
+ 	help
+@@ -1155,6 +1159,7 @@ config FB_MATROX_G
+ config FB_MATROX_I2C
+ 	tristate "Matrox I2C support"
+ 	depends on FB_MATROX
++	depends on I2C=y || I2C=FB_MATROX
+ 	select FB_DDC
+ 	help
+ 	  This drivers creates I2C buses which are needed for accessing the
+@@ -1220,6 +1225,7 @@ config FB_RADEON
+ config FB_RADEON_I2C
+ 	bool "DDC/I2C for ATI Radeon support"
+ 	depends on FB_RADEON
++	depends on I2C=y || I2C=FB_RADEON
+ 	select FB_DDC
+ 	default y
+ 	help
+@@ -1329,6 +1335,7 @@ config FB_S3
+ config FB_S3_DDC
+ 	bool "DDC for S3 support"
+ 	depends on FB_S3
++	depends on I2C=y || I2C=FB_S3
+ 	select FB_DDC
+ 	default y
+ 	help
+@@ -1354,6 +1361,7 @@ config FB_SAVAGE
+ config FB_SAVAGE_I2C
+ 	bool "Enable DDC2 Support"
+ 	depends on FB_SAVAGE
++	depends on I2C=y || I2C=FB_SAVAGE
+ 	select FB_DDC
+ 	help
+ 	  This enables I2C support for S3 Savage Chipsets.  This is used
+@@ -1493,6 +1501,7 @@ config FB_3DFX_ACCEL
+ config FB_3DFX_I2C
+ 	bool "Enable DDC/I2C support"
+ 	depends on FB_3DFX
++	depends on I2C=y || I2C=FB_3DFX
+ 	select FB_DDC
+ 	default y
+ 	help
+@@ -1532,7 +1541,7 @@ config FB_VT8623
+ 
+ config FB_TRIDENT
+ 	tristate "Trident/CyberXXX/CyberBlade support"
+-	depends on FB && PCI
++	depends on FB && PCI && I2C
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+ 	select FB_CFB_IMAGEBLIT
+-- 
+2.29.2
+
