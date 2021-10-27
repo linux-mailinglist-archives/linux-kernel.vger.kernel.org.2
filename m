@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95ED043CA49
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF8F43CA48
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242074AbhJ0NHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhJ0NHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:07:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265D3C061570;
-        Wed, 27 Oct 2021 06:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=a/axwY8nWNaBxTRi53jpnhiV68UM1lNZPNWkLRff/vg=; b=ZOpO6pkAKFsKCg4vFi+HjuH2ZL
-        gVBb+6WZ8VUdqvqZtfQmTW3eW4xezlhoBE4YmsqILQTFlXY59lGfu3RkfS7flbwzPT8IieTibBP8k
-        pKjwuLEr8uKEzhP6D/EhfI+raVKdGX8juPVTAEhfIVYE5WpF3u5KESgkWHSp4Z+HGrpadKUXcfmWn
-        RZ7pZuvLMwpx844cZ2CoSJiiftaoxRv9Px5jwSJE4NkrdhGqw6MI7K5MQi6p0mhJtIzZu0M7PqSBm
-        9JGTRzVfl0tNs+ClAeL4KVXcDfhHaCbvanj2r4JFYCf19KOIedsePqhAcvyuZg162EPyFQpc/S8AI
-        OfQiWcnQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfibw-00CYaa-LV; Wed, 27 Oct 2021 13:04:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B0AE83001BF;
-        Wed, 27 Oct 2021 15:04:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 906B82C27DC2E; Wed, 27 Oct 2021 15:04:55 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 15:04:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
+        id S242066AbhJ0NHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:07:41 -0400
+Received: from mga03.intel.com ([134.134.136.65]:28499 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233332AbhJ0NHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:07:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="230102157"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="230102157"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 06:05:14 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497857247"
+Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 06:05:11 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
-Message-ID: <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211026201622.GG174703@worktop.programming.kicks-ass.net>
- <20211027120515.GC54628@C02TD0UTHF1T.local>
- <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
- <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+        Javier Martinez Canillas <javierm@redhat.com>
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+In-Reply-To: <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local> <878ryeit9i.fsf@intel.com> <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
+Date:   Wed, 27 Oct 2021 16:05:08 +0300
+Message-ID: <87wnlyhb3v.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 02:48:52PM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 27, 2021 at 02:22:27PM +0200, Ard Biesheuvel wrote:
-> > On Wed, 27 Oct 2021 at 14:05, Mark Rutland <mark.rutland@arm.com> wrote:
-> 
-> > > > Should not this jump-table thingy get converted to an actual function
-> > > > address somewhere around arch_static_call_transform() ? This also seems
-> > > > relevant for arm64 (which already has CLANG_CFI supported) given:
-> > > >
-> > > >   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
-> > >
-> > > Ugh, yeah, we'll need to do the function_nocfi() dance somewhere...
-> > >
-> > 
-> > Sadly, that only works on symbol names, so we cannot use it to strip
-> > CFI-ness from void *func arguments passed into the static call API,
-> > unfortunately.
-> 
-> Right, and while mostly static_call_update() is used, whcih is a macro
-> and could possibly be used to wrap this, we very much rely on
-> __static_call_update() also working without that wrapper and then we're
-> up a creek without no paddles.
+On Wed, 27 Oct 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> On a related note, I did manage to sort out the backlight dependency issue
+> (intel_panel.c:(.text+0x2f58): undefined reference to
+> `backlight_device_register'),
+> but haven't sent that one again yet, but I can if you like. This one changes
+> DRM_I915 and all of drivers/video/fbdev from 'select BACKLIGHT_CLASS_DEVICE'
+> to 'depends on', which I think moves everything into broadly the right
+> direction.
+>
+> Let me know if you would like me to send those now, or have a look at the
+> top 3 patches in [1] if you are interested. This has passed a few
+> thousand randconfig
+> builds and should not depend on additional patches.
 
-Specifically, we support code like:
+FWIW,
 
-struct foo {
-	void (*func1)(args1);
-	void (*func2)(args2);
-}
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 
-struct foo global_foo;
+on the patches. I think I've sent patches before to do the same change
+from "select" to "depends on", but they went nowhere. IIRC the
+opposition was that people wanted to be able to find and enable their
+driver in menuconfig without first having to enable
+BACKLIGHT_CLASS_DEVICE.
 
-...
+BR,
+Jani.
 
-DEFINE_STATIC_CALL_NULL(func1, *global_foo.func1);
 
-...
 
-__init foo_init()
-{
-	// whatever code that fills out foo
+>
+>         Arnd
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=randconfig-5.16-next
 
-	static_call_update(func1, global_foo.func1);
-}
-
-...
-
-hot_function()
-{
-	...
-	static_cal(func1)(args1);
-	...
-}
-
-cold_function()
-{
-	...
-	global_foo->func1(args1);
-	...
-}
-
-And there is no way I can see this working sanely with CFI as presented.
-
-Even though the above uses static_call_update(), we can't no longer use
-function_nocfi() on the @func argument, because it's not a symbol, it's
-already a function pointer.
-
-Nor can we fill global_foo.func1 with function_nocfi() because then
-cold_function() goes sideways.
-
+-- 
+Jani Nikula, Intel Open Source Graphics Center
