@@ -2,126 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCA243CAB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F194343CAB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242170AbhJ0Ncd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:32:33 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:12225 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236324AbhJ0Ncc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:32:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635341407; x=1666877407;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=BkK/TZLyRyOl87sayCRYS99QcdZzIba8r4AMDj5GxCQ=;
-  b=Qakr/Etkr/9wszBdW1aBMCyuDxfMBRMUeuajpXba8aJ2yx2nhsFYB8H4
-   kxlVryUNTyqFs3BgiuY5MWPx5nUS3hg+zUMUcDrmocj5AdNfkF4Wbt/g/
-   Nh2bChI+/AJAQ6UBBi2NnH4a4/SvzboGPRXU6jl25crwSN0t+7zvqlvby
-   qUF12cRe4vTTd/9DGhY9yzJnpca2kMDGh+MXhvd/+KFuFGWBO2lQGL7to
-   qv9JdSqx4vORf6PyFoGyLYjzdkEoMEJamKmbDhh6zRKczJ5maztwAzfbq
-   IQrM6rVAopX+29bivCdjEOPLV2OEOJyPfJm6w0ZZXXyc6t7Xnu4hHnJbe
-   Q==;
-IronPort-SDR: C8w4r3XVy3FIOAtoHc818KUL1hhv0BRX+i50CmNLk4D7oCvU04PKCwAeaOhXwWvyPss/f+R6zc
- KUFM9+iPt7bnUUYZHXSBUc2OX/8VHBZYNPreKu1LIVgr81YbVHXzm7E5UzyInrQApygwD0gmMZ
- hJO7Iz4+TaL244WsD1t6Owbjdot06gPX0+LgLwrnBbjpOs4ueQgw+JPfS+MNfUlLcWEjWDUO3l
- gw/alQf8derbXvoXI8OcOxvdTTSyjJ3F/hzW4m0UvpPI5Dh2ZshKv585kXAP0NoExAk0lzdpQl
- Ae676hdlExkMerEWZe+3Ompe
-X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
-   d="scan'208";a="74442186"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Oct 2021 06:30:06 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 27 Oct 2021 06:30:06 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 27 Oct 2021 06:30:03 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <weo@reccoware.de>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH] crypto: atmel-aes: Reestablish the correct tfm context at dequeue
-Date:   Wed, 27 Oct 2021 16:30:01 +0300
-Message-ID: <20211027133001.332635-1-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        id S242178AbhJ0Ncu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:32:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236899AbhJ0Nct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:32:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6FC610A6;
+        Wed, 27 Oct 2021 13:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635341423;
+        bh=zJuysV5Sykk7qxjtmigQLRJCeSgpOOIif4RUAeNe+jo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KhIzEXLwbzqQUX/ydVQ4Y2o6fTPf5FJ1xiLlkiq8ABKJv8CIa/z+G5jhb/ZskV4c7
+         N0r8HBa3tIg5FEo36JH6fiYgUJpaUuGSkzQiRWARHUXDcWvKSoEkgccV7HGUMaGFqV
+         fQxg6QrCGAR2yJTm8R2zyz+XNEWlk1XfkX91K0AtEer8eXnVoXn5OUS1mlRFExtHqg
+         wCL8bYK6j1HnISNdZeaQ5G4CJjBbQn33+6rc/gT36Zn+pZYx10BYMSf/J452WZk9zL
+         feZLdUQUJB5UtMKNCnIVrWvQX0TxSg1ZneD9dnRLoILV/LOsNoO1oW7EJk3arZZkGU
+         8keDhOGRUq5UA==
+Received: by mail-oi1-f178.google.com with SMTP id z126so3388032oiz.12;
+        Wed, 27 Oct 2021 06:30:23 -0700 (PDT)
+X-Gm-Message-State: AOAM532UIzqfO2A+xnRpoMwli3HqhLyBaeQ8JnKt/QA6RtBcFRkeTpWc
+        geD2MDXpC/K/hJYY5liNFZ4ydxCpUGdDbf1J8p0=
+X-Google-Smtp-Source: ABdhPJxHZhozJUMLwljcE4RIAcNo/hkLSuyVxmcc3zO47ndAYbxEfSfoW2ZEZ0SjrJf0FK/z3ZQktkd0f71LTmebfjQ=
+X-Received: by 2002:a05:6808:4d9:: with SMTP id a25mr3597702oie.33.1635341422835;
+ Wed, 27 Oct 2021 06:30:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local> <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net> <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+In-Reply-To: <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 27 Oct 2021 15:30:11 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+Message-ID: <CAMj1kXHKh7wv6JqusVnoiQDMm7ApFq2ujzbfWmM9AzLKFehhAA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case there were more requests from different tfms in the crypto
-queue, only the context of the last initialized tfm was considered.
+On Wed, 27 Oct 2021 at 15:05, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Oct 27, 2021 at 02:48:52PM +0200, Peter Zijlstra wrote:
+> > On Wed, Oct 27, 2021 at 02:22:27PM +0200, Ard Biesheuvel wrote:
+> > > On Wed, 27 Oct 2021 at 14:05, Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > > > > Should not this jump-table thingy get converted to an actual function
+> > > > > address somewhere around arch_static_call_transform() ? This also seems
+> > > > > relevant for arm64 (which already has CLANG_CFI supported) given:
+> > > > >
+> > > > >   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
+> > > >
+> > > > Ugh, yeah, we'll need to do the function_nocfi() dance somewhere...
+> > > >
+> > >
+> > > Sadly, that only works on symbol names, so we cannot use it to strip
+> > > CFI-ness from void *func arguments passed into the static call API,
+> > > unfortunately.
+> >
+> > Right, and while mostly static_call_update() is used, whcih is a macro
+> > and could possibly be used to wrap this, we very much rely on
+> > __static_call_update() also working without that wrapper and then we're
+> > up a creek without no paddles.
+>
+> Specifically, we support code like:
+>
+> struct foo {
+>         void (*func1)(args1);
+>         void (*func2)(args2);
+> }
+>
+> struct foo global_foo;
+>
+> ...
+>
+> DEFINE_STATIC_CALL_NULL(func1, *global_foo.func1);
+>
+> ...
+>
+> __init foo_init()
+> {
+>         // whatever code that fills out foo
+>
+>         static_call_update(func1, global_foo.func1);
+> }
+>
+> ...
+>
+> hot_function()
+> {
+>         ...
+>         static_cal(func1)(args1);
+>         ...
+> }
+>
+> cold_function()
+> {
+>         ...
+>         global_foo->func1(args1);
+>         ...
+> }
+>
+> And there is no way I can see this working sanely with CFI as presented.
+>
+> Even though the above uses static_call_update(), we can't no longer use
+> function_nocfi() on the @func argument, because it's not a symbol, it's
+> already a function pointer.
+>
+> Nor can we fill global_foo.func1 with function_nocfi() because then
+> cold_function() goes sideways.
+>
 
-Fixes: ec2088b66f7a ("crypto: atmel-aes - Allocate aes dev at tfm init time")
-Reported-by: Wolfgang Ocker <weo@reccoware.de>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/crypto/atmel-aes.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+As far as I can tell from playing around with Clang, the stubs can
+actually be executed directly, they just jumps to the actual function.
+The compiler simply generates a jump table for each prototype that
+appears in the code as the target of an indirect jump, and checks
+whether the target appears in the list.
 
-diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
-index 9391ccc03382..fe0558403191 100644
---- a/drivers/crypto/atmel-aes.c
-+++ b/drivers/crypto/atmel-aes.c
-@@ -960,6 +960,7 @@ static int atmel_aes_handle_queue(struct atmel_aes_dev *dd,
- 	ctx = crypto_tfm_ctx(areq->tfm);
- 
- 	dd->areq = areq;
-+	dd->ctx = ctx;
- 	start_async = (areq != new_areq);
- 	dd->is_async = start_async;
- 
-@@ -1274,7 +1275,6 @@ static int atmel_aes_init_tfm(struct crypto_skcipher *tfm)
- 
- 	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx));
- 	ctx->base.dd = dd;
--	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_start;
- 
- 	return 0;
-@@ -1291,7 +1291,6 @@ static int atmel_aes_ctr_init_tfm(struct crypto_skcipher *tfm)
- 
- 	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx));
- 	ctx->base.dd = dd;
--	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_ctr_start;
- 
- 	return 0;
-@@ -1783,7 +1782,6 @@ static int atmel_aes_gcm_init(struct crypto_aead *tfm)
- 
- 	crypto_aead_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx));
- 	ctx->base.dd = dd;
--	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_gcm_start;
- 
- 	return 0;
-@@ -1927,7 +1925,6 @@ static int atmel_aes_xts_init_tfm(struct crypto_skcipher *tfm)
- 	crypto_skcipher_set_reqsize(tfm, sizeof(struct atmel_aes_reqctx) +
- 				    crypto_skcipher_reqsize(ctx->fallback_tfm));
- 	ctx->base.dd = dd;
--	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_xts_start;
- 
- 	return 0;
-@@ -2154,7 +2151,6 @@ static int atmel_aes_authenc_init_tfm(struct crypto_aead *tfm,
- 	crypto_aead_set_reqsize(tfm, (sizeof(struct atmel_aes_authenc_reqctx) +
- 				      auth_reqsize));
- 	ctx->base.dd = dd;
--	ctx->base.dd->ctx = &ctx->base;
- 	ctx->base.start = atmel_aes_authenc_start;
- 
- 	return 0;
--- 
-2.25.1
+E.g., the code below
 
+void foo(void) {}
+void bar(int) {}
+void baz(int) {}
+void (* volatile fn1)(void) = foo;
+void (* volatile fn2)(int) = bar;
+
+int main(int argc, char *argv[])
+{
+  fn1();
+  fn2 = baz;
+  fn2(-1);
+}
+
+produces
+
+0000000000400594 <foo.cfi>:
+  400594: d65f03c0 ret
+
+0000000000400598 <bar.cfi>:
+  400598: d65f03c0 ret
+
+000000000040059c <baz.cfi>:
+  40059c: d65f03c0 ret
+
+00000000004005a0 <main>:
+  4005a0: a9bf7bfd stp x29, x30, [sp, #-16]!
+
+// First indirect call
+  4005a4: b0000088 adrp x8, 411000 <__libc_start_main@GLIBC_2.17>
+  4005a8: f9401508 ldr x8, [x8, #40]
+  4005ac: 90000009 adrp x9, 400000 <__abi_tag-0x278>
+  4005b0: 91182129 add x9, x9, #0x608
+  4005b4: 910003fd mov x29, sp
+  4005b8: eb09011f cmp x8, x9
+  4005bc: 54000241 b.ne 400604 <main+0x64>  // b.any
+  4005c0: d63f0100 blr x8
+
+// Assignment of fn2
+  4005c4: 90000009 adrp x9, 400000 <__abi_tag-0x278>
+  4005c8: b0000088 adrp x8, 411000 <__libc_start_main@GLIBC_2.17>
+  4005cc: 91184129 add x9, x9, #0x610
+  4005d0: f9001909 str x9, [x8, #48]
+
+// Second indirect call
+  4005d4: f9401908 ldr x8, [x8, #48]
+  4005d8: 90000009 adrp x9, 400000 <__abi_tag-0x278>
+  4005dc: 91183129 add x9, x9, #0x60c
+  4005e0: cb090109 sub x9, x8, x9
+  4005e4: 93c90929 ror x9, x9, #2
+  4005e8: f100053f cmp x9, #0x1
+  4005ec: 540000c8 b.hi 400604 <main+0x64>  // b.pmore
+  4005f0: 12800000 mov w0, #0xffffffff            // #-1
+  4005f4: d63f0100 blr x8
+
+
+  4005f8: 2a1f03e0 mov w0, wzr
+  4005fc: a8c17bfd ldp x29, x30, [sp], #16
+  400600: d65f03c0 ret
+  400604: d4200020 brk #0x1
+
+0000000000400608 <__typeid__ZTSFvvE_global_addr>:
+  400608: 17ffffe3 b 400594 <foo.cfi>
+
+000000000040060c <__typeid__ZTSFviE_global_addr>:
+  40060c: 17ffffe3 b 400598 <bar.cfi>
+  400610: 17ffffe3 b 40059c <baz.cfi>
+
+So it looks like taking the address is fine, although not optimal due
+to the additional jump. We could fudge around that by checking the
+opcode at the target of the call, or token paste ".cfi" after the
+symbol name in the static_call_update() macro, but it doesn't like
+like anything is terminally broken tbh.
