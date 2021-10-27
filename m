@@ -2,190 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8BB43CD01
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2FB43CD13
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242383AbhJ0PIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        id S237740AbhJ0PJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242007AbhJ0PIj (ORCPT
+        with ESMTP id S242636AbhJ0PJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:08:39 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588B1C061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:06:14 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id r5so2225974pls.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:06:14 -0700 (PDT)
+        Wed, 27 Oct 2021 11:09:23 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704F8C061745
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:06:57 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id s19so5175509ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:06:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iJaFedjfgO3mNmh/C96uSOhUiL4aNQtn0C47wpwNS5I=;
-        b=iVVFlAopGMkcd0hJu+/aKOZS9/FSNpWdZd1kDncujnrTaRWMIl4ygVplZCmy9QgKZY
-         I60D6XySDqyzSLBmYS64MiRD/W1141i3Koe9x3WFMJkNZDwhu1wfkDN4AZwudkqyFN7m
-         pma05zVPG7QH+a+O3TABH235+3jkQOClywd2PcOC/N8yhIkGXdRzjDq+NkWBdWIijNvf
-         hvNhmtJedQXRIOfkXU6o+ipaxeoec2FfSS+rw9QunswdHWxq0wQiE5ZX5HyC2zUYUsYw
-         j9JwyHMVAIHJgV+EbqwSBsYKGgdoSsvi5pHctY2zP3UgOTJqOC5faTpATZjOXE+DUhxR
-         aC3w==
+         :cc;
+        bh=eEeOc3SRoTkeXEKVHoRlTI3OBL2wUysOvGNTyGSpDRc=;
+        b=vBrX1hroP2zBuvD1iKJmnG7LMigUVOYCCUjI8nNnhrOkTN5QjBm3VWoeIohRkK94mM
+         0iA0f/MUpH4lU1LpX3SUAg9Qb9ffQA0/D8+lP5Yzp3hO1Oc/dXHRmqswxRuT9K08TkOO
+         JxqtHG9LNOmuEPBOqsrakS8A/PnsDc4pWHFk4nsd1CWrbhV3CP6XgVEYZVsOFiX/FjzB
+         9hgAWNpXsxKJufJeQdlXOK36M6tMtnDPGse1nNhXhUmjKb5V5lpoDBCxHytpfbgd1la/
+         VwvSyqBmg75weHCA9Vnyf+aKIJjXvgL/syNjDNOWymJZFrIy8+prLwST1MBBhfHGFO6k
+         aaQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iJaFedjfgO3mNmh/C96uSOhUiL4aNQtn0C47wpwNS5I=;
-        b=YtLrn2Kfn1kAY0JspxS5nYcns0vHtV01kd4ybTlFD1TeMBx9Dq4huk8Sm0UJCl5lht
-         MC6k+NBVeQj0PF1ER8/LK1zpWzwMzuDeNpZsLrsjrT95BO6A3r0DhSDPjxdxvumjESgs
-         vT5IrxHKiJyYESKQ1xGtJfP4LmeZs/iwj6foTVxzqxDWk5MSlcSK9MHJX/6VDdg9RLF3
-         9f+zhbswKJUNak2Dgi1cMjqnBwPNswNvcZuFezoM/MMnL5aC4FqbHo/PG7ndP3blhc0H
-         PnCiAaEjaF0NlqwXJPUjij0SZgnWndETSshGNkQ6athYwS2Qv8n78ECcbRjTtwh0194/
-         dtPg==
-X-Gm-Message-State: AOAM533ZUpWB4/P+QmS9gNM7mbP55ArvodvQfUFINDhMIPejKUOQjTs4
-        iwyoVimphp5mJXa142n55WEAj5qs22+f0SQtjaAvYQ==
-X-Google-Smtp-Source: ABdhPJz8vpePzqPS0evtX4SnKhe7a/3eMQYQVPtaOBsulrZNJ4aqXPW9jO9ulnVJfxyOzxk45EsJg44EwOI93DtlxXM=
-X-Received: by 2002:a17:90b:4c0d:: with SMTP id na13mr6380872pjb.232.1635347173756;
- Wed, 27 Oct 2021 08:06:13 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=eEeOc3SRoTkeXEKVHoRlTI3OBL2wUysOvGNTyGSpDRc=;
+        b=GcIHlgwWEIrHHzJr/zTno8SA0Ttavo0khNaud3SvTNsj18jvdqsxSH8lsBpzbl7P/2
+         +qJit0INvhdnOxlnLjL78Yix3zeXAZMl2EJ8ohhdEGCPbyuDi3gc1E7I/F7E8gSS5wmz
+         V768utXqN5FJzwgsY39NsK6NsOuccJtQLbTivzBnCvNe6JHgJZMoT/oRqRRSxNiatXxl
+         gKOiIoIH34GhNMBZYWAp6sJUqJwgHXt8r63NSBRpQhan9pElESJW78NN4SUUFJ3g9IMm
+         RnMaIMY+V49BrYut3mDo7LQca+WLbx1oeus11N/su+oytMZ2Y1wHKVuwIBjInvL+tkwC
+         sI2A==
+X-Gm-Message-State: AOAM532CZiFgsq64lYcfMJKXSqlrbdOZrANZJyVnpIn3iKXA1pPwXxko
+        7ffqlDfuO9hip6czTkNN+ZZ3fGRklm441hhWjAkOTw==
+X-Google-Smtp-Source: ABdhPJysjKT4Qj/n7/ftR0oVtnZjTh7iTetwxvNQGH0ktAIGHoCGiRAbJE5llFkaZZ7c+ePHtcATzAPymmbQqNT848A=
+X-Received: by 2002:a05:651c:11c4:: with SMTP id z4mr33240531ljo.463.1635347215604;
+ Wed, 27 Oct 2021 08:06:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025170925.3096444-1-bjorn.andersson@linaro.org> <65243a98-61b9-3311-f41d-fa4782448baa@kali.org>
-In-Reply-To: <65243a98-61b9-3311-f41d-fa4782448baa@kali.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 27 Oct 2021 17:06:02 +0200
-Message-ID: <CAG3jFytmcFcA5W3vmcpWTWrc36-YFMPZ1wAB8gAJfiHHLWmaCA@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] pwm: Introduce single-PWM of_xlate function
-To:     Steev Klimaszewski <steev@kali.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
+References: <20211025224032.21012-1-digetx@gmail.com> <20211025224032.21012-2-digetx@gmail.com>
+In-Reply-To: <20211025224032.21012-2-digetx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 Oct 2021 17:06:19 +0200
+Message-ID: <CAPDyKFr7VY73cQugSA5n-p_oXf43o1M-7s3-M+fnk0656h25UA@mail.gmail.com>
+Subject: Re: [PATCH v14 01/39] soc/tegra: Enable runtime PM during OPP state-syncing
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
         =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-clk@vger.kernel.org, David Heidelberg <david@ixit.cz>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 19:21, Steev Klimaszewski <steev@kali.org> wrote:
+On Tue, 26 Oct 2021 at 00:45, Dmitry Osipenko <digetx@gmail.com> wrote:
 >
+> GENPD core now can set up domain's performance state properly while device
+> is RPM-suspended. Runtime PM of a device must be enabled during setup
+> because GENPD checks whether device is suspended and check doesn't work
+> while RPM is disabled. Instead of replicating the boilerplate RPM-enable
+> code around OPP helper for each driver, let's make OPP helper to take care
+> of enabling it.
 >
-> On 10/25/21 12:09 PM, Bjorn Andersson wrote:
-> > The existing pxa driver and the upcoming addition of PWM support in the
-> > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel and
-> > thereby a need for a of_xlate function with the period as its single
-> > argument.
-> >
-> > Introduce a common helper function in the core that can be used as
-> > of_xlate by such drivers and migrate the pxa driver to use this.
-> >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> > Tested-by: Steev Klimaszewski <steev@kali.org>
-> > ---
-> >
-> > Changes since v6:
-> > - None
-> >
-> >   drivers/pwm/core.c    | 26 ++++++++++++++++++++++++++
-> >   drivers/pwm/pwm-pxa.c | 16 +---------------
-> >   include/linux/pwm.h   |  2 ++
-> >   3 files changed, 29 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> > index 4527f09a5c50..2c6b155002a2 100644
-> > --- a/drivers/pwm/core.c
-> > +++ b/drivers/pwm/core.c
-> > @@ -152,6 +152,32 @@ of_pwm_xlate_with_flags(struct pwm_chip *pc, const=
- struct of_phandle_args *args)
-> >   }
-> >   EXPORT_SYMBOL_GPL(of_pwm_xlate_with_flags);
-> >
-> > +struct pwm_device *
-> > +of_pwm_single_xlate(struct pwm_chip *pc, const struct of_phandle_args =
-*args)
-> > +{
-> > +     struct pwm_device *pwm;
-> > +
-> > +     if (pc->of_pwm_n_cells < 1)
-> > +             return ERR_PTR(-EINVAL);
-> > +
-> > +     /* validate that one cell is specified, optionally with flags */
-> > +     if (args->args_count !=3D 1 && args->args_count !=3D 2)
-> > +             return ERR_PTR(-EINVAL);
-> > +
-> > +     pwm =3D pwm_request_from_chip(pc, 0, NULL);
-> > +     if (IS_ERR(pwm))
-> > +             return pwm;
-> > +
-> > +     pwm->args.period =3D args->args[0];
-> > +     pwm->args.polarity =3D PWM_POLARITY_NORMAL;
-> > +
-> > +     if (args->args_count =3D=3D 2 && args->args[2] & PWM_POLARITY_INV=
-ERTED)
-> > +             pwm->args.polarity =3D PWM_POLARITY_INVERSED;
-> > +
-> > +     return pwm;
-> > +}
-> > +EXPORT_SYMBOL_GPL(of_pwm_single_xlate);
-> > +
-> >   static void of_pwmchip_add(struct pwm_chip *chip)
-> >   {
-> >       if (!chip->dev || !chip->dev->of_node)
-> > diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
-> > index a9efdcf839ae..238ec88c130b 100644
-> > --- a/drivers/pwm/pwm-pxa.c
-> > +++ b/drivers/pwm/pwm-pxa.c
-> > @@ -148,20 +148,6 @@ static const struct platform_device_id *pxa_pwm_ge=
-t_id_dt(struct device *dev)
-> >       return id ? id->data : NULL;
-> >   }
-> >
-> > -static struct pwm_device *
-> > -pxa_pwm_of_xlate(struct pwm_chip *pc, const struct of_phandle_args *ar=
-gs)
-> > -{
-> > -     struct pwm_device *pwm;
-> > -
-> > -     pwm =3D pwm_request_from_chip(pc, 0, NULL);
-> > -     if (IS_ERR(pwm))
-> > -             return pwm;
-> > -
-> > -     pwm->args.period =3D args->args[0];
-> > -
-> > -     return pwm;
-> > -}
-> > -
-> >   static int pwm_probe(struct platform_device *pdev)
-> >   {
-> >       const struct platform_device_id *id =3D platform_get_device_id(pd=
-ev);
-> > @@ -187,7 +173,7 @@ static int pwm_probe(struct platform_device *pdev)
-> >       pc->chip.npwm =3D (id->driver_data & HAS_SECONDARY_PWM) ? 2 : 1;
-> >
-> >       if (IS_ENABLED(CONFIG_OF)) {
-> > -             pc->chip.of_xlate =3D pxa_pwm_of_xlate;
-> > +             pc->chip.of_xlate =3D of_pwm_single_xlate;
-> >               pc->chip.of_pwm_n_cells =3D 1;
-> >       }
-> >
-> > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-> > index 725c9b784e60..dd51d4931fdc 100644
-> > --- a/include/linux/pwm.h
-> > +++ b/include/linux/pwm.h
-> > @@ -414,6 +414,8 @@ struct pwm_device *pwm_request_from_chip(struct pwm=
-_chip *chip,
-> >
-> >   struct pwm_device *of_pwm_xlate_with_flags(struct pwm_chip *pc,
-> >               const struct of_phandle_args *args);
-> > +struct pwm_device *of_pwm_single_xlate(struct pwm_chip *pc,
-> > +                                    const struct of_phandle_args *args=
-);
-> >
-> >   struct pwm_device *pwm_get(struct device *dev, const char *con_id);
-> >   struct pwm_device *of_pwm_get(struct device *dev, struct device_node =
-*np,
->
-> v7 of the series is tested by me on the Lenovo Yoga C630
->
-> Tested-By: Steev Klimaszewski <steev@kali.org>
->
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Applied to drm-misc-next.
+Just a minor nitpick, see below. Nevertheless feel free to add:
+
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
+
+> ---
+>  drivers/soc/tegra/common.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
+> index cd33e99249c3..d930a2b4facc 100644
+> --- a/drivers/soc/tegra/common.c
+> +++ b/drivers/soc/tegra/common.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/export.h>
+>  #include <linux/of.h>
+>  #include <linux/pm_opp.h>
+> +#include <linux/pm_runtime.h>
+>
+>  #include <soc/tegra/common.h>
+>  #include <soc/tegra/fuse.h>
+> @@ -43,6 +44,7 @@ static int tegra_core_dev_init_opp_state(struct device *dev)
+>  {
+>         unsigned long rate;
+>         struct clk *clk;
+> +       bool rpm_enabled;
+>         int err;
+>
+>         clk = devm_clk_get(dev, NULL);
+> @@ -57,8 +59,22 @@ static int tegra_core_dev_init_opp_state(struct device *dev)
+>                 return -EINVAL;
+>         }
+>
+> +       /*
+> +        * Runtime PM of the device must be enabled in order to set up
+> +        * GENPD's performance properly because GENPD core checks whether
+> +        * device is suspended and this check doesn't work while RPM is
+> +        * disabled.
+> +        */
+> +       rpm_enabled = pm_runtime_enabled(dev);
+> +       if (!rpm_enabled)
+> +               pm_runtime_enable(dev);
+
+This makes sure the OPP vote below gets cached in genpd for the
+device. Instead, the vote is done the next time the device gets
+runtime resumed.
+
+I don't have an issue doing it like this, but at the same time it does
+remove some flexibility for the drivers/subsystem that calls
+tegra_core_dev_init_opp_state().
+
+Isn't it better to leave this to be flexible - or you prefer to have
+it done like this for everybody?
+
+> +
+>         /* first dummy rate-setting initializes voltage vote */
+>         err = dev_pm_opp_set_rate(dev, rate);
+> +
+> +       if (!rpm_enabled)
+> +               pm_runtime_disable(dev);
+> +
+>         if (err) {
+>                 dev_err(dev, "failed to initialize OPP clock: %d\n", err);
+>                 return err;
+
+Kind regards
+Uffe
