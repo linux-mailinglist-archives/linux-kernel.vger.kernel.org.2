@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33F343C3FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A6043C3FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238692AbhJ0Hhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhJ0Hh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:37:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A02E86109E;
-        Wed, 27 Oct 2021 07:35:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635320104;
-        bh=vb5/UUmGuytMVQ4VOJsav4ATysXUmZVjZbbtwRDmqdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sBAhtDYuLPTb0VW4inS89PEVfNVDqk/owmfiYVgUit6DOFXiC+DvpGdAsLIEkqQ83
-         U/i9gOF0yqD6OCaiKIda+RoNji+igQtEf94iaWZW0eZ9R6E8AMKN1fo6ZBpjY3Qh0c
-         AqhEaPsKd34we+35+ifseVtRirdfKeebQfH1ukQ8XQjtJbMgRp/K5ypZFBgrxCLnAR
-         tDj+LJb9seQMpbOTMgO0EORT7UbBoJrqJKYg0RagbiCdvuDeNNa765QxP90Yunl7hX
-         WWmGvGcH5X/YTrGhe4btqUVbFnq25IVvEncoE+QKuzAcaznFKaZOM4XxhC8FXewf+8
-         AOHRiZNQkpc7w==
-Date:   Wed, 27 Oct 2021 08:34:58 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Youngmin Nam <youngmin.nam@samsung.com>
-Cc:     krzysztof.kozlowski@canonical.com, mark.rutland@arm.com,
-        daniel.lezcano@linaro.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
-        hoony.yu@samsung.com, hajun.sung@samsung.com,
-        myung-su.cha@samsung.com, kgene@kernel.org
-Subject: Re: [PATCH v1 1/2] clocksource/drivers/exynos_mct_v2: introduce
- Exynos MCT version 2 driver for next Exynos SoC
-Message-ID: <20211027073458.GA22231@willie-the-truck>
-References: <20211021082650.GA30741@perf>
- <1b93aaf3-ed64-b105-dec4-07b6f27b385b@canonical.com>
- <20211022042116.GA30645@perf>
- <da83de3a-e7a2-f9b2-80f2-25c39717c3e4@canonical.com>
- <20211026014732.GA45525@perf>
- <91e926c4-9a3a-196d-1451-d3e7d38fc132@canonical.com>
- <20211026104518.GA40630@perf>
- <cb5bd5a3-1c23-0dc5-9f77-112befd7269c@canonical.com>
- <CGME20211027011125epcas2p2916524051416ede854b750c91a19073b@epcas2p2.samsung.com>
- <20211027013709.GA17353@perf>
+        id S238704AbhJ0HiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238700AbhJ0HiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:38:11 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A04C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:35:46 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j9so4222548lfu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qGjKGeSuDUaZDoV5/uNfrSoQiktZrWO+lzRzUgpx3qs=;
+        b=hubUU1WknuKm0XwNFCVG5hORUOZqYI5pSnqYMcFzd607mo+Zbo5SDG3vWSGCbP5TlX
+         /cNM4hzGsKHODA3ytUBfMw7NJaBAV3biCFSfVUCRecXhOIyLyG7sAoO0FGXBZMmR5tsw
+         i12fYLnQknZpvg5fuB+hObbgUWMoyRdPhUeP56rV56k50yujXUZonnLO3GsU8aqatE2F
+         kj6YZKYMASZQ/B8/jyS8a+fncx5Ofj24Q5y+CC1W4yHCO66xup+uoj2YkJaD+i18Pog0
+         PB16jAbTpXl/pT5JpH9gjjd+EjDCEBCkZiLxJH2qoACTvWDFrzd73Vjjp98mC1tWSqkS
+         HJRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qGjKGeSuDUaZDoV5/uNfrSoQiktZrWO+lzRzUgpx3qs=;
+        b=5AJZZx1oNZZVdi25COoj/CYQi7nVopleUX7x+PjSLP7jV19nqcD1Q2uwrAj2WkzXoZ
+         8eoY/EWZm8+pX8vpxSSNfn9GUjopFQQR05b7O3N4Z4uxwyGWb1ukwC/Gy+XiBdKXL2yo
+         WG8hQ0v/uvty5Q4JY4oaAwH7nduiEBWSKTyIbBs5HC+SZ4bEIKbf+4aSDAR/pfRkInAe
+         b3zPLUddjHimwysQCIqn+LMcSuEsPMqihZWBXTNXAsMLgD4BiWYfqnFpeXsROczPkJ0i
+         JUsGYkA2sVwlIgqiDQuRoSIl/sUZWfPtuQBaPAzXTGCO3FztS675F5/2bNOrfyR6GBRR
+         coTw==
+X-Gm-Message-State: AOAM533mDzwCH+uEA2qRbI0CQVUR8dQgkq3x40O/7+R2OQxT33AajIfT
+        x5hWiFwOPfTW3IehIMV1smw=
+X-Google-Smtp-Source: ABdhPJxNV1qQ4uB3VOFu44HLiUFl+Jqwo9RzBEA61kZvsfy2ItmC7RU5ybFH+slIgTNvF1/P8mCuhA==
+X-Received: by 2002:a05:6512:1304:: with SMTP id x4mr26741097lfu.591.1635320144608;
+        Wed, 27 Oct 2021 00:35:44 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id g35sm957015lfv.248.2021.10.27.00.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 00:35:44 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 10:35:42 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     apw@canonical.com, dwaipayanray1@gmail.com,
+        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev
+Subject: Re: [PATCH] checkpatch: Remove cvs keyword check
+Message-ID: <20211027073542.qxbu236cg2wic25n@kari-VirtualBox>
+References: <20211026231637.3750-1-kari.argillander@gmail.com>
+ <868c29d45172a151b6a751de4ba32165cbf7a4cc.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027013709.GA17353@perf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <868c29d45172a151b6a751de4ba32165cbf7a4cc.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 10:38:37AM +0900, Youngmin Nam wrote:
-> On Tue, Oct 26, 2021 at 01:00:51PM +0200, Krzysztof Kozlowski wrote:
-> > On 26/10/2021 12:45, Youngmin Nam wrote:
-> > > On Tue, Oct 26, 2021 at 09:10:28AM +0200, Krzysztof Kozlowski wrote:
-> > >> On 26/10/2021 03:47, Youngmin Nam wrote:
-> > >>>> If everyone added a new driver to avoid integrating with existing code,
-> > >>>> we would have huge kernel with thousands of duplicated solutions. The
-> > >>>> kernel also would be unmaintained.
-> > >>>>
-> > >>>> Such arguments were brought before several times - "I don't want to
-> > >>>> integrating with existing code", "My use case is different", "I would
-> > >>>> need to test the other cases", "It's complicated for me".
-> > >>>>
-> > >>>> Instead of pushing a new vendor driver you should integrate it with
-> > >>>> existing code.
-> > >>>>
-> > >>> Let me ask you one question.
-> > >>> If we maintain as one driver, how can people who don't have the new MCT test the new driver?
-> > >>
-> > >> I assume you talk about a case when someone else later changes something
-> > >> in the driver. Such person doesn't necessarily have to test it. The same
-> > >> as in all other cases (Exynos MCT is not special here): just ask for
-> > >> testing on platform one doesn't have.
-> > >>
-> > >> Even if you submit this as separate driver, there is the exact same
-> > >> problem. People will change the MCTv2 driver without access to hardware.
-> > >>
-> > > Yes, I can test the new MCT driver if someone ask for testing after modifying the new driver.
-> > > But in this case, we don't need to test the previous MCT driver. We have only to test the new MCT driver.
-> > 
-> > Like with everything in Linux kernel. We merge instead of duplicate.
-> > It's not an argument.
-> > 
-> > >> None of these differ for Exynos MCT from other drivers, e.g. mentioned
-> > >> Samsung PMIC drivers, recently modified (by Will and Sam) the SoC clock
-> > >> drivers or the ChipID drivers (changed by Chanho).
-> > > From HW point of view, the previous MCT is almost 10-year-old IP without any major change and
-> > > it will not be used on next new Exynos SoC.
-> > > MCTv2 is the totally newly designed IP and it will replace the Exynos system timer.
-> > > Device driver would be dependent with H/W. We are going to apply a lot of changes for this new MCT.
-> > > For maintenance, I think we should separate the new MCT driver for maintenance.
-> > > 
-> > 
-> > There are several similarities which actually suggest that you
-> > exaggerate the differences.
-> > 
-> > The number of interrupts is the same (4+8 in older one, 12 in new one...).
+On Tue, Oct 26, 2021 at 05:26:21PM -0700, Joe Perches wrote:
+> On Wed, 2021-10-27 at 02:16 +0300, Kari Argillander wrote:
+> > Time has pass and we do not need these anymore as almost all people are
+> > using git now days. Those who use cvs for kernel development probably
+> > will handle cvs pretty well already so this check is not needed anymore.
 > 
-> I didn't "exaggerate" at all.
-> The numer of interrups is the same. But their usage is completely different.
-> The type of each timer is different.
-> And previous MCT can only support upto 8 cores.
+> I think it's a relatively harmless thing to keep.
 > 
-> * MCTv1 (Let me call previous MCT as MCTv1)
->  - 4 global timer + 8 local timer
->  - Global timer and local timer are totally different.
->  - 4 global timer have only one 64bit FRC that serves as the "up-counter" with 4 "comparators"
->  - 8 local timer have 8 of 32bit FRC that serves as the "down-counter" without any "comparators".(just expire timer)
->  - local timer can be used as per-cpu event timer, so it can only support upto 8 cores.
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -4017,12 +4017,6 @@ sub process {
+> >  			}
+> >  		}
+> >  
+> > -# check for RCS/CVS revision markers
+> > -		if ($rawline =~ /^\+.*\$(Revision|Log|Id)(?:\$|)/) {
 > 
-> * MCTv2
->  - There are no global timer and local timer anymore.
->  - 1 of 64bit FRC that serves as "up-counter" (just counter without "comparators")
->  - 12 comaprators (These are not "counter") can be used as per-cpu event timer so that it can support upto 12 cores.
->  - RTC source can be used as backup source.
+> Looks like this would be better using
 > 
-> > You assign the MCT priority also as higher than Architected Timer
-> > (+Cc Will and Mark - is it ok for you?)
-> >     evt->rating = 500;      /* use value higher than ARM arch timer *
-> > 
-> Yes, this is absolutely correct on event timer.
-> We cannot use arm arch timer which is operating based on PPI as per-cpu event timer because of poewr mode.
+> 		if ($rawline =~ /^\+.*\b\$(?:Revision|Log|Id)\$?\b/) {
 
-You should be able to now that I've added support for per-cpu wakeup timers.
+As I say before I do not know much about cvs or perl regex, but I do not
+get any match with your suggestion. Test strings which I have tested:
 
-As long as the Arm arch timer is marked as C3STOP (e.g. by sticking the
-"local-timer-stop" property in the DT notes), then the MCT will be used
-as the wakeup source if you set the CLOCK_EVT_FEAT_PERCPU feature flag.
+/* $Log: frob.c,v $ */
+/* $Log: frob.c,v$ */
+/* $Log$ */
 
-Give it a try.
+But these can be wrong as I do not fully understand how cvs keywords
+works.
 
-Will
+> 
+> > -			WARN("CVS_KEYWORD",
+> > -			     "CVS style keyword markers, these will _not_ be updated\n". $herecurr);
+> 
+> 
