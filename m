@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998B843C9E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58F443C9EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241966AbhJ0Mq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S241976AbhJ0Mqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241946AbhJ0MqZ (ORCPT
+        with ESMTP id S241972AbhJ0Mqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:46:25 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE97C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:44:00 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id f9so3389660ioo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:44:00 -0700 (PDT)
+        Wed, 27 Oct 2021 08:46:42 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046E7C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:44:16 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g10so10094359edj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:44:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HDxKmOZ62FUht58FdXOSx5Qa1yp34Gywlo2BVog2d4k=;
-        b=JD6O4ZfLxh8lT62FkFjA9y4GRGOql1L41J7By24XJWV1Tot3Aga8EnorZcDBx6JwSy
-         O+hxUv6SYvUmpaXxk9V3Wz+Z8nmguLLjYr2Ku8u801A1YWrAI+rVZq9s/TwmOzY+KIq9
-         BVOvXJqxvV+yH/84+LJjZjMhp/JilthjAJP3PdkFOsD8g3KH6vYAtMmeu9ivfGF4O9R/
-         HyhVgaI0wT490I/coyp3XSy1krG376aNuw3+Rd68NGQaHc6lfja1CkHZfFxud44l1T+a
-         oSjmCbivcVjG35a4p4MP1pyqdwI/JKch5MQebhpvlGrjDALa7Ir1gyAha12ZfiFkb0tq
-         rzXQ==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=CUP4vrt1rUdvfDXyrscKzMJOp93zpu22SaFg7PrBhiA=;
+        b=CcPOQ4OiOX2pt/+YZ+a+5+PtsWF58l5SIZlH7c0NMdqivhouLD+fqU1vUJ422nap8B
+         pXvW4gzg5Z+Ti/2tVTyhRbxCD7rdEYI6XvjOMGWYQbKtmy/pc7QvOVhwNyQu184WqIC5
+         2tV2MOHw276tD+nGtZmQG8Ba/v3g6qUs6plqIh/ut+JOLhXhZtwqwhtVKZkucfTLZabK
+         9jdO5soJ/DOaLWObW8ethd2/N1Hps4tn1zIRZlUR+lKmFJg0biwKXf65CD45k1qXdJAt
+         r0adfgL8DZmSWiXmeRX4XaBTp+PL5NT81t0OI1CJjwfUDicLP4x//QMngQR/4rme5oOn
+         r9kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HDxKmOZ62FUht58FdXOSx5Qa1yp34Gywlo2BVog2d4k=;
-        b=bfsMlnRIgRnd0UIPN4RPCYA+XrnIWaN9sDznX59LBy1ydtVYo4C9UWdCQwT+wTfuS0
-         wss4oJzbEzMQBIuzKHJ+1l+wupsxFZippFNx8DvWZG9nDEJtB4x9HUt0M5bLsL92QMNm
-         MN9l3IceQL13GQzLdyJil1s4B2YPKjLz11TcaOkghdoa7TgZy5uaA9iQUY7OdIEiniVp
-         DQLaRvN3TFIO+RzVNqY3kM3TQ14cj7g/p/S78nomokMwXRWvY4tSZUoOqLLOvU7FSDIk
-         yBhQS+iC8OmjDub6UVja16nfr5AXi3xOWVJb5tIURJxDI2F4KcHxe5rTlPnBV3qPJNEK
-         USyQ==
-X-Gm-Message-State: AOAM530aLGE2yK41mjxsM+kNoYZDJfMf2WJAx/nPOu4vzY25B0byQm7W
-        8Z7OrMlHbfh7103OhDuXGCgfeQJLwYcC/KlFDWQE9Q==
-X-Google-Smtp-Source: ABdhPJxraYfyEAPdAQGs1VHNpepQRGngxVf/3a/ovSme8ZzoFWFZBjIZBzs37dAcZqbudR76+NRe9KtzN2zrnxVmRmc=
-X-Received: by 2002:a05:6602:148b:: with SMTP id a11mr20342831iow.85.1635338639393;
- Wed, 27 Oct 2021 05:43:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=CUP4vrt1rUdvfDXyrscKzMJOp93zpu22SaFg7PrBhiA=;
+        b=IAz43F73pN7tssC9zxrhthFk+48yk/9jM5qRH/kakYcj9WQcEFZ4cyMX9jahvw/pU6
+         LUybS5NErczmnuBRESsPh1XD0QRk3zHYT+DalA9sBoIm8ukuIc0EF+JY9X/nZjC+pMHB
+         XmVuF2eLFjRh/rF8H2JigrJ68wq69eHTRcEQfeELjdeMR96gfSNEQOTE8il2fwZuTadE
+         DV8e8x205o66orNBb5S41yW2vvgI0CJqzhkZnIh8i6WdnsqwJEkpYpXkN58KGM4o14dk
+         Be7/UwkBFDi/+DzpfaA/jkAdPdnWVzUAe2+T/uIjFNHC0OpDceNVp3FFfZccYFvchsmY
+         SXgA==
+X-Gm-Message-State: AOAM530aNBy4JfqzFTZVruMUdWAJ4lvQbN0kd8shsegulsW9Wc8dWqUC
+        2Syc71ZeiprNCJf+Hw5qut6jG7Cos1q8t2za+K4hOA==
+X-Google-Smtp-Source: ABdhPJzwVWeqcvccpIgdrAd8nGZnO+VjAujcw0FniNnKHAKDWNnTXb7Z/uiWrqylHJantGjdST3K827hkeW2H4l5IBA=
+X-Received: by 2002:a50:ff0a:: with SMTP id a10mr30220760edu.357.1635338652901;
+ Wed, 27 Oct 2021 05:44:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <YXU2i0FtAGDRCMSu@fedora> <202110271450.Z8JPybLg-lkp@intel.com>
- <20211027061552.bb4fczniqp6b7amh@pengutronix.de> <20211027073204.GA3978@gofer.mess.org>
- <CAH7FV3nb8K2qKgGZh-uMCk_BykWJ_sOb7K-jEhNjazYSiXdqbw@mail.gmail.com>
-In-Reply-To: <CAH7FV3nb8K2qKgGZh-uMCk_BykWJ_sOb7K-jEhNjazYSiXdqbw@mail.gmail.com>
-From:   =?UTF-8?B?TWHDrXJhIENhbmFs?= <maira.canal@usp.br>
-Date:   Wed, 27 Oct 2021 09:43:47 -0300
-Message-ID: <CAH7FV3=7Y7Z0y+Mq5Ak12KDMiZpHQHXGixF_pcrnQkuqCO9kvQ@mail.gmail.com>
-Subject: Re: [PATCH v3] media: rc: pwm-ir-tx: Switch to atomic PWM API
-To:     Sean Young <sean@mess.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        kernel test robot <lkp@intel.com>, mchehab@kernel.org,
-        thierry.reding@gmail.com, Lee Jones <lee.jones@linaro.org>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 27 Oct 2021 18:14:01 +0530
+Message-ID: <CA+G9fYsOdhqbgRwuV7RD5k3Wh3n_Cb_EmMnkYOJ+4wZi-7MgrQ@mail.gmail.com>
+Subject: ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vunmap from
+ namespace DMA_BUF, but does not import it.
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[resend it in Plain Text]
-Thank you for the feedback! I appreciate that! I'm new at the kernel
-and I got a little confused about how to send the new patch. Should I
-send a v4 of this patch or just send a new patch fixing this issue?
-I'm sorry about the question and thank you for your attention.
+Regression found on arm64 gcc-10 and gcc-11 built with defconfig
+Following build warnings / errors reported on linux next 20211027.
 
-> Em qua., 27 de out. de 2021 =C3=A0s 04:32, Sean Young <sean@mess.org> esc=
-reveu:
->>
->> On Wed, Oct 27, 2021 at 08:15:52AM +0200, Uwe Kleine-K=C3=B6nig wrote:
->> > On Wed, Oct 27, 2021 at 02:07:19PM +0800, kernel test robot wrote:
->> > > If you fix the issue, kindly add following tag as appropriate
->> > > Reported-by: kernel test robot <lkp@intel.com>
->> > >
->> > > All errors (new ones prefixed by >>, old ones prefixed by <<):
->> > >
->> > > >> ERROR: modpost: "__udivdi3" [drivers/media/rc/pwm-ir-tx.ko] undef=
-ined!
->> >
->> > This comes from the line:
->> >
->> >       state.duty_cycle =3D DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * stat=
-e.period, 100);
->> >
->> > where DIV_ROUND_CLOSEST expands to a normal division but state.period =
-is
->> > a u64. So this should use DIV64_U64_ROUND_CLOSEST I guess.
->>
->> DIV64_U64_ROUND_CLOSEST is for dividing a u64 with a u64. We're dividing
->> by 100 here so this is not necessary.
->>
->> It should use DIV_ROUND_CLOSEST_ULL, however it might be nicer to use:
->>
->>         pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
->>
->> Thanks
->>
->> Sean
+metadata:
+    git_describe: next-20211027
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    git_short_log: ae5179317e79 (\"Add linux-next specific files for 20211027\")
+    target_arch: arm64
+    toolchain: gcc-11
+
+build error :
+--------------
+ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vunmap from
+namespace DMA_BUF, but does not import it.
+ERROR: modpost: module drm_cma_helper uses symbol dma_buf_vmap from
+namespace DMA_BUF, but does not import it.
+make[2]: *** [/builds/linux/scripts/Makefile.modpost:134:
+modules-only.symvers] Error 1
+make[2]: *** Deleting file 'modules-only.symvers'
+make[2]: Target '__modpost' not remade because of errors.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+build link:
+-----------
+https://builds.tuxbuild.com/205SAU159J0g6lSlRRS11o5hHyY/build.log
+
+build config:
+-------------
+https://builds.tuxbuild.com/205SAU159J0g6lSlRRS11o5hHyY/config
+
+# To install tuxmake on your system globally
+# sudo pip3 install -U tuxmake
+tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
+--kconfig defconfig
+
+--
+Linaro LKFT
+https://lkft.linaro.org
