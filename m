@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E6A43C72B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF0D43C742
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241447AbhJ0KCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:02:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37928 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241492AbhJ0KBx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:01:53 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 92A061FD3B;
-        Wed, 27 Oct 2021 09:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635328767; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kNuMns/lFc+q5NdSRt/8ucNrQbkjmOfQfueI5a2yskA=;
-        b=0KMoiY6s0n2PppbCIKhx/5C3wQwGa6OkfqmzMcFPWlR9HVgXVwQTkbUorEkX8WdNu+gFK2
-        WZ8WgPYkRvWTLnPwxRMCWxcNtw8DGb0GTIrLMIsDCGbFELDWCKQd0pMTVes2G0XtSjvQyw
-        3AeQobChNP7Cx4IvSRwm3BtKT1iINW4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635328767;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kNuMns/lFc+q5NdSRt/8ucNrQbkjmOfQfueI5a2yskA=;
-        b=jCiJfcO+yLcv9BvSFfARVqgQ4WvXDjGPojg/QfVKSCB89f0dpHNsAV44BKas+1e2Sgir4v
-        lJ3BAa8BGyKt/GBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A22213B85;
-        Wed, 27 Oct 2021 09:59:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iGZDEP8ieWHaOgAAMHmgww
-        (envelope-from <nstange@suse.de>); Wed, 27 Oct 2021 09:59:27 +0000
-From:   Nicolai Stange <nstange@suse.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Nicolai Stange <nstange@suse.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
-        Torsten Duwe <duwe@suse.de>
-Subject: Re: [PATCH 8/8] crypto: api - make the algorithm lookup priorize non-larvals
-References: <20211003181413.12465-1-nstange@suse.de>
-        <20211003181413.12465-9-nstange@suse.de>
-        <20211008115432.GC26495@gondor.apana.org.au> <87lf30rmd8.fsf@suse.de>
-        <20211022115146.GA27997@gondor.apana.org.au>
-Date:   Wed, 27 Oct 2021 11:59:26 +0200
-In-Reply-To: <20211022115146.GA27997@gondor.apana.org.au> (Herbert Xu's
-        message of "Fri, 22 Oct 2021 19:51:46 +0800")
-Message-ID: <87zgqupz41.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.3 (gnu/linux)
+        id S241308AbhJ0KDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:03:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:16201 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235237AbhJ0KDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 06:03:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="230073802"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="230073802"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:01:08 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="529573274"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:01:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mffjf-001Qor-Po;
+        Wed, 27 Oct 2021 13:00:43 +0300
+Date:   Wed, 27 Oct 2021 13:00:43 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: Re: [PATCH v7 1/4] efi: Introduce
+ EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
+Message-ID: <YXkjS/yhAYAIAWRu@smile.fi.intel.com>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <4898b5784e79b89bb25ce91384427b5ca3547b8f.1635317102.git.yu.c.chen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4898b5784e79b89bb25ce91384427b5ca3547b8f.1635317102.git.yu.c.chen@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Herbert Xu <herbert@gondor.apana.org.au> writes:
+On Wed, Oct 27, 2021 at 03:07:24PM +0800, Chen Yu wrote:
+> Platform Firmware Runtime Update image starts with UEFI headers, and the
+> headers are defined in UEFI specification, but some of them have not been
+> defined in the kernel yet.
+> 
+> For example, the header layout of a capsule file looks like this:
+> 
+> EFI_CAPSULE_HEADER
+> EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
+> EFI_FIRMWARE_IMAGE_AUTHENTICATION
+> 
+> These structures would be used by the Platform Firmware Runtime Update
+> driver to parse the format of capsule file to verify if the corresponding
+> version number is valid. The EFI_CAPSULE_HEADER has been defined in the
+> kernel, however the rest are not, thus introduce corresponding UEFI
+> structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+> and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER are required to be packed
+> in the uefi specification. And Ard has pointed out that, the __packed
+> attribute does indicate to the compiler that the entire thing can appear
+> misaligned in memory. So if one follows the other in the capsule header,
+> the __packed attribute may be appropriate to ensure that the second one
+> is not accessed using misaligned loads and stores.
 
-> On Mon, Oct 11, 2021 at 10:34:11AM +0200, Nicolai Stange wrote:
->>
->> In order to keep a FIPS certification manageable in terms of scope,
->> we're looking for a way to disable everything under drivers/crypto iff
->> fips_enabled =3D=3D 1. The most convenient way to achieve this downstream
->> would be to add dummy entries to testmgr.c like so:
->
-> How about testing based on the flag CRYPTO_ALG_KERN_DRIVER_ONLY?
-> That flag is meant to correspond to pretty much exactly
-> drivers/crypto.
+...
 
-Hmm, I checked a couple of crypto/drivers and it seems like not all are
-setting this flag: random examples would include cavium/nitrox/,
-chelsio/, padlock*.c, vmx/, ...
+> +/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
+> +struct efi_manage_capsule_image_header {
+> +	u32	ver;
 
-Many thanks!
+> +	guid_t	image_type_id;
 
-Nicolai
+Shouldn't it be efi_guid_t ?
 
---=20
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, G=
-ermany
-(HRB 36809, AG N=C3=BCrnberg), GF: Felix Imend=C3=B6rffer
+> +	u8	image_index;
+> +	u8	reserved_bytes[3];
+> +	u32	image_size;
+> +	u32	vendor_code_size;
+> +	/* ver = 2. */
+> +	u64	hw_ins;
+> +	/* ver = v3. */
+> +	u64	capsule_support;
+> +} __packed;
+
+...
+
+> +/* WIN_CERTIFICATE_UEFI_GUID */
+> +struct win_cert_uefi_guid {
+> +	struct win_cert	hdr;
+
+> +	guid_t		cert_type;
+
+Ditto.
+
+> +	u8		cert_data[];
+> +};
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
