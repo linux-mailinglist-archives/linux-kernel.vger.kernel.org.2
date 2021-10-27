@@ -2,190 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F28D43C3B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2505543C3BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240419AbhJ0HWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240408AbhJ0HWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:22:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA91610A5;
-        Wed, 27 Oct 2021 07:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635319175;
-        bh=KG+yrRn87gJ/zy26fF8MDJvZ9hRK+FQIaH3IMKbElLU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SkR7iVHfbOIuRTWm/a/xF6/T5I1pdLAGtl1fEfkptGuValVaqQ+hkwBQUhlyD9XEy
-         17A0Kp/kAmyRl31jlhvnWQCRJqhSg15hm36uHYWV/Cy4TwCCllV886t45ci9lDO+/0
-         aH0uqxxDayyMzomGEX4klS3RFrhv+mGdTnuORFzylRa2bFhhUkTYSUAWWjh6PZWYTn
-         LLtVgF7uqZysNrskuCmljfCNgrfLGdmH8NCjK+Mfy0WF9yt3wknRh9VuWo6u0F47fj
-         XpOUyS6RJpSYj9ZeapclbG0RCv5T2SX77seIxonfQcV1WrSWSyiKQmKh1/eykrDv1b
-         sY1396rUNZpVg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mfdDg-00CV5L-Kd; Wed, 27 Oct 2021 08:19:32 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Wei Xu <xuwei5@hisilicon.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 1/1] arm64: dts: HiSilicon: Add support for HiKey 970 PCIe controller hardware
-Date:   Wed, 27 Oct 2021 08:19:25 +0100
-Message-Id: <327bf452173f6b4e10f7ad875802884d9e8109a9.1635318674.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1635318674.git.mchehab+huawei@kernel.org>
-References: <cover.1635318674.git.mchehab+huawei@kernel.org>
+        id S238468AbhJ0HWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:22:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57816 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240407AbhJ0HWg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:22:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635319211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+DbhW314EmWGlap+YeCS5cDQceQCNE6F+RMcBvYpSBk=;
+        b=gL/f8+I3t/GzJiN3Xfc8hz/F/D7/KGmIJ2bT+Ql5lkH7ddz4us/mHS5G3wrpHsEnLnr8iw
+        GJGeD8RLIfTt/63lbzcqu5huHC+s3wrCAuf1vFDLb1W/Rd3MtAzdQt8BzbiuBKHte4Vb+U
+        xP9jN9b9H2RLeisBVid0ibzPYziiOgo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-70UtzSc8NACggzQIpkOxMg-1; Wed, 27 Oct 2021 03:20:09 -0400
+X-MC-Unique: 70UtzSc8NACggzQIpkOxMg-1
+Received: by mail-ed1-f71.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso1425127edb.19
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:20:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+DbhW314EmWGlap+YeCS5cDQceQCNE6F+RMcBvYpSBk=;
+        b=Wts3YybweXFNHH7DvTAZb2VrBAOkgMO3Wlfmsm+4kbvBtdzrOijVLxFQsQmFUy6zPe
+         On1JL+SvtqHXayxUkfxsjpfU5SlN1JFVmGEFu4iGs4E6T3h1n+f8OTlejtreWiCJoCjE
+         QMFdZ9LpJsJRXzUpisxgAFeWlYxkxtnwW7MU6C1Yp1YJcewbzJIGGWsw2tVBIdhaiXr7
+         au31wrMZty5ThZbXqV4jn/HnX1jh4Kkq2whGriANfOXZJ7EoJooxOTxXiQV8QtatPnQz
+         SIK6yHEPIou/AUxI+DKd1VFyro+5IVzpw8lg+D+JEZ1YJtDpj7J/GARUxK9fuCHOlS5h
+         cEBw==
+X-Gm-Message-State: AOAM530rPtw5dT4ksRgqe2R6ZeinkDv5+582PoinlY/FThYJxBMBle/P
+        +r6ttWy/eSrs5fxmqCrotxlbu+JtGtGddH42k02mt6pikn2SuTCu1+J/1xjLlgOtESwazACdQ2/
+        kxNcU7HpsaLCH2KCWZcLP5mrN
+X-Received: by 2002:a17:906:4f8c:: with SMTP id o12mr36638843eju.115.1635319208800;
+        Wed, 27 Oct 2021 00:20:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCIQAlR+x1uvtXUAqxKjm8vS6/c+bMTwwJhi3bbhlIT3AboUf6m65iBGZdjxqc9u2af1k2tw==
+X-Received: by 2002:a17:906:4f8c:: with SMTP id o12mr36638822eju.115.1635319208614;
+        Wed, 27 Oct 2021 00:20:08 -0700 (PDT)
+Received: from redhat.com ([2a03:c5c0:207e:a543:72f:c4d1:8911:6346])
+        by smtp.gmail.com with ESMTPSA id e13sm10143344eje.95.2021.10.27.00.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 00:20:08 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 03:20:02 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Laurent Vivier <lvivier@redhat.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        syzbot <syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com>,
+        davem@davemloft.net, herbert@gondor.apana.org.au, jiri@nvidia.com,
+        kuba@kernel.org, leonro@nvidia.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mpm@selenic.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in copy_data
+Message-ID: <20211027031847-mutt-send-email-mst@kernel.org>
+References: <000000000000a4cd2105cf441e76@google.com>
+ <b6d96f08-78df-cf34-5e58-572b3fd4b566@gmail.com>
+ <6c7e48b9-5204-352f-18e7-26b13d70f966@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c7e48b9-5204-352f-18e7-26b13d70f966@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Wed, Oct 27, 2021 at 09:08:04AM +0200, Laurent Vivier wrote:
+> On 27/10/2021 00:34, Eric Dumazet wrote:
+> > 
+> > 
+> > On 10/26/21 9:39 AM, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following issue on:
+> > > 
+> > > HEAD commit:    9ae1fbdeabd3 Add linux-next specific files for 20211025
+> > > git tree:       linux-next
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1331363cb00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=aeb17e42bc109064
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
+> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116ce954b00000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132fcf62b00000
+> > > 
+> > > The issue was bisected to:
+> > > 
+> > > commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
+> > > Author: Leon Romanovsky <leonro@nvidia.com>
+> > > Date:   Thu Oct 21 14:16:14 2021 +0000
+> > > 
+> > >      devlink: Remove not-executed trap policer notifications
+> > 
+> > More likely this came with
+> > 
+> > caaf2874ba27b92bca6f0298bf88bad94067ec37 hwrng: virtio - don't waste entropy
+> > 
+> 
+> I'm going to have a look.
+> 
+> Thanks,
+> Laurent
 
-Add DTS bindings for the HiKey 970 board's PCIe hardware.
+How bad is it if we just drop this and waste some bytes of entropy?
 
-Co-developed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
-
-To mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH 0/1] at: https://lore.kernel.org/all/cover.1635318674.git.mchehab+huawei@kernel.org/
-
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 107 ++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 20698cfd0637..78b41336c587 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -176,6 +176,12 @@ sctrl: sctrl@fff0a000 {
- 			#clock-cells = <1>;
- 		};
- 
-+		pmctrl: pmctrl@fff31000 {
-+			compatible = "hisilicon,hi3670-pmctrl", "syscon";
-+			reg = <0x0 0xfff31000 0x0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		iomcu: iomcu@ffd7e000 {
- 			compatible = "hisilicon,hi3670-iomcu", "syscon";
- 			reg = <0x0 0xffd7e000 0x0 0x1000>;
-@@ -659,6 +665,107 @@ gpio28: gpio@fff1d000 {
- 			clock-names = "apb_pclk";
- 		};
- 
-+		pcie_phy: pcie-phy@fc000000 {
-+			compatible = "hisilicon,hi970-pcie-phy";
-+			reg = <0x0 0xfc000000 0x0 0x80000>;
-+
-+			phy-supply = <&ldo33>;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
-+				 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
-+				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
-+				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
-+				 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
-+			clock-names = "phy_ref", "aux",
-+				      "apb_phy", "apb_sys",
-+				      "aclk";
-+
-+			/* vboost iboost pre post main */
-+			hisilicon,eye-diagram-param = <0xffffffff 0xffffffff
-+						       0xffffffff 0xffffffff
-+						       0xffffffff>;
-+
-+			#phy-cells = <0>;
-+		};
-+
-+		pcie@f4000000 {
-+			compatible = "hisilicon,kirin970-pcie";
-+			reg = <0x0 0xf4000000 0x0 0x1000000>,
-+			      <0x0 0xfc180000 0x0 0x1000>,
-+			      <0x0 0xf5000000 0x0 0x2000>;
-+			reg-names = "dbi", "apb", "config";
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			device_type = "pci";
-+			phys = <&pcie_phy>;
-+			ranges = <0x02000000 0x0 0x00000000
-+				  0x0 0xf6000000
-+				  0x0 0x02000000>;
-+			num-lanes = <1>;
-+			#interrupt-cells = <1>;
-+			interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "msi";
-+			interrupt-map-mask = <0 0 0 7>;
-+			interrupt-map = <0x0 0 0 1
-+					 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+					<0x0 0 0 2
-+					 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+					<0x0 0 0 3
-+					 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-+					<0x0 0 0 4
-+					 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-+			reset-gpios = <&gpio7 0 0>;
-+			hisilicon,clken-gpios = <&gpio27 3 0>, <&gpio17 0 0>,
-+						<&gpio20 6 0>;
-+			pcie@0,0 { // Lane 0: PCIe switch: Bus 1, Device 0
-+				reg = <0 0 0 0 0>;
-+				compatible = "pciclass,0604";
-+				device_type = "pci";
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+
-+				pcie@0,0 { // Lane 0: upstream
-+					reg = <0 0 0 0 0>;
-+					compatible = "pciclass,0604";
-+					device_type = "pci";
-+					#address-cells = <3>;
-+					#size-cells = <2>;
-+					ranges;
-+
-+					pcie@1,0 { // Lane 4: M.2
-+						reg = <0x0800 0 0 0 0>;
-+						compatible = "pciclass,0604";
-+						device_type = "pci";
-+						reset-gpios = <&gpio3 1 0>;
-+						#address-cells = <3>;
-+						#size-cells = <2>;
-+						ranges;
-+					};
-+
-+					pcie@5,0 { // Lane 5: Mini PCIe
-+						reg = <0x2800 0 0 0 0>;
-+						compatible = "pciclass,0604";
-+						device_type = "pci";
-+						reset-gpios = <&gpio27 4 0 >;
-+						#address-cells = <3>;
-+						#size-cells = <2>;
-+						ranges;
-+					};
-+
-+					pcie@7,0 { // Lane 6: Ethernet
-+						reg = <0x3800 0 0 0 0>;
-+						compatible = "pciclass,0604";
-+						device_type = "pci";
-+						reset-gpios = <&gpio25 2 0 >;
-+						#address-cells = <3>;
-+						#size-cells = <2>;
-+						ranges;
-+					};
-+				};
-+			};
-+		};
-+
- 		/* UFS */
- 		ufs: ufs@ff3c0000 {
- 			compatible = "hisilicon,hi3670-ufs", "jedec,ufs-2.1";
 -- 
-2.31.1
+MST
 
