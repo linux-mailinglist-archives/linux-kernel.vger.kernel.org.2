@@ -2,116 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37C543C322
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7147F43C326
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239969AbhJ0GoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhJ0GoC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:44:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEA0C061570;
-        Tue, 26 Oct 2021 23:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EE2yHrHq0SApprmXqIoCJSZbtMr/fkKg2RdFQfyZEC8=; b=qxAAG1PDz+70XhMar9bH57UgFW
-        L/wzpkMzB3Q3d0nUAoaCvrOSJXqrhvpqCC0FqkRvgsczikXiF1Ev5ERmy/gvLu4PzaLajZsxttywM
-        RUNuBWhpVg4Ml4ptITNk2ry1nvw613D5BwlfrsHtwT5xyNAk2gCZrq42n/Jmv94tkNC0czfjVUFHn
-        MbEZjiUHQ4hpeQCg+vCk6sxcKD/JSpSCZBZD2OFYG6k0cpdmwPba/AFvIOygi32TkSaVy1+xi5TBM
-        jXY5acUppKhrDCz+9UBE5giIsQWOxzyDFVlul55li4Don7t51AavbPCTjQbBJNf0wensDkzMA5whM
-        1iPIzT8A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfccy-0042ea-A3; Wed, 27 Oct 2021 06:41:36 +0000
-Date:   Tue, 26 Oct 2021 23:41:36 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: WARNING in disk_release
-Message-ID: <YXj0oNuh2RdV+9+l@infradead.org>
-References: <CACkBjsY9Ao5Ri2MRoUHjsTPFZ-KN2xU3E6D7FQCmbh7Xy0BqyA@mail.gmail.com>
+        id S239991AbhJ0GqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:46:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231530AbhJ0GqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 02:46:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9757061073;
+        Wed, 27 Oct 2021 06:43:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635317035;
+        bh=16Olf4WVQYSRwe1OkFa1dBzILsGrYofaKzrqASex/Zg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HbfzhxOvHNtFDWxRIqBqW/oFXtkwTVszVX6KZTI7cIIZNEmyS5BwtpFZ5FB9Na+eG
+         Dim3h+I2yLnBxfUCr3bRMI5N4gkyiPhJkQXAioqR36saTmfu8wMucioBwNmqqJMQ3G
+         bWBYXNM5R9Q9U9hq41H5LgBqOkDtiJN8Y0JfoTtB6oHBEtj2Cg5Dw4TaaPJHdQVU34
+         bgjlBQnLV/Sa8xU1BAozwvzhnTpx/qAKyGQX9G7MEqSlp9Fh42BseYhStiEv0PHJ0J
+         M1tlbYxC57jouCTf8WEBijR5WK0Gg9osWZHdVcrl9RM94vCUhysaU1vjzlgQ6MfbfJ
+         g1pOCsvt5qoDQ==
+Date:   Wed, 27 Oct 2021 09:43:51 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Edwin Peer <edwin.peer@broadcom.com>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Michael Chan <michael.chan@broadcom.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXj1J/Z8HYvBWC6Y@unreal>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+ <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
+ <YXeYjXx92wKdPe02@unreal>
+ <CAKOOJTyrzosizeKpfYcu4jMn6SRYrqxU0BzMf8qudAk5e74R9g@mail.gmail.com>
+ <YXhVd16heaHCegL1@unreal>
+ <CAKOOJTzrQYz4FTDU_d_R0RLA4u6pfK9=+=E_uKMr4VCNbmF_kA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACkBjsY9Ao5Ri2MRoUHjsTPFZ-KN2xU3E6D7FQCmbh7Xy0BqyA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAKOOJTzrQYz4FTDU_d_R0RLA4u6pfK9=+=E_uKMr4VCNbmF_kA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 09:31:25AM +0800, Hao Sun wrote:
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1657ywLUsQk5HIV6DDfHHJydz_PPTdr6V/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/12PUnxIM1EPBgW4ZJmI7WJBRaY1lA83an/view?usp=sharing
-> C reproducer: https://drive.google.com/file/d/1PV2erZe9uWRr7cGc3BLKkwBwaSVjksLc/view?usp=sharing
-> Syzlang reproducer:
-> https://drive.google.com/file/d/1A921cPkylfbW2cYCvbtImODZXd0mbg3l/view?usp=sharing
-
-Please fix your setup to upload the actual text files directly.  This
-just gives a login page and doesn't work with wget/curl and also fails
-to actually work in firefox.
-
-What is so hard in using some non-broken webspace these days?
-
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
+On Tue, Oct 26, 2021 at 01:03:41PM -0700, Edwin Peer wrote:
+> On Tue, Oct 26, 2021 at 12:22 PM Leon Romanovsky <leon@kernel.org> wrote:
 > 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 32158 at block/genhd.c:1081
+> > At least in mlx5 case, reload_enable() was before register_netdev().
+> > It stayed like this after swapping it with devlink_register().
+> 
+> What am I missing here?
+> 
+> err = mlx5_init_one(dev);
+> if (err) {
+>        mlx5_core_err(dev, "mlx5_init_one failed with error code %d\n", err);
+>        goto err_init_one;
+> }
+> 
+> err = mlx5_crdump_enable(dev);
+> if (err)
+>         dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code
+> %d\n", err);
+> 
+> pci_save_state(pdev);
+> devlink_register(devlink);
+> 
+> Doesn't mlx5_init_one() ultimately result in the netdev being
+> presented to user space, even if it is via aux bus?
 
-Anyway, this is the new debug check to detect a final put of a disk
-that is not unregistered yet.  So it did made some pre-existing issue
-show up.
+The mlx5_init_one() aux devices, and driver is not always loaded
+directly in the Linux kernel. The device creation triggers udev event,
+which is handled by udev systemd. The systemd reads various modules.* files
+that kernel provides and this is how it knows which driver to load.
 
-> disk_release+0x1c0/0x230 block/genhd.c:1081
-> Modules linked in:
-> CPU: 0 PID: 32158 Comm: syz-executor Not tainted 5.15.0-rc6 #4
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> 1.13.0-1ubuntu1.1 04/01/2014
-> RIP: 0010:disk_release+0x1c0/0x230 block/genhd.c:1081
-> Code: 00 00 00 00 fc ff df 48 8d 7b 28 48 89 fa 48 c1 ea 03 80 3c 02
-> 00 75 4e 48 8b 7b 28 5b 5d 41 5c e9 b5 8b ff fd e8 20 2e a5 fd <0f> 0b
-> e9 06 ff ff ff e8 34 be ec fd e9 2b ff ff ff e8 2a be ec fd
-> RSP: 0018:ffffc900019efda0 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff88801a718800 RCX: ffff888113811c80
-> RDX: 0000000000000000 RSI: ffff888113811c80 RDI: 0000000000000002
-> RBP: ffff88801a718880 R08: ffffffff83d130a0 R09: ffffed100c7c6542
-> R10: ffff888063e32a0b R11: ffffed100c7c6541 R12: ffff888103988688
-> R13: 0000000000000002 R14: ffff8880194fa4d8 R15: ffff888014acee00
-> FS:  0000555555d8a940(0000) GS:ffff888135c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007efdcf048820 CR3: 000000010cd05000 CR4: 0000000000350ee0
-> Call Trace:
->  device_release+0x9f/0x240 drivers/base/core.c:2232
->  kobject_cleanup lib/kobject.c:705 [inline]
->  kobject_release lib/kobject.c:736 [inline]
->  kref_put include/linux/kref.h:65 [inline]
->  kobject_put+0x1c8/0x530 lib/kobject.c:753
->  put_device+0x1b/0x30 drivers/base/core.c:3503
->  blkdev_close+0x8d/0xb0 block/fops.c:460
->  __fput+0x288/0x9f0 fs/file_table.c:280
->  task_work_run+0xe0/0x1a0 kernel/task_work.c:164
->  tracehook_notify_resume include/linux/tracehook.h:189 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
->  exit_to_user_mode_prepare+0x28d/0x2a0 kernel/entry/common.c:207
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
->  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7efdcefd62cb
-> Code: 03 00 00 00 0f 05 48 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c
-> 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d
-> 00 f0 ff ff 77 2f 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
-> RSP: 002b:00007ffdc6a50700 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-> RAX: 0000000000000000 RBX: 00007ffdc6a50770 RCX: 00007efdcefd62cb
-> RDX: 0000000000000000 RSI: 0000000000004c01 RDI: 0000000000000003
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffdc6a505b0
-> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
-> R13: 0000000000000003 R14: 00007ffdc6a507b0 R15: 00007ffdc6a5076c
----end quoted text---
+In our case, the eth driver is part of mlx5_core module, so at the
+device creation phase that module is already loaded and driver/core
+will try to autoprobe it.
+
+However, the last step is not always performed and controlled by the
+userspace. Users can disable driver autoprobe and bind manually. This
+is pretty standard practice in the SR-IOV or VFIO modes.
+
+> 
+> > No, it is not requirement, but my suggestion. You need to be aware that
+> > after call to devlink_register(), the device will be fully open for devlink
+> > netlink access. So it is strongly advised to put devlink_register to be the
+> > last command in PCI initialization sequence.
+> 
+> Right, that's the problem. Once we register the netdev, we're in a
+> race with user space, which may expect to be able to call devlink
+> before we get to devlink_register().
+
+This is why devlink has monitor mode where you can see devlink device
+addition and removal. It is user space job to check that device is
+ready.
+
+> 
+> > You obviously need to fix your code. Upstream version of bnxt driver
+> > doesn't have reload_* support, so all this regression blaming it not
+> > relevant here.
+> 
+> Right, our timing is unfortunate and that's on us. It's still not
+> clear to me how to actually fix the devlink reload code without the
+> benefit of something similar to the reload enable API.
+> 
+> > In upstream code, devlink_register() doesn't accept ops like it was
+> > before and position of that call does only one thing - opens devlink
+> > netlink access. All kernel devlink APIs continue to be accessible even
+> > before devlink_register.
+> 
+> This isn't about kernel API. This is precisely about existing user
+> space that expects devlink to work immediately after the netdev
+> appears.
+
+Can you please share open source project that has such assumption?
+
+> 
+> > It looks like your failure is in backport code.
+> 
+> Our out-of-tree driver isn't the issue here. I'm talking about the
+> proposed upstream code. The issue is what to do in order to get
+> something workable upstream for devlink reload. We can't move
+> devlink_register() later, that will cause a regression. What do you
+> suggest instead?
+
+Fix your test respect devlink notifications and don't ignore them.
+
+Thanks
+
+> 
+> Regards,
+> Edwin Peer
