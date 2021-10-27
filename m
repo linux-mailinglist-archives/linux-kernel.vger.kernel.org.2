@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE1E43CCCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6315E43CCCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242636AbhJ0OzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:55:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
+        id S239206AbhJ0OzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:55:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237296AbhJ0OzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:55:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAFB260724;
-        Wed, 27 Oct 2021 14:52:31 +0000 (UTC)
+        id S237296AbhJ0OzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C683460F21;
+        Wed, 27 Oct 2021 14:52:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635346354;
-        bh=8M3nKt+glST/1vlSEYvPRleNwgXQb7gbwuxaCwI1Whg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fR/xE8m7qavd66EZEMHa2Um94damyxYlntoxUkZEmBPfI2A5kkRyyXpUs4MNS8p+V
-         qhu62Mbkwk4U4yP0MMLVlawZaGSSAecsLiQAH5r0AEyFUMxTgp1mm1vCumIArq44br
-         mUYif0qDQPVBy8eXTNkulbPq2tpOQdFhIgzMVn1pdwAg6/NLifaT6CO8K0FfiMqZc8
-         kU5+JCbzYWlfyqjFFJS1TE3VioDSh2ketCRCxlauE/fXZWI88loRIpoRC34+R5vwYc
-         +50aJ/ONRLLWROXaLmxvEkhQ5oVHeudRRH4BmzGS+eFb4PAB1lcRa0DhEc3YD2LvBJ
-         cTNWJ8poH/yvg==
-Date:   Wed, 27 Oct 2021 23:52:29 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kalesh Singh <kaleshsingh@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>, surenb@google.com,
-        hridya@google.com, namhyung@kernel.org, kernel-team@android.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 7/8] tracing/selftests: Add tests for hist trigger
- expression parsing
-Message-Id: <20211027235229.06f268a62133882a547c3c01@kernel.org>
-In-Reply-To: <20211027103119.2365bc90@gandalf.local.home>
-References: <20211025200852.3002369-1-kaleshsingh@google.com>
-        <20211025200852.3002369-8-kaleshsingh@google.com>
-        <20211026214311.583c728d90d41778c38201dd@kernel.org>
-        <CAC_TJvfQQCyuSZqjzC0fuAah84uLgHJv5T+WtR8=9h5fN9nrLA@mail.gmail.com>
-        <20211026174420.0056bde2@gandalf.local.home>
-        <CAC_TJveMumb=BkGL53d_rS08uQ35fz1B7cM9jp8eKoCz0MUG_Q@mail.gmail.com>
-        <20211026202020.026e7907@rorschach.local.home>
-        <CAC_TJvf8areGd1rQMbJV4r+J6JP2-DWXBLQwKRZEOzNWL_rqrQ@mail.gmail.com>
-        <20211027121420.03a09fca1efc414189bb40bb@kernel.org>
-        <CAC_TJvdMXd+wnvvs7XrTmT2-iyepr==hH9Kkd_T9_f3jd3Edrg@mail.gmail.com>
-        <20211027103119.2365bc90@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1635346375;
+        bh=4rh3R5i7kahTMHdRJpaS+YjKGx3i0TD+40QeIK22NS0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fCEeE9967IvrFwc0EwYpy17DDGaJlAWHn+GXGOCCXAIuzYQ9SVRst10LnqhqakaXF
+         6If8pnjtNVQ2ObXlgnKx21aoWW0CpJCuihF7U/7x+yrGrzYL7gh6iIK1KH70e4jsB8
+         d5pUSjtSpoolgDSEfNXFEYwCmWJ2Lji8/QQ8Bu6mUJDB01GO+pws8uJ0/RbqIn185+
+         bWcnMomWFfeQCikPPBRbw8u+QGCEA9BTdWKrzGLFcwU5cSQURc/ZpD/8p18eNOhsg4
+         FLWnRSAUmAcmBvkp9XtZE7kDxjo0rHpXCef037hu+mO1fk0qnnREAnpm8/6Nfs1i9N
+         ZVPkqlEG29Q5Q==
+From:   Dinh Nguyen <dinguyen@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] NIOS2: fix for v5.15, part 3
+Date:   Wed, 27 Oct 2021 09:52:53 -0500
+Message-Id: <20211027145253.454811-1-dinguyen@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 10:31:19 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Linus,
 
-> On Tue, 26 Oct 2021 21:27:00 -0700
-> Kalesh Singh <kaleshsingh@google.com> wrote:
-> 
-> > > Interesting. There should be test logs under logs/ directory in the
-> > > ftracetest. Can you share the logs/*/ftracetest.log and your kernel kconfig?
-> > >
-> > > Thank you,
-> > >  
-> > Hi Masami,
-> > 
-> > I have attached the config and ftracetest.log here.
+Please pull this fix for NIOS2 for v5.15.
 
-Thanks! but it seems that the tests were randomely failed...
+Thanks,
 
-> 
-> 
-> Actually, could you attach the other files in that log?
-> 
-> tar cvjf log.tar.bz2 logs/<date>/
-> 
-> Where <date> is the value for the log that failed.
-> 
-> That will give me more information to why the tests failed.
-> 
-> I'm currently going to test the config you sent.
+Dinh
 
-I'm also trying to reproduce it, but it seems to need full qemu mode.
-If you share the above logs, it is easier to check why the tests have
-been failed.
+The following changes since commit 3906fe9bb7f1a2c8667ae54e967dc8690824f4ea:
 
-> 
-> Thanks!
-> 
-> -- Steve
+  Linux 5.15-rc7 (2021-10-25 11:30:31 -0700)
 
+are available in the Git repository at:
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+  git://git.kernel.org/pub/scm/linux/kernel/git/dinguyen/linux.git tags/nios2_fixes_for_v5.15_part3
+
+for you to fetch changes up to 4a089e95b4d6bb625044d47aed0c442a8f7bd093:
+
+  nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST (2021-10-27 09:29:07 -0500)
+
+----------------------------------------------------------------
+NIOS2 fixes for v5.15, part 3
+- Fix a build error for allmodconfig
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+
+ arch/nios2/platform/Kconfig.platform | 1 +
+ 1 file changed, 1 insertion(+)
