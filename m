@@ -2,132 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7C743CA6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19FF43CA70
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242090AbhJ0NUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:20:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57437 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242081AbhJ0NUg (ORCPT
+        id S242101AbhJ0NVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:21:03 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:64604 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237433AbhJ0NVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:20:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635340690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T0knKn4vlSSXJNLziODRiT1VCKABnqaDy5uuDBcVhuU=;
-        b=R23NAdCrOUN6asoivg6xqFbbZoqmAjEg3mpo97PyQuhxOqMATgi+BQQUi9qnxUmYW9sIzr
-        xlGau06jAsUTiLhyoJ6115l3+R3mePsA6bqiF2nLj10vrJmVv43wtiWFT9aUw2w3s5u8fG
-        oJvz/Am5MDhxmUX5vI0syLe7A8QDRiM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-77DGL579OHCuOSGS4fIKFA-1; Wed, 27 Oct 2021 09:18:06 -0400
-X-MC-Unique: 77DGL579OHCuOSGS4fIKFA-1
-Received: by mail-wm1-f71.google.com with SMTP id z137-20020a1c7e8f000000b0030cd1800d86so1258339wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:18:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=T0knKn4vlSSXJNLziODRiT1VCKABnqaDy5uuDBcVhuU=;
-        b=2oRhtk4xswdmgbph7YVUinR9MisEBgjXxccz3AZ8Wg0sY5zIkEvuHTPjzpuKEUiII/
-         xmrq426t1BZQtP7/MAgKxPkwaLg8mtQ1Oej8X/OdLjg3Y/rLzrtCi/LVBTDp8dYdJKg8
-         GtDZQI32uOu4oxcPZo45Rs/OD933NZrw8pmfKc6klSTjC88SW2oEl9gGs4lPZOqiBd89
-         Xpx+MznPQJgnyBaEDQ354dydMyfliDi4ln635chXAE7uhzgsIA0ISXAL2jbKlNH2E4bs
-         kNN1EsmG/wIEdcRLA+J5UHGP2wcNT8OI7P4vQttHl9cT13QP7MiUWkLJDmI1Raqao1A+
-         24qQ==
-X-Gm-Message-State: AOAM533RUuA3HoDL+VkTE0AwhYpZ97u1A+xaOX7pmkDkAaEZZucTkLMg
-        DTyVzMgdeFAKs3F53pFk+64c/z48VVyc0bQfu5Frcvp+DnPWvOx7vkYh/Cm2dkqTbARr/dFqWKF
-        /qBLzgbkHYTJVnkJMJSdCXvTa
-X-Received: by 2002:adf:f904:: with SMTP id b4mr40692308wrr.403.1635340685718;
-        Wed, 27 Oct 2021 06:18:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzkN+ouoRwZcIXIo4nO3GPnaT6BwP+6Gy2W0VoJk+RIw7SPLg61t2NykMicE+Lxtab8AZLmqQ==
-X-Received: by 2002:adf:f904:: with SMTP id b4mr40692273wrr.403.1635340685540;
-        Wed, 27 Oct 2021 06:18:05 -0700 (PDT)
-Received: from [192.168.1.128] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id o1sm1872624wrp.95.2021.10.27.06.18.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 06:18:04 -0700 (PDT)
-Message-ID: <76763f5e-8c37-c36a-8f64-af3efe0da254@redhat.com>
-Date:   Wed, 27 Oct 2021 15:18:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+        Wed, 27 Oct 2021 09:21:00 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RCTXeA023707;
+        Wed, 27 Oct 2021 13:18:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=W87fTEnY3iPNmG6BeDf1aco/7GScB8QEqVfl/m52wVs=;
+ b=QZN4iz25AXSmS1xq+uKoSYZvbYAwl0kDa0K+m8sZf1/vw3YRQy1qDWVPBHco7EHoQfgK
+ tYiocARJKGd0XzUABlye7WOh4wv6YFwj8xFAFQFbrzCZfa6buH/7/VdJMzum4jzjvy0Y
+ kbsS/tXV54yakHGs4bpl1zzgdIa8mjWxjN+VYA/p/gi/Eyz1kKBlutrj6Qd7hgRZmdyD
+ r5ttSi7KZLv3yOm/dzSjRxkSVDvXr2a0GnOxXnSCcGL9++5iVOAsA11zyJ0rqFYm0Zem
+ BECv8THJa9uR+semMBSdY279GAG188Pgl1eT+ItipXKAYgJy9N+NvgS0dpiH5kpA8J/8 RQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4fj3h46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 13:18:21 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19RDC0Qd051761;
+        Wed, 27 Oct 2021 13:18:20 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
+        by userp3030.oracle.com with ESMTP id 3bx4h2c032-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 13:18:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YBcmK97aZALqRgwJxY/qFXsHrmDew1oW+Wc/GklnnLKa7td06i4oF9nQ8Jg6T9te1vu6c/E3HUiuJdxpTHEiFJk3r9FUC1FX0e741wDdCtiAlv/DI21z97Ruh2+t3WAa40htNAAKHgIKdD3nUiMFWdTfvolA3fFvspsSUecxnbGZ+rOHSwlOKjpKwWXG+dCPAQ5vYfZOOFBar5EGIKkXjvIDeD6Af2ekDdtJmz7CO0K5g3t0i7df3iPhwI8yHj9fh8gqOlBiDqph7L+xC4BXzYgAvU2XcO/ykd9HRonO04UnbdnfcQpS3FdHp3XSgh0dFig9q8ooNfPHkW/kTQ7tFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=W87fTEnY3iPNmG6BeDf1aco/7GScB8QEqVfl/m52wVs=;
+ b=aYMGoiZ0vi78gbBAKYY0TX9jfGkfHx3cTiEdVK0IORkbxD+Ygh2k07h5E3Jy5IjZZpKwO4vgx4ftFe0ya75MldNsLRW+xAy+oOcdFqJxZoeuPgas8vSdVJfR0qxTDLWqeG+6w+hTYcz8RKndpviF7/kWnLFTVeMDX8jdQufvwmJK2PqS/1AamrCiaRe8VhIj3ZGrakqrAGNYLMlsgwaARps7lVBjUkbC+OM9Et67YTcI47ccZj9xQwF4/LfprUWD2h8j/axHagVl5VxX3aHOliRlWnrObL6FmupLyWgO5z+DJLP4Vb1dKLBe14+GbctEpGKrsOHGmZl8+dxoTL3TcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W87fTEnY3iPNmG6BeDf1aco/7GScB8QEqVfl/m52wVs=;
+ b=LK3JknIfU7vUSeOLMUpNHM/rqhcCwRIximOCs5zYdp20ZaTUUfopZF37ABYjcb6ldazZPDa8xGiwT+oXLSlFkNMPZ7fxzYvCJOliU6Qn3AA1wGTX4kjBmEQ8C5+f3zNenyvtDsmGr54n8MI1I/fEyndTaGUYWXdWZMj5IUxShIs=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by BLAPR10MB5251.namprd10.prod.outlook.com (2603:10b6:208:332::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
+ 2021 13:18:18 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329%6]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
+ 13:18:18 +0000
+Message-ID: <f9db2b8f-c4b7-95b3-856c-ebf5231d6bf8@oracle.com>
+Date:   Wed, 27 Oct 2021 09:18:13 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH -next] xen-pciback: Fix return in pm_ctrl_init()
 Content-Language: en-US
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210927142816.2069269-1-arnd@kernel.org>
- <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local>
- <878ryeit9i.fsf@intel.com>
- <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
- <3604fb90-f6c3-0fa2-c864-7f1795caee1e@redhat.com> <87zgquhbjx.fsf@intel.com>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <87zgquhbjx.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Juergen Gross <jgross@suse.com>,
+        YueHaibing <yuehaibing@huawei.com>, sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20211008074417.8260-1-yuehaibing@huawei.com>
+ <6644d095-92da-261e-87aa-284dcfcde19a@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+In-Reply-To: <6644d095-92da-261e-87aa-284dcfcde19a@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR13CA0094.namprd13.prod.outlook.com
+ (2603:10b6:806:24::9) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+Received: from [10.74.107.92] (138.3.200.28) by SA9PR13CA0094.namprd13.prod.outlook.com (2603:10b6:806:24::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.4 via Frontend Transport; Wed, 27 Oct 2021 13:18:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 26eecf02-b001-491a-1dfb-08d9994c3dcd
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5251:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB525158F6DE5B734DAFA96AED8A859@BLAPR10MB5251.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:935;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mS8DLiWZuWCC4dYSiSn7DlJpMFkyVNR/G8Gbd64ZsIShCQTccBG/wIKvSNv2DdIHXfTNSfEs3QmYShtzWuQhNZDMWMCBF2hsUpcDsDUtJyHC2CXhKcIMQ3kavSvIPDMjI8nhBkTI2bAJ5MaF5l97UwQu1/HzInn383rlvWDx6GcR0wUiPnVFjThipAJrecLEKPpxFhsIMGgQQR0MONNSHKyskitcWpuulXlOMlzC8BJA4qZcpkcaMj6lmQSDzOLp+SR9wk2HOQMe/n3b12sCsxzhKg2wQc3DN6h0N7jZY2AKLGpZrPOqQGSeI6qgO5kElcEcPHMbRXxdPRspjA0FeaBt5Bl8gYna1dApS1/RNDctugVN6b3OF3XWb3QnG4V2V5t75ihLls5rpV0Vh8wM0YX8cahhsxYnGPG4CJzi8gKEHO5IUz0MiRGlZwlQJYj8oTejmsPBrPgTEBxLv00LEsIbQa7zcYV3WZcc3srvcEuKFu+jMbrRwMMPifdlz2+TZSVvPNPywtQ/XGWukf5On36V1IMml9m45QcAOuYLD7xqNEWQUKiAhD/DrmHgw4kBp6BaaatILVdItOFjCT8pAmcFkkZkzIpLIrIv8wLUBsUNV9fIW5U6Ke8jAmTOy8UM8YreQj4yFLkDsjoZIx8YlQX9ip9axivSoZ9rqz8ATrc5QzLy9kpBQyyzsgqTqvTcaFOBX3yMG0L95a70CJOxsVNyWG3Lm9ZKre1k8WqzR8psZf0/cwUIDeEENm/vg2nz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6666004)(110136005)(508600001)(36756003)(956004)(53546011)(8936002)(31686004)(2616005)(2906002)(4326008)(86362001)(6486002)(8676002)(26005)(186003)(66946007)(66476007)(66556008)(44832011)(38100700002)(5660300002)(83380400001)(16576012)(31696002)(4744005)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnQ1NGdIQ09uOGlMMzVDeGF2a2tMd3F6ZWlERmtNdEVGZTJ6Z2lvY2lxaERP?=
+ =?utf-8?B?MktVaXJDRks5WWYzRGtjNUF1Z3d6djY5eHMzcnZ6cVZ4VVp6b21qbmpwYW94?=
+ =?utf-8?B?eUFMRE0wbkVQYnY5dThreWlybEZtVktQQm0ra3FnWFVGdCtXd3RYejBETGJ2?=
+ =?utf-8?B?N0FGODJGQ2QyMmlDb3FuSXoyR3EydW0zeC84MFAwbnVYYjlReHAyYTBXVnBy?=
+ =?utf-8?B?U2lqNTdjTVlXRm80bmMydDBOeWZUZkVjQ3ZZV2ZnNFNpMW5uRFNZY1R1TzNH?=
+ =?utf-8?B?aGVGWDBPa3piNW1ZNUxxRzNjZXhsYktCZDByVTd2ZGh0ZUR0TUE1VkZtZUgz?=
+ =?utf-8?B?cWVBdTVLbHkrVURob2k2MEtvamNkcUEvcXhsZVgxRHF5SGdOSGI5NVZGeXdP?=
+ =?utf-8?B?YWZoTE9HUjVqdGdhcTc5TExiUFRHcG5nVXFYTVErWXp2UG1oK04zeGYyTVE0?=
+ =?utf-8?B?T1pMcU9vcEhJYzdSYksyTE1FYlE4elFXQzRrWUkwUDA3a0hFUHhXTDdMV3Vv?=
+ =?utf-8?B?WUdoRThkdFZRcXczemYxMkpZYlpOSXJyTmtwMDRqbE5WczF5eFBZUFAyd1VW?=
+ =?utf-8?B?MHdjdnZuakhjc2FNcGtPNGpyQkVtNGs5dG0vZVZoV0JJWHhUUk5IejFKN25K?=
+ =?utf-8?B?ZEFxVi9YSzgxYi9iMnZxUmhMWDNFbEJBRFlnMzkxNzNId29WcmZIQlMzS0V0?=
+ =?utf-8?B?Rk1lYjlxYTlpOUt3MDgzY0IvR3o3Q1FDcUNhN0hTaFpaZTFEZmlzUndxNkI4?=
+ =?utf-8?B?L051RUk0dWVyTEgyWUt6WXNlMk0rNm5lWk50UHpseFJuLzBQUlpHK1JhOXo1?=
+ =?utf-8?B?RGpYdDgra1g1akFvU0s2WUUvYVpEY3M5NG9RdXdWRDZFR2FwREZLaG1DVmtn?=
+ =?utf-8?B?S0tNMUNGYkRBeVlsZlQvTXpQYjhJRGE1M1FVMUozN2p5Ly80QmppRy8xb1BO?=
+ =?utf-8?B?UmJxY2R5cTFHUlFGbm5NRERPd1lqTlhzS2JHKzRZOHZRKzBacWFCRWFJSUpW?=
+ =?utf-8?B?QVdBVDZkbGI4cjBpSmFxbEZhaUlLeHc3Rm5uamoxL3RLSWkydXVQUFRSSncv?=
+ =?utf-8?B?d2E0ZjNUVTlZZkJWMFpEeDROcXk5RVZHV1N6SWtUSUIyQjlNamRFR21lZUcx?=
+ =?utf-8?B?WlMwSTZoSFJhN2tPOSsxWFpycWpOOWJGZU5MV0ppVnM3a2JtZnZ3UmhqQlZZ?=
+ =?utf-8?B?NGZvcCs5aGROc2VwMENhZUxFZFUzTEhyNFlqd3dlMGRMdllISkMxTWcyOXdi?=
+ =?utf-8?B?K2M4T0s2VDNQa21KV2RRM2owUGlFTyt2ZUVXRGdJSEM1cWVsTUljZ0hZTzdX?=
+ =?utf-8?B?WHV6Zy9mL3NGdExZR2xKeW02RndZa1RaMTJpeStpU1NaVTNpWHlIRWsxQXhL?=
+ =?utf-8?B?R24wUGgybys1MTNLVHRNckZGNW5MN3puWFMyMFhZWk81c0JMaEMrM3VaNUZ0?=
+ =?utf-8?B?NFBGdmY5SWIweWNlRDZIOVZhYW5tZ3lGb1lFQ2kycVpEQms2MFBiK0Y0U2Jt?=
+ =?utf-8?B?REdEUHlhSzVnenU3Z2xHeXQ3V0h1d1NzWk5IZW05RXlOMFdpWkdNdDJCUlRk?=
+ =?utf-8?B?S05uenlWb3d6aURySzlBYjJ1UnZIb2t2L3dBY1gyK3RiMi9ucXFFYUVZSVM3?=
+ =?utf-8?B?MzNNRjF2Sk04NU1MVjcvMDdNWlhtanFEV2phZXFLRHFibWdLc2dCaUFFVEh2?=
+ =?utf-8?B?WHYrS24xaUYrYlE3VGo0VXRkSG04eEZXZ0tTUmVrZXErSDJPR29XSzJrYitH?=
+ =?utf-8?B?ODV4U3RDeTZVUEhsQzh6Zy9KTmNhWlFrVFFYekYxaFpGdDlzR3FjaHQzQmdC?=
+ =?utf-8?B?d0RWend0VGRTblBoMVMyQThwQ2sxekppdTkxN29qcUI5YU1TMnQxOWhSaFZa?=
+ =?utf-8?B?ZkZlcTBsdlhMVkt6UUdiR040K2tuUHJRdTY0SmlCNEpWOU9xNjJ5MkFRQVVq?=
+ =?utf-8?B?Rm43TUJpYm9EYkV1bjlIcHo1dk9JTjBKMGwvK2Q2b0QwNEY2azJ1cFBJdWxj?=
+ =?utf-8?B?ajlxcVdUVU41WkY3WjJ3ZExuakhYcTlOc2JKbmdnQWZHU0RjMHYwQjEzVXpt?=
+ =?utf-8?B?eFFZVko1dllSVmN3Mm45QzUvbHM4WFdMWWFQZnQ5YUZVNjVnTGU4bmtoaEdJ?=
+ =?utf-8?B?UkMrTERucW5EcmdRY3NhYndGTmk5OUlMNHpvUzdselI5MjZIaTE3eEYwbjJl?=
+ =?utf-8?B?d2ZFNHd0QnlhanplWEdYZ3ovNlluWHRmeEM1elB5enR4cG85NVY2NEJmNmFW?=
+ =?utf-8?Q?NUTx52dO7ykUJFbG8AkDzHTYH+MyW7Twd3q7unW0iM=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26eecf02-b001-491a-1dfb-08d9994c3dcd
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 13:18:18.5243
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mkPP8sTdc5T5cZP6MRdBnqn/oda+wV8GfmBW0aI6aLjSLPK1akCauD8MYp++DkdOsG6wCRi6gdAFlLZzCwKXDeR58beZtcL+ZsE1Uo/s2F8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5251
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10149 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110270081
+X-Proofpoint-ORIG-GUID: PHVel80CkDtcDBJSeEFu0PT_UpwjL2ir
+X-Proofpoint-GUID: PHVel80CkDtcDBJSeEFu0PT_UpwjL2ir
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 14:55, Jani Nikula wrote:
 
-[snip]
-
->> Why the dependency has to be in a user-visible symbol? What could be the
->> problem with having something like:
+On 10/8/21 11:01 AM, Juergen Gross wrote:
+> On 08.10.21 09:44, YueHaibing wrote:
+>> Return NULL instead of passing to ERR_PTR while err is zero,
+>> this fix smatch warnings:
+>> drivers/xen/xen-pciback/conf_space_capability.c:163
+>>   pm_ctrl_init() warn: passing zero to 'ERR_PTR'
 >>
->> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
->> index cea777ae7fb9..f80b404946ca 100644
->> --- a/drivers/gpu/drm/Kconfig
->> +++ b/drivers/gpu/drm/Kconfig
->> @@ -82,6 +82,7 @@ config DRM_DEBUG_SELFTEST
->>  config DRM_KMS_HELPER
->>         tristate
->>         depends on DRM
->> +       depends on (DRM_FBDEV_EMULATION && FB) || !DRM_FBDEV_EMULATION
-> 
-> To me, this seems like the right solution. Depend on FB if
-> DRM_FBDEV_EMULATION is enabled. That's exactly what the relationship is.
+>> Fixes: a92336a1176b ("xen/pciback: Drop two backends, squash and cleanup some code.")
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>
+> Reviewed-by: Juergen Gross <jgross@suse.com>
 >
 
-The problem as Arnd explained is that then this relationship will have to
-be expressed in all the Kconfig symbols that select DRM_KMS_HELPER.
 
-Otherwise the symbol will happily select the wrong state and even when a
-warning is printed by Kconfig, it will just set an invalid configuration.
+Applied to for-linux-5.16.
 
-For example with CONFIG_FB=m (that led to the linker errors if the symbol
-is also not CONFIG_DRM_KMS_HELPER=m) and CONFIG_SIMPLEDRM=y (that selects
-CONFIG_DRM_KMS_HELPER), this would cause the following unmet dependencies:
 
-$ make prepare modules_prepare
-WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
-  Depends on [m]: HAS_IOMEM [=y] && DRM [=y] && (DRM_FBDEV_EMULATION [=y] && FB [=m] || !DRM_FBDEV_EMULATION [=y])
-  Selected by [y]:
-  - DRM_SIMPLEDRM [=y] && HAS_IOMEM [=y] && DRM [=y]
-  Selected by [m]:
-  - DRM_I915 [=m] && HAS_IOMEM [=y] && DRM [=y] && X86 [=y] && PCI [=y]
-  - DRM_VIRTIO_GPU [=m] && HAS_IOMEM [=y] && DRM [=y] && VIRTIO_MENU [=y] && MMU [=y]
-
-so CONFIG_DRM_KMS_HELPER will wrongly set to =y which will cause the issue.
-
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+-boris
 
