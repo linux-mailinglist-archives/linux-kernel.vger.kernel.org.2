@@ -2,87 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E1F43D3B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD1B43D3AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244257AbhJ0VSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
+        id S244262AbhJ0VSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244278AbhJ0VST (ORCPT
+        with ESMTP id S244252AbhJ0VSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:18:19 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6D0C061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:51 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id l7so4465559iln.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:51 -0700 (PDT)
+        Wed, 27 Oct 2021 17:18:06 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4238CC061348
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:40 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id c28so8875442lfv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lm0+nNU7+O9MfXmzPflhpy32QYmyc8kaxNev2lDAAEs=;
-        b=QkZG2K8bVwvVE7egaAt2KoM2ozNWqnXnRYCDiO58eC/yTXl8qb52o9wIZwiEo5g82G
-         bccuMjBMX6s2/H00mP+Fr4qT57h9Uvc53WJXiMmwn/o5rOlpjbPpRCkoq6lDMvFiLf5M
-         Mn5WuZvMESLsr+yShl4950U8mxzBbei0DvPwtD4+tGwSShXC7YBnfa4bwCxG8yzvVmD9
-         ZWQzhlnZgrRF38+as+UM1Z5B3CgzFBucx490mDEgN/LQQOr5EPSwcVKAwJjxaors8Y2R
-         Rw7IGFcGLS8D7eew/S4U2b8sGZ7yETg9YaMlTaGrL0Kw4t4XBNIT+7a4JOw/7ThIseQ4
-         4gIQ==
+        bh=ZUzj8OdRUyoCesvY9oYCJsi3ZMdPAltpXbUySPTyBuc=;
+        b=ZIKZfwDyLiBXM4FTpiIdXUlr5R+dGI4KZkzsZUVmNpqPvYo82Eg9+mHUocDVdvsZRp
+         bHC9ooluOVD3eOGj7LPilAH9no8kzTwRRuYP+1gemifBf9EmDbJHIc5OrlyAX3AErpYL
+         rCUkbQ4oC/0/RC8tdZ8NSo7568axnml9rN/sSJ5mA2MGDa5CgiyJRlLuhtN1U3Q4WSCG
+         AnMNeoEa0RpKePUuZlZiGhzIsuYPu5BLCjJhMGzARP7vYLxtIXT7UyovYQkTwrt82WqU
+         9RBNxTpyNJrocw3u98bizPwdzQxbEvMV670aQO7grbt5qAOhoDZmzAPqEDsUVxS/KD76
+         ZNrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lm0+nNU7+O9MfXmzPflhpy32QYmyc8kaxNev2lDAAEs=;
-        b=wyK2Fsc9ah3uS78jec/ryZWmnHh7BmBVDUxrB5l3k4MJM+/f8JdBNy4QNLOCMAN7lw
-         U88yg0RBsrKCW7KXLb0L94keX02fPMzSsM7nrXpHq2EYuMggrvlof4bHlzOs+yK4YxLQ
-         tvS6N9stZfBefLvlVumQfsCuzU70ru0BvPX+JTiH3kwLhLAYRCdly4jJSNWlM77uwnzU
-         5BktFwRFowj92zv3fWzTsHC/bBPybDoO0f121cvaWzklVrfLH1OGMZ8DmWVgOKeBE6sV
-         OIdNlW43fl25c35z5zMFQ9expUdh15qupL3/rzNiPAqcipjarg5JLI85ZbNWvdcNllp6
-         vEwg==
-X-Gm-Message-State: AOAM532MSxYaxxbHzCD/zthhzYCvXe5rLt+qu6KNBNeuTPRhR4gBVRjC
-        0uEAvW5dBlh+HsDZiCKojr/HeSZdfo+k2vpcZg9zow==
-X-Google-Smtp-Source: ABdhPJwFlVdGBs6/ghTfnA4EXQvfoHz1gslNeIB/tO5KGqaiLemu7UQV0bF5r1t7c+peB8KbFaYyT1obO1kHcSnGPSg=
-X-Received: by 2002:a92:2812:: with SMTP id l18mr181346ilf.239.1635369350499;
- Wed, 27 Oct 2021 14:15:50 -0700 (PDT)
+        bh=ZUzj8OdRUyoCesvY9oYCJsi3ZMdPAltpXbUySPTyBuc=;
+        b=E//RZY9c6Pk5SJ0NMndqXLTrv4KB2PZ2HDO9zj0QxQTyslFLGl1M/VtJa2c40+qgvC
+         UWKL0gFupYkcgwuU95+RRK4Zfi4hw0cElO0yWOJnWvx/DQOfvPxsYCJehdYuJ+ByWcfU
+         /SPqi5aQZAPq1ZMqb/4+LOQU/Xl7Gka16xegDYisY+fVE/7T7GEiXOdndXfvGKh+sGOg
+         Bq3OunriHGA1znyT/Jcsh0zjxS48QlTw6ufzGoJb2b8WE6f3ghL99Xr20xwyQMJi1PYU
+         mzyFjhr/g0QKiZZnASl6+/BDBaALzfUL2MEPUs2hT6c53iZ6WjYrvx9PTuwDZf78ZW68
+         rT+w==
+X-Gm-Message-State: AOAM532SSJM1FdlPlt6lPBp7b/BaeUk6Cmj7qUd1NfQtjZvOcWkAu9Lx
+        hijgj5jgFwk9z0i+bZMe4VHB4dOiTjtH0DG+fUSLyg==
+X-Google-Smtp-Source: ABdhPJybiFy4oIGNhhlBmd8VY61nM798zr2vK1FyUgViR6EzKUCgaGgxcLv7n9sV9CUY4RPDWZNVBYEO2FFLs9wKsoY=
+X-Received: by 2002:a05:6512:39d1:: with SMTP id k17mr95057lfu.79.1635369338308;
+ Wed, 27 Oct 2021 14:15:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210930212309.4001967-1-axelrasmussen@google.com>
- <20210930212309.4001967-3-axelrasmussen@google.com> <CAJHvVcj9FpJgC5EsB1_6yfgDA8p5-=Oakccg+TUrGUWZB5nHzA@mail.gmail.com>
- <YXDCagVgh2O2YdIW@xz-m1.local>
-In-Reply-To: <YXDCagVgh2O2YdIW@xz-m1.local>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 27 Oct 2021 14:15:13 -0700
-Message-ID: <CAJHvVchb1XyQiu6=0d+viG04Qe4LV3Z6dmCLRxGNqKPxriULFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd/selftests: fix feature support detection
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-41-brijesh.singh@amd.com> <CAMkAt6rPVsJpvdzwG3Keu3gv=n0hmYdDpYJMVoDP7XgwzvH7vQ@mail.gmail.com>
+ <bf55b53c-cc3d-f2c3-cf21-df6fb4882e13@amd.com> <CAMkAt6pCSNZiB7zVXp=70fF-qORZT0D5KCSY=GrJU0iiLZN_Mw@mail.gmail.com>
+ <943a1b7d-d867-5daa-e2e7-f0d91de37103@amd.com> <CAMkAt6qPHtOy8ONBtjn4V28P5F5qqQtnP2sD5YrBjbe_Uwkdcg@mail.gmail.com>
+ <ecfe3b3a-0a7d-86e7-08fb-f693bfa9255b@amd.com>
+In-Reply-To: <ecfe3b3a-0a7d-86e7-08fb-f693bfa9255b@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Wed, 27 Oct 2021 15:15:26 -0600
+Message-ID: <CAMkAt6pgXJ5vop5j7BNF_FQ6ZbWKWCCfUmic2yx3kk0Z1AvJwA@mail.gmail.com>
+Subject: Re: [PATCH v6 40/42] virt: Add SEV-SNP guest driver
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, Marc Orr <marcorr@google.com>,
+        sathyanarayanan.kuppuswamy@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 6:29 PM Peter Xu <peterx@redhat.com> wrote:
+On Wed, Oct 27, 2021 at 3:13 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
 >
-> On Wed, Oct 20, 2021 at 11:28:49AM -0700, Axel Rasmussen wrote:
-> > Just a friendly bump for review. :) Peter, any objections to this
-> > version? I think it fairly closely matches your suggestions from v1.
 >
-> Isn't the whole patchset already queued by Andrew? :)
+>
+> On 10/27/21 4:05 PM, Peter Gonda wrote:
+> ....
+>
+> >>>>>
+> >>>>> Thanks for updating this sequence number logic. But I still have some
+> >>>>> concerns. In verify_and_dec_payload() we check the encryption header
+> >>>>> but all these fields are accessible to the hypervisor, meaning it can
+> >>>>> change the header and cause this sequence number to not get
+> >>>>> incremented. We then will reuse the sequence number for the next
+> >>>>> command, which isn't great for AES GCM. It seems very hard to tell if
+> >>>>> the FW actually got our request and created a response there by
+> >>>>> incrementing the sequence number by 2, or if the hypervisor is acting
+> >>>>> in bad faith. It seems like to be safe we need to completely stop
+> >>>>> using this vmpck if we cannot confirm the PSP has gotten our request
+> >>>>> and created a response. Thoughts?
+> >>>>>
+> >>>>
+> >>>> Very good point, I think we can detect this condition by rearranging the
+> >>>> checks. The verify_and_dec_payload() is called only after the command is
+> >>>> succesful and does the following checks
+> >>>>
+> >>>> 1) Verifies the header
+> >>>> 2) Decrypts the payload
+> >>>> 3) Later we increment the sequence
+> >>>>
+> >>>> If we arrange to the below order then we can avoid this condition.
+> >>>> 1) Decrypt the payload
+> >>>> 2) Increment the sequence number
+> >>>> 3) Verify the header
+> >>>>
+> >>>> The descryption will succeed only if PSP constructed the payload.
+> >>>>
+> >>>> Does this make sense ?
+> >>>
+> >>> Either ordering seems fine to me. I don't think it changes much though
+> >>> since the header (bytes 30-50 according to the spec) are included in
+> >>> the authenticated data of the encryption. So any hypervisor modictions
+> >>> will lead to a decryption failure right?
+> >>>
+> >>> Either case if we do fail the decryption, what are your thoughts on
+> >>> not allowing further use of that VMPCK?
+> >>>
+> >>
+> >> We have limited number of VMPCK (total 3). I am not sure switching to
+> >> different will change much. HV can quickly exaust it. Once we have SVSM
+> >> in-place then its possible that SVSM may use of the VMPCK. If the
+> >> decryption failed, then maybe its safe to erase the key from the secrets
+> >> page (in other words guest OS cannot use that key for any further
+> >> communication). A guest can reload the driver will different VMPCK id
+> >> and try again.
+> >
+> > SNP cannot really cover DOS at all since the VMM could just never
+> > schedule the VM. In this case we know that the hypervisor is trying to
+> > mess with the guest, so my preference would be to stop sending guest
+> > messages to prevent that duplicated IV usage. If one caller gets an
+> > EBADMSG it knows its in this case but the rest of userspace has no
+> > idea. Maybe log an error?
+> >
+> >>
+>
+> Yap, we cannot protect against the DOS. This is why I was saying that we
+> zero the key from secrets page so that guest cannot use that key for any
+> future communication (whether its from rest of userspace or kexec
+> kernel). I can update the driver to log the message and ensure that
+> future messages will *not* use that key. The VMPCK ID is a module
+> params, so a guest can reload the driver to use different VMPCK.
 
-Ah, true, but I was worried he might hold it there until it got a R-B?
-The process is still a bit fuzzy to me. :) Thanks for taking a look in
-any case!
-
+Duh! Sorry I thought you said we needed a VMPL0 SVSM to do that. That
+sounds great.
 
 >
-> Anyway,
 >
-> Reviewed-by: Peter Xu <peterx@redhat.com>
->
-> Thanks for the change!
->
-> --
-> Peter Xu
->
+> >> thanks
