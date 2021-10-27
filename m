@@ -2,272 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B86C43D03B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083B143D086
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240200AbhJ0SDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:03:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243411AbhJ0SDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:03:18 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF2BF610A0;
-        Wed, 27 Oct 2021 18:00:45 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 19:05:11 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jishnu Prakash <quic_jprakash@quicinc.com>
-Cc:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <devicetree@vger.kernel.org>, <mka@chromium.org>,
-        <dmitry.baryshkov@linaro.org>, <robh+dt@kernel.org>,
-        <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <manivannan.sadhasivam@linaro.org>, <linus.walleij@linaro.org>,
-        <quic_kgunda@quicinc.com>, <quic_aghayal@quicinc.com>,
-        <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
-        <quic_subbaram@quicinc.com>, <Jonathan.Cameron@huawei.com>,
-        <amitk@kernel.org>, Thara Gopinath <thara.gopinath@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm-owner@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH V2 3/3] thermal: qcom: add support for PMIC5 Gen2 ADCTM
-Message-ID: <20211027190511.23f271e7@jic23-huawei>
-In-Reply-To: <1635264275-12530-4-git-send-email-quic_jprakash@quicinc.com>
-References: <1635264275-12530-1-git-send-email-quic_jprakash@quicinc.com>
-        <1635264275-12530-4-git-send-email-quic_jprakash@quicinc.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238483AbhJ0SUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:20:17 -0400
+Received: from mx0a-0039f301.pphosted.com ([148.163.133.242]:29878 "EHLO
+        mx0a-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231232AbhJ0SUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:20:16 -0400
+X-Greylist: delayed 12464 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Oct 2021 14:20:16 EDT
+Received: from pps.filterd (m0174679.ppops.net [127.0.0.1])
+        by mx0a-0039f301.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RBSMmt021844;
+        Wed, 27 Oct 2021 14:49:58 GMT
+Received: from eur02-he1-obe.outbound.protection.outlook.com (mail-he1eur02lp2059.outbound.protection.outlook.com [104.47.5.59])
+        by mx0a-0039f301.pphosted.com with ESMTP id 3by4ht9euy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 14:49:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TBMVlx6Csa81gUspTKxX2wW14bPQQ6XgADWZTLocGI2iwYQAVMSJ4ClvzDEEJVq3ghH/AL65NWT7zBjkDl0G3iiIPwaWvIM0pTaFtLWrbS8Xf0jooN9sSc1Gjg/VFJovsrEFUfqI2RNDz4QXw9HUSwi6SJp5cIGHY+4F2mVVEjiH7p98HSvRP8zSehUTiGi1qzXBJlhOUA3RY0QN5A+IjuFyv2lcUJs4ogDTTxHk+5YZLkfp3qZAqsInr3BvPzazUanG/xdCa9K/hmlx0DaEphHTw3MRz0Vu9Wjs3Fit19Dz2DJ0kAoiCBJnVNQmhnqtEeUWs/XzCfs0ees3tihGAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uKCRZI733TaWp+3vG42oP142BKKgodaJONsPpUSr6vU=;
+ b=aXO1kz0FYTkQGAOCijJ69D2N+zhB/Ft0vo52v5a3Y7W5lDUfjbt6XOrBqHRBbCKZOwVugnrfdR7rpRN8HOR+1zscH1CHRSXHbHBLLDVxSvXbIHc0luY/8SNe2sDenwmxvB8VegfCcFQIs2XqL8DTqbyEqr18IkZaDIMaCt5TYdZTBohpu7GAmv2DqSB6CX6NGhXtpPt4EfSowzAYCnmfNy75bNx3wWWTE/0EZdVupZSKTD4w5pNFH7CXphmW81Q+7+jkkTkBAt379sdweGIL3UHHdDvJLpSZttt1j/gktTD5WWE87g0skmuI//DSXHDnwFbHDvVTKOC5792Au6tE1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
+ dkim=pass header.d=epam.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uKCRZI733TaWp+3vG42oP142BKKgodaJONsPpUSr6vU=;
+ b=d7QD0qwamPXQNvyDEDReTk/10RvN7rFkOI/+JiyTUY7dS0SrkE8dN7fas22VwzyzVqfZZidUqSl9890SsFtku/ssL2yPMt2hvVogpdDM2lvq1XHE93ADOCOBeYST+qDcxMDmiYRncDa5gD4oyZcl+RCvmZxXjohc9SXHdAb9EYgUHkPurBTSxrn4FayCL4goHxjasucOuLFq/N2hBDTyhCtjC8JP2iXBxQbt9lv/ix4Wx4N+2Ppo8WJYF31WGSEu03ZAJF5Ae97Lu8FPDUxScKgAW+NM1WHw+Oywq2nl9Am8SgyT+SOoKJmAbDPNBf+PKppNj9hnIryNlezbeijX4A==
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
+ by AM0PR03MB4019.eurprd03.prod.outlook.com (2603:10a6:208:7b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Wed, 27 Oct
+ 2021 14:49:55 +0000
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::c038:e032:595a:651]) by AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::c038:e032:595a:651%9]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
+ 14:49:55 +0000
+From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "jgross@suse.com" <jgross@suse.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "jbeulich@suse.com" <jbeulich@suse.com>,
+        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>
+Subject: Re: [PATCH v5] xen-pciback: allow compiling on other archs than x86
+Thread-Topic: [PATCH v5] xen-pciback: allow compiling on other archs than x86
+Thread-Index: AQHXtDtdCEW9atNFMk2qqaldf5A98Kvm/I6AgAATI4CAAArGAIAAAOAA
+Date:   Wed, 27 Oct 2021 14:49:54 +0000
+Message-ID: <c4efe0b5-89de-aac1-6ec5-5f137fa3b9d4@epam.com>
+References: <20210928073501.433559-1-andr2000@gmail.com>
+ <71ce7c97-1d08-9fdf-b217-53eb914a29a6@oracle.com>
+ <a54ab50a-f35c-26b9-3907-20c014a1120a@epam.com>
+ <af42493e-ec31-8673-5532-1f0c8275b2c6@oracle.com>
+In-Reply-To: <af42493e-ec31-8673-5532-1f0c8275b2c6@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 37051162-eebb-40c2-3ef3-08d999590a1d
+x-ms-traffictypediagnostic: AM0PR03MB4019:
+x-microsoft-antispam-prvs: <AM0PR03MB4019F78BCBB0111488C7D780E7859@AM0PR03MB4019.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2331;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OuN55pPMC67MLDM2D8E9MXT3RniJMOJHgrQsmPsAYVuI5cPq1HWnzVXeGjBhCZT1NtMKuldNo0NDpVOtCBp2Ab3KQUhyrcL3FALpObIxlAGvPaqsxCqdrLTQg7+Fdirb8m0xSK1XEyoL0R4wkg8c6TciH4NSmT4lDlinO0VgTAKqpzhFqHXUdzpjhbvP3esXcC1W7Qj+3VNEBY5Kneii7mujLVpbH7FDtu4BpbXZjw5swmOdP6hnXzZVldd9Cw3d9P1W/iItp2ZiFD8iqwHxH+vWpL805+P17mNhmntA8a4cFIaRblzp8hkilMS6j7deqv+ftESehkVV8hEGjuGpEdk//UM+dfFOBMGQal5euReiCc/UizKvL1Od+y2qwwEwqqsNUSO+vw7sc7wmnthbOOLa5CtrQbxWKQBxa3qYZnMr89ItBUdo8Pa0jXS2z0EYCynyNz2WjSrFmIQviJ6+I08g9qLxa5t0/Wxnm7/xQy89/5wEY6hqxHzm21+JcMaiO9oBv7RLxbVR7SqR+i4TGgQzmlW3xOSCb1tl7XneZa2jg1aZepHS6rAVQtGTQoIqxKAdRlW6ZuIe6xkMfL6kozLf00wnXzyqKGsKvx0uNas8E+U/p14Dwl8Hw2Ru9MvG/gAnBI7yz6iPvPFLNsl4WVmGi4cmlH1TzjHHvq0ukccZHpJiWJCPP3otn01W3QTrx5BWy6ii/Ct9aSSoI1x+rdyaCA64aSkLA98Ml4oDawjau+wLcaim15l47axzpQsR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4744005)(53546011)(64756008)(86362001)(6506007)(5660300002)(122000001)(66476007)(36756003)(38100700002)(66556008)(4326008)(71200400001)(66946007)(54906003)(26005)(110136005)(66446008)(76116006)(107886003)(31686004)(91956017)(31696002)(508600001)(2906002)(2616005)(186003)(8676002)(6486002)(316002)(38070700005)(6512007)(8936002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NG9PNVdtUmRxOGNOR1VuNVBwQ1FtNmQ2ZHNiMzJGNGEvNUFvRVR0cnpxNDdL?=
+ =?utf-8?B?NWpNWjJ4bU5uWnNNazhRY1pSemY2Y0t2dVNBYk84T0RJcWhVVndHeEZRUFpS?=
+ =?utf-8?B?aEIxYkRRZkpYMlE2VjY3bzM5VEF0Z3BORm9LZkUrWlV0UlcxNG0rMW1mT3VP?=
+ =?utf-8?B?ZVA4VTFkenZpSG5IU3UvcHloMzQwRDJield3cUhybzJZZ1JiSWJLSy9EZ1hr?=
+ =?utf-8?B?eWF2bWM4Q2tiTUROcE95WkQvTy85ZFlSaStJVHlicnZmLzVNSkRGQkFTVDVE?=
+ =?utf-8?B?WFQ4VStHRWltd0NyeCsxZURtY3hKNnRYTC9lN25YS05mY0R1ZWxwWWhGVFV5?=
+ =?utf-8?B?Vmh6dHcvaUdvV1NNdWdQa0xRL09zZFAwMnRadGVKUFk1N3BPeW96cGZsSnlI?=
+ =?utf-8?B?VEorMDlVc1J0ZWVzb0MxakgxSExWVVVmTXhlRnRmWEhBenVDUWtmR0dVSkVz?=
+ =?utf-8?B?bnpOenBuZncrWW5FU3VMWVBtRTVncngzRStLREpnV1VHRmdYV3UyeEpEeDhZ?=
+ =?utf-8?B?U0prMk5NTkhtajZhWGZmZHRrazh5ZWdSTGt1bGk1enhvTWN3M0gySzJGK2hr?=
+ =?utf-8?B?bUxkdjYzbGFJaFpLRzlOaC9HQ2U3U1puK0QwckgrU21HcnYvaXdHTmVhdFZP?=
+ =?utf-8?B?REtJSTgrdkIrbHRmYlJpOVFOTEJkZC9xNTMyTEtzK2ZYd3dLVUZKWThJUFZD?=
+ =?utf-8?B?S25Nc1BoZWJYOW5HYklqdlIvMzN4YXl1SUxGd21NeUxlRFdTdGlhTG9JdTZI?=
+ =?utf-8?B?UUFrYTgyQ0czeDJYbk0ySWdldlI0MzY4d1BvODBFTWFqQ3RTbmR5WlFYOW5j?=
+ =?utf-8?B?VmNxL0t6b25Jc2FqQzJtVSt0YzF1c3ZVUFhHRWRKTFFVNGx2VGlvWVRmQjhu?=
+ =?utf-8?B?NFdUUDhGN2hLVkprN25XeHBRaWZOYm8vaUVIdG9lV2tkam1nOXk1bGliM0xl?=
+ =?utf-8?B?eENYMVZ2SzZ2Y3UzTHAveVJwQXNWeFRPUFZXMzJFclN1V1RXV3FqUUhIMi9n?=
+ =?utf-8?B?bzZjQ1FKVnltYURLQVNKMGFzZW94d1VJQ3drWktBL3JMckx1cTRZTTlCOE5q?=
+ =?utf-8?B?M3JycGF6NGlmUFNXSmZYUkZnZmIvdmlGSytDOVVmMzBNOXJ5U0d5TWZOSDdM?=
+ =?utf-8?B?dWhJdUtWTGtCeGNlRW0yamZYR3QwL3V0MHJyNGdmWWIvZHZ4QWszaUZDMjNY?=
+ =?utf-8?B?bkZ2akZpMUE4Y1FCVnBwa1BUZEZlWWpPdjAzZ3pENVJmTWszc2N6emF5cVZV?=
+ =?utf-8?B?Y3ovUStTZWw5ckZVdjN4b2grMUJQVEVETnBwS25ldnpWM0UzYTlXQlJvdSs2?=
+ =?utf-8?B?d3dXWEI0UjhSa0RtYmpUR0ZKRHpWaG1ibkE5K3NHbUwyakdIdEYwaktLNE9M?=
+ =?utf-8?B?TGk4Vmd6NThXK2MrSW1wUUF4NnlRNndRNWg4WHBYVmUxWDVmV2VadzV0QVBZ?=
+ =?utf-8?B?Z3p0dkJ5NHYzN1lIQ3VTZG1uNmFsL0Y0UHZ2VEpKWXFOTi9SSkVHcVBqMVhp?=
+ =?utf-8?B?c1d6SVVFMEtLZTV6eDVTTlFPNUVYeDN3aXVMOU51dmZvcGtqUjJHRUNxVHAz?=
+ =?utf-8?B?RzRIQjlnaG94Z0FyRGRPdUZUeDhMRm10b3JoaE5GblZvdHYremI3N0c0NFlI?=
+ =?utf-8?B?UTVnZVdHY0xmdFRLTXVmUzBsS1I0U2dqZVp2VGlpczg5U0dIZS93dyt4bXEr?=
+ =?utf-8?B?YjVLc1phSEZDbnp4WnV4Vk5ZNk5UWXV3akppR1hlbndqc3dPYjVlbjRWMXBS?=
+ =?utf-8?B?ZEpLTEE5cGVJQTdqVzZiV3AzZ2h4dWYzbm9Qb01USVFzVjUwS0JVWnhJNXBG?=
+ =?utf-8?B?L3BvWGc3SXhQNy85b2tIeHZPaEdjalBUMFBuSXEzWGQyMXBOTSt5clp1YmJF?=
+ =?utf-8?B?WElHZG1rZFdweU82RXJHcDM3WjIyQ3VOOVJDTWRUU3ZEU29BakVNalVnOVp6?=
+ =?utf-8?B?NStXbHVBVFE5MkZWR0pzZlFGZ2dOSGovNzFidU1xVGpoUjZ0bkY0Z1N2akVF?=
+ =?utf-8?B?a1hxNFdlcFhEc3ZyUHpwMERycGxPSUZVT1prTDBJb0gyQWdoaU8xM2YrRjZh?=
+ =?utf-8?B?SXMxNlpzWEdSdi9lZ0g4bWxpMEM1ZUdLRDk5OWROQ2lzWENRWFd2SnZMdm5h?=
+ =?utf-8?B?TGJYdUxkL0FxaERwZnJQL2xiUUVLbW5PeHJqVjd6ZXNTdU53cVordGdTaS8w?=
+ =?utf-8?B?bVFIVG1ycE5BMWU2QkszaUx1QW5vWHRoQmE0UEdXaFo0SzAweUlIYXhWV2w0?=
+ =?utf-8?B?YVo4M0p3dm5VanBxdTZ5UGJMaFR2aEtqVnp4Q09HcTBudUpBRCtkYnc5eUhq?=
+ =?utf-8?B?NzRSQVcvMzRZL1VjR0o1aVViRm1WKy9zZjZQOUpwcDNlZzFhNk0yUT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BD1825029B228A4DBD83AA8A8D2AABFE@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: epam.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37051162-eebb-40c2-3ef3-08d999590a1d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2021 14:49:54.9617
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CQ4NEgit0tTWutaYSsfoqMwWVSJsFMJPYaWPQ/ve9L9N5R3YYymVNnIJbLTruStksy9rluPWNryDNMh1tSghwEfSY2Yu7POdHdxMcUlM2ms0C6giRNmn5nMrcPnZHb28
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB4019
+X-Proofpoint-ORIG-GUID: UDjy5fVWp9j5P5bKqyOJ4dorSncNx4ke
+X-Proofpoint-GUID: UDjy5fVWp9j5P5bKqyOJ4dorSncNx4ke
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_04,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ mlxscore=0 mlxlogscore=851 priorityscore=1501 phishscore=0 suspectscore=0
+ adultscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110270089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 21:34:35 +0530
-Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
-
-> Add support for PMIC5 Gen2 ADC_TM, used on PMIC7 chips. It is a
-> close counterpart of PMIC7 ADC and has the same functionality as
-> PMIC5 ADC_TM, for threshold monitoring and interrupt generation.
-> It is present on PMK8350 alone, like PMIC7 ADC and can be used
-> to monitor up to 8 ADC channels, from any of the PMIC7 PMICs
-> having ADC on a target, through PBS(Programmable Boot Sequence).
-> 
-> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
-
-Drive be review as I was looking at the other bits of the series.
-Personally I'd prefer to see this as 2 patches, 1st one does
-the refactoring and 2nd adds the gen2 specific parts.
-
-Jonathan
-
-
->  
->  struct adc_tm5_chip;
-> +struct adc_tm5_channel;
-> +
-> +struct adc_tm5_data {
-> +	const u32	full_scale_code_volt;
-> +	unsigned int	*decimation;
-> +	unsigned int	*hw_settle;
-
-Indenting in here is inconsistent.
-Personally I'd just stop bothering with the lining everything up.
-
-> +	int (*disable_channel)(struct adc_tm5_channel *channel);
-> +	int (*configure)(struct adc_tm5_channel *channel, int low,
-> +					int high);
-
-Why the line break?  It's under 80 chars without it.
-
-> +	irqreturn_t (*isr)(int irq, void *data);
-> +	char *irq_name;
-> +	int gen;
-> +};
->  
->  /**
->   * struct adc_tm5_channel - ADC Thermal Monitoring channel data.
-> @@ -100,6 +167,12 @@ struct adc_tm5_chip;
->   * @prescale: channel scaling performed on the input signal.
->   * @hw_settle_time: the time between AMUX being configured and the
->   *	start of conversion.
-> + * @decimation: sampling rate supported for the channel.
-> + * @avg_samples: ability to provide single result from the ADC
-> + *	that is an average of multiple measurements.
-> + * @high_thr_en: channel upper voltage threshold enable state.
-> + * @low_thr_en: channel lower voltage threshold enable state.
-> + * @meas_en: recurring measurement enable state
->   * @iio: IIO channel instance used by this channel.
->   * @chip: ADC TM chip instance.
->   * @tzd: thermal zone device used by this channel.
-> @@ -110,6 +183,11 @@ struct adc_tm5_channel {
->  	enum adc_tm5_cal_method	cal_method;
->  	unsigned int		prescale;
->  	unsigned int		hw_settle_time;
-> +	unsigned int		decimation;	/* For Gen2 ADC_TM */
-> +	unsigned int		avg_samples;	/* For Gen2 ADC_TM */
-> +	bool			high_thr_en;		/* For Gen2 ADC_TM */
-> +	bool			low_thr_en;		/* For Gen2 ADC_TM */
-> +	bool			meas_en;		/* For Gen2 ADC_TM */
->  	struct iio_channel	*iio;
->  	struct adc_tm5_chip	*chip;
->  	struct thermal_zone_device *tzd;
-> @@ -123,9 +201,12 @@ struct adc_tm5_channel {
->   * @channels: array of ADC TM channel data.
->   * @nchannels: amount of channels defined/allocated
->   * @decimation: sampling rate supported for the channel.
-> + *      Applies to all channels, used only on Gen1 ADC_TM.
->   * @avg_samples: ability to provide single result from the ADC
-> - *	that is an average of multiple measurements.
-> + *      that is an average of multiple measurements. Applies to all
-> + *      channels, used only on Gen1 ADC_TM.
->   * @base: base address of TM registers.
-> + * @adc_mutex_lock: ADC_TM mutex lock.
-
-Not very informative.  What is it protecting access to?
-Ah. I see this one has already been commented on by Dmitry
-
->   */
->  struct adc_tm5_chip {
->  	struct regmap		*regmap;
-> @@ -136,14 +217,15 @@ struct adc_tm5_chip {
->  	unsigned int		decimation;
->  	unsigned int		avg_samples;
->  	u16			base;
-> +	struct mutex		adc_mutex_lock;
->  };
->  
-
-...
-
-> +
-> +static int32_t adc_tm5_gen2_conv_req(struct adc_tm5_chip *chip)
-> +{
-> +	int ret = 0;
-
-No need to initialise as set in all paths.
-
-> +	u8 data = 0;
-> +	unsigned int count;
-> +
-> +	data = ADC_TM_GEN2_EN;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_EN_CTL1, &data, 1);
-> +	if (ret < 0) {
-> +		pr_err("adc-tm enable failed with %d\n", ret);
-
-General mix of pr_err and dev_err.  Should all be dev_err unless
-they aren't associated with a particular device for some reason.
-
-> +		return ret;
-> +	}
-> +
-> +	data = ADC_TM_GEN2_CFG_HS_FLAG;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_CFG_HS_SET, &data, 1);
-> +	if (ret < 0) {
-> +		pr_err("adc-tm handshake failed with %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	data = ADC_TM_GEN2_CONV_REQ_EN;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_CONV_REQ, &data, 1);
-> +	if (ret < 0) {
-> +		pr_err("adc-tm request conversion failed with %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * SW sets a handshake bit and waits for PBS to clear it
-> +	 * before the next conversion request can be queued.
-> +	 */
-> +
-> +	for (count = 0; count < ADC_TM_GEN2_POLL_RETRY_COUNT; count++) {
-> +		ret = adc_tm5_read(chip, ADC_TM_GEN2_CFG_HS_SET, &data, sizeof(data));
-> +		if (ret < 0) {
-> +			pr_err("adc-tm read failed with %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		if (!(data & ADC_TM_GEN2_CFG_HS_FLAG))
-> +			return ret;
-> +		usleep_range(ADC_TM_GEN2_POLL_DELAY_MIN_US,
-> +			ADC_TM_GEN2_POLL_DELAY_MAX_US);
-> +	}
-> +
-> +	pr_err("adc-tm conversion request handshake timed out\n");
-> +
-> +	return -ETIMEDOUT;
-> +}
-> +
-> +static int adc_tm5_gen2_disable_channel(struct adc_tm5_channel *channel)
-> +{
-> +	struct adc_tm5_chip *chip = channel->chip;
-> +	int ret;
-> +	u8 val;
-> +
-> +	mutex_lock(&chip->adc_mutex_lock);
-> +
-> +	channel->meas_en = false;
-> +	channel->high_thr_en = false;
-> +	channel->low_thr_en = false;
-> +
-> +	ret = adc_tm5_read(chip, ADC_TM_GEN2_CH_CTL, &val, sizeof(val));
-> +	if (ret < 0) {
-> +		pr_err("adc-tm block read failed with %d\n", ret);
-
-Why pr_err rather then dev_err?
-
-> +		goto disable_fail;
-> +	}
-> +
-> +	val &= ~ADC_TM_GEN2_TM_CH_SEL;
-> +	val |= FIELD_PREP(ADC_TM_GEN2_TM_CH_SEL, channel->channel);
-> +
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_CH_CTL, &val, 1);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "adc-tm channel disable failed with %d\n", ret);
-> +		goto disable_fail;
-> +	}
-> +
-> +	val = 0;
-> +	ret = adc_tm5_write(chip, ADC_TM_GEN2_MEAS_IRQ_EN, &val, 1);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "adc-tm interrupt disable failed with %d\n", ret);
-> +		goto disable_fail;
-> +	}
-> +
-> +
-> +	ret = adc_tm5_gen2_conv_req(channel->chip);
-> +	if (ret < 0)
-> +		dev_err(chip->dev, "adc-tm channel configure failed with %d\n", ret);
-> +
-> +disable_fail:
-> +	mutex_unlock(&chip->adc_mutex_lock);
-> +	return ret;
-> +}
-> +
-
-...
-
->  
-> +static const struct adc_tm5_data adc_tm5_data_pmic = {
-> +	.full_scale_code_volt = 0x70e4,
-> +	.decimation = (unsigned int []) { 250, 420, 840 },
-> +	.hw_settle = (unsigned int []) { 15, 100, 200, 300, 400, 500, 600, 700,
-> +					 1000, 2000, 4000, 8000, 16000, 32000,
-> +					 64000, 128000 },
-> +	.disable_channel = adc_tm5_disable_channel,
-> +	.configure = adc_tm5_configure,
-This might all look nicer if split into two patches.
-1st of which does the various structure moves and addes the callbacks for the
-TM5.  2nd of which introduces the gen2 version of everything.
-
-Patch 1 would be a noop which is usually easy to tell, and patch 2 would be
-clean addition of new code.
-
-> +	.isr = adc_tm5_isr,
-> +	.irq_name = "pm-adc-tm5",
-> +	.gen = ADC_TM5,
-> +};
-> +
+DQoNCk9uIDI3LjEwLjIxIDE3OjQ2LCBCb3JpcyBPc3Ryb3Zza3kgd3JvdGU6DQo+DQo+IE9uIDEw
+LzI3LzIxIDEwOjA4IEFNLCBPbGVrc2FuZHIgQW5kcnVzaGNoZW5rbyB3cm90ZToNCj4+IEhpLCBC
+b3JpcyENCj4+DQo+PiBPbiAyNy4xMC4yMSAxNTo1OSwgQm9yaXMgT3N0cm92c2t5IHdyb3RlOg0K
+Pj4+DQo+Pj4gQ2FuIHlvdSBwbGVhc2UgcmViYXNlIHRoaXMgb24gdG9wIG9mIDUuMTUtcmM3PyBU
+aGVyZSBpcyBhIGJ1bmNoIG9mIGNvbmZsaWN0cyBkdWUgdG8gY2FlN2Q4MWEzNzMwZGZlMDg2MjNm
+OGMxMDgzMjMwYzhkMDk4NzYzOS4NCj4+Pg0KPj4gSSdsbCB0cnkgdG8gZG8gdGhhdCBBU0FQICh3
+aGF0IGlzIHRoZSBkZWFkbGluZSBmb3IgdGhhdD8pDQo+DQo+DQo+IElmIHlvdSBjb3VsZCBkbyBp
+biB0aGUgbmV4dCBmZXcgZGF5cyBpdCB3b3VsZCBiZSBncmVhdC4gSSBleHBlY3QgbmV4dCBtZXJn
+ZSB3aW5kb3cgd2lsbCBvcGVuIG9uIFN1bmRheS4NClN1cmUsIEknbGwgdHJ5IHRvIHNlbmQgaXQg
+dG9tb3Jyb3cuDQpJIGFzc3VtZSBJIGNhbiBrZWVwIFItYidzIGFmdGVyIHRoZSByZWJhc2UgKHRo
+aXMgaXMgZ29pbmcgdG8gYmUgdjYgb2YgdGhlIHBhdGNoKT8NCj4NCj4NCj4gLWJvcmlzDQo+DQo=
