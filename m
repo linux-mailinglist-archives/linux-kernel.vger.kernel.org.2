@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E9B43CA84
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181B143CA8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242115AbhJ0NZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:25:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51818 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhJ0NZq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:25:46 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 35D921FD4E;
-        Wed, 27 Oct 2021 13:23:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635341000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o/3Nbz49/kyQ2NEUZpXzOGtQ57B0/FoxfakRAxW6Cek=;
-        b=z79qK7ImJM9M3P0lN+P+TvwlZtk/o3DnybsO7hyOOwmdvvs41paBEdtSP+NcYUyqE3corR
-        e5s66EYhw4IhKabsTDEkW4lAysMXPQAYeIZJSPNDqc7GaobU7fbuXbU8XMYZMIcXHshdQW
-        2ESKiKGRFCf01Upmi5QTCEdMA+5Ffi4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635341000;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o/3Nbz49/kyQ2NEUZpXzOGtQ57B0/FoxfakRAxW6Cek=;
-        b=XOERzLFZuhMxAo6qingMdKXRnYFUzy5dEBlNzYCVL2lwyjpZ/6xK3aOigRB07UPV0m6J9m
-        sCm+X2hCwUcJy2Cw==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 1AEA4A3B89;
-        Wed, 27 Oct 2021 13:23:20 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ED2271F2C66; Wed, 27 Oct 2021 15:23:19 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 15:23:19 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>
-Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
-Message-ID: <20211027132319.GA7873@quack2.suse.cz>
-References: <20211025204634.2517-1-iangelak@redhat.com>
- <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
- <YXgqRb21hvYyI69D@redhat.com>
- <CAOQ4uxhpCKK2MYxSmRJYYMEWaHKy5ezyKgxaM+YAKtpjsZkD-g@mail.gmail.com>
- <YXhIm3mOvPsueWab@redhat.com>
- <CAO17o20sdKAWQN6w7Oe0Ze06qcK+J=6rrmA_aWGnY__MRVDCKw@mail.gmail.com>
- <CAOQ4uxhA+f-GZs-6SwNtSYZvSwfsYz4_=8_tWAUqt9s-49bqLw@mail.gmail.com>
+        id S242129AbhJ0N2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:28:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229585AbhJ0N2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:28:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 122C460041
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 13:25:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635341157;
+        bh=DRpvfgGLpwYbFsAv9yOUJyHOhSz2wXFNo6XVbHhRxJ0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ymw0mh2QQY60jm8+Gnw47dKypKUt0vp+Hrwbe+lvi7IvM9xPkr7HMHZUAES5inqA4
+         XbofBsLNudDsE3y0LF7jVZQnA7x/bKsIgNvNbHyE0tB+cKLNZ4gWXNdOoeaUchaIOB
+         vyuzgfgeciZ3PYuWgewDXi8SeYO1WyBMFcwscHNHvafk7qIPbrVu4fHunL4upzgXR+
+         UvXhyAzscA9C/OTv27InGyFGgfSL2XGuY8YQ6yeY/Ekfllk/q1JJmZShivCEXPurEP
+         /iT9NqSeS3OBfhwgrEc0l76EUFIw7518/kJJWCb4gJqETWUburbQQ6H5lvKz9XRHC6
+         6gpn/duVDWJRQ==
+Received: by mail-wr1-f47.google.com with SMTP id d3so4151216wrh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:25:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532xEHDQhgAHT4f3u7VtkpTi1kfq+aYB5H8AjPuYOrJetW+ldsHJ
+        4B2RDCNULTrjDa7gNLxHWgFhDXkYcN1ttoDCvHo=
+X-Google-Smtp-Source: ABdhPJzZ/yYljL8fOUgPtoPN2mhzZdD5s1jNGK4CxGyNcQokOv7BNnyqQrxKssWuwuOwTp5bj3HmRZiUoB0GktTIEHg=
+X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr39409910wrq.411.1635341155532;
+ Wed, 27 Oct 2021 06:25:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxhA+f-GZs-6SwNtSYZvSwfsYz4_=8_tWAUqt9s-49bqLw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook>
+ <YVXJLE8UqgcUNIKl@phenom.ffwll.local> <878ryeit9i.fsf@intel.com>
+ <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
+ <3604fb90-f6c3-0fa2-c864-7f1795caee1e@redhat.com> <CAK8P3a0_9U0MDLcNG8GL_ZDCGQAsB=G7DBC0k1BYB1HNQTbu4Q@mail.gmail.com>
+ <87tuh2hb17.fsf@intel.com>
+In-Reply-To: <87tuh2hb17.fsf@intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 27 Oct 2021 15:25:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0KHwaSNqg_dz8-w6e_EJBrsQw_ti+5aErsSr+8AfV9cA@mail.gmail.com>
+Message-ID: <CAK8P3a0KHwaSNqg_dz8-w6e_EJBrsQw_ti+5aErsSr+8AfV9cA@mail.gmail.com>
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-10-21 08:59:15, Amir Goldstein wrote:
-> On Tue, Oct 26, 2021 at 10:14 PM Ioannis Angelakopoulos
-> <iangelak@redhat.com> wrote:
-> > On Tue, Oct 26, 2021 at 2:27 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> > The problem here is that the OPEN event might still be travelling towards the guest in the
-> > virtqueues and arrives after the guest has already deleted its local inode.
-> > While the remote event (OPEN) received by the guest is valid, its fsnotify
-> > subsystem will drop it since the local inode is not there.
+On Wed, Oct 27, 2021 at 3:06 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+> On Wed, 27 Oct 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> > This fails because of all the other drivers that try to 'select DRM_KMS_HELPER'.
+> > Kconfig will now complain about a symbol that gets selected while its
+> > dependencies
+> > are not met.
 > >
-> 
-> I have a feeling that we are mixing issues related to shared server
-> and remote fsnotify.
+> > To work around that, every single driver that has 'selects DRM_KMS_HELPER' would
+> > now have to also list 'depends on (DRM_FBDEV_EMULATION && FB) ||
+> > !DRM_FBDEV_EMULATION'.
+>
+> So the fix would be that nobody selects DRM_KMS_HELPER...
 
-I don't think Ioannis was speaking about shared server case here. I think
-he says that in a simple FUSE remote notification setup we can loose OPEN
-events (or basically any other) if the inode for which the event happens
-gets deleted sufficiently early after the event being generated. That seems
-indeed somewhat unexpected and could be confusing if it happens e.g. for
-some directory operations.
+That's not going to help in this case, the way the helper functions work is that
+you select them as needed, and you avoid the other dependencies. This part
+works fine.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+We could probably get rid of this symbol by just making it an unconditional
+part of drm.ko, as almost every driver ends up using it anyway.
+
+Arguably, this would make the end result worse, as you'd again get drm.ko
+itself to link against the old framebuffer code.
+
+What I'm not sure about is whether drivers/video/fbdev/core/fb.ko could
+be split up into smaller parts so DRM_FBDEV_EMULATION could
+only depend on a set of common code without the bits that are needed
+for the classic fbdev drivers.
+
+      Arnd
