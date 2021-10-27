@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCA943C070
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7396A43C077
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238851AbhJ0C73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237824AbhJ0C71 (ORCPT
+        id S238853AbhJ0DCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:02:24 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:40702 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237816AbhJ0DCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:59:27 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4125C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:57:02 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id w15so4471850edc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+MnMGWD/0lv6QE/2RZDyhTwihVaLaY/cF7VXa6a77gU=;
-        b=ZaNVx/jqk9FWOrIgexWO/hOBqGfCeeBmqbojUEelH+VIpmg5St9QloHjV2C1+VvhTT
-         t7MPi+nZ4z/Fo15zsr28uLoGGxiK6FvKZMnMqv4hPPkre96n58ktGO355LHuuQ5H1CqH
-         eaEuYLl1bJjgYwCaabrq+lq4D9ku5jq+J+TaScuvWE1m5CPtDTOaUx0EXIMDiMZ7uyUU
-         9zjDyq2q16TEwZgTO72CuOGgixDNxjAF67A96baU6kD8hkWePLImvIALsVxiJPFPa9x+
-         2P3f7WuDYHsxQIk4UVy1JC7oR0xJovKp/QU50a6GrBYwoY87R5ClSagU53FAfV4zXlch
-         fOtg==
+        Tue, 26 Oct 2021 23:02:23 -0400
+Received: by mail-ot1-f43.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so1621691otr.7;
+        Tue, 26 Oct 2021 19:59:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+MnMGWD/0lv6QE/2RZDyhTwihVaLaY/cF7VXa6a77gU=;
-        b=jFre1Fy24QvcjwPlgBlLVys0+SJhnPGwAPQMppBhsOL3RsE9ZFfypIxw1HgCZCFeRV
-         8BXtnddCvIkDs0lEVYUsr4Ttbfzu+FDI/QXY7faaaF+4UUS5cOaGRBPdbMRVZvIj6Y+M
-         Vh/FiWj9o1t7+CQ8mX2pszvvSqXCZcC0Qcqm/qEkZhOhr8U4AFsWypLgic/czg6GX26m
-         0ZnYxwrblffvU/J+VI9+9a4QWR8PJ6rDdZhItPpudbWenH1y6NjpCvGL3LuMn+7H7NY6
-         bWKsS7DfJ8F6lE3HteiFRqK8HtUFzz49kaOFkH3QtpxDMUcx8LZpIatURfKnBNVAc08p
-         P59g==
-X-Gm-Message-State: AOAM530SuRrdj1taInlBq1A0BE4sKEwNgGooXxX7VvPXKBvrUQsQ8hMb
-        Vm5SXfrbbJkR5YxxIE9a31i6SgbkDk4y0bAo42qyBw==
-X-Google-Smtp-Source: ABdhPJwIK61/V7qcKbhx4yii4iHXjQOUbVeTBUCQwnBLVrY1BbKYFYOd48L8rLqNKXbJxAp/xU4REFHyMBfMvTKiQy8=
-X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr35935786ejb.6.1635303421412;
- Tue, 26 Oct 2021 19:57:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XeMB8+UkBEMxXaft/WjizoBKvUlz9bR0K2KbnVOPBOw=;
+        b=RvrulXdhn5jwOSsbE8cDl+m9bZy4QN8ggZdx28uAR5UzJ7pyqne5Qf62maR3RGy1Ad
+         6cDc9hFSFLJY0j+eZMQMc7FoXph4Ks5pMRyJAogI5Y/a7tyFQOCHItCwNg4cX0O60rqQ
+         g5rMjgJLUT1QbazCSKrGZhmU71h0Eyf+XODNtnbOnKIH9lJeyz0bTFW/rgaLUPO9VFNc
+         BVUQpunRa4E+xU/c44vBJq7sV/9vtAAbkzY3M2PSxarY9f04oV5s8U0Xjyr+zB0jioyA
+         gzadDXUHVPl5JdtxuC48XIwMjgY7ydweOzrhcG1SnAZ9lxfHZuTeJQWiU81zZ7Onmr7N
+         2CXQ==
+X-Gm-Message-State: AOAM530S9EIYXWLavslXr62jo8NTjnJggF671pIgonKsSJFyjPV2eXh1
+        rs8z/7gKjt2lZZ70OUc8TQ==
+X-Google-Smtp-Source: ABdhPJxgSANB4B3sT0zR1/ob6F382N+PtlEIBypB1GdoM8FG0l15ngWS6pMsHb7BHpsoU9oeeMBEQQ==
+X-Received: by 2002:a05:6830:154:: with SMTP id j20mr5162090otp.249.1635303598020;
+        Tue, 26 Oct 2021 19:59:58 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x5sm5163726otk.28.2021.10.26.19.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 19:59:57 -0700 (PDT)
+Received: (nullmailer pid 3898810 invoked by uid 1000);
+        Wed, 27 Oct 2021 02:59:56 -0000
+Date:   Tue, 26 Oct 2021 21:59:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v3 21/23] regulator: dt-bindings: update
+ samsung,s2mpa01.yaml reference
+Message-ID: <YXjArKJ1nw3rkx97@robh.at.kernel.org>
+References: <cover.1634630485.git.mchehab+huawei@kernel.org>
+ <9acc235dc4af794d18e1267371944a3955e1fb21.1634630486.git.mchehab+huawei@kernel.org>
+ <YW60a8z0JNDnTLV/@sirena.org.uk>
+ <20211020073013.6d144c0d@sal.lan>
 MIME-Version: 1.0
-References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
- <CA+G9fYvdhk-H8wBDdaPmRMZS_egxndncUkbZ92HCnUFD1g_wSQ@mail.gmail.com> <b26491f8-66a4-d532-e866-2dc0ecb922d2@suse.de>
-In-Reply-To: <b26491f8-66a4-d532-e866-2dc0ecb922d2@suse.de>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 27 Oct 2021 08:26:48 +0530
-Message-ID: <CA+G9fYvsfNO5qNj7TChXQ_si1xDwL3gqyM+8SUgCowocpRqKdA@mail.gmail.com>
-Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to `drm_gem_fb_get_obj'
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     dri-devel@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020073013.6d144c0d@sal.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Wed, Oct 20, 2021 at 07:30:13AM +0100, Mauro Carvalho Chehab wrote:
+> Em Tue, 19 Oct 2021 13:04:59 +0100
+> Mark Brown <broonie@kernel.org> escreveu:
+> 
+> > On Tue, Oct 19, 2021 at 09:04:20AM +0100, Mauro Carvalho Chehab wrote:
+> > 
+> > > To mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> > > See [PATCH v3 00/23] at: https://lore.kernel.org/all/cover.1634630485.git.mchehab+huawei@kernel.org/  
+> > 
+> > It'd be a bit easier to put a note in here about what the dependencies
+> > are rather than forcing people to go out to a link to figure out what's
+> > going on unless it's complicated. 
+> >
+> > For a case like this where there's no
+> > dependencies or real relationship between the patches it's probably
+> > better to just not thread everything and send the patches separately to
+> > everyone, the threading is just adding noise and confusion.
+> 
+> It is not that easy, unfortunately. On some cases (specially due to
+> DT binding renames) some patches change the context of a hunk, affecting
+> a subsequent patch.
 
-I have tested the fix patch [1] and it works fine for me.
-
-> Could you please try the patch at [1]? It fixes the problem for me.
-
-=F0=9F=8E=89 Pass: 6d61a7c3bc2a ("arm: multi_v5_defconfig build fix")
- arm (multi_v5_defconfig) with gcc-11
-@ https://builds.tuxbuild.com/204SnLe1DFWQ4iAHpwAMiyUcpsL/
+Those should be reduced now. I've been checking the renames since early 
+August. July really, but MAINTAINERS was not getting checked initially.
 
 
-> Best regards
-> Thomas
->
-> [1] https://patchwork.freedesktop.org/patch/461426/
+> I tried a couple of times in the past to send the patches individually,
+> but that was messier, as there was harder for people to apply them,
+> as, instead of running b4 just once to get everything, maintainers
+> would need to apply each patch individually. Also, there were cases
+> where the patch order would be relevant, due to context changes.
 
+Just spliting between in Linus' tree and only in next would help me. The 
+former I know I can just apply.
 
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Btw, talking about what it would be easier, the best procedure to
+> adopt is to run:
+> 
+> 	./scripts/documentation-file-ref-check 
+> 
+> Before sending/applying patches touching documents.
 
-- Naresh
+Good luck with that. :(
+
+> That would avoid the need of such fixup patches ;-)
+> 
+> Unfortunately, in the specific case of dt-bindings, things are not
+> that easy, as doc changes usually go via one tree, while references 
+> to them come from other places.
+> 
+> Regards,
+> Mauro
+> 
