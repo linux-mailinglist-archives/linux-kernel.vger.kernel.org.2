@@ -2,111 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2768E43D296
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867A443D225
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240704AbhJ0UOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:14:47 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:57785 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244084AbhJ0UON (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:14:13 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 23A3A2B0145E;
-        Wed, 27 Oct 2021 16:11:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 27 Oct 2021 16:11:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        dEH+48NnYpdtL5JL9l0poNkvtH8Ouiwk557d7ziA8c8=; b=POTFtTRD2oeJkeVv
-        PU7V4i98DA2GjMfJT+cWQ8XmRzZIy7Q2sXtwGwnvCwvNnWYjcFuE70mbaKy0+a3w
-        v68hHk8j2Ra8PQuc+fWPEJTOZrkFjghL75QUX5ehdIXlV5H5P0P5YiBcu7hSUFP2
-        t3DJvm6zoB+ggLtSkv6ATvlytq9S823pbEtegr845BXPXfPM0qeRUMROfdNUABrM
-        axFQXUyOA2TDcLjo5c627sX6v+uS4AqxrX8PM5Jo3SMuTT9WDbDmgX6/PSWzLg7E
-        Ri0F8H02d4EL0gCtuBko9MmkcTCtj2tvZZKEA8iLTvz7pTzN5AuY2E5dhs0jeL6v
-        tMsh8w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=dEH+48NnYpdtL5JL9l0poNkvtH8Ouiwk557d7ziA8
-        c8=; b=UQdoBvWcqo7RhGURWXmWhsf22TZlC4VVy1z9AASzM+3hUCP0flBd691R3
-        V0Cj9cdxZZlIAGg741mO+pAfEAZF7tA8dSE64j8PPCgh+GdO3tEIoKP7douwduqh
-        3ENT1M2I0yAuDCB2Tt2tN2kaVRxuvretigOhY3AEHvq6WxxFiKTNFDpZRaSVM/Nz
-        f7CS5MWTVGrm2GDGbcoZYrDfCDypZx8ijX0EOxoO4QAEAi33TRC6+fVZ1ujzYmN4
-        LOtpuTviD2CY4r5huUEHtVZP/z8TBMaoowTnH64tAOHG2ecQV0aiJHjOaMl2KkTa
-        1HOGGOM9DGs+P8X/Qzqy+Tps1qigA==
-X-ME-Sender: <xms:gLJ5YQuf2llcJFQlx0_SuOUAtz-u_V_DeuUuhPDjkkVFY_cSFJMebg>
-    <xme:gLJ5Yde1Ex0dsi0rRImbYFT9wpDuCjaV1O9Zae96a-tpnThbRF7BLKBY_MfhU3CRD
-    jhp5NENnh_0pA0D_U0>
-X-ME-Received: <xmr:gLJ5YbzuVyJ0AMAnsF1nptsAVPypActnbGBxjscOHHUmVSOKMPqnxNiOgU0OrL1zWyymqF1Ae3O3RrQEMaSEtfYOmdueFeIjnVx2kYbQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdegtddguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgig
-    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
-    grthhtvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfef
-    geeikeeknecuvehluhhsthgvrhfuihiivgepieenucfrrghrrghmpehmrghilhhfrhhomh
-    epmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:gLJ5YTP6IAKN5Vt2DFtee_vW5MSM2erQXYqtS3Bp9TEVdgJUMgHMSA>
-    <xmx:gLJ5YQ8eHKb_o6pxCWQlAjcdtgMPN3rC4DNwtfZzDX5WtXiUoIzvYA>
-    <xmx:gLJ5YbXitDXFgp0awX7jYZuY9aqMZmEzrGmU8TfiPIhs1KlT42AfPw>
-    <xmx:gLJ5YVKEK0bqUDvlKIxjG9QlJ2DIAvTPQaHDQTg1zG7VqvKJJX6IusJKV2Y>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Oct 2021 16:11:44 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Sean Paul <sean@poorly.run>, freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Inki Dae <inki.dae@samsung.com>, linux-arm-msm@vger.kernel.org,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Rob Clark <robdclark@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: (subset) [PATCH v6 21/21] drm/msm/dsi: Adjust probe order
-Date:   Wed, 27 Oct 2021 22:09:52 +0200
-Message-Id: <163532324665.18245.10729198650633132372.b4-ty@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211025151536.1048186-22-maxime@cerno.tech>
-References: <20211025151536.1048186-1-maxime@cerno.tech> <20211025151536.1048186-22-maxime@cerno.tech>
+        id S243812AbhJ0UMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238558AbhJ0UMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 16:12:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF06D60234;
+        Wed, 27 Oct 2021 20:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635365405;
+        bh=VZhKaZXZL7K0N14lsWIM3QhuQSV7O/5fTZ0QwvhhwJI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P0UsPowv+CE3ElhKSBnCWZvuvMhyozq65PdADxyynXmHJTZcnMCsCSNVBM3ZWlGbg
+         vk87ig0TgTk2YXwW54bivJu0kPQTOSjHGk5SdWDkUn2ubf6uQIhnBWl4TAP2ptY4aX
+         qE/0bmQji10yLs6eiznbJ076IWOLgU4pByNTlAViWgojW59Olti1h5XLCYDi7BtWFV
+         n2+q0J6f0NEox1TFs65znu0BvrXF64sDQW5WNnySzfvBtuS6oMvyVq/Oh8oqUMHFCs
+         1TC7zhe/lM8wp42uRCGDD1ME4CKoAhZ7nYMwtch2XKHTGJ9oYYnqnekG8S+hFtU8wU
+         mTxqHU+qq4dCQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1DA8D410A1; Wed, 27 Oct 2021 17:10:03 -0300 (-03)
+Date:   Wed, 27 Oct 2021 17:10:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Joe Mario <jmario@redhat.com>
+Cc:     kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>
+Subject: Re: [PATCH 1/2] perf script: Fix PERF_SAMPLE_WEIGHT_STRUCT support
+Message-ID: <YXmyG1RMvKnJte5/@kernel.org>
+References: <1632929894-102778-1-git-send-email-kan.liang@linux.intel.com>
+ <YVSaT54dsMjJV4dF@kernel.org>
+ <YVSzjzV+Jb7loGxI@krava>
+ <dc6926ac-4b8f-4421-088b-94436bdc3bad@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc6926ac-4b8f-4421-088b-94436bdc3bad@redhat.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 17:15:36 +0200, Maxime Ripard wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Switch to the documented order dsi-host vs bridge probe.
+Em Wed, Sep 29, 2021 at 04:22:19PM -0400, Joe Mario escreveu:
 > 
 > 
+> On 9/29/21 2:42 PM, Jiri Olsa wrote:
+> > On Wed, Sep 29, 2021 at 01:54:39PM -0300, Arnaldo Carvalho de Melo wrote:
+> >> Em Wed, Sep 29, 2021 at 08:38:13AM -0700, kan.liang@linux.intel.com escreveu:
+> >>> From: Kan Liang <kan.liang@linux.intel.com>
+> >>>
+> >>> -F weight in perf script is broken.
+> >>>
+> >>>   # ./perf mem record
+> >>>   # ./perf script -F weight
+> >>>   Samples for 'dummy:HG' event do not have WEIGHT attribute set. Cannot
+> >>> print 'weight' field.
+> >>>
+> >>> The sample type, PERF_SAMPLE_WEIGHT_STRUCT, is an alternative of the
+> >>> PERF_SAMPLE_WEIGHT sample type. They share the same space, weight. The
+> >>> lower 32 bits are exactly the same for both sample type. The higher 32
+> >>> bits may be different for different architecture. For a new kernel on
+> >>> x86, the PERF_SAMPLE_WEIGHT_STRUCT is used. For an old kernel or other
+> >>> ARCHs, the PERF_SAMPLE_WEIGHT is used.
+> >>>
+> >>> With -F weight, current perf script will only check the input string
+> >>> "weight" with the PERF_SAMPLE_WEIGHT sample type. Because the commit
+> >>> ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT") didn't
+> >>> update the PERF_SAMPLE_WEIGHT_STRUCT sample type for perf script. For a
+> >>> new kernel on x86, the check fails.
+> >>>
+> >>> Use PERF_SAMPLE_WEIGHT_TYPE, which supports both sample types, to
+> >>> replace PERF_SAMPLE_WEIGHT.
+> >>>
+> >>> Reported-by: Joe Mario <jmario@redhat.com>
+> >>> Fixes: ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT")
+> >>
+> >> Hey Joe, Jiri,
+> >>
+> >> 	Can I have your Tested-by?
+> > 
+> > Acked/Tested-by: Jiri Olsa <jolsa@redhat.com>
+> > 
+> > thanks,
+> > jirka
+> 
+>  Acked/Tested-by: Joe Mario <jmario@redhat.com>
+> 
+>  The "perf script -F weight" command works correctly.
+> 
+>  And I also verified that when just issuing "perf script", that the weight (cycle latency) 
+>  column that was missing with this bug, is now fixed and working properly.
 
-Applied to drm/drm-misc (drm-misc-next).
+Thanks, applied.
 
-Thanks!
-Maxime
+- Arnaldo
+
+ 
+>  Thanks,
+>  Joe
+> > 
+> >>
+> >> Thanks,
+> >>
+> >> - Arnaldo
+> >>
+> >>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> >>> ---
+> >>>  tools/perf/builtin-script.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> >>> index 6211d0b..9f62ac6 100644
+> >>> --- a/tools/perf/builtin-script.c
+> >>> +++ b/tools/perf/builtin-script.c
+> >>> @@ -459,7 +459,7 @@ static int evsel__check_attr(struct evsel *evsel, struct perf_session *session)
+> >>>  		return -EINVAL;
+> >>>  
+> >>>  	if (PRINT_FIELD(WEIGHT) &&
+> >>> -	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT, "WEIGHT", PERF_OUTPUT_WEIGHT))
+> >>> +	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT_TYPE, "WEIGHT", PERF_OUTPUT_WEIGHT))
+> >>>  		return -EINVAL;
+> >>>  
+> >>>  	if (PRINT_FIELD(SYM) &&
+> >>> -- 
+> >>> 2.7.4
+> >>
+> >> -- 
+> >>
+> >> - Arnaldo
+> >>
+> > 
+
+-- 
+
+- Arnaldo
