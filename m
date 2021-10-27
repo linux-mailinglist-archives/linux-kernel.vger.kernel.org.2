@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1DA43D03C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F02843D03F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238431AbhJ0SEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S238511AbhJ0SE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234677AbhJ0SET (ORCPT
+        with ESMTP id S238448AbhJ0SE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:04:19 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C075FC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:01:53 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w12so13647784edd.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:01:53 -0700 (PDT)
+        Wed, 27 Oct 2021 14:04:27 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E71C061570;
+        Wed, 27 Oct 2021 11:02:01 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 67so8426718yba.6;
+        Wed, 27 Oct 2021 11:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ayrc4b4CjZHlhGqZv1g+czx49ulJNIt8np7kCe/T/Kk=;
-        b=MmJiB4MjhKwy+8Q6Tg3Awy8evjunVv4Epi0KdYNbuQwNk3Mw4a1E8rGwbytzWYzuyb
-         mQKvWdt+4JNZ4Dg4Ka38/SW5VZDy0c+jTzwkcChpD+HoxTGC1VtdLQCC5ygMrO1MLHgI
-         14YeYP/s0sD3ikSPi9IyohZGva4ek03QleVHFCrW2+E+FSD2rQHxFUbNecI9Cxc5NKvQ
-         ABOaP6LeVS5e/B3qVd28pZFA0rc5duD28a909n/ksHmmgd3lVGPnRTK5GI4O3dqm83Zy
-         7Bqp4oOibSogORibwHEg4E+wcayvF++78gvcaFxOcpDx6Ux/wNsjrGJqJUZIxCrkmYex
-         HOWA==
+        bh=Y4Ep56fOfPjwhoMraFFxW5wtkRrwAnAh+988/M+IXBc=;
+        b=MPxf5hLKbtPKOnPYmQX3pQjMalBbUHIPoY+DVdJukH85kdrla+XRmMDmLvR+Fi6P95
+         IlBIZO0GdSK9BtsTcbfex64fTiEdv4r5uHiYRJBd94iqSuHTBBJviq7Q8ISDbnBPDreI
+         FnIZuHfvZOzFv4n69aT97nZNtMQTqU7IkYzo4p9DP/TGf+VoaAtCgDkNJ1sS9qb3OHg0
+         CAxXmqIzdBtQHah0cpMGJ7MVRdS2msU8ozI3SbontNQgTc4djocIhQhDA46B6ChChAMF
+         Lj5t1xO80nfAfEW8xZTZBkYFXUI9eNmeGMsdJpYslSlrqVSqXDKduJBllxybXxvrlUSB
+         3lfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ayrc4b4CjZHlhGqZv1g+czx49ulJNIt8np7kCe/T/Kk=;
-        b=EJYCzqCpL0DOga5uFdBAR0c9+id6O9/+fYdkkaKep78/z1eDRugLtybKeZnqjpP3EK
-         6OcZJvCDpuyZPAp+KC+pdPTVN70kur2l+4wV2RfxhncuMJXYc5cZhD0iEssxQJZCuYgB
-         KQjZ5jAcmJU+xP4VjAGHpkAHyJgUOppSvZ7fgcoHWDQ8irflvi3gf5jO/3drNtG9fU/M
-         rFytXye0WXLuMphIly5DgFasofvChjQ1POkJ7Yzk6EA2bwJGfnZ3m5MGaqo44Vjh5msR
-         58o9hxJp5D1vr723p2YAQOZU+mkyrzkm/6i1E8w2++oiNTr1ELVx433FgIYnqROYQZN/
-         Rniw==
-X-Gm-Message-State: AOAM533fe1g0alvSa7d9D2yqIAy+X4sVmStam62T7lpgExuSfr6URX4v
-        PllDYq53P+Gy5PMyvffahIPofyQKnfIw0xvkBS+Nag==
-X-Google-Smtp-Source: ABdhPJwO+TO2EGpnZYyktkP/LaAYGK7IdpC1ddnV5AIne2uExN8giJDYSLduKVtH3y65R7glrbK9rl1BQ4mZKwaeBvo=
-X-Received: by 2002:a17:907:608a:: with SMTP id ht10mr13962849ejc.89.1635357710454;
- Wed, 27 Oct 2021 11:01:50 -0700 (PDT)
+        bh=Y4Ep56fOfPjwhoMraFFxW5wtkRrwAnAh+988/M+IXBc=;
+        b=A+vRdKDk92uBYp2hFTGl37dQF6eWLL6fw4cVA6VR8rHlSPAg+kRPnxB/Ww7s+4isvC
+         YqXNkyeRy8YwoAKTOTy17ZvluXBSTdBOPgyb5JACS91nFSdTRxWzLwaeGOT5vBg+1Gej
+         yt1ycAKcYnVd8mI8BKEZ5x3kSG/kW2m50aetFYSTdE6WstMiXDzSPIZ11nsOjRO5OB34
+         LcIW7xKB0c2d8Y3gkbt6BHH5EyGV4IMYL0wC8Bx3Cw9tDoJstGlfnidAoChZaCbBf2iB
+         b8yiQpU1ffmfl4uCJqATjGd++Td6UiH6YUgcXKHq00e/VOMbUVMOrtykpT36wPfyrIvr
+         oWHQ==
+X-Gm-Message-State: AOAM533a7jSHZyX9hHj1NOxJbm/9tNC+1EhzjF/JCtSlKpoBSMEjwIsl
+        HDzweLppE2y7bmUF6UOyxipUTCaxzKFz33V8fuA=
+X-Google-Smtp-Source: ABdhPJyW+6P7367fMDFPMV3f5MHc+9YUvSUaztDH9a3u/TlmPD4C7QwMCt24dl6V9SU3pNsVL4xkQ9lLMqr23IavPuk=
+X-Received: by 2002:a25:aa0f:: with SMTP id s15mr26612332ybi.51.1635357720816;
+ Wed, 27 Oct 2021 11:02:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026195545.3951306-1-mathieu.poirier@linaro.org>
- <YXj2trHe8XA0QtFO@kroah.com> <CANLsYkwcUbV-kX3yZt6K0rK9PBUpkW=fp2_Y5Bd3+fCgxZr4EA@mail.gmail.com>
- <YXmPNNig91Pay9U5@kroah.com>
-In-Reply-To: <YXmPNNig91Pay9U5@kroah.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Wed, 27 Oct 2021 12:01:37 -0600
-Message-ID: <CANLsYkxNYuq0F8GAJeUsftwQyPgiqJbK=O3Ue=QBrKH48eHrAw@mail.gmail.com>
-Subject: Re: [GIT PULL v2] Coresight changes for v5.16
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211026223528.413950-1-jevburton.kernel@gmail.com>
+In-Reply-To: <20211026223528.413950-1-jevburton.kernel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 Oct 2021 11:01:49 -0700
+Message-ID: <CAEf4BzYoNBZEqdNWYSTrviOs5_4d08ODxL6XSNNHOmqxDRu8Mw@mail.gmail.com>
+Subject: Re: [PATCH v2] libbpf: Deprecate bpf_objects_list
+To:     Joe Burton <jevburton.kernel@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Joe Burton <jevburton@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 11:41, Greg KH <gregkh@linuxfoundation.org> wrote:
+On Tue, Oct 26, 2021 at 3:35 PM Joe Burton <jevburton.kernel@gmail.com> wrote:
 >
-> On Wed, Oct 27, 2021 at 11:32:43AM -0600, Mathieu Poirier wrote:
-> > On Wed, 27 Oct 2021 at 00:50, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Tue, Oct 26, 2021 at 01:55:45PM -0600, Mathieu Poirier wrote:
-> > > > The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
-> > > >
-> > > >   Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
-> > > >
-> > > > are available in the Git repository at:
-> > > >
-> > > >   git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git tags/coresight-next-v5.16
-> > >
-> > > Better but I get the following errors when my scripts try to merge them.
-> > > Note, the linux-next scripts will give you the same complaint, so this
-> > > isn't a new thing:
-> >
-> > Can you point me to the linux-next script you are referring to above?
-> > Usually when that happens I get an email but this time I didn't get
-> > anything.
+> From: Joe Burton <jevburton@google.com>
 >
-> Is this tree/branch in linux-next now?  If so, you should have gotten an
-> email.
+> Add a flag to `enum libbpf_strict_mode' to disable the global
+> `bpf_objects_list', preventing race conditions when concurrent threads
+> call bpf_object__open() or bpf_object__close().
+>
+> bpf_object__next() will return NULL if this option is set.
+>
+> Callers may achieve the same workflow by tracking bpf_objects in
+> application code.
+>
+>   [0] Closes: https://github.com/libbpf/libbpf/issues/293
+>
+> Signed-off-by: Joe Burton <jevburton@google.com>
+> ---
 
-Definitely: https://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux.git/log/?h=next
+Applied to bpf-next, thanks. Please specify kernel tree next time
+(i.e., [PATCH bpf-next] subject prefix)
 
->
-> My scripts were sent to the workflow mailing list a year or so ago, I
-> can dig them up if needed.
+
+>  tools/lib/bpf/libbpf.c        | 8 +++++++-
+>  tools/lib/bpf/libbpf.h        | 3 ++-
+>  tools/lib/bpf/libbpf_legacy.h | 6 ++++++
+>  3 files changed, 15 insertions(+), 2 deletions(-)
 >
 
-Thanks - I'll look it up.
+[...]
