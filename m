@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9202843C8FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8C243C901
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240195AbhJ0L6r convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Oct 2021 07:58:47 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56398 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241746AbhJ0L6q (ORCPT
+        id S237010AbhJ0L7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232793AbhJ0L7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:58:46 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-275-1d04a16FMIGKdwG7JXoMtw-1; Wed, 27 Oct 2021 12:56:15 +0100
-X-MC-Unique: 1d04a16FMIGKdwG7JXoMtw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.24; Wed, 27 Oct 2021 12:56:14 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.024; Wed, 27 Oct 2021 12:56:14 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     =?iso-8859-1?Q?=27Paul_Heidekr=FCger=27?= 
-        <paul.heidekrueger@in.tum.de>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-CC:     "elver@google.com" <elver@google.com>,
-        "charalampos.mainas@gmail.com" <charalampos.mainas@gmail.com>,
-        "pramod.bhatotia@in.tum.de" <pramod.bhatotia@in.tum.de>
-Subject: RE: Potentially Broken Address Dependency via test_bit() When
- Compiling With Clang
-Thread-Topic: Potentially Broken Address Dependency via test_bit() When
- Compiling With Clang
-Thread-Index: AQHXyx14IIc6Crq8PkmcLvT6nyYhravmu2LQ
-Date:   Wed, 27 Oct 2021 11:56:14 +0000
-Message-ID: <dcf9431eb760424bbf01b0cc8bff6d92@AcuMS.aculab.com>
-References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
-In-Reply-To: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 27 Oct 2021 07:59:49 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BC3C061570;
+        Wed, 27 Oct 2021 04:57:24 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id bp15so5642837lfb.4;
+        Wed, 27 Oct 2021 04:57:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=YXg0m4/fJ//WGjGcJyxQ/if/yQiYorndqx8ywLLIUxc=;
+        b=jThNapv4PN8aFz+XjA3tDVZi4wprRuBhHugJZuBZP/DlIxvP+7fAyNaCpZfMarEbNr
+         32z6q58YY8ApfMWn6WvDE/kcNYwITYRTkN9HyeXEsDEsQTUe74ZXWQHzvkqtfGGj17Qo
+         ynN7dn4s3aT1IyjCygoNmPf4h3n+nJe+wc6ms7nrmnKXEULCUyFAj1iT+7tuuCqedvOG
+         YOG9Fxav3t2/PAu9/eNGwnbEsLMY0Y+hMxJlEUS/winNQX8Y5womyGufSRlz72jTdk4S
+         lRYJkL0mrCi584gmxe06pmVG97mROw8QBmN04nFVOppFqz5rwzzCy/6IidXzwYpfVPtV
+         9ibQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YXg0m4/fJ//WGjGcJyxQ/if/yQiYorndqx8ywLLIUxc=;
+        b=a7M1yZ/bymPVoeu4/tZzMsCnz7PD521oSI0LYp2SYccmdVjuhKATV5OK+/c1pnKtlB
+         RZJnot2xP+LDnqbJADvtNYl3rcmSzL4FAbEm+U9fLNFjRUJHP3HZu2nJQo2hxTcVdeUI
+         EmIamg//Bajr9XVL6Li/nX4Jqv+zP53L60HtX0o2nNG+jx2vhTSZg4OZBqi4f0uK8rKi
+         myazQ8p6T9AIUSf9/MWOU7/BeimezovIwhnAHOVB2LxFZEO6A9q0AD2ppW0nJdNbVra4
+         DJkzdvWSoh1s+QNANR7xjFtGqWHWVHj/dFdoOaOIaTlTXjrb2OQ6MFB/4sx+RaVqzZwD
+         pIPg==
+X-Gm-Message-State: AOAM530JU7H5srF2MevS5DIw+YXvy6RXbi1IufID2WfKlvWBn/9jH0LT
+        nc1YaRTehRq5+25k4S+bSd0=
+X-Google-Smtp-Source: ABdhPJzG06ZKCx25ZsvM2ShhEKwT6MB3ORkQuYBX2CgoUoilCJl3p64N9h9V/iWAX2ORJiz4HBy9oA==
+X-Received: by 2002:a05:6512:1284:: with SMTP id u4mr2381577lfs.226.1635335842638;
+        Wed, 27 Oct 2021 04:57:22 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.235.8])
+        by smtp.gmail.com with ESMTPSA id p9sm1118651lfu.121.2021.10.27.04.57.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 04:57:22 -0700 (PDT)
+Message-ID: <e4922538-1a57-1d21-9079-e954d742d844@gmail.com>
+Date:   Wed, 27 Oct 2021 14:57:20 +0300
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [syzbot] WARNING in batadv_v_ogm_free
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+To:     syzbot <syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com>,
+        a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
+        sven@narfation.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com
+References: <00000000000010317a05cee52016@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <00000000000010317a05cee52016@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Heidekrüger
-> Sent: 27 October 2021 11:20
+On 10/22/21 02:19, syzbot wrote:
+> Hello,
 > 
-> For my bachelor thesis, I have been working on the infamous problem of
-> potentially broken dependency orderings in the Linux kernel. I'm being
-> advised by Marco Elver, Charalampos Mainas, Pramod Bhatotia (Cc'd).
+> syzbot found the following issue on:
 > 
-> For context, see:
-> https://linuxplumbersconf.org/event/7/contributions/821/attachments/598/1075/LPC_2020_--
-> _Dependency_ordering.pdf
+> HEAD commit:    2f111a6fd5b5 Merge tag 'ceph-for-5.15-rc7' of git://github..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=121d909f300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d95853dad8472c91
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b6a62d5cb9fe05a0e3a3
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
 > 
-> Our approach consists of two LLVM compiler passes which annotate
-> dependencies in unoptimised intermediate representation (IR) and verify
-> the annotated dependencies in optimised IR. ATM, the passes only
-> recognise a subset of address dependencies - everything is still WIP ;-)
+> Unfortunately, I don't have any reproducer for this issue yet.
 > 
-> We have been cross-compiling with a slightly modified version of
-> allyesconfig for arm64, and the passes have now found a case that we
-> would like to share with LKML for feedback: an address dependency being
-> broken (?) through compiler optimisations in
-> fs/afs/addr_list.c::afs_iterate_addresses().
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b6a62d5cb9fe05a0e3a3@syzkaller.appspotmail.com
 > 
-> Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
-> 
-> > [...]
-> >   index = READ_ONCE(ac->alist->preferred);
-> >   if (test_bit(index, &set))
-> >     goto selected;
-> > [...]
-> 
-> where test_bit() expands to the following in
-> include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
-> 
-> > static __always_inline int
-> > arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
-> > {
-> >   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-> > }
-> > #define test_bit arch_test_bit
 
-I don't think there is expected to be an address dependency.
-The READ_ONCE() is needed to ensure the generated code doesn't use
-two different values for 'index' - eg for 'nr' inside arch_test_bit().
+Looks like bug on error handling path in batadv_mesh_init(). Must be 
+fixed by my batman-adv patch.
 
-	David
+#syz fix: net: batman-adv: fix error handling
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
+
+
+With regards,
+Pavel Skripkin
