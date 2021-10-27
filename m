@@ -2,261 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0C843D7BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CE743D7BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhJ0Xtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:49:51 -0400
-Received: from vps.xff.cz ([195.181.215.36]:41330 "EHLO vps.xff.cz"
+        id S229565AbhJ0XuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:50:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhJ0Xtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:49:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-        t=1635378443; bh=XsRJN6TKJjmaCecpHw/1RD2+x3B2iPPgWytidAFW5Fk=;
-        h=Date:From:To:Subject:X-My-GPG-KeyId:References:From;
-        b=DFrmFka0HRu1zaCvZ2gH8CIKJrWLzBYnOV5MuQjn2Tlf+JkztqExDfZDzNL2eEWna
-         uGmGCcG0D3wFvjxiU2NpUZ0Ys3IBkQj8fpmryegbv8csFG0vMOhw3dDrbCbj1T/ESh
-         3VjiN9zPFZ4+pJ2lonUkkF4Cg8DgWTqPI3R+OTYI=
-Date:   Thu, 28 Oct 2021 01:47:22 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To:     Archie Pusaka <apusaka@google.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Hilda Wu <hildawu@realtek.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] Bluetooth: hci_h5: Add runtime suspend
-Message-ID: <20211027234722.2rjmxhivrkae2fai@core>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
-        Archie Pusaka <apusaka@google.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Hilda Wu <hildawu@realtek.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20210723193137.v3.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
- <20210723193137.v3.3.I4b323d2adf1dca62777c41de344a7d2f79b7f908@changeid>
- <20211027222326.e55g26ezaxpk7kkm@core>
+        id S229447AbhJ0XuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 19:50:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF32610FD
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635378473;
+        bh=t+PpqypSCKapTKRguvjCBaJPzX1t0c7f7uN58dcUX7k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=g35vda8IPAZHnszM/A969Xutm5EPOZJyoiXZ6xXU5xMhupCFrKeb2gAzsFABGAJO9
+         JZmzqgM1jCV7X2r00r3JANnowHEwoGcx6YT5cHvQuDiBliY1FnnIewjQ98rtxKvIyP
+         8H4po/ArJBCEdqHRTuKXeEitONH/RP+rIqsLx609a3SzptaiBKFwNKtM//ImcIi692
+         GNFPf//j06uYa4Z6s0uJH5Yd5j6cNsygjaYvJwMSBbzJxlGYVNoMWjMUllt75wFAjs
+         WwWicaSlYeI9CXqZvPpftCo5DS+s6yS0xLl+EP20WZa+sXrwDgWXDGgAko1VPRsUmH
+         o+tvCXbwDoHBw==
+Received: by mail-ed1-f43.google.com with SMTP id s1so17183256edd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:47:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532N/5mwmnUxkX02OhkiIfxIwwIZkS6GY0ujGXbYe0UX78Lu1MiO
+        nAIT3OBWpSFi/aR0A61e7ZnNimi2B1Pfk2I/5Q==
+X-Google-Smtp-Source: ABdhPJxg4eUZljI10gC+7+cwqF6vxnwg2Rr90TkBscgjdcWRIhtecmw9FjFNDtU5mtrkdv/lNBHMmDxTzmNvXUH9TzE=
+X-Received: by 2002:a05:6402:28f:: with SMTP id l15mr1357751edv.272.1635378471564;
+ Wed, 27 Oct 2021 16:47:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027222326.e55g26ezaxpk7kkm@core>
+References: <20211027021857.20816-1-jason-jh.lin@mediatek.com>
+ <20211027021857.20816-4-jason-jh.lin@mediatek.com> <CAC=S1ng2=XRV9s2t2dxQf1a2V2GsFwhfB8tRxnNDp-QD5eR_xQ@mail.gmail.com>
+In-Reply-To: <CAC=S1ng2=XRV9s2t2dxQf1a2V2GsFwhfB8tRxnNDp-QD5eR_xQ@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 28 Oct 2021 07:47:40 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9sCr-CM6WsZ6q7mtfqr9A5sNccC0bk1vq=Hdqr3rGkQw@mail.gmail.com>
+Message-ID: <CAAOTY_9sCr-CM6WsZ6q7mtfqr9A5sNccC0bk1vq=Hdqr3rGkQw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/6] drm/mediatek: Detect CMDQ execution timeout
+To:     Fei Shao <fshao@chromium.org>
+Cc:     "jason-jh.lin" <jason-jh.lin@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:23:26AM +0200, megi xff wrote:
-> Hello Archie,
-> 
-> On Fri, Jul 23, 2021 at 07:31:57PM +0800, Archie Pusaka wrote:
-> > From: Archie Pusaka <apusaka@chromium.org>
-> > 
-> > This patch allows the controller to suspend after a short period of
-> > inactivity.
-> 
-> I see this pattern in dmesg after this patch: (I've added printks
-> to many hci_h5 functions to see what's going on)
-> 
-> [  493.150325] h5_dequeue
-> [  493.150332] h5_dequeue
-> [  493.150336] h5_dequeue
-> [  493.150340] h5_dequeue
-> [  493.150370] h5_dequeue
-> [  493.150547] h5_recv
-> [  493.150863] h5_recv
-> [  493.150878] h5_dequeue
-> [  493.150885] h5_dequeue
-> [  493.150888] h5_dequeue
-> [  493.151315] h5_enqueue
-> [  493.151328] h5_dequeue
-> [  493.151350] h5_dequeue
-> [  493.151447] h5_dequeue
-> [  493.151612] h5_recv
-> [  493.151945] h5_recv
-> [  493.151961] h5_dequeue
-> [  493.151967] h5_dequeue
-> [  493.151970] h5_dequeue
-> [  495.171812] h5_flush
-> [  495.171845] h5_flush
-> [  499.267473] h5_serdev_suspend
-> [  499.267490] h5_btrtl_suspend
-> [  499.273784] h5_recv
-> [  499.273828] h5_serdev_resume
-> [  499.273833] h5_btrtl_resume
-> [  499.273837] h5_btrtl_resume / reprobe
-> [  499.273855] h5_btrtl_reprobe_worker
-> [  499.273913] h5_serdev_remove
-> [  499.274997] h5_close
-> [  499.275010] h5_btrtl_close
-> [  499.275624] h5_serdev_probe
-> [  499.276126] h5_open
-> [  499.276132] h5_btrtl_open
-> [  499.915820] h5_dequeue
-> [  499.915857] h5_dequeue
-> [  499.915863] h5_dequeue
-> [  499.916212] h5_dequeue
-> [  499.919643] h5_recv
-> [  499.919675] h5_dequeue
-> [  499.919682] h5_dequeue
-> [  499.919687] h5_dequeue
-> [  499.919692] h5_dequeue
-> 
-> repeating ad nauseam every 6s.
-> 
-> Basically bluetooth device reprobes every 6s. Looks like h5_recv call
-> after h5_btrtl_suspend wakes the device immediately after suspend.
-> 
-> (there are no users of bluetooth in my userspace) I'd expect the
-> device to stay suspended after suspend.
-> 
-> I have some extra patches to support 8723cs but nothing that
-> would affect this codepath. https://megous.com/git/linux/log/?h=bt-5.15
-> 
-> I assume it will have the same behavior with 8723bs which is already
-> mainline. I guess this issue is specific to devices with H5_INFO_WAKEUP_DISABLE
-> flag set.
-> 
-> Do you have any ideas?
+Hi, Fei:
 
-I've added dump_stack() to first h5_recv call after suspend (the one
-that's causing the immediate wakeup after runtime PM suspend), and it returns:
-
-[    5.938258] recv
-[   13.377775] suspend
-[   13.384106] recv
-[   13.384120] CPU: 1 PID: 83 Comm: kworker/u8:1 Tainted: G         C        5.15.0-rc7-00002-g64f2c49e8400 #23
-[   13.384141] Hardware name: Pine64 PinePhone (1.2) (DT)
-[   13.384151] Workqueue: events_unbound flush_to_ldisc
-[   13.384196] Call trace:
-[   13.384199]  dump_backtrace+0x0/0x15c
-[   13.384224]  show_stack+0x14/0x20
-[   13.384232]  dump_stack_lvl+0x64/0x7c
-[   13.384250]  dump_stack+0x14/0x2c
-[   13.384258]  h5_recv+0x44/0xdbc [hci_uart]
-[   13.384288]  hci_uart_receive_buf+0x6c/0x94 [hci_uart]
-[   13.384298]  ttyport_receive_buf+0x60/0xf4
-[   13.384318]  flush_to_ldisc+0xb0/0x160
-[   13.384324]  process_one_work+0x1d8/0x380
-[   13.384339]  worker_thread+0x178/0x4e0
-[   13.384348]  kthread+0x11c/0x130
-[   13.384359]  ret_from_fork+0x10/0x20
-
-It's comming from here https://elixir.bootlin.com/linux/latest/source/drivers/tty/tty_buffer.c#L510
-
-Which can be scheduled from these places:
-
-- https://elixir.bootlin.com/linux/latest/source/drivers/tty/tty_buffer.c#L65
-- https://elixir.bootlin.com/linux/latest/source/drivers/tty/tty_buffer.c#L413
-
-And that's where I lose a thread of what can be happening. :)
-
-Maybe h5_recv is not a good function to mark activity on the device,
-due to tty_buffer code just calling it to check if some data are
-available, even if none are? Even if nothing uses bluetooth from
-userspace...
-
-kind regards,
-	o.
-
-> kind regards,
-> 	o.
-> 
-> 
-> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > Reviewed-by: Hilda Wu <hildawu@realtek.com>
-> > 
+Fei Shao <fshao@chromium.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=8827=E6=97=A5=
+ =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=885:32=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Hi Jason,
+>
+> On Wed, Oct 27, 2021 at 10:19 AM jason-jh.lin <jason-jh.lin@mediatek.com>=
+ wrote:
+> >
+> > From: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> >
+> > CMDQ is used to update display register in vblank period, so
+> > it should be execute in next 2 vblank. One vblank interrupt
+> > before send message (occasionally) and one vblank interrupt
+> > after cmdq done. If it fail to execute in next 3 vblank,
+> > tiemout happen.
+> >
+> > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> > Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 > > ---
-> > 
-> > Changes in v3:
-> > * Reordering #include
-> > 
-> >  drivers/bluetooth/hci_h5.c | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
-> > 
-> > diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-> > index cbc63b057f33..0c0dedece59c 100644
-> > --- a/drivers/bluetooth/hci_h5.c
-> > +++ b/drivers/bluetooth/hci_h5.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/mod_devicetable.h>
-> >  #include <linux/of_device.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include <linux/serdev.h>
-> >  #include <linux/skbuff.h>
-> >  
-> > @@ -21,6 +22,8 @@
-> >  #include "btrtl.h"
-> >  #include "hci_uart.h"
-> >  
-> > +#define SUSPEND_TIMEOUT_MS	6000
-> > +
-> >  #define HCI_3WIRE_ACK_PKT	0
-> >  #define HCI_3WIRE_LINK_PKT	15
-> >  
-> > @@ -584,6 +587,10 @@ static int h5_recv(struct hci_uart *hu, const void *data, int count)
-> >  		count -= processed;
-> >  	}
-> >  
-> > +	pm_runtime_get(&hu->serdev->dev);
-> > +	pm_runtime_mark_last_busy(&hu->serdev->dev);
-> > +	pm_runtime_put_autosuspend(&hu->serdev->dev);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > @@ -620,6 +627,10 @@ static int h5_enqueue(struct hci_uart *hu, struct sk_buff *skb)
-> >  		break;
-> >  	}
-> >  
-> > +	pm_runtime_get_sync(&hu->serdev->dev);
-> > +	pm_runtime_mark_last_busy(&hu->serdev->dev);
-> > +	pm_runtime_put_autosuspend(&hu->serdev->dev);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > @@ -951,6 +962,12 @@ static void h5_btrtl_open(struct h5 *h5)
-> >  	serdev_device_set_parity(h5->hu->serdev, SERDEV_PARITY_EVEN);
-> >  	serdev_device_set_baudrate(h5->hu->serdev, 115200);
-> >  
-> > +	pm_runtime_set_active(&h5->hu->serdev->dev);
-> > +	pm_runtime_use_autosuspend(&h5->hu->serdev->dev);
-> > +	pm_runtime_set_autosuspend_delay(&h5->hu->serdev->dev,
-> > +					 SUSPEND_TIMEOUT_MS);
-> > +	pm_runtime_enable(&h5->hu->serdev->dev);
-> > +
-> >  	/* The controller needs up to 500ms to wakeup */
-> >  	gpiod_set_value_cansleep(h5->enable_gpio, 1);
-> >  	gpiod_set_value_cansleep(h5->device_wake_gpio, 1);
-> > @@ -959,6 +976,8 @@ static void h5_btrtl_open(struct h5 *h5)
-> >  
-> >  static void h5_btrtl_close(struct h5 *h5)
+> >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 20 ++++++++++++++++++--
+> >  1 file changed, 18 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/=
+mediatek/mtk_drm_crtc.c
+> > index e23e3224ac67..dad1f85ee315 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > @@ -54,6 +54,7 @@ struct mtk_drm_crtc {
+> >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> >         struct cmdq_client              cmdq_client;
+> >         u32                             cmdq_event;
+> > +       u32                             cmdq_vblank_cnt;
+> >  #endif
+> >
+> >         struct device                   *mmsys_dev;
+> > @@ -227,7 +228,10 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(st=
+ruct drm_crtc *crtc,
+> >  static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
 > >  {
-> > +	pm_runtime_disable(&h5->hu->serdev->dev);
-> > +
-> >  	gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
-> >  	gpiod_set_value_cansleep(h5->enable_gpio, 0);
+> >         struct cmdq_cb_data *data =3D mssg;
+> > +       struct cmdq_client *cmdq_cl =3D container_of(cl, struct cmdq_cl=
+ient, client);
+> > +       struct mtk_drm_crtc *mtk_crtc =3D container_of(cmdq_cl, struct =
+mtk_drm_crtc, cmdq_client);
+> >
+> > +       mtk_crtc->cmdq_vblank_cnt =3D 0;
+> >         cmdq_pkt_destroy(data->pkt);
 > >  }
-> > @@ -1066,6 +1085,7 @@ MODULE_DEVICE_TABLE(acpi, h5_acpi_match);
-> >  
-> >  static const struct dev_pm_ops h5_serdev_pm_ops = {
-> >  	SET_SYSTEM_SLEEP_PM_OPS(h5_serdev_suspend, h5_serdev_resume)
-> > +	SET_RUNTIME_PM_OPS(h5_serdev_suspend, h5_serdev_resume, NULL)
-> >  };
-> >  
-> >  static const struct of_device_id rtl_bluetooth_of_match[] = {
-> > -- 
-> > 2.32.0.432.gabb21c7263-goog
-> > 
+> >  #endif
+> > @@ -483,6 +487,15 @@ static void mtk_drm_crtc_update_config(struct mtk_=
+drm_crtc *mtk_crtc,
+> >                                            cmdq_handle->pa_base,
+> >                                            cmdq_handle->cmd_buf_size,
+> >                                            DMA_TO_DEVICE);
+> > +               /*
+> > +                * CMDQ command should execute in next 3 vblank.
+> > +                * One vblank interrupt before send message (occasional=
+ly)
+> > +                * and one vblank interrupt after cmdq done,
+> > +                * so it's timeout after 3 vblank interrupt.
+> > +                * If it fail to execute in next 3 vblank, timeout happ=
+en.
+> > +                */
+> > +               mtk_crtc->cmdq_vblank_cnt =3D 3;
+> > +
+> >                 mbox_send_message(mtk_crtc->cmdq_client.chan, cmdq_hand=
+le);
+> >                 mbox_client_txdone(mtk_crtc->cmdq_client.chan, 0);
+> >         }
+> > @@ -499,11 +512,14 @@ static void mtk_crtc_ddp_irq(void *data)
+> >
+> >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> >         if (!priv->data->shadow_register && !mtk_crtc->cmdq_client.chan=
+)
+> > +               mtk_crtc_ddp_config(crtc, NULL);
+> > +       else if (mtk_crtc->cmdq_vblank_cnt > 0 && --mtk_crtc->cmdq_vbla=
+nk_cnt =3D=3D 0)
+> I think atomic_dec_and_test() does what you want to do here.
+
+I think this operation is not necessary to be atomic operation, and
+this statement could be reduced to
+
+else if (--mtk_crtc->cmdq_vblank_cnt =3D=3D 0)
+
+>
+>
+>
+>
+> > +               DRM_ERROR("mtk_crtc %d CMDQ execute command timeout!\n"=
+,
+> > +                         drm_crtc_index(&mtk_crtc->base));
+> >  #else
+> >         if (!priv->data->shadow_register)
+> > -#endif
+> >                 mtk_crtc_ddp_config(crtc, NULL);
+> > -
+> > +#endif
+> >         mtk_drm_finish_page_flip(mtk_crtc);
+> >  }
+> >
+> > --
+> > 2.18.0
+> >
