@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEF543C56E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B6843C579
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240962AbhJ0IrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
+        id S240988AbhJ0Itt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239549AbhJ0IrT (ORCPT
+        with ESMTP id S232108AbhJ0Itr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:47:19 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF235C061570;
-        Wed, 27 Oct 2021 01:44:53 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id l13so4587457lfg.6;
-        Wed, 27 Oct 2021 01:44:53 -0700 (PDT)
+        Wed, 27 Oct 2021 04:49:47 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC144C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:47:21 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id y80so4389880ybe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=zMWK8hvpGJbXGsvO9RmIPb4Vp8Zoi5fIPTWz4fMTBMw=;
-        b=lbp34rNa/A5IA66pNvQbVeLii9gDFaqxoc8T1ixMhEQ9u0s6rc9lz5UznqFulj10j9
-         3HjPSYEC3cLm01QHECPUwJU3i7J5jXygj4E8S7xOFxgloAeqCYOl6GbXYHEhdYYtMV8v
-         8NgMv3vE658xpSc1jtV+UY/jU8Wx5F++mGGHh74Emr1qyy7LO+0j8w0vQBBwHDiQ8LKx
-         CrTibSTE3yvkc7H1qFQIn6mYmQUKRdIQTlaA0XdVP8GFD7tGW2wLCDndW2QyitVDB8VQ
-         uN2jWh1VBHNWr/7EP+sx28ZxiR5ARAG2G/nAlnkf0x1++0qFIEEV8kzFFiH6Fo5oBWjN
-         cJlg==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VpwmGL8q732gZ5k2cD5aoLwnIVUmOGw5/VzkkTYxkIg=;
+        b=JMCMuYh6Yuaf/upleikyxO5k9kDJMxBSqPkmgFsHj8CoV2zJ043vXEQ7VGHTkX7GoH
+         yk75qwH1hs9rZR3qEQz9oZt3a7ExG/ja2uAvuoKsAQSRzUdAlIKHiRZr+AFRg/15WqNl
+         W5kBihpfnHI/ofIDS6KQ9a8RJSjtU+du8IToQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=zMWK8hvpGJbXGsvO9RmIPb4Vp8Zoi5fIPTWz4fMTBMw=;
-        b=VyIECKDXWhEhBwpCzEWJWteTb0OIlVHspAJoIrUL1CXiMRBJvD4u+DSmCS5qzS+LXG
-         mkfl0bDWasxWmboPiHdocjn/aw9kIkzjHrw9yoM4Wm+4q0bx66Hpsgo9NbyYscd6M82L
-         MoL+tmZep9OJjldNeiD6SRNLdweiifb9Ms/uQg22Mx/T3wPNXdbd0ZwJaUnwxBXJc8nY
-         /CRq8X/oI8DT1uZKgnUrgBq2nhr4+FAQI9Hty5T4ab/JG2mLhgIsCOtwn/Ei1e2CH7BM
-         orfrQoLF4kJ/vjD5Ig2OkMPlc1KfjgD6TB3/pUCoRCPcjK+5G0sZf/cgKh4MmSR5WVv7
-         woIA==
-X-Gm-Message-State: AOAM533yqE4bOKYU/v2WFCPlC/TyVv7t6IVoesJ6b0mJwzOnkhTuvTTF
-        TGQ+F9Ir6Jf84mGScc6OyXkubJuHcE+q3g==
-X-Google-Smtp-Source: ABdhPJyolc92grZUbacq8NFy/dsIGCz8Kges8hMolhaRfnor8WtDO4jgVL1W8bGkP3K22LfHLBuHnA==
-X-Received: by 2002:ac2:5ed9:: with SMTP id d25mr4652910lfq.197.1635324292149;
-        Wed, 27 Oct 2021 01:44:52 -0700 (PDT)
-Received: from [10.0.0.115] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id d12sm793838lft.214.2021.10.27.01.44.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 01:44:51 -0700 (PDT)
-Message-ID: <3d825723-6bed-75e0-492b-a9ec1c9e4994@gmail.com>
-Date:   Wed, 27 Oct 2021 11:45:16 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VpwmGL8q732gZ5k2cD5aoLwnIVUmOGw5/VzkkTYxkIg=;
+        b=rznXzuRPDBIdbHgTHBr6v2gYu/CjRhaHulj3FBM6QrmXwQIeaY2XcL/TsTyhqtmqYE
+         A/HybC/aGemadNj9rN/bXQybWng0DtZfYbstIpbvceUiypxmlO8BAvQIfbhjyt4F7IUU
+         hUxDPW5dsNHs23+PAJclWyZZB52Vr8wrFoFHx7ZxPT1Ymn0dyGetSz2m/qss6OP16BDl
+         KDsxMKJuSPajJ0w7Hh8ShXSpOXGZTW4gkTa2NwnnLw2lGtThUUqeLcX6u3+0xr9AfGjc
+         XKP7WAxdrM0V43atdLw3lgz8lU0MQq63kmwI4QHp2dwouIFFcNRqQ4djpPQ2FL1Fu/gf
+         Youg==
+X-Gm-Message-State: AOAM532Oy+tOeZqONRxSDAJ/ms7ayqgDOv6E5cDmD5tHcx95Z7QdfvEm
+        nzYNK8lAsoqwl0ptCNe1kmPtGafE9iH6bS1eyqNioA==
+X-Google-Smtp-Source: ABdhPJwE5xNCo48x/75YvJ0mwgD/O6cRnzR4h6s9Ry1FQ7g9JdulrWwb2E4aaVChFivA8OAT1p7QIoPSpIIBg0bYjk4=
+X-Received: by 2002:a05:6902:724:: with SMTP id l4mr20420002ybt.193.1635324440879;
+ Wed, 27 Oct 2021 01:47:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Content-Language: en-US
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20211027055625.11150-1-kishon@ti.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Subject: Re: [RESEND PATCH v2 0/2] dmaengine: ti: k3-udma: Fix NULL pointer
- dereference error
-In-Reply-To: <20211027055625.11150-1-kishon@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder> <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
+ <YXeYjXx92wKdPe02@unreal> <CAKOOJTyrzosizeKpfYcu4jMn6SRYrqxU0BzMf8qudAk5e74R9g@mail.gmail.com>
+ <YXhVd16heaHCegL1@unreal> <CAKOOJTzrQYz4FTDU_d_R0RLA4u6pfK9=+=E_uKMr4VCNbmF_kA@mail.gmail.com>
+ <YXj1J/Z8HYvBWC6Y@unreal>
+In-Reply-To: <YXj1J/Z8HYvBWC6Y@unreal>
+From:   Edwin Peer <edwin.peer@broadcom.com>
+Date:   Wed, 27 Oct 2021 01:46:44 -0700
+Message-ID: <CAKOOJTyrUUydu9aNJSB4S_5dfqjkc6Y-14up4-V+aNcQ7TWVdQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink traps
+ on probe/remove device
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Michael Chan <michael.chan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+On Tue, Oct 26, 2021 at 11:43 PM Leon Romanovsky <leon@kernel.org> wrote:
 
-On 27/10/2021 08:56, Kishon Vijay Abraham I wrote:
-> NULL pointer de-reference error was observed when all the PCIe endpoint
-> functions (22 function in J721E) request a DMA channel. The issue was
-> specfically observed in BCDMA (Block copy DMA) but the issue is
-> applicable in PKTDMA as well.
+> In our case, the eth driver is part of mlx5_core module, so at the
+> device creation phase that module is already loaded and driver/core
+> will try to autoprobe it.
 
-Nice catch, interesting that it did not materialized before.
+> However, the last step is not always performed and controlled by the
+> userspace. Users can disable driver autoprobe and bind manually. This
+> is pretty standard practice in the SR-IOV or VFIO modes.
 
-Can you re-word the patch subjects and commit messages accordingly?
+While you say the netdev will not necessarily be bound, that still
+sounds like the netdev will indeed be presented to user space before
+devlink_register() when it is auto-probed?
 
-This is not really BCDMA/PKTDMA issue but a missed uc->Xchan = NULL;
-which would cause the de-reference error.
+> This is why devlink has monitor mode where you can see devlink device
+> addition and removal. It is user space job to check that device is
+> ready.
 
-> Changes from v1:
-> 1) Split the patch for BCDMA and PKTDMA separately
-> 2) Fixed the return value of udma_get_rflow() to 0.
-> 3) Removed the fixes tag as the patches does not directly apply to the
-> commits.
-> 
-> v1 => https://lore.kernel.org/r/20210209090036.30832-1-kishon@ti.com
-> 
-> Kishon Vijay Abraham I (2):
->   dmaengine: ti: k3-udma: Fix NULL pointer dereference error for BCDMA
+Isn't it more a question of what existing user space _does_ rather
+than what user space _should_ do?
 
-dmaengine: ti: k3-udma: Set bchan to NULL if a channel request fail
+> > This isn't about kernel API. This is precisely about existing user
+> > space that expects devlink to work immediately after the netdev
+> > appears.
+>
+> Can you please share open source project that has such assumption?
 
->   dmaengine: ti: k3-udma: Fix NULL pointer dereference error for PKTDMA
+I'm no python expert, but it looks like
+https://github.com/openstack-charmers/mlnx-switchdev-mode/ might.
+We've certainly had implicit user space assumptions trip over
+registration order before, hence the change we made in January last
+year to move devlink registration earlier. Granted, upon deeper
+analysis, that specific case pertained to phys port name via sysfs,
+which technically only needs port attrs via ndo_get_devlink_port, not
+devlink_register(). That said, I'm certainly not confident that there
+are no other existing users that might expect to be able to invoke
+devlink in ifup scripts.
 
-dmaengine: ti: k3-udma: Set rchan/tchan to NULL if a channel request fail
+> > What do you suggest instead?
+>
+> Fix your test respect devlink notifications and don't ignore them.
 
-This is also applicable for UDMA which only have rchan and tchan.
+That's not very helpful. The test case does what the user in the field
+did to break it. We can't assume users have always been using our APIs
+the way we intended.
 
-> 
->  drivers/dma/ti/k3-udma.c | 32 ++++++++++++++++++++++++++------
->  1 file changed, 26 insertions(+), 6 deletions(-)
-> 
-
--- 
-Péter
+Regards,
+Edwin Peer
