@@ -2,67 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC7543C549
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EF643C550
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239256AbhJ0Ihw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:37:52 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:48398 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233389AbhJ0Ihu (ORCPT
+        id S239305AbhJ0IjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232025AbhJ0IjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:37:50 -0400
-Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8C20C596;
-        Wed, 27 Oct 2021 10:35:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1635323724;
-        bh=PHqL24TPiqhLyMpdtDuXEIKdxWSbGMXdpe3rK+VcaNA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=XTSQndbk/yHNJ55gENbsQTXHHVqsYl9jmrDWL/w/ZIpJdq1liXB7woTOqoy+vLfu6
-         Llaemg6BhqF3it1mYfbmnMc6k+TqkT+D8NylM4+PIb2V41MFhm7agCBouYo0fGyzbN
-         46+jhG7hF7s0Op4EnBtsyt8RXaYwbMU79OnubRNk=
-Subject: Re: [PATCH v6 3/9] drm/omap: Add ovl checking funcs to dispc_ops
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Benoit Parrot <bparrot@ti.com>
-References: <20211018142842.2511200-1-narmstrong@baylibre.com>
- <20211018142842.2511200-4-narmstrong@baylibre.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Message-ID: <aecc7b00-3b12-f419-07a9-db4e471b2408@ideasonboard.com>
-Date:   Wed, 27 Oct 2021 11:35:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 27 Oct 2021 04:39:16 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E109C061570;
+        Wed, 27 Oct 2021 01:36:51 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id v3so3393689uam.10;
+        Wed, 27 Oct 2021 01:36:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FZ/r4xCuzoVfg1rTb4wXv0tkWAM+D0xue0Hb3YHjI8g=;
+        b=hx/mmb90US3JK4Rv1aPCSq2iakKYlaa8JL8gi3Aa5gqa7SIEGjT/dzasJEUcWOhXd6
+         TqrCfrJZ+U41p8/rIOHGv2+Gv9NegbCuoRAu8lrccJb/Z+6bgZOGihSfJFHcCxj0mezO
+         vLwAkl0EBcKM9FzY52mSHildEzuBAWrUPXmwK+sNamGXOmr8iV/Jpi52g8evpodhsTD7
+         MypJBq7HDr3b6wxSpGyisjSlRufItV4lCSxABdTqk057pO5TixZrUuS/Pt6MWoG0qtw5
+         CYvbhGjjLMtDya9sRE89EFypbbHYCx8Ja+Xgch1Rw95sSDJVOcibKC1uShRngNk+rR3q
+         6EYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FZ/r4xCuzoVfg1rTb4wXv0tkWAM+D0xue0Hb3YHjI8g=;
+        b=wZxU3T456r1BmiOgKZSGMaNwqF5kH3egllOcsyMguni+cvSWXwlsvsAHYV5KY33NW+
+         /nN3u6lKyujO/e1d3wZP9iGV6+DJg10/9lE81X+POt92cd3M+w6qBICuhaOvMCNfq3Fd
+         6Do0oJNsztelAR+9hOWMtcSt9ib8mX2xrI+oq725YSolWW0nfH85THVl3aXhch9lsUJo
+         5fQ99tvC+k/UxSyIT1xYkvNk2j75XEjTA2PDf1CO+th+ie7eVvmzEKxFQz4s1b43vSbE
+         YVAV+ily2q1YB6wBHmNchtTtCuniwVEaMi2TV8g4Hqn874/RCwqebT90/n+lMQhfx6kL
+         gi2A==
+X-Gm-Message-State: AOAM530DCP3+iMmdPQ9wDI/80IMPJwlPc7dJmpNOPrlsYAniwCo6g5pg
+        gHcm9DGO4f+hjlbpj0gqaagFMsXhaz/5GzVKvj0pb1V6
+X-Google-Smtp-Source: ABdhPJxF2/sXtDaGXuJCrBIF338MMnb8yU9ZyBUJkt/xtC+CxXBtdSsdH5cSBjpOJYEIiCgbXe6ZSiHuxrXnDW+i/Sk=
+X-Received: by 2002:a67:33ce:: with SMTP id z197mr20051208vsz.13.1635323810559;
+ Wed, 27 Oct 2021 01:36:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211018142842.2511200-4-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211019041659.15761-1-sergio.paracuellos@gmail.com> <YXi5Tm5QYirZeFw8@robh.at.kernel.org>
+In-Reply-To: <YXi5Tm5QYirZeFw8@robh.at.kernel.org>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 27 Oct 2021 10:36:39 +0200
+Message-ID: <CAMhs-H-Ohts75+ivL4SfriJ5MixtxTDGotcRZoR-Z5nhR=JKjw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mips: convert Ralink SoCs and boards to schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     John Crispin <john@phrozen.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        NeilBrown <neil@brown.name>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2021 17:28, Neil Armstrong wrote:
-> From: Benoit Parrot <bparrot@ti.com>
-> 
-> In order to be able to dynamically assign overlays to planes we need to
-> be able to asses the overlay capabilities.
-> 
-> Add a helper function to be able to retrieve the supported capabilities
-> of an overlay.
-> 
-> And export the function to check if a fourcc is supported on a given
-> overlay.
-> 
-> Signed-off-by: Benoit Parrot <bparrot@ti.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->   drivers/gpu/drm/omapdrm/dss/dispc.c | 9 +++++++--
->   drivers/gpu/drm/omapdrm/dss/dss.h   | 3 +++
->   2 files changed, 10 insertions(+), 2 deletions(-)
+On Wed, Oct 27, 2021 at 4:28 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, 19 Oct 2021 06:16:59 +0200, Sergio Paracuellos wrote:
+> > Convert Ralink SoCs and boards bindings to YAML schema.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  .../devicetree/bindings/mips/ralink.txt       | 32 -------
+> >  .../devicetree/bindings/mips/ralink.yaml      | 87 +++++++++++++++++++
+> >  2 files changed, 87 insertions(+), 32 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/mips/ralink.txt
+> >  create mode 100644 Documentation/devicetree/bindings/mips/ralink.yaml
+> >
+>
+> Applied, thanks!
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Thanks, Rob. I cannot see the commit in your 'for-next' branch but I
+guess it is just because you have not pushed it yet from your local
+tree :)
 
-  Tomi
-
+Best regards,
+    Sergio Paracuellos
