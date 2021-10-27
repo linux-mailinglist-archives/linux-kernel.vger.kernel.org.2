@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ACF43D337
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFEB43D33A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244072AbhJ0Uzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238909AbhJ0Uz3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:55:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C47D9C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 13:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=DCX9q09z8tXg5bvLCU7mK4ylZma0Aj+ui0Z+ZwYz7w4=; b=ChN2fVno3u+2S8lH/bNNRWYfd6
-        umxx7lnMdiRXNJLkzS+SzM8jyQ7Ry4VBoK3riQJpaQV4waGt7oKz7L/8G2SXvOnfZPEXqbL41k0wT
-        jvIoI5gJpdUFhCYG5WnMijDVi82xBseSZfx5IJ9emAl1ENS0m86h9aDhp6V3dYQx63HL+jdyZNb9K
-        u9ePAkCnHqhK/IwmyyrooV8mDJCOUhv+JjoBLFCFx4Y8LJBeEsCqoVk79sKZ7KHFei767viLS2XC7
-        +JKZVVeAr5t901mZMpcYtZc30vzkU5xSLgTD4ELlSvrcu3m1fLhlwa/EoYJsadvxny6CztGaP4saH
-        12HBmzbw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfpux-0066Im-3Q; Wed, 27 Oct 2021 20:53:03 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH -next] i915/gem/dmabuf: add <asm/smp.h> to fix build error
-Date:   Wed, 27 Oct 2021 13:53:02 -0700
-Message-Id: <20211027205302.19222-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S244083AbhJ0Uzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:55:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234080AbhJ0Uzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 16:55:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E192660720;
+        Wed, 27 Oct 2021 20:53:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635368008;
+        bh=lR4BUuybzYA05P+MmciU7UFrNU2jug/xDcDUahEPscw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aK5lTPJhNP7O5M8SRf4tlz12iShtHHSDbSrCZz0cRCHjDGx5qpk2F09b5oE6C3K38
+         ap+MitTKVRq4mzQwwBmgg8JwsjblqwDuEXUAsM40tBDpiDQaqm3vHrFyLjHOn5qogx
+         TaYJtXwOZgygWr5IQ7faO+723pmoapjQvOEgfNk5YIEE0lcpbcbW/FI2Kdwq6R+AmU
+         UJehgWb2Fk8W6H3+6LYzyaBZOtEtlxkkdHf+rYPewSbaFQ5c5nvFWUc9QY176LaWco
+         oxpgLk1cRacK+BIFtTJR1BC4p+75BTHOJAdyJ+wAxI6zEVbPLpuW+I2Cr1aRiHTfwM
+         aKqrmKtzT65Uw==
+Date:   Wed, 27 Oct 2021 13:53:27 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     cgel.zte@gmail.com
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH xfs] xfs: remove duplicate include in xfs_super.c
+Message-ID: <20211027205327.GC24307@magnolia>
+References: <20211027081652.1946-1-ran.jianping@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027081652.1946-1-ran.jianping@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_SMP is not set, wbinvd_on_all_cpus() is not declared,
-due to missing <asm/smp.h>.
+On Wed, Oct 27, 2021 at 08:16:52AM +0000, cgel.zte@gmail.com wrote:
+> From: ran jianping <ran.jianping@zte.com.cn>
+> 
+> 'xfs_btree.h ' included in 'fs/xfs/xfs_super.c'
+>  is duplicated.It is also included on the 40 line.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
 
-Fixes this build error:
+How is this different from the identical patch posted two days ago?
 
-../drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c: In function 'i915_gem_object_get_pages_dmabuf':
-../drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c:251:3: error: implicit declaration of function 'wbinvd_on_all_cpus'; did you mean 'wrmsr_on_cpus'? [-Werror=implicit-function-declaration]
-   wbinvd_on_all_cpus();
+--D
 
-Fixes: a035154da45d ("drm/i915/dmabuf: add paranoid flush-on-acquire")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-Cc: Matthew Auld <matthew.auld@intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: intel-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
----
- drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20211027.orig/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-+++ linux-next-20211027/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-@@ -8,6 +8,7 @@
- #include <linux/highmem.h>
- #include <linux/dma-resv.h>
- #include <linux/module.h>
-+#include <asm/smp.h>
- 
- #include "i915_drv.h"
- #include "i915_gem_object.h"
+> ---
+>  fs/xfs/xfs_super.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index f4c508428aad..e21459f9923a 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -37,7 +37,6 @@
+>  #include "xfs_reflink.h"
+>  #include "xfs_pwork.h"
+>  #include "xfs_ag.h"
+> -#include "xfs_btree.h"
+>  #include "xfs_defer.h"
+>  
+>  #include <linux/magic.h>
+> -- 
+> 2.25.1
+> 
