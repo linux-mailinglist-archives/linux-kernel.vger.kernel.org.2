@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CA643CC2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A76443CC2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238083AbhJ0O33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:29:29 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:40226 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236530AbhJ0O3W (ORCPT
+        id S242536AbhJ0O3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:29:48 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36107 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S238066AbhJ0O3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:29:22 -0400
-Date:   Wed, 27 Oct 2021 10:26:54 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 09/12] sh: Use of_get_cpu_hwid()
-Message-ID: <20211027142651.GW7074@brightrain.aerifal.cx>
-References: <20211006164332.1981454-1-robh@kernel.org>
- <20211006164332.1981454-10-robh@kernel.org>
+        Wed, 27 Oct 2021 10:29:46 -0400
+Received: (qmail 1320733 invoked by uid 1000); 27 Oct 2021 10:27:20 -0400
+Date:   Wed, 27 Oct 2021 10:27:20 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
+Cc:     paulmck@kernel.org, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, parri.andrea@gmail.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        elver@google.com, charalampos.mainas@gmail.com,
+        pramod.bhatotia@in.tum.de
+Subject: Re: Potentially Broken Address Dependency via test_bit() When
+ Compiling With Clang
+Message-ID: <20211027142720.GB1319606@rowland.harvard.edu>
+References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211006164332.1981454-10-robh@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 11:43:29AM -0500, Rob Herring wrote:
-> Replace open coded parsing of CPU nodes' 'reg' property with
-> of_get_cpu_hwid().
+On Wed, Oct 27, 2021 at 12:19:48PM +0200, Paul Heidekrüger wrote:
+> Hi all,
 > 
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: linux-sh@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  arch/sh/boards/of-generic.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> For my bachelor thesis, I have been working on the infamous problem of 
+> potentially broken dependency orderings in the Linux kernel. I'm being 
+> advised by Marco Elver, Charalampos Mainas, Pramod Bhatotia (Cc'd).
 > 
-> diff --git a/arch/sh/boards/of-generic.c b/arch/sh/boards/of-generic.c
-> index 921d76fc3358..f7f3e618e85b 100644
-> --- a/arch/sh/boards/of-generic.c
-> +++ b/arch/sh/boards/of-generic.c
-> @@ -62,9 +62,8 @@ static void sh_of_smp_probe(void)
->  	init_cpu_possible(cpumask_of(0));
->  
->  	for_each_of_cpu_node(np) {
-> -		const __be32 *cell = of_get_property(np, "reg", NULL);
-> -		u64 id = -1;
-> -		if (cell) id = of_read_number(cell, of_n_addr_cells(np));
-> +		u64 id = of_get_cpu_hwid(np, 0);
-> +
->  		if (id < NR_CPUS) {
->  			if (!method)
->  				of_property_read_string(np, "enable-method", &method);
-> -- 
-> 2.30.2
+> For context, see: 
+> https://linuxplumbersconf.org/event/7/contributions/821/attachments/598/1075/LPC_2020_--_Dependency_ordering.pdf
+> 
+> Our approach consists of two LLVM compiler passes which annotate 
+> dependencies in unoptimised intermediate representation (IR) and verify 
+> the annotated dependencies in optimised IR. ATM, the passes only 
+> recognise a subset of address dependencies - everything is still WIP ;-)
+> 
+> We have been cross-compiling with a slightly modified version of 
+> allyesconfig for arm64, and the passes have now found a case that we 
+> would like to share with LKML for feedback: an address dependency being 
+> broken (?) through compiler optimisations in 
+> fs/afs/addr_list.c::afs_iterate_addresses().
+> 
+> Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
+> 
+> > [...]
+> >   index = READ_ONCE(ac->alist->preferred);
+> >   if (test_bit(index, &set))
+> >     goto selected;
+> > [...]
+> 
+> where test_bit() expands to the following in 
+> include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
+> 
+> > static __always_inline int
+> > arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+> > {
+> >   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+> > }
+> > #define test_bit arch_test_bit
+> 
+> The address dependency gets preserved in unoptimised IR since the virtual register %33 transitively depends on %28:
+> 
+> > %28 = load volatile i8, i8* %preferred, align 2, !annotation !15
+> > store i8 %28, i8* %tmp21, align 1
+> > %29 = load i8, i8* %tmp21, align 1
+> > %conv23 = zext i8 %29 to i32
+> > store i32 %conv23, i32* %index, align 4
+> > %30 = load i32, i32* %index, align 4
+> > store i32 %30, i32* %nr.addr.i, align 4
+> > store i64* %set, i64** %addr.addr.i, align 8
+> > %31 = load i64*, i64** %addr.addr.i, align 8
+> > %32 = load i32, i32* %nr.addr.i, align 4
+> > %div.i = udiv i32 %32, 64
+> > %idxprom.i = zext i32 %div.i to i64
+> > %arrayidx.i = getelementptr i64, i64* %31, i64 %idxprom.i
+> > %33 = load volatile i64, i64* %arrayidx.i, align 8, !annotation !16
+> 
+> In optimised IR, there is no dependency between the two volatile loads 
+> anymore:
+> 
+> > %11 = load volatile i8, i8* %preferred, align 2, !annotation !19
+> > %conv25 = zext i8 %11 to i32
+> > %set.0. = load volatile i64, i64* %set, align 8
+> 
+> Now, since @nr traces back to the READ_ONCE() to @index, does this make 
+> the load from @addr in test_bit() address-dependent on that READ_ONCE()? 
+> Should the load from @addr therefore be ordered against the READ_ONCE()?
 
-Acked-by: Rich Felker <dalias@libc.org>
+As others have pointed out, there really is an address dependency here 
+(although it's not a very useful one and the code doesn't rely on it).
+
+However, I can't follow the IR code.  Can you please explain in ordinary 
+English how the LLVM compiler manages to lose track of this dependency?
+
+Alan Stern
