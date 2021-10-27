@@ -2,83 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D0143C508
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CF343C50B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239231AbhJ0I2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:28:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40496 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237179AbhJ0I2k (ORCPT
+        id S240874AbhJ0I3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237179AbhJ0I3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:28:40 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EB7672195E;
-        Wed, 27 Oct 2021 08:26:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635323174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lqxo+EjDn5bKx1T8Ew7F30FEa32NiHZv+Phf/jFObIc=;
-        b=Q6aRDwKFHTylT0/YntdBzdOTHpyeoLztAmEzSH4i4oKDs0A7FRl5igo/Jgs7FhRbP+fxjF
-        XItgh9R0S4eDs6DHldPCn8BkX5a85UWRvxmyaw5K9mfFmV8nqktfUezHMczc1Zl7YcaYS1
-        mB/fMQpAb43nPEYdmZBacWK6ifSCZlo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 6F92AA3B81;
-        Wed, 27 Oct 2021 08:26:14 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 10:26:14 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm: have kswapd only reclaiming use min protection
- on memcg
-Message-ID: <YXkNJjD4axYlmqQ5@dhcp22.suse.cz>
-References: <1635318110-1905-1-git-send-email-huangzhaoyang@gmail.com>
- <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz>
- <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
+        Wed, 27 Oct 2021 04:29:08 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898F1C061570;
+        Wed, 27 Oct 2021 01:26:43 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id r2so2177344pgl.10;
+        Wed, 27 Oct 2021 01:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=70nkIk1FToo0R/GNFHrATD7HbTVBXbdIxH+0XdYsr1U=;
+        b=GKHaLygw4u+iwCMo2u/mQojshnehQZ2fT+HTaNfIx47JKPyRC3LCc+l1E1J0zwc6A1
+         u3WrIMF0ZilVuFKHilL2xm9aJUOlje3vbobEzg+HPAovmTB12Am5IPnGuhs/q0JpOtkC
+         +IxZCK+aldlWqKTY9RYnoiC3X6yD/Cj/VV5r8Wi4raJOecAIZRBhXWFJMDgCGFHRYk9O
+         MHFnmdfz3S52+UNLKDqZNL3oQbD60ObtCao3VAlbvhBVT4Z6YZKDxS8I7yilQIfa2gag
+         zJrCr+FXAGvfPer6fU3yydGunKtnB+OY0f9tBUnjNkB1QZghE1hpTLUWSNjQRzk2sR2+
+         mD+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=70nkIk1FToo0R/GNFHrATD7HbTVBXbdIxH+0XdYsr1U=;
+        b=JA5deZBjOSN8dAfVqhLilX9/8ZetQqEW0Hzv6NG9wGatEQJxH1r1DX3zXkgknTSxIF
+         lYZYtCNfYNva/QX+vYReEdl9WBFgAAxLaOPE2p6wtiiuxUGhSMQRBpJzOJWZelsLIl32
+         2aP2XCcuPrS140j+S0NLM1LqZoFbBNwtHB+2H9dXHeNj4hRYaEiYewkLgQbs7JlbO0t9
+         XNQc4dFmQYglk/VD9t/PrcD0qtRWj+wJrQ9AE2QjS5AK40Wbu9PDRlTsVGgq2cvGxKrF
+         jYj+Aou5qAcuhwbXrcJ67Z3KHnF4bV7ZTwkPf3C1+9BiuItb225YD8C7UGdMVLPJ2yIA
+         EthA==
+X-Gm-Message-State: AOAM531JWNoeChrpnQO0Ok8pZnKRmTagh/I5dhVLAMPkkVyYIEEpCCIH
+        Foi5rfCAs6A6yJg4NaBjmNU=
+X-Google-Smtp-Source: ABdhPJyiwXwtgosZ0zLtUDjsD4TYRVYNIASXHrbnAfFjs0gkxFGT5a26JChDp5wHwL0LuN+HWhoK6g==
+X-Received: by 2002:a63:7e42:: with SMTP id o2mr23075863pgn.296.1635323203062;
+        Wed, 27 Oct 2021 01:26:43 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id t40sm10519507pfg.142.2021.10.27.01.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 01:26:42 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 17:26:38 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/8] docs: counter: add edge_capture_unit_* attributes
+Message-ID: <YXkNPk65hXAgpVv3@shinobu>
+References: <20211017013343.3385923-1-david@lechnology.com>
+ <20211017013343.3385923-9-david@lechnology.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ek0MJCt6gYWt9LXH"
 Content-Disposition: inline
-In-Reply-To: <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
+In-Reply-To: <20211017013343.3385923-9-david@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-10-21 15:46:19, Zhaoyang Huang wrote:
-> On Wed, Oct 27, 2021 at 3:20 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 27-10-21 15:01:50, Huangzhaoyang wrote:
-> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > >
-> > > For the kswapd only reclaiming, there is no chance to try again on
-> > > this group while direct reclaim has. fix it by judging gfp flag.
-> >
-> > There is no problem description (same as in your last submissions. Have
-> > you looked at the patch submission documentation as recommended
-> > previously?).
-> >
-> > Also this patch doesn't make any sense. Both direct reclaim and kswapd
-> > use a gfp mask which contains __GFP_DIRECT_RECLAIM (see balance_pgdat
-> > for the kswapd part)..
-> ok, but how does the reclaiming try with memcg's min protection on the
-> alloc without __GFP_DIRECT_RECLAIM?
 
-I do not follow. There is no need to protect memcg if the allocation
-request doesn't have __GFP_DIRECT_RECLAIM because that would fail the
-charge if a hard limit is reached, see try_charge_memcg and
-gfpflags_allow_blocking check.
+--Ek0MJCt6gYWt9LXH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Background reclaim, on the other hand never breaches reclaim protection.
+On Sat, Oct 16, 2021 at 08:33:43PM -0500, David Lechner wrote:
+> This adds documentation for new counter subsystem edge_capture_unit_*
+> sysfs attributes.
+>=20
+> Signed-off-by: David Lechner <david@lechnology.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-counter | 37 +++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/=
+ABI/testing/sysfs-bus-counter
+> index 78bb1a501007..6c192c8c2b55 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-counter
+> +++ b/Documentation/ABI/testing/sysfs-bus-counter
+> @@ -59,6 +59,7 @@ What:		/sys/bus/counter/devices/counterX/countY/error_n=
+oise_available
+>  What:		/sys/bus/counter/devices/counterX/countY/function_available
+>  What:		/sys/bus/counter/devices/counterX/countY/prescaler_available
+>  What:		/sys/bus/counter/devices/counterX/countY/signalZ_action_available
+> +What:		/sys/bus/counter/devices/counterX/edge_capture_unit_prescaler_ava=
+ilable
+>  What:		/sys/bus/counter/devices/counterX/latch_mode_available
+>  What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_available
+>  What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_availa=
+ble
+> @@ -230,6 +231,10 @@ What:		/sys/bus/counter/devices/counterX/signalY/cab=
+le_fault_enable_component_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler_=
+component_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_componen=
+t_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_compon=
+ent_id
+> +What:		/sys/bus/counter/devices/edge_capture_unit_enable_component_id
+> +What:		/sys/bus/counter/devices/edge_capture_unit_latched_period_compone=
+nt_id
+> +What:		/sys/bus/counter/devices/edge_capture_unit_max_period_component_id
+> +What:		/sys/bus/counter/devices/edge_capture_unit_prescaler_component_id
+>  What:		/sys/bus/counter/devices/latch_mode_component_id
+>  What:		/sys/bus/counter/devices/unit_timer_enable_component_id
+>  What:		/sys/bus/counter/devices/unit_timer_period_component_id
+> @@ -249,6 +254,38 @@ Description:
+>  		shorter or equal to configured value are ignored. Value 0 means
+>  		filter is disabled.
+> =20
+> +What:		/sys/bus/counter/devices/edge_capture_unit_enable
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Read/write attribute that starts or stops the Edge Capture Unit.
+> +		Valid values are boolean.
+> +
+> +What:		/sys/bus/counter/devices/edge_capture_unit_latched_period
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Latched period of the Edge Capture Unit represented as a string.
+> +		The value is latched in based on the trigger selected by the
+> +		counterX/latch_mode attribute. Units are nanoseconds.
+> +
+> +What:		/sys/bus/counter/devices/edge_capture_unit_max_period
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Read/write attribute that selects the maximum period that can
+> +		be measured by the Edge Capture Unit. Units are nanoseconds.
+> +
+> +What:		/sys/bus/counter/devices/edge_capture_unit_prescaler
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Read/write attribute that selects the how the
+> +		counterX/countY/count value is scaled coming in to the Edge
+> +		Capture Unit. This acts like a clock divider, e.g. if a value
+> +		of 4 is selected, the Edge Capture Unit will measure the period
+> +		between every 4 counts.
+> +
 
-What is the actual problem you want to solve?
+I'd like to see that naming for this made more generic if possible so
+that other drivers can use these extensions in the future. For example,
+instead of the "edge_capture_unit_*" prefix, perhaps "latched_count_*"
+would be appropriate. Would this be feasible?
 
--- 
-Michal Hocko
-SUSE Labs
+William Breathitt Gray
+
+>  What:		/sys/bus/counter/devices/counterX/events_queue_size
+>  KernelVersion:	5.16
+>  Contact:	linux-iio@vger.kernel.org
+> --=20
+> 2.25.1
+>=20
+
+--Ek0MJCt6gYWt9LXH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmF5DT4ACgkQhvpINdm7
+VJIZtQ/+Mb0bJ6fZ3OKhP4XxbSLj3pMkArvOiIMgHRgycGcYnc/VhAvBTnGZgt6P
+K/Zn8pyy/e2Wn4NB+DPefeKjPfXvdNym/+dvUZ6Vj5M9caYR+B8Rgutxc/8Hio75
+95IL3T99tfyt7IzwfV5DGnQAw+8NJVYAopWum0V7a2FSMTyHO5JwHVIfj+EN942a
+MU5pfHy55gKu9K6pkoSk347O8nyvghXRpB+fJHBvezMjH77M15/u4DYRRslqW+tZ
+R/daQrhdzFmP7+hdgwG9XlE/n3qQHCnFvWMLHDY9Ro//61RppB/9/ueCkKYv65xY
+FB8doar8X65T1hlNFn5B/ANd2YN/Js0V/h8k4H+1f3xUl1AAeoOuJBzywd3F7ykN
+DCjY31Ffqo3fXLFnvaGns5OEQCD3Q9CCVg1Bhs5cuPcSZnJFBbfQvfFY7zM0Zc9G
+PC4vD5ZsWzp0+kgReYkTvDYGpovoi6teMeuQc4bjRWkBE1bKiVLQpoHJyXPWau0t
+OJV5ACGIIw89KT70VwRlgdIdkSxfagtk2F5V1eDytX9GZCOlGBtLiLqQDEdRuYO+
+fR2k48WRd+Hc2dPKl9gzfTHdlzTl4gcRYjl6T2P8fZdd0mrgtleEmf6Vxmt3mGxO
+wUYYqS12VWlKwxUMuOr/I9A469pJ0Nydsv8fwMh5jpeKGNCLc78=
+=WR06
+-----END PGP SIGNATURE-----
+
+--Ek0MJCt6gYWt9LXH--
