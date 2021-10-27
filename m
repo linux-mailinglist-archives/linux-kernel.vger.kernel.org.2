@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B5F43CC88
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EB743CC9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237871AbhJ0OoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237854AbhJ0On7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:43:59 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903AAC061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:41:34 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id y1-20020a17090a134100b001a27a7e9c8dso4928661pjf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6OXSnlnR0rRr4zd42xResiJ3HjI4vG4520z7JUuMyYs=;
-        b=BjRC0MDFBU5q9E3Xn8qZmMldFXyvZ//eySha9xAzB0jmoDoGvnBh5rZJNDCpSwdREy
-         9EoAYcD7qkeaNtvcOM9mdpbf0o5Zx8GfPrl52oPVsVupbvte1MAYXeh2gVgPvsjmKTcr
-         OvG3N8s6IdOwoiORDWmu79MSfTC8tCdjVwsKVWNIZ01jMG+JmYVN7Tn36JxeYZuyLkmP
-         l/68I6qwCJelKOJxW8ZO7A5e+myyHTZHJETfMvox2BFMDLmdkBWjqGYYnYuVXEvP/t+D
-         dTunWvGIgVZuDjHHD1Ty/XEe2DuBSz3CLrLeXdA9pKLBh6KsJK0Pre9s46e4k0Dr+ooy
-         7X+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6OXSnlnR0rRr4zd42xResiJ3HjI4vG4520z7JUuMyYs=;
-        b=VVoOV7RO6/K3h9hqHC3NjSSVjUdv+n+WiLrhc2vVUNEW4+DHhaqlyXTsW4rvYNru4i
-         cR3D7gEXNpJPd/LTq/nGqw+3DZZd1w2m5oH63EoNA/lXNHkkWfcQqyBLU4Kq5KITJnep
-         ixd5OPFKV9JP4dAULipa6JOyibz9CzttaOH0abXG2lEYt6VsRrAZWJiPSJDwuqipgIW/
-         FOUHbG7QsNGFRNGr7xdAXevnQ0wvV+mIOVWiDMbUjeb9J2nQrdqDJB2wcFUhLaMEgxwz
-         D0Eo4fSCnY27plCsUhz2M5FmQUGvBz64oJaPoN5CgdhNbEp+7KjFLy82A6P6CgkLAnPP
-         JEEg==
-X-Gm-Message-State: AOAM533HZbN7v/uAfG32mLjRP/qlBI97YMFdRmYqBpt7VSutW4Majnrd
-        cseJz8Y6WawVbd4o6k3GJY9yKQ==
-X-Google-Smtp-Source: ABdhPJwpvrRMvTZfA8g36IWigq/Ddl2lTxPKT07H9cOHEBI6XhDgd4CVWZEorIKgU9/kACcZuDTlgw==
-X-Received: by 2002:a17:902:e812:b0:13f:3be8:b15a with SMTP id u18-20020a170902e81200b0013f3be8b15amr27601253plg.49.1635345693861;
-        Wed, 27 Oct 2021 07:41:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id e9sm203521pfv.189.2021.10.27.07.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 07:41:33 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 14:41:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v2 00/43] KVM: Halt-polling and x86 APICv overhaul
-Message-ID: <YXllGfrjPX1pVUx6@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <614858dd-106c-64cc-04bc-f1887b2054d1@redhat.com>
+        id S230377AbhJ0Oqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:46:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229447AbhJ0Oqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:46:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E01E660F21;
+        Wed, 27 Oct 2021 14:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635345862;
+        bh=QkaH8i/IP3CIgA/bCVNmnPGWHjIMocsRPHDcPlLjhtw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QBDnQxRc9qXNWz75JROWosZmxmOsmsNEGEaXVE8jUNBYf26QeTA7w36x4CegZq8kX
+         3e0PmaUOkOTztgiWGxzYGAYj/nSNZWmPMxeDvJRNfNSw0oxD/r3iFzJByDP+KnpeA+
+         iBAnX/vQA3SFskmA1l5OjwZPDJbZBvNjJN0YHq72gfOzoSwt9XZ5vlOJPTMfM0IegE
+         cbA7g5Xfx6sZ9kfI7gPh6dqbVEZecZBvFkOg7WBqTT4QChasCZfq81728KLS0xm/Ed
+         Nrt8BvohV87fehXxiTjwR+b/GjrRbPnP9ZNdVjNThODvjzLr3955aWuISrUCK8eID2
+         tVaxKUDb4Lv+A==
+Received: by mail-ed1-f45.google.com with SMTP id m17so10848442edc.12;
+        Wed, 27 Oct 2021 07:44:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530DRu/A9tEkI609X7JWG0CyjPzvoxt8ZJNdZQoxuJasO69pvzmv
+        zHHlxGONvQBJAkSvn5+aeXdqNIr8J6zNWxr4eQ==
+X-Google-Smtp-Source: ABdhPJzZb8un3hSlLPdikzo4LyAdNxP2rheUbz80i2Mi4iVmyOfTj91TmAOW+jBpNU7/41eeL8Fqjsu/ZlGUzLGLsIQ=
+X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr23065885ejc.466.1635345846542;
+ Wed, 27 Oct 2021 07:44:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <614858dd-106c-64cc-04bc-f1887b2054d1@redhat.com>
+References: <20211025144718.157794-1-marcan@marcan.st> <20211025144718.157794-3-marcan@marcan.st>
+ <YXhINE00HG6hbQI4@robh.at.kernel.org> <c0f2587c-ab69-8194-e618-ce7919c1aeb1@marcan.st>
+In-Reply-To: <c0f2587c-ab69-8194-e618-ce7919c1aeb1@marcan.st>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 27 Oct 2021 09:43:54 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJbVcqy8n0EroV=nFZoJ_WAr+JbrDf-c1jso856NghC2A@mail.gmail.com>
+Message-ID: <CAL_JsqJbVcqy8n0EroV=nFZoJ_WAr+JbrDf-c1jso856NghC2A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] dt-bindings: arm: apple: Add apple,pmgr binding
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Johan Hovold <johan@kernel.org>, devicetree@vger.kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Mark Kettenis <kettenis@openbsd.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021, Paolo Bonzini wrote:
-> On 09/10/21 04:11, Sean Christopherson wrote:
-> Queued 1-20 and 22-28.  Initially I skipped 21 because I didn't receive it,
-> but I have to think more about whether I agree with it.
+On Tue, Oct 26, 2021 at 10:38 PM Hector Martin <marcan@marcan.st> wrote:
+>
+> On 27/10/2021 03.25, Rob Herring wrote:
+> > On Mon, Oct 25, 2021 at 11:47:12PM +0900, Hector Martin wrote:
+> >> +  compatible:
+> >> +    items:
+> >> +      - enum:
+> >> +          - apple,t8103-pmgr
+> >> +          - apple,t8103-minipmgr
+> >> +      - const: apple,pmgr
+> >> +      - const: syscon
+> >> +      - const: simple-mfd
+> >
+> >
+> > 'simple-mfd' means 'there's nothing in this node that any of the child
+> > nodes depend on'. You should be somewhat certain as dropping it later
+> > creates compatibility issues.
+>
+> Hmm, I see simple-mfd turns this into a bus which I guess allows child
+> nodes to be probed without the parent node doing anything special (then
+> we use syscon_node_to_regmap to get the syscon instantiated). Do you
+> have a example use case for doing this without simple-mfd?
 
-https://lkml.kernel.org/r/20211009021236.4122790-22-seanjc@google.com
+Drivers calling of_platform_populate or devm_of_platform_populate.
 
-> In reality the CMPXCHG loops can really fail just once, because they only
-> race with the processor setting ON=1.  But if the warnings were to trigger
-> at all, it would mean that something iffy is happening in the
-> pi_desc->control state machine, and having the check on every iteration is
-> (very marginally) more effective.
+That of course does mean you need a driver. We could probably make the
+syscon driver call these if needed.
 
-Yeah, the "very marginally" caveat is essentially my argument.  The WARNs are
-really there to ensure that the vCPU itself did the correct setup/clean before
-and after blocking.  Because IRQs are disabled, a failure on iteration>0 but not
-iteration=0 would mean that a different CPU or a device modified the PI descriptor.
-If that happens, (a) something is wildly wrong and (b) as you noted, the odds of
-the WARN firing in the tiny window between iteration=0 and iteration=1 are really,
-really low.
+> At this point I can't think of anything we'd need from the parent node,
+> especially if we end up using this syscon strictly for pwrstate subnodes
+> (which seems likely at this point). One thing that comes to mind is
+> telling the PMP (a coprocessor in charge of power metrics/management)
+> about some domains being turned on/off, which is apparently a thing, but
+> that wouldn't even be in this node; that'd have to be a phandle property
+> in the child nodes referencing a PMP/coprocessor node elsewhere (none of
+> which is implemented right now, and which should be backwards compatible
+> once it is).
+>
+> If it turns out we do have a dep of some sort in the end, could we just
+> have the child node driver return -EPROBE_DEFER until the parent is
+> probed and has made whatever service available? That would allow us to
+> keep simple-mfd, right?
 
-The other thing I don't like about having the WARN in the loop is that it suggests
-that something other than the vCPU can modify the NDST and SN fields, which is
-wrong and confusing (for me).  The WARNs in the loops made more sense when the
-loops ran with IRQs enabled prior to commit 8b306e2f3c41 ("KVM: VMX: avoid
-double list add with VT-d posted interrupts").  Then it would be at least plausible
-that a vCPU could mess up its own descriptor while being scheduled out/in.
+That would have saved you, but deferred probe is now a fallback to
+fw_devlink and it makes sure parent driver probes first. That works
+unless there isn't a parent driver which is often the case for
+simple-bus[1]. I think you are okay since 'syscon' means there is a
+driver.
+
+> If it works for you, I'll also just squash the two bindings into one
+> commit for the next spin, since there is a direct dependency at this
+> point and it should make things easier. Otherwise, I can just swap the
+> order if you prefer it that way.
+
+Just swapping seems like less work, but either way.
+
+Rob
+
+[1] https://lore.kernel.org/all/CAL_JsqJcsqjJBe8aULYYMkFtx8OTj2wHANZ=83VMMyJ=AEgReg@mail.gmail.com/
