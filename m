@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645FA43D09D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725C043D096
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243428AbhJ0SXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        id S243490AbhJ0SXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243471AbhJ0SW5 (ORCPT
+        with ESMTP id S238525AbhJ0SXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:22:57 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81358C061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:20:31 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id bj31so3346041qkb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:20:31 -0700 (PDT)
+        Wed, 27 Oct 2021 14:23:36 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29189C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:21:11 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id h2so3920211ili.11
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:21:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YdhI8fqzmWGcXeq1t4NkGBwtDfcAf+zoczP4+N0COBM=;
-        b=UTMB/+zSl9YaXYKS5BIRPUFlja5Yb/zUUzpmDA3Q6nOQoKY09lCDDzzDyx8Pp/MWRP
-         NUY2AUwhZ/rDft1ftVxAnklTJ7lhok4v77RoW45TjuaaJGHIoEXmpKp8FDFttj5rWdTY
-         6djh9GLZu1HZceh0sS3yVz2gVbOwe8Lz3vaPVkQ1TV+UsBqd0ePw8IWfrLbX1uuQKEox
-         f+6wFrOgLpK5fzd0FP8xD+/nZrYziatzpKvJ9ueINRtteSFGOb44Ym7W2YFl36zKQdrK
-         XSusEVPjEfh104pL6Ct7uK580QctaqhsnpqQISSG9diA5WXNUMj3L3XUwIcOqaqbdDmm
-         zX9A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z0JfEEN3NrvM+koVgKkQP08yJNcZWbT/bek/nNBqnWY=;
+        b=o5GZZjcE0JpY0ACMD/cpiyniP/1Qu914TrG4NLFbUDKZjsJ0EYuqrNLhs1o3QZdILP
+         1jR8hp77/yegtSY5LuZB1yrEYjLCYKvWr3dKTcYym48grOEKuInyE6QadDnaCUlIpzFk
+         ISefsuXnZYgPLjfpCHqszN6GwUqXaAoGFmibtc6Rog41/hccioGCvyPR4ZBItaloWRBL
+         wNch8xh6fvo9o+arclkvC8uZMa0HdjTy2m6ftRjbp8gs1qR9uqTk4JMkTOHIXYrGwSJu
+         QmmlOMnxHLHCj9NdTvjy9yPjvKRghvi7a2ihTxr+cu9OPPytPI0XH6J+YWkRFtuJSQcv
+         kb6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=YdhI8fqzmWGcXeq1t4NkGBwtDfcAf+zoczP4+N0COBM=;
-        b=QBL3+qcs4eaxJVFanNuMT1MDf5tIRClRWo8a/W2/MQS+9BSXCl1WdfN70j92BHxgio
-         9y1qS2Fr5v2tXA7RJawXcccq9ffW3mpwmlqix++aQEnkPwymYYwwhrA8Frdr4sYP58pF
-         M5blIn0orWkcF+bmJGUau0b6j/5aWc6V55Vc6J/wan/y83QkfAq7I7PRRiX2wHCFUa/1
-         XLmq1yTKSTk04lKb8l+kMrrJcjq0Msd9XI938fl687DSgZkWPVCmDIBXyvDnHHOmO180
-         QzAErSzs38JXP45hpPvolW0L5cb0IlnpAdTdMoNNgPSEGNRbwcwuBY5k7scbclNgh9eT
-         pJvw==
-X-Gm-Message-State: AOAM532XV2i7J4X7kLhIKDH3xPEh5XKJlQXcFIH2vcTetN6E343vGegj
-        o4fkHATltPGwOg1J+UDPDQ==
-X-Google-Smtp-Source: ABdhPJxHCbQ5fxTJTcJ15Ko66SwsXysTHrVqW3EAxaWenw0fZN9tHIVGY90nR6tCxWS2qsbTXO0tQQ==
-X-Received: by 2002:a05:620a:28c9:: with SMTP id l9mr25620637qkp.360.1635358830392;
-        Wed, 27 Oct 2021 11:20:30 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id v17sm468522qkl.123.2021.10.27.11.20.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z0JfEEN3NrvM+koVgKkQP08yJNcZWbT/bek/nNBqnWY=;
+        b=EG0WwbAI6nwIBy9qOzzn7icRMddBw3C4IKH2ezCxbusGALHR16dCG4vrK8VxSgsA8L
+         IGXFFoKomvLTwESBP4Lcw/Fy692L6rjOALHptsL+GlYXvX0WuG5E2tCDwYyLbptFR115
+         Nei20hyE+trjzmKXYN5EdqCGXs7nsZqHSk5sBua+TdYtDJpepwYxEe00TV90Zfi8jdOV
+         5n+gufqpDEUQu3w7FRcIF5xq0ZLHKoouAhL43Hr1rI8b/GiEjILo9wSP7qnveQiIWO8/
+         B7u+g6FhCRhCrtZfw/2GUP7mrkCFxjhPPQL2PzXAA9QL+JSmSZt44e9NCT4iZUafHCnb
+         heEA==
+X-Gm-Message-State: AOAM530uC+40SkhmL/MDmukLJxbBmO8Yh024YyTL9LL8ankzNS7LSncX
+        0LmyNkt8+aEmjwhQaru+Hxs=
+X-Google-Smtp-Source: ABdhPJwzUGpiZjCcUgCB9fnRBnMybvIPpEYdnlR94d9qhLwa5ZjlsNM6c88GT8KAB5x5W7lMssiKtQ==
+X-Received: by 2002:a05:6e02:1a2f:: with SMTP id g15mr18235304ile.8.1635358870367;
+        Wed, 27 Oct 2021 11:21:10 -0700 (PDT)
+Received: from localhost.localdomain ([2600:1008:b008:ef4c:8cf4:62d8:2368:a681])
+        by smtp.googlemail.com with ESMTPSA id l13sm362050ilh.14.2021.10.27.11.21.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 11:20:29 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:ece2:c5c7:8266:ec0b])
-        by serve.minyard.net (Postfix) with ESMTPSA id B6F531800B4;
-        Wed, 27 Oct 2021 18:20:28 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 13:20:27 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Anton Lundin <glance@acc.umu.se>,
-        openipmi-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [Openipmi-developer] Issue with panic handling and ipmi
-Message-ID: <20211027182027.GG2744412@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210916163945.GY545073@minyard.net>
- <20210917101419.GE108031@montezuma.acc.umu.se>
- <20210917120758.GA545073@minyard.net>
- <20210917125525.GF108031@montezuma.acc.umu.se>
- <20210917131916.GB545073@minyard.net>
- <20210917132648.GG108031@montezuma.acc.umu.se>
- <20210920113802.GC545073@minyard.net>
- <20210920141231.GH108031@montezuma.acc.umu.se>
- <20210920144146.GD545073@minyard.net>
- <YXmTbYhFvDJ0m5KX@sashalap>
+        Wed, 27 Oct 2021 11:21:10 -0700 (PDT)
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     goldstein.w.n@gmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] x86/fpu: Add helper function for tracking AVX512 status
+Date:   Wed, 27 Oct 2021 13:21:02 -0500
+Message-Id: <20211027182103.2569136-1-goldstein.w.n@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
+References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXmTbYhFvDJ0m5KX@sashalap>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:59:09PM -0400, Sasha Levin wrote:
-> On Mon, Sep 20, 2021 at 09:41:46AM -0500, Corey Minyard wrote:
-> > On Mon, Sep 20, 2021 at 04:12:31PM +0200, Anton Lundin wrote:
-> > > On 20 September, 2021 - Corey Minyard wrote:
-> > > 
-> > > > Well, that was dumb.  Fix follows...
-> > > >
-> > > > Thanks for working on this.  On your approval, I'll send this to Linus.
-> > > 
-> > > Winner winner chicken dinner!
-> > > 
-> > > This fixes the issue, and now panic timer works, and we get crashdumps
-> > > to pstore.
-> > > 
-> > > Great job, I approve!
-> > > 
-> > > 
-> > > Thanks for your help getting this fixed.
-> > 
-> > Thanks for reporting this.  I'll get the patch in.
-> 
-> Hey Corey,
-> 
-> Just checking in to see if this patch was lost; I haven't seen it in
-> Linus's tree just yet.
+Add a new helper function 'fpu_update_avx_timestamp' to perform
+the logic from tracking AVX512 feature use.
 
-I generally wait until the merge window for changes.  It's too late in
-the process for a patch now unless it's really critical.
+Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
+---
+ arch/x86/include/asm/fpu/xstate.h |  1 +
+ arch/x86/kernel/fpu/core.c        |  6 ++----
+ arch/x86/kernel/fpu/xstate.c      | 13 +++++++++++++
+ 3 files changed, 16 insertions(+), 4 deletions(-)
 
-rc7 is out now, the merge window should be opening soon.
+diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+index 109dfcc75299..fe84ac5fb039 100644
+--- a/arch/x86/include/asm/fpu/xstate.h
++++ b/arch/x86/include/asm/fpu/xstate.h
+@@ -134,6 +134,7 @@ extern u64 xstate_fx_sw_bytes[USER_XSTATE_FX_SW_WORDS];
+ extern void __init update_regset_xstate_info(unsigned int size,
+ 					     u64 xstate_mask);
+ 
++void fpu_update_avx_timestamp(struct fpu *fpu);
+ void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
+ int xfeature_size(int xfeature_nr);
+ int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index 7ada7bd03a32..6dbf3ee642f9 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -102,11 +102,9 @@ void save_fpregs_to_fpstate(struct fpu *fpu)
+ 		os_xsave(&fpu->state.xsave);
+ 
+ 		/*
+-		 * AVX512 state is tracked here because its use is
+-		 * known to slow the max clock speed of the core.
++		 * Track of the state of desired avx related xfeatures.
+ 		 */
+-		if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
+-			fpu->avx512_timestamp = jiffies;
++		fpu_update_avx_timestamp(fpu);
+ 		return;
+ 	}
+ 
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index c8def1b7f8fb..00b495914be2 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1245,6 +1245,19 @@ void xrstors(struct xregs_state *xstate, u64 mask)
+ 	WARN_ON_ONCE(err);
+ }
+ 
++/*
++ * Track of the state of desired avx architecture features.
++ */
++void fpu_update_avx_timestamp(struct fpu *fpu)
++{
++	/*
++	 * AVX512 state is tracked here because its use is known to slow
++	 * the max clock speed of the core.
++	 */
++	if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
++		fpu->avx512_timestamp = jiffies;
++}
++
+ #ifdef CONFIG_PROC_PID_ARCH_STATUS
+ /*
+  * Report the amount of time elapsed in millisecond since last AVX512
+-- 
+2.25.1
 
--corey
