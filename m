@@ -2,71 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7313743D6C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B764543D6C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 00:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhJ0Wih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 18:38:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229484AbhJ0Wig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 18:38:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F29610CB;
-        Wed, 27 Oct 2021 22:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1635374170;
-        bh=zeRXlf3fAzntvGnBMpDwMgonqEP9pBriRbcBLNzhnE8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=voGDb2zXrSVNrVTxvYv+5pMhCPRA3F8fwGVSJ7e4sGicSa89iz8fbmPQ5IDUj6bbB
-         /7BX5p6IZvMH1BZP+4LX56HqXYw5bE76pXVRLoi98OHqHA5a8vD16kOneRNlBRbsGG
-         uykElR9RFUVO+G11QXqJr8RFcQrPCNZlTWAsud4Q=
-Date:   Wed, 27 Oct 2021 15:36:08 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH memcg v3 3/3] memcg: prohibit unconditional exceeding
- the limit of dying tasks
-Message-Id: <20211027153608.9910f7db99d5ef574045370e@linux-foundation.org>
-In-Reply-To: <YXZ6qaMJBomVfV8O@dhcp22.suse.cz>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
-        <cover.1634994605.git.vvs@virtuozzo.com>
-        <8f5cebbb-06da-4902-91f0-6566fc4b4203@virtuozzo.com>
-        <YXZ6qaMJBomVfV8O@dhcp22.suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S230126AbhJ0WjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 18:39:02 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:41100 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhJ0WjB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 18:39:01 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211027223633epoutp026e3d0b84fe12f3a14a189a10ddd107de~yBCn-BzD30115301153epoutp02s
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:36:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211027223633epoutp026e3d0b84fe12f3a14a189a10ddd107de~yBCn-BzD30115301153epoutp02s
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635374193;
+        bh=dRzUM7qo4C+5CUwqX2psGsQ+m68DYYRc41OJ7o055vs=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=FhG3qRqzlEzLt3J81UtNATnNiJPv1vtNdTXj6kLveL2T2QVtUztW0RAHT3NMqWcry
+         N20XfYkqyQqUWCWyZVj9/XEvoXdnNFlkotHfEW/MbzKWnKxMhaMSqb25NU+V7IlzfW
+         /GdzLv/L6RbrJTln/9i9iZCuKJHI9jTApqINdv+U=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20211027223632epcas2p18cdc62a75b8919c3e6c8a2628252a0c9~yBCm9eQL00292902929epcas2p1W;
+        Wed, 27 Oct 2021 22:36:32 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.100]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Hfk7S26DHz4x9Pr; Wed, 27 Oct
+        2021 22:36:20 +0000 (GMT)
+X-AuditID: b6c32a46-a25ff70000002722-76-6179d4631d28
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        67.65.10018.364D9716; Thu, 28 Oct 2021 07:36:20 +0900 (KST)
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Keoseong Park <keosung.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+Date:   Thu, 28 Oct 2021 07:36:19 +0900
+X-CMS-MailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIJsWRmVeSWpSXmKPExsWy7bCmhW7KlcpEg2lTmC0ezNvGZvHy51U2
+        i2kffjJbvDykabHqQbjFnLMNTBaLbmxjsjh+8h2jxeVdc9gsuq/vYLNYfvwfkwO3x+Ur3h47
+        Z91l95iw6ACjx8ent1g8+rasYvT4vEnOo/1AN1MAe1S2TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8
+        c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QhUoKZYk5pUChgMTiYiV9O5ui/NKSVIWM/OIS
+        W6XUgpScAvMCveLE3OLSvHS9vNQSK0MDAyNToMKE7IyFLx6wFZwWrPi1fRtLA+Npvi5GTg4J
+        AROJOc1PWLoYuTiEBHYwSnTfecXcxcjBwSsgKPF3hzBIjbCAk0Tj9smsILaQgJLE+ouz2CHi
+        ehK3Hq5hBLHZBHQkpp+4zw4yR0TgDZPE0oNHWUASzAJ1Ervn/GGDWMYrMaP9KQuELS2xfflW
+        RghbQ+LHsl5mCFtU4ubqt+ww9vtj86FqRCRa752FqhGUePBzN1RcUuLY7g9MEHa9xNY7vxhB
+        jpAQ6GGUOLzzFitEQl/iWsdGsMW8Ar4S21tPgdksAqoSyx9ehRrkIrF07R9WiKPlJba/nQMO
+        CGYBTYn1u/RBTAkBZYkjt1hgXmnY+Jsdnc0swCfRcfgvXHzHvCdQp6lJrPu5nglijIzErXmM
+        ExiVZiECehaStbMQ1i5gZF7FKJZaUJybnlpsVGAEj9vk/NxNjOC0quW2g3HK2w96hxiZOBgP
+        MUpwMCuJ8F6eV54oxJuSWFmVWpQfX1Sak1p8iNEU6OGJzFKiyfnAxJ5XEm9oYmlgYmZmaG5k
+        amCuJM5rKZqdKCSQnliSmp2aWpBaBNPHxMEp1cDkN+dY4jeltQpfjOTvhk8tUlJeVl4wwSLy
+        ZUi3kKDF9dQFQpJzauqthZ5I/vTsn8bx3zB16zHeHVtfe3KEd87wv97CFLTiO4O8Q7f6lLi8
+        Hrvog/xNrRXPblRNLDO6W8bYciHBL1PSkmWlp9z+549+lB8Wj4v9NW1Ca0zHW4lPFmcvyXB+
+        lvi277H6qXaGjyGbdXRP6WZkX5evs25v3XBpLrNozrLPeVu+Ce+9HB/b53xtlrfjvovz7Bht
+        /p75zCKZtf1QcuXenYpxl5eyxszjvfFF2uUS66q452rdz0WjZki0N3c4uDz89qL23J/bFwpT
+        LdpzD/30m15n8XluX0OzzpvX7oEfuGOXaFimflJiKc5INNRiLipOBADoXoNKNAQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
+References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 11:36:41 +0200 Michal Hocko <mhocko@suse.com> wrote:
+This patch addresses the issue of using the wrong API to create a
+pre_request for HPB READ.
+HPB READ candidate that require a pre-request will try to allocate a
+pre-request only during request_timeout_ms (default: 0). Otherwise, it is
+passed as normal READ, so deadlock problem can be resolved.
 
-> My view on stable backport is similar to the previous patch. If we want
-> to have it there then let's wait for some time to see whether there are
-> any fallouts as this patch depends on the PF_OOM change.
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 11 +++++------
+ drivers/scsi/ufs/ufshpb.h |  1 +
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-It's strange that [1/3] doesn't have cc:stable, but [2/3] and [3/3] do
-not.  What is the thinking here?
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 02fb51ae8b25..3117bd47d762 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+ 				 read_id);
+ 	rq->cmd_len = scsi_command_size(rq->cmd);
+ 
+-	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
+-		return -EAGAIN;
++	blk_execute_rq_nowait(NULL, req, true, ufshpb_pre_req_compl_fn);
+ 
+ 	hpb->stats.pre_req_cnt++;
+ 
+@@ -2315,19 +2314,19 @@ struct attribute_group ufs_sysfs_hpb_param_group = {
+ static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
+ {
+ 	struct ufshpb_req *pre_req = NULL, *t;
+-	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
+ 	int i;
+ 
+ 	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
+ 
+-	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
+-	hpb->throttle_pre_req = qd;
++	hpb->pre_req = kcalloc(HPB_INFLIGHT_PRE_REQ, sizeof(struct ufshpb_req),
++			       GFP_KERNEL);
++	hpb->throttle_pre_req = HPB_INFLIGHT_PRE_REQ;
+ 	hpb->num_inflight_pre_req = 0;
+ 
+ 	if (!hpb->pre_req)
+ 		goto release_mem;
+ 
+-	for (i = 0; i < qd; i++) {
++	for (i = 0; i < HPB_INFLIGHT_PRE_REQ; i++) {
+ 		pre_req = hpb->pre_req + i;
+ 		INIT_LIST_HEAD(&pre_req->list_req);
+ 		pre_req->req = NULL;
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index a79e07398970..411a6d625f53 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -50,6 +50,7 @@
+ #define HPB_RESET_REQ_RETRIES			10
+ #define HPB_MAP_REQ_RETRIES			5
+ #define HPB_REQUEUE_TIME_MS			0
++#define HPB_INFLIGHT_PRE_REQ			4
+ 
+ #define HPB_SUPPORT_VERSION			0x200
+ #define HPB_SUPPORT_LEGACY_VERSION		0x100
+-- 
+2.25.1
 
-I expect we'd be OK with merging these into 5.16-rc1.  This still gives
-another couple of months in -rc to shake out any problems.  But I
-suspect the -stable maintainers will merge and release the patches
-before they are released in 5.16.
-
-In which case an alternative would be not to mark these patches
-cc:stable and to somehow remember to ask the -stable maintainers to
-merge them after 5.16 has been on the streets for a suitable period.
-
-Greg, thoughts?
