@@ -2,124 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D505543CE4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0281943CE50
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242927AbhJ0QKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
+        id S242899AbhJ0QLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242912AbhJ0QKl (ORCPT
+        with ESMTP id S242911AbhJ0QK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:10:41 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02DAC061225
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:08:15 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id gn3so2451263pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:08:15 -0700 (PDT)
+        Wed, 27 Oct 2021 12:10:59 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF51C061745
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:08:33 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id o12so7646758ybk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:08:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nuCG2sDmKSazCUE8+q7TBUWWroJna3waN17Ediudyfo=;
-        b=WayoYs/G9RdOkLoLrW/BVqQ6VHPjU7g6BiG68joHyMmGiaL20yIAm/sjYdgZ0AcKJs
-         34UBgRu//I/mwxBVohule4Yths3kAXuGugB26iPsHfMV54dBZzCrAdfuAma3wIvwLeK6
-         5skY2C5JFSSaU21tpOr7VxrfykS9z8ABV/qEMvBoTKNuCyH2eBt8P1cnnpOyhrcPdGo+
-         3TUr8nLyCGNKiIm+cC1pm1SLzFfEEKhREJTeZJJEMdJpd9SDcl6sMun3hCIhWgt/3aha
-         W9nnj4Eu9amjlrLiAUIeygQ3FCEkFDEH7LYoF5wU+epaInjt/QY5/ndeDbqHbN0vOY3t
-         ydmw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+7yM+AHVg6/RWwPVXoUMFU+BAoYxNZ6FELdoFv8vPVY=;
+        b=jam13Ei0ZH0rmnEJQGz2oG7g5UJE6hddfGqNF9ht5JQ+AMTvawIvs2IlZEP15mrB8I
+         4Vb2WELl2sb+a8KiVkJxo21BQb8RmLmCXaAG3RZVsaWXnfLYRZBgE+NYnDb7fylVrVW+
+         aVveT6W+Z5ExMRWMYTo1j2GEkQK+b6zBHkgEzEB6XwHBRw98PDkazY5vkMfnt/uKBgJ+
+         k+ZG/MFiLjtd8w4m1+CBAn413mqp2pPJrigcXqzuwjTfe1S0J8GMx5VqnQWaMknlleuX
+         pTHNvzis3he35IfamTHEUyzyNdSqAOGalCHjxrvlRJ2iQ6AaYVWgIBi7JdokemJnsocR
+         h6dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nuCG2sDmKSazCUE8+q7TBUWWroJna3waN17Ediudyfo=;
-        b=GLXX+r+ZnV+tE6r9ocMhijwDlILpGedQ0h3J0yj13WlgAF0ql3ZzA+pIhGy6TAKbi1
-         H4KMz90ini8Re1fasJQNf0PGItmQ8TWaxSv9OzTEryi3tdEOdp4sVW+jDq3aQwjBnVPk
-         JWBfQoFdRffQ5R8ywv8Toc17R0WS+eigq93vrryz3j8DiuXXCeuoHjhslzitQaRgji+m
-         0MqHE4QGExtljFci0CHwMqn/dc0hQimYxP33Sqp898v6BRUL3DMkNl9BmhkqK3/5QfYu
-         vBWDe/VFQe4YQSpLhWPXqXkvWI4nIvEBdv3Hi7heY5Au50yksITH+X9R6gE1ixMnmxH+
-         E8CA==
-X-Gm-Message-State: AOAM530edhbSpssCln6f4SikayJDo60uiK4/xtKWoP8c0kfdGcStsnyE
-        Yq6zeJqqyvmEAxrdYXL8LxvSTA==
-X-Google-Smtp-Source: ABdhPJyPOfADHe2BvEKrk8mpN6Tt9+dFmmc+qUaNZEHu6/XAOEzQt/0dcBcXvuMjJIUFdj/Jqau95A==
-X-Received: by 2002:a17:90b:3ecc:: with SMTP id rm12mr6856073pjb.48.1635350894901;
-        Wed, 27 Oct 2021 09:08:14 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id lb5sm205466pjb.11.2021.10.27.09.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 09:08:14 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 16:08:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v2 35/43] KVM: SVM: Signal AVIC doorbell iff vCPU is in
- guest mode
-Message-ID: <YXl5anv0Lyjx1cws@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <20211009021236.4122790-36-seanjc@google.com>
- <0333be2a-76d8-657a-6c82-3bb5c9ff2e3b@redhat.com>
- <YXlrEWmBohaDXmqL@google.com>
- <185502d7-861e-fa5c-b225-419710fe77ed@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+7yM+AHVg6/RWwPVXoUMFU+BAoYxNZ6FELdoFv8vPVY=;
+        b=necuMKq/+m5IWy3jSzlec9z9WBVXHCsnhzrZ+NHr2JBDwgERVhZ8Vo6egyLv06sd/g
+         kXC4EAG7+ceR556+tmvprx2sFErf73vDwbw06LnbUi/V9p+ifiEv+CMCsOvqoJy+Hhuj
+         wwk1TP6Ws5GsTZpHBtzbOpFzp99OmZOBNSDQWqzlsufKgKPOwx9VSiwbETpuo/FZU4cR
+         Y1jIuzY4Vd7HFOIXA8rS1upWLtLVnH6qqRHjbggdtNSZX0/gAZe4FhLnWEOlOqt0ag10
+         33EumjU7IddvNN8bdg/O9RE/Wpk+qYOqic+3eC9wajFnB9WkDv3gBNlpj6M0QKvrt85C
+         xQmg==
+X-Gm-Message-State: AOAM532Vbbk1VtITcKBTnIIus8cIW+4jIW3PQyzmLyh/0b4MKqIIBCrU
+        ioFelKqA1g4ielGOSP/ap9C1Kbok/spggFscm83M2g==
+X-Google-Smtp-Source: ABdhPJw/n7XwHkFkI9fOQmbZIV5nvoItVjlZ5jw4xeYJ3ZltRS5KLuUCkRrnZKnwCUWhrxfvAaiFxm6E/iWN3dKdn7k=
+X-Received: by 2002:a25:8411:: with SMTP id u17mr33162493ybk.376.1635350912546;
+ Wed, 27 Oct 2021 09:08:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <185502d7-861e-fa5c-b225-419710fe77ed@redhat.com>
+References: <20211022014658.263508-1-surenb@google.com> <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+ <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 27 Oct 2021 09:08:21 -0700
+Message-ID: <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021, Paolo Bonzini wrote:
-> On 27/10/21 17:06, Sean Christopherson wrote:
-> > > Does this still need to check the "running" flag?  That should be a strict
-> > > superset of vcpu->mode == IN_GUEST_MODE.
-> > 
-> > No.  Signalling the doorbell when "running" is set but the vCPU is not in the
-> > guest is just an expensive nop.  So even if KVM were to rework its handling of
-> > "running" to set the flag immediately before VMRUN and clear it immediately after,
-> > keying off IN_GUEST_MODE and not "running" would not be wrong, just sub-optimal.
-> > 
-> > I doubt KVM will ever make the "running" flag super precise, because keeping the
-> > flag set when the vCPU is loaded avoids VM-Exits on other vCPUs due to undelivered
-> > IPIs.
-> 
-> Right, so should we drop the "if (running)" check in this patch, at the same
-> time as it's adding the IN_GUEST_MODE check?
+On Fri, Oct 22, 2021 at 10:38 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Fri, Oct 22, 2021 at 1:03 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 21-10-21 18:46:58, Suren Baghdasaryan wrote:
+> > > Race between process_mrelease and exit_mmap, where free_pgtables is
+> > > called while __oom_reap_task_mm is in progress, leads to kernel crash
+> > > during pte_offset_map_lock call. oom-reaper avoids this race by setting
+> > > MMF_OOM_VICTIM flag and causing exit_mmap to take and release
+> > > mmap_write_lock, blocking it until oom-reaper releases mmap_read_lock.
+> > > Reusing MMF_OOM_VICTIM for process_mrelease would be the simplest way to
+> > > fix this race, however that would be considered a hack. Fix this race
+> > > by elevating mm->mm_users and preventing exit_mmap from executing until
+> > > process_mrelease is finished. Patch slightly refactors the code to adapt
+> > > for a possible mmget_not_zero failure.
+> > > This fix has considerable negative impact on process_mrelease performance
+> > > and will likely need later optimization.
+> >
+> > I am not sure there is any promise that process_mrelease will run in
+> > parallel with the exiting process. In fact the primary purpose of this
+> > syscall is to provide a reliable way to oom kill from user space. If you
+> > want to optimize process exit resp. its exit_mmap part then you should
+> > be using other means. So I would be careful calling this a regression.
+> >
+> > I do agree that taking the reference count is the right approach here. I
+> > was wrong previously [1] when saying that pinning the mm struct is
+> > sufficient. I have completely forgot about the subtle sync in exit_mmap.
+> > One way we can approach that would be to take exclusive mmap_sem
+> > throughout the exit_mmap unconditionally.
+>
+> I agree, that would probably be the cleanest way.
+>
+> > There was a push back against
+> > that though so arguments would have to be re-evaluated.
+>
+> I'll review that discussion to better understand the reasons for the
+> push back. Thanks for the link.
 
-LOL, I think we have a Three^WTwo Stooges routine going on.  This patch does
-remove avic_vcpu_is_running() and replaces it with the vcpu->mode check.  Or am
-I completely misunderstanding what your referring to?
+Adding Kirill and Andrea.
 
--       if (avic_vcpu_is_running(vcpu)) {
-+       /*
-+        * Signal the doorbell to tell hardware to inject the IRQ if the vCPU
-+        * is in the guest.  If the vCPU is not in the guest, hardware will
-+        * automatically process AVIC interrupts at VMRUN.
-+        */
-+       if (vcpu->mode == IN_GUEST_MODE) {
-                int cpu = READ_ONCE(vcpu->cpu);
+I had some time to dig some more. The latency increase is definitely
+coming due to process_mrelease calling the last mmput and exit_aio is
+especially problematic. So, currently process_mrelease not only
+releases memory but does more, including waiting for io to finish.
+
+Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
+to me the most semantically correct way forward and the pushback is on
+the basis of regressing performance of the exit path. I would like to
+measure that regression to confirm this. I don't have access to a big
+machine but will ask someone in another Google team to try the test
+Michal wrote here
+https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
+a server with and without a custom patch.
+If the regression is real, then I think we could keep the "if
+(unlikely(mm_is_oom_victim(mm)))" condition but wrap free_pgtables
+with conditional mmap_write_lock. To me this is cleaner because it
+clearly shows that we are trying to prevent free_pgtables from racing
+with any mm readers (current mmap_write_lock(); mmap_write_unlock()
+sequence needs a comment section to explain why this is needed). In
+that case I would need to reuse MMF_OOM_VICTIM in process_mrelease to
+avoid postponing the exit_mmap, like oom-reaper does. Maybe we could
+rename MMF_OOM_VICTIM / MMF_OOM_SKIP to something like MMF_RELEASING /
+MMF_RELEASED to make them more generic and allow their use outside of
+oom-killer? Again, this is a fallback plan in case unconditional
+mmap_write_lock indeed regresses the exit path.
+Any comments/suggestions?
+
+
+>
+> >
+> > [1] http://lkml.kernel.org/r/YQzZqFwDP7eUxwcn@dhcp22.suse.cz
+> >
+> > That being said
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+>
+> Thanks!
+>
+> >
+> > Thanks!
+> >
+> > > Fixes: 884a7e5964e0 ("mm: introduce process_mrelease system call")
+> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > > ---
+> > >  mm/oom_kill.c | 23 ++++++++++++-----------
+> > >  1 file changed, 12 insertions(+), 11 deletions(-)
+> > >
+> > > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> > > index 831340e7ad8b..989f35a2bbb1 100644
+> > > --- a/mm/oom_kill.c
+> > > +++ b/mm/oom_kill.c
+> > > @@ -1150,7 +1150,7 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> > >       struct task_struct *task;
+> > >       struct task_struct *p;
+> > >       unsigned int f_flags;
+> > > -     bool reap = true;
+> > > +     bool reap = false;
+> > >       struct pid *pid;
+> > >       long ret = 0;
+> > >
+> > > @@ -1177,15 +1177,15 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> > >               goto put_task;
+> > >       }
+> > >
+> > > -     mm = p->mm;
+> > > -     mmgrab(mm);
+> > > -
+> > > -     /* If the work has been done already, just exit with success */
+> > > -     if (test_bit(MMF_OOM_SKIP, &mm->flags))
+> > > -             reap = false;
+> > > -     else if (!task_will_free_mem(p)) {
+> > > -             reap = false;
+> > > -             ret = -EINVAL;
+> > > +     if (mmget_not_zero(p->mm)) {
+> > > +             mm = p->mm;
+> > > +             if (task_will_free_mem(p))
+> > > +                     reap = true;
+> > > +             else {
+> > > +                     /* Error only if the work has not been done already */
+> > > +                     if (!test_bit(MMF_OOM_SKIP, &mm->flags))
+> > > +                             ret = -EINVAL;
+> > > +             }
+> > >       }
+> > >       task_unlock(p);
+> > >
+> > > @@ -1201,7 +1201,8 @@ SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> > >       mmap_read_unlock(mm);
+> > >
+> > >  drop_mm:
+> > > -     mmdrop(mm);
+> > > +     if (mm)
+> > > +             mmput(mm);
+> > >  put_task:
+> > >       put_task_struct(task);
+> > >  put_pid:
+> > > --
+> > > 2.33.0.1079.g6e70778dc9-goog
+> >
+> > --
+> > Michal Hocko
+> > SUSE Labs
