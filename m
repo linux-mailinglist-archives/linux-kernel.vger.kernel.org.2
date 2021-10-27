@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A7A43C3BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C61643C3C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240449AbhJ0HXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:23:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240466AbhJ0HXa (ORCPT
+        id S240459AbhJ0HXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:23:45 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:38710 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240460AbhJ0HXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:23:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635319265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gce9oVMY0zq8KDp8Fp86o9qyEruiLkF3GO4tnEsUK/s=;
-        b=bzYNjeYirvdQMv4UPj14NsO27LKC5yPuIR4n7G4J2JEUnCs/873KdkWqfKdhRC2fI8qnGt
-        CuyhLu0TWkA1yT4U5GOkqScIS4lhdCNIbECwPFYxuUkNiwOUEUL8bKN9aMr9h6bx4M0EMn
-        6u8B8dbaBlOIyIznpg+XhZ3uOAd8B5A=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231--CxOP0yeNuGrYHR7PU_agw-1; Wed, 27 Oct 2021 03:21:04 -0400
-X-MC-Unique: -CxOP0yeNuGrYHR7PU_agw-1
-Received: by mail-wr1-f70.google.com with SMTP id u15-20020a5d514f000000b001687ebddea3so316936wrt.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:21:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gce9oVMY0zq8KDp8Fp86o9qyEruiLkF3GO4tnEsUK/s=;
-        b=01wve0Yv5+u+tQbkRqGMKRTSOLs7uKmmI5Gd6fszsFkd3ir77hDcnWPSj6fUhCcwV4
-         7H9JlupwltkAPYR3MJWdBgomxJ+5NAur7Mq3Y8VYjUYGCld5nK5J08fCZi9abcFwbSnV
-         +EtcvQUdZ98wO+k4jpfdda5NadA7KHTzME0FA9HBcp2VE4t0ZIea+cpkSmiXEhN64i25
-         ucS8HwMCsU+ajzAcgFw2+n5X1AkBCy0ptQSn1F8P+nfVRhaOKOv6ecGnP7g9iJ/qvzIS
-         ecm0LQfSVU4cF6QqeUS8uqdtFTphr5SkgTMx8eycnI1T0a911ZhHSHpzuFXzwU6LlnA7
-         2VDQ==
-X-Gm-Message-State: AOAM532CcY8mv4xae8YffrtfjwJim+UlqRBxTOD4UagIZE+QYcVpZxMk
-        2UwGj9cx2ghKnJ62XOR1ssKvAWH0903BMyTqidnv1WePmoMWaMobqSmiZQDtluIXkTAVX2SkB5f
-        w5RudqhKzZJM0W8+yrcAlDtncSjLvA5nlKKhsVvGRs7xCIUfG6wKlIohYFQGJEg+cI7GMlDIp+K
-        A=
-X-Received: by 2002:a5d:64ec:: with SMTP id g12mr38031074wri.140.1635319262737;
-        Wed, 27 Oct 2021 00:21:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx2QZl4wgpE3MGzR+UZM6wz0rF26X0UVEKfVH7zxog9HKxoxD4LYrPBsVqm8Yi97HpTOeg4jw==
-X-Received: by 2002:a5d:64ec:: with SMTP id g12mr38031038wri.140.1635319262521;
-        Wed, 27 Oct 2021 00:21:02 -0700 (PDT)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id r1sm279858wmq.15.2021.10.27.00.21.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 00:21:02 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Dan=20Hor=C3=A1k?= <dan@danny.cz>,
-        "Justin M . Forbes" <jforbes@fedoraproject.org>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm: Make DRM_FBDEV_EMULATION deps more robust to fix linker errors
-Date:   Wed, 27 Oct 2021 09:20:44 +0200
-Message-Id: <20211027072044.4105113-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Wed, 27 Oct 2021 03:23:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=cuibixuan@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Utrsrjs_1635319253;
+Received: from VM20210331-25.tbsite.net(mailfrom:cuibixuan@linux.alibaba.com fp:SMTPD_---0Utrsrjs_1635319253)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 15:20:57 +0800
+From:   Bixuan Cui <cuibixuan@linux.alibaba.com>
+To:     kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.or, linux-kernel@vger.kernel.org
+Cc:     anup.patel@wdc.com, atish.patra@wdc.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        cuibixuan@linux.alibaba.com
+Subject: [PATCH -next] RISC-V: KVM: fix boolreturn.cocci warnings
+Date:   Wed, 27 Oct 2021 15:20:53 +0800
+Message-Id: <1635319253-100581-1-git-send-email-cuibixuan@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enabling the CONFIG_DRM_FBDEV_EMULATION Kconfig symbol can lead to linker
-errors, if CONFIG_DRM_KMS_HELPER is built-in but CONFIG_FB as a module.
+Fix boolreturn.cocci warnings:
+./arch/riscv/kvm/mmu.c:603:9-10: WARNING: return of 0/1 in function
+'kvm_age_gfn' with return type bool
+./arch/riscv/kvm/mmu.c:582:9-10: WARNING: return of 0/1 in function
+'kvm_set_spte_gfn' with return type bool
+./arch/riscv/kvm/mmu.c:621:9-10: WARNING: return of 0/1 in function
+'kvm_test_age_gfn' with return type bool
+./arch/riscv/kvm/mmu.c:568:9-10: WARNING: return of 0/1 in function
+'kvm_unmap_gfn_range' with return type bool
 
-Because in that case the drm_kms_helper.o object will have references to
-symbols that are defined in the fb.ko module, i.e:
-
-  $ make bzImage modules
-    DESCEND objtool
-    CALL    scripts/atomic/check-atomics.sh
-    CALL    scripts/checksyscalls.sh
-    CHK     include/generated/compile.h
-    GEN     .version
-    CHK     include/generated/compile.h
-    UPD     include/generated/compile.h
-    CC      init/version.o
-    AR      init/built-in.a
-    LD      vmlinux.o
-    MODPOST vmlinux.symvers
-    MODINFO modules.builtin.modinfo
-    GEN     modules.builtin
-    LD      .tmp_vmlinux.kallsyms1
-  ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_resume_worker':
-  drm_fb_helper.c:(.text+0x2a0): undefined reference to `fb_set_suspend'
-  ...
-
-To prevent this, make following changes to the config option dependencies:
-
-  * Depend on FB && !(DRM_KMS_HELPER=y && FB=m), to avoid invalid configs.
-  * Depend on DRM_KMS_HELPER instead selecting it, to avoid circular deps.
-
-Reported-by: Justin M. Forbes <jforbes@fedoraproject.org>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
 ---
+ arch/riscv/kvm/mmu.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-This fixes linker errors found when building the Fedora kernel package
-for the s390x architecture:
-
-https://kojipkgs.fedoraproject.org//work/tasks/9849/77859849/build.log
-
- drivers/gpu/drm/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index cea777ae7fb9..9a21e57b4a0d 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -103,8 +103,8 @@ config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
- config DRM_FBDEV_EMULATION
- 	bool "Enable legacy fbdev support for your modesetting driver"
- 	depends on DRM
--	depends on FB
--	select DRM_KMS_HELPER
-+	depends on FB && !(DRM_KMS_HELPER=y && FB=m)
-+	depends on DRM_KMS_HELPER
- 	select FB_CFB_FILLRECT
- 	select FB_CFB_COPYAREA
- 	select FB_CFB_IMAGEBLIT
+diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
+index 3a00c2d..d81bae8 100644
+--- a/arch/riscv/kvm/mmu.c
++++ b/arch/riscv/kvm/mmu.c
+@@ -565,12 +565,12 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+ 	if (!kvm->arch.pgd)
+-		return 0;
++		return false;
+ 
+ 	stage2_unmap_range(kvm, range->start << PAGE_SHIFT,
+ 			   (range->end - range->start) << PAGE_SHIFT,
+ 			   range->may_block);
+-	return 0;
++	return false;
+ }
+ 
+ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+@@ -579,7 +579,7 @@ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ 	kvm_pfn_t pfn = pte_pfn(range->pte);
+ 
+ 	if (!kvm->arch.pgd)
+-		return 0;
++		return false;
+ 
+ 	WARN_ON(range->end - range->start != 1);
+ 
+@@ -587,10 +587,10 @@ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ 			      __pfn_to_phys(pfn), PAGE_SIZE, true, true);
+ 	if (ret) {
+ 		kvm_debug("Failed to map stage2 page (error %d)\n", ret);
+-		return 1;
++		return true;
+ 	}
+ 
+-	return 0;
++	return false;
+ }
+ 
+ bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+@@ -600,13 +600,13 @@ bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ 	u64 size = (range->end - range->start) << PAGE_SHIFT;
+ 
+ 	if (!kvm->arch.pgd)
+-		return 0;
++		return false;
+ 
+ 	WARN_ON(size != PAGE_SIZE && size != PMD_SIZE && size != PGDIR_SIZE);
+ 
+ 	if (!stage2_get_leaf_entry(kvm, range->start << PAGE_SHIFT,
+ 				   &ptep, &ptep_level))
+-		return 0;
++		return false;
+ 
+ 	return ptep_test_and_clear_young(NULL, 0, ptep);
+ }
+@@ -618,13 +618,13 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ 	u64 size = (range->end - range->start) << PAGE_SHIFT;
+ 
+ 	if (!kvm->arch.pgd)
+-		return 0;
++		return false;
+ 
+ 	WARN_ON(size != PAGE_SIZE && size != PMD_SIZE && size != PGDIR_SIZE);
+ 
+ 	if (!stage2_get_leaf_entry(kvm, range->start << PAGE_SHIFT,
+ 				   &ptep, &ptep_level))
+-		return 0;
++		return false;
+ 
+ 	return pte_young(*ptep);
+ }
 -- 
-2.31.1
+1.8.3.1
 
