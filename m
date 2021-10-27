@@ -2,234 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A363043C375
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB60743C378
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240278AbhJ0HF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:05:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31045 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231686AbhJ0HFY (ORCPT
+        id S238310AbhJ0HGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:06:53 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:32923 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231656AbhJ0HGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:05:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635318179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qB9orfXP+TkYZdjN8fPxJ9xOGGgP6qLWhKClCfaJ4yI=;
-        b=AmazSm7sezt0wNxW5AZz1/fuH4q73MbLYZQ0BisRG/oWmrzIpdi0rOkq97QUfI5oqBvisc
-        qRHWktWupOWjPdXmgdIPqnAYUmzzhf5FnBa3qTYKV3+XKgq4ozPL4vsekByomxb9iW1JqI
-        75rzchZ5vSOaVrWiwjNYjbZVhWwjh8o=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-gCCGtBVkOQWvMiRNfyldUg-1; Wed, 27 Oct 2021 03:02:57 -0400
-X-MC-Unique: gCCGtBVkOQWvMiRNfyldUg-1
-Received: by mail-pj1-f69.google.com with SMTP id x13-20020a17090a1f8d00b001a285b9f2cbso1080993pja.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:02:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qB9orfXP+TkYZdjN8fPxJ9xOGGgP6qLWhKClCfaJ4yI=;
-        b=3BT4fiHt205lQB8/1UmtBUHRK1TcEA8nGDYej8cgUNBjfMHxbK2N9zNiok3oO3TeE5
-         r15x/dgKr6qma9G32t5lKZccbAKkNLebicjjQZ+drneWG7ZT6PwfHa5YCg+wuRwdVfln
-         XbB6BnVygcGjoaSPZsFvQODvh6Hex8ulfmu0CHbCtbl3s8DO6S16rExnxEl2KedH2alW
-         DAurNM05uG6h0bQdUtQ2fjLcqON2jFBhV4Z6UpBWdQh0Rb62+RMFQmlczaTz/FLnt9LB
-         S2sKTQUOWKCtkN4JQbftifXBWVz67euTfqE3Od8uyg6Nx7wGL/MV0P9v3qA4sq3dDLIv
-         6Spg==
-X-Gm-Message-State: AOAM530jbYVfdGjmF0+x9613l+rvn+LrtBLK1OiLrElyuLfkmJ68PtPn
-        +NZ9SWAnPo8mWyjv2Z8qfUEbQJHgndxG64NaMrNIftBQ135TY5FZEkk3MYg0sURIsqa60UytS+0
-        2sMj0XIPqCAW2yCXzoB5LDh0L
-X-Received: by 2002:a17:902:bf07:b0:138:e32d:9f2e with SMTP id bi7-20020a170902bf0700b00138e32d9f2emr26381772plb.59.1635318176272;
-        Wed, 27 Oct 2021 00:02:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzj8yFGhnsS+4GZ1/fmPMutaQvdaiMx+A6FlZd6RDjUhri7Fa4t/+UHfKlHyka9dZlqzsk0RQ==
-X-Received: by 2002:a17:902:bf07:b0:138:e32d:9f2e with SMTP id bi7-20020a170902bf0700b00138e32d9f2emr26381729plb.59.1635318175861;
-        Wed, 27 Oct 2021 00:02:55 -0700 (PDT)
-Received: from xz-m1.local ([191.101.132.60])
-        by smtp.gmail.com with ESMTPSA id f17sm11497916pfv.69.2021.10.27.00.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 00:02:55 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 15:02:49 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Bin Wang <wangbin224@huawei.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
-Message-ID: <YXj5mTFBnuJS3tvT@xz-m1.local>
-References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
- <258d0ddb-6c82-0c95-a15e-b085b59d2142@redhat.com>
- <20211004143228.GA1545442@u2004>
- <20211026232736.GA2704541@u2004>
- <YXi0v9DHCl+aiogP@xz-m1.local>
- <20211027064513.GA2717516@u2004>
+        Wed, 27 Oct 2021 03:06:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UtrKJQp_1635318264;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UtrKJQp_1635318264)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 15:04:24 +0800
+Date:   Wed, 27 Oct 2021 15:04:23 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH v6 8/8] eni_vdpa: add vDPA driver for Alibaba ENI
+Message-ID: <20211027070423.GA29957@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+ <cover.1634870456.git.wuzongyong@linux.alibaba.com>
+ <6496b76a64303a3e23ea19e3e279644608de36fb.1634870456.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEvi7505ZOSLP6gMMvhC=Zfdt=nPK4WEYe7=VVbq3GmxCQ@mail.gmail.com>
+ <20211025032146.GC3684@L-PF27918B-1352.localdomain>
+ <51e9be5b-4bb2-b82b-a152-ffc37803410c@redhat.com>
+ <20211027024700.GA23409@L-PF27918B-1352.localdomain>
+ <CACGkMEt=ywKYQPhyUYjucEmW7hszNWWrRDYgRB_eyqci4uMO=w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=gb2312
 Content-Disposition: inline
-In-Reply-To: <20211027064513.GA2717516@u2004>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACGkMEt=ywKYQPhyUYjucEmW7hszNWWrRDYgRB_eyqci4uMO=w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 03:45:13PM +0900, Naoya Horiguchi wrote:
-> On Wed, Oct 27, 2021 at 10:09:03AM +0800, Peter Xu wrote:
-> > On Wed, Oct 27, 2021 at 08:27:36AM +0900, Naoya Horiguchi wrote:
-> > > On Mon, Oct 04, 2021 at 11:32:28PM +0900, Naoya Horiguchi wrote:
-> > > > On Mon, Oct 04, 2021 at 01:55:30PM +0200, David Hildenbrand wrote:
-> > > > > On 04.10.21 13:50, Naoya Horiguchi wrote:
-> > > ...
+On Wed, Oct 27, 2021 at 11:55:05AM +0800, Jason Wang wrote:
+> On Wed, Oct 27, 2021 at 10:47 AM Wu Zongyong
+> <wuzongyong@linux.alibaba.com> wrote:
+> >
+> > On Mon, Oct 25, 2021 at 12:40:41PM +0800, Jason Wang wrote:
+> > >
+> > > ÔÚ 2021/10/25 ÉÏÎç11:21, Wu Zongyong Ð´µÀ:
+> > > > On Mon, Oct 25, 2021 at 10:27:31AM +0800, Jason Wang wrote:
+> > > > > On Fri, Oct 22, 2021 at 10:44 AM Wu Zongyong
+> > > > > <wuzongyong@linux.alibaba.com> wrote:
+> > > > > > This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
+> > > > > > Interface) which is build upon virtio 0.9.5 specification.
+> > > > > > And this driver doesn't support to run on BE host.
 > > > > > >
-> > > > > > Hwpoison entry for hugepage is also exposed by this patch. The below
-> > > > > > example shows how pagemap is visible in the case where a memory error
-> > > > > > hit a hugepage mapped to a process.
-> > > > > >
-> > > > > >      $ ./page-types --no-summary --pid $PID --raw --list --addr 0x700000000+0x400
-> > > > > >      voffset offset  len     flags
-> > > > > >      700000000       12fa00  1       ___U_______Ma__H_G_________________f_______1
-> > > > > >      700000001       12fa01  1ff     ___________Ma___TG_________________f_______1
-> > > > > >      700000200       12f800  1       __________B________X_______________f______w_
-> > > > > >      700000201       12f801  1       ___________________X_______________f______w_   // memory failure hit this page
-> > > > > >      700000202       12f802  1fe     __________B________X_______________f______w_
-> > > > > >
-> > > > > > The entries with both of "X" flag (hwpoison flag) and "w" flag (swap
-> > > > > > flag) are considered as hwpoison entries.  So all pages in 2MB range
-> > > > > > are inaccessible from the process.  We can get actual error location
-> > > > > > by page-types in physical address mode.
-> > > > > >
-> > > > > >      $ ./page-types --no-summary --addr 0x12f800+0x200 --raw --list
-> > > > > >      offset  len     flags
-> > > > > >      12f800  1       __________B_________________________________
-> > > > > >      12f801  1       ___________________X________________________
-> > > > > >      12f802  1fe     __________B_________________________________
-> > > > > >
-> > > > > > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > > > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 > > > > > > ---
-> > > > > >   fs/proc/task_mmu.c      | 41 ++++++++++++++++++++++++++++++++---------
-> > > > > >   include/linux/swapops.h | 13 +++++++++++++
-> > > > > >   tools/vm/page-types.c   |  7 ++++++-
-> > > > > >   3 files changed, 51 insertions(+), 10 deletions(-)
+> > > > > >   drivers/vdpa/Kconfig            |   8 +
+> > > > > >   drivers/vdpa/Makefile           |   1 +
+> > > > > >   drivers/vdpa/alibaba/Makefile   |   3 +
+> > > > > >   drivers/vdpa/alibaba/eni_vdpa.c | 553 ++++++++++++++++++++++++++++++++
+> > > > > >   4 files changed, 565 insertions(+)
+> > > > > >   create mode 100644 drivers/vdpa/alibaba/Makefile
+> > > > > >   create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
+> > > > > >
+> > > > > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> > > > > > index 3d91982d8371..c0232a2148a7 100644
+> > > > > > --- a/drivers/vdpa/Kconfig
+> > > > > > +++ b/drivers/vdpa/Kconfig
+> > > > > > @@ -78,4 +78,12 @@ config VP_VDPA
+> > > > > >          help
+> > > > > >            This kernel module bridges virtio PCI device to vDPA bus.
+> > > > > >
+> > > > > > +config ALIBABA_ENI_VDPA
+> > > > > > +       tristate "vDPA driver for Alibaba ENI"
+> > > > > > +       select VIRTIO_PCI_LEGACY_LIB
+> > > > > > +       depends on PCI_MSI && !CPU_BIG_ENDIAN
+> > > > > > +       help
+> > > > > > +         VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
+> > > > > > +         virtio 0.9.5 specification.
+> > > > > > +
+> > > > > >   endif # VDPA
+> > > > > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> > > > > > index f02ebed33f19..15665563a7f4 100644
+> > > > > > --- a/drivers/vdpa/Makefile
+> > > > > > +++ b/drivers/vdpa/Makefile
+> > > > > > @@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
+> > > > > >   obj-$(CONFIG_IFCVF)    += ifcvf/
+> > > > > >   obj-$(CONFIG_MLX5_VDPA) += mlx5/
+> > > > > >   obj-$(CONFIG_VP_VDPA)    += virtio_pci/
+> > > > > > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
+> > > > > > diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..ef4aae69f87a
+> > > > > > --- /dev/null
+> > > > > > +++ b/drivers/vdpa/alibaba/Makefile
+> > > > > > @@ -0,0 +1,3 @@
+> > > > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > > > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
+> > > > > > +
+> > > > > > diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..6a09f157d810
+> > > > > > --- /dev/null
+> > > > > > +++ b/drivers/vdpa/alibaba/eni_vdpa.c
+> > > > > > @@ -0,0 +1,553 @@
+> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > > > +/*
+> > > > > > + * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
+> > > > > > + *
+> > > > > > + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
+> > > > > > + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > > > > + *
+> > > > > > + */
+> > > > > > +
+> > > > > > +#include "linux/bits.h"
+> > > > > > +#include <linux/interrupt.h>
+> > > > > > +#include <linux/module.h>
+> > > > > > +#include <linux/pci.h>
+> > > > > > +#include <linux/vdpa.h>
+> > > > > > +#include <linux/virtio.h>
+> > > > > > +#include <linux/virtio_config.h>
+> > > > > > +#include <linux/virtio_ring.h>
+> > > > > > +#include <linux/virtio_pci.h>
+> > > > > > +#include <linux/virtio_pci_legacy.h>
+> > > > > > +#include <uapi/linux/virtio_net.h>
+> > > > > > +
+> > > > > > +#define ENI_MSIX_NAME_SIZE 256
+> > > > > > +
+> > > > > > +#define ENI_ERR(pdev, fmt, ...)        \
+> > > > > > +       dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> > > > > > +#define ENI_DBG(pdev, fmt, ...)        \
+> > > > > > +       dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> > > > > > +#define ENI_INFO(pdev, fmt, ...) \
+> > > > > > +       dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> > > > > > +
+> > > > > > +struct eni_vring {
+> > > > > > +       void __iomem *notify;
+> > > > > > +       char msix_name[ENI_MSIX_NAME_SIZE];
+> > > > > > +       struct vdpa_callback cb;
+> > > > > > +       int irq;
+> > > > > > +};
+> > > > > > +
+> > > > > > +struct eni_vdpa {
+> > > > > > +       struct vdpa_device vdpa;
+> > > > > > +       struct virtio_pci_legacy_device ldev;
+> > > > > > +       struct eni_vring *vring;
+> > > > > > +       struct vdpa_callback config_cb;
+> > > > > > +       char msix_name[ENI_MSIX_NAME_SIZE];
+> > > > > > +       int config_irq;
+> > > > > > +       int queues;
+> > > > > > +       int vectors;
+> > > > > > +};
+> > > > > > +
+> > > > > > +static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
+> > > > > > +{
+> > > > > > +       return container_of(vdpa, struct eni_vdpa, vdpa);
+> > > > > > +}
+> > > > > > +
+> > > > > > +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
+> > > > > > +{
+> > > > > > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> > > > > > +
+> > > > > > +       return &eni_vdpa->ldev;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
+> > > > > > +{
+> > > > > > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > > > +       u64 features = vp_legacy_get_features(ldev);
+> > > > > > +
+> > > > > > +       features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
+> > > > > > +       features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
+> > > > > > +
+> > > > > > +       return features;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+> > > > > > +{
+> > > > > > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > > > +
+> > > > > > +       if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
+> > > > > > +               ENI_ERR(ldev->pci_dev,
+> > > > > > +                       "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
+> > > > > > +               return -EINVAL;
+> > > > > > +       }
+> > > > > > +
+> > > > > > +       vp_legacy_set_features(ldev, (u32)features);
+> > > > > > +
+> > > > > > +       return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > So my comments have not been addressed since v4. Please address or
+> > > > > answer the questions before posting a new version.
 > > > > >
-> > > > >
-> > > > > Please also update the documentation located at
-> > > > >
-> > > > > Documentation/admin-guide/mm/pagemap.rst
+> > > > > Thanks
+> > > > Sorry, I forgot to reply the comments on this patch.
 > > > >
-> > > > I will do this in the next post.
-> > > 
-> > > Reading the document, I found that swap type is already exported so we
-> > > could identify hwpoison entry with it (without new PM_HWPOISON bit).
-> > > One problem is that the format of swap types (like SWP_HWPOISON) depends
-> > > on a few config macros like CONFIG_DEVICE_PRIVATE and CONFIG_MIGRATION,
-> > > so we also need to export how the swap type field is interpreted.
-> > 
-> > I had similar question before.. though it was more on the generic swap entries
-> > not the special ones yet.
-> > 
-> > The thing is I don't know how the userspace could interpret normal swap device
-> > indexes out of reading pagemap, say if we have two swap devices with "swapon
-> > -s" then I've no idea how do we know which device has which swap type index
-> > allocated.  That seems to be a similar question asked above on special swap
-> > types - the interface seems to be incomplete, if not unused at all.
-> > 
-> > AFAIU the information on "this page is swapped out to device X on offset Y" is
-> > not reliable too, because the pagein/pageout from kernel is transparent to the
-> > userspace and not under control of userspace at all.  IOW, if the user reads
-> > that swap entry, then reads data upon the disk of that offset out and put it
-> > somewhere else, then it means the data read could already be old if kernel
-> > paged in the page after userspace reading the pagemap but before it reading the
-> > disk, and I don't see any way to make it right unless the userspace could stop
-> > the kernel from page-in a swap entry.  That's why I really wonder whether we
-> > should expose normal swap entry at all, as I don't know how it could be helpful
-> > and used in the 100% right way.
+> > > >
+> > > > > > +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
+> > > > > > +{
+> > > > > > +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > > > +     u64 features = vp_legacy_get_features(ldev);
+> > > > > > +
+> > > > > > +     features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
+> > > > > > +     features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
+> > > > > VERSION_1 is also needed?
+> > > > >
+> > > > No, queue align of legacy devices should be 4096,
+> > >
+> > >
+> > > Let's use VIRTIO_PCI_VRING_ALIGN instead of PAGE_SIZE in get_vq_align then
+> > > since PAGE_SIZE is not necessarily 4096.
+> >
+> > I will fix it.
+> > >
+> > >
+> > > >   but queue align of
+> > > > devices with VERSION_1 are SMP_CACHE_BYTES which may not equals to
+> > > > 4096.
+> > > > If we set the VERSION_1, ENI will not work due to the queue align.
+> > >
+> > >
+> > > Interesting, so I think it can only be used with legacy virtio drivers in
+> > > the guest.
+> > Yes, ENI can only work well with legacy virtio drivers in the guest from
+> > my test.
+> >
+> > >
+> > > One major drawbacks is that guest can only see 32 feature bits which means
+> > > we can't advertise VIRTIO_F_ACCESS_PLATFORM and VIRTIO_F_ORDER_PLATFORM to
+> > > guest:
+> > >
+> > > /* virtio config->get_features() implementation */
+> > > static u64 vp_get_features(struct virtio_device *vdev)
+> > > {
+> > >         struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > >
+> > >         /* When someone needs more than 32 feature bits, we'll need to
+> > >          * steal a bit to indicate that the rest are somewhere else. */
+> > >         return ioread32(vp_dev->ioaddr + VIRTIO_PCI_HOST_FEATURES);
+> > > }
+> > >
+> > > For VIRTIO_F_ACCESS_PLATFORM, it should be fine. But how about
+> > > VIRTIO_F_ORDER_PLATFORM?
+> > >
+> > Is it necessary to advertise these two bits?
+> > ENI works well without these two bits regardless of bare metal or virtual
+> > machine.
 > 
-> Thank you for the feedback.
+> For VIRTIO_F_ACCESS_PLATFORM. When using with virtio-vDPA it should be
+> fine since it will be negotiated. When using with vhost-vDPA, it can't
+> be advertised to the guest, so vIOMMU will be bypassed.
 > 
-> I think that a process interested in controlling swap-in/out behavior in its own
-> typically calls mincore() to get current status and madvise() to trigger swap-in/out.
-> That's not 100% solution for the same reason, but it mostly works well because
-> calling madvise(MADV_PAGEOUT) to already swapped out is not a big issue (although
-> some CPU/memory resource is wasted, but the amount of the waste is small if the
-> returned info is new enough). 
-> So my point is that the concern around information newness might be more generic
-> issue rather than just for pagemap.  If we need 100% accurate in-kernel info,
-> maybe it had better be done in kernel (or some cooler stuff like eBPF)?
-
-I fully agree the solution you mentioned with mincore() and madvise(), that is
-very sane and working approach.  Though IMHO the major thing I wanted to point
-out is for generic swap devices we exposed (disk_index, disk_offset) tuple as
-the swap entry (besides "whether this page is swapped out or not"; that's
-PM_SWAP, and as you mentioned people'll need to rely on mincore() to make it
-right for shmem), though to use it we need to either record the index/offset or
-read/write data from it.  However none of them will make sense, IMHO..  So I
-think exposing PM_SWAP makes sense, not the swap entries on swap devices.
-
+> For VITIO_F_ORDER_PLATFORM, it's basically a question that whether
+> platform specific barrier (DMA barrier) is needed, see virtio_rmb():
 > 
-> > 
-> > Special swap entries seem a bit different - at least for is_pfn_swap_entry()
-> > typed swap entries we can still expose the PFN which might be helpful, which I
-> > can't tell.
+> static inline void virtio_rmb(bool weak_barriers)
+> {
+>         if (weak_barriers)
+>                 virt_rmb();
+>         else
+>                 dma_rmb();
+> }
 > 
-> I'm one who think it helpful for testing, although I know testing might not be
-> considered as a real usecase.
+> So it looks to me x86 should be fine, but for others platform it might
+> not. Maybe we can enable this driver for x86 first.
 
-I think testing is valid use case too.
+It's okay for me to enable it only for x86 via Kconfig since ENI can
+only be used in x86 machines on Alibaba Cloud for now.
 
 > 
-> > 
-> > I used to send an email to Matt Mackall <mpm@selenic.com> and Dave Hansen
-> > <dave.hansen@linux.intel.com> asking about above but didn't get a reply. Ccing
-> > again this time with the list copied.
-> > 
-> > > 
-> > > I thought of adding new interfaces for example under /sys/kernel/mm/swap/type_format/,
-> > > which shows info like below (assuming that all CONFIG_{DEVICE_PRIVATE,MIGRATION,MEMORY_FAILURE}
-> > > is enabled):
-> > > 
-> > >   $ ls /sys/kernel/mm/swap/type_format/
-> > >   hwpoison
-> > >   migration_read
-> > >   migration_write
-> > >   device_write
-> > >   device_read
-> > >   device_exclusive_write
-> > >   device_exclusive_read
-> > >   
-> > >   $ cat /sys/kernel/mm/swap/type_format/hwpoison
-> > >   25
-> > >   
-> > >   $ cat /sys/kernel/mm/swap/type_format/device_write
-> > >   28
-> > > 
-> > > Does it make sense or any better approach?
-> > 
-> > Then I'm wondering whether we care about the rest of the normal swap devices
-> > too with pagemap so do we need to expose some information there too (only if
-> > there's a real use case, though..)?  Or... should we just don't expose swap
-> > entries at all, at least generic swap entries?  We can still expose things like
-> > hwpoison via PM_* bits well defined in that case.
+> Thanks
 > 
-> I didn't think about normal swap devices for no reason. I'm OK to stop exposing
-> normal swap device part.  I don't have strong option yet about which approach
-> (in swaptype or PM_HWPOISON) I'll suggest next (so wait a little more for feedback).
-
-No strong opinion here too. It's just that the new interface proposed reminded
-me that it's partially complete if considering we're also exposing swap entries
-on swap devices, so the types didn't cover those entries.  However it's more
-like a pure question because I never figured out how those entries will work
-anyway.  I'd be willing to know whether Dave Hanson would comment on this.
-
-While the PM_HWPOISON approach looks always sane to me.
-
-Thanks,
-
--- 
-Peter Xu
-
+> > >
+> > > >
+> > > > > > +
+> > > > > > +     return features;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+> > > > > > +{
+> > > > > > +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > > > +
+> > > > > > +     if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
+> > > > > > +             ENI_ERR(ldev->pci_dev,
+> > > > > > +                     "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
+> > > > > > +             return -EINVAL;
+> > > > > Do we need to make sure FEATURE_OK is not set in this case or the ENI can do
+> > > > > this for us?
+> > > > Why we need to check this? I don't get what you worried about.
+> > >
+> > >
+> > > I thought the plan is to advertise the VERSION_1, so failing when without
+> > > mrg_rxbuf is a must. But looks like I was wrong, and there's no need to
+> > > mandate mrg_rxbuf in future versions.
+> >
+> > I think it is necessary to check F_MRG_RXBUF here, since ENI will not
+> > work when use qemu with mrx_rxbuf=off.
+> > >
+> > > Thanks
+> > >
+> > >
+> > > >
+> > > > > Other looks good.
+> > > > >
+> > > > > Thanks
+> >
