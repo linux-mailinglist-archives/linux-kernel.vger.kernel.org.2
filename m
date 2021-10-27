@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB5043C8C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249F743C8D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239847AbhJ0LpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:45:07 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44210 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239798AbhJ0LpG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:45:06 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 633E01FD3C;
-        Wed, 27 Oct 2021 11:42:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635334959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fo5sUfTsUY3UOkgJ2rkzuihsx0B4xmZU0SJdKHg3/K8=;
-        b=BOue54GcW/uw1WPm5hiAmIdhozSdpxtIujuKNq+5lCqra257QQ5+yVC0mYQ5eawxHlKDyr
-        nU0ifZU6580JYGww6p7MTa4j1eGWh/EpWynHxEW0BXP7jLQv8eUL4O/7yjEmIobBV3v+V+
-        clwH2P5+gllvmD14GruEDwwE2lrVid8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635334959;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fo5sUfTsUY3UOkgJ2rkzuihsx0B4xmZU0SJdKHg3/K8=;
-        b=+LylReF1y8AGvSIYf9Izx8bkit9K4VmPNvnYXAU1IXcpJZ3PzIoU+CbwuMhJJKdrER1wb3
-        YbEesObRpQJsk5Bg==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B48FCA3B84;
-        Wed, 27 Oct 2021 11:42:38 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 13:42:38 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Ming Lei <ming.lei@redhat.com>
-cc:     Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
-        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
-        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-In-Reply-To: <YXgguuAY5iEUIV0u@T590>
-Message-ID: <alpine.LSU.2.21.2110271340180.3655@pobox.suse.cz>
-References: <YWq3Z++uoJ/kcp+3@T590> <YW3LuzaPhW96jSBK@bombadil.infradead.org> <YW4uwep3BCe9Vxq8@T590> <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz> <YW6OptglA6UykZg/@T590> <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz> <YW/KEsfWJMIPnz76@T590>
- <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz> <YW/q70dLyF+YudyF@T590> <YXfA0jfazCPDTEBw@alley> <YXgguuAY5iEUIV0u@T590>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S239864AbhJ0LuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:50:13 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53788 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235172AbhJ0LuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:50:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="210920854"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="210920854"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 04:47:45 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497830029"
+Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 04:47:40 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+In-Reply-To: <YVXJLE8UqgcUNIKl@phenom.ffwll.local>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local>
+Date:   Wed, 27 Oct 2021 14:47:37 +0300
+Message-ID: <878ryeit9i.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > 
-> > The livepatch code uses workqueue because the livepatch can be
-> > disabled via sysfs interface. It obviously could not wait until
-> > the sysfs interface is removed in the sysfs write() callback
-> > that triggered the removal.
-> 
-> If klp_free_patch_* is moved into module_exit() and not let enable
-> store() to kill kobjects, all kobjects can be deleted in module_exit(),
-> then wait_for_completion(patch->finish) may be removed, also wq isn't
-> required for the async cleanup.
+On Thu, 30 Sep 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Mon, Sep 27, 2021 at 09:23:45AM -0700, Kees Cook wrote:
+>> On Mon, Sep 27, 2021 at 04:28:02PM +0200, Arnd Bergmann wrote:
+>> > From: Arnd Bergmann <arnd@arndb.de>
+>> > 
+>> > With CONFIG_FB=m and CONFIG_DRM=y, we get a link error in the fb helper:
+>> > 
+>> > aarch64-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
+>> > (.text+0x10cc): undefined reference to `framebuffer_alloc'
+>> > 
+>> > Tighten the dependency so it is only allowed in the case that DRM can
+>> > link against FB.
+>> > 
+>> > Fixes: f611b1e7624c ("drm: Avoid circular dependencies for CONFIG_FB")
+>> > Link: https://lore.kernel.org/all/20210721152211.2706171-1-arnd@kernel.org/
+>> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> Thanks for fixing this!
+>> 
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> Stuffed into drm-misc-next.
 
-It sounds like a nice cleanup. If we combine kobject_del() to prevent any 
-show()/store() accesses and free everything later in module_exit(), it 
-could work. If I am not missing something around how we maintain internal 
-lists of live patches and their modules.
+The problem is, I don't think the patch is semantically correct.
 
-Thanks
+drm_fb_helper.o is not part of drm.ko, it's part of
+drm_kms_helper.ko. This adds some sort of indirect dependency via DRM
+which might work, maybe by coincidence, maybe not - but it's certainly
+not obvious.
 
-Miroslav
+The likely culprit is, again, the overuse of select, and in this case
+select DRM_KMS_HELPER. And DRM_KMS_HELPER should depend on FB if
+DRM_FBDEV_EMULATION=y. That's the problem.
+
+All of the drm Kconfigs could use an overhaul to be semantically
+correct, but that's a hill nobody wants to die on. Instead we keep
+piling up tweaks to paper over the issues, ad infinitum.
+
+(And this ties to a previous comment I had about the organization of
+files under drm/, a hundred files in one big lump that belong to
+different modules, and it's not helping people figure out the
+dependencies.)
+
+
+BR,
+Jani.
+
+
+PS. I was brought here via [1] which is another complicated "fix" to the
+same problem.
+
+
+[1] https://lore.kernel.org/r/20211027072044.4105113-1-javierm@redhat.com
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
