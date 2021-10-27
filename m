@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC72943CC69
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F377043CC77
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242622AbhJ0Okj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
+        id S238930AbhJ0OmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242616AbhJ0Okh (ORCPT
+        with ESMTP id S232490AbhJ0OmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:40:37 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8828FC061767
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:38:12 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id lx5-20020a17090b4b0500b001a262880e99so2224811pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:38:12 -0700 (PDT)
+        Wed, 27 Oct 2021 10:42:16 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C33C079783
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:39:48 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id r6so3746354oiw.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:39:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=619X0KptUed08s0CUBhf/N/JswW0tMPE0BHSDIcOX4Y=;
-        b=VwUW9DxGBSkeRgyMzwMqoMCIN9AgwTpLSDg6/KPh+kDvDc76Jrx/wL/eO0gBa4ZpUX
-         K0T4FkjE7dVSToBvaN//CHtRYgzB2bUgT/EVG94UxRfxbTBp727tSp88UIjnm8/rxxyq
-         g1hKFq/miAgkJZ/NUoCLqVNWadua4TUfxhZKN4Z4+pt+o8KIPBzjvSGsW7HMqkD+2+D7
-         3K3mUV5UdUr3krH7L+J+LOvG/kSzhReVRBqR/HNtFRQcr4nEo2uuGLq6O3LFykgA2xht
-         MtlLMOL07lOLrRMNnOpHEPA+ft36FjoTkvHGH7kKelhyyATSqxgFzqRWFRyazw6WgIvE
-         rHdw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ZOVIW59kKpmA3YI6MyWfAQdWikp/1S+bV4WvwADltGI=;
+        b=l3VHqW+goh9EHaX+7Vr/K8TAijIkOX8IUNP6+2QSVp9LQtv1as36aPVcm/F4HjQzC/
+         LC+2Ruoy4oEUhC2ITk9J+MX8teOSjapO+KJH1NSabDmTTKPqFkhVfb5J9jPDCw8L0JER
+         79INMm8w6WMacJjG0aK90648YYdIkXCdMjAZFObUvrhgMAqBEdGQgCg3J+DrbhlgTmaA
+         YF6Vj4xML4fl0gBvveJ/6H7ETblC4ehdkPErvU967yh4nq/c08JPTZSTI/2+wXlppTdK
+         enPzilSXE/M99mVYnlq1mWrEAsV3rIE2hKTbMk9uwfaQh9nrSquS8VmfIhkqu7p769qZ
+         RPwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=619X0KptUed08s0CUBhf/N/JswW0tMPE0BHSDIcOX4Y=;
-        b=4dT7GM/W4/MXSDBRrCcefFiD/uYCflrpltLNaL15sv/cCliVgD8xNx5p7Ew6mcp7LG
-         mmYe+JuwX6OfC0zGsAMM5wIEOWzXfA5JMRPt4CIS+e0b8kIqfaOHQtlMHL/PSjyNiVkZ
-         hysRRUHR8/pVp9HWryQ5aqA3P6BG+EFVHH8b5csXrpRV7eneIqYhZYrTVzKVmLbP3MbS
-         BLfr50sl8G4VE8B7wkksA9+COs+VAlF9XZPZ2QL2klRqOGWSNGazBr2+ZEyOYVym+1z7
-         VtdvTT8QldTuYqkxp15Y87vX1YsGZeM0S6kRVaP0I8UqklsxS8nG1QHVyRVbnYrJRPeg
-         0c0w==
-X-Gm-Message-State: AOAM532gLrnHnbnYaNX0XCwJernkOymJRyky/RQ7Nxz1La8OkRsZYWbr
-        uySYU95kgiVUMzhc/WGW2ZP0Mbo3Ye+0n+nGhLqlqw==
-X-Google-Smtp-Source: ABdhPJx2YdwH/KlEpTrc402ZLzsDivRtCZrcToQPCLTj03ywUTQjxzPidpH1dlmQr/eooVdnXa2HBTRcECMeVOq2ZB0=
-X-Received: by 2002:a17:902:edc2:b0:141:6a3f:e676 with SMTP id
- q2-20020a170902edc200b001416a3fe676mr3176904plk.24.1635345491987; Wed, 27 Oct
- 2021 07:38:11 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=ZOVIW59kKpmA3YI6MyWfAQdWikp/1S+bV4WvwADltGI=;
+        b=z2oXsriQu+gv5hvEgltlTq8PXaOXV7tWiaOYM0XCJRQK7tYSN30WiPWNXW/CUYCd/t
+         XKyxHACKqrI7ywHlN6DV5UZLINTbWOrqt2dT8MaM0TTS7njuPoIp3dtA3t+KmIQWvTiz
+         mKQgCaxIhZaD1TzSUp6D7QqEGuPkddxGKpP3fH12aLt5dUGxcyTh8LVGe/0GoQP0kJzb
+         oYCW3SRzUean/3fFTFRbtmybr+z6YiM6lA9PJhl3bAVQLhY8BOeWPgYSmIfSjxEsDk4W
+         ksjC79A45SB8BLsh6mXiJUvn9g776j48gJcWQCpcwNjiEyVRprS5xRYvh+kxAx01TQqx
+         LZ/Q==
+X-Gm-Message-State: AOAM531M03WJOSIWjztpbL3cuO5Ziuknv7O9AO5fvEiXoRcEt98Zm7UU
+        4mW6z6qwDbbxFz6A5ONxyR8=
+X-Google-Smtp-Source: ABdhPJyHthbhSHJfSRNPj/xZEqesLzv1SFbQ3NKuegTuxoKp/W3Nsj1ndnpoWIrBM4Ob9PJzOL+XWQ==
+X-Received: by 2002:a05:6808:490:: with SMTP id z16mr4119312oid.54.1635345587781;
+        Wed, 27 Oct 2021 07:39:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y123sm41791oie.0.2021.10.27.07.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 07:39:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 27 Oct 2021 07:39:45 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Thelford Williams <tdwilliamsiv@gmail.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: Re: [PATCH] drm/amdgpu: fix out of bounds write
+Message-ID: <20211027143945.GA1947580@roeck-us.net>
 MIME-Version: 1.0
-References: <20211025170925.3096444-1-bjorn.andersson@linaro.org>
- <20211025170925.3096444-2-bjorn.andersson@linaro.org> <CAG3jFysN4pFqTrF8tGTVapCzysPkvO=MpYosAJnErY-AW7BqgQ@mail.gmail.com>
- <YXlc+7BzbADe/p4A@ripper>
-In-Reply-To: <YXlc+7BzbADe/p4A@ripper>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 27 Oct 2021 16:38:00 +0200
-Message-ID: <CAG3jFyuUHd0Ra7zWx6byZUiZkJFVgtPkX6-a2RSqN6aGsyST+A@mail.gmail.com>
-Subject: Re: [PATCH v7 2/3] drm/bridge: ti-sn65dsi86: Use regmap_bulk_write API
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        "Uwe Kleine-K?nig" <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 16:04, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 27 Oct 01:29 PDT 2021, Robert Foss wrote:
->
-> > Hey Bjorn,
-> >
-> > On Mon, 25 Oct 2021 at 19:07, Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > The multi-register u16 write operation can use regmap_bulk_write()
-> > > instead of two separate regmap_write() calls.
-> > >
-> > > It's uncertain if this has any effect on the actual updates of the
-> > > underlying registers, but this at least gives the hardware the
-> > > opportunity and saves us one transation on the bus.
-> > >
-> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >
-> > Did you miss including Dougs R-B from v6? As far as I can tell nothing
-> > else changed between v6 & v7.
-> >
->
-> Yes, I missed adding Doug's R-b from v6. I also missed fixing the
-> spelling of transaction (transation) in the commit message.
->
-> Would you be willing to correct these two items as you apply the
-> patches?
+On Wed, Oct 13, 2021 at 04:04:13PM -0400, Thelford Williams wrote:
+> Size can be any value and is user controlled resulting in overwriting the
+> 40 byte array wr_buf with an arbitrary length of data from buf.
+> 
+> Signed-off-by: Thelford Williams <tdwilliamsiv@gmail.com>
+> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 
-Can do.
+The fix works, but unless I am missing something it is incomplete.
+parse_write_buffer_into_params() is called several times, and the
+size parameter is always wrong. This patch only fixes one of several
+instances of the problem.
+
+Guenter
+
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> index 814f67d86a3c..9b3ad56607bb 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> @@ -264,7 +264,7 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
+>  	if (!wr_buf)
+>  		return -ENOSPC;
+>  
+> -	if (parse_write_buffer_into_params(wr_buf, size,
+> +	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
+>  					   (long *)param, buf,
+>  					   max_param_num,
+>  					   &param_nums)) {
+> -- 
+> 2.33.0
