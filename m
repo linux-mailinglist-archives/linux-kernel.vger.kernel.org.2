@@ -2,146 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D598343C570
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E176143C569
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240976AbhJ0Ir0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:47:26 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:54271 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239544AbhJ0IrV (ORCPT
+        id S239528AbhJ0Iq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235205AbhJ0Iq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:47:21 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 71C57580486;
-        Wed, 27 Oct 2021 04:44:55 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 27 Oct 2021 04:44:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=M3eCyMtSzQvSRfpY5rVVZ9RVkh6
-        FdSVbf6yAV0XO4K8=; b=NmzUZOWnydiuj2S8GXj5BmNeI6pr7rLla6OGpcy3C4x
-        SL8j7TvqoSbEzq1BnX6ggFJ9W+aANfQZl2j2oQi9v/Y1m5VlmUeid+r32/oNygjM
-        upk8Qq4jkUaPrI2deYOakvWggWGqh7tAdSbO6N9mvdMrVDLDIUmc5fbffoNGouNh
-        MZYmu70iQwwuO+33jBTTnjaDlpwybEj6wVjaiv8aAaEMS4OMe3eo5UBCx5C4kyQ4
-        amOz6taiTkfqGK39fTrH+gnmsS9doz5wve3bKXvLQgSrno6DoyVTo4WZEpLZxYlr
-        DBse/nwb8rbo5KaCwCVggb670luJpaZaFc+kQZnDktg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=M3eCyM
-        tSzQvSRfpY5rVVZ9RVkh6FdSVbf6yAV0XO4K8=; b=kLB2N0MuxPnehTteBVIRkX
-        /FWES0DM/0mOGMwFgIC9OXlHVkiq1CuZmq/W3sxWzGNh0crFYT0d+G0VEUjA2iQk
-        pa04vRIDZrh/PAvHzPbEjAS709vJwAf34g80ZGTsGDX3eelaifSfQtB8rWOuN/Yu
-        iXEjjmXGEfwmbn/SUTDOzRNqbHz6BPHJLfE1vKcLwTPm3ETQQL09KS6Id93j7/jU
-        um+uYClmfXLMaH86Ljyk4I0l26IQEHdyFK7KGVgDa+u+4uoOu0Y+8nGyyR+HfDQA
-        tW6jd3ix17HW+ZciU5Mau1fBru7L7L1EzBE35SoIp1vqYVN6UjSihcCj1e3YxnQg
-        ==
-X-ME-Sender: <xms:hBF5Yc7BzLyYRk4GGfOgPfbDwi-tlppOdcEnk6ov_Gx9a12rI5hQng>
-    <xme:hBF5Yd60K--rqAYW6wQgyM38yfJDwJ75W7rCk-uOFeWk_G4ANbXKO0HQF2GRzqsFs
-    wAEeethTYlTMbTHrlM>
-X-ME-Received: <xmr:hBF5YbfOI1J3dz9b8owKVh8tx87ejOgb4HxrCXD7nLcTpl3a4BWFzfyx1l2jGmgk3_CY57eC5E5-A0oKYCO7Wh2bSLCLLCDKHxMgSxJh>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdegtddgtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:hBF5YRLajqxC-IThi0jmk6jZ-O0HSCCBD3mbj1wS6NLddJ2x3g8z4w>
-    <xmx:hBF5YQLKmrGZZMo_GHH5FieCkwvCNX5HJtD2SQ7m2_j4WOcF3nXv_Q>
-    <xmx:hBF5YSxrJCfl9CrpGyipV_FdO_GukTIjGidowzUsN_cGUsbkkxgyhw>
-    <xmx:hxF5YbdWEcCvXgYet2d3aj7yyvMAGIwE6wZItn1hxaP9XNTHrlLpqA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Oct 2021 04:43:52 -0400 (EDT)
-Date:   Wed, 27 Oct 2021 10:42:45 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tian Tao <tiantao6@hisilicon.com>,
-        freedreno@lists.freedesktop.org,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        Sean Paul <sean@poorly.run>, Inki Dae <inki.dae@samsung.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v5 00/21] drm/bridge: Make panel and bridge probe order
- consistent
-Message-ID: <20211027084245.6wjqk3e6fa3jw5qg@gilmour>
-References: <20211021073947.499373-1-maxime@cerno.tech>
- <YXGFz4o5fWrfGnGk@ravnborg.org>
- <20211025151636.dsc3akojm7ywoecm@gilmour>
- <YXbhSjsPXk944TlF@ravnborg.org>
+        Wed, 27 Oct 2021 04:46:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBE3C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=A+zmKdPo93Lq9OnWGjUdHfAZF2hxhxCY/Mux3Z85l+M=; b=DFwgecAr0lYfidnkySqNXUHF2S
+        Os6vT0yYT0mVwTddp9nWduKSFf34bW2/Z3EguLbP8ht/xT0odTArGNbqIXsXWRKkKDDvMsP742NLk
+        oZx242HNAZir7zdLQOA9vPd+etvg7DSC1pgcWJHrSYXq0wVcBhi6JnSKxqbHxXUkbRN/nbW0IANKH
+        WjPO51z8f0dDaNjkNkwrcOvZnMlJLzvHM1+SbA9FPtsJTMn0cFVkmySKM8zj+W3DDosTcZlHVssFb
+        ZOstHBeA5zelbfFfbfdeR76ymD8JyESIV4q+YS6jAe8NMnPpLTYuBiDY1tWHFY5V2rgcJ9OAMlqP2
+        NzPB/Nkw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfeWp-00HVw6-6I; Wed, 27 Oct 2021 08:43:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E783F3001BF;
+        Wed, 27 Oct 2021 10:43:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C7013236E43E5; Wed, 27 Oct 2021 10:43:21 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 10:43:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     valentin.schneider@arm.com, mingo@kernel.org, namit@vmware.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpumask: Fix implicit type conversion
+Message-ID: <YXkRKe7ovUFVvzqd@hirez.programming.kicks-ass.net>
+References: <1635317123-2716894-1-git-send-email-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aobqxdixyoh4wxno"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXbhSjsPXk944TlF@ravnborg.org>
+In-Reply-To: <1635317123-2716894-1-git-send-email-jiasheng@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 27, 2021 at 06:45:23AM +0000, Jiasheng Jiang wrote:
+> Since the 'nr_cpu_ids' is unsigned int, then we can assume its
+> value is (2^32 - 1).
+> Also, the 'cpu' is unsigned int.
+> As the number of cycles increases, the value of 'cpu' can be
+> (2^31 - 1).
+> Although in the cpumask_next() 'cpu' is implicitly casted to int,
+> its actual value is also (2^31 - 1).
+> However, the return value of cpumask_next(), the updated value of
+> 'cpu', is (2^31).
+> That means the restriction 'cpu < nr_cpu_ids' is still statisfied
+> and in cpumask_next() when 'cpu' is implicitly casted to int, its
+> actual value is (-2^31).
+> Obviously, it is illegal and dangerous for cpumask_next(), as well
 
---aobqxdixyoh4wxno
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It is not illegal, police will not come for you.
 
-On Mon, Oct 25, 2021 at 06:54:34PM +0200, Sam Ravnborg wrote:
-> Hi Maxime,
->=20
-> On Mon, Oct 25, 2021 at 05:16:36PM +0200, Maxime Ripard wrote:
-> > Hi Sam,
-> >=20
-> > On Thu, Oct 21, 2021 at 05:22:55PM +0200, Sam Ravnborg wrote:
-> > > Hi Maxime,
-> > >=20
-> > > > Let me know what you think,
-> > >=20
-> > > apply the lot to drm-misc-next. Maybe wait for an r-b or a-b on the k=
-irin
-> > > patch but the rest is IMO good to go.
-> >=20
-> > I had a compilation error since the rebase of the v4, so I sent a new
-> > version. John Stultz has tested this series and given his tested-by, and
-> > is the kirin maintainer.
-> >=20
-> > I guess it's enough?
->=20
-> Yeah, go ahead and get it applied.
+> as others.
+> Therefore, we should fix the macro description of 'cpu' that remove
+> the '(optionally unsigned)' and restrict the value of 'cpu' to be
+> non-negative integer.
+> Moreover, all the existing issues should be dealed with.
+> 
+> Fixes: c743f0a ("sched/fair, cpumask: Export for_each_cpu_wrap()")
+> Fixes: 8bd93a2 ("rcu: Accelerate grace period if last non-dynticked CPU")
+> Fixes: 984f2f3 ("cpumask: introduce new API, without changing anything, v3")
 
-It turns out dim is not happy with just a Tested-by :)
+There is no actual bug, Fixes tag is unwarranted.
 
-I'll ask around for an acked-by or reviewed-by
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> ---
+>  include/linux/cpumask.h | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index bfc4690..8a8e59f 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -232,7 +232,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
+>  
+>  /**
+>   * for_each_cpu - iterate over every cpu in a mask
+> - * @cpu: the (optionally unsigned) integer iterator
+> + * @cpu: the integer iterator
+>   * @mask: the cpumask pointer
+>   *
+>   * After the loop, cpu is >= nr_cpu_ids.
+> @@ -240,11 +240,11 @@ int cpumask_any_distribute(const struct cpumask *srcp);
+>  #define for_each_cpu(cpu, mask)				\
+>  	for ((cpu) = -1;				\
+>  		(cpu) = cpumask_next((cpu), (mask)),	\
+> -		(cpu) < nr_cpu_ids;)
+> +		(cpu) < nr_cpu_ids && (cpu) >= 0;)
 
-Maxime
-
---aobqxdixyoh4wxno
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYXkRBQAKCRDj7w1vZxhR
-xcX+AQDa5hm15ZvQWQkhoaM7QT0BYcG/8gBhyw2NycTLJeU50wEAsbuKE/SJt3yK
-G9CaUa4imA2133VPQCI/46bOj5VmbAs=
-=1uwT
------END PGP SIGNATURE-----
-
---aobqxdixyoh4wxno--
+So now you're generating worse code for no actual gain?
