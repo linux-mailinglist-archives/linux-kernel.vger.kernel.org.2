@@ -2,139 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867A443D225
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6362E43D230
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243812AbhJ0UMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238558AbhJ0UMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:12:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF06D60234;
-        Wed, 27 Oct 2021 20:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635365405;
-        bh=VZhKaZXZL7K0N14lsWIM3QhuQSV7O/5fTZ0QwvhhwJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P0UsPowv+CE3ElhKSBnCWZvuvMhyozq65PdADxyynXmHJTZcnMCsCSNVBM3ZWlGbg
-         vk87ig0TgTk2YXwW54bivJu0kPQTOSjHGk5SdWDkUn2ubf6uQIhnBWl4TAP2ptY4aX
-         qE/0bmQji10yLs6eiznbJ076IWOLgU4pByNTlAViWgojW59Olti1h5XLCYDi7BtWFV
-         n2+q0J6f0NEox1TFs65znu0BvrXF64sDQW5WNnySzfvBtuS6oMvyVq/Oh8oqUMHFCs
-         1TC7zhe/lM8wp42uRCGDD1ME4CKoAhZ7nYMwtch2XKHTGJ9oYYnqnekG8S+hFtU8wU
-         mTxqHU+qq4dCQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1DA8D410A1; Wed, 27 Oct 2021 17:10:03 -0300 (-03)
-Date:   Wed, 27 Oct 2021 17:10:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Joe Mario <jmario@redhat.com>
-Cc:     kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [PATCH 1/2] perf script: Fix PERF_SAMPLE_WEIGHT_STRUCT support
-Message-ID: <YXmyG1RMvKnJte5/@kernel.org>
-References: <1632929894-102778-1-git-send-email-kan.liang@linux.intel.com>
- <YVSaT54dsMjJV4dF@kernel.org>
- <YVSzjzV+Jb7loGxI@krava>
- <dc6926ac-4b8f-4421-088b-94436bdc3bad@redhat.com>
+        id S243843AbhJ0UMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:12:45 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:40705 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243830AbhJ0UMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 16:12:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635365418; x=1666901418;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=4sZ8+PsZnpALtmEwUku1TEagKL1r7jaVqsFdyy1aw4Y=;
+  b=SGS5dtQQlWu11AYrT7dIBsjPi6oPtqFHLRQ2nVfT0n0mqSh1PBF7s+5t
+   EUIPjB+4pGiY+QDldi1TNSrmmI8EYuxpHpR1DddLszxU7eWmDlUvowTKf
+   Y1tkqNYk2iDQTcv07EdsrxJC8WwRcRoUtD4vkaVgKG5cquoMUV/NUKjLY
+   w=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 27 Oct 2021 13:10:17 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 13:10:17 -0700
+Received: from nalasex01b.na.qualcomm.com (10.47.209.197) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Wed, 27 Oct 2021 13:10:17 -0700
+Received: from wcheng-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Wed, 27 Oct 2021 13:10:16 -0700
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <jackp@codeaurora.org>, Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v3 0/2] Disable mass storage endpoints during disconnect
+Date:   Wed, 27 Oct 2021 13:10:05 -0700
+Message-ID: <1635365407-31337-1-git-send-email-quic_wcheng@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc6926ac-4b8f-4421-088b-94436bdc3bad@redhat.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 29, 2021 at 04:22:19PM -0400, Joe Mario escreveu:
-> 
-> 
-> On 9/29/21 2:42 PM, Jiri Olsa wrote:
-> > On Wed, Sep 29, 2021 at 01:54:39PM -0300, Arnaldo Carvalho de Melo wrote:
-> >> Em Wed, Sep 29, 2021 at 08:38:13AM -0700, kan.liang@linux.intel.com escreveu:
-> >>> From: Kan Liang <kan.liang@linux.intel.com>
-> >>>
-> >>> -F weight in perf script is broken.
-> >>>
-> >>>   # ./perf mem record
-> >>>   # ./perf script -F weight
-> >>>   Samples for 'dummy:HG' event do not have WEIGHT attribute set. Cannot
-> >>> print 'weight' field.
-> >>>
-> >>> The sample type, PERF_SAMPLE_WEIGHT_STRUCT, is an alternative of the
-> >>> PERF_SAMPLE_WEIGHT sample type. They share the same space, weight. The
-> >>> lower 32 bits are exactly the same for both sample type. The higher 32
-> >>> bits may be different for different architecture. For a new kernel on
-> >>> x86, the PERF_SAMPLE_WEIGHT_STRUCT is used. For an old kernel or other
-> >>> ARCHs, the PERF_SAMPLE_WEIGHT is used.
-> >>>
-> >>> With -F weight, current perf script will only check the input string
-> >>> "weight" with the PERF_SAMPLE_WEIGHT sample type. Because the commit
-> >>> ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT") didn't
-> >>> update the PERF_SAMPLE_WEIGHT_STRUCT sample type for perf script. For a
-> >>> new kernel on x86, the check fails.
-> >>>
-> >>> Use PERF_SAMPLE_WEIGHT_TYPE, which supports both sample types, to
-> >>> replace PERF_SAMPLE_WEIGHT.
-> >>>
-> >>> Reported-by: Joe Mario <jmario@redhat.com>
-> >>> Fixes: ea8d0ed6eae3 ("perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT")
-> >>
-> >> Hey Joe, Jiri,
-> >>
-> >> 	Can I have your Tested-by?
-> > 
-> > Acked/Tested-by: Jiri Olsa <jolsa@redhat.com>
-> > 
-> > thanks,
-> > jirka
-> 
->  Acked/Tested-by: Joe Mario <jmario@redhat.com>
-> 
->  The "perf script -F weight" command works correctly.
-> 
->  And I also verified that when just issuing "perf script", that the weight (cycle latency) 
->  column that was missing with this bug, is now fixed and working properly.
+Changes in v3:
+ - Modify statement for usb_ep_enable().
+ - Add explicit statement mentioning that APIs can be called in atomic context.
 
-Thanks, applied.
+Changes in v2:
+ - Revised comments for usb_ep_disable() as it should be safe to be
+   executed in atomic contexts as well.  Other FDs are currently
+   calling ep disable during the disconnect event as well.
 
-- Arnaldo
+This series calls the usb_ep_disable() API directly from fsg_disable()
+as there is a possibility that UDCs that support runtime PM may
+already be in a suspended state, leading to HW access while resources
+are disabled.
 
- 
->  Thanks,
->  Joe
-> > 
-> >>
-> >> Thanks,
-> >>
-> >> - Arnaldo
-> >>
-> >>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> >>> ---
-> >>>  tools/perf/builtin-script.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> >>> index 6211d0b..9f62ac6 100644
-> >>> --- a/tools/perf/builtin-script.c
-> >>> +++ b/tools/perf/builtin-script.c
-> >>> @@ -459,7 +459,7 @@ static int evsel__check_attr(struct evsel *evsel, struct perf_session *session)
-> >>>  		return -EINVAL;
-> >>>  
-> >>>  	if (PRINT_FIELD(WEIGHT) &&
-> >>> -	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT, "WEIGHT", PERF_OUTPUT_WEIGHT))
-> >>> +	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT_TYPE, "WEIGHT", PERF_OUTPUT_WEIGHT))
-> >>>  		return -EINVAL;
-> >>>  
-> >>>  	if (PRINT_FIELD(SYM) &&
-> >>> -- 
-> >>> 2.7.4
-> >>
-> >> -- 
-> >>
-> >> - Arnaldo
-> >>
-> > 
+Wesley Cheng (2):
+  usb: gadget: udc: core: Revise comments for USB ep enable/disable
+  usb: gadget: f_mass_storage: Disable eps during disconnect
 
--- 
+ drivers/usb/gadget/function/f_mass_storage.c | 10 ++++++++++
+ drivers/usb/gadget/udc/core.c                |  4 ++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-- Arnaldo
