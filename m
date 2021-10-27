@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3C843BFEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169BE43BFFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238345AbhJ0Cgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238214AbhJ0Cgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:36:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAF0B60F0F;
-        Wed, 27 Oct 2021 02:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635302059;
-        bh=tJuz9xU+39xdBxstvNh2Lqyyxlqzg73RtzfkS9+Mx50=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DBREyDU5e++mtcWEZgz8YzaxZtExD++2IO7ykow899wUqCr8ulbm1Wjr9wgtaiA83
-         COG3pR0aXfKuPDapxFwMeUN2YiA083KMVzSOhkqJPcQNGsO1lNlbGlNl4hK3KaFPNq
-         JOI3Y4X/KIrNCXyH8ZUWwpmhvwcHC+ePSAH9L3AQ2RwOWuRVd4+ZGcKvkl0y/Vh0Rf
-         yNCJBGp+3UAdQS4KHq9WJ5BQ1+Rz1w3s4OL2dHfFuVABa33nCH+gT4PXedcLQjQ7uU
-         2PxBHj85C4m0V6ejXzBbiwYcOGl9ZqBVI/8BXx6jiltLrNVGYyeK1K+jloHXrQXYf2
-         qBQAg2vJw5HNw==
-Date:   Wed, 27 Oct 2021 11:34:16 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 7/8] tracing/selftests: Add tests for hist trigger
- expression parsing
-Message-Id: <20211027113416.fdad2adf8d162e67405e44ba@kernel.org>
-In-Reply-To: <CAC_TJvfQQCyuSZqjzC0fuAah84uLgHJv5T+WtR8=9h5fN9nrLA@mail.gmail.com>
-References: <20211025200852.3002369-1-kaleshsingh@google.com>
-        <20211025200852.3002369-8-kaleshsingh@google.com>
-        <20211026214311.583c728d90d41778c38201dd@kernel.org>
-        <CAC_TJvfQQCyuSZqjzC0fuAah84uLgHJv5T+WtR8=9h5fN9nrLA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S238537AbhJ0ChO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:37:14 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:57034 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238415AbhJ0ChJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 22:37:09 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtpxLpr_1635302077;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtpxLpr_1635302077)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 10:34:39 +0800
+Subject: [PATCH v6 2/2] ftrace: do CPU checking after preemption disabled
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <df8e9b3e-504c-635d-4e92-99cdf9f05479@linux.alibaba.com>
+Message-ID: <444d3576-4160-be9e-36c0-8061bf1242fb@linux.alibaba.com>
+Date:   Wed, 27 Oct 2021 10:34:37 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <df8e9b3e-504c-635d-4e92-99cdf9f05479@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 07:28:39 -0700
-Kalesh Singh <kaleshsingh@google.com> wrote:
+With CONFIG_DEBUG_PREEMPT we observed reports like:
 
-> On Tue, Oct 26, 2021 at 5:43 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > Hi Kalesh,
-> >
-> > On Mon, 25 Oct 2021 13:08:39 -0700
-> > Kalesh Singh <kaleshsingh@google.com> wrote:
-> >
-> > > Add tests for the parsing of hist trigger expressions; and to
-> > > validate expression evaluation.
-> > >
-> > > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > > Reviewed-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >
-> > > Changes in v3:
-> > >   - Remove .sym-offset error check tests
-> > >
-> > > Changes in v2:
-> > >   - Add Namhyung's Reviewed-by
-> > >   - Update comment to clarify err_pos in "Too many subexpressions" test
-> > >
-> > >
-> > >  .../testing/selftests/ftrace/test.d/functions |  4 +-
-> > >  .../trigger/trigger-hist-expressions.tc       | 72 +++++++++++++++++++
-> > >  2 files changed, 74 insertions(+), 2 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-> > >
-> > > diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-> > > index 000fd05e84b1..1855a63559ad 100644
-> > > --- a/tools/testing/selftests/ftrace/test.d/functions
-> > > +++ b/tools/testing/selftests/ftrace/test.d/functions
-> > > @@ -16,13 +16,13 @@ reset_tracer() { # reset the current tracer
-> > >
-> > >  reset_trigger_file() {
-> > >      # remove action triggers first
-> > > -    grep -H ':on[^:]*(' $@ |
-> > > +    grep -H ':on[^:]*(' $@ | tac |
-> > >      while read line; do
-> > >          cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-> > >       file=`echo $line | cut -f1 -d:`
-> > >       echo "!$cmd" >> $file
-> > >      done
-> > > -    grep -Hv ^# $@ |
-> > > +    grep -Hv ^# $@ | tac |
-> > >      while read line; do
-> > >          cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
-> > >       file=`echo $line | cut -f1 -d:`
-> >
-> > If this update has any meaning, please make a separate patch for this part.
-> 
-> Hi Masami,
-> 
-> Thanks for the feedback. The above change is to ensure we remove
-> triggers in the reverse order that we created them - important when
-> one trigger depends on another.
+  BUG: using smp_processor_id() in preemptible
+  caller is perf_ftrace_function_call+0x6f/0x2e0
+  CPU: 1 PID: 680 Comm: a.out Not tainted
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x8d/0xcf
+   check_preemption_disabled+0x104/0x110
+   ? optimize_nops.isra.7+0x230/0x230
+   ? text_poke_bp_batch+0x9f/0x310
+   perf_ftrace_function_call+0x6f/0x2e0
+   ...
+   __text_poke+0x5/0x620
+   text_poke_bp_batch+0x9f/0x310
 
-Hi Kalesh,
-That's a good reason to make this an independent patch :)
+This telling us the CPU could be changed after task is preempted, and
+the checking on CPU before preemption will be invalid.
 
-> I can split it out into a separate
-> patch and will add a README pattern check to the requires tag for
-> these tests.
+Since now ftrace_test_recursion_trylock() will help to disable the
+preemption, this patch just do the checking after trylock() to address
+the issue.
 
-Thank you!
+CC: Steven Rostedt <rostedt@goodmis.org>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ kernel/trace/trace_event_perf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index 6aed10e..fba8cb7 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -441,13 +441,13 @@ void perf_trace_buf_update(void *record, u16 type)
+ 	if (!rcu_is_watching())
+ 		return;
 
+-	if ((unsigned long)ops->private != smp_processor_id())
+-		return;
+-
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
 
++	if ((unsigned long)ops->private != smp_processor_id())
++		goto out;
++
+ 	event = container_of(ops, struct perf_event, ftrace_ops);
+
+ 	/*
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+1.8.3.1
+
