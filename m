@@ -2,164 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1C043CD70
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8942943CD72
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242737AbhJ0PZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:25:04 -0400
-Received: from mail-dm6nam11on2061.outbound.protection.outlook.com ([40.107.223.61]:64096
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237959AbhJ0PZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:25:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lwr+Iiw61evuK6Hy5v7J2HtL0AmsbMsrZvkhy/u6rTXleosGgFZ3ToHFcKuC6OaljMoKY6FBeM5FAI8DfkXnM7mAH5J98lt1dDFJY1xQqM2653AGYFKbtqGE9/YV7zIozouVI+bDf42B5bhYGDw2b2neWZMEaSwWMeSPq8kknCSR3CAsrrrM5zlM9IEfCcYmflcTlsiI4jziQ5rhPnJM7sEPYSJQm6Y9VfL+yduRZvkqGGyvtsYt4uilwC+wqfbiSVHjQpErs7VdsnIyBl0bFn1a8qe2Q0GefHExvULOhGgie/Wptm9if0B9GCETC9ZKML0bplOwXqiVSCUJArhSvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TyOMzJ0qIftW/mYUiaeBK5SigtMqiCNrwMVsk3KM4yY=;
- b=Hno4keIoqUQdsW0SvJA0jlOUjH1nkjOhnuLJLJa7HSW+a1hARn4PTOYyIAR3dQlpjUYL5gilAB4KfM1hHGeWUX0CebGftIM8FogpV5tm7jXjqw9b1iySne3NKk+CnwAcA8NRbCdNtja/31GCTgzshzhv+IMmbGqngKQjJ/BZGv1cyRLOkTdi2T4Bmqe6AdeA4VG9PvDmcj5BU73PywIUAHdQwokoBJmGHxyo8PnrnislJfQvxv3u14/pJva440c9ZW2AwUZwOaoG7yDWpr5wD2bdJeZjL94EhdJtqaCvDh+jliNpXvSUXDm/hEeE7AoyE4q7yOvLsaAz2U27jfQWFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TyOMzJ0qIftW/mYUiaeBK5SigtMqiCNrwMVsk3KM4yY=;
- b=HMaSuoaoNySGtBt1UEe0O12wwR2HQ+L8rGQilOD4fEAblaPPR2SQtLXn1zVbB1Q5YMbiL6yXvFB31iVp+KhKkff0ZbD/12IyM9Z5y5f9XXXbAhMFc3s53zWjPqbow1fourbzoiTfkR6qi8HEfbfHl3sICBscJjIgYUIQOIGUqO4=
-Authentication-Results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by CO6PR12MB5410.namprd12.prod.outlook.com (2603:10b6:5:35b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
- 2021 15:22:34 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::d095:131a:b99a:9975]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::d095:131a:b99a:9975%3]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 15:22:34 +0000
-Message-ID: <8205a660-6990-9007-48c9-453117d16f72@amd.com>
-Date:   Wed, 27 Oct 2021 11:22:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] drm/amdgpu: fix out of bounds write
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Thelford Williams <tdwilliamsiv@gmail.com>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-References: <20211027143945.GA1947580@roeck-us.net>
-From:   Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20211027143945.GA1947580@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQXPR0101CA0038.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:14::15) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        id S242740AbhJ0PZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:25:49 -0400
+Received: from vern.gendns.com ([98.142.107.122]:57718 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237959AbhJ0PZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:25:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=JPkBCqgYVIGboIjbJlTu2+TTRW22j5I9RNJDnQc/zOw=; b=EFvcRqkoYf0Grkn1S+Avb9oGyy
+        2z6XItdZN+CPjSMFEgeyTIvLieAOJc0TuJS06VIOpXwJTd3hlmbdYGAA5OWWyAOHrv05gKFJ0zKjd
+        ccZfOjLoyf0EQaHVJm93c1d9BorFBDRKk7U7JzN8FLK4t6Vb392XyeGN4ssGubH235pHdV7JTm+p5
+        sWf+5shv8bNe8LVRV9Y5st3vFTzq37ViaCF2cxvq1XeQiCWDr9PZck5JH66ZMWfPvcEy/EcbTnsGV
+        mIxp5H22clVwGahareHer1Rihr+Y/UEiMnYAbPnrcpQ5O/e/vsFBCoCnvNkCyb6PMA0yFytWUHKHT
+        T1NrQqOA==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:42722 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <david@lechnology.com>)
+        id 1mfkle-00005U-As; Wed, 27 Oct 2021 11:23:14 -0400
+Subject: Re: [PATCH 1/8] counter/ti-eqep: implement over/underflow events
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20211017013343.3385923-1-david@lechnology.com>
+ <20211017013343.3385923-2-david@lechnology.com> <YXZZCn9O4xSTHMx5@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <1d9f37b9-8600-1d8c-09ff-b9d9cc592b26@lechnology.com>
+Date:   Wed, 27 Oct 2021 10:23:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from [192.168.50.4] (198.200.67.104) by YQXPR0101CA0038.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:14::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.22 via Frontend Transport; Wed, 27 Oct 2021 15:22:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d13dcbc6-3427-4fe8-249e-08d9995d9987
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5410:
-X-Microsoft-Antispam-PRVS: <CO6PR12MB54106AC3675580CA2F9B27008C859@CO6PR12MB5410.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FjeL51EqVSsrJ/Exnv8I+3IFefz+gHC4alPRLIQPorJlBaCOsBysKYU5JMVSLJb8mcv6rCwiRTXY/zeA6O2rPPOsDrn1xflQWMMymTjaNcX4tt0nuij86RRQLSjSSXGelRhSOzuEtNpllCfWSvvlnL02Lld4Ai/u/GzcAbuXNx3HJeyGJJ4nFWbD4+i+H2mG8jeE+GaJsChjy0bKBjb1WgBC9U8+E2PSgNniwMMaTMXebONZYiJod6rDlNNX+NE1+iY/vIbTYrJYybanxXO1621YwWnFZ6Wj6Lm337OhumM2JOTtBbm1tkZzKGuan5giFOh8d7Z+10oeHVemkhMp1Je7H0D7cglB4yrg6GJce8APrVdvUAqwh3+W4mfo7doDj77kUq/QXawke/KlxzGtOI+WPhJXaD9U0IgE6v1D9kRBRfXDroAhcxCp3xwdbrz82fouXmct9KMhfmNt1TSPcogwnRUhMGTmXE1nY0HkCtnlOwx1j6jJ6CLE7+PiMMUVAVb6H1oZ7ylVWmDnC9qeE2RwfUmYUtEB9YEprQEL7nwHEXaMIOe1uBq6CN246W7v+tRPZRoLHYIMxeBCOO3yF8tjZPYo7C6TLNiTjDqAS9v4Rr43X6/jILwo6Fx+PzpUzf3G0h0v8nzND/H3ZBAlrRsgDNQquGPoMBSMe/Fl5MdobnkN0RL5nGmjOI3xVr4D93znoYW4l9arOePHQDGxSzIScjf3Gp/cnE7lQ3RYiiLM8tH1V40PtO8AeMRMeWgZ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(66476007)(186003)(54906003)(110136005)(316002)(66556008)(31686004)(16576012)(2616005)(26005)(86362001)(956004)(38100700002)(36756003)(6666004)(966005)(2906002)(44832011)(83380400001)(53546011)(8676002)(8936002)(4326008)(31696002)(5660300002)(4001150100001)(508600001)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OERhZWRwVlNKVmhvL3p1eS85Q0FiVzVKOHBEYVRGTFZNREhuQlZxWFRkT0hD?=
- =?utf-8?B?RFRGc2h0K0xMYTlhbDVCN0RqOXRPeHFTZ3VQQ3dxK2Y1cDFQd29kWlhSNTFi?=
- =?utf-8?B?WFBqSDRBamE0N2h3R0l6aDRCWWJPYURLcmlwZ1I1WFJMTExYYnd4OGh5dVBI?=
- =?utf-8?B?cW4vWG1mRjVqSDVMY21IYUI2Sy9EU09RU2s5RlMrKzdCNFZ6aEkyNUhadkZs?=
- =?utf-8?B?dU5zT0wxUDBqZk1yYWVPa2RwNFRQbkN2SWVvYjhnbW5VYmdMVnY2VFg5S3VL?=
- =?utf-8?B?RFNWYm5xWDdvV3ZFUEo2TVBXa1czQ0J0U25JV1V0TmpveW9FdGNjQmJVeDdD?=
- =?utf-8?B?UjRjYlZlN3BtRW9ZSW1MVytRU0dlNyswQ2hUd1hvL0p3bFEzMFF6ZXBpZFUz?=
- =?utf-8?B?ejVMUVFzY2FRYTFJeVAxSlM5Q1FXTGwramd2dzNySWI1Q2FFc2NoRmdvNkR2?=
- =?utf-8?B?QXFnaW0yZFRFbHYrdUxyVkQ5VVlrUFN3Wm82QnU3aWFmZUdQOHJxZC9sa3Z1?=
- =?utf-8?B?WjF2bVRJQ2s2RjRXRXZnRlBGQ25KK2V6MTVpYWxsWHg4SzN0Y1lOVTFpbVB4?=
- =?utf-8?B?OGdGSlVMUndMU1ZlYkVybWJaT2lkSlpEajBqR3pQd21lRkQ4RURuZjdxWlYx?=
- =?utf-8?B?STA3UG1PMGw3RkRJTnprYmY4Q0UxNlE2cTY1TWlWSEl4UmFXdDl0SWpKVXJ6?=
- =?utf-8?B?QS9KQmRVVno3Uit2MC9vc3FLbldqVG1uTG9IK0FIUVprcEU2MnVjSm9Ca1ZY?=
- =?utf-8?B?Z2FvOG9lN2kvbUJNNGtWUTIrenk1NXpMckJONWNHaU1ndUZjVkQvTVFueDQ5?=
- =?utf-8?B?TUE3OXNmOXVIUm16LzNyci9uVmRDUzlGUmF2YmV4b2FvdzFhaHVVY3M5UFg3?=
- =?utf-8?B?bDVsL0MxTUY2dHlGbmg5VmRVZTlsUkRla2pvVTlaaDZBdlJHdGZsSCtrMVRo?=
- =?utf-8?B?ZzBIUUxVbkVJMHFXeTRmWkNiYmlGZlRLK2h1VTQ4ZHVlTGVUOXgvdmlxdkVL?=
- =?utf-8?B?QWZ5V1hJSlBvMktpdHV6VzdlNHZyMVpXY25SNEJwR0c1ZXhBejVkRGdBTi8r?=
- =?utf-8?B?dlJMRTh3TTBkblZaYnc1d2w5QW82OG5ET0k0SHlxTHozcGVrTjBiakdpMHVT?=
- =?utf-8?B?N1NmbGVDeFBKMTVPVERldStubUtock9DdkFaY05keFFhRDNYNEE0aUlMSlZQ?=
- =?utf-8?B?SW9XMWZta25ZOVVhMHFYd090M3Q5WHNUZXZob1A1UWlubE83ZDl6UXdtak0z?=
- =?utf-8?B?VGtVS1N0ai9uNVhMWE84UktCQm4zdnRiQzlodzJlNmNZMTRRT0RIVGZOemdJ?=
- =?utf-8?B?K3JLaVA3d25Tejd0aWhCeUpuejM0eG1jS0ZyOTNyZ1d6QkR6Ri9uYVQxL0JM?=
- =?utf-8?B?TnNUOVU2bXdoa0w5V2RqbzdUVlJWM2RRbFV2MHE4TmNGRVhhcmY0OHdOR0M4?=
- =?utf-8?B?czFZbjdiaEthVFpGSGl6REJ0bU1KOUxMeW5qNUpWcE95ZG01RjIwOW44TlE2?=
- =?utf-8?B?aWN5bUJkUGFOdFoySnM2WWgzRkJ1RFk0MDc4b3U0c1FvejBpS1o1Tkx4eHZO?=
- =?utf-8?B?N3BrbFVFbUx0ZDEyMktTRGpEa05WSDYyRkdNVUR4S0F1WlU4cXpWdnkxSnJY?=
- =?utf-8?B?akxpOEllaU9iMGtwZVFZYy9UYyszM244K3F3WDIwYXplTFM3TDZSK3RYYkV0?=
- =?utf-8?B?NDVDbzhNeitHclk4WEozSGQ4UGwrTEpLc3ROWUZ2ZzRIN0pYZk5vclFSYWJB?=
- =?utf-8?B?TU1yNTYvNXBWZ21uSEJsMC9uVlM1RmNmb3RtYkdVY2NqN2dHa3c4d0x0eGpP?=
- =?utf-8?B?NTd3cUZFQ3UwbnBCSnNRbFBFR2gwUFhkbm5oRkRmT2RiSzcwaE1mOFFZQ3J4?=
- =?utf-8?B?aTRiUmVmOFJmMkxvT0JYekthV05UaTc3Qy93SXgrNTFXT1JuaW1rbjhXdUdq?=
- =?utf-8?B?VzNjSGVZWkhqNkhhY2Z5M1BmelpqWmUvWU5vTDRpcStGa3QwYTl3ZTJqZDRT?=
- =?utf-8?B?aFpRVHh5RVJNR1BVYjB0STBZWUJMUmZmZ24wZWRjallBZWpjUCsxbFV3Ty9C?=
- =?utf-8?B?YkpDb0RQTUp4a0FKU2xvWGVKZ3RDYzQybjFZRVRxRTZ4RWdkekJDNW8vRStu?=
- =?utf-8?B?UFJDMjBPZGdGc2wwb0J0ZTNISENnTDhEY0NEU1hBQjFYbm9CM1J4U29lU1pw?=
- =?utf-8?Q?7HLeKfXv0tstFeT9Bba1gEA=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d13dcbc6-3427-4fe8-249e-08d9995d9987
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 15:22:34.0457
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rAZmV4pyOFQ3H0CcYHUfCnPHNhwwOtHs+bEkxNJCk/+v4xrba0ZVSJmhB7oVZ7OCweIoH2f3wkmi2vVN35KYng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5410
+In-Reply-To: <YXZZCn9O4xSTHMx5@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-27 10:39, Guenter Roeck wrote:
-> On Wed, Oct 13, 2021 at 04:04:13PM -0400, Thelford Williams wrote:
->> Size can be any value and is user controlled resulting in overwriting the
->> 40 byte array wr_buf with an arbitrary length of data from buf.
+On 10/25/21 2:13 AM, William Breathitt Gray wrote:
+> On Sat, Oct 16, 2021 at 08:33:36PM -0500, David Lechner wrote:
+>> This adds support to the TI eQEP counter driver for subscribing to
+>> overflow and underflow events using the counter chrdev interface.
 >>
->> Signed-off-by: Thelford Williams <tdwilliamsiv@gmail.com>
->> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+>> Since this is the first event added, this involved adding an irq
+>> handler. Also, additional range checks had to be added to the ceiling
+>> attribute to avoid infinite interrupts.
+>>
+>> Signed-off-by: David Lechner <david@lechnology.com>
 > 
-> The fix works, but unless I am missing something it is incomplete.
-> parse_write_buffer_into_params() is called several times, and the
-> size parameter is always wrong. This patch only fixes one of several
-> instances of the problem.
+> Hi David,
 > 
-
-Patrik sent a patch that covers all cases:
-https://patchwork.freedesktop.org/patch/461554/?series=96341&rev=2
-
-Harry
-
-> Guenter
+> This looks functionally okay, but I have a couple minor comments inline.
 > 
 >> ---
->>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>   drivers/counter/ti-eqep.c | 119 +++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 117 insertions(+), 2 deletions(-)
 >>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
->> index 814f67d86a3c..9b3ad56607bb 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
->> @@ -264,7 +264,7 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
->>  	if (!wr_buf)
->>  		return -ENOSPC;
->>  
->> -	if (parse_write_buffer_into_params(wr_buf, size,
->> +	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
->>  					   (long *)param, buf,
->>  					   max_param_num,
->>  					   &param_nums)) {
->> -- 
->> 2.33.0
+>> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+>> index 09817c953f9a..b7c79435e127 100644
+>> --- a/drivers/counter/ti-eqep.c
+>> +++ b/drivers/counter/ti-eqep.c
+>> @@ -7,6 +7,7 @@
+>>   
+>>   #include <linux/bitops.h>
+>>   #include <linux/counter.h>
+>> +#include <linux/interrupt.h>
+>>   #include <linux/kernel.h>
+>>   #include <linux/mod_devicetable.h>
+>>   #include <linux/module.h>
+>> @@ -67,6 +68,44 @@
+>>   #define QEPCTL_UTE		BIT(1)
+>>   #define QEPCTL_WDE		BIT(0)
+>>   
+>> +#define QEINT_UTO		BIT(11)
+>> +#define QEINT_IEL		BIT(10)
+>> +#define QEINT_SEL		BIT(9)
+>> +#define QEINT_PCM		BIT(8)
+>> +#define QEINT_PCR		BIT(7)
+>> +#define QEINT_PCO		BIT(6)
+>> +#define QEINT_PCU		BIT(5)
+>> +#define QEINT_WTO		BIT(4)
+>> +#define QEINT_QDC		BIT(3)
+>> +#define QEINT_PHE		BIT(2)
+>> +#define QEINT_PCE		BIT(1)
+>> +
+>> +#define QFLG_UTO		BIT(11)
+>> +#define QFLG_IEL		BIT(10)
+>> +#define QFLG_SEL		BIT(9)
+>> +#define QFLG_PCM		BIT(8)
+>> +#define QFLG_PCR		BIT(7)
+>> +#define QFLG_PCO		BIT(6)
+>> +#define QFLG_PCU		BIT(5)
+>> +#define QFLG_WTO		BIT(4)
+>> +#define QFLG_QDC		BIT(3)
+>> +#define QFLG_PHE		BIT(2)
+>> +#define QFLG_PCE		BIT(1)
+>> +#define QFLG_INT		BIT(0)
+>> +
+>> +#define QCLR_UTO		BIT(11)
+>> +#define QCLR_IEL		BIT(10)
+>> +#define QCLR_SEL		BIT(9)
+>> +#define QCLR_PCM		BIT(8)
+>> +#define QCLR_PCR		BIT(7)
+>> +#define QCLR_PCO		BIT(6)
+>> +#define QCLR_PCU		BIT(5)
+>> +#define QCLR_WTO		BIT(4)
+>> +#define QCLR_QDC		BIT(3)
+>> +#define QCLR_PHE		BIT(2)
+>> +#define QCLR_PCE		BIT(1)
+>> +#define QCLR_INT		BIT(0)
+>> +
+>>   /* EQEP Inputs */
+>>   enum {
+>>   	TI_EQEP_SIGNAL_QEPA,	/* QEPA/XCLK */
+>> @@ -233,12 +272,46 @@ static int ti_eqep_action_read(struct counter_device *counter,
+>>   	}
+>>   }
+>>   
+>> +static int ti_eqep_events_configure(struct counter_device *counter)
+>> +{
+>> +	struct ti_eqep_cnt *priv = counter->priv;
+>> +	struct counter_event_node *event_node;
+>> +	u32 qeint = 0;
+>> +
+>> +	list_for_each_entry(event_node, &counter->events_list, l) {
+>> +		switch (event_node->event) {
+>> +		case COUNTER_EVENT_OVERFLOW:
+>> +			qeint |= QEINT_PCO;
+>> +			break;
+>> +		case COUNTER_EVENT_UNDERFLOW:
+>> +			qeint |= QEINT_PCU;
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>> +	return regmap_write_bits(priv->regmap16, QEINT, ~0, qeint);
+>> +}
+>> +
+>> +static int ti_eqep_watch_validate(struct counter_device *counter,
+>> +				  const struct counter_watch *watch)
+>> +{
+>> +	switch (watch->event) {
+>> +	case COUNTER_EVENT_OVERFLOW:
+>> +	case COUNTER_EVENT_UNDERFLOW:
+>> +		return 0;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +}
+>> +
+>>   static const struct counter_ops ti_eqep_counter_ops = {
+>>   	.count_read	= ti_eqep_count_read,
+>>   	.count_write	= ti_eqep_count_write,
+>>   	.function_read	= ti_eqep_function_read,
+>>   	.function_write	= ti_eqep_function_write,
+>>   	.action_read	= ti_eqep_action_read,
+>> +	.events_configure = ti_eqep_events_configure,
+>> +	.watch_validate	= ti_eqep_watch_validate,
+>>   };
+>>   
+>>   static int ti_eqep_position_ceiling_read(struct counter_device *counter,
+>> @@ -260,11 +333,17 @@ static int ti_eqep_position_ceiling_write(struct counter_device *counter,
+>>   					  u64 ceiling)
+>>   {
+>>   	struct ti_eqep_cnt *priv = counter->priv;
+>> +	u32 qposmax = ceiling;
+>>   
+>> -	if (ceiling != (u32)ceiling)
+>> +	/* ensure that value fits in 32-bit register */
+>> +	if (qposmax != ceiling)
+>>   		return -ERANGE;
+>>   
+>> -	regmap_write(priv->regmap32, QPOSMAX, ceiling);
+>> +	/* protect against infinite overflow interrupts */
+>> +	if (qposmax == 0)
+>> +		return -EINVAL;
+> 
+> Would you be able to explain this scenario a bit further? My expectation
+> would be that an overflow event would only occur if the position
+> increased past the ceiling (i.e. increased to greater than 0). Of
+> course, running the device with a ceiling of 0 effectively guarantees
+> overflow eventss with every movement, but I would expect a stationary
+> device to sit with a position of 0 and thus no overflow events.
+> 
 
+This is just the way the hardware works. I discovered this the first
+time I enabled interrupts. Even if you clear the interrupt, it is
+triggered again immediately when QPOSMAX == 0.
