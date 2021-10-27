@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0E443C77E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD1843C783
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239161AbhJ0KUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbhJ0KUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:20:14 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06956C061570;
-        Wed, 27 Oct 2021 03:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kjEt7cLdB7cPY697Uxk7dOM1bUF1hgkDJORd+L3Zemw=; b=EjvrI8xmrCQvizKIITT1kd5sfX
-        Cwh5JtTCAqtPJJENlQ9U04/4v8GsIXNQvHTW3qFvxwiccJAMJV50vqxuAjtELdXSD/BWkC9DGCeQu
-        5GjyaEsphuI6PG2zbE4fI3p0JZHAYsehpR2XfgzX5HIduZLhYsGphLQs+z1XPKTIouDXUfXfIx2LZ
-        hhIVSi1Sc8xcJMHcl9b5hxp6B7FpSzmYhUvJ8p9FDyLaI3AeWuO6j+To0Y2ZHLEYzEXZWhxI91SRU
-        KwSD/LJ1/7N1s4cBUGMFzrntaq83hbtPtk7PsBSszHjxg/j4Q1EY+iYYZd00cz7nxC0QpdGsgdR/A
-        xJxXMVlw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mffzm-00CX9d-Lr; Wed, 27 Oct 2021 10:17:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 50F2D30031A;
-        Wed, 27 Oct 2021 12:17:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 355282B41AF5C; Wed, 27 Oct 2021 12:17:21 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 12:17:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
-Message-ID: <YXknMVcB1tWaPtoU@hirez.programming.kicks-ass.net>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211026201622.GG174703@worktop.programming.kicks-ass.net>
- <7ebed28b73bb48cd9b69e9097f0aa613@AcuMS.aculab.com>
+        id S241386AbhJ0KVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:21:32 -0400
+Received: from mout.gmx.net ([212.227.17.22]:56455 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232533AbhJ0KVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 06:21:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635329904;
+        bh=0/xQALMRmDMXg28cl7m2Q8kQ0DMZEqmZ9WnjNozXkKY=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=IfjaCIxyVScwaWY9tG/6eRou8+pIIGvV6kCwtIGTYeh53wMnUj3L4XQkNomFwTN2e
+         vQn20zgpVboEfBdhYoxabiPC1rY/hHKmpvinyJLn1MC4/kS0X8YYx2kYoGkVfyCJOJ
+         VmbJ2i5Df7osmYz6VY4Mwi8/YcihLjK82CX3wAqU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.126]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N4hzj-1mq11L2WYx-011fyR; Wed, 27
+ Oct 2021 12:18:24 +0200
+Message-ID: <e5c43bbf7ff6c9c9ba5ac5d0a2b8a981e2abf96e.camel@gmx.de>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 27 Oct 2021 12:18:22 +0200
+In-Reply-To: <20211027090020.GO3959@techsingularity.net>
+References: <20211021145603.5313-2-mgorman@techsingularity.net>
+         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
+         <20211022110534.GJ3959@techsingularity.net>
+         <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
+         <20211026081817.GM3959@techsingularity.net>
+         <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
+         <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
+         <20211026115707.GN3959@techsingularity.net>
+         <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
+         <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
+         <20211027090020.GO3959@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ebed28b73bb48cd9b69e9097f0aa613@AcuMS.aculab.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NWJFT/8n7JuoCprytQiCxEM/iiCQ/FNXAllKX3ifdyx8CKmNhTL
+ xtEnGoSAWHeOrOwwjUp/VzcZMHcviWpUIr/vjIS1lHvX2w9gPieIc6BfzWI3pVxf7/8jwKc
+ ruYXG95jM2MYXnfXRpSwdVTzBu9Y5LQIjJW/CbgEKqD1es5MhKTVqJjHtq2YEdSCVHn4COa
+ Jtu+rUIurjDd3Ld/IzEOA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ul/76pTy9Xo=:2CYFfdmmKTMFBGWHpQfkMu
+ KACi/agJWiPfXc0A7sGXhAGevyBIaQOItzUr5ddDoELLPtP3opyw/QpgjYRrNOl9KNhfJgiag
+ ZwlguQl4yStbv8CuJOj9fYCa+9OxLY/+C8A7LZXtK/OHCGBWUXjHDEBpF5e/nCAZZQpgAl07j
+ wuRROyyaOdRPKKKLT71bVMkXB5X/IjGY9toQHPIG3+TYmh3bj+A7+ZOHXuDjU4wioc7Xw9Rg8
+ 49BgjpBvj7PT/82fpTpkbU4lDq67e2hQqmIwbKratrJ3q7izdyLFo+BHc8yiD0Mw46WqVYHoh
+ ETzpuAX4Gd5/vuxDTknsvHEQ2XHtpVrKJmTTMnoF5J8Lw2vimQo2fFFASj9HIZIv5x9EowMEO
+ C3CuoiJ4U4qRCI4cz/fVd8VsCkE8/yVaZNLtlRTL76rnGqT8OR7nPCprhHATZI4ckXPSn9QjL
+ cbnxRriOOoPgGs9fChYRSyVQKNnqMJIVlKxAP1K5yRUIvCx5uiPqNcg0vCyXRmO8VMLz5gCIu
+ 8TjHu+3og2SM8TmjYNaXHt48dnVckWR1sS+YvBCtTFUqrurzf+OwAilLvRMlVU0dWk9w5k/j0
+ oWpxGa5WfEXZBG8ikW3COkBTEsnQescvWyiEam1PwKWQRkbsbVD54Oe4DiZQ+4EFbYeP/XTM/
+ /b7d4Jo+UoIdVikinUy1OZH9i6PQH/xYIhB96xkV32/D890XMBIZpdY8hgYCV7+MgXt8rzOFP
+ /7Fvz/nj//gLH7bWdyXQCBlBJEid7R1B9OGKoUPm99ebhLull1Fx2sMLn9xX/LgBko0S9xS0F
+ i8m0B0YwpyFzB09RdSqQ6kw+kjrqoBea3VRZKRqLmKRzbfsDD60Pe/YooJF1LWo94hQ4EtlRe
+ 2WQQ7icXpgH/iTHDxZNE2WT6oKWU0R7SUJNS8MUkiaGfxuV6Iy1qto3mOnaJAVjtp0Fh/kLoa
+ 6l3EmOjUDqbyOVRqQHa1nkFOjzuysXhGRRjziM0n+oSmZm/g0Xa+IEhAietR3kJtrv2FYHJCP
+ bS1GiSGSmIDmb7qxjmuvBtvsyPpqfqLptq56d/LuOoGgVN9EGT83n/MNH3U6UMEMCH3M2pkxi
+ EmPygjMJGHXxzQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 10:02:56AM +0000, David Laight wrote:
-> From: Peter Zijlstra
-> > Sent: 26 October 2021 21:16
-> > 
-> > On Wed, Oct 13, 2021 at 11:16:43AM -0700, Sami Tolvanen wrote:
-> > > This series adds support for Clang's Control-Flow Integrity (CFI)
-> > > checking to x86_64. With CFI, the compiler injects a runtime
-> > > check before each indirect function call to ensure the target is
-> > > a valid function with the correct static type. This restricts
-> > > possible call targets and makes it more difficult for an attacker
-> > > to exploit bugs that allow the modification of stored function
-> > > pointers. For more details, see:
-> > >
-> > >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
-> > 
-> > So, if I understand this right, the compiler emits, for every function
-> > two things: 1) the actual funcion and 2) a jump-table entry.
-> > 
-> > Then, every time the address of a function is taken, 2) is given instead
-> > of the expected 1), right?
-> > 
-> > But how does this work with things like static_call(), which we give a
-> > function address (now a jump-table entry) and use that to write direct
-> > call instructions?
-> > 
-> > Should not this jump-table thingy get converted to an actual function
-> > address somewhere around arch_static_call_transform() ? This also seems
-> > relevant for arm64 (which already has CLANG_CFI supported) given:
-> > 
-> >   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
-> > 
-> > Or am I still not understanding this CFI thing?
-> 
-> From what I remember the compiler adds code prior to every jump indirect
-> to check that the function address is in the list of valid functions
-> (with a suitable prototype - or some similar check).
+On Wed, 2021-10-27 at 10:00 +0100, Mel Gorman wrote:
+>
+> How about patch 2?
 
-It definitely mucks about with the address too; see here:
+This version doesn't slam the door, so no worries wrt kthread/control
+thread latencies etc.  Doing a brief tbench vs hogs mixed load run
+didn't even show much of a delta.
 
-  https://lkml.kernel.org/r/YW6a67fGzM2AyHot@hirez.programming.kicks-ass.net
+	-Mike
 
-I'm thinking static_call() wants the real actual function address before
-it writes instructions.
