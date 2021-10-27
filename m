@@ -2,188 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770AE43CC81
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B5F43CC88
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238017AbhJ0OnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:43:20 -0400
-Received: from mga11.intel.com ([192.55.52.93]:34978 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242650AbhJ0OnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:43:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="227630638"
-X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
-   d="scan'208";a="227630638"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 07:40:52 -0700
-X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
-   d="scan'208";a="465749065"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 07:40:49 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfk6P-001Ti4-3p;
-        Wed, 27 Oct 2021 17:40:29 +0300
-Date:   Wed, 27 Oct 2021 17:40:28 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] fbdev: rework FB_DDC dependencies
-Message-ID: <YXlk3N4n5BeYl6yO@smile.fi.intel.com>
-References: <20211027132732.3993279-1-arnd@kernel.org>
+        id S237871AbhJ0OoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237854AbhJ0On7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 10:43:59 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903AAC061745
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:41:34 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id y1-20020a17090a134100b001a27a7e9c8dso4928661pjf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6OXSnlnR0rRr4zd42xResiJ3HjI4vG4520z7JUuMyYs=;
+        b=BjRC0MDFBU5q9E3Xn8qZmMldFXyvZ//eySha9xAzB0jmoDoGvnBh5rZJNDCpSwdREy
+         9EoAYcD7qkeaNtvcOM9mdpbf0o5Zx8GfPrl52oPVsVupbvte1MAYXeh2gVgPvsjmKTcr
+         OvG3N8s6IdOwoiORDWmu79MSfTC8tCdjVwsKVWNIZ01jMG+JmYVN7Tn36JxeYZuyLkmP
+         l/68I6qwCJelKOJxW8ZO7A5e+myyHTZHJETfMvox2BFMDLmdkBWjqGYYnYuVXEvP/t+D
+         dTunWvGIgVZuDjHHD1Ty/XEe2DuBSz3CLrLeXdA9pKLBh6KsJK0Pre9s46e4k0Dr+ooy
+         7X+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6OXSnlnR0rRr4zd42xResiJ3HjI4vG4520z7JUuMyYs=;
+        b=VVoOV7RO6/K3h9hqHC3NjSSVjUdv+n+WiLrhc2vVUNEW4+DHhaqlyXTsW4rvYNru4i
+         cR3D7gEXNpJPd/LTq/nGqw+3DZZd1w2m5oH63EoNA/lXNHkkWfcQqyBLU4Kq5KITJnep
+         ixd5OPFKV9JP4dAULipa6JOyibz9CzttaOH0abXG2lEYt6VsRrAZWJiPSJDwuqipgIW/
+         FOUHbG7QsNGFRNGr7xdAXevnQ0wvV+mIOVWiDMbUjeb9J2nQrdqDJB2wcFUhLaMEgxwz
+         D0Eo4fSCnY27plCsUhz2M5FmQUGvBz64oJaPoN5CgdhNbEp+7KjFLy82A6P6CgkLAnPP
+         JEEg==
+X-Gm-Message-State: AOAM533HZbN7v/uAfG32mLjRP/qlBI97YMFdRmYqBpt7VSutW4Majnrd
+        cseJz8Y6WawVbd4o6k3GJY9yKQ==
+X-Google-Smtp-Source: ABdhPJwpvrRMvTZfA8g36IWigq/Ddl2lTxPKT07H9cOHEBI6XhDgd4CVWZEorIKgU9/kACcZuDTlgw==
+X-Received: by 2002:a17:902:e812:b0:13f:3be8:b15a with SMTP id u18-20020a170902e81200b0013f3be8b15amr27601253plg.49.1635345693861;
+        Wed, 27 Oct 2021 07:41:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id e9sm203521pfv.189.2021.10.27.07.41.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 07:41:33 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 14:41:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH v2 00/43] KVM: Halt-polling and x86 APICv overhaul
+Message-ID: <YXllGfrjPX1pVUx6@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <614858dd-106c-64cc-04bc-f1887b2054d1@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027132732.3993279-1-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <614858dd-106c-64cc-04bc-f1887b2054d1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 03:27:12PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Selecting FB_DDC currently turns on CONFIG_I2C implicitly,
-> which is often not desired and can lead to circular dependencies.
-> 
-> Change this to a 'depends on' and change all drivers that
-> rely on FB_DDC to have an appropriate I2C dependency as well.
+On Mon, Oct 25, 2021, Paolo Bonzini wrote:
+> On 09/10/21 04:11, Sean Christopherson wrote:
+> Queued 1-20 and 22-28.  Initially I skipped 21 because I didn't receive it,
+> but I have to think more about whether I agree with it.
 
-No objections from me.
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+https://lkml.kernel.org/r/20211009021236.4122790-22-seanjc@google.com
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/video/fbdev/Kconfig | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-> index 6ed5e608dd04..c187a93c9a16 100644
-> --- a/drivers/video/fbdev/Kconfig
-> +++ b/drivers/video/fbdev/Kconfig
-> @@ -62,9 +62,8 @@ config FIRMWARE_EDID
->  
->  config FB_DDC
->  	tristate
-> -	depends on FB
-> +	depends on FB && I2C
->  	select I2C_ALGOBIT
-> -	select I2C
->  
->  config FB_BOOT_VESA_SUPPORT
->  	bool
-> @@ -356,6 +355,7 @@ config FB_CYBER2000
->  config FB_CYBER2000_DDC
->  	bool "DDC for CyberPro support"
->  	depends on FB_CYBER2000
-> +	depends on I2C=y || I2C=FB_CYBER2000
->  	select FB_DDC
->  	default y
->  	help
-> @@ -894,6 +894,7 @@ config FB_NVIDIA
->  config FB_NVIDIA_I2C
->  	bool "Enable DDC Support"
->  	depends on FB_NVIDIA
-> +	depends on I2C=y || I2C=FB_NVIDIA
->  	select FB_DDC
->  	help
->  	  This enables I2C support for nVidia Chipsets.  This is used
-> @@ -940,6 +941,7 @@ config FB_RIVA
->  config FB_RIVA_I2C
->  	bool "Enable DDC Support"
->  	depends on FB_RIVA
-> +	depends on I2C=y || I2C=FB_RIVA
->  	select FB_DDC
->  	help
->  	  This enables I2C support for nVidia Chipsets.  This is used
-> @@ -967,7 +969,7 @@ config FB_RIVA_BACKLIGHT
->  
->  config FB_I740
->  	tristate "Intel740 support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && I2C
->  	select FB_MODE_HELPERS
->  	select FB_CFB_FILLRECT
->  	select FB_CFB_COPYAREA
-> @@ -1021,6 +1023,7 @@ config FB_I810_GTF
->  config FB_I810_I2C
->  	bool "Enable DDC Support"
->  	depends on FB_I810 && FB_I810_GTF
-> +	depends on I2C=y || I2C=FB_I810
->  	select FB_DDC
->  	help
->  	  Add DDC/I2C support for i810fb.  This will allow the driver to get
-> @@ -1076,6 +1079,7 @@ config FB_INTEL_DEBUG
->  config FB_INTEL_I2C
->  	bool "DDC/I2C for Intel framebuffer support"
->  	depends on FB_INTEL
-> +	depends on I2C=y || I2C=FB_INTEL
->  	select FB_DDC
->  	default y
->  	help
-> @@ -1155,6 +1159,7 @@ config FB_MATROX_G
->  config FB_MATROX_I2C
->  	tristate "Matrox I2C support"
->  	depends on FB_MATROX
-> +	depends on I2C=y || I2C=FB_MATROX
->  	select FB_DDC
->  	help
->  	  This drivers creates I2C buses which are needed for accessing the
-> @@ -1220,6 +1225,7 @@ config FB_RADEON
->  config FB_RADEON_I2C
->  	bool "DDC/I2C for ATI Radeon support"
->  	depends on FB_RADEON
-> +	depends on I2C=y || I2C=FB_RADEON
->  	select FB_DDC
->  	default y
->  	help
-> @@ -1329,6 +1335,7 @@ config FB_S3
->  config FB_S3_DDC
->  	bool "DDC for S3 support"
->  	depends on FB_S3
-> +	depends on I2C=y || I2C=FB_S3
->  	select FB_DDC
->  	default y
->  	help
-> @@ -1354,6 +1361,7 @@ config FB_SAVAGE
->  config FB_SAVAGE_I2C
->  	bool "Enable DDC2 Support"
->  	depends on FB_SAVAGE
-> +	depends on I2C=y || I2C=FB_SAVAGE
->  	select FB_DDC
->  	help
->  	  This enables I2C support for S3 Savage Chipsets.  This is used
-> @@ -1493,6 +1501,7 @@ config FB_3DFX_ACCEL
->  config FB_3DFX_I2C
->  	bool "Enable DDC/I2C support"
->  	depends on FB_3DFX
-> +	depends on I2C=y || I2C=FB_3DFX
->  	select FB_DDC
->  	default y
->  	help
-> @@ -1532,7 +1541,7 @@ config FB_VT8623
->  
->  config FB_TRIDENT
->  	tristate "Trident/CyberXXX/CyberBlade support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && I2C
->  	select FB_CFB_FILLRECT
->  	select FB_CFB_COPYAREA
->  	select FB_CFB_IMAGEBLIT
-> -- 
-> 2.29.2
-> 
+> In reality the CMPXCHG loops can really fail just once, because they only
+> race with the processor setting ON=1.  But if the warnings were to trigger
+> at all, it would mean that something iffy is happening in the
+> pi_desc->control state machine, and having the check on every iteration is
+> (very marginally) more effective.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Yeah, the "very marginally" caveat is essentially my argument.  The WARNs are
+really there to ensure that the vCPU itself did the correct setup/clean before
+and after blocking.  Because IRQs are disabled, a failure on iteration>0 but not
+iteration=0 would mean that a different CPU or a device modified the PI descriptor.
+If that happens, (a) something is wildly wrong and (b) as you noted, the odds of
+the WARN firing in the tiny window between iteration=0 and iteration=1 are really,
+really low.
 
-
+The other thing I don't like about having the WARN in the loop is that it suggests
+that something other than the vCPU can modify the NDST and SN fields, which is
+wrong and confusing (for me).  The WARNs in the loops made more sense when the
+loops ran with IRQs enabled prior to commit 8b306e2f3c41 ("KVM: VMX: avoid
+double list add with VT-d posted interrupts").  Then it would be at least plausible
+that a vCPU could mess up its own descriptor while being scheduled out/in.
