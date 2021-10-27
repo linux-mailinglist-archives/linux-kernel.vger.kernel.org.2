@@ -2,170 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4D043C931
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9874E43C934
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241767AbhJ0MH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:07:56 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56334 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241747AbhJ0MHy (ORCPT
+        id S241748AbhJ0MI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231441AbhJ0MIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:07:54 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RB7h8b012181;
-        Wed, 27 Oct 2021 14:05:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=XoFUDfILDZ4OIEyNDbToP7ox0pNhYuht3vUJnRFqiRM=;
- b=B6nUTV6Tp3D8qA8QnwXLGoxKs4xeKivon5K1kKWMdpBVRivRX0mroppfAI1v/jaCV8bd
- oGmRLpsmpwlY+3CEPuTXlZ3rs3507YIHw4581J2g9ddiYdSthYpM2rPjZnUwgYyQOFh3
- LbCtNSP/ajpcNXX2M/tI+lzdqJ73/k6lPkfZ0UPrkDW7bCjTYiDcFNWjGXQD51ySsL3a
- aTFZFniFLvRrywoCiQENM/RMYvz+JPfJFtfhyRHbUwHjSdQK0tUJf2fdlDU7q5KuPWUY
- vbyRb8ThoGJ24kLi4IXkp88zCJfOs7kc2dKxxuiCvX1dq0L4myh9sGALcAChvguitpZ7 Cw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bxputmnqp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 14:05:19 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AECBD10002A;
-        Wed, 27 Oct 2021 14:05:18 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A1110237D90;
-        Wed, 27 Oct 2021 14:05:18 +0200 (CEST)
-Received: from [10.48.0.126] (10.75.127.46) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct
- 2021 14:05:17 +0200
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Subject: Re: [PATCH] dt-bindings: usb: dwc2: document the port when
- usb-role-switch is used
-To:     Rob Herring <robh@kernel.org>
-CC:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <amelie.delaunay@foss.st.com>,
-        <alexandre.torgue@foss.st.com>
-References: <1634144026-3326-1-git-send-email-fabrice.gasnier@foss.st.com>
- <YXhnLh9OYxUz8dIC@robh.at.kernel.org>
-Message-ID: <be749cbe-c029-7a24-da0e-94ab363ea07e@foss.st.com>
-Date:   Wed, 27 Oct 2021 14:05:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 27 Oct 2021 08:08:25 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B66C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:06:00 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id y10so2116121qkp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VoE64TdDHE/gTi4i1OPzPbdXPkSP+qVI54kwUIQ+eMk=;
+        b=IL0EkEfTynBQCNxlnvNvzTzem+gKVqgjCVzXu6qnPdM6ZilL8MkGt4o4Ddpv7trMUc
+         7ZhV1rgfVCaEBB/5+qfyGBTO9WtyfLu+qE2oHhSfi035eexUaoGgs20Ixveg9dENzZiH
+         dx8ziwaUOl437AW0D+yLzqZL7iEEfJT4JbQEeMJmW3XuMOCKuJOksag2Uj5pH/nThtLy
+         LR2IpXLI29hR+NZIOIJyOw5C+nH3L1e9QehG2CgerWvmKUmn2CanVHKyHvaq/ppvzB8Q
+         sJq5aEjEuwSoAeMxleegWgF5aC1Lgs/h56TgGX8rMI+haT5XglBr9Jbi07SCygJN0W6+
+         1cfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VoE64TdDHE/gTi4i1OPzPbdXPkSP+qVI54kwUIQ+eMk=;
+        b=0zxUgfAjUcois5FeaV5Lb7o2pdseKqPIVrBIx/2um2LHXVTyRbGd7oQW625twzQ1Nr
+         Fn6jM+4fi2WARYhrui8ocuGnMAPrcIZNdJIMeB3MkYLdB/HISIM+NAdYIJTYlWbPmazc
+         DltegjYxP/p7Oz1yZ7uiM1hefiWBMxzu9gfxG+ze5Mg5FKBnN5sCdE5LcTfIrpWp2NH2
+         x3dzT8hEgtqfu/GGbnN4UXtCTmxjkyKcqZ7Nir7jes1DydSTC6Hle2zRYvl8JBlBQRuE
+         Y1tkYXdkdAwha8EdtXj9co1VxvtfXLZsCjo8eutHBwXlmBDrxlZWKrFS1m66l1L/wGoO
+         O2lg==
+X-Gm-Message-State: AOAM530lg6we31EJeBJAbZR2hkh19OKBMNZ7JVKncdGAHGYsO8XcVltG
+        huLZgpcvVWfrC0NmU4rnKCs2n689tBI4axhY1to=
+X-Google-Smtp-Source: ABdhPJyhqfwnEgb39Ng1knA6fOpJFQOuh8egGkFLxlZkWZXZUn+IfcHlyFrRUSJ0dOT/K19Gv+5XOteNZnsroLbUHy4=
+X-Received: by 2002:a37:8e44:: with SMTP id q65mr23327968qkd.372.1635336351853;
+ Wed, 27 Oct 2021 05:05:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YXhnLh9OYxUz8dIC@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_03,2021-10-26_01,2020-04-07_01
+References: <1635318110-1905-1-git-send-email-huangzhaoyang@gmail.com>
+ <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz> <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
+ <YXkNJjD4axYlmqQ5@dhcp22.suse.cz> <CAGWkznHrZ=Y3kG5j5aYdTV2294QGrQbM6251zcdGphzCGUP6dw@mail.gmail.com>
+ <YXk9a3X62vNTyvGE@dhcp22.suse.cz>
+In-Reply-To: <YXk9a3X62vNTyvGE@dhcp22.suse.cz>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Wed, 27 Oct 2021 20:05:30 +0800
+Message-ID: <CAGWkznEZhPxgb_K2vcfyhnGufPMaX3ksxbJvQSurwkNtLKRTGg@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: have kswapd only reclaiming use min protection on memcg
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/21 10:38 PM, Rob Herring wrote:
-> On Wed, Oct 13, 2021 at 06:53:46PM +0200, Fabrice Gasnier wrote:
->> Document the "port" property, which is used with "usb-role-switch"
->> to describe the bus connector.
->> Definition is inspired from mediatek,mtu3.yaml.
->>
->> This fixes some errors seen when running "make dtbs_check":
->> ... 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
->>         From schema: ... Documentation/devicetree/bindings/usb/dwc2.yaml
->>
->> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
->> ---
->>  Documentation/devicetree/bindings/usb/dwc2.yaml | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
->> index 10c7d9b..7d1aa53 100644
->> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
->> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
->> @@ -130,6 +130,16 @@ properties:
->>      description: If present indicates that we need to reset the PHY when we 
->>        detect a wakeup. This is due to a hardware errata.
->>  
->> +  port:
->> +    description:
->> +      Any connector to the data bus of this controller should be modelled
->> +      using the OF graph bindings specified, if the "usb-role-switch"
->> +      property is used. See graph.txt
-> 
-> Drop 'See graph.txt'
-> 
->> +    $ref: /schemas/graph.yaml#/properties/port
->> +
->> +dependencies:
->> +  port: [ 'usb-role-switch' ]
-> 
-> usb-role-switch without port is valid or both must be present. In case 
-> of the latter, you need to add:
+On Wed, Oct 27, 2021 at 7:52 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 27-10-21 17:19:56, Zhaoyang Huang wrote:
+> > On Wed, Oct 27, 2021 at 4:26 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Wed 27-10-21 15:46:19, Zhaoyang Huang wrote:
+> > > > On Wed, Oct 27, 2021 at 3:20 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Wed 27-10-21 15:01:50, Huangzhaoyang wrote:
+> > > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > >
+> > > > > > For the kswapd only reclaiming, there is no chance to try again on
+> > > > > > this group while direct reclaim has. fix it by judging gfp flag.
+> > > > >
+> > > > > There is no problem description (same as in your last submissions. Have
+> > > > > you looked at the patch submission documentation as recommended
+> > > > > previously?).
+> > > > >
+> > > > > Also this patch doesn't make any sense. Both direct reclaim and kswapd
+> > > > > use a gfp mask which contains __GFP_DIRECT_RECLAIM (see balance_pgdat
+> > > > > for the kswapd part)..
+> > > > ok, but how does the reclaiming try with memcg's min protection on the
+> > > > alloc without __GFP_DIRECT_RECLAIM?
+> > >
+> > > I do not follow. There is no need to protect memcg if the allocation
+> > > request doesn't have __GFP_DIRECT_RECLAIM because that would fail the
+> > > charge if a hard limit is reached, see try_charge_memcg and
+> > > gfpflags_allow_blocking check.
+> > >
+> > > Background reclaim, on the other hand never breaches reclaim protection.
+> > >
+> > > What is the actual problem you want to solve?
+> > Imagine there is an allocation with gfp_mask & ~GFP_DIRECT_RECLAIM and
+> > all processes are under cgroups. Kswapd is the only hope here which
+> > however has a low efficiency of get_scan_count. I would like to have
+> > kswapd work as direct reclaim in 2nd round which will have
+> > protection=memory.min.
+>
+> Do you have an example where this would be a practical problem? Atomic
+> allocations should be rather rare.
+Please find below for the search result of '~__GFP_DIRECT_RECLAIM'
+which shows some drivers and net prefer to behave like that.
+Furthermore, the allocations are always together with high order.
 
-Hi Rob,
+block/bio.c:464: gfp_mask &= ~__GFP_DIRECT_RECLAIM;
+drivers/vhost/net.c:668: pfrag->page = alloc_pages((gfp &
+~__GFP_DIRECT_RECLAIM) |
+drivers/net/ethernet/mellanox/mlx4/icm.c:184: mask &= ~__GFP_DIRECT_RECLAIM;
+fs/erofs/zdata.c:243: gfp_t gfp = (mapping_gfp_mask(mc) &
+~__GFP_DIRECT_RECLAIM) |
+fs/fscache/page.c:138: gfp &= ~__GFP_DIRECT_RECLAIM;
+fs/fscache/cookie.c:187: INIT_RADIX_TREE(&cookie->stores, GFP_NOFS &
+~__GFP_DIRECT_RECLAIM);
+fs/btrfs/disk-io.c:2928: INIT_RADIX_TREE(&fs_info->reada_tree,
+GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
+fs/btrfs/volumes.c:6868: INIT_RADIX_TREE(&dev->reada_zones, GFP_NOFS &
+~__GFP_DIRECT_RECLAIM);
+fs/btrfs/volumes.c:6869: INIT_RADIX_TREE(&dev->reada_extents, GFP_NOFS
+& ~__GFP_DIRECT_RECLAIM);
+kernel/cgroup/cgroup.c:325: ret = idr_alloc(idr, ptr, start, end,
+gfp_mask & ~__GFP_DIRECT_RECLAIM);
+mm/mempool.c:389: gfp_temp = gfp_mask & ~(__GFP_DIRECT_RECLAIM|__GFP_IO);
+mm/hugetlb.c:2165: gfp &=  ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
+mm/mempolicy.c:2061: preferred_gfp &= ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
+mm/memcontrol.c:5452: ret = try_charge(mc.to, GFP_KERNEL &
+~__GFP_DIRECT_RECLAIM, count);
+net/core/sock.c:2623: pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+net/core/skbuff.c:6084: page = alloc_pages((gfp_mask & ~__GFP_DIRECT_RECLAIM) |
+net/netlink/af_netlink.c:1302: (allocation & ~__GFP_DIRECT_RECLAIM) |
+net/netlink/af_netlink.c:2259: (GFP_KERNEL & ~__GFP_DIRECT_RECLAIM) |
 
-Thanks for your review.
-I agree with your statement. But I miss something in this proposal:
-
-> 
-> usb-role-switch: [ port ]
-
-I tried this without success, when running dt_binding_check.
-
-For testing, I added locally in the example successively:
-
-1 - usb-role-switch (alone)
------
-+        usb-role-switch;
-"dwc2.example.dt.yaml: usb@101c0000: 'port' is a dependency of
-'usb-role-switch'
-
-2 - port without usb-role-switch
------
-+        //usb-role-switch;
-+
-+        port {
-+          usb_role_sw: endpoint {
-+            remote-endpoint = <&hs_ep>;
-+          };
-+        };
-dt_binding_check is happy here. But it shouldn't, right ?
-
-3 - both (port + usb-role-switch)
------
-dt_binding_check is ok.
-
-
-But it seems functional, with
-+ dependencies:
-+   port: [ usb-role-switch ]
-Shall I keep (without quotes) ?
-With this, above statement, (changes in example) seems correctly
-validated with dt_binding_check.
-
-1 - dt_binding_check is happy
-2 - usb@101c0000: 'usb-role-switch' is a dependency of 'port'
-    (as expected ?)
-3 - dt_binding_check is happy
-
-I'll send a v2 with the other changes you propose.
-Please review it there.
-
-Best Regards,
-Fabrice
-
-> 
-> Also, you don't need quotes.
-> 
->> +
->>  required:
->>    - compatible
->>    - reg
->> -- 
->> 2.7.4
->>
->>
+>
+> --
+> Michal Hocko
+> SUSE Labs
