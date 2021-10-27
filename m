@@ -2,216 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1B543CBD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04A543CBDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242484AbhJ0OVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:21:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58062 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235380AbhJ0OVN (ORCPT
+        id S242485AbhJ0OVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242500AbhJ0OVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:21:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635344327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tBSPA7SFj6S0l15DFmmTz29aiCenNhw8/4n7QaHyqGY=;
-        b=FoIwbpjEU9RDfcqDKaMrOAvPF0B7uHviFTjjzq6XLjGqMlzlG6S2XkgGzHttlMMOkwCMFT
-        +N/KTwLBwLV0VUuWS1iT8jpexuTudW/nZt2LJ/eas09etldymeHHotH1vEGFwb6VZdDsHS
-        h8xqrpttIkMnbNRTdO15ALhFMd6zQ5A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-EGGnys3PO8eSwUAtseuBvQ-1; Wed, 27 Oct 2021 10:18:44 -0400
-X-MC-Unique: EGGnys3PO8eSwUAtseuBvQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46F7487320A;
-        Wed, 27 Oct 2021 14:18:40 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 714835C1B4;
-        Wed, 27 Oct 2021 14:18:31 +0000 (UTC)
-Message-ID: <e04b75455437da29fb009668e60b5be1732a183b.camel@redhat.com>
-Subject: Re: [PATCH v2 12/43] KVM: x86: Tweak halt emulation helper names to
- free up kvm_vcpu_halt()
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Wed, 27 Oct 2021 17:18:30 +0300
-In-Reply-To: <363479dd55760979da208cacf015a6f7fe2afd69.camel@redhat.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-13-seanjc@google.com>
-         <363479dd55760979da208cacf015a6f7fe2afd69.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 27 Oct 2021 10:21:23 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB161C0613B9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:18:57 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id w15so11218039edc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:18:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=A7VSAROM1Lq92tsQzcvA0FV6paOOKRRSG0CkqXmrfHY=;
+        b=WO/8J0WHy3bqbZ8bWtK8os21bmAyrg+d4GoI0FdQVNmBnedrhDrQwHoExDY2HYNc56
+         wuGhdsWbyO6HMLfe7SEFEzeORWHjKA3PZMg0C1afDFnRQUD4ZqFUyBM5nPwZFehS7m/X
+         W/E1Vfn3gFK5Z6fjNK0H27jiZurO+y4SQwZaV5JTnwtZ2OLx5cmApkpw8B1O6X9Xo+om
+         726nvMv4VOVc1TVOL4hZMFRAdnEIUsRQn11GxzVLikDaXwVX/sMLg1dKx8sp7Q28O1DL
+         OhJN2gwLwq3QBfaJBJecj9D85HBBgpvARrJFIHfm0cmYWs/UjVH5m3m/ip7qm2ysF2c5
+         YYDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=A7VSAROM1Lq92tsQzcvA0FV6paOOKRRSG0CkqXmrfHY=;
+        b=VkOync8acbbhtOMNBbJPxpFNCg/fKPnuRwcI8mH1we7tMTF9S3t7LpfP1oNrgTiLrf
+         woECgUDsNJZlForCdpVzPGUZXfgoMkrpjRyToQnidNUNBzZAXpdXwl+uSmBwnDFKXRX1
+         e41LFReQ7sKyFo2SCGtT7cNsZ1j/NREk30x28d6tuKfLuNHbAR2LbyGIajR3trvoYN7E
+         jhTsPaKStskcf9xOLc0nLh2uQbGVq40oTrdFGcgH+2MAsj4dXOh27OLDN7I94cmMGBVu
+         DcaucAh5n37mg1eBCh3r7ijFMFQnnNBoyBa0Pbric0pY+gl3xSR9Va+JHCnkbritHbFK
+         V4jA==
+X-Gm-Message-State: AOAM531F640czfn1D2JnAShGEFmMDPQk5Z9JHXmuZ+Mog01p6zz8oMoQ
+        Y7dLumyQSdwr3o/1b3Z4lHupXdahBjeOLqMXQNHA
+X-Google-Smtp-Source: ABdhPJx/AVRgyCKdtHofrLmeNbJZOE7jZKTiy9OBTXYs7O2Og+i8eOPvBwKXpaar1l0AT/K2AG1HPgfhyoHnEQ1j4vY=
+X-Received: by 2002:a17:906:919:: with SMTP id i25mr38774337ejd.171.1635344330893;
+ Wed, 27 Oct 2021 07:18:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20211026133147.35d19e00@canb.auug.org.au> <87k0i0awdl.fsf@mpe.ellerman.id.au>
+ <CAHC9VhTj7gn3iAOYctVRKvv_Bk1iQMrmkA8FVJtYzdvBjqFmvg@mail.gmail.com>
+ <87tuh2aepp.fsf@mpe.ellerman.id.au> <2012df5e-62ec-06fb-9f4d-e27dde184a3f@csgroup.eu>
+In-Reply-To: <2012df5e-62ec-06fb-9f4d-e27dde184a3f@csgroup.eu>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 27 Oct 2021 10:18:40 -0400
+Message-ID: <CAHC9VhRHs8Lx8+v+LHmJByxO_m330sfLWRsGDsFtQxyQ1860eg@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the audit tree with the powerpc tree
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Richard Guy Briggs <rgb@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-27 at 17:10 +0300, Maxim Levitsky wrote:
-> On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> > Rename a variety of HLT-related helpers to free up the function name
-> > "kvm_vcpu_halt" for future use in generic KVM code, e.g. to differentiate
-> > between "block" and "halt".
-> > 
-> > No functional change intended.
-> > 
-> > Reviewed-by: David Matlack <dmatlack@google.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h |  2 +-
-> >  arch/x86/kvm/vmx/nested.c       |  2 +-
-> >  arch/x86/kvm/vmx/vmx.c          |  4 ++--
-> >  arch/x86/kvm/x86.c              | 13 +++++++------
-> >  4 files changed, 11 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 7aafc27ce7a9..328103a520d3 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -1689,7 +1689,7 @@ int kvm_emulate_monitor(struct kvm_vcpu *vcpu);
-> >  int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
-> >  int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
-> >  int kvm_emulate_halt(struct kvm_vcpu *vcpu);
-> > -int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
-> > +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu);
-> >  int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
-> >  int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
-> >  
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index af1bbb73430a..d0237a441feb 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -3619,7 +3619,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
-> >  		    !(nested_cpu_has(vmcs12, CPU_BASED_INTR_WINDOW_EXITING) &&
-> >  		      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
-> >  			vmx->nested.nested_run_pending = 0;
-> > -			return kvm_vcpu_halt(vcpu);
-> > +			return kvm_emulate_halt_noskip(vcpu);
-> >  		}
-> >  		break;
-> >  	case GUEST_ACTIVITY_WAIT_SIPI:
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 1c8b2b6e7ed9..5517893f12fc 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -4741,7 +4741,7 @@ static int handle_rmode_exception(struct kvm_vcpu *vcpu,
-> >  		if (kvm_emulate_instruction(vcpu, 0)) {
-> >  			if (vcpu->arch.halt_request) {
-> >  				vcpu->arch.halt_request = 0;
-> > -				return kvm_vcpu_halt(vcpu);
-> > +				return kvm_emulate_halt_noskip(vcpu);
-> 
-> Could you elaborate on why you choose _noskip suffix? 
->  
-> As far as I see, kvm_vcpu_halt just calls __kvm_vcpu_halt with new VCPU run state/exit reason,
-> which is used only when local apic is not in the kernel (which is these days not that
-> supported configuration).
-> 
-> Other user of __kvm_vcpu_halt is something SEV related.
->  
-> Best regards,
-> 	Maxim Levitsky
-> 
-> 
-> >  			}
-> >  			return 1;
-> >  		}
-> > @@ -5415,7 +5415,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
-> >  
-> >  		if (vcpu->arch.halt_request) {
-> >  			vcpu->arch.halt_request = 0;
-> > -			return kvm_vcpu_halt(vcpu);
-> > +			return kvm_emulate_halt_noskip(vcpu);
-> >  		}
-> >  
-> >  		/*
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 4a52a08707de..9c23ae1d483d 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -8649,7 +8649,7 @@ void kvm_arch_exit(void)
-> >  #endif
-> >  }
-> >  
-> > -static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
-> > +static int __kvm_emulate_halt(struct kvm_vcpu *vcpu, int state, int reason)
-> >  {
-> >  	++vcpu->stat.halt_exits;
-> >  	if (lapic_in_kernel(vcpu)) {
-> > @@ -8661,11 +8661,11 @@ static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
-> >  	}
-> >  }
-> >  
-> > -int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
-> > +int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu)
-> >  {
-> > -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
-> > +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
-> >  }
-> > -EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
-> > +EXPORT_SYMBOL_GPL(kvm_emulate_halt_noskip);
-> >  
-> >  int kvm_emulate_halt(struct kvm_vcpu *vcpu)
-> >  {
-> > @@ -8674,7 +8674,7 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
-> >  	 * TODO: we might be squashing a GUESTDBG_SINGLESTEP-triggered
-> >  	 * KVM_EXIT_DEBUG here.
-> >  	 */
-> > -	return kvm_vcpu_halt(vcpu) && ret;
-> > +	return kvm_emulate_halt_noskip(vcpu) && ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(kvm_emulate_halt);
-> >  
-> > @@ -8682,7 +8682,8 @@ int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
-> >  {
-> >  	int ret = kvm_skip_emulated_instruction(vcpu);
-> >  
-> > -	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
-> > +	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD,
-> > +					KVM_EXIT_AP_RESET_HOLD) && ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
-> >  
+On Wed, Oct 27, 2021 at 7:41 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+> Le 27/10/2021 =C3=A0 13:29, Michael Ellerman a =C3=A9crit :
+> > Paul Moore <paul@paul-moore.com> writes:
+> >> On Tue, Oct 26, 2021 at 6:55 AM Michael Ellerman <mpe@ellerman.id.au> =
+wrote:
+> >>> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> >>>> Hi all,
+> >>>>
+> >>>> Today's linux-next merge of the audit tree got conflicts in:
+> >>>>
+> >>>>    arch/powerpc/kernel/audit.c
+> >>>>    arch/powerpc/kernel/compat_audit.c
+> >>>>
+> >>>> between commit:
+> >>>>
+> >>>>    566af8cda399 ("powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPA=
+T_GENERIC")
+> >>>>
+> >>>> from the powerpc tree and commits:
+> >>>>
+> >>>>    42f355ef59a2 ("audit: replace magic audit syscall class numbers w=
+ith macros")
+> >>>>    1c30e3af8a79 ("audit: add support for the openat2 syscall")
+> >>>>
+> >>>> from the audit tree.
+> >>>
+> >>> Thanks.
+> >>>
+> >>> I guess this is OK, unless the audit folks disagree. I could revert t=
+he
+> >>> powerpc commit and try it again later.
+> >>>
+> >>> If I don't hear anything I'll leave it as-is.
+> >>
+> >> Hi Michael,
+> >>
+> >> Last I recall from the powerpc/audit thread there were still some
+> >> issues with audit working properly in your testing, has that been
+> >> resolved?
+> >
+> > No.
+> >
+> > There's one test failure both before and after the conversion to use th=
+e
+> > generic code.
+> >
+> >> If nothing else, -rc7 seems a bit late for this to hit -next for me to
+> >> feel comfortable about this.
+> >
+> > OK. I'll revert the patch in my tree.
+>
+> But it's been in the pipe since end of August and no one reported any
+> issue other issue than the pre-existing one, so what's the new issue
+> that prevents us to merge it two monthes later, and how do we walk
+> forward then ?
 
-Also while at it, why not to use say '__kvm_emulate_hlt' ('hlt' instead of 'halt') to 
-put emphasis on the fact that we are emulating a cpu instruction?
+We work to resolve the test failure, it's that simple.  I haven't seen
+the failure so I haven't been much help to do any sort of root cause
+digging on the problem, it would be helpful if those who are seeing
+the problem could dig into the failure and report back on what they
+find.  That is what has been missing and why I never ACK'd or merged
+the powerpc audit code.
 
-Best regards,
-	Maxim Levitsky
- 
-
+--=20
+paul moore
+www.paul-moore.com
