@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1B343CF3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A0C43CF44
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243148AbhJ0RB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:01:57 -0400
-Received: from mail-oo1-f52.google.com ([209.85.161.52]:40572 "EHLO
-        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243158AbhJ0RBi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:01:38 -0400
-Received: by mail-oo1-f52.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so1132466ooi.7;
-        Wed, 27 Oct 2021 09:59:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3xNLUk6B6HG3KUZQunYiPk6GxwNlFHDYS2KiJ7xOzd0=;
-        b=ghxwW0MTLBPmuJuHTCjyds2HUQbFd0UQbHVCA69CgeXp2DPYC+yh71uw0CkbzSn6hz
-         6qmHMFZYi1QrWrqt7fYIDll6P515rWZNKPgZmnqPVb6QvzejYBbcGXSYlhdOvs5YP8az
-         /hHOmdF2LeSZxe32aWLJk67IowzU7ICnWF+oPPPITns48FVhcSsQaKG79ls0EpbpVXEG
-         D19UWigGEtsG/eWoupPwgwV07tddN/ONRr6L/bxMLq3HEF6eSbEU/hh56KabexD7tzTe
-         3+t9AcoLWvhH7iXMTBRapPv1/+x/UFPGvjMXIWwkh1fF/iDKqPxseLcLKibbI6GViPlm
-         Aw3A==
-X-Gm-Message-State: AOAM533PVVZniVdRj+oR4SV821/gLdioFA6tae7gNiqopbmYLlcYyv1M
-        F2U/WK1yVVHrg9BHN4bBqg==
-X-Google-Smtp-Source: ABdhPJz2mU9EVbEpZu1D4mjpd0zA7Lfg4qao8M88Gqdf0Vnqbz2FDr6xTj3Smo7ox6FLH3iDEajiIw==
-X-Received: by 2002:a4a:eacc:: with SMTP id s12mr8853355ooh.14.1635353952123;
-        Wed, 27 Oct 2021 09:59:12 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id d4sm238597otu.57.2021.10.27.09.59.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 09:59:11 -0700 (PDT)
-Received: (nullmailer pid 1698392 invoked by uid 1000);
-        Wed, 27 Oct 2021 16:59:10 -0000
-Date:   Wed, 27 Oct 2021 11:59:10 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Odelu Kukatla <okukatla@codeaurora.org>
-Cc:     sboyd@kernel.org, Georgi Djakov <djakov@kernel.org>,
-        mdtipton@codeaurora.org, Andy Gross <agross@kernel.org>,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        evgreen@google.com, bjorn.andersson@linaro.org,
-        Rob Herring <robh+dt@kernel.org>, seansw@qti.qualcomm.com,
-        georgi.djakov@linaro.org, saravanak@google.com, elder@linaro.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: Re: [v8 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on
- SC7280
-Message-ID: <YXmFXoKLmDsigVqt@robh.at.kernel.org>
-References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
- <1634812857-10676-2-git-send-email-okukatla@codeaurora.org>
+        id S243161AbhJ0RCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:02:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243147AbhJ0RBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:01:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DF61610A0;
+        Wed, 27 Oct 2021 16:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635353967;
+        bh=XPDZQSKu/oxCSRHobrKIa6UxkLgL9MvZLGmEVdFBR10=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WGif0o9JMu1zJEEycQk0nOLOX7EkiDBFLHTHCvrPnBnp5I2sDYZ2p0EJW/O1DZC01
+         xsn93+UhBoUuc+FTAkRb//k+Gn//jbX+52/xI7hAeABgXMaYamqKs/JC7epi4fJ3Cs
+         kgxfhLk1N4PhWzXXoUd4QK3aK6QvnvPykaRb3vVn1rDe9bZT4eyyFuosIEcfrLdyR3
+         LUCX65oSagL6hmrrLuUREDRLc4RM7lLUB/22eDTYXSnhICDj2SSGj34mfd8JYoJW1p
+         dgWqBdrakwVEJDjYQTMwAB0Y9sLLiF834ym7zHLIPgxZorKu58PPt5XXbZMXFxaMxD
+         0IvZeJ/8R32SA==
+Received: by mail-oi1-f171.google.com with SMTP id t4so4303588oie.5;
+        Wed, 27 Oct 2021 09:59:27 -0700 (PDT)
+X-Gm-Message-State: AOAM532Z0Px5dTsSrJGKzMnvqaLLK9VWhnOt4xVGAgrzZ45skvsRYOmr
+        NQcfdycf9iCm/YpozOq+VY1aXY5ITuUWx+9eWsw=
+X-Google-Smtp-Source: ABdhPJwY+2k7msq8E3hER2zI5uaEGtxK8/HPQuGKbUcnVM4YxgHSm9PxWrmcndYewPAwci0nPe/4lz7FIij3peH9fUQ=
+X-Received: by 2002:a05:6808:4d9:: with SMTP id a25mr4477613oie.33.1635353966546;
+ Wed, 27 Oct 2021 09:59:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634812857-10676-2-git-send-email-okukatla@codeaurora.org>
+References: <8afff0c64feb6b96db36112cb865243f4ae280ca.1634922135.git.thomas.lendacky@amd.com>
+ <c997e8a2-b364-2a8e-d247-438e9d937a1e@amd.com> <CAMj1kXGH7aGR==o1L2dnA9U9L==gM0__10UGznnyZwkHrT84sw@mail.gmail.com>
+ <YXmEo8iMNIn1esYC@zn.tnic>
+In-Reply-To: <YXmEo8iMNIn1esYC@zn.tnic>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 27 Oct 2021 18:59:15 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEZkw99MPssHWFRL_k0okeGF47VYL+o8p72hBWkqW927g@mail.gmail.com>
+Message-ID: <CAMj1kXEZkw99MPssHWFRL_k0okeGF47VYL+o8p72hBWkqW927g@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/sme: Explicitly map new EFI memmap table as encrypted
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 16:10:55 +0530, Odelu Kukatla wrote:
-> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
-> SoCs.
-> 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Wed, 27 Oct 2021 at 18:56, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Oct 27, 2021 at 05:14:35PM +0200, Ard Biesheuvel wrote:
+> > I could take it, but since it will ultimately go through -tip anyway,
+> > perhaps better if they just take it directly? (This will change after
+> > the next -rc1 though)
+> >
+> > Boris?
+>
+> Yeah, I'm being told this is not urgent enough to rush in now so you
+> could queue it into your fixes branch for 5.16 once -rc1 is out and send
+> it to Linus then. The stable tag is just so it gets backported to the
+> respective trees.
+>
+> But if you prefer I should take it, then I can queue it after -rc1.
+> It'll boil down to the same thing though.
+>
 
-Acked-by: Rob Herring <robh@kernel.org>
+No, in that case, I can take it myself.
+
+Tom, does that work for you?
