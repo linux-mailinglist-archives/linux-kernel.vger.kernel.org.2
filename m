@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D026543C1AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A360F43C1AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239542AbhJ0EkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 00:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
+        id S238031AbhJ0EkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 00:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237990AbhJ0Ejv (ORCPT
+        with ESMTP id S238008AbhJ0Ejx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 00:39:51 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CBFC061243
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:37:26 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id h196so2140416iof.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:37:26 -0700 (PDT)
+        Wed, 27 Oct 2021 00:39:53 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7252C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:37:27 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id h196so2140443iof.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:37:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hUXw1OWc0bijNWeKRWwMm43lU8lNKntPX+8f8UwNPzs=;
-        b=FUKXeYqxji29MCHeOLS1XcPak25DdjiAJQrrVp7Z1xiIyzrGUGSWc9DRHRC4DNLVH3
-         M0ZD9wPlj8W36lJfQxAm6DpGANFbqKUD/9F4LhVQ2SnlxKnEECOChi3vbjG/uy+DiWyy
-         AqchRPyAlFUgaMUf3lTMfOfh6dMXfTIdbZ2yW1m+wmHgmQ3+IxCXgKfQbjsWAUP1YDP1
-         6R15jEXiNBfRq1a+xf62CpOaKDvFeNrGmN4kf4lfRQFRlgoMli3JsxU0JobVIfxAih49
-         g/PGQ0FPCLPtA1RLiJ+5YceVQiH5R8kvjFi1utYo+fAP6GTn7D/FT7cDqD/0G07wBXiX
-         GRHg==
+        bh=cnTkeK8v67eIBs3PS2euQVCRKMfmRbTWdl+Z44hl+ec=;
+        b=hyLsn00WTLCJL4GvOmE2kxDub5BpxRbKWLIpyTkYZF2eqFHzXTbv7M4KAij+kGcq8w
+         Gz7Q6kF3P+6u6t3A5bB/VzAdsm9ralmjQ8B41BWntNLNmeJH/AHDWkq+Ej/m+8lWmPb/
+         Hd/yO7Edb3UcphCFdVM451GH/37X6CyTP6+c7p8/Rx5hOrApcbqSekYfE2APXIclkST2
+         scGa8LjGdR29jtDvfvPpH8HR2bJpt9C4R7l3/Rx31ItRrHnCWjjK1vXLw8EvjPAyHIKh
+         StLJ2ShUBrrYetUf3emdR/NQuFRm1rrCiY1qRs6FGXfqiWMbNVGy5H6hv/CW5Pt5Eake
+         gi0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hUXw1OWc0bijNWeKRWwMm43lU8lNKntPX+8f8UwNPzs=;
-        b=fdRu7GY40nQES/ucbtLiROzMKGLJhp8djxnbvsfubO1bKZ+iZduJJtpbryBdj164os
-         Z8lNuDIDhhCwHERbntNY10JUDYAX9yFJrbzxnfcgLB8iBhLaP1fI1WfzyPT7FA9t7j4F
-         HyffxTGxoPtGogQ/hggdfN2CPWiGu2kLz1X9AZCQTfTpF6XHL2rwxfCJiWRf824gvf+7
-         cYGu5L5lT1S+zwrywpHyeVnuHu/fQKM54Y8V3DVFPF9E4lTerjah6abItODyqjfgODuF
-         MJj3K6TK0ABTZpxjR7uX7Qp8XIkBDLkO6s8yrctwrMSXOta/pceEk67qsui9/j+j+bOQ
-         XOzg==
-X-Gm-Message-State: AOAM5301BB5CmhPzHHiQ3FMsxE/v8NzSGx9NWGye4t5RF1qkj+wNS3Y4
-        5tZHAEsWFiXzA9+eqdzlMJc=
-X-Google-Smtp-Source: ABdhPJzSOzGqdoO8Gck7AAmi8O0Fyw83A48XDRgzWexMwCoillaHbIEX46dwmpBmfZYsImDFq0Kxxg==
-X-Received: by 2002:a05:6602:2ac8:: with SMTP id m8mr18820933iov.112.1635309446157;
-        Tue, 26 Oct 2021 21:37:26 -0700 (PDT)
+        bh=cnTkeK8v67eIBs3PS2euQVCRKMfmRbTWdl+Z44hl+ec=;
+        b=4EF26gmzu5jYMchFsnvZKC6G7eGgj8dvUj/UDaqvGIE77pPh7yyDCIx3YxTD8/Kjks
+         RRH9cHtp83/mko/T2ZqVTV/9GFH+8EJeaJAmgzqcg0soX/nDMHeLJd4vVHNAooVl/Z4r
+         gelQ45q8ga+LlBsw/qHP3Cq73rM7Is3v7QukYVjiZUK5B3SntB0i05tFu2zAkIk+6vBM
+         CG0ybawfA8r3QiuZqviCyGhnUzHl8xtLPY0+5Y+w82ZQPBRE9GAR3KMcCr36YuCJFlNw
+         2GvuTLbRvqaJ4PSF7Uhr+8dooGvzYeKBifKZGQkr9rm7OLu8Vq2cfIXnKonQd0mhebXf
+         saQw==
+X-Gm-Message-State: AOAM531h66DiBo7B9K6YV124EIu/pHggHT7DAO2y5noUm5M5FVcGBTn0
+        CCFMlcisCT/gZfU2tgnRFO8=
+X-Google-Smtp-Source: ABdhPJxOL3av75apCy1NaSeSnBdOn/HBQSzgvyFqXTBntJL0EsDlcBUuZ+4BzU72oZQOjVlVp6bO2w==
+X-Received: by 2002:a05:6638:d90:: with SMTP id l16mr18388899jaj.36.1635309447330;
+        Tue, 26 Oct 2021 21:37:27 -0700 (PDT)
 Received: from samwise.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id a15sm2030404ilj.81.2021.10.26.21.37.25
+        by smtp.googlemail.com with ESMTPSA id a15sm2030404ilj.81.2021.10.26.21.37.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 21:37:25 -0700 (PDT)
+        Tue, 26 Oct 2021 21:37:27 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
@@ -56,9 +56,9 @@ To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         intel-gvt-dev@lists.freedesktop.org,
         intel-gfx@lists.freedesktop.org
 Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v9 09/10] dyndbg: create DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES
-Date:   Tue, 26 Oct 2021 22:36:44 -0600
-Message-Id: <20211027043645.153133-10-jim.cromie@gmail.com>
+Subject: [PATCH v9 10/10] drm: use DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES bitmap to tracefs
+Date:   Tue, 26 Oct 2021 22:36:45 -0600
+Message-Id: <20211027043645.153133-11-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211027043645.153133-1-jim.cromie@gmail.com>
 References: <20211027043645.153133-1-jim.cromie@gmail.com>
@@ -68,88 +68,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clone DEFINE_DYNAMIC_DEBUG_CATEGORIES interface to enable pr_debug
-output to tracefs.
+Use new macro to create a sysfs control bitmap knob to control
+print-to-trace in: /sys/module/drm/parameters/trace
 
-Extend DEFINE_DYNAMIC_DEBUG_CATEGORIES to work for tracing, by
-renaming it (with _FLAGS suffix), adding _flags param, and using it
-2x; in original and new names, with "p" and "T" flags respectively.
+todo: reconsider this api, ie a single macro expecting both debug &
+trace terms (2 each), followed by a single description and the
+bitmap-spec::
 
-TODO: rethink this, consider combined trace/debug declaration.
-good: single bitmap-spec for both trace,debug, no chance of divergence.
-bad: arg-type & count checks are hard, and bitmap follows too!
+Good: declares bitmap once for both interfaces
 
-to combine both, we need 4 args:
-  sysfs_debug_name, __debug_var
-  sysfs_trace_name, __trace_var	// these may be NULL, IFF !CONFIG_TRACE ??
-then a bitmap:
-  [0] = { "category1" }, ...)
-
-My BUILD_BUG-fu is insufficient to protect a naive macro.
+Bad: arg-type/count handling (expecting 4 args) is ugly,
+     especially preceding the bitmap-init var-args.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/linux/dynamic_debug.h | 19 ++++++++++++++-----
- lib/dynamic_debug.c           |  4 ++--
- 2 files changed, 16 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/drm_print.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index 896848f546e6..f273ba82cbb0 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -254,11 +254,20 @@ struct dyndbg_bitdesc {
- 
- struct dyndbg_bitmap_param {
- 	unsigned long *bits;		/* ref to shared state */
-+	const char *flags;
- 	struct dyndbg_bitdesc map[];	/* indexed by bitpos */
- };
- 
- #if defined(CONFIG_DYNAMIC_DEBUG) || \
- 	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
+diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
+index ce662d0f339b..7b49fbc5e21d 100644
+--- a/drivers/gpu/drm/drm_print.c
++++ b/drivers/gpu/drm/drm_print.c
+@@ -73,6 +73,25 @@ DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug, __drm_debug,
+ 				[7] = { DRM_DBG_CAT_LEASE },
+ 				[8] = { DRM_DBG_CAT_DP },
+ 				[9] = { DRM_DBG_CAT_DRMRES });
 +
-+#define DEFINE_DYNAMIC_DEBUG_CATEGORIES_FLAGS(fsname, _var, _flags, desc, ...) \
-+	MODULE_PARM_DESC(fsname, desc);					\
-+	static struct dyndbg_bitmap_param ddcats_##_var =		\
-+	{ .bits = &(_var), .flags = (_flags),				\
-+	  .map = { __VA_ARGS__, { .match = NULL }}};			\
-+	module_param_cb(fsname, &param_ops_dyndbg, &ddcats_##_var, 0644)
++#ifdef CONFIG_TRACING
++unsigned long __drm_trace;
++EXPORT_SYMBOL(__drm_trace);
++DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES(trace, __drm_trace,
++				      DRM_DEBUG_DESC,
++				      [0] = { DRM_DBG_CAT_CORE },
++				      [1] = { DRM_DBG_CAT_DRIVER },
++				      [2] = { DRM_DBG_CAT_KMS },
++				      [3] = { DRM_DBG_CAT_PRIME },
++				      [4] = { DRM_DBG_CAT_ATOMIC },
++				      [5] = { DRM_DBG_CAT_VBL },
++				      [6] = { DRM_DBG_CAT_STATE },
++				      [7] = { DRM_DBG_CAT_LEASE },
++				      [8] = { DRM_DBG_CAT_DP },
++				      [9] = { DRM_DBG_CAT_DRMRES });
 +
- /**
-  * DEFINE_DYNAMIC_DEBUG_CATEGORIES() - bitmap control of categorized pr_debugs
-  * @fsname: parameter basename under /sys
-@@ -271,11 +280,11 @@ struct dyndbg_bitmap_param {
-  * modules calling pr_debugs to control them in groups according to
-  * those prefixes, and map them to bits 0-N of a sysfs control point.
-  */
--#define DEFINE_DYNAMIC_DEBUG_CATEGORIES(fsname, _var, desc, ...)	\
--	MODULE_PARM_DESC(fsname, desc);					\
--	static struct dyndbg_bitmap_param ddcats_##_var =		\
--	{ .bits = &(_var), .map = { __VA_ARGS__, { .match = NULL }}};	\
--	module_param_cb(fsname, &param_ops_dyndbg, &ddcats_##_var, 0644)
-+#define DEFINE_DYNAMIC_DEBUG_CATEGORIES(fsname, _var, desc, ...) \
-+	DEFINE_DYNAMIC_DEBUG_CATEGORIES_FLAGS(fsname, _var, "p", desc, ##__VA_ARGS__)
-+
-+#define DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES(fsname, _var, desc, ...) \
-+	DEFINE_DYNAMIC_DEBUG_CATEGORIES_FLAGS(fsname, _var, "T", desc, ##__VA_ARGS__)
++struct trace_array *trace_arr;
++#endif
+ #endif
  
- extern const struct kernel_param_ops param_ops_dyndbg;
- 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index f19465b114cd..b4146178780f 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -629,8 +629,8 @@ int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
- 	for (i = 0; map->match && i < BITS_PER_LONG; map++, i++) {
- 		if (test_bit(i, &inbits) == test_bit(i, p->bits))
- 			continue;
--		snprintf(query, FMT_QUERY_SIZE, "format '%s' %cp", map->match,
--			 test_bit(i, &inbits) ? '+' : '-');
-+		snprintf(query, FMT_QUERY_SIZE, "format '%s' %c%s", map->match,
-+			 test_bit(i, &inbits) ? '+' : '-', p->flags);
- 
- 		matches = ddebug_exec_queries(query, KP_MOD_NAME);
- 
+ void __drm_puts_coredump(struct drm_printer *p, const char *str)
 -- 
 2.31.1
 
