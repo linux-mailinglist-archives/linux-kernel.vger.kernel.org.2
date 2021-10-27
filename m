@@ -2,148 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3BD43C3D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9436E43C3DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238668AbhJ0H1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:27:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35374 "EHLO mail.kernel.org"
+        id S240377AbhJ0H2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:28:52 -0400
+Received: from mga07.intel.com ([134.134.136.100]:3663 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238621AbhJ0H1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:27:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67D0060F9B;
-        Wed, 27 Oct 2021 07:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635319505;
-        bh=taqwB9xndNIP6+ubGThuMvIEjNZA59pVCLQklgOloZA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TOmdoRE/vgrtnhkY0qmVVNGZyI/6uuY5GDQ558z++JjyvNIRMcbzXiAIY/gLu+YOE
-         xhxky9vzihMGdq6u50krNTsJFOxbYvzLc5O7Oe95y5HV7INJNDnly+FBRqziA471qZ
-         MW6VqOzpbc3Pzl7wx1MhzUq/Plemn9VUWCr7qn/gnyI3qavPhPOWNwPu90/t1rtbZq
-         fV/gFvrReuS2QEVvFd0BUdq8XeH7iKsfU2ykAB6/AV6kDTlbV4TPZp1MoLt7xBmncU
-         +jdud4OoZjb1TFxX8TIYojLX48FLkYDOsspN66AB67GcgPynNy9vRddeerEhzvHL0G
-         u5oVv65XDvOcA==
-Date:   Wed, 27 Oct 2021 08:24:59 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?UTF-8?B?V2ls?= =?UTF-8?B?Y3p5xYRza2k=?= 
-        <kw@linux.com>, Binghui Wang <wangbinghui@hisilicon.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v15 00/13] Add support for Hikey 970 PCIe
-Message-ID: <20211027082459.61d5b0e5@sal.lan>
-In-Reply-To: <20211026171728.GA20609@lpieralisi>
-References: <cover.1634812676.git.mchehab+huawei@kernel.org>
-        <20211026171728.GA20609@lpieralisi>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231849AbhJ0H2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:28:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="293557040"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="293557040"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 00:26:26 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497739575"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.238.3.248]) ([10.238.3.248])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 00:26:24 -0700
+Subject: Re: [kbuild-all] Re: vmlinux.o: warning: objtool:
+ do_machine_check()+0x5fa: call to memset() leaves .noinstr.text section
+To:     Borislav Petkov <bp@suse.de>, kernel test robot <lkp@intel.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <202110261614.Bt8EM6Nj-lkp@intel.com> <YXe7AnMmiWXk36NC@zn.tnic>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <f7962977-52a1-b18f-7485-9d2247de5703@intel.com>
+Date:   Wed, 27 Oct 2021 15:26:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YXe7AnMmiWXk36NC@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 26 Oct 2021 18:17:28 +0100
-Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
 
-> On Thu, Oct 21, 2021 at 11:45:07AM +0100, Mauro Carvalho Chehab wrote:
-> > Hi Lorenzo,
-> > 
-> > I split patch 09/10 from v13 into three patches, in order to have one logical
-> > change per patch, adding a proper descriptio to each of them. The final
-> > code didn change.
-> > 
-> > The pcie-kirin PCIe driver contains internally a PHY interface for
-> > Kirin 960, but it misses support for Kirin 970. A new PHY driver
-> > for it was added at drivers/phy/hisilicon/phy-hi3670-pcie.c
-> > (already merged via PHY tree).
-> > 
-> > Add support for Kirin 970 PHY driver at the pcie-kirin.c.
-> > 
-> > While here, also add the needed logic to compile it as module and
-> > to allow to dynamically remove the driver in runtime.
-> > 
-> > Tested on HiKey970:
-> > 
-> >   # lspci -D -PP
-> >   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
-> >   0000:00:00.0/01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
-> >   0000:00:00.0/01:00.0/02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
-> >   0000:00:00.0/01:00.0/02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
-> >   0000:00:00.0/01:00.0/02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
-> >   0000:00:00.0/01:00.0/02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
-> >   0000:00:00.0/01:00.0/02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
-> >   0000:00:00.0/01:00.0/02:01.0/03:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd Device a809
-> >   0000:00:00.0/01:00.0/02:07.0/06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
-> > 
-> > Tested on HiKey960:
-> > 
-> >   # lspci -D 
-> >   0000:00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
-> > 
-> > ---
-> > 
-> > v15:
-> >   - The power-off fix patch was split into 3, in order to have one logical change
-> >     per patch.
-> >   -  Removed Fixes: tag from the poweroff patch;
-> >   - Adjusted capitalization of two patch summary lines
-> >   - No functional changes. The diff of this series is identical to v14.
-> > 
-> > v14:
-> >   - Split a timeout logic from patch 4, placing it on a separate patch;
-> >   - Added fixes: and cc: tags to the power_off fixup patch;
-> >   - change a typecast from of_data to long, in order to avoid a warning on
-> >     some randconfigs;
-> >   - removed uneeded brackets at the power_off patch;
-> >   - reordered struct device pointers at kirin_pcie_get_resource();
-> >   - added a c/c to kishon at the PHY-related patches.
-> > 
-> > v13:
-> >   - Added Xiaowei's ack for the series.
-> > 
-> > v12:
-> >   - Change a comment at patch 1 to not use c99 style.
-> > 
-> > v11:
-> >   - patch 5 changed to use the right PCIe topology
-> >   - all other patches are identical to v10.
-> > 
-> > v10:
-> >   - patch 1: dropped magic numbers from PHY driver
-> >   - patch 5: allow pcie child nodes without reset-gpios
-> >   - all other patches are identical to v9.
-> > 
-> > v9:
-> >   - Did some cleanups at patches 1 and 5
-> > 
-> > Mauro Carvalho Chehab (13):
-> >   PCI: kirin: Reorganize the PHY logic inside the driver
-> >   PCI: kirin: Add support for a PHY layer
-> >   PCI: kirin: Use regmap for APB registers
-> >   PCI: kirin: Add support for bridge slot DT schema
-> >   PCI: kirin: Give more time for PERST# reset to finish
-> >   PCI: kirin: Add Kirin 970 compatible
-> >   PCI: kirin: Add MODULE_* macros
-> >   PCI: kirin: Allow building it as a module
-> >   PCI: kirin: Add power_off support for Kirin 960 PHY
-> >   PCI: kirin: Move the power-off code to a common routine
-> >   PCI: kirin: Disable clkreq during poweroff sequence
-> >   PCI: kirin: De-init the dwc driver
-> >   PCI: kirin: Allow removing the driver
-> > 
-> >  drivers/pci/controller/dwc/Kconfig      |   2 +-
-> >  drivers/pci/controller/dwc/pcie-kirin.c | 643 ++++++++++++++++++------
-> >  2 files changed, 497 insertions(+), 148 deletions(-)  
+
+On 10/26/2021 4:23 PM, Borislav Petkov wrote:
+> Hi,
 > 
-> Applied to pci/dwc for v5.16, please have a look at the resulting
-> branch and commits. 
+> On Tue, Oct 26, 2021 at 04:16:21PM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   3906fe9bb7f1a2c8667ae54e967dc8690824f4ea
+>> commit: 7bb39313cd6239e7eb95198950a02b4ad2a08316 x86/mce: Make mce_timed_out() identify holdout CPUs
+>> date:   10 months ago
+>> config: x86_64-buildonly-randconfig-r006-20211022 (attached as .config)
+>> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+>> reproduce (this is a W=1 build):
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7bb39313cd6239e7eb95198950a02b4ad2a08316
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout 7bb39313cd6239e7eb95198950a02b4ad2a08316
+>>          # save the attached .config to linux build tree
+>>          mkdir build_dir
+>>          make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>>> vmlinux.o: warning: objtool: do_machine_check()+0x5fa: call to memset() leaves .noinstr.text section
+> 
+> if you have the technical capability to ignore all noinstr warnings
+> coming from the mce code, please do so.
+> 
+> I have a patchset to address that but more important work preempts me
+> constantly from cleaning it up and sending it out properly. ;-\
+> 
 
-Thanks!
+Hi Borislav,
 
-Everything looks fine to me.
+Thanks for the feedback, We have ignored these warnings from mce.
 
-Best regards,
-Mauro
+Best Regards,
+Rong Chen
