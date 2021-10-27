@@ -2,160 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE2143D061
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2377E43D06C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238500AbhJ0SO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:14:59 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:46789 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhJ0SO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:14:57 -0400
-Received: by mail-oo1-f43.google.com with SMTP id d144-20020a4a5296000000b002b6cf3f9aceso1201164oob.13;
-        Wed, 27 Oct 2021 11:12:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IjEQ77XSghrAblLCs5DCFzh+Qp3AEG6d63rVimhWv+U=;
-        b=XQ5mKviQlz98y+2c/CC3cDJBA+Q+KhcXKFfh64ZItQx42tTIzqAtudfD/FQA9Y0aHZ
-         yc5U1vE3VAqDEFBI4h3RIcQSroYLTcU2t/r9qw/XbiOn0TdFgYC+R5RKgFZDBIy1CE+G
-         CmoqW9i2U7+QGY29tM148nx52Oo1jcLvXEXqbnxyCrFdLFCtLbAaw6O+wtJxYJljRVEy
-         wGzJIAry6a+LXox+6Cl7ZaqF539P94Tbsqw41UcN4BzcTnwpbjx0GBvo66VH3I5xwtg9
-         GrEwLcjabbJ7s6X2uPKznFd2DM3w2+JmlftblLk+QZV7PBWqHfNRp4+jhxIE5Qwt/Myb
-         BMWg==
-X-Gm-Message-State: AOAM531QBidmfjC+8G6hTkdcDlRzTkyLjSkPuTvhXLRDyvI/g0ETnavC
-        AiZ6N1Umf1tVFDxtcuiJL+M58u1nrchlqB4xl/c=
-X-Google-Smtp-Source: ABdhPJyEd9vjtOEh2yNcn9EI/SyMHVF7Bonc4ZK8vfYutoTOiZRAx1InIWfS4mAszqZP85+Q0RVxG89PzCN7Noy66Js=
-X-Received: by 2002:a4a:e544:: with SMTP id s4mr23513695oot.0.1635358351635;
- Wed, 27 Oct 2021 11:12:31 -0700 (PDT)
+        id S238385AbhJ0SR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:17:56 -0400
+Received: from box.trvn.ru ([194.87.146.52]:56657 "EHLO box.trvn.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231381AbhJ0SRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:17:54 -0400
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id ADEE640479;
+        Wed, 27 Oct 2021 23:15:22 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1635358523; bh=cgMxHApRNl6TXjF/C5V/IAMZObp9+7rkC+EiakS/tAo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=djt9v8/mLwnSw0GlyKlJWKqkdLrabdzGvUb99M/QdNc6/pZEKMeL1cn3utAjBrYJ6
+         Rpso8U0iYWpEzgqwoe64wskyaVtrVflOARciw0lXfIo2ire8lCFG0JOe/fjRlWzqZq
+         QfgDYjqLj3a+6+aq7QvGzmyjuDyWENZ2hByStt+RAbqggzlN+WTUpMrOKANCwwAJAz
+         RxD1JlOJO/chEpbBbYQtlSmQkd4dqkfOL1GDNml57y8HWJu+XqycdEt7WsC8n/0nLl
+         tV20MBW1ytqZdOwjXkAzrC2HpRFn9POX2cDi4EvI6k3+jgnIgLXuCaiEez+MmfXHl8
+         0pIRAOHXota7Q==
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     dmitry.torokhov@gmail.com
+Cc:     robh+dt@kernel.org, Michael.Srba@seznam.cz,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH 0/6] Add touch-keys support to the Zinitix touch driver
+Date:   Wed, 27 Oct 2021 23:13:44 +0500
+Message-Id: <20211027181350.91630-1-nikita@trvn.ru>
 MIME-Version: 1.0
-References: <11860508.O9o76ZdvQC@kreacher> <YXhX/cTjH/H9UOnQ@smile.fi.intel.com>
- <YXmNuKIXjnhOx/Gi@smile.fi.intel.com>
-In-Reply-To: <YXmNuKIXjnhOx/Gi@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 27 Oct 2021 20:12:20 +0200
-Message-ID: <CAJZ5v0hwA0sEUafiTUQL_BaKnxdiBD_ASMh_5MkWT_pjr6f1zA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] ACPI: scan: Honor certain device identification rules
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 7:35 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Oct 26, 2021 at 10:33:17PM +0300, Andy Shevchenko wrote:
-> > On Tue, Oct 26, 2021 at 08:51:49PM +0200, Rafael J. Wysocki wrote:
-> > > Hi All,
-> > >
-> > > There are some rules in the ACPI spec regarding which device identification
-> > > objects can be used together etc., but they are not followed by the kernel
-> > > code.
-> > >
-> > > This series modifies the code to follow the spec more closely (see patch
-> > > changelogs for details).
-> >
-> > I understand the motivation, but afraid about consequences on the OEM cheap
-> > devices that are not always follow letter of the specification.
-> >
-> > As per Intel platforms I would look into Baytrail / Cherrytrail devices for
-> > the past (I think Hans may help here a lot) and into Elkhart Lake in the
-> > present (for the letter I mostly refer to CSRT + DSDT cooperation to get
-> > GP DMA devices enumerated, so I _hope_ DSDT shouldn't have _ADR and _HID
-> > together).
-> >
-> > Hence, from the code perspective
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > From the practice I would wait for some tests. I will try to find any new
-> > information about latest firmware tables on Elkhart Lake machines.
->
-> So, what I see in Elkhart Lake
->
-> Case 1 - Sound Wire devices (2 times):
->
->     Name (_ADR, 0x40000000)  // _ADR: Address
+This series adds support for the touch-keys that can be present on some
+touchscreen configurations, adds the compatible for bt532 and fixes a
+small race condition bug in the driver probe function.
 
-No _HID, so the IDs returned by the _CID below won't be used.
+I also pick up the series that converts the dt bindings to yaml
+initially submitted by Linus Walleij in [1].
+I made some minor changes to those patches:
+ - Fixed dt_schema_check error
+ - Adressed the review comments from Dmitry on the original series
 
->     Name (_CID, Package (0x02)  // _CID: Compatible ID
->     {
->         "PRP00001",
+[1] https://lore.kernel.org/linux-input/20210625113435.2539282-1-linus.walleij@linaro.org/
 
-The above device ID is invalid (one 0 too many).
+Linus Walleij (2):
+  dt-bindings: input/ts/zinitix: Convert to YAML, fix and extend
+  Input: zinitix - Handle proper supply names
 
->         "PNP0A05" /* Generic Container Device */
+Nikita Travkin (4):
+  input: touchscreen: zinitix: Make sure the IRQ is allocated before it
+    gets enabled
+  input: touchscreen: zinitix: Add compatible for bt532
+  dt-bindings: input: zinitix: Document touch-keys support
+  input: touchscreen: zinitix: Add touchkey support
 
-Without the change this causes a container device to be created, but
-the only purpose of it may be offline/online (if the child devices
-support offline/online).
+ .../input/touchscreen/zinitix,bt400.yaml      | 123 ++++++++++++++++++
+ .../bindings/input/touchscreen/zinitix.txt    |  40 ------
+ drivers/input/touchscreen/zinitix.c           | 101 +++++++++++---
+ 3 files changed, 207 insertions(+), 57 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/zinitix.txt
 
-This change should not be functionally relevant.
+-- 
+2.30.2
 
->     })
->
-> Case 2 - GP DMA devices (3 times):
->
->     Name (_ADR, 0x001D0003)  // _ADR: Address
-
-_ADR will be ignored which may not be expected.  Is this a PCI device?
-
->     Name (_HID, "80864BB4")  // _HID: Hardware ID
->
-> Case 3 - Camera PMIC devices (5 x 2 (CLPn/DSCn) + 1 (PMIC) times = 11x):
->
->     Name (_ADR, Zero)  // _ADR: Address
-
-_ADR will be ignored, which shouldn't matter.
-
->     Name (_HID, "INT3472")  // _HID: Hardware ID
->     Name (_CID, "INT3472")  // _CID: Compatible ID
->
-> Case 4 - LNK devices (6 times):
->
->     Name (_ADR, Zero)  // _ADR: Address
-
-Same here.
-
->     ...
->
->     Name (_UID, One)  // _UID: Unique ID
->     Method (_HID, 0, NotSerialized)  // _HID: Hardware ID
->     {
->         Return (HCID (One))
->     }
->
-> Case 5 - Camera sensors (2 times):
->
->     Name (_ADR, Zero)  // _ADR: Address
-
-And same here.
-
->     Name (_HID, "INT34xx")  // _HID: Hardware ID
->     Name (_CID, "INT34xx")  // _CID: Compatible ID
->
->
-> I have no idea about cameras or audio devices, but what I'm worrying about
-> is GP DMA. This kind of devices are PCI, but due to Microsoft hack, called
-> CSRT, we have to have a possibility to match DSDT with CSRT ot retrieve
-> the crucial information from the latter while being enumerated by the former.
->
-> While it may be against the specification, there is no other way to achieve
-> that as far as I understand (without either breaking things in Linux or
-> getting yellow bang in Windows).
-
-I'm not really sure why _HID is needed for this.  The PCI device ID
-could be used for CRST matching just fine.
-
-> Can you confirm that your change won't modify behaviour for these devices?
-
-Well, the GP DMA thing may be broken by patch [2/2], but does Windows
-actually use _ADR if _HID is provided?
