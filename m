@@ -2,116 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAD043C24D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EAB43C253
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbhJ0FoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 01:44:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10058 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233793AbhJ0FoT (ORCPT
+        id S239657AbhJ0FtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238201AbhJ0FtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:44:19 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19R4kwcI022693;
-        Wed, 27 Oct 2021 05:41:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=z4zVekMJb2A7Z8gao/omTLQSGSzMa4L8ihjQ3jWsJQY=;
- b=mL6P3uwKyKPnmzE2D2LWpOLkS7Z6wqVDpagfXLe6gWnlOIMGk2MvLho4a5yG19xbpQIn
- gx77QWKHhWEO9DHfFXTS5rhpznhV+wxjqCp9Ejs2IaXAgFwGyMirad46NSdhC47O2v1k
- PPkOqtr5nrDQAYBWHSWVO+XT/8GIthbSymUWtN2JU6Hk7LsaOgPIJFFnG0iUnx2Mw+oU
- 83m3dhkWvYpSagT1FPFxTxCzOkdFVyPrA18enzk6ip76cFIjHZ89UaZUkvfywgl7zg+H
- F9hj1KQeGJVhXtMuR0HpbYX4t4HskqipGY1f90L9c1GyS/VCtOqFfcqLJymk4DgYd1oe aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4k9c65k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 05:41:54 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19R5Rucg020974;
-        Wed, 27 Oct 2021 05:41:53 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bx4k9c657-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 05:41:53 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19R5cUfj030044;
-        Wed, 27 Oct 2021 05:41:52 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 3bx4eptu6v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 05:41:52 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19R5fmZF52625686
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 05:41:48 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D93F2AE055;
-        Wed, 27 Oct 2021 05:41:48 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4AC9CAE045;
-        Wed, 27 Oct 2021 05:41:48 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.78.35])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 27 Oct 2021 05:41:48 +0000 (GMT)
-Subject: Re: [PATCH] KVM: s390x: add debug statement for diag 318 CPNC data
-To:     Collin Walling <walling@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com
-References: <20211027025451.290124-1-walling@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <5f91eed7-993a-cb76-8a9f-0c17438cd064@de.ibm.com>
-Date:   Wed, 27 Oct 2021 07:41:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 27 Oct 2021 01:49:19 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4833CC061570;
+        Tue, 26 Oct 2021 22:46:50 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id d63so2260226iof.4;
+        Tue, 26 Oct 2021 22:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zLOEvDKKvdGsG+9+k0UI+CbP/3UBW0GfSqcdC8HXjS0=;
+        b=WiqEqsaMYE3vNm/r9L2sPfPtOKjicBq4/gBxPa3GaBz2WbjG70JrZ4I4/8Xl9eVy0o
+         vfaubcKnW65/IQIRi8irKa7NokHfORNDF3vTsKshHPvoyHx2oR6a4V1zWdZh2gRt+0AD
+         aUm/gxA1AEBOPuuqTQsn665in+949cPbcGChxjqUcC8NbZ2b7W8n9X/7XVXU+fDn85Em
+         Wbe2nr0AkmDviQcX0LuTdh6OIMz/0gPnqtQW+OyTRdoQoQGsUu4gozlVmH7pMQFeSrCe
+         rANPgwv0KHALlShZMN27AKtJlDKD0X58JCEvEOjIK7amHXErg8UC5SZCkZ+Mn72UDHKu
+         9VGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zLOEvDKKvdGsG+9+k0UI+CbP/3UBW0GfSqcdC8HXjS0=;
+        b=vm0zz4PEaVACWMnw36pP/hr/8DLkmUh150vhucKaIK0akGUPylSazC3DebnQNZ2c9W
+         oLD6y9GqIezhNDxfkH470pQ79YbcHuO16u1rRhZ+Lf5TMXCG9s5LVDJbDB1i7ds+K1gS
+         Y9gaR1wFjIxjHkpc1haLfZyMaK2TmJU5y3EFwSzLgA4uhrHWCy7uMd1TqrOTnd+xVbH7
+         8d916jZGSVKyyyfqiuaoTcXZcqjeztv/vU0dioSpgB45hPMPgSbDMQ/ZvVfgoyVbFA5w
+         S8Lf7Wbij88TVyaneWX4xjNLycVkgHDvbERr81ssYQG7U//Z9vv25hELptRo3Bvp0IE2
+         EXJw==
+X-Gm-Message-State: AOAM53216WIIbk6RD+HhumkpxB3nH4KR78Mfeqdbw8+s4eJQjadj/fTO
+        6pTlKoLTTrIT8AbOQTVfStvgm6hkc/boUq57PKUZrmuZq1A=
+X-Google-Smtp-Source: ABdhPJxGvMAVtkQ40KDzH+Cl9yuFzTgrqXARbpKx6Dv+ZceOtaIaqFypy9l8aiVCgfPb0xXaGu5BWrtmRcBvFFxvOJw=
+X-Received: by 2002:a05:6602:26d2:: with SMTP id g18mr17893740ioo.70.1635313609700;
+ Tue, 26 Oct 2021 22:46:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211027025451.290124-1-walling@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AqsuzR8Q-z4-w_1cQNajp8036A3sZNg0
-X-Proofpoint-ORIG-GUID: lq74MrM9VGVqyc06VbhhMObCY46jQNFR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 impostorscore=0 malwarescore=0 spamscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270033
+References: <20211025204634.2517-1-iangelak@redhat.com> <20211025204634.2517-2-iangelak@redhat.com>
+ <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com> <CAO17o20+jiij64y7b3eKoCjG5b_mLZj6o1LSnZ7+8exN3dFYEg@mail.gmail.com>
+In-Reply-To: <CAO17o20+jiij64y7b3eKoCjG5b_mLZj6o1LSnZ7+8exN3dFYEg@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 27 Oct 2021 08:46:38 +0300
+Message-ID: <CAOQ4uxhXZTLe00KxaZebhHKZ_3uz0NA2eqrs0fg5uqLAO+VnvQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] FUSE: Add the fsnotify opcode and in/out structs
+ to FUSE
+To:     Ioannis Angelakopoulos <iangelak@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 27.10.21 um 04:54 schrieb Collin Walling:
-> The diag 318 data contains values that denote information regarding the
-> guest's environment. Currently, it is unecessarily difficult to observe
-> this value (either manually-inserted debug statements, gdb stepping, mem
-> dumping etc). It's useful to observe this information to obtain an
-> at-a-glance view of the guest's environment, so lets add a simple VCPU
-> event that prints the CPNC to the s390dbf logs.
-> 
-> Signed-off-by: Collin Walling <walling@linux.ibm.com>
+>> > +       uint64_t mask;
+>> > +       uint32_t namelen;
+>> > +       uint32_t cookie;
+>>
+>> I object to persisting with the two-events-joined-by-cookie design.
+>> Any new design should include a single event for rename
+>> with information about src and dst.
+>>
+>> I know this is inconvenient, but we are NOT going to create a "remote inotify"
+>> interface, we need to create a "remote fsnotify" interface and if server wants
+>> to use inotify, it will need to join the disjoined MOVE_FROM/TO event into
+>> a single "remote event", that FUSE will use to call fsnotify_move().
+>>
+> I do not fully understand this. Should we define a new "remote" event
+> that corresponds to the merged MOVE_FROM/TO events and send that to the guest instead?
 
-applied and queued
-> ---
->   arch/s390/kvm/kvm-s390.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 6a6dd5e1daf6..da3ff24eabd0 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -4254,6 +4254,7 @@ static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
->   	if (kvm_run->kvm_dirty_regs & KVM_SYNC_DIAG318) {
->   		vcpu->arch.diag318_info.val = kvm_run->s.regs.diag318;
->   		vcpu->arch.sie_block->cpnc = vcpu->arch.diag318_info.cpnc;
-> +		VCPU_EVENT(vcpu, 2, "setting cpnc to %d", vcpu->arch.diag318_info.cpnc);
+Yes.
 
-After comparing this with the other events I think level==3 is better. Changed when applying.
->   	}
->   	/*
->   	 * If userspace sets the riccb (e.g. after migration) to a valid state,
-> 
+First of all, my objection to the old cookie API stems from seeing applications
+that do not use it correctly and because I find that it can be hard to use it.
+
+For those reasons, when we extended fanotify to provide "inotify compatible"
+semantics, the cookie API was not carried over to fanotify.
+
+You can see an example of "inotify compatible" API in the implementation of
+fsnotifywatch [1].
+
+That said, the functionality of joining to/from events is still missing in
+fanotify and I have posted several proposals for an API extension that
+will solve it using an event that contains information on both src and dst [2].
+
+> If that is the case, wouldn't that require that user space processes be aware of this newly added "remote"
+> event?
+
+No, the application will not be aware of the FUSE notify protocol at all.
+If application is using inotify, it will get the old from+to+cookie events, but
+FUSE server will notify the guest {MOVE, inode, from_path, to_path}
+and FUSE client will call fsnotify_mode() or a variant.
+Then inotify watchers will get what they are used to and fsnotify watchers
+will get whatever information the existing or future API will provide.
+
+To explain this from another perspective, you currently implemented the
+virtiofsd watch using inotify, but you should not limit virtiofsd to inotify.
+Once you learn the benefits of fanotify, you may consider implementing
+the virtiofsd watches using fanotify. It should not matter for the inotify
+application in the guest at all.
+
+With the current implementation of watch in virtiofsd using inotify, that
+will cause the inconvenience of having to match the from/to events
+before reporting the event to guest, but inconvenience for a specific
+implementation is not what should be driving the API design.
+
+> Also in the inotify man page there is a limitations case that states that it is possible for one of these events
+> to be missing. What should the server do in this case?
+>
+
+The protocol should be able to carry src and dst information, but
+you could leave src (of moved_to) or dst (of moved_from) empty.
+In that case, FUSE client cannot call fsnotify_move() as is, so we
+can either change fsnotify_move() or use a variant for reporting remote
+rename events.
+
+The extra info for rename events with the FAN_REPORT_TARGET_FID
+proposal is also designed to be optional.
+
+Thanks,
+Amir.
+
+[1] https://man7.org/linux/man-pages/man1/fsnotifywatch.1.html
+[2] https://lore.kernel.org/linux-fsdevel/CAOQ4uxjYDDk00VPdWtRB1_tf+gCoPFgSQ9O0p0fGaW_JiFUUKA@mail.gmail.com/
