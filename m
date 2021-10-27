@@ -2,117 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236D843C7A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3948A43C78B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239339AbhJ0Kb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:31:29 -0400
-Received: from mail-out1.in.tum.de ([131.159.0.8]:46884 "EHLO
-        mail-out1.informatik.tu-muenchen.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231643AbhJ0Kb2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:31:28 -0400
-X-Greylist: delayed 550 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Oct 2021 06:31:27 EDT
-Received: from mailrelay1.rbg.tum.de (mailrelay1.in.tum.de [131.159.254.14])
-        by mail-out1.informatik.tu-muenchen.de (Postfix) with ESMTP id C77A12401CC;
-        Wed, 27 Oct 2021 12:19:51 +0200 (CEST)
-Received: by mailrelay1.rbg.tum.de (Postfix, from userid 112)
-        id C482F172; Wed, 27 Oct 2021 12:19:51 +0200 (CEST)
-Received: from mailrelay1.rbg.tum.de (localhost [127.0.0.1])
-        by mailrelay1.rbg.tum.de (Postfix) with ESMTP id A18D216F;
-        Wed, 27 Oct 2021 12:19:51 +0200 (CEST)
-Received: from mail.in.tum.de (mailproxy.in.tum.de [IPv6:2a09:80c0::78])
-        by mailrelay1.rbg.tum.de (Postfix) with ESMTPS id 9E068B7;
-        Wed, 27 Oct 2021 12:19:51 +0200 (CEST)
-Received: by mail.in.tum.de (Postfix, from userid 112)
-        id 99BF84A046E; Wed, 27 Oct 2021 12:19:51 +0200 (CEST)
-Received: (Authenticated sender: heidekrp)
-        by mail.in.tum.de (Postfix) with ESMTPSA id 836554A040D;
-        Wed, 27 Oct 2021 12:19:50 +0200 (CEST)
-        (Extended-Queue-bit tech_zfnoy@fff.in.tum.de)
-Date:   Wed, 27 Oct 2021 12:19:48 +0200
-From:   Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
-To:     paulmck@kernel.org, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Cc:     elver@google.com, charalampos.mainas@gmail.com,
-        pramod.bhatotia@in.tum.de
-Subject: Potentially Broken Address Dependency via test_bit() When Compiling
- With Clang
-Message-ID: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
+        id S239361AbhJ0KXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:23:25 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15096 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241415AbhJ0KXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 06:23:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="227584241"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="227584241"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:20:57 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="447156221"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:20:54 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mfg2r-001R18-Uz;
+        Wed, 27 Oct 2021 13:20:33 +0300
+Date:   Wed, 27 Oct 2021 13:20:33 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YXkn8aBvAVEXxgdp@smile.fi.intel.com>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <a318e4edc13e5a3ff95b901871b8929746535715.1635317102.git.yu.c.chen@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Wed, Oct 27, 2021 at 03:07:51PM +0800, Chen Yu wrote:
+> Introduce the pfru_update driver which can be used for Platform Firmware
+> Runtime code injection and driver update [1]. The user is expected to
+> provide the update firmware in the form of capsule file, and pass it to
+> the driver via ioctl. Then the driver would hand this capsule file to the
+> Platform Firmware Runtime Update via the ACPI device _DSM method. At last
+> the low level Management Mode would do the firmware update.
+> 
+> The corresponding userspace tool and man page will be introduced at
+> tools/power/acpi/pfru.
 
-For my bachelor thesis, I have been working on the infamous problem of 
-potentially broken dependency orderings in the Linux kernel. I'm being 
-advised by Marco Elver, Charalampos Mainas, Pramod Bhatotia (Cc'd).
+...
 
-For context, see: 
-https://linuxplumbersconf.org/event/7/contributions/821/attachments/598/1075/LPC_2020_--_Dependency_ordering.pdf
+> +static int get_image_type(struct efi_manage_capsule_image_header *img_hdr,
+> +			  struct pfru_device *pfru_dev)
+> +{
+> +	guid_t *image_type_id = &img_hdr->image_type_id;
 
-Our approach consists of two LLVM compiler passes which annotate 
-dependencies in unoptimised intermediate representation (IR) and verify 
-the annotated dependencies in optimised IR. ATM, the passes only 
-recognise a subset of address dependencies - everything is still WIP ;-)
+efi_guid_t ?
 
-We have been cross-compiling with a slightly modified version of 
-allyesconfig for arm64, and the passes have now found a case that we 
-would like to share with LKML for feedback: an address dependency being 
-broken (?) through compiler optimisations in 
-fs/afs/addr_list.c::afs_iterate_addresses().
+> +	/* check whether this is a code injection or driver update */
+> +	if (guid_equal(image_type_id, &pfru_dev->code_uuid))
+> +		return CODE_INJECT_TYPE;
+> +
+> +	if (guid_equal(image_type_id, &pfru_dev->drv_uuid))
+> +		return DRIVER_UPDATE_TYPE;
+> +
+> +	return -EINVAL;
+> +}
 
-Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
+...
 
-> [...]
->   index = READ_ONCE(ac->alist->preferred);
->   if (test_bit(index, &set))
->     goto selected;
-> [...]
+> +static bool valid_version(const void *data, struct pfru_update_cap_info *cap,
+> +			  struct pfru_device *pfru_dev)
+> +{
+> +	struct pfru_payload_hdr *payload_hdr;
+> +	efi_capsule_header_t *cap_hdr;
+> +	struct efi_manage_capsule_header *m_hdr;
+> +	struct efi_manage_capsule_image_header *m_img_hdr;
+> +	struct efi_image_auth *auth;
+> +	int type, size;
+> +
+> +	/*
+> +	 * Sanity check if the capsule image has a newer version
+> +	 * than current one.
+> +	 */
+> +	cap_hdr = (efi_capsule_header_t *)data;
 
-where test_bit() expands to the following in 
-include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
+Why casting?
 
-> static __always_inline int
-> arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
-> {
->   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-> }
-> #define test_bit arch_test_bit
+> +	size = cap_hdr->headersize;
+> +	m_hdr = (struct efi_manage_capsule_header *)(data + size);
+> +	/*
+> +	 * Current data structure size plus variable array indicated
+> +	 * by number of (emb_drv_cnt + payload_cnt)
+> +	 */
+> +	size += sizeof(struct efi_manage_capsule_header) +
+> +		      (m_hdr->emb_drv_cnt + m_hdr->payload_cnt) * sizeof(u64);
+> +	m_img_hdr = (struct efi_manage_capsule_image_header *)(data + size);
+> +
+> +	type = get_image_type(m_img_hdr, pfru_dev);
+> +	if (type < 0)
+> +		return false;
+> +
+> +	size = adjust_efi_size(m_img_hdr, size);
+> +	if (size < 0)
+> +		return false;
+> +
+> +	auth = (struct efi_image_auth *)(data + size);
+> +	size += sizeof(u64) + auth->auth_info.hdr.len;
+> +	payload_hdr = (struct pfru_payload_hdr *)(data + size);
+> +
+> +	/* finally compare the version */
+> +	if (type == CODE_INJECT_TYPE)
+> +		return payload_hdr->rt_ver >= cap->code_rt_version;
+> +	else
+> +		return payload_hdr->rt_ver >= cap->drv_rt_version;
+> +}
 
-The address dependency gets preserved in unoptimised IR since the virtual register %33 transitively depends on %28:
+...
 
-> %28 = load volatile i8, i8* %preferred, align 2, !annotation !15
-> store i8 %28, i8* %tmp21, align 1
-> %29 = load i8, i8* %tmp21, align 1
-> %conv23 = zext i8 %29 to i32
-> store i32 %conv23, i32* %index, align 4
-> %30 = load i32, i32* %index, align 4
-> store i32 %30, i32* %nr.addr.i, align 4
-> store i64* %set, i64** %addr.addr.i, align 8
-> %31 = load i64*, i64** %addr.addr.i, align 8
-> %32 = load i32, i32* %nr.addr.i, align 4
-> %div.i = udiv i32 %32, 64
-> %idxprom.i = zext i32 %div.i to i64
-> %arrayidx.i = getelementptr i64, i64* %31, i64 %idxprom.i
-> %33 = load volatile i64, i64* %arrayidx.i, align 8, !annotation !16
+> +static long pfru_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> +{
+> +	struct pfru_update_cap_info cap;
+> +	struct pfru_device *pfru_dev;
+> +	void __user *p;
+> +	int ret, rev;
 
-In optimised IR, there is no dependency between the two volatile loads 
-anymore:
+> +	pfru_dev = to_pfru_dev(file);
+> +	p = (void __user *)arg;
 
-> %11 = load volatile i8, i8* %preferred, align 2, !annotation !19
-> %conv25 = zext i8 %11 to i32
-> %set.0. = load volatile i64, i64* %set, align 8
+Can be combined with definitions above. Ditto for the rest cases in the code.
 
-Now, since @nr traces back to the READ_ONCE() to @index, does this make 
-the load from @addr in test_bit() address-dependent on that READ_ONCE()? 
-Should the load from @addr therefore be ordered against the READ_ONCE()?
+> +}
 
-Many thanks,
-Paul
+...
+
+> +	phy_addr = (phys_addr_t)(info.addr_lo | (info.addr_hi << 32));
+
+Does it compile without warnings for 32-bit target?
+
+...
+
+> +	ret = guid_parse(PFRU_UUID, &pfru_dev->uuid);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = guid_parse(PFRU_CODE_INJ_UUID, &pfru_dev->code_uuid);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = guid_parse(PFRU_DRV_UPDATE_UUID, &pfru_dev->drv_uuid);
+> +	if (ret)
+> +		return ret;
+
+Why do you need to keep zillions of copies of the data which seems
+is not going to be changed? Three global variables should be enough,
+no?
+
+> +	ret = ida_alloc(&pfru_ida, GFP_KERNEL);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	pfru_dev->index = ret;
+
+...
+
+> +	/* default rev id is 1 */
+
+Shouldn't you rather define this magic and drop this doubtful comment?
+
+> +	pfru_dev->rev_id = 1;
+
+...
+
+> +failed:
+
+Make you labeling consistent. The usual pattern is to explain what will be
+happened when goto to the certain label, for example, here is 'err_free_ida'.
+Also, add an empty line everywhere before labels.
+
+> +	ida_free(&pfru_ida, pfru_dev->index);
+> +
+> +	return ret;
+> +}
+
+...
+
+> +#define UUID_SIZE 16
+
+It must not be here at all.
+Or it should be properly namespaced.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
