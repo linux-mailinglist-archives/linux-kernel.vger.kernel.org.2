@@ -2,128 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D60243CE35
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CD243CEB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242898AbhJ0QEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242890AbhJ0QEF (ORCPT
+        id S238267AbhJ0Q2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:28:06 -0400
+Received: from tartarus.angband.pl ([51.83.246.204]:49368 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234414AbhJ0Q2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:04:05 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E471C061348
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:01:39 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 17so2346122ljq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tkCgQJkUSUXPKa9PPaG98xGW8ORLrJoeUL+lFNuAKlI=;
-        b=JuXVzxzuz+qv/oGJh4H3FGcoT4i1PRfFmZGPc6lEW/N9sVUHQywzVSA6QOXoew8eMN
-         2VuWytyylFxvVVv4NHBnyfc0Qf66xZSXHV0PNkrxsRogr/txx31V1QIsqMYUDW3/lS/Q
-         puLCWl/i68QH+uN4xJWqYNAHxq8s/ABltDsTffJInX/ueXsemQ/gPVFmTZ93Ha2IFRxA
-         fbB3/Ci3reBmhbmZLY5Agp3ldPGxwIMR97E/B9IL/d5CWC5Xg4LcOyrcEsyeLsDfw7q4
-         1r0gIxWuTyvt/wIwtmEfq/EQYkL7wpbE/0EDTKaVxaRJS8WIN0jvlGqgTJ1Igaa+L78p
-         ZceQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tkCgQJkUSUXPKa9PPaG98xGW8ORLrJoeUL+lFNuAKlI=;
-        b=z59tFBydjje93K8ft9nOx3HW0XM7sEWo1JCf7OzoOgPU2fMxyNumBaOlQPTb6gwqtm
-         LGrwc3yz57To0bfMty2K9uL2ta7rueekG5BkxqpqyMTuyLiQehuAhX3TWXhEjcvK2aQV
-         h4JzKwC9djfT0zg4+GeYTvWXfmiSUXFeUOTzdRbWoLFbPlDmORJP3BzocHwx0GOTA108
-         K/QfC8TPgh0pkaRLPiNGQQU43A07sqgZAvpsL0TGf/LS/wAd9wMCe0G5MhBvT1UTnW3K
-         1ngwiwIR5L2+EfV47B396n9gxPdewcvUX+LOntjsluL1jyvKEArImBusnGhkrKPZdzeM
-         LHNA==
-X-Gm-Message-State: AOAM532QT4f0pDlslqxMxK/RW7jUcCqEmlJ0riFERLL0KYB8wpUTDN16
-        VD4gb92ILdg9u01IDXgonBk84Gqs4Sje4NbvXBy2Kw==
-X-Google-Smtp-Source: ABdhPJyLTmxvQZ0j5lQGHsFYcydy71+PhRmg+SxpLEXAm87AnzbFNmKI1TyiM271I2tAbjx+BOKyohjDU7jCER0qQM4=
-X-Received: by 2002:a2e:5c45:: with SMTP id q66mr22976435ljb.273.1635350497549;
- Wed, 27 Oct 2021 09:01:37 -0700 (PDT)
+        Wed, 27 Oct 2021 12:28:04 -0400
+X-Greylist: delayed 2043 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Oct 2021 12:28:04 EDT
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.94.2)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1mfl6c-0073uO-76; Wed, 27 Oct 2021 17:44:46 +0200
+Date:   Wed, 27 Oct 2021 17:44:46 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     heinrich.schuchardt@canonical.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
+        axboe@kernel.dk, sagar.kadam@sifive.com,
+        Atish Patra <Atish.Patra@wdc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] riscv: defconfig: enable DRM_NOUVEAU
+Message-ID: <YXlz7oa9gQFGW0AQ@angband.pl>
+References: <20211012164658.81894-1-heinrich.schuchardt@canonical.com>
+ <mhng-5dc2aa26-9f1c-4764-9877-6d99569210b4@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-References: <20211025224032.21012-1-digetx@gmail.com>
-In-Reply-To: <20211025224032.21012-1-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 27 Oct 2021 18:01:01 +0200
-Message-ID: <CAPDyKFrA2Jcb5BmaFmajtdUCmpwoPjAAvPC_MhoWwjDXJynD=w@mail.gmail.com>
-Subject: Re: [PATCH v14 00/39] NVIDIA Tegra power management patches for 5.17
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, David Heidelberg <david@ixit.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <mhng-5dc2aa26-9f1c-4764-9877-6d99569210b4@palmerdabbelt-glaptop>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 00:45, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> This series adds runtime PM support to Tegra drivers and enables core
-> voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
->
-> All patches in this series are interdependent and should go via Tegra tree
-> for simplicity.
->
-> Changelog:
->
-> v14: - Fixed missing runtime PM syncing on removal of drivers, which was
->        spotted by Ulf Hansson in v13.
->
->      - clk-device driver now resumes RPM on system suspend instead of
->        preparing clock which it backs. This was suggested by Ulf Hansson.
->
->      - clk-device driver now syncs power domain performance unconditionally
->        during driver's probe time since GENPD API allows to do this now.
->        It was spotted by Ulf Hansson.
->
->      - Added new "Enable runtime PM during OPP state-syncing" patch, which
->        allows drivers to sync state at any time. Previously drivers were
->        obligated to take care of enabling RPM at the "right" time.
->
->      - Moved runtime PM initialization/uninitialization of DRM drivers that
->        use host1x channel to host1x client init/deinit phase. I noticed that
->        there is UAF problem because RPM-suspend callback waits until channel
->        is idling and channel is already released/freed during driver's removal
->        phase.
->
->      - Added system suspend support to the new NVDEC DRM driver.
->
->      - Added missing pm_runtime_mark_last_busy() to DRM driver.
->
->      - Corrected VDE GENPD patch which previously made video decoder clock
->        always-enabled by mistake if legacy PD code path was used. It was
->        spotted while we were testing VDE on Tegra114 that doesn't support
->        GENPD yet.
->
->      - Added ack from Peter Chen to the USB patch that he gave to v13.
->
->      - Changed OPP table names in accordance to the new naming scheme
->        required by the recent core OPP binding.
->
->      - Added 500MHz memory OPP entry used by ASUS Transformer tablets.
+On Tue, Oct 26, 2021 at 04:57:08PM -0700, Palmer Dabbelt wrote:
+> On Tue, 12 Oct 2021 09:46:58 PDT (-0700), heinrich.schuchardt@canonical.com wrote:
+> > Both RADEON and NOUVEAU graphics cards are supported on RISC-V. Enabling
+> > the one and not the other does not make sense.
+> > 
+> > As typically at most one of RADEON, NOUVEAU, or VIRTIO GPU support will be
+> > needed DRM drivers should be compiled as modules.
+> 
+> Do you have an nVidia card that works on real hardware?  Last I checked was
+> a while ago, but they weren't working at the time (IIRC it was something to
+> do with PCIe addressing, but it was a hardware limitation so I don't
+> remember exactly how it all fits together).
 
-Besides those minor nitpicks/questions that I have sent for patch1 and
-patch29, the series looks good to me!
+Not having read the docs (no one does! :p), I took a random old card from
+the shelf, put it in, and it just worked:
 
-Feel free to add, for the whole series:
+07:00.0 VGA compatible controller: NVIDIA Corporation G98 [GeForce 8400 GS Rev. 2] (rev a1)
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Kind regards
-Uffe
+Meow!
+-- 
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁ Polexit is brewing?  Let's skip that smelly Polsha and reactivate
+⢿⡄⠘⠷⠚⠋⠀ the Free City of Danzig and/or reapply to the Hansa.
+⠈⠳⣄⠀⠀⠀⠀
