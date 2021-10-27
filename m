@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDBD43C6BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8055543C6C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhJ0JsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:48:00 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:35516 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbhJ0Jr4 (ORCPT
+        id S241252AbhJ0JtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:49:12 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37220 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232462AbhJ0JtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:47:56 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4HfP210Fxmz1qwxk;
-        Wed, 27 Oct 2021 11:45:29 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4HfP2068n6z1qqkB;
-        Wed, 27 Oct 2021 11:45:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id aM9GS1BKj2Zb; Wed, 27 Oct 2021 11:45:27 +0200 (CEST)
-X-Auth-Info: C2/eG4m35MkI9B3Bxg1aiLH7XdmCmAifjuwSKAmQZlq5VktfNATtjZ8fcmt6k9ZP
-Received: from igel.home (ppp-46-244-163-205.dynamic.mnet-online.de [46.244.163.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 27 Oct 2021 11:45:27 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 591102C2200; Wed, 27 Oct 2021 11:45:27 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, alex@ghiti.fr,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH] RISC-V: Make CONFIG_RELOCATABLE user selectable
-References: <20211026212847.43108-1-palmer@dabbelt.com>
-        <87mtmuaodc.fsf@igel.home>
-        <CA+zEjCuRuKtZAhkS_RFyby6UhLvYmg=4BdnXEwUdaCdtbB7ZAA@mail.gmail.com>
-X-Yow:  It's the land of DONNY AND MARIE as promised in TV GUIDE!
-Date:   Wed, 27 Oct 2021 11:45:27 +0200
-In-Reply-To: <CA+zEjCuRuKtZAhkS_RFyby6UhLvYmg=4BdnXEwUdaCdtbB7ZAA@mail.gmail.com>
-        (Alexandre Ghiti's message of "Wed, 27 Oct 2021 10:58:44 +0200")
-Message-ID: <87ee86ajig.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Wed, 27 Oct 2021 05:49:10 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D37751FD40;
+        Wed, 27 Oct 2021 09:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635328004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QOaGRGXD0H4nAMtowdLuFZCJQWrMmL8XSspoY0iadQM=;
+        b=LFhokB2Xu2F6JuySRm6q8NUO7LbRF3OJcV/9yjlVF1DxhFYKRY6c6lRMTkEuYk+ZWLDIMA
+        0qi5ZYQy0skUm6hnCTdDapfrEywuSPJtmMrGhat81hjUvcAIR3ElhzFD9zObOS3d+Cd6Ik
+        yW53DinJMfHDoqUvGhunO4FDNcvBDf4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635328004;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QOaGRGXD0H4nAMtowdLuFZCJQWrMmL8XSspoY0iadQM=;
+        b=ASqfEBZkKr5KcIsxKQ5Nog8xnwLc0n3Tfl2rxxJdU2fAbS4k8RE7up8qr+1OvgOJrkXIyV
+        cpQ6JAlcqY8fYsAg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 7E877A3B81;
+        Wed, 27 Oct 2021 09:46:44 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5E06A1F2C66; Wed, 27 Oct 2021 11:46:44 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 11:46:44 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Yu Kuai <yukuai3@huawei.com>, Jan Kara <jack@suse.cz>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: reiserfs: free new_opts in reiserfs_remount
+Message-ID: <20211027094644.GA28650@quack2.suse.cz>
+References: <20211027033947.3992059-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027033947.3992059-1-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Okt 27 2021, Alexandre Ghiti wrote:
+On Wed 27-10-21 11:39:25, Dongliang Mu wrote:
+> Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
+> if not using generic_show_options") eliminates replace_mount_options
+> in reiserfs, but did not handle the allocated new_opts,
+> it will cause memory leak in the reiserfs_remount.
+> 
+> Fix this by freeing new_opts in the reiserfs_remount temporarily.
+> 
+> Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 
-> On Wed, Oct 27, 2021 at 10:03 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
->>
->> On Okt 26 2021, Palmer Dabbelt wrote:
->>
->> > +config RELOCATABLE
->> > +     bool "Build a relocatable kernel"
->> > +     depends on MMU && 64BIT && !XIP_KERNEL
->> > +     help
->> > +          This builds a kernel as a Position Independent Executable (PIE),
->> > +          which retains all relocation metadata required to relocate the
->> > +          kernel binary at runtime to a different virtual address than the
->> > +          address it was linked at.
->> > +          Since RISCV uses the RELA relocation format, this requires a
->> > +          relocation pass at runtime even if the kernel is loaded at the
->> > +          same address it was linked at.
->>
->> When in doubt, do what?
->
-> Then do not enable.
+Thanks for the patch but I can see that new_opts is not actually used at
+all in reiserfs_remount() so we should perhaps just remove them (including
+kstrdup() et al).
 
-Please add that to the help string.
+								Honza
 
-Andreas.
-
+> ---
+>  fs/reiserfs/super.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+> index 58481f8d63d5..b36865c8b66a 100644
+> --- a/fs/reiserfs/super.c
+> +++ b/fs/reiserfs/super.c
+> @@ -1594,6 +1594,7 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+>  	}
+>  
+>  out_ok_unlocked:
+> +	kfree(new_opts);
+>  	return 0;
+>  
+>  out_err_unlock:
+> -- 
+> 2.25.1
+> 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
