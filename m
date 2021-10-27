@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D896143D214
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5C943D21A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243784AbhJ0UJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:09:40 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49046 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243780AbhJ0UJh (ORCPT
+        id S243793AbhJ0ULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:11:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238558AbhJ0ULB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:09:37 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7D73120A5C64;
-        Wed, 27 Oct 2021 13:07:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7D73120A5C64
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1635365231;
-        bh=BGo/Dtg7YwC8q+RFxuQcteIV/YmgEHdRFKrKDWOW+zM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GFFcGMtfPsb7c/cwQ8Bs8gXv83qw86n+XfEOD5DCkazvHXeY3soocMGmFANA8g44+
-         GKuU9BHNGKPokRjr1ZWDQI8ZXb+tccj/Q3E6aO1dYD01iKpzkfh11+o59n00bMzpbI
-         TQh3WVZMWYu5tcXheJo/g0DQlrYdvUTmtiB9mxYI=
-Subject: Re: [PATCH v10 08/11] arm64: Rename unwinder functions, prevent them
- from being traced and kprobed
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-9-madvenka@linux.microsoft.com>
- <20211027175325.GC58503@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <88b9f9fb-155f-da97-b8ef-755eaf2a4af9@linux.microsoft.com>
-Date:   Wed, 27 Oct 2021 15:07:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 27 Oct 2021 16:11:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635365315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=VJyQQirrZwuNXLBhFZlxTeutqhrfo+TWoiIbs1ysy2s=;
+        b=AUyKUHu1Rtv5sX5J2buxGUl5QHgZFsBvyDC7ZecjAZAmY0vCX7FjfuXgWGFR6y6gr/FxSP
+        eYScXfNxn9jLADuJHwnbZK4Vp6FZZPNWDoOCx8AKBinorLxKqxv47gQyzYK4V9cFfX430s
+        UiiQxcORdYraFc2V/mJiYcX76+vzvYw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-k8S4jPYmN2eOqVwlSbgNhA-1; Wed, 27 Oct 2021 16:08:34 -0400
+X-MC-Unique: k8S4jPYmN2eOqVwlSbgNhA-1
+Received: by mail-ed1-f71.google.com with SMTP id q6-20020a056402518600b003dd81fc405eso3429502edd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 13:08:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=VJyQQirrZwuNXLBhFZlxTeutqhrfo+TWoiIbs1ysy2s=;
+        b=L2SMmRB31kFxiDTc1gdic0pHUaGEsLT8QmTIMRiiaeZGkglRYH4w4vC4iUChCznYL+
+         f59kj9LfsIptZ1JfeSTIyR4pn89WiBoDGXYY3QZfNVHzWJ9Y3LGR3QwNb/zq9VvbYlvN
+         jN34LlTVWxKfo0fDQ07YVyJAA6a5mqV2S/VnYV72bZu4Aga25UEyQ0I4JYpqcWRossim
+         JJi5dYhstjadOtHUQzgO6cp3Rr7T7whmNVc5Ua5B+jVM/G8Lv5LblHyXQWzZ070njs+D
+         Abqzg4E8c+GIQtE4WbDsdmOshaeVOuD/uXNyHe7JIohWM5ih7BkAgpm4OjM/6Xz3I9iG
+         B7TQ==
+X-Gm-Message-State: AOAM532wfEcaubDiXCBO4WSWvjRpSkiu1S3YdCYhpOmg8+ZddmcCzv6+
+        o736JU/czZ13vezFi9Jbj40ubX0oKn8ZN9kygXrIqd/F7Ng5VvVIFnVk0Au5mTKJGMeko/wb+t3
+        U2XbiqeZavIJYPtfcAy8/jzYo
+X-Received: by 2002:a17:906:c18d:: with SMTP id g13mr40156604ejz.518.1635365312935;
+        Wed, 27 Oct 2021 13:08:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzpFHN76pLgh4LdmFOeHgtbBOiaO/TarBKKy+bAQpZOaQQRa5m1hagk9YBfjHLP3LAg3Zp+BQ==
+X-Received: by 2002:a17:906:c18d:: with SMTP id g13mr40156577ejz.518.1635365312743;
+        Wed, 27 Oct 2021 13:08:32 -0700 (PDT)
+Received: from redhat.com ([2.55.137.59])
+        by smtp.gmail.com with ESMTPSA id u9sm253017edf.47.2021.10.27.13.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 13:08:32 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 16:08:29 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jasowang@redhat.com, mst@redhat.com, vincent.whitchurch@axis.com,
+        xieyongji@bytedance.com
+Subject: [GIT PULL] virtio: last minute fixes
+Message-ID: <20211027160829-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20211027175325.GC58503@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 64222515138e43da1fcf288f0289ef1020427b87:
 
+  Merge tag 'drm-fixes-2021-10-22' of git://anongit.freedesktop.org/drm/drm (2021-10-21 19:06:08 -1000)
 
-On 10/27/21 12:53 PM, Mark Rutland wrote:
-> On Thu, Oct 14, 2021 at 09:58:44PM -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> Rename unwinder functions for consistency and better naming.
->>
->> 	- Rename start_backtrace() to unwind_start().
->> 	- Rename unwind_frame() to unwind_next().
->> 	- Rename walk_stackframe() to unwind().
-> 
-> This looks good to me.
-> 
+are available in the Git repository at:
 
-Thanks.
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-> Could we split this from the krpbes/tracing changes? I think this stands
-> on it's own, and (as below) the kprobes/tracing changes need some more
-> explanation, and would make sense as a separate patch.
-> 
+for you to fetch changes up to 890d33561337ffeba0d8ba42517e71288cfee2b6:
 
-OK. I will split the patches.
+  virtio-ring: fix DMA metadata flags (2021-10-27 15:54:34 -0400)
 
->> Prevent the following unwinder functions from being traced:
->>
->> 	- unwind_start()
->> 	- unwind_next()
->>
->> 	unwind() is already prevented from being traced.
-> 
-> This could do with an explanation in the commis message as to why we
-> need to do this. If this is fixing a latent issue, it should be in a
-> preparatory patch that we can backport.
-> 
-> I dug into this a bit, and from taking a look, we prohibited ftrace in commit:
-> 
->   0c32706dac1b0a72 ("arm64: stacktrace: avoid tracing arch_stack_walk()")
-> 
-> ... which is just one special case of graph return stack unbalancing,
-> and should be addressed by using HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so
-> with the patch making us use HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, that's
-> no longer necessary.
-> 
-> So we no longer seem to have a specific reason to prohibit ftrace
-> here.
-> 
+----------------------------------------------------------------
+virtio: last minute fixes
 
-OK, I will think about this and add a comment.
+A couple of fixes that seem important enough to pick at the last moment.
 
->> Prevent the following unwinder functions from being kprobed:
->>
->> 	- unwind_start()
->>
->> 	unwind_next() and unwind() are already prevented from being kprobed.
-> 
-> Likewise, I think this needs some explanation. From diggin, we
-> prohibited kprobes in commit:
-> 
->   ee07b93e7721ccd5 ("arm64: unwind: Prohibit probing on return_address()")
-> 
-> ... and the commit message says we need to do this because this is
-> (transitively) called by trace_hardirqs_off(), which is kprobes
-> blacklisted, but doesn't explain the actual problem this results in.
-> 
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-OK. I will think about this and add a comment.
+----------------------------------------------------------------
+Vincent Whitchurch (1):
+      virtio-ring: fix DMA metadata flags
 
-> AFAICT x86 directly uses __builtin_return_address() here, but that won't
-> recover rewritten addresses, which seems like a bug (or at least a
-> limitation) on x86, assuming I've read that correctly.
-> 
+Xie Yongji (2):
+      vduse: Disallow injecting interrupt before DRIVER_OK is set
+      vduse: Fix race condition between resetting and irq injecting
 
-OK.
+ drivers/vdpa/vdpa_user/vduse_dev.c | 29 +++++++++++++++++++++++++----
+ drivers/virtio/virtio_ring.c       |  2 +-
+ 2 files changed, 26 insertions(+), 5 deletions(-)
 
-Thanks,
-
-Madhavan
