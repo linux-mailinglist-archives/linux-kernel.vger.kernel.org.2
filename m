@@ -2,109 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651E743C536
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C040843C537
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbhJ0IeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
+        id S240949AbhJ0IeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240936AbhJ0Id5 (ORCPT
+        with ESMTP id S239011AbhJ0IeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:33:57 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469F1C0432C1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:29:20 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d9so2021021pfl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=thzDWFk9Q0tPB9sJfYt3NFAW2DK3VreaLCq6cyyRMEE=;
-        b=I5SHd85j9XYMXkGN3HPiKAs3OiCmon5wOEaUYkYPQEJRzcAsr/i815L/DDBTmgAZlK
-         EFp67Jm8jst08kO5YrOlU+k8GkQao+bnmNngHPVii4coZ9DKOPIusqOBSszH1FXQqkWW
-         y8arffbFWprqCu3qQ1fUVff5XmPh1QZ5FP4h/8MjNw91DQZeEAqclM0AaRugzY9O42st
-         Q018apx9bqf2Y817pghf4orHBr0Qd9HVokKGyqXtr1/sJEtTpAXmPDxYl6jqAEICOz3g
-         e89gnZpZjW009WCkYivSwwYbqiz4+RZpXKx6ZT0FSJhL3HFv+ZXsXGu9GwIDQkxv3zP5
-         f4Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=thzDWFk9Q0tPB9sJfYt3NFAW2DK3VreaLCq6cyyRMEE=;
-        b=W6og1bDrDAt38mjDw6SCGPXrKQc2p5yAKeoEEbWG5BmJJpu6EtLNF8mx+pAiFVtUbQ
-         jQ1XI4FmfC7Lf2FDlS/J3GO+MejOPSPhZi4u30zwBX5nzj6pJ6gsu7h46WRZqLazep/i
-         AQNEtU38L9u0X5tqOTnHusvVuRXt/sCVDDTjbQLm7fF1pchBC02pF6Y59ooXNN+flQas
-         fGvIs/SNQpDrnxPnmyWuQltb20VGwQvVFNEveAIWra4HI+Q60s1xDi3xR8ranmRQ4klw
-         FtllRYg7nhSOHieN/22RvURx1Wkf0Iill29EsbwzKXOfPg29zanD8MwYLdvcYulcyRhn
-         eoew==
-X-Gm-Message-State: AOAM530g2FT+GRoiTxOrs4dTtTyUUBelMVn7vlTIE3arw9sVmV/0hka5
-        Y0fYyfD98B1r9GGJApviFwY4dFyT9H2KFfzMgn/2TQ==
-X-Google-Smtp-Source: ABdhPJybXgubxhC8DfgFq8g0lwfLwDF6P7AyUiHgxUWktEKQSjPjY4tmPmstfYLTlntkSKzmjZqX9/kk5YEXbxJUJRM=
-X-Received: by 2002:a62:dd96:0:b0:47c:1b37:d0f with SMTP id
- w144-20020a62dd96000000b0047c1b370d0fmr7148072pff.1.1635323359684; Wed, 27
- Oct 2021 01:29:19 -0700 (PDT)
+        Wed, 27 Oct 2021 04:34:04 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1758C0432C7;
+        Wed, 27 Oct 2021 01:29:22 -0700 (PDT)
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 110F1596;
+        Wed, 27 Oct 2021 10:29:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1635323360;
+        bh=ZTxjc1XWpuboGG/O4vVtLIPrMyAcKbxdbhRyjYyHbM0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NyzggpmnL+IQVYBMnkB2upSyIgIP3dFlF3+3olECgBeaWzGS8lUrFyYHDNJA+qucm
+         tmTZtqjimzTHPjyLcbwDFofFyAo/qIg6TJ7YhWyIILHx2HR6GAzpRBlPPmrI3pcl66
+         FVkFCEAIwNp1A+T4f5cmsttpjDXg4wKh+XzC3ss0=
+Subject: Re: [PATCH v6 1/9] drm/omap: add sanity plane state check
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Benoit Parrot <bparrot@ti.com>
+References: <20211018142842.2511200-1-narmstrong@baylibre.com>
+ <20211018142842.2511200-2-narmstrong@baylibre.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <ea3d01fd-b723-b245-90cc-c5874f95122c@ideasonboard.com>
+Date:   Wed, 27 Oct 2021 11:29:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211025170925.3096444-1-bjorn.andersson@linaro.org> <20211025170925.3096444-2-bjorn.andersson@linaro.org>
-In-Reply-To: <20211025170925.3096444-2-bjorn.andersson@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 27 Oct 2021 10:29:08 +0200
-Message-ID: <CAG3jFysN4pFqTrF8tGTVapCzysPkvO=MpYosAJnErY-AW7BqgQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/3] drm/bridge: ti-sn65dsi86: Use regmap_bulk_write API
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211018142842.2511200-2-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Bjorn,
+On 18/10/2021 17:28, Neil Armstrong wrote:
+> Call drm_atomic_helper_check_plane_state() from the plane
+> atomic_check() callback in order to add plane state sanity
+> checking.
+> 
+> It will permit filtering out totally bad scaling factors, even
+> if the real check are done later in the atomic commit.
 
-On Mon, 25 Oct 2021 at 19:07, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> The multi-register u16 write operation can use regmap_bulk_write()
-> instead of two separate regmap_write() calls.
->
-> It's uncertain if this has any effect on the actual updates of the
-> underlying registers, but this at least gives the hardware the
-> opportunity and saves us one transation on the bus.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+I think there's more to it: the function sets plane_state->visible, 
+which is used in later patches.
 
-Did you miss including Dougs R-B from v6? As far as I can tell nothing
-else changed between v6 & v7.
-
-> ---
->
-> Changes since v6:
-> - None
->
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 6154bed0af5b..5b59d8dd3acd 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -193,8 +193,9 @@ static const struct regmap_config ti_sn65dsi86_regmap_config = {
->  static void ti_sn65dsi86_write_u16(struct ti_sn65dsi86 *pdata,
->                                    unsigned int reg, u16 val)
->  {
-> -       regmap_write(pdata->regmap, reg, val & 0xFF);
-> -       regmap_write(pdata->regmap, reg + 1, val >> 8);
-> +       u8 buf[2] = { val & 0xff, val >> 8 };
-> +
-> +       regmap_bulk_write(pdata->regmap, reg, buf, ARRAY_SIZE(buf));
->  }
->
->  static u32 ti_sn_bridge_get_dsi_freq(struct ti_sn65dsi86 *pdata)
-> --
-> 2.29.2
->
+  Tomi
