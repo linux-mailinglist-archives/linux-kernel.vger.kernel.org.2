@@ -2,155 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D8B43D180
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6B443D182
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240639AbhJ0TRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:17:00 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43700 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240526AbhJ0TQ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:16:59 -0400
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6E44820A5C61;
-        Wed, 27 Oct 2021 12:14:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6E44820A5C61
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1635362073;
-        bh=0up9HDY1ud1cNjZdsG8dJiMycYEcONBTeIzk10Rrlc0=;
+        id S240642AbhJ0TSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240665AbhJ0TSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 15:18:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 077DE60EB4;
+        Wed, 27 Oct 2021 19:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635362145;
+        bh=qplU8Cwv24XEsUfG76zcfuadbkM+42Y9ZtueAbhYSl0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dKK2gqdO2G7vAfTphyxiO7FUkJV6KmfrkwdkmTiGm9GK6431eDndREqvF4nrG5Qjw
-         VD+wTWEeXSv1aKJEPX0vsXOUXScIK1wqJ8g1HsvZ0PzlLCr3XAEp7Ca2s3JxaMX/ff
-         O4W3OmfGmgF9ryEKob6nTyagsUDvPFdQZz2BxOM4=
-Date:   Wed, 27 Oct 2021 12:14:28 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH v3] user_events: Enable user processes to create and
- write to trace events
-Message-ID: <20211027191428.GA1462@kbox>
-References: <20211018230957.3032-1-beaub@linux.microsoft.com>
- <20211022223811.d0b5f03a7eee147c619d0202@kernel.org>
- <20211022224202.GA27683@kbox>
- <20211025104006.a322e4a5b4a56cdf3552ebac@kernel.org>
- <20211025172655.GA27927@kbox>
- <20211026172602.55843a03c5a5ba049b567b5a@kernel.org>
+        b=hLad/F264OdtDKuYaO+9LYJbXCGjvadQsKZZkLPt0USx9/cXu9RdPwNvM9tBRfJrq
+         1vm/IeDltK95S7LZ6ZB/K7fs9hqCHCkciE9FYZRiYI0Oi5SLQtGqjW+/4Yfgn7Ik3U
+         iXNgfQGsVMP3aJSINGQS3+NOJ1getI3Sx5NPEnaoHXHcoqFydq5+fduvgMXk+y/si2
+         E9JtHmG0NP2w3wfTqS6Gt/sWEQvcH/4NVm8Y0gstC2Cr8hoNyJpjaJyEkEwopiElWQ
+         tHJRuf/V60NC7EgX0TBQa3DhNpSWSab99pDRL+yHYYjQmJw52pTV7d+bk5xC9tF2zJ
+         YztL3wVLmqqRw==
+Date:   Wed, 27 Oct 2021 22:15:41 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Edwin Peer <edwin.peer@broadcom.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXmlXSs0jXl2k1Y9@unreal>
+References: <YXelYVqeqyVJ5HLc@shredder>
+ <YXertDP8ouVbdnUt@unreal>
+ <YXgMK2NKiiVYJhLl@shredder>
+ <YXgpgr/BFpbdMLJp@unreal>
+ <20211026120234.3408fbcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YXhXT/u9bFADwEIo@unreal>
+ <20211026125602.7a8f8b7e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YXjqHc9eCpYy03Ym@unreal>
+ <20211027071723.12bd0b29@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YXlthf7pEU/OdnS0@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026172602.55843a03c5a5ba049b567b5a@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YXlthf7pEU/OdnS0@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 05:26:02PM +0900, Masami Hiramatsu wrote:
-> > > > > > +	} else if (strstr(field, "flag ") == field) {
-> > > > > > +		field += sizeof("flag");
-> > > > > > +
-> > > > > > +		if (!strcmp(field, "bpf_iter"))
-> > > > > > +			user->flags |= FLAG_BPF_ITER;
-> > > > > > +
-> > > > > 
-> > > > > What is this flag?
-> > > > > 
-> > > > We want to enable certain sensitive events the ability to mark that
-> > > > there should never be a buffer copy. When FLAG_BPF_ITER is used the raw
-> > > > iovecs are exposed out to eBPF instead of any sort of copy to reduce
-> > > > latency. We run user_events in some highly performant code and want to
-> > > > monitor things with the least amount of overhead possible.
-> > > 
-> > > Would you mean the event with this flag is only available from eBPF?
-> > > 
-> > It means that if eBPF attaches we will honor the users request to make
-> > the data as cheap as possible to them. If a user with proper access
-> > enables ftrace or perf on these high performant events they will still
-> > come through (we don't want to hide them).
-> > 
-> > We will not be able to do that at all if we copy to heap or stack. At
-> > that point we've lost the ability to delay copy/probing up until the
-> > eBPF states it is actually required.
-> 
-> I think the bpf optimization should be discussed in the other thread.
-> 
-
-Yep
-
-> Anyway, here I would like to know is that the syntax of this flag. 
-> If the flag is for the user event itself, it would be better to add the flag
-> with a special separator, not the "flag", so that user puts the flags
-> after fieldN.
-> 
-> name[:FLAG1[,FLAG2...]] [field1[;field2...]] 
-> 
-
-Agreed, will do that.
-
-> > > > I also ran with CONFIG_PROVE_RCU and didn't see anything show up in
-> > > > dmesg.
-> > > 
-> > > Hmm, that's strange, because copy_from_iter(user) may cause a fault
-> > > and yielded. Isn't it an iovec?
-> > > 
-> > Yeah, likely I just haven't hit a page fault case. I'll try to force one
-> > in our testing to ensure this case is properly covered and doesn't cause
-> > issues.
-> 
-> If you can suppress the fault (just skip copying when the fault occurs),
-> I think it is OK. e.g. copy_from_user_nofault().
-> 
-
-We want to handle faults in these paths, which means handling them
-outside of preemption disabled. This limits where we can have the buffer.
-
-> > > > > > +				/*
-> > > > > > +				 * Probes advance the iterator so we
-> > > > > > +				 * need to have a copy for each probe.
-> > > > > > +				 */
-> > > > > > +				copy = *i;
-> > > > > > +
-> > > > > > +				probe_func = probe_func_ptr->func;
-> > > > > > +				tpdata = probe_func_ptr->data;
-> > > > > > +				probe_func(user, &copy, tpdata);
-> > > > > 
-> > > > > You seems to try to copy in from user space in each probe func, but
-> > > > > please copy it here to the temporary buffer and pass it to the
-> > > > > each probe function. Such performacne optimization can postpone.
-> > > > > Start with simple implementation.
-> > > > > 
-> > > > Yes, this avoids double copying of the data in the normal paths. Moving
-> > > > to a temp buffer only really changes 1 line in the probe functions
-> > > > (copy_from_iter to copy_from_user).
+On Wed, Oct 27, 2021 at 06:17:25PM +0300, Leon Romanovsky wrote:
+> On Wed, Oct 27, 2021 at 07:17:23AM -0700, Jakub Kicinski wrote:
+> > On Wed, 27 Oct 2021 08:56:45 +0300 Leon Romanovsky wrote:
+> > > On Tue, Oct 26, 2021 at 12:56:02PM -0700, Jakub Kicinski wrote:
+> > > > On Tue, 26 Oct 2021 22:30:23 +0300 Leon Romanovsky wrote:  
+> > > > > No problem, I'll send a revert now, but what is your take on the direction?  
 > > > > 
-> > > > If I were to create a temp buffer for simplicity I guess I would have to
-> > > > kmalloc on each call or move to a per-cpu buffer or use stack memory and
-> > > > limit how much data can be copied.
+> > > > I haven't put in the time to understand the detail so I was hoping not
+> > > > to pass judgment on the direction. My likely unfounded feeling is that
+> > > > reshuffling ordering is not going to fix what is fundamentally a
+> > > > locking issue. Driver has internal locks it needs to hold both inside
+> > > > devlink callbacks and when registering devlink objects. We would solve
+> > > > a lot of the problems if those were one single lock instead of two. 
+> > > > At least that's my recollection from the times I was actually writing
+> > > > driver code...  
 > > > 
-> > > Anyway, it should be limited. You can not write more than 1 page, and
-> > > do you really need it? And allocating kmalloc object is relatively low
-> > > cost compared with a system call.
-> > > 
-> > Really, it's that low?
+> > > Exactly, and this is what reshuffling of registrations does. It allows us
+> > > to actually reduce number of locks to bare minimum, so at least creation
+> > > and deletion of devlink objects will be locks free.
 > > 
-> > We are tracking cycles counts to compare user_events with other
-> > telemetry data we have. Some people care a lot about that number, some
-> > don't.
+> > That's not what I meant. I meant devlink should call in to take
+> > driver's lock or more likely driver should use the devlink instance
+> > mutex instead of creating its own. Most of the devlink helpers (with
+> > minor exceptions like alloc) should just assert that devlink instance
+> > lock is already held by the driver when called.
+> > 
+> > > Latest changes already solved devlink reload issues for mlx5 eth side
+> > > and it is deadlock and lockdep free now. We still have deadlocks with
+> > > our IB part, where we obligated to hold pernet lock during registering
+> > > to net notifiers, but it is different discussion.
+> > > 
+> > > > > IMHO, the mlxsw layering should be fixed. All this recursive devlink re-entry
+> > > > > looks horrible and adds unneeded complexity.  
+> > > > 
+> > > > If you're asking about mlxsw or bnxt in particular I wouldn't say what
+> > > > they do is wrong until we can point out bugs.  
+> > > 
+> > > I'm talking about mlxsw and pointed to the reentry to devlink over and over.
+> > 
+> > To me "pointing to re-entry" read like breaking the new model you have
+> > in mind, not actual bug/race/deadlock etc. If that's not the case the
+> > explanation flew over my head :)
 > 
-> OK, then you can use a static per-cpu buffer for copying.
+> It doesn't break, but complicates without any reason.
 > 
+> Let me try to summarize my vision for the devlink. It is not written
+> in stone and changes after every review comment. :)
+> 
+> I want to divide all devlink APIs into two buckets:
+> 1. Before devlink_register() - we don't need to worry about locking at
+> all. If caller decides to go crazy and wants parallel calls to devlink
+> in this stage, he/she will need to be responsible for proper locking.
+> 
+> 2. After devlink_register() - users can send their commands through
+> netlink, so we need maximum protection. The devlink core will have
+> RW semaphore to make sure that every entry in this stage is marked
+> or read (allow parallel calls) or write (exclusive access). Plus we
+> have a barrier for devlink_unregister().
+> 
+> My goal is to move as much as possible in first bucket, and various
+> devlink_*_register() calls are natural candidates for it.
+> 
+> In addition, they are candidates because devlink is SW layer, in my
+> view everything or almost everything should be allocated during driver
+> init with const arrays and feature bits with clear separation between
+> devlink and driver beneath.
+> 
+> Call chains like "devlink->driver->devlink->driver.." that exist in
+> mlxsw can't be correct from layering POV.
 
-I can only use static per-cpu buffers if preemption is disabled during
-the copy. This limits to not being able to fault in data. For example
-simple migration disabled could still see another user_event getting
-traced on the same processor and corrupt / partial fill that per-CPU
-buffer.
+One of the outcomes is that such chain usually prevents from us to ensure
+proper locking annotation.
 
-For the simple version I will use kmalloc and then we can talk on the
-other threads about better ways to go about it.
+Let's take as an example devlink_trap_policers_register().
+In some drivers, it is called before device_register() and we don't need
+any locks at all, because we are in initialization flow.
 
-Thanks,
--Beau
+In mlxsw, it is called during devlink reload, and we don't really need to
+lock it too, because we were supposed to lock everything for the reload.
+
+However, for the mlxsw, we created devlink_trap_policers_register() to be
+dynamic, so we must lock devlink->lock, as we don't know how other users
+of this API will use it.
+
+In the reality, no one uses it dynamically except mlxsw and we stuck
+with function that calls to useless lock without us able to properly
+annotate it with an invitation to misuse.
+
+It is an example of layering problem, there are many more subtle issues
+like this that require some cabal knowledge of proper locks to make it
+is safe.
+
+Thanks
+
+> 
+> The current implementation of devlink reload in mlxsw adds amazingly
+> large amount of over engineering to main devlink core, because it drags
+> many (constant) initializations to be in bucket #2.
+> 
+> Bottom line, convert devlink core to be similar to driver core. :)
+> 
+> Thanks
