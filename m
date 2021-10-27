@@ -2,119 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE26043CA5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8831743CA6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237051AbhJ0NNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:13:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236927AbhJ0NNc (ORCPT
+        id S242066AbhJ0NUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:20:02 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:60484 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236464AbhJ0NT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:13:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635340266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IWYKdmA4eUJEUsGe3mptr98qqwVK7XBGAcGwuVBZe7o=;
-        b=bIZwgie8pg38MTj8LwgIn4ELW/pmrEV+FYAETTnjlUuO2CETjTfgITgXZdvw6tymktxWpV
-        f3zBJ5Dzzu+cqOsNQntvzZM97osv5S4puN52J90erpp1xvU8WbfvFHfWGegVxSib/k5PKc
-        Hy/ZkVni01Ryq4/b9WC+06VH2EzqXcY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-Jofr1NH4M_Kec2g9KF2CPw-1; Wed, 27 Oct 2021 09:11:05 -0400
-X-MC-Unique: Jofr1NH4M_Kec2g9KF2CPw-1
-Received: by mail-wm1-f71.google.com with SMTP id p18-20020a05600c205200b0032ccb9d9f76so1157752wmg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:11:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=IWYKdmA4eUJEUsGe3mptr98qqwVK7XBGAcGwuVBZe7o=;
-        b=XmEgrYi+679lsGpp7mb1uwAYjBg7kvIi7gtUTVFG8tvSQlyCZi2SOce+GMnY4Day8v
-         JwITF9dk41B74TP6WHrD3CVRQOz9lsI3R2MbMHSKSLRkx3MBdxT0A00szgaenLghs2ig
-         K2+69T4TCxPSWRvrWmWLMJz0rbT2VJ8BKx1cAecjmIqS/HUeUQa3wwh47CFgUeVyEYUE
-         zarU4VDKt7ERgTshSkzefY1T0nq4S71nv5EeWoJXdbKejSHaYfViNCZooW61HvT0gVqf
-         0CCO/G/i2BaZR7IefSUwk7SysBLbyRkXItlIOvytt8x/vdtcDX9qSe8AWAzaqEkuOXH8
-         YnXA==
-X-Gm-Message-State: AOAM532MSadfF9wDQxp2LF4dPG6THPuAI5OLsYheUnCEzprh6pUvqJ8q
-        PfLMrRS2ASt7dDmfXLf45u6Xvm9rJmsQnArbEzDgS0wRD+8qU/BArEDmlhT50jnFyRLpP4hwN30
-        sgeuDZwYlFGBBWir5qUjVcbHN
-X-Received: by 2002:a05:6000:18af:: with SMTP id b15mr38755694wri.359.1635340264015;
-        Wed, 27 Oct 2021 06:11:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxzjUjZddIUlCrumNutOY9tavd1hZf4C85p9ozzn0zyY1ymdGYMDfidxui06HqTzb2IhpmXTA==
-X-Received: by 2002:a05:6000:18af:: with SMTP id b15mr38755662wri.359.1635340263764;
-        Wed, 27 Oct 2021 06:11:03 -0700 (PDT)
-Received: from [192.168.100.42] ([82.142.14.190])
-        by smtp.gmail.com with ESMTPSA id o26sm3436083wmc.17.2021.10.27.06.11.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 06:11:03 -0700 (PDT)
-Message-ID: <eab57f0e-d3c6-7619-97cc-9bc3a7a07219@redhat.com>
-Date:   Wed, 27 Oct 2021 15:11:02 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in copy_data
+        Wed, 27 Oct 2021 09:19:59 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RCTXdT023707;
+        Wed, 27 Oct 2021 13:17:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=eKryvM9DrpnRHaNG5FgK2wqEwMeD6lIALav02VvtXik=;
+ b=P6zMv1KjmxFSsCseTL2+W3H/fYwsMlxq3H7Cc2hjn3Tb8mVd5VfirykrhKxb4WxqNfj8
+ pveIamyZCOdl1bmnRIr0EK89a1J3Mv0cOWNPEMSnmUWvx7GP+KxOdPLsgN8l/opltVG9
+ acjojYUDcD1a0Ge/JJ/398feJPtlj8ARPvwzDj4ZSePNkyX8nagekcALfAlnleChPx9U
+ yvh6aMs5hye5RRQmuzWQIiNcFZ6SR8svC7K/f5nfKbUAJldYhE0ulwFwW7CCVZ8Z2kJ3
+ Pqs6llxTnql3iXg5xA60OhOIQt0dUG9BTBpP7PcXPetVhadEJthgEREEhd9jpRdrJQcu 7g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4fj3gye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 13:17:24 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19RDBwhE027370;
+        Wed, 27 Oct 2021 13:17:20 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by userp3020.oracle.com with ESMTP id 3bx4gr28bv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Oct 2021 13:17:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ml8PDl91brzso0vTLH3bWUhEN8PpFT41O/ITYGxzHel7zoz7At/CjerKe932Jhbm+tECfCvqbuzHW1z4oHvm3OahcjRA7nO0xqAVRQdVCgniX4hT1+fZfzO7ME7D52G5bdubs0ma1clqG0I1pdpgXd8A2vQOU5msFG7WrsJ9000OgwZlup12rbFg+CXYN+Q01L6CzR+xDRAExKGUW40RwjwJJezE7ALcC1i2hDkL2DNpFOmYldnRwg4ndlJX4rHEKT8DuL7TgLwmshOle9uNhpdi9ruXISzn+AFHuqJ+0+pUtLZZT3DGuaRTTACN10ffbbL2IukWjKv+QWr9OMNSLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eKryvM9DrpnRHaNG5FgK2wqEwMeD6lIALav02VvtXik=;
+ b=joSB9/S0r4ZzIo1wlEpDkJ76Jsct2+xjFldQ8T+VygyZlmxJ7DxQ4mY3wV3PG1ZEQsYe1LxlKcCLH/45W3bY9//vCREzTMq3nTPHcqSv9Z2RL3kLwtzFpGL1DGPtzf8NC45DKRhmAZrx+tafhUfAA0pbVF/KDDXeXTIT/JhoK4NWbbGQcntHX1ZD0eolGY1B7KrKCLLoPfBO4MNpW7qGD3fbQTbbKXJk8gOyikWxV5g+W7pwYp3NBIM5sF4Dr+dOahYUo8ZEL+FLtWm/hVGNDtLcD9jKoIWOgTlL35g8dTA9SipED5xuwVZiw6mFTO5HbUnuEHnHxcmot8W6JNR/YQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eKryvM9DrpnRHaNG5FgK2wqEwMeD6lIALav02VvtXik=;
+ b=TiLuORGEVzEJbxeQ/gyUu7jOwXAIkoR/Zu5VJkadi2pU8pOXI96xP8UBtQSC/8cq0B7CkHGGykh6/s3HhghgghXj3Q/gaxxn/9CHJuO7JpK5IpuuVsF9/bFtVfLNFh8OQuuDwd07jfnDuqjkgEkmYKzTg2xhGz3rkCZWZwXC2Lk=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB4029.namprd10.prod.outlook.com (2603:10b6:208:186::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Wed, 27 Oct
+ 2021 13:17:17 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329%6]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
+ 13:17:17 +0000
+Message-ID: <0fca8243-0106-8091-9635-53251c97149a@oracle.com>
+Date:   Wed, 27 Oct 2021 09:17:12 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH 0/6] xen/x86: PV boot speedup
 Content-Language: en-US
-To:     syzbot <syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com>,
-        davem@davemloft.net, herbert@gondor.apana.org.au, jiri@nvidia.com,
-        kuba@kernel.org, leonro@nvidia.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mpm@selenic.com, mst@redhat.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000a4cd2105cf441e76@google.com>
-From:   Laurent Vivier <lvivier@redhat.com>
-In-Reply-To: <000000000000a4cd2105cf441e76@google.com>
+To:     Jan Beulich <jbeulich@suse.com>, Juergen Gross <jgross@suse.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+In-Reply-To: <022b1a5e-4121-6bae-f07c-4ad5eac12481@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR13CA0105.namprd13.prod.outlook.com
+ (2603:10b6:806:24::20) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+Received: from [10.74.107.92] (138.3.200.28) by SA9PR13CA0105.namprd13.prod.outlook.com (2603:10b6:806:24::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13 via Frontend Transport; Wed, 27 Oct 2021 13:17:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 14717415-b223-4b82-e8ec-08d9994c1980
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4029:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4029531CE21C710B6A59A35F8A859@MN2PR10MB4029.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OQAJhsEdVuFrk5m1rg2kYBNsX6vsV5AzZo2RpjZq5rcBwYoYgXm2ATgub80RmpHnkAIP2e09CDpn9BZ8djhmnw6WGzBgVhefWYSeo2pjmxzkE40FNYQXXmQffM+ydl0PvYZ2BlLUjmbMRFSOTgpfYpgNsT2QRKEQUaIfM1mQ7m2HH/PhN7POFIzALV0ipu/98mZemSGpvidT97Z4mGHrQbiNMjdOo1VGft0sf9aq6N9cr9ZmLf9p5W75ITe9jqy1Ml49rxlOA/72HoxU3GNUT9hqLJuKqlOKEjb37jf1iKEq0HHd9+e8rWxaZ2uHAE5CeAlCHbQaBrkECHwy1HsPqcrIKedYS1Fv0+qtwxe0YcHPJM4Cy9l7VmxS/ai8ZfyrW3bNCgT52AoEcNA4M1FsRdvofogrToBlQodYuNiqL6+VXVY2vSsnVaL7/ayWNFbbcGL3/ppfHAQNfQxwew8TxPH0o875O+MXv6OoxVDS9OcwRs6qt488QQibINiJLYlib6FsYv/zs4I2rQQjyxVP1u7vgg147g0VZbtTbbI70lOA3vv79ZrCJ/D3fQjrJmeJYZ+9rWfQ/vWT4xp0KtkTihic8tyZvTCohsLW2IKJ2k9tkirktX/84ua78TlIoPu2H79Z9dOCl1t4oFFLR9IOhDAXT8z1xb0bzNgNXkWqM1CUSsvOgn4y9KmDkCht0RaYjwibbfl8EgUFpx6/hts0KvkWH2qd9CzObucMgxTKo9U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31686004)(36756003)(6666004)(4744005)(16576012)(6486002)(66556008)(66946007)(66476007)(956004)(53546011)(186003)(5660300002)(26005)(38100700002)(83380400001)(44832011)(508600001)(86362001)(4326008)(31696002)(8936002)(2616005)(8676002)(54906003)(2906002)(316002)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QUR3RjFYUE5wMlJuVnQrQW4xK1BKYzJQUEFNN3F0eVVkWWxkZ0lLYUorTEFx?=
+ =?utf-8?B?ZXBRR0I1OUE2M0prY2Z0Nis4dGR2MG8zSTh1dnRBeE13bnYrWkNYNUVNeWJQ?=
+ =?utf-8?B?WWZxYmhDdFY4MXViZm1UTkUyclhxK01QLzU5d1BRd3JhRzRCa21KaTFhNnk4?=
+ =?utf-8?B?Z3cvVFJmNEZKZUhlL2kwZGo0NGYzS3dNL1cxTjJWNjIxVzRTaGVFM215akp6?=
+ =?utf-8?B?MzU0ZllNaUorenVCN3pzeUx2a3VRMjlNSnlXM0ttSy94NHlmT0t0bUs1anlF?=
+ =?utf-8?B?Y0VKNng3VHJMbDFScHB2UFFoY1RrZDZkNWNKRzVJTU9WSFFSLys3bHhmUmo1?=
+ =?utf-8?B?UFk1anc5VExPUEN1L0paY1pvb2xNQ3V4TmZ2ZnNwa01JTnVpM2Q3bmU2V3Vu?=
+ =?utf-8?B?WVZud3dnMndPbzVRWFZBM0padXE3b2xBU3FtTjdaQVN3dzNFWkhNU1c4MHRV?=
+ =?utf-8?B?V2ZqZWNaWEI3VkRTbkZNLzg2SnQyYmpiUnc1WWhJTTRobHY5SjE3Q2xxVzNX?=
+ =?utf-8?B?Z2FQU2VHU2tGOHpKNWRQUDdlb1ptcEpSS1YwcS9DTHhRR3hhNmFSUGRaZjYr?=
+ =?utf-8?B?cFY1NmdXUzExang4OENhQWY0K0M0Tk9UL0MvaFNuTmY3Z2tieFc1a1BmMnZI?=
+ =?utf-8?B?NnNuNkMzMmZrL3VHdXpIMjFqTmhYQzIwRTNQeEJQdW5WaFFqdWFYN0Z0R2Fr?=
+ =?utf-8?B?SmR6RkxrZEtiOUZIN05oVVRDSUdZelJUMmJtNmFRMXlMTkdVQ3JvWThURDly?=
+ =?utf-8?B?amRabmRhd3p4YXpxYXFaUmxlVDQ4OWdDNllWdm0rN1J2c09UbUt2Ny9OdjVU?=
+ =?utf-8?B?S3BpcDR4MGRobjNiNXV5SUhTSkdLWVlpY2NERmw1WngvVE5uSVJEc3JOd1Zj?=
+ =?utf-8?B?UXpCWU43bHcwNHFhRUpBSC94bUhLNXdjRC9mYWhyQWJyMVRjdEJmbG9aNjk5?=
+ =?utf-8?B?bWwyNHB6OFFURS9lVHRINTVqZEJnZHMwZHFOOHhHc1FLME56Z3QwenhqTWFz?=
+ =?utf-8?B?akZrLzh1aUQ5aG9JNm42Tm1ZUFhHREhDdWxlMmNtSjZSWElCZXVVWWlvYXBI?=
+ =?utf-8?B?NW05c0RIdFZvZGE1NmVmRDBXUHlvVGFmTTVQclVwT2ROM1hiMjJEU2d1aXha?=
+ =?utf-8?B?ZjBPQUphdGI2a2ZFZjJvVEYzZTNJQjJCZWluT1F5eVVudE1DRVoyVzByYmlU?=
+ =?utf-8?B?RUlNcFVwQTV0QjZ2VnZ2WUtRc05MRnhMbEhDb2hMMTRlaGJYU0JJZEozZGdD?=
+ =?utf-8?B?b3ZkcGxaRnptU2hJclkyOEYrRk0xQndLOFFZUlRpNFlIeG04a2J1MFdFYzdV?=
+ =?utf-8?B?UTF6MnZ0UXBQV0hEcHZXSVA4dlZpa3JwdlZBQjB1OUIyRklMc2FFY0RNQU54?=
+ =?utf-8?B?OFhxNWlvQTEvZjVmcCtOVG02SkhuLzgzK3ZMRzg0TFArYmNqWVJ5SFR2N0p6?=
+ =?utf-8?B?OS9CUHJiMnlzdEJ3WThIRG13ekZjOUFGamlmUjRtV1pLNTJmbW1IUDE2ZlJi?=
+ =?utf-8?B?akg2RUFWUTlhWm54UU0xWFlNdGx6TnN1WndGWTJoNnRMT2htdWRLMFFWT09s?=
+ =?utf-8?B?b1hXeGluZmNWL1AxSk01QjZKUFdKSnlvR0F0M2x3U290dFhrZ3NmSGdKcDlT?=
+ =?utf-8?B?bC9mQWRNRXA0MGMvM3ozSUVvSjRaRDB6Ukl0U2xSVnBNaksvbkowZ2lNUWdy?=
+ =?utf-8?B?UGtTK3lUK2NqeUprak1CNzhFbitzbW03Wk9RUEVnWFB3b3lSNytPTW1QWnEw?=
+ =?utf-8?B?ZzJyR3Erd2ZJVE5jcmlVSDdKTmxtRWlFTUVNemFQWXZueXZhM2M0VGFLYU9x?=
+ =?utf-8?B?d01uY0kwU0xuYWZ2czQ2Z21EQlBXNWlPY2pBQjVZY2JzTHlGSFowZm5peHJS?=
+ =?utf-8?B?ekpPRjgvVDJ4MkNUQ2Q5NXVSR2pwdEJsdUxkWG0rWEpPUmN0ZWdtY2ZCa3BJ?=
+ =?utf-8?B?c2lWTWpkaWVrRDBrNHZUUFNSM1h2MGhURnRvZDNvQXJpOWthZWhTRVllTnkr?=
+ =?utf-8?B?TmRVS0I2TXo1MG1IeVUyZ2t0VHBtS3JJcjk3aUhoVit3YmZCSDM4Nm9FckZ6?=
+ =?utf-8?B?cTBZdjJZK083WDVabUpkdFZVbDRVRnA5OFBQeUcxYk04ZmcvN0c5U2RtL2c1?=
+ =?utf-8?B?TVN2QTBSR0pOK1c2OHJqZ0k3TENxaFpUWTJIcE5VeFcrbTczQ05TN3c5NjBV?=
+ =?utf-8?B?MVd6NFlGRlM4R3pTUVMwSFd2NjhEU1B1WnliVDFhMmp2UGZ3R1pnSUhDUEs4?=
+ =?utf-8?B?UWtrNU45cUpDUWFkdFJ4Z2FVQ3pnPT0=?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14717415-b223-4b82-e8ec-08d9994c1980
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 13:17:17.6448
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z0AiZT1boac9VOL6ePHA2yblIgl5mnOb2RGYuvajIYvMnAC/6FFRPw2fc72VzW8aQB5x9urApDq4AANJJaDTv0WDvhzKNrIKkDNtJNLRcH8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4029
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10149 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110270081
+X-Proofpoint-ORIG-GUID: SthDEoaTXnYSC6InyF03KM7WKXPFgABg
+X-Proofpoint-GUID: SthDEoaTXnYSC6InyF03KM7WKXPFgABg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2021 18:39, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    9ae1fbdeabd3 Add linux-next specific files for 20211025
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1331363cb00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=aeb17e42bc109064
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b86736b5935e0d25b446
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116ce954b00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132fcf62b00000
-> 
-> The issue was bisected to:
-> 
-> commit 22849b5ea5952d853547cc5e0651f34a246b2a4f
-> Author: Leon Romanovsky <leonro@nvidia.com>
-> Date:   Thu Oct 21 14:16:14 2021 +0000
-> 
->      devlink: Remove not-executed trap policer notifications
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137d8bfcb00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10fd8bfcb00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=177d8bfcb00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b86736b5935e0d25b446@syzkaller.appspotmail.com
-> Fixes: 22849b5ea595 ("devlink: Remove not-executed trap policer notifications")
-> 
-> ==================================================================
-> BUG: KASAN: slab-out-of-bounds in memcpy include/linux/fortify-string.h:225 [inline]
-> BUG: KASAN: slab-out-of-bounds in copy_data+0xf3/0x2e0 drivers/char/hw_random/virtio-rng.c:68
-> Read of size 64 at addr ffff88801a7a1580 by task syz-executor989/6542
-> 
 
-I'm not able to reproduce the problem with next-20211026 and the C reproducer.
+On 9/30/21 8:33 AM, Jan Beulich wrote:
+> The observed (by the human eye) performance difference of early boot
+> between native and PV-on-Xen was just too large to not look into. As
+> it turns out, gaining performance back wasn't all that difficult.
+>
+> While the series (re)introduces a small number of PTWR emulations on
+> the boot path (from phys_pte_init()), there has been a much larger
+> number of them post-boot. Hence I think if this was of concern, the
+> post-boot instances would want eliminating first.
+>
+> Some of the later changes aren'r directly related to the main goal of
+> the series; these address aspects noticed while doing the investigation.
+>
+> 1: streamline set_pte_mfn()
+> 2: restore (fix) xen_set_pte_init() behavior
+> 3: adjust xen_set_fixmap()
+> 4: adjust handling of the L3 user vsyscall special page table
+> 5: there's no highmem anymore in PV mode
+> 6: restrict PV Dom0 identity mapping
 
-And reviewing the code in copy_data() I don't see any issue.
 
-Is it possible to know what it the VM configuration used to test it?
 
-Thanks,
-Laurent
+Applied to for-linus-5.16
+
+
+-boris
 
