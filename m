@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD7043C8DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6075143C8E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239913AbhJ0LyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:54:06 -0400
-Received: from mga06.intel.com ([134.134.136.31]:33800 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234994AbhJ0LyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:54:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="290977338"
-X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
-   d="scan'208";a="290977338"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 04:51:39 -0700
-X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
-   d="scan'208";a="497831225"
-Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 04:51:34 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Dan =?utf-8?Q?Hor=C3=A1k?= <dan@danny.cz>,
-        "Justin M . Forbes" <jforbes@fedoraproject.org>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm: Make DRM_FBDEV_EMULATION deps more robust to fix linker errors
-In-Reply-To: <20211027072044.4105113-1-javierm@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211027072044.4105113-1-javierm@redhat.com>
-Date:   Wed, 27 Oct 2021 14:51:31 +0300
-Message-ID: <875ytiit30.fsf@intel.com>
+        id S239997AbhJ0Lyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:54:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45224 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234994AbhJ0Lyi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:54:38 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5C9D11FD45;
+        Wed, 27 Oct 2021 11:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635335532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OZA4QayrfGUEeoPIVBit6eRMtFYI12/UjxAdPE6yC4Q=;
+        b=oD/xKTG2Diq7WbDJERf2kL7fCfdfrx9a7op0gsVHPtqYIx3AofMr3/+k7yiSuTrQrdPNDG
+        MZ6BwxZAMJTI38oFJvfjLlEXW5uQftuY0+T/WXLpg49i4TMU2Jwij2TzBgm9NV2ocPi+ol
+        RRmnn8FDOmAAzMPsXWQ+eSuIDYreP1I=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EA183A3B87;
+        Wed, 27 Oct 2021 11:52:11 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 13:52:11 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm: have kswapd only reclaiming use min protection
+ on memcg
+Message-ID: <YXk9a3X62vNTyvGE@dhcp22.suse.cz>
+References: <1635318110-1905-1-git-send-email-huangzhaoyang@gmail.com>
+ <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz>
+ <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
+ <YXkNJjD4axYlmqQ5@dhcp22.suse.cz>
+ <CAGWkznHrZ=Y3kG5j5aYdTV2294QGrQbM6251zcdGphzCGUP6dw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznHrZ=Y3kG5j5aYdTV2294QGrQbM6251zcdGphzCGUP6dw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
-> Enabling the CONFIG_DRM_FBDEV_EMULATION Kconfig symbol can lead to linker
-> errors, if CONFIG_DRM_KMS_HELPER is built-in but CONFIG_FB as a module.
->
-> Because in that case the drm_kms_helper.o object will have references to
-> symbols that are defined in the fb.ko module, i.e:
->
->   $ make bzImage modules
->     DESCEND objtool
->     CALL    scripts/atomic/check-atomics.sh
->     CALL    scripts/checksyscalls.sh
->     CHK     include/generated/compile.h
->     GEN     .version
->     CHK     include/generated/compile.h
->     UPD     include/generated/compile.h
->     CC      init/version.o
->     AR      init/built-in.a
->     LD      vmlinux.o
->     MODPOST vmlinux.symvers
->     MODINFO modules.builtin.modinfo
->     GEN     modules.builtin
->     LD      .tmp_vmlinux.kallsyms1
->   ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_resume_worker':
->   drm_fb_helper.c:(.text+0x2a0): undefined reference to `fb_set_suspend'
->   ...
->
-> To prevent this, make following changes to the config option dependencies:
->
->   * Depend on FB && !(DRM_KMS_HELPER=y && FB=m), to avoid invalid configs.
->   * Depend on DRM_KMS_HELPER instead selecting it, to avoid circular deps.
->
-> Reported-by: Justin M. Forbes <jforbes@fedoraproject.org>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+On Wed 27-10-21 17:19:56, Zhaoyang Huang wrote:
+> On Wed, Oct 27, 2021 at 4:26 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 27-10-21 15:46:19, Zhaoyang Huang wrote:
+> > > On Wed, Oct 27, 2021 at 3:20 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Wed 27-10-21 15:01:50, Huangzhaoyang wrote:
+> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > >
+> > > > > For the kswapd only reclaiming, there is no chance to try again on
+> > > > > this group while direct reclaim has. fix it by judging gfp flag.
+> > > >
+> > > > There is no problem description (same as in your last submissions. Have
+> > > > you looked at the patch submission documentation as recommended
+> > > > previously?).
+> > > >
+> > > > Also this patch doesn't make any sense. Both direct reclaim and kswapd
+> > > > use a gfp mask which contains __GFP_DIRECT_RECLAIM (see balance_pgdat
+> > > > for the kswapd part)..
+> > > ok, but how does the reclaiming try with memcg's min protection on the
+> > > alloc without __GFP_DIRECT_RECLAIM?
+> >
+> > I do not follow. There is no need to protect memcg if the allocation
+> > request doesn't have __GFP_DIRECT_RECLAIM because that would fail the
+> > charge if a hard limit is reached, see try_charge_memcg and
+> > gfpflags_allow_blocking check.
+> >
+> > Background reclaim, on the other hand never breaches reclaim protection.
+> >
+> > What is the actual problem you want to solve?
+> Imagine there is an allocation with gfp_mask & ~GFP_DIRECT_RECLAIM and
+> all processes are under cgroups. Kswapd is the only hope here which
+> however has a low efficiency of get_scan_count. I would like to have
+> kswapd work as direct reclaim in 2nd round which will have
+> protection=memory.min.
 
-Please see [1]. I think it's a big mess. I don't think this is the fix
-either.
-
-BR,
-Jani.
-
-[1] https://lore.kernel.org/r/878ryeit9i.fsf@intel.com
-
-> ---
->
-> This fixes linker errors found when building the Fedora kernel package
-> for the s390x architecture:
->
-> https://kojipkgs.fedoraproject.org//work/tasks/9849/77859849/build.log
->
->  drivers/gpu/drm/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index cea777ae7fb9..9a21e57b4a0d 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -103,8 +103,8 @@ config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
->  config DRM_FBDEV_EMULATION
->  	bool "Enable legacy fbdev support for your modesetting driver"
->  	depends on DRM
-> -	depends on FB
-> -	select DRM_KMS_HELPER
-> +	depends on FB && !(DRM_KMS_HELPER=y && FB=m)
-> +	depends on DRM_KMS_HELPER
->  	select FB_CFB_FILLRECT
->  	select FB_CFB_COPYAREA
->  	select FB_CFB_IMAGEBLIT
+Do you have an example where this would be a practical problem? Atomic
+allocations should be rather rare.
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Michal Hocko
+SUSE Labs
