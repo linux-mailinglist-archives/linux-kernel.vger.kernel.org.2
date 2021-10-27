@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B5843D155
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6425843D159
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240492AbhJ0TCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235616AbhJ0TCe (ORCPT
+        id S240563AbhJ0TDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:03:17 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:35718 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240523AbhJ0TDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:02:34 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268B0C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 12:00:08 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id e144so4991957iof.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 12:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jXKCRvYW+G/U3lCt5Bb406ecBZvxMrSVY/Zc9yEqb98=;
-        b=JzW/KRnOs36+qiUImtSUHxPTHogPFxD/HyvIaGOpbyqDP6UWSNjZESlNnNXdG7qc5r
-         AOJvgF/J0F2v8NdyUM12Ek/0kcHtSCoWu+9psXlZgl3FfrIYxAMmmSxStB4ilq2L8ikc
-         0DCCVMyvRYI4Mx9kTv2gUUgUORl3/jSUAhEPAxbhKIaUnkBSBA3ERg6Uu7V4l/TcebPs
-         CMMTrLHzggpXA+tyFPDCrLNZwkr8hPpltgN+vF5CZaJpU+K5YILQR8VuxCGyHQw0X8Z2
-         fY48qUx1qErXd7uz1QwwT3ML5p10B2ZC9yx1KqX2egWksVNV/+GpsF/R+pvj0HSkc081
-         h2nQ==
+        Wed, 27 Oct 2021 15:03:11 -0400
+Received: by mail-ot1-f44.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so5057077ott.2;
+        Wed, 27 Oct 2021 12:00:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jXKCRvYW+G/U3lCt5Bb406ecBZvxMrSVY/Zc9yEqb98=;
-        b=1djpz7auh909jgmtHBs0mZOER/1mSlMJ3wPDUZc6XY0w4W8NLH4bj6V/GJOb53l1Jq
-         gfCPAUBxqRqt2HbmLqFbC5GSmTMdo8v4JdX2apEgbZK0skpDojq6HM/dwmymdel7FiSW
-         oogwnUOm6FvPObSX+l7ISXMahJx/ILWW8riBnJQ53Oa2Y1dzktjXed9Q6u/c4M+7vvAc
-         AJfNmXl7QjUPzS1N+aJ04fpIjN8uDR13w3HVBkeB/76FL4CGQenJ/a/uH64DOyTgwDXA
-         /L5Psn2eceJDG/mvT3CgQKxcFML/85k/zLO0LaLKA2+eUXzeLOqRkvtPkpGAXMY+PlKN
-         IcWw==
-X-Gm-Message-State: AOAM531MeajUwtUYlo4YRfB05sAVMxkEDA+Ihx8XRckzPe9dcqwAkfND
-        dfB8isyfO8n+nfC4AXDZ8Y1M7rBanNfdN/CEA5VmXA==
-X-Google-Smtp-Source: ABdhPJxLBNMYnPhlvTfJ3h65LeVfM2OrbYYAMCXnwzpGjtBk+VleJKFtur6a+yaGJ4iS8fBHLaAPxgfPIb/Ybswfaik=
-X-Received: by 2002:a02:a907:: with SMTP id n7mr15849878jam.96.1635361207311;
- Wed, 27 Oct 2021 12:00:07 -0700 (PDT)
+        bh=twYyXM54JZtknY6kSlEQB2YIbHREslZxx1VWjQb9rKA=;
+        b=K5USj36N/xFW8pCr+3ry3/T7CI2ZI5jI/yDViD6+veeV7vRxI8d0iW5al0Wjnn/KfH
+         rdB25lF2DZ5jbBvgAoFTPEdHCArGVS6LAJEf44lfd0uNihmC4OLr9RwesfFSvjhJwvHC
+         89yxS9S0FSWmhkOFFfZZtAJFZ68hYbgshebuhH9w5iHk9h2y8d6cAbOFpdoIndoO9FBJ
+         bqyo0u5XJNf6S22yAiffMFoKCbqtscL551Ts9v3QOsn1a9KTrlqjRKQdtt8S1FdgMglQ
+         IhSck47GjHkersVHMbi5Sso2TeK9f4IJkhz9W/Yex9F4avDa+PeRsYNZ6yYsSR9PYfa1
+         fSvw==
+X-Gm-Message-State: AOAM533nYQHOWGxaotOAm1NoCPF2gKqsjjnB1fxgMmFtNRcWHZsArsBs
+        RXenxJF+yaU4fUWzbABrmzVFYAp52gy9mZwc0gE=
+X-Google-Smtp-Source: ABdhPJxwyoNvTjXEvWSwEzQkvS3twTW+fZkOH2aK+Tp8JKa7djpi/yo4glrydaOg6ed57ahTO8qmsT3UR7s8ZIDHGmY=
+X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr25814378otd.16.1635361244953;
+ Wed, 27 Oct 2021 12:00:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211027013702.2039566-1-davidgow@google.com> <20211027013702.2039566-3-davidgow@google.com>
-In-Reply-To: <20211027013702.2039566-3-davidgow@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 27 Oct 2021 11:59:55 -0700
-Message-ID: <CAGS_qxqbJd+8U4TQCusmcNND0vdUCF2EJqBqXhtx3NBt4KAAGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] kunit: Don't crash if no parameters are generated
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20211025070155.2995-1-chunfeng.yun@mediatek.com>
+ <CAJZ5v0gb6vN9kHeQbgjRQXvOCNaFK8ur7bLDeAVjDqdT2=a+-g@mail.gmail.com> <fba3246fbc600f06eb40e90283c1cd51bc259804.camel@mediatek.com>
+In-Reply-To: <fba3246fbc600f06eb40e90283c1cd51bc259804.camel@mediatek.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 27 Oct 2021 21:00:34 +0200
+Message-ID: <CAJZ5v0hnrr+ZidUMkN837utcKc6otmqaZ+uTX_xMukTUrdHLDQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] PM / wakeirq: support enabling wake-up irq after
+ runtime_suspend called
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 6:37 PM David Gow <davidgow@google.com> wrote:
+On Wed, Oct 27, 2021 at 11:34 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
 >
-> It's possible that a parameterised test could end up with zero
-> parameters. At the moment, the test function will nevertheless be called
-> with NULL as the parameter. Instead, don't try to run the test code, and
-> just mark the test as SKIPped.
->
-> Reported-by: Daniel Latypov <dlatypov@google.com>
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
->  lib/kunit/test.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 3bd741e50a2d..e028d98e4f5b 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -500,7 +500,10 @@ int kunit_run_tests(struct kunit_suite *suite)
->         kunit_print_subtest_start(suite);
->
->         kunit_suite_for_each_test_case(suite, test_case) {
-> -               struct kunit test = { .param_value = NULL, .param_index = 0 };
-> +               /* The initial param value is nonzero, as we want
-> +                * non-parametrised tests to run once.
-> +                */
-> +               struct kunit test = { .param_value = (void *)-1, .param_index = 0 };
+> On Tue, 2021-10-26 at 17:39 +0200, Rafael J. Wysocki wrote:
+> > On Mon, Oct 25, 2021 at 9:02 AM Chunfeng Yun <
+> > chunfeng.yun@mediatek.com> wrote:
+> > >
+> > > When the dedicated wake IRQ is level trigger, and it uses the
+> > > device's low-power status as the wakeup source, that means if the
+> > > device is not in low-power state, the wake IRQ will be triggered
+> > > if enabled; For this case, need enable the wake IRQ after running
+> > > the device's ->runtime_suspend() which make it enter low-power
+> > > state.
+> > >
+> > > e.g.
+> > > Assume the wake IRQ is a low level trigger type, and the wakeup
+> > > signal comes from the low-power status of the device.
+> > > The wakeup signal is low level at running time (0), and becomes
+> > > high level when the device enters low-power state (runtime_suspend
+> > > (1) is called), a wakeup event at (2) make the device exit low-
+> > > power
+> > > state, then the wakeup signal also becomes low level.
+> > >
+> > >                 ------------------
+> > >                |           ^     ^|
+> > > ----------------           |     | --------------
+> > >  |<---(0)--->|<--(1)--|   (3)   (2)    (4)
+> > >
+> > > if enable the wake IRQ before running runtime_suspend during (0),
+> > > a wake IRQ will arise, it causes resume immediately;
+> > > it works if enable wake IRQ ( e.g. at (3) or (4)) after running
+> > > ->runtime_suspend().
+> > >
+> > > This patch introduces a new status WAKE_IRQ_DEDICATED_REVERSE to
+> > > optionally support enabling wake IRQ after running
+> > > ->runtime_suspend().
+> > >
+> > > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> >
+> > I don't really have anything to add regarding the code.
+> >
+> > The kerneldoc comments could be improved, but I can take care of this
+> > when applying the patch.
+> Ok, thanks
+> >
+> > Please collect ACKs for the remaining 2 patches in the series and I
+> > will pick up all three.
+> The files (mtu3_plat.c, xhci-mtk.c) modified by other 2 patches are
+> maintained by myself, please pick up them, thanks a lot.
 
-(Not a strong preference)
-
-Hmm, I'd slightly prefer we don't set a dummy value of -1 for this.
-I personally think something like this is a bit less subtle:
-
-/* Run non-parameterised tests once */
-while (!test_case->generate_param || test.param_value) {
-
-  if (!test_case->generate_param) break;
-}
-
-Alternatively, we don't need to share the loop
-
-if (!test_case->generate_param) {
-  kunit_run_case_catch_errors(suite, test_case, &test);
-  kunit_update_stats(&param_stats, test.status);
-} else while (test_param.value) {
-   kunit_run_case_catch_errors(suite, test_case, &test);
-   kunit_update_stats(&param_stats, test.status);
-   /* print subtest and advance next param */
-}
-
-}
-
-
->                 struct kunit_result_stats param_stats = { 0 };
->                 test_case->status = KUNIT_SKIPPED;
->
-> @@ -510,7 +513,7 @@ int kunit_run_tests(struct kunit_suite *suite)
->                         test.param_value = test_case->generate_params(NULL, param_desc);
->                 }
->
-> -               do {
-> +               while (test.param_value) {
->                         kunit_run_case_catch_errors(suite, test_case, &test);
->
->                         if (test_case->generate_params) {
-> @@ -530,11 +533,12 @@ int kunit_run_tests(struct kunit_suite *suite)
->                                 param_desc[0] = '\0';
->                                 test.param_value = test_case->generate_params(test.param_value, param_desc);
->                                 test.param_index++;
-> -                       }
-> +                       } else
-> +                               test.param_value = NULL;
->
->                         kunit_update_stats(&param_stats, test.status);
->
-> -               } while (test.param_value);
-> +               }
->
->                 kunit_print_test_stats(&test, param_stats);
->
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
+OK, applied as 5.16 material, thanks!
