@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B831A43CA04
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612D043CA07
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242011AbhJ0MtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
+        id S242021AbhJ0Mtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241986AbhJ0MtL (ORCPT
+        with ESMTP id S235726AbhJ0Mtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:49:11 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA71C061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:46:46 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 82-20020a1c0055000000b0032ccc3ad5c1so4223448wma.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MpaJyX5zCorSGoJdZD4lCOmC8oZ3HzkpJbp1UDR5foE=;
-        b=Dju3GL58M2PKH/L0/11HSg8MvprD+864BIxCnhj9V8CrNHMVTfxPh2/mk9i9bD85iQ
-         5GTSVDg8d5QTOiwNavha2AfB1oVD5hDwo0uScRqq5h6qROjQCvfO6Yjs78Lgdpoo7pj7
-         vXpHGx4N/qyWTequyJJJfjQIXCbQv5i8Yc6KS1AVXPVdT62kUkLsAnyj34fwaQlEZ8kz
-         q/chbg+9P2h9byKvCgnM7rm5xviv2bqqJPA8mBNvBV7T2H0PYGIPiT0zlgBPQeJBYzjq
-         /9wBl4ygPVO/ht78eB6rPRNjQuK/YwNufA2HXrz1bRkW62YBI19gXTCc+fe9wIVtFxov
-         tKcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=MpaJyX5zCorSGoJdZD4lCOmC8oZ3HzkpJbp1UDR5foE=;
-        b=id22la9Iii6t+ms6esqlm8XX83y7NUUINi/f+PrfDGKu2MSd0mpqFy2w4vSO3ZMBmv
-         2655F7OB7mY81Zux6YT98bTZ2igaYzc5mrO9Q8f8J30NofS8N83Pv7ulei6QPaD050Cv
-         G1ws+6XfWWh6QqzoEhDw0eeoCUkKhRN1BTOO8J7x9dIeIE6tz5U0duqjEiTY6pdDtLLL
-         rfdmKn5ODJqnKa8TWOl4XXdjDt+LviHgqiVgKqQ1Ug40MWqasTjf7yWI4ef6URqONQir
-         St37Y2X0unnJs6XFcK3OgYIR/bc+My1HA2KkGd5NWnmIs66lVZ9Hjo/32o9k0bddd5vi
-         2wxA==
-X-Gm-Message-State: AOAM530Vg4GdwPMfJAwZpuI1/eYoULGiu4quKNJl4kmBtCyVCr/+7X3I
-        y6WAbxx9GEJM3VwjvbELk8iJXvbrY6WwwA==
-X-Google-Smtp-Source: ABdhPJyiQ/EmFf+jGp17AcccZjBNXoKSkOzJQ4YBkjnhw0iz/D9HlEXnnj8X7t7V+Qp/nBD3AYIYrA==
-X-Received: by 2002:a05:600c:19d3:: with SMTP id u19mr5315391wmq.164.1635338804779;
-        Wed, 27 Oct 2021 05:46:44 -0700 (PDT)
-Received: from [172.20.10.7] ([37.166.181.245])
-        by smtp.gmail.com with ESMTPSA id z6sm4185332wmp.1.2021.10.27.05.46.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 05:46:44 -0700 (PDT)
-Subject: Re: [PATCH v6 8/9] drm/omap: add plane_atomic_print_state support
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Benoit Parrot <bparrot@ti.com>
-References: <20211018142842.2511200-1-narmstrong@baylibre.com>
- <20211018142842.2511200-9-narmstrong@baylibre.com>
- <70a29d4d-eaab-5162-58b7-df9d9d3e7a9b@ideasonboard.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <0423c635-7121-b603-a52c-c68dde4c8c30@baylibre.com>
-Date:   Wed, 27 Oct 2021 14:46:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 27 Oct 2021 08:49:40 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015CCC061570;
+        Wed, 27 Oct 2021 05:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=07scw71Qfs4SI4ir9McWtaQKp2wLsiaRGVZmK2PzJ8k=; b=K7i9raGDP7DMyO3RzzHOftf1y7
+        tfwaocRSisRWhzUVRSLRUdSlMyJEP9lCWDhEGEvWHzDqW68jgKutVNhzQFXv6nxMbI/bxGqCI9bZg
+        xRZxDbETguyVyOxmQBD/CbAychhPQf9HRTwrWky+5erfju+jTp1JPBlConAJlBcFUQzJngYIjyWNJ
+        aPbzg+buloRgfGWGUWUonZZeJXMGNZBJFYThPJsxa8vghmoi+M2MGC3LEtCEcS3vRbbXznJB59ot0
+        vSAyLdKZAZRI17yQCnLx2Ht+66HkapompInFKqzLGI0QOqATCn6iAf6PIQfszE7kGWMvmRHNZDPZS
+        HbMMmLyg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfiKQ-00CYVg-IL; Wed, 27 Oct 2021 12:46:50 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 695C298629C; Wed, 27 Oct 2021 14:46:49 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 14:46:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, ardb@kernel.org
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <20211027124649.GJ174703@worktop.programming.kicks-ass.net>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-In-Reply-To: <70a29d4d-eaab-5162-58b7-df9d9d3e7a9b@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027120515.GC54628@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2021 14:23, Tomi Valkeinen wrote:
-> On 18/10/2021 17:28, Neil Armstrong wrote:
->> From: Benoit Parrot <bparrot@ti.com>
->>
->> Now that we added specific item to our subclassed drm_plane_state
->> we can add omap_plane_atomic_print_state() helper to dump out our own
->> driver specific plane state.
->>
->> Signed-off-by: Benoit Parrot <bparrot@ti.com>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>   drivers/gpu/drm/omapdrm/omap_plane.c | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/omapdrm/omap_plane.c
->> index ce5ed45401fb..5001c8354e4f 100644
->> --- a/drivers/gpu/drm/omapdrm/omap_plane.c
->> +++ b/drivers/gpu/drm/omapdrm/omap_plane.c
->> @@ -348,6 +348,21 @@ omap_plane_atomic_duplicate_state(struct drm_plane *plane)
->>       return &state->base;
->>   }
->>   +static void omap_plane_atomic_print_state(struct drm_printer *p,
->> +                      const struct drm_plane_state *state)
->> +{
->> +    struct omap_plane_state *omap_state = to_omap_plane_state(state);
->> +
->> +    drm_printf(p, "\toverlay=%s\n", omap_state->overlay ?
->> +                    omap_state->overlay->name : "(null)");
->> +    if (omap_state->overlay) {
->> +        drm_printf(p, "\t\tidx=%d\n", omap_state->overlay->idx);
->> +        drm_printf(p, "\t\toverlay_id=%d\n",
->> +               omap_state->overlay->id);
->> +        drm_printf(p, "\t\tcaps=0x%x\n", omap_state->overlay->caps);
->> +    }
->> +}
+On Wed, Oct 27, 2021 at 01:05:15PM +0100, Mark Rutland wrote:
+> On Tue, Oct 26, 2021 at 10:16:22PM +0200, Peter Zijlstra wrote:
+> > On Wed, Oct 13, 2021 at 11:16:43AM -0700, Sami Tolvanen wrote:
+> > > This series adds support for Clang's Control-Flow Integrity (CFI)
+> > > checking to x86_64. With CFI, the compiler injects a runtime
+> > > check before each indirect function call to ensure the target is
+> > > a valid function with the correct static type. This restricts
+> > > possible call targets and makes it more difficult for an attacker
+> > > to exploit bugs that allow the modification of stored function
+> > > pointers. For more details, see:
+> > > 
+> > >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> > 
+> > So, if I understand this right, the compiler emits, for every function
+> > two things: 1) the actual funcion and 2) a jump-table entry.
+> > 
+> > Then, every time the address of a function is taken, 2) is given instead
+> > of the expected 1), right?
 > 
-> This prints:
-> 
->         overlay=gfx
->                 idx=0
->                 overlay_id=0
->                 caps=0x3e
-> 
-> I'm not sure if some of these details are needed. The name ("gfx") and overlay_id refer to the same thing, and while idx is in theory a different value, in practice it's always the same as overlay_id. And even if it was a different number, I think idx is kind of irrelevant, isn't it?
-> 
-> caps can be figured out from the name of the overlay, but perhaps it doesn't hurt to print them here. Then again, if none of the other debug prints show the cap values (e.g. "requires cap 0x4), maybe printing the caps value is not really useful here.
-> 
-> Maybe this could be just a single line, say:
-> 
-> overlay=gfx
-> 
-> or if caps is useful:
-> 
-> overlay=gfx (caps=0x3e)
-> 
-> What do you think?
+> Yes, and we had to bodge around this with function_nocfi() to get the
+> actual function address.
 
-I'm ok with that.
+The patch set under consideration seems to have forgotten to provide one
+for x86 :/
 
-Thanks,
-Neil
+> Really there should be a compiler intrinsic or attribute for this, given
+> the compiler has all the releveant information available. On arm64 we
+> had to us inine asm to generate the addres...
 
-> 
->  Tomi
+Agreed, this *really* shouldn't be an arch asm hack trying to undo
+something the compiler did.
 
