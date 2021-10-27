@@ -2,140 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEFC43C7B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EC043C7BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241457AbhJ0KfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:35:04 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:59162 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241452AbhJ0KfC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:35:02 -0400
-Received: from [79.2.93.196] (port=39116 helo=[192.168.101.73])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mfgEV-00G4kG-C9; Wed, 27 Oct 2021 12:32:35 +0200
-Subject: Re: [PATCH v2 6/9] mfd: max77714: Add driver for Maxim MAX77714 PMIC
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20211019145919.7327-1-luca@lucaceresoli.net>
- <20211019145919.7327-7-luca@lucaceresoli.net> <YXG060evUw8rnR3O@google.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <3520ff3d-1ec0-5500-7fee-538afa25d413@lucaceresoli.net>
-Date:   Wed, 27 Oct 2021 12:32:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S241462AbhJ0Kfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:35:55 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39239 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232538AbhJ0Kfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 06:35:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217302551"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="217302551"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:33:28 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="494749377"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:33:21 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mfgEu-001R9N-7R;
+        Wed, 27 Oct 2021 13:33:00 +0300
+Date:   Wed, 27 Oct 2021 13:32:59 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 06/16] clk: starfive: Add JH7100 clock generator driver
+Message-ID: <YXkq27y50bVTcwhF@smile.fi.intel.com>
+References: <20211021174223.43310-1-kernel@esmil.dk>
+ <20211021174223.43310-7-kernel@esmil.dk>
+ <163527959276.15791.14765586510805526101@swboyd.mtv.corp.google.com>
+ <CANBLGcyYb3yNit=GCy4w2zf2=CRtCJP7aCisR8=9n1f7okfCSg@mail.gmail.com>
+ <163529604399.15791.378104318036812951@swboyd.mtv.corp.google.com>
+ <CANBLGcx0Udhaa3S+uSffFcB_KFHXQiMOvn8Fd7ogj+RFxQNAfQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YXG060evUw8rnR3O@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANBLGcx0Udhaa3S+uSffFcB_KFHXQiMOvn8Fd7ogj+RFxQNAfQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Wed, Oct 27, 2021 at 12:24:07PM +0200, Emil Renner Berthing wrote:
+> On Wed, 27 Oct 2021 at 02:54, Stephen Boyd <sboyd@kernel.org> wrote:
+> > Quoting Emil Renner Berthing (2021-10-26 15:35:36)
+> > > On Tue, 26 Oct 2021 at 22:20, Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > Quoting Emil Renner Berthing (2021-10-21 10:42:13)
 
-On 21/10/21 20:43, Lee Jones wrote:
-> On Tue, 19 Oct 2021, Luca Ceresoli wrote:
-[...]
->> diff --git a/drivers/mfd/max77714.c b/drivers/mfd/max77714.c
->> new file mode 100644
->> index 000000000000..4b49d16fe199
->> --- /dev/null
->> +++ b/drivers/mfd/max77714.c
->> @@ -0,0 +1,165 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Maxim MAX77714 MFD Driver
->> + *
->> + * Copyright (C) 2021 Luca Ceresoli
->> + * Author: Luca Ceresoli <luca@lucaceresoli.net>
->> + */
->> +
->> +#include <linux/i2c.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/mfd/core.h>
->> +#include <linux/mfd/max77714.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/regmap.h>
->> +
->> +struct max77714 {
->> +	struct device *dev;
->> +	struct regmap *regmap;
->> +	struct regmap_irq_chip_data *irq_data;
+...
+
+> > > > > +static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
+> > > >
+> > > > Drop __init as this can be called after kernel init is over.
+> > >
+> > > Oh interesting, I'd like to know when that can happen. The comment for
+> > > the builtin_platform_driver macro says it's just a wrapper for
+> >
+> > I thought this was using module_platform_driver() macro?
+> >
+> > > device_initcall.
+> > >
+> > > Won't we then need to remove all the __initconst tags too since the
+> > > probe function walks through jh7100_clk_data which eventually
+> > > references all __initconst data?
+> >
+> > Yes. If it's builtin_platform_driver() it can't be a module/tristate
+> > Kconfig, in which case all the init markings can stay.
 > 
-> Is this used outside of .probe()?
-
-No.
-
->> +/*
->> + * MAX77714 initially uses the internal, low precision oscillator. Enable
->> + * the external oscillator by setting the XOSC_RETRY bit. If the external
->> + * oscillator is not OK (probably not installed) this has no effect.
->> + */
->> +static int max77714_setup_xosc(struct max77714 *chip)
+> Yes, it's already bool in the Kconfig file. After looking into this I
+> think it's better to do like the rockchip drivers and use
+> builtin_platform_driver_probe to make sure the probe function only
+> called at kernel init time:
 > 
-> May as well just pass 'dev' and 'regmap' to this function and do away
-> with the superfluous struct along with all of it's memory management
-> handling requirements.
-
-Good idea!
-
->> +{
->> +	/* Internal Crystal Load Capacitance, indexed by value of 32KLOAD bits */
->> +	static const unsigned int load_cap[4] = {0, 10, 12, 22};
+> static struct platform_driver clk_starfive_jh7100_driver = {
+>         .driver = {
+>                 .name = "clk-starfive-jh7100",
+>                 .of_match_table = clk_starfive_jh7100_match,
+>                 .suppress_bind_attrs = true,
+>         },
+> };
+> builtin_platform_driver_probe(clk_starfive_jh7100_driver,
+> clk_starfive_jh7100_probe);
 > 
-> Probably best to define these magic numbers.
+> @Andy: is the supress_bind_attrs what you were asking about?
 
-Since these numbers do not appear anywhere else I don't find added value in:
+Clever chap! :-)
+Yes, that's what I have in mind.
 
-  #define MAX77714_LOAD_CAP_0   0
-  #define MAX77714_LOAD_CAP_10  10
-  #define MAX77714_LOAD_CAP_12  12
-  #define MAX77714_LOAD_CAP_22  22
-  [...]
-  static const unsigned int load_cap[4] = {
-      MAX77714_LOAD_CAP_0,
-      MAX77714_LOAD_CAP_10,
-      MAX77714_LOAD_CAP_12,
-      MAX77714_LOAD_CAP_12,
-  };
+...
 
-besides adding lots of lines and lots of "MAX77714_LOAD_CAP_". Even
-worse, there is potential for copy-paste errors -- can you spot it? ;)
-Finally, consider this is not even global but local to a small function.
+> > If it's never going to be a module then don't add any module_* things.
+> 
+> So does that just mean no MODULE_DEVICE_TABLE or should I also remove
+> MODULE_DESCRIPTION, MODULE_AUTHOR and MODULE_LICENSE? I'm just double
+> checking because the rockchip drivers seem to have MODULE_DESCRIPTION
+> and MODULE_LICENSE lines.
 
-But I'd rather add the unit ("pF") to either the comment line of the
-array name (load_cap -> load_cap_pf) for clarity. Would that be OK for you?
+You may comment them out. Convert them to comments or so.
+But in general yes, they are no-ops in such case.
 
-Apart from this coding style topic I'm OK with all the other
-improvements you proposed to this patch, all of them will be in v3.
-
-Thank you for the detailed review!
 -- 
-Luca
+With Best Regards,
+Andy Shevchenko
+
+
