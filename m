@@ -2,162 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C10243C46C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3762B43C470
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240669AbhJ0H4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:56:46 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:51590
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239074AbhJ0H4p (ORCPT
+        id S240676AbhJ0H50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238916AbhJ0H5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:56:45 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 72B9F3F1A4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:54:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635321259;
-        bh=jrIERodREqehysnV6gsM61G1ahaaesQ+KVjNvRfOpIo=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=ep0T11q9uoj0kUewI9HjgYetNfyl4YiPWXnK/ZGdnA+OCWOJuCtnOJk0uuM8/nYqi
-         C7VwlyIAXVxhgdF7o+t9g7V2CNjU7XlWXup8zOmSzrNDyhAaruaMqBj35RI8NZbzIN
-         mmy28C/gL8xRhwXPvkeFEGm2NSp6M/R6KLOW5vMVqKN3CYkFDMSR5xWtzAK5SGG+qn
-         9hGfsBd4RDZ66KKRqq/BV/VZkOHGNXAWrOuaPGOs4CEUxA0xMwKdoQHfpAmhUHSHwB
-         /8VNfePfaEVbi2zZyhP85YqRUfPUndmZ9DNTy+IiYf60r5vDI503Tx+5BapNBtLZK+
-         BDtKzvHDkNJvA==
-Received: by mail-wr1-f70.google.com with SMTP id b8-20020adff248000000b00171bceb5139so312471wrp.18
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:54:19 -0700 (PDT)
+        Wed, 27 Oct 2021 03:57:23 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205DEC061570;
+        Wed, 27 Oct 2021 00:54:58 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id u12so1445511pjy.1;
+        Wed, 27 Oct 2021 00:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EpWj0oN2nhXKNgQMFgyfpaonwjc0rOLvMyT83iInyoc=;
+        b=lJhEjucYFsFAkFkgfa5YPL6aglbDkwW50bxLyYX5S28yMY3MVQVStg4FkjPs8Zvi4W
+         dwglVZmC1LgnKzNn43CbryvHrLXB58qiWAkJ4llx7csvn2KzjL9lkbZXixrVUnwYFhIr
+         u2zfNoOYHQIVOxyM7HTVdeXxmQKokldxziNTVpy7cjZ6OCJ4RKGtlrsoOe925eCjb9nH
+         sC6QUvQCq/q7xb2MlAszrXwQ2jWj8xmMAz7gGtQbTBpHJ5gqO07235NN27h0EbjvfNqH
+         n6uUaC2T9RR/GlqSoS7LimOzMsvgGsx2fkMrlDhS4GEZlaQZXC7dtG8OuC70dgZk633T
+         syaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=jrIERodREqehysnV6gsM61G1ahaaesQ+KVjNvRfOpIo=;
-        b=ir2CJjuL555GYFMYZ80AXcYrCiQQgppAHF5pdA6sroV9qLhoYrGK5EpORQsigppQPp
-         0Nh8w3pho8qcsVWeI1NEUo2UIWwZyPcHCrqymxuNC59HUjo+jCmE+55SxPrRPJvSTU7k
-         I3NiXP56Sm9GBsn6oAU8jBD6IEYiDvxS6jdJW5i45pFseWBjKQho5vYLP6+dddu89+Ga
-         PAiLtfWTyRji0TBLISAws3J4+ThKH9exC+/tUBFupwh6uxXpUatKw/PhNdXnkx+L70P1
-         gEoH6FL0mQ20DhwvIjhT5KF+KXGaeld752P785IsaE8GrbeY7RK5yNxCYb6/B0a156FX
-         vDKQ==
-X-Gm-Message-State: AOAM531PFP7VQhJieglqX3QncrnLhtrQrUUpcykXtzwRfmAhPao8vz2o
-        dima3siYsCzWMG823D5N8ZvMeCZDEQk47vLOVKR9kDcByG7UMw524pWT/IIyLGheRfWpiyLBE2b
-        1mxKI5hOzTHK0Vk1rprKX/4J3Hh4uhLCDMrgbfkpkvg==
-X-Received: by 2002:a7b:cd16:: with SMTP id f22mr4132872wmj.42.1635321258929;
-        Wed, 27 Oct 2021 00:54:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy6qDUvnuv6opusaRgyH+GKdjmFxmU7S/Ic0X3KxUzeyS5RGOxCGIbPbcPVKjnEkiGVgKpkog==
-X-Received: by 2002:a7b:cd16:: with SMTP id f22mr4132838wmj.42.1635321258655;
-        Wed, 27 Oct 2021 00:54:18 -0700 (PDT)
-Received: from [192.168.123.55] (ip-88-152-144-157.hsi03.unitymediagroup.de. [88.152.144.157])
-        by smtp.gmail.com with ESMTPSA id s11sm13060053wrt.60.2021.10.27.00.54.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 00:54:18 -0700 (PDT)
-Message-ID: <7b8233f4-b7d7-7142-3c09-4d5c3e06d287@canonical.com>
-Date:   Wed, 27 Oct 2021 09:54:16 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EpWj0oN2nhXKNgQMFgyfpaonwjc0rOLvMyT83iInyoc=;
+        b=ylJld/hpfVP/0xOXENEqzTHs96TQndz57s16VaATQ6ZZCK80NYXqWcu2eBo8rdhwBL
+         1wKBS+i0aXBllin6ygYtqFHKYTQXdMaBCOumKU0UZDbzU1d0F9q3S2PYttPhSXNTPwjU
+         47lvBliyZJcsdVG+2JpWGXj1ikrSNrGB3S660MNQFSaN18rYL0wBgrjSoL593KSQgc6u
+         Xg0xWiJZwCNH7CiiaCeqzDQD0XeULZhLzixPdDYxv2G3a3DG10nMoDTpZGEI4zTHbL4L
+         povX00T3MUQgAPi70H289te9lktH6kRymv8CXphbVUBkyIqTd8hdYzC4MtnWw2OYGgXQ
+         nsuA==
+X-Gm-Message-State: AOAM533ZJROkJwUtQKwFMM6BLU5DxGYE29kU/zAUDSO9DqPQQXCg7TSH
+        FygbuR0N84CmVuKxB7klRKc=
+X-Google-Smtp-Source: ABdhPJwVvQAGehpA1gJGpq9l0Tt6kf833XpJN2+D1D8PZaLfgNIlIi5O5a415bQOL6ciVL+2mj2oOQ==
+X-Received: by 2002:a17:902:704c:b0:13f:2c24:c1ff with SMTP id h12-20020a170902704c00b0013f2c24c1ffmr26842726plt.55.1635321297563;
+        Wed, 27 Oct 2021 00:54:57 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id l6sm16182404pfc.126.2021.10.27.00.54.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 00:54:56 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 16:54:52 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/8] docs: counter: add latch_mode and latched_count
+ sysfs attributes
+Message-ID: <YXkFzK0TA5zswSrQ@shinobu>
+References: <20211017013343.3385923-1-david@lechnology.com>
+ <20211017013343.3385923-7-david@lechnology.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [RESEND PATCH V3 0/2] riscv: add RISC-V Svpbmt Standard Extension
- supports
-Content-Language: en-US
-To:     Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com
-Cc:     Anup Patel <Anup.Patel@wdc.com>, Atish Patra <Atish.Patra@wdc.com>,
-        guoren@kernel.org, christoph.muellner@vrull.eu,
-        philipp.tomsich@vrull.eu, Christoph Hellwig <hch@lst.de>,
-        liush@allwinnertech.com, lazyparser@gmail.com,
-        drew@beagleboard.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, taiten.peng@canonical.com,
-        aniket.ponkshe@canonical.com, gordan.markus@canonical.com,
-        guoren@linux.alibaba.com, Arnd Bergmann <arnd@arndb.de>,
-        wens@csie.org, maxime@cerno.tech,
-        Daniel Lustig <dlustig@nvidia.com>, gfavor@ventanamicro.com,
-        andrea.mondelli@huawei.com, behrensj@mit.edu, xinhaoqu@huawei.com,
-        huffman@cadence.com, mick@ics.forth.gr,
-        allen.baum@esperantotech.com, jscheid@ventanamicro.com,
-        rtrauben@gmail.com
-References: <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-In-Reply-To: <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8tPnTEQud8gMPGnp"
+Content-Disposition: inline
+In-Reply-To: <20211017013343.3385923-7-david@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 02:12, Palmer Dabbelt wrote:
-> On Sun, 24 Oct 2021 21:06:05 PDT (-0700), wefu@redhat.com wrote:
->> From: Fu Wei <wefu@redhat.com>
->>
->> This patch follows the  RISC-V standard Svpbmt extension in
->> privilege spec to solve the non-coherent SOC DMA synchronization
->> issues.
->>
->> The svpbmt PTE format:
->> | 63 | 62-61 | 60-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
->>   N     MT     RSW    D   A   G   U   X   W   R   V
->>         ^
->>
->> Of the Reserved bits [63:54] in a leaf PTE, the bits [62:61] are used as
->> the MT (aka MemType) field. This field specifies one of three memory 
->> types
->> as shown in the following table：
->> MemType     RISC-V Description
->> ----------  ------------------------------------------------
->> 00 - PMA    Normal Cacheable, No change to implied PMA memory type
->> 01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
->> 10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O memory
->> 11 - Rsvd   Reserved for future standard use
-> 
-> Do you have a pointer to the spec that contains these?  I'm specifically
-> worried about these page-based attributes being elided when paging is
-> off (ie, M-mode), which has caused issues in systems I've worked with in
-> the past.  I'm assuming there's something related to this in the specs,
-> but I'm worried we'll need some sort of ack from M-mode that it's been
-> setup to work that way.  One could imagine an MPRV-like approach 
-> working, but I don't see enough in the old specs and I'm having trouble 
-> figuring out where the canonical version of this lives.
 
-The draft version of the spec is available in chapter 6, p 87 of
-https://raw.githubusercontent.com/riscv/virtual-memory/main/specs/663-Svpbmt.pdf
+--8tPnTEQud8gMPGnp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-According to 
-https://groups.google.com/a/groups.riscv.org/g/isa-dev/c/nOrD9t9ImEw/m/tstjm4QbAAAJ 
-review has started Sep 17th.
+On Sat, Oct 16, 2021 at 08:33:41PM -0500, David Lechner wrote:
+> This documents new counterX/latch_mode* and
+> counterX/countY/latched_count* attributes.
+>=20
+> The counterX/signalY/*_available are moved to the
+> counterX/countY/*_available section similar to the way we already have
+> The counterX/*_component_id and The counterX/signalY/*_component_id
+> grouped together so that we don't have to start a 3rd redundant section
+> for device-level *_available section.
+>=20
+> Signed-off-by: David Lechner <david@lechnology.com>
 
-Best regards
+Please separate these two distinct changes into two distinct patches.
 
-Heinrich
+> ---
+>  Documentation/ABI/testing/sysfs-bus-counter | 39 ++++++++++++++++-----
+>  1 file changed, 30 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/=
+ABI/testing/sysfs-bus-counter
+> index 37d960a8cb1b..78bb1a501007 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-counter
+> +++ b/Documentation/ABI/testing/sysfs-bus-counter
+> @@ -59,10 +59,13 @@ What:		/sys/bus/counter/devices/counterX/countY/error=
+_noise_available
+>  What:		/sys/bus/counter/devices/counterX/countY/function_available
+>  What:		/sys/bus/counter/devices/counterX/countY/prescaler_available
+>  What:		/sys/bus/counter/devices/counterX/countY/signalZ_action_available
+> +What:		/sys/bus/counter/devices/counterX/latch_mode_available
+> +What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_available
+> +What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_availa=
+ble
+>  KernelVersion:	5.2
+>  Contact:	linux-iio@vger.kernel.org
+>  Description:
+> -		Discrete set of available values for the respective Count Y
+> +		Discrete set of available values for the respective component
+>  		configuration are listed in this file. Values are delimited by
+>  		newline characters.
+> =20
+> @@ -147,6 +150,14 @@ Description:
+>  			updates	the respective count. Quadrature encoding
+>  			determines the direction.
+> =20
+> +What:		/sys/bus/counter/devices/counterX/countY/latched_count
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Latched count data of Count Y represented as a string. The value
+> +		is latched in based on the trigger selected by the
+> +		counterX/latch_mode attribute.
+> +
 
-> 
->> The standard protection_map[] needn't be modified because the "PMA"
->> type keeps the highest bits zero.
->> And the whole modification is limited in the arch/riscv/* and using
->> a global variable(__riscv_svpbmt) as _PAGE_DMA_MASK/IO/NC for
->> pgprot_noncached (&writecombine) in pgtable.h.
->> We also add _PAGE_CHG_MASK to filter PFN than before.
->>
->> Enable it in devicetree - (Add "mmu-supports-svpbmt" in cpu node)
->>  - mmu-supports-svpbmt
-> 
-> Maybe this is enough of an ack, but we'll need to have some pretty
-> specific documentation if that's the case.  It's not described that way 
-> in the docs right now, they just talk about CPU support (IMO we could 
-> probe that with a trap, but I'm fine with the DT entry as it's a bit 
-> simpler).
-> 
->> Wei Fu (2):
->>   dt-bindings: riscv: add mmu-supports-svpbmt for Svpbmt
->>   riscv: add RISC-V Svpbmt extension supports
->>
->>  .../devicetree/bindings/riscv/cpus.yaml       |  5 +++
->>  arch/riscv/include/asm/fixmap.h               |  2 +-
->>  arch/riscv/include/asm/pgtable-64.h           |  8 ++--
->>  arch/riscv/include/asm/pgtable-bits.h         | 41 ++++++++++++++++++-
->>  arch/riscv/include/asm/pgtable.h              | 39 ++++++++++++++----
->>  arch/riscv/kernel/cpufeature.c                | 32 +++++++++++++++
->>  arch/riscv/mm/init.c                          |  5 +++
->>  7 files changed, 117 insertions(+), 15 deletions(-)
+Latches are pretty common components of devices, and not simply limited
+to latching the count data. I wonder if it would be better to omit the
+"_count" suffix in order to make this more general. Well, the name
+"latched_count" is suitable for counters so you probably don't need to
+change it, but it's something to think about in the future.
 
+>  What:		/sys/bus/counter/devices/counterX/countY/name
+>  KernelVersion:	5.2
+>  Contact:	linux-iio@vger.kernel.org
+> @@ -209,6 +220,7 @@ What:		/sys/bus/counter/devices/counterX/countY/count=
+_mode_component_id
+>  What:		/sys/bus/counter/devices/counterX/countY/direction_component_id
+>  What:		/sys/bus/counter/devices/counterX/countY/enable_component_id
+>  What:		/sys/bus/counter/devices/counterX/countY/error_noise_component_id
+> +What:		/sys/bus/counter/devices/counterX/countY/latched_count_component_=
+id
+>  What:		/sys/bus/counter/devices/counterX/countY/prescaler_component_id
+>  What:		/sys/bus/counter/devices/counterX/countY/preset_component_id
+>  What:		/sys/bus/counter/devices/counterX/countY/preset_enable_component_=
+id
+> @@ -218,6 +230,7 @@ What:		/sys/bus/counter/devices/counterX/signalY/cabl=
+e_fault_enable_component_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler_=
+component_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_componen=
+t_id
+>  What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_compon=
+ent_id
+> +What:		/sys/bus/counter/devices/latch_mode_component_id
+>  What:		/sys/bus/counter/devices/unit_timer_enable_component_id
+>  What:		/sys/bus/counter/devices/unit_timer_period_component_id
+>  What:		/sys/bus/counter/devices/unit_timer_time_component_id
+> @@ -244,6 +257,22 @@ Description:
+>  		counter_event data structures. The number of elements will be
+>  		rounded-up to a power of 2.
+> =20
+> +What:		/sys/bus/counter/devices/counterX/latch_mode
+> +KernelVersion:	5.16
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Read/write attribute that selects the trigger for latching
+> +		values. Valid values are device-specific (given by
+> +		latch_mode_available attribute) and may include:
+> +
+> +		"Read count":
+> +			Reading the countY/count attribute latches values.
+> +
+> +		"Unit timeout":
+> +			Unit timer timeout event latches values.
+> +
+> +		The latched values can be read from latched_* attributes.
+> +
+
+To make these modes more generic for use in future drivers, I suggest
+removing the "Unit " prefix and just leaving that mode as "Timeout". In
+a similar vein, rewording "Read count" to "Count read" would make this
+mode easier to understand in case a future driver introduces a mode
+called "Signal read" or similar.
+
+William Breathitt Gray
+
+>  What:		/sys/bus/counter/devices/counterX/name
+>  KernelVersion:	5.2
+>  Contact:	linux-iio@vger.kernel.org
+> @@ -298,14 +327,6 @@ Description:
+>  		Active level of index input Signal Y; irrelevant in
+>  		non-synchronous load mode.
+> =20
+> -What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_available
+> -What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_availa=
+ble
+> -KernelVersion:	5.2
+> -Contact:	linux-iio@vger.kernel.org
+> -Description:
+> -		Discrete set of available values for the respective Signal Y
+> -		configuration are listed in this file.
+> -
+>  What:		/sys/bus/counter/devices/counterX/signalY/name
+>  KernelVersion:	5.2
+>  Contact:	linux-iio@vger.kernel.org
+> --=20
+> 2.25.1
+>=20
+
+--8tPnTEQud8gMPGnp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmF5BcwACgkQhvpINdm7
+VJIvGRAA6uHCenBqcjA8Tzw2uK5PsOx2yaTxE7pbLkLdVLDrNykyGalbl83xaYVa
+BRMAxJkn/wK0+lVE3/fzT9ATCNT9zLs9OeHgySb5+ETBthKVawNbz5aUSN7cRgkn
+mF5O5aTIWfN74/EPrBIdtFk1XufmcZ0lJgTdF4oh/PYzNpsqbItqAUQNelo4LnoC
+PrExQ04Gf9e60sm6Dv9hNWYXq1XYvjyY2EfZR/F0rnHBwU5YuBQqqlIFNN13K42q
+UVq3xPLZ+kJ8KkXb+eACS8epxGsPZGjbN1VXFvgmRuSLXkSJkNRbFMzc7Oust0J4
+khmscUYWx482T0INur7pXvPKMszA7rXNkOlb+FXXv10Uj4oKa7vGMKSPZ4CFjoZ4
+1nMbwfMPZQpUgTIMQ9keq4vSJf9Fh2cYB8HW/sAWgr+AYW7UdLCqKfHLK7p/S06v
+dZd8WPzvgkX9jyc3tMPKGVSaaAFvPs8qJiFPO2mgg+nXK5TjG0ILbPa2j3EW4N+t
+kKPHO2Vosacv0jbNmGqxUb4WnUxgIBy6Npr/nraBgPh+nYSRu2TWlZa/u/oIYIuS
+pvkpWr+sjHQhS/eKyyweI9VeFVaOuE8+QQ7EZK2ZytowIodxbl1Q30N8n3LTq859
+Kvi2aJ8uArKumI8ERZj75GjXy5lpyCPJ4pYU6NgwpHtiRr8OHCg=
+=F5Gv
+-----END PGP SIGNATURE-----
+
+--8tPnTEQud8gMPGnp--
