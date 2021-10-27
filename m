@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FB543D60F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC9943D61F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbhJ0V4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229705AbhJ0V4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:56:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5D5B610CA;
-        Wed, 27 Oct 2021 21:54:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635371652;
-        bh=P97TBuOSU6VCfn0fOqxvrzobUnZ38EQAx73aJ380G0I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=M3VfebhT9aqmPN+g46qbnnrewNbanEgi94dTcPhTU7mpjH5jB8Y7+HKwlB8s7jjVw
-         AhPYMHtft/LjFNLK9Hsgj2L68/zVZEBGbpWec7MeDUupldbzjTlVnOAleK8/azkKW8
-         iFoc69n5G3V3irQEsvfGSmy36nnA8Gg9ufrGzY2OC7kVp2uH4tt5vzrFHWkHMKIJj/
-         7wTkzJE1LXtsccFy9kec2XLrFpEWyaIMu7GE41Q4IEaMYAg7teyu8b/AaSKfJARIyI
-         Nlg/tP+rBkWt+6QT1/8s4X3SDvNG/rDkbALb4JlBMtTBjRHbngtdRbmIuIn7wfMf0g
-         O4mAIg9NwhW1g==
-Received: by mail-ed1-f53.google.com with SMTP id h7so16646998ede.8;
-        Wed, 27 Oct 2021 14:54:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530fbq34jSycT0x21NOeLtHrwJpN0NtDgzse7kJYY+zas2mkQlcW
-        hSJ/zyTxheAeFH+pDZuyIBkq+j0spsetsTO7wA==
-X-Google-Smtp-Source: ABdhPJz4kxW1DR4UGq5S1PijHQ34O4WuSLKy+4MFc+0p8RGDh6RSrjWvUEec/qgQMkxVs4c2i1XYv6o1JFKR1o6WZok=
-X-Received: by 2002:a17:907:7f10:: with SMTP id qf16mr244409ejc.390.1635371651311;
- Wed, 27 Oct 2021 14:54:11 -0700 (PDT)
+        id S229829AbhJ0V7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229830AbhJ0V7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 17:59:43 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4566C061348;
+        Wed, 27 Oct 2021 14:57:17 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id z20so16448091edc.13;
+        Wed, 27 Oct 2021 14:57:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CQvz9TZ32Kb1GiUC4FEdq67vGwshSMFaVjEepIS/INM=;
+        b=RoO9FhMQ8yYJoBfZ0JQBmnbifXJac/BkLqpWrskN56Rbm1FWLdlVQfNAqhe2ajS8CH
+         CZYVCQ7/SwIM8BPMXCO5gjDKL+GJxyWXj6Dw+8wHhv6vA0lJpqkRraY2z2hcE/NrMP1n
+         vP4i71PWu1LeZVIS3XjlEUyabkuvTCBRxsCtKz4IBTq0ZoLSMidRCRwQuaGOHu3rKg9Y
+         w068GC8MwKfinEIf/doBe4Kv4Oow+r0cwghH9Alq6u3FGzu9iAaMFQd37vYdhGqVZbtq
+         m+GAyUMcjgMuVzn1wu/qsPtW+lsf0n6ny1K1MPbqVFpt07DAp83QUEc7gvwjVqgLdhtn
+         TT7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CQvz9TZ32Kb1GiUC4FEdq67vGwshSMFaVjEepIS/INM=;
+        b=R48r/2uKkK8VT8V2FiDtfJxeQdCHciA8PnfQ1e9QTaSErXq9aJtcAvU4HWPHuGJzYr
+         rfpiHBa10xa/XRMRFaM/FNf/mSFHipdTAQyAP1hDR4SW4LZUPlBoLPZYMqBKRxy8UTJ7
+         fQjnFl7lLgqeBi3YfnI3ox+wNZmIYEzmjfQmA/Mxh28/rWjwPY3mWxPLhyJsnwhtvlut
+         3PibhQXgLvXjcRBpOCJPA0D4ei3oAYbIj6ku50A5+OX7e1ATDnOjZD/UfO0pPSyUyxJM
+         5Sr6buxoEJWKJjdWg4hqWB6HfGodAfIIyqBMqyUTSGOyLa4rwScLHA7+HqK125VKFUKy
+         fLng==
+X-Gm-Message-State: AOAM531aCbVrrpZLsRawo/6A4oF+I0FKBEEKWL8qGtpXrP1Q5j5YcC+d
+        jgKD5eoQ8oP45kkoSkWFXb4vAOVGwRMN1G6mo8c=
+X-Google-Smtp-Source: ABdhPJy5Nn9hv5MsR/7yZbB39z5wO1SNl60QIQ1yDLfDZ+UfKPZ5n64Ov/EgNY5rwTCyZlMKH1d3hWr4bYZqap1MQ8U=
+X-Received: by 2002:a17:906:3f83:: with SMTP id b3mr227956ejj.233.1635371836131;
+ Wed, 27 Oct 2021 14:57:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
- <20211006035407.1147909-2-dmitry.baryshkov@linaro.org> <YXf6TbV2IpPbB/0Y@robh.at.kernel.org>
- <37b26090-945f-1e17-f6ab-52552a4b6d89@linaro.org>
-In-Reply-To: <37b26090-945f-1e17-f6ab-52552a4b6d89@linaro.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 27 Oct 2021 16:53:59 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLAnJqZ95_bf6_fFmPJFMjuy43UfP2UxzEmFMNnG_t-Ug@mail.gmail.com>
-Message-ID: <CAL_JsqLAnJqZ95_bf6_fFmPJFMjuy43UfP2UxzEmFMNnG_t-Ug@mail.gmail.com>
-Subject: Re: [PATCH v1 01/15] dt-bindings: add pwrseq device tree bindings
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
+References: <20211027195221.3825-1-shy828301@gmail.com> <C8C6E50C-D300-40D4-AA5C-490F673BADFE@fb.com>
+ <CAHbLzkqTW9U3VvTu1Ki5v_cLRC9gHW+znBukg_ycergE0JWj-A@mail.gmail.com> <20211027135328.001e4582a9535e8e4be785bb@linux-foundation.org>
+In-Reply-To: <20211027135328.001e4582a9535e8e4be785bb@linux-foundation.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 27 Oct 2021 14:57:04 -0700
+Message-ID: <CAHbLzkpPuM=R3=4wCY_pVzJMaHqm=JYff-+7nVWg-pzjsr+2zw@mail.gmail.com>
+Subject: Re: [PATCH] mm: khugepaged: skip huge page collapse for special files
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Song Liu <songliubraving@fb.com>, Hugh Dickins <hughd@google.com>,
+        "sunhao.th@gmail.com" <sunhao.th@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "andrea.righi@canonical.com" <andrea.righi@canonical.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
-        ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 9:42 AM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
+On Wed, Oct 27, 2021 at 1:53 PM Andrew Morton <akpm@linux-foundation.org> wrote:
 >
-> On 26/10/2021 15:53, Rob Herring wrote:
-> > On Wed, Oct 06, 2021 at 06:53:53AM +0300, Dmitry Baryshkov wrote:
-> >> Add device tree bindings for the new power sequencer subsystem.
-> >> Consumers would reference pwrseq nodes using "foo-pwrseq" properties.
-> >> Providers would use '#pwrseq-cells' property to declare the amount of
-> >> cells in the pwrseq specifier.
+> On Wed, 27 Oct 2021 13:44:37 -0700 Yang Shi <shy828301@gmail.com> wrote:
+>
+> > > > --- a/mm/khugepaged.c
+> > > > +++ b/mm/khugepaged.c
+> > > > @@ -445,22 +445,25 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
+> > > >       if (!transhuge_vma_enabled(vma, vm_flags))
+> > > >               return false;
+> > > >
+> > > > -     /* Enabled via shmem mount options or sysfs settings. */
+> > > > -     if (shmem_file(vma->vm_file) && shmem_huge_enabled(vma)) {
+> > > > +     if (vma->vm_file)
+> > > >               return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+> > > >                               HPAGE_PMD_NR);
+> > >
+> > > Am I misreading this? If we return here for vma->vm_file, the following
+> > > logic (shmem_file(), etc.) would be skipped, no?
 > >
-> > Please use get_maintainers.pl.
+> > Oh, yes, you are right. My mistake.
 > >
-> > This is not a pattern I want to encourage, so NAK on a common binding.
+> > Andrew,
+> >
+> > Could you please apply the below fix?
 >
->
-> Could you please spend a few more words, describing what is not
-> encouraged? The whole foo-subsys/#subsys-cells structure?
+> um, how well tested are these changes?
 
-No, that's generally how common provider/consumer style bindings work.
-
-> Or just specifying the common binding?
-
-If we could do it again, I would not have mmc pwrseq binding. The
-properties belong in the device's node. So don't generalize the mmc
-pwrseq binding.
-
-It's a kernel problem if the firmware says there's a device on a
-'discoverable' bus and the kernel can't discover it. I know you have
-the added complication of a device with 2 interfaces, but please,
-let's solve one problem at a time.
-
-Rob
+I has this fix on my test machine, but somehow forgot to fold it into
+the original patch. The whole fix was tested by opening /dev/nullb0
+readonly and mapping with PROT_EXEC, the THP was not collapsed
+anymore.
