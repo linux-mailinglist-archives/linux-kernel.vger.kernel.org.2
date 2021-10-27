@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA3A43C607
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAB543C5EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhJ0JGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhJ0JGO (ORCPT
+        id S241156AbhJ0JCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:02:50 -0400
+Received: from outbound-smtp56.blacknight.com ([46.22.136.240]:55453 "EHLO
+        outbound-smtp56.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237432AbhJ0JCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:06:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B751AC061570;
-        Wed, 27 Oct 2021 02:03:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GJg6eB6n8rP40WF7KLwrQtbmrEa/9yt5sPpTb6bjopM=; b=J2yCCtFPMmo3xtP5ajSZqKRB7D
-        nLKe/YCLDCHv29Fo6MvPx3AOPkJv96BTVBfrCTFXqFgeJBcPxXkhtmoQ7JiDc2OCqckAgsd5yDt2y
-        6EV4gAZR6XLM5V56xoOE4i2hycDkB3IFMmcI3joAOEkuKxSFN3jgA16PMRfVv3I/l/7vL+79pFVEZ
-        t5cnBi28jp7O3d8NvMs15XnAp2ri+Bwmlj2yo1EN+hUelmQ0ggoON4w+NGNM/4cirEc4RWroVqYkQ
-        u5mzu+Vr1BiEAa6HmTiEX/iQjI1DGLZwCnKh1F37yXJJ8nYfK4UujEXuWPmAqRC+FfcZxcLbdDZ+Q
-        EPmKAJ+w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfen3-00HWYd-R3; Wed, 27 Oct 2021 09:00:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73AD730031A;
-        Wed, 27 Oct 2021 11:00:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 51060236E43D9; Wed, 27 Oct 2021 11:00:09 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 11:00:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
-Message-ID: <YXkVGSG3BkMUEaKH@hirez.programming.kicks-ass.net>
-References: <20211026120132.613201817@infradead.org>
- <CAADnVQJaiHWWnVcaRN43DcNgqktgKs3i1P3uz4Qm8kN7bvPCCg@mail.gmail.com>
- <YXhMv6rENfn/zsaj@hirez.programming.kicks-ass.net>
- <CAADnVQ+w_ww3ZR_bJVEU-PxWusT569y0biLNi=GZJNpKqFzNLA@mail.gmail.com>
- <20211026210509.GH174703@worktop.programming.kicks-ass.net>
- <CAADnVQ+NA2J3Lxvb8Y31yaubM6ntx5LtoSEaLziZ1b8qiY4oYQ@mail.gmail.com>
+        Wed, 27 Oct 2021 05:02:48 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp56.blacknight.com (Postfix) with ESMTPS id 591E5FA87F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:00:22 +0100 (IST)
+Received: (qmail 18255 invoked from network); 27 Oct 2021 09:00:22 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Oct 2021 09:00:22 -0000
+Date:   Wed, 27 Oct 2021 10:00:20 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
+Message-ID: <20211027090020.GO3959@techsingularity.net>
+References: <20211021145603.5313-2-mgorman@techsingularity.net>
+ <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
+ <20211022110534.GJ3959@techsingularity.net>
+ <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
+ <20211026081817.GM3959@techsingularity.net>
+ <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
+ <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
+ <20211026115707.GN3959@techsingularity.net>
+ <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
+ <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CAADnVQ+NA2J3Lxvb8Y31yaubM6ntx5LtoSEaLziZ1b8qiY4oYQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 02:05:55PM -0700, Alexei Starovoitov wrote:
+On Wed, Oct 27, 2021 at 04:09:12AM +0200, Mike Galbraith wrote:
+> On Tue, 2021-10-26 at 14:13 +0200, Mike Galbraith wrote:
+> > On Tue, 2021-10-26 at 12:57 +0100, Mel Gorman wrote:
+> > > 
+> > > The patch in question was also tested on other workloads on NUMA
+> > > machines. For a 2-socket machine (20 cores, HT enabled so 40 CPUs)
+> > > running specjbb 2005 with one JVM per NUMA node, the patch also
+> > > scaled
+> > > reasonably well
+> > 
+> > That's way more more interesting.  No idea what this thing does under
+> > the hood thus whether it should be helped or not, but at least it's a
+> > real deal benchmark vs a kernel hacker tool.
+> 
+> ...
+> Installing test specjbb
+> specjvm-install: Fetching from mirror
+> http://mcp/mmtests-mirror/spec/SPECjbb2005_kitv1.07.tar.gz
+> specjvm-install: Fetching from internet
+> NOT_AVAILABLE/SPECjbb2005_kitv1.07.tar.gz
+> specjvm-install: Fetching from alt internet
+> /SPECjbb2005_kitv1.07.tar.gz
+> FATAL specjvm-install: specjvm-install: Could not download
+> /SPECjbb2005_kitv1.07.tar.gz
+> FATAL specjbb-bench: specjbb install script returned error
+> FATAL: specjbb returned failure, unable to continue
+> FATAL: Installation step failed for specjbb
+> 
+> Hohum, so much for trying to take a peek.
+> 
 
-> Please post it. CI cannot pull it from the repo.
+The benchmark is not available for free unfortunately.
 
-Done:
+> At any rate, unlike the tbench numbers, these have the look of signal
+> rather than test jig noise, and pretty strong signal at that, so maybe
+> patchlet should fly. At the very least, it appears to be saying that
+> there is significant performance to be had by some means.
+> 
+> Bah, fly or die little patchlet.  Either way there will be winners and
+> losers, that's just the way it works if you're not shaving cycles.
+> 
 
-  https://lore.kernel.org/bpf/20211027085243.008677168@infradead.org/T/#t
+So, I assume you are ok for patch 1 to take flight to either live or
+die. I'll handle any bugs that show up in relation to it. How about
+patch 2?
+
+-- 
+Mel Gorman
+SUSE Labs
