@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B471343BF1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3274543BF1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237647AbhJ0Bjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S237614AbhJ0Bjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237610AbhJ0Bjj (ORCPT
+        with ESMTP id S237628AbhJ0Bjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 21:39:39 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C246AC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:14 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id z187-20020a6233c4000000b0047c2090f1abso643816pfz.23
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:14 -0700 (PDT)
+        Tue, 26 Oct 2021 21:39:41 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E298BC061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:16 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id b5-20020a6541c5000000b002661347cfbcso711241pgq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=zdnP+CcH+cj0gO5XtMfjV6pCIZrG8LN0fjsgBOUCOoc=;
-        b=b92pU0ZPZUKilkgCeq0jDth2ifnAa83QiCk+5MfUApUiPVy9/uv1rEJVPOPooi3Ye3
-         YfCUuvbWmOHiEC2kiFUgckBwDx8ENqtu1wYm9f8ZZzOF6ZWP2R2VWrtb4/OJA5Qh7kHC
-         ockwapbrUmbsiLTmpcJfHXvND0KHLx3uk/mBv9dAkylFjmtjylw30n9ZsqovaSunDOyL
-         CC79OcNdjexhtkkPeny6kbLhIxQVyLc1U66yYRui05WVAQJLHWN1ZjSZhaqkKwCfncbx
-         al3w5JaVx8c3mYiPY1ySJmX5e6/pHOd69OcroHkmgDbIdSi9ygOfZOtNrWZjNHMBtRxR
-         fsjQ==
+        bh=7J7hXEZYHRVzHQmivzMp4k5hS/Z1urfbfNYVR0nOOIk=;
+        b=W+jH/TV8ffRFIZYHg3pvL/VMZ8Z391aQ0OipQqW6+SKlDH1rDYEmqGeIV0T6IKGJMh
+         pZNgdbdBThDYpPNomeKbMXwnyP4fjZ90r/hKw2bcZOEyVedQvLydxUw6Ou3onVTmL2uS
+         1YXM8ythHyylYJjWnRVLGJY0cLDw7Rzjv/3TigU/N7zYZz4L4RjAiynaEgR9p5QOJBJ2
+         wyM3RYH0blVpXuiXWstvYW6zuYt4gYjGDcTIwAoXYoZksETyoA1Kx4kEjn79QOa2pr2n
+         gJHKcic4NA6xtarDLxUQYRuDrrKjWIQYCBh0vQlLCM0dcqMx5FHuilQkX6RcEDkX+cX1
+         k9FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=zdnP+CcH+cj0gO5XtMfjV6pCIZrG8LN0fjsgBOUCOoc=;
-        b=iAOyYp7Q5s254dGIYnV1Zxt+IzJl2vJkRRqQIAk9mLVejpv+XRjMBUPFc/d4OLlmQm
-         9EvvJ9a/D7oacXXHOO2OSun3YqBjPqcSw5GOdTr0ihIZ18Ln/PV/iyhJbynOv5tzZbg8
-         MQEQmd3NdJuuuWZeT57dISHgCcMH+AXMzYmbwl48ijm4HHPtUG8r4wrUm3Y2HrM7xQJb
-         GxU1c3K5zdo96X2oSqyOYbJ+kfFR0l2Y44fYPGfx8HcZn1i+6qxmTeQSB6cgPIeWFLoj
-         fsWq/LxNjePEMDVhlpNTB02DTusoVQH3z73sGhnB3br7Jh6s/IFOSqbf6GunvnEPg5LO
-         a9aw==
-X-Gm-Message-State: AOAM532EB0MBwCJ+h+u3ExRdaMkAZA3uyut31ZbjfVz/bT6bFX452MEV
-        w3u9980PQVNK6+oFFwrdg6VePlcpc1UKrA==
-X-Google-Smtp-Source: ABdhPJwg2vr2nzlms3KujpRdCOHHVuWmWK5Bzr5xe8wdyiH+1BuM42b6Pjw14dOKIyYClEOzMDsPm2olcO1xAQ==
+        bh=7J7hXEZYHRVzHQmivzMp4k5hS/Z1urfbfNYVR0nOOIk=;
+        b=tIUuFwRXxahbjjOOjP7KkVZwlYSO2Fdfv7/STZTEvVZcnuuO032++oSTIjnU6qyTlv
+         k8oe1qamiq4Y0mQBYI9HIVY2I++4fOOwBj9rmHCi0DRi5HtLzfUT1ffU4rnQBVq4X3c/
+         qqrzqALV4jO1ZbLiPfgaaC8HPoC46ughZbwdYA6IlVtV7hbhU/cT7lkK6MthKV0dslMC
+         cmLH0DJDjiWY7ozQFqLcvE6+WHjWjbRHQcCrUXb58Zdi8Lk5HUp0g8W/M7yRvLWMi4jQ
+         ZjectNnJDJ71FTIAaD+pHkswwG81UPyZrYDBH0nTxOTGgFnbrv9AjA7w9p7aWzKK1dgI
+         XeBg==
+X-Gm-Message-State: AOAM533QQcozxlu8uy9dlWdrYIdmXvfQwyfeA0BltkLL6Znrbl7EPR7q
+        X61UYxSZ/HInGJE+f7VqglHmH1Ir1bLPWw==
+X-Google-Smtp-Source: ABdhPJxxHWq6OxvqmxnsH7pPvAGClrg/VRxmiCxws1pwjgP5B9Z2euyjsEbMnndi3o7+1pA7Zv9bpwNxTx/bMg==
 X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:c628:e925:d58d:6232])
- (user=davidgow job=sendgmr) by 2002:a17:902:ed87:b0:141:5fe1:e794 with SMTP
- id e7-20020a170902ed8700b001415fe1e794mr4334276plj.77.1635298634290; Tue, 26
- Oct 2021 18:37:14 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 18:37:01 -0700
+ (user=davidgow job=sendgmr) by 2002:a17:90b:149:: with SMTP id
+ em9mr2506857pjb.133.1635298636276; Tue, 26 Oct 2021 18:37:16 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 18:37:02 -0700
 In-Reply-To: <20211027013702.2039566-1-davidgow@google.com>
-Message-Id: <20211027013702.2039566-3-davidgow@google.com>
+Message-Id: <20211027013702.2039566-4-davidgow@google.com>
 Mime-Version: 1.0
 References: <20211027013702.2039566-1-davidgow@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 3/4] kunit: Don't crash if no parameters are generated
+Subject: [PATCH v2 4/4] kunit: Report test parameter results as (K)TAP subtests
 From:   David Gow <davidgow@google.com>
 To:     Brendan Higgins <brendanhiggins@google.com>,
         Rae Moar <rmr167@gmail.com>,
@@ -65,56 +64,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible that a parameterised test could end up with zero
-parameters. At the moment, the test function will nevertheless be called
-with NULL as the parameter. Instead, don't try to run the test code, and
-just mark the test as SKIPped.
+Currently, the results for individial parameters in a parameterised test
+are simply output as (K)TAP diagnostic lines.
 
-Reported-by: Daniel Latypov <dlatypov@google.com>
+As kunit_tool now supports nested subtests, report each parameter as its
+own subtest.
+
+For example, here's what the output now looks like:
+	# Subtest: inode_test_xtimestamp_decoding
+	ok 1 - 1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits
+	ok 2 - 1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits
+	ok 3 - 1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits
+	ok 4 - 2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits
+	ok 5 - 2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on
+	ok 6 - 2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on
+	ok 7 - 2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on
+	ok 8 - 2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on
+	ok 9 - 2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on
+	ok 10 - 2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on
+	ok 11 - 2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on
+	ok 12 - 2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on
+	ok 13 - 2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns
+	ok 14 - 2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns
+	ok 15 - 2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on
+	ok 16 - 2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on
+	# inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16
+	ok 1 - inode_test_xtimestamp_decoding
+
 Signed-off-by: David Gow <davidgow@google.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
 ---
- lib/kunit/test.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ lib/kunit/test.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 3bd741e50a2d..e028d98e4f5b 100644
+index e028d98e4f5b..fe2ab31b5949 100644
 --- a/lib/kunit/test.c
 +++ b/lib/kunit/test.c
-@@ -500,7 +500,10 @@ int kunit_run_tests(struct kunit_suite *suite)
- 	kunit_print_subtest_start(suite);
- 
- 	kunit_suite_for_each_test_case(suite, test_case) {
--		struct kunit test = { .param_value = NULL, .param_index = 0 };
-+		/* The initial param value is nonzero, as we want
-+		 * non-parametrised tests to run once.
-+		 */
-+		struct kunit test = { .param_value = (void *)-1, .param_index = 0 };
- 		struct kunit_result_stats param_stats = { 0 };
- 		test_case->status = KUNIT_SKIPPED;
- 
-@@ -510,7 +513,7 @@ int kunit_run_tests(struct kunit_suite *suite)
+@@ -511,6 +511,8 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 			/* Get initial param. */
+ 			param_desc[0] = '\0';
  			test.param_value = test_case->generate_params(NULL, param_desc);
++			kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
++				  "# Subtest: %s", test_case->name);
  		}
  
--		do {
-+		while (test.param_value) {
- 			kunit_run_case_catch_errors(suite, test_case, &test);
+ 		while (test.param_value) {
+@@ -523,9 +525,8 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 				}
  
- 			if (test_case->generate_params) {
-@@ -530,11 +533,12 @@ int kunit_run_tests(struct kunit_suite *suite)
- 				param_desc[0] = '\0';
- 				test.param_value = test_case->generate_params(test.param_value, param_desc);
- 				test.param_index++;
--			}
-+			} else
-+				test.param_value = NULL;
- 
- 			kunit_update_stats(&param_stats, test.status);
- 
--		} while (test.param_value);
-+		}
- 
- 		kunit_print_test_stats(&test, param_stats);
+ 				kunit_log(KERN_INFO, &test,
+-					  KUNIT_SUBTEST_INDENT
+-					  "# %s: %s %d - %s",
+-					  test_case->name,
++					  KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
++					  "%s %d - %s",
+ 					  kunit_status_to_ok_not_ok(test.status),
+ 					  test.param_index + 1, param_desc);
  
 -- 
 2.33.0.1079.g6e70778dc9-goog
