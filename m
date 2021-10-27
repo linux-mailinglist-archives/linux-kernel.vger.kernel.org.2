@@ -2,80 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E15343C269
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FFF43C26C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236771AbhJ0F6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 01:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233344AbhJ0F6X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:58:23 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298ABC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 22:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=uUfWJrLd6zEoYmRP410NAAsU5tIioJ+f9QyGQWf6eEI=; b=vSacETVDQdOnRDgH9QMM7dMrXZ
-        iwAl10OfpFbyVZC/zy7zFdGHWWqPzyoRLGiCnOZsuiBAvsEKgTb6W7qtKE8FvsryNKI6iRhuKj090
-        SDpigjJqAiQor0ENGV1wwXKXWvrgEe8nSufnEjx1zm6S0rEB1crekflcdnGalhfVKTzHkuARiY8xv
-        8i5dKSTwop1Te7hnvIUzG1u0cTZrLp/G7YWjsTCHajRo+SfwU1RUnmLNacIWfwvM4TY3udclWojUD
-        ywP5WKcgsetCxc3tKUVKB+KMKpCs89tMajf+NT19Xz30lq+PBBaiSlGtASPrsVskxeXKNpIcZQpyx
-        uLAZAW8w==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfbul-003wC2-Ez; Wed, 27 Oct 2021 05:55:55 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        id S238288AbhJ0F6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:58:32 -0400
+Received: from mx.socionext.com ([202.248.49.38]:45888 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236871AbhJ0F6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 01:58:30 -0400
+Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 27 Oct 2021 14:56:04 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id D5983206E701;
+        Wed, 27 Oct 2021 14:56:04 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Wed, 27 Oct 2021 14:56:04 +0900
+Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
+        by iyokan2.css.socionext.com (Postfix) with ESMTP id 67CD6B62AB;
+        Wed, 27 Oct 2021 14:56:04 +0900 (JST)
+Received: from [10.212.181.22] (unknown [10.212.181.22])
+        by yuzu2.css.socionext.com (Postfix) with ESMTP id 08487B6291;
+        Wed, 27 Oct 2021 14:56:03 +0900 (JST)
+Subject: Re: [PATCH] dt-bindings: pinctrl: uniphier: Add child node
+ definitions to describe pin mux and configuration
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Zong Li <zong@andestech.com>, Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Subject: [PATCH] nds32: ftrace: fix pointer comparison warning
-Date:   Tue, 26 Oct 2021 22:55:54 -0700
-Message-Id: <20211027055554.19372-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1634136848-20091-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <YXhluRBQ+sGMYGkj@robh.at.kernel.org>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <79b9f644-1e7a-7e95-292d-13261a18dce6@socionext.com>
+Date:   Wed, 27 Oct 2021 14:56:03 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXhluRBQ+sGMYGkj@robh.at.kernel.org>
+Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC 11.1.0 for nds32 (nds32le if it matters) complains:
+Hi Rob,
+Thank you for your comment,
 
-../arch/nds32/kernel/ftrace.c: In function '_mcount':
-../arch/nds32/kernel/ftrace.c:24:35: error: comparison of distinct pointer types lacks a cast [-Werror]
-   24 |         if (ftrace_trace_function != ftrace_stub)
-      |                                   ^~
+On 2021/10/27 5:31, Rob Herring wrote:
+> On Wed, Oct 13, 2021 at 11:54:08PM +0900, Kunihiko Hayashi wrote:
+>> In arch/arm/boot/dts/uniphier-pinctrl.dtsi, there are child nodes of
+>> pinctrl that defines pinmux and pincfg, however, there are no rules
+> about
+>> that in dt-bindings.
+>>
+>> 'make dtbs_check' results an error with the following message:
+>>
+>>     pinctrl: 'ain1', 'ain2', 'ainiec1', 'aout', 'aout1', 'aout2', ...
+>>     ... 'usb2', 'usb3' do not match any of the regexes: 'pinctrl-[0-9]+'
+>>
+>> To avoid this issue, add the rules of pinmux and pincfg in each child
+> node
+>> and grandchild node.
+>>
+>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> ---
+>>   .../pinctrl/socionext,uniphier-pinctrl.yaml        | 46
+> +++++++++++++++++++++-
+>>   1 file changed, 44 insertions(+), 2 deletions(-)
+>>
+>> diff --git
+> a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
+> l
+> b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
+> l
+>> index a804d9bc1602..4567330fe536 100644
+>> ---
+> a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
+> l
+>> +++
+> b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
+> l
+>> @@ -26,11 +26,53 @@ properties:
+>>         - socionext,uniphier-pxs3-pinctrl
+>>         - socionext,uniphier-nx1-pinctrl
+>>   
+>> -required:
+>> -  - compatible
+>> +patternProperties:
+>> +  "^.*$":
+>> +    if:
+>> +      type: object
+>> +    then:
+> 
+> After coming up with this hack, I found a better way using
+> additionalProperties:
+> 
+> additionalProperties:
+>    type: object
 
-Cast the second function (pointer) to (void *) to avoid the warning.
+I see. I'll add it next.
 
-Fixes: a18082575c66 ("nds32/ftrace: Support static function tracer")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-To: Greentime Hu <green.hu@gmail.com>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Zong Li <zong@andestech.com>
-Cc: Nick Hu <nickhu@andestech.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
+> and then all this:
+> 
+>> +      allOf:
+>> +        - $ref: pincfg-node.yaml#
+>> +        - $ref: pinmux-node.yaml#
+>> +
+>> +      properties:
+>> +        phandle: true
+>> +        function: true
+>> +        groups: true
+>> +        pins: true
+>> +        bias-pull-up: true
+>> +        bias-pull-down: true
+>> +        bias-pull-pin-default: true
+>> +        drive-strength: true
+>> +
+>> +      patternProperties:
+>> +        "^.*$":
+>> +          if:
+>> +            type: object
+>> +          then:
+> 
+> Same thing here.
+
+Yes. I'll add it, too.
+
+Thank you,
+
 ---
- arch/nds32/kernel/ftrace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20211026.orig/arch/nds32/kernel/ftrace.c
-+++ linux-next-20211026/arch/nds32/kernel/ftrace.c
-@@ -21,7 +21,7 @@ noinline void _mcount(unsigned long pare
- 
- 	unsigned long ip = (unsigned long)__builtin_return_address(0);
- 
--	if (ftrace_trace_function != ftrace_stub)
-+	if (ftrace_trace_function != (void *)ftrace_stub)
- 		ftrace_trace_function(ip - MCOUNT_INSN_SIZE, parent_ip,
- 				      NULL, NULL);
- 
+Best Regards
+Kunihiko Hayashi
