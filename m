@@ -2,198 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DA543CB19
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F9243CB1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237451AbhJ0NuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhJ0NuM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:50:12 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44ACC061570;
-        Wed, 27 Oct 2021 06:47:46 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so2125332pjb.3;
-        Wed, 27 Oct 2021 06:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qvdNFh7MkxWNhtp7QKNJAhYk/nyXIPZJEIzI2iPA3Mo=;
-        b=hcT/4ljv08p+AgUZoVB1ay+S6Xt+MGseUne1f3O4ngEiaZrhIqbfX4moYG5jFqkXv9
-         F/06/B7L4fbdJ0SiyZ+2PQ11G3E5aorWeAc+JfcHP3+IvNBCZPg2eR4EOni7TcxLgEl9
-         YtoMyeVbADulB8ai8VoEScrx/9RQiGUvHFiJtbeUnoyynUwTmHsMTIm8+E/6WZ2n2xVr
-         jePqMLXsubRWU0jf5cqJy7N75SLyISBNKaU2WajiRssnI+Gtf+FK3234n24qMuSkjv9b
-         mHNF5vysWAoprbcN33Tk6K2m6Lwcqd4+2ijFkb5gv07y101KUurJ/6Sa9Y3KaZoVt0nj
-         ZOMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qvdNFh7MkxWNhtp7QKNJAhYk/nyXIPZJEIzI2iPA3Mo=;
-        b=Ijkx7DJ2GUZWLAnw2cd+g1HVIUNOoQ04pGZi/msI970+sl97sE0IlU7oE+O+s+d7KB
-         TUbUxlwnSF1O0Vm4U3D1KgoNrKODZOu9ncutP3AqxMSX3MyAV94y/GgGNJAjlwZgdRC3
-         y8oog3mVrrnPSnryYqEIfYD8W5hXgBTFdZB1MC0GBgoGYOUG4jWsRWpyyOwJKc2Ba9H3
-         r1WC8P82aNw8JZhhRRc2kfI+dWGguC6ejtFyJphbXaD/qaSSF0qEdIfnO1CByMOh6uVM
-         erGhWH1lxMOx9krGHKy9REXKqF2cd2hJyXtOlrvC7ioSX0O1NUhIJcxllALLizmRaUTB
-         q+gA==
-X-Gm-Message-State: AOAM5338WDP/2ZCKC9C6Cn9Xi+48oxw/C4vyv9/KYD3+3AFsRfCWd3Ht
-        dBGoFrJxBtc6FpRyvhDI2QLN6t4amwBUdp79GwE=
-X-Google-Smtp-Source: ABdhPJzKP+b5xfi2bkRWraalmmHfFU3KDb80OW/qhpk0kDxI9cT7lEraO56w9PGRbE2w5OWXgLkMyMqEv/7Opy42wII=
-X-Received: by 2002:a17:902:6ac4:b0:13f:52e1:8840 with SMTP id
- i4-20020a1709026ac400b0013f52e18840mr28067744plt.15.1635342466407; Wed, 27
- Oct 2021 06:47:46 -0700 (PDT)
+        id S237590AbhJ0Nu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:50:56 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:41838 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231458AbhJ0Nuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:50:55 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1mfjHu-0001RD-DR; Wed, 27 Oct 2021 15:48:18 +0200
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <4f8718fc8da57ab799e95ef7c2060f8be0f2391f.1632171479.git.maciej.szmigiero@oracle.com>
+ <YXhQEeNxi2+fAQPM@google.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v5 13/13] KVM: Optimize overlapping memslots check
+Message-ID: <4222ead3-f80f-0992-569f-9e1a7adbabcc@maciej.szmigiero.name>
+Date:   Wed, 27 Oct 2021 15:48:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211001065720.21330-1-himadrispandya@gmail.com>
- <20211001065720.21330-2-himadrispandya@gmail.com> <YXlOSQXdZra5sYbe@hovoldconsulting.com>
- <CAOY-YVmtt4XTet4hU43nfD4pj2W008ab-VRhBMs-One4kpEEug@mail.gmail.com> <YXlWKuuYVeSWXNXR@hovoldconsulting.com>
-In-Reply-To: <YXlWKuuYVeSWXNXR@hovoldconsulting.com>
-From:   Himadri Pandya <himadrispandya@gmail.com>
-Date:   Wed, 27 Oct 2021 15:47:34 +0200
-Message-ID: <CAOY-YVkCt8BojRYc41mZL+gA0gvaKCdaM_hhW6Wo0ZShprcYmw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] USB: serial: ch314: use usb_control_msg_recv() and usb_control_msg_send()
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YXhQEeNxi2+fAQPM@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 3:38 PM Johan Hovold <johan@kernel.org> wrote:
->
-> On Wed, Oct 27, 2021 at 03:28:42PM +0200, Himadri Pandya wrote:
-> > On Wed, Oct 27, 2021 at 3:04 PM Johan Hovold <johan@kernel.org> wrote:
-> > > On Fri, Oct 01, 2021 at 08:57:19AM +0200, Himadri Pandya wrote:
->
-> > > > @@ -287,23 +277,18 @@ static int ch341_set_handshake(struct usb_device *dev, u8 control)
-> > > >  static int ch341_get_status(struct usb_device *dev, struct ch341_private *priv)
-> > > >  {
-> > > >       const unsigned int size = 2;
-> > > > -     char *buffer;
-> > > > +     u8 buffer[2];
-> > > >       int r;
-> > > >       unsigned long flags;
-> > > >
-> > > > -     buffer = kmalloc(size, GFP_KERNEL);
-> > > > -     if (!buffer)
-> > > > -             return -ENOMEM;
-> > > > -
-> > > >       r = ch341_control_in(dev, CH341_REQ_READ_REG, 0x0706, 0, buffer, size);
-> > > > -     if (r < 0)
-> > > > -             goto out;
-> > > > +     if (r)
-> > > > +             return r;
-> > > >
-> > > >       spin_lock_irqsave(&priv->lock, flags);
-> > > >       priv->msr = (~(*buffer)) & CH341_BITS_MODEM_STAT;
-> > > >       spin_unlock_irqrestore(&priv->lock, flags);
-> > > >
-> > > > -out: kfree(buffer);
-> > > >       return r;
-> > >
-> > > This should now be
-> > >
-> > >         return 0;
-> > >
-> >
-> > Yes. The function was returning the negative error value before the
-> > change. But now it doesn't need to as we are already taking care of it
-> > in the wrapper.
->
-> It has more to do with the fact that we now return early on errors so r
-> will always be zero here. It's better to be explicit about that.
->
+On 26.10.2021 20:59, Sean Christopherson wrote:
+> On Mon, Sep 20, 2021, Maciej S. Szmigiero wrote:
+>> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+>>
+>> Do a quick lookup for possibly overlapping gfns when creating or moving
+>> a memslot instead of performing a linear scan of the whole memslot set.
+>>
+>> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+>> ---
+>>   virt/kvm/kvm_main.c | 36 +++++++++++++++++++++++++++---------
+>>   1 file changed, 27 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index 5fea467d6fec..78dad8c6376f 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -1667,6 +1667,30 @@ static int kvm_delete_memslot(struct kvm *kvm,
+>>   	return kvm_set_memslot(kvm, mem, old, &new, as_id, KVM_MR_DELETE);
+>>   }
+>>   
+>> +static bool kvm_check_memslot_overlap(struct kvm_memslots *slots,
+>> +				      struct kvm_memory_slot *nslot)
+>> +{
+>> +	int idx = slots->node_idx;
+>> +	gfn_t nend = nslot->base_gfn + nslot->npages;
+>> +	struct rb_node *node;
+>> +
+>> +	kvm_for_each_memslot_in_gfn_range(node, slots, nslot->base_gfn, nend) {
+>> +		struct kvm_memory_slot *cslot;
+>> +		gfn_t cend;
+>> +
+>> +		cslot = container_of(node, struct kvm_memory_slot, gfn_node[idx]);
+>> +		cend = cslot->base_gfn + cslot->npages;
+>> +		if (cslot->id == nslot->id)
+>> +			continue;
+>> +
+>> +		/* kvm_for_each_in_gfn_no_more() guarantees that cslot->base_gfn < nend */
+>> +		if (cend > nslot->base_gfn)
+> 
+> Hmm, IMO the need for this check means that kvm_for_each_memslot_in_gfn_range()
+> is flawed.  The user of kvm_for_each...() should not be responsible for skipping
+> memslots that do not actually overlap the requested range.  I.e. this function
+> should be no more than:
+> 
+> static bool kvm_check_memslot_overlap(struct kvm_memslots *slots,
+> 				      struct kvm_memory_slot *slot)
+> {
+> 	gfn_t start = slot->base_gfn;
+> 	gfn_t end = start + slot->npages;
+> 
+> 	kvm_for_each_memslot_in_gfn_range(&iter, slots, start, end) {
+> 		if (iter.slot->id != slot->id)
+> 			return true;
+> 	}
+> 
+> 	return false;
+> }
+> 
+> 
+> and I suspect kvm_zap_gfn_range() could be further simplified as well.
+> 
+> Looking back at the introduction of the helper, its comment's highlighting of
+> "possibily" now makes sense.
+> 
+>    /* Iterate over each memslot *possibly* intersecting [start, end) range */
+>    #define kvm_for_each_memslot_in_gfn_range(node, slots, start, end)	\
+> 
+> That's an unnecessarily bad API.  It's a very solvable problem for the iterator
+> helpers to advance until there's actually overlap, not doing so violates the
+> principle of least surprise, and unless I'm missing something, there's no use
+> case for an "approximate" iteration.
 
-Okay. Right.
+In principle this can be done, however this will complicate the gfn
+iterator logic - especially the kvm_memslot_iter_start() part, which
+will already get messier from open-coding kvm_memslots_gfn_upper_bound()
+there.
 
-> > > >  }
-> > > >
-> > > > @@ -312,30 +297,25 @@ out:    kfree(buffer);
-> > > >  static int ch341_configure(struct usb_device *dev, struct ch341_private *priv)
-> > > >  {
-> > > >       const unsigned int size = 2;
-> > > > -     char *buffer;
-> > > > +     u8 buffer[2];
-> > > >       int r;
-> > > >
-> > > > -     buffer = kmalloc(size, GFP_KERNEL);
-> > > > -     if (!buffer)
-> > > > -             return -ENOMEM;
-> > > > -
-> > > >       /* expect two bytes 0x27 0x00 */
-> > > >       r = ch341_control_in(dev, CH341_REQ_READ_VERSION, 0, 0, buffer, size);
-> > > > -     if (r < 0)
-> > > > -             goto out;
-> > > > +     if (r)
-> > > > +             return r;
-> > > >       dev_dbg(&dev->dev, "Chip version: 0x%02x\n", buffer[0]);
-> > > >
-> > > >       r = ch341_control_out(dev, CH341_REQ_SERIAL_INIT, 0, 0);
-> > > > -     if (r < 0)
-> > > > -             goto out;
-> > > > +     if (r)
-> > > > +             return r;
-> > >
-> > > Now an unrelated change.
-> >
-> > I think it is a related change because we are removing the out label.
->
-> Sorry, I meant that the (r < 0) change was unrelated since you're no
-> longer touching ch341_control_out(). The return is indeed still needed.
->
+At the same kvm_zap_gfn_range() will still need to do the memslot range
+<-> request range merging by itself as it does not want to process the
+whole returned memslot, but rather just the part that's actually
+overlapping its requested range.
 
-Oh, okay. My bad.
+In the worst case, the current code can return one memslot too much, so
+I don't think it's worth bringing additional complexity just to detect
+and skip it - it's not that uncommon to design an API that needs extra
+checking from its caller to cover some corner cases.
 
-> > > > @@ -647,23 +611,19 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
-> > > >       struct ch341_private *priv = usb_get_serial_port_data(port);
-> > > >       int r;
-> > > >       uint16_t reg_contents;
-> > > > -     uint8_t *break_reg;
-> > > > +     uint8_t break_reg[2];
-> > > >
-> > > >       if (priv->quirks & CH341_QUIRK_SIMULATE_BREAK) {
-> > > >               ch341_simulate_break(tty, break_state);
-> > > >               return;
-> > > >       }
-> > > >
-> > > > -     break_reg = kmalloc(2, GFP_KERNEL);
-> > > > -     if (!break_reg)
-> > > > -             return;
-> > > > -
-> > > >       r = ch341_control_in(port->serial->dev, CH341_REQ_READ_REG,
-> > > >                       ch341_break_reg, 0, break_reg, 2);
-> > > > -     if (r < 0) {
-> > > > +     if (r) {
-> > > >               dev_err(&port->dev, "%s - USB control read error (%d)\n",
-> > > >                               __func__, r);
-> > > > -             goto out;
-> > > > +             return;
-> > > >       }
-> > > >       dev_dbg(&port->dev, "%s - initial ch341 break register contents - reg1: %x, reg2: %x\n",
-> > > >               __func__, break_reg[0], break_reg[1]);
-> > > > @@ -681,11 +641,9 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
-> > > >       reg_contents = get_unaligned_le16(break_reg);
-> > > >       r = ch341_control_out(port->serial->dev, CH341_REQ_WRITE_REG,
-> > > >                       ch341_break_reg, reg_contents);
-> > > > -     if (r < 0)
-> > > > +     if (r)
-> > >
-> > > Now also an unrelated change.
-> > >
-> >
-> > Maybe I misunderstood your comments on v2. I thought you asked to get
-> > rid of the out labels in callers.
->
-> Yes, but as above I'm referring to the (r < 0) change for
-> ch341_control_out() which is now unrelated to the rest of the patch.
->
-> Johan
+For example, see pthread_cond_wait() or kernel waitqueues with their
+spurious wakeups or atomic_compare_exchange_weak() from C11.
+And these are higher level APIs than a very limited internal KVM one
+with just two callers.
+In case of kvm_zap_gfn_range() the necessary checking is already
+there and has to be kept due to the above range merging.
 
-Yes, got it.
+Also, a code that is simpler is easier to understand, maintain and
+so less prone to subtle bugs.
+
+>> +			return true;
+>> +	}
+>> +
+>> +	return false;
+>> +}
+>> +
+>>   /*
+>>    * Allocate some memory and give it an address in the guest physical address
+>>    * space.
+>> @@ -1752,16 +1776,10 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>>   	}
+>>   
+>>   	if ((change == KVM_MR_CREATE) || (change == KVM_MR_MOVE)) {
+>> -		int bkt;
+>> -
+>>   		/* Check for overlaps */
+> 
+> This comment can be dropped, the new function is fairly self-documenting.
+
+Will drop it.
+
+>> -		kvm_for_each_memslot(tmp, bkt, __kvm_memslots(kvm, as_id)) {
+>> -			if (tmp->id == id)
+>> -				continue;
+>> -			if (!((new.base_gfn + new.npages <= tmp->base_gfn) ||
+>> -			      (new.base_gfn >= tmp->base_gfn + tmp->npages)))
+>> -				return -EEXIST;
+>> -		}
+>> +		if (kvm_check_memslot_overlap(__kvm_memslots(kvm, as_id),
+>> +					      &new))
+> 
+> And then with the comment dropped, the wrap can be avoided by folding the check
+> into the outer if statement, e.g.
+> 
+> 	if (((change == KVM_MR_CREATE) || (change == KVM_MR_MOVE)) &&
+> 	    kvm_check_memslot_overlap(__kvm_memslots(kvm, as_id), &new))
+> 		return -EEXIST;
+> 
+
+Will fold it.
 
 Thanks,
-Himadri
+Maciej
