@@ -2,78 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610EA43C968
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2612C43C94F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241942AbhJ0MTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:19:00 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13982 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241859AbhJ0MSs (ORCPT
+        id S241785AbhJ0MPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:15:15 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:56860 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239982AbhJ0MPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:18:48 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HfSKh3wW8zZcNK;
-        Wed, 27 Oct 2021 20:14:16 +0800 (CST)
-Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 20:16:12 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 20:16:11 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangjie125@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH net 7/7] net: hns3: adjust string spaces of some parameters of tx bd info in debugfs
-Date:   Wed, 27 Oct 2021 20:11:49 +0800
-Message-ID: <20211027121149.45897-8-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211027121149.45897-1-huangguangbin2@huawei.com>
-References: <20211027121149.45897-1-huangguangbin2@huawei.com>
+        Wed, 27 Oct 2021 08:15:14 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RAq1gg007199;
+        Wed, 27 Oct 2021 14:12:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=K+V7SoDRwFrj72+BVN9PGl0W0QLtqYKgJ5J1yPfvkds=;
+ b=MOt0ClCsAAuqT4WNaIOWc7DnFY6E103KUFNvdXYeSUm9z5aYBUB7KRsehW+2uqaCwrI4
+ B6NM2OQ35gYqyhghqre3yKRVTShnFWDqAtXTMAI1aMzxGhaJqfaiXCuOfOx0a+0CJT7q
+ 7zs01o8LvenonBMGO+dQBAyrJtPF0+bXGieH/q3gw6tfCQkAWD+20vkzTZXJVWadEu7y
+ lZdqUbAyQVe6eZm7E0Im94XRz2a6K5u63BrP6Xp5Xz49eWGk/T7aQtUSlMEY1cwJ1Ddc
+ r0ldMwm+JUFz3EO++wC1ORX26b48u9Pg5tiTFI06nDSzghTbobUh4pBNGnYt0lHIyWq+ tQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3by10btbpm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 14:12:42 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 27C61100038;
+        Wed, 27 Oct 2021 14:12:42 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1E82C241850;
+        Wed, 27 Oct 2021 14:12:42 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct 2021 14:12:41
+ +0200
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>,
+        <robh+dt@kernel.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>, <amelie.delaunay@foss.st.com>,
+        <fabrice.gasnier@foss.st.com>, <alexandre.torgue@foss.st.com>
+Subject: [PATCH v2] dt-bindings: usb: dwc2: document the port when usb-role-switch is used
+Date:   Wed, 27 Oct 2021 14:12:32 +0200
+Message-ID: <1635336752-14796-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_04,2021-10-26_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adjusts the string spaces of some parameters of tx bd info in
-debugfs according to their maximum needs.
+Document the "port" property, which is used with "usb-role-switch"
+to describe the bus connector.
+Definition is inspired from mediatek,mtu3.yaml.
 
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+This fixes some errors seen when running "make dtbs_check":
+... 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: ... Documentation/devicetree/bindings/usb/dwc2.yaml
+
+Note: add dependencies so that 'usb-role-switch' without port is valid or
+both must be present.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Changes in v2:
+Rob's review comments:
+- drop reference to graph.txt
+- drop unneeded quotes
+---
+ Documentation/devicetree/bindings/usb/dwc2.yaml | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-index f2ade0446208..e54f96251fea 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-@@ -790,13 +790,13 @@ static int hns3_dbg_rx_bd_info(struct hns3_dbg_data *d, char *buf, int len)
- }
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+index 10c7d9b..a351f3c 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -130,6 +130,16 @@ properties:
+     description: If present indicates that we need to reset the PHY when we 
+       detect a wakeup. This is due to a hardware errata.
  
- static const struct hns3_dbg_item tx_bd_info_items[] = {
--	{ "BD_IDX", 5 },
--	{ "ADDRESS", 2 },
-+	{ "BD_IDX", 2 },
-+	{ "ADDRESS", 13 },
- 	{ "VLAN_TAG", 2 },
- 	{ "SIZE", 2 },
- 	{ "T_CS_VLAN_TSO", 2 },
- 	{ "OT_VLAN_TAG", 3 },
--	{ "TV", 2 },
-+	{ "TV", 5 },
- 	{ "OLT_VLAN_LEN", 2 },
- 	{ "PAYLEN_OL4CS", 2 },
- 	{ "BD_FE_SC_VLD", 2 },
++  port:
++    description:
++      Any connector to the data bus of this controller should be modelled
++      using the OF graph bindings specified, if the "usb-role-switch"
++      property is used.
++    $ref: /schemas/graph.yaml#/properties/port
++
++dependencies:
++  port: [ usb-role-switch ]
++
+ required:
+   - compatible
+   - reg
 -- 
-2.33.0
+2.7.4
 
