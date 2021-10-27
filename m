@@ -2,114 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250F043C469
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C10243C46C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237071AbhJ0H4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:56:17 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15724 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231572AbhJ0H4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:56:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635321229; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=OkgHr2Y6HEkj1kBlD9Tm89+Omnw4DhBiRqIgVdp5c8E=;
- b=VEa42wK3fsFezPfOcCHbi/j2qtDh9yrvY3QIzGiP0AH2ei+VUNUB51vHEJ8YB57GdCis0Q0o
- lwJDXRLETnuGIkEWLWdvoqEfpranQ5ySq9QI/sNrHMveNynNqXhclVpxccWcL15qF/rIhvxJ
- svGdSZl4RR22KoY5O4yH+xT1B5E=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 61790581c75c436a30cdd23b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 07:53:37
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2563BC43618; Wed, 27 Oct 2021 07:53:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S240669AbhJ0H4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:56:46 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:51590
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239074AbhJ0H4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:56:45 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05E46C4338F;
-        Wed, 27 Oct 2021 07:53:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 05E46C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 72B9F3F1A4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:54:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635321259;
+        bh=jrIERodREqehysnV6gsM61G1ahaaesQ+KVjNvRfOpIo=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=ep0T11q9uoj0kUewI9HjgYetNfyl4YiPWXnK/ZGdnA+OCWOJuCtnOJk0uuM8/nYqi
+         C7VwlyIAXVxhgdF7o+t9g7V2CNjU7XlWXup8zOmSzrNDyhAaruaMqBj35RI8NZbzIN
+         mmy28C/gL8xRhwXPvkeFEGm2NSp6M/R6KLOW5vMVqKN3CYkFDMSR5xWtzAK5SGG+qn
+         9hGfsBd4RDZ66KKRqq/BV/VZkOHGNXAWrOuaPGOs4CEUxA0xMwKdoQHfpAmhUHSHwB
+         /8VNfePfaEVbi2zZyhP85YqRUfPUndmZ9DNTy+IiYf60r5vDI503Tx+5BapNBtLZK+
+         BDtKzvHDkNJvA==
+Received: by mail-wr1-f70.google.com with SMTP id b8-20020adff248000000b00171bceb5139so312471wrp.18
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:54:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=jrIERodREqehysnV6gsM61G1ahaaesQ+KVjNvRfOpIo=;
+        b=ir2CJjuL555GYFMYZ80AXcYrCiQQgppAHF5pdA6sroV9qLhoYrGK5EpORQsigppQPp
+         0Nh8w3pho8qcsVWeI1NEUo2UIWwZyPcHCrqymxuNC59HUjo+jCmE+55SxPrRPJvSTU7k
+         I3NiXP56Sm9GBsn6oAU8jBD6IEYiDvxS6jdJW5i45pFseWBjKQho5vYLP6+dddu89+Ga
+         PAiLtfWTyRji0TBLISAws3J4+ThKH9exC+/tUBFupwh6uxXpUatKw/PhNdXnkx+L70P1
+         gEoH6FL0mQ20DhwvIjhT5KF+KXGaeld752P785IsaE8GrbeY7RK5yNxCYb6/B0a156FX
+         vDKQ==
+X-Gm-Message-State: AOAM531PFP7VQhJieglqX3QncrnLhtrQrUUpcykXtzwRfmAhPao8vz2o
+        dima3siYsCzWMG823D5N8ZvMeCZDEQk47vLOVKR9kDcByG7UMw524pWT/IIyLGheRfWpiyLBE2b
+        1mxKI5hOzTHK0Vk1rprKX/4J3Hh4uhLCDMrgbfkpkvg==
+X-Received: by 2002:a7b:cd16:: with SMTP id f22mr4132872wmj.42.1635321258929;
+        Wed, 27 Oct 2021 00:54:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6qDUvnuv6opusaRgyH+GKdjmFxmU7S/Ic0X3KxUzeyS5RGOxCGIbPbcPVKjnEkiGVgKpkog==
+X-Received: by 2002:a7b:cd16:: with SMTP id f22mr4132838wmj.42.1635321258655;
+        Wed, 27 Oct 2021 00:54:18 -0700 (PDT)
+Received: from [192.168.123.55] (ip-88-152-144-157.hsi03.unitymediagroup.de. [88.152.144.157])
+        by smtp.gmail.com with ESMTPSA id s11sm13060053wrt.60.2021.10.27.00.54.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 00:54:18 -0700 (PDT)
+Message-ID: <7b8233f4-b7d7-7142-3c09-4d5c3e06d287@canonical.com>
+Date:   Wed, 27 Oct 2021 09:54:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/3] wcn36xx: add debug prints for sw_scan start/complete
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211023003949.3082900-2-benl@squareup.com>
-References: <20211023003949.3082900-2-benl@squareup.com>
-To:     Benjamin Li <benl@squareup.com>
-Cc:     Joseph Gates <jgates@squareup.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Benjamin Li <benl@squareup.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eugene Krasnikov <k.eugene.e@gmail.com>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163532120872.19793.15468481505724352001.kvalo@codeaurora.org>
-Date:   Wed, 27 Oct 2021 07:53:37 +0000 (UTC)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [RESEND PATCH V3 0/2] riscv: add RISC-V Svpbmt Standard Extension
+ supports
+Content-Language: en-US
+To:     Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com
+Cc:     Anup Patel <Anup.Patel@wdc.com>, Atish Patra <Atish.Patra@wdc.com>,
+        guoren@kernel.org, christoph.muellner@vrull.eu,
+        philipp.tomsich@vrull.eu, Christoph Hellwig <hch@lst.de>,
+        liush@allwinnertech.com, lazyparser@gmail.com,
+        drew@beagleboard.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, taiten.peng@canonical.com,
+        aniket.ponkshe@canonical.com, gordan.markus@canonical.com,
+        guoren@linux.alibaba.com, Arnd Bergmann <arnd@arndb.de>,
+        wens@csie.org, maxime@cerno.tech,
+        Daniel Lustig <dlustig@nvidia.com>, gfavor@ventanamicro.com,
+        andrea.mondelli@huawei.com, behrensj@mit.edu, xinhaoqu@huawei.com,
+        huffman@cadence.com, mick@ics.forth.gr,
+        allen.baum@esperantotech.com, jscheid@ventanamicro.com,
+        rtrauben@gmail.com
+References: <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+In-Reply-To: <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benjamin Li <benl@squareup.com> wrote:
-
-> Add some MAC debug prints for more easily demarcating a software scan
-> when parsing logs.
+On 10/27/21 02:12, Palmer Dabbelt wrote:
+> On Sun, 24 Oct 2021 21:06:05 PDT (-0700), wefu@redhat.com wrote:
+>> From: Fu Wei <wefu@redhat.com>
+>>
+>> This patch follows the  RISC-V standard Svpbmt extension in
+>> privilege spec to solve the non-coherent SOC DMA synchronization
+>> issues.
+>>
+>> The svpbmt PTE format:
+>> | 63 | 62-61 | 60-8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0
+>>   N     MT     RSW    D   A   G   U   X   W   R   V
+>>         ^
+>>
+>> Of the Reserved bits [63:54] in a leaf PTE, the bits [62:61] are used as
+>> the MT (aka MemType) field. This field specifies one of three memory 
+>> types
+>> as shown in the following table：
+>> MemType     RISC-V Description
+>> ----------  ------------------------------------------------
+>> 00 - PMA    Normal Cacheable, No change to implied PMA memory type
+>> 01 - NC     Non-cacheable, idempotent, weakly-ordered Main Memory
+>> 10 - IO     Non-cacheable, non-idempotent, strongly-ordered I/O memory
+>> 11 - Rsvd   Reserved for future standard use
 > 
-> Signed-off-by: Benjamin Li <benl@squareup.com>
+> Do you have a pointer to the spec that contains these?  I'm specifically
+> worried about these page-based attributes being elided when paging is
+> off (ie, M-mode), which has caused issues in systems I've worked with in
+> the past.  I'm assuming there's something related to this in the specs,
+> but I'm worried we'll need some sort of ack from M-mode that it's been
+> setup to work that way.  One could imagine an MPRV-like approach 
+> working, but I don't see enough in the old specs and I'm having trouble 
+> figuring out where the canonical version of this lives.
 
-Failed to build:
+The draft version of the spec is available in chapter 6, p 87 of
+https://raw.githubusercontent.com/riscv/virtual-memory/main/specs/663-Svpbmt.pdf
 
-In file included from ./include/linux/bitops.h:7,
-                 from ./include/linux/kernel.h:12,
-                 from ./include/linux/interrupt.h:6,
-                 from drivers/net/wireless/ath/wcn36xx/dxe.c:25:
-drivers/net/wireless/ath/wcn36xx/dxe.c: In function '_wcn36xx_dxe_tx_channel_is_empty':
-./include/linux/typecheck.h:12:25: error: comparison of distinct pointer types lacks a cast [-Werror]
-   12 |         (void)(&__dummy == &__dummy2); \
-      |                         ^~
-./include/linux/spinlock.h:255:17: note: in expansion of macro 'typecheck'
-  255 |                 typecheck(unsigned long, flags);        \
-      |                 ^~~~~~~~~
-./include/linux/spinlock.h:393:9: note: in expansion of macro 'raw_spin_lock_irqsave'
-  393 |         raw_spin_lock_irqsave(spinlock_check(lock), flags);     \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ath/wcn36xx/dxe.c:844:9: note: in expansion of macro 'spin_lock_irqsave'
-  844 |         spin_lock_irqsave(&ch->lock, flags);
-      |         ^~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-make[5]: *** [scripts/Makefile.build:277: drivers/net/wireless/ath/wcn36xx/dxe.o] Error 1
-make[4]: *** [scripts/Makefile.build:540: drivers/net/wireless/ath/wcn36xx] Error 2
-make[3]: *** [scripts/Makefile.build:540: drivers/net/wireless/ath] Error 2
-make[2]: *** [scripts/Makefile.build:540: drivers/net/wireless] Error 2
-make[1]: *** [scripts/Makefile.build:540: drivers/net] Error 2
-make: *** [Makefile:1868: drivers] Error 2
+According to 
+https://groups.google.com/a/groups.riscv.org/g/isa-dev/c/nOrD9t9ImEw/m/tstjm4QbAAAJ 
+review has started Sep 17th.
 
-3 patches set to Changes Requested.
+Best regards
 
-12579221 [1/3] wcn36xx: add debug prints for sw_scan start/complete
-12579223 [2/3] wcn36xx: implement flush op to speed up connected scan
-12579225 [3/3] wcn36xx: ensure pairing of init_scan/finish_scan and start_scan/end_scan
+Heinrich
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211023003949.3082900-2-benl@squareup.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> 
+>> The standard protection_map[] needn't be modified because the "PMA"
+>> type keeps the highest bits zero.
+>> And the whole modification is limited in the arch/riscv/* and using
+>> a global variable(__riscv_svpbmt) as _PAGE_DMA_MASK/IO/NC for
+>> pgprot_noncached (&writecombine) in pgtable.h.
+>> We also add _PAGE_CHG_MASK to filter PFN than before.
+>>
+>> Enable it in devicetree - (Add "mmu-supports-svpbmt" in cpu node)
+>>  - mmu-supports-svpbmt
+> 
+> Maybe this is enough of an ack, but we'll need to have some pretty
+> specific documentation if that's the case.  It's not described that way 
+> in the docs right now, they just talk about CPU support (IMO we could 
+> probe that with a trap, but I'm fine with the DT entry as it's a bit 
+> simpler).
+> 
+>> Wei Fu (2):
+>>   dt-bindings: riscv: add mmu-supports-svpbmt for Svpbmt
+>>   riscv: add RISC-V Svpbmt extension supports
+>>
+>>  .../devicetree/bindings/riscv/cpus.yaml       |  5 +++
+>>  arch/riscv/include/asm/fixmap.h               |  2 +-
+>>  arch/riscv/include/asm/pgtable-64.h           |  8 ++--
+>>  arch/riscv/include/asm/pgtable-bits.h         | 41 ++++++++++++++++++-
+>>  arch/riscv/include/asm/pgtable.h              | 39 ++++++++++++++----
+>>  arch/riscv/kernel/cpufeature.c                | 32 +++++++++++++++
+>>  arch/riscv/mm/init.c                          |  5 +++
+>>  7 files changed, 117 insertions(+), 15 deletions(-)
 
