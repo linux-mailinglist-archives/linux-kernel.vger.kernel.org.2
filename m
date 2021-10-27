@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AF143D189
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C1643D18C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240681AbhJ0TVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:21:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232939AbhJ0TVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:21:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DCC060EB4;
-        Wed, 27 Oct 2021 19:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635362320;
-        bh=QZyxF5mCab0/tbZ83TzsuU8/T++E3MImjOcnMo5e86Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S2m0/nLXMhJxjgwtJKTp4Lh2V4ciAM3p276V3A4nM06gC4pgLvpZ7+tRSr4k7ALMb
-         0d6ZXRE0TJhcrZ1tdFtBmqnPP4twJWyP4JAN3tlU+HrZoTzmWZouHv/aLZahb0QkW5
-         hhuF4Hd89GlchOJUGvpuDcG9ECZJhlIKo7byd0XZPX+piJfgoSlBMi5dFvxGTz8kd9
-         7M/2Frxay0HASye+Hq4IWYNMpb4SA2ZFPjavVSr9fx+jsTlVPbyo4VD7hyKAbqURgR
-         kxsPimCHoiP19YxiFVRafWhHHPj9Ud5i0CRhVmQ0Gn2lBu4JUfdU0j08guH4EpD4KD
-         VSjPaw0sJ73Ew==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 718FE410A1; Wed, 27 Oct 2021 16:18:37 -0300 (-03)
-Date:   Wed, 27 Oct 2021 16:18:37 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 0/6] perf dlfilter: Add dlfilter-show-cycles
-Message-ID: <YXmmDci4+9P6NCoG@kernel.org>
-References: <20211027080334.365596-1-adrian.hunter@intel.com>
+        id S243668AbhJ0TWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232939AbhJ0TWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 15:22:32 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89789C061570;
+        Wed, 27 Oct 2021 12:20:06 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id b4so528520plg.13;
+        Wed, 27 Oct 2021 12:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lamt7wUkPTKdaqCHkren9ZWjMjcvTJYr9lIMgEW7TmU=;
+        b=BJqeF9vFLoLHqQqJ3zbonBdnFs+qlgbrNY2cQZ25KhjvuWPtXS1S+181gyYzg0X5YK
+         26vrbsw1dboTy/KljayAV4ZK45ReGmh2IrUqbRCvGeWHPhfpQychYrXCnr2moeppqTN7
+         0pGN4+T8lF4u/+FZy8IAsC+X1ZR9QUuirTK100SiliVSf+B2DHzXy4X+troFE9zGvVJD
+         WgWu7VXuonyxDF0+MzbVOr8K3W/9RM/9FXdMjDJB1QXxPdA/MGTghDPGQANTK0LcMrYd
+         YRQtPMr0mejuwiRNHV4WoYy9hxiijXHrU5UgUajPEaGZvAE1D++MPVU2P/KlS9L0ZpuH
+         eHsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lamt7wUkPTKdaqCHkren9ZWjMjcvTJYr9lIMgEW7TmU=;
+        b=pyLsjYTkVt2TEodeqJIB9ldSQrBBMKCJv3aq+zYtWEEqf51KX/CvqIk0yUJ0J8fHgT
+         YTobJCqPpKyjSYXslr52it0wUeRIf78FKNT6eZ4XYhGMar8pB6+4OA6IAgZmjqNRyIUP
+         be6dXPhe/SQwabLeA4s8LHGakXW8X5gg59QpVLZDvD8e4gubB1w6OlFsKRZMI6IQcHgB
+         q8ttLvmZDqIw05XgVjTMfKMguqSPLGZNUVm+dd+wIBnQQ4gF6IFbq852XbC5JOdyyes0
+         uK4CFfimVUoHXqapPDBWloYlvaMllw/lBb6cjYIGkd3lMkbqcH9UURryyknlkH90Do9X
+         cvkQ==
+X-Gm-Message-State: AOAM531CAwJT1gETehKVpaoJrC/f/sI6Nu9sAWia/DlZIfibjyxIqC6o
+        1ch1QTAS2Xw06Co7mW1l9hLNaqsdmeA=
+X-Google-Smtp-Source: ABdhPJyAFtO0cS47gquTRUbwKao74WeeguktQUO8O084Mqv8pmcX9QoAtl1a/sAi+iRiqDl8WlvFiA==
+X-Received: by 2002:a17:902:d718:b0:13d:e2ec:1741 with SMTP id w24-20020a170902d71800b0013de2ec1741mr29977108ply.38.1635362406094;
+        Wed, 27 Oct 2021 12:20:06 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id s33sm803136pfg.18.2021.10.27.12.20.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 12:20:05 -0700 (PDT)
+Subject: Re: [PATCH net] net: gro: set the last skb->next to NULL when it get
+ merged
+To:     kerneljasonxing@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        alobakin@pm.me, jonathan.lemon@gmail.com, willemb@google.com,
+        pabeni@redhat.com, vvs@virtuozzo.com, cong.wang@bytedance.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Xing <xingwanli@kuaishou.com>
+References: <20211026131859.59114-1-kerneljasonxing@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <2b839087-ed6a-d498-e1ab-c6bcea2f2965@gmail.com>
+Date:   Wed, 27 Oct 2021 12:20:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027080334.365596-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20211026131859.59114-1-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 27, 2021 at 11:03:28AM +0300, Adrian Hunter escreveu:
-> Hi
-> 
-> The issue with V1 was that the IPC information used to accumulate cycle
-> counts has a lower granularity because it is output only when the cycle
-> count correlates to the IP of the event i.e. only when the IPC is exactly
-> correct.
-> 
-> To enable more frequent updates to the cycle count, itrace option 'A' is
-> added, which specifies that IPC information can be approximate.
-> 
-> In addition there are some new miscellaneous patches.
 
-Ok, replacing v2 with this one.
- 
-> 
-> Changes in V3:
-> 
->     perf intel-pt: Support itrace A option to approximate IPC
->       Expanded explanation of the loss of accuracy of IPC with 'A' option.
-> 
->     Added Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> 
-> 
-> Changes in V2:
-> 
->     perf dlfilter: Add dlfilter-show-cycles
->       Separate counts for branches, instructions or other events.
-> 
->     New patches:
->       perf auxtrace: Add missing Z option to ITRACE_HELP
->       perf auxtrace: Add itrace A option to approximate IPC
->       perf intel-pt: Support itrace A option to approximate IPC
->       perf auxtrace: Add itrace d+o option to direct debug log to stdout
->       perf intel-pt: Support itrace d+o option to direct debug log to stdout
-> 
-> 
-> Adrian Hunter (6):
->       perf auxtrace: Add missing Z option to ITRACE_HELP
->       perf auxtrace: Add itrace A option to approximate IPC
->       perf intel-pt: Support itrace A option to approximate IPC
->       perf dlfilter: Add dlfilter-show-cycles
->       perf auxtrace: Add itrace d+o option to direct debug log to stdout
->       perf intel-pt: Support itrace d+o option to direct debug log to stdout
-> 
->  tools/perf/Documentation/itrace.txt                |   2 +
->  tools/perf/Documentation/perf-intel-pt.txt         |  28 ++++
->  tools/perf/Makefile.perf                           |   2 +-
->  tools/perf/dlfilters/dlfilter-show-cycles.c        | 144 +++++++++++++++++++++
->  tools/perf/util/auxtrace.c                         |   3 +
->  tools/perf/util/auxtrace.h                         |   6 +
->  .../perf/util/intel-pt-decoder/intel-pt-decoder.c  |   1 +
->  .../perf/util/intel-pt-decoder/intel-pt-decoder.h  |   1 +
->  tools/perf/util/intel-pt-decoder/intel-pt-log.c    |   8 +-
->  tools/perf/util/intel-pt.c                         |  21 ++-
->  10 files changed, 205 insertions(+), 11 deletions(-)
->  create mode 100644 tools/perf/dlfilters/dlfilter-show-cycles.c
-> 
-> 
-> Regards
-> Adrian
 
--- 
+On 10/26/21 6:18 AM, kerneljasonxing@gmail.com wrote:
+> From: Jason Xing <xingwanli@kuaishou.com>
+> 
+> Setting the @next of the last skb to NULL to prevent the panic in future
+> when someone does something to the last of the gro list but its @next is
+> invalid.
+> 
+> For example, without the fix (commit: ece23711dd95), a panic could happen
+> with the clsact loaded when skb is redirected and then validated in
+> validate_xmit_skb_list() which could access the error addr of the @next
+> of the last skb. Thus, "general protection fault" would appear after that.
+> 
 
-- Arnaldo
+If this a bug, please provide a Fixes: tag
+
+> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> ---
+>  net/core/skbuff.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 2170bea..7b248f1 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -4396,6 +4396,7 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
+>  		skb_shinfo(p)->frag_list = skb;
+>  	else
+>  		NAPI_GRO_CB(p)->last->next = skb;
+> +	skb->next = NULL;
+
+Really at this point skb->next must be already NULL.
+
+Please provide a stack trace so that we fix the caller instead
+of adding more code in GRO layer.
+
+
+>  	NAPI_GRO_CB(p)->last = skb;
+>  	__skb_header_release(skb);
+>  	lp = p;
+> 
