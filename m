@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDE043D736
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4022F43D73C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhJ0XKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S230232AbhJ0XLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhJ0XKY (ORCPT
+        with ESMTP id S230080AbhJ0XLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 19:10:24 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D954DC061570;
-        Wed, 27 Oct 2021 16:07:58 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id b12so2315866wrh.4;
-        Wed, 27 Oct 2021 16:07:58 -0700 (PDT)
+        Wed, 27 Oct 2021 19:11:33 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C6CC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:09:07 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id s24so3131738plp.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:09:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=shjT1Lwvq5Pacm8Ep0rHg4FBAZ03jqRawXUWiHiX5AA=;
-        b=fX3TS9RxmgUQ4rb9iXoV7Ug8bv7uI+xiX/56cAZSrLThLbRor07/5DAXKpBcxd5eW5
-         sKleuKmzJfPck/YSQhn3UxocZE9XeIaOn7pItp6FiR7flTZrwpES+9EkTdgwlc1vOwD6
-         Fxg9dcBNdp0VFSqNej8GcfaGUdshcEtoxDMGoXr04rLSpb+DoO0fTx909qgPBoA3jRJn
-         2bctUo4wD1iNHhkcW2pStwm7fZ9xrO1oDRj3zitoK2u1hgF2LGL4MKrOMJ1XevG4xzRA
-         1LvW1d3Mc3nE3rMt6c2B4EajnGhR14A1P4KV1gY+o1S1ELc8z8u6N5nPI2FW+BRDMk8N
-         8o/A==
+        d=google.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z53gTOEVxYIb2lgRgD1L0JMW+iobeAI2vEOAm7ftuvk=;
+        b=lV/g05Uypl1OzKYE1QMWJyYIU8xBPn8A0CXWkz0mdqne0nY/AhG62U7txhv33/8DBJ
+         L8QMapRM1yzfc2+j9bzuWXoyXiXhAbLXYxCt3WAjfpBecHdHe6WwRzd1zri9JzCqhiaW
+         pZkpAUtcH+ZPBVClrhm5qjb6xz1xV+yfzRODN62gaVcYIi7sCPobs0xde5NJ42Ox0xDu
+         Vm9O+wT3VUTdonNpQP2UTPs3G3ya+XOMxAZoqAT86EVmCLMpHKdDUxwUt3v8X0kZvmwu
+         8F8ObOpydb6ih8EwhOpDBxicaZ5mhVmwPgQqDO25HgcULLaWmkyG/l53yLZsNfrjWZBq
+         8cEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=shjT1Lwvq5Pacm8Ep0rHg4FBAZ03jqRawXUWiHiX5AA=;
-        b=jSTxhgOhOUmNZbk4tF6eWagRiJ9TjdFGZe+SBJPx0JSSsD9hguoVWeT0IQsdLJvAOH
-         4Q5V7ZWdJzbteGMCGyW7rJ3hb2OUmb6D/vQcnBfn0u2maNXCUPDeW7DZeW8IdKj9c5pP
-         V8mI8lMcMtKQBeqHIsmHWGxMuAcPWS8CfMIj8TpGY1QusxtXPlkgAilGyFRSISG/Omxi
-         2rsewo/QRHaN4fOQwhKcQKHXE8UAVIoblUD/G4pDWCcnTojNhsjQgvgIGM5nvWQ7sXub
-         vDQnXBLOmHAyEmUdJ7WAS4KBi8bj9PKg84PpNSufdkWTdG7OkA+CywZWBkiYghA41QJd
-         1wQw==
-X-Gm-Message-State: AOAM533dEK6LuBPHXJHn7zyqn4IBEsAKzVIrICngoHU+Eg5nkPfIlEQR
-        QSsbiOghmOY8by50/wTCK7yStkLzyNU=
-X-Google-Smtp-Source: ABdhPJyFdw6CQgcYWV0qqu0K2OrcdZSfy6/iB5er1Di/rP0WkDDwVDItvJTzE2WVQJojzq6z7SG9wQ==
-X-Received: by 2002:a5d:4845:: with SMTP id n5mr736144wrs.251.1635376077451;
-        Wed, 27 Oct 2021 16:07:57 -0700 (PDT)
-Received: from localhost (195-70-108-137.stat.salzburg-online.at. [195.70.108.137])
-        by smtp.gmail.com with ESMTPSA id a2sm1208727wru.82.2021.10.27.16.07.56
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=z53gTOEVxYIb2lgRgD1L0JMW+iobeAI2vEOAm7ftuvk=;
+        b=JmnZGdTbloE7Fe90DXytdKPLCYEm5kx3S9VYnyD6L+0z/IcJS6sg4sqgWpoYP6IWqP
+         fU65GLvZ1/dCM2UA2TvB9qbUmHNMQ4UhgAU8laJTxWL2YYtZGMYeI9Dye8JK8ID6cZRH
+         V9JEjHWtfafkbdBjybr/vW92+HylUnGnPW3kNrKUTXBNUi1MLIMB5HV4J725pMohKVNm
+         4YNtfZ52ztgMGNQ8W/qgnv1wUlYfVvEh2XeS+NDJ4tkb8UscNHiphDTh1dV0eK6FyUAM
+         k1rB6WPAA1yWJe16j5/iLE+dLVdW3CtSErpLHkKTkba+SrtBKjZW77xUZruA5tgh3G5s
+         ljaA==
+X-Gm-Message-State: AOAM530ecm4Dw08bbB7VIwQgi5LcEi9lGHmUEMJcvu+47jH5SEGexTEf
+        uGkfQxzWTybQ6XCSFhIOHGS8qA==
+X-Google-Smtp-Source: ABdhPJwzxaxiDrbf0kl3QEpL66IJ+PcLfivFj41ahyeu/Lr51qQFioruTUwYw2IXhembXFga6qL70Q==
+X-Received: by 2002:a17:902:e808:b0:140:55fe:1b4e with SMTP id u8-20020a170902e80800b0014055fe1b4emr413929plg.87.1635376146401;
+        Wed, 27 Oct 2021 16:09:06 -0700 (PDT)
+Received: from localhost ([2620:0:1000:5e10:60fc:a50:6d27:9fd3])
+        by smtp.gmail.com with ESMTPSA id d21sm1000958pfl.59.2021.10.27.16.09.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 16:07:56 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 01:07:56 +0200
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Slade Watkins <slade@sladewatkins.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Lijun Pan <lijunp213@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: Unsubscription Incident
-Message-ID: <YXnbzE9bjVS73g7H@localhost>
-References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
- <YXcGPLau1zvfTIot@unknown>
- <CA+pv=HPK+7JVM2d=C2B6iBY+joW7T9RWrPGDd-VXm09yaWsQYg@mail.gmail.com>
- <1d5ccba0-d607-aabc-6bd1-0e7c754c8379@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d5ccba0-d607-aabc-6bd1-0e7c754c8379@infradead.org>
+        Wed, 27 Oct 2021 16:09:05 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 16:09:05 -0700 (PDT)
+X-Google-Original-Date: Wed, 27 Oct 2021 16:07:37 PDT (-0700)
+Subject:     Re: [PATCH] RISC-V: Make CONFIG_RELOCATABLE user selectable
+In-Reply-To: <87ee86ajig.fsf@igel.home>
+CC:     alexandre.ghiti@canonical.com, alex@ghiti.fr,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     schwab@linux-m68k.org
+Message-ID: <mhng-95082d33-c7f4-4d3e-9794-7e0534324218@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 12:29:34PM -0700, Randy Dunlap wrote:
-> Then you should try <postmaster@vger.kernel.org> for assistance.
+On Wed, 27 Oct 2021 02:45:27 PDT (-0700), schwab@linux-m68k.org wrote:
+> On Okt 27 2021, Alexandre Ghiti wrote:
+>
+>> On Wed, Oct 27, 2021 at 10:03 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
+>>>
+>>> On Okt 26 2021, Palmer Dabbelt wrote:
+>>>
+>>> > +config RELOCATABLE
+>>> > +     bool "Build a relocatable kernel"
+>>> > +     depends on MMU && 64BIT && !XIP_KERNEL
+>>> > +     help
+>>> > +          This builds a kernel as a Position Independent Executable (PIE),
+>>> > +          which retains all relocation metadata required to relocate the
+>>> > +          kernel binary at runtime to a different virtual address than the
+>>> > +          address it was linked at.
+>>> > +          Since RISCV uses the RELA relocation format, this requires a
+>>> > +          relocation pass at runtime even if the kernel is loaded at the
+>>> > +          same address it was linked at.
+>>>
+>>> When in doubt, do what?
+>>
+>> Then do not enable.
+>
+> Please add that to the help string.
 
-Hm, are you that isn't connected to /dev/null?
-
-Last time I wrote to the postmaster (not about present issue), I
-didn't get any response at all.
-
-Thanks,
-Richard
+Thanks, I forgot about that.  I've added it, but this is still a bit in 
+flux so I'm not going to send a v2 right now (it's on top of Alex's 
+other patches and should probably be squashed in, anyway).
