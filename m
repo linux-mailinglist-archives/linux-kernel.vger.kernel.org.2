@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7159343CF3B
+	by mail.lfdr.de (Postfix) with ESMTP id BC1B343CF3F
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243144AbhJ0RBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:01:55 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42428 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243151AbhJ0RBf (ORCPT
+        id S243148AbhJ0RB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:01:57 -0400
+Received: from mail-oo1-f52.google.com ([209.85.161.52]:40572 "EHLO
+        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243158AbhJ0RBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:01:35 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id f0d748fbbe410f5a; Wed, 27 Oct 2021 18:59:08 +0200
-Received: from kreacher.localnet (unknown [213.134.161.235])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 34D7366AA20;
-        Wed, 27 Oct 2021 18:59:07 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH] ACPI: glue: Use acpi_device_adr() in acpi_find_child_device()
-Date:   Wed, 27 Oct 2021 18:59:06 +0200
-Message-ID: <11862679.O9o76ZdvQC@kreacher>
+        Wed, 27 Oct 2021 13:01:38 -0400
+Received: by mail-oo1-f52.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so1132466ooi.7;
+        Wed, 27 Oct 2021 09:59:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3xNLUk6B6HG3KUZQunYiPk6GxwNlFHDYS2KiJ7xOzd0=;
+        b=ghxwW0MTLBPmuJuHTCjyds2HUQbFd0UQbHVCA69CgeXp2DPYC+yh71uw0CkbzSn6hz
+         6qmHMFZYi1QrWrqt7fYIDll6P515rWZNKPgZmnqPVb6QvzejYBbcGXSYlhdOvs5YP8az
+         /hHOmdF2LeSZxe32aWLJk67IowzU7ICnWF+oPPPITns48FVhcSsQaKG79ls0EpbpVXEG
+         D19UWigGEtsG/eWoupPwgwV07tddN/ONRr6L/bxMLq3HEF6eSbEU/hh56KabexD7tzTe
+         3+t9AcoLWvhH7iXMTBRapPv1/+x/UFPGvjMXIWwkh1fF/iDKqPxseLcLKibbI6GViPlm
+         Aw3A==
+X-Gm-Message-State: AOAM533PVVZniVdRj+oR4SV821/gLdioFA6tae7gNiqopbmYLlcYyv1M
+        F2U/WK1yVVHrg9BHN4bBqg==
+X-Google-Smtp-Source: ABdhPJz2mU9EVbEpZu1D4mjpd0zA7Lfg4qao8M88Gqdf0Vnqbz2FDr6xTj3Smo7ox6FLH3iDEajiIw==
+X-Received: by 2002:a4a:eacc:: with SMTP id s12mr8853355ooh.14.1635353952123;
+        Wed, 27 Oct 2021 09:59:12 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id d4sm238597otu.57.2021.10.27.09.59.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 09:59:11 -0700 (PDT)
+Received: (nullmailer pid 1698392 invoked by uid 1000);
+        Wed, 27 Oct 2021 16:59:10 -0000
+Date:   Wed, 27 Oct 2021 11:59:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Odelu Kukatla <okukatla@codeaurora.org>
+Cc:     sboyd@kernel.org, Georgi Djakov <djakov@kernel.org>,
+        mdtipton@codeaurora.org, Andy Gross <agross@kernel.org>,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
+        evgreen@google.com, bjorn.andersson@linaro.org,
+        Rob Herring <robh+dt@kernel.org>, seansw@qti.qualcomm.com,
+        georgi.djakov@linaro.org, saravanak@google.com, elder@linaro.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>
+Subject: Re: [v8 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on
+ SC7280
+Message-ID: <YXmFXoKLmDsigVqt@robh.at.kernel.org>
+References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
+ <1634812857-10676-2-git-send-email-okukatla@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.161.235
-X-CLIENT-HOSTNAME: 213.134.161.235
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvdegtddguddtgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdevgfetueetheekudeuvdduteelvefftdfftdejjeeukeffteeikefgiefghedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepvddufedrudefgedrudeiuddrvdefheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrdduiedurddvfeehpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihihrdhshhgvvhgthhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehhuggvghhovgguvgesrhgv
- ughhrghtrdgtohhmpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634812857-10676-2-git-send-email-okukatla@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, 21 Oct 2021 16:10:55 +0530, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+> SoCs.
+> 
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Instead of evaluating _ADR in acpi_find_child_device(), use the
-observation that it has already been evaluated and the value returned
-by it has been stored in the pnp.type.bus_address field of the ACPI
-device object at hand.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-Note that the patch at
-
-https://patchwork.kernel.org/project/linux-acpi/patch/2223516.ElGaqSPkdT@kreacher/
-
-will have an effect of this, so I'm going to prioritize the current patch
-over the one above.
-
----
- drivers/acpi/glue.c |    7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-Index: linux-pm/drivers/acpi/glue.c
-===================================================================
---- linux-pm.orig/drivers/acpi/glue.c
-+++ linux-pm/drivers/acpi/glue.c
-@@ -113,13 +113,10 @@ struct acpi_device *acpi_find_child_devi
- 		return NULL;
- 
- 	list_for_each_entry(adev, &parent->children, node) {
--		unsigned long long addr;
--		acpi_status status;
-+		acpi_bus_address addr = acpi_device_adr(adev);
- 		int score;
- 
--		status = acpi_evaluate_integer(adev->handle, METHOD_NAME__ADR,
--					       NULL, &addr);
--		if (ACPI_FAILURE(status) || addr != address)
-+		if (!adev->pnp.type.bus_address || addr != address)
- 			continue;
- 
- 		if (!ret) {
-
-
-
+Acked-by: Rob Herring <robh@kernel.org>
