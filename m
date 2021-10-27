@@ -2,162 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2187643D0C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591B143D0C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243570AbhJ0SdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:33:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41964 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238534AbhJ0SdB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:33:01 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 285DF1FD47;
-        Wed, 27 Oct 2021 18:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635359435; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oZMfINNzPE6pHkEjnDunLstZlbAYeAixrrZvtYFj0Hk=;
-        b=enQcVm5/bI1fZrAiZCXx1PQ8EWmEgqrHYFTe02dBOj19NX0FxxZZVD5TqdQLYKbVdhnjU0
-        RyGS4nMkzK1EoHWi/BPgJUweNwOfgvSS2HHZHO+KO8QEhzAzrotcilX49pw2NKN2ghm+eT
-        O2Q89BznTdppQcM2QR+JuidScIIjpzI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635359435;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oZMfINNzPE6pHkEjnDunLstZlbAYeAixrrZvtYFj0Hk=;
-        b=0tDjn3+FOpuiGCgpAvRQAzbuW5+DwAJYNMkbWdROxf8pq2fqXCKOKfvBg1Vr+vwJSR8UYY
-        PviTArgsX/oWhPAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C736B14068;
-        Wed, 27 Oct 2021 18:30:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Pg5/L8qaeWETLwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 27 Oct 2021 18:30:34 +0000
-Message-ID: <77d1966e-3081-10d3-d7a8-c159b62004aa@suse.de>
-Date:   Wed, 27 Oct 2021 20:30:34 +0200
+        id S239918AbhJ0Sd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:33:28 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:34868 "EHLO mail.z3ntu.xyz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243640AbhJ0Sd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:33:27 -0400
+Received: from g550jk.localnet (ip-213-127-63-241.ip.prioritytelecom.net [213.127.63.241])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 5321AC6C79;
+        Wed, 27 Oct 2021 18:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1635359459; bh=eqfvrW3djl2rMckCdQ8iCPc9puV62AsaOk6nIabDaM0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=mDUy4pwOPLA4UjWHEhXHWYIIzEu5yyl263gERf8bRX1nOZXJLZpmh3ZU/DAGZxnLx
+         oUm7MxSRqTe/rtX7VWQrzAZ9RIhwszZXSmqpAE9LK+5Y7rpAfWB6d5cayHAAbI+lXj
+         +rimFcNGwwSj7J2+Pdzww8NBzh/CnXO7eZVeBa8s=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     dmitry.torokhov@gmail.com, ~postmarketos/upstreaming@lists.sr.ht
+Cc:     robh+dt@kernel.org, Michael.Srba@seznam.cz,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Nikita Travkin <nikita@trvn.ru>,
+        Nikita Travkin <nikita@trvn.ru>
+Subject: Re: [PATCH 3/6] Input: zinitix - Handle proper supply names
+Date:   Wed, 27 Oct 2021 20:30:58 +0200
+Message-ID: <5507591.DvuYhMxLoT@g550jk>
+In-Reply-To: <20211027181350.91630-4-nikita@trvn.ru>
+References: <20211027181350.91630-1-nikita@trvn.ru> <20211027181350.91630-4-nikita@trvn.ru>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v1] drm: import DMA_BUF module namespace
-Content-Language: en-US
-To:     Marcel Ziswiler <marcel@ziswiler.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Maxime Ripard <mripard@kernel.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Linux Kernel Functional Testing <lkft@linaro.org>
-References: <20211027152534.3366799-1-marcel@ziswiler.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211027152534.3366799-1-marcel@ziswiler.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------F01O19CvWQNgrIzOLOyiFHsr"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------F01O19CvWQNgrIzOLOyiFHsr
-Content-Type: multipart/mixed; boundary="------------gna0B3soxyr33E0wIY0PXBNH";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Marcel Ziswiler <marcel@ziswiler.com>,
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- dri-devel@lists.freedesktop.org, open list <linux-kernel@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- David Airlie <airlied@linux.ie>, Maxime Ripard <mripard@kernel.org>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Linus Walleij <linus.walleij@linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
- Marcel Ziswiler <marcel.ziswiler@toradex.com>,
- Linux Kernel Functional Testing <lkft@linaro.org>
-Message-ID: <77d1966e-3081-10d3-d7a8-c159b62004aa@suse.de>
-Subject: Re: [PATCH v1] drm: import DMA_BUF module namespace
-References: <20211027152534.3366799-1-marcel@ziswiler.com>
-In-Reply-To: <20211027152534.3366799-1-marcel@ziswiler.com>
+Hi Nikita,
 
---------------gna0B3soxyr33E0wIY0PXBNH
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+On Mittwoch, 27. Oktober 2021 20:13:47 CEST Nikita Travkin wrote:
+> From: Linus Walleij <linus.walleij@linaro.org>
+> 
+> The supply names of the Zinitix touchscreen were a bit confused, the new
+> bindings rectifies this.
+> 
+> To deal with old and new devicetrees, first check if we have "vddo" and in
+> case that exists assume the old supply names. Else go and look for the new
+> ones.
+> 
+> We cannot just get the regulators since we would get an OK and a dummy
+> regulator: we need to check explicitly for the old supply name.
+> 
+> Use struct device *dev as a local variable instead of the I2C client since
+> the device is what we are actually obtaining the resources from.
+> 
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Michael Srba <Michael.Srba@seznam.cz>
+> Cc: phone-devel@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> [Slightly changed the legacy regulator detection]
+> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+> ---
+> This patch was previously submitted here:
+> https://lore.kernel.org/linux-input/20210625113435.2539282-2-linus.walleij@l
+> inaro.org/
+> 
+> Changes since the original patch:
+>  - Adress the review comments by Dmitry:
+>    Drop explict OF check and use of_find_property()
+> ---
+>  drivers/input/touchscreen/zinitix.c | 21 ++++++++++++++++-----
+>  1 file changed, 16 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/zinitix.c
+> b/drivers/input/touchscreen/zinitix.c index 1e70b8d2a8d7..d4e06a88a883
+> 100644
+> --- a/drivers/input/touchscreen/zinitix.c
+> +++ b/drivers/input/touchscreen/zinitix.c
+> @@ -252,16 +252,27 @@ static int zinitix_init_touch(struct bt541_ts_data
+> *bt541)
+> 
+>  static int zinitix_init_regulators(struct bt541_ts_data *bt541)
+>  {
+> -	struct i2c_client *client = bt541->client;
+> +	struct device *dev = &bt541->client->dev;
+>  	int error;
+> 
+> -	bt541->supplies[0].supply = "vdd";
+> -	bt541->supplies[1].supply = "vddo";
+> -	error = devm_regulator_bulk_get(&client->dev,
+> +	/*
+> +	 * Some older device trees have erroneous names for the regulators,
+> +	 * so check if "vddo" is present and in that case use these names
+> +	 * and warn. Else use the proper supply names on the component.
+> +	 */
 
-SGksDQoNCnRoYW5rcyBmb3IgdGhlIHBhdGNoLg0KDQpBbSAyNy4xMC4yMSB1bSAxNzoyNSBz
-Y2hyaWViIE1hcmNlbCBaaXN3aWxlcjoNCj4gRnJvbTogTWFyY2VsIFppc3dpbGVyIDxtYXJj
-ZWwuemlzd2lsZXJAdG9yYWRleC5jb20+DQo+IA0KPiBUb2RheSdzIC1uZXh0IGZhaWxzIGJ1
-aWxkaW5nIGFybTY0IGRlZmNvbmZpZyBhcyBmb2xsb3dzOg0KPiANCj4gRVJST1I6IG1vZHBv
-c3Q6IG1vZHVsZSBkcm1fY21hX2hlbHBlciB1c2VzIHN5bWJvbCBkbWFfYnVmX3Z1bm1hcCBm
-cm9tDQo+ICAgbmFtZXNwYWNlIERNQV9CVUYsIGJ1dCBkb2VzIG5vdCBpbXBvcnQgaXQuDQo+
-IEVSUk9SOiBtb2Rwb3N0OiBtb2R1bGUgZHJtX2NtYV9oZWxwZXIgdXNlcyBzeW1ib2wgZG1h
-X2J1Zl92bWFwIGZyb20NCj4gICBuYW1lc3BhY2UgRE1BX0JVRiwgYnV0IGRvZXMgbm90IGlt
-cG9ydCBpdC4NCj4gDQo+IFJlcG9ydGVkLWJ5OiBMaW51eCBLZXJuZWwgRnVuY3Rpb25hbCBU
-ZXN0aW5nIDxsa2Z0QGxpbmFyby5vcmc+DQo+IEZpeGVzOiBjb21taXQgNGIyYjVlMTQyZmY0
-ICgiZHJtOiBNb3ZlIEdFTSBtZW1vcnkgbWFuYWdlcnMgaW50byBtb2R1bGVzIikNCj4gU2ln
-bmVkLW9mZi1ieTogTWFyY2VsIFppc3dpbGVyIDxtYXJjZWwuemlzd2lsZXJAdG9yYWRleC5j
-b20+DQo+IA0KPiAtLS0NCj4gDQo+ICAgZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fY21hX2hl
-bHBlci5jIHwgMiArKw0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4g
-DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2dlbV9jbWFfaGVscGVyLmMg
-Yi9kcml2ZXJzL2dwdS9kcm0vZHJtX2dlbV9jbWFfaGVscGVyLmMNCj4gaW5kZXggNmY3YjNm
-OGVjMDRkMy4uNjlmODU2NGFkMTFjZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L2RybV9nZW1fY21hX2hlbHBlci5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fZ2Vt
-X2NtYV9oZWxwZXIuYw0KPiBAQCAtMjMsNiArMjMsOCBAQA0KPiAgICNpbmNsdWRlIDxkcm0v
-ZHJtX2dlbV9jbWFfaGVscGVyLmg+DQo+ICAgI2luY2x1ZGUgPGRybS9kcm1fdm1hX21hbmFn
-ZXIuaD4NCj4gICANCj4gK01PRFVMRV9JTVBPUlRfTlMoRE1BX0JVRik7DQoNCkNvdWxkIHRo
-aXMgbGluZSBiZSBtb3ZlZCB0byB0aGUgYm90dG9tIG9mIHRoZSBmaWxlLCB3aGVyZSB0aGUg
-b3RoZXIgDQpNT0RVTEUgc3RhdGVtZW50cyBhcmU/DQoNCkluIHRoZSBmaXhlZCBjb21taXQg
-NGIyYjVlMTQyZmY0LCB0aGVyZSdzIGEgc2ltaWxhciBjaGFuZ2UgZm9yIA0KZHJtX2dlbV9z
-aG1lbV9oZWxwZXIuYy4gSXQgdXNlcyBkbWEtYnVmX3ZtYXAgYXMgd2VsbC4gRG9lcyB0aGF0
-IG1vZHVsZSANCnJlcXVpcmUgdGhlIHNhbWUgZml4Pw0KDQpEbyB5b3UgaGF2ZSBhbnkgaWRl
-YSB3aHkgSSBkb24ndCBzZWUgdGhlc2UgZXJyb3JzIGluIG15IGJ1aWxkcz8NCg0KQmVzdCBy
-ZWdhcmRzDQpUaG9tYXMNCg0KPiArDQo+ICAgLyoqDQo+ICAgICogRE9DOiBjbWEgaGVscGVy
-cw0KPiAgICAqDQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2
-ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1h
-eGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgwOSwgQUcg
-TsO8cm5iZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEZlbGl4IEltZW5kw7ZyZmZlcg0K
+Nitpick, but:
+"and in that case use these names and warn."
+I don't see any dev_warn or anything that would 'warn'. If you send a v2 it 
+might be nice to fix that.
 
---------------gna0B3soxyr33E0wIY0PXBNH--
+Regards
+Luca
 
---------------F01O19CvWQNgrIzOLOyiFHsr
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+> +	if (of_find_property(dev->of_node, "vddo-supply", NULL)) {
+> +		bt541->supplies[0].supply = "vdd";
+> +		bt541->supplies[1].supply = "vddo";
+> +	} else {
+> +		/* Else use the proper supply names */
+> +		bt541->supplies[0].supply = "vcca";
+> +		bt541->supplies[1].supply = "vdd";
+> +	}
+> +	error = devm_regulator_bulk_get(dev,
+>  					ARRAY_SIZE(bt541-
+>supplies),
+>  					bt541->supplies);
+>  	if (error < 0) {
+> -		dev_err(&client->dev, "Failed to get regulators: %d\n", 
+error);
+> +		dev_err(dev, "Failed to get regulators: %d\n", error);
+>  		return error;
+>  	}
 
------BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmF5msoFAwAAAAAACgkQlh/E3EQov+D/
-IRAAsSnYvDWGk/IsOQXPm8nwU8S0Lw3lf2x0lAd/jKuZu1hnd06+b71mLGsjEyRE0uuRFoQRzyeI
-xRjRQsMsriT6ECDLnyflluze07ycoqbB+JIBHvE36CdO+dP53AiSlsKO0ayatAilbn9kGO5Q5dk+
-6zfw9ZcNvQhGYVXNULlTw17S4azAKOtaghLTDIxhDHioeI1Kwx+2UPLtDlJfcnmt2OxByvqo5Tcy
-pjgDG5loMJ7EavtyapzaW9GE8YMMywlBoFjWP15rgv6MrmZy1om5cHWboxPD7eHkjIPycGz8DfJh
-MuQ1isGBsFoyJsBliGFDYjgFL4DRXtgpeuwZWD326P0VCf7Ulw/6jjpQOjZVzZ55iJ2lkiC/aNxk
-kBNWOyKWB2ijiWaV8OXldks5yYUtc9dhLsPriN4CHL7Iqw+n6E+Cka/1n6QN79IHRBGrsEdQ7Z1f
-oXgX0RPlqvOKdi5fpVY+LoujBiDUErloQswEDbq5TZmOBpKO/Gl79qFPjCQH/qhVtx3SxeO0iP9a
-CQnYXJwDlecsXPFFXcGC+YqEFaJTK0hAmA087a/uCmJy7MUDJxIEmQs1ji+7/ov+ZxdPy+v7hhd4
-sn8ks+4UToYiOc6phkxbd752FKTZmTgqnUN//kQz2Y9g61Ah0BJKv/z7NqZiw6wJwKUv5nwhXO9r
-xx8=
-=hPKg
------END PGP SIGNATURE-----
 
---------------F01O19CvWQNgrIzOLOyiFHsr--
+
