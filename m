@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A43C43C27E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E15343C269
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236878AbhJ0GDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:03:16 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:53002 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhJ0GDP (ORCPT
+        id S236771AbhJ0F6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233344AbhJ0F6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:03:15 -0400
-X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Oct 2021 02:03:15 EDT
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19R5suWQ115299;
-        Wed, 27 Oct 2021 00:54:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635314096;
-        bh=gwwKZSkClD6ZbncJNtCYx9HarUAhL5A9fzaLxzfmhZE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ix5DU9CU3JIpQvYHXbR0+jo2mPJjUKvDWC+zGIKXBvUBRuFWVBxnvQDerrFkYR1tM
-         8akkabRWpJbYvtTHtcXHNeqCgiqy+0bhSfFRZ2rim9vLZByj8htuKdYkNDgw9OTMrU
-         E9a/MUzqQjK5/omgLe6BGgftiYgYclfpUCDraibs=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19R5suPA001249
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Oct 2021 00:54:56 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 27
- Oct 2021 00:54:55 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 27 Oct 2021 00:54:55 -0500
-Received: from [10.250.234.118] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19R5sqJ1107019;
-        Wed, 27 Oct 2021 00:54:53 -0500
-Subject: Re: [PATCH 1/2] dmaengine: ti: k3-udma: Fix NULL pointer dereference
- error for BCDMA
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20211027055254.10912-1-kishon@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <c4faa3d6-4622-0f82-603e-308c8fd43156@ti.com>
-Date:   Wed, 27 Oct 2021 11:24:52 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 27 Oct 2021 01:58:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298ABC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 22:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=uUfWJrLd6zEoYmRP410NAAsU5tIioJ+f9QyGQWf6eEI=; b=vSacETVDQdOnRDgH9QMM7dMrXZ
+        iwAl10OfpFbyVZC/zy7zFdGHWWqPzyoRLGiCnOZsuiBAvsEKgTb6W7qtKE8FvsryNKI6iRhuKj090
+        SDpigjJqAiQor0ENGV1wwXKXWvrgEe8nSufnEjx1zm6S0rEB1crekflcdnGalhfVKTzHkuARiY8xv
+        8i5dKSTwop1Te7hnvIUzG1u0cTZrLp/G7YWjsTCHajRo+SfwU1RUnmLNacIWfwvM4TY3udclWojUD
+        ywP5WKcgsetCxc3tKUVKB+KMKpCs89tMajf+NT19Xz30lq+PBBaiSlGtASPrsVskxeXKNpIcZQpyx
+        uLAZAW8w==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfbul-003wC2-Ez; Wed, 27 Oct 2021 05:55:55 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zong Li <zong@andestech.com>, Nick Hu <nickhu@andestech.com>,
+        Vincent Chen <deanbo422@gmail.com>
+Subject: [PATCH] nds32: ftrace: fix pointer comparison warning
+Date:   Tue, 26 Oct 2021 22:55:54 -0700
+Message-Id: <20211027055554.19372-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20211027055254.10912-1-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+GCC 11.1.0 for nds32 (nds32le if it matters) complains:
 
-On 27/10/21 11:22 am, Kishon Vijay Abraham I wrote:
-> bcdma_get_*() checks if bchan is already allocated by checking if it
-> has a NON NULL value. For the error cases, bchan will have error value
-> and bcdma_get_*() considers this as already allocated (PASS) since the
-> error values are NON NULL. This results in NULL pointer dereference
-> error while de-referencing bchan.
-> 
-> Reset the value of bchan to NULL if the allocation actually fails.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+../arch/nds32/kernel/ftrace.c: In function '_mcount':
+../arch/nds32/kernel/ftrace.c:24:35: error: comparison of distinct pointer types lacks a cast [-Werror]
+   24 |         if (ftrace_trace_function != ftrace_stub)
+      |                                   ^~
 
-Please ignore this series. There was some stray patches left which I failed to
-notice before sending. I'll resend a clean one.
+Cast the second function (pointer) to (void *) to avoid the warning.
 
+Fixes: a18082575c66 ("nds32/ftrace: Support static function tracer")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+To: Greentime Hu <green.hu@gmail.com>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Zong Li <zong@andestech.com>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: Vincent Chen <deanbo422@gmail.com>
+---
+ arch/nds32/kernel/ftrace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Kishon
-> ---
->  drivers/dma/ti/k3-udma.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-> index a35858610780..14ae28830871 100644
-> --- a/drivers/dma/ti/k3-udma.c
-> +++ b/drivers/dma/ti/k3-udma.c
-> @@ -1348,6 +1348,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->  {
->  	struct udma_dev *ud = uc->ud;
->  	enum udma_tp_level tpl;
-> +	int ret;
->  
->  	if (uc->bchan) {
->  		dev_dbg(ud->dev, "chan%d: already have bchan%d allocated\n",
-> @@ -1365,8 +1366,11 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->  		tpl = ud->bchan_tpl.levels - 1;
->  
->  	uc->bchan = __udma_reserve_bchan(ud, tpl, -1);
-> -	if (IS_ERR(uc->bchan))
-> -		return PTR_ERR(uc->bchan);
-> +	if (IS_ERR(uc->bchan)) {
-> +		ret = PTR_ERR(uc->bchan);
-> +		uc->bchan = NULL;
-> +		return ret;
-> +	}
->  
->  	uc->tchan = uc->bchan;
->  
-> 
+--- linux-next-20211026.orig/arch/nds32/kernel/ftrace.c
++++ linux-next-20211026/arch/nds32/kernel/ftrace.c
+@@ -21,7 +21,7 @@ noinline void _mcount(unsigned long pare
+ 
+ 	unsigned long ip = (unsigned long)__builtin_return_address(0);
+ 
+-	if (ftrace_trace_function != ftrace_stub)
++	if (ftrace_trace_function != (void *)ftrace_stub)
+ 		ftrace_trace_function(ip - MCOUNT_INSN_SIZE, parent_ip,
+ 				      NULL, NULL);
+ 
