@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD73643C9BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E9243C9C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241917AbhJ0Mdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:33:44 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:26128 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhJ0Mdm (ORCPT
+        id S241916AbhJ0MhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240142AbhJ0MhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:33:42 -0400
-Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HfSg15f6dz1DHtb;
-        Wed, 27 Oct 2021 20:29:17 +0800 (CST)
-Received: from huawei.com (10.67.189.2) by dggeme762-chm.china.huawei.com
- (10.3.19.108) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Wed, 27
- Oct 2021 20:31:13 +0800
-From:   Lexi Shao <shaolexi@huawei.com>
-To:     <james.clark@arm.com>
-CC:     <acme@kernel.org>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <mark.rutland@arm.com>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <nixiaoming@huawei.com>,
-        <peterz@infradead.org>, <qiuxi1@huawei.com>, <shaolexi@huawei.com>,
-        <wangbing6@huawei.com>
-Subject: Re: [PATCH] perf symbol: ignore $a/$d symbols for ARM modules
-Date:   Wed, 27 Oct 2021 20:31:08 +0800
-Message-ID: <20211027123108.126944-1-shaolexi@huawei.com>
-X-Mailer: git-send-email 2.12.3
-In-Reply-To: <1b7fa65a-7587-b7c4-2dc0-d0f389200671@arm.com>
-References: <1b7fa65a-7587-b7c4-2dc0-d0f389200671@arm.com>
+        Wed, 27 Oct 2021 08:37:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31788C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:34:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=qiwDhiE5qZyUEx65yCwdeMlo4Osd1LcxqqP81yccako=; b=D2e4rp2fhx8Stgk4puwwlpXhOm
+        0EzkX+nWYe4hi4T9XVf1sL9f6tfjMjGKkP+hd9bw3JaOPz2XVeR3HCcNAMApQtBLpF61e1W+Ewpr2
+        AK6sTazD4aNkw+Veg9JpXNyhDoxp4mvhIeFhBZv72KtGYC8n5+sGWf03ZGVRFPZU3T1vk1fYRtHbw
+        5xMlZefpKVY16VZXRJY6Cco9k6s0yxnvsoDIL4sS4ULKKVeUMXc3QMr5ybEyaFsUP7IvQr178G3Lx
+        BMsX2rL8r6EKUJ0q3Wn3wh2IMdpPFFSjtzTlXBi6wsF6ZgkbeCibmtD26gZWb/WMBChdiTiZsw7dZ
+        9hVsImMg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfi8T-00CYQA-Oe; Wed, 27 Oct 2021 12:34:30 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 520A5981FD2; Wed, 27 Oct 2021 14:34:29 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 14:34:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
+Cc:     paulmck@kernel.org, will@kernel.org, boqun.feng@gmail.com,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        elver@google.com, charalampos.mainas@gmail.com,
+        pramod.bhatotia@in.tum.de
+Subject: Re: Potentially Broken Address Dependency via test_bit() When
+ Compiling With Clang
+Message-ID: <20211027123429.GE174730@worktop.programming.kicks-ass.net>
+References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
+ <20211027121747.GI174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.2]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme762-chm.china.huawei.com (10.3.19.108)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211027121747.GI174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2021 18:24, James Clark wrote:
->On 27/10/2021 10:52, Lexi Shao wrote:
->> On ARM machine, kernel symbols from modules can be resolved to $a
->> instead of printing the actual symbol name. Ignore symbols starting with
->> "$" when building kallsyms rbtree.
->> 
->> A sample stacktrace is shown as follows:
->> 
->> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
->> bf4a66d8 $a+0x78 ([test_module])
->> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
->> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
->> 
->> On ARM machine, $a/$d symbols are used by the compiler to mark the
->> beginning of code/data part in code section. These symbols are filtered
->> out when linking vmlinux(see scripts/kallsyms.c ignored_prefixes), but
->> are left on modules. So there are $a symbols in /proc/kallsyms which
->> share the same addresses with the actual module symbols and confuses perf
->> when resolving symbols.
->
->Hi Lexi,
->
->Is it worth using or re-implementing the entire is_ignored_symbol() function
->from scripts/kallsyms.c? It seems like this change only fixes one occurrence,
->but is_ignored_symbol() has a big list of other cases.
->
->Unless those cases are different?
->
->Thanks
->James
+On Wed, Oct 27, 2021 at 02:17:48PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 27, 2021 at 12:19:48PM +0200, Paul Heidekrüger wrote:
+> I would personally not consider this a dependend load. The result
+> depends on two loads, but there is no actual ordering between them.
+> 
+>   r1 = *x
+>   r2 = *y
+>   b = 1 & (r1 >> r2);
+> 
+> (more or less)
 
-Hi James,
+melver pointed out on IRC that I missed the whole BIT_WORD(nr) thing.
+And with that restored this should indeed be an address dependency.
 
-I don't think it's necessary to cover all the cases listed in
-is_ignored_symbol(). As long as the symbols are unique and not overlapping
-with each other, they should't cause problems in resolving symbols. So most
-of the cases in is_ignored_symbol() should be irrelevant.
-
-Lexi
-
->
->> 
->> After this patch, the module symbol name is printed:
->> 
->> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
->> bf4a66d8 test_func+0x78 ([test_module])
->> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
->> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
->> 
->> Signed-off-by: Lexi Shao <shaolexi@huawei.com>
->> ---
->>  tools/perf/util/symbol.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->> 
->> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
->> index 0fc9a5410739..35116aed74eb 100644
->> --- a/tools/perf/util/symbol.c
->> +++ b/tools/perf/util/symbol.c
->> @@ -702,6 +702,10 @@ static int map__process_kallsym_symbol(void *arg, const char *name,
->>  	if (!symbol_type__filter(type))
->>  		return 0;
->>  
->> +	/* Ignore local symbols for ARM modules */
->> +	if (name[0] == '$')
->> +		return 0;
->> +
->>  	/*
->>  	 * module symbols are not sorted so we add all
->>  	 * symbols, setting length to 0, and rely on
->>
->
+Still, I wasn't actually expecting test_bit() to be one. Nice find.
