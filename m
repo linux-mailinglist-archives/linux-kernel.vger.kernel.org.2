@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D230043CD32
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6670843CD37
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242681AbhJ0POa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:14:30 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:33851 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242679AbhJ0POY (ORCPT
+        id S242673AbhJ0PPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:15:15 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:39494 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236706AbhJ0PPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:14:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635347519; x=1666883519;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=FL3rJ10DyM5Xsz0RCdyIcnAq1FcXhtCApK8hfIMFYLY=;
-  b=RA+tGnRnjOnaYtv64pXB6mGlj6dplla/NLkeOjlLuVSIxBRYSVR6M50T
-   H/t8i4QThBQOJK4pdTOVPt4I+wd/z5BCl6YD9RekoYxCgjO6yruPTiDqR
-   ELUYhqVWNvfr9dSywiqXXwGHmyg/VOnyeIUBOLZ90t/9xUZjIYBY0G5bd
-   Q=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 27 Oct 2021 08:11:59 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 08:11:58 -0700
-Received: from [10.110.114.196] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Wed, 27 Oct 2021
- 08:11:58 -0700
-Subject: Re: [PATCH] io_uring: fix a GCC warning in wq_list_for_each()
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-CC:     <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20211025145906.71955-1-quic_qiancai@quicinc.com>
- <27d0d7bd-a5c3-27ca-03b3-ea3c5c363380@gmail.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <5b088800-d552-68a1-bf66-6023ccad0ca8@quicinc.com>
-Date:   Wed, 27 Oct 2021 11:11:56 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 27 Oct 2021 11:15:14 -0400
+Received: by mail-oi1-f181.google.com with SMTP id s190so3073663oie.6;
+        Wed, 27 Oct 2021 08:12:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vzqpbg4IN60rjb+VTJsYtCoIP/kbPBOABnpW5V5iDJ8=;
+        b=X/pPy4FFa9htWjHjGgY8xRsHjTguBnfWsxq6dcl1RVQxQztMzCWLEqCXhfe5BsHiJe
+         oR7gyAM0/CoBZfAc2Wzbi0QzbYpxTTizvTmVZG0IRLnhlKFtv2cAlyoVGMmKJoYIlgIe
+         7tXdBMMLwkN9874s1beUNgq7Fuz+4o9D7MrgxTsk8PjSfQJXdX/HErvLilrG7t2mDoZj
+         2DN6chJJOxF3P/Po4PVWM3wXJFuG0Kx7i59j9LvzurBVVGV6NDSJuQ+sAMNET8FTNyZM
+         auxuQYkhRonpyi5ykvCyaGsnCfszqv2eDUwZKMS5XV7tYeIbUh3EVLNVjyVxDiqAU1c/
+         p9uA==
+X-Gm-Message-State: AOAM5302oCwnmG8O+jFakin6voPdgjR5KoT7wZyKJjfWcdO73OcoZ2kY
+        pzpjTMe67EfOmSb/w7a0TeIxiiN8weFSQQpyVok=
+X-Google-Smtp-Source: ABdhPJzqnHuBY7IrOfOgtphvHFZdZCMYbu9OGOF93TELQ9LyW+c/FKrh01o8Fzss/0xCaLjq2Z7Ggqq7aSqpINB2sSA=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr3995145oif.154.1635347568493;
+ Wed, 27 Oct 2021 08:12:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <27d0d7bd-a5c3-27ca-03b3-ea3c5c363380@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <20211026171313.50-1-mario.limonciello@amd.com> <CACRpkdYAv5w5AfKPQgCqXgKSYnS7wvCkE3qTj_Q9hyvOS=xsvQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYAv5w5AfKPQgCqXgKSYnS7wvCkE3qTj_Q9hyvOS=xsvQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 27 Oct 2021 17:12:37 +0200
+Message-ID: <CAJZ5v0hZxtdYw9-NbSXtROn0kROG3D6V2u7TAaHTW5ccz_i9hA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] ACPI: Add stubs for wakeup handler functions
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 27, 2021 at 12:11 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Oct 26, 2021 at 7:13 PM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+>
+> > The commit ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+> > added new functions for drivers to use during the s2idle wakeup path, but
+> > didn't add stubs for when CONFIG_ACPI wasn't set.
+> >
+> > Add those stubs in for other drivers to be able to use.
+> >
+> > Fixes: ddfd9dcf270c ("ACPI: PM: Add acpi_[un]register_wakeup_handler()")
+> > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>
+> I need an ACK from an ACPI maintainer to take this with the
+> other fix into the pinctrl tree.
 
+There you are:
 
-On 10/27/21 5:56 AM, Pavel Begunkov wrote:
-> On 10/25/21 15:59, Qian Cai wrote:
->> fs/io_uring.c: In function '__io_submit_flush_completions':
->> fs/io_uring.c:2367:33: warning: variable 'prev' set but not used
->> [-Wunused-but-set-variable]
->>   2367 |  struct io_wq_work_node *node, *prev;
->>        |                                 ^~~~
->>
->> Fixed it by open-coded the wq_list_for_each() without an unused previous
->> node pointer.
-> 
-> That's intentional, the var is optimised out and it's better to
-> not hand code it (if possible).
-
-Yes, this is pretty minor. Not going to insist if people don't like for
-some reasons.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
