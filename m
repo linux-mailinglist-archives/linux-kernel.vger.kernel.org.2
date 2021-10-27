@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DE943BF2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E748243BF3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237661AbhJ0BqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhJ0BqI (ORCPT
+        id S237714AbhJ0B57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:57:59 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:31072 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236313AbhJ0B5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 21:46:08 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5E7C061570;
-        Tue, 26 Oct 2021 18:43:43 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id kd16so834640qvb.0;
-        Tue, 26 Oct 2021 18:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8LJqS8zky7pcMbUa92VXQE1e4F/KCHrhH+dmA5eIbDw=;
-        b=Spt2jzK0txE6TKglycyhopMhk7/Qs8AejfSjBab5DxG7mnLhZ31UyxEXNvk1wFHraj
-         kYzExGTJtV/vgKU1aNpPxrUHN8OGuFQ3rWPFz5lElDm8k3b0hd2m8/gN2hbyJfIdg9X1
-         zP+DzjQyWYq8UMzx3cUMSvZKRH1Z/9M1nnlexaqWV2dXbzVAle53OvqskgnsF/cWsXJ0
-         6+7SjorfK+9+u/0AJS/7op54mV0GVycWs8Iw3hkPDhjmpaqNA3EEblpIztvAQPOz58gZ
-         r/EykbTqZqpq8cMY/JjsOPJpU6R8ywr/CaF8viTwjNdZ4JCeSwDqwcCoZZewmNjskGnf
-         LaBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8LJqS8zky7pcMbUa92VXQE1e4F/KCHrhH+dmA5eIbDw=;
-        b=ifLz8to5JZ7tCuduVCqRqe9UMTFm0TTW1Avlim9vzYiOiIDCnMzHqJ6BMdCEpy15BT
-         T85sIXBt4V5tdWqY3zq0bvn32cc/6zz5zatfxj4xyqUe2i7PAVed4ORHl2EPSFItS6ds
-         KAaNqvLBnPytBqUz9GIoNwFpoZQdiZXFH5kK0w4PhhdGVTqRF1ZkTrTA4C6Rigjue5/s
-         w58g0BwSWV9pOS4+I75PPlCabWo/KT6jzbV0O/mQTbUr8NQZBNlX4aslqWeWNSw0mvM5
-         HcUSbsiftb43Bjyn5r0PKDWwZ1Xvg9B+K2qP4r9dHi9S/9pKAcs/cFgbbvSA/jr9/5p+
-         Q6dA==
-X-Gm-Message-State: AOAM531UM//ahtMTe9qVzHcqq860Sy/D/UHHl4HTjXbmnJ0Pk1jzxxr8
-        LkgD/ed3ICDrd2LasLR54qUulvplp6N4K/7X62NGs9T+pGUVq8kJ
-X-Google-Smtp-Source: ABdhPJxmDg1USLsLZb2rgmX6eNh0CEG8+NnW52Q4brfVwVJz7fK/JAf60OYtssuk0++Jo3qg8OWPPWXB0Lb4Aws/ORA=
-X-Received: by 2002:a05:6214:2308:: with SMTP id gc8mr26076038qvb.31.1635299022709;
- Tue, 26 Oct 2021 18:43:42 -0700 (PDT)
+        Tue, 26 Oct 2021 21:57:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtpFhNO_1635299711;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtpFhNO_1635299711)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 09:55:13 +0800
+Subject: Re: [PATCH v5 1/2] ftrace: disable preemption when recursion locked
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Miroslav Benes <mbenes@suse.cz>, Guo Ren <guoren@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
+ <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+ <alpine.LSU.2.21.2110261128120.28494@pobox.suse.cz>
+ <18ba2a71-e12d-33f7-63fe-2857b2db022c@linux.alibaba.com>
+ <20211026080117.366137a5@gandalf.local.home>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <3d897161-7b74-944a-f2a0-07311436fbd9@linux.alibaba.com>
+Date:   Wed, 27 Oct 2021 09:54:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211025115910.2595-1-xingwu.yang@gmail.com> <707b5fb3-6b61-c53-e983-bc1373aa2bf@ssi.bg>
- <CA+7U5JsSuwqP7eHj1tMHfsb+EemwrhZEJ2b944LFWTroxAnQRQ@mail.gmail.com>
- <1190ef60-3ad9-119e-5336-1c62522aec81@ssi.bg> <CA+7U5JvvsNejgOifAwDdjddkLHUL30JPXSaDBTwysSL7dhphuA@mail.gmail.com>
-In-Reply-To: <CA+7U5JvvsNejgOifAwDdjddkLHUL30JPXSaDBTwysSL7dhphuA@mail.gmail.com>
-From:   yangxingwu <xingwu.yang@gmail.com>
-Date:   Wed, 27 Oct 2021 09:43:31 +0800
-Message-ID: <CA+7U5Jta_g2vCXiwScVVwLZppWp51TDOB7LxUxeundkPxNZYnA@mail.gmail.com>
-Subject: Re: [PATCH] ipvs: Fix reuse connection if RS weight is 0
-To:     Julian Anastasov <ja@ssi.bg>
-Cc:     Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        kadlec@netfilter.org, fw@strlen.de,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, corbet@lwn.net
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211026080117.366137a5@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Julian
 
-what we want is if RS weight is 0, then no new connections should be
-served even if conn_reuse_mode is 0, just as commit dc7b3eb900aa
-("ipvs: Fix reuse connection if real server is
-dead") trying to do
 
-Pls let me know if there are any other issues of concern
+On 2021/10/26 下午8:01, Steven Rostedt wrote:
+> On Tue, 26 Oct 2021 17:48:10 +0800
+> 王贇 <yun.wang@linux.alibaba.com> wrote:
+> 
+>>> The two comments should be updated too since Steven removed the "bit == 0" 
+>>> trick.  
+>>
+>> Could you please give more hint on how will it be correct?
+>>
+>> I get the point that bit will no longer be 0, there are only -1 or > 0 now
+>> so trace_test_and_set_recursion() will disable preemption on bit > 0 and
+>> trace_clear_recursion() will enabled it since it should only be called when
+>> bit > 0 (I remember we could use a WARN_ON here now :-P).
+>>
+>>>   
+>>>> @@ -178,7 +187,7 @@ static __always_inline void trace_clear_recursion(int bit)
+>>>>   * tracing recursed in the same context (normal vs interrupt),
+>>>>   *
+>>>>   * Returns: -1 if a recursion happened.
+>>>> - *           >= 0 if no recursion
+>>>> + *           > 0 if no recursion.
+>>>>   */
+>>>>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+>>>>  							 unsigned long parent_ip)  
+>>>
+>>> And this change would not be correct now.  
+>>
+>> I thought it will no longer return 0 so I change it to > 0, isn't that correct?
+> 
+> No it is not. I removed the bit + 1 return value, which means it returns the
+> actual bit now. Which is 0 or more.
 
-On Tue, Oct 26, 2021 at 2:13 PM yangxingwu <xingwu.yang@gmail.com> wrote:
->
-> thanks Julian
->
-> yes, I know that the one-second delay issue has been fixed by commit
-> f0a5e4d7a594e0fe237d3dfafb069bb82f80f42f if we set conn_reuse_mode to
-> 1
->
-> BUT  it's still NOT what we expected with sysctl settings
-> (conn_reuse_mode == 0 && expire_nodest_conn == 1).
->
-> We run kubernetes in extremely diverse environments and this issue
-> happens a lot.
->
-> On Tue, Oct 26, 2021 at 1:44 PM Julian Anastasov <ja@ssi.bg> wrote:
-> >
-> >
-> >         Hello,
-> >
-> > On Tue, 26 Oct 2021, yangxingwu wrote:
-> >
-> > > thanks julian
-> > >
-> > > What happens in this situation is that if we set the wait of the
-> > > realserver to 0 and do NOT remove the weight zero realserver with
-> > > sysctl settings (conn_reuse_mode == 0 && expire_nodest_conn == 1), and
-> > > the client reuses its source ports, the kernel will constantly
-> > > reuse connections and send the traffic to the weight 0 realserver.
-> >
-> >         Yes, this is expected when conn_reuse_mode=0.
-> >
-> > > you may check the details from
-> > > https://github.com/kubernetes/kubernetes/issues/81775
-> >
-> >         What happens if you try conn_reuse_mode=1? The
-> > one-second delay in previous kernels should be corrected with
-> >
-> > commit f0a5e4d7a594e0fe237d3dfafb069bb82f80f42f
-> > Date:   Wed Jul 1 18:17:19 2020 +0300
-> >
-> >     ipvs: allow connection reuse for unconfirmed conntrack
-> >
-> > > On Tue, Oct 26, 2021 at 2:12 AM Julian Anastasov <ja@ssi.bg> wrote:
-> > > >
-> > > > On Mon, 25 Oct 2021, yangxingwu wrote:
-> > > >
-> > > > > Since commit dc7b3eb900aa ("ipvs: Fix reuse connection if real server is
-> > > > > dead"), new connections to dead servers are redistributed immediately to
-> > > > > new servers.
-> > > > >
-> > > > > Then commit d752c3645717 ("ipvs: allow rescheduling of new connections when
-> > > > > port reuse is detected") disable expire_nodest_conn if conn_reuse_mode is
-> > > > > 0. And new connection may be distributed to a real server with weight 0.
-> > > >
-> > > >         Your change does not look correct to me. At the time
-> > > > expire_nodest_conn was created, it was not checked when
-> > > > weight is 0. At different places different terms are used
-> > > > but in short, we have two independent states for real server:
-> > > >
-> > > > - inhibited: weight=0 and no new connections should be served,
-> > > >         packets for existing connections can be routed to server
-> > > >         if it is still available and packets are not dropped
-> > > >         by expire_nodest_conn.
-> > > >         The new feature is that port reuse detection can
-> > > >         redirect the new TCP connection into a new IPVS conn and
-> > > >         to expire the existing cp/ct.
-> > > >
-> > > > - unavailable (!IP_VS_DEST_F_AVAILABLE): server is removed,
-> > > >         can be temporary, drop traffic for existing connections
-> > > >         but on expire_nodest_conn we can select different server
-> > > >
-> > > >         The new conn_reuse_mode flag allows port reuse to
-> > > > be detected. Only then expire_nodest_conn has the
-> > > > opportunity with commit dc7b3eb900aa to check weight=0
-> > > > and to consider the old traffic as finished. If a new
-> > > > server is selected, any retrans from previous connection
-> > > > would be considered as part from the new connection. It
-> > > > is a rapid way to switch server without checking with
-> > > > is_new_conn_expected() because we can not have many
-> > > > conns/conntracks to different servers.
-> >
-> > Regards
-> >
-> > --
-> > Julian Anastasov <ja@ssi.bg>
+Ah, the return is bit not val, I must be drunk...
+
+My apologize for the stupid comments... I'll send a v6 for this patch
+only to fix that, please let me know if this is not a good way to fix
+few lines of comments.
+
+Regards,
+Michael Wang
+
+> 
+> -- Steve
+> 
