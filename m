@@ -2,140 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C709E43CFC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D3B43CFC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhJ0RfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        id S239670AbhJ0Rf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhJ0RfW (ORCPT
+        with ESMTP id S229612AbhJ0RfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:35:22 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F4CC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:32:56 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id r4so13054243edi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:32:56 -0700 (PDT)
+        Wed, 27 Oct 2021 13:35:25 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D34C061570;
+        Wed, 27 Oct 2021 10:32:59 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so2606664pjb.4;
+        Wed, 27 Oct 2021 10:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XuOlL+WlhxFREjULrbNCzcikysHZz3+YPdS+RvWZfUo=;
-        b=c4KKAVWMDFDHdzGcuWzrk10Xnrm2SRrpxNNb/S2HmpT+FywEuTMooMePKQ0AjuXPs/
-         /cM5Yg/FIowQgbY51NlN2jfvG7tDHsf8Xnm8W6LMVDe/u81UQR5SIi+X83Xk7WxvUEie
-         x8Ye3JJNmsZIsJN+xaM6SaAs0ivtBkcFxQCXlJ4ehELzn2eSfRTlMBilLwIdT9tY4X5K
-         SJGcOUxtWcAi4lwoOFFiR4glQRpkxedUFTDj9tcYyT7DPsv2q1IpR3gGMDIerQKrD2w2
-         m/mOwW/xImz1Z6lTgs2qN4MUNPmTpisuBa0stfHs3+WehK57x5v5gGF/kvfLV2MvCbWX
-         sGyA==
+        bh=AQBChEkhtFQMuVjrFTDIhbaj31TO4xmGXKwKQGnOWcs=;
+        b=ZDGmGwDo5RnuiecC7SBBClnFGTmBM/X2+jXUwkHeS89LA+if+glDQ1k3g/oQbxMSO+
+         qJvuRchbUG9K37AHQSUmMk64bc/ADd6X37t7h1caaxzpSGEEsz6qFEAwbRZA8Yqvhyym
+         ozqgzOMJ8MOk8q38hLIc2R/pHU6ZZa8c3YlWTRtrMljJcRxeMPRYcurKGIMFStHyVF0X
+         21/kQA69RsVDmUocBED3+c5GxGt7GsqBSElCwG8xZa+K+wX6s+xsAh7CZ1DRfkjNs+Se
+         QTMSS+3BfDQKNTOVxgrvNo6nSQCekKgFxn/+r3kWBXAlHLYDLBW45DkD554Jvwsm+fIF
+         7IjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XuOlL+WlhxFREjULrbNCzcikysHZz3+YPdS+RvWZfUo=;
-        b=LCTYqBjcjvm7gv9437rzX9jjciQpMtRvS8M5Tu5P+LmK5MUnpDxv7fZVXyinXo6Dny
-         VDblDoCW6elLYRFRBY3MmC3oT6vZ7qaTgid2BYmIgSyuYHIzi3DkykIx+aKbn1Y6m5Wt
-         YhGU920wLzhm8wfUVqN0RtIEagOcxoXKH6TBmrERfzgSKLwxI7TZ++CXMQ7zvVSqDg0f
-         mC03L1stQnq2MHsNGsjyhjU7j3QvrdcinHbphxjG6jjMS0Hbvx1i3ddkQaOUziVcQaeA
-         oTWXPqYbxCYgmEx8kcLOevAFi2aqM73kb+CDaDRdmkFRgIoMci/PNv+TDoClNV+E8eCa
-         gmsA==
-X-Gm-Message-State: AOAM533j4fTNhOLSCocr1eGlOx4YMGyOA97wNlSznZNuxL14elh4o8+9
-        sHla92UsblDrh0pBGuI5BE4bWR6mNCTEAcYsFg/wmaMvGf4=
-X-Google-Smtp-Source: ABdhPJwMYvuaNNgqFocoQJYPD33Ldz/Pq6TA+N37frKX/f379Ky8+VSiqUf+I6Ba2Qi7OOx9YtrDa9NzHrGVxBey4wM=
-X-Received: by 2002:a50:da4e:: with SMTP id a14mr46853368edk.154.1635355975260;
- Wed, 27 Oct 2021 10:32:55 -0700 (PDT)
+        bh=AQBChEkhtFQMuVjrFTDIhbaj31TO4xmGXKwKQGnOWcs=;
+        b=zUE8SEyTbzFHofeapKAO4nn5/qIDbUanTZOr+ADcC39MnfTvFx6fz/O+hsWWIK5QyA
+         YLR2g/Sto+wysb5tBR+FgLLCfdLx8tmSkJI+1dEJ+qfaKGv4NejyTseKtbOGL6JhvgDt
+         JYMWo+po3mPDF10ugntsTMzVw586MyZ0CxBHSmUItVuvOXrXgv/O+4nAZI+GAYTNlIyd
+         zTw/rtQcH/XT9gD+a8WpZbaTyWBeIfiVXjG50NNZSMG837kUZlhBzNzRCUTnSoe9Yo+4
+         4wPBc+q8CdkNqTFNm5aZgVzqGKi4s3oWxjLJm8ms/pDqKCoUWRM0Njwe2TxDIsyr1U6S
+         ZKGA==
+X-Gm-Message-State: AOAM5331I0Fv3wOikj15mJ6kcJRx1e8LXT5LSA0BCCnT+vieTHLC3XGs
+        vRIF9HOuB/NCOSHAn21mdLx9INyrDoptP4Lv22o=
+X-Google-Smtp-Source: ABdhPJxJ9RcQO8lR5LgHho8LtnEICkSPFV9VreN0Owub71aRxlP/jMdoV1d9HHQ+U032S5WPmcKI5c5vbHTJIRjb5g4=
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr7349063pjj.138.1635355979040;
+ Wed, 27 Oct 2021 10:32:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026195545.3951306-1-mathieu.poirier@linaro.org> <YXj2trHe8XA0QtFO@kroah.com>
-In-Reply-To: <YXj2trHe8XA0QtFO@kroah.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Wed, 27 Oct 2021 11:32:43 -0600
-Message-ID: <CANLsYkwcUbV-kX3yZt6K0rK9PBUpkW=fp2_Y5Bd3+fCgxZr4EA@mail.gmail.com>
-Subject: Re: [GIT PULL v2] Coresight changes for v5.16
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211026120132.613201817@infradead.org> <CAADnVQJaiHWWnVcaRN43DcNgqktgKs3i1P3uz4Qm8kN7bvPCCg@mail.gmail.com>
+ <YXhMv6rENfn/zsaj@hirez.programming.kicks-ass.net> <CAADnVQ+w_ww3ZR_bJVEU-PxWusT569y0biLNi=GZJNpKqFzNLA@mail.gmail.com>
+ <20211026210509.GH174703@worktop.programming.kicks-ass.net>
+ <CAADnVQ+NA2J3Lxvb8Y31yaubM6ntx5LtoSEaLziZ1b8qiY4oYQ@mail.gmail.com> <YXkVGSG3BkMUEaKH@hirez.programming.kicks-ass.net>
+In-Reply-To: <YXkVGSG3BkMUEaKH@hirez.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 27 Oct 2021 10:32:47 -0700
+Message-ID: <CAADnVQL0tnF+8Wch1Uq3nH3Bi+Ogo2uK4gqY46o7E4A+Dx+Mhg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 00:50, Greg KH <gregkh@linuxfoundation.org> wrote:
+On Wed, Oct 27, 2021 at 2:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Tue, Oct 26, 2021 at 01:55:45PM -0600, Mathieu Poirier wrote:
-> > The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
-> >
-> >   Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
-> >
-> > are available in the Git repository at:
-> >
-> >   git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git tags/coresight-next-v5.16
+> On Tue, Oct 26, 2021 at 02:05:55PM -0700, Alexei Starovoitov wrote:
 >
-> Better but I get the following errors when my scripts try to merge them.
-> Note, the linux-next scripts will give you the same complaint, so this
-> isn't a new thing:
+> > Please post it. CI cannot pull it from the repo.
+>
+> Done:
+>
+>   https://lore.kernel.org/bpf/20211027085243.008677168@infradead.org/T/#t
 
-Can you point me to the linux-next script you are referring to above?
-Usually when that happens I get an email but this time I didn't get
-anything.
+Perfect. Thanks!
+Looks like vger got into 'delete all users' mode.
+Looks like my and many other emails were automatically unsubscribed
+from many mailing lists.
+bpf@vger, netdev@vger, linux-kernel@vger user count looks very low
+compared to a few weeks ago.
+I doubt all these users decided to unsubscribe themselves.
 
->
-> Commit 6871138a7ab9 ("coresight: etm4x: Add ETM PID for Kryo-5XX")
->         committer Signed-off-by missing
->         author email:    quic_taozha@quicinc.com
->         committer email: mathieu.poirier@linaro.org
->         Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> Commit 202d403ae3a9 ("coresight: Don't immediately close events that are run on invalid CPU/sink combos")
->         committer Signed-off-by missing
->         author email:    james.clark@arm.com
->         committer email: mathieu.poirier@linaro.org
->         Signed-off-by: James Clark <james.clark@arm.com>
->         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> Commit ef095e61dc8f ("coresight: Update comments for removing cs_etm_find_snapshot()")
->         committer Signed-off-by missing
->         author email:    leo.yan@linaro.org
->         committer email: mathieu.poirier@linaro.org
->         Signed-off-by: Leo Yan <leo.yan@linaro.org>
->         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> Commit 7be15eef996f ("coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer")
->         committer Signed-off-by missing
->         author email:    leo.yan@linaro.org
->         committer email: mathieu.poirier@linaro.org
->         Signed-off-by: Leo Yan <leo.yan@linaro.org>
->         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> Commit 60067d5ab339 ("coresight: tmc-etf: Add comment for store ordering")
->         committer Signed-off-by missing
->         author email:    leo.yan@linaro.org
->         committer email: mathieu.poirier@linaro.org
->         Signed-off-by: Leo Yan <leo.yan@linaro.org>
->         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> Commit 7c202525ff8c ("coresight: tmc-etr: Add barrier after updating AUX ring buffer")
->         committer Signed-off-by missing
->         author email:    leo.yan@linaro.org
->         committer email: mathieu.poirier@linaro.org
->         Signed-off-by: Leo Yan <leo.yan@linaro.org>
->         Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> Errors in tree with Signed-off-by, please fix!
->
->
-> Is there some reason you are committing changes to your tree and not signing
-> off on them?  That's not really a good idea :(
->
+Anyway looks like BPF CI doesn't see the patchset yet for some reason
+(we're debugging),
+but I've tested your patchset manually the same way CI would do
+and reviewed most of the patches.
+Please add:
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+to bpf patches 16 and 17
+and
+Tested-by: Alexei Starovoitov <ast@kernel.org>
+for the whole set.
 
-Not sure why sarcasm is required here - simply pointing out the
-problem would have been sufficient.
-
-These patches were committed by Suzuki who co-maintains the subsystem
-with me.  The committer information likely got transferred when I
-cherry-picked the patches when putting the pull request together.
-
-> thanks,
->
-> greg k-h
+Thanks!
