@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6513343CFA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEB443CFA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235894AbhJ0R1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:27:20 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:58860 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbhJ0R1Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:27:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=lSI2t1lnjEJQytf6F001iB4dSFLxXvTU5hlx3bjvWqU=; b=PVLGhrIsoKz7dtffOzQFphucuK
-        za/ynu/iXTmtLZ4MbMlZMb0y67a5nxqpkV4VIvRJPKZa/i7+/N8RDOeoKp4LAjjkJo+iLt0r424JX
-        J20pJe/HZQEQAh9FpUBNz5Mu8bkeySnpViik5IN9+L29PyOMBDMt/vGFt1x/mNw0tezwWGm79ZDCW
-        QHrN3aPBTHYzqY3y9CaQxffGmNweZoe7jlP/CQYP4Mw6z3cDT3qHQTyHWpCJgpWZIdCpXqAm2yoCN
-        nJCq+92W9LX/PXLYNDmlyZ8Xmq9Vj2iS7gFRFXw2KwKA92Do0YdchxnCRYIkAapzP3ay4Wxg2WT0S
-        Ew6gZWsQ==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <logang@deltatee.com>)
-        id 1mfmfR-000kcB-HB; Wed, 27 Oct 2021 11:24:50 -0600
-To:     Marshall Midden <marshallmidden@gmail.com>
-Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org
-References: <CAD2CkAWjS8=kKwEEN4cgVNjyFORUibzEiCUA-X+SMtbo0JoMmA@mail.gmail.com>
- <d8434a1a-b813-958f-69d7-34007faa49b7@deltatee.com>
- <CAD2CkAV8fWVPdtoxzf5w-q_411Zw_Rwm1QGuz3-Li7eFXehktw@mail.gmail.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <3747d7c3-0cb1-c9b7-8eb8-4d0b167e03fb@deltatee.com>
-Date:   Wed, 27 Oct 2021 11:24:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239467AbhJ0Ran (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232805AbhJ0Ram (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:30:42 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3AC660E74;
+        Wed, 27 Oct 2021 17:28:15 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 13:28:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [GIT PULL] ftrace/nds32: Update the proto for ftrace_trace_function
+ to match ftrace_stub
+Message-ID: <20211027132813.1e365f18@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAD2CkAV8fWVPdtoxzf5w-q_411Zw_Rwm1QGuz3-Li7eFXehktw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, will@kernel.org, joro@8bytes.org, marshallmidden@gmail.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: v5.15-rc7 AMD no kernel dump, spews "scsi_dma_map failed: request
- for 36 bytes!"
-X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
+Linus,
 
-On 2021-10-27 11:21 a.m., Marshall Midden wrote:
-> Yes, the spewing of messages stopped. Kernel crash dump taking is now
-> occurring.  Patch applied to v5.15-rc7.
-> Reworded: THANKS!  Patch works!
-> 
-> Dunno why the dmesg isn't right, but at least there is a core image!
-> [I updated makedumpfs for v5.15-rc4 -- applying a bunch of cifs/smb,
-> qlogic, etc. patches and was getting ready for new kernel release in a
-> few weeks -- couldn't debug a cifs crash. :) Down the rabbit hole...
-> ;) ]
-> Intel machine booted, etc. and it has a dmesg correct. *sigh*  I don't
-> think "I" need to worry about that. Someone else can report it.
+Fix nds32le build when DYNAMIC_FTRACE is disabled
 
-What do you mean the dmesg isn't "right"? What are you seeing and what
-are you expecting? What is it that someone else will be reporting with
-Intel machine having a "correct" dmesg?
+A randconfig found that nds32le architecture fails to build due
+to a prototype mismatch between a ftrace function pointer and
+the function it was to be assigned to. That function pointer prototype
+missed being updated when all the ftrace callbacks were updated.
 
-Logan
+
+Please pull the latest trace-v5.15-rc6 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.15-rc6
+
+Tag SHA1: 832b54f439525d3b853698ac77fa1be977452a3b
+Head SHA1: 4e84dc47bb48accbbeeba4e6bb3f31aa7895323c
+
+
+Steven Rostedt (VMware) (1):
+      ftrace/nds32: Update the proto for ftrace_trace_function to match ftrace_stub
+
+----
+ arch/nds32/kernel/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+---------------------------
+commit 4e84dc47bb48accbbeeba4e6bb3f31aa7895323c
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Wed Oct 27 12:51:01 2021 -0400
+
+    ftrace/nds32: Update the proto for ftrace_trace_function to match ftrace_stub
+    
+    The ftrace callback prototype was changed to pass a special ftrace_regs
+    instead of pt_regs as the last parameter, but the static ftrace for nds32
+    missed updating ftrace_trace_function and this caused a warning when
+    compared to ftrace_stub:
+    
+    ../arch/nds32/kernel/ftrace.c: In function '_mcount':
+    ../arch/nds32/kernel/ftrace.c:24:35: error: comparison of distinct pointer types lacks a cast [-Werror]
+       24 |         if (ftrace_trace_function != ftrace_stub)
+          |                                   ^~
+    
+    Link: https://lore.kernel.org/all/20211027055554.19372-1-rdunlap@infradead.org/
+    Link: https://lkml.kernel.org/r/20211027125101.33449969@gandalf.local.home
+    
+    Cc: Ingo Molnar <mingo@kernel.org>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Nick Hu <nickhu@andestech.com>
+    Cc: Greentime Hu <green.hu@gmail.com>
+    Cc: Vincent Chen <deanbo422@gmail.com>
+    Cc: Masami Hiramatsu <mhiramat@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: stable@vger.kernel.org
+    Fixes: d19ad0775dcd6 ("ftrace: Have the callbacks receive a struct ftrace_regs instead of pt_regs")
+    Reported-by: Randy Dunlap <rdunlap@infradead.org>
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/arch/nds32/kernel/ftrace.c b/arch/nds32/kernel/ftrace.c
+index 0e23e3a8df6b..d55b73b18149 100644
+--- a/arch/nds32/kernel/ftrace.c
++++ b/arch/nds32/kernel/ftrace.c
+@@ -6,7 +6,7 @@
+ 
+ #ifndef CONFIG_DYNAMIC_FTRACE
+ extern void (*ftrace_trace_function)(unsigned long, unsigned long,
+-				     struct ftrace_ops*, struct pt_regs*);
++				     struct ftrace_ops*, struct ftrace_regs*);
+ extern void ftrace_graph_caller(void);
+ 
+ noinline void __naked ftrace_stub(unsigned long ip, unsigned long parent_ip,
