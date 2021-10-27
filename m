@@ -2,193 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9D743CAEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9207443CAEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242231AbhJ0Noy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:44:54 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:50894 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242254AbhJ0Nos (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:44:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635342143; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=J3EW1Zq2am1RTaPdOiCGqfwjRwDl6DkV6HGUmMii8GM=; b=rS93HTxNqQNEqWiIQBsf/J9tecgor3OBPSEX8GIxfRXs9/dagZt5XkQkOA8tGAgXEWbR3Sgw
- /3yi4lHfQ2LHNUPExCbTc+1D+PSQjnmhbeEw08cIt0woinNmkV35bVFZ5WtpwZ7IeETGFexY
- pZzC9TE1IRiO6Wk73cy+FtA2OEE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 617957342e144ac4d3edb16f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 13:42:12
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3FC5EC4360C; Wed, 27 Oct 2021 13:42:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9ECC8C4360C;
-        Wed, 27 Oct 2021 13:42:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9ECC8C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH v2 3/3] pinctrl: qcom: Add SC7280 lpass pin configuration
-Date:   Wed, 27 Oct 2021 19:11:37 +0530
-Message-Id: <1635342097-2726-4-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635342097-2726-1-git-send-email-srivasam@codeaurora.org>
-References: <1635342097-2726-1-git-send-email-srivasam@codeaurora.org>
+        id S242235AbhJ0Noj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:44:39 -0400
+Received: from mga11.intel.com ([192.55.52.93]:29346 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242227AbhJ0Noh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:44:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="227617391"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="227617391"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 06:42:04 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497870033"
+Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 06:41:59 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>, dri-devel@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-fbdev@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] [v2] i915: fix backlight configuration issue
+In-Reply-To: <20211027132732.3993279-3-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211027132732.3993279-1-arnd@kernel.org> <20211027132732.3993279-3-arnd@kernel.org>
+Date:   Wed, 27 Oct 2021 16:41:55 +0300
+Message-ID: <87r1c6h9ek.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update pin control support for SC7280 LPASS LPI.
+On Wed, 27 Oct 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The i915 driver can use the backlight subsystem as an option, and usually
+> selects it when CONFIG_ACPI is set. However it is possible to configure
+> a kernel with modular backlight classdev support and a built-in i915
+> driver, which leads to a linker error:
+>
+> drivers/gpu/drm/i915/display/intel_panel.o: In function `intel_backlight_device_register':
+> intel_panel.c:(.text+0x2f58): undefined reference to `backlight_device_register'
+> drivers/gpu/drm/i915/display/intel_panel.o: In function `intel_backlight_device_unregister':
+> intel_panel.c:(.text+0x2fe4): undefined reference to `backlight_device_unregister'
+>
+> Change i915 to just 'depends on' for both BACKLIGHT_CLASS_DEVICE
+> and ACPI_VIDEO, which avoids a lot of the problems.
+>
+> Link: https://lore.kernel.org/all/20200108140227.3976563-1-arnd@arndb.de/
+> Link: https://lore.kernel.org/all/20200417155553.675905-1-arnd@arndb.de/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> This change depends on cleaning up drivers/video/fbdev to no longer
+> 'select' I2C and BACKLIGHT_CLASS_DEVICE, otherwise it causes
+> dependency loops.
+> ---
+>  drivers/gpu/drm/i915/Kconfig | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
+> index 84b6fc70cbf5..f427e6d50d9b 100644
+> --- a/drivers/gpu/drm/i915/Kconfig
+> +++ b/drivers/gpu/drm/i915/Kconfig
+> @@ -3,6 +3,8 @@ config DRM_I915
+>  	tristate "Intel 8xx/9xx/G3x/G4x/HD Graphics"
+>  	depends on DRM
+>  	depends on X86 && PCI
+> +	depends on ACPI_VIDEO || !ACPI
+> +	depends on BACKLIGHT_CLASS_DEVICE || !BACKLIGHT_CLASS_DEVICE
+>  	select INTEL_GTT
+>  	select INTERVAL_TREE
+>  	# we need shmfs for the swappable backing store, and in particular
+> @@ -16,10 +18,6 @@ config DRM_I915
+>  	select IRQ_WORK
+>  	# i915 depends on ACPI_VIDEO when ACPI is enabled
+>  	# but for select to work, need to select ACPI_VIDEO's dependencies, ick
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
----
- drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 40 ++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+The comment needs updating as well.
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-index 0bd0c16..17a05a6 100644
---- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-+++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-@@ -122,6 +122,7 @@ static const struct pinctrl_pin_desc lpass_lpi_pins[] = {
- 	PINCTRL_PIN(11, "gpio11"),
- 	PINCTRL_PIN(12, "gpio12"),
- 	PINCTRL_PIN(13, "gpio13"),
-+	PINCTRL_PIN(14, "gpio14"),
- };
- 
- enum lpass_lpi_functions {
-@@ -136,6 +137,7 @@ enum lpass_lpi_functions {
- 	LPI_MUX_i2s1_ws,
- 	LPI_MUX_i2s2_clk,
- 	LPI_MUX_i2s2_data,
-+	LPI_MUX_sc7280_i2s2_data,
- 	LPI_MUX_i2s2_ws,
- 	LPI_MUX_qua_mi2s_data,
- 	LPI_MUX_qua_mi2s_sclk,
-@@ -144,6 +146,7 @@ enum lpass_lpi_functions {
- 	LPI_MUX_swr_rx_data,
- 	LPI_MUX_swr_tx_clk,
- 	LPI_MUX_swr_tx_data,
-+	LPI_MUX_sc7280_swr_tx_data,
- 	LPI_MUX_wsa_swr_clk,
- 	LPI_MUX_wsa_swr_data,
- 	LPI_MUX_gpio,
-@@ -164,8 +167,11 @@ static const unsigned int gpio10_pins[] = { 10 };
- static const unsigned int gpio11_pins[] = { 11 };
- static const unsigned int gpio12_pins[] = { 12 };
- static const unsigned int gpio13_pins[] = { 13 };
-+static const unsigned int gpio14_pins[] = { 14 };
-+
- static const char * const swr_tx_clk_groups[] = { "gpio0" };
- static const char * const swr_tx_data_groups[] = { "gpio1", "gpio2", "gpio5" };
-+static const char * const sc7280_swr_tx_data_groups[] = { "gpio1", "gpio2", "gpio14" };
- static const char * const swr_rx_clk_groups[] = { "gpio3" };
- static const char * const swr_rx_data_groups[] = { "gpio4", "gpio5" };
- static const char * const dmic1_clk_groups[] = { "gpio6" };
-@@ -185,6 +191,7 @@ static const char * const i2s1_data_groups[] = { "gpio8", "gpio9" };
- static const char * const wsa_swr_clk_groups[] = { "gpio10" };
- static const char * const wsa_swr_data_groups[] = { "gpio11" };
- static const char * const i2s2_data_groups[] = { "gpio12", "gpio12" };
-+static const char * const sc7280_i2s2_data_groups[] = { "gpio12", "gpio13" };
- 
- static const struct lpi_pingroup sm8250_groups[] = {
- 	LPI_PINGROUP(0, 0, swr_tx_clk, qua_mi2s_sclk, _, _),
-@@ -203,6 +210,24 @@ static const struct lpi_pingroup sm8250_groups[] = {
- 	LPI_PINGROUP(13, NO_SLEW, dmic3_data, i2s2_data, _, _),
- };
- 
-+static const struct lpi_pingroup sc7280_groups[] = {
-+	LPI_PINGROUP(0, 0, swr_tx_clk, qua_mi2s_sclk, _, _),
-+	LPI_PINGROUP(1, 2, swr_tx_data, qua_mi2s_ws, _, _),
-+	LPI_PINGROUP(2, 4, swr_tx_data, qua_mi2s_data, _, _),
-+	LPI_PINGROUP(3, 8, swr_rx_clk, qua_mi2s_data, _, _),
-+	LPI_PINGROUP(4, 10, swr_rx_data, qua_mi2s_data, _, _),
-+	LPI_PINGROUP(5, 12, swr_rx_data, _, _, _),
-+	LPI_PINGROUP(6, NO_SLEW, dmic1_clk, i2s1_clk, _,  _),
-+	LPI_PINGROUP(7, NO_SLEW, dmic1_data, i2s1_ws, _, _),
-+	LPI_PINGROUP(8, NO_SLEW, dmic2_clk, i2s1_data, _, _),
-+	LPI_PINGROUP(9, NO_SLEW, dmic2_data, i2s1_data, _, _),
-+	LPI_PINGROUP(10, 16, i2s2_clk, wsa_swr_clk, _, _),
-+	LPI_PINGROUP(11, 18, i2s2_ws, wsa_swr_data, _, _),
-+	LPI_PINGROUP(12, NO_SLEW, dmic3_clk, sc7280_i2s2_data, _, _),
-+	LPI_PINGROUP(13, NO_SLEW, dmic3_data, sc7280_i2s2_data, _, _),
-+	LPI_PINGROUP(14, 6, sc7280_swr_tx_data, _, _, _),
-+};
-+
- static const struct lpi_function lpass_functions[] = {
- 	LPI_FUNCTION(dmic1_clk),
- 	LPI_FUNCTION(dmic1_data),
-@@ -215,6 +240,7 @@ static const struct lpi_function lpass_functions[] = {
- 	LPI_FUNCTION(i2s1_ws),
- 	LPI_FUNCTION(i2s2_clk),
- 	LPI_FUNCTION(i2s2_data),
-+	LPI_FUNCTION(sc7280_i2s2_data),
- 	LPI_FUNCTION(i2s2_ws),
- 	LPI_FUNCTION(qua_mi2s_data),
- 	LPI_FUNCTION(qua_mi2s_sclk),
-@@ -223,6 +249,7 @@ static const struct lpi_function lpass_functions[] = {
- 	LPI_FUNCTION(swr_rx_data),
- 	LPI_FUNCTION(swr_tx_clk),
- 	LPI_FUNCTION(swr_tx_data),
-+	LPI_FUNCTION(sc7280_swr_tx_data),
- 	LPI_FUNCTION(wsa_swr_clk),
- 	LPI_FUNCTION(wsa_swr_data),
- };
-@@ -236,6 +263,15 @@ static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
- 	.nfunctions = ARRAY_SIZE(lpass_functions),
- };
- 
-+static const struct lpi_pinctrl_variant_data sc7280_lpi_data = {
-+	.pins = lpass_lpi_pins,
-+	.npins = ARRAY_SIZE(lpass_lpi_pins),
-+	.groups = sc7280_groups,
-+	.ngroups = ARRAY_SIZE(sc7280_groups),
-+	.functions = lpass_functions,
-+	.nfunctions = ARRAY_SIZE(lpass_functions),
-+};
-+
- static int lpi_gpio_read(struct lpi_pinctrl *state, unsigned int pin,
- 			 unsigned int addr)
- {
-@@ -677,6 +713,10 @@ static const struct of_device_id lpi_pinctrl_of_match[] = {
- 	       .compatible = "qcom,sm8250-lpass-lpi-pinctrl",
- 	       .data = &sm8250_lpi_data,
- 	},
-+	{
-+	       .compatible = "qcom,sc7280-lpass-lpi-pinctrl",
-+	       .data = &sc7280_lpi_data,
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, lpi_pinctrl_of_match);
+Other than that,
+
+Acked-by: Jani Nikula <jani.nikula@intel.com>
+
+on the series.
+
+> -	select BACKLIGHT_CLASS_DEVICE if ACPI
+> -	select INPUT if ACPI
+> -	select ACPI_VIDEO if ACPI
+> -	select ACPI_BUTTON if ACPI
+>  	select SYNC_FILE
+>  	select IOSF_MBI
+>  	select CRC32
+
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Jani Nikula, Intel Open Source Graphics Center
