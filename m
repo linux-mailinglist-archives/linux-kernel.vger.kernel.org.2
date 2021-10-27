@@ -2,165 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622F143BEA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 02:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40ECA43BEAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 02:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236113AbhJ0A4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 20:56:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232410AbhJ0A4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 20:56:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 560CA60F0F;
-        Wed, 27 Oct 2021 00:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635296045;
-        bh=3wmPlMfs7SR783XTmRV7cR81LzMiYBMO+8TaAiydWkM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=W+ESkAeCUUskZxyaPVVNJSQLz8HBAG1zufvbuDBBq9aLfbxvCgVHNRyEwDhpCaD0u
-         oHHGrJIuVMsKaMJN660eES9zVI6ZuTGSw+QtEXO/3kNu3VZXMRhFWVZUkOOWNHimJi
-         zwKtwSFHkDdtmvJke91XPGHWmVbRSdg9eDy3e7anPX0kaH9xI3vYQEjDhTb1at4OTz
-         xu10tcE+mm6SIX4xTkKFgEdkljbuOldIgZu8uNAgyjBJvV4HzMV/nHGOmgwlG26lFQ
-         f/aBZYM0FGmjzdEFKrU813jTsN8gcKRjB95RH2fdQDNMon7HF1UI4ATU4wQRmWG34j
-         k9u9vXzRpknvA==
-Content-Type: text/plain; charset="utf-8"
+        id S236206AbhJ0A5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 20:57:55 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:33852 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232410AbhJ0A5v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 20:57:51 -0400
+X-UUID: b2ad23b1aa9443eaa969d3190fcc4121-20211027
+X-UUID: b2ad23b1aa9443eaa969d3190fcc4121-20211027
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1685992770; Wed, 27 Oct 2021 08:55:24 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Wed, 27 Oct 2021 08:55:23 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 27 Oct 2021 08:55:22 +0800
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ritesh Harjani <riteshh@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        "Wenbin Mei" <wenbin.mei@mediatek.com>, <stable@vger.kernel.org>
+Subject: [PATCH v2] mmc: cqhci: clear HALT state after CQE enable
+Date:   Wed, 27 Oct 2021 08:55:20 +0800
+Message-ID: <20211027005520.14481-1-wenbin.mei@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CANBLGcyYb3yNit=GCy4w2zf2=CRtCJP7aCisR8=9n1f7okfCSg@mail.gmail.com>
-References: <20211021174223.43310-1-kernel@esmil.dk> <20211021174223.43310-7-kernel@esmil.dk> <163527959276.15791.14765586510805526101@swboyd.mtv.corp.google.com> <CANBLGcyYb3yNit=GCy4w2zf2=CRtCJP7aCisR8=9n1f7okfCSg@mail.gmail.com>
-Subject: Re: [PATCH v2 06/16] clk: starfive: Add JH7100 clock generator driver
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Date:   Tue, 26 Oct 2021 17:54:03 -0700
-Message-ID: <163529604399.15791.378104318036812951@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Emil Renner Berthing (2021-10-26 15:35:36)
-> On Tue, 26 Oct 2021 at 22:20, Stephen Boyd <sboyd@kernel.org> wrote:
-> > Quoting Emil Renner Berthing (2021-10-21 10:42:13)
-> > > +};
-> > > +
-> > > +struct clk_starfive_jh7100_priv {
-> > > +       /* protect registers against overlapping read-modify-write */
-> > > +       spinlock_t rmw_lock;
-> >
-> > Does overlapping mean concurrent?
->=20
-> Yes, sorry.
->=20
-> > Do different clks share the same registers?
->=20
-> No, each clock has their own register, but they use that register both
-> to gate the clock and other configuration. The Locking chapter of
-> Documentation/driver-api/clk.rst talks about the prepare lock and the
-> enable lock and then says:
-> "However, access to resources that are shared between operations of
-> the two groups needs to be protected by the drivers. An example of
-> such a resource would be a register that controls both the clock rate
-> and the clock enable/disable state."
+While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
+cache) and disable cqe, for resume back, we enable CQE and not clear HALT
+state.
+In this case MediaTek mmc host controller will keep the value for HALT
+state after CQE disable/enable flow, so the next CQE transfer after resume
+will be timeout due to CQE is in HALT state, the log as below:
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
+<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
 
-Alright got it. Maybe say "protect clk enable and set rate from
-happening at the same time".
+This change check HALT state after CQE enable, if CQE is in HALT state, we
+will clear it.
 
->=20
-> > > +               return ERR_PTR(-EINVAL);
-> > > +       }
-> > > +
-> > > +       if (idx >=3D JH7100_CLK_PLL0_OUT)
-> > > +               return priv->pll[idx - JH7100_CLK_PLL0_OUT];
-> > > +
-> > > +       return &priv->reg[idx].hw;
-> > > +}
-> > > +
-> > > +static int __init clk_starfive_jh7100_probe(struct platform_device *=
-pdev)
-> >
-> > Drop __init as this can be called after kernel init is over.
->=20
-> Oh interesting, I'd like to know when that can happen. The comment for
-> the builtin_platform_driver macro says it's just a wrapper for
+Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
+Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/mmc/host/cqhci-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I thought this was using module_platform_driver() macro?
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index ca8329d55f43..b0d30c35c390 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -282,6 +282,9 @@ static void __cqhci_enable(struct cqhci_host *cq_host)
+ 
+ 	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
+ 
++	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
++		cqhci_writel(cq_host, 0, CQHCI_CTL);
++
+ 	mmc->cqe_on = true;
+ 
+ 	if (cq_host->ops->enable)
+-- 
+2.25.1
 
-> device_initcall.
->=20
-> Won't we then need to remove all the __initconst tags too since the
-> probe function walks through jh7100_clk_data which eventually
-> references all __initconst data?
-
-Yes. If it's builtin_platform_driver() it can't be a module/tristate
-Kconfig, in which case all the init markings can stay.
-
->=20
-> > > +
-> > > +               clk->hw.init =3D &init;
-> > > +               clk->idx =3D idx;
-> > > +               clk->max =3D jh7100_clk_data[idx].max;
-> > > +
-> > > +               ret =3D clk_hw_register(priv->dev, &clk->hw);
-> >
-> > Why not use devm_clk_hw_register()?
->=20
-> I probably could. Just for my understanding that's just to avoid the
-> loop on error below, because as a builtin driver the device won't
-> otherwise go away, right?
-
-Yes
-
->=20
-> > > +               if (ret)
-> > > +                       goto err;
-> > > +       }
-> > > +
-> > > +       ret =3D devm_of_clk_add_hw_provider(priv->dev, clk_starfive_j=
-h7100_get, priv);
-> > > +       if (ret)
-> > > +               goto err;
-> > > +
-> > > +       return 0;
-> > > +err:
-> > > +       while (idx)
-> > > +               clk_hw_unregister(&priv->reg[--idx].hw);
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +static const struct of_device_id clk_starfive_jh7100_match[] =3D {
-> > > +       { .compatible =3D "starfive,jh7100-clkgen" },
-> > > +       { /* sentinel */ }
-> > > +};
-> >
-> > Please add MODULE_DEVICE_TABLE()
->=20
-> Will do!
-
-If it's never going to be a module then don't add any module_* things.
