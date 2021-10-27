@@ -2,255 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F2D43CFF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00D343CFE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243374AbhJ0Rpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhJ0Rpu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:45:50 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68034C061570;
-        Wed, 27 Oct 2021 10:43:24 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id q124so4496263oig.3;
-        Wed, 27 Oct 2021 10:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K4risx0TGhNAaFJcqujWqV/2Qa+DXLeA+SV94Gps/ts=;
-        b=Iv0cPaCfuJjiAiItqZkUUWuAXF8WjLaCKWn6pLa2GW+5AkuZWM+GteooPqm3VQU/rR
-         Sh5gL94onzjGllHIRcLLJjU/arOMkwxg4OVR2nIr1dO5BxgK2qerVXC0Ri1/LsxCzByC
-         y/BpjZNmHMGJd+CEXxI9gwoJqDrgUXkgt2BjJTQnchxCCW8VyaCXHjTM8iH8ipv8L6ji
-         g3F9MRejeIRdzY885+5XZdkRLlKKAc1IM5qLZ2DivxHP94XCNjKMU2ubOpMSS4aklOOM
-         9yWy32csmy+ZT5wiSLB+XVe01cVved9oWtAL54DPk1iOvyK/ZBtZjyr37x52DxzV4gfd
-         rlBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=K4risx0TGhNAaFJcqujWqV/2Qa+DXLeA+SV94Gps/ts=;
-        b=EUsc4jZ0DithVkLkbWvx6quD7mYcKVqGddDR4xwsGHcKtRp4iLZQzxSv7mbKN7zyrr
-         EN+h12BwG1YXyV6fJZtMNe5TYosAlJwBXVbgfFytMj872oZlAd1wVolRjVYpkI4DX3TH
-         fKkU6aTP7rTzNbxDlvKVtFl1xs67gvS5yNCgkJdEKjmOFFkeTFjqUrFcC7xJZwUvsmuk
-         sY90wvEtB6vLYuAZrCTqZGrinNp8Qi/lL5wuuuZXu6MzNpwWjErX9LwCr5+419nY7zRP
-         ISlE2QQxOnqtiPDU4aL9ev2Ck4p6MvK3qxYm5kB5DTKFHuebsyvvbepw+uwwwPDctDNp
-         95EA==
-X-Gm-Message-State: AOAM530yO6lHJg0xRs5lwxLOHdl5Pdtsw4xbm55rnS8OppmMSBqB/9V9
-        0mDp0gjufoHYNuaa1J+u80A=
-X-Google-Smtp-Source: ABdhPJyOUY6E/8SIMxyJdD4+R6JxuOSVHZJ94lpn6AUS6GjdrkJE70PhLP3eW6hiLliaFfniGlBuRw==
-X-Received: by 2002:a05:6808:1315:: with SMTP id y21mr4685880oiv.147.1635356603760;
-        Wed, 27 Oct 2021 10:43:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q5sm209361otc.79.2021.10.27.10.43.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 10:43:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 27 Oct 2021 10:43:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Oskar Senft <osk@google.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v8 2/2] hwmon: (nct7802) Make temperature/voltage sensors
- configurable
-Message-ID: <20211027174322.GA2762049@roeck-us.net>
-References: <20211020164213.174597-1-osk@google.com>
- <20211020164213.174597-2-osk@google.com>
+        id S243355AbhJ0Rl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243342AbhJ0Rl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:41:26 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAD9D60EFF;
+        Wed, 27 Oct 2021 17:38:58 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 18:43:24 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nuno.sa@analog.com>
+Subject: Re: [PATCH v2 1/2] iio: frequency: admv1013: add support for
+ ADMV1013
+Message-ID: <20211027184324.51811ef1@jic23-huawei>
+In-Reply-To: <20211027092333.5270-1-antoniu.miclaus@analog.com>
+References: <20211027092333.5270-1-antoniu.miclaus@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020164213.174597-2-osk@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 12:42:13PM -0400, Oskar Senft wrote:
-> This change allows LTD and RTD inputs to be configured via
-> device tree bindings. If the DT bindings are not present or
-> invalid, the input configuration is not modified and left at
-> HW defaults.
-> 
-> Signed-off-by: Oskar Senft <osk@google.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+On Wed, 27 Oct 2021 12:23:32 +0300
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
 
-Applied.
-
-Thanks,
-Guenter
-
-> ---
-> Changes from PATCH v6 and v7:
-> - None (resubmitted due to changes in nuvoton,nct7802.yaml).
+> The ADMV1013 is a wideband, microwave upconverter optimized
+> for point to point microwave radio designs operating in the
+> 24 GHz to 44 GHz radio frequency (RF) range.
 > 
-> Changes from PATCH v5:
-> - Removed unused "found_channel_config" variable.
-> - Initialize mode_mask and mode_val to defaults.
-> ---
->  drivers/hwmon/nct7802.c | 129 ++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 125 insertions(+), 4 deletions(-)
+> Datasheet:
+> https://www.analog.com/media/en/technical-documentation/data-sheets/ADMV1013.pdf
 > 
-> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
-> index 604af2f6103a..d56f78327619 100644
-> --- a/drivers/hwmon/nct7802.c
-> +++ b/drivers/hwmon/nct7802.c
-> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
->  #define REG_CHIP_ID		0xfe
->  #define REG_VERSION_ID		0xff
->  
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+Hi Antoniu.
+
+A few small things inline, but main issue in here is the use of the IIO_VAL_INT_MULTIPLE
+There are very very few uses for that type (1 IIRC) and it isn't to combine multiple
+values into a single sysfs attribute as shown here.  As such those offset interfaces
+need a rethink.  We may well have to define some new ABI to support them but I don't
+see a reason to not maintain the normal sysfs rule of one value per attribute.
+
+
+..
+
+> diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
+> index 518b1e50caef..559922a8196e 100644
+> --- a/drivers/iio/frequency/Makefile
+> +++ b/drivers/iio/frequency/Makefile
+> @@ -7,3 +7,4 @@
+>  obj-$(CONFIG_AD9523) += ad9523.o
+>  obj-$(CONFIG_ADF4350) += adf4350.o
+>  obj-$(CONFIG_ADF4371) += adf4371.o
+> +obj-$(CONFIG_ADMV1013) += admv1013.o
+> diff --git a/drivers/iio/frequency/admv1013.c b/drivers/iio/frequency/admv1013.c
+> new file mode 100644
+> index 000000000000..91254605013c
+> --- /dev/null
+> +++ b/drivers/iio/frequency/admv1013.c
+> @@ -0,0 +1,578 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
 > +/*
-> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
-> + * Selection Register
+> + * ADMV1013 driver
+> + *
+> + * Copyright 2021 Analog Devices Inc.
 > + */
-> +#define RTD_MODE_CURRENT	0x1
-> +#define RTD_MODE_THERMISTOR	0x2
-> +#define RTD_MODE_VOLTAGE	0x3
 > +
-> +#define MODE_RTD_MASK		0x3
-> +#define MODE_LTD_EN		0x40
+> +#include <linux/bitfield.h>
+> +#include <linux/bitops.h>
+> +#include <linux/bits.h>
+> +#include <linux/clk.h>
+> +#include <linux/clkdev.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/device.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/module.h>
+Recheck this list.  Should have
+property.h and mod_devicetable.h
+
+> +#include <linux/notifier.h>
+> +#include <linux/regmap.h>
+
+and not regmap as you aren't using it.
+
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/spi/spi.h>
 > +
-> +/*
-> + * Bit offset for sensors modes in REG_MODE.
-> + * Valid for index 0..2, indicating RTD1..3.
-> + */
-> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
+> +#include <asm/unaligned.h>
+
+...
+
+> +/* ADMV1013_REG_OFFSET_ADJUST_Q Map */
+> +#define ADMV1013_MIXER_OFF_ADJ_Q_P_MSK		GENMASK(15, 9)
+> +#define ADMV1013_MIXER_OFF_ADJ_Q_N_MSK		GENMASK(8, 2)
+Given these two registers have the same form, could you use generic naming
+and just have them defined once?
+
 > +
->  /*
->   * Data structures and manipulation thereof
->   */
-> @@ -1038,7 +1055,112 @@ static const struct regmap_config nct7802_regmap_config = {
->  	.volatile_reg = nct7802_regmap_is_volatile,
->  };
->  
-> -static int nct7802_init_chip(struct nct7802_data *data)
-> +static int nct7802_get_channel_config(struct device *dev,
-> +				      struct device_node *node, u8 *mode_mask,
-> +				      u8 *mode_val)
+> +/* ADMV1013_REG_QUAD Map */
+> +#define ADMV1013_QUAD_SE_MODE_MSK		GENMASK(9, 6)
+> +#define ADMV1013_QUAD_FILTERS_MSK		GENMASK(3, 0)
+> +
+> +/* ADMV1013_REG_VVA_TEMP_COMP Map */
+> +#define ADMV1013_VVA_TEMP_COMP_MSK		GENMASK(15, 0)
+> +
+> +struct admv1013_state {
+> +	struct spi_device	*spi;
+> +	struct clk		*clkin;
+> +	/* Protect against concurrent accesses to the device */
+
+Also against concurrent access to data.  Maybe other state in software as well?
+This comment needs to cover everything the lock protects - if it were just
+serialization of accesses to the device then the spi subsystem would handle
+that fine for us.
+
+> +	struct mutex		lock;
+> +	struct regulator	*reg;
+> +	struct notifier_block	nb;
+> +	unsigned int		quad_se_mode;
+> +	bool			vga_pd;
+> +	bool			mixer_pd;
+> +	bool			quad_pd;
+> +	bool			bg_pd;
+> +	bool			mixer_if_en;
+> +	bool			det_en;
+> +	u8			data[3] ____cacheline_aligned;
+> +};
+
+...
+
+> +static int admv1013_read_raw(struct iio_dev *indio_dev,
+> +			     struct iio_chan_spec const *chan,
+> +			     int *val, int *val2, long info)
 > +{
-> +	u32 reg;
-> +	const char *type_str, *md_str;
-> +	u8 md;
+> +	struct admv1013_state *st = iio_priv(indio_dev);
+> +	unsigned int data;
+> +	int ret;
 > +
-> +	if (!node->name || of_node_cmp(node->name, "channel"))
-> +		return 0;
+> +	switch (info) {
+> +	case IIO_CHAN_INFO_OFFSET:
+> +		if (chan->channel2 == IIO_MOD_I) {
+> +			ret = admv1013_spi_read(st, ADMV1013_REG_OFFSET_ADJUST_I, &data);
+> +			if (ret)
+> +				return ret;
 > +
-> +	if (of_property_read_u32(node, "reg", &reg)) {
-> +		dev_err(dev, "Could not read reg value for '%s'\n",
-> +			node->full_name);
+> +			*val = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_I_P_MSK, data);
+> +			*val2 = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_I_N_MSK, data);
+
+I mention above about generic naming for these masks.  Advantage is then that this
+code can be
+
+		if (chan->channel2 == IIO_MOD_I)
+			addr = ADMV1013_REG_OFFSET_ADJUST_I;
+		else
+			addr = ADMV1013_REG_OFFSET_ADJUST_Q;
+
+		ret = admv1013_spi_read(st, addr, &data);
+		if (ret)
+			return ret;
+
+		*val = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_P_MSK, data);
+		*val2 = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_Q_MSK, data);
+
+		return IIO_VAL_INT_MULTIPLE;
+
+However, returning multiple integers is normally reserved for things like
+quaternions where the individual parts have no meaning except when they are all present.
+It's not intended for pairs like this. It should also only be used with the special
+read_raw_multi callback.
+
+So we need to rethink this interface. I'm not entirely sure what it is
+doing so I'm open to suggestions on what the interface should be!
+The description on the datasheet suggest to me these are for calibration tweaking
+in which case they should be related to calibbias not offset as they aren't something
+we should apply to a raw value in userspace (which is what offset is for).
+
+
+> +		} else {
+> +			ret = admv1013_spi_read(st, ADMV1013_REG_OFFSET_ADJUST_Q, &data);
+> +			if (ret)
+> +				return ret;
+> +
+> +			*val = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_Q_P_MSK, data);
+> +			*val2 = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_Q_N_MSK, data);
+> +		}
+> +
+> +		return IIO_VAL_INT_MULTIPLE;
+> +	case IIO_CHAN_INFO_PHASE:
+> +		if (chan->channel2 == IIO_MOD_I) {
+> +			ret = admv1013_spi_read(st, ADMV1013_REG_LO_AMP_I, &data);
+> +			if (ret)
+> +				return ret;
+> +
+> +			*val = FIELD_GET(ADMV1013_LOAMP_PH_ADJ_I_FINE_MSK, data);
+
+As above, the masks match for these two branches of if / else, so with a generic
+name you should be able to share more code and only have to select the right register.
+
+> +		} else {
+> +			ret = admv1013_spi_read(st, ADMV1013_REG_LO_AMP_Q, &data);
+> +			if (ret)
+> +				return ret;
+> +
+> +			*val = FIELD_GET(ADMV1013_LOAMP_PH_ADJ_Q_FINE_MSK, data);
+> +		}
+> +
+> +		return IIO_VAL_INT;
+> +	default:
 > +		return -EINVAL;
 > +	}
+> +}
 > +
-> +	if (reg > 3) {
-> +		dev_err(dev, "Invalid reg (%u) in '%s'\n", reg,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
+> +static int admv1013_write_raw(struct iio_dev *indio_dev,
+> +			      struct iio_chan_spec const *chan,
+> +			      int val, int val2, long info)
+> +{
+> +	struct admv1013_state *st = iio_priv(indio_dev);
+> +	int ret;
 > +
-> +	if (reg == 0) {
-> +		if (!of_device_is_available(node))
-> +			*mode_val &= ~MODE_LTD_EN;
+> +	switch (info) {
+> +	case IIO_CHAN_INFO_OFFSET:
+> +		val2 /= 100000;
+> +
+> +		if (chan->channel2 == IIO_MOD_I)
+> +			ret = admv1013_spi_update_bits(st, ADMV1013_REG_OFFSET_ADJUST_I,
+> +						       ADMV1013_MIXER_OFF_ADJ_I_P_MSK |
+> +						       ADMV1013_MIXER_OFF_ADJ_I_N_MSK,
+> +						       FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_I_P_MSK, val) |
+> +						       FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_I_N_MSK, val2));
+
+As above, this isn't in inline with the normal ABI conventions so needs a rethink.  As far as I can
+establish these two values are independent though the datasheet provides limited information.
+
 > +		else
-> +			*mode_val |= MODE_LTD_EN;
-> +		*mode_mask |= MODE_LTD_EN;
-> +		return 0;
-> +	}
+> +			ret = admv1013_spi_update_bits(st, ADMV1013_REG_OFFSET_ADJUST_Q,
+> +						       ADMV1013_MIXER_OFF_ADJ_Q_P_MSK |
+> +						       ADMV1013_MIXER_OFF_ADJ_Q_N_MSK,
+> +						       FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_Q_P_MSK, val) |
+> +						       FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_Q_N_MSK, val2));
 > +
-> +	/* At this point we have reg >= 1 && reg <= 3 */
-> +
-> +	if (!of_device_is_available(node)) {
-> +		*mode_val &= ~(MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1));
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (of_property_read_string(node, "sensor-type", &type_str)) {
-> +		dev_err(dev, "No type for '%s'\n", node->full_name);
+> +		return ret;
+> +	case IIO_CHAN_INFO_PHASE:
+> +		if (chan->channel2 == IIO_MOD_I)
+> +			return admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_I,
+> +							ADMV1013_LOAMP_PH_ADJ_I_FINE_MSK,
+> +							FIELD_PREP(ADMV1013_LOAMP_PH_ADJ_I_FINE_MSK, val));
+> +		else
+> +			return admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_Q,
+> +							ADMV1013_LOAMP_PH_ADJ_Q_FINE_MSK,
+> +							FIELD_PREP(ADMV1013_LOAMP_PH_ADJ_Q_FINE_MSK, val));
+> +	default:
 > +		return -EINVAL;
 > +	}
+> +}
 > +
-> +	if (!strcmp(type_str, "voltage")) {
-> +		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
-> +			     << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
+> +static int admv1013_update_quad_filters(struct admv1013_state *st)
+> +{
+> +	unsigned int filt_raw;
+> +	u64 rate = clk_get_rate(st->clkin);
+> +
+> +	if (rate >= 5400000000 && rate <= 7000000000)
+
+To reduce chance of 0s issues you could use the HZ_PER_MHZ definition in include/linux/units.h
+Nice to avoid counting so many zeros when reviewing.
+
+> +		filt_raw = 15;
+> +	else if (rate >= 5400000000 && rate <= 8000000000)
+> +		filt_raw = 10;
+> +	else if (rate >= 6600000000 && rate <= 9200000000)
+> +		filt_raw = 5;
+> +	else
+> +		filt_raw = 0;
+> +
+> +	return __admv1013_spi_update_bits(st, ADMV1013_REG_QUAD,
+> +					ADMV1013_QUAD_FILTERS_MSK,
+> +					FIELD_PREP(ADMV1013_QUAD_FILTERS_MSK, filt_raw));
+> +}
+> +
+
+> +static int admv1013_reg_access(struct iio_dev *indio_dev,
+> +			       unsigned int reg,
+> +			       unsigned int write_val,
+> +			       unsigned int *read_val)
+> +{
+> +	struct admv1013_state *st = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	if (read_val)
+> +		ret = admv1013_spi_read(st, reg, read_val);
+
+		return amdv1013_spi_read() etc is a bit more concise for now
+loss of readability.
+
+> +	else
+> +		ret = admv1013_spi_write(st, reg, write_val);
+> +
+> +	return ret;
+> +}
+> +
+
+...
+
+
+> +
+> +#define ADMV1013_CHAN(_channel, rf_comp) {			\
+> +	.type = IIO_ALTVOLTAGE,					\
+> +	.modified = 1,						\
+> +	.output = 1,						\
+> +	.indexed = 1,						\
+> +	.channel2 = IIO_MOD_##rf_comp,				\
+> +	.channel = _channel,					\
+> +	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE) |	\
+> +		BIT(IIO_CHAN_INFO_OFFSET)			\
 > +	}
 > +
-> +	if (strcmp(type_str, "temperature")) {
-> +		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
+> +static const struct iio_chan_spec admv1013_channels[] = {
+> +	ADMV1013_CHAN(0, I),
+> +	ADMV1013_CHAN(0, Q),
+> +};
+
+...
+
 > +
-> +	if (reg == 3) {
-> +		/* RTD3 only supports thermistor mode */
-> +		md = RTD_MODE_THERMISTOR;
-> +	} else {
-> +		if (of_property_read_string(node, "temperature-mode",
-> +					    &md_str)) {
-> +			dev_err(dev, "No mode for '%s'\n", node->full_name);
-> +			return -EINVAL;
-> +		}
+> +static int admv1013_properties_parse(struct admv1013_state *st)
+> +{
+> +	int ret;
+> +	struct spi_device *spi = st->spi;
 > +
-> +		if (!strcmp(md_str, "thermal-diode"))
-> +			md = RTD_MODE_CURRENT;
-> +		else if (!strcmp(md_str, "thermistor"))
-> +			md = RTD_MODE_THERMISTOR;
-> +		else {
-> +			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
-> +				node->full_name);
-> +			return -EINVAL;
-> +		}
-> +	}
+> +	st->vga_pd = device_property_read_bool(&spi->dev, "adi,vga-pd");
+> +	st->mixer_pd = device_property_read_bool(&spi->dev, "adi,mixer-pd");
+> +	st->quad_pd = device_property_read_bool(&spi->dev, "adi,quad-pd");
+> +	st->bg_pd = device_property_read_bool(&spi->dev, "adi,bg-pd");
+> +	st->mixer_if_en = device_property_read_bool(&spi->dev, "adi,mixer-if-en");
+> +	st->det_en = device_property_read_bool(&spi->dev, "adi,det-en");
+
+Comments on these in the binding document.
+
 > +
-> +	*mode_val |= (md & MODE_RTD_MASK) << MODE_BIT_OFFSET_RTD(reg - 1);
-> +	*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
+> +	ret = device_property_read_u32(&spi->dev, "adi,quad-se-mode", &st->quad_se_mode);
+> +	if (ret)
+> +		st->quad_se_mode = 12;
+> +
+> +	st->reg = devm_regulator_get(&spi->dev, "vcm");
+> +	if (IS_ERR(st->reg))
+> +		return dev_err_probe(&spi->dev, PTR_ERR(st->reg),
+> +				     "failed to get the common-mode voltage\n");
+> +
+> +	st->clkin = devm_clk_get(&spi->dev, "lo_in");
+> +	if (IS_ERR(st->clkin))
+> +		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
+> +				     "failed to get the LO input clock\n");
 > +
 > +	return 0;
 > +}
 > +
-> +static int nct7802_configure_channels(struct device *dev,
-> +				      struct nct7802_data *data)
+> +static int admv1013_probe(struct spi_device *spi)
 > +{
-> +	/* Enable local temperature sensor by default */
-> +	u8 mode_mask = MODE_LTD_EN, mode_val = MODE_LTD_EN;
-> +	struct device_node *node;
-> +	int err;
+> +	struct iio_dev *indio_dev;
+> +	struct admv1013_state *st;
+> +	int ret;
 > +
-> +	if (dev->of_node) {
-> +		for_each_child_of_node(dev->of_node, node) {
-> +			err = nct7802_get_channel_config(dev, node, &mode_mask,
-> +							 &mode_val);
-> +			if (err)
-> +				return err;
-> +		}
+> +	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	st = iio_priv(indio_dev);
+> +
+> +	indio_dev->info = &admv1013_info;
+> +	indio_dev->name = "admv1013";
+> +	indio_dev->channels = admv1013_channels;
+> +	indio_dev->num_channels = ARRAY_SIZE(admv1013_channels);
+> +
+> +	st->spi = spi;
+> +
+> +	ret = admv1013_properties_parse(st);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = regulator_enable(st->reg);
+> +	if (ret) {
+> +		dev_err(&spi->dev, "Failed to enable specified Common-Mode Voltage!\n");
+> +		return ret;
 > +	}
 > +
-> +	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
+> +	ret = devm_add_action_or_reset(&spi->dev, admv1013_reg_disable,
+> +				       st->reg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = clk_prepare_enable(st->clkin);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = devm_add_action_or_reset(&spi->dev, admv1013_clk_disable, st->clkin);
+> +	if (ret)
+> +		return ret;
+> +
+> +	st->nb.notifier_call = admv1013_freq_change;
+> +	ret = clk_notifier_register(st->clkin, &st->nb);
+
+There seems to be a devm_clk_notifier_registers() which you should use.
+
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = devm_add_action_or_reset(&spi->dev, admv1013_clk_notifier_unreg, st);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mutex_init(&st->lock);
+> +
+> +	ret = admv1013_init(st);
+> +	if (ret) {
+> +		dev_err(&spi->dev, "admv1013 init failed\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_add_action_or_reset(&spi->dev, admv1013_powerdown, st);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
 > +}
 > +
-> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
->  {
->  	int err;
->  
-> @@ -1047,8 +1169,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
->  	if (err)
->  		return err;
->  
-> -	/* Enable local temperature sensor */
-> -	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
-> +	err = nct7802_configure_channels(dev, data);
->  	if (err)
->  		return err;
->  
-> @@ -1074,7 +1195,7 @@ static int nct7802_probe(struct i2c_client *client)
->  	mutex_init(&data->access_lock);
->  	mutex_init(&data->in_alarm_lock);
->  
-> -	ret = nct7802_init_chip(data);
-> +	ret = nct7802_init_chip(dev, data);
->  	if (ret < 0)
->  		return ret;
->  
+
+...
+
