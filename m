@@ -2,88 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD1843C783
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1A943C782
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241386AbhJ0KVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:21:32 -0400
-Received: from mout.gmx.net ([212.227.17.22]:56455 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232533AbhJ0KVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:21:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635329904;
-        bh=0/xQALMRmDMXg28cl7m2Q8kQ0DMZEqmZ9WnjNozXkKY=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=IfjaCIxyVScwaWY9tG/6eRou8+pIIGvV6kCwtIGTYeh53wMnUj3L4XQkNomFwTN2e
-         vQn20zgpVboEfBdhYoxabiPC1rY/hHKmpvinyJLn1MC4/kS0X8YYx2kYoGkVfyCJOJ
-         VmbJ2i5Df7osmYz6VY4Mwi8/YcihLjK82CX3wAqU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.126]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N4hzj-1mq11L2WYx-011fyR; Wed, 27
- Oct 2021 12:18:24 +0200
-Message-ID: <e5c43bbf7ff6c9c9ba5ac5d0a2b8a981e2abf96e.camel@gmx.de>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 27 Oct 2021 12:18:22 +0200
-In-Reply-To: <20211027090020.GO3959@techsingularity.net>
-References: <20211021145603.5313-2-mgorman@techsingularity.net>
-         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
-         <20211022110534.GJ3959@techsingularity.net>
-         <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
-         <20211026081817.GM3959@techsingularity.net>
-         <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
-         <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
-         <20211026115707.GN3959@techsingularity.net>
-         <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
-         <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
-         <20211027090020.GO3959@techsingularity.net>
+        id S241373AbhJ0KVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:21:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27524 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232533AbhJ0KVS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 06:21:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635329933;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0f27XW5ipOgXyw7srO4b+jUX50VuAlw+C7sxFBFkpEA=;
+        b=Z4xywkau7qK0Pa6XDZcZ14UI/7PrtgD9YDOHNSg5tYFg5d/88pFRakzhidvff6NyyCoF+U
+        UDZYk0YkczFVpynDIUCugpAIiwewCx6UJfWFEu3GTMfnycj77uYUuJFsVKazk/uNMNNdhc
+        FzPOv7pWxTVcTnUvnq/+cO3NTe7tYHw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-NX_vwU-ZN9SDSZWcd7uWxg-1; Wed, 27 Oct 2021 06:18:50 -0400
+X-MC-Unique: NX_vwU-ZN9SDSZWcd7uWxg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2879100C661;
+        Wed, 27 Oct 2021 10:18:45 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC5315BAE0;
+        Wed, 27 Oct 2021 10:18:25 +0000 (UTC)
+Message-ID: <d13520b7a5a78b26ec994ec66d2fea6deddad40a.camel@redhat.com>
+Subject: Re: [PATCH v2 05/43] KVM: Update halt-polling stats if and only if
+ halt-polling was attempted
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Wed, 27 Oct 2021 13:18:24 +0300
+In-Reply-To: <20211009021236.4122790-6-seanjc@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-6-seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NWJFT/8n7JuoCprytQiCxEM/iiCQ/FNXAllKX3ifdyx8CKmNhTL
- xtEnGoSAWHeOrOwwjUp/VzcZMHcviWpUIr/vjIS1lHvX2w9gPieIc6BfzWI3pVxf7/8jwKc
- ruYXG95jM2MYXnfXRpSwdVTzBu9Y5LQIjJW/CbgEKqD1es5MhKTVqJjHtq2YEdSCVHn4COa
- Jtu+rUIurjDd3Ld/IzEOA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ul/76pTy9Xo=:2CYFfdmmKTMFBGWHpQfkMu
- KACi/agJWiPfXc0A7sGXhAGevyBIaQOItzUr5ddDoELLPtP3opyw/QpgjYRrNOl9KNhfJgiag
- ZwlguQl4yStbv8CuJOj9fYCa+9OxLY/+C8A7LZXtK/OHCGBWUXjHDEBpF5e/nCAZZQpgAl07j
- wuRROyyaOdRPKKKLT71bVMkXB5X/IjGY9toQHPIG3+TYmh3bj+A7+ZOHXuDjU4wioc7Xw9Rg8
- 49BgjpBvj7PT/82fpTpkbU4lDq67e2hQqmIwbKratrJ3q7izdyLFo+BHc8yiD0Mw46WqVYHoh
- ETzpuAX4Gd5/vuxDTknsvHEQ2XHtpVrKJmTTMnoF5J8Lw2vimQo2fFFASj9HIZIv5x9EowMEO
- C3CuoiJ4U4qRCI4cz/fVd8VsCkE8/yVaZNLtlRTL76rnGqT8OR7nPCprhHATZI4ckXPSn9QjL
- cbnxRriOOoPgGs9fChYRSyVQKNnqMJIVlKxAP1K5yRUIvCx5uiPqNcg0vCyXRmO8VMLz5gCIu
- 8TjHu+3og2SM8TmjYNaXHt48dnVckWR1sS+YvBCtTFUqrurzf+OwAilLvRMlVU0dWk9w5k/j0
- oWpxGa5WfEXZBG8ikW3COkBTEsnQescvWyiEam1PwKWQRkbsbVD54Oe4DiZQ+4EFbYeP/XTM/
- /b7d4Jo+UoIdVikinUy1OZH9i6PQH/xYIhB96xkV32/D890XMBIZpdY8hgYCV7+MgXt8rzOFP
- /7Fvz/nj//gLH7bWdyXQCBlBJEid7R1B9OGKoUPm99ebhLull1Fx2sMLn9xX/LgBko0S9xS0F
- i8m0B0YwpyFzB09RdSqQ6kw+kjrqoBea3VRZKRqLmKRzbfsDD60Pe/YooJF1LWo94hQ4EtlRe
- 2WQQ7icXpgH/iTHDxZNE2WT6oKWU0R7SUJNS8MUkiaGfxuV6Iy1qto3mOnaJAVjtp0Fh/kLoa
- 6l3EmOjUDqbyOVRqQHa1nkFOjzuysXhGRRjziM0n+oSmZm/g0Xa+IEhAietR3kJtrv2FYHJCP
- bS1GiSGSmIDmb7qxjmuvBtvsyPpqfqLptq56d/LuOoGgVN9EGT83n/MNH3U6UMEMCH3M2pkxi
- EmPygjMJGHXxzQ=
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-27 at 10:00 +0100, Mel Gorman wrote:
->
-> How about patch 2?
+On Fri, 2021-10-08 at 19:11 -0700, Sean Christopherson wrote:
+> Don't update halt-polling stats if halt-polling wasn't attempted.  This
+> is a nop as @poll_ns is guaranteed to be '0' (poll_end == start), but it
+> will allow a future patch to move the histogram stats into the helper to
+> resolve a discrepancy in what is considered a "successful" halt-poll.
+> 
+> No functional change intended.
+> 
+> Reviewed-by: David Matlack <dmatlack@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  virt/kvm/kvm_main.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 5d4a90032277..6156719bcbbc 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3217,6 +3217,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>  {
+>  	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
+>  	bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
+> +	bool do_halt_poll = halt_poll_allowed && vcpu->halt_poll_ns;
+>  	ktime_t start, cur, poll_end;
+>  	bool waited = false;
+>  	u64 block_ns;
+> @@ -3224,7 +3225,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>  	kvm_arch_vcpu_blocking(vcpu);
+>  
+>  	start = cur = poll_end = ktime_get();
+> -	if (vcpu->halt_poll_ns && halt_poll_allowed) {
+> +	if (do_halt_poll) {
+>  		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
+>  
+>  		++vcpu->stat.generic.halt_attempted_poll;
+> @@ -3276,8 +3277,9 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>  	kvm_arch_vcpu_unblocking(vcpu);
+>  	block_ns = ktime_to_ns(cur) - ktime_to_ns(start);
+>  
+> -	update_halt_poll_stats(
+> -		vcpu, ktime_to_ns(ktime_sub(poll_end, start)), waited);
+> +	if (do_halt_poll)
+> +		update_halt_poll_stats(
+> +			vcpu, ktime_to_ns(ktime_sub(poll_end, start)), waited);
+>  
+>  	if (halt_poll_allowed) {
+>  		if (!vcpu_valid_wakeup(vcpu)) {
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-This version doesn't slam the door, so no worries wrt kthread/control
-thread latencies etc.  Doing a brief tbench vs hogs mixed load run
-didn't even show much of a delta.
-
-	-Mike
+Best regards,
+	Maxim Levitsky
 
