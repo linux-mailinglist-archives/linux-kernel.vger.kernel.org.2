@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA75643CC33
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148D843CC41
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242545AbhJ0OaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:30:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238437AbhJ0OaT (ORCPT
+        id S242570AbhJ0OcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238657AbhJ0OcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:30:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635344874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KHHrb1tiDY2STHq9SuLRvZy3hZaADD9wEfu9gCQmDxI=;
-        b=hCv8kQkNku+8meoACWj3g7MvMYCo0vjOu3KGRhPncCvf3E4W7QJdIv8n3/NGtPtz6YFdeq
-        yR5anNlVrImLOXPvzlqqHoB8lr1dTGpOD7V5oi/8ZhEG6uYdC4XrTICU3IrWWnEQuf2quV
-        l7t2mgtD24SzDm2bjmPVKLB++CZboOM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-X6o1R3l_PBa5FdcUMi6Ovw-1; Wed, 27 Oct 2021 10:27:52 -0400
-X-MC-Unique: X6o1R3l_PBa5FdcUMi6Ovw-1
-Received: by mail-ed1-f70.google.com with SMTP id g6-20020a056402424600b003dd2b85563bso2477768edb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:27:52 -0700 (PDT)
+        Wed, 27 Oct 2021 10:32:16 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6EBC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:29:49 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so2216369pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 07:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RW1b2/4mo8FTI01e31IQmQwZ/AoF06MQcurQiMVorGY=;
+        b=K28YQ1lSCemZBapcOWd/+OPu6IBPr+UFgQglsFuDApNP4+PaQPsd5Y65FOKcQLjqlY
+         L3QiknmdjCSMltuAeQUK3Ctu4kGhN7vJP7fmLaPOW9agbl7Li2GkKZnMLX1bVW1pyJBN
+         /VlvBKTLc2qNcWQVikDTQuMDlTRHvc/vZ8uJ+7LCZ92MuY3wypM+Uh2LKtkl4UUUesXD
+         anHZh+rHpmL7p5kb1mvY3JE23fjS+Anxpku7yzMctQcSvXVV0uxmPz7FcmXyxE4nNFLh
+         VbK8IJxzJ/5J2Vq3jIkgTJ894/BrzS8hmGdwMJA1FrtwlG4QU+gM51gjDtvJQClOibVR
+         okYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=KHHrb1tiDY2STHq9SuLRvZy3hZaADD9wEfu9gCQmDxI=;
-        b=RUdKQhvX/g7zzmAudMVJe68YxrQ6E8nnb2BaXRBihtIL+zQnrM3tdO57HApArLbd+u
-         j3KbpJay93aSJSKIRSztrN1XtKwr5Bv5gZ/4Lb7S/r641iJ1k06wrjsC1Lj8dDJcHYe8
-         QudoXF7sFIWW53DQ0wgTR7T+IO7YZKoogmMEp+Cm8o+pFmCz+7z1n1xN3KeLGGOCZUA/
-         bdUBBrgQcUh45TbSjbppGlZ54OtnHbMUWn0bR5Vb6HNKEQCnREOZauF75CDyrYH7iMeR
-         sWttVt3dZQmyQgfrRCqqBvZ/T5Xlpkh6577jbU/ku41EuEX8Lb2Bh9ZrkpL8ogH0LLwC
-         ZiZQ==
-X-Gm-Message-State: AOAM533L4U2/V2BGbQrTrnst3mDGbIcMFJmN6zzi/54wA/W/0B2bMfoz
-        Sf3CgpnOUNu40p7pPU6+Owsw3/nvxC2kXfQCaTDDXW5imBCzRir/+k90IgLJv8cywpF1GH/4yn6
-        Bx6YhPlt59eNC+ylmmPpgY9p2
-X-Received: by 2002:a17:907:961a:: with SMTP id gb26mr17802489ejc.527.1635344871503;
-        Wed, 27 Oct 2021 07:27:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7TA88/kBuw1NJY7C8S9WnDH4N9C07D2dZ27TMGAfrekL2kIaYn912rjHXCE9gQ/3xdFOx4A==
-X-Received: by 2002:a17:907:961a:: with SMTP id gb26mr17802469ejc.527.1635344871372;
-        Wed, 27 Oct 2021 07:27:51 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id q23sm47512ejr.0.2021.10.27.07.27.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 07:27:51 -0700 (PDT)
-Message-ID: <3ad75583-b37e-8700-d062-42426966d912@redhat.com>
-Date:   Wed, 27 Oct 2021 16:27:50 +0200
+        bh=RW1b2/4mo8FTI01e31IQmQwZ/AoF06MQcurQiMVorGY=;
+        b=cYYK6hpsuMfQEQi/KY2Xh68HzI/O1meQC3CvMUlEEldqpB0FYOvnGU1LZpgFB1+n2a
+         n+WwNgYRd75kV4xpsTdv34y3XaFxSDUiJn4kZasuKWtP6bxb99R1BMpMUjKrD59JPyu2
+         G6IyJBWIMZSv2BQdIGq31Wp4uta/ji3YTlF7jbtPsHw3NzAR/4xuY+S0pKovOUgAvnix
+         UvUkn2Ek22eKlS4dY75Dabo3GYsDVlE3SZQS+ye68HfngvyL7x7LFVSQg6Ec+nVrAidn
+         gJV9yijcQ95+3kvljYgbi2fmI8oXv6g0EKqDOu3BLpk31ZGQnWLjmNS9dYRFTwQQr5Fd
+         gQOw==
+X-Gm-Message-State: AOAM533+hkLFdUwHgWZHQcUxehVGZZfTLu3SJjdx14QdnhHJBJC6vBJc
+        BGj51ZzrHd0dZXUcys6H9WM=
+X-Google-Smtp-Source: ABdhPJxc9zsPDKRWq8oJvD/1l+BVvhN6i+YnM9DLTHiQD3n8zvAoxMCtBQ8VmDp5Ah7SlCyM2cmODg==
+X-Received: by 2002:a17:90a:af93:: with SMTP id w19mr6326392pjq.10.1635344989266;
+        Wed, 27 Oct 2021 07:29:49 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id a12sm4548028pjq.16.2021.10.27.07.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 07:29:48 -0700 (PDT)
+From:   Lv Ruyi <cgel.zte@gmail.com>
+X-Google-Original-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Yang Guang <yang.guang5@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/unwind/orc: use swap() to make code cleaner
+Date:   Wed, 27 Oct 2021 14:29:40 +0000
+Message-Id: <20211027142941.4401-1-lv.ruyi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v1 0/2] ACPI: scan: Honor certain device identification
- rules
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-References: <11860508.O9o76ZdvQC@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <11860508.O9o76ZdvQC@kreacher>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-On 10/26/21 20:51, Rafael J. Wysocki wrote:
-> Hi All,
-> 
-> There are some rules in the ACPI spec regarding which device identification
-> objects can be used together etc., but they are not followed by the kernel
-> code.
-> 
-> This series modifies the code to follow the spec more closely (see patch
-> changelogs for details).
+Using swap() make it more readable.
 
-Both changes seem sensible to me; and since you make _HID take precedence
-over _ADR I don't expect this to cause any regressions on BYT / CHT
-hardware (the other way around will likely be an issue).
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+---
+ arch/x86/kernel/unwind_orc.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-So for the series:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 2de3c8c5eba9..4ea86f1f4054 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -196,7 +196,6 @@ static struct orc_entry *cur_orc_table = __start_orc_unwind;
+ static void orc_sort_swap(void *_a, void *_b, int size)
+ {
+ 	struct orc_entry *orc_a, *orc_b;
+-	struct orc_entry orc_tmp;
+ 	int *a = _a, *b = _b, tmp;
+ 	int delta = _b - _a;
+ 
+@@ -208,9 +207,7 @@ static void orc_sort_swap(void *_a, void *_b, int size)
+ 	/* Swap the corresponding .orc_unwind entries: */
+ 	orc_a = cur_orc_table + (a - cur_orc_ip_table);
+ 	orc_b = cur_orc_table + (b - cur_orc_ip_table);
+-	orc_tmp = *orc_a;
+-	*orc_a = *orc_b;
+-	*orc_b = orc_tmp;
++	swap(*orc_a, *orc_b);
+ }
+ 
+ static int orc_sort_cmp(const void *_a, const void *_b)
+-- 
+2.30.2
 
