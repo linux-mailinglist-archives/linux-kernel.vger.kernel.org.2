@@ -2,254 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1CF43BF6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA9843BFD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236461AbhJ0CR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:17:28 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25314 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbhJ0CR1 (ORCPT
+        id S237995AbhJ0CcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhJ0CcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:17:27 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HfBws6886zbhPY;
-        Wed, 27 Oct 2021 10:10:21 +0800 (CST)
-Received: from kwepemm600008.china.huawei.com (7.193.23.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 10:14:59 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600008.china.huawei.com (7.193.23.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 10:14:58 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <stable@vger.kernel.org>,
-        <linux-mm@kvack.org>, Chen Huang <chenhuang5@huawei.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.19.y] arm64: Avoid premature usercopy failure
-Date:   Wed, 27 Oct 2021 02:29:07 +0000
-Message-ID: <20211027022907.2617558-1-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 26 Oct 2021 22:32:18 -0400
+Received: from out10.migadu.com (out10.migadu.com [IPv6:2001:41d0:2:e8e3::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD57C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:29:53 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 11:29:37 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1635301789;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nQGDOP/LiQ5qzBi3yIx/uAb2j3FzvKGJHPlYNIgLsaI=;
+        b=iArym7oen0t74ifKxfuMX6gQLNj3u84i6EINnK5MlGKMIWEoRAAeLUYUlWA2Hm2YSR4QI+
+        uSaQf4JgCWzDAe3VSuqff8w9xmpP+xgQh+p8pGjEbtcNEIPZfudnANO58dJKEK2WLrvuXo
+        i59u53fcevjv2Rva6VXt1I2SOjRhwwA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     Ding Hui <dinghui@sangfor.com.cn>
+Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v2 4/4] mm/hwpoison: fix unpoison_memory()
+Message-ID: <20211027022937.GB2707645@u2004>
+References: <20211025232634.GA2651726@u2004>
+ <0d83410a-4377-35ee-66ec-0dbeb5e8801f@sangfor.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600008.china.huawei.com (7.193.23.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0d83410a-4377-35ee-66ec-0dbeb5e8801f@sangfor.com.cn>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+On Wed, Oct 27, 2021 at 09:26:08AM +0800, Ding Hui wrote:
+> On 2021/10/26 7:27, Naoya Horiguchi wrote:
+> > (Please ignore previous patch 4/4 which leaves the replied message at
+> > the end of body, this was due to my wrong manual edit, sorry about noise.
+> > I resend 4/4.)
+> > 
+> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > 
+> > After recent soft-offline rework, error pages can be taken off from
+> > buddy allocator, but the existing unpoison_memory() does not properly
+> > undo the operation.  Moreover, due to the recent change on
+> > __get_hwpoison_page(), get_page_unless_zero() is hardly called for
+> > hwpoisoned pages.  So __get_hwpoison_page() highly likely returns zero
+> 
+> Sorry, can you explain that __get_hwpoison_page() likely go which branch to
+> return zero for hwpoisoned pages ?
+> 
+> not returns -EBUSY because HWPoisonHandlable() is false ?
 
-commit 295cf156231ca3f9e3a66bde7fab5e09c41835e0 upstream.
+Sorry, you're right, the return value mentioned here was changed since v1,
+so I should have updated the description.
 
-Al reminds us that the usercopy API must only return complete failure
-if absolutely nothing could be copied. Currently, if userspace does
-something silly like giving us an unaligned pointer to Device memory,
-or a size which overruns MTE tag bounds, we may fail to honour that
-requirement when faulting on a multi-byte access even though a smaller
-access could have succeeded.
+...
+> > @@ -1958,9 +2023,7 @@ int unpoison_memory(unsigned long pfn)
+> >   {
+> >   	struct page *page;
+> >   	struct page *p;
+> > -	int freeit = 0;
+> > -	int ret = 0;
+> > -	unsigned long flags = 0;
+> > +	int ret = -EBUSY;
+> >   	static DEFINE_RATELIMIT_STATE(unpoison_rs, DEFAULT_RATELIMIT_INTERVAL,
+> >   					DEFAULT_RATELIMIT_BURST);
+> > @@ -1996,24 +2059,27 @@ int unpoison_memory(unsigned long pfn)
+> >   		goto unlock_mutex;
+> >   	}
+> > -	if (!get_hwpoison_page(p, flags)) {
+> > -		if (TestClearPageHWPoison(p))
+> > -			num_poisoned_pages_dec();
+> > -		unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
+> > -				 pfn, &unpoison_rs);
+> > +	if (PageSlab(page))
+> 
+> As I reported before [1], get refcount to a PageTable(page) is not safe,
+> maybe let huge_pmd_unshare() go to wrong branch, so can you also avoid
+> PageTable(page) here ?
+> 
+> [1]: https://lore.kernel.org/linux-mm/271d0f41-0599-9d5d-0555-47189f476243@sangfor.com.cn/
 
-Add a mitigation to the fixup routines to fall back to a single-byte
-copy if we faulted on a larger access before anything has been written
-to the destination, to guarantee making *some* forward progress. We
-needn't be too concerned about the overall performance since this should
-only occur when callers are doing something a bit dodgy in the first
-place. Particularly broken userspace might still be able to trick
-generic_perform_write() into an infinite loop by targeting write() at
-an mmap() of some read-only device register where the fault-in load
-succeeds but any store synchronously aborts such that copy_to_user() is
-genuinely unable to make progress, but, well, don't do that...
+Sure, I'll add it.
 
-CC: stable@vger.kernel.org
-Reported-by: Chen Huang <chenhuang5@huawei.com>
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/dc03d5c675731a1f24a62417dba5429ad744234e.1626098433.git.robin.murphy@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- arch/arm64/lib/copy_from_user.S | 13 ++++++++++---
- arch/arm64/lib/copy_in_user.S   | 20 ++++++++++++++------
- arch/arm64/lib/copy_to_user.S   | 14 +++++++++++---
- 3 files changed, 35 insertions(+), 12 deletions(-)
+> 
+> >   		goto unlock_mutex;
+> > -	}
+> > -	if (TestClearPageHWPoison(page)) {
+> > -		unpoison_pr_info("Unpoison: Software-unpoisoned page %#lx\n",
+> > -				 pfn, &unpoison_rs);
+> > -		num_poisoned_pages_dec();
+> > -		freeit = 1;
+> > -	}
+> > +	ret = get_hwpoison_page(p, MF_UNPOISON);
+> > +	if (!ret) {
+> > +		ret = clear_page_hwpoison(&unpoison_rs, p);
+> 
+> in this case, the page p has zero refcount, with HWPoison flag, but without
+> MAGIC_HWPOISON, where it come from ? race condition or normal case ? Is
+> there any examples please ?
 
-diff --git a/arch/arm64/lib/copy_from_user.S b/arch/arm64/lib/copy_from_user.S
-index 96b22c0fa343..7cd6eeaa216c 100644
---- a/arch/arm64/lib/copy_from_user.S
-+++ b/arch/arm64/lib/copy_from_user.S
-@@ -39,7 +39,7 @@
- 	.endm
- 
- 	.macro ldrh1 ptr, regB, val
--	uao_user_alternative 9998f, ldrh, ldtrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldrh, ldtrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
-@@ -47,7 +47,7 @@
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
--	uao_user_alternative 9998f, ldr, ldtr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldr, ldtr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro str1 ptr, regB, val
-@@ -55,7 +55,7 @@
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
--	uao_ldp 9998f, \ptr, \regB, \regC, \val
-+	uao_ldp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
-@@ -63,9 +63,11 @@
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- ENTRY(__arch_copy_from_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0				// Nothing to copy
-@@ -74,6 +76,11 @@ ENDPROC(__arch_copy_from_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+USER(9998f, ldtrb tmp1w, [srcin])
-+	strb	tmp1w, [dst], #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
-diff --git a/arch/arm64/lib/copy_in_user.S b/arch/arm64/lib/copy_in_user.S
-index e56c705f1f23..b20d3a0b3237 100644
---- a/arch/arm64/lib/copy_in_user.S
-+++ b/arch/arm64/lib/copy_in_user.S
-@@ -40,34 +40,36 @@
- 	.endm
- 
- 	.macro ldrh1 ptr, regB, val
--	uao_user_alternative 9998f, ldrh, ldtrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldrh, ldtrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
--	uao_user_alternative 9998f, strh, sttrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, strh, sttrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
--	uao_user_alternative 9998f, ldr, ldtr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, ldr, ldtr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro str1 ptr, regB, val
--	uao_user_alternative 9998f, str, sttr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, str, sttr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
--	uao_ldp 9998f, \ptr, \regB, \regC, \val
-+	uao_ldp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
--	uao_stp 9998f, \ptr, \regB, \regC, \val
-+	uao_stp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- 
- ENTRY(__arch_copy_in_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0
-@@ -76,6 +78,12 @@ ENDPROC(__arch_copy_in_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+USER(9998f, ldtrb tmp1w, [srcin])
-+USER(9998f, sttrb tmp1w, [dst])
-+	add	dst, dst, #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
-diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
-index 6b99b939c50f..cfdbb1fe8d51 100644
---- a/arch/arm64/lib/copy_to_user.S
-+++ b/arch/arm64/lib/copy_to_user.S
-@@ -42,7 +42,7 @@
- 	.endm
- 
- 	.macro strh1 ptr, regB, val
--	uao_user_alternative 9998f, strh, sttrh, \ptr, \regB, \val
-+	uao_user_alternative 9997f, strh, sttrh, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldr1 ptr, regB, val
-@@ -50,7 +50,7 @@
- 	.endm
- 
- 	.macro str1 ptr, regB, val
--	uao_user_alternative 9998f, str, sttr, \ptr, \regB, \val
-+	uao_user_alternative 9997f, str, sttr, \ptr, \regB, \val
- 	.endm
- 
- 	.macro ldp1 ptr, regB, regC, val
-@@ -58,13 +58,15 @@
- 	.endm
- 
- 	.macro stp1 ptr, regB, regC, val
--	uao_stp 9998f, \ptr, \regB, \regC, \val
-+	uao_stp 9997f, \ptr, \regB, \regC, \val
- 	.endm
- 
- end	.req	x5
-+srcin	.req	x15
- ENTRY(__arch_copy_to_user)
- 	uaccess_enable_not_uao x3, x4, x5
- 	add	end, x0, x2
-+	mov	srcin, x1
- #include "copy_template.S"
- 	uaccess_disable_not_uao x3, x4
- 	mov	x0, #0
-@@ -73,6 +75,12 @@ ENDPROC(__arch_copy_to_user)
- 
- 	.section .fixup,"ax"
- 	.align	2
-+9997:	cmp	dst, dstin
-+	b.ne	9998f
-+	// Before being absolutely sure we couldn't copy anything, try harder
-+	ldrb	tmp1w, [srcin]
-+USER(9998f, sttrb tmp1w, [dst])
-+	add	dst, dst, #1
- 9998:	sub	x0, end, dst			// bytes not copied
- 	uaccess_disable_not_uao x3, x4
- 	ret
--- 
-2.25.1
+memory_failure() could set HWPoison flag at any time, so if a memory error happens
+on a page which a just being freed, that could be linked to buddy freelist with
+HWPoison flag.
 
+Another example is hugetlb's case, if memory_failrue() is called for a free hugetlb
+page and somehow dissolve_free_huge_page() fails in handling path, the hugepage
+remains with HWPoison flag set and refcount 0.
+BTW, considering this case, I found that clear_page_hwpoison() should be called
+for "page" instead of "p", which will be fixed in the next version.
+
+Thanks,
+Naoya Horiguchi
