@@ -2,104 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E3043D027
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1893643D022
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240150AbhJ0R5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236956AbhJ0R5D (ORCPT
+        id S240038AbhJ0R4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:56:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25004 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238393AbhJ0R4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:57:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A29C061570;
-        Wed, 27 Oct 2021 10:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9nZeTw3uA8X+QDH9NcO9I7ui/+gpNaoqSNDmb15VGLI=; b=DiUG8whq1N5A1oFfdH/3I4Js1A
-        GqQboUMp3hTNNH2O3vSWk2lJqtNEwa0qrBE8ZebivmZjaHiV8Zv8JrtZPjloYnXsUsmQ2qJLs+3+e
-        RKsnu0tshRQCJxG0fos02IZrSMW3sMYvRlFzYiPxCp0tl0QHQdBK+AbeXBoRNazuFM3orw68f8qBy
-        Bx+ZTAyuOkZd8oH/sFog5zbh+crCXqHFV5CXOVhKlohsoGA17Xf7alQid2lkUBggu6XdNN1dq8Grg
-        cyZxaBw7RNyuGh6BXBvBuubcu71M8mJViSatdxxJhOq3EDuU8ATisnjgrNV4xPv4zxIlsegSF+s+Z
-        Uqe7aNsA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfn5P-000Dnx-WF; Wed, 27 Oct 2021 17:51:51 +0000
-Date:   Wed, 27 Oct 2021 18:51:39 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     "Liam R. Howlett" <liam.howlett@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
- exit_mmap
-Message-ID: <YXmRq5d86Umzrxs+@casper.infradead.org>
-References: <20211022014658.263508-1-surenb@google.com>
- <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
- <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
- <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
- <YXmNaoV4dBTOJ3+w@casper.infradead.org>
- <CAJuCfpFP-57JkWhDAN4T6VtPboSV4LGqipHMU4j+wJKU45yjYg@mail.gmail.com>
+        Wed, 27 Oct 2021 13:56:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635357224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xs32P5xw9k+anZul8tFQ2JCjeHg1mdaLsIqXwU0vnNE=;
+        b=ebaNN0lAISTq0FFPD/8B5LGvx3QvYl4ch9zbKAO7BFZNFDI9V3fy6X3bTlHuhAaRc3Efp2
+        +husEgjeEdZSvpQpRYTHVM47ox925Gw3VfM56F3hTEc0/EWMehacYYB85Qb5Bu9Vvr2E4S
+        HNodw1XgoeuWZe1BFSQ0CG7EJnNWu2E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-29CCxQbxNJyUlMNtSW0P-Q-1; Wed, 27 Oct 2021 13:53:43 -0400
+X-MC-Unique: 29CCxQbxNJyUlMNtSW0P-Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BAF9802B4F;
+        Wed, 27 Oct 2021 17:53:42 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C21F36F951;
+        Wed, 27 Oct 2021 17:53:09 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 00C3441752B6; Wed, 27 Oct 2021 14:52:47 -0300 (-03)
+Date:   Wed, 27 Oct 2021 14:52:47 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [patch v5 2/8] add prctl task isolation prctl docs and samples
+Message-ID: <20211027175247.GA296917@fuller.cnet>
+References: <20211019152431.885037499@fedora.localdomain>
+ <20211019154210.706067872@fedora.localdomain>
+ <20211027123806.GA70141@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpFP-57JkWhDAN4T6VtPboSV4LGqipHMU4j+wJKU45yjYg@mail.gmail.com>
+In-Reply-To: <20211027123806.GA70141@lothringen>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 10:42:29AM -0700, Suren Baghdasaryan wrote:
-> On Wed, Oct 27, 2021 at 10:35 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Wed, Oct 27, 2021 at 09:08:21AM -0700, Suren Baghdasaryan wrote:
-> > > Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
-> > > to me the most semantically correct way forward and the pushback is on
-> > > the basis of regressing performance of the exit path. I would like to
-> > > measure that regression to confirm this. I don't have access to a big
-> > > machine but will ask someone in another Google team to try the test
-> > > Michal wrote here
-> > > https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
-> > > a server with and without a custom patch.
-> >
-> > Sorry to hijack this, but could you ask that team to also test this
-> > patch?  I think there's probably a good-sized win here, but I have no
-> > profiles to share at this point.  I've only done light testing, and
-> > it may have bugs.
-> >
-> > NB: I only did the exit() path here.  fork() conversion is left as an
-> > exercise for the reader^W^W Liam.
+On Wed, Oct 27, 2021 at 02:38:06PM +0200, Frederic Weisbecker wrote:
+> > +- activation state:
+> > +
+> > +        The activation state (whether activate/inactive) of the task
 > 
-> To clarify, this patch does not change the mmap_write_lock portion of
-> exit_mmap. Do you want to test it in isolation or with the locking
-> changes in exit_mmap I mentioned?
+> active/inactive ?
 
-Correct, it does not.  I think it's interesting to test it in isolation,
-but if you want to test it in in combination, that could also be
-interesting (see if we regain some of the expected performance loss).
-I just don't have a NUMA box of my own to test on, so I'm hoping to
-exploit your test infrastructure ;-)
+Fixed.
 
-By the way, my vmavec patch should also be helpful on small systems
-like phones ... ;-)
+> > +        This feature allows quiescing select kernel activities on
+> 
+> selected?
+
+Fixed.
+
+> > +                - Bit ISOL_INHERIT_CONF: Inherit task isolation configuration.
+> > +                  This is the stated written via prctl(PR_ISOL_CFG_SET, ...).
+> 
+> state
+
+Fixed.
+
+> > +        The 'pmask' argument specifies the location of an 8 byte mask
+> > +        containing which features should be activated. Features whose
+> > +        bits are cleared will be deactivated. The possible
+> > +        bits for this mask are:
+> > +
+> > +                - ``ISOL_F_QUIESCE``:
+> > +
+> > +                Activate quiescing of background kernel activities.
+> > +                Quiescing happens on return to userspace from this
+> > +                system call, and on return from subsequent
+> > +                system calls (unless quiesce_oneshot_mask is configured,
+> > +                see below).
+> > +
+> > +        If the arg3 argument is non-zero, it specifies a pointer to::
+> > +
+> > +         struct task_isol_activate_control {
+> > +                 __u64 flags;
+> > +                 __u64 quiesce_oneshot_mask;
+> 
+> So you are using an entire argument here to set a single feature (ISOL_F_QUIESCE).
+
+Yes, but there is room at "struct task_isol_activate_control" for other features 
+to use (and additional space in the remaining prctl arguments, if necessary).
+
+> It looks like the oneshot VS every syscall behaviour should be defined at
+> configuration time for individual ISOL_F_QUIESCE features.
+
+It seems one-shot selection is dependent on the 
+application logic:
+
+	configure task isolation
+	enable oneshot quiescing of kernel activities
+	do {
+		process data (no system calls)
+		if (event) {
+			process event with syscalls
+			enable oneshot quiescing of kernel activities
+		}
+       } while (!exit_condition);
+
+Considering configuration performed outside the application (by chisol),
+is the administrator supposed to know the internals of the application
+at this level ?
+
+What if the application desires to use one-shot in a section
+(of code) and "all syscalls" for another section.
+
+> Also do we want that to always apply to all syscalls? Should we expect corner
+> cases with some of them? 
+
+What type of corner cases do you think of? 
+
+> What about exceptions and interrupts?
+
+Should move the isolation_exit_to_user_mode_prepare call from
+__syscall_exit_to_user_mode_work to exit_to_user_mode_prepare.
+Good point.
+
+About your question. Think so, because otherwise: 
+
+     enable oneshot quiescing of kernel activities
+     do {
+             process data (no system calls)	    <--- 1. IRQ/exception
+             if (event) {
+                     process event with syscalls
+                     enable oneshot quiescing of kernel activities
+             }
+     } while (exit_condition == false);
+
+
+If either an interrupt or exception occurs at point 1 above, userspace
+might not be notified, and the interrupt/exception handler might 
+change state in the kernel which makes the current CPU a target
+for IPIs, for example changing per-CPU vm statistics.
+
+> My wild guess is that we need to leave room for future flexibility. Either open
+> some configuration space on ISOL_F_QUIESCE for that or create a seperate
+> ISOL_F_QUIESCE_ONESHOT.
+
+See above about oneshot being application dependent.
+
+> 
+> Other than that, the general interface looks good! Now time for me to
+> look at the implementation...
+
+OK, thanks.
+
