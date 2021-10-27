@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD1043C791
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAA043C799
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241406AbhJ0KY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:24:26 -0400
-Received: from mail.bitwise.fi ([109.204.228.163]:42724 "EHLO mail.bitwise.fi"
+        id S241420AbhJ0K01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:26:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:41736 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241366AbhJ0KYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:24:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.bitwise.fi (Postfix) with ESMTP id 75C02460029;
-        Wed, 27 Oct 2021 13:21:57 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at 
-Received: from mail.bitwise.fi ([127.0.0.1])
-        by localhost (mustetatti.dmz.bitwise.fi [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Zhm03kzXQedL; Wed, 27 Oct 2021 13:21:54 +0300 (EEST)
-Received: from localhost.net (fw1.dmz.bitwise.fi [192.168.69.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: anssiha)
-        by mail.bitwise.fi (Postfix) with ESMTPSA id 91093460026;
-        Wed, 27 Oct 2021 13:21:54 +0300 (EEST)
-From:   Anssi Hannula <anssi.hannula@bitwise.fi>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH] tty: Fix extra "not" in TTY_DRIVER_REAL_RAW description
-Date:   Wed, 27 Oct 2021 13:21:24 +0300
-Message-Id: <20211027102124.3049414-1-anssi.hannula@bitwise.fi>
-X-Mailer: git-send-email 2.31.1
+        id S239361AbhJ0K0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 06:26:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 402351FB;
+        Wed, 27 Oct 2021 03:24:00 -0700 (PDT)
+Received: from [10.57.25.122] (unknown [10.57.25.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CAC53F70D;
+        Wed, 27 Oct 2021 03:23:58 -0700 (PDT)
+Subject: Re: [PATCH] perf symbol: ignore $a/$d symbols for ARM modules
+To:     Lexi Shao <shaolexi@huawei.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     acme@kernel.org, mark.rutland@arm.com, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, qiuxi1@huawei.com,
+        nixiaoming@huawei.com, wangbing6@huawei.com
+References: <20211027095235.123358-1-shaolexi@huawei.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <1b7fa65a-7587-b7c4-2dc0-d0f389200671@arm.com>
+Date:   Wed, 27 Oct 2021 11:23:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211027095235.123358-1-shaolexi@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TTY_DRIVER_REAL_RAW flag (which is always set for e.g. serial ports)
-documentation says that driver must always set special character
-handling flags in certain conditions.
 
-However, as the following sentence makes clear, what is actually
-intended is the opposite.
 
-Fix that by removing the unintended double negation.
+On 27/10/2021 10:52, Lexi Shao wrote:
+> On ARM machine, kernel symbols from modules can be resolved to $a
+> instead of printing the actual symbol name. Ignore symbols starting with
+> "$" when building kallsyms rbtree.
+> 
+> A sample stacktrace is shown as follows:
+> 
+> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
+> bf4a66d8 $a+0x78 ([test_module])
+> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
+> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
+> 
+> On ARM machine, $a/$d symbols are used by the compiler to mark the
+> beginning of code/data part in code section. These symbols are filtered
+> out when linking vmlinux(see scripts/kallsyms.c ignored_prefixes), but
+> are left on modules. So there are $a symbols in /proc/kallsyms which
+> share the same addresses with the actual module symbols and confuses perf
+> when resolving symbols.
 
-Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
----
+Hi Lexi,
 
-This one seems to have been there since 1994.
+Is it worth using or re-implementing the entire is_ignored_symbol() function
+from scripts/kallsyms.c? It seems like this change only fixes one occurrence,
+but is_ignored_symbol() has a big list of other cases.
 
- include/linux/tty_driver.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Unless those cases are different?
 
-diff --git a/include/linux/tty_driver.h b/include/linux/tty_driver.h
-index c20431d8def8..5bec04481c60 100644
---- a/include/linux/tty_driver.h
-+++ b/include/linux/tty_driver.h
-@@ -360,7 +360,7 @@ static inline void tty_set_operations(struct tty_driver *driver,
-  * 	Used for PTY's, in particular.
-  * 
-  * TTY_DRIVER_REAL_RAW --- if set, indicates that the driver will
-- * 	guarantee never not to set any special character handling
-+ * 	guarantee never to set any special character handling
-  * 	flags if ((IGNBRK || (!BRKINT && !PARMRK)) && (IGNPAR ||
-  * 	!INPCK)).  That is, if there is no reason for the driver to
-  * 	send notifications of parity and break characters up to the
--- 
-2.31.1
+Thanks
+James
 
+> 
+> After this patch, the module symbol name is printed:
+> 
+> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
+> bf4a66d8 test_func+0x78 ([test_module])
+> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
+> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
+> 
+> Signed-off-by: Lexi Shao <shaolexi@huawei.com>
+> ---
+>  tools/perf/util/symbol.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 0fc9a5410739..35116aed74eb 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -702,6 +702,10 @@ static int map__process_kallsym_symbol(void *arg, const char *name,
+>  	if (!symbol_type__filter(type))
+>  		return 0;
+>  
+> +	/* Ignore local symbols for ARM modules */
+> +	if (name[0] == '$')
+> +		return 0;
+> +
+>  	/*
+>  	 * module symbols are not sorted so we add all
+>  	 * symbols, setting length to 0, and rely on
+> 
