@@ -2,159 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C33943CADA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260C943CAE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242205AbhJ0Nn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:43:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22583 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242189AbhJ0Nn1 (ORCPT
+        id S242230AbhJ0Nog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:44:36 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:33337 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242210AbhJ0Noe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:43:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635342061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/no10Aa/zZ1ucVFb2s+gZiK3uB9pJ6W+0T89aCEE3wg=;
-        b=RNzq9IYdV4VMTBm8nPZjhJqZkJEifW4zngBPKy3tqVxbb0gocrFdj3CenZy3rh08FxyFZt
-        /h+tde7vyYdZeW2jb2l94kxMUrDsitUnZsdVLP9qmdo6GcS32Jj6R+6kPLtYqrTjN/qpVB
-        KrdHQ4sEt+KL2rNuM2Z14w60vJ96Elc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-SCIw7oS_OWK-BwM7oLJx0w-1; Wed, 27 Oct 2021 09:40:58 -0400
-X-MC-Unique: SCIw7oS_OWK-BwM7oLJx0w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 27 Oct 2021 09:44:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635342129; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=1SBLZFfunh195ytL1Uq9ouEIPWsOVkbMBN8wi1cWkN4=; b=tK23kl0r6/cVKC4VDXnHVx4nEmB9da6wWP5yUKEagPt1+zvNRxN+e8Yyj7nJh/NT6O0bOWfA
+ 4vAUc2lGvLN4bHlWAxSt11an+jmftP3Vq2QcIX6se85rLeqScTRyN+sWxGDagFvH+fejuKFI
+ bkpfnoQavYtopI6rBLT3gVoVhHo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 61795723f6a3eeacf9457518 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 13:41:55
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5BD23C4361C; Wed, 27 Oct 2021 13:41:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F7711966320;
-        Wed, 27 Oct 2021 13:40:54 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4809F5DF35;
-        Wed, 27 Oct 2021 13:40:41 +0000 (UTC)
-Message-ID: <cceb33be9e2a6ac504bb95a7b2b8cf5fe0b1ff26.camel@redhat.com>
-Subject: Re: [PATCH v2 11/43] KVM: Don't block+unblock when halt-polling is
- successful
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Wed, 27 Oct 2021 16:40:40 +0300
-In-Reply-To: <20211009021236.4122790-12-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-12-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BFE67C4360C;
+        Wed, 27 Oct 2021 13:41:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org BFE67C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v2 0/3] Add pin control support for lpass sc7280
+Date:   Wed, 27 Oct 2021 19:11:34 +0530
+Message-Id: <1635342097-2726-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Invoke the arch hooks for block+unblock if and only if KVM actually
-> attempts to block the vCPU.  The only non-nop implementation is on x86,
-> specifically SVM's AVIC, and there is no need to put the AVIC prior to
-> halt-polling as KVM x86's kvm_vcpu_has_events() will scour the full vIRR
-> to find pending IRQs regardless of whether the AVIC is loaded/"running".
-> 
-> The primary motivation is to allow future cleanup to split out "block"
-> from "halt", but this is also likely a small performance boost on x86 SVM
-> when halt-polling is successful.
-> 
-> Adjust the post-block path to update "cur" after unblocking, i.e. include
-> AVIC load time in halt_wait_ns and halt_wait_hist, so that the behavior
-> is consistent.  Moving just the pre-block arch hook would result in only
-> the AVIC put latency being included in the halt_wait stats.  There is no
-> obvious evidence that one way or the other is correct, so just ensure KVM
-> is consistent.
-> 
-> Note, x86 has two separate paths for handling APICv with respect to vCPU
-> blocking.  VMX uses hooks in x86's vcpu_block(), while SVM uses the arch
-> hooks in kvm_vcpu_block().  Prior to this path, the two paths were more
-> or less functionally identical.  That is very much not the case after
-> this patch, as the hooks used by VMX _must_ fire before halt-polling.
-> x86's entire mess will be cleaned up in future patches.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  virt/kvm/kvm_main.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index f90b3ed05628..227f6bbe0716 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3235,8 +3235,6 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  	bool waited = false;
->  	u64 block_ns;
->  
-> -	kvm_arch_vcpu_blocking(vcpu);
-> -
->  	start = cur = poll_end = ktime_get();
->  	if (do_halt_poll) {
->  		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
-> @@ -3253,6 +3251,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  		} while (kvm_vcpu_can_poll(cur, stop));
->  	}
->  
-> +	kvm_arch_vcpu_blocking(vcpu);
->  
->  	prepare_to_rcuwait(wait);
->  	for (;;) {
-> @@ -3265,6 +3264,9 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  		schedule();
->  	}
->  	finish_rcuwait(wait);
-> +
-> +	kvm_arch_vcpu_unblocking(vcpu);
-> +
->  	cur = ktime_get();
->  	if (waited) {
->  		vcpu->stat.generic.halt_wait_ns +=
-> @@ -3273,7 +3275,6 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  				ktime_to_ns(cur) - ktime_to_ns(poll_end));
->  	}
->  out:
-> -	kvm_arch_vcpu_unblocking(vcpu);
->  	block_ns = ktime_to_ns(cur) - ktime_to_ns(start);
->  
->  	/*
+This patch series is to make lpass varient independent pin control
+functions common and to add lpass sc7280 pincontrol support.
+It also includes dt-bindings for lpass sc7280 lpi compatible. 
 
-Makes sense.
+Changes Since V1:
+    -- Make lpi pinctrl variant data structure as constant
+    -- Add appropriate commit message
+    -- Change signedoff by sequence.
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Srinivasa Rao Mandadapu (3):
+  pinctrl: qcom: Update lpass variant independent functions as generic
+  dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi pinctrl compatible
+  pinctrl: qcom: Add SC7280 lpass pin configuration
 
-Best regards,
-	Maxim Levitsky
+ .../bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml   |  4 +-
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c           | 56 ++++++++++++++++++----
+ 2 files changed, 51 insertions(+), 9 deletions(-)
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
