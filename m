@@ -2,275 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94BF43C02D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F0143C034
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238581AbhJ0CsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:48:16 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:52813 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238198AbhJ0CsO (ORCPT
+        id S238599AbhJ0Ct2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:49:28 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:44031 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238184AbhJ0Ct1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:48:14 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 19R2MWKi028261;
-        Wed, 27 Oct 2021 10:22:32 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Oct
- 2021 10:44:57 +0800
-Message-ID: <0134539e-8263-e8a6-5827-2456b81f41dd@aspeedtech.com>
-Date:   Wed, 27 Oct 2021 10:44:58 +0800
+        Tue, 26 Oct 2021 22:49:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Utq7WXl_1635302820;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0Utq7WXl_1635302820)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 10:47:00 +0800
+Date:   Wed, 27 Oct 2021 10:47:00 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
+Subject: Re: [PATCH v6 8/8] eni_vdpa: add vDPA driver for Alibaba ENI
+Message-ID: <20211027024700.GA23409@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+ <cover.1634870456.git.wuzongyong@linux.alibaba.com>
+ <6496b76a64303a3e23ea19e3e279644608de36fb.1634870456.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEvi7505ZOSLP6gMMvhC=Zfdt=nPK4WEYe7=VVbq3GmxCQ@mail.gmail.com>
+ <20211025032146.GC3684@L-PF27918B-1352.localdomain>
+ <51e9be5b-4bb2-b82b-a152-ffc37803410c@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v4] media: aspeed: add debugfs
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-References: <20211025101036.4262-1-jammy_huang@aspeedtech.com>
- <16ccd042-cddd-3a2d-589b-8091aef0b405@molgen.mpg.de>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <16ccd042-cddd-3a2d-589b-8091aef0b405@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 19R2MWKi028261
+In-Reply-To: <51e9be5b-4bb2-b82b-a152-ffc37803410c@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Paul,
+On Mon, Oct 25, 2021 at 12:40:41PM +0800, Jason Wang wrote:
+> 
+> 在 2021/10/25 上午11:21, Wu Zongyong 写道:
+> > On Mon, Oct 25, 2021 at 10:27:31AM +0800, Jason Wang wrote:
+> > > On Fri, Oct 22, 2021 at 10:44 AM Wu Zongyong
+> > > <wuzongyong@linux.alibaba.com> wrote:
+> > > > This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
+> > > > Interface) which is build upon virtio 0.9.5 specification.
+> > > > And this driver doesn't support to run on BE host.
+> > > > 
+> > > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > > ---
+> > > >   drivers/vdpa/Kconfig            |   8 +
+> > > >   drivers/vdpa/Makefile           |   1 +
+> > > >   drivers/vdpa/alibaba/Makefile   |   3 +
+> > > >   drivers/vdpa/alibaba/eni_vdpa.c | 553 ++++++++++++++++++++++++++++++++
+> > > >   4 files changed, 565 insertions(+)
+> > > >   create mode 100644 drivers/vdpa/alibaba/Makefile
+> > > >   create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
+> > > > 
+> > > > diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> > > > index 3d91982d8371..c0232a2148a7 100644
+> > > > --- a/drivers/vdpa/Kconfig
+> > > > +++ b/drivers/vdpa/Kconfig
+> > > > @@ -78,4 +78,12 @@ config VP_VDPA
+> > > >          help
+> > > >            This kernel module bridges virtio PCI device to vDPA bus.
+> > > > 
+> > > > +config ALIBABA_ENI_VDPA
+> > > > +       tristate "vDPA driver for Alibaba ENI"
+> > > > +       select VIRTIO_PCI_LEGACY_LIB
+> > > > +       depends on PCI_MSI && !CPU_BIG_ENDIAN
+> > > > +       help
+> > > > +         VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
+> > > > +         virtio 0.9.5 specification.
+> > > > +
+> > > >   endif # VDPA
+> > > > diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> > > > index f02ebed33f19..15665563a7f4 100644
+> > > > --- a/drivers/vdpa/Makefile
+> > > > +++ b/drivers/vdpa/Makefile
+> > > > @@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
+> > > >   obj-$(CONFIG_IFCVF)    += ifcvf/
+> > > >   obj-$(CONFIG_MLX5_VDPA) += mlx5/
+> > > >   obj-$(CONFIG_VP_VDPA)    += virtio_pci/
+> > > > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
+> > > > diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
+> > > > new file mode 100644
+> > > > index 000000000000..ef4aae69f87a
+> > > > --- /dev/null
+> > > > +++ b/drivers/vdpa/alibaba/Makefile
+> > > > @@ -0,0 +1,3 @@
+> > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > +obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
+> > > > +
+> > > > diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
+> > > > new file mode 100644
+> > > > index 000000000000..6a09f157d810
+> > > > --- /dev/null
+> > > > +++ b/drivers/vdpa/alibaba/eni_vdpa.c
+> > > > @@ -0,0 +1,553 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > +/*
+> > > > + * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
+> > > > + *
+> > > > + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
+> > > > + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> > > > + *
+> > > > + */
+> > > > +
+> > > > +#include "linux/bits.h"
+> > > > +#include <linux/interrupt.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/pci.h>
+> > > > +#include <linux/vdpa.h>
+> > > > +#include <linux/virtio.h>
+> > > > +#include <linux/virtio_config.h>
+> > > > +#include <linux/virtio_ring.h>
+> > > > +#include <linux/virtio_pci.h>
+> > > > +#include <linux/virtio_pci_legacy.h>
+> > > > +#include <uapi/linux/virtio_net.h>
+> > > > +
+> > > > +#define ENI_MSIX_NAME_SIZE 256
+> > > > +
+> > > > +#define ENI_ERR(pdev, fmt, ...)        \
+> > > > +       dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> > > > +#define ENI_DBG(pdev, fmt, ...)        \
+> > > > +       dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> > > > +#define ENI_INFO(pdev, fmt, ...) \
+> > > > +       dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> > > > +
+> > > > +struct eni_vring {
+> > > > +       void __iomem *notify;
+> > > > +       char msix_name[ENI_MSIX_NAME_SIZE];
+> > > > +       struct vdpa_callback cb;
+> > > > +       int irq;
+> > > > +};
+> > > > +
+> > > > +struct eni_vdpa {
+> > > > +       struct vdpa_device vdpa;
+> > > > +       struct virtio_pci_legacy_device ldev;
+> > > > +       struct eni_vring *vring;
+> > > > +       struct vdpa_callback config_cb;
+> > > > +       char msix_name[ENI_MSIX_NAME_SIZE];
+> > > > +       int config_irq;
+> > > > +       int queues;
+> > > > +       int vectors;
+> > > > +};
+> > > > +
+> > > > +static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
+> > > > +{
+> > > > +       return container_of(vdpa, struct eni_vdpa, vdpa);
+> > > > +}
+> > > > +
+> > > > +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
+> > > > +{
+> > > > +       struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> > > > +
+> > > > +       return &eni_vdpa->ldev;
+> > > > +}
+> > > > +
+> > > > +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
+> > > > +{
+> > > > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > +       u64 features = vp_legacy_get_features(ldev);
+> > > > +
+> > > > +       features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
+> > > > +       features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
+> > > > +
+> > > > +       return features;
+> > > > +}
+> > > > +
+> > > > +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+> > > > +{
+> > > > +       struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > +
+> > > > +       if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
+> > > > +               ENI_ERR(ldev->pci_dev,
+> > > > +                       "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
+> > > > +               return -EINVAL;
+> > > > +       }
+> > > > +
+> > > > +       vp_legacy_set_features(ldev, (u32)features);
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > So my comments have not been addressed since v4. Please address or
+> > > answer the questions before posting a new version.
+> > > 
+> > > Thanks
+> > Sorry, I forgot to reply the comments on this patch.
+> > 
+> > 
+> > > > +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
+> > > > +{
+> > > > +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > +     u64 features = vp_legacy_get_features(ldev);
+> > > > +
+> > > > +     features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
+> > > > +     features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
+> > > VERSION_1 is also needed?
+> > > 
+> > No, queue align of legacy devices should be 4096,
+> 
+> 
+> Let's use VIRTIO_PCI_VRING_ALIGN instead of PAGE_SIZE in get_vq_align then
+> since PAGE_SIZE is not necessarily 4096.
 
-Yes, my bad!! I will update in next patch.
+I will fix it.
+> 
+> 
+> >   but queue align of
+> > devices with VERSION_1 are SMP_CACHE_BYTES which may not equals to
+> > 4096.
+> > If we set the VERSION_1, ENI will not work due to the queue align.
+> 
+> 
+> Interesting, so I think it can only be used with legacy virtio drivers in
+> the guest.
+Yes, ENI can only work well with legacy virtio drivers in the guest from
+my test.
 
-Thank you.
+> 
+> One major drawbacks is that guest can only see 32 feature bits which means
+> we can't advertise VIRTIO_F_ACCESS_PLATFORM and VIRTIO_F_ORDER_PLATFORM to
+> guest:
+> 
+> /* virtio config->get_features() implementation */
+> static u64 vp_get_features(struct virtio_device *vdev)
+> {
+>         struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> 
+>         /* When someone needs more than 32 feature bits, we'll need to
+>          * steal a bit to indicate that the rest are somewhere else. */
+>         return ioread32(vp_dev->ioaddr + VIRTIO_PCI_HOST_FEATURES);
+> }
+> 
+> For VIRTIO_F_ACCESS_PLATFORM, it should be fine. But how about
+> VIRTIO_F_ORDER_PLATFORM?
+> 
+Is it necessary to advertise these two bits?
+ENI works well without these two bits regardless of baremetal or virtual
+machine.
+> 
+> > 
+> > > > +
+> > > > +     return features;
+> > > > +}
+> > > > +
+> > > > +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
+> > > > +{
+> > > > +     struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> > > > +
+> > > > +     if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
+> > > > +             ENI_ERR(ldev->pci_dev,
+> > > > +                     "VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
+> > > > +             return -EINVAL;
+> > > Do we need to make sure FEATURE_OK is not set in this case or the ENI can do
+> > > this for us?
+> > Why we need to check this? I don't get what you worried about.
+> 
+> 
+> I thought the plan is to advertise the VERSION_1, so failing when without
+> mrg_rxbuf is a must. But looks like I was wrong, and there's no need to
+> mandate mrg_rxbuf in future versions.
 
-On 2021/10/25 下午 06:16, Paul Menzel wrote:
-> Dear Jammy,
->
->
-> On 25.10.21 12:10, Jammy Huang wrote:
->> A debugfs file, /sys/kernel/debug/aspeed-video, will be created. You can
->> read it to get video real-time information as below:
->>
->> Caputre:
->
-> The typo in Capture is still there. I couldn’t find it in the code 
-> below either. Is it missing?
->
->>    Signal              : Lock
->>    Width               : 1920
->>    Height              : 1080
->>    FRC                 : 60
->>
->> Performance:
->>    Frame#              : 3804
->>    Frame Duration(ms)  :
->>      Now               : 22
->>      Min               : 22
->>      Max               : 22
->>    FPS                 : 45
->>
->> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->
->
-> Kind regards,
->
-> Paul
->
->
->> ---
->> v4:
->>   - use void as aspeed_video_debugfs_create()'s return type
->>   - update commit message
->> v3:
->>   - let struct, aspeed_video_debugfs_ops, be const
->> v2:
->>   - Change the style of debugfs information
->>   - Use Min/Max to remove test and branch cases
->> ---
->>   drivers/media/platform/aspeed-video.c | 93 +++++++++++++++++++++++++++
->>   1 file changed, 93 insertions(+)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c 
->> b/drivers/media/platform/aspeed-video.c
->> index 8b3939b8052d..de84e30372eb 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -21,6 +21,8 @@
->>   #include <linux/videodev2.h>
->>   #include <linux/wait.h>
->>   #include <linux/workqueue.h>
->> +#include <linux/debugfs.h>
->> +#include <linux/ktime.h>
->>   #include <media/v4l2-ctrls.h>
->>   #include <media/v4l2-dev.h>
->>   #include <media/v4l2-device.h>
->> @@ -203,6 +205,14 @@ struct aspeed_video_buffer {
->>       struct list_head link;
->>   };
->>   +struct aspeed_video_perf {
->> +    ktime_t last_sample;
->> +    u32 totaltime;
->> +    u32 duration;
->> +    u32 duration_min;
->> +    u32 duration_max;
->> +};
->> +
->>   #define to_aspeed_video_buffer(x) \
->>       container_of((x), struct aspeed_video_buffer, vb)
->>   @@ -241,6 +251,8 @@ struct aspeed_video {
->>       unsigned int frame_left;
->>       unsigned int frame_right;
->>       unsigned int frame_top;
->> +
->> +    struct aspeed_video_perf perf;
->>   };
->>     #define to_aspeed_video(x) container_of((x), struct aspeed_video, 
->> v4l2_dev)
->> @@ -444,6 +456,16 @@ static void aspeed_video_write(struct 
->> aspeed_video *video, u32 reg, u32 val)
->>           readl(video->base + reg));
->>   }
->>   +static void update_perf(struct aspeed_video_perf *p)
->> +{
->> +    p->duration =
->> +        ktime_to_ms(ktime_sub(ktime_get(), p->last_sample));
->> +    p->totaltime += p->duration;
->> +
->> +    p->duration_max = max(p->duration, p->duration_max);
->> +    p->duration_min = min(p->duration, p->duration_min);
->> +}
->> +
->>   static int aspeed_video_start_frame(struct aspeed_video *video)
->>   {
->>       dma_addr_t addr;
->> @@ -482,6 +504,8 @@ static int aspeed_video_start_frame(struct 
->> aspeed_video *video)
->>       aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
->>                   VE_INTERRUPT_COMP_COMPLETE);
->>   +    video->perf.last_sample = ktime_get();
->> +
->>       aspeed_video_update(video, VE_SEQ_CTRL, 0,
->>                   VE_SEQ_CTRL_TRIG_CAPTURE | VE_SEQ_CTRL_TRIG_COMP);
->>   @@ -600,6 +624,8 @@ static irqreturn_t aspeed_video_irq(int irq, 
->> void *arg)
->>           u32 frame_size = aspeed_video_read(video,
->>                              VE_JPEG_COMP_SIZE_READ_BACK);
->>   +        update_perf(&video->perf);
->> +
->>           spin_lock(&video->lock);
->>           clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->>           buf = list_first_entry_or_null(&video->buffers,
->> @@ -760,6 +786,7 @@ static void aspeed_video_get_resolution(struct 
->> aspeed_video *video)
->>       det->width = MIN_WIDTH;
->>       det->height = MIN_HEIGHT;
->>       video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
->> +    memset(&video->perf, 0, sizeof(video->perf));
->>         do {
->>           if (tries) {
->> @@ -1450,6 +1477,8 @@ static int aspeed_video_start_streaming(struct 
->> vb2_queue *q,
->>       struct aspeed_video *video = vb2_get_drv_priv(q);
->>         video->sequence = 0;
->> +    video->perf.duration_max = 0;
->> +    video->perf.duration_min = 0xffffffff;
->>         rc = aspeed_video_start_frame(video);
->>       if (rc) {
->> @@ -1517,6 +1546,66 @@ static const struct vb2_ops 
->> aspeed_video_vb2_ops = {
->>       .buf_queue =  aspeed_video_buf_queue,
->>   };
->>   +#ifdef CONFIG_DEBUG_FS
->> +static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
->> +{
->> +    struct aspeed_video *v = s->private;
->> +
->> +    seq_puts(s, "\n");
->> +
->> +    seq_printf(s, "  %-20s:\t%s\n", "Signal",
->> +           v->v4l2_input_status ? "Unlock" : "Lock");
->> +    seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
->> +    seq_printf(s, "  %-20s:\t%d\n", "Height", v->pix_fmt.height);
->> +    seq_printf(s, "  %-20s:\t%d\n", "FRC", v->frame_rate);
->> +
->> +    seq_puts(s, "\n");
->> +
->> +    seq_puts(s, "Performance:\n");
->> +    seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
->> +    seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
->> +    seq_printf(s, "    %-18s:\t%d\n", "Now", v->perf.duration);
->> +    seq_printf(s, "    %-18s:\t%d\n", "Min", v->perf.duration_min);
->> +    seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
->> +    seq_printf(s, "  %-20s:\t%d\n", "FPS", 
->> 1000/(v->perf.totaltime/v->sequence));
->> +
->> +
->> +    return 0;
->> +}
->> +
->> +int aspeed_video_proc_open(struct inode *inode, struct file *file)
->> +{
->> +    return single_open(file, aspeed_video_debugfs_show, 
->> inode->i_private);
->> +}
->> +
->> +static struct file_operations aspeed_video_debugfs_ops = {
->> +    .owner   = THIS_MODULE,
->> +    .open    = aspeed_video_proc_open,
->> +    .read    = seq_read,
->> +    .llseek  = seq_lseek,
->> +    .release = single_release,
->> +};
->> +
->> +static struct dentry *debugfs_entry;
->> +
->> +static void aspeed_video_debugfs_remove(struct aspeed_video *video)
->> +{
->> +    debugfs_remove_recursive(debugfs_entry);
->> +}
->> +
->> +static void aspeed_video_debugfs_create(struct aspeed_video *video)
->> +{
->> +    debugfs_entry = debugfs_create_file(DEVICE_NAME, 0444, NULL, video,
->> +                        &aspeed_video_debugfs_ops);
->> +}
->> +#else
->> +static void aspeed_video_debugfs_remove(struct aspeed_video *video) { }
->> +static int aspeed_video_debugfs_create(struct aspeed_video *video)
->> +{
->> +    return 0;
->> +}
->> +#endif /* CONFIG_DEBUG_FS */
->> +
->>   static int aspeed_video_setup_video(struct aspeed_video *video)
->>   {
->>       const u64 mask = ~(BIT(V4L2_JPEG_CHROMA_SUBSAMPLING_444) |
->> @@ -1708,6 +1797,8 @@ static int aspeed_video_probe(struct 
->> platform_device *pdev)
->>           return rc;
->>       }
->>   +    aspeed_video_debugfs_create(video);
->> +
->>       return 0;
->>   }
->>   @@ -1719,6 +1810,8 @@ static int aspeed_video_remove(struct 
->> platform_device *pdev)
->>         aspeed_video_off(video);
->>   +    aspeed_video_debugfs_remove(video);
->> +
->>       clk_unprepare(video->vclk);
->>       clk_unprepare(video->eclk);
->>
--- 
-Best Regards
-Jammy
-
+I think it is necessary to check F_MRG_RXBUF here, since ENI will not
+work when use qemu with mrx_rxbuf=off.
+> 
+> Thanks
+> 
+> 
+> > 
+> > > Other looks good.
+> > > 
+> > > Thanks
