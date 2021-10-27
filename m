@@ -2,191 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCF643C2C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EDF43C2BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238452AbhJ0GRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:17:55 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30410 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238436AbhJ0GRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:17:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635315330; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=X9WQ67ZZb8Ypo1DVLfI5/keDJUV/PdvE11bg/iF1k00=;
- b=K6VlAWACR32+K5YWWJl1p7h7gIvyahfYeFnRdUj0mJPGZPSzU8DSwDxzcwqJI+6vLd4KV+EB
- DSUMALF4YrQoVptYAmwz/mWnJwVyf2ociRoJuVF0mXnQIO0+2tNIR7s4hS25CKex4jVzHPL1
- EiB9AoJ1ggXf+xAeEuMCFBMMcck=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6178edbac75c436a307d0a6c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 06:12:10
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 53E24C43460; Wed, 27 Oct 2021 06:12:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92891C4338F;
-        Wed, 27 Oct 2021 06:12:07 +0000 (UTC)
+        id S238414AbhJ0GQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236764AbhJ0GQL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 02:16:11 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41056C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 23:13:46 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id u18so2149770wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 23:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pibU8nLu7Th8DT1Zw3kLRTLSsjhZSIisT/Igppcs57Q=;
+        b=phRWH/s3Bn6j4dE1ATH6pqYHd12lU25N0SzYP0sI7HNW4+lINtz6J/Sy0l7hwYh8c7
+         mhdKsbEhJ1rlPNjNKAmIAFxs7yOLyos8BtD/9h5BV2vN7rZK/8GtdENTRzGtGbvtmauj
+         kkaMJC7lzHC9vyJgdedf2ukhbcJv8073dmPs8keCODOOzM0SX9Az59G1vDO+jbHvZ4X8
+         Nrl0n+QWItWKZ4a8XfKQMk36hBWSPER6VrJDoGLfZF6HGV01x4MZFVa66Sx7/DQpO2fw
+         oWthBTUTjCzqFA5i3YVlbNEA270cui7M2d+fVYKoptsTciAqazejGQ2SGTX9SLW6LG90
+         Bi1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pibU8nLu7Th8DT1Zw3kLRTLSsjhZSIisT/Igppcs57Q=;
+        b=6mjqRt8zQiFchTwBnlC3CmARbU5AZnsT3GMKHRjYD/GYJ58FJbb2kJ3slBt4KyYRMb
+         RhTvTIG38gbzmOLCN1p55XU45cKm5l3fBERpeELF1L7fdr9UxvJ4RwYsfgZkZ5pVMmfk
+         /n6xoCfDdcAhhVPDu94C9J4IaicKEMLUXacbSJL2XW6QRj65RtUvLznBpcrj+2wSOHVO
+         lOsmR8t9iDK4JMA4B6V4xaueSKrdeRE8joK/txVDHSZU/mxXQVUJblGCP/Ho3vnMvj1B
+         gTzdBQSXhvlLyS52r+smjTstvlFzjObcyStJoOpvXTzVkIN3Q4xtFJA8YkJZPmwp0Fil
+         cySA==
+X-Gm-Message-State: AOAM533p+Kk52uIwaeSxolsEtVsY/l56S/XfxvcHB5QqjRlBaV7y39Yb
+        nuPRcpw+zA9eP4VexkaEKSKvttiTEEU=
+X-Google-Smtp-Source: ABdhPJy+4Z7/lnrZTLEj6B/wxxqr+4WP7aDfa2X0Cu9Q4kQzUFKNuChYG+2NQrkcD/q4LP22pYAqxw==
+X-Received: by 2002:adf:fa8f:: with SMTP id h15mr38226022wrr.323.1635315224833;
+        Tue, 26 Oct 2021 23:13:44 -0700 (PDT)
+Received: from mail.google.com ([95.179.207.30])
+        by smtp.gmail.com with ESMTPSA id y23sm2545459wmi.43.2021.10.26.23.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 23:13:44 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 14:13:38 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/damon: simplify stop mechanism
+Message-ID: <20211027061338.xdqdyjaghrs63ncp@mail.google.com>
+References: <20211026153033.11140-1-changbin.du@gmail.com>
+ <20211026184203.1541-1-sj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 Oct 2021 14:12:07 +0800
-From:   tjiang@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-In-Reply-To: <YXgrwKUZwUWuWfG4@google.com>
-References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
- <YXgrwKUZwUWuWfG4@google.com>
-Message-ID: <fe118b60df5881b0e9938f57aae6f87e@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026184203.1541-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias:
-   the previous patch is submitted by zijun , as he is not working on 
-this project, I take over his job, so can we assume abandon the previous 
-patch, using my new patch ? thank you.
-regards.
-tim
+On Tue, Oct 26, 2021 at 06:42:03PM +0000, SeongJae Park wrote:
+> Hello Changbin,
+> 
+> On Tue, 26 Oct 2021 23:30:33 +0800 Changbin Du <changbin.du@gmail.com> wrote:
+> 
+> > An kernel thread can exit gracefully with kthread_stop(). So we don't need a
+> > new flag 'kdamond_stop'.  And to make sure the task struct is not freed when
+> > accessing it, get task struct on start and put it on stop.
+> 
+> We previously considered using kthread_stop() here.  However, we resulted in
+> current code because kdamond can be self-terminated when all target processes
+> are invalid[1].
+> 
+> Seems this patch is also not fully prepared for the self-termination case.  I
+> left some comments below.
+> 
+> [1] https://lore.kernel.org/linux-mm/20210624102623.24563-1-sjpark@amazon.de/
+> 
+> > 
+> > And since the return value of 'before_terminate' callback is never used,
+> > we make it have no return value.
+> 
+> This looks nice to me.  Could you please send this again as a separate patch?
+>
+Sure, I'll do it later.
 
-On 2021-10-27 00:24, Matthias Kaehlcke wrote:
-> On Fri, Oct 22, 2021 at 01:35:38PM +0800, tjiang@codeaurora.org wrote:
->> the RF performance of wcn6855 soc chip from different foundries will 
->> be
->> difference, so we should use different nvm to configure them.
->> 
->> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
->> ---
->>  drivers/bluetooth/btusb.c | 55
->> +++++++++++++++++++++++++++++++++++------------
->>  1 file changed, 41 insertions(+), 14 deletions(-)
->> 
->> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->> index 87b71740fad8..a5fe57e7cd7e 100644
->> --- a/drivers/bluetooth/btusb.c
->> +++ b/drivers/bluetooth/btusb.c
->> @@ -3195,6 +3195,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
->> hci_dev
->> *hdev,
->>  #define QCA_DFU_TIMEOUT		3000
->>  #define QCA_FLAG_MULTI_NVM      0x80
->> 
->> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
->> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
->> +
->>  struct qca_version {
->>  	__le32	rom_version;
->>  	__le32	patch_version;
->> @@ -3226,6 +3229,7 @@ static const struct qca_device_info
->> qca_devices_table[] = {
->>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
->>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
->>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
->> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
->>  };
->> 
->>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
->> request,
->> @@ -3380,6 +3384,42 @@ static int btusb_setup_qca_load_rampatch(struct
->> hci_dev *hdev,
->>  	return err;
->>  }
->> 
->> +static void btusb_generate_qca_nvm_name(char *fwname,
->> +					size_t max_size,
->> +					const struct qca_version *ver)
->> +{
->> +	u32 rom_version = le32_to_cpu(ver->rom_version);
->> +	u16 flag = le16_to_cpu(ver->flag);
->> +
->> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
->> +		u16 board_id = le16_to_cpu(ver->board_id);
->> +		u32 ram_version = le32_to_cpu(ver->ram_version);
->> +		const char *variant = NULL;
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > ---
+> >  include/linux/damon.h |  3 +--
+> >  mm/damon/core.c       | 59 +++++++++++++------------------------------
+> >  mm/damon/dbgfs.c      |  5 ++--
+> >  3 files changed, 20 insertions(+), 47 deletions(-)
+> > 
+> > diff --git a/include/linux/damon.h b/include/linux/damon.h
+> > index a14b3cc54cab..041966786270 100644
+> > --- a/include/linux/damon.h
+> > +++ b/include/linux/damon.h
+> [...]
+> > --- a/mm/damon/core.c
+> > +++ b/mm/damon/core.c
+> [...]  
+> > @@ -1069,7 +1048,7 @@ static int kdamond_fn(void *data)
+> >  					sz_limit);
+> >  			if (ctx->callback.after_aggregation &&
+> >  					ctx->callback.after_aggregation(ctx))
+> > -				set_kdamond_stop(ctx);
+> > +				done = true;
+> >  			kdamond_apply_schemes(ctx);
+> >  			kdamond_reset_aggregated(ctx);
+> >  			kdamond_split_regions(ctx);
+> > @@ -1088,16 +1067,12 @@ static int kdamond_fn(void *data)
+> >  			damon_destroy_region(r, t);
+> >  	}
+> >  
+> > -	if (ctx->callback.before_terminate &&
+> > -			ctx->callback.before_terminate(ctx))
+> > -		set_kdamond_stop(ctx);
+> > +	if (ctx->callback.before_terminate)
+> > +		ctx->callback.before_terminate(ctx);
+> >  	if (ctx->primitive.cleanup)
+> >  		ctx->primitive.cleanup(ctx);
+> >  
+> >  	pr_debug("kdamond (%d) finishes\n", current->pid);
+> > -	mutex_lock(&ctx->kdamond_lock);
+> > -	ctx->kdamond = NULL;
+> > -	mutex_unlock(&ctx->kdamond_lock);
 > 
-> This assignement was introduced in v3, it isn't really useful since the
-> variable is always assigned to a value in the switch statement below.
+> When kdamond is self-terminating, ctx->kdamond will not be nullfified.  As a
+> result, this patch can introduce some errors like below:
 > 
-> btw, why did you reset the patch version numbers, earlier they went up
-> to v11? This is confusing, e.g. when someone mentions v3 of this patch,
-> are they referring to this version or to
-> https://patchwork.kernel.org/project/bluetooth/patch/1628758216-3201-1-git-send-email-zijuhu@codeaurora.org/?
+>     # cd /sys/kernel/debug/damon
+>     # sleep 60 &
+>     [1] 1926
+>     # echo $(pidof sleep) > target_ids
+>     # echo on > monitor_on
+>     # cat monitor_on
+>     on
+>     # # after 60 seconds, sleep finishes and kdamond is self-terminated
+>     # cat monitor_on
+>     off
+>     # echo 42 > target_ids
+>     bash: echo: write error: Device or resource busy
 > 
->> +
->> +		switch (ram_version) {
->> +		case WCN6855_2_0_RAM_VERSION_GF:
->> +		case WCN6855_2_1_RAM_VERSION_GF:
->> +			variant = "_gf";
->> +			break;
->> +		default:
->> +			variant = "";
->> +			break;
->> +		}
->> +
->> +		if (board_id == 0) {
->> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
->> +				rom_version, variant);
->> +		} else {
->> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
->> +				rom_version, variant, board_id);
->> +		}
->> +	} else {
->> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
->> +			rom_version);
->> +	}
->> +
->> +}
->> +
->>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
->>  				    struct qca_version *ver,
->>  				    const struct qca_device_info *info)
->> @@ -3388,20 +3428,7 @@ static int btusb_setup_qca_load_nvm(struct 
->> hci_dev
->> *hdev,
->>  	char fwname[64];
->>  	int err;
->> 
->> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
->> -		/* if boardid equal 0, use default nvm without surfix */
->> -		if (le16_to_cpu(ver->board_id) == 0x0) {
->> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
->> -				 le32_to_cpu(ver->rom_version));
->> -		} else {
->> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
->> -				le32_to_cpu(ver->rom_version),
->> -				le16_to_cpu(ver->board_id));
->> -		}
->> -	} else {
->> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
->> -			 le32_to_cpu(ver->rom_version));
->> -	}
->> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
->> 
->>  	err = request_firmware(&fw, fwname, &hdev->dev);
->>  	if (err) {
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum, a
->> Linux Foundation Collaborative Project
+> If we simply restore the nullification here with the mutex locking, we would
+> result in a deadlock because __damon_stop() calls kthread_stop() while holding
+> ctx->kdamond_lock.
+> 
+> Also, the reference count of ctx->kdamond, which increased by __damon_start(),
+> would not be decreased in the case.
+>
+
+If so, I suppose below change should work correctly (still set ctx->kdamond to
+NULL at the end of kdamond).
+
+ static int __damon_stop(struct damon_ctx *ctx)
+ {
++       struct task_struct *tsk;
++
+        mutex_lock(&ctx->kdamond_lock);
+-       if (ctx->kdamond) {
+-               ctx->kdamond_stop = true;
++       tsk = ctx->kdamond;
++       if (tsk) {
++               get_task_struct(tsk);
+                mutex_unlock(&ctx->kdamond_lock);
+-               while (damon_kdamond_running(ctx))
+-                       usleep_range(ctx->sample_interval,
+-                                       ctx->sample_interval * 2);
++               kthread_stop(tsk);
++               put_task_struct(tsk);
+                return 0;
+        }
+        mutex_unlock(&ctx->kdamond_lock);
+
+
+> If I'm missing something, please let me know.
+> 
+> 
+> Thanks,
+> SJ
+> 
+> [...]
+
+-- 
+Cheers,
+Changbin Du
