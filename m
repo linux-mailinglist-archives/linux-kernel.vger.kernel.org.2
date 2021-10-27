@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012D943D0BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D187A43D0BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243548AbhJ0SaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238290AbhJ0SaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:30:05 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A7DC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:27:39 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id i26so4319316ljg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 11:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eTPGGY5lRCDLBi6dC5IO32LUKxcN06wIGk1r7lIVLSo=;
-        b=d3wjkgrfbqcygeWm6K/TtNmo32Mpi/IvWJLl5UmypGRAf01wECJBMI5oO6ZlCl7qfg
-         kXxZKIMk1Hd3etghlMO0DF8OBeeQDZqxG+A97FEd+MR+G92uCtX7rGbLKD1qhsQW00VE
-         hKRgadi2AztZburwCJd4Z1+tzPZJDoqhKJCrDO2EiSdQgweRWRn4fVv5+GX4swPMf7FH
-         8iQF+zzjdnwFD2o7TqZRU///noJZNQruC4Z4+YkOpzMF287IW/ePgpl8ewJBYjODSmR0
-         pluAlAFLYSCqFcxQsw935K3sqFD7E4hV/QSA5u0DJaCDiLZRcgpwlDdd2ADfdA231iih
-         jsxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eTPGGY5lRCDLBi6dC5IO32LUKxcN06wIGk1r7lIVLSo=;
-        b=P+W8lOdLu/tBHrfbY4o+1ady2XHCAWMkq5jb/EcC3Omz21m4nL5eaoF8gEIBdo1bqZ
-         OeFr+0YCccknHx+kLqDsgJA/WT4WO02lKBlBuS6alziPPBqlQ4PuVIyI4+XB9e/0+rdl
-         NM48htALZqzsx8Ggyc1OdGYOuCWpwwrrPW6hqMesn73kBmexGGpmMeTvh6gQDwRLra1J
-         yfR/B5X325NqIbA2SdR8fEueuH+mnppi3Q8ZIkKLm2w564b5eTdV5AAf0ceWdhb+RFlj
-         sJSkNpsjxtmtoza5sKHlpJwUhm/qU6Kwv+d3pN/HhD96xRWeRIv59I+MC/T1p/emS8HT
-         t/uQ==
-X-Gm-Message-State: AOAM531MNIhcTeZWg/95/Y1QW1MstiE1RcVCrbNxNCiVu0meuiY/Jafl
-        8QKkLUMmCNt4xYxJ3Nf4qxcNO7dNujRNw651etC96g==
-X-Google-Smtp-Source: ABdhPJzVrqJVm8ugC/NpTWWt0IMrYAXeu8WHnFF1TrXtg37Te+R3tSJ+rO1eSFGnjAMpx1n4+0JJslJTRNvu3vH6O7E=
-X-Received: by 2002:a2e:810c:: with SMTP id d12mr34769148ljg.177.1635359258205;
- Wed, 27 Oct 2021 11:27:38 -0700 (PDT)
+        id S243560AbhJ0SaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:30:11 -0400
+Received: from mout.gmx.net ([212.227.15.15]:32939 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243557AbhJ0SaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:30:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635359263;
+        bh=jyO49XaUNGwNU/bzsTT0sBbiyD6kTmH7ETxMu3W7TMA=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:Cc:From:In-Reply-To;
+        b=AY/YrEAuN2kjH01rL98WOFwacY4QyaZNXKG3eTOUslDku0R1OISF8Zn/RYm77Zxnj
+         9K2SoGjDdb0h1mDDcRDDENtwgBRkqShFq0Vmw6SSLXHQWLDfKlfgp/r2PkcpFRdJLG
+         GnUpcrIcIBQjEhXzJTUmTZSbAE4aCx4nZCjQif1E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.123.55] ([88.152.144.157]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M6DWs-1mZAs306X2-006iNR; Wed, 27
+ Oct 2021 20:27:43 +0200
+Message-ID: <bbc73df5-acda-5577-2cfd-ee8c8e1018c3@gmx.de>
+Date:   Wed, 27 Oct 2021 20:27:42 +0200
 MIME-Version: 1.0
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <20211026173822.502506-4-pasha.tatashin@soleen.com> <7b131cb1-68d8-6746-f9c1-2b01d4838869@nvidia.com>
- <CA+CK2bD6x01PevPqshzYqkO3aokjP2jBbt_4e5H5U3DVEdcJ5Q@mail.gmail.com> <b346cafd-d8b8-57a4-c7b9-6574b256a400@nvidia.com>
-In-Reply-To: <b346cafd-d8b8-57a4-c7b9-6574b256a400@nvidia.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 27 Oct 2021 14:27:01 -0400
-Message-ID: <CA+CK2bBiomTe-vOuxM_R+0CMAippyrfZ6AgpXQGqps3ZFQCtRA@mail.gmail.com>
-Subject: Re: [RFC 3/8] mm: Avoid using set_page_count() in set_page_recounted()
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>, weixugc@google.com,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 1/1] include/linux/byteorder/generic.h: fix index
+ variables
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210523204958.64575-1-xypron.glpk@gmx.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+In-Reply-To: <20210523204958.64575-1-xypron.glpk@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:H7FLG6Iucb3oGoFOexKWlu0QfNGwAFKnU37+PrM4ZeHndM9bKS5
+ 5e/u6FAAafCpr17OepCrexxeHVw5VVmRNwEIVhU28Q8BWTh9jCEx1TFMRiVBWxgS834lLm9
+ z1bTtTXzBZbktQPniEtJvpzqctGPmjVnx/aRcoXbTN8KFdYgyIc7PAQB8/ULJA6luOzPz7a
+ Cw1DqsFISDJoMmQCNC4NA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:p2gMn2HW7/s=:jxGGkcwx5W08x5hR75yx2w
+ GcDWwVPlVvaiTHfqx3jw8xt5jL5qyzEArFkKh1k91vQTuLtOYZVit55mx2Brnkvc1k07aCMVg
+ eHX8hNLmePbESjublC+qiWZ3vtd/RcDnTCrYv8fn8GHNFX2DEwukPDhM5+i1NXmUZg72WlxIu
+ J5ffJQ/MY6hU9gbmNlf6a3wrJjECaA57pbD4yUaS8naOvMZHrDIJIQxyAN71fLZ1IYaDw6d6L
+ 6GuL3pEtNm1OdgOoliiNxwXxheWWNg0DOMWeo/cddkjddE6qDuOxZXKy+8xExAXLPE+3pnfFZ
+ 7U/aeA5UZdiriPszPhc0cQuQstW2fceI2dgvtvte+p1Rfl2gZOTewRFfOcbF552E4jQgknGr2
+ lsT2A+eSTq8WczPdqg601V1nCZWwrTByzH/Cr0RFLt48YAv5ppXWa5irHnW6zjmO1XxVFuvQA
+ TizVc8nb6TIByF1V/4bOus/Zh1XctAoXR5pQR9Im7vCuwk+uF+PMXzVwr9LLylKvgxk4K9sEX
+ zkYhZLb4rTJCNOAUOOlJc/ia4IsKyQAZ4E0ZJucoKWUatRzakvpEy5bBdyUviInBGmNc8QhUs
+ WZ5nHLi8Ql/x02PegW4t+PZVv/Vg+ucmr95MuKSGWBoGm5ew35mKAXHYDTb/MPSfAJt4nHSFe
+ p9dTwJZ6a+uaCTshfNvF02mB8qJ4eItbwtrJSnryBK8kQt2BoEssHjgGssbA6cBaAXBOqyljS
+ xRMuvOovDWR2ttRd6KYyoA9+taQ+0PNoahG3F9+hto5SREbiiDQVxiXAfGOSNMquW1IVZ8V2M
+ im+We+XcLGoZ67j38xV6sqroYgnALpbStYbqijoivR11k+YzIT/uHC6tvdgXf7l08LW9cu96T
+ gtvru6kmOqg3WurxWhXLFmD1anngJKhx3Sxa4iycNwPSzxcg32C3jI227G164C+zcR27L+6X1
+ UEWE3KKAUjAaDmIhfsIplCfss6rf6Is9M6Fm4KTmA4c+n3LSHb4NrPoHn335Lgpu/lzWvxqAw
+ TuzzfnS9fAW+LSDi421tf3H+QytviiM9kVVVhoUVLAMny2PvOv0TywtCkFfqcBzSueCgKZLHf
+ S96eDJI9CExYlQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 1:12 AM John Hubbard <jhubbard@nvidia.com> wrote:
+On 5/23/21 22:49, Heinrich Schuchardt wrote:
+> In cpu_to_be32_array() and be32_to_cpu_array() the length of the array i=
+s
+> given by variable len of type size_t. An index variable of type int is u=
+sed
+> to iterate over the array. This is bound to fail for len > INT_MAX and
+> lets GCC add instructions for sign extension.
 >
-> On 10/26/21 11:21, Pasha Tatashin wrote:
-> > It must return the same thing, if it does not we have a bug in our
-> > kernel which may lead to memory corruptions and security holes.
-> >
-> > So today we have this:
-> >     VM_BUG_ON_PAGE(page_ref_count(page), page); -> check ref_count is 0
-> >     < What if something modified here? Hmm..>
-> >     set_page_count(page, 1); -> Yet we reset it to 1.
-> >
-> > With my proposed change:
-> >     VM_BUG_ON_PAGE(page_ref_count(page), page); -> check ref_count is 0
-> >     refcnt = page_ref_inc_return(page);  -> ref_count better be 1.
-> >     VM_BUG_ON_PAGE(refcnt != 1, page); -> Verify that it is 1.
-> >
+> Correct the type of the index variable.
 >
-> Yes, you are just repeating what the diffs say.
->
-> But it's still not good to have this function name doing something completely
-> different than its name indicates.
+> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> ---
+>   include/linux/byteorder/generic.h | 4 ++--
 
-I see, I can rename it to: 'set_page_recounted/get_page_recounted' ?
+Dear Greg,
 
+This file is not assigned to any maintainer. Could you handle the patch?
+
+Best regards
+
+Heinrich
+
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> >>
-> >> I understand where this patchset is going, but this intermediate step is
-> >> not a good move.
-> >>
-> >> Also, for the overall series, if you want to change from
-> >> "set_page_count()" to "inc_and_verify_val_equals_one()", then the way to
-> >> do that is *not* to depend solely on VM_BUG*() to verify. Instead,
-> >> return something like -EBUSY if incrementing the value results in a
-> >> surprise, and let the caller decide how to handle it.
-> >
-> > Actually, -EBUSY would be OK if the problems were because we failed to
-> > modify refcount for some reason, but if we modified refcount and got
-> > an unexpected value (i.e underflow/overflow) we better report it right
-> > away instead of waiting for memory corruption to happen.
-> >
+> diff --git a/include/linux/byteorder/generic.h b/include/linux/byteorder=
+/generic.h
+> index 4b13e0a3e15b..c9a4c96c9943 100644
+> --- a/include/linux/byteorder/generic.h
+> +++ b/include/linux/byteorder/generic.h
+> @@ -190,7 +190,7 @@ static inline void be64_add_cpu(__be64 *var, u64 val=
+)
 >
-> Having the caller do the BUG() or VM_BUG*() is not a significant delay.
-
-We cannot guarantee that new callers in the future will check return
-values, the idea behind this work is to ensure that we are always
-protected from refcount underflow/overflow and invalid refcount
-modifications by set_refcount.
-
-Pasha
+>   static inline void cpu_to_be32_array(__be32 *dst, const u32 *src, size=
+_t len)
+>   {
+> -	int i;
+> +	size_t i;
+>
+>   	for (i =3D 0; i < len; i++)
+>   		dst[i] =3D cpu_to_be32(src[i]);
+> @@ -198,7 +198,7 @@ static inline void cpu_to_be32_array(__be32 *dst, co=
+nst u32 *src, size_t len)
+>
+>   static inline void be32_to_cpu_array(u32 *dst, const __be32 *src, size=
+_t len)
+>   {
+> -	int i;
+> +	size_t i;
+>
+>   	for (i =3D 0; i < len; i++)
+>   		dst[i] =3D be32_to_cpu(src[i]);
+> --
+> 2.30.2
+>
+>
