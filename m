@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064E843C0E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFFD43C0F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239179AbhJ0Dma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 23:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbhJ0Dm2 (ORCPT
+        id S239183AbhJ0DrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:47:07 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55434 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233588AbhJ0DrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 23:42:28 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C398DC061570;
-        Tue, 26 Oct 2021 20:40:03 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id s24so1083527plp.0;
-        Tue, 26 Oct 2021 20:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zyqIHjUAZJUCPVU3obv7Mk0Xb8zYZpGJ80LlJg4jvSA=;
-        b=ThXkgHlwcFlR5t3Zi8ceXLze5pCjjdvbb5o6Z3sbnHH3j6fPHbtgyNj4cO8yJnrZ/Q
-         bbGNAP9VRfv6r3DDTZK956aPTqzp+plwYOxbjr8fAwrybTiGrUcoZPAxbHu4zte+CkzW
-         fXW3hl0nhHuVzCFmzlQZp0fL9hNn2raNNfuerV0b20jvOcXK0brd8Mt8rbPE7kbn5wkV
-         JjeUyC7iP0asn9z8OcjexjvzbM7gzcVBP0uUUIcRSsBhBhU5zgwI6r2oRmrTDT9hDmgc
-         u1Mr7EwiHV+zcUL4AWdG9sze6PXIlk4sJq5SbfYM+XaSc/9/U5qK0srGHbN8CZ7+AoF4
-         yizQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zyqIHjUAZJUCPVU3obv7Mk0Xb8zYZpGJ80LlJg4jvSA=;
-        b=znBpnspV8nQbppCavsxtzHhku4y3Nmn6wimlkiFAGy/qJh0LEZiwZ/ucBLHhQfkXif
-         K13nS3wGDs5Rc6Pcc5g5BeGmkjmj4WtRzPw+Zcsx/WyrMyf9faz4R7JNdyg1Dd2JkS0l
-         l6Ie72cy8sobKBXFoT/o6TO8vu3xVO5PqfFKx5JsfKC2uxWHA2x96b9LTGggKJGOucH8
-         aEer6oW20LcWGzvbhZlV/5OKqRXWeQRKVidsV3I2/4SroTXLycKhivOM21AzguitOGF8
-         MXWVEPX6b0Xm2q7WSIe7RvSQhinYBNiamjsOCSudLBN23jY2UPkv+a6+IYSe1SplNer/
-         Be8w==
-X-Gm-Message-State: AOAM530beuOSP/7Jmo3ybw3ZrqkwJPh0r0G1I184jxAh2klRaWnjad8W
-        m1gKHm5Y//P8OlJw3tPjldWHe8RNVdXrLfeQ
-X-Google-Smtp-Source: ABdhPJwuN6d4mEKYvdzLBYr1GzFIOWcl1rB1T9pG4gfDhx0ZmuYt8jFqsUcee4mLjHfVG7RhrwjEsw==
-X-Received: by 2002:a17:903:1111:b0:13f:d1d7:fb67 with SMTP id n17-20020a170903111100b0013fd1d7fb67mr25438685plh.85.1635306003201;
-        Tue, 26 Oct 2021 20:40:03 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.99])
-        by smtp.gmail.com with ESMTPSA id u10sm662852pfi.172.2021.10.26.20.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 20:40:02 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Yu Kuai <yukuai3@huawei.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Jan Kara <jack@suse.cz>, Miklos Szeredi <mszeredi@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: reiserfs: free new_opts in reiserfs_remount
-Date:   Wed, 27 Oct 2021 11:39:25 +0800
-Message-Id: <20211027033947.3992059-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 26 Oct 2021 23:47:06 -0400
+X-UUID: 5247acccdc6049f19153313314cdfbda-20211027
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=KatCz9XKGgtCBLEzEVLf0OO9NA8gS5alukduL27YpSU=;
+        b=rLJWOuTKzukOyNpV1HwETlbGN4XuakW34dVx/z20HvLwj9f7nAsUwr9HUVnRBv01CY2pTvUiG6omqe0TTzk69wbno6cRsVIva51qOkkF62MJP6xaysKxW59WTktnoG7u7v5x3AArZdfo0RYp2jaHz6o62BJWbrp10z7jvYwXOoc=;
+X-UUID: 5247acccdc6049f19153313314cdfbda-20211027
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2109564187; Wed, 27 Oct 2021 11:44:38 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Wed, 27 Oct 2021 11:44:37 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 27 Oct 2021 11:44:35 +0800
+Message-ID: <629c605bc547a3d025eace87eb5f1ef724c2f080.camel@mediatek.com>
+Subject: Re: [PATCH v7, 12/15] media: mtk-vcodec: Support 34bits dma address
+ for vdec
+From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        "Tiffany Lin" <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Wed, 27 Oct 2021 11:44:35 +0800
+In-Reply-To: <5e1c165d-176c-0141-dc96-0fdbda367c03@collabora.com>
+References: <20211011070247.792-1-yunfei.dong@mediatek.com>
+         <20211011070247.792-13-yunfei.dong@mediatek.com>
+         <5e1c165d-176c-0141-dc96-0fdbda367c03@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
-if not using generic_show_options") eliminates replace_mount_options
-in reiserfs, but did not handle the allocated new_opts,
-it will cause memory leak in the reiserfs_remount.
-
-Fix this by freeing new_opts in the reiserfs_remount temporarily.
-
-Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- fs/reiserfs/super.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
-index 58481f8d63d5..b36865c8b66a 100644
---- a/fs/reiserfs/super.c
-+++ b/fs/reiserfs/super.c
-@@ -1594,6 +1594,7 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
- 	}
- 
- out_ok_unlocked:
-+	kfree(new_opts);
- 	return 0;
- 
- out_err_unlock:
--- 
-2.25.1
+SGkgQW5nZWxvR2lvYWNjaGlubywNCg0KVGhhbmtzIGZvciB5b3VyIHN1Z2dlc3Rpb24uDQpPbiBU
+aHUsIDIwMjEtMTAtMTQgYXQgMTM6MDIgKzAyMDAsIEFuZ2Vsb0dpb2FjY2hpbm8gRGVsIFJlZ25v
+IHdyb3RlOg0KPiA+IFVzZSB0aGUgZG1hX3NldF9tYXNrX2FuZF9jb2hlcmVudCBoZWxwZXIgdG8g
+c2V0IHZkZWMNCj4gPiBETUEgYml0IG1hc2sgdG8gc3VwcG9ydCAzNGJpdHMgaW92YSBzcGFjZSgx
+NkdCKSB0aGF0DQo+ID4gdGhlIG10ODE5MiBpb21tdSBIVyBzdXBwb3J0Lg0KPiA+IA0KPiA+IFdo
+b2xlIHRoZSBpb3ZhIHJhbmdlIHNlcGFyYXRlIHRvIDB+NEcvNEd+OEcvOEd+MTJHLzEyR34xNkcs
+DQo+ID4gcmVnYXJkaW5nIHdoaWNoIGlvdmEgcmFuZ2UgVkRFQyBhY3R1YWxseSBsb2NhdGUsIGl0
+DQo+ID4gZGVwZW5kcyBvbiB0aGUgZG1hLXJhbmdlcyBwcm9wZXJ0eSBvZiB2ZGVjIGR0c2kgbm9k
+ZS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBZdW5mZWkgRG9uZyA8eXVuZmVpLmRvbmdAbWVk
+aWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstdmNv
+ZGVjL210a192Y29kZWNfZGVjX2Rydi5jIHwgMyArKysNCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAz
+IGluc2VydGlvbnMoKykNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0
+Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX2Rydi5jIA0KPiA+IGIvZHJpdmVycy9tZWRp
+YS9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX2Rydi5jDQo+ID4gaW5kZXggZGU4
+M2UzYjgyMWI0Li5kYTk2M2NkYWM5NmIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tZWRpYS9w
+bGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX2Rydi5jDQo+ID4gKysrIGIvZHJpdmVy
+cy9tZWRpYS9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZGVjX2Rydi5jDQo+ID4gQEAg
+LTM3Niw2ICszNzYsOSBAQCBzdGF0aWMgaW50IG10a192Y29kZWNfcHJvYmUoc3RydWN0DQo+ID4g
+cGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgCQl9DQo+ID4gICAJfQ0KPiA+ICAgDQo+ID4g
+KwlpZiAob2ZfZ2V0X3Byb3BlcnR5KHBkZXYtPmRldi5vZl9ub2RlLCAiZG1hLXJhbmdlcyIsIE5V
+TEwpKQ0KPiA+ICsJCWRtYV9zZXRfbWFza19hbmRfY29oZXJlbnQoJnBkZXYtPmRldiwNCj4gPiBE
+TUFfQklUX01BU0soMzQpKTsNCj4gPiArDQo+IA0KV2lsbCBmaXggaW4gcGF0Y2ggdjguDQo+IFRo
+aXMgZnVuY3Rpb24gcmV0dXJucyAwIGZvciBzdWNjZXNzLCBvciBuZWdhdGl2ZSBudW1iZXIgZm9y
+IGZhaWx1cmU6DQo+IHBsZWFzZSBjaGVjaw0KPiB0aGUgcmV0dXJuIHZhbHVlLCBvciB0aGlzIGRy
+aXZlciBtYXkgbm90IHdvcmsgY29ycmVjdGx5IGluIHNvbWUNCj4gY29ybmVyIGNhc2VzLg0KPiAN
+Cj4gUmVnYXJkcywNCj4gLSBBbmdlbG8NCj4gDQo+ID4gICAJZm9yIChpID0gMDsgaSA8IE1US19W
+REVDX0hXX01BWDsgaSsrKQ0KPiA+ICAgCQltdXRleF9pbml0KCZkZXYtPmRlY19tdXRleFtpXSk7
+DQo+ID4gICAJc3Bpbl9sb2NrX2luaXQoJmRldi0+aXJxbG9jayk7DQo+ID4gDQo=
 
