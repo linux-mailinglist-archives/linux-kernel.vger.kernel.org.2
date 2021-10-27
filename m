@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1061343C946
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D66843C962
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241825AbhJ0MMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:12:22 -0400
-Received: from mga11.intel.com ([192.55.52.93]:22295 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241802AbhJ0MMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:12:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="227600364"
-X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
-   d="scan'208";a="227600364"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 05:09:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
-   d="scan'208";a="486650066"
-Received: from dev01.bj.intel.com ([10.238.158.57])
-  by orsmga007.jf.intel.com with ESMTP; 27 Oct 2021 05:09:48 -0700
-From:   Huaisheng Ye <huaisheng.ye@intel.com>
-To:     dan.j.williams@intel.com, hch@lst.de, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Huaisheng Ye <huaisheng.ye@intel.com>
-Subject: [PATCH 4/4] libnvdimm/btt: implement ->set_read_only to hook into BLKROSET processing
-Date:   Wed, 27 Oct 2021 20:09:37 +0800
-Message-Id: <20211027120937.1163744-5-huaisheng.ye@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211027120937.1163744-1-huaisheng.ye@intel.com>
-References: <20211027120937.1163744-1-huaisheng.ye@intel.com>
+        id S241846AbhJ0MSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:18:46 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25316 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232242AbhJ0MSj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:18:39 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HfSGV44vZzbhKM;
+        Wed, 27 Oct 2021 20:11:30 +0800 (CST)
+Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 27 Oct 2021 20:16:09 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 27 Oct 2021 20:16:08 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangjie125@huawei.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
+        <chenhao288@hisilicon.com>
+Subject: [PATCH net 0/7] net: hns3: add some fixes for -net
+Date:   Wed, 27 Oct 2021 20:11:42 +0800
+Message-ID: <20211027121149.45897-1-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600016.china.huawei.com (7.193.23.20)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the ->set_read_only method for nd_btt.
+This series adds some fixes for the HNS3 ethernet driver.
 
-Signed-off-by: Huaisheng Ye <huaisheng.ye@intel.com>
----
- drivers/nvdimm/btt.c | 1 +
- 1 file changed, 1 insertion(+)
+Guangbin Huang (4):
+  net: hns3: fix pause config problem after autoneg disabled
+  net: hns3: ignore reset event before initialization process is done
+  net: hns3: expand buffer len for some debugfs command
+  net: hns3: adjust string spaces of some parameters of tx bd info in
+    debugfs
 
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index 92dec4952297..91fcdac7858f 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -1514,6 +1514,7 @@ static const struct block_device_operations btt_fops = {
- 	.submit_bio =		btt_submit_bio,
- 	.rw_page =		btt_rw_page,
- 	.getgeo =		btt_getgeo,
-+	.set_read_only = 	nd_set_ro,
- };
- 
- static int btt_blk_init(struct btt *btt)
+Jie Wang (2):
+  net: hns3: fix data endian problem of some functions of debugfs
+  net: hns3: add more string spaces for dumping packets number of queue
+    info in debugfs
+
+Yufeng Mo (1):
+  net: hns3: change hclge/hclgevf workqueue to WQ_UNBOUND mode
+
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  1 +
+ .../ethernet/hisilicon/hns3/hns3_debugfs.c    | 16 ++---
+ .../ethernet/hisilicon/hns3/hns3_ethtool.c    | 33 +++++++---
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 30 ++++-----
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 65 ++++++++++---------
+ .../hisilicon/hns3/hns3pf/hclge_main.h        |  1 -
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_tm.c |  2 +-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_tm.h |  1 +
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      |  5 +-
+ .../hisilicon/hns3/hns3vf/hclgevf_main.h      |  1 +
+ 10 files changed, 90 insertions(+), 65 deletions(-)
+
 -- 
-2.27.0
+2.33.0
 
