@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A834143C6AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1935A43C6B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241262AbhJ0JpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbhJ0JpO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:45:14 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7F9C061767
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 02:42:45 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so1819887wmz.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 02:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g0D9/rrpIr9fyPZx4h1CXHJNZVxoIHdXAlZrTjtbcgE=;
-        b=LWETz/r4gYw0pzFNBt54ka9qNvttyYrzQrMuOaEYSoGW+ysWI5/P7sScKno6UhF5M8
-         nDhwytGY1y2SYT6iuq7t9fNFc+vQjbL3l6jtyPahZOS36Se5lknCbysyvsBmqxahoijo
-         lIIdadK1k4/DBlmiyin7s6pXa6EwQKHqea5hGMJzXpA8wDgqGKGFc9RaVfzR1OGU1KQq
-         4ALKRJ6Z7yR1gWDw51zO8lB6sGf8NzUkxUAFgwNzDWQsWaB1GnDsiQQbH4gOdRZqBCpc
-         tMnG/KWD7SQfvSABODCPzxK6SPb3WmaUDdsrvZnaVIpvzsoOZ0NxPoDRnZqYEMLldxNP
-         UVOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g0D9/rrpIr9fyPZx4h1CXHJNZVxoIHdXAlZrTjtbcgE=;
-        b=mlUbT0m9PjikVRS3FJws1As/Y7L+CDq9owhxVe+DFJ/DCHpKAf9M1ri2hkORmTijQe
-         cUEyHy/tnv10UFOqM+C3q4KeMtTEwneOAoo5081gY38COvaTOAFjew+PrKHM08TRpm8j
-         Fd14Ib0skOkGocA2vN/2AVsccgQbt7nbdINC2OJE7rb96uCSCMbDfphxENm99faKDt84
-         yZmzIcVQPLgoDn8CoeovxXxyQSat5SZeIuGYqowcyuU2ztD3McpZw+lP2UKg4x3wB9Ky
-         aUb6rHSGE0ujAlHy4ebFyF7c79uovDEzki2N3vlF7KMxH4hvyMGgYrDvUbMYBPwZJyrn
-         ptjg==
-X-Gm-Message-State: AOAM532c7f+T5yOeokx+zh0pahu0/0QUb6nNxF+dEOZA0W3Fq76AKhl7
-        9u7w1dD60iQ3u6sfSJtFIp50GnneSfr0Wcxv1T4Pxg==
-X-Google-Smtp-Source: ABdhPJx4E1Py+4WI3Q7DjL/bwCfnrfedbmQiFdfgkiPGNuL/KEM2fGFUJZAsGynOOJVh+u1xpGAi1YMZHTLDaNmirAk=
-X-Received: by 2002:a7b:ce19:: with SMTP id m25mr4721233wmc.134.1635327764303;
- Wed, 27 Oct 2021 02:42:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211026083138.1818705-1-jens.wiklander@linaro.org>
- <20211026083138.1818705-3-jens.wiklander@linaro.org> <1635271409.203246.2939412.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1635271409.203246.2939412.nullmailer@robh.at.kernel.org>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 27 Oct 2021 11:42:33 +0200
-Message-ID: <CAHUa44GQvN_8Y5jM+TPbnoPeHpz9hybr5i8YPeArGP9Sxk9Z=Q@mail.gmail.com>
-Subject: Re: [PATCH v7 2/6] dt-bindings: arm: optee: add interrupt property
-To:     Rob Herring <robh@kernel.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jerome Forissier <jerome@forissier.org>,
-        jens.vankeirsbilck@kuleuven.be,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        id S241264AbhJ0JqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236282AbhJ0JqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 05:46:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3748B60EDF;
+        Wed, 27 Oct 2021 09:43:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635327834;
+        bh=VamiCDRY2Jm6wCsoF7Ul2LuA4UNUxvU1NzDgcC1N/XA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SijhGI3zQ4BfXjr5omvlexqH9vB+MKLh3V80St9yLNZDaEJAxOCtd6qtOzHuXieHo
+         seJIDXIikcfIcwRY9lqPocqV4K/Jvwjc7YuQPu8C+artADBP7yAyzkgMSNdMpc7nNs
+         jKG6Vl4TIm5TdButDhTHostAI1ZxCiZiMjJ/WSs7YYidMLYiYfhUxEKnxeHy6uEKqJ
+         28ViZ0IVHiRtKqxGvJmwZRawU3dWq2py8O3g9iJYprZxhdsR8tgScH1lSmlL1aJghH
+         hGna+APpSbGfWCfZxL5jwpp3od9EZsSS9SqDrZFwzzrWlI9rtv+5mOwpAEo/lf5hbB
+         bWv1CUmAFQbEw==
+Date:   Wed, 27 Oct 2021 12:43:50 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Edwin Peer <edwin.peer@broadcom.com>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        netdev <netdev@vger.kernel.org>,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Michael Chan <michael.chan@broadcom.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXkfVuthd6G75L/S@unreal>
+References: <725e121f05362da4328dda08d5814211a0725dac.1635064599.git.leonro@nvidia.com>
+ <YXUhyLXsc2egWNKx@shredder>
+ <CAKOOJTzc9pJ1KKDHuGTFDeHb77B2GynA9HEVWKys=zvh_kY+Hw@mail.gmail.com>
+ <YXeYjXx92wKdPe02@unreal>
+ <CAKOOJTyrzosizeKpfYcu4jMn6SRYrqxU0BzMf8qudAk5e74R9g@mail.gmail.com>
+ <YXhVd16heaHCegL1@unreal>
+ <CAKOOJTzrQYz4FTDU_d_R0RLA4u6pfK9=+=E_uKMr4VCNbmF_kA@mail.gmail.com>
+ <YXj1J/Z8HYvBWC6Y@unreal>
+ <CAKOOJTyrUUydu9aNJSB4S_5dfqjkc6Y-14up4-V+aNcQ7TWVdQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKOOJTyrUUydu9aNJSB4S_5dfqjkc6Y-14up4-V+aNcQ7TWVdQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 8:03 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Tue, 26 Oct 2021 10:31:34 +0200, Jens Wiklander wrote:
-> > Adds an optional interrupt property to the optee binding.
-> >
-> > Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Acked-by: Marc Zyngier <maz@kernel.org>
-> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > ---
-> >  .../devicetree/bindings/arm/firmware/linaro,optee-tz.yaml  | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
->
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.example.dts:23.31-32 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1441: dt_binding_check] Error 2
->
-> doc reference errors (make refcheckdocs):
->
-> See https://patchwork.ozlabs.org/patch/1546320
->
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
+On Wed, Oct 27, 2021 at 01:46:44AM -0700, Edwin Peer wrote:
+> On Tue, Oct 26, 2021 at 11:43 PM Leon Romanovsky <leon@kernel.org> wrote:
+> 
+> > In our case, the eth driver is part of mlx5_core module, so at the
+> > device creation phase that module is already loaded and driver/core
+> > will try to autoprobe it.
+> 
+> > However, the last step is not always performed and controlled by the
+> > userspace. Users can disable driver autoprobe and bind manually. This
+> > is pretty standard practice in the SR-IOV or VFIO modes.
+> 
+> While you say the netdev will not necessarily be bound, that still
+> sounds like the netdev will indeed be presented to user space before
+> devlink_register() when it is auto-probed?
 
-Thanks, I'll fix that in the next version.
+And it is ok, there is no binding between netdev and devlink. They are
+independent. For example, IB cards have devlink through mlx5_core, but
+without netdev at all.
 
-Cheers,
-Jens
+> 
+> > This is why devlink has monitor mode where you can see devlink device
+> > addition and removal. It is user space job to check that device is
+> > ready.
+> 
+> Isn't it more a question of what existing user space _does_ rather
+> than what user space _should_ do?
+
+No, because races of kernel vs. user space always existed and every time,
+the answer was the same - it is user space job to avoid race. Kernel
+needs to protect itself and we successfully did it here.
+
+Latest example of such programming model can be seen in VFIO too:
+https://lore.kernel.org/kvm/20211026090605.91646-1-yishaih@nvidia.com/T/#m89ef326da9405dcefe482bd5a6a54aff7e0b90bc
+"Yes. If the userspace races ioctls they get a deserved mess.
+
+This race exists no matter what we do, as soon as the unlock happens a
+racing reset ioctl could run in during the system call exit path.
+
+The purpose of the locking is to protect the kernel from hostile
+userspace, not to allow userspace to execute concurrent ioctl's in a
+sensible way."
+
+> 
+> > > This isn't about kernel API. This is precisely about existing user
+> > > space that expects devlink to work immediately after the netdev
+> > > appears.
+> >
+> > Can you please share open source project that has such assumption?
+> 
+> I'm no python expert, but it looks like
+> https://github.com/openstack-charmers/mlnx-switchdev-mode/ might.
+
+No, it is not.
+
+> We've certainly had implicit user space assumptions trip over
+> registration order before, hence the change we made in January last
+> year to move devlink registration earlier. Granted, upon deeper
+> analysis, that specific case pertained to phys port name via sysfs,
+> which technically only needs port attrs via ndo_get_devlink_port, not
+> devlink_register(). That said, I'm certainly not confident that there
+> are no other existing users that might expect to be able to invoke
+> devlink in ifup scripts.
+
+It is not what your change did, you moved devlink ops registration logic
+to be before register_netdev(), this is continue to be in upstream code.
+We are registering ops in devlink_alloc() and that function stays to be
+at the same place.
+
+> 
+> > > What do you suggest instead?
+> >
+> > Fix your test respect devlink notifications and don't ignore them.
+> 
+> That's not very helpful. The test case does what the user in the field
+> did to break it. We can't assume users have always been using our APIs
+> the way we intended.
+
+There is no API here.
+
+Thanks
+
+> 
+> Regards,
+> Edwin Peer
