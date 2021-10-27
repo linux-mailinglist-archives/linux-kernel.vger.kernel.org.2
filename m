@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEC743C55F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D3543C561
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239494AbhJ0Imm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:42:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41484 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239439AbhJ0Imj (ORCPT
+        id S240841AbhJ0InJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:43:09 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:25489 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239477AbhJ0InI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:42:39 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7F276218F0;
-        Wed, 27 Oct 2021 08:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635324013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GMgN2A9bmbMdtRlwQcHYangnfGuiIHJ49tFSvs6PWNU=;
-        b=Jeb72/Mj+bAi+4FBH876ysPMOc8EOW235meNyAYbu2TNosqxTWyPg8OvtWA/XuOIuWYC1h
-        yxTsnV5s26nWKZZyia/D3TiEc4GtGUvKfLYbKRZMCp5X0mXyA6XYg8IqO8DLfOurwA0Vm9
-        /3M7xaE3cNxeLWlW+SUqt5Ll8brNAgg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635324013;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GMgN2A9bmbMdtRlwQcHYangnfGuiIHJ49tFSvs6PWNU=;
-        b=6HdkBqs9l+N0CGtaF0ZehpcbP7GX36GexBMXr06DOIB+2b6hoZEg4jOXUvcFBTiNsA+iNe
-        s4eAooRPPMM159DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3806713A2C;
-        Wed, 27 Oct 2021 08:40:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MUjTC20QeWEMFAAAMHmgww
-        (envelope-from <nstange@suse.de>); Wed, 27 Oct 2021 08:40:13 +0000
-From:   Nicolai Stange <nstange@suse.de>
-To:     Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolai Stange <nstange@suse.de>, Torsten Duwe <duwe@suse.de>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] crypto: DRBG - improve 'nopr' reseeding
-References: <20211025092525.12805-1-nstange@suse.de>
-        <2120606.3HGXcN3vsr@positron.chronox.de>
-Date:   Wed, 27 Oct 2021 10:40:12 +0200
-In-Reply-To: <2120606.3HGXcN3vsr@positron.chronox.de> ("Stephan
- \=\?utf-8\?Q\?M\=C3\=BCller\=22's\?\=
-        message of "Tue, 26 Oct 2021 10:33:05 +0200")
-Message-ID: <87zgqurhcj.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.3 (gnu/linux)
+        Wed, 27 Oct 2021 04:43:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635324044; x=1666860044;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ei6aJ4NBv6rekmLj3yugqSXt+OtL2wsArvFXf7CSFlE=;
+  b=TRL3Yn+dOWR/tEiLrjvZIIHzZl078JlXMCoQAqDF2Vhjw5btGEsDEtif
+   CiyqQXyCHqOMzjjZR6InVhujfMv9RvjcJqsAI0xByyU9rUKnP2/oCJf0g
+   KYkKlkxvgvz7fotEcj+Ow0D6yBxbPg6EFc1ev1DlpnXE2dgZCK4EeCsbw
+   PtsxGThZfalaN0MRlQgktlLDwehfQaZSRxSpT7IBcjuVPJbvpIq5YzsBr
+   4kmWilivvB1S9vZR10SywvJ/Bbd+Gi33PHez6s616Pe8RmEejEEGjGmy0
+   LlbBnt6rJXvXNluq0IKRs2JPQFSqyzvru6lrpeMx+dx5nb0Azpn0aqHAw
+   w==;
+IronPort-SDR: luo/hmkrKwxCNiiGuDLzwUUAl2Ec3dsIBm2eO25u+bsdC7YMGKsgyakrOHm/yb/0utuOtTbSWV
+ 3FXN4m8DxmKP67dpxKXkckj9yY4lfH18TnXCyxYaRGsH9nrG7tFa03yyNymEKIMMB6WLm6kpLq
+ YD8xZEtBCHyyGwHSkNRNlFca+Znp4Jz03tAPX9kbNjiLHPIqgff8Iz1SlxUnEOXc0iVcvDyZfW
+ C0+u0BXrEoJHF6BKTs7a0/paB4i+xzbazcQuaASHekOFMVFfrMgLwHdwsUmO4LyaOsqAJUnws/
+ GASWsDeEyv7VorNY2sFZRTJA
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="141228245"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Oct 2021 01:40:43 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 27 Oct 2021 01:40:39 -0700
+Received: from [10.171.246.59] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Wed, 27 Oct 2021 01:40:37 -0700
+Subject: Re: [PATCH] net: macb: Fix mdio child node detection
+To:     Claudiu Beznea - M18063 <Claudiu.Beznea@microchip.com>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20211026173950.353636-1-linux@roeck-us.net>
+ <c6a5361b-5199-766a-c85a-f802ca77670e@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <bdc2d3c3-546d-a007-4516-feb500a3f48b@microchip.com>
+Date:   Wed, 27 Oct 2021 10:40:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <c6a5361b-5199-766a-c85a-f802ca77670e@microchip.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephan,
+On 27/10/2021 at 10:38, Claudiu Beznea - M18063 wrote:
+> On 26.10.2021 20:39, Guenter Roeck wrote:
+>> Commit 4d98bb0d7ec2 ("net: macb: Use mdio child node for MDIO bus if it
+>> exists") added code to detect if a 'mdio' child node exists to the macb
+>> driver. Ths added code does, however, not actually check if the child node
+>> exists, but if the parent node exists. This results in errors such as
+>>
+>> macb 10090000.ethernet eth0: Could not attach PHY (-19)
+>>
+>> if there is no 'mdio' child node. Fix the code to actually check for
+>> the child node.
+>>
+>> Fixes: 4d98bb0d7ec2 ("net: macb: Use mdio child node for MDIO bus if it exists")
+>> Cc: Sean Anderson <sean.anderson@seco.com>
+>> Cc: Andrew Lunn <andrew@lunn.ch>
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>> ---
+> 
+> Patch solves the failure also on sama5d2_xplained. You can add:
+> 
+> Tested-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-first of all, many thanks for your prompt review!
+Guener, Claudiu, thanks so much!
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Stephan M=C3=BCller <smueller@chronox.de> writes:
+Best regards,
+   Nicolas
 
-> Am Montag, 25. Oktober 2021, 11:25:19 CEST schrieb Nicolai Stange:
->
->
->> - Replace the asynchronous random_ready_callback based DRBG reseeding
->>   logic with a synchronous solution leveraging rng_is_initialized().
->
-> Could you please help me why replacing an async method with a sync method=
- is=20
-> helpful? Which problems do you see with the async method that are allevia=
-ted=20
-> with the swtich to the sync method? In general, an async method is more=20
-> powerful, though it requires a bit more code.
 
-There is no problem with the async method (*), I just don't see any
-advantage over the less complex approach of doing all reseeding
-work synchronously from drbg_generate().
+>>   drivers/net/ethernet/cadence/macb_main.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+>> index 309371abfe23..ffce528aa00e 100644
+>> --- a/drivers/net/ethernet/cadence/macb_main.c
+>> +++ b/drivers/net/ethernet/cadence/macb_main.c
+>> @@ -901,7 +901,7 @@ static int macb_mdiobus_register(struct macb *bp)
+>>           * directly under the MAC node
+>>           */
+>>          child = of_get_child_by_name(np, "mdio");
+>> -       if (np) {
+>> +       if (child) {
+>>                  int ret = of_mdiobus_register(bp->mii_bus, child);
+>>
+>>                  of_node_put(child);
+>> --
+>> 2.33.0
+>>
+> 
 
-Before the change, there had been two sites taking care of reseeding:
-the drbg_async_seed() work handler scheduled from the
-random_ready_callback and drbg_generate().
 
-After the change, all reseeding is handled at a single place only, namely
-drbg_generate(), which, in my opinion, makes it easier to reason about.
-In particular, in preparation for patch 6/6 from this series introducing
-yet another condition for triggering a reseed...
-
-Thanks,
-
-Nicolai
-
-(*) Except for that a wait_for_random_bytes() issued by DRBG users won't
-    give any guarantees with respect to a subsequent drbg_generate()
-    operation, c.f. my other mail in reply to your review on 3/6 I'm
-    about to write in a second. As of now, there aren't any DRBG users
-    invoking wait_for_random_bytes(), but one might perhaps consider
-    changing that in the future.
-
->>   This
->>   move simplifies the code IMO and, as a side-effect, would enable DRBG
->>   users to rely on wait_for_random_bytes() to sync properly with
->>   drbg_generate(), if desired. Implemented by patches 1-5/6.
->> - Make the 'nopr' DRBGs to reseed themselves every 5min from
->>   get_random_bytes(). This achieves at least kind of a partial prediction
->>   resistance over the time domain at almost no extra cost. Implemented
->>   by patch 6/6, the preceding patches in this series are a prerequisite
->>   for this.
-
---=20
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, G=
-ermany
-(HRB 36809, AG N=C3=BCrnberg), GF: Felix Imend=C3=B6rffer
+-- 
+Nicolas Ferre
