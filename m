@@ -2,183 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE0243D049
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425DA43D04D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbhJ0SKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:10:05 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:42794 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230495AbhJ0SKC (ORCPT
+        id S243401AbhJ0SKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:10:52 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:56748 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230495AbhJ0SKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:10:02 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RH6xKB023704;
-        Wed, 27 Oct 2021 18:07:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=qX/EEefklTZfUtSEWanRcHquz74G+d2OJ84qEV0aM0A=;
- b=S2+vXqpCIDGRmWBTLTIxJ+J6dq1E6UcvL2p2uS8FNuc2hjNK7JZe43LJ720+riV9F18T
- wR9K4F3Dsyq+nCaiKoFkVfyi88DIIPGjcQqX7/Nor4E3RWbpfSokEfhggWj2Bb+N7bmK
- dhZQREEcdo/DEz91RQHq57o2z6pvQsON/TCMSGZwNum3r0tRI3xWmrCHgEQqufUvNPyK
- qoMA2n2/AAWekUr6WAoRSwWGiuh+pXG5bYyBQ3O/q12jOSERq4oPrIhiLSyzNl6Dghv/
- bpOBSTIONA2TnXjRTPfuzxgCjNzd5G7NNLL27UHau599xvxnVV5PFF9YogrpllSJhlzs vQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4fj5e5w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 18:07:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19RI5ZHu085940;
-        Wed, 27 Oct 2021 18:06:57 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2177.outbound.protection.outlook.com [104.47.73.177])
-        by aserp3020.oracle.com with ESMTP id 3bx4gd47jy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 18:06:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F7GMxrxITp3JLZszB98tSPPkOpgaLuVWA1RJFU92s6IPaiwMunRxGpphBEpKS0Qsz84WAtbNeIM1z4BySIkp9ZOsd6Ow6A3FtUeBPq+8MPDpV3Nv0FpwGgOLy5H27GglFt5bTlMe8cuPk2l7b7tqWMwpC+WVEjGGmoQeu1i2JDd+G1SD4+shKt0kW8/AoLff7vbc33sZHXTPgpfldebbrt0I5vpY6PIm4V9bBLyVmq9W8594kphg16RRiHtEcBVRg7UXn8YzCMxKyErnr5H1EPWaqyAJy6c8JIkbiAsE0wS5U0qkeHn+L2EmVPgtki0KOKDt54LdKkUiSAuE7cypkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qX/EEefklTZfUtSEWanRcHquz74G+d2OJ84qEV0aM0A=;
- b=Cdt2oNfpcWI2ZSKLq1zwiRpzYV81B00m48mBJj/1hGaojCmmrTOaowH5Dgh9cGgZCe/4pjdSowdwQsPO9Qyo0J29WmuSB3Ktz+4ft2iP5P+GkhZRI3Mh8Qxk8UkkL1iCBm6lzdGQCVvOUNt/XIFIWMiPEjaLyetkaLaOlUMTfksri702tUOZCAvkAqUYwek1qscxo9f8rJxOEd7VZ4J5Mq3uPMMYAoPGtelGA18IQDiI9bXEEV4QtI1khXu13LkNVn1qgFoD6wMwdx+U1SLVs+Vcz3f0y/FAghVqpKvgZBciJiTZ/7PReJCpOOWgaZ2La0aVCgSsDny+61T60JG/Ug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qX/EEefklTZfUtSEWanRcHquz74G+d2OJ84qEV0aM0A=;
- b=zUCl6DtAOF1kiM0i2VCuqpSZa4plF3j+OJ0tNolfNTj4lkncC5jQwRZAcwXbkYY132/yJwKRM3GOSXFGgJIZ3QZTZtHcBbiuK1+OMNqtdZ1Yope2l02r7igopsBKT4j/47UROIVhpNIB4+4FyY40Ezqw2wa/vEEBIXTHcktAV0E=
-Authentication-Results: epam.com; dkim=none (message not signed)
- header.d=none;epam.com; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB4111.namprd10.prod.outlook.com (2603:10b6:208:111::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.20; Wed, 27 Oct
- 2021 18:06:54 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329%6]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 18:06:54 +0000
-Message-ID: <3725217f-1195-7972-e669-d4484c1deaae@oracle.com>
-Date:   Wed, 27 Oct 2021 14:06:49 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v5] xen-pciback: allow compiling on other archs than x86
-Content-Language: en-US
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "jgross@suse.com" <jgross@suse.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>
-References: <20210928073501.433559-1-andr2000@gmail.com>
- <71ce7c97-1d08-9fdf-b217-53eb914a29a6@oracle.com>
- <a54ab50a-f35c-26b9-3907-20c014a1120a@epam.com>
- <af42493e-ec31-8673-5532-1f0c8275b2c6@oracle.com>
- <c4efe0b5-89de-aac1-6ec5-5f137fa3b9d4@epam.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-In-Reply-To: <c4efe0b5-89de-aac1-6ec5-5f137fa3b9d4@epam.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0075.namprd11.prod.outlook.com
- (2603:10b6:806:d2::20) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        Wed, 27 Oct 2021 14:10:50 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RFH24O032380;
+        Wed, 27 Oct 2021 11:08:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=XWITGMFb/jan4h4z6VWEZstJVv3zQOCDbuWtYBDyH9g=;
+ b=cX05pS0eS2FtDDmw/nKdVILfUWesdZJuhgtG7P4KnUkCBwdyr47wV0cJXQwsLScM8GHj
+ kpU+8Cc8pxLCkcraZPY48NxrXXbVpZWBzuwssn9j2qzLW6eagGH662ZsVaXq3ZgmKEAk
+ nwwxmQekl1Bce/LK5FKwnhmuiDehK9qyr+tMr2+ST0FzPG79AS2e7k1GPgH99kGI9+mR
+ fUgLqfFaslRo5WwHk56E2ii2uJ2cNc/ht71tXOiui+K6fPVkNSrndWN6xq/LOs6iLyMX
+ bm42xn4yhfpzeEw3XxGHfMUHJcFOGM2YoHsJjAfCVF5PywJ5d9qU52/nzAB5r7wjBYS0 Tg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3by1caauqj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 11:08:22 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct
+ 2021 11:08:20 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Wed, 27 Oct 2021 11:08:20 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 9A5E43F706D;
+        Wed, 27 Oct 2021 11:08:17 -0700 (PDT)
+From:   Rakesh Babu Saladi <rsaladi2@marvell.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>,
+        Rakesh Babu Saladi <rsaladi2@marvell.com>
+Subject: [net-next PATCH v3 0/3] RVU Debugfs updates.
+Date:   Wed, 27 Oct 2021 23:37:42 +0530
+Message-ID: <20211027180745.27947-1-rsaladi2@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: from [10.74.107.92] (138.3.200.28) by SA0PR11CA0075.namprd11.prod.outlook.com (2603:10b6:806:d2::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Wed, 27 Oct 2021 18:06:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a7fb903e-fbd0-4ca5-8c99-08d999748f1a
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4111:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4111D0F9B4DB5C0E8572562E8A859@MN2PR10MB4111.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6gsV8qBEY5XJY+y8i9zZE0/uPx8Z0r+A2p8AfuwYr8/Z1ozz8p2X1Wd+kjgePrnPswd6GlYt3YMAqkX7bkmjqiKOMOcH9LsHYYAb0UB7QnvXeCeN3iOFQ5/Tnmk/JJqghZRM5o8tkylNYgLRJTQ0zoxPIttOC2UnpxOO3EqtX1RKcyv6uaNsREr3SZsdNz5zGWajTQX55rAKI++fdaGnNJkzYLQWxycpokelXN61XIbJR9KNnta2mr/JklC6aJkUlzFo90Bf6kEYRPBzyLa28/Bx0GliRrPgB8ADr/NAitntWUSS5RlWhiAIiKmR1uK0MaymJ+qIYonMlN7vqr4uvOril8M/g4T0aD5NFFCWb5mbb6Xq91scaCILXRVAsa4Ff55EZOU2EjXzTc+VIRf1tMSjCOAoX0OSCm0nfTsSZAMbbMu10dW7mS6F0gwYhV83TSu5C6bUZNu6t1NkmZlQS6roeRDNLfhV0suna9QmF/YdlIDAIEEwxLyG4oUMYtwVqR6WUKoUs2jjbYAVyTEAS4U+JP8aym9CuuTqm4QhDd8mDMNXOUPVv2JPMCUbKTaHeDUmjVLR0n3aMzIXD2e92T/hWfpqJj1vi3JyiWGIGiZX+sWZhiU9kwGBVUQ/dzYIQSz+J+CUIn4tSuFlQHgE0KAu9eYqsTFBVpWNWdprP9QpBVpF1dbeBjnx22rG6ie+zfjX4i+T+TbGrVLiIOoBq3dlYT3Lmrx5QeiabKoAwjsZqca2ZAzB7RNrX0GFeHH0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4744005)(38100700002)(2906002)(6486002)(26005)(5660300002)(2616005)(66476007)(186003)(956004)(44832011)(8936002)(4326008)(66946007)(54906003)(316002)(66556008)(508600001)(16576012)(8676002)(31686004)(53546011)(110136005)(86362001)(6666004)(31696002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K1p1ZXlhbHdsdktUNjByOE56UEVwTS9DRjBiY2NTRkphRmVhRHVVbStxSVVE?=
- =?utf-8?B?Z0JRYXc3bFVuT1FWU0E0VFBoRzNUUTdwc3c0R205WExkQXZxbmlqbUwvWUg4?=
- =?utf-8?B?aDlLc2c4VHRycldQdEk2Z0NIM3E2eXExT2FXY3VPVS9LRFhxZEZyRGJjZThV?=
- =?utf-8?B?andZK0JML0hTTExTOHhIdVBwYTd4dklTSjZxZVhsNGltT0t0ZE9lbkVDSisw?=
- =?utf-8?B?UlY0bTJOVkE0c3phYWIvRWNvZDE4OFVpUVhIK2pCTW41Zmk1ME1XSlk2ejBP?=
- =?utf-8?B?SnlKVzJJKzNQd2YvMjVDYUc5dHo5blEwdDFlWXU2LzhKeEVoakgreTB4Yjk1?=
- =?utf-8?B?ckZpQXgvS2EvcjNtN2tMb2RJeFAxL0Q3WjQ5TTRwMDFsazEyNVVOSjdtK2Fx?=
- =?utf-8?B?d0VnR3NMQUNjNFhzWTdFNGxnRVJkNHhYK2VxMmhwYTBzQW5LSkpwT2xtZk9l?=
- =?utf-8?B?UWx0ckhTNVhua1A1Uzl3dmN5U3loaTFiMGtZU0lPK25XMGkzNjM0QjkrbGVR?=
- =?utf-8?B?a0RSRXRiejR2NElXT3FCckZ0TXJwNGdQczJYaGZ4VWdRUDRVcW5SR1kwTEFC?=
- =?utf-8?B?ZS9KbXlKemFvdWkvbFNEWFZ4VGx0cnVaMGN5S0dHdUdQYkJUVjFFckQ5eUdm?=
- =?utf-8?B?MjhUVnhPYmMvRC9KaE5KZnRBT05LazJUWDQvc3dSWDBiUlVCeXdJbjJQMUZ2?=
- =?utf-8?B?Ukh5YWR0UFY3K0lvUkRaMWdPSDQ5M2k5N0dVN0ZNSVhzNUtkSk1senI1SGxu?=
- =?utf-8?B?bU42cUY2cTNuekhSMkJ1TTBzbXkraExkUFQ2VHRwd1pWRzREcFNLbXB6R3dx?=
- =?utf-8?B?NHdEVmZwQlB2SWxpUVN5RFRyeld4ajRtZVl5U2p6R0Vkcjltd0lKaVBiV0xM?=
- =?utf-8?B?dUdwZHMwelZ5bXpBWjZMeUlBaXRMRjA4TmxTTEs2Q3g3aVpBS3NTMUtEOVpm?=
- =?utf-8?B?a2o2TWFzNnBZUGFjWnNzTElnOVFYbGJMUXEwcnJ2TEFlVExOWTBvb1AwVnBJ?=
- =?utf-8?B?OFJjMTFzbUlsOGpWRWxremVZMUp0Z1c5WFZTVUFKMm9iTWFqZm5CREQ1Vklx?=
- =?utf-8?B?OWtaRUozTTVZeUlnSUpFYmM5ZFRQVHdXekhQR0ViYnNGejRQbFZ4Rk83OGEv?=
- =?utf-8?B?d1ZLb09XcXZ1NmQyNzJQVUo3bjFoZlRyc2xLb1Q2MXU5MzhwdG5NRUhsanY3?=
- =?utf-8?B?NThZU0o0ZG9yUHBJVS9heUp2QmRqQ29sb3JURUI1ZVFRQTk0c1N4TlRTS245?=
- =?utf-8?B?cHZSU0M2MllzUU5pWTI4djBPdjZEZmZTOW5wbFZyZ0o4YW14cmkvRnBSYkh5?=
- =?utf-8?B?cng5cmNuZ3EwelYwaGppZVMvYURwcVBXOWoyUjBQcE1rTlBXTGpEWmRKWWpj?=
- =?utf-8?B?SWZ2cktjMVFEdlhJc2E1TEpldjJaRlpKNWNJbHNpTEZaMlFUU2dubm1ROHhQ?=
- =?utf-8?B?RVFOMThoZFl3SFN6TmNtZmpoZmlIWjZsNWhZZ21zRjBjV2JQRUNXTCs3bU5n?=
- =?utf-8?B?TnpXWTdrSjJQV3UxSGxyRE1OdWtzM3UzS0hjSk4rQWlnanRxc2JjYWZUYXNn?=
- =?utf-8?B?djhOM2dXVUt4K1crU2M1UlJka2ZpcmJROVc1ZVFESWpzNTNlZnZNNnN1MlJY?=
- =?utf-8?B?ZUw5RlhvQ2tqU1grVFJHVjZYQ3p6TnhXaUYwS0w2MzZ6VmIralMyanNIMmk0?=
- =?utf-8?B?bUxWa0UzQWlGWDB6MzZaajZBU3M4aElIZG8zenYxZlBkR3ltTjE1cDRvOHBX?=
- =?utf-8?B?bDgzNmJKTjRqQTRZMTYzODRBZCt2cm4vcDFVV0dSeHA4bFNhTTh4b05Hbnkr?=
- =?utf-8?B?Skx2YkxHNGw2RkJiMkgrVWxNbnFDUkordG8yVEhGVE5kU01hZkIzY3hlRHh4?=
- =?utf-8?B?em13dmNZcW9UYWMyVnVLTXM4dVZXVCt3SzZtWm1IVXFXMFNPT3pGb0VLaDEr?=
- =?utf-8?B?bmsxTDhrZDlKSmY4Y0Z0bytnNEdma3JEa25iY04rVlZ2RVNvOWJ5TjNTeDBO?=
- =?utf-8?B?eElCeUFCMnE3ejN1WnhCYld3TjhVaWRHamVvMmdDUnhTZkpKNHdONHlwMjdO?=
- =?utf-8?B?QjhBazdveU5WM0lmYUpBRzU1dEJVRllwWDRTYUJMV3NtdThlWjhjMURzWEpp?=
- =?utf-8?B?Wk42cUtKRjZ2TEE5dCtuWFcwVlF2NUFzdGxsSWRMVUV4a2lGeDVGYUdGYlU0?=
- =?utf-8?B?Y3BZdzMvcTRYaXBlZ0RTbGRXdUptbmRvTUFLMkIyOFJqaklkR3pMV3dzTVJ0?=
- =?utf-8?Q?+NZ3OCgawQar67D8ymYQb4W1sR/UvurQh0A2uXFkTg=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7fb903e-fbd0-4ca5-8c99-08d999748f1a
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 18:06:54.7844
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NdrmVOBz27clLvf1H3gX68QBr6tA177KrWOqQOzSE3Z8FTtFsf5galyCh9LtrEGsvQke5cW6KIaPpJyLJYcxlNQPisWm7tvDzOwZNiezosk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4111
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10150 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=951
- bulkscore=0 phishscore=0 mlxscore=0 spamscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270102
-X-Proofpoint-ORIG-GUID: GPTz2k5lFmcBk5_0zVGQZm7i8KBwG5xy
-X-Proofpoint-GUID: GPTz2k5lFmcBk5_0zVGQZm7i8KBwG5xy
+Content-Type: text/plain
+X-Proofpoint-GUID: nUfb4Yb76zq05P3w31v6darxyUHP0AtS
+X-Proofpoint-ORIG-GUID: nUfb4Yb76zq05P3w31v6darxyUHP0AtS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_05,2021-10-26_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patch 1: Few minor changes such as spelling mistakes, deleting unwanted
+characters, etc.
+Patch 2: Add debugfs dump for lmtst map table
+Patch 3: Add channel and channel mask in debugfs.
 
-On 10/27/21 10:49 AM, Oleksandr Andrushchenko wrote:
->
-> On 27.10.21 17:46, Boris Ostrovsky wrote:
->> On 10/27/21 10:08 AM, Oleksandr Andrushchenko wrote:
->>> Hi, Boris!
->>>
->>> On 27.10.21 15:59, Boris Ostrovsky wrote:
->>>> Can you please rebase this on top of 5.15-rc7? There is a bunch of conflicts due to cae7d81a3730dfe08623f8c1083230c8d0987639.
->>>>
->>> I'll try to do that ASAP (what is the deadline for that?)
->>
->> If you could do in the next few days it would be great. I expect next merge window will open on Sunday.
-> Sure, I'll try to send it tomorrow.
-> I assume I can keep R-b's after the rebase (this is going to be v6 of the patch)?
+Changes made from v2 to v3:
+1. In patch 1 moved few lines and submitted those changes as a
+different patch to net branch
+2. Patch 2 is left unchanged.
+3. Patch 3 is left unchanged.
 
 
-I don't see why not.
+Harman Kalra (1):
+  octeontx2-af: cn10k: debugfs for dumping LMTST map table
 
+Rakesh Babu (1):
+  octeontx2-af: debugfs: Add channel and channel mask.
 
--boris
+Rakesh Babu Saladi (1):
+  octeontx2-af: debugfs: Minor changes.
 
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |   4 +
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 118 ++++++++++++++++--
+ .../marvell/octeontx2/af/rvu_npc_fs.c         |   3 +
+ 3 files changed, 114 insertions(+), 11 deletions(-)
+
+--
+2.17.1
