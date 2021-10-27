@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739B343CEBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D32D43CEC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239298AbhJ0Qal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236805AbhJ0Qaj (ORCPT
+        id S235257AbhJ0Qav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:30:51 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:61600 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238295AbhJ0Qau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:30:39 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67286C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:28:14 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id bp7so2938114qkb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 09:28:14 -0700 (PDT)
+        Wed, 27 Oct 2021 12:30:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kcaw11fIjDklEqqCtjykwfsrJvW1LW9AxQoWbgSjC4M=;
-        b=Ua/sCb/y9VDGpUgeNnsC/TY1iozBS8HSs8sB4TzNnEPa+6427LOWQi6WL9uSP+9r0f
-         KGOwJodnrSB2fiQhxLQFuuW8O4HKPNi3pVV1x8cV2XHk8wFzt0Z2GsjSi96dOsDPs1pd
-         jAq2oO9A9mstmfyKZ9gWU7sZY5Lj5IMLSkyfA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kcaw11fIjDklEqqCtjykwfsrJvW1LW9AxQoWbgSjC4M=;
-        b=vcs5OBrJGW+IPcpIznHW9LKaeKaNTQlu1MFpI4S6UJfiNzxAB3t5Yw9MxxvB7uncnC
-         ELDLQ95nZVNp8CkUVgQg9G0yq28XQ7jXkWlhrp7S88tTgOHKlC0f9I2P2Ogwl/Xbq734
-         8Fc8QXvyYFYuJtU7daMrO4vq+TUzjvz55PrFs8ZbEdRTUQFpjbbHUhu8YdVRQlUCiLxd
-         K1+zWz9QuvEo6h7M2RQ1zkmUlfU5DhubaCb0jqi2N0R/6rzCVFklVr3SA3wmQWHyRZo2
-         N23u9KlMsGlU+XknMh2LNkM54TT/HAewF/LH+yyQfc0Ze58Vj8rIin/jkLJI0V6czx/A
-         JqZA==
-X-Gm-Message-State: AOAM533CVAZyEqG6oCcSMNBdXRsPD7fUpDn91hVdCPWV3v3ycIkmEW4a
-        eE8DkG7Ffn9RySH5u6x73sIiJA==
-X-Google-Smtp-Source: ABdhPJzvDL/hbW8x3WlZ9XGRkGRqMyNVExMy38ru/QmkZqYlZSlc0XaIiKT5o4RWmWJvhzMO0AsrYA==
-X-Received: by 2002:a05:620a:1035:: with SMTP id a21mr8908441qkk.354.1635352093630;
-        Wed, 27 Oct 2021 09:28:13 -0700 (PDT)
-Received: from markyacoub.nyc.corp.google.com ([2620:0:1003:314:121e:94ae:f1a6:940c])
-        by smtp.gmail.com with ESMTPSA id i22sm311589qkn.80.2021.10.27.09.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 09:28:13 -0700 (PDT)
-From:   Mark Yacoub <markyacoub@chromium.org>
-Cc:     seanpaul@chromium.org, Mark Yacoub <markyacoub@google.com>,
-        Mark Yacoub <markyacoub@chromium.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/mediatek: Set the default value of rotation to DRM_MODE_ROTATE_0
-Date:   Wed, 27 Oct 2021 12:27:51 -0400
-Message-Id: <20211027162806.2014022-1-markyacoub@chromium.org>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1635352105; x=1666888105;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=uhdqI/5fJKqafKg8E+s9R22dHtZ3+dwppaLBsR5Vfb8=;
+  b=HFrNARvigs5xUFe4Mrb4TXTae3HHrKtrbHRWY8A7brDxUIBMq4BMJFDf
+   SoaU8ZVrrhnS8h1b2JYOoFDyioFv1TRGj1r7LwRowcQXydV73HGXA9I7q
+   g0pQbbzVVex8WRaN0RXoYO7Wf5crSlxbRpyRTpXQXztPWz0SKn7RkzN7O
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.87,187,1631577600"; 
+   d="scan'208";a="37342986"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-d9fba5dd.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 27 Oct 2021 16:28:16 +0000
+Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2c-d9fba5dd.us-west-2.amazon.com (Postfix) with ESMTPS id D919342832;
+        Wed, 27 Oct 2021 16:28:15 +0000 (UTC)
+Received: from [10.85.98.65] (10.43.162.153) by EX13D16EUB003.ant.amazon.com
+ (10.43.166.99) with Microsoft SMTP Server (TLS) id 15.0.1497.24; Wed, 27 Oct
+ 2021 16:28:08 +0000
+Message-ID: <cc1abeaf-4ea1-0e89-4449-dd87cd321cc7@amazon.com>
+Date:   Wed, 27 Oct 2021 19:27:59 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH] nitro_enclaves: Fix implicit type conversion
+Content-Language: en-US
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+CC:     <linux-kernel@vger.kernel.org>, <lexnv@amazon.com>,
+        <alcioa@amazon.com>, Greg KH <gregkh@linuxfoundation.org>,
+        Kamal Mostafa <kamal@canonical.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        "ne-devel-upstream@amazon.com" <ne-devel-upstream@amazon.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <1635241504-2591251-1-git-send-email-jiasheng@iscas.ac.cn>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+In-Reply-To: <1635241504-2591251-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Originating-IP: [10.43.162.153]
+X-ClientProxiedBy: EX13D48UWA001.ant.amazon.com (10.43.163.52) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Yacoub <markyacoub@google.com>
-
-At the reset hook, call __drm_atomic_helper_plane_reset which is
-called at the initialization of the plane and sets the default value of
-rotation on all planes to DRM_MODE_ROTATE_0 which is equal to 1.
-
-Tested on Jacuzzi (MTK).
-Resolves IGT@kms_properties@plane-properties-{legacy,atomic}
-
-Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
----
- drivers/gpu/drm/mediatek/mtk_drm_plane.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-index e6dcb34d30522..accd26481b9fb 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-@@ -44,9 +44,10 @@ static void mtk_plane_reset(struct drm_plane *plane)
- 		state = kzalloc(sizeof(*state), GFP_KERNEL);
- 		if (!state)
- 			return;
--		plane->state = &state->base;
- 	}
- 
-+	__drm_atomic_helper_plane_reset(plane, &state->base);
-+
- 	state->base.plane = plane;
- 	state->pending.format = DRM_FORMAT_RGB565;
- }
--- 
-2.33.0.1079.g6e70778dc9-goog
+CgpPbiAyNi8xMC8yMDIxIDEyOjQ1LCBKaWFzaGVuZyBKaWFuZyB3cm90ZToKPiAKPiBUaGUgdmFy
+aWFibGUgJ2NwdScgaXMgZGVmaW5lZCBhcyB1bnNpZ25lZCBpbnQuCj4gSG93ZXZlciBpbiB0aGUg
+Zm9yX2VhY2hfY3B1LCBpdHMgdmFsdWUgaXMgYXNzaWduZWQgdG8gLTEuCj4gVGhhdCBkb2Vzbid0
+IG1ha2Ugc2Vuc2UgYW5kIGluIHRoZSBjcHVtYXNrX25leHQoKSBpdCBpcyBpbXBsaWNpdGx5Cj4g
+dHlwZSBjb252ZXJzZWQgdG8gaW50Lgo+IEl0IGlzIHVuaXZlcnNhbGx5IGFjY2VwdGVkIHRoYXQg
+dGhlIGltcGxpY2l0IHR5cGUgY29udmVyc2lvbiBpcwo+IHRlcnJpYmxlLgo+IEFsc28sIGhhdmlu
+ZyB0aGUgZ29vZCBwcm9ncmFtbWluZyBjdXN0b20gd2lsbCBzZXQgYW4gZXhhbXBsZSBmb3IKPiBv
+dGhlcnMuCj4gVGh1cywgaXQgbWlnaHQgYmUgYmV0dGVyIHRvIGNoYW5nZSB0aGUgZGVmaW5pdGlv
+biBvZiAnY3B1JyBmcm9tCj4gdW5zaWduZWQgaW50IHRvIGludC4KPiAKPiBGaXhlczogZmY4YTRk
+MyAoIm5pdHJvX2VuY2xhdmVzOiBBZGQgbG9naWMgZm9yIHNldHRpbmcgYW4gZW5jbGF2ZSB2Q1BV
+IikKPiBTaWduZWQtb2ZmLWJ5OiBKaWFzaGVuZyBKaWFuZyA8amlhc2hlbmdAaXNjYXMuYWMuY24+
+Cj4gLS0tCj4gICBkcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYyB8IDIg
+Ky0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+IAo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYyBi
+L2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jCj4gaW5kZXggZTIxZTFl
+OC4uMzhkMWZkOSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVf
+bWlzY19kZXYuYwo+ICsrKyBiL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rl
+di5jCj4gQEAgLTE2OCw3ICsxNjgsNyBAQCBzdGF0aWMgYm9vbCBuZV9jaGVja19lbmNsYXZlc19j
+cmVhdGVkKHZvaWQpCj4gICBzdGF0aWMgaW50IG5lX3NldHVwX2NwdV9wb29sKGNvbnN0IGNoYXIg
+Km5lX2NwdV9saXN0KQo+ICAgewo+ICAgICAgICAgIGludCBjb3JlX2lkID0gLTE7Cj4gLSAgICAg
+ICB1bnNpZ25lZCBpbnQgY3B1ID0gMDsKPiArICAgICAgIGludCBjcHUgPSAwOwo+ICAgICAgICAg
+IGNwdW1hc2tfdmFyX3QgY3B1X3Bvb2w7Cj4gICAgICAgICAgdW5zaWduZWQgaW50IGNwdV9zaWJs
+aW5nID0gMDsKPiAgICAgICAgICB1bnNpZ25lZCBpbnQgaSA9IDA7Cj4gLS0KPiAyLjcuNAo+IAoK
+VGhhbmsgeW91IGZvciB0aGUgcGF0Y2guIENhbiB5b3UgcGxlYXNlIHVwZGF0ZSB0aGUgb3RoZXIg
+b2NjdXJyZW5jZXMgaW4gCnRoZSBzYW1lIGZpbGUgZS5nLiB3aGVuIGEgbG9jYWwgdmFyaWFibGUg
+aXMgdXNlZCBmb3IgdGhlICJmb3JfZWFjaF9jcHUiIApsb29wLgoKVGhhbmtzLApBbmRyYQoKWzFd
+IApodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxk
+cy9saW51eC5naXQvdHJlZS9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYu
+YyNuMTcxClsyXSAKaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9n
+aXQvdG9ydmFsZHMvbGludXguZ2l0L3RyZWUvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25l
+X21pc2NfZGV2LmMjbjE3MwpbM10gCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51
+eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90cmVlL2RyaXZlcnMvdmlydC9uaXRyb19l
+bmNsYXZlcy9uZV9taXNjX2Rldi5jI24zNzcKWzRdIApodHRwczovL2dpdC5rZXJuZWwub3JnL3B1
+Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvdHJlZS9kcml2ZXJzL3Zp
+cnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYyNuNTE5Cls1XSAKaHR0cHM6Ly9naXQua2Vy
+bmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L3RyZWUv
+ZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMjbjU2NQpbNl0gCmh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4
+LmdpdC90cmVlL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jI24xMDIw
+Cls3XSAKaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9y
+dmFsZHMvbGludXguZ2l0L3RyZWUvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2Nf
+ZGV2LmMjbjEzNjMKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwu
+IHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3IgMiwg
+SWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21hbmlh
+LiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
 
