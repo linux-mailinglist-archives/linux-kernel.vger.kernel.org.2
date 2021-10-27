@@ -2,153 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D58143C589
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395F943C5A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241041AbhJ0Ixu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235961AbhJ0Ixs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:53:48 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41847C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:51:23 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id a26so2053935pfr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=sIX7x+jsOOh5AaV+S5PO7/zC51BozSS5Rq+F5YdEC2E=;
-        b=CHBG61uLzvDqfRJ/+PW1nWr4QbYXNL3OH9IqUgo1TQV2OdCDHJL35LJxNDytgZHgSD
-         ZgDKIj7n6JkhUFlv1ZPMBaLePDJWpa1vN5bBoJZJ5/gPgWQb7a/4Eyo2IRJkueD/ZjMV
-         v3dBzwXDOnEc+NcY8x9noBBUOk79O2+8qEybPerdpJSUbtwwuCjsU/mSrcQ9N4qOg3jG
-         rsVa6VUMGfmfp1xP/euxae0Wfy5FXZJ/lQN2K4O/j8Qd+Y6ykNli8q/vm2RZD1Z9tcQl
-         tA1/wnmpOEUbDzKXGUVw2jDOzzeLmDA4aH08l8Qj05swAte4/dXG1zhxf3yInQEbQQrG
-         PS6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=sIX7x+jsOOh5AaV+S5PO7/zC51BozSS5Rq+F5YdEC2E=;
-        b=vH5z4PggcRqgSivSqF/56lwSzfqw2/mYERkpTX/7ya8lUHk+0aMPkMsOY+iizZhBj3
-         AfMH0Ngh1aWaS1eRc84Tn+xgvSGdoZoWuKIcprP458HO1PgQL51EM2J9ig4NEWlUWFc0
-         6lTLay/nXkt+sUaj+VerLjQj/ulsPvNTjbP4j+MxmSxLsC9unaKlCskffWGtHZ6ABj5m
-         FIN0M5+4HN6hdFglFusNiMm/JgF9+G1BnaPapAwkOsLJmjPZo4v8VHyI9j63OJHLQwg6
-         +IrR8p13wf6LZ+Ea22Ta5h7mY/eugjG+JlAvXmUxUvqMBJMDltT/4Qu/1OH/MVQgan1R
-         XQHA==
-X-Gm-Message-State: AOAM530V54NunRW66rM5Rv2BtCr3idVY2L1FbgymC+VESXhixErwLQ2x
-        fXq+ANmFtP3ojZ97BHMQGDI=
-X-Google-Smtp-Source: ABdhPJzJStwG8g1rHK/ea6WbgB2QH2Oeg9CnSFm4YNIijvWtlX1WDWWt3VR8/1WOY8yJRSwbFc3nXg==
-X-Received: by 2002:a63:7553:: with SMTP id f19mr18914218pgn.328.1635324682687;
-        Wed, 27 Oct 2021 01:51:22 -0700 (PDT)
-Received: from localhost ([118.208.159.180])
-        by smtp.gmail.com with ESMTPSA id n29sm4691263pfv.77.2021.10.27.01.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 01:51:22 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 18:51:16 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 1/2] powerpc/watchdog: prevent printk and send IPI while
- holding the wd lock
-To:     benh@kernel.crashing.org, Laurent Dufour <ldufour@linux.ibm.com>,
-        mpe@ellerman.id.au, paulus@samba.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <20211026162740.16283-1-ldufour@linux.ibm.com>
-        <20211026162740.16283-2-ldufour@linux.ibm.com>
-        <1635303699.wgz87uxy4c.astroid@bobo.none>
-        <33e15005-d342-5270-9b9d-64750f8794a7@linux.ibm.com>
-In-Reply-To: <33e15005-d342-5270-9b9d-64750f8794a7@linux.ibm.com>
+        id S239675AbhJ0I5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231566AbhJ0I5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 04:57:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E02660C51;
+        Wed, 27 Oct 2021 08:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635324908;
+        bh=jsFQ2hTPk1o/ulS9XWmpRn7TcjUOhIqJs34hGUXQZ08=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u20JBEpP23dqtrJiBCgr8MYA30VQEXwx5LDZt+duCBCQxoQedfaJVSonFvtc9HwmY
+         YYzxtCdI+nvFAA9BlZvmyVdtrYARMlOuTY5N4XgFA9iBgT09sM4vk4s83eM5p8ylB9
+         I9JdxW3h0utZCbq8PZS2aeQfEf4IwtIeLJfCFr5Mdtj263MafplBx0efD1Ynsla7/z
+         euiqL6tWvcq4HnppBBBf1erMWz8mgiCvopm6ihwFj8pMOyW6TBXSpUyJVJ5V1rroCj
+         3lRUqpChMaTzJ1SFT1mqAYSxOpYnR4rMf4TOLqkx582LbKJPd9OxzgQLzKvRD/atDy
+         v8DmDcnOiDMPg==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mfehv-00037H-S0; Wed, 27 Oct 2021 10:54:52 +0200
+Date:   Wed, 27 Oct 2021 10:54:51 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Ian Abbott <abbotti@mev.co.uk>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Luca Ellero <luca.ellero@brickedbrain.com>
+Subject: Re: [PATCH 1/5] comedi: ni_usb6501: fix NULL-deref in command paths
+Message-ID: <YXkT24DuZHehBO/b@hovoldconsulting.com>
+References: <20211025114532.4599-1-johan@kernel.org>
+ <20211025114532.4599-2-johan@kernel.org>
+ <be9dcb4f-3594-e756-78e3-74750a49fe91@mev.co.uk>
 MIME-Version: 1.0
-Message-Id: <1635324001.1tf9yz448t.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be9dcb4f-3594-e756-78e3-74750a49fe91@mev.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Laurent Dufour's message of October 27, 2021 6:14 pm:
-> Le 27/10/2021 =C3=A0 05:29, Nicholas Piggin a =C3=A9crit=C2=A0:
->> Excerpts from Laurent Dufour's message of October 27, 2021 2:27 am:
->>> When handling the Watchdog interrupt, long processing should not be don=
-e
->>> while holding the __wd_smp_lock. This prevents the other CPUs to grab i=
-t
->>> and to process Watchdog timer interrupts. Furhtermore, this could lead =
-to
->>> the following situation:
->>>
->>> CPU x detect lockup on CPU y and grab the __wd_smp_lock
->>>        in watchdog_smp_panic()
->>> CPU y caught the watchdog interrupt and try to grab the __wd_smp_lock
->>>        in soft_nmi_interrupt()
->>> CPU x wait for CPU y to catch the IPI for 1s in __smp_send_nmi_ipi()
->>=20
->> CPU y should get the IPI here if it's a NMI IPI (which will be true for
->>> =3D POWER9 64s).
->>=20
->> That said, not all platforms support it and the console lock problem
->> seems real, so okay.
->>=20
->>> CPU x will timeout and so has spent 1s waiting while holding the
->>>        __wd_smp_lock.
->>>
->>> A deadlock may also happen between the __wd_smp_lock and the console_ow=
-ner
->>> 'lock' this way:
->>> CPU x grab the console_owner
->>> CPU y grab the __wd_smp_lock
->>> CPU x catch the watchdog timer interrupt and needs to grab __wd_smp_loc=
-k
->>> CPU y wants to print something and wait for console_owner
->>> -> deadlock
->>>
->>> Doing all the long processing without holding the _wd_smp_lock prevents
->>> these situations.
->>=20
->> The intention was to avoid logs getting garbled e.g., if multiple
->> different CPUs fire at once.
->>=20
->> I wonder if instead we could deal with that by protecting the IPI
->> sending and printing stuff with a trylock, and if you don't get the
->> trylock then just return, and you'll come back with the next timer
->> interrupt.
->=20
-> That sounds a bit risky to me, especially on large system when system goe=
-s=20
-> wrong, all the CPU may try lock here.
+On Tue, Oct 26, 2021 at 03:12:28PM +0100, Ian Abbott wrote:
+> On 25/10/2021 12:45, Johan Hovold wrote:
+> > The driver uses endpoint-sized USB transfer buffers but had no sanity
+> > checks on the sizes. This can lead to zero-size-pointer dereferences or
+> > overflowed transfer buffers in ni6501_port_command() and
+> > ni6501_counter_command() if a (malicious) device has smaller max-packet
+> > sizes than expected (or when doing descriptor fuzz testing).
+> > 
+> > Add the missing sanity checks to probe().
+> > 
+> > Fixes: a03bb00e50ab ("staging: comedi: add NI USB-6501 support")
+> > Cc: stable@vger.kernel.org      # 3.18
+> > Cc: Luca Ellero <luca.ellero@brickedbrain.com>
+> > Signed-off-by: Johan Hovold <johan@kernel.org>
+> > ---
+> >   drivers/comedi/drivers/ni_usb6501.c | 8 ++++++++
+> >   1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/comedi/drivers/ni_usb6501.c b/drivers/comedi/drivers/ni_usb6501.c
+> > index 5b6d9d783b2f..eb2e5c23f25d 100644
+> > --- a/drivers/comedi/drivers/ni_usb6501.c
+> > +++ b/drivers/comedi/drivers/ni_usb6501.c
+> > @@ -144,6 +144,10 @@ static const u8 READ_COUNTER_RESPONSE[]	= {0x00, 0x01, 0x00, 0x10,
+> >   					   0x00, 0x00, 0x00, 0x02,
+> >   					   0x00, 0x00, 0x00, 0x00};
+> >   
+> > +/* Largest supported packets */
+> > +static const size_t TX_MAX_SIZE	= sizeof(SET_PORT_DIR_REQUEST);
+> > +static const size_t RX_MAX_SIZE	= sizeof(READ_PORT_RESPONSE);
+> > +
+> >   enum commands {
+> >   	READ_PORT,
+> >   	WRITE_PORT,
+> > @@ -486,12 +490,16 @@ static int ni6501_find_endpoints(struct comedi_device *dev)
+> >   		ep_desc = &iface_desc->endpoint[i].desc;
+> >   
+> >   		if (usb_endpoint_is_bulk_in(ep_desc)) {
+> > +			if (usb_endpoint_maxp(ep_desc) < RX_MAX_SIZE)
+> > +				continue;
+> >   			if (!devpriv->ep_rx)
+> >   				devpriv->ep_rx = ep_desc;
+> >   			continue;
+> >   		}
+> >   
+> >   		if (usb_endpoint_is_bulk_out(ep_desc)) {
+> > +			if (usb_endpoint_maxp(ep_desc) < TX_MAX_SIZE)
+> > +				continue;
+> >   			if (!devpriv->ep_tx)
+> >   				devpriv->ep_tx = ep_desc;
+> >   			continue;
+> > 
+> 
+> Perhaps it should return an error if the first encountered bulk-in 
+> endpoint has the wrong size or the first encountered bulk-out endpoint 
+> has the wrong size. Something like:
+> 
+> 		if (usb_endpoint_is_bulk_in(ep_desc)) {
+> 			if (!devpriv->ep_rx) {
+> 				if (usb_endpoint_maxp(ep_desc) < RX_MAX_SIZE)
+> 					break;
+> 			}
+> 			continue;
 
-That should be okay though, one will get through and the others will=20
-skip.
+This is too convoluted, but I can move the max-packet sanity checks
+after the endpoint look-ups instead.
 
-> Furthermore, now operation done under the lock protection are quite fast,=
- there=20
-> is no more spinning like the delay loop done when sending an IPI.
->=20
-> Protecting the IPI sending is a nightmare, if the target CPU is later pla=
-y with=20
-> the lock we are taking during the IPI processing, furthermore, if the tar=
-get CPU=20
-> is not responding the sending CPU is waiting for 1s, which slows all the =
-system=20
-> due to the lock held.
-> Since I do a copy of the pending CPU mask and clear it under the lock=20
-> protection, the IPI sending is safe while done without holding the lock.
+It doesn't really matter in the end as the real devices presumably only
+have two bulk endpoints.
 
-Protecting IPI sending basically has all the same issues in the NMI
-IPI layer.
-
->=20
-> Regarding the interleaved traces, I don't think this has to be managed do=
-wn=20
-> here, but rather in the printk/console path.
-
-It can't necessarily be because some of the problem is actually that a=20
-NMI handler can be interrupted by another NMI IPI because the caller
-can return only after handlers start running rather than complete.
-
-I don't think it would be an additional nightmare to trylock.
-
-Thanks,
-Nick
+Johan
