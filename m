@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0247143CD56
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4439943CD5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238145AbhJ0PTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:19:17 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:3358 "EHLO
-        mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236270AbhJ0PTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:19:16 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Azs6Mn6/vSlwhoeusfHtuk+FGdb1zdoMgy1kn?=
- =?us-ascii?q?xilNoENuH/BwxvrFoB1E73TJYVYqNE3I6urwXJVoIEm8yXcb2/hzAV7PZniehI?=
- =?us-ascii?q?LsFvAb0WKA+UycJ8SdzI5gPM5bGsAQZqyNMbE5t7ed3ODRKadb/DDtytHMuQ6x?=
- =?us-ascii?q?9QYLcegnUdAD0+8vYTzraXGeCTM2TKYRJd653I5qtjCgcXMYYoCSAWQEZfHKo5?=
- =?us-ascii?q?numIj9aRALKhY74E3W5AnYo4LSIly95FMzQjlPybAt/SzslBH43Lyqt7WexgXH?=
- =?us-ascii?q?32HewpxKkJ/Ky8dFBuaLls8JQw+cwjqAVcBEYfmvrTo1qOag5BIDl8TNmQ4pO4?=
- =?us-ascii?q?BJ53bYbgiO0G/Q8jil9Axrx27pyFeej3emi9f+XigGB81Igp8cWgfF6mI71esM?=
- =?us-ascii?q?n55j7ia8jd56HBnAlCPy65zjTBdxjHe5pnIkjKo6k2Ffa40Dc7VcxLZvsH+9KK?=
- =?us-ascii?q?1wXR4S1bpXUNWHVKrnlbVrmBKhHj3kV1BUsZKRti9ZJGbFfqAA0vblpgS+0koJ?=
- =?us-ascii?q?infw//Zv4EvowqhNOaWs1960TZiAq4s+P/P+TZgNc9vpEvHHfFAkf3r3QRKvCG?=
- =?us-ascii?q?WiMp07EFTwjLOyyIkJxYiRCe81Jd0J6d78bG8=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="397541166"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 17:16:49 +0200
-Date:   Wed, 27 Oct 2021 17:16:48 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Doug Smythies <dsmythies@telus.net>
-cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: problem in changing from active to passive mode
-In-Reply-To: <CAAYoRsWXew+9Pch_9ux+UK0LFwy+211d2LmNLGKF_UTr3eS2Fw@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2110271712100.2966@hadrien>
-References: <alpine.DEB.2.22.394.2110241452460.2997@hadrien> <CAAYoRsXeQravNXKsWAZvacMmE_iBzaQ+mQxNbB5jcD_vkny+Sg@mail.gmail.com> <alpine.DEB.2.22.394.2110261658440.3825@hadrien> <CAAYoRsWXew+9Pch_9ux+UK0LFwy+211d2LmNLGKF_UTr3eS2Fw@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S242684AbhJ0PT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:19:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233452AbhJ0PTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:19:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A51F604DA;
+        Wed, 27 Oct 2021 15:17:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635347849;
+        bh=duLbKkirYQ9pfMnvEqq90eGUtUZ0vya7R2CEdc+8AnU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WfBoonE6uqLKGMtOVcvHZ4dXFQOw87aV179p2rg7nWjWd3Ix2LadcVs77hD/3AQRG
+         WjUbdRxGd6T7u1cRImB26ozL1XgjbWKGprDoBTHksWO+m8hOuXhN+4Bb/BxNGVQibS
+         KhOr9fe1SJZC0nUGiwOKvi8379bFn5IesfiC17ruFJ/se75QH4ZH5nf4hbH/p9oq5Q
+         3rY1crVp0OerY8J6K/xlrOvb3jpeAgjMV6MnhY7Cpg7bita9B3lTLz7UguXf4z2xSL
+         C2YZ6gGn9OdxCo3u21F5uwDgkoSkohu/8b9jyFY0wxOpFt495XVJRQsAou3s8BoCm/
+         Nys6lqUk82+MQ==
+Date:   Wed, 27 Oct 2021 18:17:25 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+93d5accfaefceedf43c1@syzkaller.appspotmail.com,
+        Edwin Peer <edwin.peer@broadcom.com>
+Subject: Re: [PATCH net-next] netdevsim: Register and unregister devlink
+ traps on probe/remove device
+Message-ID: <YXlthf7pEU/OdnS0@unreal>
+References: <YXaNUQv8RwDc0lif@unreal>
+ <YXelYVqeqyVJ5HLc@shredder>
+ <YXertDP8ouVbdnUt@unreal>
+ <YXgMK2NKiiVYJhLl@shredder>
+ <YXgpgr/BFpbdMLJp@unreal>
+ <20211026120234.3408fbcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YXhXT/u9bFADwEIo@unreal>
+ <20211026125602.7a8f8b7e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YXjqHc9eCpYy03Ym@unreal>
+ <20211027071723.12bd0b29@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027071723.12bd0b29@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 27, 2021 at 07:17:23AM -0700, Jakub Kicinski wrote:
+> On Wed, 27 Oct 2021 08:56:45 +0300 Leon Romanovsky wrote:
+> > On Tue, Oct 26, 2021 at 12:56:02PM -0700, Jakub Kicinski wrote:
+> > > On Tue, 26 Oct 2021 22:30:23 +0300 Leon Romanovsky wrote:  
+> > > > No problem, I'll send a revert now, but what is your take on the direction?  
+> > > 
+> > > I haven't put in the time to understand the detail so I was hoping not
+> > > to pass judgment on the direction. My likely unfounded feeling is that
+> > > reshuffling ordering is not going to fix what is fundamentally a
+> > > locking issue. Driver has internal locks it needs to hold both inside
+> > > devlink callbacks and when registering devlink objects. We would solve
+> > > a lot of the problems if those were one single lock instead of two. 
+> > > At least that's my recollection from the times I was actually writing
+> > > driver code...  
+> > 
+> > Exactly, and this is what reshuffling of registrations does. It allows us
+> > to actually reduce number of locks to bare minimum, so at least creation
+> > and deletion of devlink objects will be locks free.
+> 
+> That's not what I meant. I meant devlink should call in to take
+> driver's lock or more likely driver should use the devlink instance
+> mutex instead of creating its own. Most of the devlink helpers (with
+> minor exceptions like alloc) should just assert that devlink instance
+> lock is already held by the driver when called.
+> 
+> > Latest changes already solved devlink reload issues for mlx5 eth side
+> > and it is deadlock and lockdep free now. We still have deadlocks with
+> > our IB part, where we obligated to hold pernet lock during registering
+> > to net notifiers, but it is different discussion.
+> > 
+> > > > IMHO, the mlxsw layering should be fixed. All this recursive devlink re-entry
+> > > > looks horrible and adds unneeded complexity.  
+> > > 
+> > > If you're asking about mlxsw or bnxt in particular I wouldn't say what
+> > > they do is wrong until we can point out bugs.  
+> > 
+> > I'm talking about mlxsw and pointed to the reentry to devlink over and over.
+> 
+> To me "pointing to re-entry" read like breaking the new model you have
+> in mind, not actual bug/race/deadlock etc. If that's not the case the
+> explanation flew over my head :)
 
+It doesn't break, but complicates without any reason.
 
-On Wed, 27 Oct 2021, Doug Smythies wrote:
+Let me try to summarize my vision for the devlink. It is not written
+in stone and changes after every review comment. :)
 
-> On Tue, Oct 26, 2021 at 8:13 AM Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> > The problem is illustrated by the attached graphs.  These graphs on the
-> > odd numbered pages show the frequency of each core measures at every clock
-> > tick.  At each measurement there is a small bar representing 4ms of the
-> > color associated with the frequency.  The percentages shown are thus not
-> > entirely accurate, because the frequency could change within those 4ms and
-> > we would not observe that.
-> >
-> > The first graph, 5.9schedutil_yeti, is the normal behavior of schedutil
-> > running.  The application mostly uses the second highest turbo mode, which
-> > is the appropriate one given that there are around 5 active cores most of
-> > the time.  I traced power:cpu_frequency, which is the event that occurs
-> > when the OS requests a change of frequency.  This happens around 5400
-> > times.
-> >
-> > The second graph, 5.15-schedutil_yeti, is the latest version of Linus's
-> > tree.  The cores are almost always at the lowest frequency.  There are no
-> > occurrences of the power:cpu_frequency event.
-> >
-> > The third graph, 5.9schedutil_after_yeti, it what happens when I reboot
-> > into 5.9 after having changed to passive mode in 5.15.  The number of
-> > power:cpu_frequency drops to around 1100.  The proper turbo mode is
-> > actually used sometimes, but much less than in the first graph.  More than
-> > half of the time, an active core is at the lowest frequency.
-> >
-> > This application (avrora from the DaCapo benchmarks) is continually
-> > stopping and starting, both for very short intervals.  This may discourage
-> > the hardware from raising the frequency of its own volition.
->
-> Agreed. This type of workflow has long been known to be a challenge
-> for various CPU frequency scaling governors. It comes up every so
-> often on the linux-pm email list. Basically, the schedutil CPU frequency
-> scaling governor becomes somewhat indecisive under these conditions.
-> However, if for some reason it gets kicked up to max CPU frequency,
-> then often it will stay there (depending on details of the workflow,
-> it stays up for my workflows).
->
-> Around the time of the commit you referenced in your earlier
-> email, it was recognised that proposed changes were adding
-> a bit of a downward bias to the hwp-passive-scheutil case for
-> some of these difficult workflows [1].
->
-> I booted an old 5.9, HWP enabled, passive, schedutil.
-> I got the following for my ping-pong test type workflow,
-> (which is not the best example):
->
-> Run 1: 6234 uSecs/loop
-> Run 2: 2813 uSecs/loop
-> Run 3: 2721 uSecs/loop
-> Run 4: 2813 uSecs/loop
-> Run 5: 11303 uSecs/loop
-> Run 6: 13803 uSecs/loop
-> Run 7: 2809 uSecs/loop
-> Run 8: 2796 uSecs/loop
-> Run 9: 2760 uSecs/loop
-> Run 10: 2691 uSecs/loop
-> Run 11: 9288 uSecs/loop
-> Run 12: 4275 uSecs/loop
->
-> Then the same with kernel 5.15-rc5
-> (I am a couple of weeks behind).
->
-> Run 1: 13618 uSecs/loop
-> Run 2: 13901 uSecs/loop
-> Run 3: 8929 uSecs/loop
-> Run 4: 12189 uSecs/loop
-> Run 5: 10338 uSecs/loop
-> Run 6: 12846 uSecs/loop
-> Run 7: 5418 uSecs/loop
-> Run 8: 7692 uSecs/loop
-> Run 9: 11531 uSecs/loop
-> Run 10: 9763 uSecs/loop
->
-> Now, for your graph 3, are you saying this pseudo
-> code of the process is repeatable?:
->
-> Power up the system, booting kernel 5.9
-> switch to passive/schedutil.
-> wait X minutes for system to settle
-> do benchmark, result ~13 seconds
-> re-boot to kernel 5.15-RC
-> switch to passive/schedutil.
-> wait X minutes for system to settle
-> do benchmark, result ~40 seconds
-> re-boot to kernel 5.9
-> switch to passive/schedutil.
-> wait X minutes for system to settle
-> do benchmark, result ~28 seconds
+I want to divide all devlink APIs into two buckets:
+1. Before devlink_register() - we don't need to worry about locking at
+all. If caller decides to go crazy and wants parallel calls to devlink
+in this stage, he/she will need to be responsible for proper locking.
 
-Yes, exactly.
+2. After devlink_register() - users can send their commands through
+netlink, so we need maximum protection. The devlink core will have
+RW semaphore to make sure that every entry in this stage is marked
+or read (allow parallel calls) or write (exclusive access). Plus we
+have a barrier for devlink_unregister().
 
-I have been looking into why with 5.15-RC there are no requests from
-schedutil.  I'm not yet sure to understand everything.  But I do notice
-that the function cpufreq_this_cpu_can_update returns false around 2/3 of
-the time.  This comes from the following code returning 0:
+My goal is to move as much as possible in first bucket, and various
+devlink_*_register() calls are natural candidates for it.
 
-cpumask_test_cpu(smp_processor_id(), policy->cpus)
+In addition, they are candidates because devlink is SW layer, in my
+view everything or almost everything should be allocated during driver
+init with const arrays and feature bits with clear separation between
+devlink and driver beneath.
 
-It seems that the mask policy->cpus always contains only one core, which
-might or might not be the running one.  I don't know if this is the
-intended behavior.
+Call chains like "devlink->driver->devlink->driver.." that exist in
+mlxsw can't be correct from layering POV.
 
-julia
+The current implementation of devlink reload in mlxsw adds amazingly
+large amount of over engineering to main devlink core, because it drags
+many (constant) initializations to be in bucket #2.
+
+Bottom line, convert devlink core to be similar to driver core. :)
+
+Thanks
