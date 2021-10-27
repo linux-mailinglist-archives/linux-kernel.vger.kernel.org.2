@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6408A43C88A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE0D43C892
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234681AbhJ0L3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:29:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:42242 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229869AbhJ0L3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:29:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E4191FB;
-        Wed, 27 Oct 2021 04:27:11 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.72.240])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6CBE3F73D;
-        Wed, 27 Oct 2021 04:27:09 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 12:26:58 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org
-Subject: Re: [PATCH] arm64: Select POSIX_CPU_TIMERS_TASK_WORK
-Message-ID: <20211027112658.GA54628@C02TD0UTHF1T.local>
-References: <20211018144713.873464-1-nsaenzju@redhat.com>
+        id S239718AbhJ0Lbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:31:35 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:35447 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237421AbhJ0Lbe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:31:34 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfRKb41TQz4xbP;
+        Wed, 27 Oct 2021 22:29:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1635334148;
+        bh=MHq64eZS9Jri3BDBh8LS9jVHE07Z90nQn+T4OkS25Qg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=o6u2CEpOxGBJvNemtoJ2GOBbPtwJQy/PgPE76ook/TmAX8J+i482whrIrJmiNgzsL
+         pZcK4uTPRvoHWa1kBw9ER9Z5IvA5HEUmo4kaGmqWR3gcyPilWeR4Vnubb7mH0/dXo5
+         MAD37mlLtxFGYW6MRFktS7hqlVO1vi4js4K2T7pC7KRygNrc/KIgxUu15IT57A+iqI
+         1HDWdmAm03vjeQubfeoZZD2/AeFGiOsD2LdwvBAHhYqOjHCb5QTmb5R7WcbSeSTZAd
+         BYrezRd5CfBV8G1tXX1ta70GfaBcwVPTbM8fG34tlfQidUtrBpyIws4JGqT6GE5PTt
+         QEVWRkmaKiU8g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: Re: linux-next: manual merge of the audit tree with the powerpc tree
+In-Reply-To: <CAHC9VhTj7gn3iAOYctVRKvv_Bk1iQMrmkA8FVJtYzdvBjqFmvg@mail.gmail.com>
+References: <20211026133147.35d19e00@canb.auug.org.au>
+ <87k0i0awdl.fsf@mpe.ellerman.id.au>
+ <CAHC9VhTj7gn3iAOYctVRKvv_Bk1iQMrmkA8FVJtYzdvBjqFmvg@mail.gmail.com>
+Date:   Wed, 27 Oct 2021 22:29:06 +1100
+Message-ID: <87tuh2aepp.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018144713.873464-1-nsaenzju@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[adding Marc Z to Cc, since this affects KVM]
+Paul Moore <paul@paul-moore.com> writes:
+> On Tue, Oct 26, 2021 at 6:55 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+>> > Hi all,
+>> >
+>> > Today's linux-next merge of the audit tree got conflicts in:
+>> >
+>> >   arch/powerpc/kernel/audit.c
+>> >   arch/powerpc/kernel/compat_audit.c
+>> >
+>> > between commit:
+>> >
+>> >   566af8cda399 ("powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERIC")
+>> >
+>> > from the powerpc tree and commits:
+>> >
+>> >   42f355ef59a2 ("audit: replace magic audit syscall class numbers with macros")
+>> >   1c30e3af8a79 ("audit: add support for the openat2 syscall")
+>> >
+>> > from the audit tree.
+>>
+>> Thanks.
+>>
+>> I guess this is OK, unless the audit folks disagree. I could revert the
+>> powerpc commit and try it again later.
+>>
+>> If I don't hear anything I'll leave it as-is.
+>
+> Hi Michael,
+>
+> Last I recall from the powerpc/audit thread there were still some
+> issues with audit working properly in your testing, has that been
+> resolved?
 
-On Mon, Oct 18, 2021 at 04:47:13PM +0200, Nicolas Saenz Julienne wrote:
-> With 6caa5812e2d1 ("KVM: arm64: Use generic KVM xfer to guest work
-> function") all arm64 exit paths are properly equipped to handle the
-> POSIX timers' task work.
-> 
-> Deferring timer callbacks to thread context, not only limits the amount
-> of time spent in hard interrupt context, but is a safer
-> implementation[1], and will allow PREEMPT_RT setups to use KVM[2].
-> 
-> So let's enable POSIX_CPU_TIMERS_TASK_WORK on arm64.
-> 
-> [1] https://lore.kernel.org/all/20200716201923.228696399@linutronix.de/
-> [2] https://www.spinics.net/lists/linux-rt-users/msg24860.html
+No.
 
-Trivial nit: could we please make that second link:
+There's one test failure both before and after the conversion to use the
+generic code.
 
-  https://lore.kernel.org/linux-rt-users/87v92bdnlx.ffs@tglx/
+> If nothing else, -rc7 seems a bit late for this to hit -next for me to
+> feel comfortable about this.
 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+OK. I'll revert the patch in my tree.
 
-Regardless, this makes sense to me, and given you've tested it:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Thanks,
-Mark.
-
-> 
-> ---
-> 
-> This was tested by running all relevant kernel timer self-tests and
-> making sure KVM still works as expected.
-> 
->  arch/arm64/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 789036cf74f5..ce0d0d254542 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -191,6 +191,7 @@ config ARM64
->  	select HAVE_PERF_REGS
->  	select HAVE_PERF_USER_STACK_DUMP
->  	select HAVE_REGS_AND_STACK_ACCESS_API
-> +	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
->  	select HAVE_FUNCTION_ARG_ACCESS_API
->  	select HAVE_FUTEX_CMPXCHG if FUTEX
->  	select MMU_GATHER_RCU_TABLE_FREE
-> -- 
-> 2.32.0
-> 
+cheers
