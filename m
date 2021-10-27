@@ -2,99 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40ECA43BEAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 02:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA8343BEB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 02:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236206AbhJ0A5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 20:57:55 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:33852 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232410AbhJ0A5v (ORCPT
+        id S236268AbhJ0BBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232410AbhJ0BBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 20:57:51 -0400
-X-UUID: b2ad23b1aa9443eaa969d3190fcc4121-20211027
-X-UUID: b2ad23b1aa9443eaa969d3190fcc4121-20211027
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1685992770; Wed, 27 Oct 2021 08:55:24 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Wed, 27 Oct 2021 08:55:23 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 27 Oct 2021 08:55:22 +0800
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ritesh Harjani <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        "Wenbin Mei" <wenbin.mei@mediatek.com>, <stable@vger.kernel.org>
-Subject: [PATCH v2] mmc: cqhci: clear HALT state after CQE enable
-Date:   Wed, 27 Oct 2021 08:55:20 +0800
-Message-ID: <20211027005520.14481-1-wenbin.mei@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 26 Oct 2021 21:01:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A0C061570;
+        Tue, 26 Oct 2021 17:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:
+        Subject:From:Sender:Reply-To:Content-ID:Content-Description;
+        bh=X6fcEAbwRUlxqO8/g60aGuQDzDDW3CnmwfK/tyqVlJo=; b=R8WtgvqCdXPApZUBXpV+GrvNoV
+        JfryZLRqDgy4d1kc5B3/SFU/31pYaHCKmpsnJOJ7fP+kMj9rWgBRJZvzz9hUc54vQWaek7jsSZyzh
+        R+UlGy50DnabiCCFaW1TexhfSUS09yKHU2yIGZdzY6X23UK2cWsWA8RA84EBq8/M4/QyQfh1RGUu7
+        HVY+eLPb20oUyZsOM3AhYt6QjggEqidvkuvUGLi/vaxtsQgY8rA3Y4v0ZCTP/bvSocxaOK7bnLmqy
+        zc+SHiHXpDKIjyroNmXsw9UuqlzRsXwcBtnS/ZkkZf/ZIZ50dFmpLjfkac5Uacq7xE4fwLLXN7blP
+        gO6l/kuA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfXH1-003Rlf-Rn; Wed, 27 Oct 2021 00:58:35 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: gpu: drm_fb_cma_helper.c:46: undefined reference to
+ `drm_gem_fb_get_obj'
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <CA+G9fYvpyUbqLko+9Dza8h4=9yOd-n9J0dKoQtZxawstCCnsZw@mail.gmail.com>
+ <857ab1a9-0175-2b2c-e729-2620d0221e1e@suse.de>
+Message-ID: <6862b109-ea12-6ffa-c82b-b23ee26aa5b2@infradead.org>
+Date:   Tue, 26 Oct 2021 17:58:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+In-Reply-To: <857ab1a9-0175-2b2c-e729-2620d0221e1e@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While mmc0 enter suspend state, we need halt CQE to send legacy cmd(flush
-cache) and disable cqe, for resume back, we enable CQE and not clear HALT
-state.
-In this case MediaTek mmc host controller will keep the value for HALT
-state after CQE disable/enable flow, so the next CQE transfer after resume
-will be timeout due to CQE is in HALT state, the log as below:
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: timeout for tag 2
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Config:    0x00001103 | Control:  0x00000001
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000006
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Int sig:   0x00000006 | Int Coal: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: TDL base:  0xfd05f000 | TDL up32: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Doorbell:  0x8000203c | TCN:      0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: SSC2:      0x00000001 | DCMD rsp: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQP:     0x00000000 | CRNQDUN:  0x00000000
-<4>.(4)[318:kworker/4:1H]mmc0: cqhci: CRNQIS:    0x00000000 | CRNQIE:   0x00000000
+On 10/26/21 11:21 AM, Thomas Zimmermann wrote:
+> Hi
+> 
+> Am 25.10.21 um 14:13 schrieb Naresh Kamboju:
+>> Regression found on arm gcc-11 built with multi_v5_defconfig
+>> Following build warnings / errors reported on linux next 20211025.
+>>
+>> metadata:
+>>      git_describe: next-20211025
+>>      git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+>>      git_short_log: 9ae1fbdeabd3 (\"Add linux-next specific files for 20211025\")
+>>      target_arch: arm
+>>      toolchain: gcc-11
+>>      config: multi_v5_defconfig
+>>
+>> build error :
+>> --------------
+>> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.o: in
+>> function `drm_fb_cma_get_gem_obj':
+>> drivers/gpu/drm/drm_fb_cma_helper.c:46: undefined reference to
+>> `drm_gem_fb_get_obj'
+>> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:46:
+>> undefined reference to `drm_gem_fb_get_obj'
+>> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:46:
+>> undefined reference to `drm_gem_fb_get_obj'
+>> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.o: in
+>> function `drm_fb_cma_sync_non_coherent':
+>> drivers/gpu/drm/drm_fb_cma_helper.c:133: undefined reference to
+>> `drm_atomic_helper_damage_iter_init'
+>> arm-linux-gnueabihf-ld: drivers/gpu/drm/drm_fb_cma_helper.c:135:
+>> undefined reference to `drm_atomic_helper_damage_iter_next'
+>> make[1]: *** [Makefile:1252: vmlinux] Error 1
+>> make[1]: Target '__all' not remade because of errors.
+>> make: *** [Makefile:226: __sub-make] Error 2
+>>
+>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>
+>>
+>> build link:
+>> -----------
+>> https://builds.tuxbuild.com/1zzgFZBGjpQ5R0lawQFW9iJ39Hp/build.log
+>>
+>> build config:
+>> -------------
+>> https://builds.tuxbuild.com/1zzgFZBGjpQ5R0lawQFW9iJ39Hp/config
+> 
+> Looking at this config, there is:
+> 
+> CONFIG_DRM=y
+> # CONFIG_DRM_DP_AUX_CHARDEV is not set
+> # CONFIG_DRM_DEBUG_MM is not set
+> # CONFIG_DRM_DEBUG_SELFTEST is not set
+> CONFIG_DRM_KMS_HELPER=m
+> # CONFIG_DRM_LOAD_EDID_FIRMWARE is not set
+> # CONFIG_DRM_DP_CEC is not set
+> CONFIG_DRM_GEM_CMA_HELPER=y
+> CONFIG_DRM_KMS_CMA_HELPER=y
+> 
+> GEM_CMA_HELPER depends on KMS_HELPER, but the latter is a module. That's probably the cause of the problem. Is it intentionally set this way?
+> 
 
-This change check HALT state after CQE enable, if CQE is in HALT state, we
-will clear it.
+The only drivers that select DRM_KMS_HELPER are both =m, so that's how
+DRM_KMS_HELPER is set also.
 
-Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
-Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
----
- drivers/mmc/host/cqhci-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+Symbol: DRM_KMS_HELPER [=m]
+Type : tristate
+Defined at drivers/gpu/drm/Kconfig:82
+Depends on: HAS_IOMEM [=y] && DRM [=y]
+Selected by [m]:
+- DRM_ATMEL_HLCDC [=m] && HAS_IOMEM [=y] && DRM [=y] && OF [=y] && COMMON_CLK [=y] && MFD_ATMEL_HLCDC [=y] && ARM [=y]
+- DRM_ASPEED_GFX [=m] && HAS_IOMEM [=y] && DRM [=y] && OF [=y] && (COMPILE_TEST [=n] || ARCH_ASPEED [=y]) && MMU [=y]
 
-diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-index ca8329d55f43..b0d30c35c390 100644
---- a/drivers/mmc/host/cqhci-core.c
-+++ b/drivers/mmc/host/cqhci-core.c
-@@ -282,6 +282,9 @@ static void __cqhci_enable(struct cqhci_host *cq_host)
- 
- 	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
- 
-+	if (cqhci_readl(cq_host, CQHCI_CTL) & CQHCI_HALT)
-+		cqhci_writel(cq_host, 0, CQHCI_CTL);
-+
- 	mmc->cqe_on = true;
- 
- 	if (cq_host->ops->enable)
+
+I did the ARM cross-build and also see the linker error.
+I didn't understand why -- and still don't, but here is a little
+speculation:
+
+In the past (e.g. 10 years ago), we have to move some .o files
+in lib/ from lib-y to obj-y so that they would always be included
+in the final object file and not cause their user/caller object
+files to suffer from undefined references.
+These happened because unused functions(?) in lib-y files are
+stripped out of the final object files.
+The same thing could be happening here (still just guessing).
+
+Does that help any?  I dunno.
+
+Adding Arnd to Cc: to see if he has any ideas...
+
+>>
+>> # To install tuxmake on your system globally
+>> # sudo pip3 install -U tuxmake
+>> tuxmake --runtime podman --target-arch arm --toolchain gcc-11
+>> --kconfig multi_v5_defconfig
+>>
+>> -- 
+>> Linaro LKFT
+>> https://lkft.linaro.org
+
+
+
 -- 
-2.25.1
-
+~Randy
