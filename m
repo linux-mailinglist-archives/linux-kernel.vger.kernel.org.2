@@ -2,127 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A404043BF79
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C58E43BF83
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbhJ0CVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:21:04 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56612 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232231AbhJ0CVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:21:03 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Utq7SVb_1635301115;
-Received: from B-J4ZXMD6R-0327.local(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Utq7SVb_1635301115)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 10:18:37 +0800
-Subject: Re: [PATCH v3] ACPI, APEI, EINJ: Relax platform response timeout to 1
- second.
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        bp@alien8.de, james.morse@arm.com, lenb@kernel.org,
-        rjw@rjwysocki.net, zhangliguang@linux.alibaba.com,
-        zhuo.song@linux.alibaba.com
-References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
- <20211026072829.94262-1-xueshuai@linux.alibaba.com>
- <YXg1bWBKja/tqScg@agluck-desk2.amr.corp.intel.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-Message-ID: <cf577ea6-1b9d-210c-24d5-660f2ad5757a@linux.alibaba.com>
-Date:   Wed, 27 Oct 2021 10:18:35 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S235530AbhJ0CWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:22:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230243AbhJ0CWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 22:22:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD785610A0;
+        Wed, 27 Oct 2021 02:19:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635301197;
+        bh=6OnS/9NlrXeuVcDWbkkNkhf9wUozNfxWCF5JnO+Sd0g=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GJ5SrEFBopmQPRVZEr3mltDxlkZ7M6MKGEIfehRJYjf+JTh91b0vtQSqksfnqRyrp
+         XlEoR/hKvcbv4VqIL9Ltzc1U7xAXjQB8pqhRcYZLNTdkQtfDILoTcEk87KvGrDvDKp
+         KvtAc1I/0jhuFrynUtoHU0hzWFmgf0dQg5vvfs8Y8/dSqMtaRwGi/oXvescz9pmDDd
+         ccNqCNs8JPQMVIVI0uzkpuPLMVS8o+uUzenZ36B3Vy/Ur1NeYD7vVnvF+ObT+b3BlM
+         kUsDUs7b8WkcHpvamq2dOpbw6otbbmKX8Sm8F0PXPgxnf8w6QKxEouQiXIotZtC7z4
+         LE3rErfe3gGfg==
+Message-ID: <4897a06a-9f9e-27ce-91d3-58721bee42ac@kernel.org>
+Date:   Wed, 27 Oct 2021 10:19:54 +0800
 MIME-Version: 1.0
-In-Reply-To: <YXg1bWBKja/tqScg@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH] f2fs: fix incorrect return value in
+ f2fs_sanity_check_ckpt()
 Content-Language: en-US
+To:     jaegeuk@kernel.org, Pavel Machek <pavel@denx.de>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20210922152705.720071-1-chao@kernel.org>
+ <20210924095021.GA16651@duo.ucw.cz>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20210924095021.GA16651@duo.ucw.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+Jaegeuk,
 
-Thank you for your patient revision. :)
+Missed to apply this patch?
 
-Cheers,
-Shuai
+Thanks,
 
-On 2021/10/27 AM1:05, Luck, Tony wrote:
-> On Tue, Oct 26, 2021 at 03:28:29PM +0800, Shuai Xue wrote:
->> When injecting an error into the platform, the OSPM executes an
->> EXECUTE_OPERATION action to instruct the platform to begin the injection
->> operation. And then, the OSPM busy waits for a while by continually
->> executing CHECK_BUSY_STATUS action until the platform indicates that the
->> operation is complete. More specifically, the platform is limited to
->> respond within 1 millisecond right now. This is too strict for some
->> platforms.
->>
->> For example, in Arm platform, when injecting a Processor Correctable error,
->> the OSPM will warn:
->>     Firmware does not respond in time.
->>
->> And a message is printed on the console:
->>     echo: write error: Input/output error
->>
->> We observe that the waiting time for DDR error injection is about 10 ms and
->> that for PCIe error injection is about 500 ms in Arm platform.
->>
->> In this patch, we relax the response timeout to 1 second.
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+On 2021/9/24 17:50, Pavel Machek wrote:
+> Hi!
 > 
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> 
-> Rafael: Do you want to take this in the acpi tree? If not, I can
-> apply it to the RAS tree (already at -rc7, so in next merge cycle
-> after 5.16-rc1 comes out).
-> 
->> ---
->> Changelog v2 -> v3:
->> - Implemented the timeout in usleep_range instead of msleep.
->> - Dropped command line interface of timeout.
->> - Link to the v1 patch: https://lkml.org/lkml/2021/10/14/1402
->> ---
->>  drivers/acpi/apei/einj.c | 15 ++++++++-------
->>  1 file changed, 8 insertions(+), 7 deletions(-)
+>> This code looks quite confused: part of function returns 1 on
+>> corruption, part returns -errno. The problem is not stable-specific.
 >>
->> diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
->> index 133156759551..6e1ff4b62a8f 100644
->> --- a/drivers/acpi/apei/einj.c
->> +++ b/drivers/acpi/apei/einj.c
->> @@ -28,9 +28,10 @@
->>  #undef pr_fmt
->>  #define pr_fmt(fmt) "EINJ: " fmt
->>  
->> -#define SPIN_UNIT		100			/* 100ns */
->> -/* Firmware should respond within 1 milliseconds */
->> -#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
->> +#define SLEEP_UNIT_MIN		1000			/* 1ms */
->> +#define SLEEP_UNIT_MAX		5000			/* 5ms */
->> +/* Firmware should respond within 1 seconds */
->> +#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
->>  #define ACPI5_VENDOR_BIT	BIT(31)
->>  #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
->>  				ACPI_EINJ_MEMORY_UNCORRECTABLE | \
->> @@ -171,13 +172,13 @@ static int einj_get_available_error_type(u32 *type)
->>  
->>  static int einj_timedout(u64 *t)
->>  {
->> -	if ((s64)*t < SPIN_UNIT) {
->> +	if ((s64)*t < SLEEP_UNIT_MIN) {
->>  		pr_warn(FW_WARN "Firmware does not respond in time\n");
->>  		return 1;
->>  	}
->> -	*t -= SPIN_UNIT;
->> -	ndelay(SPIN_UNIT);
->> -	touch_nmi_watchdog();
->> +	*t -= SLEEP_UNIT_MIN;
->> +	usleep_range(SLEEP_UNIT_MIN, SLEEP_UNIT_MAX);
->> +
->>  	return 0;
->>  }
->>  
->> -- 
->> 2.20.1.12.g72788fdb
+>> [1] https://lkml.org/lkml/2021/9/19/207
 >>
+>> Let's fix to make 'insane cp_payload case' to return 1 rater than
+>> EFSCORRUPTED, so that return value can be kept consistent for all
+>> error cases, it can avoid confusion of code logic.
+>>
+>> Fixes: 65ddf6564843 ("f2fs: fix to do sanity check for sb/cp fields correctly")
+>> Reported-by: Pavel Machek <pavel@denx.de>
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+> 
+> Reviewed-by: Pavel Machek <pavel@denx.de>
+> 
+> (This is good minimal fix, but eventually I believe the function
+> should switch to 0/-errno... for consistency with rest of kernel).
+> 
+> Thank you,
+> 								Pavel
+> 								
+>> +++ b/fs/f2fs/super.c
+>> @@ -3487,7 +3487,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>>   		NR_CURSEG_PERSIST_TYPE + nat_bits_blocks >= blocks_per_seg)) {
+>>   		f2fs_warn(sbi, "Insane cp_payload: %u, nat_bits_blocks: %u)",
+>>   			  cp_payload, nat_bits_blocks);
+>> -		return -EFSCORRUPTED;
+>> +		return 1;
+>>   	}
+>>   
+>>   	if (unlikely(f2fs_cp_error(sbi))) {
+> 
