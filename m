@@ -2,210 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE9643D005
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E3043D027
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239967AbhJ0Rtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:49:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235983AbhJ0Rtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:49:39 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3498660296;
-        Wed, 27 Oct 2021 17:47:06 +0000 (UTC)
-Date:   Wed, 27 Oct 2021 18:51:33 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jishnu Prakash <quic_jprakash@quicinc.com>
-Cc:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <devicetree@vger.kernel.org>, <mka@chromium.org>,
-        <dmitry.baryshkov@linaro.org>, <robh+dt@kernel.org>,
-        <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <manivannan.sadhasivam@linaro.org>, <linus.walleij@linaro.org>,
-        <quic_kgunda@quicinc.com>, <quic_aghayal@quicinc.com>,
-        <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
-        <quic_subbaram@quicinc.com>, <Jonathan.Cameron@huawei.com>,
-        <amitk@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm-owner@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH V2 1/3] dt-bindings: thermal: qcom: add PMIC5 Gen2
- ADC_TM bindings
-Message-ID: <20211027185133.0d7831fc@jic23-huawei>
-In-Reply-To: <1635264275-12530-2-git-send-email-quic_jprakash@quicinc.com>
-References: <1635264275-12530-1-git-send-email-quic_jprakash@quicinc.com>
-        <1635264275-12530-2-git-send-email-quic_jprakash@quicinc.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S240150AbhJ0R5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236956AbhJ0R5D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:57:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A29C061570;
+        Wed, 27 Oct 2021 10:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9nZeTw3uA8X+QDH9NcO9I7ui/+gpNaoqSNDmb15VGLI=; b=DiUG8whq1N5A1oFfdH/3I4Js1A
+        GqQboUMp3hTNNH2O3vSWk2lJqtNEwa0qrBE8ZebivmZjaHiV8Zv8JrtZPjloYnXsUsmQ2qJLs+3+e
+        RKsnu0tshRQCJxG0fos02IZrSMW3sMYvRlFzYiPxCp0tl0QHQdBK+AbeXBoRNazuFM3orw68f8qBy
+        Bx+ZTAyuOkZd8oH/sFog5zbh+crCXqHFV5CXOVhKlohsoGA17Xf7alQid2lkUBggu6XdNN1dq8Grg
+        cyZxaBw7RNyuGh6BXBvBuubcu71M8mJViSatdxxJhOq3EDuU8ATisnjgrNV4xPv4zxIlsegSF+s+Z
+        Uqe7aNsA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfn5P-000Dnx-WF; Wed, 27 Oct 2021 17:51:51 +0000
+Date:   Wed, 27 Oct 2021 18:51:39 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     "Liam R. Howlett" <liam.howlett@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 1/1] mm: prevent a race between process_mrelease and
+ exit_mmap
+Message-ID: <YXmRq5d86Umzrxs+@casper.infradead.org>
+References: <20211022014658.263508-1-surenb@google.com>
+ <YXJwUUPjfg9wV6MQ@dhcp22.suse.cz>
+ <CAJuCfpEcSbK8WrufZjDj-7iUxiQtrmVTqHOxFUOvLhYGz6_ttQ@mail.gmail.com>
+ <CAJuCfpFccBJHHqfOKixJvLr7Xta_ojkdHGfGomwTDNKffzziRQ@mail.gmail.com>
+ <YXmNaoV4dBTOJ3+w@casper.infradead.org>
+ <CAJuCfpFP-57JkWhDAN4T6VtPboSV4LGqipHMU4j+wJKU45yjYg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpFP-57JkWhDAN4T6VtPboSV4LGqipHMU4j+wJKU45yjYg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 21:34:33 +0530
-Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
-
-> Add documentation for PMIC5 Gen2 ADC_TM peripheral.
-> It is used for monitoring ADC channel thresholds for PMIC7-type
-> PMICs. It is present on PMK8350, like PMIC7 ADC and can be used
-> to monitor up to 8 ADC channels, from any of the PMIC7 PMICs
-> on a target, through PBS(Programmable Boot Sequence).
+On Wed, Oct 27, 2021 at 10:42:29AM -0700, Suren Baghdasaryan wrote:
+> On Wed, Oct 27, 2021 at 10:35 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Wed, Oct 27, 2021 at 09:08:21AM -0700, Suren Baghdasaryan wrote:
+> > > Unconditional mmap_write_lock around free_pgtables in exit_mmap seems
+> > > to me the most semantically correct way forward and the pushback is on
+> > > the basis of regressing performance of the exit path. I would like to
+> > > measure that regression to confirm this. I don't have access to a big
+> > > machine but will ask someone in another Google team to try the test
+> > > Michal wrote here
+> > > https://lore.kernel.org/all/20170725142626.GJ26723@dhcp22.suse.cz/ on
+> > > a server with and without a custom patch.
+> >
+> > Sorry to hijack this, but could you ask that team to also test this
+> > patch?  I think there's probably a good-sized win here, but I have no
+> > profiles to share at this point.  I've only done light testing, and
+> > it may have bugs.
+> >
+> > NB: I only did the exit() path here.  fork() conversion is left as an
+> > exercise for the reader^W^W Liam.
 > 
-> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
+> To clarify, this patch does not change the mmap_write_lock portion of
+> exit_mmap. Do you want to test it in isolation or with the locking
+> changes in exit_mmap I mentioned?
 
-Hi Jishnu,
+Correct, it does not.  I think it's interesting to test it in isolation,
+but if you want to test it in in combination, that could also be
+interesting (see if we regain some of the expected performance loss).
+I just don't have a NUMA box of my own to test on, so I'm hoping to
+exploit your test infrastructure ;-)
 
-A few comments inline.
-
-Thanks,
-
-Jonathan
-
-> ---
->  .../bindings/thermal/qcom-spmi-adc-tm5.yaml        | 83 +++++++++++++++++++++-
->  1 file changed, 81 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> index 3ea8c0c..71a05a3 100644
-> --- a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> +++ b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> @@ -10,7 +10,9 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    const: qcom,spmi-adc-tm5
-> +    enum:
-> +      - qcom,spmi-adc-tm5
-> +      - qcom,spmi-adc-tm5-gen2
->  
->    reg:
->      maxItems: 1
-> @@ -33,6 +35,7 @@ properties:
->    qcom,avg-samples:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description: Number of samples to be used for measurement.
-> +            Not applicable for Gen2 ADC_TM peripheral.
-
-Why not use an matching statement to set
-qcom,avg_samples: false
-for that compatible rather than relying on the fuzzy nature of a coment.
-
-
->      enum:
->        - 1
->        - 2
-> @@ -45,6 +48,7 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description: This parameter is used to decrease ADC sampling rate.
->              Quicker measurements can be made by reducing decimation ratio.
-> +            Not applicable for Gen2 ADC_TM peripheral.
->      enum:
->        - 250
->        - 420
-> @@ -93,6 +97,29 @@ patternProperties:
->            - const: 1
->            - enum: [ 1, 3, 4, 6, 20, 8, 10 ]
->  
-> +      qcom,avg-samples:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Number of samples to be used for measurement.
-> +          This property in child node is applicable only for Gen2 ADC_TM peripheral.
-> +        enum:
-> +          - 1
-> +          - 2
-> +          - 4
-> +          - 8
-> +          - 16
-> +        default: 1
-> +
-> +      qcom,decimation:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: This parameter is used to decrease ADC sampling rate.
-> +          Quicker measurements can be made by reducing decimation ratio.
-> +          This property in child node is applicable only for Gen2 ADC_TM peripheral.
-> +        enum:
-> +          - 85
-> +          - 340
-> +          - 1360
-> +        default: 1360
-> +
->      required:
->        - reg
->        - io-channels
-> @@ -124,7 +151,7 @@ examples:
->              #size-cells = <0>;
->              #io-channel-cells = <1>;
->  
-> -            /* Other propreties are omitted */
-> +            /* Other properties are omitted */
-
-Should really be a separate patch, but up to Rob.
-
-
->              conn-therm@4f {
->                  reg = <ADC5_AMUX_THM3_100K_PU>;
->                  qcom,ratiometric;
-> @@ -148,4 +175,56 @@ examples:
->              };
->          };
->      };
-> +
-> +  - |
-> +    #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-> +    #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    spmi_bus {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        pmk8350_vadc: adc@3100 {
-> +            reg = <0x3100>;
-> +            compatible = "qcom,spmi-adc7";
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            #io-channel-cells = <1>;
-> +
-> +            /* Other properties are omitted */
-> +            xo-therm@44 {
-> +                reg = <PMK8350_ADC7_AMUX_THM1_100K_PU>;
-> +                qcom,ratiometric;
-> +                qcom,hw-settle-time = <200>;
-> +            };
-> +
-> +            conn-therm@47 {
-> +                reg = <PM8350_ADC7_AMUX_THM4_100K_PU>;
-> +                qcom,ratiometric;
-> +                qcom,hw-settle-time = <200>;
-> +            };
-> +        };
-> +
-> +        pmk8350_adc_tm: adc-tm@3400 {
-> +            compatible = "qcom,spmi-adc-tm5-gen2";
-> +            reg = <0x3400>;
-> +            interrupts = <0x0 0x34 0x0 IRQ_TYPE_EDGE_RISING>;
-> +            #thermal-sensor-cells = <1>;
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            pmk8350-xo-therm@0 {
-> +                reg = <0>;
-> +                io-channels = <&pmk8350_vadc PMK8350_ADC7_AMUX_THM1_100K_PU>;
-> +                qcom,ratiometric;
-> +                qcom,hw-settle-time-us = <200>;
-
-Perhaps include the new properties you are defining in the example?
-
-> +            };
-> +
-> +            conn-therm@1 {
-> +                reg = <1>;
-> +                io-channels = <&pmk8350_vadc PM8350_ADC7_AMUX_THM4_100K_PU>;
-> +                qcom,ratiometric;
-> +                qcom,hw-settle-time-us = <200>;
-> +            };
-> +        };
-> +    };
->  ...
-
+By the way, my vmavec patch should also be helpful on small systems
+like phones ... ;-)
