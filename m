@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE1C43D174
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C2243D17B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240586AbhJ0TNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240552AbhJ0TNm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:13:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006E0C061570;
-        Wed, 27 Oct 2021 12:11:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DrJ64uH8XTZmuCpTpx/lxsQinIcpSpf4J3GTzl3WK1I=; b=Ix4o12A9hwyyHhUdyl4RxI9W3n
-        TI8nL5S1/C0PW40nXKxp+fAst0oDOtiQwRxEGd28WaHAnRNRnsjgHJ9JzOzmx0g/ODwp057qduBby
-        nrvPQM/DyZmsTHrzvlZ30rH0mgYltGX/GFHMU1bvvDSMm2o88XM6Nz2aA4kF+JMw6v+2GxbLVhqwP
-        QDOLAOSYRFLm83mJhQdkmUMmYbmgVYSoQMGJMjgZvcSvMdPVHb3mYGHJ8chvrbJZls7TEUV+3+dva
-        /JnsG2Lz2sXHVG+5bPtb1ixzml6Vmx/GMydk+93fk31xbnMe4r2eNO67Oofn5l0ixdZBgc2XmCxNd
-        L8D1bSBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfoK8-00CbhH-EK; Wed, 27 Oct 2021 19:10:56 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 64D80981D35; Wed, 27 Oct 2021 21:10:54 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 21:10:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 10/16] x86/alternative: Implement .retpoline_sites
- support
-Message-ID: <20211027191054.GM174703@worktop.programming.kicks-ass.net>
-References: <20211026120132.613201817@infradead.org>
- <20211026120310.232495794@infradead.org>
- <YXmOs2oSp+6Dpi4R@zn.tnic>
+        id S240612AbhJ0TPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:15:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240552AbhJ0TPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 15:15:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EAE960EB4;
+        Wed, 27 Oct 2021 19:13:04 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 20:13:01 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YXmkvfL9B+4mQAIo@arm.com>
+References: <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com>
+ <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com>
+ <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com>
+ <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com>
+ <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXmOs2oSp+6Dpi4R@zn.tnic>
+In-Reply-To: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 07:38:59PM +0200, Borislav Petkov wrote:
-> On Tue, Oct 26, 2021 at 02:01:42PM +0200, Peter Zijlstra wrote:
-> > +static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
-> > +{
-> > +	retpoline_thunk_t *target;
-> > +	int reg, i = 0;
-> > +
-> > +	target = addr + insn->length + insn->immediate.value;
-> > +	reg = target - __x86_indirect_thunk_array;
-> > +
-> > +	if (WARN_ON_ONCE(reg & ~0xf))
-> > +		return -1;
-> > +
-> > +	/* If anyone ever does: CALL/JMP *%rsp, we're in deep trouble. */
-> > +	BUG_ON(reg == 4);
-> > +
-> > +	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
-> > +		return -1;
+On Tue, Oct 26, 2021 at 11:50:04AM -0700, Linus Torvalds wrote:
+> On Tue, Oct 26, 2021 at 11:24 AM Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> > While more intrusive, I'd rather change copy_page_from_iter_atomic()
+> > etc. to take a pointer where to write back an error code.
+[...]
+> That said, the fact that these sub-page faults are always
+> non-recoverable might be a hint to a solution to the problem: maybe we
+> could extend the existing return code with actual negative error
+> numbers.
 > 
-> I wanna say this should be the first thing being checked on function
-> entry but I get the feeling you'll be looking at other X86_FEATURE bits
-> in future patches... /me goes into the future...
+> Because for _most_ cases of "copy_to/from_user()" and friends by far,
+> the only thing we look for is "zero for success".
 > 
-> yap, you do. Lemme look at the whole thing first then.
+> We could extend the "number of bytes _not_ copied" semantics to say
+> "negative means fatal", and because there are fairly few places that
+> actually look at non-zero values, we could have a coccinelle script
+> that actually marks those places.
 
-I wanted the sanity checks done unconditionally.
+As you already replied, there are some odd places where the returned
+uncopied of bytes is used. Also for some valid cases like
+copy_mount_options(), it's likely that it will fall back to
+byte-at-a-time with MTE since it's a good chance it would hit a fault in
+a 4K page (not a fast path though). I'd have to go through all the cases
+and check whether the return value is meaningful. The iter_iov.c
+functions and their callers also seem to make use of the bytes copied in
+case they need to call iov_iter_revert() (though I suppose the
+iov_iter_iovec_advance() would skip the update in case of an error).
+
+As an alternative, you mentioned earlier that a per-thread fault status
+was not feasible on x86 due to races. Was this only for the hw poison
+case? I think the uaccess is slightly different.
+
+We can add a current->non_recoverable_uaccess variable cleared on
+pagefault_disable(), only set by uaccess faults and checked by the fs
+code before re-attempting the fault_in(). An interrupt shouldn't do a
+uaccess (well, if it does a _nofault one, we can detect in_interrupt()
+in the MTE exception handler). Last time I looked at io_uring it was
+running in a separate kernel thread, not sure whether this was changed.
+I don't see what else would be racing with such
+current->non_recoverable_uaccess variable. If that's doable, I think
+it's the least intrusive approach.
+
+-- 
+Catalin
