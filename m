@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E781743CFB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DEF43CFB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243274AbhJ0RcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41868 "EHLO mail.kernel.org"
+        id S243286AbhJ0RcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:32:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243273AbhJ0Rbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:31:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E069A610A4;
-        Wed, 27 Oct 2021 17:29:14 +0000 (UTC)
+        id S243281AbhJ0Rbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:31:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15776610C7;
+        Wed, 27 Oct 2021 17:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635355756;
-        bh=wF4ITQHovrfi+/zFjLWRp1/RkCOOsze0ZdjK6Q3RTvI=;
+        s=k20201202; t=1635355763;
+        bh=Dmy2eSxMesrXx3Kt54NoJu+ASFtTZgXO7s9XqZs9lFc=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=AlNsDPBEV84Pene+w55lrYdugdtmn9Sn6nsAUpH0VQ+rOugxtPjcK5mpkbN7tucK0
-         OrRA0F6uYaswUBHcViU1yUyWc9c5DT4xNgDRRi2edtBGaN8ukx2f1V7sDjJMN97XD9
-         Nf/F9YJOxi1JGSVX47p2BP+iyMoPK55FJy0YhTp9rLSx15wqCkhqd/miC4TDJp+TkL
-         Ns9yqQqAM/Ub0PWHXOqG1NT7njNGgmNTftfH2g881weHDg12Zvy+PbGSF3nyUGQjiE
-         oWb0/mxwx6oyRCPdlJ2FHgZizSGIdK5K5YqTCBuBk8JpArotEnLxx73LQ5HJhZglNY
-         yWOo21a+LXiHQ==
+        b=utolcpQ85h/f5oh9Q/bK6syRgpbaiVM1k/d8JoOYChk/iV5EtxKi/VoTkyQHVofY7
+         zUGNW4xjtV3/NOI4OLZZP8tc6YGrPPhNevb7Bxj2bCBa8FHwVjpjRHItgc6hMuI0pZ
+         HPT1EVUZi7W8AJ3E3d0g2CU+2QXZfLBO3teKKd2FMWf1aAn18DcjeOD2gzKD4f9Oz5
+         JvwdyhUuzb4nmuc2arTmGhtz/j7FvxyzSxWrV0K2imoqDj3Xw+try+HoLD5gfUI4UW
+         TLCjCGpKlKUARHf0IOpHlaCEegIFHLfoXecoeH4PQuaDRQPACRpi1a95MWtedMlPTy
+         kuit7R26ABYDQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     robh+dt@kernel.org, lgirdwood@gmail.com,
-        George Song <george.song@maximintegrated.com>
-Cc:     steves.lee@maximintegrated.com, ryans.lee@maximintegrated.com,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        george.song@analog.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211027001431.363-1-george.song@maximintegrated.com>
-References: <20211027001431.363-1-george.song@maximintegrated.com>
-Subject: Re: [RESEND,v6 1/2] ASoC: dt-bindings: max98520: add initial bindings
-Message-Id: <163535575465.4012075.8539101072953032948.b4-ty@kernel.org>
-Date:   Wed, 27 Oct 2021 18:29:14 +0100
+To:     Arnd Bergmann <arnd@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20211027082359.52248-1-arnd@kernel.org>
+References: <20211027082359.52248-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: amd: acp: fix Kconfig dependencies
+Message-Id: <163535576182.4012075.12901832843673816206.b4-ty@kernel.org>
+Date:   Wed, 27 Oct 2021 18:29:21 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,10 +42,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 09:14:30 +0900, George Song wrote:
-> add initial bindings for max98520 audio amplifier
+On Wed, 27 Oct 2021 10:23:46 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
+> The CONFIG_SND_SOC_AMD_MACH_COMMON has some dependencies that
+> are not checked by the symbols that select it:
 > 
+> WARNING: unmet direct dependencies detected for SND_SOC_AMD_MACH_COMMON
+>   Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && X86 && PCI [=y] && I2C [=n]
+>   Selected by [m]:
+>   - SND_SOC_AMD_LEGACY_MACH [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m]
+>   - SND_SOC_AMD_SOF_MACH [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m]
+> 
+> [...]
 
 Applied to
 
@@ -53,10 +62,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: max98520: add initial bindings
-      commit: 8af1f903391419809160aef3dac0641fa15680f5
-[2/2] ASoC: max98520: add max98520 audio amplifier driver
-      commit: f88ee76b8645c6da37eec79cfd45f2cc646bd01a
+[1/1] ASoC: amd: acp: fix Kconfig dependencies
+      commit: 1dcc81d95b910dc404c40ff6101bfa2520a3528e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
