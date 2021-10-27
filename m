@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5B043C22F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94EB43C23C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238131AbhJ0F3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 01:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238069AbhJ0F3v (ORCPT
+        id S239557AbhJ0FcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:32:19 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:44516 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238185AbhJ0FcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:29:51 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A31DC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 22:27:27 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a26so1617568pfr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 22:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=9D0jLcun5ZI/bsr3yVL8rMxMwaY+QBa0l9tUPSjC5Ic=;
-        b=DKLLQhcKNjwLGV9V9wxHi8sbMog3PFM0+oJJv5PFBiwmfr4CSc0pIV4UPEaDKiCTIb
-         nMA7FmGnMOsw46OKf8crmsgplNRbFiBPdPVhsPWMJb/Xatlciigk3LN7wBBjtFMfi9av
-         UOzcvnJbM0yTAlIET399TbY4lbyv1yvg01wn6+RZ8EioeYnaYnNcbox+N9q8MVfr7LIu
-         40cEXqx/FczKurHIfbUVWzjgjQNre+oCcZhhb8PSr3uNiKqSYWY2/G+PpLviqztogYYf
-         /9muwFoLb6NPLQFZotAbNgbQFrvvMSlezFhCCqwxCM/Q4+XxtqnCE90ca+UC790xexek
-         Gfsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=9D0jLcun5ZI/bsr3yVL8rMxMwaY+QBa0l9tUPSjC5Ic=;
-        b=WnHM9GAdzu47AEnpm1b3qVQelJkLK0+KMKDtTf56v+FW94QucVpaCTwKncb5ErTzdN
-         zvuhRJtaDrMcZWJlq8r0txcVZW4o2xGY8ZR1+EX+H+RVeGJgFoqVWPtoObBbQWbgTEn0
-         mfzlrec6eYQxk6XC3E1N78FAJcGbjUXOyLXsKCobk2ojjOgpwerUgPoII2b7/aiLpQzK
-         1x0H5Imte3uzwZSs4wwMDQr9LXVRIHZiIg8wEcPN5DNPt0YAba79BEuJSH66EmzBDX5v
-         3ndIcBtmHE8sgpNa0utv18bQS7vddVZ/DAyshOEShj7OUqfuzCqPCmANasweKZP7auOl
-         0Y8g==
-X-Gm-Message-State: AOAM532ZUkY6OznpvcOzqLfl0SICnSwvwaTmTY7TE7mutrNDhdE2Afm/
-        YTgcONLszLxwr8Oy8Vg3CUw=
-X-Google-Smtp-Source: ABdhPJzWmWPSrKnARMzyMIyeaD5QJbZyMkxotLqOWj6Hc8eByAPiUIWGXRDwa5xQXW2nY9etIsh5mA==
-X-Received: by 2002:a63:18d:: with SMTP id 135mr22540659pgb.78.1635312446590;
-        Tue, 26 Oct 2021 22:27:26 -0700 (PDT)
-Received: from localhost ([118.208.159.180])
-        by smtp.gmail.com with ESMTPSA id h10sm2599610pfc.104.2021.10.26.22.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 22:27:26 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 15:27:21 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 2/3] powerpc/book3e: Fix set_memory_x() and
- set_memory_nx()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <922bdab3a220781bae2360ff3dd5adb7fe4d34f1.1635226743.git.christophe.leroy@csgroup.eu>
-        <c41100f9c144dc5b62e5a751b810190c6b5d42fd.1635226743.git.christophe.leroy@csgroup.eu>
-        <1635309296.3vv9pb80wz.astroid@bobo.none>
-        <063e72e1-fc05-7783-9f42-f681dd08a4b2@csgroup.eu>
-In-Reply-To: <063e72e1-fc05-7783-9f42-f681dd08a4b2@csgroup.eu>
+        Wed, 27 Oct 2021 01:32:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Utr8L.._1635312590;
+Received: from 30.225.212.53(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Utr8L.._1635312590)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 13:29:51 +0800
+Message-ID: <b392f501-e9fb-2c75-42b6-d94e8b8e6ace@linux.alibaba.com>
+Date:   Wed, 27 Oct 2021 13:29:49 +0800
 MIME-Version: 1.0
-Message-Id: <1635312355.da7w1oggf1.astroid@bobo.none>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
+ arch-agnostic method
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        xuesong.chen@linux.alibaba.com
+References: <20211026204722.GA158130@bhelgaas>
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+In-Reply-To: <20211026204722.GA158130@bhelgaas>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of October 27, 2021 2:55 pm:
->=20
->=20
-> Le 27/10/2021 =C3=A0 06:44, Nicholas Piggin a =C3=A9crit=C2=A0:
->> Excerpts from Christophe Leroy's message of October 26, 2021 3:39 pm:
->>> set_memory_x() calls pte_mkexec() which sets _PAGE_EXEC.
->>> set_memory_nx() calls pte_exprotec() which clears _PAGE_EXEC.
->>>
->>> Book3e has 2 bits, UX and SX, which defines the exec rights
->>> resp. for user (PR=3D1) and for kernel (PR=3D0).
->>>
->>> _PAGE_EXEC is defined as UX only.
->>>
->>> An executable kernel page is set with either _PAGE_KERNEL_RWX
->>> or _PAGE_KERNEL_ROX, which both have SX set and UX cleared.
->>>
->>> So set_memory_nx() call for an executable kernel page does
->>> nothing because UX is already cleared.
->>>
->>> And set_memory_x() on a non-executable kernel page makes it
->>> executable for the user and keeps it non-executable for kernel.
->>>
->>> Also, pte_exec() always returns 'false' on kernel pages, because
->>> it checks _PAGE_EXEC which doesn't include SX, so for instance
->>> the W+X check doesn't work.
->>>
->>> To fix this:
->>> - change tlb_low_64e.S to use _PAGE_BAP_UX instead of _PAGE_USER
->>> - sets both UX and SX in _PAGE_EXEC so that pte_user() returns
->>> true whenever one of the two bits is set
->>=20
->> I don't understand this change. Which pte_user() returns true after
->> this change? Or do you mean pte_exec()?
->=20
-> Oops, yes, I mean pte_exec()
->=20
-> Unless I have to re-spin, can Michael eventually fix that typo while=20
-> applying ?
->=20
->>=20
->> Does this filter through in some cases at least for kernel executable
->> PTEs will get both bits set? Seems cleaner to distinguish user and
->> kernel exec for that but maybe it's a lot of churn?
->=20
-> Didn't understand what you mean.
->=20
-> I did it like that to be able to continue using _PAGE_EXEC for checking=20
-> executability regardless of whether this is user or kernel, and then=20
-> continue using the generic nohash pte_exec() helper.
->=20
-> Other solution would be to get rid of _PAGE_EXEC completely for book3e=20
-> and implement both pte_exec() and pte_mkexec() with _PAGE_BAP_UX and=20
-> _PAGE_BAP_SX, but I'm not sure it is worth the churn as you say. It=20
-> would also mean different helpers for book3s/32 when it is using 32 bits=20
-> PTE (CONFIG_PTE_64BIT=3Dn)
 
-That's basically what I mean. And _PAGE_KERNEL_ROX etc would then not=20
-set the UX bit. But at least for now it seems to be an improvement.
+
+On 27/10/2021 04:47, Bjorn Helgaas wrote:
+> On Tue, Oct 26, 2021 at 05:16:47PM +0800, Xuesong Chen wrote:
+>> On 26/10/2021 07:37, Bjorn Helgaas wrote:
+> 
+>>> My point was that when ECAM is implemented correctly, a CPU does a
+>>> single MMIO load to do a PCI config read and a single MMIO store to do
+>>> a PCI config write.  In that case there no need for any locking, so
+>>> there's no need for APEI to reserve those resources.
+>>
+>> Ah, got it. That means the PCI ECAM has a implicit mutual exclusion with EINJ
+>> if the hardware implemention is correct, so we can remove the MCFG from
+>> the APEI's safely.
+> 
+> Well, not quite.  ECAM doesn't *need* mutual exclusion.  Single loads
+> and stores are atomic by definition.
+> 
+
+OK, because ECAM config access has intrinsic atomic primitive, so no need to
+reserve those ECAM config space resources for APEI, that's why commit d91525eb8ee6 
+("ACPI, EINJ: Enhance error injection tolerance level") fix make sense... 
+
+>>> I think apei_resources_request() should continue to reserve MCFG areas
+>>> on tegra194 and xgene, but it does not need to reserve them on other
+>>> ARM64 platforms.
+>>
+>> As a summary: we need to reserve the MCFG areas on those platforms with a
+>> quirk ECAM implementation since there's no lockless method to access the
+>> configuration space, on other platforms we don't need to reserve the MCFG
+>> resources (so can remove it safely).
+>>
+>> So we need to add another patch to handle the case of tegra194 and xgene...
+>> I will try to figure it out. 
+> 
+> I looked through these again and found another problem case (thunder).
+> Here are my notes from my research.
+> 
+> Normal ECAM users require no device-specific support.  The platform
+> supplies an MCFG table, the generic code works, no mutual exclusion is
+> required, and APEI doesn't need to reserve the MCFG areas.
+> 
+> The problem cases are platforms that supply an MCFG table but require
+> some device-specific workarounds.  We can identify these because they
+> have quirks in pci-mcfg.c.  Here are the existing quirks and the
+> pci_ecam_ops structs they supply:
+> 
+>   AL_ECAM             al_pcie_ops                 # OK
+>   QCOM_ECAM32         pci_32b_ops                 # OK
+>   HISI_QUAD_DOM       hisi_pcie_ops               # OK
+>   THUNDER_PEM_QUIRK   thunder_pem_ecam_ops        # problem
+>   THUNDER_PEM_QUIRK   thunder_pem_ecam_ops        # problem
+>   THUNDER_ECAM_QUIRK  pci_thunder_ecam_ops        # OK
+>   tegra               tegra194_pcie_ops           # problem
+>   XGENE_V1_ECAM_MCFG  xgene_v1_pcie_ecam_ops      # problem
+>   XGENE_V2_ECAM_MCFG  xgene_v2_pcie_ecam_ops      # problem
+>   ALTRA_ECAM_QUIRK    pci_32b_read_ops            # OK
+> 
+> The ones marked "OK" have .map_bus(), .read(), and .write() methods
+> that need no mutual exclusion because they boil down to just a single
+> MMIO load or store.  These are fine and there shouldn't be a problem
+> if an EINJ action accesses the ECAM space.
+> 
+> The others do require mutual exclusion:
+> 
+>   - thunder_pem_ecam_ops: thunder_pem_config_read() calls
+>     thunder_pem_bridge_read(), which does a writeq() to PEM_CFG_RD
+>     followed by a readq().  The writeq() and readq() must be atomic to
+>     avoid corruption.
+> 
+>   - tegra194_pcie_ops: tegra194_map_bus() programs the ATU.  This and
+>     the subsequent ECAM read/write must be atomic.
+> 
+>   - xgene_v1_pcie_ecam_ops and xgene_v2_pcie_ecam_ops:
+>     xgene_pcie_map_bus() sets the RTID.  This and the subsequent ECAM
+>     read/write must be atomic.
+> 
+> I had to look at all these ops individually to find them, so I don't
+> see an easy way to identify these problem cases at run-time.
+> 
+> I personally would not have an issue with having APEI try to reserve
+> the MCFG regions for any platform that has an MCFG quirk.  That would
+> prevent the al, qcom, hisi, thunder-ecam, and altra drivers from using
+> EINJ even though it would probably be safe for them.  But we already
+> know those platforms are not really ACPI-compliant, so ...
+
+OK, understood. Since those platforms are not really ACPI-compliant, so
+we can unify all the quirks together. Let me send an inital solution about
+this for your review and see if there's room for further improvement...
 
 Thanks,
-Nick
+Xuesong
 
-
+> 
+> Bjorn
+> 
