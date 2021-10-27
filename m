@@ -2,153 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD65343CEDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FD543CEE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239594AbhJ0Qpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237657AbhJ0Qps (ORCPT
+        id S239836AbhJ0QqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:46:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45382 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237657AbhJ0QqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:45:48 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FF4C061570;
-        Wed, 27 Oct 2021 09:43:22 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id i9so2522370qki.3;
-        Wed, 27 Oct 2021 09:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=fVvSjlYcUQ/4twrO1k18VitO42Q8EP1MJyf6lkiHJFs=;
-        b=QWKcyfDGhuNQScMc0UiAfBOi8yqDwjy/FTtKRAb+Y+aQWxdTQyrXJNFQclo2Gapg0m
-         j/C3LPsdw+kjtjsuTYllMavMWohcLMZTrzMDWZuTDy+6v69ah3AzoS6TO53e4Z6stLLk
-         26cQCHAQKHFT+D22tzArZn11fFP7MMNPuyG0TN9OnP7XUbdfzgje0qJFOG1kUkONZV4e
-         yx117tKdkv0ywTVpdsIDEpDYGXU7kkQzrhetSyI0NuWAgvWpkpgHDlCVo/0lDIMl23wP
-         xP96TDQx+RQJBPI/Nmjo4Ql4Y3RWb1SEsYhNJhgWGkol/hr61VPaocIzNo4jYneY0Yfz
-         BMbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=fVvSjlYcUQ/4twrO1k18VitO42Q8EP1MJyf6lkiHJFs=;
-        b=3ah568/znyyN+lrULSJzIWPH38w/XS7zhOkTYk4xYKLUsDHE4+WWnJNAgekwNz/xie
-         6z3rNMF6wV/oG2GYMxU4Jomn1dFuWjck2M4DWQN0kO1NrPfyG8Gm8KyVGDF+8ug3wVIr
-         7Fwu9eDknQ0QTofoVZdQbaJoTZapPIRj5kdyvNyIW9RfTggTXza0XuRujayI0VkHP+se
-         01y35HRasd8oVQR3aedxRhjGi2lhiiL4FVdbJiOYeZ7PxwF8oX1VnqszMacTy5aXGjG5
-         7B7tSDrEAfU8ABM7RyjfchPxrRCnY7BVo5Zi3aoNnbTGtNnPJ6oeGLrdyuU0qFdLA9cJ
-         lMYA==
-X-Gm-Message-State: AOAM5313LSL+bm3ZhQgRPUh+FCWSCefNQFFveVFVYd2iA8uRmIP7Lvm/
-        wHG8uMNqE+6Thk1pNp3And4=
-X-Google-Smtp-Source: ABdhPJxEKt+P1BxPsFiuldPeaaMJT3FBZl1LO/h19LWgtG/tg+pjzGEF1XM1hjFhOkCGspKHxyKIpg==
-X-Received: by 2002:a37:606:: with SMTP id 6mr6837186qkg.18.1635353002042;
-        Wed, 27 Oct 2021 09:43:22 -0700 (PDT)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id bi26sm295887qkb.102.2021.10.27.09.43.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 09:43:21 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 13:43:01 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     Song Liu <songliubraving@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, stable <stable@vger.kernel.org>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_perf-script=3A_check_sess?= =?US-ASCII?Q?ion-=3Eheader=2Eenv=2Earch_before_using_it?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <806C5000-3A49-42B0-B0AE-7ED001CB11EE@fb.com>
-References: <20211004053238.514936-1-songliubraving@fb.com> <YXlIhneZVyihywLt@kernel.org> <806C5000-3A49-42B0-B0AE-7ED001CB11EE@fb.com>
-Message-ID: <BDFE00C7-4C10-4916-ADEA-9C2B5263E797@gmail.com>
+        Wed, 27 Oct 2021 12:46:19 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CE96021637;
+        Wed, 27 Oct 2021 16:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635353032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=wjWcOQpKPYrltrU/q2bbFwJqLCaUyfo2FJLEzHDbz/w=;
+        b=tTIWbW8zAG6209NeQd65H9NJ5BwCpZxv6KJCCn03h59DCXODghQw9jxrg4Tq8HkuUpM63C
+        eqRIzeR1pX/uLYWXIvJbpSXiU7zQYfBuOUSABRFLSXMV6nsMe5P03WEiT5C0GoWAIRHadu
+        6yy8HIecI/FdUI5xeR92KWYRSuXBEI4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635353032;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=wjWcOQpKPYrltrU/q2bbFwJqLCaUyfo2FJLEzHDbz/w=;
+        b=Fpfa3dUZANNLpfkRsRvWCsx6DfTzL6SYJ7o5LTHy0dCLxfmMwySdkVcDE/qPbxwrwtd4yd
+        wpZK2zY7wMsrjnCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BBA5E14068;
+        Wed, 27 Oct 2021 16:43:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xgvFLciBeWGDCQAAMHmgww
+        (envelope-from <jwiesner@suse.de>); Wed, 27 Oct 2021 16:43:52 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+        id 17066588CC; Wed, 27 Oct 2021 18:43:52 +0200 (CEST)
+Date:   Wed, 27 Oct 2021 18:43:52 +0200
+From:   Jiri Wiesner <jwiesner@suse.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Mel Gorman <mgorman@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>
+Subject: [RFC PATCH] clocksource: increase watchdog retries
+Message-ID: <20211027164352.GA23273@incl>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A recent change to the clocksource watchdog in commit db3a34e17433
+("clocksource: Retry clock read if long delays detected") has caused a
+severe performance regression in TCP throughput tests. Netperf executed on
+localhost was used for testing. The regression was more than 80%. On the
+testing machine, the HPET clocksource was used to detect delays in reading
+the TSC clocksource, which was the selected clocksource. In 10% of the
+boots of the machine, TSC was marked unstable and the HPET clocksource was
+selected as the best clocksource:
 
+[   13.669682] clocksource: timekeeping watchdog on CPU6: hpet read-back delay of 60666ns, attempt 4, marking unstable
+[   13.669827] tsc: Marking TSC unstable due to clocksource watchdog
+[   13.669917] TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+[   13.670048] sched_clock: Marking unstable (11633513890, 2036384489)<-(13965149377, -295250974)
+[   13.672268] clocksource: Checking clocksource tsc synchronization from CPU 0 to CPUs 1-3,6-7.
+[   13.673148] clocksource: Switched to clocksource hpet
 
-On October 27, 2021 1:41:50 PM GMT-03:00, Song Liu <songliubraving@fb=2Eco=
-m> wrote:
->
->
->> On Oct 27, 2021, at 5:39 AM, Arnaldo Carvalho de Melo <acme@kernel=2Eor=
-g> wrote:
->>=20
->> Em Sun, Oct 03, 2021 at 10:32:38PM -0700, Song Liu escreveu:
->>> When perf=2Edata is not written cleanly, we would like to process exis=
-ting
->>> data as much as possible (please see f_header=2Edata=2Esize =3D=3D 0 c=
-ondition
->>> in perf_session__read_header)=2E However, perf=2Edata with partial dat=
-a may
->>> crash perf=2E Specifically, we see crash in perf-script for NULL
->>> session->header=2Eenv=2Earch=2E
->>>=20
->>> Fix this by checking session->header=2Eenv=2Earch before using it to d=
-etermine
->>> native_arch=2E Also split the if condition so it is easier to read=2E
->>>=20
->>> Cc: stable@vger=2Ekernel=2Eorg
->>> Signed-off-by: Song Liu <songliubraving@fb=2Ecom>
->>> ---
->>> tools/perf/builtin-script=2Ec | 13 +++++++++----
->>> 1 file changed, 9 insertions(+), 4 deletions(-)
->>>=20
->>> diff --git a/tools/perf/builtin-script=2Ec b/tools/perf/builtin-script=
-=2Ec
->>> index 6211d0b84b7a6=2E=2E7821f6740ac1d 100644
->>> --- a/tools/perf/builtin-script=2Ec
->>> +++ b/tools/perf/builtin-script=2Ec
->>> @@ -4039,12 +4039,17 @@ int cmd_script(int argc, const char **argv)
->>> 		goto out_delete;
->>>=20
->>> 	uname(&uts);
->>> -	if (data=2Eis_pipe ||  /* assume pipe_mode indicates native_arch */
->>> -	    !strcmp(uts=2Emachine, session->header=2Eenv=2Earch) ||
->>> -	    (!strcmp(uts=2Emachine, "x86_64") &&
->>> -	     !strcmp(session->header=2Eenv=2Earch, "i386")))
->>> +	if (data=2Eis_pipe)  /* assume pipe_mode indicates native_arch */
->>> 		native_arch =3D true;
->>>=20
->>> +	if (session->header=2Eenv=2Earch) {
->>=20
->> Shouldn't the above be:
->>=20
->> 	else if (session->header=2Eenv=2Earch) {
->>=20
->> ?
->
->Yes! That's better=2E=20
->
->Do you want me to send v2 with the change?=20
+The earliest occurrence was this:
 
+[    3.423636] clocksource: timekeeping watchdog on CPU2: hpet read-back delay of 61833ns, attempt 4, marking unstable
+[    3.435182] tsc: Marking TSC unstable due to clocksource watchdog
+[    3.455228] hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0, 0, 0, 0, 0, 0
+[    3.459182] hpet0: 8 comparators, 64-bit 24.000000 MHz counter
+[    3.471195] clocksource: Switched to clocksource hpet
 
-No need, it's simple enough, I'll do it myself,
+The HPET clocksource suffers from lock contention when its read() function
+is executed on multiple CPUs concurrently. A perf profile from the netperf
+test (netperf ran on CPU 1, netserver ran on CPU 0):
 
-- Arnaldo
->
->Thanks,
->Song
->
->>=20
->>> +		if (!strcmp(uts=2Emachine, session->header=2Eenv=2Earch))
->>> +			native_arch =3D true;
->>> +		else if (!strcmp(uts=2Emachine, "x86_64") &&
->>> +			 !strcmp(session->header=2Eenv=2Earch, "i386"))
->>> +			native_arch =3D true;
->>> +	}
->>> +
->>> 	script=2Esession =3D session;
->>> 	script__setup_sample_type(&script);
->>>=20
->>> --=20
->>> 2=2E30=2E2
->>=20
->> --=20
->>=20
->> - Arnaldo
->
+Samples: 14K of event 'bus-cycles'
+Overhead  Command    Shared Object     Symbol                         CPU
+  43.83%  netperf    [kernel.vmlinux]  [k] read_hpet                  001
+  40.86%  netserver  [kernel.vmlinux]  [k] read_hpet                  000
+   2.27%  netperf    [kernel.vmlinux]  [k] syscall_exit_to_user_mode  001
+   2.19%  netserver  [kernel.vmlinux]  [k] syscall_exit_to_user_mode  000
+   0.96%  netserver  [kernel.vmlinux]  [k] entry_SYSCALL_64           000
+   0.92%  swapper    [kernel.vmlinux]  [k] read_hpet                  000
+
+For timestamping, TCP needs to execute ktime_get() in both the transmit
+and receive path. Lock contention caused by HPET on 2 CPUs was enough to
+lose 88% of the throughput measured with TSC (1.6 Gbit/s with HPET, 13
+Gbit/s with TSC). The lock contention can also be reproduced by switching
+to HPET via sysfs.
+
+Tests were carried out to tweak the value of the
+clocksource.max_cswd_read_retries parameter. The results indicate that
+setting the number of retries to 50 mitigates the issue on the testing
+machine, but it does not make it go away entirely:
+
+clocksource.max_cswd_read_retries=3
+Reboots: 100  TSC unstable: 10
+Reboots: 300  TSC unstable: 32
+clocksource.max_cswd_read_retries=5
+Reboots: 100  TSC unstable: 5
+clocksource.max_cswd_read_retries=10
+Reboots: 100  TSC unstable: 6
+clocksource.max_cswd_read_retries=50
+Reboots: 100  TSC unstable: 0
+Reboots: 300  TSC unstable: 1
+
+The testing machine has a Skylake CPU (Intel(R) Xeon(R) CPU E3-1240 v5 @
+3.50GHz) with 4 cores (8 CPUs when SMT is on). Perhaps, the number of
+retries to mitigate the issue could depend on the number of online CPUs on
+the system. Tweaking clocksource.verify_n_cpus had no effect:
+
+clocksource.max_cswd_read_retries=3 clocksource.verify_n_cpus=1
+Reboots: 100  TSC unstable: 11
+
+The issue has been observed on both Intel and AMD machines, and it is not
+specific to Skylake CPUs. The observed regression varies but, so far, tens
+of per cent have been observed.
+
+Signed-off-by: Jiri Wiesner <jwiesner@suse.de>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 4 ++--
+ kernel/time/clocksource.c                       | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 43dc35fe5bc0..b8bebca0f520 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -603,8 +603,8 @@
+ 	clocksource.max_cswd_read_retries= [KNL]
+ 			Number of clocksource_watchdog() retries due to
+ 			external delays before the clock will be marked
+-			unstable.  Defaults to three retries, that is,
+-			four attempts to read the clock under test.
++			unstable.  Defaults to fifty retries, that is,
++			fiftyone attempts to read the clock under test.
+ 
+ 	clocksource.verify_n_cpus= [KNL]
+ 			Limit the number of CPUs checked for clocksources
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index b8a14d2fb5ba..c15de711617a 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -199,7 +199,7 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ }
+ 
+-ulong max_cswd_read_retries = 3;
++ulong max_cswd_read_retries = 50;
+ module_param(max_cswd_read_retries, ulong, 0644);
+ EXPORT_SYMBOL_GPL(max_cswd_read_retries);
+ static int verify_n_cpus = 8;
+-- 
+2.26.2
+
