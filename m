@@ -2,288 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F02C43C0A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBBB43C0A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239004AbhJ0DRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 23:17:08 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:40413 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238984AbhJ0DRD (ORCPT
+        id S239037AbhJ0DRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:17:18 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:42202 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237897AbhJ0DRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 23:17:03 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Utq-s4f_1635304474;
-Received: from 30.225.212.53(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Utq-s4f_1635304474)
+        Tue, 26 Oct 2021 23:17:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtqDHl9_1635304484;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtqDHl9_1635304484)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 11:14:35 +0800
-Message-ID: <d2a6628a-2cfb-bb5d-b30b-1ca4f3ae028d@linux.alibaba.com>
-Date:   Wed, 27 Oct 2021 11:14:34 +0800
+          Wed, 27 Oct 2021 11:14:46 +0800
+Subject: [PATCH v7 1/2] ftrace: disable preemption when recursion locked
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <ecd56129-faed-3b30-5552-7fa1e09bc408@linux.alibaba.com>
+Message-ID: <13bde807-779c-aa4c-0672-20515ae365ea@linux.alibaba.com>
+Date:   Wed, 27 Oct 2021 11:14:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v3 1/2] PCI: MCFG: Consolidate the separate PCI MCFG table
- entry list
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <YW5OdIyFkTYo0h3W@Dennis-MBP.local>
- <CAJZ5v0g=+_fATmSrLWiTirmr0MkihKpy7wp-9aFpWVK_RLhp6g@mail.gmail.com>
- <20211026140820.GA19689@lpieralisi>
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-In-Reply-To: <20211026140820.GA19689@lpieralisi>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <ecd56129-faed-3b30-5552-7fa1e09bc408@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As the documentation explained, ftrace_test_recursion_trylock()
+and ftrace_test_recursion_unlock() were supposed to disable and
+enable preemption properly, however currently this work is done
+outside of the function, which could be missing by mistake.
 
+And since the internal using of trace_test_and_set_recursion()
+and trace_clear_recursion() also require preemption disabled, we
+can just merge the logical.
 
-On 26/10/2021 22:08, Lorenzo Pieralisi wrote:
-> On Tue, Oct 26, 2021 at 03:14:37PM +0200, Rafael J. Wysocki wrote:
->> On Tue, Oct 19, 2021 at 6:50 AM Xuesong Chen
->> <xuesong.chen@linux.alibaba.com> wrote:
->>>
->>> The PCI MCFG entry list is discrete on x86 and other arches like ARM64
->>> in current implementation, this list variable can be consolidated for
->>> unnecessary duplication and other purposes, for example, we can remove
->>> some of the arch-specific codes in the APEI/EINJ module and re-implement
->>> it in a more common arch-agnostic way.
->>>
->>> To reduce the redundancy, it:
->>>   - Moves the "struct pci_mmcfg_region" definition from
->>>     arch/x86/include/asm/pci_x86.h to include/linux/pci.h, where it
->>>     can be shared across arches.
->>>
->>>   - Moves pci_mmcfg_list (a list of pci_mmcfg_region structs) from
->>>     arch/x86/pci/mmconfig-shared.c to drivers/pci/pci.c, where it can
->>>     be shared across arches.
->>>
->>>   - On x86 (which does not enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
->>>     built in arch/x86/pci/mmconfig-shared.c as before.
->>>
->>>   - Removes the "struct mcfg_entry" from drivers/acpi/pci_mcfg.c.
->>>
->>>   - Replaces pci_mcfg_list (previously a list of mcfg_entry structs)
->>>     in drivers/acpi/pci_mcfg.c with the newly-shared pci_mmcfg_list (a
->>>     list of pci_mmcfg_region structs).
->>>
->>>   - On ARM64 (which does enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
->>>     built in drivers/acpi/pci_mcfg.c.
->>>
->>> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
->>> Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
->>> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
->>
->> I'm guessing that I'm expected to pick up this one?
-> 
-> I did not provide a Reviewed-by: tag for this patch (and I don't
-> think Bjorn provided his either).
-> 
-> That's valid also for patch 2:
-> 
-> https://lore.kernel.org/linux-pci/20211019150405.GA2338201@bhelgaas
-> 
+This patch will make sure the preemption has been disabled when
+trace_test_and_set_recursion() return bit >= 0, and
+trace_clear_recursion() will enable the preemption if previously
+enabled.
 
-Ah, those tags will be dropped in the next version together with the
-'Reported-by: kernel test robot <lkp@intel.com>' tag suggested by Bjorn.
+CC: Petr Mladek <pmladek@suse.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
+CC: Miroslav Benes <mbenes@suse.cz>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ arch/csky/kernel/probes/ftrace.c     |  2 --
+ arch/parisc/kernel/ftrace.c          |  2 --
+ arch/powerpc/kernel/kprobes-ftrace.c |  2 --
+ arch/riscv/kernel/probes/ftrace.c    |  2 --
+ arch/x86/kernel/kprobes/ftrace.c     |  2 --
+ include/linux/trace_recursion.h      | 11 ++++++++++-
+ kernel/livepatch/patch.c             | 13 +++++++------
+ kernel/trace/ftrace.c                | 15 +++++----------
+ kernel/trace/trace_functions.c       |  5 -----
+ 9 files changed, 22 insertions(+), 32 deletions(-)
 
-Thanks for pointing this out and sorry for the possible confusion from
-my courtesy position :-)
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index b388228..834cffc 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -17,7 +17,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
 
-Thanks,
-Xuesong 
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (!p) {
+ 		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
+@@ -57,7 +56,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 7d14242..90c4345 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -210,7 +210,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
 
->>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>> Cc: James Morse <james.morse@arm.com>
->>> Cc: Will Deacon <will@kernel.org>
->>> Cc: Rafael. J. Wysocki <rafael@kernel.org>
->>> Cc: Tony Luck <tony.luck@intel.com>
->>> Cc: Tomasz Nowicki <tn@semihalf.com>
->>> ---
->>>  arch/x86/include/asm/pci_x86.h | 17 +----------------
->>>  arch/x86/pci/mmconfig-shared.c |  2 --
->>>  drivers/acpi/pci_mcfg.c        | 34 +++++++++++++---------------------
->>>  drivers/pci/pci.c              |  2 ++
->>>  include/linux/pci.h            | 17 +++++++++++++++++
->>>  5 files changed, 33 insertions(+), 39 deletions(-)
->>>
->>> diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
->>> index 490411d..1f4257c 100644
->>> --- a/arch/x86/include/asm/pci_x86.h
->>> +++ b/arch/x86/include/asm/pci_x86.h
->>> @@ -146,20 +146,7 @@ static inline int  __init pci_acpi_init(void)
->>>  extern void pcibios_fixup_irqs(void);
->>>
->>>  /* pci-mmconfig.c */
->>> -
->>> -/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
->>> -#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
->>> -
->>> -struct pci_mmcfg_region {
->>> -       struct list_head list;
->>> -       struct resource res;
->>> -       u64 address;
->>> -       char __iomem *virt;
->>> -       u16 segment;
->>> -       u8 start_bus;
->>> -       u8 end_bus;
->>> -       char name[PCI_MMCFG_RESOURCE_NAME_LEN];
->>> -};
->>> +struct pci_mmcfg_region;
->>>
->>>  extern int __init pci_mmcfg_arch_init(void);
->>>  extern void __init pci_mmcfg_arch_free(void);
->>> @@ -174,8 +161,6 @@ extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int start,
->>>
->>>  extern struct list_head pci_mmcfg_list;
->>>
->>> -#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
->>> -
->>>  /*
->>>   * On AMD Fam10h CPUs, all PCI MMIO configuration space accesses must use
->>>   * %eax.  No other source or target registers may be used.  The following
->>> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
->>> index 758cbfe..0b961fe6 100644
->>> --- a/arch/x86/pci/mmconfig-shared.c
->>> +++ b/arch/x86/pci/mmconfig-shared.c
->>> @@ -31,8 +31,6 @@
->>>  static DEFINE_MUTEX(pci_mmcfg_lock);
->>>  #define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
->>>
->>> -LIST_HEAD(pci_mmcfg_list);
->>> -
->>>  static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
->>>  {
->>>         if (cfg->res.parent)
->>> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
->>> index 53cab97..d9506b0 100644
->>> --- a/drivers/acpi/pci_mcfg.c
->>> +++ b/drivers/acpi/pci_mcfg.c
->>> @@ -13,14 +13,7 @@
->>>  #include <linux/pci-acpi.h>
->>>  #include <linux/pci-ecam.h>
->>>
->>> -/* Structure to hold entries from the MCFG table */
->>> -struct mcfg_entry {
->>> -       struct list_head        list;
->>> -       phys_addr_t             addr;
->>> -       u16                     segment;
->>> -       u8                      bus_start;
->>> -       u8                      bus_end;
->>> -};
->>> +extern struct list_head pci_mmcfg_list;
->>>
->>>  #ifdef CONFIG_PCI_QUIRKS
->>>  struct mcfg_fixup {
->>> @@ -214,16 +207,13 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
->>>  #endif
->>>  }
->>>
->>> -/* List to save MCFG entries */
->>> -static LIST_HEAD(pci_mcfg_list);
->>> -
->>>  int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
->>>                     const struct pci_ecam_ops **ecam_ops)
->>>  {
->>>         const struct pci_ecam_ops *ops = &pci_generic_ecam_ops;
->>>         struct resource *bus_res = &root->secondary;
->>>         u16 seg = root->segment;
->>> -       struct mcfg_entry *e;
->>> +       struct pci_mmcfg_region *e;
->>>         struct resource res;
->>>
->>>         /* Use address from _CBA if present, otherwise lookup MCFG */
->>> @@ -233,10 +223,10 @@ int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
->>>         /*
->>>          * We expect the range in bus_res in the coverage of MCFG bus range.
->>>          */
->>> -       list_for_each_entry(e, &pci_mcfg_list, list) {
->>> -               if (e->segment == seg && e->bus_start <= bus_res->start &&
->>> -                   e->bus_end >= bus_res->end) {
->>> -                       root->mcfg_addr = e->addr;
->>> +       list_for_each_entry(e, &pci_mmcfg_list, list) {
->>> +               if (e->segment == seg && e->start_bus <= bus_res->start &&
->>> +                   e->end_bus >= bus_res->end) {
->>> +                       root->mcfg_addr = e->address;
->>>                 }
->>>
->>>         }
->>> @@ -268,7 +258,7 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
->>>  {
->>>         struct acpi_table_mcfg *mcfg;
->>>         struct acpi_mcfg_allocation *mptr;
->>> -       struct mcfg_entry *e, *arr;
->>> +       struct pci_mmcfg_region *e, *arr;
->>>         int i, n;
->>>
->>>         if (header->length < sizeof(struct acpi_table_mcfg))
->>> @@ -285,10 +275,12 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
->>>
->>>         for (i = 0, e = arr; i < n; i++, mptr++, e++) {
->>>                 e->segment = mptr->pci_segment;
->>> -               e->addr =  mptr->address;
->>> -               e->bus_start = mptr->start_bus_number;
->>> -               e->bus_end = mptr->end_bus_number;
->>> -               list_add(&e->list, &pci_mcfg_list);
->>> +               e->address =  mptr->address;
->>> +               e->start_bus = mptr->start_bus_number;
->>> +               e->end_bus = mptr->end_bus_number;
->>> +               e->res.start = e->address + PCI_MMCFG_BUS_OFFSET(e->start_bus);
->>> +               e->res.end = e->address + PCI_MMCFG_BUS_OFFSET(e->end_bus + 1) - 1;
->>> +               list_add(&e->list, &pci_mmcfg_list);
->>>         }
->>>
->>>  #ifdef CONFIG_PCI_QUIRKS
->>> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
->>> index ce2ab62..899004e 100644
->>> --- a/drivers/pci/pci.c
->>> +++ b/drivers/pci/pci.c
->>> @@ -47,6 +47,8 @@
->>>  int pci_pci_problems;
->>>  EXPORT_SYMBOL(pci_pci_problems);
->>>
->>> +LIST_HEAD(pci_mmcfg_list);
->>> +
->>>  unsigned int pci_pm_d3hot_delay;
->>>
->>>  static void pci_pme_list_scan(struct work_struct *work);
->>> diff --git a/include/linux/pci.h b/include/linux/pci.h
->>> index cd8aa6f..71e4c06 100644
->>> --- a/include/linux/pci.h
->>> +++ b/include/linux/pci.h
->>> @@ -55,6 +55,23 @@
->>>  #define PCI_RESET_PROBE                true
->>>  #define PCI_RESET_DO_RESET     false
->>>
->>> +#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
->>> +
->>> +/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
->>> +#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
->>> +
->>> +/* pci mcfg region */
->>> +struct pci_mmcfg_region {
->>> +       struct list_head list;
->>> +       struct resource res;
->>> +       u64 address;
->>> +       char __iomem *virt;
->>> +       u16 segment;
->>> +       u8 start_bus;
->>> +       u8 end_bus;
->>> +       char name[PCI_MMCFG_RESOURCE_NAME_LEN];
->>> +};
->>> +
->>>  /*
->>>   * The PCI interface treats multi-function devices as independent
->>>   * devices.  The slot/function address of each device is encoded
->>> --
->>> 1.8.3.1
->>>
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -239,7 +238,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	}
+ 	__this_cpu_write(current_kprobe, NULL);
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+index 7154d58..072ebe7 100644
+--- a/arch/powerpc/kernel/kprobes-ftrace.c
++++ b/arch/powerpc/kernel/kprobes-ftrace.c
+@@ -26,7 +26,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		return;
+
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)nip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -61,7 +60,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+index aab85a8..7142ec4 100644
+--- a/arch/riscv/kernel/probes/ftrace.c
++++ b/arch/riscv/kernel/probes/ftrace.c
+@@ -15,7 +15,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -52,7 +51,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index 596de2f..dd2ec14 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -25,7 +25,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -59,7 +58,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index abe1a50..c303f7a 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -135,6 +135,9 @@ static __always_inline int trace_get_context_bit(void)
+ # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+ #endif
+
++/*
++ * Preemption is promised to be disabled when return bit >= 0.
++ */
+ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+ 							int start)
+ {
+@@ -162,11 +165,17 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+ 	current->trace_recursion = val;
+ 	barrier();
+
++	preempt_disable_notrace();
++
+ 	return bit;
+ }
+
++/*
++ * Preemption will be enabled (if it was previously enabled).
++ */
+ static __always_inline void trace_clear_recursion(int bit)
+ {
++	preempt_enable_notrace();
+ 	barrier();
+ 	trace_recursion_clear(bit);
+ }
+@@ -178,7 +187,7 @@ static __always_inline void trace_clear_recursion(int bit)
+  * tracing recursed in the same context (normal vs interrupt),
+  *
+  * Returns: -1 if a recursion happened.
+- *           >= 0 if no recursion
++ *           >= 0 if no recursion.
+  */
+ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+ 							 unsigned long parent_ip)
+diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+index e8029ae..b8d75fb 100644
+--- a/kernel/livepatch/patch.c
++++ b/kernel/livepatch/patch.c
+@@ -49,14 +49,16 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+
+ 	ops = container_of(fops, struct klp_ops, fops);
+
++	/*
++	 *
++	 * The ftrace_test_recursion_trylock() will disable preemption,
++	 * which is required for the variant of synchronize_rcu() that is
++	 * used to allow patching functions where RCU is not watching.
++	 * See klp_synchronize_transition() for more details.
++	 */
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (WARN_ON_ONCE(bit < 0))
+ 		return;
+-	/*
+-	 * A variant of synchronize_rcu() is used to allow patching functions
+-	 * where RCU is not watching, see klp_synchronize_transition().
+-	 */
+-	preempt_disable_notrace();
+
+ 	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+ 				      stack_node);
+@@ -120,7 +122,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+ 	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+
+ unlock:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index b7be1df..7392bc7 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -7198,16 +7198,15 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 	struct ftrace_ops *op;
+ 	int bit;
+
++	/*
++	 * The ftrace_test_and_set_recursion() will disable preemption,
++	 * which is required since some of the ops may be dynamically
++	 * allocated, they must be freed after a synchronize_rcu().
++	 */
+ 	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START);
+ 	if (bit < 0)
+ 		return;
+
+-	/*
+-	 * Some of the ops may be dynamically allocated,
+-	 * they must be freed after a synchronize_rcu().
+-	 */
+-	preempt_disable_notrace();
+-
+ 	do_for_each_ftrace_op(op, ftrace_ops_list) {
+ 		/* Stub functions don't need to be called nor tested */
+ 		if (op->flags & FTRACE_OPS_FL_STUB)
+@@ -7231,7 +7230,6 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 		}
+ 	} while_for_each_ftrace_op(op);
+ out:
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+
+@@ -7279,12 +7277,9 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
+ 		op->func(ip, parent_ip, op, fregs);
+
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+ NOKPROBE_SYMBOL(ftrace_ops_assist_func);
+diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
+index 1f0e63f..9f1bfbe 100644
+--- a/kernel/trace/trace_functions.c
++++ b/kernel/trace/trace_functions.c
+@@ -186,7 +186,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		return;
+
+ 	trace_ctx = tracing_gen_ctx();
+-	preempt_disable_notrace();
+
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+@@ -194,7 +193,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		trace_function(tr, ip, parent_ip, trace_ctx);
+
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ #ifdef CONFIG_UNWINDER_ORC
+@@ -298,8 +296,6 @@ static inline void process_repeats(struct trace_array *tr,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+ 	if (atomic_read(&data->disabled))
+@@ -324,7 +320,6 @@ static inline void process_repeats(struct trace_array *tr,
+
+ out:
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ static void
+-- 
+1.8.3.1
+
