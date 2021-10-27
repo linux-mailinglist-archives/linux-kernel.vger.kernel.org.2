@@ -2,302 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4673643D794
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4B643D792
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 01:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhJ0XfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 19:35:18 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:54932 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhJ0XfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229727AbhJ0XfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 19:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229641AbhJ0XfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Oct 2021 19:35:08 -0400
-Received: by mail-wm1-f52.google.com with SMTP id 71so1796040wma.4;
-        Wed, 27 Oct 2021 16:32:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ib38M5z2yfeOkrCNkLh3vFSIdBa5a6B4vOPMB+9N9es=;
-        b=pkjomh6HhKnnnq2DB/DVUedMdZxsOtoD6TAcTcq74Z3PqKgOaq1H/X+gwi7V/rA8gW
-         GzbMnV6MLW7CLTEXFPukauCAoZw2dRJvjQZ7tRn/FZqvcrANeYJXh0qd3xG1qvoAVpgc
-         v5RJrYqwfvNbiK+5ETk4W1lq9JDVqnSkyAwkAiBnDQW/EY4OAapziPZj3TQvQ2LXjpyr
-         Me4O9gK3cHGhMhh5uNFH+ymQm3jHeQFmR4+7bKOrpgM2pWu/g2+ef2cEFXpnwBWw1B65
-         2HddDZkR6Pp+ESFzPZP78H3S6gthEwcwJaf53qEzQKlKCSi/M2FLbS84BfqKNwzuGO5w
-         NJyQ==
-X-Gm-Message-State: AOAM531mPSdobFRyvkHyHE6puhkylQmEgKRwoXh8Uo9B/ojVGiFGcyAM
-        1tXVKh6W9a767TLQ/Nx9RkY=
-X-Google-Smtp-Source: ABdhPJyUf+Ot/EZyrSg0rZPaYaCHBRmp8Bn13Q7dndxvdrCiCv3cDlxtjuYqmrFqHAONJS0UACnBFQ==
-X-Received: by 2002:a7b:c010:: with SMTP id c16mr756787wmb.141.1635377561277;
-        Wed, 27 Oct 2021 16:32:41 -0700 (PDT)
-Received: from hackbase.. ([46.166.133.199])
-        by smtp.gmail.com with ESMTPSA id m3sm1199032wrx.52.2021.10.27.16.32.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 16:32:40 -0700 (PDT)
-From:   Alexander Popov <alex.popov@linux.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alexander Popov <alex.popov@linux.com>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     notify@kernel.org
-Subject: [PATCH v2 2/2] sysctl: introduce kernel.pkill_on_warn
-Date:   Thu, 28 Oct 2021 02:32:15 +0300
-Message-Id: <20211027233215.306111-3-alex.popov@linux.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211027233215.306111-1-alex.popov@linux.com>
-References: <20211027233215.306111-1-alex.popov@linux.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6742E610E5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635377562;
+        bh=h/QosSb1AiNjIDxRRILEsu6IVn9iCcA9Kxa7rzirf1c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=itQ2rhrDco0wcvN1m3TqCkr93Tm5iWFGf5nBGZmEpvMJkYcbwFr3+yPkzkpRmA3UH
+         sYsIlUQDYr+wGB72AeJYSBcK/yDQf5Zwr6t5N9Kc3Kgrcyfx9Ca1TO19Ce46LnBrzz
+         4dfkhOXF6NLEbnTxdYwhOSgxSP05YHx6S/MlirMIc6Qil63dfxpnrKdNRpTxtu4Rih
+         hyL9xnn6iSaLdGmIUinYhTPaNbieXxKpx0GI1bkklp7d4IoO72ldim00StR5V4cR60
+         IiMeAtYVYaYxMZ6VsiU/uVIeIDREOnkRDKrqdG99KPfYnMd69Bdp2JFK0SF5pWDewR
+         hgIizo23IKfSw==
+Received: by mail-ed1-f54.google.com with SMTP id s1so17071506edd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 16:32:42 -0700 (PDT)
+X-Gm-Message-State: AOAM533irYfNILi2fugPCR5mjcNBHPRxpHSeRwniA50U5U7F29i3+NNx
+        ulCNCjiuBOShl4QC9jyI58ilK8Vsr1BJDo/B7Q==
+X-Google-Smtp-Source: ABdhPJyMRUJ6IP9f5g/n4+J3+qpKUfYpNE0971UIF665toNlo+aUYjravlC+mqusyjvzhWYcZthlo/Yh60V0esfzkxk=
+X-Received: by 2002:aa7:c40c:: with SMTP id j12mr1252820edq.224.1635377560826;
+ Wed, 27 Oct 2021 16:32:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211027021857.20816-1-jason-jh.lin@mediatek.com> <20211027021857.20816-5-jason-jh.lin@mediatek.com>
+In-Reply-To: <20211027021857.20816-5-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 28 Oct 2021 07:32:29 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__ZRgFm3Mp3uEoV1m44hspBW09cfOmmyEaPhzn55PKygQ@mail.gmail.com>
+Message-ID: <CAAOTY__ZRgFm3Mp3uEoV1m44hspBW09cfOmmyEaPhzn55PKygQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] drm/mediatek: Add cmdq_handle in mtk_crtc
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the Linux kernel provides two types of reaction to kernel
-warnings:
- 1. Do nothing (by default),
- 2. Call panic() if panic_on_warn is set. That's a very strong reaction,
-    so panic_on_warn is usually disabled on production systems.
+Hi, Jason:
 
-From a safety point of view, the Linux kernel misses a middle way of
-handling kernel warnings:
- - The kernel should stop the activity that provokes a warning,
- - But the kernel should avoid complete denial of service.
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=88=
+27=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8810:19=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> From: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+>
+> One mtk_crtc need just one cmdq_handle, so add one cmdq_handle
+> in mtk_crtc to prevent frequently allocation and free of
+> cmdq_handle.
 
-From a security point of view, kernel warning messages provide a lot of
-useful information for attackers. Many GNU/Linux distributions allow
-unprivileged users to read the kernel log, so attackers use kernel
-warning infoleak in vulnerability exploits. See the examples:
-https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html
-https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
-https://googleprojectzero.blogspot.com/2018/09/a-cache-invalidation-bug-in-linux.html
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-Let's introduce the pkill_on_warn sysctl.
-If this parameter is set, the kernel kills all threads in a process that
-provoked a kernel warning. This behavior is reasonable from a safety point of
-view described above. It is also useful for kernel security hardening because
-the system kills an exploit process that hits a kernel warning.
-
-Moreover, bugs usually don't come alone, and a kernel warning may be
-followed by memory corruption or other bad effects. So pkill_on_warn allows
-the kernel to stop the process when the first signs of wrong behavior
-are detected.
-
-Signed-off-by: Alexander Popov <alex.popov@linux.com>
----
- Documentation/admin-guide/sysctl/kernel.rst | 14 +++++++++++++
- include/asm-generic/bug.h                   | 12 ++++++++---
- include/linux/panic.h                       |  3 +++
- kernel/panic.c                              | 22 ++++++++++++++++++++-
- kernel/sysctl.c                             |  9 +++++++++
- lib/bug.c                                   |  3 +++
- 6 files changed, 59 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 426162009ce9..5faf395fdf8f 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -921,6 +921,20 @@ lives in) pid namespace. When selecting a pid for a next task on fork
- kernel tries to allocate a number starting from this one.
- 
- 
-+pkill_on_warn
-+=============
-+
-+Kills all threads in a process that provoked a kernel warning.
-+That allows the kernel to stop the process when the first signs
-+of wrong behavior are detected.
-+
-+= =====================================================================
-+0 Allows a process to proceed execution after hitting a kernel warning,
-+  this is the default behavior.
-+1 Kills all threads in a process that provoked a kernel warning.
-+= =====================================================================
-+
-+
- powersave-nap (PPC only)
- ========================
- 
-diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
-index 881aeaf5a2d5..959000b5856a 100644
---- a/include/asm-generic/bug.h
-+++ b/include/asm-generic/bug.h
-@@ -94,8 +94,10 @@ void warn_slowpath_fmt(const char *file, const int line, unsigned taint,
- #ifndef WARN_ON_ONCE
- #define WARN_ON_ONCE(condition) ({					\
- 	int __ret_warn_on = !!(condition);				\
--	if (unlikely(__ret_warn_on))					\
-+	if (unlikely(__ret_warn_on)) {					\
- 		DO_ONCE_LITE(__WARN_printf, TAINT_WARN, NULL);		\
-+		do_pkill_on_warn();					\
-+	}								\
- 	unlikely(__ret_warn_on);					\
- })
- #endif
-@@ -151,15 +153,19 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
- 
- #define WARN_ONCE(condition, format...) ({				\
- 	int __ret_warn_on = !!(condition);				\
--	if (unlikely(__ret_warn_on))					\
-+	if (unlikely(__ret_warn_on)) {					\
- 		DO_ONCE_LITE(__WARN_printf, TAINT_WARN, format);	\
-+		do_pkill_on_warn();					\
-+	}								\
- 	unlikely(__ret_warn_on);					\
- })
- 
- #define WARN_TAINT_ONCE(condition, taint, format...) ({			\
- 	int __ret_warn_on = !!(condition);				\
--	if (unlikely(__ret_warn_on))					\
-+	if (unlikely(__ret_warn_on)) {					\
- 		DO_ONCE_LITE(__WARN_printf, taint, format);		\
-+		do_pkill_on_warn();					\
-+	}								\
- 	unlikely(__ret_warn_on);					\
- })
- 
-diff --git a/include/linux/panic.h b/include/linux/panic.h
-index f5844908a089..f79c69279859 100644
---- a/include/linux/panic.h
-+++ b/include/linux/panic.h
-@@ -27,6 +27,9 @@ extern int panic_on_oops;
- extern int panic_on_unrecovered_nmi;
- extern int panic_on_io_nmi;
- extern int panic_on_warn;
-+extern int pkill_on_warn;
-+
-+extern void do_pkill_on_warn(void);
- 
- extern unsigned long panic_on_taint;
- extern bool panic_on_taint_nousertaint;
-diff --git a/kernel/panic.c b/kernel/panic.c
-index cefd7d82366f..1323c9e2630f 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -53,6 +53,7 @@ static int pause_on_oops_flag;
- static DEFINE_SPINLOCK(pause_on_oops_lock);
- bool crash_kexec_post_notifiers;
- int panic_on_warn __read_mostly;
-+int pkill_on_warn __read_mostly;
- unsigned long panic_on_taint;
- bool panic_on_taint_nousertaint = false;
- 
-@@ -625,13 +626,16 @@ void warn_slowpath_fmt(const char *file, int line, unsigned taint,
- 	if (!fmt) {
- 		__warn(file, line, __builtin_return_address(0), taint,
- 		       NULL, NULL);
--		return;
-+		goto out;
- 	}
- 
- 	args.fmt = fmt;
- 	va_start(args.args, fmt);
- 	__warn(file, line, __builtin_return_address(0), taint, NULL, &args);
- 	va_end(args.args);
-+
-+out:
-+	do_pkill_on_warn();
- }
- EXPORT_SYMBOL(warn_slowpath_fmt);
- #else
-@@ -732,3 +736,19 @@ static int __init panic_on_taint_setup(char *s)
- 	return 0;
- }
- early_param("panic_on_taint", panic_on_taint_setup);
-+
-+void do_pkill_on_warn(void)
-+{
-+	if (!pkill_on_warn)
-+		return;
-+
-+	if (is_global_init(current))
-+		return;
-+
-+	if (current->flags & PF_KTHREAD)
-+		return;
-+
-+	if (system_state >= SYSTEM_RUNNING)
-+		do_send_sig_info(SIGKILL, SEND_SIG_PRIV, current, PIDTYPE_TGID);
-+}
-+EXPORT_SYMBOL(do_pkill_on_warn);
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 083be6af29d7..7fe6f0aaad2b 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2656,6 +2656,15 @@ static struct ctl_table kern_table[] = {
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_ONE,
- 	},
-+		{
-+		.procname	= "pkill_on_warn",
-+		.data		= &pkill_on_warn,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
- #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
- 	{
- 		.procname	= "timer_migration",
-diff --git a/lib/bug.c b/lib/bug.c
-index 1a91f01412b8..28cc8a5b2ee0 100644
---- a/lib/bug.c
-+++ b/lib/bug.c
-@@ -214,6 +214,9 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
- 	bug_type = BUG_TRAP_TYPE_BUG;
- 
- out:
-+	if (bug_type == BUG_TRAP_TYPE_WARN)
-+		do_pkill_on_warn();
-+
- 	return bug_type;
- }
- 
--- 
-2.31.1
-
+>
+> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 62 +++++++++++++++++++++++--
+>  1 file changed, 57 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index dad1f85ee315..ffa54b416ca7 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -53,6 +53,7 @@ struct mtk_drm_crtc {
+>
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>         struct cmdq_client              cmdq_client;
+> +       struct cmdq_pkt                 cmdq_handle;
+>         u32                             cmdq_event;
+>         u32                             cmdq_vblank_cnt;
+>  #endif
+> @@ -107,12 +108,55 @@ static void mtk_drm_finish_page_flip(struct mtk_drm=
+_crtc *mtk_crtc)
+>         }
+>  }
+>
+> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> +static int mtk_drm_cmdq_pkt_create(struct cmdq_client *client, struct cm=
+dq_pkt *pkt,
+> +                                  size_t size)
+> +{
+> +       struct device *dev;
+> +       dma_addr_t dma_addr;
+> +
+> +       pkt->va_base =3D kzalloc(size, GFP_KERNEL);
+> +       if (!pkt->va_base) {
+> +               kfree(pkt);
+> +               return -ENOMEM;
+> +       }
+> +       pkt->buf_size =3D size;
+> +       pkt->cl =3D (void *)client;
+> +
+> +       dev =3D client->chan->mbox->dev;
+> +       dma_addr =3D dma_map_single(dev, pkt->va_base, pkt->buf_size,
+> +                                 DMA_TO_DEVICE);
+> +       if (dma_mapping_error(dev, dma_addr)) {
+> +               dev_err(dev, "dma map failed, size=3D%u\n", (u32)(u64)siz=
+e);
+> +               kfree(pkt->va_base);
+> +               kfree(pkt);
+> +               return -ENOMEM;
+> +       }
+> +
+> +       pkt->pa_base =3D dma_addr;
+> +
+> +       return 0;
+> +}
+> +
+> +static void mtk_drm_cmdq_pkt_destroy(struct cmdq_pkt *pkt)
+> +{
+> +       struct cmdq_client *client =3D (struct cmdq_client *)pkt->cl;
+> +
+> +       dma_unmap_single(client->chan->mbox->dev, pkt->pa_base, pkt->buf_=
+size,
+> +                        DMA_TO_DEVICE);
+> +       kfree(pkt->va_base);
+> +       kfree(pkt);
+> +}
+> +#endif
+> +
+>  static void mtk_drm_crtc_destroy(struct drm_crtc *crtc)
+>  {
+>         struct mtk_drm_crtc *mtk_crtc =3D to_mtk_crtc(crtc);
+>
+>         mtk_mutex_put(mtk_crtc->mutex);
+> -
+> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> +       mtk_drm_cmdq_pkt_destroy(&mtk_crtc->cmdq_handle);
+> +#endif
+>         drm_crtc_cleanup(crtc);
+>  }
+>
+> @@ -227,12 +271,10 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(str=
+uct drm_crtc *crtc,
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>  static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
+>  {
+> -       struct cmdq_cb_data *data =3D mssg;
+>         struct cmdq_client *cmdq_cl =3D container_of(cl, struct cmdq_clie=
+nt, client);
+>         struct mtk_drm_crtc *mtk_crtc =3D container_of(cmdq_cl, struct mt=
+k_drm_crtc, cmdq_client);
+>
+>         mtk_crtc->cmdq_vblank_cnt =3D 0;
+> -       cmdq_pkt_destroy(data->pkt);
+>  }
+>  #endif
+>
+> @@ -438,7 +480,7 @@ static void mtk_drm_crtc_update_config(struct mtk_drm=
+_crtc *mtk_crtc,
+>                                        bool needs_vblank)
+>  {
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> -       struct cmdq_pkt *cmdq_handle;
+> +       struct cmdq_pkt *cmdq_handle =3D &mtk_crtc->cmdq_handle;
+>  #endif
+>         struct drm_crtc *crtc =3D &mtk_crtc->base;
+>         struct mtk_drm_private *priv =3D crtc->dev->dev_private;
+> @@ -478,7 +520,7 @@ static void mtk_drm_crtc_update_config(struct mtk_drm=
+_crtc *mtk_crtc,
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>         if (mtk_crtc->cmdq_client.chan) {
+>                 mbox_flush(mtk_crtc->cmdq_client.chan, 2000);
+> -               cmdq_handle =3D cmdq_pkt_create(&mtk_crtc->cmdq_client, P=
+AGE_SIZE);
+> +               cmdq_handle->cmd_buf_size =3D 0;
+>                 cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
+>                 cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
+>                 mtk_crtc_ddp_config(crtc, cmdq_handle);
+> @@ -877,6 +919,16 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
+>                                 drm_crtc_index(&mtk_crtc->base));
+>                         mbox_free_channel(mtk_crtc->cmdq_client.chan);
+>                         mtk_crtc->cmdq_client.chan =3D NULL;
+> +               } else {
+> +                       ret =3D mtk_drm_cmdq_pkt_create(&mtk_crtc->cmdq_c=
+lient,
+> +                                                     &mtk_crtc->cmdq_han=
+dle,
+> +                                                     PAGE_SIZE);
+> +                       if (ret) {
+> +                               dev_dbg(dev, "mtk_crtc %d failed to creat=
+e cmdq packet\n",
+> +                                       drm_crtc_index(&mtk_crtc->base));
+> +                               mbox_free_channel(mtk_crtc->cmdq_client.c=
+han);
+> +                               mtk_crtc->cmdq_client.chan =3D NULL;
+> +                       }
+>                 }
+>         }
+>  #endif
+> --
+> 2.18.0
+>
