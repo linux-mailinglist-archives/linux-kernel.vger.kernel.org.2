@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94EB43C23C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C95F43C243
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239557AbhJ0FcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 01:32:19 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:44516 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238185AbhJ0FcS (ORCPT
+        id S239562AbhJ0Fij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:38:39 -0400
+Received: from smtpbguseast1.qq.com ([54.204.34.129]:37446 "EHLO
+        smtpbguseast1.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238131AbhJ0Fih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:32:18 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Utr8L.._1635312590;
-Received: from 30.225.212.53(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Utr8L.._1635312590)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 13:29:51 +0800
-Message-ID: <b392f501-e9fb-2c75-42b6-d94e8b8e6ace@linux.alibaba.com>
-Date:   Wed, 27 Oct 2021 13:29:49 +0800
+        Wed, 27 Oct 2021 01:38:37 -0400
+X-QQ-mid: bizesmtp31t1635312962tpi6g3yj
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Wed, 27 Oct 2021 13:35:55 +0800 (CST)
+X-QQ-SSF: B1400000002000B0E000B00A0000000
+X-QQ-FEAT: jfdGVjI73+TOEqv0/SGQGR6m5M8lKp3adRFuEh8s2kvlNNBgHpMbW7q5Ffhn0
+        sDnBfggnTpvL/jbC4kBn12o835riLDH3yCZ0Bg91pBQtdsjk9HAQygNzqUp978tHIAbFrrT
+        MyBks9vdjUifXp22k/z0wshfmHG2Xl9DsK+qLIRjQ6Oel1SXQo9KRDczLXfm3aQPa7XBab+
+        A6txI2KT/zb5zDypfePvWq5Lb8s69t+JYQf0Pm61ox+cR2f6cj8f1xwq+CZe3BpjlbMKdzM
+        yc1eOO69oNV+Nlr5PyavpVckoLgypW4G4ptT7qjRJM33ESh7eCIxdlSOH1O72ra8idVrtj4
+        2dpYlJSZ2+rzbImBegp+T6yjEb3sGY9nNJY3vOyoiqSNaFbK0o=
+X-QQ-GoodBg: 2
+From:   lianzhi chang <changlianzhi@uniontech.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        282827961@qq.com, lianzhi chang <changlianzhi@uniontech.com>
+Subject: [PATCH v9] tty: Fix the keyboard led light display problem
+Date:   Wed, 27 Oct 2021 13:35:50 +0800
+Message-Id: <20211027053550.28966-1-changlianzhi@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v3 2/2] ACPI: APEI: Filter the PCI MCFG address with an
- arch-agnostic method
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
-        xuesong.chen@linux.alibaba.com
-References: <20211026204722.GA158130@bhelgaas>
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-In-Reply-To: <20211026204722.GA158130@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Switching from the desktop environment to the tty environment,
+the state of the keyboard led lights and the state of the keyboard
+lock are inconsistent. This is because the attribute kb->kbdmode
+of the tty bound in the desktop environment (Xorg) is set to
+VC_OFF, which causes the ledstate and kb->ledflagstate
+values of the bound tty to always be 0, which causes the switch
+from the desktop When to the tty environment, the LED light
+status is inconsistent with the keyboard lock status.
+
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+---
+ v7-->v8:
+ Optimize the implementation of kbd_update_ledstate function
+ 
+ Why not adopt the opinions of Greg KH and Andy Shevchenko:
+ (1) In the structure struct input_dev, the definition of led is
+ like this: unsigned long led[BITS_TO_LONGS(LED_CNT)]; If you
+ define it like this: unsigned long newstate = *dev->led; I
+ always feel that there is still big end and Little endian problem.
+ (2) The test_bit function is used to avoid the problem of large
+ and small ends, and the current algorithm (v8) also exists
+ elsewhere in the kernel: the atkbd_set_leds function (drivers/
+ input/keyboard/atkbd.c).
+ (3) In the current keyboard.c code, the code is already very good,
+ and it is already relatively independent. If you modify the type
+ of ledstate to u64 or modify the macro definitions such as
+ VC_NUMLOCK, it feels that it is not very meaningful, and this It
+ will also cause other related modifications. Of course, this is
+ only my current opinion. If everyone still feels that it is
+ necessary to modify, I will do it this way. Of course, this
+ process may be a bit longer, and I think it is necessary to
+ conduct more tests.
+ 
+ v9: Change description information: xorg-->Xorg
+ 
+ drivers/tty/vt/keyboard.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..f564fcf61304 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -1130,6 +1130,13 @@ static void kbd_init_leds(void)
+ 
+ #endif
+ 
++static void kbd_update_ledstate(struct input_dev *dev)
++{
++	ledstate = (test_bit(LED_SCROLLL, dev->led) ? BIT(VC_SCROLLOCK) : 0)
++		 | (test_bit(LED_NUML,    dev->led) ? BIT(VC_NUMLOCK) : 0)
++		 | (test_bit(LED_CAPSL,   dev->led) ? BIT(VC_CAPSLOCK) : 0);
++}
++
+ /*
+  * The leds display either (i) the status of NumLock, CapsLock, ScrollLock,
+  * or (ii) whatever pattern of lights people want to show using KDSETLED,
+@@ -1247,9 +1254,14 @@ void vt_kbd_con_stop(unsigned int console)
+  */
+ static void kbd_bh(struct tasklet_struct *unused)
+ {
++	struct kbd_struct *kb;
+ 	unsigned int leds;
+ 	unsigned long flags;
+ 
++	kb = kbd_table + fg_console;
++	if (kb->kbdmode == VC_OFF)
++		return;
++
+ 	spin_lock_irqsave(&led_lock, flags);
+ 	leds = getleds();
+ 	leds |= (unsigned int)kbd->lockstate << 8;
+@@ -1524,6 +1536,9 @@ static void kbd_event(struct input_handle *handle, unsigned int event_type,
+ 	/* We are called with interrupts disabled, just take the lock */
+ 	spin_lock(&kbd_event_lock);
+ 
++	if (test_bit(EV_LED, handle->dev->evbit))
++		kbd_update_ledstate(handle->dev);
++
+ 	if (event_type == EV_MSC && event_code == MSC_RAW &&
+ 			kbd_is_hw_raw(handle->dev))
+ 		kbd_rawcode(value);
+-- 
+2.20.1
 
 
-On 27/10/2021 04:47, Bjorn Helgaas wrote:
-> On Tue, Oct 26, 2021 at 05:16:47PM +0800, Xuesong Chen wrote:
->> On 26/10/2021 07:37, Bjorn Helgaas wrote:
-> 
->>> My point was that when ECAM is implemented correctly, a CPU does a
->>> single MMIO load to do a PCI config read and a single MMIO store to do
->>> a PCI config write.  In that case there no need for any locking, so
->>> there's no need for APEI to reserve those resources.
->>
->> Ah, got it. That means the PCI ECAM has a implicit mutual exclusion with EINJ
->> if the hardware implemention is correct, so we can remove the MCFG from
->> the APEI's safely.
-> 
-> Well, not quite.  ECAM doesn't *need* mutual exclusion.  Single loads
-> and stores are atomic by definition.
-> 
 
-OK, because ECAM config access has intrinsic atomic primitive, so no need to
-reserve those ECAM config space resources for APEI, that's why commit d91525eb8ee6 
-("ACPI, EINJ: Enhance error injection tolerance level") fix make sense... 
-
->>> I think apei_resources_request() should continue to reserve MCFG areas
->>> on tegra194 and xgene, but it does not need to reserve them on other
->>> ARM64 platforms.
->>
->> As a summary: we need to reserve the MCFG areas on those platforms with a
->> quirk ECAM implementation since there's no lockless method to access the
->> configuration space, on other platforms we don't need to reserve the MCFG
->> resources (so can remove it safely).
->>
->> So we need to add another patch to handle the case of tegra194 and xgene...
->> I will try to figure it out. 
-> 
-> I looked through these again and found another problem case (thunder).
-> Here are my notes from my research.
-> 
-> Normal ECAM users require no device-specific support.  The platform
-> supplies an MCFG table, the generic code works, no mutual exclusion is
-> required, and APEI doesn't need to reserve the MCFG areas.
-> 
-> The problem cases are platforms that supply an MCFG table but require
-> some device-specific workarounds.  We can identify these because they
-> have quirks in pci-mcfg.c.  Here are the existing quirks and the
-> pci_ecam_ops structs they supply:
-> 
->   AL_ECAM             al_pcie_ops                 # OK
->   QCOM_ECAM32         pci_32b_ops                 # OK
->   HISI_QUAD_DOM       hisi_pcie_ops               # OK
->   THUNDER_PEM_QUIRK   thunder_pem_ecam_ops        # problem
->   THUNDER_PEM_QUIRK   thunder_pem_ecam_ops        # problem
->   THUNDER_ECAM_QUIRK  pci_thunder_ecam_ops        # OK
->   tegra               tegra194_pcie_ops           # problem
->   XGENE_V1_ECAM_MCFG  xgene_v1_pcie_ecam_ops      # problem
->   XGENE_V2_ECAM_MCFG  xgene_v2_pcie_ecam_ops      # problem
->   ALTRA_ECAM_QUIRK    pci_32b_read_ops            # OK
-> 
-> The ones marked "OK" have .map_bus(), .read(), and .write() methods
-> that need no mutual exclusion because they boil down to just a single
-> MMIO load or store.  These are fine and there shouldn't be a problem
-> if an EINJ action accesses the ECAM space.
-> 
-> The others do require mutual exclusion:
-> 
->   - thunder_pem_ecam_ops: thunder_pem_config_read() calls
->     thunder_pem_bridge_read(), which does a writeq() to PEM_CFG_RD
->     followed by a readq().  The writeq() and readq() must be atomic to
->     avoid corruption.
-> 
->   - tegra194_pcie_ops: tegra194_map_bus() programs the ATU.  This and
->     the subsequent ECAM read/write must be atomic.
-> 
->   - xgene_v1_pcie_ecam_ops and xgene_v2_pcie_ecam_ops:
->     xgene_pcie_map_bus() sets the RTID.  This and the subsequent ECAM
->     read/write must be atomic.
-> 
-> I had to look at all these ops individually to find them, so I don't
-> see an easy way to identify these problem cases at run-time.
-> 
-> I personally would not have an issue with having APEI try to reserve
-> the MCFG regions for any platform that has an MCFG quirk.  That would
-> prevent the al, qcom, hisi, thunder-ecam, and altra drivers from using
-> EINJ even though it would probably be safe for them.  But we already
-> know those platforms are not really ACPI-compliant, so ...
-
-OK, understood. Since those platforms are not really ACPI-compliant, so
-we can unify all the quirks together. Let me send an inital solution about
-this for your review and see if there's room for further improvement...
-
-Thanks,
-Xuesong
-
-> 
-> Bjorn
-> 
