@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2796F43C8C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB5043C8C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239789AbhJ0LpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:45:03 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:43453 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbhJ0LpA (ORCPT
+        id S239847AbhJ0LpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:45:07 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44210 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239798AbhJ0LpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:45:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 27 Oct 2021 07:45:06 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 633E01FD3C;
+        Wed, 27 Oct 2021 11:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635334959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fo5sUfTsUY3UOkgJ2rkzuihsx0B4xmZU0SJdKHg3/K8=;
+        b=BOue54GcW/uw1WPm5hiAmIdhozSdpxtIujuKNq+5lCqra257QQ5+yVC0mYQ5eawxHlKDyr
+        nU0ifZU6580JYGww6p7MTa4j1eGWh/EpWynHxEW0BXP7jLQv8eUL4O/7yjEmIobBV3v+V+
+        clwH2P5+gllvmD14GruEDwwE2lrVid8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635334959;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fo5sUfTsUY3UOkgJ2rkzuihsx0B4xmZU0SJdKHg3/K8=;
+        b=+LylReF1y8AGvSIYf9Izx8bkit9K4VmPNvnYXAU1IXcpJZ3PzIoU+CbwuMhJJKdrER1wb3
+        YbEesObRpQJsk5Bg==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfRd46p0tz4xbq;
-        Wed, 27 Oct 2021 22:42:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635334954;
-        bh=G7vtBzdtwJ7fjHZiICFxjEO1GioPBcOgVhByiF5L4N8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZQH2CM0Yx0m2OsXP3gcECvHlLOSKOUhcV7r8OecVM7lakviKoU8gI9sfyug6FiJ1i
-         Fwm1aWia1kWI7+QT8xfldklaca91zM77suHPabimlpPlepR1AtHKFK8P1EiDSjH70r
-         UHMdSl7x2B6smXypKjSnp6wX5hHA/8WK5ieskcED5J7EBPAKUvEdw67R4p8+AHKeqp
-         7+xiStsQUNI3VTUolx+IgxbbdeQ+P3DhU2aEFrko4SYjMQpBFY0ffjr2CEqn+Iyuak
-         kDweAciHurf/ftDRgCTXIZEG7ZdJXlTQd6SQkjGpSp9LfnU60VtypcguCpoDG2djqg
-         i/OrqC4b74XzQ==
-Date:   Wed, 27 Oct 2021 22:42:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Xianting Tian <xianting.tian@linux.alibaba.com>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>
-Subject: Re: linux-next: Tree for Oct 25
-Message-ID: <20211027224231.1634cc6c@canb.auug.org.au>
-In-Reply-To: <20211025204921.73cb3011@canb.auug.org.au>
-References: <20211025204921.73cb3011@canb.auug.org.au>
+        by relay2.suse.de (Postfix) with ESMTPS id B48FCA3B84;
+        Wed, 27 Oct 2021 11:42:38 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 13:42:38 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Ming Lei <ming.lei@redhat.com>
+cc:     Petr Mladek <pmladek@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
+        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+In-Reply-To: <YXgguuAY5iEUIV0u@T590>
+Message-ID: <alpine.LSU.2.21.2110271340180.3655@pobox.suse.cz>
+References: <YWq3Z++uoJ/kcp+3@T590> <YW3LuzaPhW96jSBK@bombadil.infradead.org> <YW4uwep3BCe9Vxq8@T590> <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz> <YW6OptglA6UykZg/@T590> <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz> <YW/KEsfWJMIPnz76@T590>
+ <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz> <YW/q70dLyF+YudyF@T590> <YXfA0jfazCPDTEBw@alley> <YXgguuAY5iEUIV0u@T590>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5iKOjd.5EWHPwSYHxwsDRT=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5iKOjd.5EWHPwSYHxwsDRT=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> > 
+> > The livepatch code uses workqueue because the livepatch can be
+> > disabled via sysfs interface. It obviously could not wait until
+> > the sysfs interface is removed in the sysfs write() callback
+> > that triggered the removal.
+> 
+> If klp_free_patch_* is moved into module_exit() and not let enable
+> store() to kill kobjects, all kobjects can be deleted in module_exit(),
+> then wait_for_completion(patch->finish) may be removed, also wq isn't
+> required for the async cleanup.
 
-Hi all,
+It sounds like a nice cleanup. If we combine kobject_del() to prevent any 
+show()/store() accesses and free everything later in module_exit(), it 
+could work. If I am not missing something around how we maintain internal 
+lists of live patches and their modules.
 
-On Mon, 25 Oct 2021 20:49:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> There seems to be something amiss with cnosole output in today's release
-> (at least on my ppc qemu boot tests).
+Thanks
 
-The console output seems to be back today.  I assume its repair had
-something to do with commit
-
-  60f41e848492 ("Revert "tty: hvc: pass DMA capable memory to put_chars()"")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5iKOjd.5EWHPwSYHxwsDRT=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF5OycACgkQAVBC80lX
-0GzIrAf/QPJ8D+knDQ0Jx+Y2x0hUU0+jZa8xexb5q6jbM9ZRTBenGtEbgnuGRzMV
-BeOWQ6OoBM/lfNbD1IJ3WI/pBRIjezUUJqbrxOL54XL6Lb5EW3Kyuzl17kfiR9xi
-j92l37j66FGDopiqBsjrg+wZKmaRdyGbvn4f8oJ6G+qcX2ZbsN1GbSB3y47wps8i
-kTHZUezRDjNg6anbUb4AUMa4fDWnQefHlEnnZfqf/ZKZbqDUFxc942QY/BpC/Ngr
-7AktCWgS8CBWcvh+Hq20B7sAuzKe1RUIKH9MqV43tzofA3r5U3TUhrBPC/+G+S2Y
-RR0amaYQ0Wms0YtjNYHtNwuDUE+BAg==
-=ZngI
------END PGP SIGNATURE-----
-
---Sig_/5iKOjd.5EWHPwSYHxwsDRT=--
+Miroslav
