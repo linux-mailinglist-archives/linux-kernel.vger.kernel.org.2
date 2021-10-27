@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAB543C5EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F7E43C5F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241156AbhJ0JCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:02:50 -0400
-Received: from outbound-smtp56.blacknight.com ([46.22.136.240]:55453 "EHLO
-        outbound-smtp56.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237432AbhJ0JCs (ORCPT
+        id S241163AbhJ0JDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232047AbhJ0JDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:02:48 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp56.blacknight.com (Postfix) with ESMTPS id 591E5FA87F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:00:22 +0100 (IST)
-Received: (qmail 18255 invoked from network); 27 Oct 2021 09:00:22 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 Oct 2021 09:00:22 -0000
-Date:   Wed, 27 Oct 2021 10:00:20 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-Message-ID: <20211027090020.GO3959@techsingularity.net>
-References: <20211021145603.5313-2-mgorman@techsingularity.net>
- <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
- <20211022110534.GJ3959@techsingularity.net>
- <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
- <20211026081817.GM3959@techsingularity.net>
- <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
- <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
- <20211026115707.GN3959@techsingularity.net>
- <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
- <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
+        Wed, 27 Oct 2021 05:03:35 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F72C061570;
+        Wed, 27 Oct 2021 02:01:10 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id s1so7759836edd.3;
+        Wed, 27 Oct 2021 02:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FwSpFY7U7Gd4ELBz8g66vgAETa0RnYhonzcZ9AVHumA=;
+        b=fUy6bdf0Ab6eD2kRHUso7K4espthSWVlKrzsDF+v9UlWSJCkC1QCFitLCKHpqfU/rb
+         AJwnKdSsDzjDNmfnTzbYX1zKJ1z+uIt8CsbfcHWv2zelGb5iJKJMt/E4WCBD8MPBkgBB
+         nYWshVa8A2Oo+ExhtL4v0frXvHEgWfIo4GpLiu7jxvEckPrPQieivcaczp+y4ydc+h8I
+         BB7wmIwOyuJW9ZCp1ss2p2NHuK7epZ7JHsbEMzJXmxlhEMjtZrVYpl18F9pwBCIwY0oK
+         NdCDjdFTRR+DoqwI3xGfJKLtA9/nVmAoaKONnSed6PvnzpYTqwe4bNzIZWcJZPh2eGGH
+         Z4Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FwSpFY7U7Gd4ELBz8g66vgAETa0RnYhonzcZ9AVHumA=;
+        b=YkrABuw4Z0Ng2yVV1zW4nOWbaeodAEPon3SGfUj0MQRISPkFlo4znp+y4dJWKMQO1k
+         wRDrN18WFcU/wklnFNF0E1FdNModVUhA5hK1tcdq0cQCArRqZEpTKzfKFrZvI4v4AX5S
+         haJrfFqVbOtPaTkQlm7fCjCs13gQ6eA5c1kfPUkmIsnV+GUFfT2KCU6kcyXSBwSgwMYq
+         FjxOlXRtkr0xBt6Dd8vRddx+L6uOhLPCg6O5BeavQ5DIIO/kSpO+L18KZl8KyBoGjnnK
+         ZDbMFYNRJk4VcFFQc7+2Ki2wyPedwMpPVKg8NbEuvuAAGxhBN6FX0gKVEh5UefUV/6et
+         rBug==
+X-Gm-Message-State: AOAM533vMeEqe6u7fKVxG+MypoaOWA0fLLDRJKI0yb3Uhwl0dcCrnySe
+        HrqLDn8jsAJbSlcHn3pKWi0zNCPCJfi8dvDuA4c=
+X-Google-Smtp-Source: ABdhPJwiRlxKN8rVFf+TqHcvaGebMUj7HhFjqA8GrP7Zb1pDbtyaDlm7JREauXbJYDdJAwvNEIBZ86iIUp/JyM9RQFU=
+X-Received: by 2002:a05:6402:10da:: with SMTP id p26mr43735894edu.283.1635325268073;
+ Wed, 27 Oct 2021 02:01:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211022200032.23267-1-pauk.denis@gmail.com> <20211022200032.23267-2-pauk.denis@gmail.com>
+ <YXcDcXrUo4a/KAsT@smile.fi.intel.com> <YXcHYvleoOr6sqMK@smile.fi.intel.com>
+ <YXcKLvRu3gRm3zUF@smile.fi.intel.com> <20211026225805.1504a9f9@penguin.lxd>
+In-Reply-To: <20211026225805.1504a9f9@penguin.lxd>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 27 Oct 2021 12:00:32 +0300
+Message-ID: <CAHp75VekkKU7ain3f0+fWym6G54+jFYuAau7Bj+E0CrQjv-VBg@mail.gmail.com>
+Subject: Re: [PATCH v8 1/3] hwmon: (asus_wmi_ec_sensors) Support B550 Asus WMI.
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Tor Vic <torvic9@mailbox.org>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 04:09:12AM +0200, Mike Galbraith wrote:
-> On Tue, 2021-10-26 at 14:13 +0200, Mike Galbraith wrote:
-> > On Tue, 2021-10-26 at 12:57 +0100, Mel Gorman wrote:
-> > > 
-> > > The patch in question was also tested on other workloads on NUMA
-> > > machines. For a 2-socket machine (20 cores, HT enabled so 40 CPUs)
-> > > running specjbb 2005 with one JVM per NUMA node, the patch also
-> > > scaled
-> > > reasonably well
-> > 
-> > That's way more more interesting.  No idea what this thing does under
-> > the hood thus whether it should be helped or not, but at least it's a
-> > real deal benchmark vs a kernel hacker tool.
-> 
-> ...
-> Installing test specjbb
-> specjvm-install: Fetching from mirror
-> http://mcp/mmtests-mirror/spec/SPECjbb2005_kitv1.07.tar.gz
-> specjvm-install: Fetching from internet
-> NOT_AVAILABLE/SPECjbb2005_kitv1.07.tar.gz
-> specjvm-install: Fetching from alt internet
-> /SPECjbb2005_kitv1.07.tar.gz
-> FATAL specjvm-install: specjvm-install: Could not download
-> /SPECjbb2005_kitv1.07.tar.gz
-> FATAL specjbb-bench: specjbb install script returned error
-> FATAL: specjbb returned failure, unable to continue
-> FATAL: Installation step failed for specjbb
-> 
-> Hohum, so much for trying to take a peek.
-> 
+On Tue, Oct 26, 2021 at 10:58 PM Denis Pauk <pauk.denis@gmail.com> wrote:
 
-The benchmark is not available for free unfortunately.
+> Thank you, currently code has returned N/A by some reason. I will search
+> place of regression.
 
-> At any rate, unlike the tbench numbers, these have the look of signal
-> rather than test jig noise, and pretty strong signal at that, so maybe
-> patchlet should fly. At the very least, it appears to be saying that
-> there is significant performance to be had by some means.
-> 
-> Bah, fly or die little patchlet.  Either way there will be winners and
-> losers, that's just the way it works if you're not shaving cycles.
-> 
-
-So, I assume you are ok for patch 1 to take flight to either live or
-die. I'll handle any bugs that show up in relation to it. How about
-patch 2?
+The code I issued is a complete draft and basically it's just an idea
+on how to improve in the form of a patch.
+I'm pretty sure there may be some bugs lurking.
 
 -- 
-Mel Gorman
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
