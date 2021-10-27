@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DEF43CFB3
+	by mail.lfdr.de (Postfix) with ESMTP id E2E1643CFB5
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243286AbhJ0RcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41916 "EHLO mail.kernel.org"
+        id S234785AbhJ0RcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:32:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243281AbhJ0Rbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:31:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15776610C7;
-        Wed, 27 Oct 2021 17:29:21 +0000 (UTC)
+        id S243259AbhJ0Rbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:31:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6FF76109D;
+        Wed, 27 Oct 2021 17:29:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635355763;
-        bh=Dmy2eSxMesrXx3Kt54NoJu+ASFtTZgXO7s9XqZs9lFc=;
+        s=k20201202; t=1635355769;
+        bh=4u6JqQsIN87tNoFbs5p+FQuuo/VW1aS9VWMCdQOpY5I=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=utolcpQ85h/f5oh9Q/bK6syRgpbaiVM1k/d8JoOYChk/iV5EtxKi/VoTkyQHVofY7
-         zUGNW4xjtV3/NOI4OLZZP8tc6YGrPPhNevb7Bxj2bCBa8FHwVjpjRHItgc6hMuI0pZ
-         HPT1EVUZi7W8AJ3E3d0g2CU+2QXZfLBO3teKKd2FMWf1aAn18DcjeOD2gzKD4f9Oz5
-         JvwdyhUuzb4nmuc2arTmGhtz/j7FvxyzSxWrV0K2imoqDj3Xw+try+HoLD5gfUI4UW
-         TLCjCGpKlKUARHf0IOpHlaCEegIFHLfoXecoeH4PQuaDRQPACRpi1a95MWtedMlPTy
-         kuit7R26ABYDQ==
+        b=cHlk8my+EU1NqLhkugDNjQN5eeuC/7eu25hJA+AzdNe/zUh038f5dfnqtmUqOvzud
+         Yl+vLh7me0UHExOAkaBVqWqpR24ldkNqT1MxiBbZ0kDckOwuRSUG6qdlpUPFOYMf3T
+         KcMeozdzOfDfaXl2gb6ztiynjXktKhmnM+bELiqXTm2gy7Bu9kh02XxjnxjbxYnATi
+         Zby0SNkmu12ZDgHIA3SAyoFxTADIxbZehWgszxeIvRSmRp1VkzSgzemh1/qkckYKVQ
+         5YdtAw5zG1NNpWLWNiGbwoXPuIm3SzJ7BGjFLYI5BYsiZ3lxXTQhsbTP9tKsymqOHz
+         ylYx0wQ8uI/HA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20211027082359.52248-1-arnd@kernel.org>
-References: <20211027082359.52248-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: amd: acp: fix Kconfig dependencies
-Message-Id: <163535576182.4012075.12901832843673816206.b4-ty@kernel.org>
-Date:   Wed, 27 Oct 2021 18:29:21 +0100
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+In-Reply-To: <20211026193327.52420-1-eajames@linux.ibm.com>
+References: <20211026193327.52420-1-eajames@linux.ibm.com>
+Subject: Re: [PATCH] spi: fsi: Fix contention in the FSI2SPI engine
+Message-Id: <163535576865.4012316.16041752826043259627.b4-ty@kernel.org>
+Date:   Wed, 27 Oct 2021 18:29:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,28 +38,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 10:23:46 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The CONFIG_SND_SOC_AMD_MACH_COMMON has some dependencies that
-> are not checked by the symbols that select it:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_AMD_MACH_COMMON
->   Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && X86 && PCI [=y] && I2C [=n]
->   Selected by [m]:
->   - SND_SOC_AMD_LEGACY_MACH [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m]
->   - SND_SOC_AMD_SOF_MACH [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m]
+On Tue, 26 Oct 2021 14:33:27 -0500, Eddie James wrote:
+> There was nothing to protect multiple SPI controllers on the same FSI2SPI
+> device from being accessed through the FSI2SPI device at the same time.
+> For example, multiple writes to the command and data registers might occur
+> for different SPI controllers, resulting in complete chaos in the SPI
+> engine. To prevent this, add a FSI2SPI device level mutex and lock it in
+> the SPI register read and write functions.
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: amd: acp: fix Kconfig dependencies
-      commit: 1dcc81d95b910dc404c40ff6101bfa2520a3528e
+[1/1] spi: fsi: Fix contention in the FSI2SPI engine
+      commit: e954af1343f6334bf7e081f2631cc2902d07a0ee
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
