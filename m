@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B41843C66A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FFA43C676
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240102AbhJ0J17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:27:59 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4033 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhJ0J15 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:27:57 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HfNTf60vGz6H6sb;
-        Wed, 27 Oct 2021 17:20:54 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 11:25:29 +0200
-Received: from [10.47.27.251] (10.47.27.251) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 27 Oct
- 2021 10:25:28 +0100
-Subject: Re: [PATCH 1/5] iova: Move fast alloc size roundup into
- alloc_iova_fast()
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-CC:     Jason Wang <jasowang@redhat.com>, mst <mst@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <iommu@lists.linux-foundation.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-References: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
- <1632477717-5254-2-git-send-email-john.garry@huawei.com>
- <CACGkMEt8FcoJ4zMXFZzmrFjm=ynWfr5yLfvSHCckawpa3FvhkA@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <c0d35d67-e6b0-3165-0968-30eb9998d242@huawei.com>
-Date:   Wed, 27 Oct 2021 10:25:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S241014AbhJ0Jdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:33:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:26461 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230195AbhJ0JdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 05:33:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="210203097"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="210203097"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 02:31:00 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="635661120"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 02:30:54 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mffGT-001QWu-IZ;
+        Wed, 27 Oct 2021 12:30:33 +0300
+Date:   Wed, 27 Oct 2021 12:30:33 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>, devicetree@vger.kernel.org,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-gpio@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-serial@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 06/16] clk: starfive: Add JH7100 clock generator driver
+Message-ID: <YXkcOZnoGd96wjOU@smile.fi.intel.com>
+References: <20211021174223.43310-1-kernel@esmil.dk>
+ <20211021174223.43310-7-kernel@esmil.dk>
+ <163527959276.15791.14765586510805526101@swboyd.mtv.corp.google.com>
+ <CANBLGcyYb3yNit=GCy4w2zf2=CRtCJP7aCisR8=9n1f7okfCSg@mail.gmail.com>
+ <163529604399.15791.378104318036812951@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <CACGkMEt8FcoJ4zMXFZzmrFjm=ynWfr5yLfvSHCckawpa3FvhkA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.27.251]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163529604399.15791.378104318036812951@swboyd.mtv.corp.google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 03:06, Jason Wang wrote:
-> On Fri, Sep 24, 2021 at 6:07 PM John Garry<john.garry@huawei.com>  wrote:
->> It really is a property of the IOVA rcache code that we need to alloc a
->> power-of-2 size, so relocate the functionality to resize into
->> alloc_iova_fast(), rather than the callsites.
->>
->> Signed-off-by: John Garry<john.garry@huawei.com>
-> Acked-by: Jason Wang<jasowang@redhat.com>
+On Tue, Oct 26, 2021 at 05:54:03PM -0700, Stephen Boyd wrote:
+> Quoting Emil Renner Berthing (2021-10-26 15:35:36)
+> > On Tue, 26 Oct 2021 at 22:20, Stephen Boyd <sboyd@kernel.org> wrote:
+> > > Quoting Emil Renner Berthing (2021-10-21 10:42:13)
 
-Thanks
+...
+
+> > > > +static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
+> > >
+> > > Drop __init as this can be called after kernel init is over.
+> > 
+> > Oh interesting, I'd like to know when that can happen. The comment for
+> > the builtin_platform_driver macro says it's just a wrapper for
 > 
+> I thought this was using module_platform_driver() macro?
+> 
+> > device_initcall.
+> > 
+> > Won't we then need to remove all the __initconst tags too since the
+> > probe function walks through jh7100_clk_data which eventually
+> > references all __initconst data?
+> 
+> Yes. If it's builtin_platform_driver() it can't be a module/tristate
+> Kconfig, in which case all the init markings can stay.
 
-Hi Joerg,
+What about bind/unbind attribute?
 
-Can you pick up this patch only for 5.16? It has a good few tags, and 
-I'm waiting for feedback/update from Robin on the rest of the series.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Cheers,
-John
+
