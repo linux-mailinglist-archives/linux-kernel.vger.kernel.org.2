@@ -2,156 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65B643C0C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5A443C0C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237984AbhJ0DbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 23:31:24 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:31806 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232200AbhJ0DbW (ORCPT
+        id S238010AbhJ0Dbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237933AbhJ0Dbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 23:31:22 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19R0msQB018048;
-        Wed, 27 Oct 2021 03:28:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=qK7q/MS3nDlFEW8aL5aUf4aMOFeCRGFZkMFMlqSSBTg=;
- b=cZSRG8zFCC+S0V39TSbzeNN+wYgyJ1RjbZX/jnkhb8rPVOxqjtbCVJFmpe0QkxH5GI6R
- 6/r/TpysWxDO0vZ5EhMR1nT4xUurWMroPtMJlpqdzI21uH8C/1ySSWlXTXj6TuSDCcly
- j8qvVxyb9VXZ3bKAtkvITVxbyf4XvjcilmqaEgfFO/YK/lvjCaAYsa9IH5w6FpwXXu4q
- rGsTbeZlOH+1In4ojBUOWHo/aBih4/PmZv6ptcC6ZQ52WDxsRIGXEL674lbjamAUV6K1
- nW0d4UmO2I0DveAU7MktwhEdAy5f36X+t5VnR7ossrjZFfvYgkdHlcA9WEicC+TBAa3Q GQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4g17eyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 03:28:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19R3FX0D092805;
-        Wed, 27 Oct 2021 03:28:51 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
-        by aserp3020.oracle.com with ESMTP id 3bx4gc1nmm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 03:28:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E/aLYTS/klPcYxveESeJ1gdEuNamPx/87qGvj2MvG6XgGKcXiyDvTeDwh5kvFmSff2YXNf1gAr73A5KF+CkO8d2UAG7KOtTHr6pg8N2KvSgbaVezDGxMBj1nncDnGB8jJaBGe4lA8cR/X6y6mxaj0WdJHh3lT7xWReIe52BieGGg3NXKh8RvOw0qgxhHRKHfxfmpUwu9QYXo4MBcDRLm2tUlqeUKncm9zTe62chVyZzkQ+biue1XsxrDLLlDXyUECY4jNrobtfPirJCKqMgva2PQzgZgqF8fYXMj5rHhxdh84aaHSkUpR0tH9DMCMTxvgLj5X6EhK32OZ5dAkc5N5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qK7q/MS3nDlFEW8aL5aUf4aMOFeCRGFZkMFMlqSSBTg=;
- b=Ng+M7hoXxKs4UV6XhII1zBYEGnCZc2Ofq8+P5A9um2cN5KZAQO2Wk1cnw5GWq2uHa01M9xhn9R5czEN83Z1cSruuwAdE7aKAYzwWRCr3RSBlEdlf0rWLODRG42IqGXEhXYUgCrZkhWumiKfSiyy/6tlMrjBihoURTqfKFjQHUJK9j9+SYmF3Wl9qxUlpRFHcCh7RKsglu2WVFXFuftxJb49VOHaxeHRpp/nVZYJBHBdS/dImlLNRIAWWuHyQqqw5Txzkca/Sm4QrCZnOFL/h2lRUAOZC3KiawyMWtwMPmPXUIdgekrwwmC7ZsS9EzHdDCd5WF7x9U00iwMmOQZ474A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 26 Oct 2021 23:31:40 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D37C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 20:29:16 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id n18so1037763plc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 20:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qK7q/MS3nDlFEW8aL5aUf4aMOFeCRGFZkMFMlqSSBTg=;
- b=rpl2tYn5L4Lc3NBeUiq4oQrdQKJ4jNVdzDijCPkyatmQtAu2+qE5LrBCqHnT3JeYwTeb1JBDXz8mvLkmuOpJwsoIC2xaVZmPk3gj3L0Bui3oEickfp4gPSsictusc3gbxq2ShJn3kh7CZTtBJasWob97lYzhx21WO7E4K0x27Ik=
-Authentication-Results: wanadoo.fr; dkim=none (message not signed)
- header.d=none;wanadoo.fr; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5449.namprd10.prod.outlook.com (2603:10b6:510:e7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Wed, 27 Oct
- 2021 03:28:49 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::a457:48f2:991f:c349]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::a457:48f2:991f:c349%8]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 03:28:49 +0000
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     james.smart@broadcom.com, ram.vegesna@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, dwagner@suse.de,
-        hare@suse.de, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] scsi: elx: libefc_sli: Use 'bitmap_zalloc()' when
- applicable
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1lf2f16zd.fsf@ca-mkp.ca.oracle.com>
-References: <2a0a83949fb896a0a236dcca94dfdc8486d489f5.1635104793.git.christophe.jaillet@wanadoo.fr>
-Date:   Tue, 26 Oct 2021 23:28:47 -0400
-In-Reply-To: <2a0a83949fb896a0a236dcca94dfdc8486d489f5.1635104793.git.christophe.jaillet@wanadoo.fr>
-        (Christophe JAILLET's message of "Sun, 24 Oct 2021 21:48:09 +0200")
-Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0338.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::13) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=NXckBatBmWTSXNXn03oaE/p+PJTLMJ+R30YiT9U+OEM=;
+        b=ocaWQhMqVkYOQcl3SA4dEewUp9B7B3qBGmhZQ9CoV5RuyRQi9pnVEyDXRZhG3YczZu
+         nucYIzbE5pW58fspVIJQ5lmxCVn+aKqJgdup4DVBM8p2m7sfY5Q/QGgJTK/h4UUV3ghc
+         9HfpqnFHCFIMz5UUkS4s/qkznW/NCRkl3b1rKxyBBifAyFmwbB+4UwpCsIzveQ3/5DT4
+         +XidmvVDoyq4voUCUKz7IWXot8XO5eijDnppeZ43HQeby7j3e/CiO+z3Mm0mvgUlHjXu
+         VtYj3rhgeMFZ4f80JnUAU/5Dz5tl48LlxXJnHPlusOr8zFcFtwqxsLAntOMgcmKlvIFn
+         XTRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=NXckBatBmWTSXNXn03oaE/p+PJTLMJ+R30YiT9U+OEM=;
+        b=cechkztcMK/Th4USKGqhurSik4eEbWSLWFpTB7UtSznU6DR2l7aXVRQi1ojdHGD/hO
+         ld+OTi/pQ1hmyGAcbchUNEugmtzRLtAAdJKBsCh3YsFsYl1liA5AbG9p2m4BFVi9Tu/J
+         WQPj1jKoa3YobdzPxD9LaKJ/o0/5rnFdyjkS0fng9uGFmo6aUW/WggsmRXu/0GjNip/z
+         S+6sg7JKg7y5FrSbBeXqzJ4IycSl3oe0vk4HVzR9CRP2X6B8EVyxBAu/2MZ7mtVsEBzd
+         ofUGjCQ+9DjUw6def6enMtt9IIwumF3RMhBQNmtUrZHtawh137YHaCJb8WKgUnFEqb6Y
+         ZJhQ==
+X-Gm-Message-State: AOAM5329jyKpNvHRXBtOb6FLSIHUi4bvMyoYI96Dh8kNlohMumlPGq3B
+        fVsv3/7ZMiqKa8xw91xKT1BvSS+9ZJA=
+X-Google-Smtp-Source: ABdhPJwYvxE3YBrvq0yjV4xfpWcMLt9txmaD9H6pzbnOOqYTHOIALXW3GVtOoY0vZfPN8l/SQ+2sGw==
+X-Received: by 2002:a17:90a:488d:: with SMTP id b13mr3133186pjh.152.1635305355452;
+        Tue, 26 Oct 2021 20:29:15 -0700 (PDT)
+Received: from localhost ([118.208.159.180])
+        by smtp.gmail.com with ESMTPSA id m2sm20384044pgd.70.2021.10.26.20.29.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 20:29:15 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 13:29:10 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 1/2] powerpc/watchdog: prevent printk and send IPI while
+ holding the wd lock
+To:     benh@kernel.crashing.org, Laurent Dufour <ldufour@linux.ibm.com>,
+        mpe@ellerman.id.au, paulus@samba.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20211026162740.16283-1-ldufour@linux.ibm.com>
+        <20211026162740.16283-2-ldufour@linux.ibm.com>
+In-Reply-To: <20211026162740.16283-2-ldufour@linux.ibm.com>
 MIME-Version: 1.0
-Received: from ca-mkp.ca.oracle.com (138.3.201.42) by BL1PR13CA0338.namprd13.prod.outlook.com (2603:10b6:208:2c6::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.12 via Frontend Transport; Wed, 27 Oct 2021 03:28:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7dd93b7b-259a-43eb-b41f-08d998f9e45d
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5449:
-X-Microsoft-Antispam-PRVS: <PH0PR10MB544902470996E5438C4C3A968E859@PH0PR10MB5449.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5JKwqGKJ9tqJMvWfLC8gURnOcUkzv2zaEIPioYXgfUG+Kf1ok91ocZEGj7yYe7OnA8lAbvRwhPkgT4JtIWyNqMSGpMX55mO8Y0jOSosdXArsdX+8kE25aj3rqdWyHRXsGfr5LFNCFLD3TfJfBnclf4sh+zW/hQymn1flX/DC7176wppeqCNnUhT6GSieizigXku6qvwh3eWlFKjdmMrr6t9nYc2YI27sOSLoSbORBOr44RlZ5y2PhJ1uGKhxOJisrq56Ck2muEBiwh77Z2Hiaj+fxy6+mAuKFH/g4g2bJwTCmBZBCxAoJglIODqc7Kqn8VPYCvsu3QbFU2pdaVJi+c3q3xmt2DeC2wlbc26O608XFuC5+hsEHn7xWhrlGJ8pPNMWMkWxhtYp2tK0NldlX4jlLbhAUwFwGO+Oa+tQqvruLjafcOJBgDvYNPuQ1uWLH6+SzbyueXHXIkrySvwbefk/ivhTQ17O19Kc25o3e8b+EyfIxtSrap/qdkYw3NJv/a+N9PqHaTPoWtz/bp+/xJfNug94+6/FdVUr/T6/JjZ+lKbjg14Bnf0v/KCW450WKs8D4b6FIOkBKyJlj/sk5wJv2yOZChrM8NKWE7h4CtqANQfl1CGXAQuwvuYy4xpHQzpb2n0z+jB9MX/fS31QDilGzfV7ZRSBgBJv/tjeBttlwH0bgbFgc6EA1ntfyLPEa9pl+5rNRUV31SPdo8h9lQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(4326008)(186003)(6916009)(38100700002)(36916002)(7696005)(8676002)(956004)(316002)(66556008)(66476007)(8936002)(558084003)(86362001)(2906002)(5660300002)(38350700002)(66946007)(55016002)(52116002)(7416002)(508600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TaFspd2d/X8kKccccemrwrw7a+XOA0M2VImsMHad6d287k4Zi91H5lAgHY5Y?=
- =?us-ascii?Q?z11V65GZujhlQGAja4FfhLJWIBW8qlj9bZtjIWqv3bD0z1vthMl055i6jBz3?=
- =?us-ascii?Q?09jifqEohprv8p+9KsAY+HNfwv7rIlx/VrRT36t7pRKC5WMl5eqd9UDnwCV3?=
- =?us-ascii?Q?Dk5nzQ7CU++SIBqTpRtuIlNrunF6+LXDCXrYqrgrxI3zicRIXa+sirBVKwKT?=
- =?us-ascii?Q?LE4oFmswPbykkapczdwcYzdJYNgyTpDOmNDmAGahBqgM8ihj8B6KDoNWPCQL?=
- =?us-ascii?Q?qT8+EiO7ljukMB31uqw9zEbo5gRuxiIzpQAz1Y3phEpBXpQMnwHZGu27Eqe+?=
- =?us-ascii?Q?O1/PI/W1HAFWbmi4Oi3ufnMIVLraoqRZGeyEg4vaSAegGvsHD9OBS51+HGrr?=
- =?us-ascii?Q?un4AE4g9vq2eVxuNEglD4Fsku53lWCC8njhfG02bGYKrm+qT83vckx3rc2tg?=
- =?us-ascii?Q?Y95yzCiWMUwI5Mu3vgFwOEg3A+gdOvIqfMgEETy6bV5d9dzhaMulq78MUwff?=
- =?us-ascii?Q?3lbyvfpSt0KfACkBX7mJEXTfSRnLqJh5+rNUTp+L/VcSQw7VgJPdwmWYnUBr?=
- =?us-ascii?Q?eHqW4D6XVTSJpmTEfiY8paF+KccuYQKqMV1LLlFBjR4p9xFQcgGQ8G1G7Es8?=
- =?us-ascii?Q?NEK70nXS/ncLpIVErOXUF3kR3UaFII/r31a8LwuKI+M1mhA8oSndE1aoOV74?=
- =?us-ascii?Q?zmAEl7np9kUOCHQvouBm7qVxtBUsjKicgJRBv+mDBTiD5P7e5w2EPmjqZyJT?=
- =?us-ascii?Q?FBoWkmT04xlkOWjTp4JWQGKiR+7GbPOTY7Kgz9lspDeKquqIT4M3Vt9uhXA9?=
- =?us-ascii?Q?z4izldebZtc+YOxHc+nmuyeBI7qrX4QmFHhyHcdWQ5cn1SEzjKFBoGDbsq9x?=
- =?us-ascii?Q?aPOKTBscGouKM0ZcsoeD6/pSpDbb5Og94dQDtVvMxKsCniDqPhUtAVrsr5Zc?=
- =?us-ascii?Q?04elGVmhatkj8fKg8GqVnLYkQvSpNu7JX3GAj+VeGfEzHpxDaX/coIoO3nKA?=
- =?us-ascii?Q?N6vVRqxGis66fGM1UqLFUa4Te/pStHrP/dsh8GU0Z2OzDzmKS8Qy5/6coYOV?=
- =?us-ascii?Q?AWMQetJleUo8CuQnBOCFB9QjCnkAWlqalf1paiCMqjINpXc+sE2C78lG602A?=
- =?us-ascii?Q?noel2Dwibe4NGeUhSYccfo0hmBuThHbmuT+7en4ZTvEABFYbIrE+mlsugsOu?=
- =?us-ascii?Q?OynHbANS7SVJ7al9u4szjXRgtAl8EWi3ZnBvXb93pulzyWVEwNvzxBKztDcg?=
- =?us-ascii?Q?uHmFUloUqM7iwXfl6LL+wP/yioXxE2kG0e0M8hsSyGs5xBeP2zKr8H2omHaZ?=
- =?us-ascii?Q?g8lCo/IOnxD2dp42GqpCbaNwQvZ/udM+FJPTZokU8H5qq6l4K60wTAvkUVyd?=
- =?us-ascii?Q?ig74OJ97UfQZx4ecw7nF6XEe13Ku9MdJ3BOfukt1Sg8iVu+r30IEHzxvjcHR?=
- =?us-ascii?Q?WkIWS3wlJp9kK1F+Wkub3sAg9OAYG200BTKbsaOW+ook7toXBDCKFg/UTluD?=
- =?us-ascii?Q?fAk3nNUe0BS96pm1sQoNLCCT2H5//HIa7TOPHz9PaqpnsAj/4pErUja4FuhR?=
- =?us-ascii?Q?H875IqFTq9Q55Zi3hiarZ/WNnLew+Bs2CsN9uv7PAJtU2d2oX8NE/xILonez?=
- =?us-ascii?Q?ElWAQtFnFL52DK+bClZpp36S6ruufgQkommpWWjZFWAQOqfQmErRYE0narb0?=
- =?us-ascii?Q?RA99ew=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7dd93b7b-259a-43eb-b41f-08d998f9e45d
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 03:28:49.6435
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +PNXmxQqJt8HIInnqMWmRWT4stTofBjRT093TOpN0sqFWAG9EjlFE9C7VnfPd4OS7eldOjd/FoJqcneJaa+bstBnRW1x/2m3bSOpdO8+Qb0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5449
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10149 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=886
- bulkscore=0 phishscore=0 mlxscore=0 spamscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270017
-X-Proofpoint-ORIG-GUID: q7DC-R08J-LQ7vGfr1j65yuYz0Q9psZL
-X-Proofpoint-GUID: q7DC-R08J-LQ7vGfr1j65yuYz0Q9psZL
+Message-Id: <1635303699.wgz87uxy4c.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Excerpts from Laurent Dufour's message of October 27, 2021 2:27 am:
+> When handling the Watchdog interrupt, long processing should not be done
+> while holding the __wd_smp_lock. This prevents the other CPUs to grab it
+> and to process Watchdog timer interrupts. Furhtermore, this could lead to
+> the following situation:
+>=20
+> CPU x detect lockup on CPU y and grab the __wd_smp_lock
+>       in watchdog_smp_panic()
+> CPU y caught the watchdog interrupt and try to grab the __wd_smp_lock
+>       in soft_nmi_interrupt()
+> CPU x wait for CPU y to catch the IPI for 1s in __smp_send_nmi_ipi()
 
-Christophe,
+CPU y should get the IPI here if it's a NMI IPI (which will be true for=20
+>=3D POWER9 64s).
 
-> 'sli4->ext[i].use_map' is a bitmap. Use 'bitmap_zalloc()' to simplify
-> code, improve the semantic and avoid some open-coded arithmetic in
-> allocator arguments.
+That said, not all platforms support it and the console lock problem
+seems real, so okay.
 
-Applied to 5.16/scsi-staging, thanks!
+> CPU x will timeout and so has spent 1s waiting while holding the
+>       __wd_smp_lock.
+>=20
+> A deadlock may also happen between the __wd_smp_lock and the console_owne=
+r
+> 'lock' this way:
+> CPU x grab the console_owner
+> CPU y grab the __wd_smp_lock
+> CPU x catch the watchdog timer interrupt and needs to grab __wd_smp_lock
+> CPU y wants to print something and wait for console_owner
+> -> deadlock
+>=20
+> Doing all the long processing without holding the _wd_smp_lock prevents
+> these situations.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The intention was to avoid logs getting garbled e.g., if multiple=20
+different CPUs fire at once.
+
+I wonder if instead we could deal with that by protecting the IPI=20
+sending and printing stuff with a trylock, and if you don't get the
+trylock then just return, and you'll come back with the next timer
+interrupt.
+
+Thanks,
+Nick
+
+>=20
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> ---
+>  arch/powerpc/kernel/watchdog.c | 31 +++++++++++++++++--------------
+>  1 file changed, 17 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdo=
+g.c
+> index f9ea0e5357f9..bc7411327066 100644
+> --- a/arch/powerpc/kernel/watchdog.c
+> +++ b/arch/powerpc/kernel/watchdog.c
+> @@ -149,6 +149,8 @@ static void set_cpu_stuck(int cpu, u64 tb)
+> =20
+>  static void watchdog_smp_panic(int cpu, u64 tb)
+>  {
+> +	cpumask_t cpus_pending_copy;
+> +	u64 last_reset_tb_copy;
+>  	unsigned long flags;
+>  	int c;
+> =20
+> @@ -161,29 +163,32 @@ static void watchdog_smp_panic(int cpu, u64 tb)
+>  	if (cpumask_weight(&wd_smp_cpus_pending) =3D=3D 0)
+>  		goto out;
+> =20
+> +	cpumask_copy(&cpus_pending_copy, &wd_smp_cpus_pending);
+> +	last_reset_tb_copy =3D wd_smp_last_reset_tb;
+> +
+> +	/* Take the stuck CPUs out of the watch group */
+> +	set_cpumask_stuck(&wd_smp_cpus_pending, tb);
+> +
+> +	wd_smp_unlock(&flags);
+> +
+>  	pr_emerg("CPU %d detected hard LOCKUP on other CPUs %*pbl\n",
+> -		 cpu, cpumask_pr_args(&wd_smp_cpus_pending));
+> +		 cpu, cpumask_pr_args(&cpus_pending_copy));
+>  	pr_emerg("CPU %d TB:%lld, last SMP heartbeat TB:%lld (%lldms ago)\n",
+> -		 cpu, tb, wd_smp_last_reset_tb,
+> -		 tb_to_ns(tb - wd_smp_last_reset_tb) / 1000000);
+> +		 cpu, tb, last_reset_tb_copy,
+> +		 tb_to_ns(tb - last_reset_tb_copy) / 1000000);
+> =20
+>  	if (!sysctl_hardlockup_all_cpu_backtrace) {
+>  		/*
+>  		 * Try to trigger the stuck CPUs, unless we are going to
+>  		 * get a backtrace on all of them anyway.
+>  		 */
+> -		for_each_cpu(c, &wd_smp_cpus_pending) {
+> +		for_each_cpu(c, &cpus_pending_copy) {
+>  			if (c =3D=3D cpu)
+>  				continue;
+>  			smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
+>  		}
+>  	}
+> =20
+> -	/* Take the stuck CPUs out of the watch group */
+> -	set_cpumask_stuck(&wd_smp_cpus_pending, tb);
+> -
+> -	wd_smp_unlock(&flags);
+> -
+>  	if (sysctl_hardlockup_all_cpu_backtrace)
+>  		trigger_allbutself_cpu_backtrace();
+> =20
+> @@ -204,6 +209,8 @@ static void wd_smp_clear_cpu_pending(int cpu, u64 tb)
+>  			unsigned long flags;
+> =20
+>  			wd_smp_lock(&flags);
+> +			cpumask_clear_cpu(cpu, &wd_smp_cpus_stuck);
+> +			wd_smp_unlock(&flags);
+> =20
+>  			pr_emerg("CPU %d became unstuck TB:%lld\n",
+>  				 cpu, tb);
+> @@ -212,9 +219,6 @@ static void wd_smp_clear_cpu_pending(int cpu, u64 tb)
+>  				show_regs(regs);
+>  			else
+>  				dump_stack();
+> -
+> -			cpumask_clear_cpu(cpu, &wd_smp_cpus_stuck);
+> -			wd_smp_unlock(&flags);
+>  		}
+>  		return;
+>  	}
+> @@ -267,6 +271,7 @@ DEFINE_INTERRUPT_HANDLER_NMI(soft_nmi_interrupt)
+>  			return 0;
+>  		}
+>  		set_cpu_stuck(cpu, tb);
+> +		wd_smp_unlock(&flags);
+> =20
+>  		pr_emerg("CPU %d self-detected hard LOCKUP @ %pS\n",
+>  			 cpu, (void *)regs->nip);
+> @@ -277,8 +282,6 @@ DEFINE_INTERRUPT_HANDLER_NMI(soft_nmi_interrupt)
+>  		print_irqtrace_events(current);
+>  		show_regs(regs);
+> =20
+> -		wd_smp_unlock(&flags);
+> -
+>  		if (sysctl_hardlockup_all_cpu_backtrace)
+>  			trigger_allbutself_cpu_backtrace();
+> =20
+> --=20
+> 2.33.1
+>=20
+>=20
