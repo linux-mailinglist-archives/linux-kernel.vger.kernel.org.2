@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE4743CA2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCF743CA30
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242037AbhJ0M5r convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Oct 2021 08:57:47 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:60511 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235988AbhJ0M5q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:57:46 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-253-wPONUwz2OL6lc0R2QWVEYg-1; Wed, 27 Oct 2021 13:55:18 +0100
-X-MC-Unique: wPONUwz2OL6lc0R2QWVEYg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.24; Wed, 27 Oct 2021 13:55:17 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.024; Wed, 27 Oct 2021 13:55:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mark Rutland' <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Sami Tolvanen <samitolvanen@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "ardb@kernel.org" <ardb@kernel.org>
-Subject: RE: [PATCH v5 00/15] x86: Add support for Clang CFI
-Thread-Topic: [PATCH v5 00/15] x86: Add support for Clang CFI
-Thread-Index: AQHXyyrmFu1L74SRSES6mpaoExEoXavmyV5Q
-Date:   Wed, 27 Oct 2021 12:55:17 +0000
-Message-ID: <456321a9fc5245408fc0d2798e497fe0@AcuMS.aculab.com>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211026201622.GG174703@worktop.programming.kicks-ass.net>
- <20211027120515.GC54628@C02TD0UTHF1T.local>
-In-Reply-To: <20211027120515.GC54628@C02TD0UTHF1T.local>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S242046AbhJ0M6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:58:07 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27658 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235988AbhJ0M6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:58:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="230100129"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="230100129"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 05:55:38 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497853533"
+Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 05:55:33 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+In-Reply-To: <3604fb90-f6c3-0fa2-c864-7f1795caee1e@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local> <878ryeit9i.fsf@intel.com> <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com> <3604fb90-f6c3-0fa2-c864-7f1795caee1e@redhat.com>
+Date:   Wed, 27 Oct 2021 15:55:30 +0300
+Message-ID: <87zgquhbjx.fsf@intel.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland
-> Sent: 27 October 2021 13:05
-...
-> Taking a step back, it'd be nicer if we didn't have the jump-table shim
-> at all, and had some SW landing pad (e.g. a NOP with some magic bytes)
-> in the callees that the caller could check for. Then function pointers
-> would remain callable in call cases, and we could explcitly add landing
-> pads to asm to protect those. I *think* that's what the grsecurity folk
-> do, but I could be mistaken.
+On Wed, 27 Oct 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
+> On 10/27/21 14:18, Arnd Bergmann wrote:
+>> On Wed, Oct 27, 2021 at 1:47 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>
+> [snip]
+>
+>>> drm_fb_helper.o is not part of drm.ko, it's part of
+>>> drm_kms_helper.ko. This adds some sort of indirect dependency via DRM
+>>> which might work, maybe by coincidence, maybe not - but it's certainly
+>>> not obvious.
+>
+> Indeed, you are correct that's not semantically correct.
+>
+>> 
+>> Right, how about this change on top?
+>> 
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -117,9 +117,8 @@ config DRM_DEBUG_MODESET_LOCK
+>> 
+>>  config DRM_FBDEV_EMULATION
+>>         bool "Enable legacy fbdev support for your modesetting driver"
+>> -       depends on DRM
+>> -       depends on FB=y || FB=DRM
+>> -       select DRM_KMS_HELPER
+>> +       depends on DRM_KMS_HELPER
+>> +       depends on FB=y || FB=DRM_KMS_HELPER
+>>         select FB_CFB_FILLRECT
+>>         select FB_CFB_COPYAREA
+>>         select FB_CFB_IMAGEBLIT
+>> 
+>> That would probably make it work for DRM=y, FB=m, DRM_KMS_HELPER=m,
+>> but it needs more randconfig testing, which I can help with.
+>>
+>>> The likely culprit is, again, the overuse of select, and in this case
+>>> select DRM_KMS_HELPER. And DRM_KMS_HELPER should depend on FB if
+>>> DRM_FBDEV_EMULATION=y. That's the problem.
+>> 
+>> This is something we can't easily express in Kconfig, as we can't add the
+>> dependency to a symbol that only gets selected by other drivers, which
+>> is why the dependency has to be in the user-visible symbol,
+>> in this case DRM_FBDEV_EMULATION.
+>> 
+>
+> Why the dependency has to be in a user-visible symbol? What could be the
+> problem with having something like:
+>
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index cea777ae7fb9..f80b404946ca 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -82,6 +82,7 @@ config DRM_DEBUG_SELFTEST
+>  config DRM_KMS_HELPER
+>         tristate
+>         depends on DRM
+> +       depends on (DRM_FBDEV_EMULATION && FB) || !DRM_FBDEV_EMULATION
 
-It doesn't need to be a 'landing pad'.
-The 'magic value' could be at 'label - 8'.
+To me, this seems like the right solution. Depend on FB if
+DRM_FBDEV_EMULATION is enabled. That's exactly what the relationship is.
 
-Provided you can generate the required value it could be added
-to asm functions.
-(Or you could patch it at startup by stealing the value from
-a C function.)
+BR,
+Jani.
 
-Depending on the threat model, you may even want the called function
-to do some sanity checks on the caller.
 
-I suspect that anything you do is easy to subvert by anything that
-can actually write asm.
-So if the real threat is overwritten function tables then something
-relatively simple is adequate.
 
-	David
+>         help
+>           CRTC helpers for KMS drivers.
+>  
+> @@ -104,7 +105,6 @@ config DRM_FBDEV_EMULATION
+>         bool "Enable legacy fbdev support for your modesetting driver"
+>         depends on DRM
+>         depends on FB
+> -       select DRM_KMS_HELPER
+>         select FB_CFB_FILLRECT
+>         select FB_CFB_COPYAREA
+>         select FB_CFB_IMAGEBLIT
+>
+> Best regards,
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Jani Nikula, Intel Open Source Graphics Center
