@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D6343D148
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA3A43D14B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240511AbhJ0S4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:56:40 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:43536 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhJ0S4g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:56:36 -0400
-Received: by mail-ot1-f51.google.com with SMTP id y15-20020a9d460f000000b0055337e17a55so4952365ote.10;
-        Wed, 27 Oct 2021 11:54:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0BMTeXCdhZ7VaC/eWMcigTkrnP2pN01kWWzYJFIQyu0=;
-        b=HO7aDRTVppu2yosyAPICQSxU5lZ2c/IAU7mENzj2Yo+g35S4jyN81S/nOvQFt8IeMa
-         iSxbgkOPknv3UJfXJ6ZB+rNIIieF0nX7pT8u9A8ugyviKYXfqJ9GynfPJGnXg0lY3wQz
-         k+P/M9SLXiqEYYLMKu7PHGki/0gOxznCv6Yag5tQvV6ldvgXyYq6qPGbc5y7bzhD/xNh
-         tdNfTP9V/rlGW4/88xZTr+UVPxpAxxJtswzyAWYyna3mLcyjIWZtMVpTYFYbMfJVcQDG
-         08mRvET7OYyxzDFsLcVnMNoYavmi2C4ydmBkWJk+4qYzGPdt776gKCgEEypNcqjYjSKt
-         mK/A==
-X-Gm-Message-State: AOAM5325/P09KwSftqsB9AjpEOKVfdPFpMMIgKDiIDS9b1odyIR+0dJL
-        T/wbSmw5pyTjdh15j7B3wrShb8sE7KZPGVLcXKc=
-X-Google-Smtp-Source: ABdhPJw0AMpRmI1zFTOHuehxHHn8AZdWi9FzbUBykmyZ1w/j7Rjw32Mx1RuAL2p+wihj2Y1Je++etttIOPSnN3B9SVM=
-X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr25788038otd.16.1635360850599;
- Wed, 27 Oct 2021 11:54:10 -0700 (PDT)
+        id S243666AbhJ0S5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:57:12 -0400
+Received: from box.trvn.ru ([194.87.146.52]:56457 "EHLO box.trvn.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230437AbhJ0S5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:57:10 -0400
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id CD5B540479;
+        Wed, 27 Oct 2021 23:54:40 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1635360881; bh=BonGhLg84CWois0icg8TpND/lf5KoZP4O0tUhZHbQ1Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=f2IPSOYrc3Qvp6aQhgRc039cAxfHFxb+20amdVK1WvyBS/PEoBK3kqon9kPAemIyo
+         YRuKX5WNqnTxP5X8FF8IKUUk45c3A0zzuaJ9EWi7Y5FtpOgRGfHUN3Ar8bmF6TcavC
+         GGXuIm/TXLvGTAnBKFTTpGAkcGI7tfsJKMwrmL/EigNRNnVgOInDjwa2GYy+s6eGN7
+         42LWEWidS2FsZ6ahg5pFvqugnwlExfDzioqdWEDGbNsS1skflbBlsoP0+W4DWCR130
+         W08T1yfmi/maBxRqnK0BDvLLy8uzHtUSRDBjPfQ3j0TCXFZV6D6WSDpsWaaljoonTc
+         jyJ3Xnn6iqptQ==
 MIME-Version: 1.0
-References: <20211025094119.82967-1-hdegoede@redhat.com> <20211025094119.82967-3-hdegoede@redhat.com>
-In-Reply-To: <20211025094119.82967-3-hdegoede@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 27 Oct 2021 20:53:59 +0200
-Message-ID: <CAJZ5v0h2gaVxOKL0xnDpJiO2G3zvacTVbQajYaDBcXuxaoEjrg@mail.gmail.com>
-Subject: Re: [PATCH v4 02/11] i2c: acpi: Use acpi_dev_ready_for_enumeration() helper
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 27 Oct 2021 23:54:38 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     Luca Weiss <luca@z3ntu.xyz>
+Cc:     dmitry.torokhov@gmail.com, ~postmarketos/upstreaming@lists.sr.ht,
+        robh+dt@kernel.org, Michael.Srba@seznam.cz,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] dt-bindings: input: zinitix: Document touch-keys
+ support
+In-Reply-To: <4350691.LvFx2qVVIh@g550jk>
+References: <20211027181350.91630-1-nikita@trvn.ru>
+ <20211027181350.91630-6-nikita@trvn.ru> <4350691.LvFx2qVVIh@g550jk>
+Message-ID: <351bd499d1326fda5ed9d5c06dce344e@trvn.ru>
+X-Sender: nikita@trvn.ru
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 11:42 AM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> The clk and regulator frameworks expect clk/regulator consumer-devices
-> to have info about the consumed clks/regulators described in the device's
-> fw_node.
->
-> To work around cases where this info is not present in the firmware tables,
-> which is often the case on x86/ACPI devices, both frameworks allow the
-> provider-driver to attach info about consumers to the clks/regulators
-> when registering these.
->
-> This causes problems with the probe ordering wrt drivers for consumers
-> of these clks/regulators. Since the lookups are only registered when the
-> provider-driver binds, trying to get these clks/regulators before then
-> results in a -ENOENT error for clks and a dummy regulator for regulators.
->
-> To ensure the correct probe-ordering the ACPI core has code to defer the
-> enumeration of consumers affected by this until the providers are ready.
->
-> Call the new acpi_dev_ready_for_enumeration() helper to avoid
-> enumerating / instantiating i2c-clients too early.
->
-> Acked-by: Wolfram Sang <wsa@kernel.org>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Hi Luca,
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Luca Weiss писал(а) 27.10.2021 23:33:
+> Hi Nikita,
+> 
+> On Mittwoch, 27. Oktober 2021 20:13:49 CEST Nikita Travkin wrote:
+>> In some configrations the touch controller can support the touch-keys.
+>> Doucument the linux,keycodes property that enables those keys and
+>> specifies the keycodes that should be used to report the key events.
+>> 
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+>>  .../bindings/input/touchscreen/zinitix,bt400.yaml         | 8 
+>> ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git
+>> a/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
+>> b/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
+>> index b4e5ba7c0b49..40b243c07fd4 100644
+>> --- 
+>> a/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
+>> +++
+>> b/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml 
+>> @@
+>> -79,6 +79,14 @@ properties:
+>>      $ref: /schemas/types.yaml#/definitions/uint32
+>>      enum: [1, 2]
+>> 
+>> +  linux,keycodes:
+>> +    description: |
+>> +      This property specifies an array of keycodes assigned to the
+>> +      touch-keys that can be present in some touchscreen 
+>> configurations.
+>> +    $ref: /schemas/input/input.yaml#/properties/linux,keycodes
+>> +    minItems: 1
+> 
+> I think this would suggest all devices using the driver must have at 
+> least
+> keycode declared which doesn't seem to be the desired behavior?
 
-> ---
->  drivers/i2c/i2c-core-acpi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
-> index 546cc935e035..71eee5bc17ab 100644
-> --- a/drivers/i2c/i2c-core-acpi.c
-> +++ b/drivers/i2c/i2c-core-acpi.c
-> @@ -144,9 +144,12 @@ static int i2c_acpi_do_lookup(struct acpi_device *adev,
->         struct list_head resource_list;
->         int ret;
->
-> -       if (acpi_bus_get_status(adev) || !adev->status.present)
-> +       if (acpi_bus_get_status(adev))
->                 return -EINVAL;
->
-> +       if (!acpi_dev_ready_for_enumeration(adev))
-> +               return -ENODEV;
-> +
->         if (acpi_match_device_ids(adev, i2c_acpi_ignored_device_ids) == 0)
->                 return -ENODEV;
->
-> --
-> 2.31.1
->
+As I haven't added the property to the "required" list I'd read this as
+"If the property is defined it must contain from one to eight elements"
+so I think that *technically* the schema is correct. (Otherwise the
+dt_schema_check would fail verifying the example) However this indeed
+may be true that I could give a better description than "can be present
+in some touchscreen configurations."
+
+Thanks,
+Nikita
+
+> Regards,
+> Luca
+> 
+>> +    maxItems: 8
+>> +
+>>    touchscreen-size-x: true
+>>    touchscreen-size-y: true
+>>    touchscreen-fuzz-x: true
