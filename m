@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E748243BF3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E6343BF43
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237714AbhJ0B57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:57:59 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:31072 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236313AbhJ0B5x (ORCPT
+        id S237754AbhJ0CFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:05:03 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36895 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S237736AbhJ0CFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 21:57:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtpFhNO_1635299711;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtpFhNO_1635299711)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 09:55:13 +0800
-Subject: Re: [PATCH v5 1/2] ftrace: disable preemption when recursion locked
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Miroslav Benes <mbenes@suse.cz>, Guo Ren <guoren@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-References: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
- <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
- <alpine.LSU.2.21.2110261128120.28494@pobox.suse.cz>
- <18ba2a71-e12d-33f7-63fe-2857b2db022c@linux.alibaba.com>
- <20211026080117.366137a5@gandalf.local.home>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <3d897161-7b74-944a-f2a0-07311436fbd9@linux.alibaba.com>
-Date:   Wed, 27 Oct 2021 09:54:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 26 Oct 2021 22:05:01 -0400
+Received: (qmail 1306909 invoked by uid 1000); 26 Oct 2021 22:02:35 -0400
+Date:   Tue, 26 Oct 2021 22:02:35 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Kevin Hilman <khilman@kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime
+ PM is disabled
+Message-ID: <20211027020235.GA1306582@rowland.harvard.edu>
+References: <20211026222626.39222-1-ulf.hansson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20211026080117.366137a5@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026222626.39222-1-ulf.hansson@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/10/26 下午8:01, Steven Rostedt wrote:
-> On Tue, 26 Oct 2021 17:48:10 +0800
-> 王贇 <yun.wang@linux.alibaba.com> wrote:
+On Wed, Oct 27, 2021 at 12:26:26AM +0200, Ulf Hansson wrote:
+> During system suspend, the PM core sets dev->power.is_suspended for the
+> device that is being suspended. This flag is also being used in
+> rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
+> PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
+> device.
 > 
->>> The two comments should be updated too since Steven removed the "bit == 0" 
->>> trick.  
->>
->> Could you please give more hint on how will it be correct?
->>
->> I get the point that bit will no longer be 0, there are only -1 or > 0 now
->> so trace_test_and_set_recursion() will disable preemption on bit > 0 and
->> trace_clear_recursion() will enabled it since it should only be called when
->> bit > 0 (I remember we could use a WARN_ON here now :-P).
->>
->>>   
->>>> @@ -178,7 +187,7 @@ static __always_inline void trace_clear_recursion(int bit)
->>>>   * tracing recursed in the same context (normal vs interrupt),
->>>>   *
->>>>   * Returns: -1 if a recursion happened.
->>>> - *           >= 0 if no recursion
->>>> + *           > 0 if no recursion.
->>>>   */
->>>>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->>>>  							 unsigned long parent_ip)  
->>>
->>> And this change would not be correct now.  
->>
->> I thought it will no longer return 0 so I change it to > 0, isn't that correct?
+> To make this behaviour a bit more useful, let's drop the check for the
+> dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
+> be limited to this anyway.
 > 
-> No it is not. I removed the bit + 1 return value, which means it returns the
-> actual bit now. Which is 0 or more.
-
-Ah, the return is bit not val, I must be drunk...
-
-My apologize for the stupid comments... I'll send a v6 for this patch
-only to fix that, please let me know if this is not a good way to fix
-few lines of comments.
-
-Regards,
-Michael Wang
-
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/base/power/runtime.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> -- Steve
-> 
+> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> index ec94049442b9..fadc278e3a66 100644
+> --- a/drivers/base/power/runtime.c
+> +++ b/drivers/base/power/runtime.c
+> @@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
+>   repeat:
+>  	if (dev->power.runtime_error)
+>  		retval = -EINVAL;
+> -	else if (dev->power.disable_depth == 1 && dev->power.is_suspended
+> -	    && dev->power.runtime_status == RPM_ACTIVE)
+> +	else if (dev->power.disable_depth > 0 &&
+> +		dev->power.runtime_status == RPM_ACTIVE)
+
+IIRC there was a good reason why the original code checked for 
+disable_depth == 1 rather than > 0.  But I don't remember exactly what 
+the reason was.  Maybe it had something to do with the fact that during 
+a system sleep __device_suspend_late calls __pm_runtime_disable, and the 
+code was checking that there were no other disables in effect.  This is 
+related to the documented behavior of rpm_resume (it's supposed to fail 
+with -EACCES if the device is disabled for runtime PM, no matter what 
+power state the device is in).
+
+That probably is also the explanation for why dev->power.is_suspended 
+gets checked: It's how the code tells whether a system sleep is in 
+progress.
+
+So overall, I suspect this change should not be made.  But some other 
+improvement (like a nice comment) might be in order.
+
+Alan Stern
