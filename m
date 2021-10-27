@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDB043CD22
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874B143CD29
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238036AbhJ0PM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:12:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:44342 "EHLO foss.arm.com"
+        id S238156AbhJ0PNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:13:49 -0400
+Received: from mga02.intel.com ([134.134.136.20]:60999 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234446AbhJ0PM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:12:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1B11ED1;
-        Wed, 27 Oct 2021 08:10:32 -0700 (PDT)
-Received: from [10.57.25.122] (unknown [10.57.25.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED5B03F70D;
-        Wed, 27 Oct 2021 08:10:30 -0700 (PDT)
-Subject: Re: [PATCH] perf symbol: ignore $a/$d symbols for ARM modules
-To:     Lexi Shao <shaolexi@huawei.com>
-Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, nixiaoming@huawei.com,
-        peterz@infradead.org, qiuxi1@huawei.com, wangbing6@huawei.com
-References: <1b7fa65a-7587-b7c4-2dc0-d0f389200671@arm.com>
- <20211027123108.126944-1-shaolexi@huawei.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <c7dfbd17-85fd-b914-b90f-082abc64c9d1@arm.com>
-Date:   Wed, 27 Oct 2021 16:10:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236709AbhJ0PNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:13:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="217355195"
+X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
+   d="scan'208";a="217355195"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 08:11:20 -0700
+X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
+   d="scan'208";a="447582988"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 08:11:19 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mfkZv-001U9K-7f;
+        Wed, 27 Oct 2021 18:10:59 +0300
+Date:   Wed, 27 Oct 2021 18:10:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <YXlsAjSYEw2TbsMN@smile.fi.intel.com>
+References: <20211015202908.1c417ae2@canb.auug.org.au>
+ <YWl+0PFixaNqgIxb@smile.fi.intel.com>
+ <20211018133538.2a0dec43@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20211027123108.126944-1-shaolexi@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018133538.2a0dec43@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 18, 2021 at 01:35:38PM +1100, Stephen Rothwell wrote:
+> On Fri, 15 Oct 2021 16:14:56 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
+...
 
-On 27/10/2021 13:31, Lexi Shao wrote:
-> On 27/10/2021 18:24, James Clark wrote:
->> On 27/10/2021 10:52, Lexi Shao wrote:
->>> On ARM machine, kernel symbols from modules can be resolved to $a
->>> instead of printing the actual symbol name. Ignore symbols starting with
->>> "$" when building kallsyms rbtree.
->>>
->>> A sample stacktrace is shown as follows:
->>>
->>> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
->>> bf4a66d8 $a+0x78 ([test_module])
->>> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
->>> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
->>>
->>> On ARM machine, $a/$d symbols are used by the compiler to mark the
->>> beginning of code/data part in code section. These symbols are filtered
->>> out when linking vmlinux(see scripts/kallsyms.c ignored_prefixes), but
->>> are left on modules. So there are $a symbols in /proc/kallsyms which
->>> share the same addresses with the actual module symbols and confuses perf
->>> when resolving symbols.
->>
->> Hi Lexi,
->>
->> Is it worth using or re-implementing the entire is_ignored_symbol() function
->>from scripts/kallsyms.c? It seems like this change only fixes one occurrence,
->> but is_ignored_symbol() has a big list of other cases.
->>
->> Unless those cases are different?
->>
->> Thanks
->> James
+> Like this (on top of my previous fix - which I assume Andrew will
+> squash out of existence)?
+
+Andrew, can you incorporate this one, please?
+
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 18 Oct 2021 13:27:54 +1100
+> Subject: [PATCH] kernel.h: split out instrcutions pointer accessors
 > 
-> Hi James,
+> botton_half.h needs _THIS_IP_ to be standalone, so split that and _RET_IP_
+> out from kernel.h into the new instruction_pointer.h.  kernel.h directly
+> needs them, so include it there and replace the include of kernel.h with
+> this new file in bottom_half.h.
 > 
-> I don't think it's necessary to cover all the cases listed in
-> is_ignored_symbol(). As long as the symbols are unique and not overlapping
-> with each other, they should't cause problems in resolving symbols. So most
-> of the cases in is_ignored_symbol() should be irrelevant.
-
-Is it possible to do the filtering of the module symbols somewhere else like
-in kernel/kallsyms.c? I'm not that familiar with it but it seems like
-at one point when populating kallsyms '$...' functions are filtered out, but
-when modules are loaded the symbols are not filtered because another code path is
-used?
-
-If kallsyms has some duplicate addresses in there then isn't the bug in kallsyms
-rather than perf? And another tool could get confused too.
-
-James
-
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  include/linux/bottom_half.h         | 2 +-
+>  include/linux/instruction_pointer.h | 8 ++++++++
+>  include/linux/kernel.h              | 4 +---
+>  3 files changed, 10 insertions(+), 4 deletions(-)
+>  create mode 100644 include/linux/instruction_pointer.h
 > 
-> Lexi
-> 
->>
->>>
->>> After this patch, the module symbol name is printed:
->>>
->>> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
->>> bf4a66d8 test_func+0x78 ([test_module])
->>> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
->>> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
->>>
->>> Signed-off-by: Lexi Shao <shaolexi@huawei.com>
->>> ---
->>>  tools/perf/util/symbol.c | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>
->>> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
->>> index 0fc9a5410739..35116aed74eb 100644
->>> --- a/tools/perf/util/symbol.c
->>> +++ b/tools/perf/util/symbol.c
->>> @@ -702,6 +702,10 @@ static int map__process_kallsym_symbol(void *arg, const char *name,
->>>  	if (!symbol_type__filter(type))
->>>  		return 0;
->>>  
->>> +	/* Ignore local symbols for ARM modules */
->>> +	if (name[0] == '$')
->>> +		return 0;
->>> +
->>>  	/*
->>>  	 * module symbols are not sorted so we add all
->>>  	 * symbols, setting length to 0, and rely on
->>>
->>
+> diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
+> index 11d107d88d03..fc53e0ad56d9 100644
+> --- a/include/linux/bottom_half.h
+> +++ b/include/linux/bottom_half.h
+> @@ -2,7 +2,7 @@
+>  #ifndef _LINUX_BH_H
+>  #define _LINUX_BH_H
+>  
+> -#include <linux/kernel.h>
+> +#include <linux/instruction_pointer.h>
+>  #include <linux/preempt.h>
+>  
+>  #if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_TRACE_IRQFLAGS)
+> diff --git a/include/linux/instruction_pointer.h b/include/linux/instruction_pointer.h
+> new file mode 100644
+> index 000000000000..19e979425bda
+> --- /dev/null
+> +++ b/include/linux/instruction_pointer.h
+> @@ -0,0 +1,8 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_INSTRUCTION_POINTER_H
+> +#define _LINUX_INSTRUCTION_POINTER_H
+> +
+> +#define _RET_IP_		(unsigned long)__builtin_return_address(0)
+> +#define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
+> +
+> +#enfif /* _LINUX_INSTRUCTION_POINTER_H */
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 973c61ff2ef9..be84ab369650 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -20,6 +20,7 @@
+>  #include <linux/printk.h>
+>  #include <linux/build_bug.h>
+>  #include <linux/static_call_types.h>
+> +#include <linux/instruction_pointer.h>
+>  #include <asm/byteorder.h>
+>  
+>  #include <uapi/linux/kernel.h>
+> @@ -53,9 +54,6 @@
+>  }					\
+>  )
+>  
+> -#define _RET_IP_		(unsigned long)__builtin_return_address(0)
+> -#define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
+> -
+>  /**
+>   * upper_32_bits - return bits 32-63 of a number
+>   * @n: the number we're accessing
+> -- 
+> 2.33.0
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
