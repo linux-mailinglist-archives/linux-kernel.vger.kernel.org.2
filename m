@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4198843C656
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42C743C65E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhJ0JWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhJ0JWn (ORCPT
+        id S238341AbhJ0JY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:24:26 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:55697 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234091AbhJ0JYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:22:43 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD494C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 02:20:18 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id x123so1771811qke.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 02:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TZaeH8xfm8nuJT+C9vZxEFKjeBNQ5Q6FyX6gh6ZxM28=;
-        b=V+YDR1jCCz0mBkrA+c7zBwqLgPoV7OAalEw5gcs5ieHp/pTMOyhSSGYJ61r2zfVXiV
-         96IDdaO3fCKwr7BNjF25NuC1ZloQxAGwtMUMwtzO8+Ld1uWwj/Or0TgC9Bfk2Hc3rwJQ
-         hL9foVdBOsG9eoSLqxRjhllZRgxEuicl4ygIW+aiHqs62mfurssYmboxGCosK8a/7h6p
-         fN9h6gCfBxOAAdGUDhK74Pc4sa2IkNBFogkD+z6qCTAnzaXb6+jB4+m4g3+zVH+ZGb8P
-         da3/QtzJIr5IQda1kPPBksN8Dzss8mRoMoadmLGxS8nStJcTZ1A01ylAPJqVV32OuDvp
-         GecA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZaeH8xfm8nuJT+C9vZxEFKjeBNQ5Q6FyX6gh6ZxM28=;
-        b=RvlQXI9eMk97GZYn0ZPLX/uukxqD7/Lo+WIPFlHGlQHCt9zQ03k/uxge3FxKbaKSAN
-         /iBaN6s3rXtfIXM4TCJpOxdhvLYi/FAHFmMJZyyClfJvFQQk0ng8Muwg2/vMJqSS7MZ9
-         RAMQpsazAElj/wHJ1BcG/mC/MYT/IAMflZ5LasHL2ddJrKcDaKmcwc8mHDDs2//T2u4s
-         IslmncyNiPl8CnGQSk5szxwmdYt9YbfojMScf8pr+TVRtB9s8EV653fusYmZPLFul2bl
-         +z4h7cEXYX3IEG8AGfEoZrV154EIrICi1XL38vbQSk8+RFMgCa3DzuYPU1V71f8+IZ5R
-         HlDg==
-X-Gm-Message-State: AOAM531pOaAdgcoq7//rZuzaPmv6qq6y0uhNvaD7zoEl99Ar109FpVw5
-        0bS92JhD8+mLwqRhBPwExFyAHbZm+H6IfWggrdQ=
-X-Google-Smtp-Source: ABdhPJyquDWisQhtsVAixs3S/zN7zvLJhfe8MM1dfhnCwB6V6bSdxaB7WOAp9ZK+jgN7eFZKhXIpF4rbhnvgv3dsPhY=
-X-Received: by 2002:a05:620a:9d3:: with SMTP id y19mr987133qky.412.1635326417759;
- Wed, 27 Oct 2021 02:20:17 -0700 (PDT)
+        Wed, 27 Oct 2021 05:24:22 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfNVq6GTkz4xbW;
+        Wed, 27 Oct 2021 20:21:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635326516;
+        bh=elNCz4h0uELKfdL9FVEWHw7ypkrevedK/hgfDXaHWFI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rVEKk5rzdpRJ6Es4JsGlPR20SAOSu0ioDRiuAOlYDPn/AXAmupi8GQiYfeAYTTGST
+         Otw2+cyzFfmEVDjKTli4vbJJyweLRv64QVzL2oV+LyV/HbPETsuPyYm97UnSQjGvvq
+         i52nrVAGdUw9C1w3hpZ7T4C3UuEJbuIcY+S8grNdhn0N4FzMD2Vj/EZCzXO0Q2SoMk
+         sVDqy9jMj7EXfe4pGKLREzP8QMGtqZnkAjHLp2LkDZnRXuduIP10EA0912YSajPPZQ
+         v2/JyHemRDKMqoUrPkDCcotcyRnav2YE633of045YOXUOIKj0LrPZTlcVcqiQ7dd+E
+         TUSkZb1HGLCzA==
+Date:   Wed, 27 Oct 2021 20:21:49 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: linux-next: manual merge of the akpm-current tree with the s390
+ tree
+Message-ID: <20211027202149.2aae434d@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1635318110-1905-1-git-send-email-huangzhaoyang@gmail.com>
- <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz> <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
- <YXkNJjD4axYlmqQ5@dhcp22.suse.cz>
-In-Reply-To: <YXkNJjD4axYlmqQ5@dhcp22.suse.cz>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Wed, 27 Oct 2021 17:19:56 +0800
-Message-ID: <CAGWkznHrZ=Y3kG5j5aYdTV2294QGrQbM6251zcdGphzCGUP6dw@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: have kswapd only reclaiming use min protection on memcg
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/_KU65k4ekwOtwCMcW=ajvBF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 4:26 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 27-10-21 15:46:19, Zhaoyang Huang wrote:
-> > On Wed, Oct 27, 2021 at 3:20 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Wed 27-10-21 15:01:50, Huangzhaoyang wrote:
-> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > >
-> > > > For the kswapd only reclaiming, there is no chance to try again on
-> > > > this group while direct reclaim has. fix it by judging gfp flag.
-> > >
-> > > There is no problem description (same as in your last submissions. Have
-> > > you looked at the patch submission documentation as recommended
-> > > previously?).
-> > >
-> > > Also this patch doesn't make any sense. Both direct reclaim and kswapd
-> > > use a gfp mask which contains __GFP_DIRECT_RECLAIM (see balance_pgdat
-> > > for the kswapd part)..
-> > ok, but how does the reclaiming try with memcg's min protection on the
-> > alloc without __GFP_DIRECT_RECLAIM?
->
-> I do not follow. There is no need to protect memcg if the allocation
-> request doesn't have __GFP_DIRECT_RECLAIM because that would fail the
-> charge if a hard limit is reached, see try_charge_memcg and
-> gfpflags_allow_blocking check.
->
-> Background reclaim, on the other hand never breaches reclaim protection.
->
-> What is the actual problem you want to solve?
-Imagine there is an allocation with gfp_mask & ~GFP_DIRECT_RECLAIM and
-all processes are under cgroups. Kswapd is the only hope here which
-however has a low efficiency of get_scan_count. I would like to have
-kswapd work as direct reclaim in 2nd round which will have
-protection=memory.min.
+--Sig_/_KU65k4ekwOtwCMcW=ajvBF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
->
-> --
-> Michal Hocko
-> SUSE Labs
+Hi all,
+
+Today's linux-next merge of the akpm-current tree got a conflict in:
+
+  arch/s390/kernel/setup.c
+
+between commit:
+
+  e035389b73b1 ("s390/setup: use virtual address for STSI instruction")
+
+from the s390 tree and commits:
+
+  0d52db59796e ("memblock: rename memblock_free to memblock_phys_free")
+  13ab40b0e60e ("memblock: use memblock_free for freeing virtual pointers")
+
+from the akpm-current tree.
+
+I fixed it up (thanks, Vasily for the heads up and resolution) and can
+carry the fix as necessary. This is now fixed as far as linux-next is
+concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/s390/kernel/setup.c
+index e738a45057ac,8a378d426239..000000000000
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@@ -878,12 -884,14 +879,12 @@@ static void __init setup_randomness(voi
+  {
+  	struct sysinfo_3_2_2 *vmms;
+ =20
+ -	vmms =3D (struct sysinfo_3_2_2 *) memblock_phys_alloc(PAGE_SIZE,
+ -							    PAGE_SIZE);
+ +	vmms =3D memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+  	if (!vmms)
+  		panic("Failed to allocate memory for sysinfo structure\n");
+ -
+  	if (stsi(vmms, 3, 2, 2) =3D=3D 0 && vmms->count)
+  		add_device_randomness(&vmms->vm, sizeof(vmms->vm[0]) * vmms->count);
+- 	memblock_free_ptr(vmms, PAGE_SIZE);
+ -	memblock_phys_free((unsigned long)vmms, PAGE_SIZE);
+++	memblock_free(vmms, PAGE_SIZE);
+  }
+ =20
+  /*
+
+--Sig_/_KU65k4ekwOtwCMcW=ajvBF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF5Gi0ACgkQAVBC80lX
+0Gwl3QgAndcznrCT1UNQ57kym+1+YOUYeA7Gxjhhzmdzg1JqS0yGH111lo1vN5x5
+LAR4jDFCJ4Qu3eImYCixmoNddvQIEAncP0VDkmJOMD6cjSrV0whtTMGMLii8Im08
+usERW9P2Ey6WACVuJYPCyaeQ8w3mhVcL7qA+bCpCCT53IWihZZpynmiwECK0Syjb
+qgSARM2pRJnuDf0DrCidcm62fpDiHAG3UV/0It4VdC5uPuzYA4gWEanyGS1gWQ9u
+bD0pUeNxKzU6GUAkT+jXfPaNmUpJeRz7GBjgqx9CIamtPVdVSsNgKEi4bFMXpOnl
+/mXpUsJfEl60CvBI9xXJT+Jzdh0cEA==
+=u/U0
+-----END PGP SIGNATURE-----
+
+--Sig_/_KU65k4ekwOtwCMcW=ajvBF--
