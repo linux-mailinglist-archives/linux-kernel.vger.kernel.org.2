@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA20543C068
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4910143C06C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238784AbhJ0C6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238805AbhJ0C60 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Oct 2021 22:58:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238780AbhJ0C6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Oct 2021 22:58:21 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:47377 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237738AbhJ0C6U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:58:20 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfCxN508Bz4xbC;
-        Wed, 27 Oct 2021 13:55:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635303354;
-        bh=g5W+CO+WeiPTKymEKVkn4vlIKBKW1FoFJGu64rlrbaw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Rp44t2AbWF2WzbGgmsB0rt0hpQhpjBe79fYPi+EF3lTpiBr7Eew6RbDliTMwWsXk4
-         2kO+lfVvBCc+BOnsc7GZQ7LigWWydVIx9g0U9DbjqgpKgtIppN8/f6LP9+Vjh1FBCV
-         uY+cnuZ8Pp4cVxzge7eyyTCUxop7m0LNSkNozOArGsXYIXmqZ0Hv/1dQwbEhr84SDV
-         y8ysGKAjA0cqTL/pAAf0uRx0liXlX0J/wy89JnGbBowjUcfiuO240Xu6b9JkXi59YE
-         tRuznvCt4qgSstiSqCXY8P7aR3VfOMtf3oaQBmk1rnxZCsZJaIY/PU77V0MRu6UUvH
-         bZAQEzzEHEh0Q==
-Date:   Wed, 27 Oct 2021 13:55:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Tong Tiangen <tongtiangen@huawei.com>
-Subject: linux-next: manual merge of the irqchip tree with the risc-v tree
-Message-ID: <20211027135550.399f81b7@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 03365610C7;
+        Wed, 27 Oct 2021 02:55:53 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 22:55:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] ftrace: disable preemption when recursion locked
+Message-ID: <20211026225552.72a7ee79@rorschach.local.home>
+In-Reply-To: <78c95844-16b7-8904-b48d-3b2ccd76a352@linux.alibaba.com>
+References: <df8e9b3e-504c-635d-4e92-99cdf9f05479@linux.alibaba.com>
+        <78c95844-16b7-8904-b48d-3b2ccd76a352@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/U_bNodLW6z.M_UjdKnrtZ7r";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/U_bNodLW6z.M_UjdKnrtZ7r
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 27 Oct 2021 10:34:13 +0800
+王贇 <yun.wang@linux.alibaba.com> wrote:
 
-Hi all,
+> +/*
+> + * Preemption will be enabled (if it was previously enabled).
+> + */
+>  static __always_inline void trace_clear_recursion(int bit)
+>  {
+> +	WARN_ON_ONCE(bit < 0);
 
-Today's linux-next merge of the irqchip tree got a conflict in:
+Can you send a v7 without the WARN_ON.
 
-  arch/riscv/Kconfig
+This is an extremely hot path, and this will cause noticeable overhead.
 
-between commit:
+If something were to call this with bit < 0, then it would crash and
+burn rather quickly.
 
-  dffe11e280a4 ("riscv/vdso: Add support for time namespaces")
+-- Steve
 
-from the risc-v tree and commit:
 
-  0953fb263714 ("irq: remove handle_domain_{irq,nmi}()")
-
-from the irqchip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/Kconfig
-index 0050a2adf67b,353e28f5f849..000000000000
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@@ -62,8 -62,6 +62,7 @@@ config RISC
-  	select GENERIC_SCHED_CLOCK
-  	select GENERIC_SMP_IDLE_THREAD
-  	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
- +	select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
-- 	select HANDLE_DOMAIN_IRQ
-  	select HAVE_ARCH_AUDITSYSCALL
-  	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
-  	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
-
---Sig_/U_bNodLW6z.M_UjdKnrtZ7r
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF4v7YACgkQAVBC80lX
-0GwJ0Qf+J+jV+XDjvSicW5OM5NR5yyeOpRRaMb6Qf3arlJ9omvwv+cczlMDBIUe7
-DFb9lmkrbUNN2PF/0x7HWyGhP1ge17ZKWjliUWv1Pydhrtf+iBFPSMuh5FYcHT41
-WRZvXk0TbXa5L7J38N1bZzhSkk0LDyF1xudREvU9clkL1+LY5/bFsw0nboTR7Cwo
-O1hDMtQDdKMwAh/Fq1CmHpg6nIhqIf3RRbXVJ3QYJnr8gCEYhB9dELlspvTdQOXd
-w57DyXGPjLSbedkdI/NBjScxmaVXlrJr9OlJyxwLhoMpEpCEGPSeR2FeUAmwpyrU
-QGWBiDvtKMuobpR0dB1A92/GvpA9BQ==
-=samh
------END PGP SIGNATURE-----
-
---Sig_/U_bNodLW6z.M_UjdKnrtZ7r--
+> +
+> +	preempt_enable_notrace();
+>  	barrier();
+>  	trace_recursion_clear(bit);
+>  }
