@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6AD43C259
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDB143C25C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239704AbhJ0Fyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 01:54:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51288 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236625AbhJ0Fym (ORCPT
+        id S239711AbhJ0Fz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:55:29 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:34936 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236625AbhJ0Fz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:54:42 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DEDA61FD4A;
-        Wed, 27 Oct 2021 05:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635313936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eYetLBlAcojUYZGAtj4Ll7PYw0ihUehplkOn+pQk5fc=;
-        b=swdqjHjYrEFfj86WvsqxVcWvw+ioDZFBJ7EV0euU5G1mrIpIlxmfjTj4ht6sndtLQLptFU
-        rkEu+ZmOXM5O7BNVDt//B8nj79qjSH5rf96Y2da0C7ZheP+88pyIQZ6VNTiRD80K9gwIxg
-        0AKo9uvODwqOK/Bg1nOle5quATMEfqs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635313936;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eYetLBlAcojUYZGAtj4Ll7PYw0ihUehplkOn+pQk5fc=;
-        b=RIl8BhaNn++LlFjZld6LWwAiEqkOWUR/wXzVAID0U8YP1x2WZ+n8mleOJhxi9+iw6/t8M2
-        J0ibryUAR6vb9zDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 728A513E6D;
-        Wed, 27 Oct 2021 05:52:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BycVGRDpeGEnTgAAMHmgww
-        (envelope-from <osalvador@suse.de>); Wed, 27 Oct 2021 05:52:16 +0000
-Date:   Wed, 27 Oct 2021 07:52:14 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>
-Subject: Re: [PATCH] hugetlb: remove unnecessary set_page_count in
- prep_compound_gigantic_page
-Message-ID: <YXjpDoa9yvtlBuJl@localhost.localdomain>
-References: <20211026220635.35187-1-mike.kravetz@oracle.com>
+        Wed, 27 Oct 2021 01:55:28 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19R5r1o9048965;
+        Wed, 27 Oct 2021 00:53:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635313981;
+        bh=G1G/nxbLKPZnpWOP2ZsyQlrDr5BUxyCaW1OxAXd1tp0=;
+        h=From:To:CC:Subject:Date;
+        b=hr7y1xPwovUPqGpyuzRQ7cNuqiZfwI/pBe7SzbjOxH7BEHGUmzRS8am6MGWsLimv+
+         fAwdHmSMFU55rQMwXS8+TJ1MQwCQcx12Hqdpk5Wt1k2yGiDEbU64gnAVsyBWKtFHGV
+         urYXbAmGJEQ7clWW7XklMg0oEz2l8Estlc/WRXgo=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19R5r1fr101478
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Oct 2021 00:53:01 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 27
+ Oct 2021 00:53:01 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 27 Oct 2021 00:53:01 -0500
+Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19R5qvNN100051;
+        Wed, 27 Oct 2021 00:52:58 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [PATCH 1/2] dmaengine: ti: k3-udma: Fix NULL pointer dereference error for BCDMA
+Date:   Wed, 27 Oct 2021 11:22:50 +0530
+Message-ID: <20211027055254.10912-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026220635.35187-1-mike.kravetz@oracle.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 03:06:35PM -0700, Mike Kravetz wrote:
-> In commit 7118fc2906e29 ("hugetlb: address ref count racing in
-> prep_compound_gigantic_page"), page_ref_freeze is used to atomically
-> zero the ref count of tail pages iff they are 1.  The unconditional
-> call to set_page_count(0) was left in the code.  This call is after
-> page_ref_freeze so it is really a noop.
-> 
-> Remove redundant and unnecessary set_page_count call.
-> 
-> Fixes: 7118fc2906e29 ("hugetlb: address ref count racing in prep_compound_gigantic_page")
-> Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+bcdma_get_*() checks if bchan is already allocated by checking if it
+has a NON NULL value. For the error cases, bchan will have error value
+and bcdma_get_*() considers this as already allocated (PASS) since the
+error values are NON NULL. This results in NULL pointer dereference
+error while de-referencing bchan.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Reset the value of bchan to NULL if the allocation actually fails.
 
-> ---
->  mm/hugetlb.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 906fe8a3b93d..88047a367080 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1795,7 +1795,6 @@ static bool __prep_compound_gigantic_page(struct page *page, unsigned int order,
->  		} else {
->  			VM_BUG_ON_PAGE(page_count(p), p);
->  		}
-> -		set_page_count(p, 0);
->  		set_compound_head(p, page);
->  	}
->  	atomic_set(compound_mapcount_ptr(page), -1);
-> -- 
-> 2.31.1
-> 
-> 
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+---
+ drivers/dma/ti/k3-udma.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index a35858610780..14ae28830871 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -1348,6 +1348,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+ {
+ 	struct udma_dev *ud = uc->ud;
+ 	enum udma_tp_level tpl;
++	int ret;
+ 
+ 	if (uc->bchan) {
+ 		dev_dbg(ud->dev, "chan%d: already have bchan%d allocated\n",
+@@ -1365,8 +1366,11 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+ 		tpl = ud->bchan_tpl.levels - 1;
+ 
+ 	uc->bchan = __udma_reserve_bchan(ud, tpl, -1);
+-	if (IS_ERR(uc->bchan))
+-		return PTR_ERR(uc->bchan);
++	if (IS_ERR(uc->bchan)) {
++		ret = PTR_ERR(uc->bchan);
++		uc->bchan = NULL;
++		return ret;
++	}
+ 
+ 	uc->tchan = uc->bchan;
+ 
 -- 
-Oscar Salvador
-SUSE Labs
+2.17.1
+
