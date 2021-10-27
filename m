@@ -2,121 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191E743CA32
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F24F43CA39
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242049AbhJ0M67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:58:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53319 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235988AbhJ0M66 (ORCPT
+        id S242051AbhJ0NAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235978AbhJ0NAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:58:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635339393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dV1Z80ykRADd512OHhKXIV+1XGUp97f6U0RAWP3BwzU=;
-        b=cOELT0zGVbEYEJOPWA/AYrrSygxSf/BwaqQlL12f50gQTuNZ/xzOjDz+Djxjcz6Cj65FV9
-        iEHt0Y3ugj0nu2AXXsZVGj316hR8Jp5FO64Yu7+9XOPOoH1AKptyfG/Ypr6/lmTVQo/96n
-        S48iNnLxZXAqlThI2Od9g8iKhbIIpqY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-SZeQhNroO8igP6qaWeVcTA-1; Wed, 27 Oct 2021 08:56:32 -0400
-X-MC-Unique: SZeQhNroO8igP6qaWeVcTA-1
-Received: by mail-wm1-f71.google.com with SMTP id z137-20020a1c7e8f000000b0030cd1800d86so1232909wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:56:31 -0700 (PDT)
+        Wed, 27 Oct 2021 09:00:50 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D590C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:58:25 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id br18so2309805qkb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 05:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bluespec-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=iZIEhrM5Xg4JMkN+j+ydaHItGi0m/Y15lfuP7u4Lxr0=;
+        b=nH0DKYQFwd9lTsJcaWkuTZvQ6JuIQa7MJ/YR44rR4T+pDKuu8TvSlmmDoQK8tAvmIz
+         9cTuOWvGUBIUgWAGbESd0mBpnmto2gYZgVNFFWkeQAo2c5z+fpJLii4kpi7IQnbX8dqm
+         tq+Gp43GYTrTXIGe/jqDAR19THGU0DjVaZpymqxTEJmB+FaWWkED+LxjsCJ5n3NBCVhN
+         S6AV11Q4S0aLCQ9w+tpUlwiAY+sd3l1EIbX8IY2FrB7t5ivolXcOm01ZKdpyYrDQDBKk
+         UcA0gpOplD9A0gGrQwzlsMGSDeLcf5o6M6ZZxO7cOZo4IwtYU54DdpKMy2yEEHQ7d3pX
+         /z9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=dV1Z80ykRADd512OHhKXIV+1XGUp97f6U0RAWP3BwzU=;
-        b=lPaS/isdAjvf2qGj1syyqF0OFGi86AqOkZaB32QKhvp5AopQ/UHfCQBfOyu0vLKIEM
-         iLxCMecjHaWdOpqcbwOwx6MOuXjihHyy+SUgjJN/rceSYV7P+GdKKmqMt+lw0m38T1xX
-         yPpf2Ic5dLPSB5wxL8I83KxPkgXZTjduq9okkw+AhWsgnprZLQIF1alRVav3aZHUtcsF
-         lpLq5SRW5HWlKDuuUp8WdOzSjJISOq4fSVsYWLDx+Ph/hMENGfJP6Oa0WQxRJKIN7i79
-         exRG6nyluoPmzqmk1jJB5ww6iMTd8BEZsBEH6fE1+8YSC1gKLG2Ks8XEQLpi6FYZST4c
-         +CyQ==
-X-Gm-Message-State: AOAM5311vxaBkwOmCAE2NhjPa4lQ0Uk0BotFejl8qRa4bpxqZG1FiW9z
-        +qgW+b+v1qRamwcXA9u+31/pESfXBjss7KqpueU1suPkYpQy44BuZ2GDbGV4U9hqrB1vWW+5GvJ
-        FidkDwEKN33CCdJezVPz7PjbW
-X-Received: by 2002:a5d:43c5:: with SMTP id v5mr1219570wrr.11.1635339390576;
-        Wed, 27 Oct 2021 05:56:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKaVjORReycoaANOAduGQwiJYFkPr9IAe/CbTP2Q74FGscfijWFU6rg2CScZQ7+TQK5c04xw==
-X-Received: by 2002:a5d:43c5:: with SMTP id v5mr1219550wrr.11.1635339390425;
-        Wed, 27 Oct 2021 05:56:30 -0700 (PDT)
-Received: from [192.168.1.128] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id x2sm3349278wmj.3.2021.10.27.05.56.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 05:56:30 -0700 (PDT)
-Message-ID: <5a01bedd-9150-b23c-7e2a-08d2e7da0fe6@redhat.com>
-Date:   Wed, 27 Oct 2021 14:56:28 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=iZIEhrM5Xg4JMkN+j+ydaHItGi0m/Y15lfuP7u4Lxr0=;
+        b=05KDoKxYY51gg0abS2HLoFO7lJqsXyWhCOYXwkf1CCt2breII6EfPC6mjg7z2qz8XP
+         EuHXVkT1u4JfWFobqnCCbfX+u259w9mIXemrSlgsBcC+JvjZcla0MxycxZs93YwD17nn
+         JLUcI8FY6+guRqtcZtzTW9ZJ8jZ5pE2Poi6764V0G8W+i302M3MsW0D+1GIHPAPPy9S/
+         4kZ2338ekrFfiW03r9xUZsuzuZ0vL0vhUFABjchUl0p+eVO4EB99sk2SvV/SblxVYQc8
+         lv9cy0nvj8Va7QcXGYLONLJaFeP9/nWFeP6LrRI8roRhe7I1pyvDK/Wc9F0yKjJAy2Zd
+         gTNw==
+X-Gm-Message-State: AOAM530d3SSUznVkM0fBXbz84BAYywcSmwQblAgNGwKuPue65toNUOjE
+        1wNiR/ALQqMp5seHJbFpJVc6/qQjXgPy
+X-Google-Smtp-Source: ABdhPJxAplQVToUab2rh+aoWt0sbS4SpO8Yf+M4Wcr6jSnCrGc2v5oShu7WFk7SV329UmwgzFBrhTQ==
+X-Received: by 2002:a37:bd01:: with SMTP id n1mr24119608qkf.274.1635339504150;
+        Wed, 27 Oct 2021 05:58:24 -0700 (PDT)
+Received: from bruce.bluespec.com ([154.3.44.94])
+        by smtp.gmail.com with ESMTPSA id h13sm2578923qko.27.2021.10.27.05.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 05:58:22 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 08:58:20 -0400
+From:   Darius Rad <darius@bluespec.com>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [RFC PATCH v8 09/21] riscv: Add task switch support for vector
+Message-ID: <YXlM7Ipsrz0bgv47@bruce.bluespec.com>
+Mail-Followup-To: Greentime Hu <greentime.hu@sifive.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+References: <YVRp5uWFGQrwBpgf@bruce.bluespec.com>
+ <CAHCEeh+dA9243=PwNtYvyU1Myu_E8YO2g4UNACxRogQ=6UavLQ@mail.gmail.com>
+ <YVxZspMO7rAvtMBS@bruce.bluespec.com>
+ <3c9797f6-2fd3-5530-ba34-6e4c4deec984@sifive.com>
+ <YXFGAqTzHMeQA+R+@bruce.bluespec.com>
+ <CABvJ_xjMyZ3HDLinMvY88HtKywb=cwhQNOOCZYTEeL407Gyz2A@mail.gmail.com>
+ <YXKVLtT2U2g3JDrm@bruce.bluespec.com>
+ <CAHCEehKpA=d1phuAM1tdeyrp-CYQRmFxGTpvuJqWNMjRCMpWfw@mail.gmail.com>
+ <YXbZtTR7TBHvdqck@bruce.bluespec.com>
+ <CAHCEeh++tAWVkhg7uEeWGdwp6UDWqShxn8ACWMvApCkiGfgZgQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kees Cook <keescook@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210927142816.2069269-1-arnd@kernel.org>
- <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local>
- <878ryeit9i.fsf@intel.com>
- <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com>
- <3604fb90-f6c3-0fa2-c864-7f1795caee1e@redhat.com>
- <CAK8P3a0_9U0MDLcNG8GL_ZDCGQAsB=G7DBC0k1BYB1HNQTbu4Q@mail.gmail.com>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <CAK8P3a0_9U0MDLcNG8GL_ZDCGQAsB=G7DBC0k1BYB1HNQTbu4Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHCEeh++tAWVkhg7uEeWGdwp6UDWqShxn8ACWMvApCkiGfgZgQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 14:52, Arnd Bergmann wrote:
-
-[snip]
-
->>
->> @@ -104,7 +105,6 @@ config DRM_FBDEV_EMULATION
->>         bool "Enable legacy fbdev support for your modesetting driver"
->>         depends on DRM
->>         depends on FB
->> -       select DRM_KMS_HELPER
->>         select FB_CFB_FILLRECT
->>         select FB_CFB_COPYAREA
->>         select FB_CFB_IMAGEBLIT
+On Tue, Oct 26, 2021 at 12:44:31PM +0800, Greentime Hu wrote:
+> Darius Rad <darius@bluespec.com> 於 2021年10月26日 週二 上午12:22寫道：
+> >
+> > On Mon, Oct 25, 2021 at 12:47:49PM +0800, Greentime Hu wrote:
+> > > Darius Rad <darius@bluespec.com> 於 2021年10月22日 週五 下午6:40寫道：
+> > > >
+> > > > On Fri, Oct 22, 2021 at 11:52:01AM +0800, Vincent Chen wrote:
+> > > > > On Thu, Oct 21, 2021 at 6:50 PM Darius Rad <darius@bluespec.com> wrote:
+> > > > > >
+> > > > > > On Wed, Oct 20, 2021 at 06:01:31PM -0700, Paul Walmsley wrote:
+> > > > > > > Hello Darius,
+> > > > > > >
+> > > > > > > On Tue, 5 Oct 2021, Darius Rad wrote:
+> > > > > > >
+> > > > > > > > On Mon, Oct 04, 2021 at 08:36:30PM +0800, Greentime Hu wrote:
+> > > > > > > > > Darius Rad <darius@bluespec.com> 於 2021年9月29日 週三 下午9:28寫道：
+> > > > > > > > > >
+> > > > > > > > > > On Tue, Sep 28, 2021 at 10:56:52PM +0800, Greentime Hu wrote:
+> > > > > > > > > > > Darius Rad <darius@bluespec.com> 於 2021年9月13日 週一 下午8:21寫道：
+> > > > > > > > > > > >
+> > > > > > > > > > > > On 9/8/21 1:45 PM, Greentime Hu wrote:
+> > > > > > > > > > > > > This patch adds task switch support for vector. It supports partial lazy
+> > > > > > > > > > > > > save and restore mechanism. It also supports all lengths of vlen.
+> > > > > > >
+> > > > > > > [ ... ]
+> > > > > > >
+> > > > > > > > > > > > So this will unconditionally enable vector instructions, and allocate
+> > > > > > > > > > > > memory for vector state, for all processes, regardless of whether vector
+> > > > > > > > > > > > instructions are used?
+> > > > > > > > > > >
+> > > > > > > > > > > Yes, it will enable vector if has_vector() is true. The reason that we
+> > > > > > > > > > > choose to enable and allocate memory for user space program is because
+> > > > > > > > > > > we also implement some common functions in the glibc such as memcpy
+> > > > > > > > > > > vector version and it is called very often by every process. So that
+> > > > > > > > > > > we assume if the user program is running in a CPU with vector ISA
+> > > > > > > > > > > would like to use vector by default. If we disable it by default and
+> > > > > > > > > > > make it trigger the illegal instruction, that might be a burden since
+> > > > > > > > > > > almost every process will use vector glibc memcpy or something like
+> > > > > > > > > > > that.
+> > > > > > > > > >
+> > > > > > > > > > Do you have any evidence to support the assertion that almost every process
+> > > > > > > > > > would use vector operations?  One could easily argue that the converse is
+> > > > > > > > > > true: no existing software uses the vector extension now, so most likely a
+> > > > > > > > > > process will not be using it.
+> > > > > > > > >
+> > > > > > > > > Glibc ustreaming is just starting so you didn't see software using the
+> > > > > > > > > vector extension now and this patchset is testing based on those
+> > > > > > > > > optimized glibc too. Vincent Chen is working on the glibc vector
+> > > > > > > > > support upstreaming and we will also upstream the vector version glibc
+> > > > > > > > > memcpy, memcmp, memchr, memmove, memset, strcmp, strlen. Then we will
+> > > > > > > > > see platform with vector support can use vector version mem* and str*
+> > > > > > > > > functions automatically based on ifunc and platform without vector
+> > > > > > > > > will use the original one automatically. These could be done to select
+> > > > > > > > > the correct optimized glibc functions by ifunc mechanism.
+> > > > > > >
+> > > > > > > In your reply, I noticed that you didn't address Greentime's response
+> > > > > > > here.  But this looks like the key issue.  If common library functions are
+> > > > > > > vector-accelerated, wouldn't it make sense that almost every process would
+> > > > > > > wind up using vector instructions?  And thus there wouldn't be much point
+> > > > > > > to skipping the vector context memory allocation?
+> > > > > > >
+> > > > > >
+> > > > > > This issue was addressed in the thread regarding Intel AMX I linked to in a
+> > > > > > previous message.  I don't agree that this is the key issue; it is one of a
+> > > > > > number of issues.  What if I don't want to take the potential
+> > > > > > power/frequency hit for the vector unit for a workload that, at best, uses
+> > > > > > it for the occasional memcpy?  What if the allocation fails, how will that
+> > > > >
+> > > > > Hi Darius,
+> > > > > The memcpy function seems not to be occasionally used in the programs
+> > > > > because many functions in Glibc use memcpy() to complete the memory
+> > > > > copy. I use the following simple case as an example.
+> > > > > test.c
+> > > > > void main(void) {
+> > > > >     return;
+> > > > > }
+> > > > > Then, we compile it by "gcc test.c -o a.out" and execute it. In the
+> > > > > execution, the memcpy() has been called unexpectedly. It is because
+> > > > > many libc initialized functions will be executed before entering the
+> > > > > user-defined main function. One of the example is __libc_setup_tls(),
+> > > > > which is called by __libc_start_main(). The __libc_setup_tls() will
+> > > > > use memcpy() during the process of creating the Dynamic Thread Vector
+> > > > > (DTV).
+> > > > >
+> > > > > Therefore, I think the memcpy() is widely used in most programs.
+> > > > >
+> > > >
+> > > > You're missing my point.  Not every (any?) program spends a majority of the
+> > > > time doing memcpy(), and even if a program did, all of my points are still
+> > > > valid.
+> > > >
+> > > > Please read the discussion in the thread I referenced and the questions in
+> > > > my prior message.
+> > > >
+> > >
+> > > Hi Darius,
+> > >
+> > > As I mentioned before, we want to treat vector ISA like a general ISA
+> > > instead of a specific IP. User program should be able to use it
+> > > transparently just like FPU.
+> > > It seems that the use case you want is asking user to use vector like
+> > > a specific IP, user program should ask kernel before they use it and
+> > > that is not what we want to do in this patchset.
+> > >
+> >
+> > Hi Greentime,
+> >
+> > Right.
+> >
+> > But beyond what I want to do or what you want to do, is what *should* Linux
+> > do?  I have attempted to provide evidence to support my position.  You have
+> > not responded to or addressed the majority of my questions, which is
+> > concerning to me.
 > 
-> This fails because of all the other drivers that try to 'select DRM_KMS_HELPER'.
-> Kconfig will now complain about a symbol that gets selected while its
-> dependencies
-> are not met.
+> Hi Darius,
 > 
-> To work around that, every single driver that has 'selects DRM_KMS_HELPER' would
-> now have to also list 'depends on (DRM_FBDEV_EMULATION && FB) ||
-> !DRM_FBDEV_EMULATION'.
->
-
-Ah, I see now. Thanks a lot for the explanation.
- 
->        Arnd
+> What is your majority questions?
 > 
 
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+1. How will memory allocation failures for context state memory be reported
+to user space?
+
+2. How will a system administrator (i.e., the user) be able to effectively
+manage a system where the vector unit, which could have a considerable area
+and/or power impact to the system, has one or more of the following
+properties:
+
+  a. A single vector unit shared among two or more harts,
+
+  b. Additional power consumption when the vector unit is enabled and idle
+versus not being enabled at all,
+
+  c. For a system which supports variable operating frequency, a reduction
+in the maximum frequency when the vector unit is enabled, and/or
+
+  d. The inability to enter low power states and/or delays to low power
+states transitions when the vector unit is enabled.
+
+3. You contend that the RISC-V V-extension resembles ARM SVE/SVE2, at least
+more than Intel AMX.  I do not agree, but nevertheless, why then does this
+patchset not behave similar to SVE?  On arm64, SVE is only enabled and
+memory is only allocated on first use, *not* unconditionally for all tasks.
+
+// darius
 
