@@ -2,83 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A5C43CD8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE4543CD93
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242774AbhJ0PdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:33:05 -0400
-Received: from vern.gendns.com ([98.142.107.122]:33144 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237741AbhJ0PdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:33:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=cv3IcHnNlahP+LezCFcTvbfUlcwZLi0+li0AqGLVFGE=; b=kBd4OUVOWU8PuBf4IQZg37wSWb
-        XKc3sF3eABsVwpEE50St+lRS+P8v6zXC1pNn6dMnTqT0n9T7IEhNb9c6m1CQr+Dm1StOqljILhy31
-        MygNt9PmmdW6QH/4R7uKygrkCmccxIj6dX0sx+/cyeL4WGsBCg/kuJXAih8SfaDMo2tBGP1yHChVf
-        R6dLbHxoPp2imcSois+aBI154KXcE1rEULTnxKOko90cZJce2Ws0JP7x8EaLNHXh9RfcweGmu+BOx
-        AhrS1VjA1sKMFFeOlHCVQzFimHgPZm2Gy8U1K4dCAo0A18kj9NZ815zVLmSi+BHkGorkphcVeB5Sr
-        Tg4VjUpQ==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:42878 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1mfksm-0001ad-OS; Wed, 27 Oct 2021 11:30:36 -0400
-Subject: Re: [PATCH 4/8] docs: counter: add unit timer sysfs attributes
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20211017013343.3385923-1-david@lechnology.com>
- <20211017013343.3385923-5-david@lechnology.com> <YXj1xc6DdeOrUKjW@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <6e96cdd9-d1f1-6861-59eb-c4e6b9a2ffb9@lechnology.com>
-Date:   Wed, 27 Oct 2021 10:30:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S242799AbhJ0Pd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:33:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20277 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242843AbhJ0PdW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:33:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635348656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQB+Xmr9N1Y1FmI08ZieChAnebOdyH//VWSsmPfQD3s=;
+        b=Vy65hEAWhHvB1kdyVlzhILr/4rXyvNL67rODbn1ZjHzKk2BRLlBjtfQ+MyYiyhsORWDQQ/
+        M3WnU4Ivr6cBLrzoY+QZjgxL0uVOXtX7IVgPod9/kBZjNAHyvdpTZQZ381OPzfO/FRl6zA
+        YQXhyfawgexO/5EJ6sqajtzSSnyEHn0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-lrJQOzhlNt-iOqwN0jEkag-1; Wed, 27 Oct 2021 11:30:55 -0400
+X-MC-Unique: lrJQOzhlNt-iOqwN0jEkag-1
+Received: by mail-ed1-f69.google.com with SMTP id u17-20020a50d511000000b003daa3828c13so2664767edi.12
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:30:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wQB+Xmr9N1Y1FmI08ZieChAnebOdyH//VWSsmPfQD3s=;
+        b=mXlDyfim7WzVdaktmEUD+kAOf4mTVFewm6vu42ggn2t2ziJ9/yYnUzUu5zaj6cqFVH
+         3jjVy+IOoM7B7qVLSv+EJYpN59SBdrkDIb3+Dk7E2xhj0iXJDIxtlu1s/RfHH6sOURNc
+         Qzti1Uct51/NT6AEtJSqsfXobA0gI3bwvY1tFGoKNaa/Maz+gxZZC21sQKTy/iULNBK+
+         OGLoBMIY55MZXrlUhF3rc0jgyarMNscSrtRgdwXHTlMLz9HjKbFKj+32TnBA2WjItlcR
+         lmRHRHLHPZ5R1ANz+JPs4q9uasPf19r/6cqVDnxY73RsSe283X3/Xe1uIZN6PTLGQ0d8
+         OQUg==
+X-Gm-Message-State: AOAM5301O2ogsEwc4M7hRDlSqcy4YwmDcUdqAv3LP6fyad5WL5SGsw1K
+        +qr8B2wAmXMqISfkFGAwcsO36UtOUHT3RzSvBofi82/0EbHgWpw5tva6vdva/R4tpHVnQQGu704
+        TW0TcaSkLt0sXINxuZRB02fTR
+X-Received: by 2002:a17:906:4895:: with SMTP id v21mr41075482ejq.299.1635348652157;
+        Wed, 27 Oct 2021 08:30:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFKIXIPVbnbAHJYpa6zXhIHVfVRMLcWwHSQJCgAoYtJ+kBQcY1K9STnfFWcI2CKjdQzseFLQ==
+X-Received: by 2002:a17:906:4895:: with SMTP id v21mr41075442ejq.299.1635348651885;
+        Wed, 27 Oct 2021 08:30:51 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id q17sm104812ejp.106.2021.10.27.08.30.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 08:30:51 -0700 (PDT)
+Message-ID: <84e4aef5-0085-49ed-a97f-d267bfbac5cd@redhat.com>
+Date:   Wed, 27 Oct 2021 17:30:50 +0200
 MIME-Version: 1.0
-In-Reply-To: <YXj1xc6DdeOrUKjW@shinobu>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 16/17] [NOT-FOR-MERGE] media: atomsip: pci: add DMI match
+ for Microsoft Surface 3 with broken DMI (OEMB)
 Content-Language: en-US
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Aniket Bhattacharyea <aniketmail669@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alan <alan@linux.intel.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20211017161958.44351-1-kitakar@gmail.com>
+ <20211017161958.44351-17-kitakar@gmail.com>
+ <71b5b886-2ca1-27a9-6776-b3bcc430e5ed@redhat.com>
+ <ace1264d7254f7159865602614d70caf7ff4b609.camel@gmail.com>
+ <a2aa76c3-a8bb-99ef-9f5a-e62cc503a1e2@redhat.com>
+ <096e953682fed458d438d1cde57371d7358b5d7b.camel@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <096e953682fed458d438d1cde57371d7358b5d7b.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 1:46 AM, William Breathitt Gray wrote:
-> On Sat, Oct 16, 2021 at 08:33:39PM -0500, David Lechner wrote:
->> This documents new unit timer sysfs attributes for the counter
->> subsystem.
->>
->> Signed-off-by: David Lechner <david@lechnology.com>
-> 
-> Hello David,
-> 
-> The unit timer is effectively a Count in its own right, so instead of
-> introducing new sysfs attributes you can just implement it as another
-> Count in the driver. Count 0 is "QPOSCNT", so set the name of this new
-> Count 1 as "Unit Timer" (or the datasheet naming if more apt) to
-> differentiate the Counts. You can then provide the "unit_timer_enable",
-> "unit_timer_period", and "unit_timer_time" functionalities as respective
-> Count 1 extensions ("enable" and "period") and Count 1 "count".
-> 
-> If you believe it appropriate, you can provide the raw timer ticks via
-> the Count 1 "count" while a nanoseconds interface is provided via a
-> Count 1 extension "timeout" (or something similar).
-> 
+Hi,
 
-Sounds reasonable.
+On 10/27/21 16:47, Tsuchiya Yuto wrote:
+> On Thu, 2021-10-21 at 20:46 +0200, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 10/21/21 11:46, Tsuchiya Yuto wrote:
+>>> On Mon, 2021-10-18 at 09:56 +0200, Hans de Goede wrote:
+>>>> Hi,
+>>>>
+>>>> On 10/17/21 18:19, Tsuchiya Yuto wrote:
+>>>>> This commit is added for Surface 3 with broken DMI table. HACK-ish.
+>>>>> Not intended for upstreaming. Thus, NOT-FOR-MERGE. But, if someone
+>>>>> knows a nicer way to address this, comments are welcome...
+>>>>>
+>>>>>> 8-----------------------------------------------------------------8<
+>>>>>
+>>>>> On some Microsoft Surface 3, the DMI table gets corrupted for unknown
+>>>>> reasons and breaks existing DMI matching used for device-specific quirks.
+>>>>>
+>>>>> This commit adds the (broken) DMI data into dmi_system_id tables used
+>>>>> for quirks so that the driver can enable quirks even on the affected
+>>>>> systems.
+>>>>>
+>>>>> On affected systems, the DMI data will look like this:
+>>>>>
+>>>>>         $ grep . /sys/devices/virtual/dmi/id/{bios_vendor,board_name,board_vendor,\
+>>>>>         chassis_vendor,product_name,sys_vendor}
+>>>>>         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
+>>>>>         /sys/devices/virtual/dmi/id/board_name:OEMB
+>>>>>         /sys/devices/virtual/dmi/id/board_vendor:OEMB
+>>>>>         /sys/devices/virtual/dmi/id/chassis_vendor:OEMB
+>>>>>         /sys/devices/virtual/dmi/id/product_name:OEMB
+>>>>>         /sys/devices/virtual/dmi/id/sys_vendor:OEMB
+>>>>
+>>>> I wonder what the bios_date field contains ? Typically when the DMI strings
+>>>> are no good (e.g. often they contain "Default String" or "To be filled by OEM")
+>>>> we add a check on the bios-date, which together with the broken strings is
+>>>> considered unique enough to still allow a match with broken strings in the
+>>>> kernel.
+>>>
+>>> Thank you so much for the comment :-)
+>>>
+>>> Here is the full output of "/sys/devices/virtual/dmi/id/*" (not showing
+>>> files that need root permission to read):
+>>>
+>>>         $ grep . /sys/devices/virtual/dmi/id/*
+>>>         /sys/devices/virtual/dmi/id/bios_date:03/09/2015
+>>>         /sys/devices/virtual/dmi/id/bios_release:5.6
+>>>         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
+>>>         /sys/devices/virtual/dmi/id/bios_version:1.51116.238
+>>
+>> Interesting, this is the latest BIOS from july 2019 according to:
+>> https://support.microsoft.com/en-us/surface/surface-3-update-history-5d86a7bc-03f7-2d27-d858-e90ce637fb52
+>> yet the date is still set to 03/09/2015.
+> 
+> Yeah, I'm a little bit confused about this.
+
+Yes this is unusual, bit it just seems to be how Microsoft does things
+on the Surface 3.
+
+>> I just checked and the BIOS with not corrupted DMI strings also keeps
+>> the date at 03/09/2015 in BIOS updates.
+>>
+>> So the date is correct, and together with matching a coupleof the OEMB-s
+>> (which I've never seen anywhere else either) this should be plenty
+>> unique.
+>>
+>> So this not only allows adding this mathc to atomisp, but also to fix
+>> sound + wmi on bad DMI data OEMB Surface 3-s, by updating this patch:
+>>
+>> https://github.com/linux-surface/linux-surface/blob/2fb7e9ae91350098db9a280277f424272816a9ab/patches/5.5/0003-surface3-oemb.patch
+>>
+>> To include the BIOS-date match and then submitting this upstream
+>> (as 2 separate patches please).
+>>
+>> Tsuchiya, I take it that your Surface 3 has the OEMB issue, so you
+>> can actually test this ?
+> 
+> Yes, my surface3 is also affected and I can test this.
+> 
+>> If you can prepare 2 patches for the sound + wmi then; and submit
+>> them upstream that would be great. Please Cc me on both patches.
+> 
+> Thank you for the suggestion, but I started having a mixed feeling about
+> sending this kind of patches... This "OEMB" issue is not a design by
+> manufacturers, but simply just it got broken after something (maybe a
+> force power off?). On the other hand, I know there are also indeed some
+> people affected by this issue other than me...
+> 
+> If possible, I rather want to fix this broken DMI table, but I couldn't
+> find the way until now though.
+> 
+> But again, thank you for the suggestion. I'll consider sending the
+> patches when I gave up fixing it...
+
+Since other people are affected too, fixing this is only really useful
+if the fix is doable by others too.
+
+OTOH I just checked:
+
+https://github.com/linuxhw/DMI
+
+Which is a database of all dmidecode-s uploaded to:
+https://linux-hardware.org/
+
+And _zero_ of the 56358 dmidecode outputs available
+there contains OEMB, so this seems to be quite unique to the
+Surface 3. Which, esp. together with the BIOS date makes the DMI
+match definitely unique enough. Sometimes DMI strings change
+on a BIOS update (not break like this, but just change) so
+having 2 entries for a single device-model is not unheard of.
+
+So my cents is to just go with adding the extra entry to
+dmi_system_id tables and to not spend too much time on this.
+
+> <Below is completely off topic from atomisp>
+> 
+> I think some useful BIOS option might be just hidden. So, I'd like to
+> try this way. I already find the string "Restore Defaults" using
+> uefitool/ifrextract:
+> 
+>     0x13429 	Form: Save & Exit, FormId: 0x2719 {01 86 19 27 4C 00}
+>     [...]
+>     0x134E0 		Suppress If {0A 82}
+>     0x134E2 			QuestionId: 0x1C3 equals value 0x5 {12 06 C3 01 05 00}
+>     0x134E8 			Ref: Restore Defaults, VarStoreInfo (VarOffset/VarName): 0xFFFF, VarStore: 0x0, QuestionId: 0x1BC, FormId: 0x2719 {0F 0F 5B 00 5C 00 BC 01 00 00 FF FF 00 19 27}
+>     0x134F7 		End If {29 02}
+>     [...]
+> 
+> I currently don't know how I can call this. I want to try this way when
+> I have some time...
+
+So this is not a normal hidden item which just changes a setting (for which
+there are known ways to change the setting without flashing the BIOS).
+
+But this is some sorta action item which can only be enabled by flashing
+a custom BIOS, assuming we can somehow replace the Surface 3 custom
+setup menu with the standard IFR based menu, which in itself is a problem...
+
+Regards,
+
+Hans
 
