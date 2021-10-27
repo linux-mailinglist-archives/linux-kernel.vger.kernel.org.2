@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C4243D362
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394E343D364
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244094AbhJ0VC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S244152AbhJ0VCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239196AbhJ0VCZ (ORCPT
+        with ESMTP id S244149AbhJ0VCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:02:25 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7632AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 13:59:59 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id t5-20020a05622a180500b002aba5c03c5eso928685qtc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 13:59:59 -0700 (PDT)
+        Wed, 27 Oct 2021 17:02:39 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B61C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:00:13 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id n9-20020a63e049000000b002951886c1c5so2180269pgj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=0GIbMz2nXytWEz1I//ilSEDA+vtJktC6KJwGcIeR3HQ=;
-        b=WqC05lhqiNrvpuMTIPv4xuxZe1CYBGBTK/Dju6//MpTCOO3cE9JTJQS8+4MSbiH4ne
-         fF+WTJ6eQ9HYI08zSQQERMu3qFzou499RsN2dcG97QC3ryg+rstVgT3ac+cAOsJo4t6/
-         fkQ24AbgXBerzeKy1TLX2fSKIjhvUQ05W7ZlSsC2YzKBhwuEikTYo65yhsIJW/OIkznQ
-         CwzQP2KjtCDpEQp8Q7JIwoNjguJJDnLF1tnyuR51QARzXnltts3q4KvHf3LUxt1Z2Yl1
-         OjHoZEoaw+Mah+eIxDsaxViRL2GifZNf6GUL75xKTN2ftJ+9L4mrz7zsxADz6UnoSgV5
-         GytA==
+        bh=HUT1jrky2QfADSJBqDyxkAfRQl5Gv0by2m5wgHaMIGI=;
+        b=mzwlor0IxbDrHZ832vmIGDKIRLJHzHXUSJ+qdT2DtWDviVCexFW2Qe8impwSet4coq
+         S4aBLll36JwfUZ0gqCf5lbUBGExW7TtD/lNHf6y0uehgpOWapnxLldAKOjCrcOePTkm/
+         mDL4xvBzxSu+0wFXm6YAi8zdjwMxqyhAQLYU35M4Be/Vmq0iVgdyPxtL6QT4WK/WoyBM
+         fs1S5OL+TRwbXL5B71gULUE004KsnUgIC9LhxuM1/IYIu/iBAllYQcad9ifv0hbLwTSJ
+         zqGvmhEGGDsWWeG1s+Wp2Slb9lC8V1rxGDo9GPrrnUuTJv6tA+Ts2ht8U7FSzyyTxwx3
+         g5IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:cc;
-        bh=0GIbMz2nXytWEz1I//ilSEDA+vtJktC6KJwGcIeR3HQ=;
-        b=bdQqHW67xdSkeBrnqgNbcEDeTmOk5OnXGP272GoWFMrmBbYFcHPVu07dIBip81EWQh
-         xgrsAOg9Ic95lgVL99NOwIWWiB6ptO5P1BmIlUcw4ZW8srqLxBZQtx51E3Wjon0ZWV7t
-         +0PwSMuwnY+tHJ0Y2+gE4wIqpW9CpBwtNprfYc60TsJ+LBwZ26Ur3mw/d2eRttuBwFRp
-         MWEFkY5oBqq6u/qU2n2YySJB0yCWIm076vWJQSXXx9dS2QctQrP1iZ3XkiRqy4j6moMl
-         Fa8M0e6EsfQTYYT93yL6B46yvxwmewlXMVNtWW8rxaid5bbPw7yOjuduh+qo01Qsc0/U
-         61Dg==
-X-Gm-Message-State: AOAM53072sNSRhwGc5DoNxiTzrERD746qNl4YicB38FXn6mMB862TEFN
-        qpwBroTykODmyim9/JDvPgK5EnRasznNG3khYA==
-X-Google-Smtp-Source: ABdhPJxDwW2S7YdUya+jCM5lkK9C0VdJjk4Vq1uieuMPS+sXbR9F9YxF+rPyacRwAxu4kvLVzDCY1qBTzybkFJvdvw==
+        bh=HUT1jrky2QfADSJBqDyxkAfRQl5Gv0by2m5wgHaMIGI=;
+        b=5ZylzvZwFWbCZu77zxx9pR/C+z5+ZR56lSdb+ZhaqeskO/5rTDoo51SQnxMNSmFq1Q
+         F66zytWspCK4iJCD7dLq6JUi4SGl7YuJjBWn1jjMvyg57mhzXjoVAKDUmNMz2Aaww3p9
+         c7THHme+w+MDvp7SUOkEhXe4d2y56+G8ajjFwlMhXbxnebpdQ51BJIYdnpULRB+XQ5F0
+         UWHII+nktPjtlS3r3SO0ETCLrwlVQbGt3Ie5u0EiAHzogDwe7JvQW4jnsdxl3Fy/c16N
+         1xpfyYUurJAm/RI1CV5AFbncxUhL+BZaBZPWH9cQnUFtvKdMgCRGuk8YuwPMIzfTqQLb
+         qbag==
+X-Gm-Message-State: AOAM531ageYWAL4i9+i5Nmj5plybOVGLl3t9IbbflcMCsHC0XjzTapUj
+        NzpusqvupLEVjmilNgkJQ1UTkYwtsapfkVXZhg==
+X-Google-Smtp-Source: ABdhPJyt1iASH+IucgMJThPeB51NN/4FBps+l+So2s0vMdIMzts3wP5OX9ju5lRJ6tRUzwOJXqQYArg5WvNtJO4qjg==
 X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:ac51:b6be:9b51:3a7c])
- (user=kaleshsingh job=sendgmr) by 2002:a05:622a:50a:: with SMTP id
- l10mr127848qtx.73.1635368398653; Wed, 27 Oct 2021 13:59:58 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 13:59:08 -0700
+ (user=kaleshsingh job=sendgmr) by 2002:a05:6a00:2387:b0:47c:134e:4848 with
+ SMTP id f7-20020a056a00238700b0047c134e4848mr37555pfc.74.1635368412797; Wed,
+ 27 Oct 2021 14:00:12 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 13:59:09 -0700
 In-Reply-To: <20211027205919.1648553-1-kaleshsingh@google.com>
-Message-Id: <20211027205919.1648553-2-kaleshsingh@google.com>
+Message-Id: <20211027205919.1648553-3-kaleshsingh@google.com>
 Mime-Version: 1.0
 References: <20211027205919.1648553-1-kaleshsingh@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 1/3] tracing/histogram: Document hist trigger variables
+Subject: [PATCH 2/3] tracing/kselftests: Remove triggers with references
+ before their definitions
 From:   Kalesh Singh <kaleshsingh@google.com>
 Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
         kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
@@ -63,43 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the tracefs README to describe how hist trigger variables
-can be created.
+If an event trigger references a variable defined in another trigger, it
+has to be removed before the trigger that defines the variable is
+removed.
 
 Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 ---
- kernel/trace/trace.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ tools/testing/selftests/ftrace/test.d/functions | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index bc677cd64224..c41b3786401d 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5628,6 +5628,7 @@ static const char readme_msg[] =
- #ifdef CONFIG_HIST_TRIGGERS
- 	"      hist trigger\t- If set, event hits are aggregated into a hash table\n"
- 	"\t    Format: hist:keys=<field1[,field2,...]>\n"
-+	"\t            [:<var1>=<field|var_ref|numeric_literal>[,<var2>=...]]\n"
- 	"\t            [:values=<field1[,field2,...]>]\n"
- 	"\t            [:sort=<field1[,field2,...]>]\n"
- 	"\t            [:size=#entries]\n"
-@@ -5639,6 +5640,16 @@ static const char readme_msg[] =
- 	"\t            common_timestamp - to record current timestamp\n"
- 	"\t            common_cpu - to record the CPU the event happened on\n"
- 	"\n"
-+	"\t    A hist trigger variable can be:\n"
-+	"\t        - a reference to a field e.g. x=current_timestamp,\n"
-+	"\t        - a reference to another variable e.g. y=$x,\n"
-+	"\t        - a numeric literal: e.g. ms_per_sec=1000,\n"
-+	"\t        - an arithmetic expression: e.g. time_secs=current_timestamp/1000\n"
-+	"\n"
-+	"\t    hist trigger aritmethic expressions support addition(+), subtraction(-),\n"
-+	"\t    multiplication(*) and division(/) operators. An operand can be either a\n"
-+	"\t    variable reference, field or numeric literal.\n"
-+	"\n"
- 	"\t    When a matching event is hit, an entry is added to a hash\n"
- 	"\t    table using the key(s) and value(s) named, and the value of a\n"
- 	"\t    sum called 'hitcount' is incremented.  Keys and values\n"
+diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
+index 000fd05e84b1..bd9e85f4d626 100644
+--- a/tools/testing/selftests/ftrace/test.d/functions
++++ b/tools/testing/selftests/ftrace/test.d/functions
+@@ -22,6 +22,15 @@ reset_trigger_file() {
+ 	file=`echo $line | cut -f1 -d:`
+ 	echo "!$cmd" >> $file
+     done
++
++    # remove triggers with references next
++    grep -H '\$' $@ |
++    while read line; do
++        cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
++	file=`echo $line | cut -f1 -d:`
++	echo "!$cmd" >> $file
++    done
++
+     grep -Hv ^# $@ |
+     while read line; do
+         cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
