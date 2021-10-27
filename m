@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6919243C4DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCD743C4E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhJ0IRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:17:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231715AbhJ0IRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:17:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72CC260C40;
-        Wed, 27 Oct 2021 08:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635322506;
-        bh=X4JuOwCZnQSrdHtwxGd5ZSp8ZTiooFZT+7jB1hU+VQo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=EN7jmDW0tomOx7Xog/AHcXkUIZ726ZD5ezc0KfilMWo4ZgwwDoIHgHzZ2PnZNlh7w
-         01wZlWOBlJ5afZxigypsRCKOXPf9UcKglDRDJlU00IV2nnqnRH9s6m7G8cX+r7o1Uy
-         qvz4vKSd2hAvc3c/JY9had1gUE70tNFwLdMJ2mzR1sCtJLd8DGm/pJYFOQJJAS+SaK
-         mlwHoyRryUv6lvTroTIwR9k1RL/+v3QTd5kSE2zqcSYeK0U+rIyYuMQRV63qN34fEw
-         KY4/otaDgdtgabgsBzkiZKLSdGrC9lhUyn4ofimub1m7g9OQrIXYR7kkwxD0oaBYQk
-         3kZl9RuSoV1ew==
-Date:   Wed, 27 Oct 2021 10:15:02 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Jason Gerecke <killertofu@gmail.com>
-cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ping Cheng <pinglinux@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Input <linux-input@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Aaron Skomra <skomra@gmail.com>,
-        "Dickens, Joshua" <joshua.dickens@wacom.com>,
-        Cai Huoqing <caihuoqing@baidu.com>
-Subject: Re: [PATCH] HID: wacom: Make use of the helper function
- devm_add_action_or_reset()
-In-Reply-To: <CANRwn3TGkin=4aEKibUicmH-UtRz_SFz7+S6dAsTwXVxRzzi9g@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2110271014090.12554@cbobk.fhfr.pm>
-References: <20210922125939.427-1-caihuoqing@baidu.com> <nycvar.YFH.7.76.2110071338010.29107@cbobk.fhfr.pm> <CANRwn3SZagP7uCSHVDGMPMqQiKyUQJSjq143_DA1y0UPvsmkAA@mail.gmail.com> <DB6PR07MB4278FF50AB23B9B69411CA3B9BB19@DB6PR07MB4278.eurprd07.prod.outlook.com>
- <CANRwn3TTgZ9+T7h81tNShvEB8QWkrbKLPrQSnviFKMHa8Zga_Q@mail.gmail.com> <20211015025815.GA3874@LAPTOP-UKSR4ENP.internal.baidu.com> <CAF8JNhLF8_f1x1K52ay_cmkKqpNiY7P4kMwt=ia6ws9Yd9uoNQ@mail.gmail.com> <nycvar.YFH.7.76.2110181725050.12554@cbobk.fhfr.pm>
- <CANRwn3Q_LksYwX5x+dKw9OzPcYBQr_N5=5bLpZgNPtd88Zqpfg@mail.gmail.com> <CANRwn3TGkin=4aEKibUicmH-UtRz_SFz7+S6dAsTwXVxRzzi9g@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S238766AbhJ0IRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231715AbhJ0IRt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 04:17:49 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BEAC061570;
+        Wed, 27 Oct 2021 01:15:24 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id t184so2054871pfd.0;
+        Wed, 27 Oct 2021 01:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FkeGV2X5Ht4WOcxwzPnDHzustbz4fUY6SlFH5mmZHhA=;
+        b=YgZkNKac6ZilncgALhUCR3GWw5DlAyr1rgpcGY/OZ/j6V2TlgJ+eu0mkSaAQp0n86m
+         T305RAeK1fb5JVUI07auNsfLZdKdFOZMBC/6kjHsAU/WuBnpoTmN0b1roF4YG5yq2Zi6
+         aKJw9u/ozRIxWqCPlWN4MOH2puSrvkNZe024iEq1O/0/u/AlR5XR2pJxps1YrD7BOJ9U
+         PoboJjAselSPyLy3AUO6hNdsIB0z6AaxY+jk8MXJOVR68gqnavYkCDYpde6JShMjzRx6
+         QOdQQv8dpGAOpARFxbjtSxgcku57dTerqlc0/8QYCHs/yGDREhAlbLh4GwmgSQHYJHwZ
+         8xpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FkeGV2X5Ht4WOcxwzPnDHzustbz4fUY6SlFH5mmZHhA=;
+        b=X5Ha/se+vog67USiK/TS1rOn+8REk2TL2SCeZmfz+15oIDg5vSmwKy5dsXSoZt7pij
+         SsXz7+6IElA/OzZpzxEVuLE9u2bXNOpCL+Qetl5CKZUWYz25OZMsUO50wRAMbB1NIZDP
+         e2f20uD4FYoRSlXm8Ya264L7tCLkbyw//RO0fowrH78ZWRMRveCKt+P2hyTdmEoTKOy5
+         /+LMB2o3O2PViJ5QR9XQLnfmxJ3yRyQXMOKRkYBeiI6Rd6iZiko2puBiVKQNJX7IeWT/
+         zgWl8trhzj0jtEsJsnOF75dQb1eDVkVQUzw3t3I1ZNj0JCQPdPtNlx67daE5LJZeZANy
+         5ogw==
+X-Gm-Message-State: AOAM530eFJ51wKEI6V13Ot3Ti5E2qeOeD3U916zBzkwJQ53BcOHZOojw
+        EtiIJwCu8ew9sHQyyiH4ad3weYXdrWE=
+X-Google-Smtp-Source: ABdhPJxEGe6edu9vJN3Nt4OkuncWrQlJBs0g/XkpZ3pk2RyKGskWlM4F95JezYN/NDE8RBQXQK0k9g==
+X-Received: by 2002:a05:6a00:a1d:b0:44d:aa2d:9665 with SMTP id p29-20020a056a000a1d00b0044daa2d9665mr30903369pfh.24.1635322523557;
+        Wed, 27 Oct 2021 01:15:23 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h4sm3274622pjm.14.2021.10.27.01.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 01:15:23 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.jianping@zte.com.cn
+To:     santoshkumar.yadav@barco.com
+Cc:     peter.korsgaard@barco.com, hdegoede@redhat.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] platform/x86: remove duplicate include in barco-p50-gpio.c
+Date:   Wed, 27 Oct 2021 08:15:16 +0000
+Message-Id: <20211027081516.1865-1-ran.jianping@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021, Jason Gerecke wrote:
+From: ran jianping <ran.jianping@zte.com.cn>
 
-> Following up on this. I took a second look at the shared struct, and 
-> believe that things should work fine during initialization and 
-> steady-state. There are, however, opportunities for e.g. one 
-> device/thread to be removed and set e.g. `shared->touch = NULL` while a 
-> second device/thread is attempting to send an event out of that device. 
-> This is going to be very rare and only on disconnect, which is probably 
-> why we've never received reports of real-world issues.
-> 
-> This shared issue is present with or without the changes by Cai and
-> myself. I would ask that these two patches be merged 
+'linux/io.h' included in 'drivers/platform/x86/barco-p50-gpio.c'
+ is duplicated.It is also included on the 17 line.
 
-Now applied. Thanks,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
+---
+ drivers/platform/x86/barco-p50-gpio.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/platform/x86/barco-p50-gpio.c b/drivers/platform/x86/barco-p50-gpio.c
+index f5c72e33f9ae..bb8ed8e95225 100644
+--- a/drivers/platform/x86/barco-p50-gpio.c
++++ b/drivers/platform/x86/barco-p50-gpio.c
+@@ -14,7 +14,6 @@
+ #include <linux/delay.h>
+ #include <linux/dmi.h>
+ #include <linux/err.h>
+-#include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/leds.h>
+ #include <linux/module.h>
 -- 
-Jiri Kosina
-SUSE Labs
+2.25.1
 
