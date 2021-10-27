@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A173943C809
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A32A43C7ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241570AbhJ0Ktb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:49:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45473 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239741AbhJ0Kta (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:49:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635331624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jf1m3TJlglHhUX7yLsviN+p9FvmvAmCzhSZjHu7gUY=;
-        b=WIIKk3eg3EK66drsfhKARbhvRmbYvn8BYIMkvKZ223xCowyAl5q1mXRyzByK9kNQhecfEd
-        K/gTfU/tf7n2kW8jCwr+OFuE7rKMDBtuYz70OiznhwYH518diDwEN7H/23qRn73qJvhJ9y
-        83C7nyn0THPDOMHcOSG5ypjSBpJjGCQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-sitbeS-9M3-FpXC8aIuiYQ-1; Wed, 27 Oct 2021 06:47:01 -0400
-X-MC-Unique: sitbeS-9M3-FpXC8aIuiYQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B597D89CD12;
-        Wed, 27 Oct 2021 10:46:57 +0000 (UTC)
-Received: from laptop.redhat.com (unknown [10.39.193.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 571721042AEE;
-        Wed, 27 Oct 2021 10:46:40 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, joro@8bytes.org,
-        will@kernel.org, robin.murphy@arm.com, jean-philippe@linaro.org,
-        zhukeqian1@huawei.com
-Cc:     alex.williamson@redhat.com, jacob.jun.pan@linux.intel.com,
-        yi.l.liu@intel.com, kevin.tian@intel.com, ashok.raj@intel.com,
-        maz@kernel.org, peter.maydell@linaro.org, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, wangxingang5@huawei.com,
-        jiangkunkun@huawei.com, yuzenghui@huawei.com,
-        nicoleotsuka@gmail.com, chenxiang66@hisilicon.com,
-        sumitg@nvidia.com, nicolinc@nvidia.com, vdumpa@nvidia.com,
-        zhangfei.gao@linaro.org, zhangfei.gao@gmail.com,
-        lushenming@huawei.com, vsethi@nvidia.com
-Subject: [RFC v16 9/9] iommu/smmuv3: Disallow nested mode in presence of HW MSI regions
-Date:   Wed, 27 Oct 2021 12:44:28 +0200
-Message-Id: <20211027104428.1059740-10-eric.auger@redhat.com>
-In-Reply-To: <20211027104428.1059740-1-eric.auger@redhat.com>
-References: <20211027104428.1059740-1-eric.auger@redhat.com>
+        id S239748AbhJ0KsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:48:05 -0400
+Received: from mga03.intel.com ([134.134.136.65]:19097 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241535AbhJ0KsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 06:48:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="230079956"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="230079956"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:45:26 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="597316964"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 03:45:20 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1mfgQW-001RFx-N2;
+        Wed, 27 Oct 2021 13:45:00 +0300
+Date:   Wed, 27 Oct 2021 13:45:00 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update Telemetry
+Message-ID: <YXktrG1LhK5tj2uF@smile.fi.intel.com>
+References: <cover.1635317102.git.yu.c.chen@intel.com>
+ <b37584e515c36882990295097386e783da29110e.1635317102.git.yu.c.chen@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <b37584e515c36882990295097386e783da29110e.1635317102.git.yu.c.chen@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nested mode currently is not compatible with HW MSI reserved regions.
-Indeed MSI transactions targeting those MSI doorbells bypass the SMMU.
-This would require the guest to also bypass those ranges but the guest
-has no information about them.
+On Wed, Oct 27, 2021 at 03:08:05PM +0800, Chen Yu wrote:
+> Platform Firmware Runtime Update(PFRU) Telemetry Service is part of RoT
+> (Root of Trust), which allows PFRU handler and other PFRU drivers to
+> produce telemetry data to upper layer OS consumer at runtime.
+> 
+> The linux provides interfaces for the user to query the parameters of
 
-Let's check nested mode is not attempted in such configuration.
+Linux kernel
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 23 +++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+> telemetry data, and the user could read out the telemetry data
+> accordingly.
+> 
+> The corresponding userspace tool and man page will be introduced at
+> tools/power/acpi/pfru.
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index ddfc069c10ae..12e7d7920f27 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2488,6 +2488,23 @@ static void arm_smmu_detach_dev(struct arm_smmu_master *master)
- 	arm_smmu_install_ste_for_dev(master);
- }
- 
-+static bool arm_smmu_has_hw_msi_resv_region(struct device *dev)
-+{
-+	struct iommu_resv_region *region;
-+	bool has_msi_resv_region = false;
-+	LIST_HEAD(resv_regions);
-+
-+	iommu_get_resv_regions(dev, &resv_regions);
-+	list_for_each_entry(region, &resv_regions, list) {
-+		if (region->type == IOMMU_RESV_MSI) {
-+			has_msi_resv_region = true;
-+			break;
-+		}
-+	}
-+	iommu_put_resv_regions(dev, &resv_regions);
-+	return has_msi_resv_region;
-+}
-+
- static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- {
- 	int ret = 0;
-@@ -2545,6 +2562,12 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 		ret = -EINVAL;
- 		goto out_unlock;
- 	}
-+	/* Nested mode is not compatible with MSI HW reserved regions */
-+	if (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED &&
-+	    arm_smmu_has_hw_msi_resv_region(dev)) {
-+		ret = -EINVAL;
-+		goto out_unlock;
-+	}
- 
- 	master->domain = smmu_domain;
- 
+...
+
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/errno.h>
+> +#include <linux/file.h>
+> +#include <linux/fs.h>
+> +#include <linux/miscdevice.h>
+> +#include <linux/module.h>
+> +#include <linux/mm.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/string.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/uio.h>
+> +#include <linux/uuid.h>
+
++ blank line?
+
+> +#include <uapi/linux/pfru.h>
+
+...
+
+> +static DEFINE_IDA(pfru_log_ida);
+
+Do you need any mutex against operations on IDA? (I don't remember
+if it incorporates any synchronization primitives).
+
+...
+
+Looking into the code I have feelings of déjà-vu. Has it really had
+nothing in common with the previous patch?
+
+...
+
+> +static int valid_log_level(int level)
+> +{
+> +	return level == LOG_ERR || level == LOG_WARN ||
+> +		level == LOG_INFO || level == LOG_VERB;
+
+Indentation.
+
+> +}
+
+...
+
+
+This ordering in ->probe() is not okay:
+	devm_*()
+	non-devm_*()
+	devm_*()
+	non-devm_*()
+
+One mustn't interleave these. The allowed are:
+
+Case 1:
+	non-devm_*()
+
+Case 2:
+	devm_*()
+
+Case 3:
+	devm_*()
+	non-devm_*()
+
+Otherwise in ->remove() you have wrong release ordering which may hide
+subtle bugs.
+
+Above comment is applicable to the other patch as well as some comments
+from there are applicable here.
+
 -- 
-2.26.3
+With Best Regards,
+Andy Shevchenko
+
 
