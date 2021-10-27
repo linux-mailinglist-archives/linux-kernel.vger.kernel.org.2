@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AACB43C122
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C83543C133
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhJ0EHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 00:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhJ0EHG (ORCPT
+        id S230423AbhJ0ES2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 00:18:28 -0400
+Received: from smtpbg701.qq.com ([203.205.195.86]:44119 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229505AbhJ0ES1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 00:07:06 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B370CC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:04:41 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id y7so1470065pfg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Izz2fSeyp7FglLJXkUAzOzwe9eczJwqGRtb97g7cQGw=;
-        b=NyISBRU3aODLArR4lea/SISpA7/zkEP9FG+wdnUmbXfTYwn+iY4lxF+u4WsnyaWcsE
-         EfK/OT4dk3HwYCy9gjZC4VwyzjQ9zmAhuutnXxJIpPAD/w3uVCtjWogL0sYgvLG74R+v
-         g6R5D7ncWinK5HCdKMsc6NiEeGrmqQoRWJFAQQAA77aRoza/R0cG29084cNFUn7f0aUm
-         VdmFFyGKLjWLIuGKycPA6pLy3hjB+XFt6+F3hUABK9tinH9C+Aa/rOkKwPQVM1WJZl+u
-         bow0zvjF7qRvdF3zi3kG4OxKHn1OHxdmRFNVC9hREC+r19Dom3frarwKheRIMqVPZ+FQ
-         /cng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Izz2fSeyp7FglLJXkUAzOzwe9eczJwqGRtb97g7cQGw=;
-        b=ldxP5lXfFNr8RjBv3NRKkVXQbSUv8KupYJq5ZCjunFJ/00HVYspOC0CkOCUk1yrSgH
-         hUttNloHgTXDW344HgpTdzEnq+S7KjQlg3Ipq9X59G56x26zcUN6vbOvOlgdEYim8VHY
-         cJ3RYKml9W/0Yhlh/BFilfGBb/raaFmqXlwDNBBhEeb0IjnvUGbSzUf/D175ku8xmYIN
-         k5NxJx/awOXTks84YGWWIHwb4M0VRCfaicTjVWtO4nrjhZO2fb++BDyjY93C3zQ3puGl
-         J5+15zt1EKKQEvK7wgFn1CT/MjMIjwJYC7Ars8v4hNzq0wnkmcZZOiOy3LRb8l0h8tEI
-         ZN6Q==
-X-Gm-Message-State: AOAM533Gck+eGdTAnIubWri9IER+M6xFs4qIp2v8GGuX9vktV7WzIc/8
-        VbaWWg0a2Lyeh67r86bCk82Up992gOl6k3hEgHnuDw==
-X-Google-Smtp-Source: ABdhPJz0w3mvn4TX+ptIQYahw35WumxHe6KDzRZcbPE7yRtG2MVa4Il8IeujEeZaRa+ai+C0+yqpV1LFJQgVSPxIohU=
-X-Received: by 2002:a65:6499:: with SMTP id e25mr21858529pgv.146.1635307480887;
- Tue, 26 Oct 2021 21:04:40 -0700 (PDT)
+        Wed, 27 Oct 2021 00:18:27 -0400
+X-QQ-mid: bizesmtp42t1635308155tkg1he9h
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Wed, 27 Oct 2021 12:15:50 +0800 (CST)
+X-QQ-SSF: B1400000002000B0E000B00A0000000
+X-QQ-FEAT: 0VgNaGdhy9idol0qqrWPbSGiXmI8+4mRAM1q3W4nFvTv3XngHg3NS4RD8u9XC
+        PWfXvSUeHoBcOIn7QZIoLVB4X3p9ZNSalfd20977FmSL8rboJDR1xbWCrK3Z1fGat/cWFE0
+        nNkZS9ZI/+hM9hEop2P39Trv6xFc7rOQ+3YdUNEGE3R8tRifi/dCWqmgh60Ihrc5FHEptF/
+        rdXv5VvKglzMdK9u6w5q+/6+P4LB7mKXbJ+NkOIEvWZDgm7xv8hvOMv980mlCEvSPVcUK4n
+        /x3/tIY11jxMD5U6ICXJLUGxdjpA3/ZfoR6jPnN2T9mruqu+unzoQo8menZj2J512fs3wAM
+        r+3dkqcFfkWVMR2EruFmCCLleN9iLIa6RNqXsP2
+X-QQ-GoodBg: 2
+From:   lianzhi chang <changlianzhi@uniontech.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        282827961@qq.com, lianzhi chang <changlianzhi@uniontech.com>
+Subject: [PATCH v8] tty: Fix the keyboard led light display problem
+Date:   Wed, 27 Oct 2021 12:15:43 +0800
+Message-Id: <20211027041543.20579-1-changlianzhi@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20211025200852.3002369-1-kaleshsingh@google.com>
- <20211025200852.3002369-7-kaleshsingh@google.com> <20211026151451.7f3e09a4@gandalf.local.home>
- <CAC_TJveHgsPZw7p7BWOgQw6h8GNU_Pv_WUjNmw3AUq+wnSzk6Q@mail.gmail.com>
- <20211026201846.08990d1d@rorschach.local.home> <CAC_TJve-mKSojaXtukdFeQKvPz-8TQtS=pgGD0Z18Wt6yJi7dg@mail.gmail.com>
- <20211026211511.403d76ca@rorschach.local.home> <CAC_TJvdwqQAKrVs3w6NcQNBT+bAgdyqR+8Zt_An7R9AQSSthGA@mail.gmail.com>
- <20211026222123.5e206fcf@rorschach.local.home> <20211026231557.1eedad9b@rorschach.local.home>
-In-Reply-To: <20211026231557.1eedad9b@rorschach.local.home>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Tue, 26 Oct 2021 21:04:29 -0700
-Message-ID: <CAC_TJveyKhZ3jyTZ33jbxSKTxxJ1WG+NUUUbf11pJ8Gqk7UeaQ@mail.gmail.com>
-Subject: Re: [PATCH v4 6/8] tracing/histogram: Optimize division by a power of 2
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 8:16 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 26 Oct 2021 22:21:23 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > I'm sure there's an algorithm somewhere that can give as the real max.
->
-> You got me playing with this more ;-)
->
-> OK, I added the rounding in the wrong place. I found that we can make
-> the max_div to be the same as the shift! The bigger the shift, the
-> bigger the max!
+Switching from the desktop environment to the tty environment,
+the state of the keyboard led lights and the state of the keyboard
+lock are inconsistent. This is because the attribute kb->kbdmode
+of the tty bound in the desktop environment (xorg) is set to
+VC_OFF, which causes the ledstate and kb->ledflagstate
+values of the bound tty to always be 0, which causes the switch
+from the desktop When to the tty environment, the LED light
+status is inconsistent with the keyboard lock status.
 
-Nice! :)
->
->         mult = (1 << shift) / div;
->         max_div = (1 << shift)
->
-> But the rounding needs to be with the mult / shift:
->
->         return (val * mult + ((1 << shift) - 1)) >> shift;
->
->
-> When val goes pass 1 << shift, then the error will be off by more than
-> one.
-Did you mean, val should be such that when we do the (val * mult) we
-only get rounding errors less than (1 << shift)?
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+---
+ v7-->v8:
+ Optimize the implementation of kbd_update_ledstate function
+ 
+ Why not adopt the opinions of Greg KH and Andy Shevchenko:
+ (1) In the structure struct input_dev, the definition of led is
+ like this: unsigned long led[BITS_TO_LONGS(LED_CNT)]; If you
+ define it like this: unsigned long newstate = *dev->led; I
+ always feel that there is still big end and Little endian problem.
+ (2) The test_bit function is used to avoid the problem of large
+ and small ends, and the current algorithm (v8) also exists 
+ elsewhere in the kernel: the atkbd_set_leds function (drivers/
+ input/keyboard/atkbd.c).
+ (3) In the current keyboard.c code, the code is already very good,
+ and it is already relatively independent. If you modify the type 
+ of ledstate to u64 or modify the macro definitions such as
+ VC_NUMLOCK, it feels that it is not very meaningful, and this It 
+ will also cause other related modifications. Of course, this is
+ only my current opinion. If everyone still feels that it is 
+ necessary to modify, I will do it this way. Of course, this 
+ process may be a bit longer, and I think it is necessary to
+ conduct more tests.
+ 
+ drivers/tty/vt/keyboard.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-I think we also need to flip the delta now since we round down initially:
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..f564fcf61304 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -1130,6 +1130,13 @@ static void kbd_init_leds(void)
+ 
+ #endif
+ 
++static void kbd_update_ledstate(struct input_dev *dev)
++{
++	ledstate = (test_bit(LED_SCROLLL, dev->led) ? BIT(VC_SCROLLOCK) : 0)
++		 | (test_bit(LED_NUML,    dev->led) ? BIT(VC_NUMLOCK) : 0)
++		 | (test_bit(LED_CAPSL,   dev->led) ? BIT(VC_CAPSLOCK) : 0);
++}
++
+ /*
+  * The leds display either (i) the status of NumLock, CapsLock, ScrollLock,
+  * or (ii) whatever pattern of lights people want to show using KDSETLED,
+@@ -1247,9 +1254,14 @@ void vt_kbd_con_stop(unsigned int console)
+  */
+ static void kbd_bh(struct tasklet_struct *unused)
+ {
++	struct kbd_struct *kb;
+ 	unsigned int leds;
+ 	unsigned long flags;
+ 
++	kb = kbd_table + fg_console;
++	if (kb->kbdmode == VC_OFF)
++		return;
++
+ 	spin_lock_irqsave(&led_lock, flags);
+ 	leds = getleds();
+ 	leds |= (unsigned int)kbd->lockstate << 8;
+@@ -1524,6 +1536,9 @@ static void kbd_event(struct input_handle *handle, unsigned int event_type,
+ 	/* We are called with interrupts disabled, just take the lock */
+ 	spin_lock(&kbd_event_lock);
+ 
++	if (test_bit(EV_LED, handle->dev->evbit))
++		kbd_update_ledstate(handle->dev);
++
+ 	if (event_type == EV_MSC && event_code == MSC_RAW &&
+ 			kbd_is_hw_raw(handle->dev))
+ 		kbd_rawcode(value);
+-- 
+2.20.1
 
-    delta =  (1 << shift) - (mult * div)
 
-Thanks,
-Kalesh
->
-> -- Steve
+
