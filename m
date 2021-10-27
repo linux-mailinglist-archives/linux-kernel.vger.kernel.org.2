@@ -2,110 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD0D43C37A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC5C43C37E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240248AbhJ0HIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhJ0HI3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:08:29 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45819C061570;
-        Wed, 27 Oct 2021 00:06:04 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id m14so1830898pfc.9;
-        Wed, 27 Oct 2021 00:06:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=u5MIYd+O5hYq/ovFrZ8EB6uv6EHBwk1t2oUT+vqCmdk=;
-        b=PKKiAviweRIkeGOXg+k99xLQYU0hND1oyvi/fu609NPXLjKQA9WeeWm1FPvARbPZjV
-         HBiWY4HtSokG90jZcD7uSOIFen53hG6zyg7tJpMlcqQWbQmHu+KGmFRpqPEzxSs+k352
-         7QrkbzYbHQgxNlQtb/cGajXtsYvno8yvaRaamGtOncoN0JVz62zxY7aBESSDPm4Ubpnj
-         eoNVf+GBbghhIOO0tQHGbLSzv0iT7MtlKECa6JvIrGSZr93OulENxjbjwWThC9NZylSX
-         2Br5WUupaHXhnljonHfbC6ZCRss3Zf07XEXpqSi8quxiNhnDHJN8NCXM/+IMof62QP1+
-         Xd5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=u5MIYd+O5hYq/ovFrZ8EB6uv6EHBwk1t2oUT+vqCmdk=;
-        b=2coLuJ/UETliDMr+hxoZ+3SpdYztgZYRUxjk33OBDC9PfENgXIqb1KdGeU1FzC1aff
-         EJOT1MWt9tzQriw1InxUq9xESLIiyMqBg5fPpwGZoY4koy0i9impg9aOBMi5/NNiFuBv
-         n3eErQF7G2drbG5J/2TtDLqyvhIeWI4lZIxkvifuuPp3Yl/0qEEKaNTrQ/CULKPfG/xI
-         fkbq8xxlzvnWOYT/W7QiPo5+JgVY4+tWqDXOBwY8gPI4KWNXJEtrq39Xv37xtdI4pvgU
-         IWfWgBeGhaXqkA5mlhQXpwQWofppgwHaYHL44plNOv8pzEFE/lWQflF42ULc9JmUmXZ+
-         I5Sg==
-X-Gm-Message-State: AOAM530OXocCdpm3FhIga8d+eM0ysCe1LVQTVhhe+AIrsRKk9mKR8/Sb
-        9FuI+0B1B7lkmuAfsjE59vVM+W5PzfX3pw==
-X-Google-Smtp-Source: ABdhPJybHXPnSmGSka+1MoR/ets4gn1VHoOZag3l2n7NzsVqdTwcF4M/3GxCCZmmvvLX507ILpamrg==
-X-Received: by 2002:a63:e446:: with SMTP id i6mr23180230pgk.288.1635318363356;
-        Wed, 27 Oct 2021 00:06:03 -0700 (PDT)
-Received: from [172.18.2.138] ([137.59.101.13])
-        by smtp.gmail.com with ESMTPSA id a8sm7572790pgd.8.2021.10.27.00.06.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 00:06:02 -0700 (PDT)
-Subject: Re: [PATCH] io-wq: Remove unnecessary rcu_read_lock/unlock() in raw
- spinlock critical section
-To:     Jens Axboe <axboe@kernel.dk>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20211026032304.30323-1-qiang.zhang1211@gmail.com>
- <CAMZfGtUXq=nQyijktRaP7xp=sAmVCryTjU4Jo5Z=ufed8arnKQ@mail.gmail.com>
- <0efbce2d-1f63-82a7-6479-d8ef062aa90d@kernel.dk>
-From:   Zqiang <qiang.zhang1211@gmail.com>
-Message-ID: <c4bcf2fa-b72a-5e3a-efe9-544457a9816a@gmail.com>
-Date:   Wed, 27 Oct 2021 15:06:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240287AbhJ0HJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:09:26 -0400
+Received: from mga02.intel.com ([134.134.136.20]:23312 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231656AbhJ0HJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:09:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217263204"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="217263204"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 00:06:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497733185"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.186])
+  by orsmga008.jf.intel.com with ESMTP; 27 Oct 2021 00:06:56 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/4] Introduce Platform Firmware Runtime Update and Telemetry drivers
+Date:   Wed, 27 Oct 2021 15:06:10 +0800
+Message-Id: <cover.1635317102.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <0efbce2d-1f63-82a7-6479-d8ef062aa90d@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The PFRU (Platform Firmware Runtime Update) kernel interface is designed
+to interact with the platform firmware interface defined in the
+`Management Mode Firmware Runtime Update
+<https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf>`
+specification. The primary function of PFRU is to carry out runtime
+updates of the platform firmware, which doesn't require the system to
+be restarted. It also allows telemetry data to be retrieved from the
+platform firmware.
 
-On 2021/10/26 下午10:47, Jens Axboe wrote:
-> On 10/26/21 4:32 AM, Muchun Song wrote:
->> On Tue, Oct 26, 2021 at 11:23 AM Zqiang <qiang.zhang1211@gmail.com> wrote:
->>> Due to raw_spin_lock/unlock() contains preempt_disable/enable() action,
->>> already regarded as RCU critical region, so remove unnecessary
->>> rcu_read_lock/unlock().
->>>
->>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
->>> ---
->>>   fs/io-wq.c | 2 --
->>>   1 file changed, 2 deletions(-)
->>>
->>> diff --git a/fs/io-wq.c b/fs/io-wq.c
->>> index cd88602e2e81..401be005d089 100644
->>> --- a/fs/io-wq.c
->>> +++ b/fs/io-wq.c
->>> @@ -855,9 +855,7 @@ static void io_wqe_enqueue(struct io_wqe *wqe, struct io_wq_work *work)
->>>          io_wqe_insert_work(wqe, work);
->>>          clear_bit(IO_ACCT_STALLED_BIT, &acct->flags);
->>>
->>> -       rcu_read_lock();
->> Add a comment like:
->> /* spin_lock can serve as an RCU read-side critical section. */
-> Note that it's a raw spinlock. Honestly I'd probably prefer if we just leave
-> it as-is. There are plans to improve the io-wq locking, and a rcu lock/unlock
-> is pretty cheap.
->
-> That said, if resend with a comment fully detailing why it's OK currently,
-> then I'd be fine with that as well.
->
-Thanks Jens Axboe, Muchun
+=============
+- Change from v6 to v7:
+  - Use __packed instead of pragma pack(1).
+    (Greg Kroah-Hartman, Ard Biesheuve)
+  - Use ida_alloc() to allocate a ID, and release the ID when
+    device is removed. (Greg Kroah-Hartman)
+  - Check the _DSM method at early stage, before allocate or parse
+    anything in acpi_pfru_[log_]probe(). (Greg Kroah-Hartman)
+  - Set the parent of the misc device. (Greg Kroah-Hartman)
+  - Use module_platform_driver() instead of platform_driver_register()
+    in module_init(). Separate pfru driver and pfru_telemetry driver
+    to two files. (Greg Kroah-Hartman) 
+- Change from v5 to v6:
+  - Use Link: tag to add the specification download address.
+    (Andy Shevchenko)
+  - Drop comma for each terminator entry in the enum structure.
+    (Andy Shevchenko)
+  - Remove redundant 'else' in get_image_type().
+    (Andy Shevchenko)
+  - Directly return results from the switch cases in adjust_efi_size()
+    and pfru_ioctl().(Andy Shevchenko)
+  - Keep comment style consistency by removing the period for
+    one line comment.
+    (Andy Shevchenko)
+  - Remove devm_kfree() if .probe() failed. 
+    (Andy Shevchenko)
+  - Remove linux/uuid.h and use raw buffers to contain uuid.
+    (Andy Shevchenko)
+  - Include types.h in pfru.h. (Andy Shevchenko)
+  - Use __u8[16] instead of uuid_t. (Andy Shevchenko)
+  - Replace enum in pfru.h with __u32 as enum size is not the
+    same size on all possible architectures.
+    (Andy Shevchenko)
+  - Simplify the userspace tool to use while loop for getopt_long().
+    (Andy Shevchenko)
+- Change from v4 to v5:
+  - Remove Documentation/ABI/pfru, and move the content to kernel doc
+    in include/uapi/linux/pfru.h (Greg Kroah-Hartman)
+  - Shrink the range of ioctl numbers declared in
+    Documentation/userspace-api/ioctl/ioctl-number.rst
+    from 16 to 8. (Greg Kroah-Hartman)
+  - Change global variable struct pfru_device *pfru_dev to
+    per PFRU device. (Greg Kroah-Hartman)
+  - Unregister the misc device in acpi_pfru_remove().
+    (Greg Kroah-Hartman)
+  - Convert the kzalloc() to devm_kzalloc() in the driver so
+    as to avoid freeing the memory. (Greg Kroah-Hartman)
+  - Fix the compile warning by declaring the pfru_log_ioctl() as
+    static. (kernel test robot LKP)
+  - Change to global variable misc_device to per PFRU device.
+    (Greg Kroah-Hartman)
+  - Remove the telemetry output in commit log. (Greg Kroah-Hartman)
+  - Add link for corresponding userspace tool in the commit log.
+    (Greg Kroah-Hartman)
+  - Replace the telemetry .read() with .mmap() so that the userspace
+    could mmap once, and read multiple times. (Greg Kroah-Hartman)
+- Change from v3 to v4:
+  - Add Documentation/ABI/testing/pfru to document the ABI and
+    remove Documentation/x86/pfru.rst (Rafael J. Wysocki)
+  - Replace all pr_err() with dev_dbg() (Greg Kroah-Hartman,
+    Rafael J. Wysocki)
+  - returns ENOTTY rather than ENOIOCTLCMD if invalid ioctl command
+    is provided. (Greg Kroah-Hartman)
+  - Remove compat ioctl. (Greg Kroah-Hartman)
+  - Rename /dev/pfru/pfru_update to /dev/acpi_pfru (Greg Kroah-Hartman)
+  - Simplify the check for element of the package in query_capability()
+    (Rafael J. Wysocki)
+  - Remove the loop in query_capability(), query_buffer() and query
+    the package elemenet directly. (Rafael J. Wysocki)
+  - Check the number of elements in case the number of package
+    elements is too small. (Rafael J. Wysocki)
+  - Doing the assignment as initialization in get_image_type().
+    Meanwhile, returns the type or a negative error code in
+    get_image_type(). (Rafael J. Wysocki)
+  - Put the comments inside the function. (Rafael J. Wysocki)
+  - Returns the size or a negative error code in adjust_efi_size()
+    (Rafael J. Wysocki)
+  - Fix the return value from EFAULT to EINVAL if pfru_valid_revid()
+    does not pass. (Rafael J. Wysocki)
+  - Change the write() to be the code injection/update, the read() to
+    be telemetry retrieval and all of the rest to be ioctl()s under
+    one special device file.(Rafael J. Wysocki)
+  - Remove redundant parens. (Rafael J. Wysocki)
+  - Putting empty code lines after an if () statement that is not
+    followed by a block. (Rafael J. Wysocki)
+  - Remove "goto" tags to make the code more readable. (Rafael J. Wysocki)
+- Change from v2 to v3:
+  - Use valid types for structures that cross the user/kernel boundary
+    in the uapi header. (Greg Kroah-Hartman)
+  - Rename the structure in uapi to start with a prefix pfru so as
+    to avoid confusing in the global namespace. (Greg Kroah-Hartman)
+- Change from v1 to v2:
+  - Add a spot in index.rst so it becomes part of the docs build
+    (Jonathan Corbet).
+  - Sticking to the 80-column limit(Jonathan Corbet).
+  - Underline lengths should match the title text(Jonathan Corbet).
+  - Use literal blocks for the code samples(Jonathan Corbet).
+  - Add sanity check for duplicated instance of ACPI device.
+  - Update the driver to work with allocated pfru_device objects.
+    (Mike Rapoport)
+  - For each switch case pair, get rid of the magic case numbers
+    and add a default clause with the error handling.(Mike Rapoport)
+  - Move the obj->type checks outside the switch to reduce redundancy.
+    (Mike Rapoport)
+  - Parse the code_inj_id and drv_update_id at driver initialization time
+    to reduce the re-parsing at runtime. (Mike Rapoport)
+  - Explain in detail how the size needs to be adjusted when doing
+    version check. (Mike Rapoport)
+  - Rename parse_update_result() to dump_update_result()
+    (Mike Rapoport)
+  - Remove redundant return.(Mike Rapoport)
+  - Do not expose struct capsulate_buf_info to uapi, since it is
+    not needed in userspace. (Mike Rapoport)
+  - Do not allow non-root user to run this test.(Shuah Khan)
+  - Test runs on platform without pfru_telemetry should skip
+    instead of reporting failure/error.(Shuah Khan)
+  - Reuse uapi/linux/pfru.h instead of copying it into the test
+    directory. (Mike Rapoport)
 
-  I  will  add a comment fully detailing and resend.
+Chen Yu (4):
+  efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and
+    corresponding structures
+  drivers/acpi: Introduce Platform Firmware Runtime Update device driver
+  drivers/acpi: Introduce Platform Firmware Runtime Update Telemetry
+  tools: Introduce power/acpi/pfru/pfru
 
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ drivers/acpi/Kconfig                          |   1 +
+ drivers/acpi/Makefile                         |   1 +
+ drivers/acpi/pfru/Kconfig                     |  13 +
+ drivers/acpi/pfru/Makefile                    |   2 +
+ drivers/acpi/pfru/pfru_telemetry.c            | 441 ++++++++++++++
+ drivers/acpi/pfru/pfru_update.c               | 572 ++++++++++++++++++
+ include/linux/efi.h                           |  46 ++
+ include/uapi/linux/pfru.h                     | 280 +++++++++
+ tools/power/acpi/pfru/Makefile                |  25 +
+ tools/power/acpi/pfru/pfru.8                  | 137 +++++
+ tools/power/acpi/pfru/pfru.c                  | 404 +++++++++++++
+ 12 files changed, 1923 insertions(+)
+ create mode 100644 drivers/acpi/pfru/Kconfig
+ create mode 100644 drivers/acpi/pfru/Makefile
+ create mode 100644 drivers/acpi/pfru/pfru_telemetry.c
+ create mode 100644 drivers/acpi/pfru/pfru_update.c
+ create mode 100644 include/uapi/linux/pfru.h
+ create mode 100644 tools/power/acpi/pfru/Makefile
+ create mode 100644 tools/power/acpi/pfru/pfru.8
+ create mode 100644 tools/power/acpi/pfru/pfru.c
 
+-- 
+2.25.1
 
