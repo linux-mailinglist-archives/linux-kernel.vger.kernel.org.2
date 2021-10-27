@@ -2,175 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0666043BF4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F55243BF52
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237905AbhJ0CMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:12:13 -0400
-Received: from mout.gmx.net ([212.227.15.15]:48663 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237733AbhJ0CMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:12:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635300556;
-        bh=t3N4s8BqgINsIMwqgt6Xj6XVcIuAbT8uwVkTjCl+hiI=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=LRQ7Rr+oJ1fdSA0WMx6FVR/x1T/qsxTsRdfY2GhMxVNg1VoCZhFXb1YZaMWCoh6Y5
-         1sHjkfBO4063nBW01XezttC2NKxcHfI7832E0dkQplLFpreymkE7XaJe7dRNqZHykF
-         h+/VkrBW+3CTwgc85PPnwwjeiy9HPFBPxTZKP7P4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.126]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6KYl-1mhuuz2cUj-016dGt; Wed, 27
- Oct 2021 04:09:16 +0200
-Message-ID: <93033bdc35fb2ddd374700b76324de88639ef5ae.camel@gmx.de>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 27 Oct 2021 04:09:12 +0200
-In-Reply-To: <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
-References: <20211021145603.5313-1-mgorman@techsingularity.net>
-         <20211021145603.5313-2-mgorman@techsingularity.net>
-         <37d8c167df66a1ead16b699115548ca376494c0c.camel@gmx.de>
-         <20211022110534.GJ3959@techsingularity.net>
-         <496d495b290ac69fed75d02ab5915a7871243321.camel@gmx.de>
-         <20211026081817.GM3959@techsingularity.net>
-         <4105fd08f84c60698b38efcb4d22e999de187d6e.camel@gmx.de>
-         <b53de0da7c863ec4c883a92b2526a0f9132a24cb.camel@gmx.de>
-         <20211026115707.GN3959@techsingularity.net>
-         <65e20ad92f2580c632f793eafce59140b8b4c827.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S238038AbhJ0COi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:14:38 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:32888 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237733AbhJ0COh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 22:14:37 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0UtpxIGg_1635300725;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UtpxIGg_1635300725)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 10:12:06 +0800
+Subject: [PATCH v6] ftrace: disable preemption when recursion locked
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <3ca92dc9-ea04-ddc2-71cd-524bfa5a5721@linux.alibaba.com>
+ <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+Message-ID: <1d876d3f-b844-4e99-6043-af0b062dc315@linux.alibaba.com>
+Date:   Wed, 27 Oct 2021 10:11:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:+yH4pzpBzwaAXIay7LACX+uySQ3d8a81Ieqz1254ArHR7ZTntmW
- TXxVqvBTQjQadMR5R9wpjFI/3YTCbXutGMyQYX9kIQ0xUZ7v7YJjmzKlPQ3coh69SbH9atC
- C45mInLyjP3F8cYy4Ped8svCWHjVCfzUG8ZLqX5uM+W6CF8XiImB4qRsHeDYwVMKFMCYTSX
- AKBZTu0Lm6/gMTyaLvxqA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7LKFkNonaEw=:ltz2/iimljT+l9a9fHdVkZ
- 1sWYIkha7UCt6E+TptXhzxuSh8ZjBQLvExmevKM3W3s0GJjT/Ks+Ep+sgTz7F+XR9TRSMnRX4
- n0S8llpfjyzTcPafSIbB4mTJJ/x4rGEQm7WcQMFM2LJOoKSdyBL1jZQCq1Z0MKDkTAj8kz+Pp
- 9FEHDWXNdAtj3Z2qnZF1ur3jWjAI/VPah7DBKsSCLA4Mj213O4f+WihXOjm3vAFFn77IIs0WJ
- cMpz+3U0bIxoA6QPER2O+N77Jsyq+v6w/aaZ0oYbMllcC01NP9aeNmE0i2X5syqx5XpsU14aV
- D/wLHliT96ihqnMVtfR3snhgmkrJwfo6m7yiM1fEVTx3n7ovB2GWGaEjni20apTZm/ehF91gy
- d4fY/ngceSRHFYvKu5AbO4F/tfO9lTpmP7SXfi6rbbS2uLOAASvPcuuuWG4HGrpjspiP100xR
- uFHd7CbD+d6CFUuGS0SmZtUjtjimTATGAnbXVcCHMc1/lj/n9Z0XDPdv9I/Z4U2qC09qbne9C
- eKBZLNPaM1I8ef8d1WexTUEubAFMs94KCWEXpyF5tUkHmidz0MdunK+BZDkrWKZfUN5kPwuJe
- focWVZ94Vm/Qy5SJG2ZuT8IoJHudGiJnT07oB3MEC5ds33MLjyRVIVMRjHE4xLL1Mjgcur6ba
- jm8/eQhQUDvdRioEu/5YcKHLgPiZS7Ytchu74Mnif6LtEXpb+rJAJAaDn7rg8kF89OdUPihiM
- eLAO8+7NF5TI4w4PDEPHYiuopYKYz465Ye7mJZIE4Imo/NUs6g7xMuXi1MH0lf8wfrXm/eK+L
- zF9GLbeNRrhQ3KGtU+FHWetDRFT15Fl1rI3D97Wm0c2eVrn1ktPlw5PoZMj2rJHpLppukKL32
- eHEM7Od0hpAOKjIPs4LPHCicbla1VTrR6nZMvrew5I3w4ZO1yBLWQwCj73NJe1RAjgXyCnJjL
- y/1NBjNL1WmDLrwxdVmtHpLlSrKPvg8XP2MJ6SPvecLmtD+QHOxEE3QQS7oiyndtGY6GHwWO7
- 6KJ4C9AbEYNvgzcQEDxDD7DMXq/P8bVeZdY/SyhMbsbihJQ4Zgr2vgO7maAvsBHv7n+XMArBR
- mHVcQcrRD+0uP4=
+In-Reply-To: <333cecfe-3045-8e0a-0c08-64ff590845ab@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTEwLTI2IGF0IDE0OjEzICswMjAwLCBNaWtlIEdhbGJyYWl0aCB3cm90ZToN
-Cj4gT24gVHVlLCAyMDIxLTEwLTI2IGF0IDEyOjU3ICswMTAwLCBNZWwgR29ybWFuIHdyb3RlOg0K
-PiA+IA0KPiA+IFRoZSBwYXRjaCBpbiBxdWVzdGlvbiB3YXMgYWxzbyB0ZXN0ZWQgb24gb3RoZXIg
-d29ya2xvYWRzIG9uIE5VTUENCj4gPiBtYWNoaW5lcy4gRm9yIGEgMi1zb2NrZXQgbWFjaGluZSAo
-MjAgY29yZXMsIEhUIGVuYWJsZWQgc28gNDAgQ1BVcykNCj4gPiBydW5uaW5nIHNwZWNqYmIgMjAw
-NSB3aXRoIG9uZSBKVk0gcGVyIE5VTUEgbm9kZSwgdGhlIHBhdGNoIGFsc28NCj4gPiBzY2FsZWQN
-Cj4gPiByZWFzb25hYmx5IHdlbGwNCj4gDQo+IFRoYXQncyB3YXkgbW9yZSBtb3JlIGludGVyZXN0
-aW5nLsKgIE5vIGlkZWEgd2hhdCB0aGlzIHRoaW5nIGRvZXMgdW5kZXINCj4gdGhlIGhvb2QgdGh1
-cyB3aGV0aGVyIGl0IHNob3VsZCBiZSBoZWxwZWQgb3Igbm90LCBidXQgYXQgbGVhc3QgaXQncyBh
-DQo+IHJlYWwgZGVhbCBiZW5jaG1hcmsgdnMgYSBrZXJuZWwgaGFja2VyIHRvb2wuDQoNCi4uLg0K
-SW5zdGFsbGluZyB0ZXN0IHNwZWNqYmINCnNwZWNqdm0taW5zdGFsbDogRmV0Y2hpbmcgZnJvbSBt
-aXJyb3INCmh0dHA6Ly9tY3AvbW10ZXN0cy1taXJyb3Ivc3BlYy9TUEVDamJiMjAwNV9raXR2MS4w
-Ny50YXIuZ3oNCnNwZWNqdm0taW5zdGFsbDogRmV0Y2hpbmcgZnJvbSBpbnRlcm5ldA0KTk9UX0FW
-QUlMQUJMRS9TUEVDamJiMjAwNV9raXR2MS4wNy50YXIuZ3oNCnNwZWNqdm0taW5zdGFsbDogRmV0
-Y2hpbmcgZnJvbSBhbHQgaW50ZXJuZXQNCi9TUEVDamJiMjAwNV9raXR2MS4wNy50YXIuZ3oNCkZB
-VEFMIHNwZWNqdm0taW5zdGFsbDogc3BlY2p2bS1pbnN0YWxsOiBDb3VsZCBub3QgZG93bmxvYWQN
-Ci9TUEVDamJiMjAwNV9raXR2MS4wNy50YXIuZ3oNCkZBVEFMIHNwZWNqYmItYmVuY2g6IHNwZWNq
-YmIgaW5zdGFsbCBzY3JpcHQgcmV0dXJuZWQgZXJyb3INCkZBVEFMOiBzcGVjamJiIHJldHVybmVk
-IGZhaWx1cmUsIHVuYWJsZSB0byBjb250aW51ZQ0KRkFUQUw6IEluc3RhbGxhdGlvbiBzdGVwIGZh
-aWxlZCBmb3Igc3BlY2piYg0KDQpIb2h1bSwgc28gbXVjaCBmb3IgdHJ5aW5nIHRvIHRha2UgYSBw
-ZWVrLg0KDQpBdCBhbnkgcmF0ZSwgdW5saWtlIHRoZSB0YmVuY2ggbnVtYmVycywgdGhlc2UgaGF2
-ZSB0aGUgbG9vayBvZiBzaWduYWwNCnJhdGhlciB0aGFuIHRlc3QgamlnIG5vaXNlLCBhbmQgcHJl
-dHR5IHN0cm9uZyBzaWduYWwgYXQgdGhhdCwgc28gbWF5YmUNCnBhdGNobGV0IHNob3VsZCBmbHku
-IEF0IHRoZSB2ZXJ5IGxlYXN0LCBpdCBhcHBlYXJzIHRvIGJlIHNheWluZyB0aGF0DQp0aGVyZSBp
-cyBzaWduaWZpY2FudCBwZXJmb3JtYW5jZSB0byBiZSBoYWQgYnkgc29tZSBtZWFucy4NCg0KQmFo
-LCBmbHkgb3IgZGllIGxpdHRsZSBwYXRjaGxldC4gIEVpdGhlciB3YXkgdGhlcmUgd2lsbCBiZSB3
-aW5uZXJzIGFuZA0KbG9zZXJzLCB0aGF0J3MganVzdCB0aGUgd2F5IGl0IHdvcmtzIGlmIHlvdSdy
-ZSBub3Qgc2hhdmluZyBjeWNsZXMuDQoNCj4gPiBzcGVjamJiDQo+ID4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA1LjE1LjAtcmMzwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIDUuMTUuMC1yYzMNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHZhbmlsbGHCoCBz
-Y2hlZC13YWtlZWZsaXBzLXYxcjENCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMcKgwqDCoMKgIDUw
-MDQ0LjQ4ICjCoMKgIDAuMDAlKcKgwqDCoCA1Mzk2OS4wMCAqwqDCoCA3Ljg0JSoNCj4gPiBIbWVh
-bsKgwqDCoMKgIHRwdXQtMsKgwqDCoCAxMDYwNTAuMzEgKMKgwqAgMC4wMCUpwqDCoCAxMTM1ODAu
-NzggKsKgwqAgNy4xMCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTPCoMKgwqAgMTU2NzAxLjQ0
-ICjCoMKgIDAuMDAlKcKgwqAgMTY0ODU3LjAwICrCoMKgIDUuMjAlKg0KPiA+IEhtZWFuwqDCoMKg
-wqAgdHB1dC00wqDCoMKgIDE5NjUzOC43NSAowqDCoCAwLjAwJSnCoMKgIDIxODM3My40MiAqwqAg
-MTEuMTElKg0KPiA+IEhtZWFuwqDCoMKgwqAgdHB1dC01wqDCoMKgIDI0NzU2Ni4xNiAowqDCoCAw
-LjAwJSnCoMKgIDI2NzE3My4wOSAqwqDCoCA3LjkyJSoNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQt
-NsKgwqDCoCAyODQ5ODEuNDYgKMKgwqAgMC4wMCUpwqDCoCAzMTEwMDcuMTQgKsKgwqAgOS4xMyUq
-DQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTfCoMKgwqAgMzI4ODgyLjQ4ICjCoMKgIDAuMDAlKcKg
-wqAgMzU5MzczLjg5ICrCoMKgIDkuMjclKg0KPiA+IEhtZWFuwqDCoMKgwqAgdHB1dC04wqDCoMKg
-IDM2Njk0MS4yNCAowqDCoCAwLjAwJSnCoMKgIDM5MzI0NC4zNyAqwqDCoCA3LjE3JSoNCj4gPiBI
-bWVhbsKgwqDCoMKgIHRwdXQtOcKgwqDCoCA0MDIzODYuNzQgKMKgwqAgMC4wMCUpwqDCoCA0MzMw
-MTAuNDMgKsKgwqAgNy42MSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTEwwqDCoCA0Mzc1NTEu
-MDUgKMKgwqAgMC4wMCUpwqDCoCA0NzU3NTYuMDggKsKgwqAgOC43MyUqDQo+ID4gSG1lYW7CoMKg
-wqDCoCB0cHV0LTExwqDCoCA0ODEzNDkuNDEgKMKgwqAgMC4wMCUpwqDCoCA1MTk4MjQuNTQgKsKg
-wqAgNy45OSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTEywqDCoCA1MzMxNDguNDUgKMKgwqAg
-MC4wMCUpwqDCoCA1NjUwNzAuMjEgKsKgwqAgNS45OSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0
-LTEzwqDCoCA1NzA1NjMuOTcgKMKgwqAgMC4wMCUpwqDCoCA2MDk0OTkuMDYgKsKgwqAgNi44MiUq
-DQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE0wqDCoCA2MDExMTcuOTcgKMKgwqAgMC4wMCUpwqDC
-oCA2NDc4NzYuMDUgKsKgwqAgNy43OCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE1wqDCoCA2
-MzkwOTYuMzggKMKgwqAgMC4wMCUpwqDCoCA2OTA4NTQuNDYgKsKgwqAgOC4xMCUqDQo+ID4gSG1l
-YW7CoMKgwqDCoCB0cHV0LTE2wqDCoCA2ODI2NDQuOTEgKMKgwqAgMC4wMCUpwqDCoCA3MjI4MjYu
-MDYgKsKgwqAgNS44OSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE3wqDCoCA3MzIyNDguOTYg
-KMKgwqAgMC4wMCUpwqDCoCA3NTg4MDUuMTcgKsKgwqAgMy42MyUqDQo+ID4gSG1lYW7CoMKgwqDC
-oCB0cHV0LTE4wqDCoCA3NjI3NzEuMzMgKMKgwqAgMC4wMCUpwqDCoCA3OTEyMTEuNjYgKsKgwqAg
-My43MyUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTE5wqDCoCA3ODA1ODIuOTIgKMKgwqAgMC4w
-MCUpwqDCoCA4MTkwNjQuMTkgKsKgwqAgNC45MyUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTIw
-wqDCoCA4MTIxODMuOTUgKMKgwqAgMC4wMCUpwqDCoCA4MzY2NjQuODcgKsKgwqAgMy4wMSUqDQo+
-ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTIxwqDCoCA4MjE0MTUuNDggKMKgwqAgMC4wMCUpwqDCoCA4
-MzM3MzQuMjMgKMKgwqAgMS41MCUpDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTIywqDCoCA4MTU0
-NTcuNjUgKMKgwqAgMC4wMCUpwqDCoCA4NDQzOTMuOTggKsKgwqAgMy41NSUqDQo+ID4gSG1lYW7C
-oMKgwqDCoCB0cHV0LTIzwqDCoCA4MTkyNjMuNjMgKMKgwqAgMC4wMCUpwqDCoCA4NDYxMDkuMDcg
-KsKgwqAgMy4yOCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI0wqDCoCA4MTc5NjIuOTUgKMKg
-wqAgMC4wMCUpwqDCoCA4Mzk2ODIuOTIgKsKgwqAgMi42NiUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0
-cHV0LTI1wqDCoCA4MDc4MTQuNjQgKMKgwqAgMC4wMCUpwqDCoCA4NDE4MjYuNTIgKsKgwqAgNC4y
-MSUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI2wqDCoCA4MTE3NTUuODkgKMKgwqAgMC4wMCUp
-wqDCoCA4Mzg1NDMuMDggKsKgwqAgMy4zMCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI3wqDC
-oCA3OTkzNDEuNzUgKMKgwqAgMC4wMCUpwqDCoCA4MzM0ODcuMjYgKsKgwqAgNC4yNyUqDQo+ID4g
-SG1lYW7CoMKgwqDCoCB0cHV0LTI4wqDCoCA4MDM0MzQuODkgKMKgwqAgMC4wMCUpwqDCoCA4Mjkw
-MjIuNTAgKsKgwqAgMy4xOCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTI5wqDCoCA4MDMyMzMu
-MjUgKMKgwqAgMC4wMCUpwqDCoCA4MjY2MjIuMzcgKsKgwqAgMi45MSUqDQo+ID4gSG1lYW7CoMKg
-wqDCoCB0cHV0LTMwwqDCoCA4MDA0NjUuMTIgKMKgwqAgMC4wMCUpwqDCoCA4MjQzNDcuNDIgKsKg
-wqAgMi45OCUqDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTMxwqDCoCA3OTEyODQuMzkgKMKgwqAg
-MC4wMCUpwqDCoCA3OTE1NzUuNjcgKMKgwqAgMC4wNCUpDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0
-LTMywqDCoCA3ODE5MzAuMDcgKMKgwqAgMC4wMCUpwqDCoCA4MDU3MjUuODAgKMKgwqAgMy4wNCUp
-DQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTMzwqDCoCA3ODUxOTQuMzEgKMKgwqAgMC4wMCUpwqDC
-oCA4MDQ3OTUuNDQgKMKgwqAgMi41MCUpDQo+ID4gSG1lYW7CoMKgwqDCoCB0cHV0LTM0wqDCoCA3
-ODEzMjUuNjcgKMKgwqAgMC4wMCUpwqDCoCA4MDAwNjcuNTMgKMKgwqAgMi40MCUpDQo+ID4gSG1l
-YW7CoMKgwqDCoCB0cHV0LTM1wqDCoCA3Nzc3MTUuOTIgKMKgwqAgMC4wMCUpwqDCoCA3NTM5MjYu
-MzIgKMKgIC0zLjA2JSkNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMzbCoMKgIDc3MDUxNi44NSAo
-wqDCoCAwLjAwJSnCoMKgIDc4MzMyOC4zMiAowqDCoCAxLjY2JSkNCj4gPiBIbWVhbsKgwqDCoMKg
-IHRwdXQtMzfCoMKgIDc1ODA2Ny4yNiAowqDCoCAwLjAwJSnCoMKgIDc3MjI0My4xOCAqwqDCoCAx
-Ljg3JSoNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMzjCoMKgIDc2NDgxNS40NSAowqDCoCAwLjAw
-JSnCoMKgIDc2OTE1Ni4zMiAowqDCoCAwLjU3JSkNCj4gPiBIbWVhbsKgwqDCoMKgIHRwdXQtMznC
-oMKgIDc1Nzg4NS40MSAowqDCoCAwLjAwJSnCoMKgIDc1NzY3MC41OSAowqAgLTAuMDMlKQ0KPiA+
-IEhtZWFuwqDCoMKgwqAgdHB1dC00MMKgwqAgNzUwMTQwLjE1ICjCoMKgIDAuMDAlKcKgwqAgNzYw
-NzM5LjEzICjCoMKgIDEuNDElKQ0KPiA+IA0KPiA+IFRoZSBsYXJnZXN0IHJlZ3Jlc3Npb24gd2Fz
-IHdpdGhpbiBub2lzZS4gTW9zdCByZXN1bHRzIHdlcmUgb3V0c2lkZSB0aGUNCj4gPiBub2lzZS4N
-Cj4gPiANCj4gPiBTb21lIEhQQyB3b3JrbG9hZHMgc2hvd2VkIGxpdHRsZSBkaWZmZXJlbmNlIGJ1
-dCB0aGV5IGRvIG5vdCBjb21tdW5pY2F0ZQ0KPiA+IHRoYXQgaGVhdmlseS4gcmVkaXMgbWljcm9i
-ZW5jaG1hcmsgc2hvd2VkIG1vc3RseSBuZXV0cmFsIHJlc3VsdHMuDQo+ID4gc2NoYmVuY2ggKGZh
-Y2Vib29rIHNpbXVsYXRvciB3b3JrbG9hZCB0aGF0IGlzIGxhdGVuY3kgc2Vuc2l0aXZlKSBzaG93
-ZWQgYQ0KPiA+IG1peCBvZiByZXN1bHRzLCBidXQgaGVscGVkIG1vcmUgdGhhbiBpdCBodXJ0LiBF
-dmVuIHRoZSBtYWNoaW5lIHdpdGggdGhlDQo+ID4gd29yc3QgcmVzdWx0cyBmb3Igc2NoYmVuY2gg
-c2hvd2VkIGltcHJvdmVkIHdha2V1cCBsYXRlbmNpZXMgYXQgdGhlIDk5dGgNCj4gPiBwZXJjZW50
-aWxlLiBUaGVzZSB3ZXJlIGFsbCBvbiBOVU1BIG1hY2hpbmVzLg0KPiA+IA0KPiANCg0K
+As the documentation explained, ftrace_test_recursion_trylock()
+and ftrace_test_recursion_unlock() were supposed to disable and
+enable preemption properly, however currently this work is done
+outside of the function, which could be missing by mistake.
+
+And since the internal using of trace_test_and_set_recursion()
+and trace_clear_recursion() also require preemption disabled, we
+can just merge the logical.
+
+This patch will make sure the preemption has been disabled when
+trace_test_and_set_recursion() return bit >= 0, and
+trace_clear_recursion() will enable the preemption if previously
+enabled.
+
+CC: Petr Mladek <pmladek@suse.com>
+CC: Steven Rostedt <rostedt@goodmis.org>
+CC: Miroslav Benes <mbenes@suse.cz>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ arch/csky/kernel/probes/ftrace.c     |  2 --
+ arch/parisc/kernel/ftrace.c          |  2 --
+ arch/powerpc/kernel/kprobes-ftrace.c |  2 --
+ arch/riscv/kernel/probes/ftrace.c    |  2 --
+ arch/x86/kernel/kprobes/ftrace.c     |  2 --
+ include/linux/trace_recursion.h      | 13 ++++++++++++-
+ kernel/livepatch/patch.c             | 13 +++++++------
+ kernel/trace/ftrace.c                | 15 +++++----------
+ kernel/trace/trace_functions.c       |  5 -----
+ 9 files changed, 24 insertions(+), 32 deletions(-)
+
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index b388228..834cffc 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -17,7 +17,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
+
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (!p) {
+ 		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
+@@ -57,7 +56,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 7d14242..90c4345 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -210,7 +210,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		return;
+
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -239,7 +238,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	}
+ 	__this_cpu_write(current_kprobe, NULL);
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+index 7154d58..072ebe7 100644
+--- a/arch/powerpc/kernel/kprobes-ftrace.c
++++ b/arch/powerpc/kernel/kprobes-ftrace.c
+@@ -26,7 +26,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		return;
+
+ 	regs = ftrace_get_regs(fregs);
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)nip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -61,7 +60,6 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+index aab85a8..7142ec4 100644
+--- a/arch/riscv/kernel/probes/ftrace.c
++++ b/arch/riscv/kernel/probes/ftrace.c
+@@ -15,7 +15,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -52,7 +51,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index 596de2f..dd2ec14 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -25,7 +25,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+ 	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+ 		goto out;
+@@ -59,7 +58,6 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+ out:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index abe1a50..64c03ee 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -135,6 +135,9 @@ static __always_inline int trace_get_context_bit(void)
+ # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+ #endif
+
++/*
++ * Preemption is promised to be disabled when return bit >= 0.
++ */
+ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+ 							int start)
+ {
+@@ -162,11 +165,19 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
+ 	current->trace_recursion = val;
+ 	barrier();
+
++	preempt_disable_notrace();
++
+ 	return bit;
+ }
+
++/*
++ * Preemption will be enabled (if it was previously enabled).
++ */
+ static __always_inline void trace_clear_recursion(int bit)
+ {
++	WARN_ON_ONCE(bit < 0);
++
++	preempt_enable_notrace();
+ 	barrier();
+ 	trace_recursion_clear(bit);
+ }
+@@ -178,7 +189,7 @@ static __always_inline void trace_clear_recursion(int bit)
+  * tracing recursed in the same context (normal vs interrupt),
+  *
+  * Returns: -1 if a recursion happened.
+- *           >= 0 if no recursion
++ *           >= 0 if no recursion.
+  */
+ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+ 							 unsigned long parent_ip)
+diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+index e8029ae..b8d75fb 100644
+--- a/kernel/livepatch/patch.c
++++ b/kernel/livepatch/patch.c
+@@ -49,14 +49,16 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+
+ 	ops = container_of(fops, struct klp_ops, fops);
+
++	/*
++	 *
++	 * The ftrace_test_recursion_trylock() will disable preemption,
++	 * which is required for the variant of synchronize_rcu() that is
++	 * used to allow patching functions where RCU is not watching.
++	 * See klp_synchronize_transition() for more details.
++	 */
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (WARN_ON_ONCE(bit < 0))
+ 		return;
+-	/*
+-	 * A variant of synchronize_rcu() is used to allow patching functions
+-	 * where RCU is not watching, see klp_synchronize_transition().
+-	 */
+-	preempt_disable_notrace();
+
+ 	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+ 				      stack_node);
+@@ -120,7 +122,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+ 	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+
+ unlock:
+-	preempt_enable_notrace();
+ 	ftrace_test_recursion_unlock(bit);
+ }
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index b7be1df..7392bc7 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -7198,16 +7198,15 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 	struct ftrace_ops *op;
+ 	int bit;
+
++	/*
++	 * The ftrace_test_and_set_recursion() will disable preemption,
++	 * which is required since some of the ops may be dynamically
++	 * allocated, they must be freed after a synchronize_rcu().
++	 */
+ 	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START);
+ 	if (bit < 0)
+ 		return;
+
+-	/*
+-	 * Some of the ops may be dynamically allocated,
+-	 * they must be freed after a synchronize_rcu().
+-	 */
+-	preempt_disable_notrace();
+-
+ 	do_for_each_ftrace_op(op, ftrace_ops_list) {
+ 		/* Stub functions don't need to be called nor tested */
+ 		if (op->flags & FTRACE_OPS_FL_STUB)
+@@ -7231,7 +7230,6 @@ void ftrace_reset_array_ops(struct trace_array *tr)
+ 		}
+ 	} while_for_each_ftrace_op(op);
+ out:
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+
+@@ -7279,12 +7277,9 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
+ 		op->func(ip, parent_ip, op, fregs);
+
+-	preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+ NOKPROBE_SYMBOL(ftrace_ops_assist_func);
+diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
+index 1f0e63f..9f1bfbe 100644
+--- a/kernel/trace/trace_functions.c
++++ b/kernel/trace/trace_functions.c
+@@ -186,7 +186,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		return;
+
+ 	trace_ctx = tracing_gen_ctx();
+-	preempt_disable_notrace();
+
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+@@ -194,7 +193,6 @@ static void function_trace_start(struct trace_array *tr)
+ 		trace_function(tr, ip, parent_ip, trace_ctx);
+
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ #ifdef CONFIG_UNWINDER_ORC
+@@ -298,8 +296,6 @@ static inline void process_repeats(struct trace_array *tr,
+ 	if (bit < 0)
+ 		return;
+
+-	preempt_disable_notrace();
+-
+ 	cpu = smp_processor_id();
+ 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
+ 	if (atomic_read(&data->disabled))
+@@ -324,7 +320,6 @@ static inline void process_repeats(struct trace_array *tr,
+
+ out:
+ 	ftrace_test_recursion_unlock(bit);
+-	preempt_enable_notrace();
+ }
+
+ static void
+-- 
+1.8.3.1
+
+
