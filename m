@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F60A43C749
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E4E43C74B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239422AbhJ0KFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:05:14 -0400
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:34734 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241322AbhJ0KCo (ORCPT
+        id S241281AbhJ0KF1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Oct 2021 06:05:27 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:26456 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239461AbhJ0KFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:02:44 -0400
-Received: by mail-ed1-f54.google.com with SMTP id g10so8421755edj.1;
-        Wed, 27 Oct 2021 03:00:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EsemFH0tETj3VZTrSmHxIMsN9NPXwXnYtpYm6mXI1Tk=;
-        b=OVrPHfz2U5JUp+QiwRAYIE7397KhB7YycXt+DXvYe4JcjhzXsFHE5CrXDeDHIuuD1M
-         dEIkXjamD6BAgkr9Greu77ateYlJXmZPLyGqYey4pUhZ6oxyqZS455lzsSgVPDu+r9Lt
-         EEDKloMTpBgKGUhCEcuOgsByPOODZ9V4RYYGrgIcHKb/SljzqPRmtEtLQ1Xyg7wX1dBW
-         /mKgxkASIqjR8tzD30QERKId11vrnyQz6OhtJnjQT4JOnrWEEf2ctuGUfP+vzi/akV1H
-         lNMHLkoGh9IgVbL7vKBmFCikA106YeF/RhCfVd7jrU3RxIHxybBFjq/af9RtMzOfRr4A
-         O+bg==
-X-Gm-Message-State: AOAM532uomeSp4FOEndF14s9/JG028M4bvTGvS6Jp6x/idPuBAUxwnzv
-        s/ssHihUzfaa4uIF6CCknnUmM6zLjdiJgw==
-X-Google-Smtp-Source: ABdhPJwWFV7VmfT7RFLcWceqEPwWUqlkhVXAffxqOWvA+FVbvR+fUfPgg8451eo1WEr35K0YegqIOw==
-X-Received: by 2002:a17:906:4f8c:: with SMTP id o12mr37456066eju.115.1635328817804;
-        Wed, 27 Oct 2021 03:00:17 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id r5sm8427743edy.86.2021.10.27.03.00.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 03:00:17 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 12:00:16 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v1 1/1] PCI: brcmstb: Use GENMASK() as __GENMASK() is for
- internal use only
-Message-ID: <YXkjMO0ULRGqZPbr@rocinante>
-References: <20211027093433.4832-1-andriy.shevchenko@linux.intel.com>
+        Wed, 27 Oct 2021 06:05:25 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-212-F1zRjfSTOoCL9nIp_zwQSg-1; Wed, 27 Oct 2021 11:02:57 +0100
+X-MC-Unique: F1zRjfSTOoCL9nIp_zwQSg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Wed, 27 Oct 2021 11:02:56 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Wed, 27 Oct 2021 11:02:56 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>
+Subject: RE: [PATCH v5 00/15] x86: Add support for Clang CFI
+Thread-Topic: [PATCH v5 00/15] x86: Add support for Clang CFI
+Thread-Index: AQHXyqbRFu1L74SRSES6mpaoExEoXavmm4bQ
+Date:   Wed, 27 Oct 2021 10:02:56 +0000
+Message-ID: <7ebed28b73bb48cd9b69e9097f0aa613@AcuMS.aculab.com>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211027093433.4832-1-andriy.shevchenko@linux.intel.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-> Use GENMASK() as __GENMASK() is for internal use only.
-
-To add, for posterity, that using __GENMASK() bypasses the 
-GENMASK_INPUT_CHECK() macro that adds extra validation.
-
-> Fixes: 3baec684a531 ("PCI: brcmstb: Accommodate MSI for older chips")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+From: Peter Zijlstra
+> Sent: 26 October 2021 21:16
 > 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index 1fc7bd49a7ad..51522510c08c 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -619,7 +619,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
->  
->  static void brcm_msi_set_regs(struct brcm_msi *msi)
->  {
-> -	u32 val = __GENMASK(31, msi->legacy_shift);
-> +	u32 val = GENMASK(31, msi->legacy_shift);
+> On Wed, Oct 13, 2021 at 11:16:43AM -0700, Sami Tolvanen wrote:
+> > This series adds support for Clang's Control-Flow Integrity (CFI)
+> > checking to x86_64. With CFI, the compiler injects a runtime
+> > check before each indirect function call to ensure the target is
+> > a valid function with the correct static type. This restricts
+> > possible call targets and makes it more difficult for an attacker
+> > to exploit bugs that allow the modification of stored function
+> > pointers. For more details, see:
+> >
+> >   https://clang.llvm.org/docs/ControlFlowIntegrity.html
+> 
+> So, if I understand this right, the compiler emits, for every function
+> two things: 1) the actual funcion and 2) a jump-table entry.
+> 
+> Then, every time the address of a function is taken, 2) is given instead
+> of the expected 1), right?
+> 
+> But how does this work with things like static_call(), which we give a
+> function address (now a jump-table entry) and use that to write direct
+> call instructions?
+> 
+> Should not this jump-table thingy get converted to an actual function
+> address somewhere around arch_static_call_transform() ? This also seems
+> relevant for arm64 (which already has CLANG_CFI supported) given:
+> 
+>   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
+> 
+> Or am I still not understanding this CFI thing?
 
-Thank you!
+From what I remember the compiler adds code prior to every jump indirect
+to check that the function address is in the list of valid functions
+(with a suitable prototype - or some similar check).
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+So it add a run-time search to every indirect call.
 
-	Krzysztof
+What would be more sensible would be a hidden extra parameter that is
+a hash of the prototype that is saved just before the entry point.
+Then the caller and called function could both check.
+That is still a moderate cost for an indirect call.
+
+Anything that can write asm can get around any check - it just gets a
+bit harder.
+But overwritten function pointers would be detected - which I assume
+is the main threat.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
