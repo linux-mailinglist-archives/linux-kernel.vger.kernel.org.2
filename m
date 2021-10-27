@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4271143CD4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2B243CD52
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242760AbhJ0PRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 11:17:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:44434 "EHLO foss.arm.com"
+        id S237763AbhJ0PTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 11:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242727AbhJ0PRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 11:17:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A47713A1;
-        Wed, 27 Oct 2021 08:15:17 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.196.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BBCD93F70D;
-        Wed, 27 Oct 2021 08:15:15 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH v2 3/3] irqchip/gic-v3-its: Limit memreserve cpuhp state lifetime
-Date:   Wed, 27 Oct 2021 16:15:06 +0100
-Message-Id: <20211027151506.2085066-4-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211027151506.2085066-1-valentin.schneider@arm.com>
-References: <20211027151506.2085066-1-valentin.schneider@arm.com>
+        id S233168AbhJ0PSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 11:18:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F7A4610A3;
+        Wed, 27 Oct 2021 15:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635347789;
+        bh=JJobKs5YY7qyeufVo1SHRPviZaZYNzLXnXZBNGwkMKU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=cQ1oHfhsg9r8TlxSIWV5KsIeQo8EVLa8ZzmnJKeJAuJD6wskVVqIPHjeAbUfiJpt5
+         DYWUjigYWmnd2f4e8694QPCKDFenTwhbB9PzOeQRTNFVkwnUbfdn70ecSAd5jC8nTa
+         45JFz0qJeUJpCU9zob1xQQMEbClXJNGttvcBVtvy17L52XH45BLZjrnmIlj7e/QlAC
+         AYCqr5ExiVtXRpxzOb+pji+fN4oyCE0Rve2vvKMu5tKyk2ZACHohhPEzUst0dmJTtA
+         gsuETm0ITWUniun0aPkqC0WtJOiHY91u9QvC4Ul6NnVmfZfk7gDPoYOcNB1IXdnEbw
+         xpt+SPKOYrDTg==
+Message-ID: <a2f738d08d14417a693c6f0d7f97faff448595ab.camel@kernel.org>
+Subject: Re: [PATCH] fscache: fix GPF in fscache_free_cookie
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-cachefs@redhat.com, linux-kernel@vger.kernel.org
+Date:   Wed, 27 Oct 2021 11:16:28 -0400
+In-Reply-To: <20211027150732.4158273-1-mudongliangabcd@gmail.com>
+References: <20211027150732.4158273-1-mudongliangabcd@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new memreserve cpuhp callback only needs to survive up until a point
-where every CPU in the system has booted once. Beyond that, it becomes a
-no-op and can be put in the bin.
+On Wed, 2021-10-27 at 23:07 +0800, Dongliang Mu wrote:
+> If fscache_alloc_cookie encounters memory allocation failure, it will
+> go to nomem label and invoke fscache_free_cookie. However,
+> fscache_alloc_cookie assumes current cookie is already linked into
+> fscache_cookies and directly calls list_del. This assumption does not
+> hold since list_add is not called in the above scenario. As a result, it
+> will lead to Null Pointer Dereference. The stack trace is in the
+> following.
+> 
+> Call Trace:
+>  __list_del_entry include/linux/list.h:132 [inline]
+>  list_del include/linux/list.h:146 [inline]
+>  fscache_free_cookie fs/fscache/cookie.c:71 [inline]
+>  fscache_free_cookie+0x3f/0x100 fs/fscache/cookie.c:66
+>  fscache_alloc_cookie+0x2e2/0x300 fs/fscache/cookie.c:195
+>  __fscache_acquire_cookie fs/fscache/cookie.c:296 [inline]
+>  __fscache_acquire_cookie+0x132/0x380 fs/fscache/cookie.c:257
+>  fscache_acquire_cookie include/linux/fscache.h:334 [inline]
+>  v9fs_cache_session_get_cookie+0x74/0x120 fs/9p/cache.c:60
+>  v9fs_session_init+0x724/0xa90 fs/9p/v9fs.c:471
+>  v9fs_mount+0x56/0x450 fs/9p/vfs_super.c:126
+>  legacy_get_tree+0x2b/0x90 fs/fs_context.c:610
+>  vfs_get_tree+0x28/0x100 fs/super.c:1498
+>  do_new_mount fs/namespace.c:2988 [inline]
+>  path_mount+0xb92/0xfe0 fs/namespace.c:3318
+>  do_mount+0xa1/0xc0 fs/namespace.c:3331
+>  __do_sys_mount fs/namespace.c:3539 [inline]
+>  __se_sys_mount fs/namespace.c:3516 [inline]
+>  __x64_sys_mount+0xf4/0x160 fs/namespace.c:3516
+> 
+> Fix this by moving the list_add_tail before goto statements.
+> 
+> Fixes: 884a76881fc5 ("fscache: Procfile to display cookies")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  fs/fscache/cookie.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
+> index cd42be646ed3..d101e212db74 100644
+> --- a/fs/fscache/cookie.c
+> +++ b/fs/fscache/cookie.c
+> @@ -150,6 +150,11 @@ struct fscache_cookie *fscache_alloc_cookie(
+>  	if (!cookie)
+>  		return NULL;
+>  
+> +	/* move list_add_tail before any error handling code */
+> +	write_lock(&fscache_cookies_lock);
+> +	list_add_tail(&cookie->proc_link, &fscache_cookies);
+> +	write_unlock(&fscache_cookies_lock);
+> +
+>  	cookie->key_len = index_key_len;
+>  	cookie->aux_len = aux_data_len;
+>  
+> @@ -186,9 +191,6 @@ struct fscache_cookie *fscache_alloc_cookie(
+>  	 * told it may not wait */
+>  	INIT_RADIX_TREE(&cookie->stores, GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
+>  
+> -	write_lock(&fscache_cookies_lock);
+> -	list_add_tail(&cookie->proc_link, &fscache_cookies);
+> -	write_unlock(&fscache_cookies_lock);
+>  	return cookie;
+>  
+>  nomem:
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- drivers/irqchip/irq-gic-v3-its.c   | 16 ++++++++++++++++
- include/linux/irqchip/arm-gic-v3.h |  1 +
- 2 files changed, 17 insertions(+)
+Nice catch!
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index f860733d3e4e..ee83eb377d7e 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -5203,6 +5203,15 @@ int its_cpu_init(void)
- 	return 0;
- }
- 
-+static void rdist_memreserve_cpuhp_cleanup_workfn(struct work_struct *work)
-+{
-+	cpuhp_remove_state_nocalls(gic_rdists->cpuhp_memreserve_state);
-+	gic_rdists->cpuhp_memreserve_state = CPUHP_INVALID;
-+}
-+
-+static DECLARE_WORK(rdist_memreserve_cpuhp_cleanup_work,
-+		    rdist_memreserve_cpuhp_cleanup_workfn);
-+
- static int its_cpu_memreserve_lpi(unsigned int cpu)
- {
- 	struct page *pend_page;
-@@ -5231,6 +5240,10 @@ static int its_cpu_memreserve_lpi(unsigned int cpu)
- 	}
- 
- out:
-+	/* Last CPU being brought up gets to issue the cleanup */
-+	if (cpumask_equal(&cpus_booted_once_mask, cpu_possible_mask))
-+		schedule_work(&rdist_memreserve_cpuhp_cleanup_work);
-+
- 	gic_data_rdist()->flags |= RD_LOCAL_MEMRESERVE_DONE;
- 	return ret;
- }
-@@ -5425,6 +5438,7 @@ int __init its_lpi_memreserve_init(void)
- 	if (!efi_enabled(EFI_CONFIG_TABLES))
- 		return 0;
- 
-+	gic_rdists->cpuhp_memreserve_state = CPUHP_INVALID;
- 	state = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
- 				  "irqchip/arm/gicv3/memreserve:online",
- 				  its_cpu_memreserve_lpi,
-@@ -5432,6 +5446,8 @@ int __init its_lpi_memreserve_init(void)
- 	if (state < 0)
- 		return state;
- 
-+	gic_rdists->cpuhp_memreserve_state = state;
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
-index 51b85506ae90..12d91f0dedf9 100644
---- a/include/linux/irqchip/arm-gic-v3.h
-+++ b/include/linux/irqchip/arm-gic-v3.h
-@@ -624,6 +624,7 @@ struct rdists {
- 	u64			flags;
- 	u32			gicd_typer;
- 	u32			gicd_typer2;
-+	int                     cpuhp_memreserve_state;
- 	bool			has_vlpis;
- 	bool			has_rvpeid;
- 	bool			has_direct_lpi;
--- 
-2.25.1
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 
