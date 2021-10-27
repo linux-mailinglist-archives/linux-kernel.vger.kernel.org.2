@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5153143CEEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A39E43CEF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 18:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242946AbhJ0QtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:49:13 -0400
-Received: from mail-oo1-f46.google.com ([209.85.161.46]:44743 "EHLO
-        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237657AbhJ0QtJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:49:09 -0400
-Received: by mail-oo1-f46.google.com with SMTP id w10-20020a4a274a000000b002b6e972caa1so1113847oow.11;
-        Wed, 27 Oct 2021 09:46:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=viizohHp65Ko8chst0M70ML0grbLG1AUnGTjZwZ4hvA=;
-        b=MOrtUHI3ELT53mK6L2Fds+SNiujFc0ZPzHF7jBprz5FBS3QFea8bbuveCPveTUAeio
-         Y6FlIb9M7oaBmx/z7zzdcFNlSYn1ZZpmPTFeEF9kpz6VcZVvf5ZgLehmbk4uTOdIbdLp
-         5JAlqsgByE+DDdKwohhbXO24xyiBS/BNd2wFM/Q0tVEqVhcu8ONZPwrBHTo1DN4Ole3s
-         q8AZbxJiVT+QumMABlY5LtpeU8VQDCPdBwyYFqbRwKD1f1fVGFCx35k2AvncJDC244vE
-         loC4LTeRnZqlwNYcZWvmWOxfD+11jCWwaOsucAzrX7fVARkYjw8CShNC1TPp3pQmG0FX
-         j2Bg==
-X-Gm-Message-State: AOAM530BxAp6Hjuqq8p8bEAa6Brk9bc5VrJ2NDgvAl/nynd7k4Ulk2tc
-        vggtX2pwjFQvXOoCAVXpFQ==
-X-Google-Smtp-Source: ABdhPJzjMsMIryaqgvXa7F/AAD604FsFKkyTK1MsoWYdYAJGdhnDUsV4p8MLWM/ardODANWpQ11QUg==
-X-Received: by 2002:a4a:c883:: with SMTP id t3mr23046525ooq.58.1635353203170;
-        Wed, 27 Oct 2021 09:46:43 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m34sm156556ooi.16.2021.10.27.09.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 09:46:42 -0700 (PDT)
-Received: (nullmailer pid 1475077 invoked by uid 1000);
-        Wed, 27 Oct 2021 16:46:41 -0000
-Date:   Wed, 27 Oct 2021 11:46:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     s.hauer@pengutronix.de, benjamin.tissoires@redhat.com,
-        dmitry.torokhov@gmail.com, shawnguo@kernel.org,
-        alistair23@gmail.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        jikos@kernel.org
-Subject: Re: [PATCH v13 2/3] HID: i2c-hid-of: Expose the touchscreen-inverted
- properties
-Message-ID: <YXmCcXfY9GZzyZAN@robh.at.kernel.org>
-References: <20211025104605.36364-1-alistair@alistair23.me>
- <20211025104605.36364-2-alistair@alistair23.me>
+        id S242982AbhJ0QwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:52:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:45312 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhJ0QwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 12:52:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4165DED1;
+        Wed, 27 Oct 2021 09:49:50 -0700 (PDT)
+Received: from [10.1.196.31] (eglon.cambridge.arm.com [10.1.196.31])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6489A3F70D;
+        Wed, 27 Oct 2021 09:49:48 -0700 (PDT)
+Subject: Re: [PATCH v2 09/23] x86/resctrl: Switch over to the resctrl mbps_val
+ list
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com,
+        tan.shaopeng@fujitsu.com
+References: <20211001160302.31189-1-james.morse@arm.com>
+ <20211001160302.31189-10-james.morse@arm.com>
+ <af0d23a9-61b3-8a2b-7f4c-4d2d6d510238@intel.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <8dbfa092-685d-dc74-b8e5-449ad0ab5222@arm.com>
+Date:   Wed, 27 Oct 2021 17:49:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025104605.36364-2-alistair@alistair23.me>
+In-Reply-To: <af0d23a9-61b3-8a2b-7f4c-4d2d6d510238@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:46:04PM +1000, Alistair Francis wrote:
-> Allow the touchscreen-inverted-x/y device tree properties to control the
-> HID_QUIRK_X_INVERT/HID_QUIRK_Y_INVERT quirks for the hid-input device.
+Hi Reinette,
+
+On 15/10/2021 23:26, Reinette Chatre wrote:
+> On 10/1/2021 9:02 AM, James Morse wrote:
+>> Updates to resctrl's software controller follow the same path as
+>> other configuration updates, but they don't modify the hardware state.
+>> rdtgroup_schemata_write() uses parse_line() and the resource's
+>> ctrlval_parse function to stage the configuration.
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  .../devicetree/bindings/input/hid-over-i2c.txt        |  2 ++
+> parse_ctrlval ?
+> 
+>> resctrl_arch_update_domains() then updates the mbps_val[] array
+>> instead, and resctrl_arch_update_domains() skips the rdt_ctrl_update()
+>> call that would update hardware.
+>>
+>> This complicates the interface between resctrl's filesystem parts
+>> and architecture specific code. It should be possible for mba_sc
+>> to be completely implemented by the filesystem parts of resctrl. This
+>> would allow it to work on a second architecture with no additional code.
+>>
+>> Change parse_bw() to write the configuration value directly to the
+>> mba_sc[] array in the domain structure. Change rdtgroup_schemata_write()
+> 
+> mpbs_val[] array?
+> 
+>> to skip the call to resctrl_arch_update_domains(), meaning all the
+>> mba_sc specific code in resctrl_arch_update_domains() can be removed.
+>> On the read-side, show_doms() and update_mba_bw() are changed to read
+>> the mba_sc[] array from the domain structure. With this,
+> 
+> mbps_val[] ?
+> 
+> Should rdtgroup_size_show() also get a similar snippet?
 
-Acked-by: Rob Herring <robh@kernel.org>
+Yes! Good catch!
 
->  drivers/hid/i2c-hid/i2c-hid-acpi.c                    |  2 +-
->  drivers/hid/i2c-hid/i2c-hid-core.c                    |  4 +++-
->  drivers/hid/i2c-hid/i2c-hid-of-goodix.c               |  2 +-
->  drivers/hid/i2c-hid/i2c-hid-of.c                      | 11 ++++++++++-
->  drivers/hid/i2c-hid/i2c-hid.h                         |  2 +-
->  6 files changed, 18 insertions(+), 5 deletions(-)
+
+Thanks,
+
+James
