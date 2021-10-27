@@ -2,95 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE0D43C892
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A51743C89B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239718AbhJ0Lbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:31:35 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:35447 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237421AbhJ0Lbe (ORCPT
+        id S241637AbhJ0Lci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:32:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40862 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241629AbhJ0Lch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:31:34 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 27 Oct 2021 07:32:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635334211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6755i8Ev1p/V649+fKWbCguz7hafsCtx6KF7gf1uorY=;
+        b=OC9P+2/g/e5/3V5cb30fNIrI+24s9VTvRyfG0iOhrXeR/Wk22EhWWLxr8K22ZDhPp15qBc
+        iupJlRMjKgn5qPqLgf+m+PmLZqWweet5oePR0nkrptOZdII72MCzgavfKVX/LbMcOxk2gm
+        CFGFQayK+1XXM8F0EyrupXnNwTa/0sk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-SCV0Ypy_PSae9_O3yFoh6Q-1; Wed, 27 Oct 2021 07:30:07 -0400
+X-MC-Unique: SCV0Ypy_PSae9_O3yFoh6Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfRKb41TQz4xbP;
-        Wed, 27 Oct 2021 22:29:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1635334148;
-        bh=MHq64eZS9Jri3BDBh8LS9jVHE07Z90nQn+T4OkS25Qg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=o6u2CEpOxGBJvNemtoJ2GOBbPtwJQy/PgPE76ook/TmAX8J+i482whrIrJmiNgzsL
-         pZcK4uTPRvoHWa1kBw9ER9Z5IvA5HEUmo4kaGmqWR3gcyPilWeR4Vnubb7mH0/dXo5
-         MAD37mlLtxFGYW6MRFktS7hqlVO1vi4js4K2T7pC7KRygNrc/KIgxUu15IT57A+iqI
-         1HDWdmAm03vjeQubfeoZZD2/AeFGiOsD2LdwvBAHhYqOjHCb5QTmb5R7WcbSeSTZAd
-         BYrezRd5CfBV8G1tXX1ta70GfaBcwVPTbM8fG34tlfQidUtrBpyIws4JGqT6GE5PTt
-         QEVWRkmaKiU8g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: Re: linux-next: manual merge of the audit tree with the powerpc tree
-In-Reply-To: <CAHC9VhTj7gn3iAOYctVRKvv_Bk1iQMrmkA8FVJtYzdvBjqFmvg@mail.gmail.com>
-References: <20211026133147.35d19e00@canb.auug.org.au>
- <87k0i0awdl.fsf@mpe.ellerman.id.au>
- <CAHC9VhTj7gn3iAOYctVRKvv_Bk1iQMrmkA8FVJtYzdvBjqFmvg@mail.gmail.com>
-Date:   Wed, 27 Oct 2021 22:29:06 +1100
-Message-ID: <87tuh2aepp.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B14A3100C66D;
+        Wed, 27 Oct 2021 11:30:03 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A291C101E591;
+        Wed, 27 Oct 2021 11:29:47 +0000 (UTC)
+Message-ID: <62231cec8a62db6bf2baba24cc55e0ec2515d0b1.camel@redhat.com>
+Subject: Re: [PATCH v2 07/43] KVM: Reconcile discrepancies in halt-polling
+ stats
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Wed, 27 Oct 2021 14:29:46 +0300
+In-Reply-To: <20211009021236.4122790-8-seanjc@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-8-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul Moore <paul@paul-moore.com> writes:
-> On Tue, Oct 26, 2021 at 6:55 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->> Stephen Rothwell <sfr@canb.auug.org.au> writes:
->> > Hi all,
->> >
->> > Today's linux-next merge of the audit tree got conflicts in:
->> >
->> >   arch/powerpc/kernel/audit.c
->> >   arch/powerpc/kernel/compat_audit.c
->> >
->> > between commit:
->> >
->> >   566af8cda399 ("powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERIC")
->> >
->> > from the powerpc tree and commits:
->> >
->> >   42f355ef59a2 ("audit: replace magic audit syscall class numbers with macros")
->> >   1c30e3af8a79 ("audit: add support for the openat2 syscall")
->> >
->> > from the audit tree.
->>
->> Thanks.
->>
->> I guess this is OK, unless the audit folks disagree. I could revert the
->> powerpc commit and try it again later.
->>
->> If I don't hear anything I'll leave it as-is.
->
-> Hi Michael,
->
-> Last I recall from the powerpc/audit thread there were still some
-> issues with audit working properly in your testing, has that been
-> resolved?
+On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> Move the halt-polling "success" and histogram stats update into the
+> dedicated helper to fix a discrepancy where the success/fail "time" stats
+> consider polling successful so long as the wait is avoided, but the main
+> "success" and histogram stats consider polling successful if and only if
+> a wake event was detected by the halt-polling loop.
+> 
+> Move halt_attempted_poll to the helper as well so that all the stats are
+> updated in a single location.  While it's a bit odd to update the stat
+> well after the fact, practically speaking there's no meaningful advantage
+> to updating before polling.
+> 
+> Note, there is a functional change in addition to the success vs. fail
+> change.  The histogram updates previously called ktime_get() instead of
+> using "cur".  But that change is desirable as it means all the stats are
+> now updated with the same polling time, and avoids the extra ktime_get(),
+> which isn't expensive but isn't free either.
+> 
+> Reviewed-by: David Matlack <dmatlack@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  virt/kvm/kvm_main.c | 35 ++++++++++++++++-------------------
+>  1 file changed, 16 insertions(+), 19 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 4dfcd736b274..1292c7876d3f 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3204,12 +3204,23 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
+>  static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+>  					  ktime_t end, bool success)
+>  {
+> +	struct kvm_vcpu_stat_generic *stats = &vcpu->stat.generic;
+>  	u64 poll_ns = ktime_to_ns(ktime_sub(end, start));
+>  
+> -	if (success)
+> -		vcpu->stat.generic.halt_poll_success_ns += poll_ns;
+> -	else
+> -		vcpu->stat.generic.halt_poll_fail_ns += poll_ns;
+> +	++vcpu->stat.generic.halt_attempted_poll;
+> +
+> +	if (success) {
+> +		++vcpu->stat.generic.halt_successful_poll;
+> +
+> +		if (!vcpu_valid_wakeup(vcpu))
+> +			++vcpu->stat.generic.halt_poll_invalid;
+> +
+> +		stats->halt_poll_success_ns += poll_ns;
+> +		KVM_STATS_LOG_HIST_UPDATE(stats->halt_poll_success_hist, poll_ns);
+> +	} else {
+> +		stats->halt_poll_fail_ns += poll_ns;
+> +		KVM_STATS_LOG_HIST_UPDATE(stats->halt_poll_fail_hist, poll_ns);
+> +	}
+>  }
+>  
+>  /*
+> @@ -3230,30 +3241,16 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>  	if (do_halt_poll) {
+>  		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
+>  
+> -		++vcpu->stat.generic.halt_attempted_poll;
+>  		do {
+>  			/*
+>  			 * This sets KVM_REQ_UNHALT if an interrupt
+>  			 * arrives.
+>  			 */
+> -			if (kvm_vcpu_check_block(vcpu) < 0) {
+> -				++vcpu->stat.generic.halt_successful_poll;
+> -				if (!vcpu_valid_wakeup(vcpu))
+> -					++vcpu->stat.generic.halt_poll_invalid;
+> -
+> -				KVM_STATS_LOG_HIST_UPDATE(
+> -				      vcpu->stat.generic.halt_poll_success_hist,
+> -				      ktime_to_ns(ktime_get()) -
+> -				      ktime_to_ns(start));
+> +			if (kvm_vcpu_check_block(vcpu) < 0)
+>  				goto out;
+> -			}
+>  			cpu_relax();
+>  			poll_end = cur = ktime_get();
+>  		} while (kvm_vcpu_can_poll(cur, stop));
+> -
+> -		KVM_STATS_LOG_HIST_UPDATE(
+> -				vcpu->stat.generic.halt_poll_fail_hist,
+> -				ktime_to_ns(ktime_get()) - ktime_to_ns(start));
+>  	}
+>  
+>  
 
-No.
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-There's one test failure both before and after the conversion to use the
-generic code.
+Best regards,
+	Maxim Levitsky
 
-> If nothing else, -rc7 seems a bit late for this to hit -next for me to
-> feel comfortable about this.
 
-OK. I'll revert the patch in my tree.
-
-cheers
