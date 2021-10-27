@@ -2,228 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6AD43C1B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F49E43C1C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 06:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239698AbhJ0EkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 00:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
+        id S236620AbhJ0ElX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 00:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237990AbhJ0EkJ (ORCPT
+        with ESMTP id S230423AbhJ0ElV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 00:40:09 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B145C061229;
-        Tue, 26 Oct 2021 21:37:44 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfGBs1qtgz4xc9;
-        Wed, 27 Oct 2021 15:37:40 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635309462;
-        bh=hh3VvxHq5dZ8pYRaakduAV7z8X1ys9krtw6qsV8c8sQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Paj7JWHnn2X1p/UXLXCmN5eBOmnrhtcLk13Qo+ZRymrRfVrxJ8Tg5hqzDPA34AK3p
-         TpZzM9qdwnkxzeU/EsEpQwIPXHDMdPPeckdYZ4TH/ngpFclPaVrPqFe0Pyk7c4RCn1
-         SX63WTJ/ZuqIDtQHM0be322aETX+Rm32AtkoODZ0xN/Ql2siprt9ejsi38M5tcLnHy
-         OLdnuR539q34AwQa8ppZZK/WaQrIkpeYGZMmeeU4eeGjWElswZdZQLvF5tyoRZq7l8
-         3VnBeUQtgVAqhi5v2LoCZEsFJ2dLlBwAhhVRIvxy0TVoWuQ9RrwyuJlVagOChCAKKM
-         uBByk1UlWzUiQ==
-Date:   Wed, 27 Oct 2021 15:37:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thierry Reding <treding@nvidia.com>
-Subject: linux-next: manual merge of the char-misc tree with the drm-tegra
- tree
-Message-ID: <20211027153739.0cc2e5f2@canb.auug.org.au>
+        Wed, 27 Oct 2021 00:41:21 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BF0C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:38:56 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id c4so1093618plg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 21:38:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=BahrkLo1cG01RdfeU2V63voiQNUDlACSWrU7M72tqUM=;
+        b=XuVyzKpLU9Y1f7B2wa/lQrHHemNi2MGMKVkZ5gsl3UvdLuOhUQLIobFrJsugJraNE/
+         8FjTtXtegOZo/fcLn/hRxp4yLeinmG1OwlgKdMJ2QMjihbe/4m3ryqOGSta4jSJCR221
+         qBBZ3yuakPbL8vGbwqCjAeLuIecnMuOBB3S9PKOOQQsuwObJTULZT/GWsU8H7M/Kn71a
+         vODuQ+bKI6EgvfS1Zmx+AVdeBB1X/K4Ie/SRlWFHxtLqA1oV7J6e3/R/UyKLSm0jDQte
+         II1SczZAm1C5FW8TfaGLnn+cLrclzXWzig7jLFV/lVnEqji+kGhvF7AB+2jgF8M5izKC
+         1+Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=BahrkLo1cG01RdfeU2V63voiQNUDlACSWrU7M72tqUM=;
+        b=0ZbpKyMpCfS8i1/H5eQpsKyOBsQzcCaPTWRsUAEgL5jhaQACPCQzmrtdJPs8Mw24Zf
+         KjApg+R/QD+5LVyU6caMBX/n24DU3HCszTNiObKDAJ8MuxTt8XSpOeB/RyGLBCJvXyyP
+         CxcYQkT5xVCwvWliQt765drP2wIKdr40gAOPvg01jrNQL4Gzht53FiDgwswhUIW1IA3m
+         aeuhGDiPhnTdfIvYgTzToBB+uxDBTDtGHUnx5VYEPOdTAOqrGIDK0mSpBwE7aYUirk56
+         R7WZ5o2brlShzEKPZXjkVm4yYzPnHdEgMU3d/iFmjfyhH/jFsed9zvbxRdoUH023CPIM
+         M8kw==
+X-Gm-Message-State: AOAM532EShERxNqyXgtFhTaWtgiOcCIjih4v10yFjlaB5ShOdtG6gz56
+        wb7voxP+VDGzP+5NRfwiFMo=
+X-Google-Smtp-Source: ABdhPJxyxSWGbdnXnq9Vklcicy3xOXljcJl/Tqhk+55byjJgDZ/t0Qtwq+dP/X7Ik5Afkepa3Ay6eQ==
+X-Received: by 2002:a17:902:bb01:b0:13e:a6e6:9a53 with SMTP id im1-20020a170902bb0100b0013ea6e69a53mr26176466plb.4.1635309535768;
+        Tue, 26 Oct 2021 21:38:55 -0700 (PDT)
+Received: from Sauravs-Air.domain.name ([2001:4490:4409:d5:1c27:7aae:179:bb91])
+        by smtp.gmail.com with ESMTPSA id k6sm9249704pfu.161.2021.10.26.21.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 21:38:55 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 10:08:08 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: hal: remove goto statement and local
+ variable
+Message-ID: <YXjXsChOpaTThkxT@Sauravs-Air.domain.name>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7JtOJC_cRlt/GupTahQ1RG4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7JtOJC_cRlt/GupTahQ1RG4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Remove the goto statement from FillH2CCmd_88E(). In this function goto
+can be replace by return statement. As on goto label exit, function
+only return it is not performing any cleanup. Avoiding goto will
+improve the function readability. After replacing the goto statement
+local variable ret is also not needed. So remove the ret local variable.
 
-Hi all,
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/hal/rtl8188e_cmd.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-Today's linux-next merge of the char-misc tree got a conflict in:
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+index c5f9353fe3e6..de88e9ee532d 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+@@ -53,19 +53,14 @@ static s32 FillH2CCmd_88E(struct adapter *adapt, u8 ElementID, u32 CmdLen, u8 *p
+ 	u8 cmd_idx, ext_cmd_len;
+ 	u32 h2c_cmd = 0;
+ 	u32 h2c_cmd_ex = 0;
+-	s32 ret = _FAIL;
 
-  drivers/gpu/drm/tegra/gem.c
+ 	if (!adapt->bFWReady) {
+ 		DBG_88E("FillH2CCmd_88E(): return H2C cmd because fw is not ready\n");
+-		return ret;
++		return _FAIL;
+ 	}
 
-between commit:
+-	if (!pCmdBuffer)
+-		goto exit;
+-	if (CmdLen > RTL88E_MAX_CMD_LEN)
+-		goto exit;
+-	if (adapt->bSurpriseRemoved)
+-		goto exit;
++	if (!pCmdBuffer || CmdLen > RTL88E_MAX_CMD_LEN || adapt->bSurpriseRemoved)
++		return _FAIL;
 
-  1c4d17a5267b ("drm/tegra: Implement correct DMA-BUF semantics")
+ 	/* pay attention to if  race condition happened in  H2C cmd setting. */
+ 	do {
+@@ -73,7 +68,7 @@ static s32 FillH2CCmd_88E(struct adapter *adapt, u8 ElementID, u32 CmdLen, u8 *p
 
-from the drm-tegra tree and commit:
+ 		if (!_is_fw_read_cmd_down(adapt, h2c_box_num)) {
+ 			DBG_88E(" fw read cmd failed...\n");
+-			goto exit;
++			return _FAIL;
+ 		}
 
-  16b0314aa746 ("dma-buf: move dma-buf symbols into the DMA_BUF module name=
-space")
+ 		*(u8 *)(&h2c_cmd) = ElementID;
+@@ -102,11 +97,7 @@ static s32 FillH2CCmd_88E(struct adapter *adapt, u8 ElementID, u32 CmdLen, u8 *p
 
-from the char-misc tree.
+ 	} while ((!bcmd_down) && (retry_cnts--));
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+-	ret = _SUCCESS;
+-
+-exit:
+-
+-	return ret;
++	return _SUCCESS;
+ }
 
---=20
-Cheers,
-Stephen Rothwell
+ u8 rtl8188e_set_raid_cmd(struct adapter *adapt, u32 mask)
+--
+2.33.0
 
-diff --cc drivers/gpu/drm/tegra/gem.c
-index 62fc7e8429d4,d38fd7e12b57..000000000000
---- a/drivers/gpu/drm/tegra/gem.c
-+++ b/drivers/gpu/drm/tegra/gem.c
-@@@ -20,78 -21,60 +21,80 @@@
-  #include "drm.h"
-  #include "gem.h"
- =20
-+ MODULE_IMPORT_NS(DMA_BUF);
-+=20
- -static void tegra_bo_put(struct host1x_bo *bo)
- +static unsigned int sg_dma_count_chunks(struct scatterlist *sgl, unsigned=
- int nents)
-  {
- -	struct tegra_bo *obj =3D host1x_to_tegra_bo(bo);
- +	dma_addr_t next =3D ~(dma_addr_t)0;
- +	unsigned int count =3D 0, i;
- +	struct scatterlist *s;
- +
- +	for_each_sg(sgl, s, nents, i) {
- +		/* sg_dma_address(s) is only valid for entries that have sg_dma_len(s) =
-!=3D 0. */
- +		if (!sg_dma_len(s))
- +			continue;
- +
- +		if (sg_dma_address(s) !=3D next) {
- +			next =3D sg_dma_address(s) + sg_dma_len(s);
- +			count++;
- +		}
- +	}
- =20
- -	drm_gem_object_put(&obj->gem);
- +	return count;
-  }
- =20
- -/* XXX move this into lib/scatterlist.c? */
- -static int sg_alloc_table_from_sg(struct sg_table *sgt, struct scatterlis=
-t *sg,
- -				  unsigned int nents, gfp_t gfp_mask)
- +static inline unsigned int sgt_dma_count_chunks(struct sg_table *sgt)
-  {
- -	struct scatterlist *dst;
- -	unsigned int i;
- -	int err;
- -
- -	err =3D sg_alloc_table(sgt, nents, gfp_mask);
- -	if (err < 0)
- -		return err;
- -
- -	dst =3D sgt->sgl;
- +	return sg_dma_count_chunks(sgt->sgl, sgt->nents);
- +}
- =20
- -	for (i =3D 0; i < nents; i++) {
- -		sg_set_page(dst, sg_page(sg), sg->length, 0);
- -		dst =3D sg_next(dst);
- -		sg =3D sg_next(sg);
- -	}
- +static void tegra_bo_put(struct host1x_bo *bo)
- +{
- +	struct tegra_bo *obj =3D host1x_to_tegra_bo(bo);
- =20
- -	return 0;
- +	drm_gem_object_put(&obj->gem);
-  }
- =20
- -static struct sg_table *tegra_bo_pin(struct device *dev, struct host1x_bo=
- *bo,
- -				     dma_addr_t *phys)
- +static struct host1x_bo_mapping *tegra_bo_pin(struct device *dev, struct =
-host1x_bo *bo,
- +					      enum dma_data_direction direction)
-  {
-  	struct tegra_bo *obj =3D host1x_to_tegra_bo(bo);
- -	struct sg_table *sgt;
- +	struct drm_gem_object *gem =3D &obj->gem;
- +	struct host1x_bo_mapping *map;
-  	int err;
- =20
- +	map =3D kzalloc(sizeof(*map), GFP_KERNEL);
- +	if (!map)
- +		return ERR_PTR(-ENOMEM);
- +
- +	kref_init(&map->ref);
- +	map->bo =3D host1x_bo_get(bo);
- +	map->direction =3D direction;
- +	map->dev =3D dev;
- +
-  	/*
- -	 * If we've manually mapped the buffer object through the IOMMU, make
- -	 * sure to return the IOVA address of our mapping.
- -	 *
- -	 * Similarly, for buffers that have been allocated by the DMA API the
- -	 * physical address can be used for devices that are not attached to
- -	 * an IOMMU. For these devices, callers must pass a valid pointer via
- -	 * the @phys argument.
- -	 *
- -	 * Imported buffers were also already mapped at import time, so the
- -	 * existing mapping can be reused.
- +	 * Imported buffers need special treatment to satisfy the semantics of D=
-MA-BUF.
-  	 */
- -	if (phys) {
- -		*phys =3D obj->iova;
- -		return NULL;
- +	if (gem->import_attach) {
- +		struct dma_buf *buf =3D gem->import_attach->dmabuf;
- +
- +		map->attach =3D dma_buf_attach(buf, dev);
- +		if (IS_ERR(map->attach)) {
- +			err =3D PTR_ERR(map->attach);
- +			goto free;
- +		}
- +
- +		map->sgt =3D dma_buf_map_attachment(map->attach, direction);
- +		if (IS_ERR(map->sgt)) {
- +			dma_buf_detach(buf, map->attach);
- +			err =3D PTR_ERR(map->sgt);
- +			goto free;
- +		}
- +
- +		err =3D sgt_dma_count_chunks(map->sgt);
- +		map->size =3D gem->size;
- +
- +		goto out;
-  	}
- =20
-  	/*
-
---Sig_/7JtOJC_cRlt/GupTahQ1RG4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF415MACgkQAVBC80lX
-0GwxNgf+NkpLCXsp4GHoO7DGtcNslbHtkoMdCGzOWy1VflUoWeOTIBSgNhoDVDp7
-ScmFYoklU4kw1yKQHO4iLKEjhX3Le/Om2ZkUY+PC0IKIZaBhw/NsqtehiP9bzhty
-jCWdGnIC5eD1DHxIhljT72xsBA2lehmfjLm5GOKMWpCNLIEoD6PYAyl6zueL+/EU
-vZBdQAzmRJWJR9cye/1GTxv4DXmsm+7wzfxFQkY6P9mI6DSeUPuvAujonJJp3XFA
-4b4BztP0HG7YrFxvK7f4VmvjcH5e/SuEgdhKaQgcUlzyhSjRRRyYLuo346eBppNb
-f79iP/GWy53BFgl5Lh8sqpulaSKynQ==
-=x/4K
------END PGP SIGNATURE-----
-
---Sig_/7JtOJC_cRlt/GupTahQ1RG4--
