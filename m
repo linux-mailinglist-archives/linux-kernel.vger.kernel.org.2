@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3910F43C4B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEA443C4B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240777AbhJ0IMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:12:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235660AbhJ0IMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:12:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29478610FC;
-        Wed, 27 Oct 2021 08:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635322217;
-        bh=pZvXI80W6+vcTE+C0hBwqRQn3h1YSRyRrBOR6CINgcU=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=FVPdiVkwXDWl9+3ivgiZBU/HdqvwMiB0F8kE50S97GdUJZFH1jjo7B4qNz2/Kirqw
-         Epbi64kR5VqgA4vFPW3FqVw8ux5aCXW6/hmJtKJpd6t40sde0LWfqu8aevfOcUi0DM
-         kJss1SmM+ntq2LTOoYQDpYNKRNbtz1uJBMF5+cc7FuR83w/vIr+JV5vxF99jX7JOQo
-         xznEIWuDu0JXNe09U6paL1Akk5TIkndQNYUiC4wHNpElZmyOD/A8KMOg8jzXi3YRUw
-         PMfHHhmcteEOMHRre7Y7yc0c3anlp9x+DemCzTPXv8uTilhO7qbUvlkIsCYIIDt4/A
-         lcYVYQbxCoD/Q==
-Date:   Wed, 27 Oct 2021 10:10:14 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-cc:     linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        =?ISO-8859-15?Q?Jonathan_Neusch=E4fer?= <j.ne@posteo.net>,
-        =?ISO-8859-2?Q?Barnab=E1s_P=F5cze?= <pobrn@protonmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        "Daniel J . Ogorchock" <djogorchock@gmail.com>
-Subject: Re: [PATCH v4 0/5] HID: nintendo: Add support for the Wii U
- gamepad
-In-Reply-To: <20211019110418.26874-1-linkmauve@linkmauve.fr>
-Message-ID: <nycvar.YFH.7.76.2110271009410.12554@cbobk.fhfr.pm>
-References: <20210519085924.1636-1-linkmauve@linkmauve.fr> <20211019110418.26874-1-linkmauve@linkmauve.fr>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S240785AbhJ0INM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:13:12 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:55690 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240780AbhJ0INL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 04:13:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Uts4e-Z_1635322242;
+Received: from localhost.localdomain(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Uts4e-Z_1635322242)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 16:10:43 +0800
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+To:     helgaas@kernel.org
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, xuesong.chen@linux.alibaba.com
+Subject: [PATCH v4 0/4] PCI MCFG consolidation and APEI resource filtering
+Date:   Wed, 27 Oct 2021 16:10:35 +0800
+Message-Id: <20211027081035.53370-1-xuesong.chen@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <YW5OTMz+x8zrsqkF@Dennis-MBP.local>
+References: <YW5OTMz+x8zrsqkF@Dennis-MBP.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021, Emmanuel Gil Peyrot wrote:
+The issue of commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
+level") on x86 is also happened on our own ARM64 platform. We sent a patch[1]
+trying to fix this issue in an arch-specific way as x86 does at first, but
+according to the suggestion from Lorenzo Pieralisi and Catalin Marinas, we can
+consolidate the PCI MCFG part then fix it in a more common way, that's why this
+patch series comes.
 
-> This driver is for the DRC (wireless gamepad) when plugged to the DRH of
-> the Wii U, a chip exposing it as a USB device.
-> 
-> I tried to use this driver on master over usbip on my laptop, but usbip
-> disconnects the device right after the driver created the
-> /dev/input/event* files, so instead I have only tested this driver on
-> the 4.19 branch of the linux-wiiu[1] downstream.
-> 
-> Other than that, pretty much all of the HID parts of the gamepad work,
-> it’s only missing microphone, camera and NFC input now but those are
-> mostly standard (read require quirks) and pertain to other subsystems,
-> so I felt like this can be upstreamed already.
+[1] https://marc.info/?l=linux-arm-kernel&m=163108478627166&w=2
 
-Now that proper hid.git#for-5.16/nintendo branch exists, could you please 
-fix up the issues reported by the kernel build bot and resubmit?
+---
+Change from v3 to v4:
+  - Add a new patch (patch #3) to address the quirk ECAM access issue. Because
+    the normal ECAM config space can be accessed in a lockless way, so we don't
+    need the mutual exclusion with the EINJ action. But those quirks maybe break
+    this rule and corrupt the configuration access, reserve its MCFG address
+    regions in this case to avoid that happens. 
+  
+  - Add another patch (patch #4) to log the PCI MCFG entry parse message per
+    the suggestion from Bjorn Helgaas. The output on ARM64 as:
+    ACPI: MCFG entry for domain 0000 [bus 00-0f] at [mem 0x50000000-0x50ffffff] (base 0x50000000)
+  
+  - Commit message updated with more details of patch #2
 
-Thanks,
+Change from v2 to v3:
+  - Address the comments of Lorenzo Pieralisi about the CONFIG_PCI
+    dependence issue in APEI module (patch #2)
+
+Change from v1 to v2:
+  - Fix the "undefined reference to `pci_mmcfg_list'" build error in case
+    of PCI_CONFIG=n, reported by the kernel test robot
+
+Xuesong Chen (4):
+  PCI: MCFG: Consolidate the separate PCI MCFG table entry list
+  ACPI: APEI: Filter the PCI MCFG address with an arch-agnostic method
+  ACPI: APEI: Reserve the MCFG address for quirk ECAM implementation
+  PCI: MCFG: Add the MCFG entry parse log message
+
+ arch/x86/include/asm/pci_x86.h | 17 +----------
+ arch/x86/pci/mmconfig-shared.c | 30 -------------------
+ drivers/acpi/apei/apei-base.c  | 68 ++++++++++++++++++++++++++++++++----------
+ drivers/acpi/pci_mcfg.c        | 46 +++++++++++++++-------------
+ drivers/pci/pci.c              |  2 ++
+ drivers/pci/quirks.c           |  2 ++
+ include/linux/pci.h            | 18 +++++++++++
+ 7 files changed, 101 insertions(+), 82 deletions(-)
 
 -- 
-Jiri Kosina
-SUSE Labs
+1.8.3.1
 
