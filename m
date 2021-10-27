@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CDE43BEC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAC343BECA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236811AbhJ0BJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:09:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38325 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231388AbhJ0BJU (ORCPT
+        id S236870AbhJ0BMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236798AbhJ0BL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 21:09:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635296815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d0sd05fNlpWtdgtTRa/aTogQfojInzQIx5Zn8GaYdz8=;
-        b=IdvJpgCBPT/Hg8z0rosHQzW7l1Yw6kwunTcI2jJQp4dMki6GJlw4m3Hn3c+zNaWh5rapWI
-        GoJxD8gojE8jKScAFEAkpNSF7i40LoSukInC+8s28r6mqpUCry848mloY4so3jD6eiRf6X
-        8HuuMtV8CbLN0+MMYJoOi3fKZIpmWnk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-lRAYJofHMV2SNMI6IBGqTQ-1; Tue, 26 Oct 2021 21:06:52 -0400
-X-MC-Unique: lRAYJofHMV2SNMI6IBGqTQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6C46801AE8;
-        Wed, 27 Oct 2021 01:06:49 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.22.18.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 84C115F4EE;
-        Wed, 27 Oct 2021 01:06:47 +0000 (UTC)
-Subject: Re: [PATCH RFC] cpuset: Make cpusets get restored on hotplug
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     amit.pundir@linaro.org, cgroups@vger.kernel.org,
-        dimitrysh@google.com, groeck@chromium.org, hannes@cmpxchg.org,
-        joel@joelfernandes.org, jsbarnes@google.com,
-        kernel-team@android.com, kerrnel@google.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        peterz@infradead.org, sonnyrao@google.com, tj@kernel.org,
-        vpillai@digitalocean.com
-References: <972a5c1b-6721-ac20-cec5-617af67e617d@redhat.com>
- <20211026235808.34168-1-21cnbao@gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Message-ID: <f795f8be-a184-408a-0b5a-553d26061385@redhat.com>
-Date:   Tue, 26 Oct 2021 21:06:47 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 26 Oct 2021 21:11:59 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9012DC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:09:34 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id 127so1146810pfu.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:09:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IE1yW+OMDFYK7DVFzbjLOEHKVUKZvs6KTijL3WSzHgs=;
+        b=NLNyXqReix36CnFm1oFZAZzWewcBWEwwtwbwJQL1EqMUIYV8pEqTcKuyH6Kdy0Px4V
+         2pNR+PqQqvFi/tW0FOcQ5fsKwQjkn5w2HBZwkDMcA+U+MAi5uXLCl+3s874yt0wyhFpT
+         GMjsk+L/F72TgL/e9+UJcfgPXjbBJZY6ngzNKjMAFZxAy1uBQGShKV49ljsdDZoxtbFy
+         soxwso5992LkvJM/vKNtmDLloczp2Hq++1GH4SiW9cWja2WhpGpwoOReyQoaFs9oSPar
+         s+wULBwFIa8Re4QBM0DghmfyIUxe3BKsXSc6VnamBgDdu2YNf5y/d6CoPLN3R4GjxTkE
+         ehMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IE1yW+OMDFYK7DVFzbjLOEHKVUKZvs6KTijL3WSzHgs=;
+        b=gGFNKn8AHrZWvIzDt5hIj39sTVO9uuV7LGterhvx0L6/vXwzP0H1F2E5vABhsRmF7Q
+         9coT0yGv/qOUP7rF8bzZ2rYZKj9rPnzQ//Ydo1qfQgpdbQoI4DRIdb2hXGtSsoVva/Af
+         iVJxbXIt2Th7o3J7eiO8tVvjbGx9ny8Hql+MejPuTXZMv4Rqi3yEzCtLWFozcex0mZK3
+         Xw5qoXpeWg5gVZ+bebZRdWXngOzYs+eO5OmlPAmVxFjyf/zC7VyKUbDZdBBaPWrJ4YpW
+         Wkoze5QlNTqeI+rkhxERQb9CdDqJ9oMKouJpvCCwitDFx+MlnwDS31fNU37le/GgcHWU
+         qkPQ==
+X-Gm-Message-State: AOAM530M+fEfD4pUlQAW/LwCCRNSVuc7YDCY7KswImEgb9I8hkpeZek2
+        4RtMPTldWURzamBttXlKrIDOxHksCvGrTZlrh42LUA==
+X-Google-Smtp-Source: ABdhPJwd5SxRRHuClfQQAiRjCXQTrpzQChfLU0PAB6BN/EZhNgwPC0gDz0AC+Eq2iNzGTJUXciRXHM1e4aJmtX+MHVk=
+X-Received: by 2002:a05:6a00:179c:b0:47c:2092:c28c with SMTP id
+ s28-20020a056a00179c00b0047c2092c28cmr3188193pfg.59.1635296973719; Tue, 26
+ Oct 2021 18:09:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211026235808.34168-1-21cnbao@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20211025200852.3002369-1-kaleshsingh@google.com>
+ <20211025200852.3002369-7-kaleshsingh@google.com> <20211026151451.7f3e09a4@gandalf.local.home>
+ <CAC_TJveHgsPZw7p7BWOgQw6h8GNU_Pv_WUjNmw3AUq+wnSzk6Q@mail.gmail.com> <20211026201846.08990d1d@rorschach.local.home>
+In-Reply-To: <20211026201846.08990d1d@rorschach.local.home>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Tue, 26 Oct 2021 18:09:22 -0700
+Message-ID: <CAC_TJve-mKSojaXtukdFeQKvPz-8TQtS=pgGD0Z18Wt6yJi7dg@mail.gmail.com>
+Subject: Re: [PATCH v4 6/8] tracing/histogram: Optimize division by a power of 2
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/26/21 7:58 PM, Barry Song wrote:
->> I think Tejun is concerned about a change in the default behavior of
->> cpuset v1.
->>
->> There is a special v2 mode for cpuset that is enabled by the mount
->> option "cpuset_v2_mode". This causes the cpuset v1 to adopt some of the
->> v2 behavior. I introduced this v2 mode a while back to address, I think,
->> a similar concern. Could you try that to see if it is able to address
->> your problem? If not, you can make some code adjustment within the
->> framework of the v2 mode. As long as it is an opt-in, I think we are
->> open to further change.
-> I am also able to reproduce on Ubuntu 21.04 LTS.
+On Tue, Oct 26, 2021 at 5:18 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> all docker will be put in this cgroups and its child cgroups:
-> /sys/fs/cgroup/cpuset/docker
+> On Tue, 26 Oct 2021 16:39:13 -0700
+> Kalesh Singh <kaleshsingh@google.com> wrote:
 >
-> disabling and enabling SMT by:
-> echo off > /sys/devices/system/cpu/smt/control
-> echo on > /sys/devices/system/cpu/smt/control
+> > >         // This works best for small divisors
+> > >         if (div > max_div) {
+> > >                 // only do a real division
+> > >                 return;
+> > >         }
+> > >         shift = 20;
+> > >         mult = ((1 << shift) + div - 1) / div;
+> > >         delta = mult * div - (1 << shift);
+> > >         if (!delta) {
+> > >                 /* div is a power of 2 */
+> > >                 max = -1;
+> > >                 return;
+> > >         }
+> > >         max = (1 << shift) / delta;
+> >
+> > I'm still trying to digest the above algorithm.
 >
-> or unpluging and pluging CPUs by:
-> echo 0 > /sys/devices/system/cpu/cpuX/online
-> echo 1 > /sys/devices/system/cpu/cpuX/online
+> mult = (2^20 + div - 1) / div;
 >
-> then all docker images will lose some CPUs.
+> The "div - 1" is to round up.
 >
-> So should we document the broken behaviours somewhere?
+> Basically, it's doing:  X / div  = X * (2^20 / div) / 2^20
+>
+> If div is constant, the 2^20 / div is constant, and the "2^20" is the
+> same as a shift.
+>
+> So multiplier is 2^20 / div, and the shift is 20.
+>
+> But because there's rounding errors it is only accurate up to the
+> difference of:
+>
+>   delta = mult * div / 2^20
+>
+> That is if mult is a power of two, then there would be no rounding
+> errors, and the delta is zero, making the max infinite:
+>
+>   max = 2^20 / delta as delta goes to zero.
+>
+> > But doesn't this add 2 extra divisions? What am I missing here?
+>
+> The above is only done at parsing not during the trace, where we care
+> about.
 
-Is the special cpuset_v2_mode mount option able to fix the issue?
+Hi Steve,
 
-This mode is documented in
+Thanks for the explanation, this cleared it up for me.
 
-Documentation/admin-guide/cgroup-v1/cpuset.rst:
+- Kalesh
 
-The cpuset.effective_cpus and cpuset.effective_mems files are
-normally read-only copies of cpuset.cpus and cpuset.mems files
-respectively.  If the cpuset cgroup filesystem is mounted with the
-special "cpuset_v2_mode" option, the behavior of these files will become
-similar to the corresponding files in cpuset v2.  In other words, hotplug
-events will not change cpuset.cpus and cpuset.mems.  Those events will
-only affect cpuset.effective_cpus and cpuset.effective_mems which show
-the actual cpus and memory nodes that are currently used by this cpuset.
-See Documentation/admin-guide/cgroup-v2.rst for more information about
-cpuset v2 behavior.
-
-Maybe we can make it more visible.
-
-Cheers,
-Longman
-
+>
+> > >
+> > >
+> > > We would of course need to use 64 bit operations (maybe only do this for 64
+> > > bit machines). And perhaps even use bigger shift values to get a bigger max.
+> > >
+> > > Then we could do:
+> > >
+> > >         if (val1 < max)
+> > >                 return (val1 * mult) >> shift;
+>
+> This is done at the time of recording.
+>
+> Actually, it would be:
+>
+>         if (val1 < max)
+>                 return (val1 * mult) >> shift;
+>         else
+>                 return val1 / div;
+>
+> -- Steve
