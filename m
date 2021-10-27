@@ -2,96 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8055543C6C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E752143C6C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241252AbhJ0JtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:49:12 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37220 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbhJ0JtK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:49:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D37751FD40;
-        Wed, 27 Oct 2021 09:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635328004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QOaGRGXD0H4nAMtowdLuFZCJQWrMmL8XSspoY0iadQM=;
-        b=LFhokB2Xu2F6JuySRm6q8NUO7LbRF3OJcV/9yjlVF1DxhFYKRY6c6lRMTkEuYk+ZWLDIMA
-        0qi5ZYQy0skUm6hnCTdDapfrEywuSPJtmMrGhat81hjUvcAIR3ElhzFD9zObOS3d+Cd6Ik
-        yW53DinJMfHDoqUvGhunO4FDNcvBDf4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635328004;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QOaGRGXD0H4nAMtowdLuFZCJQWrMmL8XSspoY0iadQM=;
-        b=ASqfEBZkKr5KcIsxKQ5Nog8xnwLc0n3Tfl2rxxJdU2fAbS4k8RE7up8qr+1OvgOJrkXIyV
-        cpQ6JAlcqY8fYsAg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 7E877A3B81;
-        Wed, 27 Oct 2021 09:46:44 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5E06A1F2C66; Wed, 27 Oct 2021 11:46:44 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 11:46:44 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Yu Kuai <yukuai3@huawei.com>, Jan Kara <jack@suse.cz>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: reiserfs: free new_opts in reiserfs_remount
-Message-ID: <20211027094644.GA28650@quack2.suse.cz>
-References: <20211027033947.3992059-1-mudongliangabcd@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027033947.3992059-1-mudongliangabcd@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S241269AbhJ0JvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:51:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:41400 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232462AbhJ0JvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 05:51:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A6461FB;
+        Wed, 27 Oct 2021 02:48:39 -0700 (PDT)
+Received: from entos-thunderx2-desktop.shanghai.arm.com (entos-thunderx2-desktop.shanghai.arm.com [10.169.212.208])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 968C43F70D;
+        Wed, 27 Oct 2021 02:48:35 -0700 (PDT)
+From:   Jianyong Wu <jianyong.wu@arm.com>
+To:     catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        maz@kernel.org, anshuman.khandual@arm.com, ardb@kernel.org,
+        david@redhat.com, gshan@redhat.com, justin.he@arm.com,
+        jianyong.wu@arm.com, nd@arm.com
+Subject: [PATCH v1] arm64/mm: avoid race condition of update page table when kernel init
+Date:   Wed, 27 Oct 2021 17:48:28 +0800
+Message-Id: <20211027094828.7629-1-jianyong.wu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-10-21 11:39:25, Dongliang Mu wrote:
-> Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
-> if not using generic_show_options") eliminates replace_mount_options
-> in reiserfs, but did not handle the allocated new_opts,
-> it will cause memory leak in the reiserfs_remount.
-> 
-> Fix this by freeing new_opts in the reiserfs_remount temporarily.
-> 
-> Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Race condition of page table update can happen in kernel boot period as
+both of memory hotplug action when kernel init and the mark_rodata_ro can
+update page table. For virtio-mem, the function excute flow chart is:
 
-Thanks for the patch but I can see that new_opts is not actually used at
-all in reiserfs_remount() so we should perhaps just remove them (including
-kstrdup() et al).
+-------------------------
+kernel_init
+  kernel_init_freeable
+    ...
+      do_initcall
+        ...
+          module_init [A]
 
-								Honza
+  ...
+  mark_readonly
+    mark_rodata_ro [B]
+-------------------------
+virtio-mem can be initialized at [A] and spwan a workqueue to add
+memory, therefore the race of update page table can happen inside [B].
 
-> ---
->  fs/reiserfs/super.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
-> index 58481f8d63d5..b36865c8b66a 100644
-> --- a/fs/reiserfs/super.c
-> +++ b/fs/reiserfs/super.c
-> @@ -1594,6 +1594,7 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
->  	}
->  
->  out_ok_unlocked:
-> +	kfree(new_opts);
->  	return 0;
->  
->  out_err_unlock:
-> -- 
-> 2.25.1
-> 
+What's more, the race condition can happen even for ACPI based memory
+hotplug, as it can burst into kernel boot period while page table is
+updating inside mark_rodata_ro.
+
+That's why memory hotplug lock is needed to guard mark_rodata_ro to avoid
+the race condition.
+
+It may only happen in arm64. As fixmap, which is the global resource, is
+used in page table creating. So, the change is only for arm64.
+
+The error often occurs inside alloc_init_pud() in arch/arm64/mm/mmu.c
+
+the race condition flow is:
+
+*************** begin ************
+
+kerenl_init                                 virtio-mem workqueue
+=========                                   ========
+alloc_init_pud(...)
+  pudp = pud_set_fixmap_offset(..)          alloc_init_pud(...)
+...                                         ...
+    READ_ONCE(*pudp) //OK!                    pudp = pud_set_fixmap_offset(
+...                                         ...
+  pud_clear_fixmap() //fixmap break
+                                              READ_ONCE(*pudp) //CRASH!
+
+**************** end *************
+
+I catch the related error when test virtio-mem (a new memory hotplug
+driver) on arm64.
+
+How to reproduce:
+(1) prepare a kernel with virtio-mem enabled on arm64
+(2) start a VM using Cloud Hypervisor using the kernel above
+(3) hotplug memory, 20G in my case, with virtio-mem
+(4) reboot or start a new kernel using kexec
+
+Test for server times, you may find the error below:
+
+[    1.131039] Unable to handle kernel paging request at virtual address fffffbfffda3b140
+[    1.134504] Mem abort info:
+[    1.135722]   ESR = 0x96000007
+[    1.136991]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    1.139189]   SET = 0, FnV = 0
+[    1.140467]   EA = 0, S1PTW = 0
+[    1.141755]   FSC = 0x07: level 3 translation fault
+[    1.143787] Data abort info:
+[    1.144976]   ISV = 0, ISS = 0x00000007
+[    1.146554]   CM = 0, WnR = 0
+[    1.147817] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000426f2000
+[    1.150551] [fffffbfffda3b140] pgd=0000000042ffd003, p4d=0000000042ffd003, pud=0000000042ffe003, pmd=0000000042fff003, pte=0000000000000000
+[    1.155728] Internal error: Oops: 96000007 [#1] SMP
+[    1.157724] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G         C        5.15.0-rc3+ #100
+[    1.161002] Hardware name: linux,dummy-virt (DT)
+[    1.162939] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    1.165825] pc : alloc_init_pud+0x38c/0x550
+[    1.167610] lr : alloc_init_pud+0x394/0x550
+[    1.169358] sp : ffff80001001bd10
+......
+[    1.200527] Call trace:
+[    1.201583]  alloc_init_pud+0x38c/0x550
+[    1.203218]  __create_pgd_mapping+0x94/0xe0
+[    1.204983]  update_mapping_prot+0x50/0xd8
+[    1.206730]  mark_rodata_ro+0x50/0x58
+[    1.208281]  kernel_init+0x3c/0x120
+[    1.209760]  ret_from_fork+0x10/0x20
+[    1.211298] Code: eb15003f 54000061 d5033a9f d5033fdf (f94000a1)
+[    1.213856] ---[ end trace 59473413ffe3f52d ]---
+[    1.215850] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+We can see that the error derived from the l3 translation as the pte
+value is *0*. That is because the fixmap has been clear when access.
+
+Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
+---
+ arch/arm64/mm/mmu.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index cfd9deb347c3..567dfba8f08a 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -564,8 +564,10 @@ void mark_rodata_ro(void)
+ 	 * to cover NOTES and EXCEPTION_TABLE.
+ 	 */
+ 	section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata;
++	get_online_mems();
+ 	update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata,
+ 			    section_size, PAGE_KERNEL_RO);
++	put_online_mems();
+ 
+ 	debug_checkwx();
+ }
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.17.1
+
