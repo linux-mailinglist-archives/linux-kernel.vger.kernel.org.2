@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020F543C00B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CA443C014
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 04:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbhJ0Ci4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 22:38:56 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:37680 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbhJ0Cix (ORCPT
+        id S238438AbhJ0Cj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 22:39:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232502AbhJ0Cjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 22:38:53 -0400
-Received: by mail-ot1-f49.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso1580990otl.4;
-        Tue, 26 Oct 2021 19:36:28 -0700 (PDT)
+        Tue, 26 Oct 2021 22:39:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635302249;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a/QyiQUpgKsOG/cjdPPM0OAFVzZJ4RB+AB4nqT/l7qk=;
+        b=b2mGtPTIyR8mVMW2UKICFwXCSV+OhVT7KopgY/SX7Mdu0PVZvJ63CPCPvqXNF3CNHWx44R
+        WNnwCUK3g7CXTTlzIh0aF/fW6KXpV6VrHiiWYmehNgUiaDj4O86/YACLzaB4HH8F2kfdZ5
+        MQUOvtu2Nsuflem4ahcmgTh7WV60lOs=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-mXUdVGOUOt2Gn-hfQYKhQA-1; Tue, 26 Oct 2021 22:37:28 -0400
+X-MC-Unique: mXUdVGOUOt2Gn-hfQYKhQA-1
+Received: by mail-lf1-f69.google.com with SMTP id x7-20020a056512130700b003fd1a7424a8so663130lfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 19:37:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=re9KYIx1IL2WvyPtwp5UIgzDO2YvRBi9kv+ji7Pnlm8=;
-        b=hwdWPJcht85bu0HmNQTK3Qqt0971zE9RxaqJxY6g4KB6Y64d1p+mhhEkystPDbKI10
-         JT7NX8rY+GrxD+fVvuQqznQ0jgSNCQMvjoLxUKeHiFeEnofv3WWgwwe0xsiGOKELR46+
-         Dl5cH57ZV6hw72eGNa3B4hoIcEfDUucjC9bPtc9NOAM5Fdg6QbpXRM3b8j9JmWVg42Fy
-         6QrhXGMFTXql4vDZHvtk1JrwzA53Ia6YqJ4/s+TBG5TrvkutO+EtFjhw8c/fT23XhaVk
-         Z/7p9yxQ3q3olFBYyxkZLH3wmciNPTawfnGRiadk7LI1a0tddvAI+q1oG4IJbVQNUSaF
-         5tlw==
-X-Gm-Message-State: AOAM5337ssg+HmyBUHcy0sUcm/76QP1F4GMaugVISdwo5S3m8qJQjXRH
-        rxVIhsxNotpc1eYyl7GxsQ==
-X-Google-Smtp-Source: ABdhPJyxdubvLwTdDIJey4S8zSgXjUJvMd5s3cDT5T9+mh7/HrcjYBtnmCCAZPcz0RA51CQ/UObb4Q==
-X-Received: by 2002:a9d:6752:: with SMTP id w18mr21955626otm.42.1635302188516;
-        Tue, 26 Oct 2021 19:36:28 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o12sm5133885oti.21.2021.10.26.19.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 19:36:28 -0700 (PDT)
-Received: (nullmailer pid 3844748 invoked by uid 1000);
-        Wed, 27 Oct 2021 02:36:27 -0000
-Date:   Tue, 26 Oct 2021 21:36:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>, collinsd@codeaurora.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, sboyd@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        tglx@linutronix.de, David Collins <collinsd@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>, subbaram@codeaurora.org
-Subject: Re: [PATCH v2 08/10] bindings: spmi: spmi-pmic-arb: mark interrupt
- properties as optional
-Message-ID: <YXi7KxGVes6XtRwo@robh.at.kernel.org>
-References: <1634621361-17155-1-git-send-email-quic_fenglinw@quicinc.com>
- <1634621361-17155-9-git-send-email-quic_fenglinw@quicinc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a/QyiQUpgKsOG/cjdPPM0OAFVzZJ4RB+AB4nqT/l7qk=;
+        b=3+w4E+G0YZXpnZmG4y1pXcMTf9BoRF7Obw5tw2QXiq9zUbZyxZ06zjU2JBd1RYPTnT
+         tBMIz+3jnH0IBmy4iLv/DtxNwylplwJHnLbj5uEJb+bV65MiUJ9JK76MoPBhwzrpk93c
+         E1OcdJAnB2zHsQOJGvvvXgeAgQ68htvDlZJga7St/MunN+lhzaQ6enKiz/fiDoMWTNYu
+         QC/uvst9Gzb9g7/qgg7IMIsTpyvhkwFxVplQcGfTdoFXYktwzU1n6JLiwJCOFhOwFUo7
+         2q1atBksqFXyr8zrgmathyZdtJltD/ahn+0jZyjSqeKCPP4Ly9j/aqGZnB3FSjkhSRy2
+         rQgQ==
+X-Gm-Message-State: AOAM532HAPU/ONVHsqh5XdTVfdCSmbaMFx644bd3+rmiiZ79opGZl3hH
+        bN0OJMQTqkwajCahX4Hdw7CArDpmpG7FQWCpAOsjXTuQ2KhhNfNtgW8dnOpw1lUNnUgc12yIPlT
+        P5KDFhEgnIgNBQ1mUrdvvklb0AjiDCMZX0qXiS8HI
+X-Received: by 2002:ac2:4e68:: with SMTP id y8mr4837431lfs.348.1635302246312;
+        Tue, 26 Oct 2021 19:37:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmO0YmiqgEcYfuQMIcBEjDNbuvbcTM2ziLI1KoxFqXTo8sonq9p3tYxb+D/WfdElwlmRq0nkzK598R6+coRfA=
+X-Received: by 2002:ac2:4e68:: with SMTP id y8mr4837421lfs.348.1635302246139;
+ Tue, 26 Oct 2021 19:37:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634621361-17155-9-git-send-email-quic_fenglinw@quicinc.com>
+References: <20211026134725.345020-1-yangyingliang@huawei.com>
+In-Reply-To: <20211026134725.345020-1-yangyingliang@huawei.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 27 Oct 2021 10:37:15 +0800
+Message-ID: <CACGkMEtQFSxLezBiPofS3C6bL-AZEx6VgQKQrF-JP9hCNmQojg@mail.gmail.com>
+Subject: Re: [PATCH -next] virtio-pci: fix error return code in vp_legacy_probe()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        mst <mst@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Oct 2021 13:29:19 +0800, Fenglin Wu wrote:
-> From: David Collins <collinsd@quicinc.com>
-> 
-> Mark all interrupt related properties as optional instead of
-> required.  Some boards do not required PMIC IRQ support and it
-> isn't needed to handle SPMI bus transactions, so specify it as
-> optional.
-> 
-> Signed-off-by: David Collins <collinsd@codeaurora.org>
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+On Tue, Oct 26, 2021 at 9:39 PM Yang Yingliang <yangyingliang@huawei.com> wrote:
+>
+> Return error code if pci_iomap() fails in vp_legacy_probe()
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: c3ca8a3eeb54 ("virtio-pci: introduce legacy device module")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+>  drivers/virtio/virtio_pci_legacy_dev.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/virtio/virtio_pci_legacy_dev.c b/drivers/virtio/virtio_pci_legacy_dev.c
+> index 9b97680dd02b..4ca3ef38d3bf 100644
+> --- a/drivers/virtio/virtio_pci_legacy_dev.c
+> +++ b/drivers/virtio/virtio_pci_legacy_dev.c
+> @@ -45,8 +45,10 @@ int vp_legacy_probe(struct virtio_pci_legacy_device *ldev)
+>                 return rc;
+>
+>         ldev->ioaddr = pci_iomap(pci_dev, 0, 0);
+> -       if (!ldev->ioaddr)
+> +       if (!ldev->ioaddr) {
+> +               rc = -ENOMEM;
+>                 goto err_iomap;
+> +       }
+>
+>         ldev->isr = ldev->ioaddr + VIRTIO_PCI_ISR;
+>
+> --
+> 2.25.1
+>
+
