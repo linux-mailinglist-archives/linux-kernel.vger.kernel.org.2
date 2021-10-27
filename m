@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA2F43C837
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BD343C83D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 13:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241550AbhJ0LDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 07:03:48 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:52503 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbhJ0LDr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 07:03:47 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfQjW62Vjz4xbG;
-        Wed, 27 Oct 2021 22:01:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635332480;
-        bh=8V10gVOSySKY+RIZmut2n23AklVBFvSx199a3IrUKvc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=C5LYcB2bd2NfpfNDdY8RJeAhK9y1G/2o9j1dNUWsmQdtXfUDxI68DOe7a1A2mqp8B
-         HHPRRTd+WW8CNdp0LIOkwPVAibT9kTz8ouIxEHbAyeCmxQc5SJnE82SIRjBV5Bp+v1
-         pWp0zypQgg8Dn0EyLjEXda29nYkYNfS7cuRj92+5tDUFdt+tpmGgI3SiNabcAutWvX
-         QgT5v8w1s0lgsrl3n4jTMu4y5RV+Z5nYHCltuFmsqL65+oD+6lkF8lWueDEby6AiiQ
-         mIpftZN5f+bONos2rV2hL/onU+pAoS0h5imIvQUyM2wL02hs+Wq9nRQ2+rPYnN2YyT
-         yPlGg5eCNNrqw==
-Date:   Wed, 27 Oct 2021 22:01:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joey Gouly <joey.gouly@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the pinctrl tree
-Message-ID: <20211027220118.71a229ab@canb.auug.org.au>
+        id S241573AbhJ0LFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 07:05:14 -0400
+Received: from mga17.intel.com ([192.55.52.151]:50613 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239782AbhJ0LFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 07:05:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="210914508"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="210914508"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 04:02:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="635681271"
+Received: from kuha.fi.intel.com ([10.237.72.166])
+  by fmsmga001.fm.intel.com with SMTP; 27 Oct 2021 04:02:43 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 27 Oct 2021 14:02:42 +0300
+Date:   Wed, 27 Oct 2021 14:02:42 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@google.com>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Jack Pham <jackp@codeaurora.org>,
+        "Gopal, Saranya" <saranya.gopal@intel.com>,
+        "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/4] USB Power Delivery character device interface
+Message-ID: <YXkx0uG3Z539XJWo@kuha.fi.intel.com>
+References: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
+ <YXgZdFV2yTXAKxE9@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4gzLc37za48_ugFjdJ4i_Ck";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXgZdFV2yTXAKxE9@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4gzLc37za48_ugFjdJ4i_Ck
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Greg,
 
-Hi all,
+On Tue, Oct 26, 2021 at 05:06:28PM +0200, Greg KH wrote:
+> So, why not sysfs?  :)
 
-After merging the pinctrl tree, today's linux-next build (htmldocs)
-produced this warning:
+This is about allowing the user space to take over the USB Power
+Delivery communication and policy decisions in some cases. The user
+space needs to be able to send and receive raw USB Power Delivery
+messages one way or the other. I don't care about what's the interface
+that we use.
 
-include/linux/gpio/driver.h:284: warning: Function parameter or member 'par=
-ent_handler_data_array' not described in 'gpio_irq_chip'
+Here we are talking about the PDOs, so basically the power contract.
+Even if we figured out a way how to expose all the information from
+the Capability, Status, Alert and what ever messages you need to the
+user space via sysfs, and then allow the user to separately send the
+Request Message, we would have only covered the power contract. That
+does not cover everything, but it would also be unnecessarily
+complicated to handle with separate sysfs files IMO.
 
-Introduced by commit
+Even with the power contract it would make more sense to me to just
+allow the user space to simply read and write the raw messages, but
+when we go the other things like Vendor Specific Messages, I don't
+think there is any other way.
 
-  cfe6807d82e9 ("gpio: Allow per-parent interrupt data")
+So we really do need to be able to tap into the USB Power Delivery
+protocol layer directly from user space. I don't care about how we do
+that - character device is just a suggestion, although, it does still
+feel correct to me. Is there some other way we could do this?
 
-But may actually be a problem with the tool :-(
 
---=20
-Cheers,
-Stephen Rothwell
+thanks,
 
---Sig_/4gzLc37za48_ugFjdJ4i_Ck
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF5MX8ACgkQAVBC80lX
-0Gyi2AgAno68K6wEyWQN8nmvn8enihDwrTmHxS89/n2/4GG/McV7W7FNyc5yaiId
-zfDoJQGpMavpTgooN/JZw1H7blZrpDWuv5UAtBQ8z7rrDN8O5QY4R6kbulnc38Nd
-RgULm8sULgznHYDFo575b/XlvHXnakeQ7Fw50tF6/Sy6MV3rIWdy9TbEpGpRkwWH
-Dk7MoMEod62Cu820BbLiT2bKpTt2uiaELANmjudTwkVULSX+rmBBgWlKOChdjmvn
-2/rg6UZ9dXuZxW75sBhaH5vCE9HVt/+MtZ29JDfm5tcLsnxmvBzg5TkrFpvu06EI
-9l6hiYpAPqXLdrVdaDu9/unRN56jZQ==
-=O5jp
------END PGP SIGNATURE-----
-
---Sig_/4gzLc37za48_ugFjdJ4i_Ck--
+-- 
+heikki
