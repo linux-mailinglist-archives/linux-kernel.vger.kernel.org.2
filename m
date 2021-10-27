@@ -2,193 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFB443D5CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F5043D5D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhJ0VeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235021AbhJ0Vdl (ORCPT
+        id S231592AbhJ0VeY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Oct 2021 17:34:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:46506 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235480AbhJ0Vdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:33:41 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12EDC061767
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:31:13 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id d3so6426056wrh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D4Mhjd5SK9cIfjKibwbF4FuCWgAGy9+y27fhN/eSzIE=;
-        b=SS9ik34dzGOmlT5pJQ6n/A0gLlqH6axzhvPLj1asy5cXMi/Pztt8zYq3QIwGh3z6v8
-         FIOoeDlTNaZEkCLnc0Rq5rDItgCA414QF1a4QrclIrISKwqur2SpZktfkrVSuCK3BtfI
-         w0mk1uFX5tOYpTKs05FpMMqydPRfQGVjUtCnw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D4Mhjd5SK9cIfjKibwbF4FuCWgAGy9+y27fhN/eSzIE=;
-        b=5w8Zjc8GFK8etl0Wem0RO6BlxT81HURcyAUy89lib4nu2L9qwNZFrGy4vVH9W8j2mh
-         OQbgpnAIM6hI4s/3Rp78XPhQqO8Hdswy5RXdtMZ0fQqkl+iKAAA7zAqgclMaKRlqB7rU
-         X1EqbpYsxIUz6yhHNp+McD1ekIjjNlWAq2pGQOI5GGAHMevCAYRa5PD5MQEa9wZpxnsD
-         QPjE1C/rFfYKdE+KuSKgG1HUE7EiP7QAl2GzG/X5Qzg15yXD716q9A45g5llv5cy4Ttc
-         DgMdMjV3jTfi2+0q4p74+02PUxlbsIZeAEtJ2zqbQAMSnp4QI7f4dEatxIQK5HtEdtay
-         yJmA==
-X-Gm-Message-State: AOAM531BVntSG+EnFnqJ9TWiJjpsCDPFWy5njjXZXgE6OOXH14qshAzn
-        PhrBJzIyWp0iTrEdYq3rMffr99eFClCKlRD0r+vMIg==
-X-Google-Smtp-Source: ABdhPJxXkldBkDzzdkZpRximVZKSzZmCnAo9wrt206WQfFa1PrMjvgA0pu5wUjqH5GAQgQf47hBcHAlLMX6nKsXK5D0=
-X-Received: by 2002:a05:6000:1449:: with SMTP id v9mr157022wrx.433.1635370272200;
- Wed, 27 Oct 2021 14:31:12 -0700 (PDT)
+        Wed, 27 Oct 2021 17:33:52 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-42-fJv27yKXNbKPUHGUB7ziEQ-1; Wed, 27 Oct 2021 22:31:22 +0100
+X-MC-Unique: fJv27yKXNbKPUHGUB7ziEQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Wed, 27 Oct 2021 22:31:21 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Wed, 27 Oct 2021 22:31:21 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mark Rutland' <mark.rutland@arm.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "ardb@kernel.org" <ardb@kernel.org>
+Subject: RE: [PATCH v5 00/15] x86: Add support for Clang CFI
+Thread-Topic: [PATCH v5 00/15] x86: Add support for Clang CFI
+Thread-Index: AQHXyyrmFu1L74SRSES6mpaoExEoXavmyV5Q///5hQCAAJkGUA==
+Date:   Wed, 27 Oct 2021 21:31:21 +0000
+Message-ID: <fba51c06395740afa325bbccc8bff170@AcuMS.aculab.com>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211026201622.GG174703@worktop.programming.kicks-ass.net>
+ <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <456321a9fc5245408fc0d2798e497fe0@AcuMS.aculab.com>
+ <20211027131730.GF54628@C02TD0UTHF1T.local>
+In-Reply-To: <20211027131730.GF54628@C02TD0UTHF1T.local>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20211022140714.28767-1-jim2101024@gmail.com> <20211022140714.28767-2-jim2101024@gmail.com>
- <YXcup7d6ROmmPCuD@robh.at.kernel.org> <CA+-6iNyxYm4Sf6EsKjmedi8RF-CZKsXs9KXMjaTd_xqnyFL8ZA@mail.gmail.com>
- <CAL_JsqLBqjEOB_rUJ-7KW7Pr4DH-VmxkDJpEZ_YNE4Vvz8kEsQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqLBqjEOB_rUJ-7KW7Pr4DH-VmxkDJpEZ_YNE4Vvz8kEsQ@mail.gmail.com>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Wed, 27 Oct 2021 17:31:01 -0400
-Message-ID: <CA+-6iNyjD1sTYwOLGH8rj7q+VkKFg4eiK_C_n2X+6Js5AeHDsA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saenz Julienne <nsaenzjulienne@suse.de>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 4:54 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Tue, Oct 26, 2021 at 4:27 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+From: Mark Rutland
+> Sent: 27 October 2021 14:18
+> 
+> On Wed, Oct 27, 2021 at 12:55:17PM +0000, David Laight wrote:
+> > From: Mark Rutland
+> > > Sent: 27 October 2021 13:05
+> > ...
+> > > Taking a step back, it'd be nicer if we didn't have the jump-table shim
+> > > at all, and had some SW landing pad (e.g. a NOP with some magic bytes)
+> > > in the callees that the caller could check for. Then function pointers
+> > > would remain callable in call cases, and we could explcitly add landing
+> > > pads to asm to protect those. I *think* that's what the grsecurity folk
+> > > do, but I could be mistaken.
 > >
-> > On Mon, Oct 25, 2021 at 6:24 PM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Fri, Oct 22, 2021 at 10:06:54AM -0400, Jim Quinlan wrote:
-> > > > Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
-> > > > allows optional regulators to be attached and controlled by the PCIe RC
-> > > > driver.  That being said, this driver searches in the DT subnode (the EP
-> > > > node, eg pci@0,0) for the regulator property.
-> > > >
-> > > > The use of a regulator property in the pcie EP subnode such as
-> > > > "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
-> > > > file at
-> > > >
-> > > > https://github.com/devicetree-org/dt-schema/pull/54
-> > > >
-> > > > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> > > > ---
-> > > >  .../bindings/pci/brcm,stb-pcie.yaml           | 23 +++++++++++++++++++
-> > > >  1 file changed, 23 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > index b9589a0daa5c..fec13e4f6eda 100644
-> > > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > > @@ -154,5 +154,28 @@ examples:
-> > > >                                   <0x42000000 0x1 0x80000000 0x3 0x00000000 0x0 0x80000000>;
-> > > >                      brcm,enable-ssc;
-> > > >                      brcm,scb-sizes =  <0x0000000080000000 0x0000000080000000>;
-> > > > +
-> > > > +                    /* PCIe bridge */
-> > >
-> > > More specifically, the root port.
-> > >
-> > > > +                    pci@0,0 {
-> > > > +                            #address-cells = <3>;
-> > > > +                            #size-cells = <2>;
-> > > > +                            reg = <0x0 0x0 0x0 0x0 0x0>;
-> > > > +                            device_type = "pci";
-> > > > +                            ranges;
-> > > > +
-> > > > +                            /* PCIe endpoint */
-> > > > +                            pci@0,0 {
-> > > > +                                    device_type = "pci";
-> > >
-> > > This means this device is a PCI bridge which wouldn't typically be the
-> > > endpoint. Is that intended?
-> > Hi Rob,
-> >
-> > I'm not sure I understand what you are saying --  do you want the
-> > innermost node to be named something like ep-pci@0,0, and its
-> > containing node pci-bridge@0,0?   Or, more likely, I'm missing the
-> > point.  If my DT subtree is this
->
-> I'm confused as to how a bridge is the endpoint. If it is a bridge
-> (which 'device_type = "pci"' means it is), then there should be
-> another PCI device under it. That may or may not have a DT node.
+> > It doesn't need to be a 'landing pad'.
+> > The 'magic value' could be at 'label - 8'.
+> 
+> Sure; I'd intended to mean the general case of something at some fixed
+> offset from the entrypoint, either before or after, potentially but not
+> necessarily inline in the executed instruction stream.
 
-I did not know that device_type="pci" implies that it must be a
-bridge;  [1] says "device_type" is deprecated  for PCI and [2] defers
-to Open Firmware EEE 1275, which is not free AFAICT. Do you have
-better URLs that describe this?  At any rate, I will remove the
-device_type="pci" from the innermost DT node, and resubmit.
+What you really want is to be able to read the value using the I-cache
+so as not to pollute the D-cache with code bytes and to avoid having
+both an I-cache and D-cache miss at the same time for the same memory.
 
->
-> > pcie@8b10000 {
-> >     compatible = "brcm,bcm7278-pcie";
-> >     ....
-> >     pci-bridge@0,0 {
-> >         reg = <0x0 0x0 0x0 0x0 0x0>; /* bus 0 */
-> >         .....
-> >         pci-ep@0,0,0 {
-> >             reg = <0x10000 0x0 0x0 0x0 0x0>;  /* bus 1 */
-> >             vpcie3v3-supply = <&vreg8>;
-> >             ...
-> >         }
-> >     }
-> > }
-> >
-> > then the of_nodes appear to align correctly with the devices:
-> >
-> > $ cd /sys/devices/platform/
-> > $ cat 8b10000.pcie/of_node/name
-> > pcie
-> > $ cat 8b10000.pcie/pci0000:00/0000:00:00.0/of_node
-> > pci-bridge
-> > $ cat 8b10000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/of_node/name
-> > pci-ep
->
-> What does 'lspci -tv' show?
+Even if the I-cache read took an extra clock (or two) I suspect it
+would be an overall gain.
+This is also true for code that uses pc-relative instructions to
+read constants - common in arm-64.
 
-$ lspci -tv
--+-[0000:01]---00.0  Intel Corporation Wireless 7260
-  \-[0000:00]---00.0  Broadcom Inc. and subsidiaries Device 7278
+Not sure any hardware lets you do that though :-(
 
+	David
 
->
-> >
-> > and the EP device works of course.  I've even printed out the
-> > device_node structure in the EP driver's probe and it is as expected.
-> > I've noticed that examples such as
-> > "arch/arm64/boot/dts/nvidia/tegra186.dtsi" have the EP node (eg
-> > pci@1,0) directly under the
-> > host bridge DT node (pcie@10003000).  I did try doing that, but the EP
-> > device's probe is given a NUL device_node pointer.
->
-> If you want a complex example I know that's right, then see hikey970.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Thanks, will look.
-
-Jim
-
-[1] https://buildmedia.readthedocs.org/media/pdf/devicetree-specification/latest/devicetree-specification.pdf
-[2] https://www.openfirmware.info/data/docs/bus.pci.pdf
->
-> Rob
