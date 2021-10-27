@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C4043C48E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609F943C495
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239120AbhJ0IEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:04:02 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:43198 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234570AbhJ0IDQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:03:16 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4HfLhx2vHqz1qwdr;
-        Wed, 27 Oct 2021 10:00:33 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4HfLhx1z0dz1qqkG;
-        Wed, 27 Oct 2021 10:00:33 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id lnOeicQQ8Db8; Wed, 27 Oct 2021 10:00:32 +0200 (CEST)
-X-Auth-Info: x+8QjqTD1V1ACKg/WDk8SUlDVnu/BmJKfvIHSrNqoqQSSJ4hj/hMiZjB0S6pDmtP
-Received: from igel.home (ppp-46-244-163-205.dynamic.mnet-online.de [46.244.163.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 27 Oct 2021 10:00:32 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 901CE2C0C9B; Wed, 27 Oct 2021 10:00:31 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     alex@ghiti.fr, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH] RISC-V: Make CONFIG_RELOCATABLE user selectable
-References: <20211026212847.43108-1-palmer@dabbelt.com>
-X-Yow:  My ELBOW is a remote FRENCH OUTPOST!!
-Date:   Wed, 27 Oct 2021 10:00:31 +0200
-In-Reply-To: <20211026212847.43108-1-palmer@dabbelt.com> (Palmer Dabbelt's
-        message of "Tue, 26 Oct 2021 14:28:47 -0700")
-Message-ID: <87mtmuaodc.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S239069AbhJ0IGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:06:14 -0400
+Received: from mga09.intel.com ([134.134.136.24]:24462 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231975AbhJ0IGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 04:06:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="229960765"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="229960765"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 01:03:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="465644293"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.76])
+  by orsmga002.jf.intel.com with ESMTP; 27 Oct 2021 01:03:35 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/6] perf dlfilter: Add dlfilter-show-cycles
+Date:   Wed, 27 Oct 2021 11:03:28 +0300
+Message-Id: <20211027080334.365596-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Okt 26 2021, Palmer Dabbelt wrote:
+Hi
 
-> +config RELOCATABLE
-> +	bool "Build a relocatable kernel"
-> +	depends on MMU && 64BIT && !XIP_KERNEL
-> +	help
-> +          This builds a kernel as a Position Independent Executable (PIE),
-> +          which retains all relocation metadata required to relocate the
-> +          kernel binary at runtime to a different virtual address than the
-> +          address it was linked at.
-> +          Since RISCV uses the RELA relocation format, this requires a
-> +          relocation pass at runtime even if the kernel is loaded at the
-> +          same address it was linked at.
+The issue with V1 was that the IPC information used to accumulate cycle
+counts has a lower granularity because it is output only when the cycle
+count correlates to the IP of the event i.e. only when the IPC is exactly
+correct.
 
-When in doubt, do what?
+To enable more frequent updates to the cycle count, itrace option 'A' is
+added, which specifies that IPC information can be approximate.
 
-Andreas.
+In addition there are some new miscellaneous patches.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+
+Changes in V3:
+
+    perf intel-pt: Support itrace A option to approximate IPC
+      Expanded explanation of the loss of accuracy of IPC with 'A' option.
+
+    Added Reviewed-by: Andi Kleen <ak@linux.intel.com>
+
+
+Changes in V2:
+
+    perf dlfilter: Add dlfilter-show-cycles
+      Separate counts for branches, instructions or other events.
+
+    New patches:
+      perf auxtrace: Add missing Z option to ITRACE_HELP
+      perf auxtrace: Add itrace A option to approximate IPC
+      perf intel-pt: Support itrace A option to approximate IPC
+      perf auxtrace: Add itrace d+o option to direct debug log to stdout
+      perf intel-pt: Support itrace d+o option to direct debug log to stdout
+
+
+Adrian Hunter (6):
+      perf auxtrace: Add missing Z option to ITRACE_HELP
+      perf auxtrace: Add itrace A option to approximate IPC
+      perf intel-pt: Support itrace A option to approximate IPC
+      perf dlfilter: Add dlfilter-show-cycles
+      perf auxtrace: Add itrace d+o option to direct debug log to stdout
+      perf intel-pt: Support itrace d+o option to direct debug log to stdout
+
+ tools/perf/Documentation/itrace.txt                |   2 +
+ tools/perf/Documentation/perf-intel-pt.txt         |  28 ++++
+ tools/perf/Makefile.perf                           |   2 +-
+ tools/perf/dlfilters/dlfilter-show-cycles.c        | 144 +++++++++++++++++++++
+ tools/perf/util/auxtrace.c                         |   3 +
+ tools/perf/util/auxtrace.h                         |   6 +
+ .../perf/util/intel-pt-decoder/intel-pt-decoder.c  |   1 +
+ .../perf/util/intel-pt-decoder/intel-pt-decoder.h  |   1 +
+ tools/perf/util/intel-pt-decoder/intel-pt-log.c    |   8 +-
+ tools/perf/util/intel-pt.c                         |  21 ++-
+ 10 files changed, 205 insertions(+), 11 deletions(-)
+ create mode 100644 tools/perf/dlfilters/dlfilter-show-cycles.c
+
+
+Regards
+Adrian
