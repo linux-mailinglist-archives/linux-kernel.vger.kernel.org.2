@@ -2,191 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8ED43C665
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B41843C66A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240045AbhJ0J0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:26:13 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:37146 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240035AbhJ0J0M (ORCPT
+        id S240102AbhJ0J17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:27:59 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4033 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhJ0J15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:26:12 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19R84iaS013141;
-        Wed, 27 Oct 2021 05:23:46 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3bx4far2um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 05:23:46 -0400
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 19R9NiH0011769
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Oct 2021 05:23:45 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Wed, 27 Oct 2021
- 02:23:43 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Wed, 27 Oct 2021 02:23:43 -0700
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.136])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 19R9NdaE017350;
-        Wed, 27 Oct 2021 05:23:41 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <nuno.sa@analog.com>, Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v2 2/2] dt-bindings: iio: frequency: add admv1013 doc
-Date:   Wed, 27 Oct 2021 12:23:33 +0300
-Message-ID: <20211027092333.5270-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211027092333.5270-1-antoniu.miclaus@analog.com>
-References: <20211027092333.5270-1-antoniu.miclaus@analog.com>
+        Wed, 27 Oct 2021 05:27:57 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HfNTf60vGz6H6sb;
+        Wed, 27 Oct 2021 17:20:54 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 27 Oct 2021 11:25:29 +0200
+Received: from [10.47.27.251] (10.47.27.251) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 27 Oct
+ 2021 10:25:28 +0100
+Subject: Re: [PATCH 1/5] iova: Move fast alloc size roundup into
+ alloc_iova_fast()
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+CC:     Jason Wang <jasowang@redhat.com>, mst <mst@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+References: <1632477717-5254-1-git-send-email-john.garry@huawei.com>
+ <1632477717-5254-2-git-send-email-john.garry@huawei.com>
+ <CACGkMEt8FcoJ4zMXFZzmrFjm=ynWfr5yLfvSHCckawpa3FvhkA@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <c0d35d67-e6b0-3165-0968-30eb9998d242@huawei.com>
+Date:   Wed, 27 Oct 2021 10:25:17 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: v5_-qxBqZtwvCY_9WsYrxfC7F_Kxj5fP
-X-Proofpoint-ORIG-GUID: v5_-qxBqZtwvCY_9WsYrxfC7F_Kxj5fP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_03,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- priorityscore=1501 impostorscore=0 mlxscore=0 malwarescore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270057
+In-Reply-To: <CACGkMEt8FcoJ4zMXFZzmrFjm=ynWfr5yLfvSHCckawpa3FvhkA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.27.251]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the ADMV1013 Upconverter.
+On 11/10/2021 03:06, Jason Wang wrote:
+> On Fri, Sep 24, 2021 at 6:07 PM John Garry<john.garry@huawei.com>  wrote:
+>> It really is a property of the IOVA rcache code that we need to alloc a
+>> power-of-2 size, so relocate the functionality to resize into
+>> alloc_iova_fast(), rather than the callsites.
+>>
+>> Signed-off-by: John Garry<john.garry@huawei.com>
+> Acked-by: Jason Wang<jasowang@redhat.com>
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-no changes in v2.
- .../bindings/iio/frequency/adi,admv1013.yaml  | 110 ++++++++++++++++++
- 1 file changed, 110 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+Thanks
+> 
 
-diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-new file mode 100644
-index 000000000000..7c22202e1ffd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-@@ -0,0 +1,110 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/frequency/adi,admv1013.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ADMV1013 Microwave Upconverter
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   Wideband, microwave upconverter optimized for point to point microwave
-+   radio designs operating in the 24 GHz to 44 GHz frequency range.
-+
-+   https://www.analog.com/en/products/admv1013.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,admv1013
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+  clocks:
-+    description:
-+      Definition of the external clock.
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: lo_in
-+
-+  clock-output-names:
-+    maxItems: 1
-+
-+  vcm-supply:
-+    description:
-+      Analog voltage regulator.
-+
-+  adi,vga-pd:
-+    description:
-+      Power Down the Voltage Gain Amplifier Circuit.
-+    type: boolean
-+
-+  adi,mixer-pd:
-+    description:
-+      Power Down the Mixer Circuit.
-+    type: boolean
-+
-+  adi,quad-pd:
-+    description:
-+      Power Down the Quadrupler.
-+    type: boolean
-+
-+  adi,bg-pd:
-+    description:
-+      Power Down the Transmitter Band Gap.
-+    type: boolean
-+
-+  adi,mixer-if-en:
-+    description:
-+      Enable the Intermediate Frequency Mode.
-+    type: boolean
-+
-+  adi,det-en:
-+    description:
-+      Enable the Envelope Detector.
-+    type: boolean
-+
-+  adi,quad-se-mode:
-+    description:
-+      Switch the LO path from differential to single-ended operation.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [6, 9, 12]
-+
-+  '#clock-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - vcm-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      admv1013@0{
-+        compatible = "adi,admv1013";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+        clocks = <&admv1013_lo>;
-+        clock-names = "lo_in";
-+        vcm-supply = <&vcm>;
-+        adi,quad-se-mode = <12>;
-+        adi,mixer-if-en;
-+        adi,det-en;
-+      };
-+    };
-+...
--- 
-2.33.1
+Hi Joerg,
 
+Can you pick up this patch only for 5.16? It has a good few tags, and 
+I'm waiting for feedback/update from Robin on the rest of the series.
+
+Cheers,
+John
