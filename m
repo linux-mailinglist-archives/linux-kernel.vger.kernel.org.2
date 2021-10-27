@@ -2,178 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D310543C2B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCF643C2C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 08:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239875AbhJ0GOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 02:14:47 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47286 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231208AbhJ0GOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 02:14:44 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19R4bM68014856;
-        Wed, 27 Oct 2021 08:11:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=nT19xZKAS1g6Wr2Uc3j1zTC0eEqLF61U2hb0csAByE8=;
- b=qpkz848/RtyF6rGQB646MxF7l3lRxh06i/JQDEq4QXdNf0bBls4oIzPKu9hJoks6f/Qu
- zZ5EPSZzQPRMBZmURzYyXHIGJHoV4pRjFM5QrtfySALfgLuclLRwFWXOohJuaq9ZdXXU
- 1A/tvhP9HqzAkj7qPpIoRWuTrxgBM2xIlkxBQmQxMEry3YegaYhl15hpEr+uFaZRHM09
- G2djmdsXb1j1BFg4VMmDFOY0NS6CiVjZ+SJVVgVnIEPs22BxO+HytLu9jDmcsJjCYtyk
- jzPyozDJ9b4xRK9AsLTKfGq8y+d1KoyRnwgOYG+KGwS3rDJRaK+8FSk1qCrfTltXZ7Qd XQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bxm40v5fh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Oct 2021 08:11:49 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0B2CC100034;
-        Wed, 27 Oct 2021 08:11:49 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E23C3218104;
-        Wed, 27 Oct 2021 08:11:48 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.51) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct
- 2021 08:11:45 +0200
-Subject: Re: dt-bindings: treewide: Update @st.com email address to
- @foss.st.com
-To:     Marc Zyngier <maz@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        maxime coquelin <mcoquelin.stm32@gmail.com>,
-        alexandre torgue <alexandre.torgue@foss.st.com>,
-        michael turquette <mturquette@baylibre.com>,
-        stephen boyd <sboyd@kernel.org>,
-        herbert xu <herbert@gondor.apana.org.au>,
-        "david s . miller" <davem@davemloft.net>,
-        david airlie <airlied@linux.ie>,
-        daniel vetter <daniel@ffwll.ch>,
-        thierry reding <thierry.reding@gmail.com>,
-        sam ravnborg <sam@ravnborg.org>,
-        yannick fertre <yannick.fertre@foss.st.com>,
-        "philippe cornu" <philippe.cornu@foss.st.com>,
-        benjamin gaignard <benjamin.gaignard@linaro.org>,
-        vinod koul <vkoul@kernel.org>,
-        ohad ben-cohen <ohad@wizery.com>,
-        bjorn andersson <bjorn.andersson@linaro.org>,
-        baolin wang <baolin.wang7@gmail.com>,
-        jonathan cameron <jic23@kernel.org>,
-        "lars-peter clausen" <lars@metafoo.de>,
-        olivier moysan <olivier.moysan@foss.st.com>,
-        arnaud pouliquen <arnaud.pouliquen@foss.st.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        "Richard Weinberger" <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Matt Mackall <mpm@selenic.com>,
-        "Alessandro Zummo" <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Ahmad Fatoum" <a.fatoum@pengutronix.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        dillon min <dillon.minfei@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        "Laurent Pinchart" <laurent.pinchart@ideasonboard.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Fabien Dessenne <fabien.dessenne@foss.st.com>,
-        Christophe Roullier <christophe.roullier@foss.st.com>,
-        Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
-        Lionel Debieve <lionel.debieve@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Ludovic Barre <ludovic.barre@foss.st.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        pascal Paillet <p.paillet@foss.st.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        "Jose Abreu" <joabreu@synopsys.com>,
-        Le Ray <erwan.leray@foss.st.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-clk@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <dmaengine@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>
-References: <20211020065000.21312-1-patrice.chotard@foss.st.com>
- <22fb6f19-21eb-dcb5-fa31-bb243d4a7eaf@canonical.com>
- <878ryoc4dc.wl-maz@kernel.org>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <82492eb2-5a5e-39a2-a058-5e2ba75323e0@foss.st.com>
-Date:   Wed, 27 Oct 2021 08:11:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238452AbhJ0GRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 02:17:55 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30410 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238436AbhJ0GRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 02:17:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635315330; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=X9WQ67ZZb8Ypo1DVLfI5/keDJUV/PdvE11bg/iF1k00=;
+ b=K6VlAWACR32+K5YWWJl1p7h7gIvyahfYeFnRdUj0mJPGZPSzU8DSwDxzcwqJI+6vLd4KV+EB
+ DSUMALF4YrQoVptYAmwz/mWnJwVyf2ociRoJuVF0mXnQIO0+2tNIR7s4hS25CKex4jVzHPL1
+ EiB9AoJ1ggXf+xAeEuMCFBMMcck=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6178edbac75c436a307d0a6c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 06:12:10
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 53E24C43460; Wed, 27 Oct 2021 06:12:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92891C4338F;
+        Wed, 27 Oct 2021 06:12:07 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <878ryoc4dc.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_01,2021-10-26_01,2020-04-07_01
+Date:   Wed, 27 Oct 2021 14:12:07 +0800
+From:   tjiang@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
+ using different nvm
+In-Reply-To: <YXgrwKUZwUWuWfG4@google.com>
+References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
+ <YXgrwKUZwUWuWfG4@google.com>
+Message-ID: <fe118b60df5881b0e9938f57aae6f87e@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc
+Hi Matthias:
+   the previous patch is submitted by zijun , as he is not working on 
+this project, I take over his job, so can we assume abandon the previous 
+patch, using my new patch ? thank you.
+regards.
+tim
 
-On 10/20/21 1:39 PM, Marc Zyngier wrote:
-> On Wed, 20 Oct 2021 08:45:02 +0100,
-> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
->>
->> On 20/10/2021 08:50, patrice.chotard@foss.st.com wrote:
->>> From: Patrice Chotard <patrice.chotard@foss.st.com>
->>>
->>> Not all @st.com email address are concerned, only people who have
->>> a specific @foss.st.com email will see their entry updated.
->>> For some people, who left the company, remove their email.
->>>
->>
->> Please split simple address change from maintainer updates (removal,
->> addition).
->>
->> Also would be nice to see here explained *why* are you doing this.
+On 2021-10-27 00:24, Matthias Kaehlcke wrote:
+> On Fri, Oct 22, 2021 at 01:35:38PM +0800, tjiang@codeaurora.org wrote:
+>> the RF performance of wcn6855 soc chip from different foundries will 
+>> be
+>> difference, so we should use different nvm to configure them.
+>> 
+>> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+>> ---
+>>  drivers/bluetooth/btusb.c | 55
+>> +++++++++++++++++++++++++++++++++++------------
+>>  1 file changed, 41 insertions(+), 14 deletions(-)
+>> 
+>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>> index 87b71740fad8..a5fe57e7cd7e 100644
+>> --- a/drivers/bluetooth/btusb.c
+>> +++ b/drivers/bluetooth/btusb.c
+>> @@ -3195,6 +3195,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
+>> hci_dev
+>> *hdev,
+>>  #define QCA_DFU_TIMEOUT		3000
+>>  #define QCA_FLAG_MULTI_NVM      0x80
+>> 
+>> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+>> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+>> +
+>>  struct qca_version {
+>>  	__le32	rom_version;
+>>  	__le32	patch_version;
+>> @@ -3226,6 +3229,7 @@ static const struct qca_device_info
+>> qca_devices_table[] = {
+>>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+>>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+>>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+>> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+>>  };
+>> 
+>>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
+>> request,
+>> @@ -3380,6 +3384,42 @@ static int btusb_setup_qca_load_rampatch(struct
+>> hci_dev *hdev,
+>>  	return err;
+>>  }
+>> 
+>> +static void btusb_generate_qca_nvm_name(char *fwname,
+>> +					size_t max_size,
+>> +					const struct qca_version *ver)
+>> +{
+>> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+>> +	u16 flag = le16_to_cpu(ver->flag);
+>> +
+>> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+>> +		u16 board_id = le16_to_cpu(ver->board_id);
+>> +		u32 ram_version = le32_to_cpu(ver->ram_version);
+>> +		const char *variant = NULL;
 > 
-> And why this can't be done with a single update to .mailmap, like
-> anyone else does.
-
-Thanks for the tips, yes, it will be simpler.
-
-Thanks
-Patrice
-
+> This assignement was introduced in v3, it isn't really useful since the
+> variable is always assigned to a value in the switch statement below.
 > 
-> 	M.
+> btw, why did you reset the patch version numbers, earlier they went up
+> to v11? This is confusing, e.g. when someone mentions v3 of this patch,
+> are they referring to this version or to
+> https://patchwork.kernel.org/project/bluetooth/patch/1628758216-3201-1-git-send-email-zijuhu@codeaurora.org/?
 > 
+>> +
+>> +		switch (ram_version) {
+>> +		case WCN6855_2_0_RAM_VERSION_GF:
+>> +		case WCN6855_2_1_RAM_VERSION_GF:
+>> +			variant = "_gf";
+>> +			break;
+>> +		default:
+>> +			variant = "";
+>> +			break;
+>> +		}
+>> +
+>> +		if (board_id == 0) {
+>> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
+>> +				rom_version, variant);
+>> +		} else {
+>> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
+>> +				rom_version, variant, board_id);
+>> +		}
+>> +	} else {
+>> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+>> +			rom_version);
+>> +	}
+>> +
+>> +}
+>> +
+>>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+>>  				    struct qca_version *ver,
+>>  				    const struct qca_device_info *info)
+>> @@ -3388,20 +3428,7 @@ static int btusb_setup_qca_load_nvm(struct 
+>> hci_dev
+>> *hdev,
+>>  	char fwname[64];
+>>  	int err;
+>> 
+>> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+>> -		/* if boardid equal 0, use default nvm without surfix */
+>> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+>> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+>> -				 le32_to_cpu(ver->rom_version));
+>> -		} else {
+>> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+>> -				le32_to_cpu(ver->rom_version),
+>> -				le16_to_cpu(ver->board_id));
+>> -		}
+>> -	} else {
+>> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+>> -			 le32_to_cpu(ver->rom_version));
+>> -	}
+>> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
+>> 
+>>  	err = request_firmware(&fw, fwname, &hdev->dev);
+>>  	if (err) {
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum, a
+>> Linux Foundation Collaborative Project
