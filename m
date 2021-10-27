@@ -2,218 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6D643CA4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE32E43CA52
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242083AbhJ0NHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242082AbhJ0NHv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:07:51 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F5DC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:05:25 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id m22so4153959wrb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OiCX8D31pPbHnzvf2oaw3Vd7y+KKNl/DTKEL0iqAa3o=;
-        b=ENSl3WDByEE48jaQ6uANo5ZFCux4iaCaQEe+bJ/MLf93uVEov/ydZgcutP1xBeh1sy
-         TsA4EEeFe5jNr12X4/BDoXpnSCVbxKabPm/gdQweQ6vej1jAKjyWH/GcW2FKaC2olRZG
-         xNgfI/hkxkTjrA06pIOe5CH4pD+CI0xTZyO23GDXy52u/YCtx9auw4AvcIjQ687azct9
-         wj11kDuKxtcHteZxxsz656mZRWs9GJs4GOWDQ+OMPxmlwTrXZDxi+Zd8Mjp/Rqo9KFVH
-         1jIy/RtbHneEoJ3g7OwK2fjMtqaqM+xuUNfNPsYnW/Ui8LsJr9EcGisq2Y6EfxvhQPua
-         9IDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OiCX8D31pPbHnzvf2oaw3Vd7y+KKNl/DTKEL0iqAa3o=;
-        b=0cS/W+kb2960IHfR4dwupPAMIDkYL1Bxdc3KkYuvQzqt8BCGYpH22khfQLrVmal5hT
-         eaLgJQA/pbW145jxn93dfc6D58h4S4+aAEz1dqYxVVB/74roF47v7AT6QhyZE7GTBQ+2
-         kGtfBHoZ3Rq/J2W8iaZCwHZAKcWCHPIQsKTGfDjRVPNVH2fODYghrzqsjYbGdwZkSLOy
-         NfKTZImLFd5XwJvk9nc8dDByU8LxHhGXqzk7uJUMquwjfQHehRwmxX547khnYw4uAtqK
-         8YVhf7031pugZkR4UN6aaLax7szVKB39L2+HiRS1sVb+L0k763PyZZ6oVeK22JQHJdU5
-         TCQA==
-X-Gm-Message-State: AOAM5328T2PL7dO8mlKO2FdWSqKEFrcUU8g6V6KpCANk9mxwqLHowTgD
-        yI60Wi3HtBdgaLU7iDWEBRsSfF0+nUs=
-X-Google-Smtp-Source: ABdhPJwrexgWGIaXV2EAye0Q7dfKIR5P9x2Nvmh1cjyBrWQzH9s9xZ6VrRQN2KpWoEZrETKwnb8e3g==
-X-Received: by 2002:adf:ed89:: with SMTP id c9mr42032701wro.268.1635339924403;
-        Wed, 27 Oct 2021 06:05:24 -0700 (PDT)
-Received: from WRT-WX9.. ([95.179.207.30])
-        by smtp.gmail.com with ESMTPSA id v191sm3449104wme.36.2021.10.27.06.05.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 06:05:23 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v2] mm/damon: simplify stop mechanism
-Date:   Wed, 27 Oct 2021 21:05:17 +0800
-Message-Id: <20211027130517.4404-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S236937AbhJ0NJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:09:37 -0400
+Received: from mga03.intel.com ([134.134.136.65]:28690 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235246AbhJ0NJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:09:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="230102611"
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="230102611"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 06:06:50 -0700
+X-IronPort-AV: E=Sophos;i="5.87,186,1631602800"; 
+   d="scan'208";a="497857989"
+Received: from smaharan-mobl.gar.corp.intel.com (HELO localhost) ([10.251.214.195])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 06:06:46 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] [RESEND] drm: fb_helper: fix CONFIG_FB dependency
+In-Reply-To: <CAK8P3a0_9U0MDLcNG8GL_ZDCGQAsB=G7DBC0k1BYB1HNQTbu4Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210927142816.2069269-1-arnd@kernel.org> <202109270923.97AFDE89DB@keescook> <YVXJLE8UqgcUNIKl@phenom.ffwll.local> <878ryeit9i.fsf@intel.com> <CAK8P3a0EG_C6OvG00Dg8SQacirNztLFjVonb5t2xQj9aFZ47Vg@mail.gmail.com> <3604fb90-f6c3-0fa2-c864-7f1795caee1e@redhat.com> <CAK8P3a0_9U0MDLcNG8GL_ZDCGQAsB=G7DBC0k1BYB1HNQTbu4Q@mail.gmail.com>
+Date:   Wed, 27 Oct 2021 16:06:44 +0300
+Message-ID: <87tuh2hb17.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An kernel thread can exit gracefully with kthread_stop(). So we don't need
-a new flag 'kdamond_stop'. And to make sure the task struct is not freed
-when accessing it, get reference of it before termination.
+On Wed, 27 Oct 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> On Wed, Oct 27, 2021 at 2:38 PM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+>> >
+>> > This is something we can't easily express in Kconfig, as we can't add the
+>> > dependency to a symbol that only gets selected by other drivers, which
+>> > is why the dependency has to be in the user-visible symbol,
+>> > in this case DRM_FBDEV_EMULATION.
+>> >
+>>
+>> Why the dependency has to be in a user-visible symbol? What could be the
+>> problem with having something like:
+>>
+>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+>> index cea777ae7fb9..f80b404946ca 100644
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -82,6 +82,7 @@ config DRM_DEBUG_SELFTEST
+>>  config DRM_KMS_HELPER
+>>         tristate
+>>         depends on DRM
+>> +       depends on (DRM_FBDEV_EMULATION && FB) || !DRM_FBDEV_EMULATION
+>>         help
+>>           CRTC helpers for KMS drivers.
+>>
+>> @@ -104,7 +105,6 @@ config DRM_FBDEV_EMULATION
+>>         bool "Enable legacy fbdev support for your modesetting driver"
+>>         depends on DRM
+>>         depends on FB
+>> -       select DRM_KMS_HELPER
+>>         select FB_CFB_FILLRECT
+>>         select FB_CFB_COPYAREA
+>>         select FB_CFB_IMAGEBLIT
+>
+> This fails because of all the other drivers that try to 'select DRM_KMS_HELPER'.
+> Kconfig will now complain about a symbol that gets selected while its
+> dependencies
+> are not met.
+>
+> To work around that, every single driver that has 'selects DRM_KMS_HELPER' would
+> now have to also list 'depends on (DRM_FBDEV_EMULATION && FB) ||
+> !DRM_FBDEV_EMULATION'.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- include/linux/damon.h |  1 -
- mm/damon/core.c       | 51 +++++++++++++------------------------------
- 2 files changed, 15 insertions(+), 37 deletions(-)
+So the fix would be that nobody selects DRM_KMS_HELPER...
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index a14b3cc54cab..50c6eb0dee1f 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -381,7 +381,6 @@ struct damon_ctx {
- 
- /* public: */
- 	struct task_struct *kdamond;
--	bool kdamond_stop;
- 	struct mutex kdamond_lock;
- 
- 	struct damon_primitive primitive;
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 46a6afea3030..f37c17b53814 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -390,17 +390,6 @@ static unsigned long damon_region_sz_limit(struct damon_ctx *ctx)
- 	return sz;
- }
- 
--static bool damon_kdamond_running(struct damon_ctx *ctx)
--{
--	bool running;
--
--	mutex_lock(&ctx->kdamond_lock);
--	running = ctx->kdamond != NULL;
--	mutex_unlock(&ctx->kdamond_lock);
--
--	return running;
--}
--
- static int kdamond_fn(void *data);
- 
- /*
-@@ -418,7 +407,6 @@ static int __damon_start(struct damon_ctx *ctx)
- 	mutex_lock(&ctx->kdamond_lock);
- 	if (!ctx->kdamond) {
- 		err = 0;
--		ctx->kdamond_stop = false;
- 		ctx->kdamond = kthread_run(kdamond_fn, ctx, "kdamond.%d",
- 				nr_running_ctxs);
- 		if (IS_ERR(ctx->kdamond)) {
-@@ -474,13 +462,15 @@ int damon_start(struct damon_ctx **ctxs, int nr_ctxs)
-  */
- static int __damon_stop(struct damon_ctx *ctx)
- {
-+	struct task_struct *tsk;
-+
- 	mutex_lock(&ctx->kdamond_lock);
--	if (ctx->kdamond) {
--		ctx->kdamond_stop = true;
-+	tsk = ctx->kdamond;
-+	if (tsk) {
-+		get_task_struct(tsk);
- 		mutex_unlock(&ctx->kdamond_lock);
--		while (damon_kdamond_running(ctx))
--			usleep_range(ctx->sample_interval,
--					ctx->sample_interval * 2);
-+		kthread_stop(tsk);
-+		put_task_struct(tsk);
- 		return 0;
- 	}
- 	mutex_unlock(&ctx->kdamond_lock);
-@@ -925,12 +915,8 @@ static bool kdamond_need_update_primitive(struct damon_ctx *ctx)
- static bool kdamond_need_stop(struct damon_ctx *ctx)
- {
- 	struct damon_target *t;
--	bool stop;
- 
--	mutex_lock(&ctx->kdamond_lock);
--	stop = ctx->kdamond_stop;
--	mutex_unlock(&ctx->kdamond_lock);
--	if (stop)
-+	if (kthread_should_stop())
- 		return true;
- 
- 	if (!ctx->primitive.target_valid)
-@@ -1021,13 +1007,6 @@ static int kdamond_wait_activation(struct damon_ctx *ctx)
- 	return -EBUSY;
- }
- 
--static void set_kdamond_stop(struct damon_ctx *ctx)
--{
--	mutex_lock(&ctx->kdamond_lock);
--	ctx->kdamond_stop = true;
--	mutex_unlock(&ctx->kdamond_lock);
--}
--
- /*
-  * The monitoring daemon that runs as a kernel thread
-  */
-@@ -1038,17 +1017,18 @@ static int kdamond_fn(void *data)
- 	struct damon_region *r, *next;
- 	unsigned int max_nr_accesses = 0;
- 	unsigned long sz_limit = 0;
-+	bool done = false;
- 
- 	pr_debug("kdamond (%d) starts\n", current->pid);
- 
- 	if (ctx->primitive.init)
- 		ctx->primitive.init(ctx);
- 	if (ctx->callback.before_start && ctx->callback.before_start(ctx))
--		set_kdamond_stop(ctx);
-+		done = true;
- 
- 	sz_limit = damon_region_sz_limit(ctx);
- 
--	while (!kdamond_need_stop(ctx)) {
-+	while (!kdamond_need_stop(ctx) && !done) {
- 		if (kdamond_wait_activation(ctx))
- 			continue;
- 
-@@ -1056,7 +1036,7 @@ static int kdamond_fn(void *data)
- 			ctx->primitive.prepare_access_checks(ctx);
- 		if (ctx->callback.after_sampling &&
- 				ctx->callback.after_sampling(ctx))
--			set_kdamond_stop(ctx);
-+			done = true;
- 
- 		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
- 
-@@ -1069,7 +1049,7 @@ static int kdamond_fn(void *data)
- 					sz_limit);
- 			if (ctx->callback.after_aggregation &&
- 					ctx->callback.after_aggregation(ctx))
--				set_kdamond_stop(ctx);
-+				done = true;
- 			kdamond_apply_schemes(ctx);
- 			kdamond_reset_aggregated(ctx);
- 			kdamond_split_regions(ctx);
-@@ -1088,9 +1068,8 @@ static int kdamond_fn(void *data)
- 			damon_destroy_region(r, t);
- 	}
- 
--	if (ctx->callback.before_terminate &&
--			ctx->callback.before_terminate(ctx))
--		set_kdamond_stop(ctx);
-+	if (ctx->callback.before_terminate)
-+		ctx->callback.before_terminate(ctx);
- 	if (ctx->primitive.cleanup)
- 		ctx->primitive.cleanup(ctx);
- 
+BR,
+Jani.
+
+>
+>        Arnd
+
 -- 
-2.32.0
-
+Jani Nikula, Intel Open Source Graphics Center
