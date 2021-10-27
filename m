@@ -2,372 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F2143C5B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0291543C5BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241082AbhJ0I6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241077AbhJ0I6G (ORCPT
+        id S237307AbhJ0I6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:58:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50198 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241118AbhJ0I6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:58:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55781C061570;
-        Wed, 27 Oct 2021 01:55:41 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id l203so2115089pfd.2;
-        Wed, 27 Oct 2021 01:55:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=R3v6MvSfqT1luNHnBpPbyyj67/794LBUC45XQWd31SQ=;
-        b=MpixLa4ddjRWrhASEaXnYjtzHSOABfOuH6s6sYWQaP+3+KeCZpfH2TenRx5KXUsLDl
-         XzBQC8b65bxY/Ltqp/h0cpuR7PQHJsQtJfYIBvDSfReRtI7QOWKnEK0duE4O8AoR+Wzi
-         q0NpHbVEtgyBfOkfV8up6nQdFEnLZ00CyCUJF3IIGyW1+b3hz7Tips5tNmu4ZX/ZjLUK
-         RdL3oUbf7VKhCr4mnsXJX3HAChsX0/vDvxHloNwTxoK72Jl8fLW2gMa0RprWZTpdd8Qe
-         TX3JeUGWbXVEruIx8cMOE52idxcm61d2TJ+keyUB3jMGfB1gDsyr4VL43lpsGv0crQAE
-         bUwg==
+        Wed, 27 Oct 2021 04:58:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635324968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7bg2jmWugrAP5drzBc7AtpQfP7KTLK8hNbD3CI7qc7g=;
+        b=T2/B1hW08RJjQEEB65XouIjCwdvDrYXp0k19YNMXqGZvP07mfggRELZEETOuz4dr48sPDp
+        n5aSYOpY8YO/FgX2oATjKm49exCSjL5TFMdSfLK5Y13xdANXqpf+33TDCaxqr67+oLzIP6
+        5CYQ1Huxssxvp9zCLTwXqdAG6Lks3Pg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-zeySlddaPOOwj4X5_dULqw-1; Wed, 27 Oct 2021 04:56:07 -0400
+X-MC-Unique: zeySlddaPOOwj4X5_dULqw-1
+Received: by mail-wm1-f69.google.com with SMTP id a21-20020a1c7f15000000b0032cd93a2bd7so108381wmd.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 01:56:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=R3v6MvSfqT1luNHnBpPbyyj67/794LBUC45XQWd31SQ=;
-        b=4ZhhBQwE7A36w9khr7z62Ums6DxCDSb6ptz3vcF7Mq+xRGLFF11gw4iYBasg7ZEmgW
-         RE/pj0kh2UV0h3IdRjL9cqDLPgLLT5f0ZioYlwyl3QjlW53S6hmXq86Psyw89jARPmhr
-         b833YH10r6scjVNKPcYCLBQw8p++Vb4+k/O7o0+BwljAf3HQ877lVeU6pr1UKduhySPy
-         cO0ZqIGgi2C9kdadXaVupo8NgpoxvD+P0wiO0XjObzqmIthSEXKhPGA94LE7nZ/PDuqw
-         5eAr8+0xZlM/MToizZN+WoCATIZvsEmjG0PwYGktsh2bi4JsThxN1NUyK/DFjTTm2wW2
-         G+iA==
-X-Gm-Message-State: AOAM532UoEeXOdepdU9rhsldIuRr++r+EIKoNKfGEcXdAubaBCFrUKDW
-        FOhQPCOXmRmI4CtFEIsRzhg=
-X-Google-Smtp-Source: ABdhPJzBrnEInvI0q/oDAldtcTcujc9ONjFxt6dX/rGbP3WaXTEn2CL5kUMDgiuHBvo4zszGhhxdBQ==
-X-Received: by 2002:a63:b957:: with SMTP id v23mr22253604pgo.74.1635324940748;
-        Wed, 27 Oct 2021 01:55:40 -0700 (PDT)
-Received: from scdiu3.sunplus.com ([113.196.136.192])
-        by smtp.googlemail.com with ESMTPSA id a15sm8336773pfv.64.2021.10.27.01.55.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Oct 2021 01:55:40 -0700 (PDT)
-From:   Wells Lu <wellslutw@gmail.com>
-X-Google-Original-From: Wells Lu <wells.lu@sunplus.com>
-To:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Cc:     qinjian@cqplus1.com, dvorkin@tibbo.com,
-        Wells Lu <wells.lu@sunplus.com>
-Subject: [PATCH 3/3] devicetree: bindings: pinctrl: Add bindings doc for Sunplus SP7021.
-Date:   Wed, 27 Oct 2021 16:55:26 +0800
-Message-Id: <1635324926-22319-4-git-send-email-wells.lu@sunplus.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
-References: <1635324926-22319-1-git-send-email-wells.lu@sunplus.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7bg2jmWugrAP5drzBc7AtpQfP7KTLK8hNbD3CI7qc7g=;
+        b=4p1uSade6dTsBUuiVmVkuyS+JFw910ar7vo5302gjxzN6y0Mlpe9300ivs/tgtB776
+         7PETkLnBLOmuoRqq1jrxNIUkxy/PZvmRJHiVJNJHNLtzc+jiyqHWlh1ArmM7LUaHlV9m
+         gidHzindVyvzLXgKjZqnvnGzqnlot/pbH2jrv1VgUv+jhkg8Rb9EWXtqqhr86XEbGKhg
+         7Se0Kp9dkl1VdqhSEBvacOOkieaU70KesRId81DFjEDu4IIZH63wdwx9pTJsx92hlpb+
+         q6bmqcWQvZ2DoLXxlLHwnV/zAam5jlIp4tkWSR4K+6NsZe+cwF8aPnTvtubRKHia7TkM
+         xcQg==
+X-Gm-Message-State: AOAM533ph0yS8BQBy23qaaPqmjh6zxFcaMwJn5H9W/1C+MaFY8AkPZSB
+        IlDqbCsttvbHXPMUqKXGp/aPYoKq/6kv2W1IPs3FrxqLTddOkwiVPbhGB/I7JHmuCy3lwRrmdTK
+        le+lzt2BdfrJ8yskxswK0pPSD
+X-Received: by 2002:a5d:5191:: with SMTP id k17mr28697923wrv.166.1635324966165;
+        Wed, 27 Oct 2021 01:56:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzdvrKPLGWce0zKxktjiX4WZxnekcKuLnVTB4v3+lf2dmRnC6Bb5uHHKMtXNijIGyJvWy3P0A==
+X-Received: by 2002:a5d:5191:: with SMTP id k17mr28697903wrv.166.1635324965997;
+        Wed, 27 Oct 2021 01:56:05 -0700 (PDT)
+Received: from redhat.com ([2a03:c5c0:207e:a543:72f:c4d1:8911:6346])
+        by smtp.gmail.com with ESMTPSA id t3sm3296837wrq.66.2021.10.27.01.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 01:56:05 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 04:56:00 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Feng Li <lifeng1519@gmail.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Israel Rukshin <israelr@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio-blk: select CONFIG_SG_POOL
+Message-ID: <20211027045533-mutt-send-email-mst@kernel.org>
+References: <20211027082433.52616-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027082433.52616-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings documentation for Sunplus SP7021.
+On Wed, Oct 27, 2021 at 10:24:13AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Switching virtio-blk to the sg_pool interfaces causes a build
+> failures when they are not part of the kernel:
+> 
+> drivers/block/virtio_blk.c:182:3: error: implicit declaration of function 'sg_free_table_chained' [-Werror,-Wimplicit-function-declaration]
+>                 sg_free_table_chained(&vbr->sg_table,
+>                 ^
+> drivers/block/virtio_blk.c:195:8: error: implicit declaration of function 'sg_alloc_table_chained' [-Werror,-Wimplicit-function-declaration]
+>         err = sg_alloc_table_chained(&vbr->sg_table,
+>               ^
+> 
+> Select this symbol through Kconfig, as is done for all other
+> users.
+> 
+> Fixes: b2c5221fd074 ("virtio-blk: avoid preallocating big SGL for data")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Wells Lu <wells.lu@sunplus.com>
----
- .../bindings/pinctrl/sunplus,sp7021-pinctrl.yaml   | 277 +++++++++++++++++++++
- MAINTAINERS                                        |   1 +
- 2 files changed, 278 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml
+I'll squash this to avoid bisect failures, ok?
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml
-new file mode 100644
-index 0000000..7cfa0ce
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/sunplus,sp7021-pinctrl.yaml
-@@ -0,0 +1,277 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) Sunplus Co., Ltd. 2021
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/sunplus,sp7021-pinctrl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sunplus SP7021 Pin Controller Device Tree Bindings
-+
-+maintainers:
-+  - Dvorkin Dmitry <dvorkin@tibbo.com>
-+  - Wells Lu <wells.lu@sunplus.com>
-+
-+description: |
-+  The Sunplus SP7021 pin controller is used to control SoC pins. Please
-+  refer to pinctrl-bindings.txt in this directory for details of the common
-+  pinctrl bindings used by client devices.
-+
-+  Refer to https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/pages/
-+  1443495991/How+to+setup+pins+of+SP7021+in+device-tree+source
-+
-+  The device node of pin controller of Sunplus SP7021 has following
-+  properties.
-+
-+properties:
-+  compatible:
-+    const: sunplus,sp7021-pctl
-+
-+  gpio-controller: true
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  reg:
-+    items:
-+      - description: Base address and length of the MOON2 registers.
-+      - description: Base address and length of the GPIOXT registers.
-+      - description: Base address and length of the GPIOXT2 registers.
-+      - description: Base address and length of the FIRST registers.
-+      - description: Base address and length of the MOON1 registers.
-+
-+  clocks:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+patternProperties:
-+  '^.*$':
-+    if:
-+      type: object
-+    then:
-+      description: |
-+        A pinctrl node should contain at least one subnodes representing the
-+        pins or function-pins group available on the machine. Each subnode
-+        will list the pins it needs, and how they should be configured.
-+
-+        Pinctrl node's client devices use subnodes for desired pin
-+        configuration. Client device subnodes use below standard properties.
-+
-+      properties:
-+        pins:
-+          description: |
-+            Define pins which are used by pinctrl node's client device.
-+
-+            It consists of one or more integers which represents the config
-+            setting for corresponding pin. Please use macro SPPCTL_IOPAD to
-+            define the integers for pins.
-+
-+            The first argument of the macro is pin number, the second is pin
-+            type, the third is type of GPIO, the last is default output state
-+            of GPIO.
-+          $ref: /schemas/types.yaml#/definitions/uint32-array
-+
-+        function:
-+          description: |
-+            Define pin-function which is used by pinctrl node's client device.
-+            The name should be one of string in the following enumeration.
-+          $ref: "/schemas/types.yaml#/definitions/string"
-+          enum: [ SPI_FLASH, SPI_FLASH_4BIT, SPI_NAND, CARD0_EMMC, SD_CARD,
-+                  UA0, FPGA_IFX, HDMI_TX, LCDIF, USB0_OTG, USB1_OTG ]
-+
-+        groups:
-+          description: |
-+            Define pin-group in a specified pin-function.
-+            The name should be one of string in the following enumeration.
-+          $ref: "/schemas/types.yaml#/definitions/string"
-+          enum: [ SPI_FLASH1, SPI_FLASH2, SPI_FLASH_4BIT1, SPI_FLASH_4BIT2,
-+                  SPI_NAND, CARD0_EMMC, SD_CARD, UA0, FPGA_IFX, HDMI_TX1,
-+                  HDMI_TX2, HDMI_TX3, LCDIF, USB0_OTG, USB1_OTG ]
-+
-+        zero_func:
-+          description: |
-+            Disabled pins which are not used by pinctrl node's client device.
-+          $ref: /schemas/types.yaml#/definitions/uint32-array
-+
-+      additionalProperties: false
-+
-+      allOf:
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - SPI_FLASH
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - SPI_FLASH1
-+                  - SPI_FLASH2
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - SPI_FLASH_4BIT
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - SPI_FLASH_4BIT1
-+                  - SPI_FLASH_4BIT2
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - SPI_NAND
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - SPI_NAND
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - CARD0_EMMC
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - CARD0_EMMC
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - SD_CARD
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - SD_CARD
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - UA0
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - UA0
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - FPGA_IFX
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - FPGA_IFX
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - HDMI_TX
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - HDMI_TX1
-+                  - HDMI_TX2
-+                  - HDMI_TX3
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - LCDIF
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - LCDIF
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - USB0_OTG
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - USB0_OTG
-+        - if:
-+            properties:
-+              function:
-+                enum:
-+                  - USB1_OTG
-+          then:
-+            properties:
-+              groups:
-+                enum:
-+                  - USB1_OTG
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#gpio-cells"
-+  - gpio-controller
-+  - clocks
-+  - resets
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/sp-sp7021.h>
-+    #include <dt-bindings/reset/sp-sp7021.h>
-+    #include <dt-bindings/pinctrl/sppctl-sp7021.h>
-+
-+    pctl: pctl@9C000100 {
-+        compatible = "sunplus,sp7021-pctl";
-+        reg = <0x9C000100 0x100>, <0x9C000300 0x80>, <0x9C000380 0x80>,
-+              <0x9C0032e4 0x1C>, <0x9C000080 0x20>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        clocks = <&clkc GPIO>;
-+        resets = <&rstc RST_GPIO>;
-+
-+        pins_uart0: pins_uart0 {
-+            function = "UA0";
-+            groups = "UA0";
-+        };
-+
-+        pins_uart1: pins_uart1 {
-+            pins = <
-+                SPPCTL_IOPAD(11,SPPCTL_PCTL_G_PMUX,MUXF_UA1_TX,0)
-+                SPPCTL_IOPAD(10,SPPCTL_PCTL_G_PMUX,MUXF_UA1_RX,0)
-+                SPPCTL_IOPAD(7,SPPCTL_PCTL_G_GPIO,0,SPPCTL_PCTL_L_OUT)
-+            >;
-+        };
-+
-+        emmc_mux: emmc_mux {
-+            function = "CARD0_EMMC";
-+            groups = "CARD0_EMMC";
-+        };
-+
-+        mmc1_mux: mmc1_mux {
-+            function = "SD_CARD";
-+            groups = "SD_CARD";
-+            pins = < SPPCTL_IOPAD(91,SPPCTL_PCTL_G_GPIO,0,0) >;
-+        };
-+
-+        hdmi_A_tx1: hdmi_A_tx1_pins {
-+            function = "HDMI_TX";
-+            groups = "HDMI_TX1";
-+        };
-+        hdmi_A_tx2: hdmi_A_tx2_pins {
-+            function = "HDMI_TX";
-+            groups = "HDMI_TX2";
-+        };
-+        hdmi_A_tx3: hdmi_A_tx3_pins {
-+            function = "HDMI_TX";
-+            groups = "HDMI_TX3";
-+        };
-+    };
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9cae8e7..fe3f359 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14872,6 +14872,7 @@ M:	Wells Lu <wells.lu@sunplus.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- W:	https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
-+F:	Documentation/devicetree/bindings/pinctrl/sunplus,*
- F:	drivers/pinctrl/sunplus/
- F:	include/dt-bindings/pinctrl/sppctl*
- 
--- 
-2.7.4
+> ---
+>  drivers/block/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+> index d97eaf6adb6d..2a51dfb09c8f 100644
+> --- a/drivers/block/Kconfig
+> +++ b/drivers/block/Kconfig
+> @@ -371,6 +371,7 @@ config XEN_BLKDEV_BACKEND
+>  config VIRTIO_BLK
+>  	tristate "Virtio block driver"
+>  	depends on VIRTIO
+> +	select SG_POOL
+>  	help
+>  	  This is the virtual block driver for virtio.  It can be used with
+>            QEMU based VMMs (like KVM or Xen).  Say Y or M.
+> -- 
+> 2.29.2
 
