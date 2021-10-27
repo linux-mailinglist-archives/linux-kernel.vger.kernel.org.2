@@ -2,161 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F26743C0F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDFC43C0FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239230AbhJ0DuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 23:50:06 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:51602 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237894AbhJ0DuE (ORCPT
+        id S239263AbhJ0Dus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239183AbhJ0Dur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 23:50:04 -0400
-X-UUID: dd5a00d41c7d4fb6b744d9301026df6c-20211027
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9eSb7qn3/LPscD1cplmBdJDI7Pw9AFl6IDdS5bPuJvA=;
-        b=jnt67Z3XJo7LEPdTOJKjqD6v0bb6TijQeF7gzN9v6Sk62AV9HaSPYhze1+HJbpZ294041neRffpfzbdSqGYOhTciQ9UNtYWGqkjRKnCKL2leH1r6a5ji0h0JToNOnirA15EFM/yk3XisFGHte67fmUJ1JStZ0H/TRtvH3KKdVFE=;
-X-UUID: dd5a00d41c7d4fb6b744d9301026df6c-20211027
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 637495341; Wed, 27 Oct 2021 11:47:35 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Wed, 27 Oct 2021 11:47:34 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 27 Oct
- 2021 11:47:33 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 27 Oct 2021 11:47:31 +0800
-Message-ID: <f72354d3d99c22fd02cbcc2894fee2716934e180.camel@mediatek.com>
-Subject: Re: [PATCH v7, 11/15] media: mtk-vcodec: Add core thread
-From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        "Tiffany Lin" <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Wed, 27 Oct 2021 11:47:31 +0800
-In-Reply-To: <3b7084d4-e530-9a55-11f4-d67c37f8f5fa@collabora.com>
-References: <20211011070247.792-1-yunfei.dong@mediatek.com>
-         <20211011070247.792-12-yunfei.dong@mediatek.com>
-         <3b7084d4-e530-9a55-11f4-d67c37f8f5fa@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 26 Oct 2021 23:50:47 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E575CC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 20:48:22 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id f8so1022105plo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 20:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=8gO91DsTavhJqg+CYd5KFooA/zGuCaWHtAcWOf032kA=;
+        b=LpTkQdtnAJLNnc9BHs0YPYQXVvzbDou6KylaGUhLebpR/vfuO+aHeeuUdHrYRZ1Lak
+         TfBuXYIAMKCiNFVdvhNSEwuT3fklOmKIYdsLutr4GVeVwP1W3wK/A+0L8ma/tRZORnX7
+         hBRuDuuc1aBbEEgdTKX5IB1wx96Q+cU5goJWBwjQEZDnoht2k+rMWneY3Yo0E0U1sctQ
+         fY+JcO6dw4PQoZ2/p/MMjzAzGBRqTSEbp/aKH6Iyhq1jzFPJQgfupUjUFdgeGKaCYxUM
+         wLYJHfr7weuUTJTs4sYrJwH7a3P4OEwXsuN5BL7tBygrnVhAoDsZvrPm0MnO7rltXLK1
+         dqsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=8gO91DsTavhJqg+CYd5KFooA/zGuCaWHtAcWOf032kA=;
+        b=Ekrds+7jBCZGnsaOOgLZoR+DRCIxSgDsy+sOeoZxKfIiEbNHZOuc+nbzCn8aLyBIHO
+         pICtr4Ea+Nu/K5ett6Dz6HTat1n+DeO7e2Ae7KJqB96XKyvjHQupakUW2QdFn8og9Jpd
+         7nU5BDTEvK2HRaBouB8E528Y+HJLUi35CX5mg1WJA4Z6IOmhvwMo7e+4BDDc8a1CcHoa
+         C6U1iwylZEICGRBjxhpzXkZ7r9kHXmem2BaEGeXpzjsQs92FchGDWkUS7RsVx9QXlA++
+         cdazcJjzXJQ+3NEHVZzWCgL+aGyghmQG1pXUOtVn8rdvh6NUgVeDB/f86T2tF8S7aUcx
+         AaHQ==
+X-Gm-Message-State: AOAM531BYk9+eOoipxU86DhiuNMgPoT20QZF2fNmoetZLW1rJ8HyNYi3
+        bFp2cyG7lPwvNaiyKwUdx6w=
+X-Google-Smtp-Source: ABdhPJx1T6hoLtsV11wC5cTC6hThzao44pBRWK+cjXq03BZPhVaqTlHydelAa64BLDUToZQqxlYXvQ==
+X-Received: by 2002:a17:90b:4d0f:: with SMTP id mw15mr3113051pjb.207.1635306502443;
+        Tue, 26 Oct 2021 20:48:22 -0700 (PDT)
+Received: from localhost ([118.208.159.180])
+        by smtp.gmail.com with ESMTPSA id bx1sm2267900pjb.41.2021.10.26.20.48.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Oct 2021 20:48:22 -0700 (PDT)
+Date:   Wed, 27 Oct 2021 13:48:15 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 2/2] powerpc/watchdog: ensure watchdog data accesses are
+ protected
+To:     benh@kernel.crashing.org, Laurent Dufour <ldufour@linux.ibm.com>,
+        mpe@ellerman.id.au, paulus@samba.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20211026162740.16283-1-ldufour@linux.ibm.com>
+        <20211026162740.16283-3-ldufour@linux.ibm.com>
+In-Reply-To: <20211026162740.16283-3-ldufour@linux.ibm.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Message-Id: <1635305462.hbdpgat0vx.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5nZWxvR2lvYWNjaGlubywNCg0KVGhhbmtzIGZvciB5b3VyIHN1Z2dlc3Rpb24uDQpPbiBU
-aHUsIDIwMjEtMTAtMTQgYXQgMTI6NTYgKzAyMDAsIEFuZ2Vsb0dpb2FjY2hpbm8gRGVsIFJlZ25v
-IHdyb3RlOg0KPiA+IENvcmUgdGhyZWFkOg0KPiA+IDEuIEdldHMgbGF0X2J1ZiBmcm9tIGNvcmUg
-bXNnIHF1ZXVlLg0KPiA+IDIuIFByb2NlZWRzIGNvcmUgZGVjb2RlLg0KPiA+IDMuIFB1dHMgdGhl
-IGxhdF9idWYgYmFjayB0byBsYXQgbXNnIHF1ZXVlLg0KPiA+IA0KPiA+IEJvdGggSDI2NCBhbmQg
-VlA5IHJlbHkgb24gdGhlIGNvcmUgdGhyZWFkLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFl1
-bmZlaSBEb25nIDx5dW5mZWkuZG9uZ0BtZWRpYXRlay5jb20+DQo+IA0KPiBJIHdvdWxkIGJlIGhh
-cHBpZXIgdG8gc2VlIGEgYmV0dGVyIGNvbW1pdCBtZXNzYWdlLCBmb3IgZXhhbXBsZToNCj4gIklu
-dHJvZHVjZSBhIGNvcmUgdGhyZWFkLCByZXNwb25zaWJsZSBmb3IuLi4gZ2V0dGluZyBsYXRfYnVm
-IGZyb20gLi4uDQo+IHdoaWNoIHRoZW4gcHJvY2VlZHMgY29yZSBkZWNvZGUgYnkgLi4uIGFuZCBm
-aW5hbGx5LCBwdXRzIHRoZSBsYXRfYnVmDQo+IGJhY2sgdG8gdGhlIGxhdCBtZXNzYWdlIHF1ZXVl
-Ig0KPiANCj4gPiAtLS0NCj4gPiAgIC4uLi9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNf
-ZGVjX2Rydi5jICB8IDEyICsrKysrKysNCj4gPiAgIC4uLi9wbGF0Zm9ybS9tdGstdmNvZGVjL210
-a192Y29kZWNfZHJ2LmggICAgICB8ICA3ICsrKysNCj4gPiAgIC4uLi9wbGF0Zm9ybS9tdGstdmNv
-ZGVjL3ZkZWNfbXNnX3F1ZXVlLmMgICAgICB8IDMyDQo+ID4gKysrKysrKysrKysrKysrKysrKw0K
-PiA+ICAgLi4uL3BsYXRmb3JtL210ay12Y29kZWMvdmRlY19tc2dfcXVldWUuaCAgICAgIHwgIDYg
-KysrKw0KPiA+ICAgNCBmaWxlcyBjaGFuZ2VkLCA1NyBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVj
-X2RlY19kcnYuYyANCj4gPiBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtf
-dmNvZGVjX2RlY19kcnYuYw0KPiA+IGluZGV4IGUyMWUwYzRiY2Q4Ni4uZGU4M2UzYjgyMWI0IDEw
-MDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNv
-ZGVjX2RlY19kcnYuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2Rl
-Yy9tdGtfdmNvZGVjX2RlY19kcnYuYw0KPiA+IEBAIC0zNjQsNiArMzY0LDE4IEBAIHN0YXRpYyBp
-bnQgbXRrX3Zjb2RlY19wcm9iZShzdHJ1Y3QNCj4gPiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+
-ID4gICAJCWdvdG8gZXJyX2RlY19wbTsNCj4gPiAgIAl9DQo+ID4gICANCj4gPiArCWlmIChWREVD
-X0xBVF9BUkNIKGRldi0+dmRlY19wZGF0YS0+aHdfYXJjaCkpIHsNCj4gPiArCQl2ZGVjX21zZ19x
-dWV1ZV9pbml0X2N0eCgmZGV2LT5tc2dfcXVldWVfY29yZV9jdHgsDQo+ID4gKwkJCU1US19WREVD
-X0NPUkUpOw0KPiANCj4gTm8gbmVlZCB0byBicmVhayB0aGlzIGxpbmUuDQo+IA0KRml4IGluIHY4
-Lg0KPiA+ICsJCWRldi0+a3RocmVhZF9jb3JlID0NCj4gPiBrdGhyZWFkX3J1bih2ZGVjX21zZ19x
-dWV1ZV9jb3JlX3RoZWFkLCBkZXYsDQo+ID4gKwkJCSJtdGstJXMiLCAiY29yZSIpOw0KPiANCj4g
-UGxlYXNlIGZpeCBpbmRlbnRhdGlvbiwgbGlrZSBzbzoNCj4gCQlkZXYtPmt0aHJlYWRfY29yZSA9
-DQo+IGt0aHJlYWRfcnVuKHZkZWNfbXNnX3F1ZXVlX2NvcmVfdGhlYWQsIGRldiwNCj4gDQo+IAkJ
-CQkJCSJtdGstJXMiLCAiY29yZSIpOw0KPiANCj4gPiArCQlpZiAoSVNfRVJSKGRldi0+a3RocmVh
-ZF9jb3JlKSkgew0KPiA+ICsJCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gY3JlYXRl
-IGNvcmUNCj4gPiB0aHJlYWQiKTsNCj4gPiArCQkJcmV0ID0gUFRSX0VSUihkZXYtPmt0aHJlYWRf
-Y29yZSk7DQo+ID4gKwkJCWdvdG8gZXJyX3JlczsNCj4gPiArCQl9DQo+ID4gKwl9DQo+ID4gKw0K
-PiA+ICAgCWZvciAoaSA9IDA7IGkgPCBNVEtfVkRFQ19IV19NQVg7IGkrKykNCj4gPiAgIAkJbXV0
-ZXhfaW5pdCgmZGV2LT5kZWNfbXV0ZXhbaV0pOw0KPiA+ICAgCXNwaW5fbG9ja19pbml0KCZkZXYt
-PmlycWxvY2spOw0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12
-Y29kZWMvbXRrX3Zjb2RlY19kcnYuaA0KPiA+IGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGst
-dmNvZGVjL210a192Y29kZWNfZHJ2LmgNCj4gPiBpbmRleCA5ZDA3MmMwODJmNzMuLjY4YTliMWEy
-ZDNiMyAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMv
-bXRrX3Zjb2RlY19kcnYuaA0KPiA+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZj
-b2RlYy9tdGtfdmNvZGVjX2Rydi5oDQo+ID4gQEAgLTI3LDYgKzI3LDcgQEANCj4gPiAgICNkZWZp
-bmUgTVRLX1ZDT0RFQ19NQVhfUExBTkVTCTMNCj4gPiAgICNkZWZpbmUgTVRLX1Y0TDJfQkVOQ0hN
-QVJLCTANCj4gPiAgICNkZWZpbmUgV0FJVF9JTlRSX1RJTUVPVVRfTVMJMTAwMA0KPiA+ICsjZGVm
-aW5lIFZERUNfTEFUX0FSQ0goaHdfYXJjaCkgKChod19hcmNoKSA+PQ0KPiA+IE1US19WREVDX0xB
-VF9TSU5HTEVfQ09SRSkNCj4gDQo+IEknZCBwcm9wb3NlIHRvIGNoYW5nZSB0aGlzIHRvIElTX1ZE
-RUNfTEFUX0FSQ0goaHdfYXJjaCk6IHRoYXQgd291bGQNCj4gaW5jcmVhc2UgaHVtYW4NCj4gcmVh
-ZGFiaWxpdHkgd2hlbiB1c2luZyB0aGlzIG1hY3JvLg0KPiANCkZpeCBpbiB2OC4NCj4gPiAgIA0K
-PiA+ICAgLyoNCj4gPiAgICAqIGVudW0gbXRrX2h3X3JlZ19pZHggLSBNVEsgaHcgcmVnaXN0ZXIg
-YmFzZSBpbmRleA0KPiA+IEBAIC00NjYsNiArNDY3LDkgQEAgc3RydWN0IG10a192Y29kZWNfZW5j
-X3BkYXRhIHsNCj4gPiAgICAqIEBjb21wX2RldjogY29tcG9uZW50IGhhcmR3YXJlIGRldmljZQ0K
-PiA+ICAgICogQGNvbXBvbmVudF9ub2RlOiBjb21wb25lbnQgbm9kZQ0KPiA+ICAgICoNCj4gPiAr
-ICogQGt0aHJlYWRfY29yZTogdGhyZWFkIHVzZWQgZm9yIGNvcmUgaGFyZHdhcmUgZGVjb2RlDQo+
-ID4gKyAqIEBtc2dfcXVldWVfY29yZV9jdHg6IG1zZyBxdWV1ZSBjb250ZXh0IHVzZWQgZm9yIGNv
-cmUgdGhyZWFkDQo+ID4gKyAqDQo+ID4gICAgKiBAaGFyZHdhcmVfYml0bWFwOiB1c2VkIHRvIHJl
-Y29yZCBoYXJkd2FyZSBpcyByZWFkeSBvciBub3QNCj4gPiAgICAqLw0KPiA+ICAgc3RydWN0IG10
-a192Y29kZWNfZGV2IHsNCj4gPiBAQCAtNTA4LDYgKzUxMiw5IEBAIHN0cnVjdCBtdGtfdmNvZGVj
-X2RldiB7DQo+ID4gICAJdm9pZCAqY29tcF9kZXZbTVRLX1ZERUNfSFdfTUFYXTsNCj4gPiAgIAlz
-dHJ1Y3QgZGV2aWNlX25vZGUgKmNvbXBvbmVudF9ub2RlW01US19WREVDX0hXX01BWF07DQo+ID4g
-ICANCj4gPiArCXN0cnVjdCB0YXNrX3N0cnVjdCAqa3RocmVhZF9jb3JlOw0KPiA+ICsJc3RydWN0
-IHZkZWNfbXNnX3F1ZXVlX2N0eCBtc2dfcXVldWVfY29yZV9jdHg7DQo+ID4gKw0KPiA+ICAgCURF
-Q0xBUkVfQklUTUFQKGhhcmR3YXJlX2JpdG1hcCwgTVRLX1ZERUNfSFdfTUFYKTsNCj4gPiAgIH07
-DQo+ID4gICANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstdmNv
-ZGVjL3ZkZWNfbXNnX3F1ZXVlLmMNCj4gPiBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZj
-b2RlYy92ZGVjX21zZ19xdWV1ZS5jDQo+ID4gaW5kZXggZDY2ZWQ5OGM3OWE5Li42NjVmNTcxZWFi
-NGIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstdmNvZGVjL3Zk
-ZWNfbXNnX3F1ZXVlLmMNCj4gPiArKysgYi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29k
-ZWMvdmRlY19tc2dfcXVldWUuYw0KPiA+IEBAIC0yNTYsMyArMjU2LDM1IEBAIHZvaWQgdmRlY19t
-c2dfcXVldWVfZGVpbml0KA0KPiA+ICAgCQkJa2ZyZWUobGF0X2J1Zi0+cHJpdmF0ZV9kYXRhKTsN
-Cj4gPiAgIAl9DQo+ID4gICB9DQo+ID4gKw0KPiA+ICtpbnQgdmRlY19tc2dfcXVldWVfY29yZV90
-aGVhZCh2b2lkICpkYXRhKQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3QgbXRrX3Zjb2RlY19kZXYgKmRl
-diA9IGRhdGE7DQo+ID4gKwlzdHJ1Y3QgdmRlY19sYXRfYnVmICpsYXRfYnVmOw0KPiA+ICsJc3Ry
-dWN0IG10a192Y29kZWNfY3R4ICpjdHg7DQo+ID4gKw0KPiA+ICsJc2V0X2ZyZWV6YWJsZSgpOw0K
-PiA+ICsJZm9yICg7Oykgew0KPiA+ICsJCXRyeV90b19mcmVlemUoKTsNCj4gPiArCQlpZiAoa3Ro
-cmVhZF9zaG91bGRfc3RvcCgpKQ0KPiA+ICsJCQlicmVhazsNCj4gPiArDQo+ID4gKwkJbGF0X2J1
-ZiA9IHZkZWNfbXNnX3F1ZXVlX2RxYnVmKCZkZXYtDQo+ID4gPm1zZ19xdWV1ZV9jb3JlX2N0eCk7
-DQo+ID4gKwkJaWYgKCFsYXRfYnVmKQ0KPiA+ICsJCQljb250aW51ZTsNCj4gPiArDQo+ID4gKwkJ
-Y3R4ID0gbGF0X2J1Zi0+Y3R4Ow0KPiA+ICsJCW10a192Y29kZWNfc2V0X2N1cnJfY3R4KGRldiwg
-Y3R4LCBNVEtfVkRFQ19DT1JFKTsNCj4gPiArDQo+ID4gKwkJaWYgKCFsYXRfYnVmLT5jb3JlX2Rl
-Y29kZSkNCj4gPiArCQkJbXRrX3Y0bDJfZXJyKCJDb3JlIGRlY29kZSBjYWxsYmFjayBmdW5jIGlz
-DQo+ID4gTlVMTCIpOw0KPiANCj4gSXMgdGhpcyBzdXBwb3NlZCB0byByZWFsbHkgaGFwcGVuPw0K
-PiBJIHNlZSB0aGF0IHRoaXMgaXMgYWx3YXlzIGluaXRpYWxpemVkIGluIGZ1bmN0aW9uDQo+IHZk
-ZWNfbXNnX3F1ZXVlX2luaXQoKS4NCkZpeCBpbiB2OCwgdXNpbmcgd29yayBxdWV1ZSBpbnN0ZWFk
-IG9mIGNyZWF0ZSB0aHJlYWQuDQoNClRoYW5rcw0KWXVuZmVpIERvbmcNCj4gDQo+IFJlZ2FyZHMs
-DQo+IC0gQW5nZWxvDQo+IA0KPiANCg==
+Excerpts from Laurent Dufour's message of October 27, 2021 2:27 am:
+> The wd_smp_cpus_pending CPU mask should be accessed under the protection =
+of
+> the __wd_smp_lock.
+>=20
+> This prevents false alarm to be raised when the system is under an heavy
+> stress. This has been seen while doing LPM on large system with a big
+> workload.
+>=20
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> ---
+>  arch/powerpc/kernel/watchdog.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdo=
+g.c
+> index bc7411327066..8d7a1a86187e 100644
+> --- a/arch/powerpc/kernel/watchdog.c
+> +++ b/arch/powerpc/kernel/watchdog.c
+> @@ -203,12 +203,13 @@ static void watchdog_smp_panic(int cpu, u64 tb)
+> =20
+>  static void wd_smp_clear_cpu_pending(int cpu, u64 tb)
+>  {
+> +	unsigned long flags;
+> +
+> +	wd_smp_lock(&flags);
+>  	if (!cpumask_test_cpu(cpu, &wd_smp_cpus_pending)) {
+>  		if (unlikely(cpumask_test_cpu(cpu, &wd_smp_cpus_stuck))) {
+>  			struct pt_regs *regs =3D get_irq_regs();
+> -			unsigned long flags;
+> =20
+> -			wd_smp_lock(&flags);
+>  			cpumask_clear_cpu(cpu, &wd_smp_cpus_stuck);
+>  			wd_smp_unlock(&flags);
+> =20
+> @@ -219,22 +220,23 @@ static void wd_smp_clear_cpu_pending(int cpu, u64 t=
+b)
+>  				show_regs(regs);
+>  			else
+>  				dump_stack();
+> +			return;
+>  		}
+> +
+> +		wd_smp_unlock(&flags);
+>  		return;
+>  	}
+> +
+>  	cpumask_clear_cpu(cpu, &wd_smp_cpus_pending);
+>  	if (cpumask_empty(&wd_smp_cpus_pending)) {
+> -		unsigned long flags;
+> -
+> -		wd_smp_lock(&flags);
+>  		if (cpumask_empty(&wd_smp_cpus_pending)) {
+>  			wd_smp_last_reset_tb =3D tb;
+>  			cpumask_andnot(&wd_smp_cpus_pending,
+>  					&wd_cpus_enabled,
+>  					&wd_smp_cpus_stuck);
+>  		}
+> -		wd_smp_unlock(&flags);
+>  	}
+> +	wd_smp_unlock(&flags);
 
+Hmm. I wanted to avoid the lock here because all CPUs will do it on=20
+every heartbeat timer.
+
+Although maybe when you look at the cacheline transfers required it=20
+doesn't matter much (and the timer is only once every few seconds).
+
+I guess it's always better to aovid lock free craziness unless it's
+required... so where is the race coming from? I guess 2 CPUs can
+clear wd_smp_cpus_pending but not see one another's update so they
+both miss cpumask_empty =3D=3D true! Good catch.
+
+We shouldn't strictly need the wd_smp_lock for the first test, but
+that should be an uncommon case, so okay.
+
+Can we clear wd_smp_cpus_pending with a non-atomic operation now?
+
+Thanks,
+Nick
