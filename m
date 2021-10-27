@@ -2,247 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB94543C69A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A834143C6AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241227AbhJ0Jj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238859AbhJ0JjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:39:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B79A161052;
-        Wed, 27 Oct 2021 09:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635327416;
-        bh=w34sjWWnoH8USWkb6Lh268jrY7MkvGw0X2nThpeO9xA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DkF4yEox6FYj5CQPjGSPS+w20CY1G4DBKhOEc4JVyouLq3zydt9aX4R81SSZW1IDl
-         VJKYYr5iTwNq65yDsqz9EYGK1QFtYI+vMu3VE9mFdzn554rYg8u7/mYDXSHw5/8aq4
-         7lQXs92tcvu/a1IxngXuubjd66eSqEoyoIutS0u0uf1xjLSrX8M2N1IZlBayje6XB/
-         25ro00xwNYSx12RR6YoUai48t9ylZ8FfOM/FPn7lS4fXCCI8Kp36JedTTKcuA8vJq9
-         0T1LHPaKn2y3R/ggWyWqXgf0LLdZH65GIcKxgCZXYXbi7CyRi50Argnr/lmqE82OSW
-         u0q5QL40F2Qcg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mffMP-00083c-5x; Wed, 27 Oct 2021 11:36:41 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH v2 2/2] comedi: dt9812: fix DMA buffers on stack
-Date:   Wed, 27 Oct 2021 11:35:29 +0200
-Message-Id: <20211027093529.30896-3-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211027093529.30896-1-johan@kernel.org>
-References: <20211027093529.30896-1-johan@kernel.org>
+        id S241262AbhJ0JpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232006AbhJ0JpO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 05:45:14 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7F9C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 02:42:45 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so1819887wmz.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 02:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g0D9/rrpIr9fyPZx4h1CXHJNZVxoIHdXAlZrTjtbcgE=;
+        b=LWETz/r4gYw0pzFNBt54ka9qNvttyYrzQrMuOaEYSoGW+ysWI5/P7sScKno6UhF5M8
+         nDhwytGY1y2SYT6iuq7t9fNFc+vQjbL3l6jtyPahZOS36Se5lknCbysyvsBmqxahoijo
+         lIIdadK1k4/DBlmiyin7s6pXa6EwQKHqea5hGMJzXpA8wDgqGKGFc9RaVfzR1OGU1KQq
+         4ALKRJ6Z7yR1gWDw51zO8lB6sGf8NzUkxUAFgwNzDWQsWaB1GnDsiQQbH4gOdRZqBCpc
+         tMnG/KWD7SQfvSABODCPzxK6SPb3WmaUDdsrvZnaVIpvzsoOZ0NxPoDRnZqYEMLldxNP
+         UVOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g0D9/rrpIr9fyPZx4h1CXHJNZVxoIHdXAlZrTjtbcgE=;
+        b=mlUbT0m9PjikVRS3FJws1As/Y7L+CDq9owhxVe+DFJ/DCHpKAf9M1ri2hkORmTijQe
+         cUEyHy/tnv10UFOqM+C3q4KeMtTEwneOAoo5081gY38COvaTOAFjew+PrKHM08TRpm8j
+         Fd14Ib0skOkGocA2vN/2AVsccgQbt7nbdINC2OJE7rb96uCSCMbDfphxENm99faKDt84
+         yZmzIcVQPLgoDn8CoeovxXxyQSat5SZeIuGYqowcyuU2ztD3McpZw+lP2UKg4x3wB9Ky
+         aUb6rHSGE0ujAlHy4ebFyF7c79uovDEzki2N3vlF7KMxH4hvyMGgYrDvUbMYBPwZJyrn
+         ptjg==
+X-Gm-Message-State: AOAM532c7f+T5yOeokx+zh0pahu0/0QUb6nNxF+dEOZA0W3Fq76AKhl7
+        9u7w1dD60iQ3u6sfSJtFIp50GnneSfr0Wcxv1T4Pxg==
+X-Google-Smtp-Source: ABdhPJx4E1Py+4WI3Q7DjL/bwCfnrfedbmQiFdfgkiPGNuL/KEM2fGFUJZAsGynOOJVh+u1xpGAi1YMZHTLDaNmirAk=
+X-Received: by 2002:a7b:ce19:: with SMTP id m25mr4721233wmc.134.1635327764303;
+ Wed, 27 Oct 2021 02:42:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211026083138.1818705-1-jens.wiklander@linaro.org>
+ <20211026083138.1818705-3-jens.wiklander@linaro.org> <1635271409.203246.2939412.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1635271409.203246.2939412.nullmailer@robh.at.kernel.org>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Wed, 27 Oct 2021 11:42:33 +0200
+Message-ID: <CAHUa44GQvN_8Y5jM+TPbnoPeHpz9hybr5i8YPeArGP9Sxk9Z=Q@mail.gmail.com>
+Subject: Re: [PATCH v7 2/6] dt-bindings: arm: optee: add interrupt property
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jerome Forissier <jerome@forissier.org>,
+        jens.vankeirsbilck@kuleuven.be,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB transfer buffers are typically mapped for DMA and must not be
-allocated on the stack or transfers will fail.
+On Tue, Oct 26, 2021 at 8:03 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, 26 Oct 2021 10:31:34 +0200, Jens Wiklander wrote:
+> > Adds an optional interrupt property to the optee binding.
+> >
+> > Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > Acked-by: Marc Zyngier <maz@kernel.org>
+> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > ---
+> >  .../devicetree/bindings/arm/firmware/linaro,optee-tz.yaml  | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+>
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> Error: Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.example.dts:23.31-32 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1441: dt_binding_check] Error 2
+>
+> doc reference errors (make refcheckdocs):
+>
+> See https://patchwork.ozlabs.org/patch/1546320
+>
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
 
-Allocate proper transfer buffers in the various command helpers and
-return an error on short transfers instead of acting on random stack
-data.
+Thanks, I'll fix that in the next version.
 
-Note that this also fixes a stack info leak on systems where DMA is not
-used as 32 bytes are always sent to the device regardless of how short
-the command is.
-
-Fixes: 63274cd7d38a ("Staging: comedi: add usb dt9812 driver")
-Cc: stable@vger.kernel.org      # 2.6.29
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/comedi/drivers/dt9812.c | 115 ++++++++++++++++++++++++--------
- 1 file changed, 86 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/comedi/drivers/dt9812.c b/drivers/comedi/drivers/dt9812.c
-index 634f57730c1e..704b04d2980d 100644
---- a/drivers/comedi/drivers/dt9812.c
-+++ b/drivers/comedi/drivers/dt9812.c
-@@ -32,6 +32,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/errno.h>
-+#include <linux/slab.h>
- #include <linux/uaccess.h>
- 
- #include "../comedi_usb.h"
-@@ -237,22 +238,42 @@ static int dt9812_read_info(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
-+	size_t tbuf_size;
- 	int count, ret;
-+	void *tbuf;
- 
--	cmd.cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
--	cmd.u.flash_data_info.address =
-+	tbuf_size = max(sizeof(*cmd), buf_size);
-+
-+	tbuf = kzalloc(tbuf_size, GFP_KERNEL);
-+	if (!tbuf)
-+		return -ENOMEM;
-+
-+	cmd = tbuf;
-+
-+	cmd->cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
-+	cmd->u.flash_data_info.address =
- 	    cpu_to_le16(DT9812_DIAGS_BOARD_INFO_ADDR + offset);
--	cmd.u.flash_data_info.numbytes = cpu_to_le16(buf_size);
-+	cmd->u.flash_data_info.numbytes = cpu_to_le16(buf_size);
- 
- 	/* DT9812 only responds to 32 byte writes!! */
- 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
- 	if (ret)
--		return ret;
-+		goto out;
-+
-+	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-+			   tbuf, buf_size, &count, DT9812_USB_TIMEOUT);
-+	if (!ret) {
-+		if (count == buf_size)
-+			memcpy(buf, tbuf, buf_size);
-+		else
-+			ret = -EREMOTEIO;
-+	}
-+out:
-+	kfree(tbuf);
- 
--	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
--			    buf, buf_size, &count, DT9812_USB_TIMEOUT);
-+	return ret;
- }
- 
- static int dt9812_read_multiple_registers(struct comedi_device *dev,
-@@ -261,22 +282,42 @@ static int dt9812_read_multiple_registers(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count, ret;
-+	size_t buf_size;
-+	void *buf;
- 
--	cmd.cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
--	cmd.u.read_multi_info.count = reg_count;
-+	buf_size = max_t(size_t, sizeof(*cmd), reg_count);
-+
-+	buf = kzalloc(buf_size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	cmd = buf;
-+
-+	cmd->cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
-+	cmd->u.read_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++)
--		cmd.u.read_multi_info.address[i] = address[i];
-+		cmd->u.read_multi_info.address[i] = address[i];
- 
- 	/* DT9812 only responds to 32 byte writes!! */
- 	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
- 	if (ret)
--		return ret;
-+		goto out;
-+
-+	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-+			   buf, reg_count, &count, DT9812_USB_TIMEOUT);
-+	if (!ret) {
-+		if (count == reg_count)
-+			memcpy(value, buf, reg_count);
-+		else
-+			ret = -EREMOTEIO;
-+	}
-+out:
-+	kfree(buf);
- 
--	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
--			    value, reg_count, &count, DT9812_USB_TIMEOUT);
-+	return ret;
- }
- 
- static int dt9812_write_multiple_registers(struct comedi_device *dev,
-@@ -285,19 +326,27 @@ static int dt9812_write_multiple_registers(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count;
-+	int ret;
-+
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
- 
--	cmd.cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
--	cmd.u.read_multi_info.count = reg_count;
-+	cmd->cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
-+	cmd->u.read_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++) {
--		cmd.u.write_multi_info.write[i].address = address[i];
--		cmd.u.write_multi_info.write[i].value = value[i];
-+		cmd->u.write_multi_info.write[i].address = address[i];
-+		cmd->u.write_multi_info.write[i].value = value[i];
- 	}
- 
- 	/* DT9812 only responds to 32 byte writes!! */
--	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-+	kfree(cmd);
-+
-+	return ret;
- }
- 
- static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
-@@ -306,17 +355,25 @@ static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
- {
- 	struct usb_device *usb = comedi_to_usb_dev(dev);
- 	struct dt9812_private *devpriv = dev->private;
--	struct dt9812_usb_cmd cmd;
-+	struct dt9812_usb_cmd *cmd;
- 	int i, count;
-+	int ret;
-+
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
- 
--	cmd.cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
--	cmd.u.rmw_multi_info.count = reg_count;
-+	cmd->cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
-+	cmd->u.rmw_multi_info.count = reg_count;
- 	for (i = 0; i < reg_count; i++)
--		cmd.u.rmw_multi_info.rmw[i] = rmw[i];
-+		cmd->u.rmw_multi_info.rmw[i] = rmw[i];
- 
- 	/* DT9812 only responds to 32 byte writes!! */
--	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
--			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-+	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-+			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-+	kfree(cmd);
-+
-+	return ret;
- }
- 
- static int dt9812_digital_in(struct comedi_device *dev, u8 *bits)
--- 
-2.32.0
-
+Cheers,
+Jens
