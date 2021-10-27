@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BF443BF16
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667A943BF18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237609AbhJ0Bji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
+        id S237653AbhJ0Bjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236312AbhJ0Bjh (ORCPT
+        with ESMTP id S237285AbhJ0Bjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Oct 2021 21:39:37 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8A8C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:12 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id e16-20020a256910000000b005c1cc2b24ccso675375ybc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:12 -0700 (PDT)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A002C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:13 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id t7-20020a252d07000000b005c1709e6014so1469315ybt.15
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:37:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=O4M/tQHIU9ygzYdcq00Cuq5xDfJVENaFvMJsaxgv1Uk=;
-        b=ipgwRjf4MbnXNFmRgqWaZKZYpqsFrVjjUM5IUmIj48IJ+uXEjqX3lIvgCj//ujftMU
-         8lyuEx0+D6Xnz/iTY0d240W6dovoQflTqdnpDdWe8YLh89Rrv+ShMxUyOtljaa8WlHbb
-         5wiweMoy+DXW/36/PwubPsKHEAAaKv7YfU9R3XQT2rFU3D7L7qM3MjTowcXDnBrmNtYs
-         9qZFHqe/wWRR7hcYWECszq6Wsg+RbqFeCKfw5Q2rMjbzDWIZcVicwmbUqY3ELtPXBYwS
-         defaJGwEvYHDpPJaAo6mdglkpkARGqBiyHDoDflmT8FbFRtiQ0CJq9mNvcfztI1WilzM
-         aIZQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=KbePLBSXjJc+ItO7+3Jnjlde8rtlRhHvWKH0kKd5B80=;
+        b=CL35BVEpYmt7VeoOZOl3RV+eDnImtLHSZOMLTZp55viCQSTRJNmRrF8NG8os4UrC3U
+         KRPCb4C31XIg7gqpkIZvAb/MpRDtkzcAURmeOPm5OvdRazmBGez2bjuL47tSXpt6je3T
+         fBHrStjoUKnyny8Ii1LE8VvfVfsQ2E04hPavmu04JaZHy9DMp23l1VAcLAfOhVeZwwQy
+         F44ryA5xwg/M3M2UDIAmU+LaKuEQDby2QSPAsdkp9kDkdAGhrA4Lm6E1wdvrBt9uDbDD
+         8Prno9NKc3Qn3ToEe29ZI1p4eDVkTiobB2ucDC8Ep7m4JmR4jHj63JQ8tH2QHQCLDb8E
+         v+JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=O4M/tQHIU9ygzYdcq00Cuq5xDfJVENaFvMJsaxgv1Uk=;
-        b=2wHYilA7SKsyTT/9D8ckWT5bN9RuxG0WNjWgI7etxShk12B7sBlzQexLeqU/j4EE2N
-         rl2Lk4dZPJVEzSeiQnqETJ0o8mcTJtUFf3eRPt+squ5rs5VV8/gRE48wpwfuW/Bo43Oi
-         E9DGUkQOdvQmyukhGtNCnUqpEAW8ebIt9PEYV654CSj/kcsOxFejG0nJRUUI3WkTMtTM
-         GNrCDd4r+MMEV0gJF4wgVmQG5zZLBIHDPispSkqqpCCLlUkI7GT/MScwvL/mA+WU2TXs
-         Qsqx6JSuvpmA/gunq+KMTN+7WwT4e2OdCt2UinBCLq4xiwj25dDZUb4SU//LrViToRez
-         oPrw==
-X-Gm-Message-State: AOAM533iPce9P8BoKvkQa69GXi5y4Y3dPZ+KWeadJj4XevW7v1y1HOjl
-        8tP22N8oFT3kbwX/Uuhtd5OgFYV6mb2eoQ==
-X-Google-Smtp-Source: ABdhPJy5wGr37Q6+nC4gTXNyECv/6SgaiCo2x/x0NDGAyWhwPAakrLy53+OSWUWSYjsn7ctqK1CdS15Bb/BFbg==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=KbePLBSXjJc+ItO7+3Jnjlde8rtlRhHvWKH0kKd5B80=;
+        b=36ZrH1hxFHyvaMyTJb7k2KaEDuVtrw3ACFXAvEmoy7yRGmvYWOT+m0zyeXripkokUL
+         ftQh6Wl2DqRSSpyqcr+TFHeen+sy1vBhY0nLQ8itNont7GmUlGItTrr34h7eyymDp3WB
+         3LcfftIYq0nGfLq65J/f95QXwSzYIqoVtHopK2qWHX0rKH9KNYDUqBIeYBc+VHm0yoox
+         mJrPs4XGopMkGPYsfjRwHuDcHRWIC9t+G4ArIRRPbjcgfWHXvxbhLoZaRskpOY8fH02x
+         KVKJ182scQUaX3tSGFwl2MHndL2WeHdYuk9HvgSlpbJdysjfG3l53w4MvAP0YnrBbOSe
+         /G6A==
+X-Gm-Message-State: AOAM533cTBaVpOXHYaMTG1ckRBdSdmw2S8leKvPlgQV+pdVYiqcU64+k
+        NLkXC0FKBzsSVpeK48FyVAUrG6n8K2RcIg==
+X-Google-Smtp-Source: ABdhPJwFvLepJVEy6r7oUTHD+UvCDDphjgm3QnJT5artkyBGE5h2xv2USvnTsN5zO4Wdsh2SXiKYRa3E0+tzyw==
 X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:c628:e925:d58d:6232])
- (user=davidgow job=sendgmr) by 2002:a25:3622:: with SMTP id
- d34mr1601396yba.325.1635298630761; Tue, 26 Oct 2021 18:37:10 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 18:36:59 -0700
-Message-Id: <20211027013702.2039566-1-davidgow@google.com>
+ (user=davidgow job=sendgmr) by 2002:a25:afcd:: with SMTP id
+ d13mr29514222ybj.504.1635298632637; Tue, 26 Oct 2021 18:37:12 -0700 (PDT)
+Date:   Tue, 26 Oct 2021 18:37:00 -0700
+In-Reply-To: <20211027013702.2039566-1-davidgow@google.com>
+Message-Id: <20211027013702.2039566-2-davidgow@google.com>
 Mime-Version: 1.0
+References: <20211027013702.2039566-1-davidgow@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 1/4] kunit: tool: Do not error on tests without test plans
+Subject: [PATCH v2 2/4] kunit: tool: Report an error if any test has no subtests
 From:   David Gow <davidgow@google.com>
 To:     Brendan Higgins <brendanhiggins@google.com>,
         Rae Moar <rmr167@gmail.com>,
@@ -60,64 +64,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The (K)TAP spec encourages test output to begin with a 'test plan': a
-count of the number of tests being run of the form:
-1..n
+It's possible for a test to have a subtest header, but zero valid
+subtests. We used to error on this if the test plan had no subtests
+listed, but it's possible to have subtests without a test plan (indeed,
+this is how parameterised tests work).
 
-However, some test suites might not know the number of subtests in
-advance (for example, KUnit's parameterised tests use a generator
-function). In this case, it's not possible to print the test plan in
-advance.
-
-kunit_tool already parses test output which doesn't contain a plan, but
-reports an error. Since we want to use nested subtests with KUnit
-paramterised tests, remove this error.
+Tests with 0 subtests now have the result NO_TESTS, and will report an
+error (which does not halt test execution, but is printed in a scary red
+colour and is noted in the results summary).
 
 Signed-off-by: David Gow <davidgow@google.com>
 ---
- tools/testing/kunit/kunit_parser.py    | 5 ++---
- tools/testing/kunit/kunit_tool_test.py | 5 ++++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ tools/testing/kunit/kunit_parser.py                | 14 +++++++++-----
+ tools/testing/kunit/kunit_tool_test.py             |  9 +++++++++
+ .../test_is_test_passed-no_tests_no_plan.log       |  7 +++++++
+ 3 files changed, 25 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
 
 diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index 3355196d0515..50ded55c168c 100644
+index 50ded55c168c..3a838423c381 100644
 --- a/tools/testing/kunit/kunit_parser.py
 +++ b/tools/testing/kunit/kunit_parser.py
-@@ -340,8 +340,8 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
- 	"""
- 	Parses test plan line and stores the expected number of subtests in
- 	test object. Reports an error if expected count is 0.
--	Returns False and reports missing test plan error if fails to parse
--	test plan.
-+	Returns False and sets expected_count to None if there is no valid test
-+	plan.
- 
- 	Accepted format:
- 	- '1..[number of subtests]'
-@@ -356,7 +356,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
- 	match = TEST_PLAN.match(lines.peek())
- 	if not match:
- 		test.expected_count = None
--		test.add_error('missing plan line!')
- 		return False
+@@ -360,9 +360,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
  	test.log.append(lines.pop())
  	expected_count = int(match.group(1))
+ 	test.expected_count = expected_count
+-	if expected_count == 0:
+-		test.status = TestStatus.NO_TESTS
+-		test.add_error('0 tests run!')
+ 	return True
+ 
+ TEST_RESULT = re.compile(r'^(ok|not ok) ([0-9]+) (- )?([^#]*)( # .*)?$')
+@@ -731,6 +728,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
+ 		# test plan
+ 		test.name = "main"
+ 		parse_test_plan(lines, test)
++		parent_test = True
+ 	else:
+ 		# If KTAP/TAP header is not found, test must be subtest
+ 		# header or test result line so parse attempt to parser
+@@ -744,7 +742,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
+ 	expected_count = test.expected_count
+ 	subtests = []
+ 	test_num = 1
+-	while expected_count is None or test_num <= expected_count:
++	while parent_test and (expected_count is None or test_num <= expected_count):
+ 		# Loop to parse any subtests.
+ 		# Break after parsing expected number of tests or
+ 		# if expected number of tests is unknown break when test
+@@ -779,9 +777,15 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
+ 			parse_test_result(lines, test, expected_num)
+ 		else:
+ 			test.add_error('missing subtest result line!')
++
++	# Check for there being no tests
++	if parent_test and len(subtests) == 0:
++		test.status = TestStatus.NO_TESTS
++		test.add_error('0 tests run!')
++
+ 	# Add statuses to TestCounts attribute in Test object
+ 	bubble_up_test_results(test)
+-	if parent_test:
++	if parent_test and not main:
+ 		# If test has subtests and is not the main test object, print
+ 		# footer.
+ 		print_test_footer(test)
 diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 9c4126731457..bc8793145713 100755
+index bc8793145713..c59fe0777387 100755
 --- a/tools/testing/kunit/kunit_tool_test.py
 +++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -191,7 +191,10 @@ class KUnitParserTest(unittest.TestCase):
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(
- 				file.readlines()))
--		self.assertEqual(2, result.test.counts.errors)
-+		# A missing test plan is not an error.
-+		self.assertEqual(0, result.test.counts.errors)
-+		# All tests should be accounted for.
-+		self.assertEqual(10, result.test.counts.total())
+@@ -208,6 +208,15 @@ class KUnitParserTest(unittest.TestCase):
  		self.assertEqual(
- 			kunit_parser.TestStatus.SUCCESS,
+ 			kunit_parser.TestStatus.NO_TESTS,
  			result.status)
++		no_plan_log = test_data_path('test_is_test_passed-no_tests_no_plan.log')
++		with open(no_plan_log) as file:
++			result = kunit_parser.parse_run_tests(
++				kunit_parser.extract_tap_lines(file.readlines()))
++		self.assertEqual(0, len(result.test.subtests[0].subtests[0].subtests))
++		self.assertEqual(
++			kunit_parser.TestStatus.NO_TESTS,
++			result.test.subtests[0].subtests[0].status)
++
+ 
+ 	def test_no_kunit_output(self):
+ 		crash_log = test_data_path('test_insufficient_memory.log')
+diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
+new file mode 100644
+index 000000000000..dd873c981108
+--- /dev/null
++++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
+@@ -0,0 +1,7 @@
++TAP version 14
++1..1
++  # Subtest: suite
++  1..1
++    # Subtest: case
++  ok 1 - case # SKIP
++ok 1 - suite
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
