@@ -2,136 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC6C43CC4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B5143CC4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242497AbhJ0OgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:36:11 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:54143 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234535AbhJ0OgK (ORCPT
+        id S242586AbhJ0Oh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238657AbhJ0Oh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:36:10 -0400
-Received: (qmail 1321012 invoked by uid 1000); 27 Oct 2021 10:33:43 -0400
-Date:   Wed, 27 Oct 2021 10:33:43 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Kevin Hilman <khilman@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime
- PM is disabled
-Message-ID: <20211027143343.GC1319606@rowland.harvard.edu>
-References: <20211026222626.39222-1-ulf.hansson@linaro.org>
- <20211027020235.GA1306582@rowland.harvard.edu>
- <CAPDyKFpgHJA-duQSA2uqhccrDxFqWXO1R1DJxo=aOkT5FyX+Ag@mail.gmail.com>
+        Wed, 27 Oct 2021 10:37:26 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F45C061570;
+        Wed, 27 Oct 2021 07:35:01 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m21so3061348pgu.13;
+        Wed, 27 Oct 2021 07:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=thGbGpMmDBLVFCgnHjtOHQz7SQaxdSW9d+9l+tEtUqc=;
+        b=ldKmAOyUDN64FyhAHEjvFrdt6dBfRGeA7ig2+ULovFnlu9zQDtg5/RdNkjY5+o1gww
+         Qzu7x0ToRdIuf7fotbHgkKtG0j0lKjJaTacuWipZCwwNynjegtF3KrkkjrnhRHNg3S6M
+         0Ef4VWYFM1KE+8mH8JsbkYEnn0blhU4p04hDpXawndaMLprISgHBAszpqujvhLAsivkN
+         GQ2nFpe1noGxMD6hmOIu/FkkD4xQ/CRCyERLdOZFuB/0WSC/DX0PZK2c80uCGo9cBcD6
+         EJzDuZaJMIZ4YulniDBNLJ5N5XRxd+G6yHPL24IMXgIo7XryV6CPBxLQjmIDE3W4Sj8/
+         /Buw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=thGbGpMmDBLVFCgnHjtOHQz7SQaxdSW9d+9l+tEtUqc=;
+        b=jn8Mnf+A9ZYYk9lYN1ySWBc6fkX5wznDa7as+jZiDe3Gu5DSwTkjZgSAWXsIROX4xQ
+         ORjTs3Iltet1p5afcCGuhzTkLXzf1Ds+FcNtZF8cNX77zWQh9ChUciS+dRaL2hCjwbhr
+         BrooMxNXMx7m/EepVZ03YuRox5EhwrEDHfmraBKL9RRNmp/22HxNolen3P3Iodq1pGJy
+         EawV6ohoO+qryfq3sZstyx7AOdsk2B2kAAPbGTrIweFpxmFDL3bealCF0mNw46IORrKX
+         caMv1oAvq8Oek3fl11Im1rRka4trz8GQx28FO1gNXtAP8qgt1AbqCMo0BeeaGnK/Oe9u
+         FhYg==
+X-Gm-Message-State: AOAM5304kEwH2FouXLCfAHASxgQRrXd98yb35EqPCGOCfJjb55jVhUc5
+        SquZ15l9/Du2MI+Clbc6Nj0=
+X-Google-Smtp-Source: ABdhPJwV9/vWHLM/HAyanL3zKT+kRpGtHmBTAKNWM89KDm8AYwvq4ZVNs8WDmHwfEeIB77iE8O8mWg==
+X-Received: by 2002:a63:9516:: with SMTP id p22mr20577450pgd.297.1635345300367;
+        Wed, 27 Oct 2021 07:35:00 -0700 (PDT)
+Received: from localhost.localdomain ([94.177.118.99])
+        by smtp.gmail.com with ESMTPSA id g11sm67392pgn.41.2021.10.27.07.34.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 07:34:59 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Jan Kara <jack@suse.cz>, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: reiserfs: remove useless new_opts in reiserfs_remount
+Date:   Wed, 27 Oct 2021 22:34:41 +0800
+Message-Id: <20211027143445.4156459-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFpgHJA-duQSA2uqhccrDxFqWXO1R1DJxo=aOkT5FyX+Ag@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 12:55:43PM +0200, Ulf Hansson wrote:
-> On Wed, 27 Oct 2021 at 04:02, Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Wed, Oct 27, 2021 at 12:26:26AM +0200, Ulf Hansson wrote:
-> > > During system suspend, the PM core sets dev->power.is_suspended for the
-> > > device that is being suspended. This flag is also being used in
-> > > rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
-> > > PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
-> > > device.
-> > >
-> > > To make this behaviour a bit more useful, let's drop the check for the
-> > > dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
-> > > be limited to this anyway.
-> > >
-> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > ---
-> > >  drivers/base/power/runtime.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > > index ec94049442b9..fadc278e3a66 100644
-> > > --- a/drivers/base/power/runtime.c
-> > > +++ b/drivers/base/power/runtime.c
-> > > @@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
-> > >   repeat:
-> > >       if (dev->power.runtime_error)
-> > >               retval = -EINVAL;
-> > > -     else if (dev->power.disable_depth == 1 && dev->power.is_suspended
-> > > -         && dev->power.runtime_status == RPM_ACTIVE)
-> > > +     else if (dev->power.disable_depth > 0 &&
-> > > +             dev->power.runtime_status == RPM_ACTIVE)
-> >
-> > IIRC there was a good reason why the original code checked for
-> > disable_depth == 1 rather than > 0.  But I don't remember exactly what
-> > the reason was.  Maybe it had something to do with the fact that during
-> > a system sleep __device_suspend_late calls __pm_runtime_disable, and the
-> > code was checking that there were no other disables in effect.
-> 
-> The check was introduced in the below commit:
-> 
-> Commit 6f3c77b040fc
-> Author: Kevin Hilman <khilman@ti.com>
-> Date:   Fri Sep 21 22:47:34 2012 +0000
-> PM / Runtime: let rpm_resume() succeed if RPM_ACTIVE, even when disabled, v2
-> 
-> By reading the commit message it's pretty clear to me that the check
-> was added to cover only one specific use case, during system suspend.
-> 
-> That is, that a driver may want to call pm_runtime_get_sync() from a
-> late/noirq callback (when the PM core has disabled runtime PM), to
-> understand whether the device is still powered on and accessible.
-> 
-> > This is
-> > related to the documented behavior of rpm_resume (it's supposed to fail
-> > with -EACCES if the device is disabled for runtime PM, no matter what
-> > power state the device is in).
-> >
-> > That probably is also the explanation for why dev->power.is_suspended
-> > gets checked: It's how the code tells whether a system sleep is in
-> > progress.
-> 
-> Yes, you are certainly correct about the current behaviour. It's there
-> for a reason.
-> 
-> On the other hand I would be greatly surprised if this change would
-> cause any issues. Of course, I can't make guarantees, but I am, of
-> course, willing to help to fix problems if those happen.
-> 
-> As a matter of fact, I think the current behaviour looks quite
-> inconsistent, as it depends on whether the device is being system
-> suspended.
-> 
-> Moreover, for syscore devices (dev->power.syscore is set for them),
-> the PM core doesn't set the "is_suspended" flag. Those can benefit
-> from a common behaviour.
-> 
-> Finally, I think the "is_suspended" flag actually needs to be
-> protected by a lock when set by the PM core, as it's being used in two
-> separate execution paths. Although, rather than adding a lock for
-> protection, we can just rely on the "disable_depth" in rpm_resume().
-> It would be easier and makes the behaviour consistent too.
+Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
+if not using generic_show_options") eliminates replace_mount_options
+in reiserfs_remount, but does not handle the allocated new_opts,
+it will cause memory leak in the reiserfs_remount.
 
-As long as is_suspended isn't _written_ in two separate execution paths, 
-we're probably okay without a lock -- provided the code doesn't mind 
-getting an indefinite result when a read races with a write.
+Because new_opts is useless in reiserfs_mount, so we fix this bug by
+removing the useless new_opts in reiserfs_remount.
 
-> > So overall, I suspect this change should not be made.  But some other
-> > improvement (like a nice comment) might be in order.
-> >
-> > Alan Stern
-> 
-> Thanks for reviewing!
+Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ fs/reiserfs/super.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-You're welcome.  Whatever you eventually decide to do should be okay 
-with me.  I just wanted to make sure that you understood the deeper 
-issue here and had given it some thought.  For example, it may turn out 
-that you can resolve matters simply by updating the documentation.
+diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+index 58481f8d63d5..f7b05c6b3dcf 100644
+--- a/fs/reiserfs/super.c
++++ b/fs/reiserfs/super.c
+@@ -1437,7 +1437,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+ 	unsigned long safe_mask = 0;
+ 	unsigned int commit_max_age = (unsigned int)-1;
+ 	struct reiserfs_journal *journal = SB_JOURNAL(s);
+-	char *new_opts;
+ 	int err;
+ 	char *qf_names[REISERFS_MAXQUOTAS];
+ 	unsigned int qfmt = 0;
+@@ -1445,10 +1444,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+ 	int i;
+ #endif
+ 
+-	new_opts = kstrdup(arg, GFP_KERNEL);
+-	if (arg && !new_opts)
+-		return -ENOMEM;
+-
+ 	sync_filesystem(s);
+ 	reiserfs_write_lock(s);
+ 
+@@ -1599,7 +1594,6 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+ out_err_unlock:
+ 	reiserfs_write_unlock(s);
+ out_err:
+-	kfree(new_opts);
+ 	return err;
+ }
+ 
+-- 
+2.25.1
 
-Alan Stern
