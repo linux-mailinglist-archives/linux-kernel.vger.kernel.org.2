@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB3843C442
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8016743C448
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 09:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240582AbhJ0HrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 03:47:01 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:41839 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240571AbhJ0Hq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:46:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635320674; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=mz8nJIGGpohR0wU+Oe8hK35Xu2THKa0asqPSQzly+Qw=;
- b=QA5nzslC1wYyuz2RKTxWwbkWsCoNSDY8FaEvsxDzB6GyEJAgeARb9s2lO9Tto/J05sBzp7lJ
- z9Fxc7UR8pYrJgv3bFBvP/bl201EGGUksIzQU9PG2swrm6hOlNnAHX6rr+CYO3h6w2FdaerR
- UutZ1Ken4l72jgJsWHvECkWyW6s=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6179035a321f2400517d1dfb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 07:44:26
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D404FC43617; Wed, 27 Oct 2021 07:44:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71612C4338F;
-        Wed, 27 Oct 2021 07:44:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 71612C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S240617AbhJ0HtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 03:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240554AbhJ0HtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 03:49:06 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E08BC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:46:41 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id n2so1671976qta.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 00:46:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9q/ALGYqDwdhLtPZsbnRWyuardQKJ35TGG4OW1DjCZA=;
+        b=iSsc5HR+fsiNxzOXfw6h8SVZvp/HbeWKB5a5myra8kgMEaeuKZoibwAnmJBqzgBi0G
+         1m1qjpOhXnQDXh3LhYvEbcEjb82ou3ArwduzbYcyvwPSsGF5V9yGkf+b9Nnch+BmDOMO
+         uHllxmrRxPmnrXD49Pkxd/rrskiTt3mMr4j6PllfIyBi5IKzwb95YckztDT/iGfwfvF/
+         xn7HcTniSBS73kB1dk19exUmQDzL9LFhpM4yyUMvItDdauW4wnrfVUjYBn5SU1F0Kq4U
+         lJI/ObmeGm9PEk+LI4VFQew+oSggms8jYpeGS4YCT24d7BUEtqoHAk0dhNXhFrhJhZKH
+         0izw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9q/ALGYqDwdhLtPZsbnRWyuardQKJ35TGG4OW1DjCZA=;
+        b=E5S1yHnvhFmND+dfgKZviSIydJyLuGMAE2LucliwKOCWcdXnsfaZVE4o1bUpDWqubd
+         gCehG83ooS91F+qiFYoQI/LBpT5MnoEdpj1Jisk5lXy3E84Vd3eWECeIgZy1/w3eO1Cn
+         9XjhSilsuKYMPFJ+D+ifloXmxwYWZID+UDXD3088Ed0vIL3RwaskOzwuv83qUDo05Y5w
+         v1a3B6U/HHM6V+yLQxGEjo+yo5P9ohgdWV1kInkecrZ8qqsJNh7Q2iXlskQrpNYJXT5w
+         sHHPWP2JIH+FcdmtO310zMQLQ91z75FuHTbePsse9FvJpGXSIbRThj3PNcZ/xxXYbZOv
+         IfIg==
+X-Gm-Message-State: AOAM533wn83cc/Ar5I61O2dvQCtMoRji0Wqpqs0EpqLmBJ9IXFs1WTHc
+        VJwsjTNsCCFCwMw8ht1LXwhQVICu/LC0te+rXQw=
+X-Google-Smtp-Source: ABdhPJysjhJbIsbdrypKts8I/ECzzs1+FWwmDNja+0mcj/JDHnm26m1OvpQDFMySjZVbRCoTkSFhLyQsvVN2X+BSCBY=
+X-Received: by 2002:a05:622a:11c5:: with SMTP id n5mr29694457qtk.232.1635320800710;
+ Wed, 27 Oct 2021 00:46:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wcn36xx: add proper DMA memory barriers in rx path
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211023001528.3077822-1-benl@squareup.com>
-References: <20211023001528.3077822-1-benl@squareup.com>
-To:     Benjamin Li <benl@squareup.com>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Benjamin Li <benl@squareup.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        Eugene Krasnikov <k.eugene.e@gmail.com>,
-        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163532066175.19793.9331674894554153079.kvalo@codeaurora.org>
-Date:   Wed, 27 Oct 2021 07:44:26 +0000 (UTC)
+References: <1635318110-1905-1-git-send-email-huangzhaoyang@gmail.com> <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz>
+In-Reply-To: <YXj9w+8Bwlkz5PRy@dhcp22.suse.cz>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Wed, 27 Oct 2021 15:46:19 +0800
+Message-ID: <CAGWkznHVHVBrQEiO32p2uX_5BDUMc1fE64KuV34WJfpwC_23Pw@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: have kswapd only reclaiming use min protection on memcg
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benjamin Li <benl@squareup.com> wrote:
-
-> This is essentially exactly following the dma_wmb()/dma_rmb() usage
-> instructions in Documentation/memory-barriers.txt.
-> 
-> The theoretical races here are:
-> 
-> 1. DXE (the DMA Transfer Engine in the Wi-Fi subsystem) seeing the
-> dxe->ctrl & WCN36xx_DXE_CTRL_VLD write before the dxe->dst_addr_l
-> write, thus performing DMA into the wrong address.
-> 
-> 2. CPU reading dxe->dst_addr_l before DXE unsets dxe->ctrl &
-> WCN36xx_DXE_CTRL_VLD. This should generally be harmless since DXE
-> doesn't write dxe->dst_addr_l (no risk of freeing the wrong skb).
-> 
-> Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
-> Signed-off-by: Benjamin Li <benl@squareup.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-9bfe38e064af wcn36xx: add proper DMA memory barriers in rx path
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211023001528.3077822-1-benl@squareup.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+On Wed, Oct 27, 2021 at 3:20 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 27-10-21 15:01:50, Huangzhaoyang wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >
+> > For the kswapd only reclaiming, there is no chance to try again on
+> > this group while direct reclaim has. fix it by judging gfp flag.
+>
+> There is no problem description (same as in your last submissions. Have
+> you looked at the patch submission documentation as recommended
+> previously?).
+>
+> Also this patch doesn't make any sense. Both direct reclaim and kswapd
+> use a gfp mask which contains __GFP_DIRECT_RECLAIM (see balance_pgdat
+> for the kswapd part)..
+ok, but how does the reclaiming try with memcg's min protection on the
+alloc without __GFP_DIRECT_RECLAIM?
+>
+> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+>
+> Nacked-by: Michal Hocko <mhocko@suse.com>
+>
+> > ---
+> >  mm/vmscan.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 74296c2..41f5776 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -2704,7 +2704,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+> >                       unsigned long protection;
+> >
+> >                       /* memory.low scaling, make sure we retry before OOM */
+> > -                     if (!sc->memcg_low_reclaim && low > min) {
+> > +                     if (!sc->memcg_low_reclaim && low > min
+> > +                             && sc->gfp_mask & __GFP_DIRECT_RECLAIM) {
+> >                               protection = low;
+> >                               sc->memcg_low_skipped = 1;
+> >                       } else {
+> > --
+> > 1.9.1
+>
+> --
+> Michal Hocko
+> SUSE Labs
