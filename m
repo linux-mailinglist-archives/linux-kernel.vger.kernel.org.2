@@ -2,135 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FFF43C26C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EE443C26E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 07:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238288AbhJ0F6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 01:58:32 -0400
-Received: from mx.socionext.com ([202.248.49.38]:45888 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236871AbhJ0F6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:58:30 -0400
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 27 Oct 2021 14:56:04 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id D5983206E701;
-        Wed, 27 Oct 2021 14:56:04 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Wed, 27 Oct 2021 14:56:04 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id 67CD6B62AB;
-        Wed, 27 Oct 2021 14:56:04 +0900 (JST)
-Received: from [10.212.181.22] (unknown [10.212.181.22])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 08487B6291;
-        Wed, 27 Oct 2021 14:56:03 +0900 (JST)
-Subject: Re: [PATCH] dt-bindings: pinctrl: uniphier: Add child node
- definitions to describe pin mux and configuration
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1634136848-20091-1-git-send-email-hayashi.kunihiko@socionext.com>
- <YXhluRBQ+sGMYGkj@robh.at.kernel.org>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <79b9f644-1e7a-7e95-292d-13261a18dce6@socionext.com>
-Date:   Wed, 27 Oct 2021 14:56:03 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236878AbhJ0F7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 01:59:04 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46446 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231297AbhJ0F7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 01:59:00 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19R5uYYG105836;
+        Wed, 27 Oct 2021 00:56:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635314194;
+        bh=g92cF+PG1Y8ft/dPCWjVaGnIySgCFpdj/dtBjMg5QSA=;
+        h=From:To:CC:Subject:Date;
+        b=Rpc+Aw+2iZ5dXMpDvawSE4h1+h5+1i+caYpA48iQo+UxoSE4Odnbf3V5D9VwD2JJc
+         8SKO4pwsfJeUcPi6PeULQAcYBbdSb1rL9OJ+ZG6dFBF3CJBQ3venDBLegUcHOFA4B8
+         A2zI9X844kFBzQDojQN/sjp/N9hKeBiqFgrzei0Y=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19R5uY2C003978
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Oct 2021 00:56:34 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 27
+ Oct 2021 00:56:34 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 27 Oct 2021 00:56:34 -0500
+Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19R5uRPK126251;
+        Wed, 27 Oct 2021 00:56:31 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [RESEND PATCH v2 0/2] dmaengine: ti: k3-udma: Fix NULL pointer dereference error
+Date:   Wed, 27 Oct 2021 11:26:23 +0530
+Message-ID: <20211027055625.11150-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <YXhluRBQ+sGMYGkj@robh.at.kernel.org>
-Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-Thank you for your comment,
+NULL pointer de-reference error was observed when all the PCIe endpoint
+functions (22 function in J721E) request a DMA channel. The issue was
+specfically observed in BCDMA (Block copy DMA) but the issue is
+applicable in PKTDMA as well.
 
-On 2021/10/27 5:31, Rob Herring wrote:
-> On Wed, Oct 13, 2021 at 11:54:08PM +0900, Kunihiko Hayashi wrote:
->> In arch/arm/boot/dts/uniphier-pinctrl.dtsi, there are child nodes of
->> pinctrl that defines pinmux and pincfg, however, there are no rules
-> about
->> that in dt-bindings.
->>
->> 'make dtbs_check' results an error with the following message:
->>
->>     pinctrl: 'ain1', 'ain2', 'ainiec1', 'aout', 'aout1', 'aout2', ...
->>     ... 'usb2', 'usb3' do not match any of the regexes: 'pinctrl-[0-9]+'
->>
->> To avoid this issue, add the rules of pinmux and pincfg in each child
-> node
->> and grandchild node.
->>
->> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->> ---
->>   .../pinctrl/socionext,uniphier-pinctrl.yaml        | 46
-> +++++++++++++++++++++-
->>   1 file changed, 44 insertions(+), 2 deletions(-)
->>
->> diff --git
-> a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
-> l
-> b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
-> l
->> index a804d9bc1602..4567330fe536 100644
->> ---
-> a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
-> l
->> +++
-> b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yam
-> l
->> @@ -26,11 +26,53 @@ properties:
->>         - socionext,uniphier-pxs3-pinctrl
->>         - socionext,uniphier-nx1-pinctrl
->>   
->> -required:
->> -  - compatible
->> +patternProperties:
->> +  "^.*$":
->> +    if:
->> +      type: object
->> +    then:
-> 
-> After coming up with this hack, I found a better way using
-> additionalProperties:
-> 
-> additionalProperties:
->    type: object
+Changes from v1:
+1) Split the patch for BCDMA and PKTDMA separately
+2) Fixed the return value of udma_get_rflow() to 0.
+3) Removed the fixes tag as the patches does not directly apply to the
+commits.
 
-I see. I'll add it next.
+v1 => https://lore.kernel.org/r/20210209090036.30832-1-kishon@ti.com
 
-> and then all this:
-> 
->> +      allOf:
->> +        - $ref: pincfg-node.yaml#
->> +        - $ref: pinmux-node.yaml#
->> +
->> +      properties:
->> +        phandle: true
->> +        function: true
->> +        groups: true
->> +        pins: true
->> +        bias-pull-up: true
->> +        bias-pull-down: true
->> +        bias-pull-pin-default: true
->> +        drive-strength: true
->> +
->> +      patternProperties:
->> +        "^.*$":
->> +          if:
->> +            type: object
->> +          then:
-> 
-> Same thing here.
+Kishon Vijay Abraham I (2):
+  dmaengine: ti: k3-udma: Fix NULL pointer dereference error for BCDMA
+  dmaengine: ti: k3-udma: Fix NULL pointer dereference error for PKTDMA
 
-Yes. I'll add it, too.
+ drivers/dma/ti/k3-udma.c | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
-Thank you,
+-- 
+2.17.1
 
----
-Best Regards
-Kunihiko Hayashi
