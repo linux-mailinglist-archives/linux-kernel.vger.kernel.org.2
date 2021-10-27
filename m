@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE5943CA1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6525443CA13
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 14:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242027AbhJ0My0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 08:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbhJ0MyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 08:54:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25A5C061570;
-        Wed, 27 Oct 2021 05:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Cgkvcdwq0dJTP6ir5a7HxudmZPEOWaKKsMrUIHRFI/o=; b=og3HchErpvnTFHKZlelb9+dlvq
-        8ru+KFjDxKagLEYcb5toOiS1A84QArMCc7LwLJOekz0CPZm1sIlbDt5AiMedG9k8OjqwxnikmOW0a
-        vpDBzYunxz51QUU+4Jzzh3St53MewLvV6rsqC2o4D8B7w0bjHWKeJa3nafRLrdub8lhEn5Qf2rSUE
-        ac133ljKr5WuUTzLLt0X7sQSPcUY0wewP+o6ZgIntI3Pgm72i84DOrr2LVwcWAq68ddvMutW1dvYH
-        SJDA6flr6cV7yl3J+EBS0sHE6O89v9tNOXGgnqUqsqTpQpmvLUlz1kOVQIWnLduvDOMKDpLW8E63A
-        s+PKQECg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfiMQ-0003D7-0b; Wed, 27 Oct 2021 12:49:28 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 566C598629C; Wed, 27 Oct 2021 14:48:52 +0200 (CEST)
-Date:   Wed, 27 Oct 2021 14:48:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
-Message-ID: <20211027124852.GK174703@worktop.programming.kicks-ass.net>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211026201622.GG174703@worktop.programming.kicks-ass.net>
- <20211027120515.GC54628@C02TD0UTHF1T.local>
- <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+        id S231934AbhJ0Mvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 08:51:32 -0400
+Received: from gofer.mess.org ([88.97.38.141]:37929 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231811AbhJ0Mva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:51:30 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 00696C63A3; Wed, 27 Oct 2021 13:48:59 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1635338940; bh=e5phXM1J44gIrmBY104P/Z08rUN8SJnDxfNLQ7YhK9I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fXwpmhdz1XnLnKj4zPrYJ6JGcQZJmmNFwe1OFjLEXDsEx2s/3vGxAHZq/7RD51477
+         b6OfiEW3+eZH4+Y8TPyWzeFkwAah6q+oQEPwTYsfUUiwSpZv/1WNyv2RVsGrtFIc/Q
+         PJASj0OOsIwi3mvZo2NNc+wcjrle60lGtMO8HvUOoKThrWLx9AQjQ2qv4U383oY28H
+         b+OKnCFBAHHi3Tg+PF9KHUqXsuIATctW8QJiuHskKMQ6Mz43zTvMwckj/ZZZWOm1JU
+         kytwA8tGjTZ85qy3/h5Ck2ppu8HN6LdSR2EaKGm371M3ytRmp/kjsuA5873mqPHE37
+         hgYCFqUv88PYA==
+Date:   Wed, 27 Oct 2021 13:48:59 +0100
+From:   Sean Young <sean@mess.org>
+To:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        kernel test robot <lkp@intel.com>, mchehab@kernel.org,
+        thierry.reding@gmail.com, Lee Jones <lee.jones@linaro.org>,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v3] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <20211027124859.GA6320@gofer.mess.org>
+References: <YXU2i0FtAGDRCMSu@fedora>
+ <202110271450.Z8JPybLg-lkp@intel.com>
+ <20211027061552.bb4fczniqp6b7amh@pengutronix.de>
+ <20211027073204.GA3978@gofer.mess.org>
+ <CAH7FV3nb8K2qKgGZh-uMCk_BykWJ_sOb7K-jEhNjazYSiXdqbw@mail.gmail.com>
+ <CAH7FV3=7Y7Z0y+Mq5Ak12KDMiZpHQHXGixF_pcrnQkuqCO9kvQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH7FV3=7Y7Z0y+Mq5Ak12KDMiZpHQHXGixF_pcrnQkuqCO9kvQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 02:22:27PM +0200, Ard Biesheuvel wrote:
-> On Wed, 27 Oct 2021 at 14:05, Mark Rutland <mark.rutland@arm.com> wrote:
+Hi Maíra,
 
-> > > Should not this jump-table thingy get converted to an actual function
-> > > address somewhere around arch_static_call_transform() ? This also seems
-> > > relevant for arm64 (which already has CLANG_CFI supported) given:
-> > >
-> > >   https://lkml.kernel.org/r/20211025122102.46089-3-frederic@kernel.org
-> >
-> > Ugh, yeah, we'll need to do the function_nocfi() dance somewhere...
-> >
-> 
-> Sadly, that only works on symbol names, so we cannot use it to strip
-> CFI-ness from void *func arguments passed into the static call API,
-> unfortunately.
+On Wed, Oct 27, 2021 at 09:43:47AM -0300, Maíra Canal wrote:
+> [resend it in Plain Text]
+> Thank you for the feedback! I appreciate that! I'm new at the kernel
+> and I got a little confused about how to send the new patch. Should I
+> send a v4 of this patch or just send a new patch fixing this issue?
+> I'm sorry about the question and thank you for your attention.
 
-Right, and while mostly static_call_update() is used, whcih is a macro
-and could possibly be used to wrap this, we very much rely on
-__static_call_update() also working without that wrapper and then we're
-up a creek without no paddles.
+Please send out a v4 with the problem fixed.
 
+Also top-posting is deprecated on linux mailing lists.
+
+Thanks,
+
+Sean
+
+> > Em qua., 27 de out. de 2021 às 04:32, Sean Young <sean@mess.org> escreveu:
+> >>
+> >> On Wed, Oct 27, 2021 at 08:15:52AM +0200, Uwe Kleine-König wrote:
+> >> > On Wed, Oct 27, 2021 at 02:07:19PM +0800, kernel test robot wrote:
+> >> > > If you fix the issue, kindly add following tag as appropriate
+> >> > > Reported-by: kernel test robot <lkp@intel.com>
+> >> > >
+> >> > > All errors (new ones prefixed by >>, old ones prefixed by <<):
+> >> > >
+> >> > > >> ERROR: modpost: "__udivdi3" [drivers/media/rc/pwm-ir-tx.ko] undefined!
+> >> >
+> >> > This comes from the line:
+> >> >
+> >> >       state.duty_cycle = DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * state.period, 100);
+> >> >
+> >> > where DIV_ROUND_CLOSEST expands to a normal division but state.period is
+> >> > a u64. So this should use DIV64_U64_ROUND_CLOSEST I guess.
+> >>
+> >> DIV64_U64_ROUND_CLOSEST is for dividing a u64 with a u64. We're dividing
+> >> by 100 here so this is not necessary.
+> >>
+> >> It should use DIV_ROUND_CLOSEST_ULL, however it might be nicer to use:
+> >>
+> >>         pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
+> >>
+> >> Thanks
+> >>
+> >> Sean
