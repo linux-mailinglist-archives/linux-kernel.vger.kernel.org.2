@@ -2,112 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AA043C0AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5DB43C0B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239073AbhJ0DRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 23:17:43 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:58144 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237859AbhJ0DRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 23:17:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0Utq-sAQ_1635304511;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Utq-sAQ_1635304511)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 27 Oct 2021 11:15:12 +0800
-Subject: [PATCH v7 2/2] ftrace: do CPU checking after preemption disabled
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
+        id S239084AbhJ0DS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:18:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232200AbhJ0DSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 23:18:25 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 474776058D;
+        Wed, 27 Oct 2021 03:15:59 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 23:15:57 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-References: <ecd56129-faed-3b30-5552-7fa1e09bc408@linux.alibaba.com>
-Message-ID: <54880691-5fe2-33e7-d12f-1fa6136f5183@linux.alibaba.com>
-Date:   Wed, 27 Oct 2021 11:15:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 6/8] tracing/histogram: Optimize division by a power
+ of 2
+Message-ID: <20211026231557.1eedad9b@rorschach.local.home>
+In-Reply-To: <20211026222123.5e206fcf@rorschach.local.home>
+References: <20211025200852.3002369-1-kaleshsingh@google.com>
+        <20211025200852.3002369-7-kaleshsingh@google.com>
+        <20211026151451.7f3e09a4@gandalf.local.home>
+        <CAC_TJveHgsPZw7p7BWOgQw6h8GNU_Pv_WUjNmw3AUq+wnSzk6Q@mail.gmail.com>
+        <20211026201846.08990d1d@rorschach.local.home>
+        <CAC_TJve-mKSojaXtukdFeQKvPz-8TQtS=pgGD0Z18Wt6yJi7dg@mail.gmail.com>
+        <20211026211511.403d76ca@rorschach.local.home>
+        <CAC_TJvdwqQAKrVs3w6NcQNBT+bAgdyqR+8Zt_An7R9AQSSthGA@mail.gmail.com>
+        <20211026222123.5e206fcf@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <ecd56129-faed-3b30-5552-7fa1e09bc408@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_DEBUG_PREEMPT we observed reports like:
+On Tue, 26 Oct 2021 22:21:23 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-  BUG: using smp_processor_id() in preemptible
-  caller is perf_ftrace_function_call+0x6f/0x2e0
-  CPU: 1 PID: 680 Comm: a.out Not tainted
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x8d/0xcf
-   check_preemption_disabled+0x104/0x110
-   ? optimize_nops.isra.7+0x230/0x230
-   ? text_poke_bp_batch+0x9f/0x310
-   perf_ftrace_function_call+0x6f/0x2e0
-   ...
-   __text_poke+0x5/0x620
-   text_poke_bp_batch+0x9f/0x310
+> I'm sure there's an algorithm somewhere that can give as the real max.
 
-This telling us the CPU could be changed after task is preempted, and
-the checking on CPU before preemption will be invalid.
+You got me playing with this more ;-)
 
-Since now ftrace_test_recursion_trylock() will help to disable the
-preemption, this patch just do the checking after trylock() to address
-the issue.
+OK, I added the rounding in the wrong place. I found that we can make
+the max_div to be the same as the shift! The bigger the shift, the
+bigger the max!
 
-CC: Steven Rostedt <rostedt@goodmis.org>
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
----
- kernel/trace/trace_event_perf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+	mult = (1 << shift) / div;
+	max_div = (1 << shift)
 
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index 6aed10e..fba8cb7 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -441,13 +441,13 @@ void perf_trace_buf_update(void *record, u16 type)
- 	if (!rcu_is_watching())
- 		return;
+But the rounding needs to be with the mult / shift:
 
--	if ((unsigned long)ops->private != smp_processor_id())
--		return;
--
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
+	return (val * mult + ((1 << shift) - 1)) >> shift;
 
-+	if ((unsigned long)ops->private != smp_processor_id())
-+		goto out;
-+
- 	event = container_of(ops, struct perf_event, ftrace_ops);
 
- 	/*
--- 
-1.8.3.1
+When val goes pass 1 << shift, then the error will be off by more than
+one.
 
+-- Steve
