@@ -2,134 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1A943C782
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95C443C786
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 12:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241373AbhJ0KVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 06:21:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27524 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232533AbhJ0KVS (ORCPT
+        id S241396AbhJ0KWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 06:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241374AbhJ0KVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:21:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635329933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0f27XW5ipOgXyw7srO4b+jUX50VuAlw+C7sxFBFkpEA=;
-        b=Z4xywkau7qK0Pa6XDZcZ14UI/7PrtgD9YDOHNSg5tYFg5d/88pFRakzhidvff6NyyCoF+U
-        UDZYk0YkczFVpynDIUCugpAIiwewCx6UJfWFEu3GTMfnycj77uYUuJFsVKazk/uNMNNdhc
-        FzPOv7pWxTVcTnUvnq/+cO3NTe7tYHw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-NX_vwU-ZN9SDSZWcd7uWxg-1; Wed, 27 Oct 2021 06:18:50 -0400
-X-MC-Unique: NX_vwU-ZN9SDSZWcd7uWxg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2879100C661;
-        Wed, 27 Oct 2021 10:18:45 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EC5315BAE0;
-        Wed, 27 Oct 2021 10:18:25 +0000 (UTC)
-Message-ID: <d13520b7a5a78b26ec994ec66d2fea6deddad40a.camel@redhat.com>
-Subject: Re: [PATCH v2 05/43] KVM: Update halt-polling stats if and only if
- halt-polling was attempted
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Wed, 27 Oct 2021 13:18:24 +0300
-In-Reply-To: <20211009021236.4122790-6-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-6-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 27 Oct 2021 06:21:53 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89544C061570;
+        Wed, 27 Oct 2021 03:19:28 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id r12so8502445edt.6;
+        Wed, 27 Oct 2021 03:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+MBYUw2LCYdJgQSO4IIftsLZmWxQDGxMV7ore9xHzcU=;
+        b=qfqCn8fapA7itXpZwM2OcOoqMp47AjxptJyG5bWkxa14z6uAAGXNf/T7BkR8ec2h+H
+         4Lzh6B/GGCRy3uyrpUl9y6le9pPich1WklwGJdr660cyizw5Dsgkg2nZi8mBpBARz7Ow
+         ZD1ajIqyG0GwJOmLjoDzwSyOAst03PWwVdQVwSV2YmQ0izDnmAXnuX6hUnBE6fzux92t
+         drAesQwqAWfqHIRR2ujP0cUSwedBytWdx2drhhRfemoJ2lzAl71kDDCmoFKOO1dMrcNZ
+         sQGV0Ycl/K89z/ImB/4A5pZf/b7hZH9TAHzi8yxa2UUmGrP6ellC9mHhg+p1bdEwS3kE
+         BeYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+MBYUw2LCYdJgQSO4IIftsLZmWxQDGxMV7ore9xHzcU=;
+        b=RfQaV/e2QZSaB3adbnprdqTzOktecefONnwQ8gvhm8N+auarvYjyCvncdLZQZgrmGa
+         ebV1rPqvESzKct9msBfaItu8WPudCHA7NVT6qWuKZgghWFHKsfKDxoYHoTG3YTda4hjV
+         TlHedSH3sM3kcATm/7WXDvbmMjeMROMyF416OOdtZbSTkQwz/eU6seZbFzvgXzkW3Yjg
+         t5wWgYLaDSzMg/KvZmaGqnmheoOD0uXEolHfvWb8zZ3LMitqIB8wvSFq8gZsf1eYUs4n
+         fJ0HBzdZSr0UwFz1MgW6r9QGMCwfv5U1eoh66PjMxf+2X4i8xJPnzTONWNlyMeEsjP2H
+         vpuQ==
+X-Gm-Message-State: AOAM5305BV0tvsGZ/lSX9Mo4coTJoMqP6etrcr58dslFWfZ/c9YabVSj
+        enEYqqF1fRkibJs3LgVlkOQmIRv5sG32oCLbfvjmK3D2zMcjnw==
+X-Google-Smtp-Source: ABdhPJzs9lk6InNAgsoiESIxVaUNiVxTsTkcwzDcp1ti28SZo5PQNulP2bxDk4mMSAX8pNbSFX6HQYkfZRZFyFkyOzc=
+X-Received: by 2002:a17:906:1b46:: with SMTP id p6mr37201484ejg.468.1635329966937;
+ Wed, 27 Oct 2021 03:19:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20211027033947.3992059-1-mudongliangabcd@gmail.com> <20211027094644.GA28650@quack2.suse.cz>
+In-Reply-To: <20211027094644.GA28650@quack2.suse.cz>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Wed, 27 Oct 2021 18:19:00 +0800
+Message-ID: <CAD-N9QW48LDX7++chFjeZwr0Q1HX+D0+e=6BcXKxPx=i+DgmUA@mail.gmail.com>
+Subject: Re: [PATCH] fs: reiserfs: free new_opts in reiserfs_remount
+To:     Jan Kara <jack@suse.cz>
+Cc:     Yu Kuai <yukuai3@huawei.com>, Miklos Szeredi <mszeredi@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        reiserfs-devel@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:11 -0700, Sean Christopherson wrote:
-> Don't update halt-polling stats if halt-polling wasn't attempted.  This
-> is a nop as @poll_ns is guaranteed to be '0' (poll_end == start), but it
-> will allow a future patch to move the histogram stats into the helper to
-> resolve a discrepancy in what is considered a "successful" halt-poll.
-> 
-> No functional change intended.
-> 
-> Reviewed-by: David Matlack <dmatlack@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  virt/kvm/kvm_main.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 5d4a90032277..6156719bcbbc 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3217,6 +3217,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  {
->  	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
->  	bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
-> +	bool do_halt_poll = halt_poll_allowed && vcpu->halt_poll_ns;
->  	ktime_t start, cur, poll_end;
->  	bool waited = false;
->  	u64 block_ns;
-> @@ -3224,7 +3225,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  	kvm_arch_vcpu_blocking(vcpu);
->  
->  	start = cur = poll_end = ktime_get();
-> -	if (vcpu->halt_poll_ns && halt_poll_allowed) {
-> +	if (do_halt_poll) {
->  		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
->  
->  		++vcpu->stat.generic.halt_attempted_poll;
-> @@ -3276,8 +3277,9 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
->  	kvm_arch_vcpu_unblocking(vcpu);
->  	block_ns = ktime_to_ns(cur) - ktime_to_ns(start);
->  
-> -	update_halt_poll_stats(
-> -		vcpu, ktime_to_ns(ktime_sub(poll_end, start)), waited);
-> +	if (do_halt_poll)
-> +		update_halt_poll_stats(
-> +			vcpu, ktime_to_ns(ktime_sub(poll_end, start)), waited);
->  
->  	if (halt_poll_allowed) {
->  		if (!vcpu_valid_wakeup(vcpu)) {
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+On Wed, Oct 27, 2021 at 5:46 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Wed 27-10-21 11:39:25, Dongliang Mu wrote:
+> > Since the commit c3d98ea08291 ("VFS: Don't use save/replace_mount_options
+> > if not using generic_show_options") eliminates replace_mount_options
+> > in reiserfs, but did not handle the allocated new_opts,
+> > it will cause memory leak in the reiserfs_remount.
+> >
+> > Fix this by freeing new_opts in the reiserfs_remount temporarily.
+> >
+> > Fixes: c3d98ea08291 ("VFS: Don't use save/replace_mount_options if not using generic_show_options")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+>
+> Thanks for the patch but I can see that new_opts is not actually used at
+> all in reiserfs_remount() so we should perhaps just remove them (including
+> kstrdup() et al).
 
-Best regards,
-	Maxim Levitsky
+That's also a plan. Since I am not sure if maintainers will use
+new_opts anymore, So I propose a temporary patch to fix this memory
+leak.
 
+If you think new_opts is not used anymore, let's remove all the code
+related to new_opts.
+
+>
+>                                                                 Honza
+>
+> > ---
+> >  fs/reiserfs/super.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+> > index 58481f8d63d5..b36865c8b66a 100644
+> > --- a/fs/reiserfs/super.c
+> > +++ b/fs/reiserfs/super.c
+> > @@ -1594,6 +1594,7 @@ static int reiserfs_remount(struct super_block *s, int *mount_flags, char *arg)
+> >       }
+> >
+> >  out_ok_unlocked:
+> > +     kfree(new_opts);
+> >       return 0;
+> >
+> >  out_err_unlock:
+> > --
+> > 2.25.1
+> >
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
