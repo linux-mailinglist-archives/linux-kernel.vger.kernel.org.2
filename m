@@ -2,85 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D9B43CE2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDFC43CE2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 17:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242887AbhJ0QBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 12:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
+        id S242862AbhJ0QBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 12:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242862AbhJ0QBg (ORCPT
+        with ESMTP id S242884AbhJ0QBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 12:01:36 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3EEC0613B9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:59:09 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso2435787pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:59:09 -0700 (PDT)
+        Wed, 27 Oct 2021 12:01:50 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479B1C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:59:25 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so4255033otk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 08:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DN0M028IcPxor16NY4zNQ6KdrEsEqQ5iFPl6MyAoGPA=;
-        b=Hkhe7iGI0K8SRI1G3HZ34zmXt2hr2U6Wv23X5uzs9hqgrmoqBYpKYqOkWURliScyfl
-         IvDZ+wE+pmZvg1s6bdM1DVjTdwZ6KV9UyabipNaL9+HIH7G+orE6YRkq1gaSF1jeagkO
-         J34i0OloyLcSwHnEnauUleIQOi5a/xeGJYriA=
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JDGhLnAjGcemyGOmhvCllnpzPG1c1ebcma9GtpslLK8=;
+        b=gXvpY2rj4x+6ro0u4u+WkiU6Owx0jrPe7Oj5sXe99VRLCxTCzzNdp2L0QtH6vGPE5T
+         OxFrov2Ej359v/Wsbj7BYROPEeHN9vq80ZDU7uvB7KxzxokxJ8FYg4rQIimk9JBSnIE8
+         ZZIuPo/+GV2UEWwdSvRujkzdeNsdKPCp57AFefkoDXkf+cLGgbuSeUbbpFDTrXQjwv+o
+         Nv8KulaLUW0sI0fLmdhzrRgLsbWLfCRGv3L/3TNvjiU3mhW5Og77m+QVcVlKWcEXSP09
+         u8jGF9OkVmmy4VUsIaG9Fv5qcxS07Xq/l+8kNxjQg4V7jWNUDtdQ90wIGNrJJaGpH2G0
+         kcIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DN0M028IcPxor16NY4zNQ6KdrEsEqQ5iFPl6MyAoGPA=;
-        b=oqtsLfenSuuzQG84z+krczdQdLl0/5WqadHVuw1MHnVFvkScA1hgZwxz1P2C+DnHdt
-         jvG5tkn2b1qLDuXSKNsM+c/OqjV5URyW+wgOmA6Voa8QjzNzz8dcA7Z9ZX3LCUIM4NPG
-         jeRmh4ZimgpU2I9BluHiaj2KFwYgpBsZYnbD+WOAhpYlLl2W4I/AuxABm6hP/UgdmhHn
-         kht1O10BAfVbBl/k+xzlKjnu7GlQKugRAqDx8sQpBj0emkPO8gmXEHWab6JoIVyeb5A0
-         JQM9NoINM2Pa5nur1h34VKdIrUeo/1wYZV0G3fUxotgoyb3oMyx4rZg0jCEs7fSoZ/ci
-         URsA==
-X-Gm-Message-State: AOAM533Nu3fOoktbFr4Gs8ZHkaqd3aYfd7ng8LIg/SzvXPzhOJstyvmv
-        I3GOwPvxRLd4BgAiDgY/ZojyEJFUXkEJpg==
-X-Google-Smtp-Source: ABdhPJzG8mDMEBfswvzruxZuiMix01R6gOyZzzx38cUqlAm2dSx9WAjyiVtH8UA12FRXcQgLpTLiLw==
-X-Received: by 2002:a17:902:aa08:b0:13f:eb2e:8ce8 with SMTP id be8-20020a170902aa0800b0013feb2e8ce8mr29833672plb.0.1635350349227;
-        Wed, 27 Oct 2021 08:59:09 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:5ca8:d6ca:59bb:2694])
-        by smtp.gmail.com with UTF8SMTPSA id f203sm386161pfa.112.2021.10.27.08.59.08
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JDGhLnAjGcemyGOmhvCllnpzPG1c1ebcma9GtpslLK8=;
+        b=73CxdWLhiXrw0s/YJG3nWzv29IP6M/ydPlN6jdZKg857n1BEViDnttZDv9RQvIkGlE
+         vU80OFKeUJ03Wuo+XbRTmEBcQTXzH70T7pK7TbyiduvhCBzYB/gKLUwkcvWWhh5p1b7e
+         AyiKQ9IYwWGr3n1l8JcyASPHU+lpsDiGtGS4x4bJDSZ4R+u0l5phH8WDDq6yxpyXATvN
+         HuZQJYYol6FF4ktecXzCsaWHj83E6ahh6QHXPvRsLUNSAg28YJZS82++7l2xpZBGhP7b
+         udODWghzB8SQu/02x0OOxEx/oO7m/5MH4hCz/Bgi9xu4k0aVfP5wmaD5YAbX9BJ3t7sC
+         FO6A==
+X-Gm-Message-State: AOAM532DJRW4GkGdxpdXrApW0Hhr1QHqeDLRDwQ+TuDFgVtMh2KGbHtY
+        UECNYDhEv2b8/0f4gT0WNdc=
+X-Google-Smtp-Source: ABdhPJxJ1qES9romQLNWwbkLhJuQ+1GVlbrTUSnpuhDk1WhYt+AqMhF7rH8bXBtdVDY2Nm56a0B8xQ==
+X-Received: by 2002:a9d:6346:: with SMTP id y6mr26685096otk.154.1635350364648;
+        Wed, 27 Oct 2021 08:59:24 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v9sm118175oth.62.2021.10.27.08.59.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 08:59:08 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 08:59:07 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     tjiang@codeaurora.org
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-Message-ID: <YXl3S7TT30PFfyB8@google.com>
-References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
- <YXgrwKUZwUWuWfG4@google.com>
- <fe118b60df5881b0e9938f57aae6f87e@codeaurora.org>
+        Wed, 27 Oct 2021 08:59:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: fix out of bounds write
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Thelford Williams <tdwilliamsiv@gmail.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+References: <20211027143945.GA1947580@roeck-us.net>
+ <8205a660-6990-9007-48c9-453117d16f72@amd.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <fb5ee1a9-8cdb-3aab-c3ac-e4d03421fb85@roeck-us.net>
+Date:   Wed, 27 Oct 2021 08:59:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <fe118b60df5881b0e9938f57aae6f87e@codeaurora.org>
+In-Reply-To: <8205a660-6990-9007-48c9-453117d16f72@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 02:12:07PM +0800, tjiang@codeaurora.org wrote:
-> Hi Matthias:
->   the previous patch is submitted by zijun , as he is not working on this
-> project, I take over his job, so can we assume abandon the previous patch,
-> using my new patch ? thank you.
-> regards.
+On 10/27/21 8:22 AM, Harry Wentland wrote:
+> On 2021-10-27 10:39, Guenter Roeck wrote:
+>> On Wed, Oct 13, 2021 at 04:04:13PM -0400, Thelford Williams wrote:
+>>> Size can be any value and is user controlled resulting in overwriting the
+>>> 40 byte array wr_buf with an arbitrary length of data from buf.
+>>>
+>>> Signed-off-by: Thelford Williams <tdwilliamsiv@gmail.com>
+>>> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+>>
+>> The fix works, but unless I am missing something it is incomplete.
+>> parse_write_buffer_into_params() is called several times, and the
+>> size parameter is always wrong. This patch only fixes one of several
+>> instances of the problem.
+>>
+> 
+> Patrik sent a patch that covers all cases:
+> https://patchwork.freedesktop.org/patch/461554/?series=96341&rev=2
+> 
+> Harry
+> 
+Thanks!
 
-Your patch is clearly based on zijun's one, it even has the same subject. A
-change of authorship shouldn't result in resetting the version number, it's
-still the same patch/series. You can always add a 'Co-developed-by:' tag to
-indicate that someone else contributed to a patch, or use a 'From:' tag if
-you only made minor changes on top of someone else's work.
+Guenter
 
-Not sure how to proceed best with the version number, especially since there
-are already 3 versions of the 'new' patch. Either option can create confusion,
-I guess you can continue with the new scheme, it seems the patch is almost
-ready to land anyway.
+>> Guenter
+>>
+>>> ---
+>>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+>>> index 814f67d86a3c..9b3ad56607bb 100644
+>>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+>>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+>>> @@ -264,7 +264,7 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
+>>>   	if (!wr_buf)
+>>>   		return -ENOSPC;
+>>>   
+>>> -	if (parse_write_buffer_into_params(wr_buf, size,
+>>> +	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
+>>>   					   (long *)param, buf,
+>>>   					   max_param_num,
+>>>   					   &param_nums)) {
+>>> -- 
+>>> 2.33.0
+> 
+
