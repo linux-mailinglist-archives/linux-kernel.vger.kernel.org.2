@@ -2,210 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C976643CA3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057D643CA46
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242055AbhJ0NCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:02:44 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:13474 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235978AbhJ0NCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:02:42 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RCThjx023019;
-        Wed, 27 Oct 2021 13:00:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=X3TQ78hrD55J4dSEd5tXdmdstbmPGtogtES+IsQjVWg=;
- b=DPw+HS3VetPZdkGoQkZcLc1aDblZylDTW9nHAa9RdEbo1OjQosc5kVwOlzyEFSTJctCz
- j4VNm9EZE/Ot/CbvHsLQviXChS3V2jDdtB1n9XOW3U3o8DV6hhFdKpEpHTwxes9CMw1u
- Gjbifqu+fDs9IWKbfr/VE5Jgw3ifcGr6MmIm/mbkwTFNup7Of80c4Y6DD60ukSbjfEd+
- sCDar+RyB1Glrivd+NaP1MnBqAQGdo/U2rGoULhN5CulszjKFfy+hmUKxe2vWhJHXHOM
- /rilrPV9nCyfue8Qf9euGZMDuU86mY2HlOGwUfxaTaDaywWlTZ+FmdK0VbPGcIPLc8UO 1Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4g19r0r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 13:00:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19RCtG7p051618;
-        Wed, 27 Oct 2021 12:59:51 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by aserp3030.oracle.com with ESMTP id 3bx4g9vmqk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 12:59:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AAMlYLCM0S18kpXAvMhJE5+JzLXqXwub4DhC8mtea9rNRnfxHh09WUMn0v82+J7m2Kkr5O/5q2Bd+k9QW75jz5ZyrbwTj9K0uL36B1YwbgEHicB2LO1sbKwlrPXcDsG1XrUYfNuRtoNObpZpw4I+REjG5UZEZZLhKIGoX4aDJV/v1lpbRF2Y0oHm7S3Idc7eyBvk5dxygg0cpW04OI9h6CggEvs9c5jQHonvhc3sXTwPN1B1JOGRAInUYAihgiHd582U0u8XbRRWhRJ38lBq5SBkZ9ImesMT5EkbD4ZGO6Pv/IpR2m5I4sthfja4NvZqp16mT1TmjFjzZFl+YVoREw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X3TQ78hrD55J4dSEd5tXdmdstbmPGtogtES+IsQjVWg=;
- b=awHgM634+LdGfkBhL4EgIT0lyOZjW+Bv3Puee6dJmHEIAr3IdzWOnFi8T6iMz4d+gDORnLu1xguGyyevOXfBlG2z6hUwDZjLfsu2Va4K4zrrEGxEJVzPMPQGceV33X8wmECRWJSKLq2VIKv/0bPTf/Bw1cKsErUdn3JMwdJsOMhI3GCe+XuDmSpH30m4AguIAnVF0m9vdKq8dMrl0DRt9/PdMf+yiWe14OIjVjNzuqeuEUaIJENi15QSNklY4sovzA93ygVshZn1297mL7nAvjDP9o1709D5ZA6p0Kln/wJRF1tmtW8sRLITHNcd6Z+RT2rw+pucXBwm5NcTnrrfIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X3TQ78hrD55J4dSEd5tXdmdstbmPGtogtES+IsQjVWg=;
- b=Q++DSuQ8x5nYCY3lUw16DduvgNky1+o2resN0P9w7bBxQEqyxaJT2mhLjvmz+S0c3OkyqmuNX5jfFmbU8H+4OMCuSxyEXlOMrDr14cYTzFysrpAHCagwvCpf7OvHUQKZ44gK1vbj3Ivz5oR4oPBAdC6qqPiw7FmPWFmPSfvGZZ4=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB3757.namprd10.prod.outlook.com (2603:10b6:208:182::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Wed, 27 Oct
- 2021 12:59:49 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329%6]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 12:59:49 +0000
-Message-ID: <71ce7c97-1d08-9fdf-b217-53eb914a29a6@oracle.com>
-Date:   Wed, 27 Oct 2021 08:59:43 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v5] xen-pciback: allow compiling on other archs than x86
-Content-Language: en-US
-To:     Oleksandr Andrushchenko <andr2000@gmail.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     jgross@suse.com, julien@xen.org, sstabellini@kernel.org,
-        jbeulich@suse.com,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-References: <20210928073501.433559-1-andr2000@gmail.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-In-Reply-To: <20210928073501.433559-1-andr2000@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0047.namprd04.prod.outlook.com
- (2603:10b6:806:120::22) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        id S242058AbhJ0NGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:06:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233332AbhJ0NGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 09:06:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF11760F56;
+        Wed, 27 Oct 2021 13:04:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635339865;
+        bh=gEWwRZlvKUOV8tKB1LFbSkFPGZ2+kYtodakzep3VXSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cOZJbGmCIB2KdsMB8G8b4OVgQ+pKbBDTIBvoDEf9QbTySQW5BGH7rdzrZ8B2nUvOQ
+         CfgdkU22Bs5gASHYaIB/ysgtmoKFnksoyK1HQnIcQeVIF1ni4A93o4fj+DgkUCoTr8
+         9xpEDrVtlbwGQJejJbhdn0I9r1JHjCmUdqPn5ffIDVcJc/xaJkcmEWDjRqoFjU59iy
+         t5/yKZWVHbd91GB60JwoyKl2WE6Hp3cfQ9nYHcrC2TFcZDiANszdk3mB7CjkI5o/1D
+         7kWj+i6MGhMe3bab94vTLdkRREdL+7QNy9+CPjRdc+S2KFoQOOApxcDknTA0pcXJ8x
+         Irs6BMBv/mXhQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mfibB-0004dG-Cj; Wed, 27 Oct 2021 15:04:09 +0200
+Date:   Wed, 27 Oct 2021 15:04:09 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Himadri Pandya <himadrispandya@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] USB: serial: ch314: use usb_control_msg_recv()
+ and usb_control_msg_send()
+Message-ID: <YXlOSQXdZra5sYbe@hovoldconsulting.com>
+References: <20211001065720.21330-1-himadrispandya@gmail.com>
+ <20211001065720.21330-2-himadrispandya@gmail.com>
 MIME-Version: 1.0
-Received: from [10.74.107.92] (138.3.200.28) by SN7PR04CA0047.namprd04.prod.outlook.com (2603:10b6:806:120::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Wed, 27 Oct 2021 12:59:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b47a38ff-065f-45c7-a5ac-08d99949a8aa
-X-MS-TrafficTypeDiagnostic: MN2PR10MB3757:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB37576298A904C4C08FA6DE898A859@MN2PR10MB3757.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UIOkF6QwnqDI9q/OUC/xW67/EJI9i7EPPFJ23qTrCDBODcF4GkHbQJkR8FLatk+9k4mwDFlHdmt8gfGz1w/HJ+UpRKXNYgWeQThtp/mSS4dcNaQCmBL70Tl0YeTVw/owsDVxR/kkTaZaTdUXmbyxec86gV+X/3FzXBfMreHnQia9oLoTtjUxrT2aTZUlbCuXfrKb0ytEPSYha4Rnmii8J5ZrH3fhuUkdR6oYCMKOu+vKiqjLnXd8qCyC0xOk9C0bX2j5F+AICachRUz+gwUP45gmOBXTkWOHQxjafvR00CwSvne29Tae2YrjpHSrbCwpbjWc5JkthDZrOGk6cUUCHPCEY1kfWajOQOvQwAQUVZRLkToexxBgtAqOp4Of5DA7SsY1gw5d8wCiHrkx6/dvh9/sJ3SAL9uCwU4AVz/ecqQCAGbYCOjvXiDs05oDp2h4/gMh4c7P+koRXo3O0LdZoyJHYrHzVwBYyYIHpmf9YJF7BpANPSkAuD/ibjP5rJifu4weWFd4JcwWO20K4bxM9GAoqKBrGntgkZfEiuF9CkpZ8qI6rUN36gnF/feWMURVV+ftfJ5TqeXZOXtKwM2PjeJ3giBb4wfQ8i/24BnprVL+3XTQrjtinmPkY6xOPlrcLYZCo6WSf5/dzkOnF0J61Ly+nki1JVgSDIPxDA+6ZvGlUeNbPFlpWaRziVD3EWO/xu81rZqAC8mM4aPJE0q93A8TNVroCudra3H3c4E0AUQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31686004)(66946007)(66556008)(66476007)(38100700002)(83380400001)(8676002)(86362001)(31696002)(956004)(2616005)(36756003)(44832011)(8936002)(5660300002)(186003)(26005)(6666004)(508600001)(53546011)(4326008)(16576012)(54906003)(316002)(6486002)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Zi9HMm1ROG1aRSt6ZTJCaDhpdnFIK0F1RXlvRUx2OVZ3UmllOTZ0RlRPNURY?=
- =?utf-8?B?RWpWdTVaZnZucVg0Ujl5cTNyaDIxdlVQTGZkRkM4UmFOZlR3YTRackRYanFX?=
- =?utf-8?B?NFNxN1d0ay9HeEo5TXFqOTBQZXBQVEVQTjhOeTdmVGcxZnB4Mk03OGFzdm9N?=
- =?utf-8?B?Vk9Jd3NMdGg5WDlGNzRaYXJtY2tzdyt3UjlpVTNDNG15QjRxRW95NFMrZjZ1?=
- =?utf-8?B?NTl5TWg5NGJJdHhJOXUxZ0RNZFlTL2RFNWZ0dkx6Znc0VWo1bXNkSHluUGU3?=
- =?utf-8?B?TC83N0dGSnFyKzJlaEcxKzlMVGJWU2VtZy9sVFkvZHhjN0tOR2dRNWFKUEFl?=
- =?utf-8?B?Ym1Ra0g1MnZDaW85UlBMVUFpOFBFdit6TnlCUFJmcHZ6blZmQ09nSDcrSmRT?=
- =?utf-8?B?cm5TU2x2Q0ZOdlloK2JRcEh3SEZyai82SXNUR0tGWUpxME1WTTBaTEg1eWpC?=
- =?utf-8?B?L3J5SGROVmNGQndDazZrdG5GT09USzZGTy84TFk4eVFxOXR1aGZpVDRtaWY1?=
- =?utf-8?B?Wk94NGtlUU40dlVHVE5Ka3hXWklFUG16ZnMySXgxZFBNSFZpcTE0NHdhTFFJ?=
- =?utf-8?B?S05jd0VkelpaSE4zTkd3K2o0cGJQVXZoSzNxeFJidFE0VWdVR1ZBWFcyNnY4?=
- =?utf-8?B?aGZnY0kxUFdQWTJ5U0VMWk9XR1plRUFYRjVTV2JzWldjMk5hYXJ0WjFzekIy?=
- =?utf-8?B?TEk5NUZVZUZJSk54U2krbGhFMUMwRVBHT25CTmJxdEhlSUNTNjlpUzJCRThz?=
- =?utf-8?B?cEcwblFHbWxjZWtwOHloaDBldGFmVWJmUGtQZ0h6S2RrUW9zLzgyeU93czh1?=
- =?utf-8?B?OVk2TXBBZVZjVWF2V2hmaGxFVzhrOUx6dU5CNTF6VW1OSC92M1dlL29TRWFZ?=
- =?utf-8?B?ckJ6aWdBSU43MjdQOEZ4b1JyZ0dKZmV3OXhQWUFPWkZUM09RRGdCb2NZbjYv?=
- =?utf-8?B?NFE2WjVqb0pFc0ZPQ1FQbVZkU2hRUjdBbUhiU1ExVVRuN0Fna0x5QXUra05G?=
- =?utf-8?B?TCtob0ZHSmdXaDRkYXhlelBKREkrUWppV3BLT1BKY2UvWEc5eitmWXY4YkZH?=
- =?utf-8?B?aFYvNndna2k3eW1QTHdnandPRW01WEpENnd1ZXlnVDBEZ3dOZzNLK1NwQjd3?=
- =?utf-8?B?UWZic2NHWkVhMTdyNXExRkRNNzNoZnJmRmhSeGZDMWw2cjNWbHV1bXJhM0hq?=
- =?utf-8?B?Vk5jend4Z0lZRjRQc2lyVXlic0E4V3ppdVV1azhFV2VjWkp4VTk4ZVUwNndO?=
- =?utf-8?B?eXZZd09OWW5NdHliajM2TkxnVlllRktVaGlDenMrVXJSMmliU2l3bTR3MG52?=
- =?utf-8?B?TElsTUh3WEx0WU5SRmFhdndQSVpSYXo1QUtuZFdxNFRyck9iYVlDbTRnSmRJ?=
- =?utf-8?B?dllnMUduUUFQSmhRUzVCM0ZvNytMQUJiekFWeVpQTk5HYzlaQitUMVd4YWNn?=
- =?utf-8?B?ZjF5TlVjUlBic0QvRExGazI2RnlWOUJ0NEI0b2M1ZFRZc1ZmYlp1YXlydURx?=
- =?utf-8?B?VE4renVuYmQ1N2JvMjJSS1krWGsvbUUxbmJ1bnNSV1Q4ZCsxc2h4eGhBdGVH?=
- =?utf-8?B?MEZ2RGwrSi9Cd29LOEFuSE5BTGZtL1VMS2ZLd3dQS1d2dkQ2M3E3YXozV3c3?=
- =?utf-8?B?Wm1XbFM2elhxQmZVVDdlQzZNRkVTWWFTL1l4TDFRL252eEtkVjZSVVdreUtl?=
- =?utf-8?B?L1VDWkdjMG9xbEE5SHNRbDZDWEx6bVY5Y1ViUndkZk14WjlDZVc0ekVhakgz?=
- =?utf-8?B?QW42UEtzUFBIcWdoeFBuRndHcllLQVQxTHMzL2trQVBZVHRJdlFESGEyTkFr?=
- =?utf-8?B?cVgzTFlqcEJCTDR6VjRxZGFEMjc3NVY2ckRHbWlrTkVYNHh4d0tobjhLZVdm?=
- =?utf-8?B?ck5wYnVIWG8ySnR2KzRaV2hKYzdzN2YwUCsrOURiYnY0c2w3eWpKTFlIN3hr?=
- =?utf-8?B?SWtrMytVQkhJZ3hEc1Y0Ky9tUXNnRXJEaURQYWlQSldzMjRVOURlZmhBUUhq?=
- =?utf-8?B?c1c5bUJjZHZnc0NqalViRWxDYURDOWdTTHl4YUVXY3djMm9NbCtnc25BOWRP?=
- =?utf-8?B?TnBucktubWlMNEZ6Q016Z2dGdndJMUR5a3JIdENnWkEwWStQRGNvRlR5cVVY?=
- =?utf-8?B?TE1xUEVnMjNEakpuU3hQMURkdTNLZ0tSeERsd0lSRTY2VFR0czhTak1aN2xV?=
- =?utf-8?B?Sld1S1EvQkl0L2pVem9YYXdQTE5tbS9meFozRnVSZ2dRcTlENWVLOWtYamtN?=
- =?utf-8?B?SlpUU24xaEhBUnF4V3h3OFdrT3R3PT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b47a38ff-065f-45c7-a5ac-08d99949a8aa
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 12:59:49.5394
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CAWkgY1loPKCi7SzMG6bDlAnHCPj3BMSO4GJo6xrm/egnbQeRzCsGd3t8hle/TFdNBoM86t9Wf6+fAo8EgVyrrh/FReq+Fm2q/kZH4dDLHw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3757
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10149 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110270079
-X-Proofpoint-ORIG-GUID: 7lkM7CfiKkEAy04K_2Em4FMfmi7OZfDI
-X-Proofpoint-GUID: 7lkM7CfiKkEAy04K_2Em4FMfmi7OZfDI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001065720.21330-2-himadrispandya@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 01, 2021 at 08:57:19AM +0200, Himadri Pandya wrote:
+> usb_control_msg_send/recv are new wrapper functions for usb_control_msg()
+> that have proper error checks for short reads. These functions can also
+> accept data buffer on stack. Hence use these functions to simplify error
+> handling for short reads. Short reads will now get reported as
+> -EREMOTEIO with no indication of how short the transfer was.
 
-On 9/28/21 3:35 AM, Oleksandr Andrushchenko wrote:
-> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->
-> Xen-pciback driver was designed to be built for x86 only. But it
-> can also be used by other architectures, e.g. Arm.
->
-> Currently PCI backend implements multiple functionalities at a time,
-> such as:
-> 1. It is used as a database for assignable PCI devices, e.g. xl
->     pci-assignable-{add|remove|list} manipulates that list. So, whenever
->     the toolstack needs to know which PCI devices can be passed through
->     it reads that from the relevant sysfs entries of the pciback.
-> 2. It is used to hold the unbound PCI devices list, e.g. when passing
->     through a PCI device it needs to be unbound from the relevant device
->     driver and bound to pciback (strictly speaking it is not required
->     that the device is bound to pciback, but pciback is again used as a
->     database of the passed through PCI devices, so we can re-bind the
->     devices back to their original drivers when guest domain shuts down)
-> 3. Device reset for the devices being passed through
-> 4. Para-virtualised use-cases support
->
-> The para-virtualised part of the driver is not always needed as some
-> architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
-> model for PCI device passthrough.
->
-> For such use-cases make the very first step in splitting the
-> xen-pciback driver into two parts: Xen PCI stub and PCI PV backend
-> drivers.
->
-> For that add new configuration options CONFIG_XEN_PCI_STUB and
-> CONFIG_XEN_PCIDEV_STUB, so the driver can be limited in its
-> functionality, e.g. no support for para-virtualised scenario.
-> x86 platform will continue using CONFIG_XEN_PCIDEV_BACKEND for the
-> fully featured backend driver.
->
-> Please note, that CONFIG_XEN_PCIDEV_BACKEND and CONFIG_XEN_PCIDEV_STUB
-> are mutually exclusive.
->
-> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+You're no longer using usb_control_msg_send() so the commit message
+including Subject needs to be updated.
 
+> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+> ---
+> Changes in v3:
+>  - Rephrase the commit message
+>  - Include a note on not reporting size of the short reads in the commit
+>  - Drop unnecessary changes in ch341_control_out()
+>  - Drop a non-relevant style change
+>  - Remove some more "out" labels
+>  - Remove unnecessary return statement from a void function
+> 
+> Changes in v2:
+>  - Fix callers of ch341_control_out() and ch341_control_in()
+>  - Remove label "out"
+>  - Remove an unnecessary assignment statement
+> ---
+>  drivers/usb/serial/ch341.c | 90 ++++++++++----------------------------
+>  1 file changed, 24 insertions(+), 66 deletions(-)
+> 
+> diff --git a/drivers/usb/serial/ch341.c b/drivers/usb/serial/ch341.c
+> index 2db917eab799..8aecc1f0dee4 100644
+> --- a/drivers/usb/serial/ch341.c
+> +++ b/drivers/usb/serial/ch341.c
+> @@ -131,23 +131,13 @@ static int ch341_control_in(struct usb_device *dev,
+>  	dev_dbg(&dev->dev, "%s - (%02x,%04x,%04x,%u)\n", __func__,
+>  		request, value, index, bufsize);
+>  
+> -	r = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0), request,
+> -			    USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> -			    value, index, buf, bufsize, DEFAULT_TIMEOUT);
+> -	if (r < (int)bufsize) {
+> -		if (r >= 0) {
+> -			dev_err(&dev->dev,
+> -				"short control message received (%d < %u)\n",
+> -				r, bufsize);
+> -			r = -EIO;
+> -		}
+> -
+> -		dev_err(&dev->dev, "failed to receive control message: %d\n",
+> -			r);
+> -		return r;
+> -	}
+> +	r = usb_control_msg_recv(dev, 0, request,
+> +				 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> +				 value, index, buf, bufsize, DEFAULT_TIMEOUT, GFP_KERNEL);
 
-Oleksandr,
+Line is now over 80 chars for no good reason.
 
+> +	if (r)
+> +		dev_err(&dev->dev, "failed to receive control message: %d\n", r);
 
+Here too.
 
-Can you please rebase this on top of 5.15-rc7? There is a bunch of conflicts due to cae7d81a3730dfe08623f8c1083230c8d0987639.
+>  
+> -	return 0;
+> +	return r;
 
+I'd prefer returning the errno in the error path above and keep an
+explicit zero here.
 
-Thanks.
+>  }
+>  
+>  #define CH341_CLKRATE		48000000
+> @@ -287,23 +277,18 @@ static int ch341_set_handshake(struct usb_device *dev, u8 control)
+>  static int ch341_get_status(struct usb_device *dev, struct ch341_private *priv)
+>  {
+>  	const unsigned int size = 2;
+> -	char *buffer;
+> +	u8 buffer[2];
+>  	int r;
+>  	unsigned long flags;
+>  
+> -	buffer = kmalloc(size, GFP_KERNEL);
+> -	if (!buffer)
+> -		return -ENOMEM;
+> -
+>  	r = ch341_control_in(dev, CH341_REQ_READ_REG, 0x0706, 0, buffer, size);
+> -	if (r < 0)
+> -		goto out;
+> +	if (r)
+> +		return r;
+>  
+>  	spin_lock_irqsave(&priv->lock, flags);
+>  	priv->msr = (~(*buffer)) & CH341_BITS_MODEM_STAT;
+>  	spin_unlock_irqrestore(&priv->lock, flags);
+>  
+> -out:	kfree(buffer);
+>  	return r;
 
--boris
+This should now be
 
+	return 0;
+
+>  }
+>  
+> @@ -312,30 +297,25 @@ out:	kfree(buffer);
+>  static int ch341_configure(struct usb_device *dev, struct ch341_private *priv)
+>  {
+>  	const unsigned int size = 2;
+> -	char *buffer;
+> +	u8 buffer[2];
+>  	int r;
+>  
+> -	buffer = kmalloc(size, GFP_KERNEL);
+> -	if (!buffer)
+> -		return -ENOMEM;
+> -
+>  	/* expect two bytes 0x27 0x00 */
+>  	r = ch341_control_in(dev, CH341_REQ_READ_VERSION, 0, 0, buffer, size);
+> -	if (r < 0)
+> -		goto out;
+> +	if (r)
+> +		return r;
+>  	dev_dbg(&dev->dev, "Chip version: 0x%02x\n", buffer[0]);
+>  
+>  	r = ch341_control_out(dev, CH341_REQ_SERIAL_INIT, 0, 0);
+> -	if (r < 0)
+> -		goto out;
+> +	if (r)
+> +		return r;
+
+Now an unrelated change.
+
+>  
+>  	r = ch341_set_baudrate_lcr(dev, priv, priv->baud_rate, priv->lcr);
+>  	if (r < 0)
+> -		goto out;
+> +		return r;
+>  
+>  	r = ch341_set_handshake(dev, priv->mcr);
+>  
+> -out:	kfree(buffer);
+>  	return r;
+
+This looks a bit inconsistent now so I'll make this an explicit return
+0 too.
+
+>  }
+>  
+> @@ -345,39 +325,23 @@ static int ch341_detect_quirks(struct usb_serial_port *port)
+>  	struct usb_device *udev = port->serial->dev;
+>  	const unsigned int size = 2;
+>  	unsigned long quirks = 0;
+> -	char *buffer;
+> +	u8 buffer[2];
+>  	int r;
+>  
+> -	buffer = kmalloc(size, GFP_KERNEL);
+> -	if (!buffer)
+> -		return -ENOMEM;
+> -
+>  	/*
+>  	 * A subset of CH34x devices does not support all features. The
+>  	 * prescaler is limited and there is no support for sending a RS232
+>  	 * break condition. A read failure when trying to set up the latter is
+>  	 * used to detect these devices.
+>  	 */
+> -	r = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0), CH341_REQ_READ_REG,
+> -			    USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> -			    CH341_REG_BREAK, 0, buffer, size, DEFAULT_TIMEOUT);
+> +	r = usb_control_msg_recv(udev, 0, CH341_REQ_READ_REG,
+> +				 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> +				 CH341_REG_BREAK, 0, &buffer, size, DEFAULT_TIMEOUT, GFP_KERNEL);
+
+Unnecessarily long line > 80 chars.
+
+>  	if (r == -EPIPE) {
+>  		dev_info(&port->dev, "break control not supported, using simulated break\n");
+>  		quirks = CH341_QUIRK_LIMITED_PRESCALER | CH341_QUIRK_SIMULATE_BREAK;
+> -		r = 0;
+
+Oops, you just broke the driver. :(
+
+This request is used to detect quirky devices and a return value of
+-EPIPE here should not abort probe by returning an error to the caller
+of this function.
+
+> -		goto out;
+> -	}
+> -
+> -	if (r != size) {
+> -		if (r >= 0)
+> -			r = -EIO;
+> +	} else if (r)
+
+And you still need brackets on the else branch.
+
+>  		dev_err(&port->dev, "failed to read break control: %d\n", r);
+> -		goto out;
+> -	}
+> -
+> -	r = 0;
+> -out:
+> -	kfree(buffer);
+>  
+>  	if (quirks) {
+>  		dev_dbg(&port->dev, "enabling quirk flags: 0x%02lx\n", quirks);
+> @@ -647,23 +611,19 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
+>  	struct ch341_private *priv = usb_get_serial_port_data(port);
+>  	int r;
+>  	uint16_t reg_contents;
+> -	uint8_t *break_reg;
+> +	uint8_t break_reg[2];
+>  
+>  	if (priv->quirks & CH341_QUIRK_SIMULATE_BREAK) {
+>  		ch341_simulate_break(tty, break_state);
+>  		return;
+>  	}
+>  
+> -	break_reg = kmalloc(2, GFP_KERNEL);
+> -	if (!break_reg)
+> -		return;
+> -
+>  	r = ch341_control_in(port->serial->dev, CH341_REQ_READ_REG,
+>  			ch341_break_reg, 0, break_reg, 2);
+> -	if (r < 0) {
+> +	if (r) {
+>  		dev_err(&port->dev, "%s - USB control read error (%d)\n",
+>  				__func__, r);
+> -		goto out;
+> +		return;
+>  	}
+>  	dev_dbg(&port->dev, "%s - initial ch341 break register contents - reg1: %x, reg2: %x\n",
+>  		__func__, break_reg[0], break_reg[1]);
+> @@ -681,11 +641,9 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
+>  	reg_contents = get_unaligned_le16(break_reg);
+>  	r = ch341_control_out(port->serial->dev, CH341_REQ_WRITE_REG,
+>  			ch341_break_reg, reg_contents);
+> -	if (r < 0)
+> +	if (r)
+
+Now also an unrelated change.
+
+>  		dev_err(&port->dev, "%s - USB control write error (%d)\n",
+>  				__func__, r);
+> -out:
+> -	kfree(break_reg);
+>  }
+>  
+>  static int ch341_tiocmset(struct tty_struct *tty,
+
+I've fixed up the above so we don't have to spend any more time on this.
+
+The result is here
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/commit/?h=usb-next&id=74f266455062c158f343bc3aa35ef84b3eb7adf1
+
+Johan
