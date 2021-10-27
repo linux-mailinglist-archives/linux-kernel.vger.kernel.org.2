@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A267843CFE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318E243CFEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243365AbhJ0Rlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243351AbhJ0Rla (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:41:30 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D58C061570;
-        Wed, 27 Oct 2021 10:39:04 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f161500c684d7dcfa146303.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1500:c684:d7dc:fa14:6303])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 057F11EC05D4;
-        Wed, 27 Oct 2021 19:39:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635356343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1r3dQEs8J5vGBunNQMyOmRt+PDKKK7DSCsZM8a0G5Iw=;
-        b=YIniIRfaS/BOUq4GWF3KoY9dQRoI+iP8XYs933TIK9uFf4imCklj99XyXQIXzzk3yviXFv
-        z5UPeCFXVLlLGUZnJ40wTHa5iBOwJQxqpW6nwS83g1BFWNiCMVKVIzAd+zhKSEUI4PY/RE
-        I04MTKRErAlqdl0WCC812SM38j27isc=
-Date:   Wed, 27 Oct 2021 19:38:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 10/16] x86/alternative: Implement .retpoline_sites
- support
-Message-ID: <YXmOs2oSp+6Dpi4R@zn.tnic>
-References: <20211026120132.613201817@infradead.org>
- <20211026120310.232495794@infradead.org>
+        id S238481AbhJ0Rnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:43:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231531AbhJ0Rng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:43:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16F6960EFF;
+        Wed, 27 Oct 2021 17:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635356470;
+        bh=7VSID2oeTV1/xGVowVgnfToa4LEkRNWlaK/p6kpz9/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GXrrdH6KHgFqr5Klt6qMbV+SCQP6lZ9gLwlm5vaM1l1guExDw2cjml/uPMJFPaKDD
+         y+7RffOCaOYi7hvBE1cKDM/TsRDbFMhB12ff87Aw3f2Etnlxac1HSxvw6m5PLmh/11
+         gHnhBb8ercyB23LLtw29Xz83mQOBiCY6y8dYF6C4=
+Date:   Wed, 27 Oct 2021 19:41:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL v2] Coresight changes for v5.16
+Message-ID: <YXmPNNig91Pay9U5@kroah.com>
+References: <20211026195545.3951306-1-mathieu.poirier@linaro.org>
+ <YXj2trHe8XA0QtFO@kroah.com>
+ <CANLsYkwcUbV-kX3yZt6K0rK9PBUpkW=fp2_Y5Bd3+fCgxZr4EA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026120310.232495794@infradead.org>
+In-Reply-To: <CANLsYkwcUbV-kX3yZt6K0rK9PBUpkW=fp2_Y5Bd3+fCgxZr4EA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 02:01:42PM +0200, Peter Zijlstra wrote:
-> +static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
-> +{
-> +	retpoline_thunk_t *target;
-> +	int reg, i = 0;
-> +
-> +	target = addr + insn->length + insn->immediate.value;
-> +	reg = target - __x86_indirect_thunk_array;
-> +
-> +	if (WARN_ON_ONCE(reg & ~0xf))
-> +		return -1;
-> +
-> +	/* If anyone ever does: CALL/JMP *%rsp, we're in deep trouble. */
-> +	BUG_ON(reg == 4);
-> +
-> +	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
-> +		return -1;
+On Wed, Oct 27, 2021 at 11:32:43AM -0600, Mathieu Poirier wrote:
+> On Wed, 27 Oct 2021 at 00:50, Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Oct 26, 2021 at 01:55:45PM -0600, Mathieu Poirier wrote:
+> > > The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
+> > >
+> > >   Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
+> > >
+> > > are available in the Git repository at:
+> > >
+> > >   git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git tags/coresight-next-v5.16
+> >
+> > Better but I get the following errors when my scripts try to merge them.
+> > Note, the linux-next scripts will give you the same complaint, so this
+> > isn't a new thing:
+> 
+> Can you point me to the linux-next script you are referring to above?
+> Usually when that happens I get an email but this time I didn't get
+> anything.
 
-I wanna say this should be the first thing being checked on function
-entry but I get the feeling you'll be looking at other X86_FEATURE bits
-in future patches... /me goes into the future...
+Is this tree/branch in linux-next now?  If so, you should have gotten an
+email.
 
-yap, you do. Lemme look at the whole thing first then.
+My scripts were sent to the workflow mailing list a year or so ago, I
+can dig them up if needed.
 
--- 
-Regards/Gruss,
-    Boris.
+thanks,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
