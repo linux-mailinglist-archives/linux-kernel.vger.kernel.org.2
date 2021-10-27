@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C84443CF50
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E1443CF58
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243094AbhJ0RDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:03:51 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:13227 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbhJ0RDu (ORCPT
+        id S239323AbhJ0RFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238026AbhJ0RFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:03:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635354047;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=UcGJA7PEzuSJ63GKIVH98UGJaPpm3sGP7NyUN1zuyBo=;
-    b=sOD83cqktCW8+WMvGxX8in5KCcElKPnSn60m5Q+pZQ7KIxtfosolonZl/Gp43SWR3D
-    s0eY5AFhUOgsP169qkXq8Ywcn2vH/avd8Q2rWv43hDl8w7I1LPVzMlvx16EoEqKy3oOg
-    bWhnBTRq+erj2HB2l6bRyPvInON5aV+NzxB3Q8K5Cb/AMniRKjrpAq9vj74X3Wr5Qman
-    UsVUuA/CdC/6PpqGNVoP/db9HyQ+u3MXOfrw0jOXnAxoaGHkj5zpvdswCN0Fx/BPb74t
-    hKjdkzl2UdgrCqogsJqAXLFBDIc+2gaREAc+JV7slQ/zwNDC3S68MnNJ/BhqrNsN+wvx
-    L6hA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NIGH/jrwDaimQ=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id d01d1fx9RH0h350
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Wed, 27 Oct 2021 19:00:43 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired
- omap_hsmmc
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <80C6A8DD-183B-4FDD-B203-D3108C106043@goldelico.com>
-Date:   Wed, 27 Oct 2021 19:00:42 +0200
-Cc:     Jerome Pouiller <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Tony Lindgren <tony@atomide.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <935598D6-B8B5-4EC8-B87E-8EDC0F3B58CF@goldelico.com>
-References: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
- <CAPDyKFraMXqC9OBeUTpm=bxjrFZTCopV3ZJQf1TRsA8UeTWdTA@mail.gmail.com>
- <80C6A8DD-183B-4FDD-B203-D3108C106043@goldelico.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Wed, 27 Oct 2021 13:05:42 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D316CC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:03:16 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id o184so4544484iof.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 10:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=squareup.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f2sYqrV79rh3369wClGLos5kmskab5d3N7ni1N0ATjU=;
+        b=XjEC9O8fLz9VGTKb0yxMeV4s7XM80XOaOqsB9U2Iatz91WyxBtARrrgkthK3clxIDf
+         RR0hz/dgGKHb/ekP/lWgjDyEOzt11bGrYwxjhKAM4Yr2+yaM/I55SFC79/b2MrujUwC6
+         QO0lSGI9aS3INQ77fxSb7Ih12pUEce9tk7cVU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f2sYqrV79rh3369wClGLos5kmskab5d3N7ni1N0ATjU=;
+        b=FIR3gkz7wEs7Z3tZdqkNPpZuK6nr3kDS2jCodbsA9hsZjYFkeKpXHrlU1J5iyjSq3+
+         VPnsjOgBsTNuHnucEh3ugBpLtmowvib9BW8swmyIgkNstSl+pgTguW2XukkR8OiG8ki+
+         o7CjgqUm1YU0cW1u6BoXR/s0GPBgl35XKHIjyZojYX/AEG9AKyBoOOiRca8HMwQF56/f
+         hPlA8B65UXEp7Lbd17bxUQQ6Uj5XhH5ORvX2m64jDbA6MDMvhdzYX7oGVh0yNagOgAqs
+         0vwsrKMhFY14ySzqCFQi9IEOa+srZPqfXkTeCv97rqQzfuFZT3CUApaQVYN3nVQvfJW/
+         yzbQ==
+X-Gm-Message-State: AOAM5328dyBzDK/DOQu7c7926+sLtb6mP7joMtyxDoWouV/qmr1sBhjw
+        wSEtcGCHpCyWItFMtD8KO8rVXw==
+X-Google-Smtp-Source: ABdhPJywloO7Ma/yoOAJEIwPDRo+lNYk7Cdl7sFOroT3fZ8Qi9wcAHBUj2og2Sx2gGzDxYH58oHO7g==
+X-Received: by 2002:a02:cbb1:: with SMTP id v17mr17337139jap.51.1635354195460;
+        Wed, 27 Oct 2021 10:03:15 -0700 (PDT)
+Received: from localhost ([2600:6c50:4d00:cd01::382])
+        by smtp.gmail.com with ESMTPSA id n25sm230377ioz.51.2021.10.27.10.03.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 10:03:14 -0700 (PDT)
+From:   Benjamin Li <benl@squareup.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Joseph Gates <jgates@squareup.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Benjamin Li <benl@squareup.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        Eugene Krasnikov <k.eugene.e@gmail.com>,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] wcn36xx: software scanning improvements
+Date:   Wed, 27 Oct 2021 10:03:02 -0700
+Message-Id: <20211027170306.555535-1-benl@squareup.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
+v2:
+Fix compiler warning (int flags -> unsigned long flags in patch 2).
 
-> Am 26.10.2021 um 20:08 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->=20
-> Hi Uf,
->>=20
->> As a matter of fact, the similar problem that you are looking to
->> address (applying card quirks based on DT compatibility strings), is
->> partly being taken care of in another series [1], being discussed
->> right now. I think the solution for the ti,wl1251 should be based =
-upon
->> that too. Please have a look and see if you can play with that!?
->=20
-> That is interesting.
-> Yes, maybe it can be the basis. At least for finding the chip and =
-driver.
+v1:
+Less important now, given Loic's breakthrough with FW scan offload on
+5GHz channels, but downstream does do software scanning so these fixes
+for that path may still be valuable to someone.
 
-I have done a first experiment.
+Benjamin Li (3):
+  wcn36xx: add debug prints for sw_scan start/complete
+  wcn36xx: implement flush op to speed up connected scan
+  wcn36xx: ensure pairing of init_scan/finish_scan and
+    start_scan/end_scan
 
-It seems as if the series [1] does the opposite of what we need... It =
-just
-skips entries in struct mmc_fixup if the DT does *not* match.
+ drivers/net/wireless/ath/wcn36xx/dxe.c     | 47 +++++++++++++++++++++
+ drivers/net/wireless/ath/wcn36xx/dxe.h     |  1 +
+ drivers/net/wireless/ath/wcn36xx/main.c    | 49 ++++++++++++++++++----
+ drivers/net/wireless/ath/wcn36xx/smd.c     |  4 ++
+ drivers/net/wireless/ath/wcn36xx/wcn36xx.h |  1 +
+ 5 files changed, 95 insertions(+), 7 deletions(-)
 
-This new match is not even tried in the wl1251 case since =
-card->cis.vendor
-and card->cis.device are not properly initialized when =
-mmc_fixup_device() is called.
-(in the upstream code the init_card function sets these and also sets =
-MMC_QUIRK_NONSTD_SDIO
-to early abort before sdio_read_cccr, sdio_read_common_cis, and =
-mmc_fixup_device).
-
-What I don't get from the code is how cis.vendor or cis.device can be
-initialized from device tree for a specific device. As far as I see it =
-can
-only be checked for and some quirks can be set from a table if vendor =
-and
-device read from the CIS registers do match.=20
-
-Instead, we want to match DT and define some values for an otherwise =
-unknown
-device (i.e. we can't match by vendor or other methods) to help to =
-initialize
-the interface. So in mmc_fixup_device it is too late and we need =
-something
-running earlier, based purely on device tree information...
-
-BR and thanks,
-Nikolaus
-
-
-> [1]
-> [RFC PATCH 0/2] mmc: allow to rely on the DT to apply quirks
-> =
-https://lore.kernel.org/lkml/20211014143031.1313783-1-Jerome.Pouiller@sila=
-bs.com/
+-- 
+2.25.1
 
