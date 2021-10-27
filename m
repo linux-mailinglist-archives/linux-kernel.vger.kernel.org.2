@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC78443CAB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B0043CABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 15:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242113AbhJ0Nfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 09:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        id S242170AbhJ0NgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 09:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhJ0Nfb (ORCPT
+        with ESMTP id S237213AbhJ0NgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 09:35:31 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE70BC061570;
-        Wed, 27 Oct 2021 06:33:05 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id w10so2898041ilc.13;
-        Wed, 27 Oct 2021 06:33:05 -0700 (PDT)
+        Wed, 27 Oct 2021 09:36:21 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C54FC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:33:55 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id u5so4717978ljo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 06:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nZXycHElx2PvePSgfI8q1PAKzVhVZLWU+GWvzXGtf+8=;
-        b=DYJlq8deziZIZJjqh4x3V7jJEU6eO+sS5sDmopsCFiuS7lFXanCQKm7N0VRVGZlg6g
-         onIelYweU690jMcik5iRC2TwHiHzAg7ona9I/tBh4bR9r6PTVG3y3R88wq0wvbA4ZmFA
-         secTWT0tynWT0EMD5Q/u6K4Q+1uEDddm6/DHXTYIovSHWX4PJk8WLq3SQtNB7YKX6ScW
-         LEGlCgLH4REMcno9uWkwRwU2/awOTKygiKVLSA0wbAAlgggE01wcuTPUnLR9inBRF8QH
-         CYdFu/YGwFIlpCL0Titjt6e00yi5B9+i8jJxrbggP2QfS6BYQjGyIGbOK0pqzGHQzNPu
-         7wAQ==
+        bh=SF3TuLDwjCSTuZKZbIAlHelYHC/Il4xa/tsPH6DiGEk=;
+        b=StFhjxBA3IYeh9xk7RxqepC2BTyp6miu58c8IkRnymFpoS65OAATRBs7/kyVTuxoGw
+         gu/PqDKU65tuETTCV7BjhfDevG+pkJFpVNaRwfjzs3g1oQR3HXznUf7LGudjcpuOjea1
+         p4cSk9qhmET+0GBnNbq2t0+UR83tD//Q8k5H5MppGhwBLdLyMNYxz2J8v0pye1w6UBXf
+         uNLYDPTBI6AtB92nh+JyboY5Bd4wjk0OCPWJr5vsktR5/ugKhipEXjTdyO6nPO29IET/
+         0UFJ4Gsj/mrHYibEAq580ICfQxLt1PwnbkxeVasgzNRRvxcdLnweWv8kODSF7FTvGMAs
+         jQZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nZXycHElx2PvePSgfI8q1PAKzVhVZLWU+GWvzXGtf+8=;
-        b=aL45cuQloXNcrXJ9bISAGYRmayx0od63J8RejH6yTzaopr/Rh1uKQfIgCo28N9j32Z
-         bc5YevCXAwxFbvcOFrfY45oSYnJEJRg/hh7ssdQzatDWzkWHHEI3yxUTvXSegZRF2XRW
-         8gF114AAoHJ1VkYJgWs+fOhes1Yxy7RjVCAJzb2hOvFd7+YLxez/tdpcU3cNl9sn9kyR
-         m0e+YthgyPZfxKjcH1d/askZVo17ANd9WzCQ1VbyAiAZL2+DR6jwCsSu3hJ6bmSoQ38U
-         NIBPbIeytXDz5HuUHrFlKbpqLFfx5O886QbBHiOv4hI5WzRx6J7KcdvqHpWnGUme/0ki
-         Yr0A==
-X-Gm-Message-State: AOAM533DJaN7fUgqIJGO3QJUINWrKnru4LqmUTBG2npm8i8C9Iqnd6T5
-        qNyfV5Ffryt1o1kp3xibUtmweBqQGcdBMQo0NaU=
-X-Google-Smtp-Source: ABdhPJyQM7nv4/L/+ZrHrxaFQWe4enGNCZfglV+MKpcO6gFgxgurDRXlVA2+RN1ozDoYfDM5GaAxiy3o0wvCISrJVMk=
-X-Received: by 2002:a92:d08a:: with SMTP id h10mr17035457ilh.321.1635341585283;
- Wed, 27 Oct 2021 06:33:05 -0700 (PDT)
+        bh=SF3TuLDwjCSTuZKZbIAlHelYHC/Il4xa/tsPH6DiGEk=;
+        b=GiO9ubhZgy13dOA6S7q+TRy9fnNenNPl9WC32kevY7hVYl+vGcruv360LiFulktYak
+         JWAMIsERLPCO/HNDjMsgRrqNm7D4GGHl9Swk8Uth5rl40yRECDTMjxK7VhE2WiOUuLcD
+         QEiXoqh3vrpL9yg1Q0+scBzkZ9X0V54Ds1045yAokpX6GSUIqpTMXdJObwxkgDscvjNx
+         9UZ+o2TS9a+5xlxxZJkkxFHigQixQJ08gAUnyPzIN+skgDBbgRStO/L/ZiHhiou13Abu
+         gzk+CIfEGo4zFUl/TQYMoN1NHT7ZdvxhVmsybkrbULhv0/hYzL6nrJBKnO5fRmD13DvR
+         mdaQ==
+X-Gm-Message-State: AOAM531adUh2igAWtuiYFEs6B/YbLJD5hsygEvaYvgBji7mNWwU2L9nN
+        0rneGk75aK8i6JycxiXRQcETu/Co0zPj6wrMK/kQIQ==
+X-Google-Smtp-Source: ABdhPJw4Hz0qU7pk4QAD1ecXWuVM1EJf2LFlyX+ruH5szvN19acgbbYV2uu01lA95rFJu0mT5Vax7MFwL0q2NXqqy2Q=
+X-Received: by 2002:a2e:85c4:: with SMTP id h4mr33373312ljj.4.1635341633803;
+ Wed, 27 Oct 2021 06:33:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211027132732.3993279-1-arnd@kernel.org> <20211027132732.3993279-2-arnd@kernel.org>
-In-Reply-To: <20211027132732.3993279-2-arnd@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 27 Oct 2021 15:32:54 +0200
-Message-ID: <CANiq72=fkx0BNz0oPuvVA_uEcE1BF92reKtsCbK1fv-fwx2yNg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] fbdev: rework backlight dependencies
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Jon Nettleton <jon.nettleton@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Lars Poeschel <poeschel@lemonage.de>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-staging@lists.linux.dev
+References: <20211027115516.4475-1-rashmi.a@intel.com>
+In-Reply-To: <20211027115516.4475-1-rashmi.a@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 Oct 2021 15:33:17 +0200
+Message-ID: <CAPDyKFq=_Me6CwrsM+ESP+mw0Yb-anmKzqOX+Y8R0_n5U8OtuQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 0/4] Add support of eMMC PHY for Intel Thunder
+To:     rashmi.a@intel.com
+Cc:     michal.simek@xilinx.com, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kishon@ti.com, vkoul@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-phy@lists.infradead.org, mgross@linux.intel.com,
+        kris.pan@linux.intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com, adrian.hunter@intel.com,
+        mahesh.r.vaidya@intel.com, nandhini.srikandan@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 3:28 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Wed, 27 Oct 2021 at 13:55, <rashmi.a@intel.com> wrote:
 >
-> Rather than having CONFIG_FB_BACKLIGHT select CONFIG_BACKLIGHT_CLASS_DEVICE,
-> make any driver that needs it have a dependency on the class device
-> being available, to prevent circular dependencies.
+> From: Rashmi A <rashmi.a@intel.com>
+>
+> This patch set enables the support for eMMC PHY on the Intel Thunder
+> Bay SoC. eMMC PHY is based on arasan phy.
+>
+> Patch 1 Adds arasan sdhci support for eMMC in Intel Thunder Bay.
+> Patch 2 Adds arasan sdhci dt bindings.
+> Patch 3 Holds the device tree binding documentation for eMMC PHY
+>         and listings of new files in MAINTAINERS file.
+> Patch 4 Holds the eMMC PHY driver.
+>
+> Reseding V2 patchset to get the dt-binding patches reviewed.
 
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
+I have already queued patch1 and patch2, so there is no need to resend
+them anymore.
 
-Cheers,
-Miguel
+Kind regards
+Uffe
+
+>
+> Changes from v1:
+> Add arasan sdhci dt bindings
+>
+> Rashmi A (4):
+>   mmc: sdhci-of-arasan: Add intel Thunder Bay SOC support to the arasan
+>     eMMC driver
+>   dt-bindings: mmc: Add bindings for Intel Thunder Bay SoC
+>   dt-bindings: phy: intel: Add Thunder Bay eMMC PHY bindings
+>   phy: intel: Add Thunder Bay eMMC PHY support
+>
+>  .../devicetree/bindings/mmc/arasan,sdhci.yaml |  25 +
+>  .../phy/intel,phy-thunderbay-emmc.yaml        |  46 ++
+>  MAINTAINERS                                   |   7 +
+>  drivers/mmc/host/sdhci-of-arasan.c            |  29 +-
+>  drivers/phy/intel/Kconfig                     |  10 +
+>  drivers/phy/intel/Makefile                    |   1 +
+>  drivers/phy/intel/phy-intel-thunderbay-emmc.c | 511 ++++++++++++++++++
+>  7 files changed, 628 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/intel,phy-thunderbay-emmc.yaml
+>  create mode 100644 drivers/phy/intel/phy-intel-thunderbay-emmc.c
+>
+> --
+> 2.17.1
+>
