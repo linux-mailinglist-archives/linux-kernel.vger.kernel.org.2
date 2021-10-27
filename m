@@ -2,262 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B672E43BF22
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2F143BF23
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 03:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbhJ0Blp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 21:41:45 -0400
-Received: from mail-db8eur05on2072.outbound.protection.outlook.com ([40.107.20.72]:47840
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232003AbhJ0Blk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 21:41:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VhjcxXDSCw7TB+OpMeKwrvcE9/xg9AHLF/fKZGJLMe8OSFE3LSzCU32cf/8hW0kcKBL0ltNrW7gNEBn/kJcP7XGNgJE6qij0K+thO2VpCVg3OwKe7PrlORQQwdz9bqJG7tcuth3gmF+ajQcrn4vHkrl/y3yIQ+XZ4RDXDjBQ0pSsFXoDq46kAZoj5l0f1uaBHXd/fTsFjYfJ3ztN5H97Kd+H5EH3tIHjroW0004PduA4tFMKyQr3JO4/E5e5T7zsD1QHsjRNRTn2D+YHNrSO47Wb0vKkKg/f8SrUEYXEoAS5M10tKYYK5usQtnmh1Oj3lXaxkR/OeyaA3NnPw+LU4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2+fK+aS7qdVrOWHzvrlZweX9pRLTh6mnOF0RTF3EH0Q=;
- b=D86yL/X+5GpHATI+LPt8BFowWqa7r2qATcm/nnCGhHMoxuMe6WUSqcCUqllAYZH+l3mTd1fcjBTgTL+/qo6QZX5Mi+4FhF84umh0GvsaktWnztgZTiNQAdKeszKyy/kfPIRqzvUPR7XdykeUdSKqupkTQWV13cMU/MIBiLuLr3hIiMWmDVmGpzEVImMlQvMxVN2yF6L1VEBrXiiRq78m4qNbNi/lyXoVZahP0Pf0YRjUxqN+ZJ5lKwO6Kcw4bWNO4HcONZRsWW6NnRlQSyF2122v1+EtQPAaQucxo+dIdJp/QY6Y8unrJUroWeba2rohh9j6UYEMXsX/L6KxiXKxiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2+fK+aS7qdVrOWHzvrlZweX9pRLTh6mnOF0RTF3EH0Q=;
- b=f1nnH+BCo9JtZXooLfoNbtnfZoqesEjz8ZTwXDJPMaPmTHFD673MJ+D0MpfTNyERJ8lE5K8M4IqbYgTsSq5oUhVsZu4IZf2Oqqtli1TQFzwmUAIxdXMNDKc8sneQjaE0mQLuhn5JvxYxr/ia3f+Q+Gs0PfTVa0WKRXbZjM7M1VA=
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
- by AS8PR04MB8484.eurprd04.prod.outlook.com (2603:10a6:20b:34c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13; Wed, 27 Oct
- 2021 01:39:13 +0000
-Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc]) by AS8PR04MB8676.eurprd04.prod.outlook.com
- ([fe80::b059:46c6:685b:e0fc%5]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 01:39:13 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "tharvey@gateworks.com" <tharvey@gateworks.com>,
-        "galak@kernel.crashing.org" <galak@kernel.crashing.org>
-CC:     "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
- support
-Thread-Topic: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
- support
-Thread-Index: AQHXyoIP9WRZIWT4CUunBVSnJ63L4qvmD1nA
-Date:   Wed, 27 Oct 2021 01:39:13 +0000
-Message-ID: <AS8PR04MB8676F26022A5EA033FA5515B8C859@AS8PR04MB8676.eurprd04.prod.outlook.com>
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
- <6af982786f0136d5f984beaf544e2ba7b7b68d31.camel@toradex.com>
-In-Reply-To: <6af982786f0136d5f984beaf544e2ba7b7b68d31.camel@toradex.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 15c385b9-7fff-4b60-8c88-08d998ea949a
-x-ms-traffictypediagnostic: AS8PR04MB8484:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-microsoft-antispam-prvs: <AS8PR04MB84842C83EBD2D8A09E9F194E8C859@AS8PR04MB8484.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9NBIhxbZiPbUqhp+aB/gnD4+mt4j4A2C3NklzeTvOCmijmcQZW3eEPL9ThihWo6463biP9BhVNfKdPGa8vwhCgrH4l54VSzn2RuamqePpUc34zR+Dkj+3o0+4tGhW/OAKAjdAZ3a7Vpjoqdxf+N7H651VHB81jdrgGaj0PJ5PtP1TBi4g5cwME/u6k3PeOZd+WxAnHi6bNKEu2zVnfeWlzA/KddKE5o/15rClkVW6oYu9tVe5zZ5j+8QeIKjOV3bt/NFz5RWYFKVlSe3szSvE3zFpqxEglCXWkmMkLoFSBVGjvXQFc89tHAP5ECyoKVz7ULp7NEOonaD978YocLLdG5a0UtStL5Q+mXIm8Ji6n7O0taELKawiVX+M0N91UUbiBLlot5ANhXcaLAwSD2bluEhkrHAHEIShECCY5qHxffytWRJ8abmffQEALHNFCQ1ghrqA9IaEWECgHphX/hq46e4tqOFnd6abz87MPS5dK1kp9/OsH27OAMRL3ZaEoIcI1PCAF16OrTYLmnTABks/B3j4cVPqsm04zyCspPVAWkPwRcMWwsc2kLyaDrXvZBq9ItuBmPp+MTfG0n6L5dHceUhgUcPJOy0Jh6ZXpTuK1UyT4vALa2TSPQ8jQT9rImVL7W7+xlPgGjNjurG0Vkh57ZOw6tL49z6lnZ8cOlZDNQJUotwzZEbEWb693J88bkaIJvlWqe4GQWhNuUrDtUVoYpGrLMIPs6wFexXK8ycRHrwXcJGNZGM3FfUagRCsBSyRzzRi7XWSSIKrLbOvT2iPp/4aefsEC3/xeJY1qfzZ40t5UgLI51yfupTddvraRLm
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(76116006)(53546011)(8936002)(66446008)(86362001)(186003)(38070700005)(966005)(26005)(7696005)(66476007)(64756008)(7416002)(122000001)(38100700002)(45080400002)(66946007)(4326008)(71200400001)(508600001)(9686003)(6506007)(110136005)(2906002)(54906003)(52536014)(66556008)(8676002)(4001150100001)(33656002)(55016002)(83380400001)(316002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?mZXYbOgX8g6+vt1fzvDjj8UoV+I+YACpmITkiS/TUpWeXPcxgnbsCVipEh?=
- =?iso-8859-1?Q?99LQjVzYECvEe9qoj8VvTpdnCrrjqJfJumol+B3uTjtVA4phceCt2zXpmb?=
- =?iso-8859-1?Q?ZXE7aECyrL77N2J71cyUlqejKQ6qb1diChkcuuUYiN0x8kfhA8oF7WX3NE?=
- =?iso-8859-1?Q?8KZojlJyVZvsqdkl+bVtnf7YzilIZLafIpf1OWrmFFoeLJR023WuOerplR?=
- =?iso-8859-1?Q?aJEwz55vzlt/CwC6YmtcxQnra6OiPhSiTu6tPqzEUbNGydIi9xKkhxADcO?=
- =?iso-8859-1?Q?g+7CQkCSwinxXH9vTDIAhUrYYT1R1p+pSzyGs5IRbJ/Rmv1Elhe0+JzW2V?=
- =?iso-8859-1?Q?1V7lvRdrYT0Od0hBQ6Y4t/K1ByENNul24/V4s0LvewgFy9ATJKWKPN8IV4?=
- =?iso-8859-1?Q?8VmZMF7RTvH/wKq10sqZWkF/BN5ZqBZ0AlQl8eIGYyXBPlMOc5HP6CuG2U?=
- =?iso-8859-1?Q?gDq8a/18wstFljvHhdvIPyzlw+SwHR/QRzCrc0Hw48uV/d1CN/BVBnOyjC?=
- =?iso-8859-1?Q?1JtZG9FeF0eGBBEOUQ/amqzhdNTPyW2vmFT0K1kfZ3dGD1YpdaZbm4N3nK?=
- =?iso-8859-1?Q?Z/CcCv5sxwsoXL/LdxUE4PZz0+7rv7J0d+53ptdkoGsCqNWpnXTjNr95A9?=
- =?iso-8859-1?Q?shdU3lw7tiTaLkslYeovZFj1YGsigsAQ2dK6n506XUm/uVcn6hdfkZCk5f?=
- =?iso-8859-1?Q?nepaWlapMSmnAO1kTCsfFTcGJ4owdpugR2VuskwaahyuIHq5QQ8Bcl7kz8?=
- =?iso-8859-1?Q?ynjL29+XvWgrc75GY5rs79NPv0vag5RtaF7m6VuWpCU1ZxxOctX7ijLUs9?=
- =?iso-8859-1?Q?mbEHiIxa4MIjTUZzepLn55VEK3ikTdwEWsAnu5uksOuWO6kt8N2CczYqK2?=
- =?iso-8859-1?Q?hPNI1BksZM+Sf4/cDvB2350Q0pXzx7U0D0+Jn2oJtHcu1WnMyT3YoZguJZ?=
- =?iso-8859-1?Q?IQct/qZlKCs3GylHWzx/FHddKKNwMyTeHbvUN3K1lr+00MLvek4Sgsdojg?=
- =?iso-8859-1?Q?TrkLgOj8OtIBHlm2dVHVY/9KIT5OQOckjOaGw6T8XvzGx5u26Sm6HQNCjV?=
- =?iso-8859-1?Q?SQ10rCRBpsHxTiL8liMgLbplReoBtB6h0v5/8qylFCrgvasBSpylF0nb1/?=
- =?iso-8859-1?Q?60JPwc430dEw894v8ykq99xH3Qniokvja7pwLlf0RKvSDVTRTcphTAUpMd?=
- =?iso-8859-1?Q?Rbocso/hGGhliy/hnDyXASvcxHCIiy09NPESA49KQF7iQnIGlECShxxkEA?=
- =?iso-8859-1?Q?f+9TKICA0JWC1s1nLR0EoeDWFKEgp+VH+FRlWxQXm35gqJ4VvkBjOmjgiH?=
- =?iso-8859-1?Q?lvBtEkNsTq1kkzlQk6jHQ3o5utrTH5m3X10tF8mprNf77rne8qScKZX5T3?=
- =?iso-8859-1?Q?0Ni+oYhlToncxaR8dpuSx9wNrlhRSVfFVsJ8X3/7+x/TrP6ThKJUvUFpnA?=
- =?iso-8859-1?Q?jvu+aZaqrK+i8tXR0Ook1cJi1jhQ73gJY9XFHLAPWq68rEPelAaKsuRAaL?=
- =?iso-8859-1?Q?BooxH1sUF/fF5v+1sj/vfUdtxrJV5jVb/xXyoc8ywFrUFJOE5y81EwFEWC?=
- =?iso-8859-1?Q?Sd8BYaqmVdEy8wGaMosWmfEbOaQanvp+A5CK6mAIzfyOarzlS0ibmAZHR1?=
- =?iso-8859-1?Q?mnExExA5OZHWn4sxflRqumwu/VCLJGrjUEIJV5anmqWV3IlMmHHJznyA?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S234411AbhJ0BnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 21:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236482AbhJ0BnO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 21:43:14 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54EAC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:40:49 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id v1-20020a17090a088100b001a21156830bso3816291pjc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Oct 2021 18:40:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=qMgVnXJJi+80V4XgZWewbY8tftz5ivpIkClqb8Lv9Cc=;
+        b=JWl3lTPbYHxUNBIDTFAcYOJBPyfEKAHhGOElj8XH/hkxHfmwtZRrGWUPcQd6cQiaLU
+         RHf+PJ1+sCaOi6Kjut24As3O1JjcSLqqZ9si29Q3Aq31OIB57n41Sv37GwUihTIopOJe
+         bgKvUkj910LQ9RerNG/vuoN7dC0yQHq3WHEK09ttHX1wPlITNSvH1tpIR0O1tMDdrT1T
+         TBUj7NDJgY2Zz5rpnU7kbL8svkT+55LHergNn+m+6ymNeRYp/B6kVF0DL8we4u76TtlX
+         gHaJxBmIzBrAid2LF8t9A44ot3EQ6dPlfMEQsit+J4HYtwgHy+PmaWW/9AthM/oy4UII
+         CirA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=qMgVnXJJi+80V4XgZWewbY8tftz5ivpIkClqb8Lv9Cc=;
+        b=y5wlZCmXR29FnNc/joWU64TyfXhxaIKVgX1NovK2nCP3Fa7LoJpN2LNDCUNv1M1s/O
+         TWE5BfSikKCbwLiTXFBBcNpQ/IW7blxTHGGqrGfR4w/YuVW5kBhFw5g2bCr7DbrpuFXR
+         qZKtATkIxL5+p5OWJhLTGYDcBnrjy/QGZVIPWZLllX5AWFsL55vI9CsVCDdxakcYqZcB
+         FVdJGo4/Cz897AHc3mWoyH+GMXanC9g4IqMuLzQ2N8DkA32vu+ONvarStwSgWXKP5Pi/
+         6LtdJK2pCKq77SxguPHs3Wee8UyNTsGTrSzDpG/Ah1pB9r1MCea24W2/aT+MkKlr+MT/
+         Ik8w==
+X-Gm-Message-State: AOAM531XoRQRxNoJTm05u9nvPQR7c0kFX6AjFZHEplnwUXKF73Fz0dir
+        fYKSflLERPUGrlvyORS4usGLBa6hedPIbtMT8A==
+X-Google-Smtp-Source: ABdhPJzt4KGh7rfhQF+lo2ut+wHtngRU0pOcNjmOXod+SKS2Sc+bBNq7C0ItnCcPanBetsgK6kUA11XYgBVhPZr+TeM=
+X-Received: by 2002:a17:903:2348:b0:140:37e8:5944 with SMTP id
+ c8-20020a170903234800b0014037e85944mr21462072plh.15.1635298849341; Tue, 26
+ Oct 2021 18:40:49 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15c385b9-7fff-4b60-8c88-08d998ea949a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2021 01:39:13.1426
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: R9oCygYlqNrGytRFlSugceXAdQEjrQ6jQI8OQDc9fYGDiYEp9ucWT6aF2ZDMTay9FayvRt64wEtCSORSoqyakw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8484
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Wed, 27 Oct 2021 09:40:36 +0800
+Message-ID: <CACkBjsan33jgTuLteEw9FPs5Og=JLdqYT3CB4g_71_m7dZo3oA@mail.gmail.com>
+Subject: possible deadlock in force_sig_info_to_task
+To:     christian@brauner.io,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, ebiederm@xmission.com,
+        elver@google.com, peterz@infradead.org, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> Sent: Tuesday, October 26, 2021 11:57 PM
-> To: kishon@ti.com; vkoul@kernel.org; robh@kernel.org;
-> l.stach@pengutronix.de; shawnguo@kernel.org; tharvey@gateworks.com;
-> galak@kernel.crashing.org; Richard Zhu <hongxing.zhu@nxp.com>
-> Cc: linux-phy@lists.infradead.org; linux-arm-kernel@lists.infradead.org;
-> kernel@pengutronix.de; devicetree@vger.kernel.org;
-> linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
-> Subject: Re: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie
-> support
->=20
-> On Tue, 2021-10-12 at 16:41 +0800, Richard Zhu wrote:
-> > refer to the discussion [1] when try to enable i.MX8MM PCIe support,
-> > one standalone PCIe PHY driver should be seperated from i.MX PCIe
-> > driver when enable i.MX8MM PCIe support.
-> >
-> > This patch-set adds the standalone PCIe PHY driver suport[1-5], and
-> > i.MX8MM PCIe support[6-9] to have whole view to review this patch-set.
-> >
-> > The PCIe works on i.MX8MM EVK board based the the blkctrl power driver
-> > [2] and this PHY driver patch-set.
->=20
-> Whole series:
->=20
-> Tested-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
->=20
-> BTW: I tested it on Verdin iMX8M Mini V1.1B without an external PCIe
-> oscillator aka setting fsl,refclk-pad-mode to
-> IMX8_PCIE_REFCLK_PAD_OUTPUT which worked like a charm. Thanks!
->=20
-[Richard Zhu] Thanks for your tests.
+Hello,
 
-Best Regards
-Richard Zhu
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-> > [1]
-> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpat=
-c
-> >
-> hwork.ozlabs.org%2Fproject%2Flinux-pci%2Fpatch%2F20210510141509.929
-> 120
-> >
-> -3-l.stach%40pengutronix.de%2F&amp;data=3D04%7C01%7Chongxing.zhu%40
-> nxp.c
-> >
-> om%7Cbacb5db20f2d4aa7a4ad08d998993356%7C686ea1d3bc2b4c6fa92cd9
-> 9c5c3016
-> >
-> 35%7C0%7C0%7C637708606037565160%7CUnknown%7CTWFpbGZsb3d8ey
-> JWIjoiMC4wLj
-> >
-> AwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp
-> ;sdata=3D
-> >
-> Mmea0v4pP5VzSM%2F8sIStLkwvA0pY0h2lG4Vzvr8Gk%2F4%3D&amp;reserv
-> ed=3D0
-> > [2]
-> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpat=
-c
-> >
-> hwork.kernel.org%2Fproject%2Flinux-arm-kernel%2Fcover%2F202109102026
-> 40
-> > .980366-1-l.stach%40pengutronix.de%2F&amp;data=3D04%7C01%7Chongxin
-> g.zhu%
-> >
-> 40nxp.com%7Cbacb5db20f2d4aa7a4ad08d998993356%7C686ea1d3bc2b4c6
-> fa92cd99
-> >
-> c5c301635%7C0%7C0%7C637708606037565160%7CUnknown%7CTWFpbGZ
-> sb3d8eyJWIjo
-> >
-> iMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C10
-> 00&amp
-> > ;sdata=3D5U%2BP0zL0OskhyB0RtH%2FsBwRn0B1Lb27ZSpjjhFD0wUo%3D&a
-> mp;reserved
-> > =3D0
-> >
-> > Main changes v2 --> v3:
-> > - Regarding Lucas' comments.
-> > =A0- to have a whole view to review the patches, send out the i.MX8MM
-> PCIe support too.
-> > =A0- move the PHY related bits manipulations of the GPR/SRC to standalo=
-ne
-> PHY driver.
-> > =A0- split the dts changes to SOC and board DT, and use the enum instea=
-d of
-> raw value.
-> > =A0- update the license of the dt-binding header file.
-> >
-> > Changes v1 --> v2:
-> > - Update the license of the dt-binding header file to make the license
-> > =A0 compatible with dts files.
-> > - Fix the dt_binding_check errors.
-> >
-> > Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml=A0=A0=A0 |=A0=
-=A0 6
-> +++
-> > Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml |=A0 79
-> > +++++++++++++++++++++++++++++
-> >
-> arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 |
-> 53
-> > ++++++++++++++++++++
-> arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > |=A0 46 ++++++++++++++++-
-> drivers/pci/controller/dwc/pci-imx6.c
-> > |=A0 63 ++++++++++++++++++++++-
-> drivers/phy/freescale/Kconfig
-> > |=A0=A0 9 ++++
-> drivers/phy/freescale/Makefile
-> > |=A0=A0 1 +
-> drivers/phy/freescale/phy-fsl-imx8m-pcie.c=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0 |
-> > 218
-> >
-> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> ++++++++++++++++++
-> >
-> include/dt-bindings/phy/phy-imx8-pcie.h=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
->  14
-> > ++++++
-> > 9 files changed, 486 insertions(+), 3 deletions(-)
-> >
-> > [PATCH v3 1/9] dt-bindings: phy: phy-imx8-pcie: Add binding for the
-> > [PATCH v3 2/9] dt-bindings: phy: add imx8 pcie phy driver support
-> > [PATCH v3 3/9] arm64: dts: imx8mm: add the pcie phy support [PATCH v3
-> > 4/9] arm64: dts: imx8mm-evk: add the pcie phy support [PATCH v3 5/9]
-> > phy: freescale: pcie: initialize the imx8 pcie [PATCH v3 6/9]
-> > dt-bindings: imx6q-pcie: Add PHY phandles and name [PATCH v3 7/9]
-> > arm64: dts: imx8mm: add the pcie support [PATCH v3 8/9] arm64: dts:
-> > imx8mm-evk: add the pcie support on imx8mm [PATCH v3 9/9] PCI: imx:
-> > add the imx8mm pcie support
+HEAD commit: 519d81956ee2 Linux 5.15-rc6
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1tpVyBpfPqZKvBwGtvHk4Bpi3G9ycYJRT/view?usp=sharing
+kernel config: https://drive.google.com/file/d/12PUnxIM1EPBgW4ZJmI7WJBRaY1lA83an/view?usp=sharing
+
+Sorry, I don't have a reproducer for this crash, hope the symbolized
+report can help.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+
+============================================
+WARNING: possible recursive locking detected
+5.15.0-rc6 #4 Not tainted
+--------------------------------------------
+syz-executor/11999 is trying to acquire lock:
+ffff88810eba65d8 (&sighand->siglock){....}-{2:2}, at:
+force_sig_info_to_task+0x74/0x450 kernel/signal.c:1333
+
+but task is already holding lock:
+ffff88810eba65d8 (&sighand->siglock){....}-{2:2}, at:
+force_sig_info_to_task+0x74/0x450 kernel/signal.c:1333
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&sighand->siglock);
+  lock(&sighand->siglock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+2 locks held by syz-executor/11999:
+ #0: ffff88810eba65d8 (&sighand->siglock){....}-{2:2}, at:
+force_sig_info_to_task+0x74/0x450 kernel/signal.c:1333
+ #1: ffffffff8b97ea20 (rcu_read_lock){....}-{1:2}, at:
+perf_sample_regs_user kernel/events/core.c:6567 [inline]
+ #1: ffffffff8b97ea20 (rcu_read_lock){....}-{1:2}, at:
+perf_event_output_forward+0x0/0x280 kernel/events/core.c:7363
+
+stack backtrace:
+CPU: 2 PID: 11999 Comm: syz-executor Not tainted 5.15.0-rc6 #4
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
+ check_deadlock kernel/locking/lockdep.c:2987 [inline]
+ validate_chain kernel/locking/lockdep.c:3776 [inline]
+ __lock_acquire.cold+0x168/0x3c3 kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ force_sig_info_to_task+0x74/0x450 kernel/signal.c:1333
+ force_sig_fault_to_task+0xac/0xf0 kernel/signal.c:1700
+ kernelmode_fixup_or_oops+0x204/0x2b0 arch/x86/mm/fault.c:743
+ __bad_area_nosemaphore+0x381/0x410 arch/x86/mm/fault.c:806
+ do_user_addr_fault+0x6bd/0x11c0 arch/x86/mm/fault.c:1282
+ handle_page_fault arch/x86/mm/fault.c:1485 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1541
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:568
+RIP: 0010:__get_user_nocheck_8+0x10/0x13 arch/x86/lib/getuser.S:162
+Code: 0f b7 10 31 c0 0f 01 ca c3 90 0f 01 cb 0f ae e8 8b 10 31 c0 0f
+01 ca c3 66 90 0f 01 cb 0f ae e8 48 8b 10 31 c0 0f 01 ca c3 90 <0f> 01
+ca 31 d2 48 c7 c0 f2 ff ff ff c3 cc cc cc 53 89 fb e8 28 b4
+RSP: 0000:ffffc90001acf198 EFLAGS: 00050016
+RAX: 000000000000000a RBX: ffffc90001acf268 RCX: 0000000000040000
+RDX: ffffc90002ea1000 RSI: ffff88810f401c80 RDI: 0000000000000002
+RBP: ffffc90001acf274 R08: ffffffff810136a7 R09: 000000000000000a
+R10: 0000000000000006 R11: ffffed1021e80390 R12: 000000000000000a
+R13: dffffc0000000000 R14: 00007fffffffeff0 R15: ffffc90001acf270
+ perf_callchain_user+0x81f/0xbc0 arch/x86/events/core.c:2897
+ get_perf_callchain+0x39d/0x4a0 kernel/events/callchain.c:221
+ perf_callchain+0x165/0x1c0 kernel/events/core.c:7291
+ perf_prepare_sample+0xa0f/0x1e50 kernel/events/core.c:7318
+ __perf_event_output kernel/events/core.c:7487 [inline]
+ perf_event_output_forward+0xda/0x280 kernel/events/core.c:7507
+ __perf_event_overflow+0x13c/0x3d0 kernel/events/core.c:9177
+ perf_swevent_overflow+0xac/0x150 kernel/events/core.c:9253
+ perf_swevent_event+0x1e9/0x2e0 kernel/events/core.c:9286
+ perf_tp_event+0x21c/0x740 kernel/events/core.c:9709
+ perf_trace_run_bpf_submit+0x118/0x170 kernel/events/core.c:9683
+ perf_trace_lock+0x2ef/0x4d0 include/trace/events/lock.h:39
+ trace_lock_release include/trace/events/lock.h:58 [inline]
+ lock_release+0x4a7/0x670 kernel/locking/lockdep.c:5636
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:158 [inline]
+ _raw_spin_unlock_irqrestore+0x16/0x70 kernel/locking/spinlock.c:194
+ spin_unlock_irqrestore include/linux/spinlock.h:418 [inline]
+ force_sig_info_to_task+0x1fd/0x450 kernel/signal.c:1351
+ force_sig_fault_to_task+0xac/0xf0 kernel/signal.c:1700
+ kernelmode_fixup_or_oops+0x204/0x2b0 arch/x86/mm/fault.c:743
+ __bad_area_nosemaphore+0x381/0x410 arch/x86/mm/fault.c:806
+ do_user_addr_fault+0x8e0/0x11c0 arch/x86/mm/fault.c:1360
+ handle_page_fault arch/x86/mm/fault.c:1485 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1541
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:568
+RIP: 0010:__put_user_nocheck_8+0x11/0x21
+Code: 0f 01 ca c3 66 0f 1f 44 00 00 48 bb f9 ef ff ff ff 7f 00 00 48
+39 d9 73 14 0f 01 cb 48 89 01 31 c9 0f 01 ca c3 0f 1f 44 00 00 <0f> 01
+ca b9 f2 ff ff ff c3 cc cc cc cc cc cc cc 41 57 41 56 41 55
+RSP: 0000:ffffc90001acfdb0 EFLAGS: 00050293
+RAX: 000000006172a1b5 RBX: 00007fffffffeff9 RCX: 0000000000000004
+RDX: ffffc90002ea1000 RSI: ffff88810f401c80 RDI: 0000000000000002
+RBP: 1ffff92000359fb7 R08: ffffffff8164ef15 R09: ffffed100c7e6542
+R10: ffff888063f32a0b R11: ffffed100c7e6541 R12: 0000000000000004
+R13: 0000000000000003 R14: ffffc90001acfff0 R15: 0000000000000000
+ __do_sys_gettimeofday kernel/time/time.c:147 [inline]
+ __se_sys_gettimeofday kernel/time/time.c:140 [inline]
+ __x64_sys_gettimeofday+0xe2/0x200 kernel/time/time.c:140
+ emulate_vsyscall+0x9f4/0xc00 arch/x86/entry/vsyscall/vsyscall_64.c:246
+ do_user_addr_fault+0x8f8/0x11c0 arch/x86/mm/fault.c:1321
+ handle_page_fault arch/x86/mm/fault.c:1485 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1541
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:568
+RIP: 0033:_end+0x6edda000/0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffff5fffd6.
+RSP: 002b:00007eff995c6bb8 EFLAGS: 00010246
+RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 0000000000000002
+RDX: 0000000000000001 RSI: 0000000000000003 RDI: 0000000000000004
+RBP: 000000000000000a R08: 0000000000000005 R09: 0000000000000006
+R10: 0000000000000007 R11: 0000000000000008 R12: 000000000000000b
+R13: 000000000000000c R14: 000000000000000d R15: 00007eff995c6dc0
+----------------
+Code disassembly (best guess):
+   0: 0f b7 10              movzwl (%rax),%edx
+   3: 31 c0                xor    %eax,%eax
+   5: 0f 01 ca              clac
+   8: c3                    retq
+   9: 90                    nop
+   a: 0f 01 cb              stac
+   d: 0f ae e8              lfence
+  10: 8b 10                mov    (%rax),%edx
+  12: 31 c0                xor    %eax,%eax
+  14: 0f 01 ca              clac
+  17: c3                    retq
+  18: 66 90                xchg   %ax,%ax
+  1a: 0f 01 cb              stac
+  1d: 0f ae e8              lfence
+  20: 48 8b 10              mov    (%rax),%rdx
+  23: 31 c0                xor    %eax,%eax
+  25: 0f 01 ca              clac
+  28: c3                    retq
+  29: 90                    nop
+* 2a: 0f 01 ca              clac <-- trapping instruction
+  2d: 31 d2                xor    %edx,%edx
+  2f: 48 c7 c0 f2 ff ff ff mov    $0xfffffffffffffff2,%rax
+  36: c3                    retq
+  37: cc                    int3
+  38: cc                    int3
+  39: cc                    int3
+  3a: 53                    push   %rbx
+  3b: 89 fb                mov    %edi,%ebx
+  3d: e8                    .byte 0xe8
+  3e: 28                    .byte 0x28
+  3f: b4                    .byte 0xb4
