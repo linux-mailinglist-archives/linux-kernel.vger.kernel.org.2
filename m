@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C8C43C614
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F9C43C617
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 11:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237360AbhJ0JIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 05:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232132AbhJ0JIT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 05:08:19 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D629C061570;
-        Wed, 27 Oct 2021 02:05:54 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m21so2243599pgu.13;
-        Wed, 27 Oct 2021 02:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MqVpo2UqAbSygTHypSN0KNUq0+j4kDd6u6NCg3V4iYg=;
-        b=dAtSaXD5wh/RyLLKB2ZeCxosDgq0VzzMbGS8qHTDkvQrf8UMKpmDt3CPngb8bd7V9o
-         Z/yUaRIWdncbJj8oAGNMtflBEwFFbVARk4tgZZNZ6W5CrkuOsdtPdjll0JAKo4MBPOz0
-         EwsSNoj9tSqOKGaTyI1XHF8YpoT8DXFHjld4ad/5VkyCerQhLzYW92VIkpjTU0Q+/iLj
-         drbyH9MdGjSLqzNdHRkQGN9YmqCSBI67CFSI5Qvq0v/Wk8M1gDUxhZfDvZgWFS3JfQzK
-         ivm0iI4jW2JjDRTPsrbt+3znb3J+IXjXB+GgiujgqnTeo8BgO9HUpFBcz5pFpxxEU0Gx
-         ZNcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MqVpo2UqAbSygTHypSN0KNUq0+j4kDd6u6NCg3V4iYg=;
-        b=3ObqFS1b1tHt8wpTR83NGQHxQV/0m7BDUk97Q+KTOvc3qYE5gQ9y0tT3FqZ8vxYKjV
-         0zBdJNCBuWBImqGOo4YlBceVitvEJUaOq9Tbybbq/ruie8Lzq5Jgbnx5fAH2W909n+5O
-         RTuKFsof0Cjxgpiox3U4wheVSlju4+sRu+dVzp31TrTu/TjjvmvnoaSP3yCj/fHQtKvU
-         aqyBS2KgDUgjWKLUDE04CmtosYTPUH6hXc7o/uKGopCSvyZkCk3OZzqYSht4zhr1sjEe
-         merAb3dcAMFXGTeDVxyjlD0S3taBC8RLaW8YzJfijesUnO1clfisfd0XN1hkHOoXY7WV
-         /NYw==
-X-Gm-Message-State: AOAM5325PzG5ehSyDADnMv6T3L47nEbjX6O32ISjISvXrUL0XNgniy8C
-        MDSLVa1klCc0sdlLtoUDB0M=
-X-Google-Smtp-Source: ABdhPJwnUpgqIvUcI5M6UTN6L8zovE2ZtBhR6BKxEGcxu0V6i/hmnjtzKZD0mPRvkBbZhEVo3IDbig==
-X-Received: by 2002:a05:6a00:21c6:b0:44c:937:fbf3 with SMTP id t6-20020a056a0021c600b0044c0937fbf3mr31598999pfj.2.1635325554176;
-        Wed, 27 Oct 2021 02:05:54 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id k13sm29030348pfc.197.2021.10.27.02.05.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 02:05:53 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     kys@microsoft.com
-Cc:     haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ran jianping <ran.jianping@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] x86/hyperv: remove duplicate include in ivm.c
-Date:   Wed, 27 Oct 2021 09:05:44 +0000
-Message-Id: <20211027090544.2383-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S241043AbhJ0JI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 05:08:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232132AbhJ0JI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 05:08:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2199461039;
+        Wed, 27 Oct 2021 09:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635325561;
+        bh=hBNFBmosy980W50NwGoL+Bn47zg/HLrLHxp0wsfh1TM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fAgpILfQAHf+tHoZMPMLWTYoqWLaBWiBeFTxJNucFW7qiin6IWgtWHEYUpG7tY9wE
+         QmrfdpyaZLm+e/WXJzAwzhJDbD6NoQVzI0S2E9XNqKrLDli9vntedVqPJ/rwmB629q
+         +xZ0w2sOLHRSyj34lzybXbQOBbI5ZkJIMZOalf71JP6YYqSB2+nF0ezrakHF9IRlhK
+         i98CR6XhkZ9Bs+PA5yIUX1w4ly4WlwEehBeHoi5OWCCtUF1a+f7UivX8AuCUPqfxsx
+         lC1bLjascYh7hAoPUqEoUnnxuFOFwPS+ZcihignJ1HSeB7nfPCWUW+Cfx8ey7uLrWp
+         NYtAOtUZxlj9w==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mfesT-00038K-BI; Wed, 27 Oct 2021 11:05:45 +0200
+Date:   Wed, 27 Oct 2021 11:05:45 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Ian Abbott <abbotti@mev.co.uk>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/5] comedi: dt9812: fix DMA buffers on stack
+Message-ID: <YXkWaREjhd1+Law+@hovoldconsulting.com>
+References: <20211025114532.4599-1-johan@kernel.org>
+ <20211025114532.4599-3-johan@kernel.org>
+ <ecdee752-72c3-c48a-fee2-49dccf115d71@mev.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecdee752-72c3-c48a-fee2-49dccf115d71@mev.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ran jianping <ran.jianping@zte.com.cn>
+On Tue, Oct 26, 2021 at 03:27:13PM +0100, Ian Abbott wrote:
+> On 25/10/2021 12:45, Johan Hovold wrote:
+> > USB transfer buffers are typically mapped for DMA and must not be
+> > allocated on the stack or transfers will fail.
+> > 
+> > Allocate proper transfer buffers in the various command helpers and
+> > return an error on short transfers instead of acting on random stack
+> > data.
+> > 
+> > Note that this also fixes a stack info leak on systems where DMA is not
+> > used as 32 bytes are always sent to the device regardless of how short
+> > the command is.
+> > 
+> > Fixes: 63274cd7d38a ("Staging: comedi: add usb dt9812 driver")
+> > Cc: stable@vger.kernel.org      # 2.6.29
+> > Signed-off-by: Johan Hovold <johan@kernel.org>
+> > ---
+> >   drivers/comedi/drivers/dt9812.c | 109 ++++++++++++++++++++++++--------
+> >   1 file changed, 82 insertions(+), 27 deletions(-)
+> > 
+> > diff --git a/drivers/comedi/drivers/dt9812.c b/drivers/comedi/drivers/dt9812.c
+> > index 634f57730c1e..f15c306f2d06 100644
+> > --- a/drivers/comedi/drivers/dt9812.c
+> > +++ b/drivers/comedi/drivers/dt9812.c
+> > @@ -32,6 +32,7 @@
+> >   #include <linux/kernel.h>
+> >   #include <linux/module.h>
+> >   #include <linux/errno.h>
+> > +#include <linux/slab.h>
+> >   #include <linux/uaccess.h>
+> >   
+> >   #include "../comedi_usb.h"
+> > @@ -237,22 +238,41 @@ static int dt9812_read_info(struct comedi_device *dev,
+> >   {
+> >   	struct usb_device *usb = comedi_to_usb_dev(dev);
+> >   	struct dt9812_private *devpriv = dev->private;
+> > -	struct dt9812_usb_cmd cmd;
+> > +	struct dt9812_usb_cmd *cmd;
+> >   	int count, ret;
+> > +	u8 *tbuf;
+> >   
+> > -	cmd.cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
+> > -	cmd.u.flash_data_info.address =
+> > +	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+> > +	if (!cmd)
+> > +		return -ENOMEM;
+> > +
+> > +	cmd->cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
+> > +	cmd->u.flash_data_info.address =
+> >   	    cpu_to_le16(DT9812_DIAGS_BOARD_INFO_ADDR + offset);
+> > -	cmd.u.flash_data_info.numbytes = cpu_to_le16(buf_size);
+> > +	cmd->u.flash_data_info.numbytes = cpu_to_le16(buf_size);
+> >   
+> >   	/* DT9812 only responds to 32 byte writes!! */
+> >   	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
+> > -			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
+> > +			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
+> > +	kfree(cmd);
+> >   	if (ret)
+> >   		return ret;
+> >   
+> > -	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
+> > -			    buf, buf_size, &count, DT9812_USB_TIMEOUT);
+> > +	tbuf = kmalloc(buf_size, GFP_KERNEL);
+> > +	if (!tbuf)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
+> > +			   tbuf, buf_size, &count, DT9812_USB_TIMEOUT);
+> > +	if (!ret) {
+> > +		if (count == buf_size)
+> > +			memcpy(buf, tbuf, buf_size);
+> > +		else
+> > +			ret = -EREMOTEIO;
+> > +	}
+> > +	kfree(tbuf);
+> > +
+> > +	return ret;
+> >   }
+> 
+> I suggest doing all the allocations up front so it doesn't leave an 
+> unread reply message in the unlikely event that the tbuf allocation 
+> fails.  (It could even allocate a single buffer for both the command and 
+> the reply since they are not needed at the same time.)
 
-'linux/types.h' included in 'arch/x86/hyperv/ivm.c'
- is duplicated.It is also included on the 12 line.
-'linux/bitfield.h'included in 'arch/x86/hyperv/ivm.c'
-is duplicated.It is also included on the 13 line.
+These small allocations will currently never fail, but if they ever were
+to, there are other allocations done in the I/O path which would have
+the same effect if they failed. And if this ever happens, you certainly
+have bigger problems than worrying about the state of this device. :)
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
----
- arch/x86/hyperv/ivm.c | 2 --
- 1 file changed, 2 deletions(-)
+That said, I'll see if I can reuse a single buffer without things
+getting too messy.
 
-diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-index 4d012fd9d95d..479201ceae8e 100644
---- a/arch/x86/hyperv/ivm.c
-+++ b/arch/x86/hyperv/ivm.c
-@@ -9,8 +9,6 @@
- #include <linux/types.h>
- #include <linux/bitfield.h>
- #include <linux/hyperv.h>
--#include <linux/types.h>
--#include <linux/bitfield.h>
- #include <linux/slab.h>
- #include <asm/svm.h>
- #include <asm/sev.h>
--- 
-2.25.1
-
+Johan
