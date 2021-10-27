@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC8043C4EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511B543C4F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 10:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240790AbhJ0IUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 04:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238989AbhJ0IUu (ORCPT
+        id S240819AbhJ0IW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 04:22:26 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:44115 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236592AbhJ0IWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 04:20:50 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB20C061570;
-        Wed, 27 Oct 2021 01:18:25 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id s136so2190408pgs.4;
-        Wed, 27 Oct 2021 01:18:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sXRPSN6OlIv6jlVZjC7cOJCLvxxJIsw2Rw1gemHlZyI=;
-        b=Ft+chDfvPPl73yp5hjTRT1amfGEuSr3Uw/MjmPxb3B2mnBsMt35ANthkILFrjF4Z9A
-         yrhDiPMnDNM8t9HjGJGotbc2xqPa02+Vu/IxYf8MU3HrkU047GuGMINGZSNY79dYw/eg
-         4JVev1cxx8rduNhcP+Avw487JjDzl5QTN4HMmG4BoMKGeI8NjWLk4nJuJOhF3ll3Ns5C
-         CGhLDFrNSPNOEPtfZnNAR+PQHInzQNPuHco8Cq63cXLS+Y/QcOSmduxodWlf4lWKosSY
-         aM3jShzSYaFCBnch0wIgZ3V8G0XPoWhA72wq/0xd8R9hN4L9QeKFnwwtG5OVxKEmTUCH
-         S4kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sXRPSN6OlIv6jlVZjC7cOJCLvxxJIsw2Rw1gemHlZyI=;
-        b=ZCAsNbvbNMjyQ7e5xLAoeA7QER/RIovp57JtnuGu2ySWH8YnQ/5MXNHNKnWCzl+hyL
-         x5DpwwmcAcCTcIJvvNapoqCzwch3tGwdGdW0//s/Aun3hfJwhjQQqDPoXO1+aCXhNg+l
-         EhewTT2eDSlLJumsFli1zxqVrZyPbVTMtdISdGDPPnA6X/eaCNVpvpHTwkyvB/tsOqsg
-         QinkXYVXzdDp2fRLQUzEQpeG1pOZKNH57xXxU4rEbhfCkTDdOMKOidQa/Y6gZho/dzfU
-         tVZ/HqZ00405r/f153jmR9f0K05ywsJeqp/z1zUEkiC8PJamHLGo3lmSYxS1piO+bvqk
-         vHfA==
-X-Gm-Message-State: AOAM532pfbUYzddl6LqyZV963BQw3s49FmXBIViZiUPV4CpwTyfVhcnF
-        5DxNTG28Lx7gSpPAjWSyWJykWKRqh1g=
-X-Google-Smtp-Source: ABdhPJxx+7ebJVfHEH0GgucCgPhQHcerTc7P/V5apt64IXnJe6kcSV2KD8C7SpHi9pxXvz/CsWs2UA==
-X-Received: by 2002:aa7:951a:0:b0:47c:608:1f3f with SMTP id b26-20020aa7951a000000b0047c06081f3fmr13167715pfp.30.1635322694535;
-        Wed, 27 Oct 2021 01:18:14 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id p16sm21623141pgd.78.2021.10.27.01.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 01:18:14 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     kys@microsoft.com
-Cc:     haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Wed, 27 Oct 2021 04:22:24 -0400
+Received: (Authenticated sender: peter@korsgaard.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5EA5020009;
+        Wed, 27 Oct 2021 08:19:54 +0000 (UTC)
+Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
+        (envelope-from <peter@korsgaard.com>)
+        id 1mfeA6-0006U4-4d; Wed, 27 Oct 2021 10:19:54 +0200
+From:   Peter Korsgaard <peter@korsgaard.com>
+To:     cgel.zte@gmail.com
+Cc:     santoshkumar.yadav@barco.com, peter.korsgaard@barco.com,
+        hdegoede@redhat.com, markgross@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         ran jianping <ran.jianping@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] x86/hyperv: remove duplicate include in hv_init.c
-Date:   Wed, 27 Oct 2021 08:18:08 +0000
-Message-Id: <20211027081808.2099-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] platform/x86: remove duplicate include in barco-p50-gpio.c
+References: <20211027081516.1865-1-ran.jianping@zte.com.cn>
+Date:   Wed, 27 Oct 2021 10:19:54 +0200
+In-Reply-To: <20211027081516.1865-1-ran.jianping@zte.com.cn> (cgel zte's
+        message of "Wed, 27 Oct 2021 08:15:16 +0000")
+Message-ID: <87v91iriad.fsf@dell.be.48ers.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ran jianping <ran.jianping@zte.com.cn>
+>>>>> "cgel" == cgel zte <cgel.zte@gmail.com> writes:
 
-'linux/io.h' included in 'arch/x86/hyperv/hv_init.c'
- is duplicated.It is also included on the 23 line.
+ > From: ran jianping <ran.jianping@zte.com.cn>
+ > 'linux/io.h' included in 'drivers/platform/x86/barco-p50-gpio.c'
+ >  is duplicated.It is also included on the 17 line.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
----
- arch/x86/hyperv/hv_init.c | 1 -
- 1 file changed, 1 deletion(-)
+ > Reported-by: Zeal Robot <zealci@zte.com.cn>
+ > Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
+ > ---
+ >  drivers/platform/x86/barco-p50-gpio.c | 1 -
+ >  1 file changed, 1 deletion(-)
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index a16a83e46a30..4fb7c7bb164e 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -20,7 +20,6 @@
- #include <linux/kexec.h>
- #include <linux/version.h>
- #include <linux/vmalloc.h>
--#include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/hyperv.h>
- #include <linux/slab.h>
+ > diff --git a/drivers/platform/x86/barco-p50-gpio.c b/drivers/platform/x86/barco-p50-gpio.c
+ > index f5c72e33f9ae..bb8ed8e95225 100644
+ > --- a/drivers/platform/x86/barco-p50-gpio.c
+ > +++ b/drivers/platform/x86/barco-p50-gpio.c
+ > @@ -14,7 +14,6 @@
+ >  #include <linux/delay.h>
+ >  #include <linux/dmi.h>
+ >  #include <linux/err.h>
+ > -#include <linux/io.h>
+
+It probably makes more sense to drop the include from line 17 to keep
+alphabetical ordering, but otherwise it looks good to.
+
+With that fixed:
+
+Acked-by: Peter Korsgaard <peter@korsgaard.com>
+
 -- 
-2.25.1
-
+Bye, Peter Korsgaard
