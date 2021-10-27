@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B40D43C095
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50CE43C09D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 05:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237806AbhJ0DQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Oct 2021 23:16:26 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:41894 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233962AbhJ0DQZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Oct 2021 23:16:25 -0400
-Received: by mail-ot1-f45.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so1663369ote.8;
-        Tue, 26 Oct 2021 20:14:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QZsgutcYXburh6Om3gxFfVkZQgm5rcUqHCp1VMGBB+c=;
-        b=DD85eIA19kt/W1rYc1LnhNG4e71DeR4hgZYzzyIX1U5IfToP+paDESEVJZXluTs3wE
-         Btdhco5IhmoLtSr9yFZ91J9Gems8iY0jtyHFEyEa4og7vh3v0lTdjrcwED82z/U8YfCh
-         auClgKkap7sHuOhYLYvG1tptpJB00hk+JjRuVgGCLvxINexsUMcLybVbR3pKW0SWaBc9
-         IkFhmOTqVst1ymeR9oTq4pBpFoq5M4/uIgLnKyO6vLxSi8IgBLQpmAWU6PjyLKRCEb/w
-         c+oKMjMv1QnPvDmAl8aTxgd1A8og99xB6r9FvK1n/Du7OChKo8e3TGWwNF5QPag7hZ+p
-         OSKw==
-X-Gm-Message-State: AOAM530PqF3CVv6ts4JAvOtgsocT/o15Dqhhe3DpVO2GdvZH9EymdVFy
-        l9AQWyeFVMwrGEY0zKf5dQ==
-X-Google-Smtp-Source: ABdhPJwsYa2fg2xp4ZMiq9mRoWd9HVle2S+Y17/gYBC7E9sJazBCcIUaMe9RAMjnpV09dzXgvdCOfA==
-X-Received: by 2002:a05:6830:30a1:: with SMTP id g1mr22610662ots.54.1635304440594;
-        Tue, 26 Oct 2021 20:14:00 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r131sm1199208oib.27.2021.10.26.20.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 20:13:59 -0700 (PDT)
-Received: (nullmailer pid 3948938 invoked by uid 1000);
-        Wed, 27 Oct 2021 03:13:58 -0000
-Date:   Tue, 26 Oct 2021 22:13:58 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     p.zabel@pengutronix.de, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: reset: lan966x phy reset driver bindings
-Message-ID: <YXjD9o8ws5KWlafb@robh.at.kernel.org>
-References: <20211019115205.1516311-1-horatiu.vultur@microchip.com>
- <20211019115205.1516311-2-horatiu.vultur@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211019115205.1516311-2-horatiu.vultur@microchip.com>
+        id S238975AbhJ0DQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Oct 2021 23:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237793AbhJ0DQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Oct 2021 23:16:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C40B6058D;
+        Wed, 27 Oct 2021 03:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635304464;
+        bh=ThmsX7usvNVCUGc6vRHvY2s821PYyElO4mQiqD8wrzU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EUOzOwdfvn97rW1qcnes1+sFYWubQ4M7PV6nC5HDc/LDKp4blNQJU4m/LyC/uY8mr
+         WynYYh86a2GO6J3lmfvh9OAQw1ambNYjoe9CJbJkwydWTvya978QnPKLTqVGjD2Hqz
+         Qj77CL4/h9aFnEUQ8h0JwqKnIoPIQ/pfDuk+3QKU3t6x/Nwe4dI1fmidYqCFx81fIG
+         b5VnIxpESJL+odRoacfxThD+6hlg9xfr3tn3rslhi6KH69YFLka34UFMydJH5hFxYh
+         xTCPia1ip9H+z9QwBo8zk5UlRHRAhWF1YGF97YKCPTA9Kli+8fCCgfZ3wzhO6sWFyD
+         l3LsXnijB544g==
+Date:   Wed, 27 Oct 2021 12:14:20 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, surenb@google.com,
+        hridya@google.com, namhyung@kernel.org, kernel-team@android.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 7/8] tracing/selftests: Add tests for hist trigger
+ expression parsing
+Message-Id: <20211027121420.03a09fca1efc414189bb40bb@kernel.org>
+In-Reply-To: <CAC_TJvf8areGd1rQMbJV4r+J6JP2-DWXBLQwKRZEOzNWL_rqrQ@mail.gmail.com>
+References: <20211025200852.3002369-1-kaleshsingh@google.com>
+        <20211025200852.3002369-8-kaleshsingh@google.com>
+        <20211026214311.583c728d90d41778c38201dd@kernel.org>
+        <CAC_TJvfQQCyuSZqjzC0fuAah84uLgHJv5T+WtR8=9h5fN9nrLA@mail.gmail.com>
+        <20211026174420.0056bde2@gandalf.local.home>
+        <CAC_TJveMumb=BkGL53d_rS08uQ35fz1B7cM9jp8eKoCz0MUG_Q@mail.gmail.com>
+        <20211026202020.026e7907@rorschach.local.home>
+        <CAC_TJvf8areGd1rQMbJV4r+J6JP2-DWXBLQwKRZEOzNWL_rqrQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 01:52:04PM +0200, Horatiu Vultur wrote:
-> Document the lan966x phy reset device driving bindings.
-> It is using register access for the internal PHYs and toggles
-> GPIO for external PHYs.
+Hi Kalesh,
+
+On Tue, 26 Oct 2021 18:15:34 -0700
+Kalesh Singh <kaleshsingh@google.com> wrote:
+
+> On Tue, Oct 26, 2021 at 5:20 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Tue, 26 Oct 2021 16:36:03 -0700
+> > Kalesh Singh <kaleshsingh@google.com> wrote:
+> >
+> > > On my setup I without any of the changes applied (config hist triggers enabled):
+> > >
+> > > ./ftracetests
+> > >
+> > > # of passed:  41
+> > > # of failed:  40
+> > > # of unresolved:  0
+> > > # of untested:  0
+> > > # of unsupported:  32
+> > > # of xfailed:  0
+> > > # of undefined(test bug):  0
+> > >
+> > > Do all the tests pass for you, before any of the changes in this
+> > > series? Maybe some of the tests need updating?
+> >
+> > All my tests past, and I don't push any code if they fail.
+> >
+> > I'd like to understand why you have these failures. Are the test from
+> > the kernel you are testing?
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  .../bindings/reset/lan966x-phy,rst.yaml       | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml b/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
-> new file mode 100644
-> index 000000000000..35a32458cafe
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reset/lan966x-phy,rst.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/reset/lan966x-phy,rst.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Microchip Lan966x PHY Reset
-> +
-> +maintainers:
-> +  - Horatiu Vultur <horatiu.vultur@microchip.com>
-> +
-> +description: |
-> +  The Microchip Lan966x Switch provides 2 internal PHY which needs to be
-> +  released from reset before they can be accessed. Also it might have external
-> +  PHYs which requires to toggle a GPIO before the access to the PHYs.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^phy-reset@[0-9a-f]+$"
+> The results are from the kernel before I apply any of the patches. I
+> am testing on an Android emulator (cuttlefish) with 5.15.0-rc6 kernel.
+> The tests clearly work so it must be something on my end. I'll
+> investigate and get back to you.
 
-^reset-controller@[0-9a-f]+$
+Interesting. There should be test logs under logs/ directory in the
+ftracetest. Can you share the logs/*/ftracetest.log and your kernel kconfig?
 
-> +
-> +  compatible:
-> +    const: microchip,lan966x-phy-reset
-> +
-> +  reg:
-> +    items:
-> +      - description: internal phy reset registers
+Thank you,
 
-Just: maxItems: 1
 
-> +
-> +  reg-names:
-> +    const: phy
-
-Not all that useful with only 1 entry.
-
-> +
-> +  "#reset-cells":
-> +    const: 1
-> +
-> +  external-phy-reset-gpios:
-> +    description: used for release of reset of the external PHY
-> +    maxItems: 1
-
-This belongs in the external PHY's node.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - "#reset-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    phy_reset: phy-reset@e2010010 {
-> +        compatible = "microchip,lan966x-phy-reset";
-> +        reg = <0xe2010010 0x14>;
-> +        reg-names = "phy";
-> +        #reset-cells = <1>;
-> +    };
-> -- 
-> 2.33.0
-> 
-> 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
