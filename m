@@ -2,166 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A0D43D36A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7616843D368
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244167AbhJ0VCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244160AbhJ0VCx (ORCPT
+        id S244159AbhJ0VCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:02:52 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:40526 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237236AbhJ0VCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:02:53 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E6FC061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:00:27 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id d6-20020a63d646000000b00268d368ead8so2156048pgj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 14:00:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=SdbyZiNQ4LiMxmB2YhYdQuIseQ920FQ9o4MrrCvG7tM=;
-        b=dHaDKVwDNSZBeGyeNhMjTQIOFLsMxJ8Nd5psJlS/RRb39poaQwp3vTOEMJghwBPmwZ
-         YrU7vuea9ypx0AdSkZsH0z3FKZadGC7VEqoi5ltjkC74PwR8a0tZphDp/ehkh3PQwrQ6
-         9bO1NDO7GTiZyH/vx+qu8h9AB7Tyx2+dMTvm6ozruam1hJ1hOiw4L98B0t9+vopLBHA9
-         Yr1R5PLstW6gSlsg0eykjELz/DeivF720v1CFY6AAeCYX5i+leDARtf4jvcoKTJry69K
-         NjheHNzPe88PP15hppLg2gs7BNkTlSsXNXZs0y/OVFLkcl550VG03iV42OZTISA1+pFM
-         2xxQ==
+        Wed, 27 Oct 2021 17:02:51 -0400
+Received: by mail-oi1-f170.google.com with SMTP id n63so5270185oif.7;
+        Wed, 27 Oct 2021 14:00:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=SdbyZiNQ4LiMxmB2YhYdQuIseQ920FQ9o4MrrCvG7tM=;
-        b=uC3GiSLcmFWme+o9IiMQyLjMOGyuG6YkwrnHT+Ats6l/ZinJaSlU8fuciSY3en+tDN
-         3qrNzSlqyTJ0DhODIG46tFZDmKBFQhjkPkZFS1c5j5l7jrFQ2iBruu8rehVKGyAP6eR4
-         GyFvt7Dw3wsTVcwGtlMOPQ99N8qa/LgxBdaiuPMsV/K6mCuzsC9XU+yV7jgTi2eYJ39E
-         3JYlHU1uYzFYWwvUp+sPcFeUlMvBVXamh2zXRcoiJ65CrVPUFHYzEzowOVydiDAQ86t/
-         cpm1fP3vHiJY6Kvu8aq+QmwZ5C3yJ2N8oJcNysKLZWMOGVQHMY1FhAeJ2by/3GRp6Pkg
-         ioHQ==
-X-Gm-Message-State: AOAM531PzP1dTEuI03N/SHa2Ld7S9oQkDITRDg6X56Rf6VB9s0auzy3s
-        x5qY6YRNNUjqJP8bqLSA9xhTrLFsm1dEKKw54A==
-X-Google-Smtp-Source: ABdhPJzk+4wCnwzsBsYgw3jRdzH6WJEm2BS0UpBvlX8mr693q5unlLTnR17AAmB4YJ5xCOfVMUDKQPMO2AVZiCNLiA==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:ac51:b6be:9b51:3a7c])
- (user=kaleshsingh job=sendgmr) by 2002:a05:6a00:8d0:b0:44c:26e6:1c13 with
- SMTP id s16-20020a056a0008d000b0044c26e61c13mr60235pfu.28.1635368426770; Wed,
- 27 Oct 2021 14:00:26 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 13:59:10 -0700
-In-Reply-To: <20211027205919.1648553-1-kaleshsingh@google.com>
-Message-Id: <20211027205919.1648553-4-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20211027205919.1648553-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v5 3/3] tracing/selftests: Add tests for hist trigger
- expression parsing
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Feu+ijj0c1uWGjND40NWm9tPo385lhiJ4ge94odhHmc=;
+        b=ITKUMaioZy07QMqpnREdN0GTDToj1qK9jdVXNIqeC3umGvi3rUflKWqn6tZSk66rkA
+         iXgxR7VXOdPazsBPmvwM+8+1dmTxqLrh7UoiX9Xf0GGvlWlf/PGVygwgq7mzEMdke+Eq
+         0p46XjPoX+h97tMBrTYha9bOA7AZRRWhm7xSE8sm5yv0yP9AV2kOp51i4vHgvYyParQ2
+         /DgBasnu8vdGW/ZG1J8INnIqzYLLa5cvez4+rkFDfyeSOkRz4sWy9iryXm51KJew98Av
+         QlVOi4jNs7GXh2NnwEB02Arzh3UM0eEMcd7Ti+iLsHIbDAw8kCk6zjydV0gDErwDrpWQ
+         DBvA==
+X-Gm-Message-State: AOAM5338c/zkoYLKNhquPScvRBQxq7KQbfN8K2qWTrQQbDPneu0AqdAK
+        C/nz2G3fVLQg48ZMn6INJg==
+X-Google-Smtp-Source: ABdhPJylT8TaIy/PSzoJWNra3P3eLuzS9TTUapyqBHmGBfyMLk6jEEbO9IiD09ubpm5qUGK4Xq/xRg==
+X-Received: by 2002:aca:1818:: with SMTP id h24mr5422542oih.76.1635368424951;
+        Wed, 27 Oct 2021 14:00:24 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id d16sm356516otq.33.2021.10.27.14.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 14:00:24 -0700 (PDT)
+Received: (nullmailer pid 2149644 invoked by uid 1000);
+        Wed, 27 Oct 2021 21:00:22 -0000
+Date:   Wed, 27 Oct 2021 16:00:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        srinivas.kandagatla@linaro.org, perex@perex.cz, broonie@kernel.org,
+        bjorn.andersson@linaro.org, bgoswami@codeaurora.org,
+        tiwai@suse.com, rohitkr@codeaurora.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, judyhsiao@chromium.org,
+        lgirdwood@gmail.com, robh+dt@kernel.org, plai@codeaurora.org,
+        agross@kernel.org, Venkata Prasad Potturu <potturu@codeaurora.org>
+Subject: Re: [PATCH v4 2/3] dt-bindings: soundwire: qcom: Add bindings for RX
+ and TX cgcr register control
+Message-ID: <YXm95p7XmvVWjV/w@robh.at.kernel.org>
+References: <1635250764-13994-1-git-send-email-srivasam@codeaurora.org>
+ <1635250764-13994-3-git-send-email-srivasam@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635250764-13994-3-git-send-email-srivasam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests for the parsing of hist trigger expressions; and to
-validate expression evaluation.
+On Tue, 26 Oct 2021 17:49:23 +0530, Srinivasa Rao Mandadapu wrote:
+> Update description for RX and TX cgcr register control property required for
+> soundwire version 1.6.0 and above.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/soundwire/qcom,sdw.txt | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
-Changes in v5:
-  - Add README pattern to requires tag, per Masami
-
-Changes in v3:
-  - Remove .sym-offset error check tests
-
-Changes in v2:
-  - Add Namhyung's Reviewed-by
-  - Update comment to clarify err_pos in "Too many subexpressions" test
-
- .../trigger/trigger-hist-expressions.tc       | 72 +++++++++++++++++++
- 1 file changed, 72 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-new file mode 100644
-index 000000000000..9690f9f809e7
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-@@ -0,0 +1,72 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: event trigger - test histogram expression parsing
-+# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log "<var1>=<field|var_ref|numeric_literal>":README
-+
-+
-+fail() { #msg
-+    echo $1
-+    exit_fail
-+}
-+
-+get_hist_var() { #var_name hist_path
-+    hist_output=`grep -m1 "$1: " $2`
-+    hitcount=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "hitcount:") print $(i+1)} }'`
-+    var_sum=`echo $hist_output | awk '{ for (i=1; i<=NF; ++i) { if ($i ~ "'$1':") print $(i+1)} }'`
-+    var_val=$(( var_sum / hitcount ))
-+    echo $var_val
-+}
-+
-+test_hist_expr() { # test_name expression expected_val
-+    reset_trigger
-+
-+    echo "Test hist trigger expressions - $1"
-+
-+    echo "hist:keys=common_pid:x=$2" > events/sched/sched_process_fork/trigger
-+    echo 'hist:keys=common_pid:vals=$x' >> events/sched/sched_process_fork/trigger
-+    for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-+
-+    actual=`get_hist_var x events/sched/sched_process_fork/hist`
-+
-+    if [ $actual != $3 ]; then
-+        fail "Failed hist trigger expression evaluation: Expression: $2 Expected: $3, Actual: $actual"
-+    fi
-+
-+    reset_trigger
-+}
-+
-+check_error() { # test_name command-with-error-pos-by-^
-+    reset_trigger
-+
-+    echo "Test hist trigger expressions - $1"
-+    ftrace_errlog_check 'hist:sched:sched_process_fork' "$2" 'events/sched/sched_process_fork/trigger'
-+
-+    reset_trigger
-+}
-+
-+test_hist_expr "Variable assignment" "123" "123"
-+
-+test_hist_expr "Subtraction not associative" "16-8-4-2" "2"
-+
-+test_hist_expr "Division not associative" "64/8/4/2" "1"
-+
-+test_hist_expr "Same precedence operators (+,-) evaluated left to right" "16-8+4+2" "14"
-+
-+test_hist_expr "Same precedence operators (*,/) evaluated left to right" "4*3/2*2" "12"
-+
-+test_hist_expr "Multiplication evaluated before addition/subtraction" "4+3*2-2" "8"
-+
-+test_hist_expr "Division evaluated before addition/subtraction" "4+6/2-2" "5"
-+
-+# Division by zero returns -1
-+test_hist_expr "Handles division by zero" "3/0" "-1"
-+
-+# err pos for "too many subexpressions" is dependent on where
-+# the last subexpression was detected. This can vary depending
-+# on how the expression tree was generated.
-+check_error "Too many subexpressions" 'hist:keys=common_pid:x=32+^10*3/20-4'
-+check_error "Too many subexpressions" 'hist:keys=common_pid:x=^1+2+3+4+5'
-+
-+check_error "Unary minus not supported in subexpression" 'hist:keys=common_pid:x=-(^1)+2'
-+
-+exit 0
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+Acked-by: Rob Herring <robh@kernel.org>
