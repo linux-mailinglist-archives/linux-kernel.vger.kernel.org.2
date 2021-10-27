@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAAF43D2F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B00C43D2F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 22:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243911AbhJ0Uic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 16:38:32 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:33412 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243907AbhJ0Uia (ORCPT
+        id S243969AbhJ0Ujq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 16:39:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22608 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243937AbhJ0Ujo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:38:30 -0400
-Received: by mail-oi1-f172.google.com with SMTP id q129so5256197oib.0;
-        Wed, 27 Oct 2021 13:36:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tCPDN2NKy7zH086MRPJsgjN8SkN7UBBWbdtpfQKyI0A=;
-        b=Xm/yfBqxW5ZBQ+SB68Dun7iiIsTqjbg2iDdGhKP1CopxM0uIYZ9LPO0el3zLHyBCE9
-         U+/6qIfPtSn4qYQ6bZlqE/17/t38S2DRvMcgTnyVZEOpMMA64EwhYUwsRU1vmHXQZIhy
-         psUOiSuXtAfgt/lPSJ9+UkYDcZjWdWbpc4Um3WFZZXC3N4PXIrpgp0H7ZoUgaiKzE09x
-         GkDspQh584U/jndeCS9IVHM0Z/W70dLIOCHksqMuGp5+OmM6wziklETOlXxvKIqWBF9L
-         DZLq8/x6C6j/sgD3zFxcKxf1bbLZENyWhmpFrhnha7ALW+l0gJ/VPomzoFOXJYnnDRHo
-         4ZrA==
-X-Gm-Message-State: AOAM53389n0Xbm36r569MANglAmgLL2E/oYYBY5Id52p6mzlrY9k8UQ4
-        lLxoplaIhfXgLKYM3s4wzA==
-X-Google-Smtp-Source: ABdhPJwnEQUmsz6P+GvWdlDpiiibtPU66ZBDUY/rV2fjBdmNCZBaPJ74/HkGtZ8ClE+MZV4fYaScQg==
-X-Received: by 2002:a05:6808:ec9:: with SMTP id q9mr5245501oiv.160.1635366963931;
-        Wed, 27 Oct 2021 13:36:03 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id n17sm363474oic.21.2021.10.27.13.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 13:36:03 -0700 (PDT)
-Received: (nullmailer pid 2108583 invoked by uid 1000);
-        Wed, 27 Oct 2021 20:36:02 -0000
-Date:   Wed, 27 Oct 2021 15:36:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        linux-pm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH RESEND v5 3/5] dt-bindings: interconnect: Add Qualcomm
- MSM8996 DT bindings
-Message-ID: <YXm4MiOiA0HL+Q9w@robh.at.kernel.org>
-References: <20211021132329.234942-1-y.oudjana@protonmail.com>
- <20211021132329.234942-4-y.oudjana@protonmail.com>
+        Wed, 27 Oct 2021 16:39:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635367038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HMeHxvkrIXoskqvvjCVbvSOKzxFlMmMPMGH4IRICiLE=;
+        b=AuHlPCRNfMYaJg0DhQnQStSfr6QSFxwOcBV4LlcVgZsg/iHqYQTOPEtjpuIIE81Zs6tZeH
+        ZB/Ra75U7Igob1gZzhgaP3p5/bfFVlsB6N1OvnW4IeydjwU6KIKUJIddQ28gF9ptX4E6Io
+        yLeriqQQ+EoV9FrRZFlj1n/Wwdx03Gc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-EP9f_yuHMIqt26ILqORw-A-1; Wed, 27 Oct 2021 16:37:14 -0400
+X-MC-Unique: EP9f_yuHMIqt26ILqORw-A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86A371014BEC;
+        Wed, 27 Oct 2021 20:37:13 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.34.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6423860BF1;
+        Wed, 27 Oct 2021 20:37:13 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id E9BC4220562; Wed, 27 Oct 2021 16:37:12 -0400 (EDT)
+Date:   Wed, 27 Oct 2021 16:37:12 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>
+Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
+Message-ID: <YXm4eNztvEyGGp4L@redhat.com>
+References: <20211025204634.2517-1-iangelak@redhat.com>
+ <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
+ <YXgqRb21hvYyI69D@redhat.com>
+ <CAOQ4uxhpCKK2MYxSmRJYYMEWaHKy5ezyKgxaM+YAKtpjsZkD-g@mail.gmail.com>
+ <YXhIm3mOvPsueWab@redhat.com>
+ <CAO17o20sdKAWQN6w7Oe0Ze06qcK+J=6rrmA_aWGnY__MRVDCKw@mail.gmail.com>
+ <CAOQ4uxhA+f-GZs-6SwNtSYZvSwfsYz4_=8_tWAUqt9s-49bqLw@mail.gmail.com>
+ <20211027132319.GA7873@quack2.suse.cz>
+ <YXm2tAMYwFFVR8g/@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211021132329.234942-4-y.oudjana@protonmail.com>
+In-Reply-To: <YXm2tAMYwFFVR8g/@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Oct 2021 13:24:54 +0000, Yassine Oudjana wrote:
-> Add bindings for interconnects on Qualcomm MSM8996.
+On Wed, Oct 27, 2021 at 04:29:41PM -0400, Vivek Goyal wrote:
+> On Wed, Oct 27, 2021 at 03:23:19PM +0200, Jan Kara wrote:
+> > On Wed 27-10-21 08:59:15, Amir Goldstein wrote:
+> > > On Tue, Oct 26, 2021 at 10:14 PM Ioannis Angelakopoulos
+> > > <iangelak@redhat.com> wrote:
+> > > > On Tue, Oct 26, 2021 at 2:27 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+> > > > The problem here is that the OPEN event might still be travelling towards the guest in the
+> > > > virtqueues and arrives after the guest has already deleted its local inode.
+> > > > While the remote event (OPEN) received by the guest is valid, its fsnotify
+> > > > subsystem will drop it since the local inode is not there.
+> > > >
+> > > 
+> > > I have a feeling that we are mixing issues related to shared server
+> > > and remote fsnotify.
+> > 
+> > I don't think Ioannis was speaking about shared server case here. I think
+> > he says that in a simple FUSE remote notification setup we can loose OPEN
+> > events (or basically any other) if the inode for which the event happens
+> > gets deleted sufficiently early after the event being generated. That seems
+> > indeed somewhat unexpected and could be confusing if it happens e.g. for
+> > some directory operations.
 > 
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
-> ---
-> Changes since v4:
->  - Rebase on Dmitry's icc-rpm patches.
->  - Add support for Aggregate 0 NoC (a0noc).
-> Changes since v2:
->  - Dual-license qcom,msm8996.h and move it to the dt bindings patch
+> Hi Jan,
 > 
->  .../bindings/interconnect/qcom,rpm.yaml       |  42 +++++
->  .../dt-bindings/interconnect/qcom,msm8996.h   | 163 ++++++++++++++++++
->  2 files changed, 205 insertions(+)
->  create mode 100644 include/dt-bindings/interconnect/qcom,msm8996.h
-> 
+> Agreed. That's what Ioannis is trying to say. That some of the remote events
+> can be lost if fuse/guest local inode is unlinked. I think problem exists
+> both for shared and non-shared directory case.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thinking more about it, one will need remote fsnotify support only if
+this is a case of shared direcotry. If there are no clients doing parallel
+operations in shared dir (like dropping some new files), then local
+inotify should be good enough. And I think Ioannis mentioned that local
+inotify already work with fuse.
+
+For example, kata container developers wanted to use inotify on virtiofs,
+because a process on host (kubernetes?) will update some sort of config
+file in shared directory. They wanted to monitor that config in guest,
+get an inotify event and then act on updated config file. That's the
+case of shared dir.
+
+Given we do not support inotify yet, I think they went ahead with some
+sort of polling mechanism to take care of there use case.
+
+Thanks
+Vivek
+
