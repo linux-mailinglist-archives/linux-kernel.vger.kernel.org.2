@@ -2,56 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9607543D5D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC8A43D5F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 23:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhJ0Vet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 17:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
+        id S233228AbhJ0Vmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 17:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233046AbhJ0Vem (ORCPT
+        with ESMTP id S230356AbhJ0Vma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 17:34:42 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E707C061767;
-        Wed, 27 Oct 2021 14:32:16 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w12so15826637edd.11;
-        Wed, 27 Oct 2021 14:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0eLs1vKCdD9fRUqUY5RcYH11tOWYmTj/mhP+WyCuSws=;
-        b=bFn4mtu1GV4VL42GOaedj6+RTGWTSaRL10vA5lMTwhC9f/TSuaIgj4vt/kiSeQ0OG6
-         fZ7xUcbnD42u3FPpAML/7jbHVZRVs5vYJ4dG/COcZsYuLhtJLwRuOT6RklhqOYU3xSwC
-         LF6rdT+paQcIxhvWydHu3rpYUCbUgg+WGJWKx+9zyL4N1RD8BRrrT6omtw9lbGPHT0ui
-         fAZvCDSwqDILwokQeYTIqPvq6xNGHPoF4xkS4cHJnY6kWyqnENKL2pVuAR6Xj/tiOdya
-         8vGdaBx8VAVmMLjuT1/uh+3Vqb0cy73hZ2kpPm/es7QPo7SaiToP7Y3/HVXL1I9gMeXx
-         tIsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0eLs1vKCdD9fRUqUY5RcYH11tOWYmTj/mhP+WyCuSws=;
-        b=sieJ5aUag8Ltn68ftY5R5M/YIAFSpnCQxlLX5ZaWi5RIEc84cP7Rl/Mxr9lflazA4V
-         rRM8t79dtYghQ/EWmv7996elBKnvDk/PeC/Fhb3y2KFFVmof8fLL0wE5qn3n3Q0Kn8S4
-         VOZRMslwoXKYgVJW8sS7WhKMO6SVUPQRvHND14BRv/YOZcXe7UbspAwhLt1WmSek+xaP
-         SkA++3MBxqS8uiLR/3Lddgy770Sv6wjeEArwkkKuGeKcIAI++nKuwdfabXgKl9Q7VESL
-         tl1HirLzkAWcFG9QDnTd1xLYh1IX9RQWcAcwj6ZslAEYu8IfMWRmRK4fo6G/jwPNe3p2
-         gWtQ==
-X-Gm-Message-State: AOAM5330Po68zSzvVCQy8lDtyR8PDxJE4I0T8TsEwqJ//5kc4MSIMBnS
-        BQbWAVUtinbfzbM3V76SHyHbkD1YwiLw6WjRIcSbf5SMq3s=
-X-Google-Smtp-Source: ABdhPJxi08ueX1uJIQi3nNiPcLn92zuct9e+mWkRd0nfv01nssBA6LRbHDXqZtemi0VUtjzqzBhq3Z7fF4/sGrBMX7c=
-X-Received: by 2002:a50:8d52:: with SMTP id t18mr489479edt.71.1635370334982;
- Wed, 27 Oct 2021 14:32:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211027195221.3825-1-shy828301@gmail.com> <YXm7kHy8uTN1+RRc@casper.infradead.org>
-In-Reply-To: <YXm7kHy8uTN1+RRc@casper.infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 27 Oct 2021 14:32:02 -0700
-Message-ID: <CAHbLzkrV1SuqZ8750yD6ZDM9D9uc8svrJ_gARrESq0kMspg+uw@mail.gmail.com>
-Subject: Re: [PATCH] mm: khugepaged: skip huge page collapse for special files
-To:     Matthew Wilcox <willy@infradead.org>
+        Wed, 27 Oct 2021 17:42:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B96C061570;
+        Wed, 27 Oct 2021 14:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mj+64iVUFU770oqi2STnF0e0M2cIBSTKCrEACVMYR0Q=; b=danKNLwLstO6xW/jQipEHusI9v
+        K5jANdbG4bqgWj5/hnetwQn4FPcjzGYhpRM5BuflIgJOw5iBXfKF3c+KUeUk6IEREAS+J2+hh0P/6
+        PP5JV16GvTHfhbLqa9sFRthQzdCVxZaGEa6/eR/sC/h/SdNaVuIo0zrf87wW7rcauxTjnm895u6bW
+        EbakBCT9ZP8MadkxT96NXYvrD1UhVC5hR1vUTu11Z+5ywyV2g85xM8cgK6WV2NLWLgZibxn+HO9nJ
+        4A6+x9b8RwgIW2CJfLhmlrtUzT/ggfmGp+SzqUPDULYekHsQ8fRB/Yjo4tDJOw6+8UE6TOOlR4MM5
+        DfA3459Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfqbV-000Kzm-Eo; Wed, 27 Oct 2021 21:37:24 +0000
+Date:   Wed, 27 Oct 2021 22:37:01 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yang Shi <shy828301@gmail.com>
 Cc:     Hugh Dickins <hughd@google.com>, Hao Sun <sunhao.th@gmail.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Song Liu <songliubraving@fb.com>,
@@ -60,54 +38,23 @@ Cc:     Hugh Dickins <hughd@google.com>, Hao Sun <sunhao.th@gmail.com>,
         Linux MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] mm: khugepaged: skip huge page collapse for special files
+Message-ID: <YXnGfaw5fh8aBNnG@casper.infradead.org>
+References: <20211027195221.3825-1-shy828301@gmail.com>
+ <YXm7kHy8uTN1+RRc@casper.infradead.org>
+ <CAHbLzkrV1SuqZ8750yD6ZDM9D9uc8svrJ_gARrESq0kMspg+uw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkrV1SuqZ8750yD6ZDM9D9uc8svrJ_gARrESq0kMspg+uw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 1:50 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Oct 27, 2021 at 12:52:21PM -0700, Yang Shi wrote:
-> > +++ b/mm/khugepaged.c
-> > @@ -445,22 +445,25 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
-> >       if (!transhuge_vma_enabled(vma, vm_flags))
-> >               return false;
-> >
-> > -     /* Enabled via shmem mount options or sysfs settings. */
-> > -     if (shmem_file(vma->vm_file) && shmem_huge_enabled(vma)) {
-> > +     if (vma->vm_file)
-> >               return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
-> >                               HPAGE_PMD_NR);
-> > -     }
-> > +
-> > +     /* Enabled via shmem mount options or sysfs settings. */
-> > +     if (shmem_file(vma->vm_file))
-> > +             return shmem_huge_enabled(vma);
->
-> This doesn't make sense to me.  if vma->vm_file, we already returned,
-> so this is dead code.
+On Wed, Oct 27, 2021 at 02:32:02PM -0700, Yang Shi wrote:
+> > This doesn't make sense to me.  if vma->vm_file, we already returned,
+> > so this is dead code.
+> 
+> Yes, Song mentioned the same thing. Fixed by an incremental patch.
 
-Yes, Song mentioned the same thing. Fixed by an incremental patch.
-
->
-> >       /* THP settings require madvise. */
-> >       if (!(vm_flags & VM_HUGEPAGE) && !khugepaged_always())
-> >               return false;
-> >
-> > -     /* Read-only file mappings need to be aligned for THP to work. */
-> > +     /* Only regular file is valid */
-> >       if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
-> > -         !inode_is_open_for_write(vma->vm_file->f_inode) &&
-> >           (vm_flags & VM_EXEC)) {
-> > -             return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
-> > -                             HPAGE_PMD_NR);
-> > +             struct inode *inode = vma->vm_file->f_inode;
-> > +
-> > +             return !inode_is_open_for_write(inode) &&
-> > +                     S_ISREG(inode->i_mode);
-> >       }
-> >
-> >       if (!vma->anon_vma || vma->vm_ops)
-> > --
-> > 2.26.2
-> >
+I saw that after I sent this.  My email sometimes arrives slowly.
