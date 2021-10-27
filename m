@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CEA43CF9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B7D43CF9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 19:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238212AbhJ0RZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 13:25:50 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34014 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232329AbhJ0RZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:25:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=xYqWqnNTYblorxJSKWICYNXuprkqD63Vt4PUk5Lzeb8=; b=AMVbIQmqzSTQvatVfYwNEWu09n
-        Jgp2AnaAirNSQIxo0sjtKDPHBFV2osLPss77sgQjhAoJFrnqEWz/dTMDxIp/MYP+8adCg5ezAygNY
-        ff2rfKXC04DoiVdD7pnT7V8Uy7CZAb7OeAUHMpL8+nR0GJYDvrwa00lX/0lRUCTQnNpI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mfmdv-00Bv5N-EP; Wed, 27 Oct 2021 19:23:15 +0200
-Date:   Wed, 27 Oct 2021 19:23:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, wangjie125@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lipeng321@huawei.com, chenhao288@hisilicon.com
-Subject: Re: [PATCH net 1/7] net: hns3: fix pause config problem after
- autoneg disabled
-Message-ID: <YXmLA4AbY83UV00f@lunn.ch>
-References: <20211027121149.45897-1-huangguangbin2@huawei.com>
- <20211027121149.45897-2-huangguangbin2@huawei.com>
+        id S243237AbhJ0R0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 13:26:22 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:42848 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232329AbhJ0R0U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:26:20 -0400
+Received: by mail-oi1-f181.google.com with SMTP id g125so4387932oif.9;
+        Wed, 27 Oct 2021 10:23:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/7zZvIfv3CsZqjoYb0Mz7kBVQSW9A8D+jJ6CWe5XNmw=;
+        b=gCIb0wzJEjJbmsTA7REnV9WkTLiJKH2+ZjnBm7a9xDsLMq1W5L3vm/RTyPPhwagw4A
+         MIAGUA0x4QjAarANUPdNb3bt9yHEjP7YCa6wJe6cyqrOl+iaYu259K/Vd/xQebq1b45j
+         ShL07OeuWeMmBjW82cipbMY9VCHQla41xs+MwWBFllFRMuerQ1hiH3Ju8sctBk9echeT
+         /C+seOCcH5CqJIz6H9z3mJWkl0lgXwUJJofBYp4oe9MnfAyRM65rFY7uzm8toRrlX1jb
+         F2ViANVJg1APszFZ51XgIKBJgtwkbqsfubKlNf+kzFWal8VQrmtD4tBgR1jHxbc8GXHz
+         mTZw==
+X-Gm-Message-State: AOAM533O3xCs/1F2dnBHSEAniFnOlKwt23K1AGiEg3xEVFq3sBQfSSQo
+        mBeNeDTdI8NkWQSNbE8Ms/D9VawLh1v7p+lHzDg=
+X-Google-Smtp-Source: ABdhPJwl3VTKKaHQuRP6YmgcNDXqY80yOXmuV1vmIvrsN/TKCh2UxwnTeKCGtFD3C0G6Zdja/n6Fl1aW9umeaEMotl8=
+X-Received: by 2002:a05:6808:e90:: with SMTP id k16mr4567170oil.166.1635355434782;
+ Wed, 27 Oct 2021 10:23:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211027121149.45897-2-huangguangbin2@huawei.com>
+References: <11862679.O9o76ZdvQC@kreacher> <YXmJjlY6+oFy4siX@smile.fi.intel.com>
+In-Reply-To: <YXmJjlY6+oFy4siX@smile.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 27 Oct 2021 19:23:43 +0200
+Message-ID: <CAJZ5v0j43dhVcbsKyJ8BZjeBbXHNFG-Vtv-UtsJwFBYP4usNFQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: glue: Use acpi_device_adr() in acpi_find_child_device()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 08:11:43PM +0800, Guangbin Huang wrote:
+On Wed, Oct 27, 2021 at 7:17 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Wed, Oct 27, 2021 at 06:59:06PM +0200, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Instead of evaluating _ADR in acpi_find_child_device(), use the
+> > observation that it has already been evaluated and the value returned
+> > by it has been stored in the pnp.type.bus_address field of the ACPI
+> > device object at hand.
+>
+> ...
+>
+> > +             acpi_bus_address addr = acpi_device_adr(adev);
+> >               int score;
+> >
+> > -             status = acpi_evaluate_integer(adev->handle, METHOD_NAME__ADR,
+> > -                                            NULL, &addr);
+> > -             if (ACPI_FAILURE(status) || addr != address)
+> > +             if (!adev->pnp.type.bus_address || addr != address)
+> >                       continue;
+>
+> I'm not sure I understand the new check, i.e. !adev->pnp.type.bus_address.
 
-The semantics are not too well defined here, the ethtool documentation
-is not too clear. Here is how i interpret it.
+See acpi_set_pnp_ids().
 
-> If a TP port is configured by follow steps:
-> 1.ethtool -s ethx autoneg off speed 100 duplex full
+adev->pnp.bus_addres is the address value and
+adev->pnp.type.bus_address is a flag that is set to 1 when _ADR is
+valid.
 
-So you turn general autoneg off
+> IIUC _ADR == 0 is a valid value and children may have it like this.
 
-> 2.ethtool -A ethx rx on tx on
+That's true.
 
-You did not use autoneg off here. Pause autoneg is separate to general
-autoneg. So pause autoneg is still enabled at this point. That means
-you should not directly configure the MAC with the pause
-configuration, you only do that when pause autoneg is off. You can
-consider this as setting how you want pause to be negotiated once
-general autoneg is re-enabled.
+> I believe this change will break the working things (first comes to my mind
+> is drivers/mfd/intel_quark_i2c_gpio.c).
 
-> 3.ethtool -s ethx autoneg on(rx&tx negotiated pause results are off)
-
-So you reenable general autoneg. As part of that general autoneg,
-pause will re-renegotiated, and it should you the preferences you set
-in 2, that rx and tx pause can be used. What is actually used depends
-on the link peer. The link_adjust callback from phylib tells you how
-to program the MAC.
-
-> 4.ethtool -s ethx autoneg off speed 100 duplex full
-
-So you turn general autoneg off again. It is unclear how you are
-supposed to program the MAC, but i guess most systems keep with the
-result from the last autoneg.
-
-Looking at your patch, there are suspicious calls to phy_syspend and
-phy_resume. They don't look correct at all, and i'm not aware of any
-other MAC driver doing this. Now, i know the behaviour is not well
-defined here, but i'm not sure your interpretation is valid and how
-others interpret it.
-
-       Andrew
+I don't think so.
