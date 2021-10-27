@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D477C43D074
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB0C43D079
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240052AbhJ0SSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:18:15 -0400
-Received: from box.trvn.ru ([194.87.146.52]:55799 "EHLO box.trvn.ru"
+        id S243504AbhJ0SSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:18:23 -0400
+Received: from box.trvn.ru ([194.87.146.52]:54355 "EHLO box.trvn.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243440AbhJ0SSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:18:09 -0400
+        id S243469AbhJ0SSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:18:16 -0400
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id CBB124150F;
-        Wed, 27 Oct 2021 23:15:28 +0500 (+05)
+        by box.trvn.ru (Postfix) with ESMTPSA id BB50041511;
+        Wed, 27 Oct 2021 23:15:29 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1635358529; bh=rUAe9+YBz4twayA7MsH/h9YlgfxtOEUtH7zYEx82scY=;
+        t=1635358530; bh=ro7ZVSbXpCwuaZX3j2xP7JzBXPN1tirbnRREQXQvgG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a1GJuXDncIPJ7q+at/DyvVxi0U8djYZMetdcAycIpZV5NWwUwfjAJWotIFlAhGuI1
-         yalsgpYRSK5m+Q2cZpjrYCZhkyup/lnIjk646EpceuOSlRfpwwycX/NA+zrDe9KNcu
-         yDFE96az3m4r4/1CYKQkkthtWfKaMW9b7KxqR2GNCu4HcaLFKg5G+7e3+/wUTlj5Q7
-         HVm3jYiZrTLqwRyrIb81DZrxnfq5g8zcDxvhhmYD8jzp7ZCov5dsgGwPLqgCIaWYAY
-         Zkb4bb1QeTnXfzSj2Kr0dDG9qhioL2A7+luJ8gXhj2JPu9blpphShGyQ+xSNSLlxLh
-         eQeZwIHry27NA==
+        b=lTz7F78NmkuT15Mb+2mqqiyay21LWBApUaDgnM+9Sce+FK0ZFduUNS0Q0x5iUXdzl
+         N+iNktbClL5YkHxZMbzLe4mHVf6mO2BpjFI0PzEzKrNTRgv5dFO+C45tEPxFSS8uPh
+         jruL/gZfS9YUZ1ZWbYNXR/BZGGIWSsIAX0UC4YpVyVUSzTqPGeCldT1cRXR3bGRjUp
+         cHcOIHctTKsGlyNq30YsAv/3xp6sWYOTZbggFvjXjSpDT43DWM2oGdQ5CF/IstYrUZ
+         mp7GBqrGUJ6xbgrgtY1hqzOHQf3UBB0ZeWZhiL9Xx5RhS8IlN0rx6ZRuJO6625xuQZ
+         ww6VIsCgUiPPA==
 From:   Nikita Travkin <nikita@trvn.ru>
 To:     dmitry.torokhov@gmail.com
 Cc:     robh+dt@kernel.org, Michael.Srba@seznam.cz,
@@ -33,9 +33,9 @@ Cc:     robh+dt@kernel.org, Michael.Srba@seznam.cz,
         phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
         Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH 4/6] input: touchscreen: zinitix: Add compatible for bt532
-Date:   Wed, 27 Oct 2021 23:13:48 +0500
-Message-Id: <20211027181350.91630-5-nikita@trvn.ru>
+Subject: [PATCH 5/6] dt-bindings: input: zinitix: Document touch-keys support
+Date:   Wed, 27 Oct 2021 23:13:49 +0500
+Message-Id: <20211027181350.91630-6-nikita@trvn.ru>
 In-Reply-To: <20211027181350.91630-1-nikita@trvn.ru>
 References: <20211027181350.91630-1-nikita@trvn.ru>
 MIME-Version: 1.0
@@ -44,26 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zinitix BT532 is another touch controller that seem to implement the
-same interface as an already supported BT541. Add it to the driver.
+In some configrations the touch controller can support the touch-keys.
+Doucument the linux,keycodes property that enables those keys and
+specifies the keycodes that should be used to report the key events.
 
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 ---
- drivers/input/touchscreen/zinitix.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/input/touchscreen/zinitix,bt400.yaml         | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/input/touchscreen/zinitix.c b/drivers/input/touchscreen/zinitix.c
-index d4e06a88a883..c67ff8be0df1 100644
---- a/drivers/input/touchscreen/zinitix.c
-+++ b/drivers/input/touchscreen/zinitix.c
-@@ -571,6 +571,7 @@ static SIMPLE_DEV_PM_OPS(zinitix_pm_ops, zinitix_suspend, zinitix_resume);
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml b/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
+index b4e5ba7c0b49..40b243c07fd4 100644
+--- a/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
++++ b/Documentation/devicetree/bindings/input/touchscreen/zinitix,bt400.yaml
+@@ -79,6 +79,14 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     enum: [1, 2]
  
- #ifdef CONFIG_OF
- static const struct of_device_id zinitix_of_match[] = {
-+	{ .compatible = "zinitix,bt532" },
- 	{ .compatible = "zinitix,bt541" },
- 	{ }
- };
++  linux,keycodes:
++    description: |
++      This property specifies an array of keycodes assigned to the
++      touch-keys that can be present in some touchscreen configurations.
++    $ref: /schemas/input/input.yaml#/properties/linux,keycodes
++    minItems: 1
++    maxItems: 8
++
+   touchscreen-size-x: true
+   touchscreen-size-y: true
+   touchscreen-fuzz-x: true
 -- 
 2.30.2
 
