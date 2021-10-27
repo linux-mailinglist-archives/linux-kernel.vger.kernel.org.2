@@ -2,267 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3221043D057
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE2143D061
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 20:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234309AbhJ0SNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 14:13:11 -0400
-Received: from out0.migadu.com ([94.23.1.103]:50212 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233243AbhJ0SNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 14:13:09 -0400
-Date:   Thu, 28 Oct 2021 02:11:24 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635358242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dl3cVaqjWM9LnqfKLc6iTszd6L/h9XviuRFHViQuAbw=;
-        b=tgG6RkNp6EKfIsFPq4s9KQcPeMmN/kDRAcImc8ht4rBU93HXSbgesn1VQbgXiKKEBdT0y4
-        61qomOijayTsUUQ2i0hfkPBMClGnIy5NYugFuvscZ6Tg+BbEH8a4FQkSmUXU3BNsYBWWpC
-        h9x4kIsUP3fhG3hhVhCWPmhfzZmtQ6M=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH V6 11/20] rtla/osnoise: Add the hist mode
-Message-ID: <YXmWTOXHYXFduayt@geo.homenetwork>
-References: <cover.1635284863.git.bristot@kernel.org>
- <fede3c3805cb7a70bd7c8d60ba2c5ce290cc6e1e.1635284863.git.bristot@kernel.org>
+        id S238500AbhJ0SO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 14:14:59 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:46789 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231782AbhJ0SO5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:14:57 -0400
+Received: by mail-oo1-f43.google.com with SMTP id d144-20020a4a5296000000b002b6cf3f9aceso1201164oob.13;
+        Wed, 27 Oct 2021 11:12:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IjEQ77XSghrAblLCs5DCFzh+Qp3AEG6d63rVimhWv+U=;
+        b=XQ5mKviQlz98y+2c/CC3cDJBA+Q+KhcXKFfh64ZItQx42tTIzqAtudfD/FQA9Y0aHZ
+         yc5U1vE3VAqDEFBI4h3RIcQSroYLTcU2t/r9qw/XbiOn0TdFgYC+R5RKgFZDBIy1CE+G
+         CmoqW9i2U7+QGY29tM148nx52Oo1jcLvXEXqbnxyCrFdLFCtLbAaw6O+wtJxYJljRVEy
+         wGzJIAry6a+LXox+6Cl7ZaqF539P94Tbsqw41UcN4BzcTnwpbjx0GBvo66VH3I5xwtg9
+         GrEwLcjabbJ7s6X2uPKznFd2DM3w2+JmlftblLk+QZV7PBWqHfNRp4+jhxIE5Qwt/Myb
+         BMWg==
+X-Gm-Message-State: AOAM531QBidmfjC+8G6hTkdcDlRzTkyLjSkPuTvhXLRDyvI/g0ETnavC
+        AiZ6N1Umf1tVFDxtcuiJL+M58u1nrchlqB4xl/c=
+X-Google-Smtp-Source: ABdhPJyEd9vjtOEh2yNcn9EI/SyMHVF7Bonc4ZK8vfYutoTOiZRAx1InIWfS4mAszqZP85+Q0RVxG89PzCN7Noy66Js=
+X-Received: by 2002:a4a:e544:: with SMTP id s4mr23513695oot.0.1635358351635;
+ Wed, 27 Oct 2021 11:12:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fede3c3805cb7a70bd7c8d60ba2c5ce290cc6e1e.1635284863.git.bristot@kernel.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+References: <11860508.O9o76ZdvQC@kreacher> <YXhX/cTjH/H9UOnQ@smile.fi.intel.com>
+ <YXmNuKIXjnhOx/Gi@smile.fi.intel.com>
+In-Reply-To: <YXmNuKIXjnhOx/Gi@smile.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 27 Oct 2021 20:12:20 +0200
+Message-ID: <CAJZ5v0hwA0sEUafiTUQL_BaKnxdiBD_ASMh_5MkWT_pjr6f1zA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] ACPI: scan: Honor certain device identification rules
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 12:06:22AM +0200, Daniel Bristot de Oliveira wrote:
+On Wed, Oct 27, 2021 at 7:35 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Oct 26, 2021 at 10:33:17PM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 26, 2021 at 08:51:49PM +0200, Rafael J. Wysocki wrote:
+> > > Hi All,
+> > >
+> > > There are some rules in the ACPI spec regarding which device identification
+> > > objects can be used together etc., but they are not followed by the kernel
+> > > code.
+> > >
+> > > This series modifies the code to follow the spec more closely (see patch
+> > > changelogs for details).
+> >
+> > I understand the motivation, but afraid about consequences on the OEM cheap
+> > devices that are not always follow letter of the specification.
+> >
+> > As per Intel platforms I would look into Baytrail / Cherrytrail devices for
+> > the past (I think Hans may help here a lot) and into Elkhart Lake in the
+> > present (for the letter I mostly refer to CSRT + DSDT cooperation to get
+> > GP DMA devices enumerated, so I _hope_ DSDT shouldn't have _ADR and _HID
+> > together).
+> >
+> > Hence, from the code perspective
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> > From the practice I would wait for some tests. I will try to find any new
+> > information about latest firmware tables on Elkhart Lake machines.
+>
+> So, what I see in Elkhart Lake
+>
+> Case 1 - Sound Wire devices (2 times):
+>
+>     Name (_ADR, 0x40000000)  // _ADR: Address
 
-> The rtla osnoise hist tool collects all osnoise:sample_threshold
-> occurrence in a histogram, displaying the results in a user-friendly
-> way. The tool also allows many configurations of the osnoise tracer
-> and the collection of the tracer output.
-> 
-> Here is one example of the rtla osnoise hist tool output:
->   ---------- %< ----------
->  [root@f34 ~]# rtla osnoise hist --bucket-size 10 --entries 100 -c 0-8 -d 1M -r 9000 -P F:1
->  # RTLA osnoise histogram
->  # Time unit is microseconds (us)
->  # Duration:   0 00:01:00
->  Index   CPU-000   CPU-001   CPU-002   CPU-003   CPU-004   CPU-005   CPU-006   CPU-007   CPU-008
->  0           430       434       352       455       440       463       467       436       484
->  10           88        88        92       141       120       100       126       166       100
->  20           19         7        12        22         8         8        13        13        16
->  30            6         0         2         0         1         2         2         1         0
->  50            0         0         0         0         0         0         1         0         0
->  over:         0         0         0         0         0         0         0         0         0
->  count:      543       529       458       618       569       573       609       616       600
->  min:          0         0         0         0         0         0         0         0         0
->  avg:          0         0         0         0         0         0         0         0         0
->  max:         30        20        30        20        30        30        50        30        20
->   ---------- >% ----------
-> 
-> Running
->  - rtla osnoise hist --help
-> 
-> provides information about the available options.
-> 
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Tom Zanussi <zanussi@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Clark Williams <williams@redhat.com>
-> Cc: John Kacur <jkacur@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-> Cc: linux-rt-users@vger.kernel.org
-> Cc: linux-trace-devel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> ---
->  tools/tracing/rtla/src/osnoise.c      |   6 +-
->  tools/tracing/rtla/src/osnoise.h      |   1 +
->  tools/tracing/rtla/src/osnoise_hist.c | 793 ++++++++++++++++++++++++++
->  3 files changed, 799 insertions(+), 1 deletion(-)
->  create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
-> 
-> diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
-> index b9866dfdda66..6c6358ebf66f 100644
-> --- a/tools/tracing/rtla/src/osnoise.c
-> +++ b/tools/tracing/rtla/src/osnoise.c
-> @@ -790,7 +790,8 @@ static void osnoise_usage(void)
->  		"  usage: [rtla] osnoise [MODE] ...",
->  		"",
->  		"  modes:",
-> -		"     top  - prints the summary from osnoise tracer",
-> +		"     top   - prints the summary from osnoise tracer",
-> +		"     hist  - prints a histogram of osnoise samples",
->  		"",
->  		"if no MODE is given, the top mode is called, passing the arguments",
->  		NULL,
-> @@ -825,6 +826,9 @@ int osnoise_main(int argc, char *argv[])
->  	} else if (strcmp(argv[1], "top") == 0) {
->  		osnoise_top_main(argc-1, &argv[1]);
->  		exit(0);
-> +	} else if (strcmp(argv[1], "hist") == 0) {
-> +		osnoise_hist_main(argc-1, &argv[1]);
-> +		exit(0);
->  	}
->  
->  usage:
-> diff --git a/tools/tracing/rtla/src/osnoise.h b/tools/tracing/rtla/src/osnoise.h
-> index 4882ee275ea0..dbaad7a162a2 100644
-> --- a/tools/tracing/rtla/src/osnoise.h
-> +++ b/tools/tracing/rtla/src/osnoise.h
-> @@ -82,5 +82,6 @@ void osnoise_destroy_tool(struct osnoise_tool *top);
->  struct osnoise_tool *osnoise_init_tool(char *tool_name);
->  struct osnoise_tool *osnoise_init_trace_tool(char *tracer);
->  
-> +int osnoise_hist_main(int argc, char *argv[]);
->  int osnoise_top_main(int argc, char **argv);
->  int osnoise_main(int argc, char **argv);
-> diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
-> new file mode 100644
-> index 000000000000..c93f30d69795
-> --- /dev/null
-> +++ b/tools/tracing/rtla/src/osnoise_hist.c
-> @@ -0,0 +1,793 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-> + */
-> +
-> +#include <getopt.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <signal.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <stdio.h>
-> +#include <time.h>
-> +
-> +#include "utils.h"
-> +#include "osnoise.h"
-> +
-> +struct osnoise_hist_params {
-> +	char			*cpus;
-> +	char			*monitored_cpus;
-> +	char			*trace_output;
-> +	unsigned long long	runtime;
-> +	unsigned long long	period;
-> +	long long		stop_us;
-> +	long long		stop_total_us;
-> +	int			sleep_time;
-> +	int			duration;
-> +	int			set_sched;
-> +	int			output_divisor;
-> +	struct sched_attr	sched_param;
-> +
-> +	char			no_header;
-> +	char			no_summary;
-> +	char			no_index;
-> +	char			with_zeros;
-> +	int			bucket_size;
-> +	int			entries;
-> +};
-> +
-> +struct osnoise_hist_cpu {
-> +	int			*samples;
-> +	int			*thread;
-> +
-> +	int			count;
-> +	int			thread_count;
-> +
-> +	unsigned long long	min_sample;
-> +	unsigned long long	sum_sample;
-> +	unsigned long long	max_sample;
-> +
-> +	unsigned long long	min_thread;
-> +	unsigned long long	sum_thread;
-> +	unsigned long long	max_thread;
-> +};
-> +
-> +struct osnoise_hist_data {
-> +	struct tracefs_hist	*trace_hist;
-> +	struct osnoise_hist_cpu	*hist;
-> +	int			entries;
-> +	int			bucket_size;
-> +	int			nr_cpus;
-> +};
-> +
-> +/*
-> + * osnoise_free_histogram - free runtime data
-> + */
-> +static void
-> +osnoise_free_histogram(struct osnoise_hist_data *data)
-> +{
-> +	int cpu;
-> +
-> +	/* one histogram for IRQ and one for thread, per CPU */
-> +	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
-> +		if (data->hist[cpu].samples)
-> +			free(data->hist[cpu].samples);
-> +
-> +		if (data->hist[cpu].thread)
-> +			free(data->hist[cpu].thread);
-> +	}
-> +
-> +	/* one set of histograms per CPU */
-> +	if (data->hist)
-> +		free(data->hist);
-> +
-> +	free(data);
-> +}
-> +
-> +/*
-> + * osnoise_alloc_histogram - alloc runtime data
-> + */
-> +static struct osnoise_hist_data
-> +*osnoise_alloc_histogram(int nr_cpus, int entries, int bucket_size)
-> +{
-> +	struct osnoise_hist_data *data;
-> +	int cpu;
-> +
-> +	data = calloc(1, sizeof(*data));
-> +	if (!data)
-> +		return NULL;
-> +
-> +	data->entries = entries;
-> +	data->bucket_size = bucket_size;
-> +	data->nr_cpus = nr_cpus;
-> +
-> +	/* one set of histograms per CPU */
-> +	data->hist = calloc(1, sizeof(*data->hist) * nr_cpus);
-> +	if (!data->hist)
-> +		goto cleanup;
-> +
-> +	/* one histogram for IRQ and one for thread, per cpu */
-> +	for (cpu = 0; cpu < nr_cpus; cpu++) {
-> +		data->hist[cpu].samples = calloc(1, sizeof(*data->hist) * (entries + 1));
+No _HID, so the IDs returned by the _CID below won't be used.
 
-@samples is a pointer to int and used for int array. The "sizeof(*data->hist)"
-should be "sizeof(int)" or am I totally wrong.
+>     Name (_CID, Package (0x02)  // _CID: Compatible ID
+>     {
+>         "PRP00001",
 
-The same in PATCH 13.
+The above device ID is invalid (one 0 too many).
 
+>         "PNP0A05" /* Generic Container Device */
 
+Without the change this causes a container device to be created, but
+the only purpose of it may be offline/online (if the child devices
+support offline/online).
 
-Thanks,
-Tao
+This change should not be functionally relevant.
+
+>     })
+>
+> Case 2 - GP DMA devices (3 times):
+>
+>     Name (_ADR, 0x001D0003)  // _ADR: Address
+
+_ADR will be ignored which may not be expected.  Is this a PCI device?
+
+>     Name (_HID, "80864BB4")  // _HID: Hardware ID
+>
+> Case 3 - Camera PMIC devices (5 x 2 (CLPn/DSCn) + 1 (PMIC) times = 11x):
+>
+>     Name (_ADR, Zero)  // _ADR: Address
+
+_ADR will be ignored, which shouldn't matter.
+
+>     Name (_HID, "INT3472")  // _HID: Hardware ID
+>     Name (_CID, "INT3472")  // _CID: Compatible ID
+>
+> Case 4 - LNK devices (6 times):
+>
+>     Name (_ADR, Zero)  // _ADR: Address
+
+Same here.
+
+>     ...
+>
+>     Name (_UID, One)  // _UID: Unique ID
+>     Method (_HID, 0, NotSerialized)  // _HID: Hardware ID
+>     {
+>         Return (HCID (One))
+>     }
+>
+> Case 5 - Camera sensors (2 times):
+>
+>     Name (_ADR, Zero)  // _ADR: Address
+
+And same here.
+
+>     Name (_HID, "INT34xx")  // _HID: Hardware ID
+>     Name (_CID, "INT34xx")  // _CID: Compatible ID
+>
+>
+> I have no idea about cameras or audio devices, but what I'm worrying about
+> is GP DMA. This kind of devices are PCI, but due to Microsoft hack, called
+> CSRT, we have to have a possibility to match DSDT with CSRT ot retrieve
+> the crucial information from the latter while being enumerated by the former.
+>
+> While it may be against the specification, there is no other way to achieve
+> that as far as I understand (without either breaking things in Linux or
+> getting yellow bang in Windows).
+
+I'm not really sure why _HID is needed for this.  The PCI device ID
+could be used for CRST matching just fine.
+
+> Can you confirm that your change won't modify behaviour for these devices?
+
+Well, the GP DMA thing may be broken by patch [2/2], but does Windows
+actually use _ADR if _HID is provided?
