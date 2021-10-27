@@ -2,161 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F25243D1AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC2243D1B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 21:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240815AbhJ0Tbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 15:31:38 -0400
-Received: from mga03.intel.com ([134.134.136.65]:64749 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240781AbhJ0Tbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 15:31:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="230196703"
-X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
-   d="scan'208";a="230196703"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 12:29:11 -0700
-X-IronPort-AV: E=Sophos;i="5.87,187,1631602800"; 
-   d="scan'208";a="665119687"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 12:29:09 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mfobR-001ZD1-Vv;
-        Wed, 27 Oct 2021 22:28:49 +0300
-Date:   Wed, 27 Oct 2021 22:28:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v1 0/2] ACPI: scan: Honor certain device identification
- rules
-Message-ID: <YXmocZ21lNKC54EI@smile.fi.intel.com>
-References: <11860508.O9o76ZdvQC@kreacher>
- <YXhX/cTjH/H9UOnQ@smile.fi.intel.com>
- <YXmNuKIXjnhOx/Gi@smile.fi.intel.com>
- <CAJZ5v0hwA0sEUafiTUQL_BaKnxdiBD_ASMh_5MkWT_pjr6f1zA@mail.gmail.com>
+        id S243673AbhJ0TcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 15:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240761AbhJ0TcB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 15:32:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031E6C061570;
+        Wed, 27 Oct 2021 12:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=vnd1blMlmg50+eejJOJq5W4w5Dsqbt1wlIGlXdBKkB4=; b=NweHzQEf3LwTA18tRMJ5VuR2aq
+        D+Fnw/NGchjU2zJZoiTXWyIF7a3i4NYN9yq8r+aVSZSq/G7HwQ7Txsu/eDKhyP9hBHzIBuyCuShra
+        /4JCdat3Ny7j0I01RGdgMMUcWYI8hAax988ujuPg4Vg98G1Cii1LUIGLrOZrpcIsdCTYQqmh2IrH8
+        IwCDCSDINyd17h5V6CCVmMfL0X4wgzJhnlLBj2YDyPIxbaNTs1X/XdUaQ7/VVtBbs2fOhlXA6n1co
+        pRaXtXkrOv4QEJs/tLU/3wkGi7OpVc2AdM3vNfQNj60abece6S9k2NfzNq4X+9bLoz2oRje2d3aLd
+        pjXdXpaQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mfocB-005wST-Gu; Wed, 27 Oct 2021 19:29:35 +0000
+Subject: Re: Unsubscription Incident
+To:     Slade Watkins <slade@sladewatkins.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Lijun Pan <lijunp213@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+References: <CAOhMmr7bWv_UgdkFZz89O4=WRfUFhXHH5hHEOBBfBaAR8f4Ygw@mail.gmail.com>
+ <YXcGPLau1zvfTIot@unknown>
+ <CA+pv=HPK+7JVM2d=C2B6iBY+joW7T9RWrPGDd-VXm09yaWsQYg@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1d5ccba0-d607-aabc-6bd1-0e7c754c8379@infradead.org>
+Date:   Wed, 27 Oct 2021 12:29:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hwA0sEUafiTUQL_BaKnxdiBD_ASMh_5MkWT_pjr6f1zA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CA+pv=HPK+7JVM2d=C2B6iBY+joW7T9RWrPGDd-VXm09yaWsQYg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 08:12:20PM +0200, Rafael J. Wysocki wrote:
-> On Wed, Oct 27, 2021 at 7:35 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Oct 26, 2021 at 10:33:17PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Oct 26, 2021 at 08:51:49PM +0200, Rafael J. Wysocki wrote:
+On 10/26/21 5:02 PM, Slade Watkins wrote:
+> Hi,
+> On Mon, Oct 25, 2021 at 4:10 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>>
+>> On Fri, Oct 22, 2021 at 10:53:28AM -0500, Lijun Pan wrote:
+>>> Hi,
+>>>
+>>>  From Oct 11, I did not receive any emails from both linux-kernel and
+>>> netdev mailing list. Did anyone encounter the same issue? I subscribed
+>>> again and I can receive incoming emails now. However, I figured out
+>>> that anyone can unsubscribe your email without authentication. Maybe
+>>> it is just a one-time issue that someone accidentally unsubscribed my
+>>> email. But I would recommend that our admin can add one more
+>>> authentication step before unsubscription to make the process more
+>>> secure.
+>>>
+>>
+>> Same here.
+>>
+>> Fortunately I just switched to lei:
+>> https://josefbacik.github.io/kernel/2021/10/18/lei-and-b4.html
+>> so I can unsubscribe all kernel mailing lists now.
+> 
+> Not a bad workaround! I may consider trying this out. Thanks for
+> sending this along.
+> 
+> I'd still love to figure out why the whole "randomly unsubscribing
+> people who want to be subscribed" thing is happening in the first
+> place, though.
 
-...
-
-> > > From the practice I would wait for some tests. I will try to find any new
-> > > information about latest firmware tables on Elkhart Lake machines.
-> >
-> > So, what I see in Elkhart Lake
-> >
-> > Case 1 - Sound Wire devices (2 times):
-> >
-> >     Name (_ADR, 0x40000000)  // _ADR: Address
-> 
-> No _HID, so the IDs returned by the _CID below won't be used.
-> 
-> >     Name (_CID, Package (0x02)  // _CID: Compatible ID
-> >     {
-> >         "PRP00001",
-> 
-> The above device ID is invalid (one 0 too many).
-
-Probably we have to communicate this to EHL program owners internally...
-I dunno what this means in case of Sound Wire.
-
-> >         "PNP0A05" /* Generic Container Device */
-> 
-> Without the change this causes a container device to be created, but
-> the only purpose of it may be offline/online (if the child devices
-> support offline/online).
-> 
-> This change should not be functionally relevant.
-> 
-> >     })
-> >
-> > Case 2 - GP DMA devices (3 times):
-> >
-> >     Name (_ADR, 0x001D0003)  // _ADR: Address
-> 
-> _ADR will be ignored which may not be expected.  Is this a PCI device?
-
-It depends on the BIOS decision at boot time. No idea if it's only one
-possibility (what I have heard is that device is PCI enumerated, that's
-why they chose PCI ID in the CSRT, to avoid allocating new IDs for truly
-ACPI-enumerated device).
-
-But seems another point to discuss internally.
-
-> >     Name (_HID, "80864BB4")  // _HID: Hardware ID
-> >
-> > Case 3 - Camera PMIC devices (5 x 2 (CLPn/DSCn) + 1 (PMIC) times = 11x):
-> >
-> >     Name (_ADR, Zero)  // _ADR: Address
-> 
-> _ADR will be ignored, which shouldn't matter.
-> 
-> >     Name (_HID, "INT3472")  // _HID: Hardware ID
-> >     Name (_CID, "INT3472")  // _CID: Compatible ID
-> >
-> > Case 4 - LNK devices (6 times):
-> >
-> >     Name (_ADR, Zero)  // _ADR: Address
-> 
-> Same here.
-> 
-> >     ...
-> >
-> >     Name (_UID, One)  // _UID: Unique ID
-> >     Method (_HID, 0, NotSerialized)  // _HID: Hardware ID
-> >     {
-> >         Return (HCID (One))
-> >     }
-> >
-> > Case 5 - Camera sensors (2 times):
-> >
-> >     Name (_ADR, Zero)  // _ADR: Address
-> 
-> And same here.
-> 
-> >     Name (_HID, "INT34xx")  // _HID: Hardware ID
-> >     Name (_CID, "INT34xx")  // _CID: Compatible ID
-> >
-> > I have no idea about cameras or audio devices, but what I'm worrying about
-> > is GP DMA. This kind of devices are PCI, but due to Microsoft hack, called
-> > CSRT, we have to have a possibility to match DSDT with CSRT ot retrieve
-> > the crucial information from the latter while being enumerated by the former.
-> >
-> > While it may be against the specification, there is no other way to achieve
-> > that as far as I understand (without either breaking things in Linux or
-> > getting yellow bang in Windows).
-> 
-> I'm not really sure why _HID is needed for this.  The PCI device ID
-> could be used for CRST matching just fine.
-> 
-> > Can you confirm that your change won't modify behaviour for these devices?
-> 
-> Well, the GP DMA thing may be broken by patch [2/2], but does Windows
-> actually use _ADR if _HID is provided?
-
-No idea. Let's discuss internally.
-
-P.S. The issue here is that some BIOS versions are floating around and
-we never know who is using what... :-(
+Then you should try <postmaster@vger.kernel.org> for assistance.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+~Randy
