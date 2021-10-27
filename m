@@ -2,175 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DE143CCAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6645643CCB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Oct 2021 16:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242626AbhJ0Ots (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 10:49:48 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:46248 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239033AbhJ0Ota (ORCPT
+        id S238078AbhJ0OuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 10:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242593AbhJ0Ot5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 10:49:30 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RDpOZF004972;
-        Wed, 27 Oct 2021 14:46:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=ez8CdOqAU4YBceY+JgLTkEaT24Hss77HCx0Dmj9E0Yw=;
- b=IMx52jKUpud9sJBFWWmdNECcOoesUg9hLpTmTBRNt1Fs9Suvsdrv4yKVBWIgUJPMnydC
- i/FjipoYq5p7mlrjZQr/e2pHCXFfPjg+7eTGztbhfkTr0MDiiyel62jQIDhx/8PsToEB
- gt1wzbjtk1rUsGRgnWSyvXlZzY0vNZLEi899ZuWqIZ0j+uRqcla659UtLJiUOTPGzaBY
- ldmPxHezWm5OFkOCmC5nVNBNNSwW6rbjCnjkarYVMUbInr1lxGPBg0bDmDT7rJNveSDB
- NNz54u+d5SuJX6IpomMDfaGbLr6BJrifM7ZKOoOCQCQnioe70CFGDELIJ0MEN9WJ9Pbx 8A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4fj3k6d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 14:46:55 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19REPdtZ085047;
-        Wed, 27 Oct 2021 14:46:54 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by aserp3020.oracle.com with ESMTP id 3bx4gctbx0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Oct 2021 14:46:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YMI9VEJ5L2dA0zOtBnpjN1OAYXACLk6qPVN+w/etCUFzt9Mkk14MlxVqFI/n61EvJ/z8fI2angR8betv2Scw7jJdzSolw6WBUhyRX4DlJJ01UxNXmTgo+Ql1L06AtNoJzK3nBagmf9jsu5wwVPRLVUXV26N8qUd6Av3t1boLSJvpT+RKQWZDByiCbpZBzoRDRWSqrTx22Ac4ZqYQPbzJbYVC4FvNf9Rs6b515XyArHb/sELV9Ijc+2IPSJHeF+sp0pvGxqeB0fZASUwmIaKZ8+0X+6Xp9rLDJuDzLccENdC7za7rRKl8wWPFWnGPtExyD2Cn1m0fYW3ys8NoheJWvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ez8CdOqAU4YBceY+JgLTkEaT24Hss77HCx0Dmj9E0Yw=;
- b=JpPL9gu5kbDXy9IpGEY6ZWquT3CGMMbtfH5nQzZ5xHidEcVzYi+owQ1BAI689udJr3ZKTjxkgRMbErEqkeV3mfV1bnXZOAjZCeXkdp9N8PKLkISpje1JqIyPeA1ZwziRsd8dRdjx0zZSLBwto7lo45bLZ0Jpw94jcKpcVsC+slIVnkkLH5xZOdJmJam8NzU98kQUR+YhgNyt8preNUIBJVPsV2JCPcA4r7haSf5Ux29YkVGY+WFgGQdOOaLh7/evGamPl+fv3QCoP0cb0G0QvgRfxsOmtF54RgYAgQSYvgzx90NHOAO9MM1uP0mSoqlPPOAqjpWgju4NeKQ8WV9F0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 27 Oct 2021 10:49:57 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83228C061220;
+        Wed, 27 Oct 2021 07:47:30 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id y1so2146741plk.10;
+        Wed, 27 Oct 2021 07:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ez8CdOqAU4YBceY+JgLTkEaT24Hss77HCx0Dmj9E0Yw=;
- b=BBk5Dqm6TpuDpIJMl82Ugi0pIZwshHpMjYeJvyStsm5V4aqbOoXcKUu/ZaLRlGfqfG4ZDJIgmKhLhfkvIQhD2muBFImOxT6I7ifYx3dQEZNRn/kxCiYrsjR1tVCPxx/KvQkDztu8DTJlAbqKdKO06+uh6hWOwpWY1Kt7a7cLvJM=
-Authentication-Results: epam.com; dkim=none (message not signed)
- header.d=none;epam.com; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB4030.namprd10.prod.outlook.com (2603:10b6:208:1bd::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Wed, 27 Oct
- 2021 14:46:52 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329%6]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 14:46:52 +0000
-Message-ID: <af42493e-ec31-8673-5532-1f0c8275b2c6@oracle.com>
-Date:   Wed, 27 Oct 2021 10:46:46 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v5] xen-pciback: allow compiling on other archs than x86
-Content-Language: en-US
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "jgross@suse.com" <jgross@suse.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>
-References: <20210928073501.433559-1-andr2000@gmail.com>
- <71ce7c97-1d08-9fdf-b217-53eb914a29a6@oracle.com>
- <a54ab50a-f35c-26b9-3907-20c014a1120a@epam.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-In-Reply-To: <a54ab50a-f35c-26b9-3907-20c014a1120a@epam.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0201CA0029.namprd02.prod.outlook.com
- (2603:10b6:803:2e::15) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=lwlbNb/hnAsSj4Fw3uLYHCdh/oeM8y36vcLe41vaz24=;
+        b=BSxVFJuO4wogI5388fLA+7diesSil0jjhTE1fe2L15X8cCvM1Tksi8E+gLiVDRLNb6
+         2NTVuw41q85+ZXc2FpAuF3CWSXWRFvyezH+tawKYuy3/IdGTHPxkAoMCRyfrHk5dsrlQ
+         QATVSWlhp+ylznWYyD92Rai9snGHItrQfbFEqP7+OBq6kgsdfu2D0SMY83NULEPO+0Bc
+         ogyLM3bjNLhwg1y2Hh91QAfkoRR9cs3sQVfTjcnv6EWz00C0hfspYklMft/8Qo6UQo/8
+         6Kf2BouZ4SV4ktp2aQUWWjC/MAZLAln10ewCPJe4524H+H8iOfKZbd/ZCJp/afX2s2CJ
+         JEww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=lwlbNb/hnAsSj4Fw3uLYHCdh/oeM8y36vcLe41vaz24=;
+        b=4jCXc3hBmyu1iiw/hfn+MCph4kqKPPttjnasLXOFtD13p49rhnkNMK780XYCuOgkS8
+         pBY7NPP94bGbFulzGeIwqsSMsbcfasShKSe6XN1CJBSwXUWOjfslsFPUvxf0FT5s7iWN
+         GJOswns7IpdaFgR7po11lm9bOR98XoYRyNYU5s9H2DEKKWcPTvVLxaDumpUj1VAxcVe0
+         HhYXZtgh5YunHUIDJJwMyKL8980Ut5cpAgHI3Z5utz4qM+x+HN6VWq/7M3fMwPLJXLXb
+         wg5XFEKM15bv/JvxcWGPp3J6kc/ZY2qRR/3azDDOh/RhzlK9na59W5Ji3lzG4aGCV3Mn
+         QpoQ==
+X-Gm-Message-State: AOAM531dNKSRmSE8vwVRK2tnvVUSLwaVDSpfdXHjXIc951f3gh86aDRH
+        rLko4Z61jBBcZXXu3kaRjaXKXdnNjKOxQQ==
+X-Google-Smtp-Source: ABdhPJx3fS7xrs/h1GEIYEXmzmu5WnYNNlILHR6Cn+HhLQ78zGw0mAK4NC2/O61WQ01JA9wSUJpGRw==
+X-Received: by 2002:a17:903:245:b0:13f:7872:9382 with SMTP id j5-20020a170903024500b0013f78729382mr28410973plh.26.1635346049688;
+        Wed, 27 Oct 2021 07:47:29 -0700 (PDT)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id p16sm71789pgd.78.2021.10.27.07.47.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 07:47:29 -0700 (PDT)
+Message-ID: <096e953682fed458d438d1cde57371d7358b5d7b.camel@gmail.com>
+Subject: Re: [PATCH 16/17] [NOT-FOR-MERGE] media: atomsip: pci: add DMI
+ match for Microsoft Surface 3 with broken DMI (OEMB)
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Aniket Bhattacharyea <aniketmail669@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alan <alan@linux.intel.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 27 Oct 2021 23:47:24 +0900
+In-Reply-To: <a2aa76c3-a8bb-99ef-9f5a-e62cc503a1e2@redhat.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+         <20211017161958.44351-17-kitakar@gmail.com>
+         <71b5b886-2ca1-27a9-6776-b3bcc430e5ed@redhat.com>
+         <ace1264d7254f7159865602614d70caf7ff4b609.camel@gmail.com>
+         <a2aa76c3-a8bb-99ef-9f5a-e62cc503a1e2@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Received: from [10.74.107.92] (138.3.200.28) by SN4PR0201CA0029.namprd02.prod.outlook.com (2603:10b6:803:2e::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend Transport; Wed, 27 Oct 2021 14:46:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0c66ac8-f91b-488e-475d-08d999589d22
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4030:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4030DD5A20F81A78B799C3AF8A859@MN2PR10MB4030.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7xcGj9Ok/zO7dLjD+ZoTO+FWRsQUZSD7GYOaJGSzaDM5YF7FZ4pQWIvXrg8scNPQRJomnjeFvOqrpLDl2dlZGWYftQVVTWRWMkrhwGj+o1i8R4WaR/Sfh/Grw/Lh2RvI8u7lgI5GN1CirKR1kdl9sCtqyV8kPUzoyRrCqTaFdtPJXe+55dnsUExX2H37Pdex6rO3PjLejDEmNKKU329/75urKgqh177fyQMgELv/15Kmj2RP9oViWZ7xIKz5+FrkpLua3vl3g3fVuzJhRTCgkEfZLlGiUPBzUqsfaUAUY6eXXFsj5ZdRbyazlTlaCXqRusgRpwCMXWGfGXYUBKXk6PkL48RJis1bRqjTj9MMhKjA9IoFNMftlVwRFta05epUhck7mWNak0wh/aAhK3/nuCXRHwGoChOuekU3x1XqDhRoZvMcEcA69cdUG2HXOHD9qG28oIGcSuZHHGpRASOc5l6bGQNVjwWUeH+55vhSlnDNTq8QxLg4T5OP9EXW76MGL5PEybrUds68sAfcF2GboaQzn6uS8T6FBMjPuRqInrIQHqS5UOqiW1WZqyKjImCl5FotOF9ako9duKGS9kKmXuABfym26QGz0lm70Y0Oz+/LyxAfj7kMIdVNbVXEKW/uIDfERu8Iw+PavIN/aJZeT9J6sSRcNykPjaW+FPdXt6mUaEYO2eVJOo/3peUCQH5+JeLvG2PuJosO00PqR563uO+ggJl/SOjX+3oY7tPzOnU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(508600001)(36756003)(31696002)(26005)(66556008)(4744005)(5660300002)(110136005)(31686004)(16576012)(8676002)(2616005)(316002)(6666004)(186003)(2906002)(66476007)(8936002)(4326008)(956004)(66946007)(54906003)(53546011)(6486002)(86362001)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTdBYXBNd3hiV292cHMxdzFyNWk4OWRhQ3VKUnQwOU5XQmVpVVBTaHJkOER3?=
- =?utf-8?B?SFhyZG0wSWJOd1piVDV0ZUpyMWNiZTEwb3grSUlZUXNsVTNLOTlUMFY2V0RJ?=
- =?utf-8?B?cjVxZzd0QjRCQWRvRlVsRTBickpVUXA1dTFuSGYzUG9CRTF2b0JyemdLV2Er?=
- =?utf-8?B?Zm90NDl0R0ZLL0Rvak5McGl3RHN2TThaWWFBVlVNN29lOG9sZjJnK0ZocWJs?=
- =?utf-8?B?WVRCcGJpY2FnNXlnY3NVUzFmTjVnVGdaOWRkWXdaYVRDM0I0TnpqcnNPN1I0?=
- =?utf-8?B?Sk14c2Ywb0MxYll0VzNZZ1ozMmZNU0NLT09malRUbDRzQmhIUG1yTUczT1pX?=
- =?utf-8?B?MG56SW5lUTJ5elIxdFoxeFQzeDFvQjh0V3pFdzRWajdTUm9VMlRNWVFpZEJG?=
- =?utf-8?B?Y1JnWHNrb3NCd0l1b2sva3ZndjR4c1pveUxOTnJtYmpkMm9wWmh4NE1sQlZa?=
- =?utf-8?B?VEFlT0Vyc3pWdERUM2FUTXRCYUFsdWU5dmROYlVxUmdmTytwTm1CckFYQ3RH?=
- =?utf-8?B?QU1WNFJWbVV4OFAwUGNOcndDb29ocWlRM05EOFVrQkNpS2FlZnlyRURBelNM?=
- =?utf-8?B?dExpTDIrRzJpZWd4OGptZGo1YXZHV1Z5SHFTSHgrdHc2MjZtbFRtYlZtUXI2?=
- =?utf-8?B?ek1iQkNzYmxOVUdrQmdwNjRodm1hbVJQRS9CU2lrZmx5MnAvaDhJQk1UdjNu?=
- =?utf-8?B?R3BNM0NOWms3ei9vNXl0b1dkRlU5N2VQT1FFR0RlWXB0UkdPYkxwRTFCa3VL?=
- =?utf-8?B?M2FkZmJUQ1VnSWFRbGozaFNqTHRoVE4ybmxPV1lDODBTdDBiTHhMYUNoRGpP?=
- =?utf-8?B?cWk3YXFBZXU3ZS9aZjBHeFZONzlsaWVZVmp0Mm9FKzBzVVIwcVN5YldPdFlq?=
- =?utf-8?B?ZFVONkNsdmRsbElwV1pkVXFOM1A4dXBWamJGOGlzQkVqa3hnOUNaUUd3Nkpp?=
- =?utf-8?B?aHFOaDZKQXN3VmxnVDk3QzFTbXpBb2NqSHBocng2cEJnd0xZYU9KWnd4ZVBw?=
- =?utf-8?B?bDMvc2cySWZmSDNVUjY3aUVVci9mVytsVUVKN2w3d3NucVZYRVppMDYvSjlE?=
- =?utf-8?B?S3kzYjlQMEJmT3pDcytaK0xWZzkyaE92R2pTOStzdUVubnZ5NXVwVWl3TWVW?=
- =?utf-8?B?RTErRFMzQk5BZ3pyckRpSWpRbVFIZWRVMHprVTQ4Z3d5aFJkT1ZEVkN5YW9Z?=
- =?utf-8?B?RFdGU0pQMHZKbGJ2cWZKMzR3SDdUREE1aGtEQmlCU0p3ZS9aZFFhVFQ1VFc3?=
- =?utf-8?B?TU9iRTN2K2o0TExFQUF1QUpGTVJ0aUMwZWs2cnVSOXVGbndTd0E5YzkzYURI?=
- =?utf-8?B?QmpOQmxaUjJIWjg3MGZnK1VWdUZRZjhlWk9EdnV1WXFjdnBJRGw0T1lSNzE3?=
- =?utf-8?B?R09zWkRxNWF5ZlF4cnJkTDFXeHNhOC8zVFExNnpkVjJmQVkxY1N6NWZETS9X?=
- =?utf-8?B?aTB0Sjl5MUphdHhUSkRTamlBci9MRzV0MWJsYkxjaVc5ejJESkdpcEQ4Tkti?=
- =?utf-8?B?a0QvUU1NMzZHVFp5NXl3eiszdTAzRmh3TDYybGkxT1RBbm81OU53Ky9aQjlh?=
- =?utf-8?B?eFphMm9IK3QvRnNjVlFTMGFKeCs5MmFRV1hjOVM3MkxheTBKakJscXlLZjgx?=
- =?utf-8?B?aDVsZzN6TXFWQnpTU1ZKSnliNkxIemNYcW9aNFZrMTdXZFVlS0hibjJwZUU5?=
- =?utf-8?B?ajZXTVZoRDY4NUJTd3NCK0ZGVXVqTVROL0x6byttTG5JcjkyY0h1SmdEa2ZX?=
- =?utf-8?B?eDdVbGNwVTFxTCtLbFBaUEx2ZWxZZEJweXhZM2NSTjlrOUQrZ0c5OEtiWUhN?=
- =?utf-8?B?MS9xejNWRU1FWWtrL1dyRkZFR3RhbzJnM01TT05lazBER3pNKytJbExTZS9Q?=
- =?utf-8?B?aWFkeEN2dE5oNzVUdnkrT3JjYm1sbGtERENubTVqZUg2Q2NXRXBxaUJFZTBW?=
- =?utf-8?B?ME5lZnArMkpYUHYyVHRLRkxLZnpKdkQwT3VkekdwMlJYbVJDS3JSK2hKOGVZ?=
- =?utf-8?B?cVMrdjFUbzlObjJYZ0o0YUNzd1JCbldHV1c2bHR0QXlrblFDS2ZkMURFZklk?=
- =?utf-8?B?Q2tVNHlzL3JXUHlBSm1jbEVDakJFRmJMU3J0Vlp5R1hGbEJWdCs0WFNNU05L?=
- =?utf-8?B?S2NvbitHNFpMNEdReDVxUjFnMENycmNTSW1ldVI2ZE9sQkJQZmhsWVl5TEwx?=
- =?utf-8?B?ZUE0ano5cXNtN3FzRnh6ZlFFQ1QrM0paN3BDYzdOMndjekJtVDB5ekpUN1V1?=
- =?utf-8?Q?vjZ1LjDnKn+HxZDGoV1+58r6nj/0uaDXdGeq6Ddb58=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0c66ac8-f91b-488e-475d-08d999589d22
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 14:46:52.3869
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tzBQsHnCb+cHUKC9u15eeaajJiEnHeBSA/1mwkXVVesJpssQFNP7aFXCUrdetdxMMUbndSCdDWulhQdgxagOFS5NqVg0XwzkxTyN6v9kvhU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4030
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10150 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=947
- bulkscore=0 phishscore=0 mlxscore=0 spamscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270089
-X-Proofpoint-GUID: vkJzeyI5kwAh-EJt2O9nsDqJnLy-YX1V
-X-Proofpoint-ORIG-GUID: vkJzeyI5kwAh-EJt2O9nsDqJnLy-YX1V
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-10-21 at 20:46 +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 10/21/21 11:46, Tsuchiya Yuto wrote:
+> > On Mon, 2021-10-18 at 09:56 +0200, Hans de Goede wrote:
+> > > Hi,
+> > > 
+> > > On 10/17/21 18:19, Tsuchiya Yuto wrote:
+> > > > This commit is added for Surface 3 with broken DMI table. HACK-ish.
+> > > > Not intended for upstreaming. Thus, NOT-FOR-MERGE. But, if someone
+> > > > knows a nicer way to address this, comments are welcome...
+> > > > 
+> > > > > 8-----------------------------------------------------------------8<
+> > > > 
+> > > > On some Microsoft Surface 3, the DMI table gets corrupted for unknown
+> > > > reasons and breaks existing DMI matching used for device-specific quirks.
+> > > > 
+> > > > This commit adds the (broken) DMI data into dmi_system_id tables used
+> > > > for quirks so that the driver can enable quirks even on the affected
+> > > > systems.
+> > > > 
+> > > > On affected systems, the DMI data will look like this:
+> > > > 
+> > > >         $ grep . /sys/devices/virtual/dmi/id/{bios_vendor,board_name,board_vendor,\
+> > > >         chassis_vendor,product_name,sys_vendor}
+> > > >         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
+> > > >         /sys/devices/virtual/dmi/id/board_name:OEMB
+> > > >         /sys/devices/virtual/dmi/id/board_vendor:OEMB
+> > > >         /sys/devices/virtual/dmi/id/chassis_vendor:OEMB
+> > > >         /sys/devices/virtual/dmi/id/product_name:OEMB
+> > > >         /sys/devices/virtual/dmi/id/sys_vendor:OEMB
+> > > 
+> > > I wonder what the bios_date field contains ? Typically when the DMI strings
+> > > are no good (e.g. often they contain "Default String" or "To be filled by OEM")
+> > > we add a check on the bios-date, which together with the broken strings is
+> > > considered unique enough to still allow a match with broken strings in the
+> > > kernel.
+> > 
+> > Thank you so much for the comment :-)
+> > 
+> > Here is the full output of "/sys/devices/virtual/dmi/id/*" (not showing
+> > files that need root permission to read):
+> > 
+> >         $ grep . /sys/devices/virtual/dmi/id/*
+> >         /sys/devices/virtual/dmi/id/bios_date:03/09/2015
+> >         /sys/devices/virtual/dmi/id/bios_release:5.6
+> >         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
+> >         /sys/devices/virtual/dmi/id/bios_version:1.51116.238
+> 
+> Interesting, this is the latest BIOS from july 2019 according to:
+> https://support.microsoft.com/en-us/surface/surface-3-update-history-5d86a7bc-03f7-2d27-d858-e90ce637fb52
+> yet the date is still set to 03/09/2015.
 
-On 10/27/21 10:08 AM, Oleksandr Andrushchenko wrote:
-> Hi, Boris!
->
-> On 27.10.21 15:59, Boris Ostrovsky wrote:
->>
->> Can you please rebase this on top of 5.15-rc7? There is a bunch of conflicts due to cae7d81a3730dfe08623f8c1083230c8d0987639.
->>
-> I'll try to do that ASAP (what is the deadline for that?)
+Yeah, I'm a little bit confused about this.
+
+> I just checked and the BIOS with not corrupted DMI strings also keeps
+> the date at 03/09/2015 in BIOS updates.
+> 
+> So the date is correct, and together with matching a coupleof the OEMB-s
+> (which I've never seen anywhere else either) this should be plenty
+> unique.
+> 
+> So this not only allows adding this mathc to atomisp, but also to fix
+> sound + wmi on bad DMI data OEMB Surface 3-s, by updating this patch:
+> 
+> https://github.com/linux-surface/linux-surface/blob/2fb7e9ae91350098db9a280277f424272816a9ab/patches/5.5/0003-surface3-oemb.patch
+> 
+> To include the BIOS-date match and then submitting this upstream
+> (as 2 separate patches please).
+> 
+> Tsuchiya, I take it that your Surface 3 has the OEMB issue, so you
+> can actually test this ?
+
+Yes, my surface3 is also affected and I can test this.
+
+> If you can prepare 2 patches for the sound + wmi then; and submit
+> them upstream that would be great. Please Cc me on both patches.
+
+Thank you for the suggestion, but I started having a mixed feeling about
+sending this kind of patches... This "OEMB" issue is not a design by
+manufacturers, but simply just it got broken after something (maybe a
+force power off?). On the other hand, I know there are also indeed some
+people affected by this issue other than me...
+
+If possible, I rather want to fix this broken DMI table, but I couldn't
+find the way until now though.
+
+But again, thank you for the suggestion. I'll consider sending the
+patches when I gave up fixing it...
 
 
-If you could do in the next few days it would be great. I expect next merge window will open on Sunday.
 
+<Below is completely off topic from atomisp>
 
--boris
+I think some useful BIOS option might be just hidden. So, I'd like to
+try this way. I already find the string "Restore Defaults" using
+uefitool/ifrextract:
+
+    0x13429 	Form: Save & Exit, FormId: 0x2719 {01 86 19 27 4C 00}
+    [...]
+    0x134E0 		Suppress If {0A 82}
+    0x134E2 			QuestionId: 0x1C3 equals value 0x5 {12 06 C3 01 05 00}
+    0x134E8 			Ref: Restore Defaults, VarStoreInfo (VarOffset/VarName): 0xFFFF, VarStore: 0x0, QuestionId: 0x1BC, FormId: 0x2719 {0F 0F 5B 00 5C 00 BC 01 00 00 FF FF 00 19 27}
+    0x134F7 		End If {29 02}
+    [...]
+
+I currently don't know how I can call this. I want to try this way when
+I have some time...
+
+Regards,
+Tsuchiya Yuto
+
 
