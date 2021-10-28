@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A30843E6D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9B243E6D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhJ1RL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
+        id S230384AbhJ1RKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJ1RL2 (ORCPT
+        with ESMTP id S230094AbhJ1RKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:11:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389C0C061570;
-        Thu, 28 Oct 2021 10:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Te+w3AB3S4i1K0MuH89t3Hz7sgB8PA4EkDTK3lPuI30=; b=lQc3SDvpg49wSCb9o0IoMceN9K
-        +82iywQ4aPyvKXiFZv1F/XilI9oL8UrZCUgXt//5ZrFLWoMFQK5MS4BZXIXEEn4Qewd28l0FUStc3
-        wo3GWth8m8QPyvZtMsPQe36jTOlej/i4MnAd6UUdU7M3M1N8K2pRTv15Up1bOMFP+RWtKo785BFHm
-        BsB6wwsyz/z7nOHRv5tYDE+ou+sJtZ6m0LSRfd+Y+6R9qvpOLgEAruqtDisjLuWqXKRdUG15mR3uf
-        EtQUKUGGXqDDWf1NuTSyMvEeWDbdWAUP3W3/ubgIqxgtvnkCvI+wd9kfOAGupr9iXBozprhOOMbpU
-        69QYqVyg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg8rs-000v0V-8Y; Thu, 28 Oct 2021 17:07:38 +0000
-Date:   Thu, 28 Oct 2021 18:07:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     syzbot <syzbot+34ef28bb2aeb28724aa0@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        linux-nilfs@vger.kernel.org
-Subject: Re: [syzbot] WARNING in __folio_mark_dirty
-Message-ID: <YXrYvIo8YRnAOJCj@casper.infradead.org>
-References: <0000000000003a5b5905cf6c5ee7@google.com>
+        Thu, 28 Oct 2021 13:10:01 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15C6C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:07:34 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so9530372ote.8
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:07:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gZBgjz3etReQLTYp9UvuJj0WkrqB5NTdLLhetv3xijo=;
+        b=C06U+26Ot/OLH0XlOSu84+pH/2WwhGGpzP2pUvYa8eCny8+/OyEGUV7s+xYsb2rQIG
+         kyNay3It4UiRk9NCzz7AcIn9e+qhQe3DRwuGJa9k7xsE8LEcxNd0a3HdalhDl8kQ3xrr
+         9MCPMc0j85G57l64mUVVvibVhj+r0FZX5yhjFPn4zoph5WrN4xW2jxBGXDWDwhHrD3Oc
+         QeidVvZSpR/0H5AJqYlaw/RfC6WfKTigtNcoHo5iukngzNoh/3xWWSqyOyNzmmlZUe/s
+         HGfxQ6d9yEHf3kyjjXOtPF/veqT6lkxCNrcyJlrfHyYGqLqpF9UnEfRXzb3Tid0u8GQ/
+         fc/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=gZBgjz3etReQLTYp9UvuJj0WkrqB5NTdLLhetv3xijo=;
+        b=d0liEUYWw/s1So4ELPwjm5Z8rJeQf9TDRnd2J3iKPHWYcs15izUNMnueSJSy3g79gO
+         HT0Yw3B1lt42oqqLrSaw+E9iSY7Fzc90Z113hkogcMmHMG7JqGkPhRbtgod/VcOS/bp9
+         +rijk3dFvd9NfoGRiM7FVj5txZxiTFS3KdAXfj9Qi7l1KEpsi1sdFHYWAPYl/Ch+ca97
+         Kge7wFx5/J+uIB2sovkuT7pSd+mEmNl0+pwtkbSELREDGfhKZ0huaEPutlOx+I4fk5Nu
+         7FFSr7S0dRuqvtCj8lbC/aaB/mjohhjiaWJ2hOSz7/cw/KcXo0faCkEUdCjee8F+4V0w
+         Ih3w==
+X-Gm-Message-State: AOAM532BcBWdBQmMC/HiQVrxKu0FSz7GJwZNxHouzCEHL1BRhKio3dEm
+        dkmT3en4OC29BUqDjI1lhkw=
+X-Google-Smtp-Source: ABdhPJwqgUEP7rJvCkru1GLDfPLZkWmcZIcHmgnaF4zzZDcAPlCCxNbWKoRDKtOJpezhLekHQvxfxw==
+X-Received: by 2002:a9d:d84:: with SMTP id 4mr4332743ots.383.1635440854093;
+        Thu, 28 Oct 2021 10:07:34 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p190sm1135256ooa.1.2021.10.28.10.07.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 10:07:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 28 Oct 2021 10:07:32 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        catalin.marinas@arm.com, deanbo422@gmail.com, green.hu@gmail.com,
+        guoren@kernel.org, jonas@southpole.se, kernelfans@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        maz@kernel.org, nickhu@andestech.com, palmer@dabbelt.com,
+        paulmck@kernel.org, paul.walmsley@sifive.com, peterz@infradead.org,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tglx@linutronix.de, torvalds@linux-foundation.org,
+        tsbogend@alpha.franken.de, vgupta@kernel.org, will@kernel.org
+Subject: Re: [PATCH 03/15] irq: mips: simplify do_domain_IRQ()
+Message-ID: <20211028170732.GA507928@roeck-us.net>
+References: <20211021180236.37428-1-mark.rutland@arm.com>
+ <20211021180236.37428-4-mark.rutland@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000003a5b5905cf6c5ee7@google.com>
+In-Reply-To: <20211021180236.37428-4-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 21, 2021 at 07:02:24PM +0100, Mark Rutland wrote:
+> There's no need fpr arch/mips's do_domain_IRQ() to open-code the NULL
+> check performed by handle_irq_desc(), nor the resolution of the desc
+> performed by generic_handle_domain_irq().
+> 
+> Use generic_handle_domain_irq() directly, as this is functioanlly
+> equivalent and clearer.
+> 
+> There should be no functional change as a result of this patch.
+> 
 
-I don't think this is something folio-related; I think it's a bug
-in nilfs which is failing to hold one of the appropriate locks:
+Except for this compile error:
 
-        WARN_ON_ONCE(debug_locks &&
-                     (!lockdep_is_held(&inode->i_lock) &&
-                      !lockdep_is_held(&inode->i_mapping->i_pages.xa_lock) &&
-                      !lockdep_is_held(&inode->i_wb->list_lock)));
+arch/mips/kernel/irq.c: In function 'do_domain_IRQ':
+arch/mips/kernel/irq.c:114:26: error: unused variable 'desc' [-Werror=unused-variable]
+  114 |         struct irq_desc *desc;
 
-(or possibly it's fine for nilfs to not be holding one of those locks,
-but if so then the condition needs to be updated to explain why it's
-safe for nilfs to be not holding one of those locks)
+Guenter
 
-On Thu, Oct 28, 2021 at 09:40:27AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    cf6c9d12750c Add linux-next specific files for 20211022
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=177967acb00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=dd1cd3d631599df5
-> dashboard link: https://syzkaller.appspot.com/bug?extid=34ef28bb2aeb28724aa0
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e79e9f300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12231f62b00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+34ef28bb2aeb28724aa0@syzkaller.appspotmail.com
-> 
-> NILFS (loop0): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 inode_to_wb include/linux/backing-dev.h:269 [inline]
-> WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 folio_account_dirtied mm/page-writeback.c:2460 [inline]
-> WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 __folio_mark_dirty+0xa7c/0xe30 mm/page-writeback.c:2509
-> Modules linked in:
-> CPU: 0 PID: 6575 Comm: segctord Not tainted 5.15.0-rc6-next-20211022-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:inode_to_wb include/linux/backing-dev.h:269 [inline]
-> RIP: 0010:folio_account_dirtied mm/page-writeback.c:2460 [inline]
-> RIP: 0010:__folio_mark_dirty+0xa7c/0xe30 mm/page-writeback.c:2509
-> Code: ff ff ff 48 8d 78 70 e8 b2 77 ae 07 31 ff 89 c6 89 44 24 10 e8 45 a5 d7 ff 8b 44 24 10 85 c0 0f 85 49 fa ff ff e8 14 a3 d7 ff <0f> 0b e9 3d fa ff ff e8 08 a3 d7 ff e8 c3 78 ae 07 31 ff 41 89 c7
-> RSP: 0018:ffffc900020078b8 EFLAGS: 00010093
-> RAX: 0000000000000000 RBX: ffff88806b870378 RCX: 0000000000000000
-> RDX: ffff88801b4fba80 RSI: ffffffff819fea3c RDI: 0000000000000003
-> RBP: ffffea0001c92700 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff819fea2b R11: 0000000000000000 R12: 0000000000000293
-> R13: ffff88806b870138 R14: 0000000000000001 R15: 0000000000000001
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055d7235e1180 CR3: 000000001278d000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __set_page_dirty include/linux/pagemap.h:834 [inline]
->  mark_buffer_dirty+0x4e6/0x650 fs/buffer.c:1145
->  nilfs_btree_propagate_p fs/nilfs2/btree.c:1889 [inline]
->  nilfs_btree_propagate+0x4ae/0xea0 fs/nilfs2/btree.c:2085
->  nilfs_bmap_propagate+0x73/0x170 fs/nilfs2/bmap.c:337
->  nilfs_collect_dat_data+0x45/0xd0 fs/nilfs2/segment.c:625
->  nilfs_segctor_apply_buffers+0x14a/0x470 fs/nilfs2/segment.c:1009
->  nilfs_segctor_scan_file+0x47a/0x700 fs/nilfs2/segment.c:1048
->  nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1224 [inline]
->  nilfs_segctor_collect fs/nilfs2/segment.c:1494 [inline]
->  nilfs_segctor_do_construct+0x14f3/0x6c60 fs/nilfs2/segment.c:2036
->  nilfs_segctor_construct+0x7a7/0xb30 fs/nilfs2/segment.c:2372
->  nilfs_segctor_thread_construct fs/nilfs2/segment.c:2480 [inline]
->  nilfs_segctor_thread+0x3c3/0xf90 fs/nilfs2/segment.c:2563
->  kthread+0x405/0x4f0 kernel/kthread.c:327
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
->  </TASK>
-> 
-> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  arch/mips/kernel/irq.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+> diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
+> index d20e002b3246..1fee96ef8059 100644
+> --- a/arch/mips/kernel/irq.c
+> +++ b/arch/mips/kernel/irq.c
+> @@ -115,11 +115,7 @@ void __irq_entry do_domain_IRQ(struct irq_domain *domain, unsigned int hwirq)
+>  
+>  	irq_enter();
+>  	check_stack_overflow();
+> -
+> -	desc = irq_resolve_mapping(domain, hwirq);
+> -	if (likely(desc))
+> -		handle_irq_desc(desc);
+> -
+> +	generic_handle_domain_irq(domain, hwirq);
+>  	irq_exit();
+>  }
+>  #endif
+> -- 
+> 2.11.0
 > 
