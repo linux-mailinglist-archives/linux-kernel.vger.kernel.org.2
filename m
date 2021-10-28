@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C4643E851
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E0B43E854
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhJ1S3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S230496AbhJ1SdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhJ1S3p (ORCPT
+        with ESMTP id S229645AbhJ1SdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:29:45 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA274C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:27:17 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id q127so8334709iod.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:27:17 -0700 (PDT)
+        Thu, 28 Oct 2021 14:33:08 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864A1C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:30:41 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id 62so1930464iou.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:30:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+G6CdJ3zT0nfkzpCxbjyGyIXPvxmC0KG1xFQgJK82Go=;
-        b=gej7DeSlFNmwR+cz6LTfAGp06TY2sDf6NZOIOME9jn3HgYQhzy9SFGbRebGw8lfvGI
-         oxjFP3vHtgrPiLdUZgPnJiNk6N8URKVTiHRioJhz7pLc/+R9kAOtqHO8VKUG/2jVvrf3
-         POI2t4wjgtRL0WeCYTQwN0KmnspDjRtMrsScU=
+        bh=YVJUiiGg7BPcD0nHmnfGHtL2v/PQ6LcxLlzW2OXEqr4=;
+        b=iTkCTrsCfSQze4Ok1K7X4JZ8B+mt+yuaT5x02z3IvB3eZoceGk+l6Rl0vLWOxtb4j6
+         q/kvxEAsrqSdZ8bAg1v94Ujecv6sVMtoWvmppYlcjxPLv9NX9grNZ45nl69K9gju13kX
+         HgRtSI9x8dpLg9Xd6LSOW8pq8dK9nAMtv+t2+W72UUSezXCk1u9+crz5bQhkktGLVEDH
+         doz7ewhknNK89gpTavKqE5Wjqcey5ZztAt8ZEUmTSxMvPHRGcFOQdE/lnRk9Z+DPhYv/
+         f0iwDoDwaeD6fYInN0G/v10TZChhfc/7nh+An+x2fCkS+LwCh+9FtpDYoGNKu3Aq9FDa
+         EMrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+G6CdJ3zT0nfkzpCxbjyGyIXPvxmC0KG1xFQgJK82Go=;
-        b=XlDdBV7RcEdTEt37znp/HaGBH56MDbJP8pcZ/+nip8NhSzouvTHfA7kVTN5ebpG8/8
-         Lj9IhkF1lsVZ8PmXYWsi9j4E8B4dnKt76MEQQmDCIO30qjDW9d+AJdFOrZQ3wTLbvJeD
-         Dsa2nJ0qnmnpjIVBLixqeJ6djGDvogqFqDyt1OPOpG/3zD/l4oi2XOCUAy9Mnv4Gn2/H
-         F21D/22JwlZhHsHzVtCRnWF3Q0KAvbN31LRHueJmSGzCyNQ75RfNFM4ya7aC4a0Ba3jb
-         NYxP/xV9zFQW0uGWP1Ci0/aL2grE2Sh/j0+D5LYQE3ixiGtK6RtwfTCjj558o5OKvtwX
-         yPfA==
-X-Gm-Message-State: AOAM531ol6vfQWn7lXG1t4gGZoOnRLzjZkDZHalE5r0SHCDDrrOpwku2
-        zLEbp+QyGSGy7FrGxcP2TwpY7qeZgsMgPw==
-X-Google-Smtp-Source: ABdhPJz5qY5uX+dgNl82Lk8O47XGcP1USU8MjJGRLDMr37Do5A4rKEMXupmzO+BkBZZiBoZEpkTN5A==
-X-Received: by 2002:a5d:954b:: with SMTP id a11mr4257686ios.99.1635445636042;
-        Thu, 28 Oct 2021 11:27:16 -0700 (PDT)
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com. [209.85.166.180])
-        by smtp.gmail.com with ESMTPSA id r13sm1888450ilh.80.2021.10.28.11.27.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 11:27:14 -0700 (PDT)
-Received: by mail-il1-f180.google.com with SMTP id l7so7936571iln.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:27:13 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1b09:: with SMTP id i9mr4114797ilv.142.1635445633346;
- Thu, 28 Oct 2021 11:27:13 -0700 (PDT)
+        bh=YVJUiiGg7BPcD0nHmnfGHtL2v/PQ6LcxLlzW2OXEqr4=;
+        b=6AcScJA7WEQmdOXBY3YmDCK81+84ekKvJPPQXG+dc5mXSX4eqDgLU5VdI0SnWkIui/
+         7VB9oAvZw9p84GVBQdELhibAZP/Up9zf+zGbpOkLwNYaVNR+MdsDg9Im7SDO+eA2dvbf
+         peYmo3kkmXgiZ2CxjLc/N84Z0CGfSrCU9P9kqpkj4R4J2HSKzhiDooIkERs2tIn2qqJ7
+         KA4lPgCBN6D7WIbpe58Y59VByeX6yb+KbMO+MUYW9b63W1ytCisI8hDnu1xG7+p2dDNw
+         U1NrcrGz2824U+RZhTwRHnxAxwETMRsL5oYzO6JkksWLRsclozNKPb483aC/92YSCg2w
+         L5Lg==
+X-Gm-Message-State: AOAM533YQdkSYCnJge4EIIqy5FQd61W7y2ycmWkK5OAMm7CPrgm6mtz5
+        4sH0cF1AQK0fMzxeOC832sveU52r8dCr2StKY0gl1w==
+X-Google-Smtp-Source: ABdhPJypdeO5lTvhivNSq33OjQQZSkIVoSXUfz+Q0JNJAhLmkHtgAbNk5UjnOsw6d1unDbTUJGxc9Hy7MvTCQ4W9YxU=
+X-Received: by 2002:a6b:8bd0:: with SMTP id n199mr4269025iod.15.1635445840580;
+ Thu, 28 Oct 2021 11:30:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026220848.439530-1-lyude@redhat.com> <20211026220848.439530-4-lyude@redhat.com>
-In-Reply-To: <20211026220848.439530-4-lyude@redhat.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 28 Oct 2021 11:27:00 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VXJA0DoCBOG+fzqv-5rYP4mWQE-HPxH9DxCVWgnuS4Dw@mail.gmail.com>
-Message-ID: <CAD=FV=VXJA0DoCBOG+fzqv-5rYP4mWQE-HPxH9DxCVWgnuS4Dw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] drm/dp: Disable unsupported features in DP_EDP_BACKLIGHT_MODE_SET_REGISTER
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>,
-        Satadru Pramanik <satadru@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210909075700.4025355-1-eranian@google.com> <YTnL814pES+YWWnm@hirez.programming.kicks-ass.net>
+ <CABPqkBROKmSLLCwFjiqObDpQz4iBUeO-0OaziNy05kxs3-4JHQ@mail.gmail.com> <YUG3DBtJKO8mTVHy@hirez.programming.kicks-ass.net>
+In-Reply-To: <YUG3DBtJKO8mTVHy@hirez.programming.kicks-ass.net>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Thu, 28 Oct 2021 11:30:29 -0700
+Message-ID: <CABPqkBRg=7udnCKvC=9OU6Pf=9V8kbqSLKhXeCKc3B1Jf=NyPA@mail.gmail.com>
+Subject: Re: [PATCH v1 00/13] perf/x86/amd: Add AMD Fam19h Branch Sampling support
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
+        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Oct 26, 2021 at 3:09 PM Lyude Paul <lyude@redhat.com> wrote:
+On Wed, Sep 15, 2021 at 2:04 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> As it turns out, apparently some machines will actually leave additional
-> backlight functionality like dynamic backlight control on before the OS
-> loads. Currently we don't take care to disable unsupported features when
-> writing back the backlight mode, which can lead to some rather strange
-> looking behavior when adjusting the backlight.
+> On Tue, Sep 14, 2021 at 10:55:12PM -0700, Stephane Eranian wrote:
+> > On Thu, Sep 9, 2021 at 1:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Thu, Sep 09, 2021 at 12:56:47AM -0700, Stephane Eranian wrote:
+> > > > This patch series adds support for the AMD Fam19h 16-deep branch sampling
+> > > > feature as described in the AMD PPR Fam19h Model 01h Revision B1 section 2.1.13.
+> > >
+> > > Yay..
+> > >
+> > > > BRS interacts with the NMI interrupt as well. Because enabling BRS is expensive,
+> > > > it is only activated after P event occurrences, where P is the desired sampling period.
+> > > > At P occurrences of the event, the counter overflows, the CPU catches the NMI interrupt,
+> > > > activates BRS for 16 branches until it saturates, and then delivers the NMI to the kernel.
+> > >
+> > > WTF... ?!? Srsly? You're joking right?
+> > >
+> >
+> > As I said, this is because of the cost of running BRS usually for
+> > millions of branches to keep only the last 16.
+> > Running branch sampling in general on any arch is  never totally free.
 >
-> So, let's fix this by ensuring we only keep supported features enabled for
-> panel backlights - which should fix some of the issues we were seeing from
-> this on fi-bdw-samus.
+> Holding up the NMI will disrupt the sampling of the other events, which
+> is, IMO unacceptible and would require this event to be exclusive on the
+> whole PMU, simply because sharing it doesn't work.
 >
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Fixes: 867cf9cd73c3 ("drm/dp: Extract i915's eDP backlight code into DRM helpers")
-> ---
->  drivers/gpu/drm/drm_dp_helper.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+Sorry for the long delay, I have been very busy.
+
+You are right on this. It would hold the NMI for 16 taken branches.
+Making the event exclusive creates a problem with the NMI watchdog.
+We can try to hack something in to allow NMI watchdog + the sampling
+event and nothing else.
+
+> (also, other NMI sources might object)
 >
-> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-> index ada0a1ff262d..8f2032a955cf 100644
-> --- a/drivers/gpu/drm/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/drm_dp_helper.c
-> @@ -3372,7 +3372,9 @@ int drm_edp_backlight_enable(struct drm_dp_aux *aux, const struct drm_edp_backli
->                 return ret < 0 ? ret : -EIO;
->         }
+On AMD, there is also IBS op, IBS Fetch both firing on NMI. but that
+is less of a concern because the instruction address is captured by IBS
+and the interrupted IP is not useful. So the interrupt skid is not important.
+
+> Also, by only having LBRs post overflow you can't apply LBR based
+> analysis to other events, which seems quite limiting.
 >
-> -       new_dpcd_buf = dpcd_buf;
-> +       /* Disable any backlight functionality we don't support that might be on */
-> +       new_dpcd_buf = dpcd_buf & (DP_EDP_BACKLIGHT_CONTROL_MODE_MASK |
-> +                                  DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE);
+This is a very limited functionality designed to support basic sampling
+primarily to support autoFDO where there is only one sampling event.
 
-My first thought when reading the above was: if we're masking so much
-stuff out, why do we bother reading the old value back out at all?
+> This really seems like a very sub-optimal solution. I mean, it's awesome
+> AMD gets branch records, but this seems a very poor solution.
 
-I guess the two places you use the old value for are:
+For now, this is what we have. It is important to get some basic form of branch
+sampling on Zen3 even if it is not perfect because it enables optimizations such
+as autoFDO for compilers today. We have verified that autoFDO works well with
+branch sampling on Zen3.
 
-1. You avoid setting the "DP_EDP_PWMGEN_BIT_COUNT" if the backlight
-was already configured for DPCD mode.
-
-2. You avoid writing the register if you didn't change it.
-
-I would actually argue that use #1 is probably a bug. If you're
-worried about the firmware leaving the backlight configured in a
-strange way, it could very well have left the backlight configured in
-DPCD mode but set a different "bit count" than you want, right? Maybe
-you should just always set the bit count?
-
-Use #2 is fine, but does it buy you anything? Are writes to the DCPD
-bus somehow more expensive than reads? ...or maybe you're expecting
-that a display will glitch / act badly if you write the same value
-that's already there?
-
-
-So I guess my instinct here is that you should avoid reading all
-together and just program the value you want.
-
--Doug
+I hope it will improve in the future.
