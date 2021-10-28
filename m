@@ -2,92 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FCF43E187
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F88B43E191
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhJ1NEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbhJ1NEN (ORCPT
+        id S230350AbhJ1NFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:05:36 -0400
+Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:37450 "EHLO
+        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230185AbhJ1NFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:04:13 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78232C061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:01:46 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id w193so8191961oie.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:01:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A3PFuF6YvLBcLpDR2wBX2gm8p1PRn5ff3+97DYxaVOE=;
-        b=REJWxnjRNMm3b2SNxFuOyFJm5Kky2tGBLRtTHdGMJQpEs66Cg7A4z9s3AVjOtoZyGH
-         QJ6o6VNYtxR3jMiWx1s3dyCzWvH8b6Q+diSYsv/Rmx7jr9CanBgSnt14zKnqL4hqojWY
-         u3/sinOenT9+fQyNQlekER3mANxZN20ufbKzdryAtvmtgQ+UpNvQ3ScfJHdqhfZgleBz
-         Kr0jMRSFL554Y3NF736FSvFsv62hsHu3vU+mFTsGEUywPO3S3aayn4e/Wv+f58jnaSnm
-         JtrGGhoyUvz8uYpKjAkBatqcMwnvs58+9x5/shB0B/TnrsEg3H7RT2NxOguornAVnr8i
-         z9Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A3PFuF6YvLBcLpDR2wBX2gm8p1PRn5ff3+97DYxaVOE=;
-        b=3ryN2Cvy5d9M8RNHM51Xb2a8x4yccfpX1AW2PQM6A74S6oqtwVTm4+h0eVKruSlWC5
-         +EGX7K97h4kcXvO9N4htHzfdsU3C1WR8R8zq3QpDk57Zw6MUfKHp+k8DR3uUB3ICuADd
-         kvR0xa16yYFf4uRQog/FdRdj4dhB/s9ZKhuztvHf3yqVGIPFqpoMlNqGcrXokfLKt4ug
-         QNj6iIU46QPJYnfI6n2fd8eIaU7JPAuGLS9lv92sc/2kg5wNapGn4ipc6BvB8iyVcS+J
-         oSQs9ZzWvj0Uu1rSaR39BBLMh3hAhCEiHxk+QUN9aCJaiLWw7yn8uj/km98+3az4CV7U
-         lBXw==
-X-Gm-Message-State: AOAM53245z8pIx9mK/3CYPQgzyDI2tf8DftIzd7VbceEEfA82rxV+gtJ
-        ewMl3JipoLVbvTIGAdWjXUrCT0Y5uL8fY8Ap5/yvfA==
-X-Google-Smtp-Source: ABdhPJwtTf2pAvokpijYpbMwmIt7HAzhD9jU4o+bGhJBmqWwSCnd3HeGQSvnphDQ9q7Ta/MXSsGvW9ZBxKKfe2d2Vg0=
-X-Received: by 2002:a54:4390:: with SMTP id u16mr2780487oiv.109.1635426105697;
- Thu, 28 Oct 2021 06:01:45 -0700 (PDT)
+        Thu, 28 Oct 2021 09:05:35 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 46FF8BACD4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:03:07 +0100 (IST)
+Received: (qmail 10343 invoked from network); 28 Oct 2021 13:03:07 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 Oct 2021 13:03:07 -0000
+Date:   Thu, 28 Oct 2021 14:03:05 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Srinivasan, Sadagopan" <Sadagopan.Srinivasan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] sched/fair: Adjust the allowed NUMA imbalance when SD_NUMA
+ spans multiple LLCs
+Message-ID: <20211028130305.GS3959@techsingularity.net>
 MIME-Version: 1.0
-References: <00000000000058e2f605b6d2ad46@google.com> <000000000000b6cfc405cf4860a7@google.com>
-In-Reply-To: <000000000000b6cfc405cf4860a7@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 28 Oct 2021 15:01:34 +0200
-Message-ID: <CACT4Y+ZDvKgc7Z-qKVie2mvoEw9FpA8hEZ3NyRaLDf-KnK+J7A@mail.gmail.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in ieee80211_tasklet_handler
-To:     syzbot <syzbot+7bb955045fc0840decd3@syzkaller.appspotmail.com>
-Cc:     davem@davemloft.net, fweisbec@gmail.com, hdanton@sina.com,
-        johannes.berg@intel.com, johannes@sipsolutions.net,
-        kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        mingo@kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 23:44, syzbot
-<syzbot+7bb955045fc0840decd3@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 313bbd1990b6ddfdaa7da098d0c56b098a833572
-> Author: Johannes Berg <johannes.berg@intel.com>
-> Date:   Wed Sep 15 09:29:37 2021 +0000
->
->     mac80211-hwsim: fix late beacon hrtimer handling
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151766bab00000
-> start commit:   835d31d319d9 Merge tag 'media/v5.15-1' of git://git.kernel..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9c32e23fada3a0e4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7bb955045fc0840decd3
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e08125300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14b17dde300000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: mac80211-hwsim: fix late beacon hrtimer handling
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA
+nodes") allowed an imbalance between NUMA nodes such that communicating
+tasks would not be pulled apart by the load balancer. This works fine when
+there is a 1:1 relationship between LLC and node but can be suboptimal
+for multiple LLCs if independent tasks prematurely use CPUs sharing cache.
 
-Looks plausible:
+Zen* has multiple LLCs per node with local memory channels and due to
+the allowed imbalance, it's far harder to tune some workloads to run
+optimally than it is on hardware that has 1 LLC per node. This patch
+adjusts the imbalance on multi-LLC machines to allow an imbalance up to
+the point where LLCs should be balanced between nodes.
 
-#syz fix: mac80211-hwsim: fix late beacon hrtimer handling
+On a Zen3 machine running STREAM parallelised with OMP to have on instance
+per LLC the results and without binding, the results are
+
+stream
+                            5.15.0-rc3             5.15.0-rc3
+                               vanilla     sched-numaimb-v1r2
+MB/sec copy-16    166652.10 (   0.00%)   534760.46 ( 220.88%)
+MB/sec scale-16   141550.36 (   0.00%)   386871.58 ( 173.31%)
+MB/sec add-16     156696.00 (   0.00%)   631731.80 ( 303.16%)
+MB/sec triad-16   155560.36 (   0.00%)   622624.28 ( 300.25%)
+
+STREAM can use directives to force the spread if the OpenMP is new
+enough but that doesn't help if an application uses threads and
+it's not known in advance how many threads will be created.
+
+Coremark is a CPU and cache intensive benchmark parallelised with
+pthreads. When running with 1 thread per instance, the vanilla kernel
+allows threads to contend on cache. With the patch;
+
+                               5.15.0-rc3             5.15.0-rc3
+                                  vanilla     sched-numaimb-v1r2
+Min       Score-16   366090.84 (   0.00%)   401505.65 (   9.67%)
+Hmean     Score-16   391416.56 (   0.00%)   452546.28 *  15.62%*
+Stddev    Score-16    16452.12 (   0.00%)    31480.31 ( -91.35%)
+CoeffVar  Score-16        4.20 (   0.00%)        6.92 ( -64.99%)
+Max       Score-16   416666.67 (   0.00%)   483529.77 (  16.05%)
+
+It can also make a big difference for semi-realistic workloads
+like specjbb which can execute arbitrary numbers of threads without
+advance knowledge of how they should be placed
+
+specjbb2005
+                               5.15.0-rc3             5.15.0-rc3
+                                  vanilla     sched-numaimb-v1r2
+Hmean     tput-1      72211.33 (   0.00%)    69510.46 (  -3.74%)
+Hmean     tput-8     564617.72 (   0.00%)   614862.80 *   8.90%*
+Hmean     tput-16   1001427.52 (   0.00%)  1128073.47 *  12.65%*
+Hmean     tput-24   1391106.98 (   0.00%)  1605210.23 *  15.39%*
+Hmean     tput-32   1685885.77 (   0.00%)  1971077.42 *  16.92%*
+Hmean     tput-40   1840316.70 (   0.00%)  2341328.12 *  27.22%*
+Hmean     tput-48   1900286.97 (   0.00%)  2643100.06 *  39.09%*
+Hmean     tput-56   2161832.49 (   0.00%)  2288492.08 (   5.86%)
+Hmean     tput-64   1979696.79 (   0.00%)  2970706.40 *  50.06%*
+Hmean     tput-72   2075744.37 (   0.00%)  3036188.04 *  46.27%*
+Hmean     tput-80   2044842.51 (   0.00%)  3116143.03 *  52.39%*
+Hmean     tput-88   2546189.47 (   0.00%)  3095464.00 *  21.57%*
+Hmean     tput-96   2775456.33 (   0.00%)  2628754.25 (  -5.29%)
+Hmean     tput-104  2591994.59 (   0.00%)  3081532.21 *  18.89%*
+Hmean     tput-112  2817717.85 (   0.00%)  2932890.32 (   4.09%)
+Hmean     tput-120  2525230.39 (   0.00%)  2967773.00 *  17.52%*
+Hmean     tput-128  2709652.37 (   0.00%)  2912141.50 *   7.47%*
+
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ kernel/sched/fair.c     | 27 +++++++++++++++++----------
+ kernel/sched/sched.h    |  1 +
+ kernel/sched/topology.c | 15 +++++++++++++++
+ 3 files changed, 33 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ff69f245b939..fda58bcbb1c0 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1545,7 +1545,7 @@ struct task_numa_env {
+ static unsigned long cpu_load(struct rq *rq);
+ static unsigned long cpu_runnable(struct rq *rq);
+ static unsigned long cpu_util(int cpu);
+-static inline long adjust_numa_imbalance(int imbalance,
++static inline long adjust_numa_imbalance(int imbalance, int dst_cpu,
+ 					int dst_running, int dst_weight);
+ 
+ static inline enum
+@@ -1926,8 +1926,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+ 		src_running = env->src_stats.nr_running - 1;
+ 		dst_running = env->dst_stats.nr_running + 1;
+ 		imbalance = max(0, dst_running - src_running);
+-		imbalance = adjust_numa_imbalance(imbalance, dst_running,
+-							env->dst_stats.weight);
++		imbalance = adjust_numa_imbalance(imbalance, env->dst_cpu,
++					dst_running, env->dst_stats.weight);
+ 
+ 		/* Use idle CPU if there is no imbalance */
+ 		if (!imbalance) {
+@@ -8989,9 +8989,13 @@ static bool update_pick_idlest(struct sched_group *idlest,
+  * This is an approximation as the number of running tasks may not be
+  * related to the number of busy CPUs due to sched_setaffinity.
+  */
+-static inline bool allow_numa_imbalance(int dst_running, int dst_weight)
++static inline bool
++allow_numa_imbalance(int dst_cpu, int dst_running, int dst_weight)
+ {
+-	return (dst_running < (dst_weight >> 2));
++	/* Allowed NUMA imbalance */
++	dst_weight >>= per_cpu(sd_numaimb_shift, dst_cpu);
++
++	return dst_running < dst_weight;
+ }
+ 
+ /*
+@@ -9111,8 +9115,9 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+ 
+ 	case group_has_spare:
+ 		if (sd->flags & SD_NUMA) {
++			int idlest_cpu = cpumask_first(sched_group_span(idlest));
++
+ #ifdef CONFIG_NUMA_BALANCING
+-			int idlest_cpu;
+ 			/*
+ 			 * If there is spare capacity at NUMA, try to select
+ 			 * the preferred node
+@@ -9120,7 +9125,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+ 			if (cpu_to_node(this_cpu) == p->numa_preferred_nid)
+ 				return NULL;
+ 
+-			idlest_cpu = cpumask_first(sched_group_span(idlest));
+ 			if (cpu_to_node(idlest_cpu) == p->numa_preferred_nid)
+ 				return idlest;
+ #endif
+@@ -9130,8 +9134,10 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+ 			 * a real need of migration, periodic load balance will
+ 			 * take care of it.
+ 			 */
+-			if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->span_weight))
++			if (allow_numa_imbalance(idlest_cpu,
++			    local_sgs.sum_nr_running, sd->span_weight)) {
+ 				return NULL;
++			}
+ 		}
+ 
+ 		/*
+@@ -9221,10 +9227,10 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+ 
+ #define NUMA_IMBALANCE_MIN 2
+ 
+-static inline long adjust_numa_imbalance(int imbalance,
++static inline long adjust_numa_imbalance(int imbalance, int dst_cpu,
+ 				int dst_running, int dst_weight)
+ {
+-	if (!allow_numa_imbalance(dst_running, dst_weight))
++	if (!allow_numa_imbalance(dst_cpu, dst_running, dst_weight))
+ 		return imbalance;
+ 
+ 	/*
+@@ -9336,6 +9342,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+ 		/* Consider allowing a small imbalance between NUMA groups */
+ 		if (env->sd->flags & SD_NUMA) {
+ 			env->imbalance = adjust_numa_imbalance(env->imbalance,
++				env->src_cpu,
+ 				busiest->sum_nr_running, busiest->group_weight);
+ 		}
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 3d3e5793e117..f2620d6b9918 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1777,6 +1777,7 @@ static inline struct sched_domain *lowest_flag_domain(int cpu, int flag)
+ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_llc);
+ DECLARE_PER_CPU(int, sd_llc_size);
+ DECLARE_PER_CPU(int, sd_llc_id);
++DECLARE_PER_CPU(int, sd_numaimb_shift);
+ DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
+ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
+ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 4e8698e62f07..08fb02510967 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -644,6 +644,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
+ DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
+ DEFINE_PER_CPU(int, sd_llc_size);
+ DEFINE_PER_CPU(int, sd_llc_id);
++DEFINE_PER_CPU(int, sd_numaimb_shift);
+ DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
+ DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
+ DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+@@ -672,6 +673,20 @@ static void update_top_cache_domain(int cpu)
+ 	sd = lowest_flag_domain(cpu, SD_NUMA);
+ 	rcu_assign_pointer(per_cpu(sd_numa, cpu), sd);
+ 
++	/*
++	 * Save the threshold where an imbalance is allowed between SD_NUMA
++	 * domains. If LLC spans the entire node, then imbalances are allowed
++	 * until 25% of the domain is active. Otherwise, allow an imbalance
++	 * up to the point where LLCs between NUMA nodes should be balanced
++	 * to maximise cache and memory bandwidth utilisation.
++	 */
++	if (sd) {
++		if (sd->span_weight == size)
++			per_cpu(sd_numaimb_shift, cpu) = 2;
++		else
++			per_cpu(sd_numaimb_shift, cpu) = max(2, ilog2(sd->span_weight / size * num_online_nodes()));
++	}
++
+ 	sd = highest_flag_domain(cpu, SD_ASYM_PACKING);
+ 	rcu_assign_pointer(per_cpu(sd_asym_packing, cpu), sd);
+ 
