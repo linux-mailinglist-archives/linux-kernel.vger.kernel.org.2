@@ -2,62 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D15943E3C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FB743E3C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhJ1OeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:34:17 -0400
-Received: from mga14.intel.com ([192.55.52.115]:54352 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231237AbhJ1OeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:34:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="230683239"
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="230683239"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 07:31:45 -0700
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="573767285"
-Received: from sjsanghv-mobl.amr.corp.intel.com (HELO [10.212.61.51]) ([10.212.61.51])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 07:31:43 -0700
-Subject: Re: [PATCH v2] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS
- codec
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Julian Braha <julianbraha@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-References: <20211028140909.496022-1-brent.lu@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5a69b8e0-b602-a6bf-e98d-0593e500973e@linux.intel.com>
-Date:   Thu, 28 Oct 2021 09:31:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S231260AbhJ1Oe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231235AbhJ1Oe0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:34:26 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFCEC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:31:58 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id b12so6139807wrh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:31:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=G1URQ8lQTbKqKyy5iIiPH2GPZERZgQDiwncSKKtO3yA=;
+        b=fBHmbjTKwbBV7gQItocG0wuyAy3bf5EBgQUyDfKMLm92xGS1KdK3ElxDwMrekIV/4E
+         18hPsWS+TZLWBXgxqV2DRCkEmPmmrhlQr7l17pJNdFgJnGJq7DCwbJ4wWX7+pbdvEryR
+         flIqtVwIMaUVc+HS+/siJkB7FS+4KrSgg18nvaVRFGw6phKW/ekqUUgDLQzJDvIubANZ
+         gPqWACUta8NJLoG+p33Dzh7cgf70VksltNhfBZDIPlKyt1ZG00r4MukiwYgHHo7YHMiy
+         YYp6EB0Q2GgmK7WVo3cxKv6F2V/PUcJ67OYqlVYWgUK5xbHlm4fGxO7HWHSpq5COJAzV
+         Q/1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=G1URQ8lQTbKqKyy5iIiPH2GPZERZgQDiwncSKKtO3yA=;
+        b=ma+WHanL+Glu5C6/8u+bfU4deG2MNAmyNhblCNmMze3Mr+z82ZZQQwp6XQesDBGSbz
+         2N/XWOhFwb/zWHUWhkX9uZW6Xh5MpZDUtH08hHu/0ptcwIAErURsdms2TXPVH79p0gHN
+         YsSr/kdH1vosCEpCXR3e6r/6S3yoeOYerL1Iuk6feKI9aWjw7Dz9+WhwmJXKpeItwSff
+         y3J0ta/HLcCog5I4Kjyuzpf+kWRJ5PDiZW6uP1e3oNMkgzc0pexa5yXop1rnw2IsaUUD
+         NKtjwgHRPnti1J8tU6tu2gKO0YbiGeeFRbVTUyhRx+1ufDHKlVbGRlSvhdkwO5zX9RsU
+         9MKw==
+X-Gm-Message-State: AOAM530tWZgdoBgAToLWOWtImBYtaYKUnKM6CpYDlBXoWhPk+qgvT/2s
+        X8kx5a/exmRDGV9Mpy+gle4=
+X-Google-Smtp-Source: ABdhPJxHXS8cxJcuL94+fXL/rbO0pFVs3/yhI0DSigN5Eupyioy+0wUxoViDjj0DOECe+w3Vvem8SQ==
+X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr6074015wrq.411.1635431517243;
+        Thu, 28 Oct 2021 07:31:57 -0700 (PDT)
+Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id c16sm3211643wrm.46.2021.10.28.07.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 07:31:56 -0700 (PDT)
+Message-ID: <186358f460f2093dc8a60a8120be3dc6f830c81f.camel@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH 4/7] staging: vt6655: Introduce
+ `data` temporary variable
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 28 Oct 2021 15:31:55 +0100
+In-Reply-To: <39890856.3BBMun7449@localhost.localdomain>
+References: <cover.1635415820.git.karolinadrobnik@gmail.com>
+         <2039159.k92FijXA2m@localhost.localdomain>
+         <alpine.DEB.2.22.394.2110281332040.9518@hadrien>
+         <39890856.3BBMun7449@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-In-Reply-To: <20211028140909.496022-1-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Fabio and Julia,
 
+Thank you very much for looking at my changes.
 
-On 10/28/21 9:09 AM, Brent Lu wrote:
-> Detect the codec variant in probe function and update DAI link
-> accordingly. Also add an new entry in enumeration table for machine
-> driver enumeration.
+On Thu, 2021-10-28 at 13:21 +0200, Fabio M. De Francesco wrote:
+> Hi Karolina,
 > 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> I think you are using redundant parentheses in "* (data ++)" but
+> understand that those increments and dereferences are equivalent to 
+> "* data ++" (according to the C precedence rules).
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Yes, I added them on purpose to improve readability (+ that's also my
+preference anyway)
+
+> While we are at it, please notice that Maintainers of different
+> subsystems may see this topic from a different point of view and that
+> they might very well ask you for removing those redundant
+> parentheses.
+
+I understand, thanks for letting me know.
+
+
+On Thu, 2021-10-28 at 13:32 +0200, Julia Lawall wrote:
+> Would it be better as data[i] ?
+> 
+> Could there be a better name than "data"?  Perhaps "table"?
+
+Hmm, now when I'm thinking about, it indeed looks like a better option.
+I would even say that `data` (or `table`/`init_table`) can be only used
+in the AL7320 case and we can go with `al2230_init_table` for AL2230.
+The line would be 61 characters long, way below the limit.
+
+What do you think?
+
+
+Many thanks,
+Karolina
+
