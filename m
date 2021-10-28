@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A23F43DAB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D139943DABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhJ1F3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 01:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38798 "EHLO mail.kernel.org"
+        id S229772AbhJ1FcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 01:32:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229684AbhJ1F3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 01:29:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29DFE60E78;
-        Thu, 28 Oct 2021 05:27:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635398831;
-        bh=MtTLArIPjcJ9E+brocSHHX3I38Thwsm8UwOwnaormZk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z6PMRBm2hK1xXfKbmUKegEDLjI8SYviUQdvqJOkcDJkmPRBjSzWp6POGuOdujd9Jt
-         LNLzs+sDsOWK8ANE/V7JSp6TYthhVpJP/1Bcm3LNLOGL1Zuu8cl068StDSzh1NfWbn
-         w1Ez3AuS9/B0k6cuG26f3Hu6SVW4uhuIKdOPO5Lo=
-Date:   Thu, 28 Oct 2021 07:27:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Wang Kefeng <wangkefeng.wang@huawei.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] arch/Kconfig: Make CONFIG_CPU_SPECTRE available
- for all architectures
-Message-ID: <YXo0qv28Xykj718l@kroah.com>
-References: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
- <232b692cd79e4f6e4c3ee7055b5f02792a28d2c4.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+        id S229586AbhJ1FcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 01:32:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F1260E78;
+        Thu, 28 Oct 2021 05:29:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635398987;
+        bh=+uNFoSa6dL/erRiCd93Xr9hihtBPrLwDyPo7XDnmw+Q=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tJsfSILbfWaVOB9UkWTFXJpR9/oveK8/lnfDMrFrqZSQHJ0Gfu4Yn2f/aGwZABusn
+         scg/ozMR5YZVgYUPHcQZ9nAyO7vX0wEeHzLUnYMHoBpkwRNzKPprZbCEt6fYLpnwaI
+         zYaIzzQ/EspEBspncZGU5wjod+V2faxDCzdk8AFS4g4uXqI9WXsIp+ItITb0UfZsme
+         5/W6SxBkL3eP3bXkTU5TnE3HqvvsW4SUBg0mJNUoaDW1KMXp9g+snmmiQ7jVpEtjn8
+         LCJZX3XYGSoMncwsbQA/OTuIOfSMpQAmYTxOSt4pxBVcHxMD27jTBuLKtdVbV1Mspl
+         ulYN5jsumOtEg==
+Message-ID: <1f893c71400a8193f8e1637b17bc4196c52293cd.camel@kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5: Add esw assignment back in
+ mlx5e_tc_sample_unoffload()
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Date:   Wed, 27 Oct 2021 22:29:46 -0700
+In-Reply-To: <20211027153122.3224673-1-nathan@kernel.org>
+References: <20211027153122.3224673-1-nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <232b692cd79e4f6e4c3ee7055b5f02792a28d2c4.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 06:33:22PM -0700, Pawan Gupta wrote:
-> Borrow CONFIG_CPU_SPECTRE from ARM to be available for all
-> architectures. This will help in configuration of features that depend
-> on CPU being affected by spectre class of vulnerabilities.
+On Wed, 2021-10-27 at 08:31 -0700, Nathan Chancellor wrote:
+> Clang warns:
 > 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> ---
->  arch/Kconfig        | 3 +++
->  arch/arm/mm/Kconfig | 3 ---
->  arch/x86/Kconfig    | 1 +
->  3 files changed, 4 insertions(+), 3 deletions(-)
+> drivers/net/ethernet/mellanox/mlx5/core/en/tc/sample.c:635:34: error:
+> variable 'esw' is uninitialized when used here [-Werror,-
+> Wuninitialized]
+>         mlx5_eswitch_del_offloaded_rule(esw, sample_flow->pre_rule,
+> sample_flow->pre_attr);
+>                                         ^~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/tc/sample.c:626:26: note:
+> initialize the variable 'esw' to silence this warning
+>         struct mlx5_eswitch *esw;
+>                                 ^
+>                                  = NULL
+> 1 error generated.
+> 
+> It appears that the assignment should have been shuffled instead of
+> removed outright like in mlx5e_tc_sample_offload(). Add it back so
+> there
+> is no use of esw uninitialized.
+> 
+> Fixes: a64c5edbd20e ("net/mlx5: Remove unnecessary checks for slow
+> path flag")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1494
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-You forgot to cc: the bpf list for this.
+Nice catch ! 
+applied to net-next-mlx5, 
+Thanks !
 
-greg k-h
