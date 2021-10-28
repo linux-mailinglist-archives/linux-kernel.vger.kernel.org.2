@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B05E43E821
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1429A43E82F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhJ1ST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
+        id S230462AbhJ1SV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhJ1ST1 (ORCPT
+        with ESMTP id S231175AbhJ1SVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:19:27 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27259C061243
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:16:59 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so2408359ooi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:16:59 -0700 (PDT)
+        Thu, 28 Oct 2021 14:21:24 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1C0C061570;
+        Thu, 28 Oct 2021 11:18:57 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id x16-20020a9d7050000000b00553d5d169f7so8132596otj.6;
+        Thu, 28 Oct 2021 11:18:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Wusxu4vVS094WYADHFLACryqXCZAQomcEnv/oqtQUp8=;
-        b=cIHck4f7AU6fCfChVEV2LovuiRMjA9npqq575g7mD6uUXAWIZK7H/dd0FYbkYWvcLw
-         THcW+crPTr8lmtELnV92shgpOg7arjpaszvQRz613ZU/fICX96ZR7nz0A+Zs5ZWX2Kzu
-         3Fxyh0V1kgUIi49NKrpybu+L1b2eGf9O4QvZQI8qc2ZWwFFux0z41haIX4Vcc6wgljWR
-         MDV+4WCiRPJBUi+UaFPrdiEtNHYRNGNAC/yesi/c2odE1ZPoTN4ofOemZsJA0bfvkzro
-         RVFdWyPcFsTjJWMnxm3mzqX74df7+nxkEJqS8WqXZ6DsJcMWEMdTR/QCI0bM6LMkj2JB
-         0REg==
+        bh=hJJvM4OVSq3FE6QwPUFBXHlNCsmWmONWQDVttZJn9Ow=;
+        b=puLXBz6j2oPa7Vm0NTlP3SNMF+eeN8O35oik51cstM6oBN/v2Mt8jD02q9DxgaLLVx
+         4POc1hddzvmQdwm0Dsz/MX6Ra+9f1au9OEy1jrtCI6oPXSyDqdN05BVD+erT/+dQdzya
+         92aS+uBT3rssNtdyrZuQpjlfTNNidUbJlYDEFDc4zc7NTmGFeY5u08lI5XGkWnixeJsz
+         xKZP2RyrIhjrTeyNOkkHIT3mnwk+5DZGs84UZdp2PXFAUkeUNQ5rZ6EHIhE5gSQefJT4
+         QWHpTd+kx9wGejNMY20sUg+/Kf0WTt+MTt7X/XCGV5PGgne5lpGeFlkPh8Tc6WKB2uGl
+         dQNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wusxu4vVS094WYADHFLACryqXCZAQomcEnv/oqtQUp8=;
-        b=M1Ypp0cxpINudUQcYSYJcUkf31xNkVTeNB9IpGTwXiaCpD3UB9b2TnK78EnMHuBrsw
-         AIdxA7XGMSgElYJil2vSEK1K3qnF4BwhmikZMocasloW+xx57Hy3STHWcY9l2TJShs1k
-         kNkh2tJRbm1b59v39Y53xQm/wldUjQtgWcPQPSFSD2f9Zm8CuQVvQTvQ6ltCqS7Nsfua
-         +Q8HkiMnfvkyB9hdk7vXwwO+3nQ2m8clUDyZOP8wVY3iYRFnvekq0k2t0GDmvBTF5JFa
-         rZmp7+kmGfnSYfbLBocS+X3XO9KT+giJVu78/hwf3NDUilGUwNJQOoDl1YXuVp4nJ7CF
-         De+w==
-X-Gm-Message-State: AOAM5325xstWZpq1LmRhYv2+EteL+vBUI+XxXtlF9n1NGwCziYVbrLrd
-        j6cVfcMhXDWEgFSIlQucXUkGUA==
-X-Google-Smtp-Source: ABdhPJy7YMoWnmrHfImanNmbs6Unt0iAC5Q17Vv8gEqfdVoObsC06l/dfy2j5VCFf7uWMyZht8j/MQ==
-X-Received: by 2002:a4a:e218:: with SMTP id b24mr4268610oot.36.1635445018092;
-        Thu, 28 Oct 2021 11:16:58 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id bq10sm1288528oib.25.2021.10.28.11.16.57
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=hJJvM4OVSq3FE6QwPUFBXHlNCsmWmONWQDVttZJn9Ow=;
+        b=gPIvDR4HgyiVFtQL9ate9cC1MAZeQS/F4nkzoMpuYe0jRgLmxYT8cVX/ZUr9LW/Hmp
+         0yHACUVjm+z0/PkCIHT1jDgsWg9oLj7VzSATVs6WqwLq/GU1IaRwk7Dy69cPDUMqShKw
+         SXqZ5Bvjt5+x69j4tNoawxqKf6qPZF3DJb0jZs9SNYYWdu4NvDg2DS+gfWJO4kBHhzXY
+         PhT9ywxoBDaF9cd1WzUpA8Z7k5oM5cyNMb6UDvD2C9R1iFAv1YI34b7F+7W0KBOkmXKQ
+         A0H6L0UWCvfXTpY/fq+tO1D3uprGcVGrgbB1jqtxaWABwxslUQ/j8mbWoiBgUVPeV9c1
+         8+dw==
+X-Gm-Message-State: AOAM5324+kkyLXxqdaI9tpb5gRQgm9uaY8Pj4Bsl91na+hVOg+9V7OM7
+        pngeCU6zmSyvtf75OKvzaVA=
+X-Google-Smtp-Source: ABdhPJw6lPestbj12caiCcuQsgAKktCzOhUyeJGLMw4Q+USzTs0xyfmmIEAE6RKKRvIUwg0lYXLATw==
+X-Received: by 2002:a05:6830:1d6e:: with SMTP id l14mr4629805oti.147.1635445137239;
+        Thu, 28 Oct 2021 11:18:57 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c17sm1398513ots.35.2021.10.28.11.18.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 11:16:57 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 11:18:45 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Thu, 28 Oct 2021 11:18:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 28 Oct 2021 11:18:55 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, rafal@milecki.pl,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH 4/8] cpufreq: qcom_cpufreq_nvmem: Simplify reading kryo
- speedbin
-Message-ID: <YXrphSSG9+zsZbJ9@ripper>
-References: <20211014083016.137441-1-y.oudjana@protonmail.com>
- <20211014083016.137441-5-y.oudjana@protonmail.com>
- <f4af0e40-9e93-dba9-7401-cdfc76ba667e@somainline.org>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "maintainer:BROADCOM BCM63XX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Justin Chen <justinpopo6@gmail.com>,
+        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "moderated list:BROADCOM BCM63XX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 4/7] watchdog: Allow building BCM7038_WDT for BCM63XX
+Message-ID: <20211028181855.GB705675@roeck-us.net>
+References: <20211028172322.4021440-1-f.fainelli@gmail.com>
+ <20211028172322.4021440-5-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f4af0e40-9e93-dba9-7401-cdfc76ba667e@somainline.org>
+In-Reply-To: <20211028172322.4021440-5-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 15 Oct 11:58 PDT 2021, Konrad Dybcio wrote:
+On Thu, Oct 28, 2021 at 10:23:19AM -0700, Florian Fainelli wrote:
+> CONFIG_BCM63XX denotes the legacy MIPS-based DSL SoCs which utilize the
+> same piece of hardware as a watchdog, make it possible to select that
+> driver for those platforms.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-> 
-> On 14.10.2021 10:32, Yassine Oudjana wrote:
-> > In preparation for adding a separate device tree for MSM8996 Pro, skip reading
-> > msm-id from smem and just read the speedbin efuse.
-> >
-> While I'd really like for this to be merged, it's gonna totally wreck backwards
-> 
-> compatibility.. But then, since APCC was not defined properly before commit
-> 
-> 0a275a35ceab07 arm64: dts: qcom: msm8996: Make CPUCC actually probe (and work)
-> 
-> there's only 5.14/5.15 (both of which were non-LTS) which would *actually* break given
-> 
-> somebody decided that "ah yes, pulling in DTs from these specific mainline kernel releases
-> 
-> is a good idea"...
-> 
-> 
-> If I were to judge, it would probably be fine to rid the old mechanism..
-> 
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Given that various people have reported instabilities on db820c in its
-current form - and prior to that it was too slow - I think it's fine to
-favour getting this sorted out properly over backwards compatibility.
-
-Regards,
-Bjorn
+> ---
+>  drivers/watchdog/Kconfig | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index bf59faeb3de1..24a775dd2bf1 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1756,12 +1756,13 @@ config BCM7038_WDT
+>  	tristate "BCM7038 Watchdog"
+>  	select WATCHDOG_CORE
+>  	depends on HAS_IOMEM
+> -	depends on ARCH_BRCMSTB || BMIPS_GENERIC || COMPILE_TEST
+> +	depends on ARCH_BRCMSTB || BMIPS_GENERIC || BCM63XX || COMPILE_TEST
+>  	help
+>  	 Watchdog driver for the built-in hardware in Broadcom 7038 and
+>  	 later SoCs used in set-top boxes.  BCM7038 was made public
+>  	 during the 2004 CES, and since then, many Broadcom chips use this
+> -	 watchdog block, including some cable modem chips.
+> +	 watchdog block, including some cable modem chips and DSL (63xx)
+> +	 chips.
+>  
+>  config IMGPDC_WDT
+>  	tristate "Imagination Technologies PDC Watchdog Timer"
+> -- 
+> 2.25.1
+> 
