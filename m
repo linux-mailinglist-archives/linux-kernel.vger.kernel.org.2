@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F02F43E6BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E482C43E6C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhJ1RDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:03:30 -0400
-Received: from mga05.intel.com ([192.55.52.43]:61611 "EHLO mga05.intel.com"
+        id S230350AbhJ1RE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:04:26 -0400
+Received: from mga03.intel.com ([134.134.136.65]:39984 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhJ1RD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:03:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="316664366"
+        id S229565AbhJ1REZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:04:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="230410405"
 X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="316664366"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 10:01:00 -0700
+   d="scan'208";a="230410405"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 10:01:55 -0700
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="597876341"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 10:00:59 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mg8lc-001oic-J9;
-        Thu, 28 Oct 2021 20:00:40 +0300
-Date:   Thu, 28 Oct 2021 20:00:40 +0300
+   d="scan'208";a="466197543"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 28 Oct 2021 10:01:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 8A112107; Thu, 28 Oct 2021 20:01:52 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] delay: Replace kernel.h with the necessary
- inclusions
-Message-ID: <YXrXOLgjCNOUpsPK@smile.fi.intel.com>
-References: <20211027150324.79827-1-andriy.shevchenko@linux.intel.com>
- <20211028153055.GA440866@roeck-us.net>
- <YXrIlT+2llnwgRpj@smile.fi.intel.com>
- <20211028162810.GB470146@roeck-us.net>
- <YXrUu8swbM3BL/4C@smile.fi.intel.com>
- <YXrVO57eLx8gkWHW@smile.fi.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v1 1/1] delay.h: fix for removed kernel.h
+Date:   Thu, 28 Oct 2021 20:01:43 +0300
+Message-Id: <20211028170143.56523-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXrVO57eLx8gkWHW@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 07:52:12PM +0300, Andy Shevchenko wrote:
-> On Thu, Oct 28, 2021 at 07:50:03PM +0300, Andy Shevchenko wrote:
-> > On Thu, Oct 28, 2021 at 09:28:10AM -0700, Guenter Roeck wrote:
-> > > On Thu, Oct 28, 2021 at 06:58:13PM +0300, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > > Build results:
-> > > 	total: 153 pass: 115 fail: 38
-> 
-> > > Qemu test results:
-> > > 	total: 480 pass: 315 fail: 165
-> 
-> FWIW, most of them on the first glance due to something like below
-> 
-> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-> samples/fanotify/fs-monitor.c:7:10: fatal error: errno.h: No such file or directory
-> 7 | #include <errno.h>
->   |          ^~~~~~~~~
+To be folded to the commit 0d280a9fbbd9 ("include/linux/delay.h:
+replace kernel.h with the necessary inclusions")
 
-I have briefly looked at the logs (stdio) and potentially my patch might brake
-h8300 and parisc, the rest as pointed above (have no idea if my patch anyhow
-may be involved to that).
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ arch/riscv/lib/delay.c           | 4 ++++
+ arch/s390/include/asm/facility.h | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-Hence, will sent only fix for what you bisected.
-
-Thanks!
-
+diff --git a/arch/riscv/lib/delay.c b/arch/riscv/lib/delay.c
+index f51c9a03bca1..49d510ba75fd 100644
+--- a/arch/riscv/lib/delay.c
++++ b/arch/riscv/lib/delay.c
+@@ -4,10 +4,14 @@
+  */
+ 
+ #include <linux/delay.h>
++#include <linux/math.h>
+ #include <linux/param.h>
+ #include <linux/timex.h>
++#include <linux/types.h>
+ #include <linux/export.h>
+ 
++#include <asm/processor.h>
++
+ /*
+  * This is copies from arch/arm/include/asm/delay.h
+  *
+diff --git a/arch/s390/include/asm/facility.h b/arch/s390/include/asm/facility.h
+index e3aa354ab9f4..94b6919026df 100644
+--- a/arch/s390/include/asm/facility.h
++++ b/arch/s390/include/asm/facility.h
+@@ -9,8 +9,12 @@
+ #define __ASM_FACILITY_H
+ 
+ #include <asm/facility-defs.h>
++
++#include <linux/minmax.h>
+ #include <linux/string.h>
++#include <linux/types.h>
+ #include <linux/preempt.h>
++
+ #include <asm/lowcore.h>
+ 
+ #define MAX_FACILITY_BIT (sizeof(stfle_fac_list) * 8)
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.33.0
 
