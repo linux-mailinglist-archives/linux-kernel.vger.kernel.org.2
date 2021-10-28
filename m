@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC2343E289
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F8043E28C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhJ1Nvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:51:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:55144 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230445AbhJ1NvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:51:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEC811396;
-        Thu, 28 Oct 2021 06:48:56 -0700 (PDT)
-Received: from e121896.Emea.Arm.com (e121896.Emea.Arm.com [10.32.36.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B141D3F70D;
-        Thu, 28 Oct 2021 06:48:52 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, linux-perf-users@vger.kernel.org,
-        f.fainelli@gmail.com, irogers@google.com
-Cc:     James Clark <james.clark@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH 3/3] perf tests: Remove bash constructs from stat_all_pmu.sh
-Date:   Thu, 28 Oct 2021 14:48:27 +0100
-Message-Id: <20211028134828.65774-4-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20211028134828.65774-1-james.clark@arm.com>
-References: <20211028134828.65774-1-james.clark@arm.com>
+        id S230505AbhJ1NwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230508AbhJ1Nvj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:51:39 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A06C061220;
+        Thu, 28 Oct 2021 06:49:11 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id h7so25610207ede.8;
+        Thu, 28 Oct 2021 06:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3BovXqE0Q/mhEQVcledJTFqExJrjsVNS5gIUqVyJDoY=;
+        b=hv+9b20zOu4SMISP96uhUZGkB2paa1ApPsBGLC1kGOxjNUBR7J/1pT3H88Lwh510nC
+         aRQxp3ZlClR3ZGLQkF4tJURYyS26RWElkVw0G3KJMSLacP/TIfqQE42EdpSSr6AbZXxA
+         Yl9zPBar9YZPqfL1INj1Ny7s+o6WqkqFmDmFSbKxwJseUAb3pvlSdRGdbuFJX141eL9k
+         B2tvIRwt/FtzZM3KfjCQ4U/rpGGjnib7478r7Lsz7YdbZFInIZ6J1XRu5eEAWINTpPfD
+         EySyHbgZ0J/w0rdkbPj4RMP8c9mI3gHLFZpxjdMepCjP5t0I9fmPXDuL4NzqEFaSDjHU
+         GGeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3BovXqE0Q/mhEQVcledJTFqExJrjsVNS5gIUqVyJDoY=;
+        b=NNgfJcdfd1fiV3oC2sLMTnut+SsGA6PuABqieSkAcipndj6cWYC9w1rhzEt4dpbm6I
+         N+LEFrD7hcuNHTiI2O4lbrnBZR0lsHID59xi4X3Qs5pYnWJV6YHRvtWxCaOSRHuEPOv2
+         L17iRXM2f+9l+waKyVoUNIgb9VcA8c1Tlv0/StBQaE0/3TFGRiCHSykZgOSWaONESSIj
+         yBFgcuTp6+lYgshBkraAAxv2L5r91+wVZJ33H+RFUH1wJgkeF/ujIfHx6SzCv78KExW1
+         nWGCORZovoBRcLRQtl9hxhRbD+nhW7MZOFvTVhDoUrSX4C+/3/VWNISXxisZyonJdnhA
+         Pn4g==
+X-Gm-Message-State: AOAM530/fQ16+lPtx0wIeRyI6L6QA+VWNIKdT0jIkqF+KTlAgqnRNzZo
+        wWcLjlRXqfX9RBntuJ/H1x4=
+X-Google-Smtp-Source: ABdhPJwB5nJKhRiOxwpp/Pgj4qcD/x4TVfHGhWJIqnq49U0MEpM3I+U11DNwqOiy3JMqCVQ2l2ZbmQ==
+X-Received: by 2002:a05:6402:42d4:: with SMTP id i20mr6165295edc.337.1635428947629;
+        Thu, 28 Oct 2021 06:49:07 -0700 (PDT)
+Received: from demon-pc.localdomain ([188.24.96.74])
+        by smtp.gmail.com with ESMTPSA id x3sm1941934edd.67.2021.10.28.06.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 06:49:07 -0700 (PDT)
+From:   Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     demonsingur@gmail.com, cosmin.tanislav@analog.com,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] iio: add adddac subdirectory
+Date:   Thu, 28 Oct 2021 16:48:43 +0300
+Message-Id: <20211028134849.3664969-1-demonsingur@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tests were passing but without testing and were printing the
-following:
+For IIO devices that expose both ADC and DAC functionality.
 
-  $ ./perf test -v 90
-  90: perf all PMU test                                               :
-  --- start ---
-  test child forked, pid 51650
-  Testing cpu/branch-instructions/
-  ./tests/shell/stat_all_pmu.sh: 10: [:
-   Performance counter stats for 'true':
-
-             137,307      cpu/branch-instructions/
-
-         0.001686672 seconds time elapsed
-
-         0.001376000 seconds user
-         0.000000000 seconds sys: unexpected operator
-
-Changing the regexes to a grep works in sh and prints this:
-
-  $ ./perf test -v 90
-  90: perf all PMU test                                               :
-  --- start ---
-  test child forked, pid 60186
-  [...]
-  Testing tlb_flush.stlb_any
-  test child finished with 0
-  ---- end ----
-  perf all PMU test: Ok
-
-Signed-off-by: James Clark <james.clark@arm.com>
+Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
 ---
- tools/perf/tests/shell/stat_all_pmu.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/Kconfig        | 1 +
+ drivers/iio/Makefile       | 1 +
+ drivers/iio/addac/Kconfig  | 8 ++++++++
+ drivers/iio/addac/Makefile | 6 ++++++
+ 4 files changed, 16 insertions(+)
+ create mode 100644 drivers/iio/addac/Kconfig
+ create mode 100644 drivers/iio/addac/Makefile
 
-diff --git a/tools/perf/tests/shell/stat_all_pmu.sh b/tools/perf/tests/shell/stat_all_pmu.sh
-index 2de7fd0394fd..b30dba455f36 100755
---- a/tools/perf/tests/shell/stat_all_pmu.sh
-+++ b/tools/perf/tests/shell/stat_all_pmu.sh
-@@ -7,11 +7,11 @@ set -e
- for p in $(perf list --raw-dump pmu); do
-   echo "Testing $p"
-   result=$(perf stat -e "$p" true 2>&1)
--  if [[ ! "$result" =~ "$p" ]] && [[ ! "$result" =~ "<not supported>" ]]; then
-+  if ! echo "$result" | grep -q "$p" && ! echo "$result" | grep -q "<not supported>" ; then
-     # We failed to see the event and it is supported. Possibly the workload was
-     # too small so retry with something longer.
-     result=$(perf stat -e "$p" perf bench internals synthesize 2>&1)
--    if [[ ! "$result" =~ "$p" ]]; then
-+    if ! echo "$result" | grep -q "$p" ; then
-       echo "Event '$p' not printed in:"
-       echo "$result"
-       exit 1
+diff --git a/drivers/iio/Kconfig b/drivers/iio/Kconfig
+index 2334ad249b46..4fb4321a72cb 100644
+--- a/drivers/iio/Kconfig
++++ b/drivers/iio/Kconfig
+@@ -70,6 +70,7 @@ config IIO_TRIGGERED_EVENT
+ 
+ source "drivers/iio/accel/Kconfig"
+ source "drivers/iio/adc/Kconfig"
++source "drivers/iio/addac/Kconfig"
+ source "drivers/iio/afe/Kconfig"
+ source "drivers/iio/amplifiers/Kconfig"
+ source "drivers/iio/cdc/Kconfig"
+diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
+index 65e39bd4f934..8d48c70fee4d 100644
+--- a/drivers/iio/Makefile
++++ b/drivers/iio/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_IIO_TRIGGERED_EVENT) += industrialio-triggered-event.o
+ 
+ obj-y += accel/
+ obj-y += adc/
++obj-y += addac/
+ obj-y += afe/
+ obj-y += amplifiers/
+ obj-y += buffer/
+diff --git a/drivers/iio/addac/Kconfig b/drivers/iio/addac/Kconfig
+new file mode 100644
+index 000000000000..2e64d7755d5e
+--- /dev/null
++++ b/drivers/iio/addac/Kconfig
+@@ -0,0 +1,8 @@
++#
++# ADC DAC drivers
++#
++# When adding new entries keep the list in alphabetical order
++
++menu "Analog to digital and digital to analog converters"
++
++endmenu
+diff --git a/drivers/iio/addac/Makefile b/drivers/iio/addac/Makefile
+new file mode 100644
+index 000000000000..b888b9ee12da
+--- /dev/null
++++ b/drivers/iio/addac/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for industrial I/O ADDAC drivers
++#
++
++# When adding new entries keep the list in alphabetical order
 -- 
-2.28.0
+2.33.0
 
