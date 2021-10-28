@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD4043D978
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8186243D97C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhJ1Cuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhJ1Cua (ORCPT
+        id S229792AbhJ1Cuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:50:35 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:56635 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229735AbhJ1Cud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:50:30 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DB6C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 19:48:04 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id o133so4565621pfg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 19:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=abncWvOQe59IADgaUJmb1qCqctMDJgXlp15JUS3KD/o=;
-        b=fGPyrBip5h+Av/2qPh929SJsKeiJYDFozhfF+YU26iIzBnpH8VzFuWWz0+hAWpS/tK
-         vFZpJ16Eva/ZnTAqrVQadPx5gWdsapy3Ofu7JIRbv7tC1O+bhzny15olgSb1hXUQIkvS
-         XkSYmvR89A/sqEjkhm1R5SlIVxgifcJZkxaZXuVf4qbrARh1KhYqMY7KO3f3P0WMbWaw
-         Da7Lh7OJP44K7Z3FGZra9ieqJ5aeomjfb7jq21sHFPbyfza7DnwtIFAMWdW0DtUqNKuW
-         +/L4CmUaIcupaME4BHxa8jtCDH4kLe3DayjmKuXq7JJ2Wu16z5hP5VvEeZhO7gi2s7VO
-         K4hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=abncWvOQe59IADgaUJmb1qCqctMDJgXlp15JUS3KD/o=;
-        b=EceobF1innsecTTDTTp141G0GmBLVTrReACVImgcayXe6ivYFIX6QRdxY91OplwzBQ
-         INqSHnngrdLy0rrzYnXwn9VIDuMjarluJnSPfP5rCji8JtWv1x/8kSOgSB0QHpjNRDVa
-         jKu2axbMZAGX7lPRHGRs4zSuXtf4w18C0Y7urhVEWh+sgIDH+kQ+d4Dk3LMenaf+ZqV5
-         Jr6tSnnZqW7qFrhUM+YSHgXt9xWCfQnS9iBTovSeSNhM7GsbyamgajDQZpefNlRrHQPd
-         oPhr+h1Yd+3RGjsK+yR7x/p1X8WcqCeIUdlCHAuB6j5lXCxVsrbs2btaWlE1NtB0UPpJ
-         LeVw==
-X-Gm-Message-State: AOAM5323dcECPYpXcatZyq0JhXSp2NHcCzn60Bni9Hn7L6UZvqMlMS62
-        +eVyf7H25clWBFYqdTphyKTvlWH+J1A=
-X-Google-Smtp-Source: ABdhPJwJDJnRIFFN8O4iARiVHyodB1HlpOnqM/+ik/cqJklwQ1cNFPCD5PTQsZIkNbAEJPvIivbc3A==
-X-Received: by 2002:a63:33cb:: with SMTP id z194mr1219367pgz.380.1635389284386;
-        Wed, 27 Oct 2021 19:48:04 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id u4sm5697469pjg.54.2021.10.27.19.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 19:48:04 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] genirq: Remove duplicate assignments
-Date:   Thu, 28 Oct 2021 02:48:00 +0000
-Message-Id: <20211028024800.10659-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 27 Oct 2021 22:50:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hfqjw41TSz4xcC;
+        Thu, 28 Oct 2021 13:48:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635389285;
+        bh=98LBQjd8SWx4eW7nPK8+c9joxFzfiz5GTPiWTgydAcs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BXwKl3YwpQqZPI9CUL6DwHMG9qVb3m8ooBZ/0i1DP5inGI0Qj3yPqpJNY8HdD1gm1
+         SvxFlsDs05DjO+alxmz7LDBB4mC9/Ei7Xhts9LIAM06QJYs5OpQ//MnqCPSFaPzIrU
+         lAIBjq4SsjG2UULppdDtfdSnObUILS+L96wV7JfDDiv0UQp0m7id3VpuPJHlL7Pfu0
+         SLCBGZW7gg0Wv4PFhBI7iZGQ/jDNCs6McwaIDCLJMreY+Qv5QfbftvS3BSJYOGFaJQ
+         1D1zJ6MFIv9NP0wyw92Q5OyVRkKK/gdI+nMHr/QPqgCqHXfRA8J/hrzfGCQRSCpfwc
+         lz4mWzHmTrVzg==
+Date:   Thu, 28 Oct 2021 13:48:02 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
+Message-ID: <20211028134802.5740588b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/3/XP01o0t4L5C5=_jC4K1.9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable has performed the same assignment twice.
+--Sig_/3/XP01o0t4L5C5=_jC4K1.9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The clang_analyzer complains as follows:
+Hi all,
 
-kernel/irq/matrix.c:289:25 warning:
+Today's linux-next merge of the drm-misc tree got a conflict in:
 
-Value stored to 'end' during its initialization is never read
+  drivers/gpu/drm/kmb/kmb_drv.c
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- kernel/irq/matrix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+between commit:
 
-diff --git a/kernel/irq/matrix.c b/kernel/irq/matrix.c
-index 578596e..0469f30 100644
---- a/kernel/irq/matrix.c
-+++ b/kernel/irq/matrix.c
-@@ -285,7 +285,7 @@ void irq_matrix_remove_managed(struct irq_matrix *m, const struct cpumask *msk)
- int irq_matrix_alloc_managed(struct irq_matrix *m, const struct cpumask *msk,
- 			     unsigned int *mapped_cpu)
- {
--	unsigned int bit, cpu, end = m->alloc_end;
-+	unsigned int bit, cpu, end;
- 	struct cpumap *cm;
- 
- 	if (cpumask_empty(msk))
--- 
-2.15.2
+  c026565fe9be ("drm/kmb: Enable alpha blended second plane")
 
+from Linus' tree and commit:
 
+  099afadc533f ("drm/kmb: Enable support for framebuffer console")
+
+from the drm-misc tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/kmb/kmb_drv.c
+index 961ac6fb5fcf,7e1fda9f9a3d..000000000000
+--- a/drivers/gpu/drm/kmb/kmb_drv.c
++++ b/drivers/gpu/drm/kmb/kmb_drv.c
+@@@ -172,10 -173,11 +173,11 @@@ static int kmb_setup_mode_config(struc
+  	ret =3D drmm_mode_config_init(drm);
+  	if (ret)
+  		return ret;
+ -	drm->mode_config.min_width =3D KMB_MIN_WIDTH;
+ -	drm->mode_config.min_height =3D KMB_MIN_HEIGHT;
+ -	drm->mode_config.max_width =3D KMB_MAX_WIDTH;
+ -	drm->mode_config.max_height =3D KMB_MAX_HEIGHT;
+ +	drm->mode_config.min_width =3D KMB_FB_MIN_WIDTH;
+ +	drm->mode_config.min_height =3D KMB_FB_MIN_HEIGHT;
+ +	drm->mode_config.max_width =3D KMB_FB_MAX_WIDTH;
+ +	drm->mode_config.max_height =3D KMB_FB_MAX_HEIGHT;
++ 	drm->mode_config.preferred_depth =3D 24;
+  	drm->mode_config.funcs =3D &kmb_mode_config_funcs;
+ =20
+  	ret =3D kmb_setup_crtc(drm);
+
+--Sig_/3/XP01o0t4L5C5=_jC4K1.9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6D2IACgkQAVBC80lX
+0GzidAf+PsQyEkcawbqlQpxrML1k30a4myJfKSuDO8FjVyUwScJ+/jKC4xpDQP2d
+WyX8z60qsqPHiLR9//9madIPs1QlKUDCRIxPPdRI8CsdrJdNU/N0ppFwd7cSWmn8
+gqjrB8JDExrcLFITWW8Q66suKOu2qO448qdYxkvmkHqCSqPABR8XBYzOvAbiHAGI
+SQUleRcB3xzch3zGtF8/0NLMl5liglQhuaqEwL7Uk2t1uCV4CNKeS7qZSIV91DvU
+BmAzVqEU3w6si3Fn7OS8G/hwxKTiDIONw4eDfWe07bj8unAGiIaPXU4YE4f66ckN
+LlhuRvy+orm4yKQk0sOW8s9MsctMiQ==
+=uuXO
+-----END PGP SIGNATURE-----
+
+--Sig_/3/XP01o0t4L5C5=_jC4K1.9--
