@@ -2,203 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD5443DBB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B7543DBCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhJ1HPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:15:48 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:52126
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229626AbhJ1HPr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:15:47 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S229887AbhJ1HSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:18:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37969 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229878AbhJ1HR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:17:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635405332; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=QcsIIY4LkdbLo19IWuo9zMQF3oHVFXoolgXrnh06JiY=;
+ b=RZaaw4Y6PEM12sJrHOhFEKxdWt7Uy9LqQFKkaDPTLugXU7J3LVxyMI7IwPw7zAD3dbm5Ey1p
+ IiarDvFjMTAEMT9mMdgUtHfH+r25KoOyxEMJQ3i8HTH9mMM7+k0z58fh+2T7OZbbMBb67aZq
+ AhXtieZy4e7rPWz1oBT8LSrEIJU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 617a4df6ff3eb667a78d012d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 07:15:02
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9C4CCC43460; Thu, 28 Oct 2021 07:15:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BC3F03F177
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:13:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635405197;
-        bh=odvfeEDaRD9GtVNTdM8NO1Yqau879jijgr+/mlFCwcA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=SG2iTgh7c6spKgqgMTgh+SrMKJ4rhy5ZSVyCrZhprfI9sUa0ARNWxjN+7anJ050dz
-         icglZblkbXvg86BX9dRq3tXo4j6/X6l6Mt4zPzxqzqzKAbHpuJtlLkT9PfH16RpJ+P
-         DwvxctV6L6petw75K0IrMGoZEayFNzRqvHSM5qdLmpCQq8jZVn/GgSQ5j/OkDjbNYN
-         wVtpGRv6Af97Gd8hM5ZSjJ0mHdBEud9RT1Bq2zjduMszj9+i9Bo30TFTBvh/52yrQj
-         aqJwGtP/F4qdXnb3x5Cj3XbNsk+eI2ZoUXaLMp/DvJy0pOEaGZ+cxNltsz9pv7Fyij
-         VW8RBChlUHN6w==
-Received: by mail-ed1-f69.google.com with SMTP id f21-20020a0564021e9500b003dd77985601so4694955edf.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 00:13:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=odvfeEDaRD9GtVNTdM8NO1Yqau879jijgr+/mlFCwcA=;
-        b=XyHUmrnQFTt789bvf5WDH2BwZpY6eoPS/7/A0M2qCiNbTWb9XiMDF7z0thml5uVyHa
-         AenRwIXhbBYeWNXB+50N+jCH6tzRosk4GA/1nKYj5rkTk3u75VJd1iCdK9CEnHZlvByG
-         iSWvlQaColAd7fyybx869hU/vxg1SvGUSPXcKYLtZMsBCDqYs5tAI3t83z3FKU9vcsX6
-         PiCpAiMh64TH/mpPE4l4Cv+ocgaUqUDh0chpooGpYJ2QHa8TXBDh7mMMwQVT1pO15ukS
-         r51AfTCfsEI58iVEGrk6Kw0z+Hzmb6BWBOgHAh7M8NLnb/bzADLa1x6+jLzKfUYW1TOg
-         5JCg==
-X-Gm-Message-State: AOAM533cMK1nCFweMFD2wUyNGGBzbzHFam4bon7WhCzYAGN/siHk3tQQ
-        57x4oGHAQ7/zMy5GRjHZ09WBhpbB6OIXzmOAnzJbbAe4XiSnxdsyyIgasjj4l2nT6obiGjbnSoe
-        wVM1wfO9RTi8lvufQVp7PqquGi6Lu1jt2hkKeqhyt2vR/QPAwhY7wemPCeA==
-X-Received: by 2002:a17:907:d22:: with SMTP id gn34mr3130409ejc.463.1635405197382;
-        Thu, 28 Oct 2021 00:13:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyk0nDAbtD9AECmNiTtn739UUuuAZr9AaFxmOTmd5txuEcfp070z9krdc2LVyf0o8fVCZ78hEjrwvUXJC465xw=
-X-Received: by 2002:a17:907:d22:: with SMTP id gn34mr3130368ejc.463.1635405197149;
- Thu, 28 Oct 2021 00:13:17 -0700 (PDT)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA3D9C4338F;
+        Thu, 28 Oct 2021 07:15:01 +0000 (UTC)
 MIME-Version: 1.0
-References: <CA+zEjCus8+jzn074GwqhJ54Y180RASr_YaC=6zdBZSzonEtjDA@mail.gmail.com>
- <mhng-3ac5b2b9-c9da-42e5-bc56-d779fb4dd1dd@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-3ac5b2b9-c9da-42e5-bc56-d779fb4dd1dd@palmerdabbelt-glaptop>
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Date:   Thu, 28 Oct 2021 09:13:06 +0200
-Message-ID: <CA+zEjCv+whmnL_SFf20j06NpikaMtA7MNQ9+o8Zz7=1_nAtTqw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] riscv: Fix asan-stack clang build
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        nathan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 28 Oct 2021 15:15:01 +0800
+From:   tjiang@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
+ using different nvm
+In-Reply-To: <YXl3S7TT30PFfyB8@google.com>
+References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
+ <YXgrwKUZwUWuWfG4@google.com>
+ <fe118b60df5881b0e9938f57aae6f87e@codeaurora.org>
+ <YXl3S7TT30PFfyB8@google.com>
+Message-ID: <a04518bd30761a2fecfbee8f435d4daf@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 8:45 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> On Wed, 27 Oct 2021 22:34:32 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> > On Thu, Oct 28, 2021 at 7:30 AM Alexandre Ghiti
-> > <alexandre.ghiti@canonical.com> wrote:
-> >>
-> >> On Thu, Oct 28, 2021 at 7:02 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >> >
-> >> > On Wed, 27 Oct 2021 21:15:28 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> >> > > On Thu, Oct 28, 2021 at 1:06 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >> > >>
-> >> > >> On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> >> > >> > Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
-> >> > >> > Kconfig, it prevents asan-stack from getting disabled with clang even
-> >> > >> > when CONFIG_KASAN_STACK is disabled: fix this by defining the
-> >> > >> > corresponding config.
-> >> > >> >
-> >> > >> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> >> > >> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
-> >> > >> > ---
-> >> > >> >  arch/riscv/Kconfig             | 6 ++++++
-> >> > >> >  arch/riscv/include/asm/kasan.h | 3 +--
-> >> > >> >  arch/riscv/mm/kasan_init.c     | 3 +++
-> >> > >> >  3 files changed, 10 insertions(+), 2 deletions(-)
-> >> > >> >
-> >> > >> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> >> > >> > index c1abbc876e5b..79250b1ed54e 100644
-> >> > >> > --- a/arch/riscv/Kconfig
-> >> > >> > +++ b/arch/riscv/Kconfig
-> >> > >> > @@ -162,6 +162,12 @@ config PAGE_OFFSET
-> >> > >> >       default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
-> >> > >> >       default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
-> >> > >> >
-> >> > >> > +config KASAN_SHADOW_OFFSET
-> >> > >> > +     hex
-> >> > >> > +     depends on KASAN_GENERIC
-> >> > >> > +     default 0xdfffffc800000000 if 64BIT
-> >> > >> > +     default 0xffffffff if 32BIT
-> >> > >>
-> >> > >> I thought I posted this somewhere, but this is exactly what my first
-> >> > >> guess was.  The problem is that it's hanging on boot for me.  I don't
-> >> > >> really have anything exotic going on, it's just a defconfig with
-> >> > >> CONFIG_KASAN=y running in QEMU.
-> >> > >>
-> >> > >> Does this boot for you?
-> >> > >
-> >> > > Yes with the 2nd patch of this series which fixes the issue
-> >> > > encountered here. And that's true I copied/pasted this part of your
-> >> > > patch which was better than what I had initially done, sorry I should
-> >> > > have mentioned you did that, please add a Codeveloped-by or something
-> >> > > like that.
->
-> OK, those should probably be in the opposite order (though it looks like
-> they're inter-dependent, which makes things a bit trickier).
->
-> >> >
-> >> > Not sure if I'm missing something, but it's still not booting for me.
-> >> > I've put what I'm testing on palmer/to-test, it's these two on top of
-> >> > fixes and merged into Linus' tree
-> >> >
-> >> >     *   6d7d351902ff - (HEAD -> to-test, palmer/to-test) Merge remote-tracking branch 'palmer/fixes' into to-test (7 minutes ago) <Palmer Dabbelt>
-> >> >     |\
-> >> >     | * 782551edf8f8 - (palmer/fixes) riscv: Fix CONFIG_KASAN_STACK build (6 hours ago) <Alexandre Ghiti>
-> >> >     | * 47383e5b3c4f - riscv: Fix asan-stack clang build (6 hours ago) <Alexandre Ghiti>
-> >> >     | * 64a19591a293 - (riscv/fixes) riscv: fix misalgned trap vector base address (9 hours ago) <Chen Lu>
-> >> >     * |   1fc596a56b33 - (palmer/master, linus/master, linus/HEAD, master) Merge tag 'trace-v5.15-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (11 hours ago) <Linus Torvalds>
-> >> >
-> >> > Am I missing something else?
-> >>
-> >> Hmm, that's weird, I have just done the same: cherry-picked both my
-> >> commits on top of fixes (64a19591a293) and it boots fine with KASAN
-> >> enabled. Maybe a config thing? I pushed my branch here:
-> >> https://github.com/AlexGhiti/riscv-linux/tree/int/alex/kasan_stack_fixes_rebase
-> >
-> > I pushed the config I use and that boots in that branch, maybe there's
-> > another issue somewhere.
->
-> CONFIG_KASAN_VMALLOC=n is what's causing the failure.  I'm testing both
-> polarities of that, looks like your config has =y.  I haven't looked any
-> further as I'm pretty much cooked for tonight, but if you don't have
-> time then I'll try to find some time tomorrow.
->
+Thanks Matthias for the comments.
 
-Arf, that was obvious and just under my nose: without KASAN_VMALLOC,
-kasan_populate_early_shadow is called and creates the same issue that
-the second patch fixes.
+the conclusion is that I can continue to use this patch , right ? thank 
+you.
 
-I'll send a v2 today and try to swap both patches to avoid having a
-non-bootable kernel commit.
+regards.
+tim
 
-Alex
 
-> >
-> >>
-> >> >
-> >> > >
-> >> > > Thanks,
-> >> > >
-> >> > > Alex
-> >> > >
-> >> > >>
-> >> > >> > +
-> >> > >> >  config ARCH_FLATMEM_ENABLE
-> >> > >> >       def_bool !NUMA
-> >> > >> >
-> >> > >> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
-> >> > >> > index a2b3d9cdbc86..b00f503ec124 100644
-> >> > >> > --- a/arch/riscv/include/asm/kasan.h
-> >> > >> > +++ b/arch/riscv/include/asm/kasan.h
-> >> > >> > @@ -30,8 +30,7 @@
-> >> > >> >  #define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
-> >> > >> >  #define KASAN_SHADOW_START   KERN_VIRT_START
-> >> > >> >  #define KASAN_SHADOW_END     (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
-> >> > >> > -#define KASAN_SHADOW_OFFSET  (KASAN_SHADOW_END - (1ULL << \
-> >> > >> > -                                     (64 - KASAN_SHADOW_SCALE_SHIFT)))
-> >> > >> > +#define KASAN_SHADOW_OFFSET  _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
-> >> > >> >
-> >> > >> >  void kasan_init(void);
-> >> > >> >  asmlinkage void kasan_early_init(void);
-> >> > >> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> >> > >> > index d7189c8714a9..8175e98b9073 100644
-> >> > >> > --- a/arch/riscv/mm/kasan_init.c
-> >> > >> > +++ b/arch/riscv/mm/kasan_init.c
-> >> > >> > @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
-> >> > >> >       uintptr_t i;
-> >> > >> >       pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
-> >> > >> >
-> >> > >> > +     BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
-> >> > >> > +             KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
-> >> > >> > +
-> >> > >> >       for (i = 0; i < PTRS_PER_PTE; ++i)
-> >> > >> >               set_pte(kasan_early_shadow_pte + i,
-> >> > >> >                       mk_pte(virt_to_page(kasan_early_shadow_page),
+On 2021-10-27 23:59, Matthias Kaehlcke wrote:
+> On Wed, Oct 27, 2021 at 02:12:07PM +0800, tjiang@codeaurora.org wrote:
+>> Hi Matthias:
+>>   the previous patch is submitted by zijun , as he is not working on 
+>> this
+>> project, I take over his job, so can we assume abandon the previous 
+>> patch,
+>> using my new patch ? thank you.
+>> regards.
+> 
+> Your patch is clearly based on zijun's one, it even has the same 
+> subject. A
+> change of authorship shouldn't result in resetting the version number, 
+> it's
+> still the same patch/series. You can always add a 'Co-developed-by:' 
+> tag to
+> indicate that someone else contributed to a patch, or use a 'From:' tag 
+> if
+> you only made minor changes on top of someone else's work.
+> 
+> Not sure how to proceed best with the version number, especially since 
+> there
+> are already 3 versions of the 'new' patch. Either option can create 
+> confusion,
+> I guess you can continue with the new scheme, it seems the patch is 
+> almost
+> ready to land anyway.
