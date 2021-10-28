@@ -2,110 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF2643F23A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDE943F23B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhJ1WEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S231360AbhJ1WEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbhJ1WEO (ORCPT
+        with ESMTP id S231221AbhJ1WEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:04:14 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74047C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:01:47 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id o4so10354962oia.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:01:47 -0700 (PDT)
+        Thu, 28 Oct 2021 18:04:41 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D54C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:02:14 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id g8so8774828iob.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=kmwgHIUyfSQ6BfCgMiv31EIWkb4KtS9tXlC4mVfy3Iw=;
-        b=gN5xGu8a4JJPCBhhbQEvdKwVpBl+w6OqLRm2f7vkVsZp2n7jyXq1GGexcbQDRstm6+
-         pSaUsIeukgW4o/UppKIiUAxFVWEZFNwnIljG7Qw1UvKBqhiB8XHGS8BgmptYF1hVGxVt
-         BT6/wbMTKqtaxmyrCi6WBLqmC0c8Eo5BIASLI=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cAUfcAe3Jj+ZgiUsUMXUNLPYmOEvfHfG17Tv93fVfCk=;
+        b=I5p9ChNAuXMXxTmFen8/Vg9dIWijeLn43L+Xq5yryCRDSlkpwmGeMZ5B9kL/ndQt1g
+         1OFkUdtoRkPcAJW2cO7H8Kw5xKWD4dyxT4UAerGHIZzCJWRj+HPTr+oTx16WBeaJHY7C
+         MqtnY32DCNs7s3gUfFjsU20XNqiSj9AJeZNvI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=kmwgHIUyfSQ6BfCgMiv31EIWkb4KtS9tXlC4mVfy3Iw=;
-        b=qvXLZTgWExW3hD1QuwO63N0yMwT5J1QpuWvlSkKTEOMdp/ajSRRwQE8hBWexp7AZHK
-         EgrJN8pnd+NPg/MRRUDiPb9OHrHkVfqoBX4XFjeWQIX0EKBgT++vIlD6W2qkLKVcgFFH
-         fkCYn27UGMQt10UxZ/iXvFg+WhWIxKAX25JKfG2mJm4lWdebvm3XcVyvFe0VQw9+fpE4
-         ogCmSTGmhOx+zRPfdfZPQZi9ygvhWNq+15FXLR2XULl5wjjr5ONs9sstptB1Fxooe8N6
-         NJFlbNuOXOnbnHXpzsPiIB0yvw5VXSh2VLoQx/rJBIfwad8KUaG53VbnlcObUDpxB18T
-         qvTA==
-X-Gm-Message-State: AOAM530CPojpndROKF2QbErkzN4H77yPPOnAY85mT8cO82c93StNEkjh
-        mhHbK9NdGTYQAeOEaJ6OwJAHtfyHoqwjRxbGDZXW4tgoruI=
-X-Google-Smtp-Source: ABdhPJzzhpqn43FGuWlx7LrCWvU8e3n/+ToKKqYdn7jIiVawi/ws1aXxZzBYb0c8kaSvso329auJPQ1ZnsMw1vqxq7Y=
-X-Received: by 2002:a05:6808:23c2:: with SMTP id bq2mr10986132oib.32.1635458506879;
- Thu, 28 Oct 2021 15:01:46 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 28 Oct 2021 15:01:46 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cAUfcAe3Jj+ZgiUsUMXUNLPYmOEvfHfG17Tv93fVfCk=;
+        b=vgAF16TJeN+MQ2Rl4vhjxcN9glWZAHAtpF+x4y1InLamBqGsltgun4GIJCB2st+h9u
+         Omf1+fePz5YBmQ6vQGpOE9EFICVZmqWK4oS327Lu/w7sHDye5pkAnPbinuiKd8pgYkHB
+         zhMJeNo7K0D4PWK5mmGZ4zhZgakDXBkYwWMpxWLNb7EargRFYsGj7w+VoygD4yKxpfE9
+         sAiW0CdV4B7ioyU6Cgc6bUziwwLnLBNjEV5g6pTUNZ2o9cP9kFllRkfos+o7e0YHKq7v
+         jqicMpFdqwEN5PnaqSoxCMppGEBmHLcmWwlV83tv3+NH7rkoG7Ged1D9SFUt0ERyK20s
+         tj8Q==
+X-Gm-Message-State: AOAM531yp13bbdf5KIz4wKUXKGGjEpBEc3DmuKiKe2ofohoXlBDOWowA
+        3KjwZj8LhLvL9Jo5DwPawr6zAfu8WfcZvQ==
+X-Google-Smtp-Source: ABdhPJyRT3HtNq5+UvrOEE8Wb19e3lmihjTNPWZuioN/h2rqaRHHfKrSpROFyzGDtjKpKlcvnIs/ew==
+X-Received: by 2002:a6b:e212:: with SMTP id z18mr5007571ioc.180.1635458532705;
+        Thu, 28 Oct 2021 15:02:12 -0700 (PDT)
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com. [209.85.166.176])
+        by smtp.gmail.com with ESMTPSA id f15sm1384827iob.8.2021.10.28.15.02.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 15:02:12 -0700 (PDT)
+Received: by mail-il1-f176.google.com with SMTP id h2so8506913ili.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:02:11 -0700 (PDT)
+X-Received: by 2002:a05:6e02:2169:: with SMTP id s9mr5115924ilv.27.1635458531194;
+ Thu, 28 Oct 2021 15:02:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <001401d7cbfc$f0d1d700$d2758500$@codeaurora.org>
-References: <1633330133-29617-1-git-send-email-pillair@codeaurora.org>
- <CAE-0n53rkv5SKO74M+7bkuMgaD7tS0k6a8m7KeQL8j3DTHdB_Q@mail.gmail.com> <001401d7cbfc$f0d1d700$d2758500$@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 28 Oct 2021 15:01:46 -0700
-Message-ID: <CAE-0n53KCUoJWdKTY954OviRX4yShigByHB4L3OGTAGQEaHoqQ@mail.gmail.com>
-Subject: RE: [PATCH v6 0/3] Add support for sc7280 WPSS PIL loading
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, ohad@wizery.com,
-        p.zabel@pengutronix.de, pillair@codeaurora.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org
+References: <20211028140833.1.Ie6bd5a232f770acd8c9ffae487a02170bad3e963@changeid>
+ <CAE-0n521q5uLms+qWO=ibQVRyTwsCRwPSPRvpncq_mgTVd0Bpg@mail.gmail.com>
+In-Reply-To: <CAE-0n521q5uLms+qWO=ibQVRyTwsCRwPSPRvpncq_mgTVd0Bpg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 28 Oct 2021 15:01:58 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UCu-GaS3q9SgvxV-=qOgBXsDHDOEwMb8k1A-4i-YS9HQ@mail.gmail.com>
+Message-ID: <CAD=FV=UCu-GaS3q9SgvxV-=qOgBXsDHDOEwMb8k1A-4i-YS9HQ@mail.gmail.com>
+Subject: Re: [PATCH] scripts/gdb: Handle split debug for vmlinux
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting pillair@codeaurora.org (2021-10-28 06:08:39)
->
->
-> > -----Original Message-----
-> > From: Stephen Boyd <swboyd@chromium.org>
-> > Sent: Friday, October 8, 2021 12:05 AM
-> > To: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
-> > bjorn.andersson@linaro.org; mathieu.poirier@linaro.org; ohad@wizery.com;
-> > p.zabel@pengutronix.de; robh+dt@kernel.org
-> > Cc: linux-arm-msm@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; sibis@codeaurora.org; mpubbise@codeaurora.org;
-> > kuabhs@chromium.org
-> > Subject: Re: [PATCH v6 0/3] Add support for sc7280 WPSS PIL loading
-> >
-> > Quoting Rakesh Pillai (2021-10-03 23:48:50)
-> > > Add support for PIL loading of WPSS co-processor for SC7280 SOCs.
-> > >
-> > > Changes from v4/v5:
-> > > - Add yaml conversion for adsp/cdsp dt-bindings
-> > > - Change clock names in wpss dt-bindings
-> > > - Correct mistake in signed-off enail ID
-> >
-> > Can you keep a running tally here of the full progression of the series?
-> > That helps to look back and make sure we don't make a comment that has
-> > already been made before.
-> >
-> > One more request. Can you add support for 'firmware-name' like there is in
-> > Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt so that we
-> > can install firmware into some namespaced/versioned place instead of
-> > having to put wpss files into /lib/firmware?
->
-> Hi Stephen,
-> I have posted v7 with the support for firmware-name to be provided in the DT entry.
+Hi,
 
-Thanks. I didn't see it in my inbox. No Cc for me?
+On Thu, Oct 28, 2021 at 3:00 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Douglas Anderson (2021-10-28 14:08:49)
+> > This is related to two previous changes. Commit dfe4529ee4d3
+> > ("scripts/gdb: find vmlinux where it was before") and commit
+> > da036ae14762 ("scripts/gdb: handle split debug").
+> >
+> > Although Chrome OS has been using the debug suffix for modules for a
+> > while, it has just recently started using it for vmlinux as well. That
+> > means we've now got to improve the detection of "vmlinux" to also
+> > handle that it might end with ".debug".
+> >
+> > Cc: Stephen Boyd <swboyd@chromium.org>
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> >
+> >  scripts/gdb/linux/symbols.py | 3 ++-
+> >  scripts/gdb/vmlinux-gdb.py   | 0
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >  mode change 100644 => 100755 scripts/gdb/vmlinux-gdb.py
+> >
+> > diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+> > index 08d264ac328b..46f7542db08c 100644
+> > --- a/scripts/gdb/linux/symbols.py
+> > +++ b/scripts/gdb/linux/symbols.py
+> > @@ -148,7 +148,8 @@ lx-symbols command."""
+> >          # drop all current symbols and reload vmlinux
+> >          orig_vmlinux = 'vmlinux'
+> >          for obj in gdb.objfiles():
+> > -            if obj.filename.endswith('vmlinux'):
+> > +            if (obj.filename.endswith('vmlinux') or
+> > +                obj.filename.endswith('vmlinux.debug')):
+>
+> Looks good.
+>
+> >                  orig_vmlinux = obj.filename
+> >          gdb.execute("symbol-file", to_string=True)
+> >          gdb.execute("symbol-file {0}".format(orig_vmlinux))
+> > diff --git a/scripts/gdb/vmlinux-gdb.py b/scripts/gdb/vmlinux-gdb.py
+> > old mode 100644
+> > new mode 100755
+>
+> Is this mode change important?
 
->
-> > It would also be nice to load a
-> > single firmware file instead of having to split the file into many pieces.
->
-> This would require lot of changes and lot of code duplication from request firmware.
-> Also the base ath11k firmware files have been posted as split files.
->
+Ah, shoot. While I was debugging what could have gone wrong, I changed
+it and I didn't notice that it had made it into the commit. Let me do
+a quick v2. Thanks for catching!
 
-Other firmwares have done it so it seems technically possible. So
-nothing is preventing it?
+-Doug
