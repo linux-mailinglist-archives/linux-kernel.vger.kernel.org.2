@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDEF43E969
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BC743E96A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhJ1UR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231235AbhJ1UR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 16:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231178AbhJ1UR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Oct 2021 16:17:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49880 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhJ1URx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:17:53 -0400
-Date:   Thu, 28 Oct 2021 20:15:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635452125;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=akuf1P3ReGLDbx60EitA9ibylgdEPFka1HBsvSGBxI8=;
-        b=pSoNmDi5oEGIPprbGs+U2WoWB3YS/vanWPbht0rDe6+8ypc3XBq+4/uILOOZfAmIqlDxhA
-        NaZiplrP1WMH+jJ16dEef/2mq33MsRfCFwq6JxwgAv+5w0OXqx+OCzCdPvo/yg/6HtJU3t
-        tE7oAUFneUXNUoNIGL1lRl9v+1bSol8mOme/NZAbrFtD83SnpW0K6a3poKcDEnWUzYJdLk
-        Aez0dFIfCEVWoyK16nrnp/mvY4Hs5n6P6NywzhgaES0P29Db3ScZ+NebKQRZAIZEvraO4P
-        Q8LrToHWdgP727vQiShPZxM3sQaScNt0UbF4e47e7qYVOXzhCbWrN91EGvct4Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635452125;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=akuf1P3ReGLDbx60EitA9ibylgdEPFka1HBsvSGBxI8=;
-        b=t4tQERnQYtJ3ZlFBB01ZKiPiJybENWZg5Q/dOGVR4PCw1EfCTq/ndlsvQEhb1fgLnuBtZP
-        Jv+lDTHukhrGhWBA==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] h8300: Fix linux/irqchip.h include mess
-Cc:     Guenter Roeck <linux@roeck-us.net>, Marc Zyngier <maz@kernel.org>,
-        tglx@linutronix.de
-In-Reply-To: <20211028172849.GA701812@roeck-us.net>
-References: <20211028172849.GA701812@roeck-us.net>
-MIME-Version: 1.0
-Message-ID: <163545212372.626.13842745419251863344.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A5F660C4A;
+        Thu, 28 Oct 2021 20:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1635452129;
+        bh=hgkulfjy2lu/2Pn+/4MoUzzaOqJpiylsYL8YeU6rj6w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gdwBhM8acmkSuTfLv7h32T6XXK6nvsZa3HwDi1umz5MmVL4oek/V6ZW1xcGAuq6b5
+         bSFcEMEW4CL4ZjZAgkaJsH8DpJ/XG4Fi2jHDYmdmqoq5faO4hn3iy+Gx4QBj2VkXaV
+         sLHY+toZ0Q8gK/GJSdJody6HLZwewK5biCNDxOSw=
+Date:   Thu, 28 Oct 2021 13:15:26 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chomium.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Arnd Bergmann <arnd@arndb.de>, Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] kasan: test: use underlying string helpers
+Message-Id: <20211028131526.d63d1074a8faa20e1de5e209@linux-foundation.org>
+In-Reply-To: <721BDA47-9998-4F0B-80B4-F4E4765E4885@chromium.org>
+References: <20211013150025.2875883-1-arnd@kernel.org>
+        <b35768f5-8e06-ebe6-1cdd-65f7fe67ff7a@arm.com>
+        <721BDA47-9998-4F0B-80B4-F4E4765E4885@chromium.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On Thu, 14 Oct 2021 19:40:45 -0700 Kees Cook <keescook@chromium.org> wrote:
 
-Commit-ID:     837d7a8fe852cf93fff1cd3b73d707b3a6ae340f
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/837d7a8fe852cf93fff1cd3b73d707b3a6ae340f
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Thu, 28 Oct 2021 19:24:25 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 28 Oct 2021 21:02:48 +01:00
+> 
+> 
+> On October 14, 2021 1:12:54 AM PDT, Vincenzo Frascino <vincenzo.frascino@arm.com> wrote:
+> >
+> >
+> >On 10/13/21 5:00 PM, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >> 
+> >> Calling memcmp() and memchr() with an intentional buffer overflow
+> >> is now caught at compile time:
+> >> 
+> >> In function 'memcmp',
+> >>     inlined from 'kasan_memcmp' at lib/test_kasan.c:897:2:
+> >> include/linux/fortify-string.h:263:25: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+> >>   263 |                         __read_overflow();
+> >>       |                         ^~~~~~~~~~~~~~~~~
+> >> In function 'memchr',
+> >>     inlined from 'kasan_memchr' at lib/test_kasan.c:872:2:
+> >> include/linux/fortify-string.h:277:17: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+> >>   277 |                 __read_overflow();
+> >>       |                 ^~~~~~~~~~~~~~~~~
+> >> 
+> >> Change the kasan tests to wrap those inside of a noinline function
+> >> to prevent the compiler from noticing the bug and let kasan find
+> >> it at runtime.
+> >> 
+> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >
+> >Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> 
+> How about just explicitly making the size invisible to the compiler?
+> 
+> I did this for similar issues in the same source:
+> 
+> https://lore.kernel.org/linux-hardening/20211006181544.1670992-1-keescook@chromium.org/T/#u
+> 
 
-h8300: Fix linux/irqchip.h include mess
-
-h8300 drags linux/irqchip.h from asm/irq.h, which is in general a bad
-idea (asm/*.h should avoid dragging linux/*.h, as it is usually supposed
-to work the other way around).
-
-Move the inclusion of linux/irqchip.h to the single location where it
-actually matters in the arch code.
-
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211028172849.GA701812@roeck-us.net
----
- arch/h8300/include/asm/irq.h | 2 --
- arch/h8300/kernel/irq.c      | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/h8300/include/asm/irq.h b/arch/h8300/include/asm/irq.h
-index 5fc5b43..776cf06 100644
---- a/arch/h8300/include/asm/irq.h
-+++ b/arch/h8300/include/asm/irq.h
-@@ -2,8 +2,6 @@
- #ifndef _H8300_IRQ_H_
- #define _H8300_IRQ_H_
- 
--#include <linux/irqchip.h>
--
- #if defined(CONFIG_CPU_H8300H)
- #define NR_IRQS 64
- #define IRQ_CHIP h8300h_irq_chip
-diff --git a/arch/h8300/kernel/irq.c b/arch/h8300/kernel/irq.c
-index 834e4d7..8ad6d70 100644
---- a/arch/h8300/kernel/irq.c
-+++ b/arch/h8300/kernel/irq.c
-@@ -8,6 +8,7 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/irqchip.h>
- #include <linux/irqdomain.h>
- #include <linux/of_irq.h>
- #include <asm/traps.h>
+Arnd?
