@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689F943E9F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE1D43E9F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhJ1VI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:08:26 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46250 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbhJ1VIY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231304AbhJ1VIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 28 Oct 2021 17:08:24 -0400
-Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1002])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 138A01F4554B;
-        Thu, 28 Oct 2021 22:05:54 +0100 (BST)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jan Kara <jack@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the ext3 tree
-Organization: Collabora
-References: <20211028232100.03d394fd@canb.auug.org.au>
-Date:   Thu, 28 Oct 2021 18:05:49 -0300
-In-Reply-To: <20211028232100.03d394fd@canb.auug.org.au> (Stephen Rothwell's
-        message of "Thu, 28 Oct 2021 23:21:00 +1100")
-Message-ID: <87y26camhe.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:40770 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230404AbhJ1VIW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 17:08:22 -0400
+Received: by mail-oi1-f173.google.com with SMTP id n63so10186570oif.7;
+        Thu, 28 Oct 2021 14:05:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KsAfghJdqjIsPHLQlzuUpGuE0n+L1OQuzADVtlfj3pk=;
+        b=LyPtN0frxLcnqybkd82fmv0mvbw9+uFWJMvqf9iB83nDFsFOzN4KnNiusrgykf7hM0
+         9Ct+tY3GyQLe3AfMWNfmFAvdya+RcDbQPeiHFCniZu6Czrvxw06ZHmMBZG7zQH1hE7+W
+         ekEWIcfvuZ+hZwAtlQTSboQMPRUIeh60+qv+oz/reoseB7ywKmMH7yVDRo7NB9AD2D7R
+         Ogka6jPvkhunKGLKOf29bdKzw/v04wzbuyN+u7dIYzn5JAWARs6kAR/taHgEtHH+G4k+
+         5TNPmRHIwnOs8E8zJ4MYCq2aqQN+eZNBbSPx/2r4XVIQc3FGhy40B0YrzGL2kfsHvvjG
+         ozyg==
+X-Gm-Message-State: AOAM532+dNMUwPe5PryeTSVPn3YbtqjePX9yRkUr7IZ6BvQjoFfipmap
+        ctZ+eNx53Qz3dNaLEspu6A==
+X-Google-Smtp-Source: ABdhPJyXfSMCrvaZuAL3QVu4UZRxA2FWr9gEj9Sdd37w46MDzYEx/5qYwTMWrcMCMZyeNYcURj88cg==
+X-Received: by 2002:a05:6808:2cc:: with SMTP id a12mr3449048oid.124.1635455154938;
+        Thu, 28 Oct 2021 14:05:54 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 64sm1230495otm.37.2021.10.28.14.05.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 14:05:54 -0700 (PDT)
+Received: (nullmailer pid 585145 invoked by uid 1000);
+        Thu, 28 Oct 2021 21:05:53 -0000
+Date:   Thu, 28 Oct 2021 16:05:53 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 1/8] dt-bindings: phy: uniphier-usb3: Add bindings for
+ NX1 SoC
+Message-ID: <YXsQsZjDq/Jo7Jup@robh.at.kernel.org>
+References: <1634687888-23900-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1634687888-23900-2-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634687888-23900-2-git-send-email-hayashi.kunihiko@socionext.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+On Wed, 20 Oct 2021 08:58:01 +0900, Kunihiko Hayashi wrote:
+> Update USB3-PHY binding document for UniPhier NX1 SoC. Add SS-PHY and
+> HS-PHY compatible strings for the SoC to the document.
+> 
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  Documentation/devicetree/bindings/phy/socionext,uniphier-usb3hs-phy.yaml | 1 +
+>  Documentation/devicetree/bindings/phy/socionext,uniphier-usb3ss-phy.yaml | 1 +
+>  2 files changed, 2 insertions(+)
+> 
 
-> Hi all,
->
-> After merging the ext3 tree, today's linux-next build (htmldocs) produced
-> this warning:
->
-> Documentation/admin-guide/filesystem-monitoring.rst:60: WARNING: Definition list ends without a blank line; unexpected unindent.
->
-> Introduced by commit
->
->   c0baf9ac0b05 ("docs: Document the FAN_FS_ERROR event")
-
-Hi Stephen, Jan,
-
-I'd suggest the patch below.
-
-Thank you,
-
--- >8 --
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
-Date: Thu, 28 Oct 2021 17:17:47 -0300
-Subject: [PATCH] docs: Fix formatting of literal sections in fanotify docs
-
-Stephen Rothwell reported the following warning was introduced by commit
-c0baf9ac0b05 ("docs: Document the FAN_FS_ERROR event").
-
-Documentation/admin-guide/filesystem-monitoring.rst:60: WARNING:
- Definition list ends without a blank line; unexpected unindent.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- .../admin-guide/filesystem-monitoring.rst     | 20 +++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/admin-guide/filesystem-monitoring.rst b/Documentation/admin-guide/filesystem-monitoring.rst
-index 5a3c84e60095..ab8dba76283c 100644
---- a/Documentation/admin-guide/filesystem-monitoring.rst
-+++ b/Documentation/admin-guide/filesystem-monitoring.rst
-@@ -35,9 +35,11 @@ notifications is Ext4.
- 
- A FAN_FS_ERROR Notification has the following format::
- 
--  [ Notification Metadata (Mandatory) ]
--  [ Generic Error Record  (Mandatory) ]
--  [ FID record            (Mandatory) ]
-+  ::
-+
-+     [ Notification Metadata (Mandatory) ]
-+     [ Generic Error Record  (Mandatory) ]
-+     [ FID record            (Mandatory) ]
- 
- The order of records is not guaranteed, and new records might be added
- in the future.  Therefore, applications must not rely on the order and
-@@ -53,11 +55,13 @@ providing any additional details about the problem.  This record is
- identified by ``struct fanotify_event_info_header.info_type`` being set
- to FAN_EVENT_INFO_TYPE_ERROR.
- 
--  struct fanotify_event_info_error {
--	struct fanotify_event_info_header hdr;
--	__s32 error;
--	__u32 error_count;
--  };
-+  ::
-+
-+     struct fanotify_event_info_error {
-+          struct fanotify_event_info_header hdr;
-+         __s32 error;
-+         __u32 error_count;
-+     };
- 
- The `error` field identifies the type of error using errno values.
- `error_count` tracks the number of errors that occurred and were
--- 
-2.33.0
-
+Acked-by: Rob Herring <robh@kernel.org>
