@@ -2,180 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5B743E437
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BC943E411
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhJ1OvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:51:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57076 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231235AbhJ1OvC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:51:02 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SDmh6a030596;
-        Thu, 28 Oct 2021 14:48:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=AkOfNJYInjF/oBHpisU8Hp0IrDgq53HnCVySzYnXpnk=;
- b=a6j3jvcUMwCj+8UPYFaO16PQBYwujIS/cuMVmT30qhQrEhebPhN6SQVYgV8rTmqHetTI
- uVDps4mdttjHN1UxHZDPwDXuJa44sK6YpAuwU71CcBH1aEZQKC9FbyW4rE+ATDONA9j0
- LOBdJLPN9fem0Nb49WrWxh6uz4c1lTG6lBMj3MQZ2B7JZhY3zYj+NIut9GcuyJJMvWWW
- DXSmfrqi5+aqJtOGZUEd/F0EXVMaNYUlxvKL1zhXPz/wfAyuj2lxcIiR3zi8I/6dQ3Nh
- emxN4QOV/mkqE78blI+RLHVR7l2s9KH+Zpa7jv/GWVgE6yA77GD3FS2fQvvpW2NFBLNn hA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byw2n9dg0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 14:48:35 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SEOmdF008877;
-        Thu, 28 Oct 2021 14:48:35 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byw2n9df6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 14:48:35 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SEmNTT025217;
-        Thu, 28 Oct 2021 14:48:32 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 3bx4es0snn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 14:48:32 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SEmTxB524856
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 14:48:29 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 17B9B4C059;
-        Thu, 28 Oct 2021 14:48:29 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 952F34C04A;
-        Thu, 28 Oct 2021 14:48:28 +0000 (GMT)
-Received: from [9.171.30.68] (unknown [9.171.30.68])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Oct 2021 14:48:28 +0000 (GMT)
-Message-ID: <457896b2-b462-639e-bb40-dee3716fcb9a@linux.vnet.ibm.com>
-Date:   Thu, 28 Oct 2021 16:48:28 +0200
+        id S231319AbhJ1OrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:47:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230451AbhJ1OrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:47:01 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5358F6108F;
+        Thu, 28 Oct 2021 14:44:32 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 15:48:58 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     cosmin.tanislav@analog.com, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: iio: add AD74413R
+Message-ID: <20211028154858.3fc865ff@jic23-huawei>
+In-Reply-To: <20211028134849.3664969-2-demonsingur@gmail.com>
+References: <20211028134849.3664969-1-demonsingur@gmail.com>
+        <20211028134849.3664969-2-demonsingur@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 3/3] KVM: s390: gaccess: Cleanup access to guest frames
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211028135556.1793063-1-scgl@linux.ibm.com>
- <20211028135556.1793063-4-scgl@linux.ibm.com>
- <4ac7c459-8e13-087a-f98d-9f3e0e6d8ee6@redhat.com>
-From:   Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>
-In-Reply-To: <4ac7c459-8e13-087a-f98d-9f3e0e6d8ee6@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: k53KMm4IAAkzNdsYvhd724PKKsITVDp-
-X-Proofpoint-ORIG-GUID: pm5fHHQCBtMRbV_KgNakyK2z3EijAQtP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-28_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxscore=0 spamscore=0 bulkscore=0 adultscore=0 clxscore=1011
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110280081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 16:25, David Hildenbrand wrote:
-> On 28.10.21 15:55, Janis Schoetterl-Glausch wrote:
->> Introduce a helper function for guest frame access.
-> 
-> "guest page access"
+On Thu, 28 Oct 2021 16:48:44 +0300
+Cosmin Tanislav <demonsingur@gmail.com> wrote:
 
-Ok.
-> 
-> But I do wonder if you actually want to call it
-> 
-> "access_guest_abs"
-> 
-> and say "guest absolute access" instead here.
-> 
-> Because we're dealing with absolute addresses and the fact that we are
-> accessing it page-wise is just because we have to perform a page-wise
-> translation in the callers (either virtual->absolute or real->absolute).
-> 
-> Theoretically, if you know you're across X pages but they are contiguous
-> in absolute address space, nothing speaks against using that function
-> directly across X pages with a single call.
+> Add device tree bindings for AD74413R.
+Hi Cosmin,
 
-There currently is no point to this, is there?
-kvm_read/write_guest break the region up into pages anyway,
-so no reason to try to identify larger continuous chunks.
+Welcome to IIO.
+
+Nice to give a tiny bit of description of the device in here
+to expand on what the patch title told us.
+
+Some comments inline.
+
+Thanks,
+
+Jonathan
 > 
->>
->> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
->> ---
->>  arch/s390/kvm/gaccess.c | 24 ++++++++++++++++--------
->>  1 file changed, 16 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
->> index f0848c37b003..9a633310b6fe 100644
->> --- a/arch/s390/kvm/gaccess.c
->> +++ b/arch/s390/kvm/gaccess.c
->> @@ -866,6 +866,20 @@ static int guest_range_to_gpas(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
->>  	return 0;
->>  }
->>  
->> +static int access_guest_page(struct kvm *kvm, enum gacc_mode mode, gpa_t gpa,
->> +			      void *data, unsigned int len)
->> +{
->> +	const unsigned int offset = offset_in_page(gpa);
->> +	const gfn_t gfn = gpa_to_gfn(gpa);
->> +	int rc;
->> +
->> +	if (mode == GACC_STORE)
->> +		rc = kvm_write_guest_page(kvm, gfn, data, offset, len);
->> +	else
->> +		rc = kvm_read_guest_page(kvm, gfn, data, offset, len);
->> +	return rc;
->> +}
->> +
->>  int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->>  		 unsigned long len, enum gacc_mode mode)
->>  {
->> @@ -896,10 +910,7 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->>  	rc = guest_range_to_gpas(vcpu, ga, ar, gpas, len, asce, mode);
->>  	for (idx = 0; idx < nr_pages && !rc; idx++) {
->>  		fragment_len = min(PAGE_SIZE - offset_in_page(gpas[idx]), len);
->> -		if (mode == GACC_STORE)
->> -			rc = kvm_write_guest(vcpu->kvm, gpas[idx], data, fragment_len);
->> -		else
->> -			rc = kvm_read_guest(vcpu->kvm, gpas[idx], data, fragment_len);
->> +		rc = access_guest_page(vcpu->kvm, mode, gpas[idx], data, fragment_len);
->>  		len -= fragment_len;
->>  		data += fragment_len;
->>  	}
->> @@ -920,10 +931,7 @@ int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
->>  	while (len && !rc) {
->>  		gpa = kvm_s390_real_to_abs(vcpu, gra);
->>  		fragment_len = min(PAGE_SIZE - offset_in_page(gpa), len);
->> -		if (mode)
->> -			rc = write_guest_abs(vcpu, gpa, data, fragment_len);
->> -		else
->> -			rc = read_guest_abs(vcpu, gpa, data, fragment_len);
->> +		rc = access_guest_page(vcpu->kvm, mode, gpa, data, fragment_len);
->>  		len -= fragment_len;
->>  		gra += fragment_len;
->>  		data += fragment_len;
->>
+> Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+> ---
+>  .../bindings/iio/addac/adi,ad74413r.yaml      | 163 ++++++++++++++++++
+>  include/dt-bindings/iio/addac/adi,ad74413r.h  |  30 ++++
+>  2 files changed, 193 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+>  create mode 100644 include/dt-bindings/iio/addac/adi,ad74413r.h
 > 
-> 
+> diff --git a/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml b/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+> new file mode 100644
+> index 000000000000..ed4ee3047fbe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+> @@ -0,0 +1,163 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/addac/adi,ad74413r.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AD74413R/AD74412R device driver
+
+Bindings always describe hardware, not drivers (so we don't expect to
+see the word driver in them).
+
+> +
+> +maintainers:
+> +  - Cosmin Tanislav <cosmin.tanislav@analog.com>
+> +
+> +description: |
+> +  The AD74413R and AD74412R are quad-channel software configurable input/output
+> +  solutions for building and process control applications. They contain
+> +  functionality for analog output, analog input, digital input, resistance
+> +  temperature detector, and thermocouple measurements integrated
+> +  into a single chip solution with an SPI interface.
+> +  The devices feature a 16-bit ADC and four configurable 13-bit DACs to provide
+> +  four configurable input/output channels and a suite of diagnostic functions.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad74413r
+> +      - adi,ad74412r
+
+Alphabetical / numeric order preferred.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +  spi-max-frequency:
+> +    maximum: 1000000
+> +
+> +  spi-cpol: true
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  refin-supply:
+> +    description:
+> +      Reference voltage regulator.
+Name pretty much tells us everything in the description.
+
+    refin-supply: true
+
+is enough here I think.
+
+> +
+> +  adi,rsense-resistance-ohms:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+I think the automatic units stuff in dt-schema should remove the need for
+a ref here.
+
+> +    description:
+> +      RSense resistance values in Ohms.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - spi-max-frequency
+> +  - spi-cpol
+> +  - refin-supply
+> +  - adi,rsense-resistance-ohm
+> +
+> +additionalProperties: false
+> +
+> +patternProperties:
+> +  "^channel@[0-3]$":
+> +    type: object
+> +    description: Represents the external channels which are connected to the device.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          The channel number. It can have up to 4 channels numbered from 0 to 3.
+> +        maxItems: 1
+> +        minimum: 0
+> +        maximum: 3
+> +
+> +      adi,ch-func:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          Channel function.
+> +          HART functions are not supported on AD74412R.
+
+Ideally enforce that with suitable conditional statements in this binding schema.
+
+> +          0 - CH_FUNC_HIGH_IMPEDANCE
+> +          1 - CH_FUNC_VOLTAGE_OUTPUT
+> +          2 - CH_FUNC_CURRENT_OUTPUT
+> +          3 - CH_FUNC_VOLTAGE_INPUT
+> +          4 - CH_FUNC_CURRENT_INPUT_EXT_POWER
+> +          5 - CH_FUNC_CURRENT_INPUT_LOOP_POWER
+> +          6 - CH_FUNC_RESISTANCE_INPUT
+> +          7 - CH_FUNC_DIGITAL_INPUT_LOGIC
+> +          8 - CH_FUNC_DIGITAL_INPUT_LOOP_POWER
+> +          9 - CH_FUNC_CURRENT_INPUT_EXT_POWER_HART
+> +          10 - CH_FUNC_CURRENT_INPUT_LOOP_POWER_HART
+
+I'm not a great fan of large enums, but it is a bit hard to
+work out a scheme that would be better for this so I guess we are
+stuck with this.
+
+> +        maxItems: 1
+> +        minimum: 0
+> +        maximum: 10
+> +
+> +      adi,gpo-config:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          GPO config.
+
+GPO is what exactly?
+
+> +          0 - GPO_CONFIG_100K_PULL_DOWN
+> +          1 - GPO_CONFIG_LOGIC
+
+Interesting that you have defined 2 in the header... 
+Why not here?
+
+> +          3 - GPO_CONFIG_DEBOUNCED_COMPARATOR
+> +          4 - GPO_CONFIG_HIGH_IMPEDANCE
+> +        maxItems: 1
+> +        enum: [0, 1, 3, 4]
+> +
+> +    required:
+> +      - reg
+
+	This is fine if we have a default specified for the other elements
+such as what type of channel this is.
+
+> +
+> +examples:
+> +  - |
+> +    spi0 {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      cs-gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+> +      status = "okay";
+> +
+> +      ad74413r@0 {
+> +        compatible = "adi,ad74413r";
+> +        reg = <0>;
+> +        spi-max-frequency = <1000000>;
+> +        spi-cpol;
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        interrupt-parent = <&gpio>;
+> +        interrupts = <26 0>;
+> +
+> +        refin-supply = <&ad74413r_refin>;
+> +        adi,rsense-resistance-ohm = <100>;
+> +
+> +        channel@0 {
+> +          reg = <0>;
+> +
+> +          adi,ch-func = <CH_FUNC_VOLTAGE_OUTPUT>;
+> +          adi,gpo-config = <GPO_CONFIG_LOGIC>;
+> +        };
+> +
+> +        channel@1 {
+> +          reg = <1>;
+> +
+> +          adi,ch-func = <CH_FUNC_CURRENT_OUTPUT>;
+> +          adi,gpo-config = <GPO_CONFIG_LOGIC>;
+> +        };
+> +
+> +        channel@2 {
+> +          reg = <2>;
+> +
+> +          adi,ch-func = <CH_FUNC_VOLTAGE_INPUT>;
+> +          adi,gpo-config = <GPO_CONFIG_DEBOUNCED_COMPARATOR>;
+> +        };
+> +
+> +        channel@3 {
+> +          reg = <3>;
+> +
+> +          adi,ch-func = <CH_FUNC_CURRENT_INPUT_EXT_POWER>;
+> +          adi,gpo-config = <GPO_CONFIG_DEBOUNCED_COMPARATOR>;
+> +        };
+> +      };
+> +    };
+> +...
+> diff --git a/include/dt-bindings/iio/addac/adi,ad74413r.h b/include/dt-bindings/iio/addac/adi,ad74413r.h
+> new file mode 100644
+> index 000000000000..bde558d9731c
+> --- /dev/null
+> +++ b/include/dt-bindings/iio/addac/adi,ad74413r.h
+> @@ -0,0 +1,30 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _DT_BINDINGS_ADI_AD74413R_H
+> +#define _DT_BINDINGS_ADI_AD74413R_H
+> +
+> +#define GPO_CONFIG_100K_PULL_DOWN		0x0
+> +#define GPO_CONFIG_LOGIC				0x1
+> +#define GPO_CONFIG_LOGIC_PARALLEL		0x2
+> +#define GPO_CONFIG_DEBOUNCED_COMPARATOR	0x3
+> +#define GPO_CONFIG_HIGH_IMPEDANCE		0x4
+> +
+> +#define GPO_CONFIG_MIN		GPO_CONFIG_100K_PULL_DOWN
+> +#define GPO_CONFIG_MAX		GPO_CONFIG_HIGH_IMPEDANCE
+> +
+> +#define CH_FUNC_HIGH_IMPEDANCE					0x0
+> +#define CH_FUNC_VOLTAGE_OUTPUT					0x1
+> +#define CH_FUNC_CURRENT_OUTPUT					0x2
+> +#define CH_FUNC_VOLTAGE_INPUT					0x3
+> +#define CH_FUNC_CURRENT_INPUT_EXT_POWER			0x4
+> +#define CH_FUNC_CURRENT_INPUT_LOOP_POWER		0x5
+> +#define CH_FUNC_RESISTANCE_INPUT				0x6
+> +#define CH_FUNC_DIGITAL_INPUT_LOGIC				0x7
+> +#define CH_FUNC_DIGITAL_INPUT_LOOP_POWER		0x8
+> +#define CH_FUNC_CURRENT_INPUT_EXT_POWER_HART	0x9
+> +#define CH_FUNC_CURRENT_INPUT_LOOP_POWER_HART	0xA
+> +
+> +#define CH_FUNC_MIN		CH_FUNC_HIGH_IMPEDANCE
+> +#define CH_FUNC_MAX		CH_FUNC_CURRENT_INPUT_LOOP_POWER_HART
+> +
+> +#endif /* _DT_BINDINGS_ADI_AD74413R_H */
 
