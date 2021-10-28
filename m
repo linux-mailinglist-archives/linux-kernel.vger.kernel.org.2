@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75ED643E347
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AAA43E34B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhJ1ORu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhJ1ORp (ORCPT
+        id S231218AbhJ1ORy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 10:17:54 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:35233 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230258AbhJ1ORx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:17:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEBCC061570;
-        Thu, 28 Oct 2021 07:15:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bc40OkCZc3qUDZQjfILbCSwNeOqpl7xu1nq2tjombnE=; b=OasiJD/TSM+8sTYgzQS3HNGf4Y
-        BPt+VlI7/h1xQuXFHQoMlWvk02dD1LnN72xe2sehiX6aJSttPoR0pnL6g27KAIICkpTmfoecce/uO
-        hOas2Wb6v1iiZWcMhIa4Vb04tNAwkjPjse2/GkpP4JpGAAcxS1BGhC8NAfzECJejIOXoSXwqNXLqV
-        4bYu2Ce5FADs4o3oDPLN4DmJnxAlEUc3N1pffjh/9PWCALKgKdhJN23s5Vved+cYoIH5wBPRUlOpm
-        sQd1894HT9r6V0M8HM3AXalADo3rr6SPuflGYwjBAckY7/i0rRs9WP1ggWynGcW+Da3kpxeEsUBzY
-        +e/K0VFA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg6BL-00Cofl-JY; Thu, 28 Oct 2021 14:15:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 87C0E30022C;
-        Thu, 28 Oct 2021 16:15:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6ABB32C41F782; Thu, 28 Oct 2021 16:15:02 +0200 (CEST)
-Date:   Thu, 28 Oct 2021 16:15:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] kbuild: Support clang-$ver builds
-Message-ID: <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
-References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
- <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
+        Thu, 28 Oct 2021 10:17:53 -0400
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C564320002;
+        Thu, 28 Oct 2021 14:15:22 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 16:15:22 +0200
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] net: ocelot: add support to get mac from
+ device-tree
+Message-ID: <20211028161522.6b711bb2@xps-bootlin>
+In-Reply-To: <20211028140611.m7whuwrzqxp2t53f@skbuf>
+References: <20211028134932.658167-1-clement.leger@bootlin.com>
+        <20211028134932.658167-2-clement.leger@bootlin.com>
+        <20211028140611.m7whuwrzqxp2t53f@skbuf>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 11:07:40PM +0900, Masahiro Yamada wrote:
-> On Thu, Oct 28, 2021 at 10:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > Hi,
-> >
-> > Debian (and derived) distros ship their compilers as -$ver suffixed
-> > binaries. For gcc it is sufficent to use:
-> >
-> >  $ make CC=gcc-12
-> >
-> > However, clang builds (esp. clang-lto) need a whole array of tools to be
-> > exactly right, leading to unweildy stuff like:
-> >
-> >  $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
-> >
-> > which is, quite franktly, totally insane and unusable. Instead use the
-> > already mandatory LLVM variable to convey this, enabling one such as
-> > myself to use:
-> >
-> >  $ make LLVM=-13
-> >
-> > This also lets one quickly test different clang versions.
-> 
-> 
-> Please read the commit log of
-> a0d1c951ef08ed24f35129267e3595d86f57f5d3
+Le Thu, 28 Oct 2021 14:06:12 +0000,
+Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
 
-That's yuck, I like LLVM=-13 or LLVM=-12 much better to select between
-compilers. Means I don't have to remember wth they live and or wreck
-PATH.
+> On Thu, Oct 28, 2021 at 03:49:30PM +0200, Clément Léger wrote:
+> > Add support to get mac from device-tree using of_get_mac_address.
+> > 
+> > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> > ---
+> >  drivers/net/ethernet/mscc/ocelot_vsc7514.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c index
+> > d51f799e4e86..c39118e5b3ee 100644 ---
+> > a/drivers/net/ethernet/mscc/ocelot_vsc7514.c +++
+> > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c @@ -526,7 +526,10 @@
+> > static int ocelot_chip_init(struct ocelot *ocelot, const struct
+> > ocelot_ops *ops) ocelot_pll5_init(ocelot);
+> >  
+> > -	eth_random_addr(ocelot->base_mac);
+> > +	ret = of_get_mac_address(ocelot->dev->of_node,
+> > ocelot->base_mac);  
+> 
+> Why not per port? This is pretty strange, I think.
+
+Hi Vladimir,
+
+Currently, all ports share the same base mac address (5 first
+bytes). The final mac address per port is computed in ocelot_probe_port
+by adding the port number as the last byte of the mac_address provided.
+
+Clément
+
+> 
+> > +	if (ret)
+> > +		eth_random_addr(ocelot->base_mac);
+> > +
+> >  	ocelot->base_mac[5] &= 0xf0;
+> >  
+> >  	return 0;
+> > -- 
+> > 2.33.0
+>   
+
