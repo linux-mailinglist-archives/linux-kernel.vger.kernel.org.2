@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149F543D8A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0085843D8B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhJ1Bf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 21:35:56 -0400
-Received: from mga12.intel.com ([192.55.52.136]:42863 "EHLO mga12.intel.com"
+        id S229691AbhJ1BmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 21:42:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhJ1Bfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:35:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="210379103"
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
-   d="scan'208";a="210379103"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 18:33:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
-   d="scan'208";a="486925290"
-Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
-  by orsmga007.jf.intel.com with ESMTP; 27 Oct 2021 18:33:28 -0700
-Date:   Wed, 27 Oct 2021 18:35:44 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        antonio.gomez.iglesias@intel.com, tony.luck@intel.com,
-        dave.hansen@linux.intel.com, gregkh@linuxfoundation.org
-Subject: [PATCH ebpf v2 2/2] bpf: Make unprivileged bpf depend on
- CONFIG_CPU_SPECTRE
-Message-ID: <882f5c31f48bac75ebaede2a0ec321ec67128229.1635383031.git.pawan.kumar.gupta@linux.intel.com>
-References: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+        id S229515AbhJ1BmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 21:42:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D71ED610FD;
+        Thu, 28 Oct 2021 01:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635385192;
+        bh=ytYQeufNPmG0y/a7R9lsQ0yU6nEE5eEZ2Wb9wHEiiFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VdUELk9U5B1lJTOjXGuJ9uu74yoFOnUZFbrzb98STR8X0hzIx7JGTyYPkQeOSQZGR
+         6nqT2QzHY4DH6/qXVPq6G+DZ1h3De+EuAdlBpNq7R1Y3gxi06hkRPJcpRPRR/gV3/d
+         n1/98h4OStSUXhJXSDL92WfW++8m+0b0NDx65oDD3h7gKwKSBo1gBVMojw9KM0vDKb
+         0s1h5uwE5O0AeALvrNizx8kB1dLFWrR+mV9og/edXIjD0kBgNYT7pis2XVA5LvOG49
+         /0gURT4fK+mvS3BCRzAoiyGHglYQ9nniqawI+DCJTcqBj3T/KVp59JMMs0yU/pF0Z+
+         vmTRPj77pxT/w==
+Date:   Wed, 27 Oct 2021 21:39:50 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     Anton Lundin <glance@acc.umu.se>,
+        openipmi-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [Openipmi-developer] Issue with panic handling and ipmi
+Message-ID: <YXn/ZnlgXp6iuWLJ@sashalap>
+References: <20210917101419.GE108031@montezuma.acc.umu.se>
+ <20210917120758.GA545073@minyard.net>
+ <20210917125525.GF108031@montezuma.acc.umu.se>
+ <20210917131916.GB545073@minyard.net>
+ <20210917132648.GG108031@montezuma.acc.umu.se>
+ <20210920113802.GC545073@minyard.net>
+ <20210920141231.GH108031@montezuma.acc.umu.se>
+ <20210920144146.GD545073@minyard.net>
+ <YXmTbYhFvDJ0m5KX@sashalap>
+ <20211027182027.GG2744412@minyard.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+In-Reply-To: <20211027182027.GG2744412@minyard.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disabling unprivileged BPF would help prevent unprivileged users from
-creating the conditions required for potential speculative execution
-side-channel attacks on affected hardware. A deep dive on such attacks
-and mitigation is available here [1].
+On Wed, Oct 27, 2021 at 01:20:27PM -0500, Corey Minyard wrote:
+>On Wed, Oct 27, 2021 at 01:59:09PM -0400, Sasha Levin wrote:
+>> On Mon, Sep 20, 2021 at 09:41:46AM -0500, Corey Minyard wrote:
+>> > On Mon, Sep 20, 2021 at 04:12:31PM +0200, Anton Lundin wrote:
+>> > > On 20 September, 2021 - Corey Minyard wrote:
+>> > >
+>> > > > Well, that was dumb.  Fix follows...
+>> > > >
+>> > > > Thanks for working on this.  On your approval, I'll send this to Linus.
+>> > >
+>> > > Winner winner chicken dinner!
+>> > >
+>> > > This fixes the issue, and now panic timer works, and we get crashdumps
+>> > > to pstore.
+>> > >
+>> > > Great job, I approve!
+>> > >
+>> > >
+>> > > Thanks for your help getting this fixed.
+>> >
+>> > Thanks for reporting this.  I'll get the patch in.
+>>
+>> Hey Corey,
+>>
+>> Just checking in to see if this patch was lost; I haven't seen it in
+>> Linus's tree just yet.
+>
+>I generally wait until the merge window for changes.  It's too late in
+>the process for a patch now unless it's really critical.
+>
+>rc7 is out now, the merge window should be opening soon.
 
-If an architecture selects CONFIG_CPU_SPECTRE, disable unprivileged BPF
-by default. An admin can enable this at runtime, if necessary.
+Ah, great. I thought it would go in via one of the -rc releases given
+it's a fix.
 
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Thank you!
 
-[1] https://ebpf.io/summit-2021-slides/eBPF_Summit_2021-Keynote-Daniel_Borkmann-BPF_and_Spectre.pdf
----
- kernel/bpf/Kconfig | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-index a82d6de86522..510a5a73f9a2 100644
---- a/kernel/bpf/Kconfig
-+++ b/kernel/bpf/Kconfig
-@@ -64,6 +64,7 @@ config BPF_JIT_DEFAULT_ON
- 
- config BPF_UNPRIV_DEFAULT_OFF
- 	bool "Disable unprivileged BPF by default"
-+	default y if CPU_SPECTRE
- 	depends on BPF_SYSCALL
- 	help
- 	  Disables unprivileged BPF by default by setting the corresponding
-@@ -72,6 +73,10 @@ config BPF_UNPRIV_DEFAULT_OFF
- 	  disable it by setting it to 1 (from which no other transition to
- 	  0 is possible anymore).
- 
-+	  Unprivileged BPF can be used to exploit potential speculative
-+	  execution side-channel vulnerabilities on affected hardware. If you
-+	  are concerned about it, answer Y.
-+
- source "kernel/bpf/preload/Kconfig"
- 
- config BPF_LSM
 -- 
-2.31.1
-
+Thanks,
+Sasha
