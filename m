@@ -2,291 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF99243DC4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFA943DC97
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhJ1Hpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:45:54 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:64846 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhJ1Hpx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:45:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635407006; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=96tHoOMtRO1exXok+kK2+EI1nRzwGE0x/43rfTggRsA=; b=NTIhCXIA8Bdpo6XwyAMavPfg9d+GhbvlpN7HWkqG+Ia2K61j0ePnPnz1m1+xjV9Prg4pQ82s
- OqjWWORWrANhSTrmTS2TDudI06eZMK2jR08FSBtZR+nPiKqslsnUVYwLf59colNa1DDPSUYt
- cLXGVPdTWkAe9lJYy8GT1WYvzUM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 617a549997bbea7fccffef87 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 07:43:21
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4955BC4360D; Thu, 28 Oct 2021 07:43:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from PILLAIR1 (unknown [49.205.244.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DE83C4338F;
-        Thu, 28 Oct 2021 07:43:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6DE83C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   <pillair@codeaurora.org>
-To:     "'Bjorn Andersson'" <bjorn.andersson@linaro.org>
-Cc:     <agross@kernel.org>, <ohad@wizery.com>,
-        <mathieu.poirier@linaro.org>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <sibis@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1615361290-19238-1-git-send-email-pillair@codeaurora.org> <1615361290-19238-3-git-send-email-pillair@codeaurora.org> <YEj3emYBinvkfaby@builder.lan> <000001d71993$ded6e070$9c84a150$@codeaurora.org> <YVsd1Mt1iRyU2v8i@builder.lan>
-In-Reply-To: <YVsd1Mt1iRyU2v8i@builder.lan>
-Subject: RE: [PATCH 2/2] remoteproc: qcom: q6v5_wpss: Add support for sc7280 WPSS
-Date:   Thu, 28 Oct 2021 13:13:12 +0530
-Message-ID: <001201d7cbcf$7944f4b0$6bcede10$@codeaurora.org>
+        id S229881AbhJ1ICA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:02:00 -0400
+Received: from mout.gmx.net ([212.227.17.22]:50965 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229833AbhJ1IB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 04:01:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635407962;
+        bh=jmSqqwsTmKlXEHUVDmzYrAqJX1kVbs9mcRUpYNGTweA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=cVZ7YNWY0mvx2BhH7pIDHOixPNAqsGFIHTU0UORN/+LotTb91Qubs2lv1MiEY+Veb
+         u3hbcLuLYyAPq24MsvboZTB35viRmPy95YJX/TDs1pr13L8INAApHKMrBa+bFB81eR
+         hrKn8bDyfXic73Egyss3q8/08M3sOCdyiKyegjvg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from corona.crabdance.com ([173.228.106.131]) by mail.gmx.net
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1M8ygY-1mc8xr1x4w-006APr; Thu, 28 Oct 2021 09:59:22 +0200
+Received: by corona.crabdance.com (Postfix, from userid 1000)
+        id 2F5EA27FC40; Thu, 28 Oct 2021 00:59:15 -0700 (PDT)
+From:   Stefan Schaeckeler <schaecsn@gmx.net>
+To:     richard@nod.at, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Stefan Schaeckeler <sschaeck@cisco.com>
+Subject: [PATCH] ubifs: document sysfs nodes
+Date:   Thu, 28 Oct 2021 00:44:04 -0700
+Message-Id: <20211028074404.9739-1-schaecsn@gmx.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJE4j0s7F0zBoVvuux+nIAAOegXnQHQWOo3AmfgvGsCH521SQL5H+8MqsNR/OA=
-Content-Language: en-us
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Jrw2wLUw4vnbpuLx6LVkh6aLNEeKDC0j/lA3eLQnyEl3bzpfbMo
+ cYHcKPjRQQdehc4J7zv+tCNluHs1XcdKguzIp/DN8Pp4u80OalAOWyjMxvBYJtnrAixhqYg
+ BNy4B/Tk3NKHYKZht6t7c3Fa0hDo1JHMegaGSwKMuMHPjJKI9b/fivXKFayEcW29NGaVnP5
+ YnYluGMXJKR5n1J7Qg1BA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KP6gfw0l2A4=:ioIF4Tgg4ilz/G/7/eoSDS
+ OiWyY4SR7zwrzNKZH5BiPzmnKWt+pPSZs3GK067+d83ku7CHtlugdCbVARj9XHwB4XNir/a9b
+ Avq1qzSjM2rExvGKKcstL9UvT6p1HzCkpK6JVKgm+YO8uUswgj6THgGgUechuD3EmCfd0Ad8e
+ aBP5X4h3tNb5arGEW5qJd30qhgOe1mTRuEw71hK8UARGOhf5SaYY2/IalzmiXMhTStTOz9fuu
+ mRwnS9eM8aPqCSmu8oxDm5B6n5NW48LtSkED+NljYqL0tXOAptrf1s+FUHwPCdvnNDd75eDgm
+ 25jIu9w15Ife2Ho8afpYt+TXCD49EBiq9GtJHTNtrVwSMiEnfgxoODwVlXx3U/3ZhoCdSxbX1
+ pdA/o2OpbA7krONhR3tLV/SNsTWSma6GZBQvQvpWxKk8nBarZS1ssg9jL9/hr042x0QNFZz3s
+ BNv7/xJCejRjJbZr0jCPx7esowpI/RyZTN4/e5pgcttgS2WaYW50DBeio7ZA1XbK8qE1PyBQM
+ TFkWbi9yeuadhke/pWvzRa1PYB2FZxNLM8d+Au2rayV0/TWa2cOO4dZfVRH2qKdqXLznF5d+v
+ NYu8kEKYJTktL+55d3uiOMs59O06cAIUDZAmaHNyO1PR6BxVUgcghDUNZ+Limc25HoYKpbY0B
+ R9IFkNSjuFhNkpbEDcZoGN+qBNKBT2dlpUqcaS1RgQ2osYVSg1s5Pdcxi9x+Bu/dNDF1MnQNG
+ aTT9GBp2+N8+PR1VOIY4l+q71rYozX4ik3Oa0u4Bm9H+nyhCqy8w+MrtLE0KPUMxYE25bnibz
+ 5t/JDQGl8MJtnzvyqSLQulH8ffpLNVZHdZqM9qr3sNVrKYMsqNKJG5g8+O0W2mR0NCL/cQBoE
+ uydkoD6qN/2L3LG6g1GxygBNjdfWKQq+rj1lLzuYRHiZlvdArSWT/Vciwek7XzWB/MwMLu79K
+ wrJxu7a0qLCUUdFYF3jsN02kpDVFTii3T9OoBuruF1WPwPvtwG33ZWsT5rpqk/CiorehXZaVz
+ jDNtP/nH021k3kGGxPA3FEKBhQf7A8hKb/NPzzIOioEossHKshmzm7b+XPwiiUkYdXVysiOJa
+ 2sZsB8/Ggi1KAo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Stefan Schaeckeler <sschaeck@cisco.com>
 
+Add documentation for the new sysfs nodes
 
-> -----Original Message-----
-> From: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Sent: Monday, October 4, 2021 8:59 PM
-> To: Rakesh Pillai <pillair@codeaurora.org>
-> Cc: agross@kernel.org; ohad@wizery.com; mathieu.poirier@linaro.org;
-> robh+dt@kernel.org; p.zabel@pengutronix.de; sibis@codeaurora.org; linux-
-> arm-msm@vger.kernel.org; linux-remoteproc@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH 2/2] remoteproc: qcom: q6v5_wpss: Add support for
-> sc7280 WPSS
-> 
-> On Mon 15 Mar 07:08 CDT 2021, Rakesh Pillai wrote:
-> 
-> >
-> >
-> > > -----Original Message-----
-> > > From: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > Sent: Wednesday, March 10, 2021 10:15 PM
-> > > To: Rakesh Pillai <pillair@codeaurora.org>
-> > > Cc: agross@kernel.org; ohad@wizery.com; mathieu.poirier@linaro.org;
-> > > robh+dt@kernel.org; p.zabel@pengutronix.de; sibis@codeaurora.org;
-> > > robh+linux-
-> > > arm-msm@vger.kernel.org; linux-remoteproc@vger.kernel.org;
-> > > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> > > Subject: Re: [PATCH 2/2] remoteproc: qcom: q6v5_wpss: Add support
-> > > for
-> > > sc7280 WPSS
-> > >
-> > > On Wed 10 Mar 01:28 CST 2021, Rakesh Pillai wrote:
-> > >
-> > > > Add support for PIL loading of WPSS processor for SC7280 WPSS boot
-> > > > will be requested by the wifi driver and hence disable auto-boot
-> > > > for WPSS. Also add a separate shutdown sequence handler for WPSS.
-> > > >
-> > > > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> > > > ---
-> > > >  drivers/remoteproc/qcom_q6v5_adsp.c | 77
-> > > ++++++++++++++++++++++++++++++++++++-
-> > > >  1 file changed, 76 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c
-> > > b/drivers/remoteproc/qcom_q6v5_adsp.c
-> > > > index e024502..dc6b91d 100644
-> > > > --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> > > > +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> > > > @@ -58,6 +58,8 @@ struct adsp_pil_data {
-> > > >  	const char *ssr_name;
-> > > >  	const char *sysmon_name;
-> > > >  	int ssctl_id;
-> > > > +	bool is_wpss;
-> > > > +	bool auto_boot;
-> > > >
-> > > >  	const char **clk_ids;
-> > > >  	int num_clks;
-> > > > @@ -96,8 +98,54 @@ struct qcom_adsp {
-> > > >  	struct qcom_rproc_glink glink_subdev;
-> > > >  	struct qcom_rproc_ssr ssr_subdev;
-> > > >  	struct qcom_sysmon *sysmon;
-> > > > +
-> > > > +	int (*shutdown)(struct qcom_adsp *adsp);
-> > > >  };
-> > > >
-> > > > +static int qcom_wpss_shutdown(struct qcom_adsp *adsp) {
-> > > > +	unsigned long timeout;
-> > > > +	unsigned int val;
-> > > > +	int ret;
-> > > > +
-> > > > +	regmap_write(adsp->halt_map, adsp->halt_lpass +
-> > > LPASS_HALTREQ_REG, 1);
-> > > > +
-> > > > +	/* Wait for halt ACK from QDSP6 */
-> > > > +	timeout = jiffies + msecs_to_jiffies(ACK_TIMEOUT);
-> > > > +	for (;;) {
-> > > > +		ret = regmap_read(adsp->halt_map,
-> > > > +				  adsp->halt_lpass +
-LPASS_HALTACK_REG,
-> > > &val);
-> > > > +		if (ret || val || time_after(jiffies, timeout))
-> > > > +			break;
-> > > > +
-> > > > +		usleep_range(1000, 1100);
-> > > > +	}
-> > > > +
-> > > > +	/* Place the WPSS processor into reset */
-> > > > +	reset_control_assert(adsp->restart);
-> > > > +	/* wait after asserting subsystem restart from AOSS */
-> > > > +	usleep_range(100, 105);
-> > > > +	/* Remove the WPSS reset */
-> > > > +	reset_control_deassert(adsp->restart);
-> > > > +
-> > > > +	usleep_range(100, 105);
-> > > > +
-> > > > +	regmap_write(adsp->halt_map, adsp->halt_lpass +
-> > > LPASS_HALTREQ_REG, 0);
-> > > > +
-> > > > +	/* Wait for halt ACK from QDSP6 */
-> > > > +	timeout = jiffies + msecs_to_jiffies(ACK_TIMEOUT);
-> > > > +	for (;;) {
-> > > > +		ret = regmap_read(adsp->halt_map,
-> > > > +				  adsp->halt_lpass +
-LPASS_HALTACK_REG,
-> > > &val);
-> > > > +		if (ret || !val || time_after(jiffies, timeout))
-> > > > +			break;
-> > > > +
-> > > > +		usleep_range(1000, 1100);
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > >  static int qcom_adsp_shutdown(struct qcom_adsp *adsp)  {
-> > > >  	unsigned long timeout;
-> > > > @@ -270,7 +318,7 @@ static int adsp_stop(struct rproc *rproc)
-> > > >  	if (ret == -ETIMEDOUT)
-> > > >  		dev_err(adsp->dev, "timed out on wait\n");
-> > > >
-> > > > -	ret = qcom_adsp_shutdown(adsp);
-> > > > +	ret = adsp->shutdown(adsp);
-> > > >  	if (ret)
-> > > >  		dev_err(adsp->dev, "failed to shutdown: %d\n", ret);
-> > > >
-> > > > @@ -439,6 +487,8 @@ static int adsp_probe(struct platform_device
-> > > *pdev)
-> > > >  		dev_err(&pdev->dev, "unable to allocate
-remoteproc\n");
-> > > >  		return -ENOMEM;
-> > > >  	}
-> > > > +
-> > > > +	rproc->auto_boot = desc->auto_boot;
-> > > >  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
-> > > >
-> > > >  	adsp = (struct qcom_adsp *)rproc->priv; @@ -447,6 +497,11 @@
-> > > > static int adsp_probe(struct platform_device
-> > > *pdev)
-> > > >  	adsp->info_name = desc->sysmon_name;
-> > > >  	platform_set_drvdata(pdev, adsp);
-> > > >
-> > > > +	if (desc->is_wpss)
-> > > > +		adsp->shutdown = qcom_wpss_shutdown;
-> > > > +	else
-> > > > +		adsp->shutdown = qcom_adsp_shutdown;
-> > > > +
-> > > >  	ret = adsp_alloc_memory_region(adsp);
-> > > >  	if (ret)
-> > > >  		goto free_rproc;
-> > > > @@ -515,6 +570,8 @@ static const struct adsp_pil_data
-> > > > adsp_resource_init
-> > > = {
-> > > >  	.ssr_name = "lpass",
-> > > >  	.sysmon_name = "adsp",
-> > > >  	.ssctl_id = 0x14,
-> > > > +	.is_wpss = false,
-> > > > +	.auto_boot = true;
-> > > >  	.clk_ids = (const char*[]) {
-> > > >  		"sway_cbcr", "lpass_ahbs_aon_cbcr",
-> > > "lpass_ahbm_aon_cbcr",
-> > > >  		"qdsp6ss_xo", "qdsp6ss_sleep", "qdsp6ss_core", NULL
-@@ -
-> 528,6
-> > > > +585,8 @@ static const struct adsp_pil_data cdsp_resource_init
-> > > = {
-> > > >  	.ssr_name = "cdsp",
-> > > >  	.sysmon_name = "cdsp",
-> > > >  	.ssctl_id = 0x17,
-> > > > +	.is_wpss = false,
-> > > > +	.auto_boot = true;
-> > > >  	.clk_ids = (const char*[]) {
-> > > >  		"sway", "tbu", "bimc", "ahb_aon", "q6ss_slave",
-> > > "q6ss_master",
-> > > >  		"q6_axim", NULL
-> > > > @@ -535,7 +594,23 @@ static const struct adsp_pil_data
-> > > cdsp_resource_init = {
-> > > >  	.num_clks = 7,
-> > > >  };
-> > > >
-> > > > +static const struct adsp_pil_data wpss_resource_init = {
-> > > > +	.crash_reason_smem = 626,
-> > > > +	.firmware_name = "wpss.mdt",
-> > > > +	.ssr_name = "wpss",
-> > > > +	.sysmon_name = "wpss",
-> > > > +	.ssctl_id = 0x19,
-> > > > +	.is_wpss = true,
-> > > > +	.auto_boot = false;
-> > >
-> > > Why is auto_boot false for the WPSS?
-> >
-> > Wifi driver will start the remote processor when it comes up. We do
-> > not want to load it at the start.
-> >
-> 
-> Can you please explain this further?
-> 
-> We've had several cases in the past where functional drivers controls a
-> remoteproc instance and makes assumptions about when the remoteproc is
-> up or not. I would like to ensure that we don't design ourselves into such
-> corner (even though I see that the ath11k code for this was merged a long
-> time ago)
-> 
-> Regards,
-> Bjorn
-> 
+ /sys/fs/ubifs/ubiX_Y/errors_magic
+ /sys/fs/ubifs/ubiX_Y/errors_node
+ /sys/fs/ubifs/ubiX_Y/errors_crc
 
-Hi Bjorn,
-Yes, the wpss remoteproc is used by ath11k, where it takes care of starting
-the rproc during init.
-Ideally the wpss is not supposed to be started until the wifi driver comes
-up.
+Signed-off-by: Stefan Schaeckeler <sschaeck@cisco.com>
+=2D--
+ Documentation/ABI/testing/sysfs-fs-ubifs | 35 ++++++++++++++++++++++++
+ MAINTAINERS                              |  1 +
+ 2 files changed, 36 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-fs-ubifs
 
-If wifi is started/enabled, the wifi driver can take care of starting the
-wpss.
-This is the reason behind keeping auto_boot as false for wpss.
-
-Thanks,
-Rakesh Pillai
-
-
-> > > > 2.7.4
-> > > >
-> >
+diff --git a/Documentation/ABI/testing/sysfs-fs-ubifs b/Documentation/ABI/=
+testing/sysfs-fs-ubifs
+new file mode 100644
+index 000000000000..19a8ebf7fe61
+=2D-- /dev/null
++++ b/Documentation/ABI/testing/sysfs-fs-ubifs
+@@ -0,0 +1,35 @@
++What:		/sys/fs/ubifsX_Y/error_magic
++Date:		October 2021
++KernelVersion:	5.16
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Exposes magic errors: every node starts with a magic number.
++
++		This counter keeps track of the number of accesses of nodes
++		with a corrupted magic number.
++
++		The counter is reset to 0 with a remount.
++
++What:		/sys/fs/ubifsX_Y/error_node
++Date:		October 2021
++KernelVersion:	5.16
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Exposes node errors. Every node embeds its type.
++
++		This counter keeps track of the number of accesses of nodes
++		with a corrupted node type.
++
++		The counter is reset to 0 with a remount.
++
++What:		/sys/fs/ubifsX_Y/error_crc
++Date:		October 2021
++KernelVersion:	5.16
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Exposes crc errors: every node embeds a crc checksum.
++
++		This counter keeps track of the number of accesses of nodes
++		with a bad crc checksum.
++
++		The counter is reset to 0 with a remount.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b43662a9a5f3..a8f0e3e38b2e 100644
+=2D-- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19105,6 +19105,7 @@ S:	Supported
+ W:	http://www.linux-mtd.infradead.org/doc/ubifs.html
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git fixes
++F:	Documentation/ABI/testing/sysfs-fs-ubifs
+ F:	Documentation/filesystems/ubifs-authentication.rst
+ F:	Documentation/filesystems/ubifs.rst
+ F:	fs/ubifs/
+=2D-
+2.33.0
 
