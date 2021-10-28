@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CC343DB33
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1692843DB4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhJ1GhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
+        id S229808AbhJ1Gkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhJ1Gg7 (ORCPT
+        with ESMTP id S229626AbhJ1Gkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:36:59 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C451CC061745
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:34:32 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so7195617ote.8
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:34:32 -0700 (PDT)
+        Thu, 28 Oct 2021 02:40:52 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00781C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:38:25 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id s23-20020a056830125700b00553e2ca2dccso2354757otp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:38:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=PRgWCRCX7AtwJtD++BtDcASmdtlLCky0vNsp17MLlCo=;
-        b=em7rMEP++cDD6gn1cQ27hJKr0PZKndl+gMTj5cIe4wcUsLq1UdZ258NJ827zstWX79
-         EmDvUqjsQQT7BlzCpY13u6u29OM3jwkeYBAvmvdv1rvMxknpaUWbppiNXIueAmOAvjPz
-         LhbvwuU3B7empW598hrp22LTfyfUFg6buyuU0=
+        bh=Q0aPYShzUHQahtTa1rDM0UEGu5hh3TXopg752neKMGg=;
+        b=KruDRqjhoLjx+sYOUpcq3sXk+XjHwJCdCH64uMmttuPc0A1Ta8HjzGKGqfQturSuV4
+         eJC8zMQU25XhO1/5qaLQ9Z4UUuhozYFk6zA47U4yYRH/7RQDkdwNLZ0B9O5Nm8wv8ldd
+         /jFaUIShVutNM8YxnxPYE1zdvlfpCnyPyxfxw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=PRgWCRCX7AtwJtD++BtDcASmdtlLCky0vNsp17MLlCo=;
-        b=3oLpykQowZhnejcd8p2gT73bb1bowFLASpTOTc+YaiPO1aGMdkpl2+l/FnWDy6wK+m
-         K1+DfuxsQMzm/5uy9MZKvhKD36wZyorObz2DkG8I69u4zWqVxtBtQ2L6Ooas959BKfkj
-         pn3E/SpescVxCXDFllCnfx+ihwSlX8VcWuMtJ3Wj+08nJH+/hT+dtGNLCoiaLdk3oh67
-         S3GZveDjQaIwT/riYq0SCKFLbPT/zrsSB8lIUcMmZDZKi2iDsK20yAMKafimsVotnXJo
-         Xwk4qjoXuZpBSoH0OeasFBUPB+3WRRfzc+2ZhJ4Vkegeyob6P900FqFajDXcHY0tlYwA
-         YO5A==
-X-Gm-Message-State: AOAM531cxUXFcAUqJhWq7kCK5XuRdgCvVQFBEYnAhHwu5wPG7n5/dlaH
-        OmH0/tBD6kAhPUGJSsUkvpbus2iYm0fXjdVFyrN16A==
-X-Google-Smtp-Source: ABdhPJxWcOa3Xkk6Hw5Lr0txJqbDDMJPmnfEf8oGlsnZUqb3TVVAZTrS+4RFqV0jimxB4yUnK+VWxsK2/WZ+xbzr3qU=
-X-Received: by 2002:a9d:6e16:: with SMTP id e22mr1863400otr.77.1635402872221;
- Wed, 27 Oct 2021 23:34:32 -0700 (PDT)
+        bh=Q0aPYShzUHQahtTa1rDM0UEGu5hh3TXopg752neKMGg=;
+        b=WSU3L6B/eHesB18ukkeTPP3orrCda9sSzhcJ1bwIq8Y1jWcz8vejtix6i1kBAmk2kO
+         fOW5YTfB/Lz8A3jrjcCqe8gk9ZvAKJnwLVe0M+4ABtQ4P/HE3UD95XO0MOcS5d/Dvaj0
+         4k7m+8to/qJOUwdVXzStcyZLVyI1A+y+/DtF0K2V3smRO2yntPUW3NzSi0ahR1urvZ8Z
+         h8S25XwnxuRpQ9GREosCpvJCLiCwAk5t5sMGsGmF5HC2C7CVPEAprHkpZNCxT2taTvGt
+         B76zU0UlIRtu6JZy5e89jeCqtwk3vSEVo2q3o+jpIK8vMklddTiL3c/Jw/OeFHJ3yVTE
+         gxig==
+X-Gm-Message-State: AOAM532Uns1K8TAHVpJQMEpAVMauZK3zWm6eFdmp3LAJ1GVnC7tyfePY
+        lnHsn+pjVz4lhIYwE0bNFRnO62FRFod7u+4PXpKk5w==
+X-Google-Smtp-Source: ABdhPJy5II9bUKXp0PmXN9iZD0uyK1uwYoFfurzgzrVy+zidgimkf19uyPDV0C7OcPK1KlpMppshRp1NEBWVvR6ePUk=
+X-Received: by 2002:a9d:7655:: with SMTP id o21mr1932382otl.126.1635403105338;
+ Wed, 27 Oct 2021 23:38:25 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 27 Oct 2021 23:34:31 -0700
+ HTTPREST; Wed, 27 Oct 2021 23:38:25 -0700
 MIME-Version: 1.0
-In-Reply-To: <1635386088-18089-6-git-send-email-quic_sbillaka@quicinc.com>
-References: <1635386088-18089-1-git-send-email-quic_sbillaka@quicinc.com> <1635386088-18089-6-git-send-email-quic_sbillaka@quicinc.com>
+In-Reply-To: <1635386088-18089-7-git-send-email-quic_sbillaka@quicinc.com>
+References: <1635386088-18089-1-git-send-email-quic_sbillaka@quicinc.com> <1635386088-18089-7-git-send-email-quic_sbillaka@quicinc.com>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Wed, 27 Oct 2021 23:34:31 -0700
-Message-ID: <CAE-0n53U0JARXjzt=Hr5kfEdEHJR5AFKYx796V7LGbn6CVnVig@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] drm/msm/dp: Enable ASSR for supported DP sinks
+Date:   Wed, 27 Oct 2021 23:38:24 -0700
+Message-ID: <CAE-0n50YcX6sCoTR0bUy_GrZM7=UdHPAGYNwE3Nvj6GL4iTmMg@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] drm/msm/dp: Remove the hpd init delay for eDP
 To:     Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
         dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -63,14 +63,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sankeerth Billakanti (2021-10-27 18:54:47)
-> The eDP sink on sc7280 supports ASSR and dp driver will
-> enable ASSR in the source hardware. The driver needs to
-> enable the ASSR field in the DPCD configuration register
-> to avoid screen corruption. This change will enable ASSR
-> if supported in the sink device.
+Quoting Sankeerth Billakanti (2021-10-27 18:54:48)
+> DP driver needs a 10 second delay before phy_init so that
+> the usb combo phy initializes and sets up the necessary
+> clocks for usb devices such as keyboard and mouse.
+>
+> eDP controller uses a standalone phy and need not wait for
+> phy initialization from any other component. This change
+> will remove the delay for eDP controller.
 >
 > Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
 > ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 61385d6..de6a1fd 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1438,7 +1439,15 @@ void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+>
+>         dp_hpd_event_setup(dp);
+>
+> -       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 100);
+> +       if (dp->dp_display.connector_type == DRM_MODE_CONNECTOR_eDP) {
+> +               /* eDP does not need any delay before phy init */
+> +               delay = 0;
+> +       } else {
+> +               /* DP needs 10 second delay to let usb combo phy initialize */
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+This seems to be a different approach to the patch Kuogee sent a week or
+two ago. Can we figure out what's wrong with the DP phy starting before
+the USB phy? I suppose this patch is OK as a temporary hack to keep
+moving with eDP, but we really need to figure out what's wrong with DP
+so this delay can be removed entirely. Has any progress been made on
+that?
+
+> +               delay = 100;
+> +       }
+> +
+> +       dp_add_event(dp, EV_HPD_INIT_SETUP, 0, delay);
