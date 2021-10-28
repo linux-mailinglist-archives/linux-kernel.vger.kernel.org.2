@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB7C43E125
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5F743E12A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhJ1Mrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229868AbhJ1Mrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:47:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1CAE60FC4;
-        Thu, 28 Oct 2021 12:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635425114;
-        bh=o2C6FvRrmDzrbftY8FeeMYbB6RuSRYiUaT2LP9Dk+YI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Vv8BsWEePhaTpO+39QlXx5FIPm9+IPxz4irhvfpCZC3w+KD1RgItVlwdUjMhGlyRo
-         3lWMIOgn1q0EKFllKonO/WqgUFTbw4B6McSUQk4SbRyxcTia8eydYhtba/Ibjzl5Cv
-         In4MCYGkwx3inORdhhLfLPga5AAlKWaNeQc/brbQPJ9SXUoRZpTwGCNVpnss9UMMyv
-         n0hRpk2IDIg2PVdOFU4WhdTkG8WZb4Mppj2sx4+DsPXZdxgQrB2M6pEsWVAKtyHFQF
-         fkxZkZRSN74CK4CmTHS4O46UKVX8HB0Kqq8+VrUD3ypdmE+ywrWntVfndstwfcb/dn
-         OJvUDFYo969bQ==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Pavel Machek <pavel@denx.de>
-Subject: [PATCH RESEND] f2fs: fix incorrect return value in f2fs_sanity_check_ckpt()
-Date:   Thu, 28 Oct 2021 20:45:08 +0800
-Message-Id: <20211028124508.2672-1-chao@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S230260AbhJ1MsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:48:14 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:45444 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhJ1MsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:48:12 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19SCjOuE046426;
+        Thu, 28 Oct 2021 07:45:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635425124;
+        bh=NtVjaK3NVDc5/FgFPK++Bri10Kvkgs6XU03tEJ+YQ0c=;
+        h=From:To:CC:Subject:Date;
+        b=Vo0L4UGhARwXYeRKxOVVyJnLvlxMBykznrkdrPhOG8WrLDC9rDRpTiPQYo4/BtUCi
+         VCX3Ma71P7Lfyl52NlD4SWrXCP+DohVdO4jihOzPjWA7TFFYVtQHPEEHpKT7LzHXxu
+         wI1QczV5rlyWgjGB/ufySkewPQnlTYZcPsbZKr4s=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19SCjOD2119937
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 Oct 2021 07:45:24 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 28
+ Oct 2021 07:45:23 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 28 Oct 2021 07:45:23 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19SCjJbA115317;
+        Thu, 28 Oct 2021 07:45:20 -0500
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+Subject: [PATCH v2 0/3] Add bindings for slave-specific SPI controller properties
+Date:   Thu, 28 Oct 2021 18:15:15 +0530
+Message-ID: <20211028124518.17370-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.33.1.835.ge9e5ba39a7
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Pavel Machek reported in [1]
+Hi,
 
-This code looks quite confused: part of function returns 1 on
-corruption, part returns -errno. The problem is not stable-specific.
+This series adds bindings for slave-specific SPI controller properties.
+See patch 1 for more info on the motivations behind this.
 
-[1] https://lkml.org/lkml/2021/9/19/207
+This is the best approach that I came up with with my limited knowledge
+of JSON schema. It has some limitations that are mentioned in patch 1. I
+don't know of any better ways to model this. Suggestions are welcome!
 
-Let's fix to make 'insane cp_payload case' to return 1 rater than
-EFSCORRUPTED, so that return value can be kept consistent for all
-error cases, it can avoid confusion of code logic.
+Changes in v2:
+- Move other subnode properties listed in spi-controller.yaml to
+  spi-slave-props.yaml
+- Move the Cadence controller-specific properties out of
+  spi-slave-props.yaml. They will be added in a separate file.
+- Add a reference to spi-slave-props.yaml in spi-controller.yaml.
+- Update description.
 
-Fixes: 65ddf6564843 ("f2fs: fix to do sanity check for sb/cp fields correctly")
-Reported-by: Pavel Machek <pavel@denx.de>
-Reviewed-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Pratyush Yadav (3):
+  spi: dt-bindings: add schema listing slave-specific properties
+  spi: dt-bindings: cdns,qspi-nor: Move slave-specific properties out
+  dt-bindings: mtd: spi-nor: Add a reference to spi-slave-props.yaml
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 9693f3e4cdd4..989e76ec7fb2 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3495,7 +3495,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 		NR_CURSEG_PERSIST_TYPE + nat_bits_blocks >= blocks_per_seg)) {
- 		f2fs_warn(sbi, "Insane cp_payload: %u, nat_bits_blocks: %u)",
- 			  cp_payload, nat_bits_blocks);
--		return -EFSCORRUPTED;
-+		return 1;
- 	}
- 
- 	if (unlikely(f2fs_cp_error(sbi))) {
+ .../bindings/mtd/jedec,spi-nor.yaml           |  3 +-
+ .../spi/cdns,qspi-nor-slave-props.yaml        | 42 +++++++++
+ .../bindings/spi/cdns,qspi-nor.yaml           | 33 -------
+ .../bindings/spi/spi-controller.yaml          | 69 +-------------
+ .../bindings/spi/spi-slave-props.yaml         | 93 +++++++++++++++++++
+ 5 files changed, 139 insertions(+), 101 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor-slave-props.yaml
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-slave-props.yaml
+
 -- 
-2.32.0
+2.33.1.835.ge9e5ba39a7
 
