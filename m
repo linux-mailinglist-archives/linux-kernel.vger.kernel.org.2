@@ -2,61 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3950243F2DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B1B43F2DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhJ1Whk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:37:40 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:37763 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbhJ1Whj (ORCPT
+        id S231393AbhJ1WjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231235AbhJ1WjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:37:39 -0400
-Received: by mail-io1-f71.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso5231763iov.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:35:11 -0700 (PDT)
+        Thu, 28 Oct 2021 18:39:00 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D983CC061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:36:32 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id s3so8695895ild.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:36:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tK1+5HlOuiSkOMddGgoV7U/XOQaHtx3v2HgHVD1iYN8=;
+        b=ZxvSeDwPFW152l1kjOzLqFVTqRIZ1tSyJm/Eu65JwEexV3UdocljKuPe7+igtGft0o
+         4J/OTTf7MgYfOgPneYct2FlOlzmd3wJ7Te3HfdnpZP4bfo3Sw/oO508tPp1qntRlOUPv
+         rf5SEQxfxGDJhvw/ti2Kx+r6hvqzPJVL0Y/6eZEASyPRd9PDy7p6gpnRzw2qzh3OXs1y
+         3clqox8iEkZu6FZ6KkldBcFLkJ0GpBYbtgZ7xpzDKhfZ2OvnPFHLRLRehVSslnV02Fv7
+         sAolhMktaCRwpH5T/eZXbKMykoArybd5dK8+r2/CXawhT7Ok1bcupF4tFoPLRe7fJIck
+         IFhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=N9EOrS/2LnqMiI4SQz1TSOBHS3qpfSRUoJVqf+vmGnY=;
-        b=KU7WEfMiPo32J/gv8yxlPXETH8F4f/Q/JNYPYYwMLK5QPChBusq2JJ/y5SLT6P7O81
-         xcA9v4R63P08aXRwObzg3lvzZ7jGLkvYsLJ/YBi5PxlfiFEUGsBVqEfmTG2DJ45NSnHs
-         um7wWKUURphut2iUcMKghZP3juagCy0kqqdT7wyu3jfqX1IpXz2WEB/fO26QGuyhZF6s
-         mEsw9kj8/DDPh2bAqt6QJC5WeVSOMJnCNUEI4aVW3Bb6IqnEApb/D6q8+6YL7RODMYYS
-         z+F14hI1vGAnRw0VDFJ59T95lKOkKx8rbTKI0HRwNCYBGRH+gpzA1BhUFrLgTNpzRiYa
-         6yEA==
-X-Gm-Message-State: AOAM532NYwWIUKz/ZxsZsboLYVdIypGYopi6/DUIHeAA1hp8AiJ5AhpB
-        IsELcnI7T4yp2jcdCPud6OJ05c4fmp7Vl1BC2rMfJK6gZt2d
-X-Google-Smtp-Source: ABdhPJxugzRMQthei9yf9E8esqe3gS+EjBvi1+X3jXhL0239BRvPkn5bKFXqDB3+O+2rxAerku6rN1vKAPslwSeTkgvKXCwhF5fI
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tK1+5HlOuiSkOMddGgoV7U/XOQaHtx3v2HgHVD1iYN8=;
+        b=FieKN/PUc2C/43yRmb0uRvfUcF/eDoT924xSXmAcgykcIuEbqwgArpO73pcpTp+4nf
+         vcvQidMbnbiCrWRbLTpDXYvXpUFLGjHdP3JoUsQ9SaDcqDrPUdTT8cmSbYa0b+YW2IuH
+         fCcyeFGBogs0I25QEp09lX7ENjgGnW3P4wDykuM0D4WofDJiospVmkx3NORGC9GjDuzw
+         oGNaJc4QDQ6a2jJeZLc3H/LClNb9MMRhlFFzWjLBnTzLvlWn9reFvd0UkOHALA5YqjZ6
+         hJRHzN+Dzo/ReeGgNnMrWLy1aKKmu2IP9SUxKnacsg9ii/3ed0tuNPgAnTPvAFe+ME+L
+         njyg==
+X-Gm-Message-State: AOAM533llXCgwNdDOVHrQjLQ+YWkP7sMJdECsKLhwSi1XcLgbkQltSqT
+        jIGBAemnJcyQ+Stkx/Ziy/Y2AnScT1x+nBs1UNx+iQ==
+X-Google-Smtp-Source: ABdhPJxyo7q9vBF/AuGwxupKSSnuSRqNqUaOic6kixIS9BztJFEpi+9u+HwsTdYOpdH0TWlimS0TX3kOl+GrKjV/dB0=
+X-Received: by 2002:a05:6e02:190f:: with SMTP id w15mr5046526ilu.121.1635460592112;
+ Thu, 28 Oct 2021 15:36:32 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:8b4:: with SMTP id a20mr5132740ilt.315.1635460511478;
- Thu, 28 Oct 2021 15:35:11 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 15:35:11 -0700
-In-Reply-To: <2b0d6d98-b6f6-e1b1-1ea8-3126f41ec0ce@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d4b82205cf71522e@google.com>
-Subject: Re: [syzbot] INFO: task hung in io_wqe_worker
-From:   syzbot <syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20211028064154.2301049-1-davidgow@google.com> <20211028064154.2301049-2-davidgow@google.com>
+In-Reply-To: <20211028064154.2301049-2-davidgow@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 28 Oct 2021 15:36:20 -0700
+Message-ID: <CAGS_qxoOj+sDOHY8VZv4fw7_XiXqDWcYEC1LAiSUHv38dXh_uw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] kunit: tool: Report an error if any test has no subtests
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Rae Moar <rmr167@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 27, 2021 at 11:42 PM David Gow <davidgow@google.com> wrote:
+>
+> It's possible for a test to have a subtest header, but zero valid
+> subtests. We used to error on this if the test plan had no subtests
+> listed, but it's possible to have subtests without a test plan (indeed,
+> this is how parameterised tests work).
+>
+> Tests with 0 subtests now have the result NO_TESTS, and will report an
+> error (which does not halt test execution, but is printed in a scary red
+> colour and is noted in the results summary).
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Tested by tweaking ext4 tests (and running with patch 3)
 
-Reported-and-tested-by: syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com
+[15:04:33] =============== ext4_inode_test (1 subtest) ================
+[15:04:33] ============== inode_test_xtimestamp_decoding ==============
+[15:04:33] [ERROR] Test inode_test_xtimestamp_decoding: 0 tests run!
+[15:04:33] ====== [NO TESTS RUN] inode_test_xtimestamp_decoding =======
+[15:04:33] ================ [SKIPPED] ext4_inode_test =================
+[15:04:33] ============================================================
+[15:04:33] Testing complete. Passed: 0, Failed: 0, Crashed: 0,
+Skipped: 1, Errors: 1
+[15:04:33] Elapsed time: 48.581s total, 0.000s configuring, 45.486s
+building, 2.992s running
 
-Tested on:
+It's maybe a bit confusing to have ERROR, NO TESTS RUN, and SKIPPED
+all printed for the same thing.
 
-commit:         5983fb88 io-wq: remove worker to owner dependency
-git tree:       https://github.com/isilence/linux.git syz_coredump
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1f7f46d98a0da80e
-dashboard link: https://syzkaller.appspot.com/bug?extid=27d62ee6f256b186883e
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+An alternative would be to drop the error, giving
+[15:04:33] =============== ext4_inode_test (1 subtest) ================
+[15:04:33] ============== inode_test_xtimestamp_decoding ==============
+[15:04:33] ====== [NO TESTS RUN] inode_test_xtimestamp_decoding =======
+[15:04:33] ================ [SKIPPED] ext4_inode_test =================
+[15:04:33] ============================================================
 
-Note: testing is done by a robot and is best-effort only.
+But looking at it, I think I prefer the more explicit ERROR being there.
+
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+
+A few optional nits below.
+
+> ---
+>
+> Changes since v2:
+> https://lore.kernel.org/linux-kselftest/20211027013702.2039566-2-davidgow@google.com/
+> - Report NO_TESTS as '[NO TESTS RUN]' in yellow, instead of '[FAILED]'
+>   in red, particularly since it doesn't get counted as a failure.
+>
+>  tools/testing/kunit/kunit_parser.py              | 16 +++++++++++-----
+>  tools/testing/kunit/kunit_tool_test.py           |  9 +++++++++
+>  .../test_is_test_passed-no_tests_no_plan.log     |  7 +++++++
+>  3 files changed, 27 insertions(+), 5 deletions(-)
+>  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
+>
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> index 50ded55c168c..68c847e8ca58 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -360,9 +360,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
+>         test.log.append(lines.pop())
+>         expected_count = int(match.group(1))
+>         test.expected_count = expected_count
+> -       if expected_count == 0:
+> -               test.status = TestStatus.NO_TESTS
+> -               test.add_error('0 tests run!')
+>         return True
+>
+>  TEST_RESULT = re.compile(r'^(ok|not ok) ([0-9]+) (- )?([^#]*)( # .*)?$')
+> @@ -589,6 +586,8 @@ def format_test_result(test: Test) -> str:
+>                 return (green('[PASSED] ') + test.name)
+>         elif test.status == TestStatus.SKIPPED:
+>                 return (yellow('[SKIPPED] ') + test.name)
+> +       elif test.status == TestStatus.NO_TESTS:
+> +               return (yellow('[NO TESTS RUN] ') + test.name)
+>         elif test.status == TestStatus.TEST_CRASHED:
+>                 print_log(test.log)
+>                 return (red('[CRASHED] ') + test.name)
+> @@ -731,6 +730,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
+>                 # test plan
+>                 test.name = "main"
+>                 parse_test_plan(lines, test)
+> +               parent_test = True
+>         else:
+>                 # If KTAP/TAP header is not found, test must be subtest
+>                 # header or test result line so parse attempt to parser
+> @@ -744,7 +744,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
+>         expected_count = test.expected_count
+>         subtests = []
+>         test_num = 1
+> -       while expected_count is None or test_num <= expected_count:
+> +       while parent_test and (expected_count is None or test_num <= expected_count):
+>                 # Loop to parse any subtests.
+>                 # Break after parsing expected number of tests or
+>                 # if expected number of tests is unknown break when test
+> @@ -779,9 +779,15 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
+>                         parse_test_result(lines, test, expected_num)
+>                 else:
+>                         test.add_error('missing subtest result line!')
+> +
+> +       # Check for there being no tests
+> +       if parent_test and len(subtests) == 0:
+> +               test.status = TestStatus.NO_TESTS
+> +               test.add_error('0 tests run!')
+> +
+>         # Add statuses to TestCounts attribute in Test object
+>         bubble_up_test_results(test)
+> -       if parent_test:
+> +       if parent_test and not main:
+>                 # If test has subtests and is not the main test object, print
+>                 # footer.
+>                 print_test_footer(test)
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index bc8793145713..c59fe0777387 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -208,6 +208,15 @@ class KUnitParserTest(unittest.TestCase):
+>                 self.assertEqual(
+>                         kunit_parser.TestStatus.NO_TESTS,
+>                         result.status)
+
+I'd prefer we split these test cases out.
+Perhaps:
+
+def test_no_tests_empty_plan(self):
+   ...
+
+def test_no_tests_no_plan(self):
+  ... # this new test
+
+> +               no_plan_log = test_data_path('test_is_test_passed-no_tests_no_plan.log')
+> +               with open(no_plan_log) as file:
+> +                       result = kunit_parser.parse_run_tests(
+> +                               kunit_parser.extract_tap_lines(file.readlines()))
+> +               self.assertEqual(0, len(result.test.subtests[0].subtests[0].subtests))
+> +               self.assertEqual(
+> +                       kunit_parser.TestStatus.NO_TESTS,
+> +                       result.test.subtests[0].subtests[0].status)
+
+optional:
+self.assertEqual(1, result.test.counts.errors)
+
+> +
+>
+>         def test_no_kunit_output(self):
+>                 crash_log = test_data_path('test_insufficient_memory.log')
+> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
+> new file mode 100644
+> index 000000000000..dd873c981108
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
+> @@ -0,0 +1,7 @@
+> +TAP version 14
+> +1..1
+> +  # Subtest: suite
+> +  1..1
+> +    # Subtest: case
+> +  ok 1 - case # SKIP
+> +ok 1 - suite
+> --
+> 2.33.0.1079.g6e70778dc9-goog
+>
