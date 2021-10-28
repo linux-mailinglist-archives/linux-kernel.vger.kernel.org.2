@@ -2,140 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BDF43DDF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D9743DE24
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhJ1Jqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 05:46:40 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:26357 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhJ1Jqe (ORCPT
+        id S230119AbhJ1JyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 05:54:14 -0400
+Received: from smtp77.iad3a.emailsrvr.com ([173.203.187.77]:59645 "EHLO
+        smtp77.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229788AbhJ1JyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:46:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635414224;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=6iZMXH9oQp7yfoBy6uIi23vCzU7CVARSRZrB+lxBmMs=;
-    b=FZn+S8gD2YPYYn87J3OXVr9jqnHP2npfLQYDRWWr/fYTuGczH6FqyqGOqTwwBBj3vL
-    bnUZGvrJJMnuwdb0um+saJ7RdAvSe9nauVPr8YrW5gifoH1M9rSOVS6YyrCdaTcZ6BPY
-    Yi89Kt04aSJgM54VnZrpmpW6O8NZavOuSQnxDuun0ZHr+xn5zTyOk7wR78g3Zk2uVvbQ
-    mGKv7cs6Uvz1Ancsgl31p3Di1j6FU1FohOBZNQP4s3NUxn2ORPYunluavYdL9udthwoy
-    58PQcTTdizBNNX+oQmjqFKcru/GsKDbEI0IjdimXhXbv9ZP+QzM5QzSpL1WKjilkMB5I
-    1OeQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw4vtTA=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id d01d1fx9S9hi5h2
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 28 Oct 2021 11:43:44 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired
- omap_hsmmc
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <1EF25CD6-7801-4C15-AB4C-5F499948A653@goldelico.com>
-Date:   Thu, 28 Oct 2021 11:43:43 +0200
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Tony Lindgren <tony@atomide.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <920CFF1F-475C-4403-B563-DDD144F7E52D@goldelico.com>
-References: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
- <CAPDyKFp47sAXhM2s5HOqV2wLf-kYRhdqSdzcn7a62ZW23SSPdg@mail.gmail.com>
- <470A96FD-DB24-4C32-BC9F-AE2F617FBF2D@goldelico.com>
- <2013308.OSlt1BDEiP@pc-42>
- <1EF25CD6-7801-4C15-AB4C-5F499948A653@goldelico.com>
-To:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Thu, 28 Oct 2021 05:54:11 -0400
+X-Greylist: delayed 412 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Oct 2021 05:54:11 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1635414291;
+        bh=GHy2nV4GSIm/Zg7KtLF9h09s3w/Q86hpAOQm11zTqZ0=;
+        h=Subject:To:From:Date:From;
+        b=TtEz/7Tlt2EnEef+dvTgCC/C0ous8qAp87E0PJPAmW2E6Axp863nV28bTMjsfL0Uu
+         mWwzwv4p4uBa7MC09wYmzAkpTld8K94BvoESWMQyGCAkuGHBXHuRYFfsmB3oyInTze
+         GUXhOh8BPSHmO9R2WffQZyscZLnOb4CVZ0mvpoiI=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp2.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 1F02A18AB;
+        Thu, 28 Oct 2021 05:44:51 -0400 (EDT)
+Subject: Re: [PATCH v2 1/2] comedi: ni_usb6501: fix NULL-deref in command
+ paths
+To:     Johan Hovold <johan@kernel.org>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Luca Ellero <luca.ellero@brickedbrain.com>
+References: <20211027093529.30896-1-johan@kernel.org>
+ <20211027093529.30896-2-johan@kernel.org>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <44fc8c7a-9281-b2b1-a8ec-4009b0a5f33c@mev.co.uk>
+Date:   Thu, 28 Oct 2021 10:44:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211027093529.30896-2-johan@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: f6f3b32a-8cea-445e-9639-66bc3da331f8-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/10/2021 10:35, Johan Hovold wrote:
+> The driver uses endpoint-sized USB transfer buffers but had no sanity
+> checks on the sizes. This can lead to zero-size-pointer dereferences or
+> overflowed transfer buffers in ni6501_port_command() and
+> ni6501_counter_command() if a (malicious) device has smaller max-packet
+> sizes than expected (or when doing descriptor fuzz testing).
+> 
+> Add the missing sanity checks to probe().
+> 
+> Fixes: a03bb00e50ab ("staging: comedi: add NI USB-6501 support")
+> Cc: stable@vger.kernel.org      # 3.18
+> Cc: Luca Ellero <luca.ellero@brickedbrain.com>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>   drivers/comedi/drivers/ni_usb6501.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/comedi/drivers/ni_usb6501.c b/drivers/comedi/drivers/ni_usb6501.c
+> index 5b6d9d783b2f..c42987b74b1d 100644
+> --- a/drivers/comedi/drivers/ni_usb6501.c
+> +++ b/drivers/comedi/drivers/ni_usb6501.c
+> @@ -144,6 +144,10 @@ static const u8 READ_COUNTER_RESPONSE[]	= {0x00, 0x01, 0x00, 0x10,
+>   					   0x00, 0x00, 0x00, 0x02,
+>   					   0x00, 0x00, 0x00, 0x00};
+>   
+> +/* Largest supported packets */
+> +static const size_t TX_MAX_SIZE	= sizeof(SET_PORT_DIR_REQUEST);
+> +static const size_t RX_MAX_SIZE	= sizeof(READ_PORT_RESPONSE);
+> +
+>   enum commands {
+>   	READ_PORT,
+>   	WRITE_PORT,
+> @@ -501,6 +505,12 @@ static int ni6501_find_endpoints(struct comedi_device *dev)
+>   	if (!devpriv->ep_rx || !devpriv->ep_tx)
+>   		return -ENODEV;
+>   
+> +	if (usb_endpoint_maxp(devpriv->ep_rx) < RX_MAX_SIZE)
+> +		return -ENODEV;
+> +
+> +	if (usb_endpoint_maxp(devpriv->ep_tx) < TX_MAX_SIZE)
+> +		return -ENODEV;
+> +
+>   	return 0;
+>   }
+>   
+> 
 
+Looks good, thanks!
 
-> Am 28.10.2021 um 11:40 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->=20
-> Hi J=C3=A9r=C3=B4me,
->=20
->> Am 28.10.2021 um 10:59 schrieb J=C3=A9r=C3=B4me Pouiller =
-<jerome.pouiller@silabs.com>:
->>=20
->> Hi Nikolaus,
->>=20
->> On Thursday 28 October 2021 09:08:50 CEST H. Nikolaus Schaller wrote:
->>=20
->>>> Let me have a closer look - and for sure, I am willing to help if =
-needed.
->>=20
->> I confirm it does not have the expected behavior. =
-!mmc_fixup_of_compatible_match()
->> should be mmc_fixup_of_compatible_match(), sorry.
->=20
-> Ok, I see.
->=20
-> One more question: how can I specify "ti,wl1251" in some struct =
-mmc_fixup table?
-> Does it need another macro like MMC_FIXUP() or SDIO_FIXUP() to set the =
-.name
-> field?
->=20
->>>=20
->>> Combining your suggestions we could do roughly:
->>>=20
->>> in mmc_sdio_init_card():
->>>=20
->>>       if (host->ops->init_card)
->>>               host->ops->init_card(host, card);
->>>       else
->>>               mmc_fixup_device(host, sdio_prepare_fixups_methods);
->>=20
->> I think I mostly agree, but why you don't call mmc_fixup_device() if
->> init_card is defined? (BTW, mmc_fixup_device() takes a card as
->> first parameter)
->=20
-> Because I want to get rid of init_card. It is host specific and not =
-client
-> specific.
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
 
-Ah, on a second though we can do that independently. Either there is
-some init_card - or something in the fixup tables. Why not both...
-So the else clause is not needed.
-
-And you are right, the first parameter should be card`.
-
->=20
->>=20
->>=20
->>> Next we need a location for the sdio_prepare_fixups_methods table =
-and functions.
->>>=20
->>> For "ti,wl1251" we would then provide the entry in the table and a =
-function doing
->>> the setup. But where should these be defined? Likely not in a header =
-file like
->>> quirks.h? But there is no quirks.c.
->>=20
->> I think you can place your function in drivers/mmc/core/card.h. There =
-are
->> already add_quirk(), add_limit_rate_quirk(), add_quirk_mmc(), etc...
->=20
-> Ok. Would be some add_wl1251_quirk() then.
->=20
-> BR and thanks,
-> Nikolaus
->=20
-
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
