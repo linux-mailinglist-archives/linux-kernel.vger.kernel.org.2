@@ -2,161 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A264C43E4D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE4143E4AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhJ1PTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:19:08 -0400
-Received: from mga17.intel.com ([192.55.52.151]:21566 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231313AbhJ1PTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:19:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="211200924"
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="211200924"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 08:16:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="447730645"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.68])
-  by orsmga006.jf.intel.com with ESMTP; 28 Oct 2021 08:16:35 -0700
-Date:   Thu, 28 Oct 2021 23:09:55 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Russ Weight <russell.h.weight@intel.com>,
-        "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>
-Subject: Re: [PATCH v17 0/5] FPGA Image Load (previously Security Manager)
-Message-ID: <20211028150955.GA207794@yilunxu-OptiPlex-7050>
-References: <301850cf-9f34-530b-bd9c-fbe9bf9feee5@intel.com>
- <20211019025356.GC40070@yilunxu-OptiPlex-7050>
- <85d56e4b-5bed-693d-4f76-027173a6e7a0@intel.com>
- <20211020011608.GA145760@yilunxu-OptiPlex-7050>
- <38cfb530-8826-7890-da59-c1dd33b9cc7d@intel.com>
- <DM6PR11MB38198F9B969569FDDD71A1CC85849@DM6PR11MB3819.namprd11.prod.outlook.com>
- <03ff4983-d8a9-6ad7-a655-a8dcde3da360@intel.com>
- <DM6PR11MB38192DC4A39D654F88322D0C85859@DM6PR11MB3819.namprd11.prod.outlook.com>
- <e5fa668d-d32c-2285-1145-b1e9128508ec@intel.com>
- <4664128f-1a08-aed9-ca4f-563b7da62883@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4664128f-1a08-aed9-ca4f-563b7da62883@redhat.com>
+        id S231357AbhJ1PNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230451AbhJ1PNj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 11:13:39 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C98C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:11:11 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id x7so1258844pfh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:11:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=259aXqiOnA5iWuUV4ETs5uC0oUlsrJdMmweeqlD6Flw=;
+        b=FSE7WAV8W97zgFBcxdpzW8qW6M4y5zLcv98iJDuq/vvHWgDfXsqVXKXCpuHZotL7Mg
+         Ie3ZPWMKBqGUy6jF5Hg+dCQfBXlSRIWLMh9AbOrkraAM6pJDNwkDfuqlNnULGZhQeCZQ
+         JpRFu0QBrCpzg8FzzgEm5jdfVtoME+pTfxYPXjpSIuo68ZXU4Pp/uNLUjaMO7Uvk9MzO
+         VRWtxYVGNm0xrDpc1VJ3QogOPi2SNcx7ym6EQTr2dlDn7Se9TYgZkZuRBxwUB2VJ4GuM
+         HQ+LXIjfLQHWkeACsjm+70PRgXVFmfPNcEF4Hq/wtI6dEMAo77D23kG+vuNlPYCk/PAz
+         ViTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=259aXqiOnA5iWuUV4ETs5uC0oUlsrJdMmweeqlD6Flw=;
+        b=iawknWa54rxwvzMi5Jt3nPGY6+tfRCh2YJ2Vf0LhPwjNLLtOXGtGIIp+T46vuLRTI9
+         ey/uOgROkMcUxyum5PhD4Jx1e0nZMQH22nzAxSDE5RKtIY+4sEKSEwq+iCyqaN1sHhcv
+         diFqAuOdHBKPetx3IsIBcjiVYZe/HHNXcCLVSwz1sL7vBbbQmc/hW/JQGKxYwDMtLZEw
+         89zPJmXuNh2v+XPcPkZJ6/oNMGBpTgI36Lc8PLDeo9sNZmFFCuYFVeu1B5vhweT1xSmI
+         MBTzK8CnqotMsGkq+U9EINAF0C57iXrIMY69DznsZWVUNDd38nNyuTIQzpbNCSKVdofe
+         VMHw==
+X-Gm-Message-State: AOAM533UFW6n/QaIVRwfRBfpYJpcTELq6A78BJovGPiVcKifXC9AUqZr
+        FGDPYcGXv5/rvPWYu/u1F5HP6A==
+X-Google-Smtp-Source: ABdhPJwKglkHjgwMStiVm2swRxL2R5ugLP4vxahA1WyfTlvuNO3MAlOeWJ5SytvsYU+mCPBpiPv54g==
+X-Received: by 2002:a63:3446:: with SMTP id b67mr3614765pga.258.1635433871085;
+        Thu, 28 Oct 2021 08:11:11 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id f14sm2956300pfv.5.2021.10.28.08.11.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 08:11:10 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 08:11:10 -0700 (PDT)
+X-Google-Original-Date: Thu, 28 Oct 2021 08:11:05 PDT (-0700)
+Subject:     Re: [PATCH 1/2] riscv: Fix asan-stack clang build
+In-Reply-To: <CA+zEjCv+whmnL_SFf20j06NpikaMtA7MNQ9+o8Zz7=1_nAtTqw@mail.gmail.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        nathan@kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alexandre.ghiti@canonical.com
+Message-ID: <mhng-4c43fe14-f36b-4232-a316-530a4d041d49@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 08:34:16AM -0700, Tom Rix wrote:
-> 
-> On 10/27/21 8:11 AM, Russ Weight wrote:
-> > 
-> > On 10/26/21 8:29 PM, Wu, Hao wrote:
-> > > > > > > The API should not only define what it won't do, but also define what
-> > > > > > > it will do. But the "image load" just specifies the top half of the
-> > > > > > > process. So I don't think this API would be accepted.
-> > > > > > So what is the path forward. It seems like you are saying
-> > > > > > that the self-describing files do not fit in the fpga-mgr.
-> > > > > > Can we reconsider the FPGA Image Load Framework, which does
-> > > > > > not make any assumptions about the contents of the image
-> > > > > > files?
-> > > > > Why we need such "generic data transfer" interface in FPGA
-> > > > > framework?
-> > > > Are you referring to the use of self-describing files?
-> > > > or the generic nature of this class driver?
-> > > Yes, why this is under FPGA framework? Per your description that
-> > > it can be used to transfer any data, e.g. BMC images, some device
-> > > specific data (self-describing image?). Let's take this as example,
-> > > if FPGA device is replaced with ASIC on N3000, do you still want
-> > > to use FPGA image load framework to transfer your device specific
-> > > data, e.g. BMC images? I really hope that FPGA framework code only
-> > > focus on common usage of FPGA.
-> > > 
-> > > > > we need to handle the common need for FPGA
-> > > > > devices only, not all devices, like programming FPGA images.
-> > > > > So far we even don't know, what's the hardware response on
-> > > > > these self-describing files, how we define it as a common need
-> > > > > interface in the framework?
-> > > > The class driver does not _need_ to reside in the FPGA
-> > > > framework. I sent an inquiry to the maintainer of the
-> > > > Firmware update subsystem (and cc'd the kernel mailing list)
-> > > > and received no responses. I placed it under the FPGA
-> > > > framework only because the first user of the class driver
-> > > > is an FPGA driver.
-> > > You must have enough justifications why this needs to be included
-> > > for everybody not for our own case.
-> > How do we justify it when there are currently no other known
-> > users? I can go ahead and work up some patches for the firmware
-> > subsystem, if we can resolve the other concerns below.
-> > 
-> > > > > If you just want to reuse the
-> > > > > fpga-mgr/framework code for your own purpose, Yes, it seems
-> > > > > saving some code for you, but finally it loses flexibility, as it's
-> > > > > not possible to extend common framework for your own
-> > > > > purpose in the future.
-> > > > If I understand correctly, you are saying that it doesn't
-> > > > fit well in the FPGA manager, because not all file types
-> > > > fit the definition of a firmware update? And future file
-> > > > types may not fit in fpga-mgr context?
-> > > Let's split the use cases, I think the use case that update a persistent
-> > > storage for FPGA image, and later use hardware logic (FPGA loader)
-> > > to load it into FPGA. This sounds like a common usage for FPGA
-> > > devices, so I think this is why Yilun propose to have this part to be
-> > > covered by fpga-mgr. But for other cases in your description, e.g.
-> > > BMC images, device specific data, self-describing image and etc,
-> > > they are out of scope of FPGA.
-> > Self-describing files are not something new to us; _ALL_ of the image
-> > files that we send to our FPGA cards, including the N3000 FPGA and BMC
-> > images, root-entry hashes, key cancellations, etc. are self-describing
-> > files. They always have been.
-> > 
-> > > Actually I don't fully understand why we need to introduce the
-> > > "self-describing image" as a common data transfer interface, if
-> > > I remember correctly, for N3000, different sub drivers will own
-> > > different hardware sub function blocks, why expose such a new
-> > > shared communication channel?
-> > There is no change here. The N3000 files are self describing. The
-> > secure-update sub-driver of the MAX10 BMC invokes the class driver,
-> > funnels image data to the BMC, performs handshakes with the BMC,
-> > and ultimately returns status through the class driver. All images
-> > that are sent to the FPGA card follow this same path - and it works
-> > fine.
-> > 
-> > To try to split out the purposes of each self-describing file to
-> > use different kernel APIs means interfacing multiple class drivers
-> > to the same MAX10 sub-driver. I think it also means replicating
-> > code.
-> 
-> Could the split be ?
-> 
-> add max10 bits mfd/
-> 
-> move image updating out of the kernel and into an uio driver
+On Thu, 28 Oct 2021 00:13:06 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+> On Thu, Oct 28, 2021 at 8:45 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>>
+>> On Wed, 27 Oct 2021 22:34:32 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+>> > On Thu, Oct 28, 2021 at 7:30 AM Alexandre Ghiti
+>> > <alexandre.ghiti@canonical.com> wrote:
+>> >>
+>> >> On Thu, Oct 28, 2021 at 7:02 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>> >> >
+>> >> > On Wed, 27 Oct 2021 21:15:28 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+>> >> > > On Thu, Oct 28, 2021 at 1:06 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>> >> > >>
+>> >> > >> On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+>> >> > >> > Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
+>> >> > >> > Kconfig, it prevents asan-stack from getting disabled with clang even
+>> >> > >> > when CONFIG_KASAN_STACK is disabled: fix this by defining the
+>> >> > >> > corresponding config.
+>> >> > >> >
+>> >> > >> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+>> >> > >> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+>> >> > >> > ---
+>> >> > >> >  arch/riscv/Kconfig             | 6 ++++++
+>> >> > >> >  arch/riscv/include/asm/kasan.h | 3 +--
+>> >> > >> >  arch/riscv/mm/kasan_init.c     | 3 +++
+>> >> > >> >  3 files changed, 10 insertions(+), 2 deletions(-)
+>> >> > >> >
+>> >> > >> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> >> > >> > index c1abbc876e5b..79250b1ed54e 100644
+>> >> > >> > --- a/arch/riscv/Kconfig
+>> >> > >> > +++ b/arch/riscv/Kconfig
+>> >> > >> > @@ -162,6 +162,12 @@ config PAGE_OFFSET
+>> >> > >> >       default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+>> >> > >> >       default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+>> >> > >> >
+>> >> > >> > +config KASAN_SHADOW_OFFSET
+>> >> > >> > +     hex
+>> >> > >> > +     depends on KASAN_GENERIC
+>> >> > >> > +     default 0xdfffffc800000000 if 64BIT
+>> >> > >> > +     default 0xffffffff if 32BIT
+>> >> > >>
+>> >> > >> I thought I posted this somewhere, but this is exactly what my first
+>> >> > >> guess was.  The problem is that it's hanging on boot for me.  I don't
+>> >> > >> really have anything exotic going on, it's just a defconfig with
+>> >> > >> CONFIG_KASAN=y running in QEMU.
+>> >> > >>
+>> >> > >> Does this boot for you?
+>> >> > >
+>> >> > > Yes with the 2nd patch of this series which fixes the issue
+>> >> > > encountered here. And that's true I copied/pasted this part of your
+>> >> > > patch which was better than what I had initially done, sorry I should
+>> >> > > have mentioned you did that, please add a Codeveloped-by or something
+>> >> > > like that.
+>>
+>> OK, those should probably be in the opposite order (though it looks like
+>> they're inter-dependent, which makes things a bit trickier).
+>>
+>> >> >
+>> >> > Not sure if I'm missing something, but it's still not booting for me.
+>> >> > I've put what I'm testing on palmer/to-test, it's these two on top of
+>> >> > fixes and merged into Linus' tree
+>> >> >
+>> >> >     *   6d7d351902ff - (HEAD -> to-test, palmer/to-test) Merge remote-tracking branch 'palmer/fixes' into to-test (7 minutes ago) <Palmer Dabbelt>
+>> >> >     |\
+>> >> >     | * 782551edf8f8 - (palmer/fixes) riscv: Fix CONFIG_KASAN_STACK build (6 hours ago) <Alexandre Ghiti>
+>> >> >     | * 47383e5b3c4f - riscv: Fix asan-stack clang build (6 hours ago) <Alexandre Ghiti>
+>> >> >     | * 64a19591a293 - (riscv/fixes) riscv: fix misalgned trap vector base address (9 hours ago) <Chen Lu>
+>> >> >     * |   1fc596a56b33 - (palmer/master, linus/master, linus/HEAD, master) Merge tag 'trace-v5.15-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (11 hours ago) <Linus Torvalds>
+>> >> >
+>> >> > Am I missing something else?
+>> >>
+>> >> Hmm, that's weird, I have just done the same: cherry-picked both my
+>> >> commits on top of fixes (64a19591a293) and it boots fine with KASAN
+>> >> enabled. Maybe a config thing? I pushed my branch here:
+>> >> https://github.com/AlexGhiti/riscv-linux/tree/int/alex/kasan_stack_fixes_rebase
+>> >
+>> > I pushed the config I use and that boots in that branch, maybe there's
+>> > another issue somewhere.
+>>
+>> CONFIG_KASAN_VMALLOC=n is what's causing the failure.  I'm testing both
+>> polarities of that, looks like your config has =y.  I haven't looked any
+>> further as I'm pretty much cooked for tonight, but if you don't have
+>> time then I'll try to find some time tomorrow.
+>>
+>
+> Arf, that was obvious and just under my nose: without KASAN_VMALLOC,
+> kasan_populate_early_shadow is called and creates the same issue that
+> the second patch fixes.
+>
+> I'll send a v2 today and try to swap both patches to avoid having a
+> non-bootable kernel commit.
 
-I'm afraid an uio driver doesn't help in this case. The image updating
-is not an independent device, it may dynamically change other hardwares.
-So it is better the image updating driver works as an low level driver
-which provides services to other feature drivers.
+Thanks.
 
-Thanks,
-Yilun
-
-> 
-> Tom
-> 
-> > 
-> > - Russ
-> > > If "self-describing image" is a
-> > > request to one of the sub function block, why not just expose
-> > > new interface in such hardware block per modularization? I
-> > > have some concern that this new requirement may break
-> > > current driver architecture for N3000.
-> > > 
-> > > Hao
-> > > 
-> > > > - Russ
-> > > > > Thanks
-> > > > > Hao
+>
+> Alex
+>
+>> >
+>> >>
+>> >> >
+>> >> > >
+>> >> > > Thanks,
+>> >> > >
+>> >> > > Alex
+>> >> > >
+>> >> > >>
+>> >> > >> > +
+>> >> > >> >  config ARCH_FLATMEM_ENABLE
+>> >> > >> >       def_bool !NUMA
+>> >> > >> >
+>> >> > >> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
+>> >> > >> > index a2b3d9cdbc86..b00f503ec124 100644
+>> >> > >> > --- a/arch/riscv/include/asm/kasan.h
+>> >> > >> > +++ b/arch/riscv/include/asm/kasan.h
+>> >> > >> > @@ -30,8 +30,7 @@
+>> >> > >> >  #define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
+>> >> > >> >  #define KASAN_SHADOW_START   KERN_VIRT_START
+>> >> > >> >  #define KASAN_SHADOW_END     (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
+>> >> > >> > -#define KASAN_SHADOW_OFFSET  (KASAN_SHADOW_END - (1ULL << \
+>> >> > >> > -                                     (64 - KASAN_SHADOW_SCALE_SHIFT)))
+>> >> > >> > +#define KASAN_SHADOW_OFFSET  _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+>> >> > >> >
+>> >> > >> >  void kasan_init(void);
+>> >> > >> >  asmlinkage void kasan_early_init(void);
+>> >> > >> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+>> >> > >> > index d7189c8714a9..8175e98b9073 100644
+>> >> > >> > --- a/arch/riscv/mm/kasan_init.c
+>> >> > >> > +++ b/arch/riscv/mm/kasan_init.c
+>> >> > >> > @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
+>> >> > >> >       uintptr_t i;
+>> >> > >> >       pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
+>> >> > >> >
+>> >> > >> > +     BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
+>> >> > >> > +             KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
+>> >> > >> > +
+>> >> > >> >       for (i = 0; i < PTRS_PER_PTE; ++i)
+>> >> > >> >               set_pte(kasan_early_shadow_pte + i,
+>> >> > >> >                       mk_pte(virt_to_page(kasan_early_shadow_page),
