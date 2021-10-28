@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF88343E5AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B6A43E555
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhJ1QD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:03:29 -0400
-Received: from klopfer.dv.fh-frankfurt.de ([194.95.81.200]:35972 "EHLO
-        klopfer.dv.fh-frankfurt.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229565AbhJ1QD1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:03:27 -0400
-X-Greylist: delayed 1292 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Oct 2021 12:03:26 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fra-uas.de;
-         s=klopfer; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=KmC2f4hzNEZiAJ2cWt0jfAJBpvzVIJKDeY9QVzfizCE=; b=C8PE2QFEf/bc+ICB+sT5imzsIl
-        zTaVbAzvu5WZHjH7wS9HYCABkpjN5Fn80QTtqlE9YufobcTscuEZZx3DN/Il59m78Qxg3SsOGXIMs
-        Rnkm/2mpJ3cFHKzyBOzZoIfzKCble+7rhgu+iit8RD+0fxZ0AEwTTJELXPM2qHEFUgwBoBmBPK7u9
-        PwyLHYNnQNhmHnwKrf+ucxDwrqMKZ071vhesqNbeMAC68DWqjoUgsqyyyZvhhwXdLxY2OGnb2Wnfb
-        eCMW8jVfIjimhlMe4SQhU4IyGgTY+OMt0VsTQszBGJ9XJ5v1wZOtZ6sCOFt8Q5NWzlInguX3YwILv
-        Yqy8ZUlQ==;
-Received: from p4fc1712c.dip0.t-ipconnect.de ([79.193.113.44] helo=localhost.localdomain)
-        by klopfer.dv.fh-frankfurt.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <ssivaraj@stud.fra-uas.de>)
-        id 1mg7Uy-00042I-4G; Thu, 28 Oct 2021 17:39:24 +0200
-From:   Senthu Sivarajah <ssivaraj@stud.fra-uas.de>
-To:     vaibhav.sr@gmail.com
-Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
-Subject: [PATCH] Staging: greybus: audio_codec: changed a void function to return 0
-Date:   Thu, 28 Oct 2021 17:38:08 +0200
-Message-Id: <20211028153808.9509-1-ssivaraj@stud.fra-uas.de>
-X-Mailer: git-send-email 2.27.0
+        id S230315AbhJ1Pmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:42:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230126AbhJ1Pmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 11:42:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 742F4610CF;
+        Thu, 28 Oct 2021 15:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635435608;
+        bh=Lo44b0rW1gj+oT6zZVf+WbryFgBd3jrRmWGI9w20vk0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=K049cS+VwMaRRMWqyo6i8Wiq705B3V8UFh5iNW/LziHsxZIF1Y0SVddUY2ExcpqAJ
+         E5qe4sq4dgIXZ72XbiiEpFvcb4aHV0gqRUs3jplvi+n5u2OzTiBwr812szl4cmmMk3
+         M73be33VkCclyaeUmtzJp1JE+UA5LeeOQ7tXx1y/jzXQNINStaIvjsU8f0CHsjG76B
+         YK1A1brdbRUpkDRvge3k89kDnOli6gK18nbRqOm+GV6W91G3tS+NeAvz9c/vTGLj6G
+         7+cOZEIbK8lK8WMsGGKmsrTODxgUuvj7wyXA7QudMckyL9rMzq4N5MUMGdjOcseN2N
+         GuXJRPjeJZGKw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 61F4260A1B;
+        Thu, 28 Oct 2021 15:40:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] Revert "net: hns3: fix pause config problem after autoneg
+ disabled"
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163543560839.29178.11743093544263683251.git-patchwork-notify@kernel.org>
+Date:   Thu, 28 Oct 2021 15:40:08 +0000
+References: <20211028140624.53149-1-huangguangbin2@huawei.com>
+In-Reply-To: <20211028140624.53149-1-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, wangjie125@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lipeng321@huawei.com, chenhao288@hisilicon.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
+Hello:
 
-Fixed a coding style issue.
+This patch was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Signed-off-by: Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
+On Thu, 28 Oct 2021 22:06:24 +0800 you wrote:
+> This reverts commit 3bda2e5df476417b6d08967e2d84234a59d57b1c.
+> 
+> According to discussion with Andrew as follow:
+> https://lore.kernel.org/netdev/09eda9fe-196b-006b-6f01-f54e75715961@huawei.com/
+> 
+> HNS3 driver needs to separate pause autoneg from general autoneg, so revert
+> this incorrect patch.
+> 
+> [...]
 
----
- drivers/staging/greybus/audio_codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the summary with links:
+  - [net] Revert "net: hns3: fix pause config problem after autoneg disabled"
+    https://git.kernel.org/netdev/net/c/35392da51b1a
 
-diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-index b589cf6b1d03..9f99862791dc 100644
---- a/drivers/staging/greybus/audio_codec.c
-+++ b/drivers/staging/greybus/audio_codec.c
-@@ -1028,7 +1028,7 @@ static int gbcodec_probe(struct snd_soc_component *comp)
- static void gbcodec_remove(struct snd_soc_component *comp)
- {
- 	/* Empty function for now */
--	return;
-+	return 0;
- }
- 
- static int gbcodec_write(struct snd_soc_component *comp, unsigned int reg,
+You are awesome, thank you!
 -- 
-2.27.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
