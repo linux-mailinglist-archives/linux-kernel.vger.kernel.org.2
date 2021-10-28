@@ -2,58 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3ED43E2FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68E343E307
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhJ1OE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhJ1OE4 (ORCPT
+        id S230481AbhJ1OHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:07:24 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:54253 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhJ1OHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:04:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF66DC061570;
-        Thu, 28 Oct 2021 07:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UfjsYhiRcSank6A2IzO7XbDBsmDmgHLyZsbz7vn8sLM=; b=fUFmybLY7f6WY/JhhuB+aexrhV
-        T165OYZ533+3TQ5VqYkmnuBtjNDrNium/Mi87aKx91ScvSFYd16VBIv8AGBa/8GniomDMzPcZ7QXT
-        blrO3YcP7WZ/DGASnnCxJTyjqDtTqQVbk6H14yA23EtMphWxyGnzspThSm9Yt6Dvg3Tn2vbYSA4D+
-        3vRpT46Tuk6hKi1WW6ubezrM3+FzE2vmUI/xM+z3yMMqAUXFr/V/zlY4aFOgMyeeDyLSKtjdOpERo
-        C0iP3Q8XPQbqvI284JGPEv9MAKw9iI0IFI+twG8M5RdjJXHKgb2KZdNCKlrA2LufBhHu3/rxOVH0j
-        scWCcpew==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg5z8-0083Lk-8P; Thu, 28 Oct 2021 14:02:26 +0000
-Date:   Thu, 28 Oct 2021 07:02:26 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/core: Rely on vendors to set right IOVA
-Message-ID: <YXqtci47xMYVZz4Y@infradead.org>
-References: <4b0a31bbc372842613286a10d7a8cbb0ee6069c7.1635400472.git.leonro@nvidia.com>
- <YXpXvh0sxP8r9r7R@infradead.org>
- <YXp0XSpXsarxrGqS@unreal>
+        Thu, 28 Oct 2021 10:07:19 -0400
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 19SE4WjO022024;
+        Thu, 28 Oct 2021 23:04:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 19SE4WjO022024
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1635429873;
+        bh=Sea5hD6phvwTmk5ZADmU7oqXzEZCMAYU29Idfkm0Ubg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yi6BwuyyjwhN8oBIlmznzedZQr+PW3rIPs6ynCAqem0e1daYGX3uxzeFAGu3f2XS2
+         xu/H52j/+0ymy6o/EJJ/ULeM2YHq4/DvlJmR7yQaFxVsAywb0DS7rePauSePa0hsHp
+         HoFD3dJhL1+HncmghTJSxkZu5nec+K9GSbrnm6qK0iVv5lFwRMedTtBHAIynvJ40Gg
+         aUNqdtB11wCXtrS5H+BLaPXDklyKjFwS7Nl22tJR3xIKkNe0SFBQ5YcNvEc6BWJBBW
+         9wIqU6QHfb9CrynA6S5qAp+Jfuph2+bI7bEdI/NK8tLZ1BQBcKG772Rkf1foEENmD2
+         q5Ynm4fz9Tpbw==
+X-Nifty-SrcIP: [209.85.215.169]
+Received: by mail-pg1-f169.google.com with SMTP id g184so6461445pgc.6;
+        Thu, 28 Oct 2021 07:04:32 -0700 (PDT)
+X-Gm-Message-State: AOAM532zVUIGjF7f+KWtISQEuZf6ENkq+7hrGe6aVhQyOt9anFnvmKxb
+        KbKBXqc03QlmnUh6zx57U8FbyUVlNHl1vlZlUd4=
+X-Google-Smtp-Source: ABdhPJxdmip7Bng/77jo+FGar0VlJBV9bZ/zdzncUg6wrysw8S0CsBXN4HXY6vfrN3NqhuNyVoDQtkD/H7GWQHA9I8o=
+X-Received: by 2002:a63:d64c:: with SMTP id d12mr3422492pgj.186.1635429871388;
+ Thu, 28 Oct 2021 07:04:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXp0XSpXsarxrGqS@unreal>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <962c0565-89a3-c6d2-37e0-a93c8c753d57@quicinc.com>
+In-Reply-To: <962c0565-89a3-c6d2-37e0-a93c8c753d57@quicinc.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 28 Oct 2021 23:03:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQX2GiUB04fOm7p=F+H5p9XFQjt9hEPSZS4JR+FZK6PZg@mail.gmail.com>
+Message-ID: <CAK7LNAQX2GiUB04fOm7p=F+H5p9XFQjt9hEPSZS4JR+FZK6PZg@mail.gmail.com>
+Subject: Re: Introduce "make debugconfig"
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:58:53PM +0300, Leon Romanovsky wrote:
-> "vendor" is wrong word here.
-> 
-> I wanted to say that all drivers which support ".rereg_user_mr()"
-> callback and return new_mr should set everything. In case of IB_MR_REREG_TRANS
-> flow, it is IOVA which is not cmd.hca_va, but mr->iova.
+On Thu, Oct 28, 2021 at 10:32 PM Qian Cai <quic_qiancai@quicinc.com> wrote:
+>
+> Hi there, some general debugging features like kmemleak, KASAN, lockdep,
+>
+> UBSAN etc help fix many viruses like a microscope. On the other hand, those
+>  features are scatter around and mixed up with more situational debugging
+>  options making them difficult to consume properly.
+>
+>
+>
+> Since I have been deal with those options on a daily basis for the last
+>
+> a few years and accumulated the knowledge of their pros and cons, I am
+>
+> thinking about to create an initial "make debugconfig" target, so that
+> it could amplify the general debugging/testing efforts and help
+> establish sensitive default values for those options across the broad.
+>
+>
+> The idea is to have a debugconfig inside kernel/configs/ and update
+> scripts/kconfig/Makefile
 
-Thanks, that makes a lot more sense.
+Please do not wire it up to Makefile.
+
+
+
+
+> and Documentation/admin-guide/README.rst
+> accordingly. I am still trying to figure out a few implementation
+> details like how to convert an existing .config to debugconfig, but want
+> to gather some feedback before I dive in too deep.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
