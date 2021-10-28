@@ -2,118 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7CD43DBAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057E243DBAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhJ1HJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:09:45 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:37128 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229626AbhJ1HJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:09:44 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowABXOe4MTHph60h7BQ--.10285S2;
-        Thu, 28 Oct 2021 15:06:52 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     peterz@infradead.org, valentin.schneider@arm.com, namit@vmware.com,
-        mingo@kernel.org, dave.hansen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH v3] cpumask: Fix implicit type conversion
-Date:   Thu, 28 Oct 2021 07:06:51 +0000
-Message-Id: <1635404811-2992370-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowABXOe4MTHph60h7BQ--.10285S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF4fGFWxXrW3XF1rAF1DWrg_yoW5WF43pF
-        W0g3yUK3ykJr4kZ34UC3yUur1F93ykJ3yvk3yUGFyq9FW3Aw18Zr12kF9xXrWUCF1kWFyI
-        9r9093yUuFn8AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4x
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYMKZDUUUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S229805AbhJ1HLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:11:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJ1HLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:11:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 140906103B;
+        Thu, 28 Oct 2021 07:08:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635404928;
+        bh=NKOgfVI75LT2kYNlTpP+Imw8FP9ky/mWL0iRbt63IFY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=IcTTs2pzI1rBl1mGdMHHWabXHzmvKMBHSIrrvOB/b5XyotUao7s7hLyPJAd68TFjK
+         gzqtvyXGeg9Cjqnpg0P5/btMu4b1C4lgfTlHJK6vGuGig5ljCMmP405Pd2n+k3m+Ri
+         p7ABWupvO8x+s+ocT6BdfztEKPBzQ53kfi9+NDSbXZyRQKJTjwtnJg38zlJ9QLRAMF
+         BmDHkzCNOXpj4E9gP1EPaQNVn+RhdQXxqZa0cEi1/wOCrzlH/Bid0aIqcNDLJqPO2K
+         s/72hbenst3ZADM5dbq39xyQFyaq97eo107D6xjmHbqt5CMbuNzYytd3XWanzpjAxR
+         9ujDF2apI6QhQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        SeongJae Park <sj@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/damon: simplify stop mechanism
+Date:   Thu, 28 Oct 2021 07:08:45 +0000
+Message-Id: <20211028070845.10445-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211027130517.4404-1-changbin.du@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description of the macro in `include/linux/cpumask.h` says the
-variable 'cpu' can be int, whose value ranges from (-2^31) to
-(2^31 - 1).
-However in the for_each_cpu(), 'nr_cpu_ids' and the return value of
-cpumask_next() is unsigned int, whose value ranges from 0 to
-(2^32 - 1).
-If return value of cpumask_next() is (2^31), the restrict
-'cpu < nr_cpu_ids' can also be statisfied, but the actual value
-of 'cpu' is (-2^31).
-Take amd_pmu_cpu_starting() in `arch/x86/events/amd/core.c` as an
-example. When value of 'cpu' is (-2^31), then in the per_cpu(),
-there will apear __per_cpu_offset[-2^31], which is array out of
-bounds error.
-Moreover, the num of cpu to be the negative doesn't make sense and
-may easily causes trouble.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to fix the macro description of 'cpu' and
-deal with all the existing issues.
+Thank you for this patch!
 
-Fixes: c743f0a ("sched/fair, cpumask: Export for_each_cpu_wrap()")
-Fixes: 8bd93a2 ("rcu: Accelerate grace period if last non-dynticked CPU")
-Fixes: 984f2f3 ("cpumask: introduce new API, without changing anything, v3")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- include/linux/cpumask.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On Wed, 27 Oct 2021 21:05:17 +0800 Changbin Du <changbin.du@gmail.com> wrote:
 
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index bfc4690..5db1d9d 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -232,7 +232,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
- 
- /**
-  * for_each_cpu - iterate over every cpu in a mask
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the unsigned integer iterator
-  * @mask: the cpumask pointer
-  *
-  * After the loop, cpu is >= nr_cpu_ids.
-@@ -244,7 +244,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
- 
- /**
-  * for_each_cpu_not - iterate over every cpu in a complemented mask
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the unsigned integer iterator
-  * @mask: the cpumask pointer
-  *
-  * After the loop, cpu is >= nr_cpu_ids.
-@@ -258,7 +258,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- 
- /**
-  * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a specified location
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the unsigned integer iterator
-  * @mask: the cpumask poiter
-  * @start: the start location
-  *
-@@ -273,7 +273,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
- 
- /**
-  * for_each_cpu_and - iterate over every cpu in both masks
-- * @cpu: the (optionally unsigned) integer iterator
-+ * @cpu: the unsigned integer iterator
-  * @mask1: the first cpumask pointer
-  * @mask2: the second cpumask pointer
-  *
--- 
-2.7.4
+> An kernel thread can exit gracefully with kthread_stop(). So we don't need
+> a new flag 'kdamond_stop'. And to make sure the task struct is not freed
+> when accessing it, get reference of it before termination.
+> 
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
 
+Reviewed-by: SeongJae Park <sj@kernel.org>
+
+
+Thanks,
+SJ
+
+> ---
+>  include/linux/damon.h |  1 -
+>  mm/damon/core.c       | 51 +++++++++++++------------------------------
+>  2 files changed, 15 insertions(+), 37 deletions(-)
+> 
+> diff --git a/include/linux/damon.h b/include/linux/damon.h
+> index a14b3cc54cab..50c6eb0dee1f 100644
+> --- a/include/linux/damon.h
+> +++ b/include/linux/damon.h
+> @@ -381,7 +381,6 @@ struct damon_ctx {
+>  
+>  /* public: */
+>  	struct task_struct *kdamond;
+> -	bool kdamond_stop;
+>  	struct mutex kdamond_lock;
+>  
+>  	struct damon_primitive primitive;
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index 46a6afea3030..f37c17b53814 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+> @@ -390,17 +390,6 @@ static unsigned long damon_region_sz_limit(struct damon_ctx *ctx)
+>  	return sz;
+>  }
+>  
+> -static bool damon_kdamond_running(struct damon_ctx *ctx)
+> -{
+> -	bool running;
+> -
+> -	mutex_lock(&ctx->kdamond_lock);
+> -	running = ctx->kdamond != NULL;
+> -	mutex_unlock(&ctx->kdamond_lock);
+> -
+> -	return running;
+> -}
+> -
+>  static int kdamond_fn(void *data);
+>  
+>  /*
+> @@ -418,7 +407,6 @@ static int __damon_start(struct damon_ctx *ctx)
+>  	mutex_lock(&ctx->kdamond_lock);
+>  	if (!ctx->kdamond) {
+>  		err = 0;
+> -		ctx->kdamond_stop = false;
+>  		ctx->kdamond = kthread_run(kdamond_fn, ctx, "kdamond.%d",
+>  				nr_running_ctxs);
+>  		if (IS_ERR(ctx->kdamond)) {
+> @@ -474,13 +462,15 @@ int damon_start(struct damon_ctx **ctxs, int nr_ctxs)
+>   */
+>  static int __damon_stop(struct damon_ctx *ctx)
+>  {
+> +	struct task_struct *tsk;
+> +
+>  	mutex_lock(&ctx->kdamond_lock);
+> -	if (ctx->kdamond) {
+> -		ctx->kdamond_stop = true;
+> +	tsk = ctx->kdamond;
+> +	if (tsk) {
+> +		get_task_struct(tsk);
+>  		mutex_unlock(&ctx->kdamond_lock);
+> -		while (damon_kdamond_running(ctx))
+> -			usleep_range(ctx->sample_interval,
+> -					ctx->sample_interval * 2);
+> +		kthread_stop(tsk);
+> +		put_task_struct(tsk);
+>  		return 0;
+>  	}
+>  	mutex_unlock(&ctx->kdamond_lock);
+> @@ -925,12 +915,8 @@ static bool kdamond_need_update_primitive(struct damon_ctx *ctx)
+>  static bool kdamond_need_stop(struct damon_ctx *ctx)
+>  {
+>  	struct damon_target *t;
+> -	bool stop;
+>  
+> -	mutex_lock(&ctx->kdamond_lock);
+> -	stop = ctx->kdamond_stop;
+> -	mutex_unlock(&ctx->kdamond_lock);
+> -	if (stop)
+> +	if (kthread_should_stop())
+>  		return true;
+>  
+>  	if (!ctx->primitive.target_valid)
+> @@ -1021,13 +1007,6 @@ static int kdamond_wait_activation(struct damon_ctx *ctx)
+>  	return -EBUSY;
+>  }
+>  
+> -static void set_kdamond_stop(struct damon_ctx *ctx)
+> -{
+> -	mutex_lock(&ctx->kdamond_lock);
+> -	ctx->kdamond_stop = true;
+> -	mutex_unlock(&ctx->kdamond_lock);
+> -}
+> -
+>  /*
+>   * The monitoring daemon that runs as a kernel thread
+>   */
+> @@ -1038,17 +1017,18 @@ static int kdamond_fn(void *data)
+>  	struct damon_region *r, *next;
+>  	unsigned int max_nr_accesses = 0;
+>  	unsigned long sz_limit = 0;
+> +	bool done = false;
+>  
+>  	pr_debug("kdamond (%d) starts\n", current->pid);
+>  
+>  	if (ctx->primitive.init)
+>  		ctx->primitive.init(ctx);
+>  	if (ctx->callback.before_start && ctx->callback.before_start(ctx))
+> -		set_kdamond_stop(ctx);
+> +		done = true;
+>  
+>  	sz_limit = damon_region_sz_limit(ctx);
+>  
+> -	while (!kdamond_need_stop(ctx)) {
+> +	while (!kdamond_need_stop(ctx) && !done) {
+>  		if (kdamond_wait_activation(ctx))
+>  			continue;
+>  
+> @@ -1056,7 +1036,7 @@ static int kdamond_fn(void *data)
+>  			ctx->primitive.prepare_access_checks(ctx);
+>  		if (ctx->callback.after_sampling &&
+>  				ctx->callback.after_sampling(ctx))
+> -			set_kdamond_stop(ctx);
+> +			done = true;
+>  
+>  		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
+>  
+> @@ -1069,7 +1049,7 @@ static int kdamond_fn(void *data)
+>  					sz_limit);
+>  			if (ctx->callback.after_aggregation &&
+>  					ctx->callback.after_aggregation(ctx))
+> -				set_kdamond_stop(ctx);
+> +				done = true;
+>  			kdamond_apply_schemes(ctx);
+>  			kdamond_reset_aggregated(ctx);
+>  			kdamond_split_regions(ctx);
+> @@ -1088,9 +1068,8 @@ static int kdamond_fn(void *data)
+>  			damon_destroy_region(r, t);
+>  	}
+>  
+> -	if (ctx->callback.before_terminate &&
+> -			ctx->callback.before_terminate(ctx))
+> -		set_kdamond_stop(ctx);
+> +	if (ctx->callback.before_terminate)
+> +		ctx->callback.before_terminate(ctx);
+>  	if (ctx->primitive.cleanup)
+>  		ctx->primitive.cleanup(ctx);
+>  
+> -- 
+> 2.32.0
+> 
