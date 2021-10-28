@@ -2,105 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7ED43E548
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D836E43E54F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhJ1Pit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
+        id S230281AbhJ1PkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhJ1Pis (ORCPT
+        with ESMTP id S230156AbhJ1PkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:38:48 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BA0C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:36:21 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id f8so4926078edy.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:36:21 -0700 (PDT)
+        Thu, 28 Oct 2021 11:40:12 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23821C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:37:45 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id e4so10924927wrc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Km7RN9DuYhSgIdZd4vw5rE9R6RjCpFJ/7Jxi8UL+wpU=;
-        b=AlM+eueZXz8t3SOmFz7G6PaqrKh/8fZ7t4ebW1BfNzZVsiSmiuBcpXUbFbzFr80EPh
-         b3wK5Fp0Dah+Kr1sNSpyk3ND5UYWlrL/QOBud8eo4PQUE0gfQoRFuRqEgC+ZOIoJMKVD
-         4srzw4IwWjmkY1d/GYfmTHou9jwST8itfs7PmfHN/JidMIqJqyLQy1VyqeLduhjGFjyn
-         6XUaxx0+1udNHyqUeGnqhCwUy1wftttRahRagX9OMuFb4FiDStKPkPdoxEjwwkPgSmBg
-         CCcgJHeJRZtecoilsnWiJCaQtgJ/bzROBO8Pv3XJtxy4/e3M5GVe7t7ezA0qUiXdr1Cs
-         3CTg==
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ajUUMnRMo/CfkqSYpjRKHF3O4uKdRUUoW9jGXm2YH/8=;
+        b=YClg6r+Pjz+KcVotJsLNPXbLH9rBZDDotsVtGKPz45+pVaqV/8VvUjjmgxfln+tl16
+         pNgJZteb1XcKJu8Rq2O+Ynz/a0nrl5R1VzAZCyQkBuj48jBJeEKmI91ATjk19ed3/slS
+         C81BjQjFI0TIdMvGA8/1Np3r5VYzz1pIj+AiN8B5R5bQdSRzJ6eV67fmV1J/W1Ph864s
+         bkD9r359wt5zBv00KUKa4W7rGTHW5SHb/bNIWtzdO8UdH441eq4XJD3GsByeCoLO5L8I
+         ZMgcjyA79pYnH7Dabb/EbzZdbWJ8S5Kjtru5/7Zsbabr+kgD909eP4gs8/bUlW2SdT/L
+         ns2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Km7RN9DuYhSgIdZd4vw5rE9R6RjCpFJ/7Jxi8UL+wpU=;
-        b=JYTWpwxQm8haCir+/RWU8t5VpdB2/UPWlx0yX5/N2wSF0//fZMLlU3kMQVspRXqjSE
-         uA3oQInoBdX4hO2sOoFjfke8TNc3frODdkzGwBHHhWgI9/Gos9VNFMIZZrRIQohnw826
-         XxmA5Pf61L2vYFq4AD7uLqZ4sEw+U8/lSH2oC9wycmlJAkBTrS4jhYCL8qSGd2tnR80x
-         6J48YqgE5oH0ts60xvMyBqPL6Czn7CJb8E6CY812kAmViMJwOZCwvQ7u+XZ8VMlYsgIE
-         p2tjWJqdMtTk7bh8wFbCFh2ZeyfJfYxTegcsZi0dX6bBjK9wVDXqUClKalkKyHzJD7Tx
-         b+rw==
-X-Gm-Message-State: AOAM530FrkxPZqyRhcssWDdCC8T/lHZ8ZJ+MifXSmCVZus3/Qjrf5/I7
-        k5AGpd+sLBuQq5DKRutVHRg=
-X-Google-Smtp-Source: ABdhPJw/Yo90kJQEQRr1eUujrIVd2cC+gKKUV9sZsn77IH1geIQKq/vGEVJuhyTYNpeKCW9Gy0hPKw==
-X-Received: by 2002:a17:906:1848:: with SMTP id w8mr6316533eje.485.1635435379975;
-        Thu, 28 Oct 2021 08:36:19 -0700 (PDT)
-Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
-        by smtp.gmail.com with ESMTPSA id hv9sm1604735ejc.51.2021.10.28.08.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 08:36:19 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Karolina Drobnik <karolinadrobnik@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
-        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 5/7] staging: vt6655: Rewrite conditional in AL7320 initialization
-Date:   Thu, 28 Oct 2021 17:36:18 +0200
-Message-ID: <9038076.3kJb6oI6SG@localhost.localdomain>
-In-Reply-To: <6d2590b127499ba7ae1e7bc36d71064a5262659d.camel@gmail.com>
-References: <cover.1635415820.git.karolinadrobnik@gmail.com> <alpine.DEB.2.22.394.2110281505170.9518@hadrien> <6d2590b127499ba7ae1e7bc36d71064a5262659d.camel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ajUUMnRMo/CfkqSYpjRKHF3O4uKdRUUoW9jGXm2YH/8=;
+        b=0tsm0J1jt49avDX4ymJIaHtxWyDBk1WyXo3y86DDMmEB20Wviyp9QFJNNtCK5UPLJS
+         ruwm1Z4+LOJYJugK38GABN1x29lEYBokxHY3rW905b1C8lQrjdw6cI/Lh33QY7bTJ1cq
+         EX2H1eNfnL8q05xpuCy9hSiLpxHjB3yVK8HUJZY5H/jEWH65Zz8JeJlv0HpB8aRK9AIB
+         pILOBdVhHCd6c9ZdpIBpUdC2fLSVWkaG4AagOgqlEEUp7XInufnybf+DPagPXAm+SAzK
+         xwumK48YhZDKuLlQGw1noyU3XTxJ3GSuSxv0QAbNU0vMBg16W+6FDA+X9HalZDwrX0Wi
+         E8xw==
+X-Gm-Message-State: AOAM533INsyAV4ea6SrZWJ0kwHNbNZZ4jBCiLEUpTavdJEQbHS5YBBox
+        Ni2bTtH3TzQWRhHE2OU6DgL93eSma5rhevhXz0yKJw==
+X-Google-Smtp-Source: ABdhPJxSMxsPRNAYx8kcStvSGAzhyUcPtRJdvcLJU2SSsUAIOtS/6o5e+daLbr1h08HtBnOjMLBDhmaly+ryMxoJScw=
+X-Received: by 2002:a05:6000:1a89:: with SMTP id f9mr6700138wry.249.1635435463471;
+ Thu, 28 Oct 2021 08:37:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20211026170136.2147619-2-anup.patel@wdc.com> <mhng-1044c135-bede-498b-b244-9f9c5f5ea89b@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-1044c135-bede-498b-b244-9f9c5f5ea89b@palmerdabbelt-glaptop>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 28 Oct 2021 21:07:31 +0530
+Message-ID: <CAAhSdy2SCjncCRP22Zfu+5vXPageteQkC-L3aEkkTXvuKjb4Gw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] RISC-V: Enable KVM in RV64 and RV32 defconfigs as a module
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, October 28, 2021 4:35:30 PM CEST Karolina Drobnik wrote:
-> On Thu, 2021-10-28 at 14:36 +0200, Fabio M. De Francesco wrote:
-> > As far as I know by reading some Greg K-H's replies to other
-> > developers, this 
-> > "<test> ? <true> : <false>" style is not well accepted here.
-> 
-> I thought that the expression is simple enough that it can be written
-> this way. Julia nicely summarised why I think it's a good usage of the
-> conditional operator. Still, there's no problem in changing it to "if-
-> else" statement if that's the preferred option.
+On Thu, Oct 28, 2021 at 3:42 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
+>
+> On Tue, 26 Oct 2021 10:01:34 PDT (-0700), Anup Patel wrote:
+> > Let's enable KVM RISC-V in RV64 and RV32 defconfigs as module
+> > so that it always built along with the default kernel image.
+>
+> Turning on KVM in the defconfigs seems like the right way to go, but
+> this has more diff than just that.  Not sure if that's all just
+> savedefconfig stuff, I usually try and split out the non-functional
+> changes from anything that makes a change.
 
-If I were you, I'd leave the patch as-is and wait for Greg review.
+Other diffs in the defconfigs are generated by "make savedefconfig". I
+guess this is because most people don't use "make savedefconfig"
+to generate updated defconfigs.
 
-I was only reporting some words that I recall I read in some emails of Greg. 
-But it is highly probable that those contexts were a bit different or that 
-the statements were much more complex.
+>
+> If you checked then
+>
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> assuming you want to keep these together.  LMK if you want me to take
+> this on its own (I'll split it up if you do).
 
-As far as what my personal preference is, I think that you shouldn't care 
-because I'm not one of the maintainers. Above all, even if I were one of the 
-maintainers I'd never prevent developers to use their own style with this 
-kind of statements.
+Thanks Palmer.
 
-To summarize, you'd better leave the patch as-is.
+Regards,
+Anup
 
-Thanks,
-
-Fabio
-
-> 
-> Thanks,
-> Karolina
-> > 
-> 
-> 
-
-
-
-
+>
+> >
+> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > ---
+> >  arch/riscv/configs/defconfig      | 15 +++++++--------
+> >  arch/riscv/configs/rv32_defconfig |  8 ++++----
+> >  2 files changed, 11 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> > index 4ebc80315f01..40506dfab5cf 100644
+> > --- a/arch/riscv/configs/defconfig
+> > +++ b/arch/riscv/configs/defconfig
+> > @@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
+> >  CONFIG_POSIX_MQUEUE=y
+> >  CONFIG_NO_HZ_IDLE=y
+> >  CONFIG_HIGH_RES_TIMERS=y
+> > +CONFIG_BPF_SYSCALL=y
+> >  CONFIG_IKCONFIG=y
+> >  CONFIG_IKCONFIG_PROC=y
+> >  CONFIG_CGROUPS=y
+> > @@ -13,12 +14,14 @@ CONFIG_USER_NS=y
+> >  CONFIG_CHECKPOINT_RESTORE=y
+> >  CONFIG_BLK_DEV_INITRD=y
+> >  CONFIG_EXPERT=y
+> > -CONFIG_BPF_SYSCALL=y
+> > +# CONFIG_SYSFS_SYSCALL is not set
+> > +CONFIG_SOC_MICROCHIP_POLARFIRE=y
+> >  CONFIG_SOC_SIFIVE=y
+> >  CONFIG_SOC_VIRT=y
+> > -CONFIG_SOC_MICROCHIP_POLARFIRE=y
+> >  CONFIG_SMP=y
+> >  CONFIG_HOTPLUG_CPU=y
+> > +CONFIG_VIRTUALIZATION=y
+> > +CONFIG_KVM=m
+> >  CONFIG_JUMP_LABEL=y
+> >  CONFIG_MODULES=y
+> >  CONFIG_MODULE_UNLOAD=y
+> > @@ -68,14 +71,12 @@ CONFIG_HW_RANDOM=y
+> >  CONFIG_HW_RANDOM_VIRTIO=y
+> >  CONFIG_SPI=y
+> >  CONFIG_SPI_SIFIVE=y
+> > +# CONFIG_PTP_1588_CLOCK is not set
+> >  CONFIG_GPIOLIB=y
+> >  CONFIG_GPIO_SIFIVE=y
+> > -# CONFIG_PTP_1588_CLOCK is not set
+> > -CONFIG_POWER_RESET=y
+> >  CONFIG_DRM=y
+> >  CONFIG_DRM_RADEON=y
+> >  CONFIG_DRM_VIRTIO_GPU=y
+> > -CONFIG_FRAMEBUFFER_CONSOLE=y
+> >  CONFIG_USB=y
+> >  CONFIG_USB_XHCI_HCD=y
+> >  CONFIG_USB_XHCI_PLATFORM=y
+> > @@ -85,10 +86,10 @@ CONFIG_USB_OHCI_HCD=y
+> >  CONFIG_USB_OHCI_HCD_PLATFORM=y
+> >  CONFIG_USB_STORAGE=y
+> >  CONFIG_USB_UAS=y
+> > +CONFIG_MMC=y
+> >  CONFIG_MMC_SDHCI=y
+> >  CONFIG_MMC_SDHCI_PLTFM=y
+> >  CONFIG_MMC_SDHCI_CADENCE=y
+> > -CONFIG_MMC=y
+> >  CONFIG_MMC_SPI=y
+> >  CONFIG_RTC_CLASS=y
+> >  CONFIG_VIRTIO_PCI=y
+> > @@ -139,5 +140,3 @@ CONFIG_RCU_EQS_DEBUG=y
+> >  # CONFIG_FTRACE is not set
+> >  # CONFIG_RUNTIME_TESTING_MENU is not set
+> >  CONFIG_MEMTEST=y
+> > -# CONFIG_SYSFS_SYSCALL is not set
+> > -CONFIG_EFI=y
+> > diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
+> > index 434ef5b64599..44022e048efd 100644
+> > --- a/arch/riscv/configs/rv32_defconfig
+> > +++ b/arch/riscv/configs/rv32_defconfig
+> > @@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
+> >  CONFIG_POSIX_MQUEUE=y
+> >  CONFIG_NO_HZ_IDLE=y
+> >  CONFIG_HIGH_RES_TIMERS=y
+> > +CONFIG_BPF_SYSCALL=y
+> >  CONFIG_IKCONFIG=y
+> >  CONFIG_IKCONFIG_PROC=y
+> >  CONFIG_CGROUPS=y
+> > @@ -13,12 +14,14 @@ CONFIG_USER_NS=y
+> >  CONFIG_CHECKPOINT_RESTORE=y
+> >  CONFIG_BLK_DEV_INITRD=y
+> >  CONFIG_EXPERT=y
+> > -CONFIG_BPF_SYSCALL=y
+> > +# CONFIG_SYSFS_SYSCALL is not set
+> >  CONFIG_SOC_SIFIVE=y
+> >  CONFIG_SOC_VIRT=y
+> >  CONFIG_ARCH_RV32I=y
+> >  CONFIG_SMP=y
+> >  CONFIG_HOTPLUG_CPU=y
+> > +CONFIG_VIRTUALIZATION=y
+> > +CONFIG_KVM=m
+> >  CONFIG_JUMP_LABEL=y
+> >  CONFIG_MODULES=y
+> >  CONFIG_MODULE_UNLOAD=y
+> > @@ -67,11 +70,9 @@ CONFIG_HW_RANDOM_VIRTIO=y
+> >  CONFIG_SPI=y
+> >  CONFIG_SPI_SIFIVE=y
+> >  # CONFIG_PTP_1588_CLOCK is not set
+> > -CONFIG_POWER_RESET=y
+> >  CONFIG_DRM=y
+> >  CONFIG_DRM_RADEON=y
+> >  CONFIG_DRM_VIRTIO_GPU=y
+> > -CONFIG_FRAMEBUFFER_CONSOLE=y
+> >  CONFIG_USB=y
+> >  CONFIG_USB_XHCI_HCD=y
+> >  CONFIG_USB_XHCI_PLATFORM=y
+> > @@ -130,4 +131,3 @@ CONFIG_RCU_EQS_DEBUG=y
+> >  # CONFIG_FTRACE is not set
+> >  # CONFIG_RUNTIME_TESTING_MENU is not set
+> >  CONFIG_MEMTEST=y
+> > -# CONFIG_SYSFS_SYSCALL is not set
