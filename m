@@ -2,91 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A9343DCE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7133E43DD14
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhJ1IVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:21:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46558 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229835AbhJ1IVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:21:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635409135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pXMrcpHehLRVHJk/nMeA6+QLvzVDo2cx25CECDi4i7A=;
-        b=JAJnUFjPqlv1tq/hh0E+TED8BpilQejxGHjiKBiysXigTdTJqeqCUCUBXaaf4kLzAfyQM6
-        Qc74S11k6+asX8ooLERRU/y4bdY/TkEGhd4QM7WSdOdq67b+N2Xw6Hy/ZxKv3eLgDFiH+1
-        C3JBAQrvzdZTRX/nliMScDC0A35q6qI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-i4Dnxkw1NDyC3baBbDAFUQ-1; Thu, 28 Oct 2021 04:18:51 -0400
-X-MC-Unique: i4Dnxkw1NDyC3baBbDAFUQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 497889F932;
-        Thu, 28 Oct 2021 08:18:50 +0000 (UTC)
-Received: from localhost (unknown [10.39.194.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E742B57CB9;
-        Thu, 28 Oct 2021 08:18:46 +0000 (UTC)
-Date:   Thu, 28 Oct 2021 09:18:46 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Colin Ian King <colin.i.king@googlemail.com>
-Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] virtio_blk: Fix spelling mistake: "advertisted" ->
- "advertised"
-Message-ID: <YXpc5l6lzp+aBTaU@stefanha-x1.localdomain>
-References: <20211025102240.22801-1-colin.i.king@gmail.com>
+        id S230081AbhJ1IrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:47:13 -0400
+Received: from mga14.intel.com ([192.55.52.115]:27058 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229800AbhJ1IrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 04:47:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="230620521"
+X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
+   d="scan'208";a="230620521"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 01:24:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
+   d="scan'208";a="447871447"
+Received: from lkp-server01.sh.intel.com (HELO 3b851179dbd8) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 28 Oct 2021 01:24:28 -0700
+Received: from kbuild by 3b851179dbd8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mg0i4-0001pe-2V; Thu, 28 Oct 2021 08:24:28 +0000
+Date:   Thu, 28 Oct 2021 16:23:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:for-next/kspp] BUILD SUCCESS
+ 704f6142a9033e76aaa054c7ecf93b4bb4bf0028
+Message-ID: <617a5e0e.UNLbM2mbTeHYbNEt%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="U+u1ddsxMsOIkdhu"
-Content-Disposition: inline
-In-Reply-To: <20211025102240.22801-1-colin.i.king@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
+branch HEAD: 704f6142a9033e76aaa054c7ecf93b4bb4bf0028  firmware/psci: fix application of sizeof to pointer
 
---U+u1ddsxMsOIkdhu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+elapsed time: 1947m
 
-On Mon, Oct 25, 2021 at 11:22:40AM +0100, Colin Ian King wrote:
-> There is a spelling mistake in a dev_err error message. Fix it.
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/block/virtio_blk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+configs tested: 63
+configs skipped: 3
 
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
---U+u1ddsxMsOIkdhu
-Content-Type: application/pgp-signature; name="signature.asc"
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+arc                  randconfig-r043-20211027
+s390                 randconfig-r044-20211027
+riscv                randconfig-r042-20211027
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
------BEGIN PGP SIGNATURE-----
+clang tested configs:
+x86_64               randconfig-a002-20211027
+x86_64               randconfig-a004-20211027
+x86_64               randconfig-a005-20211027
+x86_64               randconfig-a006-20211027
+x86_64               randconfig-a001-20211027
+x86_64               randconfig-a003-20211027
+hexagon              randconfig-r045-20211027
+hexagon              randconfig-r041-20211027
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmF6XOUACgkQnKSrs4Gr
-c8j8vgf9GmyeRUXKxu9ABJAENCKSjxXLD6Vukn+lKvXAMvprvR+m82GgNwtX37u5
-ag8cYzpK3JKZ8pu2U9hmsbormnnXTPhwSv4Xu6rwSsmLK2kx1ZrVjmlh3/z4MA8T
-yoUsJQOpMsIjO6Y0R+t+/Hl/8bzxuH3d4mWWca4GTbIF2ZAvOxEgute1VVGcUr9L
-yiFT3Ym5HVxP7VaHrtXBCwjXl/taWhB+oTo4cToa4OPo6/ccnTaXtuJEn+ytGlTd
-ZBiPFVVGIpPNqasYkZeMcE8Jxxp/4+c5uDW89FVZ3l2NxKoX3TmaLHyfFDk0RqJY
-1tK8mop6eVQvpb7pkQwjikTXOG8/7g==
-=0jkP
------END PGP SIGNATURE-----
-
---U+u1ddsxMsOIkdhu--
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
