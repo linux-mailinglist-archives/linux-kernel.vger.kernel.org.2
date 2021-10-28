@@ -2,258 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA6643DE25
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF0843DE0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhJ1JyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 05:54:23 -0400
-Received: from smtp82.iad3a.emailsrvr.com ([173.203.187.82]:44469 "EHLO
-        smtp82.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229915AbhJ1JyR (ORCPT
+        id S229626AbhJ1Ju5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 05:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230101AbhJ1Jut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:54:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1635414317;
-        bh=CYy7x/FF6kwpFQYSiYAtB0kHpztDGzB1vTD/96AEPg8=;
-        h=Subject:To:From:Date:From;
-        b=FDTxiCaaJnXoxqw9cDWA2M+IDVnckJavRHQyXpNQOwVtHclsjIyctXQv5HE6UJtCG
-         1YFHTJTNlnvatPee2UClM8jJjAxLS3ZyZSfSdmwGohjP2dsX2UIVFQNVHq5PHY3JGF
-         e6Y+kdFFttt/GUBVB9pf2NFq73VWFtErtfmxU+K0=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp19.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 34BC043C2;
-        Thu, 28 Oct 2021 05:45:16 -0400 (EDT)
-Subject: Re: [PATCH v2 2/2] comedi: dt9812: fix DMA buffers on stack
-To:     Johan Hovold <johan@kernel.org>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20211027093529.30896-1-johan@kernel.org>
- <20211027093529.30896-3-johan@kernel.org>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <7b6d9a85-c2a5-2f3d-5385-81df0ef7f195@mev.co.uk>
-Date:   Thu, 28 Oct 2021 10:45:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 28 Oct 2021 05:50:49 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D9BC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 02:48:22 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id i5so1404664wrb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 02:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TDEJin9Wub/pTmZCaG0ahvo3TESho8nP0MZ/DG5F4bU=;
+        b=Fq7FjlAbZV5zR/iWtDoqRfxsQKOz3/NHuIDK/MgY5Uz+X8Bzve19JOmFMCKZtHnc6C
+         3JxZxqr5idu9by/1C9tNk29r5SoxWsPFNh4ZvUOyQuzMqlwxlTBnfcpI7COiVFzwU5i7
+         Kh46iOm6VO6gPmtmj2vn2dabUejlwv7uesL9o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TDEJin9Wub/pTmZCaG0ahvo3TESho8nP0MZ/DG5F4bU=;
+        b=3s2u/Q+p8bEGXcuhBXFUzj/iYT2KoeCaq19w/7/AAD8bhYLkBU5hTYHA7NnKPC+GAL
+         YOsJ3dv2ovxWrx1+NljdZR6GrJi/b/D1XgJVTD+63zHGMEttwryH5+7KenErz9aNUGl1
+         7xgqR1xD7uohKKbd4DkT2K1ml75ZqvbRFSzfq5XnGD/Fpo8Zg6x3ccdnuebXi/61I7Yn
+         pXZFTOr7VgdyNgc3iwY3fs65WAX/2HZidqQCzr6ZVEXVEBEu8MOjAf7XluQfFle9qQND
+         Aq7WXQDwA/Tv2FjFHGM9pQA8EJHNMw7SQ/LvnnWLaoRhcBg2sh/Qb9Vxm5bfEQz1U27J
+         pHXg==
+X-Gm-Message-State: AOAM532cLmioR2f1B5Da9qcvQq3hBiIzRxq2WPFtxWj+jn9LLQvD5/V9
+        5PJsri9SrMVZbzEPk/qbyeHsOQ==
+X-Google-Smtp-Source: ABdhPJzuPEadJHFC6DHS+OKXKCrBNBoHbYtFLfXrapFarUbsAE/PiuGk7n5gPew0+g/APt+J5HIwJA==
+X-Received: by 2002:a5d:4d52:: with SMTP id a18mr4233102wru.406.1635414500859;
+        Thu, 28 Oct 2021 02:48:20 -0700 (PDT)
+Received: from altair.lan (2.f.6.6.b.3.3.0.3.a.d.b.6.0.6.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:606:bda3:33b:66f2])
+        by smtp.googlemail.com with ESMTPSA id i6sm3378029wry.71.2021.10.28.02.48.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 02:48:20 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     viro@zeniv.linux.org.uk, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     mszeredi@redhat.com, gregkh@linuxfoundation.org,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 1/4] libfs: move shmem_exchange to simple_rename_exchange
+Date:   Thu, 28 Oct 2021 10:47:21 +0100
+Message-Id: <20211028094724.59043-2-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211028094724.59043-1-lmb@cloudflare.com>
+References: <20211028094724.59043-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <20211027093529.30896-3-johan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 2228fac0-5ceb-4e0c-b35a-279f4d924c94-1-1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2021 10:35, Johan Hovold wrote:
-> USB transfer buffers are typically mapped for DMA and must not be
-> allocated on the stack or transfers will fail.
-> 
-> Allocate proper transfer buffers in the various command helpers and
-> return an error on short transfers instead of acting on random stack
-> data.
-> 
-> Note that this also fixes a stack info leak on systems where DMA is not
-> used as 32 bytes are always sent to the device regardless of how short
-> the command is.
-> 
-> Fixes: 63274cd7d38a ("Staging: comedi: add usb dt9812 driver")
-> Cc: stable@vger.kernel.org      # 2.6.29
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->   drivers/comedi/drivers/dt9812.c | 115 ++++++++++++++++++++++++--------
->   1 file changed, 86 insertions(+), 29 deletions(-)
-> 
-> diff --git a/drivers/comedi/drivers/dt9812.c b/drivers/comedi/drivers/dt9812.c
-> index 634f57730c1e..704b04d2980d 100644
-> --- a/drivers/comedi/drivers/dt9812.c
-> +++ b/drivers/comedi/drivers/dt9812.c
-> @@ -32,6 +32,7 @@
->   #include <linux/kernel.h>
->   #include <linux/module.h>
->   #include <linux/errno.h>
-> +#include <linux/slab.h>
->   #include <linux/uaccess.h>
->   
->   #include "../comedi_usb.h"
-> @@ -237,22 +238,42 @@ static int dt9812_read_info(struct comedi_device *dev,
->   {
->   	struct usb_device *usb = comedi_to_usb_dev(dev);
->   	struct dt9812_private *devpriv = dev->private;
-> -	struct dt9812_usb_cmd cmd;
-> +	struct dt9812_usb_cmd *cmd;
-> +	size_t tbuf_size;
->   	int count, ret;
-> +	void *tbuf;
->   
-> -	cmd.cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
-> -	cmd.u.flash_data_info.address =
-> +	tbuf_size = max(sizeof(*cmd), buf_size);
-> +
-> +	tbuf = kzalloc(tbuf_size, GFP_KERNEL);
-> +	if (!tbuf)
-> +		return -ENOMEM;
-> +
-> +	cmd = tbuf;
-> +
-> +	cmd->cmd = cpu_to_le32(DT9812_R_FLASH_DATA);
-> +	cmd->u.flash_data_info.address =
->   	    cpu_to_le16(DT9812_DIAGS_BOARD_INFO_ADDR + offset);
-> -	cmd.u.flash_data_info.numbytes = cpu_to_le16(buf_size);
-> +	cmd->u.flash_data_info.numbytes = cpu_to_le16(buf_size);
->   
->   	/* DT9812 only responds to 32 byte writes!! */
->   	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-> -			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-> +			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
->   	if (ret)
-> -		return ret;
-> +		goto out;
-> +
-> +	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-> +			   tbuf, buf_size, &count, DT9812_USB_TIMEOUT);
-> +	if (!ret) {
-> +		if (count == buf_size)
-> +			memcpy(buf, tbuf, buf_size);
-> +		else
-> +			ret = -EREMOTEIO;
-> +	}
-> +out:
-> +	kfree(tbuf);
->   
-> -	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-> -			    buf, buf_size, &count, DT9812_USB_TIMEOUT);
-> +	return ret;
->   }
->   
->   static int dt9812_read_multiple_registers(struct comedi_device *dev,
-> @@ -261,22 +282,42 @@ static int dt9812_read_multiple_registers(struct comedi_device *dev,
->   {
->   	struct usb_device *usb = comedi_to_usb_dev(dev);
->   	struct dt9812_private *devpriv = dev->private;
-> -	struct dt9812_usb_cmd cmd;
-> +	struct dt9812_usb_cmd *cmd;
->   	int i, count, ret;
-> +	size_t buf_size;
-> +	void *buf;
->   
-> -	cmd.cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
-> -	cmd.u.read_multi_info.count = reg_count;
-> +	buf_size = max_t(size_t, sizeof(*cmd), reg_count);
-> +
-> +	buf = kzalloc(buf_size, GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	cmd = buf;
-> +
-> +	cmd->cmd = cpu_to_le32(DT9812_R_MULTI_BYTE_REG);
-> +	cmd->u.read_multi_info.count = reg_count;
->   	for (i = 0; i < reg_count; i++)
-> -		cmd.u.read_multi_info.address[i] = address[i];
-> +		cmd->u.read_multi_info.address[i] = address[i];
->   
->   	/* DT9812 only responds to 32 byte writes!! */
->   	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-> -			   &cmd, 32, &count, DT9812_USB_TIMEOUT);
-> +			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
->   	if (ret)
-> -		return ret;
-> +		goto out;
-> +
-> +	ret = usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-> +			   buf, reg_count, &count, DT9812_USB_TIMEOUT);
-> +	if (!ret) {
-> +		if (count == reg_count)
-> +			memcpy(value, buf, reg_count);
-> +		else
-> +			ret = -EREMOTEIO;
-> +	}
-> +out:
-> +	kfree(buf);
->   
-> -	return usb_bulk_msg(usb, usb_rcvbulkpipe(usb, devpriv->cmd_rd.addr),
-> -			    value, reg_count, &count, DT9812_USB_TIMEOUT);
-> +	return ret;
->   }
->   
->   static int dt9812_write_multiple_registers(struct comedi_device *dev,
-> @@ -285,19 +326,27 @@ static int dt9812_write_multiple_registers(struct comedi_device *dev,
->   {
->   	struct usb_device *usb = comedi_to_usb_dev(dev);
->   	struct dt9812_private *devpriv = dev->private;
-> -	struct dt9812_usb_cmd cmd;
-> +	struct dt9812_usb_cmd *cmd;
->   	int i, count;
-> +	int ret;
-> +
-> +	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-> +	if (!cmd)
-> +		return -ENOMEM;
->   
-> -	cmd.cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
-> -	cmd.u.read_multi_info.count = reg_count;
-> +	cmd->cmd = cpu_to_le32(DT9812_W_MULTI_BYTE_REG);
-> +	cmd->u.read_multi_info.count = reg_count;
->   	for (i = 0; i < reg_count; i++) {
-> -		cmd.u.write_multi_info.write[i].address = address[i];
-> -		cmd.u.write_multi_info.write[i].value = value[i];
-> +		cmd->u.write_multi_info.write[i].address = address[i];
-> +		cmd->u.write_multi_info.write[i].value = value[i];
->   	}
->   
->   	/* DT9812 only responds to 32 byte writes!! */
-> -	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-> -			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-> +	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-> +			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-> +	kfree(cmd);
-> +
-> +	return ret;
->   }
->   
->   static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
-> @@ -306,17 +355,25 @@ static int dt9812_rmw_multiple_registers(struct comedi_device *dev,
->   {
->   	struct usb_device *usb = comedi_to_usb_dev(dev);
->   	struct dt9812_private *devpriv = dev->private;
-> -	struct dt9812_usb_cmd cmd;
-> +	struct dt9812_usb_cmd *cmd;
->   	int i, count;
-> +	int ret;
-> +
-> +	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-> +	if (!cmd)
-> +		return -ENOMEM;
->   
-> -	cmd.cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
-> -	cmd.u.rmw_multi_info.count = reg_count;
-> +	cmd->cmd = cpu_to_le32(DT9812_RMW_MULTI_BYTE_REG);
-> +	cmd->u.rmw_multi_info.count = reg_count;
->   	for (i = 0; i < reg_count; i++)
-> -		cmd.u.rmw_multi_info.rmw[i] = rmw[i];
-> +		cmd->u.rmw_multi_info.rmw[i] = rmw[i];
->   
->   	/* DT9812 only responds to 32 byte writes!! */
-> -	return usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-> -			    &cmd, 32, &count, DT9812_USB_TIMEOUT);
-> +	ret = usb_bulk_msg(usb, usb_sndbulkpipe(usb, devpriv->cmd_wr.addr),
-> +			   cmd, sizeof(*cmd), &count, DT9812_USB_TIMEOUT);
-> +	kfree(cmd);
-> +
-> +	return ret;
->   }
->   
->   static int dt9812_digital_in(struct comedi_device *dev, u8 *bits)
-> 
+Move shmem_exchange and make it available to other callers.
 
-Looks great, thanks!
+Suggested-by: <mszeredi@redhat.com>
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ fs/libfs.c         | 24 ++++++++++++++++++++++++
+ include/linux/fs.h |  2 ++
+ mm/shmem.c         | 24 +-----------------------
+ 3 files changed, 27 insertions(+), 23 deletions(-)
 
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 51b4de3b3447..1cf144dc9ed2 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -448,6 +448,30 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
+ }
+ EXPORT_SYMBOL(simple_rmdir);
+ 
++int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
++			   struct inode *new_dir, struct dentry *new_dentry)
++{
++	bool old_is_dir = d_is_dir(old_dentry);
++	bool new_is_dir = d_is_dir(new_dentry);
++
++	if (old_dir != new_dir && old_is_dir != new_is_dir) {
++		if (old_is_dir) {
++			drop_nlink(old_dir);
++			inc_nlink(new_dir);
++		} else {
++			drop_nlink(new_dir);
++			inc_nlink(old_dir);
++		}
++	}
++	old_dir->i_ctime = old_dir->i_mtime =
++	new_dir->i_ctime = new_dir->i_mtime =
++	d_inode(old_dentry)->i_ctime =
++	d_inode(new_dentry)->i_ctime = current_time(old_dir);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(simple_rename_exchange);
++
+ int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+ 		  struct dentry *old_dentry, struct inode *new_dir,
+ 		  struct dentry *new_dentry, unsigned int flags)
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index e7a633353fd2..333b8af405ce 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3383,6 +3383,8 @@ extern int simple_open(struct inode *inode, struct file *file);
+ extern int simple_link(struct dentry *, struct inode *, struct dentry *);
+ extern int simple_unlink(struct inode *, struct dentry *);
+ extern int simple_rmdir(struct inode *, struct dentry *);
++extern int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
++				  struct inode *new_dir, struct dentry *new_dentry);
+ extern int simple_rename(struct user_namespace *, struct inode *,
+ 			 struct dentry *, struct inode *, struct dentry *,
+ 			 unsigned int);
+diff --git a/mm/shmem.c b/mm/shmem.c
+index b5860f4a2738..a18dde3d3092 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2945,28 +2945,6 @@ static int shmem_rmdir(struct inode *dir, struct dentry *dentry)
+ 	return shmem_unlink(dir, dentry);
+ }
+ 
+-static int shmem_exchange(struct inode *old_dir, struct dentry *old_dentry, struct inode *new_dir, struct dentry *new_dentry)
+-{
+-	bool old_is_dir = d_is_dir(old_dentry);
+-	bool new_is_dir = d_is_dir(new_dentry);
+-
+-	if (old_dir != new_dir && old_is_dir != new_is_dir) {
+-		if (old_is_dir) {
+-			drop_nlink(old_dir);
+-			inc_nlink(new_dir);
+-		} else {
+-			drop_nlink(new_dir);
+-			inc_nlink(old_dir);
+-		}
+-	}
+-	old_dir->i_ctime = old_dir->i_mtime =
+-	new_dir->i_ctime = new_dir->i_mtime =
+-	d_inode(old_dentry)->i_ctime =
+-	d_inode(new_dentry)->i_ctime = current_time(old_dir);
+-
+-	return 0;
+-}
+-
+ static int shmem_whiteout(struct user_namespace *mnt_userns,
+ 			  struct inode *old_dir, struct dentry *old_dentry)
+ {
+@@ -3012,7 +2990,7 @@ static int shmem_rename2(struct user_namespace *mnt_userns,
+ 		return -EINVAL;
+ 
+ 	if (flags & RENAME_EXCHANGE)
+-		return shmem_exchange(old_dir, old_dentry, new_dir, new_dentry);
++		return simple_rename_exchange(old_dir, old_dentry, new_dir, new_dentry);
+ 
+ 	if (!simple_empty(new_dentry))
+ 		return -ENOTEMPTY;
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+2.32.0
+
