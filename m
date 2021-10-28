@@ -2,152 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E570043E110
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592BA43E113
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhJ1MkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:40:20 -0400
-Received: from mail-out1.in.tum.de ([131.159.0.8]:42751 "EHLO
-        mail-out1.informatik.tu-muenchen.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230093AbhJ1MkT (ORCPT
+        id S230202AbhJ1MlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhJ1MlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:40:19 -0400
-Received: from mailrelay1.rbg.tum.de (mailrelay1.in.tum.de [131.159.254.14])
-        by mail-out1.informatik.tu-muenchen.de (Postfix) with ESMTP id D290F2400D4;
-        Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
-Received: by mailrelay1.rbg.tum.de (Postfix, from userid 112)
-        id CA53416F; Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
-Received: from mailrelay1.rbg.tum.de (localhost [127.0.0.1])
-        by mailrelay1.rbg.tum.de (Postfix) with ESMTP id 86AA6C3;
-        Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
-Received: from mail.in.tum.de (mailproxy.in.tum.de [IPv6:2a09:80c0::78])
-        by mailrelay1.rbg.tum.de (Postfix) with ESMTPS id 7F860B7;
-        Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
-Received: by mail.in.tum.de (Postfix, from userid 112)
-        id 795CB4A0531; Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
-Received: (Authenticated sender: heidekrp)
-        by mail.in.tum.de (Postfix) with ESMTPSA id 9FFDA4A006E;
-        Thu, 28 Oct 2021 14:37:49 +0200 (CEST)
-        (Extended-Queue-bit tech_joqtw@fff.in.tum.de)
-Date:   Thu, 28 Oct 2021 14:37:47 +0200
-From:   Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     paulmck@kernel.org, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, parri.andrea@gmail.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        elver@google.com, charalampos.mainas@gmail.com,
-        pramod.bhatotia@in.tum.de
-Subject: Re: Potentially Broken Address Dependency via test_bit() When
- Compiling With Clang
-Message-ID: <YXqZm6XTlMGDSpMT@Pauls-MacBook-Pro>
-References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
- <20211027142720.GB1319606@rowland.harvard.edu>
+        Thu, 28 Oct 2021 08:41:14 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616DAC061570;
+        Thu, 28 Oct 2021 05:38:47 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg4qS6kkHz4xZ1;
+        Thu, 28 Oct 2021 23:38:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635424725;
+        bh=QnRRNSnTaO6YJsSfPYQRO3q2yMGCeOnG2DOzgPjJso8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lPI67dY7fSZvmXemWqkuTRbpRGieB4+GoV23Xiwu6fIzggMf99ff2nRf1MCC+CY7K
+         NRmlqSy5Rt++VwnoX525uhXkcuGy0xMEHe8fdG74o1tzwb6qLaQDD8Fce+S+RGJDmZ
+         ipKpxpZ5V6dv5Nm1j/aLS3dgKgFAyOUFTd6nJnLvXbqVJJ18hux/JOvKDygSoiN9/I
+         dYgVeNHkdZZPv28vVyka5gbsqhp+SO71f9GCYcscErnVMOFhMApPMqfuVbNpcZdl2X
+         Rz3XOVPVrlh7MnlMoRS14IVbVsnvM2te/I9zTPYKGdZS6G1SFlfNQsz9Q2eKt3T/Hl
+         Dld3DKvd+GaSA==
+Date:   Thu, 28 Oct 2021 23:38:44 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: linux-next: build failure after merge of almost all the trees
+Message-ID: <20211028233844.292e1319@canb.auug.org.au>
+In-Reply-To: <20211028212651.57beb05b@canb.auug.org.au>
+References: <20211028212651.57beb05b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211027142720.GB1319606@rowland.harvard.edu>
+Content-Type: multipart/signed; boundary="Sig_/Jnm1pzZ8/GNchqeU=kfC_Di";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 10:27:20AM -0400, Alan Stern wrote:
-> On Wed, Oct 27, 2021 at 12:19:48PM +0200, Paul Heidekrüger wrote:
-> > Hi all,
-> > 
-> > For my bachelor thesis, I have been working on the infamous problem of 
-> > potentially broken dependency orderings in the Linux kernel. I'm being 
-> > advised by Marco Elver, Charalampos Mainas, Pramod Bhatotia (Cc'd).
-> > 
-> > For context, see: 
-> > https://linuxplumbersconf.org/event/7/contributions/821/attachments/598/1075/LPC_2020_--_Dependency_ordering.pdf
-> > 
-> > Our approach consists of two LLVM compiler passes which annotate 
-> > dependencies in unoptimised intermediate representation (IR) and verify 
-> > the annotated dependencies in optimised IR. ATM, the passes only 
-> > recognise a subset of address dependencies - everything is still WIP ;-)
-> > 
-> > We have been cross-compiling with a slightly modified version of 
-> > allyesconfig for arm64, and the passes have now found a case that we 
-> > would like to share with LKML for feedback: an address dependency being 
-> > broken (?) through compiler optimisations in 
-> > fs/afs/addr_list.c::afs_iterate_addresses().
-> > 
-> > Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
-> > 
-> > > [...]
-> > >   index = READ_ONCE(ac->alist->preferred);
-> > >   if (test_bit(index, &set))
-> > >     goto selected;
-> > > [...]
-> > 
-> > where test_bit() expands to the following in 
-> > include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
-> > 
-> > > static __always_inline int
-> > > arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
-> > > {
-> > >   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-> > > }
-> > > #define test_bit arch_test_bit
-> > 
-> > The address dependency gets preserved in unoptimised IR since the virtual register %33 transitively depends on %28:
-> > 
-> > > %28 = load volatile i8, i8* %preferred, align 2, !annotation !15
-> > > store i8 %28, i8* %tmp21, align 1
-> > > %29 = load i8, i8* %tmp21, align 1
-> > > %conv23 = zext i8 %29 to i32
-> > > store i32 %conv23, i32* %index, align 4
-> > > %30 = load i32, i32* %index, align 4
-> > > store i32 %30, i32* %nr.addr.i, align 4
-> > > store i64* %set, i64** %addr.addr.i, align 8
-> > > %31 = load i64*, i64** %addr.addr.i, align 8
-> > > %32 = load i32, i32* %nr.addr.i, align 4
-> > > %div.i = udiv i32 %32, 64
-> > > %idxprom.i = zext i32 %div.i to i64
-> > > %arrayidx.i = getelementptr i64, i64* %31, i64 %idxprom.i
-> > > %33 = load volatile i64, i64* %arrayidx.i, align 8, !annotation !16
-> > 
-> > In optimised IR, there is no dependency between the two volatile loads 
-> > anymore:
-> > 
-> > > %11 = load volatile i8, i8* %preferred, align 2, !annotation !19
-> > > %conv25 = zext i8 %11 to i32
-> > > %set.0. = load volatile i64, i64* %set, align 8
-> > 
-> > Now, since @nr traces back to the READ_ONCE() to @index, does this make 
-> > the load from @addr in test_bit() address-dependent on that READ_ONCE()? 
-> > Should the load from @addr therefore be ordered against the READ_ONCE()?
-> 
-> As others have pointed out, there really is an address dependency here 
-> (although it's not a very useful one and the code doesn't rely on it).
-> 
-> However, I can't follow the IR code.  Can you please explain in ordinary 
-> English how the LLVM compiler manages to lose track of this dependency?
-> 
-> Alan Stern
+--Sig_/Jnm1pzZ8/GNchqeU=kfC_Di
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Here's what we think might be going on:
-- In 'arch_test_bit()', 'addr[BIT_WORD(nr)]' expands to 'addr[(nr) / 64]'.
-- Since 'addr' points to an 'unsigned long', any other result than '0' for
-  '(nr) / 64' would be out of bounds and therefore undefined.
-- We assume LLVM is able to figure this out and use it to get rid of the
-  address computation all together.
+Hi all,
 
-We ran some experiments to see how optimisations behave when 'set' is in fact
-an array and / or in global scope.
+On Thu, 28 Oct 2021 21:26:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next build (powerpc allyesconfig) failed like this:
+>=20
+> fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+> fs/ntfs/aops.c:1311:1: error: the frame size of 2304 bytes is larger than=
+ 2048 bytes [-Werror=3Dframe-larger-than=3D]
+>  1311 | }
+>       | ^
+> cc1: all warnings being treated as errors
+>=20
+> I have no idea what has caused this.
 
-1. Insert a 'barrier()' in 'arch_test_bit()' before the 'return':
-The dependency gets broken.
+With a nudge from Arnd, it seems the immediate case was commit
 
-2. Make 'set' an 'unsigned long' array of size '42', keep local scope: 
-The dependency gets preserved.
+  f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit book3s")
 
-3. Keep 'set' as 'unsigend long', move to global scope: 
-The dependency gets preserved.
+from the powerpc tree switching the allyesconfig build from 4k pages to
+64k pages which expanded a few arrays on the stack in that function.
 
-4. Make 'set' an 'unsigned long' array of size '42', move to global scope: 
-The dependency gets preserved.
+--=20
+Cheers,
+Stephen Rothwell
 
-Many thanks,
-Paul
+--Sig_/Jnm1pzZ8/GNchqeU=kfC_Di
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6mdQACgkQAVBC80lX
+0GweUQf+JcHkit3ffccvp0vwAM7BGZY5WNLoXfVvw/nyTNmueDJfNxFCCfa9uola
+nlGWEXmShl1ruC/nhL4EkTAjhEJ+KxrOExQnlPXCEOfksTzigTsa/vP3vdmqs6ZH
+tSf4uHDf/pWhQEwVZUVYmI2DpFvasj8VMvxvOUPIzw+kfpw57g4V5EMw7jwEbdvh
+qrfTJLp9a7zz2bQ8k4Mqq/DC6Go7aDjDuKUK3yf2yhUfKfUdfoUpj1asVwRpM88j
+UeI8UQUDhwhYh4QSHsUihVOo6dweRMfT1FjVa8F7luVjJWsZZEgM/K16298jMxOT
+kaOih47fjbDZxL1JnGc2zu9rwwMNUA==
+=Y6q6
+-----END PGP SIGNATURE-----
+
+--Sig_/Jnm1pzZ8/GNchqeU=kfC_Di--
