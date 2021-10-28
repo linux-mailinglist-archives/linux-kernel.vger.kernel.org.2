@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C3E43E1BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB0743E1BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhJ1NNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
+        id S230254AbhJ1NQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhJ1NNu (ORCPT
+        with ESMTP id S229641AbhJ1NQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:13:50 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7265BC061570;
-        Thu, 28 Oct 2021 06:11:23 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id f10so2249719ilu.5;
-        Thu, 28 Oct 2021 06:11:23 -0700 (PDT)
+        Thu, 28 Oct 2021 09:16:12 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A64DC061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:13:46 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id m11so3409768oif.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1sv2pVjuobpaTD6e7jjCzSJYHPbS/EWvyrW59yWrJP4=;
-        b=kGeEAnH2GZMfu36XdYP0RYPN3EHxgor/2x4oBQFh8bL0W+rn1CsbXgt6zE7DULl6V5
-         4RvPh9qjgTQLYEem/svKD3wQRNU4wHQTDr7DS79PGD2pSTtUpBqrAo4EKuYtD7zhUozi
-         cWo+s5fDFhaRwaMUFycNjhkXrW5rsf17GzsmgJ+VgmMbXCTHk+3Rc7cd7yd5FSDsG9ue
-         ay1RDoZeUHinplF7rKnlp7MiFWKMVCZP+cZtl67mDJjapDQgJ7DAmeGUB+aQjSUrK12u
-         NT5qf7hEMODgbPIK2sgB8w7lSwJn9Jn/jNpen9bz825uBYG9hTv30iyKHM2IerPgdh1Q
-         qVIg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iOMRY+5EQlt3AMhlWcF2Jku3DStXtwx/KpJdGp0gI2c=;
+        b=Fs6zHdSI2uUASs/WQXD/oHus8l8cuQQ/q/FtJVBv4wUOpQD3iqU2AJP1/usYPkdkQm
+         reXDFApWQCOoSBOz6QNEWmoAwSUTRLtzLKbj/IroQlrViHO6w6uWRpgfIIce2/jLRwJr
+         6U6YczGQEuHf5UA2+jUTKbxhE/mPgG+s18xpw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1sv2pVjuobpaTD6e7jjCzSJYHPbS/EWvyrW59yWrJP4=;
-        b=jfz3A2ZsYYKMgZIdz4Coeqmirs3Ca0xWe4T2VLTLzFDsHhgXwU8E8NltAJNMftK8sW
-         akqfb5cohsRXqun1PMygMqCidWOUDM6XUfzgY8yYYzYW3stpkXC9qWxEL6OCxgUHZEao
-         22yIeFjjhBupKQnTG1/gY3jqC8BYZ3bFEGSukhdRr02Tfxln1QALz3auO0FeDk0xZysK
-         +9BvSVuemqoTa58HDPTkhXZhnjU9hUng5b4MhUIpIsn57grxHI54wSTgAtXlZO8mMCoY
-         jyvsvnI2ALDsKRhbHuxIp8JW8VIxKquyaU5aB/AvhFwQl+w5QBNtISn+3VlvFMkDvml9
-         XKwA==
-X-Gm-Message-State: AOAM532bcntxR9TWLchdMlz63vXkyMr98IR6BfwLmyZ0cnlxkRZhgcFi
-        AbkcMq9pSA0FvP86ARK6FpLKPFGVuwW8+qpYw+CSsPYIkVg=
-X-Google-Smtp-Source: ABdhPJz7vI5nHIlFyRgGSpaq+jCGnJTbs4wpK50NHm0c4jUfi0BQOrUqDOa59ndDyLUF6VuTlx6uYvTGfaBN1jblSKI=
-X-Received: by 2002:a05:6e02:893:: with SMTP id z19mr3129606ils.224.1635426682913;
- Thu, 28 Oct 2021 06:11:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iOMRY+5EQlt3AMhlWcF2Jku3DStXtwx/KpJdGp0gI2c=;
+        b=rNa9dwRvDHwK+IrWfn+SSu8Ho5C3neHWIL1vkejXtqbaaVZK1QDzAh/vNmOJt/9bPU
+         Dgs3ClQjW4IIE/1lBPOMr3OFCZVA6/jWXNOudqjZjfkV0oMXDqNcIWhCE1m95l76scmD
+         dm9sAam/fzlnD8HtUBu5Vq4mtForFRbxoQf1barZgIZxg0QHI2Xd0gIq9ScOhgjK0GRV
+         J2zW+7uVVLszpxoSTUXVp2za8xpjyc1AKHPdhf/iLvefP24iXkSd6veN9TnKBchJqRvS
+         VivdVYjI6MN8hiNqu3NMR6RXwBLws5CtmNZszlNgq5O77blZ9TEGrVG1EcR+BQg6NdQd
+         VHsg==
+X-Gm-Message-State: AOAM531O5avx5HQxsu4A5Yi0/fjx0eRvggtFjJsKWfMJv0ckGuizu26c
+        v9eEUAcj4OKiXJmRUo0wCfvdSg==
+X-Google-Smtp-Source: ABdhPJxtHX+E8FMg+JPNf2ETnLpObNqAXNMo8H2E5oi3uH1xa7e2Pz3bAvrftKeKZx01BPrqlmoimw==
+X-Received: by 2002:a05:6808:1791:: with SMTP id bg17mr8378167oib.94.1635426825463;
+        Thu, 28 Oct 2021 06:13:45 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s5sm1111548ois.55.2021.10.28.06.13.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 06:13:44 -0700 (PDT)
+Subject: Re: [PATCH] userfaultfd/selftests: use swap() to make code cleaner
+To:     cgel.zte@gmail.com, akpm@linux-foundation.org
+Cc:     shuah@kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211028112331.16152-1-deng.changcheng@zte.com.cn>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f60560fe-ac6b-a48b-cc79-a3a42c22cc02@linuxfoundation.org>
+Date:   Thu, 28 Oct 2021 07:13:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20200320212833.3507-1-sean.j.christopherson@intel.com> <20200320212833.3507-24-sean.j.christopherson@intel.com>
-In-Reply-To: <20200320212833.3507-24-sean.j.christopherson@intel.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Thu, 28 Oct 2021 21:11:11 +0800
-Message-ID: <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
-Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
- nested VM-Enter/VM-Exit
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        John Haxby <john.haxby@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211028112331.16152-1-deng.changcheng@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 21, 2020 at 5:29 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
+On 10/28/21 5:23 AM, cgel.zte@gmail.com wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+> 
+> Use swap() in order to make code cleaner. Issue found by coccinelle.
 
-> +       if (!nested_cpu_has_vpid(vmcs12) || !nested_has_guest_tlb_tag(vcpu)) {
-> +               kvm_make_request(KVM_REQ_TLB_FLUSH, vcpu);
-> +       } else if (is_vmenter &&
-> +                  vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
-> +               vmx->nested.last_vpid = vmcs12->virtual_processor_id;
-> +               vpid_sync_context(nested_get_vpid02(vcpu));
-> +       }
-> +}
+Please include the coccinelle log.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+> ---
+>   tools/testing/selftests/vm/userfaultfd.c | 10 ++--------
+>   1 file changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+> index 8a09057d2f22..41dfe6f4ebfb 100644
+> --- a/tools/testing/selftests/vm/userfaultfd.c
+> +++ b/tools/testing/selftests/vm/userfaultfd.c
+> @@ -1413,7 +1413,6 @@ static void userfaultfd_pagemap_test(unsigned int test_pgsize)
+>   static int userfaultfd_stress(void)
+>   {
+>   	void *area;
+> -	char *tmp_area;
+>   	unsigned long nr;
+>   	struct uffdio_register uffdio_register;
+>   	struct uffd_stats uffd_stats[nr_cpus];
+> @@ -1524,13 +1523,8 @@ static int userfaultfd_stress(void)
+>   					    count_verify[nr], nr);
+>   
+>   		/* prepare next bounce */
+> -		tmp_area = area_src;
+> -		area_src = area_dst;
+> -		area_dst = tmp_area;
+> -
+> -		tmp_area = area_src_alias;
+> -		area_src_alias = area_dst_alias;
+> -		area_dst_alias = tmp_area;
+> +		swap(area_src, area_dst);
+> +		swap(area_src_alias, area_dst_alias);
+>   
+>   		uffd_stats_report(uffd_stats, nr_cpus);
+>   	}
+> 
 
-
-(I'm sorry to pick this old email to reply to, but the problem has
-nothing to do with this patch nor 5c614b3583e7 and it exists since
-nested vmx is introduced.)
-
-I think kvm_mmu_free_guest_mode_roots() should be called
-if (!enable_ept && vmcs12->virtual_processor_id != vmx->nested.last_vpid)
-just because prev_roots doesn't cache the vpid12.
-(prev_roots caches PCID, which is distinctive)
-
-The problem hardly exists if L1's hypervisor is also kvm, but if
-L1's hypervisor is different or is also kvm with some changes
-in the way how it manages VPID.  (Actually, I planned to
-change the way how it manages VPID to svm-like.)
-
-nvcpu0 and nvcpu1 are in the same nested VM and are running the same
-application process.
-
-vcpu1: runs nvcpu1 with the same cr3 as nvcpu0
-vcpu0: runs nvcpu0, modifies pagetable and L1 sync root, and flush VPID12
-       but L0 doesn't sync, it just removes the root from vcpu0's prev_roots.
-vcpu1: L1 migrates nvcpu0 to here, allocates a *fresh* VPID12 to nvcpu0
-       like the ways svm allocates a fresh ASID.
-vcpu1: runs nvcpu0 without any flush. (vcpu1's prev_roots has already had it
-       L0 hasn't synced it)
-
-If my understanding is correct, I hope it is a report and somebody fixes it.
+thanks,
+-- Shuah
