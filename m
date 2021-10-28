@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C143143DB1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2AC43DB26
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhJ1Gd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhJ1Gdz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:33:55 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17848C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:31:29 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id x27-20020a9d459b000000b0055303520cc4so7151886ote.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:31:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=fl3/6+D1WzrjlO9U2XlvyAbP1wGZPooZUWolFXNY6RE=;
-        b=icJvMa5pUjALY+NkhGVS54Ds28x++ZE3VJJWfsC4PaJl0wk9D0YnQX8VgrkoN1N+jf
-         2XmMVSkoHKJAQY1yroE0GbT2nKRKFPJJoOL7J1FiJwRoemobn38o4iTMCRgTpjbbNkoV
-         wZ5HpRl/I3U6Mea/Wf46aCNQnb1zLIaYkJ0IQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=fl3/6+D1WzrjlO9U2XlvyAbP1wGZPooZUWolFXNY6RE=;
-        b=ZxxRNloCBRFdq+E2Acflp0QIw04qKQ0amTIOYqHgyLOvkKd6dUmwulQJNHEavj53En
-         AnY2cuPPA5WeEbeE5al+ivLzDXMomKy9S91L8lP4xdDh0CAyUXp69Fxauy4AbKCho3Oq
-         iKnnM2MJIkAvqHc18XJKT38zkn3Shy7I6H4x6TTuZKXRN+aQcfNs9P9e+c3YXrA/W1+O
-         kwazB/AMdC0x8LaN3zZ9E0bTeEV6V6LzVaU4sm6KoINkHEBhT62Ic9EyFGxtijdC2Z1+
-         qYwAOgfis+JznU4zAsh9jhoCIocBrfLcvSXJD6sTlCFED7aOktdcyJQl7SxYFzGYbdKA
-         cX8w==
-X-Gm-Message-State: AOAM531mg+lz4IUksrp+3EKPMXBqY3qr9WVNZqZjDl/pGmGJObSMMa5T
-        U9iH+zXozChqYdavFO9BXVcf/LRlPFHZMfyLP13+GQ==
-X-Google-Smtp-Source: ABdhPJwOH+dMU3ZV+EAZWCrAfkMlWceuSfzj8nbggbBIE6vGZwr08wjI7kbJHzryENUczI1dk388o3ot156zGeQHIH4=
-X-Received: by 2002:a9d:6e16:: with SMTP id e22mr1856094otr.77.1635402688480;
- Wed, 27 Oct 2021 23:31:28 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 27 Oct 2021 23:31:27 -0700
+        id S229694AbhJ1Gfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:35:33 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:60295 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229762AbhJ1Gfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 02:35:31 -0400
+Received: from [192.168.0.2] (ip5f5aef59.dynamic.kabel-deutschland.de [95.90.239.89])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 94DC261E64846;
+        Thu, 28 Oct 2021 08:33:02 +0200 (CEST)
+Message-ID: <0e1c2fd6-c792-a77c-4105-b7f6f5104357@molgen.mpg.de>
+Date:   Thu, 28 Oct 2021 08:33:02 +0200
 MIME-Version: 1.0
-In-Reply-To: <1635386088-18089-4-git-send-email-quic_sbillaka@quicinc.com>
-References: <1635386088-18089-1-git-send-email-quic_sbillaka@quicinc.com> <1635386088-18089-4-git-send-email-quic_sbillaka@quicinc.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 27 Oct 2021 23:31:27 -0700
-Message-ID: <CAE-0n52o0FtVhd_TPEf_NhpXwLErcYm9NX+dqW8RnwrYGrM6-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] drm/dp: Add macro to check max_downspread capability
-To:     Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     robdclark@gmail.com, seanpaul@chromium.org,
-        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
-        dianders@chromium.org, khsieh@codeaurora.org,
-        mkrishn@codeaurora.org, sbillaka@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] raid5-ppl: use swap() to make code cleaner
+Content-Language: en-US
+To:     Yang Guang <yang.guang5@zte.com.cn>
+Cc:     Yang Guang <cgel.zte@gmail.com>, Zeal Robot <zealci@zte.com.cn>,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Song Liu <song@kernel.org>
+References: <20211028010053.7609-1-yang.guang5@zte.com.cn>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20211028010053.7609-1-yang.guang5@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sankeerth Billakanti (2021-10-27 18:54:45)
-> Add a macro to check for the max_downspread capability in
-> drm_dp_helper.
->
-> Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
+Dear Yang,
+
+
+Thank you for the patch.
+
+On 28.10.21 03:00, Yang Guang wrote:
+> Using swap() make it more readable.
+
+make*s*
+
+Maybe:
+
+Use the macro `swap()` defined in `include/linux/minmax.h` to avoid 
+opencoding it.
+
+By the way, there is also the Coccinelle script 
+`scripts/coccinelle/misc/swap.cocci`.
+
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 > ---
+>   drivers/md/raid5-ppl.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/md/raid5-ppl.c b/drivers/md/raid5-ppl.c
+> index 3ddc2aa0b530..4ab417915d7f 100644
+> --- a/drivers/md/raid5-ppl.c
+> +++ b/drivers/md/raid5-ppl.c
+> @@ -1081,7 +1081,7 @@ static int ppl_load_distributed(struct ppl_log *log)
+>   	struct ppl_conf *ppl_conf = log->ppl_conf;
+>   	struct md_rdev *rdev = log->rdev;
+>   	struct mddev *mddev = rdev->mddev;
+> -	struct page *page, *page2, *tmp;
+> +	struct page *page, *page2;
+>   	struct ppl_header *pplhdr = NULL, *prev_pplhdr = NULL;
+>   	u32 crc, crc_stored;
+>   	u32 signature;
+> @@ -1156,9 +1156,7 @@ static int ppl_load_distributed(struct ppl_log *log)
+>   		prev_pplhdr_offset = pplhdr_offset;
+>   		prev_pplhdr = pplhdr;
+>   
+> -		tmp = page;
+> -		page = page2;
+> -		page2 = tmp;
+> +		swap(page, page2);
+>   
+>   		/* calculate next potential ppl offset */
+>   		for (i = 0; i < le32_to_cpu(pplhdr->entries_count); i++)
+> 
 
-Looks OK to me. One question below
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Kind regards,
 
->  include/drm/drm_dp_helper.h | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-> index afdf7f4..b39e7a0 100644
-> --- a/include/drm/drm_dp_helper.h
-> +++ b/include/drm/drm_dp_helper.h
-> @@ -1784,6 +1784,12 @@ drm_dp_tps3_supported(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
->  }
->
->  static inline bool
-> +drm_dp_max_downspread(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
-> +{
-> +       return dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5;
-
-Does it need a dpcd[DP_DPCD_REV] >= 0x11 check? Reading the spec I think
-the answer may be that we check for 1.1 and always return 1 if so just
-to make sure devices don't break the spec and put a 0 here when they're
-rev is >= v1.1?
-
-> +}
-> +
-> +static inline bool
->  drm_dp_tps4_supported(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
->  {
->         return dpcd[DP_DPCD_REV] >= 0x14 &&
+Paul
