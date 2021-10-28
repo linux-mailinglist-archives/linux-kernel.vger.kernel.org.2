@@ -2,249 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADA443E00D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A845F43E00C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhJ1Lev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:34:51 -0400
-Received: from mail-eopbgr80052.outbound.protection.outlook.com ([40.107.8.52]:52161
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230122AbhJ1Lel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:34:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OfADh9wrmvCQwHnR4lR0BBTkKekwPI+Zc+131vpJkrngW6Br/tMi1s1fTjdlvHfyidG0MFQr+ckci36xdrfwEzrfPAPdXi3bGktMyMbH836cUCQK1K41Mjt+AIIhozSW29H7F+udEFJs/WgCU3iQEHKLtnxPUyAA7d4h0kUQViDaKVlYTl55fmTC1fi/V/U9QuykUzyZ8I5aS5XpFOSHfL0buS9NlqOPtAebq73rwLNVq3NE8FW9T2Kkv3S2Ompzt5/pov2Vk3sdnRMh/B+mxCRJqW1p+Rfz9q97KJ2+/HY0iohdPcX6S+HispFs5xOuP0IM3CQ1O9k8bTKo6bDckw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kuqfFf8Jxk2JK9DKOyqwE3i6/hG5D6koovUwoceEFSM=;
- b=I49hGwh7gUvnBx7I2HLNSrQAq6RWHnRYpe2kecrUfUQElFLV7yYEGeCf6ZUKx2ApL6XZGsWIYZowmrC5KjSDisdScB5NiG1kFOFYf4Fhan7xO8jt7p7CB8Yd66pQW+AhwIfGdIwPCU1l2xPa6reqKgZbJg7G3enVPHV4AdCObcCH7jAfVv+oXgyYkVZHNODoFzdgL1AMGeX4afAUwNCB8nRCZMuvOOC+SbieVhsXK/XhG2c7q2xvQ6LpndVNd7Sblh24Wb/cX+D+vMS7/BbZ3XABxB7xG49ikmlASgx+IozWgMorxVrfNkz5TL/g4oKo5YsVtfDzVnuxM8JabmNlGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kuqfFf8Jxk2JK9DKOyqwE3i6/hG5D6koovUwoceEFSM=;
- b=c9UYHmS04dcjDmYmD/qNlJ1SxOzFA+7u02AWYgLvb49T1M9VmMwdZU0tTZwTttc/7thQCJY3xSlzu7Ud37mZOYKeuVhhu0+mCOPTNZgIUN2bf2J0ASG1hS444rCwOUAvkD9FCcjxkNTtF/y4suXHtXspxJV4qE78nhkOZ7Q9BR0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3503.eurprd04.prod.outlook.com (2603:10a6:803:d::26)
- by VE1PR04MB6368.eurprd04.prod.outlook.com (2603:10a6:803:11b::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Thu, 28 Oct
- 2021 11:32:12 +0000
-Received: from VI1PR0402MB3503.eurprd04.prod.outlook.com
- ([fe80::e180:2765:97f4:cae5]) by VI1PR0402MB3503.eurprd04.prod.outlook.com
- ([fe80::e180:2765:97f4:cae5%7]) with mapi id 15.20.4628.020; Thu, 28 Oct 2021
- 11:32:12 +0000
-Message-ID: <69bd66c8-d4f5-7649-33bc-71a507c65ce1@nxp.com>
-Date:   Thu, 28 Oct 2021 14:32:09 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 4/5] soc: fsl: dpio: fix qbman alignment error in the
- virtualization context
-Content-Language: en-US
-To:     Leo Li <leoyang.li@nxp.com>, Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     Youri Querry <youri.querry_1@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20211018151034.137918-1-ioana.ciornei@nxp.com>
- <20211018151034.137918-5-ioana.ciornei@nxp.com>
- <AS8PR04MB8946734C740B202DC3CA88F08F849@AS8PR04MB8946.eurprd04.prod.outlook.com>
-From:   Diana Madalina Craciun <diana.craciun@nxp.com>
-In-Reply-To: <AS8PR04MB8946734C740B202DC3CA88F08F849@AS8PR04MB8946.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR10CA0084.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::37) To VI1PR0402MB3503.eurprd04.prod.outlook.com
- (2603:10a6:803:d::26)
+        id S230191AbhJ1LeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:34:22 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:62939 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbhJ1LeV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 07:34:21 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211028113152epoutp0307aacb112c0ab619b9af776f092e77e3~yLnk1qhNQ2809828098epoutp03W
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:31:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211028113152epoutp0307aacb112c0ab619b9af776f092e77e3~yLnk1qhNQ2809828098epoutp03W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635420712;
+        bh=qPKVtQyQQkGyv4J6n3UjORyRBa1GV5fSYB+lDWdWH5k=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=OHl2IbSpuaXPHter8CS2u72OYkpK+GLmNsUR86+v2a88HoBFaKwLqC6j6dkI/Z9md
+         U0ZymCN/HRiIKDnDVV10RDGV6rR0ZHb/SFYSckGrE+yEKtarqBo8Z8Ai75P8pp6gSw
+         cBwPSxnOGL63mgQdljClabYIvpLxW43BO+m+gsxo=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20211028113152epcas1p2a3b506539472c1df47cdc2dc2dd1a5ac~yLnkyzaA71580015800epcas1p2q;
+        Thu, 28 Oct 2021 11:31:52 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.38.233]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Hg3LB2Zhpz4x9Q3; Thu, 28 Oct
+        2021 11:31:46 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8C.8E.09592.22A8A716; Thu, 28 Oct 2021 20:31:46 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20211028113145epcas1p1fc19a8a2beee5ba347c9cffed3f5784f~yLneK7daj0595105951epcas1p16;
+        Thu, 28 Oct 2021 11:31:45 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211028113145epsmtrp20d676e36bdf69bb168a220efb0592a20~yLneS7pud1039910399epsmtrp2Y;
+        Thu, 28 Oct 2021 11:31:45 +0000 (GMT)
+X-AuditID: b6c32a37-2a5ff70000002578-dd-617a8a220806
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        66.70.08738.12A8A716; Thu, 28 Oct 2021 20:31:45 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211028113145epsmtip1e067a91a5fb27c4c7988479d53a96720~yLnd8yVpt2523925239epsmtip1A;
+        Thu, 28 Oct 2021 11:31:45 +0000 (GMT)
+Subject: Re: [PATCH][next] mmc: dw_mmc: exynos: Fix spelling mistake
+ "candiates" -> candidates
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Colin Ian King <colin.i.king@googlemail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+Message-ID: <e51c552a-0cab-10c0-1242-b69ea7707863@samsung.com>
+Date:   Thu, 28 Oct 2021 20:32:28 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from [192.168.1.211] (188.25.165.160) by AM0PR10CA0084.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13 via Frontend Transport; Thu, 28 Oct 2021 11:32:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 567af497-14a9-4acd-94ce-08d99a069586
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6368:
-X-Microsoft-Antispam-PRVS: <VE1PR04MB636842CBD47164F62A2F7FD9FF869@VE1PR04MB6368.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:873;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HHRrR0EIKOfgbWljcuPqXEb1MBRqvJq2VqtjaoiRAxiR3ee5hWOmuuU4UJnMFjgZJGKaW1KyDrs4/ajT4HGPyx6cnZxgw9sJSATB6GlzxC+i4dpm2Rn2dBZm/iUyKhgHjQJlVEYk6s3yQ+Ehj3yIWF/50p4vSk5MPjPS3meffWaaoLNxvOcox0qxo/kh3i77/yh91GH+pjQAXtRc2FH9fEGcneCDeDueZF1pRujOU685z0O5qYUMmhZZrTp5yEoJlzM397Oa78+4hz9jMhrMcnnJwEZCSNW3emdD2zl47t1Ds+BUty0PSGFsswiLqRI+7G3rtMNjcAgRn6j6WEuRqTQrKGko9V/5XuqMy00IeGp2hrKFlz5zHC3RroS8K5dpTU+ihc7sXgX+NXTeapjSjHhehK7hwuq4w3YvPX/+xN1rzkscV/so78B8Mui2+RCU+TLN7W73nAngQC6DPFqvVnHF1d2bPocBUF3YqO2xVk4PxxbwqDLnv8EednfFDDrp0zxDTQPF2D/KICMOH6Ou/i+gXNsZhewZ/7kQbFr4Cu4oe2ReiBskHgy+Wf6gfPdzVhOkuB9xt5tD1OtH+bkSulxOsoxuczgeJfPLCObUURZLhT1l8OnAQ2a5g2zkSQK8j1C3IQJTORovumT9PFucSqREWBdvVN6tNCJI5lIZ4UjEaw2EbWEbzWORmcopd25X6paVQdba3d1l8ok4/D6NP27t4ZgSDkqYLCN013BITFGRQuwNYBxKIdJRS56NN/hExlTFGlSQaHeOycmDeBbuJg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3503.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(956004)(83380400001)(2616005)(36756003)(6636002)(38100700002)(38350700002)(316002)(8676002)(5660300002)(508600001)(66946007)(31686004)(66556008)(66476007)(2906002)(16576012)(53546011)(4326008)(110136005)(86362001)(8936002)(54906003)(52116002)(6486002)(31696002)(26005)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YlZPSVluZE0rVFZKMjNlWUo0ZE5kSEtycTlRZVlVeUNvcEJvdEkrUjR4bHkz?=
- =?utf-8?B?SVlleGZpNHo2eVJsc1RXajA1R3NIdDhsK3pFKzlCa3Z1LytsSjlmOWp4SnNR?=
- =?utf-8?B?dG04ZllSTDUwcXV2bG41T1dtM2plUUNxZENtN215R21vOHVDdHUxdG1vMmZu?=
- =?utf-8?B?ZUo0c0F2Z1pvaEZ3clJXUVZPUk82WVJjMFdYTlFJZVY4eDVOWFpOL284VGh4?=
- =?utf-8?B?RXl3TVhQL2dqSkUxTkxVeUo5OS8wbWFLakZNR1U4T3FiOW5oa3A1YWFVLzQv?=
- =?utf-8?B?UnBkM0V2cDEzSE5lbnpITTQrZHd3eDdQU2MyOU1CYVJ1NWtuZzRzOU9HSlF5?=
- =?utf-8?B?UzJyblBab1YyZURJOTlvYmc2MVhSZU1tQk55YjROalNIc0RWbmVYQkRHenB2?=
- =?utf-8?B?ei8zYjUvY3I0U0hMMkxhcHhJa3FWUyt0Wi9Gcm5vck5lSys0OUJva2JYa3dZ?=
- =?utf-8?B?SEpwVmVBSlE5NUtoRDJlSDN2ak1uZmtCbnN3TEZCdWhvQ09wdmd3YnNlU2Fq?=
- =?utf-8?B?VEJ4a0svbmhINUdWOEg1QzZMZ204TXJKU0xvcXRoQTk3VmgwTW9LWmswL2hS?=
- =?utf-8?B?NE1ibE9ud2crc0xzVGxqalhUQ1lPdXJWMFFHalRBWTdZQS9RTWpHTEJ1Wm9S?=
- =?utf-8?B?NVhWUHRFcERHM09Xb2phblpvRW42VXhsUjF3V29DMFlwMkF0T1ZYc3U3elRG?=
- =?utf-8?B?Zm1qdThrclRwRGJzVHc3ZTNnOHNkRXJRNnAzYjIzd0Q1Sm5CdFBtc2RQU0Js?=
- =?utf-8?B?UlBPQzViRk83K0ZZVGE2cHBPTEtTVm9LSjUwSGRkYWJEZ3pUZ09ZN3NTZlQv?=
- =?utf-8?B?OWlNS0dZQThTUXpGTFZEVXU3KzlFNEJWS3ZlRjZpZWNNRy8rSkViZmk2dVJl?=
- =?utf-8?B?RFFGRTBVUXFtUERTZk9GUW9IUDZwMDlQVFBJeEZyK0NTT1pYbkt6enhlVm9S?=
- =?utf-8?B?VER1T3JvZFNuUHF2NEhQZGphRzMwcG14ZEJEcTV5Nm9pajY5SWZSVXhNc1VS?=
- =?utf-8?B?YVRsc3I0b2pWSHBjZzQrbjFFaVFoOHAyZXZ0Mm5pVTVBSmRlcUpoeW1KRUkw?=
- =?utf-8?B?bUIwMksyNWd0eHE5QjBiRll3RGhUWHRxdXBBOXFMb3BnYkRqbTNzRmNLTEF1?=
- =?utf-8?B?Q2RPODRjVXJqQ0ZBN05qSnlCOGxCU3JpMHlycEtib0dLdkFxRlh0SVBrdnFL?=
- =?utf-8?B?LzVyb0RRVTNlOGFvblRzeW9Qd2trbnZqYlRLOE0rUG54MnhQbTRjdTdQZVZR?=
- =?utf-8?B?RzNEU0FBcGpYM2wvY1VJaWNyamd0ZGgwSVgxbXR0Z2JQS3ZBa0xGcGhEcnVm?=
- =?utf-8?B?LzQzSmp0bzNJaTVZM2hhQnZ0TTF0azNIRmZlQ3pLQjZxSzZPbnAvV2hjQWNq?=
- =?utf-8?B?MHJabHRtZG9vNUErVm84UHpXbEVndUpNeHFOYlZXWWhlZm8xeTBERDVZdmc3?=
- =?utf-8?B?bGl3OWRNN2VnWVN6UmVLWnVkcGQyamN1Y1lWZnZMU3U4TnE4d3J5ME1wT1Bi?=
- =?utf-8?B?aGQ3amtVeFM3VXlGcDlrRVRQME1vY3U2OE80Vnp3bjdXVnZxQ09ERlRCRmRB?=
- =?utf-8?B?QVZtZUl6emZXL2l4Umd2eUxta3hXS1dFUEgwMTlraEcxTzNvNTJsMEpaVTcv?=
- =?utf-8?B?V2hXLzlIS1F4dG80a1E0bi9FdUg1NHdwQXRxZGcxWUx0d3REc25Ha1pMYVhz?=
- =?utf-8?B?UXNESDhOd1R0Y2MzbGR6YVJiY3N4MjhFSzNDeTZWeUVGQUU1Y1JNOU1iQkpa?=
- =?utf-8?B?eFpINWRadVIvbmNOSkRiVnI4MWZqc2VLc09GWXZuZnpjL0RPNjhUVmhRdExH?=
- =?utf-8?B?aUFqRnQxK21MbEs3R29iYTlseE5VOC9HUWY0eFVMVXlnNHpHK0FDYkVCMzgx?=
- =?utf-8?B?STVKOGU4RUpKNVdRRTJvN3N2cWswSmVYdUxJZStJZjVRTHdkUVJFd0NjbWV2?=
- =?utf-8?B?aHNLMnQ4MUd6ZDNaNFVVL3lOTUdVL1diNWRFOTFCbUl1dWQrQ3BmOFRkOWVo?=
- =?utf-8?B?d3RiTVIzYVVkOXIrNktSdXd6V3d1a3pJU0FrTWxudXNVblZYajVmZm1qbjY4?=
- =?utf-8?B?aENXRTlnK0ZFWkV5ODlyQnJFbmRzNXphSkozaGhWMGhYNnk2YTRsdDlHQVFW?=
- =?utf-8?B?bGxBNXkvWWkvU1E5SFk0R2JsZnd0azZSMGlxemY4dWNRczE2VGV3K0tjM2du?=
- =?utf-8?Q?gEL9L//Ia0aL/YFYOjA6nXU=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 567af497-14a9-4acd-94ce-08d99a069586
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3503.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 11:32:12.0731
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G6A/7iatK/PkNsrIzfwgpwmGyaYD8kxZPvucrrydcIECz3JoV+jsTtlUw75n5+wk3LtZM7VAJ/+RIYmCplFCXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6368
+In-Reply-To: <CAPDyKFqXQwfJuU_PPrfeNwh51UkhtVFJzZ71_0R6kcVuSM3bWw@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmrq5SV1WiwcIdihY7N/5gtdh6S9pi
+        49sfTBabHl9jtbi8aw6bxZH//YwWM87vY7I4vjbcgcNjVkMvm8fTCZPZPe5c28PmsXlJvcfn
+        TXIBrFHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlA
+        hygplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCkwL9IoTc4tL89L18lJLrAwNDIxM
+        gQoTsjMWPfvJUtAvV/Frc3oD40fhLkZODgkBE4mpbz6xdTFycQgJ7GCU2P3jDpTziVHi+I4N
+        7BDOZ0aJ7/s2scG1nLzBApHYxSjRM3UPE4TznlHiyOQm1i5GDg5hgQSJ40e5QRpEBCIkPmxa
+        zgpSwyzwhFFia/tsdpAEm4COxPZvx5lAbF4BO4nVE36xgNgsAqoSu/79BLNFBSIl/p7cxQpR
+        IyhxcuYTsDinQKBE8+bpYL3MAuISt57Mh7LlJba/ncMMskxCoJdDoufrE3aIs10kvjxtZoKw
+        hSVeHd8CFZeS+PxuL9Rr1RK7ms9ANXcwStza1gTVYCyxf+lkJpDPmAU0Jdbv0ocIK0rs/D2X
+        EWIxn8S7rz1gz0sI8Ep0tAlBlKhIXHr9kglm1d0n/1khbA+Jo8dXME9gVJyF5LVZSN6ZheSd
+        WQiLFzCyrGIUSy0ozk1PLTYsMIbHdnJ+7iZGcCLVMt/BOO3tB71DjEwcjIcYJTiYlUR4L88r
+        TxTiTUmsrEotyo8vKs1JLT7EaAoM7InMUqLJ+cBUnlcSb2hiaWBiZmRsYmFoZqgkzvtZrjBR
+        SCA9sSQ1OzW1ILUIpo+Jg1OqgSnKcOrfnU0LqnprBTS7jn+6cpjrosey+wZ3lxR/i6nbcbBi
+        o7+rHrOhW5rojDcPHtvNP3pEzMknNMiu2tfj6oZ9+27vmfI17+kts1WeL38VJYkr+P9byKNY
+        wzf71cxDT+/eNRAqMz3Nr7i8d+68qxsKOStmnOn4cenbv3iWOM9LgjfDZf/MOlQqIPZwy6Ut
+        U68fmv1bqMh9rfQXo0WdW2+eWP/e51HiFx6Nh/Ktcysb1l27JXFILnvxgeIbQRlrXfNv6cY+
+        7ZhwvuJG1nY9eya7mVJaswU+1RdY7pbpNpwkl71tQWV236oz06Yq+eyfKmh5rEVUQm1dDPOZ
+        Dxe37AzPULO6l8odcFKOxTR62t0VSizFGYmGWsxFxYkAvm0FVC0EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBLMWRmVeSWpSXmKPExsWy7bCSnK5iV1Wiwfb94hY7N/5gtdh6S9pi
+        49sfTBabHl9jtbi8aw6bxZH//YwWM87vY7I4vjbcgcNjVkMvm8fTCZPZPe5c28PmsXlJvcfn
+        TXIBrFFcNimpOZllqUX6dglcGYue/WQp6Jer+LU5vYHxo3AXIyeHhICJxNSTN1i6GLk4hAR2
+        MEos/7iDGSIhJfH56VS2LkYOIFtY4vDhYoiat4wSx5tb2UHiwgIJEsePcoOUiwhESLSdPMMK
+        UsMs8IRR4v6jT8wQDdcZJY5M7WEBqWIT0JHY/u04E4jNK2AnsXrCL7A4i4CqxK5/P8FsUYFI
+        iaYTW9kgagQlTs58AhbnFAiUaN48HayXWUBd4s+8S8wQtrjErSfzoeLyEtvfzmGewCg0C0n7
+        LCQts5C0zELSsoCRZRWjZGpBcW56brFhgVFearlecWJucWleul5yfu4mRnDkaGntYNyz6oPe
+        IUYmDsZDjBIczEoivJfnlScK8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9sSQ1OzW1
+        ILUIJsvEwSnVwKR/cu3ppC/32YsMcqWqRc7q/rnN1Wlz7deWvBVshWZdk/zSRa/nKT3U3nP0
+        4qLNtswzBJf08i+bt7/k16HN15jv7uVa4rnna6R19wq3fO28fC85js1KVtOe1N2rq/+6p1xx
+        YXTHoY93wlVfyTDeafkTLq+gsmkde35t3mWJLbnxSs2rLu/csWoCh4fiNbXvt/Zu93TObop5
+        xFv/nrF2SkITMHqZK/i7diX+zVz8RqH1g17xQ6mA06t5Fvx6dsbyTtJO9SKfQon/MZwP6gpW
+        VCp7vPuak5akpzAnp03s1XdGn6XiscIX5l5+oz5JgDduveiMFc91u5nmCi8U63jFF6K7corT
+        AaeFAutX9q58qcRSnJFoqMVcVJwIAD4UfmYLAwAA
+X-CMS-MailID: 20211028113145epcas1p1fc19a8a2beee5ba347c9cffed3f5784f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211028100054epcas1p2767c48b7e47f6147c590f8a3edfc6b85
+References: <20211027130812.426373-1-colin.i.king@gmail.com>
+        <CGME20211028100054epcas1p2767c48b7e47f6147c590f8a3edfc6b85@epcas1p2.samsung.com>
+        <CAPDyKFqXQwfJuU_PPrfeNwh51UkhtVFJzZ71_0R6kcVuSM3bWw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
-
-Just drop this patch. I realize that the implementation is not correct. 
-The problem should be resolved (if possible) elsewhere.
-
-I will open another thread on the relevant lists regarding this problem.
-
-Diana
-
-On 10/27/2021 2:47 AM, Leo Li wrote:
->
->> -----Original Message-----
->> From: Ioana Ciornei <ioana.ciornei@nxp.com>
->> Sent: Monday, October 18, 2021 10:11 AM
->> To: Leo Li <leoyang.li@nxp.com>
->> Cc: Youri Querry <youri.querry_1@nxp.com>; linux-kernel@vger.kernel.org;
->> Diana Madalina Craciun <diana.craciun@nxp.com>; Ioana Ciornei
->> <ioana.ciornei@nxp.com>
->> Subject: [PATCH 4/5] soc: fsl: dpio: fix qbman alignment error in the
->> virtualization context
+On 10/28/21 7:00 PM, Ulf Hansson wrote:
+> On Wed, 27 Oct 2021 at 15:08, Colin Ian King
+> <colin.i.king@googlemail.com> wrote:
 >>
->> From: Diana Craciun <diana.craciun@nxp.com>
+>> There are several spelling mistakes in variable names and in a dev_warn
+>> message. Fix these.
 >>
->> When running as a guest, under KVM, the CENA region is mapped as device
->> memory, so uncacheable. When the memory is mapped as device memory,
->> the unaligned accesses are not allowed.  Memcpy is optimized to transfer 8
->> bytes at a time regardless of the start address and might cause alignment
->> issues.
->>
->> Signed-off-by: Diana Craciun <diana.craciun@nxp.com>
->> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> We get the following feedback from Arnd about this patch.  Could you respond to the comments?
->
-> "This patch looks very suspicious to me, I don't think it's generally safe to
-> use memcpy_toio() on a normal pointer, as the __iomem tokens may
-> be in a separate address range, even though this currently works
-> on arm64. Adding the  (__iomem void *) cast without a comment that
-> explains why it's added seems similarly wrong, and finally the
-> changeset text does not seem to match what the code does:
->
-> According to the text, the pointer is to a virtual address mapped as
-> "device memory" (i.e. PROT_DEVICE_nGnRE or PROT_DEVICE_nGnRnE),
-> but the code suggests it's actually write-combining normal
-> (PROT_NORMAL_NC)."
->
+>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> 
+> Applied for next, thanks!
+
+Thanks for fixing them!
+
+Best Regards,
+Jaehoon Chung
+
+> 
+> Kind regards
+> Uffe
+> 
+> 
 >> ---
->>   drivers/soc/fsl/dpio/qbman-portal.c | 24 ++++++++++++------------
->>   1 file changed, 12 insertions(+), 12 deletions(-)
+>>  drivers/mmc/host/dw_mmc-exynos.c | 20 ++++++++++----------
+>>  1 file changed, 10 insertions(+), 10 deletions(-)
 >>
->> diff --git a/drivers/soc/fsl/dpio/qbman-portal.c
->> b/drivers/soc/fsl/dpio/qbman-portal.c
->> index 3fd54611ed98..ef9cafd12534 100644
->> --- a/drivers/soc/fsl/dpio/qbman-portal.c
->> +++ b/drivers/soc/fsl/dpio/qbman-portal.c
->> @@ -679,9 +679,9 @@ int qbman_swp_enqueue_multiple_direct(struct
->> qbman_swp *s,
->>   	for (i = 0; i < num_enqueued; i++) {
->>   		p = (s->addr_cena + QBMAN_CENA_SWP_EQCR(eqcr_pi &
->> half_mask));
->>   		/* Skip copying the verb */
->> -		memcpy(&p[1], &cl[1], EQ_DESC_SIZE_WITHOUT_FD - 1);
->> -		memcpy(&p[EQ_DESC_SIZE_FD_START/sizeof(uint32_t)],
->> -		       &fd[i], sizeof(*fd));
->> +		memcpy_toio((__iomem void *)&p[1], &cl[1],
->> EQ_DESC_SIZE_WITHOUT_FD - 1);
->> +		memcpy_toio((__iomem void
->> *)&p[EQ_DESC_SIZE_FD_START / sizeof(uint32_t)],
->> +			    &fd[i], sizeof(*fd));
->>   		eqcr_pi++;
->>   	}
+>> diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-exynos.c
+>> index 1f8a3c0ddfe1..c2dd29ef45c6 100644
+>> --- a/drivers/mmc/host/dw_mmc-exynos.c
+>> +++ b/drivers/mmc/host/dw_mmc-exynos.c
+>> @@ -442,14 +442,14 @@ static inline u8 dw_mci_exynos_move_next_clksmpl(struct dw_mci *host)
+>>         return sample;
+>>  }
 >>
->> @@ -763,9 +763,9 @@ int
->> qbman_swp_enqueue_multiple_mem_back(struct qbman_swp *s,
->>   	for (i = 0; i < num_enqueued; i++) {
->>   		p = (s->addr_cena + QBMAN_CENA_SWP_EQCR(eqcr_pi &
->> half_mask));
->>   		/* Skip copying the verb */
->> -		memcpy(&p[1], &cl[1], EQ_DESC_SIZE_WITHOUT_FD - 1);
->> -		memcpy(&p[EQ_DESC_SIZE_FD_START/sizeof(uint32_t)],
->> -		       &fd[i], sizeof(*fd));
->> +		memcpy_toio((__iomem void *)&p[1], &cl[1],
->> EQ_DESC_SIZE_WITHOUT_FD - 1);
->> +		memcpy_toio((__iomem void
->> *)&p[EQ_DESC_SIZE_FD_START / sizeof(uint32_t)],
->> +			    &fd[i], sizeof(*fd));
->>   		eqcr_pi++;
->>   	}
+>> -static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
+>> +static s8 dw_mci_exynos_get_best_clksmpl(u8 candidates)
+>>  {
+>>         const u8 iter = 8;
+>>         u8 __c;
+>>         s8 i, loc = -1;
 >>
->> @@ -837,9 +837,9 @@ int
->> qbman_swp_enqueue_multiple_desc_direct(struct qbman_swp *s,
->>   		p = (s->addr_cena + QBMAN_CENA_SWP_EQCR(eqcr_pi &
->> half_mask));
->>   		cl = (uint32_t *)(&d[i]);
->>   		/* Skip copying the verb */
->> -		memcpy(&p[1], &cl[1], EQ_DESC_SIZE_WITHOUT_FD - 1);
->> -		memcpy(&p[EQ_DESC_SIZE_FD_START/sizeof(uint32_t)],
->> -		       &fd[i], sizeof(*fd));
->> +		memcpy_toio((__iomem void *)&p[1], &cl[1],
->> EQ_DESC_SIZE_WITHOUT_FD - 1);
->> +		memcpy_toio((__iomem void
->> *)&p[EQ_DESC_SIZE_FD_START / sizeof(uint32_t)],
->> +			    &fd[i], sizeof(*fd));
->>   		eqcr_pi++;
->>   	}
+>>         for (i = 0; i < iter; i++) {
+>> -               __c = ror8(candiates, i);
+>> +               __c = ror8(candidates, i);
+>>                 if ((__c & 0xc7) == 0xc7) {
+>>                         loc = i;
+>>                         goto out;
+>> @@ -457,7 +457,7 @@ static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
+>>         }
 >>
->> @@ -907,9 +907,9 @@ int
->> qbman_swp_enqueue_multiple_desc_mem_back(struct qbman_swp *s,
->>   		p = (s->addr_cena + QBMAN_CENA_SWP_EQCR(eqcr_pi &
->> half_mask));
->>   		cl = (uint32_t *)(&d[i]);
->>   		/* Skip copying the verb */
->> -		memcpy(&p[1], &cl[1], EQ_DESC_SIZE_WITHOUT_FD - 1);
->> -		memcpy(&p[EQ_DESC_SIZE_FD_START/sizeof(uint32_t)],
->> -		       &fd[i], sizeof(*fd));
->> +		memcpy_toio((__iomem void *)&p[1], &cl[1],
->> EQ_DESC_SIZE_WITHOUT_FD - 1);
->> +		memcpy_toio((__iomem void
->> *)&p[EQ_DESC_SIZE_FD_START / sizeof(uint32_t)],
->> +			    &fd[i], sizeof(*fd));
->>   		eqcr_pi++;
->>   	}
+>>         for (i = 0; i < iter; i++) {
+>> -               __c = ror8(candiates, i);
+>> +               __c = ror8(candidates, i);
+>>                 if ((__c & 0x83) == 0x83) {
+>>                         loc = i;
+>>                         goto out;
+>> @@ -466,11 +466,11 @@ static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
 >>
+>>         /*
+>>          * If there is no cadiates value, then it needs to return -EIO.
+>> -        * If there are candiates values and don't find bset clk sample value,
+>> -        * then use a first candiates clock sample value.
+>> +        * If there are candidates values and don't find bset clk sample value,
+>> +        * then use a first candidates clock sample value.
+>>          */
+>>         for (i = 0; i < iter; i++) {
+>> -               __c = ror8(candiates, i);
+>> +               __c = ror8(candidates, i);
+>>                 if ((__c & 0x1) == 0x1) {
+>>                         loc = i;
+>>                         goto out;
+>> @@ -485,7 +485,7 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+>>         struct dw_mci *host = slot->host;
+>>         struct dw_mci_exynos_priv_data *priv = host->priv;
+>>         struct mmc_host *mmc = slot->mmc;
+>> -       u8 start_smpl, smpl, candiates = 0;
+>> +       u8 start_smpl, smpl, candidates = 0;
+>>         s8 found;
+>>         int ret = 0;
+>>
+>> @@ -496,18 +496,18 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+>>                 smpl = dw_mci_exynos_move_next_clksmpl(host);
+>>
+>>                 if (!mmc_send_tuning(mmc, opcode, NULL))
+>> -                       candiates |= (1 << smpl);
+>> +                       candidates |= (1 << smpl);
+>>
+>>         } while (start_smpl != smpl);
+>>
+>> -       found = dw_mci_exynos_get_best_clksmpl(candiates);
+>> +       found = dw_mci_exynos_get_best_clksmpl(candidates);
+>>         if (found >= 0) {
+>>                 dw_mci_exynos_set_clksmpl(host, found);
+>>                 priv->tuned_sample = found;
+>>         } else {
+>>                 ret = -EIO;
+>>                 dev_warn(&mmc->class_dev,
+>> -                       "There is no candiates value about clksmpl!\n");
+>> +                       "There is no candidates value about clksmpl!\n");
+>>         }
+>>
+>>         return ret;
 >> --
->> 2.33.1
+>> 2.32.0
+>>
+> 
 
