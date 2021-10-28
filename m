@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F5343E0DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1DD43E0E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhJ1M0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:26:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52596 "EHLO mail.kernel.org"
+        id S230400AbhJ1M0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:26:51 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:54171 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhJ1M0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:26:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 031DD610C8;
-        Thu, 28 Oct 2021 12:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635423844;
-        bh=FhsU/JUmjM3yQSaI1P6ZyROxrwHmJWAWlY7zoKGNVdM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MCDP17rEWu69wuqgoV/MeWPuFeRsu7yM5CCSspO5ekm1+x18CfQ8ALE4/3W0DUJn5
-         JV63dFwziZouKaPdktNYUnZQK+C/4EHmX/FUJHXq2dlTpunamZacqfkwHRr8zmvlQi
-         cSDmuMrfgmJ7mfcySTgOOkSenWsMk/FFuiZI0cU768un21KuFZYjHBIXiYhy4JUTbs
-         hQVEMD0+w1rcWXCcl8cqu8+x9g5Yzxm4IKcEKpVXuBP4D8I63S98MLU9o8R7wsyb7d
-         vB9jqiB1NdOCxDCHRjl86cHkevkJHDgJepZaMkzvRUsz1wXGgmcBN71VMlYkbJeZCT
-         KcKR6bTmFhO1g==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.15-rc7
-Date:   Thu, 28 Oct 2021 13:23:47 +0100
-Message-Id: <20211028122404.031DD610C8@mail.kernel.org>
+        id S229998AbhJ1M0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:26:47 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Hg4Vm6B4Xz9sSg;
+        Thu, 28 Oct 2021 14:24:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LcTfRu4VdTXV; Thu, 28 Oct 2021 14:24:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hg4Vl5Ffdz9sSx;
+        Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9DD228B763;
+        Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id W7VTTWHSEaOY; Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.214])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 30A6F8B78D;
+        Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19SCO6vZ194383
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 28 Oct 2021 14:24:06 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19SCO50i194382;
+        Thu, 28 Oct 2021 14:24:05 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        live-patching@vger.kernel.org
+Subject: [PATCH v1 0/5] Implement livepatch on PPC32
+Date:   Thu, 28 Oct 2021 14:24:00 +0200
+Message-Id: <cover.1635423081.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1635423843; l=817; s=20211009; h=from:subject:message-id; bh=Kpfi8u6BYe1lB+LwyFewbJpGh40Ydk0cPIy4xtozaU4=; b=f0o8yLCQzjOdho2S2LrY3195nnMIi9FpAKMSzkL2Gm0p8wQjfmelld6x0/1vGqOLSZgLUIiZ9oyk s0Ym1Z0mC4KouO6TCSH6KOCQ42eska6ueLMRxnJXjoQfjyXfnjpM
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 16a8e2fbb2d49111004efc1c7342e083eafabeb0:
+This series implements livepatch on PPC32.
 
-  spi-mux: Fix false-positive lockdep splats (2021-10-14 13:32:19 +0100)
+This is largely copied from what's done on PPC64.
 
-are available in the Git repository at:
+Christophe Leroy (5):
+  livepatch: Fix build failure on 32 bits processors
+  powerpc/ftrace: No need to read LR from stack in _mcount()
+  powerpc/ftrace: Add module_trampoline_target() for PPC32
+  powerpc/ftrace: Activate HAVE_DYNAMIC_FTRACE_WITH_REGS on PPC32
+  powerpc/ftrace: Add support for livepatch to PPC32
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.15-rc7
+ arch/powerpc/Kconfig                  |   2 +-
+ arch/powerpc/include/asm/livepatch.h  |   4 +-
+ arch/powerpc/kernel/module_32.c       |  33 +++++
+ arch/powerpc/kernel/trace/ftrace.c    |  53 +++-----
+ arch/powerpc/kernel/trace/ftrace_32.S | 187 ++++++++++++++++++++++++--
+ kernel/livepatch/core.c               |   4 +-
+ 6 files changed, 230 insertions(+), 53 deletions(-)
 
-for you to fetch changes up to d81d0e41ed5fe7229a2c9a29d13bad288c7cf2d2:
+-- 
+2.31.1
 
-  spi: spl022: fix Microwire full duplex mode (2021-10-26 11:53:57 +0100)
-
-----------------------------------------------------------------
-spi: Fixes for v5.15
-
-A couple of final driver specific fixes for v5.15, one fixing potential
-ID collisions between two instances of the Altera driver and one making
-Microwire full duplex mode actually work on pl022.
-
-----------------------------------------------------------------
-Russ Weight (1):
-      spi: altera: Change to dynamic allocation of spi id
-
-Thomas Perrot (1):
-      spi: spl022: fix Microwire full duplex mode
-
- drivers/spi/spi-altera-dfl.c      | 2 +-
- drivers/spi/spi-altera-platform.c | 2 +-
- drivers/spi/spi-pl022.c           | 5 +++--
- 3 files changed, 5 insertions(+), 4 deletions(-)
