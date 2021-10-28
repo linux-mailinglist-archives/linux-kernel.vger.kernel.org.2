@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB37943E0FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B0B43E0FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhJ1M3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhJ1M3W (ORCPT
+        id S230414AbhJ1MaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:30:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14873 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhJ1MaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:29:22 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF45C061570;
-        Thu, 28 Oct 2021 05:26:55 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg4Yn1V0dz4xbr;
-        Thu, 28 Oct 2021 23:26:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635424014;
-        bh=J43BOHXi3s6ZgPk25TW9tHUw2VoU1KG5nl6oX8vdGuo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sqbwWTEp9NGLBY8h9H24M4ETUggKgpMisV0Kz+I3Tgh+kxVk+x84ZLwQkfDizyCSo
-         n+e6TqmZ/SQa779zSp7fjJT1fVMANwGXPzA8EO6841njxAzO/JuJwmPit6Ads3zQ9w
-         YcneJuXjMpxT9Xi3Stm7yT7IOBs1gK6ITtA0KpL5d9A52btTbLNpBHlRR8ooc+fwcK
-         14TJrf++lwCsP5DM6fJV9Zpqd/ppo+IAfBXZuiMEUIpYQorRr5D8PcrnUM19hNQb6n
-         2Wu1en7SxwC4of8eM6BehB2XDcvfJJvs35TopgbzmpE91mg3rXya91Uq27w27dgO9f
-         zrZ7zfhNvDYEQ==
-Date:   Thu, 28 Oct 2021 23:26:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the tip tree
-Message-ID: <20211028232651.31c01c86@canb.auug.org.au>
+        Thu, 28 Oct 2021 08:30:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hg4ZW61Mrz8yCQ;
+        Thu, 28 Oct 2021 20:27:31 +0800 (CST)
+Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 28 Oct 2021 20:27:35 +0800
+Received: from [10.174.176.231] (10.174.176.231) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 28 Oct 2021 20:27:35 +0800
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <wangkefeng.wang@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <wuxu.wu@huawei.com>, Hewenliang <hewenliang4@huawei.com>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Subject: [PATCH] arm64: mm: Use asid2idx() and asid feature macro for cleanup
+Message-ID: <4aaabf1b-00c3-3365-e371-9d97dc0c06ab@huawei.com>
+Date:   Thu, 28 Oct 2021 20:27:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gnZxGiik2qDnuEnbS2yzXQE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.231]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500024.china.huawei.com (7.185.36.10)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gnZxGiik2qDnuEnbS2yzXQE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Use asid2idx() and asid feature macro for cleanup.
 
-Hi all,
+No functional change.
 
-After merging the tip tree, today's linux-next build (htmldocs) produced
-this warning:
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+---
+ arch/arm64/mm/context.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Documentation/x86/xstate.rst:15: WARNING: Title underline too short.
+diff --git a/arch/arm64/mm/context.c b/arch/arm64/mm/context.c
+index cd72576ae2b7..076f14a75bd5 100644
+--- a/arch/arm64/mm/context.c
++++ b/arch/arm64/mm/context.c
+@@ -50,10 +50,10 @@ static u32 get_cpu_asid_bits(void)
+ 		pr_warn("CPU%d: Unknown ASID size (%d); assuming 8-bit\n",
+ 					smp_processor_id(),  fld);
+ 		fallthrough;
+-	case 0:
++	case ID_AA64MMFR0_ASID_8:
+ 		asid = 8;
+ 		break;
+-	case 2:
++	case ID_AA64MMFR0_ASID_16:
+ 		asid = 16;
+ 	}
 
-Using dynamically enabled XSTATE features in user space applications
--------------------------------------------------------------------
+@@ -162,7 +162,7 @@ static u64 new_context(struct mm_struct *mm)
+ 	u64 generation = atomic64_read(&asid_generation);
 
-Introduced by commit
+ 	if (asid != 0) {
+-		u64 newasid = generation | (asid & ~ASID_MASK);
++		u64 newasid = generation | asid2idx(asid);
 
-  93175ec299f8 ("Documentation/x86: Add documentation for using dynamic XST=
-ATE features")
+ 		/*
+ 		 * If our current ASID was active during a rollover, we
+@@ -306,7 +306,7 @@ unsigned long arm64_mm_context_get(struct mm_struct *mm)
+ out_unlock:
+ 	raw_spin_unlock_irqrestore(&cpu_asid_lock, flags);
 
---=20
-Cheers,
-Stephen Rothwell
+-	asid &= ~ASID_MASK;
++	asid = asid2idx(asid);
 
---Sig_/gnZxGiik2qDnuEnbS2yzXQE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6lwsACgkQAVBC80lX
-0GxSMwf9FjzaUVcD0hGx6SNA9oN/Y50RmNDYOCDWE3ESzk+r5eDyS6nTqg4EnM6H
-luCxVAjlLpdCNDd7KobGIeN93HOIE5HTOZmTBAyZT8NObpGY8fk8pcMco7+fgv6J
-wfC8PFgDmirFUXi8Gp+pWUbr6C+4GAb0HY3lfX7YS4/G8pDCDrUyTZB7zk3oWBcN
-2FmepMovIxBvf0XTcKjcQWbH0mwfpXL9OlBdLfF6fIwA9izQWytPmgNBkkn0SjB4
-Rhwn/hArUXoUH0LF5Tg8KOC/Lzn896oaXcmGdzrE0OqqUIrN2CO4mHncX0enfzUL
-Tzm7O8QouEiHnvgrpX3qdiIg1ZQ3qg==
-=de3Y
------END PGP SIGNATURE-----
-
---Sig_/gnZxGiik2qDnuEnbS2yzXQE--
+ 	/* Set the equivalent of USER_ASID_BIT */
+ 	if (asid && arm64_kernel_unmapped_at_el0())
+-- 
+2.27.0
