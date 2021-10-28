@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3846643DD33
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CF043DD39
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhJ1I4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:56:02 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35542 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhJ1I4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:56:01 -0400
-Received: from zn.tnic (p200300ec2f13a70055babd09551bec66.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:a700:55ba:bd09:551b:ec66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 30ED21EC064E;
-        Thu, 28 Oct 2021 10:53:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1635411213;
+        id S229992AbhJ1I76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:59:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46218 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhJ1I75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 04:59:57 -0400
+Date:   Thu, 28 Oct 2021 10:57:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635411449;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=DvOoyo1XKHGob7k4rSognbYB+jQykBxHt0HYpc/zPoA=;
-        b=BnJCKIF8hrw+iAYzJ+fAEZncz37ov25IOg48XjNMdoJbPaAv39XJ7dUfwOiUU+/Swxx5Z7
-        6IHfedl0l9M2kwjHOXD1LEjAXa67u818TdjcyT5QlK1FhHDbRf2Hv3rr/v8dhqi6Ttgupu
-        2QgNXkpaTgvriXD06njphmzyp4qqKa8=
-Date:   Thu, 28 Oct 2021 10:53:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Koralahalli Channabasappa, Smita" <skoralah@amd.com>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH v2 3/5] x86/mce: Use mca_msr_reg() in prepare_msrs()
-Message-ID: <YXplCF5ccfbl+dGg@zn.tnic>
-References: <20211019233641.140275-1-Smita.KoralahalliChannabasappa@amd.com>
- <20211019233641.140275-4-Smita.KoralahalliChannabasappa@amd.com>
- <YXk6z9xWvS4B7eRP@zn.tnic>
- <f5287d1d-bb2b-bb9b-1b33-f6692eaeb566@amd.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=h3Cje/SqvoYZHCrFh9PDa4DmqMrBzIUj2b9Zikpc8xU=;
+        b=gDLavLb42mgNDpGDuSnlwyEe1Z9r4m/Po0NnjCth7VpzBoYctRmN0Ub+FN7H8YPPpHHyGp
+        KVlQ/td991cNpKG+Kh1j+AhkiSQ0M8FvyC8s0Dg+w9t7e+jfFKPQ8DER19/5fEy+BA/oma
+        Ay/x3wMdwYUlLPug8/yX2ffc6LIp77YO9F3MsQ6zoIllIpjlI+U/47FsWweq6HNOPeymMm
+        dY2y/Ez+MCEz4igh8j/chZB4sisOcWAnaxAfNG7zVQX0XxatZ8eQVTN0Asx2Vducr53qRM
+        LfSh3lTCULwNdPMXfgy1fxLFkJ1H6M6UxDBSOkqgKh03YsZOsQvre/dBDawveQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635411449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h3Cje/SqvoYZHCrFh9PDa4DmqMrBzIUj2b9Zikpc8xU=;
+        b=5c0RE0K570oOvLi7kvEji7sKkb5/YnQB9kigXLanVL78HNxEFboadXTM25uOQvRSVBp8KC
+        5fIuamHGKliWQMBQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Gregor Beck <gregor.beck@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
+Subject: Re: 5.4.143-rt63 fscache sleeps while holding a look
+Message-ID: <20211028085728.j34fsqbvtb5hqqfc@linutronix.de>
+References: <CAEvSrYKjfkO=q=kK=2GEo707QDuEGjKA5Nn3E+9=QGOxnFE+vw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f5287d1d-bb2b-bb9b-1b33-f6692eaeb566@amd.com>
+In-Reply-To: <CAEvSrYKjfkO=q=kK=2GEo707QDuEGjKA5Nn3E+9=QGOxnFE+vw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 03:19:51PM -0500, Koralahalli Channabasappa, Smita wrote:
-> Multiple initialization here I mean: Initializing the MCA registers twice.
-> Prior to mca_msr_reg() replacement, the MCA registers were initialized
-> separately for SMCA and legacy processors. However, this is not required
-> after replacing with mca_msr_reg() as it does the job of returning the
-> proper MSR addresses.
+On 2021-09-14 10:29:40 [+0200], Gregor Beck wrote:
+Hi,
 
-You mean, there was a simple if-else statement
+> with kernel 5.4.143-rt63 fscache might sleep while holding a lock:
+> 
+> [ 1392.058346] BUG: sleeping function called from invalid context at
+> kernel/locking/rtmutex.c:973
+> [ 1392.058349] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 159,
+> name: kswapd0
+> [ 1392.058351] Preemption disabled at:
+> [ 1392.058351] [<ffffffffc053a2a5>] fscache_enqueue_object+0x45/0x100
+> [fscache]
 
-	if (SMCA)
+This brings some memory back. Let me stare at it.
 
-		prepare MSRs
+> Gregor
 
-	else
-
-		prepare MSRs for !SMCA
-
-which did the init for each type of system in one go.
-
-But frankly, your change doesn't make it more readable but less - you
-have a goto label now and another SMCA feature check at the end. Vs a
-simple if-else which is trivial to read.
-
-So I don't see any advantage in this change.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Sebastian
