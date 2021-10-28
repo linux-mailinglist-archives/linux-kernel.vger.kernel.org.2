@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF7C43E1E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE0243E1F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhJ1NUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:20:36 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:53431 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhJ1NUf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:20:35 -0400
-Received: (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 37921200021;
-        Thu, 28 Oct 2021 13:18:05 +0000 (UTC)
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     davem@davemloft.net, Russell King <linux@armlinux.org.uk>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com
-Subject: [PATCH net-next v2] net: ipconfig: Release the rtnl_lock while waiting for carrier
-Date:   Thu, 28 Oct 2021 15:18:04 +0200
-Message-Id: <20211028131804.413243-1-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.25.4
+        id S230347AbhJ1NY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:24:28 -0400
+Received: from ixit.cz ([94.230.151.217]:35134 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229981AbhJ1NY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:24:27 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 6675D20064;
+        Thu, 28 Oct 2021 15:21:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635427318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tRtvLsIyTzl1Po9E5wDOrSjeOosw5eO3XZEpRHlLuvo=;
+        b=UiHtoW68Y5aQXo7yUDPn3YqqEXayTa44ULi0V79pXd25hc7dw86Md4dGdAt4pT/ourOMvx
+        JVHNpaEYDtEdhiC26vs5biOCowMVOCUm5kZmqCPCFsRoMzlCcSTi+V+FXPQQgeKbF+c+Dt
+        cU2I/nRvDOnamwcOBUMUrqeBRftjAQE=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: tegra: add -hog to gpios hogs
+Date:   Thu, 28 Oct 2021 15:21:52 +0200
+Message-Id: <20211028132152.44232-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While waiting for a carrier to come on one of the netdevices, some
-devices will require to take the rtnl lock at some point to fully
-initialize all parts of the link.
+Comply with dt-schema, fixes warnings as:
+$ make dtbs_check
+...
+arch/arm/boot/dts/tegra30-apalis-eval.dt.yaml: pex-perst-n: $nodename:0: 'pex-perst-n' does not match '^(hog-[0-9]+|.+-hog(-[0-9]+)?)$'
+	From schema: /home/runner/.local/lib/python3.8/site-packages/dtschema/schemas/gpio/gpio-hog.yaml
+...
 
-That's the case for SFP, where the rtnl is taken when a module gets
-detected. This prevents mounting an NFS rootfs over an SFP link.
-
-This means that while ipconfig waits for carriers to be detected, no SFP
-modules can be detected in the meantime, it's only detected after
-ipconfig times out.
-
-This commit releases the rtnl_lock while waiting for the carrier to come
-up, and re-takes it to check the for the init device and carrier status.
-
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
-v2: - Following Antoine's review, release the lock earlier and only
-explicitely protect the for_each_netdev loop
-    - Rebased and targeted the patch towards net-next
-    - Dropped the Fixes tag
+ arch/arm/boot/dts/tegra124-apalis-eval.dts      | 2 +-
+ arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts | 2 +-
+ arch/arm/boot/dts/tegra20-colibri.dtsi          | 6 +++---
+ arch/arm/boot/dts/tegra30-apalis-eval.dts       | 2 +-
+ arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts  | 2 +-
+ arch/arm/boot/dts/tegra30-colibri.dtsi          | 2 +-
+ 6 files changed, 8 insertions(+), 8 deletions(-)
 
- net/ipv4/ipconfig.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
-index 816d8aad5a68..9d41d5d5cd1e 100644
---- a/net/ipv4/ipconfig.c
-+++ b/net/ipv4/ipconfig.c
-@@ -262,6 +262,11 @@ static int __init ic_open_devs(void)
- 				 dev->name, able, d->xid);
- 		}
- 	}
-+	/* Devices with a complex topology like SFP ethernet interfaces needs
-+	 * the rtnl_lock at init. The carrier wait-loop must therefore run
-+	 * without holding it.
-+	 */
-+	rtnl_unlock();
+diff --git a/arch/arm/boot/dts/tegra124-apalis-eval.dts b/arch/arm/boot/dts/tegra124-apalis-eval.dts
+index 28c29b6813a7..3209554ec7e6 100644
+--- a/arch/arm/boot/dts/tegra124-apalis-eval.dts
++++ b/arch/arm/boot/dts/tegra124-apalis-eval.dts
+@@ -246,7 +246,7 @@ reg_usbh_vbus: regulator-usbh-vbus {
  
- 	/* no point in waiting if we could not bring up at least one device */
- 	if (!ic_first_dev)
-@@ -274,9 +279,13 @@ static int __init ic_open_devs(void)
- 			   msecs_to_jiffies(carrier_timeout * 1000))) {
- 		int wait, elapsed;
+ &gpio {
+ 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
+-	pex-perst-n {
++	pex-perst-n-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(DD, 1) GPIO_ACTIVE_HIGH>;
+ 		output-high;
+diff --git a/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts b/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts
+index f3afde410615..814257c79bf1 100644
+--- a/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts
++++ b/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts
+@@ -248,7 +248,7 @@ reg_usbh_vbus: regulator-usbh-vbus {
  
-+		rtnl_lock();
- 		for_each_netdev(&init_net, dev)
--			if (ic_is_init_dev(dev) && netif_carrier_ok(dev))
-+			if (ic_is_init_dev(dev) && netif_carrier_ok(dev)) {
-+				rtnl_unlock();
- 				goto have_carrier;
-+			}
-+		rtnl_unlock();
+ &gpio {
+ 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
+-	pex-perst-n {
++	pex-perst-n-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(DD, 1) GPIO_ACTIVE_HIGH>;
+ 		output-high;
+diff --git a/arch/arm/boot/dts/tegra20-colibri.dtsi b/arch/arm/boot/dts/tegra20-colibri.dtsi
+index 375b60eb03af..618d35647a43 100644
+--- a/arch/arm/boot/dts/tegra20-colibri.dtsi
++++ b/arch/arm/boot/dts/tegra20-colibri.dtsi
+@@ -749,7 +749,7 @@ &emc_icc_dvfs_opp_table {
+ };
  
- 		msleep(1);
+ &gpio {
+-	lan-reset-n {
++	lan-reset-n-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(V, 4) GPIO_ACTIVE_HIGH>;
+ 		output-high;
+@@ -757,7 +757,7 @@ lan-reset-n {
+ 	};
  
-@@ -289,7 +298,6 @@ static int __init ic_open_devs(void)
- 		next_msg = jiffies + msecs_to_jiffies(20000);
- 	}
- have_carrier:
--	rtnl_unlock();
+ 	/* Tri-stating GMI_WR_N on SODIMM pin 99 nPWE */
+-	npwe {
++	npwe-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(T, 5) GPIO_ACTIVE_HIGH>;
+ 		output-high;
+@@ -765,7 +765,7 @@ npwe {
+ 	};
  
- 	*last = NULL;
+ 	/* Not tri-stating GMI_WR_N on SODIMM pin 93 RDnWR */
+-	rdnwr {
++	rdnwr-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(T, 6) GPIO_ACTIVE_HIGH>;
+ 		output-low;
+diff --git a/arch/arm/boot/dts/tegra30-apalis-eval.dts b/arch/arm/boot/dts/tegra30-apalis-eval.dts
+index 9f653ef41da4..93b83b3c5655 100644
+--- a/arch/arm/boot/dts/tegra30-apalis-eval.dts
++++ b/arch/arm/boot/dts/tegra30-apalis-eval.dts
+@@ -239,7 +239,7 @@ reg_usbh_vbus: regulator-usbh-vbus {
  
+ &gpio {
+ 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
+-	pex-perst-n {
++	pex-perst-n-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(S, 7) GPIO_ACTIVE_HIGH>;
+ 		output-high;
+diff --git a/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts b/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts
+index 86e138e8c7f0..fbfa75e53f32 100644
+--- a/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts
++++ b/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts
+@@ -257,7 +257,7 @@ reg_vddio_sdmmc3: regulator-vddio-sdmmc3 {
+ 
+ &gpio {
+ 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
+-	pex-perst-n {
++	pex-perst-n-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(S, 7) GPIO_ACTIVE_HIGH>;
+ 		output-high;
+diff --git a/arch/arm/boot/dts/tegra30-colibri.dtsi b/arch/arm/boot/dts/tegra30-colibri.dtsi
+index 64e4a375bfb1..9cfc6c7d2065 100644
+--- a/arch/arm/boot/dts/tegra30-colibri.dtsi
++++ b/arch/arm/boot/dts/tegra30-colibri.dtsi
+@@ -1056,7 +1056,7 @@ sound {
+ };
+ 
+ &gpio {
+-	lan-reset-n {
++	lan-reset-n-hog {
+ 		gpio-hog;
+ 		gpios = <TEGRA_GPIO(DD, 0) GPIO_ACTIVE_HIGH>;
+ 		output-high;
 -- 
-2.25.4
+2.33.0
 
