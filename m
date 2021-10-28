@@ -2,153 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908A543E002
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3591243DFFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhJ1LbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:31:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30357 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230216AbhJ1LbT (ORCPT
+        id S230213AbhJ1LbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhJ1LbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:31:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635420532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MHpIfrYfSW8Oruu5gZzONXfOs5cqhayPI05VEPrlFqI=;
-        b=ZXK1SsScmTgtnETpIVi2QXHMMs18RzTZPLNJsMQPBJZrv9133Un6zEiD04wYDmRLk8iqrN
-        iuZX4yT7S6TUZoHT9hESffo8pukWCq5lQV0yzXImlSkMPgQqKPN/CyfuhIr/OGE6dxfDS+
-        vegJ1oDUxlGxo3f0//TYGU5zmJ/np9g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-301-eJZbxn5mNyK61ySDSBCRrA-1; Thu, 28 Oct 2021 07:28:46 -0400
-X-MC-Unique: eJZbxn5mNyK61ySDSBCRrA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF9359F92B;
-        Thu, 28 Oct 2021 11:28:42 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 108AF5DA61;
-        Thu, 28 Oct 2021 11:28:30 +0000 (UTC)
-Message-ID: <643d9c249b5863f04290a6f047ea1a2d98bd75f9.camel@redhat.com>
-Subject: Re: [PATCH v2 27/43] KVM: VMX: Move Posted Interrupt ndst
- computation out of write loop
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Thu, 28 Oct 2021 14:28:29 +0300
-In-Reply-To: <20211009021236.4122790-28-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-28-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 28 Oct 2021 07:31:10 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890A6C061570;
+        Thu, 28 Oct 2021 04:28:43 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 187so5634459pfc.10;
+        Thu, 28 Oct 2021 04:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gQFplOd7AdgUe+nOj1VdUU7Afy07VLeiglFcD1nsIqc=;
+        b=jEcrCaWtuRq6M+hdzOY2U1QMbYuX9kMvsGIB2I+LqoggKm1DOQ8sg1b1NK9NHAOq6r
+         25Wa2YQHz4Zg+SJDoPKY7tV/Xb7xTboQv9NxIyxrSO3Btag85Bc7fFnCaTxSvo5vwHsl
+         C0G8SlOztDGrEFYBN4z9hLCVHXv//Aqh5tLpGLfq+IdAnSptd8hML50VefpDoY3Lu6G2
+         3gKtPc9DcZPeduOGzHSUe1pHnXZICVnBCB71DIQgKEBAbQILM7FVxBrAm9gv5PImiX/h
+         j+Ng9YPofTaf5lh/+W4QLDM7RIr+VpclV439SsBpoRFDvc2ZvTuOVXZu2BsshgB0U0Rx
+         DvkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gQFplOd7AdgUe+nOj1VdUU7Afy07VLeiglFcD1nsIqc=;
+        b=nbKh9Q9DjEuixxKqNycZuA3u1bkVW1caMkzXXk2j4vXldSzj+WXgxagEAejaONAC4U
+         cxefufAON9+k3wjJH9lXCFkvd8x3XNasqQv+PGqhwpAeQCtZW/Ky/tr83PAtpwCWsVns
+         oppu9aXiPJWGzd4+VjF+7bTPSu9cEk5SH8imMlHQVLWckeQY+NkPMH1pE3yq272hcxMH
+         WIaavjD52NfvuucuCZa+pEBBdK/ojgn/qS1zqarHWHE5e+MislBbS+M88A+TTQqjbFCU
+         YFihGVQQqCKMbffonIkJdCFdZvGvz5HAFraJkXvqzPEj/qgQ36Ztfcgur1BYMJebojV+
+         U6/Q==
+X-Gm-Message-State: AOAM530FsKq1kOWiNZbQwQBTxvXVkQ8X3LvYlOld0tVHQjM46N+Glk6C
+        p0XtvxCOd13i19vLKdsQgmp+U/PudSo=
+X-Google-Smtp-Source: ABdhPJytVmeIm+P2sxi8A1p98b2+YklwfMLmjys9pQn1QpUuaHmsvLWWU4Wuj23aMJ68a6lw6jcYpA==
+X-Received: by 2002:a62:f20e:0:b0:47b:f629:6b52 with SMTP id m14-20020a62f20e000000b0047bf6296b52mr3618569pfh.53.1635420523156;
+        Thu, 28 Oct 2021 04:28:43 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id f4sm2501316pgn.93.2021.10.28.04.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 04:28:42 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     djwong@kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] xfs: use swap() to make code cleaner
+Date:   Thu, 28 Oct 2021 11:28:30 +0000
+Message-Id: <20211028112830.16381-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Hoist the CPU => APIC ID conversion for the Posted Interrupt descriptor
-> out of the loop to write the descriptor, preemption is disabled so the
-> CPU won't change, and if the APIC ID changes KVM has bigger problems.
-> 
-> No functional change intended.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Is preemption always disabled in vmx_vcpu_pi_load? vmx_vcpu_pi_load is called from vmx_vcpu_load,
-which is called indirectly from vcpu_load which is called from many ioctls,
-which userspace does. In these places I don't think that preemption is disabled.
+Use swap() in order to make code cleaner. Issue found by coccinelle.
 
-Best regards,
-	Maxim Levitsky
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ fs/xfs/xfs_inode.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/posted_intr.c | 25 +++++++++++--------------
->  1 file changed, 11 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-> index fea343dcc011..2b2206339174 100644
-> --- a/arch/x86/kvm/vmx/posted_intr.c
-> +++ b/arch/x86/kvm/vmx/posted_intr.c
-> @@ -51,17 +51,15 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
->  		goto after_clear_sn;
->  	}
->  
-> -	/* The full case.  */
-> +	/* The full case.  Set the new destination and clear SN. */
-> +	dest = cpu_physical_id(cpu);
-> +	if (!x2apic_mode)
-> +		dest = (dest << 8) & 0xFF00;
-> +
->  	do {
->  		old.control = new.control = READ_ONCE(pi_desc->control);
->  
-> -		dest = cpu_physical_id(cpu);
-> -
-> -		if (x2apic_mode)
-> -			new.ndst = dest;
-> -		else
-> -			new.ndst = (dest << 8) & 0xFF00;
-> -
-> +		new.ndst = dest;
->  		new.sn = 0;
->  	} while (cmpxchg64(&pi_desc->control, old.control,
->  			   new.control) != old.control);
-> @@ -103,15 +101,14 @@ static void __pi_post_block(struct kvm_vcpu *vcpu)
->  	WARN(pi_desc->nv != POSTED_INTR_WAKEUP_VECTOR,
->  	     "Wakeup handler not enabled while the vCPU was blocking");
->  
-> +	dest = cpu_physical_id(vcpu->cpu);
-> +	if (!x2apic_mode)
-> +		dest = (dest << 8) & 0xFF00;
-> +
->  	do {
->  		old.control = new.control = READ_ONCE(pi_desc->control);
->  
-> -		dest = cpu_physical_id(vcpu->cpu);
-> -
-> -		if (x2apic_mode)
-> -			new.ndst = dest;
-> -		else
-> -			new.ndst = (dest << 8) & 0xFF00;
-> +		new.ndst = dest;
->  
->  		/* set 'NV' to 'notification vector' */
->  		new.nv = POSTED_INTR_VECTOR;
-
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index a4f6f034fb81..518c82bfc80d 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -564,8 +564,6 @@ xfs_lock_two_inodes(
+ 	struct xfs_inode	*ip1,
+ 	uint			ip1_mode)
+ {
+-	struct xfs_inode	*temp;
+-	uint			mode_temp;
+ 	int			attempts = 0;
+ 	struct xfs_log_item	*lp;
+ 
+@@ -578,12 +576,8 @@ xfs_lock_two_inodes(
+ 	ASSERT(ip0->i_ino != ip1->i_ino);
+ 
+ 	if (ip0->i_ino > ip1->i_ino) {
+-		temp = ip0;
+-		ip0 = ip1;
+-		ip1 = temp;
+-		mode_temp = ip0_mode;
+-		ip0_mode = ip1_mode;
+-		ip1_mode = mode_temp;
++		swap(ip0, ip1);
++		swap(ip0_mode, ip1_mode);
+ 	}
+ 
+  again:
+-- 
+2.25.1
 
