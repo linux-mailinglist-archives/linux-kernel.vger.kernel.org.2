@@ -2,164 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F2143E92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 21:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F2C43E93A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhJ1UBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 16:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbhJ1UBB (ORCPT
+        id S230380AbhJ1UGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 16:06:37 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:40617 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhJ1UGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:01:01 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F09C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:58:33 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id b5-20020a6541c5000000b002661347cfbcso3852082pgq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=BAtqkafADpwzULg+aeC1UZQn1dNACnm78j2C0LgZ8Iw=;
-        b=A5Zf/AOSgFV9fSmGXh19RoCb4QnRV+uAz/hj6kwDDgC3a5GZ91tpiAJN2+W8aKGRmw
-         p395l/Xctlu5tsTf1MRv825lf4mMGWnoRqBomrGvqIjx+OR5x8bqrTAKn5ppn2AnCqSI
-         68I1Km2zkPzg6J44JkN5Yreom5YJ8E/jwpnRtslQ+3VR2QsJAjW8N+SEO02xp6yS/ycK
-         LLUxveQZoRQi2/jsSHDmupmrh6uRvg1vqiN5CMI/PrFpZRHdapsnQlfPJiOwv1Yvl2Ab
-         LwRgddZlwHH9jjhTHb5aJaXluoaLLYThpYcBoE7Zi5y6I31aBSTNpSnwCUPoU4GU76j6
-         EY+w==
+        Thu, 28 Oct 2021 16:06:36 -0400
+Received: by mail-pf1-f177.google.com with SMTP id x7so1998396pfh.7;
+        Thu, 28 Oct 2021 13:04:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=BAtqkafADpwzULg+aeC1UZQn1dNACnm78j2C0LgZ8Iw=;
-        b=Jv6XAMptnD4qHZgamdKOhpRQI2v/k+4vuNAwt8EQANF7svPErKN4XywIUGpLntM7f7
-         fy4lNNZQgQ7X1vGwsWyNtLmyZO9MD3CM//XjGkL1yCpmXfXs+YSDQPWF6K9cnUDpF1qF
-         SiSlbl8CUR+q6uCIzjBc4rRQv7o+WAP8+TuD3SzxWO2/gbCzKeeQKYkXNW05ElDLu4eV
-         sjk61z0JMCvONd8jOkwXOMpd2uM4/lSQ6MazVKFAwEOVVShzaDmT5iETv1s8eV1prdhf
-         jUjn3b0TIUHv91rn3cdD1pxwuB2LhollfnddtC7+9YFFVOIao2cm1vp/O899S2RAH6zM
-         ctMQ==
-X-Gm-Message-State: AOAM532CPS87WxohLiTG4L4IaKN7Axm9SZ0E8hbT2hp54AomtTQckFKy
-        H1mDUp26SdyHQ63Gpey8Wh19akf5fGlmI6xqFQ==
-X-Google-Smtp-Source: ABdhPJzPuc1W8F6odW8JRqiM+d0qiJb02/NUR1m+kdFBA1gJ2l+vRPMlZ8+oaovTUnuembNkG6jSS/0IThRn7kqWFQ==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:9b57:752f:2f0a:3a13])
- (user=kaleshsingh job=sendgmr) by 2002:a05:6a00:16d2:b029:300:200b:6572 with
- SMTP id l18-20020a056a0016d2b0290300200b6572mr6351628pfc.62.1635451113404;
- Thu, 28 Oct 2021 12:58:33 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 12:57:58 -0700
-In-Reply-To: <20211028195805.2684854-1-kaleshsingh@google.com>
-Message-Id: <20211028195805.2684854-3-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20211028195805.2684854-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v6 2/2] tracing/selftests: Add tests for hist trigger
- expression parsing
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        kernel-team@android.com, rostedt@goodmis.org, mhiramat@kernel.org,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1K+bk6NacZ1m1XKXaDe80atm4JTwmJpcwCVGp6y32I4=;
+        b=rx9xYVF0yGR5g28Zy3FU3SF0zPOc/erGhxw4DAEQCaXHvvW7JHwSSThpMDfIV3R6Y/
+         5bBEiQ+tHQIZuaq2UFqsBo+Ng67AzxsSdSzUR4wdxsIC9ZZPyNNFqPSez/e0EsI4yQoF
+         fDPULlC3Kn6irRytNi+KCTBH+ITTYk/1wBjIJRZ7byrxVueRVCM/nY17XtChddhGp4YJ
+         Fsj4KpkW1K2Jz9iuBXmUDI77/+NEWxX6szmYLi+QIMUWNn3W9U1C2Xl+S8SxmHqCa4Gw
+         FYqyE0Kiz9Rc/pdjTEXPoLXY+0zo7EvHEmod3rqBJACFSzVp1elAh1TjRqETJovRsSeZ
+         lveA==
+X-Gm-Message-State: AOAM530Vgdu8wRE055AIrFFFLmB+4j9t+t4RTMPWIipnlHPA9BL4L+3y
+        6HvwdsnHzh6cQeAND1s5p1g=
+X-Google-Smtp-Source: ABdhPJysGuZSTGQ7v+yjb7Ew6sNSAs/5db0fIntuQ9zAe2nGFeULfKVrLzrHKpu1/OHcavAHqfSdpA==
+X-Received: by 2002:a63:4c17:: with SMTP id z23mr877638pga.198.1635451448500;
+        Thu, 28 Oct 2021 13:04:08 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:e816:bd0d:426c:f959])
+        by smtp.gmail.com with ESMTPSA id s18sm4540439pfk.160.2021.10.28.13.04.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 13:04:07 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
+To:     jejb@linux.ibm.com, daejun7.park@samsung.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        Keoseong Park <keosung.park@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+ <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+ <0f9229c3c4c7859524411a47db96a3b53ac89c90.camel@linux.ibm.com>
+ <0d66b6d0-26c6-573f-e2a0-022e22c47b52@acm.org>
+ <1d7c1faf6b6fa71599b5157ae95fc48ce479b722.camel@linux.ibm.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <42ca5f60-4c57-ade1-5fb7-be935ac4ccce@acm.org>
+Date:   Thu, 28 Oct 2021 13:04:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <1d7c1faf6b6fa71599b5157ae95fc48ce479b722.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests for the parsing of hist trigger expressions; and to
-validate expression evaluation.
+On 10/28/21 12:12 PM, James Bottomley wrote:
+> I think the deadlock is triggered if the system is down to its last
+> reserved request on the memory clearing device and the next entry in
+> the queue for this device is one which does a fanout so we can't
+> service it with the single reserved request we have left for the
+> purposes of making forward progress.  Sending it back doesn't help,
+> assuming this is the only memory clearing path, because retrying it
+> won't help ... we have to succeed with a request on this path to move
+> forward with clearing memory.
+> 
+> I think this problem could be solved by processing the WRITE BUFFER and
+> the request serially by hijacking the request sent down, but we can't
+> solve it if we try to allocate a new request.
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
-Changes in v6:
-  - Read the expression result from the trigger file,
-    instead of creating a histogram to print the value.
+Hi James,
 
-Changes in v5:
-  - Add README pattern to requires tag, per Masami
+How about fixing the abuse of blk_insert_cloned_request() in the UFS HPB
+before the v5.16 SCSI pull request is sent to Linus and implementing the
+proposal from your email at a later time? I'm proposing to defer further
+UFS HPB rework since the issue described above only affects UFS HPB users
+and does not obstruct maintenance or refactoring of the block layer core.
 
-Changes in v3:
-  - Remove .sym-offset error check tests
+Thanks,
 
-Changes in v2:
-  - Add Namhyung's Reviewed-by
-  - Update comment to clarify err_pos in "Too many subexpressions" test
-
-
- .../trigger/trigger-hist-expressions.tc       | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-new file mode 100644
-index 000000000000..33eb79589b32
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
-@@ -0,0 +1,65 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: event trigger - test histogram expression parsing
-+# requires: set_event events/sched/sched_process_fork/trigger events/sched/sched_process_fork/hist error_log "<var1>=<field|var_ref|numeric_literal>":README
-+
-+
-+fail() { #msg
-+    echo $1
-+    exit_fail
-+}
-+
-+test_hist_expr() { # test_name expression expected_val
-+    trigger="events/sched/sched_process_fork/trigger"
-+
-+    reset_trigger_file $trigger
-+
-+    echo "Test hist trigger expressions - $1"
-+
-+    echo "hist:keys=common_pid:x=$2" > $trigger
-+
-+    for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-+
-+    x=`grep -o 'x=[[:digit:]]*' $trigger | awk -F= '{ print $2 }'`
-+    actual=$(( x + 0 )) # To print negative numbers correctly
-+
-+    if [ $actual != $3 ]; then
-+        fail "Failed hist trigger expression evaluation: Expression: $2 Expected: $3, Actual: $actual"
-+    fi
-+
-+    reset_trigger_file $trigger
-+}
-+
-+check_error() { # test_name command-with-error-pos-by-^
-+    trigger="events/sched/sched_process_fork/trigger"
-+
-+    echo "Test hist trigger expressions - $1"
-+    ftrace_errlog_check 'hist:sched:sched_process_fork' "$2" $trigger
-+}
-+
-+test_hist_expr "Variable assignment" "123" "123"
-+
-+test_hist_expr "Subtraction not associative" "16-8-4-2" "2"
-+
-+test_hist_expr "Division not associative" "64/8/4/2" "1"
-+
-+test_hist_expr "Same precedence operators (+,-) evaluated left to right" "16-8+4+2" "14"
-+
-+test_hist_expr "Same precedence operators (*,/) evaluated left to right" "4*3/2*2" "12"
-+
-+test_hist_expr "Multiplication evaluated before addition/subtraction" "4+3*2-2" "8"
-+
-+test_hist_expr "Division evaluated before addition/subtraction" "4+6/2-2" "5"
-+
-+# Division by zero returns -1
-+test_hist_expr "Handles division by zero" "3/0" "-1"
-+
-+# err pos for "too many subexpressions" is dependent on where
-+# the last subexpression was detected. This can vary depending
-+# on how the expression tree was generated.
-+check_error "Too many subexpressions" 'hist:keys=common_pid:x=32+^10*3/20-4'
-+check_error "Too many subexpressions" 'hist:keys=common_pid:x=^1+2+3+4+5'
-+
-+check_error "Unary minus not supported in subexpression" 'hist:keys=common_pid:x=-(^1)+2'
-+
-+exit 0
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+Bart.
