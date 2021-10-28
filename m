@@ -2,150 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405C643DD0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75C943DD12
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhJ1Ip2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:45:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:52330 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhJ1Ip0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:45:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91E321FB;
-        Thu, 28 Oct 2021 01:42:59 -0700 (PDT)
-Received: from [10.32.36.26] (e121896.Emea.Arm.com [10.32.36.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8987D3F70D;
-        Thu, 28 Oct 2021 01:42:57 -0700 (PDT)
-Subject: Re: [PATCH] perf symbol: ignore $a/$d symbols for ARM modules
-To:     Lexi Shao <shaolexi@huawei.com>
-Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, nixiaoming@huawei.com,
-        peterz@infradead.org, qiuxi1@huawei.com, wangbing6@huawei.com
-References: <c7dfbd17-85fd-b914-b90f-082abc64c9d1@arm.com>
- <20211028020509.39082-1-shaolexi@huawei.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <cb7e9ef7-eda4-b197-df8a-0b54f9b56181@arm.com>
-Date:   Thu, 28 Oct 2021 09:42:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230058AbhJ1IqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:46:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37494 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229800AbhJ1IqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 04:46:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635410635;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KccYG4rSdcXMoVRo53pQg4Ozdzh38yw0Q7oh7hWL/OA=;
+        b=W53oVEaDQzM8VF6YoIGich0YcmQU7TxrAmiqolsqmbApNLJD5N0jCCnjEoOjGsd2oNqg2x
+        vIjegVBS5fClyOdzmOHGzoycz8fSkZNNJeLO3f3KXjBC6eJoGv/qXcsDF6b5+9+qTc7Z4K
+        Tn72LK5p6uxxzsfaHbRvF0tZfq88XiU=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-j9wFlNvAPLWXvlWpG2AP-g-1; Thu, 28 Oct 2021 04:43:54 -0400
+X-MC-Unique: j9wFlNvAPLWXvlWpG2AP-g-1
+Received: by mail-qv1-f72.google.com with SMTP id gi5-20020a056214248500b00382f7a7c7e6so4345064qvb.21
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 01:43:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KccYG4rSdcXMoVRo53pQg4Ozdzh38yw0Q7oh7hWL/OA=;
+        b=Gt1nU+tB7HqmZOxNhcLs67o2Yzejx6a2M8PTWmVL64VQmTbKZwFmhQ8NoX4rjPadLc
+         2W3Czx+oKrQYLiROGQLy+vhzPE+ppweQ3or5Fs4wIsl7nqbxIPAv2B4pjlYDgRVxfSWD
+         wC/klEVNMwF9oIyWIW6hN6A3ixPtU2DzFrlrdmmHvA4Cob3Mpi1RFMRAmvHOhRH8Y57q
+         /cAEsihieRl3s2d0NS+Hb0e7EL9twK8atr5rlNT+vFlv3hi9jVod3//BkfUtZnItQE+/
+         Ba+jjCaeA84A9xGA296OLYHb9CnE/ijpuk7X9NWui/8Xf3usYuGZPFEAAYq9+l8HhGCW
+         xDNA==
+X-Gm-Message-State: AOAM531EY5vrWql1MNmECa1dOPgDAKEVRBIMfpuYtmbdXurc5QL4qjrf
+        92EjnQffP9GO4eXgtJMenXfZCneTmzC0XBspNXpk3UDKy+EBZHO72VV8HxGzUETjxFTJlGL97Jf
+        Y19G8JKxAfhY9r2s8mja15sBh9+TH6Z7fFv5NEFOK
+X-Received: by 2002:a05:620a:15f3:: with SMTP id p19mr2422629qkm.337.1635410634134;
+        Thu, 28 Oct 2021 01:43:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzArBk6z7YGdByxd/X+igic/KcScZxC371ErWZ5REyS2JhtSA3Npou6sTwbdZL/ZSDM/1i2lyGhR3evMJPw0lI=
+X-Received: by 2002:a05:620a:15f3:: with SMTP id p19mr2422618qkm.337.1635410633974;
+ Thu, 28 Oct 2021 01:43:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211028020509.39082-1-shaolexi@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211021151528.116818-1-lmb@cloudflare.com> <20211021151528.116818-2-lmb@cloudflare.com>
+ <b215bb8c-3ffd-2b43-44a3-5b25243db5be@iogearbox.net>
+In-Reply-To: <b215bb8c-3ffd-2b43-44a3-5b25243db5be@iogearbox.net>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Thu, 28 Oct 2021 10:43:43 +0200
+Message-ID: <CAOssrKciL5EDhrbQe1mkOrtD1gwkrEBRQyQmVhRE8Z-Kjb0WGw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] libfs: support RENAME_EXCHANGE in simple_rename()
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@cloudflare.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 28, 2021 at 1:46 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> [ Adding Miklos & Greg to Cc for review given e0e0be8a8355 ("libfs: support RENAME_NOREPLACE in
+>    simple_rename()"). If you have a chance, would be great if you could take a look, thanks! ]
+>
+> On 10/21/21 5:15 PM, Lorenz Bauer wrote:
+> > Allow atomic exchange via RENAME_EXCHANGE when using simple_rename.
+> > This affects binderfs, ramfs, hubetlbfs and bpffs. There isn't much
+> > to do except update the various *time fields.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >   fs/libfs.c | 6 +++++-
+> >   1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/libfs.c b/fs/libfs.c
+> > index 51b4de3b3447..93c03d593749 100644
+> > --- a/fs/libfs.c
+> > +++ b/fs/libfs.c
+> > @@ -455,9 +455,12 @@ int simple_rename(struct user_namespace *mnt_userns, struct inode *old_dir,
+> >       struct inode *inode = d_inode(old_dentry);
+> >       int they_are_dirs = d_is_dir(old_dentry);
+> >
+> > -     if (flags & ~RENAME_NOREPLACE)
+> > +     if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE))
+> >               return -EINVAL;
+> >
+> > +     if (flags & RENAME_EXCHANGE)
+> > +             goto done;
+> > +
 
+This is not sufficient.   RENAME_EXCHANGE can swap a dir and a
+non-dir, in which case the parent nlink counters need to be fixed up.
 
-On 28/10/2021 03:05, Lexi Shao wrote:
-> On 27/10/2021 23:10, James Clark wrote:
->> On 27/10/2021 13:31, Lexi Shao wrote:
->>> On 27/10/2021 18:24, James Clark wrote:
->>>> On 27/10/2021 10:52, Lexi Shao wrote:
->>>>> On ARM machine, kernel symbols from modules can be resolved to $a
->>>>> instead of printing the actual symbol name. Ignore symbols starting with
->>>>> "$" when building kallsyms rbtree.
->>>>>
->>>>> A sample stacktrace is shown as follows:
->>>>>
->>>>> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
->>>>> bf4a66d8 $a+0x78 ([test_module])
->>>>> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
->>>>> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
->>>>>
->>>>> On ARM machine, $a/$d symbols are used by the compiler to mark the
->>>>> beginning of code/data part in code section. These symbols are filtered
->>>>> out when linking vmlinux(see scripts/kallsyms.c ignored_prefixes), but
->>>>> are left on modules. So there are $a symbols in /proc/kallsyms which
->>>>> share the same addresses with the actual module symbols and confuses perf
->>>>> when resolving symbols.
->>>>
->>>> Hi Lexi,
->>>>
->>>> Is it worth using or re-implementing the entire is_ignored_symbol() function
->>> >from scripts/kallsyms.c? It seems like this change only fixes one occurrence,
->>>> but is_ignored_symbol() has a big list of other cases.
->>>>
->>>> Unless those cases are different?
->>>>
->>>> Thanks
->>>> James
->>>
->>> Hi James,
->>>
->>> I don't think it's necessary to cover all the cases listed in
->>> is_ignored_symbol(). As long as the symbols are unique and not overlapping
->>> with each other, they should't cause problems in resolving symbols. So most
->>> of the cases in is_ignored_symbol() should be irrelevant.
->>
->> Is it possible to do the filtering of the module symbols somewhere else like
->> in kernel/kallsyms.c? I'm not that familiar with it but it seems like
->> at one point when populating kallsyms '$...' functions are filtered out, but
->> when modules are loaded the symbols are not filtered because another code path is
->> used?
->>
->> If kallsyms has some duplicate addresses in there then isn't the bug in kallsyms
->> rather than perf? And another tool could get confused too.
->>
->> James
-> 
-> Yes we can filter these symbols out when adding module symbols to the kallsyms
-> list. I will send another patch that modifies module.c to ignore '$' symbols
-> when loading module.
-> 
+See shmem_exchange().   My suggestion is to move that function to
+libfs.c:simple_rename_exchange().
 
-That sounds great thanks.
+Thanks,
+Miklos
 
-> I think it's worth applying this patch in the sense that perf userspace tool
-> can be used on all 5.x kernels, and people don't have to update the kernel
-> to fix it.
-
-Yes you are right. In that case I will add a review tag to this change.
-
-Thanks
-James
-
-> 
-> Lexi
-> 
->>
->>>
->>> Lexi
->>>
->>>>
->>>>>
->>>>> After this patch, the module symbol name is printed:
->>>>>
->>>>> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
->>>>> bf4a66d8 test_func+0x78 ([test_module])
->>>>> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
->>>>> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
->>>>>
->>>>> Signed-off-by: Lexi Shao <shaolexi@huawei.com>
->>>>> ---
->>>>>  tools/perf/util/symbol.c | 4 ++++
->>>>>  1 file changed, 4 insertions(+)
->>>>>
->>>>> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
->>>>> index 0fc9a5410739..35116aed74eb 100644
->>>>> --- a/tools/perf/util/symbol.c
->>>>> +++ b/tools/perf/util/symbol.c
->>>>> @@ -702,6 +702,10 @@ static int map__process_kallsym_symbol(void *arg, const char *name,
->>>>>  	if (!symbol_type__filter(type))
->>>>>  		return 0;
->>>>>  
->>>>> +	/* Ignore local symbols for ARM modules */
->>>>> +	if (name[0] == '$')
->>>>> +		return 0;
->>>>> +
->>>>>  	/*
->>>>>  	 * module symbols are not sorted so we add all
->>>>>  	 * symbols, setting length to 0, and rely on
->>>>>
->>>>
-> 
