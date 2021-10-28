@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE5243D949
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C9C43D94A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhJ1CXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:23:25 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:44216 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229809AbhJ1CXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:23:24 -0400
-X-UUID: 1de94ce069ba4bd59c11ecb3b1595b5d-20211028
-X-UUID: 1de94ce069ba4bd59c11ecb3b1595b5d-20211028
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <wenbin.mei@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 52249534; Thu, 28 Oct 2021 10:20:54 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
- Thu, 28 Oct 2021 10:20:52 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Thu, 28 Oct 2021 10:20:52 +0800
-From:   Wenbin Mei <wenbin.mei@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        "Yong Mao" <yong.mao@mediatek.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        "Wenbin Mei" <wenbin.mei@mediatek.com>, <stable@vger.kernel.org>
-Subject: [PATCH] mmc: mediatek: move cqhci init behind ungate clock
-Date:   Thu, 28 Oct 2021 10:20:49 +0800
-Message-ID: <20211028022049.22129-1-wenbin.mei@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+        id S229735AbhJ1C1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:27:20 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:40888 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229534AbhJ1C1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:27:19 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowAD3_2fZCXph4SE9BQ--.6388S2;
+        Thu, 28 Oct 2021 10:24:25 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     valentin.schneider@arm.com, peterz@infradead.org,
+        bristot@redhat.com, dave.hansen@linux.intel.com, namit@vmware.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH v2] cpumask: Fix implicit type conversion
+Date:   Thu, 28 Oct 2021 02:24:24 +0000
+Message-Id: <1635387864-2743220-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowAD3_2fZCXph4SE9BQ--.6388S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4rZF4DZF45GFWDJFWDurg_yoW8tFW3pF
+        10grWUK3ykArs5u34UAayUCw1Y93ykJ3yvkw4UGFWDuFW7Aw1kZr129F9xtryUCFZ5GFyS
+        9ryq9398uF15AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbpwZ7UUUU
+        U==
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We must enable clock before cqhci init, because crypto needs
-read information from CQHCI registers, otherwise, it will hang
-in MediaTek mmc host controller.
+The description of the macro in `include/linux/cpumask.h` says the
+variable 'cpu' can be unsigned int.
+However in the for_each_cpu(), for_each_cpu_wrap() and
+for_each_cpu_and(), its value is assigned to -1.
+That doesn't make sense. Moreover in the cpumask_next(),
+cpumask_next_zero(), cpumask_next_wrap() and cpumask_next_and(),
+'cpu' will be implicitly type conversed to int if the type is
+unsigned int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to fix the macro description of 'cpu' that
+remove the '(optionally unsigned)'.
 
-Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-Fixes: 88bd652b3c74 ("mmc: mediatek: command queue support")
-Cc: stable@vger.kernel.org
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- drivers/mmc/host/mtk-sd.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ include/linux/cpumask.h | 8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index b124cfee05a1..943940b44e83 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -2656,6 +2656,25 @@ static int msdc_drv_probe(struct platform_device *pdev)
- 		host->dma_mask = DMA_BIT_MASK(32);
- 	mmc_dev(mmc)->dma_mask = &host->dma_mask;
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index bfc4690..ceaed99 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -232,7 +232,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
  
-+	host->timeout_clks = 3 * 1048576;
-+	host->dma.gpd = dma_alloc_coherent(&pdev->dev,
-+				2 * sizeof(struct mt_gpdma_desc),
-+				&host->dma.gpd_addr, GFP_KERNEL);
-+	host->dma.bd = dma_alloc_coherent(&pdev->dev,
-+				MAX_BD_NUM * sizeof(struct mt_bdma_desc),
-+				&host->dma.bd_addr, GFP_KERNEL);
-+	if (!host->dma.gpd || !host->dma.bd) {
-+		ret = -ENOMEM;
-+		goto release_mem;
-+	}
-+	msdc_init_gpd_bd(host, &host->dma);
-+	INIT_DELAYED_WORK(&host->req_timeout, msdc_request_timeout);
-+	spin_lock_init(&host->lock);
-+
-+	platform_set_drvdata(pdev, mmc);
-+	msdc_ungate_clock(host);
-+	msdc_init_hw(host);
-+
- 	if (mmc->caps2 & MMC_CAP2_CQE) {
- 		host->cq_host = devm_kzalloc(mmc->parent,
- 					     sizeof(*host->cq_host),
-@@ -2676,25 +2695,6 @@ static int msdc_drv_probe(struct platform_device *pdev)
- 		mmc->max_seg_size = 64 * 1024;
- 	}
+ /**
+  * for_each_cpu - iterate over every cpu in a mask
+- * @cpu: the (optionally unsigned) integer iterator
++ * @cpu: the integer iterator
+  * @mask: the cpumask pointer
+  *
+  * After the loop, cpu is >= nr_cpu_ids.
+@@ -244,7 +244,7 @@ int cpumask_any_distribute(const struct cpumask *srcp);
  
--	host->timeout_clks = 3 * 1048576;
--	host->dma.gpd = dma_alloc_coherent(&pdev->dev,
--				2 * sizeof(struct mt_gpdma_desc),
--				&host->dma.gpd_addr, GFP_KERNEL);
--	host->dma.bd = dma_alloc_coherent(&pdev->dev,
--				MAX_BD_NUM * sizeof(struct mt_bdma_desc),
--				&host->dma.bd_addr, GFP_KERNEL);
--	if (!host->dma.gpd || !host->dma.bd) {
--		ret = -ENOMEM;
--		goto release_mem;
--	}
--	msdc_init_gpd_bd(host, &host->dma);
--	INIT_DELAYED_WORK(&host->req_timeout, msdc_request_timeout);
--	spin_lock_init(&host->lock);
--
--	platform_set_drvdata(pdev, mmc);
--	msdc_ungate_clock(host);
--	msdc_init_hw(host);
--
- 	ret = devm_request_irq(&pdev->dev, host->irq, msdc_irq,
- 			       IRQF_TRIGGER_NONE, pdev->name, host);
- 	if (ret)
+ /**
+  * for_each_cpu_not - iterate over every cpu in a complemented mask
+- * @cpu: the (optionally unsigned) integer iterator
++ * @cpu: the integer iterator
+  * @mask: the cpumask pointer
+  *
+  * After the loop, cpu is >= nr_cpu_ids.
+@@ -258,7 +258,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
+ 
+ /**
+  * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a specified location
+- * @cpu: the (optionally unsigned) integer iterator
++ * @cpu: the integer iterator
+  * @mask: the cpumask poiter
+  * @start: the start location
+  *
+@@ -273,7 +273,7 @@ extern int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool
+ 
+ /**
+  * for_each_cpu_and - iterate over every cpu in both masks
+- * @cpu: the (optionally unsigned) integer iterator
++ * @cpu: the integer iterator
+  * @mask1: the first cpumask pointer
+  * @mask2: the second cpumask pointer
+  *
 -- 
-2.25.1
+2.7.4
 
