@@ -2,107 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBA743DFE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A00E43DFE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhJ1LUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230262AbhJ1LUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:20:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 219CF60230;
-        Thu, 28 Oct 2021 11:17:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635419862;
-        bh=J8jy9tuBckxRSi+qIzZp/xilQsnDoDURjsHWfnqtDdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tC6izQdbp5n0P4O8e3dhxQipAZ3kVKU0SOOme0MCrB1GIwtKketSY3QCSF7XtYCk2
-         Q6avK3hc4x/eKpcI/696GUi8ZUg3lJsaNt/Dv2GoH2h28eFfjju0/jhO2R8j4apUCR
-         T1RVgxYNSAw+hxuD68hm71BCFtm6Dlt/Tu09tgrTxJ9FzeMAxi/87cz2L+Lwoz+0zg
-         qtJ+qNbFkLfboefEUMXTS+soNIjMLNX3fTMjUy6w5VyogsK2vrMOyeFdHgHUK4jQCK
-         VUunEWbKlY8VLNKRjxfVW7+jsr9alkKGnnT3eOKiFzumnkwTSTBb9bys51KGoNFulC
-         WSVZ2keYBCDqw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id ED516410A1; Thu, 28 Oct 2021 08:17:38 -0300 (-03)
-Date:   Thu, 28 Oct 2021 08:17:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "irogers@google.com" <irogers@google.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        "james.clark@arm.com" <james.clark@arm.com>
-Subject: Re: [PATCH v2 2/2] perf jevents: Enable warnings through HOSTCFLAGS
-Message-ID: <YXqG0jb4qg4+x5DE@kernel.org>
-References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
- <1634807805-40093-3-git-send-email-john.garry@huawei.com>
- <YXFhr2YoVp9GPsDM@krava>
- <86aee893-0b6b-bce3-d1aa-3b66365592d1@huawei.com>
- <YXaXvGgvs4gr8Cgi@krava>
- <YXbZa8SaQta9pzHS@kernel.org>
- <32d98804-7e56-e73b-4c66-8776dbf58ddf@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32d98804-7e56-e73b-4c66-8776dbf58ddf@huawei.com>
-X-Url:  http://acmel.wordpress.com
+        id S230299AbhJ1LV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhJ1LVQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 07:21:16 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B7EC061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:18:49 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so8221628yba.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=GArPAs92R04yZtAJ3Eyt3HPrbC6g2vwEe9LxDAEsAoI=;
+        b=mpyXcJETSPJjVF7L8fe2iYA2F2RsPPOD0pVivAwB74+al0GAinwQAe4IwSq71Pz88d
+         HanUxsrz0KUgt8v6D6bfgadmfOIbpKCOynDxw4+M4ccIAJy/xRpqz005cns9xyW7fQgg
+         JXWrZ+m6QqHX8NJp4c69iKe06Cn7dpmSusjnm1ujukAD44dOvUP904QQKYNqaY/dEi+G
+         o46gsihRHGkSsC2i40ySdv8mSEmZauEcv/mwIx9L+3mpYhXQ7LRee2leQSbDeqeyz+kr
+         qB8M4ValJTi+oR02Ktcthel+VeW7v8UK0MMz0/ofQDYBWw5XNTRRJniukz2tAwNhlcmE
+         yigw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=GArPAs92R04yZtAJ3Eyt3HPrbC6g2vwEe9LxDAEsAoI=;
+        b=Lt4fmgwM2D1xLeYosGHdzUMqbLk9qqQnmujU5nXoraG8mjq0VCl+Vik2A8TKvHxASo
+         TZac6BZbmOu9FfDDQbCtOu9vUtPsgv967ETupqN0C8iq92MiGLeaIBS32Sqf8yJ7X7g/
+         SSlI4muE8QY3UI+g+xcYvlBJFnWjZLVW0uIzB121mzcqvf8bl8RXhTqeb0v7KdeZ3i7j
+         jNYqq7mKOqKa2s5CWKHYrGBjXvxE98kc7aRNFFFvRU1lPZrQHieVIrllkQTwidVEV25Q
+         E34Divk1Xz/E/G2/9frYF/IS7OU13yA/6rVk9FofkW3dNNIQnLQadg+YwxvQ4ZPVh0D0
+         hrlg==
+X-Gm-Message-State: AOAM533or1tJCJYXeft+pnqz+2TtadVs7tohSKfldcIbxJkLgmooo4Fl
+        9gbP9yW5JZEBwSSizsNLumdUF48cmlSi
+X-Google-Smtp-Source: ABdhPJyLWi7XzEVenNr7snS37vs2wJPBKmPwYx/gvza6YS5LzQGepbfu6AjkxrtFFuQ+Tk+836P7OeSqObiU
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:a9d:c667:f9ff:b40e])
+ (user=apusaka job=sendgmr) by 2002:a25:424a:: with SMTP id
+ p71mr3949088yba.101.1635419928437; Thu, 28 Oct 2021 04:18:48 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 19:18:42 +0800
+Message-Id: <20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH] Bluetooth: Limit duration of Remote Name Resolve
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 28, 2021 at 09:23:58AM +0100, John Garry escreveu:
-> On 25/10/2021 17:20, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Oct 25, 2021 at 01:40:44PM +0200, Jiri Olsa escreveu:
-> > > On Fri, Oct 22, 2021 at 10:42:11AM +0100, John Garry wrote:
-> > > > On 21/10/2021 13:48, Jiri Olsa wrote:
-> > > > ok, so IIRC, then the rule for building .o from .c in
-> > > > tools/build/Makefile.build will pick up HOSTCFLAGS through this variable, so
-> > > > we then don't need to explicitly mention it in the per-target rule, so can
-> > > > have this as before in pmu-events/Build
+From: Archie Pusaka <apusaka@chromium.org>
 
-> > > > HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+When doing remote name request, we cannot scan. In the normal case it's
+OK since we can expect it to finish within a short amount of time.
+However, there is a possibility to scan lots of devices that
+(1) requires Remote Name Resolve
+(2) is unresponsive to Remote Name Resolve
+When this happens, we are stuck to do Remote Name Resolve until all is
+done before continue scanning.
 
-> > > > right?
+This patch adds a time limit to stop us spending too long on remote
+name request. The limit is increased for every iteration where we fail
+to complete the RNR in order to eventually solve all names.
 
-> > > > (Indeed I guess that we can get rid of -I$(srctree)/tools/include as well)
-
-> > > hm, the -I.. should stay no? I don't see that
-> > > it's being added soem other way
-
-> > Probably this change from KBUILD_HOSTCFLAGS back to HOSTCFLAGS should
-> > come with this;
-
-> > Cc: Laura Abbott <labbott@redhat.com>
-> > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> > Fixes: 96f14fe738b69dd9 ("kbuild: Rename HOSTCFLAGS to KBUILD_HOSTCFLAGS")
-
-> > Right?
- 
-> Maybe, but then renaming back from KBUILD_HOSTCFLAGS -> HOSTCFLAGS seems odd
-> as a fix
- 
-> Anyway, now that this original series is in perf/core,
-
-Nope, just this one landed:
-
-commit 342cb7ebf5e29fff4dc09ab2c8f37d710f8f5206
-Author: John Garry <john.garry@huawei.com>
-Date:   Thu Oct 21 17:16:44 2021 +0800
-
-    perf jevents: Fix some would-be warnings
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 
 ---
+Hi maintainers, we found one instance where a test device spends ~90
+seconds to do Remote Name Resolving, hence this patch.
+I think it's better if we reset the time limit to the default value
+at some point, but I don't have a good proposal where to do that, so
+in the end I didn't.
 
-The one you asked to wait for further discussion wasn't merged.
 
-- Arnaldo
+ include/net/bluetooth/hci_core.h |  5 +++++
+ net/bluetooth/hci_event.c        | 12 ++++++++++++
+ 2 files changed, 17 insertions(+)
 
-> I'll send patches on top with this change, cc'ing Laura and Masahiro
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index dd8840e70e25..df9ffedf1d29 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -87,6 +87,8 @@ struct discovery_state {
+ 	u8			(*uuids)[16];
+ 	unsigned long		scan_start;
+ 	unsigned long		scan_duration;
++	unsigned long		name_resolve_timeout;
++	unsigned long		name_resolve_duration;
+ };
+ 
+ #define SUSPEND_NOTIFIER_TIMEOUT	msecs_to_jiffies(2000) /* 2 seconds */
+@@ -805,6 +807,8 @@ static inline void sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
+ #define INQUIRY_CACHE_AGE_MAX   (HZ*30)   /* 30 seconds */
+ #define INQUIRY_ENTRY_AGE_MAX   (HZ*60)   /* 60 seconds */
+ 
++#define NAME_RESOLVE_INIT_DURATION	5120	/* msec */
++
+ static inline void discovery_init(struct hci_dev *hdev)
+ {
+ 	hdev->discovery.state = DISCOVERY_STOPPED;
+@@ -813,6 +817,7 @@ static inline void discovery_init(struct hci_dev *hdev)
+ 	INIT_LIST_HEAD(&hdev->discovery.resolve);
+ 	hdev->discovery.report_invalid_rssi = true;
+ 	hdev->discovery.rssi = HCI_RSSI_INVALID;
++	hdev->discovery.name_resolve_duration = NAME_RESOLVE_INIT_DURATION;
+ }
+ 
+ static inline void hci_discovery_filter_clear(struct hci_dev *hdev)
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 3cba2bbefcd6..104a1308f454 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2086,6 +2086,15 @@ static bool hci_resolve_next_name(struct hci_dev *hdev)
+ 	if (list_empty(&discov->resolve))
+ 		return false;
+ 
++	/* We should stop if we already spent too much time resolving names.
++	 * However, double the name resolve duration for the next iterations.
++	 */
++	if (time_after(jiffies, discov->name_resolve_timeout)) {
++		bt_dev_dbg(hdev, "Name resolve takes too long, stopping.");
++		discov->name_resolve_duration *= 2;
++		return false;
++	}
++
+ 	e = hci_inquiry_cache_lookup_resolve(hdev, BDADDR_ANY, NAME_NEEDED);
+ 	if (!e)
+ 		return false;
+@@ -2634,6 +2643,9 @@ static void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 	if (e && hci_resolve_name(hdev, e) == 0) {
+ 		e->name_state = NAME_PENDING;
+ 		hci_discovery_set_state(hdev, DISCOVERY_RESOLVING);
++
++		discov->name_resolve_timeout = jiffies +
++				msecs_to_jiffies(discov->name_resolve_duration);
+ 	} else {
+ 		/* When BR/EDR inquiry is active and no LE scanning is in
+ 		 * progress, then change discovery state to indicate completion.
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
