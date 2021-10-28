@@ -2,169 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E34C43DACD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3056343DAD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhJ1Fmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 01:42:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22739 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229586AbhJ1Fmu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 01:42:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635399623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=anF7BPmbH7+9aDUvnziYE4TDy5s8dDRfTV6pgnlOgB8=;
-        b=d6qXdqVEYQfqk578iPMGav8ECdHC91nJvquQpAeAzOWxElO1rMjGKbLP1iZh9ZclQQSWkl
-        ZgIer3wEjCE82E4RU+Jml/ExEqJs1878PPM+8L/BXSRXGA4LHSoieqsP4OxGhKFtywTqkv
-        BNMTtrsDwmEWqfcw9Q+1jacKZRb2d4U=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-4zTUyp86MB-Gd30okZPjfw-1; Thu, 28 Oct 2021 01:40:21 -0400
-X-MC-Unique: 4zTUyp86MB-Gd30okZPjfw-1
-Received: by mail-ed1-f69.google.com with SMTP id z1-20020a05640235c100b003dcf0fbfbd8so4501266edc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:40:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=anF7BPmbH7+9aDUvnziYE4TDy5s8dDRfTV6pgnlOgB8=;
-        b=MJD4ngbOAj6eO/7qHYTt9jO/IIOmnlM6eeZacdjL9PodSfaHLSy6SSlU5aSUz0/SOh
-         8cENm772KRVixY/3owohNYgq9K2QPXykbF1QMNfnP86idfiN/DQl55d+HZt+E/jN/HHG
-         +w6cBASHUzfQEFCwE+zdRbRU5pA085x9MuSYRcVCZwRMjnnZ6JBt33Y4pYdJijBZEVki
-         8wV4S0tcJJ5RP4Izy92WkOopcOm48BPd/QcOiSK2vKBqxTmKhc+81xfENNFl7EP7MpMX
-         +bYCQMK3Q1DM2JjKGODuchYh5BtAdrjFmVrVVg5hCmzNiGx9/vpZzbKj2aemyz2EvhzN
-         dUuw==
-X-Gm-Message-State: AOAM530fdq5CtoN+SJqyfUGLQ7Q+PJHOmdbqdWz4l+Ok0F1h/NdcJkkR
-        vOYVJN1lBAmsUi/KnoK+NZyROZWJ23aZRP0VAdjqPYdC9mZ0O8xjA4/9KTuUrVjNhu9FTf/QGjA
-        o7K8lNf/Sb+NueWCayzy5iDSc
-X-Received: by 2002:a17:907:1caa:: with SMTP id nb42mr2599412ejc.333.1635399620608;
-        Wed, 27 Oct 2021 22:40:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyQhd1vOTP7CLD/BJ5RCWNsTIMoyg9pY3KHXHXK3KvUR6nZvmqchxP6Ys9Sd0YzoBlY6gk8EA==
-X-Received: by 2002:a17:907:1caa:: with SMTP id nb42mr2599392ejc.333.1635399620384;
-        Wed, 27 Oct 2021 22:40:20 -0700 (PDT)
-Received: from redhat.com ([2.55.137.59])
-        by smtp.gmail.com with ESMTPSA id n2sm657001ejl.92.2021.10.27.22.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 22:40:19 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 01:40:16 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Erdem Aktas <erdemaktas@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [RFC] Add DMA_API support for Virtio devices earlier than VirtIO
- 1.0
-Message-ID: <20211028013901-mutt-send-email-mst@kernel.org>
-References: <20211027232828.2043569-1-erdemaktas@google.com>
+        id S229791AbhJ1Fra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 01:47:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhJ1Fr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 01:47:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B6E6103C;
+        Thu, 28 Oct 2021 05:45:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635399901;
+        bh=AeCe8kc7D0XDwcosE113ZUP5h3uuuc8Wo/nX4PARYd8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jqoml+dkw9pXIJBpmXvi8UQN3f1nTmo9DUJXYvJWgj2AjfcRF5KEv8T62njj6ZFCm
+         UVhXt1s+qGPSpMcg0n4J0vK8jp2L7vao7Bhmw9VMaMLAGSRLqKMTvcTMTym8IkWIGl
+         Lc6+cT9ONs/F+ioljQYgEkSpmCU5P1zWMStMDmIMHfClRZHeRu/GIMIAir5juPkEpS
+         xc/u3eJ9VseYMkMzgeGqhmhkM966tx+6X/Toec6IOu1wyQGKpy+w2QTYVD0Bi87JvF
+         ToObMIWEEq0QAGStOrW63zUEow3K56i0wTVQAUKpP76qOdZHosLl3WhFkln654l0eO
+         xampLfnAmayiw==
+Date:   Thu, 28 Oct 2021 08:44:57 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ziyang Xuan <william.xuanziyang@huawei.com>, davem@davemloft.net,
+        jgg@nvidia.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net] net: vlan: fix a UAF in vlan_dev_real_dev()
+Message-ID: <YXo42VbEQEtPi1CO@unreal>
+References: <20211027121606.3300860-1-william.xuanziyang@huawei.com>
+ <20211027184640.7955767e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027232828.2043569-1-erdemaktas@google.com>
+In-Reply-To: <20211027184640.7955767e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 04:28:28PM -0700, Erdem Aktas wrote:
-> Enable DMA_API for any VirtIO device earlier than Virtio 1.0 which
-> is the only way for those devices to be configured correctly when
-> memory access is retricted.
+On Wed, Oct 27, 2021 at 06:46:40PM -0700, Jakub Kicinski wrote:
+> On Wed, 27 Oct 2021 20:16:06 +0800 Ziyang Xuan wrote:
+> > The real_dev of a vlan net_device may be freed after
+> > unregister_vlan_dev(). Access the real_dev continually by
+> > vlan_dev_real_dev() will trigger the UAF problem for the
+> > real_dev like following:
+> > 
+> > ==================================================================
+> > BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
+> > Call Trace:
+> >  kasan_report.cold+0x83/0xdf
+> >  vlan_dev_real_dev+0xf9/0x120
+> >  is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
+> >  is_eth_port_of_netdev_filter+0x28/0x40
+> >  ib_enum_roce_netdev+0x1a3/0x300
+> >  ib_enum_all_roce_netdevs+0xc7/0x140
+> >  netdevice_event_work_handler+0x9d/0x210
+> > ...
+> > 
+> > Freed by task 9288:
+> >  kasan_save_stack+0x1b/0x40
+> >  kasan_set_track+0x1c/0x30
+> >  kasan_set_free_info+0x20/0x30
+> >  __kasan_slab_free+0xfc/0x130
+> >  slab_free_freelist_hook+0xdd/0x240
+> >  kfree+0xe4/0x690
+> >  kvfree+0x42/0x50
+> >  device_release+0x9f/0x240
+> >  kobject_put+0x1c8/0x530
+> >  put_device+0x1b/0x30
+> >  free_netdev+0x370/0x540
+> >  ppp_destroy_interface+0x313/0x3d0
+> > ...
+> > 
+> > Set vlan->real_dev to NULL after dev_put(real_dev) in
+> > unregister_vlan_dev(). Check real_dev is not NULL before
+> > access it in vlan_dev_real_dev().
+> > 
+> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
+> > Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> > ---
+> >  net/8021q/vlan.c      | 1 +
+> >  net/8021q/vlan_core.c | 2 +-
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+> > index 55275ef9a31a..1106da84e725 100644
+> > --- a/net/8021q/vlan.c
+> > +++ b/net/8021q/vlan.c
+> > @@ -126,6 +126,7 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
+> >  
+> >  	/* Get rid of the vlan's reference to real_dev */
+> >  	dev_put(real_dev);
+> > +	vlan->real_dev = NULL;
+> >  }
+> >  
+> >  int vlan_check_real_dev(struct net_device *real_dev,
+> > diff --git a/net/8021q/vlan_core.c b/net/8021q/vlan_core.c
+> > index 59bc13b5f14f..343f34479d8b 100644
+> > --- a/net/8021q/vlan_core.c
+> > +++ b/net/8021q/vlan_core.c
+> > @@ -103,7 +103,7 @@ struct net_device *vlan_dev_real_dev(const struct net_device *dev)
+> >  {
+> >  	struct net_device *ret = vlan_dev_priv(dev)->real_dev;
+> >  
+> > -	while (is_vlan_dev(ret))
+> > +	while (ret && is_vlan_dev(ret))
+> >  		ret = vlan_dev_priv(ret)->real_dev;
+> >  
+> >  	return ret;
 > 
-> Virtio devices can use DMA_API to translate guest phsical addresses to
-> device physical addresses if VIRTIO_F_ACCESS_PLATFORM feature is set
-> while the device is being initialized. VIRTIO_F_ACCESS_PLATFORM
-> feature is only supported in VirtIO 1.0 and later devices. This prevents
-> any device using an earlier VirtIO version than Virtio 1.0 to be
-> attached when memory access is restricted ie memory encryption features
-> (AMD SEV [ES/SNP], Intel TDX, etc..) are enabled.
+> But will make all the callers of vlan_dev_real_dev() feel like they
+> should NULL-check the result, which is not necessary.
 > 
-> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
+> RDMA must be calling this helper on a vlan which was already
+> unregistered, can we fix RDMA instead?
 
+He tried to fix RDMA first, but we came to conclusion that we real
+solution is in netdev land.
 
-Sorry .. NACK.
+https://lore.kernel.org/linux-rdma/20211025163941.GA393143@nvidia.com/T/#m44abbf1ea5e4b5237610c1b389c3340d92a03b8d
 
-Virtio before 1.0 is on life support. No new features. Just use 1.0
-please.
-
-
-> ---
-> I have tested the this patch using linux-stable.git head, 5.15.0-rc6
-> kernel and scsi disk with virtio 0.95 version with legacy VM and
-> Confidential VM (AMD SEV). I want to get feedback if
-> there is any risk or downside of enabling DMA_API on older virtio
-> drivers when memory encrytion is enabled.
-> 
->  drivers/virtio/virtio.c       |  7 ++-----
->  include/linux/virtio_config.h | 22 ++++++++++++++--------
->  2 files changed, 16 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index 236081afe9a2..71115ba85d07 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -179,11 +179,8 @@ int virtio_finalize_features(struct virtio_device *dev)
->  	if (ret) {
->  		if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1)) {
->  			dev_warn(&dev->dev,
-> -				 "device must provide VIRTIO_F_VERSION_1\n");
-> -			return -ENODEV;
-> -		}
-> -
-> -		if (!virtio_has_feature(dev, VIRTIO_F_ACCESS_PLATFORM)) {
-> +				 "device does not provide VIRTIO_F_VERSION_1 while restricted memory access is enabled!.\n");
-> +		} else if (!virtio_has_feature(dev, VIRTIO_F_ACCESS_PLATFORM)) {
->  			dev_warn(&dev->dev,
->  				 "device must provide VIRTIO_F_ACCESS_PLATFORM\n");
->  			return -ENODEV;
-> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> index 8519b3ae5d52..6eacb4d43318 100644
-> --- a/include/linux/virtio_config.h
-> +++ b/include/linux/virtio_config.h
-> @@ -170,6 +170,15 @@ static inline bool virtio_has_feature(const struct virtio_device *vdev,
->  	return __virtio_test_bit(vdev, fbit);
->  }
->  
-> +#ifdef CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
-> +int arch_has_restricted_virtio_memory_access(void);
-> +#else
-> +static inline int arch_has_restricted_virtio_memory_access(void)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS */
-> +
->  /**
->   * virtio_has_dma_quirk - determine whether this device has the DMA quirk
->   * @vdev: the device
-> @@ -180,6 +189,11 @@ static inline bool virtio_has_dma_quirk(const struct virtio_device *vdev)
->  	 * Note the reverse polarity of the quirk feature (compared to most
->  	 * other features), this is for compatibility with legacy systems.
->  	 */
-> +	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1) &&
-> +	   arch_has_restricted_virtio_memory_access())
-> +		return false;
-> +
-> +
->  	return !virtio_has_feature(vdev, VIRTIO_F_ACCESS_PLATFORM);
->  }
->  
-> @@ -558,13 +572,5 @@ static inline void virtio_cwrite64(struct virtio_device *vdev,
->  		_r;							\
->  	})
->  
-> -#ifdef CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
-> -int arch_has_restricted_virtio_memory_access(void);
-> -#else
-> -static inline int arch_has_restricted_virtio_memory_access(void)
-> -{
-> -	return 0;
-> -}
-> -#endif /* CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS */
->  
->  #endif /* _LINUX_VIRTIO_CONFIG_H */
-> -- 
-> 2.30.2
-
+Thanks
