@@ -2,116 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1A743D7EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EF543D7EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhJ1AHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhJ1AHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:07:50 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD329C061570;
-        Wed, 27 Oct 2021 17:05:24 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id bl14so4213883qkb.4;
-        Wed, 27 Oct 2021 17:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y7UgbqXfGQTuON1FkJoN0C/+54lWp+M8elVKbKesD3M=;
-        b=mDUVHXpmYXoJx2ddZx0CcEzr7PtL0a4mtrORL49PwZvrhMfNn17Waa6QiLxSRdQqRg
-         A4qe/S8522kYsPO96exItLrlx7c8ISvhRAFHwaxxDDqzoPQRE+iLjft5LXJR237kAKJc
-         zEmI60Pw8P6M62zSE13WodJ4M6zCkt9mYNZSFIB7ILvtf77wdpFBmaQBuaZ73as3WobN
-         B8ePcf7jkZ9K460tku4btgfQUBYzYgGnuTW2aY2Pm04YgbWds6ROE3zz4SNokis0hhSv
-         vVtnQVjBh4Mh3Gs7MruCVaMvqPOf8wX2xaN5HtVQUE7VQj+FLN32+kwedKwRWH9YW28H
-         I/Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y7UgbqXfGQTuON1FkJoN0C/+54lWp+M8elVKbKesD3M=;
-        b=rff3gHiDMK/9mGqs4G6XLfU3r/h/0A7d16jX1gVa8I7KFA0DkzhmVGKrydntI9NK6N
-         9QwzugeOqQdStLL+MR7FdDys71EmRui3FdlEeEprSbVRwCXtjlgpUG4lmGPHLfQUJoLp
-         0B5jV4FjXT2R1UDXwsdTkXu5EqV++2VmSbCHaDcdGHTrqdOKhcX8P5mCRHPjyYVEPqA3
-         trkipJfl5YVrZnxtB855Gb1IfMBLICXIjxi8ByuFHpl5c2SqHJ8Vw/jILQ8gzBAZcG1N
-         9OQ+XsLMpyx5mohNDf3yzLE4Y1B+LsaJJa/i9njlddPVzke0c5tGly9vETOoraX17Uge
-         w+Og==
-X-Gm-Message-State: AOAM532on+Dmyv1aGnO+0Ilng3wmzhsHWnrSkNO7vhy05wfbCdKyItdZ
-        PXU3DDm0xndDzgebt2iYPmM=
-X-Google-Smtp-Source: ABdhPJz+kqsvLz9OGU2ngkb3rqJBAqSk0PQi48I7IPt5PhD/pQpK59BP3rZsMDJM89pAFLpOv7Cnfw==
-X-Received: by 2002:a05:620a:c42:: with SMTP id u2mr833004qki.115.1635379523848;
-        Wed, 27 Oct 2021 17:05:23 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id v17sm963463qkl.123.2021.10.27.17.05.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 17:05:23 -0700 (PDT)
-Subject: Re: [PATCH] of/unittest: Disable new dtc node_name_vs_property_name
- and interrupt_map warnings
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20211026225527.3460520-1-robh@kernel.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <361311a6-5818-6fc8-56d9-1a0ab8eaa74b@gmail.com>
-Date:   Wed, 27 Oct 2021 19:05:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229515AbhJ1AMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhJ1AMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 20:12:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D36560EC0;
+        Thu, 28 Oct 2021 00:09:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635379785;
+        bh=osHe5qQZL4+EsqRTmg0smsm97CQxSIioocJlwg5ueBk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RJvCsgn/fH5TMlG+wpAzKS7+9l7kL2689hFO2Z4HlgiW8S3ULVSpzJH3j2TGhU3qk
+         C/G/sMA0YqcxVhYCpDnHyUdzc+Zuyq8BBrjyUmqHI5ig5YhWd6QhjxO+tdV+Mz2AFS
+         UjfbGD+H2rJe412cZ+sBG+JUZUhGNw26UwcmGXz8YtJ7M7uRMGlHs5+7jLxH0C2lD6
+         H6HEcJRFHm0CKCRDEXCWYSBn6KKfAHoINkom4guaBwkJz1l2FJKKOcZPXzJvDaUk2X
+         MEHJCSLv/3hCEpD82BwRXGwIb5wikqZ+6GIh8SHw5SNiFeb3DjKEDzctimVb8TXXxu
+         vnowSwHW3e9TQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8F373410A1; Wed, 27 Oct 2021 21:09:42 -0300 (-03)
+Date:   Wed, 27 Oct 2021 21:09:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Madhavan Srinivasan <maddy@linux.ibm.com>, michael@ellerman.id.au,
+        eranian@google.com, mark.rutland@arm.com, namhyung@kernel.org,
+        kjain@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] tools/perf: Add bitfield_swap to handle
+ branch_stack endian issue
+Message-ID: <YXnqRgcNkRSfijGp@kernel.org>
+References: <20211016125059.691856-1-maddy@linux.ibm.com>
+ <YXad+y2VCyC6y+CE@krava>
 MIME-Version: 1.0
-In-Reply-To: <20211026225527.3460520-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXad+y2VCyC6y+CE@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/21 5:55 PM, Rob Herring wrote:
-> The unittest dtbs have various intentional errors which cause warnings.
-> With the latest dtc sync to v1.6.1-19-g0a3a9d3449c8, we need to disable
-> some new checks: node_name_vs_property_name and interrupt_map warnings.
+Em Mon, Oct 25, 2021 at 02:07:23PM +0200, Jiri Olsa escreveu:
+> On Sat, Oct 16, 2021 at 06:20:58PM +0530, Madhavan Srinivasan wrote:
+> > branch_stack struct has bit field definition which
+> > produces different bit ordering for big/little endian.
+> > Because of this, when branch_stack sample is collected
+> > in a BE system and viewed/reported in a LE system, bit
+> > fields of the branch stack are not presented properly.
+> > To address this issue, a evsel__bitfield_swap_branch_stack()
+> > is defined and introduced in evsel__parse_sample.
+> > 
+> > Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
 > 
-> These warnings are also generated for static_base_1.dtb, so let's just
-> disable the problematic warnings for all unittest dtbs instead of just
-> testcases.dtb.
+> for both patches
 > 
-> Fixes: e76187b9792e ("scripts/dtc: Update to upstream version v1.6.1-19-g0a3a9d3449c8")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/of/unittest-data/Makefile | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> thanks,
+> jirka
 > 
-> diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
-> index a5d2d9254b2c..7e1a25ad4e5c 100644
-> --- a/drivers/of/unittest-data/Makefile
-> +++ b/drivers/of/unittest-data/Makefile
-> @@ -37,7 +37,9 @@ DTC_FLAGS_overlay_base += -@
->  DTC_FLAGS_testcases += -@
->  
->  # suppress warnings about intentional errors
-> -DTC_FLAGS_testcases += -Wno-interrupts_property
-> +DTC_FLAGS += -Wno-interrupts_property \
-> +	-Wno-node_name_vs_property_name \
-> +	-Wno-interrupt_map
->  
->  # Apply overlays statically with fdtoverlay.  This is a build time test that
->  # the overlays can be applied successfully by fdtoverlay.  This does not
-> 
+> > ---
+> > Changelog v1:
+> > - Renamed function and macro
+> > - Added comments in code
+> > 
+> >  tools/perf/util/evsel.c | 74 +++++++++++++++++++++++++++++++++++++++--
+> >  tools/perf/util/evsel.h | 13 ++++++++
+> >  2 files changed, 85 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > index dbfeceb2546c..746e642d4d32 100644
+> > --- a/tools/perf/util/evsel.c
+> > +++ b/tools/perf/util/evsel.c
+> > @@ -2221,6 +2221,51 @@ void __weak arch_perf_parse_sample_weight(struct perf_sample *data,
+> >  	data->weight = *array;
+> >  }
+> >  
+> > +u64 evsel__bitfield_swap_branch_flags(u64 value)
+> > +{
+> > +	u64 new_val = 0;
+> > +
+> > +	/*
+> > +	 * branch_flags
+> > +	 * union {
+> > +	 * 	u64 values;
+> > +	 * 	struct {
+> > +	 * 		mispred:1	//target mispredicted
+> > +	 * 		predicted:1	//target predicted
+> > +	 * 		in_tx:1		//in transaction
+> > +	 * 		abort:1		//transaction abort
+> > +	 * 		cycles:16	//cycle count to last branch
+> > +	 * 		type:4		//branch type
+> > +	 * 		reserved:40
+> > +	 * 	}
+> > +	 * }
+> > +	 *
+> > +	 * Avoid bswap64() the entire branch_flag.value,
+> > +	 * as it has variable bit-field sizes. Instead the
+> > +	 * macro takes the bit-field position/size,
+> > +	 * swaps it based on the host endianness.
+> > +	 */
+> > +	if (bigendian()) {
+> > +		new_val = bitfield_swap(value, 0, 1);
+> > +		new_val |= bitfield_swap(value, 1, 1);
+> > +		new_val |= bitfield_swap(value, 2, 1);
+> > +		new_val |= bitfield_swap(value, 3, 1);
+> > +		new_val |= bitfield_swap(value, 4, 16);
+> > +		new_val |= bitfield_swap(value, 20, 4);
+> > +		new_val |= bitfield_swap(value, 24, 40);
+> > +	} else {
+> > +		new_val = bitfield_swap(value, 63, 1);
+> > +		new_val |= bitfield_swap(value, 62, 1);
+> > +		new_val |= bitfield_swap(value, 61, 1);
+> > +		new_val |= bitfield_swap(value, 60, 1);
+> > +		new_val |= bitfield_swap(value, 44, 16);
+> > +		new_val |= bitfield_swap(value, 40, 4);
+> > +		new_val |= bitfield_swap(value, 0, 40);
+> > +	}
+> > +
+> > +	return new_val;
+> > +}
+> > +
+> >  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+> >  			struct perf_sample *data)
+> >  {
+> > @@ -2408,6 +2453,8 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+> >  	if (type & PERF_SAMPLE_BRANCH_STACK) {
+> >  		const u64 max_branch_nr = UINT64_MAX /
+> >  					  sizeof(struct branch_entry);
+> > +		struct branch_entry *e;
+> > +		unsigned int i;
+> >  
+> >  		OVERFLOW_CHECK_u64(array);
+> >  		data->branch_stack = (struct branch_stack *)array++;
+> > @@ -2416,10 +2463,33 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+> >  			return -EFAULT;
+> >  
+> >  		sz = data->branch_stack->nr * sizeof(struct branch_entry);
+> > -		if (evsel__has_branch_hw_idx(evsel))
+> > +		if (evsel__has_branch_hw_idx(evsel)) {
+> >  			sz += sizeof(u64);
+> > -		else
+> > +			e = &data->branch_stack->entries[0];
+> > +		} else {
+> >  			data->no_hw_idx = true;
+> > +			/*
+> > +			 * if the PERF_SAMPLE_BRANCH_HW_INDEX is not applied,
+> > +			 * only nr and entries[] will be output by kernel.
+> > +			 */
+> > +			e = (struct branch_entry *)&data->branch_stack->hw_idx;
+> > +		}
+> > +
+> > +		if (swapped) {
+> > +			/*
+> > +			 * struct branch_flag does not have endian
+> > +			 * specific bit field definition. And bswap
+> > +			 * will not resolve the issue, since these
+> > +			 * are bit fields.
+> > +			 *
+> > +			 * evsel__bitfield_swap_branch_flags() uses a
+> > +			 * bitfield_swap macro to swap the bit position
+> > +			 * based on the host endians.
+> > +			 */
+> > +			for (i = 0; i < data->branch_stack->nr; i++, e++)
+> > +				e->flags.value = evsel__bitfield_swap_branch_flags(e->flags.value);
+> > +		}
+> > +
+> >  		OVERFLOW_CHECK(array, sz, max_size);
+> >  		array = (void *)array + sz;
+> >  	}
+> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> > index 1f7edfa8568a..2e82cdbe2c08 100644
+> > --- a/tools/perf/util/evsel.h
+> > +++ b/tools/perf/util/evsel.h
+> > @@ -482,4 +482,17 @@ struct evsel *evsel__leader(struct evsel *evsel);
+> >  bool evsel__has_leader(struct evsel *evsel, struct evsel *leader);
+> >  bool evsel__is_leader(struct evsel *evsel);
+> >  void evsel__set_leader(struct evsel *evsel, struct evsel *leader);
+> > +
+> > +/*
+> > + * Macro to swap the bit-field postition and size.
+> > + * Used when,
+> > + * - dont need to swap the entire u64 &&
+> > + * - when u64 has variable bit-field sizes &&
+> > + * - when presented in a host endian which is different
+> > + *   than the source endian of the perf.data file
+> > + */
+> > +#define bitfield_swap(src, pos, size)	\
+> > +	((((src) >> (pos)) & ((1ull << (size)) - 1)) << (63 - ((pos) + (size) - 1)))
+> > +
+> > +u64 evsel__bitfield_swap_branch_flags(u64 value);
+> >  #endif /* __PERF_EVSEL_H */
+> > -- 
+> > 2.31.1
+> > 
 
-Before applying this commit, I am not seeing the warning that -Wno-interrupt_map
-suppresses.  I've tried with (1) CONFIG_OF_DYNAMIC and (2) with both
-CONFIG_OF_DYNAMIC and CONFIG_OF_OVERLAY, and I don't see the warning.
+-- 
 
-Where are you seeing the interrupt_map warning?
-
-I would prefer not changing from DTC_FLAGS_testcases to DTC_FLAGS because
-the suppresses the warning for all unittest .dts files, not just the two
-that lead to the node_name_vs_property_name warning. These two cases can
-be covered with DTC_FLAGS_testcases and DTC_FLAGS_static_test_1.
-
--Frank
+- Arnaldo
