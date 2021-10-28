@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263BD43E3AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1D543E3FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhJ1O3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:29:43 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14875 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbhJ1O3m (ORCPT
+        id S231344AbhJ1OmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:42:07 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:42695 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231249AbhJ1OmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:29:42 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hg7DV4wnGz90QX;
-        Thu, 28 Oct 2021 22:27:06 +0800 (CST)
-Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 22:27:09 +0800
-Received: from compute.localdomain (10.175.112.70) by
- dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 22:27:08 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        <kernel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v2 3/3] can: j1939: j1939_tp_cmd_recv(): check the dst address of TP.CM_BAM
-Date:   Thu, 28 Oct 2021 22:38:27 +0800
-Message-ID: <1635431907-15617-4-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1635431907-15617-1-git-send-email-zhangchangzhong@huawei.com>
-References: <1635431907-15617-1-git-send-email-zhangchangzhong@huawei.com>
+        Thu, 28 Oct 2021 10:42:04 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1McYP5-1nELWM3KUH-00d1Ud; Thu, 28 Oct 2021 16:39:35 +0200
+Received: by mail-wr1-f44.google.com with SMTP id e4so10597062wrc.7;
+        Thu, 28 Oct 2021 07:39:35 -0700 (PDT)
+X-Gm-Message-State: AOAM533Fmk/gHzgo4WG+rvoS55ej8i90ec6DYx+dkdkPxCxCVSJ4F5A2
+        4Z/XDdvymZM+ulMCAPdphUJvr2KeZI0MK1zyXa4=
+X-Google-Smtp-Source: ABdhPJywcxOpdNSzG6Dz7Wo0Mfr5ZcmBRbk8+ke27ZX22Ol8jLoYbLDirLsu+KPslnCjLkVgZLhdwSyWSSptfkSO3xA=
+X-Received: by 2002:a5d:4692:: with SMTP id u18mr6354304wrq.428.1635431975426;
+ Thu, 28 Oct 2021 07:39:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com> <20211028141938.3530-3-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211028141938.3530-3-lukas.bulwahn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 28 Oct 2021 16:39:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2raR70Xw3AT=BSojvqvua4WGeYrzasp+i7bnwTLVcxhg@mail.gmail.com>
+Message-ID: <CAK8P3a2raR70Xw3AT=BSojvqvua4WGeYrzasp+i7bnwTLVcxhg@mail.gmail.com>
+Subject: Re: [PATCH 02/13] arm: debug: reuse the config DEBUG_OMAP2UART{1,2}
+ for OMAP{3,4,5}
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:O0+hG/032u5qnVL/LYERTy7yBBZqLM4cqY9KOXWXCEcfdFfJl6E
+ 855AovJ4XK8jzqhG1qKTfAGNFQ0vEIb5MMeKO59Ed2zLeL5tLHGLPuqlPDxokxQrDGzPW+l
+ 0HbmD+XJGE4GKsSMJJa/n/e4kQT+Btoth+AAva4DVFAbWd54TnigzHBqEMyxHdMBzX1Voj6
+ eKXFx+S4O9eSg8zUSeoMA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2/Tj9EHEsjQ=:5NqSNS2BxTu6Z/88fqYViy
+ gcSPnND3qxNHoYANDG9nPtZ08It9M5vIXlgK+rc2Z64PQMHwaHiM3jnhcVplgbfGOEbxa8v47
+ sHcn9vEmJ7uglduOkWK1as5AWIkZdTX864LTbMRUBhoLYIVEFu4UYdphKKRHZ8D98uRLR6kiR
+ hQa3JrdcfaRkbtA3EbJrpVwg5XI557Jt7xeB0J9HTW7WtVLoSpo3Q3NoFc0qYlzNZGlwXxRnU
+ tbg7xwudfbPhipC4U6voTcRot3ffVClhx1FZYtkBYGsmbk8i9ZBRyXkHtKkVaI592cVO35NNA
+ 6+iOHBtx1vuBYYr/TJuDJlqE1iUCH9mMVPjbMmB+Gje1m+vVM/cbpVpc/CwXQeJd9OUBDlqyn
+ ztX7c7Rxb6uoT7eaQziuPHFEfpCaRt1GkL6I38NR7fdFGfnzgEbjwzUvwIUzoh1XEmo1kCbYx
+ rUgtYDiqQ1ukoEUfCFUliMUV0hN0rGn9ca2xjXJSYAjbflGwuK3+skrYfnILyrDckUyXtiLwa
+ NAdDO6szXEQ4CjtvFVgXxDDPEc/PJmuT82YOwSBo97UapEsswaVbTvEOcKnRC2PSvNCoDgR/o
+ QXQHNEjquSnmfgCSy1v9xXP+T25eg0ozXQAeO5QJYDMamAbcslcVIyK5glT8XbsmcpGvnwOaV
+ 6ne4oR71dm8CDfduAV0Pxcg7ChhxeWXTk/emh+BdvAjUj2a77MrXYv1N//YxdCLNrXsLwgRBY
+ vbV2oDYQRk4FqTVU0QXUkI13xj/LnxN79ponfwc4byhfF9Zqo1Thm0N4v9wZffY7faiwUyYXr
+ H/QvGRyAdVDJKDgqHw++mFiQT/iZ/kld14KjvkiAo+vh23kajE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TP.CM_BAM message must be sent to the global address [1], so add a
-check to drop TP.CM_BAM sent to a non-global address.
+On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit d2b310b0234c ("ARM: debug: Use generic 8250 debug_ll for omap2 and
+> omap3/4/5 common uarts") adds address definitions of DEBUG_UART_PHYS for
+> OMAP2, OMAP3, OMAP4 and OMAP5 in ./arch/arm/Kconfig.debug.
+>
+> These definitions depend on DEBUG_OMAP{2,3,4,5}UART{1,2}; however, only
+> DEBUG_OMAP2UART{1,2} are defined in ./arch/arm/Kconfig.debug, and
+> DEBUG_OMAP{3,4,5}UART{1,2} are not defined. Hence, the script
+> ./scripts/checkkconfigsymbols.py warns here on non-existing symbols.
+> Simply reuse the config DEBUG_OMAP2UART{1,2}; there is no need to define
+> separate config symbols for OMAP{3,4,5}. So, just delete the dead
+> references to DEBUG_OMAP{3,4,5}UART{1,2}.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Without this patch, the receiver will treat the following packets as
-normal RTS/CTS tranport:
-18EC0102#20090002FF002301
-18EB0102#0100000000000000
-18EB0102#020000FFFFFFFFFF
-
-[1] SAE-J1939-82 2015 A.3.3 Row 1.
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- net/can/j1939/transport.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 05eb3d0..a271688 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -2023,6 +2023,11 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
- 		extd = J1939_ETP;
- 		fallthrough;
- 	case J1939_TP_CMD_BAM:
-+		if (cmd == J1939_TP_CMD_BAM && !j1939_cb_is_broadcast(skcb)) {
-+			netdev_err_once(priv->ndev, "%s: BAM to unicast (%02x), ignoring!\n",
-+					__func__, skcb->addr.sa);
-+			return;
-+		}
- 		fallthrough;
- 	case J1939_TP_CMD_RTS:
- 		if (skcb->addr.type != extd)
--- 
-2.9.5
-
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
