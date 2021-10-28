@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E957443E26B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A9E43E264
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhJ1Nmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41290 "EHLO mail.kernel.org"
+        id S230356AbhJ1Nip convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 09:38:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230305AbhJ1Nmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C1F0561108;
-        Thu, 28 Oct 2021 13:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635428407;
-        bh=zLg45tPH3YWCn+HpbPJFz48i4v70NOHcl/6yl8+8pEc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cNu2aBgF9vNGiXQo9WNWEvprUQmL5zLXzIc/zPhzAWa70aJoSZpptOsPwT2/X7IA5
-         XaDtWBhk+VnMI2FnaA4Qex+5KiM7V0za7BY1nXbo3okfRCVigulnadm0oEOV1vjSEQ
-         3i8xZOsu00P0PFWlgYim6boNtZshk4jdahIcZuVncGQDY1WqlAZ4+3bd/Ued0hDMRY
-         l8Q1nsmW0enXCUL6udlx6PnhItr4cAE68SvzmjNXBtBYWJ3Jj388F+v8gX9A7DFzft
-         W5EVo4tUGEX0KejW30QeN7Lxe4zOz2c1dm8oqO3tNB+V58q438oFi7S5HyHxP191LV
-         IqBHaYdxa3EvQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AC22C60A6B;
-        Thu, 28 Oct 2021 13:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229887AbhJ1Nio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:38:44 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5584161056;
+        Thu, 28 Oct 2021 13:36:15 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 14:40:41 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     =?UTF-8?B?QW5kcsOp?= Gustavo Nakagomi Lopez <andregnl@usp.br>
+Cc:     lars@metafoo.de, vz@mleia.com, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: lpc18xx_adc: Reorder clk_get_rate function
+ call
+Message-ID: <20211028144041.20407149@jic23-huawei>
+In-Reply-To: <YXag5l4xBkGQH3tq@Andryuu.br>
+References: <YXag5l4xBkGQH3tq@Andryuu.br>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net: ipconfig: Release the rtnl_lock while
- waiting for carrier
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163542840769.2633.15242995859268025107.git-patchwork-notify@kernel.org>
-Date:   Thu, 28 Oct 2021 13:40:07 +0000
-References: <20211028131804.413243-1-maxime.chevallier@bootlin.com>
-In-Reply-To: <20211028131804.413243-1-maxime.chevallier@bootlin.com>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     davem@davemloft.net, linux@armlinux.org.uk,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        atenart@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, 25 Oct 2021 09:19:50 -0300
+André Gustavo Nakagomi Lopez <andregnl@usp.br> wrote:
 
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Thu, 28 Oct 2021 15:18:04 +0200 you wrote:
-> While waiting for a carrier to come on one of the netdevices, some
-> devices will require to take the rtnl lock at some point to fully
-> initialize all parts of the link.
+> clk_get_rate is not guaranteed to work if called before clk_prepare_enable.
 > 
-> That's the case for SFP, where the rtnl is taken when a module gets
-> detected. This prevents mounting an NFS rootfs over an SFP link.
+> Reorder clk_get_rate, so it's called after clk_prepare_enable and
+> after devm_add_action_or_reset of lpc18xx_clk_disable.
 > 
-> [...]
+> Suggested-by: Jonathan Cameron <jic23@kernel.org>
+> Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+> Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
 
-Here is the summary with links:
-  - [net-next,v2] net: ipconfig: Release the rtnl_lock while waiting for carrier
-    https://git.kernel.org/netdev/net-next/c/ee046d9a22a4
+Thanks. I tweaked the message a little and added a note that this was not
+a fix for this particular platform.  Good to avoid chance of cut and paste
+into another driver!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Jonathan
 
+> ---
+> Change log V1 -> V2:
+> 		  -Fixed typo
+> 		  -Added appropriate Suggested-by and Acked-by tags
+>  drivers/iio/adc/lpc18xx_adc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
+> index ceefa4d793cf..ae9c9384f23e 100644
+> --- a/drivers/iio/adc/lpc18xx_adc.c
+> +++ b/drivers/iio/adc/lpc18xx_adc.c
+> @@ -157,9 +157,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
+>  		return dev_err_probe(&pdev->dev, PTR_ERR(adc->clk),
+>  				     "error getting clock\n");
+>  
+> -	rate = clk_get_rate(adc->clk);
+> -	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
+> -
+>  	adc->vref = devm_regulator_get(&pdev->dev, "vref");
+>  	if (IS_ERR(adc->vref))
+>  		return dev_err_probe(&pdev->dev, PTR_ERR(adc->vref),
+> @@ -192,6 +189,9 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	rate = clk_get_rate(adc->clk);
+> +	clkdiv = DIV_ROUND_UP(rate, LPC18XX_ADC_CLK_TARGET);
+> +
+>  	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
+>  			LPC18XX_ADC_CR_PDN;
+>  	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
 
