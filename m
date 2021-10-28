@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CFB43F32C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 01:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03AF43F32F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 01:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbhJ1Wu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
+        id S231476AbhJ1Wv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbhJ1Wu0 (ORCPT
+        with ESMTP id S231319AbhJ1WvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:50:26 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AC8C061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:47:59 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id om14so5799509pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:47:58 -0700 (PDT)
+        Thu, 28 Oct 2021 18:51:25 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3B5C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:48:55 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id n11so2420486oig.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:48:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=dmHzXZ8W8u4Vahswm1Gfu/jyOgChRuyCsd/1+WrvSv4=;
-        b=XnSxctpskX7YOPowMe3yO2c/GcedcCFtMPPrpfaTf0lCuShRzDc6Z8AjPWJT1sbwfg
-         M80i1IxhmX4wDNRCZPqjROJ/CwLcKpeNqjJMuVVuJYt3FQnU37D2m2Xa4roUlEHIdOc8
-         5QqLl9f8utHVrRPVVMxM3Kxc5kZz3AaIEHU6z2cOivLZwy5jljtECPy2cLTL8ev0dG+s
-         jo+P/jwOuD5mD0vtQA/2HkAzPytkHkbzuAwlyauifu+WDsbuBQvOIxK085FLR9TqedSJ
-         pyzr+Zj9GzyKWQqiSOiv3hMIljdbrqOl03lQDW/sBo61Q/yCzHFcbVKMdgfRT4o/NrlU
-         Ptcw==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=zM8uiZ/0fig4c43d46Pk2wkrmm7GRfhsBgHoOi3NfxI=;
+        b=ScpnGW2MPkDkWmvvW9XYdpwZsleLGo4e4MfIHMSN47Wq1ZcmGQx/lo0h17j6e9Q85H
+         xKhgTn/ycXpv0hKkkbWsfsfDryAbEP+k+Ye9fHlhDHFPyBsPYNzId9hJBkVc1oZD1/GO
+         mYTqVUlbL4Me+ZceH4J09lRlIHq09eDLvHJp8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=dmHzXZ8W8u4Vahswm1Gfu/jyOgChRuyCsd/1+WrvSv4=;
-        b=d+4Z0BFx8VkJYjWpRjs6zLT5m4d7iAIGjttsOklWVLi1WH9fdr1o94STFK160c6z1w
-         ZhPeGRo1P0E2mVAtEvCIRD7+Jz2q4/DYrDCMqs0LH3XVO4If9mhBdbR9D9A+sz/Rycjx
-         QVpcGMn1aoOz5eMcPdpE1Z9lmaSN3UoxgIWlPSMbrdjEVf5J8enI4pGVrPfeMqdFim+M
-         LPM6krwaGFITzQacG3QIco4KSZ0K9m0sl8f1ivEVUSIT4ShGLsuAiDF21L8wJeHMCTk6
-         MGidh4AaVk3f0+BItIB+I9EDGb+SUw4Jlb+4borcRbWQjZsAzarMRZW9UdzLLdP5ipbS
-         /9aA==
-X-Gm-Message-State: AOAM530aKe69tNAEax6WqkP6X5Rn4Rq89Qlse2MI7SYu6nh9weQyrFPy
-        0hV7fBFX9yFzVtPGZjLkvyu0tdSuQ147c307QCU=
-X-Google-Smtp-Source: ABdhPJw4B6AZ5JGIcCMtRkXXU79Ro0RimofddsTUx/d3ADRSrHYnA0ane0mzZGs1VjCnYlLWeLZ6wlev5qVd3JNXTS0=
-X-Received: by 2002:a17:90a:7a81:: with SMTP id q1mr4038568pjf.1.1635461278336;
- Thu, 28 Oct 2021 15:47:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=zM8uiZ/0fig4c43d46Pk2wkrmm7GRfhsBgHoOi3NfxI=;
+        b=LKNxJ4ryAsWEB0SFQjs/zbUAWqx7vCwneaUQ6j6ATU8npVa/7J+MO1WpQFa5wt8Tk9
+         YRGlgiYukjOWrOIY0sgIWjBipb/JFgSYaoNFDE/dqxC7yVfHmxAqxOECXkski6ksPQs3
+         wpCRl/mxBtbiZw6rVlB5jSluEYuUsnobkcF8vX4gN6pa0OSKyX3mW4q0qGfMXpdNqZ1Y
+         YYV2G0O8eDpPzM7axbwW7dedU+vXsB7fLW64/giIwCZNPQR1U5e6h+LzED3yjlFVnXKr
+         dBZChdXG5+qUxd/K4muy51bqNTp5GUaNDenwJ0Ey+SW7tapGKUc6CMTx6g8Wds9hSuT5
+         5YDw==
+X-Gm-Message-State: AOAM531QpvzHJCnAHsMY5MaM/Xy6ISFret02rg6oY4p2bAaoL+nHhMPX
+        eHvlr4MwWFCizO9LSzlG2dyPRz5QzjgRbvnP/0sI5w==
+X-Google-Smtp-Source: ABdhPJzW1asRv8vFGbtuYb3nZrKzGbZSUQuvTUAAaEr626YwTRXyVexGGswyk+k+FCu9k8P2w7sZowcd++Xk7iiaSuQ=
+X-Received: by 2002:a05:6808:2128:: with SMTP id r40mr3601576oiw.164.1635461335081;
+ Thu, 28 Oct 2021 15:48:55 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 28 Oct 2021 15:48:54 -0700
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:bb0d:0:0:0:0 with HTTP; Thu, 28 Oct 2021 15:47:57
- -0700 (PDT)
-Reply-To: cashfinanceb@citromail.hu
-From:   "Mr. Fred Williams" <oma4224@gmail.com>
-Date:   Thu, 28 Oct 2021 23:47:57 +0100
-Message-ID: <CAB_9CXggOfx6xq7KBWQ3X-TYmh6kZ-eX-=_Pg=GBzJE3UrfhiA@mail.gmail.com>
-Subject: Re: Payment Of ($10,500,000.00)
-To:     undisclosed-recipients:;
+In-Reply-To: <20211028151120.v2.1.Ie6bd5a232f770acd8c9ffae487a02170bad3e963@changeid>
+References: <20211028151120.v2.1.Ie6bd5a232f770acd8c9ffae487a02170bad3e963@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 28 Oct 2021 15:48:54 -0700
+Message-ID: <CAE-0n52HuVGXWeiJj6VSFxYqPWgnTzh17t06v4KAfmM5pf5EgQ@mail.gmail.com>
+Subject: Re: [PATCH v2] scripts/gdb: Handle split debug for vmlinux
+To:     Douglas Anderson <dianders@chromium.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-ATTENTION
+Quoting Douglas Anderson (2021-10-28 15:11:38)
+> This is related to two previous changes. Commit dfe4529ee4d3
+> ("scripts/gdb: find vmlinux where it was before") and commit
+> da036ae14762 ("scripts/gdb: handle split debug").
+>
+> Although Chrome OS has been using the debug suffix for modules for a
+> while, it has just recently started using it for vmlinux as well. That
+> means we've now got to improve the detection of "vmlinux" to also
+> handle that it might end with ".debug".
+>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-PAYMENT OF ($10,500,000.00)
-
-WE ACKNOWLEDGE THE RECEIPT OF YOUR EMAIL IN RESPECT OF YOUR DEPOSITED
-FUND TOTAL SUM OF $10,500,000.00 US DOLLARS FUND DEPOSITED TO US
-THROUGH THE HELP OF INTERNATIONAL PAYMENT DEPT
-
-BE INFORM THAT YOUR PAYMENT OF $10,500,000.00 US DOLLARS WILL BE
-PROCESS AND CREDITED TO YOUR BANK ACCOUNT AS REQUESTED AFTER FILLING
-BACK TO US ALL BELLOW DETAILS ON YOUR NEXT EMAIL MESSAGE FOR THE
-PROCESSING OF THE PAYMENT WITHIN 24HOURS AS THE RIGHTFUL FUND
-BENEFICIARY TO RECEIVE AND CLAIM THE SAID FUND TOTAL SUM OF
-$10,500,000.00  US DOLLARS
-
-PLEASE KINDLY RECONFIRM TO THE BANK THE FOLLOWING
-
-1 YOUR FULL NAME:_____
-2. YOUR CURRENT ADDRESS:_____
-3. OCCUPATION;_____
-4. YOUR TELEPHONE NUMBERS AND FAX;_____
-5. AGE AND SEX;_____
-6. SCAN COPY OF YOUR VALID ID CARD.;_____
-7 YOUR EXISTING COMPANY NAME;_____
-8 YOUR MOBILE PHONE NO;_____
-9 YOUR BANK NAME;_____
-10 YOUR BANK ACCOUNT NO;_____
-11 YOUR ROUTING NO;_____
-12 YOU BANK SWIFT CODE;_____
-13 YOUR BANK ADDRESS;_____
-
-AS SOON AS THIS INFORMATION IS RECEIVED, THE SAID FUNDS WILL BE
-RE-DIRECTED TO YOUR NAME DIRECTLY FROM CASH FINANCE BANK. WE SHALL
-PROCEED TO ISSUE ALL PAYMENTS DETAILS WITH THE FUND CREDITING POP TO
-YOUR EMAIL WITHOUT ANY FURTHER DELAY.
-
-PAYMENT DIRECTOR
-MR. FRED WILLIAMS
-INTERNATIONAL PAYMENT DEPARTMENT
-CASH FINANCE BANK OF GEORGIA
-E-MAIL: cashfinanceb@citromail.hu
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
