@@ -2,136 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE0C43E4FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2E443E501
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhJ1PZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S230162AbhJ1P0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhJ1PZC (ORCPT
+        with ESMTP id S230156AbhJ1PZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:25:02 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28553C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:22:32 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id gn3so4986353pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:22:32 -0700 (PDT)
+        Thu, 28 Oct 2021 11:25:59 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EC4C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:23:31 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id g25so3274700qvf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:23:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wq2fDK4Y1PYwyFg0KcaMcSGyQtEXNmJj70LIwShSA+Q=;
-        b=CZX8flQtIVS05QrpK8YoB5qywUviOPjv2q2uZ4eYLf+8b9f3ZmF23ddtLnEJyiYkpa
-         apiZF4s4CJRnLoq8tgZVPWnCXtqReuMEko2ICe02Aj9lKpXGnJSBM2snTQDnxmPjjs18
-         nErNOdhiP6p0jHsyCm7eNWqRgcv7HnJPkXYvcAUGjcegiAIN7h/UGFem+7ofSHiaTrCD
-         885Sqqon8TODsp4DRZ0YcCyh1KJO0caYUvtUsRdTOGRp8MQNDd/YOM/RHbHBbuoDzSO1
-         /RBYfRiXn7f5zXDOF3n4RKU/40f/YzkCitydxImHYpSeo20H4iK79qsytq2Vhca3uAxY
-         u9ow==
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mOVoYXRHI5sNBWLXNQNXSjOsNry4SjlW/GjCDgN+QZw=;
+        b=mE++Z0a0PPlRUkk6R75IRCCUodjtsEUnnLfylnq63z4c5436WEDxvqrJgHpJtZn3K5
+         jMGtw3eWXI7rdw2Fik8lCefKcMChJ//NjezCloryhA7LWjmilO25wDcdkaOlb9s2o4yC
+         57N1H6KhjCqlVAu3AtGl3hWmAmfAVs9pr8Q/5dgBJtg1PPUaUOhO3GBPImLcGUSiiSno
+         MlcWssjTT7oLHA4Gz8NEeumDYfdI6tSglF0rq+Na+i2Km7MEC5XiNa/LkKWCiaMXJAhL
+         ipV/7y6recr65xFDRn1mlrj1cFLPjfiLlqDaFY9mQ/mKo/xx1HLFjTt7RhAvfnu9ywED
+         NoHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wq2fDK4Y1PYwyFg0KcaMcSGyQtEXNmJj70LIwShSA+Q=;
-        b=kMNw+6VlrO9z8L67dwCY3sUuf33DNCW3MzrW0kgPZhpau7JbC66lg26n6i6VXstKhn
-         KQYdkzPnCYt8a/tqA1+1JEl5GvRelk4W1ajRXVicKbNpurek6sidxDUvPHJKuSopWg3K
-         TUS2sxcNhI0fA8b2e/GXXKADIDJsRyl4AJnmnRj+LFtpxh7LgD+BXOF0JX02QsL1om9V
-         6J7aQgm/eg8T6rc6Es6vYhJHn5eTl6cGl/L6tdsbtoxa1TIEe5zAqCc+6RvCTMc+lwnT
-         BY42atd4mfyCuesA7mV+L3uaEjkB/xsYMBlWpnQrq8C/CdnAGvTiQXPYIPk7uoFg7FOA
-         Zk6w==
-X-Gm-Message-State: AOAM531i4sZoLxXxrYyIs7K7NzHSaSmMnLbIEqNpobiMA7yLFRgzq9jz
-        4ytLRu1AY0XKt2ElWGiTsv0teA==
-X-Google-Smtp-Source: ABdhPJzMzl5yGCkZYibocwnByVzQKmmQKSZmgPXRr65ajBmCV+xq9SIKT52tvNqaOt+05b5mMNH+mw==
-X-Received: by 2002:a17:902:a5c2:b0:140:14bb:8efd with SMTP id t2-20020a170902a5c200b0014014bb8efdmr4572984plq.31.1635434551473;
-        Thu, 28 Oct 2021 08:22:31 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g13sm4229663pfv.20.2021.10.28.08.22.30
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=mOVoYXRHI5sNBWLXNQNXSjOsNry4SjlW/GjCDgN+QZw=;
+        b=3jOHT1zd/D5/sgfpuPkZ/pOtcZHugGqkj1nfFZL9dsSA0L+SVZEf2TD087kut2e6ED
+         3qT/+qKjhZgzww3z2MseLHSw+2taGqI3LkO1GYWSyH6t2VFjn5/h5AIjrWFsJ4JtQ9Ib
+         EAJAMn0FPMcpx0nN6FW6IpU/JoykYEklUv6xZFtuAimGFmQNuWM1X6KVEdD+kVEMWYnc
+         geFYwHK61JsNVPA9zCGfeUTUMyDpx1QdFVK0eZqmVp2Jr/4MVCk33WrcjTLA6saETyfk
+         KqFo9Y/d4gFt8gJAm/zvmfGLGo07eROs8OfHhxbyz1zkJqKYKN4X9y1+sUiyO68GO8U/
+         u4kg==
+X-Gm-Message-State: AOAM531rRC5HafEb9/Cg7n+OFZ0oBmd3fqRgtNVHfmv5rpQO/tJ8xZS3
+        QcDFhNza7eELNM0qLQTFZsOma6zIzhxdsB8s/z8=
+X-Google-Smtp-Source: ABdhPJxZcqGt/AL0gMONY8/y92jwlGyjci7sYU0xuRmAp2TlTBvPQZI6R2lXM/zyqaYIZw/K2yuHcg==
+X-Received: by 2002:a05:6214:4119:: with SMTP id kc25mr4650274qvb.65.1635434611069;
+        Thu, 28 Oct 2021 08:23:31 -0700 (PDT)
+Received: from ubuntu-mate-laptop.localnet ([67.8.38.84])
+        by smtp.gmail.com with ESMTPSA id u22sm1131685qta.23.2021.10.28.08.23.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 08:22:30 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 15:22:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        John Haxby <john.haxby@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
- nested VM-Enter/VM-Exit
-Message-ID: <YXrAM9MNqgLTU6+m@google.com>
-References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
- <20200320212833.3507-24-sean.j.christopherson@intel.com>
- <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
+        Thu, 28 Oct 2021 08:23:30 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, perex@perex.cz
+Cc:     Vijendar.Mukunda@amd.com, tiwai@suse.com,
+        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, fazilyildiran@gmail.co
+Subject: Re: [PATCH RESEND] ASoC: fix unmet dependencies on GPIOLIB for SND_SOC_DMIC
+Date:   Thu, 28 Oct 2021 11:23:29 -0400
+Message-ID: <51280965.5nCgCKSeW0@ubuntu-mate-laptop>
+In-Reply-To: <YXqXdV0YC5BhEARB@sirena.org.uk>
+References: <20211027184835.112916-1-julianbraha@gmail.com> <YXqXdV0YC5BhEARB@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--me :-)
-
-On Thu, Oct 28, 2021, Lai Jiangshan wrote:
-> On Sat, Mar 21, 2020 at 5:29 AM Sean Christopherson
-> <sean.j.christopherson@intel.com> wrote:
+On Thursday, October 28, 2021 8:28:37 AM EDT you wrote:
+> On Wed, Oct 27, 2021 at 02:48:35PM -0400, Julian Braha wrote:
+> > When SND_SOC_AMD_RENOIR_MACH or SND_SOC_AMD_RV_RT5682_MACH
+> > are selected, and GPIOLIB is not selected, Kbuild gives
+> > the following warnings, respectively:
 > 
-> > +       if (!nested_cpu_has_vpid(vmcs12) || !nested_has_guest_tlb_tag(vcpu)) {
-> > +               kvm_make_request(KVM_REQ_TLB_FLUSH, vcpu);
-> > +       } else if (is_vmenter &&
-> > +                  vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
-> > +               vmx->nested.last_vpid = vmcs12->virtual_processor_id;
-> > +               vpid_sync_context(nested_get_vpid02(vcpu));
-> > +       }
-> > +}
+> I can't seem to find any indication that this has been sent before...
 > 
-> (I'm sorry to pick this old email to reply to, but the problem has
-> nothing to do with this patch nor 5c614b3583e7 and it exists since
-> nested vmx is introduced.)
-> 
-> I think kvm_mmu_free_guest_mode_roots() should be called
-> if (!enable_ept && vmcs12->virtual_processor_id != vmx->nested.last_vpid)
-> just because prev_roots doesn't cache the vpid12.
-> (prev_roots caches PCID, which is distinctive)
-> 
-> The problem hardly exists if L1's hypervisor is also kvm, but if L1's
-> hypervisor is different or is also kvm with some changes in the way how it
-> manages VPID.
 
-Indeed.  A more straightforward error case would be if L1 and L2 share CR3, and
-vmcs02.VPID is toggled (or used for the first time) on the L1 => L2 VM-Enter.
+Hi Mark,
 
-The fix should simply be:
+When I previously submitted this patch, I did not send it to all relevant 
+maintainers. Also the subject line was flawed.
+Here's the original: 
+https://lore.kernel.org/lkml/20210430143919.43362-1-julianbraha@gmail.com/
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index eedcebf58004..574823370e7a 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -1202,17 +1202,15 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
-         *
-         * If a TLB flush isn't required due to any of the above, and vpid12 is
-         * changing then the new "virtual" VPID (vpid12) will reuse the same
--        * "real" VPID (vpid02), and so needs to be flushed.  There's no direct
--        * mapping between vpid02 and vpid12, vpid02 is per-vCPU and reused for
--        * all nested vCPUs.  Remember, a flush on VM-Enter does not invalidate
--        * guest-physical mappings, so there is no need to sync the nEPT MMU.
-+        * "real" VPID (vpid02), and so needs to be flushed.  Like the !vpid02
-+        * case above, this is a full TLB flush from the guest's perspective.
-         */
-        if (!nested_has_guest_tlb_tag(vcpu)) {
-                kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-        } else if (is_vmenter &&
-                   vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
-                vmx->nested.last_vpid = vmcs12->virtual_processor_id;
--               vpid_sync_context(nested_get_vpid02(vcpu));
-+               kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
-        }
- }
+- Julian Braha
+
+
