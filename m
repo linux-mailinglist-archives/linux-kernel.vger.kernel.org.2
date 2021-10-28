@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3F043E8A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6113643E8A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhJ1Sxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229645AbhJ1Sxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:53:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A43610D2;
-        Thu, 28 Oct 2021 18:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635447077;
-        bh=QXYlXZ/XsbqGTREhOhDWkniHowuwQaogvXifIJ8tj40=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=KS/y7VDCoI87IOHlUXdt/mCgArq+2fwsNM9fDLF10UES2E8xLsC1oT3ixDM0zuyHf
-         +78GXc8c+VDsxa0CXb/iLGnpWG/AjTXtxCaOmBu7o9ZdDkOh9G3gSeukz2qqkttybV
-         fv2teg6bfaUrCTiVWn8wcxOzJmlXQLeSacLn6pDPom//LSWZ+Xzm6jtcAO5jXEI9vb
-         lVqTNFWa2FaoiFhfJ6+7QPuCRQdeAhYfHiruUOJp92MQncvlh53KjXxvtX+8PIt/Cl
-         0ibiZ1zPH0fWvQorJJck2NJpscF22ID+RZ2CQJvMAPM7csCfAP6DJ+VV35JUIcGuyp
-         83cs+O7DkUpgQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Colin Ian King <colin.i.king@googlemail.com>
-Cc:     SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] mm/damon: Fix a few spelling mistakes in comments and a pr_debug message
-Date:   Thu, 28 Oct 2021 18:51:12 +0000
-Message-Id: <20211028185112.16085-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211028184157.614544-1-colin.i.king@gmail.com>
+        id S231169AbhJ1SyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231163AbhJ1SyN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 14:54:13 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53988C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:51:46 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id j2so15624536lfg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=xuK+PVCpGoo5TXNGceaR1z13nIhhcB5eydr90mLDPII=;
+        b=SGJj+zOmM28+pJw7UAZXKqgJd5UpR393id6/o8uFKPAqrAJpW23gBSZxsOAldjRxsF
+         e4TwMTj/tWNPmPCjjFnuG7cPNoSJldpBM2N0l+nwhwXAOvteE4NdqZH+Lsi7d9AkLE0E
+         D1Xyn8tY4K7ASs7lQwgm6g2lRraa4+fMddrrA5JILFkt4hp0g8or7Po1jpJuP/v3TRpy
+         VfiUj+OUn+RYbzfrr1YwdQag3Yqe4Qcz+Z810ibf//gme58Y/Pwrbxo1pjGSG1yNyOC6
+         LTvAfihEiQokhzA/9Hy/kqSyriF8Q3dMH/HUQEuzkvUTXEQB0qy6ZTH9XcbwATyPeuc3
+         9MzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=xuK+PVCpGoo5TXNGceaR1z13nIhhcB5eydr90mLDPII=;
+        b=iPQYGo28qXfIlstGsuAakJZ/8RiSea2jNQNSKLRolhXQYKhh8kPLJZQflyyARBShiD
+         yI3ostazylReDwX42IwHWZcUFYzI6Qu5bAiEBQOrrsoItoB1NeqvQ1zW0r+zgFwLFa1d
+         /GQI22jmlAWiTtRnEYLVdhNoHtAIdPVLzGLBx6AqdeEhqxKzDWCUcQnIy+fzkih+i5Sx
+         5IRX11bjmcHIVfxBgffCR6BuNB03CVqwpgddjDG0hzWACdrtEbKshtGNRZ6631MLEFIE
+         78DSLB9OpY5ddBWhNfnkdWIWDiuy7zOMgjNR9n0mkBKJrSfGqA8AFBVLbN38yVoBhWKq
+         3xAQ==
+X-Gm-Message-State: AOAM532Q5lEQwMRzU1DJPSYF/onTvkBG0u5moRmZK5NX0htABJHrKDqq
+        phlOjjLJVr451pC7QQRlQV7/PQ==
+X-Google-Smtp-Source: ABdhPJzBnfa4mBA0AnC37UOa9fGUbSIMG7jpPJRp30ImMtv7XDpSn8ilUPF1pyTBhW89l82LvVDBsQ==
+X-Received: by 2002:a05:6512:5c7:: with SMTP id o7mr4449258lfo.105.1635447104690;
+        Thu, 28 Oct 2021 11:51:44 -0700 (PDT)
+Received: from jade (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
+        by smtp.gmail.com with ESMTPSA id e2sm348226lfs.85.2021.10.28.11.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 11:51:44 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 20:51:42 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] OP-TEE FF-A fix for V5.16
+Message-ID: <20211028185142.GA2489375@jade>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 19:41:57 +0100 Colin Ian King <colin.i.king@googlemail.com> wrote:
+Hello arm-soc maintainers,
 
-> There are a few spelling mistakes in the code. Fix these.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-
-Thank you for the fixes!
-
-Reviewed-by: SeongJae Park <sj@kernel.org>
-
+Please pull this small OP-TEE driver fix which takes care of a couple of
+spell errors in a few log messages. These log messages was added in the
+recently pulled 4615e5a34b95 ("optee: add FF-A support").
 
 Thanks,
-SJ
+Jens
 
-> ---
->  mm/damon/core.c       | 2 +-
->  mm/damon/dbgfs-test.h | 2 +-
->  mm/damon/vaddr-test.h | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/damon/core.c b/mm/damon/core.c
-> index f37c17b53814..c381b3c525d0 100644
-> --- a/mm/damon/core.c
-> +++ b/mm/damon/core.c
-> @@ -959,7 +959,7 @@ static unsigned long damos_wmark_wait_us(struct damos *scheme)
->  	/* higher than high watermark or lower than low watermark */
->  	if (metric > scheme->wmarks.high || scheme->wmarks.low > metric) {
->  		if (scheme->wmarks.activated)
-> -			pr_debug("inactivate a scheme (%d) for %s wmark\n",
-> +			pr_debug("deactivate a scheme (%d) for %s wmark\n",
->  					scheme->action,
->  					metric > scheme->wmarks.high ?
->  					"high" : "low");
-> diff --git a/mm/damon/dbgfs-test.h b/mm/damon/dbgfs-test.h
-> index 104b22957616..86b9f9528231 100644
-> --- a/mm/damon/dbgfs-test.h
-> +++ b/mm/damon/dbgfs-test.h
-> @@ -145,7 +145,7 @@ static void damon_dbgfs_test_set_init_regions(struct kunit *test)
->  
->  		KUNIT_EXPECT_STREQ(test, (char *)buf, expect);
->  	}
-> -	/* Put invlid inputs and check the return error code */
-> +	/* Put invalid inputs and check the return error code */
->  	for (i = 0; i < ARRAY_SIZE(invalid_inputs); i++) {
->  		input = invalid_inputs[i];
->  		pr_info("input: %s\n", input);
-> diff --git a/mm/damon/vaddr-test.h b/mm/damon/vaddr-test.h
-> index 1f5c13257dba..ecfd0b2ed222 100644
-> --- a/mm/damon/vaddr-test.h
-> +++ b/mm/damon/vaddr-test.h
-> @@ -233,7 +233,7 @@ static void damon_test_apply_three_regions3(struct kunit *test)
->   * and 70-100) has totally freed and mapped to different area (30-32 and
->   * 65-68).  The target regions which were in the old second and third big
->   * regions should now be removed and new target regions covering the new second
-> - * and third big regions should be crated.
-> + * and third big regions should be created.
->   */
->  static void damon_test_apply_three_regions4(struct kunit *test)
->  {
-> -- 
-> 2.32.0
-> 
-> 
+The following changes since commit 4615e5a34b95e0d81467f6d2176f19a5d184cb5d:
+
+  optee: add FF-A support (2021-10-18 11:44:23 +0200)
+
+are available in the Git repository at:
+
+  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-ffa-fix-for-v5.16
+
+for you to fetch changes up to 1b73a9e4986a4e9065bacf1e5ab2dfda17b54161:
+
+  optee: Fix spelling mistake "reclain" -> "reclaim" (2021-10-28 11:41:39 +0200)
+
+----------------------------------------------------------------
+Fix spell errors in OP-TEE FF-A driver log messages
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      optee: Fix spelling mistake "reclain" -> "reclaim"
+
+ drivers/tee/optee/ffa_abi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
