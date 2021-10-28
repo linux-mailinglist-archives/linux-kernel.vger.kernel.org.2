@@ -2,205 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE4143E4AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8EA43E4BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhJ1PNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhJ1PNj (ORCPT
+        id S231359AbhJ1PRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:17:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41569 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231182AbhJ1PRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:13:39 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C98C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:11:11 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id x7so1258844pfh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=259aXqiOnA5iWuUV4ETs5uC0oUlsrJdMmweeqlD6Flw=;
-        b=FSE7WAV8W97zgFBcxdpzW8qW6M4y5zLcv98iJDuq/vvHWgDfXsqVXKXCpuHZotL7Mg
-         Ie3ZPWMKBqGUy6jF5Hg+dCQfBXlSRIWLMh9AbOrkraAM6pJDNwkDfuqlNnULGZhQeCZQ
-         JpRFu0QBrCpzg8FzzgEm5jdfVtoME+pTfxYPXjpSIuo68ZXU4Pp/uNLUjaMO7Uvk9MzO
-         VRWtxYVGNm0xrDpc1VJ3QogOPi2SNcx7ym6EQTr2dlDn7Se9TYgZkZuRBxwUB2VJ4GuM
-         HQ+LXIjfLQHWkeACsjm+70PRgXVFmfPNcEF4Hq/wtI6dEMAo77D23kG+vuNlPYCk/PAz
-         ViTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=259aXqiOnA5iWuUV4ETs5uC0oUlsrJdMmweeqlD6Flw=;
-        b=iawknWa54rxwvzMi5Jt3nPGY6+tfRCh2YJ2Vf0LhPwjNLLtOXGtGIIp+T46vuLRTI9
-         ey/uOgROkMcUxyum5PhD4Jx1e0nZMQH22nzAxSDE5RKtIY+4sEKSEwq+iCyqaN1sHhcv
-         diFqAuOdHBKPetx3IsIBcjiVYZe/HHNXcCLVSwz1sL7vBbbQmc/hW/JQGKxYwDMtLZEw
-         89zPJmXuNh2v+XPcPkZJ6/oNMGBpTgI36Lc8PLDeo9sNZmFFCuYFVeu1B5vhweT1xSmI
-         MBTzK8CnqotMsGkq+U9EINAF0C57iXrIMY69DznsZWVUNDd38nNyuTIQzpbNCSKVdofe
-         VMHw==
-X-Gm-Message-State: AOAM533UFW6n/QaIVRwfRBfpYJpcTELq6A78BJovGPiVcKifXC9AUqZr
-        FGDPYcGXv5/rvPWYu/u1F5HP6A==
-X-Google-Smtp-Source: ABdhPJwKglkHjgwMStiVm2swRxL2R5ugLP4vxahA1WyfTlvuNO3MAlOeWJ5SytvsYU+mCPBpiPv54g==
-X-Received: by 2002:a63:3446:: with SMTP id b67mr3614765pga.258.1635433871085;
-        Thu, 28 Oct 2021 08:11:11 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id f14sm2956300pfv.5.2021.10.28.08.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 08:11:10 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 08:11:10 -0700 (PDT)
-X-Google-Original-Date: Thu, 28 Oct 2021 08:11:05 PDT (-0700)
-Subject:     Re: [PATCH 1/2] riscv: Fix asan-stack clang build
-In-Reply-To: <CA+zEjCv+whmnL_SFf20j06NpikaMtA7MNQ9+o8Zz7=1_nAtTqw@mail.gmail.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        nathan@kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alexandre.ghiti@canonical.com
-Message-ID: <mhng-4c43fe14-f36b-4232-a316-530a4d041d49@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 28 Oct 2021 11:17:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635434085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CgLB+hml0Y7q7/T5mul1oJ9iyJp6xHKyNVaPuOUZPD4=;
+        b=gqcPBRxuZcHjcrJaPS/NnAKtDH/GKzfZJXJF/3deCx030mqwrQSVdGAw+Nx6b8ao27Lb+W
+        V9Eb+YKv6bBept8UbWujVhpV6x/VAv9DMVEW7r+56xpFw18/LbodIhqU9wyO5QG44IStbF
+        Jyiyi2ioEH8VI0fj1LeDKdPbG/QWOK4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-7i2Vkjg3NLG5kTq--XeVvA-1; Thu, 28 Oct 2021 11:14:42 -0400
+X-MC-Unique: 7i2Vkjg3NLG5kTq--XeVvA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B87E100F95D;
+        Thu, 28 Oct 2021 15:14:37 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E0E960FB8;
+        Thu, 28 Oct 2021 15:14:06 +0000 (UTC)
+Message-ID: <2e1f7a9c83f38f3262febf05b4d2acd5efc753b3.camel@redhat.com>
+Subject: Re: [PATCH v2 29/43] KVM: VMX: Handle PI wakeup shenanigans during
+ vcpu_put/load
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Thu, 28 Oct 2021 18:14:04 +0300
+In-Reply-To: <20211009021236.4122790-30-seanjc@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-30-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 00:13:06 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> On Thu, Oct 28, 2021 at 8:45 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->>
->> On Wed, 27 Oct 2021 22:34:32 PDT (-0700), alexandre.ghiti@canonical.com wrote:
->> > On Thu, Oct 28, 2021 at 7:30 AM Alexandre Ghiti
->> > <alexandre.ghiti@canonical.com> wrote:
->> >>
->> >> On Thu, Oct 28, 2021 at 7:02 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->> >> >
->> >> > On Wed, 27 Oct 2021 21:15:28 PDT (-0700), alexandre.ghiti@canonical.com wrote:
->> >> > > On Thu, Oct 28, 2021 at 1:06 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->> >> > >>
->> >> > >> On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
->> >> > >> > Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
->> >> > >> > Kconfig, it prevents asan-stack from getting disabled with clang even
->> >> > >> > when CONFIG_KASAN_STACK is disabled: fix this by defining the
->> >> > >> > corresponding config.
->> >> > >> >
->> >> > >> > Reported-by: Nathan Chancellor <nathan@kernel.org>
->> >> > >> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
->> >> > >> > ---
->> >> > >> >  arch/riscv/Kconfig             | 6 ++++++
->> >> > >> >  arch/riscv/include/asm/kasan.h | 3 +--
->> >> > >> >  arch/riscv/mm/kasan_init.c     | 3 +++
->> >> > >> >  3 files changed, 10 insertions(+), 2 deletions(-)
->> >> > >> >
->> >> > >> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> >> > >> > index c1abbc876e5b..79250b1ed54e 100644
->> >> > >> > --- a/arch/riscv/Kconfig
->> >> > >> > +++ b/arch/riscv/Kconfig
->> >> > >> > @@ -162,6 +162,12 @@ config PAGE_OFFSET
->> >> > >> >       default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
->> >> > >> >       default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
->> >> > >> >
->> >> > >> > +config KASAN_SHADOW_OFFSET
->> >> > >> > +     hex
->> >> > >> > +     depends on KASAN_GENERIC
->> >> > >> > +     default 0xdfffffc800000000 if 64BIT
->> >> > >> > +     default 0xffffffff if 32BIT
->> >> > >>
->> >> > >> I thought I posted this somewhere, but this is exactly what my first
->> >> > >> guess was.  The problem is that it's hanging on boot for me.  I don't
->> >> > >> really have anything exotic going on, it's just a defconfig with
->> >> > >> CONFIG_KASAN=y running in QEMU.
->> >> > >>
->> >> > >> Does this boot for you?
->> >> > >
->> >> > > Yes with the 2nd patch of this series which fixes the issue
->> >> > > encountered here. And that's true I copied/pasted this part of your
->> >> > > patch which was better than what I had initially done, sorry I should
->> >> > > have mentioned you did that, please add a Codeveloped-by or something
->> >> > > like that.
->>
->> OK, those should probably be in the opposite order (though it looks like
->> they're inter-dependent, which makes things a bit trickier).
->>
->> >> >
->> >> > Not sure if I'm missing something, but it's still not booting for me.
->> >> > I've put what I'm testing on palmer/to-test, it's these two on top of
->> >> > fixes and merged into Linus' tree
->> >> >
->> >> >     *   6d7d351902ff - (HEAD -> to-test, palmer/to-test) Merge remote-tracking branch 'palmer/fixes' into to-test (7 minutes ago) <Palmer Dabbelt>
->> >> >     |\
->> >> >     | * 782551edf8f8 - (palmer/fixes) riscv: Fix CONFIG_KASAN_STACK build (6 hours ago) <Alexandre Ghiti>
->> >> >     | * 47383e5b3c4f - riscv: Fix asan-stack clang build (6 hours ago) <Alexandre Ghiti>
->> >> >     | * 64a19591a293 - (riscv/fixes) riscv: fix misalgned trap vector base address (9 hours ago) <Chen Lu>
->> >> >     * |   1fc596a56b33 - (palmer/master, linus/master, linus/HEAD, master) Merge tag 'trace-v5.15-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (11 hours ago) <Linus Torvalds>
->> >> >
->> >> > Am I missing something else?
->> >>
->> >> Hmm, that's weird, I have just done the same: cherry-picked both my
->> >> commits on top of fixes (64a19591a293) and it boots fine with KASAN
->> >> enabled. Maybe a config thing? I pushed my branch here:
->> >> https://github.com/AlexGhiti/riscv-linux/tree/int/alex/kasan_stack_fixes_rebase
->> >
->> > I pushed the config I use and that boots in that branch, maybe there's
->> > another issue somewhere.
->>
->> CONFIG_KASAN_VMALLOC=n is what's causing the failure.  I'm testing both
->> polarities of that, looks like your config has =y.  I haven't looked any
->> further as I'm pretty much cooked for tonight, but if you don't have
->> time then I'll try to find some time tomorrow.
->>
->
-> Arf, that was obvious and just under my nose: without KASAN_VMALLOC,
-> kasan_populate_early_shadow is called and creates the same issue that
-> the second patch fixes.
->
-> I'll send a v2 today and try to swap both patches to avoid having a
-> non-bootable kernel commit.
+On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> Move the posted interrupt pre/post_block logic into vcpu_put/load
+> respectively, using the kvm_vcpu_is_blocking() to determining whether or
+> not the wakeup handler needs to be set (and unset).  This avoids updating
+> the PI descriptor if halt-polling is successful, reduces the number of
+> touchpoints for updating the descriptor, and eliminates the confusing
+> behavior of intentionally leaving a "stale" PI.NDST when a blocking vCPU
+> is scheduled back in after preemption.
+> 
+> The downside is that KVM will do the PID update twice if the vCPU is
+> preempted after prepare_to_rcuwait() but before schedule(), but that's a
+> rare case (and non-existent on !PREEMPT kernels).
+> 
+> The notable wart is the need to send a self-IPI on the wakeup vector if
+> an outstanding notification is pending after configuring the wakeup
+> vector.  Ideally, KVM would just do a kvm_vcpu_wake_up() in this case,
+> but the scheduler doesn't support waking a task from its preemption
+> notifier callback, i.e. while the task is smack dab in the middle of
+> being scheduled out.
+> 
+> Note, setting the wakeup vector before halt-polling is not necessary as
+> the pending IRQ will be recorded in the PIR and detected as a blocking-
+> breaking condition by kvm_vcpu_has_events() -> vmx_sync_pir_to_irr().
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/vmx/posted_intr.c | 162 ++++++++++++++-------------------
+>  arch/x86/kvm/vmx/posted_intr.h |   8 +-
+>  arch/x86/kvm/vmx/vmx.c         |   5 -
+>  3 files changed, 75 insertions(+), 100 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+> index 901b7a5f7777..d2b3d75c57d1 100644
+> --- a/arch/x86/kvm/vmx/posted_intr.c
+> +++ b/arch/x86/kvm/vmx/posted_intr.c
+> @@ -37,33 +37,45 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+>  {
+>  	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+>  	struct pi_desc old, new;
+> +	unsigned long flags;
+>  	unsigned int dest;
+>  
+>  	/*
+> -	 * To simplify hot-plug and dynamic toggling of APICv, keep PI.NDST and
+> -	 * PI.SN up-to-date even if there is no assigned device or if APICv is
+> +	 * To simplify hot-plug and dynamic toggling of APICv, keep PI.NDST
+> +	 * up-to-date even if there is no assigned device or if APICv is
+>  	 * deactivated due to a dynamic inhibit bit, e.g. for Hyper-V's SyncIC.
+>  	 */
+>  	if (!enable_apicv || !lapic_in_kernel(vcpu))
+>  		return;
+>  
+> -	/* Nothing to do if PI.SN==0 and the vCPU isn't being migrated. */
+> -	if (!pi_test_sn(pi_desc) && vcpu->cpu == cpu)
+> +	/*
+> +	 * If the vCPU wasn't on the wakeup list and wasn't migrated, then the
+> +	 * full update can be skipped as neither the vector nor the destination
+> +	 * needs to be changed.
+> +	 */
+> +	if (pi_desc->nv != POSTED_INTR_WAKEUP_VECTOR && vcpu->cpu == cpu) {
+> +		/*
+> +		 * Clear SN if it was set due to being preempted.  Again, do
+> +		 * this even if there is no assigned device for simplicity.
+> +		 */
+> +		if (pi_test_and_clear_sn(pi_desc))
+> +			goto after_clear_sn;
+>  		return;
+> +	}
+> +
+> +	local_irq_save(flags);
+>  
+>  	/*
+> -	 * If the 'nv' field is POSTED_INTR_WAKEUP_VECTOR, do not change
+> -	 * PI.NDST: pi_post_block is the one expected to change PID.NDST and the
+> -	 * wakeup handler expects the vCPU to be on the blocked_vcpu_list that
+> -	 * matches PI.NDST. Otherwise, a vcpu may not be able to be woken up
+> -	 * correctly.
+> +	 * If the vCPU was waiting for wakeup, remove the vCPU from the wakeup
+> +	 * list of the _previous_ pCPU, which will not be the same as the
+> +	 * current pCPU if the task was migrated.
+>  	 */
+> -	if (pi_desc->nv == POSTED_INTR_WAKEUP_VECTOR || vcpu->cpu == cpu) {
+> -		pi_clear_sn(pi_desc);
+> -		goto after_clear_sn;
+> +	if (pi_desc->nv == POSTED_INTR_WAKEUP_VECTOR) {
+> +		spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->cpu));
+> +		list_del(&vcpu->blocked_vcpu_list);
+> +		spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->cpu));
+>  	}
+>  
+> -	/* The full case.  Set the new destination and clear SN. */
+>  	dest = cpu_physical_id(cpu);
+>  	if (!x2apic_mode)
+>  		dest = (dest << 8) & 0xFF00;
+> @@ -71,11 +83,23 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+>  	do {
+>  		old.control = new.control = READ_ONCE(pi_desc->control);
+>  
+> +		/*
+> +		 * Clear SN (as above) and refresh the destination APIC ID to
+> +		 * handle task migration (@cpu != vcpu->cpu).
+> +		 */
+>  		new.ndst = dest;
+>  		new.sn = 0;
+> +
+> +		/*
+> +		 * Restore the notification vector; in the blocking case, the
+> +		 * descriptor was modified on "put" to use the wakeup vector.
+> +		 */
+> +		new.nv = POSTED_INTR_VECTOR;
+>  	} while (cmpxchg64(&pi_desc->control, old.control,
+>  			   new.control) != old.control);
+>  
+> +	local_irq_restore(flags);
+> +
+>  after_clear_sn:
+>  
+>  	/*
+> @@ -90,88 +114,24 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+>  		pi_set_on(pi_desc);
+>  }
+>  
+> -void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
+> -{
+> -	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+> -
+> -	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
+> -		!irq_remapping_cap(IRQ_POSTING_CAP)  ||
+> -		!kvm_vcpu_apicv_active(vcpu))
+> -		return;
+> -
+> -	/* Set SN when the vCPU is preempted */
+> -	if (vcpu->preempted)
+> -		pi_set_sn(pi_desc);
+> -}
+> -
+> -static void __pi_post_block(struct kvm_vcpu *vcpu)
+> -{
+> -	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+> -	struct pi_desc old, new;
+> -	unsigned int dest;
+> -
+> -	WARN(pi_desc->nv != POSTED_INTR_WAKEUP_VECTOR,
+> -	     "Wakeup handler not enabled while the vCPU was blocking");
+> -
+> -	/*
+> -	 * Remove the vCPU from the wakeup list of the _previous_ pCPU, which
+> -	 * will not be the same as the current pCPU if the task was migrated.
+> -	 */
+> -	spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> -	list_del(&vcpu->blocked_vcpu_list);
+> -	spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->pre_pcpu));
+> -
+> -	dest = cpu_physical_id(vcpu->cpu);
+> -	if (!x2apic_mode)
+> -		dest = (dest << 8) & 0xFF00;
+> -
+> -	do {
+> -		old.control = new.control = READ_ONCE(pi_desc->control);
+> -
+> -		new.ndst = dest;
+> -
+> -		/* set 'NV' to 'notification vector' */
+> -		new.nv = POSTED_INTR_VECTOR;
+> -	} while (cmpxchg64(&pi_desc->control, old.control,
+> -			   new.control) != old.control);
+> -
+> -	vcpu->pre_pcpu = -1;
+> -}
+> -
+>  /*
+> - * This routine does the following things for vCPU which is going
+> - * to be blocked if VT-d PI is enabled.
+> - * - Store the vCPU to the wakeup list, so when interrupts happen
+> - *   we can find the right vCPU to wake up.
+> - * - Change the Posted-interrupt descriptor as below:
+> - *      'NV' <-- POSTED_INTR_WAKEUP_VECTOR
+> - * - If 'ON' is set during this process, which means at least one
+> - *   interrupt is posted for this vCPU, we cannot block it, in
+> - *   this case, return 1, otherwise, return 0.
+> - *
+> + * Put the vCPU on this pCPU's list of vCPUs that needs to be awakened and set
+> + * WAKEUP as the notification vector in the PI descriptor.
+>   */
+> -int pi_pre_block(struct kvm_vcpu *vcpu)
+> +static void pi_enable_wakeup_handler(struct kvm_vcpu *vcpu)
+>  {
+> -	struct pi_desc old, new;
+>  	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+> +	struct pi_desc old, new;
+>  	unsigned long flags;
+>  
+> -	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
+> -	    !irq_remapping_cap(IRQ_POSTING_CAP) ||
+> -	    !kvm_vcpu_apicv_active(vcpu) ||
+> -	    vmx_interrupt_blocked(vcpu))
+> -		return 0;
+> -
+>  	local_irq_save(flags);
+>  
+> -	vcpu->pre_pcpu = vcpu->cpu;
+>  	spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->cpu));
+>  	list_add_tail(&vcpu->blocked_vcpu_list,
+>  		      &per_cpu(blocked_vcpu_on_cpu, vcpu->cpu));
+>  	spin_unlock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->cpu));
+>  
+> -	WARN(pi_desc->sn == 1,
+> -	     "Posted Interrupt Suppress Notification set before blocking");
+> +	WARN(pi_desc->sn, "PI descriptor SN field set before blocking");
+>  
+>  	do {
+>  		old.control = new.control = READ_ONCE(pi_desc->control);
+> @@ -181,24 +141,40 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
+>  	} while (cmpxchg64(&pi_desc->control, old.control,
+>  			   new.control) != old.control);
+>  
+> -	/* We should not block the vCPU if an interrupt is posted for it.  */
+> -	if (pi_test_on(pi_desc))
+> -		__pi_post_block(vcpu);
+> +	/*
+> +	 * Send a wakeup IPI to this CPU if an interrupt may have been posted
+> +	 * before the notification vector was updated, in which case the IRQ
+> +	 * will arrive on the non-wakeup vector.  An IPI is needed as calling
+> +	 * try_to_wake_up() from ->sched_out() isn't allowed (IRQs are not
+> +	 * enabled until it is safe to call try_to_wake_up() on the task being
+> +	 * scheduled out).
+> +	 */
+> +	if (pi_test_on(&new))
+> +		apic->send_IPI_self(POSTED_INTR_WAKEUP_VECTOR);
+>  
+>  	local_irq_restore(flags);
+> -	return (vcpu->pre_pcpu == -1);
+>  }
+>  
+> -void pi_post_block(struct kvm_vcpu *vcpu)
+> +void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
+>  {
+> -	unsigned long flags;
+> +	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
+>  
+> -	if (vcpu->pre_pcpu == -1)
+> +	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
+> +	    !irq_remapping_cap(IRQ_POSTING_CAP)  ||
+> +	    !kvm_vcpu_apicv_active(vcpu))
+>  		return;
+>  
+> -	local_irq_save(flags);
+> -	__pi_post_block(vcpu);
+> -	local_irq_restore(flags);
+> +	if (kvm_vcpu_is_blocking(vcpu) && !vmx_interrupt_blocked(vcpu))
+> +		pi_enable_wakeup_handler(vcpu);
+> +
+> +	/*
+> +	 * Set SN when the vCPU is preempted.  Note, the vCPU can both be seen
+> +	 * as blocking and preempted, e.g. if it's preempted between setting
+> +	 * its wait state and manually scheduling out.  In that case, KVM will
+> +	 * update
+> +	 */
+> +	if (vcpu->preempted)
+> +		pi_set_sn(pi_desc);
+>  }
+>  
+>  /*
+> @@ -239,7 +215,7 @@ bool pi_has_pending_interrupt(struct kvm_vcpu *vcpu)
+>   * Bail out of the block loop if the VM has an assigned
+>   * device, but the blocking vCPU didn't reconfigure the
+>   * PI.NV to the wakeup vector, i.e. the assigned device
+> - * came along after the initial check in pi_pre_block().
+> + * came along after the initial check in vmx_vcpu_pi_put().
+>   */
+>  void vmx_pi_start_assignment(struct kvm *kvm)
+>  {
+> diff --git a/arch/x86/kvm/vmx/posted_intr.h b/arch/x86/kvm/vmx/posted_intr.h
+> index 36ae035f14aa..eb14e76b84ef 100644
+> --- a/arch/x86/kvm/vmx/posted_intr.h
+> +++ b/arch/x86/kvm/vmx/posted_intr.h
+> @@ -40,6 +40,12 @@ static inline bool pi_test_and_clear_on(struct pi_desc *pi_desc)
+>  			(unsigned long *)&pi_desc->control);
+>  }
+>  
+> +static inline bool pi_test_and_clear_sn(struct pi_desc *pi_desc)
+> +{
+> +	return test_and_clear_bit(POSTED_INTR_SN,
+> +			(unsigned long *)&pi_desc->control);
+> +}
+> +
+>  static inline bool pi_test_and_set_pir(int vector, struct pi_desc *pi_desc)
+>  {
+>  	return test_and_set_bit(vector, (unsigned long *)pi_desc->pir);
+> @@ -88,8 +94,6 @@ static inline bool pi_test_sn(struct pi_desc *pi_desc)
+>  
+>  void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu);
+>  void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu);
+> -int pi_pre_block(struct kvm_vcpu *vcpu);
+> -void pi_post_block(struct kvm_vcpu *vcpu);
+>  void pi_wakeup_handler(void);
+>  void __init pi_init_cpu(int cpu);
+>  bool pi_has_pending_interrupt(struct kvm_vcpu *vcpu);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 5517893f12fc..26ed8cd1a1f2 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7462,9 +7462,6 @@ void vmx_update_cpu_dirty_logging(struct kvm_vcpu *vcpu)
+>  
+>  static int vmx_pre_block(struct kvm_vcpu *vcpu)
+>  {
+> -	if (pi_pre_block(vcpu))
+> -		return 1;
+> -
+>  	if (kvm_lapic_hv_timer_in_use(vcpu))
+>  		kvm_lapic_switch_to_sw_timer(vcpu);
+>  
+> @@ -7475,8 +7472,6 @@ static void vmx_post_block(struct kvm_vcpu *vcpu)
+>  {
+>  	if (kvm_x86_ops.set_hv_timer)
+>  		kvm_lapic_switch_to_hv_timer(vcpu);
+> -
+> -	pi_post_block(vcpu);
+>  }
+>  
+>  static void vmx_setup_mce(struct kvm_vcpu *vcpu)
 
-Thanks.
 
->
-> Alex
->
->> >
->> >>
->> >> >
->> >> > >
->> >> > > Thanks,
->> >> > >
->> >> > > Alex
->> >> > >
->> >> > >>
->> >> > >> > +
->> >> > >> >  config ARCH_FLATMEM_ENABLE
->> >> > >> >       def_bool !NUMA
->> >> > >> >
->> >> > >> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
->> >> > >> > index a2b3d9cdbc86..b00f503ec124 100644
->> >> > >> > --- a/arch/riscv/include/asm/kasan.h
->> >> > >> > +++ b/arch/riscv/include/asm/kasan.h
->> >> > >> > @@ -30,8 +30,7 @@
->> >> > >> >  #define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
->> >> > >> >  #define KASAN_SHADOW_START   KERN_VIRT_START
->> >> > >> >  #define KASAN_SHADOW_END     (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
->> >> > >> > -#define KASAN_SHADOW_OFFSET  (KASAN_SHADOW_END - (1ULL << \
->> >> > >> > -                                     (64 - KASAN_SHADOW_SCALE_SHIFT)))
->> >> > >> > +#define KASAN_SHADOW_OFFSET  _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
->> >> > >> >
->> >> > >> >  void kasan_init(void);
->> >> > >> >  asmlinkage void kasan_early_init(void);
->> >> > >> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
->> >> > >> > index d7189c8714a9..8175e98b9073 100644
->> >> > >> > --- a/arch/riscv/mm/kasan_init.c
->> >> > >> > +++ b/arch/riscv/mm/kasan_init.c
->> >> > >> > @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
->> >> > >> >       uintptr_t i;
->> >> > >> >       pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
->> >> > >> >
->> >> > >> > +     BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
->> >> > >> > +             KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
->> >> > >> > +
->> >> > >> >       for (i = 0; i < PTRS_PER_PTE; ++i)
->> >> > >> >               set_pte(kasan_early_shadow_pte + i,
->> >> > >> >                       mk_pte(virt_to_page(kasan_early_shadow_page),
+Looks OK to me, and IMHO is a very good step in direction to simplify that code,
+but the logic is far from beeing simple so I might have missed something.
+
+Especially, this should be tested with nested APICv, which I don't yet know well
+enough to know if this can break it or not.
+
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Best regards,
+	Maxim Levitsky
+
