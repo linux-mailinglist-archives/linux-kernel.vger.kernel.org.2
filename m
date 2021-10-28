@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1553543E633
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A97143E62A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhJ1QiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:38:05 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:37877 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230070AbhJ1QiD (ORCPT
+        id S230214AbhJ1Qg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhJ1Qg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:38:03 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0061758059B;
-        Thu, 28 Oct 2021 12:35:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 28 Oct 2021 12:35:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        bryanbrattlof.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=fm1; bh=Dmo
-        DyFhle48A/BncL9peDPujVA8ksYC4fnqTHSY2dtg=; b=ZpnVps44vv/Hx3/cXjx
-        xHFBUHzeauLYDByrZ8dlPTFgjuSd+KqqoY9ShsC0H7CDUEvj22ZJHkH53eYhSHLo
-        mNLtLedaXIRbBnDv3IgE/ogHEHdB6LXX93IWfLijd/X4Z4gIx7soL89mi/FF7zWr
-        TO669TxQOeeXjaDwsNZTgCGNHGk01Fy5U1CTx4epc0mtXE87NuLDDceO+LPXBJxa
-        haEPzNSfP9tRQR+STZlw0cbGiRzjGrufnslgOH3J1jPMr5HigM0WDsGlSH649XQH
-        hzJHUZ6vHkqDU68SAm8bI4rixvvBdn0asw2LVyz7AXn6ojf0WJYJPnuAiBNger80
-        3kw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=DmoDyF
-        hle48A/BncL9peDPujVA8ksYC4fnqTHSY2dtg=; b=Z0yUDBojdOFgdO45GRCBxM
-        DMSEjWxsu7PPOFXybpFnfbuSqxy48zztB76ktFApTrw773oA1mf80bE5fxias97G
-        Kb6gOZwmjO+fYjDsh1e+OIGtVb2m2pSXZVoQPi2acXwVkBKr3rbTs2InYkD2VI8w
-        PyhxyQiet49VksdZSylW+e6VJXVih4Y6xxcJyRFl7bMfN+pPoC13YI7L1YkKFkI7
-        hLqs+g3AsCAvNAAIqZh3ZuMLwolexW+nuI7R0X5WMn9S8GF8B15DSrmttlV1jMLv
-        03motH23L+GOC3otEGzqeinVUjee/nXYo2jX+jYcEVvpw5ZCSUCLXIn6c3jJEJZw
-        ==
-X-ME-Sender: <xms:V9F6YZ7WE40cMPFjBPqLhOsO18BsnN9Hsxr58Pr79lebo7j4uojReQ>
-    <xme:V9F6YW5x4gnLljUmC9CFuC2-8C-u6BDFSckfq-zO2L4n1c13jcd84kU8GQwZdLaYq
-    tsJktlckOcpxYCohFY>
-X-ME-Received: <xmr:V9F6YQd4G5RMq_UFIOitAlOEqO4yRxVovRaeXgZisKN6HIdel3AauYZ8GKShjdYLfNeTnNjWg9u2PvZV4gHtIf-1Lzk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdegvddgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpeeurhihrghn
-    uceurhgrthhtlhhofhcuoehhvghllhhosegsrhihrghnsghrrghtthhlohhfrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeevtdelgfefjeduvddvgfefhfeggfdvheejhfdvhfegudev
-    gfeitddtjeffkeejheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehhvghllhhosegsrhihrghnsghrrghtthhlohhfrdgtohhm
-X-ME-Proxy: <xmx:V9F6YSLR37om6QI6NHhTHdtKxT_SYqhyFwEMWcFSd_rygJnFdcCI3Q>
-    <xmx:V9F6YdJbzCoLyo3DSP74rICc9VXSXNNjLYH70s1GNJbOVExlAgQDcA>
-    <xmx:V9F6YbxgABYs_5-KJgisMqNIcmGcET7qfw3uoflh9Ry2NQ5ySMPPVw>
-    <xmx:V9F6Yd2h9bZBl0f18xEyuukbWpEPKLwUOhRGh7Rvo67Ef4HoyCG02A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 28 Oct 2021 12:35:35 -0400 (EDT)
-Date:   Thu, 28 Oct 2021 12:35:34 -0400
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-To:     Senthu Sivarajah <ssivaraj@stud.fra-uas.de>
-Cc:     vaibhav.sr@gmail.com, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: greybus: audio_codec: changed a void function
- to return 0
-Message-ID: <20211028163534.mpoimdxtdirlsbmn@h510>
-References: <20211028153808.9509-1-ssivaraj@stud.fra-uas.de>
+        Thu, 28 Oct 2021 12:36:26 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED92C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:33:59 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id q129so9159810oib.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:33:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nem2XTY5QU11TIb5tpm+rntM/cfQ1YaYLiw0IXoaZ+w=;
+        b=Y3qFNcE15hVggRrMhiAeClG/Hnfm+SplZEeWKDF6zQdWbTj1BeHIubrS60YhBSk9FD
+         6NshmXy756/SwcXKW7YKdIa1eKHzXYn7Sv0sCtio1Rc0MsZxsVULUDOTwj2Vue+T+FMI
+         C0cChZdf1dEZGcbEFPab7NJ153OsC19SbmM88Xd5Zpe89W49OIEiFs4G8p3/Uui7TuXM
+         e/F4QKlhelC1nXa0FSH5uWEaREI7Pg6Jhof/tmCZRqlp5X4XCAqpYVB8AiHqzG6LBzVu
+         qhMe8xxNj6xIa1xQjFM3vadRTjG8vKWDaarULUoL6E1jbwVrc/sn9hdJGg0jBl/UKOaV
+         e+Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nem2XTY5QU11TIb5tpm+rntM/cfQ1YaYLiw0IXoaZ+w=;
+        b=eovJWUgz63lt3ZTPP5wnTHLYmwh5iWcHVHsV9makv3Ojn7FKXoG5vFfLhCR68IAwn3
+         Mbod1RmTAweOTh5ds4d5A0+uq1wHzhV4phNGCPkJT/+A9ciGAiZ3xnFbutpiAdVMCFFk
+         COu0zIBheBoHH3H3YKw/VZdDaYCahouTVs0UlyYjtnAKYM5ipKt54wsNXD898TFJ22D0
+         LZc/ihPoEcx8eBBYf7v+DO/mSBJPF/ixxeGhSBu5bBB7ErK+DYAQX9L5BZL+AAcXyeO5
+         13Am4kAptDLuTgrBf+6hk/0krbFiDeeI5g13302jllmySSiqX+xpmrHWv7raQ8YDIooQ
+         I4ng==
+X-Gm-Message-State: AOAM533y08Jkd1T34Huj/i/EAHIMeyZlbu1BZQzF83wv7ckD2g7imv4B
+        2aieFX1gpwta3F0ffJNYWkWziQ==
+X-Google-Smtp-Source: ABdhPJwtlHeKphy+Nfalit6/5el3VVG+6AjCVfyW9NdfXB5zsE959C+I2Txn2mrMSl4H3Eauhv3f4Q==
+X-Received: by 2002:a05:6808:1a0c:: with SMTP id bk12mr3929768oib.48.1635438838563;
+        Thu, 28 Oct 2021 09:33:58 -0700 (PDT)
+Received: from ripper.. (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x13sm1058721ooj.37.2021.10.28.09.33.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 09:33:58 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH] drm/bridge: sn65dsi86: ti_sn65dsi86_read_u16() __maybe_unused
+Date:   Thu, 28 Oct 2021 09:35:48 -0700
+Message-Id: <20211028163548.273736-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211028153808.9509-1-ssivaraj@stud.fra-uas.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Senthu,
+When built without CONFIG_PWM there are no references to
+ti_sn65dsi86_read_u16(), avoid the W=1 build warning by marking the
+function as __maybe_unused.
 
-On this day, October 28, 2021, thus sayeth Senthu Sivarajah:
-> From: Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
-> 
-> Fixed a coding style issue.
-> 
-> Signed-off-by: Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
-> 
-> ---
->  drivers/staging/greybus/audio_codec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index b589cf6b1d03..9f99862791dc 100644
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -1028,7 +1028,7 @@ static int gbcodec_probe(struct snd_soc_component *comp)
->  static void gbcodec_remove(struct snd_soc_component *comp)
-	  ^^^^
+__maybe_unused is used insted of a #ifdef guard as it looks slighly
+cleaner and it avoids issues if in the future other permutations of the
+config options would use the function.
 
-If I'm not mistaken here, our options are to remove the return or just 
-leave this as is. IMO I think this is fine as is.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-~Bryan
+Robert, I believe you pushed out the driver patch introducing this issue
+yesterday. Can you please add the relevant Fixes?
+
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+index 430067a3071c..e1f43b73155b 100644
+--- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
++++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+@@ -215,8 +215,8 @@ static const struct regmap_config ti_sn65dsi86_regmap_config = {
+ 	.cache_type = REGCACHE_NONE,
+ };
+ 
+-static int ti_sn65dsi86_read_u16(struct ti_sn65dsi86 *pdata,
+-				 unsigned int reg, u16 *val)
++static int __maybe_unused ti_sn65dsi86_read_u16(struct ti_sn65dsi86 *pdata,
++						unsigned int reg, u16 *val)
+ {
+ 	u8 buf[2];
+ 	int ret;
+-- 
+2.33.1
+
