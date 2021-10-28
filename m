@@ -2,103 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369C843E2C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6121243E2D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhJ1N6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        id S231262AbhJ1N7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhJ1N6o (ORCPT
+        with ESMTP id S231160AbhJ1N70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:58:44 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DE2C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:56:17 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id w15so25308423edc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:56:17 -0700 (PDT)
+        Thu, 28 Oct 2021 09:59:26 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A007AC061767;
+        Thu, 28 Oct 2021 06:56:59 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id z20so25506158edc.13;
+        Thu, 28 Oct 2021 06:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=WSTbLQavJNJbT4+PxFGX9NBSygatu7Mx2BWU1M2IA2U=;
-        b=U++kpKdE+2a6HUWZiDL/odN4hCBdt3L+qULt3hHPa/2P6zCxdca9gqn2cM3gRKwagi
-         chgn50EDLkUleTLN0fUwcSIxigQI50idixTeOrkl94/LDeFHMyuqZZQyVHb1Ko6CyKs7
-         o3Gpr9QhKRStzhAFFoxxKt1s2uE/GP73DnLWtjByQGKIuE2+4Ipb44R1RgVKqrqRVQAD
-         WDDZ+e2ixnLHfyvHh+6DfS3TI/aZfGpo+oK6+9/IKWE2+VnelKtmB1zqt7G+LdUEOJrV
-         ZkSvz6hxm/awWMTifrNYi/wrQ/k3b7Wr1ISOdhX7f24VMXaquxFTUd+TOu5Wr3yrqI/h
-         rBNA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Io+fzT/3ns2XqoDsP4IFv/GKd+WL+h+b3kvGosuxSzI=;
+        b=UEVjuB3YX1yRMG8eTSNfZzEENNJ0pZFwTfoC4HtK+j/1mdigp3QCWFjP7bd9bg7DBW
+         I+IbaYHzP8jv57cP+ZOOazp80D8EE//dYXImHQGkdR6aasE9O6+RrZnMGOTV7Ofl8Hoo
+         Ih3bQiHIcB/wJOxeGpSjgcteSQ1E8rRInrR+++XQSug4nzivAw5BhdU+nW9+rXpNK6jP
+         OEOKveowMtU+C4DweFhka3GBmgy9NmKLp1/xvNUosGVgLmX+9UJiKL2oaXiye2wRVUu1
+         DATFJYMMCYps++J/qFWQvn54MIpEuanYu/jTT1WK1DQ5ORL4tK4cgY3qodkagPBrOe0w
+         8kSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=WSTbLQavJNJbT4+PxFGX9NBSygatu7Mx2BWU1M2IA2U=;
-        b=jkrBiHtvoyAlerQWhHFpiIwAi/Gj75jiEFL1sENUQRFZlEpco7jD0RcD9yNgDm4Tpa
-         HD5WJAE2wZHlyonVzQm4nL9VjwO+1Gol8n/Jq9xL458trV1zVIpndsZTrfDG/sOmNcMQ
-         ldHkGfx6PW3Akyn+EgRbkhPZ458jCsOr/uUDcjFvTn0tLk5lKteWsUwvkNQGMz5s6xeT
-         cTmRw8fUyLoY+0jaF9xIB7n80Bs2B3uCD7yr8l1vNrjx/jl6KSM7wplho0aGYFALg0Nq
-         XV6nBkVGVlHfLOghX5NsKzzD3fo/J+UWGXESm+snygZYmwBxLjqu2EVaV8mxfzU2u95s
-         zr8g==
-X-Gm-Message-State: AOAM5330skweQZHkinqdK+uqCTm9l1hcDaf/zrpqfRDbMquVyyAgU771
-        /X4qMK55W5vhoKRM2InI8VgLlizFp39C8wQ4+1BAkw==
-X-Google-Smtp-Source: ABdhPJzv7K5ZsTrqrtIRGOqtedD4ahyQ77vmK32yoFXb3w63Si5JEFI12AyJy2mm97F+JWBeShvcXI/WHjJoEvltq7s=
-X-Received: by 2002:a05:6402:5255:: with SMTP id t21mr6182196edd.103.1635429375474;
- Thu, 28 Oct 2021 06:56:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Io+fzT/3ns2XqoDsP4IFv/GKd+WL+h+b3kvGosuxSzI=;
+        b=cR92pzq84KJUipxRf43B447WbmmRDMzxmVTWevisI9rg2KN9dFnVJJucH6a32/bZt+
+         W/Lku4geeJ4GbqJZx73MMDB3jWBjnvLAO+Emq718LU5bWjJxxVHPeaBj8XXxqiThaeMB
+         wqNtlvuIzp8qnj1vHo3RkKLiXnsSbavkf1W/1fUAULXYj4U1abDvDeMqAAcvWSYmK7sV
+         LvvW6PJknDzV3GGQXhYr+IDsYXNcJC1mBfGX0SmQS/7rcemcGAdToRlDeW43iedhdwqG
+         7jxS5TRt+jFq23If0QHXgIXAWaWItIUyEMOMLO3oQY5dJTkiNjM4h6XhpMqlZveyfozi
+         QDVg==
+X-Gm-Message-State: AOAM532bNPXhG1n8jVgbBacoMx434dCihuFBJkmu7hINj+2UOS985hjy
+        +vgmoE2m219HZPPoS1QYGz8=
+X-Google-Smtp-Source: ABdhPJy04TJllH1xTfjAgj+XeYFKZKZTqiwpp1qj8qcj3ccCXP+qV89w4+ZNyD3bd4+OiZtYILZgyg==
+X-Received: by 2002:aa7:cd05:: with SMTP id b5mr6388003edw.58.1635429417771;
+        Thu, 28 Oct 2021 06:56:57 -0700 (PDT)
+Received: from demon-pc.localdomain ([188.24.96.74])
+        by smtp.gmail.com with ESMTPSA id gn24sm651039ejc.78.2021.10.28.06.56.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 06:56:57 -0700 (PDT)
+From:   Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     demonsingur@gmail.com, cosmin.tanislav@analog.com,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/3] dt-bindings: iio: add AD74413R
+Date:   Thu, 28 Oct 2021 16:56:04 +0300
+Message-Id: <20211028135608.3666940-2-demonsingur@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211028135608.3666940-1-demonsingur@gmail.com>
+References: <20211028134849.3664969-1-demonsingur@gmail.com>
+ <20211028135608.3666940-1-demonsingur@gmail.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 28 Oct 2021 19:26:04 +0530
-Message-ID: <CA+G9fYs6X5ce1BhynpivZLU7MvPq+vkrJCM7oSJf8GJBApCqZg@mail.gmail.com>
-Subject: riscv: delay.c:77:17: error: implicit declaration of function
- 'cpu_relax' [-Werror=implicit-function-declaration]
-To:     linux-riscv <linux-riscv@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regression found on riscv gcc-11 built with defconfig
-Following build warnings / errors reported on linux next 20211028.
+From: Cosmin Tanislav <cosmin.tanislav@analog.com>
 
-metadata:
-    git_describe: next-20211028
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_short_log: 503f375baa99 (\"Add linux-next specific files for 20211028\")
-    target_arch: riscv
-    toolchain: gcc-11
+Add device tree bindings for AD74413R.
 
-build error :
---------------
-/builds/linux/arch/riscv/lib/delay.c: In function '__delay':
-/builds/linux/arch/riscv/lib/delay.c:77:17: error: implicit
-declaration of function 'cpu_relax'
-[-Werror=implicit-function-declaration]
-   77 |                 cpu_relax();
-      |                 ^~~~~~~~~
-cc1: some warnings being treated as errors
-make[2]: *** [/builds/linux/scripts/Makefile.build:288:
-arch/riscv/lib/delay.o] Error 1
+Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+---
+ .../bindings/iio/addac/adi,ad74413r.yaml      | 163 ++++++++++++++++++
+ include/dt-bindings/iio/addac/adi,ad74413r.h  |  30 ++++
+ 2 files changed, 193 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+ create mode 100644 include/dt-bindings/iio/addac/adi,ad74413r.h
 
+diff --git a/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml b/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+new file mode 100644
+index 000000000000..ed4ee3047fbe
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+@@ -0,0 +1,163 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/addac/adi,ad74413r.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AD74413R/AD74412R device driver
++
++maintainers:
++  - Cosmin Tanislav <cosmin.tanislav@analog.com>
++
++description: |
++  The AD74413R and AD74412R are quad-channel software configurable input/output
++  solutions for building and process control applications. They contain
++  functionality for analog output, analog input, digital input, resistance
++  temperature detector, and thermocouple measurements integrated
++  into a single chip solution with an SPI interface.
++  The devices feature a 16-bit ADC and four configurable 13-bit DACs to provide
++  four configurable input/output channels and a suite of diagnostic functions.
++
++properties:
++  compatible:
++    enum:
++      - adi,ad74413r
++      - adi,ad74412r
++
++  reg:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  spi-max-frequency:
++    maximum: 1000000
++
++  spi-cpol: true
++
++  interrupts:
++    maxItems: 1
++
++  refin-supply:
++    description:
++      Reference voltage regulator.
++
++  adi,rsense-resistance-ohms:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      RSense resistance values in Ohms.
++
++required:
++  - compatible
++  - reg
++  - spi-max-frequency
++  - spi-cpol
++  - refin-supply
++  - adi,rsense-resistance-ohm
++
++additionalProperties: false
++
++patternProperties:
++  "^channel@[0-3]$":
++    type: object
++    description: Represents the external channels which are connected to the device.
++
++    properties:
++      reg:
++        description: |
++          The channel number. It can have up to 4 channels numbered from 0 to 3.
++        maxItems: 1
++        minimum: 0
++        maximum: 3
++
++      adi,ch-func:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description: |
++          Channel function.
++          HART functions are not supported on AD74412R.
++          0 - CH_FUNC_HIGH_IMPEDANCE
++          1 - CH_FUNC_VOLTAGE_OUTPUT
++          2 - CH_FUNC_CURRENT_OUTPUT
++          3 - CH_FUNC_VOLTAGE_INPUT
++          4 - CH_FUNC_CURRENT_INPUT_EXT_POWER
++          5 - CH_FUNC_CURRENT_INPUT_LOOP_POWER
++          6 - CH_FUNC_RESISTANCE_INPUT
++          7 - CH_FUNC_DIGITAL_INPUT_LOGIC
++          8 - CH_FUNC_DIGITAL_INPUT_LOOP_POWER
++          9 - CH_FUNC_CURRENT_INPUT_EXT_POWER_HART
++          10 - CH_FUNC_CURRENT_INPUT_LOOP_POWER_HART
++        maxItems: 1
++        minimum: 0
++        maximum: 10
++
++      adi,gpo-config:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description: |
++          GPO config.
++          0 - GPO_CONFIG_100K_PULL_DOWN
++          1 - GPO_CONFIG_LOGIC
++          3 - GPO_CONFIG_DEBOUNCED_COMPARATOR
++          4 - GPO_CONFIG_HIGH_IMPEDANCE
++        maxItems: 1
++        enum: [0, 1, 3, 4]
++
++    required:
++      - reg
++
++examples:
++  - |
++    spi0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      cs-gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
++      status = "okay";
++
++      ad74413r@0 {
++        compatible = "adi,ad74413r";
++        reg = <0>;
++        spi-max-frequency = <1000000>;
++        spi-cpol;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        interrupt-parent = <&gpio>;
++        interrupts = <26 0>;
++
++        refin-supply = <&ad74413r_refin>;
++        adi,rsense-resistance-ohm = <100>;
++
++        channel@0 {
++          reg = <0>;
++
++          adi,ch-func = <CH_FUNC_VOLTAGE_OUTPUT>;
++          adi,gpo-config = <GPO_CONFIG_LOGIC>;
++        };
++
++        channel@1 {
++          reg = <1>;
++
++          adi,ch-func = <CH_FUNC_CURRENT_OUTPUT>;
++          adi,gpo-config = <GPO_CONFIG_LOGIC>;
++        };
++
++        channel@2 {
++          reg = <2>;
++
++          adi,ch-func = <CH_FUNC_VOLTAGE_INPUT>;
++          adi,gpo-config = <GPO_CONFIG_DEBOUNCED_COMPARATOR>;
++        };
++
++        channel@3 {
++          reg = <3>;
++
++          adi,ch-func = <CH_FUNC_CURRENT_INPUT_EXT_POWER>;
++          adi,gpo-config = <GPO_CONFIG_DEBOUNCED_COMPARATOR>;
++        };
++      };
++    };
++...
+diff --git a/include/dt-bindings/iio/addac/adi,ad74413r.h b/include/dt-bindings/iio/addac/adi,ad74413r.h
+new file mode 100644
+index 000000000000..bde558d9731c
+--- /dev/null
++++ b/include/dt-bindings/iio/addac/adi,ad74413r.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _DT_BINDINGS_ADI_AD74413R_H
++#define _DT_BINDINGS_ADI_AD74413R_H
++
++#define GPO_CONFIG_100K_PULL_DOWN		0x0
++#define GPO_CONFIG_LOGIC				0x1
++#define GPO_CONFIG_LOGIC_PARALLEL		0x2
++#define GPO_CONFIG_DEBOUNCED_COMPARATOR	0x3
++#define GPO_CONFIG_HIGH_IMPEDANCE		0x4
++
++#define GPO_CONFIG_MIN		GPO_CONFIG_100K_PULL_DOWN
++#define GPO_CONFIG_MAX		GPO_CONFIG_HIGH_IMPEDANCE
++
++#define CH_FUNC_HIGH_IMPEDANCE					0x0
++#define CH_FUNC_VOLTAGE_OUTPUT					0x1
++#define CH_FUNC_CURRENT_OUTPUT					0x2
++#define CH_FUNC_VOLTAGE_INPUT					0x3
++#define CH_FUNC_CURRENT_INPUT_EXT_POWER			0x4
++#define CH_FUNC_CURRENT_INPUT_LOOP_POWER		0x5
++#define CH_FUNC_RESISTANCE_INPUT				0x6
++#define CH_FUNC_DIGITAL_INPUT_LOGIC				0x7
++#define CH_FUNC_DIGITAL_INPUT_LOOP_POWER		0x8
++#define CH_FUNC_CURRENT_INPUT_EXT_POWER_HART	0x9
++#define CH_FUNC_CURRENT_INPUT_LOOP_POWER_HART	0xA
++
++#define CH_FUNC_MIN		CH_FUNC_HIGH_IMPEDANCE
++#define CH_FUNC_MAX		CH_FUNC_CURRENT_INPUT_LOOP_POWER_HART
++
++#endif /* _DT_BINDINGS_ADI_AD74413R_H */
+-- 
+2.33.0
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-build link:
------------
-https://builds.tuxbuild.com/208R1uE0CO13gO5XbrrWlqwau7r/build.log
-
-build config:
--------------
-https://builds.tuxbuild.com/208R1uE0CO13gO5XbrrWlqwau7r/config
-
-# To install tuxmake on your system globally
-# sudo pip3 install -U tuxmake
-tuxmake --runtime podman --target-arch riscv --toolchain gcc-11
---kconfig defconfig
-
---
-Linaro LKFT
-https://lkft.linaro.org
