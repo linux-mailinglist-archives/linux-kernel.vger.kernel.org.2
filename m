@@ -2,163 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE3943DAA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC2443DAA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhJ1FFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 01:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
+        id S229791AbhJ1FNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 01:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhJ1FFK (ORCPT
+        with ESMTP id S229684AbhJ1FNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 01:05:10 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBC9C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:02:44 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id v1-20020a17090a088100b001a21156830bso7024270pjc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ET9rgc2cPQO0D9fY/bz0XEDC7bhtrK0ZvnRrK6wQ7eU=;
-        b=WxFhA8TZckMYBBHxPkT45pXRfhhAuA5TLksn3+jhe2UniPM+VgCSRN9knqFI2+mfR/
-         tSsW9UmbE4i8fwnsR9gUbcAc74ThkukJ/QwqzpG7E4MMA05eLavgqwUQBQN5/ICtAUuB
-         OXtb9ujB0ObDBev8152CdCY8SaC3C2vV0qUP0ZaW392Gm7lRQ643/jtEM/EeOETL2rGQ
-         Qc+Teh5HTCEiWZaq2AsKtucP/FUniW4EG7ptd6qQvAVbT/3cixYp6hShn+hZLHeUkF0i
-         XOrafyjMRZHHDCCK1ngLG9flycq1vCZ5RzSy/u4ri0kIP4AbVn5hYaN0p6vceJonlUcc
-         jn9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ET9rgc2cPQO0D9fY/bz0XEDC7bhtrK0ZvnRrK6wQ7eU=;
-        b=luHAZYxO6eRfRISne8SMDsbdIf/VoIK8CuomGb5NjdPTQbdGFCAKYwtLNZRRIk16qI
-         AzpsACC/VNtF541HPTpTA2dvQ44j9gLKKTWWICBq4NlJx+h+ZWjWJxcZbvKoc92pvEym
-         aH0gXSHYMZMwaTAUbfJuSXj/k7G8cwiDZf/BPNnhXoFU3rvHgG2K5TzPakAl0z5nV0Vd
-         mH06mfF5coWWosWKE5bzmrtW8Ydn+/rO2rOlzgcRfHMrvz2vxtvMB6f8zPvUGwR0ofcI
-         FwEGhklL0hk8zr8hhv4RTXv813IdLxTV6aQSSQbkR8Km9GctnnzrorWUZT3/EYJDtTXm
-         O3Fg==
-X-Gm-Message-State: AOAM533lRpk+II9NJURVPx/wsYLvYEW5/shl9mScPbdqAfNVfl/ur81p
-        NtznL/AQhmiVUnayvEVXtowLUA==
-X-Google-Smtp-Source: ABdhPJz4PU1uvJDhqa5URcYX83sYl0VtkoGCoIUdPAP38/HliPgU7ET3vEC7C0r7sFeERLSU5bOUOw==
-X-Received: by 2002:a17:90b:f82:: with SMTP id ft2mr911134pjb.107.1635397363825;
-        Wed, 27 Oct 2021 22:02:43 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id y6sm1667005pfi.154.2021.10.27.22.02.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 22:02:43 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 22:02:43 -0700 (PDT)
-X-Google-Original-Date: Wed, 27 Oct 2021 22:02:39 PDT (-0700)
-Subject:     Re: [PATCH 1/2] riscv: Fix asan-stack clang build
-In-Reply-To: <CA+zEjCuUCxqTtbox2K8c=ymHC8X97LV6CSO3ydJKgRR9cBXUEw@mail.gmail.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        nathan@kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alexandre.ghiti@canonical.com
-Message-ID: <mhng-897d082f-5ca4-4d77-a69d-4efaa456bf3b@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 28 Oct 2021 01:13:30 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05CEC061570;
+        Wed, 27 Oct 2021 22:11:03 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hfttr1QpYz4xcB;
+        Thu, 28 Oct 2021 16:10:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635397862;
+        bh=iCeoh5MOSFMdmwhKeYS0ibGllhX3aH3QzBQP6pzBhoY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=J40O6eeaqN/OLSIGCrxOy1Mp/ylZen6N38yLptDiF2A4nYKMRUmV8ztC5ngsGp1Wv
+         7NptxToKeieodjXsm4WY5HMmLfR9dlR8BXAyqkg3v39eugMxI8Dinmy/uDJvXSC0d5
+         Na2bxVqS8WJfr1uq/G+pYGSoH93vDAyX/K6mrmXYdEaZwzYP5GnPFF2KIA4Yo+jidR
+         5RxM8kaKxBRCAVCO/FsoIks+eedBfaZInNNyE5UsnmJFUnFZBVZEoJ+ImCn3de1zpz
+         imWq4bVDU2Yjc47f4yqq0IwpTmbwJ1XS7N3roEVo4BNJWu8r+YZPu6FP1eMrl/M4e9
+         AEd+oMj5jUN6g==
+Date:   Thu, 28 Oct 2021 16:10:58 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the tip tree
+Message-ID: <20211028161058.39c0d199@canb.auug.org.au>
+In-Reply-To: <20211025151144.552c60ca@canb.auug.org.au>
+References: <20211025151144.552c60ca@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/+ji0ctx9r/azHz.0qUscCCJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 21:15:28 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> On Thu, Oct 28, 2021 at 1:06 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->>
->> On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
->> > Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
->> > Kconfig, it prevents asan-stack from getting disabled with clang even
->> > when CONFIG_KASAN_STACK is disabled: fix this by defining the
->> > corresponding config.
->> >
->> > Reported-by: Nathan Chancellor <nathan@kernel.org>
->> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
->> > ---
->> >  arch/riscv/Kconfig             | 6 ++++++
->> >  arch/riscv/include/asm/kasan.h | 3 +--
->> >  arch/riscv/mm/kasan_init.c     | 3 +++
->> >  3 files changed, 10 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> > index c1abbc876e5b..79250b1ed54e 100644
->> > --- a/arch/riscv/Kconfig
->> > +++ b/arch/riscv/Kconfig
->> > @@ -162,6 +162,12 @@ config PAGE_OFFSET
->> >       default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
->> >       default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
->> >
->> > +config KASAN_SHADOW_OFFSET
->> > +     hex
->> > +     depends on KASAN_GENERIC
->> > +     default 0xdfffffc800000000 if 64BIT
->> > +     default 0xffffffff if 32BIT
->>
->> I thought I posted this somewhere, but this is exactly what my first
->> guess was.  The problem is that it's hanging on boot for me.  I don't
->> really have anything exotic going on, it's just a defconfig with
->> CONFIG_KASAN=y running in QEMU.
->>
->> Does this boot for you?
->
-> Yes with the 2nd patch of this series which fixes the issue
-> encountered here. And that's true I copied/pasted this part of your
-> patch which was better than what I had initially done, sorry I should
-> have mentioned you did that, please add a Codeveloped-by or something
-> like that.
+--Sig_/+ji0ctx9r/azHz.0qUscCCJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Not sure if I'm missing something, but it's still not booting for me.  
-I've put what I'm testing on palmer/to-test, it's these two on top of 
-fixes and merged into Linus' tree
+Hi all,
 
-    *   6d7d351902ff - (HEAD -> to-test, palmer/to-test) Merge remote-tracking branch 'palmer/fixes' into to-test (7 minutes ago) <Palmer Dabbelt>
-    |\
-    | * 782551edf8f8 - (palmer/fixes) riscv: Fix CONFIG_KASAN_STACK build (6 hours ago) <Alexandre Ghiti>
-    | * 47383e5b3c4f - riscv: Fix asan-stack clang build (6 hours ago) <Alexandre Ghiti>
-    | * 64a19591a293 - (riscv/fixes) riscv: fix misalgned trap vector base address (9 hours ago) <Chen Lu>
-    * |   1fc596a56b33 - (palmer/master, linus/master, linus/HEAD, master) Merge tag 'trace-v5.15-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (11 hours ago) <Linus Torvalds>
+On Mon, 25 Oct 2021 15:11:44 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+>=20
+> arch/x86/kernel/fpu/core.c: In function 'fpu_alloc_guest_fpstate':
+> arch/x86/kernel/fpu/core.c:187:12: error: implicit declaration of functio=
+n 'vzalloc'; did you mean 'kzalloc'? [-Werror=3Dimplicit-function-declarati=
+on]
+>   187 |  fpstate =3D vzalloc(size);
+>       |            ^~~~~~~
+>       |            kzalloc
+> arch/x86/kernel/fpu/core.c:187:10: error: assignment to 'struct fpstate *=
+' from 'int' makes pointer from integer without a cast [-Werror=3Dint-conve=
+rsion]
+>   187 |  fpstate =3D vzalloc(size);
+>       |          ^
+> arch/x86/kernel/fpu/core.c: In function 'fpu_free_guest_fpstate':
+> arch/x86/kernel/fpu/core.c:212:2: error: implicit declaration of function=
+ 'vfree'; did you mean 'kfree'? [-Werror=3Dimplicit-function-declaration]
+>   212 |  vfree(fps);
+>       |  ^~~~~
+>       |  kfree
+> cc1: all warnings being treated as errors
+>=20
+> Caused by commit
+>=20
+>   69f6ed1d14c6 ("x86/fpu: Provide infrastructure for KVM FPU cleanup")
+>=20
+> I have applied the following patch for today (because it was quicker
+> than using the tip tree from next-20211022).
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 25 Oct 2021 15:04:13 +1100
+> Subject: [PATCH] x86/fpu: include vmalloc.h for vzalloc etc
+>=20
+> Fixes: 69f6ed1d14c6 ("x86/fpu: Provide infrastructure for KVM FPU cleanup=
+")
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  arch/x86/kernel/fpu/core.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+> index 9c475e2efd4d..c55013fc82ab 100644
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -16,6 +16,7 @@
+> =20
+>  #include <linux/hardirq.h>
+>  #include <linux/pkeys.h>
+> +#include <linux/vmalloc.h>
+> =20
+>  #include "context.h"
+>  #include "internal.h"
+> --=20
+> 2.33.0
 
-Am I missing something else?
+This build failure has returned today :-(
 
->
-> Thanks,
->
-> Alex
->
->>
->> > +
->> >  config ARCH_FLATMEM_ENABLE
->> >       def_bool !NUMA
->> >
->> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
->> > index a2b3d9cdbc86..b00f503ec124 100644
->> > --- a/arch/riscv/include/asm/kasan.h
->> > +++ b/arch/riscv/include/asm/kasan.h
->> > @@ -30,8 +30,7 @@
->> >  #define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
->> >  #define KASAN_SHADOW_START   KERN_VIRT_START
->> >  #define KASAN_SHADOW_END     (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
->> > -#define KASAN_SHADOW_OFFSET  (KASAN_SHADOW_END - (1ULL << \
->> > -                                     (64 - KASAN_SHADOW_SCALE_SHIFT)))
->> > +#define KASAN_SHADOW_OFFSET  _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
->> >
->> >  void kasan_init(void);
->> >  asmlinkage void kasan_early_init(void);
->> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
->> > index d7189c8714a9..8175e98b9073 100644
->> > --- a/arch/riscv/mm/kasan_init.c
->> > +++ b/arch/riscv/mm/kasan_init.c
->> > @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
->> >       uintptr_t i;
->> >       pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
->> >
->> > +     BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
->> > +             KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
->> > +
->> >       for (i = 0; i < PTRS_PER_PTE; ++i)
->> >               set_pte(kasan_early_shadow_pte + i,
->> >                       mk_pte(virt_to_page(kasan_early_shadow_page),
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+ji0ctx9r/azHz.0qUscCCJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6MOIACgkQAVBC80lX
+0GzTAgf+Jckqrmc7Nh3L5M5lGLWfU4oKuwZsH/6A9KwF2NYdxVLtJdvT1nTu2GCa
+ZonWuoC0j92bkHtnRLQyMtWElqJ6bTwpB8kLro9HOT3Y7uoiMFOVDaKFva0kgGz0
+Fa7yRnPmuTBs1onBgw7KF/cc+BOO75z5qvC5dc+SQAK/tK/Wqc7ihg8mHnKL5RHW
+9HqoaXHdH2EJRA/V2xG9kiyJTaHOm3FWORfaU6E+2MFhDuWQG2QkkTqa1cAj/EMf
+WsExOCPm5L0++c/WjxvlFtOCRB5FRbEJp4lXuLDeV+LFG3i0sxUxi0eI0x8xgAE9
+YwvJc9keManUTfdXsS7JiZtY/zjZ3g==
+=kkli
+-----END PGP SIGNATURE-----
+
+--Sig_/+ji0ctx9r/azHz.0qUscCCJ--
