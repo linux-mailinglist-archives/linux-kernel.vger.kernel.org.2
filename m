@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1906C43E4A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA59343E4A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhJ1PMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhJ1PMP (ORCPT
+        id S231423AbhJ1PMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:12:34 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49385 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231411AbhJ1PM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:12:15 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F638C061570;
-        Thu, 28 Oct 2021 08:09:48 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id y207so8669878oia.11;
-        Thu, 28 Oct 2021 08:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=aADjUL3aoYVuhKrrOmc9kzerdnVVqgXoXwAZgyL/N/U=;
-        b=XhbAQtELL3EMSWLYvjyRKjO2fpf7UQsdykJZwmwrectdPQoafcCTXv7f2Tv3Kj1TpH
-         NbPhrBiBvkL+pjmZty2UnaWe+uc+j7oXqnV9SkhO0IEQLuPCGYhA3oua7lXP64wlelgu
-         4RZlopnYPUB/nOGOfC8f9WFATE4fbybuNaZTARKRYwfjeqFgmeZvkUmkWZeruAsge3dD
-         nTiQf2uc0Ywu0d32ZIva1O25nq5SlipgSsk+eM9Aatu3fKSC87lyibiZgfUpjknbnLC+
-         9ra3/2q75DAO20i/xQkAbWLnChpkE794s86Z1qwKYP4sDvL8ejDZIjMpkltf5ojxw0Ti
-         6mjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=aADjUL3aoYVuhKrrOmc9kzerdnVVqgXoXwAZgyL/N/U=;
-        b=SDc5PXnTgKHVmbo83xBzF6RQwr+kKMqklGAz9v8ZrYf9Zf1slC9E1WDrYvxYELZ6B+
-         q0BapwPqNN2GmMFXEWZ/WfLf82dNloXYi4vivO3bw5p6VblKdtmVCosj2MMbeeLFvPsT
-         DXPk1GeznAt4i32InWfPG8uLIHA2FmuAnmNnrRE2va8Upd4e8OvTRNjLdeXXzIi70gZ3
-         McHtAduMAFQ75fuzjqUfbIeU4E7NztYxZBgVWfHK2U6jnT1ZQ7HeunW9jhq+zwtE3E2U
-         e35r7CCc42C5RFLdOhwF7OhNo/gTV3vLW7HL3LYurqXdILc2OE6O1pnxAcRLEqgawCio
-         noOw==
-X-Gm-Message-State: AOAM530s4Z87GwkLI8wpDe8VN/SSLoED37TLrhI++i/okVKvAhnVdiB0
-        aR/gwKmHE9g8geqD16vE2cmcfM4l3yE=
-X-Google-Smtp-Source: ABdhPJzb+xizXUPt5P6p1qkqBpQXPH+lSyzWHcorceIZANn1ZP7Wz97agKdRsJturFMltGumuSh4MQ==
-X-Received: by 2002:a05:6808:23cb:: with SMTP id bq11mr3469368oib.139.1635433787557;
-        Thu, 28 Oct 2021 08:09:47 -0700 (PDT)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id v66sm1149541oib.18.2021.10.28.08.09.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 08:09:47 -0700 (PDT)
-Message-ID: <7e5514de-01ec-060f-cbc3-1b777e134a54@gmail.com>
-Date:   Thu, 28 Oct 2021 09:09:46 -0600
+        Thu, 28 Oct 2021 11:12:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uu1.ECo_1635433795;
+Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uu1.ECo_1635433795)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 Oct 2021 23:09:56 +0800
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
+        arnd@arndb.de, osandov@fb.com
+Cc:     shile.zhang@linux.alibaba.com, sfr@canb.auug.org.au,
+        linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: [PATCH v12 0/2] make hvc pass dma capable memory to its backend
+Date:   Thu, 28 Oct 2021 23:09:52 +0800
+Message-Id: <20211028150954.1356334-1-xianting.tian@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH net-next] neigh: use struct {arp, ndisc}_generic_ops for
- all case
-Content-Language: en-US
-To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211028122022.14879-1-yajun.deng@linux.dev>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20211028122022.14879-1-yajun.deng@linux.dev>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 6:20 AM, Yajun Deng wrote:
-> diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
-> index 922dd73e5740..9ee59c2e419a 100644
-> --- a/net/ipv4/arp.c
-> +++ b/net/ipv4/arp.c
-> @@ -135,14 +135,6 @@ static const struct neigh_ops arp_generic_ops = {
->  	.connected_output =	neigh_connected_output,
->  };
->  
-> -static const struct neigh_ops arp_hh_ops = {
-> -	.family =		AF_INET,
-> -	.solicit =		arp_solicit,
-> -	.error_report =		arp_error_report,
-> -	.output =		neigh_resolve_output,
-> -	.connected_output =	neigh_resolve_output,
-> -};
-> -
+Dear all,
 
-neigh_ops are used by net/core/neighbour.c; this change breaks those
-references.
+This patch series make hvc framework pass DMA capable memory to
+put_chars() of hvc backend(eg, virtio-console), and revert commit
+c4baad5029 ("virtio-console: avoid DMA from stack”)
 
+V1
+virtio-console: avoid DMA from vmalloc area
+https://lkml.org/lkml/2021/7/27/494
+
+For v1 patch, Arnd Bergmann suggests to fix the issue in the first
+place:
+Make hvc pass DMA capable memory to put_chars()
+The fix suggestion is included in v2.
+
+V2
+[PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/1/8
+[PATCH 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/1/9
+
+For v2 patch, Arnd Bergmann suggests to make new buf part of the
+hvc_struct structure, and fix the compile issue.
+The fix suggestion is included in v3.
+
+V3
+[PATCH v3 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/3/1347
+[PATCH v3 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/3/1348
+
+For v3 patch, Jiri Slaby suggests to make 'char c[N_OUTBUF]' part of
+hvc_struct, and make 'hp->outbuf' aligned and use struct_size() to
+calculate the size of hvc_struct. The fix suggestion is included in
+v4.
+
+V4
+[PATCH v4 0/2] make hvc pass dma capable memory to its backend
+https://lkml.org/lkml/2021/8/5/1350
+[PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/5/1351
+[PATCH v4 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/5/1352
+
+For v4 patch, Arnd Bergmann suggests to introduce another
+array(cons_outbuf[]) for the buffer pointers next to the cons_ops[]
+and vtermnos[] arrays. This fix included in this v5 patch.
+
+V5
+Arnd Bergmann suggests to use "L1_CACHE_BYTES" as dma alignment,
+use 'sizeof(long)' as dma alignment is wrong. fix it in v6.
+
+V6
+It contains coding error, fix it in v7 and it worked normally
+according to test result.
+
+V7
+Greg KH suggests to add test and code review developer,
+Jiri Slaby suggests to use lockless buffer and fix dma alignment
+in separate patch.
+fix above things in v8. 
+
+V8
+This contains coding error when switch to use new buffer. fix it in v9.
+
+V9
+It didn't make things much clearer, it needs add more comments for new added buf.
+Add use lock to protect new added buffer. fix in v10.
+
+V10
+Remove 'char outchar' and its lock from hvc_struct, adjust hvc_struct and use
+pahole to display the struct layout.
+fix it in v11.
+
+V11
+Fix early console print issue, which is broken by v11, in v12.
+
+********TEST STEPS*********
+1, config guest console=hvc0
+2, start guest
+3, login guest
+    Welcome to Buildroot
+    buildroot login: root
+    # 
+    # cat /proc/cmdline 
+    console=hvc0 root=/dev/vda rw init=/sbin/init
+    #
+
+drivers/tty/hvc/hvc_console.c | 48 ++++++++++++++++++++++++-----------
+drivers/tty/hvc/hvc_console.h | 30 +++++++++++++++++++++-
+drivers/char/virtio_console.c | 12 ++----------
+3 file changed
