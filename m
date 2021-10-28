@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBBF43DF08
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C0C43DF12
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhJ1Kip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhJ1Kic (ORCPT
+        id S230115AbhJ1KmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:42:25 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:40499 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhJ1KmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:38:32 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172A5C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:36:06 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so4658633wmz.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4Qso+1ON4rmrX1jJtTceQDXho/IqTPAJlT6pz5AB0mo=;
-        b=JuDRzGWXJdwZnwyw9y3XuVYfdz9VmYyIut/q4Myqdp3crHDY9XEp/eNxGhslq4+exG
-         4inLg7hkdi2hYEmQ0nicHhrvVC5TagslJf4PyfHnVkYeiYbyvO/sKmepIpC6EW6vrWyz
-         iiwmEkT5J4MCTO5t83XOV8Ew1gr8w1Hi/IOh2GKNcWs6r+Gl6TecOn/w/psoQZoMVs9n
-         7zvXFAzoPdxxUfqEMmsfk/VNe6u+hYhV7RlCcuUUOpW4ft6zogpfUspYUPAXh3MkAEsw
-         x1BKCw6bmTyahZPmdz9P/ZMUdciHFLyenLHP4mOediicetow322D23uwFmDQ3E8x8hNz
-         lpYQ==
+        Thu, 28 Oct 2021 06:42:22 -0400
+Received: by mail-wr1-f52.google.com with SMTP id e4so9308428wrc.7;
+        Thu, 28 Oct 2021 03:39:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4Qso+1ON4rmrX1jJtTceQDXho/IqTPAJlT6pz5AB0mo=;
-        b=hQOz7BQxfSpTosQ+7xhT0QK/10Ytwj4QK9aCwJTMe0SPkIBIg7X0nZaSwHW43DoxbB
-         moPx6HPQcOwYwjRrar/Pq+2mqjoiao+segK+BV+56UkQVSEiU9hGRGDdsTCFbXBqCfE6
-         d+fcARa8SLN7MyNT3l9tzzzvjr6cSYBwusW16CF9+qjuuDKOyXH8z5pNuJa0qEKgiWdn
-         vGnU/kqe5zuq7+K2PzNCB6/yPKsVreNK7/6yskFTIwjvgkTh/6PXAXR66g476jcYDwYd
-         O/Vem0STfZ8vazvUGi9yupPUn3vJYz9Xe5OFRq0r3R98MeBa6jtATLjFFDrnY8AmP7Zx
-         6p7Q==
-X-Gm-Message-State: AOAM532nt0s/U669CUti+z/i5F6nDkVyQpTH9546tdKzY610YO3n/353
-        bmMuZ3pCF9CtYokbVbxksJs=
-X-Google-Smtp-Source: ABdhPJzVmmyk3rICEmdjGQDKZco2RAgx2FID/jxIj3Qw0fF2RVVSg+bXEv/Q2llkGSua0Y/aboa5Uw==
-X-Received: by 2002:a05:600c:ac1:: with SMTP id c1mr3464003wmr.99.1635417364756;
-        Thu, 28 Oct 2021 03:36:04 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
-        by smtp.gmail.com with ESMTPSA id 13sm3768083wrz.38.2021.10.28.03.36.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jhjE6uggRXwcLBz6rtpVFtSWpSJGJ9KkPR5seEmlDps=;
+        b=fT+ZCh5csaROFP8W8HnEaglIk3MACPzJWi6e1o39Cq9ISd8YdF1R5GcGIGThej+Wsb
+         c4G1eHnjNlUYKpgCkJIyXoYi10tjdO6ElBKNruOmp9CaihpzUW/2ddNwa2sfecZ8980S
+         Ov/lwqLkZNfbir8AW4/EoaKjMVkYoQ2EKrBTzrUDC87I0FULRUPuatXobsE7uTsQXH2+
+         Hfh8U7SdF9fRJOrqRqv/MvEG67JHkWIug4IgbajsG5TejjpiDp7HzGj9y0sTu18DgLvw
+         ZvqLMu/vBxfdzeW4zAQAaYNgze+v3vQnFovv7Z6jffwycOtbFlUQezPHBBVlWCncHDvw
+         3CeA==
+X-Gm-Message-State: AOAM531zTPDLu9brXBLuq3Zf2exMT3HNYAzaCmFjcFV4IAU1AiNruHsn
+        GEUiC7TPO5fhYwB4oKoyqJzXWuxuuxE=
+X-Google-Smtp-Source: ABdhPJyAVE/5fkyVJ3vnSOaf3E6NCT/M2KYsF4aVgpeS6QvEVkIzsGoRcy4LIzEB/PA1ERH1kM+PIA==
+X-Received: by 2002:adf:f44e:: with SMTP id f14mr3095256wrp.37.1635417595030;
+        Thu, 28 Oct 2021 03:39:55 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id c16sm2679409wrm.46.2021.10.28.03.39.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 03:36:04 -0700 (PDT)
-From:   Karolina Drobnik <karolinadrobnik@gmail.com>
-To:     outreachy-kernel@googlegroups.com
-Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Karolina Drobnik <karolinadrobnik@gmail.com>
-Subject: [PATCH 7/7] staging: vt6655: Update comment for `rf_write_wake_prog_syn`
-Date:   Thu, 28 Oct 2021 11:35:37 +0100
-Message-Id: <353aa2ea26c64adc1d591a1fabdedd3d27cce3d5.1635415820.git.karolinadrobnik@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1635415820.git.karolinadrobnik@gmail.com>
-References: <cover.1635415820.git.karolinadrobnik@gmail.com>
+        Thu, 28 Oct 2021 03:39:54 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 10:39:52 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: linux-next: manual merge of the hyperv tree with the tip tree
+Message-ID: <20211028103952.olmn4xqnfwnjrdfc@liuwe-devbox-debian-v2>
+References: <20211026172251.0f655709@canb.auug.org.au>
+ <YXe77nC1uNKiuPch@zn.tnic>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXe77nC1uNKiuPch@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the function description to include the actual parameters.
-Update the comment on the return type.
+On Tue, Oct 26, 2021 at 10:27:26AM +0200, Borislav Petkov wrote:
+> On Tue, Oct 26, 2021 at 05:22:51PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Today's linux-next merge of the hyperv tree got a conflict in:
+> > 
+> >   arch/x86/mm/pat/set_memory.c
+> > 
+> > between commit:
+> > 
+> >   e9d1d2bb75b2 ("treewide: Replace the use of mem_encrypt_active() with cc_platform_has()")
+> > 
+> > from the tip tree and commit:
+> > 
+> >   cf90c4532b92 ("x86/hyperv: Add new hvcall guest address host visibility support")
+> > 
+> > from the hyperv tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> > -- 
+> > Cheers,
+> > Stephen Rothwell
+> > 
+> > diff --cc arch/x86/mm/pat/set_memory.c
+> > index 527957586f3c,525f682ab150..000000000000
+> > --- a/arch/x86/mm/pat/set_memory.c
+> > +++ b/arch/x86/mm/pat/set_memory.c
+> > @@@ -2024,6 -2025,17 +2026,17 @@@ static int __set_memory_enc_pgtable(uns
+> >   	return ret;
+> >   }
+> >   
+> > + static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> > + {
+> > + 	if (hv_is_isolation_supported())
+> > + 		return hv_set_mem_host_visibility(addr, numpages, !enc);
+> > + 
+> >  -	if (mem_encrypt_active())
+> > ++	if (cc_platform_has(CC_ATTR_MEM_ENCRYPT))
+> > + 		return __set_memory_enc_pgtable(addr, numpages, enc);
+> > + 
+> > + 	return 0;
+> > + }
+> > + 
+> >   int set_memory_encrypted(unsigned long addr, int numpages)
+> >   {
+> >   	return __set_memory_enc_dec(addr, numpages, true);
+> 
+> Looks good, thanks.
+> 
+> Wei, you could mention this conflict when sending to Linus or you can
+> simply merge into your branch the tip branch tip:x86/cc which has the
+> cc_platform_has() changes and then redo the isolation VM stuff ontop.
+> 
 
-Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
----
- drivers/staging/vt6655/rf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Boris and Stephen, thanks for the heads-up.
 
-diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-index 7caac1b44a68..fb31ec70c019 100644
---- a/drivers/staging/vt6655/rf.c
-+++ b/drivers/staging/vt6655/rf.c
-@@ -669,11 +669,11 @@ bool RFbSelectChannel(struct vnt_private *priv, unsigned char byRFType,
-  *
-  * Parameters:
-  *  In:
-- *      iobase      - I/O base address
-- *      channel     - channel number
-- *      bySleepCnt  - SleepProgSyn count
-+ *      priv        - Device Structure
-+ *      rf_type     - RF type
-+ *      channel     - Channel number
-  *
-- * Return Value: None.
-+ * Return Value: true if succeeded; false if failed.
-  *
-  */
- bool rf_write_wake_prog_syn(struct vnt_private *priv, unsigned char rf_type,
--- 
-2.30.2
+Wei.
 
+> HTH.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
