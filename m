@@ -2,174 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329C543E6A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF9C43E69B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhJ1QyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:54:12 -0400
-Received: from ixit.cz ([94.230.151.217]:42626 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230457AbhJ1Qx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:53:56 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        id S229985AbhJ1QxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhJ1QxV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 12:53:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D0EC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:50:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/tMGaK2sUVMsCiLlAMK/jc7wo8BAZ+rnikau/I3t/GU=; b=oWjZxuKcMWE5A0iD3QNPvuEsgD
+        +OIg6fK+PcpGLkD1D1HAatr0NJpVptr4ka5d3JntFZFLxWbdowDpl/2ZRksu+jGEEduY0roUKbl+0
+        d2M8ALN+eQhvJ0jP53aLyrBnVCcNpsZOuL7I6z56y4atofVSgJJJJ7kcLGTll4NJOoOGzfRMzRHVK
+        oj7WtmUqPlC8/RglTybwqHZaqDCSvBhPFCuOx4fdCD5RzZFXyif3ndfnbM3ueF6LqS1GEhEXziINK
+        5lJvfmf/poqLol+W9HFH3rTh/Ljn3rhV3vzEtCw20f4BDc0OOtkNG1K5NDBnXjHTqEy2okFxps7N2
+        p42wFs4Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mg8c3-00CqOk-On; Thu, 28 Oct 2021 16:50:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id B162520064;
-        Thu, 28 Oct 2021 18:51:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635439886;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UKp1ql47JL+USXsrEy5E93P0OLiPl1As1GzW+P8vLKs=;
-        b=uyq7h/BDMOH5QW//nPOGAvS/NMZhEYHk71/kw5bXiA4EGLNubvHeuDYy+r3otIaFMgcOOM
-        mM2YFm3oJhwze1taF4gTQ15lpeNcjgFIOiBcK1MdYJTGjKzAcZ6FkJ4DdXAzvGsYAvETum
-        idcT8etsuhZTot60Zi7ndjxiefBhBIc=
-From:   David Heidelberg <david@ixit.cz>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2314030031A;
+        Thu, 28 Oct 2021 18:50:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D53EF2064564E; Thu, 28 Oct 2021 18:50:46 +0200 (CEST)
+Date:   Thu, 28 Oct 2021 18:50:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>, Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: power: reset: gpio-poweroff: Convert txt bindings to yaml
-Date:   Thu, 28 Oct 2021 18:50:08 +0200
-Message-Id: <20211028165009.76641-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+Subject: Re: [PATCH] sched/core: Export pelt_thermal_tp
+Message-ID: <YXrU5hQfEJFTP93d@hirez.programming.kicks-ass.net>
+References: <20211028115005.873539-1-qais.yousef@arm.com>
+ <YXrJOKb17cH6vkTc@infradead.org>
+ <20211028161855.GN174703@worktop.programming.kicks-ass.net>
+ <YXrOLay3BbaDObM2@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXrOLay3BbaDObM2@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert power-off action connected to the GPIO documentation to the YAML syntax.
+On Thu, Oct 28, 2021 at 09:22:05AM -0700, Christoph Hellwig wrote:
+> On Thu, Oct 28, 2021 at 06:18:55PM +0200, Peter Zijlstra wrote:
+> > > > @@ -36,6 +36,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_rt_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
+> > > > +EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_thermal_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_cpu_capacity_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+> > > 
+> > > ... and while we're at it, all these exports are unused and should
+> > > be deleted as well.
+> > 
+> > This is my concession wrt tracepoints. Actual tracepoints are ABI,
+> > exports are in-kernel interfaces and are explicitly not ABI.
+> > 
+> > This way people can use an external module to get at the tracepoint data
+> > without having in-tree tracepoints.
+> 
+> All of this makes no sense at all.  These are entirely dead exports.
+> If you remove them nothing else changes.  Note taht the tracepoints
+> do have in-kernel callers, so if people thing of them as an ABI you've
+> got your ABI already with or without the exports.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v3:
- - incorporated Sebastian notes
-v2:
- - remove driver specific note about WARN_ON
+These are not normal traceevents, these are tracepoints, the distinction
+is that these things do not show up in tracefs and there is no userspace
+visible representation of them. No userspace gives no ABI.
 
- .../bindings/power/reset/gpio-poweroff.txt    | 41 -------------
- .../bindings/power/reset/gpio-poweroff.yaml   | 59 +++++++++++++++++++
- 2 files changed, 59 insertions(+), 41 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
- create mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+All they provide is the in-code hook and in-kernel registration
+interface. These EXPORTS export that registration interface, such that
+an out-of-tree module can make use of them.
 
-diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
-deleted file mode 100644
-index 3e56c1b34a4c..000000000000
---- a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--Driver a GPIO line that can be used to turn the power off.
--
--The driver supports both level triggered and edge triggered power off.
--At driver load time, the driver will request the given gpio line and
--install a handler to power off the system. If the optional properties
--'input' is not found, the GPIO line will be driven in the inactive
--state. Otherwise its configured as an input.
--
--When the power-off handler is called, the gpio is configured as an
--output, and drive active, so triggering a level triggered power off
--condition. This will also cause an inactive->active edge condition, so
--triggering positive edge triggered power off. After a delay of 100ms,
--the GPIO is set to inactive, thus causing an active->inactive edge,
--triggering negative edge triggered power off. After another 100ms
--delay the GPIO is driver active again. If the power is still on and
--the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
--
--Required properties:
--- compatible : should be "gpio-poweroff".
--- gpios : The GPIO to set high/low, see "gpios property" in
--  Documentation/devicetree/bindings/gpio/gpio.txt. If the pin should be
--  low to power down the board set it to "Active Low", otherwise set
--  gpio to "Active High".
--
--Optional properties:
--- input : Initially configure the GPIO line as an input. Only reconfigure
--  it to an output when the power-off handler is called. If this optional
--  property is not specified, the GPIO is initialized as an output in its
--  inactive state.
--- active-delay-ms: Delay (default 100) to wait after driving gpio active
--- inactive-delay-ms: Delay (default 100) to wait after driving gpio inactive
--- timeout-ms: Time to wait before asserting a WARN_ON(1). If nothing is
--              specified, 3000 ms is used.
--
--Examples:
--
--gpio-poweroff {
--	compatible = "gpio-poweroff";
--	gpios = <&gpio 4 0>;
--	timeout-ms = <3000>;
--};
-diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
-new file mode 100644
-index 000000000000..45d66c775115
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/reset/gpio-poweroff.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: GPIO controlled power off
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+description: >
-+  System power off support via a GPIO line. When a shutdown is
-+  executed the operating system is expected to switch the GPIO
-+  from inactive to active. After a delay (active-delay-ms) it
-+  is expected to be switched back to inactive. After another
-+  delay (inactive-delay-ms) it is configured as active again.
-+  Finally the operating system assumes the power off failed if
-+  the system is still running after waiting some time (timeout-ms).
-+
-+properties:
-+  compatible:
-+    const: gpio-poweroff
-+
-+  gpios:
-+    maxItems: 1
-+
-+  input:
-+    type: boolean
-+    description: >
-+      Initially configure the GPIO line as an input. Only reconfigure
-+      it to an output when the power-off sequence is initiated. If this optional
-+      property is not specified, the GPIO is initialized as an output in its inactive state.
-+
-+  active-delay-ms:
-+    default: 100
-+    description: Delay to wait after driving gpio active
-+
-+  inactive-delay-ms:
-+    default: 100
-+    description: Delay to wait after driving gpio inactive
-+
-+  timeout-ms:
-+    default: 3000
-+    description: Time to wait before assuming the power off sequence failed.
-+
-+required:
-+  - compatible
-+  - gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio-poweroff {
-+        compatible = "gpio-poweroff";
-+        gpios = <&gpio 4 0>;
-+        timeout-ms = <3000>;
-+    };
--- 
-2.33.0
+And yes, unused exports are iffy, out-of-tree modules are iffy, but in
+this case I made an exception since ABI contraints are worse. We very
+clearly state there is no such thing is kabi, so breaking any user of
+these exports if fair game.
 
+Breaking users of userspace trace-events gets kernel patches reverted
+(been there, done that, never want to ever be there again).
+
+People want to trace this stuff, but I *REALLY* do not want to commit to
+ABI, this is the middle-ground that sucks least :/
