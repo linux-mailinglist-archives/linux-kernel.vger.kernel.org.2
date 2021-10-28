@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248BF43E290
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7640A43E297
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJ1NwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:52:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:55180 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230445AbhJ1Nvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:51:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBF7C13A1;
-        Thu, 28 Oct 2021 06:49:23 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C61E43F70D;
-        Thu, 28 Oct 2021 06:49:20 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 14:49:18 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Wang Kefeng <wangkefeng.wang@huawei.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] arch/Kconfig: Make CONFIG_CPU_SPECTRE available
- for all architectures
-Message-ID: <20211028134918.GB48435@lakrids.cambridge.arm.com>
-References: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
- <232b692cd79e4f6e4c3ee7055b5f02792a28d2c4.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+        id S230335AbhJ1Nwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231172AbhJ1NwO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:52:14 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB0CC061226
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:49:45 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id r2so4458891qtw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0TNHT+XtxGt7Pj6EGkbe6GYkL2KA5e1SLKKvZ3jL2xI=;
+        b=xRnfJxaZc7aaNs28zpMGTlD47tit7ezTMQ7BEqowby/aaxFKyHBZ7/Db6QAVeAaDX8
+         2IdtKheBIvHiDWAutYV8L6yUtP4Ka5Xq5ufKUsMw14tZlaLfrHs2g0qkqdtmoIu4LlF4
+         zCH2hig2L1aEAOod68nV9G7fqRzGtK/lwlc5Iav8u1IGjyyutP9gJqg8pFvCz1z62xwD
+         I3f+91mxSWY/6DJOATv15LoUab6yqiYIxFsJtshHOGdAwjQMpprE2g9rQlrSo5BdvnrW
+         jowyveYNJnufSkXqxUNYAUJt55JxmFUunXSXKtSuQHGmICJMB9BNgBBMLODmv4igB/N1
+         GA8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0TNHT+XtxGt7Pj6EGkbe6GYkL2KA5e1SLKKvZ3jL2xI=;
+        b=W4JiVBbQTp4QiKF7eabg7WUqj0sAMGhuHSM78/+lxoShe3rW2ZxTHUzy0JyNpJc0Cy
+         jVs83PLZYPW6+eYyBuIVWILnrg58uIpx8qnKSzkUNqNB3EMN3vI97DrHdFnrSG1fnUHI
+         TOiAzrh7um2KTU7PC0kmL0QX8rjeCcnba1pVs52RQwkihsr8RSLcbcRlkkJIfjK9WjCT
+         EPiB8Ci/fRU1efbaE583JaEAJStY+J/jV6YKub6akPPxx8oR147ZHW0izd2vn1pDXDgh
+         mG5SMbT0xbhbJCng1hPQDveeB4E+GHERFPtv54mrmxMWDdvUtlfaxM8qCOTQZDN+zfXM
+         dlMA==
+X-Gm-Message-State: AOAM532dkgGlpgBPInDwDTzA3yI2c3N1JKlgOoImlYiObBohXD7lx/OL
+        ITlz4WMF7gknlXJaf2D8q0zuog==
+X-Google-Smtp-Source: ABdhPJyWwoEESZiwcY8pdh9ik191tsPt10istWMC3Sqfb2ydRk3fkWizMfSy5eEOix/CUayxY/HDdA==
+X-Received: by 2002:ac8:7fd5:: with SMTP id b21mr4836172qtk.101.1635428984736;
+        Thu, 28 Oct 2021 06:49:44 -0700 (PDT)
+Received: from maple.netwinder.org (rfs.netwinder.org. [206.248.184.2])
+        by smtp.gmail.com with ESMTPSA id h20sm2071219qtx.10.2021.10.28.06.49.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 06:49:44 -0700 (PDT)
+From:   Ralph Siemsen <ralph.siemsen@linaro.org>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org, jiri.prchal@aksignal.cz,
+        broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ralph Siemsen <ralph.siemsen@linaro.org>
+Subject: [PATCH] nvmem: eeprom: at25: fix byte_len for FRAM
+Date:   Thu, 28 Oct 2021 09:49:22 -0400
+Message-Id: <20211028134922.3965612-1-ralph.siemsen@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <232b692cd79e4f6e4c3ee7055b5f02792a28d2c4.1635383031.git.pawan.kumar.gupta@linux.intel.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 06:33:22PM -0700, Pawan Gupta wrote:
-> Borrow CONFIG_CPU_SPECTRE from ARM to be available for all
-> architectures. This will help in configuration of features that depend
-> on CPU being affected by spectre class of vulnerabilities.
-> 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Commit fd307a4ad332 ("nvmem: prepare basics for FRAM support") added
+support for FRAM devices such as the Cypress FM25V. During testing, it
+was found that the FRAM detects properly, however reads and writes fail.
+Upon further investigation, two problem were found in at25_probe() routine.
 
-Given that spectre isn't one specific issue, biut rather a blanket term
-for a bunch of things that can have variable overlap, I don't think this
-makes much sense unless we're going to add finer-grained options for all
-the variants, and IMO it'd make more sene for the architectures to
-directly select the things that'd otherwise be dependent on this.
+1) In the case of an FRAM device without platform data, eg.
+       fram == true && spi->dev.platform_data == NULL
+the stack local variable "struct spi_eeprom chip" is never initialized.
+This structure is copied into at25->chip, which is used subsequently.
+Fix this by an explicit memset(), similar to existing at25_fw_to_chip().
 
-Thanks,
-Mark.
+2) The size of FRAM is computed from its ID register, and is stored into
+the stack local "struct spi_eeprom chip" structure. This happens after
+the same structure has been copied into at25->chip. As a result,
+at25->chip.byte_len does not contain the correct length of the device.
+In turn this can cause checks at beginning of at25_ee_read() to fail
+(or equally, it could allow reads beyond the end of the device length).
 
-> ---
->  arch/Kconfig        | 3 +++
->  arch/arm/mm/Kconfig | 3 ---
->  arch/x86/Kconfig    | 1 +
->  3 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 8df1c7102643..6aa856d51cb7 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1091,6 +1091,9 @@ config ARCH_SUPPORTS_RT
->  config CPU_NO_EFFICIENT_FFS
->  	def_bool n
->  
-> +config CPU_SPECTRE
-> +	bool
-> +
->  config HAVE_ARCH_VMAP_STACK
->  	def_bool n
->  	help
-> diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-> index 8355c3895894..44551465fd03 100644
-> --- a/arch/arm/mm/Kconfig
-> +++ b/arch/arm/mm/Kconfig
-> @@ -828,9 +828,6 @@ config CPU_BPREDICT_DISABLE
->  	help
->  	  Say Y here to disable branch prediction.  If unsure, say N.
->  
-> -config CPU_SPECTRE
-> -	bool
-> -
->  config HARDEN_BRANCH_PREDICTOR
->  	bool "Harden the branch predictor against aliasing attacks" if EXPERT
->  	depends on CPU_SPECTRE
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index d9830e7e1060..769739da67c6 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -124,6 +124,7 @@ config X86
->  	select CLKEVT_I8253
->  	select CLOCKSOURCE_VALIDATE_LAST_CYCLE
->  	select CLOCKSOURCE_WATCHDOG
-> +	select CPU_SPECTRE
->  	select DCACHE_WORD_ACCESS
->  	select EDAC_ATOMIC_SCRUB
->  	select EDAC_SUPPORT
-> -- 
-> 2.31.1
-> 
+Fixes: fd307a4ad332 ("nvmem: prepare basics for FRAM support")
+Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
+---
+ drivers/misc/eeprom/at25.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
+index 632325474233..65cfb10fa0b7 100644
+--- a/drivers/misc/eeprom/at25.c
++++ b/drivers/misc/eeprom/at25.c
+@@ -395,6 +395,8 @@ static int at25_probe(struct spi_device *spi)
+ 			err = at25_fw_to_chip(&spi->dev, &chip);
+ 			if (err)
+ 				return err;
++		} else {
++			memset(&chip, 0, sizeof(chip));
+ 		}
+ 	} else
+ 		chip = *(struct spi_eeprom *)spi->dev.platform_data;
+@@ -432,6 +434,7 @@ static int at25_probe(struct spi_device *spi)
+ 			return -ENODEV;
+ 		}
+ 		chip.byte_len = int_pow(2, id[7] - 0x21 + 4) * 1024;
++		at25->chip.byte_len = chip.byte_len;
+ 
+ 		if (at25->chip.byte_len > 64 * 1024)
+ 			at25->chip.flags |= EE_ADDR3;
+-- 
+2.25.1
+
