@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DAE43E995
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B332643E998
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhJ1UiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 16:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
+        id S231281AbhJ1Uii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 16:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhJ1UiF (ORCPT
+        with ESMTP id S230323AbhJ1Uie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:38:05 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01A9C061570;
-        Thu, 28 Oct 2021 13:35:37 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id ay10so2036758qkb.12;
-        Thu, 28 Oct 2021 13:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RJ/TZBmAjtBZEQ7SF9pt737iGPmZZZE1EbwprVB6+B8=;
-        b=cuXtA5t15HjnPp7OPl35fJNotIP9gC4nBC9TPE9YctYbO5ObFZHbko0xoAiamkVypR
-         fb3HPJxSC26+7bEhYxyhm4pk5v9Wb/X3mMz46/h6lc7Q6l5Nq7vTunKQHC6FqQu1jhE0
-         jKkbX9xeWuS+72ePM+SNTfgCTMialYZ8nDqW5UgN3E5dHX6uQjvHvoPHGAQAnIsV2Q+Y
-         6gcXwignr0+ziJuuiyiSwJhrOoWheNNlCDpMvEj51dMoK8gjnJwBVPGJpefRMfwzLawW
-         IGdMQh+udMfdMxl1SJSSIiB6gltmAd46fNUTwxeichW9LFCCoXGevcfXtZFVNwr3Nl7V
-         H55Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=RJ/TZBmAjtBZEQ7SF9pt737iGPmZZZE1EbwprVB6+B8=;
-        b=f5IPjMXUd8tPkhtN+tAPdCs06LIAbjN24w8H2Hom2f2s5jkneUkozRQ21/00Jk+Qc3
-         7b81AD910t4d+PzFH6w3BZ3zwR6LbKTqcfj99zp7zWCgOBmNkNjDf10LYMTKtpkwNdRZ
-         udmyJOcwjfvVLWLzxgptJiDTnBZRlXif18HTk3Kmf9e8MjgvQzhiAeH3F7zNwys9bJED
-         x4UmGZIlMqzHvenIV47VG/LkNi9xuIBYDC8D17j9gM/jb1NDuisHDGAENsx6TgVgFRQR
-         VhZDolVYxj7uAohg3nGSdQeFqfhDX0q/661hFM0u4HaruvUd6Oitm+PPUQQZiNsjviJM
-         Hjwg==
-X-Gm-Message-State: AOAM533MfiHj2McP+XEHhkHjuqFJsb5r7Bwu69Zw0pg73UGaoNFw8TBQ
-        LD7Vl9IOZcZeuyUkUJQjFR0=
-X-Google-Smtp-Source: ABdhPJxTlzO10r5Nzl9pSYnQeYSG2R240FixGykJH96yXDFciOwLRHsZhD7PRGO41qpFtjBEeih1YQ==
-X-Received: by 2002:a05:620a:d85:: with SMTP id q5mr5502693qkl.64.1635453336806;
-        Thu, 28 Oct 2021 13:35:36 -0700 (PDT)
-Received: from localhost.localdomain ([67.8.38.84])
-        by smtp.gmail.com with ESMTPSA id 9sm2593575qkn.84.2021.10.28.13.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 13:35:36 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        rdunlap@infradead.org, daejun7.park@samsung.com
-Cc:     fazilyildiran@gmail.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: ufs: fix unmet dependency on RESET_CONTROLLER for RESET_TI_SYSCON
-Date:   Thu, 28 Oct 2021 16:35:35 -0400
-Message-Id: <20211028203535.7771-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 28 Oct 2021 16:38:34 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC0BC061570;
+        Thu, 28 Oct 2021 13:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=LX6K9oTgNbH+UMBpyJZsK97HkfDlA20CVm5u+Vv4f3E=; b=32L6dRGIMGbYnYxVZLsriMubkW
+        nzw7Knt3nRE7Fv6kpBPY+RAqS3+eiiayJxQQ4y3Dto7quWrYM3fxgwk5lFo7Z/BU/bA2zqcLFAGOT
+        xefHURRhmruyq+4C81a47La954GM+/05xztPqn3NBPOBAUZ/pBW2aH7eOS9yzZ+vLJMZCiLIb9EDp
+        Sj0rf0Aej+DkA9wQi0F4aPnO3VO98uOjfPEIifYVUzmG+uZuDaYa+tJ9qKqYun/uKFtVnK5vSxiXM
+        uMvFHFuCGyjR1LiO4bKL8i4HXZxCu1+hvRizuYyILCytWMBT9pdPh1ybatDrEoJMZmCrgCHlDmCuQ
+        sSl9MUmQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mgC84-0093FY-U8; Thu, 28 Oct 2021 20:36:04 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
+        axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH] zram: use ATTRIBUTE_GROUPS
+Date:   Thu, 28 Oct 2021 13:36:00 -0700
+Message-Id: <20211028203600.2157356-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When RESET_TI_SYSCON is selected, and RESET_CONTROLLER
-is not selected, Kbuild gives the following warning:
+Embrace ATTRIBUTE_GROUPS to avoid boiler plate code.
+This should not introduce any functional changes.
 
-WARNING: unmet direct dependencies detected for RESET_TI_SYSCON
-  Depends on [n]: RESET_CONTROLLER [=n] && HAS_IOMEM [=y]
-  Selected by [y]:
-  - SCSI_UFS_MEDIATEK [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && SCSI_UFSHCD_PLATFORM [=y] && ARCH_MEDIATEK [=y]
-
-This is because RESET_TI_SYSCON is selected by
-SCSI_UFS_MEDIATEK, but SCSI_UFS_MEDIATEK does
-not select or depend on RESET_CONTROLLER, despite
-RESET_TI_SYSCON depending on RESET_CONTROLLER.
-
-These unmet dependency bugs were detected by Kismet,
-a static analysis tool for Kconfig. Please advise if this
-is not the appropriate solution.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/scsi/ufs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/block/zram/zram_drv.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
-index b2521b830be7..0427f8277a5d 100644
---- a/drivers/scsi/ufs/Kconfig
-+++ b/drivers/scsi/ufs/Kconfig
-@@ -115,6 +115,7 @@ config SCSI_UFS_MEDIATEK
- 	tristate "Mediatek specific hooks to UFS controller platform driver"
- 	depends on SCSI_UFSHCD_PLATFORM && ARCH_MEDIATEK
- 	select PHY_MTK_UFS
-+  select RESET_CONTROLLER
- 	select RESET_TI_SYSCON
- 	help
- 	  This selects the Mediatek specific additions to UFSHCD platform driver.
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index fcaf2750f68f..268f727f7cba 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1874,14 +1874,7 @@ static struct attribute *zram_disk_attrs[] = {
+ 	NULL,
+ };
+ 
+-static const struct attribute_group zram_disk_attr_group = {
+-	.attrs = zram_disk_attrs,
+-};
+-
+-static const struct attribute_group *zram_disk_attr_groups[] = {
+-	&zram_disk_attr_group,
+-	NULL,
+-};
++ATTRIBUTE_GROUPS(zram_disk);
+ 
+ /*
+  * Allocate and initialize new zram device. the function returns
+@@ -1953,7 +1946,7 @@ static int zram_add(void)
+ 		blk_queue_max_write_zeroes_sectors(zram->disk->queue, UINT_MAX);
+ 
+ 	blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, zram->disk->queue);
+-	device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
++	device_add_disk(NULL, zram->disk, zram_disk_groups);
+ 
+ 	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
+ 
 -- 
-2.30.2
+2.33.0
 
