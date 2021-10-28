@@ -2,67 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614E043E5A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552C643E598
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhJ1QD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhJ1QD0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:03:26 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3C1C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:00:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WPI3HGeY+QJAr3olI2zUkaqrGB17KW9jhBoLk8LEx0s=; b=nQxyl1pzM4GZBegx0zgg3RzYAy
-        S5k7jmu6twSgp+Y1yW6oyRiYwWL/uPJpQP4dKYL1YH65LjbtPiqCvjXNe3U6lLsSdlMH/hfG34947
-        daQBPetwPAqcFWGlCw688XGJZADcYFSyLqDwetqkNQ5FBNQZ3KMiDCTjiPfmNFtZYqTf5pUXQ5xln
-        pHY08+sMm5tG0HymZm4op/jPPOLgEdNPMqN20ucEc/JnirAVoqYMMaZOTcL5SGVWzplgwYIcb4zxz
-        nzKkRJPFG5K4w18RCMi5+dGtpDFgrHnp4uOj6D006Vt6s6L07uS24Vy6HTUrJ+eyz0DGFPpPEA2sp
-        A7b2/b4A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg7po-008Vf5-Mg; Thu, 28 Oct 2021 16:00:56 +0000
-Date:   Thu, 28 Oct 2021 09:00:56 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/core: Export pelt_thermal_tp
-Message-ID: <YXrJOKb17cH6vkTc@infradead.org>
-References: <20211028115005.873539-1-qais.yousef@arm.com>
+        id S230022AbhJ1QBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229565AbhJ1QBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 12:01:00 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A16DA60FC4;
+        Thu, 28 Oct 2021 15:58:30 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 17:02:56 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     cosmin.tanislav@analog.com, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] iio: add adddac subdirectory
+Message-ID: <20211028170256.5a616bae@jic23-huawei>
+In-Reply-To: <20211028135608.3666940-1-demonsingur@gmail.com>
+References: <20211028134849.3664969-1-demonsingur@gmail.com>
+        <20211028135608.3666940-1-demonsingur@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028115005.873539-1-qais.yousef@arm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:50:05PM +0100, Qais Yousef wrote:
-> We can't use this tracepoint in modules without having the symbol
-> exported first, fix that.
+On Thu, 28 Oct 2021 16:56:03 +0300
+Cosmin Tanislav <demonsingur@gmail.com> wrote:
 
-Which modules is using this?  In linux-next there does not seems to be
-any user outside of kernel/sched/pelt.c.
+> From: Cosmin Tanislav <cosmin.tanislav@analog.com>
+> 
+> For IIO devices that expose both ADC and DAC functionality.
+> 
+> Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+Why v2?
 
-> @@ -36,6 +36,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_rt_tp);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
-> +EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_thermal_tp);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_cpu_capacity_tp);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+Should be a change log (+ I would suggest a cover letter).
+Also, reply to previous version if there haven't been comments that
+you are replying to..
 
-... and while we're at it, all these exports are unused and should
-be deleted as well.
+I'll assume most v1 comments apply to v2 and hence wait for v3.
+
+Please leave some time for others to review these versions before
+sending a v3.  
+
+Jonathan
+
+> ---
+>  drivers/iio/Kconfig        | 1 +
+>  drivers/iio/Makefile       | 1 +
+>  drivers/iio/addac/Kconfig  | 8 ++++++++
+>  drivers/iio/addac/Makefile | 6 ++++++
+>  4 files changed, 16 insertions(+)
+>  create mode 100644 drivers/iio/addac/Kconfig
+>  create mode 100644 drivers/iio/addac/Makefile
+> 
+> diff --git a/drivers/iio/Kconfig b/drivers/iio/Kconfig
+> index 2334ad249b46..4fb4321a72cb 100644
+> --- a/drivers/iio/Kconfig
+> +++ b/drivers/iio/Kconfig
+> @@ -70,6 +70,7 @@ config IIO_TRIGGERED_EVENT
+>  
+>  source "drivers/iio/accel/Kconfig"
+>  source "drivers/iio/adc/Kconfig"
+> +source "drivers/iio/addac/Kconfig"
+>  source "drivers/iio/afe/Kconfig"
+>  source "drivers/iio/amplifiers/Kconfig"
+>  source "drivers/iio/cdc/Kconfig"
+> diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
+> index 65e39bd4f934..8d48c70fee4d 100644
+> --- a/drivers/iio/Makefile
+> +++ b/drivers/iio/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_IIO_TRIGGERED_EVENT) += industrialio-triggered-event.o
+>  
+>  obj-y += accel/
+>  obj-y += adc/
+> +obj-y += addac/
+>  obj-y += afe/
+>  obj-y += amplifiers/
+>  obj-y += buffer/
+> diff --git a/drivers/iio/addac/Kconfig b/drivers/iio/addac/Kconfig
+> new file mode 100644
+> index 000000000000..2e64d7755d5e
+> --- /dev/null
+> +++ b/drivers/iio/addac/Kconfig
+> @@ -0,0 +1,8 @@
+> +#
+> +# ADC DAC drivers
+> +#
+> +# When adding new entries keep the list in alphabetical order
+> +
+> +menu "Analog to digital and digital to analog converters"
+> +
+> +endmenu
+> diff --git a/drivers/iio/addac/Makefile b/drivers/iio/addac/Makefile
+> new file mode 100644
+> index 000000000000..b888b9ee12da
+> --- /dev/null
+> +++ b/drivers/iio/addac/Makefile
+> @@ -0,0 +1,6 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Makefile for industrial I/O ADDAC drivers
+> +#
+> +
+> +# When adding new entries keep the list in alphabetical order
+
