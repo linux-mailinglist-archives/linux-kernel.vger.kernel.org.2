@@ -2,133 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C5F43D9FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6940B43DA05
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhJ1DvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 23:51:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53574 "EHLO mail.kernel.org"
+        id S229788AbhJ1D7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 23:59:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31566 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhJ1DvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 23:51:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F52960F22;
-        Thu, 28 Oct 2021 03:48:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635392931;
-        bh=4uaS2ebATc8X0cVmdWXxFMt9mK9HMe1yPqm7907dkQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dJNWLvWTkhLqS95oSEtp08mQ+7EP1niXdYf5r4ot0nMkvT0wpoI7zdkS4IsXRamZ9
-         qy7a3CpWbsWboUogzIiKuCq3PIle2iM846NEKhcyyE1cA+DCiDd2obFCxCvO/qzuI2
-         FkGxEdyxv6FSORSLBpWEOmHbTB81JbEor5oGC8r95lX9R6bGT/uwKYO1aIdF9jYjom
-         jOoUYpCGdfe6M1f25SBHS8P/Suc7BgDrUG5cQpKRD63QPMqGxxpJGuh1qDQ8DQ6JJu
-         qf2VyQZM6/nwFxHZ2nlG9Er8R2YjsdgWnYsidVZHtH0L5lqloiPJG6Qk1yyO4L7zfE
-         7smMRVWc8v7ag==
-Date:   Wed, 27 Oct 2021 20:48:23 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Deven Bowers <deven.desai@linux.microsoft.com>
-Cc:     corbet@lwn.net, axboe@kernel.dk, agk@redhat.com,
-        snitzer@redhat.com, tytso@mit.edu, paul@paul-moore.com,
-        eparis@redhat.com, jmorris@namei.org, serge@hallyn.com,
-        jannh@google.com, dm-devel@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-audit@redhat.com,
-        linux-security-module@vger.kernel.org
-Subject: Re: [RFC PATCH v7 12/16] fsverity|security: add security hooks to
- fsverity digest and signature
-Message-ID: <YXodhzYto5BRxqYO@sol.localdomain>
-References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
- <1634151995-16266-13-git-send-email-deven.desai@linux.microsoft.com>
- <YWcyYBuNppjrVOe2@gmail.com>
- <9089bdb0-b28a-9fa0-c510-00fa275af621@linux.microsoft.com>
- <YWngaVdvMyWBlITZ@gmail.com>
- <f027e3fa-2f70-0cdb-ac7b-255cee68edbb@linux.microsoft.com>
+        id S229705AbhJ1D7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 23:59:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635393432; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=m+tIbxcshou06MTQ58i8f/rhVixWQJgIxK9i9z23/4k=; b=ttp+E4jfakf/+Pxc/v2AvmGDp8Vm7MytNuXTlR3FysRXc2BJvb6r9IOEWn4nwd6v1EiVfnWX
+ 1fUrvyPt+k54JawsrJvaiB/w6OE8pDPnntvfrxrkSo0QOvHt+ducZNADnNqWPO2zZhr2wrUG
+ sJFIKBaOovPycSrSGET96sk4nzU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 617a1f93545d7d365f27c2a7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 03:57:07
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 20798C4360D; Thu, 28 Oct 2021 03:57:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.118] (unknown [49.207.214.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CE52C4338F;
+        Thu, 28 Oct 2021 03:57:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0CE52C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
+ for dwc3 qcom
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
+References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
+ <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
+ <YXcBK7zqny0s4gd4@ripper>
+ <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
+ <YXck+xCJQBRGqTCw@ripper>
+ <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
+ <YXdsYlLWnjopyMn/@ripper>
+ <CAE-0n51C4dm6bhds=ZZyje-Pcejxjm4MMa3m-VHjFgq7GZGrLw@mail.gmail.com>
+ <YXjbs3Bv6Y3d87EC@yoga>
+ <CAPDyKFrWQdvZX4ukHZoGz73JPfQSgqVrG_4ShMp_GrxL0NKLvg@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <da877712-dac9-e9d0-0bfc-25bef450eb65@codeaurora.org>
+Date:   Thu, 28 Oct 2021 09:26:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f027e3fa-2f70-0cdb-ac7b-255cee68edbb@linux.microsoft.com>
+In-Reply-To: <CAPDyKFrWQdvZX4ukHZoGz73JPfQSgqVrG_4ShMp_GrxL0NKLvg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 12:03:53PM -0700, Deven Bowers wrote:
-> > > The proposed LSM (IPE) of this series will be the only one to need
-> > > this information at the  moment. IPE’s goal is to have provide
-> > > trust-based access control. Trust and Integrity are tied together,
-> > > as you cannot prove trust without proving integrity.
-> > I think you mean authenticity, not integrity?
-> I’ve heard a lot of people use these terms in overloaded ways.
-> 
-> If we’re working with the definition of authenticity being
-> “the property that a resource was _actually_ sent/created by a
-> party”, and integrity being “the property that a resource was not
-> modified from a point of time”, then yes. Though the statement isn’t
-> false, though, because you’d need to prove integrity in the process of
-> proving authenticity.
-> 
-> If not, could you clarify what you mean by authenticity and integrity,
-> so that we can use consistent definitions?
 
-In cryptography, integrity normally means knowing whether data has been
-non-maliciously changed, while authenticity means knowing whether data is from a
-particular source, which implies knowing whether it has been changed at all
-(whether maliciously or not).  Consider that there are "Message Authentication
-Codes" (MACs) and "Authenticated Encryption", not "Message Integrity Codes" and
-"Intact Encryption".
 
-Unfortunately lots of people do overload "integrity" to mean authenticity, so
-you're not alone.  But it's confusing, so if you're going to do that then please
-make sure to clearly explain what you mean.
+On 10/27/2021 7:54 PM, Ulf Hansson wrote:
+> On Wed, 27 Oct 2021 at 06:55, Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+>>
+>> On Tue 26 Oct 19:48 CDT 2021, Stephen Boyd wrote:
+>>
+>>> +Rajendra
+>>>
+>>> Quoting Bjorn Andersson (2021-10-25 19:48:02)
+>>>> On Mon 25 Oct 15:41 PDT 2021, Stephen Boyd wrote:
+>>>>
+>>>>>
+>>>>> When the binding was introduced I recall we punted on the parent child
+>>>>> conversion stuff. One problem at a time. There's also the possibility
+>>>>> for a power domain to be parented by multiple power domains so
+>>>>> translation tables need to account for that.
+>>>>>
+>>>>
+>>>> But for this case - and below display case - the subdomain (the device's
+>>>> power-domain) is just a dumb gate. So there is no translation, the given
+>>>> performance_state applies to the parent. Or perhaps such implicitness
+>>>> will come back and bite us?
+>>>
+>>> In the gate case I don't see how the implicitness will ever be a
+>>> problem.
+>>>
+>>>>
+>>>> I don't think we allow a power-domain to be a subdomain of two
+>>>> power-domains - and again it's not applicable to USB or display afaict.
+>>>
+>>> Ah maybe. I always confuse power domains and genpd.
+>>>
+>>>>
+>>>>>>
+>>>>>>> Or we may need to make another part of the OPP binding to indicate the
+>>>>>>> relationship between the power domain and the OPP and the parent of
+>>>>>>> the power domain.
+>>>>>>
+>>>>>> I suspect this would be useful if a power-domain provider needs to
+>>>>>> translate a performance_state into a different supply-performance_state.
+>>>>>> Not sure if we have such case currently; these examples are all an
+>>>>>> adjustable power-domain with "gating" subdomains.
+>>>>>
+>>>>> Even for this case, we should be able to have the GDSC map the on state
+>>>>> to some performance state in the parent domain. Maybe we need to add
+>>>>> some code to the gdsc.c file to set a performance state on the parent
+>>>>> domain when it is turned on. I'm not sure where the value for that perf
+>>>>> state comes from. I guess we can hardcode it in the driver for now and
+>>>>> if it needs to be multiple values based on the clk frequency we can push
+>>>>> it out to an OPP table or something like that.
+>>>>>
+>>>>
+>>>> For the GDSC I believe we only have 1:1 mapping, so implementing
+>>>> set_performance_state to just pass that on to the parent might do the
+>>>> trick (although I haven't thought this through).
+>>>>
+>>>> Conceptually I guess this would be like calling clk_set_rate() on a
+>>>> clock gate, relying on it being propagated upwards. The problem here is
+>>>> that the performance_state is just a "random" integer without a well
+>>>> defined unit.
+>>>>
+>>>
+>>> Right. Ideally it would be in the core code somehow so that if there
+>>> isn't a set_performance_state function we go to the parent or some
+>>> special return value from the function says "call it on my parent". The
+>>> translation scheme could come later so we can translate the "random"
+>>> integer between parent-child domains.
+>>
+>> As a proof of concept it should be sufficient to just add an
+>> implementation of sc->pd.set_performance_state in gdsc.c. But I agree
+>> that it would be nice to push this into some framework code, perhaps
+>> made opt-in by some GENPD_FLAG_xyz.
+>>
+>>> At the end of the day the device
+>>> driver wants to set a frequency or runtime pm get the device and let the
+>>> OPP table or power domain code figure out what the level is supposed to
+>>> be.
+>>>
+>>
+>> Yes and this is already working for the non-nested case - where the
+>> single power-domain jumps between performance states as the opp code
+>> switches from one opp to another.
+>>
+>> So if we can list only the child power-domain (i.e. the GDSC) and have
+>> the performance_stat requests propagate up to the parent rpmhpd resource
+>> I think we're good.
+>>
+>>
+>> Let's give this a spin and confirm that this is the case...
+>>
+>>>>
+>>>>
+>>>> The one case where I believe we talked about having different mapping
+>>>> between the performance_state levels was in the relationship between CX
+>>>> and MX. But I don't think we ever did anything about that...
+>>>
+>>> Hmm alright. I think there's a constraint but otherwise nobody really
+>>> wants to change both at the same time.
+>>>
+>>>>>
+>>>>> Yes, a GDSC is really a gate on a parent power domain like CX or MMCX,
+>>>>> etc. Is the display subsystem an example of different clk frequencies
+>>>>> wanting to change the perf state of CX? If so it's a good place to work
+>>>>> out the translation scheme for devices that aren't listing the CX power
+>>>>> domain in DT.
+>>>>
+>>>> Yes, the various display components sits in MDSS_GDSC but the opp-tables
+>>>> needs to change the performance_state of MDSS_GDSC->parent (i.e. CX or
+>>>> MMCX, depending on platform).
+>>>>
+>>>> As I said, today we hack this by trusting that the base drm/msm driver
+>>>> will keep MDSS_GDSC on and listing MMCX (or CX) as power-domain for each
+>>>> of these components.
+>>>>
+>>>>
+>>>> So if we solve this, then that seems to directly map to the static case
+>>>> for USB as well.
+>>>>
+>>>
+>>> Got it. So in this case we could have the various display components
+>>> that are in the mdss gdsc domain set their frequency via OPP and then
+>>> have that translate to a level in CX or MMCX. How do we parent the power
+>>> domains outside of DT? I'm thinking that we'll need to do that if MMCX
+>>> is parented by CX or something like that and the drivers for those two
+>>> power domains are different. Is it basic string matching?
+>>
+>> In one way or another we need to invoke pm_genpd_add_subdomain() to link
+>> the two power-domains (actually genpds) together, like what was done in
+>> 3652265514f5 ("clk: qcom: gdsc: enable optional power domain support").
+>>
+>> In the case of MMCX and CX, my impression of the documentation is that
+>> they are independent - but if we need to express that CX is parent of
+>> MMCX, they are both provided by rpmhpd which already supports this by
+>> just specifying .parent on mmcx to point to cx.
+> 
+> I was trying to follow the discussion, but it turned out to be a bit
+> complicated to catch up and answer all things. In any case, let me
+> just add a few overall comments, perhaps that can help to move things
+> forward.
+> 
+> First, one domain can have two parent domains. Both from DT and from
+> genpd point of view, just to make this clear.
+> 
+> Although, it certainly looks questionable to me, to hook up the USB
+> device to two separate power domains, one to control power and one to
+> control performance. Especially, if it's really the same piece of HW
+> that is managing both things. 
+[]..
+> Additionally, if it's correct to model
+> the USB GDSC power domain as a child to the CX power domain from HW
+> point of view, we should likely do that.
 
-> > Also how does this differ from IMA?  I know that IMA doesn't support fs-verity
-> > file hashes, but that could be changed.  Why not extend IMA to cover your use
-> > case(s)?
-> We looked at extending IMA to cover our requirements extensively the past
-> year
-> based on feedback the last time I posted these patches. We implemented a
-> prototype that had half of our requirements, but found it resulted in a
-> large change list that would result in a large amount of pain in respect
-> to maintenance, in addition to other more architectural concerns about the
-> implementation. We weren’t convinced it was the correct direction, for our
-> needs.
-> 
-> There was a presentation done at LSS 2021 around this prototype done by my
-> colleague, Fan, who authored this patch and implemented the aforementioned
-> prototype.
-> 
-> In general, IMA provides a whole suite of amazing functionality when it
-> comes to everything integrity, as the fs-verity documentation states
-> itself:
-> 
->    IMA specifies a system-wide policy that specifies which
->    files are hashed and what to do with those hashes, such
->    as log them, authenticate them, or add them to a
->    measurement list.
-> 
-> Instead, IPE provides a fine-tuned way to _only_ enforce an access control
-> policy to these files based on the defined trust requirements in the policy,
-> under various contexts, (you might have different requirements for what
-> executes in a general purpose, versus loadable kernel modules, for example).
-> It will never provide bother to log, measure, or revalidate these hashes
-> because
-> that’s not its purpose. This is why it belongs at the LSM layer instead of
-> the
-> integrity subsystem layer, as it is providing access control based on a
-> policy,
-> versus providing deep integrations with the actual integrity claim.
-> 
-> IPE is trying to be agnostic to how precisely “trust” is provided, as
-> opposed to be deeply integrated into the mechanism that provides
-> “trust”.
+I think this would still require a few things in genpd, since
+CX and USB GDSC are power domains from different providers.
+Perhaps a pm_genpd_add_subdomain_by_name()?
 
-IMA doesn't require logging or "measuring" hashes, though.  Those are just some
-of its supported features.  And I thought the IMA developers were planning to
-add support for fs-verity hashes, and that it wouldn't require an entirely new
-architecture to do so.
-
-Anyway, while it does sound to me like you're duplicating IMA, I don't really
-have a horse in this race, and I defer to the IMA developers on this.  I trust
-that you've been engaging with them?  This patchset isn't even Cc'ed to
-linux-integrity, so it's unclear that's been happening.
-
-- Eric
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
