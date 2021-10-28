@@ -2,67 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8208C43E5C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F86243E5C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhJ1QLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJ1QLK (ORCPT
+        id S230183AbhJ1QM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:12:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229723AbhJ1QMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:11:10 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB44C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:08:43 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id h7so27475296ede.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=5AsGrA4DlL+PCBChvj92hqjB0hfn92LRQaKu0Z47lw0=;
-        b=p37JvdQeF6gj2/2/baY6ttzazMkR5Hrbo4VT1gU5g1bOGWq7B5fm9Y9Fa/dZJKxjcR
-         IjZ2F9/wZkJXxkuBbe79O1zLJJDUn6Hlvlzt5K8Okbyi1Oj/VBpL2Rs/7dT/pyhGIbpB
-         FMXwfQIjf+oqPB5lchuM/bknrqn3nQvSngBSOFlBISMw3Ho+EXdYG8udwAs76W6se7QR
-         45ozQjYauqyvSiIyWOSLDNqmTq10vGaFs7x6eRigkUT9m3DSLgkqeMltKaHnbWpjqwu7
-         DxlH65G9HEqL5dBRjQ2FDAQ9voiPc0QSpIr4/PBx0pWyBjDED+pL1ozsE1Z07r6Ym3Jc
-         29eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=5AsGrA4DlL+PCBChvj92hqjB0hfn92LRQaKu0Z47lw0=;
-        b=Sh6K6G3tQaFPm/W/bVO7y7KS4j5ZzK1FQfNvbHtDAHtyjaFiqtPAu7aoPZA5+9hkl/
-         kC7AL6MA0H1dpEn5/j7KxsXNkc6yoBeBYtHPh/eU4hQfxLH3zz6eZXNdlW6niFKPexHb
-         lcy1fLZkvr8Y/gSEUpUXcDoR3y2y9GDASn5+3WJK3mhWSFK5o2zeygYANBWVX+mMhyq3
-         N0oi+Ttf0c357fSnOeiZZ0FXzCthjBFDaqGq570LfjZ5rSYUvWJsGvJsDfGsv77n1WN5
-         aRl05kq/y+xptgD6Jmp5KaVwIhuBmu3VeuduBvwb/YBTzLNtYHgWwTtx8azOSuB3xplA
-         uB6g==
-X-Gm-Message-State: AOAM533AEFx6jvjgzy6EYtD1P9f5MPG2xBQBuI9PjHGSOh8pNaASWy5K
-        hoMDc3ar2pX4+vV9FprewR9+MxGMR/Bv/Bq1hNw=
-X-Google-Smtp-Source: ABdhPJxhTlPM+JSmE2bxqJ/HgWwQzr85wtdnp4BhmK33tCKtZ0glhvYiM71Qns5aP1IdbaArzQ/5O5fjUeO2/mN3z5U=
-X-Received: by 2002:a17:907:608c:: with SMTP id ht12mr6632911ejc.78.1635437320389;
- Thu, 28 Oct 2021 09:08:40 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a17:907:61a7:0:0:0:0 with HTTP; Thu, 28 Oct 2021 09:08:39
- -0700 (PDT)
-Reply-To: mrsbillchantallawrence2@gmail.com
-From:   MRS BILL CHANTAL LAWRANCE <aamadchantal001@gmail.com>
-Date:   Thu, 28 Oct 2021 09:08:39 -0700
-Message-ID: <CA+svXzirsD_+QyxQEwrwYuypvJUADu-QH7fuSs+JCn+o6=vz6g@mail.gmail.com>
-Subject: Dear
-To:     undisclosed-recipients:;
+        Thu, 28 Oct 2021 12:12:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635437398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RPIozLU8n1iGsiSzHPyPa84e4ejX/UYwSJJGhpw0Bzs=;
+        b=Cavcg8kYCez3L1P7/Nryd2w594yDq1v5IjOY0wGJh60DlGqsu9s08DFBWTqcZA3VNy7aVr
+        ukCGsHvefXozm+ZKZbOn2v5yjgJdxOvQb9alkA6ib/93ADvNdPtnhBT4z4xU+FyfwkJ6jv
+        dTZxJztXlZPNndIg585IXCxkEr3gVds=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-PimS6ymnOV-UnZZtG5v5zw-1; Thu, 28 Oct 2021 12:09:56 -0400
+X-MC-Unique: PimS6ymnOV-UnZZtG5v5zw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E21580A5C0;
+        Thu, 28 Oct 2021 16:09:52 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 79BD660843;
+        Thu, 28 Oct 2021 16:09:42 +0000 (UTC)
+Message-ID: <5769bb700d94c3828bdef57963a3fe9422e801e7.camel@redhat.com>
+Subject: Re: [PATCH v2 27/43] KVM: VMX: Move Posted Interrupt ndst
+ computation out of write loop
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Thu, 28 Oct 2021 19:09:41 +0300
+In-Reply-To: <643d9c249b5863f04290a6f047ea1a2d98bd75f9.camel@redhat.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-28-seanjc@google.com>
+         <643d9c249b5863f04290a6f047ea1a2d98bd75f9.camel@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dear
+On Thu, 2021-10-28 at 14:28 +0300, Maxim Levitsky wrote:
+> On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> > Hoist the CPU => APIC ID conversion for the Posted Interrupt descriptor
+> > out of the loop to write the descriptor, preemption is disabled so the
+> > CPU won't change, and if the APIC ID changes KVM has bigger problems.
+> > 
+> > No functional change intended.
+> 
+> Is preemption always disabled in vmx_vcpu_pi_load? vmx_vcpu_pi_load is called from vmx_vcpu_load,
+> which is called indirectly from vcpu_load which is called from many ioctls,
+> which userspace does. In these places I don't think that preemption is disabled.
 
-You have been compensated with the sum of 5.1 million dollars in this
-united nation the payment will be Issue into ATM visa card and send to
-you from the Santander bank of Spain we need your address passport and
-your whatsapp number.
-Thanks
+You can disregard this, I missed the fact that we have 'int cpu = get_cpu();'
+which disables preemption in 'vcpu_load'
 
-Mrs. bill Chantal
+Thus,
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+
+Best regards,
+	Maxim Levitsky
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/vmx/posted_intr.c | 25 +++++++++++--------------
+> >  1 file changed, 11 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+> > index fea343dcc011..2b2206339174 100644
+> > --- a/arch/x86/kvm/vmx/posted_intr.c
+> > +++ b/arch/x86/kvm/vmx/posted_intr.c
+> > @@ -51,17 +51,15 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+> >  		goto after_clear_sn;
+> >  	}
+> >  
+> > -	/* The full case.  */
+> > +	/* The full case.  Set the new destination and clear SN. */
+> > +	dest = cpu_physical_id(cpu);
+> > +	if (!x2apic_mode)
+> > +		dest = (dest << 8) & 0xFF00;
+> > +
+> >  	do {
+> >  		old.control = new.control = READ_ONCE(pi_desc->control);
+> >  
+> > -		dest = cpu_physical_id(cpu);
+> > -
+> > -		if (x2apic_mode)
+> > -			new.ndst = dest;
+> > -		else
+> > -			new.ndst = (dest << 8) & 0xFF00;
+> > -
+> > +		new.ndst = dest;
+> >  		new.sn = 0;
+> >  	} while (cmpxchg64(&pi_desc->control, old.control,
+> >  			   new.control) != old.control);
+> > @@ -103,15 +101,14 @@ static void __pi_post_block(struct kvm_vcpu *vcpu)
+> >  	WARN(pi_desc->nv != POSTED_INTR_WAKEUP_VECTOR,
+> >  	     "Wakeup handler not enabled while the vCPU was blocking");
+> >  
+> > +	dest = cpu_physical_id(vcpu->cpu);
+> > +	if (!x2apic_mode)
+> > +		dest = (dest << 8) & 0xFF00;
+> > +
+> >  	do {
+> >  		old.control = new.control = READ_ONCE(pi_desc->control);
+> >  
+> > -		dest = cpu_physical_id(vcpu->cpu);
+> > -
+> > -		if (x2apic_mode)
+> > -			new.ndst = dest;
+> > -		else
+> > -			new.ndst = (dest << 8) & 0xFF00;
+> > +		new.ndst = dest;
+> >  
+> >  		/* set 'NV' to 'notification vector' */
+> >  		new.nv = POSTED_INTR_VECTOR;
+
+
