@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF0B43DD80
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A0C43DD85
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhJ1JPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 05:15:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229626AbhJ1JPM (ORCPT
+        id S230097AbhJ1JRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 05:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1JRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:15:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635412365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l1MWdjra8eZcIIlx8zcoZvMR0jtyOa/xjrbhOVDWvpc=;
-        b=V8a5sB/JvhD+0u4HLs9/Gr4edBOkIui2t+oyYZ+cghAw1/Hq+cteD509Ue0t6KHzCrKos1
-        AvzI4TWIaZMeP6iqW752YJpFgc+s5aKgU/hZW7zD+K9mMcqiD7IaI6vy/9BE7HO+/W9a1P
-        7SF9adeb3+GF2wTxqMq838l1SVnw/G8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-sp4eSFtgN52tnt6kECXjIQ-1; Thu, 28 Oct 2021 05:12:40 -0400
-X-MC-Unique: sp4eSFtgN52tnt6kECXjIQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE71D1966321;
-        Thu, 28 Oct 2021 09:12:36 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4625A5F707;
-        Thu, 28 Oct 2021 09:12:15 +0000 (UTC)
-Message-ID: <c6c19d79bc8c7747d91a9dba1c1e671e9d138761.camel@redhat.com>
-Subject: Re: [PATCH v2 20/43] KVM: VMX: Skip Posted Interrupt updates if
- APICv is hard disabled
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Thu, 28 Oct 2021 12:12:13 +0300
-In-Reply-To: <20211009021236.4122790-21-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-21-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 28 Oct 2021 05:17:13 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D0BC061570;
+        Thu, 28 Oct 2021 02:14:46 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 992B6C63F8; Thu, 28 Oct 2021 10:14:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1635412482; bh=TcwYNZ9H69bImLZ0/fzU687Op74rMoUC94o75C/+mGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l/o+pLpHf4DC/vWwSVZTNz1SUwcxoW/GrW6I7a8YFum1o3dbgllj+fwzIs6lt/TXN
+         1FWhVesHP+QMAyuTkLu1M/zsKfKUr9WWdkqxOs6JStsTJq/myiWLHzi5opFPo+w623
+         mF/P5Sqx8Y3R9qBxacNphGCs9Ct9MMsJZs/Lwt9U+WsUSIPVarw1FTjzI3wOApaGd3
+         DFdfuNZZwzE+Me5jdP/Gx/ZJC/FJ5jiJO08nVf9GitDp5lQ0pqOJ7+11MJRdJwhCHa
+         GPPKIteBr19d/GuNKtaU6PB40jrDjrZdtrKOYpvQN9pq31M0/kFCPBn0DsUqhrMkrU
+         VkDSKQfkbzzIQ==
+Date:   Thu, 28 Oct 2021 10:14:42 +0100
+From:   Sean Young <sean@mess.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     =?iso-8859-1?Q?Ma=EDra?= Canal <maira.canal@usp.br>, lkp@intel.com,
+        mchehab@kernel.org, thierry.reding@gmail.com, lee.jones@linaro.org,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
+Message-ID: <20211028091442.GA16514@gofer.mess.org>
+References: <YXlxhpZWf2mxJaMi@fedora>
+ <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Explicitly skip posted interrupt updates if APICv is disabled in all of
-> KVM, or if the guest doesn't have an in-kernel APIC.  The PI descriptor
-> is kept up-to-date if APICv is inhibited, e.g. so that re-enabling APICv
-> doesn't require a bunch of updates, but neither the module param nor the
-> APIC type can be changed on-the-fly.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/posted_intr.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-> index 3263056784f5..351666c41bbc 100644
-> --- a/arch/x86/kvm/vmx/posted_intr.c
-> +++ b/arch/x86/kvm/vmx/posted_intr.c
-> @@ -28,11 +28,14 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
->  	unsigned int dest;
->  
->  	/*
-> -	 * In case of hot-plug or hot-unplug, we may have to undo
-> -	 * vmx_vcpu_pi_put even if there is no assigned device.  And we
-> -	 * always keep PI.NDST up to date for simplicity: it makes the
-> -	 * code easier, and CPU migration is not a fast path.
-> +	 * To simplify hot-plug and dynamic toggling of APICv, keep PI.NDST and
-> +	 * PI.SN up-to-date even if there is no assigned device or if APICv is
-> +	 * deactivated due to a dynamic inhibit bit, e.g. for Hyper-V's SyncIC.
->  	 */
-> +	if (!enable_apicv || !lapic_in_kernel(vcpu))
-> +		return;
-> +
-> +	/* Nothing to do if PI.SN==0 and the vCPU isn't being migrated. */
->  	if (!pi_test_sn(pi_desc) && vcpu->cpu == cpu)
->  		return;
->  
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+On Thu, Oct 28, 2021 at 08:45:13AM +0200, Uwe Kleine-König wrote:
+> The conversion is right (I think),
 
-Best regards,
-	Maxim Levitsky
+We still have the problem that the pwm drivers calculate the period
+incorrectly by rounding down (except pwm-bcm2835). So the period is not
+as good as it could be in most cases, but this driver can't do anything
+about that.
 
+> note this could be optimized a bit
+> further: state.period only depends on carrier which rarely changes, so
+> the calculation could be done in pwm_ir_set_carrier(). Ditto for duty
+> which only depends on state.period and pwm_ir->duty_cycle. (This is for
+> a separate commit though.)
+
+I'm not sure what caching this is much of a win. The calculation is a few
+instructions, so you're not winning in the way of speed. On the flip side
+you use more memory since pwm_state has to be kmalloc() rather than existing
+just on the stack, and both ioctl handlers and the probe function need to
+recalculate the period/duty cycle, so there is a slight increase in code size.
+
+This change does not improve anything measurably and only increases code
+complexity.
+
+> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+
+Thanks for your review.
+
+
+Sean
