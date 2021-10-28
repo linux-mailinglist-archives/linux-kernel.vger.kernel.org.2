@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B9643D955
+	by mail.lfdr.de (Postfix) with ESMTP id D204643D956
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhJ1CcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:32:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37528 "EHLO mail.kernel.org"
+        id S229868AbhJ1CcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhJ1CcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229705AbhJ1CcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Oct 2021 22:32:14 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D37E961100;
-        Thu, 28 Oct 2021 02:29:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 119CA61106;
+        Thu, 28 Oct 2021 02:29:48 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mfvAo-00110X-Un;
-        Wed, 27 Oct 2021 22:29:46 -0400
-Message-ID: <20211028022946.780675650@goodmis.org>
+        id 1mfvAp-001115-4W;
+        Wed, 27 Oct 2021 22:29:47 -0400
+Message-ID: <20211028022946.974661479@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 27 Oct 2021 22:29:17 -0400
+Date:   Wed, 27 Oct 2021 22:29:18 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         "Robin H. Johnson" <robbat2@gentoo.org>
-Subject: [for-next][PATCH 2/3] tracing: Show size of requested perf buffer
+Subject: [for-next][PATCH 3/3] tracing: Increase PERF_MAX_TRACE_SIZE to handle Sentinel1 and docker
+ together
 References: <20211028022915.320082859@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +40,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Robin H. Johnson" <robbat2@gentoo.org>
 
-If the perf buffer isn't large enough, provide a hint about how large it
-needs to be for whatever is running.
+Running endpoint security solutions like Sentinel1 that use perf-based
+tracing heavily lead to this repeated dump complaining about dockerd.
+The default value of 2048 is nowhere near not large enough.
 
-Link: https://lkml.kernel.org/r/20210831043723.13481-1-robbat2@gentoo.org
+Using the prior patch "tracing: show size of requested buffer", we get
+"perf buffer not large enough, wanted 6644, have 6144", after repeated
+up-sizing (I did 2/4/6/8K). With 8K, the problem doesn't occur at all,
+so below is the trace for 6K.
+
+I'm wondering if this value should be selectable at boot time, but this
+is a good starting point.
+
+```
+------------[ cut here ]------------
+perf buffer not large enough, wanted 6644, have 6144
+WARNING: CPU: 1 PID: 4997 at kernel/trace/trace_event_perf.c:402 perf_trace_buf_alloc+0x8c/0xa0
+Modules linked in: [..]
+CPU: 1 PID: 4997 Comm: sh Tainted: G                T 5.13.13-x86_64-00039-gb3959163488e #63
+Hardware name: LENOVO 20KH002JUS/20KH002JUS, BIOS N23ET66W (1.41 ) 09/02/2019
+RIP: 0010:perf_trace_buf_alloc+0x8c/0xa0
+Code: 80 3d 43 97 d0 01 00 74 07 31 c0 5b 5d 41 5c c3 ba 00 18 00 00 89 ee 48 c7 c7 00 82 7d 91 c6 05 25 97 d0 01 01 e8 22 ee bc 00 <0f> 0b 31 c0 eb db 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 55 89
+RSP: 0018:ffffb922026b7d58 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff9da5ee012000 RCX: 0000000000000027
+RDX: ffff9da881657828 RSI: 0000000000000001 RDI: ffff9da881657820
+RBP: 00000000000019f4 R08: 0000000000000000 R09: ffffb922026b7b80
+R10: ffffb922026b7b78 R11: ffffffff91dda688 R12: 000000000000000f
+R13: ffff9da5ee012108 R14: ffff9da8816570a0 R15: ffffb922026b7e30
+FS:  00007f420db1a080(0000) GS:ffff9da881640000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000060 CR3: 00000002504a8006 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kprobe_perf_func+0x11e/0x270
+ ? do_execveat_common.isra.0+0x1/0x1c0
+ ? do_execveat_common.isra.0+0x5/0x1c0
+ kprobe_ftrace_handler+0x10e/0x1d0
+ 0xffffffffc03aa0c8
+ ? do_execveat_common.isra.0+0x1/0x1c0
+ do_execveat_common.isra.0+0x5/0x1c0
+ __x64_sys_execve+0x33/0x40
+ do_syscall_64+0x6b/0xc0
+ ? do_syscall_64+0x11/0xc0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f420dc1db37
+Code: ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00 00 f7 d8 64 41 89 00 eb dc 0f 1f 84 00 00 00 00 00 b8 3b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 01 43 0f 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffd4e8b4e38 EFLAGS: 00000246 ORIG_RAX: 000000000000003b
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f420dc1db37
+RDX: 0000564338d1e740 RSI: 0000564338d32d50 RDI: 0000564338d28f00
+RBP: 0000564338d28f00 R08: 0000564338d32d50 R09: 0000000000000020
+R10: 00000000000001b6 R11: 0000000000000246 R12: 0000564338d28f00
+R13: 0000564338d32d50 R14: 0000564338d1e740 R15: 0000564338d28c60
+---[ end trace 83ab3e8e16275e49 ]---
+```
+
+Link: https://lkml.kernel.org/r/20210831043723.13481-2-robbat2@gentoo.org
 
 Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_event_perf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/trace_events.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index fba8cb77a73a..a114549720d6 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -400,7 +400,8 @@ void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp)
- 	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 3e475eeb5a99..50453b287615 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -671,7 +671,7 @@ struct trace_event_file {
+ 	}								\
+ 	early_initcall(trace_init_perf_perm_##name);
  
- 	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
--		      "perf buffer not large enough"))
-+		      "perf buffer not large enough, wanted %d, have %d",
-+		      size, PERF_MAX_TRACE_SIZE))
- 		return NULL;
+-#define PERF_MAX_TRACE_SIZE	2048
++#define PERF_MAX_TRACE_SIZE	8192
  
- 	*rctxp = rctx = perf_swevent_get_recursion_context();
+ #define MAX_FILTER_STR_VAL	256	/* Should handle KSYM_SYMBOL_LEN */
+ 
 -- 
 2.33.0
