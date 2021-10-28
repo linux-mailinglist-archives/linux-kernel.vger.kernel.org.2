@@ -2,211 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D836E43E54F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF88343E5AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhJ1PkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhJ1PkM (ORCPT
+        id S230230AbhJ1QD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:03:29 -0400
+Received: from klopfer.dv.fh-frankfurt.de ([194.95.81.200]:35972 "EHLO
+        klopfer.dv.fh-frankfurt.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229565AbhJ1QD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:40:12 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23821C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:37:45 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id e4so10924927wrc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ajUUMnRMo/CfkqSYpjRKHF3O4uKdRUUoW9jGXm2YH/8=;
-        b=YClg6r+Pjz+KcVotJsLNPXbLH9rBZDDotsVtGKPz45+pVaqV/8VvUjjmgxfln+tl16
-         pNgJZteb1XcKJu8Rq2O+Ynz/a0nrl5R1VzAZCyQkBuj48jBJeEKmI91ATjk19ed3/slS
-         C81BjQjFI0TIdMvGA8/1Np3r5VYzz1pIj+AiN8B5R5bQdSRzJ6eV67fmV1J/W1Ph864s
-         bkD9r359wt5zBv00KUKa4W7rGTHW5SHb/bNIWtzdO8UdH441eq4XJD3GsByeCoLO5L8I
-         ZMgcjyA79pYnH7Dabb/EbzZdbWJ8S5Kjtru5/7Zsbabr+kgD909eP4gs8/bUlW2SdT/L
-         ns2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ajUUMnRMo/CfkqSYpjRKHF3O4uKdRUUoW9jGXm2YH/8=;
-        b=0tsm0J1jt49avDX4ymJIaHtxWyDBk1WyXo3y86DDMmEB20Wviyp9QFJNNtCK5UPLJS
-         ruwm1Z4+LOJYJugK38GABN1x29lEYBokxHY3rW905b1C8lQrjdw6cI/Lh33QY7bTJ1cq
-         EX2H1eNfnL8q05xpuCy9hSiLpxHjB3yVK8HUJZY5H/jEWH65Zz8JeJlv0HpB8aRK9AIB
-         pILOBdVhHCd6c9ZdpIBpUdC2fLSVWkaG4AagOgqlEEUp7XInufnybf+DPagPXAm+SAzK
-         xwumK48YhZDKuLlQGw1noyU3XTxJ3GSuSxv0QAbNU0vMBg16W+6FDA+X9HalZDwrX0Wi
-         E8xw==
-X-Gm-Message-State: AOAM533INsyAV4ea6SrZWJ0kwHNbNZZ4jBCiLEUpTavdJEQbHS5YBBox
-        Ni2bTtH3TzQWRhHE2OU6DgL93eSma5rhevhXz0yKJw==
-X-Google-Smtp-Source: ABdhPJxSMxsPRNAYx8kcStvSGAzhyUcPtRJdvcLJU2SSsUAIOtS/6o5e+daLbr1h08HtBnOjMLBDhmaly+ryMxoJScw=
-X-Received: by 2002:a05:6000:1a89:: with SMTP id f9mr6700138wry.249.1635435463471;
- Thu, 28 Oct 2021 08:37:43 -0700 (PDT)
+        Thu, 28 Oct 2021 12:03:27 -0400
+X-Greylist: delayed 1292 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Oct 2021 12:03:26 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fra-uas.de;
+         s=klopfer; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=KmC2f4hzNEZiAJ2cWt0jfAJBpvzVIJKDeY9QVzfizCE=; b=C8PE2QFEf/bc+ICB+sT5imzsIl
+        zTaVbAzvu5WZHjH7wS9HYCABkpjN5Fn80QTtqlE9YufobcTscuEZZx3DN/Il59m78Qxg3SsOGXIMs
+        Rnkm/2mpJ3cFHKzyBOzZoIfzKCble+7rhgu+iit8RD+0fxZ0AEwTTJELXPM2qHEFUgwBoBmBPK7u9
+        PwyLHYNnQNhmHnwKrf+ucxDwrqMKZ071vhesqNbeMAC68DWqjoUgsqyyyZvhhwXdLxY2OGnb2Wnfb
+        eCMW8jVfIjimhlMe4SQhU4IyGgTY+OMt0VsTQszBGJ9XJ5v1wZOtZ6sCOFt8Q5NWzlInguX3YwILv
+        Yqy8ZUlQ==;
+Received: from p4fc1712c.dip0.t-ipconnect.de ([79.193.113.44] helo=localhost.localdomain)
+        by klopfer.dv.fh-frankfurt.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <ssivaraj@stud.fra-uas.de>)
+        id 1mg7Uy-00042I-4G; Thu, 28 Oct 2021 17:39:24 +0200
+From:   Senthu Sivarajah <ssivaraj@stud.fra-uas.de>
+To:     vaibhav.sr@gmail.com
+Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
+Subject: [PATCH] Staging: greybus: audio_codec: changed a void function to return 0
+Date:   Thu, 28 Oct 2021 17:38:08 +0200
+Message-Id: <20211028153808.9509-1-ssivaraj@stud.fra-uas.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20211026170136.2147619-2-anup.patel@wdc.com> <mhng-1044c135-bede-498b-b244-9f9c5f5ea89b@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-1044c135-bede-498b-b244-9f9c5f5ea89b@palmerdabbelt-glaptop>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 28 Oct 2021 21:07:31 +0530
-Message-ID: <CAAhSdy2SCjncCRP22Zfu+5vXPageteQkC-L3aEkkTXvuKjb4Gw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] RISC-V: Enable KVM in RV64 and RV32 defconfigs as a module
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 3:42 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
->
-> On Tue, 26 Oct 2021 10:01:34 PDT (-0700), Anup Patel wrote:
-> > Let's enable KVM RISC-V in RV64 and RV32 defconfigs as module
-> > so that it always built along with the default kernel image.
->
-> Turning on KVM in the defconfigs seems like the right way to go, but
-> this has more diff than just that.  Not sure if that's all just
-> savedefconfig stuff, I usually try and split out the non-functional
-> changes from anything that makes a change.
+From: Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
 
-Other diffs in the defconfigs are generated by "make savedefconfig". I
-guess this is because most people don't use "make savedefconfig"
-to generate updated defconfigs.
+Fixed a coding style issue.
 
->
-> If you checked then
->
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
->
-> assuming you want to keep these together.  LMK if you want me to take
-> this on its own (I'll split it up if you do).
+Signed-off-by: Senthuran Sivarajah <ssivaraj@stud.fra-uas.de>
 
-Thanks Palmer.
+---
+ drivers/staging/greybus/audio_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Anup
+diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+index b589cf6b1d03..9f99862791dc 100644
+--- a/drivers/staging/greybus/audio_codec.c
++++ b/drivers/staging/greybus/audio_codec.c
+@@ -1028,7 +1028,7 @@ static int gbcodec_probe(struct snd_soc_component *comp)
+ static void gbcodec_remove(struct snd_soc_component *comp)
+ {
+ 	/* Empty function for now */
+-	return;
++	return 0;
+ }
+ 
+ static int gbcodec_write(struct snd_soc_component *comp, unsigned int reg,
+-- 
+2.27.0
 
->
-> >
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > ---
-> >  arch/riscv/configs/defconfig      | 15 +++++++--------
-> >  arch/riscv/configs/rv32_defconfig |  8 ++++----
-> >  2 files changed, 11 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> > index 4ebc80315f01..40506dfab5cf 100644
-> > --- a/arch/riscv/configs/defconfig
-> > +++ b/arch/riscv/configs/defconfig
-> > @@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
-> >  CONFIG_POSIX_MQUEUE=y
-> >  CONFIG_NO_HZ_IDLE=y
-> >  CONFIG_HIGH_RES_TIMERS=y
-> > +CONFIG_BPF_SYSCALL=y
-> >  CONFIG_IKCONFIG=y
-> >  CONFIG_IKCONFIG_PROC=y
-> >  CONFIG_CGROUPS=y
-> > @@ -13,12 +14,14 @@ CONFIG_USER_NS=y
-> >  CONFIG_CHECKPOINT_RESTORE=y
-> >  CONFIG_BLK_DEV_INITRD=y
-> >  CONFIG_EXPERT=y
-> > -CONFIG_BPF_SYSCALL=y
-> > +# CONFIG_SYSFS_SYSCALL is not set
-> > +CONFIG_SOC_MICROCHIP_POLARFIRE=y
-> >  CONFIG_SOC_SIFIVE=y
-> >  CONFIG_SOC_VIRT=y
-> > -CONFIG_SOC_MICROCHIP_POLARFIRE=y
-> >  CONFIG_SMP=y
-> >  CONFIG_HOTPLUG_CPU=y
-> > +CONFIG_VIRTUALIZATION=y
-> > +CONFIG_KVM=m
-> >  CONFIG_JUMP_LABEL=y
-> >  CONFIG_MODULES=y
-> >  CONFIG_MODULE_UNLOAD=y
-> > @@ -68,14 +71,12 @@ CONFIG_HW_RANDOM=y
-> >  CONFIG_HW_RANDOM_VIRTIO=y
-> >  CONFIG_SPI=y
-> >  CONFIG_SPI_SIFIVE=y
-> > +# CONFIG_PTP_1588_CLOCK is not set
-> >  CONFIG_GPIOLIB=y
-> >  CONFIG_GPIO_SIFIVE=y
-> > -# CONFIG_PTP_1588_CLOCK is not set
-> > -CONFIG_POWER_RESET=y
-> >  CONFIG_DRM=y
-> >  CONFIG_DRM_RADEON=y
-> >  CONFIG_DRM_VIRTIO_GPU=y
-> > -CONFIG_FRAMEBUFFER_CONSOLE=y
-> >  CONFIG_USB=y
-> >  CONFIG_USB_XHCI_HCD=y
-> >  CONFIG_USB_XHCI_PLATFORM=y
-> > @@ -85,10 +86,10 @@ CONFIG_USB_OHCI_HCD=y
-> >  CONFIG_USB_OHCI_HCD_PLATFORM=y
-> >  CONFIG_USB_STORAGE=y
-> >  CONFIG_USB_UAS=y
-> > +CONFIG_MMC=y
-> >  CONFIG_MMC_SDHCI=y
-> >  CONFIG_MMC_SDHCI_PLTFM=y
-> >  CONFIG_MMC_SDHCI_CADENCE=y
-> > -CONFIG_MMC=y
-> >  CONFIG_MMC_SPI=y
-> >  CONFIG_RTC_CLASS=y
-> >  CONFIG_VIRTIO_PCI=y
-> > @@ -139,5 +140,3 @@ CONFIG_RCU_EQS_DEBUG=y
-> >  # CONFIG_FTRACE is not set
-> >  # CONFIG_RUNTIME_TESTING_MENU is not set
-> >  CONFIG_MEMTEST=y
-> > -# CONFIG_SYSFS_SYSCALL is not set
-> > -CONFIG_EFI=y
-> > diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
-> > index 434ef5b64599..44022e048efd 100644
-> > --- a/arch/riscv/configs/rv32_defconfig
-> > +++ b/arch/riscv/configs/rv32_defconfig
-> > @@ -2,6 +2,7 @@ CONFIG_SYSVIPC=y
-> >  CONFIG_POSIX_MQUEUE=y
-> >  CONFIG_NO_HZ_IDLE=y
-> >  CONFIG_HIGH_RES_TIMERS=y
-> > +CONFIG_BPF_SYSCALL=y
-> >  CONFIG_IKCONFIG=y
-> >  CONFIG_IKCONFIG_PROC=y
-> >  CONFIG_CGROUPS=y
-> > @@ -13,12 +14,14 @@ CONFIG_USER_NS=y
-> >  CONFIG_CHECKPOINT_RESTORE=y
-> >  CONFIG_BLK_DEV_INITRD=y
-> >  CONFIG_EXPERT=y
-> > -CONFIG_BPF_SYSCALL=y
-> > +# CONFIG_SYSFS_SYSCALL is not set
-> >  CONFIG_SOC_SIFIVE=y
-> >  CONFIG_SOC_VIRT=y
-> >  CONFIG_ARCH_RV32I=y
-> >  CONFIG_SMP=y
-> >  CONFIG_HOTPLUG_CPU=y
-> > +CONFIG_VIRTUALIZATION=y
-> > +CONFIG_KVM=m
-> >  CONFIG_JUMP_LABEL=y
-> >  CONFIG_MODULES=y
-> >  CONFIG_MODULE_UNLOAD=y
-> > @@ -67,11 +70,9 @@ CONFIG_HW_RANDOM_VIRTIO=y
-> >  CONFIG_SPI=y
-> >  CONFIG_SPI_SIFIVE=y
-> >  # CONFIG_PTP_1588_CLOCK is not set
-> > -CONFIG_POWER_RESET=y
-> >  CONFIG_DRM=y
-> >  CONFIG_DRM_RADEON=y
-> >  CONFIG_DRM_VIRTIO_GPU=y
-> > -CONFIG_FRAMEBUFFER_CONSOLE=y
-> >  CONFIG_USB=y
-> >  CONFIG_USB_XHCI_HCD=y
-> >  CONFIG_USB_XHCI_PLATFORM=y
-> > @@ -130,4 +131,3 @@ CONFIG_RCU_EQS_DEBUG=y
-> >  # CONFIG_FTRACE is not set
-> >  # CONFIG_RUNTIME_TESTING_MENU is not set
-> >  CONFIG_MEMTEST=y
-> > -# CONFIG_SYSFS_SYSCALL is not set
