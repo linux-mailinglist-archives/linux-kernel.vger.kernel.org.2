@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2BE43E359
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8DB43E35B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhJ1OWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
+        id S231201AbhJ1OWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhJ1OWT (ORCPT
+        with ESMTP id S230305AbhJ1OWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:22:19 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081AFC061570;
-        Thu, 28 Oct 2021 07:19:52 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id v127so5949788wme.5;
-        Thu, 28 Oct 2021 07:19:51 -0700 (PDT)
+        Thu, 28 Oct 2021 10:22:23 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F28C061745;
+        Thu, 28 Oct 2021 07:19:55 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id e4so10486470wrc.7;
+        Thu, 28 Oct 2021 07:19:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w9dCLGXOlRDJmVPN1HJBPCtrX5Y3dq1CeosXfwTmTIE=;
-        b=MZZW77BM7jF65T9itFpM6n7U5dNOUA1+IJ2d8FO0oyqoTXflUpdwut867AadkBdvOf
-         MdACiu8DDmGMF+ElH9PG5i8Vech57XSQftI0CPVl/H/Lw/Vm1dOXi+WEMpTh9jUyQiki
-         4IGL04gs8riaamW4lCTxL2bq0QDsXJGQKdGw7lKFv4+GZlRw4q7G23uXPqU+6333/Jht
-         FAL+5sTiLuJhnGZUX+lOTCNtQeJwivdpuzCv9KhQTKrVTHEgBBCUCzuAh7vcvujktWcX
-         FFZ08vnnBqfrGGnGqgBZTDNN5sWGI3Xa1pIT5tRBF+AQbPK+usl8k/O8qrjp212PEG6D
-         MhLA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=V3KiU206SAU31NUfwpS2+BkRGT20ITYrNtM1Dgg2dPQ=;
+        b=EU3xEG/3dC9YXPW/ccVFr8K3ChYeYFaYcNGGtHp0RPz/O0Ec7X9YV2fflD58Vb/Xso
+         e9oHK0zp1VWtKz/TtPv+KlKv0VY+4wEx+KVkrpdQYgTP+IHKbLJs/vKYgBthSHiLH7Si
+         vHKFVvvoU6t7ADJSwLn97xxpdkBa55eS7kQUVcD/5VuGcYQ0EZQdV/4kyNJR8rHzS9Dw
+         zuoHixsB5EbAsiKAUaK41cjTNEj2Fw4a5SWEgWTSkcH1v/pENY5Jitp3svHZAmly13W7
+         zxc/xp4Gm+1aj3Su20bhbwplVlkYEdigikzOeMADEPj/FMzWEveXImKKEM85ea1SdlZA
+         zcXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w9dCLGXOlRDJmVPN1HJBPCtrX5Y3dq1CeosXfwTmTIE=;
-        b=R0DJ6x2YdBfBZrJCo7kuYuJjSDpz0Kz36jHzHcI41bKnGA7T047Dhwh7oGkrYpWD7Y
-         Pclqm/s0sMjVAYqJsjJSj2aMys6kUKoQMIQuil35jSs7L8NBmS8y+PfzobWd7vSXCunb
-         5iI3hS9SOCg+DkMMEJQ7CGLtm2tX5tbJ7ZjC8t3cMviFyWKoSD01RBLC5BQawmCzc9fW
-         9FgyX7nO2AFs0RSu+oEvPUJvgSoAZrZ2vn6JRVL8rHhahHdPN5lznlcf8KtEcOV2tB4U
-         yL158bhPBGNNVY+sojSjhdiotZiXrHtiYKtqecncsna1f4DY3OAlz35mQiFYeSuoYNt0
-         YFCg==
-X-Gm-Message-State: AOAM532ghWgiW43L+qgOr6Pp6aJ2eqTT8NMuarJEVbUaQRH5RE7E30mi
-        qjQ51L0lX89mTAGKu2YCVfM=
-X-Google-Smtp-Source: ABdhPJzg6/fblA82QiNOpf6te3qmuIz0aMLwxzyCLkqjiM6kfgiHZAu7QfphRHWjzrEyKfVdfQhyfQ==
-X-Received: by 2002:a05:600c:2288:: with SMTP id 8mr13025376wmf.40.1635430790515;
-        Thu, 28 Oct 2021 07:19:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=V3KiU206SAU31NUfwpS2+BkRGT20ITYrNtM1Dgg2dPQ=;
+        b=t4ziafhfTAN9/+a0WfvKLY6LYFOdVGVEWGnHbzedNAg7bhzF9fL1LYGcJfpZh9PP9s
+         Xoci7B7olAdLQB6zjdj3uQGw75IFH2KIO9yJYvjSDq5UP25osY3XA+VmXuIn8eqqDaAo
+         HaDjmNfVtOsZUUYNQKGNpU5jUA//72l0pTcSFNLCBQ3EZ8pM9skoU7ejddNIeLhwMdCk
+         Jq5t9A/fRzZz+6HJg6uynOgiRmcJkBadfkS3koxPBYTE9gXogFqFB5FVYL4jQzERX9Xl
+         x3bosqjtWZAj8CNEk4wnDvOU4g5pOJEm+GiHNcE43jVEgax8ALf6a4QCmdKB8HHPURMW
+         fTjQ==
+X-Gm-Message-State: AOAM5332ANH1JWdP9lYv/rGDpz+KSfd3qu88vdOWOHyXecB7EtXrro3g
+        a9EUBSgc4Kfi0kBfhDngufQ=
+X-Google-Smtp-Source: ABdhPJwg3ZOGkOv7nfE4Q1CFcC2U67ylJHTUMHUX7NHf7xKUz3nmHuxjhKWOUj9v1S9QjSEYhiHxYg==
+X-Received: by 2002:adf:c00d:: with SMTP id z13mr5966699wre.299.1635430794430;
+        Thu, 28 Oct 2021 07:19:54 -0700 (PDT)
 Received: from localhost.localdomain (i5C74E249.versanet.de. [92.116.226.73])
-        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.19.49
+        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.19.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:19:50 -0700 (PDT)
+        Thu, 28 Oct 2021 07:19:54 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -70,145 +70,52 @@ To:     Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 00/13] Kconfig symbol clean-up on ./arch/arm{64}
-Date:   Thu, 28 Oct 2021 16:19:25 +0200
-Message-Id: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
+Subject: [PATCH 01/13] arm: debug: remove obsolete debug code for DEBUG_ZTE_ZX
+Date:   Thu, 28 Oct 2021 16:19:26 +0200
+Message-Id: <20211028141938.3530-2-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear arm maintainers,
+Commit 89d4f98ae90d ("ARM: remove zte zx platform") removes the config
+DEBUG_ZTE_ZX. Hence, since then, the "ifdef CONFIG_DEBUG_ZTE_ZX" in
+./arch/arm/include/debug/pl01x.S is dead code.
 
-The script ./scripts/checkkconfigsymbols.py warns on invalid references to
-Kconfig symbols (often: minor typos, name confusions or outdated references).
+Fortunately, ./scripts/checkkconfigsymbols.py detects this and warns:
 
-This is a patch series addressing the issues reported by
-./scripts/checkkconfigsymbols.py in the ./arch/arm{64}/ directories, quickly
-filtered down with:
+DEBUG_ZTE_ZX
+Referencing files: arch/arm/include/debug/pl01x.S
 
-  ./scripts/checkkconfigsymbols.py | grep "arch/arm" -B 1 -A 2
+So, remove the obsolete ifdef CONFIG_DEBUG_ZTE_ZX.
 
-without considering kernel configs, i.e., after removing arch/arm{64}/configs
-in the working tree. It addresses some issues I considered to be "true positives";
-so, issues that should be addressed and cleaned up.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ arch/arm/include/debug/pl01x.S | 7 -------
+ 1 file changed, 7 deletions(-)
 
-The patches on updating the comments might arguably be considered of lower value
-by itself, but as the other patches show, checkkconfigsymbols does detect some
-relevant issues in the kernel tree otherwise being unnoticed.
-So, it might be worth to clean up the kernel tree to have checkkconfigsymbols
-produce a rather short list of issues and then continuously follow and check
-what checkkconfigsymbols reports.
-
-Some work from checkkconfigsymbols on arch/arm/ is deferred; the other remaining
-issues that checkkconfigsymbols reports are (as far as I understand it now)
-"false positives", i.e., the tool misinterprets the actual content) or
-"intentional", e.g., they refer to historic configs for the purpose of
-documentation (e.g., in changelogs) or are in various kernel configs that are
-not continuously updated to match the current set of kernel configs. You can
-see below a grouped list of remaining reports.
-
-Each patch in this series can be discussed and applied individually if needed.
-They are sent in one patch series, as they all orginate from the investigation
-guided by the same tool and hence share similar topics and resolutions.
-
-Please pick this series of minor clean-up patches on ./arch/arm{64}/.
-It applies cleanly on next-20211027.
-
-Best regards,
-
-Lukas
-
-
-Remaining reports from ./scripts/checkkconfigsymbols.py pointing to files in
-./arch/arm{64}/ (excluding configs), grouped by the rationale why it is not
-addressed in this patch series:
-
-
-- Reference in historic comment:
-
-  ARM_NR_BANKS
-  Referencing files: arch/arm/mach-exynos/exynos.c
-
-  CPU
-  Referencing files: arch/arm/lib/backtrace.S, arch/arm/lib/csumpartialcopyuser.S,
-    arch/arm/mach-rpc/ecard-loader.S, arch/arm/mach-rpc/io-acorn.S, arch/arm/nwfpe/fpmodule.h
-
-  CPU_ARM92{0,2,5,6}_CPU_IDLE
-  Referencing files: arch/arm/mm/proc-arm92{0,2,5,6}.S
-
-  KVM_INDIRECT_VECTORS
-  Referencing files: arch/arm64/kvm/hyp/nvhe/host.S
-
-
-- Use of CONFIG_* environment variable beyond the definition in Kconfig scripts
-
-  AS_DMB_ISHLD
-  Referencing files: arch/arm64/include/asm/vdso/compat_barrier.h, arch/arm64/kernel/vdso32/Makefile
-
-  CC_HAS_K_CONSTRAINT
-  Referencing files: arch/arm64/Makefile, arch/arm64/include/asm/atomic_ll_sc.h
-
-  SHELL
-  Ignore CONFIG_SHELL. Default variable in Kbuild build system.
-
-
-- Parsing Mistake (Incomplete parsing heuristics) by checkkconfigsymbols.py:
-
-  ASC1, ASC2, SBC, UART
-  Referencing files: arch/arm/Kconfig.debug
-
-
-- Future work to send clean-up patches:
-
-  IRDA{_MODULE}
-  Referencing files: arch/arm/mach-pxa/balloon3.c, arch/arm/mach-pxa/palm27x.c,
-    arch/arm/mach-pxa/palm27x.h, arch/arm/mach-pxa/palmtc.c, include/linux/atalk.h,
-    include/linux/netdevice.h
-
-  PXA_FICP{_MODULE}
-  Referencing files: arch/arm/mach-pxa/spitz.c
-
-  DEBUG_LL_SER3
-  Referencing files: arch/arm/boot/compressed/head.S
-
-  already discussed in 2014: https://lore.kernel.org/all/1400055127.31197.1.camel@x220/
-
-
-Lukas Bulwahn (13):
-  arm: debug: remove obsolete debug code for DEBUG_ZTE_ZX
-  arm: debug: reuse the config DEBUG_OMAP2UART{1,2} for OMAP{3,4,5}
-  arm: Kconfig.debug: drop reference to removed ARCH_MSM
-  arm: drop an obsolete ifdef with the removed config PCI_HOST_ITE8152
-  arm: davinci: remove reference to obsolete BLK_DEV_PALMCHIP_BK3710
-  arm: ixp4xx: remove dead configs CPU_IXP43X and CPU_IXP46X
-  arm: imx: remove dead left-over from i.MX{27,31,35} removal
-  arm: imx: rename DEBUG_IMX21_IMX27_UART to DEBUG_IMX27_UART
-  arm: milbeaut: remove select of non-existing PINCTRL_MILBEAUT
-  arm: nomadik: drop selecting obsolete CLKSRC_NOMADIK_MTU_SCHED_CLOCK
-  arm: npcm: drop selecting non-existing ARM_ERRATA_794072
-  arm: socfpga: always select PL310_ERRATA_753970
-  arm: pgtable: refer to intended CONFIG_ARM_LPAE in comment
-
- arch/arm/Kconfig.debug                    | 28 ++++++++++-------------
- arch/arm/include/debug/imx-uart.h         | 18 +++++++--------
- arch/arm/include/debug/pl01x.S            |  7 ------
- arch/arm/kernel/bios32.c                  |  2 --
- arch/arm/mach-davinci/board-dm644x-evm.c  |  3 +--
- arch/arm/mach-davinci/board-dm646x-evm.c  |  3 +--
- arch/arm/mach-davinci/board-neuros-osd2.c |  3 +--
- arch/arm/mach-imx/Kconfig                 | 12 ----------
- arch/arm/mach-imx/Makefile                |  2 --
- arch/arm/mach-ixp4xx/Kconfig              | 13 -----------
- arch/arm/mach-milbeaut/Kconfig            |  1 -
- arch/arm/mach-nomadik/Kconfig             |  1 -
- arch/arm/mach-npcm/Kconfig                |  1 -
- arch/arm/mach-socfpga/Kconfig             |  2 +-
- arch/arm/mm/pgd.c                         |  2 +-
- 15 files changed, 26 insertions(+), 72 deletions(-)
-
+diff --git a/arch/arm/include/debug/pl01x.S b/arch/arm/include/debug/pl01x.S
+index 0c7bfa4c10db..c7e02d0628bf 100644
+--- a/arch/arm/include/debug/pl01x.S
++++ b/arch/arm/include/debug/pl01x.S
+@@ -8,13 +8,6 @@
+ */
+ #include <linux/amba/serial.h>
+ 
+-#ifdef CONFIG_DEBUG_ZTE_ZX
+-#undef UART01x_DR
+-#undef UART01x_FR
+-#define UART01x_DR     0x04
+-#define UART01x_FR     0x14
+-#endif
+-
+ #ifdef CONFIG_DEBUG_UART_PHYS
+ 		.macro	addruart, rp, rv, tmp
+ 		ldr	\rp, =CONFIG_DEBUG_UART_PHYS
 -- 
 2.26.2
 
