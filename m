@@ -2,204 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4280143E899
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CED643E89F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhJ1Ssb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:48:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37892 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhJ1Ss3 (ORCPT
+        id S230496AbhJ1SuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231132AbhJ1SuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:48:29 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 81E941FD53;
-        Thu, 28 Oct 2021 18:46:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635446760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ecWVPcwOfzpV0QpOBidyI3KRjmXmd+oaLSz7CPNfAeI=;
-        b=KhkBBOn2Vdct7RM/TTVUyX+511kWS5r5BqL7En9hUhxS4OurA+OH2jw8J5Hhv4NrBWsbbQ
-        ajChZGk4Y4pK+C30piZ5BIY5RmibPc/HSnP8m9ex69nSQbKXBmHLocx16vB3PglXwe3baK
-        xhh2E51GCMQe/U8JtrUCOIad3cSPG1E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635446760;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ecWVPcwOfzpV0QpOBidyI3KRjmXmd+oaLSz7CPNfAeI=;
-        b=v8wLO+0StmBGDA07NDUBcmqFxhV4POUZhzQMPiCZBXzKjODhhwzFrl3+pN6kkwueK1OjAq
-        tsb3uY8rwJSipoBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C52113F51;
-        Thu, 28 Oct 2021 18:46:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id arReCejvemF/fwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 28 Oct 2021 18:46:00 +0000
-Message-ID: <e5b4681a-36cd-20ba-c763-c4ff00732eb4@suse.de>
-Date:   Thu, 28 Oct 2021 20:45:59 +0200
+        Thu, 28 Oct 2021 14:50:17 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF03CC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id 187so6807060pfc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OVU9szkq61aNLb2lvzFxnap0kX1k7Tq4ULR6zE1UQeA=;
+        b=JhzxYSWISXsDoknoTCT5nmTH4RRJulSB1Z9lahh/ZTXx4d4gioMrgqswO8/VYuE+GL
+         uTMcpMs9GnlYYgE8fyW79aM/M3HNcJR6IINXi2Cr2HpJoNnLX2FgIGH8po0lCth0yQ2M
+         DkaEnizVNx0xEvzdLz5QigtPDn2z/jCMKZQZU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OVU9szkq61aNLb2lvzFxnap0kX1k7Tq4ULR6zE1UQeA=;
+        b=NhRnac4vfBwt3YZdcjMM01fWomO4r0S9r9+uykl93LiRoCdvz1+iayYpiLBsWMd4iT
+         GprNousoizBRv2pySWEcSJT4Jo6+Lgl7zVZlGtmGN1rhtiFQPbqR6RDj73GwQ2o+eE8U
+         Htq1oMg1KW42M/09QSabj2IeJ8L4A+pxC6XTllSfgdDrmIAEsvZ08ATJZEKgkLBLH+Gy
+         Q/IevZzCf4lfgpiyj6ApmsbSsxgk4JsYfbQbRJaIv7dHFfm7ALiCiKhcslqmAc3WP/9o
+         phggvkESlHSvneuDpu9Krpzzn1JGA5ta+7HgzPiJbn7R8DVbhlO/OUA1PpJt1cYp2e2G
+         ixlA==
+X-Gm-Message-State: AOAM532rgt+kTAW9x4gW2zMO4bdV3dE681hMJusoQ5+kj5CirldMQOYA
+        2MiOZyS57ByfWBjEAZJLTZPn721+ZdzmnQ==
+X-Google-Smtp-Source: ABdhPJzgpftfzQqh6cQkfQwpqB9kCGWUYUkdWrI6OS+lGu7a8shSi/eg1Ixn5ahdw0frC07JSH/3jQ==
+X-Received: by 2002:aa7:8a0e:0:b0:47c:1116:3ce with SMTP id m14-20020aa78a0e000000b0047c111603cemr5964030pfa.76.1635446869394;
+        Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ls6sm144127pjb.53.2021.10.28.11.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 11:47:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: selftests: seccomp_bpf failure on 5.15
+Message-ID: <202110281136.5CE65399A7@keescook>
+References: <YXrN+Hnl9pSOsWlA@arighi-desktop>
+ <202110280955.B18CB67@keescook>
+ <878rydm56l.fsf@disp2133>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v1] drm: import DMA_BUF module namespace
-Content-Language: en-US
-To:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "lkft@linaro.org" <lkft@linaro.org>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-References: <20211027152534.3366799-1-marcel@ziswiler.com>
- <77d1966e-3081-10d3-d7a8-c159b62004aa@suse.de>
- <0f90b5da6139316429363fc14f76e96366f4a4b5.camel@toradex.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <0f90b5da6139316429363fc14f76e96366f4a4b5.camel@toradex.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------mErstqRuzD08suBMKdvgcL6H"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878rydm56l.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------mErstqRuzD08suBMKdvgcL6H
-Content-Type: multipart/mixed; boundary="------------YoNzEKjaCWljAM4gZ7Iwc0LE";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
- "airlied@linux.ie" <airlied@linux.ie>,
- "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
- "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "lkft@linaro.org" <lkft@linaro.org>,
- "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "mripard@kernel.org" <mripard@kernel.org>, "daniel@ffwll.ch"
- <daniel@ffwll.ch>
-Message-ID: <e5b4681a-36cd-20ba-c763-c4ff00732eb4@suse.de>
-Subject: Re: [PATCH v1] drm: import DMA_BUF module namespace
-References: <20211027152534.3366799-1-marcel@ziswiler.com>
- <77d1966e-3081-10d3-d7a8-c159b62004aa@suse.de>
- <0f90b5da6139316429363fc14f76e96366f4a4b5.camel@toradex.com>
-In-Reply-To: <0f90b5da6139316429363fc14f76e96366f4a4b5.camel@toradex.com>
+On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> 
+> > On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
+> >> The following sub-tests are failing in seccomp_bpf selftest:
+> >> 
+> >> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
+> >> ...
+> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
+> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
+> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
+> >> ...
+> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
+> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
+> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
+> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
+> >> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
+> >> ...
+> >> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
+> >> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
+> >> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
+> >> 
+> >> I did some bisecting and found that the failures started to happen with:
+> >> 
+> >>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
+> >> 
+> >> Not sure if the test needs to be fixed after this commit, or if the
+> >> commit is actually introducing an issue. I'll investigate more, unless
+> >> someone knows already what's going on.
+> >
+> > Ah thanks for noticing; I will investigate...
+> 
+> 
+> I just did a quick read through of the test and while
+> I don't understand everything having a failure seems
+> very weird.
+> 
+> I don't understand the comment:
+> /* Tracer will redirect getpid to getppid, and we should die. */
+> 
+> As I think what happens is it the bpf programs loads the signal
+> number.  Tests to see if the signal number if GETPPID and allows
+> that system call and causes any other system call to be terminated.
 
---------------YoNzEKjaCWljAM4gZ7Iwc0LE
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+The test suite runs a series of seccomp filter vs syscalls under tracing,
+either with ptrace or with seccomp SECCOMP_RET_TRACE, to validate the
+expected behavioral states. It seems that what's happened is that the
+SIGSYS has suddenly become non-killing:
 
-SGkNCg0KQW0gMjcuMTAuMjEgdW0gMjI6NTQgc2NocmllYiBNYXJjZWwgWmlzd2lsZXI6DQo+
-IFNhbGkgVGhvbWFzDQo+IA0KPiBPbiBXZWQsIDIwMjEtMTAtMjcgYXQgMjA6MzAgKzAyMDAs
-IFRob21hcyBaaW1tZXJtYW5uIHdyb3RlOg0KPj4gSGksDQo+Pg0KPj4gdGhhbmtzIGZvciB0
-aGUgcGF0Y2guDQo+IA0KPiBZb3UgYXJlIHZlcnkgd2VsY29tZS4NCj4gDQo+PiBBbSAyNy4x
-MC4yMSB1bSAxNzoyNSBzY2hyaWViIE1hcmNlbCBaaXN3aWxlcjoNCj4+PiBGcm9tOiBNYXJj
-ZWwgWmlzd2lsZXIgPG1hcmNlbC56aXN3aWxlckB0b3JhZGV4LmNvbT4NCj4+Pg0KPj4+IFRv
-ZGF5J3MgLW5leHQgZmFpbHMgYnVpbGRpbmcgYXJtNjQgZGVmY29uZmlnIGFzIGZvbGxvd3M6
-DQo+Pj4NCj4+PiBFUlJPUjogbW9kcG9zdDogbW9kdWxlIGRybV9jbWFfaGVscGVyIHVzZXMg
-c3ltYm9sIGRtYV9idWZfdnVubWFwIGZyb20NCj4+PiAgwqAgbmFtZXNwYWNlIERNQV9CVUYs
-IGJ1dCBkb2VzIG5vdCBpbXBvcnQgaXQuDQo+Pj4gRVJST1I6IG1vZHBvc3Q6IG1vZHVsZSBk
-cm1fY21hX2hlbHBlciB1c2VzIHN5bWJvbCBkbWFfYnVmX3ZtYXAgZnJvbQ0KPj4+ICDCoCBu
-YW1lc3BhY2UgRE1BX0JVRiwgYnV0IGRvZXMgbm90IGltcG9ydCBpdC4NCj4+Pg0KPj4+IFJl
-cG9ydGVkLWJ5OiBMaW51eCBLZXJuZWwgRnVuY3Rpb25hbCBUZXN0aW5nIDxsa2Z0QGxpbmFy
-by5vcmc+DQo+Pj4gRml4ZXM6IGNvbW1pdCA0YjJiNWUxNDJmZjQgKCJkcm06IE1vdmUgR0VN
-IG1lbW9yeSBtYW5hZ2VycyBpbnRvIG1vZHVsZXMiKQ0KPj4+IFNpZ25lZC1vZmYtYnk6IE1h
-cmNlbCBaaXN3aWxlciA8bWFyY2VsLnppc3dpbGVyQHRvcmFkZXguY29tPg0KPj4+DQo+Pj4g
-LS0tDQo+Pj4NCj4+PiAgwqAgZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fY21hX2hlbHBlci5j
-IHwgMiArKw0KPj4+ICDCoCAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+Pj4N
-Cj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fY21hX2hlbHBlci5j
-IGIvZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fY21hX2hlbHBlci5jDQo+Pj4gaW5kZXggNmY3
-YjNmOGVjMDRkMy4uNjlmODU2NGFkMTFjZCAxMDA2NDQNCj4+PiAtLS0gYS9kcml2ZXJzL2dw
-dS9kcm0vZHJtX2dlbV9jbWFfaGVscGVyLmMNCj4+PiArKysgYi9kcml2ZXJzL2dwdS9kcm0v
-ZHJtX2dlbV9jbWFfaGVscGVyLmMNCj4+PiBAQCAtMjMsNiArMjMsOCBAQA0KPj4+ICDCoCAj
-aW5jbHVkZSA8ZHJtL2RybV9nZW1fY21hX2hlbHBlci5oPg0KPj4+ICDCoCAjaW5jbHVkZSA8
-ZHJtL2RybV92bWFfbWFuYWdlci5oPg0KPj4+ICAgIA0KPj4+ICtNT0RVTEVfSU1QT1JUX05T
-KERNQV9CVUYpOw0KPj4NCj4+IENvdWxkIHRoaXMgbGluZSBiZSBtb3ZlZCB0byB0aGUgYm90
-dG9tIG9mIHRoZSBmaWxlLCB3aGVyZSB0aGUgb3RoZXINCj4+IE1PRFVMRSBzdGF0ZW1lbnRz
-IGFyZT8NCj4gDQo+IEhlaGUsIGdvb2QgcXVlc3Rpb24uIEkgd2FzIGFjdHVhbGx5IGFza2lu
-ZyBteXNlbGYgdGhlIHNhbWUgYnV0IHF1aWNrbHkgbG9va2luZyBhdCBhIGZldyBmaWxlcyBh
-bmQgdGhleSBhbGwgaGFkDQo+IGl0IGFmdGVyIHRoZWlyIGluY2x1ZGVzIHRvd2FyZHMgdGhl
-IHRvcC4gVHVybnMgb3V0IHRoYXQgd2FzIHJhdGhlciBzaG9ydCBzaWdodGVkLi4uDQo+IA0K
-PiBMZXQgbWUgbG9vayBtb3JlIGNsb3NlbHkuIEN1cnJlbnQgLW5leHQgaGFzIGV4YWN0bHkg
-MjAwIGZpbGVzIHdpdGggYSBNT0RVTEVfSU1QT1JUX05TIHN0YXRlbWVudC4gT2theSwgc29t
-ZSBvZg0KPiB3aGljaCBhcmUgZG9jdW1lbnRhdGlvbi4gQW55d2F5LCAxMzIgb2Ygd2hpY2gg
-ZG8gaGF2ZSBpdCB3aXRoIHRoZWlyIG90aGVyIE1PRFVMRSBtYWNyb3MgdG93YXJkcyB0aGUg
-ZW5kIGFzIHlvdQ0KPiBzdWdnZXN0LiAyMCBvZiB3aGljaCBhbmQgbWFpbmx5IERSTSBzdHVm
-ZiBoYXMgaXQgdG93YXJkcyB0aGUgdG9wIGFmdGVyIHRoZW0gaW5jbHVkZXMuIEZ1bm55Lg0K
-PiANCj4gV2hhdCBkb2VzIHRoZSBkb2N1bWVudGF0aW9uIHN1Z2dlc3Q/DQo+IA0KPiBEb2N1
-bWVudGF0aW9uL2NvcmUtYXBpL3N5bWJvbC1uYW1lc3BhY2VzLnJzdA0KPiANCj4gIkl0IGlz
-IGFkdmlzYWJsZSB0byBhZGQgdGhlIE1PRFVMRV9JTVBPUlRfTlMoKSBzdGF0ZW1lbnQgY2xv
-c2UgdG8gb3RoZXIgbW9kdWxlDQo+IG1ldGFkYXRhIGRlZmluaXRpb25zIGxpa2UgTU9EVUxF
-X0FVVEhPUigpIG9yIE1PRFVMRV9MSUNFTlNFKCkuIFJlZmVyIHRvIHNlY3Rpb24NCj4gNS4g
-Zm9yIGEgd2F5IHRvIGNyZWF0ZSBtaXNzaW5nIGltcG9ydCBzdGF0ZW1lbnRzIGF1dG9tYXRp
-Y2FsbHkuIg0KPiANCj4gVGhlcmUgeW91IGdvLiBQbHVzIHRoZXJlIGlzIGV2ZW4gc29tZSBm
-YW5jeSBhdXRvbWF0aW9uICg7LXApLg0KPiANCj4gU28gbGV0IG1lIG1vdmUgaXQgZG93biB0
-aGVyZSB0aGVuLg0KDQpXaWxsIHlvdSBzZW5kIG91dCBhbm90aGVyIHJldmlzaW9uIG9mIHRo
-ZSBwYXRjaD8NCg0KPiANCj4+IEluIHRoZSBmaXhlZCBjb21taXQgNGIyYjVlMTQyZmY0LCB0
-aGVyZSdzIGEgc2ltaWxhciBjaGFuZ2UgZm9yDQo+PiBkcm1fZ2VtX3NobWVtX2hlbHBlci5j
-LiBJdCB1c2VzIGRtYS1idWZfdm1hcCBhcyB3ZWxsLiBEb2VzIHRoYXQgbW9kdWxlDQo+PiBy
-ZXF1aXJlIHRoZSBzYW1lIGZpeD8NCj4gDQo+IExpa2VseS4gTGV0IG1lIGp1c3QgcnVuIHpl
-IGF1dG9tYXRpb24gYW5kIHNlZSB3aGF0IHdlIGdldC4uLg0KPiANCj4+IERvIHlvdSBoYXZl
-IGFueSBpZGVhIHdoeSBJIGRvbid0IHNlZSB0aGVzZSBlcnJvcnMgaW4gbXkgYnVpbGRzPw0K
-PiANCj4gV2VsbCwgSSBndWVzcywgdGhlcmUgYXJlIHZhcmlvdXMgS0NPTkZJRyBzeW1ib2xz
-IGluZmx1ZW5jaW5nIHRoYXQgd2hvbGUgc3RvcnkuIEhvdyBhYm91dCBlLmcuDQo+IA0KPiBp
-bml0L0tjb25maWc6Y29uZmlnIE1PRFVMRV9BTExPV19NSVNTSU5HX05BTUVTUEFDRV9JTVBP
-UlRTDQoNClRoYW5rcyBmb3IgdGhlIGhpbnQuDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoN
-Cj4gDQo+PiBCZXN0IHJlZ2FyZHMNCj4+IFRob21hcw0KPiANCj4gQ2hlZXJzDQo+IA0KPiBN
-YXJjZWwNCj4gDQo+Pj4gKw0KPj4+ICDCoCAvKioNCj4+PiAgwqDCoCAqIERPQzogY21hIGhl
-bHBlcnMNCj4+PiAgwqDCoCAqDQo+Pj4NCj4+DQo+PiAtLSANCj4+IFRob21hcyBaaW1tZXJt
-YW5uDQo+PiBHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQo+PiBTVVNFIFNvZnR3YXJlIFNv
-bHV0aW9ucyBHZXJtYW55IEdtYkgNCj4+IE1heGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVy
-ZywgR2VybWFueQ0KPj4gKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KPj4gR2VzY2jDpGZ0
-c2bDvGhyZXI6IEZlbGl4IEltZW5kw7ZyZmZlcg0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVy
-bWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlv
-bnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1LCA5MDQwOSBOw7xybmJlcmcsIEdlcm1h
-bnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVyZykNCkdlc2Now6RmdHNmw7xocmVyOiBGZWxp
-eCBJbWVuZMO2cmZmZXINCg==
+#  RUN           TRACE_syscall.ptrace.kill_after ...
+# seccomp_bpf.c:1555:kill_after:Expected WSTOPSIG(status) & 0x80 (0) == 0x80 (128)
+# seccomp_bpf.c:1556:kill_after:WSTOPSIG: 31
+# kill_after: Test exited normally instead of by signal (code: 12)
+#          FAIL  TRACE_syscall.ptrace.kill_after
 
---------------YoNzEKjaCWljAM4gZ7Iwc0LE--
+i.e. the ptracer no longer sees a dead tracee, which would pass through
+here:
 
---------------mErstqRuzD08suBMKdvgcL6H
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+                if (WIFSIGNALED(status) || WIFEXITED(status))
+                        /* Child is dead. Time to go. */
+                        return;
 
------BEGIN PGP SIGNATURE-----
+So the above saw a SIG_TRAP|SIGSYS rather than a killing SIGSYS. i.e.
+instead of WIFSIGNALED(stauts) being true, it instead catches a
+PTRACE_EVENT_STOP for SIGSYS, which should be impossible (the process
+should be getting killed).
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmF67+cFAwAAAAAACgkQlh/E3EQov+CR
-Dw/8C0RXo97a70QQN2Xt9ROWfK+aE3antAURtxdLdXbKyjjeXlywMzzpTjkjID8YOS/cIwz5rU7h
-sswYnkEGzKLgwMdwVHU51R0cKG4Wrvgz6nB/3zkSlt0yZJv5PY0GkX2oZ842lcYcC4FyDc/grjc4
-1ntK3vORuWF/NnEk/VPqU1JlX1gf45b6OHEIhovgfAjnWdoOeD1cB6XNMxyOH2rXvgCqzDUT0lIa
-XtzKlPKrG0AP2J1DWDgDyOJGeyMQeDz46p2ud3+2a1VnLFCz8493flBZwtv5CRQdloZ12dLMdWBe
-OepG2BKbgbemJpmpgKVJAhc3mipvLlSuWPuaO9kP9dxhsxQPrrCMcKX8Wr3/VzQh9pOCCj6cddsI
-mIaSZAFPpJVrkTISCMdOFnpwjBd8YaeVryJv9ahec8TMad+lJA9SIDMcLpQ35w3pOKgnyktS6Mlr
-+tW6F1w8WvmMIBpGIpMd2PDZ0zrHGgrDwTyxdqLd7fL7v60xS44SaTftpYB//VtIW5o26Nfs8tco
-DeKpDm5JP84utCDt/a/KMRnfZ5iDpJaQFn+WWeBeGxgH573aW9Qg9b3EcqHYn4u6FfP4SM3+00AA
-8YtOM70ZXJejvrBBdGU9ILA0zfyrnhz04I9dBAWZ4u+lhjCx31MjHafcl66wS0AEC2xilUYQhYpC
-KsQ=
-=L9Du
------END PGP SIGNATURE-----
+> Which being single threaded would seem to cause the kernel  to execute
+> the changed code.
+> 
+> How there kernel at that point is having the process exit with anything
+> except SIGSYS I am not immediately seeing.
 
---------------mErstqRuzD08suBMKdvgcL6H--
+I've run out of time at the moment to debug further, but I've appended
+my changes to the test, and a brute-force change to kernel/seccomp.c to
+restore original behavior (though I haven't tested if coredumping works
+still). I'll return to this in a few hours...
+
+> 
+> The logic is the same as that for SECCOMP_RET_TRAP is there a test for
+> that, that is also failing?
+> 
+> How do you run that test anyway?
+
+cd tools/testing/selftests/seccomp
+make seccomp_bpf
+scp seccomp_bpf target:
+ssh target ./seccomp_bpf
+
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 4d8f44a17727..b6c8c8f8bd69 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1269,10 +1269,12 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 			syscall_rollback(current, current_pt_regs());
+ 			/* Trigger a coredump with SIGSYS */
+ 			force_sig_seccomp(this_syscall, data, true);
+-		} else {
+-			do_exit(SIGSYS);
++			do_group_exit(SIGSYS);
+ 		}
+-		return -1; /* skip the syscall go directly to signal handling */
++		if (action == SECCOMP_RET_KILL_THREAD)
++			do_exit(SIGSYS);
++		else
++			do_group_exit(SIGSYS);
+ 	}
+ 
+ 	unreachable();
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 1d64891e6492..8f8c1df885d6 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -1487,7 +1487,7 @@ TEST_F(precedence, log_is_fifth_in_any_order)
+ #define PTRACE_EVENT_SECCOMP 7
+ #endif
+ 
+-#define IS_SECCOMP_EVENT(status) ((status >> 16) == PTRACE_EVENT_SECCOMP)
++#define PTRACE_EVENT_MASK(status) ((status) >> 16)
+ bool tracer_running;
+ void tracer_stop(int sig)
+ {
+@@ -1536,17 +1536,34 @@ void start_tracer(struct __test_metadata *_metadata, int fd, pid_t tracee,
+ 	/* Run until we're shut down. Must assert to stop execution. */
+ 	while (tracer_running) {
+ 		int status;
++		bool run_callback = true;
+ 
+ 		if (wait(&status) != tracee)
+ 			continue;
++
+ 		if (WIFSIGNALED(status) || WIFEXITED(status))
+ 			/* Child is dead. Time to go. */
+ 			return;
+ 
+-		/* Check if this is a seccomp event. */
+-		ASSERT_EQ(!ptrace_syscall, IS_SECCOMP_EVENT(status));
++		/* Check if we got an expected event. */
++		ASSERT_EQ(WIFCONTINUED(status), false);
++		ASSERT_EQ(WIFSTOPPED(status), true);
++		ASSERT_EQ(WSTOPSIG(status) & SIGTRAP, SIGTRAP) {
++			TH_LOG("WSTOPSIG: %d", WSTOPSIG(status));
++		}
++		if (ptrace_syscall) {
++			EXPECT_EQ(WSTOPSIG(status) & 0x80, 0x80) {
++				TH_LOG("WSTOPSIG: %d", WSTOPSIG(status));
++				run_callback = false;
++			};
++		} else {
++			EXPECT_EQ(PTRACE_EVENT_MASK(status), PTRACE_EVENT_SECCOMP) {
++				run_callback = false;
++			};
++		}
+ 
+-		tracer_func(_metadata, tracee, status, args);
++		if (run_callback)
++			tracer_func(_metadata, tracee, status, args);
+ 
+ 		ret = ptrace(ptrace_syscall ? PTRACE_SYSCALL : PTRACE_CONT,
+ 			     tracee, NULL, 0);
+
+-- 
+Kees Cook
