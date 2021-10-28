@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C015E43DCF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086FC43DCFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhJ1IdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhJ1IdX (ORCPT
+        id S229950AbhJ1Ige (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:36:34 -0400
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:43872 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1Igd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:33:23 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635CAC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 01:30:57 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mg0oB-00045G-SJ; Thu, 28 Oct 2021 10:30:47 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mg0oA-0007Qs-Fn; Thu, 28 Oct 2021 10:30:46 +0200
-Date:   Thu, 28 Oct 2021 10:30:46 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        linux-kernel@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net 2/3] can: j1939: j1939_can_recv(): ignore messages
- with invalid source address
-Message-ID: <20211028083046.GF20681@pengutronix.de>
-References: <1634825057-47915-1-git-send-email-zhangchangzhong@huawei.com>
- <1634825057-47915-3-git-send-email-zhangchangzhong@huawei.com>
- <20211022102306.GB20681@pengutronix.de>
- <9c636d7f-70df-18c9-66ed-46eb21f4ffbb@huawei.com>
- <20211028065144.GE20681@pengutronix.de>
- <ff21f8b9-0fe0-e6be-73d4-18b9f5bfd773@huawei.com>
+        Thu, 28 Oct 2021 04:36:33 -0400
+Received: by mail-ua1-f47.google.com with SMTP id v3so10001403uam.10;
+        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BYbaXCUYNWuEm6VFzPPAR1kV9z1lrK0IXCwkfP1SadA=;
+        b=CYzzkop7dRZE4eMMbeQXAov/bGioCy9Vt2iQQo7NEMYOSjzlawqGYZNUpHzifso/Pz
+         YtPcDnzLNbF+fGVNtgtxu4jpFTetyfANZUcPoxRu85e4rRErbykvUhy3EEOtNS9rpl0T
+         wYD5kVjXrj5o1NaZkD/LOegZfA2K6hxGShWnxB5g9ttRbyJmw6nq9LtloR/vabXDqsGV
+         aR4WdRpu6VdbYVzqR3j/97XYCPuflf0KLDv2A0TlpJKOlxgxdVPOjSmXHZPPtUkX86bA
+         cN1cjrQn558HOalE/sxjnZcM7WY/ZrWDb6l+tbJxGwTI6Ze2FnuPUhGUnKWtUB02QQAJ
+         +5tA==
+X-Gm-Message-State: AOAM530ClTACY7IG5IfUGh0klMmlKDceIZimSQpNOqi/eOvSz90gSGSt
+        1R4DYOKYWlTWR+V163USJYj4seAeSYds/Q==
+X-Google-Smtp-Source: ABdhPJy7dwNsDkMlFGm70cwUIGaZe5jNg5oeikWbOuZRRL7EdVAVPjQ4CqAAPliqbdh8uGEXtdU6nQ==
+X-Received: by 2002:a9f:3881:: with SMTP id t1mr2733578uaf.127.1635410046224;
+        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id q24sm253216vkn.20.2021.10.28.01.34.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
+Received: by mail-ua1-f46.google.com with SMTP id s4so10174581uaq.0;
+        Thu, 28 Oct 2021 01:34:06 -0700 (PDT)
+X-Received: by 2002:ab0:2bd2:: with SMTP id s18mr2843638uar.78.1635410045974;
+ Thu, 28 Oct 2021 01:34:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff21f8b9-0fe0-e6be-73d4-18b9f5bfd773@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:29:58 up 252 days, 11:53, 140 users,  load average: 0.15, 0.51,
- 0.43
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211005001914.28574-1-rdunlap@infradead.org> <20211005001914.28574-3-rdunlap@infradead.org>
+ <20211027205431.GX7074@brightrain.aerifal.cx>
+In-Reply-To: <20211027205431.GX7074@brightrain.aerifal.cx>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 Oct 2021 10:33:54 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
+Message-ID: <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
+Subject: Re: [PATCH 2/5 v3] sh: add git tree to MAINTAINERS
+To:     Rich Felker <dalias@libc.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 03:33:21PM +0800, Zhang Changzhong wrote:
-> On 2021/10/28 14:51, Oleksij Rempel wrote:
-> > Hi,
-> > 
-> > On Mon, Oct 25, 2021 at 03:30:57PM +0800, Zhang Changzhong wrote:
-> >> On 2021/10/22 18:23, Oleksij Rempel wrote:
-> >>> On Thu, Oct 21, 2021 at 10:04:16PM +0800, Zhang Changzhong wrote:
-> >>>> According to SAE-J1939-82 2015 (A.3.6 Row 2), a receiver should never
-> >>>> send TP.CM_CTS to the global address, so we can add a check in
-> >>>> j1939_can_recv() to drop messages with invalid source address.
-> >>>>
-> >>>> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> >>>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> >>>
-> >>> NACK. This will break Address Claiming, where first message is SA == 0xff
-> >>
-> >> I know that 0xfe can be used as a source address, but which message has a source
-> >> address of 0xff?
-> >>
-> >> According to SAE-J1939-81 2017 4.2.2.8：
-> >>
-> >>   The network address 255, also known as the Global address, is permitted in the
-> >>   Destination Address field of the SAE J1939 message identifier but never in the
-> >>   Source Address field.
-> > 
-> > You are right. Thx!
-> > 
-> > Are you using any testing frameworks?
-> > Can you please take a look here:
-> > https://github.com/linux-can/can-tests/tree/master/j1939
-> > 
-> > We are using this scripts for regression testing of some know bugs.
-> 
-> Great! I'll run these scripts before posting patches.
- 
-You are welcome to extend this tests :)
+Hi Rich,
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+On Wed, Oct 27, 2021 at 10:54 PM Rich Felker <dalias@libc.org> wrote:
+> On Mon, Oct 04, 2021 at 05:19:11PM -0700, Randy Dunlap wrote:
+> > Add the git tree location for linux-sh.
+> >
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+
+> > --- linux-next-20211001.orig/MAINTAINERS
+> > +++ linux-next-20211001/MAINTAINERS
+> > @@ -18047,6 +18047,7 @@ M:    Yoshinori Sato <ysato@users.sourcefor
+> >  M:   Rich Felker <dalias@libc.org>
+> >  L:   linux-sh@vger.kernel.org
+> >  S:   Maintained
+> > +T:   git git://git.libc.org/linux-sh
+> >  Q:   http://patchwork.kernel.org/project/linux-sh/list/
+> >  F:   Documentation/sh/
+> >  F:   arch/sh/
+>
+> I'm omitting this for now since (as noted on the cgit description)
+> this server is not provisioned adequately for cloning from scratch,
+> and should only be used for fetch into an already-populated mainline
+> repo clone. If that's a problem I can see about getting it moved
+> somewhere more appropriate.
+
+Perhaps you can move it to kernel.org?
+
+> The rest of this series should appear in next shortly.
+
+Thanks a lot!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
