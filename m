@@ -2,155 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E53043DA28
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 06:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C051643DA2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 06:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhJ1EPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 00:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJ1EPs (ORCPT
+        id S229758AbhJ1ESL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 00:18:11 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49084
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229488AbhJ1ESK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 00:15:48 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BA7C061570;
-        Wed, 27 Oct 2021 21:13:22 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id h20so5373728ila.4;
-        Wed, 27 Oct 2021 21:13:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5r+33U1uPYiFPTnh2Xd8jicIMSHfddEZuVW3fEW/Lz8=;
-        b=ZRH/bDHtnLi1gDo9lKFYyuYY/9P8nu3jKlS3XZyDwNAuWzybFmV3ew1ZVrt2w8fHFB
-         zUB/EHZDFSfGR9TxC+q8sdIVTD3pee+AcDE5bynMGU7CXRcgvjXcQVekUbme8LRiPC7/
-         hOc5dHt5v91exsQBT8AQEFO8QGl5xPu1NLiXZBZ1CCCFwIXoExtGAxMHkk1kg0K61zgy
-         RbkRDnI1mW3CNGnnuyL23N8FjEsWeS2qScyTy5XVNAhDsueIov2pio7HcaFpBBwZ0YBg
-         y2gmnfb8wT1V92nA8A3Ao/yjanGtL8nJ3W8feOuFOeUj658LbCmJjURHxLF/wnpPRnMA
-         llFA==
+        Thu, 28 Oct 2021 00:18:10 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3C9043F174
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635394541;
+        bh=5LeZ4qJd1/I0CO3BOhH9jstVrpNoI/oz+UiYuO/v2Z4=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=M3QmDFDwvvxEKZsitSwgvH7RdmxBISRHqSZCqlCQnf2VVpw7vkRNELZT8dvSb82ot
+         kb0G12MllAK4SCCWL/BhvSruPA/rvUzBEobwX034PZYfIH5omvdKcPeNPtl5ILNKRs
+         PaYNfDx+8a2jnOA4hpHd4nvtb+650WhUpqst+sk5obgoCaUTc4oK+IG0ywIrIo4WDJ
+         gBHwIncONMSSWHd+HhsLFjI7MdL6zdYykfM+wJSA/A0KFBQFLnKOe32SI+WjOzHZzN
+         rdyzGrSJt/gsjEBAFreo7ak2PJQRrk1YrUweGPcii/U706dZJ3YGyqUpZMTlkl/mmP
+         0VDnqirforEtw==
+Received: by mail-ed1-f70.google.com with SMTP id s18-20020a056402521200b003dd5902f4f3so4279701edd.23
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 21:15:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5r+33U1uPYiFPTnh2Xd8jicIMSHfddEZuVW3fEW/Lz8=;
-        b=d49uUiff6r4MqM7ONDoZsdh1TYhq5h6wpq4FNseaO3MtmHVy8P1xvFI0dts04f5F22
-         9LJ46b3+8hK+ITCOUKGI9ucYHnmCP2kpOYKntfeUArA9KT86kdf7+q+5PEPOLA+KHBa+
-         CPWNMKnHifyqs2NN7f8G52+ZcAA1IhD1eVuY3DKcNln1+PExfdzGIb+yZXO7/u8SFflx
-         XFmhRYTKzO2ZyW53MnFkoBdVdePX/4KWPU+/mSFyrHqcsxK8Og/0q2UbaoU8d0f/vZC3
-         33qhNUWjwoIoqgT1Sgm7+l9bhlrcS/ys3AbUqXQZdgG4s3C2MfRwngBxFh3n5NAhQz+/
-         YnCw==
-X-Gm-Message-State: AOAM531WCTWLXcS/cXfxrYeUblJj0cTVnryMEVvzBdx668VX9RIWbzuX
-        BTbYFihvDFnUnvNZDVeV73+QBbIi6nMoMhVZyK3slWQvrCI=
-X-Google-Smtp-Source: ABdhPJxn5BX5hTZdumQ794jeLL9tPWDCAWi4dHuGb4Wf8faWqts0VksBQb1isn5TnDTIM4RxCu2x53dxlmsR1SW71+k=
-X-Received: by 2002:a05:6e02:20e7:: with SMTP id q7mr1542962ilv.254.1635394401478;
- Wed, 27 Oct 2021 21:13:21 -0700 (PDT)
+        bh=5LeZ4qJd1/I0CO3BOhH9jstVrpNoI/oz+UiYuO/v2Z4=;
+        b=mEn6dO7CG90m5YlaaU8EOgCyrUo7uvRxPPlNiBSZ4k0C1ySVJWQPX2leMcy59s0H7i
+         GIQWOzZdeaeiPZ9dMhesz8d8XMLN2RBg4+cSrB0J5dKO0v8QxlrWHtm+BiuX//ceJxTR
+         dB1+a4iTfl/mB2TMGYs9UXd5CDuCGdiUL477n777QdFHVK2SXhd8wnyVgvxjaoNZKQ7m
+         Ioa1VpChxQ8kG/4+bKL1Q0VEfTRHhchw1O1UHOOohn64myf2gwtO8Kru1eKUGO1IUTZk
+         Auth/6bu0lEENz84VmAfCf5f7cJ8GEoqUnnseaKh9A43QO54j5ckwK6jx7VoOjSpo2u4
+         ZHFw==
+X-Gm-Message-State: AOAM533KYeCRh4MdoywY8sfbZMPgNmDsm0p9Pfxz2LmhOjaJuVYMU+3F
+        wdwa+6DTS8ApF7TsFTRUc5OAKwnhc3nv1h/nd2EEsHxnCmuLzhCx+YJCbMGC/jIOuioiUz5zVPc
+        LoEegfIJ2t9vDE4TpZfRFUtdlLLzMF+wmliD/6DzHTEswYH/cWaRNyliTKQ==
+X-Received: by 2002:a05:6402:cb8:: with SMTP id cn24mr2785990edb.190.1635394540861;
+        Wed, 27 Oct 2021 21:15:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZi39J2kwik0RQhOm5p9MLjprDz5OI4qGnklGMEHC/w9pQt4Nm/adBkMjvmLJBYtF/TOSO3uDCvbbjc4taCh8=
+X-Received: by 2002:a05:6402:cb8:: with SMTP id cn24mr2785968edb.190.1635394540704;
+ Wed, 27 Oct 2021 21:15:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025204634.2517-1-iangelak@redhat.com> <20211025204634.2517-2-iangelak@redhat.com>
- <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com> <YXnImHp1QfZYZ1OU@redhat.com>
-In-Reply-To: <YXnImHp1QfZYZ1OU@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 28 Oct 2021 07:13:10 +0300
-Message-ID: <CAOQ4uxiY=sZVsJF670T73bk2zq+LpG9B5VQA-5rOOpaSrvhdXA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/7] FUSE: Add the fsnotify opcode and in/out structs
- to FUSE
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>
+References: <20211027045843.1770770-1-alexandre.ghiti@canonical.com> <mhng-41b64d3e-5a5a-4d59-86fc-80f2148823e8@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-41b64d3e-5a5a-4d59-86fc-80f2148823e8@palmerdabbelt-glaptop>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Thu, 28 Oct 2021 06:15:28 +0200
+Message-ID: <CA+zEjCuUCxqTtbox2K8c=ymHC8X97LV6CSO3ydJKgRR9cBXUEw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] riscv: Fix asan-stack clang build
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        nathan@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > you need to either include the generation in object identifier
-> > or much better use the object's nfs file handle, the same way
-> > that fanotify stores object identifiers.
+On Thu, Oct 28, 2021 at 1:06 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 >
-> I think nfs file handle is much more complicated and its a separate
-> project altogether. I am assuming we are talking about persistent
-> nfs file handle as generated by host. I think biggest issue we faced
-> with that is that guest is untrusted and we don't want to resolve
-> file handle provided by guest on host otherwise guest can craft
-> file handles and possibly be able to open other files on same filesystem
-> outside shared dir.
->
-
-Right now, virtiofsd keeps all inodes and dentries of live client inodes
-pinned in cache on the server.
-If you switch to file handles design, virtiofsd only need to keep a map
-of all the file handles that server handed out to client to address
-this concern.
-
-For directories, this practice is not even needed for security, because
-a decoded directory file handle can be verified to be within the shared dir.
-It is only needed to prevent DoS, because a crafted directory file handle
-(outside of shared dir) can be used to generate extra IO and thrash the
-inode/dentry cache on the server.
-
+> On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+> > Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
+> > Kconfig, it prevents asan-stack from getting disabled with clang even
+> > when CONFIG_KASAN_STACK is disabled: fix this by defining the
+> > corresponding config.
 > >
-> > > +       uint64_t mask;
-> > > +       uint32_t namelen;
-> > > +       uint32_t cookie;
+> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+> > ---
+> >  arch/riscv/Kconfig             | 6 ++++++
+> >  arch/riscv/include/asm/kasan.h | 3 +--
+> >  arch/riscv/mm/kasan_init.c     | 3 +++
+> >  3 files changed, 10 insertions(+), 2 deletions(-)
 > >
-> > I object to persisting with the two-events-joined-by-cookie design.
-> > Any new design should include a single event for rename
-> > with information about src and dst.
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index c1abbc876e5b..79250b1ed54e 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -162,6 +162,12 @@ config PAGE_OFFSET
+> >       default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+> >       default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
 > >
-> > I know this is inconvenient, but we are NOT going to create a "remote inotify"
-> > interface, we need to create a "remote fsnotify" interface and if server wants
-> > to use inotify, it will need to join the disjoined MOVE_FROM/TO event into
-> > a single "remote event", that FUSE will use to call fsnotify_move().
+> > +config KASAN_SHADOW_OFFSET
+> > +     hex
+> > +     depends on KASAN_GENERIC
+> > +     default 0xdfffffc800000000 if 64BIT
+> > +     default 0xffffffff if 32BIT
 >
-> man inotify says following.
+> I thought I posted this somewhere, but this is exactly what my first
+> guess was.  The problem is that it's hanging on boot for me.  I don't
+> really have anything exotic going on, it's just a defconfig with
+> CONFIG_KASAN=y running in QEMU.
 >
-> "       Matching up the IN_MOVED_FROM and IN_MOVED_TO event pair  generated  by
->        rename(2)  is thus inherently racy.  (Don't forget that if an object is
->        renamed outside of a monitored directory, there  may  not  even  be  an
->        IN_MOVED_TO  event.)"
->
-> So if guest is no monitoring target dir of renamed file, then we will not
-> even get IN_MOVED_TO. In that case we can't merge two events into one.
->
-> And this sounds like inotify/fanotify interface needs to come up with
-> an merged event and in that case remote filesystem will simply propagate
-> that event. (Instead of coming up with a new event only for remote
-> filesystems. Sounds like this is not a problem limited to remote
-> filesystems only).
->
+> Does this boot for you?
 
-I don't see it that way.
-I see the "internal protocol" for filesystems/vfs to report rename is
-fsnotify_move() which carries information about both src and target.
-I would like the remote protocol  to carry the same information.
-It is then up to the userspace API whether to report the rename
-as two events or a unified event.
-
-For example, debugfs, calls fsnotify_move() when an object is renamed
-from underneath the vfs. It does not call fsnotify() twice with a cookie,
-because we would not want to change local filesystem nor remote protocols
-when we want to add new userspace APIs for reporting fsevents.
-
-That comes down to my feeling that this claims to be a proposal
-for "remote fsnotify", but it looks and sounds like a proposal for
-"remote inotify" and this is the core of my objection to passing
-the rename cookie in the protocol.
-
-Regarding the issue that the src/dst path may not be known
-to the server, as I wrote, it is fine if either the src/dst path information
-is omitted from an event, but the protocol should provide the
-placeholder to report them.
-
-After sufficient arguing, I might be convinced that the cookie may be included
-as an optional field in addition to the fields that I requested.
-
-I understand why you write that this sounds like an fanotify interface
-that needs to be resolved and you are correct, but the reason that the
-fanotify interface issue was not yet resolved is that we are trying to not
-repeat the mistakes of the past and for that same reason, I am insisting
-on the protocol.
+Yes with the 2nd patch of this series which fixes the issue
+encountered here. And that's true I copied/pasted this part of your
+patch which was better than what I had initially done, sorry I should
+have mentioned you did that, please add a Codeveloped-by or something
+like that.
 
 Thanks,
-Amir.
+
+Alex
+
+>
+> > +
+> >  config ARCH_FLATMEM_ENABLE
+> >       def_bool !NUMA
+> >
+> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
+> > index a2b3d9cdbc86..b00f503ec124 100644
+> > --- a/arch/riscv/include/asm/kasan.h
+> > +++ b/arch/riscv/include/asm/kasan.h
+> > @@ -30,8 +30,7 @@
+> >  #define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
+> >  #define KASAN_SHADOW_START   KERN_VIRT_START
+> >  #define KASAN_SHADOW_END     (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
+> > -#define KASAN_SHADOW_OFFSET  (KASAN_SHADOW_END - (1ULL << \
+> > -                                     (64 - KASAN_SHADOW_SCALE_SHIFT)))
+> > +#define KASAN_SHADOW_OFFSET  _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+> >
+> >  void kasan_init(void);
+> >  asmlinkage void kasan_early_init(void);
+> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> > index d7189c8714a9..8175e98b9073 100644
+> > --- a/arch/riscv/mm/kasan_init.c
+> > +++ b/arch/riscv/mm/kasan_init.c
+> > @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
+> >       uintptr_t i;
+> >       pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
+> >
+> > +     BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
+> > +             KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
+> > +
+> >       for (i = 0; i < PTRS_PER_PTE; ++i)
+> >               set_pte(kasan_early_shadow_pte + i,
+> >                       mk_pte(virt_to_page(kasan_early_shadow_page),
