@@ -2,170 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CBA43F2A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F8C43F2A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhJ1WXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S231491AbhJ1WYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhJ1WXv (ORCPT
+        with ESMTP id S231298AbhJ1WYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:23:51 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CEFC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:21:23 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id g8so8828784iob.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:21:23 -0700 (PDT)
+        Thu, 28 Oct 2021 18:24:14 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828AFC061570;
+        Thu, 28 Oct 2021 15:21:46 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id s9so2452944qvk.12;
+        Thu, 28 Oct 2021 15:21:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OB5iyvsQZRGpy5tFYsZx8Gnk3OXs+5ecQAO2u6+yIE0=;
-        b=OoVDgPTl7ZhmRZ1tG6wP15y/AQaJCXDOrb1AFO8bAWvIXsp3R9UBK0cfFZSla1ZYgu
-         S7o6OJ5fJ++5HmmLbxYyzPyndUZcizJ1gZ/9L7t7wYxMb+oSaDEK3bKDmncOVN9IhOyl
-         oi6RT8IH/YPsFxlc4CRnZbd99G4oQdsjKn5AVB9LUXUaDNJdbugn0RfJEtEBZAeNEOHN
-         4BtL1g7lCIL/JUKx+of5ulLfZsAWjUhkc8v2QDsBqknxMQRjqHqiwJcQespLt3eGNo0q
-         2VH1088aXYbga19PHrNaXzKU4/GeEx7zgSacmMIYmzyS460b/L/EGLuTlW2+VQQlDMGQ
-         E6UQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=/T5F9B07gErRjYPria9st2w4l8wiE8xoQUEOHVZGBvM=;
+        b=cqtX/zRCsu1o1qbVcFQmpDrYQ3+yL++ZD059O9aXErqM7s4r2YYk5G5k6k2MU4WCXU
+         5d9YWkx5fJDDC7hrEIMFECAkWrHvfrIPWk+geI54qxLUqmOAnVK02sc9AJISjJpvooQs
+         0zCZZuh/1T9etRR+mtyGLfqGY/vTqliOfMm36Hb3U+/PWjc+H8oXWfwGDaFpFbs2Sla3
+         u8ym2NCG/EC7t25SqQOUy3lpC//9B96QDlNOatYWD3nDfJZT2JIENAyIzoNuzazZ0g2t
+         VT3fwMoXDjzXR3zxawPSPtCA56kee46tlvy9mcwY2qRL7pmL+i765nXuC+YlA9C9kE5r
+         7IlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OB5iyvsQZRGpy5tFYsZx8Gnk3OXs+5ecQAO2u6+yIE0=;
-        b=dDdfQT6mpbHiZEk0ubarqPpSZTBvZqXRAQ0wsuXh7BMcEqhHp2rh8bhaHoliJ5GWjQ
-         dmYO619OUc/ZJBbi2WetwbTLqiTNs2hzkNcLJETgjQM880aTzSwK9dDdIVMQeMjllgVx
-         boZfcNo0LySkeDMo3cwuLdvoUZ2n0a6yLJls0ncB6JFQu+45/kCUygrjBv7RffBtjgdt
-         K4Wn/RffJ0Bc7U4NDZZAX0UQlRhz3feokGSg/kvD1/yy6VvZQR0UEAakvcNQtCjuqje/
-         /OWJBzrLJDWVRDwKBdT/kuoMakaHVG8neFzMotfZQcQJUAFX7UbSsi1BFJIAZ11udErS
-         BBsg==
-X-Gm-Message-State: AOAM5309Bv4mCQf1yE3aeKwKjRLf8h7pe4iig1hB74pWFavZkBIHySwm
-        C52yIYY/hmcX2DZBP/wPrn28ek7so1osQDJwlZcV5w==
-X-Google-Smtp-Source: ABdhPJyNYb2lqLKl/zgacwnUpmKC5pyJpELsieMm2hsFUR/icGAEyJw8RJ03g/C49/unwqlglzmZhUdYOb+cbF4sMj0=
-X-Received: by 2002:a6b:f614:: with SMTP id n20mr5149554ioh.134.1635459682871;
- Thu, 28 Oct 2021 15:21:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211028064154.2301049-1-davidgow@google.com> <20211028064154.2301049-3-davidgow@google.com>
-In-Reply-To: <20211028064154.2301049-3-davidgow@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 28 Oct 2021 15:21:11 -0700
-Message-ID: <CAGS_qxp5KLKqFOBT2zyjw3R5fqcVnzFjTVTnqxKt=X9ZJ-oREQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] kunit: Don't crash if no parameters are generated
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=/T5F9B07gErRjYPria9st2w4l8wiE8xoQUEOHVZGBvM=;
+        b=BQNbapo5Z+vF3qShO4lMIXUvXEfZe6TjaMpsUaTq/NuC8VJAou3WiUboWA9v5w1QT0
+         9v/c3Z839/ZPl8o72wzRmsZKnfvWAmC3LqdLu4NPISCVK4Dup/902JMPFhLWfMmYXzqk
+         aw7YMCOLFq3tXSx2Sl3wF4raNauE51LxlBBRL9q4yIRZr9/xlpju60W7ZVPTOrceYBfZ
+         ew2bBai3yHBhAnADb6yoG/U+2ckAGO8Wiq/YbEvvkaiO03NyOOaPsvvFW/Mm8C0IXdPW
+         j3MfmvXq45qR4pBlOT/00CRRzU1zbLARUNnY/iuePA39L6ULZvrSw9uijsjWRjwxTM6I
+         s2Lg==
+X-Gm-Message-State: AOAM531XxXhmoTgdR1PLckAS6OJC/qcKhJ9o5oh0IaK3U6ig+d79nBQE
+        Ns5ws9b4uKtdIfwxKB1mgLg9tS6PTzLuWQ==
+X-Google-Smtp-Source: ABdhPJxrFWd7ykakPW+atJE2BnfLAVVaBklvxy7ljS6mwW0kjUE7gDDiD31OnzQ/fxQohs1eq6P5kQ==
+X-Received: by 2002:a05:6214:5086:: with SMTP id kk6mr6749178qvb.63.1635459705668;
+        Thu, 28 Oct 2021 15:21:45 -0700 (PDT)
+Received: from 10-18-43-117.dynapool.wireless.nyu.edu (216-165-95-164.natpool.nyu.edu. [216.165.95.164])
+        by smtp.gmail.com with ESMTPSA id c10sm3067773qtd.27.2021.10.28.15.21.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 15:21:45 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 18:21:42 -0400
+From:   Zekun Shen <bruceshenzk@gmail.com>
+To:     bruceshenzk@gmail.com
+Cc:     ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] ath9k: Fix out-of-bound memcpy in ath9k_hif_usb_rx_stream
+Message-ID: <YXsidrRuK6zBJicZ@10-18-43-117.dynapool.wireless.nyu.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:42 PM David Gow <davidgow@google.com> wrote:
->
-> It's possible that a parameterised test could end up with zero
-> parameters. At the moment, the test function will nevertheless be called
-> with NULL as the parameter. Instead, don't try to run the test code, and
-> just mark the test as SKIPped.
->
-> Reported-by: Daniel Latypov <dlatypov@google.com>
-> Signed-off-by: David Gow <davidgow@google.com>
+Large pkt_len can lead to out-out-bound memcpy. Current
+ath9k_hif_usb_rx_stream allows combining the content of two urb
+inputs to one pkt. The first input can indicate the size of the
+pkt. Any remaining size is saved in hif_dev->rx_remain_len.
+While processing the next input, memcpy is used with rx_remain_len.
 
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
+4-byte pkt_len can go up to 0xffff, while a single input is 0x4000
+maximum in size (MAX_RX_BUF_SIZE). Thus, the patch adds a check for
+pkt_len which must not exceed 2 * MAX_RX_BUG_SIZE.
 
-There's a small bug in this patch noted below, we just need to move
-the "# Subtest" change into the child patch.
-If/when we make that change, I have an optional suggestion about
-flipping the if/else branch.
+BUG: KASAN: slab-out-of-bounds in ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+Read of size 46393 at addr ffff888018798000 by task kworker/0:1/23
 
-But other than that, this looks good to me.
+CPU: 0 PID: 23 Comm: kworker/0:1 Not tainted 5.6.0 #63
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.10.2-0-g5f4c7b1-prebuilt.qemu-project.org 04/01/2014
+Workqueue: events request_firmware_work_func
+Call Trace:
+ <IRQ>
+ dump_stack+0x76/0xa0
+ print_address_description.constprop.0+0x16/0x200
+ ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+ ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+ __kasan_report.cold+0x37/0x7c
+ ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+ kasan_report+0xe/0x20
+ check_memory_region+0x15a/0x1d0
+ memcpy+0x20/0x50
+ ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
+ ? hif_usb_mgmt_cb+0x2d9/0x2d9 [ath9k_htc]
+ ? _raw_spin_lock_irqsave+0x7b/0xd0
+ ? _raw_spin_trylock_bh+0x120/0x120
+ ? __usb_unanchor_urb+0x12f/0x210
+ __usb_hcd_giveback_urb+0x1e4/0x380
+ usb_giveback_urb_bh+0x241/0x4f0
+ ? __hrtimer_run_queues+0x316/0x740
+ ? __usb_hcd_giveback_urb+0x380/0x380
+ tasklet_action_common.isra.0+0x135/0x330
+ __do_softirq+0x18c/0x634
+ irq_exit+0x114/0x140
+ smp_apic_timer_interrupt+0xde/0x380
+ apic_timer_interrupt+0xf/0x20
 
-> ---
->
-> Changes since v2:
-> https://lore.kernel.org/linux-kselftest/20211027013702.2039566-3-davidgow@google.com/
-> - Rework to not share the loop between the parameterised and
->   non-parameterised test cases.
->   - Suggested by Daniel Latypov.
->   - Avoids using a magic non-zero pointer value.
->
->  lib/kunit/test.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 3bd741e50a2d..dfe1127aacfd 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -508,12 +508,12 @@ int kunit_run_tests(struct kunit_suite *suite)
->                         /* Get initial param. */
->                         param_desc[0] = '\0';
->                         test.param_value = test_case->generate_params(NULL, param_desc);
-> -               }
-> +                       kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
-> +                                 "# Subtest: %s", test_case->name);
+Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+---
+ drivers/net/wireless/ath/ath9k/hif_usb.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-It looks like this change accidentally made its way into this patch as
-opposed to the child.
+diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
+index 860da13bf..0681bc5fa 100644
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -589,6 +589,12 @@ static void ath9k_hif_usb_rx_stream(struct hif_device_usb *hif_dev,
+ 			RX_STAT_INC(skb_dropped);
+ 			return;
+ 		}
++		if (pkt_len > 2 * MAX_RX_BUF_SIZE) {
++			dev_err(&hif_dev->udev->dev,
++				"ath9k_htc: invalid pkt_len (%x)\n", pkt_len);
++			RX_STAT_INC(skb_dropped);
++			return;
++		}
+ 
+ 		pad_len = 4 - (pkt_len & 0x3);
+ 		if (pad_len == 4)
+-- 
+2.25.1
 
-This commit itself gives me a traffic light (red/yellow/green statuses):
-
-[ERROR] Test inode_test_xtimestamp_decoding: 0 tests run!
-====== [NO TESTS RUN] inode_test_xtimestamp_decoding =======
-================= [PASSED] ext4_inode_test =================
-============================================================
-
-The problem is the output becomes this:
-    # Subtest: ext4_inode_test
-    1..1
-        # Subtest: inode_test_xtimestamp_decoding
-    # inode_test_xtimestamp_decoding: ok 1 - 1901-12-13 Lower bound of
-32bit < 0 timestamp, no extra bits
-   ...
-
->
-> -               do {
-> -                       kunit_run_case_catch_errors(suite, test_case, &test);
-> +                       while (test.param_value) {
-> +                               kunit_run_case_catch_errors(suite, test_case, &test);
->
-> -                       if (test_case->generate_params) {
->                                 if (param_desc[0] == '\0') {
->                                         snprintf(param_desc, sizeof(param_desc),
->                                                  "param-%d", test.param_index);
-> @@ -530,11 +530,15 @@ int kunit_run_tests(struct kunit_suite *suite)
->                                 param_desc[0] = '\0';
->                                 test.param_value = test_case->generate_params(test.param_value, param_desc);
->                                 test.param_index++;
-> -                       }
->
-> +                               kunit_update_stats(&param_stats, test.status);
-> +                       }
-> +               } else {
-
-I have a very slight preference for having the order of these branches swapped.
-i.e.
-
-if (!test_case->generate_params) {
-  /* Non-parameterised test */
-} else { ... }
-
-I prefer this because I think it's more readable for a few reasons:
-* I like having the "normal" branch come first. This is likely the
-code path a reader would care more about.
-* I prefer having the shorter branch come first. It makes it easier to
-read it through and see "oh, so this branch is just that one but with
-XYZ"
-
-> +                       /* Non-parameterised test. */
-> +                       kunit_run_case_catch_errors(suite, test_case, &test);
->                         kunit_update_stats(&param_stats, test.status);
-> +               }
->
-> -               } while (test.param_value);
->
->                 kunit_print_test_stats(&test, param_stats);
->
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
