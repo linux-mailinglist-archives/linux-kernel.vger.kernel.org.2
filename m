@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374EB43E2E0
+	by mail.lfdr.de (Postfix) with ESMTP id A392643E2E1
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbhJ1OAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:00:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:55408 "EHLO foss.arm.com"
+        id S231154AbhJ1OAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:00:53 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13436 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230480AbhJ1OAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:00:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0BE61FB;
-        Thu, 28 Oct 2021 06:58:10 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0105A3F70D;
-        Thu, 28 Oct 2021 06:58:08 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 14:57:51 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        antonio.gomez.iglesias@intel.com, tony.luck@intel.com,
-        dave.hansen@linux.intel.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH ebpf v2 2/2] bpf: Make unprivileged bpf depend on
- CONFIG_CPU_SPECTRE
-Message-ID: <20211028135751.GA41384@lakrids.cambridge.arm.com>
-References: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
- <882f5c31f48bac75ebaede2a0ec321ec67128229.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+        id S231208AbhJ1OAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:00:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="211180582"
+X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
+   d="scan'208";a="211180582"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 06:58:05 -0700
+X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
+   d="scan'208";a="573755634"
+Received: from sjsanghv-mobl.amr.corp.intel.com (HELO [10.212.61.51]) ([10.212.61.51])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 06:58:03 -0700
+Subject: Re: [PATCH] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS
+ codec
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Julian Braha <julianbraha@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+References: <20211028060203.446093-1-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <2ca92247-70c6-a092-8fe2-cfca9d6f18e6@linux.intel.com>
+Date:   Thu, 28 Oct 2021 08:58:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <882f5c31f48bac75ebaede2a0ec321ec67128229.1635383031.git.pawan.kumar.gupta@linux.intel.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+In-Reply-To: <20211028060203.446093-1-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 06:35:44PM -0700, Pawan Gupta wrote:
-> Disabling unprivileged BPF would help prevent unprivileged users from
-> creating the conditions required for potential speculative execution
-> side-channel attacks on affected hardware. A deep dive on such attacks
-> and mitigation is available here [1].
-> 
-> If an architecture selects CONFIG_CPU_SPECTRE, disable unprivileged BPF
-> by default. An admin can enable this at runtime, if necessary.
-> 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> 
-> [1] https://ebpf.io/summit-2021-slides/eBPF_Summit_2021-Keynote-Daniel_Borkmann-BPF_and_Spectre.pdf
-> ---
->  kernel/bpf/Kconfig | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> index a82d6de86522..510a5a73f9a2 100644
-> --- a/kernel/bpf/Kconfig
-> +++ b/kernel/bpf/Kconfig
-> @@ -64,6 +64,7 @@ config BPF_JIT_DEFAULT_ON
+
+
+
+> @@ -592,12 +610,29 @@ static int geminilake_audio_probe(struct platform_device *pdev)
+>  	struct snd_soc_acpi_mach *mach;
+>  	const char *platform_name;
+>  	struct snd_soc_card *card;
+> -	int ret;
+> +	int ret, i;
 >  
->  config BPF_UNPRIV_DEFAULT_OFF
->  	bool "Disable unprivileged BPF by default"
-> +	default y if CPU_SPECTRE
-
-Why can't this just be "default y"?
-
-This series makes that the case on x86, and if SW is going to have to
-deal with that we may as well do that everywhere, and say that on all
-architectures we leave it to the sysadmin or kernel builder to optin to
-permitting unprivileged BPF.
-
-If we can change the default for x86 I see no reason we can't change
-this globally, and we avoid tying this to CPU_SPECTRE specifically.
-
-Thanks,
-Mark.
-
->  	depends on BPF_SYSCALL
->  	help
->  	  Disables unprivileged BPF by default by setting the corresponding
-> @@ -72,6 +73,10 @@ config BPF_UNPRIV_DEFAULT_OFF
->  	  disable it by setting it to 1 (from which no other transition to
->  	  0 is possible anymore).
+>  	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+>  	if (!ctx)
+>  		return -ENOMEM;
 >  
-> +	  Unprivileged BPF can be used to exploit potential speculative
-> +	  execution side-channel vulnerabilities on affected hardware. If you
-> +	  are concerned about it, answer Y.
+> +	/* Detect the headset codec variant */
+> +	if (acpi_dev_present("RTL5682", NULL, -1)) {
+> +		/* ALC5682I-VS is detected */
+> +		ctx->is_rt5682s = 1;
 > +
->  source "kernel/bpf/preload/Kconfig"
+> +		for (i = 0; i < glk_audio_card_rt5682_m98357a.num_links; i++) {
+> +			if (strcmp(geminilake_dais[i].name, "SSP2-Codec"))
+> +				continue;
+> +
+> +			/* update the dai link to use rt5682s codec */
+> +			geminilake_dais[i].codecs = ssp2_codec_5682s;
+> +			geminilake_dais[i].num_codecs = ARRAY_SIZE(ssp2_codec_5682s);
+> +			break;
+> +		}
+> +	} else
+> +		ctx->is_rt5682s = 0;
+> +
+
+nit-pick: this branch is not required, the field is already reset with
+kzalloc().
+
+>  	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
 >  
->  config BPF_LSM
-> -- 
-> 2.31.1
+>  	card = &glk_audio_card_rt5682_m98357a;
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+> index 32fff9389eb3..4de4add74443 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+> @@ -40,6 +40,15 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+>  		.sof_fw_filename = "sof-glk.ri",
+>  		.sof_tplg_filename = "sof-glk-rt5682.tplg",
+>  	},
+> +	{
+> +		.id = "RTL5682",
+> +		.drv_name = "glk_rt5682_max98357a",
+> +		.fw_filename = "intel/dsp_fw_glk.bin",
+
+Have you actually tested with this firmware? if not, it's probably
+better not to list it as an option.
+
+> +		.machine_quirk = snd_soc_acpi_codec_list,
+> +		.quirk_data = &glk_codecs,
+> +		.sof_fw_filename = "sof-glk.ri",
+> +		.sof_tplg_filename = "sof-glk-rt5682.tplg",
+> +	},
+>  	{
+>  		.id = "10134242",
+>  		.drv_name = "glk_cs4242_mx98357a",
 > 
