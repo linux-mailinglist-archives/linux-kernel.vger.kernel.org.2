@@ -2,161 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE6643DD71
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF4E43DD75
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhJ1JL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 05:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhJ1JL6 (ORCPT
+        id S230077AbhJ1JNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 05:13:01 -0400
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:45645 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1JM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:11:58 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCC8C061570;
-        Thu, 28 Oct 2021 02:09:31 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg09y6rtTz4xcC;
-        Thu, 28 Oct 2021 20:09:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635412170;
-        bh=6bxZMa6u3BdmZNcWDX7MjL0GNbyqtdo/SRu92As+UL8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hG3JmjhWcSB4EDi4Xu/QR5Tt6PY/1DrDw866wpE3S/pNzUfAjEMtxtmfnG+M6v4EM
-         YP62Kxpl5SeM5fjMy8yyPz6nJwJxKWEtJ6vbbrN1MlWnuXR3LEtpOqVgkyu76wFUv2
-         rQq4MDBMefCm+2CO8+bCe7k0dR/ND5zOCY3RYCkNqwOBV7XSaGhxlFe74ChZIprNFx
-         PLndJv2nnFE83pVkiksk4sclFxafYnis1QesBSHeGLYsijZ9VZiPOb7fhSneawIs9G
-         iEPcfHkmvebuZgAtDU/eEbO1pXSz+983PQnjryYUqkb4F9P6s/mm5CjOq7Gqn44a+Y
-         vzXUlFO/5/Vkg==
-Date:   Thu, 28 Oct 2021 20:09:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
-        Fox Chen <foxhlchen@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Yuki Okushi <jtitor@2k36.org>
-Subject: Re: linux-next: manual merge of the rust tree with the kbuild tree
-Message-ID: <20211028200925.64f16df2@canb.auug.org.au>
-In-Reply-To: <20211015182404.0355bef6@canb.auug.org.au>
-References: <20211015182404.0355bef6@canb.auug.org.au>
+        Thu, 28 Oct 2021 05:12:58 -0400
+Received: by mail-ua1-f50.google.com with SMTP id z22so7850080uaq.12;
+        Thu, 28 Oct 2021 02:10:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jIdjJwfIBGv1KS5xhlxqTwJnLJVOANH70wfvTGUMbeI=;
+        b=MTI/PviUH7WLYyisUCS7UlJRSoWQ9uIMpq+iviYVQ/WbT4D4x3BeNKAOhuzsF6AjVL
+         vIalfZZSA+OHJd54S1iP9HvIk7W+b8iVfWsghrD/iZ4tab5i/BDJ6Kgd284WWCmc1jTM
+         m1pZr52DY2ppOoEluNd4qH7xWwof52+0Ls/YGvpQx7aZCX/lMXMDShy2ZftxnSbdZ6cw
+         STgjM4RkMog7xsa4uC8tPx75lfhZ209iq9RzBAdonB6zkVdHwYZLCnPlx9/QnPrD6VYu
+         uQHlg+kFQdiSzkj3pEKU/H8QmZFJ/WQX65GEXE59hdacFSAg1B5EbE3dfT8AbXdddpaX
+         NZsA==
+X-Gm-Message-State: AOAM532Y3pKr81xDPKJhIVe9LPurCt0KInN+5UCg68ZC0rqPCcpn3yEI
+        5mNWDH/YrbgVocIvwyulbdyKlhYHhj3hIg==
+X-Google-Smtp-Source: ABdhPJzIhfq0NCdhh0fNLeuuIsaoD0K1CJogFbOa1BJfOl03xCJIC7UmovGr6pCInWISsiXrUZ95dw==
+X-Received: by 2002:a67:ca81:: with SMTP id a1mr2656042vsl.56.1635412231255;
+        Thu, 28 Oct 2021 02:10:31 -0700 (PDT)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id n17sm380262vkp.36.2021.10.28.02.10.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 02:10:30 -0700 (PDT)
+Received: by mail-ua1-f45.google.com with SMTP id e2so10195882uax.7;
+        Thu, 28 Oct 2021 02:10:30 -0700 (PDT)
+X-Received: by 2002:ab0:3818:: with SMTP id x24mr2932390uav.122.1635412230510;
+ Thu, 28 Oct 2021 02:10:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vvi=bl.Rr0pN0CqAV8ZNVTF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211027134509.5036-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211027134509.5036-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdX81X+1AHp4Dsp70kG1TaYj=x3T8j3xidfLuskjd1Vc6g@mail.gmail.com> <CA+V-a8tRRaF=-1_94g54mYREujLed4G-=DtCXP=QJ6YeRwgfWg@mail.gmail.com>
+In-Reply-To: <CA+V-a8tRRaF=-1_94g54mYREujLed4G-=DtCXP=QJ6YeRwgfWg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 Oct 2021 11:10:19 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXK0dVpNsCUAv6eqPi0Zqek1hymvW6HrcDfJPtDVJ4hog@mail.gmail.com>
+Message-ID: <CAMuHMdXK0dVpNsCUAv6eqPi0Zqek1hymvW6HrcDfJPtDVJ4hog@mail.gmail.com>
+Subject: Re: [PATCH 4/4] pinctrl: renesas: pinctrl-rzg2l: Add support to
+ get/set drive-strength and output-impedance-ohms
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vvi=bl.Rr0pN0CqAV8ZNVTF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Prabhakar,
 
-Hi all,
+On Thu, Oct 28, 2021 at 10:59 AM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Thu, Oct 28, 2021 at 8:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Oct 27, 2021 at 3:45 PM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > Add support to get/set drive-strength and output-impedance-ohms
+> > > for the supported pins.
+> > >
+> > > While at it also renamed the below macros to match the HW manual,
+> > > PIN_CFG_IOLH_SD0 -> PIN_CFG_IO_VMC_SD0
+> > > PIN_CFG_IOLH_SD1 -> PIN_CFG_IO_VMC_SD1
+> > > PIN_CFG_IOLH_QSPI -> PIN_CFG_IO_VMC_QSPI
+> > > PIN_CFG_IOLH_ETH0 -> PIN_CFG_IO_VMC_ETH0
+> > > PIN_CFG_IOLH_ETH1 -> PIN_CFG_IO_VMC_ETH1
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-On Fri, 15 Oct 2021 18:24:04 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the rust tree got a conflict in:
->=20
->   Makefile
->=20
-> between commit:
->=20
->   09708df61f2b ("kbuild: split DEBUG_CFLAGS out to scripts/Makefile.debug=
-")
->=20
-> from the kbuild tree and commit:
->=20
->   dc08d49444e9 ("Kbuild: add Rust support")
->=20
-> from the rust tree.
->=20
-> I fixed it up (I used the Makefile conflicting part from the former and
-> applied the patch below) and can carry the fix as necessary. This is
-> now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your
-> tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+> > The rest looks good to me!
+> >
+> Thanks, I'll post a v2 just with patches 3 and 4 only. Hope that is OK with you.
 
-The fixup patch now looks like this:
+That's fine for me.  I can take 1/4 and 2/4 of this series, if LinusW
+and Rob give their Acked-by.
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 15 Oct 2021 18:16:09 +1100
-Subject: [PATCH] Kbuild: fix for "kbuild: split DEBUG_CFLAGS out to
- scripts/Makefile.debug"
+Gr{oetje,eeting}s,
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- scripts/Makefile.debug | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+                        Geert
 
-diff --git a/scripts/Makefile.debug b/scripts/Makefile.debug
-index 9f39b0130551..c664af3ccc6b 100644
---- a/scripts/Makefile.debug
-+++ b/scripts/Makefile.debug
-@@ -1,4 +1,5 @@
- DEBUG_CFLAGS	:=3D
-+DEBUG_RUSTFLAGS :=3D
-=20
- ifdef CONFIG_DEBUG_INFO_SPLIT
- DEBUG_CFLAGS	+=3D -gsplit-dwarf
-@@ -10,6 +11,12 @@ ifndef CONFIG_AS_IS_LLVM
- KBUILD_AFLAGS	+=3D -Wa,-gdwarf-2
- endif
-=20
-+ifdef CONFIG_DEBUG_INFO_REDUCED
-+DEBUG_RUSTFLAGS +=3D -Cdebuginfo=3D1
-+else
-+DEBUG_RUSTFLAGS +=3D -Cdebuginfo=3D2
-+endif
-+
- ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) :=3D 4
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) :=3D 5
-@@ -31,3 +38,6 @@ endif
-=20
- KBUILD_CFLAGS +=3D $(DEBUG_CFLAGS)
- export DEBUG_CFLAGS
-+
-+KBUILD_RUSTFLAGS +=3D $(DEBUG_RUSTFLAGS)
-+export DEBUG_RUSTFLAGS
---=20
-2.33.0
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vvi=bl.Rr0pN0CqAV8ZNVTF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6aMUACgkQAVBC80lX
-0Gwa0Qf+LZYWYOrgNlZxCXHxfx0/2s9nJjvXc+upbheQHszM6ho9nOolaMchN+RF
-h4lA7IeYvbvOArK5LM3wIxPAIb0vUTNooXrW2+u+NkSLEroUMfcSXfeLcxaD5Pd8
-longZPyCobQ6lIEZXLXFe4q2cJP4Fj/1SJQccyCCXLgJ+rVHlljqRv1wZ041KXU8
-jkcgEWIpOETLgKwIp/qSJah6EyTfFNwr6F1beE2BgGNhzjTkdFsI0t9+W8CTfa14
-JRT3+FjEXmcPDSgAIpPZxTfkhppm9ZenlMp9a8F6WhPxNGVb/ym2seXyqTFGPBuc
-S0R/Div6hklj/wppqNzlKxZeW+tcoQ==
-=3618
------END PGP SIGNATURE-----
-
---Sig_/vvi=bl.Rr0pN0CqAV8ZNVTF--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
