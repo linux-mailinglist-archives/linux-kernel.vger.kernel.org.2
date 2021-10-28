@@ -2,86 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A82743E217
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666C243E224
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhJ1N3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:29:20 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12749 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230265AbhJ1N3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:29:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635427612; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=uHCxDRy0CnpAT24ZiF7PmTZGX6J9BLvsOGhtHcHUmSg=;
- b=glSORvaMt59b9+FnlmMrp+cN1LMyhV6HGe66Yc8n5CLMrkgy+GCaSEN2/pqrqVXef8zimEjI
- FfDs+Fhnx1snhtg17hMAtpNRrEyxL+rpnxhsICZtRhPYQpv6Ko5NuN4v8q4qU0o/W8uVRykc
- YXlN09re51BJ0xRE73zVoMtdF1c=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 617aa51ac8c1b282a5bcc437 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 13:26:50
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C7A82C4361A; Thu, 28 Oct 2021 13:26:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FC82C4338F;
-        Thu, 28 Oct 2021 13:26:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 8FC82C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S230423AbhJ1N3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:29:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26216 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230185AbhJ1N3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:29:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635427638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x32GTHyZV2d2Te0Y1QYSCYUtM8g2i1acZ3bTfsYMMAU=;
+        b=Grmd0RTLzmFZPUEoWNDffuG1GyB3wIbGs3ZP6w3YBl5IksD8seUFXuSEdfPDI3oFbDNg/k
+        Me00uPKH7hdhLMHjRlkCNCHF3QCH5gVo3PWSmyu+a/ntM50wPzsfz/rLhoDdWpJ0D6+S8w
+        PniVPXEyD1gkyThyU9tro6oGBXw16jw=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-1qCoFemJOvGUfJgjAD716w-1; Thu, 28 Oct 2021 09:27:17 -0400
+X-MC-Unique: 1qCoFemJOvGUfJgjAD716w-1
+Received: by mail-pf1-f200.google.com with SMTP id 12-20020a62150c000000b0047bedbb0619so3291297pfv.17
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:27:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=x32GTHyZV2d2Te0Y1QYSCYUtM8g2i1acZ3bTfsYMMAU=;
+        b=ZImlEVrv6tpY5G94gM/7suYFsPbKRznl3lIzPZxu9xNKLT656C1YB+2HMcg0pnI/he
+         TE6kWOkZ1v9pBRO/1mLfmZpPb5oSxbUuXgzFpiQb6pJD4UWv6Wmc7V8YdTcziFfLCx98
+         15SEnyR0lkh7VRDzPrUuElw5SJNb3JhSGHmkdkgYvm5l5zWezcvCcT8K07THkU0Z3DO8
+         nxXl4LwwYSIOFIhRPArxy6kLQuJC/amBlsjachbdI1HgC8oSQ06WbVsjQw7n4NOVqlB1
+         7LtS1zqjGA79alLUvOOIGalkAIYOTWDeEjlwBWviU7291CdczicKagkZagPm3e/Kl6RP
+         cNLQ==
+X-Gm-Message-State: AOAM532TqJ80sivY4N0xpLEyBfZNFSfmoLzsN7SVx0UuIx+R6KJQT9JX
+        C+ZWOGjyn0G+Bt9zsqVeIbqkAMXrf12CKA3yOr4OsB1z+NDtUhEtw8E93TsM0S9cKu4YGpObfdC
+        0BjTaTG1XC7qRZXC8nPBBFQr7
+X-Received: by 2002:a63:d2:: with SMTP id 201mr3212091pga.400.1635427635559;
+        Thu, 28 Oct 2021 06:27:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwY33wZMynrtLcKEoB+4FpWFHv3aPazGRU2vRfqNmPhWiFOsQux/UEOKNeRz2nu9Lt/1v7Qkg==
+X-Received: by 2002:a63:d2:: with SMTP id 201mr3212064pga.400.1635427635283;
+        Thu, 28 Oct 2021 06:27:15 -0700 (PDT)
+Received: from [10.72.12.20] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id mi11sm7861757pjb.5.2021.10.28.06.27.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 06:27:14 -0700 (PDT)
+Subject: Re: [RFC PATCH v3] ceph: ceph: add remote object copies to fs client
+ metrics
+To:     =?UTF-8?Q?Lu=c3=ads_Henriques?= <lhenriques@suse.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Patrick Donnelly <pdonnell@redhat.com>
+References: <20211028114826.27192-1-lhenriques@suse.de>
+From:   Xiubo Li <xiubli@redhat.com>
+Message-ID: <d80cc52c-4617-7941-c227-0465cbc8fc23@redhat.com>
+Date:   Thu, 28 Oct 2021 21:27:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 3/4] rtl8187: fix control-message timeouts
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211025120522.6045-4-johan@kernel.org>
-References: <20211025120522.6045-4-johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Herton Ronaldo Krzesinski <herton@canonical.com>,
-        Hin-Tak Leung <htl10@users.sourceforge.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163542760369.5095.9529718902360790096.kvalo@codeaurora.org>
-Date:   Thu, 28 Oct 2021 13:26:49 +0000 (UTC)
+In-Reply-To: <20211028114826.27192-1-lhenriques@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johan Hovold <johan@kernel.org> wrote:
 
-> USB control-message timeouts are specified in milliseconds and should
-> specifically not vary with CONFIG_HZ.
-> 
-> Fixes: 605bebe23bf6 ("[PATCH] Add rtl8187 wireless driver")
-> Cc: stable@vger.kernel.org      # 2.6.23
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+On 10/28/21 7:48 PM, Luís Henriques wrote:
+> This patch adds latency and size metrics for remote object copies
+> operations ("copyfrom").  For now, these metrics will be available on the
+> client only, they won't be sent to the MDS.
+>
+> Cc: Patrick Donnelly<pdonnell@redhat.com>
+> Signed-off-by: Luís Henriques<lhenriques@suse.de>
+> ---
+> This patch is still an RFC because it is... ugly.  Although it now
+> provides nice values (latency and size) using the metrics infrastructure,
+> it actually needs to extend the ceph_osdc_copy_from() function to add 2
+> extra args!  That's because we need to get the timestamps stored in
+> ceph_osd_request, which is handled within that function.
+>
+> The alternative is to ignore those timestamps and collect new ones in
+> ceph_do_objects_copy():
+>
+> 	start_req = ktime_get();
+> 	ceph_osdc_copy_from(...);
+> 	end_req = ktime_get();
+>
+> These would be more coarse-grained, of course.  Any other suggestions?
+>
+> Cheers,
+> -- Luís fs/ceph/debugfs.c | 19 ++++++++++++++++++ fs/ceph/file.c | 7 
+> ++++++- fs/ceph/metric.c | 35 +++++++++++++++++++++++++++++++++ 
+> fs/ceph/metric.h | 14 +++++++++++++ include/linux/ceph/osd_client.h | 
+> 3 ++- net/ceph/osd_client.c | 8 ++++++-- 6 files changed, 82 
+> insertions(+), 4 deletions(-) diff --git a/fs/ceph/debugfs.c 
+> b/fs/ceph/debugfs.c index 55426514491b..b657170d6bc3 100644 --- 
+> a/fs/ceph/debugfs.c +++ b/fs/ceph/debugfs.c @@ -203,6 +203,16 @@ 
+> static int metrics_latency_show(struct seq_file *s, void *p) 
+> spin_unlock(&m->metadata_metric_lock); 
+> CEPH_LAT_METRIC_SHOW("metadata", total, avg, min, max, sq); + 
+> spin_lock(&m->copyfrom_metric_lock); + total = m->total_copyfrom; + 
+> sum = m->copyfrom_latency_sum; + avg = total > 0 ? 
+> DIV64_U64_ROUND_CLOSEST(sum, total) : 0; + min = 
+> m->copyfrom_latency_min; + max = m->copyfrom_latency_max; + sq = 
+> m->copyfrom_latency_sq_sum; + spin_unlock(&m->copyfrom_metric_lock); + 
+> CEPH_LAT_METRIC_SHOW("copyfrom", total, avg, min, max, sq); + return 
+> 0; } @@ -234,6 +244,15 @@ static int metrics_size_show(struct seq_file 
+> *s, void *p) spin_unlock(&m->write_metric_lock); 
+> CEPH_SZ_METRIC_SHOW("write", total, avg_sz, min_sz, max_sz, sum_sz); + 
+> spin_lock(&m->copyfrom_metric_lock); + total = m->total_copyfrom; + 
+> sum_sz = m->copyfrom_size_sum; + avg_sz = total > 0 ? 
+> DIV64_U64_ROUND_CLOSEST(sum_sz, total) : 0; + min_sz = 
+> m->copyfrom_size_min; + max_sz = m->copyfrom_size_max; + 
+> spin_unlock(&m->copyfrom_metric_lock); + 
+> CEPH_SZ_METRIC_SHOW("copyfrom", total, avg_sz, min_sz, max_sz, 
+> sum_sz); + return 0; } diff --git a/fs/ceph/file.c b/fs/ceph/file.c 
+> index e61018d9764e..d1139bbcd58d 100644 --- a/fs/ceph/file.c +++ 
+> b/fs/ceph/file.c @@ -2208,6 +2208,7 @@ static ssize_t 
+> ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off 
+> struct ceph_object_locator src_oloc, dst_oloc; struct ceph_object_id 
+> src_oid, dst_oid; size_t bytes = 0; + ktime_t start_req, end_req; u64 
+> src_objnum, src_objoff, dst_objnum, dst_objoff; u32 src_objlen, 
+> dst_objlen; u32 object_size = src_ci->i_layout.object_size; @@ -2242,7 
+> +2243,11 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info 
+> *src_ci, u64 *src_off CEPH_OSD_OP_FLAG_FADVISE_DONTNEED, 
+> dst_ci->i_truncate_seq, dst_ci->i_truncate_size, - 
+> CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ); + 
+> CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ, + &start_req, &end_req); + 
+> ceph_update_copyfrom_metrics(&fsc->mdsc->metric, + start_req, end_req, 
+> + object_size, ret);
 
-2 patches applied to wireless-drivers-next.git, thanks.
+Maybe you can move this to ceph_osdc_copy_from() by passing the 
+object_size to it ?
 
-2e9be536a213 rtl8187: fix control-message timeouts
-541fd20c3ce5 rsi: fix control-message timeout
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211025120522.6045-4-johan@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> if (ret) { if (ret == -EOPNOTSUPP) { fsc->have_copy_from2 = false; 
+> diff --git a/fs/ceph/metric.c b/fs/ceph/metric.c index 
+> 04d5df29bbbf..94e7f8fd34d6 100644 --- a/fs/ceph/metric.c +++ 
+> b/fs/ceph/metric.c @@ -270,6 +270,16 @@ int ceph_metric_init(struct 
+> ceph_client_metric *m) m->total_metadatas = 0; m->metadata_latency_sum 
+> = 0; + spin_lock_init(&m->copyfrom_metric_lock); + 
+> m->copyfrom_latency_sq_sum = 0; + m->copyfrom_latency_min = KTIME_MAX; 
+> + m->copyfrom_latency_max = 0; + m->total_copyfrom = 0; + 
+> m->copyfrom_latency_sum = 0; + m->copyfrom_size_min = U64_MAX; + 
+> m->copyfrom_size_max = 0; + m->copyfrom_size_sum = 0; + 
+> atomic64_set(&m->opened_files, 0); ret = 
+> percpu_counter_init(&m->opened_inodes, 0, GFP_KERNEL); if (ret) @@ 
+> -408,3 +418,28 @@ void ceph_update_metadata_metrics(struct 
+> ceph_client_metric *m, &m->metadata_latency_sq_sum, lat); 
+> spin_unlock(&m->metadata_metric_lock); } + +void 
+> ceph_update_copyfrom_metrics(struct ceph_client_metric *m, + ktime_t 
+> r_start, ktime_t r_end, + unsigned int size, int rc) +{ + ktime_t lat 
+> = ktime_sub(r_end, r_start); + ktime_t total; + + if (unlikely(rc && 
+> rc != -ETIMEDOUT)) + return; + + spin_lock(&m->copyfrom_metric_lock); 
+> + total = ++m->total_copyfrom; + m->copyfrom_size_sum += size; + 
+> m->copyfrom_latency_sum += lat; + 
+> METRIC_UPDATE_MIN_MAX(m->copyfrom_size_min, + m->copyfrom_size_max, + 
+> size); + METRIC_UPDATE_MIN_MAX(m->copyfrom_latency_min, + 
+> m->copyfrom_latency_max, + lat); + __update_stdev(total, 
+> m->copyfrom_latency_sum, + &m->copyfrom_latency_sq_sum, lat); + 
+> spin_unlock(&m->copyfrom_metric_lock); +} diff --git 
+> a/fs/ceph/metric.h b/fs/ceph/metric.h index 0133955a3c6a..c95517c7c77b 
+> 100644 --- a/fs/ceph/metric.h +++ b/fs/ceph/metric.h @@ -162,6 +162,16 
+> @@ struct ceph_client_metric { ktime_t metadata_latency_min; ktime_t 
+> metadata_latency_max; + spinlock_t copyfrom_metric_lock; + u64 
+> total_copyfrom; + u64 copyfrom_size_sum; + u64 copyfrom_size_min; + 
+> u64 copyfrom_size_max; + ktime_t copyfrom_latency_sum; + ktime_t 
+> copyfrom_latency_sq_sum; + ktime_t copyfrom_latency_min; + ktime_t 
+> copyfrom_latency_max; + /* The total number of directories and files 
+> that are opened */ atomic64_t opened_files; @@ -204,4 +214,8 @@ extern 
+> void ceph_update_write_metrics(struct ceph_client_metric *m, extern 
+> void ceph_update_metadata_metrics(struct ceph_client_metric *m, 
+> ktime_t r_start, ktime_t r_end, int rc); +extern void 
+> ceph_update_copyfrom_metrics(struct ceph_client_metric *m, + ktime_t 
+> r_start, ktime_t r_end, + unsigned int size, int rc); + #endif /* 
+> _FS_CEPH_MDS_METRIC_H */ diff --git a/include/linux/ceph/osd_client.h 
+> b/include/linux/ceph/osd_client.h index 83fa08a06507..d282c7531a3f 
+> 100644 --- a/include/linux/ceph/osd_client.h +++ 
+> b/include/linux/ceph/osd_client.h @@ -524,7 +524,8 @@ int 
+> ceph_osdc_copy_from(struct ceph_osd_client *osdc, struct 
+> ceph_object_locator *dst_oloc, u32 dst_fadvise_flags, u32 
+> truncate_seq, u64 truncate_size, - u8 copy_from_flags); + u8 
+> copy_from_flags, + ktime_t *start_req, ktime_t *end_req); /* 
+> watch/notify */ struct ceph_osd_linger_request * diff --git 
+> a/net/ceph/osd_client.c b/net/ceph/osd_client.c index 
+> ff8624a7c964..74ffe6240b07 100644 --- a/net/ceph/osd_client.c +++ 
+> b/net/ceph/osd_client.c @@ -5356,7 +5356,8 @@ int 
+> ceph_osdc_copy_from(struct ceph_osd_client *osdc, struct 
+> ceph_object_locator *dst_oloc, u32 dst_fadvise_flags, u32 
+> truncate_seq, u64 truncate_size, - u8 copy_from_flags) + u8 
+> copy_from_flags, + ktime_t *start_req, ktime_t *end_req) { struct 
+> ceph_osd_request *req; int ret; @@ -5364,6 +5365,8 @@ int 
+> ceph_osdc_copy_from(struct ceph_osd_client *osdc, req = 
+> ceph_osdc_alloc_request(osdc, NULL, 1, false, GFP_KERNEL); if (!req) 
+> return -ENOMEM; + *start_req = 0; + *end_req = 0; req->r_flags = 
+> CEPH_OSD_FLAG_WRITE; @@ -5383,7 +5386,8 @@ int 
+> ceph_osdc_copy_from(struct ceph_osd_client *osdc, 
+> ceph_osdc_start_request(osdc, req, false); ret = 
+> ceph_osdc_wait_request(osdc, req); - + *start_req = 
+> req->r_start_latency; + *end_req = req->r_end_latency; out: 
+> ceph_osdc_put_request(req); return ret;
 
