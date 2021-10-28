@@ -2,573 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90C443DEEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7262243DEEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhJ1Key (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:34:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhJ1Kes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:34:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71D7361040;
-        Thu, 28 Oct 2021 10:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635417141;
-        bh=EEH1kQpZ6zNvVfX0L7XGWE/jH9+syRJkIcKYB+ZHdFQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rFmbHMMOBNYVcssEypIP4HfJvPjfN/e7jJAkmGpDVh0QNrnq5pQivoiImzhHceDS9
-         zVyeyZKHen34kUD6F42Ln5Je37ukCR4CwAF3Mp7Ght4ycUicLmTh6J/OmXfnOFJR4E
-         gkdQk4s4jfM+srfj5ryrAV0mT5dWJheqigNs1iiCUSYfWnubSnXkwoIm6BXd3Lnqdi
-         KRx3AMoJ2CaC8mPhbTZYqjAMVM1qs3zIwbDfMfqHTFAf78LcVR58S43Z3zqofgLO0s
-         ZFhdE+qrVmToznkLpc7eVZwxTh2s4WAkozbbj3AoFH0TwP3kVMGZOpO4IivG18eJOk
-         eFHs7d+s5rvew==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>, Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Laurent Vivier <laurent@vivier.eu>,
-        Matthew Bobrowski <repnop@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, containers@lists.linux.dev
-Subject: [PATCH 2/2] binfmt_misc: enable sandboxed mounts
-Date:   Thu, 28 Oct 2021 12:31:14 +0200
-Message-Id: <20211028103114.2849140-2-brauner@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211028103114.2849140-1-brauner@kernel.org>
-References: <20211028103114.2849140-1-brauner@kernel.org>
+        id S230119AbhJ1Kex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhJ1Ker (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 06:34:47 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E2DC061767
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:32:20 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id b32so9361601lfv.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LDxy8zf16XbblmUbXPDzHFwVyeqRrn2W3qeHn28IFtA=;
+        b=QFzIb5gUTe4RelRe44dkEOHgZU2yh1MtOfT5MUgPyUQuh5lg0977zIgECaPQDdBj94
+         BFkSTYJiWDPxjquU/iRXxSmLnZKzySqv4tRahOT/i3nsIrF/ceZB3jJ/QXzNmerSFdHT
+         j6y7c7+0gwDhuZ6bzFgDB/c7mPjz7k4NTeX9Y1dzMQGAPKIBxQukEzZt80vR0jQYhNts
+         /dYzG66TfgeOSMSGWpzrto+h8hkCtU7cGpd/qGmmXVcNyAKIEJ/Uq9ACZg8z+SDjvb4U
+         B/Cu29e07u78iKlZYDXjsv2EiCilRJvHfgkhYERy5d811QFGeIl8vDSY6m7DQGaIJOSt
+         NzhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LDxy8zf16XbblmUbXPDzHFwVyeqRrn2W3qeHn28IFtA=;
+        b=YKXz51b55/vjVeYO1WCrga18bX4FGbgMoFYk8WZEpaHsxG7dUO5Hq7jIkTuMClb3iI
+         uFpep0IanTEHcwdURMZAgNwwaGtlB+dkZU0+zOG35mqNv5gKuHjahJ0l7akI/1Y0G9C9
+         MODIb+4Qed2hatQB8D31744aBdSsyZPDe0wh+PzhltpiKiiB3oHTH9jCHrMUPOj6UNr+
+         y6aWbvWG/lyhhjeWgFIh1a74gMQ+yXgU0MarhFjyE8SPBQbAWw/a/Yh+GcL5T2SN+8P+
+         cKECj3LbS2cINK/EWrZLfwkCYEx3Qas93vRK1uQtbXPqjcGwqSP2DNF1JvC7vKd3nG3i
+         xBdg==
+X-Gm-Message-State: AOAM5323ZrqZDRwq7mcarsTAaBLqdB3YVDrESOdfFjS8oNbciU7jIrh+
+        v6+vGRCeJn7+mpLWEEWFqZyx5QZnuKLXYiC+AZ/x8w==
+X-Google-Smtp-Source: ABdhPJwJk0vTvCHQGwtvtA9aKAQOD7odrTm25viS1f/o7JE473vUBTmJCGpXpvGj6R3j3zwwwNZn9hKBQKXCJHHJvBM=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr3347083lfb.71.1635417138723;
+ Thu, 28 Oct 2021 03:32:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1635152851-23660-1-git-send-email-quic_c_sanm@quicinc.com>
+ <1635152851-23660-2-git-send-email-quic_c_sanm@quicinc.com>
+ <YXcBK7zqny0s4gd4@ripper> <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
+ <YXck+xCJQBRGqTCw@ripper> <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
+ <YXdsYlLWnjopyMn/@ripper> <CAE-0n51C4dm6bhds=ZZyje-Pcejxjm4MMa3m-VHjFgq7GZGrLw@mail.gmail.com>
+ <YXjbs3Bv6Y3d87EC@yoga> <CAPDyKFrWQdvZX4ukHZoGz73JPfQSgqVrG_4ShMp_GrxL0NKLvg@mail.gmail.com>
+ <YXlsEF9XZpthecJC@ripper>
+In-Reply-To: <YXlsEF9XZpthecJC@ripper>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 28 Oct 2021 12:31:41 +0200
+Message-ID: <CAPDyKFpXdUKeuO2z2-2qG6YtiHmbg3=opfVwG007p1N2AOxGDA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
+ for dwc3 qcom
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Vivier <laurent@vivier.eu>
+On Wed, 27 Oct 2021 at 17:09, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Wed 27 Oct 07:24 PDT 2021, Ulf Hansson wrote:
+>
+> > On Wed, 27 Oct 2021 at 06:55, Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> > >
+> > > On Tue 26 Oct 19:48 CDT 2021, Stephen Boyd wrote:
+> > >
+> > > > +Rajendra
+> > > >
+> > > > Quoting Bjorn Andersson (2021-10-25 19:48:02)
+> > > > > On Mon 25 Oct 15:41 PDT 2021, Stephen Boyd wrote:
+> > > > >
+> > > > > >
+> > > > > > When the binding was introduced I recall we punted on the parent child
+> > > > > > conversion stuff. One problem at a time. There's also the possibility
+> > > > > > for a power domain to be parented by multiple power domains so
+> > > > > > translation tables need to account for that.
+> > > > > >
+> > > > >
+> > > > > But for this case - and below display case - the subdomain (the device's
+> > > > > power-domain) is just a dumb gate. So there is no translation, the given
+> > > > > performance_state applies to the parent. Or perhaps such implicitness
+> > > > > will come back and bite us?
+> > > >
+> > > > In the gate case I don't see how the implicitness will ever be a
+> > > > problem.
+> > > >
+> > > > >
+> > > > > I don't think we allow a power-domain to be a subdomain of two
+> > > > > power-domains - and again it's not applicable to USB or display afaict.
+> > > >
+> > > > Ah maybe. I always confuse power domains and genpd.
+> > > >
+> > > > >
+> > > > > > >
+> > > > > > > > Or we may need to make another part of the OPP binding to indicate the
+> > > > > > > > relationship between the power domain and the OPP and the parent of
+> > > > > > > > the power domain.
+> > > > > > >
+> > > > > > > I suspect this would be useful if a power-domain provider needs to
+> > > > > > > translate a performance_state into a different supply-performance_state.
+> > > > > > > Not sure if we have such case currently; these examples are all an
+> > > > > > > adjustable power-domain with "gating" subdomains.
+> > > > > >
+> > > > > > Even for this case, we should be able to have the GDSC map the on state
+> > > > > > to some performance state in the parent domain. Maybe we need to add
+> > > > > > some code to the gdsc.c file to set a performance state on the parent
+> > > > > > domain when it is turned on. I'm not sure where the value for that perf
+> > > > > > state comes from. I guess we can hardcode it in the driver for now and
+> > > > > > if it needs to be multiple values based on the clk frequency we can push
+> > > > > > it out to an OPP table or something like that.
+> > > > > >
+> > > > >
+> > > > > For the GDSC I believe we only have 1:1 mapping, so implementing
+> > > > > set_performance_state to just pass that on to the parent might do the
+> > > > > trick (although I haven't thought this through).
+> > > > >
+> > > > > Conceptually I guess this would be like calling clk_set_rate() on a
+> > > > > clock gate, relying on it being propagated upwards. The problem here is
+> > > > > that the performance_state is just a "random" integer without a well
+> > > > > defined unit.
+> > > > >
+> > > >
+> > > > Right. Ideally it would be in the core code somehow so that if there
+> > > > isn't a set_performance_state function we go to the parent or some
+> > > > special return value from the function says "call it on my parent". The
+> > > > translation scheme could come later so we can translate the "random"
+> > > > integer between parent-child domains.
+> > >
+> > > As a proof of concept it should be sufficient to just add an
+> > > implementation of sc->pd.set_performance_state in gdsc.c. But I agree
+> > > that it would be nice to push this into some framework code, perhaps
+> > > made opt-in by some GENPD_FLAG_xyz.
+> > >
+> > > > At the end of the day the device
+> > > > driver wants to set a frequency or runtime pm get the device and let the
+> > > > OPP table or power domain code figure out what the level is supposed to
+> > > > be.
+> > > >
+> > >
+> > > Yes and this is already working for the non-nested case - where the
+> > > single power-domain jumps between performance states as the opp code
+> > > switches from one opp to another.
+> > >
+> > > So if we can list only the child power-domain (i.e. the GDSC) and have
+> > > the performance_stat requests propagate up to the parent rpmhpd resource
+> > > I think we're good.
+> > >
+> > >
+> > > Let's give this a spin and confirm that this is the case...
+> > >
+> > > > >
+> > > > >
+> > > > > The one case where I believe we talked about having different mapping
+> > > > > between the performance_state levels was in the relationship between CX
+> > > > > and MX. But I don't think we ever did anything about that...
+> > > >
+> > > > Hmm alright. I think there's a constraint but otherwise nobody really
+> > > > wants to change both at the same time.
+> > > >
+> > > > > >
+> > > > > > Yes, a GDSC is really a gate on a parent power domain like CX or MMCX,
+> > > > > > etc. Is the display subsystem an example of different clk frequencies
+> > > > > > wanting to change the perf state of CX? If so it's a good place to work
+> > > > > > out the translation scheme for devices that aren't listing the CX power
+> > > > > > domain in DT.
+> > > > >
+> > > > > Yes, the various display components sits in MDSS_GDSC but the opp-tables
+> > > > > needs to change the performance_state of MDSS_GDSC->parent (i.e. CX or
+> > > > > MMCX, depending on platform).
+> > > > >
+> > > > > As I said, today we hack this by trusting that the base drm/msm driver
+> > > > > will keep MDSS_GDSC on and listing MMCX (or CX) as power-domain for each
+> > > > > of these components.
+> > > > >
+> > > > >
+> > > > > So if we solve this, then that seems to directly map to the static case
+> > > > > for USB as well.
+> > > > >
+> > > >
+> > > > Got it. So in this case we could have the various display components
+> > > > that are in the mdss gdsc domain set their frequency via OPP and then
+> > > > have that translate to a level in CX or MMCX. How do we parent the power
+> > > > domains outside of DT? I'm thinking that we'll need to do that if MMCX
+> > > > is parented by CX or something like that and the drivers for those two
+> > > > power domains are different. Is it basic string matching?
+> > >
+> > > In one way or another we need to invoke pm_genpd_add_subdomain() to link
+> > > the two power-domains (actually genpds) together, like what was done in
+> > > 3652265514f5 ("clk: qcom: gdsc: enable optional power domain support").
+> > >
+> > > In the case of MMCX and CX, my impression of the documentation is that
+> > > they are independent - but if we need to express that CX is parent of
+> > > MMCX, they are both provided by rpmhpd which already supports this by
+> > > just specifying .parent on mmcx to point to cx.
+> >
+> > I was trying to follow the discussion, but it turned out to be a bit
+> > complicated to catch up and answer all things. In any case, let me
+> > just add a few overall comments, perhaps that can help to move things
+> > forward.
+> >
+>
+> Thanks for jumping in Ulf.
+>
+> > First, one domain can have two parent domains. Both from DT and from
+> > genpd point of view, just to make this clear.
+> >
+>
+> I was under the impression that the only such configuration we supported
+> was that we can explicitly attach and control multiple PDs from a
+> driver. I didn't think we could say that a given genpd is a subdomain of
+> multiple other genpds...
+>
+> That said, it's better if we can ignore this, as it doesn't apply to our
+> problem at hand.
+>
+> > Although, it certainly looks questionable to me, to hook up the USB
+> > device to two separate power domains, one to control power and one to
+> > control performance. Especially, if it's really the same piece of HW
+> > that is managing both things. Additionally, if it's correct to model
+> > the USB GDSC power domain as a child to the CX power domain from HW
+> > point of view, we should likely do that.
+> >
+>
+> So to clarify, we have the following situation:
+>
+> +---------------+
+> | CX            |
+> | +-----------+ |
+> | | USB_GDSC  | |
+> | | +-------+ | |
+> | | | dwc3  | | |
+> | | +-------+ | |
+> | +-----------+ |
+> +---------------+
+>
+> CX can operate at different performance_states, USB_GDSC can be toggled
+> on/off and hence dwc3 needs CX to operate at a performance_state meeting
+> its needs.
+>
+> The proposed patch is to list both CX and USB_GDSC as power-domains for
+> dwc3, in order for the required-opp in the dwc3 to affect CX.
 
-Enable unprivileged sandboxes to create their own binfmt_misc mounts.
-This is based on Laurent's work in [1] but has been significantly
-reworked to fix various issues we identified in earlier versions.
+Okay. Then I need to point out that this looks wrong to me.
 
-While binfmt_misc can currently only be mounted in the initial user
-namespace, binary types registered in this binfmt_misc instance are
-available to all sandboxes (Either by having them installed in the
-sandbox or by registering the binary type with the F flag causing the
-interpreter to be opened right away). So binfmt_misc binary types are
-already delegated to sandboxes implicitly.
+We should be able to support the needs for dwc3, by letting CX to
+become the parent domain for USB_GDSC.
 
-However, while a sandbox has access to all registered binary types in
-binfmt_misc a sandbox cannot currently register its own binary types
-in binfmt_misc. This has prevented various use-cases some of which were
-already outlined in [1] but we have a range of issues associated with
-this (cf. [3]-[5] below which are just a small sample).
+If there is something missing from the genpd point of view, for
+example, let's fix that!
 
-Extend binfmt_misc to be mountable in non-initial user namespaces.
-Similar to other filesystem such as nfsd, mqueue, and sunrpc we use
-keyed superblock management. The key determines whether we need to
-create a new superblock or can reuse an already existing one. We use the
-user namespace of the mount as key. This means a new binfmt_misc
-superblock is created once per user namespace creation. Subsequent
-mounts of binfmt_misc in the same user namespace will mount the same
-binfmt_misc instance. We explicitly do not create a new binfmt_misc
-superblock on every binfmt_misc mount as the semantics for
-load_misc_binary() line up with the keying model. This also allows us to
-retrieve the relevant binfmt_misc instance based on the caller's user
-namespace which can be done in a simple (bounded to 32 levels) loop.
+>
+> > From the performance states point of view, genpd supports propagating
+> > performance states to parent domains, via a 1:1 mapping of the
+> > performance state. Note that, we have also quite recently made genpd's
+> > ->set_performance_state() callback to be optional. A vote for a
+> > performance state will be propagated to the parent domain, even if the
+> > child domain would lack the ->set_performance_state() callback.  This
+> > should be useful, where a child domain relies on its parent domain for
+> > performance state management, which seems to be the case for the USB
+> > GDSC/CX power domains, right?
+> >
+>
+> I presume you're referring to the first half of
+> _genpd_set_performance_state(). This looks to be exactly what Stephen
+> and I discussed implementing.
 
-Similar to the current binfmt_misc semantics allowing access to the
-binary types in the initial binfmt_misc instance we do allow sandboxes
-access to their parent's binfmt_misc mounts if they do not have created
-a separate binfmt_misc instance.
+Yes.
 
-Overall, this will unblock the use-cases mentioned below and in general
-will also allow to support and harden execution of another
-architecture's binaries in tight sandboxes. For instance, using the
-unshare binary it possible to start a chroot of another architecture and
-configure the binfmt_misc interpreter without being root to run the
-binaries in this chroot and without requiring the host to modify its
-binary type handlers.
+>
+> I had a rather messy tree when I looked at this last time, presumably
+> missing something else to hide this propagation.
+>
+>
+> For the USB_GDSC we today don't describe that as a subdomain of CX, but
+> per your guidance and the recently introduced 3652265514f5 ("clk: qcom:
+> gdsc: enable optional power domain support") we should be fairly close
+> to the solution.
 
-Henning had already posted a few experiments in the cover letter at [1].
-But here's an additional example where an unprivileged container
-registers qemu-user-static binary handlers for various binary types in
-its separate binfmt_misc mount and is then seamlessly able to start
-containers with a different architecture without affecting the host:
+Great!
 
-[lxc monitor] /var/lib/lxc imp2
- \_ /sbin/init
-     \_ /lib/systemd/systemd-journald
-     \_ /lib/systemd/systemd-udevd
-     \_ /lib/systemd/systemd-networkd
-     \_ /usr/sbin/cron -f -P
-     \_ @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-     \_ /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
-     \_ /usr/sbin/rsyslogd -n -iNONE
-     \_ /lib/systemd/systemd-logind
-     \_ /lib/systemd/systemd-resolved
-     \_ dnsmasq --conf-file=/dev/null -u lxc-dnsmasq --strict-order --bind-interfaces --pid-file=/run/lxc/dnsmasq.pid --liste
-     \_ /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
-     \_ /sbin/agetty -o -p -- \u --noclear --keep-baud pts/0 115200,38400,9600 vt220
-     \_ /sbin/agetty -o -p -- \u --noclear --keep-baud pts/1 115200,38400,9600 vt220
-     \_ /sbin/agetty -o -p -- \u --noclear --keep-baud pts/2 115200,38400,9600 vt220
-     \_ /sbin/agetty -o -p -- \u --noclear --keep-baud pts/3 115200,38400,9600 vt220
-     \_ [lxc monitor] /var/lib/lxc alp1
-         \_ /usr/libexec/qemu-binfmt/ppc64le-binfmt-P /sbin/init /sbin/init
-             \_ /usr/libexec/qemu-binfmt/ppc64le-binfmt-P /lib/systemd/systemd-journald /lib/systemd/systemd-journald
-             \_ /usr/libexec/qemu-binfmt/ppc64le-binfmt-P /lib/systemd/systemd-udevd /lib/systemd/systemd-udevd
-             \_ /usr/libexec/qemu-binfmt/ppc64le-binfmt-P /usr/sbin/cron /usr/sbin/cron -f -P
-             \_ /usr/libexec/qemu-binfmt/ppc64le-binfmt-P /lib/systemd/systemd-resolved /lib/systemd/systemd-resolved
-             \_ /usr/libexec/qemu-binfmt/ppc64le-binfmt-P /lib/systemd/systemd-logind /lib/systemd/systemd-logind
+>
+>
+> The one "problem" I can see is that I believe that some of the GDSCs in
+> GCC should be subdomains of MX, so the above referenced patch would then
+> need to be extended to allow specifying which of the multiple
+> power-domains each GDSC should be a subdomain of - something Dmitry and
+> I did discuss, but wasn't needed for the display GDSC.
+> Perhaps I'm just misinformed regarding this need though.
 
-Link: https://lore.kernel.org/r/20191216091220.465626-2-laurent@vivier.eu
-[1]: https://lore.kernel.org/all/20191216091220.465626-1-laurent@vivier.eu
-[2]: https://discuss.linuxcontainers.org/t/binfmt-misc-permission-denied
-[3]: https://discuss.linuxcontainers.org/t/lxd-binfmt-support-for-qemu-static-interpreters
-[4]: https://discuss.linuxcontainers.org/t/3-1-0-binfmt-support-service-in-unprivileged-guest-requires-write-access-on-hosts-proc-sys-fs-binfmt-misc
-[5]: https://discuss.linuxcontainers.org/t/qemu-user-static-not-working-4-11
-Cc: Sargun Dhillon <sargun@sargun.me>
-Cc: Serge Hallyn <serge@hallyn.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Henning Schild <henning.schild@siemens.com>
-Cc: Andrei Vagin <avagin@gmail.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Laurent Vivier <laurent@vivier.eu>
-Cc: linux-fsdevel@vger.kernel.org
-Signed-off-by: Laurent Vivier <laurent@vivier.eu>
-[christian.brauner@ubuntu.com: rework patch substantially]
-[christian.brauner@ubuntu.com: add new commit message]
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- fs/binfmt_misc.c               | 158 ++++++++++++++++++++++++++++-----
- include/linux/binfmts.h        |  10 +++
- include/linux/user_namespace.h |   8 ++
- kernel/user.c                  |  13 +++
- kernel/user_namespace.c        |   3 +
- 5 files changed, 168 insertions(+), 24 deletions(-)
+I didn't quite follow all of this.
 
-diff --git a/fs/binfmt_misc.c b/fs/binfmt_misc.c
-index 5a9d5e44c750..033834d83455 100644
---- a/fs/binfmt_misc.c
-+++ b/fs/binfmt_misc.c
-@@ -40,9 +40,6 @@ enum {
- 	VERBOSE_STATUS = 1 /* make it zero to save 400 bytes kernel memory */
- };
- 
--static LIST_HEAD(entries);
--static int enabled = 1;
--
- enum {Enabled, Magic};
- #define MISC_FMT_PRESERVE_ARGV0 (1 << 31)
- #define MISC_FMT_OPEN_BINARY (1 << 30)
-@@ -63,7 +60,6 @@ typedef struct {
- 	refcount_t ref;
- } Node;
- 
--static DEFINE_RWLOCK(entries_lock);
- static struct file_system_type bm_fs_type;
- 
- /*
-@@ -81,18 +77,39 @@ static struct file_system_type bm_fs_type;
-  */
- #define MAX_REGISTER_LENGTH 1920
- 
-+static struct binfmt_misc *binfmt_misc(struct user_namespace *user_ns)
-+{
-+	while (user_ns) {
-+		struct binfmt_misc *misc;
-+
-+		/* Pairs with smp_store_release() in bm_fill_super(). */
-+		misc = smp_load_acquire(&user_ns->binfmt_misc);
-+		if (misc)
-+			return misc;
-+
-+		user_ns = user_ns->parent;
-+	}
-+
-+	/*
-+	 * As the first user namespace is initialized with
-+	 * &init_binfmt_misc we should never come here.
-+	 */
-+	WARN_ON_ONCE(1);
-+	return ERR_PTR(-EINVAL);
-+}
-+
- /*
-  * Check if we support the binfmt
-  * if we do, return the node, else NULL
-  * locking is done in load_misc_binary
-  */
--static Node *check_file(struct linux_binprm *bprm)
-+static Node *check_file(struct binfmt_misc *misc, struct linux_binprm *bprm)
- {
- 	char *p = strrchr(bprm->interp, '.');
- 	struct list_head *l;
- 
- 	/* Walk all the registered handlers. */
--	list_for_each(l, &entries) {
-+	list_for_each(l, &misc->entries) {
- 		Node *e = list_entry(l, Node, list);
- 		char *s;
- 		int j;
-@@ -143,18 +160,23 @@ static int load_misc_binary(struct linux_binprm *bprm)
- 	Node *fmt;
- 	struct file *interp_file = NULL;
- 	int retval;
-+	struct binfmt_misc *misc;
-+
-+	misc = binfmt_misc(current_user_ns());
-+	if (IS_ERR(misc))
-+		return PTR_ERR(misc);
- 
- 	retval = -ENOEXEC;
--	if (!enabled)
-+	if (!misc->enabled)
- 		return retval;
- 
- 	/* to keep locking time low, we copy the interpreter string */
--	read_lock(&entries_lock);
--	fmt = check_file(bprm);
-+	read_lock(&misc->entries_lock);
-+	fmt = check_file(misc, bprm);
- 	/* Make sure the node isn't freed behind our back. */
- 	if (fmt)
- 		refcount_inc(&fmt->ref);
--	read_unlock(&entries_lock);
-+	read_unlock(&misc->entries_lock);
- 	if (!fmt)
- 		return retval;
- 
-@@ -579,14 +601,20 @@ static void bm_evict_inode(struct inode *inode)
- 	clear_inode(inode);
- 
- 	if (e) {
--		write_lock(&entries_lock);
-+		struct binfmt_misc *misc;
-+
-+		misc = binfmt_misc(inode->i_sb->s_user_ns);
-+		if (IS_ERR(misc))
-+			return;
-+
-+		write_lock(&misc->entries_lock);
- 		list_del_init(&e->list);
--		write_unlock(&entries_lock);
-+		write_unlock(&misc->entries_lock);
- 		put_node(e);
- 	}
- }
- 
--static void kill_node(Node *e)
-+static void kill_node(struct binfmt_misc *misc, Node *e)
- {
- 	struct dentry *dentry;
- 
-@@ -626,8 +654,14 @@ static ssize_t bm_entry_write(struct file *file, const char __user *buffer,
- 				size_t count, loff_t *ppos)
- {
- 	struct dentry *root;
--	Node *e = file_inode(file)->i_private;
-+	struct inode *inode = file_inode(file);
-+	Node *e = inode->i_private;
- 	int res = parse_command(buffer, count);
-+	struct binfmt_misc *misc;
-+
-+	misc = binfmt_misc(inode->i_sb->s_user_ns);
-+	if (IS_ERR(misc))
-+		return PTR_ERR(misc);
- 
- 	switch (res) {
- 	case 1:
-@@ -644,7 +678,7 @@ static ssize_t bm_entry_write(struct file *file, const char __user *buffer,
- 		inode_lock(d_inode(root));
- 
- 		if (!list_empty(&e->list))
--			kill_node(e);
-+			kill_node(misc, e);
- 
- 		inode_unlock(d_inode(root));
- 		break;
-@@ -670,16 +704,25 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
- 	struct inode *inode;
- 	struct super_block *sb = file_inode(file)->i_sb;
- 	struct dentry *root = sb->s_root, *dentry;
-+	struct binfmt_misc *misc;
- 	int err = 0;
- 	struct file *f = NULL;
- 
-+	misc = binfmt_misc(file_inode(file)->i_sb->s_user_ns);
-+	if (IS_ERR(misc))
-+		return PTR_ERR(misc);
-+
- 	e = create_entry(buffer, count);
- 
- 	if (IS_ERR(e))
- 		return PTR_ERR(e);
- 
- 	if (e->flags & MISC_FMT_OPEN_FILE) {
-+		const struct cred *old_cred;
-+
-+		old_cred = override_creds(file->f_cred);
- 		f = open_exec(e->interpreter);
-+		revert_creds(old_cred);
- 		if (IS_ERR(f)) {
- 			pr_notice("register: failed to install interpreter file %s\n",
- 				 e->interpreter);
-@@ -711,9 +754,9 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
- 	inode->i_fop = &bm_entry_operations;
- 
- 	d_instantiate(dentry, inode);
--	write_lock(&entries_lock);
--	list_add(&e->list, &entries);
--	write_unlock(&entries_lock);
-+	write_lock(&misc->entries_lock);
-+	list_add(&e->list, &misc->entries);
-+	write_unlock(&misc->entries_lock);
- 
- 	err = 0;
- out2:
-@@ -740,33 +783,45 @@ static const struct file_operations bm_register_operations = {
- static ssize_t
- bm_status_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
- {
--	char *s = enabled ? "enabled\n" : "disabled\n";
-+	struct binfmt_misc *misc;
-+	char *s;
- 
-+	misc = binfmt_misc(file_inode(file)->i_sb->s_user_ns);
-+	if (IS_ERR(misc))
-+		return PTR_ERR(misc);
-+
-+	s = misc->enabled ? "enabled\n" : "disabled\n";
- 	return simple_read_from_buffer(buf, nbytes, ppos, s, strlen(s));
- }
- 
- static ssize_t bm_status_write(struct file *file, const char __user *buffer,
- 		size_t count, loff_t *ppos)
- {
-+	struct binfmt_misc *misc;
- 	int res = parse_command(buffer, count);
- 	struct dentry *root;
- 
-+	misc = binfmt_misc(file_inode(file)->i_sb->s_user_ns);
-+	if (IS_ERR(misc))
-+		return PTR_ERR(misc);
-+
- 	switch (res) {
- 	case 1:
- 		/* Disable all handlers. */
--		enabled = 0;
-+		misc->enabled = false;
- 		break;
- 	case 2:
- 		/* Enable all handlers. */
--		enabled = 1;
-+		misc->enabled = true;
- 		break;
- 	case 3:
- 		/* Delete all handlers. */
- 		root = file_inode(file)->i_sb->s_root;
- 		inode_lock(d_inode(root));
- 
--		while (!list_empty(&entries))
--			kill_node(list_first_entry(&entries, Node, list));
-+		while (!list_empty(&misc->entries))
-+			kill_node(misc,
-+				  list_first_entry(&misc->entries, Node, list));
- 
- 		inode_unlock(d_inode(root));
- 		break;
-@@ -785,32 +840,86 @@ static const struct file_operations bm_status_operations = {
- 
- /* Superblock handling */
- 
-+static void bm_put_super(struct super_block *sb)
-+{
-+	struct user_namespace *user_ns = sb->s_fs_info;
-+
-+	sb->s_fs_info = NULL;
-+	put_user_ns(user_ns);
-+}
-+
- static const struct super_operations s_ops = {
- 	.statfs		= simple_statfs,
- 	.evict_inode	= bm_evict_inode,
-+	.put_super	= bm_put_super,
- };
- 
- static int bm_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	int err;
-+	struct user_namespace *user_ns = sb->s_user_ns;
-+	struct binfmt_misc *misc;
- 	static const struct tree_descr bm_files[] = {
- 		[2] = {"status", &bm_status_operations, S_IWUSR|S_IRUGO},
- 		[3] = {"register", &bm_register_operations, S_IWUSR},
- 		/* last one */ {""}
- 	};
- 
-+	/*
-+	 * Allocate a new binfmt_misc instance for this namespace.
-+	 * While multiple superblocks can exist they are keyed by userns in
-+	 * s_fs_info for binfmt_misc. Hence, the vfs guarantees that
-+	 * bm_fill_super() is called exactly once whenever a binfmt_misc
-+	 * superblock for a userns is created. This in turn lets us conclude
-+	 * that when a binfmt_misc superblock is created for the first time for
-+	 * a userns there's no one racing us. Therefore we don't need any
-+	 * barriers when we dereference binfmt_misc.
-+	 */
-+	misc = user_ns->binfmt_misc;
-+	if (!misc) {
-+		misc = kmalloc(sizeof(struct binfmt_misc), GFP_KERNEL);
-+		if (!misc)
-+			return -ENOMEM;
-+
-+		INIT_LIST_HEAD(&misc->entries);
-+		rwlock_init(&misc->entries_lock);
-+
-+		/* Pairs with smp_load_acquire() in binfmt_misc(). */
-+		smp_store_release(&user_ns->binfmt_misc, misc);
-+	}
-+
-+	/*
-+	 * When the binfmt_misc superblock for this userns is shutdown
-+	 * ->enabled might have been set to false and we don't reinitialize
-+	 * ->enabled again in put_super() as someone might already be mounting
-+	 * binfmt_misc again. It also would be pointless since by the time
-+	 * ->put_super() is called we know that the binary type list for this
-+	 * bintfmt_misc mount is empty making load_misc_binary() return
-+	 * -ENOEXEC independent of whether ->enabled is true. Instead, if
-+	 * someone mounts binfmt_misc for the first time or again we simply
-+	 * reset ->enabled to true.
-+	 */
-+	misc->enabled = true;
-+
- 	err = simple_fill_super(sb, BINFMTFS_MAGIC, bm_files);
- 	if (!err)
- 		sb->s_op = &s_ops;
- 	return err;
- }
- 
-+static void bm_free(struct fs_context *fc)
-+{
-+	if (fc->s_fs_info)
-+		put_user_ns(fc->s_fs_info);
-+}
-+
- static int bm_get_tree(struct fs_context *fc)
- {
--	return get_tree_single(fc, bm_fill_super);
-+	return get_tree_keyed(fc, bm_fill_super, get_user_ns(fc->user_ns));
- }
- 
- static const struct fs_context_operations bm_context_ops = {
-+	.free		= bm_free,
- 	.get_tree	= bm_get_tree,
- };
- 
-@@ -829,6 +938,7 @@ static struct file_system_type bm_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "binfmt_misc",
- 	.init_fs_context = bm_init_fs_context,
-+	.fs_flags	= FS_USERNS_MOUNT,
- 	.kill_sb	= kill_litter_super,
- };
- MODULE_ALIAS_FS("binfmt_misc");
-diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-index 049cf9421d83..42efcefc56c7 100644
---- a/include/linux/binfmts.h
-+++ b/include/linux/binfmts.h
-@@ -102,6 +102,16 @@ struct linux_binfmt {
- 	unsigned long min_coredump;	/* minimal dump size */
- } __randomize_layout;
- 
-+#if IS_ENABLED(CONFIG_BINFMT_MISC)
-+struct binfmt_misc {
-+	struct list_head entries;
-+	rwlock_t entries_lock;
-+	bool enabled;
-+} __randomize_layout;
-+
-+extern struct binfmt_misc init_binfmt_misc;
-+#endif
-+
- extern void __register_binfmt(struct linux_binfmt *fmt, int insert);
- 
- /* Registration of default binfmt handlers */
-diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-index 33a4240e6a6f..a49f8f121fc4 100644
---- a/include/linux/user_namespace.h
-+++ b/include/linux/user_namespace.h
-@@ -63,6 +63,10 @@ enum ucount_type {
- 
- #define MAX_PER_NAMESPACE_UCOUNTS UCOUNT_RLIMIT_NPROC
- 
-+#if IS_ENABLED(CONFIG_BINFMT_MISC)
-+struct binfmt_misc;
-+#endif
-+
- struct user_namespace {
- 	struct uid_gid_map	uid_map;
- 	struct uid_gid_map	gid_map;
-@@ -99,6 +103,10 @@ struct user_namespace {
- #endif
- 	struct ucounts		*ucounts;
- 	long ucount_max[UCOUNT_COUNTS];
-+
-+#if IS_ENABLED(CONFIG_BINFMT_MISC)
-+	struct binfmt_misc *binfmt_misc;
-+#endif
- } __randomize_layout;
- 
- struct ucounts {
-diff --git a/kernel/user.c b/kernel/user.c
-index e2cf8c22b539..d2e7575dbfa2 100644
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -18,8 +18,18 @@
- #include <linux/interrupt.h>
- #include <linux/export.h>
- #include <linux/user_namespace.h>
-+#include <linux/binfmts.h>
- #include <linux/proc_ns.h>
- 
-+#if IS_ENABLED(CONFIG_BINFMT_MISC)
-+struct binfmt_misc init_binfmt_misc = {
-+	.entries = LIST_HEAD_INIT(init_binfmt_misc.entries),
-+	.enabled = true,
-+	.entries_lock = __RW_LOCK_UNLOCKED(init_binfmt_misc.entries_lock),
-+};
-+EXPORT_SYMBOL_GPL(init_binfmt_misc);
-+#endif
-+
- /*
-  * userns count is 1 for root user, 1 for init_uts_ns,
-  * and 1 for... ?
-@@ -67,6 +77,9 @@ struct user_namespace init_user_ns = {
- 	.keyring_name_list = LIST_HEAD_INIT(init_user_ns.keyring_name_list),
- 	.keyring_sem = __RWSEM_INITIALIZER(init_user_ns.keyring_sem),
- #endif
-+#if IS_ENABLED(CONFIG_BINFMT_MISC)
-+	.binfmt_misc = &init_binfmt_misc,
-+#endif
- };
- EXPORT_SYMBOL_GPL(init_user_ns);
- 
-diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-index 6b2e3ca7ee99..2bdf2ff69148 100644
---- a/kernel/user_namespace.c
-+++ b/kernel/user_namespace.c
-@@ -196,6 +196,9 @@ static void free_user_ns(struct work_struct *work)
- 			kfree(ns->projid_map.forward);
- 			kfree(ns->projid_map.reverse);
- 		}
-+#if IS_ENABLED(CONFIG_BINFMT_MISC)
-+		kfree(ns->binfmt_misc);
-+#endif
- 		retire_userns_sysctls(ns);
- 		key_free_user_ns(ns);
- 		ns_free_inum(&ns->ns);
--- 
-2.30.2
+But, perhaps using "#power-domain-cells = <2>" for the power-domain
+provider can help to specify this for the consumer/child-domain?
 
+>
+> > In regards to the parsing of the "required-opps" DT binding for a
+> > device node, I think that should work for cases like these, too. Or is
+> > there something missing around this?
+> >
+>
+> Given that Sandeep's proposed patch solves his problem without touching
+> the framework those patches (required-opps) must already have been
+> picked up.
+
+Right!
+
+Kind regards
+Uffe
