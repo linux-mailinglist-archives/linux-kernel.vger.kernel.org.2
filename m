@@ -2,235 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC4043E778
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9319E43E782
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhJ1Rqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:46:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhJ1Rqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:46:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A93660F38;
-        Thu, 28 Oct 2021 17:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635443051;
-        bh=0L2qrlxhpMUF7fTdRz7zfOLtpAuVLxVyftNL4daqgMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Uaidu29HzagQtZy/rDOEXnhhBYuazWeFxUkwAZBdKASEYkA7RfBco4V9mGy2DOJ79
-         l/eZTLVJur3foZrC9HbhB2bDVHwFy3vZ0Qrp3xQXlzUPi0lwEivPTXUkF4Zork2jF3
-         bjTs5qJ6fzubzZj7Eozq7uDhuqZ/rW36l8DGEX/AV83sSr3TOlAzdcfQMhW0WPiImz
-         BPvyR700KxhxR5DIy5Hsn1BwEajfvLgJyS35EWm1bPA5ypr559r9iNNiwxkNS/069O
-         UnHBLeSqtkm3YgzLXUk3L2KQoPQbvVxMeD/VPKCXlTPP6t+bmtUi6/4ImGYUu2hU/g
-         IhZehfEOUGFgQ==
-Date:   Thu, 28 Oct 2021 10:44:06 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] kbuild: Support clang-$ver builds
-Message-ID: <YXrhZoOgv5dtFMTs@archlinux-ax161>
-References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
- <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
- <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net>
- <YXqyHhWGJfDkuxjP@hirez.programming.kicks-ass.net>
- <YXq72/yPe76DhDLu@hirez.programming.kicks-ass.net>
+        id S230451AbhJ1Rtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229645AbhJ1Rtu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:49:50 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16D1C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:47:22 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id g8so28346889edb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WZwJd6pQXuj90DgXnmrq+JdASJsQQ5coXQgD2NBlIMM=;
+        b=G3sr7w/roLYmKlnvisZ1SahLTPw/d5MFZeE22ZJGZ7BOh2T9pXzjLKg6uG5EBc66Nt
+         n8CqKUA9uN37u8E/BPA4fA6m3xaPdlTfb76AgCBciiQjidV/61VkCYaQKZM7/Uw9EdN6
+         tsTMdbYOCJRKf9M1vPdwt0HMdz08BAoOrSjwFcsWgRNcUrGuuasRYnAd0WWvw13LA/Cr
+         ampXu0UqLQRgPkcRzMMXRHWnuPGsyAG7EBNw9pverK6IzaIpr6SOtqO2P6iJWKEC/fhJ
+         iNhKGWroolv+wpgigJ046giMVh02x70kNcDx7Gtp+TozM0cxeRo+Ruck4vcS95R3AUXV
+         2c+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WZwJd6pQXuj90DgXnmrq+JdASJsQQ5coXQgD2NBlIMM=;
+        b=elqhz6NpELTt3ONNcVBIrc1nruc6S3RuRT+4OZ44j/Tdey5SiXW7+7xMR0oVLVCiNA
+         LVSbpWFBvLERvtiljw3Tz/laD0OL75BRtidt2t9lH2dIns77FBPtlgixC8M60ZICPYhB
+         0Icqyd8v91Zh7eH4hwT1P30EkU6zhdtS5SjHnhA8H3mvVPu2c6FSB22DK769/fla9/1t
+         C+FhcM3pNDGoDGCUkE7a4FAu/GFp9l4LG1GgoBVv//4dbnApu1axxHgJFvFnOhx8KYdj
+         /+XR9dXW78HZ/9qWooYZxNg8+vncEl24MGeiNMe/jF2q41UIgvcDwFgVVKMvaJVCwXGN
+         YesQ==
+X-Gm-Message-State: AOAM532iV7ZHfR7iSs9lVa9KYagnP9N5/CMzWgxY4e04eGB3UtBmSSyN
+        V6k417UvScYcR25z3ske3CgB7dwEo6Wiha9MHs4=
+X-Google-Smtp-Source: ABdhPJwZpKp8j/ZqLkz/YCaSorgWj3UPYbXwFJbMNJq4izJmxsXGOVNDfIdmOKHu8yvPTG2ZdqwRKPhsWvQCDQY3EeM=
+X-Received: by 2002:a50:e08a:: with SMTP id f10mr8051671edl.319.1635443241516;
+ Thu, 28 Oct 2021 10:47:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXq72/yPe76DhDLu@hirez.programming.kicks-ass.net>
+Received: by 2002:a50:6c8b:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 10:47:21
+ -0700 (PDT)
+Reply-To: jennehkandeh@yahoo.com
+From:   Jenneh Kandeh <efffbi12@gmail.com>
+Date:   Thu, 28 Oct 2021 10:47:21 -0700
+Message-ID: <CANLFAeTVz=EdzQBzEL_dMpVdO6A1RwNPknfZdmnpmAipQupmgQ@mail.gmail.com>
+Subject: Re: Regarding Of My Late Father's Fund $10,200,000
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 05:03:55PM +0200, Peter Zijlstra wrote:
-> On Thu, Oct 28, 2021 at 04:22:22PM +0200, Peter Zijlstra wrote:
-> > On Thu, Oct 28, 2021 at 04:15:02PM +0200, Peter Zijlstra wrote:
-> > > On Thu, Oct 28, 2021 at 11:07:40PM +0900, Masahiro Yamada wrote:
-> > > > On Thu, Oct 28, 2021 at 10:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > Debian (and derived) distros ship their compilers as -$ver suffixed
-> > > > > binaries. For gcc it is sufficent to use:
-> > > > >
-> > > > >  $ make CC=gcc-12
-> > > > >
-> > > > > However, clang builds (esp. clang-lto) need a whole array of tools to be
-> > > > > exactly right, leading to unweildy stuff like:
-> > > > >
-> > > > >  $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
-> > > > >
-> > > > > which is, quite franktly, totally insane and unusable. Instead use the
-> > > > > already mandatory LLVM variable to convey this, enabling one such as
-> > > > > myself to use:
-> > > > >
-> > > > >  $ make LLVM=-13
-> > > > >
-> > > > > This also lets one quickly test different clang versions.
-> > > > 
-> > > > 
-> > > > Please read the commit log of
-> > > > a0d1c951ef08ed24f35129267e3595d86f57f5d3
-> > > 
-> > > That's yuck, I like LLVM=-13 or LLVM=-12 much better to select between
-> > > compilers. Means I don't have to remember wth they live and or wreck
-> > > PATH.
-> > 
-> > Even better, why not do something like:
-> > 
-> > if test "${CC:0:5}" == "clang"
-> > then
-> > 	LLVM=1
-> > 	LLVM_SFX=${CC:5}
-> > fi
-> > 
-> > Then we can simply use: make CC=clang-12 and have it all just work.
-> > 
-> 
-> Like so..
+dear,
 
-I like the first iteration of this idea most, as CC=clang does not
-currently imply using all LLVM tools. There are some architectures that
-work with CC=clang but not LLVM=1 so I am not sure we want that meaning
-to change.
+I got your contact through the internet due to serious searching for a
+reliable personality.  I am Jenneh Kandeh from FreeTown Capital of
+Sierra Leone. Time of opposed to the government of President Ahmad
+Tejan Kebbah the ex-leader.
 
-I do think this issue of Debian's different clang versions needs to be
-resolved as more and more LLVM features are being developed and non-LLVM
-or ClangBuiltLinux developers want to test these features and make sure
-that they work properly. There are a few different options:
+Since 21st November, 2005 But I am current residing in Porto-Novo
+Benin due to war of my country, my mother killed on 04/01/2002 for
+Sierra Leone civilian war my father decided to change another
+residence country with me because I am only child for my family bad
+news that my father passed away on 25/11/2018. During the war, My
+father made a lot of money through the illegal sales of Diamonds. To
+the tune of $10,200,000.
 
-1. Take Peter's first patch so that LLVM=1 and LLVM=-# can be used. The
-   documentation should be updated to convey this change. The argument
-   against doing this might be that Debian/Ubuntu/derivatives of either
-   are special for using versioned suffixes and we do not want to add
-   this to the build system but I think that might be short sighted.
-   Peter's patch is not super complex nor does it change the status quo
-   of LLVM=1.
+This money is currently and secretly kept in ECOWAS security company
+here in Benin, but because of the political turmoil which still exists
+here in Africa, I can not invest the money by myself, hence am
+soliciting your help to help me take these funds into your custody and
+also advise me on how to invest it.
 
-2. Update the documentation to describe using the
+And I want to add here that if agreed 35% of the total worth of the
+fund will be yours minus your total expenses incurred during the
+clearing of the fund in
+Porto Novo Benin that 35% is a $3,570,000 I would like to invest on
+heavy duty agricultural equipment and earth moving machines to enable
+me go into a full scale mechanized farming.
 
-   $ PATH=/usr/lib/llvm-#/bin:$PATH make LLVM=1 ...
-
-   trick. This has been the preferred method for using different
-   versions of LLVM but it has never been documented anywhere. This
-   would allow us to keep the current build infrastructure while giving
-   people clear instructions for how to handle different versions of
-   clang. As Peter has noted, this would require people who are not
-   familiar with building with LLVM to be constantly looking at the
-   documentation to remember the command to invoke, whereas with
-   LLVM=-#, it is easy to remember.
-
-3. Explore recommending update-alternatives in the documentation or
-   working with Debian to provide this automatically. As this is a
-   Debian and derivatives only problem, a solution for it could come
-   from the distribution itself. I found one post from a few years ago
-   that talks about this but a command to use all LLVM tools from a
-   particular version would be rather unweildy:
-
-   https://askubuntu.com/questions/791616/set-clang-3-8-as-default
-
-Overall, I think I like #1 the best. It is not that much more
-complicated than what we have now and it leaves it entirely up to the
-user how they want to build and it is hard for them to shoot themselves
-in the foot. I am open to other suggestions or arguments though :)
-
-Cheers,
-Nathan
-
-> ---
->  Makefile                       | 26 ++++++++++++++++----------
->  tools/scripts/Makefile.include | 22 ++++++++++++++--------
->  2 files changed, 30 insertions(+), 18 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 30c7c81d0437..1d0d4494e01d 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -423,9 +423,15 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
->  HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
->  HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
->  
-> +CC_BASE = $(shell echo $(CC) | cut -b "1-5")
-> +ifeq ($(shell test $(CC_BASE) = clang; echo $$?),0)
-> +LLVM := 1
-> +LLVM_SFX := $(shell echo $(CC) | cut -b "6-")
-> +endif
-> +
->  ifneq ($(LLVM),)
-> -HOSTCC	= clang
-> -HOSTCXX	= clang++
-> +HOSTCC	= clang$(LLVM_SFX)
-> +HOSTCXX	= clang++$(LLVM_SFX)
->  else
->  HOSTCC	= gcc
->  HOSTCXX	= g++
-> @@ -443,14 +449,14 @@ KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
->  # Make variables (CC, etc...)
->  CPP		= $(CC) -E
->  ifneq ($(LLVM),)
-> -CC		= clang
-> -LD		= ld.lld
-> -AR		= llvm-ar
-> -NM		= llvm-nm
-> -OBJCOPY		= llvm-objcopy
-> -OBJDUMP		= llvm-objdump
-> -READELF		= llvm-readelf
-> -STRIP		= llvm-strip
-> +CC		= clang$(LLVM_SFX)
-> +LD		= ld.lld$(LLVM_SFX)
-> +AR		= llvm-ar$(LLVM_SFX)
-> +NM		= llvm-nm$(LLVM_SFX)
-> +OBJCOPY		= llvm-objcopy$(LLVM_SFX)
-> +OBJDUMP		= llvm-objdump$(LLVM_SFX)
-> +READELF		= llvm-readelf$(LLVM_SFX)
-> +STRIP		= llvm-strip$(LLVM_SFX)
->  else
->  CC		= $(CROSS_COMPILE)gcc
->  LD		= $(CROSS_COMPILE)ld
-> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-> index 071312f5eb92..94c41083a7c7 100644
-> --- a/tools/scripts/Makefile.include
-> +++ b/tools/scripts/Makefile.include
-> @@ -51,12 +51,18 @@ define allow-override
->      $(eval $(1) = $(2)))
->  endef
->  
-> +CC_BASE = $(shell echo $(CC) | cut -b "1-5")
-> +ifeq ($(shell test $(CC_BASE) = clang; echo $$?),0)
-> +LLVM := 1
-> +LLVM_SFX := $(shell echo $(CC) | cut -b "6-")
-> +endif
-> +
->  ifneq ($(LLVM),)
-> -$(call allow-override,CC,clang)
-> -$(call allow-override,AR,llvm-ar)
-> -$(call allow-override,LD,ld.lld)
-> -$(call allow-override,CXX,clang++)
-> -$(call allow-override,STRIP,llvm-strip)
-> +$(call allow-override,CC,clang$(LLVM_SFX))
-> +$(call allow-override,AR,llvm-ar$(LLVM_SFX))
-> +$(call allow-override,LD,ld.lld$(LLVM_SFX))
-> +$(call allow-override,CXX,clang++$(LLVM_SFX))
-> +$(call allow-override,STRIP,llvm-strip$(LLVM_SFX))
->  else
->  # Allow setting various cross-compile vars or setting CROSS_COMPILE as a prefix.
->  $(call allow-override,CC,$(CROSS_COMPILE)gcc)
-> @@ -69,9 +75,9 @@ endif
->  CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
->  
->  ifneq ($(LLVM),)
-> -HOSTAR  ?= llvm-ar
-> -HOSTCC  ?= clang
-> -HOSTLD  ?= ld.lld
-> +HOSTAR  ?= llvm-ar$(LLVM_SFX)
-> +HOSTCC  ?= clang$(LLVM_SFX)
-> +HOSTLD  ?= ld.lld$(LLVM_SFX)
->  else
->  HOSTAR  ?= ar
->  HOSTCC  ?= gcc
+l wait to hear from you
