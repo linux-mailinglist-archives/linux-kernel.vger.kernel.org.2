@@ -2,211 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C00343E0E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEE943E0EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhJ1M1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:27:19 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:41035 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230438AbhJ1M1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:27:16 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Hg4Vq43CJz9sTB;
-        Thu, 28 Oct 2021 14:24:19 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4QgjcO61GqGT; Thu, 28 Oct 2021 14:24:19 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hg4Vl5ZYfz9sT4;
-        Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A7F578B790;
-        Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id hRVvgn6jIpfN; Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.214])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2768B8B787;
-        Thu, 28 Oct 2021 14:24:15 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19SCO8hL194404
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 14:24:08 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19SCO8T4194403;
-        Thu, 28 Oct 2021 14:24:08 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        live-patching@vger.kernel.org
-Subject: [PATCH v1 5/5] powerpc/ftrace: Add support for livepatch to PPC32
-Date:   Thu, 28 Oct 2021 14:24:05 +0200
-Message-Id: <b73d053c145245499511c4827890c9411c8b3a5a.1635423081.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1635423081.git.christophe.leroy@csgroup.eu>
-References: <cover.1635423081.git.christophe.leroy@csgroup.eu>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1635423844; l=4541; s=20211009; h=from:subject:message-id; bh=mq9s4eHxuC1bZRD9QPlTzVCTZ9AR7dRdociEo6K2Lk8=; b=j+JHR6B2ZEwqQWAnOV0uTfyLqlr5amNNwi/eJ4/n12jOw/uATyRW/aATB/XM/+lO+dvC+/5f8MKM fXjpDKInCAeWNeUrGa0hM5UiPsE4kZY5ryjW8SDTUhUSRZ/TBYXP
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+        id S230170AbhJ1M1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:27:36 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:45014 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230375AbhJ1M1f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:27:35 -0400
+Received: by mail-ot1-f45.google.com with SMTP id o10-20020a9d718a000000b00554a0fe7ba0so2433188otj.11;
+        Thu, 28 Oct 2021 05:25:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=6NJL/epdKwPjRr+Azrw8XvMRYX/QOKMs3w7KqwedYLI=;
+        b=Uo2zqrWzsw0SepZbQPFwthTExaFFee0QwnPLJjtK2PtrPceGswWvDNf5L8I8gsiSBm
+         Xal60CZkQByfvGdJQAT4Ch/PbuLPjtz3HzWD5q+5qCdD09ZXuJTRQ+fpJ/njzYzPf3YP
+         ukgE1cUPXH7bGCRe9PNzajcWXnIIV+4thee31uerYQoM8BMUm/ibSVcyCUInSMLws3U2
+         1dbRsE8/cZaISWusKv0YTdmn1ij+oKeDOYavKaVW/h8CLy9z+h7LdZqkauwxzPfkOori
+         iqDOUlApo7NYLUcOQ9eYsn9mTxe+LFJGOp3/Vh0ssFtwGj8PiYRakIedIHcxx/PU/ytc
+         YTlQ==
+X-Gm-Message-State: AOAM530ClHgtNk9CG4Pf+00RVZeHKN4YK0z9i0xSrasISENnoCk/sT2R
+        aRTnvrmC1mXXSwHlyLB9TN1zEONMoA==
+X-Google-Smtp-Source: ABdhPJwSevZxg+e9IYslJ09TcROXr7fMOjeHx07dXdyrDspyDA98bHNjgkkryT6U61ynE1oAk4Zrbw==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr3098287otj.191.1635423907966;
+        Thu, 28 Oct 2021 05:25:07 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 16sm1043080oty.20.2021.10.28.05.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 05:25:07 -0700 (PDT)
+Received: (nullmailer pid 3934876 invoked by uid 1000);
+        Thu, 28 Oct 2021 12:25:06 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Andrea Merello <andrea.merello@gmail.com>
+Cc:     andy.shevchenko@gmail.com, robh+dt@kernel.org, lars@metafoo.de,
+        matt.ranostay@konsulko.com, Andrea Merello <andrea.merello@iit.it>,
+        devicetree@vger.kernel.org, jacopo@jmondi.org,
+        mchehab+huawei@kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, jic23@kernel.org, ardeleanalex@gmail.com
+In-Reply-To: <20211028101840.24632-9-andrea.merello@gmail.com>
+References: <20210715141742.15072-1-andrea.merello@gmail.com> <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-9-andrea.merello@gmail.com>
+Subject: Re: [v2 08/10] dt-bindings: iio: imu: add documentation for Bosch BNO055 bindings
+Date:   Thu, 28 Oct 2021 07:25:06 -0500
+Message-Id: <1635423906.378411.3934875.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is heavily copied from PPC64. Not much to say about it.
+On Thu, 28 Oct 2021 12:18:38 +0200, Andrea Merello wrote:
+> Introduce new documentation file for the Bosch BNO055 IMU
+> 
+> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+> ---
+>  .../bindings/iio/imu/bosch,bno055.yaml        | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml
+> 
 
-Livepatch sample modules all work.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/Kconfig                  |  2 +-
- arch/powerpc/include/asm/livepatch.h  |  4 +-
- arch/powerpc/kernel/trace/ftrace_32.S | 69 +++++++++++++++++++++++++++
- 3 files changed, 72 insertions(+), 3 deletions(-)
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml:20:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
+./Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml:37:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index f66eb1984b00..eceee3b814b9 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -230,7 +230,7 @@ config PPC
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
- 	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
--	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS && PPC64
-+	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
- 	select HAVE_OPTPROBES
-diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
-index 4fe018cc207b..daf24d837241 100644
---- a/arch/powerpc/include/asm/livepatch.h
-+++ b/arch/powerpc/include/asm/livepatch.h
-@@ -23,8 +23,8 @@ static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
- static inline unsigned long klp_get_ftrace_location(unsigned long faddr)
- {
- 	/*
--	 * Live patch works only with -mprofile-kernel on PPC. In this case,
--	 * the ftrace location is always within the first 16 bytes.
-+	 * Live patch works on PPC32 and only with -mprofile-kernel on PPC64. In
-+	 * both cases, the ftrace location is always within the first 16 bytes.
- 	 */
- 	return ftrace_location_range(faddr, faddr + 16);
- }
-diff --git a/arch/powerpc/kernel/trace/ftrace_32.S b/arch/powerpc/kernel/trace/ftrace_32.S
-index 0a02c0cb12d9..2545d6bb9f02 100644
---- a/arch/powerpc/kernel/trace/ftrace_32.S
-+++ b/arch/powerpc/kernel/trace/ftrace_32.S
-@@ -10,6 +10,7 @@
- #include <asm/ftrace.h>
- #include <asm/export.h>
- #include <asm/ptrace.h>
-+#include <asm/bug.h>
- 
- _GLOBAL(mcount)
- _GLOBAL(_mcount)
-@@ -83,6 +84,9 @@ _GLOBAL(ftrace_regs_caller)
- 	lis	r3,function_trace_op@ha
- 	lwz	r5,function_trace_op@l(r3)
- 
-+#ifdef CONFIG_LIVEPATCH
-+	mr	r14,r7		/* remember old NIP */
-+#endif
- 	/* Calculate ip from nip-4 into r3 for call below */
- 	subi    r3, r7, MCOUNT_INSN_SIZE
- 
-@@ -107,6 +111,9 @@ ftrace_regs_call:
- 	/* Load ctr with the possibly modified NIP */
- 	lwz	r3, _NIP(r1)
- 	mtctr	r3
-+#ifdef CONFIG_LIVEPATCH
-+	cmpw	r14, r3		/* has NIP been altered? */
-+#endif
- 
- 	/* Restore gprs */
- 	lmw	r2, GPR2(r1)
-@@ -118,8 +125,70 @@ ftrace_regs_call:
- 	/* Pop our stack frame */
- 	addi r1, r1, INT_FRAME_SIZE
- 
-+#ifdef CONFIG_LIVEPATCH
-+        /* Based on the cmpw above, if the NIP was altered handle livepatch */
-+	bne-	livepatch_handler
-+#endif
- 	b	ftrace_caller_common
- 
-+#ifdef CONFIG_LIVEPATCH
-+	/*
-+	 * This function runs in the mcount context, between two functions. As
-+	 * such it can only clobber registers which are volatile and used in
-+	 * function linkage.
-+	 *
-+	 * We get here when a function A, calls another function B, but B has
-+	 * been live patched with a new function C.
-+	 *
-+	 * On entry:
-+	 *  - we have no stack frame and can not allocate one
-+	 *  - LR points back to the original caller (in A)
-+	 *  - CTR holds the new NIP in C
-+	 *  - r0, r11 & r12 are free
-+	 */
-+livepatch_handler:
-+	/* Allocate 2 x 8 bytes */
-+	lwz	r11, TI_livepatch_sp+THREAD(r2)
-+	addi	r11, r11, 16
-+	stw	r11, TI_livepatch_sp+THREAD(r2)
-+
-+	/* Save real LR on livepatch stack */
-+	mflr	r12
-+	stw	r12, -16(r11)
-+
-+	/* Store stack end marker */
-+	lis     r12, STACK_END_MAGIC@h
-+	ori     r12, r12, STACK_END_MAGIC@l
-+	stw	r12, -4(r11)
-+
-+	/* Branch to ctr */
-+	bctrl
-+
-+	/*
-+	 * Now we are returning from the patched function to the original
-+	 * caller A. We are free to use r11 and r12.
-+	 */
-+
-+	lwz	r11, TI_livepatch_sp+THREAD(r2)
-+
-+	/* Check stack marker hasn't been trashed */
-+	lwz	r12, -4(r11)
-+	subis	r12, r12, STACK_END_MAGIC@h
-+1:	twnei	r12, STACK_END_MAGIC@l
-+	EMIT_BUG_ENTRY 1b, __FILE__, __LINE__ - 1, 0
-+
-+	/* Restore LR from livepatch stack */
-+	lwz	r12, -16(r11)
-+	mtlr	r12
-+
-+	/* Pop livepatch stack frame */
-+	subi	r11, r11, 16
-+	stw	r11, TI_livepatch_sp+THREAD(r2)
-+
-+	/* Return to original caller of live patched function */
-+	blr
-+#endif /* CONFIG_LIVEPATCH */
-+
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- _GLOBAL(ftrace_graph_caller)
- 	stwu	r1,-48(r1)
--- 
-2.31.1
+dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/iio/imu/bosch,bno055.yaml#
+Error: Documentation/devicetree/bindings/iio/imu/bosch,bno055.example.dts:53.13-14 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/iio/imu/bosch,bno055.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1547408
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
