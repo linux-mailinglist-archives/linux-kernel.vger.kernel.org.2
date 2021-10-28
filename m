@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F4443F243
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1644043F247
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhJ1WH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
+        id S231423AbhJ1WHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhJ1WH0 (ORCPT
+        with ESMTP id S231360AbhJ1WHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:07:26 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26196C061570;
-        Thu, 28 Oct 2021 15:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=C0URAtIqTgzQHryIDaXXjHNMTGhauwHVxMJmkYTTzcw=; b=I3xholVEQwOxRuk+KBgytIi7NE
-        dMq2/VOKL87Gb1Z02gGctYBsEcSY3I/0ztJPKeD5K92k/tfLeikdTaARinMxo94EORTUUfXMZkwJr
-        eVDv3lUE0pBekA3+62d8Ev1/d2mDaf8EQoaIwp9Abqbh+x9xz8wTVnx+h+8mzIXmGWFDEgUwbV4Jm
-        0unwxjYpsw11aL5gbJB3l9lF36CU80XzT3Rb984X2VS4iANDp6QNNRZqFcPePm8wfPBrjeiRUNy2j
-        2iHpCgdAj1PIBPpTEO8L+YBOA1e/RUJV+MZPAq0L1bOgzawtbDnct82/QWdm62E9RcvAwL3uKZFnp
-        Yfi9E/hA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mgDW0-009D9u-33; Thu, 28 Oct 2021 22:04:52 +0000
-Subject: Re: [v2 10/10] iio: imu: add BNO055 I2C driver
-To:     Andrea Merello <andrea.merello@gmail.com>, jic23@kernel.org,
-        mchehab+huawei@kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     lars@metafoo.de, robh+dt@kernel.org, andy.shevchenko@gmail.com,
-        matt.ranostay@konsulko.com, ardeleanalex@gmail.com,
-        jacopo@jmondi.org, Andrea Merello <andrea.merello@iit.it>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20211028101840.24632-1-andrea.merello@gmail.com>
- <20211028101840.24632-11-andrea.merello@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <85ef90ad-0d3a-6cb7-529f-667562b2ad71@infradead.org>
-Date:   Thu, 28 Oct 2021 15:04:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 28 Oct 2021 18:07:51 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B5DC0613B9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:05:24 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id q124so10394325oig.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=K9UBnDgY425QDygPvGt3o1Td/4RRZ5EAJhMXHkdozRU=;
+        b=FM0rLYNu1+ErBFuS26Bd+y+C6G51CyTBQZ2r5DkqkLzOKvN6ApYpobItt2PNtXDs2b
+         AzSg5WVoRoSBQT3oB8FrHN/bGv5G2+wGLFKpfZXPZS0KBpTTXlKTovdMsKIDLF9yGKjx
+         gkv/ZVNFnzoKgHcc7DKHaXnrk7PlDgQFf1CwQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=K9UBnDgY425QDygPvGt3o1Td/4RRZ5EAJhMXHkdozRU=;
+        b=UMOw6sHmPKB+frLnfBOQUOPqf2/tJFi92+pHNjkbTJMbMqHL8BcS5ItmenlO4KJkxb
+         KPFVHJuPv9BCUTX6phlfHXwC7OHv16VoywoZ/ZWWx2zfmDqQICrAm4Wws1QxZ9R3JAog
+         OItVjk91vMNOn+rkEBE3wpAkRQ6cBIc2AYjGUnTdA22iKL7Ed7IEro+NJ154ZLgBEFQS
+         2lxCK0yfTQ+pofKd/CL7xnJyFkjAqWM4vu7nDQKNq0Wk0RKLjqTc5Odp4dPxuzzxcEIW
+         m1oQb4aitmj/W1yp8TAqTjgBTRNxv9k4YEBwtxmpABpFzZAzV4fWexMPivBSXrhjtK6+
+         89oA==
+X-Gm-Message-State: AOAM533y4usBNVyyUGZlbQ4mCmkNHOi2yTWpuT2dM1joPnZxk3Jc9hJa
+        K/kKp7M1vTML0n9LBw8SD7CcyK30sxvpE336x+KNQg==
+X-Google-Smtp-Source: ABdhPJwg2zw1/jW0y61U8U7GYDUhUDAXyhoBEIGD5TwRhN4mcpqiCyxsEbT8u9/uL4TUn7cBNIBdRV+TaG1F7YXwbzk=
+X-Received: by 2002:a05:6808:2124:: with SMTP id r36mr5286797oiw.64.1635458723366;
+ Thu, 28 Oct 2021 15:05:23 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 28 Oct 2021 15:05:22 -0700
 MIME-Version: 1.0
-In-Reply-To: <20211028101840.24632-11-andrea.merello@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1635408817-14426-2-git-send-email-pillair@codeaurora.org>
+References: <1635408817-14426-1-git-send-email-pillair@codeaurora.org> <1635408817-14426-2-git-send-email-pillair@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 28 Oct 2021 15:05:22 -0700
+Message-ID: <CAE-0n53_qNfsdXa2eLY3g74bpq2HhN2DjSGCe0gCwDfovnWPdw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] dt-bindings: remoteproc: qcom: adsp: Convert
+ binding to YAML
+To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sibis@codeaurora.org, mpubbise@codeaurora.org, kuabhs@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 3:18 AM, Andrea Merello wrote:
-> This path adds an I2C driver for communicating to a BNO055 IMU via I2C bus
-> and it enables the BNO055 core driver to work in this scenario.
-> 
-> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+Quoting Rakesh Pillai (2021-10-28 01:13:35)
+> Convert Qualcomm ADSP/CDSP Remoteproc devicetree
+> binding to YAML.
+>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 > ---
->   drivers/iio/imu/bno055/Kconfig      |  6 ++++
->   drivers/iio/imu/bno055/Makefile     |  1 +
->   drivers/iio/imu/bno055/bno055_i2c.c | 54 +++++++++++++++++++++++++++++
->   3 files changed, 61 insertions(+)
->   create mode 100644 drivers/iio/imu/bno055/bno055_i2c.c
-> 
-> diff --git a/drivers/iio/imu/bno055/Kconfig b/drivers/iio/imu/bno055/Kconfig
-> index 941e43f0368d..87200787d548 100644
-> --- a/drivers/iio/imu/bno055/Kconfig
-> +++ b/drivers/iio/imu/bno055/Kconfig
-> @@ -7,3 +7,9 @@ config BOSH_BNO055_SERIAL
->   	tristate "Bosh BNO055 attached via serial bus"
->   	depends on SERIAL_DEV_BUS
->   	select BOSH_BNO055_IIO
+
+Found it. I think it hit spam :(
+
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,qcs404-cdsp-pil.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,qcs404-cdsp-pil.yaml
+> new file mode 100644
+> index 0000000..90ca7e0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,qcs404-cdsp-pil.yaml
+> @@ -0,0 +1,161 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/remoteproc/qcom,qcs404-cdsp-pil.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +config BOSH_BNO055_I2C
-> +	tristate "Bosh BNO055 attached via I2C bus"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	select BOSH_BNO055_IIO
+> +title: Qualcomm QCS404 CDSP Peripheral Image Loader
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description:
+> +  This document defines the binding for a component that loads and boots firmware
+> +  on the Qualcomm Technology Inc. CDSP.
 
-Hi,
+What does CDSP mean? Can you spell out the acronym once?
 
-The config entries that have user prompt strings should also
-have help text.  scripts/checkpatch.pl should have told you
-about that...
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,qcs404-cdsp-pil
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      The base address and size of the qdsp6ss register
+> +
+> +  interrupts-extended:
 
--- 
-~Randy
+I think the recommendation is to use interrupts and the schema will know
+to treat interrupts-extended the same.
+
+> +    items:
+> +      - description: Watchdog interrupt
+> +      - description: Fatal interrupt
+> +      - description: Ready interrupt
+> +      - description: Handover interrupt
+> +      - description: Stop acknowledge interrupt
+> +
