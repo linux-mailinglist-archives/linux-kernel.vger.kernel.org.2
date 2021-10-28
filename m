@@ -2,61 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CD143E751
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DBD43E759
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhJ1R2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:28:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44154 "EHLO mail.kernel.org"
+        id S230501AbhJ1R3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:29:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230451AbhJ1R14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:27:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0DFD2610FF;
-        Thu, 28 Oct 2021 17:25:29 +0000 (UTC)
+        id S229610AbhJ1R3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:29:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DADDB60D07;
+        Thu, 28 Oct 2021 17:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635441929;
-        bh=g/bzId7RkrOvfk+SrjHBprnep7MTl4j0MevO9JIXV6E=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Hc7NIXIszy888yfFJM7APFGcE1Xgh+FZAX/HR2Lf5t9YpdPgoowpZvBfsp43Rdnxb
-         hD+QNIjgut0w0GHoEwZdb/3JsCb4kFLZzjDPQ6dBOyJ7c3+uj+Hmvolt+tYSldYAa3
-         NVm7ubexdVEfWvZDC3a5l2FrWJVE8Kvf3ptfSMDGi9qI//x1+8AVSTimEjH0k/YPkA
-         eD40vYpaxPe0qaqgbKaQtA9Jnit/5SS0WGhblUxsXCB4Ifj3H2uPAf19sb/NQaBn/t
-         D+X84vOC45j23McV+ETZnUmQDnGVipw4n/ju230ENxgmCrwSMSzDLAtfMYSt9COzUB
-         j7esaCpkvrKpw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0705360972;
-        Thu, 28 Oct 2021 17:25:29 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for 5.15-rc8
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211028162912.1660341-1-kuba@kernel.org>
-References: <20211028162912.1660341-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211028162912.1660341-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.15-rc8
-X-PR-Tracked-Commit-Id: 35392da51b1ab7ba0c63de0a553e2a93c2314266
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 411a44c24a561e449b592ff631b7ae321f1eb559
-Message-Id: <163544192902.14282.15783866044630928474.pr-tracker-bot@kernel.org>
-Date:   Thu, 28 Oct 2021 17:25:29 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, daniel@iogearbox.net, toke@toke.dk,
-        johannes@sipsolutions.net, bpf@vger.kernel.org
+        s=k20201202; t=1635442045;
+        bh=mBbR6pAt+Y2mxIQqcN8Lo1Mrl/Z8IeNGVXFhUQacrFk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qkajzi/qqwYoF7/s5wNEFkez9ob1FxiCATs3gBnsA7J8v64yxUZMvs6bYGk+xu8O+
+         Y9z2BzzGr7483gt5FC4VCuurLdJS8QtOp38cbmyj6C9GZbRT/uJOw2rZo2p3LERiqk
+         tb4X97Y9kVTXhWtUP9V95gQVl4jdSC+odzUyrKMVfAUX6R8T23hkL08CROvDx+S65j
+         UzErHGPKQ8T6CwtsgK712cfqwwI44vHucdGPNmClEch/VribvHwkn97Pxm1o+Vf6gT
+         eU3pkdXYUkJtHsrgvm+3g6FlfkC7GzM0btavNLHVuTeHJKk9wnA9lDB9knTSDh2lK0
+         ldCj11G70/tpw==
+Date:   Thu, 28 Oct 2021 22:57:21 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Joy Zou <joy.zou@nxp.com>
+Cc:     yibin.gong@nxp.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 1/1] dmaengine: fsl-edma: support edma memcpy
+Message-ID: <YXrdebhLswRQ90EV@matsya>
+References: <20211026090025.2777292-1-joy.zou@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211026090025.2777292-1-joy.zou@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 28 Oct 2021 09:29:12 -0700:
+On 26-10-21, 17:00, Joy Zou wrote:
+> Add memcpy in edma. The edma has the capability to transfer data by
+> software trigger so that it could be used for memory copy. Enable
+> MEMCPY for edma driver and it could be test directly by dmatest.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.15-rc8
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/411a44c24a561e449b592ff631b7ae321f1eb559
-
-Thank you!
+Applied, thanks
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+~Vinod
