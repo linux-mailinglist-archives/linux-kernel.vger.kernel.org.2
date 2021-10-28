@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244A643D9CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6528743D9D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbhJ1DY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 23:24:26 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:54384 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229704AbhJ1DYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 23:24:25 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-03 (Coremail) with SMTP id rQCowAB3fKg9F3phlTw+BQ--.43941S2;
-        Thu, 28 Oct 2021 11:21:33 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] thermal: Fix implicit type conversion
-Date:   Thu, 28 Oct 2021 03:21:32 +0000
-Message-Id: <1635391292-2879179-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowAB3fKg9F3phlTw+BQ--.43941S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFyUWFyxJF1rZr4rXr1fJFb_yoWkJFb_CF
-        n3Xr1093s8CF1FvFn7Cr18C347tasFqanag34FvwnxZ348Z343Wr1qqF98Wr48WrZYyF9r
-        ZF12kr1xAw1xZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUj8uctUUUU
-        U==
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S229811AbhJ1DYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 23:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhJ1DYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 23:24:53 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D972C061570;
+        Wed, 27 Oct 2021 20:22:27 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id x16-20020a9d7050000000b00553d5d169f7so4970159otj.6;
+        Wed, 27 Oct 2021 20:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5s4StmHI8iYxy7i8cyeJSVr9mk1BwTCxomSITB1pSno=;
+        b=j0xgAgrjHYQ5lLxNU677Dz084gx6BKYrnofb/lNen5QG6+ndlB5fsn2SMU+RCx28la
+         IoK6SGz+3hm5CiJOC+qWFV2os2R1nXML4yjdaZlGem5/YIknGHavWRZNNJYPHNWGAtzC
+         +Wtldac1BYGHu2mg6ykF0sHoZMXflgRQyspWNFpkFzQgdy8/4QgLEzo+HhnNfVt7/1By
+         TEQziQJfOPVz1YEgmpXxji/ZRxgJUEmFIk11MURALQkrzmSztqdDzuKjjf4DQGehy6o1
+         D8qpJf4MeNEfxMEMuyKWDuCXmN/G68ypsKwpFYiZsN9DS7DO6B0QAdg7IfszdjIBrsoJ
+         yjxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5s4StmHI8iYxy7i8cyeJSVr9mk1BwTCxomSITB1pSno=;
+        b=3AacCeztpuvXADTs6Bla5Ylnl4LyGeHg2MnEkd1nuAn/qb9tQn7v08fOkFOx1hSBO+
+         xMmHtlBT0WmhLAsX8kk5yg9Qfgnt+XoeFnD9gt8GbU/6eZwsxcM2iirjNmfiEiUOmg5k
+         h8Nf4oMjPK/2Twa8kJ0JqmovtZwR067A/QiALc+eucpynZdHK+QClJ/PRcx07icvREy5
+         bSlELa6FeMkl1Z76PklyeMQuNmTgJCzWyTx04KoitXQQox46JRPDfNkrr7fyincdc6sG
+         N7QciG6DFZ20X3QAYtJaaQMCPQaXKSPmRH7v29dxNiv0S+JVBCJbEBoNFWOqNMO1o28c
+         HgZA==
+X-Gm-Message-State: AOAM5324AkL53vWbj62Spl1+E470IRXvs08FkLqE9ooOhiFeuI/nFrru
+        qe/9CtpOiiYXekXyB+etTTSn/jqQ5cdbGhOvBDw=
+X-Google-Smtp-Source: ABdhPJzQpleeZm2BZiizYujx18/yGLF9n7JjAxk+5zP6ToHPqMkuMlrjUuS7lUkavWlq8YA5IzY9ZBfIyhOmP9rDNIk=
+X-Received: by 2002:a9d:1b4f:: with SMTP id l73mr1425647otl.200.1635391346481;
+ Wed, 27 Oct 2021 20:22:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211028140644.7c1a7244@canb.auug.org.au>
+In-Reply-To: <20211028140644.7c1a7244@canb.auug.org.au>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 27 Oct 2021 23:22:15 -0400
+Message-ID: <CADnq5_PLXWpPK=BV6AS8QaPcnAr8JELF8u2Cvn_FCqJwB33AMg@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the amdgpu tree with the drm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Fangzhi Zuo <Jerry.Zuo@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parameter 'cpu' is defined as unsigned int.
-However in the cpumask_next() it is implicitly type conversed
-to int.
-It is universally accepted that the implicit type conversion is
-terrible.
-Also, having the good programming custom will set an example for
-others.
-Thus, it might be better to change the type of 'cpu' from
-unsigned int to int.
+On Wed, Oct 27, 2021 at 11:06 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the amdgpu tree got conflicts in:
+>
+>   drivers/gpu/drm/amd/display/dc/core/dc_link.c
+>   drivers/gpu/drm/drm_dp_mst_topology.c
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>
+> between commits:
+>
+>   d740e0bf8ed4 ("drm/amd/display: Add DP 2.0 MST DC Support")
+>   41724ea273cd ("drm/amd/display: Add DP 2.0 MST DM Support")
+>   00f965e700ef ("drm/amdgpu/display: fix build when CONFIG_DRM_AMD_DC_DCN is not set")
+>
+> from the drm tree and commits:
+>
+>   6d23be5bc661 ("drm/amd/display: Add DP 2.0 MST DC Support")
+>   39b3c728e5ca ("drm/amd/display: Add DP 2.0 MST DM Support")
+>   8bc3824f0ee2 ("drm/amdgpu/display: fix build when CONFIG_DRM_AMD_DC_DCN is not set")
+>
+> from the amdgpu tree.
+>
+> The conflicts between these different versions of the same patches,
+> and some other changes in the amdgpu tree are just a mess today, do I
+> have just dropped the amdgpu tree completely for today.
 
-Fixes: 3e8c4d3 ("drivers: thermal: Move various drivers for intel platforms into a subdir")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- drivers/thermal/intel/intel_powerclamp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Those patches were just in my tree while I was waiting for the topic
+branch to land in drm-next.  I'll drop them from my tree tomorrow.
 
-diff --git a/drivers/thermal/intel/intel_powerclamp.c b/drivers/thermal/intel/intel_powerclamp.c
-index b0eb5ec..ed46b5e 100644
---- a/drivers/thermal/intel/intel_powerclamp.c
-+++ b/drivers/thermal/intel/intel_powerclamp.c
-@@ -578,7 +578,7 @@ static int powerclamp_cpu_online(unsigned int cpu)
- 	return 0;
- }
- 
--static int powerclamp_cpu_predown(unsigned int cpu)
-+static int powerclamp_cpu_predown(int cpu)
- {
- 	if (clamping == false)
- 		return 0;
--- 
-2.7.4
+Alex
 
+>
+> --
+> Cheers,
+> Stephen Rothwell
