@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8F243D96B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E4043D96D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhJ1Cmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhJ1Cmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:42:38 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DE3C061570;
-        Wed, 27 Oct 2021 19:40:12 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 127so4597297pfu.1;
-        Wed, 27 Oct 2021 19:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6wxiIhsm7YU7OSO+F4l4BXdzqkhsJbBlK/iS/zR+pSQ=;
-        b=f0Jk3OruJDRHOvw3WJlglMaZHj+YE1qFIxMKnslz32Ga1Ojpts28oR8XhUhFOTjTTy
-         N9oZgmWg5Lel/ncDy5cjrBVjZz54BVR1wCrzSqr8C6fF+W5SVRYDtxxLKZaJcnN38j2R
-         HOivZ2Pbl7cJB1QTmcViWuoBwAS32jg+lWTxMvC0msYjUXHxcuT1CB1ntzOCTkDZUzgs
-         b+gjVgHRSYT08dYqH9kTR5D9BqdMFcBmxf51yvKgalsrlRUlroZ7+T/SxmkSCpJElWRm
-         MJo8/tn/uxanQXDh/kqlKk9ekXW45c+Ng0pV7odkLvzgbyjQlOTVU6KrQwn6Om2ZqNi/
-         9seg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6wxiIhsm7YU7OSO+F4l4BXdzqkhsJbBlK/iS/zR+pSQ=;
-        b=zRbdU5ihN/+SaiGshSNh9xiru1afVzhbdSLXYcp4n4jhzsGS7gm5/ocLKOYOyixR+3
-         R7SE5XwYUiB+MSxgBkXZ1NNw0K8dvflwynWwkPWV+Y9XsU3Mrv036qjJvsYT63Mkeg9F
-         sA6DARA5e8PfWTcR3kgn3XqNCYmk+YAAd/aMWAJtsRhTkT8hS9CieKHzIB91o7/yCkws
-         IIhp/j9RlfTJejZug0anqK1JlO/bQqR+G6zGcy9wwih2O369yEiWfseWY1aap/QyuMY6
-         +5PJnWW09sTtrlhhoKt9qQ7BuLbMSvlUqeF+aTp6OzoGZw+o6BDRo09rrBgjXQxjxx0W
-         4k7w==
-X-Gm-Message-State: AOAM531hotaVThexzVDv3mp5V98vcBjLFOeTu+Qy1X94mOKWa4qku/N9
-        +wjgJkcfvJwG0SmKoHjXOD6sLJY/1W0=
-X-Google-Smtp-Source: ABdhPJyvPZPulVtAwl6z8fIR9Q9sH7j0OYCWaC997zh7hh5p3L4eiDFLnpNEasa+wo7jBDxgwbxW8A==
-X-Received: by 2002:a63:f05:: with SMTP id e5mr1176708pgl.226.1635388811932;
-        Wed, 27 Oct 2021 19:40:11 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id n11sm966077pgm.74.2021.10.27.19.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 19:40:11 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] ext4: Remove redundant statement
-Date:   Thu, 28 Oct 2021 02:40:02 +0000
-Message-Id: <20211028024002.10254-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229775AbhJ1Cof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:44:35 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:44578 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229534AbhJ1Coe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:44:34 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowABnb2frDXph0XU9BQ--.45455S2;
+        Thu, 28 Oct 2021 10:41:47 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     andraprs@amazon.com, lexnv@amazon.com, alcioa@amazon.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] nitro_enclaves: Fix implicit type conversion
+Date:   Thu, 28 Oct 2021 02:41:46 +0000
+Message-Id: <1635388906-2856355-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowABnb2frDXph0XU9BQ--.45455S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZrW8JFyDKw1DtF4DAF45Awb_yoW5XrWDpF
+        4rX34UJrW8AasFkayxAr17uF15ZFZ3W3y7J3y3Cay8Cry5ZFy8ZFWDK3sxJryUCrWkXFy2
+        y34Yywn0gF45C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
+        6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbYhF7
+        UUUUU==
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The local variable assignment at the end of the function is meaningless.
+The variable 'cpu' is defined as unsigned int.
+However in the for_each_cpu, its value is assigned to -1.
+That doesn't make sense and in the cpumask_next() it is implicitly
+type conversed to int.
+It is universally accepted that the implicit type conversion is
+terrible.
+Also, having the good programming custom will set an example for
+others.
+Thus, it might be better to change the definition of 'cpu' from
+unsigned int to int.
 
-The clang_analyzer complains as follows:
-
-fs/ext4/fast_commit.c:779:2 warning:
-
-Value stored to 'dst' is never read
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+Fixes: ff8a4d3 ("nitro_enclaves: Add logic for setting an enclave vCPU")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- fs/ext4/fast_commit.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/virt/nitro_enclaves/ne_misc_dev.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 782d05a..9e5bfa0 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -797,7 +797,6 @@ static  bool ext4_fc_add_dentry_tlv(struct super_block *sb, u16 tag,
- 	ext4_fc_memcpy(sb, dst, &fcd, sizeof(fcd), crc);
- 	dst += sizeof(fcd);
- 	ext4_fc_memcpy(sb, dst, dname, dlen, crc);
--	dst += dlen;
+diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+index e21e1e8..2d80879 100644
+--- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
++++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+@@ -168,9 +168,9 @@ static bool ne_check_enclaves_created(void)
+ static int ne_setup_cpu_pool(const char *ne_cpu_list)
+ {
+ 	int core_id = -1;
+-	unsigned int cpu = 0;
++	int cpu = 0;
+ 	cpumask_var_t cpu_pool;
+-	unsigned int cpu_sibling = 0;
++	int cpu_sibling = 0;
+ 	unsigned int i = 0;
+ 	int numa_node = -1;
+ 	int rc = -EINVAL;
+@@ -374,7 +374,7 @@ static int ne_setup_cpu_pool(const char *ne_cpu_list)
+  */
+ static void ne_teardown_cpu_pool(void)
+ {
+-	unsigned int cpu = 0;
++	int cpu = 0;
+ 	unsigned int i = 0;
+ 	int rc = -EINVAL;
  
- 	return true;
- }
+@@ -516,7 +516,7 @@ static int ne_get_unused_core_from_cpu_pool(void)
+ static int ne_set_enclave_threads_per_core(struct ne_enclave *ne_enclave,
+ 					   int core_id, u32 vcpu_id)
+ {
+-	unsigned int cpu = 0;
++	int cpu = 0;
+ 
+ 	if (core_id < 0 && vcpu_id == 0) {
+ 		dev_err_ratelimited(ne_misc_dev.this_device,
+@@ -562,7 +562,7 @@ static int ne_set_enclave_threads_per_core(struct ne_enclave *ne_enclave,
+ static int ne_get_cpu_from_cpu_pool(struct ne_enclave *ne_enclave, u32 *vcpu_id)
+ {
+ 	int core_id = -1;
+-	unsigned int cpu = 0;
++	int cpu = 0;
+ 	unsigned int i = 0;
+ 	int rc = -EINVAL;
+ 
+@@ -1017,7 +1017,7 @@ static int ne_start_enclave_ioctl(struct ne_enclave *ne_enclave,
+ 	struct ne_enclave_start_info *enclave_start_info)
+ {
+ 	struct ne_pci_dev_cmd_reply cmd_reply = {};
+-	unsigned int cpu = 0;
++	int cpu = 0;
+ 	struct enclave_start_req enclave_start_req = {};
+ 	unsigned int i = 0;
+ 	struct pci_dev *pdev = ne_devs.ne_pci_dev->pdev;
+@@ -1360,7 +1360,7 @@ static void ne_enclave_remove_all_mem_region_entries(struct ne_enclave *ne_encla
+  */
+ static void ne_enclave_remove_all_vcpu_id_entries(struct ne_enclave *ne_enclave)
+ {
+-	unsigned int cpu = 0;
++	int cpu = 0;
+ 	unsigned int i = 0;
+ 
+ 	mutex_lock(&ne_cpu_pool.mutex);
 -- 
-2.15.2
-
+2.7.4
 
