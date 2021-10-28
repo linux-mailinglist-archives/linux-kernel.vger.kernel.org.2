@@ -2,114 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A72143F36D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 01:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFCA43F372
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 01:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhJ1X1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 19:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
+        id S231496AbhJ1Xah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 19:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhJ1X1k (ORCPT
+        with ESMTP id S231431AbhJ1Xag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 19:27:40 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0658AC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 16:25:13 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id w193so10715456oie.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 16:25:12 -0700 (PDT)
+        Thu, 28 Oct 2021 19:30:36 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5183C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 16:28:08 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id p16so17040819lfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 16:28:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EDe6iwcvK4P5hlBt+qwjDx1hQlBIPuFbPW/BOYvPeKw=;
-        b=pvWUBJxKggXKZRJmAHjUNCjWEEfpZK8JUSaaafZP78H7+1A+5NYmpfk+cVtbeGUHar
-         Lf0swKVnEKe+9LUm4TIwhMdurYC2eo5C25JQGG/bZ+GX8qeliN6NF7Ha24In6fUQYdJd
-         jaw4sT52NEvwLGvHvTPcUczr8jE1eIgFQQx8rl9li3h48UbCIg3aZZiA5Wt3eZRqAqSx
-         Wu+UB80HIjkcvu84rQ1ZFASW0OtcGEPGTgXWp2MCLoMvAQQcjZgh8dPyq3QEdUdsDk4G
-         pLLVNDgEjcNeBH07jWz2/0x8HP3wPSle7hu6UhljuOV3ZGiyVzIRH3mP7mjFK6RXxUlp
-         GL5w==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v2NZVqDWdoVucsv8uhkHaXgoKbQvyvz0JI/8C3axFj0=;
+        b=RnCAwZVxy7QKt+LZUrPTZt2C46+fJhrIILG0woPvFNPB0ITXfELJIWLn+ekVwQeW6u
+         NCUfuuIOawzPAVWuS4eFW2z+Ey3R04FKVosZU3vLihK/dPK0PE8pd22bYLucsVQSCSfG
+         n8FlDzunt6v0xBsXM+bJYA3cC4SduIDEpYPYOj3TJy1wlbGERNyv7Y7x1VmlOXbA42AB
+         XqfHIlVO9v/aUkppqMqU2ILMDDmXLof3+lnI4neUiQ0QfcfGY8D8Bbi6WeXes7AKMw6/
+         Hbp3Cxr7TynW0ezKPi/rZ3ZcU7CSG+ad/tG/zjWZsv6InOUSwfYFG3r1bPvWowatc2Fd
+         FkWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EDe6iwcvK4P5hlBt+qwjDx1hQlBIPuFbPW/BOYvPeKw=;
-        b=hjinu3TftSLS+ZEP6mGjxcOIGF+YIvN6fjmfjkZg3K7oYMKQYPzaotI1zYTHEnPTkC
-         +GLmdebdKht4V7A9XgruJAwLVI4R+kLp+gUvfgWgU21jden28B1w1IkDXKLJT88nnHOm
-         qoXnPul2psGYwG5ZzjSY1d7nyBVCpbBzJ7LlY96CnzHOaOaeIm2TbpaBT7qQ3yHad+wN
-         O8jQZNtJ4Yw8r/vNck7nUkE7qgQvrxcFQzRH/H000m/Nu+TK1oGyY4j+mHEDysq0AbXn
-         lMpGZt4dt4B+vwICBIEZGhXV3a7wMdwXPDx921mBp4WPLxHN7Ekdw5Ml3yu7IehmS875
-         l7XQ==
-X-Gm-Message-State: AOAM531JSs+K1vLNIuJjzaHPolUbLGYSrhJYIpTDeJmlxt8+vFkKK2T8
-        QPrBdvzAI7lE4DLkUQDDame7TQ==
-X-Google-Smtp-Source: ABdhPJw76jtgAGonUXDGNel+tZMapRW9u1aPMw5KM4t4dLEqHc/UEMWzrWlue86K1xN32pjE5r2ntQ==
-X-Received: by 2002:a05:6808:138d:: with SMTP id c13mr11300022oiw.60.1635463512310;
-        Thu, 28 Oct 2021 16:25:12 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i13sm1500650oig.35.2021.10.28.16.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 16:25:11 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 16:27:01 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Odelu Kukatla <okukatla@codeaurora.org>
-Cc:     georgi.djakov@linaro.org, evgreen@google.com,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [v8 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
- provider
-Message-ID: <YXsxxd7f/FaDJEMa@ripper>
-References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
- <1634812857-10676-4-git-send-email-okukatla@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v2NZVqDWdoVucsv8uhkHaXgoKbQvyvz0JI/8C3axFj0=;
+        b=6K1mt1jT4ly4hti15LMTEH2RJ7X+nBY8emckerDdP+NZGEiaK11H24PC0oXovnNBZ4
+         cPxMFkd9gOwysdDyaNFV9GYmd7JkANSg/zIldEChKs5hc//PqS3DYrEG9ZnjiZDi+J84
+         iw/tJQVIfBku2Rr7UwVrk3+E8IevzFDZlnZs4iMN3qsw9xPPATVPBrUQf00WdvIOs6Er
+         oIOsOaSO2GkmV7LXuNbpKyVPxYDlN4oEpzS7ROR5BP2AYTps4mAa8pLkDEXpbtkq6mAr
+         q7w3BJsrzhgXgbqqdRn9RpntNXcAD/8np63O+bYb33OZYbBUvnXqutD5GaxQvofXzSUG
+         sIcw==
+X-Gm-Message-State: AOAM533gPqPbS0PUM76NpaP1My0VCMjYkFM1cUly1KiKfKuhcYHRZr6y
+        9IR9XjdKtPKeIl+ePdhti1cq3zFoIXjlllLseArcHDMmpf7v2g==
+X-Google-Smtp-Source: ABdhPJxyPCMzLSMX6BMpvUfaQg/tFqyUsmyDB2tZULGDfZBfJ9oA5/75vCUWsEtI+hqFXwHppll/S/RkQLTZUTmyHkw=
+X-Received: by 2002:a05:6512:228a:: with SMTP id f10mr6932000lfu.489.1635463686807;
+ Thu, 28 Oct 2021 16:28:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634812857-10676-4-git-send-email-okukatla@codeaurora.org>
+References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
+ <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
+ <YXqwZq53WUiTeqI7@hirez.programming.kicks-ass.net> <YXqyHhWGJfDkuxjP@hirez.programming.kicks-ass.net>
+ <YXq72/yPe76DhDLu@hirez.programming.kicks-ass.net> <YXrhZoOgv5dtFMTs@archlinux-ax161>
+ <20211028204855.GP174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211028204855.GP174703@worktop.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 28 Oct 2021 16:27:55 -0700
+Message-ID: <CAKwvOd=x9E=7WcCiieso-CDiiU-wMFcXL4W3V5j8dq7BL5QT+w@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Support clang-$ver builds
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21 Oct 03:40 PDT 2021, Odelu Kukatla wrote:
+On Thu, Oct 28, 2021 at 1:49 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Oct 28, 2021 at 10:44:06AM -0700, Nathan Chancellor wrote:
+>
+> > I like the first iteration of this idea most, as CC=clang does not
+> > currently imply using all LLVM tools. There are some architectures that
+> > work with CC=clang but not LLVM=1 so I am not sure we want that meaning
+> > to change.
+>
+> Could such architecture set a CONFIG symbol to indicate they're
+> handicapped and have that make the Makefile not use the full LLVM suite?
 
-> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
-> SoCs.
-> 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index d74a4c8..0b55742 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -3687,6 +3687,14 @@
->  			};
->  		};
->  
-> +		epss_l3: interconnect@18590000 {
-> +			compatible = "qcom,sc7280-epss-l3";
-> +			reg = <0 0x18590000 0 0x1000>;
+At this point, it's just powerpc and s390 where the assembler in llvm
+needs more work. Every other arch we can compile we generally can
+generally link. (modulo some long tail configs).
 
-This series looks like I would expect, with and without per-core dcvs.
-But can you please explain why this contradict what Sibi says here:
-https://lore.kernel.org/all/1627581885-32165-3-git-send-email-sibis@codeaurora.org/
+> > 2. Update the documentation to describe using the
+> >
+> >    $ PATH=/usr/lib/llvm-#/bin:$PATH make LLVM=1 ...
+> >
+> >    trick. This has been the preferred method for using different
+> >    versions of LLVM but it has never been documented anywhere. This
+> >    would allow us to keep the current build infrastructure while giving
+> >    people clear instructions for how to handle different versions of
+> >    clang. As Peter has noted, this would require people who are not
+> >    familiar with building with LLVM to be constantly looking at the
+> >    documentation to remember the command to invoke, whereas with
+> >    LLVM=-#, it is easy to remember.
+>
+> Right, this is no more than a crude hack and is super unfriendly. It
+> should never have been accepted.
 
-Regards,
-Bjorn
+Lots of tools modify PATH in your `.bashrc` or `.zshrc` etc.  I don't
+see how that's any different, other than one off commands in which you
+actually intend to use a specific version.
 
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
-> +			clock-names = "xo", "alternate";
-> +			#interconnect-cells = <1>;
-> +		};
-> +
->  		cpufreq_hw: cpufreq@18591000 {
->  			compatible = "qcom,cpufreq-epss";
->  			reg = <0 0x18591000 0 0x1000>,
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> So how about we do the below instead? Then the normal way of things will
+> be:
+>
+>  $ make CC=clang-12
+>
+> and it will all *just*work*. The incomplete LLVM archs can revert back
+> to the old hybrid (clang+binutils) way of things by doing:
+>
+>  $ make CC=clang LLVM=0
+>
+> Which explicitly states, use clang but don't use the full llvm suite. Or
+> they can do that CONFIG_LLVM_BROKEN (or whatever) to have them default
+> to LLVM=0
+>
+> ifdef CONFIG_LLVM_BROKEN
+> LLVM ?= 0
+> endif
+>
+> in front of the CC magic in the below patch should take care of that.
+
+I don't think setting CC should affect LD and friends (if you were
+suggesting that CC=clang-12 replace LLVM=1).  Like Nathan, I'm
+sympathetic and think that your first patch is probably closer to what
+I'd accept, but it needs to handle non-suffixed versions (looks like
+it should) and add this info to Documentations/kbuild/llvm.rst.
+-- 
+Thanks,
+~Nick Desaulniers
