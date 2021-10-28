@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9299F43E0C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C9F43E0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhJ1MXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:23:32 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54211 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhJ1MXa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:23:30 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg4R24CPTz4xZ1;
-        Thu, 28 Oct 2021 23:21:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635423662;
-        bh=hCboHI7lN95339dseQTlz8zWh/IwrYE8xrkV3rLUulE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rEETi90aNuAhHpxZIdyuTUuA1EFA8Sxd4BqQL8hrHYdBAMAGegyxbg8LQz4xqC38U
-         0RHj3ajI9b1FSc6lTYCtXYPYO8y+w31zub0d7L7kG3ub/Q2a5ILdT1JP0N/K8Mintd
-         Ch2kKdJrCvXMMvpfMPv062FFESmPG27s9VZ9Asv3xv4XL8ntduqLgtPVg1y1qU+zF5
-         vXKaGmINjQalTfYU83H1l0ToWfh2t+AFFb6UtsvieuC1MPAucbGSvppNgA0Fjw8Xbz
-         iyl1uB+lxgoxlSBXWIi0ImiOlFNlg5JBc861U6gTrmH3c4VEMahoUoHYWvDpalmfRq
-         Eve0IawJILMUA==
-Date:   Thu, 28 Oct 2021 23:21:00 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the ext3 tree
-Message-ID: <20211028232100.03d394fd@canb.auug.org.au>
+        id S230393AbhJ1MYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:24:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhJ1MYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:24:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9807760238;
+        Thu, 28 Oct 2021 12:22:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635423735;
+        bh=sNViopt2AGTtGw527JuqTqB1yq2eoISJmKY8LUifpCw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uKX/4zI6IWHcPtl7pW3anmaQmlXeBb4YgFJOp/BU2SAJuIN3NW0EEzmC5p7dHppqU
+         zo9JBqBGeQAPw1RDqiumR6BA4dNwpxHy2rXxKscMYKDh6NeF8aA4rzrHDqmmv2kL+X
+         OSh4+0vYvXrL98kcOYjt0aafPlxXSw8FCIOu6MJ3ifW8R1aQ3WyMX2Wyh/FFwn8T52
+         4eyzLpbMoby1OLMO46v12CZMwzTnczzgeTrQXWxl56o6lgx86VGAf17mzes2ymRjUo
+         XZ8/9Ixb/16kTjsyiuJlM+5ycsJVeEMVEs8ZwhOZTtSvbRlPSwTs0THkgM4um3YTyo
+         z329vdIQiPhVg==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mg4Q9-00053D-8y; Thu, 28 Oct 2021 14:22:13 +0200
+Date:   Thu, 28 Oct 2021 14:22:13 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     cgel.zte@gmail.com
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        macro@orcam.me.uk, fancer.lancer@gmail.com, andrew@aj.id.au,
+        pali@kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jing Yao <yao.jing2@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] drivers: tty: replace snprintf in show functions with
+ sysfs_emit
+Message-ID: <YXqV9V0eWhqFTc+i@hovoldconsulting.com>
+References: <20211028101350.14172-1-yao.jing2@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rM0dgqzZr27hO9UjKH7Q3Tq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028101350.14172-1-yao.jing2@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rM0dgqzZr27hO9UjKH7Q3Tq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 28, 2021 at 10:13:50AM +0000, cgel.zte@gmail.com wrote:
+> From: Jing Yao <yao.jing2@zte.com.cn>
 
-Hi all,
+Where's the commit message?
 
-After merging the ext3 tree, today's linux-next build (htmldocs) produced
-this warning:
+Also, look at the log for the driver you're changing for the Subject
+prefix you should use. Including "drivers:" is never right.
 
-Documentation/admin-guide/filesystem-monitoring.rst:60: WARNING: Definition=
- list ends without a blank line; unexpected unindent.
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
+> ---
+>  drivers/tty/serial/8250/8250_port.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> index 5775cbff8f6e..557e8b13b5c1 100644
+> --- a/drivers/tty/serial/8250/8250_port.c
+> +++ b/drivers/tty/serial/8250/8250_port.c
+> @@ -3099,7 +3099,7 @@ static ssize_t rx_trig_bytes_show(struct device *dev,
+>  	if (rxtrig_bytes < 0)
+>  		return rxtrig_bytes;
+>  
+> -	return snprintf(buf, PAGE_SIZE, "%d\n", rxtrig_bytes);
+> +	return sysfs_emit(buf, PAGE_SIZE, "%d\n", rxtrig_bytes);
 
-Introduced by commit
+FFS... This would not even compile, at least not without a warning, as
+it's completely broken.
 
-  c0baf9ac0b05 ("docs: Document the FAN_FS_ERROR event")
+You do know that you have to at least compile-test your patches, right?
 
---=20
-Cheers,
-Stephen Rothwell
+>  }
+>  
+>  static int do_set_rxtrig(struct tty_port *port, unsigned char bytes)
 
---Sig_/rM0dgqzZr27hO9UjKH7Q3Tq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6lawACgkQAVBC80lX
-0GwPtwf+PNz1/JhFk09yNeR1vnt3PHLmUehMNwZbn6z+lOlvnimYGGqxpuH8lk1U
-Wt36O2/gbgIVN8hvYu8Lhn+MnNqODzeiUD1Fv/xxD5g/h/AWqGdXHdRmdkfXqsA1
-f7Vlcq/F+E+VUywjy3YFbPfOdXpgyb36slz61cRY5oJkaecAl3PzSRJvNRp5TvKo
-xfFzmuDauD61CW6e0RFHDrcXQHcpMninx3d0YypZLfHCIw0vLaQAJM22qyYGlhtY
-GkHNH/YK1HkQM320v4g47nK3/eN/08uuTGB/oCx5VMHHEWiXA48nBDeXsTlGNPQ5
-1h6FnHWKzBhXX5P6nDGoqxbTLtIYnQ==
-=0W3K
------END PGP SIGNATURE-----
-
---Sig_/rM0dgqzZr27hO9UjKH7Q3Tq--
+Johan
