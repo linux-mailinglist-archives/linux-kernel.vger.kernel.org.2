@@ -2,159 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E227A43E315
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3221A43E318
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhJ1OKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:10:12 -0400
-Received: from mail-eopbgr150057.outbound.protection.outlook.com ([40.107.15.57]:57790
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230508AbhJ1OKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:10:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ht3XV2kQjgXxw7yQkdLOTR8skdBsSVlWOpKDAoa4UlImlTGU8jlwdT4VXeA2PJKOJIKhQ2zqq4/KpMqytchhkF+P+G07yTr5scoLLaDruwyQfqsom7oEJhhCS9n0aPmQ+c4M3Wy9Yre82c7Mteg6dfYbxadnxYKLRrPKFWcBq+lIEhaH9B25+mbKMpXeNdieZQjvBKPv+1dV5zZpUv5kkzVlBJTuE5rLG/iNAfBFbDuUONIwSD27pmiRVrDp5kUstkHlR9CqaJCU5haLS2KOMaO+DX/5V7mqMt488AgAlvk/bya8ISWCTw+lNDmoOmepocFZ+wgVVxQEPOrsgi+lrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+ffrj3gQwq27OQ1aIcs0GCByNKwfFbJlgjIwfaMmeMo=;
- b=fsHRMg4I6/gIWD4zm9HDjY9DfcersrPIQyFj3i7X2E2/AbRK4N3BPy02sTVvyExrcJXS7U7zdzr2BKPv6WBhcOhKDAu7FdqzZqwOsljNCMeVnKqLVNKft6CEIt7D1Xl1DuZRn7rTTap9duJsmgintKCgvEMHC6CoCUbf8CCCS9QncY5+b5Uy+G/7sWnKJIRAkwJIjHDtGRm8P7Xxdeb8zZDMfpX/C5CwM8mWuO1CcPxTWB7DxMFRK02orZK9W3S6hnjnZa7isT07sxtRN/j0L/Hs95+diyLJJOpjp3+fzRELP5ICdBLi0JyacU13lEYAFiGcheZZpGobLQfz6kFt4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ffrj3gQwq27OQ1aIcs0GCByNKwfFbJlgjIwfaMmeMo=;
- b=Hitfe5dhT0JDFi31rT0rbtR7/Z0Rql7Lq1hTNOvRpKGA78pxT0SNn/R+4Y5nYkFQ+fCXLxcx0QTZtD19MqP8mIQFnXTgLWtXtKzY0sj2uYsTTlinRRFLYizIqU3/K8OFGPvvbS9uUKLoB2g2LXAVXWh9avNxzmtMvV/ZFOK3Koc=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB6269.eurprd04.prod.outlook.com (2603:10a6:803:fa::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Thu, 28 Oct
- 2021 14:07:39 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4628.020; Thu, 28 Oct 2021
- 14:07:39 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] Add FDMA support on ocelot switch driver
-Thread-Topic: [PATCH 0/3] Add FDMA support on ocelot switch driver
-Thread-Index: AQHXzALgdbtnb6IpB0+/l+K5J3/uHavock0A
-Date:   Thu, 28 Oct 2021 14:07:39 +0000
-Message-ID: <20211028140738.4mozxpgltezu6zsm@skbuf>
-References: <20211028134932.658167-1-clement.leger@bootlin.com>
-In-Reply-To: <20211028134932.658167-1-clement.leger@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d1243867-8fb5-4636-885f-08d99a1c4d3a
-x-ms-traffictypediagnostic: VI1PR04MB6269:
-x-microsoft-antispam-prvs: <VI1PR04MB6269549CE8B3C80E3B174B7AE0869@VI1PR04MB6269.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7Zj6fLdNnQtbZlnEfrTdkNcvL2Q0xpNFjTPGn9o5tfzrBKKHY8ICA3lwYY7ZubrP2spu4K52ckcBzQykqDOs59Uh9g95GNZZ3plBvzKBSnwjp3XoK858EUMGZhlqZI+3xFZ272R0ql9n/fq7AWPHIz+zO77cQ3i0ZiCayosHy1PzTNRnWDSfR5VlBM+s/wqft+hsXWSwY7R9lZcf/bKkm3x5jOc8OqWYd18Bq7oZV85QIXx9b0Bg1xwH+15UeJDg4PUUHYz2gWQwsElbb3yx86xXDv7v/XhnBpWZUir46jt+8fbex9N5pNO3jDzP0SAhEnDX9PamXlf2EbmnRh2rly4+qsUPjNuvBqqzabqSgBEuigrcA7/2qkxGloO0b69XI9/gvnSVRa5JFA9S0oxwN5ozEPrDzHk2OFqQ+lzpt+9o3ee/2eOEivK3zeXxIMbbR+MtTJMO1XKXKPLmcjbKqWwcNkFa33jl7v/J5lS74tYBV3rG6vLXq7NchVbl78Ol2F29NiI0YucaLGDvg+X++kxVPAunyRhN8IgjVmL+TyPzTdQYf68GtFX3o6Fd+x8u0UEkJGplcDqgF6cFr397K3saQJ6pYuIqNbcAtgqxqQ3bDLpT51hh8fi+CBf7ENa9o1i87aWKlKMH+8o0/W8ylzuXAjOkdKorb7xCpd5lXWvrtE5oY6dkpEM8PQLUKWJMAAXrpXI50xAYX1x8m94iDw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(4326008)(6486002)(83380400001)(66946007)(6916009)(38070700005)(66476007)(66556008)(1076003)(8936002)(76116006)(38100700002)(6506007)(66446008)(9686003)(7416002)(2906002)(8676002)(44832011)(66574015)(5660300002)(86362001)(6512007)(91956017)(316002)(71200400001)(26005)(122000001)(186003)(33716001)(508600001)(64756008)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?9cw3q2FGLpJwldTWspLEoda6/li4z8Z8b7Kp3brI4wNuvmN6AO1j35WR39?=
- =?iso-8859-1?Q?0CXD/DC5w/vxJzap6bW+ELB0A3zSvdJ1KfXZykZOeuyH/xqPKI0y7TzsX5?=
- =?iso-8859-1?Q?+StNqv3R0bIYmHTrcPrhMYhooAUvAfSDgWing/WYADlpFKi5co7QMoQWwp?=
- =?iso-8859-1?Q?oHcr+jr4HZeMm5k65ScTWWHWfcwNrC8HaAErERC8IcP/ajQoNRB5bJzPU0?=
- =?iso-8859-1?Q?8dnmEHYapG73Wsem7cLd0PtFmlxTLPKH/tgYGLUet8rBqew47/FtbYinmw?=
- =?iso-8859-1?Q?A4bpuJMjoUndRh9bdlnO7Bov3KBtx/dpOZegbGGrW/z6wl93DPKaTJIgh9?=
- =?iso-8859-1?Q?MPx82jR692302xn+spXKgLpwaUshwDOdtZRD4UZTQQ6Gzwvb9Z8uGuce8m?=
- =?iso-8859-1?Q?vs7V9L32TvipLgRH9eKzc9Fe0wXG1dNWXyCvK25fecDjv6cwXWIr8GHLQf?=
- =?iso-8859-1?Q?n0t3Y2hlDYInOb9NrxE7b2w7TKOjbucU+3Z0n90JziCmZ4W1OdIsy3gpV0?=
- =?iso-8859-1?Q?vBYoZfGf32IRuRvzRT2dcQcCP8wQez0RqG8fnOgA8Xe9SvIK3WYG25TOUP?=
- =?iso-8859-1?Q?2lJq312o+ehsGmmbrkld2n9Vn9K8GOSUhNaomGpC55l3jOxIbnJhxkvXgS?=
- =?iso-8859-1?Q?2nTwSZDRhAwxW8cpEA5CRmPtuG5vhMXKbRQKFescis5SQxwcQK8FIu/El7?=
- =?iso-8859-1?Q?6zEYpTYTR/ggFuRYoJdWd2eKqzPiMdJ6K3M5BucTg2aaRViu2MHetAjNws?=
- =?iso-8859-1?Q?a6jPZHResVrBEphiPr6pjbKDdpPb1rF8baqeWiydcvikgMVmk4+PTp/HIy?=
- =?iso-8859-1?Q?PY1iMWSKI/O3jSetbtq40xX7IgnB7LzAe0R37Q+QySok8uUb8wsILM0NRZ?=
- =?iso-8859-1?Q?tb+6V9cBo6iTmzLLn1egftX/m9B34PlpMidUtxUcTd4zS3OzrDIH1c4tzI?=
- =?iso-8859-1?Q?ef3dOzCSOTMaAQIGjYMi4ftY8+aOWX5VZB1FbXc+9fSZRRmkP+rJWEDzxJ?=
- =?iso-8859-1?Q?QJ1ZgTv50EloRJvF+VjrZZJ//HD9KakIeIRvwzTFtwG5ZZNajk53qBV1Ja?=
- =?iso-8859-1?Q?BCoSuWSeLRKVJp5knJxDUdV3NotuS0W8RsqpabMhKGD22a/NtnI4F3X39Z?=
- =?iso-8859-1?Q?1yYbQs6o586tDT3Mv7efX1pgmszV0X2T/S+ANvS2WR86S7Wct3VwpCEFPr?=
- =?iso-8859-1?Q?Rhl5/lXgaqOrwznPoTJ0y4jSxaUQ6B8T924xRf2R1aqrKs/5UNM3sUz9sh?=
- =?iso-8859-1?Q?HAF/IxEQ2scBUF0HSwZgxV/mDuir1m0Pp74aNeZ3SqDwBxL91bdDy4gpbQ?=
- =?iso-8859-1?Q?FF5RK0nDSI/Up/lNPEh7wTL079hAYZSq1tUKj0j8tke8vXpQzW+a++CVlu?=
- =?iso-8859-1?Q?4P+qoe4+6otAPpcnXWoNQ/GqXADp/tynyszYj9PLUKZPujr9NrVFfQWgGM?=
- =?iso-8859-1?Q?U6TNsi5qSK5OosSJ+ebZXkLSFaDnFAufnile/fZRLBSXkILy6BAIjO3dak?=
- =?iso-8859-1?Q?oPQdSquIboGN1HrQb7sDDoYSdaeYIYS3rgd7lhuxlwlvy3uY9HFeX1GV8m?=
- =?iso-8859-1?Q?8Ynb4KYgH8XJhcW2zcUdOPRbNGnEYUPxLnMEzFAh2u/bux0EHRbiW7XWI2?=
- =?iso-8859-1?Q?kcGU/NMJth/njykBtIqJ4INrvAQ7dTRgPQnnDC0GbWA+fiUn3OmFsPAkO5?=
- =?iso-8859-1?Q?0rKh2h60V0Cq9+OPwNiUVg/ngeAEzk0mfIMs/YRw?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <88A767420C47B14E89C26F16EF23F283@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S230508AbhJ1OLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:11:06 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:39888 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhJ1OLF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:11:05 -0400
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 19SE8H6k023321;
+        Thu, 28 Oct 2021 23:08:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 19SE8H6k023321
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1635430098;
+        bh=IcpYv7zWe5UQhJrI79AsCfWxxZvFKvcreINhWE0NajI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YxOIeYLDuS0h3c2gODHmpmjviov+d4UQNZI5XcUQm9Gw+FjMt5Cv2md1zinagZU1P
+         rw82N2SiDVSqbuE+tzuUOsPHWYpO+sPG3os8K+ruy0OwLi7hYxuCTIu+ZzMMbY6EAA
+         jiuA4nOvBPJDUvluM1OwZxiCmGybRlMEvK+YC1HIPyQexPWTPoSrIw4bbZhfqeFwEh
+         abkxKEfX1Y+dZzccYk4KfDUbx0YaGbImPutGumzW5vUWFmd4ynRh8Ponz/r0NyKyyK
+         ipfRkDZs/cjfEgIWLWw3ka3BQZTjv3D/e9a0DLdZCknip5ILXXgLNR6796N+nQXRet
+         oMdgZjvUbHmhA==
+X-Nifty-SrcIP: [209.85.216.51]
+Received: by mail-pj1-f51.google.com with SMTP id k2-20020a17090ac50200b001a218b956aaso4821889pjt.2;
+        Thu, 28 Oct 2021 07:08:18 -0700 (PDT)
+X-Gm-Message-State: AOAM533BF+4oUODzq/eqG4UHgLURG/w9DB68f4jChwW12RH7ivcvHaQG
+        pFRxhDOqhgnC4Bgty+1aU1gSaYYrEPG/u2Oek9c=
+X-Google-Smtp-Source: ABdhPJzVFYbKNCh5NMd97Z3K+qVlRxTWjQ19pEitcfweyZV2B/3abCoKrJBl47vojEOwhmyU4YFrGcIuZKH08TVdTIY=
+X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr4795598pjb.144.1635430097162;
+ Thu, 28 Oct 2021 07:08:17 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1243867-8fb5-4636-885f-08d99a1c4d3a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2021 14:07:39.3460
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IeUJ2fdeRio/I4rh6KEwje3BShyQsJqw4veeNHSrDeJpqhd7Y8GLcLGbu3QyyG7itEdm1DR/2MSkix76VSCeNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6269
+References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
+In-Reply-To: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 28 Oct 2021 23:07:40 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
+Message-ID: <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Support clang-$ver builds
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 03:49:29PM +0200, Cl=E9ment L=E9ger wrote:
-> This series adds support for the Frame DMA present on the VSC7514
-> switch. The FDMA is able to extract and inject packets on the various
-> ethernet interfaces present on the switch.
->=20
-> While adding FDMA support, bindings were switched from .txt to .yaml
-> and mac address read from device-tree was added to allow be set instead
-> of using random mac address.
->=20
-> Cl=E9ment L=E9ger (3):
->   net: ocelot: add support to get mac from device-tree
->   dt-bindings: net: convert mscc,vsc7514-switch bindings to yaml
->   net: ocelot: add FDMA support
->=20
->  .../bindings/net/mscc,vsc7514-switch.yaml     | 183 ++++
->  .../devicetree/bindings/net/mscc-ocelot.txt   |  83 --
->  drivers/net/ethernet/mscc/Makefile            |   1 +
->  drivers/net/ethernet/mscc/ocelot.h            |   2 +
->  drivers/net/ethernet/mscc/ocelot_fdma.c       | 811 ++++++++++++++++++
->  drivers/net/ethernet/mscc/ocelot_fdma.h       |  60 ++
->  drivers/net/ethernet/mscc/ocelot_net.c        |  30 +-
->  drivers/net/ethernet/mscc/ocelot_vsc7514.c    |  20 +-
->  include/linux/dsa/ocelot.h                    |  40 +-
->  include/soc/mscc/ocelot.h                     |   2 +
->  10 files changed, 1140 insertions(+), 92 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/mscc,vsc7514-sw=
-itch.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/mscc-ocelot.txt
->  create mode 100644 drivers/net/ethernet/mscc/ocelot_fdma.c
->  create mode 100644 drivers/net/ethernet/mscc/ocelot_fdma.h
->=20
-> --=20
-> 2.33.0
+On Thu, Oct 28, 2021 at 10:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
+> Hi,
+>
+> Debian (and derived) distros ship their compilers as -$ver suffixed
+> binaries. For gcc it is sufficent to use:
+>
+>  $ make CC=gcc-12
+>
+> However, clang builds (esp. clang-lto) need a whole array of tools to be
+> exactly right, leading to unweildy stuff like:
+>
+>  $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
+>
+> which is, quite franktly, totally insane and unusable. Instead use the
+> already mandatory LLVM variable to convey this, enabling one such as
+> myself to use:
+>
+>  $ make LLVM=-13
+>
+> This also lets one quickly test different clang versions.
 
-Oh yes, finally some care and attention for the ocelot switchdev driver.
-I'll review this soon, but I can't today.
-Will you be keeping the hardware for some extended period of time, and
-do you have some other changes planned as well?=
+
+Please read the commit log of
+a0d1c951ef08ed24f35129267e3595d86f57f5d3
+
+
+
+
+
+
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  Makefile                       | 27 +++++++++++++++++----------
+>  tools/scripts/Makefile.include | 23 +++++++++++++++--------
+>  2 files changed, 32 insertions(+), 18 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 30c7c81d0437..a38f38f7f190 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -423,9 +423,16 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
+>  HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
+>  HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
+>
+> +# When LLVM=-ver use clang-ver binaries, useful for Debian and other
+> +# multi-version setups
+> +ifeq ($(shell test $(LLVM) -lt 0; echo $$?),0)
+> +LLVM_SFX=$(LLVM)
+> +export LLVM_SFX
+> +endif
+> +
+>  ifneq ($(LLVM),)
+> -HOSTCC = clang
+> -HOSTCXX        = clang++
+> +HOSTCC = clang$(LLVM_SFX)
+> +HOSTCXX        = clang++$(LLVM_SFX)
+>  else
+>  HOSTCC = gcc
+>  HOSTCXX        = g++
+> @@ -443,14 +450,14 @@ KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
+>  # Make variables (CC, etc...)
+>  CPP            = $(CC) -E
+>  ifneq ($(LLVM),)
+> -CC             = clang
+> -LD             = ld.lld
+> -AR             = llvm-ar
+> -NM             = llvm-nm
+> -OBJCOPY                = llvm-objcopy
+> -OBJDUMP                = llvm-objdump
+> -READELF                = llvm-readelf
+> -STRIP          = llvm-strip
+> +CC             = clang$(LLVM_SFX)
+> +LD             = ld.lld$(LLVM_SFX)
+> +AR             = llvm-ar$(LLVM_SFX)
+> +NM             = llvm-nm$(LLVM_SFX)
+> +OBJCOPY                = llvm-objcopy$(LLVM_SFX)
+> +OBJDUMP                = llvm-objdump$(LLVM_SFX)
+> +READELF                = llvm-readelf$(LLVM_SFX)
+> +STRIP          = llvm-strip$(LLVM_SFX)
+>  else
+>  CC             = $(CROSS_COMPILE)gcc
+>  LD             = $(CROSS_COMPILE)ld
+> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+> index 071312f5eb92..a2b53cc91378 100644
+> --- a/tools/scripts/Makefile.include
+> +++ b/tools/scripts/Makefile.include
+> @@ -51,12 +51,19 @@ define allow-override
+>      $(eval $(1) = $(2)))
+>  endef
+>
+> +# When LLVM=-ver use clang-ver binaries, useful for Debian and other
+> +# multi-version setups
+> +ifeq ($(shell test $(LLVM) -lt 0; echo $$?),0)
+> +LLVM_SFX=$(LLVM)
+> +export LLVM_SFX
+> +endif
+> +
+>  ifneq ($(LLVM),)
+> -$(call allow-override,CC,clang)
+> -$(call allow-override,AR,llvm-ar)
+> -$(call allow-override,LD,ld.lld)
+> -$(call allow-override,CXX,clang++)
+> -$(call allow-override,STRIP,llvm-strip)
+> +$(call allow-override,CC,clang$(LLVM_SFX))
+> +$(call allow-override,AR,llvm-ar$(LLVM_SFX))
+> +$(call allow-override,LD,ld.lld$(LLVM_SFX))
+> +$(call allow-override,CXX,clang++$(LLVM_SFX))
+> +$(call allow-override,STRIP,llvm-strip$(LLVM_SFX))
+>  else
+>  # Allow setting various cross-compile vars or setting CROSS_COMPILE as a prefix.
+>  $(call allow-override,CC,$(CROSS_COMPILE)gcc)
+> @@ -69,9 +76,9 @@ endif
+>  CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
+>
+>  ifneq ($(LLVM),)
+> -HOSTAR  ?= llvm-ar
+> -HOSTCC  ?= clang
+> -HOSTLD  ?= ld.lld
+> +HOSTAR  ?= llvm-ar$(LLVM_SFX)
+> +HOSTCC  ?= clang$(LLVM_SFX)
+> +HOSTLD  ?= ld.lld$(LLVM_SFX)
+>  else
+>  HOSTAR  ?= ar
+>  HOSTCC  ?= gcc
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
