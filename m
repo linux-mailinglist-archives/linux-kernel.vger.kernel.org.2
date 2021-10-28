@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978DE43E33D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7EB43E342
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhJ1OPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhJ1OPp (ORCPT
+        id S230471AbhJ1ORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:17:16 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:53011 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230258AbhJ1ORP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:15:45 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FA9C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:13:18 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id w15so25539123edc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:13:18 -0700 (PDT)
+        Thu, 28 Oct 2021 10:17:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=2HfodvIKsXmdxTtsXOvx0knfgEclU3IICQbU3Ulbeso=;
-        b=AxlRapfPYendyh+fP+pokIB+ry3X22Nm37GimJ0AKBb11iO5dWGizMLp78HALEUXk4
-         5FAPeUVpRwGjcTOVuKwWxCR2MyvHvIPneTVVvM4jfkMy1qGyfQcyQ8CbsIkQ0TgJxuY0
-         f9b+K98dwgFwGBnkl3SHdudosMM3xssdoz0ppmjfbeHoxEEv8j2C9ALZnS1zMOIGz1SL
-         lydnO4UoGLf4MpZrliUg/6zr+BpmEj0l5gh7AshzOBYdOWLVWdB/BuGRsYxvXJM3XW5h
-         yujhp0vNBQLqfH1EAwxlbuqyfJ5p6dCNZ5PqRwKYcsBhtYqdMZ0jg9QWzndD2y6XStTe
-         ZHbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=2HfodvIKsXmdxTtsXOvx0knfgEclU3IICQbU3Ulbeso=;
-        b=roG72/+uvx/J/hspc/83CP5SZhPEibomLDYnXnwHbxxsHQWVydgx7sKlchAngloCrD
-         fVjo7UIsOoExpTHPk/FO0FzHcbtHjeqT3VCh4fJbAA0luta6K6X9f1jFtyea3hlnQzIm
-         5fFarrmLko59U0Q+6cWwu3Tk/ZQTDp/IPgXp2chnuQy+Nmh7ocrfclX2PqeqsugxGUg3
-         3ehdQUBKtSt6wHOMpHkpI1xGOY0Wlb5Np/hnLC6mHBENIz6vzVEgSQWqaxJzx8AGkzos
-         Fy0hDTy9aZ3CvBhQZWWL1hxJRvTicIzRSFzzRwVIyR74XzAOpEtGQ1AlsBCwOhOF8Cm4
-         0ldw==
-X-Gm-Message-State: AOAM533qHzeCTqQlOoaoFFp1DLtqW1rty0OFLiN0PuJrM+Ia/3v77YUM
-        hYdir9eRH5akSM9hEYB2YAkrhqhk+BaOhbcvMIsBASXqwXHR4w==
-X-Google-Smtp-Source: ABdhPJx7xbYO3adfzEdDBvMW/w1USw7c2rkLDD2FkHY1ila44wcCYWIIbjglpZRlhGy45J2a59Uh6OCPYkKbn37zQy4=
-X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr5908906ejb.6.1635430396601;
- Thu, 28 Oct 2021 07:13:16 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635430488; x=1666966488;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=bMUYINU1qv85LuldYKLFMYVsWuEupSSSUwCLfiLT3L0=;
+  b=xzRQQfvmtRIZ4IOJFvjc8NCk+eblgEe00IaNgDo/py3p4uc2IrVEVhB8
+   yH3HmLq2fvFqaQMqSkdpgCdcNu0guP03nLvpqQETI+SU0oDSq8HRQKIth
+   kkgVJz9WOs7yzdCXZnpiOPsu39xrF2GG+fz3bWt8n+Z43RKwi7EYWCy6S
+   0=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Oct 2021 07:14:48 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 07:14:48 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Thu, 28 Oct 2021 07:14:47 -0700
+Received: from [10.110.38.143] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 28 Oct 2021
+ 07:14:47 -0700
+Subject: Re: Introduce "make debugconfig"
+To:     Masahiro Yamada <masahiroy@kernel.org>
+CC:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+References: <962c0565-89a3-c6d2-37e0-a93c8c753d57@quicinc.com>
+ <CAK7LNAQX2GiUB04fOm7p=F+H5p9XFQjt9hEPSZS4JR+FZK6PZg@mail.gmail.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <1e21fddd-cdb9-a986-ae53-6e1a288b817e@quicinc.com>
+Date:   Thu, 28 Oct 2021 10:14:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 28 Oct 2021 19:43:04 +0530
-Message-ID: <CA+G9fYu=0pViKt-9bZA91qaq1WgHBYA4=o1kHz6VMNp_3EBM1g@mail.gmail.com>
-Subject: s390: facility.h:98:22: error: implicit declaration of function
- 'min_t' [-Werror=implicit-function-declaration]
-To:     linux-s390@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK7LNAQX2GiUB04fOm7p=F+H5p9XFQjt9hEPSZS4JR+FZK6PZg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regression found on s390 gcc-11 built with defconfig
-Following build warnings / errors reported on linux next 20211028.
-
-metadata:
-    git_describe: next-20211028
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_short_log: 503f375baa99 (\"Add linux-next specific files for 20211028\")
-    target_arch: s390
-    toolchain: gcc-11
-
-build error :
---------------
-<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
-In file included from arch/s390/pci/pci_insn.c:12:
-arch/s390/include/asm/facility.h: In function '__stfle':
-arch/s390/include/asm/facility.h:98:22: error: implicit declaration of
-function 'min_t' [-Werror=implicit-function-declaration]
-   98 |                 nr = min_t(unsigned long, (nr + 1) * 8, size * 8);
-      |                      ^~~~~
-arch/s390/include/asm/facility.h:98:28: error: expected expression
-before 'unsigned'
-   98 |                 nr = min_t(unsigned long, (nr + 1) * 8, size * 8);
-      |                            ^~~~~~~~
-cc1: some warnings being treated as errors
 
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On 10/28/21 10:03 AM, Masahiro Yamada wrote:
+>> The idea is to have a debugconfig inside kernel/configs/ and update
+>> scripts/kconfig/Makefile
+> 
+> Please do not wire it up to Makefile.
 
-build link:
------------
-https://builds.tuxbuild.com/208R0Wv3siu0646e0z4lUYcUQD3/build.log
+Masahiro, I am afraid I don't follow here. I meant that in order for
+"make help" to show things like:
 
-build config:
--------------
-https://builds.tuxbuild.com/208R0Wv3siu0646e0z4lUYcUQD3/config
+debug.config - Enable Kconfig items for running kernel for general debugging
 
-# To install tuxmake on your system globally
-# sudo pip3 install -U tuxmake
-tuxmake --runtime podman --target-arch s390 --toolchain gcc-11
---kconfig defconfig
-
---
-Linaro LKFT
-https://lkft.linaro.org
+It needs to modify scripts/kconfig/Makefile or use a arch-specific
+Makefile like kvm_guest.config. Do you mean you would prefer the latter?
