@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B7543DBCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3931943DBC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhJ1HSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:18:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:37969 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhJ1HR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:17:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635405332; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=QcsIIY4LkdbLo19IWuo9zMQF3oHVFXoolgXrnh06JiY=;
- b=RZaaw4Y6PEM12sJrHOhFEKxdWt7Uy9LqQFKkaDPTLugXU7J3LVxyMI7IwPw7zAD3dbm5Ey1p
- IiarDvFjMTAEMT9mMdgUtHfH+r25KoOyxEMJQ3i8HTH9mMM7+k0z58fh+2T7OZbbMBb67aZq
- AhXtieZy4e7rPWz1oBT8LSrEIJU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 617a4df6ff3eb667a78d012d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 07:15:02
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9C4CCC43460; Thu, 28 Oct 2021 07:15:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA3D9C4338F;
-        Thu, 28 Oct 2021 07:15:01 +0000 (UTC)
+        id S229846AbhJ1HRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:17:48 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:42634 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1HRr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:17:47 -0400
+Received: by mail-ua1-f51.google.com with SMTP id v20so9716504uaj.9;
+        Thu, 28 Oct 2021 00:15:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fd0A4kINjaHErhsbdwDU7+kl4csF742c8BAWf6V/9/M=;
+        b=zn4MAvatZIJgATIOZsxhz+KCk3PeE7oX5rDFtQZ+o/aVMwvtivPHWMSADK7SFKpcCu
+         QNVBkZBkGCi6jAEXG6qPHXubx9GCNnBQzu9lMoXIaSJ6fgEZELfrKSySoFGjWVECWZiw
+         O00FHTKJlPp87QoE4qTuPi1iHxVS0gdpBWjV4pFPKyjnBYVQqK5EuZVVfBzcFKaO/3a5
+         Ukx8AbVsWz211+q5EZz08ioDR/L2HZO/5Dj2WkJI6hUYIHQrtKXTMAIsLkz5mc2L5beU
+         IEJJGwc+Y2VPi8zdaGYS0lKj9wI/pbcr3/MxFt47efATvmwzGNZrBBfjHimijXwN+Jvq
+         8SDw==
+X-Gm-Message-State: AOAM532AEvP8b/hy5/B7EHIQT+SRl3bvgCFlWk7K9ZWMRxkBxeiK4g5L
+        +/A4F2Yoj5wX11KIYgtT2pRC29drsvnWPw==
+X-Google-Smtp-Source: ABdhPJy8dZCWOfhkYDDqQpPeSH5uH5K+Qmq2109l/I2uWO50g9jefhCklXCBJDcz4dvQdB0nLLl5ww==
+X-Received: by 2002:a05:6102:e13:: with SMTP id o19mr2301478vst.54.1635405320403;
+        Thu, 28 Oct 2021 00:15:20 -0700 (PDT)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id p195sm332148vkp.50.2021.10.28.00.15.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 00:15:20 -0700 (PDT)
+Received: by mail-ua1-f52.google.com with SMTP id o26so9747875uab.5;
+        Thu, 28 Oct 2021 00:15:19 -0700 (PDT)
+X-Received: by 2002:a67:3208:: with SMTP id y8mr2615189vsy.37.1635405319660;
+ Thu, 28 Oct 2021 00:15:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 28 Oct 2021 15:15:01 +0800
-From:   tjiang@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: Re: [PATCH v3] Bluetooth: btusb: Add support for variant WCN6855 by
- using different nvm
-In-Reply-To: <YXl3S7TT30PFfyB8@google.com>
-References: <1d19afff955cdc8d47582297a26246d9@codeaurora.org>
- <YXgrwKUZwUWuWfG4@google.com>
- <fe118b60df5881b0e9938f57aae6f87e@codeaurora.org>
- <YXl3S7TT30PFfyB8@google.com>
-Message-ID: <a04518bd30761a2fecfbee8f435d4daf@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211027134509.5036-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211027134509.5036-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211027134509.5036-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 Oct 2021 09:15:08 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX0iZTJCa0RGOKk5Ug8_tid-Zx514XCW2Ob1QM7Weu6ew@mail.gmail.com>
+Message-ID: <CAMuHMdX0iZTJCa0RGOKk5Ug8_tid-Zx514XCW2Ob1QM7Weu6ew@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: pincfg-node: Add "output-impedance-ohms" property
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Matthias for the comments.
+On Wed, Oct 27, 2021 at 3:45 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> On RZ/G2L SoC for Group-B pins, output impedance can be configured. This
+> patch documents "output-impedance-ohms" property in pincfg-node.yaml so
+> that other platforms requiring such feature can make use of this property.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-the conclusion is that I can continue to use this patch , right ? thank 
-you.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-regards.
-tim
+Gr{oetje,eeting}s,
 
+                        Geert
 
-On 2021-10-27 23:59, Matthias Kaehlcke wrote:
-> On Wed, Oct 27, 2021 at 02:12:07PM +0800, tjiang@codeaurora.org wrote:
->> Hi Matthias:
->>   the previous patch is submitted by zijun , as he is not working on 
->> this
->> project, I take over his job, so can we assume abandon the previous 
->> patch,
->> using my new patch ? thank you.
->> regards.
-> 
-> Your patch is clearly based on zijun's one, it even has the same 
-> subject. A
-> change of authorship shouldn't result in resetting the version number, 
-> it's
-> still the same patch/series. You can always add a 'Co-developed-by:' 
-> tag to
-> indicate that someone else contributed to a patch, or use a 'From:' tag 
-> if
-> you only made minor changes on top of someone else's work.
-> 
-> Not sure how to proceed best with the version number, especially since 
-> there
-> are already 3 versions of the 'new' patch. Either option can create 
-> confusion,
-> I guess you can continue with the new scheme, it seems the patch is 
-> almost
-> ready to land anyway.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
