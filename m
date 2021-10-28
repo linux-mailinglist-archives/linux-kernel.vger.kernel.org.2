@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4624543DD13
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9B343DD16
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhJ1Iq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:46:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:52350 "EHLO foss.arm.com"
+        id S230091AbhJ1Irh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:47:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhJ1Iq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:46:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA3101FB;
-        Thu, 28 Oct 2021 01:44:29 -0700 (PDT)
-Received: from [10.32.36.26] (e121896.Emea.Arm.com [10.32.36.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44B973F70D;
-        Thu, 28 Oct 2021 01:44:27 -0700 (PDT)
-Subject: Re: [PATCH] perf symbol: ignore $a/$d symbols for ARM modules
-To:     Lexi Shao <shaolexi@huawei.com>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, mark.rutland@arm.com, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, qiuxi1@huawei.com,
-        nixiaoming@huawei.com, wangbing6@huawei.com
-References: <20211027095235.123358-1-shaolexi@huawei.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <0631949b-6cde-dee6-6a77-5b826938ce79@arm.com>
-Date:   Thu, 28 Oct 2021 09:44:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230016AbhJ1Irf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 04:47:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D56C9610C7;
+        Thu, 28 Oct 2021 08:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635410707;
+        bh=6FnoWItqhX4i2tVirmjmWtZScoYaiHnnimIFWjGaDxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NZ3P9zZZtFG40mdnjQbz+sZr67CPVdGcvrOk7fnrpulWEKbcv3w4BCbRH1ylyPqjy
+         1zS0ChoaLbv2NPEHVX78T1IES9RCzWng4NtEqzO4hP8n1+KxbGwjviChxLTXbaOLWO
+         rPbeTOD1pLzXD2lubeLicEkzN49R5IKNK/rlROTQGPozCYS0nQYTZcQP+3XIbdpT+/
+         E26aIiX1sukCpksG4h09lC72f39grkktecPfolr7Z+vzJhTMgP6yHRnDmAJ5pzozJm
+         e332bVC0WuIh7JzcmbcxeN3ccWTBxxMEM3jSZC/lV+VGxQPgOvOgZ9ErVqJEql2Pgu
+         2eINs7j9LvM3A==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mg121-0006wF-7T; Thu, 28 Oct 2021 10:45:05 +0200
+Date:   Thu, 28 Oct 2021 10:45:05 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Anssi Hannula <anssi.hannula@bitwise.fi>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH] tty: Fix extra "not" in TTY_DRIVER_REAL_RAW description
+Message-ID: <YXpjEeeajd706Nak@hovoldconsulting.com>
+References: <20211027102124.3049414-1-anssi.hannula@bitwise.fi>
 MIME-Version: 1.0
-In-Reply-To: <20211027095235.123358-1-shaolexi@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027102124.3049414-1-anssi.hannula@bitwise.fi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 27/10/2021 10:52, Lexi Shao wrote:
-> On ARM machine, kernel symbols from modules can be resolved to $a
-> instead of printing the actual symbol name. Ignore symbols starting with
-> "$" when building kallsyms rbtree.
+On Wed, Oct 27, 2021 at 01:21:24PM +0300, Anssi Hannula wrote:
+> TTY_DRIVER_REAL_RAW flag (which is always set for e.g. serial ports)
+> documentation says that driver must always set special character
+> handling flags in certain conditions.
 > 
-> A sample stacktrace is shown as follows:
+> However, as the following sentence makes clear, what is actually
+> intended is the opposite.
 > 
-> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
-> bf4a66d8 $a+0x78 ([test_module])
-> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
-> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
+> Fix that by removing the unintended double negation.
 > 
-> On ARM machine, $a/$d symbols are used by the compiler to mark the
-> beginning of code/data part in code section. These symbols are filtered
-> out when linking vmlinux(see scripts/kallsyms.c ignored_prefixes), but
-> are left on modules. So there are $a symbols in /proc/kallsyms which
-> share the same addresses with the actual module symbols and confuses perf
-> when resolving symbols.
-> 
-> After this patch, the module symbol name is printed:
-> 
-> c0f2e39c schedule_hrtimeout+0x14 ([kernel.kallsyms])
-> bf4a66d8 test_func+0x78 ([test_module])
-> c0a4f5f4 kthread+0x15c ([kernel.kallsyms])
-> c0a001f8 ret_from_fork+0x14 ([kernel.kallsyms])
-> 
-> Signed-off-by: Lexi Shao <shaolexi@huawei.com>
-
-Reviewed-by: James Clark <james.clark@arm.com>
-
+> Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 > ---
->  tools/perf/util/symbol.c | 4 ++++
->  1 file changed, 4 insertions(+)
+
+Acked-by: Johan Hovold <johan@kernel.org>
+
+> This one seems to have been there since 1994.
 > 
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index 0fc9a5410739..35116aed74eb 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -702,6 +702,10 @@ static int map__process_kallsym_symbol(void *arg, const char *name,
->  	if (!symbol_type__filter(type))
->  		return 0;
->  
-> +	/* Ignore local symbols for ARM modules */
-> +	if (name[0] == '$')
-> +		return 0;
-> +
->  	/*
->  	 * module symbols are not sorted so we add all
->  	 * symbols, setting length to 0, and rely on
+>  include/linux/tty_driver.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/include/linux/tty_driver.h b/include/linux/tty_driver.h
+> index c20431d8def8..5bec04481c60 100644
+> --- a/include/linux/tty_driver.h
+> +++ b/include/linux/tty_driver.h
+> @@ -360,7 +360,7 @@ static inline void tty_set_operations(struct tty_driver *driver,
+>   * 	Used for PTY's, in particular.
+>   * 
+>   * TTY_DRIVER_REAL_RAW --- if set, indicates that the driver will
+> - * 	guarantee never not to set any special character handling
+> + * 	guarantee never to set any special character handling
+>   * 	flags if ((IGNBRK || (!BRKINT && !PARMRK)) && (IGNPAR ||
+>   * 	!INPCK)).  That is, if there is no reason for the driver to
+>   * 	send notifications of parity and break characters up to the
