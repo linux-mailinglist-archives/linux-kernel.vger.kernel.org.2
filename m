@@ -2,204 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA8843E2DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374EB43E2E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhJ1OA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:00:28 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42598 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231151AbhJ1OAN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:00:13 -0400
-X-UUID: 1464a5cd677e45688009f47e60029246-20211028
-X-UUID: 1464a5cd677e45688009f47e60029246-20211028
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yc.hung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1669125369; Thu, 28 Oct 2021 21:57:45 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 28 Oct 2021 21:57:43 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Thu, 28 Oct 2021 21:57:43 +0800
-From:   YC Hung <yc.hung@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <yc.hung@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <daniel.baluta@nxp.com>, <trevor.wu@mediatek.com>,
-        <allen-kh.cheng@mediatek.com>,
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v4 2/2] dt-bindings: dsp: mediatek: Add mt8195 DSP binding support
-Date:   Thu, 28 Oct 2021 21:57:37 +0800
-Message-ID: <20211028135737.8625-3-yc.hung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211028135737.8625-1-yc.hung@mediatek.com>
-References: <20211028135737.8625-1-yc.hung@mediatek.com>
+        id S231203AbhJ1OAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:00:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:55408 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230480AbhJ1OAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:00:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0BE61FB;
+        Thu, 28 Oct 2021 06:58:10 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0105A3F70D;
+        Thu, 28 Oct 2021 06:58:08 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 14:57:51 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        antonio.gomez.iglesias@intel.com, tony.luck@intel.com,
+        dave.hansen@linux.intel.com, gregkh@linuxfoundation.org
+Subject: Re: [PATCH ebpf v2 2/2] bpf: Make unprivileged bpf depend on
+ CONFIG_CPU_SPECTRE
+Message-ID: <20211028135751.GA41384@lakrids.cambridge.arm.com>
+References: <cover.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+ <882f5c31f48bac75ebaede2a0ec321ec67128229.1635383031.git.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <882f5c31f48bac75ebaede2a0ec321ec67128229.1635383031.git.pawan.kumar.gupta@linux.intel.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This describes the mt8195 DSP device tree node.
+On Wed, Oct 27, 2021 at 06:35:44PM -0700, Pawan Gupta wrote:
+> Disabling unprivileged BPF would help prevent unprivileged users from
+> creating the conditions required for potential speculative execution
+> side-channel attacks on affected hardware. A deep dive on such attacks
+> and mitigation is available here [1].
+> 
+> If an architecture selects CONFIG_CPU_SPECTRE, disable unprivileged BPF
+> by default. An admin can enable this at runtime, if necessary.
+> 
+> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> 
+> [1] https://ebpf.io/summit-2021-slides/eBPF_Summit_2021-Keynote-Daniel_Borkmann-BPF_and_Spectre.pdf
+> ---
+>  kernel/bpf/Kconfig | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+> index a82d6de86522..510a5a73f9a2 100644
+> --- a/kernel/bpf/Kconfig
+> +++ b/kernel/bpf/Kconfig
+> @@ -64,6 +64,7 @@ config BPF_JIT_DEFAULT_ON
+>  
+>  config BPF_UNPRIV_DEFAULT_OFF
+>  	bool "Disable unprivileged BPF by default"
+> +	default y if CPU_SPECTRE
 
-Signed-off-by: YC Hung <yc.hung@mediatek.com>
----
- .../bindings/dsp/mtk,mt8195-dsp.yaml          | 139 ++++++++++++++++++
- 1 file changed, 139 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+Why can't this just be "default y"?
 
-diff --git a/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-new file mode 100644
-index 000000000000..f113f71ca094
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-@@ -0,0 +1,139 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dsp/mtk,mt8195-dsp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek mt8195 DSP core
-+
-+maintainers:
-+  - YC Hung <yc.hung@mediatek.com>
-+
-+description: |
-+  Some boards from mt8195 contain a DSP core used for
-+  advanced pre- and post- audio processing.
-+properties:
-+  compatible:
-+    const: mediatek,mt8195-dsp
-+
-+  reg:
-+    maxItems: 2
-+
-+  reg-names:
-+    maxItems: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-names:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: mux for audio dsp clock
-+      - description: 26M clock
-+      - description: mux for audio dsp local bus
-+      - description: default audio dsp local bus clock source
-+      - description: clock gate for audio dsp clock
-+      - description: mux for audio dsp access external bus
-+
-+  clock-names:
-+    items:
-+      - const: adsp_sel
-+      - const: clk26m_ck
-+      - const: audio_local_bus
-+      - const: mainpll_d7_d2
-+      - const: scp_adsp_audiodsp
-+      - const: audio_h
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  mboxes:
-+    maxItems: 2
-+
-+  mbox-names:
-+    description:
-+      Specifies the mailboxes used to communicate with audio DSP
-+    items:
-+      - const: mbox0
-+      - const: mbox1
-+
-+  memory-region:
-+    description:
-+      phandle to a node describing reserved memory (System RAM memory)
-+      used by DSP (see bindings/reserved-memory/reserved-memory.txt)
-+    maxItems: 2
-+
-+  sound:
-+    description:
-+      Sound subnode includes ASoC platform, DPTx codec node, and
-+      HDMI codec node.
-+
-+    type: object
-+
-+    properties:
-+      mediatek,platform:
-+        $ref: "/schemas/types.yaml#/definitions/phandle"
-+        description: The phandle of MT8195 ASoC platform.
-+
-+      mediatek,dptx-codec:
-+        $ref: "/schemas/types.yaml#/definitions/phandle"
-+        description: The phandle of MT8195 Display Port Tx codec node.
-+
-+      mediatek,hdmi-codec:
-+        $ref: "/schemas/types.yaml#/definitions/phandle"
-+        description: The phandle of MT8195 HDMI codec node.
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - interrupt-names
-+  - clocks
-+  - clock-names
-+  - memory-region
-+  - power-domains
-+  - mbox-names
-+  - mboxes
-+  - sound
-+
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    adsp: adsp@10803000 {
-+       compatible =  "mediatek,mt8195-dsp";
-+       reg = <0x10803000  0x1000>,
-+             <0x10840000  0x40000>;
-+       reg-names = "cfg", "sram";
-+       interrupts = <GIC_SPI 694 IRQ_TYPE_LEVEL_HIGH 0>;
-+       interrupt-names = "wdt";
-+       clocks = <&topckgen 10>, //CLK_TOP_ADSP
-+                <&clk26m>,
-+                <&topckgen 107>, //CLK_TOP_AUDIO_LOCAL_BUS
-+                <&topckgen 136>, //CLK_TOP_MAINPLL_D7_D2
-+                <&scp_adsp 0>, //CLK_SCP_ADSP_AUDIODSP
-+                <&topckgen 34>; //CLK_TOP_AUDIO_H
-+       clock-names = "adsp_sel",
-+                     "clk26m_ck",
-+                     "audio_local_bus",
-+                     "mainpll_d7_d2",
-+                     "scp_adsp_audiodsp",
-+                     "audio_h";
-+       memory-region = <&adsp_dma_mem_reserved>,
-+                       <&adsp_mem_reserved>;
-+       power-domains = <&spm 6>; //MT8195_POWER_DOMAIN_ADSP
-+       mbox-names = "mbox0", "mbox1";
-+       mboxes = <&adsp_mailbox 0>, <&adsp_mailbox 1>;
-+       status = "disabled";
-+       sound {
-+              mediatek,dptx-codec = <&dp_tx>;
-+              mediatek,hdmi-codec = <&hdmi0>;
-+              mediatek,platform = <&afe>;
-+             };
-+       };
--- 
-2.18.0
+This series makes that the case on x86, and if SW is going to have to
+deal with that we may as well do that everywhere, and say that on all
+architectures we leave it to the sysadmin or kernel builder to optin to
+permitting unprivileged BPF.
 
+If we can change the default for x86 I see no reason we can't change
+this globally, and we avoid tying this to CPU_SPECTRE specifically.
+
+Thanks,
+Mark.
+
+>  	depends on BPF_SYSCALL
+>  	help
+>  	  Disables unprivileged BPF by default by setting the corresponding
+> @@ -72,6 +73,10 @@ config BPF_UNPRIV_DEFAULT_OFF
+>  	  disable it by setting it to 1 (from which no other transition to
+>  	  0 is possible anymore).
+>  
+> +	  Unprivileged BPF can be used to exploit potential speculative
+> +	  execution side-channel vulnerabilities on affected hardware. If you
+> +	  are concerned about it, answer Y.
+> +
+>  source "kernel/bpf/preload/Kconfig"
+>  
+>  config BPF_LSM
+> -- 
+> 2.31.1
+> 
