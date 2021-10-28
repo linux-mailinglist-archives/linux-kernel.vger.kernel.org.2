@@ -2,116 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEBE43DD36
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1021B43DD5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhJ1I6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:58:33 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:4688 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhJ1I6c (ORCPT
+        id S230097AbhJ1JBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 05:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhJ1JBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:58:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635411366; x=1666947366;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/0UPLaDhy5BJJ6FFv8PzjnYUUj7i5fsxoZCJyakl5BQ=;
-  b=uBvd1HQJgTbCg68hBc0eRGUQDF7mrRjhIfu/GLSdMh2gQ/64QxNSJA1q
-   PJVLsFLr/5fvy8GKAWNiNUUAOrlS9tl+RNF8sPNee5dXM+zX5Zg73Mg+3
-   V1uVfKZ5WF32l4Ya13pw3gBip7vzjVbbxdp0BMCXUd64JP34pOaXeyKIP
-   j7B6avxwceQUmsPm6wjWEDfEAQeVKVawxAJTPlVoviF6PD67eAHdvfeW1
-   SvhrdGoYyZ1gA6VhJgOsVysty+UcFsLLxZmXUsxgMXcCHRIV4FwcIegkP
-   25xuAUliWQOQOkrJRp8CZxkdssKUdXmgLawrl/XwnnVuV6zPGnRm0ACsI
-   g==;
-IronPort-SDR: yty8zBVIjgtCtz9mlh4VOpVaraBtaIwXR43SXtqVi4Z2aTxe5IeCShX5JgUlGtfCL0p8NG5/B4
- WAmFTQytlmG3zIIt4OstqR6SuscnqgoSpaCcIHapXJlBtPO1NpT43z04jXR0ryh7xjwjnHwh3I
- siW5OEQAOd5ixyb/RRcctAbvbJh3c7mA5jvkqng+8RznHnn5GQ9Tmlo5qO7btwqVy1FPN2bFG0
- q6QF3vDgAeC7e6TYgHYlxY7x9BpkOFl6ZSGEkpYb1YZa3ZeFMQlaxRFRhcZixtL6PJD6FXRsA2
- WxCAhz2RtNc8RCDok0IKhoqp
-X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
-   d="scan'208";a="149848806"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 01:56:05 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 28 Oct 2021 01:56:05 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 28 Oct 2021 01:56:04 -0700
-Date:   Thu, 28 Oct 2021 10:57:47 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>, <kishon@ti.com>,
-        <robh+dt@kernel.org>, <andrew@lunn.ch>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] phy: Add lan966x ethernet serdes PHY driver
-Message-ID: <20211028085747.hhpbcfaevmt4wrl2@soft-dev3-1.localhost>
-References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
- <20211015123920.176782-4-horatiu.vultur@microchip.com>
- <YW8HIHTCVgB+URJ5@matsya>
- <20211020091733.fxph2pq3xa3byvry@soft-dev3-1.localhost>
- <YXA3VVUGEjUR4HDC@matsya>
- <YXA6lZBTeA6aNxVD@piout.net>
- <YXEEcJHuEdFLPyCU@matsya>
- <20211021091032.ffaoncg5jjdwdeyg@soft-dev3-1.localhost>
- <YXGoGtbFeKa+TVk2@matsya>
+        Thu, 28 Oct 2021 05:01:37 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE93CC061570;
+        Thu, 28 Oct 2021 01:59:10 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id y3so2392656ybf.2;
+        Thu, 28 Oct 2021 01:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZAtIrMWbv5on6WRur6yNujhfIaAJ4f/Bmd/NvYd0jDY=;
+        b=PTJrKYXcOixs0iQoLyBWy3utrJEj8Hyva9RCjveHiFKQ2jyGRsDgqECRJN+CyRAcjp
+         5xrIWa6JOd7Z8C3eIidMlwPnH9D9pHxgnzmhMJt7IW48I45lEXiLO8Ru2ZnC6ZvTTllY
+         lCwiECLjGzwfSCVyokrFyRaOe1/sXfoywen14IKtBPHOgY8juQ8Bj7+zn1rKtLMq8yse
+         DTJoEKhCCFJdx/V2GLI5DS7mJuti2C2XJ0SE01cpB8IHv2NqSZeEJ0qTqYlhYYYxFKRJ
+         DV73+BZhpVtmbQqywzmjNvnACnA4bxk4jO3vrQEJPSsiGZsQzyvYcOQpOcRodY/YzCOg
+         7WZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZAtIrMWbv5on6WRur6yNujhfIaAJ4f/Bmd/NvYd0jDY=;
+        b=O+QW6flXiL3pUK5nMd+rVCYc6J5730ZcagNXAZCf4gQNsOg+vpd8DNbiX2bhwNBtCa
+         PxEmfVSkBzl7MbpIZOHuF9yHJj31DfaCRTaqVMtAyYZkcmQWRdR7KYIh3JXV7Rya1yDh
+         1uPeVv2XkqpXyl/LRXVjv2Cb0cOxOwaRiv6b04it+iDcPVJW+JinMsMsPTWccpHpvKsb
+         gSEg7HNSrIAvxkhdiYold5V7tAK4dY4yzoPpWJoH+1x0ZO+c7D2gBbXUaPQfOb27xqvk
+         Gz06l2p67GnM1mhYsN1LyKHzZ34ebF5P1xDgIgFzGeoLXzzNm2cMjVnimnYY2l44sWGu
+         s/lA==
+X-Gm-Message-State: AOAM532pmVJyqIDCmt7a5ROchnU9XENx4IFCuQsC7ywzwXWNt6nktDsN
+        yTYPSjp0wnDJS3bS4WO5L7xjkWIRJWY0PyZyU7k=
+X-Google-Smtp-Source: ABdhPJzjpT13HnM7dPir9RBGBx7Ap1uzKzgouFd8ZmEHlVQNTap3gPa3pgqb8dJf8qyClGVdypM6t1SRO1Cgb4Y+TRY=
+X-Received: by 2002:a25:56c3:: with SMTP id k186mr3227880ybb.543.1635411550018;
+ Thu, 28 Oct 2021 01:59:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YXGoGtbFeKa+TVk2@matsya>
+References: <20211027134509.5036-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211027134509.5036-5-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdX81X+1AHp4Dsp70kG1TaYj=x3T8j3xidfLuskjd1Vc6g@mail.gmail.com>
+In-Reply-To: <CAMuHMdX81X+1AHp4Dsp70kG1TaYj=x3T8j3xidfLuskjd1Vc6g@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Thu, 28 Oct 2021 09:58:44 +0100
+Message-ID: <CA+V-a8tRRaF=-1_94g54mYREujLed4G-=DtCXP=QJ6YeRwgfWg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] pinctrl: renesas: pinctrl-rzg2l: Add support to
+ get/set drive-strength and output-impedance-ohms
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/21/2021 23:19, Vinod Koul wrote:
-> 
-> On 21-10-21, 11:10, Horatiu Vultur wrote:
-> > The 10/21/2021 11:40, Vinod Koul wrote:
-> > >
-> > > On 20-10-21, 17:49, Alexandre Belloni wrote:
-> > > > On 20/10/2021 21:05:49+0530, Vinod Koul wrote:
-> > > > > > > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > > > > > >
-> > > > > > > Any reason why this is dual licensed, why not GPL only?
-> > > > > >
-> > > > > > No reason, I think I copy this from a different file.
-> > > > >
-> > > > > Please have a chat with your lawyers on the correct license this should
-> > > > > have!
-> > > > Dual GPL and MIT was Microsemi's policy, I'm not sure it carried over to
-> > > > Microchip.
-> > >
-> > > That is why they need to talk to someone and decide what license
-> > > applies :)
+Hi Geert,
+
+Thank you for the review.
+
+On Thu, Oct 28, 2021 at 8:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Wed, Oct 27, 2021 at 3:45 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add support to get/set drive-strength and output-impedance-ohms
+> > for the supported pins.
 > >
-> > I have changed it to be the same as the one on sparx5 because also
-> > sparx5 is a Microchip product. On sparx5 we used:
-> > 'SPDX-License-Identifier: GPL-2.0-or-later'
-> 
-> Has the code been copied/derived from somewhere/auto generated from
-> scripts/tools or entirely written by you?
+> > While at it also renamed the below macros to match the HW manual,
+> > PIN_CFG_IOLH_SD0 -> PIN_CFG_IO_VMC_SD0
+> > PIN_CFG_IOLH_SD1 -> PIN_CFG_IO_VMC_SD1
+> > PIN_CFG_IOLH_QSPI -> PIN_CFG_IO_VMC_QSPI
+> > PIN_CFG_IOLH_ETH0 -> PIN_CFG_IO_VMC_ETH0
+> > PIN_CFG_IOLH_ETH1 -> PIN_CFG_IO_VMC_ETH1
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> Thanks for the update!
+>
+> > ---
+> > RFC->v1
+> >  * Renamed macros to match HW manual
+>
+> You may want to split that off into a separate patch, as not all lines
+> changed are touched for other reasons.
+Sure will do.
 
-Sorry for late reply, but I was out of office without access to the
-emails.
+> BTW, where do I find these "VMC" names in the HW manual?
+>
+I have shortened VOLTAGE MODE CONTROL to VMC from ETH_ch0/1, SD_ch0/1
+and QSPI registers.
 
-The register file 'lan966x_serdes_regs.h' was autogenerated from some
-internal scripts. Which takes the info from here [1] and generates these
-header files. The reason why we generate them is that is more error proof
-that writting them manually. We are doing the same for sparx5
-registers[2]
+> >  * Added PIN_CFG_IOLH_A/B macros to differentiate Group A/B
+> >  * Added helper function to read/rmw pin config
+> >  * Included RB tags
+>
+> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+>
+> > +static u32 rzg2l_read_pin_config(void __iomem *addr,
+> > +                                u8 bit, u32 mask)
+>
+> The above fits on a single line.
+>
+> > +{
+> > +       void __iomem *addr_adjust = addr;
+> > +       u8 bit_adjust = bit;
+>
+> No need for these, just operate on addr and bit directly.
+>
+will do.
 
-The other file 'lan966x_serdes.c' was entirely written by me.
+> > +       u32 reg;
+> > +
+> > +       if (bit >= 4) {
+> > +               bit_adjust -= 4;
+> > +               addr_adjust += 4;
+> > +       }
+> > +
+> > +       reg = readl(addr_adjust) & (mask << (bit_adjust * 8));
+> > +       return (reg >> (bit_adjust * 8));
+> > +}
+> > +
+> > +static void rzg2l_rmw_pin_config(void __iomem *addr,
+> > +                                u8 bit, u32 mask, u32 val)
+> > +{
+>
+> The above fits on a single line.
+>
+will adjust that.
 
-[1] https://github.com/microchip-ung/lan9668_reginfo
-[2] https://elixir.bootlin.com/linux/latest/source/drivers/phy/microchip/sparx5_serdes_regs.h
+> > +       void __iomem *addr_adjust = addr;
+> > +       u8 bit_adjust = bit;
+>
+> No need for these, just operate on addr and bit directly.
+>
+OK.
 
-> 
+> > +       u32 reg;
+> > +
+> > +       if (bit >= 4) {
+> > +               bit_adjust -= 4;
+> > +               addr_adjust += 4;
+> > +       }
+> > +
+> > +       reg = readl(addr_adjust) & ~(mask << (bit_adjust * 8));
+> > +
+> > +       writel(reg | val, addr_adjust);
+>
+> I think you should handle "val << (bit * 8)" here, instead of in
+> all callers.
+>
+Agreed.
+
+> > +}
+>
+> Please split the introduction of these helpers (and add conversion
+> of the existing PIN_CONFIG_INPUT_ENABLE handling) off into a separate
+> patch.
+>
+Agreed, will do.
+
+> > @@ -484,6 +544,34 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
+> >                 break;
+> >         }
+> >
+> > +       case PIN_CONFIG_DRIVE_STRENGTH: {
+> > +               static const unsigned int mA[4] = { 2, 4, 8, 12 };
+> > +
+> > +               if (!(cfg & PIN_CFG_IOLH_A))
+> > +                       return -EINVAL;
+> > +
+> > +               spin_lock_irqsave(&pctrl->lock, flags);
+> > +               addr = pctrl->base + IOLH(port);
+> > +               reg = rzg2l_read_pin_config(addr, bit, IOLH_MASK);
+> > +               arg = mA[reg];
+> > +               spin_unlock_irqrestore(&pctrl->lock, flags);
+>
+> Do you need the spinlock for reading?
+>
+Yes, to avoid any mishaps, I also looked at pinctrl.c which uses
+spinlock while reading.
+
+> > +               break;
+> > +       }
+> > +
+> > +       case PIN_CONFIG_OUTPUT_IMPEDANCE_OHMS: {
+> > +               static const unsigned int oi[4] = { 100, 66, 50, 33 };
+> > +
+> > +               if (!(cfg & PIN_CFG_IOLH_B))
+> > +                       return -EINVAL;
+> > +
+> > +               spin_lock_irqsave(&pctrl->lock, flags);
+> > +               addr = pctrl->base + IOLH(port);
+> > +               reg = rzg2l_read_pin_config(addr, bit, IOLH_MASK);
+> > +               arg = oi[reg];
+> > +               spin_unlock_irqrestore(&pctrl->lock, flags);
+>
+> Likewise.
+>
+> > +               break;
+> > +       }
+> > +
+> >         default:
+> >                 return -ENOTSUPP;
+> >         }
+>
+> > @@ -564,6 +659,49 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
+> >                         spin_unlock_irqrestore(&pctrl->lock, flags);
+> >                         break;
+> >                 }
+> > +
+> > +               case PIN_CONFIG_DRIVE_STRENGTH: {
+> > +                       unsigned int arg = pinconf_to_config_argument(_configs[i]);
+> > +                       static const unsigned int mA[4] = { 2, 4, 8, 12 };
+>
+> Duplicate, move to file scope?
+>
+Ok will do.
+
+> > +
+> > +                       if (!(cfg & PIN_CFG_IOLH_A))
+> > +                               return -EINVAL;
+> > +
+> > +                       for (i = 0; i < ARRAY_SIZE(mA); i++) {
+> > +                               if (arg == mA[i])
+> > +                                       break;
+> > +                       }
+> > +                       if (i >= ARRAY_SIZE(mA))
+> > +                               return -EINVAL;
+> > +
+> > +                       spin_lock_irqsave(&pctrl->lock, flags);
+> > +                       addr = pctrl->base + IOLH(port);
+> > +                       rzg2l_rmw_pin_config(addr, bit, IOLH_MASK, (i << (bit * 8)));
+>
+> Pass pctrl and offset instead of addr (also for rzg2l_read_pin_config,
+> for symmetry), and move locking into rzg2l_rmw_pin_config()?
+> Taking all of the above into account, that would become:
+>
+Agreed.
+
+>     rzg2l_rmw_pin_config(pctrl, IOLH(port), bit, IOLH_MASK, i);
+>
+That looks much cleaner.
+
+> > +                       spin_unlock_irqrestore(&pctrl->lock, flags);
+> > +                       break;
+> > +               }
+> > +
+> > +               case PIN_CONFIG_OUTPUT_IMPEDANCE_OHMS: {
+> > +                       unsigned int arg = pinconf_to_config_argument(_configs[i]);
+> > +                       static const unsigned int oi[4] = { 100, 66, 50, 33 };
+>
+> Duplicate, move to file scope?
+>
+Agreed.
+
+> > +
+> > +                       if (!(cfg & PIN_CFG_IOLH_B))
+> > +                               return -EINVAL;
+> > +
+> > +                       for (i = 0; i < ARRAY_SIZE(oi); i++) {
+> > +                               if (arg == oi[i])
+> > +                                       break;
+> > +                       }
+> > +                       if (i >= ARRAY_SIZE(oi))
+> > +                               return -EINVAL;
+> > +
+> > +                       spin_lock_irqsave(&pctrl->lock, flags);
+> > +                       addr = pctrl->base + IOLH(port);
+> > +                       rzg2l_rmw_pin_config(addr, bit, IOLH_MASK, (i << (bit * 8)));
+>
+> Likewise.
+>
+OK.
+
+> > +                       spin_unlock_irqrestore(&pctrl->lock, flags);
+> > +                       break;
+> > +               }
+> > +
+> >                 default:
+> >                         return -EOPNOTSUPP;
+> >                 }
+>
+> The rest looks good to me!
+>
+Thanks, I'll post a v2 just with patches 3 and 4 only. Hope that is OK with you.
+
+Cheers,
+Prabhakar
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
 > --
-> ~Vinod
-
--- 
-/Horatiu
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
