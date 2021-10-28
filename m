@@ -2,247 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F88B43E191
+	by mail.lfdr.de (Postfix) with ESMTP id D8F6B43E192
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhJ1NFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:05:36 -0400
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:37450 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230185AbhJ1NFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:05:35 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 46FF8BACD4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:03:07 +0100 (IST)
-Received: (qmail 10343 invoked from network); 28 Oct 2021 13:03:07 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 Oct 2021 13:03:07 -0000
-Date:   Thu, 28 Oct 2021 14:03:05 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Srinivasan, Sadagopan" <Sadagopan.Srinivasan@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] sched/fair: Adjust the allowed NUMA imbalance when SD_NUMA
- spans multiple LLCs
-Message-ID: <20211028130305.GS3959@techsingularity.net>
+        id S230415AbhJ1NFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:05:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230282AbhJ1NFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:05:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9978160F0F;
+        Thu, 28 Oct 2021 13:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635426192;
+        bh=G3llENj5zaWeQ3Ev+d/6q267AlCv0UdQYTb35WjjKwA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rQn+eRLR4hMkkO0ZA/eIevaJk1/2IZPe6TPxZiwCsayddfnRnQsFGoSAEN0LmJRF2
+         it0LSPyTwqPNvzXlyrJHx9uHqDU6FLT9g0EhuIg0YYyw/WIZTZYjaCTZ8rfpOk4WM3
+         FPdxJDGEwmBygicRse393rdSLb+ofX70lexrpnBos8FqpuuSDjZePfvPBdkVxMBRR3
+         DV84DxgKkHcScHQbJVLhrJB5WVpY42xTA7eyu3F4E9vqw2WnaMti0CaV5nFwg9o7vP
+         Lbtmw/C/qTDqSBdsRjUmf1Nx4Pt0wKuVhu31XLkJN6IywgOppeK3TnzRzzDpRmsdT7
+         +C9EZ882MFZcw==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: support fault injection for dquot_initialize()
+Date:   Thu, 28 Oct 2021 21:03:05 +0800
+Message-Id: <20211028130305.5333-1-chao@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA
-nodes") allowed an imbalance between NUMA nodes such that communicating
-tasks would not be pulled apart by the load balancer. This works fine when
-there is a 1:1 relationship between LLC and node but can be suboptimal
-for multiple LLCs if independent tasks prematurely use CPUs sharing cache.
+This patch adds a new function f2fs_dquot_initialize() to wrap
+dquot_initialize(), and it supports to inject fault into
+f2fs_dquot_initialize() to simulate inner failure occurs in
+dquot_initialize().
 
-Zen* has multiple LLCs per node with local memory channels and due to
-the allowed imbalance, it's far harder to tune some workloads to run
-optimally than it is on hardware that has 1 LLC per node. This patch
-adjusts the imbalance on multi-LLC machines to allow an imbalance up to
-the point where LLCs should be balanced between nodes.
+Usage:
+a) echo 65536 > /sys/fs/f2fs/<dev>/inject_type or
+b) mount -o fault_type=65536 <dev> <mountpoint>
 
-On a Zen3 machine running STREAM parallelised with OMP to have on instance
-per LLC the results and without binding, the results are
-
-stream
-                            5.15.0-rc3             5.15.0-rc3
-                               vanilla     sched-numaimb-v1r2
-MB/sec copy-16    166652.10 (   0.00%)   534760.46 ( 220.88%)
-MB/sec scale-16   141550.36 (   0.00%)   386871.58 ( 173.31%)
-MB/sec add-16     156696.00 (   0.00%)   631731.80 ( 303.16%)
-MB/sec triad-16   155560.36 (   0.00%)   622624.28 ( 300.25%)
-
-STREAM can use directives to force the spread if the OpenMP is new
-enough but that doesn't help if an application uses threads and
-it's not known in advance how many threads will be created.
-
-Coremark is a CPU and cache intensive benchmark parallelised with
-pthreads. When running with 1 thread per instance, the vanilla kernel
-allows threads to contend on cache. With the patch;
-
-                               5.15.0-rc3             5.15.0-rc3
-                                  vanilla     sched-numaimb-v1r2
-Min       Score-16   366090.84 (   0.00%)   401505.65 (   9.67%)
-Hmean     Score-16   391416.56 (   0.00%)   452546.28 *  15.62%*
-Stddev    Score-16    16452.12 (   0.00%)    31480.31 ( -91.35%)
-CoeffVar  Score-16        4.20 (   0.00%)        6.92 ( -64.99%)
-Max       Score-16   416666.67 (   0.00%)   483529.77 (  16.05%)
-
-It can also make a big difference for semi-realistic workloads
-like specjbb which can execute arbitrary numbers of threads without
-advance knowledge of how they should be placed
-
-specjbb2005
-                               5.15.0-rc3             5.15.0-rc3
-                                  vanilla     sched-numaimb-v1r2
-Hmean     tput-1      72211.33 (   0.00%)    69510.46 (  -3.74%)
-Hmean     tput-8     564617.72 (   0.00%)   614862.80 *   8.90%*
-Hmean     tput-16   1001427.52 (   0.00%)  1128073.47 *  12.65%*
-Hmean     tput-24   1391106.98 (   0.00%)  1605210.23 *  15.39%*
-Hmean     tput-32   1685885.77 (   0.00%)  1971077.42 *  16.92%*
-Hmean     tput-40   1840316.70 (   0.00%)  2341328.12 *  27.22%*
-Hmean     tput-48   1900286.97 (   0.00%)  2643100.06 *  39.09%*
-Hmean     tput-56   2161832.49 (   0.00%)  2288492.08 (   5.86%)
-Hmean     tput-64   1979696.79 (   0.00%)  2970706.40 *  50.06%*
-Hmean     tput-72   2075744.37 (   0.00%)  3036188.04 *  46.27%*
-Hmean     tput-80   2044842.51 (   0.00%)  3116143.03 *  52.39%*
-Hmean     tput-88   2546189.47 (   0.00%)  3095464.00 *  21.57%*
-Hmean     tput-96   2775456.33 (   0.00%)  2628754.25 (  -5.29%)
-Hmean     tput-104  2591994.59 (   0.00%)  3081532.21 *  18.89%*
-Hmean     tput-112  2817717.85 (   0.00%)  2932890.32 (   4.09%)
-Hmean     tput-120  2525230.39 (   0.00%)  2967773.00 *  17.52%*
-Hmean     tput-128  2709652.37 (   0.00%)  2912141.50 *   7.47%*
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- kernel/sched/fair.c     | 27 +++++++++++++++++----------
- kernel/sched/sched.h    |  1 +
- kernel/sched/topology.c | 15 +++++++++++++++
- 3 files changed, 33 insertions(+), 10 deletions(-)
+ Documentation/filesystems/f2fs.rst |  1 +
+ fs/f2fs/checkpoint.c               |  2 +-
+ fs/f2fs/f2fs.h                     |  2 ++
+ fs/f2fs/file.c                     |  6 +++---
+ fs/f2fs/inline.c                   |  2 +-
+ fs/f2fs/inode.c                    |  2 +-
+ fs/f2fs/namei.c                    | 30 +++++++++++++++---------------
+ fs/f2fs/recovery.c                 |  6 +++---
+ fs/f2fs/super.c                    | 16 ++++++++++++++++
+ fs/f2fs/verity.c                   |  2 +-
+ fs/f2fs/xattr.c                    |  2 +-
+ 11 files changed, 45 insertions(+), 26 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ff69f245b939..fda58bcbb1c0 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1545,7 +1545,7 @@ struct task_numa_env {
- static unsigned long cpu_load(struct rq *rq);
- static unsigned long cpu_runnable(struct rq *rq);
- static unsigned long cpu_util(int cpu);
--static inline long adjust_numa_imbalance(int imbalance,
-+static inline long adjust_numa_imbalance(int imbalance, int dst_cpu,
- 					int dst_running, int dst_weight);
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index 4294db649fa8..6954c04753ad 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -197,6 +197,7 @@ fault_type=%d		 Support configuring fault injection type, should be
+ 			 FAULT_DISCARD		  0x000002000
+ 			 FAULT_WRITE_IO		  0x000004000
+ 			 FAULT_SLAB_ALLOC	  0x000008000
++			 FAULT_DQUOT_INIT	  0x000010000
+ 			 ===================	  ===========
+ mode=%s			 Control block allocation mode which supports "adaptive"
+ 			 and "lfs". In "lfs" mode, there should be no random
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 6f6a7d812d60..f1693d45bb78 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -653,7 +653,7 @@ static int recover_orphan_inode(struct f2fs_sb_info *sbi, nid_t ino)
+ 		return PTR_ERR(inode);
+ 	}
  
- static inline enum
-@@ -1926,8 +1926,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
- 		src_running = env->src_stats.nr_running - 1;
- 		dst_running = env->dst_stats.nr_running + 1;
- 		imbalance = max(0, dst_running - src_running);
--		imbalance = adjust_numa_imbalance(imbalance, dst_running,
--							env->dst_stats.weight);
-+		imbalance = adjust_numa_imbalance(imbalance, env->dst_cpu,
-+					dst_running, env->dst_stats.weight);
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err) {
+ 		iput(inode);
+ 		goto err_out;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index c8c7d9e7dd7a..ce9fc9f13000 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -55,6 +55,7 @@ enum {
+ 	FAULT_DISCARD,
+ 	FAULT_WRITE_IO,
+ 	FAULT_SLAB_ALLOC,
++	FAULT_DQUOT_INIT,
+ 	FAULT_MAX,
+ };
  
- 		/* Use idle CPU if there is no imbalance */
- 		if (!imbalance) {
-@@ -8989,9 +8989,13 @@ static bool update_pick_idlest(struct sched_group *idlest,
-  * This is an approximation as the number of running tasks may not be
-  * related to the number of busy CPUs due to sched_setaffinity.
+@@ -3376,6 +3377,7 @@ static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
   */
--static inline bool allow_numa_imbalance(int dst_running, int dst_weight)
-+static inline bool
-+allow_numa_imbalance(int dst_cpu, int dst_running, int dst_weight)
- {
--	return (dst_running < (dst_weight >> 2));
-+	/* Allowed NUMA imbalance */
-+	dst_weight >>= per_cpu(sd_numaimb_shift, dst_cpu);
-+
-+	return dst_running < dst_weight;
+ int f2fs_inode_dirtied(struct inode *inode, bool sync);
+ void f2fs_inode_synced(struct inode *inode);
++int f2fs_dquot_initialize(struct inode *inode);
+ int f2fs_enable_quota_files(struct f2fs_sb_info *sbi, bool rdonly);
+ int f2fs_quota_sync(struct super_block *sb, int type);
+ loff_t max_file_blocks(struct inode *inode);
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 9c8ef33bd8d3..abe7edc82582 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -786,7 +786,7 @@ int f2fs_truncate(struct inode *inode)
+ 		return -EIO;
+ 	}
+ 
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		return err;
+ 
+@@ -916,7 +916,7 @@ int f2fs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
+ 		return err;
+ 
+ 	if (is_quota_modification(inode, attr)) {
+-		err = dquot_initialize(inode);
++		err = f2fs_dquot_initialize(inode);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -3020,7 +3020,7 @@ static int f2fs_ioc_setproject(struct inode *inode, __u32 projid)
+ 	}
+ 	f2fs_put_page(ipage, 1);
+ 
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index 56a20d5c15da..ea08f0dfa1bd 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -192,7 +192,7 @@ int f2fs_convert_inline_inode(struct inode *inode)
+ 			f2fs_hw_is_readonly(sbi) || f2fs_readonly(sbi->sb))
+ 		return 0;
+ 
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 1213f15ffd68..0f8b2df3e1e0 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -754,7 +754,7 @@ void f2fs_evict_inode(struct inode *inode)
+ 	if (inode->i_nlink || is_bad_inode(inode))
+ 		goto no_delete;
+ 
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err) {
+ 		err = 0;
+ 		set_sbi_flag(sbi, SBI_QUOTA_NEED_REPAIR);
+diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+index ae0838001480..a728a0af9ce0 100644
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -74,7 +74,7 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+ 	if (err)
+ 		goto fail_drop;
+ 
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		goto fail_drop;
+ 
+@@ -345,7 +345,7 @@ static int f2fs_create(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (!f2fs_is_checkpoint_ready(sbi))
+ 		return -ENOSPC;
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		return err;
+ 
+@@ -404,7 +404,7 @@ static int f2fs_link(struct dentry *old_dentry, struct inode *dir,
+ 			F2FS_I(old_dentry->d_inode)->i_projid)))
+ 		return -EXDEV;
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		return err;
+ 
+@@ -460,7 +460,7 @@ static int __recover_dot_dentries(struct inode *dir, nid_t pino)
+ 		return 0;
+ 	}
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		return err;
+ 
+@@ -598,10 +598,10 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
+ 		goto fail;
+ 	}
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		goto fail;
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		goto fail;
+ 
+@@ -675,7 +675,7 @@ static int f2fs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (err)
+ 		return err;
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		return err;
+ 
+@@ -746,7 +746,7 @@ static int f2fs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (unlikely(f2fs_cp_error(sbi)))
+ 		return -EIO;
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		return err;
+ 
+@@ -803,7 +803,7 @@ static int f2fs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (!f2fs_is_checkpoint_ready(sbi))
+ 		return -ENOSPC;
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		return err;
+ 
+@@ -841,7 +841,7 @@ static int __f2fs_tmpfile(struct inode *dir, struct dentry *dentry,
+ 	struct inode *inode;
+ 	int err;
+ 
+-	err = dquot_initialize(dir);
++	err = f2fs_dquot_initialize(dir);
+ 	if (err)
+ 		return err;
+ 
+@@ -965,16 +965,16 @@ static int f2fs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			return err;
+ 	}
+ 
+-	err = dquot_initialize(old_dir);
++	err = f2fs_dquot_initialize(old_dir);
+ 	if (err)
+ 		goto out;
+ 
+-	err = dquot_initialize(new_dir);
++	err = f2fs_dquot_initialize(new_dir);
+ 	if (err)
+ 		goto out;
+ 
+ 	if (new_inode) {
+-		err = dquot_initialize(new_inode);
++		err = f2fs_dquot_initialize(new_inode);
+ 		if (err)
+ 			goto out;
+ 	}
+@@ -1138,11 +1138,11 @@ static int f2fs_cross_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			F2FS_I(new_dentry->d_inode)->i_projid)))
+ 		return -EXDEV;
+ 
+-	err = dquot_initialize(old_dir);
++	err = f2fs_dquot_initialize(old_dir);
+ 	if (err)
+ 		goto out;
+ 
+-	err = dquot_initialize(new_dir);
++	err = f2fs_dquot_initialize(new_dir);
+ 	if (err)
+ 		goto out;
+ 
+diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+index 706ddb3c95c0..6a1b4668d933 100644
+--- a/fs/f2fs/recovery.c
++++ b/fs/f2fs/recovery.c
+@@ -81,7 +81,7 @@ static struct fsync_inode_entry *add_fsync_inode(struct f2fs_sb_info *sbi,
+ 	if (IS_ERR(inode))
+ 		return ERR_CAST(inode);
+ 
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		goto err_out;
+ 
+@@ -203,7 +203,7 @@ static int recover_dentry(struct inode *inode, struct page *ipage,
+ 			goto out_put;
+ 		}
+ 
+-		err = dquot_initialize(einode);
++		err = f2fs_dquot_initialize(einode);
+ 		if (err) {
+ 			iput(einode);
+ 			goto out_put;
+@@ -508,7 +508,7 @@ static int check_index_in_prev_nodes(struct f2fs_sb_info *sbi,
+ 		if (IS_ERR(inode))
+ 			return PTR_ERR(inode);
+ 
+-		ret = dquot_initialize(inode);
++		ret = f2fs_dquot_initialize(inode);
+ 		if (ret) {
+ 			iput(inode);
+ 			return ret;
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 989e76ec7fb2..75f706b91ebf 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -58,6 +58,7 @@ const char *f2fs_fault_name[FAULT_MAX] = {
+ 	[FAULT_DISCARD]		= "discard error",
+ 	[FAULT_WRITE_IO]	= "write IO error",
+ 	[FAULT_SLAB_ALLOC]	= "slab alloc",
++	[FAULT_DQUOT_INIT]	= "dquot initialize",
+ };
+ 
+ void f2fs_build_fault_attr(struct f2fs_sb_info *sbi, unsigned int rate,
+@@ -2499,6 +2500,16 @@ static ssize_t f2fs_quota_write(struct super_block *sb, int type,
+ 	return len - towrite;
  }
  
- /*
-@@ -9111,8 +9115,9 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 
- 	case group_has_spare:
- 		if (sd->flags & SD_NUMA) {
-+			int idlest_cpu = cpumask_first(sched_group_span(idlest));
-+
- #ifdef CONFIG_NUMA_BALANCING
--			int idlest_cpu;
- 			/*
- 			 * If there is spare capacity at NUMA, try to select
- 			 * the preferred node
-@@ -9120,7 +9125,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			if (cpu_to_node(this_cpu) == p->numa_preferred_nid)
- 				return NULL;
- 
--			idlest_cpu = cpumask_first(sched_group_span(idlest));
- 			if (cpu_to_node(idlest_cpu) == p->numa_preferred_nid)
- 				return idlest;
- #endif
-@@ -9130,8 +9134,10 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			 * a real need of migration, periodic load balance will
- 			 * take care of it.
- 			 */
--			if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->span_weight))
-+			if (allow_numa_imbalance(idlest_cpu,
-+			    local_sgs.sum_nr_running, sd->span_weight)) {
- 				return NULL;
-+			}
- 		}
- 
- 		/*
-@@ -9221,10 +9227,10 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 
- #define NUMA_IMBALANCE_MIN 2
- 
--static inline long adjust_numa_imbalance(int imbalance,
-+static inline long adjust_numa_imbalance(int imbalance, int dst_cpu,
- 				int dst_running, int dst_weight)
- {
--	if (!allow_numa_imbalance(dst_running, dst_weight))
-+	if (!allow_numa_imbalance(dst_cpu, dst_running, dst_weight))
- 		return imbalance;
- 
- 	/*
-@@ -9336,6 +9342,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
- 		/* Consider allowing a small imbalance between NUMA groups */
- 		if (env->sd->flags & SD_NUMA) {
- 			env->imbalance = adjust_numa_imbalance(env->imbalance,
-+				env->src_cpu,
- 				busiest->sum_nr_running, busiest->group_weight);
- 		}
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 3d3e5793e117..f2620d6b9918 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1777,6 +1777,7 @@ static inline struct sched_domain *lowest_flag_domain(int cpu, int flag)
- DECLARE_PER_CPU(struct sched_domain __rcu *, sd_llc);
- DECLARE_PER_CPU(int, sd_llc_size);
- DECLARE_PER_CPU(int, sd_llc_id);
-+DECLARE_PER_CPU(int, sd_numaimb_shift);
- DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
- DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
- DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 4e8698e62f07..08fb02510967 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -644,6 +644,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
- DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
- DEFINE_PER_CPU(int, sd_llc_size);
- DEFINE_PER_CPU(int, sd_llc_id);
-+DEFINE_PER_CPU(int, sd_numaimb_shift);
- DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
- DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
- DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-@@ -672,6 +673,20 @@ static void update_top_cache_domain(int cpu)
- 	sd = lowest_flag_domain(cpu, SD_NUMA);
- 	rcu_assign_pointer(per_cpu(sd_numa, cpu), sd);
- 
-+	/*
-+	 * Save the threshold where an imbalance is allowed between SD_NUMA
-+	 * domains. If LLC spans the entire node, then imbalances are allowed
-+	 * until 25% of the domain is active. Otherwise, allow an imbalance
-+	 * up to the point where LLCs between NUMA nodes should be balanced
-+	 * to maximise cache and memory bandwidth utilisation.
-+	 */
-+	if (sd) {
-+		if (sd->span_weight == size)
-+			per_cpu(sd_numaimb_shift, cpu) = 2;
-+		else
-+			per_cpu(sd_numaimb_shift, cpu) = max(2, ilog2(sd->span_weight / size * num_online_nodes()));
++int f2fs_dquot_initialize(struct inode *inode)
++{
++	if (time_to_inject(F2FS_I_SB(inode), FAULT_DQUOT_INIT)) {
++		f2fs_show_injection_info(F2FS_I_SB(inode), FAULT_DQUOT_INIT);
++		return -ESRCH;
 +	}
 +
- 	sd = highest_flag_domain(cpu, SD_ASYM_PACKING);
- 	rcu_assign_pointer(per_cpu(sd_asym_packing, cpu), sd);
++	return dquot_initialize(inode);
++}
++
+ static struct dquot **f2fs_get_dquots(struct inode *inode)
+ {
+ 	return F2FS_I(inode)->i_dquot;
+@@ -2883,6 +2894,11 @@ static const struct quotactl_ops f2fs_quotactl_ops = {
+ 	.get_nextdqblk	= dquot_get_next_dqblk,
+ };
+ #else
++int f2fs_dquot_initialize(struct inode *inode)
++{
++	return 0;
++}
++
+ int f2fs_quota_sync(struct super_block *sb, int type)
+ {
+ 	return 0;
+diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
+index 03549b5ba204..fe5acdccaae1 100644
+--- a/fs/f2fs/verity.c
++++ b/fs/f2fs/verity.c
+@@ -136,7 +136,7 @@ static int f2fs_begin_enable_verity(struct file *filp)
+ 	 * here and not rely on ->open() doing it.  This must be done before
+ 	 * evicting the inline data.
+ 	 */
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		return err;
  
+diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+index 1d2d29dcd41c..e348f33bcb2b 100644
+--- a/fs/f2fs/xattr.c
++++ b/fs/f2fs/xattr.c
+@@ -773,7 +773,7 @@ int f2fs_setxattr(struct inode *inode, int index, const char *name,
+ 	if (!f2fs_is_checkpoint_ready(sbi))
+ 		return -ENOSPC;
+ 
+-	err = dquot_initialize(inode);
++	err = f2fs_dquot_initialize(inode);
+ 	if (err)
+ 		return err;
+ 
+-- 
+2.32.0
+
