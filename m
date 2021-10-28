@@ -2,245 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C6243D885
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4C843D882
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhJ1BaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 21:30:18 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:23654 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229636AbhJ1BaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:30:17 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RMoQ0b004983;
-        Thu, 28 Oct 2021 01:26:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : mime-version;
- s=corp-2021-07-09; bh=00hIRxLONqx+89sOGBZdZ0BNvFPX/tr/Ga097oZol8E=;
- b=RXWQ1nVHFH22oxLuSTWSm+MUpBaedacM3oodIlY/4ca9cEpy7DOnC+cIDWMUhejse9B1
- cFA/ornvfk0wHiUVR9wOgnxm7pcDEiWlylc8u2CjVdyDtUzModADyfgdHuqFeRrlYY2X
- XUbF0jszYU2J0DjjY2nSHClyJJulhpcL9aKC/4uyqint3gdCN8+/xSwXcUlFbhw6L3wg
- SXXLQarXL9aDcrelbY8F8r5andnKiDBTocW072q1KKJyMMVqsB3pGTcdrZAEdQ9Mjkjz
- hfWxnnnEhW55fbR5utvO0L6Oh1CfcpcAbzjq+yLkudrwAO0L/Q4K1gDY6MHhP92sEbAo sQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bx4fj6ctg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 01:26:22 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19S1G2P3136150;
-        Thu, 28 Oct 2021 01:26:22 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by userp3030.oracle.com with ESMTP id 3bx4h39y0s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 01:26:21 +0000
+        id S229698AbhJ1B3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 21:29:53 -0400
+Received: from mail-dm6nam08on2052.outbound.protection.outlook.com ([40.107.102.52]:1505
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229505AbhJ1B3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 21:29:53 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CeZeAwLfVj0nL+YJy8sIk+zk0h8ZhbGk9RQ3Fr33b7Og9AI6Gsvdr5WINIgIbaqVilte4UfdhvGYFqGL2g8gkzoWJ2tot6l6QWdoSfz55yVIS9B7etAOabvdA97EqZxXmU+vQ+MPxMg4c4FIBF6VbkjQlORHGehpt3c13JHkcGf1KcX52wloET3xBA3ZrxaO6OmDEua+YErGht/ZzCu7wdd8Vbjli5XEOAOi7L0Qkei3dcmgg6uRwJ+tn+8h2tja1Ss121wrek3sKxBjaiLKSgk5zfplt1YpVlWh7f+G7Xacdm28mIS4qTX5uK2+Gy90tdFbcynHDxsw9KXb2Yj6Fg==
+ b=S7/CbHHrAHY4xHdxxIAjsxJ+wTXMUTD95BG6MOLsMZUlzaha+ZDHMRFvM2GIuGDc8jfB+vVKoE7/2ONOZW60LeqyzgazfOKsr5I81sy5ADeus+iSP022BFWk5//KejHNwGBT7c3mMio192ah7FaTzJUNZHOXW472Bs3abwDQwn7nPutKmbQmudePUikd3MIoLHXGoKl5pc4T6Q6vnyotF769znqfUA7ZXOp5dlquZK7JN4fdipOVf6oMI9mrzPdLUsaRb8M8sLwYcdlClnt0obm1JH+c7y3B4SrjWMm+xCO28J/XIw19HPAuNNsONZ3tUNN42Le/HXPOY7VDaq3BbA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=00hIRxLONqx+89sOGBZdZ0BNvFPX/tr/Ga097oZol8E=;
- b=cVrc9ERBkhGcKMDYheuIGoyRTCWc7fWTsnoL/7wceO6+vCQ65TA3+855kETErWXC1zaqREXvgylBEGTcP54hKhc8EujwPWpsGJJXSM2IZvIzWVhsUGN6H6+cMj2UB4D0LNY1CW4YSoFserlzSMgxDs+4nROmREAL1dUq6L2tzO93I6Em0JsuUcEHvYbDRPZ+RBaN2qiWe3lcW9MeW6HVGNDLRzx5/dUp3ATW7ymH7MipbZXiWsVNuZqW2E2xtLqfSHWVk3/ySVvU/ZlvXwP0e5a9XJN+C3TDiGABBDeWHRjhfoQ/D2toVlaH9qteXYBs3aJVLquZTnKnn/SYvSYOcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ bh=zeDSaVZu7SpBRH4t8WvPfUTxkwmTudj7wiROmHXcUxk=;
+ b=A6992NjeQ8zLaSkxX05goNANprxRPjWgbO1f9cZVGuDfl7E+n1FfpG4/tiApSGAZ8bIzt3jvuiunw5NCOR3Myh1Q4p/Ivc24oFCBFzeUg7SBbLH9RwaLUe6tl9Khqew6V9/h4bbDb0RBJbAcJp7NTuZ6fSmgevOEGeXQ4vFX2WD3QyZYUOHAPxhn9e1qKC5ltRdX7uwudbHKpozWfzs4oUxifqBfq4g3fM/m7g1vl5895uv0eKKiY2zH4QSeRyIHtIWZ4nRcujgUUXFedeMKe3VK7lYgcTVzlYmVD5VeeFnqPD5piX4gz+d1/aZ7ZCz91mQb2J4goO21UmfdZyvenA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=lists.freedesktop.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=quarantine sp=quarantine pct=100)
+ action=none header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=00hIRxLONqx+89sOGBZdZ0BNvFPX/tr/Ga097oZol8E=;
- b=R9J2bIbpyyoAIDSOJtkw0O1NQnUw4d4954SxzNxdQgnEI/rRtpzb9m4IPVnBYsniflBdTG++KL84WX1qAQH6XHD1Kheqmwtl/K3LeTmqmgTzUOABfKP2v1FMrNCJtikfbmk3OstC3YfFYcqzAEdfq6zgcq7l1T//O1xI+1NHS+g=
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by BY5PR10MB3761.namprd10.prod.outlook.com (2603:10b6:a03:1ff::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13; Thu, 28 Oct
- 2021 01:26:18 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::2848:63dc:b87:8021]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::2848:63dc:b87:8021%7]) with mapi id 15.20.4649.014; Thu, 28 Oct 2021
- 01:26:18 +0000
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org
-Cc:     boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        joe.jin@oracle.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] xen: delay xen_hvm_init_time_ops() if kdump is boot on vcpu>=32
-Date:   Wed, 27 Oct 2021 18:25:43 -0700
-Message-Id: <20211028012543.8776-1-dongli.zhang@oracle.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SN4PR0701CA0044.namprd07.prod.outlook.com
- (2603:10b6:803:2d::17) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+ bh=zeDSaVZu7SpBRH4t8WvPfUTxkwmTudj7wiROmHXcUxk=;
+ b=fMzW0XOdFDfs9GFPB7LdffsyN3OmtpqdaPBuUoGuRDevDZqPRLGB0yUdENHiWuJ5NCVbR7KHvoU/NL++5TmRBe718K7Z1s2Dsd3ww86+j1r5xAFjRA6i2fuylJ7YTB2OxVJ35/XWiwZntzBzZkCUd+S7kA7WBX0bFC4WRHJWanxapzbtu8kzhaI3egrRIJUE4V6Da6s7Ya73I0AJksJW9oItzeQnIxfZiVfbDDLTo72u24Dch8OPGei11NJI8u9h2e3AFfmq5x+SOdDAX5CFhYGdsxTN8/qw2/ZIL2x9RkMNT5ruUOtqkiREvylzbJEnwongyyFx9+ZOL6vkgFueOA==
+Received: from DM5PR06CA0030.namprd06.prod.outlook.com (2603:10b6:3:5d::16) by
+ CH2PR12MB3782.namprd12.prod.outlook.com (2603:10b6:610:23::28) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4649.14; Thu, 28 Oct 2021 01:27:24 +0000
+Received: from DM6NAM11FT067.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:5d:cafe::db) by DM5PR06CA0030.outlook.office365.com
+ (2603:10b6:3:5d::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend
+ Transport; Thu, 28 Oct 2021 01:27:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; lists.freedesktop.org; dkim=none (message not
+ signed) header.d=none;lists.freedesktop.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT067.mail.protection.outlook.com (10.13.172.76) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4649.14 via Frontend Transport; Thu, 28 Oct 2021 01:27:23 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 28 Oct
+ 2021 01:27:19 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <akpm@linux-foundation.org>, Ralph Campbell <rcampbell@nvidia.com>
+CC:     <kvm-ppc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <Felix.Kuehling@amd.com>, <alexander.deucher@amd.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
+        <amd-gfx@lists.freedesktop.org>, <jglisse@redhat.com>,
+        <jhubbard@nvidia.com>, <ziy@nvidia.com>, <hch@lst.de>,
+        <bskeggs@redhat.com>
+Subject: Re: [PATCH] mm/migrate.c: Remove MIGRATE_PFN_LOCKED
+Date:   Thu, 28 Oct 2021 12:27:17 +1100
+Message-ID: <2564177.V13TkMiDjn@nvdebian>
+In-Reply-To: <f92e2dfe-f033-9b09-e83c-203052b491e1@nvidia.com>
+References: <20211025041608.289017-1-apopple@nvidia.com> <f92e2dfe-f033-9b09-e83c-203052b491e1@nvidia.com>
 MIME-Version: 1.0
-Received: from localhost.localdomain (138.3.200.16) by SN4PR0701CA0044.namprd07.prod.outlook.com (2603:10b6:803:2d::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Thu, 28 Oct 2021 01:26:16 +0000
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ee9e348d-fa09-4a9f-f005-08d999b1f0e0
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3761:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3761F0B338E4D170F1F9D35FF0869@BY5PR10MB3761.namprd10.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 872876ee-ae33-4e26-2a6b-08d999b21822
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3782:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB37825D4DE245EC748763A514DF869@CH2PR12MB3782.namprd12.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GZ0PE8fRiQtK/1s94b3zXHZ978dGcJr5t2hJngZ1Nb853CSC2Yg4NTSdVZHrui0WyNyEuD2Mw4peahW/L2CZPZNcdOhZd0m4oBkPjivgOonoh+hoT0AbG38qmJJEOXtwKSfj8I6JEvmUy/u3qBaRVq7n5tvaUy40WCLM78MDkdZCM6ene7lwrK8+oEHhq4l6oaKdxKjO+Cdgi8okwM8YVb/yeADTmvomRkyGSX0WeIJY8p/Ab4ZgHURR5BQ+Jqg4PzeE8Us5D9Q/nenuQbYiThNTDnThhVHAFOYh0J3at/o7mYWAcFzCoEQMG/6wCJwTHzer0GqJlMAqhWx7zLCA94GtXEYWSP/7/LUa+Mbco9M3J4riAYUcZaQfOfQDhZMqFVtrpRPo++PVC2PDG5dcjK6fWUTnhMWlr2aJpzU4Y5N6zc/cD+N454BFzC4uK2AMLSYV9r6R7TybRuP+piDN3cBgInhhHWE8Q5PCOxPxxvBoHfKug/83sp5+/tQ2An9d9XApoZthkxlFa10YajJKHlBA3rc4XGxJJ9MevyhWePpl0kJZp+dzLNPU2+s9QHHittyv7It8c9lb8+WgecSu721YlhfJSFgPWDqnbfwX8u6Wiyiyl553oGPyVJtDKqfXB6AFEUL5n++5hvFydIsaxkQDGFy99JXmwHtsGeIepSYbEbhg+hXxc3EfS8Ndfnvk2k4XvmV4W+Ks3v+rNB0Abp37OuwzND4wIT8+XKOjFmaL3YRhLRYBNU01GFQRc8Guq3/JGDlL0dLX/221+hDjeyuOi4twWrbyPSJuonbqEgE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(2616005)(5660300002)(38350700002)(2906002)(66556008)(86362001)(956004)(66476007)(316002)(6666004)(6506007)(38100700002)(83380400001)(186003)(6486002)(66946007)(8936002)(6512007)(508600001)(44832011)(26005)(52116002)(7416002)(4326008)(966005)(1076003)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?90jjWBT5DMTT5TE7WJ7uCYuMl3UkX10N8b6g7zr8ZQSpf2xNqKPKxKvFmsCl?=
- =?us-ascii?Q?xUHYB9TJyyOAWgD8peO0JLJBMgsaKC1Ryjqo6AEcbU55xZF/DA3L/c3yQmnk?=
- =?us-ascii?Q?dAr76I1pb3TGQGIxggg7PVYWStyZErJw3v3QXqgwi7ncbfuaSpJetsvCYFQp?=
- =?us-ascii?Q?bntFohuSaPU12yHfptFAdtwJn16mZIyifPEWUjwepe69A4nwZicC5H03Yu7N?=
- =?us-ascii?Q?mV08XCfjiqlFJm1X4MPWM7FhNjUWZV4NjS82sP8UJlztSnArPjHEiUW1pGli?=
- =?us-ascii?Q?Ahr2RMCOUcjIQeDZ/ZzOVHPeJTpzoNzirQDqK5p95AaNt0olQ07CZhZyYiWx?=
- =?us-ascii?Q?+TP2ODfCpm0JVM2pXByNU2Xus28q5Z3Y61+G39tgianMAlvHbcbEE0hI+8us?=
- =?us-ascii?Q?wo3539OIgjsSJNAdqzYJTWI/+bG0z0pcDXPaFIsOpCFbYx81Ea2bREbXIM3A?=
- =?us-ascii?Q?1BPNAkDSRyvSI3x0XcYZ6GRir7APZ6R8E4yn2sfL7wujuEPIOzuVEUSGRPaO?=
- =?us-ascii?Q?iHUJFQhNLqtOYSw5FZtdEHNVj5y5Sxt7WYHGkCfL8/ifZRSNCCpWTves6VLb?=
- =?us-ascii?Q?78PV+X+cI54COPvn4bgbTNDsQxNmwzMFyfZgP4jVGof63/roUFzp28THAUk+?=
- =?us-ascii?Q?tXmud+uQZu00LjFrj4Otd1SSEm/cXHRzwy5zeqcnkL9aSNjF+iZKYSrtYhpC?=
- =?us-ascii?Q?kLGjSfHxJHiSSWyk2s9pICsL977TMh6V6VJb/tkKlyzkLnCANuFG1T3z1PQM?=
- =?us-ascii?Q?98AObkglseytl9zuHE+oY6g7a3XGjfBQE7Nc7arAGUsecwL7D6xdSZtKcyOp?=
- =?us-ascii?Q?GdXLLwoVHuQXmgRO8b8MolF3mgOQOxDG9ABiyq2w7CjOFPDn9E/EUx9Pm0+W?=
- =?us-ascii?Q?NYo9BI53cCD6bIeVfgYczP56fi/4+S727c/q6aiuHkBuj2LH9ViUOEWC5wJY?=
- =?us-ascii?Q?c1h3dpYTKBF5ZDp4vxdVNAEqy7AW4bMaMjFYGVc55SgIQ5qzOlsFU62a40wz?=
- =?us-ascii?Q?eoDGz6Xj2EgY/8OUKOz/UHG+ZvYItwGf9YieJKuHoeAMvaYBXoIAL2cns2Y4?=
- =?us-ascii?Q?5J97rxZ5r95rjq2yXJqUsGezX/s6ZHD6LasMGNKnHtkyAEdZ3k0yWjLUpLFj?=
- =?us-ascii?Q?+NrjjC6PbEwiTLXl1HtExYiqL3nP4JSJ2YBVxafKAwFAz0Trlq5zj2FTa2Qw?=
- =?us-ascii?Q?UNZTRmpoKvsCPGmcxyJBuCUGwQOhstSuixCNePjviHUTic+TeXhLzflsTxHt?=
- =?us-ascii?Q?Dwn5SEEuk8B6KHsORQ8Gq7OnOJ5ZnmEO0birBxVVm620eBFvtjTxWSs3QzLs?=
- =?us-ascii?Q?ncRgjeqp0dP1JQSv/ZZLcoSahU96gCINlHolJmhhJ74ilRwWmgvWVX7bxtuA?=
- =?us-ascii?Q?e3IJ5BcpNguE3b/gjFVYiJcITiAlOwlQKJsG929+IhCShaLHqvifIJAmT/NR?=
- =?us-ascii?Q?7UClibjGpV4yTEnRioKcK6gW5PjhAIeetmzPHaVaQWrusQEmYjVannfxtPOX?=
- =?us-ascii?Q?OcQQVSMAIPtzRf+NPsk5hegEVhwbLFjY9OLmBWArkBk+BP9odJUiYYnJoX0v?=
- =?us-ascii?Q?fYtt9Mf/zsEGfQDWIfMG1cFBhlqVUBnsR8OJPc0K+mTuQ30ckvDE0quA2yIV?=
- =?us-ascii?Q?0fCCTiWyvhSKP3OPqcbXO18=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee9e348d-fa09-4a9f-f005-08d999b1f0e0
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 01:26:18.1638
+X-Microsoft-Antispam-Message-Info: PnAFK9NyPO+UIoxcVwvk3ds3DO4FeMSLfPb9OrNdH0oN8W6kpeieo26JWTXAHZtwpftmSQoixCmp/thMkCTbvy9RatHb+PlE7PYgRd3e5/m5GTI+3CsVWnBhHedAvPHU2QSDW8607PH0km7kuKR/YF17LSrnxsGHyDfTKB1/9YJr5mPg+FhXQ8aOEwvsF/8fGd/j7tswYjifwVvtbcbcP0Odq9ceT02UPYTEX5NpbgOf9OUUyPN2lrXCga/9+vFICKLRQhTVAJ9gJ1doD84VaqWHKwEGI2EGeKcCsMVkV0UslKpFzUMZQZA/I6sMGLIefhAAlVOnHUNY4XQ7cZQlOtj8+6Tod9NjJsVVDavxR/6JRsqz4BeO+PH+MPsN1Xh2AInvXiRlgU2lkDqSRSZE7BT6F6esV4w2WwIbCvg6f2lJOsxz9c1o+D+ut6GBA+F79vndooJ7f01GWd3kUoTUFaVk7w+v5LSgXgJuVnpv5UKaNk8RH6yGTERIvRvFVgmP+Q+L0gAWxSPzzc6KHm8mt5vFWcnbNIK/S7jSKJfSO+1v/FLdnjR6EMOHClcw4q5CETD8ZNtnRKBdP00RLTg+LQ7pwd2uWz1jAahBPDsuXW4ulGg6LU8LGbKevZIxUbWgO2wXIOx4tNPBckZv2uU0JDtZOYQUDSQiu4e+Syp63EGlOoQVwz31C+6XYO4tv/i8Z2fYvpHDjUomAuvTGxvFvlE355Zq0rYGCiyycttbDtM=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(110136005)(356005)(33716001)(53546011)(508600001)(82310400003)(8936002)(7416002)(54906003)(9686003)(9576002)(7636003)(36860700001)(4326008)(2906002)(426003)(26005)(70586007)(16526019)(186003)(6636002)(70206006)(86362001)(8676002)(83380400001)(336012)(5660300002)(316002)(47076005)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 01:27:23.6187
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Jki7SmEMuVURk2MiuuiD6+QLaRR6Q9Gcq0RGgOTkxdbW/AWGjUu80ZY9PqJgoY0dzunokPZLGHrfkqL+T8OWPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3761
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10150 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
- mlxscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110280006
-X-Proofpoint-GUID: HVIeaRs42jHKtvGrgD95e0-5YT6Jr_vo
-X-Proofpoint-ORIG-GUID: HVIeaRs42jHKtvGrgD95e0-5YT6Jr_vo
+X-MS-Exchange-CrossTenant-Network-Message-Id: 872876ee-ae33-4e26-2a6b-08d999b21822
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT067.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3782
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sched_clock() can be used very early since
-commit 857baa87b642 ("sched/clock: Enable sched clock early"). In addition,
-with commit 38669ba205d1 ("x86/xen/time: Output xen sched_clock time from
-0"), kdump kernel in Xen HVM guest may panic at very early stage when
-accessing &__this_cpu_read(xen_vcpu)->time as in below:
+On Tuesday, 26 October 2021 11:57:06 AM AEDT Ralph Campbell wrote:
+> 
+> On 10/24/21 21:16, Alistair Popple wrote:
+> > MIGRATE_PFN_LOCKED is used to indicate to migrate_vma_prepare() that a
+> > source page was already locked during migrate_vma_collect(). If it
+> > wasn't then the a second attempt is made to lock the page. However if
+> > the first attempt failed it's unlikely a second attempt will succeed,
+> > and the retry adds complexity. So clean this up by removing the retry
+> > and MIGRATE_PFN_LOCKED flag.
+> >
+> > Destination pages are also meant to have the MIGRATE_PFN_LOCKED flag
+> > set, but nothing actually checks that.
+> >
+> > Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> 
+> You can add:
+> Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
 
-setup_arch()
- -> init_hypervisor_platform()
-     -> x86_init.hyper.init_platform = xen_hvm_guest_init()
-         -> xen_hvm_init_time_ops()
-             -> xen_clocksource_read()
-                 -> src = &__this_cpu_read(xen_vcpu)->time;
+Thanks!
 
-This is because Xen HVM supports at most MAX_VIRT_CPUS=32 'vcpu_info'
-embedded inside 'shared_info' during early stage until xen_vcpu_setup() is
-used to allocate/relocate 'vcpu_info' for boot cpu at arbitrary address.
+> >   
+> >   		/*
+> >   		 * Optimize for the common case where page is only mapped once
+> > @@ -2379,7 +2378,7 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
+> >   		if (trylock_page(page)) {
+> >   			pte_t swp_pte;
+> >   
+> > -			mpfn |= MIGRATE_PFN_LOCKED;
+> > +			migrate->cpages++;
+> >   			ptep_get_and_clear(mm, addr, ptep);
+> 
+> I was looking at try_to_migrate_one() and looking at the differences with
+> the code here to insert the migration PTE and noticed that instead of
+> ptet_get_and_clear() it has:
+> 	pteval = ptep_clear_flush(vma, address, pvmw.pte);
+> 
+> 	/* Move the dirty bit to the page. Now the pte is gone. */
+> 	if (pte_dirty(pteval))
+> 		set_page_dirty(page);
+> 	update_hiwater_rss(mm);
+> 
+> I know that is pre-existing, probably a separate patch if it is an issue.
 
-However, when Xen HVM guest panic on vcpu >= 32, since
-xen_vcpu_info_reset(0) would set per_cpu(xen_vcpu, cpu) = NULL when
-vcpu >= 32, xen_clocksource_read() on vcpu >= 32 would panic.
+I don't think it is an issue today because migrate_vma only supports private,
+non-shared pages. At some point though it may be extended to support
+file-backed pages and this would be easy to miss so will put a patch together.
 
-This patch delays xen_hvm_init_time_ops() to later in
-xen_hvm_smp_prepare_boot_cpu() after the 'vcpu_info' for boot vcpu is
-registered when the boot vcpu is >= 32.
+> >   
+> >   			/* Setup special migration page table entry */
+> > @@ -2413,6 +2412,9 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
+> >   
+> >   			if (pte_present(pte))
+> >   				unmapped++;
+> > +		} else {
+> > +			put_page(page);
+> > +			mpfn = 0;
+> >   		}
+> >   
+> >   next:
+> > @@ -2517,15 +2519,17 @@ static bool migrate_vma_check_page(struct page *page)
+> >   }
+> >   
+> >   /*
+> > - * migrate_vma_prepare() - lock pages and isolate them from the lru
+> > + * migrate_vma_unmap() - replace page mapping with special migration pte entry
+> >    * @migrate: migrate struct containing all migration information
+> >    *
+> > - * This locks pages that have been collected by migrate_vma_collect(). Once each
+> > - * page is locked it is isolated from the lru (for non-device pages). Finally,
+> > - * the ref taken by migrate_vma_collect() is dropped, as locked pages cannot be
+> > - * migrated by concurrent kernel threads.
+> > + * Isolate pages from the LRU and replace mappings (CPU page table pte) with a
+> > + * special migration pte entry and check if it has been pinned. Pinned pages are
+> > + * restored because we cannot migrate them.
+> > + *
+> > + * This is the last step before we call the device driver callback to allocate
+> > + * destination memory and copy contents of original page over to new page.
+> >    */
+> > -static void migrate_vma_prepare(struct migrate_vma *migrate)
+> > +static void migrate_vma_unmap(struct migrate_vma *migrate)
+> >   {
+> >   	const unsigned long npages = migrate->npages;
+> >   	const unsigned long start = migrate->start;
+> > @@ -2534,32 +2538,12 @@ static void migrate_vma_prepare(struct migrate_vma *migrate)
+> >   
+> >   	lru_add_drain();
+> >   
+> > -	for (i = 0; (i < npages) && migrate->cpages; i++) {
+> > +	for (i = 0; i < npages; i++) {
+> >   		struct page *page = migrate_pfn_to_page(migrate->src[i]);
+> > -		bool remap = true;
+> >   
+> >   		if (!page)
+> >   			continue;
+> >   
+> > -		if (!(migrate->src[i] & MIGRATE_PFN_LOCKED)) {
+> > -			/*
+> > -			 * Because we are migrating several pages there can be
+> > -			 * a deadlock between 2 concurrent migration where each
+> > -			 * are waiting on each other page lock.
+> > -			 *
+> > -			 * Make migrate_vma() a best effort thing and backoff
+> > -			 * for any page we can not lock right away.
+> > -			 */
+> > -			if (!trylock_page(page)) {
+> > -				migrate->src[i] = 0;
+> > -				migrate->cpages--;
+> > -				put_page(page);
+> > -				continue;
+> > -			}
+> > -			remap = false;
+> > -			migrate->src[i] |= MIGRATE_PFN_LOCKED;
+> > -		}
+> > -
+> >   		/* ZONE_DEVICE pages are not on LRU */
+> >   		if (!is_zone_device_page(page)) {
+> >   			if (!PageLRU(page) && allow_drain) {
+> > @@ -2569,16 +2553,9 @@ static void migrate_vma_prepare(struct migrate_vma *migrate)
+> >   			}
+> >   
+> >   			if (isolate_lru_page(page)) {
+> > -				if (remap) {
+> > -					migrate->src[i] &= ~MIGRATE_PFN_MIGRATE;
+> > -					migrate->cpages--;
+> > -					restore++;
+> > -				} else {
+> > -					migrate->src[i] = 0;
+> > -					unlock_page(page);
+> > -					migrate->cpages--;
+> > -					put_page(page);
+> > -				}
+> > +				migrate->src[i] &= ~MIGRATE_PFN_MIGRATE;
+> > +				migrate->cpages--;
+> > +				restore++;
+> >   				continue;
+> >   			}
+> >   
+> > @@ -2586,80 +2563,20 @@ static void migrate_vma_prepare(struct migrate_vma *migrate)
+> >   			put_page(page);
+> >   		}
+> >   
+> > -		if (!migrate_vma_check_page(page)) {
+> > -			if (remap) {
+> > -				migrate->src[i] &= ~MIGRATE_PFN_MIGRATE;
+> > -				migrate->cpages--;
+> > -				restore++;
+> > -
+> > -				if (!is_zone_device_page(page)) {
+> > -					get_page(page);
+> > -					putback_lru_page(page);
+> > -				}
+> > -			} else {
+> > -				migrate->src[i] = 0;
+> > -				unlock_page(page);
+> > -				migrate->cpages--;
+> > +		if (page_mapped(page))
+> > +			try_to_migrate(page, 0);
+> >   
+> > -				if (!is_zone_device_page(page))
+> > -					putback_lru_page(page);
+> > -				else
+> > -					put_page(page);
+> > +		if (page_mapped(page) || !migrate_vma_check_page(page)) {
+> > +			if (!is_zone_device_page(page)) {
+> > +				get_page(page);
+> > +				putback_lru_page(page);
+> >   			}
+> > -		}
+> > -	}
+> > -
+> > -	for (i = 0, addr = start; i < npages && restore; i++, addr += PAGE_SIZE) {
+> > -		struct page *page = migrate_pfn_to_page(migrate->src[i]);
+> > -
+> > -		if (!page || (migrate->src[i] & MIGRATE_PFN_MIGRATE))
+> > -			continue;
+> >   
+> > -		remove_migration_pte(page, migrate->vma, addr, page);
+> > -
+> > -		migrate->src[i] = 0;
+> > -		unlock_page(page);
+> > -		put_page(page);
+> > -		restore--;
+> > -	}
+> > -}
+> > -
+> > -/*
+> > - * migrate_vma_unmap() - replace page mapping with special migration pte entry
+> > - * @migrate: migrate struct containing all migration information
+> > - *
+> > - * Replace page mapping (CPU page table pte) with a special migration pte entry
+> > - * and check again if it has been pinned. Pinned pages are restored because we
+> > - * cannot migrate them.
+> > - *
+> > - * This is the last step before we call the device driver callback to allocate
+> > - * destination memory and copy contents of original page over to new page.
+> > - */
+> > -static void migrate_vma_unmap(struct migrate_vma *migrate)
+> > -{
+> > -	const unsigned long npages = migrate->npages;
+> > -	const unsigned long start = migrate->start;
+> > -	unsigned long addr, i, restore = 0;
+> > -
+> > -	for (i = 0; i < npages; i++) {
+> > -		struct page *page = migrate_pfn_to_page(migrate->src[i]);
+> > -
+> > -		if (!page || !(migrate->src[i] & MIGRATE_PFN_MIGRATE))
+> > +			migrate->src[i] &= ~MIGRATE_PFN_MIGRATE;
+> > +			migrate->cpages--;
+> > +			restore++;
+> >   			continue;
+> > -
+> > -		if (page_mapped(page)) {
+> > -			try_to_migrate(page, 0);
+> > -			if (page_mapped(page))
+> > -				goto restore;
+> >   		}
+> > -
+> > -		if (migrate_vma_check_page(page))
+> > -			continue;
+> > -
+> > -restore:
+> > -		migrate->src[i] &= ~MIGRATE_PFN_MIGRATE;
+> > -		migrate->cpages--;
+> > -		restore++;
+> >   	}
+> >   
+> >   	for (addr = start, i = 0; i < npages && restore; addr += PAGE_SIZE, i++) {
+> > @@ -2672,12 +2589,8 @@ static void migrate_vma_unmap(struct migrate_vma *migrate)
+> >   
+> >   		migrate->src[i] = 0;
+> >   		unlock_page(page);
+> > +		put_page(page);
+> >   		restore--;
+> > -
+> > -		if (is_zone_device_page(page))
+> > -			put_page(page);
+> > -		else
+> > -			putback_lru_page(page);
+> >   	}
+> >   }
+> >   
+> > @@ -2700,8 +2613,8 @@ static void migrate_vma_unmap(struct migrate_vma *migrate)
+> >    * it for all those entries (ie with MIGRATE_PFN_VALID and MIGRATE_PFN_MIGRATE
+> >    * flag set).  Once these are allocated and copied, the caller must update each
+> >    * corresponding entry in the dst array with the pfn value of the destination
+> > - * page and with the MIGRATE_PFN_VALID and MIGRATE_PFN_LOCKED flags set
+> > - * (destination pages must have their struct pages locked, via lock_page()).
+> > + * page and with MIGRATE_PFN_VALID. Destination pages must be locked via
+> > + * lock_page().
+> >    *
+> >    * Note that the caller does not have to migrate all the pages that are marked
+> >    * with MIGRATE_PFN_MIGRATE flag in src array unless this is a migration from
+> > @@ -2770,8 +2683,6 @@ int migrate_vma_setup(struct migrate_vma *args)
+> >   
+> >   	migrate_vma_collect(args);
+> >   
+> > -	if (args->cpages)
+> > -		migrate_vma_prepare(args);
+> >   	if (args->cpages)
+> >   		migrate_vma_unmap(args);
+> >   
+> 
 
-Another option is to always delay xen_hvm_init_time_ops() for any vcpus
-(including vcpu=0). Since to delay xen_hvm_init_time_ops() may lead to
-clock backward issue, it is preferred to avoid that for regular boot (The
-pv_sched_clock=native_sched_clock() is used at the very beginning until
-xen_sched_clock() is registered). That requires to adjust
-xen_sched_clock_offset. That's why we only delay xen_hvm_init_time_ops()
-for vcpu>=32.
 
-This issue can be reproduced on purpose via below command at the guest
-side when kdump/kexec is enabled:
 
-"taskset -c 33 echo c > /proc/sysrq-trigger"
-
-Reference:
-https://lists.xenproject.org/archives/html/xen-devel/2021-10/msg00571.html
-Cc: Joe Jin <joe.jin@oracle.com>
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
----
-Changed since v1:
-  - Add commit message to explain why xen_hvm_init_time_ops() is delayed
-    for any vcpus. (Suggested by Boris Ostrovsky)
-  - Add a comment in xen_hvm_smp_prepare_boot_cpu() referencing the related
-    code in xen_hvm_guest_init(). (suggested by Juergen Gross)
-
- arch/x86/xen/enlighten_hvm.c | 20 +++++++++++++++++++-
- arch/x86/xen/smp_hvm.c       |  8 ++++++++
- 2 files changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
-index e68ea5f4ad1c..7734dec52794 100644
---- a/arch/x86/xen/enlighten_hvm.c
-+++ b/arch/x86/xen/enlighten_hvm.c
-@@ -216,7 +216,25 @@ static void __init xen_hvm_guest_init(void)
- 	WARN_ON(xen_cpuhp_setup(xen_cpu_up_prepare_hvm, xen_cpu_dead_hvm));
- 	xen_unplug_emulated_devices();
- 	x86_init.irqs.intr_init = xen_init_IRQ;
--	xen_hvm_init_time_ops();
-+
-+	/*
-+	 * Only MAX_VIRT_CPUS 'vcpu_info' are embedded inside 'shared_info'
-+	 * and the VM would use them until xen_vcpu_setup() is used to
-+	 * allocate/relocate them at arbitrary address.
-+	 *
-+	 * However, when Xen HVM guest panic on vcpu >= MAX_VIRT_CPUS,
-+	 * per_cpu(xen_vcpu, cpu) is still NULL at this stage. To access
-+	 * per_cpu(xen_vcpu, cpu) via xen_clocksource_read() would panic.
-+	 *
-+	 * Therefore we delay xen_hvm_init_time_ops() to
-+	 * xen_hvm_smp_prepare_boot_cpu() when boot vcpu is >= MAX_VIRT_CPUS.
-+	 */
-+	if (xen_vcpu_nr(0) >= MAX_VIRT_CPUS)
-+		pr_info("Delay xen_hvm_init_time_ops() as kernel is running on vcpu=%d\n",
-+			xen_vcpu_nr(0));
-+	else
-+		xen_hvm_init_time_ops();
-+
- 	xen_hvm_init_mmu_ops();
- 
- #ifdef CONFIG_KEXEC_CORE
-diff --git a/arch/x86/xen/smp_hvm.c b/arch/x86/xen/smp_hvm.c
-index 6ff3c887e0b9..f99043df8bb5 100644
---- a/arch/x86/xen/smp_hvm.c
-+++ b/arch/x86/xen/smp_hvm.c
-@@ -19,6 +19,14 @@ static void __init xen_hvm_smp_prepare_boot_cpu(void)
- 	 */
- 	xen_vcpu_setup(0);
- 
-+	/*
-+	 * The xen_hvm_init_time_ops() is delayed from
-+	 * xen_hvm_guest_init() to here to avoid panic when the kernel
-+	 * boots from vcpu>=MAX_VIRT_CPUS (32).
-+	 */
-+	if (xen_vcpu_nr(0) >= MAX_VIRT_CPUS)
-+		xen_hvm_init_time_ops();
-+
- 	/*
- 	 * The alternative logic (which patches the unlock/lock) runs before
- 	 * the smp bootup up code is activated. Hence we need to set this up
--- 
-2.17.1
 
