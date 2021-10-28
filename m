@@ -2,187 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7178B43F2A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CBA43F2A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhJ1WXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
+        id S231460AbhJ1WXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhJ1WXI (ORCPT
+        with ESMTP id S231364AbhJ1WXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:23:08 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED7FC061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:20:40 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id bq11so16657525lfb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:20:40 -0700 (PDT)
+        Thu, 28 Oct 2021 18:23:51 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CEFC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:21:23 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id g8so8828784iob.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MrMC6ps/Yy4KdTFANWsKX5xwpfm3xnZdTscIy4NxrwM=;
-        b=r2rp15DmSFiQXaIqZojTMocwCNzQ7uibqUeLpOwuyknyyyrgRxBJtMfLSH7g8MnhGm
-         AUE6u79hOGrrdXe9CoeYTZzrR2saPFLsgFWmkghX1eiKYEqd1ur4QtLJMKTxMYu4Ci+U
-         pWPLRVN+3eyeIO2LIPyvN7lV7t4/xBLcXS3smaIqPoOwzs1EZN/iYzfgboGHJTGRFMOh
-         GEe6Bo4h8XbGA9/tNdxZKWSWdoxjdgDZYJ/zmgvJT4+g7XZMn17KjL3q8Gy2lD8dQL9H
-         iw736xfnE8WL++eYNmJqXwPgsFfrtoUVkEdMuCHJOVaD/pos+Q5M5P9FxP9PMHw8hUB5
-         13zA==
+        bh=OB5iyvsQZRGpy5tFYsZx8Gnk3OXs+5ecQAO2u6+yIE0=;
+        b=OoVDgPTl7ZhmRZ1tG6wP15y/AQaJCXDOrb1AFO8bAWvIXsp3R9UBK0cfFZSla1ZYgu
+         S7o6OJ5fJ++5HmmLbxYyzPyndUZcizJ1gZ/9L7t7wYxMb+oSaDEK3bKDmncOVN9IhOyl
+         oi6RT8IH/YPsFxlc4CRnZbd99G4oQdsjKn5AVB9LUXUaDNJdbugn0RfJEtEBZAeNEOHN
+         4BtL1g7lCIL/JUKx+of5ulLfZsAWjUhkc8v2QDsBqknxMQRjqHqiwJcQespLt3eGNo0q
+         2VH1088aXYbga19PHrNaXzKU4/GeEx7zgSacmMIYmzyS460b/L/EGLuTlW2+VQQlDMGQ
+         E6UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MrMC6ps/Yy4KdTFANWsKX5xwpfm3xnZdTscIy4NxrwM=;
-        b=bTn1bYhkW0UYl7ur+S+f5RfFJZQtk+2EtIus2tl4FqhRvCceeAV8O8O46+eEh4AqeW
-         L0Rm702rwFfP7XMHZvPUVzRsNIflxOTgIFzcXXL/pG83jNO/HRi620QhC4bpRoSRUADr
-         RHUyk4Sr6LyeDsLi2G43ebEfA2siH264/DgNWJSDF/rHvKkSmiT8vI7K0+SEfkZwUVEB
-         4BxhZcDk7Yw1jySKh1YvquwgDqldlNwKGrmSRMu9Xl2/6Maha4fkbqq0kQYP5DAk5xHm
-         aMshWzaDEjmVXABwa9xe9drIZ/uYNGp1Lk+YXXqP52e4/M+MaoJ4/m1CLv+X0syVnWBy
-         WfVA==
-X-Gm-Message-State: AOAM532dvs1oyWtj3BMebvksrQEFWMsrOOQ4Qj4m2TjiXpfssT//qEoJ
-        fWen/JGbJRIL397kyIRyjAT1mnd0vMKIchKQBtMNjA==
-X-Google-Smtp-Source: ABdhPJzVc+Tap1Ahd0sAw7lz95FWy8WEWdvKB4gdDXVSzeAd3fJljMWKzF7poGRnHwuGBovGkiFkH+H4vTavZjuMAr8=
-X-Received: by 2002:a19:ad4d:: with SMTP id s13mr6988529lfd.373.1635459638664;
- Thu, 28 Oct 2021 15:20:38 -0700 (PDT)
+        bh=OB5iyvsQZRGpy5tFYsZx8Gnk3OXs+5ecQAO2u6+yIE0=;
+        b=dDdfQT6mpbHiZEk0ubarqPpSZTBvZqXRAQ0wsuXh7BMcEqhHp2rh8bhaHoliJ5GWjQ
+         dmYO619OUc/ZJBbi2WetwbTLqiTNs2hzkNcLJETgjQM880aTzSwK9dDdIVMQeMjllgVx
+         boZfcNo0LySkeDMo3cwuLdvoUZ2n0a6yLJls0ncB6JFQu+45/kCUygrjBv7RffBtjgdt
+         K4Wn/RffJ0Bc7U4NDZZAX0UQlRhz3feokGSg/kvD1/yy6VvZQR0UEAakvcNQtCjuqje/
+         /OWJBzrLJDWVRDwKBdT/kuoMakaHVG8neFzMotfZQcQJUAFX7UbSsi1BFJIAZ11udErS
+         BBsg==
+X-Gm-Message-State: AOAM5309Bv4mCQf1yE3aeKwKjRLf8h7pe4iig1hB74pWFavZkBIHySwm
+        C52yIYY/hmcX2DZBP/wPrn28ek7so1osQDJwlZcV5w==
+X-Google-Smtp-Source: ABdhPJyNYb2lqLKl/zgacwnUpmKC5pyJpELsieMm2hsFUR/icGAEyJw8RJ03g/C49/unwqlglzmZhUdYOb+cbF4sMj0=
+X-Received: by 2002:a6b:f614:: with SMTP id n20mr5149554ioh.134.1635459682871;
+ Thu, 28 Oct 2021 15:21:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211026222626.39222-1-ulf.hansson@linaro.org>
- <20211027020235.GA1306582@rowland.harvard.edu> <CAPDyKFpgHJA-duQSA2uqhccrDxFqWXO1R1DJxo=aOkT5FyX+Ag@mail.gmail.com>
- <20211027143343.GC1319606@rowland.harvard.edu>
-In-Reply-To: <20211027143343.GC1319606@rowland.harvard.edu>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 29 Oct 2021 00:20:02 +0200
-Message-ID: <CAPDyKFoMS-0WqNjtsrGy5-SV3RRbpgA3_HS5XDtNHH9wFgLhXg@mail.gmail.com>
-Subject: Re: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime
- PM is disabled
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Kevin Hilman <khilman@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211028064154.2301049-1-davidgow@google.com> <20211028064154.2301049-3-davidgow@google.com>
+In-Reply-To: <20211028064154.2301049-3-davidgow@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 28 Oct 2021 15:21:11 -0700
+Message-ID: <CAGS_qxp5KLKqFOBT2zyjw3R5fqcVnzFjTVTnqxKt=X9ZJ-oREQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] kunit: Don't crash if no parameters are generated
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Rae Moar <rmr167@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 at 16:33, Alan Stern <stern@rowland.harvard.edu> wrote:
+On Wed, Oct 27, 2021 at 11:42 PM David Gow <davidgow@google.com> wrote:
 >
-> On Wed, Oct 27, 2021 at 12:55:43PM +0200, Ulf Hansson wrote:
-> > On Wed, 27 Oct 2021 at 04:02, Alan Stern <stern@rowland.harvard.edu> wrote:
-> > >
-> > > On Wed, Oct 27, 2021 at 12:26:26AM +0200, Ulf Hansson wrote:
-> > > > During system suspend, the PM core sets dev->power.is_suspended for the
-> > > > device that is being suspended. This flag is also being used in
-> > > > rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
-> > > > PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
-> > > > device.
-> > > >
-> > > > To make this behaviour a bit more useful, let's drop the check for the
-> > > > dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
-> > > > be limited to this anyway.
-> > > >
-> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > ---
-> > > >  drivers/base/power/runtime.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > > > index ec94049442b9..fadc278e3a66 100644
-> > > > --- a/drivers/base/power/runtime.c
-> > > > +++ b/drivers/base/power/runtime.c
-> > > > @@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
-> > > >   repeat:
-> > > >       if (dev->power.runtime_error)
-> > > >               retval = -EINVAL;
-> > > > -     else if (dev->power.disable_depth == 1 && dev->power.is_suspended
-> > > > -         && dev->power.runtime_status == RPM_ACTIVE)
-> > > > +     else if (dev->power.disable_depth > 0 &&
-> > > > +             dev->power.runtime_status == RPM_ACTIVE)
-> > >
-> > > IIRC there was a good reason why the original code checked for
-> > > disable_depth == 1 rather than > 0.  But I don't remember exactly what
-> > > the reason was.  Maybe it had something to do with the fact that during
-> > > a system sleep __device_suspend_late calls __pm_runtime_disable, and the
-> > > code was checking that there were no other disables in effect.
-> >
-> > The check was introduced in the below commit:
-> >
-> > Commit 6f3c77b040fc
-> > Author: Kevin Hilman <khilman@ti.com>
-> > Date:   Fri Sep 21 22:47:34 2012 +0000
-> > PM / Runtime: let rpm_resume() succeed if RPM_ACTIVE, even when disabled, v2
-> >
-> > By reading the commit message it's pretty clear to me that the check
-> > was added to cover only one specific use case, during system suspend.
-> >
-> > That is, that a driver may want to call pm_runtime_get_sync() from a
-> > late/noirq callback (when the PM core has disabled runtime PM), to
-> > understand whether the device is still powered on and accessible.
-> >
-> > > This is
-> > > related to the documented behavior of rpm_resume (it's supposed to fail
-> > > with -EACCES if the device is disabled for runtime PM, no matter what
-> > > power state the device is in).
-> > >
-> > > That probably is also the explanation for why dev->power.is_suspended
-> > > gets checked: It's how the code tells whether a system sleep is in
-> > > progress.
-> >
-> > Yes, you are certainly correct about the current behaviour. It's there
-> > for a reason.
-> >
-> > On the other hand I would be greatly surprised if this change would
-> > cause any issues. Of course, I can't make guarantees, but I am, of
-> > course, willing to help to fix problems if those happen.
-> >
-> > As a matter of fact, I think the current behaviour looks quite
-> > inconsistent, as it depends on whether the device is being system
-> > suspended.
-> >
-> > Moreover, for syscore devices (dev->power.syscore is set for them),
-> > the PM core doesn't set the "is_suspended" flag. Those can benefit
-> > from a common behaviour.
-> >
-> > Finally, I think the "is_suspended" flag actually needs to be
-> > protected by a lock when set by the PM core, as it's being used in two
-> > separate execution paths. Although, rather than adding a lock for
-> > protection, we can just rely on the "disable_depth" in rpm_resume().
-> > It would be easier and makes the behaviour consistent too.
+> It's possible that a parameterised test could end up with zero
+> parameters. At the moment, the test function will nevertheless be called
+> with NULL as the parameter. Instead, don't try to run the test code, and
+> just mark the test as SKIPped.
 >
-> As long as is_suspended isn't _written_ in two separate execution paths,
-> we're probably okay without a lock -- provided the code doesn't mind
-> getting an indefinite result when a read races with a write.
+> Reported-by: Daniel Latypov <dlatypov@google.com>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Well, indefinite doesn't sound very good to me for these cases, even
-if it most likely never will happen.
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+
+There's a small bug in this patch noted below, we just need to move
+the "# Subtest" change into the child patch.
+If/when we make that change, I have an optional suggestion about
+flipping the if/else branch.
+
+But other than that, this looks good to me.
+
+> ---
+>
+> Changes since v2:
+> https://lore.kernel.org/linux-kselftest/20211027013702.2039566-3-davidgow@google.com/
+> - Rework to not share the loop between the parameterised and
+>   non-parameterised test cases.
+>   - Suggested by Daniel Latypov.
+>   - Avoids using a magic non-zero pointer value.
+>
+>  lib/kunit/test.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+>
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 3bd741e50a2d..dfe1127aacfd 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -508,12 +508,12 @@ int kunit_run_tests(struct kunit_suite *suite)
+>                         /* Get initial param. */
+>                         param_desc[0] = '\0';
+>                         test.param_value = test_case->generate_params(NULL, param_desc);
+> -               }
+> +                       kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
+> +                                 "# Subtest: %s", test_case->name);
+
+It looks like this change accidentally made its way into this patch as
+opposed to the child.
+
+This commit itself gives me a traffic light (red/yellow/green statuses):
+
+[ERROR] Test inode_test_xtimestamp_decoding: 0 tests run!
+====== [NO TESTS RUN] inode_test_xtimestamp_decoding =======
+================= [PASSED] ext4_inode_test =================
+============================================================
+
+The problem is the output becomes this:
+    # Subtest: ext4_inode_test
+    1..1
+        # Subtest: inode_test_xtimestamp_decoding
+    # inode_test_xtimestamp_decoding: ok 1 - 1901-12-13 Lower bound of
+32bit < 0 timestamp, no extra bits
+   ...
 
 >
-> > > So overall, I suspect this change should not be made.  But some other
-> > > improvement (like a nice comment) might be in order.
-> > >
-> > > Alan Stern
-> >
-> > Thanks for reviewing!
+> -               do {
+> -                       kunit_run_case_catch_errors(suite, test_case, &test);
+> +                       while (test.param_value) {
+> +                               kunit_run_case_catch_errors(suite, test_case, &test);
 >
-> You're welcome.  Whatever you eventually decide to do should be okay
-> with me.  I just wanted to make sure that you understood the deeper
-> issue here and had given it some thought.  For example, it may turn out
-> that you can resolve matters simply by updating the documentation.
+> -                       if (test_case->generate_params) {
+>                                 if (param_desc[0] == '\0') {
+>                                         snprintf(param_desc, sizeof(param_desc),
+>                                                  "param-%d", test.param_index);
+> @@ -530,11 +530,15 @@ int kunit_run_tests(struct kunit_suite *suite)
+>                                 param_desc[0] = '\0';
+>                                 test.param_value = test_case->generate_params(test.param_value, param_desc);
+>                                 test.param_index++;
+> -                       }
+>
+> +                               kunit_update_stats(&param_stats, test.status);
+> +                       }
+> +               } else {
 
-I observed the issue on cpuidle-psci. The devices it operates upon are
-assigned as syscore devices and these are hooked up to a genpd.
+I have a very slight preference for having the order of these branches swapped.
+i.e.
 
-A call to pm_runtime_get_sync() can happen even after the PM core has
-disabled runtime PM in the "late" phase. So the error code is received
-for these real use-cases.
+if (!test_case->generate_params) {
+  /* Non-parameterised test */
+} else { ... }
 
-Now, as we currently don't check the return value of
-pm_runtime_get_sync() in cpuidle-psci, it's not a big deal. But it
-certainly seems worth fixing in my opinion.
+I prefer this because I think it's more readable for a few reasons:
+* I like having the "normal" branch come first. This is likely the
+code path a reader would care more about.
+* I prefer having the shorter branch come first. It makes it easier to
+read it through and see "oh, so this branch is just that one but with
+XYZ"
 
-Let's see if Rafael has some thoughts around this.
-
-Again, thanks for your input!
-
-Kind regards
-Uffe
+> +                       /* Non-parameterised test. */
+> +                       kunit_run_case_catch_errors(suite, test_case, &test);
+>                         kunit_update_stats(&param_stats, test.status);
+> +               }
+>
+> -               } while (test.param_value);
+>
+>                 kunit_print_test_stats(&test, param_stats);
+>
+> --
+> 2.33.0.1079.g6e70778dc9-goog
+>
