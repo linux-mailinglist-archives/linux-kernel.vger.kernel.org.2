@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B64143E3D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B53443E3DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhJ1Ohw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:37:52 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:55030
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230265AbhJ1Ohu (ORCPT
+        id S231237AbhJ1OiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhJ1OiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:37:50 -0400
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9AC043F1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635431718;
-        bh=UfC6Za7EDXnJsTRiZd6ux4jhSdUioPONKZicpxuGsRs=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=fnhFYy4c4Bt+u5eRwAL/KMxO86pfdwSXA0Y/yBOF7lmvN8DTyKOPmaS7xsQTHpN+F
-         fvUkEuVMGpB2T6Mh0XY76zGK2WUBxp8VnJ9mm4KpX4a7aO+rFuU3IGMfg8CRfRhBY4
-         x/l7hCXDGFU1oV6WoqrsT1KUIiTKDeK4cA1JQ5QHT2hEmOyIuVHeK9ZghQk6tW4KUm
-         erH25E2x7CZCQ1bG/Zksa5kUFLdWtaNWRS4uOZq7JX9yVhbqLtmmRMlc/p+Un47VUm
-         Ha1utDBNfqKRyQtjs5Ow/AY1Fj7lHPng4IcERo7uRWmjwl8x/lXAd6CF6TFVytmVH1
-         clfVZqogfhTOw==
-Received: by mail-lj1-f197.google.com with SMTP id s17-20020a2e2c11000000b002119b8e1336so1703607ljs.23
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:35:18 -0700 (PDT)
+        Thu, 28 Oct 2021 10:38:00 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FE2C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:35:33 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id e4so10575236wrc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=R5vDRCLKxQuuLX1TwFGPbSTqOd5q7X00mWAhulDDMZw=;
+        b=d19eLgmUE6YJ9vGgjKB6ybiHXJAI2uxh7hMaJObS1KroNKXF3fMK8rNzbwdq/ZWar3
+         p3iy/H1QNY6HeNNiqWNF/v1sHbAILUjCpoG9gpjKRUVbAEVZp9bnbAfjf0GiejwFF7xJ
+         MFkehtgenVbAJAFlff2zdRjC3TY3p2lORZa7Li8owlqIn2SX0FQWT6KHEHh7xaWfMbVU
+         V3D+fgbGQJsGI9L3LfBY7SxvxxvImD9km1+Qi6fVjfh49WnxXUCY5j+pk+0ocvwPQZ6C
+         1Bb0MyzUwEinFPAGgIEzigUOCkoJRWbVB5eZA10P4z9IIS/QaSPN8Rc523d0MbAzzQHh
+         PoMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UfC6Za7EDXnJsTRiZd6ux4jhSdUioPONKZicpxuGsRs=;
-        b=IC2aU/UN07sFzMMx1p7hewWz6n5L2S1oF93ZosK7OK8wEgyf1Ky7v+8IkS2T9KsruQ
-         7x9NqkseT0ppS+i+TSaULg7VcpqJMje93U0HSqm4/4TuIKW/cBfOcYQigJGkRedeoV58
-         VRyCe0vfA1jsX4wqHM6wFbG+36X9GkBQ6oYwnKHC3kPB3UvI6CKaLTLiQ4LsiR9D68o8
-         n4rpqeTHweyJIEI8vGqyKL9FdykM2/iQGgfXPPiVNMu3K7485rTas+JvfBqbmN3KcYWT
-         ILSEagtONjZy6JAqh4xSt9yNdIKa919oAixQzFzC1G5HWvdIWfPNMpNSlZEOegB4G66D
-         Eg/g==
-X-Gm-Message-State: AOAM532pxEjzX/9L4hysbQxTpIUxOF/Mua8cn26LLeetz5RR+/5l7piK
-        9AMjU8X0sD1OEHwkuJ+XNTD0ydX/PUys0GYsSRxRA+tGd4ZOFE1buhU8MiuFZEOjSL1PhxTW+Dh
-        h2HPpPNm/alJcle0NfEU/xvDdTepPXrxKA5yH0GT85w==
-X-Received: by 2002:a2e:a5c4:: with SMTP id n4mr5077030ljp.72.1635431717486;
-        Thu, 28 Oct 2021 07:35:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOEC4wlvcyuWLOfhIzSL5cyZfWYsGZ42k2Uja8j5sZ/fOp+hWKTyEyakkGWhuywzdmU+vZXw==
-X-Received: by 2002:a2e:a5c4:: with SMTP id n4mr5077012ljp.72.1635431717324;
-        Thu, 28 Oct 2021 07:35:17 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id u7sm292697lju.103.2021.10.28.07.35.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 07:35:16 -0700 (PDT)
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20211026115916.31553-1-semen.protsenko@linaro.org>
- <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
- <CAPLW+4=YizLzdiZ1mdCGxvPCTYhNjeiomO=q=4Xk-ZxqqH++nA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH] arm64: Kconfig: Enable MCT timer for ARCH_EXYNOS
-Message-ID: <e01b0072-008a-c83d-59b2-2174860c00fd@canonical.com>
-Date:   Thu, 28 Oct 2021 16:35:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=R5vDRCLKxQuuLX1TwFGPbSTqOd5q7X00mWAhulDDMZw=;
+        b=z20rnly1RoNfHm2jrONRwPVQ1Pv7czKuPzm+dG1fPihj6jJ9EEV8qRj1X69FBCoBTX
+         JcgsdouDvgfppiymHZchxUZArLzNuZwSe3PaqjB6YeLLFSE4sBPXky/z9LZmpofAKptp
+         1kYeye1A13z2GxKRx02XuaeRGcwWRHPmmKJlzVpqa+xcDRnSZnB4LGen1BUtZduAbkGJ
+         MB/hfXncJuQX9uVtZaZ3svqJLkUYUljHTghs1AxhXiFhKgqxD1QBt5VnGHLp7d/yFvOK
+         PZBxVh0fYkx75K/GWRAFPTKvyDQt5+0PsUp5BqCI3xhqy5H0hf/3VeAfht+BHLKxslO7
+         3K6Q==
+X-Gm-Message-State: AOAM533GAS/oXqe57jbfQB9uRtlEySwxFexhRc5zx9Z+1OojUz9pUt0o
+        YN6EHDSpgGNK/9scFXard+g=
+X-Google-Smtp-Source: ABdhPJwz/IS5dO4n4UdN4ULl3moVosoEDMKzH5Z5uYS8lRPkc9YdMTNCa/FeKPIDIfjqA92Ta/3fEA==
+X-Received: by 2002:a5d:6e91:: with SMTP id k17mr6167781wrz.260.1635431732069;
+        Thu, 28 Oct 2021 07:35:32 -0700 (PDT)
+Received: from ?IPv6:2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62? ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id t6sm2025392wmq.31.2021.10.28.07.35.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 07:35:31 -0700 (PDT)
+Message-ID: <6d2590b127499ba7ae1e7bc36d71064a5262659d.camel@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH 5/7] staging: vt6655: Rewrite
+ conditional in AL7320 initialization
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 28 Oct 2021 15:35:30 +0100
+In-Reply-To: <alpine.DEB.2.22.394.2110281505170.9518@hadrien>
+References: <cover.1635415820.git.karolinadrobnik@gmail.com>
+         <948406a3e7d23f1cdf866aa4448d9428bdd32512.1635415820.git.karolinadrobnik@gmail.com>
+         <1683328.aCfAWUeHFl@localhost.localdomain>
+         <alpine.DEB.2.22.394.2110281505170.9518@hadrien>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-In-Reply-To: <CAPLW+4=YizLzdiZ1mdCGxvPCTYhNjeiomO=q=4Xk-ZxqqH++nA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/2021 16:22, Sam Protsenko wrote:
-> On Tue, 26 Oct 2021 at 17:03, Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> On 26/10/2021 13:59, Sam Protsenko wrote:
->>> Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
->>> Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
->>> is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
->>> it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
->>> for ARM64 Exynos SoCs.
->>>
->>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
->>> ---
->>>  arch/arm64/Kconfig.platforms | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>
->> +CC Marek, Marc, Mark and Chanwoo,
->> Looks like duplicated:
->> https://lore.kernel.org/lkml/20181018095708.1527-7-m.szyprowski@samsung.com/
->>
->> The topic stalled and I think this particular patch did not make sense
->> on its own, without rest of changes from Marek. I am not sure, though...
->>
+On Thu, 2021-10-28 at 14:36 +0200, Fabio M. De Francesco wrote:
+> As far as I know by reading some Greg K-H's replies to other
+> developers, this 
+> "<test> ? <true> : <false>" style is not well accepted here.
+
+I thought that the expression is simple enough that it can be written
+this way. Julia nicely summarised why I think it's a good usage of the
+conditional operator. Still, there's no problem in changing it to "if-
+else" statement if that's the preferred option.
+
+
+Thanks,
+Karolina
 > 
-> Krzysztof, Marek,
-> 
-> That series looks nice, I'm quite interested in that being applied. Do
-> you think I can do something to help with that (e.g. rebasing,
-> re-sending on behalf of Marek, testing on Exynos850, etc)?
 
-I think there were no objections against v4 of this patchset, but
-somehow it wasn't applied.
-
-Marek,
-Does it make sense to try respinning your v4?
-
-Best regards,
-Krzysztof
