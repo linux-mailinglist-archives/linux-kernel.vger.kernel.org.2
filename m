@@ -2,166 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A5343E4FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE0C43E4FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhJ1PYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:24:51 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58908 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230183AbhJ1PYu (ORCPT
+        id S230331AbhJ1PZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhJ1PZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:24:50 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SErSKo011359;
-        Thu, 28 Oct 2021 15:22:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=/hJ3Lm1qbGC4/iVNVxS0v9M4R8V2I6sBbwkXzOuCkVk=;
- b=XJ2jZqHb+vPPsH3SJvRJCja7DGrgu5m9ENvISF0mNVeGbFSc/jyIfe3GikpAglOX4hUA
- srHkdmOXjJWI22e54226DqK/9hF3elNaH+Q0l9N4PwBG3LK07elPC7CwExS0WLF31Apv
- PcKXE38jFnxmHcaRLkMtUCe/plP7e6kyWyBd6ZwyxtKG4aQdajQ+6RCi8col8BQaasi9
- +SmACDoeftAngbW9MmGeQwko+3yD+LsLLgGfhEOrJ+eyTDv564OHSh4p+oFHrNUqPHz/
- 6BVDrwWde0g1muXaz8EYuIRiAhIsG1GTi1ls5/ORsPZ6gzEFL9p/fLRnkNY8ib+E8bKs OQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byx18rn9n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 15:22:11 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SEwZ47024174;
-        Thu, 28 Oct 2021 15:22:11 GMT
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byx18rn97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 15:22:10 +0000
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SFDYJ2002801;
-        Thu, 28 Oct 2021 15:22:10 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02dal.us.ibm.com with ESMTP id 3bx4f8gueq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 15:22:10 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SFM8Rq46006544
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 15:22:08 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 585F878066;
-        Thu, 28 Oct 2021 15:22:08 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB8787805F;
-        Thu, 28 Oct 2021 15:22:06 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.163.12.226])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Oct 2021 15:22:06 +0000 (GMT)
-Message-ID: <431d809cc8c26a9b8dfbf1c209c713e7656a94e4.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     daejun7.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Keoseong Park <keosung.park@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Date:   Thu, 28 Oct 2021 11:22:05 -0400
-In-Reply-To: <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-         <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 28 Oct 2021 11:25:02 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28553C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:22:32 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id gn3so4986353pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wq2fDK4Y1PYwyFg0KcaMcSGyQtEXNmJj70LIwShSA+Q=;
+        b=CZX8flQtIVS05QrpK8YoB5qywUviOPjv2q2uZ4eYLf+8b9f3ZmF23ddtLnEJyiYkpa
+         apiZF4s4CJRnLoq8tgZVPWnCXtqReuMEko2ICe02Aj9lKpXGnJSBM2snTQDnxmPjjs18
+         nErNOdhiP6p0jHsyCm7eNWqRgcv7HnJPkXYvcAUGjcegiAIN7h/UGFem+7ofSHiaTrCD
+         885Sqqon8TODsp4DRZ0YcCyh1KJO0caYUvtUsRdTOGRp8MQNDd/YOM/RHbHBbuoDzSO1
+         /RBYfRiXn7f5zXDOF3n4RKU/40f/YzkCitydxImHYpSeo20H4iK79qsytq2Vhca3uAxY
+         u9ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wq2fDK4Y1PYwyFg0KcaMcSGyQtEXNmJj70LIwShSA+Q=;
+        b=kMNw+6VlrO9z8L67dwCY3sUuf33DNCW3MzrW0kgPZhpau7JbC66lg26n6i6VXstKhn
+         KQYdkzPnCYt8a/tqA1+1JEl5GvRelk4W1ajRXVicKbNpurek6sidxDUvPHJKuSopWg3K
+         TUS2sxcNhI0fA8b2e/GXXKADIDJsRyl4AJnmnRj+LFtpxh7LgD+BXOF0JX02QsL1om9V
+         6J7aQgm/eg8T6rc6Es6vYhJHn5eTl6cGl/L6tdsbtoxa1TIEe5zAqCc+6RvCTMc+lwnT
+         BY42atd4mfyCuesA7mV+L3uaEjkB/xsYMBlWpnQrq8C/CdnAGvTiQXPYIPk7uoFg7FOA
+         Zk6w==
+X-Gm-Message-State: AOAM531i4sZoLxXxrYyIs7K7NzHSaSmMnLbIEqNpobiMA7yLFRgzq9jz
+        4ytLRu1AY0XKt2ElWGiTsv0teA==
+X-Google-Smtp-Source: ABdhPJzMzl5yGCkZYibocwnByVzQKmmQKSZmgPXRr65ajBmCV+xq9SIKT52tvNqaOt+05b5mMNH+mw==
+X-Received: by 2002:a17:902:a5c2:b0:140:14bb:8efd with SMTP id t2-20020a170902a5c200b0014014bb8efdmr4572984plq.31.1635434551473;
+        Thu, 28 Oct 2021 08:22:31 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g13sm4229663pfv.20.2021.10.28.08.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 08:22:30 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 15:22:27 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        John Haxby <john.haxby@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
+ nested VM-Enter/VM-Exit
+Message-ID: <YXrAM9MNqgLTU6+m@google.com>
+References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
+ <20200320212833.3507-24-sean.j.christopherson@intel.com>
+ <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: iZS2Ahrfr_UutVI-lZKeSJ4HQKOX7Wn-
-X-Proofpoint-ORIG-GUID: fg_tG7gemUTsxeV_AR5CKMyLIMfvRIer
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-28_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 suspectscore=0 mlxscore=0 impostorscore=0 bulkscore=0
- malwarescore=0 spamscore=0 clxscore=1011 adultscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110280085
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Jens, Christoph and linux-block
+-me :-)
 
-On Thu, 2021-10-28 at 07:36 +0900, Daejun Park wrote:
-> This patch addresses the issue of using the wrong API to create a
-> pre_request for HPB READ.
-> HPB READ candidate that require a pre-request will try to allocate a
-> pre-request only during request_timeout_ms (default: 0). Otherwise,
-> it is
-> passed as normal READ, so deadlock problem can be resolved.
+On Thu, Oct 28, 2021, Lai Jiangshan wrote:
+> On Sat, Mar 21, 2020 at 5:29 AM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
 > 
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 11 +++++------
->  drivers/scsi/ufs/ufshpb.h |  1 +
->  2 files changed, 6 insertions(+), 6 deletions(-)
+> > +       if (!nested_cpu_has_vpid(vmcs12) || !nested_has_guest_tlb_tag(vcpu)) {
+> > +               kvm_make_request(KVM_REQ_TLB_FLUSH, vcpu);
+> > +       } else if (is_vmenter &&
+> > +                  vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
+> > +               vmx->nested.last_vpid = vmcs12->virtual_processor_id;
+> > +               vpid_sync_context(nested_get_vpid02(vcpu));
+> > +       }
+> > +}
 > 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 02fb51ae8b25..3117bd47d762 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct
-> ufshpb_lu *hpb, struct scsi_cmnd *cmd,
->  				 read_id);
->  	rq->cmd_len = scsi_command_size(rq->cmd);
->  
-> -	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> -		return -EAGAIN;
-> +	blk_execute_rq_nowait(NULL, req, true,
-> ufshpb_pre_req_compl_fn);
->  
->  	hpb->stats.pre_req_cnt++;
->  
-> @@ -2315,19 +2314,19 @@ struct attribute_group
-> ufs_sysfs_hpb_param_group = {
->  static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
->  {
->  	struct ufshpb_req *pre_req = NULL, *t;
-> -	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
->  	int i;
->  
->  	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
->  
-> -	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req),
-> GFP_KERNEL);
-> -	hpb->throttle_pre_req = qd;
-> +	hpb->pre_req = kcalloc(HPB_INFLIGHT_PRE_REQ, sizeof(struct
-> ufshpb_req),
-> +			       GFP_KERNEL);
-> +	hpb->throttle_pre_req = HPB_INFLIGHT_PRE_REQ;
->  	hpb->num_inflight_pre_req = 0;
->  
->  	if (!hpb->pre_req)
->  		goto release_mem;
->  
-> -	for (i = 0; i < qd; i++) {
-> +	for (i = 0; i < HPB_INFLIGHT_PRE_REQ; i++) {
->  		pre_req = hpb->pre_req + i;
->  		INIT_LIST_HEAD(&pre_req->list_req);
->  		pre_req->req = NULL;
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index a79e07398970..411a6d625f53 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -50,6 +50,7 @@
->  #define HPB_RESET_REQ_RETRIES			10
->  #define HPB_MAP_REQ_RETRIES			5
->  #define HPB_REQUEUE_TIME_MS			0
-> +#define HPB_INFLIGHT_PRE_REQ			4
->  
->  #define HPB_SUPPORT_VERSION			0x200
->  #define HPB_SUPPORT_LEGACY_VERSION		0x100
+> (I'm sorry to pick this old email to reply to, but the problem has
+> nothing to do with this patch nor 5c614b3583e7 and it exists since
+> nested vmx is introduced.)
+> 
+> I think kvm_mmu_free_guest_mode_roots() should be called
+> if (!enable_ept && vmcs12->virtual_processor_id != vmx->nested.last_vpid)
+> just because prev_roots doesn't cache the vpid12.
+> (prev_roots caches PCID, which is distinctive)
+> 
+> The problem hardly exists if L1's hypervisor is also kvm, but if L1's
+> hypervisor is different or is also kvm with some changes in the way how it
+> manages VPID.
 
+Indeed.  A more straightforward error case would be if L1 and L2 share CR3, and
+vmcs02.VPID is toggled (or used for the first time) on the L1 => L2 VM-Enter.
 
+The fix should simply be:
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index eedcebf58004..574823370e7a 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -1202,17 +1202,15 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
+         *
+         * If a TLB flush isn't required due to any of the above, and vpid12 is
+         * changing then the new "virtual" VPID (vpid12) will reuse the same
+-        * "real" VPID (vpid02), and so needs to be flushed.  There's no direct
+-        * mapping between vpid02 and vpid12, vpid02 is per-vCPU and reused for
+-        * all nested vCPUs.  Remember, a flush on VM-Enter does not invalidate
+-        * guest-physical mappings, so there is no need to sync the nEPT MMU.
++        * "real" VPID (vpid02), and so needs to be flushed.  Like the !vpid02
++        * case above, this is a full TLB flush from the guest's perspective.
+         */
+        if (!nested_has_guest_tlb_tag(vcpu)) {
+                kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+        } else if (is_vmenter &&
+                   vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
+                vmx->nested.last_vpid = vmcs12->virtual_processor_id;
+-               vpid_sync_context(nested_get_vpid02(vcpu));
++               kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
+        }
+ }
