@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7DB43DAB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6098843DAB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhJ1FTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 01:19:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhJ1FTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 01:19:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635398225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZgx1Bu9hAX0UQlH/oNEZR1u/6d60fhGvlu287SMYxE=;
-        b=X9m7q9rj+Mg++98+g4+8yr+yDqliItJBeg7XdOFH1ksL8D4huTNKr2YvRwfUMWcvTb1W8z
-        MR6bygN8DCYtxM6dihiLEi4hRGj3Wpl6z9iXFVoEP+Crdnrf4/jEGca3OBNawd29IkmsP9
-        RTBFM2p3V5pu1NtVAYbvHYFuI2InY5g=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-526-IaGCaf_lMz2VflQQIAxQ4g-1; Thu, 28 Oct 2021 01:17:04 -0400
-X-MC-Unique: IaGCaf_lMz2VflQQIAxQ4g-1
-Received: by mail-qt1-f200.google.com with SMTP id v20-20020ac85794000000b002a7fc7cf1d8so3589202qta.11
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:17:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tZgx1Bu9hAX0UQlH/oNEZR1u/6d60fhGvlu287SMYxE=;
-        b=r6VEjIkEWTw/xMWwe1CzgATcN24cmA52jlyfIvytiAFM2utQQj2ZssWrx1A2WsiSqX
-         F+rtPN2db/b5ZF7SW4bh3BqZYYWzxJbXxLalfVF7e1fy1zNwn9YWKhUhFgzugytNiqlg
-         mZHtxJg/pD8mC5uzdpzHvvg6XiuwCjKmPEuUjUu/5yM5dhLC5iEcKOk+bpDZKmjVhuhL
-         YfcrJIJU1J2xq6X0abI8mSW5dQDgZg7+1tKkXC78xynl+N8p4pfj/VOWBx1xjvLE3/Iq
-         4MhWzIDi7xdGg626lY4BVi0VhDCgavFfh7S4ufEUPcNbgIWF2Mz6VYqpbPe6gpddVrVZ
-         JS5w==
-X-Gm-Message-State: AOAM530acvf6+UT+2X8KTvWZtvsYKNxH9O8TWYPzl9gEqYG01HG0cAXn
-        BD10tS2yEgrf63zgOEB74aHf7KbeGPab0nTqXdL2eRhe4itn4rnyoNdnzpt66dYXpcNq/D1euKJ
-        U2yKts3jYdqrI3pSoTkrO8F7b
-X-Received: by 2002:a05:6214:248c:: with SMTP id gi12mr1833332qvb.14.1635398223792;
-        Wed, 27 Oct 2021 22:17:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWTRGwYuG19Z+rsjyARLbj2Vq6k9UfVrQ10HGj0EwOZqM/1BTu+meVUyc4pklM6muZk3P/oQ==
-X-Received: by 2002:a05:6214:248c:: with SMTP id gi12mr1833313qvb.14.1635398223558;
-        Wed, 27 Oct 2021 22:17:03 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id g10sm1423680qko.38.2021.10.27.22.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 22:17:03 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 22:17:00 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 00/16] x86: Rewrite the retpoline rewrite logic
-Message-ID: <20211028051700.id3nbzextq6oevr5@treble>
-References: <20211026120132.613201817@infradead.org>
+        id S229769AbhJ1FZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 01:25:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229684AbhJ1FZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 01:25:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D57660E78;
+        Thu, 28 Oct 2021 05:22:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635398573;
+        bh=Aznlr7Iqs31knJ/shNpJZTG2LVNF9rkzq+tM0FuBX+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LJdwC8NnxdOqbIl+QnJ+RnuJ2RSsCC1/XiyIba4hPq3IvLFKWvzMubi4ZZTE6SHZH
+         FPTou70QxGdskxGHnLPxWV+0iNTzhs1q4g7fObJ9o8DeH5I8uMgVjJpNqT9CFV900t
+         IIoM/+x+LbXahtzgy77vD/UI6raHJYNM5JtAthJU=
+Date:   Thu, 28 Oct 2021 07:22:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     vaatsalya shrivastava <shrivastavavaatsalya@gmail.com>
+Cc:     manohar.vanga@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: comedi: Cleaned a bit of code that was not
+ required
+Message-ID: <YXozqK1elRwpK0qf@kroah.com>
+References: <20211027193235.5927-1-shrivastavavaatsalya@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211026120132.613201817@infradead.org>
+In-Reply-To: <20211027193235.5927-1-shrivastavavaatsalya@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 02:01:32PM +0200, Peter Zijlstra wrote:
-> Hi,
-> 
-> These patches rewrite the way retpolines are rewritten. Currently objtool emits
-> alternative entries for most retpoline calls. However trying to extend that led
-> to trouble (ELF files are horrid).
-> 
-> Therefore completely overhaul this and have objtool emit a .retpoline_sites
-> section that lists all compiler generated retpoline thunk calls. Then the
-> kernel can do with them as it pleases.
-> 
-> Notably it will:
-> 
->  - rewrite them to indirect instructions for !RETPOLINE
->  - rewrite them to lfence; indirect; for RETPOLINE_AMD,
->    where size allows (boo clang!)
-> 
-> Specifically, the !RETPOLINE case can now also deal with the clang-special
-> conditional-indirect-tail-call:
-> 
->   Jcc __x86_indirect_thunk_\reg.
-> 
-> Finally, also update the x86 BPF jit to catch up to recent times and do these
-> same things.
-> 
-> All this should help improve performance by removing an indirection.
-> 
-> Patches can (soon) be found here:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git objtool/core
-> 
-> Changes since v2:
-> 
->  - rewrite the __x86_indirect_thunk_array[] stuff again
->  - rewrite the retpoline,amd rewrite logic, it now also supports
->    rewriting the Jcc case, if the original instruction is long enough, but
->    more importantly, it's simpler code.
->  - bpf label simplification patch
->  - random assorted cleanups
->  - actually managed to get bpf selftests working
+On Wed, Oct 27, 2021 at 03:32:34PM -0400, vaatsalya shrivastava wrote:
+> Warning found by checkpatch.pl script.
 
-Good stuff!
+Please be specific as to what you did.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> 
+> Signed-off-by: vaatsalya shrivastava <shrivastavavaatsalya@gmail.com>
 
--- 
-Josh
+"V" and "S"?
 
+> ---
+>  drivers/comedi/drivers/dt2815.c        | 2 +-
+>  drivers/staging/vme/devices/vme_user.h | 8 ++++----
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/comedi/drivers/dt2815.c b/drivers/comedi/drivers/dt2815.c
+> index 5906f32aa01f..2be240630bbd 100644
+> --- a/drivers/comedi/drivers/dt2815.c
+> +++ b/drivers/comedi/drivers/dt2815.c
+> @@ -17,7 +17,7 @@
+>   * contrary, please update.
+>   *
+>   * Configuration options:
+> - * [0] - I/O port base base address
+> + * [0] - I/O port base address
+
+The original is correct.
+
+>   * [1] - IRQ (unused)
+>   * [2] - Voltage unipolar/bipolar configuration
+>   *	0 == unipolar 5V  (0V -- +5V)
+> diff --git a/drivers/staging/vme/devices/vme_user.h b/drivers/staging/vme/devices/vme_user.h
+> index 19ecb05781cc..3c1564fd9b20 100644
+> --- a/drivers/staging/vme/devices/vme_user.h
+> +++ b/drivers/staging/vme/devices/vme_user.h
+
+This is not a comedi driver.
+
+> @@ -14,11 +14,11 @@ struct vme_master {
+>  	__u32 aspace;		/* Address Space */
+>  	__u32 cycle;		/* Cycle properties */
+>  	__u32 dwidth;		/* Maximum Data Width */
+> -#if 0
+> +
+
+You can not just remove these lines, please realize what you are doing.
+
+thanks,
+
+greg k-h
