@@ -2,188 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8F843E786
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEA643E79E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhJ1R4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbhJ1R4G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:56:06 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68500C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:53:39 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x7so1697536pfh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QUy7C3pMfYDSd+gJBLd/Qm4IQNiMMafgC3bCqMCwLnQ=;
-        b=V2m484sBGMfAZF6ekWflWHuCH3mcIIF/yy1mokly1IVIxz5gdLick7wsTcm3QpHzsJ
-         Fw5/ypXiO/a6ay8Hy3n8vh9aa2+wkILSk5Id7uRvN30yhTKosSzKa2UB8Q6jF941Vp+E
-         bfvrquk+nS4d1tqzjMKYgIsD2ajVt20YYBKFPZhS66Yp4E4/r8L/XX+YMe1ikPXrmW5R
-         dFHt6LPWU1mNxEsUMSTVsXiXkFMKpAj/YmmGLAF5asEZBY3EW1VWdaNmErr8icCFP9KP
-         2c+1oQeNdgcfvj+LBulpjjHnFh5S5n9G99KOPuGwDYO9n5q2/YZ34rexiNMp3GlSJ9pC
-         4bTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QUy7C3pMfYDSd+gJBLd/Qm4IQNiMMafgC3bCqMCwLnQ=;
-        b=jMCi3xsgW3XKG035f+1nvqrkZnmQgzfLyBu2YG+X09At4pFChyoSuK5EI6S/TgroVC
-         b98vnD8Wmt1PMRXGcsBX5MQi7hqOl82q1LIsLwl2Q7MWCp/RW1DsUY0rQE0CPJI7Y39+
-         Z0Xb43zcsqiHDw8HBBBXpd87kS2mtQxsbsVbYipl8r2wlH9qZzVvMTgRn5OjI0RzJrVF
-         LGusu77dLHxDuV9ASwn8pt4yWbwof2ymM+RCVTbr8af1RJ7RMh4krHxUfU9bNm9oOWyw
-         WzxqZjlhvPw/1cuwXqYAQLR5vzL4CQ+IXvJG8OVox/fhwKtWyl0poWgwfbIMCZ/fCrWo
-         c+Mw==
-X-Gm-Message-State: AOAM533IirZcYfCAMhW0cUo2POabL7whhyTBFPJvAWof9ErtgTyp3ktv
-        WmykKOY3tQ02gh4aNttjjSTkjg==
-X-Google-Smtp-Source: ABdhPJysal2B5WUWU6g4Fq6oWH9QJqhRYWjw3zX5PU6I51TK3Pouopi1BNPtDsvO/auEgxPwnSxrYQ==
-X-Received: by 2002:aa7:8718:0:b0:47b:f2ca:2e59 with SMTP id b24-20020aa78718000000b0047bf2ca2e59mr5811730pfo.21.1635443617763;
-        Thu, 28 Oct 2021 10:53:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g18sm4539825pfj.67.2021.10.28.10.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 10:53:37 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 17:53:33 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 13/13] KVM: Optimize overlapping memslots check
-Message-ID: <YXrjnSKBhzG7JVLF@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <4f8718fc8da57ab799e95ef7c2060f8be0f2391f.1632171479.git.maciej.szmigiero@oracle.com>
- <YXhQEeNxi2+fAQPM@google.com>
- <4222ead3-f80f-0992-569f-9e1a7adbabcc@maciej.szmigiero.name>
+        id S231204AbhJ1SAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:00:35 -0400
+Received: from mail-sn1anam02on2063.outbound.protection.outlook.com ([40.107.96.63]:47424
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230484AbhJ1SAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 14:00:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aSJmJlddeRbXD6LqSAYIl6s9Nycs7uYB3W++B3FV5bUYR/enJRS5QwW9TP9Ikz/AJ3ogJib8Ub7ILjDCpQlYP2V8JVRwFtJWZGXEQnmCyvLV16FqwDLiJbRNf1H3YvezVXP0k7+egO1hW28Np9RVU07SA+DWTDX79ZaNSJyzrMPX3Aw557zV68hwqXfciugX07fUYGgMrgOPeeCRt4bYbCf5MZgccQhcghC5gEbP7rDeACOVlKJZ9PKObHjyIKvI4pOyCDj3fUjiuIvMsV4uQ8xQkhtoBe11iAzkEchZ1d98iLxyMJ+Wwe6zWHyCfYr4evaXy9gJOmvHDJZ5aES70g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gBM/NHI4/M9ioYxIxja3QexzLfBJoA7gifHGQ9xcT1I=;
+ b=JEBmfniRIcODJWY1FLAwnFMDI73THntE4nHo4S3IGiroTMjX748FP98n+ZpkXkZz46e0pa790e+Ote4VRHYi7KaEKrLVirMuXOrByqi05h4QacSOwUG6iCPiD7WdkFwWHl8wkAcRJ8LDKINHxdVPWtpfA2p1YFjE+wjhjpp8QtqXrXMOZ/aPDDMY28QM2YNl1GZs/oBln5wbPIsc/+9OwwGTPWMS7RxtfHQTYEXSj4AiYg54OSdTjbzWE53g0cNl5QUa1t8Hi+m6ogqr0MzxzKPxBZz9qWMrQbQmDdDKaw26j7gfcYFXugkeGv8XrLfaffF5LO8CK6cZ0+AfERUalg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gBM/NHI4/M9ioYxIxja3QexzLfBJoA7gifHGQ9xcT1I=;
+ b=BiAyYjV3bOpkIRv9Zw7I/rExQVhdXi7uXzSNMbW6/kOOno0EU+LND4u2afy5UzjZCBfgpdj2ONifP59ilYOMVLlZv7fMWUM4VNJqxbu74HEf11MHtlflMa8tbuitqUYBbJC93YggGrbJe5/zrjoitdF150dvkhBDsWEszS6rMj8=
+Received: from MWHPR10CA0022.namprd10.prod.outlook.com (2603:10b6:301::32) by
+ BY5PR12MB4872.namprd12.prod.outlook.com (2603:10b6:a03:1c4::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Thu, 28 Oct
+ 2021 17:57:54 +0000
+Received: from CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:301:0:cafe::e6) by MWHPR10CA0022.outlook.office365.com
+ (2603:10b6:301::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14 via Frontend
+ Transport; Thu, 28 Oct 2021 17:57:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT006.mail.protection.outlook.com (10.13.174.246) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4649.14 via Frontend Transport; Thu, 28 Oct 2021 17:57:53 +0000
+Received: from yaz-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 28 Oct
+ 2021 12:57:49 -0500
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     <linux-edac@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>,
+        <mchehab@kernel.org>, <tony.luck@intel.com>, <james.morse@arm.com>,
+        <rric@kernel.org>, <Smita.KoralahalliChannabasappa@amd.com>,
+        <NaveenKrishna.Chatradhi@amd.com>, <Muralidhara.MK@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>, <x86@kernel.org>
+Subject: [PATCH v3 00/33] AMD MCA Address Translation Updates
+Date:   Thu, 28 Oct 2021 17:56:55 +0000
+Message-ID: <20211028175728.121452-1-yazen.ghannam@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4222ead3-f80f-0992-569f-9e1a7adbabcc@maciej.szmigiero.name>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 91b7edd6-ce29-45f2-9863-08d99a3c7708
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4872:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB4872E2CF8F76970A825CAC41F8869@BY5PR12MB4872.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6N9wB7gMtUGWvfrXipbni9V8JdG4+/KVBfdqEabvabXHPvx6gt60qRDKhzFGTOBqlDEzBlcBW42zeIROnPBqzCwvwe05HGpaWq53bysj1TD7E6oPkWy2DK+MXnXPdnzCQDwiXqvdjrsTGu8o3NjIwyNN4egprmKKqHghyEMbcK6mtdUfVX/mC1xIZMdNbQ0rl3Z5KrbGGbQ2uVkVvkIXOKfSZuU1n/fGLuGTF70BwdHFxRp3Q4K0esVyo0nKgD9r7kjZciSueztfGmugxgIEmNzc5Ny9QU9t+XtbM8uu8G4/hCv7a0a5Y51Gp9Fz2Qpa+V8KGmAb+drlvsXQd/zdRdXeX6pIpJXhUeV/Q9i5qr2nrbVphCfzWEHEsJB9O31DSFyJJ8zlPDvV/Fzz5EWuiF0sMkATatOxv6Rm5IqIy9XeGsy0skYOV7GZd/zBWkj7W5JdsuMTFlPdX3yLQ1WnRmeCV590ovMJF9e/yUogY7tz4rHOa5oA2CCinmvGhsJcbcGN7MborHOpNPLEo6JGebbhITMvKd5EG/bSNGDrOngH7TMJ6lMJbn+0F7y0TkFQ0CcTT09SYg96moTui9RrEa+eaYx67ZQA3vEt/L5zwjvztME8+911P/Onu3RslTbfEjykuvMD2j6Nq2UAa/lJTpxkOkgNjpzoZ1sVPZRLoh+bHfxKOfBp/um6SssIDJN5UuB7do93vferY1g+cSl/IxP/QXf1WO7d5Ix4pP8Stith7vhkjJ1o9h638Pt1vckBskD5IaYTvyV43i/cDIgOJ0hR6KhYi33ZBKZal+jTnlOW5PFULKbpIEpwDRf14ZyP0F+n9fRLyHjKvR0N4EFflaIZW7ZPCk5Au5kKkc+0aIA=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(86362001)(15650500001)(82310400003)(356005)(81166007)(966005)(26005)(36860700001)(2616005)(426003)(336012)(508600001)(1076003)(54906003)(316002)(186003)(8676002)(8936002)(47076005)(44832011)(5660300002)(6916009)(2906002)(4326008)(7696005)(70586007)(70206006)(6666004)(83380400001)(16526019)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 17:57:53.3754
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91b7edd6-ce29-45f2-9863-08d99a3c7708
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4872
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021, Maciej S. Szmigiero wrote:
-> On 26.10.2021 20:59, Sean Christopherson wrote:
-> > > +		/* kvm_for_each_in_gfn_no_more() guarantees that cslot->base_gfn < nend */
-> > > +		if (cend > nslot->base_gfn)
-> > 
-> > Hmm, IMO the need for this check means that kvm_for_each_memslot_in_gfn_range()
-> > is flawed.  The user of kvm_for_each...() should not be responsible for skipping
-> > memslots that do not actually overlap the requested range.  I.e. this function
-> > should be no more than:
-> > 
-> > static bool kvm_check_memslot_overlap(struct kvm_memslots *slots,
-> > 				      struct kvm_memory_slot *slot)
-> > {
-> > 	gfn_t start = slot->base_gfn;
-> > 	gfn_t end = start + slot->npages;
-> > 
-> > 	kvm_for_each_memslot_in_gfn_range(&iter, slots, start, end) {
-> > 		if (iter.slot->id != slot->id)
-> > 			return true;
-> > 	}
-> > 
-> > 	return false;
-> > }
-> > 
-> > 
-> > and I suspect kvm_zap_gfn_range() could be further simplified as well.
-> > 
-> > Looking back at the introduction of the helper, its comment's highlighting of
-> > "possibily" now makes sense.
-> > 
-> >    /* Iterate over each memslot *possibly* intersecting [start, end) range */
-> >    #define kvm_for_each_memslot_in_gfn_range(node, slots, start, end)	\
-> > 
-> > That's an unnecessarily bad API.  It's a very solvable problem for the iterator
-> > helpers to advance until there's actually overlap, not doing so violates the
-> > principle of least surprise, and unless I'm missing something, there's no use
-> > case for an "approximate" iteration.
-> 
-> In principle this can be done, however this will complicate the gfn
-> iterator logic - especially the kvm_memslot_iter_start() part, which
-> will already get messier from open-coding kvm_memslots_gfn_upper_bound()
-> there.
+This patchset refactors the AMD MCA Address Translation code and adds
+support for newer systems.
 
-Hmm, no, this is trivial to handle, though admittedly a bit unpleasant.
+The reference code was recently refactored in preparation for updates
+for future systems. These patches try to follow the reference code as
+closely as possible. I also tried to address comments from previous
+patchset reviews.
 
-/*
- * Note, kvm_memslot_iter_start() finds the first memslot that _may_ overlap
- * the range, it does not verify that there is actual overlap.  The check in
- * the loop body filters out the case where the highest memslot with a base_gfn
- * below start doesn't actually overlap.
- */
-#define kvm_for_each_memslot_in_gfn_range(iter, node, slots, start, end) \
-        for (kvm_memslot_iter_start(iter, node, slots, start, end);      \
-             kvm_memslot_iter_is_valid(iter);                            \
-             kvm_memslot_iter_next(node))                                \
-		if (iter->slot->base_gfn + iter->slot->npages < start) { \
-		} else
+Patch 1 moves the address translation code from arch/x86 to EDAC.
 
+Patch 2 moves the df_indirect_read() function from arch/x86 to EDAC
+also, since this is used only by the address translation code.
 
+Patches 3-28 do the refactor without adding new system support. The goal
+is to break down the translation algorithm into smaller chunks. Code
+that changes between Data Fabric versions or interleaving modes is moved
+to a set of function pointers. The intention is that new system support
+can be added without any major refactor.
 
-> At the same kvm_zap_gfn_range() will still need to do the memslot range
-> <-> request range merging by itself as it does not want to process the
-> whole returned memslot, but rather just the part that's actually
-> overlapping its requested range.
+I tried to make a patch for each logical change. The top level function
+was split first, then the next level of functions, etc. in a somewhat
+breadth-first approach. 
 
-That's purely coincidental though.  IMO, kvm_zap_gfn_range() would be well within
-its rights to sanity the memslot, e.g.
+Patch 29 adds support for systems with Data Fabric version 3 (Rome and
+later).
 
-	if (WARN_ON(memslot->base_gfn + memslot->npages < gfn_start))
-		continue;
- 
-> In the worst case, the current code can return one memslot too much, so
-> I don't think it's worth bringing additional complexity just to detect
-> and skip it
+Patch 30 adds a short glossary for acronyms used in the translation
+code.
 
-I strongly disagree.  This is very much a case of one chunk of code that knows
-the internal details of what it's doing taking on all the pain and complexity
-so that users of the helper
+Patches 31-32 prep for future systems including, but not limited to,
+heterogeneous CPU+GPU systems.
 
-> it's not that uncommon to design an API that needs extra checking from its
-> caller to cover some corner cases.
+Patch 33 adds support for systems with Data Fabric version 3.5
+(heterogeneous CPU+GPU systems).
 
-That doesn't mean it's desirable.
+Each patch was build tested individually. The entire set was
+functionally tested with the following modes.
 
-> For example, see pthread_cond_wait() or kernel waitqueues with their
-> spurious wakeups or atomic_compare_exchange_weak() from C11.
-> And these are higher level APIs than a very limited internal KVM one
-> with just two callers.
+Naples:
+  No interleaving
+  Channel interleaving
+  Die interleaving
+  Socket interleaving
 
-Two _existing_ callers.  Odds are very, very high that future usage of
-kvm_for_each_memslot_in_gfn_range() will overlook the detail about the helper
-not actually doing what it says it does.  That could be addressed to some extent
-by renaming it kvm_for_each_memslot_in_gfn_range_approx() or whatever, but as
-above this isn't difficult to handle, just gross.
+Rome:
+  No interleaving
+  Nodes-per-Socket 0 (NPS0)
+  Nodes-per-Socket 1 (NPS1)
+  Nodes-per-Socket 2 (NPS2)
+  Nodes-per-Socket 4 (NPS4)
+  NPS2 w/o hashing
+  NPS4 w/o hashing
 
-> In case of kvm_zap_gfn_range() the necessary checking is already
-> there and has to be kept due to the above range merging.
-> 
-> Also, a code that is simpler is easier to understand, maintain and
-> so less prone to subtle bugs.
+This version of the set was rebased on the following set.
+https://lkml.kernel.org/r/20211025145018.29985-1-nchatrad@amd.com
 
-Heh, and IMO that's an argument for putting all the complexity into a single
-location.  :-)
+I've copied x86@kernel.org for the cover letter and first two patches
+that touch arch/x86. The EDAC maintainers are copied for the whole set.
+
+Thanks,
+Yazen
+
+Cc: <x86@kernel.org>
+
+Link:
+https://lkml.kernel.org/r/20210623192002.3671647-1-yazen.ghannam@amd.com
+
+v2->v3:
+* Drop "df_regs" use.
+* Include patches needed for CPU+GPU systems.
+* Set "df_ops" at module init based on family type.
+
+v1->v2:
+* Move address translation code to EDAC.
+* Use function pointers to handle code differences between DF versions.
+* Add glossary of acronyms.
+
+Muralidhara M K (1):
+  EDAC/amd64: Add address translation support for DF3.5
+
+Yazen Ghannam (32):
+  x86/MCE/AMD, EDAC/amd64: Move address translation to AMD64 EDAC
+  x86/amd_nb, EDAC/amd64: Move DF Indirect Read to AMD64 EDAC
+  EDAC/amd64: Allow for DF Indirect Broadcast reads
+  EDAC/amd64: Add context struct
+  EDAC/amd64: Define Data Fabric operations
+  EDAC/amd64: Define functions for DramOffset
+  EDAC/amd64: Define function to read DRAM address map registers
+  EDAC/amd64: Define function to find interleaving mode
+  EDAC/amd64: Define function to denormalize address
+  EDAC/amd64: Define function to add DRAM base and hole
+  EDAC/amd64: Define function to dehash address
+  EDAC/amd64: Define function to check DRAM limit address
+  EDAC/amd64: Remove goto statements
+  EDAC/amd64: Simplify function parameters
+  EDAC/amd64: Define function to get Interleave Address Bit
+  EDAC/amd64: Skip denormalization if no interleaving
+  EDAC/amd64: Define function to get number of interleaved channels
+  EDAC/amd64: Define function to get number of interleaved dies
+  EDAC/amd64: Define function to get number of interleaved sockets
+  EDAC/amd64: Remove unnecessary assert
+  EDAC/amd64: Define function to make space for CS ID
+  EDAC/amd64: Define function to calculate CS ID
+  EDAC/amd64: Define function to insert CS ID into address
+  EDAC/amd64: Define function to get CS Fabric ID
+  EDAC/amd64: Define function to find shift and mask values
+  EDAC/amd64: Update CS ID calculation to match reference code
+  EDAC/amd64: Match hash function to reference code
+  EDAC/amd64: Define function to get interleave address select bit
+  EDAC/amd64: Add support for address translation on DF3 systems
+  EDAC/amd64: Add glossary of acronyms for address translation
+  EDAC/amd64: Add check for when to add DRAM base and hole
+  EDAC/amd64: Save the number of block instances
+
+ arch/x86/include/asm/amd_nb.h |   1 -
+ arch/x86/include/asm/mce.h    |   3 -
+ arch/x86/kernel/amd_nb.c      |  49 +-
+ arch/x86/kernel/cpu/mce/amd.c | 200 --------
+ drivers/edac/amd64_edac.c     | 911 +++++++++++++++++++++++++++++++++-
+ 5 files changed, 910 insertions(+), 254 deletions(-)
+
+-- 
+2.25.1
+
