@@ -2,113 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D02043E63F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FA943E646
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhJ1Qm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:42:56 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:54093 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJ1Qmz (ORCPT
+        id S230258AbhJ1Qnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:43:50 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:16391 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhJ1Qnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:42:55 -0400
-Received: by mail-io1-f70.google.com with SMTP id o7-20020a05660213c700b005de826aaea0so4486314iov.20
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:40:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hQOwIpDJMFa8b9GH204Ti072BTb6C3oMwQNXRNRgt9M=;
-        b=fNVDqxoXTnSRd2tFdJxivJIlJx5W1CTsP1NmJ09bUMmmszr32fwHmWz/9r2ynk5GVT
-         MoQHMoMuQ6Aacj1MYMiFcszSlaIQfWO71Wzl4cLBKnCnqV6GwIacW7TH2OIlb0CX+U7/
-         Cxe1B9HbXWNN119benCbWoIDyp/MMfIlQfopM4yD7UZoYoHagxJIYic4I537977iiHCt
-         m0YHufY+hy3Sjc7bSCreGNLwLNxjQ5f5WILqNGmx+1wbDVzBK+B9Wclx4GUAgKq+tfQs
-         gayPSxwaxSz+J+HItgPbdZBRMmTYyrOhYHdLIRDoAKV/VjYSMNC84wSNWmXvMg2QMrdP
-         gt4w==
-X-Gm-Message-State: AOAM532IONGbFmsvx2GUaNJDMfLVduVLYwovwhweEG33XmE6D9Yyeu4P
-        sElnPnlR+sKmMBMc6AZTL81+Xjex0U7acBRY+bfCfmTICzRR
-X-Google-Smtp-Source: ABdhPJxGkbFazMINrhILG4xAO9v+M8rewD3VQw9PigConMG5CFo9rdXVzjgi4HFG/PAVlJRl+5wT7IcDmfivrBXIXRfhUOIsiSym
+        Thu, 28 Oct 2021 12:43:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635439282; x=1666975282;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3DcGoNLDw0nBvHnM5dU5BhrLiLH6Em/sSyzdlwx2xHc=;
+  b=jR9P0amZR+pUP8M3/DCxu8ibYuhdA8I89uXBULV9pT/Zq3ByBP0YXUZR
+   dSCxgtbz48SCSVSbZ8zLfjutoM/CAJiQL3AinUCsv2pGyyjosTPG5PYyX
+   i5QVh0Hq0cWaMfd19QMAzTOr5Tf1BIPyThrmQBtrhyiiSz9c4rxWPYfrv
+   REx88+VFhCngN9hE3+PmyRjQK6A8d12V9Mo69647sx6CTA+IzimGbsYNA
+   OkRdmywouRxagoqlRyx4SHAVMXM+L0KkY5/stf4z8j67HTNGcSJ6Uznht
+   Ab8usIT0JmFfp+mOgwCy69+sqKkYRnpqCM36OBEI/6Q103eO2VL5t6OYD
+   g==;
+IronPort-SDR: pnc7oD4xDzZc7MosiZSbtG0dRNR1LaoHT5TKF/jWW31ni7WsAJbvrcr0aRz8zQqBDU1plBpMdw
+ IyRzmdmUiST/ZBjKEYhFthxli0F6C5OwJQ7wfuDZYvfffI8T9z7P3Zagz15F2vkDCFPIXReYi+
+ Msh7EcHYmKeijnyEy0uAeA7Wzaoavf+nHFL6jZH5AE7Lizfl/4D/qSHOgfffqo6Dwegt80NT/U
+ A633i4AF5/+4XGns9dDKmo0pHN+idcFbsq40HG7EL1f45ps1RyLg7IDz5dVio35RK6tgUNaebU
+ JNxEDBjwqCY+Uq2rsKEXIp6P
+X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
+   d="scan'208";a="142031693"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 09:41:21 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 28 Oct 2021 09:41:20 -0700
+Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 28 Oct 2021 09:41:14 -0700
+From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+To:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
+        <robh+dt@kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
+Subject: [PATCH v5 net-next 00/10] net: dsa: microchip: DSA driver support for LAN937x switch
+Date:   Thu, 28 Oct 2021 22:11:01 +0530
+Message-ID: <20211028164111.521039-1-prasanna.vengateshan@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1987:: with SMTP id g7mr3988763ilf.137.1635439227851;
- Thu, 28 Oct 2021 09:40:27 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 09:40:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003a5b5905cf6c5ee7@google.com>
-Subject: [syzbot] WARNING in __folio_mark_dirty
-From:   syzbot <syzbot+34ef28bb2aeb28724aa0@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+LAN937x is a Multi-Port 100BASE-T1 Ethernet Physical Layer switch  
+compliant with the IEEE 802.3bw-2015 specification. The device  
+provides 100 Mbit/s transmit and receive capability over a single 
+Unshielded Twisted Pair (UTP) cable. LAN937x is successive revision 
+of KSZ series switch. This series of patches provide the DSA driver  
+support for Microchip LAN937X switch and it configures through  
+SPI interface. 
 
-syzbot found the following issue on:
+This driver shares some of the functions from KSZ common 
+layer. 
 
-HEAD commit:    cf6c9d12750c Add linux-next specific files for 20211022
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=177967acb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dd1cd3d631599df5
-dashboard link: https://syzkaller.appspot.com/bug?extid=34ef28bb2aeb28724aa0
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e79e9f300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12231f62b00000
+The LAN937x switch series family consists of following SKUs: 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+34ef28bb2aeb28724aa0@syzkaller.appspotmail.com
+LAN9370: 
+  - 4 T1 Phys 
+  - 1 RGMII port 
 
-NILFS (loop0): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 inode_to_wb include/linux/backing-dev.h:269 [inline]
-WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 folio_account_dirtied mm/page-writeback.c:2460 [inline]
-WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 __folio_mark_dirty+0xa7c/0xe30 mm/page-writeback.c:2509
-Modules linked in:
-CPU: 0 PID: 6575 Comm: segctord Not tainted 5.15.0-rc6-next-20211022-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:inode_to_wb include/linux/backing-dev.h:269 [inline]
-RIP: 0010:folio_account_dirtied mm/page-writeback.c:2460 [inline]
-RIP: 0010:__folio_mark_dirty+0xa7c/0xe30 mm/page-writeback.c:2509
-Code: ff ff ff 48 8d 78 70 e8 b2 77 ae 07 31 ff 89 c6 89 44 24 10 e8 45 a5 d7 ff 8b 44 24 10 85 c0 0f 85 49 fa ff ff e8 14 a3 d7 ff <0f> 0b e9 3d fa ff ff e8 08 a3 d7 ff e8 c3 78 ae 07 31 ff 41 89 c7
-RSP: 0018:ffffc900020078b8 EFLAGS: 00010093
-RAX: 0000000000000000 RBX: ffff88806b870378 RCX: 0000000000000000
-RDX: ffff88801b4fba80 RSI: ffffffff819fea3c RDI: 0000000000000003
-RBP: ffffea0001c92700 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff819fea2b R11: 0000000000000000 R12: 0000000000000293
-R13: ffff88806b870138 R14: 0000000000000001 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055d7235e1180 CR3: 000000001278d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __set_page_dirty include/linux/pagemap.h:834 [inline]
- mark_buffer_dirty+0x4e6/0x650 fs/buffer.c:1145
- nilfs_btree_propagate_p fs/nilfs2/btree.c:1889 [inline]
- nilfs_btree_propagate+0x4ae/0xea0 fs/nilfs2/btree.c:2085
- nilfs_bmap_propagate+0x73/0x170 fs/nilfs2/bmap.c:337
- nilfs_collect_dat_data+0x45/0xd0 fs/nilfs2/segment.c:625
- nilfs_segctor_apply_buffers+0x14a/0x470 fs/nilfs2/segment.c:1009
- nilfs_segctor_scan_file+0x47a/0x700 fs/nilfs2/segment.c:1048
- nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1224 [inline]
- nilfs_segctor_collect fs/nilfs2/segment.c:1494 [inline]
- nilfs_segctor_do_construct+0x14f3/0x6c60 fs/nilfs2/segment.c:2036
- nilfs_segctor_construct+0x7a7/0xb30 fs/nilfs2/segment.c:2372
- nilfs_segctor_thread_construct fs/nilfs2/segment.c:2480 [inline]
- nilfs_segctor_thread+0x3c3/0xf90 fs/nilfs2/segment.c:2563
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
+LAN9371: 
+  - 3 T1 Phys & 1 TX Phy 
+  - 2 RGMII ports 
 
+LAN9372: 
+  - 5 T1 Phys & 1 TX Phy 
+  - 2 RGMII ports 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+LAN9373: 
+  - 5 T1 Phys 
+  - 2 RGMII & 1 SGMII port 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+LAN9374: 
+  - 6 T1 Phys 
+  - 2 RGMII ports 
+
+More support will be added at a later stage.
+
+Changes in v5:
+- microchip,lan937x.yaml: Added mdio properties detail
+- microchip,lan937x.yaml: *-internal-delay-ps added under port node
+- lan937x_dev.c: changed devm_mdiobus_alloc from of_mdiobus_register as suggested
+  by Vladimir
+- lan937x_dev.c: added dev_info for rgmii internal delay & error message to user
+  in case of out of range values
+- lan937x_dev.c: return -EOPNOTSUPP for C45 regnum values for lan937x_sw_mdio_read
+  & write operations
+- return from function with out storing in a variable
+- lan937x_main.c: Added vlan_enable info in vlan_filtering API
+- lan937x_main.c: lan937x_port_vlan_del: removed unintended PVID write
+
+Changes in v4:
+- tag_ksz.c: cpu_to_be16 to  put_unaligned_be16
+- correct spacing in comments
+- tag_ksz.c: NETIF_F_HW_CSUM fix is integrated 
+- lan937x_dev.c: mdio_np is removed from global and handled locally
+- lan937x_dev.c: unused functions removed lan937x_cfg32 & lan937x_port_cfg32
+- lan937x_dev.c: lan937x_is_internal_100BTX_phy_port function name changes
+- lan937x_dev.c: RGMII internal delay handling for MAC. Delay values are
+  retrieved from DTS and updated
+- lan937x_dev.c: corrected mutex operations for few dev variables
+- microchip,lan937x.yaml: introduced rx-internal-delay-ps & 
+  tx-internal-delay-ps for RGMII internal delay
+- lan937x_dev.c: Unnecessary mutex_lock has been removed
+- lan937x_main.c: PHY_INTERFACE_MODE_NA handling for lan937x_phylink_validate
+- lan937x_main.c: PORT_MIRROR_SNIFFER check in right place
+- lan937x_main.c: memset is used instead of writing 0's individually in 
+  lan937x_port_fdb_add function
+- lan937x_main.c: Removed \n from NL_SET_ERR_MSG_MOD calls
+
+Changes in v3: 
+- Removed settings of cnt_ptr to zero and the memset() 
+  added a cleanup patch which moves this into ksz_init_mib_timer().
+- Used ret everywhere instead of rc
+- microchip,lan937x.yaml: Remove mdio compatible
+- microchip_t1.c: Renaming standard phy registers
+- tag_ksz.c: LAN937X_TAIL_TAG_OVERRIDE renaming 
+  LAN937X_TAIL_TAG_BLOCKING_OVERRIDE
+- tag_ksz.c: Changed Ingress and Egress naming convention based on 
+  Host
+- tag_ksz.c: converted to skb_mac_header(skb) from 
+  (is_link_local_ether_addr(hdr->h_dest))
+- lan937x_dev.c: Removed BCAST Storm protection settings since we
+  have Tc commands for them
+- lan937x_dev.c: Flow control setting in lan937x_port_setup function
+- lan937x_dev.c: RGMII internal delay added only for cpu port, 
+- lan937x_dev.c: of_get_compatible_child(node, 
+  "microchip,lan937x-mdio") to of_get_child_by_name(node, "mdio");
+- lan937x_dev.c:lan937x_get_interface API: returned 
+  PHY_INTERFACE_MODE_INTERNAL instead of PHY_INTERFACE_MODE_NA
+- lan937x_main.c: Removed compat interface implementation in 
+  lan937x_config_cpu_port() API & dev_info corrected as well
+- lan937x_main.c: deleted ds->configure_vlan_while_not_filtering 
+  = true
+- lan937x_main.c: Added explanation for lan937x_setup lines
+- lan937x_main.c: FR_MAX_SIZE correction in lan937x_get_max_mtu API 
+- lan937x_main.c: removed lan937x_port_bridge_flags dummy functions
+- lan937x_spi.c - mdiobus_unregister to be added to spi_remove 
+  function
+- lan937x_main.c: phy link layer changes  
+- lan937x_main.c: port mirroring: sniff port selection limiting to
+  one port
+- lan937x_main.c: Changed to global vlan filtering
+- lan937x_main.c: vlan_table array to structure
+- lan937x_main.c -Use extack instead of reporting errors to Console
+- lan937x_main.c - Remove cpu_port addition in vlan_add api
+- lan937x_main.c - removed pvid resetting
+
+Changes in v2:
+- return check for register read/writes
+- dt compatible compatible check is added against chip id value 
+- lan937x_internal_t1_tx_phy_write() is renamed to 
+  lan937x_internal_phy_write()
+- lan937x_is_internal_tx_phy_port is renamed to 
+  lan937x_is_internal_100BTX_phy_port as it is 100Base-Tx phy
+- Return value for lan937x_internal_phy_write() is -EOPNOTSUPP 
+  in case of failures 
+- Return value for lan937x_internal_phy_read() is 0xffff 
+  for non existent phy 
+- cpu_port checking is removed from lan937x_port_stp_state_set()
+- lan937x_phy_link_validate: 100baseT_Full to 100baseT1_Full
+- T1 Phy driver is moved to drivers/net/phy/microchip_t1.c 
+- Tx phy driver support will be added later 
+- Legacy switch checkings in dts file are removed.
+- tag_ksz.c: Re-used ksz9477_rcv for lan937x_rcv 
+- tag_ksz.c: Xmit() & rcv() Comments are corrected w.r.to host
+- net/dsa/Kconfig: Family skew numbers altered in ascending order
+- microchip,lan937x.yaml: eth is replaced with ethernet
+- microchip,lan937x.yaml: spi1 is replaced with spi 
+- microchip,lan937x.yaml: cpu labelling is removed 
+- microchip,lan937x.yaml: port@x value will match the reg value now
+
+Prasanna Vengateshan (10):
+  dt-bindings: net: dsa: dt bindings for microchip lan937x
+  net: dsa: move mib->cnt_ptr reset code to ksz_common.c
+  net: phy: Add support for LAN937x T1 phy driver
+  net: dsa: tag_ksz: add tag handling for Microchip LAN937x
+  net: dsa: microchip: add DSA support for microchip lan937x
+  net: dsa: microchip: add support for phylink management
+  net: dsa: microchip: add support for ethtool port counters
+  net: dsa: microchip: add support for port mirror operations
+  net: dsa: microchip: add support for fdb and mdb management
+  net: dsa: microchip: add support for vlan operations
+
+ .../bindings/net/dsa/microchip,lan937x.yaml   |  180 +++
+ MAINTAINERS                                   |    1 +
+ drivers/net/dsa/microchip/Kconfig             |   12 +
+ drivers/net/dsa/microchip/Makefile            |    5 +
+ drivers/net/dsa/microchip/ksz8795.c           |    2 -
+ drivers/net/dsa/microchip/ksz9477.c           |    3 -
+ drivers/net/dsa/microchip/ksz_common.c        |    8 +-
+ drivers/net/dsa/microchip/ksz_common.h        |    5 +
+ drivers/net/dsa/microchip/lan937x_dev.c       |  730 ++++++++++
+ drivers/net/dsa/microchip/lan937x_dev.h       |   80 ++
+ drivers/net/dsa/microchip/lan937x_main.c      | 1250 +++++++++++++++++
+ drivers/net/dsa/microchip/lan937x_reg.h       |  683 +++++++++
+ drivers/net/dsa/microchip/lan937x_spi.c       |  227 +++
+ drivers/net/phy/microchip_t1.c                |  350 +++--
+ include/net/dsa.h                             |    2 +
+ net/dsa/Kconfig                               |    4 +-
+ net/dsa/tag_ksz.c                             |   59 +
+ 17 files changed, 3513 insertions(+), 88 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+ create mode 100644 drivers/net/dsa/microchip/lan937x_dev.c
+ create mode 100644 drivers/net/dsa/microchip/lan937x_dev.h
+ create mode 100644 drivers/net/dsa/microchip/lan937x_main.c
+ create mode 100644 drivers/net/dsa/microchip/lan937x_reg.h
+ create mode 100644 drivers/net/dsa/microchip/lan937x_spi.c
+
+-- 
+2.27.0
+
