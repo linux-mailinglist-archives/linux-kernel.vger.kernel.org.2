@@ -2,49 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D45E43DF90
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC26C43DF94
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhJ1K6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:58:00 -0400
-Received: from forward500o.mail.yandex.net ([37.140.190.195]:32998 "EHLO
-        forward500o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230157AbhJ1K56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:57:58 -0400
-Received: from sas1-900f78e25d27.qloud-c.yandex.net (sas1-900f78e25d27.qloud-c.yandex.net [IPv6:2a02:6b8:c14:39a3:0:640:900f:78e2])
-        by forward500o.mail.yandex.net (Yandex) with ESMTP id 75611941A89;
-        Thu, 28 Oct 2021 13:55:27 +0300 (MSK)
-Received: from sas2-1cbd504aaa99.qloud-c.yandex.net (2a02:6b8:c14:7101:0:640:1cbd:504a [2a02:6b8:c14:7101:0:640:1cbd:504a])
-        by sas1-900f78e25d27.qloud-c.yandex.net (mxback/Yandex) with ESMTP id q8kJzHGsh3-tQEuCcFV;
-        Thu, 28 Oct 2021 13:55:27 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1635418527;
-        bh=udSJvaxIUlBbTSQoZiMCrwbkjTdE+UC73DQGiSmy6yc=;
-        h=In-Reply-To:Subject:To:From:References:Date:Message-ID:Cc;
-        b=THXEc31zi9wOb6+7NfBvXlkD2tPknlqjd7xgVKWeiVyTuX40gC8vCIxLBKmODIJA7
-         PberpMoWg0C/nwZXbhAKRvowUFdPAs5UKF5f8G6KpReOwoeiHEZeHeleXZSIi+Gfc5
-         q01QApuCzjGmmdQXl8MsBYgfz8Eg2DSJDMxQKT6g=
-Authentication-Results: sas1-900f78e25d27.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by sas2-1cbd504aaa99.qloud-c.yandex.net (smtp/Yandex) with ESMTPS id KNJkzVzdNo-tPJWa7sa;
-        Thu, 28 Oct 2021 13:55:26 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-Date:   Thu, 28 Oct 2021 13:55:23 +0300
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com,
-        tglx@linutronix.de, palmer@dabbelt.com, heiko@sntech.de,
-        robh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead, c900-plic
- request_threaded_irq with ONESHOT
-Message-ID: <20211028135523.5cf4b66b@redslave.neermore.group>
-In-Reply-To: <87a6ixbcse.wl-maz@kernel.org>
-References: <20211024013303.3499461-1-guoren@kernel.org>
-        <20211024013303.3499461-4-guoren@kernel.org>
-        <87a6ixbcse.wl-maz@kernel.org>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230169AbhJ1LAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230049AbhJ1LAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 07:00:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71D5D610F8;
+        Thu, 28 Oct 2021 10:58:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635418687;
+        bh=Gkr2M7tmNtttpnmRIuF7dQ106RqzchtOjG7lRkrUzbw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sh7DFrbTAMUW7cRKsSXrUpXu05gMw4SzitY5VmvMI67cJemTsugL2zzQullaVuih/
+         aHcXeI4Sq2M0qhye/vXevYvIekb07XcyNT9xMgQc72Jf4rkCyO3pNR2kCLaktFqyQi
+         z9cyNkhoaQ/yaF3jFaQMDctOk8b1/g04ZPEePKiR2sgNV3T/mz9jjFPBKgH/MjCw4B
+         bYf5HuuOdRiZtq7LnRzSWr7Ja0YCQ/GMkkTVV7SBqS3P9pNDLS9eWhHCTpHxIElbGw
+         Ksam/z0SoiMf0Wnd56CX7Lad9jeq2iW9aM6KKtWmA94EBOi1hyho88Gnzw7KQdWvIu
+         wqDpOt+OTdabQ==
+Date:   Thu, 28 Oct 2021 11:58:02 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nable <nable.maininbox@googlemail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>
+Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
+Message-ID: <20211028115802.49258990@sal.lan>
+In-Reply-To: <00dd9a0286e194696f6cc083a98de47d709b1d9e.camel@gmail.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+        <00dd9a0286e194696f6cc083a98de47d709b1d9e.camel@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -52,87 +48,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Marc and Guo Ren!
+Em Thu, 28 Oct 2021 13:32:29 +0900
+Tsuchiya Yuto <kitakar@gmail.com> escreveu:
 
-On Mon, 25 Oct 2021 11:48:33 +0100
-Marc Zyngier <maz@kernel.org> wrote:
-
-> On Sun, 24 Oct 2021 02:33:03 +0100,
-> guoren@kernel.org wrote:
+> <Fixed Cc list>
+> 
+> On Mon, 2021-10-18 at 01:19 +0900, Tsuchiya Yuto wrote:
+> > [...]
+> >   ## taking a picture with atomisp
 > > 
-> > From: Guo Ren <guoren@linux.alibaba.com>
+> > Note that to try to take a picture, please also apply at least the
+> > this RFC patch ("[BUG][RFC] media: atomisp: pci: assume run_mode is
+> > PREVIEW") I'll send as almost a BUG report later.
 > > 
-> > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the
-> > driver, only the first interrupt could be handled, and continue irq
-> > is blocked by hw. Because the thead,c900-plic couldn't complete
-> > masked irq source which has been disabled in enable register. Add
-> > thead_plic_chip which fix up c906-plic irq source completion
-> > problem by unmask/mask wrapper.
+> > You need to use firmware version irci_stable_candrpv_0415_20150521_0458,
+> > which is available from the intel-aero [1]  
+> 
+> Just in case, the hash (as well as version) of firmware which I
+> downloaded from intel-aero and I use to capture is the following:
+> 
+>         $ sha256sum /lib/firmware/shisp_2401a0_v21.bin
+>         e89359f4e4934c410c83d525e283f34c5fcce9cb5caa75ad8a32d66d3842d95c  /lib/firmware/shisp_2401a0_v21.bin
+> 
+>         $ strings /lib/firmware/shisp_2401a0_v21.bin | grep 2015
+>         irci_stable_candrpv_0415_20150521_0458
+> 
+> Regards,
+> Tsuchiya Yuto
+> 
+> > The atomisp (ipu2), like the ipu3, needs userspace support. The libcamera
+> > has now decent ipu3 support but does not have atomisp support yet.
 > > 
-> > Here is the description of Interrupt Completion in PLIC spec [1]:
+> > I found some userspace tools for atomisp that run on Linux:
 > > 
-> > The PLIC signals it has completed executing an interrupt handler by
-> > writing the interrupt ID it received from the claim to the
-> > claim/complete register. The PLIC does not check whether the
-> > completion ID is the same as the last claim ID for that target. If
-> > the completion ID does not match an interrupt source that is
-> > currently enabled for the target, the ^^ ^^^^^^^^^ ^^^^^^^
-> > completion is silently ignored.  
-> 
-> Given this bit of the spec...
-> 
-> > +static void plic_thead_irq_eoi(struct irq_data *d)
-> > +{
-> > +	struct plic_handler *handler =
-> > this_cpu_ptr(&plic_handlers); +
-> > +	if (irqd_irq_masked(d)) {
-> > +		plic_irq_unmask(d);
-> > +		writel(d->hwirq, handler->hart_base +
-> > CONTEXT_CLAIM);
-> > +		plic_irq_mask(d);
-> > +	} else {
-> > +		writel(d->hwirq, handler->hart_base +
-> > CONTEXT_CLAIM);
-> > +	}
-> > +}
-> > +  
-> 
-> ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
+> >   - capturev4l2 from intel-aero/sample-apps
+> >     (https://github.com/intel-aero/sample-apps/tree/master/capturev4l2)
+> >   - hd-camera from intel-aero/sample-apps
+> >     (https://github.com/intel-aero/sample-apps/tree/master/hd-camera)
+> >   - intel/nvt
+> >     (https://github.com/intel/nvt)
+> > 
+> > It looks like the nvt is the most feature-rich, like exposure and white
+> > balance. Note that current upstreamed atomisp dropped 32-bit support.
+> > So, you need to build it with `-m64` (change it in Makefile). Here is
+> > the example of usage I use on mipad2:
+> > 
+> >         $ ./v4l2n -o testimage_@.raw \
+> >                 --device /dev/video2 \
+> >                 --input 0 \
+> >                 --exposure=30000,30000,30000,30000 \
+> >                 --parm type=1,capturemode=CI_MODE_PREVIEW \
+> >                 --fmt type=1,width=1920,height=1080,pixelformat=NV12 \
+> >                 --reqbufs count=2,memory=USERPTR \
+> >                 --parameters=wb_config.r=32768,wb_config.gr=21043,wb_config.gb=21043,wb_config.b=30863 \
+> >                 --capture=2 \
+> > 
+> >         ./raw2pnm -x1920 -y1080 -fNV12 testimage_001.raw testimage_001.pnm
+> >         feh *.pnm # open the converted image
+> >         rm testimage*
 
-This indeed happens with SiFive PLIC. I am currently tinkering with
-da9063 RTC on SiFive Unmatched, and ALARM irq fires only once. However
-with changes proposed by Guo Ren in plic_thead_irq_eoi, everything
-begins to work fine.
+Great! that worked for me too on Asus T101HA (CHT). I had to tweak the
+resolution, as ov2680 sensor has a max of 1616x1216 30fps. I had
+to use a number smaller than that, though (1600x1200).
 
-May be these change should be propagated to plic_irq_eoi instead of
-making a new function ?
+I guess the next step is to make a generic app to also work on it. 
 
-> 
-> And it isn't only for threaded interrupts in oneshot mode. Any driver
-> can mask an interrupt from its handler after having set the
-> IRQ_DISABLE_UNLAZY flag, and the interrupt would need the exact same
-> treatment.
-> 
-> 	M.
-> 
+> > 
+> > Note that I see the following warn/err after capture:
+> > 
+> >         kern  :warn  : [72660.793335] atomisp-isp2 0000:00:03.0: stop stream timeout.
+> >         kern  :err   : [72660.973629] atomisp-isp2 0000:00:03.0: atomisp_reset
+> > 
+> > but I see the same message on the Android kernel, too. So, I think this
+> > is not a real issue (I hope).
 
----
-diff --git a/drivers/irqchip/irq-sifive-plic.c
-b/drivers/irqchip/irq-sifive-plic.c index cf74cfa82045..259065d271ef
-100644 --- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -163,7 +163,13 @@ static void plic_irq_eoi(struct irq_data *d)
- {
-        struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
- 
--       writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+       if (irqd_irq_masked(d)) {
-+               plic_irq_unmask(d);
-+               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+               plic_irq_mask(d);
-+       } else {
-+               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-+       }
- }
- 
- static struct irq_chip plic_chip = {
+Same here.
+
+> > 
+> > [1] https://github.com/intel-aero/meta-intel-aero-base/tree/master/recipes-kernel/linux/linux-yocto
+> >     filename shisp_2401a0_v21.bin  
+> 
+> 
