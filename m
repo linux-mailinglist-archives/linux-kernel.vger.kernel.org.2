@@ -2,177 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D10C43E973
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2709143E979
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhJ1UUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 16:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbhJ1UUM (ORCPT
+        id S231260AbhJ1UVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 16:21:06 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10849
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230424AbhJ1UVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:20:12 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4CDC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 13:17:45 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id d3so12236939wrh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 13:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrtc27.com; s=gmail.jrtc27.user;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QQHy5W4NO/yZkhM4CUJlGj83LWvnUyD366Fk7aGMOq0=;
-        b=foANG7O14U8sEI7ZM6z8LKCSBA21HEfZaM4bwrYibqI9I+7AD56u4y1BdbkLifkfVm
-         AtrE9CrJTCU7T7u4SCamS3G6CjOUp3rL8f0+28Dkc9RLyFf0l2vYnDOr9ygVQ7W/mPrj
-         2o7df8IPsKQ93pXnjmkq6AwYNd07iCu+J47pHl9u4Eu1X/2nB8cBwipHprKsa9rSAn1k
-         Bm8Kgr7VTpiTm6K2fVsmoqlcJ5P8f8oJl2IGsGtlif97mpifCBf0ivhNGe7qyLv7Qiz6
-         IW52nn/EIWvuVa+ztbwucd0BMpjBYLEWf+wPytCIr7ZTRHpEsHECm8xY9y9NxFEKuGIR
-         QrWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QQHy5W4NO/yZkhM4CUJlGj83LWvnUyD366Fk7aGMOq0=;
-        b=yoJF8RQ7PLxtH5nrlEIbK0cR1IpuFKypGJ3JaJgxCtjs0nIvgdaiiZq0x2AgUKoQgJ
-         rGHWj8R2KppuUFLSVyVn9plhIvXASW9HNSeYBfX/M7NBvRA+K8v3YE02M1kbPneWpWJ9
-         bEP9yHOeRr3Vfonr8y0kmYL+T46maAORbvSFeI17TY+xKMVn8Gcj0T1/uaEEEZ/jpjpi
-         cfJtBNGia8lmAwlNfShZD00M8Dz1kc5QzDb9R/m1AFPO8bydQ7O++UvH6A7Xreh4eLmL
-         w5Xr3i7ixMotioG1Zd22t1Q/36sfjgga2FtJYx9j1xGyOEUyj8aDDe4xixNwYuaP35kl
-         AmbA==
-X-Gm-Message-State: AOAM533pq8uhd6F7AYhjkQolINd6qt3go4YTzqpQFS4KgAIwcrysBCiC
-        pw/Ex0efDahEPVpKyyoOBMSgZw==
-X-Google-Smtp-Source: ABdhPJwQ1VglxMGcOdndU0OUSIqA7uD0zPYkNbvW3Po5Rb8V6zwfdp3UJXnb4kkrEEhK65pslhw79g==
-X-Received: by 2002:a5d:4f85:: with SMTP id d5mr8741341wru.247.1635452263729;
-        Thu, 28 Oct 2021 13:17:43 -0700 (PDT)
-Received: from Jessicas-MacBook-Pro.local (global-5-141.nat-2.net.cam.ac.uk. [131.111.5.141])
-        by smtp.gmail.com with ESMTPSA id t8sm3835979wrx.47.2021.10.28.13.17.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 28 Oct 2021 13:17:43 -0700 (PDT)
-Received: by Jessicas-MacBook-Pro.local (Postfix, from userid 501)
-        id D60A89279738; Thu, 28 Oct 2021 21:17:42 +0100 (BST)
-Date:   Thu, 28 Oct 2021 21:17:42 +0100
-From:   Jessica Clarke <jrtc27@jrtc27.com>
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     linux-kernel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        devicetree@vger.kernel.org, Greentime Hu <greentime.hu@sifive.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vincent Chen <vincent.chen@sifive.com>
-Subject: Re: [v4 06/11] dt-binding: pmu: Add RISC-V PMU DT bindings
-Message-ID: <YXsFZmRwpQAWhSw0@Jessicas-MacBook-Pro.local>
-References: <20211025195350.242914-1-atish.patra@wdc.com>
- <20211025195350.242914-7-atish.patra@wdc.com>
+        Thu, 28 Oct 2021 16:21:05 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AhsSUma94wQwPkLbhP1Vuk+GWdb1zdoMgy1kn?=
+ =?us-ascii?q?xilNoRw8SL37qymLppsmPHjP+X8ssRAb6Ka90cy7LE80mqQFmrX5A43SFDUO1F?=
+ =?us-ascii?q?HJEGmNhbGSsQEJNUXFh5pgPI1bAthD4OSZNykOsS4RiDPIZOrIueP3g5xA5t2x?=
+ =?us-ascii?q?854Od3AOV0g61XYJNu/zKCQfL2MrOXcgLuvn2iMEnUvFRZ05VLXxOpBvZZm+mz?=
+ =?us-ascii?q?SkruOEXfbGbyRXlzWmvHeE5LX7Gx/d5yxbdz9U278t/QH+4nXEz5Tmnv2xyhfa?=
+ =?us-ascii?q?k1bpq61fktnoxNcrPr3qtuElbhjhgQahY8BZYPm5uiwvqu3H0idNrDHzyS1QR/?=
+ =?us-ascii?q?ibk0mxQok7ySGdpTXIwXIi53TjwVjdiWL7usrnSD9SMbs9ub5k?=
+X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
+   d="scan'208";a="397681647"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 22:18:36 +0200
+Date:   Thu, 28 Oct 2021 22:18:35 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+cc:     Doug Smythies <dsmythies@telus.net>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: problem in changing from active to passive mode
+In-Reply-To: <CAJZ5v0j9fJi+Fa1404uH3V2XJUrVB5crEjcZ9tsnBtQWgCCu4w@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2110282217390.9518@hadrien>
+References: <alpine.DEB.2.22.394.2110241452460.2997@hadrien> <CAAYoRsXeQravNXKsWAZvacMmE_iBzaQ+mQxNbB5jcD_vkny+Sg@mail.gmail.com> <alpine.DEB.2.22.394.2110261658440.3825@hadrien> <CAAYoRsWXew+9Pch_9ux+UK0LFwy+211d2LmNLGKF_UTr3eS2Fw@mail.gmail.com>
+ <alpine.DEB.2.22.394.2110281908150.9518@hadrien> <CAJZ5v0ihVdrZ1ogEc34+QgZUJW5-=RzP34-U1_91VTcLhbc4Nw@mail.gmail.com> <CAJZ5v0ij105B05xPGgfauwFv1KhXRnwh5p28R1y11qKWjxUOhg@mail.gmail.com> <CAJZ5v0gAax-uz+shKv4MNBiSBPKGroQGNKdYyUK4v6sRS15o_w@mail.gmail.com>
+ <alpine.DEB.2.22.394.2110282112060.9518@hadrien> <CAJZ5v0jmQgg_DwqSdFsoMd5qV_ZH=cHUJtb372mqv=GSWioRgw@mail.gmail.com> <alpine.DEB.2.22.394.2110282124201.9518@hadrien> <CAJZ5v0j9fJi+Fa1404uH3V2XJUrVB5crEjcZ9tsnBtQWgCCu4w@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025195350.242914-7-atish.patra@wdc.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:53:45PM -0700, Atish Patra wrote:
-> This patch adds the DT bindings for RISC-V PMU driver. It also defines
-> the interrupt related properties to allow counter overflow interrupt.
-> 
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  .../devicetree/bindings/perf/riscv,pmu.yaml   | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/perf/riscv,pmu.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/perf/riscv,pmu.yaml b/Documentation/devicetree/bindings/perf/riscv,pmu.yaml
-> new file mode 100644
-> index 000000000000..497caad63f16
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/perf/riscv,pmu.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pmu/riscv,pmu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: RISC-V PMU
-> +
-> +maintainers:
-> +  - Atish Patra <atish.patra@wdc.com>
-> +
-> +description:
-> +  The "Sscofpmf" extension allows the RISC-V PMU counters to overflow and
-> +  generate a local interrupt so that event sampling can be done from user-space.
-> +  The above said ISA extension is an optional extension to maintain backward
-> +  compatibility and will be included in privilege specification v1.12 . That's
-> +  why the interrupt property is marked as optional. The platforms with sscofpmf
-> +  extension should add this property to enable event sampling.
-> +  The device tree node with the compatible string is mandatory for any platform
-> +  that wants to use pmu counter start/stop methods using SBI PMU extension.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - riscv,pmu
 
-This is conflating the Sscofpmf extension with the SBI PMU interface;
-the former is what the hardware supports, the latter is what the
-firmware exposes. The SBI interface exists today and does not require
-overflow interrupts to be supported, so there needs to be a distinction
-between that case and the case where Sscofpmf is supported in both
-hardware and the SBI implementation, which probably means having a
-second compatible string for that case that also includes the generic
-SBI PMU interface as a fallback compatible string.
 
-Secondly, I do not think this is the right name for this. The riscv,pmu
-compatible string (or anything of that nature) should be reserved for
-*hardware* that provides usable performance monitoring features to an
-OS. This is not that, this is the SBI interface that requires an OS to
-make firmware calls for any starting, stopping or configuring of a
-counter, which results in an even greater probe effect than is already
-present with frameworks like FreeBSD's HWPMC or Linux's perf (I don't
-know how the two compare on that front, but I imagine Linux is similar
-to FreeBSD). This should have SBI in the name so that it doesn't get in
-the way of real performance monitoring support once the architecture is
-finally mature enough to have S-mode-configurable counters and a
-standardised set of common events like pretty much every other
-architecture.
+On Thu, 28 Oct 2021, Rafael J. Wysocki wrote:
 
-Also I do not like the use of PMU, since that is Arm's terminology,
-whereas RISC-V uses HPM, but you've already defined the SBI interface as
-being PMU so I guess that ship has sailed.
+> On Thu, Oct 28, 2021 at 9:25 PM Julia Lawall <julia.lawall@inria.fr> wrote:
+> >
+> >
+> >
+> > On Thu, 28 Oct 2021, Rafael J. Wysocki wrote:
+> >
+> > > On Thu, Oct 28, 2021 at 9:13 PM Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On Thu, 28 Oct 2021, Rafael J. Wysocki wrote:
+> > > >
+> > > > > On Thu, Oct 28, 2021 at 7:57 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 28, 2021 at 7:29 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Thu, Oct 28, 2021 at 7:10 PM Julia Lawall <julia.lawall@inria.fr> wrote:
+> > > > > > > >
+> > > > > > > > > Now, for your graph 3, are you saying this pseudo
+> > > > > > > > > code of the process is repeatable?:
+> > > > > > > > >
+> > > > > > > > > Power up the system, booting kernel 5.9
+> > > > > > > > > switch to passive/schedutil.
+> > > > > > > > > wait X minutes for system to settle
+> > > > > > > > > do benchmark, result ~13 seconds
+> > > > > > > > > re-boot to kernel 5.15-RC
+> > > > > > > > > switch to passive/schedutil.
+> > > > > > > > > wait X minutes for system to settle
+> > > > > > > > > do benchmark, result ~40 seconds
+> > > > > > > > > re-boot to kernel 5.9
+> > > > > > > > > switch to passive/schedutil.
+> > > > > > > > > wait X minutes for system to settle
+> > > > > > > > > do benchmark, result ~28 seconds
+> > > > > > > >
+> > > > > > > > In the first boot of 5.9, the des (desired?) field of the HWP_REQUEST
+> > > > > > > > register is 0 and in the second boot (after booting 5.15 and entering
+> > > > > > > > passive mode) it is 10.  I don't know though if this is a bug or a
+> > > > > > > > feature...
+> > > > > > >
+> > > > > > > It looks like a bug.
+> > > > > > >
+> > > > > > > I think that the desired value is not cleared on driver exit which
+> > > > > > > should happen.  Let me see if I can do a quick patch for that.
+> > > > > >
+> > > > > > Please check the behavior with the attached patch applied.
+> > > > >
+> > > > > Well, actually, the previous one won't do anything, because the
+> > > > > desired perf field is already cleared in this function before writing
+> > > > > the MSR, so please try the one attached to this message instead.
+> > > > >
+> > > >
+> > > > Turbostat still shows 10:
+> > > >
+> > > > cpu0: MSR_HWP_CAPABILITIES: 0x070a1525 (high 37 guar 21 eff 10 low 7)
+> > > > cpu0: MSR_HWP_REQUEST: 0x000a2525 (min 37 max 37 des 10 epp 0x0 window 0x0 pkg 0x0)
+> > > > cpu0: MSR_HWP_REQUEST_PKG: 0x8000ff00 (min 0 max 255 des 0 epp 0x80 window 0x0)
+> > > > cpu0: MSR_HWP_STATUS: 0x00000004 (No-Guaranteed_Perf_Change, No-Excursion_Min)
+> > > > cpu1: MSR_PM_ENABLE: 0x00000001 (HWP)
+> > > > cpu1: MSR_HWP_CAPABILITIES: 0x070a1525 (high 37 guar 21 eff 10 low 7)
+> > > > cpu1: MSR_HWP_REQUEST: 0x000a2525 (min 37 max 37 des 10 epp 0x0 window 0x0 pkg 0x0)
+> > > > cpu1: MSR_HWP_REQUEST_PKG: 0x8000ff00 (min 0 max 255 des 0 epp 0x80 window 0x0)
+> > > > cpu1: MSR_HWP_STATUS: 0x00000004 (No-Guaranteed_Perf_Change, No-Excursion_Min)
+> > > > cpu2: MSR_PM_ENABLE: 0x00000001 (HWP)
+> > > > cpu2: MSR_HWP_CAPABILITIES: 0x070a1525 (high 37 guar 21 eff 10 low 7)
+> > > > cpu2: MSR_HWP_REQUEST: 0x000a2525 (min 37 max 37 des 10 epp 0x0 window 0x0 pkg 0x0)
+> > > > cpu2: MSR_HWP_REQUEST_PKG: 0x8000ff00 (min 0 max 255 des 0 epp 0x80 window 0x0)
+> > > > cpu2: MSR_HWP_STATUS: 0x00000004 (No-Guaranteed_Perf_Change, No-Excursion_Min)
+> > > > cpu3: MSR_PM_ENABLE: 0x00000001 (HWP)
+> > > > cpu3: MSR_HWP_CAPABILITIES: 0x070a1525 (high 37 guar 21 eff 10 low 7)
+> > > > cpu3: MSR_HWP_REQUEST: 0x000a2525 (min 37 max 37 des 10 epp 0x0 window 0x0 pkg 0x0)
+> > > > cpu3: MSR_HWP_REQUEST_PKG: 0x8000ff00 (min 0 max 255 des 0 epp 0x80 window 0x0)
+> > > > cpu3: MSR_HWP_STATUS: 0x00000004 (No-Guaranteed_Perf_Change, No-Excursion_Min)
+> > >
+> > > Hmmm.
+> > >
+> > > Is this also the case if you go from "passive" to "active" on 5.15-rc
+> > > w/ the patch applied?
+> >
+> > Sorry, I was wrong.  If I am in 5.15 and go from passive to active, the
+> > des field indeed returns to 0.  If I use kexec
+>
+> Well, this means that the cpufreq driver cleanup is not carried out in
+> the kexec path and the old desired value remains in the register.
+>
+> > to reboot from 5.15 passive into 5.9, then the des field remains 10.
+>
+> It looks like desired perf needs to be cleared explicitly in the active mode.
+>
+> Attached is a patch to do that, but please note that the 5.9 will need
+> to be patched too to address this issue.
 
-Jess
+I'm not completely clear on what the new patch is doing and how I should
+test it.  If I stay in 5.15, the original patch worked for clearing des
+when going from passive to active.
 
-> +
-> +    description:
-> +      Should be "riscv,pmu".
-> +
-> +  interrupts-extended:
-> +    minItems: 1
-> +    maxItems: 4095
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - None
-> +optional:
-> +  - compatible
-> +  - interrupts-extended
-> +
-> +examples:
-> +  - |
-> +    pmu {
-> +      compatible = "riscv,pmu";
-> +      interrupts-extended = <&cpu0intc 13>,
-> +                            <&cpu1intc 13>,
-> +                            <&cpu2intc 13>,
-> +                            <&cpu3intc 13>;
-> +    };
-> +...
-> -- 
-> 2.31.1
+julia
