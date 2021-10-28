@@ -2,162 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF62F43E990
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DAE43E995
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhJ1Uev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 16:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
+        id S231250AbhJ1UiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 16:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhJ1Uet (ORCPT
+        with ESMTP id S230323AbhJ1UiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:34:49 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D9AC061570;
-        Thu, 28 Oct 2021 13:32:22 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id o14so12259289wra.12;
-        Thu, 28 Oct 2021 13:32:22 -0700 (PDT)
+        Thu, 28 Oct 2021 16:38:05 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01A9C061570;
+        Thu, 28 Oct 2021 13:35:37 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id ay10so2036758qkb.12;
+        Thu, 28 Oct 2021 13:35:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:references:in-reply-to:content-transfer-encoding;
-        bh=Fj3d8L+Tu5plhp0oURJ8bfnGKwtrSzamN+RMCCiJX+E=;
-        b=lwMU2t2KYxi+doRDlM9Asav7Ntly0/MRqmO5gK8DX5l5bzNjzPUg47D33oywP2jMdp
-         RqifkhgcS8IqJDcFzKsKylYgXaE/o2P1wMQ6QjaDtncRycDEgDTQJeYLbvlsZOrv2F4Z
-         dQoUSLkEEiYL+yfSJ3iOD7uCCz/sPPgsuYpzXc62bxs/HFTxAlbR6FEurcX6sWQn2Qx6
-         MzSZ76sMdig8zy/xzocmuGotxPSBkD20+cnvQdXu34KzBz+fCYPs9VjrNp/y9U/15k3X
-         RemHC3ZK3Ipay9yFNS344Blrso7XPEowbIYogvBFJFiTgjKJksFSsKQKiqshsTcavHlX
-         zMKA==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RJ/TZBmAjtBZEQ7SF9pt737iGPmZZZE1EbwprVB6+B8=;
+        b=cuXtA5t15HjnPp7OPl35fJNotIP9gC4nBC9TPE9YctYbO5ObFZHbko0xoAiamkVypR
+         fb3HPJxSC26+7bEhYxyhm4pk5v9Wb/X3mMz46/h6lc7Q6l5Nq7vTunKQHC6FqQu1jhE0
+         jKkbX9xeWuS+72ePM+SNTfgCTMialYZ8nDqW5UgN3E5dHX6uQjvHvoPHGAQAnIsV2Q+Y
+         6gcXwignr0+ziJuuiyiSwJhrOoWheNNlCDpMvEj51dMoK8gjnJwBVPGJpefRMfwzLawW
+         IGdMQh+udMfdMxl1SJSSIiB6gltmAd46fNUTwxeichW9LFCCoXGevcfXtZFVNwr3Nl7V
+         H55Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=Fj3d8L+Tu5plhp0oURJ8bfnGKwtrSzamN+RMCCiJX+E=;
-        b=osLDnanwHoXcNBoLcUH9x55bEgKbKimIwh2yaYcofZCZhvh6Eiu9bZK2JtBrUwhhG5
-         ekfKwP7/Py0GF8w90+neFlsHvZTkh0s6XeQKL4H6xPz4R0ewzsVO8aauJ3O2xhTISPHj
-         sH6WqQQilgpefrnfW214pFKScJq5VkxmO7daBgKq6tLkKK2P3kvsAf7Onk2vCXiHG2ts
-         OupcfrBqkcVHlNYvNJix5DHLzwhTe9jNT/DOmvayxvWs+0y2iBVz4PxUGrxv0NSLGr1i
-         6lrpEHZVfbsk8OHsvHRp6xagCZOUAqkfMBoiDzdXCHMT9RJ2W7NIEK+gsKy1U+bXS170
-         9P6A==
-X-Gm-Message-State: AOAM530ttdJXEP2KXrvHU816ohA2c4KdUa4DvIST+mLRKPYtiTUHKRPM
-        eGKC3zAKHSA+WXPj8UsCVl6bU6qNKu0=
-X-Google-Smtp-Source: ABdhPJxXHSJBH1d+T2z6uFyQ4LXTPpMxyVe5FiGcWl0Q3z34KN2uC5v4LkbP0lNZzUaJYR8U/i91Zw==
-X-Received: by 2002:a05:6000:2a3:: with SMTP id l3mr8520088wry.12.1635453140975;
-        Thu, 28 Oct 2021 13:32:20 -0700 (PDT)
-Received: from [192.168.8.198] ([148.252.129.16])
-        by smtp.gmail.com with ESMTPSA id y8sm4063049wrq.77.2021.10.28.13.32.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 13:32:20 -0700 (PDT)
-Message-ID: <2b0d6d98-b6f6-e1b1-1ea8-3126f41ec0ce@gmail.com>
-Date:   Thu, 28 Oct 2021 21:32:23 +0100
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=RJ/TZBmAjtBZEQ7SF9pt737iGPmZZZE1EbwprVB6+B8=;
+        b=f5IPjMXUd8tPkhtN+tAPdCs06LIAbjN24w8H2Hom2f2s5jkneUkozRQ21/00Jk+Qc3
+         7b81AD910t4d+PzFH6w3BZ3zwR6LbKTqcfj99zp7zWCgOBmNkNjDf10LYMTKtpkwNdRZ
+         udmyJOcwjfvVLWLzxgptJiDTnBZRlXif18HTk3Kmf9e8MjgvQzhiAeH3F7zNwys9bJED
+         x4UmGZIlMqzHvenIV47VG/LkNi9xuIBYDC8D17j9gM/jb1NDuisHDGAENsx6TgVgFRQR
+         VhZDolVYxj7uAohg3nGSdQeFqfhDX0q/661hFM0u4HaruvUd6Oitm+PPUQQZiNsjviJM
+         Hjwg==
+X-Gm-Message-State: AOAM533MfiHj2McP+XEHhkHjuqFJsb5r7Bwu69Zw0pg73UGaoNFw8TBQ
+        LD7Vl9IOZcZeuyUkUJQjFR0=
+X-Google-Smtp-Source: ABdhPJxTlzO10r5Nzl9pSYnQeYSG2R240FixGykJH96yXDFciOwLRHsZhD7PRGO41qpFtjBEeih1YQ==
+X-Received: by 2002:a05:620a:d85:: with SMTP id q5mr5502693qkl.64.1635453336806;
+        Thu, 28 Oct 2021 13:35:36 -0700 (PDT)
+Received: from localhost.localdomain ([67.8.38.84])
+        by smtp.gmail.com with ESMTPSA id 9sm2593575qkn.84.2021.10.28.13.35.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 13:35:36 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        rdunlap@infradead.org, daejun7.park@samsung.com
+Cc:     fazilyildiran@gmail.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: ufs: fix unmet dependency on RESET_CONTROLLER for RESET_TI_SYSCON
+Date:   Thu, 28 Oct 2021 16:35:35 -0400
+Message-Id: <20211028203535.7771-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] INFO: task hung in io_wqe_worker
-Content-Language: en-US
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     syzbot <syzbot+27d62ee6f256b186883e@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000000012fb05cee99477@google.com>
- <85f96aab-4127-f494-9718-d7bfc035db54@gmail.com>
- <27280d59-88ff-7eeb-1e43-eb9bd23df761@gmail.com>
-In-Reply-To: <27280d59-88ff-7eeb-1e43-eb9bd23df761@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/21 14:57, Pavel Begunkov wrote:
-> On 10/22/21 14:49, Pavel Begunkov wrote:
->> On 10/22/21 05:38, syzbot wrote:
->>> Hello,
->>>
->>> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
->>> INFO: task hung in io_wqe_worker
->>>
->>> INFO: task iou-wrk-9392:9401 blocked for more than 143 seconds.
->>>        Not tainted 5.15.0-rc2-syzkaller #0
->>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->>> task:iou-wrk-9392    state:D stack:27952 pid: 9401 ppid:  7038 flags:0x00004004
->>> Call Trace:
->>>   context_switch kernel/sched/core.c:4940 [inline]
->>>   __schedule+0xb44/0x5960 kernel/sched/core.c:6287
->>>   schedule+0xd3/0x270 kernel/sched/core.c:6366
->>>   schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
->>>   do_wait_for_common kernel/sched/completion.c:85 [inline]
->>>   __wait_for_common kernel/sched/completion.c:106 [inline]
->>>   wait_for_common kernel/sched/completion.c:117 [inline]
->>>   wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
->>>   io_worker_exit fs/io-wq.c:183 [inline]
->>>   io_wqe_worker+0x66d/0xc40 fs/io-wq.c:597
->>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+When RESET_TI_SYSCON is selected, and RESET_CONTROLLER
+is not selected, Kbuild gives the following warning:
 
-#syz test: https://github.com/isilence/linux.git syz_coredump
+WARNING: unmet direct dependencies detected for RESET_TI_SYSCON
+  Depends on [n]: RESET_CONTROLLER [=n] && HAS_IOMEM [=y]
+  Selected by [y]:
+  - SCSI_UFS_MEDIATEK [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && SCSI_UFSHCD_PLATFORM [=y] && ARCH_MEDIATEK [=y]
 
+This is because RESET_TI_SYSCON is selected by
+SCSI_UFS_MEDIATEK, but SCSI_UFS_MEDIATEK does
+not select or depend on RESET_CONTROLLER, despite
+RESET_TI_SYSCON depending on RESET_CONTROLLER.
 
+These unmet dependency bugs were detected by Kismet,
+a static analysis tool for Kconfig. Please advise if this
+is not the appropriate solution.
 
->>
->> Easily reproducible, it's stuck in
->>
->> static void io_worker_exit(struct io_worker *worker)
->> {
->>      ...
->>      wait_for_completion(&worker->ref_done);
->>      ...
->> }
->>
->> The reference belongs to a create_worker_cb() task_work item. It's expected
->> to either be executed or cancelled by io_wq_exit_workers(), but the owner
->> task never goes __io_uring_cancel (called in do_exit()) and so never
->> reaches io_wq_exit_workers().
->>
->> Following the owner task, cat /proc/<pid>/stack:
->>
->> [<0>] do_coredump+0x1d0/0x10e0
->> [<0>] get_signal+0x4a3/0x960
->> [<0>] arch_do_signal_or_restart+0xc3/0x6d0
->> [<0>] exit_to_user_mode_prepare+0x10e/0x190
->> [<0>] irqentry_exit_to_user_mode+0x9/0x20
->> [<0>] irqentry_exit+0x36/0x40
->> [<0>] exc_page_fault+0x95/0x190
->> [<0>] asm_exc_page_fault+0x1e/0x30
->>
->> (gdb) l *(do_coredump+0x1d0-5)
->> 0xffffffff81343ccb is in do_coredump (fs/coredump.c:469).
->> 464
->> 465             if (core_waiters > 0) {
->> 466                     struct core_thread *ptr;
->> 467
->> 468                     freezer_do_not_count();
->> 469                     wait_for_completion(&core_state->startup);
->> 470                     freezer_count();
->>
->> Can't say anything more at the moment as not familiar with coredump
-> 
-> A simple hack allowing task works to be executed from there
-> workarounds the problem
-> 
-> 
-> diff --git a/fs/coredump.c b/fs/coredump.c
-> index 3224dee44d30..f6f9dfb02296 100644
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -466,7 +466,8 @@ static int coredump_wait(int exit_code, struct core_state *core_state)
->           struct core_thread *ptr;
-> 
->           freezer_do_not_count();
-> -        wait_for_completion(&core_state->startup);
-> +        while (wait_for_completion_interruptible(&core_state->startup))
-> +            tracehook_notify_signal();
->           freezer_count();
->           /*
->            * Wait for all the threads to become inactive, so that
-> 
-> 
-> 
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ drivers/scsi/ufs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
+index b2521b830be7..0427f8277a5d 100644
+--- a/drivers/scsi/ufs/Kconfig
++++ b/drivers/scsi/ufs/Kconfig
+@@ -115,6 +115,7 @@ config SCSI_UFS_MEDIATEK
+ 	tristate "Mediatek specific hooks to UFS controller platform driver"
+ 	depends on SCSI_UFSHCD_PLATFORM && ARCH_MEDIATEK
+ 	select PHY_MTK_UFS
++  select RESET_CONTROLLER
+ 	select RESET_TI_SYSCON
+ 	help
+ 	  This selects the Mediatek specific additions to UFSHCD platform driver.
 -- 
-Pavel Begunkov
+2.30.2
+
