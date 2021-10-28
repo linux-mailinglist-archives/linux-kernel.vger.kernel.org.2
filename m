@@ -2,73 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F7F43DF31
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FEC43DF78
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhJ1Kvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:51:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:53354 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229835AbhJ1Kvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:51:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 273AF1FB;
-        Thu, 28 Oct 2021 03:49:05 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CFBD3F5A1;
-        Thu, 28 Oct 2021 03:49:04 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, peterz@infradead.org,
-        namit@vmware.com, mingo@kernel.org, dave.hansen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: Re: [PATCH v3] cpumask: Fix implicit type conversion
-In-Reply-To: <1635404811-2992370-1-git-send-email-jiasheng@iscas.ac.cn>
-References: <1635404811-2992370-1-git-send-email-jiasheng@iscas.ac.cn>
-Date:   Thu, 28 Oct 2021 11:48:56 +0100
-Message-ID: <871r45whk7.mognet@arm.com>
+        id S230237AbhJ1Kyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhJ1Kyu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 06:54:50 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AD4C061233
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:52:22 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id z20so23224445edc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
+        b=MqgQiMnth4O6zLvpsYbAhVLW1BorpgoCleWwfkY0/i+i6OSDuXRZO1jIKzpTTrmehO
+         XtsLWdXiTcL+XCe4naFtf2tTUJnbwwmDpuUkpvRhLd+LEnuxY7nNr11hmTRUVX1WOHsO
+         bN0u1arCg4gm9LHdXRMZFcXOD22U5gDGuBOuhPo6qvWbt6nA2j/p/5IZ88XFHrEsiSW3
+         12hentYJMlWeUfa2lUQkLm+5/fvMSizrI7wGoF2taOa3dgGUV5HKZWb0yAAH7nAXVevJ
+         tDC/xbHNLzSn310XeD3Gkoobjl6MPBQzT5DSLzerNBdTKOdmyp3xvfvOyo80qVUTZIED
+         gaRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
+        b=nsM0kPtu7moF9YjZiUCZhswEKmJpwJn3VMLs9xX8PJOAiDz1XIHwVNmK749xSuSf5H
+         MZHqOu2YSLLCCCee0ETQKUnBjQu3ISZW8Wrll4ExKNZoxcnHAEl+9fIitWcx+6ZhB/5b
+         R7EEyEzl13F3yhU9mUuWt0HtGoprggmX+lkNUE5F3Q5vYcCsGIsfA50a9ThujINU+rY6
+         h1HsRYevxlq7wfu984vNe0nOJZo2Em+OaJqyB1fHlSGuN11bTacYvg3ZYTlGKXiI7ef+
+         c5w7aht3+55AodU42lPMpRgManO1V+c8PVzAv1L7UUGTvkjWFnfkkBO6esCbn6npZJFf
+         2Jhw==
+X-Gm-Message-State: AOAM533bwnCypXK4vHVBTh+D2sRbxUk+4J+AgWAu5cbuOTt5G1MmxIwS
+        7stuMT/TsgAhCP3HORW7kAM/ddymtXFseoJhva8+/R7Sa6lK4YLL
+X-Google-Smtp-Source: ABdhPJw39EF9dJlXS9lAFrZ3adXxB8DVzXcygVzA3uRLiZxWlggxaB9ElCxkEB0P82xisoA6G442GD5iqMe2hCgLIt8=
+X-Received: by 2002:a2e:9a83:: with SMTP id p3mr3750290lji.145.1635418330269;
+ Thu, 28 Oct 2021 03:52:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:ab3:6f89:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 03:52:09
+ -0700 (PDT)
+Reply-To: aabdulwalialhashmi@gmail.com
+From:   Abdulwali Alhashmi <husamalsayed.hs@gmail.com>
+Date:   Thu, 28 Oct 2021 03:52:09 -0700
+Message-ID: <CAF6yYCeS=rm8=_71-kMjVo4oaVK57w9X52R_yv1HDrBe7vh-sA@mail.gmail.com>
+Subject: PLEASE GET BACK TO ME IF I CAN I TRUST YOU
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/21 07:06, Jiasheng Jiang wrote:
-> The description of the macro in `include/linux/cpumask.h` says the
-> variable 'cpu' can be int, whose value ranges from (-2^31) to
-> (2^31 - 1).
-> However in the for_each_cpu(), 'nr_cpu_ids' and the return value of
-> cpumask_next() is unsigned int, whose value ranges from 0 to
-> (2^32 - 1).
-> If return value of cpumask_next() is (2^31), the restrict
-> 'cpu < nr_cpu_ids' can also be statisfied, but the actual value
-> of 'cpu' is (-2^31).
-> Take amd_pmu_cpu_starting() in `arch/x86/events/amd/core.c` as an
-> example. When value of 'cpu' is (-2^31), then in the per_cpu(),
-> there will apear __per_cpu_offset[-2^31], which is array out of
-> bounds error.
-> Moreover, the num of cpu to be the negative doesn't make sense and
-> may easily causes trouble.
-> It is universally accepted that the implicit type conversion is
-> terrible.
-> Also, having the good programming custom will set an example for
-> others.
-> Thus, it might be better to fix the macro description of 'cpu' and
-> deal with all the existing issues.
->
+-- 
+Greetings,
 
-AFAIA the upper bounds for NR_CPUS are around 2^12 (arm64) and 2^13 (x86);
-I don't think we're anywhere near supporting such massive systems.
+Firstly, I apologize for encroaching into your privacy in this manner
+as it may seem unethical though it is a matter of great importance.
 
-I got curious and had a look at the size of .data..percpu on a defconfig
-arm64 kernel - I get about ~40KB. So purely on the percpu data side of
-things, we're talking about 100TB of RAM...
+I am Abdulwali Alhashmi, I work with Cayman National Bank (Cayman Islands).
 
-Trying to improve the code is laudable, but I don't see much incentive in
-the churn ATM.
+I am contacting you because my status would not permit me to do this
+alone as it is concerning our customer and an investment placed under
+our bank's management over 5 years ago.
 
-> Fixes: c743f0a ("sched/fair, cpumask: Export for_each_cpu_wrap()")
-> Fixes: 8bd93a2 ("rcu: Accelerate grace period if last non-dynticked CPU")
-> Fixes: 984f2f3 ("cpumask: introduce new API, without changing anything, v3")
+I have a proposal I would love to discuss with you which will be very
+beneficial to both of us. It's regarding my late client who has a huge
+deposit with my bank.
 
-Where's the v1->v2->v3 changelog? This is merely fiddling with doc headers,
-what's being fixed here?
+He is from your country and shares the same last name with you.
+
+I want to seek your consent to present you as the next of kin to my
+late client who died and left a huge deposit with my bank.
+
+I would respectfully request that you keep the contents of this mail
+confidential and respect the integrity of the information you come by
+as a result of this mail.
+
+Please kindly get back to me for more details if I can TRUST YOU.{
+aabdulwalialhashmi@gmail.com }
+
+Regards
+Abdulwali Alhashmi
+Treasury and Deposit Management,
+Cayman National Bank Cayman Islands
