@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF42A43E353
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8640143E345
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhJ1OUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhJ1OUi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:20:38 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBCCC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:18:11 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id k29so4113707qve.6
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=nMYUF74sjEpWHuRRud5MO5ghjCJajD1UAWLtkFjebQ8=;
-        b=AcFOcYEDEke9Cr2Fcbyz6T2cnXP+xdgvJ8vghHGrZbzEU3F07oJ/V14ct6GmQNYz3s
-         6cyUL7cLYDNHnbdk6roOf1RTDn3xyb7P8OS91ur27mmleQQYQptZ+s5WCpDAgH/g0FJ9
-         AYqCyCy9d13ljbw1IxaRE/3E86w9sCVNSvtC9o/wsXM5HDbSqPWiD7tPMx3Yyq8NwpNy
-         Kvm+b7a/94i519ok4wznMccqQOiwdEwi06gJEU84vJRNHbV6k9EOy3H/jscwydkkuJqC
-         qmkhJitRJck0Ztji1DbeBKGPEeu1d6Sr7J9jX2gx5krNOBfdiPtsisZa6AbWjnBA8Lue
-         H6Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=nMYUF74sjEpWHuRRud5MO5ghjCJajD1UAWLtkFjebQ8=;
-        b=h2iobEoKGWlZ1BgagpQzPvtSrCeaJ7+Yp07gmHIuBO2GMVYsdyfcW6nC44yAP0zK87
-         b7YKI5JjrpDkCpqj/f7H0IuXVJkI6XHtmvOiU8CZjeyL51dWMQ+884ga+aqMQ6nhgwYC
-         lYfESyTyT6xnyWp8FTtFM1qvkCGgBUcwGrv/mCTiWIxY+8wiFke69rd4ppIDG3fQKVql
-         oRDMKld+yj73chGLJV/e9kdB6bvyxfTVfzLQgc0GWPs7DcAf1ET4M3/NfFnXqLX593ge
-         4GegG59pX4Mdeb6sBgbZF2xP8ViG1TmydHLxGIoYJvYZjFEgKCFwyMdTKN+2FZB+omuR
-         NufQ==
-X-Gm-Message-State: AOAM531P/xrQl+YcCzxoUYYIM69vMcxjzLk4q69/7fxbHKVOMVjAndWq
-        9k1BMwFTiekUKEYbG7JDrD0+nA==
-X-Google-Smtp-Source: ABdhPJx6zHTHcttN+FeVTgYVhZ3L9lDybi5HnFGUMp6gMgU8UhioTK5yvPn19Ra2Kzh8chqzs12gXA==
-X-Received: by 2002:a0c:b412:: with SMTP id u18mr4729682qve.14.1635430690565;
-        Thu, 28 Oct 2021 07:18:10 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id v15sm1406288qtx.54.2021.10.28.07.18.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:18:10 -0700 (PDT)
-Message-ID: <34a3f0e40c5248472d072d2a06cc4370e08ea9ff.camel@ndufresne.ca>
-Subject: Re: [PATCH 1/3] media: mtk-vcodec: enc: add vp8 profile ctrl
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-media@vger.kernel.org
-Cc:     kernel@collabora.com, acourbot@chromium.org,
-        andrew-ct.chen@mediatek.com, courbot@chromium.org,
-        dafna3@gmail.com, eizan@chromium.org, houlong.wei@mediatek.com,
-        hsinyi@chromium.org, hverkuil@xs4all.nl, irui.wang@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        maoguang.meng@mediatek.com, matthias.bgg@gmail.com,
-        mchehab@kernel.org, minghsiu.tsai@mediatek.com, tfiga@chromium.org,
-        tiffany.lin@mediatek.com
-Date:   Thu, 28 Oct 2021 10:18:08 -0400
-In-Reply-To: <20211022150410.29335-2-dafna.hirschfeld@collabora.com>
-References: <20211022150410.29335-1-dafna.hirschfeld@collabora.com>
-         <20211022150410.29335-2-dafna.hirschfeld@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S231140AbhJ1ORY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:17:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230258AbhJ1ORX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:17:23 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E948160238;
+        Thu, 28 Oct 2021 14:14:54 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 15:19:21 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <alexandre.torgue@foss.st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH] iio: adc: stm32: fix a leak by resetting pcsel before
+ disabling vdda
+Message-ID: <20211028151921.761c1413@jic23-huawei>
+In-Reply-To: <76ac386a-a748-f044-13c5-46b164738338@foss.st.com>
+References: <1634905169-23762-1-git-send-email-fabrice.gasnier@foss.st.com>
+        <77f3593a-0e94-f5ab-f102-86ba8d0f1a3b@foss.st.com>
+        <20211024170749.44c0d81f@jic23-huawei>
+        <76ac386a-a748-f044-13c5-46b164738338@foss.st.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 22 octobre 2021 à 17:04 +0200, Dafna Hirschfeld a écrit :
-> In order for the encoder to work with gstreamer
-> it needs to have the V4L2_CID_MPEG_VIDEO_VP8_PROFILE
-> ctrl. This patch adds that ctrl with only profile 0
-> supported.
+On Mon, 25 Oct 2021 09:43:10 +0200
+Fabrice Gasnier <fabrice.gasnier@foss.st.com> wrote:
+
+> On 10/24/21 6:07 PM, Jonathan Cameron wrote:
+> > On Fri, 22 Oct 2021 14:38:52 +0200
+> > Olivier MOYSAN <olivier.moysan@foss.st.com> wrote:
+> > 
+> > I'll probably reword the description here as 'leak' tends to mean memory
+> > leak rather than current.  
 > 
-> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-
-I confirm starting from GStreamer 1.18 profile (and level for other codecs) are
-needed. This is to allow proper fallback to other decoders (including software)
-when the HW is not capable.
-
-Acked-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-
-> ---
->  drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> Hi Jonathan,
 > 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-> index 8998244ea671..87a5114bf680 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
-> @@ -103,6 +103,13 @@ static int vidioc_venc_s_ctrl(struct v4l2_ctrl *ctrl)
->  		p->gop_size = ctrl->val;
->  		ctx->param_change |= MTK_ENCODE_PARAM_GOP_SIZE;
->  		break;
-> +	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
-> +		/*
-> +		 * FIXME - what vp8 profiles are actually supported?
-> +		 * The ctrl is added (with only profile 0 supported) for now.
-> +		 */
-> +		mtk_v4l2_debug(2, "V4L2_CID_MPEG_VIDEO_VP8_PROFILE val = %d", ctrl->val);
-> +		break;
->  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
->  		mtk_v4l2_debug(2, "V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME");
->  		p->force_intra = 1;
-> @@ -1394,6 +1401,9 @@ int mtk_vcodec_enc_ctrls_setup(struct mtk_vcodec_ctx *ctx)
->  	v4l2_ctrl_new_std_menu(handler, ops, V4L2_CID_MPEG_VIDEO_H264_LEVEL,
->  			       h264_max_level,
->  			       0, V4L2_MPEG_VIDEO_H264_LEVEL_4_0);
-> +	v4l2_ctrl_new_std_menu(handler, ops, V4L2_CID_MPEG_VIDEO_VP8_PROFILE,
-> +			       V4L2_MPEG_VIDEO_VP8_PROFILE_0, 0, V4L2_MPEG_VIDEO_VP8_PROFILE_0);
-> +
->  
->  	if (handler->error) {
->  		mtk_v4l2_err("Init control handler fail %d",
+> Yes, please fell free to improve this. I had the same concern, but I
+> haven't found a more suitable description.
 
+Added the word current to the title which I think makes it clear.
+> 
+> >   
+> >> Hi Fabrice,
+> >>
+> >> On 10/22/21 2:19 PM, Fabrice Gasnier wrote:  
+> >>> Some I/Os are connected to ADC input channels, when the corresponding bit
+> >>> in PCSEL register are set on STM32H7 and STM32MP15. This is done in the
+> >>> prepare routine of stm32-adc driver.
+> >>> There are constraints here, as PCSEL shouldn't be set when VDDA supply
+> >>> is disabled. Enabling/disabling of VDDA supply in done via stm32-adc-core
+> >>> runtime PM routines (before/after ADC is enabled/disabled).
+> >>>
+> >>> Currently, PCSEL remains set when disabling ADC. Later on, PM runtime
+> >>> can disable the VDDA supply. This creates some conditions on I/Os that
+> >>> can start to leak current.
+> >>> So PCSEL needs to be cleared when disabling the ADC.
+> >>>
+> >>> Fixes: 95e339b6e85d ("iio: adc: stm32: add support for STM32H7")
+> >>>  
+> > 
+> > No line break here as Fixes forms part of the tag block.
+> >   
+> 
+> Sorry, will check this next time.
+> 
+> >>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>  
+> > 
+> > Given timing wrt to being too near merge window, I'll let this it on
+> > list a while longer as it'll be post rc1 material now anyway.
+> > 
+> > I can fix the above whilst applying if nothing else comes up.  
+> 
+> That's fine for me.
+
+Applied to the fixes-togreg branch of iio.git, targeting a pull request
+some time shortly after rc1.
+
+Thanks,
+
+Jonathan
+
+> 
+> Many thanks,
+> Fabrice
+> > 
+> > Jonathan
+> >   
+> >>> ---
+> >>>   drivers/iio/adc/stm32-adc.c | 1 +
+> >>>   1 file changed, 1 insertion(+)
+> >>>
+> >>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> >>> index 5088de8..e3e7541 100644
+> >>> --- a/drivers/iio/adc/stm32-adc.c
+> >>> +++ b/drivers/iio/adc/stm32-adc.c
+> >>> @@ -975,6 +975,7 @@ static void stm32h7_adc_unprepare(struct iio_dev *indio_dev)
+> >>>   {
+> >>>   	struct stm32_adc *adc = iio_priv(indio_dev);
+> >>>   
+> >>> +	stm32_adc_writel(adc, STM32H7_ADC_PCSEL, 0);
+> >>>   	stm32h7_adc_disable(indio_dev);
+> >>>   	stm32h7_adc_enter_pwr_down(adc);
+> >>>   }
+> >>>     
+> >>
+> >> Reviewed-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> >>
+> >> Thanks
+> >> Olivier  
+> >   
 
