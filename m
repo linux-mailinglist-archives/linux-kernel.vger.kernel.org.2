@@ -2,152 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66D943E49F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1906C43E4A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhJ1PMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        id S231401AbhJ1PMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhJ1PMM (ORCPT
+        with ESMTP id S230258AbhJ1PMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:12:12 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655D8C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:09:45 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id r28so6741939pga.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:09:45 -0700 (PDT)
+        Thu, 28 Oct 2021 11:12:15 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F638C061570;
+        Thu, 28 Oct 2021 08:09:48 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id y207so8669878oia.11;
+        Thu, 28 Oct 2021 08:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N7Lz9MlAMZ2EGF4S5jNyBSYl14bB0H20CJuEnD/geJQ=;
-        b=2uuYfs53wDiP8SOJND/mT1QmnMTq1Kvus1r7zENS40yq0e8Rq2cQndpVU5VWhK3o+m
-         6JmwQXM0xnR46VZ/3ftL32FoXfce6Hi6jt7T210datbosHDW8dndLg3dBvzBb32YSyqi
-         EgjgLHDrAJcCqauSzjfeAy9llX6NfTFNUwMDSWwPPQW7jr00B59kg5mfx28kAFn2nGuV
-         5i0ERVPQUlmWBxEWUnU3dseyi+V70LdAYXPGFaEfNET+d7b3OyJsww9BdxwqlD7qNlne
-         uPVeahnkmGPqF2Cso2ALiepQBsSLd78TXqmrBY9NIhrazNWpzz+EFSMVk3jRid1Gn7pf
-         YBTg==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=aADjUL3aoYVuhKrrOmc9kzerdnVVqgXoXwAZgyL/N/U=;
+        b=XhbAQtELL3EMSWLYvjyRKjO2fpf7UQsdykJZwmwrectdPQoafcCTXv7f2Tv3Kj1TpH
+         NbPhrBiBvkL+pjmZty2UnaWe+uc+j7oXqnV9SkhO0IEQLuPCGYhA3oua7lXP64wlelgu
+         4RZlopnYPUB/nOGOfC8f9WFATE4fbybuNaZTARKRYwfjeqFgmeZvkUmkWZeruAsge3dD
+         nTiQf2uc0Ywu0d32ZIva1O25nq5SlipgSsk+eM9Aatu3fKSC87lyibiZgfUpjknbnLC+
+         9ra3/2q75DAO20i/xQkAbWLnChpkE794s86Z1qwKYP4sDvL8ejDZIjMpkltf5ojxw0Ti
+         6mjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=N7Lz9MlAMZ2EGF4S5jNyBSYl14bB0H20CJuEnD/geJQ=;
-        b=MA10VxfRpzvaBLe1s+AyNUxWNH3OmsSwp40LS5Ep5JRK+gB8gNmu1sHWxPamMonpMw
-         ta8U/WdeCOCaq1BIz21bcJ46YIsN0AJ4qDnsKXTRJ83PA07V4KePeqJlrNkYxvtdDS/T
-         5Eoh3WyHhDyz826aUX3uLnQIU8X4FH9ZV24+BvXAyFHYz+Coa7VhV4kJjd2kiA5CetK8
-         eGva6ke69f45ZDw2+XKRxdeDJi+p+YxRoRJGGf+1BrjkMlbo9nItaogSvKnA2jYwQRIX
-         ehU2niO/evAVEIj70VYuUslIEYT+2+evp3WSJleozBIdJTGc1HWYwTjpAkG+j22IDMWL
-         SJbA==
-X-Gm-Message-State: AOAM531aHNhrWDJEqHD5j3i5zKuC4yvSNObWe0LWWc9cjY4plGd7SA52
-        v4x0SYMB7l81htz8d64HM9Gw9w==
-X-Google-Smtp-Source: ABdhPJwRRDZyKhXpNUtdLZyEV4kcEI+U8JXXFrleCFGmkM6ObKtrEsBtJfXxxHCTLi6yvm+nwByeJg==
-X-Received: by 2002:a05:6a00:158d:b0:47c:2341:264f with SMTP id u13-20020a056a00158d00b0047c2341264fmr4997658pfk.80.1635433784596;
-        Thu, 28 Oct 2021 08:09:44 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id y9sm3212418pjj.6.2021.10.28.08.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 08:09:44 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 08:09:44 -0700 (PDT)
-X-Google-Original-Date: Thu, 28 Oct 2021 08:09:41 PDT (-0700)
-Subject:     Re: Out-of-bounds access when hartid >= NR_CPUS
-In-Reply-To: <CAOnJCU+MSP1QdpRRGYUpen8xZU+kn3PcSMJnZnRQw-iATs8JgQ@mail.gmail.com>
-CC:     heiko@sntech.de, geert@linux-m68k.org, re@w6rz.net,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     atishp@atishpatra.org
-Message-ID: <mhng-51188428-41ff-4962-b548-bf514a779723@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=aADjUL3aoYVuhKrrOmc9kzerdnVVqgXoXwAZgyL/N/U=;
+        b=SDc5PXnTgKHVmbo83xBzF6RQwr+kKMqklGAz9v8ZrYf9Zf1slC9E1WDrYvxYELZ6B+
+         q0BapwPqNN2GmMFXEWZ/WfLf82dNloXYi4vivO3bw5p6VblKdtmVCosj2MMbeeLFvPsT
+         DXPk1GeznAt4i32InWfPG8uLIHA2FmuAnmNnrRE2va8Upd4e8OvTRNjLdeXXzIi70gZ3
+         McHtAduMAFQ75fuzjqUfbIeU4E7NztYxZBgVWfHK2U6jnT1ZQ7HeunW9jhq+zwtE3E2U
+         e35r7CCc42C5RFLdOhwF7OhNo/gTV3vLW7HL3LYurqXdILc2OE6O1pnxAcRLEqgawCio
+         noOw==
+X-Gm-Message-State: AOAM530s4Z87GwkLI8wpDe8VN/SSLoED37TLrhI++i/okVKvAhnVdiB0
+        aR/gwKmHE9g8geqD16vE2cmcfM4l3yE=
+X-Google-Smtp-Source: ABdhPJzb+xizXUPt5P6p1qkqBpQXPH+lSyzWHcorceIZANn1ZP7Wz97agKdRsJturFMltGumuSh4MQ==
+X-Received: by 2002:a05:6808:23cb:: with SMTP id bq11mr3469368oib.139.1635433787557;
+        Thu, 28 Oct 2021 08:09:47 -0700 (PDT)
+Received: from [172.16.0.2] ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id v66sm1149541oib.18.2021.10.28.08.09.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 08:09:47 -0700 (PDT)
+Message-ID: <7e5514de-01ec-060f-cbc3-1b777e134a54@gmail.com>
+Date:   Thu, 28 Oct 2021 09:09:46 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH net-next] neigh: use struct {arp, ndisc}_generic_ops for
+ all case
+Content-Language: en-US
+To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211028122022.14879-1-yajun.deng@linux.dev>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20211028122022.14879-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021 16:34:15 PDT (-0700), atishp@atishpatra.org wrote:
-> On Tue, Oct 26, 2021 at 2:34 AM Heiko Stübner <heiko@sntech.de> wrote:
->>
->> Am Dienstag, 26. Oktober 2021, 10:57:26 CEST schrieb Geert Uytterhoeven:
->> > Hi Heiko,
->> >
->> > On Tue, Oct 26, 2021 at 10:53 AM Heiko Stübner <heiko@sntech.de> wrote:
->> > > Am Dienstag, 26. Oktober 2021, 08:44:31 CEST schrieb Geert Uytterhoeven:
->> > > > On Tue, Oct 26, 2021 at 2:37 AM Ron Economos <re@w6rz.net> wrote:
->> > > > > On 10/25/21 8:54 AM, Geert Uytterhoeven wrote:
->> > > > > > When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
->> > > > > > the 4th CPU either fails to come online, or the system crashes.
->> > > > > >
->> > > > > > This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
->> > > > > > and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
->> > > > > >    - unused core has hartid 0 (sifive,e51),
->> > > > > >    - processor 0 has hartid 1 (sifive,u74-mc),
->> > > > > >    - processor 1 has hartid 2 (sifive,u74-mc),
->> > > > > >    - processor 2 has hartid 3 (sifive,u74-mc),
->> > > > > >    - processor 3 has hartid 4 (sifive,u74-mc).
->> > > > > >
->> > > > > > I assume the same issue is present on the SiFive fu540 and fu740
->> > > > > > SoCs, but I don't have access to these.  The issue is not present
->> > > > > > on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
->> > > > > > hartid 0.
->> > > > > >
->> > > > > > arch/riscv/kernel/cpu_ops.c has:
->> > > > > >
->> > > > > >      void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
->> > > > > >      void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
->> > > > > >
->> > > > > >      void cpu_update_secondary_bootdata(unsigned int cpuid,
->> > > > > >                                         struct task_struct *tidle)
->> > > > > >      {
->> > > > > >              int hartid = cpuid_to_hartid_map(cpuid);
->> > > > > >
->> > > > > >              /* Make sure tidle is updated */
->> > > > > >              smp_mb();
->> > > > > >              WRITE_ONCE(__cpu_up_stack_pointer[hartid],
->> > > > > >                         task_stack_page(tidle) + THREAD_SIZE);
->> > > > > >              WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
->> > > > > >
->> > > > > > The above two writes cause out-of-bound accesses beyond
->> > > > > > __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
->> > > > > >
->> > > > > >      }
->> >
->> > > > https://riscv.org/wp-content/uploads/2017/05/riscv-privileged-v1.10.pdf
->> > > > says:
->> > > >
->> > > >     Hart IDs might not necessarily be numbered contiguously in a
->> > > >     multiprocessor system, but at least one hart must have a hart
->> > > >     ID of zero.
->> > > >
->> > > > Which means indexing arrays by hart ID is a no-go?
->> > >
->> > > Isn't that also similar on aarch64?
->> > >
->> > > On a rk3399 you get 0-3 and 100-101 and with the paragraph above
->> > > something like this could very well exist on some riscv cpu too I guess.
->> >
->> > Yes, it looks like hart IDs are similar to MPIDRs on ARM.
->>
->> and they have the set_cpu_logical_map construct to map hwids
->> to a continuous list of cpu-ids.
->>
->> So with hartids not being necessarily continuous this looks like
->> riscv would need a similar mechanism.
->>
->
-> RISC-V already has a similar mechanism cpuid_to_hartid_map. Logical
-> cpu ids are continuous
-> while hartid can be sparse.
->
-> The issue here is that __cpu_up_stack/task_pointer are per hart but
-> array size depends on the NR_CPUs
-> which represents the logical CPU.
->
-> That's why, having a maximum number of hartids defined in config will
-> be helpful.
+On 10/28/21 6:20 AM, Yajun Deng wrote:
+> diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
+> index 922dd73e5740..9ee59c2e419a 100644
+> --- a/net/ipv4/arp.c
+> +++ b/net/ipv4/arp.c
+> @@ -135,14 +135,6 @@ static const struct neigh_ops arp_generic_ops = {
+>  	.connected_output =	neigh_connected_output,
+>  };
+>  
+> -static const struct neigh_ops arp_hh_ops = {
+> -	.family =		AF_INET,
+> -	.solicit =		arp_solicit,
+> -	.error_report =		arp_error_report,
+> -	.output =		neigh_resolve_output,
+> -	.connected_output =	neigh_resolve_output,
+> -};
+> -
 
-I don't understand why we'd have both: if we can't find a CPU number for 
-a hart, then all we can do is just leave it offline.  Wouldn't it be 
-simpler to just rely on NR_CPUS?  We'll need to fix the crashes on 
-overflows either way.
+neigh_ops are used by net/core/neighbour.c; this change breaks those
+references.
+
