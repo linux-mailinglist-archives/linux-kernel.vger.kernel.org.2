@@ -2,140 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341F043E5E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6712043E5DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhJ1QPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:15:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46808 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230010AbhJ1QPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:15:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635437586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MqVw0Z8vi7JjvCVtjxAexVsSznKzCGLBzzaPnc6KX/k=;
-        b=DcGeE5ajlUqoCuTtu9dQxp5GHJ9Zj4uNGnYldZ6OSY8VBRVQfZW0SfDRcV6PMxLVtQR93J
-        QhPs4rJVYEdHdtIa4/G8Fh69ucrkfyrrYS3aGEZmc3v6kB2TVM+7u0T12q/s1DVNFOyhZH
-        gwi8ioJhreoia23cpxG+CuPek8CkqXQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-R1OcEdtCNRy5fjOQqmfJWg-1; Thu, 28 Oct 2021 12:13:00 -0400
-X-MC-Unique: R1OcEdtCNRy5fjOQqmfJWg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 594BC112A0A3;
-        Thu, 28 Oct 2021 16:12:14 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BBDF84180;
-        Thu, 28 Oct 2021 16:12:05 +0000 (UTC)
-Message-ID: <b2ba4c4e6a9083f3fa0b9af4504f9f54e72ca24c.camel@redhat.com>
-Subject: Re: [PATCH v2 35/43] KVM: SVM: Signal AVIC doorbell iff vCPU is in
- guest mode
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
+        id S230297AbhJ1QOx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 12:14:53 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:46890 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229764AbhJ1QOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 12:14:51 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mg80m-0004W7-6v; Thu, 28 Oct 2021 18:12:16 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     atishp@atishpatra.org, Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     geert@linux-m68k.org, re@w6rz.net, linux-riscv@lists.infradead.org,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Date:   Thu, 28 Oct 2021 19:12:04 +0300
-In-Reply-To: <20211009021236.4122790-36-seanjc@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-36-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org
+Subject: Re: Out-of-bounds access when hartid >= NR_CPUS
+Date:   Thu, 28 Oct 2021 18:12:14 +0200
+Message-ID: <1733048.UrJg72UHvK@diego>
+In-Reply-To: <mhng-51188428-41ff-4962-b548-bf514a779723@palmerdabbelt-glaptop>
+References: <mhng-51188428-41ff-4962-b548-bf514a779723@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
-> Signal the AVIC doorbell iff the vCPU is running in the guest.  If the vCPU
-> is not IN_GUEST_MODE, it's guaranteed to pick up any pending IRQs on the
-> next VMRUN, which unconditionally processes the vIRR.
+Am Donnerstag, 28. Oktober 2021, 17:09:44 CEST schrieb Palmer Dabbelt:
+> On Wed, 27 Oct 2021 16:34:15 PDT (-0700), atishp@atishpatra.org wrote:
+> > On Tue, Oct 26, 2021 at 2:34 AM Heiko Stübner <heiko@sntech.de> wrote:
+> >>
+> >> Am Dienstag, 26. Oktober 2021, 10:57:26 CEST schrieb Geert Uytterhoeven:
+> >> > Hi Heiko,
+> >> >
+> >> > On Tue, Oct 26, 2021 at 10:53 AM Heiko Stübner <heiko@sntech.de> wrote:
+> >> > > Am Dienstag, 26. Oktober 2021, 08:44:31 CEST schrieb Geert Uytterhoeven:
+> >> > > > On Tue, Oct 26, 2021 at 2:37 AM Ron Economos <re@w6rz.net> wrote:
+> >> > > > > On 10/25/21 8:54 AM, Geert Uytterhoeven wrote:
+> >> > > > > > When booting a kernel with CONFIG_NR_CPUS=4 on Microchip PolarFire,
+> >> > > > > > the 4th CPU either fails to come online, or the system crashes.
+> >> > > > > >
+> >> > > > > > This happens because PolarFire has 5 CPU cores: hart 0 is an e51,
+> >> > > > > > and harts 1-4 are u54s, with the latter becoming CPUs 0-3 in Linux:
+> >> > > > > >    - unused core has hartid 0 (sifive,e51),
+> >> > > > > >    - processor 0 has hartid 1 (sifive,u74-mc),
+> >> > > > > >    - processor 1 has hartid 2 (sifive,u74-mc),
+> >> > > > > >    - processor 2 has hartid 3 (sifive,u74-mc),
+> >> > > > > >    - processor 3 has hartid 4 (sifive,u74-mc).
+> >> > > > > >
+> >> > > > > > I assume the same issue is present on the SiFive fu540 and fu740
+> >> > > > > > SoCs, but I don't have access to these.  The issue is not present
+> >> > > > > > on StarFive JH7100, as processor 0 has hartid 1, and processor 1 has
+> >> > > > > > hartid 0.
+> >> > > > > >
+> >> > > > > > arch/riscv/kernel/cpu_ops.c has:
+> >> > > > > >
+> >> > > > > >      void *__cpu_up_stack_pointer[NR_CPUS] __section(".data");
+> >> > > > > >      void *__cpu_up_task_pointer[NR_CPUS] __section(".data");
+> >> > > > > >
+> >> > > > > >      void cpu_update_secondary_bootdata(unsigned int cpuid,
+> >> > > > > >                                         struct task_struct *tidle)
+> >> > > > > >      {
+> >> > > > > >              int hartid = cpuid_to_hartid_map(cpuid);
+> >> > > > > >
+> >> > > > > >              /* Make sure tidle is updated */
+> >> > > > > >              smp_mb();
+> >> > > > > >              WRITE_ONCE(__cpu_up_stack_pointer[hartid],
+> >> > > > > >                         task_stack_page(tidle) + THREAD_SIZE);
+> >> > > > > >              WRITE_ONCE(__cpu_up_task_pointer[hartid], tidle);
+> >> > > > > >
+> >> > > > > > The above two writes cause out-of-bound accesses beyond
+> >> > > > > > __cpu_up_{stack,pointer}_pointer[] if hartid >= CONFIG_NR_CPUS.
+> >> > > > > >
+> >> > > > > >      }
+> >> >
+> >> > > > https://riscv.org/wp-content/uploads/2017/05/riscv-privileged-v1.10.pdf
+> >> > > > says:
+> >> > > >
+> >> > > >     Hart IDs might not necessarily be numbered contiguously in a
+> >> > > >     multiprocessor system, but at least one hart must have a hart
+> >> > > >     ID of zero.
+> >> > > >
+> >> > > > Which means indexing arrays by hart ID is a no-go?
+> >> > >
+> >> > > Isn't that also similar on aarch64?
+> >> > >
+> >> > > On a rk3399 you get 0-3 and 100-101 and with the paragraph above
+> >> > > something like this could very well exist on some riscv cpu too I guess.
+> >> >
+> >> > Yes, it looks like hart IDs are similar to MPIDRs on ARM.
+> >>
+> >> and they have the set_cpu_logical_map construct to map hwids
+> >> to a continuous list of cpu-ids.
+> >>
+> >> So with hartids not being necessarily continuous this looks like
+> >> riscv would need a similar mechanism.
+> >>
+> >
+> > RISC-V already has a similar mechanism cpuid_to_hartid_map. Logical
+> > cpu ids are continuous
+> > while hartid can be sparse.
+> >
+> > The issue here is that __cpu_up_stack/task_pointer are per hart but
+> > array size depends on the NR_CPUs
+> > which represents the logical CPU.
+> >
+> > That's why, having a maximum number of hartids defined in config will
+> > be helpful.
 > 
-> Add comments to document the logic.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/svm/avic.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index 208c5c71e827..cbf02e7e20d0 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -674,7 +674,12 @@ int svm_deliver_avic_intr(struct kvm_vcpu *vcpu, int vec)
->  	kvm_lapic_set_irr(vec, vcpu->arch.apic);
->  	smp_mb__after_atomic();
->  
-> -	if (avic_vcpu_is_running(vcpu)) {
-> +	/*
-> +	 * Signal the doorbell to tell hardware to inject the IRQ if the vCPU
-> +	 * is in the guest.  If the vCPU is not in the guest, hardware will
-> +	 * automatically process AVIC interrupts at VMRUN.
-> +	 */
-> +	if (vcpu->mode == IN_GUEST_MODE) {
->  		int cpu = READ_ONCE(vcpu->cpu);
->  
->  		/*
-> @@ -687,8 +692,13 @@ int svm_deliver_avic_intr(struct kvm_vcpu *vcpu, int vec)
->  		if (cpu != get_cpu())
->  			wrmsrl(SVM_AVIC_DOORBELL, kvm_cpu_get_apicid(cpu));
->  		put_cpu();
-> -	} else
-> +	} else {
-> +		/*
-> +		 * Wake the vCPU if it was blocking.  KVM will then detect the
-> +		 * pending IRQ when checking if the vCPU has a wake event.
-> +		 */
->  		kvm_vcpu_wake_up(vcpu);
-> +	}
->  
->  	return 0;
->  }
+> I don't understand why we'd have both: if we can't find a CPU number for 
+> a hart, then all we can do is just leave it offline.  Wouldn't it be 
+> simpler to just rely on NR_CPUS?  We'll need to fix the crashes on 
+> overflows either way.
 
-It makes sense indeed to avoid ringing the doorbell when the vCPU is not in the guest mode.
+I'd think so.
 
-I do wonder if we want to call kvm_vcpu_wake_up always otherwise, as the vCPU might
-be just outside of the guest mode and not scheduled out. I don't know how expensive
-is kvm_vcpu_wake_up in this case.
+The mhartid register is xlen big and as the spec says they don't have to be
+contiguously, so it looks like hw-designers could adopt really "creative"
+numbering.
 
-Before this patch, the avic_vcpu_is_running would only be false when the vCPU is scheduled out
-(e.g when vcpu_put was done on it)
+So having a NR_HARTS won't really help, because there could be huge
+gaps in numbering at some point.
 
-Best regards,
-	Maxim Levitsky
 
