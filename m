@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3A143DB9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D7D43DBA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhJ1HDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhJ1HDf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:03:35 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51A1C061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 00:01:08 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id b125so1699392vkb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 00:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=jfZ6y8fcGvAE1BlPR3wVs6P5tuC6lUydmPFOe3mAfpg=;
-        b=ReZTcygEqMAqMkFch88nyHz8SBFKZWSEAHUXoY7mhefBwzubgtajFAmOnCyyB4tHCs
-         czz1/Qmif89dQWs3aY1HqL7MO4aauKCcK5rw5iH5Nj3+e4fQqaKt/5gkCcXbfiXukOkF
-         nilBeMnQZNMuwinFwbNJefFY5KCJ0r1HiVPr5GY7W+ZiSGUuUmRgJoTLiXD0dy83EVR6
-         XW5lC/iCJQDsmJ5Hcxp9n2+q1jtX/LM2NrlbmjCRZZdoAuOLcQCd7suPxhev+gFN/OXA
-         dDk84bj9y0wkJMICkL65TOhA3pNXHR3IsROWD+G+096LF4SNKjXbFn7FCPQz9zA7nXer
-         kbMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=jfZ6y8fcGvAE1BlPR3wVs6P5tuC6lUydmPFOe3mAfpg=;
-        b=VBzo1b2lazYOMH3Lof5ktcFO0ShPlnbHRs4+uWcTqfxnzc0xZBFLuqmXb+6RVTDQce
-         e94B2mDHK51OO0vFSbBxce3HxCB/Zl07G2uk4eKN8wKvN+nfrNXpIQB0ZvJxj6igH1Xs
-         HIuvw3QGZRfX2k7zcWvoPF39lXG/hSbgAcFQcxJ0y4GNEPKZ51vEHLtL9899+IhHymU9
-         819keVnwDh19x574LU/UkG1pVz0I5tZIwwVJyCX12G5P+QzOyY/vArNZYjJyWYD9iQPI
-         5eoRkBzFCe4VNiRnEkQ+IxKPE7Lk/19YH5d6wHVYK1sPsOO08FOygnGFrutVTj7Z4aC9
-         YIOw==
-X-Gm-Message-State: AOAM530JoD6Deduia6DiW3rzISOdGLmSAodnR2N1+fI/GSLG7Ctrspuy
-        BivOm7HR7lTC9mS9PkwGk7e3oTCRdrYmLUmPim8=
-X-Google-Smtp-Source: ABdhPJwF20E6FLIIr+mGyaFYd5k9Efn0lozgbrY6AsC6jjAGUYlJAUuT0T5kLSg7W1u5MoYb+3bDhU7nKTJUnDYeSWg=
-X-Received: by 2002:a1f:7288:: with SMTP id n130mr2229830vkc.24.1635404466530;
- Thu, 28 Oct 2021 00:01:06 -0700 (PDT)
+        id S229791AbhJ1HGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:06:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJ1HGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:06:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6707160FF2;
+        Thu, 28 Oct 2021 07:03:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635404615;
+        bh=86u9JaFjx1bbI+cakk6gCSU7N3ac0DZfd5iIvtQn9T4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CaHOKMYkUuGT9nrJwKqIOyJK+o/+MlD1QlKOqjx4IgSCKgIlYo7+fy2AdcK7UaRMt
+         xpq2MObON9CuAhoCr3hZyjXvKzCjEMrnwFssTRE8EwePYQK2Ug8k6n3GvUiT/VNagr
+         yEH0tvWZIkAX510CYiPkgjADkFLvGESNuCA1LjWqFaB6qJ+p5RGKU3opyKOUFwqCfJ
+         jLvAxcT1fUQnEaHXUDnQkhYI1A07i9R6XZ+smh4jG6bLsMPOWCm6Qk4svHE1xrhQPA
+         ThP28IX+rKv8Ze4twvy7VdDldDkY4HgEcKduTykp6yq0zXnLPRxOogeXiHqx0HTmLe
+         OeWb2Me65fTAQ==
+Date:   Thu, 28 Oct 2021 08:03:31 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pinctrl tree
+Message-ID: <20211028080331.6d199082@sal.lan>
+In-Reply-To: <874k92bu4q.wl-maz@kernel.org>
+References: <20211027220118.71a229ab@canb.auug.org.au>
+        <874k92bu4q.wl-maz@kernel.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a59:cc61:0:b0:238:b198:f3a9 with HTTP; Thu, 28 Oct 2021
- 00:01:06 -0700 (PDT)
-Reply-To: mrmichelduku@outlook.com
-From:   Michel <wster7410@gmail.com>
-Date:   Thu, 28 Oct 2021 07:01:06 +0000
-Message-ID: <CA+zKiD4+F04EAsi3Fd8-ZKdPNfXuJBie1PTfFVJU+8vMczU2kw@mail.gmail.com>
-Subject: Please Respond Urgently
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+Em Wed, 27 Oct 2021 12:10:45 +0100
+Marc Zyngier <maz@kernel.org> escreveu:
 
-With due respect to your person, I make this contact with you as I
-believe that you can be of great assistance to me. I need your
-assistance in transferring the sum of $11.3million to your account
-Where this money can be shared between us.
+> On Wed, 27 Oct 2021 12:01:18 +0100,
+> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > 
+> > Hi all,
+> > 
+> > After merging the pinctrl tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> > 
+> > include/linux/gpio/driver.h:284: warning: Function parameter or member 'parent_handler_data_array' not described in 'gpio_irq_chip'
+> > 
+> > Introduced by commit
+> > 
+> >   cfe6807d82e9 ("gpio: Allow per-parent interrupt data")
+> > 
+> > But may actually be a problem with the tool :-(  
+> 
+> I guess the tool doesn't like having two fields that are part of a
+> union documented together... Happy to tweak it if someone tells me how
+> this should be written.
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+Yes, that's the case. See, when you do:
 
-Best Regards,
-Michel Duku.
+	/**
+	 * @parent_handler_data:
+	 * @parent_handler_data_array:
+	 *
+	 * Data associated, and passed to, the handler for the parent
+	 * interrupt. Can either be a single pointer if @per_parent_data
+	 * is false, or an array of @num_parents pointers otherwise.  If
+	 * @per_parent_data is true, @parent_handler_data_array cannot be
+	 * NULL.
+	 */
+	union {
+		void *parent_handler_data;
+		void **parent_handler_data_array;
+	};
+
+The tool will understand it as an undocumented "parent_handler_data" and
+a documented "parent_handler_data_array".
+
+It has to do that, as otherwise it won't get cases where people just adds a
+@foo: as a template but actually forgets to fill it.
+
+The solution would be to add a description for both, e. g. something
+similar to:
+
+	/**
+	 * @parent_handler_data:
+	 *
+	 * If @per_parent_data is false, contains a single pointer 
+	 * with the data associated, and passed to, the handler for the 
+	 * parent interrupt.
+	 *
+	 * @parent_handler_data_array:
+	 *
+	 * If @per_parent_data is true, it should contain an array of 
+	 * @num_parents pointers with the data associated, and passed to,
+	 * the handler for the parent interrupt. Cannot be NULL.
+	 */
+
+Regards,
+Mauro
