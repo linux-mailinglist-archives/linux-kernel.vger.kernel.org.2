@@ -2,201 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC12643E32D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B1543E312
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhJ1ONV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:13:21 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:26132 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhJ1ONU (ORCPT
+        id S230498AbhJ1OKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:10:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230265AbhJ1OKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:13:20 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Hg6qN2QdLz1DHqq;
-        Thu, 28 Oct 2021 22:08:48 +0800 (CST)
-Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 22:10:45 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 22:10:44 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangjie125@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH net] Revert "net: hns3: fix pause config problem after autoneg disabled"
-Date:   Thu, 28 Oct 2021 22:06:24 +0800
-Message-ID: <20211028140624.53149-1-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 28 Oct 2021 10:10:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635430061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w/6u/2V3kbwOw+vCIQ7D9V9KhEUDROrBvfNcLoT9zUQ=;
+        b=UTsa6i+wGl7hbT5TLvHPl+zcKKTc+NS1wd+63cInIpoxNn9IoC6uELtsDj5F4yS1quD0xA
+        EOCDqHtxy1BHDQqd4d6ZoqUkIoeagcHr58jbyxx5kkTGR2HQquX94di3W1BXnQQdKJYiaV
+        JYOpJ6lHCMhJTW60jA/A13vaVrnIeWs=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-sWIUlx0ZPU6mHd356W8J6Q-1; Thu, 28 Oct 2021 10:07:39 -0400
+X-MC-Unique: sWIUlx0ZPU6mHd356W8J6Q-1
+Received: by mail-ed1-f71.google.com with SMTP id t1-20020a056402524100b003dd9a419eb5so5737878edd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:07:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=w/6u/2V3kbwOw+vCIQ7D9V9KhEUDROrBvfNcLoT9zUQ=;
+        b=XpHZhGf4fC2JWJO6Ogb8oN7U8YalpyeXlft0Lo0GK/NWt9fxF8C/sHgbKmizn2Fcgd
+         zcHpOPznQPPEPulGYq++Mrd7cEreDn1u+KHDxssU2F/dsP0HKhSjAt57sSxxCLySDrXl
+         5+FRUPGzMjcDaqg/9acH25eXlQHO8T4vBHOEI7KO32h3tL7IPB2GQZND6uFuWTCMpbGp
+         c37m0ge8h8XAVTvfqmWvpOWB71NyF4brUpCtvdmYyKvxlqf0bY0XVBqaRosozCmwiazE
+         VADCErQVOXSGYEfwzVAiPxppf3/bPAmHuigukVFKZdITLa0Gixpwax9mBnqbIU7bSoUt
+         SypQ==
+X-Gm-Message-State: AOAM5338H5xFo0kBmSqacynunDW66e9B9RqdVoXhZbToEaj70ZpGaZHD
+        5PU6j3cF7fUIyMqX8KsXt4/FQyMVVT1wCtERB94xLNMt1EiVQrx6+fCZVY7JY043S0oMEVJ7iOi
+        GK4L2mG8ZYqMkV6b5wtO7PAyq
+X-Received: by 2002:a17:906:7b42:: with SMTP id n2mr5716169ejo.428.1635430058053;
+        Thu, 28 Oct 2021 07:07:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy5XiquuYAH7SkWh2/xFy/qGlGMMv5yBFfuta79BJff+F3uPv7LPQF5rW36lriFN8dBTGu76g==
+X-Received: by 2002:a17:906:7b42:: with SMTP id n2mr5716144ejo.428.1635430057860;
+        Thu, 28 Oct 2021 07:07:37 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id gt36sm1448349ejc.13.2021.10.28.07.07.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 07:07:37 -0700 (PDT)
+Message-ID: <62fe1c8e-abe0-5de9-5c00-3549faae1dba@redhat.com>
+Date:   Thu, 28 Oct 2021 16:07:33 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/3] RISC-V: KVM: Few assorted changes
+Content-Language: en-US
+To:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20211026170136.2147619-1-anup.patel@wdc.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211026170136.2147619-1-anup.patel@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 3bda2e5df476417b6d08967e2d84234a59d57b1c.
+On 26/10/21 19:01, Anup Patel wrote:
+> I had a few assorted KVM RISC-V changes which I wanted to sent after
+> KVM RISC-V was merged hence this series.
+> 
+> These patches can also be found in riscv_kvm_assorted_v1 branch at:
+> https://github.com/avpatel/linux.git
+> 
+> Anup Patel (3):
+>    RISC-V: Enable KVM in RV64 and RV32 defconfigs as a module
+>    RISC-V: KVM: Factor-out FP virtualization into separate sources
+>    RISC-V: KVM: Fix GPA passed to __kvm_riscv_hfence_gvma_xyz() functions
+> 
+>   arch/riscv/configs/defconfig         |  15 ++-
+>   arch/riscv/configs/rv32_defconfig    |   8 +-
+>   arch/riscv/include/asm/kvm_host.h    |  10 +-
+>   arch/riscv/include/asm/kvm_vcpu_fp.h |  59 +++++++++
+>   arch/riscv/kvm/Makefile              |   1 +
+>   arch/riscv/kvm/tlb.S                 |   4 +-
+>   arch/riscv/kvm/vcpu.c                | 172 ---------------------------
+>   arch/riscv/kvm/vcpu_fp.c             | 167 ++++++++++++++++++++++++++
+>   8 files changed, 244 insertions(+), 192 deletions(-)
+>   create mode 100644 arch/riscv/include/asm/kvm_vcpu_fp.h
+>   create mode 100644 arch/riscv/kvm/vcpu_fp.c
+> 
 
-According to discussion with Andrew as follow:
-https://lore.kernel.org/netdev/09eda9fe-196b-006b-6f01-f54e75715961@huawei.com/
+Queued 2+3, thanks.
 
-HNS3 driver needs to separate pause autoneg from general autoneg, so revert
-this incorrect patch.
-
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  1 -
- .../ethernet/hisilicon/hns3/hns3_ethtool.c    | 33 +++++--------------
- .../hisilicon/hns3/hns3pf/hclge_main.c        | 30 -----------------
- .../ethernet/hisilicon/hns3/hns3pf/hclge_tm.c |  2 +-
- .../ethernet/hisilicon/hns3/hns3pf/hclge_tm.h |  1 -
- 5 files changed, 10 insertions(+), 57 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index da3a593f6a56..d701451596c8 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -568,7 +568,6 @@ struct hnae3_ae_ops {
- 			       u32 *auto_neg, u32 *rx_en, u32 *tx_en);
- 	int (*set_pauseparam)(struct hnae3_handle *handle,
- 			      u32 auto_neg, u32 rx_en, u32 tx_en);
--	int (*restore_pauseparam)(struct hnae3_handle *handle);
- 
- 	int (*set_autoneg)(struct hnae3_handle *handle, bool enable);
- 	int (*get_autoneg)(struct hnae3_handle *handle);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 7d92dd273ed7..5ebd96f6833d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -824,26 +824,6 @@ static int hns3_check_ksettings_param(const struct net_device *netdev,
- 	return 0;
- }
- 
--static int hns3_set_phy_link_ksettings(struct net_device *netdev,
--				       const struct ethtool_link_ksettings *cmd)
--{
--	struct hnae3_handle *handle = hns3_get_handle(netdev);
--	const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
--	int ret;
--
--	if (cmd->base.speed == SPEED_1000 &&
--	    cmd->base.autoneg == AUTONEG_DISABLE)
--		return -EINVAL;
--
--	if (cmd->base.autoneg == AUTONEG_DISABLE && ops->restore_pauseparam) {
--		ret = ops->restore_pauseparam(handle);
--		if (ret)
--			return ret;
--	}
--
--	return phy_ethtool_ksettings_set(netdev->phydev, cmd);
--}
--
- static int hns3_set_link_ksettings(struct net_device *netdev,
- 				   const struct ethtool_link_ksettings *cmd)
- {
-@@ -862,11 +842,16 @@ static int hns3_set_link_ksettings(struct net_device *netdev,
- 		  cmd->base.autoneg, cmd->base.speed, cmd->base.duplex);
- 
- 	/* Only support ksettings_set for netdev with phy attached for now */
--	if (netdev->phydev)
--		return hns3_set_phy_link_ksettings(netdev, cmd);
--	else if (test_bit(HNAE3_DEV_SUPPORT_PHY_IMP_B, ae_dev->caps) &&
--		 ops->set_phy_link_ksettings)
-+	if (netdev->phydev) {
-+		if (cmd->base.speed == SPEED_1000 &&
-+		    cmd->base.autoneg == AUTONEG_DISABLE)
-+			return -EINVAL;
-+
-+		return phy_ethtool_ksettings_set(netdev->phydev, cmd);
-+	} else if (test_bit(HNAE3_DEV_SUPPORT_PHY_IMP_B, ae_dev->caps) &&
-+		   ops->set_phy_link_ksettings) {
- 		return ops->set_phy_link_ksettings(handle, cmd);
-+	}
- 
- 	if (ae_dev->dev_version < HNAE3_DEVICE_VERSION_V2)
- 		return -EOPNOTSUPP;
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 269e579762b2..d891390d492f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -10998,35 +10998,6 @@ static int hclge_set_pauseparam(struct hnae3_handle *handle, u32 auto_neg,
- 	return -EOPNOTSUPP;
- }
- 
--static int hclge_restore_pauseparam(struct hnae3_handle *handle)
--{
--	struct hclge_vport *vport = hclge_get_vport(handle);
--	struct hclge_dev *hdev = vport->back;
--	u32 auto_neg, rx_pause, tx_pause;
--	int ret;
--
--	hclge_get_pauseparam(handle, &auto_neg, &rx_pause, &tx_pause);
--	/* when autoneg is disabled, the pause setting of phy has no effect
--	 * unless the link goes down.
--	 */
--	ret = phy_suspend(hdev->hw.mac.phydev);
--	if (ret)
--		return ret;
--
--	phy_set_asym_pause(hdev->hw.mac.phydev, rx_pause, tx_pause);
--
--	ret = phy_resume(hdev->hw.mac.phydev);
--	if (ret)
--		return ret;
--
--	ret = hclge_mac_pause_setup_hw(hdev);
--	if (ret)
--		dev_err(&hdev->pdev->dev,
--			"restore pauseparam error, ret = %d.\n", ret);
--
--	return ret;
--}
--
- static void hclge_get_ksettings_an_result(struct hnae3_handle *handle,
- 					  u8 *auto_neg, u32 *speed, u8 *duplex)
- {
-@@ -12990,7 +12961,6 @@ static const struct hnae3_ae_ops hclge_ops = {
- 	.halt_autoneg = hclge_halt_autoneg,
- 	.get_pauseparam = hclge_get_pauseparam,
- 	.set_pauseparam = hclge_set_pauseparam,
--	.restore_pauseparam = hclge_restore_pauseparam,
- 	.set_mtu = hclge_set_mtu,
- 	.reset_queue = hclge_reset_tqp,
- 	.get_stats = hclge_get_stats,
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-index 124791e4bfee..95074e91a846 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
-@@ -1435,7 +1435,7 @@ static int hclge_bp_setup_hw(struct hclge_dev *hdev, u8 tc)
- 	return 0;
- }
- 
--int hclge_mac_pause_setup_hw(struct hclge_dev *hdev)
-+static int hclge_mac_pause_setup_hw(struct hclge_dev *hdev)
- {
- 	bool tx_en, rx_en;
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.h
-index 4b2c3a788980..2ee9b795f71d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.h
-@@ -244,7 +244,6 @@ int hclge_tm_get_pri_weight(struct hclge_dev *hdev, u8 pri_id, u8 *weight);
- int hclge_tm_get_pri_shaper(struct hclge_dev *hdev, u8 pri_id,
- 			    enum hclge_opcode_type cmd,
- 			    struct hclge_tm_shaper_para *para);
--int hclge_mac_pause_setup_hw(struct hclge_dev *hdev);
- int hclge_tm_get_q_to_qs_map(struct hclge_dev *hdev, u16 q_id, u16 *qset_id);
- int hclge_tm_get_q_to_tc(struct hclge_dev *hdev, u16 q_id, u8 *tc_id);
- int hclge_tm_get_pg_to_pri_map(struct hclge_dev *hdev, u8 pg_id,
--- 
-2.33.0
+Paolo
 
