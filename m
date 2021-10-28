@@ -2,277 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CC343E1F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC62643E1F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhJ1N0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:26:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230195AbhJ1NZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230318AbhJ1NZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 28 Oct 2021 09:25:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F8B860F92;
-        Thu, 28 Oct 2021 13:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635427406;
-        bh=MHd0VsFoJKZpEh0+cqexMABqtGf+jebYqYU99Q+jS/A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YylB4snR9WIoK41yPkY1g21AwWIc7X+sqocVoRkPCZRL5I9+Fn4L4zKKcQOleVNvm
-         LvIv8NPzDMVcVZxWM8pY8jHtUkpxpPKEilrPqQfRnU5oJl1RJGai61w2S+MJmz5qT+
-         bcJUEWFUb7XHUheHMOHv/XbrdrXDKv1LW3q+jA2Z8QybzfaonDp4tmEnxUYtO87sqj
-         Y02ETedmW/16xz2bD8VqMFRg3CBmYYjLyNUD9xwnnBsM3Ql5K+20xW6Wd+ogbOA6gL
-         9/7LpL8gKK7u/1Q/NdXS6P96G8/UIEvm2UdZvm8ji7KVRQjxkf0BHqRVfVu12Jqnnt
-         QUb7U4WhFMaHA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next] devlink: Simplify internal devlink params implementation
-Date:   Thu, 28 Oct 2021 16:23:21 +0300
-Message-Id: <efec83a9e9479018c324f12c1a99b2a9e3ee29f7.1635427378.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhJ1NZw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:25:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37FDC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 06:23:25 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 13:23:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635427404;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kgs/qsH5tOLO8EMTfWC5dAEwDBpicjEmAyFtm6HGcZA=;
+        b=CYSECXg9dKaRlVFg/ggNJUUZoEz7rJZncraE1K9wrwKPS9Qwc7VkEkJmcZpjUm1hw1OFWL
+        jaYsPc/YwIGicEkpiYAdT+OGI35Cq2j1U1vU2cK7jTxJbIlCxs5BbSkqUWu1PTpG4E3IlJ
+        lL+JtemtB2svgfs2NoWyyBIp/MOJ8XOHuYnOQGPAj7uI6iCsoooRLiW4sMGczjqcEALkWA
+        4se3lkNY+wUHwxGl7rvWb7cnSu1R2oFTu6WTPjKnZkMieG+hmiqtice1CPxKc4QzJe8JiU
+        gsU+MqoAMGSQa+zfbOfmOND0jj23Ec8KYMnkOpuJcQJpOgFqcjq1VA8Gc8SpHg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635427404;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kgs/qsH5tOLO8EMTfWC5dAEwDBpicjEmAyFtm6HGcZA=;
+        b=qNDhw9sVL0GDfsRKhCdlpjH6bnF1jk4fbWlB19qhCJSNZC2vm8gmJV1CCT98IrU79cNJIo
+        N8tLot+IIC6bl1BA==
+From:   "irqchip-bot for Marian-Cristian Rotariu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] dt-bindings: irqchip: renesas-irqc:
+ Document r8a774e1 bindings
+Cc:     "Marian-Cristian Rotariu" <marian-cristian.rotariu.rb@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: =?utf-8?q?=3C53317ce1bdd1d5e517122eb5c8ea0ccaa69eba3b=2E16353?=
+ =?utf-8?q?37428=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
+References: =?utf-8?q?=3C53317ce1bdd1d5e517122eb5c8ea0ccaa69eba3b=2E163533?=
+ =?utf-8?q?7428=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <163542740330.626.15868336895746257359.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Reduce extra indirection from devlink_params_*() API. Such change
-makes it clear that we can drop devlink->lock from these flows, because
-everything is executed when the devlink is not registered yet.
+Commit-ID:     d2cf863a934b12ca3769fe4cab581d114143a35b
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/d2cf863a934b12ca3769fe4cab581d114143a35b
+Author:        Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+AuthorDate:    Wed, 27 Oct 2021 14:25:09 +02:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Thu, 28 Oct 2021 13:33:58 +01:00
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+dt-bindings: irqchip: renesas-irqc: Document r8a774e1 bindings
+
+Document SoC specific bindings for RZ/G2H (r8a774e1) SoC.
+
+Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/53317ce1bdd1d5e517122eb5c8ea0ccaa69eba3b.1635337428.git.geert+renesas@glider.be
 ---
- net/core/devlink.c | 169 ++++++++++++---------------------------------
- 1 file changed, 46 insertions(+), 123 deletions(-)
+ Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 0de679c4313c..ff2bc6a8f95e 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -4925,45 +4925,6 @@ static int devlink_nl_cmd_param_set_doit(struct sk_buff *skb,
- 					       info, DEVLINK_CMD_PARAM_NEW);
- }
- 
--static int devlink_param_register_one(struct devlink *devlink,
--				      unsigned int port_index,
--				      struct list_head *param_list,
--				      const struct devlink_param *param,
--				      enum devlink_command cmd)
--{
--	struct devlink_param_item *param_item;
--
--	if (devlink_param_find_by_name(param_list, param->name))
--		return -EEXIST;
--
--	if (param->supported_cmodes == BIT(DEVLINK_PARAM_CMODE_DRIVERINIT))
--		WARN_ON(param->get || param->set);
--	else
--		WARN_ON(!param->get || !param->set);
--
--	param_item = kzalloc(sizeof(*param_item), GFP_KERNEL);
--	if (!param_item)
--		return -ENOMEM;
--	param_item->param = param;
--
--	list_add_tail(&param_item->list, param_list);
--	return 0;
--}
--
--static void devlink_param_unregister_one(struct devlink *devlink,
--					 unsigned int port_index,
--					 struct list_head *param_list,
--					 const struct devlink_param *param,
--					 enum devlink_command cmd)
--{
--	struct devlink_param_item *param_item;
--
--	param_item = devlink_param_find_by_name(param_list, param->name);
--	WARN_ON(!param_item);
--	list_del(&param_item->list);
--	kfree(param_item);
--}
--
- static int devlink_nl_cmd_port_param_get_dumpit(struct sk_buff *msg,
- 						struct netlink_callback *cb)
- {
-@@ -10092,73 +10053,6 @@ static int devlink_param_verify(const struct devlink_param *param)
- 		return devlink_param_driver_verify(param);
- }
- 
--static int __devlink_param_register_one(struct devlink *devlink,
--					unsigned int port_index,
--					struct list_head *param_list,
--					const struct devlink_param *param,
--					enum devlink_command reg_cmd)
--{
--	int err;
--
--	err = devlink_param_verify(param);
--	if (err)
--		return err;
--
--	return devlink_param_register_one(devlink, port_index,
--					  param_list, param, reg_cmd);
--}
--
--static int __devlink_params_register(struct devlink *devlink,
--				     unsigned int port_index,
--				     struct list_head *param_list,
--				     const struct devlink_param *params,
--				     size_t params_count,
--				     enum devlink_command reg_cmd,
--				     enum devlink_command unreg_cmd)
--{
--	const struct devlink_param *param = params;
--	int i;
--	int err;
--
--	mutex_lock(&devlink->lock);
--	for (i = 0; i < params_count; i++, param++) {
--		err = __devlink_param_register_one(devlink, port_index,
--						   param_list, param, reg_cmd);
--		if (err)
--			goto rollback;
--	}
--
--	mutex_unlock(&devlink->lock);
--	return 0;
--
--rollback:
--	if (!i)
--		goto unlock;
--	for (param--; i > 0; i--, param--)
--		devlink_param_unregister_one(devlink, port_index, param_list,
--					     param, unreg_cmd);
--unlock:
--	mutex_unlock(&devlink->lock);
--	return err;
--}
--
--static void __devlink_params_unregister(struct devlink *devlink,
--					unsigned int port_index,
--					struct list_head *param_list,
--					const struct devlink_param *params,
--					size_t params_count,
--					enum devlink_command cmd)
--{
--	const struct devlink_param *param = params;
--	int i;
--
--	mutex_lock(&devlink->lock);
--	for (i = 0; i < params_count; i++, param++)
--		devlink_param_unregister_one(devlink, 0, param_list, param,
--					     cmd);
--	mutex_unlock(&devlink->lock);
--}
--
- /**
-  *	devlink_params_register - register configuration parameters
-  *
-@@ -10172,12 +10066,25 @@ int devlink_params_register(struct devlink *devlink,
- 			    const struct devlink_param *params,
- 			    size_t params_count)
- {
-+	const struct devlink_param *param = params;
-+	int i, err;
-+
- 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
- 
--	return __devlink_params_register(devlink, 0, &devlink->param_list,
--					 params, params_count,
--					 DEVLINK_CMD_PARAM_NEW,
--					 DEVLINK_CMD_PARAM_DEL);
-+	for (i = 0; i < params_count; i++, param++) {
-+		err = devlink_param_register(devlink, param);
-+		if (err)
-+			goto rollback;
-+	}
-+	return 0;
-+
-+rollback:
-+	if (!i)
-+		return err;
-+
-+	for (param--; i > 0; i--, param--)
-+		devlink_param_unregister(devlink, param);
-+	return err;
- }
- EXPORT_SYMBOL_GPL(devlink_params_register);
- 
-@@ -10191,11 +10098,13 @@ void devlink_params_unregister(struct devlink *devlink,
- 			       const struct devlink_param *params,
- 			       size_t params_count)
- {
-+	const struct devlink_param *param = params;
-+	int i;
-+
- 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
- 
--	return __devlink_params_unregister(devlink, 0, &devlink->param_list,
--					   params, params_count,
--					   DEVLINK_CMD_PARAM_DEL);
-+	for (i = 0; i < params_count; i++, param++)
-+		devlink_param_unregister(devlink, param);
- }
- EXPORT_SYMBOL_GPL(devlink_params_unregister);
- 
-@@ -10211,15 +10120,26 @@ EXPORT_SYMBOL_GPL(devlink_params_unregister);
- int devlink_param_register(struct devlink *devlink,
- 			   const struct devlink_param *param)
- {
--	int err;
-+	struct devlink_param_item *param_item;
- 
- 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
- 
--	mutex_lock(&devlink->lock);
--	err = __devlink_param_register_one(devlink, 0, &devlink->param_list,
--					   param, DEVLINK_CMD_PARAM_NEW);
--	mutex_unlock(&devlink->lock);
--	return err;
-+	WARN_ON(devlink_param_verify(param));
-+	WARN_ON(devlink_param_find_by_name(&devlink->param_list, param->name));
-+
-+	if (param->supported_cmodes == BIT(DEVLINK_PARAM_CMODE_DRIVERINIT))
-+		WARN_ON(param->get || param->set);
-+	else
-+		WARN_ON(!param->get || !param->set);
-+
-+	param_item = kzalloc(sizeof(*param_item), GFP_KERNEL);
-+	if (!param_item)
-+		return -ENOMEM;
-+
-+	param_item->param = param;
-+
-+	list_add_tail(&param_item->list, &devlink->param_list);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(devlink_param_register);
- 
-@@ -10231,12 +10151,15 @@ EXPORT_SYMBOL_GPL(devlink_param_register);
- void devlink_param_unregister(struct devlink *devlink,
- 			      const struct devlink_param *param)
- {
-+	struct devlink_param_item *param_item;
-+
- 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
- 
--	mutex_lock(&devlink->lock);
--	devlink_param_unregister_one(devlink, 0, &devlink->param_list, param,
--				     DEVLINK_CMD_PARAM_DEL);
--	mutex_unlock(&devlink->lock);
-+	param_item =
-+		devlink_param_find_by_name(&devlink->param_list, param->name);
-+	WARN_ON(!param_item);
-+	list_del(&param_item->list);
-+	kfree(param_item);
- }
- EXPORT_SYMBOL_GPL(devlink_param_unregister);
- 
--- 
-2.31.1
-
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml
+index abb22db..79d0358 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml
+@@ -27,6 +27,7 @@ properties:
+           - renesas,intc-ex-r8a774a1    # RZ/G2M
+           - renesas,intc-ex-r8a774b1    # RZ/G2N
+           - renesas,intc-ex-r8a774c0    # RZ/G2E
++          - renesas,intc-ex-r8a774e1    # RZ/G2H
+           - renesas,intc-ex-r8a7795     # R-Car H3
+           - renesas,intc-ex-r8a7796     # R-Car M3-W
+           - renesas,intc-ex-r8a77961    # R-Car M3-W+
