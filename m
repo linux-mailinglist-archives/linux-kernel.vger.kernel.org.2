@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D983343E1A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610E643E1AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhJ1NKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:10:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59274 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229603AbhJ1NKt (ORCPT
+        id S230318AbhJ1NL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:11:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:16627 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhJ1NLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:10:49 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SCnGYv016294;
-        Thu, 28 Oct 2021 13:08:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : content-transfer-encoding : mime-version; s=pp1;
- bh=8fiPYKyw0EhWbEal4tnK6baVTfmvbJ8ImkJJsxDI9cM=;
- b=W8DVNNVEqayOpJIMfqMvblEkGSgR3F9Bg8XTzVObqD/Bdjgxn7H/I+MFqCROVRWtayZ/
- iM90MsGJlPf+JhYpQlB04dyDsz9+Oefjc1L8vtmqdI0ld+v7Y7AP/4okzJvyCjj0s707
- AONemM+DNsD3rBdhE+uOc16Bk5qenX4tS3XsKwYwjopXf4tRHFiJY2OiQ2mLOdpClf31
- b2JvOneB3BE3TVbRKhWsSHNVhV46Jq2tHcBhQPlELIO3yO3Tn1zsF0tz3g9xks5pLCSB
- jMbmDfCLMWUHm4zAVxE0M1683kIkgDxY7K2JL4Yq7kiTUjXv4v3/0sfivlze8MZHTvzb Og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byv6r0ebr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 13:08:11 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SCnaA6016537;
-        Thu, 28 Oct 2021 13:08:11 GMT
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byv6r0eb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 13:08:10 +0000
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SCvNEW020620;
-        Thu, 28 Oct 2021 13:08:09 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma03dal.us.ibm.com with ESMTP id 3bx4fn598y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 13:08:09 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SD88Pd24183174
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 13:08:08 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88DC378240;
-        Thu, 28 Oct 2021 13:08:07 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3233D7807C;
-        Thu, 28 Oct 2021 13:07:46 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.163.12.226])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Oct 2021 13:07:45 +0000 (GMT)
-Message-ID: <ff3d1d11291b7e115317b06503f0ec52949122ca.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 0/2] use SM3 instead of SM3_256
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Date:   Thu, 28 Oct 2021 09:07:43 -0400
-In-Reply-To: <CAMj1kXGiC-LCc-50cfddJxJ-mezO=fcLqhJHiK110CgxKusy9w@mail.gmail.com>
-References: <20211026075626.61975-1-tianjia.zhang@linux.alibaba.com>
-         <CAMj1kXGiC-LCc-50cfddJxJ-mezO=fcLqhJHiK110CgxKusy9w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: KOLHtfetbXM2M_5ECkPDVsAXdzorivCz
-X-Proofpoint-GUID: ThYkNwItNh-c7SaFT-nOwuL1brdOArJ_
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 28 Oct 2021 09:11:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635426536; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=Qb7X8st4uzzS9456OTzm8fGK/jpZSE56FlCL1Nrl7ho=; b=IwjFwGb4seB+2Ph6p2PPqWFbP7yUkVMPtpDvP2Z55Crr6uyWB0M6nrleJsOpeh54bNKiyWuw
+ BmQdyN1eB0/PKtH2CJeLSbJWW5RgU1nro+toQ4ZGIjbQizqIL3K0KmPF8L5slF5KufHkuRtE
+ WBS1aG6XB1U/okcFQOq39r4iTGM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 617aa0e0648aeeca5cd8fd0f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 13:08:48
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9961FC43618; Thu, 28 Oct 2021 13:08:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from PILLAIR1 (unknown [49.205.244.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98DE2C4338F;
+        Thu, 28 Oct 2021 13:08:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 98DE2C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   <pillair@codeaurora.org>
+To:     "'Stephen Boyd'" <swboyd@chromium.org>, <agross@kernel.org>,
+        <bjorn.andersson@linaro.org>, <mathieu.poirier@linaro.org>,
+        <ohad@wizery.com>, <p.zabel@pengutronix.de>, <robh+dt@kernel.org>
+Cc:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sibis@codeaurora.org>,
+        <mpubbise@codeaurora.org>, <kuabhs@chromium.org>
+References: <1633330133-29617-1-git-send-email-pillair@codeaurora.org> <CAE-0n53rkv5SKO74M+7bkuMgaD7tS0k6a8m7KeQL8j3DTHdB_Q@mail.gmail.com>
+In-Reply-To: <CAE-0n53rkv5SKO74M+7bkuMgaD7tS0k6a8m7KeQL8j3DTHdB_Q@mail.gmail.com>
+Subject: RE: [PATCH v6 0/3] Add support for sc7280 WPSS PIL loading
+Date:   Thu, 28 Oct 2021 18:38:39 +0530
+Message-ID: <001401d7cbfc$f0d1d700$d2758500$@codeaurora.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-28_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 adultscore=0 mlxscore=0 suspectscore=0 clxscore=1015
- phishscore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110280073
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKwJKLJ4tjmgoIJWycFdR/OOcUEpALtul/YqiBB3JA=
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-26 at 18:08 +0200, Ard Biesheuvel wrote:
-> On Tue, 26 Oct 2021 at 09:56, Tianjia Zhang
-> <tianjia.zhang@linux.alibaba.com> wrote:
-> > According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.html
-> > ,
-> > SM3 always produces a 256-bit hash value and there are no plans for
-> > other length development, so there is no ambiguity in the name of
-> > sm3.
-> > 
-> 
-> What is the point of these changes? Having '256' in the identifiers
-> is merely redundant and not factually incorrect, so why can't we just
-> leave these as they are?
 
-Me too on this.  Plus the various standards bodies we follow are still
-using the 256 suffix and it's not clear they'll change.
 
-Finally, I'm not sure, given the confusion over sha256 and sha3-256,
-that the IETF won't eventually decide that all hash algorithms should
-be designated by <algorithm>-<bitlength> in which case this will get
-churned again ...
+> -----Original Message-----
+> From: Stephen Boyd <swboyd@chromium.org>
+> Sent: Friday, October 8, 2021 12:05 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>; agross@kernel.org;
+> bjorn.andersson@linaro.org; mathieu.poirier@linaro.org; =
+ohad@wizery.com;
+> p.zabel@pengutronix.de; robh+dt@kernel.org
+> Cc: linux-arm-msm@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; sibis@codeaurora.org; mpubbise@codeaurora.org;
+> kuabhs@chromium.org
+> Subject: Re: [PATCH v6 0/3] Add support for sc7280 WPSS PIL loading
+>=20
+> Quoting Rakesh Pillai (2021-10-03 23:48:50)
+> > Add support for PIL loading of WPSS co-processor for SC7280 SOCs.
+> >
+> > Changes from v4/v5:
+> > - Add yaml conversion for adsp/cdsp dt-bindings
+> > - Change clock names in wpss dt-bindings
+> > - Correct mistake in signed-off enail ID
+>=20
+> Can you keep a running tally here of the full progression of the =
+series?
+> That helps to look back and make sure we don't make a comment that has
+> already been made before.
+>=20
+> One more request. Can you add support for 'firmware-name' like there =
+is in
+> Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt so that we
+> can install firmware into some namespaced/versioned place instead of
+> having to put wpss files into /lib/firmware?=20
 
-James
+Hi Stephen,
+I have posted v7 with the support for firmware-name to be provided in =
+the DT entry.
 
+> It would also be nice to load a
+> single firmware file instead of having to split the file into many =
+pieces.
+
+This would require lot of changes and lot of code duplication from =
+request firmware.
+Also the base ath11k firmware files have been posted as split files.
+
+
+Thanks,
+Rakesh Pillai
 
