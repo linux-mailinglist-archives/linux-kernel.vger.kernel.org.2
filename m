@@ -2,107 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4259443F294
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EFD43F28F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhJ1WTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
+        id S231463AbhJ1WSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbhJ1WTM (ORCPT
+        with ESMTP id S231124AbhJ1WSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:19:12 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2957FC061570;
-        Thu, 28 Oct 2021 15:16:45 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id i26so11320386ljg.7;
-        Thu, 28 Oct 2021 15:16:45 -0700 (PDT)
+        Thu, 28 Oct 2021 18:18:35 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F06BC061570;
+        Thu, 28 Oct 2021 15:16:07 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id n67so10111875iod.9;
+        Thu, 28 Oct 2021 15:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zccR1Tq2hhAOkM8nx/fMHIfFzwGXSXLaETWpnFro8HM=;
-        b=eZn3kUXN9Nt3/bN2zLGP9h5JktbC5d8/qFxl6rGy4PINL8CGIYT7YsvvIiHorRWnGx
-         +PfmZ8Ymu4Q4RLycU7jQcbW1u03IvhkMhjS427UEQ3lwcDsxqtwtFskI6Ea5oqmIHC5k
-         JKBtHNR3EPsTvXTYpHyIMyWTfri+CYRD0NwZILNDfMwe2R8F7HkKfxwCHiyMED3piZ7t
-         /PwHXKIH/uGRNPFS6E4U+Lbphpu/sF/7WZJovpM6xvoCdu0TCIY/SDQ+/i8rit4aZULv
-         VvUI5Q/C8H2JE0rNVpxtqiz0gXy/c8dMMIdybUv7t5i2rycALvRknx9BkFQwcYaXPNOC
-         RKEA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rg70L5/px9IrBTtKlC6NDcYo4kfwnEG9jTpOWhVqPcc=;
+        b=eLMlkR3CrL/8PKVzyYVcuncnEdxnsfxn3riWgN8oKOQlGwnX+UChUbaymKEw6taCnn
+         T8Axfv4krveNN1JwPJ8iFTOlfd102NDBwnWrreHYu4O3lJvrvpNe2/UNEdxrzQ9SIEC2
+         QLoTJw49KEGspkcIbfmZwhQPQnQHmI3RwBeznARr6NdRUey/+TThUWIxW9Sln8YZy4R8
+         11VLzJvcLrKyWixt2PgLtCOpiAI3GIufYgiUdKrBvJwerHJEVjKfl6H+d48ohmeM6LH4
+         qI+q4pHyEmmlq/Z2OQHtWTRygZ3gz8XwduyZ/uS8/ZOuJq5JPvoIFBAGbgx8he4F1Sb8
+         u0iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zccR1Tq2hhAOkM8nx/fMHIfFzwGXSXLaETWpnFro8HM=;
-        b=AxvU6da5ELuPsooFzvePJpGP1AAlp27wdzyCL35UQMaDhL88AO1Da3WfhEUiN3lqUw
-         U4wBWlrNQ9wOf5Of3nOIMQ5ZQ5jgYmUsnBX84HKU2SxL58Mf+TH6ElIhS4SsCIa9ZEN1
-         RPzlYT1LB5MYvEKn+GIAGRzg6v5cIcRF1icOvPCIlORN6lpdIB4MY+Ht20if6jqTK7Me
-         4QhVnKxtMfd4eg1p75vbFJcgj+n20ddzNQTY9v4rPtw2/5Au9cq/JT/G77kZopj1OS3I
-         8KjuHllYelM12i23L5jWAo96U16CPca855s6hMxcQytWGuuEkVMt1ej3yLU4xrm+/8Mo
-         FWAg==
-X-Gm-Message-State: AOAM530LjtWc/oiahVbo8PGDTB0V0IRfwsjlPdX+X/nzT4qwgu0b91JT
-        wT3RggVnZJCCBHL+YYV6tYg=
-X-Google-Smtp-Source: ABdhPJyalJUYRYJip4v8rzWeYJluHz+c9NGgYD3IPDSAitpycpPooq4FbSIruhkvebXV6HHBFm9Glg==
-X-Received: by 2002:a2e:8846:: with SMTP id z6mr7523700ljj.277.1635459403581;
-        Thu, 28 Oct 2021 15:16:43 -0700 (PDT)
-Received: from localhost.localdomain (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.gmail.com with ESMTPSA id 9sm404598lfz.157.2021.10.28.15.16.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 15:16:43 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Viresh Kumar <vireshk@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v4] dt-bindings: opp: Allow multi-worded OPP entry name
-Date:   Fri, 29 Oct 2021 01:15:47 +0300
-Message-Id: <20211028221547.22601-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rg70L5/px9IrBTtKlC6NDcYo4kfwnEG9jTpOWhVqPcc=;
+        b=L/DRI1oulBjkW6Rq0CXcppn/FcluXqjQE4oIn+JLyA9t33m+qKb4OViuIQ33dYX60R
+         001EoHXE37qWdx8gTzPi/MvP+0UN/jAjz+UphTB6PZu3DbBt97J7/d40RZsSwzJgNY9Y
+         GlpuQqpzwLP1og4EplBOkxjh+GGeA8a4mHRYSjO25pI0T8fnxwcquDvChSlXldFec5Pj
+         aXNAtzx5fmVOUO2Xdgh5oHpuTy2tlACb16SX/iqb7ULhgL5EJF1XngfyP0dIWs6/kPWa
+         PMH60Ova2gDyBmJBWgGGUgLIqd0lij4W3MPqKDzSOmjHjD3ktpaD9GfSy10g9NwErib2
+         0PWQ==
+X-Gm-Message-State: AOAM530S+Uu4ldN9l126Q2om5ocMNGKP6+14NOqQf4mbs13MQ1WCrDvO
+        fYNvgKUlK8dRx3MS1sKF12BqYVFquYkUq8daKII=
+X-Google-Smtp-Source: ABdhPJwQxQk+UInDEwQGMzT3vtIBaThPNMfpgrXChu4UuLq9KZI3dYCJq/rt6DgOPhDRcNVWlcfUbesD2a/U+JO29i0=
+X-Received: by 2002:a05:6602:736:: with SMTP id g22mr5165002iox.139.1635459366944;
+ Thu, 28 Oct 2021 15:16:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com> <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+ <YXmkvfL9B+4mQAIo@arm.com> <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
+ <YXsUNMWFpmT1eQcX@arm.com>
+In-Reply-To: <YXsUNMWFpmT1eQcX@arm.com>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Fri, 29 Oct 2021 00:15:55 +0200
+Message-ID: <CAHpGcMLeiXSjCJGY6SCJJ=bdNOspHLHofmTE8aC_sZtfHRG5ZA@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all OPP entries fit into a single word. In particular NVIDIA Tegra OPP
-tables use multi-word names. Allow OPP entry to have multi-worded name
-separated by hyphen. This silences DT checker warnings about wrong naming
-scheme.
+Am Do., 28. Okt. 2021 um 23:21 Uhr schrieb Catalin Marinas
+<catalin.marinas@arm.com>:
+> One last try on this path before I switch to the other options.
+>
+> On Wed, Oct 27, 2021 at 02:14:48PM -0700, Linus Torvalds wrote:
+> > On Wed, Oct 27, 2021 at 12:13 PM Catalin Marinas
+> > <catalin.marinas@arm.com> wrote:
+> > > As an alternative, you mentioned earlier that a per-thread fault status
+> > > was not feasible on x86 due to races. Was this only for the hw poison
+> > > case? I think the uaccess is slightly different.
+> >
+> > It's not x86-specific, it's very generic.
+> >
+> > If we set some flag in the per-thread status, we'll need to be careful
+> > about not overwriting it if we then have a subsequent NMI that _also_
+> > takes a (completely unrelated) page fault - before we then read the
+> > per-thread flag.
+> >
+> > Think 'perf' and fetching backtraces etc.
+> >
+> > Note that the NMI page fault can easily also be a pointer coloring
+> > fault on arm64, for exactly the same reason that whatever original
+> > copy_from_user() code was. So this is not a "oh, pointer coloring
+> > faults are different". They have the same re-entrancy issue.
+> >
+> > And both the "pagefault_disable" and "fault happens in interrupt
+> > context" cases are also the exact same 'faulthandler_disabled()'
+> > thing. So even at fault time they look very similar.
+>
+> They do look fairly similar but we should have the information in the
+> fault handler to distinguish: not a page fault (pte permission or p*d
+> translation), in_task(), user address, fixup handler. But I agree the
+> logic looks fragile.
+>
+> I think for nested contexts we can save the uaccess fault state on
+> exception entry, restore it on return. Or (needs some thinking on
+> atomicity) save it in a local variable. The high-level API would look
+> something like:
+>
+>         unsigned long uaccess_flags;    /* we could use TIF_ flags */
+>
+>         uaccess_flags = begin_retriable_uaccess();
+>         copied = copy_page_from_iter_atomic(...);
+>         retry = end_retriable_uaccess(uaccess_flags);
+>         ...
+>
+>         if (!retry)
+>                 break;
+>
+> I think we'd need a TIF flag to mark the retriable region and another to
+> track whether a non-recoverable fault occurred. It needs prototyping.
+>
+> Anyway, if you don't like this approach, I'll look at error codes being
+> returned but rather than changing all copy_from_user() etc., introduce a
+> new API that returns different error codes depending on the fault
+> (e.g -EFAULT vs -EACCES). We already have copy_from_user_nofault(), we'd
+> need something for the iov_iter stuff to use in the fs code.
 
-Reviewed-by: David Heidelberg <david@ixit.cz>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
+We won't need any of that on the filesystem read and write paths. The
+two cases there are buffered and direct I/O:
 
-Changelog:
+* In the buffered I/O case, the copying happens with page faults
+disabled, at a byte granularity. If that returns a short result, we
+need to enable page faults, check if the exact address that failed
+still fails (in which case we have a sub-page fault),  fault in the
+pages, disable page faults again, and repeat. No probing for sub-page
+faults beyond the first byte of the fault-in address is needed.
+Functions fault_in_{readable,writeable} implicitly have this behavior;
+for fault_in_safe_writeable() the choice we have is to either add
+probing of the first byte for sub-page faults to this function or
+force callers to do that probing separately. At this point, I'd vote
+for the former.
 
-v4: - Corrected pattern to retain matching of variants like 'opp1'.
-      Was spotted by Rob Herring.
+* In the direct I/O case, the copying happens while we're holding page
+references, so the only page faults that can occur during copying are
+sub-page faults. When iomap_dio_rw or its legacy counterpart is called
+with page faults disabled, we need to make sure that the caller can
+distinguish between page faults triggered during
+bio_iov_iter_get_pages() and during the copying, but that's a separate
+problem. (At the moment, when iomap_dio_rw fails with -EFAULT, the
+caller *cannot* distinguish between a bio_iov_iter_get_pages failure
+and a failure during synchronous copying, but that could be fixed by
+returning unique error codes from iomap_dio_rw.)
 
-v3: - Viresh Kumar suggested that we shouldn't support postfix variant.
-      I dropped variant with postfix naming scheme and multi-wording
-      support of table names.
+So as far as I can see, the only problematic case we're left with is
+copying bigger than byte-size chunks with page faults disabled when we
+don't know whether the underlying pages are resident or not. My guess
+would be that in this case, if the copying fails, it would be
+perfectly acceptable to explicitly probe the entire chunk for sub-page
+faults.
 
-v2: - In addition to a multi-wording support, support of the postfix
-      *-opp-table naming scheme is added to the updated pattern.
-
- Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-index ae3ae4d39843..15a76bcd6d42 100644
---- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-+++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
-@@ -33,7 +33,7 @@ properties:
-     type: boolean
- 
- patternProperties:
--  '^opp-?[0-9]+$':
-+  '^opp(-?[0-9]+)*$':
-     type: object
-     description:
-       One or more OPP nodes describing voltage-current-frequency combinations.
--- 
-2.33.1
-
+Thanks,
+Andreas
