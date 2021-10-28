@@ -2,299 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA5443D928
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73E043D92D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhJ1CJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhJ1CJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:09:37 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12CEC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 19:07:10 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id u18so7330455wrg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 19:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=q11tY1kGQW9LucW8sG+xXia7coWutkfUkM0ceajT1RA=;
-        b=owuNgYs6U6AaLEb+ag9tJ1PROAS+bUOqJXwofksm3VDghWPaKWGxlkV98pM7Nfk64s
-         GipkV8MZmxI5AjD5KnI1NcrMiQr/ZTecfzRdfmZEUI0bASj5aMhQiro1fK2SBCrqdx0n
-         CxHsFE71vnyHGJlTTd8QenW5Gq7DFhlthy4EULGVJraN5euuBvlExJKtpKKJiMDju/WB
-         zpbIRyZuiCC3V9izpA8iEsAJiTZn1Oc09TUTrFDrlxZal3yD2gXLE746IObz0I/trJQZ
-         ZWWcIwh4Z+uJR4mXR3Mg+DPNmNOpYg0x9Kg4Ok90PYgSSwuuhWPpQVkpWs8mVA2rJM7W
-         uzRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=q11tY1kGQW9LucW8sG+xXia7coWutkfUkM0ceajT1RA=;
-        b=VDJo6ObXLPBSuyHpDCYcfcjDTJoM1k96/qvXV4iNN9GbJNfRFvhtVEqsTu/RAhe81n
-         tDex9flQ4Yb/oGTobLMGEzA2VZaBIkpDTgLAfs56Z0+9CH7YnOCqPnYOFxLuJivcCpIN
-         MrWXi6mMdawDmGQfqTRHTmrngESI/z8dLkzdKvSB1RVTQUpTXq5E3K9oAd3DZWsvTA52
-         ehRZXpCplQ026ZG+MtEsJgtNaliD6Emyw9w1emz2mY6y4hlmdaqvMluAA37uxgBXD/6N
-         cQDuCmAnVW0FJQ/Xov2iw7XsIzR8mxHcsKKqrAlAKTlx7NSTy88+EhwBu077NGrsxRAR
-         exnw==
-X-Gm-Message-State: AOAM531Nf4Sg170D9npA1MfPYazOArv+ZcDjYC9b5XjTtFe/AaatOchr
-        WBjJ5/HeKWFpbAOiP6c/dnEQ1QFcbq4XbeH1WscTug==
-X-Google-Smtp-Source: ABdhPJzAn1/eEcEqbjXB6Do9zC+qw7f2VNzAuMmoU/faRGnQBW2s5WEIklTeU+hlmZ4p0w+Tk1ualxzCBhquObBY4bc=
-X-Received: by 2002:a5d:64c8:: with SMTP id f8mr1812767wri.398.1635386829134;
- Wed, 27 Oct 2021 19:07:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210723193137.v3.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
- <20210723193137.v3.3.I4b323d2adf1dca62777c41de344a7d2f79b7f908@changeid>
- <20211027222326.e55g26ezaxpk7kkm@core> <20211027234722.2rjmxhivrkae2fai@core>
-In-Reply-To: <20211027234722.2rjmxhivrkae2fai@core>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Thu, 28 Oct 2021 10:06:58 +0800
-Message-ID: <CAJQfnxFt5OVs1Tw9q6JVkQeKpEFfjyX6MM4qLkDLf02rRL7gew@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] Bluetooth: hci_h5: Add runtime suspend
-To:     =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megi@xff.cz>,
-        Archie Pusaka <apusaka@google.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Hilda Wu <hildawu@realtek.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S229783AbhJ1CKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:10:21 -0400
+Received: from mga12.intel.com ([192.55.52.136]:45184 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229603AbhJ1CKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:10:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="210383865"
+X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
+   d="scan'208";a="210383865"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 19:07:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
+   d="scan'208";a="498160685"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga008.jf.intel.com with ESMTP; 27 Oct 2021 19:07:53 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 27 Oct 2021 19:07:53 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Wed, 27 Oct 2021 19:07:52 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Wed, 27 Oct 2021 19:07:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ozd7K773CS0qA/cTTNXYcb0+YaChtkoiatA164ieWlRWU4ZfVonns9R1djeQ1trlD15HdRfK4YCyKN4P+Q8l8MK7UHjfsw8Cy6OHO6IOtZGvU+7Vg+qonISyX7vCrzBtWTeTkdEtCvJvZeo2htzVBteOaAfzwSBPQ3ZNrES+rGPyJGdEV4Erj2ffsq8bQnTcsTNBshnWye6xUuzPyC5hwu7P9lX6sQ75jX6k2CAOy6Iyhidm4rHhQb0QUdqKhAV8kuZEyGeOoimukOb58zetSjyVdSowGJyGMsPOayZXh7pOh1a/hRDrqT324imklNtBpk/Ldit2STbKBROxikMtEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+WGW91mYfszMEpTePqiAdGR8Xy6+jjeAxFjVnsvPxAY=;
+ b=jzSFwkus6V2TUDx6cFtp7zQ9JpXmQFV7NbFHpTcj8rgStHdOe5QWl/h/ZiPIY8d3wjxcsg7OMiaRpOVV2JWjqFikjvi1pnLtrbFiJ9QzV0Uu8d4v8hqk6dcPvR9FByLNVpa8LOclklymVxOhuY1QisFKWB3d4AUXkZ2ESNG9pjswkB4ZfuYnn4ZhuRWf5QGOi1tDlyuNygVO5NElJtFWHHyNKH1GiaTHqTOe2SKS8gzdzKQmGpkzd7LhMRrR1Tq290C+6/XinmvZ5plY4+JhlLWedPhM65O6k0cf3uWd3y+PwK+4hZjF4iSATEneZQtKE3lKwWjkaZCjqkTV04yZhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+WGW91mYfszMEpTePqiAdGR8Xy6+jjeAxFjVnsvPxAY=;
+ b=lggHWBfetiouJezS5no48oxg09Ye/3ocLD5DkSEs5b80oH484SfQO5pMh1AzgoD8uWanxcX5U98Q/mxCD2H+l0XIpEcorQq672jBxBkGxN7YTvmYi/ULpIHYLtNXSEAzNSfB59km2pwoe6j5zoUZ3WzmyDqrXkYMhb3KePREGmY=
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
+ by BN9PR11MB5420.namprd11.prod.outlook.com (2603:10b6:408:101::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13; Thu, 28 Oct
+ 2021 02:07:46 +0000
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ecad:62e1:bab9:ac81]) by BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ecad:62e1:bab9:ac81%7]) with mapi id 15.20.4649.014; Thu, 28 Oct 2021
+ 02:07:46 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: RE: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Thread-Topic: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Thread-Index: AQHXrSGNbNtRgavabUSKJjvt8l12BauwlhaAgAAouwCAACufAIAAEL4QgACKr4CACtdfoIAA3DaAgBUX8GCAAHivgIAAl4FggAl6ZNCAAXETAIAAHLdQgAYt1oCAA0rdUA==
+Date:   Thu, 28 Oct 2021 02:07:46 +0000
+Message-ID: <BN9PR11MB5433E2A78648049A41C484B78C869@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <BN9PR11MB54333BDB1E58387FD9999DF18CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210923114219.GG964074@nvidia.com>
+ <BN9PR11MB5433519229319BA951CA97638CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210930222355.GH964074@nvidia.com>
+ <BN9PR11MB5433530032DC8400B71FCB788CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20211014154259.GT2744544@nvidia.com>
+ <BN9PR11MB543327BB6D58AEF91AD2C9D18CB99@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <BL1PR11MB5429973588E4FBCEC8F519A88CBF9@BL1PR11MB5429.namprd11.prod.outlook.com>
+ <20211021233036.GN2744544@nvidia.com>
+ <BN9PR11MB5433482C3754A8A383C3B6298C809@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20211025233459.GM2744544@nvidia.com>
+In-Reply-To: <20211025233459.GM2744544@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e1b8675b-9cf1-4667-615f-08d999b7bc11
+x-ms-traffictypediagnostic: BN9PR11MB5420:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-microsoft-antispam-prvs: <BN9PR11MB5420B8388671EA7622FEA47C8C869@BN9PR11MB5420.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4qiggXGZAz8GAKUZnuhavMWZ7d4UwOIdUlUOPgzze9vyLlh597BH2ScjxUOhHi3bi17qDeXbgo4u2keQH5rVRxI7gyjRKOo2j+a0pPy67M0uEHDqSPdbzuD6sBKlCPpYjCtiu+x22JDHP6kUHfQ7OuSbux3n7s1oUNIMgVz7k3rt8sXtD7+4wQMMVNexEfjNJZvjlqdJFSRfaHK7gmGKzefb2lxSF/nACXutv5+nzvvqxTGB9QQQPSxYzMbkcnS3E3V1rcxCjSYDeAnl7p0EJ2HQvI+bkewMy30P4Xpo1PbBVMInztFMyL8X/E+f1bKvSw/RQkyOvyLQ94P5quKqUjgZeBKJjIiDjXIhzEBwcUI4olFu9DFpV1oJIcGOQCDl1S3BF7hDmXD4oh8xZwnDYs7DKkpCFfho80Xco76HUNL9f5sihVM8Do6XnZWYdYZ6/XZwjSUXRFsJt/M7RPG+n0Byo2mSsQDoV3NNzu+g9GhhNFH/1mV0b/u90srMddlMF/k7bq+9qCGT9npCdLxsJ8YRW9F4F7ryMmJwXnOLRbNPFGT+jxB9iOVrN7K9vDU/JnNXyt/GFTzFy2j/0yRmBz7gNgP1yj0qIeioFkynnu/1r7VjChxHVfcah43fMOeO42VOeGlNl8AxI5DTzDcjgNiRGRybHupV8m7caPzfKQo+RRHdbeqegAuV1YZh+mDSPkAfloOEJwCDsdhLSXFS1Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(7416002)(83380400001)(7696005)(64756008)(66446008)(55016002)(6506007)(4326008)(38100700002)(52536014)(122000001)(71200400001)(316002)(38070700005)(2906002)(8936002)(86362001)(186003)(5660300002)(26005)(66556008)(66946007)(76116006)(8676002)(508600001)(82960400001)(6916009)(9686003)(54906003)(33656002)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xKecstFExDz/ccZ2yuEGrzZvJxRNBPStwOxdKdkoY3csPgM9ehsKfpr9CxPZ?=
+ =?us-ascii?Q?Au96+e0MnRh+8oL3bUKFyWS7I9wWLQDo0uW9IlPuSY2u2qqky8zw8EoHfn/n?=
+ =?us-ascii?Q?VhcpxMEJMErJF+AiGc9VUGfhViq6UeNzIGMlFqqvkkHVG35SNHai3tHWLqCU?=
+ =?us-ascii?Q?Z4421x4xG31WsTQvFLGdTfLo0JHS8bu7H7gk578Mn8O8ZIKXpuHSKpcLyKY2?=
+ =?us-ascii?Q?QVv52NEIPTUpW7SKTdpUMGjEsYAoxVICihdmQeRMJ1Hki2NjBI2QYcGy/QF1?=
+ =?us-ascii?Q?eWMzMrMPSM1AIx2u3y7KkZk+VJ+pjKH4NsD1f2EfbA9TsxXn/DUz1QlM30LT?=
+ =?us-ascii?Q?LrmZDpM5BcBYEJUjRVXPhLbUaSRgl+x2G9OwFZ3bN5RF+0iNbEu3ztH/9+ov?=
+ =?us-ascii?Q?EtfZNPtM0zkGiNhz8WXT1kKRz5zCMn00vpk1xVIkAGnjBZYcjgbb3HYfpzGZ?=
+ =?us-ascii?Q?xm2yQp+nS+C+m9eZlY9acmNNx04OVzNoWrmYV7rEHe6egV6bzX4T1s+eK2NP?=
+ =?us-ascii?Q?/9Q6Op7AwWul8bz4OvHoHrVvXSdkvzZqsjs9pvP4upQWNVtPcRJICQO8NOuC?=
+ =?us-ascii?Q?er48tAEDcRvqNqSNife1LYb7ABmxOKPP4AbO6A+CHi4UT2XLxTVDGrm+NYnx?=
+ =?us-ascii?Q?Lf4bpvUg9P0fDUG49A1JHhS0lUVol8EjZTyKZmYKxzNaE4ejJ95mpXvLN0WA?=
+ =?us-ascii?Q?eE8HLvshFBcDwBnM25x88leaHOYGmxFDO6/d0de0hh/AuduOPqB1EmNQHg3e?=
+ =?us-ascii?Q?gGoCFDRAH9swPnnvrrTb+y4cuThNbNaPHbaiinhsEoy8HDx5a6yH7Q46oT7e?=
+ =?us-ascii?Q?IRpc1tp0k36K711iEvkslJFtYuWFujhEDh7L8Kv16h8I2IbfactVjy4GuMxT?=
+ =?us-ascii?Q?tLe7aXHQI1spGpgSRxZExwxmxqTdQjszYkvHu9NizP04EB2++xue9OAP7bO8?=
+ =?us-ascii?Q?WxK8cTaZD7yvoHBNMz15jvO3sEDmnTq6JS4S3iCfJlHAP//KbfEaPpXKR7q7?=
+ =?us-ascii?Q?t7RP8zALve+umVuBslLsQD8qXeRi08fzgaUFxORNcqywwXYEHnTDgS/cccUx?=
+ =?us-ascii?Q?DlLQ80CGZl5NleAfISNOukTzSw8PC8ARd9jI8u5QCybp79k15qFc798clTVY?=
+ =?us-ascii?Q?H6z+Kr8E3Pk9gxVMq/VpK14EGXuqJ2CMR9xftNX9+xZy/QpqtlB4U9kM1W+n?=
+ =?us-ascii?Q?RsapTXGgQtL8s035j/nobKq2sZEE0UVafU0DmJzbHCFYiUtp2D0mYluVv+fp?=
+ =?us-ascii?Q?MeWIhr0O0uso2QFz74zXo9rr/Hq/K230pa9xNiWzf1DlZmhHT60b5IxJaEa/?=
+ =?us-ascii?Q?ZtnAdnmeHJpFN2RS489HooFCOrTTJIfvQwLujtR2NmcloyF+I5iIgI0OBpF5?=
+ =?us-ascii?Q?RWHTy3kOgU7/uBVkuwvUnHxmBiwLdKLwDGdbrOtMTeVME7y3xXDKuXo2ovkF?=
+ =?us-ascii?Q?L7A07jF+EOaItlMtUS+5dZfPJbI8XnruI8l7QLvGC2r6aJWExacArtHthgJi?=
+ =?us-ascii?Q?zWCOgfgFhNlr8U9sdaTfkZRpjimOMHITSwrYN5PWIs+WIQCYFAb5xJ4YiFgp?=
+ =?us-ascii?Q?KkplVmScMaYiK2nuhaKuGwXlvrZ9GzVCPEP+iDqQFiQsJOPBsaNvxJM4gQDR?=
+ =?us-ascii?Q?zWnv6nvkom1RohJ0fg/Y0lk=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1b8675b-9cf1-4667-615f-08d999b7bc11
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2021 02:07:46.0407
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ACeEfeGiDUy4o6UmIbFfByDaW71eo6jyvNxQLbtwVRupXuwFvDB1uZQjIPMfGpke24keXNnjI1kuUw8XusdfLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5420
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ondrej,
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Tuesday, October 26, 2021 7:35 AM
+>=20
+> On Fri, Oct 22, 2021 at 03:08:06AM +0000, Tian, Kevin wrote:
+>=20
+> > > I have no idea what security model makes sense for wbinvd, that is th=
+e
+> > > major question you have to answer.
+> >
+> > wbinvd flushes the entire cache in local cpu. It's more a performance
+> > isolation problem but nothing can prevent it once the user is allowed
+> > to call this ioctl. This is the main reason why wbinvd is a privileged
+> > instruction and is emulated by kvm as a nop unless an assigned device
+> > has no-snoop requirement. alternatively the user may call clflush
+> > which is unprivileged and can invalidate a specific cache line, though
+> > not efficient for flushing a big buffer.
+> >
+> > One tricky thing is that the process might be scheduled to different
+> > cpus between writing buffers and calling wbinvd ioctl. Since wbvind
+> > only has local behavior, it requires the ioctl to call wbinvd on all
+> > cpus that this process has previously been scheduled on.
+>=20
+> That is such a hassle, you may want to re-open this with the kvm
+> people as it seems ARM also has different behavior between VM and
+> process here.
+>=20
+> The ideal is already not being met, so maybe we can keep special
+> casing cache ops?
+>=20
 
-There's a mistake on my side with the WAKEUP_DISABLE flag, but it's
-fixed by Hans in this patch.
-https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.gi=
-t/commit/drivers/bluetooth/hci_h5.c?id=3D9a9023f314873241a43b5a2b96e9c0caaa=
-958433
-Could you try and see whether that fixes your issue?
+Now Paolo confirmed wbinvd ioctl is just a thought experiment.=20
 
-Thanks,
-Archie
+Then Jason, want to have a clarification on 'keep special casing' here.
 
+Did you mean adopting the vfio model which neither allows the user
+to decide no-snoop format nor provides a wbinvd ioctl for the user
+to manage buffers used for no-snoop traffic, or still wanting the user=20
+to decide no-snoop format but not implementing a wbinvd ioctl?
 
-On Thu, 28 Oct 2021 at 07:47, Ond=C5=99ej Jirman <megi@xff.cz> wrote:
->
-> On Thu, Oct 28, 2021 at 12:23:26AM +0200, megi xff wrote:
-> > Hello Archie,
-> >
-> > On Fri, Jul 23, 2021 at 07:31:57PM +0800, Archie Pusaka wrote:
-> > > From: Archie Pusaka <apusaka@chromium.org>
-> > >
-> > > This patch allows the controller to suspend after a short period of
-> > > inactivity.
-> >
-> > I see this pattern in dmesg after this patch: (I've added printks
-> > to many hci_h5 functions to see what's going on)
-> >
-> > [  493.150325] h5_dequeue
-> > [  493.150332] h5_dequeue
-> > [  493.150336] h5_dequeue
-> > [  493.150340] h5_dequeue
-> > [  493.150370] h5_dequeue
-> > [  493.150547] h5_recv
-> > [  493.150863] h5_recv
-> > [  493.150878] h5_dequeue
-> > [  493.150885] h5_dequeue
-> > [  493.150888] h5_dequeue
-> > [  493.151315] h5_enqueue
-> > [  493.151328] h5_dequeue
-> > [  493.151350] h5_dequeue
-> > [  493.151447] h5_dequeue
-> > [  493.151612] h5_recv
-> > [  493.151945] h5_recv
-> > [  493.151961] h5_dequeue
-> > [  493.151967] h5_dequeue
-> > [  493.151970] h5_dequeue
-> > [  495.171812] h5_flush
-> > [  495.171845] h5_flush
-> > [  499.267473] h5_serdev_suspend
-> > [  499.267490] h5_btrtl_suspend
-> > [  499.273784] h5_recv
-> > [  499.273828] h5_serdev_resume
-> > [  499.273833] h5_btrtl_resume
-> > [  499.273837] h5_btrtl_resume / reprobe
-> > [  499.273855] h5_btrtl_reprobe_worker
-> > [  499.273913] h5_serdev_remove
-> > [  499.274997] h5_close
-> > [  499.275010] h5_btrtl_close
-> > [  499.275624] h5_serdev_probe
-> > [  499.276126] h5_open
-> > [  499.276132] h5_btrtl_open
-> > [  499.915820] h5_dequeue
-> > [  499.915857] h5_dequeue
-> > [  499.915863] h5_dequeue
-> > [  499.916212] h5_dequeue
-> > [  499.919643] h5_recv
-> > [  499.919675] h5_dequeue
-> > [  499.919682] h5_dequeue
-> > [  499.919687] h5_dequeue
-> > [  499.919692] h5_dequeue
-> >
-> > repeating ad nauseam every 6s.
-> >
-> > Basically bluetooth device reprobes every 6s. Looks like h5_recv call
-> > after h5_btrtl_suspend wakes the device immediately after suspend.
-> >
-> > (there are no users of bluetooth in my userspace) I'd expect the
-> > device to stay suspended after suspend.
-> >
-> > I have some extra patches to support 8723cs but nothing that
-> > would affect this codepath. https://megous.com/git/linux/log/?h=3Dbt-5.=
-15
-> >
-> > I assume it will have the same behavior with 8723bs which is already
-> > mainline. I guess this issue is specific to devices with H5_INFO_WAKEUP=
-_DISABLE
-> > flag set.
-> >
-> > Do you have any ideas?
->
-> I've added dump_stack() to first h5_recv call after suspend (the one
-> that's causing the immediate wakeup after runtime PM suspend), and it ret=
-urns:
->
-> [    5.938258] recv
-> [   13.377775] suspend
-> [   13.384106] recv
-> [   13.384120] CPU: 1 PID: 83 Comm: kworker/u8:1 Tainted: G         C    =
-    5.15.0-rc7-00002-g64f2c49e8400 #23
-> [   13.384141] Hardware name: Pine64 PinePhone (1.2) (DT)
-> [   13.384151] Workqueue: events_unbound flush_to_ldisc
-> [   13.384196] Call trace:
-> [   13.384199]  dump_backtrace+0x0/0x15c
-> [   13.384224]  show_stack+0x14/0x20
-> [   13.384232]  dump_stack_lvl+0x64/0x7c
-> [   13.384250]  dump_stack+0x14/0x2c
-> [   13.384258]  h5_recv+0x44/0xdbc [hci_uart]
-> [   13.384288]  hci_uart_receive_buf+0x6c/0x94 [hci_uart]
-> [   13.384298]  ttyport_receive_buf+0x60/0xf4
-> [   13.384318]  flush_to_ldisc+0xb0/0x160
-> [   13.384324]  process_one_work+0x1d8/0x380
-> [   13.384339]  worker_thread+0x178/0x4e0
-> [   13.384348]  kthread+0x11c/0x130
-> [   13.384359]  ret_from_fork+0x10/0x20
->
-> It's comming from here https://elixir.bootlin.com/linux/latest/source/dri=
-vers/tty/tty_buffer.c#L510
->
-> Which can be scheduled from these places:
->
-> - https://elixir.bootlin.com/linux/latest/source/drivers/tty/tty_buffer.c=
-#L65
-> - https://elixir.bootlin.com/linux/latest/source/drivers/tty/tty_buffer.c=
-#L413
->
-> And that's where I lose a thread of what can be happening. :)
->
-> Maybe h5_recv is not a good function to mark activity on the device,
-> due to tty_buffer code just calling it to check if some data are
-> available, even if none are? Even if nothing uses bluetooth from
-> userspace...
->
-> kind regards,
->         o.
->
-> > kind regards,
-> >       o.
-> >
-> >
-> > > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > > Reviewed-by: Hilda Wu <hildawu@realtek.com>
-> > >
-> > > ---
-> > >
-> > > Changes in v3:
-> > > * Reordering #include
-> > >
-> > >  drivers/bluetooth/hci_h5.c | 20 ++++++++++++++++++++
-> > >  1 file changed, 20 insertions(+)
-> > >
-> > > diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-> > > index cbc63b057f33..0c0dedece59c 100644
-> > > --- a/drivers/bluetooth/hci_h5.c
-> > > +++ b/drivers/bluetooth/hci_h5.c
-> > > @@ -12,6 +12,7 @@
-> > >  #include <linux/kernel.h>
-> > >  #include <linux/mod_devicetable.h>
-> > >  #include <linux/of_device.h>
-> > > +#include <linux/pm_runtime.h>
-> > >  #include <linux/serdev.h>
-> > >  #include <linux/skbuff.h>
-> > >
-> > > @@ -21,6 +22,8 @@
-> > >  #include "btrtl.h"
-> > >  #include "hci_uart.h"
-> > >
-> > > +#define SUSPEND_TIMEOUT_MS 6000
-> > > +
-> > >  #define HCI_3WIRE_ACK_PKT  0
-> > >  #define HCI_3WIRE_LINK_PKT 15
-> > >
-> > > @@ -584,6 +587,10 @@ static int h5_recv(struct hci_uart *hu, const vo=
-id *data, int count)
-> > >             count -=3D processed;
-> > >     }
-> > >
-> > > +   pm_runtime_get(&hu->serdev->dev);
-> > > +   pm_runtime_mark_last_busy(&hu->serdev->dev);
-> > > +   pm_runtime_put_autosuspend(&hu->serdev->dev);
-> > > +
-> > >     return 0;
-> > >  }
-> > >
-> > > @@ -620,6 +627,10 @@ static int h5_enqueue(struct hci_uart *hu, struc=
-t sk_buff *skb)
-> > >             break;
-> > >     }
-> > >
-> > > +   pm_runtime_get_sync(&hu->serdev->dev);
-> > > +   pm_runtime_mark_last_busy(&hu->serdev->dev);
-> > > +   pm_runtime_put_autosuspend(&hu->serdev->dev);
-> > > +
-> > >     return 0;
-> > >  }
-> > >
-> > > @@ -951,6 +962,12 @@ static void h5_btrtl_open(struct h5 *h5)
-> > >     serdev_device_set_parity(h5->hu->serdev, SERDEV_PARITY_EVEN);
-> > >     serdev_device_set_baudrate(h5->hu->serdev, 115200);
-> > >
-> > > +   pm_runtime_set_active(&h5->hu->serdev->dev);
-> > > +   pm_runtime_use_autosuspend(&h5->hu->serdev->dev);
-> > > +   pm_runtime_set_autosuspend_delay(&h5->hu->serdev->dev,
-> > > +                                    SUSPEND_TIMEOUT_MS);
-> > > +   pm_runtime_enable(&h5->hu->serdev->dev);
-> > > +
-> > >     /* The controller needs up to 500ms to wakeup */
-> > >     gpiod_set_value_cansleep(h5->enable_gpio, 1);
-> > >     gpiod_set_value_cansleep(h5->device_wake_gpio, 1);
-> > > @@ -959,6 +976,8 @@ static void h5_btrtl_open(struct h5 *h5)
-> > >
-> > >  static void h5_btrtl_close(struct h5 *h5)
-> > >  {
-> > > +   pm_runtime_disable(&h5->hu->serdev->dev);
-> > > +
-> > >     gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
-> > >     gpiod_set_value_cansleep(h5->enable_gpio, 0);
-> > >  }
-> > > @@ -1066,6 +1085,7 @@ MODULE_DEVICE_TABLE(acpi, h5_acpi_match);
-> > >
-> > >  static const struct dev_pm_ops h5_serdev_pm_ops =3D {
-> > >     SET_SYSTEM_SLEEP_PM_OPS(h5_serdev_suspend, h5_serdev_resume)
-> > > +   SET_RUNTIME_PM_OPS(h5_serdev_suspend, h5_serdev_resume, NULL)
-> > >  };
-> > >
-> > >  static const struct of_device_id rtl_bluetooth_of_match[] =3D {
-> > > --
-> > > 2.32.0.432.gabb21c7263-goog
-> > >
+The latter option sounds a bit incomplete from uAPI p.o.v. but it
+allows us to stay with one-format-one-ioas policy. And anyway the
+userspace can still call clflush to do cacheline-based invalidation,
+if necessary.
+
+The former option would force us to support multi-formats-one-ioas.
+
+either case it's iommufd which decides and tells kvm whether wbinvd=20
+is allowed for a process.=20
+
+Thanks
+Kevin
