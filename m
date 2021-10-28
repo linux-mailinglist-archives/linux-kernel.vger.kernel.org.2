@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A507643D93F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2798C43D940
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhJ1CRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:17:33 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:38561 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhJ1CRc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:17:32 -0400
-Received: by mail-il1-f198.google.com with SMTP id r13-20020a92440d000000b002498d6b85c1so3075622ila.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 19:15:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=6yG8pcJo54/vxDX6p7Xpz0mDhkbXcuuHhQ0tF2/zx5g=;
-        b=OIfOfxJsB9Vqgi+cYERy/b0DLWfevmeEOVeOjTVxF+I8NX40/nZ1QJ9eT6apvgK7KY
-         /JnhhVTjjZJQlXffdrMcHpIqq3ASGw8Hv3bV55cwnh1ba0AP3m3WNKX5JWrRx1NOwy9I
-         5/tKKbz+i0rwpsFd0mXXGv7OGE6G/gvHCIN22+matu7mYOlSw64kYJt7YOXamp8twy+l
-         BQ8ifPVc38Lt3antH3NxQmchOnPyVSTsh5ixQGlDbCzk/xvX2qgSeiLGRL0kMJg0Xs/8
-         b3xHtJdpYbcojmR20Qkh8ZOuyHOyrVSUPcPJ3mgTRPBZ0SvvWP6LHauQmTIPorPCHGLL
-         XJrw==
-X-Gm-Message-State: AOAM532AigjBZV/obPlj2PvhkSF9qUrQJvI56GwV4mvx10vJp82xTq4e
-        hmclRdNW63ME9S/hJglp2CUHOOESVW7KJ0RTgHIsRGqXhzWE
-X-Google-Smtp-Source: ABdhPJzcSorb1KARbjJuazLmAfL+5SdTTWdZypcGX+Si7N9T1NNDXJ4DOpUfV3/jg9EUyHmPOXTHGnfR0KVgoFgwpLcLEWUEbWTC
+        id S229792AbhJ1CSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229624AbhJ1CSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:18:39 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27AE160F56;
+        Thu, 28 Oct 2021 02:16:13 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 22:16:11 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: [GIT PULL] tracing: Do not warn when connecting eprobe to non
+ existing event
+Message-ID: <20211027221611.23d9c3af@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c4d:: with SMTP id d13mr1095444ilg.120.1635387306485;
- Wed, 27 Oct 2021 19:15:06 -0700 (PDT)
-Date:   Wed, 27 Oct 2021 19:15:06 -0700
-In-Reply-To: <0000000000000f73a805afeb9be8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000792dda05cf604775@google.com>
-Subject: Re: [syzbot] BUG: spinlock bad magic in synchronize_srcu
-From:   syzbot <syzbot+05017ad275a64a3246f8@syzkaller.appspotmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com, bhelgaas@google.com,
-        bp@alien8.de, dave.hansen@linux.intel.com,
-        devel@driverdev.osuosl.org, f.fainelli@gmail.com,
-        gregkh@linuxfoundation.org, hpa@zytor.com,
-        info@cestasdeplastico.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        linux-rpi-kernel-owner@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, lorenzo.pieralisi@arm.com,
-        mchehab@kernel.org, mingo@redhat.com, nsaenzjulienne@suse.de,
-        pbonzini@redhat.com, robh@kernel.org,
-        sean.j.christopherson@intel.com, seanjc@google.com,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        tcs_kernel@tencent.com, tglx@linutronix.de, vkuznets@redhat.com,
-        wanpengli@tencent.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Linus,
 
-commit eb7511bf9182292ef1df1082d23039e856d1ddfb
-Author: Haimin Zhang <tcs_kernel@tencent.com>
-Date:   Fri Sep 3 02:37:06 2021 +0000
+Do not WARN when attaching event probe to non-existent event
 
-    KVM: x86: Handle SRCU initialization failure during page track init
+If the user tries to attach an event probe (eprobe) to an event that does
+not exist, it will trigger a warning. There's an error check that only
+expects memory issues otherwise it is considered a bug. But changes in the
+code to move around the locking made it that it can error out if the user
+attempts to attach to an event that does not exist, returning an -ENODEV.
+As this path can be caused by user space putting in a bad value, do not
+trigger a WARN.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143e2b02b00000
-start commit:   78e709522d2c Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2150ebd7e72fa695
-dashboard link: https://syzkaller.appspot.com/bug?extid=05017ad275a64a3246f8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b72895300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c42853300000
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Please pull the latest trace-v5.15-rc6-2 tree, which can be found at:
 
-#syz fix: KVM: x86: Handle SRCU initialization failure during page track init
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.15-rc6-2
+
+Tag SHA1: 9fae737f622d42e0b9469ff6f481eed539363d90
+Head SHA1: 7fa598f9706d40bd16f2ab286bdf5808e1393d35
+
+
+Steven Rostedt (VMware) (1):
+      tracing: Do not warn when connecting eprobe to non existing event
+
+----
+ kernel/trace/trace_eprobe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+---------------------------
+commit 7fa598f9706d40bd16f2ab286bdf5808e1393d35
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Wed Oct 27 12:08:54 2021 -0400
+
+    tracing: Do not warn when connecting eprobe to non existing event
+    
+    When the syscall trace points are not configured in, the kselftests for
+    ftrace will try to attach an event probe (eprobe) to one of the system
+    call trace points. This triggered a WARNING, because the failure only
+    expects to see memory issues. But this is not the only failure. The user
+    may attempt to attach to a non existent event, and the kernel must not
+    warn about it.
+    
+    Link: https://lkml.kernel.org/r/20211027120854.0680aa0f@gandalf.local.home
+    
+    Fixes: 7491e2c442781 ("tracing: Add a probe that attaches to trace events")
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
+index c4a15aef36af..5c5f208c15d3 100644
+--- a/kernel/trace/trace_eprobe.c
++++ b/kernel/trace/trace_eprobe.c
+@@ -904,8 +904,8 @@ static int __trace_eprobe_create(int argc, const char *argv[])
+ 
+ 	if (IS_ERR(ep)) {
+ 		ret = PTR_ERR(ep);
+-		/* This must return -ENOMEM, else there is a bug */
+-		WARN_ON_ONCE(ret != -ENOMEM);
++		/* This must return -ENOMEM or misssing event, else there is a bug */
++		WARN_ON_ONCE(ret != -ENOMEM && ret != -ENODEV);
+ 		ep = NULL;
+ 		goto error;
+ 	}
