@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E7543DE86
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE83B43DE88
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhJ1KOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:14:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46740 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230123AbhJ1KOe (ORCPT
+        id S229946AbhJ1KQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhJ1KQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:14:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635415927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=niNxNs+708zjm3j3rRaODc+lHl5+1aQR820Stcz2CGo=;
-        b=i9XnrTTIOm4XpU/QU+Bya+slzwpO6aI1gB/hFuKtCNgQ+O5dXSPSIWvncqUKsduJ7Yk+TW
-        gJ23rkAubZOpfAtVigb521A9RkItYHwNNCWF5O3JUk1oILPF8Wx7/gUcQVCypnj9ooXlwH
-        gIR/0080SgsEJTHxkvD8Z6KEOoQsDlc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-EH0ScqUPMOiHbfZG9hSlSA-1; Thu, 28 Oct 2021 06:12:04 -0400
-X-MC-Unique: EH0ScqUPMOiHbfZG9hSlSA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BDFB10A8E02;
-        Thu, 28 Oct 2021 10:12:02 +0000 (UTC)
-Received: from thinkpad.redhat.com (unknown [10.39.194.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E90C060C04;
-        Thu, 28 Oct 2021 10:11:59 +0000 (UTC)
-From:   Laurent Vivier <lvivier@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     amit@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        Matt Mackall <mpm@selenic.com>,
-        virtualization@lists.linux-foundation.org,
-        Dmitriy Vyukov <dvyukov@google.com>, rusty@rustcorp.com.au,
-        akong@redhat.com, Alexander Potapenko <glider@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-crypto@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>
-Subject: [PATCH v2 4/4] hwrng: virtio - always add a pending request
-Date:   Thu, 28 Oct 2021 12:11:11 +0200
-Message-Id: <20211028101111.128049-5-lvivier@redhat.com>
-In-Reply-To: <20211028101111.128049-1-lvivier@redhat.com>
-References: <20211028101111.128049-1-lvivier@redhat.com>
+        Thu, 28 Oct 2021 06:16:51 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211C2C061570;
+        Thu, 28 Oct 2021 03:14:24 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id p40so665603pfh.8;
+        Thu, 28 Oct 2021 03:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cGRFFkbWPTpn78tArCV7l81qRRNeflw+gfeWzgd3Hsg=;
+        b=AOCFHTvxB2nikILO2omNQt5gXOpPro5gwBYzusab4FwTwq5bh5BY1w0XHmZbX2KNcc
+         ezGnMbIC8G0V4A2FtTUQ8WZYZgPJFf1QasqgKO3DS6YMsHqLdlFOPIwuRDG8f5YH9cqv
+         YxvOU2rjuiXlBib160jJnV/TORTJ16c/Qj9ovOWb2fl7YSJ4gBWE9qa04KFgcJFi4uGd
+         AboAe0zGa0SMsyMeFTm8F8M/7IJIIq6gTeft0mxT/HSVLEdN8yt/VbH7IrR6XwZIyk+U
+         VSXst6JBK2pvKVyJoboL4Eqf2oh1R/yTTZSSddDwwgpFnJR5AypDCtuNws81iExCyF0U
+         URsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cGRFFkbWPTpn78tArCV7l81qRRNeflw+gfeWzgd3Hsg=;
+        b=73qJnnxwUKGA7u+vBTSoEGxega2LSr1ujgX/LtZ2PKGP0br5e2TGTF/FPMD/dRWInr
+         zNxrdKijm2OQgYl9mze+d5+jT/VLwZHJNWtnG7z/T6bvOxOV82q02S88v1kFJVHT05pE
+         mnTnwWnpgYxybpBeH5Dk45PsAQRYHg9Ioa55yraWZrgt/iSYtRqPp5MNg7QgbRoe7ohi
+         8isa/7DIL5Hd3VifhkNiOZzBd77pg9X/zrjmzC0UwUDbEt81YuPx/xe7qg7K9HzIwVhF
+         vKfn0EnIUYxq0R6kpQdJX1dR1z+PWTqBSCcVf7Bc2G85B5lnFktia3YN5syyoa9sDwT4
+         FhoA==
+X-Gm-Message-State: AOAM530NG/7jkQ1j/80YuPjbIpJE2rJ0SS0Ntl68P7f9CrDSnGwNKvF2
+        GXV30ugPN2uksPTdv+xl+xA=
+X-Google-Smtp-Source: ABdhPJxJQcPt7Q9aPbVzsGu3HlkUvWz8Yz+Slvx7rw8A2GPzAYj1+DfzTQkNBysLCraz5+bwNT4TLg==
+X-Received: by 2002:a63:85c1:: with SMTP id u184mr2481407pgd.243.1635416063677;
+        Thu, 28 Oct 2021 03:14:23 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id mt16sm2468674pjb.22.2021.10.28.03.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 03:14:23 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     gregkh@linuxfoundation.org
+Cc:     jirislaby@kernel.org, johan@kernel.org, macro@orcam.me.uk,
+        fancer.lancer@gmail.com, andrew@aj.id.au, pali@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] drivers: tty: replace snprintf in show functions with sysfs_emit
+Date:   Thu, 28 Oct 2021 10:13:50 +0000
+Message-Id: <20211028101350.14172-1-yao.jing2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we ensure we have already some data available by enqueuing
-again the buffer once data are exhausted, we can return what we
-have without waiting for the device answer.
+From: Jing Yao <yao.jing2@zte.com.cn>
 
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
 ---
- drivers/char/hw_random/virtio-rng.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ drivers/tty/serial/8250/8250_port.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
-index 8ba97cf4ca8f..0a7dde135db1 100644
---- a/drivers/char/hw_random/virtio-rng.c
-+++ b/drivers/char/hw_random/virtio-rng.c
-@@ -20,7 +20,6 @@ struct virtrng_info {
- 	struct virtqueue *vq;
- 	char name[25];
- 	int index;
--	bool busy;
- 	bool hwrng_register_done;
- 	bool hwrng_removed;
- 	/* data transfer */
-@@ -44,16 +43,18 @@ static void random_recv_done(struct virtqueue *vq)
- 		return;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 5775cbff8f6e..557e8b13b5c1 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -3099,7 +3099,7 @@ static ssize_t rx_trig_bytes_show(struct device *dev,
+ 	if (rxtrig_bytes < 0)
+ 		return rxtrig_bytes;
  
- 	vi->data_idx = 0;
--	vi->busy = false;
- 
- 	complete(&vi->have_data);
+-	return snprintf(buf, PAGE_SIZE, "%d\n", rxtrig_bytes);
++	return sysfs_emit(buf, PAGE_SIZE, "%d\n", rxtrig_bytes);
  }
  
--/* The host will fill any buffer we give it with sweet, sweet randomness. */
--static void register_buffer(struct virtrng_info *vi)
-+static void request_entropy(struct virtrng_info *vi)
- {
- 	struct scatterlist sg;
- 
-+	reinit_completion(&vi->have_data);
-+	vi->data_avail = 0;
-+	vi->data_idx = 0;
-+
- 	sg_init_one(&sg, vi->data, sizeof(vi->data));
- 
- 	/* There should always be room for one buffer. */
-@@ -69,6 +70,8 @@ static unsigned int copy_data(struct virtrng_info *vi, void *buf,
- 	memcpy(buf, vi->data + vi->data_idx, size);
- 	vi->data_idx += size;
- 	vi->data_avail -= size;
-+	if (vi->data_avail == 0)
-+		request_entropy(vi);
- 	return size;
- }
- 
-@@ -98,13 +101,7 @@ static int virtio_read(struct hwrng *rng, void *buf, size_t size, bool wait)
- 	 * so either size is 0 or data_avail is 0
- 	 */
- 	while (size != 0) {
--		/* data_avail is 0 */
--		if (!vi->busy) {
--			/* no pending request, ask for more */
--			vi->busy = true;
--			reinit_completion(&vi->have_data);
--			register_buffer(vi);
--		}
-+		/* data_avail is 0 but a request is pending */
- 		ret = wait_for_completion_killable(&vi->have_data);
- 		if (ret < 0)
- 			return ret;
-@@ -126,8 +123,7 @@ static void virtio_cleanup(struct hwrng *rng)
- {
- 	struct virtrng_info *vi = (struct virtrng_info *)rng->priv;
- 
--	if (vi->busy)
--		complete(&vi->have_data);
-+	complete(&vi->have_data);
- }
- 
- static int probe_common(struct virtio_device *vdev)
-@@ -163,6 +159,9 @@ static int probe_common(struct virtio_device *vdev)
- 		goto err_find;
- 	}
- 
-+	/* we always have a pending entropy request */
-+	request_entropy(vi);
-+
- 	return 0;
- 
- err_find:
-@@ -181,7 +180,6 @@ static void remove_common(struct virtio_device *vdev)
- 	vi->data_idx = 0;
- 	complete(&vi->have_data);
- 	vdev->config->reset(vdev);
--	vi->busy = false;
- 	if (vi->hwrng_register_done)
- 		hwrng_unregister(&vi->hwrng);
- 	vdev->config->del_vqs(vdev);
+ static int do_set_rxtrig(struct tty_port *port, unsigned char bytes)
 -- 
-2.31.1
+2.25.1
 
