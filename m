@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7DB43F1D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118EE43F1AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhJ1VgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhJ1VgT (ORCPT
+        id S231303AbhJ1VbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:31:03 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:46716 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230476AbhJ1VbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:36:19 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013C4C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:33:52 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id z126so10237912oiz.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ojtgT//7p7t10p7AJbgEBlvuMnFN3DnPO87emGYBPlo=;
-        b=dOBpw4p+OyNuZ2q2pbtiHIDy0of27aYm+errnGezomSb4EzF587zcp3XyKPZKn0xUD
-         spwGOEA/IRD4CkdZDRXcy2HiRDXyRPqihqHl9xr053n57sKFpi/ezlFFjKsWqjvvifdV
-         vOOacmOsQTpGvspg1qEgiSjw7oNKit2slbMHI=
+        Thu, 28 Oct 2021 17:31:00 -0400
+Received: by mail-oi1-f182.google.com with SMTP id m11so5467653oif.13;
+        Thu, 28 Oct 2021 14:28:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ojtgT//7p7t10p7AJbgEBlvuMnFN3DnPO87emGYBPlo=;
-        b=X6unznvsrkHQtsZtNq4TmY+sYL9xOECQ6/pFOmtLFMx5rW9dORPCqcYRAoA9ZQis43
-         cybXnnTR2odv6LTbadOcuHNs1oixS6Xh456yif9ekx/qAlXOmC9U4S//x9cmzFChy5Y8
-         Yp5EHjYVOF0N06Mkcr3B/DgvSjAIZQ2O9ugn8IJkZRgerEnIS48Sdg4gelcOcQCckuvw
-         ZP+y27MiZYXKXtzkHW2yap5L551rwPWL2O4qe0KUJwTqvWDjI/gDTCD1hitUAtLlresd
-         2lIs9wl+hVt4OtoBfia8CyQWjcuQp8Wwzt+ic88igDO5CmN+N2PlXIGzvZjLvXXV9Ye3
-         tP7w==
-X-Gm-Message-State: AOAM5334GHkK3SeFHnBjBN54v8vhGLI4IpEintknB6gLlzHwVw0OK4k8
-        WdEA7J7EzMXpEgTMouC/n9k0c2XK+iYj6w==
-X-Google-Smtp-Source: ABdhPJzOi2GemcdQUTVA7iMvH3y4IrHw8pi8BmOZK+Pwta3eIG6ooR5n67fFf0IUGiEHWSDRiy5Hog==
-X-Received: by 2002:a05:6808:643:: with SMTP id z3mr5041893oih.156.1635456831108;
-        Thu, 28 Oct 2021 14:33:51 -0700 (PDT)
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com. [209.85.210.44])
-        by smtp.gmail.com with ESMTPSA id s124sm546589ooa.25.2021.10.28.14.33.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 14:33:50 -0700 (PDT)
-Received: by mail-ot1-f44.google.com with SMTP id s23-20020a056830125700b00553e2ca2dccso5704613otp.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:33:50 -0700 (PDT)
-X-Received: by 2002:a05:6830:4009:: with SMTP id h9mr5296087ots.186.1635456439298;
- Thu, 28 Oct 2021 14:27:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UbQ3X7BD6qpgtn540MLFzrLrimBO17bm2/cyxoaaA+k=;
+        b=tZgBGmFvfUFJ3if1guKwoyCEM6IXcdOaPc856L6LvLqrk+S0U0/VPfkBIQnSMoTWi4
+         9tB2qoZesqfoLFnioj2vS4H8DtKNzjzy2yl2BNOmdUBKgOe5PhP+sDZzPE80bgSCaxox
+         az3pV81unYiPd3ERYGY2JKGZ0LZ3EEDB4kxktM/oVVTjxRvgA+w6VmiDTxO9hL6LJ7tA
+         zfe403v19eDE4m3AIYLS2JYY2NE1SlqAD0OPJvZ3TRl46TsI+99yGmzVJhEC6QZpbZ+p
+         4CG07hGhRi099GiYoyteZpsj09PLKyQWfUhLZygzh12MbJeJah+RpTtWmy5Pik78W4WJ
+         eq8w==
+X-Gm-Message-State: AOAM532r5lg3mq7XOagJQmKMZd5az+tg/nE/FhN/kofNTZOcJoBRaKFc
+        pdWGA+qlHttQQCvaDzoWbw==
+X-Google-Smtp-Source: ABdhPJyGQdpbdp9+nSux0RGdftKN1RUp3rufQfJSKzdQIJX4Kd5pHVOiVZw6cP3YM+RToI8p67J7VQ==
+X-Received: by 2002:aca:280c:: with SMTP id 12mr10593329oix.93.1635456511984;
+        Thu, 28 Oct 2021 14:28:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r44sm1512242otv.39.2021.10.28.14.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 14:28:31 -0700 (PDT)
+Received: (nullmailer pid 617930 invoked by uid 1000);
+        Thu, 28 Oct 2021 21:28:30 -0000
+Date:   Thu, 28 Oct 2021 16:28:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Julien Su <juliensu@mxic.com.tw>,
+        Jaime Liao <jaimeliao@mxic.com.tw>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>
+Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
+ description file to yaml
+Message-ID: <YXsV/l+/vU1fBanY@robh.at.kernel.org>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+ <20211020142809.349347-5-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-References: <20211028073729.24408-1-verdre@v0yd.nl>
-In-Reply-To: <20211028073729.24408-1-verdre@v0yd.nl>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Thu, 28 Oct 2021 14:27:06 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXOrad3b=b8+vwuF6m3+ZcigVaoJySpDXXZOnC3O8CJBSw@mail.gmail.com>
-Message-ID: <CA+ASDXOrad3b=b8+vwuF6m3+ZcigVaoJySpDXXZOnC3O8CJBSw@mail.gmail.com>
-Subject: Re: [PATCH] mwifiex: Add quirk to disable deep sleep with certain
- hardware revision
-To:     =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020142809.349347-5-miquel.raynal@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:37 AM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wrote:
->
-> The 88W8897 PCIe+USB card in the hardware revision 20 apparently has a
-> hardware issue where the card wakes up from deep sleep randomly and very
-> often, somewhat depending on the card activity, maybe the hardware has a
-> floating wakeup pin or something.
+On Wed, Oct 20, 2021 at 04:27:55PM +0200, Miquel Raynal wrote:
+> Let's get rid of spi-nand.txt by converting it to yaml schema. While at
+> converting this file, let's actually pull all the generic properties
+> from nand-chip.yaml which might apply to a SPI-NAND chip.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
+>  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
+>  2 files changed, 27 insertions(+), 5 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 
-What makes you think it's associated with the particular "hardware
-revision 20"? Have you used multiple revisions on the same platform
-and found that only certain ones fail in this way? Otherwise, your
-theory in the last part of your sentence sounds like a platform issue,
-where you might do a DMI match instead.
-
-> --- a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-> @@ -708,6 +708,22 @@ static int mwifiex_ret_ver_ext(struct mwifiex_privat=
-e *priv,
->  {
->         struct host_cmd_ds_version_ext *ver_ext =3D &resp->params.verext;
->
-> +       if (test_and_clear_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &priv->ad=
-apter->work_flags)) {
-> +               if (strncmp(ver_ext->version_str, "ChipRev:20, BB:9b(10.0=
-0), RF:40(21)", 128) =3D=3D 0) {
-
-Rather than memorize the 128-size array here, maybe use
-sizeof(ver_ext->version_str) ?
-
-Brian
+Reviewed-by: Rob Herring <robh@kernel.org>
