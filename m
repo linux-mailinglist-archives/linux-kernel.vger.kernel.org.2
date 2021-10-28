@@ -2,180 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D40343DACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E34C43DACD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhJ1FhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 01:37:12 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:50344
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229586AbhJ1FhL (ORCPT
+        id S229752AbhJ1Fmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 01:42:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22739 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229586AbhJ1Fmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 01:37:11 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 751183F165
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635399284;
-        bh=lNwK2X60c7f9X7KPf6h2ScbG4X9q5dg3Bv4L43p8gyc=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=VR6NgBZSdn17dt4WZtBnwIcF+UYQO4Fy2DIfnhwzmgrJ9siB0Dtkdqls7jzpXcMIq
-         eeuYzrkajXBEH5x0v0avekOhFu5Bo/D9LdNf0FMfCH//9kdpyjnIplIqUHhAMGUYL6
-         6lUfcCMbPy4asWiWNuUl85L1awn0cKsg75dd1RDhEnEeqP9BJn4Z5vBuLVySxtIruV
-         aLB6wBd3IJ5Moxer0r5/gx9eXbGxdnqSVmpgDTZG3akB6m8OSSsiq7wFygdFlcwcIi
-         HnaaXG7kXtR10ZkzlmH0FYMHz+cZD4gloob3jv4LpqyNi/vp2w+bPnHyljYPxlxiL3
-         Jirda2nj0FLMw==
-Received: by mail-ed1-f69.google.com with SMTP id f4-20020a50e084000000b003db585bc274so4444442edl.17
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:34:44 -0700 (PDT)
+        Thu, 28 Oct 2021 01:42:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635399623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=anF7BPmbH7+9aDUvnziYE4TDy5s8dDRfTV6pgnlOgB8=;
+        b=d6qXdqVEYQfqk578iPMGav8ECdHC91nJvquQpAeAzOWxElO1rMjGKbLP1iZh9ZclQQSWkl
+        ZgIer3wEjCE82E4RU+Jml/ExEqJs1878PPM+8L/BXSRXGA4LHSoieqsP4OxGhKFtywTqkv
+        BNMTtrsDwmEWqfcw9Q+1jacKZRb2d4U=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-4zTUyp86MB-Gd30okZPjfw-1; Thu, 28 Oct 2021 01:40:21 -0400
+X-MC-Unique: 4zTUyp86MB-Gd30okZPjfw-1
+Received: by mail-ed1-f69.google.com with SMTP id z1-20020a05640235c100b003dcf0fbfbd8so4501266edc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:40:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lNwK2X60c7f9X7KPf6h2ScbG4X9q5dg3Bv4L43p8gyc=;
-        b=YaWdoTCJFWrjWW67UlMPVparNmy8mgnF5F/ufb23C8lk4eNbGSbfOcJXKTz5CD5Pt0
-         Yv6i7LCJOhHyaCPB0dWC67eC6egm2YuQ+8mskz1lXOpbgS2W3qutSQJx0J9mdXqaW35T
-         z2hrurzklcHDQVuBcUwMlshVFqi/4nCrnj/bfxuFRxjTQaCxMJeBL9sy5kXpvV/5JQr6
-         Bnw6KTKK4gEMvVmO6yZwAnw+sIB5zB7y7yxKZ5ehEobLZwbuucWECbM8uquol40B9S5I
-         2GS8qywYzfMshMhFlVfZ7nVsvI21rqdOCIIcAx5DnBWBinUWUbTPvoMswpFQZL/NtgSL
-         DGhA==
-X-Gm-Message-State: AOAM533PvR6UAHkC1GTvNMTLIcMEjGNZ12FDXNN4XdJp1ZbBKzr3ESN9
-        Q0wRgZTPDtiGtnMYucgXiEBBttr0vDGmuDozBJBPyr16WwwhPNx8tiw2PMdt0NS+fXCHqlnKf0j
-        rDsPs5hCeFrSq90ozcZRFZVYadF7pWaJVfaEo32dyyW0KQ9aXcZUlkiLIMQ==
-X-Received: by 2002:a17:907:d22:: with SMTP id gn34mr2588261ejc.463.1635399284146;
-        Wed, 27 Oct 2021 22:34:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlcFK3g0aghHl1OqGtK1Bhn/y6XrnUQws1ghf+7gXW2GywHn20ADq7fIm32Iz1kaJxVTbcmDaMD6qhdD4uHhc=
-X-Received: by 2002:a17:907:d22:: with SMTP id gn34mr2588238ejc.463.1635399283919;
- Wed, 27 Oct 2021 22:34:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=anF7BPmbH7+9aDUvnziYE4TDy5s8dDRfTV6pgnlOgB8=;
+        b=MJD4ngbOAj6eO/7qHYTt9jO/IIOmnlM6eeZacdjL9PodSfaHLSy6SSlU5aSUz0/SOh
+         8cENm772KRVixY/3owohNYgq9K2QPXykbF1QMNfnP86idfiN/DQl55d+HZt+E/jN/HHG
+         +w6cBASHUzfQEFCwE+zdRbRU5pA085x9MuSYRcVCZwRMjnnZ6JBt33Y4pYdJijBZEVki
+         8wV4S0tcJJ5RP4Izy92WkOopcOm48BPd/QcOiSK2vKBqxTmKhc+81xfENNFl7EP7MpMX
+         +bYCQMK3Q1DM2JjKGODuchYh5BtAdrjFmVrVVg5hCmzNiGx9/vpZzbKj2aemyz2EvhzN
+         dUuw==
+X-Gm-Message-State: AOAM530fdq5CtoN+SJqyfUGLQ7Q+PJHOmdbqdWz4l+Ok0F1h/NdcJkkR
+        vOYVJN1lBAmsUi/KnoK+NZyROZWJ23aZRP0VAdjqPYdC9mZ0O8xjA4/9KTuUrVjNhu9FTf/QGjA
+        o7K8lNf/Sb+NueWCayzy5iDSc
+X-Received: by 2002:a17:907:1caa:: with SMTP id nb42mr2599412ejc.333.1635399620608;
+        Wed, 27 Oct 2021 22:40:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyQhd1vOTP7CLD/BJ5RCWNsTIMoyg9pY3KHXHXK3KvUR6nZvmqchxP6Ys9Sd0YzoBlY6gk8EA==
+X-Received: by 2002:a17:907:1caa:: with SMTP id nb42mr2599392ejc.333.1635399620384;
+        Wed, 27 Oct 2021 22:40:20 -0700 (PDT)
+Received: from redhat.com ([2.55.137.59])
+        by smtp.gmail.com with ESMTPSA id n2sm657001ejl.92.2021.10.27.22.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 22:40:19 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 01:40:16 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Erdem Aktas <erdemaktas@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] Add DMA_API support for Virtio devices earlier than VirtIO
+ 1.0
+Message-ID: <20211028013901-mutt-send-email-mst@kernel.org>
+References: <20211027232828.2043569-1-erdemaktas@google.com>
 MIME-Version: 1.0
-References: <CA+zEjCuUCxqTtbox2K8c=ymHC8X97LV6CSO3ydJKgRR9cBXUEw@mail.gmail.com>
- <mhng-897d082f-5ca4-4d77-a69d-4efaa456bf3b@palmerdabbelt-glaptop> <CA+zEjCvF7yCbA9KvsD+OaGXhEAF4x_jBB+OZ3C-Q6RctYSjd7w@mail.gmail.com>
-In-Reply-To: <CA+zEjCvF7yCbA9KvsD+OaGXhEAF4x_jBB+OZ3C-Q6RctYSjd7w@mail.gmail.com>
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Date:   Thu, 28 Oct 2021 07:34:32 +0200
-Message-ID: <CA+zEjCus8+jzn074GwqhJ54Y180RASr_YaC=6zdBZSzonEtjDA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] riscv: Fix asan-stack clang build
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        nathan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027232828.2043569-1-erdemaktas@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 7:30 AM Alexandre Ghiti
-<alexandre.ghiti@canonical.com> wrote:
->
-> On Thu, Oct 28, 2021 at 7:02 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >
-> > On Wed, 27 Oct 2021 21:15:28 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> > > On Thu, Oct 28, 2021 at 1:06 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > >>
-> > >> On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
-> > >> > Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
-> > >> > Kconfig, it prevents asan-stack from getting disabled with clang even
-> > >> > when CONFIG_KASAN_STACK is disabled: fix this by defining the
-> > >> > corresponding config.
-> > >> >
-> > >> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > >> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
-> > >> > ---
-> > >> >  arch/riscv/Kconfig             | 6 ++++++
-> > >> >  arch/riscv/include/asm/kasan.h | 3 +--
-> > >> >  arch/riscv/mm/kasan_init.c     | 3 +++
-> > >> >  3 files changed, 10 insertions(+), 2 deletions(-)
-> > >> >
-> > >> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > >> > index c1abbc876e5b..79250b1ed54e 100644
-> > >> > --- a/arch/riscv/Kconfig
-> > >> > +++ b/arch/riscv/Kconfig
-> > >> > @@ -162,6 +162,12 @@ config PAGE_OFFSET
-> > >> >       default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
-> > >> >       default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
-> > >> >
-> > >> > +config KASAN_SHADOW_OFFSET
-> > >> > +     hex
-> > >> > +     depends on KASAN_GENERIC
-> > >> > +     default 0xdfffffc800000000 if 64BIT
-> > >> > +     default 0xffffffff if 32BIT
-> > >>
-> > >> I thought I posted this somewhere, but this is exactly what my first
-> > >> guess was.  The problem is that it's hanging on boot for me.  I don't
-> > >> really have anything exotic going on, it's just a defconfig with
-> > >> CONFIG_KASAN=y running in QEMU.
-> > >>
-> > >> Does this boot for you?
-> > >
-> > > Yes with the 2nd patch of this series which fixes the issue
-> > > encountered here. And that's true I copied/pasted this part of your
-> > > patch which was better than what I had initially done, sorry I should
-> > > have mentioned you did that, please add a Codeveloped-by or something
-> > > like that.
-> >
-> > Not sure if I'm missing something, but it's still not booting for me.
-> > I've put what I'm testing on palmer/to-test, it's these two on top of
-> > fixes and merged into Linus' tree
-> >
-> >     *   6d7d351902ff - (HEAD -> to-test, palmer/to-test) Merge remote-tracking branch 'palmer/fixes' into to-test (7 minutes ago) <Palmer Dabbelt>
-> >     |\
-> >     | * 782551edf8f8 - (palmer/fixes) riscv: Fix CONFIG_KASAN_STACK build (6 hours ago) <Alexandre Ghiti>
-> >     | * 47383e5b3c4f - riscv: Fix asan-stack clang build (6 hours ago) <Alexandre Ghiti>
-> >     | * 64a19591a293 - (riscv/fixes) riscv: fix misalgned trap vector base address (9 hours ago) <Chen Lu>
-> >     * |   1fc596a56b33 - (palmer/master, linus/master, linus/HEAD, master) Merge tag 'trace-v5.15-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (11 hours ago) <Linus Torvalds>
-> >
-> > Am I missing something else?
->
-> Hmm, that's weird, I have just done the same: cherry-picked both my
-> commits on top of fixes (64a19591a293) and it boots fine with KASAN
-> enabled. Maybe a config thing? I pushed my branch here:
-> https://github.com/AlexGhiti/riscv-linux/tree/int/alex/kasan_stack_fixes_rebase
+On Wed, Oct 27, 2021 at 04:28:28PM -0700, Erdem Aktas wrote:
+> Enable DMA_API for any VirtIO device earlier than Virtio 1.0 which
+> is the only way for those devices to be configured correctly when
+> memory access is retricted.
+> 
+> Virtio devices can use DMA_API to translate guest phsical addresses to
+> device physical addresses if VIRTIO_F_ACCESS_PLATFORM feature is set
+> while the device is being initialized. VIRTIO_F_ACCESS_PLATFORM
+> feature is only supported in VirtIO 1.0 and later devices. This prevents
+> any device using an earlier VirtIO version than Virtio 1.0 to be
+> attached when memory access is restricted ie memory encryption features
+> (AMD SEV [ES/SNP], Intel TDX, etc..) are enabled.
+> 
+> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
 
-I pushed the config I use and that boots in that branch, maybe there's
-another issue somewhere.
 
->
-> >
-> > >
-> > > Thanks,
-> > >
-> > > Alex
-> > >
-> > >>
-> > >> > +
-> > >> >  config ARCH_FLATMEM_ENABLE
-> > >> >       def_bool !NUMA
-> > >> >
-> > >> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
-> > >> > index a2b3d9cdbc86..b00f503ec124 100644
-> > >> > --- a/arch/riscv/include/asm/kasan.h
-> > >> > +++ b/arch/riscv/include/asm/kasan.h
-> > >> > @@ -30,8 +30,7 @@
-> > >> >  #define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
-> > >> >  #define KASAN_SHADOW_START   KERN_VIRT_START
-> > >> >  #define KASAN_SHADOW_END     (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
-> > >> > -#define KASAN_SHADOW_OFFSET  (KASAN_SHADOW_END - (1ULL << \
-> > >> > -                                     (64 - KASAN_SHADOW_SCALE_SHIFT)))
-> > >> > +#define KASAN_SHADOW_OFFSET  _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
-> > >> >
-> > >> >  void kasan_init(void);
-> > >> >  asmlinkage void kasan_early_init(void);
-> > >> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> > >> > index d7189c8714a9..8175e98b9073 100644
-> > >> > --- a/arch/riscv/mm/kasan_init.c
-> > >> > +++ b/arch/riscv/mm/kasan_init.c
-> > >> > @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
-> > >> >       uintptr_t i;
-> > >> >       pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
-> > >> >
-> > >> > +     BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
-> > >> > +             KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
-> > >> > +
-> > >> >       for (i = 0; i < PTRS_PER_PTE; ++i)
-> > >> >               set_pte(kasan_early_shadow_pte + i,
-> > >> >                       mk_pte(virt_to_page(kasan_early_shadow_page),
+Sorry .. NACK.
+
+Virtio before 1.0 is on life support. No new features. Just use 1.0
+please.
+
+
+> ---
+> I have tested the this patch using linux-stable.git head, 5.15.0-rc6
+> kernel and scsi disk with virtio 0.95 version with legacy VM and
+> Confidential VM (AMD SEV). I want to get feedback if
+> there is any risk or downside of enabling DMA_API on older virtio
+> drivers when memory encrytion is enabled.
+> 
+>  drivers/virtio/virtio.c       |  7 ++-----
+>  include/linux/virtio_config.h | 22 ++++++++++++++--------
+>  2 files changed, 16 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 236081afe9a2..71115ba85d07 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -179,11 +179,8 @@ int virtio_finalize_features(struct virtio_device *dev)
+>  	if (ret) {
+>  		if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1)) {
+>  			dev_warn(&dev->dev,
+> -				 "device must provide VIRTIO_F_VERSION_1\n");
+> -			return -ENODEV;
+> -		}
+> -
+> -		if (!virtio_has_feature(dev, VIRTIO_F_ACCESS_PLATFORM)) {
+> +				 "device does not provide VIRTIO_F_VERSION_1 while restricted memory access is enabled!.\n");
+> +		} else if (!virtio_has_feature(dev, VIRTIO_F_ACCESS_PLATFORM)) {
+>  			dev_warn(&dev->dev,
+>  				 "device must provide VIRTIO_F_ACCESS_PLATFORM\n");
+>  			return -ENODEV;
+> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+> index 8519b3ae5d52..6eacb4d43318 100644
+> --- a/include/linux/virtio_config.h
+> +++ b/include/linux/virtio_config.h
+> @@ -170,6 +170,15 @@ static inline bool virtio_has_feature(const struct virtio_device *vdev,
+>  	return __virtio_test_bit(vdev, fbit);
+>  }
+>  
+> +#ifdef CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
+> +int arch_has_restricted_virtio_memory_access(void);
+> +#else
+> +static inline int arch_has_restricted_virtio_memory_access(void)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS */
+> +
+>  /**
+>   * virtio_has_dma_quirk - determine whether this device has the DMA quirk
+>   * @vdev: the device
+> @@ -180,6 +189,11 @@ static inline bool virtio_has_dma_quirk(const struct virtio_device *vdev)
+>  	 * Note the reverse polarity of the quirk feature (compared to most
+>  	 * other features), this is for compatibility with legacy systems.
+>  	 */
+> +	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1) &&
+> +	   arch_has_restricted_virtio_memory_access())
+> +		return false;
+> +
+> +
+>  	return !virtio_has_feature(vdev, VIRTIO_F_ACCESS_PLATFORM);
+>  }
+>  
+> @@ -558,13 +572,5 @@ static inline void virtio_cwrite64(struct virtio_device *vdev,
+>  		_r;							\
+>  	})
+>  
+> -#ifdef CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
+> -int arch_has_restricted_virtio_memory_access(void);
+> -#else
+> -static inline int arch_has_restricted_virtio_memory_access(void)
+> -{
+> -	return 0;
+> -}
+> -#endif /* CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS */
+>  
+>  #endif /* _LINUX_VIRTIO_CONFIG_H */
+> -- 
+> 2.30.2
+
