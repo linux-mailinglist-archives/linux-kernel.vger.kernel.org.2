@@ -2,248 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935C643E7F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1764F43E7F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhJ1SH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
+        id S230495AbhJ1SJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbhJ1SH6 (ORCPT
+        with ESMTP id S230478AbhJ1SJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:07:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F4BC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:05:31 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mg9mB-0004Od-N2; Thu, 28 Oct 2021 20:05:19 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mg9m9-0003Gw-4c; Thu, 28 Oct 2021 20:05:17 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mg9m9-0005bv-2m; Thu, 28 Oct 2021 20:05:17 +0200
-Date:   Thu, 28 Oct 2021 20:05:16 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>, lkp@intel.com,
-        mchehab@kernel.org, thierry.reding@gmail.com, lee.jones@linaro.org,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <20211028180516.t2tpfbzztm7s6cqm@pengutronix.de>
-References: <YXlxhpZWf2mxJaMi@fedora>
- <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
- <20211028091442.GA16514@gofer.mess.org>
- <20211028111535.x7xgz7domx2lpyfh@pengutronix.de>
- <20211028122610.GA18767@gofer.mess.org>
+        Thu, 28 Oct 2021 14:09:30 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A206C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:07:03 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so5449695pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2aJJjoTlLhFRNMSLNmA2DQYLIxullrmAPX3Kd2+b1NQ=;
+        b=RY8sTH9PFqArMSe74G5FFq90x96KTIX6w9btW5btq5WXcgJZzv09lMc2obUvzL4IyY
+         cVR1CB7QvgMIiDNhX0NtVW91TkLXr96QVnIKS1DX2iYMzq9bEzujTDD1EQGPZrukFw7C
+         P+jSe1/wrMllnExSUCgcPU0mwx01QGqJvvGNodJ7Hi3ivkhS5rWHuOQfYUGRzvrpIpSf
+         aK0LhnsIRk3Ck7OktwQwr/mnGRMONCdlcXIU+MIvgXCYzCJzFR0fKsutRNf8GaEvJJmC
+         ItPLpeAsuU5VJwuN1DldExHrbZbiBRA2Ov3DlYO03Np5+ilA5bwg2lZsiPqF2tV0aXRo
+         2H0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2aJJjoTlLhFRNMSLNmA2DQYLIxullrmAPX3Kd2+b1NQ=;
+        b=MdQkKSmnn4HqokoXWWrg359+oqjR5Egn7iGYF+DsamhX9jwwSvU+/mQnD1SpMA7yC1
+         0nY/k2uk9Eq8z5IhuGgZjQSNAW1RJaTs/OAkbwtH4VYQvSnr/aK6lFwaIm9hq0yjO8m4
+         lIVQiy+osjdfZDzQhvNVog58OvZgoL+TDtcspYruxTR1fdRB1bj1A2XOuh8ScJeF7Mpm
+         o97Tfafg4NISn6RdlBD+zDiRJYMHm2onT7Ots/zLGaUzYzIwWWZ1zW45VNia/lGvMsiI
+         0be36AgkwFPwRwXBHFCVc629oIgUIrVIP4eY34fRubRzGyz9p3L59eqbp6dmIAP/Kq7i
+         pIfQ==
+X-Gm-Message-State: AOAM533ZOfReK1Y9SG/WUEH7O1Cg8xz/4KYS0Kz9xoR8UY9PPr1oB7W6
+        64MFap0lOik00nZGVhOWPofqTw==
+X-Google-Smtp-Source: ABdhPJy3q1U6S5rP+3HrXHm4DpDRV1oBstyFwS9GzmTqwhJYUauZfo++MbXhEgz0U+KaL32k0m4XYQ==
+X-Received: by 2002:a17:902:8ecb:b0:140:1934:ea7d with SMTP id x11-20020a1709028ecb00b001401934ea7dmr5264183plo.46.1635444422945;
+        Thu, 28 Oct 2021 11:07:02 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id v22sm633742pgc.83.2021.10.28.11.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 11:07:02 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 12:06:59 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tao Zhang <quic_taozha@quicinc.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>
+Subject: Re: [PATCH 01/10] coresight: add support to enable more coresight
+ paths
+Message-ID: <20211028180659.GC4045120@p14s>
+References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
+ <1634801936-15080-2-git-send-email-quic_taozha@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kktnnlgzrkdhkvw5"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028122610.GA18767@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1634801936-15080-2-git-send-email-quic_taozha@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 21, 2021 at 03:38:47PM +0800, Tao Zhang wrote:
+> Current coresight implementation only supports enabling source
+> ETMs or STM. This patch adds support to enable more kinds of
+> coresight source to sink paths. We build a path from source to
+> sink when any source is enabled and store it in a list. When the
+> source is disabled, we fetch the corresponding path from the list
+> and decrement the refcount on each device in the path. The device
+> is disabled if the refcount reaches zero. Don't store path to
+> coresight data structure of source to avoid unnecessary change to
+> ABI.
+> Since some targets may have coresight sources other than STM and
+> ETMs, we need to add this change to support these coresight
+> devices.
+> 
+> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-core.c | 100 +++++++++++--------
+>  1 file changed, 56 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 8a18c71df37a..1e621d61307a 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -37,18 +37,16 @@ struct coresight_node {
+>  };
+>  
+>  /*
+> - * When operating Coresight drivers from the sysFS interface, only a single
+> - * path can exist from a tracer (associated to a CPU) to a sink.
+> + * struct coresight_path - path from source to sink
+> + * @path:	Address of path list.
+> + * @link:	hook to the list.
+>   */
+> -static DEFINE_PER_CPU(struct list_head *, tracer_path);
+> +struct coresight_path {
+> +	struct list_head *path;
+> +	struct list_head link;
+> +};
 
---kktnnlgzrkdhkvw5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For sources associated with a CPU, like ETMs, having a per-cpu way of storing
+paths is a definite advantage and should be kept that way.  
 
-On Thu, Oct 28, 2021 at 01:26:10PM +0100, Sean Young wrote:
-> Hi Uwe,
->=20
-> On Thu, Oct 28, 2021 at 01:15:35PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Thu, Oct 28, 2021 at 10:14:42AM +0100, Sean Young wrote:
-> > > On Thu, Oct 28, 2021 at 08:45:13AM +0200, Uwe Kleine-K=F6nig wrote:
-> > > > The conversion is right (I think),
-> > >=20
-> > > We still have the problem that the pwm drivers calculate the period
-> > > incorrectly by rounding down (except pwm-bcm2835). So the period is n=
-ot
-> > > as good as it could be in most cases, but this driver can't do anythi=
-ng
-> > > about that.
-> >=20
-> > Yeah, some time ago I started coding a round_state function
-> > (wip at
-> > https://git.pengutronix.de/cgit/ukl/linux/commit/?h=3Dpwm-wip&id=3Dae34=
-8eb6a55d6526f30ef4a49819197d9616391e)
-> > but this was pushed down on my todo-list by more important stuff.
->=20
-> That looks great, thank you for working on that!
->=20
-> > If you want to experiment with that ...
->=20
-> I will have a look.
->=20
-> > > > note this could be optimized a bit
-> > > > further: state.period only depends on carrier which rarely changes,=
- so
-> > > > the calculation could be done in pwm_ir_set_carrier(). Ditto for du=
-ty
-> > > > which only depends on state.period and pwm_ir->duty_cycle. (This is=
- for
-> > > > a separate commit though.)
-> > >=20
-> > > I'm not sure what caching this is much of a win. The calculation is a=
- few
-> > > instructions, so you're not winning in the way of speed. On the flip =
-side
-> > > you use more memory since pwm_state has to be kmalloc() rather than e=
-xisting
-> >=20
-> > I tested a bit with this patch on top of Ma=EDra's:
-> >=20
-> > 	diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx=
-=2Ec
-> > 	index 105a9c24f1e3..7585c21775bc 100644
-> > 	--- a/drivers/media/rc/pwm-ir-tx.c
-> > 	+++ b/drivers/media/rc/pwm-ir-tx.c
-> > 	@@ -17,7 +17,7 @@
-> > 	=20
-> > 	 struct pwm_ir {
-> > 		struct pwm_device *pwm;
-> > 	-	unsigned int carrier;
-> > 	+	struct pwm_state state;
-> > 		unsigned int duty_cycle;
-> > 	 };
-> > 	=20
-> > 	@@ -32,6 +32,7 @@ static int pwm_ir_set_duty_cycle(struct rc_dev *dev,=
- u32 duty_cycle)
-> > 		struct pwm_ir *pwm_ir =3D dev->priv;
-> > 	=20
-> > 		pwm_ir->duty_cycle =3D duty_cycle;
-> > 	+	pwm_set_relative_duty_cycle(&pwm_ir->state, pwm_ir->duty_cycle, 100);
-> > 	=20
-> > 		return 0;
-> > 	 }
-> > 	@@ -43,7 +44,8 @@ static int pwm_ir_set_carrier(struct rc_dev *dev, u3=
-2 carrier)
-> > 		if (!carrier)
-> > 			return -EINVAL;
-> > 	=20
-> > 	-	pwm_ir->carrier =3D carrier;
-> > 	+	pwm_ir->state.period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, carrier);
-> > 	+	pwm_set_relative_duty_cycle(&pwm_ir->state, pwm_ir->duty_cycle, 100);
-> > 	=20
-> > 		return 0;
-> > 	 }
-> > 	@@ -53,21 +55,15 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned =
-int *txbuf,
-> > 	 {
-> > 		struct pwm_ir *pwm_ir =3D dev->priv;
-> > 		struct pwm_device *pwm =3D pwm_ir->pwm;
-> > 	-	struct pwm_state state;
-> > 		int i;
-> > 		ktime_t edge;
-> > 		long delta;
-> > 	=20
-> > 	-	pwm_init_state(pwm, &state);
-> > 	-
-> > 	-	state.period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-> > 	-	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
-> > 	-
-> > 		edge =3D ktime_get();
-> > 	=20
-> > 		for (i =3D 0; i < count; i++) {
-> > 	-		state.enabled =3D !(i % 2);
-> > 	-		pwm_apply_state(pwm, &state);
-> > 	+		pwm_ir->state.enabled =3D !(i % 2);
-> > 	+		pwm_apply_state(pwm, &pwm_ir->state);
-> > 	=20
-> > 			edge =3D ktime_add_us(edge, txbuf[i]);
-> > 			delta =3D ktime_us_delta(edge, ktime_get());
-> > 	@@ -75,8 +71,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned in=
-t *txbuf,
-> > 				usleep_range(delta, delta + 10);
-> > 		}
-> > 	=20
-> > 	-	state.enabled =3D false;
-> > 	-	pwm_apply_state(pwm, &state);
-> > 	+	pwm_ir->state.enabled =3D false;
-> > 	+	pwm_apply_state(pwm, &pwm_ir->state);
-> > 	=20
-> > 		return count;
-> > 	 }
-> > 	@@ -95,8 +91,9 @@ static int pwm_ir_probe(struct platform_device *pdev)
-> > 		if (IS_ERR(pwm_ir->pwm))
-> > 			return PTR_ERR(pwm_ir->pwm);
-> > 	=20
-> > 	-	pwm_ir->carrier =3D 38000;
-> > 	-	pwm_ir->duty_cycle =3D 50;
-> > 	+	pwm_ir->state.duty_cycle =3D 50;
-> > 	+	pwm_init_state(pwm_ir->pwm, &pwm_ir->state);
-> > 	+	pwm_ir_set_carrier(rcdev, 38000);
-> > 	=20
-> > 		rcdev =3D devm_rc_allocate_device(&pdev->dev, RC_DRIVER_IR_RAW_TX);
-> > 		if (!rcdev)
-> >=20
-> > bloat-o-meter reports (for an arm allmodconfig build)
-> >=20
-> > 	add/remove: 0/0 grow/shrink: 3/1 up/down: 644/-396 (248)
-> > 	Function                                     old     new   delta
-> > 	pwm_ir_probe                                 372     676    +304
-> > 	pwm_ir_set_carrier                           108     292    +184
-> > 	pwm_ir_set_duty_cycle                         68     224    +156
-> > 	pwm_ir_tx                                    908     512    -396
-> > 	Total: Before=3D2302, After=3D2550, chg +10.77%
->=20
-> So 248 bytes more after your changes.
+>  
+> -/*
+> - * As of this writing only a single STM can be found in CS topologies.  Since
+> - * there is no way to know if we'll ever see more and what kind of
+> - * configuration they will enact, for the time being only define a single path
+> - * for STM.
+> - */
+> -static struct list_head *stm_path;
+> +static LIST_HEAD(cs_active_paths);
 
-ack. This is because the compiler inlines the division which accounts
-for > 100 bytes.
+Then there are sources that aren't associated with a CPU like STMs and TPDMs.
+Perhaps using an IDR or the hash of the device name as a key to a hashing
+vector would be better than doing a sequential search, especially as the
+list of devices is bound to increase over time.
 
-> > struct pwm_ir increases from 12 bytes to 40 bytes.
-> >=20
-> > The stack space required by pwm_ir_tx decreases from 60 to 36
-> >=20
-> > I don't know exactly how kmalloc works internally. Maybe allocating a
-> > structure of size 40 bytes doesn't need more memory than a structure of
-> > size 12?
-> >=20
-> > I didn't check how runtimes change, but the size decrease of pwm_ir_tx()
-> > is nice and might save a bit of runtime.
->=20
-> I'm not following, how is this decreasing runtime?=20
+>  
+>  /*
+>   * When losing synchronisation a new barrier packet needs to be inserted at the
+> @@ -354,6 +352,7 @@ static void coresight_disable_sink(struct coresight_device *csdev)
+>  	if (ret)
+>  		return;
+>  	coresight_control_assoc_ectdev(csdev, false);
+> +	csdev->activated = false;
 
-With my changes pwm_ir_tx got smaller and { pwm_ir_probe,
-pwm_ir_set_carrier, pwm_ir_set_duty_cycle } got bigger. Now if for a
-typical runtime pattern pwm_ir_probe and pwm_ir_set_carrier run once and
-pwm_ir_set_duty_cycle 100 times and pwm_ir_tx 1000 times (no idea if
-that is realistic) it might be a net win in sum.
+I don't see why this is needed and without proper documentation there is no way
+for me to guess the logic behind the change.  The ->activated flag should be
+manipulated from the command line interface only.
 
-Best regards
-Uwe
+>  	csdev->enable = false;
+>  }
+>  
+> @@ -590,6 +589,20 @@ int coresight_enable_path(struct list_head *path, u32 mode, void *sink_data)
+>  	goto out;
+>  }
+>  
+> +static struct coresight_device *coresight_get_source(struct list_head *path)
+> +{
+> +	struct coresight_device *csdev;
+> +
+> +	if (!path)
+> +		return NULL;
+> +
+> +	csdev = list_first_entry(path, struct coresight_node, link)->csdev;
+> +	if (csdev->type != CORESIGHT_DEV_TYPE_SOURCE)
+> +		return NULL;
+> +
+> +	return csdev;
+> +}
+> +
+>  struct coresight_device *coresight_get_sink(struct list_head *path)
+>  {
+>  	struct coresight_device *csdev;
+> @@ -1086,9 +1099,23 @@ static int coresight_validate_source(struct coresight_device *csdev,
+>  	return 0;
+>  }
+>  
+> +static int coresight_store_path(struct list_head *path)
+> +{
+> +	struct coresight_path *node;
+> +
+> +	node = kzalloc(sizeof(struct coresight_path), GFP_KERNEL);
+> +	if (!node)
+> +		return -ENOMEM;
+> +
+> +	node->path = path;
+> +	list_add(&node->link, &cs_active_paths);
+> +
+> +	return 0;
+> +}
+> +
+>  int coresight_enable(struct coresight_device *csdev)
+>  {
+> -	int cpu, ret = 0;
+> +	int ret = 0;
+>  	struct coresight_device *sink;
+>  	struct list_head *path;
+>  	enum coresight_dev_subtype_source subtype;
+> @@ -1133,25 +1160,9 @@ int coresight_enable(struct coresight_device *csdev)
+>  	if (ret)
+>  		goto err_source;
+>  
+> -	switch (subtype) {
+> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_PROC:
+> -		/*
+> -		 * When working from sysFS it is important to keep track
+> -		 * of the paths that were created so that they can be
+> -		 * undone in 'coresight_disable()'.  Since there can only
+> -		 * be a single session per tracer (when working from sysFS)
+> -		 * a per-cpu variable will do just fine.
+> -		 */
+> -		cpu = source_ops(csdev)->cpu_id(csdev);
+> -		per_cpu(tracer_path, cpu) = path;
+> -		break;
+> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_SOFTWARE:
+> -		stm_path = path;
+> -		break;
+> -	default:
+> -		/* We can't be here */
+> -		break;
+> -	}
+> +	ret = coresight_store_path(path);
+> +	if (ret)
+> +		goto err_source;
+>  
+>  out:
+>  	mutex_unlock(&coresight_mutex);
+> @@ -1168,8 +1179,11 @@ EXPORT_SYMBOL_GPL(coresight_enable);
+>  
+>  void coresight_disable(struct coresight_device *csdev)
+>  {
+> -	int cpu, ret;
+> +	int  ret;
+>  	struct list_head *path = NULL;
+> +	struct coresight_path *cspath = NULL;
+> +	struct coresight_path *cspath_next = NULL;
+> +	struct coresight_device *src_csdev = NULL;
+>  
+>  	mutex_lock(&coresight_mutex);
+>  
+> @@ -1180,20 +1194,18 @@ void coresight_disable(struct coresight_device *csdev)
+>  	if (!csdev->enable || !coresight_disable_source(csdev))
+>  		goto out;
+>  
+> -	switch (csdev->subtype.source_subtype) {
+> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_PROC:
+> -		cpu = source_ops(csdev)->cpu_id(csdev);
+> -		path = per_cpu(tracer_path, cpu);
+> -		per_cpu(tracer_path, cpu) = NULL;
+> -		break;
+> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_SOFTWARE:
+> -		path = stm_path;
+> -		stm_path = NULL;
+> -		break;
+> -	default:
+> -		/* We can't be here */
+> -		break;
+> +	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, link) {
+> +		src_csdev = coresight_get_source(cspath->path);
+> +		if (!src_csdev)
+> +			continue;
+> +		if (src_csdev == csdev) {
+> +			path = cspath->path;
+> +			list_del(&cspath->link);
+> +			kfree(cspath);
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+See my comment above - I agree that sources _not_ associated with a CPU should
+be handled differently.  CPU bound sources should be kept untouched.
 
---kktnnlgzrkdhkvw5
-Content-Type: application/pgp-signature; name="signature.asc"
+That is all the time I had for today, I will continue tomorrow.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mathieu
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF65lkACgkQwfwUeK3K
-7AmVBgf/ekwfpx+8Te6xIIkZVy8YTGElDMPzOQ06kUS6W/1mpt9gr7ACSQsyrR47
-y7amS9rOIOE7Y4z+xDWHCARWy2Q3nYbLpvLgcO7MzhtsiSrkQR/SYiS0IjqW4++Y
-h41pStigTMYdr3ULy+2XV7SSYEKvWuHJYRCTe6Oxh39cgZFRY6S21Wb712F0/LV0
-uw2+OngnIpwP7mNn6JbWMIJScoFl6vKjfrKonilhcR74F4It78Yeb4ZO3b+AFXgl
-LJWXKMK1xSAUzShFZzNJVhia3pbdurhmkufBTCtdZ/O3y+g8Qa6Ul12mRPBCZ9H+
-yfWJuZEan4BGr1W3n5/vLB0ViAbzAw==
-=XFwm
------END PGP SIGNATURE-----
-
---kktnnlgzrkdhkvw5--
+> +		}
+>  	}
+> +	if (path == NULL)
+> +		goto out;
+>  
+>  	coresight_disable_path(path);
+>  	coresight_release_path(path);
+> -- 
+> 2.17.1
+> 
