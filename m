@@ -2,287 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AECB43E03B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E213A43E03C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhJ1Lu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:50:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57046 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhJ1Lu6 (ORCPT
+        id S230264AbhJ1LvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhJ1LvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:50:58 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4614C2196E;
-        Thu, 28 Oct 2021 11:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635421710; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wx62y0sSCwgO8J1OME/h2XU+M/3QqZZOJexyStk3S9I=;
-        b=1++FsmijpKkQhORBeQVWGcAxqepeSHsmUHcN3S1satLqwr/yT0yKkjdFAouonDppxCloLJ
-        EWL7tGAIFq9PtRUpqiv0kObw6GQrewoBqaIhHMK86G8xzMvvycNtJtKd/PLu1fnKQ6xL6n
-        2Ly2BuuxYlx0ZpQnCwBcc+VVLR2Zrvk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635421710;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wx62y0sSCwgO8J1OME/h2XU+M/3QqZZOJexyStk3S9I=;
-        b=YV/gT2dpwY+yrvwDYZtxVkpPQOJ5yX8Sk/PXhYkhhLWtHr0n2TLbWUfIzd0cAa4udtiWaO
-        pUzbLtF/MLrIZyDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C437313B88;
-        Thu, 28 Oct 2021 11:48:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hG3tLA2OemHUTwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 28 Oct 2021 11:48:29 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 44eb804b;
-        Thu, 28 Oct 2021 11:48:29 +0000 (UTC)
-From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>,
-        Patrick Donnelly <pdonnell@redhat.com>
-Subject: [RFC PATCH v3] ceph: ceph: add remote object copies to fs client metrics
-Date:   Thu, 28 Oct 2021 12:48:26 +0100
-Message-Id: <20211028114826.27192-1-lhenriques@suse.de>
+        Thu, 28 Oct 2021 07:51:10 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB3EC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:48:43 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 5so23033644edw.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oFqtoBu84uWB8xzASyVCnCV1AZJEfiefbpv4BLpVjpM=;
+        b=TCUTveglvKDDEt/ik1JrJRQ/hMmJYm3SL9PYaVti2YTY4ZIFfDrOOUojBW+L8EyJKe
+         0RF9fbwNuLo5D8ODajEQMJjjCcynLvWtSQfSETZpTJ7LIz1BCKBabYj44gfBH18TWLHu
+         eLwgjm6SWwKWWsNigU1HtZaCSgqp2ASOcIAuLhrWf9MPkPO6mrsZRjO6UPq+B3PV1KHF
+         5hW3E9UygIiNmU+vAxKyQUAcsE4+DWr/XAbdZvg2eaNPMjWqABliYF4X5erYb2Lnx+vP
+         OoEj+6yE9rbv2y0hTsUYxBZ4MhPSYCsgS7y3//a6HY1La2ennBTp8mMh48zgMeQTuAAS
+         DAOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oFqtoBu84uWB8xzASyVCnCV1AZJEfiefbpv4BLpVjpM=;
+        b=ogxATXqpUEFho0MbBBDkEavvUoI15ZeCMXtRMwrEM7pCdFoM1JhLSdn1olDK7rZ/Lh
+         VA+PcOQ6NcpD5U+U/48aR2mzF+uIfxpixDtowkk3LL0tsP/XSnzrwDWPXv7m7EoYX55G
+         fPvU1XoVwoDAJa55j18X0Bj3/NUf/br+0nVktGVXJXd7pgOq5mUwmAldrCboIdZ/y4wh
+         6l8Q2jskYJy5JHTUTuKEWCX2A5Hc8G5JOhyHFj61HVT/MV63Ay/XyjJGJjZbb311Sf+w
+         Qd19hbl4NMag4/knG8pMKUtFdOsm1VTJprbd2Hxn+/uNWgsMD2Sih3Vx99aZYLs+bFwA
+         Xk7A==
+X-Gm-Message-State: AOAM530jSQ8rWWIcfOIwUzt802IJBYO8+PaTteNyWJ2yMpDcTVXrdtpJ
+        8CEJpAIB29i86+N2dgHlMLZxlf8uFtY=
+X-Google-Smtp-Source: ABdhPJxkcb8+y8uTCDi/gw/MxEXVIwYyB6EgOMaNOknjyvWc9CI12chRKvBh2ze7FgF5ujq/gdUnxw==
+X-Received: by 2002:a05:6402:5c2:: with SMTP id n2mr5437501edx.239.1635421721737;
+        Thu, 28 Oct 2021 04:48:41 -0700 (PDT)
+Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
+        by smtp.gmail.com with ESMTPSA id i15sm1558045edk.2.2021.10.28.04.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 04:48:41 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH 4/7] staging: vt6655: Introduce `data` temporary variable
+Date:   Thu, 28 Oct 2021 13:48:40 +0200
+Message-ID: <39890856.3BBMun7449@localhost.localdomain>
+In-Reply-To: <alpine.DEB.2.22.394.2110281332040.9518@hadrien>
+References: <cover.1635415820.git.karolinadrobnik@gmail.com> <2039159.k92FijXA2m@localhost.localdomain> <alpine.DEB.2.22.394.2110281332040.9518@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="US-ASCII"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds latency and size metrics for remote object copies
-operations ("copyfrom").  For now, these metrics will be available on the
-client only, they won't be sent to the MDS.
+On Thursday, October 28, 2021 1:32:58 PM CEST Julia Lawall wrote:
+> 
+> On Thu, 28 Oct 2021, Fabio M. De Francesco wrote:
+> 
+> > On Thursday, October 28, 2021 12:35:34 PM CEST Karolina Drobnik wrote:
+> > > Add a variable to store initialization tables. Use this variable
+> > > in AL2230 initialization.
+> > >
+> > > Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
+> > > ---
+> > >  drivers/staging/vt6655/rf.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+> > > index ea74701917e5..afd202ea3356 100644
+> > > --- a/drivers/staging/vt6655/rf.c
+> > > +++ b/drivers/staging/vt6655/rf.c
+> > > @@ -684,6 +684,7 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv,
+> > unsigned char rf_type,
+> > >  	unsigned short idx = MISCFIFO_SYNDATA_IDX;
+> > >  	unsigned char init_count = 0;
+> > >  	unsigned char sleep_count = 0;
+> > > +	const unsigned long *data;
+> > >
+> > >  	VNSvOutPortW(iobase + MAC_REG_MISCFFNDEX, 0);
+> > >  	switch (rf_type) {
+> > > @@ -699,8 +700,9 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv,
+> > unsigned char rf_type,
+> > >  		if (init_count > (MISCFIFO_SYNDATASIZE - 
+sleep_count))
+> > >  			return false;
+> > >
+> > > +		data = al2230_init_table;
+> > >  		for (i = 0; i < CB_AL2230_INIT_SEQ; i++)
+> > > -			MACvSetMISCFifo(priv, idx++,
+> > al2230_init_table[i]);
+> > > +			MACvSetMISCFifo(priv, idx++, *(data++));
+> >
+> > Hi Karolina,
+> >
+> > I think you are using redundant parentheses in "* (data ++)" but 
+understand
+> > that those increments and dereferences are equivalent to "* data ++"
+> > (according to the C precedence rules).
+> >
+> > Some time ago I suggested that you use those redundant parentheses 
+because
+> > Greg Kroah-Hartman had previously explained that he prefers not to see
+> > "*foo++" because maintainers and reviewers are not required to remember 
+the C
+> > precedence rules.
+> >
+> > I hope my suggestion isn't based on a misunderstanding of what Greg wants
+> > here and that your patch can be accepted as is.
+> >
+> > While we are at it, please notice that Maintainers of different 
+subsystems
+> > may see this topic from a different point of view and that they might 
+very
+> > well ask you for removing those redundant parentheses.
+> >
+> > I'd suggest to use grep and find out what is preferred in other 
+subsystems,
+> > when you want to contribute to other parts of Linux.
+> 
+> Would it be better as data[i] ?
 
-Cc: Patrick Donnelly <pdonnell@redhat.com>
-Signed-off-by: Luís Henriques <lhenriques@suse.de>
----
-This patch is still an RFC because it is... ugly.  Although it now
-provides nice values (latency and size) using the metrics infrastructure,
-it actually needs to extend the ceph_osdc_copy_from() function to add 2
-extra args!  That's because we need to get the timestamps stored in
-ceph_osd_request, which is handled within that function.
+In this case, yes for sure. It would be better because we are inside a 'for' 
+loop where the code already as an "i" index.
 
-The alternative is to ignore those timestamps and collect new ones in
-ceph_do_objects_copy():
+I didn't notice that we are inside the loop and just looked at that increment 
+and dereference for checking the proper syntax.
 
-	start_req = ktime_get();
-	ceph_osdc_copy_from(...);
-	end_req = ktime_get();
+> 
+> Could there be a better name than "data"?  Perhaps "table"?
 
-These would be more coarse-grained, of course.  Any other suggestions?
+Again, yes if we look at what "data" has been assigned with. 
 
-Cheers,
--- 
-Luís
+Thanks,
 
- fs/ceph/debugfs.c               | 19 ++++++++++++++++++
- fs/ceph/file.c                  |  7 ++++++-
- fs/ceph/metric.c                | 35 +++++++++++++++++++++++++++++++++
- fs/ceph/metric.h                | 14 +++++++++++++
- include/linux/ceph/osd_client.h |  3 ++-
- net/ceph/osd_client.c           |  8 ++++++--
- 6 files changed, 82 insertions(+), 4 deletions(-)
+Fabio
 
-diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-index 55426514491b..b657170d6bc3 100644
---- a/fs/ceph/debugfs.c
-+++ b/fs/ceph/debugfs.c
-@@ -203,6 +203,16 @@ static int metrics_latency_show(struct seq_file *s, void *p)
- 	spin_unlock(&m->metadata_metric_lock);
- 	CEPH_LAT_METRIC_SHOW("metadata", total, avg, min, max, sq);
- 
-+	spin_lock(&m->copyfrom_metric_lock);
-+	total = m->total_copyfrom;
-+	sum = m->copyfrom_latency_sum;
-+	avg = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0;
-+	min = m->copyfrom_latency_min;
-+	max = m->copyfrom_latency_max;
-+	sq = m->copyfrom_latency_sq_sum;
-+	spin_unlock(&m->copyfrom_metric_lock);
-+	CEPH_LAT_METRIC_SHOW("copyfrom", total, avg, min, max, sq);
-+
- 	return 0;
- }
- 
-@@ -234,6 +244,15 @@ static int metrics_size_show(struct seq_file *s, void *p)
- 	spin_unlock(&m->write_metric_lock);
- 	CEPH_SZ_METRIC_SHOW("write", total, avg_sz, min_sz, max_sz, sum_sz);
- 
-+	spin_lock(&m->copyfrom_metric_lock);
-+	total = m->total_copyfrom;
-+	sum_sz = m->copyfrom_size_sum;
-+	avg_sz = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum_sz, total) : 0;
-+	min_sz = m->copyfrom_size_min;
-+	max_sz = m->copyfrom_size_max;
-+	spin_unlock(&m->copyfrom_metric_lock);
-+	CEPH_SZ_METRIC_SHOW("copyfrom", total, avg_sz, min_sz, max_sz, sum_sz);
-+
- 	return 0;
- }
- 
-diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-index e61018d9764e..d1139bbcd58d 100644
---- a/fs/ceph/file.c
-+++ b/fs/ceph/file.c
-@@ -2208,6 +2208,7 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off
- 	struct ceph_object_locator src_oloc, dst_oloc;
- 	struct ceph_object_id src_oid, dst_oid;
- 	size_t bytes = 0;
-+	ktime_t start_req, end_req;
- 	u64 src_objnum, src_objoff, dst_objnum, dst_objoff;
- 	u32 src_objlen, dst_objlen;
- 	u32 object_size = src_ci->i_layout.object_size;
-@@ -2242,7 +2243,11 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off
- 					  CEPH_OSD_OP_FLAG_FADVISE_DONTNEED,
- 					  dst_ci->i_truncate_seq,
- 					  dst_ci->i_truncate_size,
--					  CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ);
-+					  CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ,
-+					  &start_req, &end_req);
-+		ceph_update_copyfrom_metrics(&fsc->mdsc->metric,
-+					     start_req, end_req,
-+					     object_size, ret);
- 		if (ret) {
- 			if (ret == -EOPNOTSUPP) {
- 				fsc->have_copy_from2 = false;
-diff --git a/fs/ceph/metric.c b/fs/ceph/metric.c
-index 04d5df29bbbf..94e7f8fd34d6 100644
---- a/fs/ceph/metric.c
-+++ b/fs/ceph/metric.c
-@@ -270,6 +270,16 @@ int ceph_metric_init(struct ceph_client_metric *m)
- 	m->total_metadatas = 0;
- 	m->metadata_latency_sum = 0;
- 
-+	spin_lock_init(&m->copyfrom_metric_lock);
-+	m->copyfrom_latency_sq_sum = 0;
-+	m->copyfrom_latency_min = KTIME_MAX;
-+	m->copyfrom_latency_max = 0;
-+	m->total_copyfrom = 0;
-+	m->copyfrom_latency_sum = 0;
-+	m->copyfrom_size_min = U64_MAX;
-+	m->copyfrom_size_max = 0;
-+	m->copyfrom_size_sum = 0;
-+
- 	atomic64_set(&m->opened_files, 0);
- 	ret = percpu_counter_init(&m->opened_inodes, 0, GFP_KERNEL);
- 	if (ret)
-@@ -408,3 +418,28 @@ void ceph_update_metadata_metrics(struct ceph_client_metric *m,
- 		       &m->metadata_latency_sq_sum, lat);
- 	spin_unlock(&m->metadata_metric_lock);
- }
-+
-+void ceph_update_copyfrom_metrics(struct ceph_client_metric *m,
-+				  ktime_t r_start, ktime_t r_end,
-+				  unsigned int size, int rc)
-+{
-+	ktime_t lat = ktime_sub(r_end, r_start);
-+	ktime_t total;
-+
-+	if (unlikely(rc && rc != -ETIMEDOUT))
-+		return;
-+
-+	spin_lock(&m->copyfrom_metric_lock);
-+	total = ++m->total_copyfrom;
-+	m->copyfrom_size_sum += size;
-+	m->copyfrom_latency_sum += lat;
-+	METRIC_UPDATE_MIN_MAX(m->copyfrom_size_min,
-+			      m->copyfrom_size_max,
-+			      size);
-+	METRIC_UPDATE_MIN_MAX(m->copyfrom_latency_min,
-+			      m->copyfrom_latency_max,
-+			      lat);
-+	__update_stdev(total, m->copyfrom_latency_sum,
-+		       &m->copyfrom_latency_sq_sum, lat);
-+	spin_unlock(&m->copyfrom_metric_lock);
-+}
-diff --git a/fs/ceph/metric.h b/fs/ceph/metric.h
-index 0133955a3c6a..c95517c7c77b 100644
---- a/fs/ceph/metric.h
-+++ b/fs/ceph/metric.h
-@@ -162,6 +162,16 @@ struct ceph_client_metric {
- 	ktime_t metadata_latency_min;
- 	ktime_t metadata_latency_max;
- 
-+	spinlock_t copyfrom_metric_lock;
-+	u64 total_copyfrom;
-+	u64 copyfrom_size_sum;
-+	u64 copyfrom_size_min;
-+	u64 copyfrom_size_max;
-+	ktime_t copyfrom_latency_sum;
-+	ktime_t copyfrom_latency_sq_sum;
-+	ktime_t copyfrom_latency_min;
-+	ktime_t copyfrom_latency_max;
-+
- 	/* The total number of directories and files that are opened */
- 	atomic64_t opened_files;
- 
-@@ -204,4 +214,8 @@ extern void ceph_update_write_metrics(struct ceph_client_metric *m,
- extern void ceph_update_metadata_metrics(struct ceph_client_metric *m,
- 				         ktime_t r_start, ktime_t r_end,
- 					 int rc);
-+extern void ceph_update_copyfrom_metrics(struct ceph_client_metric *m,
-+					 ktime_t r_start, ktime_t r_end,
-+					 unsigned int size, int rc);
-+
- #endif /* _FS_CEPH_MDS_METRIC_H */
-diff --git a/include/linux/ceph/osd_client.h b/include/linux/ceph/osd_client.h
-index 83fa08a06507..d282c7531a3f 100644
---- a/include/linux/ceph/osd_client.h
-+++ b/include/linux/ceph/osd_client.h
-@@ -524,7 +524,8 @@ int ceph_osdc_copy_from(struct ceph_osd_client *osdc,
- 			struct ceph_object_locator *dst_oloc,
- 			u32 dst_fadvise_flags,
- 			u32 truncate_seq, u64 truncate_size,
--			u8 copy_from_flags);
-+			u8 copy_from_flags,
-+			ktime_t *start_req, ktime_t *end_req);
- 
- /* watch/notify */
- struct ceph_osd_linger_request *
-diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-index ff8624a7c964..74ffe6240b07 100644
---- a/net/ceph/osd_client.c
-+++ b/net/ceph/osd_client.c
-@@ -5356,7 +5356,8 @@ int ceph_osdc_copy_from(struct ceph_osd_client *osdc,
- 			struct ceph_object_locator *dst_oloc,
- 			u32 dst_fadvise_flags,
- 			u32 truncate_seq, u64 truncate_size,
--			u8 copy_from_flags)
-+			u8 copy_from_flags,
-+			ktime_t *start_req, ktime_t *end_req)
- {
- 	struct ceph_osd_request *req;
- 	int ret;
-@@ -5364,6 +5365,8 @@ int ceph_osdc_copy_from(struct ceph_osd_client *osdc,
- 	req = ceph_osdc_alloc_request(osdc, NULL, 1, false, GFP_KERNEL);
- 	if (!req)
- 		return -ENOMEM;
-+	*start_req = 0;
-+	*end_req = 0;
- 
- 	req->r_flags = CEPH_OSD_FLAG_WRITE;
- 
-@@ -5383,7 +5386,8 @@ int ceph_osdc_copy_from(struct ceph_osd_client *osdc,
- 
- 	ceph_osdc_start_request(osdc, req, false);
- 	ret = ceph_osdc_wait_request(osdc, req);
--
-+	*start_req = req->r_start_latency;
-+	*end_req = req->r_end_latency;
- out:
- 	ceph_osdc_put_request(req);
- 	return ret;
+> 
+> julia
+> 
+> 
+> >
+> > Thanks,
+> >
+> > Fabio
+> >
+> > >  		MACvSetMISCFifo(priv, idx++,
+> > al2230_channel_table0[channel - 1]);
+> > >  		MACvSetMISCFifo(priv, idx++,
+> > al2230_channel_table1[channel - 1]);
+> > > --
+> > > 2.30.2
+> > >
+> > > --
+> > > You received this message because you are subscribed to the Google 
+Groups
+> > "outreachy-kernel" group.
+> > > To unsubscribe from this group and stop receiving emails from it, send 
+an
+> > email to outreachy-kernel+unsubscribe@googlegroups.com.
+> > > To view this discussion on the web visit https://groups.google.com/d/
+msgid/
+> > outreachy-kernel/dc72a4c3539aed70569f66396ed3b51818bc2aea.
+> > 1635415820.git.karolinadrobnik%40gmail.com.
+> > >
+> >
+> >
+> >
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups 
+"outreachy-kernel" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an 
+email to outreachy-kernel+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/
+msgid/outreachy-kernel/2039159.k92FijXA2m%40localhost.localdomain.
+> >
+> 
+
+
+
+
