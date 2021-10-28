@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8060543F27C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B715643F27F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhJ1WP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
+        id S231467AbhJ1WQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhJ1WP6 (ORCPT
+        with ESMTP id S231322AbhJ1WQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:15:58 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93309C061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:13:30 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id r2so6018529qtw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:13:30 -0700 (PDT)
+        Thu, 28 Oct 2021 18:16:15 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D8CC061570;
+        Thu, 28 Oct 2021 15:13:48 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id q13so14506967uaq.2;
+        Thu, 28 Oct 2021 15:13:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BxQeetJwEcrw7mZizeh9N8oA8I68HO4YJPCT6BOjW/s=;
-        b=YFX4KkFo8sn9wUT9exIjYE3zy3X6XhfFyUpqK4woD/WNaVGG3KGkVpVflHcB2Qt1lE
-         Xkhb3v3R7klYbEuJFZfZjc88uoGQTQlz55LXKAO/HgzTV1v+Iw3nk3r4l8kDktOetHWv
-         zE+bQ06pDHenulNUaR3PQwa1vJ0rOPI/VD52aaxeqduMEy75r78mNhqQ8H2h5bci8jtS
-         XwmcTcwMGOBl99eASIyea5vPhEfkpKyomJtpy9kr23OXOIjmoOzm/7kz1r2I8u/mpEdv
-         Pn4gxdZZ5msiceUFeN0yQ5DE4zcoTWmFwaQLZYGeLXelxIx+UNHtzObZMzsrRiU9cZv5
-         pTow==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OZwn3eXuvWv7lMEKRx3mWcKBqrug9ReClOP6MHvgXXo=;
+        b=ncBwZyaDsRgBz2HNsnLFFT54p9rGXB1Z1lXnxnoKfOMf3POT5WAEVMfCIC9Aud49yG
+         VEuaOfKviK7i0iS+WMtDqtEooKrux50TPvQI/VNRV9aiccWOLpgWL0VgdJHsE6F5na6g
+         BYJ6MU+0FCEdJSeu+tL/iARZ4UrpAP7Rd94WA+xHNrB9m19lZWFLYlDrZSDoRXhJV8TK
+         mxxZUP8GVxVL5H3b8BfCc12ayUsA6X6Wk+N4Qtm/7oBIuGc61CFfw4uW06fB8siNcpLL
+         7Ijltqx4ZcwkkBRPPuOmNrd1TmI52J8ekafRFfYO//Mg1DxWSIOwWvzwjuYZ6ge4QITE
+         FDAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=BxQeetJwEcrw7mZizeh9N8oA8I68HO4YJPCT6BOjW/s=;
-        b=Faq3W2PXBpHks0m9FA0DFXGxZg93sV3dF+Rl4Hp+1mUhpw7GUav6GL1fapfptOQeNZ
-         iVqmlbMGiZ6wCdfGxhWYI/MdhXZ1PfQBDYPyU8q71P3GUZS1VRGDVCq7REdqe4uFnvSi
-         XwzT7yb+LTdLBbnsdoL4CY+BUgKf+ouwKp/5cR2IiwLKs5Dz9JXd1ZeuBCGd5GXrXgvA
-         rwvG0tJodIJ4CqEfq/7HhbIVufSwaOvRJAE0I/WGeAXHOYbwda/3iP1KBL6PnCcPd7g2
-         usl/EwcJJaypF31/kjNBS2G8IQHa/gW2QUJompnI0/pzNMIdsuGyLiTEs4HJnGhgZuRD
-         /74A==
-X-Gm-Message-State: AOAM531eX463/nroxFBqYcobmhzwPnxfF7NftKS1giZZ/lKSgbTmYZuC
-        vGV0hpJ9GI+WylPM9pP6V64=
-X-Google-Smtp-Source: ABdhPJw7Ip+mVVOhi3P5MeUydNnz0+e4/X81XifGWVT5beNjEjvIb8weALxoCTaaNT8lMLrlpNCpGQ==
-X-Received: by 2002:ac8:5d8c:: with SMTP id d12mr7510623qtx.184.1635459209652;
-        Thu, 28 Oct 2021 15:13:29 -0700 (PDT)
-Received: from localhost.localdomain ([67.8.38.84])
-        by smtp.gmail.com with ESMTPSA id h2sm2791097qkf.106.2021.10.28.15.13.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 15:13:29 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     airlied@linux.ie, daniel@ffwll.ch, jernej.skrabec@gmail.com,
-        wens@csie.org, mripard@kernel.org
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
-Subject: [PATCH] drm/sun4i: fix unmet dependency on RESET_CONTROLLER for PHY_SUN6I_MIPI_DPHY
-Date:   Thu, 28 Oct 2021 18:13:27 -0400
-Message-Id: <20211028221327.17984-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OZwn3eXuvWv7lMEKRx3mWcKBqrug9ReClOP6MHvgXXo=;
+        b=iEC/LiBhiado2tzjThQXnq4DqLRdhdDqt5hGJI62OhG+swI/Wzd/hgY0W9eHOYwkIc
+         KKWI8R0ZeuDwhsPmF85XUfFgNyPTqrPlYsHoYx/lvfNPUZvC94LdIppFUUnUb/V+bdAe
+         shux0BwaGCnjt0nu/DODfclEXwk9cocGoTuAoCwQ2jkaHabFCyEKnfBnxmL+2XzkDaso
+         zNt2/5II8O17sGkyR3UH+PsBQs6v90PFiuKXaAlnbTRViRjlFdcrRH19m7YoWn8AKL3L
+         7jxNKC1/qEaDrgKoFGJnZU63O4N6aHtCkspn9PiZTOMt9gbhN4WhMOK9O5qqlinRS/6K
+         3QGg==
+X-Gm-Message-State: AOAM532m4oL3Rvr8MUBY178XD3CzfC21PxyzBri4qyNBKV4OIqaU8Y/K
+        ELjzz3JBoTw7IsnEef8tvVcQqawe3lq2ttmsKxo=
+X-Google-Smtp-Source: ABdhPJw1zwmPqg/5ONAp6N8wLZJFTVyKdFFRxu5c7HNLQ7mlWQiiTYaHQQKdsd8lkm9W35GbYKYDQcxZQX5V+zk1Ffo=
+X-Received: by 2002:ab0:2b13:: with SMTP id e19mr7889657uar.3.1635459227002;
+ Thu, 28 Oct 2021 15:13:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211028191723.1.I94a358fc5abdb596412a2e22dd2b73b71f56fa82@changeid>
+In-Reply-To: <20211028191723.1.I94a358fc5abdb596412a2e22dd2b73b71f56fa82@changeid>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Thu, 28 Oct 2021 15:13:36 -0700
+Message-ID: <CABBYNZKyJ7wJC5HcYy24LayrysywqjcRpAkMtHmm7=UrfucV4Q@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: Fix removing adv when processing cmd complete
+To:     Archie Pusaka <apusaka@google.com>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Sonny Sasaka <sonnysasaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PHY_SUN6I_MIPI_DPHY is selected, and RESET_CONTROLLER
-is not selected, Kbuild gives the following warning:
+Hi Archie,
 
-WARNING: unmet direct dependencies detected for PHY_SUN6I_MIPI_DPHY
-  Depends on [n]: (ARCH_SUNXI [=n] || COMPILE_TEST [=y]) && HAS_IOMEM [=y] && COMMON_CLK [=y] && RESET_CONTROLLER [=n]
-  Selected by [y]:
-  - DRM_SUN6I_DSI [=y] && HAS_IOMEM [=y] && DRM_SUN4I [=y]
+On Thu, Oct 28, 2021 at 4:17 AM Archie Pusaka <apusaka@google.com> wrote:
+>
+> From: Archie Pusaka <apusaka@chromium.org>
+>
+> If we remove one instance of adv using Set Extended Adv Enable, there
+> is a possibility of issue occurs when processing the Command Complete
+> event. Especially, the adv_info might not be found since we already
+> remove it in hci_req_clear_adv_instance() -> hci_remove_adv_instance().
+> If that's the case, we will mistakenly proceed to remove all adv
+> instances instead of just one single instance.
+>
+> This patch fixes the issue by checking the content of the HCI command
+> instead of checking whether the adv_info is found.
+>
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
+>
+> ---
+>
+>  net/bluetooth/hci_event.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index 3cba2bbefcd6..894670419a27 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -1326,8 +1326,10 @@ static void hci_cc_le_set_ext_adv_enable(struct hci_dev *hdev,
+>                                            &conn->le_conn_timeout,
+>                                            conn->conn_timeout);
+>         } else {
+> -               if (adv) {
+> -                       adv->enabled = false;
+> +               if (cp->num_of_sets) {
+> +                       if (adv)
+> +                               adv->enabled = false;
+> +
+>                         /* If just one instance was disabled check if there are
+>                          * any other instance enabled before clearing HCI_LE_ADV
+>                          */
+> --
+> 2.33.0.1079.g6e70778dc9-goog
 
-This is because DRM_SUN6I_DSI selects PHY_SUN6I_MIPI_DPHY
-without selecting or depending on RESET_CONTROLLER, despite
-PHY_SUN6I_MIPI_DPHY depending on RESET_CONTROLLER.
+Applied, thanks.
 
-These unmet dependency bugs were detected by Kismet,
-a static analysis tool for Kconfig. Please advise if this
-is not the appropriate solution.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- drivers/gpu/drm/sun4i/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/sun4i/Kconfig b/drivers/gpu/drm/sun4i/Kconfig
-index 5755f0432e77..3f70a14a3c94 100644
---- a/drivers/gpu/drm/sun4i/Kconfig
-+++ b/drivers/gpu/drm/sun4i/Kconfig
-@@ -46,6 +46,7 @@ config DRM_SUN6I_DSI
- 	default MACH_SUN8I
- 	select CRC_CCITT
- 	select DRM_MIPI_DSI
-+  select RESET_CONTROLLER
- 	select PHY_SUN6I_MIPI_DPHY
- 	help
- 	  Choose this option if you want have an Allwinner SoC with
 -- 
-2.30.2
-
+Luiz Augusto von Dentz
