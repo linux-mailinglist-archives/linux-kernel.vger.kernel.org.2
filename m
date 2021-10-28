@@ -2,189 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8654943DAED
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E93743DAF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhJ1GA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:00:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:50966 "EHLO foss.arm.com"
+        id S229769AbhJ1GGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:06:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:36156 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhJ1GAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:00:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24018ED1;
-        Wed, 27 Oct 2021 22:57:57 -0700 (PDT)
-Received: from [10.163.77.198] (unknown [10.163.77.198])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51A103F73D;
-        Wed, 27 Oct 2021 22:57:53 -0700 (PDT)
-Subject: Re: [PATCH v1] arm64/mm: avoid race condition of update page table
- when kernel init
-To:     Jianyong Wu <jianyong.wu@arm.com>, catalin.marinas@arm.com,
-        will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        maz@kernel.org, ardb@kernel.org, david@redhat.com,
-        gshan@redhat.com, justin.he@arm.com, nd@arm.com
-References: <20211027094828.7629-1-jianyong.wu@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <1cd8e875-24b1-2904-4e9f-2a4eb13674dc@arm.com>
-Date:   Thu, 28 Oct 2021 11:27:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229586AbhJ1GGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 02:06:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="293791411"
+X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
+   d="scan'208";a="293791411"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2021 23:03:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,188,1631602800"; 
+   d="scan'208";a="537873255"
+Received: from brentlu-brix.itwn.intel.com ([10.5.253.1])
+  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2021 23:03:43 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Julian Braha <julianbraha@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rander Wang <rander.wang@intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS codec
+Date:   Thu, 28 Oct 2021 14:02:03 +0800
+Message-Id: <20211028060203.446093-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211027094828.7629-1-jianyong.wu@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Detect the codec variant in probe function and update DAI link
+accordingly. Also add an new entry in enumeration table for machine
+driver enumeration.
 
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/Kconfig                |  1 +
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 53 +++++++++++++++----
+ .../intel/common/soc-acpi-intel-glk-match.c   |  9 ++++
+ 3 files changed, 54 insertions(+), 9 deletions(-)
 
-On 10/27/21 3:18 PM, Jianyong Wu wrote:
-> Race condition of page table update can happen in kernel boot period as
-> both of memory hotplug action when kernel init and the mark_rodata_ro can
-> update page table. For virtio-mem, the function excute flow chart is:
-> 
-> -------------------------
-> kernel_init
->   kernel_init_freeable
->     ...
->       do_initcall
->         ...
->           module_init [A]
-> 
->   ...
->   mark_readonly
->     mark_rodata_ro [B]
-> -------------------------
-> virtio-mem can be initialized at [A] and spwan a workqueue to add
-> memory, therefore the race of update page table can happen inside [B].
-> 
-> What's more, the race condition can happen even for ACPI based memory
-> hotplug, as it can burst into kernel boot period while page table is
-> updating inside mark_rodata_ro.
-> 
-> That's why memory hotplug lock is needed to guard mark_rodata_ro to avoid
-> the race condition.
-> 
-> It may only happen in arm64. As fixmap, which is the global resource, is
-> used in page table creating. So, the change is only for arm64.
-> 
-> The error often occurs inside alloc_init_pud() in arch/arm64/mm/mmu.c
-> 
-> the race condition flow is:
-> 
-> *************** begin ************
-> 
-> kerenl_init                                 virtio-mem workqueue
-> =========                                   ========
-> alloc_init_pud(...)
->   pudp = pud_set_fixmap_offset(..)          alloc_init_pud(...)
-> ...                                         ...
->     READ_ONCE(*pudp) //OK!                    pudp = pud_set_fixmap_offset(
-> ...                                         ...
->   pud_clear_fixmap() //fixmap break
->                                               READ_ONCE(*pudp) //CRASH!
-> 
-> **************** end *************
-> 
-> I catch the related error when test virtio-mem (a new memory hotplug
-> driver) on arm64.
-> 
-> How to reproduce:
-> (1) prepare a kernel with virtio-mem enabled on arm64
-> (2) start a VM using Cloud Hypervisor using the kernel above
-> (3) hotplug memory, 20G in my case, with virtio-mem
-> (4) reboot or start a new kernel using kexec
-> 
-> Test for server times, you may find the error below:
-> 
-> [    1.131039] Unable to handle kernel paging request at virtual address fffffbfffda3b140
-> [    1.134504] Mem abort info:
-> [    1.135722]   ESR = 0x96000007
-> [    1.136991]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    1.139189]   SET = 0, FnV = 0
-> [    1.140467]   EA = 0, S1PTW = 0
-> [    1.141755]   FSC = 0x07: level 3 translation fault
-> [    1.143787] Data abort info:
-> [    1.144976]   ISV = 0, ISS = 0x00000007
-> [    1.146554]   CM = 0, WnR = 0
-> [    1.147817] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000426f2000
-> [    1.150551] [fffffbfffda3b140] pgd=0000000042ffd003, p4d=0000000042ffd003, pud=0000000042ffe003, pmd=0000000042fff003, pte=0000000000000000
-> [    1.155728] Internal error: Oops: 96000007 [#1] SMP
-> [    1.157724] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G         C        5.15.0-rc3+ #100
-> [    1.161002] Hardware name: linux,dummy-virt (DT)
-> [    1.162939] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    1.165825] pc : alloc_init_pud+0x38c/0x550
-> [    1.167610] lr : alloc_init_pud+0x394/0x550
-> [    1.169358] sp : ffff80001001bd10
-> ......
-> [    1.200527] Call trace:
-> [    1.201583]  alloc_init_pud+0x38c/0x550
-> [    1.203218]  __create_pgd_mapping+0x94/0xe0
-> [    1.204983]  update_mapping_prot+0x50/0xd8
-> [    1.206730]  mark_rodata_ro+0x50/0x58
-> [    1.208281]  kernel_init+0x3c/0x120
-> [    1.209760]  ret_from_fork+0x10/0x20
-> [    1.211298] Code: eb15003f 54000061 d5033a9f d5033fdf (f94000a1)
-> [    1.213856] ---[ end trace 59473413ffe3f52d ]---
-> [    1.215850] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> 
-> We can see that the error derived from the l3 translation as the pte
-> value is *0*. That is because the fixmap has been clear when access.
-> 
-> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
-> ---
->  arch/arm64/mm/mmu.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index cfd9deb347c3..567dfba8f08a 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -564,8 +564,10 @@ void mark_rodata_ro(void)
->  	 * to cover NOTES and EXCEPTION_TABLE.
->  	 */
->  	section_size = (unsigned long)__init_begin - (unsigned long)__start_rodata;
-> +	get_online_mems();
->  	update_mapping_prot(__pa_symbol(__start_rodata), (unsigned long)__start_rodata,
->  			    section_size, PAGE_KERNEL_RO);
-> +	put_online_mems();
->  
->  	debug_checkwx();
->  }
-> 
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index f693383eb6e3..2dd5ff7e35ce 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -427,6 +427,7 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
+ 	select SND_SOC_RT5682_I2C
++	select SND_SOC_RT5682S
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index 9d75beec09d1..058aa7cb899a 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -18,14 +18,18 @@
+ #include <sound/soc.h>
+ #include <sound/soc-acpi.h>
+ #include "../../codecs/rt5682.h"
++#include "../../codecs/rt5682s.h"
+ #include "../../codecs/hdac_hdmi.h"
+ #include "hda_dsp_common.h"
+ 
+ /* The platform clock outputs 19.2Mhz clock to codec as I2S MCLK */
+ #define GLK_PLAT_CLK_FREQ 19200000
+ #define RT5682_PLL_FREQ (48000 * 512)
+-#define GLK_REALTEK_CODEC_DAI "rt5682-aif1"
++#define RT5682_DAI_NAME "rt5682-aif1"
++#define RT5682S_DAI_NAME "rt5682s-aif1"
+ #define GLK_MAXIM_CODEC_DAI "HiFi"
++#define RT5682_DEV0_NAME "i2c-10EC5682:00"
++#define RT5682S_DEV0_NAME "i2c-RTL5682:00"
+ #define MAXIM_DEV0_NAME "MX98357A:00"
+ #define DUAL_CHANNEL 2
+ #define QUAD_CHANNEL 4
+@@ -43,6 +47,7 @@ struct glk_card_private {
+ 	struct snd_soc_jack geminilake_headset;
+ 	struct list_head hdmi_pcm_list;
+ 	bool common_hdmi_codec_drv;
++	int is_rt5682s;
+ };
+ 
+ enum {
+@@ -139,9 +144,19 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct snd_soc_jack *jack;
+-	int ret;
++	int pll_id, pll_source, clk_id, ret;
++
++	if (ctx->is_rt5682s) {
++		pll_id = RT5682S_PLL2;
++		pll_source = RT5682S_PLL_S_MCLK;
++		clk_id = RT5682S_SCLK_S_PLL2;
++	} else {
++		pll_id = RT5682_PLL1;
++		pll_source = RT5682_PLL1_S_MCLK;
++		clk_id = RT5682_SCLK_S_PLL1;
++	}
+ 
+-	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
++	ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source,
+ 					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
+ 	if (ret < 0) {
+ 		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+@@ -149,7 +164,7 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	}
+ 
+ 	/* Configure sysclk for codec */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
++	ret = snd_soc_dai_set_sysclk(codec_dai, clk_id,
+ 					RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
+@@ -344,9 +359,12 @@ SND_SOC_DAILINK_DEF(ssp1_codec,
+ 
+ SND_SOC_DAILINK_DEF(ssp2_pin,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("SSP2 Pin")));
+-SND_SOC_DAILINK_DEF(ssp2_codec,
+-	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00",
+-				      GLK_REALTEK_CODEC_DAI)));
++SND_SOC_DAILINK_DEF(ssp2_codec_5682,
++	DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
++				      RT5682_DAI_NAME)));
++SND_SOC_DAILINK_DEF(ssp2_codec_5682s,
++	DAILINK_COMP_ARRAY(COMP_CODEC(RT5682S_DEV0_NAME,
++				      RT5682S_DAI_NAME)));
+ 
+ SND_SOC_DAILINK_DEF(dmic_pin,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
+@@ -492,7 +510,7 @@ static struct snd_soc_dai_link geminilake_dais[] = {
+ 		.ops = &geminilake_rt5682_ops,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+-		SND_SOC_DAILINK_REG(ssp2_pin, ssp2_codec, platform),
++		SND_SOC_DAILINK_REG(ssp2_pin, ssp2_codec_5682, platform),
+ 	},
+ 	{
+ 		.name = "dmic01",
+@@ -592,12 +610,29 @@ static int geminilake_audio_probe(struct platform_device *pdev)
+ 	struct snd_soc_acpi_mach *mach;
+ 	const char *platform_name;
+ 	struct snd_soc_card *card;
+-	int ret;
++	int ret, i;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
++	/* Detect the headset codec variant */
++	if (acpi_dev_present("RTL5682", NULL, -1)) {
++		/* ALC5682I-VS is detected */
++		ctx->is_rt5682s = 1;
++
++		for (i = 0; i < glk_audio_card_rt5682_m98357a.num_links; i++) {
++			if (strcmp(geminilake_dais[i].name, "SSP2-Codec"))
++				continue;
++
++			/* update the dai link to use rt5682s codec */
++			geminilake_dais[i].codecs = ssp2_codec_5682s;
++			geminilake_dais[i].num_codecs = ARRAY_SIZE(ssp2_codec_5682s);
++			break;
++		}
++	} else
++		ctx->is_rt5682s = 0;
++
+ 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
+ 
+ 	card = &glk_audio_card_rt5682_m98357a;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+index 32fff9389eb3..4de4add74443 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+@@ -40,6 +40,15 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+ 		.sof_fw_filename = "sof-glk.ri",
+ 		.sof_tplg_filename = "sof-glk-rt5682.tplg",
+ 	},
++	{
++		.id = "RTL5682",
++		.drv_name = "glk_rt5682_max98357a",
++		.fw_filename = "intel/dsp_fw_glk.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &glk_codecs,
++		.sof_fw_filename = "sof-glk.ri",
++		.sof_tplg_filename = "sof-glk-rt5682.tplg",
++	},
+ 	{
+ 		.id = "10134242",
+ 		.drv_name = "glk_cs4242_mx98357a",
+-- 
+2.25.1
 
-While this should solve the current problem i.e race between concurrent
-memory hotplug operation and mark_rodata_ro(), but I am still wondering
-whether this is the fix at the right place and granularity. Basically a
-hotplug operation queued in an work queue at [A] can execute during [B]
-is the root cause of this problem.
-
-start_kernel(..)
-{
-
-arch_call_rest_init(..)
-rest_init(..)
-	kernel_thread(kernel_init, ...)
-		kernel_init(..) {
-			kernel_init_freeable(..)
-				do_basic_setup(..)
-					do_initcalls(..)
-						........
-						module_init(..) [A]
-			................
-			................
-			mark_readonly(..)
-				mark_rodata_ro(..)
-					update_mapping_prot(..)
-						__create_pgd_mapping(..) [B]
-			}
-}
-
-Are there no other non-hotplug call path after module_init(), which could
-land in __create_pgd_mapping() ?
-
-Please also note that this is not an existing problem on arm64 platform
-which needs to be fixed, as virtio-mem is yet to be enabled.
