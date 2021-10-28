@@ -2,520 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4664E43DAFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302BF43DAFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhJ1GQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
+        id S229807AbhJ1GQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhJ1GQM (ORCPT
+        with ESMTP id S229762AbhJ1GQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:16:12 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6494C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:13:45 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id b82-20020a1c8055000000b0032ccc728d63so4171377wmd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:13:45 -0700 (PDT)
+        Thu, 28 Oct 2021 02:16:36 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3421C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:14:09 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id d63so6695569iof.4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:14:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q3qnOo6SNi6rqddx/0yloZQA3I3JxT1zp2CKgKB09us=;
-        b=TwFkBaSJCwHCEWFfzyxsaSXf3iO2XIjEXbpSRkKKMjscqrvSwvJeojBTOFVcrJuRGg
-         CpsTsATuS6MO+XpmPb1QYG/TFUfdDCNIVZlHQW77//nQPho20ETXVA9kzX0U8gqexjsC
-         EUSLx16pywRPCoRSQ88+AKtsxf2H5WNVFKR1BNuNRm8ktVB6uglFBSoCNFbsZRxslcqx
-         YBWFk5OC0T7Q6O6HqQSC1LADIiiP4fqHeh+CQfJd7YVFLUME2GRucn6G+BqHuRl1kFVL
-         0b415YswL7w7t7lPOqq0L3m5Jpj5MoPwqqYUxcM2hOkrP1ajRgH+Uy2LE4y/b90Rfw2e
-         iBYg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q/CaYgRMivi6E5IrdJQN3VhID0wrYip2MBmQLj5bzn8=;
+        b=Aq2N80QZqWuk5rhmqD7SlSuHwXw7X5Xj9MYYbX+VkHfnnnJufBOqYb9gJF4OaEiYOR
+         JuqCgXZnsw56MasCxD1UCPwBEADYf4FTAWs1ucK/j7eyDg4KLsC9VDX8pUg2LrTvIBMu
+         LluBL6cpWjDIFC5cHIlQBEAbj2544NrYdVLsI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q3qnOo6SNi6rqddx/0yloZQA3I3JxT1zp2CKgKB09us=;
-        b=g7jlXQoYX/rmMwXkFB2EjD5DaHibrvWG/xHqnGPSCD+r5RQXuFNkONzXfdl2BcupqJ
-         lhXCtD2VCsRWBFDZmVyjs1wYmx8t7lnexna2i7vsst2BRS99CiUdVRA64RvcOrPzeKFg
-         MBTd5Lp0Ys00ZIoFA1xRXZiR1Xz/AGHK+BDZQY+b2BD7Q9nSck2DgriUCpCPDfvOTR6P
-         rweTZSMh4cw19FDjPL/dzjT7p7gxGGNMYwNCs0zfRL4mXnn4f4NAPSYc9HOimgvKq4uk
-         laTShoJZXhpaOakBmpd7+3GKeSJOA1XeLgWWduxjcm0sUnC5/KLl4tSHkp5DJeG1TLQs
-         2t9A==
-X-Gm-Message-State: AOAM530ngrTKEaFz6foplfPrFJBJoB5oxwsl2TylaMc3oRxgr2yY2RfQ
-        CJR7j3ZSV4zbhW7fa5infDA=
-X-Google-Smtp-Source: ABdhPJz//HRSfzmYX4KISrdn+yhGgPuaOyN74hoip0nXElEu6yi9BSQby+eCwmf9oEZo0mHlayWHCw==
-X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr2371815wmq.168.1635401624195;
-        Wed, 27 Oct 2021 23:13:44 -0700 (PDT)
-Received: from localhost.localdomain ([185.199.97.5])
-        by smtp.gmail.com with ESMTPSA id b19sm5649656wmj.9.2021.10.27.23.13.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 23:13:43 -0700 (PDT)
-From:   Oleksandr Andrushchenko <andr2000@gmail.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
-        sstabellini@kernel.org, jbeulich@suse.com,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-Subject: [PATCH] xen-pciback: allow compiling on other archs than x86
-Date:   Thu, 28 Oct 2021 09:13:41 +0300
-Message-Id: <20211028061341.1479333-1-andr2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q/CaYgRMivi6E5IrdJQN3VhID0wrYip2MBmQLj5bzn8=;
+        b=jlgkf4dEvZ+N1GorP3pgS8h1XfD1Z9eRPFi18hjLsuCGfz2FQ5qk/kjgbi04CE5ypj
+         NjxE4V1CfHpASTh2Tzne/y36oqMr+0FDR3tJYy/MbLMEBB4YBuyqa/xTKZ9m5AZesxTs
+         sYbv7UwRx8hB3fnSpmEBDUKmqJ3lGOW5fJHlGFv1HfyahidLLVNM8AsqNtiz7nB4lybg
+         HPLXdbq9wmrULvSVlXib9JniOe3QRyldEqIu3e/0M8CiV7zN66CB9SLzRm+aZaNhBvL6
+         wslvuc2c7FQKlp0bF0BmS9iQEDd8lkUKclnrHJ9I3iY8v9GP0RZ/+LKt0judxoiBaj9B
+         zRyA==
+X-Gm-Message-State: AOAM532WWHt+vbKiVb4Fl7iyL4OBOdBp/fw+ZgeKNj4bIAv+HOGjqJLQ
+        BS/fXxeO8bUq8AbtI+Z1qCtklveQQ+aoYkzPgXvX2w==
+X-Google-Smtp-Source: ABdhPJzC5EHSvYTWsmMZor72KBYkv+zsEBX+bmiCWVqdyiTSd1OU5sPmnEltvdTsr6xsiuVNtLUjnZF8GSWmTewNAHQ=
+X-Received: by 2002:a02:954d:: with SMTP id y71mr1680582jah.83.1635401649146;
+ Wed, 27 Oct 2021 23:14:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211028055056.26378-1-yong.wu@mediatek.com>
+In-Reply-To: <20211028055056.26378-1-yong.wu@mediatek.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Thu, 28 Oct 2021 14:13:43 +0800
+Message-ID: <CAJMQK-jCuH-EKd1snhtrkFEz0bFN1t8EvsF3Kjua-HVFa_3J9A@mail.gmail.com>
+Subject: Re: [PATCH] memory: mtk-smi: Fix a null dereference for the ostd
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        anan.sun@mediatek.com, yi.kuo@mediatek.com,
+        anthony.huang@mediatek.com, Ikjoon Jang <ikjn@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+On Thu, Oct 28, 2021 at 1:51 PM Yong Wu <yong.wu@mediatek.com> wrote:
+>
+> We add the ostd setting for mt8195. It introduces a abort for the
+> previous SoC which doesn't have ostd setting. This is the log:
+>
+> Unable to handle kernel NULL pointer dereference at virtual address
+> 0000000000000080
+> ...
+> pc : mtk_smi_larb_config_port_gen2_general+0x64/0x130
+> lr : mtk_smi_larb_resume+0x54/0x98
+> ...
+> Call trace:
+>  mtk_smi_larb_config_port_gen2_general+0x64/0x130
+>  pm_generic_runtime_resume+0x2c/0x48
+>  __genpd_runtime_resume+0x30/0xa8
+>  genpd_runtime_resume+0x94/0x2c8
+>  __rpm_callback+0x44/0x150
+>  rpm_callback+0x6c/0x78
+>  rpm_resume+0x310/0x558
+>  __pm_runtime_resume+0x3c/0x88
+>
+> In the code: larbostd = larb->larb_gen->ostd[larb->larbid],
+> if "larb->larb_gen->ostd" is null, the "larbostd" is the offset, it is
+> also a valid value, thus, use the larb->larb_gen->ostd as the condition
+> inside the "for" loop.
+>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 
-Xen-pciback driver was designed to be built for x86 only. But it
-can also be used by other architectures, e.g. Arm.
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-Currently PCI backend implements multiple functionalities at a time,
-such as:
-1. It is used as a database for assignable PCI devices, e.g. xl
-   pci-assignable-{add|remove|list} manipulates that list. So, whenever
-   the toolstack needs to know which PCI devices can be passed through
-   it reads that from the relevant sysfs entries of the pciback.
-2. It is used to hold the unbound PCI devices list, e.g. when passing
-   through a PCI device it needs to be unbound from the relevant device
-   driver and bound to pciback (strictly speaking it is not required
-   that the device is bound to pciback, but pciback is again used as a
-   database of the passed through PCI devices, so we can re-bind the
-   devices back to their original drivers when guest domain shuts down)
-3. Device reset for the devices being passed through
-4. Para-virtualised use-cases support
+After applying this patch, mt8183 is no longer crashing.
 
-The para-virtualised part of the driver is not always needed as some
-architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
-model for PCI device passthrough.
-
-For such use-cases make the very first step in splitting the
-xen-pciback driver into two parts: Xen PCI stub and PCI PV backend
-drivers.
-
-For that add new configuration options CONFIG_XEN_PCI_STUB and
-CONFIG_XEN_PCIDEV_STUB, so the driver can be limited in its
-functionality, e.g. no support for para-virtualised scenario.
-x86 platform will continue using CONFIG_XEN_PCIDEV_BACKEND for the
-fully featured backend driver.
-
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Reviewed-by: Juergen Gross <jgross@suse.com>
----
-Changes since v5:
-- rebased
-Changes since v4:
-- squashed two patches
-- simplified Makefile
-Changes since v3:
- - Fix >>32 shift for 32-bit architectures
-Changes since v2:
- - swap the patch order
-Since v1:
- - Do not move pci_xen_initial_domain as it is x86 specific
----
- arch/x86/include/asm/xen/pci.h              | 19 ------
- arch/x86/pci/xen.c                          | 76 +--------------------
- drivers/xen/Kconfig                         | 24 +++++++
- drivers/xen/Makefile                        |  2 +-
- drivers/xen/pci.c                           | 75 ++++++++++++++++++++
- drivers/xen/xen-pciback/Makefile            |  7 ++
- drivers/xen/xen-pciback/conf_space_header.c |  8 ++-
- drivers/xen/xen-pciback/pci_stub.c          |  3 +-
- drivers/xen/xen-pciback/pciback.h           |  5 ++
- drivers/xen/xen-pciback/xenbus.c            |  8 ++-
- include/xen/pci.h                           | 28 ++++++++
- 11 files changed, 155 insertions(+), 100 deletions(-)
- create mode 100644 include/xen/pci.h
-
-diff --git a/arch/x86/include/asm/xen/pci.h b/arch/x86/include/asm/xen/pci.h
-index 4557f7cb0fa6..9015b888edd6 100644
---- a/arch/x86/include/asm/xen/pci.h
-+++ b/arch/x86/include/asm/xen/pci.h
-@@ -22,25 +22,6 @@ static inline int __init pci_xen_initial_domain(void)
- 	return -1;
- }
- #endif
--#ifdef CONFIG_XEN_DOM0
--int xen_find_device_domain_owner(struct pci_dev *dev);
--int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
--int xen_unregister_device_domain_owner(struct pci_dev *dev);
--#else
--static inline int xen_find_device_domain_owner(struct pci_dev *dev)
--{
--	return -1;
--}
--static inline int xen_register_device_domain_owner(struct pci_dev *dev,
--						   uint16_t domain)
--{
--	return -1;
--}
--static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
--{
--	return -1;
--}
--#endif
- 
- #if defined(CONFIG_PCI_MSI)
- #if defined(CONFIG_PCI_XEN)
-diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
-index 5debe4ac6f81..12da00558631 100644
---- a/arch/x86/pci/xen.c
-+++ b/arch/x86/pci/xen.c
-@@ -23,6 +23,7 @@
- 
- #include <xen/features.h>
- #include <xen/events.h>
-+#include <xen/pci.h>
- #include <asm/xen/pci.h>
- #include <asm/xen/cpuid.h>
- #include <asm/apic.h>
-@@ -585,78 +586,3 @@ int __init pci_xen_initial_domain(void)
- }
- #endif
- 
--#ifdef CONFIG_XEN_DOM0
--
--struct xen_device_domain_owner {
--	domid_t domain;
--	struct pci_dev *dev;
--	struct list_head list;
--};
--
--static DEFINE_SPINLOCK(dev_domain_list_spinlock);
--static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
--
--static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--
--	list_for_each_entry(owner, &dev_domain_list, list) {
--		if (owner->dev == dev)
--			return owner;
--	}
--	return NULL;
--}
--
--int xen_find_device_domain_owner(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--	int domain = -ENODEV;
--
--	spin_lock(&dev_domain_list_spinlock);
--	owner = find_device(dev);
--	if (owner)
--		domain = owner->domain;
--	spin_unlock(&dev_domain_list_spinlock);
--	return domain;
--}
--EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
--
--int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
--{
--	struct xen_device_domain_owner *owner;
--
--	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
--	if (!owner)
--		return -ENODEV;
--
--	spin_lock(&dev_domain_list_spinlock);
--	if (find_device(dev)) {
--		spin_unlock(&dev_domain_list_spinlock);
--		kfree(owner);
--		return -EEXIST;
--	}
--	owner->domain = domain;
--	owner->dev = dev;
--	list_add_tail(&owner->list, &dev_domain_list);
--	spin_unlock(&dev_domain_list_spinlock);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
--
--int xen_unregister_device_domain_owner(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--
--	spin_lock(&dev_domain_list_spinlock);
--	owner = find_device(dev);
--	if (!owner) {
--		spin_unlock(&dev_domain_list_spinlock);
--		return -ENODEV;
--	}
--	list_del(&owner->list);
--	spin_unlock(&dev_domain_list_spinlock);
--	kfree(owner);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
--#endif /* CONFIG_XEN_DOM0 */
-diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
-index 1b2c3aca6887..a1b11c62da9e 100644
---- a/drivers/xen/Kconfig
-+++ b/drivers/xen/Kconfig
-@@ -181,10 +181,34 @@ config SWIOTLB_XEN
- 	select DMA_OPS
- 	select SWIOTLB
- 
-+config XEN_PCI_STUB
-+	bool
-+
-+config XEN_PCIDEV_STUB
-+	tristate "Xen PCI-device stub driver"
-+	depends on PCI && !X86 && XEN
-+	depends on XEN_BACKEND
-+	select XEN_PCI_STUB
-+	default m
-+	help
-+	  The PCI device stub driver provides limited version of the PCI
-+	  device backend driver without para-virtualized support for guests.
-+	  If you select this to be a module, you will need to make sure no
-+	  other driver has bound to the device(s) you want to make visible to
-+	  other guests.
-+
-+	  The "hide" parameter (only applicable if backend driver is compiled
-+	  into the kernel) allows you to bind the PCI devices to this module
-+	  from the default device drivers. The argument is the list of PCI BDFs:
-+	  xen-pciback.hide=(03:00.0)(04:00.0)
-+
-+	  If in doubt, say m.
-+
- config XEN_PCIDEV_BACKEND
- 	tristate "Xen PCI-device backend driver"
- 	depends on PCI && X86 && XEN
- 	depends on XEN_BACKEND
-+	select XEN_PCI_STUB
- 	default m
- 	help
- 	  The PCI device backend driver allows the kernel to export arbitrary
-diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
-index 3434593455b2..5aae66e638a7 100644
---- a/drivers/xen/Makefile
-+++ b/drivers/xen/Makefile
-@@ -24,7 +24,7 @@ obj-$(CONFIG_XEN_SYS_HYPERVISOR)	+= sys-hypervisor.o
- obj-$(CONFIG_XEN_PVHVM_GUEST)		+= platform-pci.o
- obj-$(CONFIG_SWIOTLB_XEN)		+= swiotlb-xen.o
- obj-$(CONFIG_XEN_MCE_LOG)		+= mcelog.o
--obj-$(CONFIG_XEN_PCIDEV_BACKEND)	+= xen-pciback/
-+obj-$(CONFIG_XEN_PCI_STUB)	        += xen-pciback/
- obj-$(CONFIG_XEN_PRIVCMD)		+= xen-privcmd.o
- obj-$(CONFIG_XEN_ACPI_PROCESSOR)	+= xen-acpi-processor.o
- obj-$(CONFIG_XEN_EFI)			+= efi.o
-diff --git a/drivers/xen/pci.c b/drivers/xen/pci.c
-index 224df03ce42e..fc8c1249d49f 100644
---- a/drivers/xen/pci.c
-+++ b/drivers/xen/pci.c
-@@ -254,3 +254,78 @@ static int xen_mcfg_late(void)
- 	return 0;
- }
- #endif
-+
-+#ifdef CONFIG_XEN_DOM0
-+struct xen_device_domain_owner {
-+	domid_t domain;
-+	struct pci_dev *dev;
-+	struct list_head list;
-+};
-+
-+static DEFINE_SPINLOCK(dev_domain_list_spinlock);
-+static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
-+
-+static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	list_for_each_entry(owner, &dev_domain_list, list) {
-+		if (owner->dev == dev)
-+			return owner;
-+	}
-+	return NULL;
-+}
-+
-+int xen_find_device_domain_owner(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+	int domain = -ENODEV;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	owner = find_device(dev);
-+	if (owner)
-+		domain = owner->domain;
-+	spin_unlock(&dev_domain_list_spinlock);
-+	return domain;
-+}
-+EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
-+
-+int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
-+	if (!owner)
-+		return -ENODEV;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	if (find_device(dev)) {
-+		spin_unlock(&dev_domain_list_spinlock);
-+		kfree(owner);
-+		return -EEXIST;
-+	}
-+	owner->domain = domain;
-+	owner->dev = dev;
-+	list_add_tail(&owner->list, &dev_domain_list);
-+	spin_unlock(&dev_domain_list_spinlock);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
-+
-+int xen_unregister_device_domain_owner(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	owner = find_device(dev);
-+	if (!owner) {
-+		spin_unlock(&dev_domain_list_spinlock);
-+		return -ENODEV;
-+	}
-+	list_del(&owner->list);
-+	spin_unlock(&dev_domain_list_spinlock);
-+	kfree(owner);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
-+#endif
-diff --git a/drivers/xen/xen-pciback/Makefile b/drivers/xen/xen-pciback/Makefile
-index e8d981d43235..d63df09de81c 100644
---- a/drivers/xen/xen-pciback/Makefile
-+++ b/drivers/xen/xen-pciback/Makefile
-@@ -1,5 +1,12 @@
- # SPDX-License-Identifier: GPL-2.0
-+
-+# N.B. The below cannot be expressed with a single line using
-+# CONFIG_XEN_PCI_STUB as it always remains in "y" state,
-+# thus preventing the driver to be built as a module.
-+# Please note, that CONFIG_XEN_PCIDEV_BACKEND and
-+# CONFIG_XEN_PCIDEV_STUB are mutually exclusive.
- obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
-+obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
- 
- xen-pciback-y := pci_stub.o pciback_ops.o xenbus.o
- xen-pciback-y += conf_space.o conf_space_header.o \
-diff --git a/drivers/xen/xen-pciback/conf_space_header.c b/drivers/xen/xen-pciback/conf_space_header.c
-index ac45cdc38e85..981435103af1 100644
---- a/drivers/xen/xen-pciback/conf_space_header.c
-+++ b/drivers/xen/xen-pciback/conf_space_header.c
-@@ -236,8 +236,12 @@ static void *bar_init(struct pci_dev *dev, int offset)
- 	else {
- 		pos = (offset - PCI_BASE_ADDRESS_0) / 4;
- 		if (pos && (res[pos - 1].flags & IORESOURCE_MEM_64)) {
--			bar->val = res[pos - 1].start >> 32;
--			bar->len_val = -resource_size(&res[pos - 1]) >> 32;
-+			/*
-+			 * Use ">> 16 >> 16" instead of direct ">> 32" shift
-+			 * to avoid warnings on 32-bit architectures.
-+			 */
-+			bar->val = res[pos - 1].start >> 16 >> 16;
-+			bar->len_val = -resource_size(&res[pos - 1]) >> 16 >> 16;
- 			return bar;
- 		}
- 	}
-diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
-index f8e4faa96ad6..bba527620507 100644
---- a/drivers/xen/xen-pciback/pci_stub.c
-+++ b/drivers/xen/xen-pciback/pci_stub.c
-@@ -19,7 +19,8 @@
- #include <linux/sched.h>
- #include <linux/atomic.h>
- #include <xen/events.h>
--#include <asm/xen/pci.h>
-+#include <xen/pci.h>
-+#include <xen/xen.h>
- #include <asm/xen/hypervisor.h>
- #include <xen/interface/physdev.h>
- #include "pciback.h"
-diff --git a/drivers/xen/xen-pciback/pciback.h b/drivers/xen/xen-pciback/pciback.h
-index 95e28ee48d52..9a64196e831d 100644
---- a/drivers/xen/xen-pciback/pciback.h
-+++ b/drivers/xen/xen-pciback/pciback.h
-@@ -71,6 +71,11 @@ struct pci_dev *pcistub_get_pci_dev(struct xen_pcibk_device *pdev,
- 				    struct pci_dev *dev);
- void pcistub_put_pci_dev(struct pci_dev *dev);
- 
-+static inline bool xen_pcibk_pv_support(void)
-+{
-+	return IS_ENABLED(CONFIG_XEN_PCIDEV_BACKEND);
-+}
-+
- /* Ensure a device is turned off or reset */
- void xen_pcibk_reset_device(struct pci_dev *pdev);
- 
-diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
-index c09c7ebd6968..bde63ef677b8 100644
---- a/drivers/xen/xen-pciback/xenbus.c
-+++ b/drivers/xen/xen-pciback/xenbus.c
-@@ -14,7 +14,7 @@
- #include <linux/workqueue.h>
- #include <xen/xenbus.h>
- #include <xen/events.h>
--#include <asm/xen/pci.h>
-+#include <xen/pci.h>
- #include "pciback.h"
- 
- #define INVALID_EVTCHN_IRQ  (-1)
-@@ -743,6 +743,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
- 
- int __init xen_pcibk_xenbus_register(void)
- {
-+	if (!xen_pcibk_pv_support())
-+		return 0;
-+
- 	xen_pcibk_backend = &xen_pcibk_vpci_backend;
- 	if (passthrough)
- 		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
-@@ -752,5 +755,6 @@ int __init xen_pcibk_xenbus_register(void)
- 
- void __exit xen_pcibk_xenbus_unregister(void)
- {
--	xenbus_unregister_driver(&xen_pcibk_driver);
-+	if (xen_pcibk_pv_support())
-+		xenbus_unregister_driver(&xen_pcibk_driver);
- }
-diff --git a/include/xen/pci.h b/include/xen/pci.h
-new file mode 100644
-index 000000000000..b8337cf85fd1
---- /dev/null
-+++ b/include/xen/pci.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __XEN_PCI_H__
-+#define __XEN_PCI_H__
-+
-+#if defined(CONFIG_XEN_DOM0)
-+int xen_find_device_domain_owner(struct pci_dev *dev);
-+int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
-+int xen_unregister_device_domain_owner(struct pci_dev *dev);
-+#else
-+static inline int xen_find_device_domain_owner(struct pci_dev *dev)
-+{
-+	return -1;
-+}
-+
-+static inline int xen_register_device_domain_owner(struct pci_dev *dev,
-+						   uint16_t domain)
-+{
-+	return -1;
-+}
-+
-+static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
-+{
-+	return -1;
-+}
-+#endif
-+
-+#endif
--- 
-2.25.1
-
+> ---
+> Hi Krzysztof,
+> Could you help review and conside this as a fix for the mt8195 patchset?
+> The mt8195 patchset are not in mainline, thus, I don't know its sha-id,
+> and don't add Fixes tag.
+> Thanks
+> ---
+>  drivers/memory/mtk-smi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
+> index b883dcc0bbfa..0262a59a2d6e 100644
+> --- a/drivers/memory/mtk-smi.c
+> +++ b/drivers/memory/mtk-smi.c
+> @@ -257,7 +257,7 @@ static void mtk_smi_larb_config_port_gen2_general(struct device *dev)
+>         if (MTK_SMI_CAPS(flags_general, MTK_SMI_FLAG_SW_FLAG))
+>                 writel_relaxed(SMI_LARB_SW_FLAG_1, larb->base + SMI_LARB_SW_FLAG);
+>
+> -       for (i = 0; i < SMI_LARB_PORT_NR_MAX && larbostd && !!larbostd[i]; i++)
+> +       for (i = 0; i < SMI_LARB_PORT_NR_MAX && larb->larb_gen->ostd && !!larbostd[i]; i++)
+>                 writel_relaxed(larbostd[i], larb->base + SMI_LARB_OSTDL_PORTx(i));
+>
+>         for_each_set_bit(i, (unsigned long *)larb->mmu, 32) {
+> --
+> 2.18.0
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
