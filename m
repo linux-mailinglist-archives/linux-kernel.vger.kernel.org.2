@@ -2,241 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE1843E2B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D57C43E2C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhJ1Nz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:55:26 -0400
-Received: from ixit.cz ([94.230.151.217]:35258 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhJ1NzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:55:12 -0400
-Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 5D70A20064;
-        Thu, 28 Oct 2021 15:52:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635429161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IhbhJtURt+WnE9ECLdh1gqMi5nXfjMcR+LTiEWo/+2s=;
-        b=fcB6XX4004At1KY3+sfv99iJcibCHwuuu1xRny9RTu2cLvXDlLeMYiamkB25qVGjJHAka4
-        T0q6GYJuGrskIG7yQWiSp6cvF7MuEE9BeAN/CUIJNVe7DBtCp/1s94vHGaDgwaUqd+Odtt
-        RWeqqQcx0NNlwN2ePm2BD2H6aUo6rBs=
-Date:   Thu, 28 Oct 2021 15:52:35 +0200
-From:   David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH] WIP: dt-bindings: arm: hwmon: gpio-fan: Convert txt
- bindings to yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~okias/devicetree@lists.sr.ht
-Message-Id: <N7XO1R.T7ICL6D5U4CF3@ixit.cz>
-In-Reply-To: <YW86Ffa+zoIZpixu@robh.at.kernel.org>
-References: <20211009104309.45117-1-david@ixit.cz>
-        <YW86Ffa+zoIZpixu@robh.at.kernel.org>
-X-Mailer: geary/40.0
+        id S230476AbhJ1N7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:59:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20906 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229887AbhJ1N7Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:59:16 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SDmAT9022005;
+        Thu, 28 Oct 2021 13:56:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=3Y6lteLfUPBChcASwXUwRdn1BQK2ILLRwZ4Nuk0nTYM=;
+ b=gJ/Li03PIoqeMwRryfqwdvzLuKoMARJ1rr4u9C656NjN3DxLohRI4BsQAT31RA75y0+T
+ LwoZAj+MeUFwF6iQfrUZ6VfKYWKMZSx1rJ/SHlhu7FdjvWQ69kuLFbKnli3m2GEBsqxk
+ 4jQXzxud8JqVuRvHQUmxNvlEnzNK4uqmaBnpegRFA28saaullupX+7JVEhN/KZz1wvSl
+ i0UzCYECypz8v0fvCaCMcBrHzl/KpYGl0EnS9eOPmeCQZuVO0SbFnbYzwY1jOzmbBEIW
+ T+J/QHqOv/gMmLbj8js+MYsNzI7SF8IyrjYX86sI1630FcixZXXbZ09xGSXoZGjx0tnj sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3byw2p8523-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Oct 2021 13:56:49 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SDn4FB024008;
+        Thu, 28 Oct 2021 13:56:49 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3byw2p851a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Oct 2021 13:56:49 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SDr2sl011834;
+        Thu, 28 Oct 2021 13:56:46 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bx4f1su7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Oct 2021 13:56:46 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SDoYhc38339038
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Oct 2021 13:50:34 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4C97A405B;
+        Thu, 28 Oct 2021 13:56:43 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4669CA4060;
+        Thu, 28 Oct 2021 13:56:43 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 28 Oct 2021 13:56:43 +0000 (GMT)
+From:   Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] KVM: s390: Some gaccess cleanup
+Date:   Thu, 28 Oct 2021 15:55:53 +0200
+Message-Id: <20211028135556.1793063-1-scgl@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LasjKA88j_A33Gv2_a28oMEO8HQxrnVW
+X-Proofpoint-ORIG-GUID: PkJHyxa0CLwcdI0Mz0eO3TNi8nSQKxoL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-28_01,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999
+ impostorscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110280075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cleanup s390 guest access code a bit, getting rid of some code
+duplication and improving readability.
 
+v1 -> v2
+	separate patch for renamed variable
+		fragment_len instead of seg
+	expand comment of guest_range_to_gpas
+	fix nits
 
+I did not pick up Janosch's Reviewed-by because of the split patch
+and the changed variable name.
 
-On Tue, Oct 19 2021 at 16:35:17 -0500, Rob Herring <robh@kernel.org> 
-wrote:
-> On Sat, Oct 09, 2021 at 12:43:09PM +0200, David Heidelberg wrote:
->>  Convert fan devices connected to GPIOs to the YAML syntax.
->> 
->>  Signed-off-by: David Heidelberg <david@ixit.cz>
->>  ---
->>   .../devicetree/bindings/hwmon/gpio-fan.txt    | 41 -----------
->>   .../devicetree/bindings/hwmon/gpio-fan.yaml   | 69 
->> +++++++++++++++++++
->>   2 files changed, 69 insertions(+), 41 deletions(-)
->>   delete mode 100644 
->> Documentation/devicetree/bindings/hwmon/gpio-fan.txt
->>   create mode 100644 
->> Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
->> 
->>  diff --git a/Documentation/devicetree/bindings/hwmon/gpio-fan.txt 
->> b/Documentation/devicetree/bindings/hwmon/gpio-fan.txt
->>  deleted file mode 100644
->>  index f4cfa350f6a1..000000000000
->>  --- a/Documentation/devicetree/bindings/hwmon/gpio-fan.txt
->>  +++ /dev/null
->>  @@ -1,41 +0,0 @@
->>  -Bindings for fan connected to GPIO lines
->>  -
->>  -Required properties:
->>  -- compatible : "gpio-fan"
->>  -
->>  -Optional properties:
->>  -- gpios: Specifies the pins that map to bits in the control value,
->>  -  ordered MSB-->LSB.
->>  -- gpio-fan,speed-map: A mapping of possible fan RPM speeds and the
->>  -  control value that should be set to achieve them. This array
->>  -  must have the RPM values in ascending order.
->>  -- alarm-gpios: This pin going active indicates something is wrong 
->> with
->>  -  the fan, and a udev event will be fired.
->>  -- #cooling-cells: If used as a cooling device, must be <2>
->>  -  Also see:
->>  -  
->> Documentation/devicetree/bindings/thermal/thermal-cooling-devices.yaml
->>  -  min and max states are derived from the speed-map of the fan.
->>  -
->>  -Note: At least one the "gpios" or "alarm-gpios" properties must be 
->> set.
->>  -
->>  -Examples:
->>  -
->>  -	gpio_fan {
->>  -		compatible = "gpio-fan";
->>  -		gpios = <&gpio1 14 1
->>  -			 &gpio1 13 1>;
->>  -		gpio-fan,speed-map = <0    0
->>  -				      3000 1
->>  -				      6000 2>;
->>  -		alarm-gpios = <&gpio1 15 1>;
->>  -	};
->>  -	gpio_fan_cool: gpio_fan {
->>  -		compatible = "gpio-fan";
->>  -		gpios = <&gpio2 14 1
->>  -			 &gpio2 13 1>;
->>  -		gpio-fan,speed-map =	<0    0>,
->>  -					<3000 1>,
->>  -					<6000 2>;
->>  -		alarm-gpios = <&gpio2 15 1>;
->>  -		#cooling-cells = <2>; /* min followed by max */
->>  -	};
->>  diff --git a/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml 
->> b/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
->>  new file mode 100644
->>  index 000000000000..e2db65d58a92
->>  --- /dev/null
->>  +++ b/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
->>  @@ -0,0 +1,69 @@
->>  +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>  +%YAML 1.2
->>  +---
->>  +$id: "http://devicetree.org/schemas/hwmon/gpio-fan.yaml#"
->>  +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->>  +
->>  +title: Bindings for fan connected to GPIO lines
->>  +
->>  +maintainers:
->>  +  - Rob Herring <robh+dt@kernel.org>
-> 
-> Just robh@kernel.org
-> 
->>  +
->>  +properties:
->>  +  compatible:
->>  +    const: gpio-fan
->>  +
->>  +  gpios:
->>  +    description: |
->>  +      Specifies the pins that map to bits in the control value,
->>  +      ordered MSB-->LSB.
-> 
-> minItems: 1
-> maxItems: 7 ?
-> 
->>  +
->>  +  gpio-fan,speed-map:
->>  +    $ref: /schemas/types.yaml#/definitions/uint32-array
->>  +    minItems: 4
->>  +    maxItems: 254
->>  +    description: |
->>  +      A mapping of possible fan RPM speeds and the
->>  +      control value that should be set to achieve them. This array
->>  +      must have the RPM values in ascending order.
-> 
-> Really this should be a uint32-matrix with this schema:
-> 
-> items:
->   minItems: 2
->   maxItems: 127
->   items:
->     - description: fan speed in RPMs
->     - description: control value
-> 
->>  +
->>  +  alarm-gpios:
->>  +    description: |
->>  +      This pin going active indicates something is wrong with
->>  +      the fan, and a udev event will be fired.
-> 
-> maxItems: 1
-> 
-> udev is a linuxism and shouldn't be in the binding.
-> 
->>  +
->>  +  '#cooling-cells':
->>  +    const: 2
->>  +
->>  +required:
->>  +  - compatible
->>  +  - gpio-fan,speed-map
->>  +
->>  +anyOf:
->>  +  - required: [gpios]
-> 
-> How is 'gpios' not always required?
-> 
->>  +  - required: [alarm-gpios]
->>  +
->>  +additionalProperties: false
->>  +
->>  +examples:
->>  +  - |
->>  +    gpio_fan {
->>  +      compatible = "gpio-fan";
->>  +      gpios = <&gpio1 14 1
->>  +               &gpio1 13 1>;
->>  +      gpio-fan,speed-map = <0    0
->>  +                            3000 1
->>  +                            6000 2>;
-> 
-> Brackets needed around each pair.
+Janis Schoetterl-Glausch (3):
+  KVM: s390: gaccess: Refactor gpa and length calculation
+  KVM: s390: gaccess: Refactor access address range check
+  KVM: s390: gaccess: Cleanup access to guest frames
 
-Well, that's the issue. I would love to use u32-matrix, but all the 
-drivers use < x1 x2 y1 x2 ... z1 z2 > syntax and driver suggests it's 
-the right solution.
-         * Speed map is in the form <RPM ctrl_val RPM ctrl_val ...>
+ arch/s390/kvm/gaccess.c | 158 +++++++++++++++++++++++-----------------
+ 1 file changed, 92 insertions(+), 66 deletions(-)
 
-Someone had to rewrite the driver and the DTS files to fix it. We could 
-mark old format as deprecated and use u32-matrix, but for now with 
-current drivers it's not a solution.
-
-What you think? Should I document it as it is (so u32-array)?
-
-David
-
-> 
->>  +      alarm-gpios = <&gpio1 15 1>;
->>  +    };
->>  +  - |
->>  +    gpio_fan_cool: gpio_fan {
->>  +      compatible = "gpio-fan";
->>  +      gpios = <&gpio2 14 1
->>  +               &gpio2 13 1>;
->>  +      gpio-fan,speed-map = <0    0
->>  +                            3000 1
->>  +                            6000 2>;
->>  +      alarm-gpios = <&gpio2 15 1>;
->>  +      #cooling-cells = <2>; /* min followed by max */
->>  +    };
->>  --
->>  2.33.0
->> 
->> 
-
+-- 
+2.25.1
 
