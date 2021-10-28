@@ -2,161 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C39743DB77
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E7443DB74
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhJ1Grz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhJ1Grw (ORCPT
+        id S229833AbhJ1Grx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 02:47:53 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:53967 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhJ1Grv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:47:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACA9C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:45:25 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mfzA4-0008LQ-77; Thu, 28 Oct 2021 08:45:16 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mfzA2-0001rL-1N; Thu, 28 Oct 2021 08:45:14 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mfzA2-000369-04; Thu, 28 Oct 2021 08:45:14 +0200
-Date:   Thu, 28 Oct 2021 08:45:13 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
-Cc:     sean@mess.org, lkp@intel.com, mchehab@kernel.org,
-        thierry.reding@gmail.com, lee.jones@linaro.org,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v4] media: rc: pwm-ir-tx: Switch to atomic PWM API
-Message-ID: <20211028064513.guziv6uaivzlk6ki@pengutronix.de>
-References: <YXlxhpZWf2mxJaMi@fedora>
+        Thu, 28 Oct 2021 02:47:51 -0400
+Received: (Authenticated sender: maxime.chevallier@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 7FC9660014;
+        Thu, 28 Oct 2021 06:45:21 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 08:45:20 +0200
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Antoine Tenart <atenart@kernel.org>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com
+Subject: Re: [RFC PATCH net] net: ipconfig: Release the rtnl_lock while
+ waiting for carrier
+Message-ID: <20211028084520.4b96f93a@bootlin.com>
+In-Reply-To: <163535070902.935735.6368176213562383450@kwain>
+References: <20211027131953.9270-1-maxime.chevallier@bootlin.com>
+        <163535070902.935735.6368176213562383450@kwain>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mf4wlywlnibmr5pv"
-Content-Disposition: inline
-In-Reply-To: <YXlxhpZWf2mxJaMi@fedora>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Antoine,
 
---mf4wlywlnibmr5pv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 27 Oct 2021 18:05:09 +0200
+Antoine Tenart <atenart@kernel.org> wrote:
 
-On Wed, Oct 27, 2021 at 12:34:30PM -0300, Ma=EDra Canal wrote:
-> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-> replace it for the atomic PWM API.
->=20
-> Signed-off-by: Ma=EDra Canal <maira.canal@usp.br>
-> Reported-by: kernel test robot <lkp@intel.com>
+>Hi Maxime,
+>
+>Quoting Maxime Chevallier (2021-10-27 15:19:53)
+>> While waiting for a carrier to come on one of the netdevices, some
+>> devices will require to take the rtnl lock at some point to fully
+>> initialize all parts of the link.
+>> 
+>> That's the case for SFP, where the rtnl is taken when a module gets
+>> detected. This prevents mounting an NFS rootfs over an SFP link.
+>> 
+>> This means that while ipconfig waits for carriers to be detected, no SFP
+>> modules can be detected in the meantime, it's only detected after
+>> ipconfig times out.
+>> 
+>> This commit releases the rtnl_lock while waiting for the carrier to come
+>> up, and re-takes it to check the for the init device and carrier status.
+>> 
+>> At that point, the rtnl_lock seems to be only protecting
+>> ic_is_init_dev().
+>> 
+>> Fixes: 73970055450e ("sfp: add SFP module support")  
+>
+>Was this working with SFP modules before?
 
-While it's true that he kernel robot told you about a problem in an
-earlier revision, adding the tag here is misleading, because in the end
-you only see the tag in the commit history, and there is suggests that
-the commit fixes something that was reported in the kernel tree before.
+From what I can tell, no. In that case, does it need a fixes tag ?
+It seems the problem has always been there, and booting an nfsroot
+never worked over SFP links.
 
-For this reason I usually only add a thanks after the tripple dash.
+>
+>> diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
+>> index 816d8aad5a68..069ae05bd0a5 100644
+>> --- a/net/ipv4/ipconfig.c
+>> +++ b/net/ipv4/ipconfig.c
+>> @@ -278,7 +278,12 @@ static int __init ic_open_devs(void)
+>>                         if (ic_is_init_dev(dev) && netif_carrier_ok(dev))
+>>                                 goto have_carrier;
+>>  
+>> +               /* Give a chance to do complex initialization that
+>> +                * would require to take the rtnl lock.
+>> +                */
+>> +               rtnl_unlock();
+>>                 msleep(1);
+>> +               rtnl_lock();
+>>  
+>>                 if (time_before(jiffies, next_msg))
+>>                         continue;  
+>
+>The rtnl lock is protecting 'for_each_netdev' and 'dev_change_flags' in
+>this function. What could happen in theory is a device gets removed from
+>the list or has its flags changed. I don't think that's an issue here.
+>
+>Instead of releasing the lock while sleeping, you could drop the lock
+>before the carrier waiting loop (with a similar comment) and only
+>protect the above 'for_each_netdev' loop.
 
-Also note this nitpick: Your S-o-b should always be the last thing.
+Nice catch, the effect should be the same but with a much cleaner idea
+of what is being protected.
 
-> ---
-> V1 -> V2: Assign variables directly and simplify conditional statement
-> V2 -> V3: Fix declaration of undeclared variables
-> V3 -> V4: Fix DIV_ROUND_CLOSEST error with u64 variables
-> ---
->  drivers/media/rc/pwm-ir-tx.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-> index 4bc28d2c9cc9..105a9c24f1e3 100644
-> --- a/drivers/media/rc/pwm-ir-tx.c
-> +++ b/drivers/media/rc/pwm-ir-tx.c
-> @@ -53,22 +53,21 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int=
- *txbuf,
->  {
->  	struct pwm_ir *pwm_ir =3D dev->priv;
->  	struct pwm_device *pwm =3D pwm_ir->pwm;
-> -	int i, duty, period;
-> +	struct pwm_state state;
-> +	int i;
->  	ktime_t edge;
->  	long delta;
-> =20
-> -	period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-> -	duty =3D DIV_ROUND_CLOSEST(pwm_ir->duty_cycle * period, 100);
-> +	pwm_init_state(pwm, &state);
-> =20
-> -	pwm_config(pwm, duty, period);
-> +	state.period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-> +	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
-> =20
->  	edge =3D ktime_get();
-> =20
->  	for (i =3D 0; i < count; i++) {
-> -		if (i % 2) // space
-> -			pwm_disable(pwm);
-> -		else
-> -			pwm_enable(pwm);
-> +		state.enabled =3D !(i % 2);
-> +		pwm_apply_state(pwm, &state);
-> =20
->  		edge =3D ktime_add_us(edge, txbuf[i]);
->  		delta =3D ktime_us_delta(edge, ktime_get());
-> @@ -76,7 +75,8 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *=
-txbuf,
->  			usleep_range(delta, delta + 10);
->  	}
-> =20
-> -	pwm_disable(pwm);
-> +	state.enabled =3D false;
-> +	pwm_apply_state(pwm, &state);
-> =20
->  	return count;
->  }
+I'll give it a try and respin, thanks for the review !
 
-The conversion is right (I think), note this could be optimized a bit
-further: state.period only depends on carrier which rarely changes, so
-the calculation could be done in pwm_ir_set_carrier(). Ditto for duty
-which only depends on state.period and pwm_ir->duty_cycle. (This is for
-a separate commit though.)
+Maxime
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Thanks
-Uwe
+>Antoine
 
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---mf4wlywlnibmr5pv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmF6RvUACgkQwfwUeK3K
-7Anl9Af8CgvGM/ZHx9tafHzheQcFRngBZ+7mNWcXYkutj+S3XAQ/G/W9V+nS9RWc
-j5M9Q/st772Y1X0h7dT0YpUcYiLa2IYlAQlWijolrdFKzuXW7lDiAGDexmI3TAVO
-C/LaJQ4oHUgfr4wULkvQey3FgwXpE6asDxTk+eiIG1zLoADJ5ur38zpqpq1nrQNv
-jl4S3iBgO3BftndvCk0qPN3Ff16XgzjLFvzoXr81nxOJIHfUAmzjaZ8ctJbckN8f
-Qo3dY2KhxgCVJt7DuRytUIS6kYY5or4lh1udF+y0UiS0TiavLk0pvuwegYxJ6Ovq
-mOIZhjNjBObw03KqCaBga9+pU74N7A==
-=V5HL
------END PGP SIGNATURE-----
-
---mf4wlywlnibmr5pv--
+-- 
+Maxime Chevallier, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
