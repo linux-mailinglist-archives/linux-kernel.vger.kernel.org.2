@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE43B43E6DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA1F43E6E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhJ1RM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhJ1RM4 (ORCPT
+        id S230462AbhJ1RNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:13:18 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:54729 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230223AbhJ1RNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:12:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC91C061570;
-        Thu, 28 Oct 2021 10:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QZ+Ok3QSmenqeVI6Z1A7VRMrFdlOCkIcageNVExYylc=; b=b2hbSrdSC0kGmPAhfihD5iFS0Q
-        xz/h1wVwG3l0wjyGPDn4YAAtuKOtQ9x+bQ3wVFvZiDGH3o8HlSOHP+gz3WCTmIn/69AA8Vyqpy+fN
-        Iu+62AgQfjLPPG0K2D3BOaJynv5YvbD37iTiOlaWWJO2TXVNJE6IUmbpj/Zepisz82jJEuIUBOz8h
-        mXZpPq45AYhp1cwsiMTGEmeloKiBcbj2IIx4BmqeqG+iYWzdEbeoSntsjTvD+XS8mnl9aApe+QncE
-        SClPthXIkFRJr1xViXlPWTER1itjHWNMZGNpFCb0oRlXCkVAVvlVivwk8eQ2yLbJT4Snd3d+ylmTH
-        u72ZVHtA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg8v2-008gjq-Fp; Thu, 28 Oct 2021 17:10:24 +0000
-Date:   Thu, 28 Oct 2021 10:10:24 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        James Bottomley <jejb@linux.ibm.com>, daejun7.park@samsung.com,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-Message-ID: <YXrZgC7mYVQS+CE6@infradead.org>
-References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
- <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
- <0f9229c3c4c7859524411a47db96a3b53ac89c90.camel@linux.ibm.com>
- <YXrBTHmu/fiAaZH5@infradead.org>
- <54b45df9-9339-c69d-73b5-9c293449b849@acm.org>
+        Thu, 28 Oct 2021 13:13:17 -0400
+IronPort-Data: =?us-ascii?q?A9a23=3AGJpiAK0+5EntTj2VtfbD5WBzkn2cJEfYwER7XOP?=
+ =?us-ascii?q?LsXnJgWgm02YDmGUfDG+Gb/yPMTened1/aoq29x5TuZHUy4U2QQE+nZ1PZyIT+?=
+ =?us-ascii?q?JCdXbx1DW+pYnjMdpWbJK5fAnR3huDodKjYdVeB4EfyWlTdhSMkj/jRHuCsULS?=
+ =?us-ascii?q?s1h1ZHmeIdg9w0HqPpMZp2uaEsfDha++8kYuaT//3YDdJ6BYoWo4g0J9vnTs01?=
+ =?us-ascii?q?BjEVJz0iXRlDRxDlAe2e3D4l/vzL4npR5fzatE88uJX24/+IL+FEmPxp3/BC/u?=
+ =?us-ascii?q?lm7rhc0AMKlLQFVjTzCQGHfH4214b+XdaPqUTbZLwbW9VljGIlpZ1wcpEsZiYS?=
+ =?us-ascii?q?AEzP6SKlv51vxxwSnkkZ/IZp9crJlD666R/1Xbuf2Dp0uluDUwtFZEV/vtsR2d?=
+ =?us-ascii?q?D6ZQwMyoMaBGdjvnw2Lu9RvNxmM0vJeHvPYUCqjdhyy3UCbAtRpWra6HH49Vw3?=
+ =?us-ascii?q?zoqgM1KW/HEaKIxczhwRA7CfAxUPVwUCdQ4kfvArmf+aTBDqBSWuK8++UDXzQp?=
+ =?us-ascii?q?4yr+rN8DaEvSORMNIjgOAo0rY8GnjRBIXLtqSzXyC6H3EruvOmz7rHYEfDru18?=
+ =?us-ascii?q?tZ0j1CJgG8eEhsbUR28u/bRt6IUc7qzMGRNpXFo9PJrshL7CImgGQe1vjifsAR?=
+ =?us-ascii?q?aXddMe9DWITqlksL8izt1zEBdJtKZVOEbiQ=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Aue7oYatwqwOcuG9rDm9G7+hw7skDYdV00zEX?=
+ =?us-ascii?q?/kB9WHVpm6uj5qWTdZUgpH3JYVMqKRUdcL+7VJVoLUmyyXcN2+ks1NSZLWrbUQ?=
+ =?us-ascii?q?mTTb2KhLGKq1bd8kvFmNK1vp0MT0ERMrfNMWQ=3D?=
+X-IronPort-AV: E=Sophos;i="5.87,190,1631570400"; 
+   d="scan'208";a="1022777"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 19:10:48 +0200
+Date:   Thu, 28 Oct 2021 19:10:48 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Doug Smythies <dsmythies@telus.net>
+cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: problem in changing from active to passive mode
+In-Reply-To: <CAAYoRsWXew+9Pch_9ux+UK0LFwy+211d2LmNLGKF_UTr3eS2Fw@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2110281908150.9518@hadrien>
+References: <alpine.DEB.2.22.394.2110241452460.2997@hadrien> <CAAYoRsXeQravNXKsWAZvacMmE_iBzaQ+mQxNbB5jcD_vkny+Sg@mail.gmail.com> <alpine.DEB.2.22.394.2110261658440.3825@hadrien> <CAAYoRsWXew+9Pch_9ux+UK0LFwy+211d2LmNLGKF_UTr3eS2Fw@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54b45df9-9339-c69d-73b5-9c293449b849@acm.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:07:52AM -0700, Bart Van Assche wrote:
-> I spent some time looking around for other examples of allocating and
-> inserting a request from inside block layer callbacks. I only found one
-> such example, namely in the NVMe core. nvme_timeout() calls
-> nvme_alloc_request() and blk_execute_rq_nowait(). The difference between
-> what the UFS HPB code is doing and what nvme_timeout() does doesn't seem
-> that big to me.
+> Now, for your graph 3, are you saying this pseudo
+> code of the process is repeatable?:
+>
+> Power up the system, booting kernel 5.9
+> switch to passive/schedutil.
+> wait X minutes for system to settle
+> do benchmark, result ~13 seconds
+> re-boot to kernel 5.15-RC
+> switch to passive/schedutil.
+> wait X minutes for system to settle
+> do benchmark, result ~40 seconds
+> re-boot to kernel 5.9
+> switch to passive/schedutil.
+> wait X minutes for system to settle
+> do benchmark, result ~28 seconds
 
-The difference is that nvme_timeout allocates a request on the
-admin queue, and only does so for commands on the I/O queues.
+In the first boot of 5.9, the des (desired?) field of the HWP_REQUEST
+register is 0 and in the second boot (after booting 5.15 and entering
+passive mode) it is 10.  I don't know though if this is a bug or a
+feature...
+
+julia
