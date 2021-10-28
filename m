@@ -2,142 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E33E43E271
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9661243E277
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhJ1NpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:45:23 -0400
-Received: from vern.gendns.com ([98.142.107.122]:58772 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229887AbhJ1NpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:45:19 -0400
+        id S230361AbhJ1Nru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229887AbhJ1Nro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:47:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A212C061570;
+        Thu, 28 Oct 2021 06:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SVlgNf+ucxEPseJvy+L/+bBmOwRajcw4V+PyOl9QXbA=; b=Al5M4BbYU+HjwYm6e9i0JgWcH0
-        cxzOwIHAF0fEp1eLeTCENiW1kD+SZzd4yODLESrUw0E6VzKkTk7lk9Fq/srfxd6Ue4ksLyylVB968
-        m9yF4fNokuhAENlbDJsbHZZrfixIhdxWrVifhLNudShT3OZolwaTPx5FyMBttWMXtcR8O6Bei2dgD
-        ixyag8870IuuX8myLCo8AjieTOJslZBxy6sEawQxcF+K4ASUUL23/G4cyyHYCUCEcp8FPk87np7Wz
-        bfv17pVsxmB5IKmKbW3vjV6I+7MTa767PKZWrNVAJacUAdoe5YhHfPmHFJLKlc+MhEOLVtXc63Nzy
-        NQu/nviw==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:47982 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1mg5g0-00013p-Ck; Thu, 28 Oct 2021 09:42:50 -0400
-Subject: Re: [PATCH 3/8] counter/ti-eqep: add support for unit timer
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-iio@vger.kernel.org, Robert Nelson <robertcnelson@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20211017013343.3385923-1-david@lechnology.com>
- <20211017013343.3385923-4-david@lechnology.com> <YXZvQSU6bRRaWD89@shinobu>
- <253916e2-a808-8786-ac72-60a1a62b1531@lechnology.com>
- <YXpVyjnrrmRbpHJU@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <f5e40a22-3c7f-4d4d-d160-fe5b5a7dd72e@lechnology.com>
-Date:   Thu, 28 Oct 2021 08:42:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=RseIqWUemXBQX2ZvxpTektn5wh2Dt3uxLghf6LdyvGI=; b=rcJB8/YGkFoVKJhJpe/4YdGPn+
+        pBn68RiGAv0WKkT5phwJNeWyaa8gLk8Ffn9zWBtI26ZCLRoGwMzbxJ+uZs9ASbSiInNUvt1+Nodn3
+        BbSE4rg0mjy9trP4GMt8YK7rmXJpLDwbAXK3F5iLnVSSX6l0A6UmngV+aZtdDmwx/zQvYC4XUbjze
+        BgEDDhohhoIqevQa/bYDc7GJWpe40RYSTqMxjbc4E5ylMRcQ1hG0B7NtProsd1YAXBjhxv+jw6LXW
+        5JXcLfE2rcAjg0SaG4ABudSmAp9cXTTB/8FnZfMUSjvvx/77RgThYErHyLSlmbhpK6R7PfU+BT9N9
+        Wn/mwjPA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mg5h8-000njz-Fy; Thu, 28 Oct 2021 13:44:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 917313001BF;
+        Thu, 28 Oct 2021 15:43:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 43F71200D2747; Thu, 28 Oct 2021 15:43:48 +0200 (CEST)
+Date:   Thu, 28 Oct 2021 15:43:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     nathan@kernel.org, ndesaulniers@google.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] kbuild: Support clang-$ver builds
+Message-ID: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <YXpVyjnrrmRbpHJU@shinobu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 2:48 AM, William Breathitt Gray wrote:
-> On Wed, Oct 27, 2021 at 10:28:59AM -0500, David Lechner wrote:
->> On 10/25/21 3:48 AM, William Breathitt Gray wrote:
->>> On Sat, Oct 16, 2021 at 08:33:38PM -0500, David Lechner wrote:
->>>> This adds support to the TI eQEP counter driver for the Unit Timer.
->>>> The Unit Timer is a device-level extension that provides a timer to be
->>>> used for speed calculations. The sysfs interface for the Unit Timer is
->>>> new and will be documented in a later commit. It contains a R/W time
->>>> attribute for the current time, a R/W period attribute for the timeout
->>>> period and a R/W enable attribute to start/stop the timer. It also
->>>> implements a timeout event on the chrdev interface that is triggered
->>>> each time the period timeout is reached.
->>>>
->>>> Signed-off-by: David Lechner <david@lechnology.com>
->>>
->>> I'll comment on the sysfs interface in the respective docs patch. Some
->>> comments regarding this patch below.
->>>
->>
->> ...
->>
->>>> +static int ti_eqep_unit_timer_period_write(struct counter_device *counter,
->>>> +					   u64 value)
->>>> +{
->>>> +	struct ti_eqep_cnt *priv = counter->priv;
->>>> +	u32 quprd;
->>>> +
->>>> +	/* convert nanoseconds to timer ticks */
->>>> +	quprd = value = mul_u64_u32_div(value, priv->sysclkout_rate, NSEC_PER_SEC);
->>>> +	if (quprd != value)
->>>> +		return -ERANGE;
->>>> +
->>>> +	/* protect against infinite unit timeout interrupts */
->>>> +	if (quprd == 0)
->>>> +		return -EINVAL;
->>>
->>> I doubt there's any practical reason for a user to set the timer period
->>> to 0, but perhaps we should not try to protect users from themselves
->>> here. It's very obvious and expected that setting the timer period to 0
->>> results in timeouts as quickly as possible, so really the user should be
->>> left to reap the fruits of their decision regardless of how asinine that
->>> decision is.
->>
->> Even if the operating system ceases operation because the interrupt
->> handler keeps running because clearing the interrupt has no effect
->> in this condition?
-> 
-> I don't disagree with you that configuring the device to repeatedly
-> timeout without pause would be a waste of system resources. However, it
-> is more appropriate for this protection to be located in a userspace
-> application rather than the driver code here.
-> 
-> The purpose of a driver is to expose the functionality of a device in an
-> understandable and consistent manner. Drivers should not dictate what a
-> user does with their device, but rather should help facilitate the
-> user's control so that the device behaves as would be expected given
-> such an interface.
-> 
-> For this particular case, the device is capable of sending an interrupt
-> when a timeout events occurs, and the timeout period can be adjusted;
-> setting the timeout period lower and lower results in less and less time
-> between timeout events. The behavior and result of setting the timeout
-> period lower is well-defined and predictable; it is intuitive that
-> configuring the timeout period to 0, the lowest value possible, results
-> in the shortest time possible between timeouts: no pause at all.
-> 
-> As long as the functionality of this device is exposed in such an
-> understandable and consistent manner, the driver succeeds in serving its
-> purpose. So I believe a timeout period of 0 is a valid configuration
-> for this driver to allow, albeit a seemingly pointless one for users to
-> actually choose. To that end, simply set the default value of QUPRD to
-> non-zero on probe() as you do already in this patch and let the user be
-> free to adjust if they so decide.
-> 
-> William Breathitt Gray
-> 
+Hi,
 
-I disagree. I consider this a crash. The system becomes completely
-unusable and you have to pull power to turn it off, potentially
-leading to data loss and disk corruption.
+Debian (and derived) distros ship their compilers as -$ver suffixed
+binaries. For gcc it is sufficent to use:
 
+ $ make CC=gcc-12
+
+However, clang builds (esp. clang-lto) need a whole array of tools to be
+exactly right, leading to unweildy stuff like:
+
+ $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
+
+which is, quite franktly, totally insane and unusable. Instead use the
+already mandatory LLVM variable to convey this, enabling one such as
+myself to use:
+
+ $ make LLVM=-13
+
+This also lets one quickly test different clang versions.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ Makefile                       | 27 +++++++++++++++++----------
+ tools/scripts/Makefile.include | 23 +++++++++++++++--------
+ 2 files changed, 32 insertions(+), 18 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 30c7c81d0437..a38f38f7f190 100644
+--- a/Makefile
++++ b/Makefile
+@@ -423,9 +423,16 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
+ HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
+ HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
+ 
++# When LLVM=-ver use clang-ver binaries, useful for Debian and other
++# multi-version setups
++ifeq ($(shell test $(LLVM) -lt 0; echo $$?),0)
++LLVM_SFX=$(LLVM)
++export LLVM_SFX
++endif
++
+ ifneq ($(LLVM),)
+-HOSTCC	= clang
+-HOSTCXX	= clang++
++HOSTCC	= clang$(LLVM_SFX)
++HOSTCXX	= clang++$(LLVM_SFX)
+ else
+ HOSTCC	= gcc
+ HOSTCXX	= g++
+@@ -443,14 +450,14 @@ KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
+ # Make variables (CC, etc...)
+ CPP		= $(CC) -E
+ ifneq ($(LLVM),)
+-CC		= clang
+-LD		= ld.lld
+-AR		= llvm-ar
+-NM		= llvm-nm
+-OBJCOPY		= llvm-objcopy
+-OBJDUMP		= llvm-objdump
+-READELF		= llvm-readelf
+-STRIP		= llvm-strip
++CC		= clang$(LLVM_SFX)
++LD		= ld.lld$(LLVM_SFX)
++AR		= llvm-ar$(LLVM_SFX)
++NM		= llvm-nm$(LLVM_SFX)
++OBJCOPY		= llvm-objcopy$(LLVM_SFX)
++OBJDUMP		= llvm-objdump$(LLVM_SFX)
++READELF		= llvm-readelf$(LLVM_SFX)
++STRIP		= llvm-strip$(LLVM_SFX)
+ else
+ CC		= $(CROSS_COMPILE)gcc
+ LD		= $(CROSS_COMPILE)ld
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 071312f5eb92..a2b53cc91378 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -51,12 +51,19 @@ define allow-override
+     $(eval $(1) = $(2)))
+ endef
+ 
++# When LLVM=-ver use clang-ver binaries, useful for Debian and other
++# multi-version setups
++ifeq ($(shell test $(LLVM) -lt 0; echo $$?),0)
++LLVM_SFX=$(LLVM)
++export LLVM_SFX
++endif
++
+ ifneq ($(LLVM),)
+-$(call allow-override,CC,clang)
+-$(call allow-override,AR,llvm-ar)
+-$(call allow-override,LD,ld.lld)
+-$(call allow-override,CXX,clang++)
+-$(call allow-override,STRIP,llvm-strip)
++$(call allow-override,CC,clang$(LLVM_SFX))
++$(call allow-override,AR,llvm-ar$(LLVM_SFX))
++$(call allow-override,LD,ld.lld$(LLVM_SFX))
++$(call allow-override,CXX,clang++$(LLVM_SFX))
++$(call allow-override,STRIP,llvm-strip$(LLVM_SFX))
+ else
+ # Allow setting various cross-compile vars or setting CROSS_COMPILE as a prefix.
+ $(call allow-override,CC,$(CROSS_COMPILE)gcc)
+@@ -69,9 +76,9 @@ endif
+ CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
+ 
+ ifneq ($(LLVM),)
+-HOSTAR  ?= llvm-ar
+-HOSTCC  ?= clang
+-HOSTLD  ?= ld.lld
++HOSTAR  ?= llvm-ar$(LLVM_SFX)
++HOSTCC  ?= clang$(LLVM_SFX)
++HOSTLD  ?= ld.lld$(LLVM_SFX)
+ else
+ HOSTAR  ?= ar
+ HOSTCC  ?= gcc
