@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0770143D9A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C35143D9C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhJ1DJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 23:09:14 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:53797 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhJ1DJN (ORCPT
+        id S229792AbhJ1DS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 23:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhJ1DS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 23:09:13 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hfr7T3y8vz4xbG;
-        Thu, 28 Oct 2021 14:06:45 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635390406;
-        bh=4Z8RtmBKEJZe9Dzrso/ZzzvU182TDgKKdlUvm24xPcc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iE2wIJLQnajkbaOC0p8SN+VqXMxMmDjNKMRjB/ThC2eUFpAN2TepbOCzArPSzK5kp
-         EMvJfYZGRExhD+o3X8KdDRuZxEL5BfigX9zClkuYkbkZtmwd0A1GTTx4WKQrLyTQ8x
-         SwJv8OF8CFJBpt2jYgTxnnn/7yaL1uR5tvVBDQcjsx0nCDtUDH1nq8DMj0rPLzLyjE
-         RYjkDVXOaMgepKDZIAsP1kQDBqIWSckX256Epbcyg38u+9DFK9qJrUgrw7iJ1mL/fN
-         H0BU1CGImShqGT0YSEx0b0HRZXOHdo9hA9hMMKnTWpzDX6YbME1wHQIYwY0zsAUO5k
-         rlh9JId1he0lw==
-Date:   Thu, 28 Oct 2021 14:06:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Fangzhi Zuo <Jerry.Zuo@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>
-Subject: linux-next: manual merge of the amdgpu tree with the drm tree
-Message-ID: <20211028140644.7c1a7244@canb.auug.org.au>
+        Wed, 27 Oct 2021 23:18:27 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E073BC061570;
+        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so6870390pje.0;
+        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GQFH6LpwUVgQz3kdbCMnzkuHN/OwYSwPtbUfSLUuNFY=;
+        b=WjiZgL17+2uBuK14CiicqiXU0j7MygUmgn059rnhDNcFBzlhMR1umKvuqxOyf9LVH8
+         ofIL+u7rfhM6PzlnXOJJONawu2Vibvw9d0zDmGyyMNExU6jdqV/8TEJk4cLsLe21OjlB
+         VWurTjeISFd2xf5OxTJE0w7b0OoXiqrlVQLjTUmymQnLrQ7ksPjHgz7g3EPX7WvEsakH
+         EaHCeLhJA6U1DvwRkNcQxePJgfOc0Sw1pvR3JldA1BYTs7O5PSdizBRFOnxBXxd1JPEO
+         0wPi9mcRrgsUStSmYYfzu9x2V6RlpMmskF812sTuxugSWe4ho8dykDtkep0xLmEqzSOL
+         QQqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GQFH6LpwUVgQz3kdbCMnzkuHN/OwYSwPtbUfSLUuNFY=;
+        b=tqZbN09yu4VrivDi5sJG+jX/SAahAb0rPoj7LishQWHwpk9pW0vNjd13NtT299rCEC
+         Ya8l3pdFX3wN0iH6BNcmmwP1MFRThhbry2yQOezgDBW9lZFNP2sjCFgRjKHTeF7OaLRP
+         qectVXJbw/iIx4akDgICj2GZ/qK4Wf0xsJfH37DrEVAZa0tupj/QsqQLJh6cmAhZENSV
+         4ZBKi5rkXmMcdhMzV+DpYVNMH5oSjzNs598JryaL5Zqb4WK1keJV7jUfPFKDMORyHkWJ
+         Mxw0cQ9kgvwelWF5ZlYnAMyQGRetS08Otntcgg2MPR5siEVbqTP9w+FonbvLD2rkidXa
+         O/zw==
+X-Gm-Message-State: AOAM532PF9MGcHY8a41Ntqusi6IR+bIxOz41nMZgQ+MNKdBOOk9atCPr
+        sFjRbEh/0fuDpS6/Yrjtlk4=
+X-Google-Smtp-Source: ABdhPJx1iYljgq7f4n077sGS0zwAMJYLUVXXwm5FM6o0BWuNtQzT80Cu4l81BNSBLUQmOJRak61U3w==
+X-Received: by 2002:a17:90a:ff91:: with SMTP id hf17mr1779002pjb.50.1635390960313;
+        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id v13sm1032201pgt.7.2021.10.27.20.15.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
+From:   luo penghao <cgel.zte@gmail.com>
+X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
+To:     Mirko Lindner <mlindner@marvell.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH ipsec-next v2] sky2: Remove redundant assignment and parentheses
+Date:   Thu, 28 Oct 2021 03:15:51 +0000
+Message-Id: <20211028031551.11209-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/IspTBx_avmFxEn8ysc4IXMj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/IspTBx_avmFxEn8ysc4IXMj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The variable err will be reassigned on subsequent branches, and this
+assignment does not perform related value operations. This will cause
+the double parentheses to be redundant, so the inner parentheses should
+be deleted.
 
-Hi all,
+clang_analyzer complains as follows:
 
-Today's linux-next merge of the amdgpu tree got conflicts in:
+drivers/net/ethernet/marvell/sky2.c:4988: warning:
 
-  drivers/gpu/drm/amd/display/dc/core/dc_link.c
-  drivers/gpu/drm/drm_dp_mst_topology.c
-  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+Although the value stored to 'err' is used in the enclosing expression,
+the value is never actually read from 'err'.
 
-between commits:
+Changes in v2:
 
-  d740e0bf8ed4 ("drm/amd/display: Add DP 2.0 MST DC Support")
-  41724ea273cd ("drm/amd/display: Add DP 2.0 MST DM Support")
-  00f965e700ef ("drm/amdgpu/display: fix build when CONFIG_DRM_AMD_DC_DCN i=
-s not set")
+modify title category:octeontx2-af to sky2.
+delete the inner parentheses.
 
-from the drm tree and commits:
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+---
+ drivers/net/ethernet/marvell/sky2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  6d23be5bc661 ("drm/amd/display: Add DP 2.0 MST DC Support")
-  39b3c728e5ca ("drm/amd/display: Add DP 2.0 MST DM Support")
-  8bc3824f0ee2 ("drm/amdgpu/display: fix build when CONFIG_DRM_AMD_DC_DCN i=
-s not set")
+diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
+index 8b8bff5..33558aa 100644
+--- a/drivers/net/ethernet/marvell/sky2.c
++++ b/drivers/net/ethernet/marvell/sky2.c
+@@ -4985,7 +4985,7 @@ static int sky2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	pci_set_master(pdev);
+ 
+ 	if (sizeof(dma_addr_t) > sizeof(u32) &&
+-	    !(err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)))) {
++	    !dma_set_mask(&pdev->dev, DMA_BIT_MASK(64))) {
+ 		using_dac = 1;
+ 		err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
+ 		if (err < 0) {
+-- 
+2.15.2
 
-from the amdgpu tree.
 
-The conflicts between these different versions of the same patches,
-and some other changes in the amdgpu tree are just a mess today, do I
-have just dropped the amdgpu tree completely for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/IspTBx_avmFxEn8ysc4IXMj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6E8QACgkQAVBC80lX
-0GwgEQgAm5ybNqy8bFm4dY5XXBEam6vgcOXi295gvzOh9eqDwpkHcuisfEcakVrP
-3kfi/w+0NSowxmkzY9kfFjnJ+7oidophRJkaQK2TsK3ZsyjZtvVflfuD9dNl6dU+
-gfWmRxo4dCaNlkAJeH3AUhsk3NLn6/tFe4zTNa9umi0f0vQlNQeMn0bpQM8xM1Jn
-oJxpdCK0+33wDzYdpo0vbwYNz8OjRiYiG4nLbml666ShXX/6v0XQ4r6eDC+fHVzG
-Vv/QfBlQmHXphYroIL5OJDpOG1adpmZXBldBrgPxbYZzXdGZk/ZfkVj2VPz+Ha5V
-VHnMGR6UZ504S871ApwEGVKloT4G+Q==
-=CF/T
------END PGP SIGNATURE-----
-
---Sig_/IspTBx_avmFxEn8ysc4IXMj--
