@@ -2,209 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56B643DA26
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 06:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E53043DA28
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 06:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhJ1EPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 00:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
+        id S229778AbhJ1EPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 00:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJ1EPQ (ORCPT
+        with ESMTP id S229488AbhJ1EPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 00:15:16 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E95C061570;
-        Wed, 27 Oct 2021 21:12:50 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m21so5083148pgu.13;
-        Wed, 27 Oct 2021 21:12:50 -0700 (PDT)
+        Thu, 28 Oct 2021 00:15:48 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BA7C061570;
+        Wed, 27 Oct 2021 21:13:22 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id h20so5373728ila.4;
+        Wed, 27 Oct 2021 21:13:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Xa/s2qxLOUtJOm4LajgR3Js6mInXEqTgYry1ESfBaYs=;
-        b=Z9gwOCiAy4Q4Ak4QXv+a8whutaK205/uJyhVt7uh/TGgXcY/IODnOS58HSNSoxQ+op
-         gOAyCT+IGq76vJuhzma/aMpST5VtUtFMkoEUoWMCull4g/MqqFymskjnbtEJqlOJXDoa
-         hAmPzTa1zwiTYUSgujDMfr4Z8MVodWQIPB2oSl7psOzE2CPtqedOmxKG9OXVRK4penJx
-         qvdrChx0aw0mfa9A57GmgzESsOocvsoCSgM91me49unBR95RaUh/38fGPwCfq00n7nNu
-         xcpIw3TcWFVObZzifaVd8BqK9cQfWTYoCIm6W8YMLPKczl7m/dUW2QEGlbvv+MyU48dQ
-         ERoQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5r+33U1uPYiFPTnh2Xd8jicIMSHfddEZuVW3fEW/Lz8=;
+        b=ZRH/bDHtnLi1gDo9lKFYyuYY/9P8nu3jKlS3XZyDwNAuWzybFmV3ew1ZVrt2w8fHFB
+         zUB/EHZDFSfGR9TxC+q8sdIVTD3pee+AcDE5bynMGU7CXRcgvjXcQVekUbme8LRiPC7/
+         hOc5dHt5v91exsQBT8AQEFO8QGl5xPu1NLiXZBZ1CCCFwIXoExtGAxMHkk1kg0K61zgy
+         RbkRDnI1mW3CNGnnuyL23N8FjEsWeS2qScyTy5XVNAhDsueIov2pio7HcaFpBBwZ0YBg
+         y2gmnfb8wT1V92nA8A3Ao/yjanGtL8nJ3W8feOuFOeUj658LbCmJjURHxLF/wnpPRnMA
+         llFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Xa/s2qxLOUtJOm4LajgR3Js6mInXEqTgYry1ESfBaYs=;
-        b=6rLvYrdwBDt0gfvP0y2A7mS/sfSNH9GiiZr3qOOzkS08QoxegxprMpogV2qApFcoqb
-         M7QPoBG2vP9e6qGJN+EuZgIJcAuTVdKwX4GqZtKRCpmGlGCz3LS4maFHc+NFPOKtYFuk
-         q7OvTA7BfD21vDxwNu2IO4aZiuC4DHBDk/hNpRbNZgN9T1h37jg7/cDOBqWtf5f1hhiP
-         rz7zCwuJ2EAzHo4sYEGv2a+h7yqHpwHDODjDejEizhSEyS69PY1NdD/+585CscqVOwvG
-         VpUYdw9011lmOp08LZv0tTL7lEhzs8+oedKRoRDQKonVq9vHpA9HrnRvWK/rbiOM/ers
-         LmKQ==
-X-Gm-Message-State: AOAM531+ijm7TxNof7NBUlbCEkrTPxrukHjHUO8bMjpqDHAIleN2p7ik
-        HwGucXSCt0s6gEng5mxN5aU=
-X-Google-Smtp-Source: ABdhPJzmybam+CqtEI+R7p2Dr/E4ERxr8+gkvsnBFXjnK9COqjkYiYd7uZCKMwkWUd7f/eDbaxJ5lQ==
-X-Received: by 2002:aa7:8a0e:0:b0:47c:1116:3ce with SMTP id m14-20020aa78a0e000000b0047c111603cemr1819453pfa.76.1635394369905;
-        Wed, 27 Oct 2021 21:12:49 -0700 (PDT)
-Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id 141sm1178962pge.23.2021.10.27.21.12.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 21:12:49 -0700 (PDT)
-Message-ID: <1a295721fd1f1e512cd54a659a250aef162bfb6f.camel@gmail.com>
-Subject: Re: [PATCH 04/17] media: atomisp: pci: do not use err var when
- checking port validity for ISP2400
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>
-Date:   Thu, 28 Oct 2021 13:12:45 +0900
-In-Reply-To: <20211026092637.196447aa@sal.lan>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-         <20211017161958.44351-5-kitakar@gmail.com>
-         <20211026092637.196447aa@sal.lan>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5r+33U1uPYiFPTnh2Xd8jicIMSHfddEZuVW3fEW/Lz8=;
+        b=d49uUiff6r4MqM7ONDoZsdh1TYhq5h6wpq4FNseaO3MtmHVy8P1xvFI0dts04f5F22
+         9LJ46b3+8hK+ITCOUKGI9ucYHnmCP2kpOYKntfeUArA9KT86kdf7+q+5PEPOLA+KHBa+
+         CPWNMKnHifyqs2NN7f8G52+ZcAA1IhD1eVuY3DKcNln1+PExfdzGIb+yZXO7/u8SFflx
+         XFmhRYTKzO2ZyW53MnFkoBdVdePX/4KWPU+/mSFyrHqcsxK8Og/0q2UbaoU8d0f/vZC3
+         33qhNUWjwoIoqgT1Sgm7+l9bhlrcS/ys3AbUqXQZdgG4s3C2MfRwngBxFh3n5NAhQz+/
+         YnCw==
+X-Gm-Message-State: AOAM531WCTWLXcS/cXfxrYeUblJj0cTVnryMEVvzBdx668VX9RIWbzuX
+        BTbYFihvDFnUnvNZDVeV73+QBbIi6nMoMhVZyK3slWQvrCI=
+X-Google-Smtp-Source: ABdhPJxn5BX5hTZdumQ794jeLL9tPWDCAWi4dHuGb4Wf8faWqts0VksBQb1isn5TnDTIM4RxCu2x53dxlmsR1SW71+k=
+X-Received: by 2002:a05:6e02:20e7:: with SMTP id q7mr1542962ilv.254.1635394401478;
+ Wed, 27 Oct 2021 21:13:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20211025204634.2517-1-iangelak@redhat.com> <20211025204634.2517-2-iangelak@redhat.com>
+ <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com> <YXnImHp1QfZYZ1OU@redhat.com>
+In-Reply-To: <YXnImHp1QfZYZ1OU@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 28 Oct 2021 07:13:10 +0300
+Message-ID: <CAOQ4uxiY=sZVsJF670T73bk2zq+LpG9B5VQA-5rOOpaSrvhdXA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] FUSE: Add the fsnotify opcode and in/out structs
+ to FUSE
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<Adding back people/list to Cc>
+> > you need to either include the generation in object identifier
+> > or much better use the object's nfs file handle, the same way
+> > that fanotify stores object identifiers.
+>
+> I think nfs file handle is much more complicated and its a separate
+> project altogether. I am assuming we are talking about persistent
+> nfs file handle as generated by host. I think biggest issue we faced
+> with that is that guest is untrusted and we don't want to resolve
+> file handle provided by guest on host otherwise guest can craft
+> file handles and possibly be able to open other files on same filesystem
+> outside shared dir.
+>
 
-On Tue, 2021-10-26 at 09:26 +0100, Mauro Carvalho Chehab wrote:
-> Em Mon, 18 Oct 2021 01:19:44 +0900
-> Tsuchiya Yuto <kitakar@gmail.com> escreveu:
-> 
-> > Currently, the `port >= N_CSI_PORTS || err` checks for ISP2400 are always
-> > evaluated as true because the err variable is set to `-EINVAL` on
-> > declaration but the variable is never used until the evaluation.
-> > 
-> > Looking at the diff of commit 3c0538fbad9f ("media: atomisp: get rid of
-> > most checks for ISP2401 version"), the `port >= N_CSI_PORTS` check is
-> > for ISP2400 and the err variable check is for ISP2401. Fix this issue
-> > by adding ISP version test there accordingly.
-> > 
-> > Yes, there are other better ways to fix this issue, like adding support
-> > for ISP2400 to ia_css_mipi_is_source_port_valid(). In this way, we can
-> > unify the following test:
-> > 
-> > 	if (!IS_ISP2401)
-> > 		port = (unsigned int)pipe->stream->config.source.port.port;
-> > 	else
-> > 		err = ia_css_mipi_is_source_port_valid(pipe, &port);
-> > 
-> > However, the IS_ISP2401 test here (formerly `ifdef ISP2401`) is not
-> > a result of real hardware difference, but just a result of the following
-> > two different versions of driver merged by tools [1]:
-> > 
-> >   - ISP2400: irci_stable_candrpv_0415_20150521_0458
-> >   - ISP2401: irci_ecr-master_20150911_0724
-> 
-> No.
-> 
-> While I don't have any internal information from the hardware manufacturer,
-> I guess you misinterpreted things here. 2400 and 2401 are different
-> hardware versions. See atomisp_pci_probe() logic.
-> 
-> Basically, Cherrytail and Anniedale comes with 2401. Older Atom CPUs
-> (Merrifield and Baytrail) comes with 2400.
+Right now, virtiofsd keeps all inodes and dentries of live client inodes
+pinned in cache on the server.
+If you switch to file handles design, virtiofsd only need to keep a map
+of all the file handles that server handed out to client to address
+this concern.
 
-Yes, indeed, 2400 and 2401 are different hardware. When they (I mean who
-originally wrote atomisp driver non-upstream) needed to distinguish
-between ISP2400 and ISP2401, they used the ifdefs like the following:
+For directories, this practice is not even needed for security, because
+a decoded directory file handle can be verified to be within the shared dir.
+It is only needed to prevent DoS, because a crafted directory file handle
+(outside of shared dir) can be used to generate extra IO and thrash the
+inode/dentry cache on the server.
 
-  - USE_INPUT_SYSTEM_VERSION_2    (for both ISP2400/ISP2401)
-  - USE_INPUT_SYSTEM_VERSION_2401 (for ISP2401)
-  ...
+> >
+> > > +       uint64_t mask;
+> > > +       uint32_t namelen;
+> > > +       uint32_t cookie;
+> >
+> > I object to persisting with the two-events-joined-by-cookie design.
+> > Any new design should include a single event for rename
+> > with information about src and dst.
+> >
+> > I know this is inconvenient, but we are NOT going to create a "remote inotify"
+> > interface, we need to create a "remote fsnotify" interface and if server wants
+> > to use inotify, it will need to join the disjoined MOVE_FROM/TO event into
+> > a single "remote event", that FUSE will use to call fsnotify_move().
+>
+> man inotify says following.
+>
+> "       Matching up the IN_MOVED_FROM and IN_MOVED_TO event pair  generated  by
+>        rename(2)  is thus inherently racy.  (Don't forget that if an object is
+>        renamed outside of a monitored directory, there  may  not  even  be  an
+>        IN_MOVED_TO  event.)"
+>
+> So if guest is no monitoring target dir of renamed file, then we will not
+> even get IN_MOVED_TO. In that case we can't merge two events into one.
+>
+> And this sounds like inotify/fanotify interface needs to come up with
+> an merged event and in that case remote filesystem will simply propagate
+> that event. (Instead of coming up with a new event only for remote
+> filesystems. Sounds like this is not a problem limited to remote
+> filesystems only).
+>
 
-I think this is a sign that the atomisp driver supports both
-ISP2400/ISP2401 in a single version.
+I don't see it that way.
+I see the "internal protocol" for filesystems/vfs to report rename is
+fsnotify_move() which carries information about both src and target.
+I would like the remote protocol  to carry the same information.
+It is then up to the userspace API whether to report the rename
+as two events or a unified event.
 
-Indeed, the upstreamed atomisp uses irci_stable_candrpv_0415_20150521_0458
-for ISP2400 and IIUC it was working on Bay Trail. On the other hand,
-intel-aero is a kernel for Cherry Trail and uses the same version
-irci_stable_candrpv_0415_20150521_0458.
+For example, debugfs, calls fsnotify_move() when an object is renamed
+from underneath the vfs. It does not call fsnotify() twice with a cookie,
+because we would not want to change local filesystem nor remote protocols
+when we want to add new userspace APIs for reporting fsevents.
 
-So, both ISP version ISP2400/ISP2401 can be supported by a single
-driver version.
+That comes down to my feeling that this claims to be a proposal
+for "remote fsnotify", but it looks and sounds like a proposal for
+"remote inotify" and this is the core of my objection to passing
+the rename cookie in the protocol.
 
-> > We should eventually remove (not unify) such tests caused by just a
-> > driver version difference and use just one version of driver. So, for
-> > now, let's avoid further unification.
-> > 
-> > [1] The function ia_css_mipi_is_source_port_valid() and its usage is
-> >     added on updating css version to irci_master_20150701_0213
-> >     https://raw.githubusercontent.com/intel/ProductionKernelQuilts/cht-m1stable-2016_ww31/uefi/cht-m1stable/patches/cam-0439-atomisp2-css2401-and-2401_legacy-irci_master_2015070.patch
-> >     ("atomisp2: css2401 and 2401_legacy-irci_master_20150701_0213")
-> 
-> What happens is that there is a 2401 and a 2401 "legacy". It sounds
-> that this due to some different software stacks that are reflected both
-> at the firmware and at the driver.
+Regarding the issue that the src/dst path may not be known
+to the server, as I wrote, it is fine if either the src/dst path information
+is omitted from an event, but the protocol should provide the
+placeholder to report them.
 
-Yeah, I'm not sure what the "legacy" is. It might be a reference of
-`ISP2401_NEW_INPUT_SYSTEM` (css_2401_csi2p_system) and
-non-`ISP2401_NEW_INPUT_SYSTEM` (css_2401_system).
+After sufficient arguing, I might be convinced that the cookie may be included
+as an optional field in addition to the fields that I requested.
 
-> -
-> 
-> On other words, this patch requires some rework, as otherwise it will break
-> support for Baytrail.
+I understand why you write that this sounds like an fanotify interface
+that needs to be resolved and you are correct, but the reason that the
+fanotify interface issue was not yet resolved is that we are trying to not
+repeat the mistakes of the past and for that same reason, I am insisting
+on the protocol.
 
-You mean "this patch"? then, I intended this patch is rather a fix for
-ISP2400 case! The err variable for ISP2400 case is always true because
-it is not used before the error check:
-
-        int
-        allocate_mipi_frames(struct ia_css_pipe *pipe,
-        		     struct ia_css_stream_info *info)
-        {
-        	int err = -EINVAL;
-[...]
-        	if (!IS_ISP2401)
-        		port = (unsigned int)pipe->stream->config.source.port.port;
-        	else
-        		err = ia_css_mipi_is_source_port_valid(pipe, &port);
-        
-        	assert(port < N_CSI_PORTS);
-        
-        	if (port >= N_CSI_PORTS || err) {
-        		ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
-        				    "allocate_mipi_frames(%p) exit: error: port is not correct (port=%d).\n",
-        				    pipe, port);
-        		return -EINVAL;
-        	}
-
-The first usage of err variable is ia_css_mipi_is_source_port_valid()
-for IS_ISP2401 case, but it's not used for ISP2400 case. This causes
-the evaluation `port >= N_CSI_PORTS || err` always true for ISP2400 case,
-meaning it will be always treated as a error.
-
-> Also, patch 13 should be dropped, as the firmware versions for 2400 are
-> different
-
-The firmware version for 2400 on the upstreamed atomisp is
-irci_stable_candrpv_0415_20150521_0458 :-)
-
-        static const char *isp2400_release_version = STR(irci_stable_candrpv_0415_20150521_0458);
-        static const char *isp2401_release_version = STR(irci_ecr - master_20150911_0724);
-
-The intention of that patch is rather, it clarifies ISP2401 is now using
-the same driver (css) version as ISP2400.
-
-> - and maybe patches 8 to 12 may need more work in order to not
-> touch 2400.
-
-Those patches do not break ISP2400, because what they do for ISP2400
-is that, they remove members from `struct`s which were initially inside
-of `ifdef ISP2401`. And because these removed members were initially
-inside of the ifdefs, the usage was also inside the ifdefs.
-
-Regards,
-Tsuchiya Yuto
-
+Thanks,
+Amir.
