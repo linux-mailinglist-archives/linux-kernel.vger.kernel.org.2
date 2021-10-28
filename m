@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5CF43DF1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B50A43DF0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhJ1KoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhJ1KoL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:44:11 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B175C061570;
-        Thu, 28 Oct 2021 03:41:44 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id r5so4159124pls.1;
-        Thu, 28 Oct 2021 03:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w6k9H+1esaoJxBW+jGH+iFBTYa8xXJVNGvttUpb0vAA=;
-        b=p/MMYZS0qb/MTwTrJCxDlKpcr0zH2nLUjiN9uBzJBhL528nG7w22f6msCb2cDXrhvZ
-         8uLOy9KPfe+3a8Hc5FWanAaal+6QebSzmN9yw0T8GyswDtstcQVxdMfVRJOV/4B4dS8m
-         JrGViro03YC7AbS3SwmMIQ7V+8iT/qd8tBe/JG2JgZu8OsekRpZMDzQm2a0hK7+jmDRN
-         ozMNQFxez27lWKEkn3hwjX1C1dOb5AcEa2veunmuTx/yDx5ZyC59syKyJ0UXZC9YYWJY
-         jFJ9HrWx9HTnrereqo6UzdUrh8XcNV+f0WplbdZtuO3zVKcbHUF/AUCvwl13k1Z4aPiy
-         foKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w6k9H+1esaoJxBW+jGH+iFBTYa8xXJVNGvttUpb0vAA=;
-        b=myPVmdLvX841My1b4dzn8MXWs9e40L2nVnAlBioPmGXK/LVbM0GG6E2ZNw7t0NhZsT
-         gMb37WHd46cirS3mz0+UAipKFQHbeNTOMxrWN3y6k/y+imJJwbZFOmS/lBBhkhpw6pHB
-         wwOvhCwtMCSA3+LDcJuVUeBZj6Rm1QQrcm1bbomh8w3o5kKezjp3GG+7yRx10u5Di/Nj
-         07XFDtFHX26LUbkxbUO6JRXM7KWKdqHk0S5dWi0fP6N0SN4bGkmBZ7iqk//O8RaByahr
-         DYtNVBhRN40lyfR1kfNNPH7uR/TuZ7pscuaKUqk94V5YKAj1Unsmwz51+aoj8r68paLt
-         CnTA==
-X-Gm-Message-State: AOAM5315kDooLcCk8h0hfE/672tYgOTwoqRnecdzGvJT9K+WiTgu8D4h
-        GYOjTalsplP7uTg9x7NqEHM=
-X-Google-Smtp-Source: ABdhPJxsMdagnYkbRdTL2wc2y+3Wv16EBbaG5YyXFaVi+jC7TREqmiezh1mOd4j44a918ipYRJc7Ug==
-X-Received: by 2002:a17:90a:4d44:: with SMTP id l4mr3665230pjh.58.1635417703907;
-        Thu, 28 Oct 2021 03:41:43 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h2sm2519462pjk.44.2021.10.28.03.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 03:41:43 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     kys@microsoft.com
-Cc:     haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] Drivers: hv : vmbus: Adding NULL pointer check
-Date:   Thu, 28 Oct 2021 10:41:38 +0000
-Message-Id: <20211028104138.14576-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230061AbhJ1KkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:40:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229775AbhJ1Kj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 06:39:59 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 295CA60296;
+        Thu, 28 Oct 2021 10:37:28 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 11:41:54 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andrea Merello <andrea.merello@gmail.com>
+Cc:     mchehab+huawei@kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        lars@metafoo.de, robh+dt@kernel.org, andy.shevchenko@gmail.com,
+        matt.ranostay@konsulko.com, ardeleanalex@gmail.com,
+        jacopo@jmondi.org, Andrea Merello <andrea.merello@iit.it>
+Subject: Re: [v2 03/10] iio: document euler angles modifiers
+Message-ID: <20211028114154.19e596fc@jic23-huawei>
+In-Reply-To: <20211028101840.24632-4-andrea.merello@gmail.com>
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+        <20211028101840.24632-1-andrea.merello@gmail.com>
+        <20211028101840.24632-4-andrea.merello@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+On Thu, 28 Oct 2021 12:18:33 +0200
+Andrea Merello <andrea.merello@gmail.com> wrote:
 
-This patch fixes the following Coccinelle warning:
-drivers/hv/ring_buffer.c:223: alloc with no test
+> This patch introduces ABI documentation for new modifiers used for
+> reporting rotations expressed as euler angles (i.e. yaw, pitch, roll).
+> 
+> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-iio | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+> index 5147a00bf24a..f0adc2c817bd 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-iio
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> @@ -1965,3 +1965,11 @@ KernelVersion:	5.15
+>  Contact:	linux-iio@vger.kernel.org
+>  Description:
+>  		Raw (unscaled) linear acceleration readings.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_rot_yaw_raw
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_rot_pitch_raw
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_rot_roll_raw
+> +KernelVersion:	5.15
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Raw (unscaled) euler angles readings.
+Any _raw entry should also include what the units are after application of
+offset and scale.   Or you could just add this as more info to the in_rot_raw
+block as an extra sentence explaining that they are euler angles.
+That will lose the 'KernelVersion' information but honestly I'm not sure we
+care that much about that.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
----
- drivers/hv/ring_buffer.c | 2 ++
- 1 file changed, 2 insertions(+)
+Jonathan
 
-diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
-index 931802ae985c..4ef5c3771079 100644
---- a/drivers/hv/ring_buffer.c
-+++ b/drivers/hv/ring_buffer.c
-@@ -223,6 +223,8 @@ int hv_ringbuffer_init(struct hv_ring_buffer_info *ring_info,
- 		pages_wraparound = kcalloc(page_cnt * 2 - 1,
- 					   sizeof(struct page *),
- 					   GFP_KERNEL);
-+		if (!pages_wraparound)
-+			return -ENOMEM;
- 
- 		pages_wraparound[0] = pages;
- 		for (i = 0; i < 2 * (page_cnt - 1); i++)
--- 
-2.25.1
 
