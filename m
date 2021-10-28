@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F398843DB29
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7E343DB2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhJ1Gfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
+        id S229850AbhJ1Gfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhJ1Gfp (ORCPT
+        with ESMTP id S229762AbhJ1Gfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:35:45 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE06C061570;
-        Wed, 27 Oct 2021 23:33:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hfwjn0W6hz4xcC;
-        Thu, 28 Oct 2021 17:33:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635402797;
-        bh=/R7loCnMrMbPjsUshOHJxqGM+7aLjRr8ecYMPWeUsTU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=g64YH78CMh3JlAlFRYGBkNNGd4y5pNAcgx5ZxVoMv9669gK8hhRZMeZ0HaS+keMbD
-         I7eue/L5R22Q5T/JgBZ9sPSEv7GQyYu1PoIm0XF3UFC/uppsItGb6+XKMOnl0y+TEp
-         lJk0yAUVtpLTv1wHn8KrXXU3a8cDmWIvac5TwoEIYYy+ArxmcOACaewgiKs7JFEzWm
-         P2UOmmmmq1f8ohxWoDrCKaRICLqCjqSHuhc104TqrB1Pow2a/oCC22QjLkLkXs/6gy
-         P0RtS8q+siRTjlxaIBjNuSqKwP3F/kb6j0h+VRUe+QMFsVEqNXZYTteqt7AFDRKf7F
-         xKet4Q0PvuHmg==
-Date:   Thu, 28 Oct 2021 17:33:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Juergen Gross <jgross@suse.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Xen Devel <xen-devel@lists.xenproject.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the xen-tip tree
-Message-ID: <20211028173315.55b1a121@canb.auug.org.au>
+        Thu, 28 Oct 2021 02:35:51 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCF8C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:33:24 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id q124so6947200oig.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=012a/Vm5/ys3I7xHUTpKoav2CLUL7YSpnaZKJZYXlbU=;
+        b=kB6S9D3z3JDO5QzXuz/0sV2WOSEVXZ2qgSY0IZnKfGAJcuUfZn8yCNPiCiar7BGtV6
+         p76fd7ObCQ41N8/bGr2+zEQdqFjOZb6RHaCKFtlNwaLIE9o7aFPPtECLa7F04KSjB4T0
+         unmdhb6IwfpxRslLEclYxHgHi9c7Ote5ZJZH8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=012a/Vm5/ys3I7xHUTpKoav2CLUL7YSpnaZKJZYXlbU=;
+        b=C075e8ec9cNQf75+7bAk7Mc22AOwLNgQ7PmNjfXpEDj8J+mjIbXtCpGodJhgOApusY
+         dcMqlqNZIOTt439IGPelOlyKBNs7ogNtOnoiFxe999u6b3M6/qSgrV9bh0JF1xf3ypXJ
+         SJ1NUXFDqMLmj/epUI7Y9/VCXZWmwTI3pV/eTqDSQJFfrJotTH6yDb7FasG91zvCpyfZ
+         yxMUdBp2ScmOp6u/OaOigL7mBN3TMINer2cbUAi/VrJUu9DRMxCesct5iSFmj/G8g931
+         0EJWSUOeCK5lE+epznqIUBx2EapzsLPFED9mG0kkSVX3AkM/w3h44XkoFA7UkfZJFrj9
+         2isw==
+X-Gm-Message-State: AOAM532wsj/W0QgUMY3C0JIVP73uce3iUgyg+XP28P5M0UGPpdFRXyXc
+        8mHOA/Rdvq+5zntZKlH/gW9FYwYgeDcx2f2cXFjoYQ==
+X-Google-Smtp-Source: ABdhPJwKfcrcVbkDjjQUjrvG2947KpA9p0L4TJMaJtoUfNTXn8AL7+GfwN6Z13xYxPFcN24NqTGRjkARDf39SksmrAk=
+X-Received: by 2002:a05:6808:a1d:: with SMTP id n29mr7024899oij.164.1635402804016;
+ Wed, 27 Oct 2021 23:33:24 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 27 Oct 2021 23:33:23 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/r0i/0s/oy4PgZOhjNEZmIby";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1635386088-18089-5-git-send-email-quic_sbillaka@quicinc.com>
+References: <1635386088-18089-1-git-send-email-quic_sbillaka@quicinc.com> <1635386088-18089-5-git-send-email-quic_sbillaka@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 27 Oct 2021 23:33:23 -0700
+Message-ID: <CAE-0n52b5xKboi6b-J0m-W_rbjgSzyJqhPrMVaZrm65L2GeOFg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] drm/msm/dp: Enable downspread for supported DP sinks
+To:     Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     robdclark@gmail.com, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org, sbillaka@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/r0i/0s/oy4PgZOhjNEZmIby
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Quoting Sankeerth Billakanti (2021-10-27 18:54:46)
+> The sc7280 eDP sink that supports downspread will fail link training
+> if source does not enable SSC / downspread. This change will set the
+> downspread bit in the DP sink if supported and indicate SSC support
+> to the DP PHY driver.
+>
+> Signed-off-by: Sankeerth Billakanti <quic_sbillaka@quicinc.com>
+> ---
 
-Hi all,
-
-After merging the xen-tip tree, today's linux-next build (x86_64
-allmodconfig) produced these warnings:
-
-vmlinux.o: warning: objtool: pv_ops[32]: paravirt_BUG
-vmlinux.o: warning: objtool: lock_is_held_type()+0x145: call to pv_ops[32](=
-) leaves .noinstr.text section
-
-Presuambly introduced by commit
-
-  97c79d816979 ("x86/xen: switch initial pvops IRQ functions to dummy ones")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/r0i/0s/oy4PgZOhjNEZmIby
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6RCsACgkQAVBC80lX
-0Gysogf8DPnYiV4jaScnM+66C/vwmmlpos27JM+22fOKgj/3J1syzTHopLIS2jZ8
-v358bhJ1jj8EnGJI/m2ebkZwATeNbGhsTj/Grs2AWaz4XzjVNX7fX6PX6fg4p4wM
-aLCRmuedIMDcNkzSNtsO9AZQsQLtpdsmxRthvfwdLkA/L6895mszPTP+hA4AZNzD
-SuoLYGP622hkjcASTSGxhaohbo1hJtsfwAkQQzviQ/QhfWdVKmx7gOuLA7AG9mJU
-UPVVXAFwoYX58z2q3AqoN2xsAFknKRAafS2L8zKk99JKhrK7azlwoqXZj9unkErI
-rivpI4IsQO6yjZs3k9OZ0aIZSI/PkQ==
-=yI5b
------END PGP SIGNATURE-----
-
---Sig_/r0i/0s/oy4PgZOhjNEZmIby--
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
