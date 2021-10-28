@@ -2,143 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0764643DC3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9D843DC3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhJ1HkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:40:16 -0400
-Received: from mout-p-102.mailbox.org ([80.241.56.152]:18652 "EHLO
-        mout-p-102.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhJ1HkN (ORCPT
+        id S229881AbhJ1Hk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhJ1Hkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:40:13 -0400
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Hfy8820NFzQl1x;
-        Thu, 28 Oct 2021 09:37:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH] mwifiex: Add quirk to disable deep sleep with certain hardware revision
-Date:   Thu, 28 Oct 2021 09:37:29 +0200
-Message-Id: <20211028073729.24408-1-verdre@v0yd.nl>
+        Thu, 28 Oct 2021 03:40:55 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CF7C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 00:38:28 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id t4so7121172oie.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 00:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mIbpBG4itQiw5sBCKu1rj0cAmiBtDNuZ4xna3PGBh/Q=;
+        b=Bw6JQBjkaumGLz98sP/L8YyRPZRrxmyXxw9eqldJndQHUkO3TrP4JrOuHHXiHcsAlz
+         1wW1T171ufeeWyh6W1Vmjz/cu2MtT78bbWqMYpgS7ThUbxXb00iCpgqYMUaS6R5ZXmve
+         WoMZxWkRXSMQnymHdWaCo1ifO1Nx7snBvirOQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mIbpBG4itQiw5sBCKu1rj0cAmiBtDNuZ4xna3PGBh/Q=;
+        b=R54kiJCBe2MCj8HPx3MDMwG6BjCQFzDMRJxKqQ5gZOviZ3oEPSOLnzpiIWAxHpbGe0
+         Kz1X0tCxnUDc8300wje25czbH8yW9dd0To0nPXWNamZlYtYIjTFSY9cWY4kttB0PIhsH
+         qu++4+7pZNeb+62OL01iVZXJQAGvcivS7a46XZtQycRbvjP8GOtmC8XRfC6j8Sq9z3Vh
+         jK7uH3QA+5KLili0gj1pCOWj0MnC3NEWXa2QcyhM8NtzHoaO4Ys6jyqfsTpFuCdH4Xs7
+         zGyIaVnX71DoxNrm7IlXuXOdsIWWC+dFIFHazjxI6xRVIgteAnejIaG05yG94Yy8ydtg
+         0Q9Q==
+X-Gm-Message-State: AOAM531fvJPcttP9HRrRbT9hylT+C4iIBUZFY6GfmTFx1dyBg95fIlsy
+        zhjMRa6DQVQvLasOjgwMUBiqRLo2Cr+nYjGFMqkH0A==
+X-Google-Smtp-Source: ABdhPJzmScwHAlThr6qOFUACMGB5knm8qYkuuxlPKf8+xCgUKZ9Hq6DNHk+J36nz17/EWdYKk4J3erW5IFGPhvbTrLA=
+X-Received: by 2002:aca:5b07:: with SMTP id p7mr6909330oib.14.1635406708196;
+ Thu, 28 Oct 2021 00:38:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6340818B8
+References: <CAFCwf119s7iXk+qpwoVPnRtOGcxeuZb3rnihf6NWWoVT-4ODHA@mail.gmail.com>
+ <YTsQJ753sm701R/n@kroah.com> <CAFCwf10GD2dJMZW0DtFUFOZdXuq-opcEKEhwACbApxybjp2M3A@mail.gmail.com>
+In-Reply-To: <CAFCwf10GD2dJMZW0DtFUFOZdXuq-opcEKEhwACbApxybjp2M3A@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 28 Oct 2021 09:38:17 +0200
+Message-ID: <CAKMK7uFyk9eU+DS_w=_3E=6oCLKGAqoBKp4OkroZQh0Vkkv9uQ@mail.gmail.com>
+Subject: Re: Habanalabs Open-Source TPC LLVM compiler and SynapseAI Core library
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 88W8897 PCIe+USB card in the hardware revision 20 apparently has a
-hardware issue where the card wakes up from deep sleep randomly and very
-often, somewhat depending on the card activity, maybe the hardware has a
-floating wakeup pin or something.
+On Wed, Oct 27, 2021 at 8:53 AM Oded Gabbay <ogabbay@kernel.org> wrote:
+>
+> On Fri, Sep 10, 2021 at 10:58 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Sep 10, 2021 at 10:26:56AM +0300, Oded Gabbay wrote:
+> > > Hi Greg,
+> > >
+> > > Following our conversations a couple of months ago, I'm happy to tell you that
+> > > Habanalabs has open-sourced its TPC (Tensor Processing Core) LLVM compiler,
+> > > which is a fork of the LLVM open-source project.
+> > >
+> > > The project can be found on Habanalabs GitHub website at:
+> > > https://github.com/HabanaAI/tpc_llvm
+> > >
+> > > There is a companion guide on how to write TPC kernels at:
+> > > https://docs.habana.ai/en/latest/TPC_User_Guide/TPC_User_Guide.html
+> >
+> > That's great news, thanks for pushing for this and releasing it all!
+> >
+> > greg k-h
+>
+> Hi Greg,
+> I would like to update that yesterday AWS launched new EC2 instances
+> powered by the Gaudi accelerators. It is now in general availability,
+> and anyone can launch an instance with those devices.
+> Therefore, one can now take the upstream driver, hl-thunk, tpc llvm
+> compiler and SynapseAI core and execute compute kernels on the Gaudi
+> devices. I have verified this to be working with the driver in kernel
+> 5.15-rc6.
 
-Those continuous wakeups prevent the card from entering host sleep when
-the computer suspends. And because the host won't answer to events from
-the card anymore while it's suspended, the firmwares internal
-powersaving state machine seems to get confused and the card can't sleep
-anymore at all after that.
+Nice!
 
-Since we can't work around that hardware bug in the firmware, let's
-get the hardware revision string from the firmware and match it with
-known bad revisions. Then disable auto deep sleep for those revisions,
-which makes sure we no longer get those spurious wakeups.
+Now that the llvm part is open, any plans to upstream that? Years ago
+when amd upstreamed their backend there was the hope that llvm would
+grow some competent support for gpu style accelerator isa, but since
+for years now amd's the only backend that ever was merged it's stuck
+in a chicken-egg situation of upstream llvm complaining why amd
+backend has all these special requirements. And other accel backends
+(at least the gpu-style simd ones) not having a good path to upstream
+llvm since a lot of the infrastructure and understanding isn't there.
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/net/wireless/marvell/mwifiex/main.c      | 14 ++++++++++++++
- drivers/net/wireless/marvell/mwifiex/main.h      |  1 +
- .../net/wireless/marvell/mwifiex/sta_cmdresp.c   | 16 ++++++++++++++++
- 3 files changed, 31 insertions(+)
+Getting a 2nd accel backend into upstream llvm would be a huge step
+towards fixing this mess. As far as I know the only other open accel
+backend based on llvm is intel's igc (for intel gpus), and that one is
+such a massive fork that's been out of upstream llvm for so long that
+it's not going to land anytime soon, if ever (in it's current form at
+least).
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index 19b996c6a260..5ab2ad4c7006 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -226,6 +226,19 @@ static int mwifiex_process_rx(struct mwifiex_adapter *adapter)
- 	return 0;
- }
- 
-+static void maybe_quirk_fw_disable_ds(struct mwifiex_adapter *adapter)
-+{
-+	struct mwifiex_private *priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_STA);
-+	struct mwifiex_ver_ext ver_ext;
-+
-+	set_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &adapter->work_flags);
-+
-+	memset(&ver_ext, 0, sizeof(ver_ext));
-+	ver_ext.version_str_sel = 1;
-+	mwifiex_send_cmd(priv, HostCmd_CMD_VERSION_EXT,
-+			 HostCmd_ACT_GEN_GET, 0, &ver_ext, false);
-+}
-+
- /*
-  * The main process.
-  *
-@@ -356,6 +369,7 @@ int mwifiex_main_process(struct mwifiex_adapter *adapter)
- 			if (adapter->hw_status == MWIFIEX_HW_STATUS_INIT_DONE) {
- 				adapter->hw_status = MWIFIEX_HW_STATUS_READY;
- 				mwifiex_init_fw_complete(adapter);
-+				maybe_quirk_fw_disable_ds(adapter);
- 			}
- 		}
- 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.h b/drivers/net/wireless/marvell/mwifiex/main.h
-index 90012cbcfd15..1e829d84b1f6 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.h
-+++ b/drivers/net/wireless/marvell/mwifiex/main.h
-@@ -524,6 +524,7 @@ enum mwifiex_adapter_work_flags {
- 	MWIFIEX_IS_SUSPENDED,
- 	MWIFIEX_IS_HS_CONFIGURED,
- 	MWIFIEX_IS_HS_ENABLING,
-+	MWIFIEX_IS_REQUESTING_FW_VEREXT,
- };
- 
- struct mwifiex_band_config {
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-index 6b5d35d9e69f..8e49ebca1847 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-@@ -708,6 +708,22 @@ static int mwifiex_ret_ver_ext(struct mwifiex_private *priv,
- {
- 	struct host_cmd_ds_version_ext *ver_ext = &resp->params.verext;
- 
-+	if (test_and_clear_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &priv->adapter->work_flags)) {
-+		if (strncmp(ver_ext->version_str, "ChipRev:20, BB:9b(10.00), RF:40(21)", 128) == 0) {
-+			struct mwifiex_ds_auto_ds auto_ds = {
-+				.auto_ds = DEEP_SLEEP_OFF,
-+			};
-+
-+			mwifiex_dbg(priv->adapter, MSG,
-+				    "Bad HW revision detected, disabling deep sleep\n");
-+
-+			mwifiex_send_cmd(priv, HostCmd_CMD_802_11_PS_MODE_ENH,
-+					 DIS_AUTO_PS, BITMAP_AUTO_DS, &auto_ds, false);
-+		}
-+
-+		return 0;
-+	}
-+
- 	if (version_ext) {
- 		version_ext->version_str_sel = ver_ext->version_str_sel;
- 		memcpy(version_ext->version_str, ver_ext->version_str,
+Once we do have an accel backend in upstream llvm we can finally start
+building a real stack here I think, so whomever is first will win
+quite some advantage I think.
+
+Cheers, Daniel
+
+> We are still missing the networking parts, but I hope to start
+> upstreaming them in the next coming months.
+>
+> Thanks,
+> Oded
+
+
+
 -- 
-2.31.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
