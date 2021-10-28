@@ -2,210 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3521343E10D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F4643E10F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhJ1MfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:35:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhJ1MfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:35:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04789610FC;
-        Thu, 28 Oct 2021 12:32:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635424373;
-        bh=JHELoj2mmW10VXh13e2V2GRYKvOf6aNdym1rcKygtbM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YwaQWf8cBWqfv25YTmI/8UHeSBbLwa+Z0AHrjcPK+FX7IYXFY1a8+RY/hgpCPA5aN
-         8s1+w1C/hNwoTIJMKx4NKCRHGH6OuK0Y/wmSIlhQxVlcn4yHnobSdM/gyua19RkffP
-         tYbcGF279NecELnLR360bqEUu5LBN0c3hfyr/CJD7HaCisHn5jR/glcjRd/eUmQnYB
-         bXYsZqIqE96E8GZAIGGoCUojQm4J06RbdLphByL3jZ9uVqVgbdd1mFb3xZqY7EH1fy
-         ez5MnO4H9cUfBk4TxlZeW/MrpPTm0fUEfmwTZ0d7Ykr2HJ1/XQNL1waWEMb0xk1X3b
-         UgyhgZmH3meBw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DC6EC410A1; Thu, 28 Oct 2021 09:32:48 -0300 (-03)
-Date:   Thu, 28 Oct 2021 09:32:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Madhavan Srinivasan <maddy@linux.ibm.com>, jolsa@redhat.com,
-        michael@ellerman.id.au, eranian@google.com, mark.rutland@arm.com,
-        namhyung@kernel.org, kjain@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] tools/perf: Add bitfield_swap to handle
- branch_stack endian issue
-Message-ID: <YXqYcEu9flGFMHX1@kernel.org>
-References: <20211028113714.600549-1-maddy@linux.ibm.com>
+        id S229998AbhJ1Mja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhJ1Mj3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:39:29 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B902C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:37:02 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g10so23978550edj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SLr4/TnuHibe67bj8qgu1HXsYDnjQOeI4kUtFicodUM=;
+        b=Vp13/kU1uMF7hIYXyF+K5W5teumj+0JSIXryVIwzTjc7QMOkHfZOyFTGG9JLL2sNDJ
+         rK6JlS7HtH/dNA+K5Rf7x5mQjYGR6S+M0xWfadOGZk/y59dWVoEdTWWaDXstuMl3MrKi
+         VqN7qvNLRpWzn9CX2+VhZFr2olh8w73R3QQcZk3KQl2gXHvxUWXiInAQHvRPWEW+/9lP
+         gEcDvZb5NxFB79tbwUoIEFOQGjUbrZA1Op2WFuZhBp+CXTmax2VVcrt/6weUuWsm717p
+         fw0/S/Mnc0Z8PkQweaIRp9DZCxfLQSkAWXtnt2ckcatpuIt76BM3AkbXtTBbZ5V2HEwU
+         Kj+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SLr4/TnuHibe67bj8qgu1HXsYDnjQOeI4kUtFicodUM=;
+        b=sWD8F3UVgnfEQIxAHzh53rvEGe4vZH+KO/W2Af6Jh8P82yg730KNh7QIUBO57kFTX0
+         jrrrjG2VZbo4/BVJDlRc8CFMp2yspwletxa/qNkVhh9lwFGqfEra2zN4sVl/TWxLIsAl
+         G4L75fHqM9kyahimCd2OucFLyfuLqXIGsGd+cjbv7NUfqPxbmFEnCW8g704j93eujErb
+         O8/w0Ze21pLjWqeVgbvkY2oYxTGCvW1UY+sFDKAn8YNVOCJqyvFLyOYunAwf4X1GKcSB
+         ZHXCPGGNuBKdGqpD1tC72bBucSHYoLjfD6d0q7Jjs44OeeVZLpALTxLcP6nq+PBSlE2v
+         DzgA==
+X-Gm-Message-State: AOAM5332r2JoMSi4faJM+M2IR+ancdldUD9L6DI5ifgoxIBKWYJGpAkg
+        0nlsX47a/OMeKiXWaDNTNy4=
+X-Google-Smtp-Source: ABdhPJxNLKB6efA6LY1H6WKs7qec+/IU0ErVxxUVKcftBYYm6ph6GxjvZ96Z+tffWqafuIFyGYeDkg==
+X-Received: by 2002:a17:906:3a0e:: with SMTP id z14mr5245835eje.55.1635424620813;
+        Thu, 28 Oct 2021 05:37:00 -0700 (PDT)
+Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
+        by smtp.gmail.com with ESMTPSA id s16sm1675021edd.32.2021.10.28.05.36.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 05:37:00 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: Re: [Outreachy kernel] [PATCH 5/7] staging: vt6655: Rewrite conditional in AL7320 initialization
+Date:   Thu, 28 Oct 2021 14:36:59 +0200
+Message-ID: <1683328.aCfAWUeHFl@localhost.localdomain>
+In-Reply-To: <948406a3e7d23f1cdf866aa4448d9428bdd32512.1635415820.git.karolinadrobnik@gmail.com>
+References: <cover.1635415820.git.karolinadrobnik@gmail.com> <948406a3e7d23f1cdf866aa4448d9428bdd32512.1635415820.git.karolinadrobnik@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028113714.600549-1-maddy@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 28, 2021 at 05:07:13PM +0530, Madhavan Srinivasan escreveu:
-> branch_stack struct has bit field definition which
-> produces different bit ordering for big/little endian.
-> Because of this, when branch_stack sample is collected
-> in a BE system and viewed/reported in a LE system, bit
-> fields of the branch stack are not presented properly.
-> To address this issue, a evsel__bitfield_swap_branch_stack()
-> is defined and introduced in evsel__parse_sample.
-
-Jiri,
-
-	This is a minor change, he just switched to an inline equivalent
-(the code is slightly different, but should be ok), can I apply yout
-v2 Acked-by tags?
-
-- Arnaldo
- 
-> Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+On Thursday, October 28, 2021 12:35:35 PM CEST Karolina Drobnik wrote:
+> Use conditional operator to determine which table for AL7320
+> initialization should be used. Use `data` temporary value to
+> store this value.
+> 
+> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
 > ---
-> Changelog v2:
-> - used tep_is_bigendian() instead bigendian()
->   to avoid perf test python fail.
->  
-> Changelog v1:
-> - Renamed function and macro
-> - Added comments in code
+>  drivers/staging/vt6655/rf.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
 > 
->  tools/perf/util/evsel.c | 77 +++++++++++++++++++++++++++++++++++++++--
->  tools/perf/util/evsel.h | 13 +++++++
->  2 files changed, 88 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index dbfeceb2546c..4e929b9d9718 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2221,6 +2221,54 @@ void __weak arch_perf_parse_sample_weight(struct perf_sample *data,
->  	data->weight = *array;
->  }
+> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+> index afd202ea3356..af4eb7eb8e7d 100644
+> --- a/drivers/staging/vt6655/rf.c
+> +++ b/drivers/staging/vt6655/rf.c
+> @@ -716,13 +716,10 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, 
+unsigned char rf_type,
+>  		if (init_count > (MISCFIFO_SYNDATASIZE - sleep_count))
+>  			return false;
 >  
-> +u64 evsel__bitfield_swap_branch_flags(u64 value)
-> +{
-> +	u64 new_val = 0;
-> +
-> +	/*
-> +	 * branch_flags
-> +	 * union {
-> +	 * 	u64 values;
-> +	 * 	struct {
-> +	 * 		mispred:1	//target mispredicted
-> +	 * 		predicted:1	//target predicted
-> +	 * 		in_tx:1		//in transaction
-> +	 * 		abort:1		//transaction abort
-> +	 * 		cycles:16	//cycle count to last branch
-> +	 * 		type:4		//branch type
-> +	 * 		reserved:40
-> +	 * 	}
-> +	 * }
-> +	 *
-> +	 * Avoid bswap64() the entire branch_flag.value,
-> +	 * as it has variable bit-field sizes. Instead the
-> +	 * macro takes the bit-field position/size,
-> +	 * swaps it based on the host endianness.
-> +	 *
-> +	 * tep_is_bigendian() is used here instead of
-> +	 * bigendian() to avoid python test fails.
-> +	 */
-> +	if (tep_is_bigendian()) {
-> +		new_val = bitfield_swap(value, 0, 1);
-> +		new_val |= bitfield_swap(value, 1, 1);
-> +		new_val |= bitfield_swap(value, 2, 1);
-> +		new_val |= bitfield_swap(value, 3, 1);
-> +		new_val |= bitfield_swap(value, 4, 16);
-> +		new_val |= bitfield_swap(value, 20, 4);
-> +		new_val |= bitfield_swap(value, 24, 40);
-> +	} else {
-> +		new_val = bitfield_swap(value, 63, 1);
-> +		new_val |= bitfield_swap(value, 62, 1);
-> +		new_val |= bitfield_swap(value, 61, 1);
-> +		new_val |= bitfield_swap(value, 60, 1);
-> +		new_val |= bitfield_swap(value, 44, 16);
-> +		new_val |= bitfield_swap(value, 40, 4);
-> +		new_val |= bitfield_swap(value, 0, 40);
-> +	}
-> +
-> +	return new_val;
-> +}
-> +
->  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  			struct perf_sample *data)
->  {
-> @@ -2408,6 +2456,8 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  	if (type & PERF_SAMPLE_BRANCH_STACK) {
->  		const u64 max_branch_nr = UINT64_MAX /
->  					  sizeof(struct branch_entry);
-> +		struct branch_entry *e;
-> +		unsigned int i;
+> -		if (channel <= CB_MAX_CHANNEL_24G) {
+> -			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
+> -				MACvSetMISCFifo(priv, idx++, 
+al7230_init_table[i]);
+> -		} else {
+> -			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
+> -				MACvSetMISCFifo(priv, idx++, 
+al7230_init_table_a_mode[i]);
+> -		}
+> +		data = (channel <= CB_MAX_CHANNEL_24G) ?
+> +			al7230_init_table : 
+al7230_init_table_a_mode;
+
+As far as I know by reading some Greg K-H's replies to other developers, this 
+"<test> ? <true> : <false>" style is not well accepted here.
+
+I'd prefer to see an explicit "if-else" statement because with that style you 
+sacrifice readability and gain nothing here.
+
+> +		for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
+> +			MACvSetMISCFifo(priv, idx++, *(data++));
+
+Again, as Julia pointed out, "*data++" and "*(data++)" are syntactically 
+correct instructions but are not required here. I'm also pretty sure that, by 
+not reusing that index, you're adding additional unnecessary instructions to 
+the resulting assembly code (unless the compiler is able to optimize it).
+
+"*foo++" and the like are powerful and compact instructions, but you should 
+use them in other, more suitable contexts.
+
+Thanks,
+
+Fabio
+
+
 >  
->  		OVERFLOW_CHECK_u64(array);
->  		data->branch_stack = (struct branch_stack *)array++;
-> @@ -2416,10 +2466,33 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  			return -EFAULT;
->  
->  		sz = data->branch_stack->nr * sizeof(struct branch_entry);
-> -		if (evsel__has_branch_hw_idx(evsel))
-> +		if (evsel__has_branch_hw_idx(evsel)) {
->  			sz += sizeof(u64);
-> -		else
-> +			e = &data->branch_stack->entries[0];
-> +		} else {
->  			data->no_hw_idx = true;
-> +			/*
-> +			 * if the PERF_SAMPLE_BRANCH_HW_INDEX is not applied,
-> +			 * only nr and entries[] will be output by kernel.
-> +			 */
-> +			e = (struct branch_entry *)&data->branch_stack->hw_idx;
-> +		}
-> +
-> +		if (swapped) {
-> +			/*
-> +			 * struct branch_flag does not have endian
-> +			 * specific bit field definition. And bswap
-> +			 * will not resolve the issue, since these
-> +			 * are bit fields.
-> +			 *
-> +			 * evsel__bitfield_swap_branch_flags() uses a
-> +			 * bitfield_swap macro to swap the bit position
-> +			 * based on the host endians.
-> +			 */
-> +			for (i = 0; i < data->branch_stack->nr; i++, e++)
-> +				e->flags.value = evsel__bitfield_swap_branch_flags(e->flags.value);
-> +		}
-> +
->  		OVERFLOW_CHECK(array, sz, max_size);
->  		array = (void *)array + sz;
->  	}
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 1f7edfa8568a..2e82cdbe2c08 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -482,4 +482,17 @@ struct evsel *evsel__leader(struct evsel *evsel);
->  bool evsel__has_leader(struct evsel *evsel, struct evsel *leader);
->  bool evsel__is_leader(struct evsel *evsel);
->  void evsel__set_leader(struct evsel *evsel, struct evsel *leader);
-> +
-> +/*
-> + * Macro to swap the bit-field postition and size.
-> + * Used when,
-> + * - dont need to swap the entire u64 &&
-> + * - when u64 has variable bit-field sizes &&
-> + * - when presented in a host endian which is different
-> + *   than the source endian of the perf.data file
-> + */
-> +#define bitfield_swap(src, pos, size)	\
-> +	((((src) >> (pos)) & ((1ull << (size)) - 1)) << (63 - ((pos) + (size) - 1)))
-> +
-> +u64 evsel__bitfield_swap_branch_flags(u64 value);
->  #endif /* __PERF_EVSEL_H */
+>  		MACvSetMISCFifo(priv, idx++, 
+al7230_channel_table0[channel - 1]);
+>  		MACvSetMISCFifo(priv, idx++, 
+al7230_channel_table1[channel - 1]);
 > -- 
-> 2.31.1
+> 2.30.2
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups 
+"outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an 
+email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/
+outreachy-kernel/
+948406a3e7d23f1cdf866aa4448d9428bdd32512.1635415820.git.karolinadrobnik%40gmail.com.
+> 
 
--- 
 
-- Arnaldo
+
+
