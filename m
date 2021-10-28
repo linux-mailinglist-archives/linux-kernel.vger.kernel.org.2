@@ -2,106 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C3C43E133
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FC943E139
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhJ1Msa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:48:30 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:45208 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhJ1MsS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:48:18 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19SCjaML096846;
-        Thu, 28 Oct 2021 07:45:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635425136;
-        bh=KYpi63S67jEFLXgUwSqYZm2jT92fcc60hhrJnZCLW8U=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=YsQ8cmpovfVomGE2A5PzuDhy+SSjMyGjQ8lfBkSOjRDG0D66V/B7UCew5fPSnjmTr
-         ul299tnVdfShpRWhcG99CkzjkyD4JEmROcBBHHv43MbzxwXQR8XC7lF3rSUy49hpPv
-         LeCqM7HVNShGapLEOyog6kMTXAt/LI7Y/sBA89EA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19SCjam3036663
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Oct 2021 07:45:36 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 28
- Oct 2021 07:45:36 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 28 Oct 2021 07:45:36 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19SCjJbD115317;
-        Thu, 28 Oct 2021 07:45:32 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Mark Brown <broonie@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: [PATCH v2 3/3] dt-bindings: mtd: spi-nor: Add a reference to spi-slave-props.yaml
-Date:   Thu, 28 Oct 2021 18:15:18 +0530
-Message-ID: <20211028124518.17370-4-p.yadav@ti.com>
-X-Mailer: git-send-email 2.33.1.835.ge9e5ba39a7
-In-Reply-To: <20211028124518.17370-1-p.yadav@ti.com>
-References: <20211028124518.17370-1-p.yadav@ti.com>
+        id S230274AbhJ1MtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:49:22 -0400
+Received: from ixit.cz ([94.230.151.217]:34996 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhJ1MtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:49:21 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 7E2E920064;
+        Thu, 28 Oct 2021 14:46:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635425212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xgjicstCdETA5yD5ttEWNXkXTM7bl4gND1HVg9nbOM0=;
+        b=bskFoIBb0rfqZ7feenbLCcXO2DyUOYsS0T3S4f0eDorElFK3n0LR9Sg27Xxe1VH0JIbwUy
+        k69E186equqEEVhEasOPu7wLy8AbJzwhKCou3wg2BBemgdxs9a8Cda8cECE0B/6x0/kuEY
+        cyGQkZWM6cCrvzaLVFhzto39fzb+6ug=
+From:   David Heidelberg <david@ixit.cz>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        - <patches@opensource.cirrus.com>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: sound: wlf,wm8903: Convert txt bindings to yaml
+Date:   Thu, 28 Oct 2021 14:46:38 +0200
+Message-Id: <20211028124639.38420-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The spi-slave-props.yaml schema contains slave-specific properties
-for SPI controllers that should be present in the slave node. Add a
-reference to that so its constraints are followed.
+Convert the Wolfson WM8903 Ultra-Low Power Stereo CODEC Device Tree
+binding documentation to json-schema.
 
-additionalProperties: false cannot be used since it marks the controller
-properties as unknown. Use unevaluatedProperties: false instead. This
-has the side effect of allowing extra properties that are not specified
-in the schema. The alternative is to list all the controller properties
-in this schema but that would mean every slave binding would have to
-repeat the same set of properties for each controller.
-
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
+ .../devicetree/bindings/sound/wlf,wm8903.yaml | 116 ++++++++++++++++++
+ .../devicetree/bindings/sound/wm8903.txt      |  82 -------------
+ 2 files changed, 116 insertions(+), 82 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8903.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/wm8903.txt
 
-(no changes since v1)
-
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index ed590d7c6e37..e69a8fbb91f1 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -11,6 +11,7 @@ maintainers:
- 
- allOf:
-   - $ref: "mtd.yaml#"
-+  - $ref: /schemas/spi/spi-slave-props.yaml#
- 
- properties:
-   compatible:
-@@ -88,7 +89,7 @@ patternProperties:
-   "^otp(-[0-9]+)?$":
-     type: object
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
+diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8903.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8903.yaml
+new file mode 100644
+index 000000000000..7105ed5fd6c7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/wlf,wm8903.yaml
+@@ -0,0 +1,116 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/wlf,wm8903.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: WM8903 audio codec
++
++description: |
++  This device supports I2C only.
++  Pins on the device (for linking into audio routes):
++      * IN1L
++      * IN1R
++      * IN2L
++      * IN2R
++      * IN3L
++      * IN3R
++      * DMICDAT
++      * HPOUTL
++      * HPOUTR
++      * LINEOUTL
++      * LINEOUTR
++      * LOP
++      * LON
++      * ROP
++      * RON
++      * MICBIAS
++
++maintainers:
++  - patches@opensource.cirrus.com
++
++properties:
++  compatible:
++    const: wlf,wm8903
++
++  reg:
++    maxItems: 1
++
++  gpio-controller: true
++  '#gpio-cells':
++    const: 2
++
++  interrupts:
++    maxItems: 1
++
++  micdet-cfg:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    default: 0
++    description: Default register value for R6 (Mic Bias).
++
++  micdet-delay:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    default: 100
++    description: The debounce delay for microphone detection in mS.
++
++  gpio-cfg:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: |
++      minItems: 5
++      maxItems: 5
++      A list of GPIO configuration register values.
++      If absent, no configuration of these registers is performed.
++      If any entry has the value 0xffffffff, that GPIO's
++      configuration will not be modified.
++
++  AVDD-supply:
++    description: Analog power supply regulator on the AVDD pin.
++
++  CPVDD-supply:
++    description: Charge pump supply regulator on the CPVDD pin.
++
++  DBVDD-supply:
++    description: Digital buffer supply regulator for the DBVDD pin.
++
++  DCVDD-supply:
++    description: Digital core supply regulator for the DCVDD pin.
++
++
++required:
++  - compatible
++  - reg
++  - gpio-controller
++  - '#gpio-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      wm8903: codec@1a {
++        compatible = "wlf,wm8903";
++        reg = <0x1a>;
++        interrupts = <347>;
++
++        AVDD-supply = <&fooreg_a>;
++        CPVDD-supply = <&fooreg_b>;
++        DBVDD-supply = <&fooreg_c>;
++        DCVDD-supply = <&fooreg_d>;
++
++        gpio-controller;
++        #gpio-cells = <2>;
++
++        micdet-cfg = <0>;
++        micdet-delay = <100>;
++        gpio-cfg = <
++          0x0600 /* DMIC_LR, output */
++          0x0680 /* DMIC_DAT, input */
++          0x0000 /* GPIO, output, low */
++          0x0200 /* Interrupt, output */
++          0x01a0 /* BCLK, input, active high */
++        >;
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/sound/wm8903.txt b/Documentation/devicetree/bindings/sound/wm8903.txt
+deleted file mode 100644
+index 6371c2434afe..000000000000
+--- a/Documentation/devicetree/bindings/sound/wm8903.txt
++++ /dev/null
+@@ -1,82 +0,0 @@
+-WM8903 audio CODEC
+-
+-This device supports I2C only.
+-
+-Required properties:
+-
+-  - compatible : "wlf,wm8903"
+-
+-  - reg : the I2C address of the device.
+-
+-  - gpio-controller : Indicates this device is a GPIO controller.
+-
+-  - #gpio-cells : Should be two. The first cell is the pin number and the
+-    second cell is used to specify optional parameters (currently unused).
+-
+-Optional properties:
+-
+-  - interrupts : The interrupt line the codec is connected to.
+-
+-  - micdet-cfg : Default register value for R6 (Mic Bias). If absent, the
+-    default is 0.
+-
+-  - micdet-delay : The debounce delay for microphone detection in mS. If
+-    absent, the default is 100.
+-
+-  - gpio-cfg : A list of GPIO configuration register values. The list must
+-    be 5 entries long. If absent, no configuration of these registers is
+-    performed. If any entry has the value 0xffffffff, that GPIO's
+-    configuration will not be modified.
+-
+-  - AVDD-supply : Analog power supply regulator on the AVDD pin.
+-
+-  - CPVDD-supply : Charge pump supply regulator on the CPVDD pin.
+-
+-  - DBVDD-supply : Digital buffer supply regulator for the DBVDD pin.
+-
+-  - DCVDD-supply : Digital core supply regulator for the DCVDD pin.
+-
+-Pins on the device (for linking into audio routes):
+-
+-  * IN1L
+-  * IN1R
+-  * IN2L
+-  * IN2R
+-  * IN3L
+-  * IN3R
+-  * DMICDAT
+-  * HPOUTL
+-  * HPOUTR
+-  * LINEOUTL
+-  * LINEOUTR
+-  * LOP
+-  * LON
+-  * ROP
+-  * RON
+-  * MICBIAS
+-
+-Example:
+-
+-wm8903: codec@1a {
+-	compatible = "wlf,wm8903";
+-	reg = <0x1a>;
+-	interrupts = < 347 >;
+-
+-	AVDD-supply = <&fooreg_a>;
+-	CPVDD-supply = <&fooreg_b>;
+-	DBVDD-supply = <&fooreg_c>;
+-	DCVDC-supply = <&fooreg_d>;
+-
+-	gpio-controller;
+-	#gpio-cells = <2>;
+-
+-	micdet-cfg = <0>;
+-	micdet-delay = <100>;
+-	gpio-cfg = <
+-		0x0600 /* DMIC_LR, output */
+-		0x0680 /* DMIC_DAT, input */
+-		0x0000 /* GPIO, output, low */
+-		0x0200 /* Interrupt, output */
+-		0x01a0 /* BCLK, input, active high */
+-	>;
+-};
 -- 
-2.33.1.835.ge9e5ba39a7
+2.33.0
 
