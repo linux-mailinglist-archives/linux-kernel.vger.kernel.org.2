@@ -2,122 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7FF43DBFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A9B43DC07
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhJ1Haa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:30:30 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:56363 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhJ1HaZ (ORCPT
+        id S230030AbhJ1HbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:31:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34337 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhJ1Ha4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:30:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 28 Oct 2021 03:30:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635406109; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=Xy2s/FZomRSPdghy7qxK71w8rfqcDVVYA5SE6uPgsCs=; b=ogPDYkZ0KtxoTBKp07kaUTiQzOiVbee3D+wDd1esdfks9dty+M1cA4tBLiAmR5zKIdXrgJAw
+ 7WYIxeHYiwrZ9OJHhohYHMCUtffxAp1T0+D5Xp9InjMOduQsa3fN1cFn0bpR/WQYJUk3+5Bu
+ zgzq2OzZevhkKQg984Z/nX57P5Y=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 617a511bf6a3eeacf9a3913e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 28 Oct 2021 07:28:27
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 20289C4361B; Thu, 28 Oct 2021 07:28:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hfxwp5Hh5z4xYy;
-        Thu, 28 Oct 2021 18:27:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635406077;
-        bh=Qcv0WIWBqgF7S3Hx8WF1gQA6e3vrfumd7O64F1UC2XU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dteowK2iy6rMIyEGowhklT5fLwvmRbh3E/otbGJ68i/5MHgwMXUCkwq7IDT8J6Pjj
-         khzcJOW9FDVdxT9s7f0DpcZyfd267CrcAbIarL0nImIYlpTAVXXVo7k081S8d7X24w
-         65bl+38Yag7DfqvLZRGZgB41tEWzU8D3+M6tGmIyddIO+GdTHpaUXLDWH2nF67YBS4
-         pg/vuZAOjiZ1/yVAt7Owjh9WBcJCILnUPrUZTdVw4Tqhra2itSe2NgxcbMmD1UR0FW
-         seh6DVyaCZd1z64nsI8Ta3c2BT5o9Agx80kgHgztPtfxhR79VtjK6zA0r17pvNwFqU
-         EKPB9ukJwQjAg==
-Date:   Thu, 28 Oct 2021 18:27:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Matthew Auld <matthew.auld@intel.com>
-Subject: linux-next: manual merge of the char-misc tree with the drm-intel
- tree
-Message-ID: <20211028182753.56b6a174@canb.auug.org.au>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1241BC43617;
+        Thu, 28 Oct 2021 07:28:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1241BC43617
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     Benjamin Li <benl@squareup.com>,
+        Joseph Gates <jgates@squareup.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eugene Krasnikov <k.eugene.e@gmail.com>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] wcn36xx: ensure pairing of init_scan/finish_scan and start_scan/end_scan
+References: <20211027170306.555535-1-benl@squareup.com>
+        <20211027170306.555535-4-benl@squareup.com>
+        <9a933103-afbc-3278-3d2e-ade77b0e4b09@linaro.org>
+Date:   Thu, 28 Oct 2021 10:28:19 +0300
+In-Reply-To: <9a933103-afbc-3278-3d2e-ade77b0e4b09@linaro.org> (Bryan
+        O'Donoghue's message of "Wed, 27 Oct 2021 23:30:18 +0100")
+Message-ID: <87pmrp6224.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZxH8PJt7z=AaYJvoJhDlVz7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZxH8PJt7z=AaYJvoJhDlVz7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Bryan O'Donoghue <bryan.odonoghue@linaro.org> writes:
 
-Hi all,
+> On 27/10/2021 18:03, Benjamin Li wrote:
+>> An SMD capture from the downstream prima driver on WCN3680B shows the
+>> following command sequence for connected scans:
+>>
+>> - init_scan_req
+>>      - start_scan_req, channel 1
+>>      - end_scan_req, channel 1
+>>      - start_scan_req, channel 2
+>>      - ...
+>>      - end_scan_req, channel 3
+>> - finish_scan_req
+>> - init_scan_req
+>>      - start_scan_req, channel 4
+>>      - ...
+>>      - end_scan_req, channel 6
+>> - finish_scan_req
+>> - ...
+>>      - end_scan_req, channel 165
+>> - finish_scan_req
+>>
+>> Upstream currently never calls wcn36xx_smd_end_scan, and in some cases[1]
+>> still sends finish_scan_req twice in a row or before init_scan_req. A
+>> typical connected scan looks like this:
+>>
+>> - init_scan_req
+>>      - start_scan_req, channel 1
+>> - finish_scan_req
+>> - init_scan_req
+>>      - start_scan_req, channel 2
+>> - ...
+>>      - start_scan_req, channel 165
+>> - finish_scan_req
+>> - finish_scan_req
+>>
+>> This patch cleans up scanning so that init/finish and start/end are always
+>> paired together and correctly nested.
+>>
+>> - init_scan_req
+>>      - start_scan_req, channel 1
+>>      - end_scan_req, channel 1
+>> - finish_scan_req
+>> - init_scan_req
+>>      - start_scan_req, channel 2
+>>      - end_scan_req, channel 2
+>> - ...
+>>      - start_scan_req, channel 165
+>>      - end_scan_req, channel 165
+>> - finish_scan_req
+>>
+>> Note that upstream will not do batching of 3 active-probe scans before
+>> returning to the operating channel, and this patch does not change that.
+>> To match downstream in this aspect, adjust IEEE80211_PROBE_DELAY and/or
+>> the 125ms max off-channel time in ieee80211_scan_state_decision.
+>>
+>> [1]: commit d195d7aac09b ("wcn36xx: Ensure finish scan is not requested
+>> before start scan") addressed one case of finish_scan_req being sent
+>> without a preceding init_scan_req (the case of the operating channel
+>> coinciding with the first scan channel); two other cases are:
+>> 1) if SW scan is started and aborted immediately, without scanning any
+>>     channels, we send a finish_scan_req without ever sending init_scan_req,
+>>     and
+>> 2) as SW scan logic always returns us to the operating channel before
+>>     calling wcn36xx_sw_scan_complete, finish_scan_req is always sent twice
+>>     at the end of a SW scan
+>>
+>> Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
+>> Signed-off-by: Benjamin Li <benl@squareup.com>
+>> ---
+>>   drivers/net/wireless/ath/wcn36xx/main.c    | 34 +++++++++++++++++-----
+>>   drivers/net/wireless/ath/wcn36xx/smd.c     |  4 +++
+>>   drivers/net/wireless/ath/wcn36xx/wcn36xx.h |  1 +
+>>   3 files changed, 32 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+>> index 18383d0fc0933..37b4016f020c9 100644
+>> --- a/drivers/net/wireless/ath/wcn36xx/main.c
+>> +++ b/drivers/net/wireless/ath/wcn36xx/main.c
+>> @@ -400,6 +400,7 @@ static void wcn36xx_change_opchannel(struct wcn36xx *wcn, int ch)
+>>   static int wcn36xx_config(struct ieee80211_hw *hw, u32 changed)
+>>   {
+>>   	struct wcn36xx *wcn = hw->priv;
+>> +	int ret;
+>>     	wcn36xx_dbg(WCN36XX_DBG_MAC, "mac config changed 0x%08x\n",
+>> changed);
+>>   @@ -415,17 +416,31 @@ static int wcn36xx_config(struct
+>> ieee80211_hw *hw, u32 changed)
+>>   			 * want to receive/transmit regular data packets, then
+>>   			 * simply stop the scan session and exit PS mode.
+>>   			 */
+>> -			wcn36xx_smd_finish_scan(wcn, HAL_SYS_MODE_SCAN,
+>> -						wcn->sw_scan_vif);
+>> -			wcn->sw_scan_channel = 0;
+>> +			if (wcn->sw_scan_channel)
+>> +				wcn36xx_smd_end_scan(wcn, wcn->sw_scan_channel);
+>> +			if (wcn->sw_scan_init) {
+>> +				wcn36xx_smd_finish_scan(wcn, HAL_SYS_MODE_SCAN,
+>> +							wcn->sw_scan_vif);
+>> +			}
+>>   		} else if (wcn->sw_scan) {
+>>   			/* A scan is ongoing, do not change the operating
+>>   			 * channel, but start a scan session on the channel.
+>>   			 */
+>> -			wcn36xx_smd_init_scan(wcn, HAL_SYS_MODE_SCAN,
+>> -					      wcn->sw_scan_vif);
+>> +			if (wcn->sw_scan_channel)
+>> +				wcn36xx_smd_end_scan(wcn, wcn->sw_scan_channel);
+>> +			if (!wcn->sw_scan_init) {
+>> +				/* This can fail if we are unable to notify the
+>> +				 * operating channel.
+>> +				 */
+>> +				ret = wcn36xx_smd_init_scan(wcn,
+>> +							    HAL_SYS_MODE_SCAN,
+>> +							    wcn->sw_scan_vif);
+>> +				if (ret) {
+>> +					mutex_unlock(&wcn->conf_mutex);
+>> +					return -EIO;
+>> +				}
+>> +			}
+>>   			wcn36xx_smd_start_scan(wcn, ch);
+>> -			wcn->sw_scan_channel = ch;
+>>   		} else {
+>>   			wcn36xx_change_opchannel(wcn, ch);
+>>   		}
+>> @@ -723,7 +738,12 @@ static void wcn36xx_sw_scan_complete(struct ieee80211_hw *hw,
+>>   	wcn36xx_dbg(WCN36XX_DBG_MAC, "sw_scan_complete");
+>>     	/* ensure that any scan session is finished */
+>> -	wcn36xx_smd_finish_scan(wcn, HAL_SYS_MODE_SCAN, wcn->sw_scan_vif);
+>> +	if (wcn->sw_scan_channel)
+>> +		wcn36xx_smd_end_scan(wcn, wcn->sw_scan_channel);
+>> +	if (wcn->sw_scan_init) {
+>> +		wcn36xx_smd_finish_scan(wcn, HAL_SYS_MODE_SCAN,
+>> +					wcn->sw_scan_vif);
+>> +	}
+>>   	wcn->sw_scan = false;
+>>   	wcn->sw_scan_opchannel = 0;
+>>   }
+>> diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
+>> index 3cecc8f9c9647..830341be72673 100644
+>> --- a/drivers/net/wireless/ath/wcn36xx/smd.c
+>> +++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+>> @@ -721,6 +721,7 @@ int wcn36xx_smd_init_scan(struct wcn36xx *wcn, enum wcn36xx_hal_sys_mode mode,
+>>   		wcn36xx_err("hal_init_scan response failed err=%d\n", ret);
+>>   		goto out;
+>>   	}
+>> +	wcn->sw_scan_init = true;
+>>   out:
+>>   	mutex_unlock(&wcn->hal_mutex);
+>>   	return ret;
+>> @@ -751,6 +752,7 @@ int wcn36xx_smd_start_scan(struct wcn36xx *wcn, u8 scan_channel)
+>>   		wcn36xx_err("hal_start_scan response failed err=%d\n", ret);
+>>   		goto out;
+>>   	}
+>> +	wcn->sw_scan_channel = scan_channel;
+>>   out:
+>>   	mutex_unlock(&wcn->hal_mutex);
+>>   	return ret;
+>> @@ -781,6 +783,7 @@ int wcn36xx_smd_end_scan(struct wcn36xx *wcn, u8 scan_channel)
+>>   		wcn36xx_err("hal_end_scan response failed err=%d\n", ret);
+>>   		goto out;
+>>   	}
+>> +	wcn->sw_scan_channel = 0;
+>>   out:
+>>   	mutex_unlock(&wcn->hal_mutex);
+>>   	return ret;
+>> @@ -822,6 +825,7 @@ int wcn36xx_smd_finish_scan(struct wcn36xx *wcn,
+>>   		wcn36xx_err("hal_finish_scan response failed err=%d\n", ret);
+>>   		goto out;
+>>   	}
+>> +	wcn->sw_scan_init = false;
+>>   out:
+>>   	mutex_unlock(&wcn->hal_mutex);
+>>   	return ret;
+>> diff --git a/drivers/net/wireless/ath/wcn36xx/wcn36xx.h b/drivers/net/wireless/ath/wcn36xx/wcn36xx.h
+>> index 1c8d918137da2..fbd0558c2c196 100644
+>> --- a/drivers/net/wireless/ath/wcn36xx/wcn36xx.h
+>> +++ b/drivers/net/wireless/ath/wcn36xx/wcn36xx.h
+>> @@ -248,6 +248,7 @@ struct wcn36xx {
+>>   	struct cfg80211_scan_request *scan_req;
+>>   	bool			sw_scan;
+>>   	u8			sw_scan_opchannel;
+>> +	bool			sw_scan_init;
+>>   	u8			sw_scan_channel;
+>>   	struct ieee80211_vif	*sw_scan_vif;
+>>   	struct mutex		scan_lock;
+>>
+>
+> LGTM
+>
+> Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-Today's linux-next merge of the char-misc tree got a conflict in:
+Thanks, all review and testing is very much appreciated. But please trim
+your replies, including the whole patch makes reading your replies and
+using patchwork much harder:
 
-  drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+https://patchwork.kernel.org/project/linux-wireless/patch/20211027170306.555535-4-benl@squareup.com/
 
-between commit:
+I recommend just including the commit log and dropping the rest.
 
-  5740211ea442 ("drm/i915/dmabuf: fix broken build")
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-from the drm-intel tree and commit:
-
-  16b0314aa746 ("dma-buf: move dma-buf symbols into the DMA_BUF module name=
-space")
-
-from the char-misc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-index a45d0ec2c5b6,abb854281347..000000000000
---- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-@@@ -12,13 -13,8 +13,15 @@@
-  #include "i915_gem_object.h"
-  #include "i915_scatterlist.h"
- =20
- +#if defined(CONFIG_X86)
- +#include <asm/smp.h>
- +#else
- +#define wbinvd_on_all_cpus() \
- +	pr_warn(DRIVER_NAME ": Missing cache flush in %s\n", __func__)
- +#endif
- +
-+ MODULE_IMPORT_NS(DMA_BUF);
-+=20
-  I915_SELFTEST_DECLARE(static bool force_different_devices;)
- =20
-  static struct drm_i915_gem_object *dma_buf_to_obj(struct dma_buf *buf)
-
---Sig_/ZxH8PJt7z=AaYJvoJhDlVz7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6UPkACgkQAVBC80lX
-0GzRngf/eUNxuO7M1M1QXanRfCOH/GCb3ybr/TsDwmInoK3A3IJQe3/Btjt5lbUE
-uh+KLTNNclL/Wk+batwFzkuNjjswFkkEGNVUjK4DEJkOKzKmPgl8LQ/BjpbGF+fv
-OnHbqb6Zj3DYyP0aWxkicTas83i2gK2DEbMfvTTRWI5S5pExoXc60Mhc3MsgGcPE
-xekDfHCTWEjzU4XzRLQeTgTCOj9n8s5b242gjc0wZizoP2L1y3lUab+2QauYxroL
-IVVegaFuTTZEuriepSs1jtFnYlyzFD57jS1AKi+hi/QU0EBJU4DhezFxw7p+AMil
-EIiCJ8jZZsCSPk59brKDGG46KQ7EIw==
-=as+o
------END PGP SIGNATURE-----
-
---Sig_/ZxH8PJt7z=AaYJvoJhDlVz7--
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
