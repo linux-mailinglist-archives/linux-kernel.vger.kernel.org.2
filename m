@@ -2,173 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847D543DBB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD5443DBB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhJ1HLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:11:40 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:21061 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhJ1HLi (ORCPT
+        id S229784AbhJ1HPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:15:48 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:52126
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229626AbhJ1HPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:11:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635404932;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=AmCnIkC4xxL8JxCkpiyDD7JlfpGKYsyeat25tXevaX4=;
-    b=jLG7PP43yreRqs2U/5telR2iGo8kTKwncWbdYEzwaXEixgwnzzyHQfHvpq/S82OQes
-    AsyOI2BgYqECOyfzjOyyGa/W3p6dSVPtTG2yU10XZYMFyCoQEMxp0Y9RHYWtqL6hTpCT
-    WusP6S5qw46BdJFMUPKoNF5IB+i/JkEP9wqEbw5X99NalY0WX2hYiZWke3gU3Wip/h+3
-    +ccdwFUUUsFTYX68Qg+sKxIsgyJkWm8FnVgV0keKoO69tl2z456sfZtQ8A86kxJHRvSu
-    rE6DoMoECg0dJ2kXG7UE6Rpo6jmeA3TE6uymcscduEWq574YnyuAhGbqOLxFI8vdUrRM
-    J1jg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw4vtTA=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id d01d1fx9S78p4jN
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 28 Oct 2021 09:08:51 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired
- omap_hsmmc
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CAPDyKFp47sAXhM2s5HOqV2wLf-kYRhdqSdzcn7a62ZW23SSPdg@mail.gmail.com>
-Date:   Thu, 28 Oct 2021 09:08:50 +0200
-Cc:     Jerome Pouiller <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Tony Lindgren <tony@atomide.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <470A96FD-DB24-4C32-BC9F-AE2F617FBF2D@goldelico.com>
-References: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
- <CAPDyKFraMXqC9OBeUTpm=bxjrFZTCopV3ZJQf1TRsA8UeTWdTA@mail.gmail.com>
- <80C6A8DD-183B-4FDD-B203-D3108C106043@goldelico.com>
- <935598D6-B8B5-4EC8-B87E-8EDC0F3B58CF@goldelico.com>
- <CAPDyKFp47sAXhM2s5HOqV2wLf-kYRhdqSdzcn7a62ZW23SSPdg@mail.gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Thu, 28 Oct 2021 03:15:47 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BC3F03F177
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:13:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635405197;
+        bh=odvfeEDaRD9GtVNTdM8NO1Yqau879jijgr+/mlFCwcA=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=SG2iTgh7c6spKgqgMTgh+SrMKJ4rhy5ZSVyCrZhprfI9sUa0ARNWxjN+7anJ050dz
+         icglZblkbXvg86BX9dRq3tXo4j6/X6l6Mt4zPzxqzqzKAbHpuJtlLkT9PfH16RpJ+P
+         DwvxctV6L6petw75K0IrMGoZEayFNzRqvHSM5qdLmpCQq8jZVn/GgSQ5j/OkDjbNYN
+         wVtpGRv6Af97Gd8hM5ZSjJ0mHdBEud9RT1Bq2zjduMszj9+i9Bo30TFTBvh/52yrQj
+         aqJwGtP/F4qdXnb3x5Cj3XbNsk+eI2ZoUXaLMp/DvJy0pOEaGZ+cxNltsz9pv7Fyij
+         VW8RBChlUHN6w==
+Received: by mail-ed1-f69.google.com with SMTP id f21-20020a0564021e9500b003dd77985601so4694955edf.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 00:13:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=odvfeEDaRD9GtVNTdM8NO1Yqau879jijgr+/mlFCwcA=;
+        b=XyHUmrnQFTt789bvf5WDH2BwZpY6eoPS/7/A0M2qCiNbTWb9XiMDF7z0thml5uVyHa
+         AenRwIXhbBYeWNXB+50N+jCH6tzRosk4GA/1nKYj5rkTk3u75VJd1iCdK9CEnHZlvByG
+         iSWvlQaColAd7fyybx869hU/vxg1SvGUSPXcKYLtZMsBCDqYs5tAI3t83z3FKU9vcsX6
+         PiCpAiMh64TH/mpPE4l4Cv+ocgaUqUDh0chpooGpYJ2QHa8TXBDh7mMMwQVT1pO15ukS
+         r51AfTCfsEI58iVEGrk6Kw0z+Hzmb6BWBOgHAh7M8NLnb/bzADLa1x6+jLzKfUYW1TOg
+         5JCg==
+X-Gm-Message-State: AOAM533cMK1nCFweMFD2wUyNGGBzbzHFam4bon7WhCzYAGN/siHk3tQQ
+        57x4oGHAQ7/zMy5GRjHZ09WBhpbB6OIXzmOAnzJbbAe4XiSnxdsyyIgasjj4l2nT6obiGjbnSoe
+        wVM1wfO9RTi8lvufQVp7PqquGi6Lu1jt2hkKeqhyt2vR/QPAwhY7wemPCeA==
+X-Received: by 2002:a17:907:d22:: with SMTP id gn34mr3130409ejc.463.1635405197382;
+        Thu, 28 Oct 2021 00:13:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyk0nDAbtD9AECmNiTtn739UUuuAZr9AaFxmOTmd5txuEcfp070z9krdc2LVyf0o8fVCZ78hEjrwvUXJC465xw=
+X-Received: by 2002:a17:907:d22:: with SMTP id gn34mr3130368ejc.463.1635405197149;
+ Thu, 28 Oct 2021 00:13:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <CA+zEjCus8+jzn074GwqhJ54Y180RASr_YaC=6zdBZSzonEtjDA@mail.gmail.com>
+ <mhng-3ac5b2b9-c9da-42e5-bc56-d779fb4dd1dd@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-3ac5b2b9-c9da-42e5-bc56-d779fb4dd1dd@palmerdabbelt-glaptop>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Thu, 28 Oct 2021 09:13:06 +0200
+Message-ID: <CA+zEjCv+whmnL_SFf20j06NpikaMtA7MNQ9+o8Zz7=1_nAtTqw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] riscv: Fix asan-stack clang build
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        nathan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 28, 2021 at 8:45 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Wed, 27 Oct 2021 22:34:32 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+> > On Thu, Oct 28, 2021 at 7:30 AM Alexandre Ghiti
+> > <alexandre.ghiti@canonical.com> wrote:
+> >>
+> >> On Thu, Oct 28, 2021 at 7:02 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> >> >
+> >> > On Wed, 27 Oct 2021 21:15:28 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+> >> > > On Thu, Oct 28, 2021 at 1:06 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> >> > >>
+> >> > >> On Tue, 26 Oct 2021 21:58:42 PDT (-0700), alexandre.ghiti@canonical.com wrote:
+> >> > >> > Nathan reported that because KASAN_SHADOW_OFFSET was not defined in
+> >> > >> > Kconfig, it prevents asan-stack from getting disabled with clang even
+> >> > >> > when CONFIG_KASAN_STACK is disabled: fix this by defining the
+> >> > >> > corresponding config.
+> >> > >> >
+> >> > >> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> >> > >> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+> >> > >> > ---
+> >> > >> >  arch/riscv/Kconfig             | 6 ++++++
+> >> > >> >  arch/riscv/include/asm/kasan.h | 3 +--
+> >> > >> >  arch/riscv/mm/kasan_init.c     | 3 +++
+> >> > >> >  3 files changed, 10 insertions(+), 2 deletions(-)
+> >> > >> >
+> >> > >> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> >> > >> > index c1abbc876e5b..79250b1ed54e 100644
+> >> > >> > --- a/arch/riscv/Kconfig
+> >> > >> > +++ b/arch/riscv/Kconfig
+> >> > >> > @@ -162,6 +162,12 @@ config PAGE_OFFSET
+> >> > >> >       default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+> >> > >> >       default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+> >> > >> >
+> >> > >> > +config KASAN_SHADOW_OFFSET
+> >> > >> > +     hex
+> >> > >> > +     depends on KASAN_GENERIC
+> >> > >> > +     default 0xdfffffc800000000 if 64BIT
+> >> > >> > +     default 0xffffffff if 32BIT
+> >> > >>
+> >> > >> I thought I posted this somewhere, but this is exactly what my first
+> >> > >> guess was.  The problem is that it's hanging on boot for me.  I don't
+> >> > >> really have anything exotic going on, it's just a defconfig with
+> >> > >> CONFIG_KASAN=y running in QEMU.
+> >> > >>
+> >> > >> Does this boot for you?
+> >> > >
+> >> > > Yes with the 2nd patch of this series which fixes the issue
+> >> > > encountered here. And that's true I copied/pasted this part of your
+> >> > > patch which was better than what I had initially done, sorry I should
+> >> > > have mentioned you did that, please add a Codeveloped-by or something
+> >> > > like that.
+>
+> OK, those should probably be in the opposite order (though it looks like
+> they're inter-dependent, which makes things a bit trickier).
+>
+> >> >
+> >> > Not sure if I'm missing something, but it's still not booting for me.
+> >> > I've put what I'm testing on palmer/to-test, it's these two on top of
+> >> > fixes and merged into Linus' tree
+> >> >
+> >> >     *   6d7d351902ff - (HEAD -> to-test, palmer/to-test) Merge remote-tracking branch 'palmer/fixes' into to-test (7 minutes ago) <Palmer Dabbelt>
+> >> >     |\
+> >> >     | * 782551edf8f8 - (palmer/fixes) riscv: Fix CONFIG_KASAN_STACK build (6 hours ago) <Alexandre Ghiti>
+> >> >     | * 47383e5b3c4f - riscv: Fix asan-stack clang build (6 hours ago) <Alexandre Ghiti>
+> >> >     | * 64a19591a293 - (riscv/fixes) riscv: fix misalgned trap vector base address (9 hours ago) <Chen Lu>
+> >> >     * |   1fc596a56b33 - (palmer/master, linus/master, linus/HEAD, master) Merge tag 'trace-v5.15-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (11 hours ago) <Linus Torvalds>
+> >> >
+> >> > Am I missing something else?
+> >>
+> >> Hmm, that's weird, I have just done the same: cherry-picked both my
+> >> commits on top of fixes (64a19591a293) and it boots fine with KASAN
+> >> enabled. Maybe a config thing? I pushed my branch here:
+> >> https://github.com/AlexGhiti/riscv-linux/tree/int/alex/kasan_stack_fixes_rebase
+> >
+> > I pushed the config I use and that boots in that branch, maybe there's
+> > another issue somewhere.
+>
+> CONFIG_KASAN_VMALLOC=n is what's causing the failure.  I'm testing both
+> polarities of that, looks like your config has =y.  I haven't looked any
+> further as I'm pretty much cooked for tonight, but if you don't have
+> time then I'll try to find some time tomorrow.
+>
 
+Arf, that was obvious and just under my nose: without KASAN_VMALLOC,
+kasan_populate_early_shadow is called and creates the same issue that
+the second patch fixes.
 
-> Am 27.10.2021 um 23:31 schrieb Ulf Hansson <ulf.hansson@linaro.org>:
->=20
-> On Wed, 27 Oct 2021 at 19:01, H. Nikolaus Schaller <hns@goldelico.com> =
-wrote:
->>=20
->> Hi Ulf,
->>=20
->>> Am 26.10.2021 um 20:08 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->>>=20
->>> Hi Uf,
->>>>=20
->>>> As a matter of fact, the similar problem that you are looking to
->>>> address (applying card quirks based on DT compatibility strings), =
-is
->>>> partly being taken care of in another series [1], being discussed
->>>> right now. I think the solution for the ti,wl1251 should be based =
-upon
->>>> that too. Please have a look and see if you can play with that!?
->>>=20
->>> That is interesting.
->>> Yes, maybe it can be the basis. At least for finding the chip and =
-driver.
->>=20
->> I have done a first experiment.
->>=20
->> It seems as if the series [1] does the opposite of what we need... It =
-just
->> skips entries in struct mmc_fixup if the DT does *not* match.
->=20
-> Ohh, I didn't look that close. In that case the code isn't doing what
-> it *should*. The point is really to match on the compatible string and
-> then add quirks if that is found.
+I'll send a v2 today and try to swap both patches to avoid having a
+non-bootable kernel commit.
 
-That is what I had expected.
+Alex
 
->=20
-> Let me have a closer look - and for sure, I am willing to help if =
-needed.
->=20
->>=20
->> This new match is not even tried in the wl1251 case since =
-card->cis.vendor
->> and card->cis.device are not properly initialized when =
-mmc_fixup_device() is called.
->> (in the upstream code the init_card function sets these and also sets =
-MMC_QUIRK_NONSTD_SDIO
->> to early abort before sdio_read_cccr, sdio_read_common_cis, and =
-mmc_fixup_device).
->=20
-> We can call mmc_fixup_device() more than once during initialization
-> and provide different struct mmc_fixup* - if that is needed.
-
-Ah, looks good.
-
->=20
->>=20
->> What I don't get from the code is how cis.vendor or cis.device can be
->> initialized from device tree for a specific device. As far as I see =
-it can
->> only be checked for and some quirks can be set from a table if vendor =
-and
->> device read from the CIS registers do match.
->=20
-> Yes. I thought that should be possible, but maybe it is not?
-
-It seems to be a hen or egg issue here. MMC_QUIRK_NONSTD_SDIO should be =
-set
-before we can match by vendor and device or compatible. But it can't be =
-set
-late.
-
->=20
->>=20
->> Instead, we want to match DT and define some values for an otherwise =
-unknown
->> device (i.e. we can't match by vendor or other methods) to help to =
-initialize
->> the interface. So in mmc_fixup_device it is too late and we need =
-something
->> running earlier, based purely on device tree information...
->=20
-> Okay, I will have a closer look. Maybe we need to extend the card
-> quirks interface a bit to make it suitable for this case too.
-
-Combining your suggestions we could do roughly:
-
-in mmc_sdio_init_card():
-
-	if (host->ops->init_card)
-		host->ops->init_card(host, card);
-	else
-		mmc_fixup_device(host, sdio_prepare_fixups_methods);
-
-Next we need a location for the sdio_prepare_fixups_methods table and =
-functions.
-
-For "ti,wl1251" we would then provide the entry in the table and a =
-function doing
-the setup. But where should these be defined? Likely not in a header =
-file like
-quirks.h? But there is no quirks.c.
-
-Best regards,
-Nikolaus
-
+> >
+> >>
+> >> >
+> >> > >
+> >> > > Thanks,
+> >> > >
+> >> > > Alex
+> >> > >
+> >> > >>
+> >> > >> > +
+> >> > >> >  config ARCH_FLATMEM_ENABLE
+> >> > >> >       def_bool !NUMA
+> >> > >> >
+> >> > >> > diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
+> >> > >> > index a2b3d9cdbc86..b00f503ec124 100644
+> >> > >> > --- a/arch/riscv/include/asm/kasan.h
+> >> > >> > +++ b/arch/riscv/include/asm/kasan.h
+> >> > >> > @@ -30,8 +30,7 @@
+> >> > >> >  #define KASAN_SHADOW_SIZE    (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
+> >> > >> >  #define KASAN_SHADOW_START   KERN_VIRT_START
+> >> > >> >  #define KASAN_SHADOW_END     (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
+> >> > >> > -#define KASAN_SHADOW_OFFSET  (KASAN_SHADOW_END - (1ULL << \
+> >> > >> > -                                     (64 - KASAN_SHADOW_SCALE_SHIFT)))
+> >> > >> > +#define KASAN_SHADOW_OFFSET  _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+> >> > >> >
+> >> > >> >  void kasan_init(void);
+> >> > >> >  asmlinkage void kasan_early_init(void);
+> >> > >> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> >> > >> > index d7189c8714a9..8175e98b9073 100644
+> >> > >> > --- a/arch/riscv/mm/kasan_init.c
+> >> > >> > +++ b/arch/riscv/mm/kasan_init.c
+> >> > >> > @@ -17,6 +17,9 @@ asmlinkage void __init kasan_early_init(void)
+> >> > >> >       uintptr_t i;
+> >> > >> >       pgd_t *pgd = early_pg_dir + pgd_index(KASAN_SHADOW_START);
+> >> > >> >
+> >> > >> > +     BUILD_BUG_ON(KASAN_SHADOW_OFFSET !=
+> >> > >> > +             KASAN_SHADOW_END - (1UL << (64 - KASAN_SHADOW_SCALE_SHIFT)));
+> >> > >> > +
+> >> > >> >       for (i = 0; i < PTRS_PER_PTE; ++i)
+> >> > >> >               set_pte(kasan_early_shadow_pte + i,
+> >> > >> >                       mk_pte(virt_to_page(kasan_early_shadow_page),
