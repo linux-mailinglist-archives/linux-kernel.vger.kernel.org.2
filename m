@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592BA43E113
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86A143E114
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhJ1MlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhJ1MlO (ORCPT
+        id S230185AbhJ1Ml6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:41:58 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:25026 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229578AbhJ1Ml4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:41:14 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616DAC061570;
-        Thu, 28 Oct 2021 05:38:47 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg4qS6kkHz4xZ1;
-        Thu, 28 Oct 2021 23:38:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635424725;
-        bh=QnRRNSnTaO6YJsSfPYQRO3q2yMGCeOnG2DOzgPjJso8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lPI67dY7fSZvmXemWqkuTRbpRGieB4+GoV23Xiwu6fIzggMf99ff2nRf1MCC+CY7K
-         NRmlqSy5Rt++VwnoX525uhXkcuGy0xMEHe8fdG74o1tzwb6qLaQDD8Fce+S+RGJDmZ
-         ipKpxpZ5V6dv5Nm1j/aLS3dgKgFAyOUFTd6nJnLvXbqVJJ18hux/JOvKDygSoiN9/I
-         dYgVeNHkdZZPv28vVyka5gbsqhp+SO71f9GCYcscErnVMOFhMApPMqfuVbNpcZdl2X
-         Rz3XOVPVrlh7MnlMoRS14IVbVsnvM2te/I9zTPYKGdZS6G1SFlfNQsz9Q2eKt3T/Hl
-         Dld3DKvd+GaSA==
-Date:   Thu, 28 Oct 2021 23:38:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: linux-next: build failure after merge of almost all the trees
-Message-ID: <20211028233844.292e1319@canb.auug.org.au>
-In-Reply-To: <20211028212651.57beb05b@canb.auug.org.au>
-References: <20211028212651.57beb05b@canb.auug.org.au>
+        Thu, 28 Oct 2021 08:41:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635424770; x=1666960770;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=9dxaZhDdceU2P32yTix/f3IgWkejut4T2juuaJpJqIc=;
+  b=ooWUStld3tKju0kjLZdR55ZBtVL/VbIrMNjRqNOanBbVAAftXk8J6pvP
+   WwSW7TjbI2WBEgIMIIEYexOkZNpjKytOnVMo5j/2QEEtTCKNSpPGia+ji
+   uLnMwV3M+zUdUW5AXP//H2QrvtozBQqAOke+ipZZCKQn9vhzyXi7So5vx
+   w=;
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Oct 2021 05:39:29 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 05:39:29 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Thu, 28 Oct 2021 05:39:29 -0700
+Received: from [10.110.38.143] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 28 Oct 2021
+ 05:39:28 -0700
+Subject: Re: Arm64 defconfig-debug
+To:     Will Deacon <will@kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <4aee8e37-b1f0-bd1c-9bf8-842c6cdc557e@quicinc.com>
+ <20211028074949.GB23476@willie-the-truck>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <fb956b2b-cf34-1f20-633b-0d686d381478@quicinc.com>
+Date:   Thu, 28 Oct 2021 08:39:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Jnm1pzZ8/GNchqeU=kfC_Di";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20211028074949.GB23476@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Jnm1pzZ8/GNchqeU=kfC_Di
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Thu, 28 Oct 2021 21:26:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next build (powerpc allyesconfig) failed like this:
->=20
-> fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
-> fs/ntfs/aops.c:1311:1: error: the frame size of 2304 bytes is larger than=
- 2048 bytes [-Werror=3Dframe-larger-than=3D]
->  1311 | }
->       | ^
-> cc1: all warnings being treated as errors
->=20
-> I have no idea what has caused this.
+On 10/28/21 3:49 AM, Will Deacon wrote:
+> I'm not in favour of adding a whole new debug-flavoured defconfig for arm64,
+> but you might be able to add some reduced config file containing just the
+> options you're interested in to kernel/configs/. That said, I'm not sure the
+> existing files under there are well-maintained at all. The Android ones,
+> especially, looks like they should just be removed.
 
-With a nudge from Arnd, it seems the immediate case was commit
-
-  f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit book3s")
-
-from the powerpc tree switching the allyesconfig build from 4k pages to
-64k pages which expanded a few arrays on the stack in that function.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Jnm1pzZ8/GNchqeU=kfC_Di
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6mdQACgkQAVBC80lX
-0GweUQf+JcHkit3ffccvp0vwAM7BGZY5WNLoXfVvw/nyTNmueDJfNxFCCfa9uola
-nlGWEXmShl1ruC/nhL4EkTAjhEJ+KxrOExQnlPXCEOfksTzigTsa/vP3vdmqs6ZH
-tSf4uHDf/pWhQEwVZUVYmI2DpFvasj8VMvxvOUPIzw+kfpw57g4V5EMw7jwEbdvh
-qrfTJLp9a7zz2bQ8k4Mqq/DC6Go7aDjDuKUK3yf2yhUfKfUdfoUpj1asVwRpM88j
-UeI8UQUDhwhYh4QSHsUihVOo6dweRMfT1FjVa8F7luVjJWsZZEgM/K16298jMxOT
-kaOih47fjbDZxL1JnGc2zu9rwwMNUA==
-=Y6q6
------END PGP SIGNATURE-----
-
---Sig_/Jnm1pzZ8/GNchqeU=kfC_Di--
+Thanks for the pointer, Will. I'll dig into that direction then.
