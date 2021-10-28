@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400A843E06B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD97843E072
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhJ1MDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhJ1MDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:03:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FD5A61151
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 12:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635422482;
-        bh=66/4XZkO/EiB+eSR2/3xy1BlDhuYDYyfR0wFYpD6ckE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a/PpiSh1sesE/waJt83yHjofkVgT5GcgsOakKvmiDhqj2wxgn6yoWXuYR9xGAUqk8
-         0G1MPg3ZAKe0NAA21zBU8TfmrQfGkLMGBYmr2FASZ2a2N28DYeD9RW7AJzmpuykxGs
-         o5b8Komzu6Tav1J3Cv2j+WQXe7IB8fZU99u0/ucmrgpB8qmB3wD5C3MnlHdbm/X6xy
-         tmvkDKQ8jmEXBrGNoevd5qHL8r2lHmCQEF8Y16uNl8d4yTFU4Sa+gdjGbDYh7ofmy1
-         ay3G0BkovrvBlqUAfx5Cj7q/XaTbojcnDJGJVWFpVSj31aTp2FDPT4FExE6852IJgf
-         2QJYEDiRao1wA==
-Received: by mail-yb1-f180.google.com with SMTP id v64so8128140ybi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:01:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530RPGWTe7HUasFG5VEzJnpAvRwQPiEDalo1i4khRypon5987lij
-        Kz2gMYsqNH0xaf8EUs1za4FwoHER9tPuU5YVlQk=
-X-Google-Smtp-Source: ABdhPJwGOUbD1hJiwqtt0ShnZayIpPd//JzHkG1Xh66KU16/weovnNDuJoKllTGMdOuEP3CSWV6TMkY982biNZl7IW4=
-X-Received: by 2002:a25:1c02:: with SMTP id c2mr4125824ybc.218.1635422481210;
- Thu, 28 Oct 2021 05:01:21 -0700 (PDT)
+        id S230285AbhJ1MEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230240AbhJ1MEx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:04:53 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75877C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:02:26 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id h11so10310371ljk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:02:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7JVpBTwxX7UXyXk0IveCqm6QwI/eFfNAsaUhv2IBFUs=;
+        b=TqErJFnw43FiumbqTgEdhrUynkg0qW1u0k3asGZbSb1BwJsB4FXiaXxCDY/Ons/poo
+         cabA9l0L2imyIjpqra+wkr6iIPvz9ZvtoLJQfHPFwac0w0yk6LW1JqbCh5FyCmVs8yMz
+         DEZANqOqSVvecfK40owktaDw976ZVMFelQNNZSiW6mZTR5ZxF1uOxGmabKn4Ml6BZlls
+         AzSomEwz00pK5vz/YVDVhkZkuykPSJMqoIgsq7w0BFVsXiMGF9c/o2gaO6VdN+EcPHSW
+         Bs1YIRJplq3vE7JHNG+VWmR3d2LJXCKNHxIHKFWs+jhqx4oD479qBVzZYw+lAnNkN8N4
+         X0zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7JVpBTwxX7UXyXk0IveCqm6QwI/eFfNAsaUhv2IBFUs=;
+        b=8IjP0ByK3JfoMd3x/oBB2GzQ/+vKg0AzN95j3Ic1+uvKJie4hmkeIt5KCnB6uXCzEo
+         ldFJlkJ9x7JVKNUuZ0HrORjRFyUOXoj1PLsO5wSgJgEAUpvbFH+Z+9hye/MpKsi9bphq
+         odP3KfIDhS0NjfRmtWC7xwim/YRvLqOaAjt5q84sQpAxTiyWwI6+uRBb/PbbCA00o2Y2
+         Gb1aDIOQIn43b6/uexGLJqH7/yljvaWI5th7IWhjBlCMK2nRxXsmIxBJx6vTW6J2Wn60
+         BcMtubfzt7uw4sMadC261wSD58kZo7zagoAsSdNIToEb1KinVMe8L++vfLOsU8pxP2ew
+         GPiQ==
+X-Gm-Message-State: AOAM5338MuHDH7iL8Y062G+Dz1xN6p6GaNuC3AYusEqeDmF80S8VmQiv
+        mbg8xNQblAtl73P589VAtBE=
+X-Google-Smtp-Source: ABdhPJziX61Xz6mcaSeGjSH6G2UeXGVWU3mHlQYloIOTvrHMq5OfemBOwjJwJPgRD60QXIgkbw92kQ==
+X-Received: by 2002:a2e:b5b3:: with SMTP id f19mr4226196ljn.423.1635422543462;
+        Thu, 28 Oct 2021 05:02:23 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id q6sm293435lfg.188.2021.10.28.05.02.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 05:02:23 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 28 Oct 2021 14:02:20 +0200
+To:     cgel.zte@gmail.com
+Cc:     akpm@linux-foundation.org, urezki@gmail.com,
+        deng.changcheng@zte.com.cn, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] lib/test_vmalloc.c: use swap() to make code cleaner
+Message-ID: <20211028120220.GA1907@pc638.lan>
+References: <20211028111443.15744-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-References: <CAFCwf119s7iXk+qpwoVPnRtOGcxeuZb3rnihf6NWWoVT-4ODHA@mail.gmail.com>
- <YTsQJ753sm701R/n@kroah.com> <CAFCwf10GD2dJMZW0DtFUFOZdXuq-opcEKEhwACbApxybjp2M3A@mail.gmail.com>
- <CAKMK7uFyk9eU+DS_w=_3E=6oCLKGAqoBKp4OkroZQh0Vkkv9uQ@mail.gmail.com>
-In-Reply-To: <CAKMK7uFyk9eU+DS_w=_3E=6oCLKGAqoBKp4OkroZQh0Vkkv9uQ@mail.gmail.com>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Thu, 28 Oct 2021 15:00:54 +0300
-X-Gmail-Original-Message-ID: <CAFCwf13fAxTj6LG8U=uh1nn-fKh5AHhdjTF-cHY5fdwXqH79Yg@mail.gmail.com>
-Message-ID: <CAFCwf13fAxTj6LG8U=uh1nn-fKh5AHhdjTF-cHY5fdwXqH79Yg@mail.gmail.com>
-Subject: Re: Habanalabs Open-Source TPC LLVM compiler and SynapseAI Core library
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Airlie <airlied@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028111443.15744-1-deng.changcheng@zte.com.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:38 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
->
-> On Wed, Oct 27, 2021 at 8:53 AM Oded Gabbay <ogabbay@kernel.org> wrote:
-> >
-> > On Fri, Sep 10, 2021 at 10:58 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Fri, Sep 10, 2021 at 10:26:56AM +0300, Oded Gabbay wrote:
-> > > > Hi Greg,
-> > > >
-> > > > Following our conversations a couple of months ago, I'm happy to tell you that
-> > > > Habanalabs has open-sourced its TPC (Tensor Processing Core) LLVM compiler,
-> > > > which is a fork of the LLVM open-source project.
-> > > >
-> > > > The project can be found on Habanalabs GitHub website at:
-> > > > https://github.com/HabanaAI/tpc_llvm
-> > > >
-> > > > There is a companion guide on how to write TPC kernels at:
-> > > > https://docs.habana.ai/en/latest/TPC_User_Guide/TPC_User_Guide.html
-> > >
-> > > That's great news, thanks for pushing for this and releasing it all!
-> > >
-> > > greg k-h
-> >
-> > Hi Greg,
-> > I would like to update that yesterday AWS launched new EC2 instances
-> > powered by the Gaudi accelerators. It is now in general availability,
-> > and anyone can launch an instance with those devices.
-> > Therefore, one can now take the upstream driver, hl-thunk, tpc llvm
-> > compiler and SynapseAI core and execute compute kernels on the Gaudi
-> > devices. I have verified this to be working with the driver in kernel
-> > 5.15-rc6.
->
-> Nice!
->
-> Now that the llvm part is open, any plans to upstream that? Years ago
+On Thu, Oct 28, 2021 at 11:14:43AM +0000, cgel.zte@gmail.com wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+> 
+> Use swap() in order to make code cleaner. Issue found by coccinelle.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+> ---
+>  lib/test_vmalloc.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+> index e14993bc84d2..cf41fd6df42a 100644
+> --- a/lib/test_vmalloc.c
+> +++ b/lib/test_vmalloc.c
+> @@ -393,7 +393,7 @@ static struct test_driver {
+>  static void shuffle_array(int *arr, int n)
+>  {
+>  	unsigned int rnd;
+> -	int i, j, x;
+> +	int i, j;
+>  
+>  	for (i = n - 1; i > 0; i--)  {
+>  		get_random_bytes(&rnd, sizeof(rnd));
+> @@ -402,9 +402,7 @@ static void shuffle_array(int *arr, int n)
+>  		j = rnd % i;
+>  
+>  		/* Swap indexes. */
+> -		x = arr[i];
+> -		arr[i] = arr[j];
+> -		arr[j] = x;
+> +		swap(arr[i], arr[j]);
+>  	}
+>  }
+>  
+> -- 
+> 2.25.1
 
-AFAIK, there were internal discussions about doing that and the decision was
-to pursue that goal somewhere in the future. Not sure how far in the future
-they were talking about...
+Makes sense to me: Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Having said that, I'm not at all involved at the compiler front, so I
-might have outdated information.
-If you want, I can connect you with the compiler group leader to
-discuss that with him.
-
-
-Oded
-
-> when amd upstreamed their backend there was the hope that llvm would
-> grow some competent support for gpu style accelerator isa, but since
-> for years now amd's the only backend that ever was merged it's stuck
-> in a chicken-egg situation of upstream llvm complaining why amd
-> backend has all these special requirements. And other accel backends
-> (at least the gpu-style simd ones) not having a good path to upstream
-> llvm since a lot of the infrastructure and understanding isn't there.
->
-> Getting a 2nd accel backend into upstream llvm would be a huge step
-> towards fixing this mess. As far as I know the only other open accel
-> backend based on llvm is intel's igc (for intel gpus), and that one is
-> such a massive fork that's been out of upstream llvm for so long that
-> it's not going to land anytime soon, if ever (in it's current form at
-> least).
->
-> Once we do have an accel backend in upstream llvm we can finally start
-> building a real stack here I think, so whomever is first will win
-> quite some advantage I think.
->
-> Cheers, Daniel
->
-> > We are still missing the networking parts, but I hope to start
-> > upstreaming them in the next coming months.
-> >
-> > Thanks,
-> > Oded
->
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+--
+Vlad Rezki
