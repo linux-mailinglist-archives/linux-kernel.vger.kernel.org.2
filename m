@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118EE43F1AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E327943F1B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhJ1VbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:31:03 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:46716 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbhJ1VbA (ORCPT
+        id S231368AbhJ1VdM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 17:33:12 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:29872 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231344AbhJ1VdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:31:00 -0400
-Received: by mail-oi1-f182.google.com with SMTP id m11so5467653oif.13;
-        Thu, 28 Oct 2021 14:28:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UbQ3X7BD6qpgtn540MLFzrLrimBO17bm2/cyxoaaA+k=;
-        b=tZgBGmFvfUFJ3if1guKwoyCEM6IXcdOaPc856L6LvLqrk+S0U0/VPfkBIQnSMoTWi4
-         9tB2qoZesqfoLFnioj2vS4H8DtKNzjzy2yl2BNOmdUBKgOe5PhP+sDZzPE80bgSCaxox
-         az3pV81unYiPd3ERYGY2JKGZ0LZ3EEDB4kxktM/oVVTjxRvgA+w6VmiDTxO9hL6LJ7tA
-         zfe403v19eDE4m3AIYLS2JYY2NE1SlqAD0OPJvZ3TRl46TsI+99yGmzVJhEC6QZpbZ+p
-         4CG07hGhRi099GiYoyteZpsj09PLKyQWfUhLZygzh12MbJeJah+RpTtWmy5Pik78W4WJ
-         eq8w==
-X-Gm-Message-State: AOAM532r5lg3mq7XOagJQmKMZd5az+tg/nE/FhN/kofNTZOcJoBRaKFc
-        pdWGA+qlHttQQCvaDzoWbw==
-X-Google-Smtp-Source: ABdhPJyGQdpbdp9+nSux0RGdftKN1RUp3rufQfJSKzdQIJX4Kd5pHVOiVZw6cP3YM+RToI8p67J7VQ==
-X-Received: by 2002:aca:280c:: with SMTP id 12mr10593329oix.93.1635456511984;
-        Thu, 28 Oct 2021 14:28:31 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r44sm1512242otv.39.2021.10.28.14.28.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 14:28:31 -0700 (PDT)
-Received: (nullmailer pid 617930 invoked by uid 1000);
-        Thu, 28 Oct 2021 21:28:30 -0000
-Date:   Thu, 28 Oct 2021 16:28:30 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Julien Su <juliensu@mxic.com.tw>,
-        Jaime Liao <jaimeliao@mxic.com.tw>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>
-Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
- description file to yaml
-Message-ID: <YXsV/l+/vU1fBanY@robh.at.kernel.org>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-5-miquel.raynal@bootlin.com>
+        Thu, 28 Oct 2021 17:33:11 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-w4-jIuYlNyyPbjvm_V_nXQ-1; Thu, 28 Oct 2021 17:30:40 -0400
+X-MC-Unique: w4-jIuYlNyyPbjvm_V_nXQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5096F5B378;
+        Thu, 28 Oct 2021 21:30:38 +0000 (UTC)
+Received: from x1.com (unknown [10.22.32.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D3560100EBBE;
+        Thu, 28 Oct 2021 21:29:52 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V7 0/9] osnoise: Support multiple instances (for RTLA)
+Date:   Thu, 28 Oct 2021 23:29:28 +0200
+Message-Id: <cover.1635452903.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020142809.349347-5-miquel.raynal@bootlin.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 04:27:55PM +0200, Miquel Raynal wrote:
-> Let's get rid of spi-nand.txt by converting it to yaml schema. While at
-> converting this file, let's actually pull all the generic properties
-> from nand-chip.yaml which might apply to a SPI-NAND chip.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
->  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
->  2 files changed, 27 insertions(+), 5 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+Currently, osnoise and timerlat run only on a single instance only. To lift
+this limitation, this series adds support for parallel instances of the
+same tracer. For example, making it possible to run one osnoise instance
+for the tracer output and another for a set of tracepoints.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This patchset is the kernel dependencies for RTLA. It was
+being sent along with RTLA [1], but we split the kernel and
+user-space patch sets.
+
+Steve, feel free to drop the last two if they break anything.
+
+[1] RTLA: An interface for osnoise/timerlat tracers:
+    https://lore.kernel.org/lkml/cover.1635284863.git.bristot@kernel.org/
+
+Changes from v6:
+  - Fix compilation problems for the case in which osnoise
+    enabled, but timerlat is not (Steven)
+  - Remove ifdefs from inside functions (Steven)
+
+Changes that happened while in the RTLA patchset:
+  - Fix comment on start_per_cpu_kthreads() (Steven)
+  - Fix msg log on patch 1
+  - Add comments about the barrier need for trace_nmi_enter/exit
+  - Fix RCU usage in osnoise_unregister_instance() (Steven/Paul)
+  - Add lockdep checks in osnoise_unregister/unregister_instance()
+    (Steven/Paul)
+  - Improve the explanation about the multi instances support (Steven)
+
+Daniel Bristot de Oliveira (9):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Improve comments about barrier need for NMI callbacks
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Remove TIMERLAT ifdefs from inside functions
+  trace/osnoise: Allow multiple instances of the same tracer
+  trace/osnoise: Remove STACKTRACE ifdefs from inside functions
+  trace/osnoise: Remove PREEMPT_RT ifdefs from inside functions
+
+ kernel/trace/trace_osnoise.c | 607 ++++++++++++++++++++++++-----------
+ 1 file changed, 424 insertions(+), 183 deletions(-)
+
+-- 
+2.31.1
+
