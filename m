@@ -2,99 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6398543E38F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D7E43E38D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhJ1OZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhJ1OZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:25:29 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4DEC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:23:01 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id v20so11823629uaj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3GojDRl0lhPijBHeCI2+QHmcQrK//DxoGwC4jAHi/Us=;
-        b=I4kNYNidDOJOdRTpeS6ZtRVtbORy5aS5N6CxX+uPyWenW6db+HwJU47E9PacqSUkYj
-         qHBI1XM/od4gHRo5i81E9ILb6SKC+eujmzzrxS8bkfeR3PTgKdfwn6u0CqlJ7rn9/Xeu
-         59WuWYqKawG8Jsulh2rx7XIc7Y9yD3INZ8/4t1VY2623pk3jMHjfaSIJrOeTJKy2aTo7
-         zs1wGc0uiYtvLHPttS+E5OtbNsD23e6VZoKQZ1xZ6nPcLeEeh7Uqgmbv8gmcY/D9/DMX
-         5p9ViYsGJzxZdqwyO4PBMy4zooH+19Y5wcoRYUJJ1VqKCflyJ0OQGgh2M/dGAl7aWn7y
-         n3Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3GojDRl0lhPijBHeCI2+QHmcQrK//DxoGwC4jAHi/Us=;
-        b=q5inc/dahAB1R0NA2OYs6feMohXGMTS/M9dEfYI5vMrQRRMP/TRlUrFlFJxYSzh0dC
-         nOy44M3UvUmxXKuj+ubOk7H5FfCtz/WQA7CQ7dO5GDECUU4wWlHU+bMJFwW1M3dulGuT
-         uxLt6kfreJTkrJ51GGL8xHPZGitTc7LAh7cMD68gq8e8mO1K6k2VuPIbwPp/F4cBkKVQ
-         lYXkW8G0qj7B+6lWeVc50czkFr19VnVHlN+GmWuwaIzxV6t7WYAmVqoEXORazPVwWOFb
-         jgz6Gup2rdGQzbYD61RrF1U6TwadsIypihkKnW3ejUphR8UWtvb0p8//gX6TjScejPDz
-         TtNg==
-X-Gm-Message-State: AOAM5307KawFzh1D3ejdru+X5sGlTDwcL3z5VWb5XjzVDqwWJLU1Cf50
-        RBnoHz7wnQ126Ik00g8rsjjg74mv8ppqJHLGBBFiAQ==
-X-Google-Smtp-Source: ABdhPJzyreIEFUtBY+FH6rI9UXKqn/URtyI9pjIR9kW9DoUCPHs2N/1eHoXRiWdKiA2HWLZAiNOvKlc5uTRSeCWMyBs=
-X-Received: by 2002:a67:1781:: with SMTP id 123mr4698177vsx.1.1635430980648;
- Thu, 28 Oct 2021 07:23:00 -0700 (PDT)
+        id S231247AbhJ1OZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:25:30 -0400
+Received: from mail-eopbgr10066.outbound.protection.outlook.com ([40.107.1.66]:53061
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230265AbhJ1OZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:25:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=laoE6O2W5mfI54gNJ9Y1v9pM3wpLCxun0r7EaQqNhvBsXUrF5EhrM6WCkEg1fo/Ep5FBCMpOr2E7EhHvi+2r6+Y9GSbFF2oT6CZI8fIePb//F2S6w47CBHv70zU5WH5UMIlgc7kUDPWCfZ9gCUTKoLXEHBdmYmaJYx09PKlNtley6YexQlymhCFmGxTPSSQ8x0jl7F7EPvAsqlxSyaIF87NpVsjyhJgvVnBegse7WfEbwimFRXDGOgq0Vaimghyu3eIJOh/kNEGvueaJ5VP04r33vBlJhyX2REZl/oCJtcRDcpDaKsmgD5n+941mQqGWmch0c0d3SNR66UgkExdnpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=39mzozdy59doAnJm+7jzTZcaUxrbLgjdHyXw7EXGAVA=;
+ b=oMZhvPXv1WdyXFtL+tItn3PD4OnRFhG+BM3LLZcZyfUhtlipnQr351S9ibiDjWZZ4Ftg3+qtjnSMusugT2C9DCcpccAv0XHYRr5SvAoCaBpLElwULFkyPapTGY9P4NlAZisdmHiLTiEYpoRyq5jvUrf/vBuRJL7Dh0vy6878JEHRfyiw0sictgVF3c1Xx/bh4PzMA7vggjfsocrHvb7vWhUS8oJDTtikTxXXRPIfEpavQTVwvg0BQpFok76wyoFn/axOG+RQpo/Fe8zORYUChQrbslnW0uwsigW4ty+aayoQX2TBi7j2882QjSewJp+IiSFUjm0s3HyxnLsfdcwmWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39mzozdy59doAnJm+7jzTZcaUxrbLgjdHyXw7EXGAVA=;
+ b=mV2loxwV7veu/N19dmL2C4Bo0WGZa1COdxgEaKndd7kVkTTd7PPS1+y5vGzRzEs20pblYMH3CArDWUJyXNTAdqxCjgefD4s+oglogQXFsz3Wa8q+vUirm7SmEiWsDNCH0JtqGuBNvWq4m0XsSmb0VYTUxuQhq9GJUynFHblLo28=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5695.eurprd04.prod.outlook.com (2603:10a6:803:e9::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Thu, 28 Oct
+ 2021 14:22:55 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4628.020; Thu, 28 Oct 2021
+ 14:22:55 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] net: ocelot: add support to get mac from device-tree
+Thread-Topic: [PATCH 1/3] net: ocelot: add support to get mac from device-tree
+Thread-Index: AQHXzALaBu1tOZHr/E6Z7NAaubhTaKvoceaAgAACkQCAAAIaAA==
+Date:   Thu, 28 Oct 2021 14:22:55 +0000
+Message-ID: <20211028142254.mbm7gczhhb4h5g3n@skbuf>
+References: <20211028134932.658167-1-clement.leger@bootlin.com>
+ <20211028134932.658167-2-clement.leger@bootlin.com>
+ <20211028140611.m7whuwrzqxp2t53f@skbuf> <20211028161522.6b711bb2@xps-bootlin>
+In-Reply-To: <20211028161522.6b711bb2@xps-bootlin>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9b1486f8-192c-4ea1-5c63-08d99a1e6f3d
+x-ms-traffictypediagnostic: VI1PR04MB5695:
+x-microsoft-antispam-prvs: <VI1PR04MB5695AA36CD04736A2FAAE2F3E0869@VI1PR04MB5695.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sAUb4kdSgIQtM/YzIsxl+tu4QMj0fUAiVC1tnDAwOOxQGzPKaZY6S0SVkwcFQf2NrFKN1iY+yZFDAgUaTcSBv0q0U8ODSmBAwRqpH+vbeTFZCyCcLAP2LkqLcY/gm2bpy1nr2yc99c9ac1O/d2M5lErk86RSnzzO8qNl97n8A/FlaYApbEarhUFaWsMkVb8gZwVp1ZuutsgXXCcU55+oBlW70NKpdFWrUn+waL1CNNck+rkYPSpWxq7CtjjvRUreg22HSctJw/hWZwMEkURz0XoDHrGdpmKYaGSTSiodojNHf44ugr4x+vaD7UIubzHJ/J03uyRcp4W0G9/HGL34XwW+CfNWlC3ELdhlC10/2Vc1TZyRgnN1xqTS68quwXsT2o5X29cALKCFgXDUAbMM7JdowSs3zreaj03Vrksbrg7hZsxAnJ/337pGafLnTyCk3E4at8QA73pGIck+bC7VmJdXIh1Omp9TZBBAdRwPPxsiLaOhrnFBZ0ASDcjSawRQJXMjg/grOkGQE6jSjsDU0WNbV/QdmvvWtbYybS6OoshL0BKAuTTegm2s7R/V7n6E/2fYBpZ+gni49Q+DaCgsCL9TEbYKe7ifn8vIL4p9THKY6K/vjUtbRafih0oKr6edJqpzX5wZoybFv4bfjtHD2LZ7/FfsmOuPZ7OcWc5PAJPIFbuKshzHiTBbSorHT3qSyN2f+UpE6buRxtCA+Xwe3Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(33716001)(86362001)(6506007)(6512007)(66476007)(508600001)(8936002)(76116006)(64756008)(66946007)(6916009)(4326008)(71200400001)(186003)(66556008)(26005)(316002)(66446008)(5660300002)(38100700002)(9686003)(7416002)(38070700005)(2906002)(8676002)(122000001)(44832011)(6486002)(54906003)(91956017)(66574015)(83380400001)(1076003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?MABjGHLz3A+2Hh45d9WwwHFrjxYptsOZthttsjyws0pwrbx2Sy+qzlEInl?=
+ =?iso-8859-1?Q?i4EzxwqGOi0zxJsYpdhmgqHHltBixp3GvzdcM4KjwzZK9H2FTNLBBF7Otd?=
+ =?iso-8859-1?Q?C5YLMfY2va+VQp9iFC86Iq5ioku6snAZzbrQdY6d/HV35iv+pC6q6TC+U3?=
+ =?iso-8859-1?Q?/WmLWkxC0tuRoDTT7N0BobwxvZR06xzgTrXIAJa6K10Qj5zlbVGRuyBkbg?=
+ =?iso-8859-1?Q?Czf/Rr0HbU2DCtl85Xbnl329bKviOjuFidCo2SQ5kGoGJHz1Tx1M+AY2+t?=
+ =?iso-8859-1?Q?MC/AwWdhlWKiRQIk6cKtz/lMRKpqIxWHKgL97GqITxiL3SoGfSYu2PBWsn?=
+ =?iso-8859-1?Q?BvG0zUHD27PahG+uTLjXX3fBObtqK3ZVtVuFKJZ7rFr8iM9vrDwCovcymo?=
+ =?iso-8859-1?Q?l25Y1VbzffS4RGV/6qdo4oEnbN0BpSBkma0yQiXk5h2Hc8Ycg0c7OzWvTD?=
+ =?iso-8859-1?Q?CeWXWllpfFRZpWYh/Wikw98jdNOO7nxW4/yrLlhepETuJl0HL0N37bR93X?=
+ =?iso-8859-1?Q?d1orqfxFxKGCspcDwF+QTOp0QJTdXDzKcdtPPLABVmHfy1BFmjDZe/Gij8?=
+ =?iso-8859-1?Q?DS2FK0Ma2ArjsknEZ9Hny/1Pl57kNC9t3tklQbB8u+IaZHSEldSetsHTIt?=
+ =?iso-8859-1?Q?VXmFyQwL+5bSM5eX04n76h+pNLAGO5CDPE4pcH5QRZDvEu3peBx9Fd1WZc?=
+ =?iso-8859-1?Q?kBR3OgV29PBiQjVSeKkF9lqWznQqm9ENLelQUktbavk/tD0MaLlumbGr38?=
+ =?iso-8859-1?Q?Wc1+KKn64J3CA3NgfeLJWx/5yzWiULLiTsCnHIwLmxIMyiTmnKurMRhklm?=
+ =?iso-8859-1?Q?M38TRqdyAbxsUkOJj7Eq0OEILTAdtS7hWFSlKDH+vzQ+QF5Mp37ZscQEQ9?=
+ =?iso-8859-1?Q?B6TYAlK1J4OnADfgyXekz3jF3sE3D1A1JqxzULnoelt0fQmEzDtongCwhc?=
+ =?iso-8859-1?Q?rcVRpc4ZCtkyvNRT49snGJyr9cTQz1tU1Nbrq2Xct+TEtDMoDUhuPJF+Af?=
+ =?iso-8859-1?Q?y0p9THvExSFh/E5m2hb/QtjvqrDsHLSdlFEbyqZGcl7MCBtXzprILDF1Zl?=
+ =?iso-8859-1?Q?Hgl+M3eHvS8sDj5nQguShyZsQMxqURkAFbqdt8uTsBzlpshhLyljT6jXRu?=
+ =?iso-8859-1?Q?IxvaDuKQT0PZZHUo3vQZWblhSg0vH4NuHDILL9K+qqYe+iCcAPnyhp14CU?=
+ =?iso-8859-1?Q?4j8XR7dihiy0TEixvZ8+ZJBoUBzUrAHPdh4Kgt1TD6B3QUgBPJ4mCjA4xk?=
+ =?iso-8859-1?Q?Wp6I681tGr/7/t6EIiQF/DWhQPIDzGhwSMc1mQ2ABh1NWbKjkC6e5jO2Tw?=
+ =?iso-8859-1?Q?alsFrfpefUBc1OKCqxDwXq1lBprYhcDuUhpPDBlH/XFAyHlxFJ+KUZjS2J?=
+ =?iso-8859-1?Q?HwJASBc8izNzRBsutgNag3z7c+oJsLRvn0M9e164bFru6+zahdPYYs/yMg?=
+ =?iso-8859-1?Q?mSmuMK7xHMn9hVH+t+6VEhHUyXhzeX5lJg+RxGIVagQU593JnAibT0l4y5?=
+ =?iso-8859-1?Q?2Y1Vhdyb/XfOYgDZdCparASKxEwG9pHvWRA5Wr0O/uyn3nK41h9HFudIE0?=
+ =?iso-8859-1?Q?bwQglv1R2oWhzJqK9j4GAFZO9InL2L1vLI6LHU3m12IWowghebTs4uCuW3?=
+ =?iso-8859-1?Q?t+p4Psqkas1HDXUKqlpGtx0vkyG3Pc1UOosCkb3RDH1LuKcRve2giYSk13?=
+ =?iso-8859-1?Q?FZTOoXHw9htBCuo2oFu3LsfqVNRxy+K7aKPnBInS?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <3D4EAD2B20F1A249B4C9DF10B117E44A@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20211026115916.31553-1-semen.protsenko@linaro.org> <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
-In-Reply-To: <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 28 Oct 2021 17:22:48 +0300
-Message-ID: <CAPLW+4=YizLzdiZ1mdCGxvPCTYhNjeiomO=q=4Xk-ZxqqH++nA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: Kconfig: Enable MCT timer for ARCH_EXYNOS
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b1486f8-192c-4ea1-5c63-08d99a1e6f3d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2021 14:22:55.4445
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8/yHIZg7r3VtMMjeeBMKGmcXyDUja7cZYJKL/OsQFSzlnjhzjstwrfyOrmd5V9c46il3paT9skuHwvCiP7OQYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5695
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 17:03, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 26/10/2021 13:59, Sam Protsenko wrote:
-> > Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
-> > Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
-> > is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
-> > it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
-> > for ARM64 Exynos SoCs.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  arch/arm64/Kconfig.platforms | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
->
-> +CC Marek, Marc, Mark and Chanwoo,
-> Looks like duplicated:
-> https://lore.kernel.org/lkml/20181018095708.1527-7-m.szyprowski@samsung.com/
->
-> The topic stalled and I think this particular patch did not make sense
-> on its own, without rest of changes from Marek. I am not sure, though...
->
+On Thu, Oct 28, 2021 at 04:15:22PM +0200, Cl=E9ment L=E9ger wrote:
+> Le Thu, 28 Oct 2021 14:06:12 +0000,
+> Vladimir Oltean <vladimir.oltean@nxp.com> a =E9crit :
+>=20
+> > On Thu, Oct 28, 2021 at 03:49:30PM +0200, Cl=E9ment L=E9ger wrote:
+> > > Add support to get mac from device-tree using of_get_mac_address.
+> > >=20
+> > > Signed-off-by: Cl=E9ment L=E9ger <clement.leger@bootlin.com>
+> > > ---
+> > >  drivers/net/ethernet/mscc/ocelot_vsc7514.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> > > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c index
+> > > d51f799e4e86..c39118e5b3ee 100644 ---
+> > > a/drivers/net/ethernet/mscc/ocelot_vsc7514.c +++
+> > > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c @@ -526,7 +526,10 @@
+> > > static int ocelot_chip_init(struct ocelot *ocelot, const struct
+> > > ocelot_ops *ops) ocelot_pll5_init(ocelot);
+> > > =20
+> > > -	eth_random_addr(ocelot->base_mac);
+> > > +	ret =3D of_get_mac_address(ocelot->dev->of_node,
+> > > ocelot->base_mac); =20
+> >=20
+> > Why not per port? This is pretty strange, I think.
+>=20
+> Hi Vladimir,
+>=20
+> Currently, all ports share the same base mac address (5 first
+> bytes). The final mac address per port is computed in ocelot_probe_port
+> by adding the port number as the last byte of the mac_address provided.
+>=20
+> Cl=E9ment
 
-Krzysztof, Marek,
+Yes, I know that, but that's not my point.
+Every switch port should be pretty much compliant with
+ethernet-controller.yaml, if it could inherit that it would be even
+better. And since mac-address is an ethernet-controller.yaml property,
+it is pretty much non-obvious at all that you put the mac-address
+property directly under the switch, and manually add 0, 1, 2, 3 etc to it.
+My request was to parse the mac-address property of each port. Like
+this:
 
-That series looks nice, I'm quite interested in that being applied. Do
-you think I can do something to help with that (e.g. rebasing,
-re-sending on behalf of Marek, testing on Exynos850, etc)?
+base_mac =3D random;
 
-> Best regards,
-> Krzysztof
+for_each_port() {
+	err =3D of_get_mac_address(port_dn, &port_mac);
+	if (err)
+		port_mac =3D base_mac + port;
+}
+
+> > > +	if (ret)
+> > > +		eth_random_addr(ocelot->base_mac);
+> > > +
+> > >  	ocelot->base_mac[5] &=3D 0xf0;
+> > > =20
+> > >  	return 0;
+> > > --=20
+> > > 2.33.0
+> >  =20
+>=
