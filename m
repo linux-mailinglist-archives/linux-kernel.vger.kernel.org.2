@@ -2,198 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D59243E01C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD1E43E020
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhJ1LkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:40:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60132 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229578AbhJ1LkG (ORCPT
+        id S230162AbhJ1Lkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:40:33 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:37497 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhJ1Lkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:40:06 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SApiRf027220;
-        Thu, 28 Oct 2021 11:37:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=mpKZsVC7bkqUHWPdhUOP1i5WrUtVyGSY/LjQMqONk40=;
- b=eCtdqseywteDJBLcESe3aGUSCOPWs0ARVg/H0LAItYKCNSNFdQKD4/raCZiv+yY85K+0
- q24cFmfUUwnJiigLGQDwsMIyIFh5EaCBHMt5YN871grTQr5UzMhgy1YHLmspZdYs2WpJ
- ptRtygmJYR9VnjO6vRxr69IHyE7rew9S0TIEaNlqsCvfzg5xrOklRUtsm8SCwvWb4hv4
- 24Gx/11Tzxo750cf/3pnRCzGl1M6ZVFzQ8lMJy6RgaQDgQJvbVRuIHwpGwG/bydvSvH4
- 25x2NlBmVcyYdb2tfKmGV42eDLexr6EUrv+n00lSCvY+FXgjZFKFkIVqz8KToE+X6T+1 iA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bytfwrvkp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 11:37:33 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SBTScW026092;
-        Thu, 28 Oct 2021 11:37:33 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bytfwrvjv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 11:37:33 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SBX3a7029551;
-        Thu, 28 Oct 2021 11:37:30 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bx4f1rj4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 11:37:30 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SBbR9A60293376
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 11:37:27 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8338F4204F;
-        Thu, 28 Oct 2021 11:37:27 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8226F4204B;
-        Thu, 28 Oct 2021 11:37:23 +0000 (GMT)
-Received: from Madhavan.com (unknown [9.43.61.213])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Oct 2021 11:37:23 +0000 (GMT)
-From:   Madhavan Srinivasan <maddy@linux.ibm.com>
-To:     acme@kernel.org, jolsa@redhat.com
-Cc:     michael@ellerman.id.au, eranian@google.com, mark.rutland@arm.com,
-        namhyung@kernel.org, kjain@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Madhavan Srinivasan <maddy@linux.ibm.com>
-Subject: [PATCH v3 2/2] tools/perf/test: Add endian test for struct branch_flags
-Date:   Thu, 28 Oct 2021 17:07:14 +0530
-Message-Id: <20211028113714.600549-2-maddy@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211028113714.600549-1-maddy@linux.ibm.com>
-References: <20211028113714.600549-1-maddy@linux.ibm.com>
+        Thu, 28 Oct 2021 07:40:32 -0400
+Received: by mail-wr1-f52.google.com with SMTP id b12so5175389wrh.4;
+        Thu, 28 Oct 2021 04:38:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R9iGBH0bitmQ2PUPTG4ti18s03rp1E4yJA21sHWqAfs=;
+        b=aXv7CWNQjqrxFcBSYXN6cd4eBtjy08b8MLqh1QwUBIeEaQytUchYRO8bu3qTVai1Z/
+         Wu7V2elzLWeMSCPqNMaLm7I9xd4vKTf20emLPmRyRXcv2iQxg1a2w57qamwbOsdv51L3
+         fpr59sAv2wL6MZZMQ4gx4QbCu4tC/f5fP+3SzQWdwwz6fushKWh1wbffvYyCED2be+ce
+         0HN48jwehVE4XdjpcLCapmhkhKbpEnpKKCdSmhzde6Pvj1lUzwSoBo26HT2r5OmZEVyt
+         HcgPBYoagSbZnPxvyN5a2RCuF9NppNuQ7p+BQhoX0UyV5v2immSo0P8K+w70XZum5/i/
+         wIBg==
+X-Gm-Message-State: AOAM532O/BJAo1Tp0jsUh7BbtYyLnhc6C0ejXhIiWEYqh/aVXTtmkq6S
+        Iy5QC4xH+p1VQ34HWInOgKBc0Hf9eyE=
+X-Google-Smtp-Source: ABdhPJzJ9y3cHuVGs0L8QADNH8gz0yPGriIbyRsqWhOOY2M/Z7K1pW7bqN+1vNL13AvsJfi1h1V56g==
+X-Received: by 2002:adf:9dc1:: with SMTP id q1mr4963621wre.13.1635421084391;
+        Thu, 28 Oct 2021 04:38:04 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id j9sm6040192wms.39.2021.10.28.04.38.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 04:38:04 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 11:38:02 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/hyperv: Remove duplicate include
+Message-ID: <20211028113802.kze3rbjdo6z3jlq4@liuwe-devbox-debian-v2>
+References: <1635325022-99889-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HxSzh0wFoOJCXjfhmR_zxrwG1eQB9_u-
-X-Proofpoint-ORIG-GUID: pr32ZE8GJOhHxCnTsBziQkuBgwNqGWVZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-28_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 mlxscore=0
- clxscore=1015 lowpriorityscore=0 phishscore=0 mlxlogscore=431
- impostorscore=0 spamscore=0 suspectscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110280063
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635325022-99889-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend sample-parsing test to include branch_flag
-bitfield-endian swap test. Patch include "util/trace-event.h"
-to sample-parsing for importing tep_is_bigendian() and
-extends samples_same() to include "needs_swap" to
-detect/enable check for bitfield-endian swap.
+On Wed, Oct 27, 2021 at 04:57:02PM +0800, Jiapeng Chong wrote:
+> Clean up the following includecheck warning:
+> 
+> ./arch/x86/hyperv/ivm.c: linux/bitfield.h is included more than once.
+> ./arch/x86/hyperv/ivm.c: linux/types.h is included more than once.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
----
-Changelog v2:
-- used tep_is_bigendian() instead bigendian()
-  to avoid perf test python fail.
-- Updated commit message
+Applied to hyperv-next. Thanks.
 
-Changelog v1:
-- Updated commit message
-
- tools/perf/tests/sample-parsing.c | 43 +++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-index 8fd8a4ef97da..c83a11514129 100644
---- a/tools/perf/tests/sample-parsing.c
-+++ b/tools/perf/tests/sample-parsing.c
-@@ -13,6 +13,7 @@
- #include "evsel.h"
- #include "debug.h"
- #include "util/synthetic-events.h"
-+#include "util/trace-event.h"
- 
- #include "tests.h"
- 
-@@ -30,9 +31,18 @@
- 	}						\
- } while (0)
- 
-+/*
-+ * Hardcode the expected values for branch_entry flags.
-+ * These are based on the input value (213) specified
-+ * in branch_stack variable.
-+ */
-+#define BS_EXPECTED_BE	0xa00d000000000000
-+#define BS_EXPECTED_LE	0xd5000000
-+#define FLAG(s)	s->branch_stack->entries[i].flags
-+
- static bool samples_same(const struct perf_sample *s1,
- 			 const struct perf_sample *s2,
--			 u64 type, u64 read_format)
-+			 u64 type, u64 read_format, bool needs_swap)
- {
- 	size_t i;
- 
-@@ -100,8 +110,14 @@ static bool samples_same(const struct perf_sample *s1,
- 	if (type & PERF_SAMPLE_BRANCH_STACK) {
- 		COMP(branch_stack->nr);
- 		COMP(branch_stack->hw_idx);
--		for (i = 0; i < s1->branch_stack->nr; i++)
--			MCOMP(branch_stack->entries[i]);
-+		for (i = 0; i < s1->branch_stack->nr; i++) {
-+			if (needs_swap)
-+				return ((tep_is_bigendian()) ?
-+					(FLAG(s2).value == BS_EXPECTED_BE) :
-+					(FLAG(s2).value == BS_EXPECTED_LE));
-+			else
-+				MCOMP(branch_stack->entries[i]);
-+		}
- 	}
- 
- 	if (type & PERF_SAMPLE_REGS_USER) {
-@@ -248,7 +264,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		},
- 	};
- 	struct sample_read_value values[] = {{1, 5}, {9, 3}, {2, 7}, {6, 4},};
--	struct perf_sample sample_out;
-+	struct perf_sample sample_out, sample_out_endian;
- 	size_t i, sz, bufsz;
- 	int err, ret = -1;
- 
-@@ -313,12 +329,29 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		goto out_free;
- 	}
- 
--	if (!samples_same(&sample, &sample_out, sample_type, read_format)) {
-+	if (!samples_same(&sample, &sample_out, sample_type, read_format, evsel.needs_swap)) {
- 		pr_debug("parsing failed for sample_type %#"PRIx64"\n",
- 			 sample_type);
- 		goto out_free;
- 	}
- 
-+	if (sample_type == PERF_SAMPLE_BRANCH_STACK) {
-+		evsel.needs_swap = true;
-+		evsel.sample_size = __evsel__sample_size(sample_type);
-+		err = evsel__parse_sample(&evsel, event, &sample_out_endian);
-+		if (err) {
-+			pr_debug("%s failed for sample_type %#"PRIx64", error %d\n",
-+				 "evsel__parse_sample", sample_type, err);
-+			goto out_free;
-+		}
-+
-+		if (!samples_same(&sample, &sample_out_endian, sample_type, read_format, evsel.needs_swap)) {
-+			pr_debug("parsing failed for sample_type %#"PRIx64"\n",
-+				 sample_type);
-+			goto out_free;
-+		}
-+	}
-+
- 	ret = 0;
- out_free:
- 	free(event);
--- 
-2.31.1
-
+> ---
+>  arch/x86/hyperv/ivm.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+> index 4d012fd..69c7a57 100644
+> --- a/arch/x86/hyperv/ivm.c
+> +++ b/arch/x86/hyperv/ivm.c
+> @@ -6,11 +6,9 @@
+>   *  Tianyu Lan <Tianyu.Lan@microsoft.com>
+>   */
+>  
+> -#include <linux/types.h>
+>  #include <linux/bitfield.h>
+>  #include <linux/hyperv.h>
+>  #include <linux/types.h>
+> -#include <linux/bitfield.h>
+>  #include <linux/slab.h>
+>  #include <asm/svm.h>
+>  #include <asm/sev.h>
+> -- 
+> 1.8.3.1
+> 
