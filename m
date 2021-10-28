@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FCE43D98D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D7843D991
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhJ1Cys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhJ1Cyr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:54:47 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C50C061570;
-        Wed, 27 Oct 2021 19:52:21 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id y1so3375192plk.10;
-        Wed, 27 Oct 2021 19:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jcnGJtdrqaa1AmyqKqYK6KAUEoUhmNr+Rf2cHbtAGQ0=;
-        b=YUgoDPiKp3MhHStufYQZ+0PnS0nsUB4159fpXiGORH1AD355ROMhqTq7sc3SbICgjg
-         j853duYB5m7osB/4hWBDIRWyk86cX/diOCWCiNRjoEb1yD1p53h2h8ryjOUHS1sqE+4V
-         tc1Gg/GW3zEKMY2DnMKzIC8bdr1YNgoPTwCjVQeDyO98kiWJIZ2lQK+GDl5E8OACiGpa
-         RyDmQ7kdZ0GOLpxuZ7ApdfwcTsiSDtdEdj3n635Jew9BCroLTzm1tjSMSIcTbGcQubni
-         z8rs9ErbjqLmm0pM5AYnY2NZ0a8VUC/mCvwuXCnk/L+Vwnr3uetwLI8KPLZ1ERAmBAx4
-         htpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jcnGJtdrqaa1AmyqKqYK6KAUEoUhmNr+Rf2cHbtAGQ0=;
-        b=icPuCojcdM0GRsTg8TzZn2Xa5ljZ+M+FW8Y8rYw4UutvxpkELOxfgwOko7juhVGq1d
-         kycKe5iqdVJE0GPe4oc4NPv6w76uSX30nu/saFJiFvHOubQsli+U8GD0uDLM1T8LfODE
-         sH2XVzI1y8jhj3jd9BT+Tu+3weDQhpbjrpzphrWP6MGcJXK1gijZK5v+VonpN/wpxvAo
-         Kty7bPUZ4rBpZewicf0lGxN1+VcoAzzfOJscqK5HqX8BFxcFtmqBte+q+uNzDKPp1hPj
-         Z/xUEK2yRYrr8lr4F5VgB6rJ/28AFlFFlsjrxUafElhjxk6JrmQG0LHxuHbrfEhTdW5M
-         Rh+w==
-X-Gm-Message-State: AOAM532ggZDNV4eosoGOuEN/hTCAqqPbX+n6v0nRahGKAqXsfLoPf/NN
-        hMRVgpM5o1h8kmFosWVA+EE2v2wUlUU=
-X-Google-Smtp-Source: ABdhPJwenHZAgCv/dulADK6JKovBLqpDmaLXW2UAdA+cIgUMPX8scwGDbWtCoTsc7KVf7hgIgm1Wgw==
-X-Received: by 2002:a17:902:ab50:b0:13f:4c70:9322 with SMTP id ij16-20020a170902ab5000b0013f4c709322mr1233924plb.89.1635389540905;
-        Wed, 27 Oct 2021 19:52:20 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id b13sm6030673pjl.15.2021.10.27.19.52.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 19:52:20 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] loop: Remove duplicate assignments
-Date:   Thu, 28 Oct 2021 02:52:16 +0000
-Message-Id: <20211028025216.10737-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S229770AbhJ1C5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:57:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhJ1C5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:57:14 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E343F60527;
+        Thu, 28 Oct 2021 02:54:46 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 22:54:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V6 07/20] rtla: Real-Time Linux Analysis tool
+Message-ID: <20211027225445.0325be0f@rorschach.local.home>
+In-Reply-To: <60dbd3e36ac9489b6aadbc1c3d095608e6c7e4bb.1635284863.git.bristot@kernel.org>
+References: <cover.1635284863.git.bristot@kernel.org>
+        <60dbd3e36ac9489b6aadbc1c3d095608e6c7e4bb.1635284863.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The assignment and operation there will be overwritten later, so
-it should be deleted.
+On Wed, 27 Oct 2021 00:06:18 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-The clang_analyzer complains as follows:
+> The rtla is a meta-tool that includes a set of commands that aims
+> to analyze the real-time properties of Linux. But instead of testing
+> Linux as a black box, rtla leverages kernel tracing capabilities to
+> provide precise information about the properties and root causes of
+> unexpected results.
+> 
+> rtla --help works and provide information about the available options.
+>
 
-drivers/block/loop.c:2330:2 warning:
+BTW,
 
-Value stored to 'err' is never read
+I would break this up into two separate series.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- drivers/block/loop.c | 1 -
- 1 file changed, 1 deletion(-)
+One for the kernel changes [ patches 1-6 ] and then one for the tooling
+[ patches 7 - 20 ].
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 1f91bd4..941b482 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -2329,7 +2329,6 @@ static int loop_add(int i)
- 		goto out_free_dev;
- 	i = err;
- 
--	err = -ENOMEM;
- 	lo->tag_set.ops = &loop_mq_ops;
- 	lo->tag_set.nr_hw_queues = 1;
- 	lo->tag_set.queue_depth = 128;
--- 
-2.15.2
+That will make it better for versioning. And you really shouldn't have
+the two mixed together. Just state in the cover letter of the tooling 
+[ Depends on the series at: ...] 
 
+And include the lore link.
 
+BTW, you may resend a fixed version of 1-6 ;-)
+
+-- Steve
