@@ -2,95 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FF143E67C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C3743E697
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhJ1Qt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
+        id S230451AbhJ1Qup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhJ1Qt0 (ORCPT
+        with ESMTP id S230377AbhJ1Quo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:49:26 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F478C061570;
-        Thu, 28 Oct 2021 09:46:59 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id s136so6966183pgs.4;
-        Thu, 28 Oct 2021 09:46:59 -0700 (PDT)
+        Thu, 28 Oct 2021 12:50:44 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742F7C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:48:16 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id s1so27469810edd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ffa161gA4EvJtmVnOlg8DPccovJS7ZtlelqcF1oheOw=;
-        b=SsZQl8IrnhYXP6BCnP7VD+eqgxUGrpp5sGi77QQmDCB6L3Gwu9iLhF+QAoWacqqkdS
-         gW4VIDLUlwdo43Wd56pfDAqmbuBrTiUQXKh7PgxNWLNGnledhVlFXKWqn4+dcII20Ct+
-         wSWZDEwo92AtGzkeHgg9YjTGRXV/Eepaa+1GfNaZRR1dyAOjW0/gw+CexWhmBWzQF5oA
-         mVa9jxglddKelInmTW8zcNFZyFfwnpXW7Iv6Khs57olFgYydhFmzFfeHOx9gTKhmMLH8
-         t8qR27fVyrWMBnYWSIrZAQPBJenvp7LitydGIabLG4DrOzgJzPRQMnbhtnvPRjFCVnwM
-         VZYA==
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M8Jw/S2n3WB7bDRByTQGeQns0CvXOlde4kiN/IEV98o=;
+        b=PR8boEcK6RSO8eaafJJSJzKy+NQsdbysFi/aCXaszc/wOVJoO+mM0BaQ6dPPy9xKKq
+         XnNEfSSYf9NJ3digurFFHlOYis4fL1gGKHiQJHJIvXMQ4steyAzNeh+mP1AK2b9WWabC
+         f7D+pHU75jrNCG78NwUNk2dljTXfS61O+bxbPg2vKADcyExEWkmhVq0718tTQhcinK9w
+         TrDOa5w2oDLuEJVR/+IfpAsuAczb1VG+l8ewlLw6o7j3/dJvOJGZfmijAvwegEmqjENt
+         EWGl12GBnC3849MIoXM3qGsBe5i48hPnBsQsfxDsBgeZTAowHUX3drMfakwzmRW+aHTa
+         8HEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ffa161gA4EvJtmVnOlg8DPccovJS7ZtlelqcF1oheOw=;
-        b=WLZvL++ILpRKn1piO/voF/r51YZzzXpPhQ3/3zX2Ltd306l40ujIBydrxZHOAO0+u1
-         F4oKnxAOyKIyfT5252qWF9B202e99oqZ8Z7SIEN41qqi31wzvtCuvSGk1rd0qFZpc+mK
-         GyZetTIhok6rdWmroyNVY1S+i+SjPiiBUMztUwU1Un/BfHP63J9dfGZ6De1q9oAfuUaw
-         IpSEau2Ic9ZQa/BTcKhgOdElwelInUn/Kpo0OXimo7Bk0Kwg6JdxSvs0u1WmmbC4Uzy7
-         SIp6bmSxLpDvyhmSq7rjsdJXx/Co85Q8+LlZrVruXumQHRG2qD2u4FUPAag59ZQjpnjn
-         Pkmg==
-X-Gm-Message-State: AOAM530IHTOqC1Cs7W6EkdfQbTHVIVfVaexDX8LzBMxwfYboIKBKQC7o
-        6oVCtJrg0i78XrPmS82toOU=
-X-Google-Smtp-Source: ABdhPJx1yi+cEBvD5yaZMWOBTR6AJr4PNm7Igp8eovJQzKBFFnqbtfoRSNg0G8Ip7uYr1Bk6uIM4ww==
-X-Received: by 2002:aa7:96d0:0:b0:47c:efd:9ab4 with SMTP id h16-20020aa796d0000000b0047c0efd9ab4mr5586384pfq.30.1635439618948;
-        Thu, 28 Oct 2021 09:46:58 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y19sm4011406pfn.23.2021.10.28.09.46.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 09:46:58 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     chunkeey@gmail.com, arinc.unal@arinc9.com, mnhagan88@gmail.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM5301X ARM
-        ARCHITECTURE), Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ARM: dts: BCM5301X: Add interrupt properties to GPIO node
-Date:   Thu, 28 Oct 2021 09:46:53 -0700
-Message-Id: <20211028164654.4014646-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M8Jw/S2n3WB7bDRByTQGeQns0CvXOlde4kiN/IEV98o=;
+        b=q9Ze2+lH2Dd3RFVv3DLDdvJuCxkdWnENJCScew7S3N7zzwYonI2rnvZ1shxXZLvBij
+         jGMFjuRL7a+DdMQzuT+G15WLniG4BmnCV+cSsnQoEP35odnpOLPDbsmkbbT+7dIRmVKf
+         m2EAfjgGcxwqBTMA5Qhd3pincxP23D0xE5lOylMQUSK4HeLN4rEcNRmguyfVylBrGo2+
+         WLm44nViyGpTiyPpvHgK87k0VI/m7kHOu5n9feGOgCnvspWy6k2Ziz2plmxDEaAS4pzP
+         q1oNn1hyo5BWIBSOLxOfhTkSyva0uSGCXJ8qxQuPmY27s3hm3YGcysvoPfIskKUkSF1j
+         lbGQ==
+X-Gm-Message-State: AOAM533kQTP1KjT4DOiOe3/pOzfQKYidVMHtJgS6c60BBg1s04JIULbB
+        pwVUfKWPR5YEUbgBZKDHJDjDKACafy6au/JosSm92g==
+X-Google-Smtp-Source: ABdhPJynXs15eI4J4h6dypN6+uIsPodjJBAXKeImKWkhEvpw9l+CnL5egYbTMYSOE5emSX15YsoKbBx+YIZPYkVvpPU=
+X-Received: by 2002:a50:e686:: with SMTP id z6mr7820251edm.311.1635439694998;
+ Thu, 28 Oct 2021 09:48:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210926223322.848641-1-isabellabdoamaral@usp.br>
+ <CABVgOSkG=J7TpuzZMW_RbGA9f4NRZxGXRS8wd-cBmrWHD97pRQ@mail.gmail.com> <CAFd5g47ECaw3CRH4MKzVPYmYhsiXR5hvha0ciadAFtEuUz6Xdw@mail.gmail.com>
+In-Reply-To: <CAFd5g47ECaw3CRH4MKzVPYmYhsiXR5hvha0ciadAFtEuUz6Xdw@mail.gmail.com>
+From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
+Date:   Thu, 28 Oct 2021 13:48:03 -0300
+Message-ID: <CAAniXFTdQN3_BnRZeZLu-UHJPwyMkFZvTw7J4Sm4W+fRsuEC3w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] test_hash.c: refactor into KUnit
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Enzo Ferreira <ferreiraenzoa@gmail.com>,
+        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
+        <augusto.duraes33@gmail.com>, Daniel Latypov <dlatypov@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        ~lkcamp/patches@lists.sr.ht,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GPIO controller is also an interrupt controller provider and is
-currently missing the appropriate 'interrupt-controller' and
-'#interrupt-cells' properties to denote that.
+Hi all,
 
-Fixes: fb026d3de33b ("ARM: BCM5301X: Add Broadcom's bus-axi to the DTS file")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/boot/dts/bcm5301x.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+On Tue, Oct 5, 2021 at 6:19 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> +Shuah Khan
+>
+> On Sat, Oct 2, 2021 at 12:30 AM David Gow <davidgow@google.com> wrote:
+> >
+> > On Mon, Sep 27, 2021 at 6:33 AM Isabella Basso <isabellabdoamaral@usp.br> wrote:
+> > >
+> > > We refactored the lib/test_hash.c file into KUnit as part of the student
+> > > group LKCAMP [1] introductory hackathon for kernel development.
+> > >
+> > > This test was pointed to our group by Daniel Latypov [2], so its full
+> > > conversion into a pure KUnit test was our goal in this patch series, but
+> > > we ran into many problems relating to it not being split as unit tests,
+> > > which complicated matters a bit, as the reasoning behind the original
+> > > tests is quite cryptic for those unfamiliar with hash implementations.
+> > >
+> > > Some interesting developments we'd like to highlight are:
+> > >
+> > > - In patch 1/5 we noticed that there was an unused define directive that
+> > >   could be removed.
+> > > - In patch 4/5 we noticed how stringhash and hash tests are all under
+> > >   the lib/test_hash.c file, which might cause some confusion, and we
+> > >   also broke those kernel config entries up.
+> > >
+> > > Overall KUnit developments have been made in the other patches in this
+> > > series:
+> > >
+> > > In patches 2/5, 3/5 and 5/5 we refactored the lib/test_hash.c
+> > > file so as to make it more compatible with the KUnit style, whilst
+> > > preserving the original idea of the maintainer who designed it (i.e.
+> > > George Spelvin), which might be undesirable for unit tests, but we
+> > > assume it is enough for a first patch.
+> > >
+> > > This is our first patch series so we hope our contributions are
+> > > interesting and also hope to get some useful criticism from the
+> > > community. :)
+> > >
+> > > Changes since V1:
+> > > - Fixed compilation on parisc and m68k.
+> > > - Fixed whitespace mistakes.
+> > > - Renamed a few functions.
+> > > - Refactored globals into struct for test function params, thus removing
+> > >   a patch.
+> > > - Reworded some commit messages.
+> > >
+> > > [1] - https://lkcamp.dev/
+> > > [2] - https://lore.kernel.org/linux-kselftest/CAGS_qxojszgM19u=3HLwFgKX5bm5KhywvsSunuBAt5RtR+GyxQ@mail.gmail.com/
+> > >
+> >
+> > Thanks: I've gone through this new revision, and it still works fine,
+> > and my prior comments have been addressed. The commit messages in
+> > particular are much clearer, thank you! I've reviewed the various
+> > patches and left a few comments here and there, but there's nothing
+> > too drastic.
+> >
+> > I'm pretty happy with this from the KUnit side, but it would be ideal
+> > if someone with more knowledge of the hash functions looked over it.
+> > Unfortunately, George's email is bouncing, and no-one else has made
+> > any particularly major changes to this.
 
-diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
-index ec5de636796e..1ff21951d24a 100644
---- a/arch/arm/boot/dts/bcm5301x.dtsi
-+++ b/arch/arm/boot/dts/bcm5301x.dtsi
-@@ -242,6 +242,8 @@ chipcommon: chipcommon@0 {
- 
- 			gpio-controller;
- 			#gpio-cells = <2>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
- 		};
- 
- 		pcie0: pcie@12000 {
--- 
-2.25.1
+I'm glad to hear this :) I'd also like to point out that "George Spelvin" is a
+rather unusual figure [3] so we shouldn't be expecting much back from
+him, anyway. Maybe I should've looked that up before trying to tackle this
+patch, as I've no idea who might be able to properly review the hash part of
+it.
 
+> >
+> > My only remaining comment on the tests themselves is that it'd be nice
+> > to have them split up further into more, smaller tests. Given that
+> > it's a port of an existing test, though, I understand the desire not
+> > to change things too drastically.
+
+Thanks for your comprehension!
+
+> >
+> > We also need to work out how this is going to go upstream: does it go
+> > through the kunit branch (via Shuah's kselftest repo), or directly to
+> > Linus (who's handled most of the other recent-ish changes here.
+> > Brendan, any thoughts?
+>
+> I think Shuah should take them in 5.16.
+>
+> Shuah, let me know if you are OK taking these in 5.16 and I will
+> update the patch tracker.
+>
+
+Thanks a lot for your interest in this patch :)
+
+We were a little worried about who might be able to get it upstream, so we
+appreciate that you also thought of this!
+
+> > Cheers,
+> > -- David
+> >
+> >
+> >
+> > > Isabella Basso (5):
+> > >   hash.h: remove unused define directive
+> > >   test_hash.c: split test_int_hash into arch-specific functions
+> > >   test_hash.c: split test_hash_init
+> > >   lib/Kconfig.debug: properly split hash test kernel entries
+> > >   test_hash.c: refactor into kunit
+> > >
+> > >  include/linux/hash.h       |   5 +-
+> > >  lib/Kconfig.debug          |  28 ++++-
+> > >  lib/Makefile               |   3 +-
+> > >  lib/test_hash.c            | 247 +++++++++++++++++--------------------
+> > >  tools/include/linux/hash.h |   5 +-
+> > >  5 files changed, 139 insertions(+), 149 deletions(-)
+> > >
+> > > --
+> > > 2.33.0
+> > >
+
+I'm sorry for the delay in my response, but I think I can send a V3 soon,
+probably until next week.
+
+[3] - https://lwn.net/Articles/688216/
+
+Cheers,
+--
+Isabella Basso
