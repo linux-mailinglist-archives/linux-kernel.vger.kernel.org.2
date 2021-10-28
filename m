@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D9343D851
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA21743D857
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhJ1BDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 21:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        id S229700AbhJ1BEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 21:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhJ1BD3 (ORCPT
+        with ESMTP id S229532AbhJ1BEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:03:29 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737B3C061570;
-        Wed, 27 Oct 2021 18:01:03 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so6592172pjl.2;
-        Wed, 27 Oct 2021 18:01:03 -0700 (PDT)
+        Wed, 27 Oct 2021 21:04:09 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220FDC061570;
+        Wed, 27 Oct 2021 18:01:42 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id l186so4690402pge.7;
+        Wed, 27 Oct 2021 18:01:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=k+zQD8CQaycNrdXa2NhAlfSk8bkMuLuQctVMZwAMb5o=;
-        b=oJ+zSBHPinxWCKj93v1TqObCHmImdDl+iVeTO3ls/858ugBtndDUFuSJ0pgqQ8AOzm
-         E+/TfN1Z6carxLC7YuefyE/UcAsl/LeUaWAoCFfYPovNpZLWD2vV0YKf20vvQbOafFsW
-         RW8EKHNU9WvPEQiApp7/CQqpdTDqNZFy8ZCjuwInqa88rCPe6LPNKreeihMyW9010ehS
-         /8HDBn7L1makPYc/dBtOR6Cy9W1yIyceO5riPMIsDl1Uv+PtV+X7nHKO4tIRiEYVp01W
-         nxTd/EBXmZhrjJAjW0tmgF99w/78M92ZaBlPUBO2kT51jkxAR+iLRVbvS/DOib6MonZ3
-         5b3Q==
+        bh=hDvRc3zSZmPMaUlLovS+QCbZBjY1LcMWYS4FPlOxhUE=;
+        b=ZBXEcxpctXzRRxgxaCNpMlghQfSLZqwZO3Tbe3akH1DeJjnmEfkqN287iSsYZLidVC
+         xJE6fAw7CKtEl0SHiSFtzZH4XhlZNZfJ/6wdxfuuY9ijwjUTT58TUqZS6GskSMwl7CoG
+         Teuin4CGu/hvT+BR26GjEL+tug36Id5l+b8CZVeN/axgDLN8xJn67giB/q96h/ns3mJi
+         iU8O3aEpEPTZsGmkq8VcC/WJqQvtULlYV0M7EmsGsX0N75LfqmnSQjPhyh+Rlp+Z7NzU
+         BTh3n4vW8gxR1l3UfuqKm6GnwMkNNw6h6sJjoi/QR/dOUIGK2++OUzOsvH63mzFT24tM
+         6DYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=k+zQD8CQaycNrdXa2NhAlfSk8bkMuLuQctVMZwAMb5o=;
-        b=ZlVWyjLIqVbwThpCmPelG8KLgP99xI8dXQWHAnnJJRQVNlGkQeNu9MRWfesixWaKGw
-         Pfvv1lUznjyxMjeOmABIzguqyyOebKv5mhVgSQy6siwD8Nxy5+mxzLIuhoXKhXoWT/sd
-         zW/ttalMR9Uqtn9nUsmPy6uWeAx8czhkAlicjPcLo1kHRVHaS0CS8EsK3Q1lYiLx/PYP
-         12bsAkkj/VO5BzuH63YyJoC0gADEC6ClA4u58JrrnAIiAAPxTOdKM9eA6yGk+91YdPqc
-         G7IUrG/QQexCS1YTxDr5JS3qr9RUmgWeQCFN6Er1Kaok3xLfj0MNOfSr9nIGb5FNbn+C
-         zpBA==
-X-Gm-Message-State: AOAM531m6kxeGtvHFsXDgbgbzl+tWmtpQh9E/Niu3cj6qrz9L7YXEdMz
-        qzc4Vq9Tvf3KXcYwPaKbHL8BZBVRGSw=
-X-Google-Smtp-Source: ABdhPJzSYpIZ+33E+8PEAVvvZYtjRpm8RofSxaJx4otwP2iPfs4TZMTGuzOeMag6lff4YX7GC7mGkw==
-X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr9469296pjb.102.1635382862984;
-        Wed, 27 Oct 2021 18:01:02 -0700 (PDT)
+        bh=hDvRc3zSZmPMaUlLovS+QCbZBjY1LcMWYS4FPlOxhUE=;
+        b=2uciT9geiU6FK5EArhT42c35YPgE7dPHFBNGvnnEepcZmfx9g5Tycq3rwDyL0spbPV
+         eYB/EULD4EoYgNDujNshQfk1QuqNftDDH9SvJDrKUz0ayQi5Dqmj8QXDIR7W3J3er3FJ
+         5J+Y+/AB7BSWeEM0zz+7dt4xFMSUYw2JzQwcww5PPBgi9uF0FGEbYgzu00OuDvuBZw/u
+         0gwS9g7lDJOQEWlOLT2s2cxr6H9/s4IGlQK7vePRqUn3P1LdsSHZIhEVh/ykpY8wX1nO
+         gsjO++GnCRSGjIWeqG9f9tKWgDNjYtWvKqKmnlcimkb8msWC9P8m0aazjRkzKhkHQw4Q
+         O9xA==
+X-Gm-Message-State: AOAM532DO1FLruI+CgktpuCUFl97f0Mti9+44LvYRI85DpTfcerT0PIp
+        g5zhwNg7XS/Rm/fzMR2p3Bo=
+X-Google-Smtp-Source: ABdhPJw/02gEZFtyzsCkNG027d512vf0kGUzOzi8v2Of6RGkWlg1RsvHFDTkYGcSw1ql+hXMudDYHA==
+X-Received: by 2002:a63:b519:: with SMTP id y25mr849122pge.237.1635382901741;
+        Wed, 27 Oct 2021 18:01:41 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id y9sm849287pjj.6.2021.10.27.18.01.01
+        by smtp.gmail.com with ESMTPSA id k14sm856108pji.45.2021.10.27.18.01.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 18:01:02 -0700 (PDT)
+        Wed, 27 Oct 2021 18:01:41 -0700 (PDT)
 From:   Yang Guang <cgel.zte@gmail.com>
 X-Google-Original-From: Yang Guang <yang.guang5@zte.com.cn>
-To:     Song Liu <song@kernel.org>
+To:     Thomas Winischhofer <thomas@winischhofer.net>
 Cc:     Yang Guang <yang.guang5@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>, linux-raid@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] raid5-ppl: use swap() to make code cleaner
-Date:   Thu, 28 Oct 2021 01:00:53 +0000
-Message-Id: <20211028010053.7609-1-yang.guang5@zte.com.cn>
+Subject: [PATCH] video: use swap() to make code cleaner
+Date:   Thu, 28 Oct 2021 01:01:34 +0000
+Message-Id: <20211028010134.7681-1-yang.guang5@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -69,33 +70,22 @@ Using swap() make it more readable.
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 ---
- drivers/md/raid5-ppl.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/video/fbdev/sis/sis_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/raid5-ppl.c b/drivers/md/raid5-ppl.c
-index 3ddc2aa0b530..4ab417915d7f 100644
---- a/drivers/md/raid5-ppl.c
-+++ b/drivers/md/raid5-ppl.c
-@@ -1081,7 +1081,7 @@ static int ppl_load_distributed(struct ppl_log *log)
- 	struct ppl_conf *ppl_conf = log->ppl_conf;
- 	struct md_rdev *rdev = log->rdev;
- 	struct mddev *mddev = rdev->mddev;
--	struct page *page, *page2, *tmp;
-+	struct page *page, *page2;
- 	struct ppl_header *pplhdr = NULL, *prev_pplhdr = NULL;
- 	u32 crc, crc_stored;
- 	u32 signature;
-@@ -1156,9 +1156,7 @@ static int ppl_load_distributed(struct ppl_log *log)
- 		prev_pplhdr_offset = pplhdr_offset;
- 		prev_pplhdr = pplhdr;
- 
--		tmp = page;
--		page = page2;
--		page2 = tmp;
-+		swap(page, page2);
- 
- 		/* calculate next potential ppl offset */
- 		for (i = 0; i < le32_to_cpu(pplhdr->entries_count); i++)
+diff --git a/drivers/video/fbdev/sis/sis_main.c b/drivers/video/fbdev/sis/sis_main.c
+index 266a5582f94d..742f62986b80 100644
+--- a/drivers/video/fbdev/sis/sis_main.c
++++ b/drivers/video/fbdev/sis/sis_main.c
+@@ -213,7 +213,7 @@ static void sisfb_search_mode(char *name, bool quiet)
+ 		/* This does some fuzzy mode naming detection */
+ 		if(sscanf(strbuf1, "%u %u %u %u", &xres, &yres, &depth, &rate) == 4) {
+ 			if((rate <= 32) || (depth > 32)) {
+-				j = rate; rate = depth; depth = j;
++				swap(rate, depth);
+ 			}
+ 			sprintf(strbuf, "%ux%ux%u", xres, yres, depth);
+ 			nameptr = strbuf;
 -- 
 2.30.2
 
