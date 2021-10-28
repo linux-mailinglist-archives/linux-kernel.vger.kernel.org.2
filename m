@@ -2,98 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011DC43E27B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE1843E2B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhJ1Ntz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:49:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
+        id S231162AbhJ1Nz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:55:26 -0400
+Received: from ixit.cz ([94.230.151.217]:35258 "EHLO ixit.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229887AbhJ1Ntt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:49:49 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230370AbhJ1NzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:55:12 -0400
+Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FDE961056;
-        Thu, 28 Oct 2021 13:47:20 +0000 (UTC)
-Date:   Thu, 28 Oct 2021 14:51:47 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <hdegoede@redhat.com>,
-        <andriy.shevchenko@linux.intel.com>, <ddvlad@gmail.com>
-Subject: Re: [PATCH v2] iio: accel: kxcjk-1013: Fix possible memory leak in
- probe and remove
-Message-ID: <20211028145147.7ad93c5f@jic23-huawei>
-In-Reply-To: <20211025124159.2700301-1-yangyingliang@huawei.com>
-References: <20211025124159.2700301-1-yangyingliang@huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by ixit.cz (Postfix) with ESMTPSA id 5D70A20064;
+        Thu, 28 Oct 2021 15:52:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1635429161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IhbhJtURt+WnE9ECLdh1gqMi5nXfjMcR+LTiEWo/+2s=;
+        b=fcB6XX4004At1KY3+sfv99iJcibCHwuuu1xRny9RTu2cLvXDlLeMYiamkB25qVGjJHAka4
+        T0q6GYJuGrskIG7yQWiSp6cvF7MuEE9BeAN/CUIJNVe7DBtCp/1s94vHGaDgwaUqd+Odtt
+        RWeqqQcx0NNlwN2ePm2BD2H6aUo6rBs=
+Date:   Thu, 28 Oct 2021 15:52:35 +0200
+From:   David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH] WIP: dt-bindings: arm: hwmon: gpio-fan: Convert txt
+ bindings to yaml
+To:     Rob Herring <robh@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~okias/devicetree@lists.sr.ht
+Message-Id: <N7XO1R.T7ICL6D5U4CF3@ixit.cz>
+In-Reply-To: <YW86Ffa+zoIZpixu@robh.at.kernel.org>
+References: <20211009104309.45117-1-david@ixit.cz>
+        <YW86Ffa+zoIZpixu@robh.at.kernel.org>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 20:41:59 +0800
-Yang Yingliang <yangyingliang@huawei.com> wrote:
 
-> When ACPI type is ACPI_SMO8500, the data->dready_trig will not be set, the
-> memory allocated by iio_triggered_buffer_setup() will not be freed, and cause
-> memory leak as follows:
-> 
-> unreferenced object 0xffff888009551400 (size 512):
->   comm "i2c-SMO8500-125", pid 911, jiffies 4294911787 (age 83.852s)
->   hex dump (first 32 bytes):
->     02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 20 e2 e5 c0 ff ff ff ff  ........ .......
->   backtrace:
->     [<0000000041ce75ee>] kmem_cache_alloc_trace+0x16d/0x360
->     [<000000000aeb17b0>] iio_kfifo_allocate+0x41/0x130 [kfifo_buf]
->     [<000000004b40c1f5>] iio_triggered_buffer_setup_ext+0x2c/0x210 [industrialio_triggered_buffer]
->     [<000000004375b15f>] kxcjk1013_probe+0x10c3/0x1d81 [kxcjk_1013]
-> 
-> Fix it by remove data->dready_trig condition in probe and remove.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: a25691c1f967 ("iio: accel: kxcjk1013: allow using an external trigger")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Applied to the fixes-togreg branch of iio.git.  Note this will hit mainline after the merge window
-now.   Also, we should look at taking this driver fully over to devm managed functions.
-Looks easy to do and would have avoided this particular leak.
 
-Jonathan
 
-> ---
-> v2:
->   drop some calltrace in commit message
-> ---
->  drivers/iio/accel/kxcjk-1013.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+On Tue, Oct 19 2021 at 16:35:17 -0500, Rob Herring <robh@kernel.org> 
+wrote:
+> On Sat, Oct 09, 2021 at 12:43:09PM +0200, David Heidelberg wrote:
+>>  Convert fan devices connected to GPIOs to the YAML syntax.
+>> 
+>>  Signed-off-by: David Heidelberg <david@ixit.cz>
+>>  ---
+>>   .../devicetree/bindings/hwmon/gpio-fan.txt    | 41 -----------
+>>   .../devicetree/bindings/hwmon/gpio-fan.yaml   | 69 
+>> +++++++++++++++++++
+>>   2 files changed, 69 insertions(+), 41 deletions(-)
+>>   delete mode 100644 
+>> Documentation/devicetree/bindings/hwmon/gpio-fan.txt
+>>   create mode 100644 
+>> Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
+>> 
+>>  diff --git a/Documentation/devicetree/bindings/hwmon/gpio-fan.txt 
+>> b/Documentation/devicetree/bindings/hwmon/gpio-fan.txt
+>>  deleted file mode 100644
+>>  index f4cfa350f6a1..000000000000
+>>  --- a/Documentation/devicetree/bindings/hwmon/gpio-fan.txt
+>>  +++ /dev/null
+>>  @@ -1,41 +0,0 @@
+>>  -Bindings for fan connected to GPIO lines
+>>  -
+>>  -Required properties:
+>>  -- compatible : "gpio-fan"
+>>  -
+>>  -Optional properties:
+>>  -- gpios: Specifies the pins that map to bits in the control value,
+>>  -  ordered MSB-->LSB.
+>>  -- gpio-fan,speed-map: A mapping of possible fan RPM speeds and the
+>>  -  control value that should be set to achieve them. This array
+>>  -  must have the RPM values in ascending order.
+>>  -- alarm-gpios: This pin going active indicates something is wrong 
+>> with
+>>  -  the fan, and a udev event will be fired.
+>>  -- #cooling-cells: If used as a cooling device, must be <2>
+>>  -  Also see:
+>>  -  
+>> Documentation/devicetree/bindings/thermal/thermal-cooling-devices.yaml
+>>  -  min and max states are derived from the speed-map of the fan.
+>>  -
+>>  -Note: At least one the "gpios" or "alarm-gpios" properties must be 
+>> set.
+>>  -
+>>  -Examples:
+>>  -
+>>  -	gpio_fan {
+>>  -		compatible = "gpio-fan";
+>>  -		gpios = <&gpio1 14 1
+>>  -			 &gpio1 13 1>;
+>>  -		gpio-fan,speed-map = <0    0
+>>  -				      3000 1
+>>  -				      6000 2>;
+>>  -		alarm-gpios = <&gpio1 15 1>;
+>>  -	};
+>>  -	gpio_fan_cool: gpio_fan {
+>>  -		compatible = "gpio-fan";
+>>  -		gpios = <&gpio2 14 1
+>>  -			 &gpio2 13 1>;
+>>  -		gpio-fan,speed-map =	<0    0>,
+>>  -					<3000 1>,
+>>  -					<6000 2>;
+>>  -		alarm-gpios = <&gpio2 15 1>;
+>>  -		#cooling-cells = <2>; /* min followed by max */
+>>  -	};
+>>  diff --git a/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml 
+>> b/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
+>>  new file mode 100644
+>>  index 000000000000..e2db65d58a92
+>>  --- /dev/null
+>>  +++ b/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
+>>  @@ -0,0 +1,69 @@
+>>  +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>  +%YAML 1.2
+>>  +---
+>>  +$id: "http://devicetree.org/schemas/hwmon/gpio-fan.yaml#"
+>>  +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>>  +
+>>  +title: Bindings for fan connected to GPIO lines
+>>  +
+>>  +maintainers:
+>>  +  - Rob Herring <robh+dt@kernel.org>
 > 
-> diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
-> index a51fdd3c9b5b..24c9387c2968 100644
-> --- a/drivers/iio/accel/kxcjk-1013.c
-> +++ b/drivers/iio/accel/kxcjk-1013.c
-> @@ -1595,8 +1595,7 @@ static int kxcjk1013_probe(struct i2c_client *client,
->  	return 0;
->  
->  err_buffer_cleanup:
-> -	if (data->dready_trig)
-> -		iio_triggered_buffer_cleanup(indio_dev);
-> +	iio_triggered_buffer_cleanup(indio_dev);
->  err_trigger_unregister:
->  	if (data->dready_trig)
->  		iio_trigger_unregister(data->dready_trig);
-> @@ -1618,8 +1617,8 @@ static int kxcjk1013_remove(struct i2c_client *client)
->  	pm_runtime_disable(&client->dev);
->  	pm_runtime_set_suspended(&client->dev);
->  
-> +	iio_triggered_buffer_cleanup(indio_dev);
->  	if (data->dready_trig) {
-> -		iio_triggered_buffer_cleanup(indio_dev);
->  		iio_trigger_unregister(data->dready_trig);
->  		iio_trigger_unregister(data->motion_trig);
->  	}
+> Just robh@kernel.org
+> 
+>>  +
+>>  +properties:
+>>  +  compatible:
+>>  +    const: gpio-fan
+>>  +
+>>  +  gpios:
+>>  +    description: |
+>>  +      Specifies the pins that map to bits in the control value,
+>>  +      ordered MSB-->LSB.
+> 
+> minItems: 1
+> maxItems: 7 ?
+> 
+>>  +
+>>  +  gpio-fan,speed-map:
+>>  +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>>  +    minItems: 4
+>>  +    maxItems: 254
+>>  +    description: |
+>>  +      A mapping of possible fan RPM speeds and the
+>>  +      control value that should be set to achieve them. This array
+>>  +      must have the RPM values in ascending order.
+> 
+> Really this should be a uint32-matrix with this schema:
+> 
+> items:
+>   minItems: 2
+>   maxItems: 127
+>   items:
+>     - description: fan speed in RPMs
+>     - description: control value
+> 
+>>  +
+>>  +  alarm-gpios:
+>>  +    description: |
+>>  +      This pin going active indicates something is wrong with
+>>  +      the fan, and a udev event will be fired.
+> 
+> maxItems: 1
+> 
+> udev is a linuxism and shouldn't be in the binding.
+> 
+>>  +
+>>  +  '#cooling-cells':
+>>  +    const: 2
+>>  +
+>>  +required:
+>>  +  - compatible
+>>  +  - gpio-fan,speed-map
+>>  +
+>>  +anyOf:
+>>  +  - required: [gpios]
+> 
+> How is 'gpios' not always required?
+> 
+>>  +  - required: [alarm-gpios]
+>>  +
+>>  +additionalProperties: false
+>>  +
+>>  +examples:
+>>  +  - |
+>>  +    gpio_fan {
+>>  +      compatible = "gpio-fan";
+>>  +      gpios = <&gpio1 14 1
+>>  +               &gpio1 13 1>;
+>>  +      gpio-fan,speed-map = <0    0
+>>  +                            3000 1
+>>  +                            6000 2>;
+> 
+> Brackets needed around each pair.
+
+Well, that's the issue. I would love to use u32-matrix, but all the 
+drivers use < x1 x2 y1 x2 ... z1 z2 > syntax and driver suggests it's 
+the right solution.
+         * Speed map is in the form <RPM ctrl_val RPM ctrl_val ...>
+
+Someone had to rewrite the driver and the DTS files to fix it. We could 
+mark old format as deprecated and use u32-matrix, but for now with 
+current drivers it's not a solution.
+
+What you think? Should I document it as it is (so u32-array)?
+
+David
+
+> 
+>>  +      alarm-gpios = <&gpio1 15 1>;
+>>  +    };
+>>  +  - |
+>>  +    gpio_fan_cool: gpio_fan {
+>>  +      compatible = "gpio-fan";
+>>  +      gpios = <&gpio2 14 1
+>>  +               &gpio2 13 1>;
+>>  +      gpio-fan,speed-map = <0    0
+>>  +                            3000 1
+>>  +                            6000 2>;
+>>  +      alarm-gpios = <&gpio2 15 1>;
+>>  +      #cooling-cells = <2>; /* min followed by max */
+>>  +    };
+>>  --
+>>  2.33.0
+>> 
+>> 
+
 
