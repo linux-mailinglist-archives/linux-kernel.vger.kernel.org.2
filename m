@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7D143D954
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B9643D955
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhJ1CcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37504 "EHLO mail.kernel.org"
+        id S229833AbhJ1CcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhJ1CcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:32:13 -0400
+        id S229704AbhJ1CcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:32:14 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2F6B610C7;
+        by mail.kernel.org (Postfix) with ESMTPSA id D37E961100;
         Thu, 28 Oct 2021 02:29:47 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mfvAo-0010zy-OK;
+        id 1mfvAo-00110X-Un;
         Wed, 27 Oct 2021 22:29:46 -0400
-Message-ID: <20211028022946.582230137@goodmis.org>
+Message-ID: <20211028022946.780675650@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 27 Oct 2021 22:29:16 -0400
+Date:   Wed, 27 Oct 2021 22:29:17 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 1/3] bootconfig: Initialize ret in xbc_parse_tree()
+        "Robin H. Johnson" <robbat2@gentoo.org>
+Subject: [for-next][PATCH 2/3] tracing: Show size of requested perf buffer
 References: <20211028022915.320082859@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,40 +37,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: "Robin H. Johnson" <robbat2@gentoo.org>
 
-The do while loop continues while ret is zero, but ret is never
-initialized. The check for ret in the loop at the while should always be
-initialized, but if an empty string were to be passed in, q would be NULL
-and p would be '\0', and it would break out of the loop without ever
-setting ret.
+If the perf buffer isn't large enough, provide a hint about how large it
+needs to be for whatever is running.
 
-Set ret to zero, and then xbc_verify_tree() would be called and catch that
-it is an empty tree and report the proper error.
+Link: https://lkml.kernel.org/r/20210831043723.13481-1-robbat2@gentoo.org
 
-Link: https://lkml.kernel.org/r/20211027105753.6ab9da5f@gandalf.local.home
-
-Fixes: bdac5c2b243f ("bootconfig: Allocate xbc_data inside xbc_init()")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Robin H. Johnson <robbat2@gentoo.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- lib/bootconfig.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_event_perf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index a10ab25f6fcc..70e0d52ffd24 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -836,7 +836,7 @@ static int __init xbc_verify_tree(void)
- static int __init xbc_parse_tree(void)
- {
- 	char *p, *q;
--	int ret, c;
-+	int ret = 0, c;
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index fba8cb77a73a..a114549720d6 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -400,7 +400,8 @@ void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp)
+ 	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
  
- 	last_parent = NULL;
- 	p = xbc_data;
+ 	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
+-		      "perf buffer not large enough"))
++		      "perf buffer not large enough, wanted %d, have %d",
++		      size, PERF_MAX_TRACE_SIZE))
+ 		return NULL;
+ 
+ 	*rctxp = rctx = perf_swevent_get_recursion_context();
 -- 
 2.33.0
