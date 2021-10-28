@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3591243DFFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4DA43E004
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhJ1LbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbhJ1LbK (ORCPT
+        id S230214AbhJ1LcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:32:01 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:34673 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhJ1LcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:31:10 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890A6C061570;
-        Thu, 28 Oct 2021 04:28:43 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 187so5634459pfc.10;
-        Thu, 28 Oct 2021 04:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gQFplOd7AdgUe+nOj1VdUU7Afy07VLeiglFcD1nsIqc=;
-        b=jEcrCaWtuRq6M+hdzOY2U1QMbYuX9kMvsGIB2I+LqoggKm1DOQ8sg1b1NK9NHAOq6r
-         25Wa2YQHz4Zg+SJDoPKY7tV/Xb7xTboQv9NxIyxrSO3Btag85Bc7fFnCaTxSvo5vwHsl
-         C0G8SlOztDGrEFYBN4z9hLCVHXv//Aqh5tLpGLfq+IdAnSptd8hML50VefpDoY3Lu6G2
-         3gKtPc9DcZPeduOGzHSUe1pHnXZICVnBCB71DIQgKEBAbQILM7FVxBrAm9gv5PImiX/h
-         j+Ng9YPofTaf5lh/+W4QLDM7RIr+VpclV439SsBpoRFDvc2ZvTuOVXZu2BsshgB0U0Rx
-         DvkA==
+        Thu, 28 Oct 2021 07:32:00 -0400
+Received: by mail-wr1-f49.google.com with SMTP id d10so9630332wrb.1;
+        Thu, 28 Oct 2021 04:29:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gQFplOd7AdgUe+nOj1VdUU7Afy07VLeiglFcD1nsIqc=;
-        b=nbKh9Q9DjEuixxKqNycZuA3u1bkVW1caMkzXXk2j4vXldSzj+WXgxagEAejaONAC4U
-         cxefufAON9+k3wjJH9lXCFkvd8x3XNasqQv+PGqhwpAeQCtZW/Ky/tr83PAtpwCWsVns
-         oppu9aXiPJWGzd4+VjF+7bTPSu9cEk5SH8imMlHQVLWckeQY+NkPMH1pE3yq272hcxMH
-         WIaavjD52NfvuucuCZa+pEBBdK/ojgn/qS1zqarHWHE5e+MislBbS+M88A+TTQqjbFCU
-         YFihGVQQqCKMbffonIkJdCFdZvGvz5HAFraJkXvqzPEj/qgQ36Ztfcgur1BYMJebojV+
-         U6/Q==
-X-Gm-Message-State: AOAM530FsKq1kOWiNZbQwQBTxvXVkQ8X3LvYlOld0tVHQjM46N+Glk6C
-        p0XtvxCOd13i19vLKdsQgmp+U/PudSo=
-X-Google-Smtp-Source: ABdhPJytVmeIm+P2sxi8A1p98b2+YklwfMLmjys9pQn1QpUuaHmsvLWWU4Wuj23aMJ68a6lw6jcYpA==
-X-Received: by 2002:a62:f20e:0:b0:47b:f629:6b52 with SMTP id m14-20020a62f20e000000b0047bf6296b52mr3618569pfh.53.1635420523156;
-        Thu, 28 Oct 2021 04:28:43 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id f4sm2501316pgn.93.2021.10.28.04.28.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=421f3LwifZUZNPSEyEAdKWVD1ka58kXxmjC4jtayTyo=;
+        b=NSGDJFTPLklghMnOlmJnaNsx1pS7aPIzRvpVTfA6EOZ7sawX2Jp/TCVwYG+82l0L5/
+         omQy67Spgjto71I2sg/pCXjm+Ut++sin7Bw0weh/zBKiFNZyxdmgVPiV+8X6mpMsbXp4
+         AsOmZzGdOuIA3NuCcdWDLgUyelRn7WL8W1JsLxK2lJmB7sOVqF51T5Ur6Z2bm6cBk2qo
+         2SeOvfE9W63+7wttiDCdNcD0MMcfp68hrMKlgJ4M3PUA77L7WsZnF4BmUldlcv5Od4Y6
+         e6nhivW9+nNhUDrXfw2T6deeSRolN3JwJB6mB3T+UG96xeErYjEMblGTh2DQAJgNxP8P
+         0p5w==
+X-Gm-Message-State: AOAM532LAb2sVgoTWxuW9QbFLrknuGvgvPTXNH4n+6c2btw5D4rvY7tN
+        L3aFeftEhVXUSK3RDPlkUrs=
+X-Google-Smtp-Source: ABdhPJyl0gL67L8UZYs45igP2Y6XhiUvKPuocLTaWT/V3kiRoVKZvhWhV3phJ2qExXMh/65iUF/qJQ==
+X-Received: by 2002:a5d:6dae:: with SMTP id u14mr4951249wrs.46.1635420572916;
+        Thu, 28 Oct 2021 04:29:32 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id 3sm2673764wms.5.2021.10.28.04.29.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 04:28:42 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     djwong@kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Thu, 28 Oct 2021 04:29:32 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 11:29:31 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     cgel.zte@gmail.com
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] xfs: use swap() to make code cleaner
-Date:   Thu, 28 Oct 2021 11:28:30 +0000
-Message-Id: <20211028112830.16381-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] x86/hyperv: remove duplicate include in hv_init.c
+Message-ID: <20211028112931.3zq5qialuzro4mc5@liuwe-devbox-debian-v2>
+References: <20211027081808.2099-1-ran.jianping@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027081808.2099-1-ran.jianping@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Wed, Oct 27, 2021 at 08:18:08AM +0000, cgel.zte@gmail.com wrote:
+> From: ran jianping <ran.jianping@zte.com.cn>
+> 
+> 'linux/io.h' included in 'arch/x86/hyperv/hv_init.c'
+>  is duplicated.It is also included on the 23 line.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
 
-Use swap() in order to make code cleaner. Issue found by coccinelle.
+This is fixed by an earlier patch which happened to be sent out one day
+before yours. I just picked that one up.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- fs/xfs/xfs_inode.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Thanks anyway.
 
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index a4f6f034fb81..518c82bfc80d 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -564,8 +564,6 @@ xfs_lock_two_inodes(
- 	struct xfs_inode	*ip1,
- 	uint			ip1_mode)
- {
--	struct xfs_inode	*temp;
--	uint			mode_temp;
- 	int			attempts = 0;
- 	struct xfs_log_item	*lp;
- 
-@@ -578,12 +576,8 @@ xfs_lock_two_inodes(
- 	ASSERT(ip0->i_ino != ip1->i_ino);
- 
- 	if (ip0->i_ino > ip1->i_ino) {
--		temp = ip0;
--		ip0 = ip1;
--		ip1 = temp;
--		mode_temp = ip0_mode;
--		ip0_mode = ip1_mode;
--		ip1_mode = mode_temp;
-+		swap(ip0, ip1);
-+		swap(ip0_mode, ip1_mode);
- 	}
- 
-  again:
--- 
-2.25.1
+Wei.
 
+> ---
+>  arch/x86/hyperv/hv_init.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index a16a83e46a30..4fb7c7bb164e 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -20,7 +20,6 @@
+>  #include <linux/kexec.h>
+>  #include <linux/version.h>
+>  #include <linux/vmalloc.h>
+> -#include <linux/io.h>
+>  #include <linux/mm.h>
+>  #include <linux/hyperv.h>
+>  #include <linux/slab.h>
+> -- 
+> 2.25.1
+> 
