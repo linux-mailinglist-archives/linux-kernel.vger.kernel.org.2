@@ -2,171 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A95843E377
+	by mail.lfdr.de (Postfix) with ESMTP id BE14643E379
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhJ1OX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:23:26 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33108 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231235AbhJ1OXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231308AbhJ1OX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:23:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37514 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230480AbhJ1OXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Oct 2021 10:23:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="230270359"
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="230270359"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 07:20:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="597814583"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by orsmga004.jf.intel.com with ESMTP; 28 Oct 2021 07:20:33 -0700
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 28 Oct 2021 07:20:32 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 28 Oct 2021 07:20:32 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Thu, 28 Oct 2021 07:20:32 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Thu, 28 Oct 2021 07:20:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BrrzgCn0hfcVq3u5p/u/b8rtK+hzzpbP9gvFSvrBhhP2J0J4q5IAJ/GQHFU1gvEJWrdg8p8xEzLdCxBkam6sueDAEd25QeMJr8TM3BPcp9R2/y9Ni4RPL010nZoEuQS3Q+kirhaTB9hchJdEWPSVeBkMXK/x1BRBd6RN2ivJphCZsAlxTephDIk3iawGTvNvSO8cn+fG14bHrb06kQWCON64i+SrXOK4cKTeHpgSxhJij7n9eq1bgcNljXa93T2jVEBKAilBxS/L/YABW+QfDtoAtq9ZdJEpHxeYfFG1YaSm5RxoIm7tvGR81WJRjuzKF7RdNhnJCOdiN0XAjyJu3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K4N4O2Vr6kMSbVMluiYr7XqGxdJj7RRu0BWBIVb2y18=;
- b=PBgUcIhQ+Z6uoNQYtB5XS1Q1OD3vhz+9nC+SBxf9GP7vGUFsyxEGqtjdScxAQe4y4cPKc8E4AqO1oZ58lh4wN/j3+RZVo+SrWcT8YzT9w9aEQzXi+h33LcFp58Zu7SBuoSp/uF9huwnxOE/wOXKb+/nZKg+v3h9YpKAC0tCwkShpqksr6/5041508XGoRThmn2BQ99p8gCouFNg9yNwzKzB7SNZ/GWvANZmm3Y9byp2bIK1+kWPByE+44338+qaaUd1vcyfppgcMCX1SWnV3Um11eAMePv/Cukoyu10zXsGVEi3nc2iE+YnGtMnJd7CNwkhHNHypkN4e6pIsUOLAtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K4N4O2Vr6kMSbVMluiYr7XqGxdJj7RRu0BWBIVb2y18=;
- b=f+nUu8f6sOYFr2dvO3g2EYzaYFpBMHaw4zCjCRX3qAnlIhosPo4luffuHMKoOp4bFi+Z5m6IIoqF0yt5iwnz5YI7jqS51nORga/d8I8LeBVR49ZvtjuFvcy2DBMLlPHabPX6/Pq4zYkGO4qidzkyNSmWP9pVye6BEWiS5AL6RnY=
-Received: from SA2PR11MB4891.namprd11.prod.outlook.com (2603:10b6:806:11e::18)
- by SN6PR11MB2685.namprd11.prod.outlook.com (2603:10b6:805:58::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Thu, 28 Oct
- 2021 14:20:31 +0000
-Received: from SA2PR11MB4891.namprd11.prod.outlook.com
- ([fe80::3d8a:d8b6:947c:f2c3]) by SA2PR11MB4891.namprd11.prod.outlook.com
- ([fe80::3d8a:d8b6:947c:f2c3%5]) with mapi id 15.20.4649.015; Thu, 28 Oct 2021
- 14:20:31 +0000
-From:   "Lu, Brent" <brent.lu@intel.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        "Wang, Rander" <rander.wang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Julian Braha <julianbraha@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Subject: RE: [PATCH] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS
- codec
-Thread-Topic: [PATCH] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS
- codec
-Thread-Index: AQHXy8GV33wTYpHcSkm1Rlt4HlBd66vocB8AgAAF5LA=
-Date:   Thu, 28 Oct 2021 14:20:31 +0000
-Message-ID: <SA2PR11MB4891B36669720A98FA9B348797869@SA2PR11MB4891.namprd11.prod.outlook.com>
-References: <20211028060203.446093-1-brent.lu@intel.com>
- <2ca92247-70c6-a092-8fe2-cfca9d6f18e6@linux.intel.com>
-In-Reply-To: <2ca92247-70c6-a092-8fe2-cfca9d6f18e6@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.6.200.16
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ff261a58-2c28-4c67-f1cb-08d99a1e1973
-x-ms-traffictypediagnostic: SN6PR11MB2685:
-x-microsoft-antispam-prvs: <SN6PR11MB2685DCE4189422AC114AFBDE97869@SN6PR11MB2685.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PspaECJiv3lv8b/IDbmkGpXaCZA5qpMNnZiitq1epN7EzqNkuKQ81io3zvB2vu6rIyr6CFQwI2axynuJQRfJR0rTtyDl8UgkoqFXYLWRU42jgbuh+2uUgg/MfWlhpOiOyTov7xkvfua4OeUptFTnDsXr8rTQAkMXVAcuHR+rnqlgYN0mFTrk1uBfMv2wq2hGK4u1hZOP0r80Xobpif3soAAXLRlvKmb7EsS5bYgiDbafx1HsTYABl0lLxVmS56vN7JCBv4DPShMEGz5Lo9xVDU1ZJINwJxHk3r+UyvsdtGjaCEQYj9juS//lfeIQAL07oZS4xXfkdQVNZdR/RwbNQq0KbL9vBwzcxUP2fnweg+k72Lhj7C21jeH2FthZH3fTs8Grfy75LUywJF/NSCBRNYtPB0e1n4aJOt/GuFkhe0bQuKBSmkCQZMzChgZRv2no7TLmUKJ06fzuabIH2OtsTiRmM2GrJtzJ4dkNfo0Wxv3yNTGz1iOeXn3/QIsYuRJ/AaU5rl5PjSQ27bBdTZKHt/3T6o68olgu8rRR3cV87jzcby/r+yYGRz3SaJTiGCHAtGTBq/toPvLfj+qepbtcY8JievM8S5PBMugXysOwpg/CPu5JPxVwKjxNZ/wKo9Ta2byK5lhFIBrU/BSVQd1C0BRAe3qY7nRbSLL7/+Ykt7kK6iyVyAerk5BfW/ZymwT+oYTlS+b7ZW7OIiGTFOomMGj4RYiC+cQlyd/rkAIwvA4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4891.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(9686003)(110136005)(82960400001)(55016002)(33656002)(26005)(2906002)(316002)(4326008)(5660300002)(52536014)(186003)(7416002)(4744005)(54906003)(38100700002)(76116006)(508600001)(66556008)(66446008)(64756008)(66476007)(7696005)(8936002)(8676002)(71200400001)(122000001)(38070700005)(66946007)(6506007)(86362001)(83380400001)(11716005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RkhweHNpSUY1Q0tRbXRyTFBKSTNhMHVYVDBlMUR6MHlZbWdaV0g0NmVIdDR4?=
- =?utf-8?B?TmtYRTY2eWdtTks1VlJGNFhXZGdvamp5WnNZRzhKcWZTQ295aCtqbFRZM3Vl?=
- =?utf-8?B?SzlVNTl2cFR4YjdDOU0vT205Q0RRQjZROHJjOXZqMGRtYzZKdzhwbmdJNkhD?=
- =?utf-8?B?RjUwNXVZTGVKMkNZU1ZKWWYySk9WZVRDSlF4WGFyZDJJcW5QZnRHTUNyak1Z?=
- =?utf-8?B?VDlwZm9pemMwdlBSb09nMUZnVjB1SHdlbjZnRCs2cm1RTlBDODhxUDVyaVJ1?=
- =?utf-8?B?QkQzYjZTZVNGL2xLZGpMZzliN0FQbmY0UnZxSEVrZkdHUTF0TFpGUlpJU0ZH?=
- =?utf-8?B?SGIrZjRvYUIwZzZ1em1CZE5Ud1RVRHNHbUhsd1lDdHJiYmtqTy9TT3FrTVQ4?=
- =?utf-8?B?VUt6Q0NkNUhXVTJsN1UwK2VHVVlvTnYyNjZOSHRIN0wzSmQ1YjBxemEwcnJo?=
- =?utf-8?B?R3lOZXFkcndEd0N1NUp4UzQvN3Z4NnhzWGhkUXAyV0NYemdQYkhYODc3azE2?=
- =?utf-8?B?a1NlWmQ1WEtNcVpPdDZuN3Z3L1AvWnpyaUhkL3UvdjBML3crZWszUEE1ajFh?=
- =?utf-8?B?NXo3anRHeGY1TzNPV3FjQWFWSWRqbitta2JPNnNzNGZPNDArOW5nbnBzUEt4?=
- =?utf-8?B?WWEzWkpRcnY4T1A3Z1E5T0JEVEN4anJEVUI5SlZPZ3pOdkF4OHpYRjJmYjhp?=
- =?utf-8?B?OHk2OWt3UEgrajZtaG9jRHA2TjVnV3V0Y3VFbStDNXBmYlFUbjdhNHhFK0NJ?=
- =?utf-8?B?bHhFNklBUGpGZFNtS244ZTM1NzdxN0dkeE1naHUzRHNwZkZxeGhyNzRlM003?=
- =?utf-8?B?K1E0azhuYkdRTTZvOTBPWHhxcExEZ3NIZjZxb1JMVDYzMnpFNjE1NFJ4NnU2?=
- =?utf-8?B?OWgrMGpKZ3FCSEZNcUplM3RKY0RZOUtySGpWMUlhUTlUMldvdTJOSURsQ29W?=
- =?utf-8?B?WkkzVVNDeHFqZUNHcWhJSDBJZ0NuaVNrNVJkWFhVNWpIVVNYTUxCQWpCMFhB?=
- =?utf-8?B?cURwUFIzaEpKQ3hhYzBmekVjTEtHc1ZLNUtEYWVKVFBSbnhUNTFjVzhCU3BI?=
- =?utf-8?B?amJOTC9icjQrelVHNDhBdWNsNnhReFhERVdscXlWYVFleTg3ZGVLc2lFWnZO?=
- =?utf-8?B?N1NUOWM0L0VzK3VlQzRMK3l6NmNZcGRiYStXU05YQ3Q1ekNTTnpjdnI5cmlF?=
- =?utf-8?B?MXdRREhwcmxHTWdiRkc5ZXhVM0RQa0RjMndhdHNNSjJsWVRhODViQVM2QW9O?=
- =?utf-8?B?VE5halNVajZqZ2FVMmdzcE9SSmgxK2dlTTF3UW41MFpOcU5UVjJPaEtTc3Nn?=
- =?utf-8?B?ckR2Q1NpMXRzbTRHZ0tPRTVsQ3plNEJVUXZvR3ROWHZjNkM0Ny9nb0Q3TDR1?=
- =?utf-8?B?OXFhZjBKajNHT1l4VjV5UjAxNVdCOE5CUk54dWpLYzVPMnRZR2wvNzAzYjcy?=
- =?utf-8?B?RExxMkpld0pJL1U5QTlMQitNUnRaQkQrM0x6Unh5UmRiOEZ2Um1CeFZocjhr?=
- =?utf-8?B?d0NPZDYxa2Qya3hFZHI2MlNvbG1XdWZubFlPZUdmSU9ybFk3RHZ6Qlh3Y3kz?=
- =?utf-8?B?aTVvQ3RGTXJtM0tobEJmSDNDNFBxUWcrT3gvTUgwdVpEd1ZiYlNMcmFVdVpp?=
- =?utf-8?B?UjFaNkhsR3hmTFQ3WWEwQWJWWXJRa2gvN21VcEJJcVdMYy92REREbm52VTgx?=
- =?utf-8?B?TW1TSE5lZG5FY1VoWlY2Sm5tWTZIbE9yNTN2c3N4SDFiQ2FHVktQcSt0RjlT?=
- =?utf-8?B?VCtNSDROYmoxeGc2ZlNjRHNIOU1PVWZZYlpqS2x5OEdIeVVsSVdvVW5YalVt?=
- =?utf-8?B?bHJhWWlRZFNIR3dHMEh6M1h6TGhPTWRLM2tRSW8xUms1aUZjL08yWEdHUkFJ?=
- =?utf-8?B?eTBkWTZaTE5keGRYYk1PZ2gwcXRwUWdSbkM1ZlZNRjBNdXBDNEFyOHNraUhY?=
- =?utf-8?B?elVUZDFpMDRqZlFGYnJrVnI0QmNDaWF6MmQ0dXJQdnVCNC9kenJ1YTljRFRK?=
- =?utf-8?B?UkJCMTFDYSsxa3l4a2MydjNVcG9SRlBvVGNSeTEzc1A4KzYyaDJZMUVWbU5R?=
- =?utf-8?B?S2tQV28wMExsMVEyYUdPSEtqZmRkWlIrYjdYelcwdXBHTzhFdEhxOStZcjdU?=
- =?utf-8?B?bVRIN1VLcm0xdnRjOXF2TEFYakdFQjhXeVlvVnJ2dVUxajJSWVVsL1ZRSkpW?=
- =?utf-8?B?SHc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635430849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ACHZw6gZCSMFI1V1OWrwm+s4ColIYm0RTLQm70jRkM=;
+        b=T1dPl0xb4RYVztuE9nQAyCNIYUFFLzgzsqixfny/dnc267rATbQItMl331UIZIPYTWUN0C
+        DXWwR7OCj4M4AhOLJ3Q2dKlEVf6BArQa/COoViN6QMtb02M4NRc2x/0n732RV6iBOHu03W
+        pQeVmExZuI3V13bfL9HB2DjY30Rb01w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-548-CfdvRAgjMwu6KH9dDOuK-Q-1; Thu, 28 Oct 2021 10:20:46 -0400
+X-MC-Unique: CfdvRAgjMwu6KH9dDOuK-Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 860F5BBEE4;
+        Thu, 28 Oct 2021 14:20:44 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.9.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 304745D9DE;
+        Thu, 28 Oct 2021 14:20:44 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C04D0220562; Thu, 28 Oct 2021 10:20:43 -0400 (EDT)
+Date:   Thu, 28 Oct 2021 10:20:43 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Ioannis Angelakopoulos <iangelak@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: [RFC PATCH 1/7] FUSE: Add the fsnotify opcode and in/out structs
+ to FUSE
+Message-ID: <YXqxu3iks1Skjhwi@redhat.com>
+References: <20211025204634.2517-1-iangelak@redhat.com>
+ <20211025204634.2517-2-iangelak@redhat.com>
+ <CAOQ4uxinGYb0QtgE8To5wc2iijT9VpTgDiXEp-9YXz=t_6eMbA@mail.gmail.com>
+ <YXnImHp1QfZYZ1OU@redhat.com>
+ <CAOQ4uxiY=sZVsJF670T73bk2zq+LpG9B5VQA-5rOOpaSrvhdXA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4891.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff261a58-2c28-4c67-f1cb-08d99a1e1973
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2021 14:20:31.5086
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 53sLV7TI5HJO4gmqWDALivZ4GKoxWxSxVc/H3ZmsdRPpga1THb3sKrdjGdHptFUPaLZp8T0edep3OznGZ1fNOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2685
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxiY=sZVsJF670T73bk2zq+LpG9B5VQA-5rOOpaSrvhdXA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gbml0LXBpY2s6IHRoaXMgYnJhbmNoIGlzIG5vdCByZXF1aXJlZCwgdGhlIGZpZWxkIGlz
-IGFscmVhZHkgcmVzZXQgd2l0aCBremFsbG9jKCkuDQo+IA0KV2lsbCByZW1vdmUgaXQuDQoNCj4g
-DQo+IEhhdmUgeW91IGFjdHVhbGx5IHRlc3RlZCB3aXRoIHRoaXMgZmlybXdhcmU/IGlmIG5vdCwg
-aXQncyBwcm9iYWJseSBiZXR0ZXIgbm90IHRvDQo+IGxpc3QgaXQgYXMgYW4gb3B0aW9uLg0KPiAN
-Ckl0J3MgdmFsaWRhdGVkIGJ5IE9ETSBvbiBHTEsgQ2hyb21lYm9vay4gU28gSSB0aGluayBvbmx5
-IFNPRiBGVyBpcyB2YWxpZGF0ZWQuDQpXaWxsIHJlbW92ZSB0aGlzIGxpbmUgaW4gVjIgcGF0Y2gu
-DQoNCg0KDQo=
+On Thu, Oct 28, 2021 at 07:13:10AM +0300, Amir Goldstein wrote:
+> > > you need to either include the generation in object identifier
+> > > or much better use the object's nfs file handle, the same way
+> > > that fanotify stores object identifiers.
+> >
+> > I think nfs file handle is much more complicated and its a separate
+> > project altogether. I am assuming we are talking about persistent
+> > nfs file handle as generated by host. I think biggest issue we faced
+> > with that is that guest is untrusted and we don't want to resolve
+> > file handle provided by guest on host otherwise guest can craft
+> > file handles and possibly be able to open other files on same filesystem
+> > outside shared dir.
+> >
+> 
+> Right now, virtiofsd keeps all inodes and dentries of live client inodes
+> pinned in cache on the server.
+> If you switch to file handles design, virtiofsd only need to keep a map
+> of all the file handles that server handed out to client to address
+> this concern.
+
+Keeping a map of all file handles server handed out to client, should work.
+But that means these file handles are not persistent and can't be used after
+a vritiofsd restart (virtiofsd will lose its map over restart). And that
+means one can not pass these file handles to user space. And that rules out
+giving file handle to user space as part of fanotify API, IIUC.
+
+So in practice it is as good as (nodeid, generation) solution. And using
+file handles means giving CAP_DAC_READ_SEARCH to virtiofsd daemon. Will
+really like to run virtiofsd unrpviliged (in a user namespace) and be
+able to support as many features as possible.
+
+> 
+> For directories, this practice is not even needed for security, because
+> a decoded directory file handle can be verified to be within the shared dir.
+> It is only needed to prevent DoS, because a crafted directory file handle
+> (outside of shared dir) can be used to generate extra IO and thrash the
+> inode/dentry cache on the server.
+
+Good to know that for directories only DOS is a concern.
+
+> 
+> > >
+> > > > +       uint64_t mask;
+> > > > +       uint32_t namelen;
+> > > > +       uint32_t cookie;
+> > >
+> > > I object to persisting with the two-events-joined-by-cookie design.
+> > > Any new design should include a single event for rename
+> > > with information about src and dst.
+> > >
+> > > I know this is inconvenient, but we are NOT going to create a "remote inotify"
+> > > interface, we need to create a "remote fsnotify" interface and if server wants
+> > > to use inotify, it will need to join the disjoined MOVE_FROM/TO event into
+> > > a single "remote event", that FUSE will use to call fsnotify_move().
+> >
+> > man inotify says following.
+> >
+> > "       Matching up the IN_MOVED_FROM and IN_MOVED_TO event pair  generated  by
+> >        rename(2)  is thus inherently racy.  (Don't forget that if an object is
+> >        renamed outside of a monitored directory, there  may  not  even  be  an
+> >        IN_MOVED_TO  event.)"
+> >
+> > So if guest is no monitoring target dir of renamed file, then we will not
+> > even get IN_MOVED_TO. In that case we can't merge two events into one.
+> >
+> > And this sounds like inotify/fanotify interface needs to come up with
+> > an merged event and in that case remote filesystem will simply propagate
+> > that event. (Instead of coming up with a new event only for remote
+> > filesystems. Sounds like this is not a problem limited to remote
+> > filesystems only).
+> >
+> 
+> I don't see it that way.
+> I see the "internal protocol" for filesystems/vfs to report rename is
+> fsnotify_move() which carries information about both src and target.
+> I would like the remote protocol  to carry the same information.
+> It is then up to the userspace API whether to report the rename
+> as two events or a unified event.
+
+Sure not a bad idea and allowing "cookie" does not stop remote filesystems
+from reporting single rename event.
+
+In this case virtiofs is just a passthrough filesystem. It simply reports
+back what underlying filesystem is reporting. So if inotify interface
+reports two events, it will simply send that. In fact old users will
+expect that.
+
+I understand that you don't like two separate events and hence wants
+to kill cookie. But how will we fix that when underlying inotify API
+reports two separate events. If we try to merge these there is no
+guarantee that we can do that because we might get only one events
+as we might not be watching either source/target directory. We place
+watches only as specified by client. 
+
+> 
+> For example, debugfs, calls fsnotify_move() when an object is renamed
+> from underneath the vfs. It does not call fsnotify() twice with a cookie,
+> because we would not want to change local filesystem nor remote protocols
+> when we want to add new userspace APIs for reporting fsevents.
+> 
+> That comes down to my feeling that this claims to be a proposal
+> for "remote fsnotify", but it looks and sounds like a proposal for
+> "remote inotify" and this is the core of my objection to passing
+> the rename cookie in the protocol.
+
+We are starting with remote inotify support and hoping it can be extended
+to remote fanotify in limited feature form. So want to make modifications
+in such a way so that one can easily extend it for fanotify as well.
+
+Now question is, that should there be separate fuse commands for inotify
+and fanotify request/events. Or we should try to merge these two and
+design fuse_notify_fsnotify_out{} and fuse_notify_fsnotify_in{} in such
+a way so that it could support both inotify/fanotify. I guess later will
+make more sense. Just that it will be more complicated as well because
+fanotify API can send much more information to user space. Like, file
+handles, "fd", "pid" etc.
+
+I think "pid" might not make much sense in the context of remote filesystem.
+In case of virtiofsd, it will simply be pid of another virtiofsd instance
+most likely which does not mean anything for guest process. In fact,
+there is a chance that it could be same pid as of guest process.
+
+> 
+> Regarding the issue that the src/dst path may not be known
+> to the server, as I wrote, it is fine if either the src/dst path information
+> is omitted from an event, but the protocol should provide the
+> placeholder to report them.
+
+This kind of makes more sense. That protocol should have capability to report
+a rename event with both src/dst path to future proof it. That way when
+inotify/fanotify APIs start reporting a single rename event, we will be
+able to simply send it back to client without any fuse protocol
+modifications.
+
+One risk of adding space for src/dst path info in fuse_notify_fsnotify_out{}
+is that we don't know how this information will end up looking like when
+inotify/fanotify actually start supporting single rename event. It is
+possible that we add some fields now and final single event format looks
+different and now we have unused fields.
+
+> 
+> After sufficient arguing, I might be convinced that the cookie may be included
+> as an optional field in addition to the fields that I requested.
+
+But we should allow cookie as well so that older inotify API continues
+to be supported as well.
+> 
+> I understand why you write that this sounds like an fanotify interface
+> that needs to be resolved and you are correct, but the reason that the
+> fanotify interface issue was not yet resolved is that we are trying to not
+> repeat the mistakes of the past and for that same reason, I am insisting
+> on the protocol.
+
+Right now we are writing protocol fields based on what inotify (and
+possibly fanotify) are supporting. But if you want to extend it further
+so that it can report something which you intend to introduce in future,
+I think that's fine too.
+
+So how will additional fields will look like to support this signle
+rename event.
+
+Vivek
+
