@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2153C43D7E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1A743D7EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbhJ1AEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        id S229614AbhJ1AHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhJ1AET (ORCPT
+        with ESMTP id S229437AbhJ1AHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:04:19 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1ECC061767
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:01:53 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id e2so7480322ljg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:01:53 -0700 (PDT)
+        Wed, 27 Oct 2021 20:07:50 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD329C061570;
+        Wed, 27 Oct 2021 17:05:24 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id bl14so4213883qkb.4;
+        Wed, 27 Oct 2021 17:05:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uqHiZAh9153nwS+DodprExoTASZ+7YRb3/+XlZxYLIE=;
-        b=uDQ9r6kZiDALGD4eETvKi+OF+Z+JRrO7Ta/eyWLuqzAi1N5S57vey4fLz9MQ7srH01
-         AwA+AwCHxpONEVd93TX/qLMSZqLjLEw+o9DqzKxlM5S/8A6AIbGoeEiwfj96uIt+TLym
-         Y7+IUAhZP4koHDaPoCwyiPWKSLlTGf6ALXjoz4Gif4DhiWVWFBwkY1VXlz9/PohF6yoj
-         PmQlvJs0q+xoifPkDqmQwRKZvvE4bmYpw4YaHJVmEzFleF73zcNL/RWmekWsy1OgHv6M
-         isOFzGkRO3cbxql94FjuVzkUeBh5KAhq0P7OCqN9vXBpi8ZDv3n20rMnVboST+pWPaUC
-         INiA==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y7UgbqXfGQTuON1FkJoN0C/+54lWp+M8elVKbKesD3M=;
+        b=mDUVHXpmYXoJx2ddZx0CcEzr7PtL0a4mtrORL49PwZvrhMfNn17Waa6QiLxSRdQqRg
+         A4qe/S8522kYsPO96exItLrlx7c8ISvhRAFHwaxxDDqzoPQRE+iLjft5LXJR237kAKJc
+         zEmI60Pw8P6M62zSE13WodJ4M6zCkt9mYNZSFIB7ILvtf77wdpFBmaQBuaZ73as3WobN
+         B8ePcf7jkZ9K460tku4btgfQUBYzYgGnuTW2aY2Pm04YgbWds6ROE3zz4SNokis0hhSv
+         vVtnQVjBh4Mh3Gs7MruCVaMvqPOf8wX2xaN5HtVQUE7VQj+FLN32+kwedKwRWH9YW28H
+         I/Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uqHiZAh9153nwS+DodprExoTASZ+7YRb3/+XlZxYLIE=;
-        b=ClpTVk0j4rO/YaWGimb7FU622eYtjvlFraB7n/wwHsKMLFqgNNmBaJsxB0o+qov5Lt
-         i9nH/lQ1Q6WKUSsAL3k4FlR3Gbt05BW6/vD1Ahm6iT+C0FUO1AtnjBBC2yJJMlKnTRQF
-         GJRhdoWN/2UNvPvn+gpYLmKSSl5feXs6W9caztIf8TWWOtVK3UfjAJXjZ1zs8/NX5Xx9
-         kB00dSRin9kNO/GqwykgTFuKW0aZybEGhLVJFzxrsrxdvoAb1zguP5A5SWFpeLSo4DQf
-         eQ+gK0r2WNpADCG+Za4G2Gbxdl4WK6hRE5eC4/7IoKb3RKaib2QS0hQsAmhHH+5jcdkn
-         tfTg==
-X-Gm-Message-State: AOAM533Dw6i2MrRdUn9LDog/ttomYnpVNoE6lqrzEHoEVqfJS8TDGSXw
-        IytE5MKg1Ag460hQE37cxeQmmRT0TEnjGN6iB1S+ig==
-X-Google-Smtp-Source: ABdhPJzUb8Oe3WNE2P7KCn5W7pI7aWmRDIg72+6F/Q8l+7E0d5UFfH0toa7VlbWtqBGVBCspe0x7tehPVJHDYenJX0Q=
-X-Received: by 2002:a05:651c:389:: with SMTP id e9mr1101224ljp.61.1635379311380;
- Wed, 27 Oct 2021 17:01:51 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y7UgbqXfGQTuON1FkJoN0C/+54lWp+M8elVKbKesD3M=;
+        b=rff3gHiDMK/9mGqs4G6XLfU3r/h/0A7d16jX1gVa8I7KFA0DkzhmVGKrydntI9NK6N
+         9QwzugeOqQdStLL+MR7FdDys71EmRui3FdlEeEprSbVRwCXtjlgpUG4lmGPHLfQUJoLp
+         0B5jV4FjXT2R1UDXwsdTkXu5EqV++2VmSbCHaDcdGHTrqdOKhcX8P5mCRHPjyYVEPqA3
+         trkipJfl5YVrZnxtB855Gb1IfMBLICXIjxi8ByuFHpl5c2SqHJ8Vw/jILQ8gzBAZcG1N
+         9OQ+XsLMpyx5mohNDf3yzLE4Y1B+LsaJJa/i9njlddPVzke0c5tGly9vETOoraX17Uge
+         w+Og==
+X-Gm-Message-State: AOAM532on+Dmyv1aGnO+0Ilng3wmzhsHWnrSkNO7vhy05wfbCdKyItdZ
+        PXU3DDm0xndDzgebt2iYPmM=
+X-Google-Smtp-Source: ABdhPJz+kqsvLz9OGU2ngkb3rqJBAqSk0PQi48I7IPt5PhD/pQpK59BP3rZsMDJM89pAFLpOv7Cnfw==
+X-Received: by 2002:a05:620a:c42:: with SMTP id u2mr833004qki.115.1635379523848;
+        Wed, 27 Oct 2021 17:05:23 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id v17sm963463qkl.123.2021.10.27.17.05.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 17:05:23 -0700 (PDT)
+Subject: Re: [PATCH] of/unittest: Disable new dtc node_name_vs_property_name
+ and interrupt_map warnings
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20211026225527.3460520-1-robh@kernel.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <361311a6-5818-6fc8-56d9-1a0ab8eaa74b@gmail.com>
+Date:   Wed, 27 Oct 2021 19:05:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
-In-Reply-To: <20211025144345.267107-1-tadeusz.struk@linaro.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 27 Oct 2021 17:01:39 -0700
-Message-ID: <CALAqxLXjh9o925G9smW+uwWqKDarsvrBuzr+UL1CsQc4m7W+oQ@mail.gmail.com>
-Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and enc/dec
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211026225527.3460520-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 7:44 AM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
->
-> Venus video encode/decode hardware driver consists of three modules.
-> The parent module venus-core, and two sub modules venus-enc and venus-dec.
-> The venus-core module allocates a common structure that is used by the
-> enc/dec modules, loads the firmware, and performs some common hardware
-> initialization. Since the three modules are loaded one after the other,
-> and their probe functions can run in parallel it is possible that
-> the venc_probe and vdec_probe functions can finish before the core
-> venus_probe function, which then can fail when, for example it
-> fails to load the firmware. In this case the subsequent call to venc_open
-> causes an Oops as it tries to dereference already uninitialized structures
-> through dev->parent and the system crashes in __pm_runtime_resume() as in
-> the trace below:
->
-> [   26.064835][  T485] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-> [   26.270914][  T485] Hardware name: Thundercomm Dragonboard 845c (DT)
-> [   26.285019][  T485] pc : __pm_runtime_resume+0x34/0x178
-> [   26.286374][  T213] lt9611 10-003b: hdmi cable connected
-> [   26.290285][  T485] lr : venc_open+0xc0/0x278 [venus_enc]
-> [   26.290326][  T485] Call trace:
-> [   26.290328][  T485]  __pm_runtime_resume+0x34/0x178
-> [   26.290330][  T485]  venc_open+0xc0/0x278 [venus_enc]
-> [   26.290335][  T485]  v4l2_open+0x184/0x294
-> [   26.290340][  T485]  chrdev_open+0x468/0x5c8
-> [   26.290344][  T485]  do_dentry_open+0x260/0x54c
-> [   26.290349][  T485]  path_openat+0xbe8/0xd5c
-> [   26.290352][  T485]  do_filp_open+0xb8/0x168
-> [   26.290354][  T485]  do_sys_openat2+0xa4/0x1e8
-> [   26.290357][  T485]  __arm64_compat_sys_openat+0x70/0x9c
-> [   26.290359][  T485]  invoke_syscall+0x60/0x170
-> [   26.290363][  T485]  el0_svc_common+0xb8/0xf8
-> [   26.290365][  T485]  do_el0_svc_compat+0x20/0x30
-> [   26.290367][  T485]  el0_svc_compat+0x24/0x84
-> [   26.290372][  T485]  el0t_32_sync_handler+0x7c/0xbc
-> [   26.290374][  T485]  el0t_32_sync+0x1b8/0x1bc
-> [   26.290381][  T485] ---[ end trace 04ca7c088b4c1a9c ]---
-> [   26.290383][  T485] Kernel panic - not syncing: Oops: Fatal exception
->
-> This can be fixed by synchronizing the three probe functions and
-> only allowing the venc_probe() and vdec_probe() to pass when venus_probe()
-> returns success.
->
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+On 10/26/21 5:55 PM, Rob Herring wrote:
+> The unittest dtbs have various intentional errors which cause warnings.
+> With the latest dtc sync to v1.6.1-19-g0a3a9d3449c8, we need to disable
+> some new checks: node_name_vs_property_name and interrupt_map warnings.
+> 
+> These warnings are also generated for static_base_1.dtb, so let's just
+> disable the problematic warnings for all unittest dtbs instead of just
+> testcases.dtb.
+> 
+> Fixes: e76187b9792e ("scripts/dtc: Update to upstream version v1.6.1-19-g0a3a9d3449c8")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/of/unittest-data/Makefile | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+> index a5d2d9254b2c..7e1a25ad4e5c 100644
+> --- a/drivers/of/unittest-data/Makefile
+> +++ b/drivers/of/unittest-data/Makefile
+> @@ -37,7 +37,9 @@ DTC_FLAGS_overlay_base += -@
+>  DTC_FLAGS_testcases += -@
+>  
+>  # suppress warnings about intentional errors
+> -DTC_FLAGS_testcases += -Wno-interrupts_property
+> +DTC_FLAGS += -Wno-interrupts_property \
+> +	-Wno-node_name_vs_property_name \
+> +	-Wno-interrupt_map
+>  
+>  # Apply overlays statically with fdtoverlay.  This is a build time test that
+>  # the overlays can be applied successfully by fdtoverlay.  This does not
+> 
 
+Before applying this commit, I am not seeing the warning that -Wno-interrupt_map
+suppresses.  I've tried with (1) CONFIG_OF_DYNAMIC and (2) with both
+CONFIG_OF_DYNAMIC and CONFIG_OF_OVERLAY, and I don't see the warning.
 
-Hey Tadeusz
-  Thanks so much for sending this out, I definitely would like to see
-these crashes sorted!
+Where are you seeing the interrupt_map warning?
 
-Unfortunately this patch causes some odd behavior when I use it with a
-modular config.  The display does not start up and trying to reboot
-the board ends up with it hanging instead of rebooting.
+I would prefer not changing from DTC_FLAGS_testcases to DTC_FLAGS because
+the suppresses the warning for all unittest .dts files, not just the two
+that lead to the node_name_vs_property_name warning. These two cases can
+be covered with DTC_FLAGS_testcases and DTC_FLAGS_static_test_1.
 
-And booting with this patch in my non-modular config, it just seems to
-get stuck during bootup (I suspect waiting on firmware that's not yet
-mounted?).
-
-I've got to run right now, but I'll try to help debug this down further.
-
-thanks
--john
+-Frank
