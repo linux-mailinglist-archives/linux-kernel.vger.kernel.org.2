@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE2043E6C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7818E43E6CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhJ1RII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
+        id S230340AbhJ1RIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJ1RIH (ORCPT
+        with ESMTP id S230094AbhJ1RIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:08:07 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC07C061570;
-        Thu, 28 Oct 2021 10:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HkGYfxxVPcWMTGp2R4d/RlpWmLG/2/mcfu/24wT0+fg=; b=to/pZlYy6m8mMy7hBJXsH3C0Ou
-        fxSKKQTtUakArGZtAGa5ys+DJrPdBTJZcpNXIwa3DVmtRgKCefy7QjNeNYRN5nYQ/t5eQkfigrGJk
-        52UnMW2/NsapzYaw87FM2O0QOhdW7OmefsyVogazJVeDhO7p6MpObUwh3AFYykFLq8QFbVOMeGY9j
-        stJAREGqeV/4RyXvBk3AD+vL+9gHm6UNz2tcMKrJx3WX8t23RfrUthb7rdIaONo0hNTVyfPykv43T
-        +2BkSB4NLEEKnmK/swvviYIGcDCRfbfqa0eXfiljoNn9kY+tt562+LPcoF3KHGXmFc8JXxOGPD9Zg
-        HhTuf56w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55358)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mg8qQ-0007oe-64; Thu, 28 Oct 2021 18:05:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mg8qO-0000VT-Qj; Thu, 28 Oct 2021 18:05:36 +0100
-Date:   Thu, 28 Oct 2021 18:05:36 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     andrew@lunn.ch, netdev@vger.kernel.org, olteanv@gmail.com,
-        robh+dt@kernel.org, UNGLinuxDriver@microchip.com,
-        Woojung.Huh@microchip.com, hkallweit1@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 06/10] net: dsa: microchip: add support for
- phylink management
-Message-ID: <YXrYYL7+NRgUtvN3@shell.armlinux.org.uk>
-References: <20211028164111.521039-1-prasanna.vengateshan@microchip.com>
- <20211028164111.521039-7-prasanna.vengateshan@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028164111.521039-7-prasanna.vengateshan@microchip.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        Thu, 28 Oct 2021 13:08:22 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11758C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:05:55 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id nk24-20020a17090b195800b001a289ee607eso5082866pjb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
+        bh=ErvuDA1ElQaCco+4n4DcJ4OhuycZwOW9DeeX1vLe+30=;
+        b=LBOVJZKWIzt1/Nn4r/5uhdXigjSqIetx7K1ikqomJ0bETUkwrxDuZgg+WfjSMWrKhq
+         qWmL5e1/UNDZbJKhedETmkVxrSB/qtbZVJEExJ8/vd/t2QFlL+rAoKdViOH1ajwOQn6B
+         IuNI+JuQlM+3gSsHMvvKjSvQnLZxHiTEyIBUocZcn8cKH277fccZt2XU5vQ3j3R8rBjq
+         B60G/UH+4FSL7M1ttTYXVhfgSD3EeXjpFVXurR8UZVqKIAaPcqjZ2C7IRWUIcsGJcWuy
+         J4QPnNWQd3ORx2AAtfX2JDfEUvwIhsjYIp0mRmaK2qZgTAcF6yN19BinYE7JEraKTK3C
+         ia4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:cc;
+        bh=ErvuDA1ElQaCco+4n4DcJ4OhuycZwOW9DeeX1vLe+30=;
+        b=ToeEb/aSuDslxfN+5oKkqVRpb28LulVwClqg1xCJl/WkJwu+83Fl6SJRQpY/BLDY2p
+         OC9g7i4AuP6kyvAv0oAYGXoFrDvqYLuQwn4s5+o7+l+pX4Vu5ydQNlu11ZGUn4L1Q62y
+         MxJi9jBXWcvSAJlwiY1Q2wyQsBp4tRPpfNp8I077xUlEY/6yTU/zIDy9XSD0Rz3smb0L
+         fAsAsIgCmwYOTm0GU4BhBNb7+BLh/018V3Ed9WEZ9qdQgRTPX9ekkj59mg/QOf9DSxs+
+         rAmRlZNuclngbM6ycltmk/TDmfTMhx8xWgoEvHOKwK62kMPN/cQtl1X3MCt5u9ouwkk4
+         NHZQ==
+X-Gm-Message-State: AOAM533d0oWNYHLJTW2ODSl1gbjM11Lw39ukOYXarJ7QmVRP8zG3EudL
+        dT+cv1ueRtsD9/DL+K9UO9TmFT985eB2PZiPFg==
+X-Google-Smtp-Source: ABdhPJw1j/ergvA9UHnj1GszoH0Stqyu/UZaI6A+IdNtPA7h4FN9o5otSGwFHwdWozUmeCEhviEYL7XgLG1SbfTyCQ==
+X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:ac51:b6be:9b51:3a7c])
+ (user=kaleshsingh job=sendgmr) by 2002:a63:2cf:: with SMTP id
+ 198mr4141837pgc.274.1635440754464; Thu, 28 Oct 2021 10:05:54 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 10:05:48 -0700
+In-Reply-To: <20211028091646.15f6e6de@gandalf.local.home>
+Message-Id: <20211028170548.2597449-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+References: <20211028091646.15f6e6de@gandalf.local.home>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH] tracing/histogram: Fix documentation inline emphasis warning
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, kernel-team@android.com,
+        rostedt@goodmis.org, sfr@canb.auug.org.au,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        Kalesh Singh <kaleshsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:11:07PM +0530, Prasanna Vengateshan wrote:
-> Support for phylink_validate() and reused KSZ commmon API for
-> phylink_mac_link_down() operation
-> 
-> lan937x_phylink_mac_config configures the interface using
-> lan937x_mac_config and lan937x_phylink_mac_link_up configures
-> the speed/duplex/flow control.
-> 
-> Currently SGMII & in-band neg are not supported & it will be
-> added later.
-> 
-> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+This fixes the warning:
 
-Hi,
+Documentation/trace/histogram.rst:1766: WARNING: Inline emphasis
+start-string without end-string
 
-I've just sent "net: dsa: populate supported_interfaces member"
-which adds a hook to allow DSA to populate the newly introduced
-supported_interfaces member of phylink_config. Once this patch is
-merged, it would be great to see any new drivers setting this
-member.
+The issue was caused by an unescaped '*' character.
 
-Essentially, the phylink_get_interfaces method is called with the
-DSA switch and port number, and a pointer to the supported_interfaces
-member - which is a bitmap of PHY_INTERFACE_MODEs that are supported
-by this port.
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ Documentation/trace/histogram.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-When you have set any bit in the supported interfaces, phylink's
-behaviour when calling your lan937x_phylink_validate changes - it will
-no longer call it with PHY_INTERFACE_MODE_NA, but will instead do a
-bitwalk over the bitmap, and call it for each supported interface type
-instead.
-
-When phylink has a specific interface mode, it will continue to make a
-single call - but only if the interface mode is indicated as supported
-in the supported interfaces bitmap.
-
-Please keep an eye on "net: dsa: populate supported_interfaces member"
-and if you need to respin this series after that patch has been merged,
-please update in regards of this.
-
-Thanks.
-
+diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
+index e12699abaee8..66ec972dfb78 100644
+--- a/Documentation/trace/histogram.rst
++++ b/Documentation/trace/histogram.rst
+@@ -1764,7 +1764,7 @@ using the same key and variable from yet another event::
+   # echo 'hist:key=pid:wakeupswitch_lat=$wakeup_lat+$switchtime_lat ...' >> event3/trigger
+ 
+ Expressions support the use of addition, subtraction, multiplication and
+-division operators (+-*/).
++division operators (+-\*/).
+ 
+ Note that division by zero always returns -1.
+ 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.33.0.1079.g6e70778dc9-goog
+
