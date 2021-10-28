@@ -2,203 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319EF43E670
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E633A43E679
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhJ1Qq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:46:27 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:48295 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhJ1Qq0 (ORCPT
+        id S230407AbhJ1QrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230318AbhJ1QrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:46:26 -0400
+        Thu, 28 Oct 2021 12:47:12 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B9DC061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:44:45 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m22so11390715wrb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:44:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635439439; x=1666975439;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=XbQPuBSMPzhXAvXT//JyOTFVXRJxMwHnIWgwQC0OXOk=;
-  b=OH29ob1NddYDdb37ruEKFdbTv2ucci6G/6v0G2L5aPO0BJYCmXBGrPEP
-   tFv26tISnwTOXFZuO3E/hTSD8u3n1zutRd7C9CgYTc2M2odWYlCqj4wm0
-   +B4Y8U90Xl4wZt9XdVtyx2nAkxlH9Hsj3yYdR/K//zBd0Doz1OfM6Nc8G
-   s=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 28 Oct 2021 09:43:59 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 09:43:59 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 28 Oct 2021 09:43:58 -0700
-Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 28 Oct 2021 09:43:57 -0700
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-CC:     <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Subject: [PATCH] configs: Introduce debug.config for CI-like setup
-Date:   Thu, 28 Oct 2021 12:43:20 -0400
-Message-ID: <20211028164320.17348-1-quic_qiancai@quicinc.com>
-X-Mailer: git-send-email 2.30.2
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s5sA21svvdbNRWWkv4wMUduPzISF+IZMbMm8sVfICi8=;
+        b=EMwKjOqLDz5qZUjDGCmvTlH8VtASiWSWR4Zy5Dc9G4g9ye/Y/9OWW8ksuTLNrdUvyK
+         A/zF3mcxz6ouMGoWV3zlgOFheF1aWW1O79vJNTT2Ohtgsx0rtBdnnhyUBNwPSUO5D/CV
+         dvy4ROeIBoAqvWxtUpIaBruVetdvQBGtS6MiI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s5sA21svvdbNRWWkv4wMUduPzISF+IZMbMm8sVfICi8=;
+        b=sbhIwAlUILnbGtwARzoc8hqc/xzQdkNq0A8GOFhCyPC/FaEJ51iphPE8mMQM6M9gjV
+         a/7aPss4ejQbK18aXek/0x0OLkDBgf1P5FJ4P3dR0ix7pIQ8FDgZpAmYHk4xZKbFXzhA
+         y+0mTFnIdbTFFQUQjwnhL48Wthffhp+g+gbiJEoZRQ96iexnJskzVyJyfFFMP6qYz9pF
+         +1wp/zxOO7Px4Y8iYGOtPf+ZjdAHiEil0Wu2/DHzhin56FUWEmiBM9sQFW0LOc5QXUVq
+         vOB0D0HykAc91G7yJb8GTLi8Yu1OASst/0roWm1Jw6/tTmjc4Ug6IcznbIiDeBh8PldD
+         wsuw==
+X-Gm-Message-State: AOAM533wS37YRZShc3gt4ITLXCf23DIz9D+/wU5i4KWfSY7NQjl4EhWa
+        Ugi+hkN/H0PnJUAPCk5iO55eHQ==
+X-Google-Smtp-Source: ABdhPJyQ3fo1TyiyK8Sl04sewX0JkJkHS9zN663Ikmzp4vjjIXaF/KHmJ6tIBPLuO+pQMKyCjZkUdw==
+X-Received: by 2002:a5d:64aa:: with SMTP id m10mr7306377wrp.196.1635439484187;
+        Thu, 28 Oct 2021 09:44:44 -0700 (PDT)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:60fa:f15c:2dfe:b1df])
+        by smtp.gmail.com with ESMTPSA id s13sm6873286wmc.47.2021.10.28.09.44.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 09:44:43 -0700 (PDT)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
+Date:   Thu, 28 Oct 2021 18:43:57 +0200
+Message-Id: <20211028164357.1439102-1-revest@chromium.org>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some general debugging features like kmemleak, KASAN, lockdep, UBSAN etc
-help fix many viruses like a microscope. On the other hand, those features
-are scatter around and mixed up with more situational debugging options
-making them difficult to consume properly. This cold help amplify the
-general debugging/testing efforts and help establish sensitive default
-values for those options across the broad.
+Allow the helper to be called from the perf_event_mmap hook. This is
+convenient to lookup vma->vm_file and implement a similar logic as
+perf_event_mmap_event in BPF.
 
-The config is based on years' experiences running daily CI inside the
-largest enterprise Linux distro company to seek regressions on
-linux-next builds on different bare-metal and virtual platforms. This is
-more of some art than science. It can be used for example,
-
-$ make ARCH=arm64 defconfig debug.config
-
-Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+Signed-off-by: Florent Revest <revest@chromium.org>
 ---
- kernel/configs/debug.config | 119 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 kernel/configs/debug.config
+ kernel/trace/bpf_trace.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/configs/debug.config b/kernel/configs/debug.config
-new file mode 100644
-index 000000000000..baba7e4cdda4
---- /dev/null
-+++ b/kernel/configs/debug.config
-@@ -0,0 +1,119 @@
-+# Keep alphabetically sorted.
-+#
-+# CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
-+# CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
-+# CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF is not set
-+# CONFIG_DEBUG_PAGEALLOC is not set
-+# CONFIG_DEBUG_RODATA_TEST is not set
-+# CONFIG_DEBUG_WX is not set
-+# CONFIG_KFENCE is not set
-+# CONFIG_PAGE_POISONING is not set
-+# CONFIG_PROVE_RAW_LOCK_NESTING is not set
-+# CONFIG_SLUB_STATS is not set
-+# CONFIG_UBSAN_ALIGNMENT is not set
-+# CONFIG_UBSAN_DIV_ZERO is not set
-+# CONFIG_UBSAN_TRAP is not set
-+# CONFIG_WARN_ALL_UNSEEDED_RANDOM is not set
-+CONFIG_BRANCH_PROFILE_NONE=y
-+CONFIG_BUG_ON_DATA_CORRUPTION=y
-+CONFIG_CONTEXT_SWITCH_TRACER=y
-+CONFIG_DEBUG_ATOMIC_SLEEP=y
-+CONFIG_DEBUG_BUGVERBOSE=y
-+CONFIG_DEBUG_FS_ALLOW_ALL=y
-+CONFIG_DEBUG_FS=y
-+CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_IRQFLAGS=y
-+CONFIG_DEBUG_KERNEL=y
-+CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y
-+CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE=40000
-+CONFIG_DEBUG_KMEMLEAK=y
-+CONFIG_DEBUG_LIST=y
-+CONFIG_DEBUG_LOCK_ALLOC=y
-+CONFIG_DEBUG_MUTEXES=y
-+CONFIG_DEBUG_OBJECTS_ENABLE_DEFAULT=1
-+CONFIG_DEBUG_OBJECTS_FREE=y
-+CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y
-+CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
-+CONFIG_DEBUG_OBJECTS_TIMERS=y
-+CONFIG_DEBUG_OBJECTS_WORK=y
-+CONFIG_DEBUG_OBJECTS=y
-+CONFIG_DEBUG_PER_CPU_MAPS=y
-+CONFIG_DEBUG_RT_MUTEXES=y
-+CONFIG_DEBUG_RWSEMS=y
-+CONFIG_DEBUG_SECTION_MISMATCH=y
-+CONFIG_DEBUG_SPINLOCK=y
-+CONFIG_DEBUG_STACK_USAGE=y
-+CONFIG_DEBUG_VIRTUAL=y
-+CONFIG_DEBUG_VM_PGFLAGS=y
-+CONFIG_DEBUG_VM_RB=y
-+CONFIG_DEBUG_VM_VMACACHE=y
-+CONFIG_DEBUG_VM=y
-+CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
-+CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=120
-+CONFIG_DETECT_HUNG_TASK=y
-+CONFIG_DYNAMIC_DEBUG_CORE=y
-+CONFIG_DYNAMIC_DEBUG=y
-+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
-+CONFIG_DYNAMIC_FTRACE=y
-+CONFIG_EVENT_TRACING=y
-+CONFIG_FRAME_POINTER=y
-+CONFIG_FRAME_WARN=2048
-+CONFIG_FTRACE_MCOUNT_RECORD=y
-+CONFIG_FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY=y
-+CONFIG_FTRACE=y
-+CONFIG_FUNCTION_TRACER=y
-+CONFIG_GENERIC_PTDUMP=y
-+CONFIG_GENERIC_TRACER=y
-+CONFIG_IO_STRICT_DEVMEM=y
-+CONFIG_KASAN_GENERIC=y
-+CONFIG_KASAN_INLINE=y
-+CONFIG_KASAN_STACK=y
-+CONFIG_KASAN_VMALLOC=y
-+CONFIG_KASAN=y
-+CONFIG_LOCK_DEBUGGING_SUPPORT=y
-+CONFIG_LOCKDEP_BITS=15
-+CONFIG_LOCKDEP_CHAINS_BITS=16
-+CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
-+CONFIG_LOCKDEP_STACK_TRACE_BITS=19
-+CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
-+CONFIG_LOCKDEP=y
-+CONFIG_LOCKUP_DETECTOR=y
-+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x1
-+CONFIG_MAGIC_SYSRQ_SERIAL_SEQUENCE=""
-+CONFIG_MAGIC_SYSRQ_SERIAL=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_NOP_TRACER=y
-+CONFIG_PAGE_EXTENSION=y
-+CONFIG_PAGE_OWNER=y
-+CONFIG_PANIC_ON_OOPS_VALUE=1
-+CONFIG_PANIC_ON_OOPS=y
-+CONFIG_PANIC_TIMEOUT=0
-+CONFIG_PREEMPTIRQ_TRACEPOINTS=y
-+CONFIG_PRINTK_CALLER=y
-+CONFIG_PRINTK_TIME=y
-+CONFIG_PROVE_LOCKING=y
-+CONFIG_PROVE_RCU_LIST=y
-+CONFIG_PROVE_RCU=y
-+CONFIG_PTDUMP_CORE=y
-+CONFIG_PTDUMP_DEBUGFS=y
-+CONFIG_RCU_CPU_STALL_TIMEOUT=60
-+CONFIG_RING_BUFFER=y
-+CONFIG_SCHED_INFO=y
-+CONFIG_SCHED_STACK_END_CHECK=y
-+CONFIG_SECTION_MISMATCH_WARN_ONLY=y
-+CONFIG_SLUB_DEBUG_ON=y
-+CONFIG_SOFTLOCKUP_DETECTOR=y
-+CONFIG_STACKTRACE=y
-+CONFIG_STRICT_DEVMEM=y
-+CONFIG_SYMBOLIC_ERRNAME=y
-+CONFIG_TRACE_CLOCK=y
-+CONFIG_TRACE_IRQFLAGS=y
-+CONFIG_TRACING_SUPPORT=y
-+CONFIG_TRACING=y
-+CONFIG_UBSAN_BOOL=y
-+CONFIG_UBSAN_BOUNDS=y
-+CONFIG_UBSAN_ENUM=y
-+CONFIG_UBSAN_ONLY_BOUNDS=y
-+CONFIG_UBSAN_SHIFT=y
-+CONFIG_UBSAN_UNREACHABLE=y
-+CONFIG_UBSAN=y
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index cbcd0d6fca7c..f6e301c775a5 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -922,6 +922,9 @@ BTF_ID(func, vfs_fallocate)
+ BTF_ID(func, dentry_open)
+ BTF_ID(func, vfs_getattr)
+ BTF_ID(func, filp_close)
++#ifdef CONFIG_PERF_EVENTS
++BTF_ID(func, perf_event_mmap)
++#endif
+ BTF_SET_END(btf_allowlist_d_path)
+ 
+ static bool bpf_d_path_allowed(const struct bpf_prog *prog)
 -- 
-2.30.2
+2.33.0.1079.g6e70778dc9-goog
 
