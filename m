@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E482C43E6C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE2043E6C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhJ1RE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:04:26 -0400
-Received: from mga03.intel.com ([134.134.136.65]:39984 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhJ1REZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:04:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="230410405"
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="230410405"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 10:01:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="466197543"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 28 Oct 2021 10:01:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 8A112107; Thu, 28 Oct 2021 20:01:52 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v1 1/1] delay.h: fix for removed kernel.h
-Date:   Thu, 28 Oct 2021 20:01:43 +0300
-Message-Id: <20211028170143.56523-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S230329AbhJ1RII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhJ1RIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:08:07 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC07C061570;
+        Thu, 28 Oct 2021 10:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HkGYfxxVPcWMTGp2R4d/RlpWmLG/2/mcfu/24wT0+fg=; b=to/pZlYy6m8mMy7hBJXsH3C0Ou
+        fxSKKQTtUakArGZtAGa5ys+DJrPdBTJZcpNXIwa3DVmtRgKCefy7QjNeNYRN5nYQ/t5eQkfigrGJk
+        52UnMW2/NsapzYaw87FM2O0QOhdW7OmefsyVogazJVeDhO7p6MpObUwh3AFYykFLq8QFbVOMeGY9j
+        stJAREGqeV/4RyXvBk3AD+vL+9gHm6UNz2tcMKrJx3WX8t23RfrUthb7rdIaONo0hNTVyfPykv43T
+        +2BkSB4NLEEKnmK/swvviYIGcDCRfbfqa0eXfiljoNn9kY+tt562+LPcoF3KHGXmFc8JXxOGPD9Zg
+        HhTuf56w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55358)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mg8qQ-0007oe-64; Thu, 28 Oct 2021 18:05:38 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mg8qO-0000VT-Qj; Thu, 28 Oct 2021 18:05:36 +0100
+Date:   Thu, 28 Oct 2021 18:05:36 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     andrew@lunn.ch, netdev@vger.kernel.org, olteanv@gmail.com,
+        robh+dt@kernel.org, UNGLinuxDriver@microchip.com,
+        Woojung.Huh@microchip.com, hkallweit1@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 net-next 06/10] net: dsa: microchip: add support for
+ phylink management
+Message-ID: <YXrYYL7+NRgUtvN3@shell.armlinux.org.uk>
+References: <20211028164111.521039-1-prasanna.vengateshan@microchip.com>
+ <20211028164111.521039-7-prasanna.vengateshan@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028164111.521039-7-prasanna.vengateshan@microchip.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To be folded to the commit 0d280a9fbbd9 ("include/linux/delay.h:
-replace kernel.h with the necessary inclusions")
+On Thu, Oct 28, 2021 at 10:11:07PM +0530, Prasanna Vengateshan wrote:
+> Support for phylink_validate() and reused KSZ commmon API for
+> phylink_mac_link_down() operation
+> 
+> lan937x_phylink_mac_config configures the interface using
+> lan937x_mac_config and lan937x_phylink_mac_link_up configures
+> the speed/duplex/flow control.
+> 
+> Currently SGMII & in-band neg are not supported & it will be
+> added later.
+> 
+> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- arch/riscv/lib/delay.c           | 4 ++++
- arch/s390/include/asm/facility.h | 4 ++++
- 2 files changed, 8 insertions(+)
+Hi,
 
-diff --git a/arch/riscv/lib/delay.c b/arch/riscv/lib/delay.c
-index f51c9a03bca1..49d510ba75fd 100644
---- a/arch/riscv/lib/delay.c
-+++ b/arch/riscv/lib/delay.c
-@@ -4,10 +4,14 @@
-  */
- 
- #include <linux/delay.h>
-+#include <linux/math.h>
- #include <linux/param.h>
- #include <linux/timex.h>
-+#include <linux/types.h>
- #include <linux/export.h>
- 
-+#include <asm/processor.h>
-+
- /*
-  * This is copies from arch/arm/include/asm/delay.h
-  *
-diff --git a/arch/s390/include/asm/facility.h b/arch/s390/include/asm/facility.h
-index e3aa354ab9f4..94b6919026df 100644
---- a/arch/s390/include/asm/facility.h
-+++ b/arch/s390/include/asm/facility.h
-@@ -9,8 +9,12 @@
- #define __ASM_FACILITY_H
- 
- #include <asm/facility-defs.h>
-+
-+#include <linux/minmax.h>
- #include <linux/string.h>
-+#include <linux/types.h>
- #include <linux/preempt.h>
-+
- #include <asm/lowcore.h>
- 
- #define MAX_FACILITY_BIT (sizeof(stfle_fac_list) * 8)
+I've just sent "net: dsa: populate supported_interfaces member"
+which adds a hook to allow DSA to populate the newly introduced
+supported_interfaces member of phylink_config. Once this patch is
+merged, it would be great to see any new drivers setting this
+member.
+
+Essentially, the phylink_get_interfaces method is called with the
+DSA switch and port number, and a pointer to the supported_interfaces
+member - which is a bitmap of PHY_INTERFACE_MODEs that are supported
+by this port.
+
+When you have set any bit in the supported interfaces, phylink's
+behaviour when calling your lan937x_phylink_validate changes - it will
+no longer call it with PHY_INTERFACE_MODE_NA, but will instead do a
+bitwalk over the bitmap, and call it for each supported interface type
+instead.
+
+When phylink has a specific interface mode, it will continue to make a
+single call - but only if the interface mode is indicated as supported
+in the supported interfaces bitmap.
+
+Please keep an eye on "net: dsa: populate supported_interfaces member"
+and if you need to respin this series after that patch has been merged,
+please update in regards of this.
+
+Thanks.
+
 -- 
-2.33.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
