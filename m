@@ -2,201 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420FE43E4CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5912643E4DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhJ1PSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:18:47 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:14748 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231460AbhJ1PSf (ORCPT
+        id S231458AbhJ1PTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:19:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51753 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231451AbhJ1PT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:18:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635434168; x=1666970168;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=rZ35PAmj2ZM0gYGTV0O5/B/yO4omBn7WGn9bgn37XKQ=;
-  b=V50CdGLo159H+coR6sB93IiDOEKO2w5cTEZkucADz0R1Bapjz66rborl
-   UZSzKqfg2b1rV9SlT5UMjPfgz2MdxQX4ajqqEtxmfGDoNwRXAk2gqWhPx
-   owiq4R5MuaxZjSfedr1gZKAmeOV3cGOAhzfxgOGjUom3TgxuySh9XaobP
-   c=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Oct 2021 08:16:08 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 08:16:07 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 28 Oct 2021 08:16:07 -0700
-Received: from c-skakit-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 28 Oct 2021 08:16:03 -0700
-From:   Satya Priya <quic_c_skakit@quicinc.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, <swboyd@chromium.org>,
-        <collinsd@codeurora.org>, <subbaram@codeaurora.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Satya Priya <quic_c_skakit@quicinc.com>
-Subject: [PATCH V3 4/4] arm64: dts: qcom: sc7280: Add pm8008 regulators support for sc7280-idp
-Date:   Thu, 28 Oct 2021 20:44:32 +0530
-Message-ID: <1635434072-32055-5-git-send-email-quic_c_skakit@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635434072-32055-1-git-send-email-quic_c_skakit@quicinc.com>
-References: <1635434072-32055-1-git-send-email-quic_c_skakit@quicinc.com>
+        Thu, 28 Oct 2021 11:19:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635434221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DVtdqDXww3KgKAYnCusxuLMUzDOnQrWVlJbyjA+vsRU=;
+        b=gPjdPwe+/dQQApVozTccKru8Z7yTs10NqTYTLMoUaiwU/wZp/C4jVZNE5EP7qqOKGtcaav
+        ybmJ77PccO0LBblYbytt5fUNLZrfdl7QmS19gEmBsEznkLSS3uu6Y1fPZjAfdZBp23Pjdu
+        5jeJzpb09HryIvwGV0tiqmzFviBYahw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-MW_4YzIxOem6d6CcDHBrfA-1; Thu, 28 Oct 2021 11:16:52 -0400
+X-MC-Unique: MW_4YzIxOem6d6CcDHBrfA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E298B19200C1;
+        Thu, 28 Oct 2021 15:16:48 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF85560BF1;
+        Thu, 28 Oct 2021 15:16:37 +0000 (UTC)
+Message-ID: <ea79dbabd67c09b76ca3409d2d7d4934dc4de2c1.camel@redhat.com>
+Subject: Re: [PATCH v2 30/43] KVM: Drop unused kvm_vcpu.pre_pcpu field
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Date:   Thu, 28 Oct 2021 18:16:36 +0300
+In-Reply-To: <20211009021236.4122790-31-seanjc@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+         <20211009021236.4122790-31-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pm8008 regulators support for sc7280 idp.
+On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> Remove kvm_vcpu.pre_pcpu as it no longer has any users.  No functional
+> change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  include/linux/kvm_host.h | 1 -
+>  virt/kvm/kvm_main.c      | 1 -
+>  2 files changed, 2 deletions(-)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 1fa38dc00b87..87996b22e681 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -304,7 +304,6 @@ struct kvm_vcpu {
+>  	u64 requests;
+>  	unsigned long guest_debug;
+>  
+> -	int pre_pcpu;
+>  	struct list_head blocked_vcpu_list;
+>  
+>  	struct mutex mutex;
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index c870cae7e776..2bbf5c9d410f 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -426,7 +426,6 @@ static void kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id)
+>  #endif
+>  	kvm_async_pf_vcpu_init(vcpu);
+>  
+> -	vcpu->pre_pcpu = -1;
+>  	INIT_LIST_HEAD(&vcpu->blocked_vcpu_list);
+>  
+>  	kvm_vcpu_set_in_spin_loop(vcpu, false);
 
-Signed-off-by: Satya Priya <quic_c_skakit@quicinc.com>
----
-Changes in V2:
- - As per Stephen's comments, replaced '_' with '-' for node names.
 
-Changes in V3:
- - Changed the regulator node names as l1, l2 etc
- - Changed "pm8008-regulators" to "regulators"
- - Changed "qcom,min-dropout-voltage" to "regulator-min-dropout-voltage-microvolt"
 
- arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 103 +++++++++++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-index d623d71..493575b 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-@@ -309,6 +309,97 @@
- 	};
- };
- 
-+&i2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	pm8008_chip: pm8008@8 {
-+		compatible = "qcom,pm8008";
-+		reg = <0x8>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pm8008_active>;
-+	};
-+
-+	pm8008_ldo: pm8008@9 {
-+		compatible = "qcom,pm8008";
-+		reg = <0x9>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		regulators {
-+			compatible = "qcom,pm8008-regulator";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			vdd_l1_l2-supply = <&vreg_s8b_1p2>;
-+			vdd_l3_l4-supply = <&vreg_s1b_1p8>;
-+			vdd_l5-supply = <&vreg_bob>;
-+			vdd_l6-supply = <&vreg_bob>;
-+			vdd_l7-supply = <&vreg_bob>;
-+
-+			pm8008_l1: l1@4000 {
-+				reg = <0x4000>;
-+				regulator-name = "pm8008_l1";
-+				regulator-min-microvolt = <950000>;
-+				regulator-max-microvolt = <1300000>;
-+				regulator-min-dropout-voltage-microvolt = <96000>;
-+			};
-+
-+			pm8008_l2: l2@4100 {
-+				reg = <0x4100>;
-+				regulator-name = "pm8008_l2";
-+				regulator-min-microvolt = <950000>;
-+				regulator-max-microvolt = <1250000>;
-+				regulator-min-dropout-voltage-microvolt = <24000>;
-+			};
-+
-+			pm8008_l3: l3@4200 {
-+				reg = <0x4200>;
-+				regulator-name = "pm8008_l3";
-+				regulator-min-microvolt = <1650000>;
-+				regulator-max-microvolt = <3000000>;
-+				regulator-min-dropout-voltage-microvolt = <224000>;
-+			};
-+
-+			pm8008_l4: l4@4300 {
-+				reg = <0x4300>;
-+				regulator-name = "pm8008_l4";
-+				regulator-min-microvolt = <1504000>;
-+				regulator-max-microvolt = <1600000>;
-+				regulator-min-dropout-voltage-microvolt = <0>;
-+			};
-+
-+			pm8008_l5: l5@4400 {
-+				reg = <0x4400>;
-+				regulator-name = "pm8008_l5";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3000000>;
-+				regulator-min-dropout-voltage-microvolt = <104000>;
-+			};
-+
-+			pm8008_l6: l6@4500 {
-+				reg = <0x4500>;
-+				regulator-name = "pm8008_l6";
-+				regulator-min-microvolt = <2600000>;
-+				regulator-max-microvolt = <3000000>;
-+				regulator-min-dropout-voltage-microvolt = <112000>;
-+			};
-+
-+			pm8008_l7: l7@4600 {
-+				reg = <0x4600>;
-+				regulator-name = "pm8008_l7";
-+				regulator-min-microvolt = <3000000>;
-+				regulator-max-microvolt = <3544000>;
-+				regulator-min-dropout-voltage-microvolt = <96000>;
-+			};
-+		};
-+	};
-+};
-+
- &qfprom {
- 	vcc-supply = <&vreg_l1c_1p8>;
- };
-@@ -437,6 +528,18 @@
- 	};
- };
- 
-+&pm8350c_gpios {
-+	pm8008-reset {
-+		pm8008_active: pm8008-active {
-+			pins = "gpio4";
-+			function = "normal";
-+			bias-disable;
-+			output-high;
-+			power-source = <0>;
-+		};
-+	};
-+};
-+
- &qspi_cs0 {
- 	bias-disable;
- };
--- 
-2.7.4
+Best regards,
+	Maxim Levitsky
+
+
 
