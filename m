@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BEE43E36C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8959243E36E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhJ1OWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S231329AbhJ1OW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhJ1OWl (ORCPT
+        with ESMTP id S231236AbhJ1OWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:22:41 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A444C061570;
-        Thu, 28 Oct 2021 07:20:14 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id e4so10488281wrc.7;
-        Thu, 28 Oct 2021 07:20:14 -0700 (PDT)
+        Thu, 28 Oct 2021 10:22:44 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7FCC061226;
+        Thu, 28 Oct 2021 07:20:16 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id f7-20020a1c1f07000000b0032ee11917ceso1488553wmf.0;
+        Thu, 28 Oct 2021 07:20:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/Nx/FXuZHmzN2GOFSI5UkCtNDgB6jstgst0HpHC3bhg=;
-        b=A6WnNrgNuUzR2IdplG9xU5Gda69cXlfGiU1iEpuut95+ObDoQu1P91FrbNMRKlmqZa
-         OE1Nuc1KwLULHd2xdii8m0/7wQoIC27d/Z4SpOeEosVI7QfrR9PaO6bnH0ZNVySIxccR
-         9I70Iyl98aAfQZ4NRYpvp8TQ/ooZaDTsb5xfmQ3/7B8HKq7gVupxZAgvGtzZZGrw8zkf
-         Fb7VblpEaH3Ydc7Wm3zYsqDHt5nAQ0r7VgKWFdIrJ8LGr9oBLjW4kclFyV2mePgpQ4+q
-         xXtNmYzt+EEBS4miFg4Q/gJqhzs7yLP1pexOC2O44eqyGMdROaTEAGRJ2jNP6XLuc70M
-         jvkA==
+        bh=h9UTPRxPPIM85WFH39byVhI0Wop1oatVXrCc+qxiWlw=;
+        b=qXON4UmKXQcP3NyhCCpnEw7n2l5yB9V8mlAogARYrAB3yclwFzmLFQ/ndWp9T6CMTY
+         ztl8rrU+HBOIlZwo9wUdrS7gRpDB23pgvHskYu5INA9Ne/uoohF4H0KKhxVTd39MLxgb
+         OCuLdYH9tL6kVMbEYs1qWb81bC2bMbLAr9H9d3ZmVzAZ6U65Y6gKTVTfSaQJHWvZf8E8
+         8h7WN22vOD1L2sxDA4eAQzexsiB6soe4/k2tPxVqWue76hG1CDfRA6Y1PSYhmoQkpyNl
+         Q6lVcW6L55qvTE6mH/cxuaWQXREKcMuLHSY+c11NNIob5it5e7F5Cqp8jY3sl+HqszXb
+         UC/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/Nx/FXuZHmzN2GOFSI5UkCtNDgB6jstgst0HpHC3bhg=;
-        b=dbp2QdBQtj/6tXXfXsLQNQ62isIz98JydkZ+Q4z0HGEVXG5u/Nh1GoIahWi4s9Ym5J
-         9+xyp/GiUtaDwsv/VXo2A2CiWwDYiymhCjlK5+Enpn+cIJqfR7sQ5DblMyn8Xphs7oBK
-         46xp3lRjIuIHl7FOGJHhBcm6hAw5Om3qhKJFvg5EFlFjY+QhlHWHrDQr6H2gNRdpOzaF
-         QkoUgoEuMqW0yIZHgf8PWZKEG6bLYXhUvX4dyhmtlHmbhJJs6ldbQbpH07DuOZTiFnav
-         bvNwm0C2mjotzvif/o71VLxMpBqT8QIQOBT6DSNIrHEF68H/x+YpfJyt/YkaQeS77XZz
-         +JeQ==
-X-Gm-Message-State: AOAM533daaTEIQKDDLTPxNELJIgj+48aBWDuLZIdjDHrSFwqewuYATJF
-        DcdxZGRivSsxKBQY38Ue6Ac=
-X-Google-Smtp-Source: ABdhPJzKYyvK9ywN7FVlYbhzQ1DkLGKtk+llarpayFZ0BWuSbPQgbsxmQR6e6DL+lCwMCTPH0zsAJA==
-X-Received: by 2002:a5d:69ce:: with SMTP id s14mr4967054wrw.25.1635430812973;
-        Thu, 28 Oct 2021 07:20:12 -0700 (PDT)
+        bh=h9UTPRxPPIM85WFH39byVhI0Wop1oatVXrCc+qxiWlw=;
+        b=yi7h2K4EPrc/6qLu4HxoMth3ZNa7yTqqzAv352w63Vx2Kz2xptysq+FC71sH8XIgsS
+         rFVNXr0Sa56TT7n13+VbvTDOKRj0+nGGqnDdMzfl0zisosRbRykjrsLxfbMdh1UBaiDE
+         npkz7rGytPIQwP6DTaosB5qseyw/mJ5mkNBNtqDQ3R6Ib0rHaXDTvKMP3JarcOXwLPWo
+         VqpdFh+T+BHluHKxsuAJKpeTq07ZCj7lFgKbYfTgyBxpt9UpaGKHMBN475QKATpod7PT
+         eNLdl/3kM9Hc5zwIj5UXlrdS4AxVDPecC4bpgfOgzOUmj5qPAGZQ3H4Yi3dLy/I6rzMn
+         mxdg==
+X-Gm-Message-State: AOAM531v+/J3F74j2L/WmBw8ZNdZL+0vjem1OjFAFEGAniHsysgsHKiV
+        1ykPtHslWq77y1Atz6yUbqE=
+X-Google-Smtp-Source: ABdhPJwTApopXsu78VNhZKnyHSCssVCqkMXqxaLoxvpVRe0ZrqH/I2RaRROEgoJ+KRMawHk/qDAl1w==
+X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr4958277wmk.51.1635430815273;
+        Thu, 28 Oct 2021 07:20:15 -0700 (PDT)
 Received: from localhost.localdomain (i5C74E249.versanet.de. [92.116.226.73])
-        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.20.11
+        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.20.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:20:12 -0700 (PDT)
+        Thu, 28 Oct 2021 07:20:14 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -70,9 +70,9 @@ To:     Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 09/13] arm: milbeaut: remove select of non-existing PINCTRL_MILBEAUT
-Date:   Thu, 28 Oct 2021 16:19:34 +0200
-Message-Id: <20211028141938.3530-10-lukas.bulwahn@gmail.com>
+Subject: [PATCH 10/13] arm: nomadik: drop selecting obsolete CLKSRC_NOMADIK_MTU_SCHED_CLOCK
+Date:   Thu, 28 Oct 2021 16:19:35 +0200
+Message-Id: <20211028141938.3530-11-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
 References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
@@ -82,44 +82,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch series "Add basic support for Socionext Milbeaut M10V SoC" (see
-Link) introduced the config ARCH_MILBEAUT_M10V "Milbeaut SC2000/M10V
-platform" in ./arch/arm/mach-milbeaut/ and intended to introduce timer,
-clock, pinctrl and serial controller drivers.
+Commit 85b6fcadcf66 ("clocksource/drivers/ux500: Drop Ux500 custom
+SCHED_CLOCK") removes a sched_clock workaround and its corresponding
+config CLKSRC_NOMADIK_MTU_SCHED_CLOCK. Since then, selecting
+CLKSRC_NOMADIK_MTU_SCHED_CLOCK in ./arch/arm/mach-nomadik/Kconfig has no
+effect and ./scripts/checkkconfigsymbols.py warns:
 
-However, during patch submission in March 2019, the introduction of the
-milbeaut pinctrl driver was dropped from v2 to v3 of the patch series.
-Since then, there was no further patch series to add this pinctrl driver
-later on.
+CLKSRC_NOMADIK_MTU_SCHED_CLOCK
+Referencing files: arch/arm/mach-nomadik/Kconfig
 
-Hence, selecting PINCTRL_MILBEAUT in config is simply dangling and
-referring to a non-existing config symbols.
-Fortunately, ./scripts/checkkconfigsymbols.py warns:
-
-PINCTRL_MILBEAUT
-Referencing files: arch/arm/mach-milbeaut/Kconfig
-
-Remove this select of the non-existing PINCTRL_MILBEAUT for now.
-
-Link: https://lore.kernel.org/linux-arm-kernel/1551243056-10521-1-git-send-email-sugaya.taichi@socionext.com/
+Simply drop selecting the obsolete CLKSRC_NOMADIK_MTU_SCHED_CLOCK.
 
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/arm/mach-milbeaut/Kconfig | 1 -
+ arch/arm/mach-nomadik/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/mach-milbeaut/Kconfig b/arch/arm/mach-milbeaut/Kconfig
-index 6a576fd8521e..f9d1006f9442 100644
---- a/arch/arm/mach-milbeaut/Kconfig
-+++ b/arch/arm/mach-milbeaut/Kconfig
-@@ -13,7 +13,6 @@ config ARCH_MILBEAUT_M10V
- 	select ARM_ARCH_TIMER
- 	select MILBEAUT_TIMER
- 	select PINCTRL
--	select PINCTRL_MILBEAUT
- 	help
- 	  Support for Socionext's MILBEAUT M10V based systems
- 
+diff --git a/arch/arm/mach-nomadik/Kconfig b/arch/arm/mach-nomadik/Kconfig
+index e98429be2b18..ab52b1abc453 100644
+--- a/arch/arm/mach-nomadik/Kconfig
++++ b/arch/arm/mach-nomadik/Kconfig
+@@ -5,7 +5,6 @@ menuconfig ARCH_NOMADIK
+ 	select ARM_AMBA
+ 	select ARM_VIC
+ 	select CLKSRC_NOMADIK_MTU
+-	select CLKSRC_NOMADIK_MTU_SCHED_CLOCK
+ 	select CPU_ARM926T
+ 	select GPIOLIB
+ 	select MFD_SYSCON
 -- 
 2.26.2
 
