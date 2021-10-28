@@ -2,187 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3221A43E318
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6819743E303
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhJ1OLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:11:06 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:39888 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbhJ1OLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:11:05 -0400
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 19SE8H6k023321;
-        Thu, 28 Oct 2021 23:08:18 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 19SE8H6k023321
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1635430098;
-        bh=IcpYv7zWe5UQhJrI79AsCfWxxZvFKvcreINhWE0NajI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YxOIeYLDuS0h3c2gODHmpmjviov+d4UQNZI5XcUQm9Gw+FjMt5Cv2md1zinagZU1P
-         rw82N2SiDVSqbuE+tzuUOsPHWYpO+sPG3os8K+ruy0OwLi7hYxuCTIu+ZzMMbY6EAA
-         jiuA4nOvBPJDUvluM1OwZxiCmGybRlMEvK+YC1HIPyQexPWTPoSrIw4bbZhfqeFwEh
-         abkxKEfX1Y+dZzccYk4KfDUbx0YaGbImPutGumzW5vUWFmd4ynRh8Ponz/r0NyKyyK
-         ipfRkDZs/cjfEgIWLWw3ka3BQZTjv3D/e9a0DLdZCknip5ILXXgLNR6796N+nQXRet
-         oMdgZjvUbHmhA==
-X-Nifty-SrcIP: [209.85.216.51]
-Received: by mail-pj1-f51.google.com with SMTP id k2-20020a17090ac50200b001a218b956aaso4821889pjt.2;
-        Thu, 28 Oct 2021 07:08:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533BF+4oUODzq/eqG4UHgLURG/w9DB68f4jChwW12RH7ivcvHaQG
-        pFRxhDOqhgnC4Bgty+1aU1gSaYYrEPG/u2Oek9c=
-X-Google-Smtp-Source: ABdhPJzVFYbKNCh5NMd97Z3K+qVlRxTWjQ19pEitcfweyZV2B/3abCoKrJBl47vojEOwhmyU4YFrGcIuZKH08TVdTIY=
-X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr4795598pjb.144.1635430097162;
- Thu, 28 Oct 2021 07:08:17 -0700 (PDT)
+        id S230441AbhJ1OGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:06:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229887AbhJ1OGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:06:45 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F395C61056;
+        Thu, 28 Oct 2021 14:04:16 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 15:08:42 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
+        andy.shevchenko@gmail.com
+Subject: Re: [PATCH v7 2/2] iio/scmi: Add reading "raw" attribute.
+Message-ID: <20211028150842.2e309268@jic23-huawei>
+In-Reply-To: <20211024091627.28031-3-andriy.tryshnivskyy@opensynergy.com>
+References: <20211024091627.28031-1-andriy.tryshnivskyy@opensynergy.com>
+        <20211024091627.28031-3-andriy.tryshnivskyy@opensynergy.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
-In-Reply-To: <YXqpFHeY26sEbort@hirez.programming.kicks-ass.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 28 Oct 2021 23:07:40 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
-Message-ID: <CAK7LNATUpgfKJvjp0+8H6VfMLMio9+BCoyj00mAO8FcaVGCqjg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Support clang-$ver builds
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Hi,
->
-> Debian (and derived) distros ship their compilers as -$ver suffixed
-> binaries. For gcc it is sufficent to use:
->
->  $ make CC=gcc-12
->
-> However, clang builds (esp. clang-lto) need a whole array of tools to be
-> exactly right, leading to unweildy stuff like:
->
->  $ make CC=clang-13 LD=ld.lld=14 AR=llvm-ar-13 NM=llvm-nm-13 OBJCOPY=llvm-objcopy-13 OBJDUMP=llvm-objdump-13 READELF=llvm-readelf-13 STRIP=llvm-strip-13 LLVM=1
->
-> which is, quite franktly, totally insane and unusable. Instead use the
-> already mandatory LLVM variable to convey this, enabling one such as
-> myself to use:
->
->  $ make LLVM=-13
->
-> This also lets one quickly test different clang versions.
+On Sun, 24 Oct 2021 12:16:27 +0300
+Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
 
+> Add IIO_CHAN_INFO_RAW to the mask and implement corresponding
+> reading "raw" attribute in scmi_iio_read_raw.
+> 
+> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
 
-Please read the commit log of
-a0d1c951ef08ed24f35129267e3595d86f57f5d3
+@Jyoti,
 
+looking for your Ack / or Reviewed-by tag for this one.
 
+Thanks,
 
+Jonathan
 
-
-
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  Makefile                       | 27 +++++++++++++++++----------
->  tools/scripts/Makefile.include | 23 +++++++++++++++--------
->  2 files changed, 32 insertions(+), 18 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 30c7c81d0437..a38f38f7f190 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -423,9 +423,16 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
->  HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
->  HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
->
-> +# When LLVM=-ver use clang-ver binaries, useful for Debian and other
-> +# multi-version setups
-> +ifeq ($(shell test $(LLVM) -lt 0; echo $$?),0)
-> +LLVM_SFX=$(LLVM)
-> +export LLVM_SFX
-> +endif
+> Changes comparing v6 -> v7:
+> * split into two patches: one for changes in core functionality,
+>   another - for changes in the driver
+> 
+> Changes comparing v5 -> v6:
+> * revert v5 changes since with scmi_iio_read_raw() the channel
+>   can't be used by in kernel users (iio-hwmon)
+> * returned to v3 with direct mode
+> * introduce new type IIO_VAL_INT_64 to read 64-bit value
+> 
+> Changes comparing v4 -> v5:
+> * call iio_device_release_direct_mode() on error
+> * code cleanup, fix typo
+> 
+> Changes comparing v3 -> v4:
+> * do not use scmi_iio_get_raw() for reading raw attribute due to 32-bit
+>   return value limitation (actually I reverted the previous v3)
+> * introduce scmi_iio_read_raw to scmi_iio_ext_info[] which can return
+>   64-bit value
+> * enabling/disabling and reading raw attribute is done in direct mode
+> 
+> Changes comparing v2 -> v3:
+> * adaptation for changes in structure scmi_iio_priv (no member
+>   named 'handle')
+> 
+> Changes comparing v0 -> v2:
+> * added an error return when the error happened during config_set
+> * removed redundant cast for "readings"
+> * added check if raw value fits 32 bits
+> 
+>  drivers/iio/common/scmi_sensors/scmi_iio.c | 57 +++++++++++++++++++++-
+>  1 file changed, 56 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> index 7cf2bf282cef..d538bf3ab1ef 100644
+> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> @@ -279,6 +279,52 @@ static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+>  	return 0;
+>  }
+>  
+> +static int scmi_iio_read_channel_data(struct iio_dev *iio_dev,
+> +			     struct iio_chan_spec const *ch, int *val, int *val2)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	u32 sensor_config;
+> +	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
+> +	int err;
 > +
->  ifneq ($(LLVM),)
-> -HOSTCC = clang
-> -HOSTCXX        = clang++
-> +HOSTCC = clang$(LLVM_SFX)
-> +HOSTCXX        = clang++$(LLVM_SFX)
->  else
->  HOSTCC = gcc
->  HOSTCXX        = g++
-> @@ -443,14 +450,14 @@ KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
->  # Make variables (CC, etc...)
->  CPP            = $(CC) -E
->  ifneq ($(LLVM),)
-> -CC             = clang
-> -LD             = ld.lld
-> -AR             = llvm-ar
-> -NM             = llvm-nm
-> -OBJCOPY                = llvm-objcopy
-> -OBJDUMP                = llvm-objdump
-> -READELF                = llvm-readelf
-> -STRIP          = llvm-strip
-> +CC             = clang$(LLVM_SFX)
-> +LD             = ld.lld$(LLVM_SFX)
-> +AR             = llvm-ar$(LLVM_SFX)
-> +NM             = llvm-nm$(LLVM_SFX)
-> +OBJCOPY                = llvm-objcopy$(LLVM_SFX)
-> +OBJDUMP                = llvm-objdump$(LLVM_SFX)
-> +READELF                = llvm-readelf$(LLVM_SFX)
-> +STRIP          = llvm-strip$(LLVM_SFX)
->  else
->  CC             = $(CROSS_COMPILE)gcc
->  LD             = $(CROSS_COMPILE)ld
-> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-> index 071312f5eb92..a2b53cc91378 100644
-> --- a/tools/scripts/Makefile.include
-> +++ b/tools/scripts/Makefile.include
-> @@ -51,12 +51,19 @@ define allow-override
->      $(eval $(1) = $(2)))
->  endef
->
-> +# When LLVM=-ver use clang-ver binaries, useful for Debian and other
-> +# multi-version setups
-> +ifeq ($(shell test $(LLVM) -lt 0; echo $$?),0)
-> +LLVM_SFX=$(LLVM)
-> +export LLVM_SFX
-> +endif
+> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					SCMI_SENS_CFG_SENSOR_ENABLE);
+> +	err = sensor->sensor_ops->config_set(
+> +		sensor->ph, sensor->sensor_info->id, sensor_config);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in enabling sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
 > +
->  ifneq ($(LLVM),)
-> -$(call allow-override,CC,clang)
-> -$(call allow-override,AR,llvm-ar)
-> -$(call allow-override,LD,ld.lld)
-> -$(call allow-override,CXX,clang++)
-> -$(call allow-override,STRIP,llvm-strip)
-> +$(call allow-override,CC,clang$(LLVM_SFX))
-> +$(call allow-override,AR,llvm-ar$(LLVM_SFX))
-> +$(call allow-override,LD,ld.lld$(LLVM_SFX))
-> +$(call allow-override,CXX,clang++$(LLVM_SFX))
-> +$(call allow-override,STRIP,llvm-strip$(LLVM_SFX))
->  else
->  # Allow setting various cross-compile vars or setting CROSS_COMPILE as a prefix.
->  $(call allow-override,CC,$(CROSS_COMPILE)gcc)
-> @@ -69,9 +76,9 @@ endif
->  CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
->
->  ifneq ($(LLVM),)
-> -HOSTAR  ?= llvm-ar
-> -HOSTCC  ?= clang
-> -HOSTLD  ?= ld.lld
-> +HOSTAR  ?= llvm-ar$(LLVM_SFX)
-> +HOSTCC  ?= clang$(LLVM_SFX)
-> +HOSTLD  ?= ld.lld$(LLVM_SFX)
->  else
->  HOSTAR  ?= ar
->  HOSTCC  ?= gcc
+> +	err = sensor->sensor_ops->reading_get_timestamped(
+> +		sensor->ph, sensor->sensor_info->id,
+> +		sensor->sensor_info->num_axis, readings);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in reading raw attribute for sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +					SCMI_SENS_CFG_SENSOR_DISABLE);
+> +	err = sensor->sensor_ops->config_set(
+> +		sensor->ph, sensor->sensor_info->id, sensor_config);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in disabling sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	*val = lower_32_bits(readings[ch->scan_index].value);
+> +	*val2 = upper_32_bits(readings[ch->scan_index].value);
+> +
+> +	return IIO_VAL_INT_64;
+> +}
+> +
+>  static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  			     struct iio_chan_spec const *ch, int *val,
+>  			     int *val2, long mask)
+> @@ -300,6 +346,14 @@ static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
+>  		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> +	case IIO_CHAN_INFO_RAW:
+> +		ret = iio_device_claim_direct_mode(iio_dev);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = scmi_iio_read_channel_data(iio_dev, ch, val, val2);
+> +		iio_device_release_direct_mode(iio_dev);
+> +		return ret;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -381,7 +435,8 @@ static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+>  	iio_chan->type = type;
+>  	iio_chan->modified = 1;
+>  	iio_chan->channel2 = mod;
+> -	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
+> +	iio_chan->info_mask_separate =
+> +		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_RAW);
+>  	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+>  	iio_chan->info_mask_shared_by_type_available =
+>  		BIT(IIO_CHAN_INFO_SAMP_FREQ);
 
-
-
--- 
-Best Regards
-Masahiro Yamada
