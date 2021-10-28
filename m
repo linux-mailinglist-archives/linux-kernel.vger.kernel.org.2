@@ -2,165 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B5C43E3B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C57C43E3BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhJ1Oao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:30:44 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23250 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230435AbhJ1Oam (ORCPT
+        id S231160AbhJ1OcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:32:21 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36636 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhJ1OcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:30:42 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SDmIie025864;
-        Thu, 28 Oct 2021 14:28:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=md+FvUwIZEcksl9BuW+fxFURYNR/ASpN6IZSInq3iS8=;
- b=jg5KEj3FDWysKtZAZ8Cgmo35kd7weKx/O48+Y1CcqZqvpZRLHZSoM7iBEYqQ7LsX+86B
- C3wcFottx/45Jk7NeU5YU3jCkVvxGcdLpyhwlDU7AYNEWSSeO/Z+/emHHOCt6bKV+940
- ZZOw0dd8Md6KPGhZ2/V9VIElM8ZHP2Hi9WQG3smVaxzUE2LhFaLokvLYvraNDi4sapy7
- M1TwDIZreVeTVUIhmZNsAWk9VuQBNHEL7Xyp5ey/U+YeN+0/vRty+XU/6vTksti7ECsC
- uO2mIVg4nWg/meqGsGhm3IBbZRfdKUW4v+if7j6IU0mVlGENpyh3QrcF/oso/hfOXs5d EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byw2qgxuq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 14:28:07 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SDnkuB031691;
-        Thu, 28 Oct 2021 14:28:06 GMT
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3byw2qgxua-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 14:28:06 +0000
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SEE3qu031509;
-        Thu, 28 Oct 2021 14:28:05 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma01wdc.us.ibm.com with ESMTP id 3bx4egsh1a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 14:28:05 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SES4vV54526450
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 14:28:04 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 28F377805F;
-        Thu, 28 Oct 2021 14:28:04 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0435B78068;
-        Thu, 28 Oct 2021 14:28:02 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.163.12.226])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Oct 2021 14:28:02 +0000 (GMT)
-Message-ID: <0f9229c3c4c7859524411a47db96a3b53ac89c90.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     daejun7.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Keoseong Park <keosung.park@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 Oct 2021 10:28:01 -0400
-In-Reply-To: <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-         <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 28 Oct 2021 10:32:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 46EDD21974;
+        Thu, 28 Oct 2021 14:29:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635431392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fnQacjJrzF+VweZrVr7dh+1tn73gKyrFNWxwR+b7ei0=;
+        b=ERg7um1WGG8zfpmDgP3TGle9Yf3ztkCuGEIZdoHS5dL8X0Vg8gW++cWhz0bVbtKrpAGSXA
+        SsD9HwfkLiqDl96FWWT9xNDHiDiCmcjablNpmV58HR+Z1qn6oj4jdhPxsXEsQA45A+3MIG
+        ryfQ24YTT7JBCqICf6KQPzgBKvtm400=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635431392;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fnQacjJrzF+VweZrVr7dh+1tn73gKyrFNWxwR+b7ei0=;
+        b=CaHggJbrtI8oFFghRMpZCpZ6oyWWDWVl9lPuGFhbZPAtFama8SqP/REafP64RHFR4mJlUV
+        Aa7ILBBGX8VOXaCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CB84513E9D;
+        Thu, 28 Oct 2021 14:29:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DomcLt+zemGuHQAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Thu, 28 Oct 2021 14:29:51 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id b25d11a7;
+        Thu, 28 Oct 2021 14:29:51 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 15:29:50 +0100
+From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Patrick Donnelly <pdonnell@redhat.com>
+Subject: Re: [RFC PATCH v3] ceph: ceph: add remote object copies to fs client
+ metrics
+Message-ID: <YXqz3rCNrj2vsSwI@suse.de>
+References: <20211028114826.27192-1-lhenriques@suse.de>
+ <d80cc52c-4617-7941-c227-0465cbc8fc23@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: blp7e5H7Jg_JWfl7koHVWvBx1vcFTJDn
-X-Proofpoint-ORIG-GUID: lzmmOi1i4-cAmkvl5yQ57GJ_GJ3QM6iT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-28_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- spamscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 adultscore=0 suspectscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110280079
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d80cc52c-4617-7941-c227-0465cbc8fc23@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-28 at 07:36 +0900, Daejun Park wrote:
-> This patch addresses the issue of using the wrong API to create a
-> pre_request for HPB READ.
-> HPB READ candidate that require a pre-request will try to allocate a
-> pre-request only during request_timeout_ms (default: 0). Otherwise,
-> it is
-> passed as normal READ, so deadlock problem can be resolved.
+On Thu, Oct 28, 2021 at 09:27:08PM +0800, Xiubo Li wrote:
 > 
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 11 +++++------
->  drivers/scsi/ufs/ufshpb.h |  1 +
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 02fb51ae8b25..3117bd47d762 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -548,8 +548,7 @@ static int ufshpb_execute_pre_req(struct
-> ufshpb_lu *hpb, struct scsi_cmnd *cmd,
->  				 read_id);
->  	rq->cmd_len = scsi_command_size(rq->cmd);
->  
-> -	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> -		return -EAGAIN;
-> +	blk_execute_rq_nowait(NULL, req, true,
-> ufshpb_pre_req_compl_fn);
->  
->  	hpb->stats.pre_req_cnt++;
->  
-> @@ -2315,19 +2314,19 @@ struct attribute_group
-> ufs_sysfs_hpb_param_group = {
->  static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
->  {
->  	struct ufshpb_req *pre_req = NULL, *t;
-> -	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
->  	int i;
->  
->  	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
->  
-> -	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req),
-> GFP_KERNEL);
-> -	hpb->throttle_pre_req = qd;
-> +	hpb->pre_req = kcalloc(HPB_INFLIGHT_PRE_REQ, sizeof(struct
-> ufshpb_req),
-> +			       GFP_KERNEL);
-> +	hpb->throttle_pre_req = HPB_INFLIGHT_PRE_REQ;
->  	hpb->num_inflight_pre_req = 0;
->  
->  	if (!hpb->pre_req)
->  		goto release_mem;
->  
-> -	for (i = 0; i < qd; i++) {
-> +	for (i = 0; i < HPB_INFLIGHT_PRE_REQ; i++) {
->  		pre_req = hpb->pre_req + i;
->  		INIT_LIST_HEAD(&pre_req->list_req);
->  		pre_req->req = NULL;
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index a79e07398970..411a6d625f53 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -50,6 +50,7 @@
->  #define HPB_RESET_REQ_RETRIES			10
->  #define HPB_MAP_REQ_RETRIES			5
->  #define HPB_REQUEUE_TIME_MS			0
-> +#define HPB_INFLIGHT_PRE_REQ			4
+> On 10/28/21 7:48 PM, Luís Henriques wrote:
+> > This patch adds latency and size metrics for remote object copies
+> > operations ("copyfrom").  For now, these metrics will be available on the
+> > client only, they won't be sent to the MDS.
+> > 
+> > Cc: Patrick Donnelly<pdonnell@redhat.com>
+> > Signed-off-by: Luís Henriques<lhenriques@suse.de>
+> > ---
+> > This patch is still an RFC because it is... ugly.  Although it now
+> > provides nice values (latency and size) using the metrics infrastructure,
+> > it actually needs to extend the ceph_osdc_copy_from() function to add 2
+> > extra args!  That's because we need to get the timestamps stored in
+> > ceph_osd_request, which is handled within that function.
+> > 
+> > The alternative is to ignore those timestamps and collect new ones in
+> > ceph_do_objects_copy():
+> > 
+> > 	start_req = ktime_get();
+> > 	ceph_osdc_copy_from(...);
+> > 	end_req = ktime_get();
+> > 
+> > These would be more coarse-grained, of course.  Any other suggestions?
+> > 
+> > Cheers,
+> > -- Luís fs/ceph/debugfs.c | 19 ++++++++++++++++++ fs/ceph/file.c | 7
+> > ++++++- fs/ceph/metric.c | 35 +++++++++++++++++++++++++++++++++
+> > fs/ceph/metric.h | 14 +++++++++++++ include/linux/ceph/osd_client.h | 3
+> > ++- net/ceph/osd_client.c | 8 ++++++-- 6 files changed, 82
+> > insertions(+), 4 deletions(-) diff --git a/fs/ceph/debugfs.c
+> > b/fs/ceph/debugfs.c index 55426514491b..b657170d6bc3 100644 ---
+> > a/fs/ceph/debugfs.c +++ b/fs/ceph/debugfs.c @@ -203,6 +203,16 @@ static
+> > int metrics_latency_show(struct seq_file *s, void *p)
+> > spin_unlock(&m->metadata_metric_lock); CEPH_LAT_METRIC_SHOW("metadata",
+> > total, avg, min, max, sq); + spin_lock(&m->copyfrom_metric_lock); +
+> > total = m->total_copyfrom; + sum = m->copyfrom_latency_sum; + avg =
+> > total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0; + min =
+> > m->copyfrom_latency_min; + max = m->copyfrom_latency_max; + sq =
+> > m->copyfrom_latency_sq_sum; + spin_unlock(&m->copyfrom_metric_lock); +
+> > CEPH_LAT_METRIC_SHOW("copyfrom", total, avg, min, max, sq); + return 0;
+> > } @@ -234,6 +244,15 @@ static int metrics_size_show(struct seq_file *s,
+> > void *p) spin_unlock(&m->write_metric_lock);
+> > CEPH_SZ_METRIC_SHOW("write", total, avg_sz, min_sz, max_sz, sum_sz); +
+> > spin_lock(&m->copyfrom_metric_lock); + total = m->total_copyfrom; +
+> > sum_sz = m->copyfrom_size_sum; + avg_sz = total > 0 ?
+> > DIV64_U64_ROUND_CLOSEST(sum_sz, total) : 0; + min_sz =
+> > m->copyfrom_size_min; + max_sz = m->copyfrom_size_max; +
+> > spin_unlock(&m->copyfrom_metric_lock); + CEPH_SZ_METRIC_SHOW("copyfrom",
+> > total, avg_sz, min_sz, max_sz, sum_sz); + return 0; } diff --git
+> > a/fs/ceph/file.c b/fs/ceph/file.c index e61018d9764e..d1139bbcd58d
+> > 100644 --- a/fs/ceph/file.c +++ b/fs/ceph/file.c @@ -2208,6 +2208,7 @@
+> > static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64
+> > *src_off struct ceph_object_locator src_oloc, dst_oloc; struct
+> > ceph_object_id src_oid, dst_oid; size_t bytes = 0; + ktime_t start_req,
+> > end_req; u64 src_objnum, src_objoff, dst_objnum, dst_objoff; u32
+> > src_objlen, dst_objlen; u32 object_size = src_ci->i_layout.object_size;
+> > @@ -2242,7 +2243,11 @@ static ssize_t ceph_do_objects_copy(struct
+> > ceph_inode_info *src_ci, u64 *src_off CEPH_OSD_OP_FLAG_FADVISE_DONTNEED,
+> > dst_ci->i_truncate_seq, dst_ci->i_truncate_size, -
+> > CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ); +
+> > CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ, + &start_req, &end_req); +
+> > ceph_update_copyfrom_metrics(&fsc->mdsc->metric, + start_req, end_req, +
+> > object_size, ret);
 
-If the block people are happy with this, then I'm OK with it, but it
-doesn't look like you've solved the fanout deadlock problem because
-this new mechanism is still going to allocate a new tag.
+(Ugh!  Your mail client completely messed-up the patch and took me a while
+to figure out what you're suggesting :-) )
 
-James
+> Maybe you can move this to ceph_osdc_copy_from() by passing the object_size
+> to it ?
 
+I think this would mean to push into net/ceph/ more details about cephfs
+(such as the knowledge about metrics).  Which I think we should avoid.
+I've just suggested something different in my reply to Jeff, maybe that's
+a better approach (basically, get the OSD request struct from
+ceph_osdc_copy_from()).
 
+Cheers,
+--
+Luís
