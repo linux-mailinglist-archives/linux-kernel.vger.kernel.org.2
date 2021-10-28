@@ -2,167 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189D643F256
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076DB43F25A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhJ1WJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:09:58 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:53954 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbhJ1WJ5 (ORCPT
+        id S231235AbhJ1WKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230264AbhJ1WKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:09:57 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:41874)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mgDYW-001UqF-TD; Thu, 28 Oct 2021 16:07:28 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:53464 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mgDYU-003102-Oy; Thu, 28 Oct 2021 16:07:28 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <YXrN+Hnl9pSOsWlA@arighi-desktop> <202110280955.B18CB67@keescook>
-        <878rydm56l.fsf@disp2133> <202110281136.5CE65399A7@keescook>
-Date:   Thu, 28 Oct 2021 17:06:53 -0500
-In-Reply-To: <202110281136.5CE65399A7@keescook> (Kees Cook's message of "Thu,
-        28 Oct 2021 11:47:48 -0700")
-Message-ID: <8735okls76.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 28 Oct 2021 18:10:52 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492F2C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:08:25 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id x8so6112698oix.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=/Pr4+moq6uxxSNErzs5t8Ot9an4fXCfokoXqjuAIaPM=;
+        b=ebzHjuz36pjePUwf6bx+AtX5Vlyr9kmsxahF9QG/CPujIICXfNLXBrhctdsiDigC1r
+         oC7gWnW3ZT1+gitykWhbRQnv2Gst/kC9DCuQ/JAe75+aAQQ4EKrMFiBd2823/zZCIbL0
+         mwG/AgqpbsrScim2HxTEhOieAPh1KtKBEnhbE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=/Pr4+moq6uxxSNErzs5t8Ot9an4fXCfokoXqjuAIaPM=;
+        b=jukUAJqk6/CFS4XemORrfvUuCFPjlWKRxy2wVJMvd11GwqVBJPCkE8lWNafd7sfeUY
+         Mt3wZCcJfu05eq0v6LG2o1/2G1Zz5GC/RctvRIdYNDGvUwo5guksgSlcOP46FUWJyD19
+         d+Nc7H9gTId1l/+GLWG7IOlUW4fCIcui03fLbjy+HBFu0H7V0RMyDmv6OykwTCbpTxiL
+         LYDT2Say/5uUcbdLx/7+CqgofCaoHjjkETBKU9SicWBdK0XoZkZokKQK03avohhDT0dT
+         A+9r/gNQSvXVw7fr536Y+PGegq7UepnMwLCgG7HpbLiZqu7SLLfrnpkL1KZnP5P0jVyE
+         gq9g==
+X-Gm-Message-State: AOAM532ccR/E1mAundV44LRi9yKAG4sj84rZdVh/ea7INCHsYicO3Tkp
+        EQhTXw2fGJxIteQHc/lZp1yWC+pDNQNwDRdn9nVb1g==
+X-Google-Smtp-Source: ABdhPJyTHzX6uF5OsBpL7VXXllfq+d9ZMUgRaSJsFQgxo4OpDV3YsTM9R8u9y+LDZWpQqgNTTdKDKdEBLc9IG7kuVko=
+X-Received: by 2002:a05:6808:2124:: with SMTP id r36mr5299547oiw.64.1635458904676;
+ Thu, 28 Oct 2021 15:08:24 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 28 Oct 2021 15:08:24 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mgDYU-003102-Oy;;;mid=<8735okls76.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/GE8vE6FsfUV0q1XYNQ1Vhe88bv9TKu1Y=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_08
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1552 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 10 (0.6%), b_tie_ro: 9 (0.6%), parse: 0.87 (0.1%),
-         extract_message_metadata: 13 (0.8%), get_uri_detail_list: 2.6 (0.2%),
-        tests_pri_-1000: 13 (0.8%), tests_pri_-950: 1.27 (0.1%),
-        tests_pri_-900: 1.01 (0.1%), tests_pri_-90: 96 (6.2%), check_bayes: 93
-        (6.0%), b_tokenize: 10 (0.7%), b_tok_get_all: 9 (0.6%), b_comp_prob:
-        2.9 (0.2%), b_tok_touch_all: 67 (4.3%), b_finish: 0.88 (0.1%),
-        tests_pri_0: 1403 (90.3%), check_dkim_signature: 0.54 (0.0%),
-        check_dkim_adsp: 2.8 (0.2%), poll_dns_idle: 0.55 (0.0%), tests_pri_10:
-        3.3 (0.2%), tests_pri_500: 9 (0.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: selftests: seccomp_bpf failure on 5.15
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <1635408817-14426-3-git-send-email-pillair@codeaurora.org>
+References: <1635408817-14426-1-git-send-email-pillair@codeaurora.org> <1635408817-14426-3-git-send-email-pillair@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 28 Oct 2021 15:08:24 -0700
+Message-ID: <CAE-0n50z=h-avn+K-weZnZFVN7nsR=fLAtge7jFZ0JLx2JvP2w@mail.gmail.com>
+Subject: Re: [PATCH v7 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sibis@codeaurora.org, mpubbise@codeaurora.org, kuabhs@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+Quoting Rakesh Pillai (2021-10-28 01:13:36)
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
+> new file mode 100644
+> index 0000000..96d11a4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
+> @@ -0,0 +1,194 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/remoteproc/qcom,sc7280-wpss-pil.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm SC7280 WPSS Peripheral Image Loader
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description:
+> +  This document defines the binding for a component that loads and boots firmware
+> +  on the Qualcomm Technology Inc. WPSS.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sc7280-wpss-pil
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      The base address and size of the qdsp6ss register
+> +
+> +  interrupts:
+> +    items:
+> +      - description: Watchdog interrupt
+> +      - description: Fatal interrupt
+> +      - description: Ready interrupt
+> +      - description: Handover interrupt
+> +      - description: Stop acknowledge interrupt
+> +      - description: Shutdown acknowledge interrupt
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: wdog
+> +      - const: fatal
+> +      - const: ready
+> +      - const: handover
+> +      - const: stop-ack
+> +      - const: shutdown-ack
+> +
+> +  clocks:
+> +    items:
+> +      - description: GCC WPSS AHB BDG Master clock
+> +      - description: GCC WPSS AHB clock
+> +      - description: GCC WPSS RSCP clock
+> +      - description: XO clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ahb_bdg
+> +      - const: ahb
+> +      - const: rscp
+> +      - const: xo
+> +
+> +  power-domains:
+> +    items:
+> +      - description: CX power domain
+> +      - description: MX power domain
+> +
+> +  power-domain-names:
+> +    items:
+> +      - const: cx
+> +      - const: mx
+> +
+> +  resets:
+> +    items:
+> +      - description: AOSS restart
+> +      - description: PDC SYNC
+> +
+> +  reset-names:
+> +    items:
+> +      - const: restart
+> +      - const: pdc_sync
+> +
+> +  memory-region:
 
-> On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
->> Kees Cook <keescook@chromium.org> writes:
->> 
->> > On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
->> >> The following sub-tests are failing in seccomp_bpf selftest:
->> >> 
->> >> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
->> >> ...
->> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
->> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
->> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
->> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
->> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
->> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
->> >> ...
->> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
->> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
->> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
->> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
->> >> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
->> >> ...
->> >> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
->> >> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
->> >> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
->> >> 
->> >> I did some bisecting and found that the failures started to happen with:
->> >> 
->> >>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
->> >> 
->> >> Not sure if the test needs to be fixed after this commit, or if the
->> >> commit is actually introducing an issue. I'll investigate more, unless
->> >> someone knows already what's going on.
->> >
->> > Ah thanks for noticing; I will investigate...
->> 
->> 
->> I just did a quick read through of the test and while
->> I don't understand everything having a failure seems
->> very weird.
->> 
->> I don't understand the comment:
->> /* Tracer will redirect getpid to getppid, and we should die. */
->> 
->> As I think what happens is it the bpf programs loads the signal
->> number.  Tests to see if the signal number if GETPPID and allows
->> that system call and causes any other system call to be terminated.
->
-> The test suite runs a series of seccomp filter vs syscalls under tracing,
-> either with ptrace or with seccomp SECCOMP_RET_TRACE, to validate the
-> expected behavioral states. It seems that what's happened is that the
-> SIGSYS has suddenly become non-killing:
->
-> #  RUN           TRACE_syscall.ptrace.kill_after ...
-> # seccomp_bpf.c:1555:kill_after:Expected WSTOPSIG(status) & 0x80 (0) == 0x80 (128)
-> # seccomp_bpf.c:1556:kill_after:WSTOPSIG: 31
-> # kill_after: Test exited normally instead of by signal (code: 12)
-> #          FAIL  TRACE_syscall.ptrace.kill_after
->
-> i.e. the ptracer no longer sees a dead tracee, which would pass through
-> here:
->
->                 if (WIFSIGNALED(status) || WIFEXITED(status))
->                         /* Child is dead. Time to go. */
->                         return;
->
-> So the above saw a SIG_TRAP|SIGSYS rather than a killing SIGSYS. i.e.
-> instead of WIFSIGNALED(stauts) being true, it instead catches a
-> PTRACE_EVENT_STOP for SIGSYS, which should be impossible (the process
-> should be getting killed).
+Does it need
 
-Oh.  This is being ptraced as part of the test?
+    $ref: /schemas/types.yaml#/definitions/phandle
 
-Yes.  The signal started being delivered.  As far as that goes that
-sounds correct.
+because it's a phandle?
 
-Ptrace is allowed to intercept even fatal signals.  Everything except
-SIGKILL.
+> +    maxItems: 1
+> +    description: Reference to the reserved-memory for the Hexagon core
+> +
+> +  firmware-name:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description:
+> +      The name of the firmware which should be loaded for this remote
+> +      processor.
+> +
+> +  qcom,halt-regs:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      Phandle reference to a syscon representing TCSR followed by the
+> +      three offsets within syscon for q6, modem and nc halt registers.
+> +
+> +  qcom,qmp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Reference to the AOSS side-channel message RAM.
+> +
+> +  qcom,smem-states:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: States used by the AP to signal the Hexagon core
+> +    items:
+> +      - description: Stop the modem
+> +
+> +  qcom,smem-state-names:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: The names of the state bits used for SMP2P output
+> +    items:
+> +      - const: stop
+> +
+> +  glink-edge:
+> +    type: object
+> +    description:
+> +      Qualcomm G-Link subnode which represents communication edge, channels
+> +      and devices related to the ADSP.
 
-Is this a condition we don't want even ptrace to be able to catch?
+Any properties of glink-edge that are required?
 
-I think we can arrange it so that even ptrace can't intercept this
-signal.  I need to sit this problem on the back burner for a few
-minutes.  It is an angle I had not considered.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
 
-Is it a problem that the debugger can see the signal if the process does
-not?
+interrupts
 
-Eric
+> +  - interrupt-names
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - power-domain-names
+> +  - reset
+> +  - reset-names
+> +  - qcom,halt-regs
+> +  - memory-region
+> +  - qcom,qmp
+> +  - qcom,smem-states
+> +  - qcom,smem-state-names
+> +  - glink-edge
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/qcom,gcc-sc7280.h>
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +    #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+> +    #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+> +    #include <dt-bindings/mailbox/qcom-ipcc.h>
+> +    remoteproc@8a00000 {
+> +        compatible = "qcom,sc7280-wpss-pil";
+> +        reg = <0x08a00000 0x10000>;
+> +
+> +        interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
+> +        interrupt-names = "wdog", "fatal", "ready", "handover",
+> +                          "stop-ack", "shutdown-ack";
+> +
+> +        clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
+> +                 <&gcc GCC_WPSS_AHB_CLK>,
+> +                 <&gcc GCC_WPSS_RSCP_CLK>,
+> +                 <&rpmhcc RPMH_CXO_CLK>;
+> +        clock-names = "ahb_bdg", "ahb",
+> +                      "rscp", "xo";
+> +
+> +        power-domains = <&rpmhpd SC7280_CX>,
+> +                        <&rpmhpd SC7280_MX>;
+> +        power-domain-names = "cx", "mx";
+> +
+> +        memory-region = <&wpss_mem>;
+> +
+> +        qcom,qmp = <&aoss_qmp>;
+> +
+> +        qcom,smem-states = <&wpss_smp2p_out 0>;
+> +        qcom,smem-state-names = "stop";
+> +
+> +        resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
+> +                 <&pdc_reset PDC_WPSS_SYNC_RESET>;
+> +        reset-names = "restart", "pdc_sync";
+> +
+> +        qcom,halt-regs = <&tcsr_mutex 0x37000>;
+> +
+> +        status = "disabled";
+
+status can be left out of examples.
+
+> +
+> +        glink-edge {
+> +            interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
+> +                                         IPCC_MPROC_SIGNAL_GLINK_QMP
+> +                                         IRQ_TYPE_EDGE_RISING>;
+> +            mboxes = <&ipcc IPCC_CLIENT_WPSS
+> +                            IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +            label = "wpss";
+> +            qcom,remote-pid = <13>;
+
+There are a few properties here that don't seem to be required. Is that
+intentional?
