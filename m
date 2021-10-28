@@ -2,160 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE0243E1F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CC343E1F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhJ1NY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:24:28 -0400
-Received: from ixit.cz ([94.230.151.217]:35134 "EHLO ixit.cz"
+        id S230357AbhJ1N0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:26:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229981AbhJ1NY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:24:27 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 6675D20064;
-        Thu, 28 Oct 2021 15:21:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1635427318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tRtvLsIyTzl1Po9E5wDOrSjeOosw5eO3XZEpRHlLuvo=;
-        b=UiHtoW68Y5aQXo7yUDPn3YqqEXayTa44ULi0V79pXd25hc7dw86Md4dGdAt4pT/ourOMvx
-        JVHNpaEYDtEdhiC26vs5biOCowMVOCUm5kZmqCPCFsRoMzlCcSTi+V+FXPQQgeKbF+c+Dt
-        cU2I/nRvDOnamwcOBUMUrqeBRftjAQE=
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: tegra: add -hog to gpios hogs
-Date:   Thu, 28 Oct 2021 15:21:52 +0200
-Message-Id: <20211028132152.44232-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S230195AbhJ1NZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:25:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F8B860F92;
+        Thu, 28 Oct 2021 13:23:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635427406;
+        bh=MHd0VsFoJKZpEh0+cqexMABqtGf+jebYqYU99Q+jS/A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YylB4snR9WIoK41yPkY1g21AwWIc7X+sqocVoRkPCZRL5I9+Fn4L4zKKcQOleVNvm
+         LvIv8NPzDMVcVZxWM8pY8jHtUkpxpPKEilrPqQfRnU5oJl1RJGai61w2S+MJmz5qT+
+         bcJUEWFUb7XHUheHMOHv/XbrdrXDKv1LW3q+jA2Z8QybzfaonDp4tmEnxUYtO87sqj
+         Y02ETedmW/16xz2bD8VqMFRg3CBmYYjLyNUD9xwnnBsM3Ql5K+20xW6Wd+ogbOA6gL
+         9/7LpL8gKK7u/1Q/NdXS6P96G8/UIEvm2UdZvm8ji7KVRQjxkf0BHqRVfVu12Jqnnt
+         QUb7U4WhFMaHA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH net-next] devlink: Simplify internal devlink params implementation
+Date:   Thu, 28 Oct 2021 16:23:21 +0300
+Message-Id: <efec83a9e9479018c324f12c1a99b2a9e3ee29f7.1635427378.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Comply with dt-schema, fixes warnings as:
-$ make dtbs_check
-...
-arch/arm/boot/dts/tegra30-apalis-eval.dt.yaml: pex-perst-n: $nodename:0: 'pex-perst-n' does not match '^(hog-[0-9]+|.+-hog(-[0-9]+)?)$'
-	From schema: /home/runner/.local/lib/python3.8/site-packages/dtschema/schemas/gpio/gpio-hog.yaml
-...
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
+Reduce extra indirection from devlink_params_*() API. Such change
+makes it clear that we can drop devlink->lock from these flows, because
+everything is executed when the devlink is not registered yet.
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- arch/arm/boot/dts/tegra124-apalis-eval.dts      | 2 +-
- arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts | 2 +-
- arch/arm/boot/dts/tegra20-colibri.dtsi          | 6 +++---
- arch/arm/boot/dts/tegra30-apalis-eval.dts       | 2 +-
- arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts  | 2 +-
- arch/arm/boot/dts/tegra30-colibri.dtsi          | 2 +-
- 6 files changed, 8 insertions(+), 8 deletions(-)
+ net/core/devlink.c | 169 ++++++++++++---------------------------------
+ 1 file changed, 46 insertions(+), 123 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra124-apalis-eval.dts b/arch/arm/boot/dts/tegra124-apalis-eval.dts
-index 28c29b6813a7..3209554ec7e6 100644
---- a/arch/arm/boot/dts/tegra124-apalis-eval.dts
-+++ b/arch/arm/boot/dts/tegra124-apalis-eval.dts
-@@ -246,7 +246,7 @@ reg_usbh_vbus: regulator-usbh-vbus {
+diff --git a/net/core/devlink.c b/net/core/devlink.c
+index 0de679c4313c..ff2bc6a8f95e 100644
+--- a/net/core/devlink.c
++++ b/net/core/devlink.c
+@@ -4925,45 +4925,6 @@ static int devlink_nl_cmd_param_set_doit(struct sk_buff *skb,
+ 					       info, DEVLINK_CMD_PARAM_NEW);
+ }
  
- &gpio {
- 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
--	pex-perst-n {
-+	pex-perst-n-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(DD, 1) GPIO_ACTIVE_HIGH>;
- 		output-high;
-diff --git a/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts b/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts
-index f3afde410615..814257c79bf1 100644
---- a/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts
-+++ b/arch/arm/boot/dts/tegra124-apalis-v1.2-eval.dts
-@@ -248,7 +248,7 @@ reg_usbh_vbus: regulator-usbh-vbus {
+-static int devlink_param_register_one(struct devlink *devlink,
+-				      unsigned int port_index,
+-				      struct list_head *param_list,
+-				      const struct devlink_param *param,
+-				      enum devlink_command cmd)
+-{
+-	struct devlink_param_item *param_item;
+-
+-	if (devlink_param_find_by_name(param_list, param->name))
+-		return -EEXIST;
+-
+-	if (param->supported_cmodes == BIT(DEVLINK_PARAM_CMODE_DRIVERINIT))
+-		WARN_ON(param->get || param->set);
+-	else
+-		WARN_ON(!param->get || !param->set);
+-
+-	param_item = kzalloc(sizeof(*param_item), GFP_KERNEL);
+-	if (!param_item)
+-		return -ENOMEM;
+-	param_item->param = param;
+-
+-	list_add_tail(&param_item->list, param_list);
+-	return 0;
+-}
+-
+-static void devlink_param_unregister_one(struct devlink *devlink,
+-					 unsigned int port_index,
+-					 struct list_head *param_list,
+-					 const struct devlink_param *param,
+-					 enum devlink_command cmd)
+-{
+-	struct devlink_param_item *param_item;
+-
+-	param_item = devlink_param_find_by_name(param_list, param->name);
+-	WARN_ON(!param_item);
+-	list_del(&param_item->list);
+-	kfree(param_item);
+-}
+-
+ static int devlink_nl_cmd_port_param_get_dumpit(struct sk_buff *msg,
+ 						struct netlink_callback *cb)
+ {
+@@ -10092,73 +10053,6 @@ static int devlink_param_verify(const struct devlink_param *param)
+ 		return devlink_param_driver_verify(param);
+ }
  
- &gpio {
- 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
--	pex-perst-n {
-+	pex-perst-n-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(DD, 1) GPIO_ACTIVE_HIGH>;
- 		output-high;
-diff --git a/arch/arm/boot/dts/tegra20-colibri.dtsi b/arch/arm/boot/dts/tegra20-colibri.dtsi
-index 375b60eb03af..618d35647a43 100644
---- a/arch/arm/boot/dts/tegra20-colibri.dtsi
-+++ b/arch/arm/boot/dts/tegra20-colibri.dtsi
-@@ -749,7 +749,7 @@ &emc_icc_dvfs_opp_table {
- };
+-static int __devlink_param_register_one(struct devlink *devlink,
+-					unsigned int port_index,
+-					struct list_head *param_list,
+-					const struct devlink_param *param,
+-					enum devlink_command reg_cmd)
+-{
+-	int err;
+-
+-	err = devlink_param_verify(param);
+-	if (err)
+-		return err;
+-
+-	return devlink_param_register_one(devlink, port_index,
+-					  param_list, param, reg_cmd);
+-}
+-
+-static int __devlink_params_register(struct devlink *devlink,
+-				     unsigned int port_index,
+-				     struct list_head *param_list,
+-				     const struct devlink_param *params,
+-				     size_t params_count,
+-				     enum devlink_command reg_cmd,
+-				     enum devlink_command unreg_cmd)
+-{
+-	const struct devlink_param *param = params;
+-	int i;
+-	int err;
+-
+-	mutex_lock(&devlink->lock);
+-	for (i = 0; i < params_count; i++, param++) {
+-		err = __devlink_param_register_one(devlink, port_index,
+-						   param_list, param, reg_cmd);
+-		if (err)
+-			goto rollback;
+-	}
+-
+-	mutex_unlock(&devlink->lock);
+-	return 0;
+-
+-rollback:
+-	if (!i)
+-		goto unlock;
+-	for (param--; i > 0; i--, param--)
+-		devlink_param_unregister_one(devlink, port_index, param_list,
+-					     param, unreg_cmd);
+-unlock:
+-	mutex_unlock(&devlink->lock);
+-	return err;
+-}
+-
+-static void __devlink_params_unregister(struct devlink *devlink,
+-					unsigned int port_index,
+-					struct list_head *param_list,
+-					const struct devlink_param *params,
+-					size_t params_count,
+-					enum devlink_command cmd)
+-{
+-	const struct devlink_param *param = params;
+-	int i;
+-
+-	mutex_lock(&devlink->lock);
+-	for (i = 0; i < params_count; i++, param++)
+-		devlink_param_unregister_one(devlink, 0, param_list, param,
+-					     cmd);
+-	mutex_unlock(&devlink->lock);
+-}
+-
+ /**
+  *	devlink_params_register - register configuration parameters
+  *
+@@ -10172,12 +10066,25 @@ int devlink_params_register(struct devlink *devlink,
+ 			    const struct devlink_param *params,
+ 			    size_t params_count)
+ {
++	const struct devlink_param *param = params;
++	int i, err;
++
+ 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
  
- &gpio {
--	lan-reset-n {
-+	lan-reset-n-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(V, 4) GPIO_ACTIVE_HIGH>;
- 		output-high;
-@@ -757,7 +757,7 @@ lan-reset-n {
- 	};
+-	return __devlink_params_register(devlink, 0, &devlink->param_list,
+-					 params, params_count,
+-					 DEVLINK_CMD_PARAM_NEW,
+-					 DEVLINK_CMD_PARAM_DEL);
++	for (i = 0; i < params_count; i++, param++) {
++		err = devlink_param_register(devlink, param);
++		if (err)
++			goto rollback;
++	}
++	return 0;
++
++rollback:
++	if (!i)
++		return err;
++
++	for (param--; i > 0; i--, param--)
++		devlink_param_unregister(devlink, param);
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(devlink_params_register);
  
- 	/* Tri-stating GMI_WR_N on SODIMM pin 99 nPWE */
--	npwe {
-+	npwe-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(T, 5) GPIO_ACTIVE_HIGH>;
- 		output-high;
-@@ -765,7 +765,7 @@ npwe {
- 	};
+@@ -10191,11 +10098,13 @@ void devlink_params_unregister(struct devlink *devlink,
+ 			       const struct devlink_param *params,
+ 			       size_t params_count)
+ {
++	const struct devlink_param *param = params;
++	int i;
++
+ 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
  
- 	/* Not tri-stating GMI_WR_N on SODIMM pin 93 RDnWR */
--	rdnwr {
-+	rdnwr-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(T, 6) GPIO_ACTIVE_HIGH>;
- 		output-low;
-diff --git a/arch/arm/boot/dts/tegra30-apalis-eval.dts b/arch/arm/boot/dts/tegra30-apalis-eval.dts
-index 9f653ef41da4..93b83b3c5655 100644
---- a/arch/arm/boot/dts/tegra30-apalis-eval.dts
-+++ b/arch/arm/boot/dts/tegra30-apalis-eval.dts
-@@ -239,7 +239,7 @@ reg_usbh_vbus: regulator-usbh-vbus {
+-	return __devlink_params_unregister(devlink, 0, &devlink->param_list,
+-					   params, params_count,
+-					   DEVLINK_CMD_PARAM_DEL);
++	for (i = 0; i < params_count; i++, param++)
++		devlink_param_unregister(devlink, param);
+ }
+ EXPORT_SYMBOL_GPL(devlink_params_unregister);
  
- &gpio {
- 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
--	pex-perst-n {
-+	pex-perst-n-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(S, 7) GPIO_ACTIVE_HIGH>;
- 		output-high;
-diff --git a/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts b/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts
-index 86e138e8c7f0..fbfa75e53f32 100644
---- a/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts
-+++ b/arch/arm/boot/dts/tegra30-apalis-v1.1-eval.dts
-@@ -257,7 +257,7 @@ reg_vddio_sdmmc3: regulator-vddio-sdmmc3 {
+@@ -10211,15 +10120,26 @@ EXPORT_SYMBOL_GPL(devlink_params_unregister);
+ int devlink_param_register(struct devlink *devlink,
+ 			   const struct devlink_param *param)
+ {
+-	int err;
++	struct devlink_param_item *param_item;
  
- &gpio {
- 	/* Apalis GPIO7 MXM3 pin 15 PLX PEX 8605 PCIe Switch Reset */
--	pex-perst-n {
-+	pex-perst-n-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(S, 7) GPIO_ACTIVE_HIGH>;
- 		output-high;
-diff --git a/arch/arm/boot/dts/tegra30-colibri.dtsi b/arch/arm/boot/dts/tegra30-colibri.dtsi
-index 64e4a375bfb1..9cfc6c7d2065 100644
---- a/arch/arm/boot/dts/tegra30-colibri.dtsi
-+++ b/arch/arm/boot/dts/tegra30-colibri.dtsi
-@@ -1056,7 +1056,7 @@ sound {
- };
+ 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
  
- &gpio {
--	lan-reset-n {
-+	lan-reset-n-hog {
- 		gpio-hog;
- 		gpios = <TEGRA_GPIO(DD, 0) GPIO_ACTIVE_HIGH>;
- 		output-high;
+-	mutex_lock(&devlink->lock);
+-	err = __devlink_param_register_one(devlink, 0, &devlink->param_list,
+-					   param, DEVLINK_CMD_PARAM_NEW);
+-	mutex_unlock(&devlink->lock);
+-	return err;
++	WARN_ON(devlink_param_verify(param));
++	WARN_ON(devlink_param_find_by_name(&devlink->param_list, param->name));
++
++	if (param->supported_cmodes == BIT(DEVLINK_PARAM_CMODE_DRIVERINIT))
++		WARN_ON(param->get || param->set);
++	else
++		WARN_ON(!param->get || !param->set);
++
++	param_item = kzalloc(sizeof(*param_item), GFP_KERNEL);
++	if (!param_item)
++		return -ENOMEM;
++
++	param_item->param = param;
++
++	list_add_tail(&param_item->list, &devlink->param_list);
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(devlink_param_register);
+ 
+@@ -10231,12 +10151,15 @@ EXPORT_SYMBOL_GPL(devlink_param_register);
+ void devlink_param_unregister(struct devlink *devlink,
+ 			      const struct devlink_param *param)
+ {
++	struct devlink_param_item *param_item;
++
+ 	ASSERT_DEVLINK_NOT_REGISTERED(devlink);
+ 
+-	mutex_lock(&devlink->lock);
+-	devlink_param_unregister_one(devlink, 0, &devlink->param_list, param,
+-				     DEVLINK_CMD_PARAM_DEL);
+-	mutex_unlock(&devlink->lock);
++	param_item =
++		devlink_param_find_by_name(&devlink->param_list, param->name);
++	WARN_ON(!param_item);
++	list_del(&param_item->list);
++	kfree(param_item);
+ }
+ EXPORT_SYMBOL_GPL(devlink_param_unregister);
+ 
 -- 
-2.33.0
+2.31.1
 
