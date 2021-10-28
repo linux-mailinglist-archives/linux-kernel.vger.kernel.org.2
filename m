@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DDC43E0FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D172543E107
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhJ1MbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53872 "EHLO mail.kernel.org"
+        id S230169AbhJ1MdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:33:15 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35644 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhJ1MbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:31:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A28E610CA;
-        Thu, 28 Oct 2021 12:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635424122;
-        bh=0IyHeV0L08KxqGj2Yi4V76DmhaAi20BHj3eWpXmjuSc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BPtm2gf6ueNW4PwQim7p7pYHbw1vohTXjCquTE2CXOEdA7saNvRjaRHPiYer91bzW
-         GKazsdh1TA8kb9OhaSQbzFZXIp0RLzdrR2D1oeibRXMWmU4LfHQZ4B/7m1/nRa7/7N
-         fs4NjX2fMDRIj/oxke/iNXJfm9Jv4XEV6jeVt4YRaG3wThFWzisY2gRbwmEUO/NdxU
-         YLbhLRQR0I1Fipgx/4GQd2nRcdRAixMkWgGukGIZft1pdCzsG2QXLGtqZoPO+hIEQQ
-         wCZQuX3gYFqG+P7spK25lmGMHP04ZeiE/mToZxo6/+y+iBmJXB88oacFZM4po+W79n
-         jzWTQlaNv1qlw==
-Date:   Thu, 28 Oct 2021 13:28:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     Vijendar.Mukunda@amd.com, perex@perex.cz, tiwai@suse.com,
-        pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, fazilyildiran@gmail.com
-Subject: Re: [PATCH RESEND] ASoC: fix unmet dependencies on GPIOLIB for
- SND_SOC_DMIC
-Message-ID: <YXqXdV0YC5BhEARB@sirena.org.uk>
-References: <20211027184835.112916-1-julianbraha@gmail.com>
+        id S229448AbhJ1MdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:33:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=xEBKoPrmRsIIkkMzN6IAirZdQjATcebsXUv59Brc72A=; b=hbPsAgRz/N44KSKUhIjWS+PnUf
+        iyLzSIw6C41F3zhgF9Xk4QINEaFK6cEfV0riqMpxGHrjRzy3Spzyv8o788FQxLKu/MZfC8Bckydrk
+        sMy+rwaoSFHRNTcuXwtvImOGmzkuRlT4riDlmTvZfkcTPQvK61OT8DPlO7D8x3nam7Kg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mg4YJ-00BzVI-Jh; Thu, 28 Oct 2021 14:30:39 +0200
+Date:   Thu, 28 Oct 2021 14:30:39 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "huangguangbin (A)" <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, wangjie125@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lipeng321@huawei.com, chenhao288@hisilicon.com
+Subject: Re: [PATCH net 1/7] net: hns3: fix pause config problem after
+ autoneg disabled
+Message-ID: <YXqX7z2GljD6bxTr@lunn.ch>
+References: <20211027121149.45897-1-huangguangbin2@huawei.com>
+ <20211027121149.45897-2-huangguangbin2@huawei.com>
+ <YXmLA4AbY83UV00f@lunn.ch>
+ <09eda9fe-196b-006b-6f01-f54e75715961@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DdE/G2GeDUUSa88j"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027184835.112916-1-julianbraha@gmail.com>
-X-Cookie: try again
+In-Reply-To: <09eda9fe-196b-006b-6f01-f54e75715961@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Hi Andrew, thanks very much for your guidance on how to use pause autoneg,
+> it confuses me before because PHY registers actually have no separate setting
+> bit of pause autoneg.
+> 
+> So, summarize what you mean:
+> 1. If pause autoneg is on, driver should always use the autoneg result to program
+>    the MAC. Eventhough general autoneg is off now and link state is no changed then
+>    driver just needs to keep the last configuration for the MAC, if link state is
+>    changed and phy goes down and up then driver needs to program the MAC according
+>    to the autoneg result in the link_adjust callback.
+> 2. If pause autoneg is off, driver should directly configure the MAC with tx pause
+>    and rx pause. Eventhough general autoneg is on, driver should ignore the autoneg
+>    result.
+> 
+> Do I understand right?
 
---DdE/G2GeDUUSa88j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, that fits my understanding of ethtool, etc.
 
-On Wed, Oct 27, 2021 at 02:48:35PM -0400, Julian Braha wrote:
-> When SND_SOC_AMD_RENOIR_MACH or SND_SOC_AMD_RV_RT5682_MACH
-> are selected, and GPIOLIB is not selected, Kbuild gives
-> the following warnings, respectively:
+phylink tried to clear up some of these problems by fully implementing
+the call within phylink. All the MAC driver needs to provide is a
+method to configure the MAC pause settings. Take a look at
+phylink_ethtool_set_pauseparam() and the commit messages related to
+that.
 
-I can't seem to find any indication that this has been sent before...
-
---DdE/G2GeDUUSa88j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF6l3QACgkQJNaLcl1U
-h9DjMgf+NZ1xB5WHfg/qE5AWTWl3sQk/3x1QHEWf9GvEbnabN53Q4mI2Gl8BruND
-Bo2jUu7e6Gk8QCBqRbPG4QBtq3E6Kp8iU5COhvwfII/YtUI48hF673+VWe5zUN/V
-bGzv/5PCMHq9z4ExbSV/fRYjgWpGBundZfnkj8+NzgrzRh4LOLJz4tksc4I3oNzk
-HucsQHqL/nJ4D4UG+b+mR/jHWf0BOarTY+/yY/VLUGRNV+ndAkTecPXEUucDxn5A
-Zc04LducScKdd4oOBzXhF5jhdhdJNGiIMXu+byUbxbTBwwjwz7W3vYFflbPufIWF
-lxLueOIx0+F4BIGUeUCVguCPfpF6Sg==
-=zRlM
------END PGP SIGNATURE-----
-
---DdE/G2GeDUUSa88j--
+	Andrew
