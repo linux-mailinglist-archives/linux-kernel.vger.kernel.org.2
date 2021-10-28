@@ -2,94 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEE943E0EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858B643E0DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhJ1M1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:27:36 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:45014 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbhJ1M1f (ORCPT
+        id S230383AbhJ1M0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:26:23 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:3532 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhJ1M0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:27:35 -0400
-Received: by mail-ot1-f45.google.com with SMTP id o10-20020a9d718a000000b00554a0fe7ba0so2433188otj.11;
-        Thu, 28 Oct 2021 05:25:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=6NJL/epdKwPjRr+Azrw8XvMRYX/QOKMs3w7KqwedYLI=;
-        b=Uo2zqrWzsw0SepZbQPFwthTExaFFee0QwnPLJjtK2PtrPceGswWvDNf5L8I8gsiSBm
-         Xal60CZkQByfvGdJQAT4Ch/PbuLPjtz3HzWD5q+5qCdD09ZXuJTRQ+fpJ/njzYzPf3YP
-         ukgE1cUPXH7bGCRe9PNzajcWXnIIV+4thee31uerYQoM8BMUm/ibSVcyCUInSMLws3U2
-         1dbRsE8/cZaISWusKv0YTdmn1ij+oKeDOYavKaVW/h8CLy9z+h7LdZqkauwxzPfkOori
-         iqDOUlApo7NYLUcOQ9eYsn9mTxe+LFJGOp3/Vh0ssFtwGj8PiYRakIedIHcxx/PU/ytc
-         YTlQ==
-X-Gm-Message-State: AOAM530ClHgtNk9CG4Pf+00RVZeHKN4YK0z9i0xSrasISENnoCk/sT2R
-        aRTnvrmC1mXXSwHlyLB9TN1zEONMoA==
-X-Google-Smtp-Source: ABdhPJwSevZxg+e9IYslJ09TcROXr7fMOjeHx07dXdyrDspyDA98bHNjgkkryT6U61ynE1oAk4Zrbw==
-X-Received: by 2002:a9d:17c5:: with SMTP id j63mr3098287otj.191.1635423907966;
-        Thu, 28 Oct 2021 05:25:07 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 16sm1043080oty.20.2021.10.28.05.25.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 05:25:07 -0700 (PDT)
-Received: (nullmailer pid 3934876 invoked by uid 1000);
-        Thu, 28 Oct 2021 12:25:06 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     andy.shevchenko@gmail.com, robh+dt@kernel.org, lars@metafoo.de,
-        matt.ranostay@konsulko.com, Andrea Merello <andrea.merello@iit.it>,
-        devicetree@vger.kernel.org, jacopo@jmondi.org,
-        mchehab+huawei@kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, jic23@kernel.org, ardeleanalex@gmail.com
-In-Reply-To: <20211028101840.24632-9-andrea.merello@gmail.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com> <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-9-andrea.merello@gmail.com>
-Subject: Re: [v2 08/10] dt-bindings: iio: imu: add documentation for Bosch BNO055 bindings
-Date:   Thu, 28 Oct 2021 07:25:06 -0500
-Message-Id: <1635423906.378411.3934875.nullmailer@robh.at.kernel.org>
+        Thu, 28 Oct 2021 08:26:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635423834; x=1666959834;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0Oq6s7AaG3bBjKwD3GLU5KykTSVALr5XWLndoODjwLU=;
+  b=Rue0PgcyZZgsrKknQdIrkBaZNzzj46k7JGO6pSQhVMuqPR24GtgSaY6w
+   D8B196oXaGEELWZ7iDgzJyuovmItZ+2kiw13s8B6JoestoMK1HZR0bmpw
+   S+Gq/iUsqAT3tqJZbIjY7AOxiZ6DV62vCBGfivua8RzhhccK05QTYe+k3
+   1aCHrnYL7i3rAaikCo3Brc7OUJplavf6DVF+fQ/Vd5irBzHKXcb421XAI
+   hJDtv2d9vrXNrpIBJI3n4A73R1AIh3WPOUXXSjvCC/iLn+PlmEDjGeDbx
+   xQQKhofBv2WIvL7MaE2Q0PWzrKj3+IGXndwlZ3v46USFzQnjE+zDoUX+J
+   A==;
+IronPort-SDR: Jvt9IWyJhVgbyC8C7YE7fAwf8FOQFwPQjJpYGNXGuvyTt+PIMFEcAa6JTDfEyUoGL2Hfvmaq2w
+ zkokjxpdqcdZObeGyaYVsgJDNYsblmTlPAvakcUsV+KKlllU6BinRfLW99C4jvDTOLFiiJfRNd
+ MuaTB72RiiUYZb1UKPwsYqdHulv250M1Fj7u7iXdc8JRinM0ukID43cpoTx4oBSVfpmEeqrKXk
+ a3JA/6HV4WJHaB+8NhaQfxMC7DVbsb6Kjtf+DGbo02g+Sq2CK/YcuGIc3zi4lkIrTWnMTcUogx
+ H2tJA3Ns9EAQWxB0z8je9So2
+X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
+   d="scan'208";a="134648670"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 05:23:51 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 28 Oct 2021 05:23:51 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 28 Oct 2021 05:23:50 -0700
+Date:   Thu, 28 Oct 2021 14:25:33 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Peter Rosin <peda@axentia.se>
+CC:     <robh+dt@kernel.org>, <peter.korsgaard@barco.com>,
+        <lars.povlsen@microchip.com>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] i2c: i2c-mux-gpio: Add support 'select-delay'
+ property
+Message-ID: <20211028122533.4o63fuguyqfua5tm@soft-dev3-1.localhost>
+References: <20211013141003.2388495-1-horatiu.vultur@microchip.com>
+ <20211013141003.2388495-3-horatiu.vultur@microchip.com>
+ <9fe92c02-40af-a077-4189-6f0c0a934745@axentia.se>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <9fe92c02-40af-a077-4189-6f0c0a934745@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 12:18:38 +0200, Andrea Merello wrote:
-> Introduce new documentation file for the Bosch BNO055 IMU
+The 10/27/2021 12:41, Peter Rosin wrote:
 > 
-> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> ---
->  .../bindings/iio/imu/bosch,bno055.yaml        | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml
+> Hi!
+
+Hi Peter,
+
 > 
+> I'm sorry for the slow response...
+> 
+> On 2021-10-13 16:10, Horatiu Vultur wrote:
+> > Use select-delay property to add a delay once the mux state is changed.
+> > This is required on some platforms to allow the GPIO signals to get
+> > stabilized.
+> >
+> > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  drivers/i2c/muxes/i2c-mux-gpio.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-mux-gpio.c
+> > index bac415a52b78..1cc69eb67221 100644
+> > --- a/drivers/i2c/muxes/i2c-mux-gpio.c
+> > +++ b/drivers/i2c/muxes/i2c-mux-gpio.c
+> > @@ -13,6 +13,8 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/bits.h>
+> >  #include <linux/gpio/consumer.h>
+> > +#include <linux/delay.h>
+> > +
+> >  /* FIXME: stop poking around inside gpiolib */
+> >  #include "../../gpio/gpiolib.h"
+> >
+> > @@ -20,6 +22,7 @@ struct gpiomux {
+> >       struct i2c_mux_gpio_platform_data data;
+> >       int ngpios;
+> >       struct gpio_desc **gpios;
+> > +     int select_delay;
+> >  };
+> >
+> >  static void i2c_mux_gpio_set(const struct gpiomux *mux, unsigned val)
+> > @@ -29,6 +32,8 @@ static void i2c_mux_gpio_set(const struct gpiomux *mux, unsigned val)
+> >       values[0] = val;
+> >
+> >       gpiod_set_array_value_cansleep(mux->ngpios, mux->gpios, NULL, values);
+> > +     if (mux->select_delay)
+> > +             udelay(mux->select_delay);
+> 
+> Use fsleep(mux->select_delay) if you don't know how long the delay really
+> is.
+> 
+> However, you needlessly invoke the delay even if you do not actually change
+> the state of the mux. In order to fix that, you need to keep track of the
+> current state of the mux, but that's a chunk of boring code to write. If you
+> instead switch to using a mux-gpio from the mux subsystem and point an
+> i2c-mux-gpmux to that instance, you get that for free, and you can make simple
+> changes to the i2c-mux-gpmux driver to get this sorted properly, basically
+> exactly as this patch but with this
+> 
+> -       ret = mux_control_select(mux->control, chan->channel);
+> +       ret = mux_control_select_delay(mux->control, chan->channel,
+> +                                      mux->delay_us);
+> 
+> instead of the udelay/fsleep in this patch. That will invoke the requested
+> delay, but only if too little time has gone by since the latest state change.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Thanks for the advice! I will change to use i2c-mux-gpmux and make the
+changes there.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml:20:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
-./Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml:37:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
+> 
+> That interface (mux_control_select_delay) is brand new though, but available
+> in linux-next and scheduled for the next merge window. But, since I fumbled
+> this series it's a bit late for this merge window anyway (sorry again) so
+> that should not be an issue.
 
-dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/iio/imu/bosch,bno055.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/iio/imu/bosch,bno055.yaml#
-Error: Documentation/devicetree/bindings/iio/imu/bosch,bno055.example.dts:53.13-14 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/iio/imu/bosch,bno055.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
+No worries, I will try to send a new version.
 
-doc reference errors (make refcheckdocs):
+> 
+> Cheers,
+> Peter
+> 
+> >  }
+> >
+> >  static int i2c_mux_gpio_select(struct i2c_mux_core *muxc, u32 chan)
+> > @@ -153,6 +158,8 @@ static int i2c_mux_gpio_probe_fw(struct gpiomux *mux,
+> >       if (fwnode_property_read_u32(dev->fwnode, "idle-state", &mux->data.idle))
+> >               mux->data.idle = I2C_MUX_GPIO_NO_IDLE;
+> >
+> > +     fwnode_property_read_u32(dev->fwnode, "select-delay", &mux->select_delay);
+> > +
+> >       return 0;
+> >  }
+> >
+> >
 
-See https://patchwork.ozlabs.org/patch/1547408
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+/Horatiu
