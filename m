@@ -2,125 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8198C43E267
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF9D43E268
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhJ1Nk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:40:28 -0400
-Received: from mail-vk1-f176.google.com ([209.85.221.176]:45689 "EHLO
-        mail-vk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhJ1Nk1 (ORCPT
+        id S230331AbhJ1Nls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:41:48 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:26202 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229887AbhJ1Nlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:40:27 -0400
-Received: by mail-vk1-f176.google.com with SMTP id n201so2984906vkn.12;
-        Thu, 28 Oct 2021 06:38:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z3bhZg2q8rGPgVnYFAWcAuG3eiVVloGlaqKG4qPQIPg=;
-        b=cQ0jUHIhTDi9oTpqgXG441S+hJ0iuyMx9DrFDxaTOskrPR6T1yzQ4n2OFM1x7O/DPI
-         aaV+r/C6K0uk3RL5oIRZ+WsaQpjVD67dgrthWoj6h4WlVBMWikm1JhCLUlzfSDUSHtnX
-         +ywK3cwJS/3CDIfEe9v1YRIpTuACtD9t7cySZATyjqBwz19QzIciNSuLiLHzMY8So9f5
-         LMN15c6XDIQA0PeszzpzLkADFGai8YhMfBsWwFKvOlmrgSE09k4IOjmyU20yaabJBQJw
-         KLetR+xB5v3NRzI9gMp3rXmwCEKM/x+CLDr4i4+PDI3RIcM+ueHEHuicT8u+QwLWCt8k
-         DgJQ==
-X-Gm-Message-State: AOAM532CqOfJmCYfD9tDqQst3AIWrdEr8lsY1q6YnQv6rEGenRuTf4Lp
-        W0Y9mBw61cExNH4jEt44Z7VnS9zVhPKG/w==
-X-Google-Smtp-Source: ABdhPJxpX8F1cR0UMjl51bxRqKkOkIwObcf/VwwxmvJZqyciAksEmxMnAKNmOuf406JKcyYXM1Sntg==
-X-Received: by 2002:a05:6122:881:: with SMTP id 1mr4353111vkf.19.1635428279527;
-        Thu, 28 Oct 2021 06:37:59 -0700 (PDT)
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com. [209.85.221.176])
-        by smtp.gmail.com with ESMTPSA id a8sm452549vko.51.2021.10.28.06.37.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 06:37:59 -0700 (PDT)
-Received: by mail-vk1-f176.google.com with SMTP id s201so2990064vke.6;
-        Thu, 28 Oct 2021 06:37:58 -0700 (PDT)
-X-Received: by 2002:a05:6122:a12:: with SMTP id 18mr4280175vkn.15.1635428278667;
- Thu, 28 Oct 2021 06:37:58 -0700 (PDT)
+        Thu, 28 Oct 2021 09:41:46 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hg67d1vZPz8tVn;
+        Thu, 28 Oct 2021 21:37:49 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 28 Oct 2021 21:39:12 +0800
+Received: from [10.174.178.178] (10.174.178.178) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 28 Oct 2021 21:39:11 +0800
+Message-ID: <505c2aa3-2a36-3981-786e-4d192bc6f8f2@huawei.com>
+Date:   Thu, 28 Oct 2021 21:39:10 +0800
 MIME-Version: 1.0
-References: <20211005001914.28574-1-rdunlap@infradead.org> <20211005001914.28574-3-rdunlap@infradead.org>
- <20211027205431.GX7074@brightrain.aerifal.cx> <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
- <20211028133049.GY7074@brightrain.aerifal.cx>
-In-Reply-To: <20211028133049.GY7074@brightrain.aerifal.cx>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Oct 2021 15:37:47 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUw=6RMF4gEhROMBwQALNmmKJgiKQLYymV4m75EZV+DJQ@mail.gmail.com>
-Message-ID: <CAMuHMdUw=6RMF4gEhROMBwQALNmmKJgiKQLYymV4m75EZV+DJQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5 v3] sh: add git tree to MAINTAINERS
-To:     Rich Felker <dalias@libc.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH v3 2/2] mm/vmalloc: introduce
+ alloc_pages_bulk_array_mempolicy to accelerate memory allocation
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <npiggin@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <edumazet@google.com>,
+        <wangkefeng.wang@huawei.com>, <guohanjun@huawei.com>,
+        <shakeelb@google.com>, <urezki@gmail.com>
+References: <20211021080744.874701-1-chenwandun@huawei.com>
+ <20211021080744.874701-3-chenwandun@huawei.com>
+ <20211021202652.ff8568bd5d58fbcf32946f83@linux-foundation.org>
+From:   Chen Wandun <chenwandun@huawei.com>
+In-Reply-To: <20211021202652.ff8568bd5d58fbcf32946f83@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.178]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rich,
 
-CC Konstantin
 
-On Thu, Oct 28, 2021 at 3:30 PM Rich Felker <dalias@libc.org> wrote:
-> On Thu, Oct 28, 2021 at 10:33:54AM +0200, Geert Uytterhoeven wrote:
-> > On Wed, Oct 27, 2021 at 10:54 PM Rich Felker <dalias@libc.org> wrote:
-> > > On Mon, Oct 04, 2021 at 05:19:11PM -0700, Randy Dunlap wrote:
-> > > > Add the git tree location for linux-sh.
-> > > >
-> > > > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> >
-> > > > --- linux-next-20211001.orig/MAINTAINERS
-> > > > +++ linux-next-20211001/MAINTAINERS
-> > > > @@ -18047,6 +18047,7 @@ M:    Yoshinori Sato <ysato@users.sourcefor
-> > > >  M:   Rich Felker <dalias@libc.org>
-> > > >  L:   linux-sh@vger.kernel.org
-> > > >  S:   Maintained
-> > > > +T:   git git://git.libc.org/linux-sh
-> > > >  Q:   http://patchwork.kernel.org/project/linux-sh/list/
-> > > >  F:   Documentation/sh/
-> > > >  F:   arch/sh/
-> > >
-> > > I'm omitting this for now since (as noted on the cgit description)
-> > > this server is not provisioned adequately for cloning from scratch,
-> > > and should only be used for fetch into an already-populated mainline
-> > > repo clone. If that's a problem I can see about getting it moved
-> > > somewhere more appropriate.
-> >
-> > Perhaps you can move it to kernel.org?
->
-> I would love to. This was my hope years ago, but I got bogged down in
-> the GPG key signing requirements and folks not following through with
-> signing my key. Has any of that been streamlined since?
-
-I'll let Konstantin respond...
-
-> > > The rest of this series should appear in next shortly.
-> >
-> > Thanks a lot!
->
-> Looks like it's been pulled by next now with no reports of anything
-> going wrong. I know it's late in the release cycle but should I
-
-Good!
-
-> probably go ahead and send a PR?
-
-Actually you're right on time ;-)
-Your tree is based on v5.15-rc1, and the merge window for v5.16 is
-expected to open on Monday. So you can send the PR right away.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+在 2021/10/22 11:26, Andrew Morton 写道:
+> On Thu, 21 Oct 2021 16:07:44 +0800 Chen Wandun <chenwandun@huawei.com> wrote:
+> 
+>> It
+> 
+> What is "it"?
+it == > [PATCH] mm/vmalloc: fix numa spreading for large hash tables;
+> 
+>> will cause significant performance regressions in some situations
+>> as Andrew mentioned in [1]. The main situation is vmalloc, vmalloc
+>> will allocate pages with NUMA_NO_NODE by default, that will result
+>> in alloc page one by one;
+>>
+>> In order to solve this, __alloc_pages_bulk and mempolicy should be
+>> considered at the same time.
+>>
+>> 1) If node is specified in memory allocation request, it will alloc
+>> all pages by __alloc_pages_bulk.
+>>
+>> 2) If interleaving allocate memory, it will cauculate how many pages
+>> should be allocated in each node, and use __alloc_pages_bulk to alloc
+>> pages in each node.
+> 
+> This v3 patch didn't incorporate my two fixes, below.  It is usual to
+> incorporate such fixes prior to resending.  I have retained those two
+> fixes, now against v3.
+> 
+> 
+> From: Andrew Morton <akpm@linux-foundation.org>
+> Subject: mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix
+> 
+> make two functions static
+> 
+> Cc: Chen Wandun <chenwandun@huawei.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Hanjun Guo <guohanjun@huawei.com>
+> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>   mm/mempolicy.c |    4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- a/mm/mempolicy.c~mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix
+> +++ a/mm/mempolicy.c
+> @@ -2196,7 +2196,7 @@ struct page *alloc_pages(gfp_t gfp, unsi
+>   }
+>   EXPORT_SYMBOL(alloc_pages);
+>   
+> -unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
+> +static unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
+>   		struct mempolicy *pol, unsigned long nr_pages,
+>   		struct page **page_array)
+>   {
+> @@ -2231,7 +2231,7 @@ unsigned long alloc_pages_bulk_array_int
+>   	return total_allocated;
+>   }
+>   
+> -unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
+> +static unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
+>   		struct mempolicy *pol, unsigned long nr_pages,
+>   		struct page **page_array)
+>   {
+> _
+> 
+> 
+> 
+> 
+> From: Andrew Morton <akpm@linux-foundation.org>
+> Subject: mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix-2
+> 
+> fix CONFIG_NUMA=n build.  alloc_pages_bulk_array_mempolicy() was undefined
+> 
+> Cc: Chen Wandun <chenwandun@huawei.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Hanjun Guo <guohanjun@huawei.com>
+> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>   mm/vmalloc.c |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/mm/vmalloc.c~mm-vmalloc-introduce-alloc_pages_bulk_array_mempolicy-to-accelerate-memory-allocation-fix-2
+> +++ a/mm/vmalloc.c
+> @@ -2860,7 +2860,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>   			 * otherwise memory may be allocated in only one node,
+>   			 * but mempolcy want to alloc memory by interleaving.
+>   			 */
+> -			if (nid == NUMA_NO_NODE)
+> +			if (IS_ENABLED(CONFIG_NUMA) && nid == NUMA_NO_NODE)
+>   				nr = alloc_pages_bulk_array_mempolicy(gfp,
+>   							nr_pages_request,
+>   							pages + nr_allocated);
+> _
+> 
+> .
+> 
