@@ -2,71 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED72243E6A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C27843E6A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhJ1QzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:55:04 -0400
-Received: from mga01.intel.com ([192.55.52.88]:37751 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229795AbhJ1QzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:55:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="254034844"
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="254034844"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 09:52:32 -0700
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="498482973"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 09:52:31 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mg8dQ-001oQS-6o;
-        Thu, 28 Oct 2021 19:52:12 +0300
-Date:   Thu, 28 Oct 2021 19:52:11 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] delay: Replace kernel.h with the necessary
- inclusions
-Message-ID: <YXrVO57eLx8gkWHW@smile.fi.intel.com>
-References: <20211027150324.79827-1-andriy.shevchenko@linux.intel.com>
- <20211028153055.GA440866@roeck-us.net>
- <YXrIlT+2llnwgRpj@smile.fi.intel.com>
- <20211028162810.GB470146@roeck-us.net>
- <YXrUu8swbM3BL/4C@smile.fi.intel.com>
+        id S230514AbhJ1QyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhJ1Qxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 12:53:53 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5424FC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:51:25 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id n11so1032640oig.6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vdcieApq76aVwV7YeMbL8svFqnVx22XOBF/ZRhqhdrw=;
+        b=VmAzlfQViSU8L2QzalW4BxxyO3g0UOqJWS98/kME2IOfJlFAK1uyLIMYdqNHwB4J3Q
+         tk/T4YqeIUhBk14pYTxaqxaYliGAPfRs4B7iKO3BWERKdjJzRSY/wdOSk/rZBF6ZPKed
+         QiN+Lqj3HC74T4frOj4auTGqAafFJ4KVxg445qaLRQkDIW8MEQ1qREhUkO0c+llAqgK9
+         0uNIvg1RAiBhIvvnVWcDKMrrG54qz3etlmFfWRquIwUpyACrGtpXgw7LdJc93XksOYtx
+         XW2t8kOKZLhJQ81wjMAvsheSde6OVDVyEhSjeXPKh3gRV0YmSwbv1fMqZqXbebUu54ZS
+         rvfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vdcieApq76aVwV7YeMbL8svFqnVx22XOBF/ZRhqhdrw=;
+        b=gqgq73AKxHDcCYIbtbQZJ1xlB6/5mTM9qjyrbEx25k4TfJZ8ZssldWfvycGpVgxscD
+         6cdq9XA4oiXJCTG0hC2O+/y8Ub/J6Z47jf+IMRyIQ8yMWCLgPA/neU59PFrp3HnL98Og
+         ap5tphGcUu7dj/tPTkUkZJ4USFUr1tJo2Pnglqh6zfcx/gBuygHJRYfeXm7sXscX7nlp
+         4LyKS8c/RmltFEq3Ix3wvIifwn9SS2sAsPmTiUOzM6NUQ7poYGq1XVp1qau8JPvoo7wE
+         2gjAmQaHmpkO0/BgyQsUWQMT4UMugUfBOKuBC3uclFDtkZY3K8yRuLBercpgbK/KZIVH
+         mmZg==
+X-Gm-Message-State: AOAM533eGxlKVEy2Z5CDJd2HrWbO9LKWhdDTGyKT05AuNWo1S3W4TGKA
+        xcO4tRUescIfG5rmcDaPfN7ivw==
+X-Google-Smtp-Source: ABdhPJxFgbLyfR/ke3FH70Vv9T+iJrawjEp7Pk+BsCSCkyiKAoFyC4dXUhGH3nTTI7DWi8fkZYMzig==
+X-Received: by 2002:a05:6808:171c:: with SMTP id bc28mr9424798oib.18.1635439884570;
+        Thu, 28 Oct 2021 09:51:24 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q15sm1178672otm.15.2021.10.28.09.51.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 09:51:24 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 09:53:14 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd
+ bindings for dwc3 qcom
+Message-ID: <YXrVevUlCJJtbpLi@ripper>
+References: <CAE-0n51k8TycXjEkH7rHYo0j7cYbKJOnOn1keVhx2yyTcBNnvg@mail.gmail.com>
+ <YXck+xCJQBRGqTCw@ripper>
+ <CAE-0n530M3eft-o0qB+yEzGjZgCLMgY==ZgdvwiVCwqqCAVxxA@mail.gmail.com>
+ <YXdsYlLWnjopyMn/@ripper>
+ <CAE-0n51C4dm6bhds=ZZyje-Pcejxjm4MMa3m-VHjFgq7GZGrLw@mail.gmail.com>
+ <YXjbs3Bv6Y3d87EC@yoga>
+ <CAPDyKFrWQdvZX4ukHZoGz73JPfQSgqVrG_4ShMp_GrxL0NKLvg@mail.gmail.com>
+ <da877712-dac9-e9d0-0bfc-25bef450eb65@codeaurora.org>
+ <CAPDyKFoMpmkHgUbRN4pxgW2Gy=aZpS=eVwQrg0ydFbh9_GFG6Q@mail.gmail.com>
+ <e32a59e2-0d8b-3338-5963-81ea07a709ef@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YXrUu8swbM3BL/4C@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <e32a59e2-0d8b-3338-5963-81ea07a709ef@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 07:50:03PM +0300, Andy Shevchenko wrote:
-> On Thu, Oct 28, 2021 at 09:28:10AM -0700, Guenter Roeck wrote:
-> > On Thu, Oct 28, 2021 at 06:58:13PM +0300, Andy Shevchenko wrote:
+On Thu 28 Oct 03:46 PDT 2021, Rajendra Nayak wrote:
 
-...
+> 
+> On 10/28/2021 4:05 PM, Ulf Hansson wrote:
+> > [...]
+> > 
+> > > > > > Got it. So in this case we could have the various display components
+> > > > > > that are in the mdss gdsc domain set their frequency via OPP and then
+> > > > > > have that translate to a level in CX or MMCX. How do we parent the power
+> > > > > > domains outside of DT? I'm thinking that we'll need to do that if MMCX
+> > > > > > is parented by CX or something like that and the drivers for those two
+> > > > > > power domains are different. Is it basic string matching?
+> > > > > 
+> > > > > In one way or another we need to invoke pm_genpd_add_subdomain() to link
+> > > > > the two power-domains (actually genpds) together, like what was done in
+> > > > > 3652265514f5 ("clk: qcom: gdsc: enable optional power domain support").
+> > > > > 
+> > > > > In the case of MMCX and CX, my impression of the documentation is that
+> > > > > they are independent - but if we need to express that CX is parent of
+> > > > > MMCX, they are both provided by rpmhpd which already supports this by
+> > > > > just specifying .parent on mmcx to point to cx.
+> > > > 
+> > > > I was trying to follow the discussion, but it turned out to be a bit
+> > > > complicated to catch up and answer all things. In any case, let me
+> > > > just add a few overall comments, perhaps that can help to move things
+> > > > forward.
+> > > > 
+> > > > First, one domain can have two parent domains. Both from DT and from
+> > > > genpd point of view, just to make this clear.
+> > > > 
+> > > > Although, it certainly looks questionable to me, to hook up the USB
+> > > > device to two separate power domains, one to control power and one to
+> > > > control performance. Especially, if it's really the same piece of HW
+> > > > that is managing both things.
+> > > []..
+> > > > Additionally, if it's correct to model
+> > > > the USB GDSC power domain as a child to the CX power domain from HW
+> > > > point of view, we should likely do that.
+> > > 
+> > > I think this would still require a few things in genpd, since
+> > > CX and USB GDSC are power domains from different providers.
+> > > Perhaps a pm_genpd_add_subdomain_by_name()?
+> > > 
+> > 
+> > I think of_genpd_add_subdomain() should help to address this. No?
+> 
+> We only describe the provider nodes in DT and not the individual power domains.
+> For instance GCC is the power domain provider which is in DT, and USB GDSC is one
+> of the many power domains it supports, similarly RPMHPD is the provider node in
+> DT and CX is one of the many power domains it supports.
+> So we would need some non-DT way of hooking up power domains from two different
+> providers as parent/child.
+> 
 
-> > Build results:
-> > 	total: 153 pass: 115 fail: 38
+See 266e5cf39a0f ("arm64: dts: qcom: sm8250: remove mmcx regulator") and
+3652265514f5 ("clk: qcom: gdsc: enable optional power domain support")
 
-> > Qemu test results:
-> > 	total: 480 pass: 315 fail: 165
-
-FWIW, most of them on the first glance due to something like below
-
-<stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-samples/fanotify/fs-monitor.c:7:10: fatal error: errno.h: No such file or directory
-7 | #include <errno.h>
-  |          ^~~~~~~~~
-
--- 
-With Best Regards,
-Andy Shevchenko
+MMCX is declared as power-domain for the dispcc (which is correct
+in itself) and the gdsc code will register GDSCs as subdomains of
+the same power-domain.
 
 
+To ensure this code path is invoked the clock driver itself needed this
+6158b94ec807 ("clk: qcom: dispcc-sm8250: use runtime PM for the clock
+controller")
+
+So at least in theory, considering only USB the minimum would be to
+pm_runtime_enable() gcc-7280 and add power-domains = <CX> to the gcc
+node.
+
+
+The "problem" I described would be if there are GDSCs that are
+subdomains of MX - which I've seen hinted in some documentation. If so
+we should to specify both CX and MX as power-domains for &gcc and the
+gdsc implementation needs to be extended to allow us to select between
+the two.
+
+For this I believe a combination of genpd_dev_pm_attach_by_name() and
+of_genpd_add_subdomain() would do the trick.
+
+That is, if there actually are GDSCs exposed by gcc that are not
+subdomains of CX - otherwise none of this is needed.
+
+Regards,
+Bjorn
