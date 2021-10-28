@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BB143E0BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9299F43E0C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhJ1MXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhJ1MXH (ORCPT
+        id S230377AbhJ1MXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:23:32 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:54211 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhJ1MXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:23:07 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F2C061570;
-        Thu, 28 Oct 2021 05:20:40 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635423639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HuLmrknqKnj+uCiF1w4Lwe6N+b32tTBwksurG4f0/zw=;
-        b=XVCwugBDhR8XjESFAbqF6hw/6e0PR24MRPVDYfK/vsmUFCGwtmqdmRUCvOuDObqvz2voTu
-        eaozg4OBZxpIRVB8GoiQgl6IoyAXxDrv3r67PdtPz6VPrhyQ0CnmcqV3N1wTNwDqyLiBgc
-        CACoUtdAf/NztzSE28igDXJ97L5xyd4=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH net-next] neigh: use struct {arp, ndisc}_generic_ops for all case
-Date:   Thu, 28 Oct 2021 20:20:22 +0800
-Message-Id: <20211028122022.14879-1-yajun.deng@linux.dev>
+        Thu, 28 Oct 2021 08:23:30 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg4R24CPTz4xZ1;
+        Thu, 28 Oct 2021 23:21:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635423662;
+        bh=hCboHI7lN95339dseQTlz8zWh/IwrYE8xrkV3rLUulE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rEETi90aNuAhHpxZIdyuTUuA1EFA8Sxd4BqQL8hrHYdBAMAGegyxbg8LQz4xqC38U
+         0RHj3ajI9b1FSc6lTYCtXYPYO8y+w31zub0d7L7kG3ub/Q2a5ILdT1JP0N/K8Mintd
+         Ch2kKdJrCvXMMvpfMPv062FFESmPG27s9VZ9Asv3xv4XL8ntduqLgtPVg1y1qU+zF5
+         vXKaGmINjQalTfYU83H1l0ToWfh2t+AFFb6UtsvieuC1MPAucbGSvppNgA0Fjw8Xbz
+         iyl1uB+lxgoxlSBXWIi0ImiOlFNlg5JBc861U6gTrmH3c4VEMahoUoHYWvDpalmfRq
+         Eve0IawJILMUA==
+Date:   Thu, 28 Oct 2021 23:21:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the ext3 tree
+Message-ID: <20211028232100.03d394fd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: multipart/signed; boundary="Sig_/rM0dgqzZr27hO9UjKH7Q3Tq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These struct {arp, ndisc}_generic_ops can cover all case, so those
-struct {arp, ndisc}_hh_ops are no need, remove them.
+--Sig_/rM0dgqzZr27hO9UjKH7Q3Tq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- net/ipv4/arp.c   | 15 ++-------------
- net/ipv6/ndisc.c | 18 ++++--------------
- 2 files changed, 6 insertions(+), 27 deletions(-)
+Hi all,
 
-diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
-index 922dd73e5740..9ee59c2e419a 100644
---- a/net/ipv4/arp.c
-+++ b/net/ipv4/arp.c
-@@ -135,14 +135,6 @@ static const struct neigh_ops arp_generic_ops = {
- 	.connected_output =	neigh_connected_output,
- };
- 
--static const struct neigh_ops arp_hh_ops = {
--	.family =		AF_INET,
--	.solicit =		arp_solicit,
--	.error_report =		arp_error_report,
--	.output =		neigh_resolve_output,
--	.connected_output =	neigh_resolve_output,
--};
--
- static const struct neigh_ops arp_direct_ops = {
- 	.family =		AF_INET,
- 	.output =		neigh_direct_output,
-@@ -277,12 +269,9 @@ static int arp_constructor(struct neighbour *neigh)
- 			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
- 		}
- 
--		if (dev->header_ops->cache)
--			neigh->ops = &arp_hh_ops;
--		else
--			neigh->ops = &arp_generic_ops;
-+		neigh->ops = &arp_generic_ops;
- 
--		if (neigh->nud_state & NUD_VALID)
-+		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
- 			neigh->output = neigh->ops->connected_output;
- 		else
- 			neigh->output = neigh->ops->output;
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index 184190b9ea25..a544bd7454c4 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -91,15 +91,6 @@ static const struct neigh_ops ndisc_generic_ops = {
- 	.connected_output =	neigh_connected_output,
- };
- 
--static const struct neigh_ops ndisc_hh_ops = {
--	.family =		AF_INET6,
--	.solicit =		ndisc_solicit,
--	.error_report =		ndisc_error_report,
--	.output =		neigh_resolve_output,
--	.connected_output =	neigh_resolve_output,
--};
--
--
- static const struct neigh_ops ndisc_direct_ops = {
- 	.family =		AF_INET6,
- 	.output =		neigh_direct_output,
-@@ -357,11 +348,10 @@ static int ndisc_constructor(struct neighbour *neigh)
- 			neigh->nud_state = NUD_NOARP;
- 			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
- 		}
--		if (dev->header_ops->cache)
--			neigh->ops = &ndisc_hh_ops;
--		else
--			neigh->ops = &ndisc_generic_ops;
--		if (neigh->nud_state&NUD_VALID)
-+
-+		neigh->ops = &ndisc_generic_ops;
-+
-+		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
- 			neigh->output = neigh->ops->connected_output;
- 		else
- 			neigh->output = neigh->ops->output;
--- 
-2.32.0
+After merging the ext3 tree, today's linux-next build (htmldocs) produced
+this warning:
 
+Documentation/admin-guide/filesystem-monitoring.rst:60: WARNING: Definition=
+ list ends without a blank line; unexpected unindent.
+
+Introduced by commit
+
+  c0baf9ac0b05 ("docs: Document the FAN_FS_ERROR event")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/rM0dgqzZr27hO9UjKH7Q3Tq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6lawACgkQAVBC80lX
+0GwPtwf+PNz1/JhFk09yNeR1vnt3PHLmUehMNwZbn6z+lOlvnimYGGqxpuH8lk1U
+Wt36O2/gbgIVN8hvYu8Lhn+MnNqODzeiUD1Fv/xxD5g/h/AWqGdXHdRmdkfXqsA1
+f7Vlcq/F+E+VUywjy3YFbPfOdXpgyb36slz61cRY5oJkaecAl3PzSRJvNRp5TvKo
+xfFzmuDauD61CW6e0RFHDrcXQHcpMninx3d0YypZLfHCIw0vLaQAJM22qyYGlhtY
+GkHNH/YK1HkQM320v4g47nK3/eN/08uuTGB/oCx5VMHHEWiXA48nBDeXsTlGNPQ5
+1h6FnHWKzBhXX5P6nDGoqxbTLtIYnQ==
+=0W3K
+-----END PGP SIGNATURE-----
+
+--Sig_/rM0dgqzZr27hO9UjKH7Q3Tq--
