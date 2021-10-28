@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3792443DED4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7A843DED6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhJ1K3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
+        id S230114AbhJ1K3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhJ1K3K (ORCPT
+        with ESMTP id S230088AbhJ1K3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:29:10 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8257AC061570;
-        Thu, 28 Oct 2021 03:26:42 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id w15so22802303edc.9;
-        Thu, 28 Oct 2021 03:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x5pT//UQaL7euDOvojBQvZaQtog7UFRTQVBLvvJ8oFg=;
-        b=M+fk3xpPH0QNFxXsT3zunN3ji29hRoUJpjXF7HyNe2bKWAEbx/T00ytqSdvn3TierB
-         4P4WhavE47ghsinlNHMjzSgCIFLuul5GnqmDZ4p7q42TelA1Fxr0F9U1ijCFNrIMITb5
-         qFuRLlIEA7G/3fpj50tdQ0OlO4vJVzvNeqR56I5DHe2aTx9M5joAP+3fpS/SoGAwQRG2
-         a/wh3o/I4vnva9RH7EGTcDcpGVCUX0CssvcDaYfHPO/b5kRk1Kq5TJH0xGL5kpicXqSh
-         mzvFrP7tqKEu8RzPCdMWMhghfBxZNtGEmcnZy/ax4G/RqcCOv+10d9yVcXiM1iFw0RqH
-         KqpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x5pT//UQaL7euDOvojBQvZaQtog7UFRTQVBLvvJ8oFg=;
-        b=BltHuszqOb7V3Tmw9RAyCaciqoRNm74ZO+8bu2PMlHpzs6EB/E2sPrDD90HQZsqpnE
-         Her/ycX+uq1OB7NzftfItRwN3JGJdTkohhIdd8Y4N4CEx9QoVFuJtkTPN7gd45P/z3Ga
-         5rRYl3cTlRVG/CzDZNUtBCjUAy5RB2oRdYNEZSPdg+F6qwRnyz+7EPwRo0y5Hh7anAmr
-         qCo5sx/8yyDo9x7iVMXp6AmpEXVz3unaMHmJIL5ERfZM6jfOTBGgi0ckcs+Tog0G6olC
-         Mt8B7o8RJ0VMGOAHHMwMHGlJxdlcDaET1NNV7aa6f6pMXOlQC1KV/ho9Ex3eOqkbPYc6
-         ZxDA==
-X-Gm-Message-State: AOAM5314fgCTs4wqF6yG3uogRKKv7GkuKgktGbU+7t1HJZmz0cykoPnB
-        g1f6Yf3yce4GTdrZyA74SySh9eLt1Ta9+ehBvso=
-X-Google-Smtp-Source: ABdhPJz/zYIXOnJeP7GjMyTLPVa1T7H/UKik6x5mbyUob5+kG0/YmrPcA9VQTRy5QIsk9PXVZ+oeAtYOYM1Oiczwu58=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr4246924ejc.69.1635416801123;
- Thu, 28 Oct 2021 03:26:41 -0700 (PDT)
+        Thu, 28 Oct 2021 06:29:22 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2200C061570;
+        Thu, 28 Oct 2021 03:26:55 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hg1vJ5zZ9z4xbr;
+        Thu, 28 Oct 2021 21:26:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635416813;
+        bh=uQh3gPYokxYVOUJ7Iyqv9DP5cj4U1hIIKagooupob64=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SnB4VZGt/hJpydQLrxzSl3bUJ7hmvyo6KaCvoAF3vgodogSFnXjrbu9V73KXzrfFS
+         sM35rWnou7hvzrHyt6It+dwO3WXfggfCHP/WHvuljLEI/39YmsTMHv/a1sWiAyAoME
+         YNA6k4C9x0jx/9x/Y5iAIBBZy/9qiwka055AvYmTOak8vYaoV4N4hJ7z3jtuGhVyKM
+         VAStYGFr2wrLgb2sT8RdOgYEDGL5F0wCfoaenZ2nMqqJ8z9v1c+C8TBORv7Hp0I3up
+         zHdGh8DMNShfsowd3PiTFzT/bbVqiKr5joVApaSFfmEmCPBr3qZGPFpP9dhyi8hmFM
+         YPvp5dXoiLMHA==
+Date:   Thu, 28 Oct 2021 21:26:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>
+Subject: linux-next: build failure after merge of almost all the trees
+Message-ID: <20211028212651.57beb05b@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
- <20211028101840.24632-1-andrea.merello@gmail.com> <20211028101840.24632-2-andrea.merello@gmail.com>
-In-Reply-To: <20211028101840.24632-2-andrea.merello@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 28 Oct 2021 13:25:48 +0300
-Message-ID: <CAHp75VdPhNbr6Y7ethsmw_Bd7DZOi4cyFHubPpOxa1LXibkUCQ@mail.gmail.com>
-Subject: Re: [v2 01/10] utils_macro: introduce find_closest_unsorted()
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        jmondi <jacopo@jmondi.org>,
-        Andrea Merello <andrea.merello@iit.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/9F=Co5trPhyZVWZ4R77tcdx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 1:18 PM Andrea Merello <andrea.merello@gmail.com> wrote:
->
-> This is similar to find_closest() and find_closest_descending(), but, it
-> doesn't make any assumption about the array being ordered.
+--Sig_/9F=Co5trPhyZVWZ4R77tcdx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Macros in general are not so welcoming.
-Why do you do it as a macro?
+Hi all,
 
-...
+Today's linux-next build (powerpc allyesconfig) failed like this:
 
-> +#include <linux/math.h>
+fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+fs/ntfs/aops.c:1311:1: error: the frame size of 2304 bytes is larger than 2=
+048 bytes [-Werror=3Dframe-larger-than=3D]
+ 1311 | }
+      | ^
+cc1: all warnings being treated as errors
 
-Wondering if the current header misses other inclusions it's a direct user of.
+I have no idea what has caused this.
 
-...
+I have disabled ntfs for now.
 
-> +/**
-> + * find_closest_unsorted - locate the closest element in a unsorted array
+--=20
+Cheers,
+Stephen Rothwell
 
-an
+--Sig_/9F=Co5trPhyZVWZ4R77tcdx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> + * @x: The reference value.
-> + * @a: The array in which to look for the closest element.
-> + * @as: Size of 'a'.
-> + *
-> + * Similar to find_closest() but 'a' has no requirement to being sorted
-> + */
+-----BEGIN PGP SIGNATURE-----
 
--- 
-With Best Regards,
-Andy Shevchenko
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6eusACgkQAVBC80lX
+0GzLAQf+LtDfVXYxAGR59+53EMyUzfBPGVbKZd+r0pcp8tDWMgFsl/0uvGbcnR+3
+hJyrOkQEOtQMU65ru80mwwu+6tfy4Ap2I78A/ka3k4iSYd4qvtTYWM3he3Zi+mpZ
+eRyp3QbnrKTxPcy9w4+1tjRFjCXRVZurDPPEVWjVx5SkmBa+pWtVwIGyIdhb1si2
+H0LfD088y6crkcbdRjM8udRzynVkqabg+nl+5pS/NxQNueLMQSDZgek6yrbXS+rS
+ESBHUcYdOqDDe2Li2lMG7rHTNbIzV+Jti1CQIfyJ21uR7RrhgLU65un8C466C+kP
+jVakm9qZPMnr36eb3ryteFZgde21wA==
+=+WXI
+-----END PGP SIGNATURE-----
+
+--Sig_/9F=Co5trPhyZVWZ4R77tcdx--
