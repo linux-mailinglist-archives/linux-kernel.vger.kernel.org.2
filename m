@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D13C43E5F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0EF43E5F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhJ1QVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        id S230226AbhJ1QWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJ1QVk (ORCPT
+        with ESMTP id S229925AbhJ1QWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:21:40 -0400
-Received: from out10.migadu.com (out10.migadu.com [IPv6:2001:41d0:2:e8e3::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94400C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:19:13 -0700 (PDT)
-Date:   Fri, 29 Oct 2021 00:19:48 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1635437951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UKnFFiMfY0GxswzJmBjzLfl2Fj5DavTAFzb8a7nWObQ=;
-        b=IMBJdvx4lTA/0WJec4tnZEwkaCDtgWkK6vn7ZWf+VhH4bFLgkkGfrYY2Eb/yg2GWRxuNdI
-        WQX41RpqvbTCU/OcCdkcZy+JU7Z5BztpoBWQhr7cAhMGejXHNxq7R3QaPi2J9wEFo323yU
-        jI1+q8H5txYSq6+eCyKpY4xGNpOYBlk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH 1/2] sched/fair: Couple wakee flips with heavy wakers
-Message-ID: <YXrNfHcfhp2LutiL@geo.homenetwork>
-References: <20211028094834.1312-1-mgorman@techsingularity.net>
- <20211028094834.1312-2-mgorman@techsingularity.net>
+        Thu, 28 Oct 2021 12:22:42 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D19C061570;
+        Thu, 28 Oct 2021 09:20:15 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso9294594ota.9;
+        Thu, 28 Oct 2021 09:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qpc8jpsWVpJyk0cd0OJ7nlpLB5oumfHlBGc3n3seh8I=;
+        b=RC6Wxlkoq2dVLklq2Jk0LTN1s8376mQdC+nJuxnPTooIzwe/azssI5ZCo6oAhn9Mz9
+         OLjq7/lFO+NU0yvCOSoxzkSuhOUYDeBZ018jLgsyDO8rKmVfT8Qh1spxipVAC0HIJhAm
+         EFWknDA6C11qJLmSKc7JcdpR37UD1p9EoazsmzGGAuP7ad0oykv0aWd8b2+mPOPvX8Nv
+         A0y55TNc7w6NWO86Jm0r44hAlHJ/2Smh1YCIbk/DQk33+3Or4x9rAd5MxH8PHaKx4CzU
+         +tR/Txani8LyXkcWIWsOdRy6VzxoJr5pXBznTP771dpn+dFttGy6IgVb2SPBF42hl8su
+         0UXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=qpc8jpsWVpJyk0cd0OJ7nlpLB5oumfHlBGc3n3seh8I=;
+        b=X5lo3zDoHhEq5JNrDVjqF9KTKFWCb7GQ+Ci8a5NTtfSeya0Dv2WYW6ztVb2KHkEDUo
+         8LVQFH+xfDS3WiTzvgrrq1ZwzpolLzKUIDKJk5N2CUwkjadrQcB33x1xIvItohWHTTGm
+         k28+sd/7pXMo8VPzreGcz3fx/RqcBwYit3hgr7MRKcWGwEAojZOpExfXnEf973g2y/7m
+         9SpiKLnnzjbfXn8ZnMuWU/cJq91hrkXFHUUR2X8CzQH6/+gFfFboyHQznz+n/e5Pvz5o
+         XGr9G35TGR52jhgednlxS18a9hZDNUz80UjF/YS8SD7oWtwXs3D+TEgyOClXOi5/S9V9
+         +LbA==
+X-Gm-Message-State: AOAM5304xRrvKK1IsanUgoYQw8OPlvBOBOu/Ephs1xacZP/WAcEHJGM0
+        SxmRtCTMTL/lPE3ylA14ZkO4CmQSkl0=
+X-Google-Smtp-Source: ABdhPJzvi/sN32vb6BiJI0UOAyMHnmRji434S5M676KNZTpq8px/UHWPV6+07ie7eBpBdoujIFAHew==
+X-Received: by 2002:a9d:669:: with SMTP id 96mr4176377otn.224.1635438015002;
+        Thu, 28 Oct 2021 09:20:15 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p133sm1150001oia.11.2021.10.28.09.20.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 09:20:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 28 Oct 2021 09:20:12 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Wilson, David T. (GSFC-5870)" <david.wilson@nasa.gov>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: Potential issue with smb word operations for
+ tmp461 device in tmp401 driver
+Message-ID: <20211028162012.GA470146@roeck-us.net>
+References: <SA1PR09MB7440BF952778F0DB8138747DE7B99@SA1PR09MB7440.namprd09.prod.outlook.com>
+ <7f334e4c-0e71-2005-854f-c2d4e068ef85@roeck-us.net>
+ <SA1PR09MB74408633E36AE3C97B4D2CA7E7BD9@SA1PR09MB7440.namprd09.prod.outlook.com>
+ <3923f61f-031c-f293-dfbd-8db7efbce2cb@roeck-us.net>
+ <SA1PR09MB7440DE6CE6882186ECDE3401E7BE9@SA1PR09MB7440.namprd09.prod.outlook.com>
+ <8485a422-31b2-6d9f-516c-29d60fd13490@roeck-us.net>
+ <SA1PR09MB74400C313FFCCEAE32A4C565E7869@SA1PR09MB7440.namprd09.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028094834.1312-2-mgorman@techsingularity.net>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+In-Reply-To: <SA1PR09MB74400C313FFCCEAE32A4C565E7869@SA1PR09MB7440.namprd09.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mel,
+Hi David,
 
-On Thu, Oct 28, 2021 at 10:48:33AM +0100, Mel Gorman wrote:
+On Thu, Oct 28, 2021 at 01:54:01AM +0000, Wilson, David T. (GSFC-5870) wrote:
+> Hi Guenter,
+> 
+> Like last time, I updated several files in my platform's v5.4 files and applied your three patches. 
+> From what I can tell, I'm having no problems with the tmp461's basic support in the modified lm90 driver.
+> 
+> Thanks again for looking into this,
 
-> @@ -5865,6 +5865,14 @@ static void record_wakee(struct task_struct *p)
->  	}
->  
->  	if (current->last_wakee != p) {
-> +		int min = __this_cpu_read(sd_llc_size) << 1;
-> +		/*
-> +		 * Couple the wakee flips to the waker for the case where it
-> +		 * doesn't accrue flips, taking care to not push the wakee
-> +		 * high enough that the wake_wide() heuristic fails.
-> +		 */
-> +		if (current->wakee_flips > p->wakee_flips * min)
-> +			p->wakee_flips++;
->  		current->last_wakee = p;
->  		current->wakee_flips++;
->  	}
-> @@ -5895,7 +5903,7 @@ static int wake_wide(struct task_struct *p)
->  
->  	if (master < slave)
->  		swap(master, slave);
-> -	if (slave < factor || master < slave * factor)
-> +	if ((slave < factor && master < (factor>>1)*factor) || master < slave * factor)
+I ordered an evaluation board from TI to be able to test improved support
+for TMP461 in the lm90 driver (actual chips are all but impossible to get,
+unless I am willing to wait for 9+ months). There are still some issues
+with negative temperatures in standard mode and, as you noticed, with
+resolution. I do have a board with TMP451 (which doesn't support negative
+temperatures in standard mode), but that doesn't help with the TMP461
+specifics. I'll keep you posted.
 
-So, the check like this include the above range:
-
-  if ((slave < factor && master < slave * factor) ||
-       master < slave * factor)
-
-That "factor>>1" filter some.
-
-If "slave < factor" is true and "master < (factor>>1)*factor" is false,
-then we check "master < slave * factor".(This is one path added by the
-check "&&  master < (factor>>1)*factor").
-In the latter check "slave < factor" must be true, the result of this
-check depend on slave in the range [factor, factor>>1] if there is possibility
-that "master < slave * factor". If slave in [factor>>1, 0], the check of
-"master < slave * factor" is absolutly false and this can be filtered if
-we use a variable to load the result of master < (factor>>1)*factor.
-
-My random random inputs and continue confusing to move on.
-
-
-
-Thanks,
-Tao
+Guenter
