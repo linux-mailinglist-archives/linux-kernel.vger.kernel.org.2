@@ -2,128 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C435843F21A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410FE43F227
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhJ1V7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:59:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230476AbhJ1V7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:59:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A67560EFF;
-        Thu, 28 Oct 2021 21:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635458208;
-        bh=p1CgpYh4aVtdnX6MdBbbbhbddudo+aw//ZNbp0j3+c8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=d4rAxZjeh2FEiYPF4uFQFptIetsY/Q0YZUVzaBQT5mcTcBmZwrniixzFBiFTiTFPA
-         31//Yjvov6QH95zQDzVMYjZWcbG4/wi2OI5+VQUG34WQH0mJbra7YSS/iiIECESneE
-         IlCXBMfXhrth6eqkObgjSYsMp8TqQNlDqvY/qBzMZBp3MiO226/XBLTkDlP0x9s+lW
-         iU/j0SV17Oh6cdRNPZlVbFOtgeeeCyEpiDyjBzB0ilvgnDUzZ1VFBYOdAsKn0C014T
-         OaWTszoJN1jhSY7G57HfA/uODPR1uC/5YSSxPWt0uX8p96tO+Smr2z7Kd4YCakZY+5
-         oPNob95+R/FNg==
-Received: by mail-ed1-f46.google.com with SMTP id 5so29855710edw.7;
-        Thu, 28 Oct 2021 14:56:48 -0700 (PDT)
-X-Gm-Message-State: AOAM532eoqhvHHoHQTMZR7O7bRY0j6Dp+/Q2WkszdC0x4iC1mgMFMzUz
-        uMMBpWo5Xez1W9WmnUrYZCoiFgZPy9550LWJpA==
-X-Google-Smtp-Source: ABdhPJyBZTHa1ojrhvI9yd99LoSOz9t2pRPDfh45BIbRWanmI5KCU7TATgBknuLMfpapt+/+JRbD8NqF5DmgcvkeHrk=
-X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr8354497ejc.466.1635458206566;
- Thu, 28 Oct 2021 14:56:46 -0700 (PDT)
+        id S231404AbhJ1WBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231346AbhJ1WBE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 18:01:04 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DF2C061745;
+        Thu, 28 Oct 2021 14:58:36 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id h11so13215359ljk.1;
+        Thu, 28 Oct 2021 14:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c23uil5g78FyKWMRLgZ6hSpJ/5dZjfgZdNOr6DwhpW8=;
+        b=fN/sghTD1TZsVWGg7UdNVpmnpsJmxwTIReywOn3iS879FfwyrwTro/6JMf4MaGrEqh
+         0NHbUx8tMPVCykH7rLffN6x80gPATjYeRH0X7Rke1JX3QXf40ikAhOl25K5S1BWImyNK
+         Ws74ZKNhvY45yMsuq3FCKQn2UeHbmrvMca8cD6CCJ0R2lYcZYJkrBjgifHSN/5oWm7n1
+         lFtQ6NQQUb7L/5VMhM9mJogVid13IyjOv29tIrHnCgMGRUpYmk/I5bl/5lJ21eD61OSt
+         uVSSMkzEczkDy+3W/RlWkglTIAMMvdWcaEVw6izXBz+EOktxUqL8EL8FpyIQN0i0+0ax
+         cKtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c23uil5g78FyKWMRLgZ6hSpJ/5dZjfgZdNOr6DwhpW8=;
+        b=1n52YYDkTaUwLAN4/m9qcwLr6k0p7iQesqOlEWUPLZVUC6Rzw5c6mU2SJF5RlodjJT
+         71tuVdSFpp1hhbhNLzYzRasYI2CMCvIZJu1HuwKLsRY4Z9Xp8vdONz21H8kqe+Ina36b
+         J02ZPAPId6b/N8Tyr4dqkmG8QDcTdW8oxnZBs/h6sJN0dsrEDTFiIYzhf6a/z4804N8c
+         O2j1dGjQyro2dTo622efJVoohVAR5nJmA9nLmk6cML7u40h386CSDy1giPWtwurVdGYF
+         Q3hQKQjIc9p0OHSOWwr8+Y1MiRUHIgbya+hp+x8Q94VaVpTgIXKJUHpeUHyMlAHdrzcV
+         iojg==
+X-Gm-Message-State: AOAM530wGIeiaZAaQM3Bc3kvBNVPgDG0Z7Bi55QTXfYldUiQL8RzQbU1
+        FhMI8uJJeXAkzCNyUw60aMj7NpJ9388=
+X-Google-Smtp-Source: ABdhPJwU+yd9K4RKqPYJGKdWrmOtthi6PCwOlEc1MXGCnrTPBunu0coGknm3bBb5A7s1sx8AG2GBkw==
+X-Received: by 2002:a2e:b88f:: with SMTP id r15mr7402126ljp.157.1635458314886;
+        Thu, 28 Oct 2021 14:58:34 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
+        by smtp.googlemail.com with ESMTPSA id t17sm248350ljc.136.2021.10.28.14.58.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 14:58:34 -0700 (PDT)
+Subject: Re: [PATCH v2 08/45] kernel: Add combined power-off+restart handler
+ call chain API
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        openbmc@lists.ozlabs.org,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-9-digetx@gmail.com>
+ <CAJZ5v0gpu2ezMhWr=grg6M8aWAx58DQozbXHoZaiPqUaZxJi4Q@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <28560da7-8ab6-3bd5-b4d6-e34b21a9bbb0@gmail.com>
+Date:   Fri, 29 Oct 2021 00:58:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211028211753.573480-1-jaschultzMS@gmail.com> <20211028211753.573480-2-jaschultzMS@gmail.com>
-In-Reply-To: <20211028211753.573480-2-jaschultzMS@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 28 Oct 2021 16:56:35 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLxg3-Th85cYNJqCgQFYB0awgXV-=OkASk_aDY-H4Mk5g@mail.gmail.com>
-Message-ID: <CAL_JsqLxg3-Th85cYNJqCgQFYB0awgXV-=OkASk_aDY-H4Mk5g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: platform: microsoft: Document surface xbl
-To:     Jarrett Schultz <jaschultzms@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Jarrett Schultz <jaschultz@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0gpu2ezMhWr=grg6M8aWAx58DQozbXHoZaiPqUaZxJi4Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:18 PM Jarrett Schultz <jaschultzms@gmail.com> wrote:
->
-> Introduce yaml for surface xbl driver.
+28.10.2021 12:59, Rafael J. Wysocki пишет:
+>> +#define RESTART_PRIO_RESERVED          0
+>> +#define RESTART_PRIO_DEFAULT           128
+>> +#define RESTART_PRIO_HIGH              192
+>>
+>>  enum reboot_mode {
+>>         REBOOT_UNDEFINED = -1,
+>> @@ -49,6 +55,167 @@ int register_restart_handler(struct notifier_block *);
+>>  int unregister_restart_handler(struct notifier_block *);
+>>  void do_kernel_restart(char *cmd);
+>>
+>> +/*
+>> + * Unified poweroff + restart API.
+>> + */
+>> +
+>> +#define POWEROFF_PRIO_RESERVED         0
+>> +#define POWEROFF_PRIO_PLATFORM         1
+>> +#define POWEROFF_PRIO_DEFAULT          128
+>> +#define POWEROFF_PRIO_HIGH             192
+>> +#define POWEROFF_PRIO_FIRMWARE         224
+> Also I'm wondering why these particular numbers were chosen, here and above?
 
-What's surface? What's xbl? Bindings are for h/w devices, not drivers.
+These values are chosen based on priorities that drivers already use. I looked thorough them all and ended with this scheme that fulfills the needs of the current API users.
 
-Please send DT patches to the DT list. IOW, run get_maintainers.pl.
+I'll add these comments in v3:
 
->
-> Signed-off-by: Jarrett Schultz <jaschultz@microsoft.com>
-> ---
->  .../platform/microsoft/surface-xbl.yaml       | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml
->
-> diff --git a/Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml b/Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml
-> new file mode 100644
-> index 000000000000..3d2771322e72
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/platform/microsoft/surface-xbl.yaml
-> @@ -0,0 +1,37 @@
-> +# SPDX-License-Identifier: GPL-2.0
+/*
+ * Standard restart priority levels. Intended to be set in the
+ * sys_off_handler.restart_priority field.
+ *
+ * Use `RESTART_PRIO_XXX +- prio` style for additional levels.
+ *
+ * RESTART_PRIO_RESERVED:	Falls back to RESTART_PRIO_DEFAULT.
+ *				Drivers may leave priority initialized
+ *				to zero, to auto-set it to the default level.
+ *
+ * RESTART_PRIO_DEFAULT:	Use this for generic handler.
+ *
+ * RESTART_PRIO_HIGH:		Use this if you have multiple handlers and
+ *				this handler has higher priority than the
+ *				default handler.
+ */
 
-Dual license please. Run checkpatch.pl as that will tell you this.
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/platform/microsoft/surface-xbl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Surface Extensible Bootloader for Microsoft Surface Duo
-> +
-> +maintainers:
-> +  - Jarrett Schultz <jaschultzMS@gmail.com>
-> +
-> +description: |
-> +  Exposes device information to user space.
-
-What does that mean?
-
-> +
-> +allOf:
-> +  - $ref: /schemas/platform/microsoft/surface-xbl.c#
-
-You have a C file with json-schema?
-
-> +
-> +properties:
-> +  compatible:
-> +    const: microsoft,sm8150-surface-duo-xbl
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +examples:
-> +  - |
-> +    xbl@146bfa94 {
-> +      compatible = "microsoft,sm8150-surface-duo-xbl";
-> +      reg = <0x00 0x146bfa94 0x00 0x100>;
-
-That's an odd address. Is this part of some other block?
-
-> +    };
-> --
-> 2.25.1
->
+/*
+ * Standard power-off priority levels. Intended to be set in the
+ * sys_off_handler.power_off_priority field.
+ *
+ * Use `POWEROFF_PRIO_XXX +- prio` style for additional levels.
+ *
+ * POWEROFF_PRIO_RESERVED:	Falls back to POWEROFF_PRIO_DEFAULT.
+ *				Drivers may leave priority initialized
+ *				to zero, to auto-set it to the default level.
+ *
+ * POWEROFF_PRIO_PLATFORM:	Intended to be used by platform-level handler.
+ *				Has lowest priority since device drivers are
+ *				expected to take over platform handler which
+ *				doesn't allow further callback chaining.
+ *
+ * POWEROFF_PRIO_DEFAULT:	Use this for generic handler.
+ *
+ * POWEROFF_PRIO_HIGH:		Use this if you have multiple handlers and
+ *				this handler has higher priority than the
+ *				default handler.
+ *
+ * POWEROFF_PRIO_FIRMWARE:	Use this if handler uses firmware call.
+ *				Has highest priority since firmware is expected
+ *				to know best how to power-off hardware properly.
+ */
