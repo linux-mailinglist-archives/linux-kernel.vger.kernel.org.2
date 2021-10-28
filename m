@@ -2,310 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAC943DE50
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53C943DE57
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhJ1KCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:02:09 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:34682 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhJ1KB6 (ORCPT
+        id S229809AbhJ1KDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhJ1KDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:01:58 -0400
-Received: by mail-ot1-f47.google.com with SMTP id t17-20020a056830083100b00553ced10177so7617839ots.1;
-        Thu, 28 Oct 2021 02:59:31 -0700 (PDT)
+        Thu, 28 Oct 2021 06:03:07 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB55C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:00:40 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id bi35so12347199lfb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zH77Pp44GzU2/mdoe346UbjhRK1B7c5cpEUdWokacgM=;
+        b=CleTm/dC2x8A9iZozB6/QHm7oBHfJUuBkh4xpX3f8zr+yQSuORhJjP/bLBZY1wS2Ph
+         yC0nWVbOvT/pxpdE/L3nzBfVDjAV0W6+6G/xD8oyPJXQ29SMcfhoT3QqxsbuKKVGIvAP
+         /aAPvPFn9U4RD+c7MdVW0d00rICXvVkJ5NkMueIZoqOzwTeyqTy5Vil2V9m1lp+ddGpO
+         1ESh2Yz6pxx5q1VmnLIx9Bx4wGiSvI5K9SLlz24CGSXNb1Dc03IVDSEMwOEjWZy0t5o+
+         b4NNZm2xMaRpBzYLljmzI9WEaA7l9LYH4cfAI0nOOpn3E+aWbgpAa4iDDCOCPOXSzzc3
+         YBNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YApfc+rtORQHprN7aKpnZNhl8TPl/VtOJQI8beQJmCY=;
-        b=ZISI/TqYdNfu8bZIXT5RgeyOfBmGr0yaEHq3Lee1O1i0DfKvqoibZzZzq0OWZ6IPNS
-         0HRJ9hu5TnXyshbdh4/4P1ZKND3MtQnb2KkOH4irWfXWORRALOa3EIyITdnA/fgQ/fjH
-         WCKr/uY1dRce5u5wrJ8U5/I19GIq+hkOo9wzt+0ipl79AOjuKXQuuPkAtn4NhW4riTm0
-         yBRqb18GtYUh8SLkJsK4mEJru3Up8assYiSmt/H+I+MO3TfMvAKZgRBVdRZb2d8D7Pr4
-         r8OuqYoOuNY1m+DiiJkUUjcx6Bfk6Y3sxnXELU0g1Q9PBaYTYaB5JM+7Eo95TEn4cWXL
-         DZvg==
-X-Gm-Message-State: AOAM532ufq8H7lkzA/GvA9s/yy+W/QcGd8FcDkkQcGuJoF7g46LIettU
-        xbMvrl0BdX9tnptHeAMgRe8wrFp8RgPc3VIeJlk=
-X-Google-Smtp-Source: ABdhPJzD4cm7tn60vkyopY5CUMxUc9huwAUhS0IgxTyGcJq7Km0Bm+8fuUNsdZomFIBYzzQsRecVralPmU+TS+34zNY=
-X-Received: by 2002:a9d:65c1:: with SMTP id z1mr2427957oth.198.1635415170827;
- Thu, 28 Oct 2021 02:59:30 -0700 (PDT)
+        bh=zH77Pp44GzU2/mdoe346UbjhRK1B7c5cpEUdWokacgM=;
+        b=vvEMiWyWgHenIPYHKGXGwb9iJtCiiWvHx4FfQ4vTIv8kVrYzs91h9+dx/gs9xjn3za
+         49Lva5K60xD0DmKILtul52KlX77wEzty52Xvens2afUrUxi7P3GnXEMIVwrME6R1O6qP
+         JYJoapLRqkNwUNn+mgkdJE+PzPvXoqtWAbDvG0afcBAcS00kzuD24RjceyMLJXopzNwJ
+         DtOeIVcoIQfRTsocFWkSN62/uiH4jrucknRfB1kBMJAusKqEPUifNmwK55nf6VML4DLU
+         Z09csLpLvFuzU9r7xF6wclmHhWMHFD4GvO+ceG0WO87ez01U6UmOWFqHTVCy9pqNqa4r
+         raAg==
+X-Gm-Message-State: AOAM53283ZRC33j5YBN6evlMlyK1L99h/7zyEDFK/eyUlUkqzQaM3nz8
+        Xdo1OYLAC7EspHqlmjQysDK7OmbiB0mcvxiCKLMy1w==
+X-Google-Smtp-Source: ABdhPJxHt41HvAzrxD80dsEBaTWUS7K3FBjUXccCtdhuvFUrm7B+4xT6HIt0mETF6V9gmM+/Q+Hmyf0r2uDW3UvTtxY=
+X-Received: by 2002:ac2:4e8a:: with SMTP id o10mr3302231lfr.358.1635415238498;
+ Thu, 28 Oct 2021 03:00:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211027211715.12671-1-digetx@gmail.com> <20211027211715.12671-9-digetx@gmail.com>
-In-Reply-To: <20211027211715.12671-9-digetx@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 28 Oct 2021 11:59:18 +0200
-Message-ID: <CAJZ5v0gpu2ezMhWr=grg6M8aWAx58DQozbXHoZaiPqUaZxJi4Q@mail.gmail.com>
-Subject: Re: [PATCH v2 08/45] kernel: Add combined power-off+restart handler
- call chain API
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
+References: <20211027130812.426373-1-colin.i.king@gmail.com>
+In-Reply-To: <20211027130812.426373-1-colin.i.king@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 28 Oct 2021 12:00:01 +0200
+Message-ID: <CAPDyKFqXQwfJuU_PPrfeNwh51UkhtVFJzZ71_0R6kcVuSM3bWw@mail.gmail.com>
+Subject: Re: [PATCH][next] mmc: dw_mmc: exynos: Fix spelling mistake
+ "candiates" -> candidates
+To:     Colin Ian King <colin.i.king@googlemail.com>
+Cc:     Jaehoon Chung <jh80.chung@samsung.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        openbmc@lists.ozlabs.org,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:18 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+On Wed, 27 Oct 2021 at 15:08, Colin Ian King
+<colin.i.king@googlemail.com> wrote:
 >
-> SoC platforms often have multiple options of how to perform system's
-> power-off and restart operations. Meanwhile today's kernel is limited to
-> a single option. Add combined power-off+restart handler call chain API,
-> which is inspired by the restart API. The new API provides both power-off
-> and restart functionality.
+> There are several spelling mistakes in variable names and in a dev_warn
+> message. Fix these.
 >
-> The old pm_power_off method will be kept around till all users are
-> converted to the new API.
->
-> Current restart API will be replaced by the new unified API since
-> new API is its superset. The restart functionality of the power-handler
-> API is built upon the existing restart-notifier APIs.
->
-> In order to ease conversion to the new API, convenient helpers are added
-> for the common use-cases. They will reduce amount of boilerplate code and
-> remove global variables. These helpers preserve old behaviour for cases
-> where only one power-off handler is executed, this is what existing
-> drivers want, and thus, they could be easily converted to the new API.
-> Users of the new API should explicitly enable power-off chaining by
-> setting corresponding flag of the power_handler structure.
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+Applied for next, thanks!
+
+Kind regards
+Uffe
+
+
 > ---
->  include/linux/reboot.h   | 176 +++++++++++-
->  kernel/power/hibernate.c |   2 +-
->  kernel/reboot.c          | 601 ++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 768 insertions(+), 11 deletions(-)
+>  drivers/mmc/host/dw_mmc-exynos.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 >
-> diff --git a/include/linux/reboot.h b/include/linux/reboot.h
-> index b7fa25726323..0ec835338c27 100644
-> --- a/include/linux/reboot.h
-> +++ b/include/linux/reboot.h
-> @@ -8,10 +8,16 @@
+> diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-exynos.c
+> index 1f8a3c0ddfe1..c2dd29ef45c6 100644
+> --- a/drivers/mmc/host/dw_mmc-exynos.c
+> +++ b/drivers/mmc/host/dw_mmc-exynos.c
+> @@ -442,14 +442,14 @@ static inline u8 dw_mci_exynos_move_next_clksmpl(struct dw_mci *host)
+>         return sample;
+>  }
 >
->  struct device;
+> -static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
+> +static s8 dw_mci_exynos_get_best_clksmpl(u8 candidates)
+>  {
+>         const u8 iter = 8;
+>         u8 __c;
+>         s8 i, loc = -1;
 >
-> -#define SYS_DOWN       0x0001  /* Notify of system down */
-> -#define SYS_RESTART    SYS_DOWN
-> -#define SYS_HALT       0x0002  /* Notify of system halt */
-> -#define SYS_POWER_OFF  0x0003  /* Notify of system power off */
-> +enum reboot_prepare_mode {
-> +       SYS_DOWN = 1,           /* Notify of system down */
-> +       SYS_RESTART = SYS_DOWN,
-> +       SYS_HALT,               /* Notify of system halt */
-> +       SYS_POWER_OFF,          /* Notify of system power off */
-> +};
-> +
-> +#define RESTART_PRIO_RESERVED          0
-> +#define RESTART_PRIO_DEFAULT           128
-> +#define RESTART_PRIO_HIGH              192
+>         for (i = 0; i < iter; i++) {
+> -               __c = ror8(candiates, i);
+> +               __c = ror8(candidates, i);
+>                 if ((__c & 0xc7) == 0xc7) {
+>                         loc = i;
+>                         goto out;
+> @@ -457,7 +457,7 @@ static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
+>         }
 >
->  enum reboot_mode {
->         REBOOT_UNDEFINED = -1,
-> @@ -49,6 +55,167 @@ int register_restart_handler(struct notifier_block *);
->  int unregister_restart_handler(struct notifier_block *);
->  void do_kernel_restart(char *cmd);
+>         for (i = 0; i < iter; i++) {
+> -               __c = ror8(candiates, i);
+> +               __c = ror8(candidates, i);
+>                 if ((__c & 0x83) == 0x83) {
+>                         loc = i;
+>                         goto out;
+> @@ -466,11 +466,11 @@ static s8 dw_mci_exynos_get_best_clksmpl(u8 candiates)
 >
-> +/*
-> + * Unified poweroff + restart API.
-> + */
-> +
-> +#define POWEROFF_PRIO_RESERVED         0
-> +#define POWEROFF_PRIO_PLATFORM         1
-> +#define POWEROFF_PRIO_DEFAULT          128
-> +#define POWEROFF_PRIO_HIGH             192
-> +#define POWEROFF_PRIO_FIRMWARE         224
-
-Also I'm wondering why these particular numbers were chosen, here and above?
-
-> +
-> +enum poweroff_mode {
-> +       POWEROFF_NORMAL = 0,
-> +       POWEROFF_PREPARE,
-> +};
-> +
-> +struct power_off_data {
-> +       void *cb_data;
-> +};
-> +
-> +struct power_off_prep_data {
-> +       void *cb_data;
-> +};
-> +
-> +struct restart_data {
-> +       void *cb_data;
-> +       const char *cmd;
-> +       enum reboot_mode mode;
-> +};
-> +
-> +struct reboot_prep_data {
-> +       void *cb_data;
-> +       const char *cmd;
-> +       enum reboot_prepare_mode mode;
-> +};
-> +
-> +struct power_handler_private_data {
-> +       struct notifier_block reboot_prep_nb;
-> +       struct notifier_block power_off_nb;
-> +       struct notifier_block restart_nb;
-> +       void (*trivial_power_off_cb)(void);
-> +       void (*simple_power_off_cb)(void *data);
-> +       void *simple_power_off_cb_data;
-> +       bool registered;
-> +};
-> +
-> +/**
-> + * struct power_handler - Machine power-off + restart handler
-> + *
-> + * Describes power-off and restart handlers which are invoked by kernel
-> + * to power off or restart this machine.  Supports prioritized chaining for
-> + * both restart and power-off handlers.  Callback's priority must be unique.
-> + * Intended to be used by device drivers that are responsible for restarting
-> + * and powering off hardware which kernel is running on.
-> + *
-> + * Struct power_handler can be static.  Members of this structure must not be
-> + * altered while handler is registered.
-> + *
-> + * Fill the structure members and pass it to register_power_handler().
-> + */
-> +struct power_handler {
-> +       /**
-> +        * @cb_data:
-> +        *
-> +        * User data included in callback's argument.
-> +        */
-
-And here I would document the structure fields in the main kerneldoc
-comment above.
-
-As is, it is a bit hard to grasp the whole definition.
-
-> +       void *cb_data;
-> +
-> +       /**
-> +        * @power_off_cb:
-> +        *
-> +        * Callback that should turn off machine.  Inactive if NULL.
-> +        */
-> +       void (*power_off_cb)(struct power_off_data *data);
-> +
-> +       /**
-> +        * @power_off_prepare_cb:
-> +        *
-> +        * Power-off preparation callback.  All power-off preparation callbacks
-> +        * are invoked before @restart_cb.  Inactive if NULL.
-> +        */
-> +       void (*power_off_prepare_cb)(struct power_off_prep_data *data);
-> +
-> +       /**
-> +        * @power_off_priority:
-> +        *
-> +        * Power-off callback priority, must be unique.  Zero value is
-> +        * reassigned to default priority.  Inactive if @power_off_cb is NULL.
-> +        */
-> +       int power_off_priority;
-> +
-> +       /**
-> +        * @power_off_chaining_allowed:
-> +        *
-> +        * False if callbacks execution should stop when @power_off_cb fails
-> +        * to power off machine.  True if further lower priority power-off
-> +        * callback should be executed.
-> +        */
-> +       bool power_off_chaining_allowed;
-> +
-> +       /**
-> +        * @restart_cb:
-> +        *
-> +        * Callback that should reboot machine.  Inactive if NULL.
-> +        */
-> +       void (*restart_cb)(struct restart_data *data);
-> +
-> +       /**
-> +        * @restart_priority:
-> +        *
-> +        * Restart callback priority, must be unique.  Zero value is reassigned
-> +        * to default priority.  Inactive if @restart_cb is NULL.
-> +        */
-> +       int restart_priority;
-> +
-> +       /**
-> +        * @reboot_prepare_cb:
-> +        *
-> +        * Reboot preparation callback.  All reboot preparation callbacks are
-> +        * invoked before @restart_cb.  Inactive if NULL.
-> +        */
-> +       void (*reboot_prepare_cb)(struct reboot_prep_data *data);
-> +
-> +       /**
-> +        * @priv:
-> +        *
-> +        * Internal data.  Shouldn't be touched.
-> +        */
-> +       const struct power_handler_private_data priv;
-> +};
+>         /*
+>          * If there is no cadiates value, then it needs to return -EIO.
+> -        * If there are candiates values and don't find bset clk sample value,
+> -        * then use a first candiates clock sample value.
+> +        * If there are candidates values and don't find bset clk sample value,
+> +        * then use a first candidates clock sample value.
+>          */
+>         for (i = 0; i < iter; i++) {
+> -               __c = ror8(candiates, i);
+> +               __c = ror8(candidates, i);
+>                 if ((__c & 0x1) == 0x1) {
+>                         loc = i;
+>                         goto out;
+> @@ -485,7 +485,7 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+>         struct dw_mci *host = slot->host;
+>         struct dw_mci_exynos_priv_data *priv = host->priv;
+>         struct mmc_host *mmc = slot->mmc;
+> -       u8 start_smpl, smpl, candiates = 0;
+> +       u8 start_smpl, smpl, candidates = 0;
+>         s8 found;
+>         int ret = 0;
+>
+> @@ -496,18 +496,18 @@ static int dw_mci_exynos_execute_tuning(struct dw_mci_slot *slot, u32 opcode)
+>                 smpl = dw_mci_exynos_move_next_clksmpl(host);
+>
+>                 if (!mmc_send_tuning(mmc, opcode, NULL))
+> -                       candiates |= (1 << smpl);
+> +                       candidates |= (1 << smpl);
+>
+>         } while (start_smpl != smpl);
+>
+> -       found = dw_mci_exynos_get_best_clksmpl(candiates);
+> +       found = dw_mci_exynos_get_best_clksmpl(candidates);
+>         if (found >= 0) {
+>                 dw_mci_exynos_set_clksmpl(host, found);
+>                 priv->tuned_sample = found;
+>         } else {
+>                 ret = -EIO;
+>                 dev_warn(&mmc->class_dev,
+> -                       "There is no candiates value about clksmpl!\n");
+> +                       "There is no candidates value about clksmpl!\n");
+>         }
+>
+>         return ret;
+> --
+> 2.32.0
+>
