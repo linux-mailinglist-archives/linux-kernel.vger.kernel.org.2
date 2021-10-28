@@ -2,199 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19ED443D8CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D0343D8E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhJ1Bp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 21:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhJ1Bpy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:45:54 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A36C061570;
-        Wed, 27 Oct 2021 18:43:28 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id v65so6113407ioe.5;
-        Wed, 27 Oct 2021 18:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q2MWT3ltBpEutemWMnO5IV+Dli3w0cr7Jk2rYKN1WKo=;
-        b=VYaQyXfWM6sOanx3t6qAvPWFfD338jdnTaM7L2F4EXwJrISOsX2ByFuKTHv7xNRkTG
-         7BWciBeSY2irXsWhnWRi6OVqJxQs7/ZO79rLcIDs/aiVFWgHfJlvuVpfUToWcVFBDw49
-         BCfecdSa2WUEjL+TN94OyEqsucM5rEaK9DgGgCJaOCYNRUwXGRjWaKZseUmGso3F9gxw
-         di+uY+S3e+rK3xyX3eI/JiQ9ICTO+6tm+0hZ1D5dbOqVvxb2fQEWj7uSPsf/vcKdxhy1
-         StoSWoyz4zwvhiyUgYfxfRiYrspymffEwoasFZiknT2hQbvSdzCZRqpNBiWlqe1b6cj1
-         mybQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q2MWT3ltBpEutemWMnO5IV+Dli3w0cr7Jk2rYKN1WKo=;
-        b=5GtjatUqJ3P9/HnNIN95alD9Bu6whWZ9XVH5ktL/d+9Y3X89z5iUXVvwstLkiMjlFh
-         hC0T0712eP4l1p0mDmyu5STkFNR9g/cCuoBFFLCV62gMSpF4zwqp788gqcLN1dTxVywT
-         5qQ9wYhSEAijAef1im6uXAFA2apjq5ewm3Ae2/isLPWeAutvFD1husaS/pkPBIA3dE8t
-         KCkzdsFUsrcoaeDGsP6trlq2ypDDWFRtQshtZogN5AyzuTfZE+Gi5lx4/KsOtzrHyWBD
-         XM9Dr8AC3LgvMDp0hYdRRLA8ifS6PBqYsQJxe3H0MsMQTWMv0yc2NUF2Pksh870R8cOH
-         SO3Q==
-X-Gm-Message-State: AOAM533MCB28MCWGOamJ3U8rP8FlBSMyDsmopkaAF7lQwf9LT/NoZXEn
-        /S17W2MLejSuW/NLZahlp0d1KcSH8CgbVh6cZdQ=
-X-Google-Smtp-Source: ABdhPJwNQClWNir1jhV830HzS4FTBIIlwJORqskR1S8FYGa8OK7RlivKeHpt/M/ZKHGSsheR5GLY1mxrQk02MMgYFuc=
-X-Received: by 2002:a02:cb9c:: with SMTP id u28mr1005721jap.95.1635385408343;
- Wed, 27 Oct 2021 18:43:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-13-laoar.shao@gmail.com>
- <202110251431.F594652F@keescook> <YXmySeDsxxbA7hcq@alley>
-In-Reply-To: <YXmySeDsxxbA7hcq@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 28 Oct 2021 09:42:52 +0800
-Message-ID: <CALOAHbB4LT8t6g5NseRygGAaAbHzKXfuWzg+TnLeg1tRUuwePg@mail.gmail.com>
-Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's comm
- is truncated
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229769AbhJ1BtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 21:49:15 -0400
+Received: from mx.socionext.com ([202.248.49.38]:57202 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhJ1BtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 21:49:12 -0400
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 28 Oct 2021 10:46:45 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 2DDEC207616C;
+        Thu, 28 Oct 2021 10:46:45 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Thu, 28 Oct 2021 10:46:45 +0900
+Received: from plum.e01.socionext.com (unknown [10.212.243.119])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id B8346B1D51;
+        Thu, 28 Oct 2021 10:46:44 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v2] dt-bindings: pinctrl: uniphier: Add child node definitions to describe pin mux and configuration
+Date:   Thu, 28 Oct 2021 10:46:39 +0900
+Message-Id: <1635385599-17778-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:10 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Mon 2021-10-25 14:35:42, Kees Cook wrote:
-> > On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
-> > > Show a warning if task comm is truncated. Below is the result
-> > > of my test case:
-> > >
-> > > truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-> > >
-> > > Suggested-by: Petr Mladek <pmladek@suse.com>
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Petr Mladek <pmladek@suse.com>
-> > > ---
-> > >  kernel/kthread.c | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > > index 5b37a8567168..46b924c92078 100644
-> > > --- a/kernel/kthread.c
-> > > +++ b/kernel/kthread.c
-> > > @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> > >     if (!IS_ERR(task)) {
-> > >             static const struct sched_param param = { .sched_priority = 0 };
-> > >             char name[TASK_COMM_LEN];
-> > > +           int len;
-> > >
-> > >             /*
-> > >              * task is already visible to other tasks, so updating
-> > >              * COMM must be protected.
-> > >              */
-> > > -           vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           len = vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           if (len >= TASK_COMM_LEN) {
-> >
-> > And since this failure case is slow-path, we could improve the warning
-> > as other had kind of suggested earlier with something like this instead:
-> >
-> >                       char *full_comm;
-> >
-> >                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
->
-> You need to use va_copy()/va_end() if you want to use the same va_args
-> twice.
->
-> For example, see how kvasprintf() is implemented. It calls
-> vsnprintf() twice and it uses va_copy()/va_end() around the the first call.
->
+In arch/arm/boot/dts/uniphier-pinctrl.dtsi, there are child nodes of
+pinctrl that defines pinmux and pincfg, however, there are no rules about
+that in dt-bindings.
 
-Does it mean that if we want to call vsnprintf() three times, we must
-use va_copy()/va_end() around the first call and the second call ?
-IOW, if we call vsnprintf() multiple times, all the calls except the
-last call should be protected by va_copy()/va_end().
-Actually I don't quite understand why we should do it like this. I
-will try to understand it, and appreciate it if you could explain it
-in detail.
+'make dtbs_check' results an error with the following message:
 
-BTW,  can we use va_copy()/va_end() in vsnprintf(), then the caller
-doesn't need to care how many times it will call vsnprintf().
+   pinctrl: 'ain1', 'ain2', 'ainiec1', 'aout', 'aout1', 'aout2', ...
+   ... 'usb2', 'usb3' do not match any of the regexes: 'pinctrl-[0-9]+'
 
-> kvasprintf() could also return NULL if there is not enough memory.
+To avoid this issue, add the rules of pinmux and pincfg in each child node
+and grandchild node.
 
-Right. We need to do the NULL check.
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+---
+Changes since v1:
+- Replace additionalProperties with unevaluatedProperties
+- Add additionalProperties for child and grandchild nodes
 
->
-> >                       pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
-> >                               full_comm, name);
->
-> BTW: Is this message printed during normal boot? I did not tried the
-> patchset myself.
->
+ .../pinctrl/socionext,uniphier-pinctrl.yaml        | 50 +++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
-Yes, it will be printed at boot time.
-
-> We should add this warning only if there is a good solution how to
-> avoid the truncated names. And we should me sure that the most common
-> kthreads/workqueues do not trigger it. It would be ugly to print many
-> warnings during boot if people could not get rid of them easily.
->
-
-As we have extended task comm to 24, there's no such warning printed
-for the existing kthreads/workqueues.
-IOW, it will only print for the newly introduced one if it has a long name.
-That means this printing is under control.
-
-> >                       kfree(full_comm);
-> >               }
-> > >             set_task_comm(task, name);
-> > >             /*
-> > >              * root may have changed our (kthreadd's) priority or CPU mask.
->
-> Best Regards,
-> Petr
-
-
-
+diff --git a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml
+index a804d9bc1602..7e504e003181 100644
+--- a/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml
+@@ -26,10 +26,58 @@ properties:
+       - socionext,uniphier-pxs3-pinctrl
+       - socionext,uniphier-nx1-pinctrl
+ 
++additionalProperties:
++  type: object
++
++patternProperties:
++  "^.*$":
++    if:
++      type: object
++    then:
++      allOf:
++        - $ref: pincfg-node.yaml#
++        - $ref: pinmux-node.yaml#
++
++      properties:
++        phandle: true
++        function: true
++        groups: true
++        pins: true
++        bias-pull-up: true
++        bias-pull-down: true
++        bias-pull-pin-default: true
++        drive-strength: true
++
++      additionalProperties:
++        type: object
++
++      patternProperties:
++        "^.*$":
++          if:
++            type: object
++          then:
++            allOf:
++              - $ref: pincfg-node.yaml#
++              - $ref: pinmux-node.yaml#
++
++            properties:
++              phandle: true
++              function: true
++              groups: true
++              pins: true
++              bias-pull-up: true
++              bias-pull-down: true
++              bias-pull-pin-default: true
++              drive-strength: true
++
++            unevaluatedProperties: false
++
++      unevaluatedProperties: false
++
+ required:
+   - compatible
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
 -- 
-Thanks
-Yafang
+2.7.4
+
