@@ -2,90 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0085843D8B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE0F43D8B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhJ1BmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 21:42:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57520 "EHLO mail.kernel.org"
+        id S229734AbhJ1Bmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 21:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhJ1BmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:42:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D71ED610FD;
-        Thu, 28 Oct 2021 01:39:51 +0000 (UTC)
+        id S229515AbhJ1Bmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 21:42:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6090461100;
+        Thu, 28 Oct 2021 01:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635385192;
-        bh=ytYQeufNPmG0y/a7R9lsQ0yU6nEE5eEZ2Wb9wHEiiFw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VdUELk9U5B1lJTOjXGuJ9uu74yoFOnUZFbrzb98STR8X0hzIx7JGTyYPkQeOSQZGR
-         6nqT2QzHY4DH6/qXVPq6G+DZ1h3De+EuAdlBpNq7R1Y3gxi06hkRPJcpRPRR/gV3/d
-         n1/98h4OStSUXhJXSDL92WfW++8m+0b0NDx65oDD3h7gKwKSBo1gBVMojw9KM0vDKb
-         0s1h5uwE5O0AeALvrNizx8kB1dLFWrR+mV9og/edXIjD0kBgNYT7pis2XVA5LvOG49
-         /0gURT4fK+mvS3BCRzAoiyGHglYQ9nniqawI+DCJTcqBj3T/KVp59JMMs0yU/pF0Z+
-         vmTRPj77pxT/w==
-Date:   Wed, 27 Oct 2021 21:39:50 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     Anton Lundin <glance@acc.umu.se>,
-        openipmi-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [Openipmi-developer] Issue with panic handling and ipmi
-Message-ID: <YXn/ZnlgXp6iuWLJ@sashalap>
-References: <20210917101419.GE108031@montezuma.acc.umu.se>
- <20210917120758.GA545073@minyard.net>
- <20210917125525.GF108031@montezuma.acc.umu.se>
- <20210917131916.GB545073@minyard.net>
- <20210917132648.GG108031@montezuma.acc.umu.se>
- <20210920113802.GC545073@minyard.net>
- <20210920141231.GH108031@montezuma.acc.umu.se>
- <20210920144146.GD545073@minyard.net>
- <YXmTbYhFvDJ0m5KX@sashalap>
- <20211027182027.GG2744412@minyard.net>
+        s=k20201202; t=1635385210;
+        bh=X288Vb/CllN4w89yrsjxckKoO24AoOFwTC+Y1bZLW54=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=dLx+k5vKHRPbn9SEh146uGicFOvuXY5hlgq84dMgd0XlKDUkNwmGh745Eyvj4Tlkx
+         pHv0CQlLN2Fidfqzl0WpeQDhbO/RBotviUoP2VDpTIdNCIX7X8A4m4X08HkZJALyWI
+         7ivVD1MqmiC1bJTRItBaeEKM+7Nk8Ko5TgySx/QtN4O1PvNkY/keYwy69+VKQ1sATC
+         arysC86WNTzxHzO7S/sZSF6w+99XpzZQPSoGRAf1TTPnCRy06usB4DGmBn7YSNCElT
+         k1qmQvsrlO6vu7CUGNmLhuL+jRnU1WkrW0f8w540sMVT99qapAMoKKqkrpxrjQjV1B
+         cAKl+pORy1r9A==
+Date:   Wed, 27 Oct 2021 18:40:09 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Tyshchenko <olekstysh@gmail.com>
+cc:     xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
+Subject: Re: [PATCH V2 4/4] arm/xen: Read extended regions from DT and init
+ Xen resource
+In-Reply-To: <1635264312-3796-5-git-send-email-olekstysh@gmail.com>
+Message-ID: <alpine.DEB.2.21.2110271803060.20134@sstabellini-ThinkPad-T480s>
+References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com> <1635264312-3796-5-git-send-email-olekstysh@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211027182027.GG2744412@minyard.net>
+Content-Type: multipart/mixed; BOUNDARY="8323329-800219594-1635384450=:20134"
+Content-ID: <alpine.DEB.2.21.2110271827430.20134@sstabellini-ThinkPad-T480s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:20:27PM -0500, Corey Minyard wrote:
->On Wed, Oct 27, 2021 at 01:59:09PM -0400, Sasha Levin wrote:
->> On Mon, Sep 20, 2021 at 09:41:46AM -0500, Corey Minyard wrote:
->> > On Mon, Sep 20, 2021 at 04:12:31PM +0200, Anton Lundin wrote:
->> > > On 20 September, 2021 - Corey Minyard wrote:
->> > >
->> > > > Well, that was dumb.  Fix follows...
->> > > >
->> > > > Thanks for working on this.  On your approval, I'll send this to Linus.
->> > >
->> > > Winner winner chicken dinner!
->> > >
->> > > This fixes the issue, and now panic timer works, and we get crashdumps
->> > > to pstore.
->> > >
->> > > Great job, I approve!
->> > >
->> > >
->> > > Thanks for your help getting this fixed.
->> >
->> > Thanks for reporting this.  I'll get the patch in.
->>
->> Hey Corey,
->>
->> Just checking in to see if this patch was lost; I haven't seen it in
->> Linus's tree just yet.
->
->I generally wait until the merge window for changes.  It's too late in
->the process for a patch now unless it's really critical.
->
->rc7 is out now, the merge window should be opening soon.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Ah, great. I thought it would go in via one of the -rc releases given
-it's a fix.
+--8323329-800219594-1635384450=:20134
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-ID: <alpine.DEB.2.21.2110271827431.20134@sstabellini-ThinkPad-T480s>
 
-Thank you!
+On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
+> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> 
+> This patch implements arch_xen_unpopulated_init() on Arm where
+> the extended regions (if any) are gathered from DT and inserted
+> into passed Xen resource to be used as unused address space
+> for Xen scratch pages by unpopulated-alloc code.
+> 
+> The extended region (safe range) is a region of guest physical
+> address space which is unused and could be safely used to create
+> grant/foreign mappings instead of wasting real RAM pages from
+> the domain memory for establishing these mappings.
+> 
+> The extended regions are chosen by the hypervisor at the domain
+> creation time and advertised to it via "reg" property under
+> hypervisor node in the guest device-tree. As region 0 is reserved
+> for grant table space (always present), the indexes for extended
+> regions are 1...N.
+> 
+> If arch_xen_unpopulated_init() fails for some reason the default
+> behaviour will be restored (allocate xenballooned pages).
+> 
+> This patch also removes XEN_UNPOPULATED_ALLOC dependency on x86.
+> 
+> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> ---
+> Changes RFC -> V2:
+>    - new patch, instead of
+>     "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide unallocated space"
+> ---
+>  arch/arm/xen/enlighten.c | 112 +++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/xen/Kconfig      |   2 +-
+>  2 files changed, 113 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+> index dea46ec..1a1e0d3 100644
+> --- a/arch/arm/xen/enlighten.c
+> +++ b/arch/arm/xen/enlighten.c
+> @@ -62,6 +62,7 @@ static __read_mostly unsigned int xen_events_irq;
+>  static phys_addr_t xen_grant_frames;
+>  
+>  #define GRANT_TABLE_INDEX   0
+> +#define EXT_REGION_INDEX    1
+>  
+>  uint32_t xen_start_flags;
+>  EXPORT_SYMBOL(xen_start_flags);
+> @@ -303,6 +304,117 @@ static void __init xen_acpi_guest_init(void)
+>  #endif
+>  }
+>  
+> +#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
+> +int arch_xen_unpopulated_init(struct resource *res)
+> +{
+> +	struct device_node *np;
+> +	struct resource *regs, *tmp_res;
+> +	uint64_t min_gpaddr = -1, max_gpaddr = 0;
+> +	unsigned int i, nr_reg = 0;
+> +	struct range mhp_range;
+> +	int rc;
+> +
+> +	if (!xen_domain())
+> +		return -ENODEV;
+> +
+> +	np = of_find_compatible_node(NULL, NULL, "xen,xen");
+> +	if (WARN_ON(!np))
+> +		return -ENODEV;
+> +
+> +	/* Skip region 0 which is reserved for grant table space */
+> +	while (of_get_address(np, nr_reg + EXT_REGION_INDEX, NULL, NULL))
+> +		nr_reg++;
+> +	if (!nr_reg) {
+> +		pr_err("No extended regions are found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	regs = kcalloc(nr_reg, sizeof(*regs), GFP_KERNEL);
+> +	if (!regs)
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * Create resource from extended regions provided by the hypervisor to be
+> +	 * used as unused address space for Xen scratch pages.
+> +	 */
+> +	for (i = 0; i < nr_reg; i++) {
+> +		rc = of_address_to_resource(np, i + EXT_REGION_INDEX, &regs[i]);
+> +		if (rc)
+> +			goto err;
+> +
+> +		if (max_gpaddr < regs[i].end)
+> +			max_gpaddr = regs[i].end;
+> +		if (min_gpaddr > regs[i].start)
+> +			min_gpaddr = regs[i].start;
+> +	}
+> +
+> +	/* Check whether the resource range is within the hotpluggable range */
+> +	mhp_range = mhp_get_pluggable_range(true);
+> +	if (min_gpaddr < mhp_range.start)
+> +		min_gpaddr = mhp_range.start;
+> +	if (max_gpaddr > mhp_range.end)
+> +		max_gpaddr = mhp_range.end;
+> +
+> +	res->start = min_gpaddr;
+> +	res->end = max_gpaddr;
+> +
+> +	/*
+> +	 * Mark holes between extended regions as unavailable. The rest of that
+> +	 * address space will be available for the allocation.
+> +	 */
+> +	for (i = 1; i < nr_reg; i++) {
+> +		resource_size_t start, end;
+> +
+> +		start = regs[i - 1].end + 1;
+> +		end = regs[i].start - 1;
+> +
+> +		if (start > (end + 1)) {
 
--- 
-Thanks,
-Sasha
+Should this be:
+
+if (start >= end)
+
+?
+
+
+> +			rc = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		/* There is no hole between regions */
+> +		if (start == (end + 1))
+
+Also here, shouldn't it be:
+
+if (start == end)
+
+?
+
+I think I am missing again something in termination accounting :-)
+
+
+> +			continue;
+> +
+> +		/* Check whether the hole range is within the resource range */
+> +		if (start < res->start || end > res->end) {
+
+By definition I don't think this check is necessary as either condition
+is impossible?
+
+
+> +			if (start < res->start)
+> +				start = res->start;
+> +			if (end > res->end)
+> +				end = res->end;
+> +
+> +			if (start >= (end + 1))
+> +				continue;
+> +		}
+> +
+> +		tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
+> +		if (!tmp_res) {
+> +			rc = -ENOMEM;
+> +			goto err;
+> +		}
+> +
+> +		tmp_res->name = "Unavailable space";
+> +		tmp_res->start = start;
+> +		tmp_res->end = end;
+
+Do we need to set any flags so that the system can reuse the memory in
+the hole, e.g. IORESOURCE_MEM? Or is it not necessary?
+
+
+> +		rc = insert_resource(res, tmp_res);
+> +		if (rc) {
+> +			pr_err("Cannot insert resource [%llx - %llx] %d\n",
+> +					tmp_res->start, tmp_res->end, rc);
+
+Although it is impossible to enable XEN_UNPOPULATED_ALLOC on arm32 due
+to unmet dependencies, I would like to keep the implementation of
+arch_xen_unpopulated_init 32bit clean.
+
+I am getting build errors like (by forcing arch_xen_unpopulated_init to
+compile on arm32):
+
+./include/linux/kern_levels.h:5:18: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘resource_size_t {aka unsigned int}’ [-Wformat=]
+
+
+> +			kfree(tmp_res);
+> +			goto err;
+> +		}
+> +	}
+> +
+> +err:
+> +	kfree(regs);
+> +
+> +	return rc;
+> +}
+> +#endif
+> +
+>  static void __init xen_dt_guest_init(void)
+>  {
+>  	struct device_node *xen_node;
+> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+> index 1b2c3ac..e6031fc 100644
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -297,7 +297,7 @@ config XEN_FRONT_PGDIR_SHBUF
+>  
+>  config XEN_UNPOPULATED_ALLOC
+>  	bool "Use unpopulated memory ranges for guest mappings"
+> -	depends on X86 && ZONE_DEVICE
+> +	depends on ZONE_DEVICE
+>  	default XEN_BACKEND || XEN_GNTDEV || XEN_DOM0
+>  	help
+>  	  Use unpopulated memory ranges in order to create mappings for guest
+--8323329-800219594-1635384450=:20134--
