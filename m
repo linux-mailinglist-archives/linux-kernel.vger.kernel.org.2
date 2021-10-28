@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4980543DB58
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D6C43DB50
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhJ1Gnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:43:33 -0400
-Received: from mout.gmx.net ([212.227.15.15]:57871 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhJ1Gnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:43:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635403130;
-        bh=9epiwmWdzTgZY2j4GBWRs9N0QEWknADgKRkQPvp+Ggo=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=FXhe5yXxylYP540/EC+4AzkmLOP3fNSEmO39fyo/3NOlbWcEm0ryYTd7J3Iv20szB
-         cWKWEC4dZ521NZJ4gyIpkKod8spMS5RmsFlBvqxTT96Vwc/S6HyYHyyyo0FoSjpetw
-         nwPjJnU+hcraQ+NzVcLrxZf8To+aYZc5aH/99quU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.152.46]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M3UZ6-1mfR6019Wc-000dpr; Thu, 28
- Oct 2021 08:38:50 +0200
-Message-ID: <6470d500-a832-9e1f-e3b9-4d3972b3996e@gmx.de>
-Date:   Thu, 28 Oct 2021 08:38:35 +0200
+        id S229823AbhJ1Gm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhJ1Gmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 02:42:51 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8A7C061570;
+        Wed, 27 Oct 2021 23:40:25 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id b1so1523611pfm.6;
+        Wed, 27 Oct 2021 23:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TPysl08iPk8HUR2rAwTxqTaZwzgk21PETj/BHWf2oVE=;
+        b=Y0oeto+FlB1nikNoDdE9Q9ujUmDPTlVzCCjEU7X+kKZDsezagtdybLve3ccHStFFwC
+         w8Z86qgmvKZv97VzPYZgs9pMdZhrcZW71DNae8hOziJAoD4W9+MHK0M0ZwiqMaN+YQ/b
+         WtODAyxcReLxWbn4JcNE/jBPU1R6igySyvAjDE5YpZ/4/KHPf+jWHo2sG4dTqqiqQKta
+         a/B/JLh0SnkVe2XoQ/iFD7BSlmYMmHBhKJhSwWO5Od5HqlsaatGiEb4/0C2ENj4gjdLe
+         V78AoeUk9ZiFZ6iNEnKvE78nsm9XQGeRGTqsN38Qj3aBvO0ovGvWZNKgYWuUqh21RoiT
+         l1GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TPysl08iPk8HUR2rAwTxqTaZwzgk21PETj/BHWf2oVE=;
+        b=Rn1q9MccqCL9iIucrIhuDIcdcvnNfXEMtmh6hqpoUACukLbTurF7RGMXusXAqlVWFw
+         MVqZWmL912lZDyRlC+WtYgaPs4hS7+Et7XrMZsVUKgOUhIl82zkhvo5UUKEiXzVvTzKS
+         6zR612h2YqKbRVcq9qwPnjxY62lLxLO1HZQV1itw8C4LjowJqXuzf3CjjKmm9IpFCp7o
+         lppv2k6LqRWmJaNxc6iElKQ7yjfGIfqhofD2KoPZkBhoja1kuI3JHTcWiQGfO0nDylUG
+         xtp/B09lIZHmTrPdU3qI1dYcsyo8ag/iRa2a4cs1Id0dAjRC8PlUsiurHMUUNB/y0aXl
+         zgww==
+X-Gm-Message-State: AOAM533jQT4tY7yGInjJM8SlQ/wcu4kzQoyhV7Upnflm6lu8m6Zsf1yx
+        wtlt5OMEtNjFi0BeOnj6zcI=
+X-Google-Smtp-Source: ABdhPJzsMNCkHdzwiHJhYQUu4MHHxENVNh5cKtewR5lEoCcRnD2gIJ//6iLIdBrMUNnBjHlfiBpYww==
+X-Received: by 2002:a62:5ec2:0:b0:44d:47e2:4b3b with SMTP id s185-20020a625ec2000000b0044d47e24b3bmr2449024pfb.38.1635403225012;
+        Wed, 27 Oct 2021 23:40:25 -0700 (PDT)
+Received: from fmin-TravelMate-B115-M.nreal.work ([137.59.103.165])
+        by smtp.gmail.com with ESMTPSA id l17sm2222289pfc.94.2021.10.27.23.40.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 23:40:24 -0700 (PDT)
+From:   Dillon Min <dillon.minfei@gmail.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc:     acourbot@chromium.org, arnd@arndb.de, stanimir.varbanov@linaro.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [linux-next][PATCH] media: stm32-dma2d: fix compile-testing failed
+Date:   Thu, 28 Oct 2021 14:40:20 +0800
+Message-Id: <20211028064020.681499-1-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 16/45] parisc: Use do_kernel_power_off()
-Content-Language: en-US
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-17-digetx@gmail.com>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20211027211715.12671-17-digetx@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FyRzIrUgBb05q0bHWFRS/zQ/jjhGXy+pktz0g9vMu8rSAyG2PhH
- igLh0yuSJkfQClwGAYYVp96vDjlam7EqP3CW0lWkZ155s/JTRG7aXysFtzh8fsHm3d7JOnd
- U2wPiCoWHArr/c1zeopIGDkaYwvec8wHmOgMEvIr7aPgxK9GcFiXcIhkSKruN1bnrxyn2QX
- umWMtuIv0Xa3Bg/ofbf6Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Nt03nam4XH8=:N7PuLhTcs13ezPdb4QL3P5
- EAsOC32SEC/CwoA2+8DjNnTsILfn+sFrb9LZytvE/YP2J2Aj7Qx7fkEO40fY8T8rIBLGw9GX+
- NIsaN0+sjNJKdkOQlJE/AFyfJG+vQ7ahzCRk2HMLrf3z5M6K/b0L71tddrkVIJCMb7IuCUzph
- ykgDP6aZxfqVXIMaikKg097ePHHG0x47b/94G1+2NvXBe71nBfFTfm04TrvRNne2czLnMB+Lg
- v+wFHtJZ2jQ9cLfCu2fzZQuGkclVf14XlYnoDKMRVnVFWWYf0adoOjwfKSRtptB20/q31drw2
- HePgYF8sylMcfQbim3Wp4ygBdzf5/6i3x4H4dnB1q/EhvkJY/KiaZgrjHxrJkHNauXcVxsg6y
- 3vvk7psmlYjcJLo6ddOdIBc9OIQs133Ce1iU2wSod2qhYwBPSJppgIk8kJCYKzZxAzsnModUK
- BgEImgsOUGiDlYZe9Muppxy4TrQaqVmfjaM9kmqq8Gvz9GaOjVqBYmFsm570hW8BuF9BI+r+S
- 0GJuN3cdiVBY0G0MhcxnoHe4O22baIwcBDk2FnckJriXO5mZE3hJQVTcEKeAb2ybK5KNuVVY6
- nww/BdElXnSWt1HhtpoHRHlgigO4KvVdiDhtBi8tFoyeYg8pvvK9qgrlLqCEJsbs8TBaWRdRr
- 7fvMB1yoKM8dWEL+Z/gHindYZd433ys7huBzX1XyE7cCnO+L/FE5ZfETDY8DSBwlBCCD940Ri
- wkqaYntrDtmIkWD9BWTD4j7K3fgZUU7IPEaJZjdl5xWo8e268I+GMSTVMrUSVDmQzI7cEG+Lb
- i0qZzTuZiztLiwLZgXQVnYgopvNIgyfo6LMbZ9e4NuBR0ff+vu+fsAwWJH4T3BJlzoZYXX193
- PLDnh+2eGZNNZJ83DOYN1ApcqeJpwMwKyPuCFuf/SxuBIQ7A6oWrcCikiPFJaPxKlXhX5RTg8
- v7QQ4c9ImeWqMCb0i29R5vmks8Ui9IG2X5j/SIZwSpXutCAWE2F/LMHO+pOK/jVtTRVpgu0WW
- MapTUMEB41Z0LdVwL6aYL1P3sWB52Pfffr4C3r7aA/3cWiJWf1QCoiwOmHCTExfYhCTFuQCe5
- +ZRYgxUKbSq514=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/21 23:16, Dmitry Osipenko wrote:
-> Kernel now supports chained power-off handlers. Use do_kernel_power_off(=
-)
-> that invokes chained power-off handlers. It also invokes legacy
-> pm_power_off() for now, which will be removed once all drivers will
-> be converted to the new power-off API.
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+get compile-test failed report from lkp@intel.com after the driver
+submitted.
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
+"ld.lld: error: undefined symbol: v4l2_fh_init"
 
+so, make CONFIG_STM32_DMA2D depends on CONFIG_VIDEO_DEV and
+CONFIG_VIDEO_V4L2 to fix this compile error.
 
+Fixes: bdbbd511ef0c ("media: stm32-dma2d: STM32 DMA2D driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+---
+Hi Hans
 
-> ---
->  arch/parisc/kernel/process.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-> index ea3d83b6fb62..928201b1f58f 100644
-> --- a/arch/parisc/kernel/process.c
-> +++ b/arch/parisc/kernel/process.c
-> @@ -26,6 +26,7 @@
->  #include <linux/module.h>
->  #include <linux/personality.h>
->  #include <linux/ptrace.h>
-> +#include <linux/reboot.h>
->  #include <linux/sched.h>
->  #include <linux/sched/debug.h>
->  #include <linux/sched/task.h>
-> @@ -114,8 +115,7 @@ void machine_power_off(void)
->  	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_SHUTDOWN);
->
->  	/* ipmi_poweroff may have been installed. */
-> -	if (pm_power_off)
-> -		pm_power_off();
-> +	do_kernel_power_off();
->
->  	/* It seems we have no way to power the system off via
->  	 * software. The user has to press the button himself. */
->
+I found the dma2d driver was merged to linux-next.
+so submit this patch based on linux-next/master, to fix the compile test error.
+
+hope it's not too late for 5.16.
+
+Thanks & Best Regards
+Dillon
+
+ drivers/media/platform/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index 68f16aef8754..9fbdba0fd1e7 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -494,7 +494,8 @@ endif # VIDEO_STI_DELTA
+ 
+ config VIDEO_STM32_DMA2D
+ 	tristate "STM32 Chrom-Art Accelerator (DMA2D)"
+-	depends on (VIDEO_DEV && VIDEO_V4L2 && ARCH_STM32) || COMPILE_TEST
++	depends on VIDEO_DEV && VIDEO_V4L2
++	depends on ARCH_STM32 || COMPILE_TEST
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_MEM2MEM_DEV
+ 	help
+-- 
+2.25.1
 
