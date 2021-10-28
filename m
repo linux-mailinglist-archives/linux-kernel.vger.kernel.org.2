@@ -2,158 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E3043E247
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7A43E249
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhJ1NdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:33:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230389AbhJ1NdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:33:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA16261040;
-        Thu, 28 Oct 2021 13:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635427849;
-        bh=2AU5vMARnoD7CkinUW7V2ShndNd+uKH+pR6OdrEij04=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MGab7tyS50J9fDwYO3sPuUnkvQjjW4+A0/rRJPW4n0CpPd4gefT2D5jhu/0v3qHg5
-         ZkqV4ZDMqXLXjmsgPwu1ZgY/BX1CQRZu+KdgjZSNlHmvPfAWBCh+0fMQBrT5QMuOhX
-         KscBrn7vqpxR3giMSKl1AtpncRAzLdiLsRlyZLKIsL+7o30x4vOd+La0wRysUbNBZ1
-         9eKa4idRFn1aVyhum3TQzYY1T4oA0L0QKapSUDWBUvIOU2g0d4FFodSrmTQAPmYZvh
-         sQRFZ7gfRD4jFFXewvCnQXJ+6Nasi25j/IF4feL5nIWgsRYSBt2LuDQ3Ipzp/SqijB
-         So3T6Lie2g4kQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3E3BC5C00AA; Thu, 28 Oct 2021 06:30:49 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 06:30:49 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-Cc:     "dave@stgolabs.net" <dave@stgolabs.net>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] refscale: always log the error message
-Message-ID: <20211028133049.GC880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211025032658.22889-1-lizhijian@cn.fujitsu.com>
- <20211025032658.22889-3-lizhijian@cn.fujitsu.com>
- <5f4c53e4-34aa-98f6-343f-0de18df830f2@fujitsu.com>
- <20211026140632.GV880162@paulmck-ThinkPad-P17-Gen-1>
- <0c9868b6-a143-b098-aa0d-bf525f32ed8c@fujitsu.com>
- <c4a3691e-38b9-60d5-ed8b-77e5442cfd07@fujitsu.com>
+        id S230420AbhJ1NdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:33:22 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:40958 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230389AbhJ1NdV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:33:21 -0400
+Date:   Thu, 28 Oct 2021 09:30:53 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: [PATCH 2/5 v3] sh: add git tree to MAINTAINERS
+Message-ID: <20211028133049.GY7074@brightrain.aerifal.cx>
+References: <20211005001914.28574-1-rdunlap@infradead.org>
+ <20211005001914.28574-3-rdunlap@infradead.org>
+ <20211027205431.GX7074@brightrain.aerifal.cx>
+ <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c4a3691e-38b9-60d5-ed8b-77e5442cfd07@fujitsu.com>
+In-Reply-To: <CAMuHMdWUQkhYxXfrG4MG-Ghi62P_XVxkCMb_6qijP-MMgn-JWg@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 07:21:34AM +0000, lizhijian@fujitsu.com wrote:
-> Hi Paul
+On Thu, Oct 28, 2021 at 10:33:54AM +0200, Geert Uytterhoeven wrote:
+> Hi Rich,
 > 
-> During adding the missing '\n', i also found there are some verbose control error message
-> Should we convert it like [PATCH 3/3] refscale: always log the error message
+> On Wed, Oct 27, 2021 at 10:54 PM Rich Felker <dalias@libc.org> wrote:
+> > On Mon, Oct 04, 2021 at 05:19:11PM -0700, Randy Dunlap wrote:
+> > > Add the git tree location for linux-sh.
+> > >
+> > > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> > > --- linux-next-20211001.orig/MAINTAINERS
+> > > +++ linux-next-20211001/MAINTAINERS
+> > > @@ -18047,6 +18047,7 @@ M:    Yoshinori Sato <ysato@users.sourcefor
+> > >  M:   Rich Felker <dalias@libc.org>
+> > >  L:   linux-sh@vger.kernel.org
+> > >  S:   Maintained
+> > > +T:   git git://git.libc.org/linux-sh
+> > >  Q:   http://patchwork.kernel.org/project/linux-sh/list/
+> > >  F:   Documentation/sh/
+> > >  F:   arch/sh/
+> >
+> > I'm omitting this for now since (as noted on the cgit description)
+> > this server is not provisioned adequately for cloning from scratch,
+> > and should only be used for fetch into an already-populated mainline
+> > repo clone. If that's a problem I can see about getting it moved
+> > somewhere more appropriate.
+> 
+> Perhaps you can move it to kernel.org?
 
-These do indeed look like they should always be logged.  Good catches!
+I would love to. This was my hope years ago, but I got bogged down in
+the GPG key signing requirements and folks not following through with
+signing my key. Has any of that been streamlined since?
 
-							Thanx, Paul
+> > The rest of this series should appear in next shortly.
+> 
+> Thanks a lot!
 
-> lizj@FNSTPC: linux$ git grep VERBOSE.*_ERRSTRING
-> include/linux/torture.h:#define VERBOSE_TOROUT_ERRSTRING(s) \
-> kernel/locking/locktorture.c: VERBOSE_TOROUT_ERRSTRING("writer_tasks: Out of memory");
-> kernel/locking/locktorture.c: VERBOSE_TOROUT_ERRSTRING("reader_tasks: Out of memory");
-> kernel/rcu/rcuscale.c:#define VERBOSE_SCALEOUT_ERRSTRING(s) \
-> kernel/rcu/rcuscale.c:          VERBOSE_SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
-> kernel/rcu/rcuscale.c:          VERBOSE_SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
-> kernel/rcu/rcuscale.c:          VERBOSE_SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
-> kernel/rcu/rcuscale.c:          VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-> kernel/rcu/rcuscale.c:          VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-> kernel/rcu/rcutorture.c: VERBOSE_TOROUT_ERRSTRING("out of memory");
-> kernel/rcu/rcutorture.c: VERBOSE_TOROUT_ERRSTRING("out of memory");
-> kernel/rcu/rcutorture.c: VERBOSE_TOROUT_ERRSTRING("out of memory");
-> kernel/rcu/rcutorture.c: VERBOSE_TOROUT_ERRSTRING("out of memory");
-> kernel/scftorture.c:#define VERBOSE_SCFTORTOUT_ERRSTRING(s, x...) \
-> kernel/scftorture.c:            VERBOSE_SCFTORTOUT_ERRSTRING("all zero weights makes no sense");
-> kernel/scftorture.c:            VERBOSE_SCFTORTOUT_ERRSTRING("built as module, weight_resched ignored");
-> kernel/scftorture.c:            VERBOSE_SCFTORTOUT_ERRSTRING("out of memory");
-> kernel/torture.c:               VERBOSE_TOROUT_ERRSTRING("Failed to alloc mask");
-> kernel/torture.c:               VERBOSE_TOROUT_ERRSTRING(f);
-> 
-> 
-> 
-> Thanks
-> 
-> 
-> 
-> On 27/10/2021 13:17, Li Zhijian wrote:
-> >
-> >
-> > On 26/10/2021 22:06, Paul E. McKenney wrote:
-> >> On Mon, Oct 25, 2021 at 06:12:40AM +0000, lizhijian@fujitsu.com wrote:
-> >>>
-> >>> On 25/10/2021 11:26, Li Zhijian wrote:
-> >>>> Generally, error message should be logged anyhow.
-> >>>>
-> >>>> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> >>>> ---
-> >>>>    kernel/rcu/refscale.c | 8 ++++----
-> >>>>    1 file changed, 4 insertions(+), 4 deletions(-)
-> >>>>
-> >>>> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-> >>>> index a4479f00dcdc..f055d168365a 100644
-> >>>> --- a/kernel/rcu/refscale.c
-> >>>> +++ b/kernel/rcu/refscale.c
-> >>>> @@ -58,8 +58,8 @@ do {                                            \
-> >>>>        }                                        \
-> >>>>    } while (0)
-> >>>>    -#define VERBOSE_SCALEOUT_ERRSTRING(s, x...) \
-> >>>> -    do { if (verbose) pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
-> >>>> +#define SCALEOUT_ERRSTRING(s, x...) \
-> >>>> +    do { pr_alert("%s" SCALE_FLAG "!!! " s, scale_type, ## x); } while (0)
-> >>>>       MODULE_LICENSE("GPL");
-> >>>>    MODULE_AUTHOR("Joel Fernandes (Google) <joel@joelfernandes.org>");
-> >>>> @@ -651,7 +651,7 @@ static int main_func(void *arg)
-> >>>>        result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
-> >>>>        buf = kzalloc(800 + 64, GFP_KERNEL);
-> >>>>        if (!result_avg || !buf) {
-> >>>> -        VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-> >>>> +        SCALEOUT_ERRSTRING("out of memory");
-> >>> '\n' should be added to the last to flush it.
-> >> And there might well be other missing "\n" instances in similar messages
-> >> in rcuscale.c, rcutorture.c, scftorture.c, locktorture.c, and torture.c.
-> >> Please feel free to send a patch for each file needing this help.
-> >
-> > Sure, i will do that.
-> >
-> > Thanks
-> > Zhijian
-> >
-> >> I queued your other three patches for v5.17 (not this coming merge window,
-> >> but the one after that), thank you!  I did wordsmith the commit logs,
-> >> so please check to see if I messed anything up.
-> >>
-> >>                             Thanx, Paul
-> >>
-> >>>>            goto oom_exit;
-> >>>>        }
-> >>>>        if (holdoff)
-> >>>> @@ -837,7 +837,7 @@ ref_scale_init(void)
-> >>>>        reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
-> >>>>                       GFP_KERNEL);
-> >>>>        if (!reader_tasks) {
-> >>>> -        VERBOSE_SCALEOUT_ERRSTRING("out of memory");
-> >>>> +        SCALEOUT_ERRSTRING("out of memory");
-> >>> ditto
-> >>>
-> >>> Thanks
-> >>> Zhijian
-> >>>>            firsterr = -ENOMEM;
-> >>>>            goto unwind;
-> >>>>        }
-> >
+Looks like it's been pulled by next now with no reports of anything
+going wrong. I know it's late in the release cycle but should I
+probably go ahead and send a PR?
+
+Rich
