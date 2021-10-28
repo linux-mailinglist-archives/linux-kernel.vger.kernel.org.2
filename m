@@ -2,178 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AF943E0A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5769643E0AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhJ1MQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:16:55 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50278 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhJ1MQx (ORCPT
+        id S230380AbhJ1MSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230192AbhJ1MSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:16:53 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DD4AA1FD53;
-        Thu, 28 Oct 2021 12:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635423265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g3E7wkRJp91MKjK1zSRVHtFUse8VULFkLnWAwqt+tOU=;
-        b=h00ymuW0J36OBNpp5TDQG2drxGIjwsWQwk1DtOLEnvbZJHg5OmxlJseSUd1opoL2qjYfln
-        W0uKNXOqaujxpSihFkMFJ8nZ2lgwLuxN4ttxpfJSJZm+IgoFujignT0gXFNBKroaFDgNy+
-        HTPzbS8tY8EJP/DcfXAMohwGxGqkjH8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635423265;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g3E7wkRJp91MKjK1zSRVHtFUse8VULFkLnWAwqt+tOU=;
-        b=0rvApIq8a4o3k783acr29655BKyqavq+u45qpDkAy7SZyOslxOt6li+h1mlXlYCDZ8qSuv
-        Hu8pUTgrVmr22+DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0C44B13CFD;
-        Thu, 28 Oct 2021 12:14:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YoUUACGUemGDXQAAMHmgww
-        (envelope-from <dkirjanov@suse.de>); Thu, 28 Oct 2021 12:14:24 +0000
-Subject: Re: [PATCH] mwifiex: Add quirk to disable deep sleep with certain
- hardware revision
-To:     =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-References: <20211028073729.24408-1-verdre@v0yd.nl>
-From:   Denis Kirjanov <dkirjanov@suse.de>
-Message-ID: <0123bb9b-7c66-9197-94dd-d96e226f439f@suse.de>
-Date:   Thu, 28 Oct 2021 15:14:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 28 Oct 2021 08:18:01 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9E1C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:15:34 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 192so4016620wme.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=hTsaHD+w0QczYgd8STqc5PXAbEsXQQXxYrvU1QF5rzo=;
+        b=yuvBvsn/MnbXRX9mjN8lsmT16b7pfKJGbM8V7aOBxZx8MZzf8gyJj7qoFRQeetk87Q
+         Vl7siPBE+6xd9MzClY55jygp+ENc/sjSxYyITPxtq2Z8byV6gdV6iwFn7MckeL37lK6v
+         mgTQ9rXqmj0EjTfflHoaLlYwf7jRyXWSnIbA+WfQhsf/DhbAqbFqx7b4lHF+dAoycCRC
+         LhMsUxHNpcXdxnZT7joMGykHSMn1bk+Lb+mFvLELL8k5jNQJ4kxpzUvzFNQfpPKOJDpu
+         4tg+0ky5aAtwe5U+7GJYTGX2tF+EodDT5Fs6rKz8DhTpkXJIXfRuBQKHoUiz1t+F9PNJ
+         p/Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=hTsaHD+w0QczYgd8STqc5PXAbEsXQQXxYrvU1QF5rzo=;
+        b=UiEOuLsl2Zl/S6YfTcJaHLFUgIKiHP1+gWVyrd68NrTYRD4fdiK1YcTAcM3HTgKMVi
+         0vSv0PeLfaASgPqIDspdMq4OP9eWc7NB5pM8wWPFc7r1x2uu3U/QqfA4OkznGyQjDZ17
+         AWW+88amE84wr6wfHJWHbWa5s/rSw2Tf20gkYN49aLS8PzRqeNVCP3LKXdqP09lSTtTg
+         QagV6Arungh0oyTVTWGQj/OgTiOVprf/Mo4pUQqyimEcSrCRfozWb84dqYQYE2TgwgSK
+         Nurdf4SP7uvcJuJv3HQhxKvGHg74wcJLZbMKOTyTo13lHBTTEl3YsGsjyuNDgPxX11AP
+         lKqw==
+X-Gm-Message-State: AOAM532iMeUj7qwcNkHGqrKX28yM4xh0uMRpKNJpuW4Qh2mJU6/8R8ea
+        zlw1KTjkwH9v1d4uaCEUepJLnQ==
+X-Google-Smtp-Source: ABdhPJz2h2vsU+LSIENFL7V+PEekkO2pDz3I74SKNuaNewWJoXoE2lMnAq12N453FeTl3lqGqN/jBg==
+X-Received: by 2002:a7b:c4c1:: with SMTP id g1mr4053035wmk.2.1635423333117;
+        Thu, 28 Oct 2021 05:15:33 -0700 (PDT)
+Received: from vingu-book ([2a01:e0a:f:6020:ac5e:7a99:ff44:4f9a])
+        by smtp.gmail.com with ESMTPSA id y6sm1578635wrh.18.2021.10.28.05.15.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 28 Oct 2021 05:15:32 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 14:15:30 +0200
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] Improve newidle lb cost tracking and early abort
+Message-ID: <20211028121530.GA19512@vingu-book>
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+ <7128695d64e9161637b67315b5beb51c4accdc82.camel@linux.intel.com>
+ <CAKfTPtAv7vPGYAwUSmGL5wtbY=if8G+3geWMKpHu3vLGqthPfg@mail.gmail.com>
+ <720fd26424927dd27fea4e5719dafe8a0afaa8c4.camel@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211028073729.24408-1-verdre@v0yd.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: ru
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <720fd26424927dd27fea4e5719dafe8a0afaa8c4.camel@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-10/28/21 10:37 AM, Jonas Dreßler пишет:
-> The 88W8897 PCIe+USB card in the hardware revision 20 apparently has a
-> hardware issue where the card wakes up from deep sleep randomly and very
-> often, somewhat depending on the card activity, maybe the hardware has a
-> floating wakeup pin or something.
+Le mercredi 27 oct. 2021 � 13:53:32 (-0700), Tim Chen a �crit :
+> On Wed, 2021-10-27 at 10:49 +0200, Vincent Guittot wrote:
+> > 
+> > > Looking at the profile on update_blocked_averages a bit more,
+> > > the majority of the call to update_blocked_averages
+> > > happens in run_rebalance_domain.  And we are not
+> > > including that cost of update_blocked_averages for
+> > > run_rebalance_domains in our current patch set. I think
+> > > the patch set should account for that too.
+> > 
+> > nohz_newidle_balance keeps using sysctl_sched_migration_cost to
+> > trigger a _nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK, CPU_IDLE);
+> > This would probably benefit to take into account the cost of
+> > update_blocked_averages instead
+> > 
 > 
-> Those continuous wakeups prevent the card from entering host sleep when
-> the computer suspends. And because the host won't answer to events from
-> the card anymore while it's suspended, the firmwares internal
-> powersaving state machine seems to get confused and the card can't sleep
-> anymore at all after that.
+> For the case where
 > 
-> Since we can't work around that hardware bug in the firmware, let's
-> get the hardware revision string from the firmware and match it with
-> known bad revisions. Then disable auto deep sleep for those revisions,
-> which makes sure we no longer get those spurious wakeups.
+> 	this_rq->avg_idle < sysctl_sched_migration_cost
 > 
-> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-> ---
->   drivers/net/wireless/marvell/mwifiex/main.c      | 14 ++++++++++++++
->   drivers/net/wireless/marvell/mwifiex/main.h      |  1 +
->   .../net/wireless/marvell/mwifiex/sta_cmdresp.c   | 16 ++++++++++++++++
->   3 files changed, 31 insertions(+)
+> in newidle_balance(), we skip to the out: label
 > 
-> diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-> index 19b996c6a260..5ab2ad4c7006 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/main.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/main.c
-> @@ -226,6 +226,19 @@ static int mwifiex_process_rx(struct mwifiex_adapter *adapter)
->   	return 0;
->   }
->   
-> +static void maybe_quirk_fw_disable_ds(struct mwifiex_adapter *adapter)
-> +{
-> +	struct mwifiex_private *priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_STA);
-> +	struct mwifiex_ver_ext ver_ext;
-> +
-> +	set_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &adapter->work_flags);
-> +
-> +	memset(&ver_ext, 0, sizeof(ver_ext));
-> +	ver_ext.version_str_sel = 1;
-> +	mwifiex_send_cmd(priv, HostCmd_CMD_VERSION_EXT,
-> +			 HostCmd_ACT_GEN_GET, 0, &ver_ext, false);
-> +}
-> +
->   /*
->    * The main process.
->    *
-> @@ -356,6 +369,7 @@ int mwifiex_main_process(struct mwifiex_adapter *adapter)
->   			if (adapter->hw_status == MWIFIEX_HW_STATUS_INIT_DONE) {
->   				adapter->hw_status = MWIFIEX_HW_STATUS_READY;
->   				mwifiex_init_fw_complete(adapter);
-> +				maybe_quirk_fw_disable_ds(adapter);
->   			}
->   		}
->   
-> diff --git a/drivers/net/wireless/marvell/mwifiex/main.h b/drivers/net/wireless/marvell/mwifiex/main.h
-> index 90012cbcfd15..1e829d84b1f6 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/main.h
-> +++ b/drivers/net/wireless/marvell/mwifiex/main.h
-> @@ -524,6 +524,7 @@ enum mwifiex_adapter_work_flags {
->   	MWIFIEX_IS_SUSPENDED,
->   	MWIFIEX_IS_HS_CONFIGURED,
->   	MWIFIEX_IS_HS_ENABLING,
-> +	MWIFIEX_IS_REQUESTING_FW_VEREXT,
->   };
->   
->   struct mwifiex_band_config {
-> diff --git a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-> index 6b5d35d9e69f..8e49ebca1847 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-> @@ -708,6 +708,22 @@ static int mwifiex_ret_ver_ext(struct mwifiex_private *priv,
->   {
->   	struct host_cmd_ds_version_ext *ver_ext = &resp->params.verext;
->   
-> +	if (test_and_clear_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &priv->adapter->work_flags)) {
-> +		if (strncmp(ver_ext->version_str, "ChipRev:20, BB:9b(10.00), RF:40(21)", 128) == 0) {
-> +			struct mwifiex_ds_auto_ds auto_ds = {
-> +				.auto_ds = DEEP_SLEEP_OFF,
-> +			};
-> +
-> +			mwifiex_dbg(priv->adapter, MSG,
-> +				    "Bad HW revision detected, disabling deep sleep\n");
-> +
-> +			mwifiex_send_cmd(priv, HostCmd_CMD_802_11_PS_MODE_ENH,
-> +					 DIS_AUTO_PS, BITMAP_AUTO_DS, &auto_ds, false);
-> +		}
-> +
-> +		return 0;
-> +	}
+> out:
+>         /* Move the next balance forward */
+>         if (time_after(this_rq->next_balance, next_balance))
+>                 this_rq->next_balance = next_balance;
+> 
+>         if (pulled_task)
+>                 this_rq->idle_stamp = 0;
+>         else
+>                 nohz_newidle_balance(this_rq);
+> 
+> and we call nohz_newidle_balance as we don't have a pulled_task.
+> 
+> It seems to make sense to skip the call
+> to nohz_newidle_balance() for this case? 
 
-mwifiex_send_cmd() may return an error
+nohz_newidle_balance() also tests this condition :
+(this_rq->avg_idle < sysctl_sched_migration_cost)
+and doesn't set NOHZ_NEWILB_KICKi in such case
 
-> +
->   	if (version_ext) {
->   		version_ext->version_str_sel = ver_ext->version_str_sel;
->   		memcpy(version_ext->version_str, ver_ext->version_str,
+But this patch now used the condition :
+this_rq->avg_idle < sd->max_newidle_lb_cost
+and sd->max_newidle_lb_cost can be higher than sysctl_sched_migration_cost
+
+which means that we can set NOHZ_NEWILB_KICK:
+-although we decided to skip newidle loop
+-or when we abort because this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost 
+
+This is even more true when sysctl_sched_migration_cost is lowered which is your case IIRC
+
+The patch below ensures that we don't set NOHZ_NEWILB_KICK in such cases:
+
+---
+ kernel/sched/fair.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c19f4bb3df1a..36ddae208959 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10779,7 +10779,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	int this_cpu = this_rq->cpu;
+ 	u64 t0, t1, curr_cost = 0;
+ 	struct sched_domain *sd;
+-	int pulled_task = 0;
++	int pulled_task = 0, early_stop = 0;
+ 
+ 	update_misfit_status(NULL, this_rq);
+ 
+@@ -10816,8 +10816,16 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	if (!READ_ONCE(this_rq->rd->overload) ||
+ 	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+ 
+-		if (sd)
++		if (sd) {
+ 			update_next_balance(sd, &next_balance);
++
++			/*
++			 * We skip new idle LB because there is not enough
++			 * time before next wake up. Make sure that we will
++			 * not kick NOHZ_NEWILB_KICK
++			 */
++			early_stop = 1;
++		}
+ 		rcu_read_unlock();
+ 
+ 		goto out;
+@@ -10836,8 +10844,10 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 
+ 		update_next_balance(sd, &next_balance);
+ 
+-		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
++		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
++			early_stop = 1;
+ 			break;
++		}
+ 
+ 		if (sd->flags & SD_BALANCE_NEWIDLE) {
+ 
+@@ -10887,7 +10897,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 
+ 	if (pulled_task)
+ 		this_rq->idle_stamp = 0;
+-	else
++	else if (!early_stop)
+ 		nohz_newidle_balance(this_rq);
+ 
+ 	rq_repin_lock(this_rq, rf);
+-- 
+
+> We expect a very short idle and a task to wake shortly.  
+> So we do not have to pull a task
+> to this idle cpu and incur the migration cost.
+> 
+> Tim
+> 
+> 
+> 
 > 
