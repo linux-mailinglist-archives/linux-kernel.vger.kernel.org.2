@@ -2,129 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302BF43DAFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE9D43DAFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 08:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhJ1GQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 02:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
+        id S229772AbhJ1GTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 02:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhJ1GQg (ORCPT
+        with ESMTP id S229586AbhJ1GTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 02:16:36 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3421C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:14:09 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id d63so6695569iof.4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 23:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q/CaYgRMivi6E5IrdJQN3VhID0wrYip2MBmQLj5bzn8=;
-        b=Aq2N80QZqWuk5rhmqD7SlSuHwXw7X5Xj9MYYbX+VkHfnnnJufBOqYb9gJF4OaEiYOR
-         JuqCgXZnsw56MasCxD1UCPwBEADYf4FTAWs1ucK/j7eyDg4KLsC9VDX8pUg2LrTvIBMu
-         LluBL6cpWjDIFC5cHIlQBEAbj2544NrYdVLsI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q/CaYgRMivi6E5IrdJQN3VhID0wrYip2MBmQLj5bzn8=;
-        b=jlgkf4dEvZ+N1GorP3pgS8h1XfD1Z9eRPFi18hjLsuCGfz2FQ5qk/kjgbi04CE5ypj
-         NjxE4V1CfHpASTh2Tzne/y36oqMr+0FDR3tJYy/MbLMEBB4YBuyqa/xTKZ9m5AZesxTs
-         sYbv7UwRx8hB3fnSpmEBDUKmqJ3lGOW5fJHlGFv1HfyahidLLVNM8AsqNtiz7nB4lybg
-         HPLXdbq9wmrULvSVlXib9JniOe3QRyldEqIu3e/0M8CiV7zN66CB9SLzRm+aZaNhBvL6
-         wslvuc2c7FQKlp0bF0BmS9iQEDd8lkUKclnrHJ9I3iY8v9GP0RZ/+LKt0judxoiBaj9B
-         zRyA==
-X-Gm-Message-State: AOAM532WWHt+vbKiVb4Fl7iyL4OBOdBp/fw+ZgeKNj4bIAv+HOGjqJLQ
-        BS/fXxeO8bUq8AbtI+Z1qCtklveQQ+aoYkzPgXvX2w==
-X-Google-Smtp-Source: ABdhPJzC5EHSvYTWsmMZor72KBYkv+zsEBX+bmiCWVqdyiTSd1OU5sPmnEltvdTsr6xsiuVNtLUjnZF8GSWmTewNAHQ=
-X-Received: by 2002:a02:954d:: with SMTP id y71mr1680582jah.83.1635401649146;
- Wed, 27 Oct 2021 23:14:09 -0700 (PDT)
+        Thu, 28 Oct 2021 02:19:05 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC431C061570;
+        Wed, 27 Oct 2021 23:16:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HfwLV6NF6z4xcB;
+        Thu, 28 Oct 2021 17:16:34 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635401796;
+        bh=RZCVeOXwcdZa/nUqU9rKDWY5H15gYWvRWpcvq5i8Ge0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KxxaLlCJKUB3tk2ICp52vJiupSdOjd0U/C1dxifNIKXuuczTJpshFtBKr4OTAMVbL
+         2WWLRt0t0dZu+5jgCscb4xEiiZ+Gt+QLSIG7VlRp0zlDxCzhSjNlCzHHkN8KjspCC4
+         +XBmqBPucM69dELcL+TqMLawq6UW3ZCgeTDJeqAbpdG4eVkWqMCVF3z6s8rKFq+rWU
+         WJOFX/qBCn7j0dFLGOQPk0K6Z733SPL39JLULFUdRoYCXaxASve41nXeYyr9KCL/mh
+         Awd/Vs7rvOPUg0ivwkc4vrd4Mod5oXDgPG8B22ItA4AIoU/w6IMVVV2urFbznDE8Sr
+         xMSb5bvMvjFDw==
+Date:   Thu, 28 Oct 2021 17:16:33 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Xen Devel <xen-devel@lists.xenproject.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the xen-tip tree with the tip tree
+Message-ID: <20211028171633.603441ef@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211028055056.26378-1-yong.wu@mediatek.com>
-In-Reply-To: <20211028055056.26378-1-yong.wu@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 28 Oct 2021 14:13:43 +0800
-Message-ID: <CAJMQK-jCuH-EKd1snhtrkFEz0bFN1t8EvsF3Kjua-HVFa_3J9A@mail.gmail.com>
-Subject: Re: [PATCH] memory: mtk-smi: Fix a null dereference for the ostd
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, yi.kuo@mediatek.com,
-        anthony.huang@mediatek.com, Ikjoon Jang <ikjn@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/gjdfCg28mrFUIRBmrXBDBmL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 1:51 PM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> We add the ostd setting for mt8195. It introduces a abort for the
-> previous SoC which doesn't have ostd setting. This is the log:
->
-> Unable to handle kernel NULL pointer dereference at virtual address
-> 0000000000000080
-> ...
-> pc : mtk_smi_larb_config_port_gen2_general+0x64/0x130
-> lr : mtk_smi_larb_resume+0x54/0x98
-> ...
-> Call trace:
->  mtk_smi_larb_config_port_gen2_general+0x64/0x130
->  pm_generic_runtime_resume+0x2c/0x48
->  __genpd_runtime_resume+0x30/0xa8
->  genpd_runtime_resume+0x94/0x2c8
->  __rpm_callback+0x44/0x150
->  rpm_callback+0x6c/0x78
->  rpm_resume+0x310/0x558
->  __pm_runtime_resume+0x3c/0x88
->
-> In the code: larbostd = larb->larb_gen->ostd[larb->larbid],
-> if "larb->larb_gen->ostd" is null, the "larbostd" is the offset, it is
-> also a valid value, thus, use the larb->larb_gen->ostd as the condition
-> inside the "for" loop.
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+--Sig_/gjdfCg28mrFUIRBmrXBDBmL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Hi all,
 
-After applying this patch, mt8183 is no longer crashing.
+Today's linux-next merge of the xen-tip tree got a conflict in:
 
-> ---
-> Hi Krzysztof,
-> Could you help review and conside this as a fix for the mt8195 patchset?
-> The mt8195 patchset are not in mainline, thus, I don't know its sha-id,
-> and don't add Fixes tag.
-> Thanks
-> ---
->  drivers/memory/mtk-smi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
-> index b883dcc0bbfa..0262a59a2d6e 100644
-> --- a/drivers/memory/mtk-smi.c
-> +++ b/drivers/memory/mtk-smi.c
-> @@ -257,7 +257,7 @@ static void mtk_smi_larb_config_port_gen2_general(struct device *dev)
->         if (MTK_SMI_CAPS(flags_general, MTK_SMI_FLAG_SW_FLAG))
->                 writel_relaxed(SMI_LARB_SW_FLAG_1, larb->base + SMI_LARB_SW_FLAG);
->
-> -       for (i = 0; i < SMI_LARB_PORT_NR_MAX && larbostd && !!larbostd[i]; i++)
-> +       for (i = 0; i < SMI_LARB_PORT_NR_MAX && larb->larb_gen->ostd && !!larbostd[i]; i++)
->                 writel_relaxed(larbostd[i], larb->base + SMI_LARB_OSTDL_PORTx(i));
->
->         for_each_set_bit(i, (unsigned long *)larb->mmu, 32) {
-> --
-> 2.18.0
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+  arch/x86/xen/irq.c
+
+between commits:
+
+  20125c872a3f ("x86/xen: Make save_fl() noinstr")
+  d7bfc7d57cbe ("x86/xen: Make irq_enable() noinstr")
+  09c413071e2d ("x86/xen: Make irq_disable() noinstr")
+  1462eb381b4c ("x86/xen: Rework the xen_{cpu,irq,mmu}_opsarrays")
+
+from the tip tree and commit:
+
+  97c79d816979 ("x86/xen: switch initial pvops IRQ functions to dummy ones")
+
+from the xen-tip tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+There may be more required, though.
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/xen/irq.c
+index 4fe387e520af,ae8537583102..000000000000
+--- a/arch/x86/xen/irq.c
++++ b/arch/x86/xen/irq.c
+@@@ -94,16 -40,14 +40,16 @@@ static void xen_halt(void
+  		xen_safe_halt();
+  }
+ =20
+ -static const struct pv_irq_ops xen_irq_ops __initconst =3D {
+ -	/* Initial interrupt flag handling only called while interrupts off. */
+ -	.save_fl =3D __PV_IS_CALLEE_SAVE(paravirt_ret0),
+ -	.irq_disable =3D __PV_IS_CALLEE_SAVE(paravirt_nop),
+ -	.irq_enable =3D __PV_IS_CALLEE_SAVE(paravirt_BUG),
+ +static const typeof(pv_ops) xen_irq_ops __initconst =3D {
+ +	.irq =3D {
+-=20
+- 		.save_fl =3D PV_CALLEE_SAVE(xen_save_fl),
+- 		.irq_disable =3D PV_CALLEE_SAVE(xen_irq_disable),
+- 		.irq_enable =3D PV_CALLEE_SAVE(xen_irq_enable),
+++		/* Initial interrupt flag handling only called while interrupts off. */
+++		.save_fl =3D __PV_IS_CALLEE_SAVE(paravirt_ret0),
+++		.irq_disable =3D __PV_IS_CALLEE_SAVE(paravirt_nop),
+++		.irq_enable =3D __PV_IS_CALLEE_SAVE(paravirt_BUG),
+ =20
+ -	.safe_halt =3D xen_safe_halt,
+ -	.halt =3D xen_halt,
+ +		.safe_halt =3D xen_safe_halt,
+ +		.halt =3D xen_halt,
+ +	},
+  };
+ =20
+  void __init xen_init_irq_ops(void)
+
+--Sig_/gjdfCg28mrFUIRBmrXBDBmL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF6QEEACgkQAVBC80lX
+0Gxqagf/Td093dl4efT9lndu1gmog0FXF5HLVk8gif87xRq/cT3j5DPqKW8hK5fi
+UQ+M974Op+nIw/Eoplf/l1Yn4nND+YJ5krN/5UUbHSBzQs3FL0jJ2dw3B+MOgTwd
+SdJn5rW+MXt7HLhcPxkrA+bDZ2Z/CTjUrIpwtmEGzeYUQKjBbMgBMIxnulAd5EqA
+3T5aXCG2xjb09NgKN6VJhXSNh7nM5q+9Zdx6v7anYWdahZ9Y4hG720qbf0Wgtu0P
+o7nR0InCFnIA3UkG4fFlxGZAvjzlRIb/HPTE4wC2HmcO/PVU+grqT/Mt6eSI+r1g
+ciDl8OICcWy0nJTmU+/ZpiNH/UqtRQ==
+=T10R
+-----END PGP SIGNATURE-----
+
+--Sig_/gjdfCg28mrFUIRBmrXBDBmL--
