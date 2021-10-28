@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8DB43E35B
+	by mail.lfdr.de (Postfix) with ESMTP id B240043E35D
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhJ1OWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        id S231213AbhJ1OW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhJ1OWX (ORCPT
+        with ESMTP id S231207AbhJ1OWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:22:23 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F28C061745;
-        Thu, 28 Oct 2021 07:19:55 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id e4so10486470wrc.7;
-        Thu, 28 Oct 2021 07:19:55 -0700 (PDT)
+        Thu, 28 Oct 2021 10:22:25 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F685C061570;
+        Thu, 28 Oct 2021 07:19:58 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id d13so10486440wrf.11;
+        Thu, 28 Oct 2021 07:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=V3KiU206SAU31NUfwpS2+BkRGT20ITYrNtM1Dgg2dPQ=;
-        b=EU3xEG/3dC9YXPW/ccVFr8K3ChYeYFaYcNGGtHp0RPz/O0Ec7X9YV2fflD58Vb/Xso
-         e9oHK0zp1VWtKz/TtPv+KlKv0VY+4wEx+KVkrpdQYgTP+IHKbLJs/vKYgBthSHiLH7Si
-         vHKFVvvoU6t7ADJSwLn97xxpdkBa55eS7kQUVcD/5VuGcYQ0EZQdV/4kyNJR8rHzS9Dw
-         zuoHixsB5EbAsiKAUaK41cjTNEj2Fw4a5SWEgWTSkcH1v/pENY5Jitp3svHZAmly13W7
-         zxc/xp4Gm+1aj3Su20bhbwplVlkYEdigikzOeMADEPj/FMzWEveXImKKEM85ea1SdlZA
-         zcXw==
+        bh=gyvzNad0Xx5R9v5YeX/jyfVB5cjv8pWIdrWsMdtOKeU=;
+        b=pnI+cDc9pgmeUAnEprJ7/g4BWiQOQtOOfpQNHyw3VF2sBk/yxpLfYNtbnA4fAvsbzv
+         +DdHd6ejGKxE3mz93ID2DTOqwhVuISJvg+EYrF122ReobcnkAtX3JdQaMCfYD5aOdqxt
+         tn+DosTSrlI2W7nHzvKH80PUuO8b+5SkBOGl5wnksLRPsgqEabF4Av2vkPbXeq3JMdeG
+         eIQOPCkjUT8qbpJfBNSVZy8OPEftyNcMBoyeTW0qUaTDRVCuKcfC6PmVliubGi7YiuEn
+         oLehjjga+IdY0b9Zznh0Zne8SGdgDPw49DXo88qGqGf8udnQqu/8tCdT/tybaYzf9BDb
+         +Hyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=V3KiU206SAU31NUfwpS2+BkRGT20ITYrNtM1Dgg2dPQ=;
-        b=t4ziafhfTAN9/+a0WfvKLY6LYFOdVGVEWGnHbzedNAg7bhzF9fL1LYGcJfpZh9PP9s
-         Xoci7B7olAdLQB6zjdj3uQGw75IFH2KIO9yJYvjSDq5UP25osY3XA+VmXuIn8eqqDaAo
-         HaDjmNfVtOsZUUYNQKGNpU5jUA//72l0pTcSFNLCBQ3EZ8pM9skoU7ejddNIeLhwMdCk
-         Jq5t9A/fRzZz+6HJg6uynOgiRmcJkBadfkS3koxPBYTE9gXogFqFB5FVYL4jQzERX9Xl
-         x3bosqjtWZAj8CNEk4wnDvOU4g5pOJEm+GiHNcE43jVEgax8ALf6a4QCmdKB8HHPURMW
-         fTjQ==
-X-Gm-Message-State: AOAM5332ANH1JWdP9lYv/rGDpz+KSfd3qu88vdOWOHyXecB7EtXrro3g
-        a9EUBSgc4Kfi0kBfhDngufQ=
-X-Google-Smtp-Source: ABdhPJwg3ZOGkOv7nfE4Q1CFcC2U67ylJHTUMHUX7NHf7xKUz3nmHuxjhKWOUj9v1S9QjSEYhiHxYg==
-X-Received: by 2002:adf:c00d:: with SMTP id z13mr5966699wre.299.1635430794430;
-        Thu, 28 Oct 2021 07:19:54 -0700 (PDT)
+        bh=gyvzNad0Xx5R9v5YeX/jyfVB5cjv8pWIdrWsMdtOKeU=;
+        b=uKmE56sBLmCbPanrcI28ZdzCR1wLSWs6N66Lyefu5dyxhtgXdFzUQIJd9/W+KMai7G
+         FASloih4ChOpd7V5rJ0RlScQTIUHVZDzuqBGT5hSLWTXOf3qUe755xKp9LmVMVyxGDgs
+         BKEAZRxuFbJUScoO+6VmNem+1+06xPdru7mBHj8EHwOVp5HMjnL8KnmbAT58w19D+zAH
+         oKHxKo+m2f5OwMWrnBIvNSIIoZijM9AsV+wyp93f+PiT9kXEZdj1XruArjQrKF4z+zwn
+         vBQVHEzJUIPjC2xTz9q/r6t0MRNccZYVrf9J1WEu5zhkIl+Zi/P8qOkwXjwt2VD+LM+O
+         E7Ow==
+X-Gm-Message-State: AOAM5302zck/O9zVSnCgOG5bhCbQUhWHg0x46p33J4OfiIQour2zMXM8
+        YHbFIEVuDeIF3HT4yxtDNwg=
+X-Google-Smtp-Source: ABdhPJyezFwmqtsLn5aBEOCfGdfBxksRSaz4BYGyosYiXwUImog8O0a6Qn+fFMD6OKMmrx4b80PO/Q==
+X-Received: by 2002:adf:cc8d:: with SMTP id p13mr1609524wrj.274.1635430796683;
+        Thu, 28 Oct 2021 07:19:56 -0700 (PDT)
 Received: from localhost.localdomain (i5C74E249.versanet.de. [92.116.226.73])
-        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.19.53
+        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.19.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:19:54 -0700 (PDT)
+        Thu, 28 Oct 2021 07:19:56 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -70,9 +70,9 @@ To:     Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 01/13] arm: debug: remove obsolete debug code for DEBUG_ZTE_ZX
-Date:   Thu, 28 Oct 2021 16:19:26 +0200
-Message-Id: <20211028141938.3530-2-lukas.bulwahn@gmail.com>
+Subject: [PATCH 02/13] arm: debug: reuse the config DEBUG_OMAP2UART{1,2} for OMAP{3,4,5}
+Date:   Thu, 28 Oct 2021 16:19:27 +0200
+Message-Id: <20211028141938.3530-3-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
 References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
@@ -82,40 +82,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 89d4f98ae90d ("ARM: remove zte zx platform") removes the config
-DEBUG_ZTE_ZX. Hence, since then, the "ifdef CONFIG_DEBUG_ZTE_ZX" in
-./arch/arm/include/debug/pl01x.S is dead code.
+Commit d2b310b0234c ("ARM: debug: Use generic 8250 debug_ll for omap2 and
+omap3/4/5 common uarts") adds address definitions of DEBUG_UART_PHYS for
+OMAP2, OMAP3, OMAP4 and OMAP5 in ./arch/arm/Kconfig.debug.
 
-Fortunately, ./scripts/checkkconfigsymbols.py detects this and warns:
-
-DEBUG_ZTE_ZX
-Referencing files: arch/arm/include/debug/pl01x.S
-
-So, remove the obsolete ifdef CONFIG_DEBUG_ZTE_ZX.
+These definitions depend on DEBUG_OMAP{2,3,4,5}UART{1,2}; however, only
+DEBUG_OMAP2UART{1,2} are defined in ./arch/arm/Kconfig.debug, and
+DEBUG_OMAP{3,4,5}UART{1,2} are not defined. Hence, the script
+./scripts/checkkconfigsymbols.py warns here on non-existing symbols.
+Simply reuse the config DEBUG_OMAP2UART{1,2}; there is no need to define
+separate config symbols for OMAP{3,4,5}. So, just delete the dead
+references to DEBUG_OMAP{3,4,5}UART{1,2}.
 
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/arm/include/debug/pl01x.S | 7 -------
- 1 file changed, 7 deletions(-)
+ arch/arm/Kconfig.debug | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/include/debug/pl01x.S b/arch/arm/include/debug/pl01x.S
-index 0c7bfa4c10db..c7e02d0628bf 100644
---- a/arch/arm/include/debug/pl01x.S
-+++ b/arch/arm/include/debug/pl01x.S
-@@ -8,13 +8,6 @@
- */
- #include <linux/amba/serial.h>
- 
--#ifdef CONFIG_DEBUG_ZTE_ZX
--#undef UART01x_DR
--#undef UART01x_FR
--#define UART01x_DR     0x04
--#define UART01x_FR     0x14
--#endif
--
- #ifdef CONFIG_DEBUG_UART_PHYS
- 		.macro	addruart, rp, rv, tmp
- 		ldr	\rp, =CONFIG_DEBUG_UART_PHYS
+diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
+index 98436702e0c7..83484564b1d9 100644
+--- a/arch/arm/Kconfig.debug
++++ b/arch/arm/Kconfig.debug
+@@ -1643,10 +1643,8 @@ config DEBUG_UART_PHYS
+ 	default 0x48020000 if DEBUG_OMAP4UART3 || DEBUG_TI81XXUART1
+ 	default 0x48022000 if DEBUG_TI81XXUART2
+ 	default 0x48024000 if DEBUG_TI81XXUART3
+-	default 0x4806a000 if DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || \
+-				DEBUG_OMAP4UART1 || DEBUG_OMAP5UART1
+-	default 0x4806c000 if DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || \
+-				DEBUG_OMAP4UART2 || DEBUG_OMAP5UART2
++	default 0x4806a000 if DEBUG_OMAP2UART1
++	default 0x4806c000 if DEBUG_OMAP2UART2
+ 	default 0x4806e000 if DEBUG_OMAP2UART3 || DEBUG_OMAP4UART4
+ 	default 0x49020000 if DEBUG_OMAP3UART3
+ 	default 0x49042000 if DEBUG_OMAP3UART4
+@@ -1782,10 +1780,8 @@ config DEBUG_UART_VIRT
+ 	default 0xfa020000 if DEBUG_OMAP4UART3 || DEBUG_TI81XXUART1
+ 	default 0xfa022000 if DEBUG_TI81XXUART2
+ 	default 0xfa024000 if DEBUG_TI81XXUART3
+-	default 0xfa06a000 if DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || \
+-				DEBUG_OMAP4UART1 || DEBUG_OMAP5UART1
+-	default 0xfa06c000 if DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || \
+-				DEBUG_OMAP4UART2 || DEBUG_OMAP5UART2
++	default 0xfa06a000 if DEBUG_OMAP2UART1
++	default 0xfa06c000 if DEBUG_OMAP2UART2
+ 	default 0xfa06e000 if DEBUG_OMAP2UART3 || DEBUG_OMAP4UART4
+ 	default 0xfa71e000 if DEBUG_QCOM_UARTDM
+ 	default 0xfb002000 if DEBUG_CNS3XXX
 -- 
 2.26.2
 
