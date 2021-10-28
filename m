@@ -2,165 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBE743F1CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F93643F1D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhJ1VfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        id S231361AbhJ1VhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhJ1VfJ (ORCPT
+        with ESMTP id S230476AbhJ1VhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:35:09 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229FEC061227;
-        Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id l2so13056363lji.6;
-        Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
+        Thu, 28 Oct 2021 17:37:11 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942DCC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:34:43 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id z8-20020a0cd788000000b00384d92a0f11so6106442qvi.17
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:34:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
-        b=USVIOuLFNftY9TSlAv8GQB7acWI1sWWXinRBTyt58drm2RaLh5La11nG4ixMTMewfR
-         mX32BgQ2N30EhppM8q0HGzyhqJFMUCJMnblCfs4t5KonQ44KE0wlYv2W8rFYqs4V2koj
-         XX371v1ONZUx01vnBeB6kBqd5XtkGxjVTj1e6iP0L3n7qnRFNsZrpRBj/O9TAqf3J13f
-         DVFT1FMABW5ltJOUpFKPkQHX+APbXjkM1X+NMw4LCmok7h64fUY8hoIatZpEbYmauo9R
-         3tzIe6iUnZRzMnNPnMBZ+KjZo2BGgmZ8KUvvaXZMV9Llm3C259zfQ4YRn+8CQPkkCOFN
-         RJzA==
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=OQDQ2f8asb/XV/7FhL+X/OcXI4SOd7uK2NuQ9jXG82g=;
+        b=V15hpHIJKFlrONA4ck3gnpQxOMBmxXpg8zWdnO3bKmdnKpgyrKIHj1W414KzxnSJPO
+         0lm+gU7kc+/Di9iP1OoXUonyfWvhs5GwiJGUtRn93f6xrDmVs8lcP5qvjcUk3V4F/z6j
+         fqQNwFDljf0DCDeSXgXMrv2jWuATPlzNDOGL25BBCHbaeXuoqzbiqWPBGREC7HDOcnC5
+         seRzrXPCxC2nTg7t6nxjGZFIPIrzA/qp8MEckWw1qdVRR4L1SGj+cTgRfATNN3SlEBd5
+         ckK+PwMG+K55cFtpIJctHVt+M7ZoM8viL/34Iz6ILxmZo4DQQ4qooLpiv2O8f8c1c2Ke
+         Kr3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
-        b=x1/SikoFEcrTbmPz93P/kN5wRqho0t39OVDAJv+OHPpejl3BDkhaQa+Q9zEimY+lTG
-         pkmzIEiDMujGUPeupqDWi3XMPXC96Px1Jxizh+kdbxxNsUO7bOtSnkm7FzjaSeDbR7tF
-         al46WibVXIEkI5bzTADQl/TbhehmBadMq/7qTE0YlWDMUetLZYpVygysz6pjV4tE1iIs
-         H2Vra42snnaOazZwAVdNz84+0KUKOu/7i+LOsK2rmMd1q04WGPxoXq66L7XX3/eWxPdu
-         OXFkwYpBBn8m8whifSIt3NH8bLkW+cFeJQJIABshOqUEDc3smi2IznpVKm0USjFTNCzs
-         RRww==
-X-Gm-Message-State: AOAM532nyuVTlKEcTJTTLcJNf+3yw3C5RkKuj29rxy1FGshrRdwapLvb
-        Zf8n43psf8yToj5DIHTaLofjTTmfMmI=
-X-Google-Smtp-Source: ABdhPJwcWGds1J/UVngHunSwfN7ztb9W9OVxlAX827dktWLGe1JrS01AY9nWnDg96vqg3wWMmL+l6Q==
-X-Received: by 2002:a2e:9b0e:: with SMTP id u14mr7220400lji.247.1635456760396;
-        Thu, 28 Oct 2021 14:32:40 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.googlemail.com with ESMTPSA id bi14sm474384lfb.290.2021.10.28.14.32.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 14:32:39 -0700 (PDT)
-Subject: Re: [PATCH v2 03/45] notifier: Add
- atomic/blocking_notifier_has_unique_priority()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-4-digetx@gmail.com>
- <YXqCz/utp2DFJJ45@smile.fi.intel.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
-Date:   Fri, 29 Oct 2021 00:32:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <YXqCz/utp2DFJJ45@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=OQDQ2f8asb/XV/7FhL+X/OcXI4SOd7uK2NuQ9jXG82g=;
+        b=l92tKA572/KRBux5+I12gz39V25rE7ij40bROEPDX1ZBRriRTQa+I0MWDAQ7kDwJRT
+         8Moa3lVS2YGmzseWu3LkbshXMr+QcdbzJ42Kj03qjjHpMrB2jqHweSe0Qym+Mt5Gzrqk
+         kZxQpQr5WA4iQyMORcH8gyylJqVjgeJnFU1DMHvUQedLY7vuFVRou6+s2h2GCyykf+b1
+         Sl7jzQP+CkzYzJs4/mYJy7Vii25wM8doFMLjZa2NSZ3ahihJWv7+Mqp0mf67tejdc11y
+         3FcIJd+al9Z344DGGWG9z9VtJbNprZ++VQZMIWEBASuQ0QKdSzLDH4UiquAj/1REVpK2
+         5eUA==
+X-Gm-Message-State: AOAM530Fuwhv5yCxv3WpCpLgsj31SrtrSf3B+W0D9QAZJwUYpQ8Y81oR
+        ZtdhPvk1SMf/BbgnPgZWS/BgA1x/qwc=
+X-Google-Smtp-Source: ABdhPJx/zJIBQjlkciiZyjU08oE/ufcsTYPRGQljhVBj9crj3Qsd0W2Wk/AaJbFCQkKyQ6KV6eihUIdUUec=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:cbc8:1a0d:eab9:2274])
+ (user=seanjc job=sendgmr) by 2002:a05:622a:1441:: with SMTP id
+ v1mr7554345qtx.45.1635456882657; Thu, 28 Oct 2021 14:34:42 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 28 Oct 2021 14:34:08 -0700
+Message-Id: <20211028213408.2883933-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH] KVM: x86: Shove vp_bitmap handling down into sparse_set_to_vcpu_mask()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ajay Garg <ajaygargnsit@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-28.10.2021 14:00, Andy Shevchenko пишет:
-> On Thu, Oct 28, 2021 at 12:16:33AM +0300, Dmitry Osipenko wrote:
->> Add atomic/blocking_notifier_has_unique_priority() helpers which return
->> true if given handler has unique priority.
-> 
-> ...
-> 
->> +/**
->> + *	atomic_notifier_has_unique_priority - Checks whether notifier's priority is unique
->> + *	@nh: Pointer to head of the atomic notifier chain
->> + *	@n: Entry in notifier chain to check
->> + *
->> + *	Checks whether there is another notifier in the chain with the same priority.
->> + *	Must be called in process context.
->> + *
->> + *	Returns true if priority is unique, false otherwise.
-> 
-> Why this indentation?
+Move the vp_bitmap "allocation" that's need to handle mismatched vp_index
+values down into sparse_set_to_vcpu_mask() and drop __always_inline from
+said helper.  The vp_bitmap mess is a detail that's specific to the sparse
+translation and does not need to be exposed to the caller.
 
-This is the same doc-comment style used by this file in general. I
-haven't tried to invent anything new.
+The underlying motivation is to fudge around a compilation warning/error
+when CONFIG_KASAN_STACK=y, which is selected (and can't be unselected) by
+CONFIG_KASAN=y when compiling with gcc (clang/LLVM is a stack hog in some
+cases so it's opt-in for clang).  KASAN_STACK adds a redzone around every
+stack variable, which pushes the Hyper-V functions over the default limit
+of 1024.  With CONFIG_KVM_WERROR=y, this breaks the build.  Shuffling which
+function is charged with vp_bitmap gets all functions below the default
+limit.
 
+Regarding the __always_inline, prior to commit f21dd494506a ("KVM: x86:
+hyperv: optimize sparse VP set processing") the helper, then named
+hv_vcpu_in_sparse_set(), was a tiny bit of code that effectively boiled
+down to a handful of bit ops.  The __always_inline was understandable, if
+not justifiable.  Since the aforementioned change, sparse_set_to_vcpu_mask()
+is a chunky 350-450+ bytes of code without KASAN=y, and balloons to 1100+
+with KASAN=y.  In other words, it has no business being forcefully inlined.
 
-> ...
-> 
->> +	/*
->> +	 * This code gets used during boot-up, when task switching is
->> +	 * not yet working and interrupts must remain disabled.  At
-> 
-> One space is enough.
+Reported-by: Ajay Garg <ajaygargnsit@gmail.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
-This comment is replicated multiple times over this source file. You can
-find it before each down_write(). I borrowed the text as-is, for
-consistency.
+Vitaly (and anyone with extensive KVM + Hyper-V knowledge), it would be
+really helpful to get better coverage in kvm-unit-tests.  There's a smoke
+test for this in selftests, but it's not really all that interesting.  It
+took me over an hour and a half just to get a Linux guest to hit the
+relevant flows.  Most of that was due to QEMU 5.1 bugs (doesn't advertise
+HYPERCALL MSR by default) and Linux guest stupidity (silently disables
+itself if said MSR isn't available), but it was really annoying to have to
+go digging through QEMU to figure out how to even enable features that are
+extensive/critical enough to warrant their own tests.
+
+/wave to the clang folks for the pattern patch on the changelog ;-)
+
+ arch/x86/kvm/hyperv.c | 55 ++++++++++++++++++++++---------------------
+ 1 file changed, 28 insertions(+), 27 deletions(-)
+
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index 4f15c0165c05..80018cfab5c7 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -1710,31 +1710,36 @@ int kvm_hv_get_msr_common(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata, bool host)
+ 		return kvm_hv_get_msr(vcpu, msr, pdata, host);
+ }
+ 
+-static __always_inline unsigned long *sparse_set_to_vcpu_mask(
+-	struct kvm *kvm, u64 *sparse_banks, u64 valid_bank_mask,
+-	u64 *vp_bitmap, unsigned long *vcpu_bitmap)
++static void sparse_set_to_vcpu_mask(struct kvm *kvm, u64 *sparse_banks,
++				    u64 valid_bank_mask, unsigned long *vcpu_mask)
+ {
+ 	struct kvm_hv *hv = to_kvm_hv(kvm);
++	bool has_mismatch = atomic_read(&hv->num_mismatched_vp_indexes);
++	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
+ 	struct kvm_vcpu *vcpu;
+ 	int i, bank, sbank = 0;
++	u64 *bitmap;
+ 
+-	memset(vp_bitmap, 0,
+-	       KVM_HV_MAX_SPARSE_VCPU_SET_BITS * sizeof(*vp_bitmap));
++	BUILD_BUG_ON(sizeof(vp_bitmap) >
++		     sizeof(*vcpu_mask) * BITS_TO_LONGS(KVM_MAX_VCPUS));
++
++	/* If vp_index == vcpu_idx for all vCPUs, fill vcpu_mask directly. */
++	if (likely(!has_mismatch))
++		bitmap = (u64 *)vcpu_mask;
++
++	memset(bitmap, 0, sizeof(vp_bitmap));
+ 	for_each_set_bit(bank, (unsigned long *)&valid_bank_mask,
+ 			 KVM_HV_MAX_SPARSE_VCPU_SET_BITS)
+-		vp_bitmap[bank] = sparse_banks[sbank++];
++		bitmap[bank] = sparse_banks[sbank++];
+ 
+-	if (likely(!atomic_read(&hv->num_mismatched_vp_indexes))) {
+-		/* for all vcpus vp_index == vcpu_idx */
+-		return (unsigned long *)vp_bitmap;
+-	}
++	if (likely(!has_mismatch))
++		return;
+ 
+-	bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
++	bitmap_zero(vcpu_mask, KVM_MAX_VCPUS);
+ 	kvm_for_each_vcpu(i, vcpu, kvm) {
+ 		if (test_bit(kvm_hv_get_vpindex(vcpu), (unsigned long *)vp_bitmap))
+-			__set_bit(i, vcpu_bitmap);
++			__set_bit(i, vcpu_mask);
+ 	}
+-	return vcpu_bitmap;
+ }
+ 
+ struct kvm_hv_hcall {
+@@ -1756,9 +1761,7 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 	struct kvm *kvm = vcpu->kvm;
+ 	struct hv_tlb_flush_ex flush_ex;
+ 	struct hv_tlb_flush flush;
+-	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
+-	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
+-	unsigned long *vcpu_mask;
++	DECLARE_BITMAP(vcpu_mask, KVM_MAX_VCPUS);
+ 	u64 valid_bank_mask;
+ 	u64 sparse_banks[64];
+ 	int sparse_banks_len;
+@@ -1842,11 +1845,9 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 	if (all_cpus) {
+ 		kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH_GUEST);
+ 	} else {
+-		vcpu_mask = sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask,
+-						    vp_bitmap, vcpu_bitmap);
++		sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask, vcpu_mask);
+ 
+-		kvm_make_vcpus_request_mask(kvm, KVM_REQ_TLB_FLUSH_GUEST,
+-					    vcpu_mask);
++		kvm_make_vcpus_request_mask(kvm, KVM_REQ_TLB_FLUSH_GUEST, vcpu_mask);
+ 	}
+ 
+ ret_success:
+@@ -1879,9 +1880,7 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 	struct kvm *kvm = vcpu->kvm;
+ 	struct hv_send_ipi_ex send_ipi_ex;
+ 	struct hv_send_ipi send_ipi;
+-	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
+-	DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
+-	unsigned long *vcpu_mask;
++	DECLARE_BITMAP(vcpu_mask, KVM_MAX_VCPUS);
+ 	unsigned long valid_bank_mask;
+ 	u64 sparse_banks[64];
+ 	int sparse_banks_len;
+@@ -1937,11 +1936,13 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+ 	if ((vector < HV_IPI_LOW_VECTOR) || (vector > HV_IPI_HIGH_VECTOR))
+ 		return HV_STATUS_INVALID_HYPERCALL_INPUT;
+ 
+-	vcpu_mask = all_cpus ? NULL :
+-		sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask,
+-					vp_bitmap, vcpu_bitmap);
++	if (all_cpus) {
++		kvm_send_ipi_to_many(kvm, vector, NULL);
++	} else {
++		sparse_set_to_vcpu_mask(kvm, sparse_banks, valid_bank_mask, vcpu_mask);
+ 
+-	kvm_send_ipi_to_many(kvm, vector, vcpu_mask);
++		kvm_send_ipi_to_many(kvm, vector, vcpu_mask);
++	}
+ 
+ ret_success:
+ 	return HV_STATUS_SUCCESS;
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
