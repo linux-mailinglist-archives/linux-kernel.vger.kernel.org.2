@@ -2,210 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1937D43D7FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DA743D803
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbhJ1ATX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:19:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhJ1ATU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:19:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BCDA610C7;
-        Thu, 28 Oct 2021 00:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635380214;
-        bh=o3QNQPCGtLKxio4JdnP5c0qPU1uXVN1lOeUtBKwrKa0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ehyokWs3NR24/zviJ7+zl5rcrr0KIGv6xoSZj2aGzkQ1oBRKXbxyraDWGUZdl6wBF
-         1y/yNySsktg81AjBBYMFot7OZoGQdIZdJFEi4ZSctg4YovqtywBW1W+HHkA9yiefPr
-         0i5j3VEPQ/XzC6Zf5unpRCerUQqS0FT78pYk1oXY6kOZNFCAN0aAf2aRPJ6cj4VxbJ
-         CkQDZWYHhUPkJau9ILCRfNdFYoUemQC543ikDqP0ZwJhnIFY+BYcEF95UvZp30sclx
-         66u5flYpYKrgz9b3c4sajQNALvdlU1s6oleTp1NzQ9/GvQQ5sg9j16uGpfhlDU6H5n
-         pmT2Kme2jxqOg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B2CC5410A1; Wed, 27 Oct 2021 21:16:51 -0300 (-03)
-Date:   Wed, 27 Oct 2021 21:16:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Madhavan Srinivasan <maddy@linux.ibm.com>
-Cc:     jolsa@redhat.com, michael@ellerman.id.au, eranian@google.com,
-        mark.rutland@arm.com, namhyung@kernel.org, kjain@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] tools/perf: Add bitfield_swap to handle
- branch_stack endian issue
-Message-ID: <YXnr8xpltsVZPATC@kernel.org>
-References: <20211016125059.691856-1-maddy@linux.ibm.com>
+        id S229603AbhJ1AWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhJ1AWG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 20:22:06 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585DCC061767
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:19:40 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so6501237pji.5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=8hL4Jqifd0AqJfsoeSiVVrM/htd90YTwh+/QL+wMYOE=;
+        b=F93KwyeuhwvUblxbiN9AHnABBpT0SDhBsNATgF0SFWLYQh0yWU+DzXWq3Eh2uh1J6q
+         cDLS3PdXCm6xTEC17TeUvlICdZfwr7SIwrnt4V0pU8zxnDNhLKinTJ4f3wBHCapA3vSe
+         fceA05q1SxC9iRkyNndPWsogerSrgjHEMvm6Klz9fWnyEFnDgbZXF0bFXIwH/QlVsmlH
+         hEjcqPE23JgTkD7Bi7s6hWbT3PRJaCOtGoY5lwRf3EDIMO2lhOQ1j+j3I6ZIySd3QrTb
+         wB8VQLFuJ0LuU0mtF2CSZ2oGp9UIcbO74beajkkClPZj4cbh6ft7ysTrnwtDeM0TUgmM
+         +6mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=8hL4Jqifd0AqJfsoeSiVVrM/htd90YTwh+/QL+wMYOE=;
+        b=4SL9JvqRKE7UYZZU1zWycpTk7HhVm4z0r8f6YPgSJ3HaAn83v24hdaFHxt67y9kt0E
+         j9o2YTPApRWGwLno3vkR+vruySinVmouYF8rTy6C6nkkQN/X7kYGPB0O2I3mCQYjWDmG
+         A2KBgu4GVfI1WJ08GMpY1Xgo10aoI1nSsgHZ9lcE1/OzFDaE/TbfCfadQvJ1cIChuszC
+         jjZK4PBVCUwCoIj0Uj8ToFHQewF5aQgsBcOh7R9wmUYF2kuY8KqBAkUrNygywCiBik+7
+         qZElpdKNXc3ecKOMZ1hYunnZSE3DUdMdZMe5NNOt/W/hPmwv996BzDqNKUJ0XJHqqN6v
+         fMHA==
+X-Gm-Message-State: AOAM533pUzNi/moHKJ6vq4bQ+YuzVNnPNYz95V1jiCSqFc/3v64u6MCU
+        U0EP21kYmq2x1JS+QF7gQhg0Vg==
+X-Google-Smtp-Source: ABdhPJyu9MyzsDbU0tdfRTLWP9RqAQHWwh9iBmH89gLRJ6pWDjBOMKJ5/XCIGCQAbXWNd6WAZE5ouw==
+X-Received: by 2002:a17:90a:f195:: with SMTP id bv21mr917394pjb.203.1635380379858;
+        Wed, 27 Oct 2021 17:19:39 -0700 (PDT)
+Received: from [192.168.254.36] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id d15sm1063545pfv.22.2021.10.27.17.19.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 17:19:38 -0700 (PDT)
+Message-ID: <5c3d9b0a-8c68-feec-74b6-59f2e29b1d11@linaro.org>
+Date:   Wed, 27 Oct 2021 17:19:30 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016125059.691856-1-maddy@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
+ <CALAqxLXjh9o925G9smW+uwWqKDarsvrBuzr+UL1CsQc4m7W+oQ@mail.gmail.com>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
+ enc/dec
+In-Reply-To: <CALAqxLXjh9o925G9smW+uwWqKDarsvrBuzr+UL1CsQc4m7W+oQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Oct 16, 2021 at 06:20:58PM +0530, Madhavan Srinivasan escreveu:
-> branch_stack struct has bit field definition which
-> produces different bit ordering for big/little endian.
-> Because of this, when branch_stack sample is collected
-> in a BE system and viewed/reported in a LE system, bit
-> fields of the branch stack are not presented properly.
-> To address this issue, a evsel__bitfield_swap_branch_stack()
-> is defined and introduced in evsel__parse_sample.
+Hi John,
+On 10/27/21 17:01, John Stultz wrote:
+>    Thanks so much for sending this out, I definitely would like to see
+> these crashes sorted!
 > 
-> Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-> ---
-> Changelog v1:
-> - Renamed function and macro
-> - Added comments in code
+> Unfortunately this patch causes some odd behavior when I use it with a
+> modular config.  The display does not start up and trying to reboot
+> the board ends up with it hanging instead of rebooting.
+> 
+> And booting with this patch in my non-modular config, it just seems to
+> get stuck during bootup (I suspect waiting on firmware that's not yet
+> mounted?).
+> 
 
-[acme@quaco perf]$ perf test python
-19: 'import perf' in python                                         : FAILED!
-[acme@quaco perf]$ perf test -v python
-Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-19: 'import perf' in python                                         :
---- start ---
-test child forked, pid 991284
-python usage test: "echo "import sys ; sys.path.append('/tmp/build/perf/python'); import perf" | '/usr/bin/python3' "
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-ImportError: /tmp/build/perf/python/perf.cpython-39-x86_64-linux-gnu.so: undefined symbol: bigendian
-test child finished with -1
----- end ----
-'import perf' in python: FAILED!
-[acme@quaco perf]$
- 
->  tools/perf/util/evsel.c | 74 +++++++++++++++++++++++++++++++++++++++--
->  tools/perf/util/evsel.h | 13 ++++++++
->  2 files changed, 85 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index dbfeceb2546c..746e642d4d32 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2221,6 +2221,51 @@ void __weak arch_perf_parse_sample_weight(struct perf_sample *data,
->  	data->weight = *array;
->  }
->  
-> +u64 evsel__bitfield_swap_branch_flags(u64 value)
-> +{
-> +	u64 new_val = 0;
-> +
-> +	/*
-> +	 * branch_flags
-> +	 * union {
-> +	 * 	u64 values;
-> +	 * 	struct {
-> +	 * 		mispred:1	//target mispredicted
-> +	 * 		predicted:1	//target predicted
-> +	 * 		in_tx:1		//in transaction
-> +	 * 		abort:1		//transaction abort
-> +	 * 		cycles:16	//cycle count to last branch
-> +	 * 		type:4		//branch type
-> +	 * 		reserved:40
-> +	 * 	}
-> +	 * }
-> +	 *
-> +	 * Avoid bswap64() the entire branch_flag.value,
-> +	 * as it has variable bit-field sizes. Instead the
-> +	 * macro takes the bit-field position/size,
-> +	 * swaps it based on the host endianness.
-> +	 */
-> +	if (bigendian()) {
-> +		new_val = bitfield_swap(value, 0, 1);
-> +		new_val |= bitfield_swap(value, 1, 1);
-> +		new_val |= bitfield_swap(value, 2, 1);
-> +		new_val |= bitfield_swap(value, 3, 1);
-> +		new_val |= bitfield_swap(value, 4, 16);
-> +		new_val |= bitfield_swap(value, 20, 4);
-> +		new_val |= bitfield_swap(value, 24, 40);
-> +	} else {
-> +		new_val = bitfield_swap(value, 63, 1);
-> +		new_val |= bitfield_swap(value, 62, 1);
-> +		new_val |= bitfield_swap(value, 61, 1);
-> +		new_val |= bitfield_swap(value, 60, 1);
-> +		new_val |= bitfield_swap(value, 44, 16);
-> +		new_val |= bitfield_swap(value, 40, 4);
-> +		new_val |= bitfield_swap(value, 0, 40);
-> +	}
-> +
-> +	return new_val;
-> +}
-> +
->  int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  			struct perf_sample *data)
->  {
-> @@ -2408,6 +2453,8 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  	if (type & PERF_SAMPLE_BRANCH_STACK) {
->  		const u64 max_branch_nr = UINT64_MAX /
->  					  sizeof(struct branch_entry);
-> +		struct branch_entry *e;
-> +		unsigned int i;
->  
->  		OVERFLOW_CHECK_u64(array);
->  		data->branch_stack = (struct branch_stack *)array++;
-> @@ -2416,10 +2463,33 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  			return -EFAULT;
->  
->  		sz = data->branch_stack->nr * sizeof(struct branch_entry);
-> -		if (evsel__has_branch_hw_idx(evsel))
-> +		if (evsel__has_branch_hw_idx(evsel)) {
->  			sz += sizeof(u64);
-> -		else
-> +			e = &data->branch_stack->entries[0];
-> +		} else {
->  			data->no_hw_idx = true;
-> +			/*
-> +			 * if the PERF_SAMPLE_BRANCH_HW_INDEX is not applied,
-> +			 * only nr and entries[] will be output by kernel.
-> +			 */
-> +			e = (struct branch_entry *)&data->branch_stack->hw_idx;
-> +		}
-> +
-> +		if (swapped) {
-> +			/*
-> +			 * struct branch_flag does not have endian
-> +			 * specific bit field definition. And bswap
-> +			 * will not resolve the issue, since these
-> +			 * are bit fields.
-> +			 *
-> +			 * evsel__bitfield_swap_branch_flags() uses a
-> +			 * bitfield_swap macro to swap the bit position
-> +			 * based on the host endians.
-> +			 */
-> +			for (i = 0; i < data->branch_stack->nr; i++, e++)
-> +				e->flags.value = evsel__bitfield_swap_branch_flags(e->flags.value);
-> +		}
-> +
->  		OVERFLOW_CHECK(array, sz, max_size);
->  		array = (void *)array + sz;
->  	}
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 1f7edfa8568a..2e82cdbe2c08 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -482,4 +482,17 @@ struct evsel *evsel__leader(struct evsel *evsel);
->  bool evsel__has_leader(struct evsel *evsel, struct evsel *leader);
->  bool evsel__is_leader(struct evsel *evsel);
->  void evsel__set_leader(struct evsel *evsel, struct evsel *leader);
-> +
-> +/*
-> + * Macro to swap the bit-field postition and size.
-> + * Used when,
-> + * - dont need to swap the entire u64 &&
-> + * - when u64 has variable bit-field sizes &&
-> + * - when presented in a host endian which is different
-> + *   than the source endian of the perf.data file
-> + */
-> +#define bitfield_swap(src, pos, size)	\
-> +	((((src) >> (pos)) & ((1ull << (size)) - 1)) << (63 - ((pos) + (size) - 1)))
-> +
-> +u64 evsel__bitfield_swap_branch_flags(u64 value);
->  #endif /* __PERF_EVSEL_H */
-> -- 
-> 2.31.1
+Thanks for trying the patch. With this patch I was able to boot android13
+running 5.15.0-rc4-mainlineon on my Dragonboard 845c with the default
+config common/build.config.db845c. Without it it was crashing.
+It doesn't solve the firmware loading problem, it just makes it fail
+gracefully for the boot to continue. If you share your config I can try
+it and see what's wrong.
 
 -- 
-
-- Arnaldo
+Thanks,
+Tadeusz
