@@ -2,56 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399CF43F288
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1017043F28A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhJ1WQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:16:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231298AbhJ1WQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:16:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2130060F21;
-        Thu, 28 Oct 2021 22:14:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635459262;
-        bh=onadzWfgLPpUpBKJ+JVyWY31TdkFRWw0WyEa4lKUYHo=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ChNm3uj0va7YpJ+4sXPHWIpStZL+YY/LMoo0++38qFkpMlSHlaQbeWPdURsgKcbyM
-         kEGA6oXlIJH2a5M+zbW276pSfCZMgn7/wxU28HJ0LIe5NL1SKRtTvoK4jm9r+gUaEn
-         FhShOvaSRuvOY2x9yb4cXTiZhwbyF0CEhPyDRn0IAdkzHrR7Zmr7754tQex7h1H8yT
-         G2srvfWcCJdGJq3HeUaHs6QVTG1nbK3SRvlYD6t8yQGfgND0qROImMxs50zEQVuQ4M
-         ub6A2sQ1rIKMH7vCFag7gdbH5d3Gm0F8M5wa2KpeIys9dZPJ4x3zlCH0TWP1v3olkL
-         npRhVja4/7y5g==
-Content-Type: text/plain; charset="utf-8"
+        id S231455AbhJ1WSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231124AbhJ1WSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 18:18:02 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14728C061570;
+        Thu, 28 Oct 2021 15:15:35 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id g17so7284802qtk.8;
+        Thu, 28 Oct 2021 15:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CE76jWMeyxCY5I/qaaAbgmKw1EMykfKV4BEuJDaHL6g=;
+        b=bC5SbaUerEviaszA0wT3TsZ+ctvQ/QnSXU7T7i7Fy6GxjbipoH+8sKTQiCIJfzRUSs
+         ovm57fVyR0Cxx+fiJP1BuUI/ZaqfOCMANrxpU9SYDCxLRI5tmCJTltM2I/sGr2/Q4ZC4
+         OK/KF/Ynq17jKFTkQWmmnSX5aW/JbZfmyYOIkn7ByKOju2mAb4iMZkEhe05yhUS9h/GQ
+         cTLiXhEevJw8JsJxvA1tEfsVxMY/XQqddtwKcOvDn9F8USO6FAVFlday3CS6fXnTYFIK
+         fNYN1JjbWPnZfqKsVhiu465bq9SDnAQvZqf141HWdEvURrdf3PdfVr0oatCtxJ+GOUdX
+         Ushg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CE76jWMeyxCY5I/qaaAbgmKw1EMykfKV4BEuJDaHL6g=;
+        b=dYyzQn2o5/aQ3Q3uHsCVaMSKBkJwLow8qzqqZsxHYsZlEnYzqiSDAagYZni6qBg64B
+         fHMcUPJeHI5h7D23INAliVXE0ALu1SQbu+NJtJtcK4An9mlTTVEpoEsUx9B7yHvXYNnF
+         n+1yK9MyTycsP2WJbKqaZJRyS2R5TZ/4f1lL9karTkHo8KaOQ6bKmhBpx6ph4K4AywlK
+         1wQD19fFY7P/ecTEjcxf3SDfPjWUwotuokVUREv4ooAMu0kXLHT2wt2ZtsI+j4fkDX4B
+         LYhnOEUeLX0MIFwxKc0csaVjuDQ4378O5t8K6vYWHAn6Lfk7J1B1NKmAxTb04qEeRScN
+         8M5w==
+X-Gm-Message-State: AOAM533Ysa/OgciufZaKQk1l3d7w1uj/Nyw/NA395R8n2X8T9HzgDeCM
+        lCQ6zcFGTf+pWKjPxUM8dvc=
+X-Google-Smtp-Source: ABdhPJwA0BfWj5EG71e6vKa95CPIt6z4r3DZerwPHgsjI9oACmExo0NEFIi6aqOQDyB1q5ZVRBIbYA==
+X-Received: by 2002:a05:622a:14:: with SMTP id x20mr7876016qtw.372.1635459334249;
+        Thu, 28 Oct 2021 15:15:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:e592])
+        by smtp.gmail.com with ESMTPSA id 10sm2958801qkv.37.2021.10.28.15.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 15:15:33 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Boris Burkov <boris@bur.io>,
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] cgroup: Fix rootcg cpu.stat guest double counting
+Date:   Thu, 28 Oct 2021 15:15:27 -0700
+Message-Id: <20211028221528.2174284-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1634812857-10676-4-git-send-email-okukatla@codeaurora.org>
-References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org> <1634812857-10676-4-git-send-email-okukatla@codeaurora.org>
-Subject: Re: [v8 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, okukatla@codeaurora.org,
-        seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, evgreen@google.com,
-        georgi.djakov@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 28 Oct 2021 15:14:20 -0700
-Message-ID: <163545926092.15791.695600896724921402@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Odelu Kukatla (2021-10-21 03:40:57)
-> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
-> SoCs.
->=20
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
-> ---
+In account_guest_time in kernel/sched/cputime.c guest time is
+attributed to both CPUTIME_NICE and CPUTIME_USER in addition to
+CPUTIME_GUEST_NICE and CPUTIME_GUEST respectively. Therefore, adding
+both to calculate usage results in double counting any guest time at
+the rootcg.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: 936f2a70f207 ("cgroup: add cpu.stat file to root cgroup")
+Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+---
+ kernel/cgroup/rstat.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index b264ab5652ba..1486768f2318 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -433,8 +433,6 @@ static void root_cgroup_cputime(struct task_cputime *cputime)
+ 		cputime->sum_exec_runtime += user;
+ 		cputime->sum_exec_runtime += sys;
+ 		cputime->sum_exec_runtime += cpustat[CPUTIME_STEAL];
+-		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST];
+-		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST_NICE];
+ 	}
+ }
+ 
+-- 
+2.30.2
+
