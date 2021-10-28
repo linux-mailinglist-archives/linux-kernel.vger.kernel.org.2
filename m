@@ -2,103 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4114143E3D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B64143E3D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhJ1OhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:37:16 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:48583 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230435AbhJ1OhO (ORCPT
+        id S231166AbhJ1Ohw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:37:52 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:55030
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230265AbhJ1Ohu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:37:14 -0400
-Received: (qmail 1352277 invoked by uid 1000); 28 Oct 2021 10:34:46 -0400
-Date:   Thu, 28 Oct 2021 10:34:46 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
-Cc:     paulmck@kernel.org, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, parri.andrea@gmail.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        elver@google.com, charalampos.mainas@gmail.com,
-        pramod.bhatotia@in.tum.de
-Subject: Re: Potentially Broken Address Dependency via test_bit() When
- Compiling With Clang
-Message-ID: <20211028143446.GA1351384@rowland.harvard.edu>
-References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
- <20211027142720.GB1319606@rowland.harvard.edu>
- <YXqZm6XTlMGDSpMT@Pauls-MacBook-Pro>
+        Thu, 28 Oct 2021 10:37:50 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9AC043F1A1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 14:35:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635431718;
+        bh=UfC6Za7EDXnJsTRiZd6ux4jhSdUioPONKZicpxuGsRs=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=fnhFYy4c4Bt+u5eRwAL/KMxO86pfdwSXA0Y/yBOF7lmvN8DTyKOPmaS7xsQTHpN+F
+         fvUkEuVMGpB2T6Mh0XY76zGK2WUBxp8VnJ9mm4KpX4a7aO+rFuU3IGMfg8CRfRhBY4
+         x/l7hCXDGFU1oV6WoqrsT1KUIiTKDeK4cA1JQ5QHT2hEmOyIuVHeK9ZghQk6tW4KUm
+         erH25E2x7CZCQ1bG/Zksa5kUFLdWtaNWRS4uOZq7JX9yVhbqLtmmRMlc/p+Un47VUm
+         Ha1utDBNfqKRyQtjs5Ow/AY1Fj7lHPng4IcERo7uRWmjwl8x/lXAd6CF6TFVytmVH1
+         clfVZqogfhTOw==
+Received: by mail-lj1-f197.google.com with SMTP id s17-20020a2e2c11000000b002119b8e1336so1703607ljs.23
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:35:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UfC6Za7EDXnJsTRiZd6ux4jhSdUioPONKZicpxuGsRs=;
+        b=IC2aU/UN07sFzMMx1p7hewWz6n5L2S1oF93ZosK7OK8wEgyf1Ky7v+8IkS2T9KsruQ
+         7x9NqkseT0ppS+i+TSaULg7VcpqJMje93U0HSqm4/4TuIKW/cBfOcYQigJGkRedeoV58
+         VRyCe0vfA1jsX4wqHM6wFbG+36X9GkBQ6oYwnKHC3kPB3UvI6CKaLTLiQ4LsiR9D68o8
+         n4rpqeTHweyJIEI8vGqyKL9FdykM2/iQGgfXPPiVNMu3K7485rTas+JvfBqbmN3KcYWT
+         ILSEagtONjZy6JAqh4xSt9yNdIKa919oAixQzFzC1G5HWvdIWfPNMpNSlZEOegB4G66D
+         Eg/g==
+X-Gm-Message-State: AOAM532pxEjzX/9L4hysbQxTpIUxOF/Mua8cn26LLeetz5RR+/5l7piK
+        9AMjU8X0sD1OEHwkuJ+XNTD0ydX/PUys0GYsSRxRA+tGd4ZOFE1buhU8MiuFZEOjSL1PhxTW+Dh
+        h2HPpPNm/alJcle0NfEU/xvDdTepPXrxKA5yH0GT85w==
+X-Received: by 2002:a2e:a5c4:: with SMTP id n4mr5077030ljp.72.1635431717486;
+        Thu, 28 Oct 2021 07:35:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOEC4wlvcyuWLOfhIzSL5cyZfWYsGZ42k2Uja8j5sZ/fOp+hWKTyEyakkGWhuywzdmU+vZXw==
+X-Received: by 2002:a2e:a5c4:: with SMTP id n4mr5077012ljp.72.1635431717324;
+        Thu, 28 Oct 2021 07:35:17 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id u7sm292697lju.103.2021.10.28.07.35.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 07:35:16 -0700 (PDT)
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <20211026115916.31553-1-semen.protsenko@linaro.org>
+ <8b3466f1-2b16-80ca-79c7-577860fc90aa@canonical.com>
+ <CAPLW+4=YizLzdiZ1mdCGxvPCTYhNjeiomO=q=4Xk-ZxqqH++nA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH] arm64: Kconfig: Enable MCT timer for ARCH_EXYNOS
+Message-ID: <e01b0072-008a-c83d-59b2-2174860c00fd@canonical.com>
+Date:   Thu, 28 Oct 2021 16:35:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <CAPLW+4=YizLzdiZ1mdCGxvPCTYhNjeiomO=q=4Xk-ZxqqH++nA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YXqZm6XTlMGDSpMT@Pauls-MacBook-Pro>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 02:37:47PM +0200, Paul Heidekrüger wrote:
-> On Wed, Oct 27, 2021 at 10:27:20AM -0400, Alan Stern wrote:
-> > On Wed, Oct 27, 2021 at 12:19:48PM +0200, Paul Heidekrüger wrote:
-
-> > > Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
-> > > 
-> > > > [...]
-> > > >   index = READ_ONCE(ac->alist->preferred);
-> > > >   if (test_bit(index, &set))
-> > > >     goto selected;
-> > > > [...]
-> > > 
-> > > where test_bit() expands to the following in 
-> > > include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
-> > > 
-> > > > static __always_inline int
-> > > > arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
-> > > > {
-> > > >   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-> > > > }
-> > > > #define test_bit arch_test_bit
-
-> > However, I can't follow the IR code.  Can you please explain in ordinary 
-> > English how the LLVM compiler manages to lose track of this dependency?
-> > 
-> > Alan Stern
+On 28/10/2021 16:22, Sam Protsenko wrote:
+> On Tue, 26 Oct 2021 at 17:03, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> On 26/10/2021 13:59, Sam Protsenko wrote:
+>>> Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
+>>> Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
+>>> is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
+>>> it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
+>>> for ARM64 Exynos SoCs.
+>>>
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>>  arch/arm64/Kconfig.platforms | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>
+>> +CC Marek, Marc, Mark and Chanwoo,
+>> Looks like duplicated:
+>> https://lore.kernel.org/lkml/20181018095708.1527-7-m.szyprowski@samsung.com/
+>>
+>> The topic stalled and I think this particular patch did not make sense
+>> on its own, without rest of changes from Marek. I am not sure, though...
+>>
 > 
-> Here's what we think might be going on:
-> - In 'arch_test_bit()', 'addr[BIT_WORD(nr)]' expands to 'addr[(nr) / 64]'.
-> - Since 'addr' points to an 'unsigned long', any other result than '0' for
->   '(nr) / 64' would be out of bounds and therefore undefined.
-> - We assume LLVM is able to figure this out and use it to get rid of the
->   address computation all together.
-
-Ah, that explains it.  Yes, when set is a single unsigned long (or an 
-array of length 1), the address dependency is only syntactic, not 
-semantic.  As a result, we should expect that compilers will sometimes 
-not preserve it.
-
-The danger, of course, is that people relying on an ordering prescribed 
-by the LKMM may get fooled because (unbeknownst to them) the dependency 
-in question is not semantic.  It would be great if a static checker 
-could detect such things -- but this would require some way for us to 
-inform the checker about when the code does rely on a dependency 
-ordering.
-
-> We ran some experiments to see how optimisations behave when 'set' is in fact
-> an array and / or in global scope.
+> Krzysztof, Marek,
 > 
-> 1. Insert a 'barrier()' in 'arch_test_bit()' before the 'return':
-> The dependency gets broken.
-> 
-> 2. Make 'set' an 'unsigned long' array of size '42', keep local scope: 
-> The dependency gets preserved.
-> 
-> 3. Keep 'set' as 'unsigend long', move to global scope: 
-> The dependency gets preserved.
+> That series looks nice, I'm quite interested in that being applied. Do
+> you think I can do something to help with that (e.g. rebasing,
+> re-sending on behalf of Marek, testing on Exynos850, etc)?
 
-That one's a little strange.  I don't see why the scope should make any 
-difference, so long as the compiler knows the actual type and length.
+I think there were no objections against v4 of this patchset, but
+somehow it wasn't applied.
 
-> 4. Make 'set' an 'unsigned long' array of size '42', move to global scope: 
-> The dependency gets preserved.
+Marek,
+Does it make sense to try respinning your v4?
 
-Alan
+Best regards,
+Krzysztof
