@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685C843E3EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E761443E3F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhJ1Okc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231299AbhJ1Ok3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:40:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D63360F9B;
-        Thu, 28 Oct 2021 14:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635431882;
-        bh=nb7hadX1IVa2oFNbJtHdb0jVHNwL2nVEwRk4XRPlPVI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=gDtAMnHadk+rxLKs7JSehz6T6fcbvujYbj1tMLbOy5ZV4NnBTLHUC/KRmArx8Unqm
-         Un/q7InN6qkDNf0WdZ+76tR+lnouF9cUzO5mzHF5p/E8r7syJWOvwuE9u6GZfpLxPq
-         u/Wh7bfsJdYGlznncVaOgqh1/l/adjD6GDzxwov1Tzv3VRYwSZeL0cGpRAY0fC9k9Q
-         bNn+lT5iDHTBqTbT1S2tzCo9lUmy4HzVMEhBVdpFicGllyZ5jKvz0MGDBrrbfhd7cK
-         4EzrkKE0yy+0SeHEp3/77oTvpWetYTFEFWbvsv2xrr69uh6UdCPjFIx3kktKuUxn6u
-         Tv5gD8bqq7STg==
-Message-ID: <d13f3f13eda6f9d73e0754db3238f27aaa7f2e85.camel@kernel.org>
-Subject: Re: [RFC PATCH v3] ceph: ceph: add remote object copies to fs
- client metrics
-From:   Jeff Layton <jlayton@kernel.org>
-To:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-Cc:     Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Patrick Donnelly <pdonnell@redhat.com>
-Date:   Thu, 28 Oct 2021 10:38:01 -0400
-In-Reply-To: <YXqy1rRu9hDS72Cx@suse.de>
-References: <20211028114826.27192-1-lhenriques@suse.de>
-         <06ef4f08edebf8b0a1a8660adfc46597d0d028b7.camel@kernel.org>
-         <YXqy1rRu9hDS72Cx@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        id S231328AbhJ1Okz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:40:55 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:52411 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhJ1Okx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:40:53 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MA88C-1mUX1P080A-00BcYV; Thu, 28 Oct 2021 16:38:25 +0200
+Received: by mail-wr1-f50.google.com with SMTP id k7so10559064wrd.13;
+        Thu, 28 Oct 2021 07:38:24 -0700 (PDT)
+X-Gm-Message-State: AOAM533vvxQR5o1K9AjRyMkyFcjVZRiq2jFTPhjA14O8+1aGitlMlb0V
+        diAQGoNkoDwDozjELNwxDZjuOB1eBJB40DRA940=
+X-Google-Smtp-Source: ABdhPJwEbUzPqw6Qes7yfw3ZhWk6B9QYudD6+r+R+eUXO5VRnI6SKME4aCzk7a7O2pmBiO0ccl6r5d8I2rAIgWwZUKE=
+X-Received: by 2002:a5d:4692:: with SMTP id u18mr6346128wrq.428.1635431904641;
+ Thu, 28 Oct 2021 07:38:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com> <20211028141938.3530-2-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211028141938.3530-2-lukas.bulwahn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 28 Oct 2021 16:38:08 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2UmTj2imJWdeLHX0TTV36Hk-Xx5c3j8cPe+Gk33-3Tyw@mail.gmail.com>
+Message-ID: <CAK8P3a2UmTj2imJWdeLHX0TTV36Hk-Xx5c3j8cPe+Gk33-3Tyw@mail.gmail.com>
+Subject: Re: [PATCH 01/13] arm: debug: remove obsolete debug code for DEBUG_ZTE_ZX
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:+vD+Y6ubku5brdTPb5fPvEtLJo4kBMb1i2zNycj4s7DNYnL05ZX
+ EMe9TPElIpVSx9nuQ0X0hpS9LmAeAiA/uEi7VzaXD0rcnOc3o//tRqrbeVL4zM+gu0DSrgU
+ 6nDl5kohOVpXUr2hsfQiRA8WyCBUa/MdlpnK6C6SUJX+/McR9XeME3z2noeix18MijVpjhx
+ 68rH8YZhQUt+ZcmL50cfg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3/atB2SDEQg=:ge8U0HhAxX2zPKM0zKaSRr
+ XRGCPFJOACAhmHRnl+MGa/XDzuZdBXvIjPLwDR/bPtWXhgn/I+qfftRLl5d4fl/Y3yrLlHyT5
+ 0L6hBzi1JH8hqaZBHoetQZfkUAj+YMTP+AGwJfGMWA5PVqhW+d+Og+qHz7uTzCVoh/AQ0/zdK
+ WXSiLtSpuqwnkywgnWzy9ymwG7H0NdhmoZikk1FFKPwsjrVBN3z9Ob+epqOy52HGL1HXD4B5G
+ C3Awh/FRcVLz8KaZhvRsxG8/viFuSyBizny6FwldNYTfAwRCKzR8wxs9tzE7hbn7Jgvq6vpjb
+ v+mTEFEZS29wUJ3Iru5dFFFZjpomeLxRUpBj1T2RInIvDYFgnPEcKV5MuUdjDwFeNG71Rcfnx
+ dVqoyksuZXKlYHTo8OfCnZUPAf6/ga4Ras2KwxVsrOEomSl4qO574Heov0qPod+sCaC9woySK
+ BcXK5gwZEdMHVy9OtxiTpi1ihNtSYY9Xln6X2ZXVezgvWMB6th4KpRWS6X+4t/5j81llq410Y
+ zjcZH3uhdHiw/NxU19IGvobLRbNgcGgcsxR0EWrzdynDg8kfmN8sbAzxTBhjKZb3+YseQvVVz
+ kwhqOo2G+w1JPsV63TE1ThzVPCPdTWOaOj+t2X/WfMLVLDyVrSF14bdsE6QLS5YBNWkEWImvO
+ pEhW90IZ75Y/28dfabbfCenQv+gz9kr6U4Hwh7MNYugepkXr8SoqtNv4qrnZbxhYPysF5A486
+ iUUDvhdYEe5LOdlkJJJz1b/eJUgEjrotkLIyDbJgLJOl2iDZSIFmKwk3darHWMXv4UOS+tGHz
+ +pNzFkD8+Kv+sjBKLKfbELfqpxvqErpGLVJ5pfnGoQNOQN75o0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-28 at 15:25 +0100, Luís Henriques wrote:
-> On Thu, Oct 28, 2021 at 08:41:52AM -0400, Jeff Layton wrote:
-> > On Thu, 2021-10-28 at 12:48 +0100, Luís Henriques wrote:
-> > > This patch adds latency and size metrics for remote object copies
-> > > operations ("copyfrom").  For now, these metrics will be available on the
-> > > client only, they won't be sent to the MDS.
-> > > 
-> > > Cc: Patrick Donnelly <pdonnell@redhat.com>
-> > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
-> > > ---
-> > > This patch is still an RFC because it is... ugly.  Although it now
-> > > provides nice values (latency and size) using the metrics infrastructure,
-> > > it actually needs to extend the ceph_osdc_copy_from() function to add 2
-> > > extra args!  That's because we need to get the timestamps stored in
-> > > ceph_osd_request, which is handled within that function.
-> > > 
-> > > The alternative is to ignore those timestamps and collect new ones in
-> > > ceph_do_objects_copy():
-> > > 
-> > > 	start_req = ktime_get();
-> > > 	ceph_osdc_copy_from(...);
-> > > 	end_req = ktime_get();
-> > > 
-> > > These would be more coarse-grained, of course.  Any other suggestions?
-> > > 
-> > 
-> > Not really. It is definitely ugly, I'll grant you that though...
-> > 
-> > The cleaner method might be to just inline ceph_osdc_copy_from in
-> > ceph_do_objects_copy so that you deal with the req in there.
-> 
-> Yeah, but the reason for having these 2 functions was to keep net/ceph/
-> code free from cephfs-specific code.  Inlining ceph_osdc_copy_from would
-> need to bring some extra FS knowledge into libceph.ko.  Right now the
-> funcion in osd_client receives only the required args for doing a copyfrom
-> operation.  (But TBH it's possible that libceph already contains several
-> bits that are cephfs or rbd specific.)
-> 
+On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 89d4f98ae90d ("ARM: remove zte zx platform") removes the config
+> DEBUG_ZTE_ZX. Hence, since then, the "ifdef CONFIG_DEBUG_ZTE_ZX" in
+> ./arch/arm/include/debug/pl01x.S is dead code.
+>
+> Fortunately, ./scripts/checkkconfigsymbols.py detects this and warns:
+>
+> DEBUG_ZTE_ZX
+> Referencing files: arch/arm/include/debug/pl01x.S
+>
+> So, remove the obsolete ifdef CONFIG_DEBUG_ZTE_ZX.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Oh, I was more just suggesting that you just copy the guts out of
-ceph_osdc_copy_from() and paste them into the only caller
-(ceph_do_objects_copy). That would give you access to the OSD req field
-in ceph_do_objects_copy and you could just copy the appropriate fields
-there.
+I see another copy of these constants in drivers/tty/serial/amba-pl011.c,
+which we should probably clean up as well.
 
-
-> However, I just realized that I do have some code here that changes
-> ceph_osdc_copy_from() to return the OSD req struct.  The caller would then
-> be responsible for doing the ceph_osdc_wait_request().  This code was from
-> my copy_file_range parallelization patch (which I should revisit one of
-> these days), but could be reused here.  Do you think it would be
-> acceptable?
-> 
-
-Yeah, that would work too. The problem you have is that the OSD request
-is driven by ceph_osdc_copy_from, and you probably want to do that in
-ceph_do_objects_copy instead so you can get to the timestamp fields.
-
-> <...>
-> > > +	spinlock_t copyfrom_metric_lock;
-> > > +	u64 total_copyfrom;
-> > > +	u64 copyfrom_size_sum;
-> > > +	u64 copyfrom_size_min;
-> > > +	u64 copyfrom_size_max;
-> > > +	ktime_t copyfrom_latency_sum;
-> > > +	ktime_t copyfrom_latency_sq_sum;
-> > > +	ktime_t copyfrom_latency_min;
-> > > +	ktime_t copyfrom_latency_max;
-> > > +
-> > 
-> > Not a comment about your patch, specifically, but we have a lot of
-> > copy/pasted code to deal with different parts of ceph_client_metric.
-> > 
-> > It might be nice to eventually turn each of the read/write/copy metric
-> > blocks in this struct into an array, and collapse a lot of the other
-> > helper functions together.
-> > 
-> > If you feel like doing that cleanup, I'd be happy to review. Otherwise,
-> > I'll plan to look at it in the near future.
-> 
-> Yeah, sure.  I can have a look at that too.
-> 
-> Cheers,
-> --
-> Luís
-
--- 
-Jeff Layton <jlayton@kernel.org>
-
+          Arnd
