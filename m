@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39B343DCDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A9343DCE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhJ1ITl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:19:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47946 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhJ1ITk (ORCPT
+        id S230057AbhJ1IVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:21:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229835AbhJ1IVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:19:40 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 211432177B;
-        Thu, 28 Oct 2021 08:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635409033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 28 Oct 2021 04:21:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635409135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zqdN6Yjfc0XO6AHhq0eQB4f4yiJINc5vCkKCiBekK2M=;
-        b=NgbGwfcr7oyJW7XwZ6TcRjr0SKAHialJKfeXWxWb6kmsx8zY6B+hXCxgILiQssu9G8KVxx
-        MSqODr51OJ2U41JEKshfU/hMeWEwk17EFYkCcfEFiyb1/I2W3cwA+LSJx92M8tAcJ8jGkg
-        wLAi7rUkQdfiAQbdbqngjA2m4avMU0k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635409033;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zqdN6Yjfc0XO6AHhq0eQB4f4yiJINc5vCkKCiBekK2M=;
-        b=XFBH3OHzK02GTqiMsYUPCMkwMUyAgNBwDdJ8soiJb7xH/nlmoSFp+zyuHa6cALbyWqRFh4
-        H0ij0Izb7tpZ/pCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=pXMrcpHehLRVHJk/nMeA6+QLvzVDo2cx25CECDi4i7A=;
+        b=JAJnUFjPqlv1tq/hh0E+TED8BpilQejxGHjiKBiysXigTdTJqeqCUCUBXaaf4kLzAfyQM6
+        Qc74S11k6+asX8ooLERRU/y4bdY/TkEGhd4QM7WSdOdq67b+N2Xw6Hy/ZxKv3eLgDFiH+1
+        C3JBAQrvzdZTRX/nliMScDC0A35q6qI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-i4Dnxkw1NDyC3baBbDAFUQ-1; Thu, 28 Oct 2021 04:18:51 -0400
+X-MC-Unique: i4Dnxkw1NDyC3baBbDAFUQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 109AA139BE;
-        Thu, 28 Oct 2021 08:17:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id V2YJBIlcemGVMwAAMHmgww
-        (envelope-from <bp@suse.de>); Thu, 28 Oct 2021 08:17:13 +0000
-Date:   Thu, 28 Oct 2021 10:17:06 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <YXpcgoGzF4Sh3qs3@zn.tnic>
-References: <20211025151144.552c60ca@canb.auug.org.au>
- <20211028161058.39c0d199@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 497889F932;
+        Thu, 28 Oct 2021 08:18:50 +0000 (UTC)
+Received: from localhost (unknown [10.39.194.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E742B57CB9;
+        Thu, 28 Oct 2021 08:18:46 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 09:18:46 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Colin Ian King <colin.i.king@googlemail.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] virtio_blk: Fix spelling mistake: "advertisted" ->
+ "advertised"
+Message-ID: <YXpc5l6lzp+aBTaU@stefanha-x1.localdomain>
+References: <20211025102240.22801-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="U+u1ddsxMsOIkdhu"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211028161058.39c0d199@canb.auug.org.au>
+In-Reply-To: <20211025102240.22801-1-colin.i.king@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On Thu, Oct 28, 2021 at 04:10:58PM +1100, Stephen Rothwell wrote:
-> This build failure has returned today :-(
+--U+u1ddsxMsOIkdhu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry about that.
+On Mon, Oct 25, 2021 at 11:22:40AM +0100, Colin Ian King wrote:
+> There is a spelling mistake in a dev_err error message. Fix it.
+>=20
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  drivers/block/virtio_blk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I had the original patch updated but then it is very possible I
-fat-fingered the branch during the patch frenzy in the past days here.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
-Now I've applied yours because it happening a second time simply
-warrants having this as a separate patch.
+--U+u1ddsxMsOIkdhu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thx.
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Regards/Gruss,
-    Boris.
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmF6XOUACgkQnKSrs4Gr
+c8j8vgf9GmyeRUXKxu9ABJAENCKSjxXLD6Vukn+lKvXAMvprvR+m82GgNwtX37u5
+ag8cYzpK3JKZ8pu2U9hmsbormnnXTPhwSv4Xu6rwSsmLK2kx1ZrVjmlh3/z4MA8T
+yoUsJQOpMsIjO6Y0R+t+/Hl/8bzxuH3d4mWWca4GTbIF2ZAvOxEgute1VVGcUr9L
+yiFT3Ym5HVxP7VaHrtXBCwjXl/taWhB+oTo4cToa4OPo6/ccnTaXtuJEn+ytGlTd
+ZBiPFVVGIpPNqasYkZeMcE8Jxxp/4+c5uDW89FVZ3l2NxKoX3TmaLHyfFDk0RqJY
+1tK8mop6eVQvpb7pkQwjikTXOG8/7g==
+=0jkP
+-----END PGP SIGNATURE-----
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+--U+u1ddsxMsOIkdhu--
+
