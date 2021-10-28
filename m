@@ -2,160 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8588443E035
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD1643E039
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhJ1Lst convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 07:48:49 -0400
-Received: from aposti.net ([89.234.176.197]:36912 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229835AbhJ1Lsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:48:47 -0400
-Date:   Thu, 28 Oct 2021 12:46:07 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 1/2] dt-bindings: Rename Ingenic CGU headers to
- ingenic,*.h
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, list@opendingux.net,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <VCRO1R.FQ8R7TN6NPYP3@crapouillou.net>
-In-Reply-To: <YXiNLZ9ne8D8uv82@robh.at.kernel.org>
-References: <20211016133322.40771-1-paul@crapouillou.net>
-        <YXiNLZ9ne8D8uv82@robh.at.kernel.org>
+        id S230210AbhJ1Ltw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 07:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhJ1Ltv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 07:49:51 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D17BC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:47:24 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g8so23978237edb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=J1HSbTsrMEQI/U/YbiCc+5c6T/LW7ZVWAAUAlEL1IAU=;
+        b=tXvtIytz0bfa5k9zkzWy7Ha/EfUR3MVX60l2VSDubKCkCnNlfiYqRuqx3uCOCYUMCS
+         W4zgQEgXUnITXdLOvNRlLUQ5YN8n8ZUBRvQm7JH46dv6Zpp0P/w/41Qz9/5MSSZZl130
+         K72hGNV6R9h5Fc/y/LTNevvuC5QWnjYGTkRGkTy5FgEFUeKi2FS6oPtxq53XaBEOXVC0
+         cd5riiaDVwBwfAw8uvY6W6xju8fCDBr4mo3Lfz5BDLpx/PRA2fz5F1fZ2pidhekyoWXx
+         Yibq8o79m9fEjLCZZ+HA40MsXDBoeiH5DXe2aJ3KJupYomUvG/czS6x6A6g8THSBsfjN
+         x03Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=J1HSbTsrMEQI/U/YbiCc+5c6T/LW7ZVWAAUAlEL1IAU=;
+        b=NSCj0B/f7lbfQ+/maiOFJVCse85On+RFzxZHWiAWbV6z8+imHi/brK2zE6IeaQ/Dgz
+         7CrHyz8xZgW1Mjcb+PEkATBsrRWp/Sc52sWJk9yITsmdrH7ttgGRRrJT/VpwRqJokEPr
+         /NIOfGei6fm+HGdwhG0Q+9qZJi1Fs8+zyZb6o9FNGwfB9pBir/DkXgo8Ui+rJWMf6q8o
+         6iN1V5rHYTcAHuMbn4z8+2QQjWMnKd22UUIkaVNsa7mSxcluklFDuopqPYtGnJajbQ9Q
+         oHEPQC6RNrkpV/4Y8FkQX2yrfGXM1IqB2FbDyu2oXbJOR4083SmAPUTdv7vaiPG06xdj
+         HXMA==
+X-Gm-Message-State: AOAM530LVp0P99vR44w4rK/prtckYp4SqFI7z3pgrGzRjnXzm9J6ESEc
+        iPgRq8++HePFfYpe1b2AWdtlKjdNjYgghLSkYbBrPw==
+X-Google-Smtp-Source: ABdhPJwMPU0JSbf9rgqPGZAT9qVbTZ/lKa7s54pyRcMY6qOJ5m6qoSgrhdrnYMiELxgogXz28FNpx2c5einX3a5y7bc=
+X-Received: by 2002:a17:906:c302:: with SMTP id s2mr4642505ejz.499.1635421642352;
+ Thu, 28 Oct 2021 04:47:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 28 Oct 2021 17:17:11 +0530
+Message-ID: <CA+G9fYtQCd4V9Y=qEGZeQw17TRNG1p_g9MKtYaWVo8QPua-Cug@mail.gmail.com>
+Subject: mips: irq.c:114:19: error: unused variable 'desc' [-Werror=unused-variable]
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Regression found on mips gcc-10 built with defconfig
+Following build warnings / errors reported on linux next 20211027.
 
-Le mar., oct. 26 2021 at 18:20:13 -0500, Rob Herring <robh@kernel.org> 
-a écrit :
-> On Sat, Oct 16, 2021 at 02:33:21PM +0100, Paul Cercueil wrote:
->>  Tidy up a bit the tree, by prefixing all include/dt-bindings/clock/ 
->> files
->>  related to Ingenic SoCs with 'ingenic,'.
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->> 
->>  Notes:
->>      v2: Fix x1000-cgu.h and x1830-cgu.h incorrectly renamed to
->>          x1000.h / x1830.h
->> 
->>   Documentation/devicetree/bindings/clock/ingenic,cgu.yaml      | 2 
->> +-
->>   Documentation/devicetree/bindings/display/ingenic,ipu.yaml    | 2 
->> +-
->>   Documentation/devicetree/bindings/display/ingenic,lcd.yaml    | 4 
->> ++--
->>   Documentation/devicetree/bindings/dma/ingenic,dma.yaml        | 2 
->> +-
->>   Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml        | 2 
->> +-
->>   Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml    | 2 
->> +-
->>   .../devicetree/bindings/memory-controllers/ingenic,nemc.yaml  | 2 
->> +-
->>   .../devicetree/bindings/mips/ingenic/ingenic,cpu.yaml         | 2 
->> +-
->>   Documentation/devicetree/bindings/mmc/ingenic,mmc.yaml        | 2 
->> +-
->>   Documentation/devicetree/bindings/mtd/ingenic,nand.yaml       | 2 
->> +-
->>   Documentation/devicetree/bindings/net/ingenic,mac.yaml        | 2 
->> +-
->>   .../devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml       | 2 
->> +-
->>   Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml    | 2 
->> +-
->>   Documentation/devicetree/bindings/remoteproc/ingenic,vpu.yaml | 2 
->> +-
->>   Documentation/devicetree/bindings/rng/ingenic,trng.yaml       | 2 
->> +-
->>   Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml        | 2 
->> +-
->>   Documentation/devicetree/bindings/serial/ingenic,uart.yaml    | 2 
->> +-
->>   Documentation/devicetree/bindings/sound/ingenic,aic.yaml      | 2 
->> +-
->>   Documentation/devicetree/bindings/sound/ingenic,codec.yaml    | 2 
->> +-
->>   Documentation/devicetree/bindings/timer/ingenic,sysost.yaml   | 2 
->> +-
->>   Documentation/devicetree/bindings/timer/ingenic,tcu.yaml      | 2 
->> +-
->>   Documentation/devicetree/bindings/usb/ingenic,musb.yaml       | 2 
->> +-
->>   arch/mips/boot/dts/ingenic/jz4725b.dtsi                       | 2 
->> +-
->>   arch/mips/boot/dts/ingenic/jz4740.dtsi                        | 2 
->> +-
->>   arch/mips/boot/dts/ingenic/jz4770.dtsi                        | 2 
->> +-
->>   arch/mips/boot/dts/ingenic/jz4780.dtsi                        | 2 
->> +-
->>   arch/mips/boot/dts/ingenic/x1000.dtsi                         | 2 
->> +-
->>   arch/mips/boot/dts/ingenic/x1830.dtsi                         | 2 
->> +-
->>   drivers/clk/ingenic/jz4725b-cgu.c                             | 2 
->> +-
->>   drivers/clk/ingenic/jz4740-cgu.c                              | 2 
->> +-
->>   drivers/clk/ingenic/jz4760-cgu.c                              | 2 
->> +-
->>   drivers/clk/ingenic/jz4770-cgu.c                              | 2 
->> +-
->>   drivers/clk/ingenic/jz4780-cgu.c                              | 2 
->> +-
->>   drivers/clk/ingenic/x1000-cgu.c                               | 2 
->> +-
->>   drivers/clk/ingenic/x1830-cgu.c                               | 2 
->> +-
->>   .../clock/{jz4725b-cgu.h => ingenic,jz4725b-cgu.h}            | 0
->>   .../dt-bindings/clock/{jz4740-cgu.h => ingenic,jz4740-cgu.h}  | 0
->>   .../dt-bindings/clock/{jz4760-cgu.h => ingenic,jz4760-cgu.h}  | 0
->>   .../dt-bindings/clock/{jz4770-cgu.h => ingenic,jz4770-cgu.h}  | 0
->>   .../dt-bindings/clock/{jz4780-cgu.h => ingenic,jz4780-cgu.h}  | 0
->>   .../dt-bindings/clock/{x1000-cgu.h => ingenic,x1000-cgu.h}    | 0
->>   .../dt-bindings/clock/{x1830-cgu.h => ingenic,x1830-cgu.h}    | 0
->>   42 files changed, 36 insertions(+), 36 deletions(-)
->>   rename include/dt-bindings/clock/{jz4725b-cgu.h => 
->> ingenic,jz4725b-cgu.h} (100%)
->>   rename include/dt-bindings/clock/{jz4740-cgu.h => 
->> ingenic,jz4740-cgu.h} (100%)
->>   rename include/dt-bindings/clock/{jz4760-cgu.h => 
->> ingenic,jz4760-cgu.h} (100%)
->>   rename include/dt-bindings/clock/{jz4770-cgu.h => 
->> ingenic,jz4770-cgu.h} (100%)
->>   rename include/dt-bindings/clock/{jz4780-cgu.h => 
->> ingenic,jz4780-cgu.h} (100%)
->>   rename include/dt-bindings/clock/{x1000-cgu.h => 
->> ingenic,x1000-cgu.h} (100%)
->>   rename include/dt-bindings/clock/{x1830-cgu.h => 
->> ingenic,x1830-cgu.h} (100%)
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> 
-> However, this will be a pain to merge if there are any new users 
-> coming
-> in during the merge window. If not, then Stephen can just take this. 
-> If
-> there are, then at the end of the merge window is the best time. For
-> that to work, you need to track when all dependent changes are merged
-> and we need to agree who will pick this up. I usually have fixes from
-> breakages in the merge window anyways.
+The bisect tool pointing to the following commit
+The first bad commit:
 
-I get Cc'd on all ingenic-related patches, so far I don't see anything 
-that will cause a breakage. I think it would be okay to merge it now 
-(we're at -rc7 after all).
+commit 4cb6f4df976b288aa02bbb658d38e73d34d8231f
+  irq: mips: simplify do_domain_IRQ()
 
-Cheers,
--Paul
+metadata:
+    git_describe: next-20211027
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+    git_short_log: ae5179317e79 (\"Add linux-next specific files for 20211027\")
+    target_arch: mips
+    toolchain: gcc-10
 
+build error :
+--------------
+<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
+arch/mips/kernel/irq.c: In function 'do_domain_IRQ':
+arch/mips/kernel/irq.c:114:19: error: unused variable 'desc'
+[-Werror=unused-variable]
+  struct irq_desc *desc;
+                   ^~~~
+cc1: all warnings being treated as errors
 
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+build link:
+-----------
+https://builds.tuxbuild.com/205S9XOzkonL7F3xvY8YUO2l1QT/build.log
+
+build config:
+-------------
+https://builds.tuxbuild.com/205S9XOzkonL7F3xvY8YUO2l1QT/config
+
+# To install tuxmake on your system globally
+# sudo pip3 install -U tuxmake
+tuxmake --runtime podman --target-arch mips --toolchain gcc-10
+--kconfig defconfig
+
+--
+Linaro LKFT
+https://lkft.linaro.org
