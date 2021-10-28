@@ -2,167 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C3343DE16
+	by mail.lfdr.de (Postfix) with ESMTP id A794643DE17
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 11:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhJ1JwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 05:52:06 -0400
-Received: from outbound-smtp48.blacknight.com ([46.22.136.219]:53817 "EHLO
-        outbound-smtp48.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230157AbhJ1Jvi (ORCPT
+        id S230230AbhJ1JwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 05:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhJ1Jvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:51:38 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp48.blacknight.com (Postfix) with ESMTPS id A64A9FAC17
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 10:49:05 +0100 (IST)
-Received: (qmail 23834 invoked from network); 28 Oct 2021 09:49:05 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPA; 28 Oct 2021 09:49:05 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 2/2] sched/fair: Increase wakeup_gran if current task has not executed the minimum granularity
-Date:   Thu, 28 Oct 2021 10:48:34 +0100
-Message-Id: <20211028094834.1312-3-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211028094834.1312-1-mgorman@techsingularity.net>
-References: <20211028094834.1312-1-mgorman@techsingularity.net>
+        Thu, 28 Oct 2021 05:51:46 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91770C061224
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 02:49:18 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id d23so8311984ljj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 02:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fk20SFTna7oenyJFMvCkJ++ZR0TFp2usytKYkzVEf0s=;
+        b=kf7QbjWu1KoXK2GcxquXY75XDFKY96HN8PhY+2IdmX0My5dsmxhOifxj3w+ZaB8bI1
+         mTFK+tYsuwaU9fDQtOw0yMiZeS4i4l45HAoV8jZRaqMfQKixIfM+z9QIDq1gQI2fnCPM
+         cKkuo2/nXat3lC4ncjsZfWKecL2Cq0VFHHxyw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fk20SFTna7oenyJFMvCkJ++ZR0TFp2usytKYkzVEf0s=;
+        b=ha12ITKo8pDh/mSauqcro230WSL4eur3MnhXrYt/n7K2feslaTMbWO/ydOxwHr1pZ9
+         /ddfj3ERiP0C/PMeog0oarrFHHgGOjnUqKc3r0D5PldlhXvIOj9xLkSjVL2xub6xFk70
+         jevmdDVeiXRR86TYobNz7dkVYhRmMPd4u37654lAaqz/esJNu8j6Qj05lf09kNnqyIcg
+         tc/5TCQYX1DisgFDSMswWTvTHNPisMzCwCitd8v7xiU0wFjIOT70Of74kKtPweSS4nci
+         M1CI4Pp9f1qng7O6GI6DsrHIag/Tc183GMyPCKYsJvsFPJk6Ln5fgrpMeLdEC9w8QL+6
+         NeGw==
+X-Gm-Message-State: AOAM533n/gJDv/Ib3eX8ceJAEjbJU9juS+KmwnXgwE77SM1ZDcZoMwOa
+        dIVXHdwMLAj+W8my7cs/Pa8WjhKFcahiNs1h0Uj97g==
+X-Google-Smtp-Source: ABdhPJy79YQNwa1VedoC9Fu2+mb2Y9ZRSMvFCQS6gRxPDar6Suys0za7kSVoiq/FhiIJ2iaPRaXNwxunO+FZ+29u4rE=
+X-Received: by 2002:a05:651c:2328:: with SMTP id bi40mr3584357ljb.121.1635414556987;
+ Thu, 28 Oct 2021 02:49:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211021151528.116818-1-lmb@cloudflare.com> <20211021151528.116818-2-lmb@cloudflare.com>
+ <b215bb8c-3ffd-2b43-44a3-5b25243db5be@iogearbox.net> <CAOssrKciL5EDhrbQe1mkOrtD1gwkrEBRQyQmVhRE8Z-Kjb0WGw@mail.gmail.com>
+In-Reply-To: <CAOssrKciL5EDhrbQe1mkOrtD1gwkrEBRQyQmVhRE8Z-Kjb0WGw@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 28 Oct 2021 10:49:06 +0100
+Message-ID: <CACAyw9_yWL2YdYs2WbZ-Up2MqUKH7s5=g+v230TzYa=A4gx9SA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] libfs: support RENAME_EXCHANGE in simple_rename()
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
-moved the kernel.sched_wakeup_granularity_ns sysctl under debugfs.
-One of the reasons why this sysctl may be used may be for "optimising
-for throughput", particularly when overloaded. The tool TuneD sometimes
-alters this for two profiles e.g. "mssql" and "throughput-performance". At
-least version 2.9 does but it changed in master where it also will poke
-at debugfs instead. This patch aims to reduce the motivation to tweak
-sysctl_sched_wakeup_granularity by increasing sched_wakeup_granularity
-if the running task runtime has not exceeded sysctl_sched_min_granularity.
+On Thu, 28 Oct 2021 at 09:43, Miklos Szeredi <mszeredi@redhat.com> wrote:
+>
+> This is not sufficient.   RENAME_EXCHANGE can swap a dir and a
+> non-dir, in which case the parent nlink counters need to be fixed up.
+>
+> See shmem_exchange().   My suggestion is to move that function to
+> libfs.c:simple_rename_exchange().
 
-During task migration or wakeup, a decision is made on whether
-to preempt the current task or not. To limit over-scheduled,
-sysctl_sched_wakeup_granularity delays the preemption to allow at least 1ms
-of runtime before preempting. However, when a domain is heavily overloaded
-(e.g. hackbench), the degree of over-scheduling is still severe. This is
-problematic as time is wasted rescheduling tasks that could instead be
-used by userspace tasks.
+Thanks for the pointer, I sent a v3.
 
-However, care must be taken. Even if a system is overloaded, there may
-be high priority threads that must still be able to run. Mike Galbraith
-explained the constraints as follows;
+Lorenz
 
-        CFS came about because the O1 scheduler was unfair to the
-        point it had starvation problems. People pretty much across the
-        board agreed that a fair scheduler was a much way better way
-        to go, and CFS was born.  It didn't originally have the sleep
-        credit business, but had to grow it to become _short term_ fair.
-        Ingo cut the sleep credit in half because of overscheduling, and
-        that has worked out pretty well all told.. but now you're pushing
-        it more in the unfair direction, all the way to extremely unfair
-        for anything and everything very light.
-
-        Fairness isn't the holy grail mind you, and at some point, giving
-        up on short term fairness certainly isn't crazy, as proven by your
-        hackbench numbers and other numbers we've seen over the years,
-        but taking bites out of the 'CF' in the CFS that was born to be a
-        corner-case killer is.. worrisome.  The other shoe will drop.. it
-        always does :)
-
-This patch increases the wakeup granularity if the current task has not
-reached its minimum preemption granularity. The current task may still
-be preempted but the difference in runtime must be higher.
-
-hackbench-process-pipes
-                          5.15.0-rc3             5.15.0-rc3
-               sched-wakeeflips-v1r1sched-scalewakegran-v3r2
-Amean     1        0.3890 (   0.00%)      0.3823 (   1.71%)
-Amean     4        0.5217 (   0.00%)      0.4867 (   6.71%)
-Amean     7        0.5387 (   0.00%)      0.5053 (   6.19%)
-Amean     12       0.5443 (   0.00%)      0.5450 (  -0.12%)
-Amean     21       0.6487 (   0.00%)      0.6807 (  -4.93%)
-Amean     30       0.8033 (   0.00%)      0.7107 *  11.54%*
-Amean     48       1.2400 (   0.00%)      1.0447 *  15.75%*
-Amean     79       1.8200 (   0.00%)      1.6033 *  11.90%*
-Amean     110      2.5820 (   0.00%)      2.0763 *  19.58%*
-Amean     141      3.2203 (   0.00%)      2.5313 *  21.40%*
-Amean     172      3.8200 (   0.00%)      3.1163 *  18.42%*
-Amean     203      4.3357 (   0.00%)      3.5560 *  17.98%*
-Amean     234      4.8047 (   0.00%)      3.8913 *  19.01%*
-Amean     265      5.1243 (   0.00%)      4.2293 *  17.47%*
-Amean     296      5.5940 (   0.00%)      4.5357 *  18.92%*
-
-                  5.15.0-rc3  5.15.0-rc3
-         sched-wakeeflips-v1r1 sched-scalewakegran-v3r2
-Duration User        2567.27     2034.17
-Duration System     21098.79    17137.08
-Duration Elapsed      136.49      120.2
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c     | 17 +++++++++++++++--
- kernel/sched/features.h |  2 ++
- 2 files changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d00af3b97d8f..dee108470297 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7052,10 +7052,23 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- }
- #endif /* CONFIG_SMP */
- 
--static unsigned long wakeup_gran(struct sched_entity *se)
-+static unsigned long
-+wakeup_gran(struct sched_entity *curr, struct sched_entity *se)
- {
- 	unsigned long gran = sysctl_sched_wakeup_granularity;
- 
-+	if (sched_feat(SCALE_WAKEUP_GRAN)) {
-+		unsigned long delta_exec;
-+
-+		/*
-+		 * Increase the wakeup granularity if curr's runtime
-+		 * is less than the minimum preemption granularity.
-+		 */
-+		delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
-+		if (delta_exec < sysctl_sched_min_granularity)
-+			gran += sysctl_sched_min_granularity;
-+	}
-+
- 	/*
- 	 * Since its curr running now, convert the gran from real-time
- 	 * to virtual-time in his units.
-@@ -7094,7 +7107,7 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
- 	if (vdiff <= 0)
- 		return -1;
- 
--	gran = wakeup_gran(se);
-+	gran = wakeup_gran(curr, se);
- 	if (vdiff > gran)
- 		return 1;
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 7f8dace0964c..611591355ffd 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -95,3 +95,5 @@ SCHED_FEAT(LATENCY_WARN, false)
- 
- SCHED_FEAT(ALT_PERIOD, true)
- SCHED_FEAT(BASE_SLICE, true)
-+
-+SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
 -- 
-2.31.1
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
