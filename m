@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E576443DF23
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F7F43DF31
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhJ1KpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:45:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45274 "EHLO mail.kernel.org"
+        id S230111AbhJ1Kvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:51:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:53354 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229775AbhJ1KpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:45:04 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B396B60F58;
-        Thu, 28 Oct 2021 10:42:34 +0000 (UTC)
-Date:   Thu, 28 Oct 2021 11:47:00 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     mchehab+huawei@kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        lars@metafoo.de, robh+dt@kernel.org, andy.shevchenko@gmail.com,
-        matt.ranostay@konsulko.com, ardeleanalex@gmail.com,
-        jacopo@jmondi.org, Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [v2 05/10] iio: add modifers for pitch, yaw, roll
-Message-ID: <20211028114700.788635ba@jic23-huawei>
-In-Reply-To: <20211028101840.24632-6-andrea.merello@gmail.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
-        <20211028101840.24632-1-andrea.merello@gmail.com>
-        <20211028101840.24632-6-andrea.merello@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229835AbhJ1Kvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 06:51:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 273AF1FB;
+        Thu, 28 Oct 2021 03:49:05 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CFBD3F5A1;
+        Thu, 28 Oct 2021 03:49:04 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, peterz@infradead.org,
+        namit@vmware.com, mingo@kernel.org, dave.hansen@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH v3] cpumask: Fix implicit type conversion
+In-Reply-To: <1635404811-2992370-1-git-send-email-jiasheng@iscas.ac.cn>
+References: <1635404811-2992370-1-git-send-email-jiasheng@iscas.ac.cn>
+Date:   Thu, 28 Oct 2021 11:48:56 +0100
+Message-ID: <871r45whk7.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 12:18:35 +0200
-Andrea Merello <andrea.merello@gmail.com> wrote:
+On 28/10/21 07:06, Jiasheng Jiang wrote:
+> The description of the macro in `include/linux/cpumask.h` says the
+> variable 'cpu' can be int, whose value ranges from (-2^31) to
+> (2^31 - 1).
+> However in the for_each_cpu(), 'nr_cpu_ids' and the return value of
+> cpumask_next() is unsigned int, whose value ranges from 0 to
+> (2^32 - 1).
+> If return value of cpumask_next() is (2^31), the restrict
+> 'cpu < nr_cpu_ids' can also be statisfied, but the actual value
+> of 'cpu' is (-2^31).
+> Take amd_pmu_cpu_starting() in `arch/x86/events/amd/core.c` as an
+> example. When value of 'cpu' is (-2^31), then in the per_cpu(),
+> there will apear __per_cpu_offset[-2^31], which is array out of
+> bounds error.
+> Moreover, the num of cpu to be the negative doesn't make sense and
+> may easily causes trouble.
+> It is universally accepted that the implicit type conversion is
+> terrible.
+> Also, having the good programming custom will set an example for
+> others.
+> Thus, it might be better to fix the macro description of 'cpu' and
+> deal with all the existing issues.
+>
 
-> This patch adds modifiers for reporting rotations as euler angles (i.e.
-> yaw, pitch and roll).
-> 
-> Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-Same comment on tools update, and a few editorial things inline.
+AFAIA the upper bounds for NR_CPUS are around 2^12 (arm64) and 2^13 (x86);
+I don't think we're anywhere near supporting such massive systems.
 
-Jonathan
+I got curious and had a look at the size of .data..percpu on a defconfig
+arm64 kernel - I get about ~40KB. So purely on the percpu data side of
+things, we're talking about 100TB of RAM...
 
-> ---
->  drivers/iio/industrialio-core.c | 5 ++++-
->  include/uapi/linux/iio/types.h  | 3 +++
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index a79cb32207e4..d2ebbfa8b9fc 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -136,7 +136,10 @@ static const char * const iio_modifier_names[] = {
->  	[IIO_MOD_O2] = "o2",
->  	[IIO_MOD_ACCEL_LINEAR_X] = "linear_x",
->  	[IIO_MOD_ACCEL_LINEAR_Y] = "linear_y",
-> -	[IIO_MOD_ACCEL_LINEAR_Z] = "linear_z"
-> +	[IIO_MOD_ACCEL_LINEAR_Z] = "linear_z",
+Trying to improve the code is laudable, but I don't see much incentive in
+the churn ATM.
 
-Move the comman to the previous patch.
+> Fixes: c743f0a ("sched/fair, cpumask: Export for_each_cpu_wrap()")
+> Fixes: 8bd93a2 ("rcu: Accelerate grace period if last non-dynticked CPU")
+> Fixes: 984f2f3 ("cpumask: introduce new API, without changing anything, v3")
 
-> +	[IIO_MOD_PITCH] = "pitch",
-> +	[IIO_MOD_YAW] = "yaw",
-> +	[IIO_MOD_ROLL] = "roll"
->  };
->  
->  /* relies on pairs of these shared then separate */
-> diff --git a/include/uapi/linux/iio/types.h b/include/uapi/linux/iio/types.h
-> index db00f7c45f48..fc9909ca4f95 100644
-> --- a/include/uapi/linux/iio/types.h
-> +++ b/include/uapi/linux/iio/types.h
-> @@ -98,6 +98,9 @@ enum iio_modifier {
->  	IIO_MOD_ACCEL_LINEAR_X,
->  	IIO_MOD_ACCEL_LINEAR_Y,
->  	IIO_MOD_ACCEL_LINEAR_Z,
-> +	IIO_MOD_PITCH,
-> +	IIO_MOD_YAW,
-> +	IIO_MOD_ROLL
-
-And add a comma here to make extending this in future easy.
-
->  };
->  
->  enum iio_event_type {
-
+Where's the v1->v2->v3 changelog? This is merely fiddling with doc headers,
+what's being fixed here?
