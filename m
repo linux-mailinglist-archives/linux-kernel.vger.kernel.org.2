@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1289943DE68
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B48D43DE6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 12:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhJ1KIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 06:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhJ1KI2 (ORCPT
+        id S229950AbhJ1KKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 06:10:18 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:25062 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhJ1KKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:08:28 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1982C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:06:01 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id s10-20020a17090a6e4a00b001a5f4da9892so396470pjm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 03:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=71DboPsJzVyNUqOqj02CXJCXuAMtdI8S9OCGpFqqiEk=;
-        b=RKGb7X3guPSIfY8BwvnsCArId6i1XNAIsQ85/prN1ATiuo6HaAq65Twii0V71Y86kP
-         icHWdjToX7FpiNPAKFieoS3jnsLKMgdYXKLnwKiUKwvL1lpQB1SDnA9G6gC60jo0qq2q
-         6WBKQTPn8JO7F03uWu697sRiXQpGWb9ILIBsHapblPVCUkc9ISIJE82ALu/xpeAMVrqy
-         34TqZhM8JJhHuOsRB2q+246tw9iZeGsLky8xO7c+NRmnmWnnQNdaECAIjOUKj8CgorDT
-         2JhL+WRH5t6wyk54mqn2lcT2Dy38AIx0+Fq8RR5IlWduUbSEXwSSpo5zdsKnbmsX66K5
-         IaIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=71DboPsJzVyNUqOqj02CXJCXuAMtdI8S9OCGpFqqiEk=;
-        b=PPyT3uwcENhddefIK7BLciotqKRMT8WFKPRZ8wFIj+49NHgGtHAig0OQSiDhjQky8g
-         65FYhrtj9DOHQlgXXwVGwcRlcs7+L1tXpNmrOPngzlmzOOyzNdt82uW0WXXCsV+wyQVT
-         NuuAmkPHcvIVK5z63wUu1GiJFAGrXQtAVzXJgq+zfSPzT6HoAnKudRXdGqp7vMcTtOZV
-         Ilg23a4NSc+6Fqd22zBi5fovGzI+nYXcVSkAdNbRwOtY0rrgoHN19WEB7HYUNJxHIUfb
-         iNAjGH0BrBEq7/VohqeNIHQUF3TEwsrDLCSD5lRwRwm3Zrc/Exe4QHCQKAfFxrXrlH77
-         qLgQ==
-X-Gm-Message-State: AOAM532UaVMiSrdxIwSariyG9YZcPx4ttiFGU3S2hjkuPDrpPAOjQyGx
-        YRDY3cXdgcTpagZMjrxDW1pz5NHjhg7eWe2+7Ek=
-X-Google-Smtp-Source: ABdhPJzlRV/s+MYtmeoY1TosUimHYVRt6bHdUdFG+rVJ2HIu3dTwlqneSf5HK85/pJy+78X+qgf/A22TuAiygPSGMDg=
-X-Received: by 2002:a17:90a:640a:: with SMTP id g10mr5298956pjj.198.1635415561376;
- Thu, 28 Oct 2021 03:06:01 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6a11:620:0:0:0:0 with HTTP; Thu, 28 Oct 2021 03:06:01
- -0700 (PDT)
-From:   Ibrahim Alpha <ibrahimalpha0@gmail.com>
-Date:   Thu, 28 Oct 2021 10:06:01 +0000
-Message-ID: <CANvM_MrHkqRf8zyXfr27M4WEpWy5iofuo5npkpmD87inA9OMPA@mail.gmail.com>
-Subject: Seasons of greetings to you and your family?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 28 Oct 2021 06:10:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635415649;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=hXR8Z/Nu1gLX0h4WuKajrdI1yS2oKpMgJtR5xG9UxGM=;
+    b=KrW0hEHwbBnKn27A1B4OPBxV1nQgN7v3JNpkZ2R4FQnwHfKUziYbzv8Hr6prIm5J8q
+    Nu74y5bmI6E04xlbCVTNFEp056Y0ktmmL8iwMBCR1Aw5UUXktsVjO8Qmgu4y2I3J3lgR
+    nbMysHedReIGsVDS/7Q1AjTDRF70YW9nE9egEFaw022ZBHiP+vJS1/kwu1495Tr+3SKh
+    Z841xHxiMPdBmSjRvWA6flsGjoGNPmHtw++otWMqHk+o2P2RZJZeXNG89OEVQvta+9SQ
+    XdkySfvdHeEfixPMLhYugnxhWac6y6Yc4hqWYWhSbyUl9S1tFyyFndlHjoIjv86uEnuO
+    zi1w==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw4vtTA=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id d01d1fx9SA7S5sY
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 28 Oct 2021 12:07:28 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [RFC] mmc: core: transplant ti,wl1251 quirks from to be retired
+ omap_hsmmc
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <34072875.m9Xp8G9xV5@pc-42>
+Date:   Thu, 28 Oct 2021 12:07:27 +0200
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bean Huo <beanhuo@micron.com>, linux-mmc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Tony Lindgren <tony@atomide.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4153E8E6-2D39-4AEA-9CC6-411D4FF8CE67@goldelico.com>
+References: <8ecc5c79c1dd0627d570ede31e18c860786cacca.1633519499.git.hns@goldelico.com>
+ <2013308.OSlt1BDEiP@pc-42>
+ <1EF25CD6-7801-4C15-AB4C-5F499948A653@goldelico.com>
+ <34072875.m9Xp8G9xV5@pc-42>
+To:     =?utf-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-My Seasons of greetings to you and your family.
 
-First, I am Mr. Ibrahim Alpha, a banker working with Bank of Africa
-here in my country Burkina Faso West Africa, I have a business
-transaction that will benefit both of us, and want to know if you can
-handle it and claim the fund to your country's account. The amount is
-($10.5Million). After the transfer, we have to share it, 50% for me,
-and 50% for you. Please let me know if you can assist me, for more
-details information regarding the transfer. I hope you will work with
-me honestly?
 
-This is legal, risk free and will be 100% successful, because I work
-in the same bank and have arranged for it properly before contacting
-you.
+> Am 28.10.2021 um 11:55 schrieb J=C3=A9r=C3=B4me Pouiller =
+<jerome.pouiller@silabs.com>:
+>=20
+> On Thursday 28 October 2021 11:40:59 CEST H. Nikolaus Schaller wrote:
+>>> Am 28.10.2021 um 10:59 schrieb J=C3=A9r=C3=B4me Pouiller =
+<jerome.pouiller@silabs.com>:
+>>> On Thursday 28 October 2021 09:08:50 CEST H. Nikolaus Schaller =
+wrote:
+>>>=20
+>>>>> Let me have a closer look - and for sure, I am willing to help if =
+needed.
+>>>=20
+>>> I confirm it does not have the expected behavior. =
+!mmc_fixup_of_compatible_match()
+>>> should be mmc_fixup_of_compatible_match(), sorry.
+>>=20
+>> Ok, I see.
+>>=20
+>> One more question: how can I specify "ti,wl1251" in some struct =
+mmc_fixup table?
+>> Does it need another macro like MMC_FIXUP() or SDIO_FIXUP() to set =
+the .name
+>> field?
+>=20
+> yes, I didn't provide it with my RFC.=20
 
-If yes, update me with your personal information such as;
+I see.
 
-1. Your name in Full:
-2. Your House Address:
-3. Your Occupation:
-4. Your Age:
-5. Your direct phone number;
+Starts to look like a good plan and we just have to execute it.
 
-Regards.
-Mr. Ibrahim A.
+Please notify if you have a new version to work with (it isn't urgent =
+since the
+transplantation is only needed if omap_hsmmc is retired which depends on =
+merge
+of the new driver).
+
+BR and thanks,
+Nikolaus
+
