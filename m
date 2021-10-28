@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC20743E842
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F6D43E844
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhJ1SZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
+        id S231140AbhJ1SZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhJ1SZS (ORCPT
+        with ESMTP id S230293AbhJ1SZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:25:18 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4FAC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:22:51 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id s3so8002272ild.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:22:51 -0700 (PDT)
+        Thu, 28 Oct 2021 14:25:33 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A98C061570;
+        Thu, 28 Oct 2021 11:23:05 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id t4so9520675oie.5;
+        Thu, 28 Oct 2021 11:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/dQjBtihCGzCzk4sWaJtlIxEMe6bvTILkJmUOOEk/+A=;
-        b=qQzgyM9+6/Neq0qzf0bVuG0UN3cPEidy2yx2e9I4UAfTT415rHOjLkEeBU4uxzGJyW
-         4lBvp86JQ+Re95L4OjhFw+rwdVa5VffUPZoydRoDMb1YCYKGD/wD1WEc9HwpJLOozU6V
-         Nx4Cy+Y9QW5SM6Pkh/MXtnfd5y5/nuqnITavsYamlBjXNixn1cq5wr0ulM++CUxyTjN9
-         AHUk2x9z1XNq0rQb4Qo+ZSLvQmU0EuhyqRiaLqjZXQK1PKmLCGtq6ob5y+TN6rKBYQhC
-         XkzTwtOMV6R/mc0Vh5qDLSec3zQzr++aP/MbdB+nYC0B4CIpXHVLBCdWZrA9SpXKmN2v
-         etQg==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=huVvxmimD4yAH/A6Y9OLvaPoqMhARnPLJLBzkidypAY=;
+        b=EpQ4Cgk/KRPsVZSO8XT8ym1bp9HATFUscqocrjA4GZjp4lO33ltGHl2qqr+IY6gN0N
+         ROpNZ6dA/QQJStbTYEiiFsBbxTZZwCPftutLo7N9mIUY3DgpZvZRQ/yNxW4HGfJMYOFN
+         QRJ4r78iauQY6KYGUB9ye/KMJTuxu8GfJKN0QXX6Z+wybNYVv3ysrLzPl4InXvB6MC0a
+         QjD3UuLNVNYoPSvfVmy+2hyxTJdH5nvludTwp+qnqvFb3FwvfCft6WfsvrEKbJjeE1pA
+         3F6YprS4hiWJv0sC5Z2myndgGNLYxuKSzTJaU7WltN4Tp9EPzqLq0BtGgDgM5PYeGyV/
+         Zfdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/dQjBtihCGzCzk4sWaJtlIxEMe6bvTILkJmUOOEk/+A=;
-        b=R2DdvEjI1MzwMJ/WyI4JODcMcHw3+3GADr6EGKibKPjiT0FM8Bd+nYYRZpYVNOA012
-         565QW//n/Ky7PT/+WdIDVMBWY5o8UGflHH/7zC+hSVy6+bK2HrAL38cAp80wZEuiFg7m
-         e6xMNBJ1gdnt1XYVHumQeQDLHwoXAVcatvZ8IIcxYCBb/iL0sEczru8TKRWZJIptoMbq
-         qDjz1feNu5uiz6hFEnIbhsnLXChmYnKxXAwxpOelVfm+W7sWR67K7eXoNLkdUKR+Mei+
-         DuCgbxxMv2ahCI/6zluG2PIGdFT0uiiCbTk4G0zwCKuOuK60XM8G5InqzBX5A8EE49U7
-         eDSA==
-X-Gm-Message-State: AOAM532aW4omxzDGEvcdTkEtYMOcChMSUveyt3CbtFsNrygpUGhj7UJE
-        inHTrd/5hmbvsIqktCxQsw3WEQ==
-X-Google-Smtp-Source: ABdhPJy5ZX9WH7HWNVyq3m+BRT5/jF7ABlJbV1IBddR0A15cliuEljTJ94llIqo/aZkHQr+VIOEZQA==
-X-Received: by 2002:a92:8751:: with SMTP id d17mr1755422ilm.104.1635445371144;
-        Thu, 28 Oct 2021 11:22:51 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id m7sm1890990iov.30.2021.10.28.11.22.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 11:22:50 -0700 (PDT)
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-To:     Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     Pavel Begunkov <asml.silence@gmail.com>
-References: <20211028080813.15966-1-sir@cmpwn.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cc3d7fac-62e9-fe11-0cf1-3d9528d191a0@kernel.dk>
-Date:   Thu, 28 Oct 2021 12:22:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=huVvxmimD4yAH/A6Y9OLvaPoqMhARnPLJLBzkidypAY=;
+        b=u40Gy8AyYtuBcNkKq1VhvPBDwAs7aNZWFPhOjlTWY5tx75i7LYbzoW2DK+qdW5CZKV
+         8vrO+BpO+4Wdg4H86rOfCBzHF8YnZGDaDbPOLrbt0eL5bKJQU2Z2dc1oeFh8ZadnH8WR
+         IX6iDvDyLGe62rPxDuij6g36emnXjmOH2/6p7T433eFE+OEsIsAm0GEkXnf5trAPILKO
+         oljyv3N6BugDg6d0lXu6ASXOYx/SkwTlL+poKrUXt5I/n2m3mKKX8E8PYmHkOEol6eOh
+         2Ef7fnjL5juvlAoTkcdrDqA7mZ8I9WZ4W0/Damb2HSXEdW2oSyTWQA20+JeBaq5ts6B9
+         U6wg==
+X-Gm-Message-State: AOAM533skFjiKOlxRKyObolvtiKncVbKHbM9FTVaRcJ561Gz+4VAEFNx
+        qjtXN54ncKsb2IVuoDDCovk=
+X-Google-Smtp-Source: ABdhPJwkEkQDrdteZwRxlQLVHCdQqVNVv5YrcVd2q+VPWjeAB6rK9MlQsRU0SlhPiNEJB2b1u4qTUw==
+X-Received: by 2002:a54:4f1d:: with SMTP id e29mr9931945oiy.179.1635445385247;
+        Thu, 28 Oct 2021 11:23:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 8sm1273422oix.29.2021.10.28.11.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 11:23:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 28 Oct 2021 11:23:03 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v1 1/1] delay.h: fix for removed kernel.h
+Message-ID: <20211028182303.GA711390@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <20211028080813.15966-1-sir@cmpwn.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 2:08 AM, Drew DeVault wrote:
-> This limit has not been updated since 2008, when it was increased to 64
-> KiB at the request of GnuPG. Until recently, the main use-cases for this
-> feature were (1) preventing sensitive memory from being swapped, as in
-> GnuPG's use-case; and (2) real-time use-cases. In the first case, little
-> memory is called for, and in the second case, the user is generally in a
-> position to increase it if they need more.
+On Thu, Oct 28, 2021 at 08:01:43PM +0300, Andy Shevchenko wrote:
+> To be folded to the commit 0d280a9fbbd9 ("include/linux/delay.h:
+> replace kernel.h with the necessary inclusions")
 > 
-> The introduction of IOURING_REGISTER_BUFFERS adds a third use-case:
-> preparing fixed buffers for high-performance I/O. This use-case will
-> take as much of this memory as it can get, but is still limited to 64
-> KiB by default, which is very little. This increases the limit to 8 MB,
-> which was chosen fairly arbitrarily as a more generous, but still
-> conservative, default value.
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
 > ---
-> It is also possible to raise this limit in userspace. This is easily
-> done, for example, in the use-case of a network daemon: systemd, for
-> instance, provides for this via LimitMEMLOCK in the service file; OpenRC
-> via the rc_ulimit variables. However, there is no established userspace
-> facility for configuring this outside of daemons: end-user applications
-> do not presently have access to a convenient means of raising their
-> limits.
+>  arch/riscv/lib/delay.c           | 4 ++++
+>  arch/s390/include/asm/facility.h | 4 ++++
+>  2 files changed, 8 insertions(+)
 > 
-> The buck, as it were, stops with the kernel. It's much easier to address
-> it here than it is to bring it to hundreds of distributions, and it can
-> only realistically be relied upon to be high-enough by end-user software
-> if it is more-or-less ubiquitous. Most distros don't change this
-> particular rlimit from the kernel-supplied default value, so a change
-> here will easily provide that ubiquity.
-
-Agree with raising this limit, it is ridiculously low and we often get
-reports from people that can't even do basic rings with it. Particularly
-when bpf is involved as well, as it also dips into this pool.
-
-On the production side at facebook, we do raise this limit as well.
-
-Acked-by: Jens Axboe <axboe@kernel.dk>
-
--- 
-Jens Axboe
-
+> diff --git a/arch/riscv/lib/delay.c b/arch/riscv/lib/delay.c
+> index f51c9a03bca1..49d510ba75fd 100644
+> --- a/arch/riscv/lib/delay.c
+> +++ b/arch/riscv/lib/delay.c
+> @@ -4,10 +4,14 @@
+>   */
+>  
+>  #include <linux/delay.h>
+> +#include <linux/math.h>
+>  #include <linux/param.h>
+>  #include <linux/timex.h>
+> +#include <linux/types.h>
+>  #include <linux/export.h>
+>  
+> +#include <asm/processor.h>
+> +
+>  /*
+>   * This is copies from arch/arm/include/asm/delay.h
+>   *
+> diff --git a/arch/s390/include/asm/facility.h b/arch/s390/include/asm/facility.h
+> index e3aa354ab9f4..94b6919026df 100644
+> --- a/arch/s390/include/asm/facility.h
+> +++ b/arch/s390/include/asm/facility.h
+> @@ -9,8 +9,12 @@
+>  #define __ASM_FACILITY_H
+>  
+>  #include <asm/facility-defs.h>
+> +
+> +#include <linux/minmax.h>
+>  #include <linux/string.h>
+> +#include <linux/types.h>
+>  #include <linux/preempt.h>
+> +
+>  #include <asm/lowcore.h>
+>  
+>  #define MAX_FACILITY_BIT (sizeof(stfle_fac_list) * 8)
+> -- 
+> 2.33.0
+> 
