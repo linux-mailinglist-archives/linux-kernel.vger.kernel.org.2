@@ -2,63 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6217B43E04F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8000A43E062
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 13:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhJ1L51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 07:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhJ1L5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 07:57:24 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D73C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 04:54:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Mime-Version
-        :Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=y8rl0XIlF2Cpg8lJtO567Qjj0qqLoriC6dnteEPeF9s=; b=WjK2ObiNkKVftdaJyUhHA0jBWj
-        AFrpKFfQvlcu72O6hVoFALLaLErdeUgVt0n9phDkP9cjCpT8KsKROoUHUCJpVlnx8mv2F8nHtFSgp
-        Ys/zs6zku8gMnswZYanFDlcdP22+f2WoIrVKDS+pi4tJVsJymp0rYkGq5ZgXYfeRV+984n8AVJwX4
-        onuGhNUrRFCPhLulfQ0JTHEIucYbeINXhDiRGNATgvYfrPcIX/fY/2y5Lo++h3T/cj6JzhTrRbwnS
-        1wfisF5sVQB3a4VAJAK5fgNPAOuDKn84HLTgC4dRMrs4GlGgkQbyeS2w3dkWvnGHq6iaWfc+dsptH
-        9FGsg2Fw==;
-Received: from [54.239.6.185] (helo=freeip.amazon.com)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg3ze-00CkpU-7b; Thu, 28 Oct 2021 11:54:50 +0000
-Message-ID: <dcd5178f3706fd57352f171bb20535ed052d26fe.camel@infradead.org>
-Subject: Re: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D=3A?= drivers/char: suspected
- null-pointer dereference problem in handle_control_message
-From:   Amit Shah <amit@infradead.org>
-To:     YE Chengfeng <cyeaa@connect.ust.hk>,
-        "amit@kernel.org" <amit@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 28 Oct 2021 13:54:49 +0200
-In-Reply-To: <TYCP286MB11885C2C4C12BFBB42F0D9CE8A849@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-References: <TYCP286MB11884B1010AF8C77F1BBDAF08A849@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-         <a61be974ef65d00fd22b0216fc0d85c0c226f5e9.camel@infradead.org>
-         <TYCP286MB11885C2C4C12BFBB42F0D9CE8A849@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S230297AbhJ1MCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhJ1MBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:01:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17810610FC;
+        Thu, 28 Oct 2021 11:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635422364;
+        bh=6SRnBqGEu6kfrjY8F8AIxFOXpP3mk9uNLODc5pl6vYo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PF+p5k3fPcX4g7U/HaBJuzIJ4k5E0pNaC5AYSReMWdptL5C6nDTIJaIE7qlYNYlG6
+         n1n/PwUdpeEdECCRPixbjSlqTeevDW0OntTvozcAaeZnGpyg9v14UXE0Uy+uDhiwA4
+         opUKp2Rh8z49oq5/De4kzH0wt2Tq2fvNA7/+mgp+6zfuqvEwWijrNqLYLBlBZuMPRL
+         88N447RwKebi4Ez1WZLL28f9yHI1UOy8Ip53Ye3TTKmeO3nK2Kc7hLybqU9+9eT+Gw
+         dD6HWh7fPMZRMI/QpI/9KZ3rirsCMx4Hs00YhSbDpBEZNMfr2ZfvOMHA6ZLmKCwWDw
+         xkF14RX5nWTCw==
+Date:   Thu, 28 Oct 2021 12:59:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 24/45] regulator: pfuze100: Use
+ devm_register_power_handler()
+Message-ID: <YXqQjG+5Eshm9fl5@sirena.org.uk>
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-25-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Wle3PKA2/qG6+6Vj"
+Content-Disposition: inline
+In-Reply-To: <20211027211715.12671-25-digetx@gmail.com>
+X-Cookie: try again
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-26 at 11:51 +0000, YE Chengfeng wrote:
-> Thanks for your reply.
-> 
-> Agree with you, seems that the branch at #line 1573 already handles this situation.
-> 
-> Another question, is it possible that port->name is null when show_port_name is invoked? I don't see any null-check there, could it be a null-dereference problem at #line 1282? Link is below.
-> https://github.com/torvalds/linux/blob/master/drivers/char/virtio_console.c#L1282
 
-Why don't you try it?
+--Wle3PKA2/qG6+6Vj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It's certainly possible that a port doesn't have a name.
+On Thu, Oct 28, 2021 at 12:16:54AM +0300, Dmitry Osipenko wrote:
 
+> Use devm_register_power_handler() that replaces global pm_power_off_prepare
+> variable and allows to register multiple power-off handlers.
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--Wle3PKA2/qG6+6Vj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF6kIwACgkQJNaLcl1U
+h9AyhAf+Nziuu181EjKis21sdValh/0I2qd5n6cZmpuLUeA7g6K6TyFH79y+tEkd
+Itu0nx35rsztyjl7+A8ECF9S9uJGD1N0o3cruhqU01R5Kloz9mrUDRii5R3Uh+fm
+wjXlm+iYDXdXIzRmM07WyWi8rUTpLrhHx7ogAb291MVxgxc1LqxOBAwk6hcvnDCB
+aLDZSKk0LT7/yHSU+s5sBmll+K1S09x+XUfo/7VEuf9WqctxN8t6DgnigNeg1sU1
+S3cmBREB1bkkqHuPWJhOyUeW6YyuYI8inCcpXRNtdydg4jwo5l2h16fE8e0db953
+VsD3Y2dmLQu1qKxLNZUqHCelyjTPow==
+=sNsl
+-----END PGP SIGNATURE-----
+
+--Wle3PKA2/qG6+6Vj--
