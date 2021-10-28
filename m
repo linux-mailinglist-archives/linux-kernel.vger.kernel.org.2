@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D0443D84F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D9343D851
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 03:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhJ1BCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 21:02:35 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:26129 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbhJ1BCe (ORCPT
+        id S229658AbhJ1BDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 21:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhJ1BD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:02:34 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HfnH018nsz1DHqv;
-        Thu, 28 Oct 2021 08:58:04 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 09:00:00 +0800
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 08:59:58 +0800
-Subject: Re: [PATCH bpf-next,v3] riscv, bpf: Add BPF exception tables
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-References: <20211027111822.3801679-1-tongtiangen@huawei.com>
- <CAJ+HfNhC=hfFnjVvCf=bw+n1msRjR3gGUyapAmsRDupZ5CusrQ@mail.gmail.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-From:   tongtiangen <tongtiangen@huawei.com>
-Message-ID: <d5c619a0-9632-6d13-c86b-46e3c2a16dcc@huawei.com>
-Date:   Thu, 28 Oct 2021 08:59:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 27 Oct 2021 21:03:29 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737B3C061570;
+        Wed, 27 Oct 2021 18:01:03 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so6592172pjl.2;
+        Wed, 27 Oct 2021 18:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k+zQD8CQaycNrdXa2NhAlfSk8bkMuLuQctVMZwAMb5o=;
+        b=oJ+zSBHPinxWCKj93v1TqObCHmImdDl+iVeTO3ls/858ugBtndDUFuSJ0pgqQ8AOzm
+         E+/TfN1Z6carxLC7YuefyE/UcAsl/LeUaWAoCFfYPovNpZLWD2vV0YKf20vvQbOafFsW
+         RW8EKHNU9WvPEQiApp7/CQqpdTDqNZFy8ZCjuwInqa88rCPe6LPNKreeihMyW9010ehS
+         /8HDBn7L1makPYc/dBtOR6Cy9W1yIyceO5riPMIsDl1Uv+PtV+X7nHKO4tIRiEYVp01W
+         nxTd/EBXmZhrjJAjW0tmgF99w/78M92ZaBlPUBO2kT51jkxAR+iLRVbvS/DOib6MonZ3
+         5b3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k+zQD8CQaycNrdXa2NhAlfSk8bkMuLuQctVMZwAMb5o=;
+        b=ZlVWyjLIqVbwThpCmPelG8KLgP99xI8dXQWHAnnJJRQVNlGkQeNu9MRWfesixWaKGw
+         Pfvv1lUznjyxMjeOmABIzguqyyOebKv5mhVgSQy6siwD8Nxy5+mxzLIuhoXKhXoWT/sd
+         zW/ttalMR9Uqtn9nUsmPy6uWeAx8czhkAlicjPcLo1kHRVHaS0CS8EsK3Q1lYiLx/PYP
+         12bsAkkj/VO5BzuH63YyJoC0gADEC6ClA4u58JrrnAIiAAPxTOdKM9eA6yGk+91YdPqc
+         G7IUrG/QQexCS1YTxDr5JS3qr9RUmgWeQCFN6Er1Kaok3xLfj0MNOfSr9nIGb5FNbn+C
+         zpBA==
+X-Gm-Message-State: AOAM531m6kxeGtvHFsXDgbgbzl+tWmtpQh9E/Niu3cj6qrz9L7YXEdMz
+        qzc4Vq9Tvf3KXcYwPaKbHL8BZBVRGSw=
+X-Google-Smtp-Source: ABdhPJzSYpIZ+33E+8PEAVvvZYtjRpm8RofSxaJx4otwP2iPfs4TZMTGuzOeMag6lff4YX7GC7mGkw==
+X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr9469296pjb.102.1635382862984;
+        Wed, 27 Oct 2021 18:01:02 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id y9sm849287pjj.6.2021.10.27.18.01.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 18:01:02 -0700 (PDT)
+From:   Yang Guang <cgel.zte@gmail.com>
+X-Google-Original-From: Yang Guang <yang.guang5@zte.com.cn>
+To:     Song Liu <song@kernel.org>
+Cc:     Yang Guang <yang.guang5@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] raid5-ppl: use swap() to make code cleaner
+Date:   Thu, 28 Oct 2021 01:00:53 +0000
+Message-Id: <20211028010053.7609-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNhC=hfFnjVvCf=bw+n1msRjR3gGUyapAmsRDupZ5CusrQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Using swap() make it more readable.
 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+---
+ drivers/md/raid5-ppl.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-On 2021/10/28 0:55, Björn Töpel wrote:
-> On Wed, 27 Oct 2021 at 13:03, Tong Tiangen <tongtiangen@huawei.com> wrote:
->>
->> When a tracing BPF program attempts to read memory without using the
->> bpf_probe_read() helper, the verifier marks the load instruction with
->> the BPF_PROBE_MEM flag. Since the riscv JIT does not currently recognize
->> this flag it falls back to the interpreter.
->>
->> Add support for BPF_PROBE_MEM, by appending an exception table to the
->> BPF program. If the load instruction causes a data abort, the fixup
->> infrastructure finds the exception table and fixes up the fault, by
->> clearing the destination register and jumping over the faulting
->> instruction.
->>
->> A more generic solution would add a "handler" field to the table entry,
->> like on x86 and s390.
->>
->> The same issue in ARM64 is fixed in:
->> commit 800834285361 ("bpf, arm64: Add BPF exception tables")
->>
->> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
->> Tested-by: Pu Lehui <pulehui@huawei.com>
->> ---
->> v3:
->> Modify according to Björn's comments, mainly code optimization.
->
-> Thank you!
->
-> I ran this patch against the test_bpf.ko, and selftests/bpf -- no
-> regressions, and after the patch is applied more tests passes. Yay!
+diff --git a/drivers/md/raid5-ppl.c b/drivers/md/raid5-ppl.c
+index 3ddc2aa0b530..4ab417915d7f 100644
+--- a/drivers/md/raid5-ppl.c
++++ b/drivers/md/raid5-ppl.c
+@@ -1081,7 +1081,7 @@ static int ppl_load_distributed(struct ppl_log *log)
+ 	struct ppl_conf *ppl_conf = log->ppl_conf;
+ 	struct md_rdev *rdev = log->rdev;
+ 	struct mddev *mddev = rdev->mddev;
+-	struct page *page, *page2, *tmp;
++	struct page *page, *page2;
+ 	struct ppl_header *pplhdr = NULL, *prev_pplhdr = NULL;
+ 	u32 crc, crc_stored;
+ 	u32 signature;
+@@ -1156,9 +1156,7 @@ static int ppl_load_distributed(struct ppl_log *log)
+ 		prev_pplhdr_offset = pplhdr_offset;
+ 		prev_pplhdr = pplhdr;
+ 
+-		tmp = page;
+-		page = page2;
+-		page2 = tmp;
++		swap(page, page2);
+ 
+ 		/* calculate next potential ppl offset */
+ 		for (i = 0; i < le32_to_cpu(pplhdr->entries_count); i++)
+-- 
+2.30.2
 
-Exciting test result, Thanks!
-
->
-> On a related note. The RISC-V selftests/bpf is in a pretty lousy
-> state. I'll send a cleanup patch for them soonish. E.g.:
->
-> * RISC-V is missing in bpf_tracing.h (libbpf)
-> * Some programs don't converge in 16 steps, I had to increase it to ~32
-> * The selftest/bpf Makefile needed some RV specific changes
-> * ...a lot of tests still don't pass, and needs to be looked in to
->
-> Feel free to add:
->
-> Acked-by: Björn Töpel <bjorn@kernel.org>
->
->> v2:
->> Modify according to Björn's comments, mainly removes redundant head files
->> extable.h and some code style issues.
->>
->>  arch/riscv/mm/extable.c         |  19 +++-
->>  arch/riscv/net/bpf_jit.h        |   1 +
->>  arch/riscv/net/bpf_jit_comp64.c | 185 +++++++++++++++++++++++++-------
->>  arch/riscv/net/bpf_jit_core.c   |  19 ++--
->>  4 files changed, 177 insertions(+), 47 deletions(-)
->>
->
-> [...]
->
-> Björn
-> .
->
