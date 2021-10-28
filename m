@@ -2,226 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B1B43F2DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB1543F2DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhJ1WjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        id S231445AbhJ1Wj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhJ1WjA (ORCPT
+        with ESMTP id S231235AbhJ1Wj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:39:00 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D983CC061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:36:32 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id s3so8695895ild.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:36:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tK1+5HlOuiSkOMddGgoV7U/XOQaHtx3v2HgHVD1iYN8=;
-        b=ZxvSeDwPFW152l1kjOzLqFVTqRIZ1tSyJm/Eu65JwEexV3UdocljKuPe7+igtGft0o
-         4J/OTTf7MgYfOgPneYct2FlOlzmd3wJ7Te3HfdnpZP4bfo3Sw/oO508tPp1qntRlOUPv
-         rf5SEQxfxGDJhvw/ti2Kx+r6hvqzPJVL0Y/6eZEASyPRd9PDy7p6gpnRzw2qzh3OXs1y
-         3clqox8iEkZu6FZ6KkldBcFLkJ0GpBYbtgZ7xpzDKhfZ2OvnPFHLRLRehVSslnV02Fv7
-         sAolhMktaCRwpH5T/eZXbKMykoArybd5dK8+r2/CXawhT7Ok1bcupF4tFoPLRe7fJIck
-         IFhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tK1+5HlOuiSkOMddGgoV7U/XOQaHtx3v2HgHVD1iYN8=;
-        b=FieKN/PUc2C/43yRmb0uRvfUcF/eDoT924xSXmAcgykcIuEbqwgArpO73pcpTp+4nf
-         vcvQidMbnbiCrWRbLTpDXYvXpUFLGjHdP3JoUsQ9SaDcqDrPUdTT8cmSbYa0b+YW2IuH
-         fCcyeFGBogs0I25QEp09lX7ENjgGnW3P4wDykuM0D4WofDJiospVmkx3NORGC9GjDuzw
-         oGNaJc4QDQ6a2jJeZLc3H/LClNb9MMRhlFFzWjLBnTzLvlWn9reFvd0UkOHALA5YqjZ6
-         hJRHzN+Dzo/ReeGgNnMrWLy1aKKmu2IP9SUxKnacsg9ii/3ed0tuNPgAnTPvAFe+ME+L
-         njyg==
-X-Gm-Message-State: AOAM533llXCgwNdDOVHrQjLQ+YWkP7sMJdECsKLhwSi1XcLgbkQltSqT
-        jIGBAemnJcyQ+Stkx/Ziy/Y2AnScT1x+nBs1UNx+iQ==
-X-Google-Smtp-Source: ABdhPJxyo7q9vBF/AuGwxupKSSnuSRqNqUaOic6kixIS9BztJFEpi+9u+HwsTdYOpdH0TWlimS0TX3kOl+GrKjV/dB0=
-X-Received: by 2002:a05:6e02:190f:: with SMTP id w15mr5046526ilu.121.1635460592112;
- Thu, 28 Oct 2021 15:36:32 -0700 (PDT)
+        Thu, 28 Oct 2021 18:39:26 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AA4C061570;
+        Thu, 28 Oct 2021 15:36:58 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HgL5g0wZ4z4xZ1;
+        Fri, 29 Oct 2021 09:36:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635460616;
+        bh=9eeQaGQGPYKxTDsNj7/Y6zXShdllX9TeK91s4sW5YQ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kpz2kWSpERt7NZ+WtiyNmuBmaCd/sXR5/cRH27JX+kLZga66L454mEqU4TpeKiVvM
+         v3yRoNGSHvsrUX3sQFJ2EVX3pJRo7+G/3by4q6UQkNRBk9Fm5zPZaAc8uWZqXe90Nc
+         R421LNhttswEDepiTKj+ZRObI80HcBLXu95QTcVJ/OP84kAPcilJTfhly7kIrQ37m2
+         n9kg2r3C1801iigFcReWFn0z+xcU5hulTiJB2K3AfeiID2/oEtR8K+2wqHlkTiT2sd
+         s3ZATyBfcGkFGtbt8SGeO4db0+TwbIQpLKiMZXNmN5pwIoCzelu/aC4V0kDIZxdnRF
+         zMFzqHSu3GcQg==
+Date:   Fri, 29 Oct 2021 09:36:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: linux-next: build warning after merge of the ftrace tree
+Message-ID: <20211029093653.78c10d98@canb.auug.org.au>
+In-Reply-To: <CAC_TJvd+RT0dwAHC8wM-CU4P15=7yQObWmJ+DZMCh26Lf-im2Q@mail.gmail.com>
+References: <20211028232345.5ffa43bc@canb.auug.org.au>
+        <20211028091646.15f6e6de@gandalf.local.home>
+        <20211029081009.0fd1a83a@canb.auug.org.au>
+        <CAC_TJvd+RT0dwAHC8wM-CU4P15=7yQObWmJ+DZMCh26Lf-im2Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211028064154.2301049-1-davidgow@google.com> <20211028064154.2301049-2-davidgow@google.com>
-In-Reply-To: <20211028064154.2301049-2-davidgow@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 28 Oct 2021 15:36:20 -0700
-Message-ID: <CAGS_qxoOj+sDOHY8VZv4fw7_XiXqDWcYEC1LAiSUHv38dXh_uw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] kunit: tool: Report an error if any test has no subtests
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Rae Moar <rmr167@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/ovXM2oMsWuFvBX5P5Wj==P6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:42 PM David Gow <davidgow@google.com> wrote:
+--Sig_/ovXM2oMsWuFvBX5P5Wj==P6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Kalesh,
+
+On Thu, 28 Oct 2021 14:29:47 -0700 Kalesh Singh <kaleshsingh@google.com> wr=
+ote:
 >
-> It's possible for a test to have a subtest header, but zero valid
-> subtests. We used to error on this if the test plan had no subtests
-> listed, but it's possible to have subtests without a test plan (indeed,
-> this is how parameterised tests work).
->
-> Tests with 0 subtests now have the result NO_TESTS, and will report an
-> error (which does not halt test execution, but is printed in a scary red
-> colour and is noted in the results summary).
+> On Thu, Oct 28, 2021 at 2:10 PM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+> >
+> > On Thu, 28 Oct 2021 09:16:46 -0400 Steven Rostedt <rostedt@goodmis.org>=
+ wrote: =20
+> > >
+> > > On Thu, 28 Oct 2021 23:23:45 +1100
+> > > Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > =20
+> > > > After merging the ftrace tree, today's linux-next build (htmldocs)
+> > > > produced this warning:
+> > > >
+> > > > Documentation/trace/histogram.rst:1766: WARNING: Inline emphasis st=
+art-string without end-string. =20
+> > >
+> > > I have no idea what that means. =20
+> >
+> > I assume you need to quote (with '\') the '*' on line 1767 (?). =20
+>=20
+> I also found the problem to be '*' character. I posted a fix at:
+> https://lore.kernel.org/r/20211028170548.2597449-1-kaleshsingh@google.com/
 
-Tested by tweaking ext4 tests (and running with patch 3)
+Yeah, every now and then I forget to read all my email before replying :-)
 
-[15:04:33] =============== ext4_inode_test (1 subtest) ================
-[15:04:33] ============== inode_test_xtimestamp_decoding ==============
-[15:04:33] [ERROR] Test inode_test_xtimestamp_decoding: 0 tests run!
-[15:04:33] ====== [NO TESTS RUN] inode_test_xtimestamp_decoding =======
-[15:04:33] ================ [SKIPPED] ext4_inode_test =================
-[15:04:33] ============================================================
-[15:04:33] Testing complete. Passed: 0, Failed: 0, Crashed: 0,
-Skipped: 1, Errors: 1
-[15:04:33] Elapsed time: 48.581s total, 0.000s configuring, 45.486s
-building, 2.992s running
+Thanks.
+--=20
+Cheers,
+Stephen Rothwell
 
-It's maybe a bit confusing to have ERROR, NO TESTS RUN, and SKIPPED
-all printed for the same thing.
+--Sig_/ovXM2oMsWuFvBX5P5Wj==P6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-An alternative would be to drop the error, giving
-[15:04:33] =============== ext4_inode_test (1 subtest) ================
-[15:04:33] ============== inode_test_xtimestamp_decoding ==============
-[15:04:33] ====== [NO TESTS RUN] inode_test_xtimestamp_decoding =======
-[15:04:33] ================ [SKIPPED] ext4_inode_test =================
-[15:04:33] ============================================================
+-----BEGIN PGP SIGNATURE-----
 
-But looking at it, I think I prefer the more explicit ERROR being there.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmF7JgUACgkQAVBC80lX
+0GywcQf/Zcwp2NfASf4Z3t+P1Plt5qFWP1NcC3NQ8RlHesnXFUl5lULQAKCPBAr+
+VaOK3kayzaAYxd0Xx2dht2B0T0B0OHkdaPHAaXwH3VAt83K57a7oyPn+wNjwluPM
+V4WflOiKQSRNsbk321YRREJmBmcII68rnr3OcntWvJ0H0fLKhAS203N779mjZJzh
+msuSrJnaYq0g+Ew6yvezkVHB1kOgkP+3yU8L+u0uSkZBPqBosfjJdRaC8lPMLluw
+bZl29FkoJNY+PsPqT/u/BctGWAgla2RLWajTxAY98qvelN98L3kRBk0/O5GuujyL
+dE0Ja1R2OirILO7PBz25slJMudej+g==
+=w/sL
+-----END PGP SIGNATURE-----
 
->
-> Signed-off-by: David Gow <davidgow@google.com>
-
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
-
-A few optional nits below.
-
-> ---
->
-> Changes since v2:
-> https://lore.kernel.org/linux-kselftest/20211027013702.2039566-2-davidgow@google.com/
-> - Report NO_TESTS as '[NO TESTS RUN]' in yellow, instead of '[FAILED]'
->   in red, particularly since it doesn't get counted as a failure.
->
->  tools/testing/kunit/kunit_parser.py              | 16 +++++++++++-----
->  tools/testing/kunit/kunit_tool_test.py           |  9 +++++++++
->  .../test_is_test_passed-no_tests_no_plan.log     |  7 +++++++
->  3 files changed, 27 insertions(+), 5 deletions(-)
->  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
->
-> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> index 50ded55c168c..68c847e8ca58 100644
-> --- a/tools/testing/kunit/kunit_parser.py
-> +++ b/tools/testing/kunit/kunit_parser.py
-> @@ -360,9 +360,6 @@ def parse_test_plan(lines: LineStream, test: Test) -> bool:
->         test.log.append(lines.pop())
->         expected_count = int(match.group(1))
->         test.expected_count = expected_count
-> -       if expected_count == 0:
-> -               test.status = TestStatus.NO_TESTS
-> -               test.add_error('0 tests run!')
->         return True
->
->  TEST_RESULT = re.compile(r'^(ok|not ok) ([0-9]+) (- )?([^#]*)( # .*)?$')
-> @@ -589,6 +586,8 @@ def format_test_result(test: Test) -> str:
->                 return (green('[PASSED] ') + test.name)
->         elif test.status == TestStatus.SKIPPED:
->                 return (yellow('[SKIPPED] ') + test.name)
-> +       elif test.status == TestStatus.NO_TESTS:
-> +               return (yellow('[NO TESTS RUN] ') + test.name)
->         elif test.status == TestStatus.TEST_CRASHED:
->                 print_log(test.log)
->                 return (red('[CRASHED] ') + test.name)
-> @@ -731,6 +730,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
->                 # test plan
->                 test.name = "main"
->                 parse_test_plan(lines, test)
-> +               parent_test = True
->         else:
->                 # If KTAP/TAP header is not found, test must be subtest
->                 # header or test result line so parse attempt to parser
-> @@ -744,7 +744,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
->         expected_count = test.expected_count
->         subtests = []
->         test_num = 1
-> -       while expected_count is None or test_num <= expected_count:
-> +       while parent_test and (expected_count is None or test_num <= expected_count):
->                 # Loop to parse any subtests.
->                 # Break after parsing expected number of tests or
->                 # if expected number of tests is unknown break when test
-> @@ -779,9 +779,15 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
->                         parse_test_result(lines, test, expected_num)
->                 else:
->                         test.add_error('missing subtest result line!')
-> +
-> +       # Check for there being no tests
-> +       if parent_test and len(subtests) == 0:
-> +               test.status = TestStatus.NO_TESTS
-> +               test.add_error('0 tests run!')
-> +
->         # Add statuses to TestCounts attribute in Test object
->         bubble_up_test_results(test)
-> -       if parent_test:
-> +       if parent_test and not main:
->                 # If test has subtests and is not the main test object, print
->                 # footer.
->                 print_test_footer(test)
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index bc8793145713..c59fe0777387 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -208,6 +208,15 @@ class KUnitParserTest(unittest.TestCase):
->                 self.assertEqual(
->                         kunit_parser.TestStatus.NO_TESTS,
->                         result.status)
-
-I'd prefer we split these test cases out.
-Perhaps:
-
-def test_no_tests_empty_plan(self):
-   ...
-
-def test_no_tests_no_plan(self):
-  ... # this new test
-
-> +               no_plan_log = test_data_path('test_is_test_passed-no_tests_no_plan.log')
-> +               with open(no_plan_log) as file:
-> +                       result = kunit_parser.parse_run_tests(
-> +                               kunit_parser.extract_tap_lines(file.readlines()))
-> +               self.assertEqual(0, len(result.test.subtests[0].subtests[0].subtests))
-> +               self.assertEqual(
-> +                       kunit_parser.TestStatus.NO_TESTS,
-> +                       result.test.subtests[0].subtests[0].status)
-
-optional:
-self.assertEqual(1, result.test.counts.errors)
-
-> +
->
->         def test_no_kunit_output(self):
->                 crash_log = test_data_path('test_insufficient_memory.log')
-> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
-> new file mode 100644
-> index 000000000000..dd873c981108
-> --- /dev/null
-> +++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_no_plan.log
-> @@ -0,0 +1,7 @@
-> +TAP version 14
-> +1..1
-> +  # Subtest: suite
-> +  1..1
-> +    # Subtest: case
-> +  ok 1 - case # SKIP
-> +ok 1 - suite
-> --
-> 2.33.0.1079.g6e70778dc9-goog
->
+--Sig_/ovXM2oMsWuFvBX5P5Wj==P6--
