@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3056343DAD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E18943DAD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 07:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhJ1Fra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 01:47:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhJ1Fr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229809AbhJ1Frc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 01:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229689AbhJ1Fr2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Oct 2021 01:47:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B6E6103C;
-        Thu, 28 Oct 2021 05:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635399901;
-        bh=AeCe8kc7D0XDwcosE113ZUP5h3uuuc8Wo/nX4PARYd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jqoml+dkw9pXIJBpmXvi8UQN3f1nTmo9DUJXYvJWgj2AjfcRF5KEv8T62njj6ZFCm
-         UVhXt1s+qGPSpMcg0n4J0vK8jp2L7vao7Bhmw9VMaMLAGSRLqKMTvcTMTym8IkWIGl
-         Lc6+cT9ONs/F+ioljQYgEkSpmCU5P1zWMStMDmIMHfClRZHeRu/GIMIAir5juPkEpS
-         xc/u3eJ9VseYMkMzgeGqhmhkM966tx+6X/Toec6IOu1wyQGKpy+w2QTYVD0Bi87JvF
-         ToObMIWEEq0QAGStOrW63zUEow3K56i0wTVQAUKpP76qOdZHosLl3WhFkln654l0eO
-         xampLfnAmayiw==
-Date:   Thu, 28 Oct 2021 08:44:57 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Ziyang Xuan <william.xuanziyang@huawei.com>, davem@davemloft.net,
-        jgg@nvidia.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net] net: vlan: fix a UAF in vlan_dev_real_dev()
-Message-ID: <YXo42VbEQEtPi1CO@unreal>
-References: <20211027121606.3300860-1-william.xuanziyang@huawei.com>
- <20211027184640.7955767e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B21FC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:45:02 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id t184so4980160pfd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 22:45:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GG4woYR7NisY/q8Aqftt8VbaoIUjeCAFtan/TYRsjpU=;
+        b=GrlMrACUpkv4yRw/bDNI74wjHSJX2ujYSjccxXlMwSqpqwHxbMBmdMvVkv0bO9AjH8
+         ic8U5zL/L9NoK4aaLi1aw4q0ZpTdDrdkzCrxPOmAQlBq6v7AxoqEo3ecAb7FVrY4U+01
+         yB9/LEjRxgwzYrK+z1kmhEWslqQQBaxUgEthyd6cSKEvhtTrypqWG8bqYIbPvwhjGLuK
+         PS3oTkLVzKTq91pmr5BgCC9SRyHeg1dvVQMSMqfh0N5dM9BchT9B4Bhg0enreOm3xcyl
+         2CcPf4CeQYiYc7C9LmwNPU+Q2zHLH3VFKvH9P3tobjVq6wjazpM7MpFRkQQ4YpL4ibCp
+         Ixog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GG4woYR7NisY/q8Aqftt8VbaoIUjeCAFtan/TYRsjpU=;
+        b=V7GqTDxchkKxv7sUCnF2P4KZ6Tfwm+l7+NNraPU+snDmYZbtkcFOmUZf7tywQM9jLc
+         QOVzrmDj8gIRlDdFeM1ZzPTqSuwl0YIiA5PZEJBthLvzW/C8gwVbzVxKLRu7g8xNfJrz
+         7mqYkpmE0gDGLz39SgSMaJnklva9sOLJoxmYm1W+DKP9RYOsE+0naorPMQ0ZJH9yY7FY
+         vFJI46om3jaM45GzS6Ic0YrdTjIQur6rqkY5o1F1Fd11kKtVxeLKZ78sjbVq5iGSP59M
+         Nq87cG6GyF+2TAyr9JxEM5mSymUtq4ebIxjpaBOhaFxPvAUCNnk3egeSkhAA2SbmgrCg
+         Gfig==
+X-Gm-Message-State: AOAM531tSfp213bYWKl/Jjo3s1EUQXGxBOVTROF0i7gNSfR3v/lS8ZNC
+        zQwp0gGBsg62x5y2o+jN/8HEPQ==
+X-Google-Smtp-Source: ABdhPJykT+5wpjxxfNlbo1iflYwQ32FIIWG5dI2LruihbbOqUdV3QEb5FgCDaxq2gggVjjxyWadZYA==
+X-Received: by 2002:a63:3759:: with SMTP id g25mr1671466pgn.231.1635399901817;
+        Wed, 27 Oct 2021 22:45:01 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id pj12sm1467465pjb.19.2021.10.27.22.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 22:45:01 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 11:14:59 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        thara.gopinath@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org
+Subject: Re: [PATCH v2 1/5] arch_topology: Introduce thermal pressure update
+ function
+Message-ID: <20211028054459.dve6s2my2tq7odem@vireshk-i7>
+References: <20211015144550.23719-1-lukasz.luba@arm.com>
+ <20211015144550.23719-2-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027184640.7955767e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211015144550.23719-2-lukasz.luba@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 06:46:40PM -0700, Jakub Kicinski wrote:
-> On Wed, 27 Oct 2021 20:16:06 +0800 Ziyang Xuan wrote:
-> > The real_dev of a vlan net_device may be freed after
-> > unregister_vlan_dev(). Access the real_dev continually by
-> > vlan_dev_real_dev() will trigger the UAF problem for the
-> > real_dev like following:
-> > 
-> > ==================================================================
-> > BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
-> > Call Trace:
-> >  kasan_report.cold+0x83/0xdf
-> >  vlan_dev_real_dev+0xf9/0x120
-> >  is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
-> >  is_eth_port_of_netdev_filter+0x28/0x40
-> >  ib_enum_roce_netdev+0x1a3/0x300
-> >  ib_enum_all_roce_netdevs+0xc7/0x140
-> >  netdevice_event_work_handler+0x9d/0x210
-> > ...
-> > 
-> > Freed by task 9288:
-> >  kasan_save_stack+0x1b/0x40
-> >  kasan_set_track+0x1c/0x30
-> >  kasan_set_free_info+0x20/0x30
-> >  __kasan_slab_free+0xfc/0x130
-> >  slab_free_freelist_hook+0xdd/0x240
-> >  kfree+0xe4/0x690
-> >  kvfree+0x42/0x50
-> >  device_release+0x9f/0x240
-> >  kobject_put+0x1c8/0x530
-> >  put_device+0x1b/0x30
-> >  free_netdev+0x370/0x540
-> >  ppp_destroy_interface+0x313/0x3d0
-> > ...
-> > 
-> > Set vlan->real_dev to NULL after dev_put(real_dev) in
-> > unregister_vlan_dev(). Check real_dev is not NULL before
-> > access it in vlan_dev_real_dev().
-> > 
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
-> > Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> > ---
-> >  net/8021q/vlan.c      | 1 +
-> >  net/8021q/vlan_core.c | 2 +-
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
-> > index 55275ef9a31a..1106da84e725 100644
-> > --- a/net/8021q/vlan.c
-> > +++ b/net/8021q/vlan.c
-> > @@ -126,6 +126,7 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
-> >  
-> >  	/* Get rid of the vlan's reference to real_dev */
-> >  	dev_put(real_dev);
-> > +	vlan->real_dev = NULL;
-> >  }
-> >  
-> >  int vlan_check_real_dev(struct net_device *real_dev,
-> > diff --git a/net/8021q/vlan_core.c b/net/8021q/vlan_core.c
-> > index 59bc13b5f14f..343f34479d8b 100644
-> > --- a/net/8021q/vlan_core.c
-> > +++ b/net/8021q/vlan_core.c
-> > @@ -103,7 +103,7 @@ struct net_device *vlan_dev_real_dev(const struct net_device *dev)
-> >  {
-> >  	struct net_device *ret = vlan_dev_priv(dev)->real_dev;
-> >  
-> > -	while (is_vlan_dev(ret))
-> > +	while (ret && is_vlan_dev(ret))
-> >  		ret = vlan_dev_priv(ret)->real_dev;
-> >  
-> >  	return ret;
-> 
-> But will make all the callers of vlan_dev_real_dev() feel like they
-> should NULL-check the result, which is not necessary.
-> 
-> RDMA must be calling this helper on a vlan which was already
-> unregistered, can we fix RDMA instead?
+On 15-10-21, 15:45, Lukasz Luba wrote:
+> +/**
+> + * topology_thermal_pressure_update() - Update thermal pressure for CPUs
+> + * @cpus	: The related CPUs for which capacity has been reduced
+> + * @capped_freq	: The maximum allowed frequency that CPUs can run at
 
-He tried to fix RDMA first, but we came to conclusion that we real
-solution is in netdev land.
+Maybe replace tabs with spaces here ?
 
-https://lore.kernel.org/linux-rdma/20211025163941.GA393143@nvidia.com/T/#m44abbf1ea5e4b5237610c1b389c3340d92a03b8d
+> + *
+> + * Update the value of thermal pressure for all @cpus in the mask. The
+> + * cpumask should include all (online+offline) affected CPUs, to avoid
+> + * operating on stale data when hot-plug is used for some CPUs. The
+> + * @capped_freq must be less or equal to the max possible frequency and
+> + * reflects the currently allowed max CPUs frequency due to thermal capping.
+> + * The @capped_freq must be provided in kHz.
+> + */
+> +void topology_thermal_pressure_update(const struct cpumask *cpus,
+> +				      unsigned long capped_freq)
+> +{
+> +	unsigned long max_capacity, capacity;
+> +	int cpu;
+> +
+> +	if (!cpus)
 
-Thanks
+I will drop this and let the kernel crash :)
+
+> +		return;
+> +
+> +	cpu = cpumask_first(cpus);
+> +	max_capacity = arch_scale_cpu_capacity(cpu);
+> +
+> +	/* Convert to MHz scale which is used in 'freq_factor' */
+> +	capped_freq /= 1000;
+
+We should make sure capped_freq > freq_factor and WARN if not. This will also
+get rid of similar checks at the users.
+
+> +
+> +	capacity = mult_frac(capped_freq, max_capacity,
+> +			     per_cpu(freq_factor, cpu));
+> +
+> +	arch_set_thermal_pressure(cpus, max_capacity - capacity);
+> +}
+> +EXPORT_SYMBOL_GPL(topology_thermal_pressure_update);
+
+-- 
+viresh
