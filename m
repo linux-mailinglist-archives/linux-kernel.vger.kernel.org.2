@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4858A43DBD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9E643DBD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhJ1HT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 03:19:59 -0400
-Received: from mga01.intel.com ([192.55.52.88]:50581 "EHLO mga01.intel.com"
+        id S229921AbhJ1HVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:21:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:51590 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229768AbhJ1HT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:19:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="253900828"
-X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
-   d="scan'208";a="253900828"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 00:17:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
-   d="scan'208";a="636111472"
-Received: from kuha.fi.intel.com ([10.237.72.166])
-  by fmsmga001.fm.intel.com with SMTP; 28 Oct 2021 00:17:12 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 28 Oct 2021 10:17:11 +0300
-Date:   Thu, 28 Oct 2021 10:17:11 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@google.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Jack Pham <jackp@codeaurora.org>,
-        "Gopal, Saranya" <saranya.gopal@intel.com>,
-        "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/4] USB Power Delivery character device interface
-Message-ID: <YXpOd9AZ/mGZC97g@kuha.fi.intel.com>
-References: <20211026143352.78387-1-heikki.krogerus@linux.intel.com>
- <YXgZdFV2yTXAKxE9@kroah.com>
- <YXkx0uG3Z539XJWo@kuha.fi.intel.com>
- <YXlL5WG6M7fNNtuo@kroah.com>
+        id S229656AbhJ1HVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:21:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 965D01063;
+        Thu, 28 Oct 2021 00:19:11 -0700 (PDT)
+Received: from [10.57.25.153] (unknown [10.57.25.153])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF1B13F73D;
+        Thu, 28 Oct 2021 00:19:07 -0700 (PDT)
+Subject: Re: [PATCH v2 1/5] arch_topology: Introduce thermal pressure update
+ function
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        thara.gopinath@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org
+References: <20211015144550.23719-1-lukasz.luba@arm.com>
+ <20211015144550.23719-2-lukasz.luba@arm.com>
+ <20211028054459.dve6s2my2tq7odem@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <3e1807d3-82cd-7ade-d361-e1982a4848a9@arm.com>
+Date:   Thu, 28 Oct 2021 08:19:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXlL5WG6M7fNNtuo@kroah.com>
+In-Reply-To: <20211028054459.dve6s2my2tq7odem@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 02:53:57PM +0200, Greg KH wrote:
-> On Wed, Oct 27, 2021 at 02:02:42PM +0300, Heikki Krogerus wrote:
-> > Hi Greg,
-> > 
-> > On Tue, Oct 26, 2021 at 05:06:28PM +0200, Greg KH wrote:
-> > > So, why not sysfs?  :)
-> > 
-> > This is about allowing the user space to take over the USB Power
-> > Delivery communication and policy decisions in some cases. The user
-> > space needs to be able to send and receive raw USB Power Delivery
-> > messages one way or the other. I don't care about what's the interface
-> > that we use.
-> > 
-> > Here we are talking about the PDOs, so basically the power contract.
-> > Even if we figured out a way how to expose all the information from
-> > the Capability, Status, Alert and what ever messages you need to the
-> > user space via sysfs, and then allow the user to separately send the
-> > Request Message, we would have only covered the power contract. That
-> > does not cover everything, but it would also be unnecessarily
-> > complicated to handle with separate sysfs files IMO.
-> > 
-> > Even with the power contract it would make more sense to me to just
-> > allow the user space to simply read and write the raw messages, but
-> > when we go the other things like Vendor Specific Messages, I don't
-> > think there is any other way.
-> > 
-> > So we really do need to be able to tap into the USB Power Delivery
-> > protocol layer directly from user space. I don't care about how we do
-> > that - character device is just a suggestion, although, it does still
-> > feel correct to me. Is there some other way we could do this?
-> 
-> Ok, a char device sounds fine, but _what_ userspace code is going to be
-> using this interface?  We need to have a working version of that as well
-> before we could take this new interface, otherwise it wouldn't make much
-> sense.
-> 
-> And why does userspace have to do this, what is wrong with the kernel
-> doing it as it does today?  I.e. what is broken that adding a new api to
-> the kernel is going to fix?
-> 
-> That needs to be documented really really well.
 
-Sure.
 
-thanks,
+On 10/28/21 6:44 AM, Viresh Kumar wrote:
+> On 15-10-21, 15:45, Lukasz Luba wrote:
+>> +/**
+>> + * topology_thermal_pressure_update() - Update thermal pressure for CPUs
+>> + * @cpus	: The related CPUs for which capacity has been reduced
+>> + * @capped_freq	: The maximum allowed frequency that CPUs can run at
+> 
+> Maybe replace tabs with spaces here ?
 
--- 
-heikki
+Sure
+
+> 
+>> + *
+>> + * Update the value of thermal pressure for all @cpus in the mask. The
+>> + * cpumask should include all (online+offline) affected CPUs, to avoid
+>> + * operating on stale data when hot-plug is used for some CPUs. The
+>> + * @capped_freq must be less or equal to the max possible frequency and
+>> + * reflects the currently allowed max CPUs frequency due to thermal capping.
+>> + * The @capped_freq must be provided in kHz.
+>> + */
+>> +void topology_thermal_pressure_update(const struct cpumask *cpus,
+>> +				      unsigned long capped_freq)
+>> +{
+>> +	unsigned long max_capacity, capacity;
+>> +	int cpu;
+>> +
+>> +	if (!cpus)
+> 
+> I will drop this and let the kernel crash :)
+
+OK :)
+
+> 
+>> +		return;
+>> +
+>> +	cpu = cpumask_first(cpus);
+>> +	max_capacity = arch_scale_cpu_capacity(cpu);
+>> +
+>> +	/* Convert to MHz scale which is used in 'freq_factor' */
+>> +	capped_freq /= 1000;
+> 
+> We should make sure capped_freq > freq_factor and WARN if not. This will also
+> get rid of similar checks at the users.
+
+OK, I'll change that.
+
+Thank you for the review.
+
+Regards,
+Lukasz
