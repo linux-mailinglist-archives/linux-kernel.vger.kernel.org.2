@@ -2,126 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A249E43E163
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DCF43E166
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhJ1M7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:59:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64460 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229946AbhJ1M7l (ORCPT
+        id S230217AbhJ1NAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:00:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42743 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230157AbhJ1NAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:59:41 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SClxWL011260;
-        Thu, 28 Oct 2021 12:56:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=INVjYdr5gOcGiPS4sk9gH2v6Lz9ouI5VLmcx1ztSyQo=;
- b=Ke+uy7DrTihhmaJ3oHitCrskzuXMZxX65iUNrDO1fwQOHgFe0eEX3fDSbR36Ej53CmFZ
- dwnsOfH25Bd01RPAqcAwwJWg9xdyh3ikyc3Xjx04duti83cWHccTvVOx2xA7pQSEv3lf
- ocrlk5cg2G73UfVOZ1Bj8FeI/2v976cuMVDx3K4HvKz6aWryZUIdVnQnvCjUfvonWnLU
- wCe78Y/MzkQDV8jTE78xikRsOMvcmkIZV06kGXnNbrNZmbKOo8OpQP7Q3uqJFD4MrmkU
- 8rA/ueY0kn5iwJ/ZGUroB8Ugmg3XXR4e26CNZDfeIYtXPviN4qkLf820SjKOHisjUHza UQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3byv6er4qt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 12:56:46 +0000
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SCmTlE012057;
-        Thu, 28 Oct 2021 12:56:45 GMT
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3byv6er4qd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 12:56:45 +0000
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SCrb9m026734;
-        Thu, 28 Oct 2021 12:56:44 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04dal.us.ibm.com with ESMTP id 3bx4f8vvn5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 12:56:44 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SCuhvn48955892
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 12:56:43 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E5FD7805C;
-        Thu, 28 Oct 2021 12:56:43 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 396277806B;
-        Thu, 28 Oct 2021 12:56:40 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.163.12.226])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Oct 2021 12:56:39 +0000 (GMT)
-Message-ID: <5b4ef3212232836b02920e57014d69300b484f20.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 2/2] tpm: use SM3 instead of SM3_256
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Date:   Thu, 28 Oct 2021 08:56:38 -0400
-In-Reply-To: <20211026075626.61975-3-tianjia.zhang@linux.alibaba.com>
-References: <20211026075626.61975-1-tianjia.zhang@linux.alibaba.com>
-         <20211026075626.61975-3-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: GWOqV3gAEq8QSKNIJu50pIXY1-qMcU6E
-X-Proofpoint-ORIG-GUID: xFCfz9k46q-l0FnrN5q9B3PNV22O0QGq
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 28 Oct 2021 09:00:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635425885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RLyubtvxjGpeEnTLp10d70mgW+REwGQNEyC836W4VCQ=;
+        b=A99wx56CIC7XvsX+kehqYGxvlAWdI6kzbAm4rBQwQOU/FLApGPxmcfdCu0WyYNst90kAKz
+        hAWm5Il9mG6dLBi4gVE8iGDkGTjcNsdmBYoz3V3xBMm6u/xQbd64vgIelrHSl4SEIloyMC
+        gVmFcO4ddumLoIQ5xzmjUcOa5w8nlNk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-kqPdrAPOPdC5wC-EgQAYiA-1; Thu, 28 Oct 2021 08:58:02 -0400
+X-MC-Unique: kqPdrAPOPdC5wC-EgQAYiA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14DAA19067F2;
+        Thu, 28 Oct 2021 12:57:45 +0000 (UTC)
+Received: from localhost (ovpn-8-40.pek2.redhat.com [10.72.8.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D6C65D9DE;
+        Thu, 28 Oct 2021 12:57:43 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: [PATCH 0/3] livepatch: cleanup kpl_patch kobject release
+Date:   Thu, 28 Oct 2021 20:57:31 +0800
+Message-Id: <20211028125734.3134176-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-28_01,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 malwarescore=0 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110280069
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-26 at 15:56 +0800, Tianjia Zhang wrote:
-> According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.html,
-> SM3 always produces a 256-bit hash value and there are no plans for
-> other length development, so there is no ambiguity in the name of
-> sm3.
+Hello,
 
-Please just drop this piece.
+The 1st patch moves module_put() to release handler of klp_patch
+kobject.
 
-[...]
->         hash=         hash algorithm name as a string. For TPM 1.x
-> the only
->                       allowed value is sha1. For TPM 2.x the allowed
-> values
-> -                     are sha1, sha256, sha384, sha512 and sm3-256.
-> +                     are sha1, sha256, sha384, sha512 and sm3.
+The 2nd patch changes to free klp_patch and other kobjects without
+klp_mutex.
 
-the hash parameter is an external ABI we can't simply change ... as
-Jarkko already told you.
-
-The rest are constants defined in the TPM standard, which we shouldn't
-change because then it makes everyone wonder why we're deviating.
-
-James
+The 3rd patch switches to synchronous kobject release for klp_patch.
 
 
+Ming Lei (3):
+  livepatch: remove 'struct completion finish' from klp_patch
+  livepatch: free klp_patch object without holding klp_mutex
+  livepatch: free klp_patch object synchronously
 
+ include/linux/livepatch.h     |  2 --
+ kernel/livepatch/core.c       | 63 +++++++++++++++--------------------
+ kernel/livepatch/core.h       |  3 +-
+ kernel/livepatch/transition.c | 23 +++++++++----
+ kernel/livepatch/transition.h |  2 +-
+ 5 files changed, 46 insertions(+), 47 deletions(-)
+
+-- 
+2.31.1
 
