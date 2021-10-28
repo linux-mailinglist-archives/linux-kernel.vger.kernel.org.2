@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FD343E399
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C69B43E39D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhJ1O1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:27:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230480AbhJ1O1j (ORCPT
+        id S231214AbhJ1O2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:28:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57062 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhJ1O2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:27:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635431111;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 28 Oct 2021 10:28:01 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5DA021FD53;
+        Thu, 28 Oct 2021 14:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635431133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0G7LmSeoTaOCEDD4Qdow17gIDFlX8I4Q0C2wC4wNyVM=;
-        b=UzdMzX1Cm7GtivQ3CecDSYQMcD1E7MLbGPFjrZTsAPqT7ivP7gFQirNFk64VuSVqgtnoq6
-        e+Xu3aO7MB21MpwjphrmO69R5GsQ9urRvAziOgs6DBON1SfMjkZybH2qr/EvHegLdvt30G
-        Ybj8HZ8EsuXxydQPKxK0Zyi88/LQhnQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-1gpGr-gOO0i4-NUmUbZDAw-1; Thu, 28 Oct 2021 10:25:10 -0400
-X-MC-Unique: 1gpGr-gOO0i4-NUmUbZDAw-1
-Received: by mail-wm1-f72.google.com with SMTP id z137-20020a1c7e8f000000b0030cd1800d86so2453754wmc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:25:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=0G7LmSeoTaOCEDD4Qdow17gIDFlX8I4Q0C2wC4wNyVM=;
-        b=4Ep1/yMap25WGnhqGK5p+CaoCTQaX5rCXKlUkWxrqkBE/XPuP7njaPNtzos2A+8kG1
-         fz89AJiG0jcnDw45mff+/6L9qk5aB2MlHArXuOE3fPypoYjOPu2jD9zQeiA9U4YbVZ54
-         zJupwVgfqLy88lGjEPY3E+IDxYK0spBDxiN930wykWgE3UJ1vShRMzfLEv3o5ui+AvXH
-         VB+rOTQq2csvux0XNdxyn/axhFQvQJaaCUHRmBoLKmA/wkmoq2rNTWTjD+sG792ac174
-         M5sFNt+tIs7KJor763W01a14sWA9smuRY8wWUbzYFG1hWEtAshk3O6ctvqyyqHUYNbcq
-         A22g==
-X-Gm-Message-State: AOAM5326PUIZLp78JzBN61xdzpXcWbQLpp5b6bU4F2WfZa4UE1r07kuW
-        Y9HOcJy1vdBtt5yG6HO/zWydVlCBlrti+Umt0LpfALq0/o2v7dbPvqintFQw31QpquXgA7lunoS
-        JTdQYXlUoDYMgznolCTvoAnDK
-X-Received: by 2002:a05:6000:186a:: with SMTP id d10mr6384577wri.279.1635431109200;
-        Thu, 28 Oct 2021 07:25:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxOi9O+vaOwxJUXA6a+jCK0+01FKTzme4s23K0tex2QVjKnfZgH01pT2wTLAsv8N0KStFFkhg==
-X-Received: by 2002:a05:6000:186a:: with SMTP id d10mr6384549wri.279.1635431108942;
-        Thu, 28 Oct 2021 07:25:08 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23b52.dip0.t-ipconnect.de. [79.242.59.82])
-        by smtp.gmail.com with ESMTPSA id x21sm6332839wmc.14.2021.10.28.07.25.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 07:25:08 -0700 (PDT)
-Message-ID: <4ac7c459-8e13-087a-f98d-9f3e0e6d8ee6@redhat.com>
-Date:   Thu, 28 Oct 2021 16:25:07 +0200
+        bh=z8HFzhLPeMNEIpymtY0aL1CjyagQsMTGZ46Z+UL1840=;
+        b=k2D/G9+AULYYNXqvPfX4mVCOkk8d0zBoamjfB/CPWzUlYA/JhdQztIClekKMThoxv5Uqzh
+        854ccBKhpjKEQfy2ZRnYIRXjVo+mL502jTBMoOY6/VqDnsD7xo2o/WrWPkJzmS7LJA3UHz
+        51dBqFXAfEmNupZDQ1TXusD99bARikk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635431133;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z8HFzhLPeMNEIpymtY0aL1CjyagQsMTGZ46Z+UL1840=;
+        b=ZhIhuVX2aPEFKw5sI9v9nRX42997oUUzEidx4H6yPFLPwe1jWxnK2KgozOqRgxCJpI32EN
+        xMec8D6KPh/eFjDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0AC113E9D;
+        Thu, 28 Oct 2021 14:25:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 75yNN9yyemGbGwAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Thu, 28 Oct 2021 14:25:32 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id b993446c;
+        Thu, 28 Oct 2021 14:25:32 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 15:25:26 +0100
+From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>,
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Patrick Donnelly <pdonnell@redhat.com>
+Subject: Re: [RFC PATCH v3] ceph: ceph: add remote object copies to fs client
+ metrics
+Message-ID: <YXqy1rRu9hDS72Cx@suse.de>
+References: <20211028114826.27192-1-lhenriques@suse.de>
+ <06ef4f08edebf8b0a1a8660adfc46597d0d028b7.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Content-Language: en-US
-To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211028135556.1793063-1-scgl@linux.ibm.com>
- <20211028135556.1793063-4-scgl@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 3/3] KVM: s390: gaccess: Cleanup access to guest frames
-In-Reply-To: <20211028135556.1793063-4-scgl@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <06ef4f08edebf8b0a1a8660adfc46597d0d028b7.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.10.21 15:55, Janis Schoetterl-Glausch wrote:
-> Introduce a helper function for guest frame access.
-
-"guest page access"
-
-But I do wonder if you actually want to call it
-
-"access_guest_abs"
-
-and say "guest absolute access" instead here.
-
-Because we're dealing with absolute addresses and the fact that we are
-accessing it page-wise is just because we have to perform a page-wise
-translation in the callers (either virtual->absolute or real->absolute).
-
-Theoretically, if you know you're across X pages but they are contiguous
-in absolute address space, nothing speaks against using that function
-directly across X pages with a single call.
-
+On Thu, Oct 28, 2021 at 08:41:52AM -0400, Jeff Layton wrote:
+> On Thu, 2021-10-28 at 12:48 +0100, Luís Henriques wrote:
+> > This patch adds latency and size metrics for remote object copies
+> > operations ("copyfrom").  For now, these metrics will be available on the
+> > client only, they won't be sent to the MDS.
+> > 
+> > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > ---
+> > This patch is still an RFC because it is... ugly.  Although it now
+> > provides nice values (latency and size) using the metrics infrastructure,
+> > it actually needs to extend the ceph_osdc_copy_from() function to add 2
+> > extra args!  That's because we need to get the timestamps stored in
+> > ceph_osd_request, which is handled within that function.
+> > 
+> > The alternative is to ignore those timestamps and collect new ones in
+> > ceph_do_objects_copy():
+> > 
+> > 	start_req = ktime_get();
+> > 	ceph_osdc_copy_from(...);
+> > 	end_req = ktime_get();
+> > 
+> > These would be more coarse-grained, of course.  Any other suggestions?
+> > 
 > 
-> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-> ---
->  arch/s390/kvm/gaccess.c | 24 ++++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
+> Not really. It is definitely ugly, I'll grant you that though...
 > 
-> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
-> index f0848c37b003..9a633310b6fe 100644
-> --- a/arch/s390/kvm/gaccess.c
-> +++ b/arch/s390/kvm/gaccess.c
-> @@ -866,6 +866,20 @@ static int guest_range_to_gpas(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
->  	return 0;
->  }
->  
-> +static int access_guest_page(struct kvm *kvm, enum gacc_mode mode, gpa_t gpa,
-> +			      void *data, unsigned int len)
-> +{
-> +	const unsigned int offset = offset_in_page(gpa);
-> +	const gfn_t gfn = gpa_to_gfn(gpa);
-> +	int rc;
-> +
-> +	if (mode == GACC_STORE)
-> +		rc = kvm_write_guest_page(kvm, gfn, data, offset, len);
-> +	else
-> +		rc = kvm_read_guest_page(kvm, gfn, data, offset, len);
-> +	return rc;
-> +}
-> +
->  int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->  		 unsigned long len, enum gacc_mode mode)
->  {
-> @@ -896,10 +910,7 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->  	rc = guest_range_to_gpas(vcpu, ga, ar, gpas, len, asce, mode);
->  	for (idx = 0; idx < nr_pages && !rc; idx++) {
->  		fragment_len = min(PAGE_SIZE - offset_in_page(gpas[idx]), len);
-> -		if (mode == GACC_STORE)
-> -			rc = kvm_write_guest(vcpu->kvm, gpas[idx], data, fragment_len);
-> -		else
-> -			rc = kvm_read_guest(vcpu->kvm, gpas[idx], data, fragment_len);
-> +		rc = access_guest_page(vcpu->kvm, mode, gpas[idx], data, fragment_len);
->  		len -= fragment_len;
->  		data += fragment_len;
->  	}
-> @@ -920,10 +931,7 @@ int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
->  	while (len && !rc) {
->  		gpa = kvm_s390_real_to_abs(vcpu, gra);
->  		fragment_len = min(PAGE_SIZE - offset_in_page(gpa), len);
-> -		if (mode)
-> -			rc = write_guest_abs(vcpu, gpa, data, fragment_len);
-> -		else
-> -			rc = read_guest_abs(vcpu, gpa, data, fragment_len);
-> +		rc = access_guest_page(vcpu->kvm, mode, gpa, data, fragment_len);
->  		len -= fragment_len;
->  		gra += fragment_len;
->  		data += fragment_len;
+> The cleaner method might be to just inline ceph_osdc_copy_from in
+> ceph_do_objects_copy so that you deal with the req in there.
+
+Yeah, but the reason for having these 2 functions was to keep net/ceph/
+code free from cephfs-specific code.  Inlining ceph_osdc_copy_from would
+need to bring some extra FS knowledge into libceph.ko.  Right now the
+funcion in osd_client receives only the required args for doing a copyfrom
+operation.  (But TBH it's possible that libceph already contains several
+bits that are cephfs or rbd specific.)
+
+However, I just realized that I do have some code here that changes
+ceph_osdc_copy_from() to return the OSD req struct.  The caller would then
+be responsible for doing the ceph_osdc_wait_request().  This code was from
+my copy_file_range parallelization patch (which I should revisit one of
+these days), but could be reused here.  Do you think it would be
+acceptable?
+
+<...>
+> > +	spinlock_t copyfrom_metric_lock;
+> > +	u64 total_copyfrom;
+> > +	u64 copyfrom_size_sum;
+> > +	u64 copyfrom_size_min;
+> > +	u64 copyfrom_size_max;
+> > +	ktime_t copyfrom_latency_sum;
+> > +	ktime_t copyfrom_latency_sq_sum;
+> > +	ktime_t copyfrom_latency_min;
+> > +	ktime_t copyfrom_latency_max;
+> > +
 > 
+> Not a comment about your patch, specifically, but we have a lot of
+> copy/pasted code to deal with different parts of ceph_client_metric.
+> 
+> It might be nice to eventually turn each of the read/write/copy metric
+> blocks in this struct into an array, and collapse a lot of the other
+> helper functions together.
+> 
+> If you feel like doing that cleanup, I'd be happy to review. Otherwise,
+> I'll plan to look at it in the near future.
 
+Yeah, sure.  I can have a look at that too.
 
--- 
-Thanks,
-
-David / dhildenb
-
+Cheers,
+--
+Luís
