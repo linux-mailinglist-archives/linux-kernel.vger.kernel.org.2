@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796E343E402
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CAB43E404
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhJ1OnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:43:05 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:42926 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230451AbhJ1OnE (ORCPT
+        id S231163AbhJ1Oos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:44:48 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:60579 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230265AbhJ1Ooq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:43:04 -0400
-IronPort-Data: =?us-ascii?q?A9a23=3Aga/KPqB0g3RQ3BVW/37iw5YqxClBgxIJ4g17XOL?=
- =?us-ascii?q?fU1HrgGkr3mdRn2AfWz2GP/vfYGrzeNggO4q0909V7Z+Ax9UxeLYW3SE0HigS8?=
- =?us-ascii?q?aIpJvzAcxyuZ3vKRiH7ofMOA/w2MrEsF+hpCC+DzvuRGuK59yAljfvYHuCU5NP?=
- =?us-ascii?q?sYUideyc1EU/Ntjozw4bVsqYw6TSIK1vlVeHa+6UzC3f5s9JACV/43orYwP9ZU?=
- =?us-ascii?q?FsejxtD1rA2TagjUFYzDBD5BrpHTU26ByOQroW5goeHq+j/ILGRpgs1/j8tA9+?=
- =?us-ascii?q?/k7v9GqEIau6Pe1bezCMMAu773UMqSi8ai87XMNIedENWgnONls94zNFltJqqS?=
- =?us-ascii?q?A5vMLekdOE1AkgFSX8hVUFB0PqdSZSliuSQxlfBd3rqyvl0C0swPI4w9eN+AGU?=
- =?us-ascii?q?I/vsdQBgDaxyOifi/xrm2UeJrrssmJcjveogYvxlIyizFF/svSpDSBqbH/9lV2?=
- =?us-ascii?q?B8/gcdBGfvRfc0EcSEpZxPFCzVAIFoYC5IWmOaum2nxdCBepFuJpK0xpW/Jw2R?=
- =?us-ascii?q?Z3r/3PcHJUtWORNlJmkuEoWXf4mX0HlccOcD34T6E9G+8w/TTlCz6Xo06ELyj6?=
- =?us-ascii?q?uUshFyV23xVBBAIPXO/oP+kmgu9VshZJkg85CUjt+4x+VatQ927WAe3yENoFDZ?=
- =?us-ascii?q?0t8F4SrJhrljXk+yKs0DJWy4eQyAHc9I88sk7WVQXOpayt4uBLVRSXHe9ExpxL?=
- =?us-ascii?q?oupkA4=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Aw+FPzaOMK6uACMBcTsCjsMiBIKoaSvp037BL?=
- =?us-ascii?q?7TETdfU7SKelfqyV9sjzkCWatN9zYhEdcLK7VJVoKEm0naKdo7N+AV7IZmjbUR?=
- =?us-ascii?q?6TXeZfBPzZslnd8kPFm9K1rZ0QFpSWX+eAb2RHsQ=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.87,190,1631570400"; 
-   d="scan'208";a="995267"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 16:40:36 +0200
-Date:   Thu, 28 Oct 2021 16:40:35 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>
-cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
-        forest@alittletooquiet.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 4/7] staging: vt6655: Introduce `data`
- temporary variable
-In-Reply-To: <186358f460f2093dc8a60a8120be3dc6f830c81f.camel@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2110281639360.9518@hadrien>
-References: <cover.1635415820.git.karolinadrobnik@gmail.com>  <2039159.k92FijXA2m@localhost.localdomain>  <alpine.DEB.2.22.394.2110281332040.9518@hadrien>  <39890856.3BBMun7449@localhost.localdomain>
- <186358f460f2093dc8a60a8120be3dc6f830c81f.camel@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 28 Oct 2021 10:44:46 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MpUlO-1n0oqb2zvA-00pqiF; Thu, 28 Oct 2021 16:42:17 +0200
+Received: by mail-wm1-f46.google.com with SMTP id b71so5280119wmd.0;
+        Thu, 28 Oct 2021 07:42:17 -0700 (PDT)
+X-Gm-Message-State: AOAM530hdB1UavH2d6Z6XLxjrMbnJZvQrT6UV7Y2BvCZg989E+N10JsK
+        3Wzb16ytB8eAM9IERImatZX+EeIplNghVQkYvLA=
+X-Google-Smtp-Source: ABdhPJx9cbVaNwx+3GHbcHnQXOpN9heQ4JmpWp0Hw9nZ+0Vz+KISvn385FCbSquLcG8jLThOtn8bEBSn4MBwQAn7pDA=
+X-Received: by 2002:a1c:1c1:: with SMTP id 184mr1292581wmb.1.1635432137333;
+ Thu, 28 Oct 2021 07:42:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com> <20211028141938.3530-4-lukas.bulwahn@gmail.com>
+In-Reply-To: <20211028141938.3530-4-lukas.bulwahn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 28 Oct 2021 16:42:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3+-J6XbUmzWs7ATN7z53GomZSj6vq3n5R709=iL45RrA@mail.gmail.com>
+Message-ID: <CAK8P3a3+-J6XbUmzWs7ATN7z53GomZSj6vq3n5R709=iL45RrA@mail.gmail.com>
+Subject: Re: [PATCH 03/13] arm: Kconfig.debug: drop reference to removed ARCH_MSM
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:wCBMx+HBENwdEVNanSmQ9zpMu8pE+lD9RbEYFLss8aQbl7kLZt6
+ a2wk9JodzAGTmpCdw7XQqFKBSjbKWWKtvXQmuMfWTBZUgAGMkl/OAqI/jKwEGUz9J8yLSAi
+ tYweqNWMrzWHDb6IChmphJJu6bIdy7kZg9aBy6Wc5a1Bqgz74mQ71b64riFnB17iLpmlWEq
+ KZQaheLfjKv5w3bjutYxw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Mgt+1CsVrGA=:5/F8zFWhHeHQlVaesv4adb
+ DxyvCbf0PRMcVwa8Ygyu80p/e5lmqgjNz2QkAkkTYm1Iv3a1v05l6NkvsRK188/+QB3mR66eK
+ KvEKly4aOLtokb2Qhb4yH428Ymde9mCq5WJTgma3wMuVNSc8pHYLBvc/tsD3KlerZ2DT3JiEV
+ I0tPQKLgsU7SnyuRjTNmzdaTwaC6i4rxZeQSMpUjW22BCmJunt4ZEIdWbM5DJYH04MaQppYnI
+ sfQ4uZaRPkjj6qhPERN1K0NwPGMVWv+zfif4l80DOH+mF61By449gpB5rBDcFP7FFR1niOH2t
+ 8w47gBRDqs8xQ96hBuapzcDzk+5K5yPCyA/P4F/WLakWUhXuxXuGwXyfo02dXLc+cVvuyy2rA
+ Q6aGczwxkBOfzP07QqvFA/i65uXN4yiHgvNNngkE/uIUayXcX92ev0VUs9X8jzW9LohWEzblq
+ xD5N1KIJFCaJl573/3NusfPiEqBzs1ARuWzfEpoG5fr4nq8dfnGuEOp+a6QRQCVXfjaGiq5lA
+ ICTU3At2QC9YUwxvju7LuJmgPp8gx8cx0Zj0YElzX3nsIn2ivMPgy8Y3NWtIEjBuNzTuSMKit
+ vHGThSzhZ3COJFBOIYmRNrMLJx4joyMc+WIPc/7dHmHHkhfFteOVouIu7c5ulIXDWD5YNxogq
+ TqynImbd6tCYJGvrTr7FibpIzZpZDKQyPK4be0DtiXbCEe6wWirHEUNqanETy37Z/CpcCDTt4
+ Cp5CG+oJVHgyiQpgt58VsTx3iGtLV53YqXtmPh05wYQkziS8MU1hKMtzxo9RdMrdbBhGA1z9a
+ 5aMEpYzXLFZ5EFU5umCzVYObWUMaPFUAL7gluxYp1dzIA4IFTE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, 2021-10-28 at 13:32 +0200, Julia Lawall wrote:
-> > Would it be better as data[i] ?
-> >
-> > Could there be a better name than "data"?  Perhaps "table"?
+On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 >
-> Hmm, now when I'm thinking about, it indeed looks like a better option.
-> I would even say that `data` (or `table`/`init_table`) can be only used
-> in the AL7320 case and we can go with `al2230_init_table` for AL2230.
-> The line would be 61 characters long, way below the limit.
+> Commit c0c89fafa289 ("ARM: Remove mach-msm and associated ARM architecture
+> code") removes the definition of the config ARCH_MSM. Since then, the
+> reference to ARCH_MSM in the dependencies of UNCOMPRESS_INCLUDE in
+> Kconfig.debug is dead.
 >
-> What do you think?
+> Fortunately, ./scripts/checkkconfigsymbols.py warns:
+>
+> ARCH_MSM
+> Referencing files: arch/arm/Kconfig.debug
+>
+> Drop the dependency on this removed config.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  arch/arm/Kconfig.debug | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
+> index 83484564b1d9..87aa6e92ee6e 100644
+> --- a/arch/arm/Kconfig.debug
+> +++ b/arch/arm/Kconfig.debug
+> @@ -1886,7 +1886,7 @@ config DEBUG_UNCOMPRESS
+>
+>  config UNCOMPRESS_INCLUDE
+>         string
+> -       default "debug/uncompress.h" if ARCH_MULTIPLATFORM || ARCH_MSM || \
+> +       default "debug/uncompress.h" if ARCH_MULTIPLATFORM || \
+>                                         PLAT_SAMSUNG || ARM_SINGLE_ARMV7M
 
-That would amount to dropping patch 4?  That seems fine.  It is better to
-avoid creating aliases.
+The PLAT_SAMSUNG reference is also misplaced here, I think you just want
+ARCH_S3C24XX instead, since the other samsung ones already require
+ARCH_MULTIPLATFORM.
 
-julia
+        Arnd
