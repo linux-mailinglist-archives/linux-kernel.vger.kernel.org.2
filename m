@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6718D43D944
+	by mail.lfdr.de (Postfix) with ESMTP id DC5E843D945
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhJ1CXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229805AbhJ1CXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 22:23:05 -0400
+Received: from mail-eopbgr1400109.outbound.protection.outlook.com ([40.107.140.109]:11232
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229769AbhJ1CXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Oct 2021 22:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhJ1CXB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:23:01 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74E5C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 19:20:34 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id z20so18558448edc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 19:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d+wQZhyCwuaSol1jeoxc8MwW4vFU/MqWckHBmmor4ps=;
-        b=d3rxyvyvSBLHMyaELlrw4KjAwd85ZPlkWOHepm8hSxrIrkKBdrJHQxXwge2VEMENxw
-         O+m9CEPvTqednDfMw5jXMo+qUXu+CFde1/KRbYhjqEqYffxeEqeg2eQLet9t8UGe6iEN
-         mupYQIsQRV+CkzS1S52QSpt1reM6LgZVOISjpJepePsAf1S1HKPfy6h/Zf8gjXtUAFCm
-         NDCtr7TEI+sJ/Y8vKzhKoKv3TyJHuvGPVMlRPw94NFuyBnoUqAdQMOzhxLCIYvxWygek
-         g35RsvShH/gv+TRuuDFURz7SrZSkmSKhd0w+NxSXS8PpmRRsrVHPtJ39hjcj3Y7rtQXZ
-         vFnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d+wQZhyCwuaSol1jeoxc8MwW4vFU/MqWckHBmmor4ps=;
-        b=GjY0+2LWy/PZMpt+l8yh/a/kIOD/KDn43987TzRDgo0TE19//PmSSFbQCD+Knq24/6
-         +HTzNdXV9QcTX/RQglWCK1uC/g9YjwUoKL9QBOky00zMPtlEpStm1eZEmK3rY4y/w6P1
-         8POBhTMka9+Wc4XqE5Kw5Qz1QKVrZMRgCiFr7iQ8juLX7JuUV7gUFLhUJTCsmx6z82kl
-         7LfqKmyR322BEIhUnbesmKU1jyNvLIi9xCRW8aZX7biJZ7dgybc650f4mPXsGKi/1QQZ
-         sxU8paLPC95bz+KW3rPEu3Q6NBRv9QSAksWHZ0kNi6zW3tLrMKxZqwuMmSo6iE5iKV2B
-         2Scw==
-X-Gm-Message-State: AOAM530vryxhuwn0eSGa/7MnuVEd1cL0OVdKL8Gu7g/Nc2Xi/WBtMwVN
-        aAKe6gfcZiyBoaoXF2ASzl5rnGE0MjGEzUuKRhQ=
-X-Google-Smtp-Source: ABdhPJzmVKkRycepS+exbnYCD1GiRrAHb9ylHxB5j/gQ8W6QUWHxQfuoZmhJVTcVtNezDFUKSTz7Io1giVRPzC23FNE=
-X-Received: by 2002:a17:906:794:: with SMTP id l20mr1671760ejc.419.1635387633269;
- Wed, 27 Oct 2021 19:20:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nQdg+QdX8UdxTSMzcQjsKIRXigpZS13gX0Ouq72K5LSlfzWcZH/ohMXIntXWqF3uu0JoLxAJ8jm+CR5moXiJxqOzFlQSELdpa2LSySLQLxcgFhQz2/vCWA3XHaWB0zcTctRbD9MycsvEd+1Q2AxiE4jMtt4ucQcw4oRrKoij+7ujcd+cvciZsKl4CsYAZr1iZ10c96fprv2FWZGj4HQfEIqNzTuJMKO7wtFZi548jOEGKDgJdWbYl+GZ/s/VCeKXhmZGC+7WjSrbixBM2NlNfZdQ6R0rYbx+rzALjUvs+PcMfyNO1ZruzWDyWy+qJJzjpo/JpFedfVInQVKE1fhNAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VH+bPy9JDCaVFproKoCQwRBMrrvsxgJr3a/hOw1ExSQ=;
+ b=VowmR90HYSLJVCR4AEYmmeQ+e+Uxg0nrwKYjJwF3JzqAAPT0V1h18RcmiITBkbZ1O0s5paOfvI8dmpj8rGsM37xMHKBCA5MpGqy7wcncxACaeRqS8fod+SVASt48ymiC1f/sWvb93E8IfezR+7DBwknVaD4uyK7rwPm8nBmprZYRAyi+tQhLpLM64f3cA/96sZS0UrTomjqdrVWQkeXO128jseZUdlmLrzqK/oZ+YiDHOECBfhz3d8EUahl6RCKN1anNJj8SSFTGachyqsz9qehS9tQ/0gFwzrSVHQJU/uentzUAEDAm8EMHMu+49MEP8QamkK/vrVi9E1MeYYRxzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VH+bPy9JDCaVFproKoCQwRBMrrvsxgJr3a/hOw1ExSQ=;
+ b=DVkdC83wfp7tqIMUYh6EClfLK02/Pevml2Qyl/FMQu7HRUfckIXjqwKb+W6BN191yADw/uhl9qodjSLJtj+6Zh77Nyds2n9lRIqe7WwBnW9glsfLOQGaAO64pYIxTh3oaCHQhUtB97DXiuBQfYNbiSuSKRQjxd8LljRsRv3dYgQ=
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
+ TYYP286MB1193.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:d0::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4649.15; Thu, 28 Oct 2021 02:20:34 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%8]) with mapi id 15.20.4649.015; Thu, 28 Oct 2021
+ 02:20:34 +0000
+From:   YE Chengfeng <cyeaa@connect.ust.hk>
+To:     Zhou Wang <wangzhou1@hisilicon.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogZHJpdmVycy9jcnlwdG86IHN1c3BlY3RlZCBtaXNzaW5nIG51bGwg?=
+ =?gb2312?B?Y2hlY2sgaW4gaGlzaV9xbV9wcmVfaW5pdA==?=
+Thread-Topic: drivers/crypto: suspected missing null check in hisi_qm_pre_init
+Thread-Index: AdfLImPw9K3hXRldQ8ebJhLRIqPCMwAeB9sAAAHu/aA=
+Date:   Thu, 28 Oct 2021 02:20:33 +0000
+Message-ID: <TYCP286MB11880901F8D4A1563F0DF34F8A869@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB11889662BE368CEEF92CF65E8A859@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
+ <e1d5b35e-5055-34de-5864-f2331c9ac051@hisilicon.com>
+In-Reply-To: <e1d5b35e-5055-34de-5864-f2331c9ac051@hisilicon.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: hisilicon.com; dkim=none (message not signed)
+ header.d=none;hisilicon.com; dmarc=none action=none
+ header.from=connect.ust.hk;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e95674e1-1b9a-467d-4fec-08d999b985ca
+x-ms-traffictypediagnostic: TYYP286MB1193:
+x-microsoft-antispam-prvs: <TYYP286MB1193CB2E8E86303311C5A6BD8A869@TYYP286MB1193.JPNP286.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IUvlcYi6ImtBlOlBlVwDUminm8TXvCFYWZkSeGIEdSyJbSgA8x9iLVB/cjZdToB0U81kXitVyaH11lQshymtEDirrtbPpPk1Gk5uDeFzRwF6htqbY5S11tGLeQwRSA7FckIL+CuUipouCVAqVqcuMHBZGH7aKHySkkZhRfQIVpbOXAwN9FmjdITKJrO6TJN6UOOwthp5IZghE1zzz8aAys8bGL+6nUFDBHR1n9yamSwRWuJb/0/iK2w3uMF5gcjERkb3XP0DzG4DJmrfb/RKOE/P+mONsOfNnVXvNGXyIsKYIIrgRbOjhiGr1CuxtQKuNxzpoI/qpoOrnl6gMVcc8XQII0C2wLhWu2EheBY8bar6KUblArRHGKJehDyceJDAD5dL8YYTED19874gQGMGAp4Qg6YRTv9I7sZvjpsRrnH0r8St1YJYGPWi1aLWnHwAlJTysyEaP8nRoYYP36XocQ/nSlzVR3W+qlG6fnmC+Kcsr73CpVGfX4Jd1IYxf/fLBROEfBSIvywkCkMfF6JWBU+Tgd2Jrp4rkSKqf9E2GTTvl05O+LtYES5QO8CBoNj3x3cV/BqihQRd0nxM9obEMsDbscDJmfpq0ZRj66N+rybB2rbHFEfbJx77Q7BMfiLopjytaPW15D0qjGlsTaWkrVNl7CP1usJrNm3NaWvOFOpvvGCN2i55JZSDnGzHetoocqVgXlxr1wlYV+9DJclvhbby49aTpqjxNCbRuEEi17Gm0cGyHUoQNAKhzn1gUHRJp1+6P+ZvwYbAyJtRQbcfkJ9lyd0jRBe0OiGaQFRLZUA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(86362001)(71200400001)(5660300002)(110136005)(4326008)(6506007)(8936002)(83380400001)(38070700005)(316002)(786003)(508600001)(224303003)(66446008)(66556008)(38100700002)(2906002)(186003)(26005)(52536014)(122000001)(66476007)(64756008)(966005)(45080400002)(55016002)(7696005)(76116006)(9686003)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?Y0VIK0JtMWdqcDVRRWZhRWZQQmdxMEVnMXMyMVBnWU8xYVN6dk10S2sxUHpJ?=
+ =?gb2312?B?cHBlRmtHUFptRllGS3R0WDNWYStPNUFlUWJBbkR0S2x2dUdjdDZXK3dJZUZ6?=
+ =?gb2312?B?dnBxRktxTTZlWWlKVmFVQm94b2pwUjNVZWFyVDBmRW1MNkZRc0ZNbGFZalQ1?=
+ =?gb2312?B?M1RPVDVkYkhCL2c5NlVjYUF2dlFRZElvdm9rcjk5NFExN1dBaytvV0dRSkZH?=
+ =?gb2312?B?WndqWU9OMEl3QW1aYUJtUlBGMzk2dS9iWXpWOXVXVkdveTVWc2JjSFo3MVAv?=
+ =?gb2312?B?RzNnQVpoTjV6d20ycGJKay9HMlJUZWEra0YrQVNXZEFCajlQcWVFQlRVSTlX?=
+ =?gb2312?B?ckJmM2xZbER5L3A1bmRvSEpIL2p3SDJJYllnY2ZmT0x0Q0FJZlF1WUgxR1B0?=
+ =?gb2312?B?eDZpL0M2ZnVCMXI1eGx4Y1hnNkliVnFxcWhvRVV2dUxaRVRJazE3U3IvaE91?=
+ =?gb2312?B?MjVUWDU0K2pOcEdqekhQQlE5WXNGajlSUi9hdDBWeTc1Nm4zNkFPS3diWWdk?=
+ =?gb2312?B?bVNlbFcrSnE4V0theW1UbFRWNmMvR0wvQnBzMjJ2Vml4R2NmZnZjTnRuck93?=
+ =?gb2312?B?YXNMeGlicCt4Q0NuUmNzajU5YVZKUzJZZ0R2OGJuYnpJbWRVY29mbVJEVUps?=
+ =?gb2312?B?SGJzU0N4dEk0ZXFIVGpGOWM4anhXN1o0UDRhY1VaSGlucWREdktMVHpPcHIv?=
+ =?gb2312?B?UUNFTW53OGc3NjNSbnc2R204UGt2L25vQk5aNllFQ3ZTRDdtM3pPVFBPNU9j?=
+ =?gb2312?B?ZENSUy9iOWs5c1hBVW1lODZoTEVPVTVHeG5qMG9OS245T1pDRlVNdEcvTGkw?=
+ =?gb2312?B?dm1MU0c2TSsyNU1ROXVISTNWZWZ5TDM5TkFoK09lSE9GWlZwaGlYMGUraXpL?=
+ =?gb2312?B?dlR1cktGK2d1eU5hQTFIT1dWOC8xdjB0TGlDL1ZmeHhBNlo4Q090UTFVVnBF?=
+ =?gb2312?B?WFVaWXdYSk1jR0VHdlZ3aUdSL2kxNkp1bldkYW53TFlmSUtsT3ZZOVY3dHZ0?=
+ =?gb2312?B?bFFLbDR6d0x6UVhSTE9qZ1VQWU16NkFYR0lQeGNKR3E5aTgvNXhqRnpaUzJL?=
+ =?gb2312?B?YWVMbDFNVG0vOUMzcm5uM3I3R0ErV1FXV09WZm01ajUwSExRelQ5cTcrQzZi?=
+ =?gb2312?B?S0RnQ1YrNnd1TGFnZGVUNGw2MUNQK0NtbzhKaUlyeHpHZjRpaUZNcXpsTTVo?=
+ =?gb2312?B?QTJhRFdPMGNmTTVuVWlaN1VFdGFseWN1Qjk5YXJocExJMnNzRERCaDZHc3ZB?=
+ =?gb2312?B?U0Y0K1UzZWJBa0N3NkVKY0drMTlTU2lMMnErR3BSVHE1NXF0NGJZRWxGazhS?=
+ =?gb2312?B?cGhsYWNEZ2hBUU5ZYUhMVFFwMXFVL0dMNTZMazNvN0ZGRW9yMlpyU0UvRzlO?=
+ =?gb2312?B?QUFVT25QTGxpSzIwL1RHeEIwOTYyT21EY2M2cFpFUjJIenowNG5sdm84dmEy?=
+ =?gb2312?B?N2N0MzdTUmNjL1h3WFdLRFA1QWMrNlg0SEFzbm10RGRGeXQrS0dyRVN0RHdy?=
+ =?gb2312?B?M1pFRFVselR3b0FXWlh1d2w0RENJcXA4ak9acVIwQ29kZTJqak1nUC85TkRB?=
+ =?gb2312?B?TzZxZy9TVmoxby9JL095em5obVZwd3ZSZHNwZWFIdnlxcU1yRWdnYnhZaXBn?=
+ =?gb2312?B?dkNZQ01NSGlkNnJ5aXJ4VXdDWktpRkw2enAzclpxNlJ0eDRxL1FhRjlBNllj?=
+ =?gb2312?B?VEZEN2s2Z3I4Z3JHWXhSTzltaXlsRHBzOHdBVkdqbWx6UmVxU0hEWVNqUHM3?=
+ =?gb2312?B?K2JOMU9md1VKOUdQU29kdW9HK0F2MGt3SjVhc1MwMXl6VFZoUlFFM3piSDB1?=
+ =?gb2312?B?RW0yMW8rSXZSZFRZaWMrODJSbmt0cWx1bTNsSlNwOXpxRTNaSnRJc3hwTWRD?=
+ =?gb2312?B?VVoySzlSTEpqRXBkR1RCZ3NzSTBWUGh5WGh5SWpIYTU3RFBQUExtaEJnZEx4?=
+ =?gb2312?B?NlN1Z1B6Z2owVWVsN2gxQ29tenNRdGorYWl5T1V1bC8reEhJbGxrSjFyRytX?=
+ =?gb2312?B?Nkp4UFgxUUhkYk53WXc1L3hrcGREcmhMVFVMdUF2WU82TE0zQVgxcnFIaThy?=
+ =?gb2312?B?RkNQdnRzNnNTZjZ6cUVEblVPRjFqYVZzczltQzhMRkNxbEVMenZrbGltdlJn?=
+ =?gb2312?B?R2Z0dUlwcmdXbTExYlNOZEV5NFJSU09OazdicnM1WVJyWVVYUjRkVmdSanFQ?=
+ =?gb2312?B?MXc9PQ==?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211027150732.4158273-1-mudongliangabcd@gmail.com> <a2f738d08d14417a693c6f0d7f97faff448595ab.camel@kernel.org>
-In-Reply-To: <a2f738d08d14417a693c6f0d7f97faff448595ab.camel@kernel.org>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Thu, 28 Oct 2021 10:20:07 +0800
-Message-ID: <CAD-N9QV=Nd+T3wa6xyq6WOP7Mex7s4_sCFnvAM8FU+_dOFHgqQ@mail.gmail.com>
-Subject: Re: [PATCH] fscache: fix GPF in fscache_free_cookie
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: e95674e1-1b9a-467d-4fec-08d999b985ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2021 02:20:33.8629
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8Yp/j8cGTihqAJWlXkfGBXVlxHStIc+fwVHTq4f1W8OnVBYVqNvgEC3QdIX00NUmdnFBeZ9wCc32rPH14o1aPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYP286MB1193
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 11:16 PM Jeff Layton <jlayton@kernel.org> wrote:
->
-> On Wed, 2021-10-27 at 23:07 +0800, Dongliang Mu wrote:
-> > If fscache_alloc_cookie encounters memory allocation failure, it will
-> > go to nomem label and invoke fscache_free_cookie. However,
-> > fscache_alloc_cookie assumes current cookie is already linked into
-> > fscache_cookies and directly calls list_del. This assumption does not
-> > hold since list_add is not called in the above scenario. As a result, it
-> > will lead to Null Pointer Dereference. The stack trace is in the
-> > following.
-> >
-> > Call Trace:
-> >  __list_del_entry include/linux/list.h:132 [inline]
-> >  list_del include/linux/list.h:146 [inline]
-> >  fscache_free_cookie fs/fscache/cookie.c:71 [inline]
-> >  fscache_free_cookie+0x3f/0x100 fs/fscache/cookie.c:66
-> >  fscache_alloc_cookie+0x2e2/0x300 fs/fscache/cookie.c:195
-> >  __fscache_acquire_cookie fs/fscache/cookie.c:296 [inline]
-> >  __fscache_acquire_cookie+0x132/0x380 fs/fscache/cookie.c:257
-> >  fscache_acquire_cookie include/linux/fscache.h:334 [inline]
-> >  v9fs_cache_session_get_cookie+0x74/0x120 fs/9p/cache.c:60
-> >  v9fs_session_init+0x724/0xa90 fs/9p/v9fs.c:471
-> >  v9fs_mount+0x56/0x450 fs/9p/vfs_super.c:126
-> >  legacy_get_tree+0x2b/0x90 fs/fs_context.c:610
-> >  vfs_get_tree+0x28/0x100 fs/super.c:1498
-> >  do_new_mount fs/namespace.c:2988 [inline]
-> >  path_mount+0xb92/0xfe0 fs/namespace.c:3318
-> >  do_mount+0xa1/0xc0 fs/namespace.c:3331
-> >  __do_sys_mount fs/namespace.c:3539 [inline]
-> >  __se_sys_mount fs/namespace.c:3516 [inline]
-> >  __x64_sys_mount+0xf4/0x160 fs/namespace.c:3516
-> >
-> > Fix this by moving the list_add_tail before goto statements.
-> >
-> > Fixes: 884a76881fc5 ("fscache: Procfile to display cookies")
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  fs/fscache/cookie.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
-> > index cd42be646ed3..d101e212db74 100644
-> > --- a/fs/fscache/cookie.c
-> > +++ b/fs/fscache/cookie.c
-> > @@ -150,6 +150,11 @@ struct fscache_cookie *fscache_alloc_cookie(
-> >       if (!cookie)
-> >               return NULL;
-> >
-> > +     /* move list_add_tail before any error handling code */
-> > +     write_lock(&fscache_cookies_lock);
-> > +     list_add_tail(&cookie->proc_link, &fscache_cookies);
-> > +     write_unlock(&fscache_cookies_lock);
-> > +
-> >       cookie->key_len = index_key_len;
-> >       cookie->aux_len = aux_data_len;
-> >
-> > @@ -186,9 +191,6 @@ struct fscache_cookie *fscache_alloc_cookie(
-> >        * told it may not wait */
-> >       INIT_RADIX_TREE(&cookie->stores, GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
-> >
-> > -     write_lock(&fscache_cookies_lock);
-> > -     list_add_tail(&cookie->proc_link, &fscache_cookies);
-> > -     write_unlock(&fscache_cookies_lock);
-> >       return cookie;
-> >
-> >  nomem:
->
-> Nice catch!
->
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
-
-Hi Jeff,
-
-fscache_free_cookie also has an issue in cookie->backing_objects, but
-it does not affect the execution. The reason is in the following:
-
-At first, I observed that the cookie->backing_objects in
-fscache_alloc_cookie is not initialized with INIT_HLIST_HEAD when an
-error occurs. It may lead to some issues in the fscache_free_cookie,
-e.g., WARN_ON.
-
-Actually, it does not due to the zero initialization of
-kmem_cache_zalloc before. cookie->backing_objects is already with two
-null pointers. It does not need INIT_HLIST_HEAD.
-
-And in the fscache_free_cookie, it actually does not trigger
-WARN_ON(!hlist_empty()).
-
-So I wonder if we need to explicitly move INIT_HLIST_HEAD before any
-error handling code.
-
->
+R290IGl0Lg0KVGhhbmtzIGZvciB5b3VyIHJlcGx5Lg0KDQpCZXN0IHJlZ2FyZHMsDQpDaGVuZ2Zl
+bmcNCg0KLS0tLS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IFpob3UgV2FuZyA8d2FuZ3pob3UxQGhp
+c2lsaWNvbi5jb20+IA0Kt6LLzcqxvOQ6IDIwMjHE6jEw1MIyOMjVIDk6MjQNCsrVvP7IyzogWUUg
+Q2hlbmdmZW5nIDxjeWVhYUBjb25uZWN0LnVzdC5oaz47IGhlcmJlcnRAZ29uZG9yLmFwYW5hLm9y
+Zy5hdTsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldA0Ks63LzTogbGludXgta2VybmVsQHZnZXIua2VybmVs
+Lm9yZw0K1vfM4jogUmU6IGRyaXZlcnMvY3J5cHRvOiBzdXNwZWN0ZWQgbWlzc2luZyBudWxsIGNo
+ZWNrIGluIGhpc2lfcW1fcHJlX2luaXQNCg0KPiBIaSwNCj4gDQo+IGh0dHBzOi8vYXBjMDEuc2Fm
+ZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmdpdGgNCj4g
+dWIuY29tJTJGdG9ydmFsZHMlMkZsaW51eCUyRmJsb2IlMkZtYXN0ZXIlMkZkcml2ZXJzJTJGY3J5
+cHRvJTJGaGlzaWxpYw0KPiBvbiUyRnFtLmMlMjNMMzI4NiZhbXA7ZGF0YT0wNCU3QzAxJTdDY3ll
+YWElNDBjb25uZWN0LnVzdC5oayU3Qzk4Yzk5YjliDQo+IDI1MDg0YTNmYWM4ZDA4ZDk5OWIxYTlj
+YiU3QzZjMWQ0MTUyMzlkMDQ0Y2E4OGQ5YjhkNmRkY2EwNzA4JTdDMSU3QzAlN0MNCj4gNjM3NzA5
+ODEwNjAyNjczOTQ3JTdDVW5rbm93biU3Q1RXRnBiR1pzYjNkOGV5SldJam9pTUM0d0xqQXdNREFp
+TENKUUlqbw0KPiBpVjJsdU16SWlMQ0pCVGlJNklrMWhhV3dpTENKWFZDSTZNbjAlM0QlN0MxMDAw
+JmFtcDtzZGF0YT1lM3AwUFAxdHAlMkJBDQo+ICUyQnJVQUxVZ3Jvd3VZRVpUM0wyMVdvUUJxZkFu
+NWlLYWMlM0QmYW1wO3Jlc2VydmVkPTANCj4gDQo+IFdlIG5vdGljZSB0aGF0IGF0ICNsaW5lIDMy
+ODYsIHRoZSByZXR1cm4gcG9pbnRlciBvZiBBQ1BJX0NPTVBBTklPTiBpcyBub3QgbnVsbC1jaGVj
+a2VkLCBhbmQgdGhlbiBpdCdzIGRlcmVmZXJlbmNlZCBpbiBhY3BpX2RldmljZV9wb3dlcl9tYW5h
+Z2VhYmxlLiBTZWVtcyB0aGF0IGl0IGNvdWxkIGJlIGEgcG90ZW50aWFsIG51bGwtcG9pbnRlci1k
+ZXJlZmVyZW5jZSBpc3N1ZS4NCj4gDQo+IFRoaXMgaXMgZGV0ZWN0ZWQgYnkgb3VyIGV4cGVyaW1l
+bnRhbCBzdGF0aWMgYW5hbHlzaXMgdG9vbCwgaXQgY291bGQgYmUgZmFsc2UgcG9zaXRpdmUsIHNv
+IHdlIG1hbnVhbGx5IGNoZWNrIGFuZCByZXBvcnQgdGhvc2Ugd2UgdGhpbmsgbWF5IGJlIHRydWUg
+YnVncy4gV291bGQgeW91IGxpa2UgdG8gaGF2ZSBhIGxvb2sgYXQgdGhlbT8gSWYgaXQncyByZWFs
+IGJ1Zywgd2UgY291bGQgbGlrZSB0byBwcm92aWRlIHBhdGNoIHRvIGVhc2UgeW91ciB3b3JrZmxv
+dy4NCg0KSGkgQ2hlbmdmZW5nLA0KDQpJdCB3aWxsIHJldHVyZSBOVUxMIHdoZW4gQUNQSSBpcyBk
+aXNhYmxlZCwgaG93ZXZlciB0aGlzIGRyaXZlciBkZXBvbmRzIG9uIEFDUEksIHdoaWNoIGlzIGFs
+cmVhZHkgc2V0IGluIEtjb25maWcuIFNvIG5vIG5lZWQgZG8gbnVsbC1jaGVja2VkIGhlcmUuDQoN
+ClRoYW5rcywNClpob3UNCg0KPiANCj4gVGhhbmtzIHNvIG11Y2gsDQo+IENoZW5nZmVuZw0KPiAu
+DQo+IA0K
