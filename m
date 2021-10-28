@@ -2,236 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CED643E89F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3F043E8A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 20:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhJ1SuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 14:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhJ1SuR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 14:50:17 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF03CC061767
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id 187so6807060pfc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OVU9szkq61aNLb2lvzFxnap0kX1k7Tq4ULR6zE1UQeA=;
-        b=JhzxYSWISXsDoknoTCT5nmTH4RRJulSB1Z9lahh/ZTXx4d4gioMrgqswO8/VYuE+GL
-         uTMcpMs9GnlYYgE8fyW79aM/M3HNcJR6IINXi2Cr2HpJoNnLX2FgIGH8po0lCth0yQ2M
-         DkaEnizVNx0xEvzdLz5QigtPDn2z/jCMKZQZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OVU9szkq61aNLb2lvzFxnap0kX1k7Tq4ULR6zE1UQeA=;
-        b=NhRnac4vfBwt3YZdcjMM01fWomO4r0S9r9+uykl93LiRoCdvz1+iayYpiLBsWMd4iT
-         GprNousoizBRv2pySWEcSJT4Jo6+Lgl7zVZlGtmGN1rhtiFQPbqR6RDj73GwQ2o+eE8U
-         Htq1oMg1KW42M/09QSabj2IeJ8L4A+pxC6XTllSfgdDrmIAEsvZ08ATJZEKgkLBLH+Gy
-         Q/IevZzCf4lfgpiyj6ApmsbSsxgk4JsYfbQbRJaIv7dHFfm7ALiCiKhcslqmAc3WP/9o
-         phggvkESlHSvneuDpu9Krpzzn1JGA5ta+7HgzPiJbn7R8DVbhlO/OUA1PpJt1cYp2e2G
-         ixlA==
-X-Gm-Message-State: AOAM532rgt+kTAW9x4gW2zMO4bdV3dE681hMJusoQ5+kj5CirldMQOYA
-        2MiOZyS57ByfWBjEAZJLTZPn721+ZdzmnQ==
-X-Google-Smtp-Source: ABdhPJzgpftfzQqh6cQkfQwpqB9kCGWUYUkdWrI6OS+lGu7a8shSi/eg1Ixn5ahdw0frC07JSH/3jQ==
-X-Received: by 2002:aa7:8a0e:0:b0:47c:1116:3ce with SMTP id m14-20020aa78a0e000000b0047c111603cemr5964030pfa.76.1635446869394;
-        Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ls6sm144127pjb.53.2021.10.28.11.47.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 11:47:49 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 11:47:48 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: selftests: seccomp_bpf failure on 5.15
-Message-ID: <202110281136.5CE65399A7@keescook>
-References: <YXrN+Hnl9pSOsWlA@arighi-desktop>
- <202110280955.B18CB67@keescook>
- <878rydm56l.fsf@disp2133>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878rydm56l.fsf@disp2133>
+        id S231132AbhJ1Sxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 14:53:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229645AbhJ1Sxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 14:53:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A43610D2;
+        Thu, 28 Oct 2021 18:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635447077;
+        bh=QXYlXZ/XsbqGTREhOhDWkniHowuwQaogvXifIJ8tj40=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=KS/y7VDCoI87IOHlUXdt/mCgArq+2fwsNM9fDLF10UES2E8xLsC1oT3ixDM0zuyHf
+         +78GXc8c+VDsxa0CXb/iLGnpWG/AjTXtxCaOmBu7o9ZdDkOh9G3gSeukz2qqkttybV
+         fv2teg6bfaUrCTiVWn8wcxOzJmlXQLeSacLn6pDPom//LSWZ+Xzm6jtcAO5jXEI9vb
+         lVqTNFWa2FaoiFhfJ6+7QPuCRQdeAhYfHiruUOJp92MQncvlh53KjXxvtX+8PIt/Cl
+         0ibiZ1zPH0fWvQorJJck2NJpscF22ID+RZ2CQJvMAPM7csCfAP6DJ+VV35JUIcGuyp
+         83cs+O7DkUpgQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     Colin Ian King <colin.i.king@googlemail.com>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mm/damon: Fix a few spelling mistakes in comments and a pr_debug message
+Date:   Thu, 28 Oct 2021 18:51:12 +0000
+Message-Id: <20211028185112.16085-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211028184157.614544-1-colin.i.king@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
-> Kees Cook <keescook@chromium.org> writes:
+On Thu, 28 Oct 2021 19:41:57 +0100 Colin Ian King <colin.i.king@googlemail.com> wrote:
+
+> There are a few spelling mistakes in the code. Fix these.
 > 
-> > On Thu, Oct 28, 2021 at 06:21:12PM +0200, Andrea Righi wrote:
-> >> The following sub-tests are failing in seccomp_bpf selftest:
-> >> 
-> >> 18:56:54 DEBUG| [stdout] # selftests: seccomp: seccomp_bpf
-> >> ...
-> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.ptrace.kill_after ...
-> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (0)
-> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (2) == msg (1)
-> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:2023:kill_after:Expected entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY : PTRACE_EVENTMSG_SYSCALL_EXIT (1) == msg (2)
-> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 12)
-> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.ptrace.kill_after
-> >> ...
-> >> 18:56:57 DEBUG| [stdout] # #  RUN           TRACE_syscall.seccomp.kill_after ...
-> >> 18:56:57 DEBUG| [stdout] # # seccomp_bpf.c:1547:kill_after:Expected !ptrace_syscall (1) == IS_SECCOMP_EVENT(status) (0)
-> >> 18:56:57 DEBUG| [stdout] # # kill_after: Test exited normally instead of by signal (code: 0)
-> >> 18:56:57 DEBUG| [stdout] # #          FAIL  TRACE_syscall.seccomp.kill_after
-> >> 18:56:57 DEBUG| [stdout] # not ok 80 TRACE_syscall.seccomp.kill_after
-> >> ...
-> >> 18:56:57 DEBUG| [stdout] # # FAILED: 85 / 87 tests passed.
-> >> 18:56:57 DEBUG| [stdout] # # Totals: pass:85 fail:2 xfail:0 xpass:0 skip:0 error:0
-> >> 18:56:57 DEBUG| [stdout] not ok 1 selftests: seccomp: seccomp_bpf # exit=1
-> >> 
-> >> I did some bisecting and found that the failures started to happen with:
-> >> 
-> >>  307d522f5eb8 ("signal/seccomp: Refactor seccomp signal and coredump generation")
-> >> 
-> >> Not sure if the test needs to be fixed after this commit, or if the
-> >> commit is actually introducing an issue. I'll investigate more, unless
-> >> someone knows already what's going on.
-> >
-> > Ah thanks for noticing; I will investigate...
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+Thank you for the fixes!
+
+Reviewed-by: SeongJae Park <sj@kernel.org>
+
+
+Thanks,
+SJ
+
+> ---
+>  mm/damon/core.c       | 2 +-
+>  mm/damon/dbgfs-test.h | 2 +-
+>  mm/damon/vaddr-test.h | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index f37c17b53814..c381b3c525d0 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+> @@ -959,7 +959,7 @@ static unsigned long damos_wmark_wait_us(struct damos *scheme)
+>  	/* higher than high watermark or lower than low watermark */
+>  	if (metric > scheme->wmarks.high || scheme->wmarks.low > metric) {
+>  		if (scheme->wmarks.activated)
+> -			pr_debug("inactivate a scheme (%d) for %s wmark\n",
+> +			pr_debug("deactivate a scheme (%d) for %s wmark\n",
+>  					scheme->action,
+>  					metric > scheme->wmarks.high ?
+>  					"high" : "low");
+> diff --git a/mm/damon/dbgfs-test.h b/mm/damon/dbgfs-test.h
+> index 104b22957616..86b9f9528231 100644
+> --- a/mm/damon/dbgfs-test.h
+> +++ b/mm/damon/dbgfs-test.h
+> @@ -145,7 +145,7 @@ static void damon_dbgfs_test_set_init_regions(struct kunit *test)
+>  
+>  		KUNIT_EXPECT_STREQ(test, (char *)buf, expect);
+>  	}
+> -	/* Put invlid inputs and check the return error code */
+> +	/* Put invalid inputs and check the return error code */
+>  	for (i = 0; i < ARRAY_SIZE(invalid_inputs); i++) {
+>  		input = invalid_inputs[i];
+>  		pr_info("input: %s\n", input);
+> diff --git a/mm/damon/vaddr-test.h b/mm/damon/vaddr-test.h
+> index 1f5c13257dba..ecfd0b2ed222 100644
+> --- a/mm/damon/vaddr-test.h
+> +++ b/mm/damon/vaddr-test.h
+> @@ -233,7 +233,7 @@ static void damon_test_apply_three_regions3(struct kunit *test)
+>   * and 70-100) has totally freed and mapped to different area (30-32 and
+>   * 65-68).  The target regions which were in the old second and third big
+>   * regions should now be removed and new target regions covering the new second
+> - * and third big regions should be crated.
+> + * and third big regions should be created.
+>   */
+>  static void damon_test_apply_three_regions4(struct kunit *test)
+>  {
+> -- 
+> 2.32.0
 > 
 > 
-> I just did a quick read through of the test and while
-> I don't understand everything having a failure seems
-> very weird.
-> 
-> I don't understand the comment:
-> /* Tracer will redirect getpid to getppid, and we should die. */
-> 
-> As I think what happens is it the bpf programs loads the signal
-> number.  Tests to see if the signal number if GETPPID and allows
-> that system call and causes any other system call to be terminated.
-
-The test suite runs a series of seccomp filter vs syscalls under tracing,
-either with ptrace or with seccomp SECCOMP_RET_TRACE, to validate the
-expected behavioral states. It seems that what's happened is that the
-SIGSYS has suddenly become non-killing:
-
-#  RUN           TRACE_syscall.ptrace.kill_after ...
-# seccomp_bpf.c:1555:kill_after:Expected WSTOPSIG(status) & 0x80 (0) == 0x80 (128)
-# seccomp_bpf.c:1556:kill_after:WSTOPSIG: 31
-# kill_after: Test exited normally instead of by signal (code: 12)
-#          FAIL  TRACE_syscall.ptrace.kill_after
-
-i.e. the ptracer no longer sees a dead tracee, which would pass through
-here:
-
-                if (WIFSIGNALED(status) || WIFEXITED(status))
-                        /* Child is dead. Time to go. */
-                        return;
-
-So the above saw a SIG_TRAP|SIGSYS rather than a killing SIGSYS. i.e.
-instead of WIFSIGNALED(stauts) being true, it instead catches a
-PTRACE_EVENT_STOP for SIGSYS, which should be impossible (the process
-should be getting killed).
-
-> Which being single threaded would seem to cause the kernel  to execute
-> the changed code.
-> 
-> How there kernel at that point is having the process exit with anything
-> except SIGSYS I am not immediately seeing.
-
-I've run out of time at the moment to debug further, but I've appended
-my changes to the test, and a brute-force change to kernel/seccomp.c to
-restore original behavior (though I haven't tested if coredumping works
-still). I'll return to this in a few hours...
-
-> 
-> The logic is the same as that for SECCOMP_RET_TRAP is there a test for
-> that, that is also failing?
-> 
-> How do you run that test anyway?
-
-cd tools/testing/selftests/seccomp
-make seccomp_bpf
-scp seccomp_bpf target:
-ssh target ./seccomp_bpf
-
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 4d8f44a17727..b6c8c8f8bd69 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1269,10 +1269,12 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
- 			syscall_rollback(current, current_pt_regs());
- 			/* Trigger a coredump with SIGSYS */
- 			force_sig_seccomp(this_syscall, data, true);
--		} else {
--			do_exit(SIGSYS);
-+			do_group_exit(SIGSYS);
- 		}
--		return -1; /* skip the syscall go directly to signal handling */
-+		if (action == SECCOMP_RET_KILL_THREAD)
-+			do_exit(SIGSYS);
-+		else
-+			do_group_exit(SIGSYS);
- 	}
- 
- 	unreachable();
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 1d64891e6492..8f8c1df885d6 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1487,7 +1487,7 @@ TEST_F(precedence, log_is_fifth_in_any_order)
- #define PTRACE_EVENT_SECCOMP 7
- #endif
- 
--#define IS_SECCOMP_EVENT(status) ((status >> 16) == PTRACE_EVENT_SECCOMP)
-+#define PTRACE_EVENT_MASK(status) ((status) >> 16)
- bool tracer_running;
- void tracer_stop(int sig)
- {
-@@ -1536,17 +1536,34 @@ void start_tracer(struct __test_metadata *_metadata, int fd, pid_t tracee,
- 	/* Run until we're shut down. Must assert to stop execution. */
- 	while (tracer_running) {
- 		int status;
-+		bool run_callback = true;
- 
- 		if (wait(&status) != tracee)
- 			continue;
-+
- 		if (WIFSIGNALED(status) || WIFEXITED(status))
- 			/* Child is dead. Time to go. */
- 			return;
- 
--		/* Check if this is a seccomp event. */
--		ASSERT_EQ(!ptrace_syscall, IS_SECCOMP_EVENT(status));
-+		/* Check if we got an expected event. */
-+		ASSERT_EQ(WIFCONTINUED(status), false);
-+		ASSERT_EQ(WIFSTOPPED(status), true);
-+		ASSERT_EQ(WSTOPSIG(status) & SIGTRAP, SIGTRAP) {
-+			TH_LOG("WSTOPSIG: %d", WSTOPSIG(status));
-+		}
-+		if (ptrace_syscall) {
-+			EXPECT_EQ(WSTOPSIG(status) & 0x80, 0x80) {
-+				TH_LOG("WSTOPSIG: %d", WSTOPSIG(status));
-+				run_callback = false;
-+			};
-+		} else {
-+			EXPECT_EQ(PTRACE_EVENT_MASK(status), PTRACE_EVENT_SECCOMP) {
-+				run_callback = false;
-+			};
-+		}
- 
--		tracer_func(_metadata, tracee, status, args);
-+		if (run_callback)
-+			tracer_func(_metadata, tracee, status, args);
- 
- 		ret = ptrace(ptrace_syscall ? PTRACE_SYSCALL : PTRACE_CONT,
- 			     tracee, NULL, 0);
-
--- 
-Kees Cook
