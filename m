@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DA743D803
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F111543D811
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhJ1AWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
+        id S229589AbhJ1AZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhJ1AWG (ORCPT
+        with ESMTP id S229437AbhJ1AZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:22:06 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585DCC061767
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:19:40 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id n36-20020a17090a5aa700b0019fa884ab85so6501237pji.5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 17:19:40 -0700 (PDT)
+        Wed, 27 Oct 2021 20:25:32 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5784C061570;
+        Wed, 27 Oct 2021 17:23:05 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id s1so17458964edd.3;
+        Wed, 27 Oct 2021 17:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=8hL4Jqifd0AqJfsoeSiVVrM/htd90YTwh+/QL+wMYOE=;
-        b=F93KwyeuhwvUblxbiN9AHnABBpT0SDhBsNATgF0SFWLYQh0yWU+DzXWq3Eh2uh1J6q
-         cDLS3PdXCm6xTEC17TeUvlICdZfwr7SIwrnt4V0pU8zxnDNhLKinTJ4f3wBHCapA3vSe
-         fceA05q1SxC9iRkyNndPWsogerSrgjHEMvm6Klz9fWnyEFnDgbZXF0bFXIwH/QlVsmlH
-         hEjcqPE23JgTkD7Bi7s6hWbT3PRJaCOtGoY5lwRf3EDIMO2lhOQ1j+j3I6ZIySd3QrTb
-         wB8VQLFuJ0LuU0mtF2CSZ2oGp9UIcbO74beajkkClPZj4cbh6ft7ysTrnwtDeM0TUgmM
-         +6mQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DjjqSH69oC8cg0hQ1i4eeW5boZhzpHPAKqQHgkqSM40=;
+        b=BZaF8jnvOph44VTBcgU0GwKZUEKTErcivkRShSXAiBrZlDT/MjytdQZcWPCUxon0hh
+         GTNPs6Sq9zzOJNQ6GsBz+ko7mWjUoJw0UdQktNKdO3MHMhjboKv/71OFsybq+PfXPhj6
+         7X2abD+LBpbtJ88xN+ATWOKJT2GMKWaL4+P2ZjOGRS4gcadYcDj4mfBNOhNIM43SUlPr
+         qCONOGgKL2paDWTn4ht8mXFRs2nuUIMKgxB2Ru1YKSCe3ze01NyDLWJQb3r169Q2smQb
+         mSmg/CuknCY5hL2Y+lMvFkFix86fYxcSZWAdr/DCdepdwd2qM4XWO0NQvPDkwcokWBYR
+         nxnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8hL4Jqifd0AqJfsoeSiVVrM/htd90YTwh+/QL+wMYOE=;
-        b=4SL9JvqRKE7UYZZU1zWycpTk7HhVm4z0r8f6YPgSJ3HaAn83v24hdaFHxt67y9kt0E
-         j9o2YTPApRWGwLno3vkR+vruySinVmouYF8rTy6C6nkkQN/X7kYGPB0O2I3mCQYjWDmG
-         A2KBgu4GVfI1WJ08GMpY1Xgo10aoI1nSsgHZ9lcE1/OzFDaE/TbfCfadQvJ1cIChuszC
-         jjZK4PBVCUwCoIj0Uj8ToFHQewF5aQgsBcOh7R9wmUYF2kuY8KqBAkUrNygywCiBik+7
-         qZElpdKNXc3ecKOMZ1hYunnZSE3DUdMdZMe5NNOt/W/hPmwv996BzDqNKUJ0XJHqqN6v
-         fMHA==
-X-Gm-Message-State: AOAM533pUzNi/moHKJ6vq4bQ+YuzVNnPNYz95V1jiCSqFc/3v64u6MCU
-        U0EP21kYmq2x1JS+QF7gQhg0Vg==
-X-Google-Smtp-Source: ABdhPJyu9MyzsDbU0tdfRTLWP9RqAQHWwh9iBmH89gLRJ6pWDjBOMKJ5/XCIGCQAbXWNd6WAZE5ouw==
-X-Received: by 2002:a17:90a:f195:: with SMTP id bv21mr917394pjb.203.1635380379858;
-        Wed, 27 Oct 2021 17:19:39 -0700 (PDT)
-Received: from [192.168.254.36] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id d15sm1063545pfv.22.2021.10.27.17.19.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Oct 2021 17:19:38 -0700 (PDT)
-Message-ID: <5c3d9b0a-8c68-feec-74b6-59f2e29b1d11@linaro.org>
-Date:   Wed, 27 Oct 2021 17:19:30 -0700
+        bh=DjjqSH69oC8cg0hQ1i4eeW5boZhzpHPAKqQHgkqSM40=;
+        b=OM8YIdL+vd/Q9ejddWPpO+O/pYDrfVxo47S+hKQOt7SdlgYCy6YZzy6cGnoaB8iB6+
+         Yzhz2jSZ5JYQhQwVOwdZUaZUw5R4ECOaqB3PAV73k+JW6YKAWlYvn/0FVia1dGr6/kgv
+         j0dcvzRET3dvYzb84eaY+b5oKGiJTlo+wsAWCq6UGHBmBOU2A1A2awtGI1C+qdqXhANz
+         wTWHPZ3cB/fj7ZIx9DenneCuO4Pas16rKOO25RNMPA84Dex9T8sjI+ZmNDUdcS9LT3X0
+         flbn4W/ZdQugSNeEd4zobG3c7zELHeg2vp5XNPml6e2c9QfRkHm3bHtFY2MP2mE0HIFs
+         7TIg==
+X-Gm-Message-State: AOAM5339A8PtXSX+upWzf0JVt+u0roMwy1hf53YXw2IKuEDP+Gh9NBgv
+        SxBZpxOBzn2yQuAOXu5KHgbPIURsHQo=
+X-Google-Smtp-Source: ABdhPJz22H0uIcxVEu9LGZPrXfdO+bXbzZGKkJgv51RhQvK0CcQLQJd3wv52GYXfF2S6psAZxMO3LA==
+X-Received: by 2002:a05:6402:5189:: with SMTP id q9mr1511621edd.94.1635380584048;
+        Wed, 27 Oct 2021 17:23:04 -0700 (PDT)
+Received: from xws.localdomain ([37.120.217.83])
+        by smtp.gmail.com with ESMTPSA id i22sm753801edu.93.2021.10.27.17.23.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Oct 2021 17:23:03 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     platform-driver-x86@vger.kernel.org
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] platform/surface: aggregator: Clean up client device removal
+Date:   Thu, 28 Oct 2021 02:22:40 +0200
+Message-Id: <20211028002243.1586083-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211025144345.267107-1-tadeusz.struk@linaro.org>
- <CALAqxLXjh9o925G9smW+uwWqKDarsvrBuzr+UL1CsQc4m7W+oQ@mail.gmail.com>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-Subject: Re: [PATCH] media: venus: Synchronize probe() between venus_core and
- enc/dec
-In-Reply-To: <CALAqxLXjh9o925G9smW+uwWqKDarsvrBuzr+UL1CsQc4m7W+oQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
-On 10/27/21 17:01, John Stultz wrote:
->    Thanks so much for sending this out, I definitely would like to see
-> these crashes sorted!
-> 
-> Unfortunately this patch causes some odd behavior when I use it with a
-> modular config.  The display does not start up and trying to reboot
-> the board ends up with it hanging instead of rebooting.
-> 
-> And booting with this patch in my non-modular config, it just seems to
-> get stuck during bootup (I suspect waiting on firmware that's not yet
-> mounted?).
-> 
+Remove some duplicate code for Surface Aggregator client device removal and
+rename a function for consistency.
 
-Thanks for trying the patch. With this patch I was able to boot android13
-running 5.15.0-rc4-mainlineon on my Dragonboard 845c with the default
-config common/build.config.db845c. Without it it was crashing.
-It doesn't solve the firmware loading problem, it just makes it fail
-gracefully for the boot to continue. If you share your config I can try
-it and see what's wrong.
+Maximilian Luz (3):
+  platform/surface: aggregator: Make client device removal more generic
+  platform/surface: aggregator_registry: Use generic client removal
+    function
+  platform/surface: aggregator_registry: Rename device registration
+    function
+
+ drivers/platform/surface/aggregator/bus.c     | 24 +++++---------
+ drivers/platform/surface/aggregator/bus.h     |  3 --
+ drivers/platform/surface/aggregator/core.c    |  3 +-
+ .../surface/surface_aggregator_registry.c     | 32 ++++++-------------
+ include/linux/surface_aggregator/device.h     |  9 ++++++
+ 5 files changed, 28 insertions(+), 43 deletions(-)
 
 -- 
-Thanks,
-Tadeusz
+2.33.1
+
