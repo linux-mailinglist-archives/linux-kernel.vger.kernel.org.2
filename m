@@ -2,197 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C3743E697
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA6043E699
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhJ1Qup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhJ1Quo (ORCPT
+        id S230462AbhJ1Qv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:51:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40764 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229806AbhJ1QvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:50:44 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742F7C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:48:16 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id s1so27469810edd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M8Jw/S2n3WB7bDRByTQGeQns0CvXOlde4kiN/IEV98o=;
-        b=PR8boEcK6RSO8eaafJJSJzKy+NQsdbysFi/aCXaszc/wOVJoO+mM0BaQ6dPPy9xKKq
-         XnNEfSSYf9NJ3digurFFHlOYis4fL1gGKHiQJHJIvXMQ4steyAzNeh+mP1AK2b9WWabC
-         f7D+pHU75jrNCG78NwUNk2dljTXfS61O+bxbPg2vKADcyExEWkmhVq0718tTQhcinK9w
-         TrDOa5w2oDLuEJVR/+IfpAsuAczb1VG+l8ewlLw6o7j3/dJvOJGZfmijAvwegEmqjENt
-         EWGl12GBnC3849MIoXM3qGsBe5i48hPnBsQsfxDsBgeZTAowHUX3drMfakwzmRW+aHTa
-         8HEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M8Jw/S2n3WB7bDRByTQGeQns0CvXOlde4kiN/IEV98o=;
-        b=q9Ze2+lH2Dd3RFVv3DLDdvJuCxkdWnENJCScew7S3N7zzwYonI2rnvZ1shxXZLvBij
-         jGMFjuRL7a+DdMQzuT+G15WLniG4BmnCV+cSsnQoEP35odnpOLPDbsmkbbT+7dIRmVKf
-         m2EAfjgGcxwqBTMA5Qhd3pincxP23D0xE5lOylMQUSK4HeLN4rEcNRmguyfVylBrGo2+
-         WLm44nViyGpTiyPpvHgK87k0VI/m7kHOu5n9feGOgCnvspWy6k2Ziz2plmxDEaAS4pzP
-         q1oNn1hyo5BWIBSOLxOfhTkSyva0uSGCXJ8qxQuPmY27s3hm3YGcysvoPfIskKUkSF1j
-         lbGQ==
-X-Gm-Message-State: AOAM533kQTP1KjT4DOiOe3/pOzfQKYidVMHtJgS6c60BBg1s04JIULbB
-        pwVUfKWPR5YEUbgBZKDHJDjDKACafy6au/JosSm92g==
-X-Google-Smtp-Source: ABdhPJynXs15eI4J4h6dypN6+uIsPodjJBAXKeImKWkhEvpw9l+CnL5egYbTMYSOE5emSX15YsoKbBx+YIZPYkVvpPU=
-X-Received: by 2002:a50:e686:: with SMTP id z6mr7820251edm.311.1635439694998;
- Thu, 28 Oct 2021 09:48:14 -0700 (PDT)
+        Thu, 28 Oct 2021 12:51:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635439737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XCItrNKZX+ugRebW30ECM6Yoplo+IdMbapYttnlvVF4=;
+        b=csZ7/OGjtkhcnnOtNsl0IWQZweM1bo3lbU2XhpvJ6xGSljJBJYWxK2ID9vNyoO2GtckDpu
+        m58VpnY830z1D+4TimBh5w8Vauiri0vMTOuRebL/cH8nC7Vzkli5PKWnTdeUlfaghMV6ls
+        HZG3lWU+RUJZ6NmnudgyYxaUticWNAw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-rL0sYMYgMyCDVsPagYbrsA-1; Thu, 28 Oct 2021 12:48:53 -0400
+X-MC-Unique: rL0sYMYgMyCDVsPagYbrsA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4832218D6A25;
+        Thu, 28 Oct 2021 16:48:52 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.32.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 137DE5F4EA;
+        Thu, 28 Oct 2021 16:48:50 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 12:48:49 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/core: Export pelt_thermal_tp
+Message-ID: <YXrUcVlKj1BSIj7k@lorien.usersys.redhat.com>
+References: <20211028115005.873539-1-qais.yousef@arm.com>
+ <YXrJOKb17cH6vkTc@infradead.org>
+ <20211028161855.GN174703@worktop.programming.kicks-ass.net>
+ <YXrOLay3BbaDObM2@infradead.org>
 MIME-Version: 1.0
-References: <20210926223322.848641-1-isabellabdoamaral@usp.br>
- <CABVgOSkG=J7TpuzZMW_RbGA9f4NRZxGXRS8wd-cBmrWHD97pRQ@mail.gmail.com> <CAFd5g47ECaw3CRH4MKzVPYmYhsiXR5hvha0ciadAFtEuUz6Xdw@mail.gmail.com>
-In-Reply-To: <CAFd5g47ECaw3CRH4MKzVPYmYhsiXR5hvha0ciadAFtEuUz6Xdw@mail.gmail.com>
-From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
-Date:   Thu, 28 Oct 2021 13:48:03 -0300
-Message-ID: <CAAniXFTdQN3_BnRZeZLu-UHJPwyMkFZvTw7J4Sm4W+fRsuEC3w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] test_hash.c: refactor into KUnit
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Enzo Ferreira <ferreiraenzoa@gmail.com>,
-        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
-        <augusto.duraes33@gmail.com>, Daniel Latypov <dlatypov@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        ~lkcamp/patches@lists.sr.ht,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXrOLay3BbaDObM2@infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Thu, Oct 28, 2021 at 09:22:05AM -0700 Christoph Hellwig wrote:
+> On Thu, Oct 28, 2021 at 06:18:55PM +0200, Peter Zijlstra wrote:
+> > > > @@ -36,6 +36,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_rt_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
+> > > > +EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_thermal_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_cpu_capacity_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
+> > > >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+> > > 
+> > > ... and while we're at it, all these exports are unused and should
+> > > be deleted as well.
+> > 
+> > This is my concession wrt tracepoints. Actual tracepoints are ABI,
+> > exports are in-kernel interfaces and are explicitly not ABI.
+> > 
+> > This way people can use an external module to get at the tracepoint data
+> > without having in-tree tracepoints.
+> 
+> All of this makes no sense at all.  These are entirely dead exports.
+> If you remove them nothing else changes.  Note taht the tracepoints
+> do have in-kernel callers, so if people thing of them as an ABI you've
+> got your ABI already with or without the exports.
+> 
 
-On Tue, Oct 5, 2021 at 6:19 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> +Shuah Khan
->
-> On Sat, Oct 2, 2021 at 12:30 AM David Gow <davidgow@google.com> wrote:
-> >
-> > On Mon, Sep 27, 2021 at 6:33 AM Isabella Basso <isabellabdoamaral@usp.br> wrote:
-> > >
-> > > We refactored the lib/test_hash.c file into KUnit as part of the student
-> > > group LKCAMP [1] introductory hackathon for kernel development.
-> > >
-> > > This test was pointed to our group by Daniel Latypov [2], so its full
-> > > conversion into a pure KUnit test was our goal in this patch series, but
-> > > we ran into many problems relating to it not being split as unit tests,
-> > > which complicated matters a bit, as the reasoning behind the original
-> > > tests is quite cryptic for those unfamiliar with hash implementations.
-> > >
-> > > Some interesting developments we'd like to highlight are:
-> > >
-> > > - In patch 1/5 we noticed that there was an unused define directive that
-> > >   could be removed.
-> > > - In patch 4/5 we noticed how stringhash and hash tests are all under
-> > >   the lib/test_hash.c file, which might cause some confusion, and we
-> > >   also broke those kernel config entries up.
-> > >
-> > > Overall KUnit developments have been made in the other patches in this
-> > > series:
-> > >
-> > > In patches 2/5, 3/5 and 5/5 we refactored the lib/test_hash.c
-> > > file so as to make it more compatible with the KUnit style, whilst
-> > > preserving the original idea of the maintainer who designed it (i.e.
-> > > George Spelvin), which might be undesirable for unit tests, but we
-> > > assume it is enough for a first patch.
-> > >
-> > > This is our first patch series so we hope our contributions are
-> > > interesting and also hope to get some useful criticism from the
-> > > community. :)
-> > >
-> > > Changes since V1:
-> > > - Fixed compilation on parisc and m68k.
-> > > - Fixed whitespace mistakes.
-> > > - Renamed a few functions.
-> > > - Refactored globals into struct for test function params, thus removing
-> > >   a patch.
-> > > - Reworded some commit messages.
-> > >
-> > > [1] - https://lkcamp.dev/
-> > > [2] - https://lore.kernel.org/linux-kselftest/CAGS_qxojszgM19u=3HLwFgKX5bm5KhywvsSunuBAt5RtR+GyxQ@mail.gmail.com/
-> > >
-> >
-> > Thanks: I've gone through this new revision, and it still works fine,
-> > and my prior comments have been addressed. The commit messages in
-> > particular are much clearer, thank you! I've reviewed the various
-> > patches and left a few comments here and there, but there's nothing
-> > too drastic.
-> >
-> > I'm pretty happy with this from the KUnit side, but it would be ideal
-> > if someone with more knowledge of the hash functions looked over it.
-> > Unfortunately, George's email is bouncing, and no-one else has made
-> > any particularly major changes to this.
+Full blown trace _events_ create an ABI. These trace points are not ABI.
+But by exporting them they are accesible to little helper modules which
+can turn them into trace events which can then by used by trace-cmd and
+ftrace etc.  That way we can have the tracepoints at the interesting spots
+in the code but still have control over them with respect to changes. 
 
-I'm glad to hear this :) I'd also like to point out that "George Spelvin" is a
-rather unusual figure [3] so we shouldn't be expecting much back from
-him, anyway. Maybe I should've looked that up before trying to tackle this
-patch, as I've no idea who might be able to properly review the hash part of
-it.
-
-> >
-> > My only remaining comment on the tests themselves is that it'd be nice
-> > to have them split up further into more, smaller tests. Given that
-> > it's a port of an existing test, though, I understand the desire not
-> > to change things too drastically.
-
-Thanks for your comprehension!
-
-> >
-> > We also need to work out how this is going to go upstream: does it go
-> > through the kunit branch (via Shuah's kselftest repo), or directly to
-> > Linus (who's handled most of the other recent-ish changes here.
-> > Brendan, any thoughts?
->
-> I think Shuah should take them in 5.16.
->
-> Shuah, let me know if you are OK taking these in 5.16 and I will
-> update the patch tracker.
->
-
-Thanks a lot for your interest in this patch :)
-
-We were a little worried about who might be able to get it upstream, so we
-appreciate that you also thought of this!
-
-> > Cheers,
-> > -- David
-> >
-> >
-> >
-> > > Isabella Basso (5):
-> > >   hash.h: remove unused define directive
-> > >   test_hash.c: split test_int_hash into arch-specific functions
-> > >   test_hash.c: split test_hash_init
-> > >   lib/Kconfig.debug: properly split hash test kernel entries
-> > >   test_hash.c: refactor into kunit
-> > >
-> > >  include/linux/hash.h       |   5 +-
-> > >  lib/Kconfig.debug          |  28 ++++-
-> > >  lib/Makefile               |   3 +-
-> > >  lib/test_hash.c            | 247 +++++++++++++++++--------------------
-> > >  tools/include/linux/hash.h |   5 +-
-> > >  5 files changed, 139 insertions(+), 149 deletions(-)
-> > >
-> > > --
-> > > 2.33.0
-> > >
-
-I'm sorry for the delay in my response, but I think I can send a V3 soon,
-probably until next week.
-
-[3] - https://lwn.net/Articles/688216/
+See https://github.com/auldp/tracepoints-helpers for an example. 
 
 Cheers,
---
-Isabella Basso
+Phil
+
+-- 
+
