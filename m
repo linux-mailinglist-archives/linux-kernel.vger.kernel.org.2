@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0594143D816
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F03743D819
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 02:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhJ1AZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 20:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhJ1AZf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 20:25:35 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27E3C061570;
-        Wed, 27 Oct 2021 17:23:08 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id ee16so4441434edb.10;
-        Wed, 27 Oct 2021 17:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ahKhrHirpXz6r9DfRiERy6Xt9mCAFVI2v2LBmTZuv+k=;
-        b=GC1UNNAP2fbhjIdhBgf+g08hymHvQi2bEkuZJ43l0Mm8VS4HTMULwq/+lO+fKmn0B6
-         Y8ebj8qFS0+tXaDXHTC5Om8FxMyhdYAfjjkuEPdQBbuBrROaY1dO33qEdcaid0jQF5jA
-         QY6BdJiaRxK5WT9tRx8xH1hOrYscO8kVvrdgdqqCgdpnIJhheIrBx0PMKEoBKYfMHQ3i
-         +AFoHLWJh7Ce4FowQWj7Y0H52Xd1OCH/buU/huuhX0yXZrnfj/fQTbyPfM4nq+Jlwaf3
-         ho3E5b6aP02w8KCZUukniWHfxoBFMtSliSKXtqkhCi1i7C/S7jDLdkl4yG4XkzX4Lb9b
-         wkmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ahKhrHirpXz6r9DfRiERy6Xt9mCAFVI2v2LBmTZuv+k=;
-        b=RuoXh12F/KOaWgZzj9w8SjP62gP753akXDUa/CngJBuWBRly8rn81DwR79W3mZdMXI
-         lUSXRZCF++J5YBpaAJjdG1S3sWQPR7kPDKXF7CAPuW6DaCzGtJ+AWQ951Q8EYLehfE71
-         PEnSJ/x+DbnntMTH5I4PuChkMj09H1lhJMFsug+h8PfDR4vyZbNJeqmyZSl81ZzlJKb9
-         YoQkDoEFsdsweL5+l3ojGOh9V15rLJyiI1Osmph5SKRjjbdul7/AmP3R3W+FC1+TTG6q
-         Wovg4ZkTNs+HTBk+Pj5Yj4c0dcvX5SAszYDqHtu6XBX3sMQfmYnyOUN6Z/eXkm1mK9ki
-         HC3Q==
-X-Gm-Message-State: AOAM532+ncwZUly2kKytkETcNPprQ4YakRSadokPJ+JhjWTp/Y7LBuOV
-        1m97dk8bbxrPOQPOz3KwSHVLQ5ABeHFPGA==
-X-Google-Smtp-Source: ABdhPJybZswh65Hg+M6KlK9UCdcitb6By3+6zwbEUwW8nlxqUA/9seNgUy9sm75SYhfQekolzh0WrA==
-X-Received: by 2002:a05:6402:348d:: with SMTP id v13mr1527465edc.279.1635380587293;
-        Wed, 27 Oct 2021 17:23:07 -0700 (PDT)
-Received: from xws.localdomain ([37.120.217.83])
-        by smtp.gmail.com with ESMTPSA id i22sm753801edu.93.2021.10.27.17.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 17:23:06 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     platform-driver-x86@vger.kernel.org
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] platform/surface: aggregator_registry: Rename device registration function
-Date:   Thu, 28 Oct 2021 02:22:43 +0200
-Message-Id: <20211028002243.1586083-4-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211028002243.1586083-1-luzmaximilian@gmail.com>
-References: <20211028002243.1586083-1-luzmaximilian@gmail.com>
+        id S229612AbhJ1A1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 20:27:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhJ1A1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 20:27:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4FB60F9B;
+        Thu, 28 Oct 2021 00:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635380691;
+        bh=FiS4PSp9dq5XSaCsWhfnvL9XlrVWGShYyfrLJTdu9vE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LLiu9hL0Nnfj0wrmhGnnxL5+8GTJJbXO4vG40Y4IEyaBbUa88fsVA0M+rE2wPP55K
+         VLA6cRwCiUhxECHQOahortB3Yo2VP+oFbMEG0uElQs81v4jqhfp8kRYJAeUnnA16zJ
+         b+HS7hPoUelooieVdCl2Nx6xZkxw/UW2E15yHmAfP3nhWY0ybavp+pTPnAHxX+G4UW
+         F0ZV+G9Tqf5vDpTUtdu8DAFnC69xwsGEyN/qag6omHGpOOd3XLSLw822wOCWuz45t8
+         xD8mrOpLmMT4K4s0abdIP5Oo4QMzSeb0EDc/7elPxTr+C57KbXjFo3PtV8fNtBQS9d
+         bD3r72wnTUFYA==
+Date:   Wed, 27 Oct 2021 17:24:51 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <20211028002451.GB2237511@magnolia>
+References: <20211021001059.438843-1-jane.chu@oracle.com>
+ <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXj2lwrxRxHdr4hb@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename the device registration function to better align names with the
-newly introduced device removal function.
+On Tue, Oct 26, 2021 at 11:49:59PM -0700, Christoph Hellwig wrote:
+> On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote:
+> > Thanks - I try to be honest.  As far as I can tell, the argument
+> > about the flag is a philosophical argument between two views.
+> > One view assumes design based on perfect hardware, and media error
+> > belongs to the category of brokenness. Another view sees media
+> > error as a build-in hardware component and make design to include
+> > dealing with such errors.
+> 
+> No, I don't think so.  Bit errors do happen in all media, which is
+> why devices are built to handle them.  It is just the Intel-style
+> pmem interface to handle them which is completely broken.  
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
- drivers/platform/surface/surface_aggregator_registry.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Yeah, I agree, this takes me back to learning how to use DISKEDIT to
+work around a hole punched in a file (with a pen!) in the 1980s...
 
-diff --git a/drivers/platform/surface/surface_aggregator_registry.c b/drivers/platform/surface/surface_aggregator_registry.c
-index d63f975bfd4c..2e0d3a808d47 100644
---- a/drivers/platform/surface/surface_aggregator_registry.c
-+++ b/drivers/platform/surface/surface_aggregator_registry.c
-@@ -274,8 +274,8 @@ static int ssam_hub_add_device(struct device *parent, struct ssam_controller *ct
- 	return status;
- }
- 
--static int ssam_hub_add_devices(struct device *parent, struct ssam_controller *ctrl,
--				struct fwnode_handle *node)
-+static int ssam_hub_register_clients(struct device *parent, struct ssam_controller *ctrl,
-+				     struct fwnode_handle *node)
- {
- 	struct fwnode_handle *child;
- 	int status;
-@@ -389,7 +389,7 @@ static void ssam_base_hub_update_workfn(struct work_struct *work)
- 	hub->state = state;
- 
- 	if (hub->state == SSAM_BASE_HUB_CONNECTED)
--		status = ssam_hub_add_devices(&hub->sdev->dev, hub->sdev->ctrl, node);
-+		status = ssam_hub_register_clients(&hub->sdev->dev, hub->sdev->ctrl, node);
- 	else
- 		ssam_remove_clients(&hub->sdev->dev);
- 
-@@ -585,7 +585,7 @@ static int ssam_platform_hub_probe(struct platform_device *pdev)
- 
- 	set_secondary_fwnode(&pdev->dev, root);
- 
--	status = ssam_hub_add_devices(&pdev->dev, ctrl, root);
-+	status = ssam_hub_register_clients(&pdev->dev, ctrl, root);
- 	if (status) {
- 		set_secondary_fwnode(&pdev->dev, NULL);
- 		software_node_unregister_node_group(nodes);
--- 
-2.33.1
+...so would you happen to know if anyone's working on solving this
+problem for us by putting the memory controller in charge of dealing
+with media errors?
 
+> > errors in mind from start.  I guess I'm trying to articulate why
+> > it is acceptable to include the RWF_DATA_RECOVERY flag to the
+> > existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
+> > and its slow path (w/ error clearing) is faster than other alternative.
+> > Other alternative being 1 system call to clear the poison, and
+> > another system call to run the fast pwrite for recovery, what
+> > happens if something happened in between?
+> 
+> Well, my point is doing recovery from bit errors is by definition not
+> the fast path.  Which is why I'd rather keep it away from the pmem
+> read/write fast path, which also happens to be the (much more important)
+> non-pmem read/write path.
+
+The trouble is, we really /do/ want to be able to (re)write the failed
+area, and we probably want to try to read whatever we can.  Those are
+reads and writes, not {pre,f}allocation activities.  This is where Dave
+and I arrived at a month ago.
+
+Unless you'd be ok with a second IO path for recovery where we're
+allowed to be slow?  That would probably have the same user interface
+flag, just a different path into the pmem driver.
+
+Ha, how about a int fd2 = recoveryfd(fd); call where you'd get whatever
+speshul options (retry raid mirrors!  scrape the film off the disk if
+you have to!) you want that can take forever, leaving the fast paths
+alone?
+
+(Ok, that wasn't entirely serious...)
+
+--D
