@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D3D43E74E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161BD43E74F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 19:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhJ1R2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 13:28:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44112 "EHLO mail.kernel.org"
+        id S231219AbhJ1R2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 13:28:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230256AbhJ1R1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 13:27:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7BEAC60FC0;
+        id S230258AbhJ1R14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 13:27:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D33F3610E5;
         Thu, 28 Oct 2021 17:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635441928;
-        bh=a8iCX3LTNg++iRs74STw8FafPhajJyhP3eUyXNvkwhI=;
+        bh=sGn3i0Cyeyw5DwQfEnBJJAsvEWMbCAIYmlhJQYxnsTM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=oAbI//0CBHMSdTj/CWPUMzjOnuNwuzxmX36GL6gFjvzZdw/rUngJaNs4grSs07sF7
-         gmotqU3sayEXaTt74/xv7RwYUMSUjPGHGGaX95o874nrvNt4CncjDUBJYNx/Z/KINA
-         OKYowZO9Q1KB8UBidDVmjuswYvoh7jKIb9s5F2EHWeYBbDYjZfFBay4r12FeeQT0KZ
-         lxEMCkfKpU/66yTlZmrbZWItkiNXBzj1jY2CmGFn+LSaRnKGz3C6afYspRBu84rhvM
-         CBiOIWqi7zEKDJ8pHz6w6nbcFEL4smuOBq6FFHYoErsYgaJRgNqsIoFm95a36sKMDu
-         IORz7schEYdkw==
+        b=H+3hf36kBpy8/aG+ARNd4yFukdoG7d8i5++PW4tEpb+2jSeqiS+OSKntkVj51iZn3
+         EftIl/XJW6NOIZmjNpnkYWcWURdyQRXgzZq07p6D0xP5zy1DOFAVIm/MVln2P6jFss
+         eKV4mP6KyduXFn3whlk+yK4YBEQOBYl1rC8wwuJS9z79A1CtvPGX4WDtrNTplIpPpK
+         Q3TcAOewQ/gdHML1StG/3bpoaTshzQdZLDfxu4ZphFT7EDSdgP9QT7sakb8AUW8LmS
+         G6L9YofCJB1w0wEgkg6M3A2xFh8wt5eNIg5FuPyU3AGxV1BSsHnDCfpxGrl/cF3Q9b
+         2SUnupLJc5V8Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 73E4B609D2;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CC9E760972;
         Thu, 28 Oct 2021 17:25:28 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Do not warn when connecting eprobe to non
- existing event
+Subject: Re: [GIT PULL] regmap fixes for v5.15-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211027221611.23d9c3af@rorschach.local.home>
-References: <20211027221611.23d9c3af@rorschach.local.home>
+In-Reply-To: <20211028122340.C5766610C8@mail.kernel.org>
+References: <20211028122340.C5766610C8@mail.kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211027221611.23d9c3af@rorschach.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15-rc6-2
-X-PR-Tracked-Commit-Id: 7fa598f9706d40bd16f2ab286bdf5808e1393d35
+X-PR-Tracked-Message-Id: <20211028122340.C5766610C8@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v5.15-rc7
+X-PR-Tracked-Commit-Id: 55e6d8037805b3400096d621091dfbf713f97e83
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fc18cc89b9802dbe710cbfb52d0b11b3197ead18
-Message-Id: <163544192846.14282.6825700612442746050.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8685de2ed8c1b0e5cfb07d1986e6a38250a58e8a
+Message-Id: <163544192883.14282.117958868677769862.pr-tracker-bot@kernel.org>
 Date:   Thu, 28 Oct 2021 17:25:28 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
+To:     Mark Brown <broonie@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 27 Oct 2021 22:16:11 -0400:
+The pull request you sent on Thu, 28 Oct 2021 13:23:37 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15-rc6-2
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v5.15-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fc18cc89b9802dbe710cbfb52d0b11b3197ead18
+https://git.kernel.org/torvalds/c/8685de2ed8c1b0e5cfb07d1986e6a38250a58e8a
 
 Thank you!
 
