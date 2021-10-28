@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AC843E46D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249DD43E470
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhJ1PAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbhJ1PAq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:00:46 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4D4C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:58:19 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so4982916pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QGXF5oWPYn5wMkU6IdsSHBlyLVAw8pj3F3Vqsyv9n4A=;
-        b=P6eCMloWeqINUEj9ranXxT68xKyKG+nZeXgfOAjzUbfehAu/rt22mvQK6Cv6/wEVhf
-         ILloehy+H3AmheBwCsJOWXj/ExWSGoUX7OnMiNGVroCNOp4k9Vgiy6/GMu5fFT6Zszgf
-         KXJW6oVWAEOgw+nZb3EgWed+o32RfN8X4ovTA7EnWrvpelJNMO8xQoTFTMttXOUzUZwb
-         0Xly/nYCzxtW3j12hxAVfUgxFKxGC5/vHAA21WJTYrU6D50yjoLIq2WotwRspD3zmaKZ
-         masg4S+YLS4wCtzhqaBIf6crO0VS8UF0feqHXJVclVA/LnZwLrGD4PHQtvtjpiCHo8A/
-         G3WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QGXF5oWPYn5wMkU6IdsSHBlyLVAw8pj3F3Vqsyv9n4A=;
-        b=OPwnt1qN6ei7bTpDUqOouXwg422d6RpdghqNK8kIvBsavcjQz41NzkXz4DFmHfwtX+
-         3nCQCsZULbZBeyqJ5RAf74k9Eem4YIlv8npn7fQt66Um+Xi6Wx2nnag5vtOVxpMkxiNM
-         ejZF6SVvsPlV78YxDmLunxRcZmcjibC9J/kfAB5zJtuT7a1N90J16uld5LsUI324X7Go
-         WcXuvv4f2Xywlaiz+FvGYmAJwtpLMsfcNVlHWATNIgXqJ2x/InrqPGByKn93we+KTFgp
-         jbBJ35zimS9YkHeDzD3tK46ZgvfZGVlH8WW1gwX+oHKDZGr6tRchOZAdgisGmu7+GioT
-         5kow==
-X-Gm-Message-State: AOAM532HO3dyCaELm65Dbxi2HN9/3tGCBFBn2oiXI9uIDueTzzHFRhg8
-        U5EOZ6jghP+C+fXsYy9U6/Ds7w==
-X-Google-Smtp-Source: ABdhPJzktVilKhrXQKOyuMENgwV5ET+AbhuNqDf8NyijYHCTVEjAfRDleaAvbK/MY9xZIowkHZVQMA==
-X-Received: by 2002:a17:90b:388a:: with SMTP id mu10mr5243207pjb.0.1635433098398;
-        Thu, 28 Oct 2021 07:58:18 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id m10sm8036396pjs.21.2021.10.28.07.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:58:17 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 14:58:13 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     syzbot <syzbot+05017ad275a64a3246f8@syzkaller.appspotmail.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com, bhelgaas@google.com,
-        bp@alien8.de, dave.hansen@linux.intel.com,
-        devel@driverdev.osuosl.org, f.fainelli@gmail.com,
-        gregkh@linuxfoundation.org, hpa@zytor.com,
-        info@cestasdeplastico.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        linux-rpi-kernel-owner@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, lorenzo.pieralisi@arm.com,
-        mchehab@kernel.org, mingo@redhat.com, nsaenzjulienne@suse.de,
-        pbonzini@redhat.com, robh@kernel.org,
-        sean.j.christopherson@intel.com, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, tcs_kernel@tencent.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Subject: Re: [syzbot] BUG: spinlock bad magic in synchronize_srcu
-Message-ID: <YXq6hTAOhOaWGsNA@google.com>
-References: <0000000000000f73a805afeb9be8@google.com>
- <000000000000792dda05cf604775@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000792dda05cf604775@google.com>
+        id S231368AbhJ1PAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:00:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230451AbhJ1PAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 11:00:49 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55D9F6112F;
+        Thu, 28 Oct 2021 14:58:22 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mg6rE-002ErX-DD; Thu, 28 Oct 2021 15:58:20 +0100
+Date:   Thu, 28 Oct 2021 15:58:19 +0100
+Message-ID: <87sfwl9oxg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com,
+        tglx@linutronix.de, palmer@dabbelt.com, heiko@sntech.de,
+        robh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V5 3/3] irqchip/sifive-plic: Fixup thead, c900-plic request_threaded_irq with ONESHOT
+In-Reply-To: <20211028135523.5cf4b66b@redslave.neermore.group>
+References: <20211024013303.3499461-1-guoren@kernel.org>
+        <20211024013303.3499461-4-guoren@kernel.org>
+        <87a6ixbcse.wl-maz@kernel.org>
+        <20211028135523.5cf4b66b@redslave.neermore.group>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: nikita.shubin@maquefel.me, guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com, tglx@linutronix.de, palmer@dabbelt.com, heiko@sntech.de, robh@kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, guoren@linux.alibaba.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On Thu, 28 Oct 2021 11:55:23 +0100,
+Nikita Shubin <nikita.shubin@maquefel.me> wrote:
 > 
-> commit eb7511bf9182292ef1df1082d23039e856d1ddfb
-> Author: Haimin Zhang <tcs_kernel@tencent.com>
-> Date:   Fri Sep 3 02:37:06 2021 +0000
+> Hello Marc and Guo Ren!
 > 
->     KVM: x86: Handle SRCU initialization failure during page track init
+> On Mon, 25 Oct 2021 11:48:33 +0100
+> Marc Zyngier <maz@kernel.org> wrote:
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143e2b02b00000
-> start commit:   78e709522d2c Merge tag 'for_linus' of git://git.kernel.org..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2150ebd7e72fa695
-> dashboard link: https://syzkaller.appspot.com/bug?extid=05017ad275a64a3246f8
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b72895300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c42853300000
+> > On Sun, 24 Oct 2021 02:33:03 +0100,
+> > guoren@kernel.org wrote:
+> > > 
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > 
+> > > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the
+> > > driver, only the first interrupt could be handled, and continue irq
+> > > is blocked by hw. Because the thead,c900-plic couldn't complete
+> > > masked irq source which has been disabled in enable register. Add
+> > > thead_plic_chip which fix up c906-plic irq source completion
+> > > problem by unmask/mask wrapper.
+> > > 
+> > > Here is the description of Interrupt Completion in PLIC spec [1]:
+> > > 
+> > > The PLIC signals it has completed executing an interrupt handler by
+> > > writing the interrupt ID it received from the claim to the
+> > > claim/complete register. The PLIC does not check whether the
+> > > completion ID is the same as the last claim ID for that target. If
+> > > the completion ID does not match an interrupt source that is
+> > > currently enabled for the target, the ^^ ^^^^^^^^^ ^^^^^^^
+> > > completion is silently ignored.  
+> > 
+> > Given this bit of the spec...
+> > 
+> > > +static void plic_thead_irq_eoi(struct irq_data *d)
+> > > +{
+> > > +	struct plic_handler *handler =
+> > > this_cpu_ptr(&plic_handlers); +
+> > > +	if (irqd_irq_masked(d)) {
+> > > +		plic_irq_unmask(d);
+> > > +		writel(d->hwirq, handler->hart_base +
+> > > CONTEXT_CLAIM);
+> > > +		plic_irq_mask(d);
+> > > +	} else {
+> > > +		writel(d->hwirq, handler->hart_base +
+> > > CONTEXT_CLAIM);
+> > > +	}
+> > > +}
+> > > +  
+> > 
+> > ... it isn't obvious to me why this cannot happen on an SiFive PLIC.
 > 
-> If the result looks correct, please mark the issue as fixed by replying with:
+> This indeed happens with SiFive PLIC. I am currently tinkering with
+> da9063 RTC on SiFive Unmatched, and ALARM irq fires only once. However
+> with changes proposed by Guo Ren in plic_thead_irq_eoi, everything
+> begins to work fine.
 > 
-> #syz fix: KVM: x86: Handle SRCU initialization failure during page track init
+> May be these change should be propagated to plic_irq_eoi instead of
+> making a new function ?
 
-#syz fix: KVM: x86: Handle SRCU initialization failure during page track init
+That's my impression too. I think the T-Head defect is pretty much
+immaterial when you consider how 'interesting' the PLIC architecture
+is. Conflating EOI and masking really is a misfeature...
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
