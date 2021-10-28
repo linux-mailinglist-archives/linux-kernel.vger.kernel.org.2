@@ -2,254 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898F443E573
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6573843E58B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhJ1PvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S229723AbhJ1P6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 11:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhJ1PvG (ORCPT
+        with ESMTP id S229752AbhJ1P6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:51:06 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F06C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:48:38 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g8so26965997edb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:48:38 -0700 (PDT)
+        Thu, 28 Oct 2021 11:58:13 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3288C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:55:46 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id v10so4439876pjr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 08:55:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zbZ9TZiWVecEQFiE8v0DssKnTP5W+NVcms/8fiOavLY=;
-        b=IL+vSHwit3FV6PaMoc8v9POwLt+FCZzBEedybH5B42uCW5WDwt689x4g/UywfEgpvt
-         k7Nu4Rzg3vlI1y82D/ACednq26m+YAepiVRc5TYaieaarxW7zfy6/VqwlleaL0J6k6xW
-         YQpP/7t++vw+oJz94ANpMCaroaJ+qhQuYuezemuSaDD7NMga8XPK0Qxj7cVNzOtCqgBi
-         MTU3eZJLAdHB4bEzRZAx7aGROcd8yhtOR2CUFqSeHKhj3tIkSlEHBwwfydcXZ6e4pbCA
-         6RlcRoJ1WalAI1RNzk+xnduYU/eUYa5k/iWfoLyJrqB0it6c7hF9v7NWXKEW4sBN5wHT
-         D++g==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m0tHnHlQJDBdfArgGfCXfVMbH9LdSSnDL35miUYeLjs=;
+        b=QQmaJ8nXN2KbyIG5k1JyBoSquPg6yk3b/FNSx1V8PjEEIwsY4bZfol7aYj6Ws7u8lu
+         AL3QNRVPk8G4o1zbT2wS3T+0q2unqIYIGvpD4X4hbS+GWLCfdCjK1582SOfCPxgbXaj6
+         rp1/zAb/gxsig9wW4x8Hmz3hVUCDwIHJtvbG8WTJj+OyXJ9Qbywk0hsQ9i5L1juwa1hs
+         n78Jiehn21G0dcgi1vzqMRfnUHdXLWIscCjEk3VHPYnbJSs6c8My2YAhN/ZegigH9hDg
+         LWqS5PZjO6n0Z4WJ0z7BuPmceVWRsCdNKwW5JM9MnEgXi3tzkHrjJO1A1KNXmTOVd/Xz
+         cMxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zbZ9TZiWVecEQFiE8v0DssKnTP5W+NVcms/8fiOavLY=;
-        b=piHdjgr5ZAKukgdOdmrLwt7CgMsyBJIr+Ii7Y89ZqgssYAHlCxihNIzQBNh5jijJEG
-         U3ucf8ESe4WH4/soR7JBD99gPOmU3B86djwQIaN38oK/zZe1uXxw2YAvhWTRIanYGQDn
-         KSAqP3GGT51NReulLdeb7+DKScd1o7aZpKjCYNAPdicCObF7053QsI0okuyKfyz5BTic
-         Vok+JU1ezOgXkB97Guo7yKeM1DnvRNwF4a6NFAyIP7+zo7E0vspB3YPzOt6Nrw4Glyu/
-         zWerCk1eU+IvEZag2gOfoJ9WxpudTomNpH9VhI7ECilFnNoZ1L5ffNZSd/7IRzaHEUq5
-         YujA==
-X-Gm-Message-State: AOAM5316Z8qRvzM7K2MY8UGe6EOQrRsXHdRa9Xdl+gBINUinBW0UY9Yc
-        y20mCNF9FUppMtS4k2Dhx3dWaWQdDZ5mvEDJ4E2N3g==
-X-Google-Smtp-Source: ABdhPJzpURV/X2pcYNSnFQ/13FLM6rnmE8k8wsgO1aYcW50j9BbWGHTPX8lqHy5MNGKXjJSdDEPEYOvwXhthwhHdZZM=
-X-Received: by 2002:aa7:cac2:: with SMTP id l2mr7153749edt.168.1635436117146;
- Thu, 28 Oct 2021 08:48:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m0tHnHlQJDBdfArgGfCXfVMbH9LdSSnDL35miUYeLjs=;
+        b=blsjanx2OVADLOZagbXWce33cRzojx6FQoD0lSdiqFpW2nL4EmEpm6aiUCOCdUymS3
+         ZvkYICuvK+lr/mIiKovmA9XIRlU2z6FiLP7VGhjCPk+QuiBOesCqiztpvKWcrYHih8px
+         ulP21vs+lk3IakamcvasbvQ80xxVBwKPjSAJtVzcwI6GxJhTVbaA3BBLcmqpexyM952g
+         6BqkL/CRUGS1UxHwXnKDvkATvRAGyaOtX1Ozvy/NxTIEQCWFvxiCysrWxhHBVSNzIg8C
+         sqdVpF142r0HpIscFTvwNChS9daFvh3LwoRJ6/627p9DR8sCC0JcwJMyur+jBZS875qs
+         MiHA==
+X-Gm-Message-State: AOAM531vB47FnEn27cIJBcPR4pYdnB78o62aLU8ZExSe9CWqYxn7zQ3L
+        wDzfsf4DN6ThybKdF61LHB3ZeQ==
+X-Google-Smtp-Source: ABdhPJwGUzCGTG+bFEKCx4HxRTPn7WtM79GFmjO7irPTWNvcrtXMPEuDRtNZ53pGeMNDkz8HGfA6sw==
+X-Received: by 2002:a17:90b:17d0:: with SMTP id me16mr13884280pjb.152.1635436545938;
+        Thu, 28 Oct 2021 08:55:45 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id s12sm3788591pfg.70.2021.10.28.08.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 08:55:45 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 15:55:41 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH v2 26/43] KVM: VMX: Read Posted Interrupt "control"
+ exactly once per loop iteration
+Message-ID: <YXrH/ZZBOHrWHz4j@google.com>
+References: <20211009021236.4122790-1-seanjc@google.com>
+ <20211009021236.4122790-27-seanjc@google.com>
+ <b078cce30f86672d7d8f8eaa0adc47d24def24e2.camel@redhat.com>
 MIME-Version: 1.0
-References: <20210926223322.848641-1-isabellabdoamaral@usp.br>
- <20210926223322.848641-3-isabellabdoamaral@usp.br> <CABVgOS=kzCyfHgR_5OwoqMuNZBmziYFFa5gTVzH-W4ZbV101xQ@mail.gmail.com>
-In-Reply-To: <CABVgOS=kzCyfHgR_5OwoqMuNZBmziYFFa5gTVzH-W4ZbV101xQ@mail.gmail.com>
-From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
-Date:   Thu, 28 Oct 2021 12:48:26 -0300
-Message-ID: <CAAniXFQE5O0Zcu6HoLrw_s3g7o2--1Dc5RD9hd2O3nThWC285w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] test_hash.c: split test_int_hash into
- arch-specific functions
-To:     David Gow <davidgow@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Enzo Ferreira <ferreiraenzoa@gmail.com>,
-        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
-        <augusto.duraes33@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        ~lkcamp/patches@lists.sr.ht,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b078cce30f86672d7d8f8eaa0adc47d24def24e2.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 2, 2021 at 4:20 AM David Gow <davidgow@google.com> wrote:
->
-> On Mon, Sep 27, 2021 at 6:33 AM Isabella Basso <isabellabdoamaral@usp.br> wrote:
-> >
-> > Split the test_int_hash function to keep its mainloop separate from
-> > arch-specific chunks, which are only compiled as needed. This aims at
-> > improving readability.
-> >
-> > Tested-by: David Gow <davidgow@google.com>
-> > Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
+On Thu, Oct 28, 2021, Maxim Levitsky wrote:
+> On Fri, 2021-10-08 at 19:12 -0700, Sean Christopherson wrote:
+> > Use READ_ONCE() when loading the posted interrupt descriptor control
+> > field to ensure "old" and "new" have the same base value.  If the
+> > compiler emits separate loads, and loads into "new" before "old", KVM
+> > could theoretically drop the ON bit if it were set between the loads.
+> > 
+> > Fixes: 28b835d60fcc ("KVM: Update Posted-Interrupts Descriptor when vCPU is preempted")
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > > ---
->
-> This looks good to me. It's possibly worth fixing up the changelog
-> mixup between this and patch 3 if you send out a v3.
->
-> A minor suggestion re: commenting below, otherwise this is:
->
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> -- David
->
-> >  lib/test_hash.c | 86 ++++++++++++++++++++++++++++++++-----------------
-> >  1 file changed, 57 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/lib/test_hash.c b/lib/test_hash.c
-> > index d4b0cfdb0377..08fe63776c4f 100644
-> > --- a/lib/test_hash.c
-> > +++ b/lib/test_hash.c
-> > @@ -56,6 +56,53 @@ fill_buf(char *buf, size_t len, u32 seed)
-> >         }
-> >  }
-> >
-> > +/* Holds most testing variables for the int test */
->
-> It might be worth commenting what these variables actually are here,
-> as it's pretty confusing on a quick read through.
->
-> Maybe something like:
->
-> > +struct test_hash_params {
-> > +       unsigned long long *h64;
->
-> /* Pointer to integer to be hashed. */
->
-> > +       u32 h0;
->
-> /* Low 32-bits of integer to be hashed. */
->
-> > +       u32 h1;
->
-> /* Arch-specific hash result. */
->
-> > +       u32 h2;
->
-> /* Generic hash result. */
->
-> > +       u32 (*hash_or)[33];
->
-> /* ORed hashes of given size (in bits) */
->
+> >  arch/x86/kvm/vmx/posted_intr.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+> > index 414ea6972b5c..fea343dcc011 100644
+> > --- a/arch/x86/kvm/vmx/posted_intr.c
+> > +++ b/arch/x86/kvm/vmx/posted_intr.c
+> > @@ -53,7 +53,7 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+> >  
+> >  	/* The full case.  */
+> >  	do {
+> > -		old.control = new.control = pi_desc->control;
+> > +		old.control = new.control = READ_ONCE(pi_desc->control);
+> >  
+> >  		dest = cpu_physical_id(cpu);
+> >  
+> > @@ -104,7 +104,7 @@ static void __pi_post_block(struct kvm_vcpu *vcpu)
+> >  	     "Wakeup handler not enabled while the vCPU was blocking");
+> >  
+> >  	do {
+> > -		old.control = new.control = pi_desc->control;
+> > +		old.control = new.control = READ_ONCE(pi_desc->control);
+> >  
+> >  		dest = cpu_physical_id(vcpu->cpu);
+> >  
+> > @@ -160,7 +160,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
+> >  	     "Posted Interrupt Suppress Notification set before blocking");
+> >  
+> >  	do {
+> > -		old.control = new.control = pi_desc->control;
+> > +		old.control = new.control = READ_ONCE(pi_desc->control);
+> >  
+> >  		/* set 'NV' to 'wakeup vector' */
+> >  		new.nv = POSTED_INTR_WAKEUP_VECTOR;
+> 
+> I wish there was a way to mark fields in a struct, as requiring 'READ_ONCE' on them
+> so that compiler would complain if this isn't done, or automatically use 'READ_ONCE'
+> logic.
 
-Those comments look pretty sensible to me! I think I'll stick with them :)
+Hmm, I think you could make an argument that ON and thus the whole "control"
+word should be volatile.  AFAICT, tagging just "on" as volatile actually works.
+There's even in a clause in Documentation/process/volatile-considered-harmful.rst
+that calls this out as a (potentially) legitimate use case.
 
-Thanks,
---
-Isabella Basso
+  - Pointers to data structures in coherent memory which might be modified
+    by I/O devices can, sometimes, legitimately be volatile.
 
->
-> > +};
-> > +
-> > +#ifdef HAVE_ARCH__HASH_32
-> > +static bool __init
-> > +test_int__hash_32(struct test_hash_params *params)
-> > +{
-> > +       params->hash_or[1][0] |= params->h2 = __hash_32_generic(params->h0);
-> > +#if HAVE_ARCH__HASH_32 == 1
-> > +       if (params->h1 != params->h2) {
-> > +               pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
-> > +                      params->h0, params->h1, params->h2);
-> > +               return false;
-> > +       }
-> > +#endif
-> > +       return true;
-> > +}
-> > +#endif
-> > +
-> > +#ifdef HAVE_ARCH_HASH_64
-> > +static bool __init
-> > +test_int_hash_64(struct test_hash_params *params, u32 const *m, int *k)
-> > +{
-> > +       params->h2 = hash_64_generic(*params->h64, *k);
-> > +#if HAVE_ARCH_HASH_64 == 1
-> > +       if (params->h1 != params->h2) {
-> > +               pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() = %#x",
-> > +                      *params->h64, *k, params->h1, params->h2);
-> > +               return false;
-> > +       }
-> > +#else
-> > +       if (params->h2 > *m) {
-> > +               pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
-> > +                      *params->h64, *k, params->h1, *m);
-> > +               return false;
-> > +       }
-> > +#endif
-> > +       return true;
-> > +}
-> > +#endif
-> > +
-> >  /*
-> >   * Test the various integer hash functions.  h64 (or its low-order bits)
-> >   * is the integer to hash.  hash_or accumulates the OR of the hash values,
-> > @@ -69,19 +116,13 @@ static bool __init
-> >  test_int_hash(unsigned long long h64, u32 hash_or[2][33])
-> >  {
-> >         int k;
-> > -       u32 h0 = (u32)h64, h1, h2;
-> > +       struct test_hash_params params = { &h64, (u32)h64, 0, 0, hash_or };
-> >
-> >         /* Test __hash32 */
-> > -       hash_or[0][0] |= h1 = __hash_32(h0);
-> > +       hash_or[0][0] |= params.h1 = __hash_32(params.h0);
-> >  #ifdef HAVE_ARCH__HASH_32
-> > -       hash_or[1][0] |= h2 = __hash_32_generic(h0);
-> > -#if HAVE_ARCH__HASH_32 == 1
-> > -       if (h1 != h2) {
-> > -               pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
-> > -                       h0, h1, h2);
-> > +       if (!test_int__hash_32(&params))
-> >                 return false;
-> > -       }
-> > -#endif
-> >  #endif
-> >
-> >         /* Test k = 1..32 bits */
-> > @@ -89,37 +130,24 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
-> >                 u32 const m = ((u32)2 << (k-1)) - 1;    /* Low k bits set */
-> >
-> >                 /* Test hash_32 */
-> > -               hash_or[0][k] |= h1 = hash_32(h0, k);
-> > -               if (h1 > m) {
-> > -                       pr_err("hash_32(%#x, %d) = %#x > %#x", h0, k, h1, m);
-> > +               hash_or[0][k] |= params.h1 = hash_32(params.h0, k);
-> > +               if (params.h1 > m) {
-> > +                       pr_err("hash_32(%#x, %d) = %#x > %#x", params.h0, k, params.h1, m);
-> >                         return false;
-> >                 }
-> >
-> >                 /* Test hash_64 */
-> > -               hash_or[1][k] |= h1 = hash_64(h64, k);
-> > -               if (h1 > m) {
-> > -                       pr_err("hash_64(%#llx, %d) = %#x > %#x", h64, k, h1, m);
-> > +               hash_or[1][k] |= params.h1 = hash_64(h64, k);
-> > +               if (params.h1 > m) {
-> > +                       pr_err("hash_64(%#llx, %d) = %#x > %#x", h64, k, params.h1, m);
-> >                         return false;
-> >                 }
-> >  #ifdef HAVE_ARCH_HASH_64
-> > -               h2 = hash_64_generic(h64, k);
-> > -#if HAVE_ARCH_HASH_64 == 1
-> > -               if (h1 != h2) {
-> > -                       pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() "
-> > -                               "= %#x", h64, k, h1, h2);
-> > +               if (!test_int_hash_64(&params, &m, &k))
-> >                         return false;
-> > -               }
-> > -#else
-> > -               if (h2 > m) {
-> > -                       pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
-> > -                               h64, k, h1, m);
-> > -                       return false;
-> > -               }
-> > -#endif
-> >  #endif
-> >         }
-> >
-> > -       (void)h2;       /* Suppress unused variable warning */
-> >         return true;
-> >  }
-> >
-> > --
-> > 2.33.0
-> >
+That said, I think I actually prefer forcing the use of READ_ONCE.  The descriptor
+requires more protections than what volatile provides, namely that all writes need
+to be atomic.  So given that volatile alone isn't sufficient, I'd prefer to have
+the code itself be more self-documenting.
+
+E.g. this compiles and does mess up the expected size.
+
+diff --git a/arch/x86/kvm/vmx/posted_intr.h b/arch/x86/kvm/vmx/posted_intr.h
+index 7f7b2326caf5..149df3b18789 100644
+--- a/arch/x86/kvm/vmx/posted_intr.h
++++ b/arch/x86/kvm/vmx/posted_intr.h
+@@ -11,9 +11,9 @@ struct pi_desc {
+        union {
+                struct {
+                                /* bit 256 - Outstanding Notification */
+-                       u16     on      : 1,
++                       volatile u16    on      : 1;
+                                /* bit 257 - Suppress Notification */
+-                               sn      : 1,
++                       u16     sn      : 1,
+                                /* bit 271:258 - Reserved */
+                                rsvd_1  : 14;
+                                /* bit 279:272 - Notification Vector */
+@@ -23,7 +23,7 @@ struct pi_desc {
+                                /* bit 319:288 - Notification Destination */
+                        u32     ndst;
+                };
+-               u64 control;
++               volatile u64 control;
+        };
+        u32 rsvd[6];
+ } __aligned(64);
