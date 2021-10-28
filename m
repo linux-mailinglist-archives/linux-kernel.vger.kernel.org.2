@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CAB43E404
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B0243E408
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhJ1Oos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:44:48 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:60579 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhJ1Ooq (ORCPT
+        id S231267AbhJ1Opp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhJ1Opn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:44:46 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MpUlO-1n0oqb2zvA-00pqiF; Thu, 28 Oct 2021 16:42:17 +0200
-Received: by mail-wm1-f46.google.com with SMTP id b71so5280119wmd.0;
-        Thu, 28 Oct 2021 07:42:17 -0700 (PDT)
-X-Gm-Message-State: AOAM530hdB1UavH2d6Z6XLxjrMbnJZvQrT6UV7Y2BvCZg989E+N10JsK
-        3Wzb16ytB8eAM9IERImatZX+EeIplNghVQkYvLA=
-X-Google-Smtp-Source: ABdhPJx9cbVaNwx+3GHbcHnQXOpN9heQ4JmpWp0Hw9nZ+0Vz+KISvn385FCbSquLcG8jLThOtn8bEBSn4MBwQAn7pDA=
-X-Received: by 2002:a1c:1c1:: with SMTP id 184mr1292581wmb.1.1635432137333;
- Thu, 28 Oct 2021 07:42:17 -0700 (PDT)
+        Thu, 28 Oct 2021 10:45:43 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636E4C061767
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:43:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u11so14134220lfs.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=148z8Jno5ibjrSfO3iE+zKfRZ+rTkFE53njyJOvaPpE=;
+        b=FM3+GGUSfg6YDOe1Wo1KLij7xyUbtrOhNvp+MkkZNaMFKzpKBK1xHqInpLPyQ6Fu5+
+         nCwUQODEkDLD+RMo4eYW6XVC8Dc2/aY+djYAUDLKaYKzxEtrl6Mw1M/BxJbOYOosRQuI
+         RSYZ+qCyKm4drPnOA+LrKBrBRhmUYu2nTiyLbGw/RkRHpla6vhj53vxN2YiYG7yDyA/I
+         K7t/VuQ4K3PPYlPOe2CsJEMnLVeK7lNZ7hfjBU0/vjlbCM8Lh783WXExHiU6NYakmIB7
+         h+4q6/zc4jCQW8LJOAsVce89xiPiRSWf+m3scb67KgBxMyzKCPmXVKoPf/2k4kVeuF4B
+         PCJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=148z8Jno5ibjrSfO3iE+zKfRZ+rTkFE53njyJOvaPpE=;
+        b=mh0G7NhPlK7D8aUs/vrjvIJTCQIdGaWFdt9isGIHOtA9SJ1b9/txIMplqMoaRlF1X2
+         3/bTpcUxPq0fQCmDVgE0NhYgiir94yDZ27M+TKAtLtUPVMNS4ZvszeV6+IFnGiTVZYzm
+         F/mq05eqaT5Cdhg7AIxL0rcH2s4W+EmAV53+TVIR4WZvGVkytjdnoB9N+4Sna/C9vvby
+         9g6SxheP1M+Kr0rLgm8rgE1EZP4qtJC55ndElpAwb2pPsDmAcZGQTDtGzQHfFOFZfnAX
+         gGlif7YhxNj5nvV3sfpKFDDgQNsPgT72CMynATIHZ6job3iGTo1OxVuENgI4hYSjHSRG
+         VYhg==
+X-Gm-Message-State: AOAM532vyPCmWRr8Aest9AqnLSldCNxMO08eIrTsd16XpatsiZReG51b
+        4X0z1paDamornvdXMC5f+piSzA==
+X-Google-Smtp-Source: ABdhPJwtVWJTLzQqQ6CF4sgcVaSbsL/TbZAhf+71RjlxI06EBTx9BcGPNlntpxY18ixgsSk2ylCj6A==
+X-Received: by 2002:ac2:4f02:: with SMTP id k2mr4657354lfr.415.1635432194696;
+        Thu, 28 Oct 2021 07:43:14 -0700 (PDT)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id h31sm332844lfv.111.2021.10.28.07.43.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 07:43:14 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: samsung: pmu: Document Exynos850
+Date:   Thu, 28 Oct 2021 17:43:12 +0300
+Message-Id: <20211028144313.9444-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211028141938.3530-1-lukas.bulwahn@gmail.com> <20211028141938.3530-4-lukas.bulwahn@gmail.com>
-In-Reply-To: <20211028141938.3530-4-lukas.bulwahn@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 28 Oct 2021 16:42:01 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3+-J6XbUmzWs7ATN7z53GomZSj6vq3n5R709=iL45RrA@mail.gmail.com>
-Message-ID: <CAK8P3a3+-J6XbUmzWs7ATN7z53GomZSj6vq3n5R709=iL45RrA@mail.gmail.com>
-Subject: Re: [PATCH 03/13] arm: Kconfig.debug: drop reference to removed ARCH_MSM
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:wCBMx+HBENwdEVNanSmQ9zpMu8pE+lD9RbEYFLss8aQbl7kLZt6
- a2wk9JodzAGTmpCdw7XQqFKBSjbKWWKtvXQmuMfWTBZUgAGMkl/OAqI/jKwEGUz9J8yLSAi
- tYweqNWMrzWHDb6IChmphJJu6bIdy7kZg9aBy6Wc5a1Bqgz74mQ71b64riFnB17iLpmlWEq
- KZQaheLfjKv5w3bjutYxw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Mgt+1CsVrGA=:5/F8zFWhHeHQlVaesv4adb
- DxyvCbf0PRMcVwa8Ygyu80p/e5lmqgjNz2QkAkkTYm1Iv3a1v05l6NkvsRK188/+QB3mR66eK
- KvEKly4aOLtokb2Qhb4yH428Ymde9mCq5WJTgma3wMuVNSc8pHYLBvc/tsD3KlerZ2DT3JiEV
- I0tPQKLgsU7SnyuRjTNmzdaTwaC6i4rxZeQSMpUjW22BCmJunt4ZEIdWbM5DJYH04MaQppYnI
- sfQ4uZaRPkjj6qhPERN1K0NwPGMVWv+zfif4l80DOH+mF61By449gpB5rBDcFP7FFR1niOH2t
- 8w47gBRDqs8xQ96hBuapzcDzk+5K5yPCyA/P4F/WLakWUhXuxXuGwXyfo02dXLc+cVvuyy2rA
- Q6aGczwxkBOfzP07QqvFA/i65uXN4yiHgvNNngkE/uIUayXcX92ev0VUs9X8jzW9LohWEzblq
- xD5N1KIJFCaJl573/3NusfPiEqBzs1ARuWzfEpoG5fr4nq8dfnGuEOp+a6QRQCVXfjaGiq5lA
- ICTU3At2QC9YUwxvju7LuJmgPp8gx8cx0Zj0YElzX3nsIn2ivMPgy8Y3NWtIEjBuNzTuSMKit
- vHGThSzhZ3COJFBOIYmRNrMLJx4joyMc+WIPc/7dHmHHkhfFteOVouIu7c5ulIXDWD5YNxogq
- TqynImbd6tCYJGvrTr7FibpIzZpZDKQyPK4be0DtiXbCEe6wWirHEUNqanETy37Z/CpcCDTt4
- Cp5CG+oJVHgyiQpgt58VsTx3iGtLV53YqXtmPh05wYQkziS8MU1hKMtzxo9RdMrdbBhGA1z9a
- 5aMEpYzXLFZ5EFU5umCzVYObWUMaPFUAL7gluxYp1dzIA4IFTE=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit c0c89fafa289 ("ARM: Remove mach-msm and associated ARM architecture
-> code") removes the definition of the config ARCH_MSM. Since then, the
-> reference to ARCH_MSM in the dependencies of UNCOMPRESS_INCLUDE in
-> Kconfig.debug is dead.
->
-> Fortunately, ./scripts/checkkconfigsymbols.py warns:
->
-> ARCH_MSM
-> Referencing files: arch/arm/Kconfig.debug
->
-> Drop the dependency on this removed config.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  arch/arm/Kconfig.debug | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-> index 83484564b1d9..87aa6e92ee6e 100644
-> --- a/arch/arm/Kconfig.debug
-> +++ b/arch/arm/Kconfig.debug
-> @@ -1886,7 +1886,7 @@ config DEBUG_UNCOMPRESS
->
->  config UNCOMPRESS_INCLUDE
->         string
-> -       default "debug/uncompress.h" if ARCH_MULTIPLATFORM || ARCH_MSM || \
-> +       default "debug/uncompress.h" if ARCH_MULTIPLATFORM || \
->                                         PLAT_SAMSUNG || ARM_SINGLE_ARMV7M
+Exynos850 SoC can reuse PMU driver functionality. Add corresponding
+compatible string to PMU bindings documentation.
 
-The PLAT_SAMSUNG reference is also misplaced here, I think you just want
-ARCH_S3C24XX instead, since the other samsung ones already require
-ARCH_MULTIPLATFORM.
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+---
+ Documentation/devicetree/bindings/arm/samsung/pmu.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-        Arnd
+diff --git a/Documentation/devicetree/bindings/arm/samsung/pmu.yaml b/Documentation/devicetree/bindings/arm/samsung/pmu.yaml
+index 17678d9686c1..0bbd89265b28 100644
+--- a/Documentation/devicetree/bindings/arm/samsung/pmu.yaml
++++ b/Documentation/devicetree/bindings/arm/samsung/pmu.yaml
+@@ -24,6 +24,7 @@ select:
+           - samsung,exynos5420-pmu
+           - samsung,exynos5433-pmu
+           - samsung,exynos7-pmu
++          - samsung,exynos850-pmu
+           - samsung-s5pv210-pmu
+   required:
+     - compatible
+@@ -41,6 +42,7 @@ properties:
+           - samsung,exynos5420-pmu
+           - samsung,exynos5433-pmu
+           - samsung,exynos7-pmu
++          - samsung,exynos850-pmu
+           - samsung-s5pv210-pmu
+       - const: syscon
+ 
+-- 
+2.30.2
+
