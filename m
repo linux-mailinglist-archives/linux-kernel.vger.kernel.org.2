@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F6643E367
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391CC43E36A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhJ1OWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
+        id S231392AbhJ1OWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbhJ1OWg (ORCPT
+        with ESMTP id S231297AbhJ1OWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:22:36 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7F6C061348;
-        Thu, 28 Oct 2021 07:20:09 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v17so10479842wrv.9;
-        Thu, 28 Oct 2021 07:20:09 -0700 (PDT)
+        Thu, 28 Oct 2021 10:22:39 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A85C0613B9;
+        Thu, 28 Oct 2021 07:20:12 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id i5so2841146wrb.2;
+        Thu, 28 Oct 2021 07:20:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=le2hzZSknGbN32j+WyPBSUphMiDhY48ycCDRlUrmOR4=;
-        b=fZyet1jpHTyp6VrkESIendSjAXNfzPrPLAR6SiYMpsO2hpA1CHmWoU4oL0LwcRnXaH
-         R6LUm9v8niok9TSIHUNh6JKXcTCj2RLkkEAlV2TL7wcssA9Q7j9qRrZdCIeLgYUEYjOl
-         S9jEpoC1YR8Q33EwmWarOFgCoqhl8PxSPSs690us4j5VsBHH8dfhNW07cmVQJcM8V5Ve
-         DUh4QZoHipLRXYsSzL/CJzs7Uo3GIwjHoRsLHiCCcDkAB2GIF3S7sqnJAmGMRrF3RlqI
-         8sh/9yJkUy7/hvu0m92m9++TNNzrmhRvDPC1wSk9WHNJIgLEFdKXxdKB/PyKf9tt0Y9E
-         Dl2g==
+        bh=Jq2UWtG87dKtp2XZhwrbjMAgWZR6sHhFRmylDzZWc3U=;
+        b=Ga9puom6MDb1nGZqJz4kzpiYpvKxyb9Nm4IeObhoEB/Vyllld2oBBGENQHR5M90VZp
+         t6IYEj07WV+x9NavL9+WLfTcp9SPEMOZEYlWpMWtWNMOkt0CUEjSGJN0/NNSJOzoxG1r
+         gPMborydG7PWwy4+8i/EnGGjnaw4j6akgpVanezrqm0D8Ty7h8UCUem3TsgZE3w4PjH5
+         7r+4hlcJj22WKY5x9yJkkno2fzzvDwTTNr2pNgB6awOHHnQmxc3US9B9HdumUG0dHMyV
+         pDWyXkldoEGup0spMTVH1ReipOAau4ZpTUImIBX0JqY58UCBKej5j0YT17ywMh9Ng9B/
+         IDXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=le2hzZSknGbN32j+WyPBSUphMiDhY48ycCDRlUrmOR4=;
-        b=A4gqJ/7EZRclzjFteP4+Kq+gsbyGxw9tToKLAWCKUSJE22fVUcd3fOjJcD+x2hB6Cw
-         zAc77yhYWieYdpsjvmCMS/FQtLhVkV/qOhDqEMsfTUCNp+QB2jjD8trvQU4kcr1Dvu02
-         b8FHivV8BpqY0WpwzV6ytNu1jw7t5AL2NumFGzSC/0RcyEACWlLc+Bg1+6xyQNTiuVkm
-         FrL7ivZdhDM4/gIdEI+3iOfF/K0AQz18YW96xr/FwMZrre/EMH/1h6GtBqKQr4RfAJKI
-         e9ty7a7v3GPX2+Lzvxm/pRJYw7CgriKjrxBnoWQTXP50JSAQYsrV8eTcC6GQutteNiwc
-         9cDg==
-X-Gm-Message-State: AOAM532nxAxWDbj1Esq6V6efIv9tFxPx0rjvj5RAkqqeWhMwNbo2JTVZ
-        ffR1iRiiCfnR5HcGE/rYLlE=
-X-Google-Smtp-Source: ABdhPJy4C/+R0zhTRyO5Ty3sYcOvSI81tuUGNdaGW1vIgobW8JDjdh2Y3LAk2e7WtMKDJ59YhVDa2A==
-X-Received: by 2002:a5d:47a3:: with SMTP id 3mr6100112wrb.336.1635430808034;
-        Thu, 28 Oct 2021 07:20:08 -0700 (PDT)
+        bh=Jq2UWtG87dKtp2XZhwrbjMAgWZR6sHhFRmylDzZWc3U=;
+        b=yBrdWgZJGaGOpyhXrQ11Xc6wmNW1k+yIS8hZFlc26FwoeNaE5CKkfsCCjSix3exe6o
+         xpbUIlmHeAdoTFKOEuCrQQMPt3i5Y0xH7q/EWXc+Y5lAQW5ZgA3+iAYWuuCjxJhKIyxi
+         YFyUf1mQt1kjb6aIYhxeLCWYfU1ESnvl6m5ahjc1PbberQU2QibleClnFyJGYJ46KShy
+         0qEV5f1hIl8GE1HUgavWt90c0wcUg5GdUOhRKY5okp/1U4KIa2NT7gw/SPPpk3rN9ppV
+         AM0nuRiNLM9mQ847CNa71yM0b3P1k2/ESHqEj0ttJ0VUC5ZcYQo2HR9TsmSYZFRGdKlV
+         HxRA==
+X-Gm-Message-State: AOAM533nBDA4V82VtSDww7Ag19R27E6UTJVYV6su+j4sis7EWgAoMVJW
+        V3yJnN1wk//KrWCy288qulE=
+X-Google-Smtp-Source: ABdhPJyTnHflOd35od7Nqe0uPf6eZ2Tsvdh6LTEeOfKT4xLNdiyUfBf9J8jHcbNZwK8CGER76iQugg==
+X-Received: by 2002:a5d:6da7:: with SMTP id u7mr5906547wrs.322.1635430810538;
+        Thu, 28 Oct 2021 07:20:10 -0700 (PDT)
 Received: from localhost.localdomain (i5C74E249.versanet.de. [92.116.226.73])
-        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.20.07
+        by smtp.gmail.com with ESMTPSA id m2sm6284546wml.15.2021.10.28.07.20.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:20:07 -0700 (PDT)
+        Thu, 28 Oct 2021 07:20:10 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -70,9 +70,9 @@ To:     Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 07/13] arm: imx: remove dead left-over from i.MX{27,31,35} removal
-Date:   Thu, 28 Oct 2021 16:19:32 +0200
-Message-Id: <20211028141938.3530-8-lukas.bulwahn@gmail.com>
+Subject: [PATCH 08/13] arm: imx: rename DEBUG_IMX21_IMX27_UART to DEBUG_IMX27_UART
+Date:   Thu, 28 Oct 2021 16:19:33 +0200
+Message-Id: <20211028141938.3530-9-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
 References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
@@ -82,65 +82,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commits:
+Since commit 4b563a066611 ("ARM: imx: Remove imx21 support"), the config
+DEBUG_IMX21_IMX27_UART is really only debug support for IMX27.
 
-  commit 879c0e5e0ac7 ("ARM: imx: Remove i.MX27 board files")
-  commit c93197b0041d ("ARM: imx: Remove i.MX31 board files")
-  commit e1324ece2af4 ("ARM: imx: Remove i.MX35 board files")
+So, rename this option to DEBUG_IMX27_UART and adjust dependencies in
+Kconfig and rename the definitions to IMX27 as further clean-up.
 
-remove the config MACH_MX27_3DS, MACH_MX31_3DS and MACH_MX35_3DS.
-Commit a542fc18168c ("ARM: imx31: Remove remaining i.MX31 board code")
-further removes arch/arm/mach-imx/3ds_debugboard.{c,h}. So, only some
-dead left-over in Kconfig and Makefile remains.
-
-Remove this remaining left-over.
-
-This issue was identified with ./scripts/checkkconfigsymbols.py,
-which warns on references to the non-existing configs
-MACH_MX{27,31,35}_3DS in ./arch/arm/mach-imx/Kconfig.
+This issue was discovered with ./scripts/checkkconfigsymbols.py, which
+reported that DEBUG_IMX21_IMX27_UART depends on the non-existing config
+SOC_IMX21.
 
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/arm/mach-imx/Kconfig  | 12 ------------
- arch/arm/mach-imx/Makefile |  2 --
- 2 files changed, 14 deletions(-)
+ arch/arm/Kconfig.debug            | 14 +++++++-------
+ arch/arm/include/debug/imx-uart.h | 18 +++++++++---------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-index b407b024dde3..f296bac467c8 100644
---- a/arch/arm/mach-imx/Kconfig
-+++ b/arch/arm/mach-imx/Kconfig
-@@ -21,18 +21,6 @@ config MXC_TZIC
- config MXC_AVIC
- 	bool
+diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
+index 87aa6e92ee6e..7dad01729683 100644
+--- a/arch/arm/Kconfig.debug
++++ b/arch/arm/Kconfig.debug
+@@ -410,12 +410,12 @@ choice
+ 		  Say Y here if you want kernel low-level debugging support
+ 		  on i.MX25.
  
--config MXC_DEBUG_BOARD
--	bool "Enable MXC debug board(for 3-stack)"
--	depends on MACH_MX27_3DS || MACH_MX31_3DS || MACH_MX35_3DS
--	help
--	  The debug board is an integral part of the MXC 3-stack(PDK)
--	  platforms, it can be attached or removed from the peripheral
--	  board. On debug board, several debug devices(ethernet, UART,
--	  buttons, LEDs and JTAG) are implemented. Between the MCU and
--	  these devices, a CPLD is added as a bridge which performs
--	  data/address de-multiplexing and decode, signal level shift,
--	  interrupt control and various board functions.
+-	config DEBUG_IMX21_IMX27_UART
+-		bool "i.MX21 and i.MX27 Debug UART"
+-		depends on SOC_IMX21 || SOC_IMX27
++	config DEBUG_IMX27_UART
++		bool "i.MX27 Debug UART"
++		depends on SOC_IMX27
+ 		help
+ 		  Say Y here if you want kernel low-level debugging support
+-		  on i.MX21 or i.MX27.
++		  on i.MX27.
+ 
+ 	config DEBUG_IMX28_UART
+ 		bool "i.MX28 Debug UART"
+@@ -1481,7 +1481,7 @@ config DEBUG_IMX_UART_PORT
+ 	int "i.MX Debug UART Port Selection"
+ 	depends on DEBUG_IMX1_UART || \
+ 		   DEBUG_IMX25_UART || \
+-		   DEBUG_IMX21_IMX27_UART || \
++		   DEBUG_IMX27_UART || \
+ 		   DEBUG_IMX31_UART || \
+ 		   DEBUG_IMX35_UART || \
+ 		   DEBUG_IMX50_UART || \
+@@ -1540,12 +1540,12 @@ config DEBUG_LL_INCLUDE
+ 	default "debug/icedcc.S" if DEBUG_ICEDCC
+ 	default "debug/imx.S" if DEBUG_IMX1_UART || \
+ 				 DEBUG_IMX25_UART || \
+-				 DEBUG_IMX21_IMX27_UART || \
++				 DEBUG_IMX27_UART || \
+ 				 DEBUG_IMX31_UART || \
+ 				 DEBUG_IMX35_UART || \
+ 				 DEBUG_IMX50_UART || \
+ 				 DEBUG_IMX51_UART || \
+-				 DEBUG_IMX53_UART ||\
++				 DEBUG_IMX53_UART || \
+ 				 DEBUG_IMX6Q_UART || \
+ 				 DEBUG_IMX6SL_UART || \
+ 				 DEBUG_IMX6SX_UART || \
+diff --git a/arch/arm/include/debug/imx-uart.h b/arch/arm/include/debug/imx-uart.h
+index c8eb83d4b896..3edbb3c5b42b 100644
+--- a/arch/arm/include/debug/imx-uart.h
++++ b/arch/arm/include/debug/imx-uart.h
+@@ -11,13 +11,6 @@
+ #define IMX1_UART_BASE_ADDR(n)	IMX1_UART##n##_BASE_ADDR
+ #define IMX1_UART_BASE(n)	IMX1_UART_BASE_ADDR(n)
+ 
+-#define IMX21_UART1_BASE_ADDR	0x1000a000
+-#define IMX21_UART2_BASE_ADDR	0x1000b000
+-#define IMX21_UART3_BASE_ADDR	0x1000c000
+-#define IMX21_UART4_BASE_ADDR	0x1000d000
+-#define IMX21_UART_BASE_ADDR(n)	IMX21_UART##n##_BASE_ADDR
+-#define IMX21_UART_BASE(n)	IMX21_UART_BASE_ADDR(n)
 -
- config HAVE_IMX_ANATOP
- 	bool
+ #define IMX25_UART1_BASE_ADDR	0x43f90000
+ #define IMX25_UART2_BASE_ADDR	0x43f94000
+ #define IMX25_UART3_BASE_ADDR	0x5000c000
+@@ -26,6 +19,13 @@
+ #define IMX25_UART_BASE_ADDR(n)	IMX25_UART##n##_BASE_ADDR
+ #define IMX25_UART_BASE(n)	IMX25_UART_BASE_ADDR(n)
  
-diff --git a/arch/arm/mach-imx/Makefile b/arch/arm/mach-imx/Makefile
-index d1506ef7a537..d5291ed9186a 100644
---- a/arch/arm/mach-imx/Makefile
-+++ b/arch/arm/mach-imx/Makefile
-@@ -14,8 +14,6 @@ obj-$(CONFIG_SOC_IMX5) += cpu-imx5.o $(imx5-pm-y)
- obj-$(CONFIG_MXC_TZIC) += tzic.o
- obj-$(CONFIG_MXC_AVIC) += avic.o
++#define IMX27_UART1_BASE_ADDR	0x1000a000
++#define IMX27_UART2_BASE_ADDR	0x1000b000
++#define IMX27_UART3_BASE_ADDR	0x1000c000
++#define IMX27_UART4_BASE_ADDR	0x1000d000
++#define IMX27_UART_BASE_ADDR(n)	IMX27_UART##n##_BASE_ADDR
++#define IMX27_UART_BASE(n)	IMX27_UART_BASE_ADDR(n)
++
+ #define IMX31_UART1_BASE_ADDR	0x43f90000
+ #define IMX31_UART2_BASE_ADDR	0x43f94000
+ #define IMX31_UART3_BASE_ADDR	0x5000c000
+@@ -112,10 +112,10 @@
  
--obj-$(CONFIG_MXC_DEBUG_BOARD) += 3ds_debugboard.o
--
- ifeq ($(CONFIG_CPU_IDLE),y)
- obj-$(CONFIG_SOC_IMX5) += cpuidle-imx5.o
- obj-$(CONFIG_SOC_IMX6Q) += cpuidle-imx6q.o
+ #ifdef CONFIG_DEBUG_IMX1_UART
+ #define UART_PADDR	IMX_DEBUG_UART_BASE(IMX1)
+-#elif defined(CONFIG_DEBUG_IMX21_IMX27_UART)
+-#define UART_PADDR	IMX_DEBUG_UART_BASE(IMX21)
+ #elif defined(CONFIG_DEBUG_IMX25_UART)
+ #define UART_PADDR	IMX_DEBUG_UART_BASE(IMX25)
++#elif defined(CONFIG_DEBUG_IMX27_UART)
++#define UART_PADDR	IMX_DEBUG_UART_BASE(IMX27)
+ #elif defined(CONFIG_DEBUG_IMX31_UART)
+ #define UART_PADDR	IMX_DEBUG_UART_BASE(IMX31)
+ #elif defined(CONFIG_DEBUG_IMX35_UART)
 -- 
 2.26.2
 
