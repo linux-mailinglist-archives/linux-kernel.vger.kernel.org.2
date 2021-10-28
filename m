@@ -2,107 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C35143D9C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE4A43D9CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 05:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhJ1DS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 23:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S229778AbhJ1DWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Oct 2021 23:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhJ1DS1 (ORCPT
+        with ESMTP id S229691AbhJ1DWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 23:18:27 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E073BC061570;
-        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so6870390pje.0;
-        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
+        Wed, 27 Oct 2021 23:22:10 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3633C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 20:19:43 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id z144so5168977iof.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 20:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GQFH6LpwUVgQz3kdbCMnzkuHN/OwYSwPtbUfSLUuNFY=;
-        b=WjiZgL17+2uBuK14CiicqiXU0j7MygUmgn059rnhDNcFBzlhMR1umKvuqxOyf9LVH8
-         ofIL+u7rfhM6PzlnXOJJONawu2Vibvw9d0zDmGyyMNExU6jdqV/8TEJk4cLsLe21OjlB
-         VWurTjeISFd2xf5OxTJE0w7b0OoXiqrlVQLjTUmymQnLrQ7ksPjHgz7g3EPX7WvEsakH
-         EaHCeLhJA6U1DvwRkNcQxePJgfOc0Sw1pvR3JldA1BYTs7O5PSdizBRFOnxBXxd1JPEO
-         0wPi9mcRrgsUStSmYYfzu9x2V6RlpMmskF812sTuxugSWe4ho8dykDtkep0xLmEqzSOL
-         QQqw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8iLqanegbeY/oC5IucoRrB/uNp5p6hrJTUbMi+FyPCg=;
+        b=I/BQtp4v9VF9Mrf/HLCEPNJpd/6gyYZZhOoXLzv9PA68p4CmdvxV3LrV9GdRlfmrpY
+         DlKSHwbewUBrYPxr7U4RR76y6oWMF7J4K18U/GFNGmhQNyQAsD/o648g3YZOZtci+FaP
+         GYLoNR94SVRFEgAyk0lFT5e85rc3gjBq+25ys=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GQFH6LpwUVgQz3kdbCMnzkuHN/OwYSwPtbUfSLUuNFY=;
-        b=tqZbN09yu4VrivDi5sJG+jX/SAahAb0rPoj7LishQWHwpk9pW0vNjd13NtT299rCEC
-         Ya8l3pdFX3wN0iH6BNcmmwP1MFRThhbry2yQOezgDBW9lZFNP2sjCFgRjKHTeF7OaLRP
-         qectVXJbw/iIx4akDgICj2GZ/qK4Wf0xsJfH37DrEVAZa0tupj/QsqQLJh6cmAhZENSV
-         4ZBKi5rkXmMcdhMzV+DpYVNMH5oSjzNs598JryaL5Zqb4WK1keJV7jUfPFKDMORyHkWJ
-         Mxw0cQ9kgvwelWF5ZlYnAMyQGRetS08Otntcgg2MPR5siEVbqTP9w+FonbvLD2rkidXa
-         O/zw==
-X-Gm-Message-State: AOAM532PF9MGcHY8a41Ntqusi6IR+bIxOz41nMZgQ+MNKdBOOk9atCPr
-        sFjRbEh/0fuDpS6/Yrjtlk4=
-X-Google-Smtp-Source: ABdhPJx1iYljgq7f4n077sGS0zwAMJYLUVXXwm5FM6o0BWuNtQzT80Cu4l81BNSBLUQmOJRak61U3w==
-X-Received: by 2002:a17:90a:ff91:: with SMTP id hf17mr1779002pjb.50.1635390960313;
-        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id v13sm1032201pgt.7.2021.10.27.20.15.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 20:16:00 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Mirko Lindner <mlindner@marvell.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH ipsec-next v2] sky2: Remove redundant assignment and parentheses
-Date:   Thu, 28 Oct 2021 03:15:51 +0000
-Message-Id: <20211028031551.11209-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8iLqanegbeY/oC5IucoRrB/uNp5p6hrJTUbMi+FyPCg=;
+        b=O4q/WlEmqmhf2uF1zcfJoHmoWzBslBPKI0XYlbd2O18Wir01VgBX7nnEc4xbZ2vzNB
+         uC0xPwT4m8KiwKN8AR+koIU+14v+8AyXt4XzFpLtO47rh2d5JaYkoIYi93raiJeBHBHa
+         uWoD72b8o+24kWlAW71M/wIME5KVieTZf0dwyXGFsG9XD7xVWQbqSAJSp3rlFljm+FMO
+         GVWV3RswFtUWd4R7qODqHeakWHZwEC8WcBlMDbYnSL0GJQ4pho+ET1z3H12iW3rGWLxe
+         vkrmYNGmft/PRvidB66AABAAsTxozpoPcFeHR2SPAEvuIrSQH68JmI5Adxo7YqGhJl4j
+         E0aA==
+X-Gm-Message-State: AOAM530pis8iLn7Ou2c37G/ZJXQmooqAFmx61NEyEmNkMkZLwILG6YWB
+        YGNDz+A+P7EcJHDhFzUW1SvlwU5MWUYSkw==
+X-Google-Smtp-Source: ABdhPJzDTMLn9y163EmQnDA7VMAqBZP0BtZ+TZiuRJhXAiNzKOKwkmtE2QdUciVZjaOhzBY86WSX+Q==
+X-Received: by 2002:a05:6638:3727:: with SMTP id k39mr1242664jav.143.1635391182775;
+        Wed, 27 Oct 2021 20:19:42 -0700 (PDT)
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
+        by smtp.gmail.com with ESMTPSA id s7sm1021801ilv.61.2021.10.27.20.19.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 20:19:42 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id y17so5243153ilb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Oct 2021 20:19:41 -0700 (PDT)
+X-Received: by 2002:a05:6e02:687:: with SMTP id o7mr1270144ils.222.1635391180904;
+ Wed, 27 Oct 2021 20:19:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211027021857.20816-1-jason-jh.lin@mediatek.com>
+ <20211027021857.20816-4-jason-jh.lin@mediatek.com> <CAC=S1ng2=XRV9s2t2dxQf1a2V2GsFwhfB8tRxnNDp-QD5eR_xQ@mail.gmail.com>
+ <CAAOTY_9sCr-CM6WsZ6q7mtfqr9A5sNccC0bk1vq=Hdqr3rGkQw@mail.gmail.com>
+In-Reply-To: <CAAOTY_9sCr-CM6WsZ6q7mtfqr9A5sNccC0bk1vq=Hdqr3rGkQw@mail.gmail.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Thu, 28 Oct 2021 11:19:04 +0800
+X-Gmail-Original-Message-ID: <CAC=S1njhuzPi6gOmGfqhtKMtDTsGPzZ7P=PoVbAviHt1o00U6w@mail.gmail.com>
+Message-ID: <CAC=S1njhuzPi6gOmGfqhtKMtDTsGPzZ7P=PoVbAviHt1o00U6w@mail.gmail.com>
+Subject: Re: [PATCH v5 3/6] drm/mediatek: Detect CMDQ execution timeout
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     "jason-jh.lin" <jason-jh.lin@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable err will be reassigned on subsequent branches, and this
-assignment does not perform related value operations. This will cause
-the double parentheses to be redundant, so the inner parentheses should
-be deleted.
+Hi Chun-Kuang,
 
-clang_analyzer complains as follows:
+On Thu, Oct 28, 2021 at 7:47 AM Chun-Kuang Hu <chunkuang.hu@kernel.org> wro=
+te:
+>
+> Hi, Fei:
+>
+> Fei Shao <fshao@chromium.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=8827=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=885:32=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > Hi Jason,
+> >
+> > On Wed, Oct 27, 2021 at 10:19 AM jason-jh.lin <jason-jh.lin@mediatek.co=
+m> wrote:
+> > >
+> > > From: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > >
+> > > CMDQ is used to update display register in vblank period, so
+> > > it should be execute in next 2 vblank. One vblank interrupt
+> > > before send message (occasionally) and one vblank interrupt
+> > > after cmdq done. If it fail to execute in next 3 vblank,
+> > > tiemout happen.
+> > >
+> > > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > > Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> > > Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > > ---
+> > >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 20 ++++++++++++++++++--
+> > >  1 file changed, 18 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/dr=
+m/mediatek/mtk_drm_crtc.c
+> > > index e23e3224ac67..dad1f85ee315 100644
+> > > --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > > +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> > > @@ -54,6 +54,7 @@ struct mtk_drm_crtc {
+> > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> > >         struct cmdq_client              cmdq_client;
+> > >         u32                             cmdq_event;
+> > > +       u32                             cmdq_vblank_cnt;
+> > >  #endif
+> > >
+> > >         struct device                   *mmsys_dev;
+> > > @@ -227,7 +228,10 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(=
+struct drm_crtc *crtc,
+> > >  static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
+> > >  {
+> > >         struct cmdq_cb_data *data =3D mssg;
+> > > +       struct cmdq_client *cmdq_cl =3D container_of(cl, struct cmdq_=
+client, client);
+> > > +       struct mtk_drm_crtc *mtk_crtc =3D container_of(cmdq_cl, struc=
+t mtk_drm_crtc, cmdq_client);
+> > >
+> > > +       mtk_crtc->cmdq_vblank_cnt =3D 0;
+> > >         cmdq_pkt_destroy(data->pkt);
+> > >  }
+> > >  #endif
+> > > @@ -483,6 +487,15 @@ static void mtk_drm_crtc_update_config(struct mt=
+k_drm_crtc *mtk_crtc,
+> > >                                            cmdq_handle->pa_base,
+> > >                                            cmdq_handle->cmd_buf_size,
+> > >                                            DMA_TO_DEVICE);
+> > > +               /*
+> > > +                * CMDQ command should execute in next 3 vblank.
+> > > +                * One vblank interrupt before send message (occasion=
+ally)
+> > > +                * and one vblank interrupt after cmdq done,
+> > > +                * so it's timeout after 3 vblank interrupt.
+> > > +                * If it fail to execute in next 3 vblank, timeout ha=
+ppen.
+> > > +                */
+> > > +               mtk_crtc->cmdq_vblank_cnt =3D 3;
+> > > +
+> > >                 mbox_send_message(mtk_crtc->cmdq_client.chan, cmdq_ha=
+ndle);
+> > >                 mbox_client_txdone(mtk_crtc->cmdq_client.chan, 0);
+> > >         }
+> > > @@ -499,11 +512,14 @@ static void mtk_crtc_ddp_irq(void *data)
+> > >
+> > >  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> > >         if (!priv->data->shadow_register && !mtk_crtc->cmdq_client.ch=
+an)
+> > > +               mtk_crtc_ddp_config(crtc, NULL);
+> > > +       else if (mtk_crtc->cmdq_vblank_cnt > 0 && --mtk_crtc->cmdq_vb=
+lank_cnt =3D=3D 0)
+> > I think atomic_dec_and_test() does what you want to do here.
+>
+> I think this operation is not necessary to be atomic operation, and
+> this statement could be reduced to
+>
+> else if (--mtk_crtc->cmdq_vblank_cnt =3D=3D 0)
 
-drivers/net/ethernet/marvell/sky2.c:4988: warning:
-
-Although the value stored to 'err' is used in the enclosing expression,
-the value is never actually read from 'err'.
-
-Changes in v2:
-
-modify title category:octeontx2-af to sky2.
-delete the inner parentheses.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- drivers/net/ethernet/marvell/sky2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
-index 8b8bff5..33558aa 100644
---- a/drivers/net/ethernet/marvell/sky2.c
-+++ b/drivers/net/ethernet/marvell/sky2.c
-@@ -4985,7 +4985,7 @@ static int sky2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	pci_set_master(pdev);
- 
- 	if (sizeof(dma_addr_t) > sizeof(u32) &&
--	    !(err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)))) {
-+	    !dma_set_mask(&pdev->dev, DMA_BIT_MASK(64))) {
- 		using_dac = 1;
- 		err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
- 		if (err < 0) {
--- 
-2.15.2
+I was thinking about using existing helpers to wrap up the counter
+operations, but I agree that it's not necessary.
+Just dropping the redundant check would be good enough.
 
 
+>
+> >
+> > > +               DRM_ERROR("mtk_crtc %d CMDQ execute command timeout!\=
+n",
+> > > +                         drm_crtc_index(&mtk_crtc->base));
+> > >  #else
+> > >         if (!priv->data->shadow_register)
+> > > -#endif
+> > >                 mtk_crtc_ddp_config(crtc, NULL);
+> > > -
+> > > +#endif
+> > >         mtk_drm_finish_page_flip(mtk_crtc);
+> > >  }
+> > >
+> > > --
+> > > 2.18.0
+> > >
