@@ -2,142 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F4643E10F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E570043E110
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhJ1Mja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhJ1Mj3 (ORCPT
+        id S230183AbhJ1MkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:40:20 -0400
+Received: from mail-out1.in.tum.de ([131.159.0.8]:42751 "EHLO
+        mail-out1.informatik.tu-muenchen.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230093AbhJ1MkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:39:29 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B902C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:37:02 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id g10so23978550edj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 05:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SLr4/TnuHibe67bj8qgu1HXsYDnjQOeI4kUtFicodUM=;
-        b=Vp13/kU1uMF7hIYXyF+K5W5teumj+0JSIXryVIwzTjc7QMOkHfZOyFTGG9JLL2sNDJ
-         rK6JlS7HtH/dNA+K5Rf7x5mQjYGR6S+M0xWfadOGZk/y59dWVoEdTWWaDXstuMl3MrKi
-         VqN7qvNLRpWzn9CX2+VhZFr2olh8w73R3QQcZk3KQl2gXHvxUWXiInAQHvRPWEW+/9lP
-         gEcDvZb5NxFB79tbwUoIEFOQGjUbrZA1Op2WFuZhBp+CXTmax2VVcrt/6weUuWsm717p
-         fw0/S/Mnc0Z8PkQweaIRp9DZCxfLQSkAWXtnt2ckcatpuIt76BM3AkbXtTBbZ5V2HEwU
-         Kj+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SLr4/TnuHibe67bj8qgu1HXsYDnjQOeI4kUtFicodUM=;
-        b=sWD8F3UVgnfEQIxAHzh53rvEGe4vZH+KO/W2Af6Jh8P82yg730KNh7QIUBO57kFTX0
-         jrrrjG2VZbo4/BVJDlRc8CFMp2yspwletxa/qNkVhh9lwFGqfEra2zN4sVl/TWxLIsAl
-         G4L75fHqM9kyahimCd2OucFLyfuLqXIGsGd+cjbv7NUfqPxbmFEnCW8g704j93eujErb
-         O8/w0Ze21pLjWqeVgbvkY2oYxTGCvW1UY+sFDKAn8YNVOCJqyvFLyOYunAwf4X1GKcSB
-         ZHXCPGGNuBKdGqpD1tC72bBucSHYoLjfD6d0q7Jjs44OeeVZLpALTxLcP6nq+PBSlE2v
-         DzgA==
-X-Gm-Message-State: AOAM5332r2JoMSi4faJM+M2IR+ancdldUD9L6DI5ifgoxIBKWYJGpAkg
-        0nlsX47a/OMeKiXWaDNTNy4=
-X-Google-Smtp-Source: ABdhPJxNLKB6efA6LY1H6WKs7qec+/IU0ErVxxUVKcftBYYm6ph6GxjvZ96Z+tffWqafuIFyGYeDkg==
-X-Received: by 2002:a17:906:3a0e:: with SMTP id z14mr5245835eje.55.1635424620813;
-        Thu, 28 Oct 2021 05:37:00 -0700 (PDT)
-Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
-        by smtp.gmail.com with ESMTPSA id s16sm1675021edd.32.2021.10.28.05.36.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 05:37:00 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com
-Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Karolina Drobnik <karolinadrobnik@gmail.com>,
-        Karolina Drobnik <karolinadrobnik@gmail.com>
-Subject: Re: [Outreachy kernel] [PATCH 5/7] staging: vt6655: Rewrite conditional in AL7320 initialization
-Date:   Thu, 28 Oct 2021 14:36:59 +0200
-Message-ID: <1683328.aCfAWUeHFl@localhost.localdomain>
-In-Reply-To: <948406a3e7d23f1cdf866aa4448d9428bdd32512.1635415820.git.karolinadrobnik@gmail.com>
-References: <cover.1635415820.git.karolinadrobnik@gmail.com> <948406a3e7d23f1cdf866aa4448d9428bdd32512.1635415820.git.karolinadrobnik@gmail.com>
+        Thu, 28 Oct 2021 08:40:19 -0400
+Received: from mailrelay1.rbg.tum.de (mailrelay1.in.tum.de [131.159.254.14])
+        by mail-out1.informatik.tu-muenchen.de (Postfix) with ESMTP id D290F2400D4;
+        Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
+Received: by mailrelay1.rbg.tum.de (Postfix, from userid 112)
+        id CA53416F; Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
+Received: from mailrelay1.rbg.tum.de (localhost [127.0.0.1])
+        by mailrelay1.rbg.tum.de (Postfix) with ESMTP id 86AA6C3;
+        Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
+Received: from mail.in.tum.de (mailproxy.in.tum.de [IPv6:2a09:80c0::78])
+        by mailrelay1.rbg.tum.de (Postfix) with ESMTPS id 7F860B7;
+        Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
+Received: by mail.in.tum.de (Postfix, from userid 112)
+        id 795CB4A0531; Thu, 28 Oct 2021 14:37:50 +0200 (CEST)
+Received: (Authenticated sender: heidekrp)
+        by mail.in.tum.de (Postfix) with ESMTPSA id 9FFDA4A006E;
+        Thu, 28 Oct 2021 14:37:49 +0200 (CEST)
+        (Extended-Queue-bit tech_joqtw@fff.in.tum.de)
+Date:   Thu, 28 Oct 2021 14:37:47 +0200
+From:   Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     paulmck@kernel.org, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, parri.andrea@gmail.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        elver@google.com, charalampos.mainas@gmail.com,
+        pramod.bhatotia@in.tum.de
+Subject: Re: Potentially Broken Address Dependency via test_bit() When
+ Compiling With Clang
+Message-ID: <YXqZm6XTlMGDSpMT@Pauls-MacBook-Pro>
+References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
+ <20211027142720.GB1319606@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211027142720.GB1319606@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, October 28, 2021 12:35:35 PM CEST Karolina Drobnik wrote:
-> Use conditional operator to determine which table for AL7320
-> initialization should be used. Use `data` temporary value to
-> store this value.
+On Wed, Oct 27, 2021 at 10:27:20AM -0400, Alan Stern wrote:
+> On Wed, Oct 27, 2021 at 12:19:48PM +0200, Paul Heidekrüger wrote:
+> > Hi all,
+> > 
+> > For my bachelor thesis, I have been working on the infamous problem of 
+> > potentially broken dependency orderings in the Linux kernel. I'm being 
+> > advised by Marco Elver, Charalampos Mainas, Pramod Bhatotia (Cc'd).
+> > 
+> > For context, see: 
+> > https://linuxplumbersconf.org/event/7/contributions/821/attachments/598/1075/LPC_2020_--_Dependency_ordering.pdf
+> > 
+> > Our approach consists of two LLVM compiler passes which annotate 
+> > dependencies in unoptimised intermediate representation (IR) and verify 
+> > the annotated dependencies in optimised IR. ATM, the passes only 
+> > recognise a subset of address dependencies - everything is still WIP ;-)
+> > 
+> > We have been cross-compiling with a slightly modified version of 
+> > allyesconfig for arm64, and the passes have now found a case that we 
+> > would like to share with LKML for feedback: an address dependency being 
+> > broken (?) through compiler optimisations in 
+> > fs/afs/addr_list.c::afs_iterate_addresses().
+> > 
+> > Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
+> > 
+> > > [...]
+> > >   index = READ_ONCE(ac->alist->preferred);
+> > >   if (test_bit(index, &set))
+> > >     goto selected;
+> > > [...]
+> > 
+> > where test_bit() expands to the following in 
+> > include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
+> > 
+> > > static __always_inline int
+> > > arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+> > > {
+> > >   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+> > > }
+> > > #define test_bit arch_test_bit
+> > 
+> > The address dependency gets preserved in unoptimised IR since the virtual register %33 transitively depends on %28:
+> > 
+> > > %28 = load volatile i8, i8* %preferred, align 2, !annotation !15
+> > > store i8 %28, i8* %tmp21, align 1
+> > > %29 = load i8, i8* %tmp21, align 1
+> > > %conv23 = zext i8 %29 to i32
+> > > store i32 %conv23, i32* %index, align 4
+> > > %30 = load i32, i32* %index, align 4
+> > > store i32 %30, i32* %nr.addr.i, align 4
+> > > store i64* %set, i64** %addr.addr.i, align 8
+> > > %31 = load i64*, i64** %addr.addr.i, align 8
+> > > %32 = load i32, i32* %nr.addr.i, align 4
+> > > %div.i = udiv i32 %32, 64
+> > > %idxprom.i = zext i32 %div.i to i64
+> > > %arrayidx.i = getelementptr i64, i64* %31, i64 %idxprom.i
+> > > %33 = load volatile i64, i64* %arrayidx.i, align 8, !annotation !16
+> > 
+> > In optimised IR, there is no dependency between the two volatile loads 
+> > anymore:
+> > 
+> > > %11 = load volatile i8, i8* %preferred, align 2, !annotation !19
+> > > %conv25 = zext i8 %11 to i32
+> > > %set.0. = load volatile i64, i64* %set, align 8
+> > 
+> > Now, since @nr traces back to the READ_ONCE() to @index, does this make 
+> > the load from @addr in test_bit() address-dependent on that READ_ONCE()? 
+> > Should the load from @addr therefore be ordered against the READ_ONCE()?
 > 
-> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
-> ---
->  drivers/staging/vt6655/rf.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+> As others have pointed out, there really is an address dependency here 
+> (although it's not a very useful one and the code doesn't rely on it).
 > 
-> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-> index afd202ea3356..af4eb7eb8e7d 100644
-> --- a/drivers/staging/vt6655/rf.c
-> +++ b/drivers/staging/vt6655/rf.c
-> @@ -716,13 +716,10 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, 
-unsigned char rf_type,
->  		if (init_count > (MISCFIFO_SYNDATASIZE - sleep_count))
->  			return false;
->  
-> -		if (channel <= CB_MAX_CHANNEL_24G) {
-> -			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
-> -				MACvSetMISCFifo(priv, idx++, 
-al7230_init_table[i]);
-> -		} else {
-> -			for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
-> -				MACvSetMISCFifo(priv, idx++, 
-al7230_init_table_a_mode[i]);
-> -		}
-> +		data = (channel <= CB_MAX_CHANNEL_24G) ?
-> +			al7230_init_table : 
-al7230_init_table_a_mode;
-
-As far as I know by reading some Greg K-H's replies to other developers, this 
-"<test> ? <true> : <false>" style is not well accepted here.
-
-I'd prefer to see an explicit "if-else" statement because with that style you 
-sacrifice readability and gain nothing here.
-
-> +		for (i = 0; i < CB_AL7230_INIT_SEQ; i++)
-> +			MACvSetMISCFifo(priv, idx++, *(data++));
-
-Again, as Julia pointed out, "*data++" and "*(data++)" are syntactically 
-correct instructions but are not required here. I'm also pretty sure that, by 
-not reusing that index, you're adding additional unnecessary instructions to 
-the resulting assembly code (unless the compiler is able to optimize it).
-
-"*foo++" and the like are powerful and compact instructions, but you should 
-use them in other, more suitable contexts.
-
-Thanks,
-
-Fabio
-
-
->  
->  		MACvSetMISCFifo(priv, idx++, 
-al7230_channel_table0[channel - 1]);
->  		MACvSetMISCFifo(priv, idx++, 
-al7230_channel_table1[channel - 1]);
-> -- 
-> 2.30.2
+> However, I can't follow the IR code.  Can you please explain in ordinary 
+> English how the LLVM compiler manages to lose track of this dependency?
 > 
-> -- 
-> You received this message because you are subscribed to the Google Groups 
-"outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an 
-email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/
-outreachy-kernel/
-948406a3e7d23f1cdf866aa4448d9428bdd32512.1635415820.git.karolinadrobnik%40gmail.com.
-> 
+> Alan Stern
 
+Here's what we think might be going on:
+- In 'arch_test_bit()', 'addr[BIT_WORD(nr)]' expands to 'addr[(nr) / 64]'.
+- Since 'addr' points to an 'unsigned long', any other result than '0' for
+  '(nr) / 64' would be out of bounds and therefore undefined.
+- We assume LLVM is able to figure this out and use it to get rid of the
+  address computation all together.
 
+We ran some experiments to see how optimisations behave when 'set' is in fact
+an array and / or in global scope.
 
+1. Insert a 'barrier()' in 'arch_test_bit()' before the 'return':
+The dependency gets broken.
 
+2. Make 'set' an 'unsigned long' array of size '42', keep local scope: 
+The dependency gets preserved.
+
+3. Keep 'set' as 'unsigend long', move to global scope: 
+The dependency gets preserved.
+
+4. Make 'set' an 'unsigned long' array of size '42', move to global scope: 
+The dependency gets preserved.
+
+Many thanks,
+Paul
