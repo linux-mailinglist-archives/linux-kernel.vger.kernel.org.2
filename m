@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68E343E307
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1C743E304
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhJ1OHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:07:24 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:54253 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhJ1OHT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:07:19 -0400
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 19SE4WjO022024;
-        Thu, 28 Oct 2021 23:04:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 19SE4WjO022024
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1635429873;
-        bh=Sea5hD6phvwTmk5ZADmU7oqXzEZCMAYU29Idfkm0Ubg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=yi6BwuyyjwhN8oBIlmznzedZQr+PW3rIPs6ynCAqem0e1daYGX3uxzeFAGu3f2XS2
-         xu/H52j/+0ymy6o/EJJ/ULeM2YHq4/DvlJmR7yQaFxVsAywb0DS7rePauSePa0hsHp
-         HoFD3dJhL1+HncmghTJSxkZu5nec+K9GSbrnm6qK0iVv5lFwRMedTtBHAIynvJ40Gg
-         aUNqdtB11wCXtrS5H+BLaPXDklyKjFwS7Nl22tJR3xIKkNe0SFBQ5YcNvEc6BWJBBW
-         9wIqU6QHfb9CrynA6S5qAp+Jfuph2+bI7bEdI/NK8tLZ1BQBcKG772Rkf1foEENmD2
-         q5Ynm4fz9Tpbw==
-X-Nifty-SrcIP: [209.85.215.169]
-Received: by mail-pg1-f169.google.com with SMTP id g184so6461445pgc.6;
-        Thu, 28 Oct 2021 07:04:32 -0700 (PDT)
-X-Gm-Message-State: AOAM532zVUIGjF7f+KWtISQEuZf6ENkq+7hrGe6aVhQyOt9anFnvmKxb
-        KbKBXqc03QlmnUh6zx57U8FbyUVlNHl1vlZlUd4=
-X-Google-Smtp-Source: ABdhPJxdmip7Bng/77jo+FGar0VlJBV9bZ/zdzncUg6wrysw8S0CsBXN4HXY6vfrN3NqhuNyVoDQtkD/H7GWQHA9I8o=
-X-Received: by 2002:a63:d64c:: with SMTP id d12mr3422492pgj.186.1635429871388;
- Thu, 28 Oct 2021 07:04:31 -0700 (PDT)
+        id S230478AbhJ1OGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:06:54 -0400
+Received: from mga04.intel.com ([192.55.52.120]:44548 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230471AbhJ1OGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:06:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="229161842"
+X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
+   d="scan'208";a="229161842"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 07:04:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
+   d="scan'208";a="636208867"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga001.fm.intel.com with SMTP; 28 Oct 2021 07:04:19 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 28 Oct 2021 17:04:19 +0300
+Date:   Thu, 28 Oct 2021 17:04:19 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid divide
+ by zero
+Message-ID: <YXqt46TPL9tUZCL1@intel.com>
+References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
 MIME-Version: 1.0
-References: <962c0565-89a3-c6d2-37e0-a93c8c753d57@quicinc.com>
-In-Reply-To: <962c0565-89a3-c6d2-37e0-a93c8c753d57@quicinc.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 28 Oct 2021 23:03:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQX2GiUB04fOm7p=F+H5p9XFQjt9hEPSZS4JR+FZK6PZg@mail.gmail.com>
-Message-ID: <CAK7LNAQX2GiUB04fOm7p=F+H5p9XFQjt9hEPSZS4JR+FZK6PZg@mail.gmail.com>
-Subject: Re: Introduce "make debugconfig"
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:32 PM Qian Cai <quic_qiancai@quicinc.com> wrote:
->
-> Hi there, some general debugging features like kmemleak, KASAN, lockdep,
->
-> UBSAN etc help fix many viruses like a microscope. On the other hand, those
->  features are scatter around and mixed up with more situational debugging
->  options making them difficult to consume properly.
->
->
->
-> Since I have been deal with those options on a daily basis for the last
->
-> a few years and accumulated the knowledge of their pros and cons, I am
->
-> thinking about to create an initial "make debugconfig" target, so that
-> it could amplify the general debugging/testing efforts and help
-> establish sensitive default values for those options across the broad.
->
->
-> The idea is to have a debugconfig inside kernel/configs/ and update
-> scripts/kconfig/Makefile
+On Thu, Oct 28, 2021 at 08:57:17AM -0500, George Kennedy wrote:
+> Do a sanity check on struct drm_format_info hsub and vsub values to
+> avoid divide by zero.
+> 
+> Syzkaller reported a divide error in framebuffer_check() when the
+> DRM_FORMAT_Q410 or DRM_FORMAT_Q401 pixel_format is passed in via
+> the DRM_IOCTL_MODE_ADDFB2 ioctl. The drm_format_info struct for
+> the DRM_FORMAT_Q410 pixel_pattern has ".hsub = 0" and ".vsub = 0".
+> fb_plane_width() uses hsub as a divisor and fb_plane_height() uses
+> vsub as a divisor. These divisors need to be sanity checked for
+> zero before use.
+> 
+> divide error: 0000 [#1] SMP KASAN NOPTI
+> CPU: 0 PID: 14995 Comm: syz-executor709 Not tainted 5.15.0-rc6-syzk #1
+> Hardware name: Red Hat KVM, BIOS 1.13.0-2
+> RIP: 0010:framebuffer_check drivers/gpu/drm/drm_framebuffer.c:199 [inline]
+> RIP: 0010:drm_internal_framebuffer_create+0x604/0xf90
+> drivers/gpu/drm/drm_framebuffer.c:317
+> 
+> Call Trace:
+>  drm_mode_addfb2+0xdc/0x320 drivers/gpu/drm/drm_framebuffer.c:355
+>  drm_mode_addfb2_ioctl+0x2a/0x40 drivers/gpu/drm/drm_framebuffer.c:391
+>  drm_ioctl_kernel+0x23a/0x2e0 drivers/gpu/drm/drm_ioctl.c:795
+>  drm_ioctl+0x589/0xac0 drivers/gpu/drm/drm_ioctl.c:898
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:874 [inline]
+>  __se_sys_ioctl fs/ioctl.c:860 [inline]
+>  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> ---
+>  drivers/gpu/drm/drm_framebuffer.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+> index 07f5abc..a146e4b 100644
+> --- a/drivers/gpu/drm/drm_framebuffer.c
+> +++ b/drivers/gpu/drm/drm_framebuffer.c
+> @@ -195,6 +195,16 @@ static int framebuffer_check(struct drm_device *dev,
+>  	/* now let the driver pick its own format info */
+>  	info = drm_get_format_info(dev, r);
+>  
+> +	if (info->hsub == 0) {
+> +		DRM_DEBUG_KMS("bad horizontal chroma subsampling factor %u\n", info->hsub);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (info->vsub == 0) {
+> +		DRM_DEBUG_KMS("bad vertical chroma subsampling factor %u\n", info->vsub);
+> +		return -EINVAL;
+> +	}
 
-Please do not wire it up to Makefile.
+Looks like duct tape to me. I think we need to either fix those formats
+to have valid format info, or just revert the whole patch that added such
+broken things.
 
-
-
-
-> and Documentation/admin-guide/README.rst
-> accordingly. I am still trying to figure out a few implementation
-> details like how to convert an existing .config to debugconfig, but want
-> to gather some feedback before I dive in too deep.
-
-
+> +
+>  	for (i = 0; i < info->num_planes; i++) {
+>  		unsigned int width = fb_plane_width(r->width, info, i);
+>  		unsigned int height = fb_plane_height(r->height, info, i);
+> -- 
+> 1.8.3.1
 
 -- 
-Best Regards
-Masahiro Yamada
+Ville Syrjälä
+Intel
