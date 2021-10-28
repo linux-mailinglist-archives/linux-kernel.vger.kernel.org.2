@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2103A43F1DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0FA43F1DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhJ1Vho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:37:44 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:40716 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbhJ1Vhn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:37:43 -0400
-Received: by mail-ot1-f41.google.com with SMTP id 71-20020a9d034d000000b00553e24ce2b8so5899759otv.7;
-        Thu, 28 Oct 2021 14:35:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uVpB6t/XH+sh2qfT1aM2PNoYeGU85zqXSS4jjTp9y90=;
-        b=gHcqszkMaz/nLF2AgrI4x7Mi1egg36gbX7eursb5z9uODRspSFhoix3Yu2gUIxM9V+
-         j3Kt/im/uAMwGGqcb3COImI+OiM9E5suZA0jgbO2PLhsr1HZ+mwwTuDf5j+IwHl9Yoeo
-         tGNESkwp/uCHMYxfTYl5bYTO1Z+20MXwtGCOUqz9ok+i/JMygImYaoByKh2pmwvxE2xo
-         4fktRrDIW+fSwLdMj8WToJBDiL/apdmOoK9U0Hytl70OxTkUcLm+nN8sxiVvCXmtE1RL
-         z9ZcttrAyFBvgP8ZAtnn+alF2KRPbDnVcWNa/fda691r8CJ/n8ywN89z9DUi6DAOtzvC
-         ezag==
-X-Gm-Message-State: AOAM533BxXPGEz4ZdcgQAEpop8tVQUo6R8LQcKpRTZ0E3TfCTTJAj1gr
-        j10NVGuPVHwRyx14npAsJF5lKk/pWg==
-X-Google-Smtp-Source: ABdhPJy03vHBCBw25GpIZT2cQy06T0I69YsG5Io9Nkfdi9p8Jll53OaZVmFHQAoQgzXTLljfZbxSqQ==
-X-Received: by 2002:a05:6830:40b0:: with SMTP id x48mr5379834ott.89.1635456915421;
-        Thu, 28 Oct 2021 14:35:15 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r22sm1352984otq.5.2021.10.28.14.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 14:35:14 -0700 (PDT)
-Received: (nullmailer pid 627527 invoked by uid 1000);
-        Thu, 28 Oct 2021 21:35:13 -0000
-Date:   Thu, 28 Oct 2021 16:35:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        Julien Su <juliensu@mxic.com.tw>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jaime Liao <jaimeliao@mxic.com.tw>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 08/18] dt-bindings: mtd: Describe Macronix NAND ECC engine
-Message-ID: <YXsXkfGNtMFLPMA2@robh.at.kernel.org>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-9-miquel.raynal@bootlin.com>
+        id S231346AbhJ1Vii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:38:38 -0400
+Received: from mga02.intel.com ([134.134.136.20]:7162 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230522AbhJ1Vig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 17:38:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="217704023"
+X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
+   d="scan'208";a="217704023"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 14:36:09 -0700
+X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
+   d="scan'208";a="466289015"
+Received: from schen9-mobl.amr.corp.intel.com ([10.212.137.85])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 14:36:08 -0700
+Message-ID: <8f6b4ab17a319117cbed8751aa4fa9f2d6e0ca5b.camel@linux.intel.com>
+Subject: Re: [PATCH v3 0/5] Improve newidle lb cost tracking and early abort
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Date:   Thu, 28 Oct 2021 14:36:08 -0700
+In-Reply-To: <20211028121530.GA19512@vingu-book>
+References: <20211019123537.17146-1-vincent.guittot@linaro.org>
+         <7128695d64e9161637b67315b5beb51c4accdc82.camel@linux.intel.com>
+         <CAKfTPtAv7vPGYAwUSmGL5wtbY=if8G+3geWMKpHu3vLGqthPfg@mail.gmail.com>
+         <720fd26424927dd27fea4e5719dafe8a0afaa8c4.camel@linux.intel.com>
+         <20211028121530.GA19512@vingu-book>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020142809.349347-9-miquel.raynal@bootlin.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 16:27:59 +0200, Miquel Raynal wrote:
-> Describe Macronix NAND ECC engine. This engine may be used as an
-> external engine or can be pipelined with either a raw NAND controller or
-> a SPI controller. Both hardware designs with a SPI controller are shown
-> in the examples.
+On Thu, 2021-10-28 at 14:15 +0200, Vincent Guittot wrote:
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../bindings/mtd/mxicy,nand-ecc-engine.yaml   | 77 +++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mxicy,nand-ecc-engine.yaml
+> > It seems to make sense to skip the call
+> > to nohz_newidle_balance() for this case? 
+> 
+> nohz_newidle_balance() also tests this condition :
+> (this_rq->avg_idle < sysctl_sched_migration_cost)
+> and doesn't set NOHZ_NEWILB_KICKi in such case
+> 
+> But this patch now used the condition :
+> this_rq->avg_idle < sd->max_newidle_lb_cost
+> and sd->max_newidle_lb_cost can be higher than
+> sysctl_sched_migration_cost
+> 
+> which means that we can set NOHZ_NEWILB_KICK:
+> -although we decided to skip newidle loop
+> -or when we abort because this_rq->avg_idle < curr_cost + sd-
+> >max_newidle_lb_cost 
+> 
+> This is even more true when sysctl_sched_migration_cost is lowered
+> which is your case IIRC
+> 
+> The patch below ensures that we don't set NOHZ_NEWILB_KICK in such
+> cases:
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks. Will ask our benchmark team to give it a spin.
+
+Tim
+
