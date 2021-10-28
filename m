@@ -2,117 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCE243D986
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FC143D989
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 04:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhJ1Cwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Oct 2021 22:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhJ1Cwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Oct 2021 22:52:39 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C920BC061570;
-        Wed, 27 Oct 2021 19:50:12 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id v10so3138935qvb.10;
-        Wed, 27 Oct 2021 19:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZIj8JUAa/oKHTviYbVQQPi5hTbJg26A4cMkQ91+NOI8=;
-        b=iZ0NK8UU6jtSoNk8YFG/C/0ZrYxJp3ssvBFgVcBvZgrxo9WuTceVxZB2S/SLU1Qvbs
-         BBsbwbXXYm7q0hx5iKdqjKl+pBjARCIP4tXohpNC6DGM9fin60TEzIMXbTDzHbrgFueE
-         KuDGrQ6uuKxSbG2zaJ3MUHSYNwB05x+w5UAkne8B6NFsB4lORD7mjgV1B4d7lQxHQ0ov
-         O2BBsbB0cWHi0i0CXs8wCGY1x/+J4Tfrkb7NdZAl1H37fI+46fQVtT2A+IMm7seG7ul/
-         B1EKUouwzqWkXuYJuIDq31/EtIzFoZkmrsNcJLUqL+8KA3toIRERpwpsM0c4n2YGpjC6
-         Baog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZIj8JUAa/oKHTviYbVQQPi5hTbJg26A4cMkQ91+NOI8=;
-        b=paCHJJm0U8pcLwytA23cnLjR1h157UecK2kWxT4ZIx2+LRzuHSFRZRI9aYlTQ4Apr+
-         uagXXokuLreJGqjqDuHMClzBLaeKkEsranWJH7UqjLvXC1u85TAT0ZhyFQ4MIlvFz+wg
-         8LSqtrtJQ/+e/61jlkfSFycdbSSUIJpis1OCVjJ2E2uWSuZBRvMtRqyu9f2yXamQZq5O
-         F0Y5lKSIYI33K/LmiZm3s+xn0Ji5tKAW45zefrGrrfVYHCl8N6tMAplbqfiBjdvEG7OR
-         qsNFkEEvE4dcY994COfBUYJQdodCpw6Ku3rmOY6W/hyDsRrARAixYnbma7MQdoyqVcWT
-         5sCA==
-X-Gm-Message-State: AOAM530HAkh02g3coHTiSGCBEbzAI5/gQ4rVYs6k7/QQHVKFfqcHm4pA
-        7f7WXp7Md8BNnwq7/FLxwfTSH2VHSprJ/HS8yc+r/9+uhY6R2w==
-X-Google-Smtp-Source: ABdhPJxTREUyUzJXRE21WgWrK4gKtQ6gtBOxN1/R5dXaxto/CWqUoYyxfx4owr3NEBjPv9LNJstmDKe53jL0UbH+NSs=
-X-Received: by 2002:a05:6214:2308:: with SMTP id gc8mr1230271qvb.31.1635389412045;
- Wed, 27 Oct 2021 19:50:12 -0700 (PDT)
+        id S229807AbhJ1CxW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Oct 2021 22:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhJ1CxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 27 Oct 2021 22:53:21 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F33B61100;
+        Thu, 28 Oct 2021 02:50:53 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 22:50:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V6 06/20] trace/osnoise: Allow multiple instances of the
+ same tracer
+Message-ID: <20211027225051.20ffef90@rorschach.local.home>
+In-Reply-To: <69cbbd98cce2515c84127c8827d733dc87b04823.1635284863.git.bristot@kernel.org>
+References: <cover.1635284863.git.bristot@kernel.org>
+        <69cbbd98cce2515c84127c8827d733dc87b04823.1635284863.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211025115910.2595-1-xingwu.yang@gmail.com> <707b5fb3-6b61-c53-e983-bc1373aa2bf@ssi.bg>
- <CA+7U5JsSuwqP7eHj1tMHfsb+EemwrhZEJ2b944LFWTroxAnQRQ@mail.gmail.com>
- <1190ef60-3ad9-119e-5336-1c62522aec81@ssi.bg> <CA+7U5JvvsNejgOifAwDdjddkLHUL30JPXSaDBTwysSL7dhphuA@mail.gmail.com>
- <CA+7U5Jta_g2vCXiwScVVwLZppWp51TDOB7LxUxeundkPxNZYnA@mail.gmail.com> <35e6215-4fb3-5149-a888-67aa6fae958f@ssi.bg>
-In-Reply-To: <35e6215-4fb3-5149-a888-67aa6fae958f@ssi.bg>
-From:   yangxingwu <xingwu.yang@gmail.com>
-Date:   Thu, 28 Oct 2021 10:50:00 +0800
-Message-ID: <CA+7U5JuxN1BSneYuiZde_kZRNpPDuT23Wn7_Uyv12yk26tXEzA@mail.gmail.com>
-Subject: Re: [PATCH] ipvs: Fix reuse connection if RS weight is 0
-To:     Julian Anastasov <ja@ssi.bg>
-Cc:     Simon Horman <horms@verge.net.au>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello
+On Wed, 27 Oct 2021 00:06:17 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
 
-On Thu, Oct 28, 2021 at 5:09 AM Julian Anastasov <ja@ssi.bg> wrote:
->
->
->         Hello,
->
-> On Wed, 27 Oct 2021, yangxingwu wrote:
->
-> > what we want is if RS weight is 0, then no new connections should be
-> > served even if conn_reuse_mode is 0, just as commit dc7b3eb900aa
-> > ("ipvs: Fix reuse connection if real server is
-> > dead") trying to do
-> >
-> > Pls let me know if there are any other issues of concern
->
->         My concern is with the behaviour people expect
-> from each sysctl var: conn_reuse_mode decides if port reuse
-> is considered for rescheduling and expire_nodest_conn
-> should have priority only for unavailable servers (nodest means
-> No Destination), not in this case.
->
->         We don't know how people use the conn_reuse_mode=0
-> mode, one may bind to a local port and try to send multiple
-> connections in a row with the hope they will go to same real
-> server, i.e. as part from same "session", even while weight=0.
-> If they do not want such behaviour (99% of the cases), they
-> will use the default conn_reuse_mode=1. OTOH, you have different
-> expectations for mode 0, not sure why but you do not want to use
-> the default mode=1 which is safer to use. May be the setups
-> forget to stay with conn_reuse_mode=1 on kernels 5.9+ and
-> set the var to 0 ?
+>  static int osnoise_tracer_init(struct trace_array *tr)
+>  {
+> -
+> -	/* Only allow one instance to enable this */
+> -	if (osnoise_has_registered_instances())
+> +	/*
+> +	 * Only allow osnoise tracer if timerlat tracer is not running
+> +	 * already.
+> +	 */
+> +	if (osnoise_data.timerlat_tracer)
+>  		return -EBUSY;
+>  
 
-The problem is we can NOT decide what the customers do, many of them
-run kubernetes with old versions of kube-proxy. And most importantly,
-upgrade to new version is a very long and painful process, that's why
-we want to fix this at the kernel level
+This fails to build when timerlat is not enabled:
 
->         The problem with mentioned commit dc7b3eb900aa is that
-> it breaks FTP and persistent connections while the goal of
-> weight=0 is graceful inhibition of the server. We made
-> the mistake to add priority for expire_nodest_conn when weight=0.
-> This can be fixed with a !cp->control check. We do not want
-> expire_nodest_conn to kill every connection during the
-> graceful period.
+/work/git/linux-trace.git/kernel/trace/trace_osnoise.c: In function ‘osnoise_tracer_init’:
+/work/git/linux-trace.git/kernel/trace/trace_osnoise.c:2161:18: error: ‘struct osnoise_data’ has no member named ‘timerlat_tracer’
+ 2161 |  if (osnoise_data.timerlat_tracer)
+      |                  ^
+make[3]: *** [/work/git/linux-trace.git/scripts/Makefile.build:277: kernel/trace/trace_osnoise.o] Error 1
 
-ok, got it, I will try to fix this problem
 
-> Regards
->
-> --
-> Julian Anastasov <ja@ssi.bg>
+Also, I hate all the #ifdef muckery in this file. What you need is:
+
+static struct osnoise_data {
+	u64	sample_period;		/* total sampling period */
+	u64	sample_runtime;		/* active sampling portion of period */
+	u64	stop_tracing;		/* stop trace in the internal operation (loop/irq) */
+	u64	stop_tracing_total;	/* stop trace in the final operation (report/thread) */
+#ifdef CONFIG_TIMERLAT_TRACER
+	u64	timerlat_period;	/* timerlat period */
+	u64	print_stack;		/* print IRQ stack if total > */
+	int	timerlat_tracer;	/* timerlat tracer */
+#endif
+	bool	tainted;		/* infor users and developers about a problem */
+} osnoise_data = {
+	.sample_period			= DEFAULT_SAMPLE_PERIOD,
+	.sample_runtime			= DEFAULT_SAMPLE_RUNTIME,
+	.stop_tracing			= 0,
+	.stop_tracing_total		= 0,
+#ifdef CONFIG_TIMERLAT_TRACER
+	.print_stack			= 0,
+	.timerlat_period		= DEFAULT_TIMERLAT_PERIOD,
+	.timerlat_tracer		= 0,
+#endif
+};
+
+
+#ifdef CONFIG_TIMERLAT_TRACER
+static bool timerlat_enbabled()
+{
+	return osnoise_data.timerlat_tracer;
+}
+static void timerlat_softirq_exit(void)
+{
+	struct timerlat_variables *tlat_var;
+	tlat_var = this_cpu_tmr_var();
+	if (!tlat_var->tracing_thread) {
+		osn_var->softirq.arrival_time = 0;
+		osn_var->softirq.delta_start = 0;
+	}
+}
+#else
+static inline bool timerlat_enbabled()
+{
+	return false;
+}
+static void timerlat_softirq_exit(void) { }
+#endif
+
+Then in places like trace_softirq_exit_callback() you can have:
+
+	if (unlikely(timerlat_enabled())
+		timerlat_softirq_exit();
+
+And this will help in making mistakes like you did with the compile
+failure.
+
+So there should be no #ifdef in any functions (it's fine to wrap
+functions).
+
+-- Steve
