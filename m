@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B0943E144
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F91743E146
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 14:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhJ1MyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 08:54:12 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:26201 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhJ1MyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 08:54:09 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hg54n3bHmz8tym
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 20:50:17 +0800 (CST)
-Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 20:51:38 +0800
-Received: from [10.174.176.231] (10.174.176.231) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 28 Oct 2021 20:51:38 +0800
-To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
-CC:     <wuxu.wu@huawei.com>, Hewenliang <hewenliang4@huawei.com>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Subject: [PATCH] genirq: Use AFFINITY and AFFINITY_LIST in
- write_irq_affinity()
-Message-ID: <3edf17ad-e784-f541-1b49-3c95a982d6b5@huawei.com>
-Date:   Thu, 28 Oct 2021 20:51:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S230195AbhJ1Mye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 08:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhJ1Myc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 08:54:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 805B0610C8;
+        Thu, 28 Oct 2021 12:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635425526;
+        bh=PD5OY0z4sq0WOWIWj8b1CoVUgNKxXKscJZlSI2MOXDA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IfwxoSG0rTD0yKW9KYigsR5p+YPzYc5DeTzHH+Elno9nmFqyDv4D3PTW/Qt/kBueQ
+         sOrRqD0e+bTV3BRohyQ5GeAnK+zLGN8pDDOrbnLE+hEjpM3dFhMVcS6lgZGJaDfYzP
+         f6M2jO1fdf8a+XVFOMUIUY2q0hUinQfHvwuY8tetwpmyoiEILqdKP0YA/slV4MF6Nh
+         K5ssv7h1HtX1MO49jZy/vqC0POd+UDm7R8knNVGGFx9uDLGMYcgEPp6ejBUcFqSS57
+         58E9GMcgIlAEMklk4M9cMGkU5FIamLjAZK9ov/UvlRpgFyAJnw1OWfCdn4HcQ6P0gC
+         9BS2CP1eWxLaQ==
+Date:   Thu, 28 Oct 2021 13:51:59 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Alan <alan@linux.intel.com>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
+Message-ID: <20211028135159.7ac3f263@sal.lan>
+In-Reply-To: <20211017161958.44351-1-kitakar@gmail.com>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.231]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500024.china.huawei.com (7.185.36.10)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 0d3f54257dc3 ("genirq: Introduce effective affinity mask")
-introduce AFFINITY and AFFINITY_LIST Enumerated Type, so use it in
-write_irq_affinity().
+Em Mon, 18 Oct 2021 01:19:40 +0900
+Tsuchiya Yuto <kitakar@gmail.com> escreveu:
 
-No functional change.
+> Hi all,
+> 
+> This patch series contains fixes for atomisp to work (again). Tested on
+> Microsoft Surface 3 (Windows) and Xiaomi Mi Pad 2 (Android model) with
+> v5.15-rc5. Both are Cherry Trail (ISP2401) devices.
+> 
+After testing this series, I'm opting to merge most patches at the media 
+stage tree:
 
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+	https://git.linuxtv.org/media_stage.git/log/
+
+That would allow more people to test the changes.
+
+It is probably too late to merge it for 5.16, so I'll likely postpone
+merging it at media_tree to happen after 5.16-rc1.
+
+Regards,
+Mauro
+
 ---
- kernel/irq/proc.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
-index ee595ec09778..423f65203a69 100644
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -147,10 +147,16 @@ static ssize_t write_irq_affinity(int type, struct file *file,
- 	if (!zalloc_cpumask_var(&new_value, GFP_KERNEL))
- 		return -ENOMEM;
+I tested it on an Asus T101HA with:
+	https://github.com/intel/nvt
 
--	if (type)
-+	switch (type) {
-+	case AFFINITY_LIST:
- 		err = cpumask_parselist_user(buffer, count, new_value);
--	else
-+		break;
-+	case AFFINITY:
- 		err = cpumask_parse_user(buffer, count, new_value);
-+		break;
-+	default:
-+		err = -EINVAL;
-+	}
- 	if (err)
- 		goto free_cpumask;
+compiled with -m64, and with the enclosed script:
 
-@@ -179,13 +185,13 @@ static ssize_t write_irq_affinity(int type, struct file *file,
- static ssize_t irq_affinity_proc_write(struct file *file,
- 		const char __user *buffer, size_t count, loff_t *pos)
- {
--	return write_irq_affinity(0, file, buffer, count, pos);
-+	return write_irq_affinity(AFFINITY, file, buffer, count, pos);
- }
 
- static ssize_t irq_affinity_list_proc_write(struct file *file,
- 		const char __user *buffer, size_t count, loff_t *pos)
- {
--	return write_irq_affinity(1, file, buffer, count, pos);
-+	return write_irq_affinity(AFFINITY_LIST, file, buffer, count, pos);
- }
+#!/bin/bash
+set -e
 
- static int irq_affinity_proc_open(struct inode *inode, struct file *file)
--- 
-2.27.0
+FRAMES=10
+
+FORMAT=NV12
+WIDTH=1600
+HEIGHT=1200
+
+#FORMAT=NV12
+#WIDTH=1920
+#HEIGHT=1080
+
+
+./v4l2n -o testimage_@.raw \
+                 --device /dev/video2 \
+                 --input 0 \
+                 --exposure=30000,30000,30000,30000 \
+                 --parm type=1,capturemode=CI_MODE_PREVIEW \
+                 --fmt type=1,width=$WIDTH,height=$HEIGHT,pixelformat=$FORMAT \
+                 --reqbufs count=2,memory=USERPTR \
+                 --parameters=wb_config.r=32768,wb_config.gr=21043,wb_config.gb=21043,wb_config.b=30863 \
+                 --capture=$FRAMES
+
+for i in $(seq 0 $(($FRAMES - 1))); do
+	name="testimage_$(printf "%03i" $i)"
+
+	./raw2pnm -x$WIDTH -y$HEIGHT -f$FORMAT $name.raw $name.pnm
+
+	rm $name.raw
+done
+
+
