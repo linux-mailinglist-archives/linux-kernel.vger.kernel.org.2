@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EE943DBCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0314C43DBCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 09:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhJ1HSq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 03:18:46 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:51558 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhJ1HSp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:18:45 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 21E8261EAE61;
-        Thu, 28 Oct 2021 09:16:17 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id JFCI-lQ7V8jh; Thu, 28 Oct 2021 09:16:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id AEB6760F6B63;
-        Thu, 28 Oct 2021 09:16:16 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EdzS24WRludn; Thu, 28 Oct 2021 09:16:16 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 8900E61EAE61;
-        Thu, 28 Oct 2021 09:16:16 +0200 (CEST)
-Date:   Thu, 28 Oct 2021 09:16:16 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     schaecsn <schaecsn@gmx.net>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Schaeckeler <sschaeck@cisco.com>
-Message-ID: <791707806.43634.1635405376333.JavaMail.zimbra@nod.at>
-In-Reply-To: <20211028062124.12539-1-schaecsn@gmx.net>
-References: <20211028062124.12539-1-schaecsn@gmx.net>
-Subject: Re: [PATCH v3] ubifs: ubifs to export filesystem error counters
+        id S229920AbhJ1HTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 03:19:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:51560 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229768AbhJ1HTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:19:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED08E1063;
+        Thu, 28 Oct 2021 00:16:52 -0700 (PDT)
+Received: from [10.57.25.153] (unknown [10.57.25.153])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F8A63F73D;
+        Thu, 28 Oct 2021 00:16:49 -0700 (PDT)
+Subject: Re: [PATCH v2 1/5] arch_topology: Introduce thermal pressure update
+ function
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        thara.gopinath@linaro.org, agross@kernel.org
+References: <20211015144550.23719-1-lukasz.luba@arm.com>
+ <20211015144550.23719-2-lukasz.luba@arm.com> <YXmdyeOmNS2x3K0W@ripper>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <a75b08d9-cf0f-b132-b07e-878b10d133a2@arm.com>
+Date:   Thu, 28 Oct 2021 08:16:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF93 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: ubifs to export filesystem error counters
-Thread-Index: GOJMgSWITBfEasKolYQiwLcyBXA7+Q==
+In-Reply-To: <YXmdyeOmNS2x3K0W@ripper>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan,
 
------ Ursprüngliche Mail -----
-> Von: "schaecsn" <schaecsn@gmx.net>
-> An: "richard" <richard@nod.at>, "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel"
-> <linux-kernel@vger.kernel.org>
-> CC: "Stefan Schaeckeler" <sschaeck@cisco.com>
-> Gesendet: Donnerstag, 28. Oktober 2021 08:21:24
-> Betreff: [PATCH v3] ubifs: ubifs to export filesystem error counters
 
-> From: Stefan Schaeckeler <sschaeck@cisco.com>
+On 10/27/21 7:43 PM, Bjorn Andersson wrote:
+> On Fri 15 Oct 07:45 PDT 2021, Lukasz Luba wrote:
+>> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+> [..]
+>> +/**
+>> + * topology_thermal_pressure_update() - Update thermal pressure for CPUs
+>> + * @cpus	: The related CPUs for which capacity has been reduced
+>> + * @capped_freq	: The maximum allowed frequency that CPUs can run at
 > 
-> Not all ubifs filesystem errors are propagated to userspace.
-> 
-> Export bad magic, bad node and crc errors via sysfs. This allows userspace
-> to notice filesystem errors:
-> 
-> /sys/fs/ubifs/ubiX_Y/errors_magic
-> /sys/fs/ubifs/ubiX_Y/errors_node
-> /sys/fs/ubifs/ubiX_Y/errors_crc
-> 
-> The counters are reset to 0 with a remount.
-> 
-> Signed-off-by: Stefan Schaeckeler <sschaeck@cisco.com>
-> ---
-> Changes in v3:
->  - Added Documentation/ABI/testing/sysfs-fs-ubifs
->  - Added Documentation/ABI/testing/sysfs-fs-ubifs to MAINTAINERS
+> I know this matches what I see in e.g. the Qualcomm cpufreq hw driver,
+> but in what cases will @capped_freq differ from
+> cpufreq_get_hw_max_freq(cpumask_first(cpus))?
 
-I asked for just the Documentation. v2 of your patch is already in linux-next. :-)
+The @capped_freq is the maximum allowed frequency value due to
+thermal reasons, which will always be lower or equal to the value
+returned by cpufreq_get_hw_max_freq()
+(effectively: 'policy->cpuinfo.max_freq').
 
-Thanks,
-//richard
+We limit the frequency (and voltage) of CPU to reduce power (and heat)
+in the passive cooling system. That information is important to us,
+because scheduler needs to know how fast the CPU can go. It cannot
+assume that the speed is always 'policy->cpuinfo.max_freq'. Often
+it's less then that at heavy load or GPU heavy load (the same SoC).
+
+Regards,
+Lukasz
