@@ -2,59 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D1443E519
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57B743E51D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 17:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhJ1P3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 11:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhJ1P3n (ORCPT
+        id S230274AbhJ1Pb3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Oct 2021 11:31:29 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:39111 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhJ1Pb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 11:29:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3772C061570;
-        Thu, 28 Oct 2021 08:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=C25FBrHsCS4SYuLkvj36k8rSA/hCmYxj6KRyZJNajPM=; b=o7THTnaL+L3FfKjMLmtHwiKh3K
-        SfxqvG7VqrnusU2O/m3zIwbHf67bF2KwWWZYPgW4oJLG51CaaqwCL2OUU4/gRIqrHbMmW64c/atOI
-        Y64srbXUmLbBuFGLel56CeFY4R7JqQIOz1Puo1ui8CeqHJty8oyrPNXyB3DoZCvISQIai0cmP8LPO
-        cQnFhTDfQE8ox+7MSKHTDeqTc9c8RwCU9JQ1ZSkEhn731GlnrTHAuE2ht210qKNC8bFp8lVEiVaEQ
-        rCW5JIJ5GBbeD+mOlJO3CN+CDrRMoew7IVyOS6L/zpBm58OfZeSfBncDr/GfMTZGpkYjt40xQ3jxA
-        DV58QM1g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mg7J6-008PEq-Do; Thu, 28 Oct 2021 15:27:08 +0000
-Date:   Thu, 28 Oct 2021 08:27:08 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     daejun7.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Thu, 28 Oct 2021 11:31:26 -0400
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id C1389100006;
+        Thu, 28 Oct 2021 15:28:55 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 17:28:55 +0200
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-Message-ID: <YXrBTHmu/fiAaZH5@infradead.org>
-References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
- <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
- <0f9229c3c4c7859524411a47db96a3b53ac89c90.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/3] net: ocelot: add support to get mac from
+ device-tree
+Message-ID: <20211028172855.0f646cc7@xps-bootlin>
+In-Reply-To: <20211028145142.xjgd3u2xz7kpijtl@skbuf>
+References: <20211028134932.658167-1-clement.leger@bootlin.com>
+        <20211028134932.658167-2-clement.leger@bootlin.com>
+        <20211028140611.m7whuwrzqxp2t53f@skbuf>
+        <20211028161522.6b711bb2@xps-bootlin>
+        <20211028142254.mbm7gczhhb4h5g3n@skbuf>
+        <20211028163825.7ccb1dea@xps-bootlin>
+        <20211028145142.xjgd3u2xz7kpijtl@skbuf>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f9229c3c4c7859524411a47db96a3b53ac89c90.camel@linux.ibm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:28:01AM -0400, James Bottomley wrote:
-> If the block people are happy with this, then I'm OK with it, but it
-> doesn't look like you've solved the fanout deadlock problem because
-> this new mechanism is still going to allocate a new tag.
+Le Thu, 28 Oct 2021 14:51:43 +0000,
+Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
 
-Yes, same problem as before.
+> On Thu, Oct 28, 2021 at 04:38:25PM +0200, Clément Léger wrote:
+> > Le Thu, 28 Oct 2021 14:22:55 +0000,
+> > Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
+> >   
+> > > On Thu, Oct 28, 2021 at 04:15:22PM +0200, Clément Léger wrote:  
+> > > > Le Thu, 28 Oct 2021 14:06:12 +0000,
+> > > > Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
+> > > >     
+> > > > > On Thu, Oct 28, 2021 at 03:49:30PM +0200, Clément Léger
+> > > > > wrote:    
+> > > > > > Add support to get mac from device-tree using
+> > > > > > of_get_mac_address.
+> > > > > > 
+> > > > > > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> > > > > > ---
+> > > > > >  drivers/net/ethernet/mscc/ocelot_vsc7514.c | 5 ++++-
+> > > > > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> > > > > > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c index
+> > > > > > d51f799e4e86..c39118e5b3ee 100644 ---
+> > > > > > a/drivers/net/ethernet/mscc/ocelot_vsc7514.c +++
+> > > > > > b/drivers/net/ethernet/mscc/ocelot_vsc7514.c @@ -526,7
+> > > > > > +526,10 @@ static int ocelot_chip_init(struct ocelot
+> > > > > > *ocelot, const struct ocelot_ops *ops)
+> > > > > > ocelot_pll5_init(ocelot); 
+> > > > > > -	eth_random_addr(ocelot->base_mac);
+> > > > > > +	ret = of_get_mac_address(ocelot->dev->of_node,
+> > > > > > ocelot->base_mac);      
+> > > > > 
+> > > > > Why not per port? This is pretty strange, I think.    
+> > > > 
+> > > > Hi Vladimir,
+> > > > 
+> > > > Currently, all ports share the same base mac address (5 first
+> > > > bytes). The final mac address per port is computed in
+> > > > ocelot_probe_port by adding the port number as the last byte of
+> > > > the mac_address provided.
+> > > > 
+> > > > Clément    
+> > > 
+> > > Yes, I know that, but that's not my point.
+> > > Every switch port should be pretty much compliant with
+> > > ethernet-controller.yaml, if it could inherit that it would be
+> > > even better. And since mac-address is an ethernet-controller.yaml
+> > > property, it is pretty much non-obvious at all that you put the
+> > > mac-address property directly under the switch, and manually add
+> > > 0, 1, 2, 3 etc to it. My request was to parse the mac-address
+> > > property of each port. Like this:
+> > > 
+> > > base_mac = random;
+> > > 
+> > > for_each_port() {
+> > > 	err = of_get_mac_address(port_dn, &port_mac);
+> > > 	if (err)
+> > > 		port_mac = base_mac + port;
+> > > }  
+> > 
+> > Ok indeed. So I will parse each port for a mac-address property. Do
+> > you also want a fallback to use the switch base mac if not
+> > specified in port or should I keep the use of a default random mac
+> > as the base address anyway ?  
+> 
+> Isn't the pseudocode I posted above explicit enough? Sorry...
+> Keep doing what the driver is doing right now, with an optional
+> mac-address override per port.
+> Why would we read the mac-address property of the switch? Which other
+> switch driver does that? Are there device trees in circulation where
+> this is being done?
+
+Sorry, guess I'm a bit tired and missed out the base_mac = random...
+Acked for the whole modification requested.
+
+> 
+> > > > > > +	if (ret)
+> > > > > > +		eth_random_addr(ocelot->base_mac);
+> > > > > > +
+> > > > > >  	ocelot->base_mac[5] &= 0xf0;
+> > > > > >  
+> > > > > >  	return 0;
+> > > > > > -- 
+> > > > > > 2.33.0    
+> > > > >       
+> > >     
+>   
+
