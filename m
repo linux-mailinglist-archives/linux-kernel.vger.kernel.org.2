@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A9243E2A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011DC43E27B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 15:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhJ1Ny1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 09:54:27 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:46830 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhJ1NyQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:54:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1635429110; x=1666965110;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dU+TKEqFhookugii6e48sZZmL7sX4kZZtdRkPRAXV1A=;
-  b=ej4BLdwZmyzWxhgz5296NgshlsW4M5aEtJnbY1mVzQjpGL1KH/VlUCI4
-   uKgBlo40chXkH8nMEeY6YrISKXYK+6eI4zmQbSrb8OULATcDisysjqM51
-   C1nHt724WFTb7vEqtS+zSkSLVPvUGFYiCqmBvqlMfbTBCJ98X26YgarI+
-   qQMM/xCWOMV7HzoHXNwy+bbK2lYVn+7wOQDK418vtSPF7GRtcBNtdlJyt
-   +anrcLbHkQsxTBgmkOMNgvrw1yoNU6vpJw7l9zIVFdwPQIftFdYhaN/nu
-   /LuJdvo8uyYL+nR8jhFJzIxPlmq9qi031I0pOxlXQknhvHGyFlPA5ep4p
-   A==;
-IronPort-SDR: rM/lXGyAi+bIgAGFPtr1FNHDDRhtFDR7jL6dPDregF/oUhTwRy4tIYbkn1HRkCVq6VWjI0lS33
- eznC8t7k87ZYsIpo3qJm+KClJ5R1LKk0QSNcElZ/1FkBszWpYCDMhwVm7Dt50yGwrZHWF9WfQ1
- /GbsbQbRUyYIvpm5m+zFIN+A/NDqRtUj5it4SNAbW3w9Bmfj7v/O05HJe2rRdJq3U1NCJZH29o
- /U/WVnD3odHWvC18dP8uTZk9tGkiQPZ8D9rkZPWNYPpUGST0eFmWCafJ0YzZ0s+plMHlGZr7tC
- PZmmbaFtHWPkvIYY2+Je5zdB
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="142003400"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Oct 2021 06:51:49 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 28 Oct 2021 06:51:49 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 28 Oct 2021 06:51:47 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <lee.jones@linaro.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <romain.izard.pro@gmail.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH v2 2/2] mfd: atmel-flexcom: use resume_noirq
-Date:   Thu, 28 Oct 2021 16:51:38 +0300
-Message-ID: <20211028135138.3481166-3-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211028135138.3481166-1-claudiu.beznea@microchip.com>
-References: <20211028135138.3481166-1-claudiu.beznea@microchip.com>
+        id S230297AbhJ1Ntz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 09:49:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229887AbhJ1Ntt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 09:49:49 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FDE961056;
+        Thu, 28 Oct 2021 13:47:20 +0000 (UTC)
+Date:   Thu, 28 Oct 2021 14:51:47 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <hdegoede@redhat.com>,
+        <andriy.shevchenko@linux.intel.com>, <ddvlad@gmail.com>
+Subject: Re: [PATCH v2] iio: accel: kxcjk-1013: Fix possible memory leak in
+ probe and remove
+Message-ID: <20211028145147.7ad93c5f@jic23-huawei>
+In-Reply-To: <20211025124159.2700301-1-yangyingliang@huawei.com>
+References: <20211025124159.2700301-1-yangyingliang@huawei.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flexcom IP embeds 3 other IPs: usart, i2c, spi and selects the operation
-mode (usart, i2c, spi) via mode register (FLEX_MR). On i2c bus there might
-be connected critical devices (like PMIC) which on suspend/resume should
-be suspended/resumed at the end/beginning. i2c uses
-.suspend_noirq/.resume_noirq for this kind of purposes. Align flexcom
-to use .resume_noirq as it should be resumed before the embedded IPs.
-Otherwise the embedded devices might behave badly.
+On Mon, 25 Oct 2021 20:41:59 +0800
+Yang Yingliang <yangyingliang@huawei.com> wrote:
 
-Fixes: 7fdec11015c3 ("atmel_flexcom: Support resuming after a chip reset")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Tested-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- drivers/mfd/atmel-flexcom.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> When ACPI type is ACPI_SMO8500, the data->dready_trig will not be set, the
+> memory allocated by iio_triggered_buffer_setup() will not be freed, and cause
+> memory leak as follows:
+> 
+> unreferenced object 0xffff888009551400 (size 512):
+>   comm "i2c-SMO8500-125", pid 911, jiffies 4294911787 (age 83.852s)
+>   hex dump (first 32 bytes):
+>     02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 20 e2 e5 c0 ff ff ff ff  ........ .......
+>   backtrace:
+>     [<0000000041ce75ee>] kmem_cache_alloc_trace+0x16d/0x360
+>     [<000000000aeb17b0>] iio_kfifo_allocate+0x41/0x130 [kfifo_buf]
+>     [<000000004b40c1f5>] iio_triggered_buffer_setup_ext+0x2c/0x210 [industrialio_triggered_buffer]
+>     [<000000004375b15f>] kxcjk1013_probe+0x10c3/0x1d81 [kxcjk_1013]
+> 
+> Fix it by remove data->dready_trig condition in probe and remove.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: a25691c1f967 ("iio: accel: kxcjk1013: allow using an external trigger")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Applied to the fixes-togreg branch of iio.git.  Note this will hit mainline after the merge window
+now.   Also, we should look at taking this driver fully over to devm managed functions.
+Looks easy to do and would have avoided this particular leak.
 
-diff --git a/drivers/mfd/atmel-flexcom.c b/drivers/mfd/atmel-flexcom.c
-index 962f66dc8813..559eb4d352b6 100644
---- a/drivers/mfd/atmel-flexcom.c
-+++ b/drivers/mfd/atmel-flexcom.c
-@@ -87,7 +87,7 @@ static const struct of_device_id atmel_flexcom_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, atmel_flexcom_of_match);
- 
--static int __maybe_unused atmel_flexcom_resume(struct device *dev)
-+static int __maybe_unused atmel_flexcom_resume_noirq(struct device *dev)
- {
- 	struct atmel_flexcom *ddata = dev_get_drvdata(dev);
- 	int err;
-@@ -105,8 +105,9 @@ static int __maybe_unused atmel_flexcom_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(atmel_flexcom_pm_ops, NULL,
--			 atmel_flexcom_resume);
-+static const struct dev_pm_ops atmel_flexcom_pm_ops = {
-+	.resume_noirq = atmel_flexcom_resume_noirq,
-+};
- 
- static struct platform_driver atmel_flexcom_driver = {
- 	.probe	= atmel_flexcom_probe,
--- 
-2.33.0
+Jonathan
+
+> ---
+> v2:
+>   drop some calltrace in commit message
+> ---
+>  drivers/iio/accel/kxcjk-1013.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
+> index a51fdd3c9b5b..24c9387c2968 100644
+> --- a/drivers/iio/accel/kxcjk-1013.c
+> +++ b/drivers/iio/accel/kxcjk-1013.c
+> @@ -1595,8 +1595,7 @@ static int kxcjk1013_probe(struct i2c_client *client,
+>  	return 0;
+>  
+>  err_buffer_cleanup:
+> -	if (data->dready_trig)
+> -		iio_triggered_buffer_cleanup(indio_dev);
+> +	iio_triggered_buffer_cleanup(indio_dev);
+>  err_trigger_unregister:
+>  	if (data->dready_trig)
+>  		iio_trigger_unregister(data->dready_trig);
+> @@ -1618,8 +1617,8 @@ static int kxcjk1013_remove(struct i2c_client *client)
+>  	pm_runtime_disable(&client->dev);
+>  	pm_runtime_set_suspended(&client->dev);
+>  
+> +	iio_triggered_buffer_cleanup(indio_dev);
+>  	if (data->dready_trig) {
+> -		iio_triggered_buffer_cleanup(indio_dev);
+>  		iio_trigger_unregister(data->dready_trig);
+>  		iio_trigger_unregister(data->motion_trig);
+>  	}
 
