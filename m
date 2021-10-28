@@ -2,121 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7133E43DD14
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A6643DCE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 10:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhJ1IrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 04:47:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:27058 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhJ1IrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 04:47:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="230620521"
-X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
-   d="scan'208";a="230620521"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 01:24:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,189,1631602800"; 
-   d="scan'208";a="447871447"
-Received: from lkp-server01.sh.intel.com (HELO 3b851179dbd8) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 28 Oct 2021 01:24:28 -0700
-Received: from kbuild by 3b851179dbd8 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mg0i4-0001pe-2V; Thu, 28 Oct 2021 08:24:28 +0000
-Date:   Thu, 28 Oct 2021 16:23:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:for-next/kspp] BUILD SUCCESS
- 704f6142a9033e76aaa054c7ecf93b4bb4bf0028
-Message-ID: <617a5e0e.UNLbM2mbTeHYbNEt%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229946AbhJ1I0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 04:26:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4035 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ1I03 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 04:26:29 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hfz4B2whkz6H6r9;
+        Thu, 28 Oct 2021 16:19:22 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Thu, 28 Oct 2021 10:23:59 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 28 Oct 2021 09:23:59 +0100
+Subject: Re: [PATCH v2 2/2] perf jevents: Enable warnings through HOSTCFLAGS
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "irogers@google.com" <irogers@google.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        "james.clark@arm.com" <james.clark@arm.com>
+References: <1634807805-40093-1-git-send-email-john.garry@huawei.com>
+ <1634807805-40093-3-git-send-email-john.garry@huawei.com>
+ <YXFhr2YoVp9GPsDM@krava> <86aee893-0b6b-bce3-d1aa-3b66365592d1@huawei.com>
+ <YXaXvGgvs4gr8Cgi@krava> <YXbZa8SaQta9pzHS@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <32d98804-7e56-e73b-4c66-8776dbf58ddf@huawei.com>
+Date:   Thu, 28 Oct 2021 09:23:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <YXbZa8SaQta9pzHS@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml734-chm.china.huawei.com (10.201.108.85) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
-branch HEAD: 704f6142a9033e76aaa054c7ecf93b4bb4bf0028  firmware/psci: fix application of sizeof to pointer
+On 25/10/2021 17:20, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Oct 25, 2021 at 01:40:44PM +0200, Jiri Olsa escreveu:
+>> On Fri, Oct 22, 2021 at 10:42:11AM +0100, John Garry wrote:
+>>> On 21/10/2021 13:48, Jiri Olsa wrote:
+>>>>> +HOSTCFLAGS += -Wall
+>>>>> +HOSTCFLAGS += -Wextra
+>>>>> +
+>>>>>    # Enforce a non-executable stack, as we may regress (again) in the future by
+>>>>>    # adding assembler files missing the .GNU-stack linker note.
+>>>>>    LDFLAGS += -Wl,-z,noexecstack
+>>>>> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+>>>>> index 7df13e74450c..118bcdc70bb4 100644
+>>>>> --- a/tools/perf/Makefile.perf
+>>>>> +++ b/tools/perf/Makefile.perf
+>>>>> @@ -226,7 +226,7 @@ else
+>>>>>    endif
+>>>>>    export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+>>>>> -export HOSTCC HOSTLD HOSTAR
+>>>>> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+>>>>>    include $(srctree)/tools/build/Makefile.include
+>>>>> diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+>>>>> index a055dee6a46a..d5c287f069a2 100644
+>>>>> --- a/tools/perf/pmu-events/Build
+>>>>> +++ b/tools/perf/pmu-events/Build
+>>>>> @@ -1,7 +1,7 @@
+>>>>>    hostprogs := jevents
+>>>>>    jevents-y	+= json.o jsmn.o jevents.o
+>>>>> -HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+>>>>> +HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
+>>>> so the the host cflags are made of:
+>>>>
+>>>> host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+>>>>
+>>>
+>>> ok, so IIRC, then the rule for building .o from .c in
+>>> tools/build/Makefile.build will pick up HOSTCFLAGS through this variable, so
+>>> we then don't need to explicitly mention it in the per-target rule, so can
+>>> have this as before in pmu-events/Build
+>>>
+>>> HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
+>>>
+>>> right?
+>>>
+>>> (Indeed I guess that we can get rid of -I$(srctree)/tools/include as well)
+>>
+>> hm, the -I.. should stay no? I don't see that
+>> it's being added soem other way
+>>
+>> jirka
+>>
+> 
+> Probably this change from KBUILD_HOSTCFLAGS back to HOSTCFLAGS should
+> come with this;
+> 
+> Cc: Laura Abbott <labbott@redhat.com>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Fixes: 96f14fe738b69dd9 ("kbuild: Rename HOSTCFLAGS to KBUILD_HOSTCFLAGS")
+> 
+> Right?
 
-elapsed time: 1947m
+Maybe, but then renaming back from KBUILD_HOSTCFLAGS -> HOSTCFLAGS seems 
+odd as a fix
 
-configs tested: 63
-configs skipped: 3
+Anyway, now that this original series is in perf/core, I'll send patches 
+on top with this change, cc'ing Laura and Masahiro
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-arc                  randconfig-r043-20211027
-s390                 randconfig-r044-20211027
-riscv                randconfig-r042-20211027
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20211027
-x86_64               randconfig-a004-20211027
-x86_64               randconfig-a005-20211027
-x86_64               randconfig-a006-20211027
-x86_64               randconfig-a001-20211027
-x86_64               randconfig-a003-20211027
-hexagon              randconfig-r045-20211027
-hexagon              randconfig-r041-20211027
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks!
