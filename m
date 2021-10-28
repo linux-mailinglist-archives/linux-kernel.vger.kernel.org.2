@@ -2,88 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EE643E9EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9641B43E9ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhJ1U6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 16:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S231215AbhJ1VB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhJ1U6Y (ORCPT
+        with ESMTP id S230404AbhJ1VBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:58:24 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B526C061570;
-        Thu, 28 Oct 2021 13:55:57 -0700 (PDT)
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1635454555;
-        bh=iU+XFbXQ5x1nQ3jO5MtLXH4WteHt7kqPsbwW0F5WHZ8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NX5AO2BpT1tqtkrm2S0G0qdTWr4/yd0VT5yG7XpXPrvMH6EKe4Xmb5fGdCkU8m/bT
-         Qqkti85uw1a5Rjs4Pdg4/lexxmjdQUDsHClk2z4RwX+nCwwKb5uFbSDa48HsrlkJF2
-         ZGihtEZSbxdfC5tjYA9cYUfgDrb84DcYJPHFLWd4=
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org, Brent Roman <brent@mbari.org>
-Subject: [PATCH] HID: input: set usage type to key on keycode remap
-Date:   Thu, 28 Oct 2021 22:55:42 +0200
-Message-Id: <20211028205542.499280-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Thu, 28 Oct 2021 17:01:25 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E1AC061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 13:58:58 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id z187-20020a6233c4000000b0047c2090f1abso3865127pfz.23
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 13:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=1Gx3GrW6nfRdIvN3hTXoEKYwq030Bu3new2FccuYxgo=;
+        b=rCt1D4mSu2vjxTTVSFG2Lu5AspB/iJjyyyyTL9vEnLgRFC3uDfKXS6CkgOun+CLV1J
+         y/wG8Op0nvk9aj2joV0MIVZj3965kcvhOd3O/moGmjew9RsVsfUvCG4daSm/h7zNy5hD
+         ZhmXIJZ0VnySJvB60SoJX694dKIa2FWXjoVF7mICun8WDA10u3DiqMNmLHcRS9Vacp7Y
+         NOqdQt2Me4DaJ3TkaAdk+8tXn7hQsjlTisYCyZ2Shlqc4FeqjKG1QDshbLdFr3cWbCt+
+         zOjoPcMx8umHzMIxY82zQDw5YUWdB/ueeLEiQEkqIReX7KLTTT3cexKg/Uq6HdnBI5n3
+         UrDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=1Gx3GrW6nfRdIvN3hTXoEKYwq030Bu3new2FccuYxgo=;
+        b=NeDg6C17QiO41/F3ZCfXD1J37ehvZHXJixGy7hjCxbtscPMs0wM91o1Ohv8vTHvAAD
+         YXORNiVItugqdPxL6+wQZi4OBVshMXz6djuqqwBB7qY3p0RUbAio8RrXnTNhwYd+Ld9b
+         Qo409c8AD/IxAnDGTVMRZneDIofUWTWi1EeqsWS7MP/igIlq3WGT3yJiiUWDu6Ft3gqi
+         tYonHf96lDTxMq3UqdoYUz4M3FoCDG/a/7XPH/9NyXW0tBHbZ20Af/ERy/Qn/tN8RPuo
+         7V9/DdxfRGy9mreioBhB4Xh5JHVNWvN8sw/MJbtfJfG9fLO036h0PaG74e8xtPqw+o/v
+         7hXw==
+X-Gm-Message-State: AOAM530PXIoZoyp8CAgq6P2y2gb50LjFRJBXjh7rJLv5kcK/AzbNDXec
+        6x7+xUsoEE8S9eiZ0hGPO4thu0vAGS6Vpkie2g==
+X-Google-Smtp-Source: ABdhPJwsx2QbAPnmHQN/diGDA6MEVEW27gTcAdEXpI5mnPZqo75LcKHbuSSNNHZa6+mSWL7N2ugnqt8U654P0OObvg==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:8b1e:c410:4c0f:5458])
+ (user=almasrymina job=sendgmr) by 2002:a17:90a:2bca:: with SMTP id
+ n10mr7112646pje.241.1635454737673; Thu, 28 Oct 2021 13:58:57 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 13:58:54 -0700
+Message-Id: <20211028205854.830200-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH v1] mm: Add /proc/$PID/pageflags
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Yu Zhao <yuzhao@google.com>, Mina Almasry <almasrymina@google.com>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        David Hildenbrand <david@redhat.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a scancode is manually remapped that previously was not handled as
-key, then the old usage type was incorrectly reused.
+From: Yu Zhao <yuzhao@google.com>
 
-This caused issues on a "04b3:301b IBM Corp. SK-8815 Keyboard" which has
-marked some of its keys with an invalid HID usage.  These invalid usage
-keys are being ignored since support for USB programmable buttons was
-added.
+This file lets a userspace process know the page flags of each of its virtual
+pages.  It contains a 64-bit set of flags for each virtual page, containing
+data identical to that emitted by /proc/kpageflags.  This allows the user-space
+task can learn the kpageflags for the pages backing its address-space by
+consulting one file, without needing to be root.
 
-The scancodes are however remapped explicitly by the systemd hwdb to the
-keycodes that are printed on the physical buttons.  During this mapping
-step the existing usage is retrieved which will be found with a default
-type of 0 (EV_SYN) instead of EV_KEY.
+Example use case is a performance sensitive user-space process querying the
+hugepage backing of its own memory without the root access required to access
+/proc/kpageflags, and without accessing /proc/self/smaps_rollup which can be
+slow and needs to hold mmap_lock.
 
-The events with the correct code but EV_SYN type are not forwarded to
-userspace.
+Similar to /proc/kpageflags, the flags printed out by the kernel for
+each page are provided by stable_page_flags(), which exports flag bits
+that are user visible and stable over time.
 
-This also leads to a kernel oops when trying to print the report descriptor
-via debugfs.  hid_resolv_event() tries to resolve a EV_SYN event with an
-EV_KEY code which leads to an out-of-bounds access in the EV_SYN names
-array.
+Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-Fixes: bcfa8d1457 ("HID: input: Add support for Programmable Buttons")
-Fixes: f5854fad39 ("Input: hid-input - allow mapping unknown usages")
-Reported-by: Brent Roman <brent@mbari.org>
-Tested-by: Brent Roman <brent@mbari.org>
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Cc: David Rientjes rientjes@google.com
+Cc: Paul E. McKenney <paulmckrcu@fb.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Florian Schmidt <florian.schmidt@nutanix.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+
 ---
- drivers/hid/hid-input.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/admin-guide/mm/pagemap.rst |   9 +-
+ Documentation/filesystems/proc.rst       |   5 +-
+ fs/proc/base.c                           |   2 +
+ fs/proc/internal.h                       |   1 +
+ fs/proc/task_mmu.c                       | 158 ++++++++++++++++++-----
+ 5 files changed, 144 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 4b5ebeacd283..21d8cc64064d 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -160,6 +160,7 @@ static int hidinput_setkeycode(struct input_dev *dev,
- 	if (usage) {
- 		*old_keycode = usage->type == EV_KEY ?
- 				usage->code : KEY_RESERVED;
-+		usage->type = EV_KEY;
- 		usage->code = ke->keycode;
- 
- 		clear_bit(*old_keycode, dev->keybit);
+diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+index fdc19fbc10839..79a127f671436 100644
+--- a/Documentation/admin-guide/mm/pagemap.rst
++++ b/Documentation/admin-guide/mm/pagemap.rst
+@@ -8,7 +8,7 @@ pagemap is a new (as of 2.6.25) set of interfaces in the kernel that allow
+ userspace programs to examine the page tables and related information by
+ reading files in ``/proc``.
 
-base-commit: 42d43c92fc577dca59ed74aec7868abec8d6ca6e
--- 
-2.33.1
+-There are four components to pagemap:
++There are five components to pagemap:
 
+  * ``/proc/pid/pagemap``.  This file lets a userspace process find out which
+    physical frame each virtual page is mapped to.  It contains one 64-bit
+@@ -82,6 +82,13 @@ number of times a page is mapped.
+     25. IDLE
+     26. PGTABLE
+
++ * ``/proc/pid/pageflags``.  This file lets a userspace process know the page
++   flags of each of its virtual pages.  It contains a 64-bit set of flags for
++   each virtual page, containing data identical to the one emitted by
++   /proc/kpageflags listed above.  The user-space task can learn the kpageflags
++   for the pages backing its address-space by consulting one file, without
++   needing to be root.
++
+  * ``/proc/kpagecgroup``.  This file contains a 64-bit inode number of the
+    memory cgroup each page is charged to, indexed by PFN. Only available when
+    CONFIG_MEMCG is set.
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 042c418f40906..fab84e5966b3e 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -155,6 +155,7 @@ usually fail with ESRCH.
+  wchan		Present with CONFIG_KALLSYMS=y: it shows the kernel function
+ 		symbol the task is blocked in - or "0" if not blocked.
+  pagemap	Page table
++ pageflags	Process's memory page flag information
+  stack		Report full stack trace, enable via CONFIG_STACKTRACE
+  smaps		An extension based on maps, showing the memory consumption of
+ 		each mapping and flags associated with it
+@@ -619,7 +620,9 @@ Any other value written to /proc/PID/clear_refs will have no effect.
+
+ The /proc/pid/pagemap gives the PFN, which can be used to find the pageflags
+ using /proc/kpageflags and number of times a page is mapped using
+-/proc/kpagecount. For detailed explanation, see
++/proc/kpagecount. /proc/pid/pageflags provides the page flags of a process's
++virtual pages, so a task can learn the kpageflags for its address space with no
++need to be root. For detailed explanation, see
+ Documentation/admin-guide/mm/pagemap.rst.
+
+ The /proc/pid/numa_maps is an extension based on maps, showing the memory
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 264509e584e3e..40febcaef6aa6 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3219,6 +3219,7 @@ static const struct pid_entry tgid_base_stuff[] = {
+ 	REG("smaps",      S_IRUGO, proc_pid_smaps_operations),
+ 	REG("smaps_rollup", S_IRUGO, proc_pid_smaps_rollup_operations),
+ 	REG("pagemap",    S_IRUSR, proc_pagemap_operations),
++	REG("pageflags",  S_IRUGO, proc_pageflags_operations),
+ #endif
+ #ifdef CONFIG_SECURITY
+ 	DIR("attr",       S_IRUGO|S_IXUGO, proc_attr_dir_inode_operations, proc_attr_dir_operations),
+@@ -3562,6 +3563,7 @@ static const struct pid_entry tid_base_stuff[] = {
+ 	REG("smaps",     S_IRUGO, proc_pid_smaps_operations),
+ 	REG("smaps_rollup", S_IRUGO, proc_pid_smaps_rollup_operations),
+ 	REG("pagemap",    S_IRUSR, proc_pagemap_operations),
++	REG("pageflags",  S_IRUGO, proc_pageflags_operations),
+ #endif
+ #ifdef CONFIG_SECURITY
+ 	DIR("attr",      S_IRUGO|S_IXUGO, proc_attr_dir_inode_operations, proc_attr_dir_operations),
+diff --git a/fs/proc/internal.h b/fs/proc/internal.h
+index 03415f3fb3a81..177be691a86a7 100644
+--- a/fs/proc/internal.h
++++ b/fs/proc/internal.h
+@@ -305,6 +305,7 @@ extern const struct file_operations proc_pid_smaps_operations;
+ extern const struct file_operations proc_pid_smaps_rollup_operations;
+ extern const struct file_operations proc_clear_refs_operations;
+ extern const struct file_operations proc_pagemap_operations;
++extern const struct file_operations proc_pageflags_operations;
+
+ extern unsigned long task_vsize(struct mm_struct *);
+ extern unsigned long task_statm(struct mm_struct *,
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index ad667dbc96f5c..4e24ff521b5f0 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1291,6 +1291,10 @@ struct pagemapread {
+ 	int pos, len;		/* units: PM_ENTRY_BYTES, not bytes */
+ 	pagemap_entry_t *buffer;
+ 	bool show_pfn;
++	/* If to_flags is set, show the page flags for the virtual pages
++	 * instead of the mapping information.
++	 */
++	bool to_flags;
+ };
+
+ #define PAGEMAP_WALK_SIZE	(PMD_SIZE)
+@@ -1331,7 +1335,8 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
+
+ 	while (addr < end) {
+ 		struct vm_area_struct *vma = find_vma(walk->mm, addr);
+-		pagemap_entry_t pme = make_pme(0, 0);
++		pagemap_entry_t pme =
++			make_pme(0, pm->to_flags ? stable_page_flags(NULL) : 0);
+ 		/* End of address space hole, which we mark as non-present. */
+ 		unsigned long hole_end;
+
+@@ -1350,7 +1355,7 @@ static int pagemap_pte_hole(unsigned long start, unsigned long end,
+ 			break;
+
+ 		/* Addresses in the VMA. */
+-		if (vma->vm_flags & VM_SOFTDIRTY)
++		if ((vma->vm_flags & VM_SOFTDIRTY) && !pm->to_flags)
+ 			pme = make_pme(0, PM_SOFT_DIRTY);
+ 		for (; addr < min(end, vma->vm_end); addr += PAGE_SIZE) {
+ 			err = add_to_pagemap(addr, &pme, pm);
+@@ -1368,6 +1373,12 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+ 	u64 frame = 0, flags = 0;
+ 	struct page *page = NULL;
+
++	if (pm->to_flags) {
++		if (pte_present(pte))
++			page = vm_normal_page(vma, addr, pte);
++		return make_pme(0, stable_page_flags(page));
++	}
++
+ 	if (pte_present(pte)) {
+ 		if (pm->show_pfn)
+ 			frame = pte_pfn(pte);
+@@ -1421,6 +1432,22 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
+ 		if (vma->vm_flags & VM_SOFTDIRTY)
+ 			flags |= PM_SOFT_DIRTY;
+
++		if (pm->to_flags) {
++			pagemap_entry_t pme;
++			struct page *page =
++				pmd_present(pmd) ? pmd_page(pmd) : NULL;
++
++			for (; addr != end; addr += PAGE_SIZE) {
++				if (page)
++					page += (addr & ~PMD_MASK) >>
++						PAGE_SHIFT;
++				pme = make_pme(0, stable_page_flags(page));
++				add_to_pagemap(addr, &pme, pm);
++			}
++			spin_unlock(ptl);
++			return 0;
++		}
++
+ 		if (pmd_present(pmd)) {
+ 			page = pmd_page(pmd);
+
+@@ -1514,6 +1541,20 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
+ 		flags |= PM_SOFT_DIRTY;
+
+ 	pte = huge_ptep_get(ptep);
++
++	if (pm->to_flags) {
++		pagemap_entry_t pme;
++		struct page *page = pte_present(pte) ? pte_page(pte) : NULL;
++
++		for (; addr != end; addr += PAGE_SIZE) {
++			if (page)
++				page += (addr & ~hmask) >> PAGE_SHIFT;
++			pme = make_pme(0, stable_page_flags(page));
++			add_to_pagemap(addr, &pme, pm);
++		}
++		goto done;
++	}
++
+ 	if (pte_present(pte)) {
+ 		struct page *page = pte_page(pte);
+
+@@ -1539,6 +1580,7 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
+ 			frame++;
+ 	}
+
++done:
+ 	cond_resched();
+
+ 	return err;
+@@ -1553,34 +1595,11 @@ static const struct mm_walk_ops pagemap_ops = {
+ 	.hugetlb_entry	= pagemap_hugetlb_range,
+ };
+
+-/*
+- * /proc/pid/pagemap - an array mapping virtual pages to pfns
+- *
+- * For each page in the address space, this file contains one 64-bit entry
+- * consisting of the following:
+- *
+- * Bits 0-54  page frame number (PFN) if present
+- * Bits 0-4   swap type if swapped
+- * Bits 5-54  swap offset if swapped
+- * Bit  55    pte is soft-dirty (see Documentation/admin-guide/mm/soft-dirty.rst)
+- * Bit  56    page exclusively mapped
+- * Bits 57-60 zero
+- * Bit  61    page is file-page or shared-anon
+- * Bit  62    page swapped
+- * Bit  63    page present
+- *
+- * If the page is not present but in swap, then the PFN contains an
+- * encoding of the swap file number and the page's offset into the
+- * swap. Unmapped pages return a null PFN. This allows determining
+- * precisely which pages are mapped (or in swap) and comparing mapped
+- * pages between processes.
+- *
+- * Efficient users of this interface will use /proc/pid/maps to
+- * determine which areas of memory are actually mapped and llseek to
+- * skip over unmapped regions.
++/* If to_flags is set, show the page flags for the virtual pages
++ * instead of the mapping information.
+  */
+-static ssize_t pagemap_read(struct file *file, char __user *buf,
+-			    size_t count, loff_t *ppos)
++static ssize_t pagemap_pageflags_read(struct file *file, char __user *buf,
++				      size_t count, loff_t *ppos, bool to_flags)
+ {
+ 	struct mm_struct *mm = file->private_data;
+ 	struct pagemapread pm;
+@@ -1602,6 +1621,8 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
+ 	if (!count)
+ 		goto out_mm;
+
++	pm.to_flags = to_flags;
++
+ 	/* do not disclose physical addresses: attack vector */
+ 	pm.show_pfn = file_ns_capable(file, &init_user_ns, CAP_SYS_ADMIN);
+
+@@ -1668,6 +1689,78 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
+ 	return ret;
+ }
+
++/*
++ * /proc/pid/pagemap - an array mapping virtual pages to pfns
++ *
++ * For each page in the address space, this file contains one 64-bit entry
++ * consisting of the following:
++ *
++ * Bits 0-54  page frame number (PFN) if present
++ * Bits 0-4   swap type if swapped
++ * Bits 5-54  swap offset if swapped
++ * Bit  55    pte is soft-dirty (see Documentation/admin-guide/mm/soft-dirty.rst)
++ * Bit  56    page exclusively mapped
++ * Bits 57-60 zero
++ * Bit  61    page is file-page or shared-anon
++ * Bit  62    page swapped
++ * Bit  63    page present
++ *
++ * If the page is not present but in swap, then the PFN contains an
++ * encoding of the swap file number and the page's offset into the
++ * swap. Unmapped pages return a null PFN. This allows determining
++ * precisely which pages are mapped (or in swap) and comparing mapped
++ * pages between processes.
++ *
++ * Efficient users of this interface will use /proc/pid/maps to
++ * determine which areas of memory are actually mapped and llseek to
++ * skip over unmapped regions.
++ */
++static ssize_t pagemap_read(struct file *file, char __user *buf, size_t count,
++			    loff_t *ppos)
++{
++	return pagemap_pageflags_read(file, buf, count, ppos, false);
++}
++
++/*
++ * /proc/pid/pageflags - an array mapping virtual pages to pageflags
++ *
++ * For each page in the address space, this file contains one 64-bit entry
++ * consisting of the following:
++ *
++ * 0. LOCKED
++ * 1. ERROR
++ * 2. REFERENCED
++ * 3. UPTODATE
++ * 4. DIRTY
++ * 5. LRU
++ * 6. ACTIVE
++ * 7. SLAB
++ * 8. WRITEBACK
++ * 9. RECLAIM
++ * 10. BUDDY
++ * 11. MMAP
++ * 12. ANON
++ * 13. SWAPCACHE
++ * 14. SWAPBACKED
++ * 15. COMPOUND_HEAD
++ * 16. COMPOUND_TAIL
++ * 17. HUGE
++ * 18. UNEVICTABLE
++ * 19. HWPOISON
++ * 20. NOPAGE
++ * 21. KSM
++ * 22. THP
++ * 23. OFFLINE
++ * 24. ZERO_PAGE
++ * 25. IDLE
++ * 26. PGTABLE
++ */
++static ssize_t pageflags_read(struct file *file, char __user *buf, size_t count,
++			      loff_t *ppos)
++{
++	return pagemap_pageflags_read(file, buf, count, ppos, true);
++}
++
+ static int pagemap_open(struct inode *inode, struct file *file)
+ {
+ 	struct mm_struct *mm;
+@@ -1694,6 +1787,13 @@ const struct file_operations proc_pagemap_operations = {
+ 	.open		= pagemap_open,
+ 	.release	= pagemap_release,
+ };
++
++const struct file_operations proc_pageflags_operations = {
++	.llseek		= mem_lseek,
++	.read		= pageflags_read,
++	.open		= pagemap_open,
++	.release	= pagemap_release,
++};
+ #endif /* CONFIG_PROC_PAGE_MONITOR */
+
+ #ifdef CONFIG_NUMA
+--
+2.33.0.1079.g6e70778dc9-goog
