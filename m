@@ -2,465 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298FD43F2C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF6A43F2B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhJ1Wef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:34:35 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:55032 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhJ1Wec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:34:32 -0400
-X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 Oct 2021 18:34:31 EDT
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4HgKs66k51zDySt;
-        Thu, 28 Oct 2021 15:26:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1635459963; bh=1zrC8LR9nAREifaTK92aPZ6b8KhJ7I8x3pYiPbiRazU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KEjlCKgwOVvworSX4AkHNEKAvAD6gh9Wx204AjSW9p0QSEwZ6wEF2/IiufL+4/B0X
-         RDsp7XLgHfsMMocB8ZZhsJFnAWovz1/CCAGFKZAhmBpUL+8u5PFxYk7RXwRgq0RAvQ
-         M8jf7ynCG3X/F7kZZH+A+S3EkHgvZPk6N0zM4kjE=
-X-Riseup-User-ID: 75C1465B27D621C3B87084A5EB2B3C5BBB0E1B3D8B510A156D642E120268B125
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4HgKs24m4Jz5vvd;
-        Thu, 28 Oct 2021 15:25:58 -0700 (PDT)
-From:   Isabella Basso <isabbasso@riseup.net>
-To:     geert@linux-m68k.org
-Cc:     ferreiraenzoa@gmail.com, augusto.duraes33@gmail.com,
-        brendanhiggins@google.com, dlatypov@google.com,
-        davidgow@google.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com,
-        akpm@linux-foundation.org, skhan@linuxfoundation.org,
-        Isabella Basso <isabellabdoamaral@usp.br>,
-        kernel test robot <lkp@intel.com>,
-        Isabella Basso <isabbasso@riseup.net>
-Subject: [PATCH v3 5/5] test_hash.c: refactor into kunit
-Date:   Thu, 28 Oct 2021 19:25:33 -0300
-Message-Id: <20211028222533.432641-6-isabbasso@riseup.net>
-In-Reply-To: <20211028222533.432641-1-isabbasso@riseup.net>
-References: <20211028222533.432641-1-isabbasso@riseup.net>
+        id S231387AbhJ1W26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231201AbhJ1W24 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 18:28:56 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80471C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:26:29 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id q127so9127159iod.12
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=69slPYPdxoIP5E1pXozkkOSJJNlQJg/ZybGsQcAlQjU=;
+        b=ZvebgKH3pRDT+eHN8yyyqshk7Xwtu0s+RNmQNKAF4bGCFh8HihuoQwIeVuENvHdO95
+         K4pfwh4RoUL60H8qNDvbEG+LIbiwhhNCY6AB8N/i63ofgqTMFXz5RCgUwqZQt813ldX8
+         xl34jWj15whFLfTX5t4DCQ8y4p545xs63NbwFJlDgG2CyVMvsV+6DPaoKl7czrrymczA
+         TkUHOP80lNP15DfhPKvonioyjWR3HaLSrut5ke4tpWu3vINXuVvw27Jal3DQZ+tk+Gtt
+         hX0IEZtROh08TtZN4+4mGfm11giUEgwoWxwtDIbMMyyM2KZbz9hRdDivvc2guFYXj9Pj
+         N72Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=69slPYPdxoIP5E1pXozkkOSJJNlQJg/ZybGsQcAlQjU=;
+        b=aYAH9Zun5q9z+21fhQ1ywj1bxoO3NV/x05xSqZoZ9oSczVNFMWTRQT0HZlTza2CuzN
+         hXYy2o8yVSXpEaOPuHcRJdHjxa4IENyqfK5HM2yGwPYnEPXEGca0HsOw1FrL2tZKkx5I
+         WSAooQeiLBUwn/VRCra7PtENgFEWAhXD6NU9knQwDwGjxWuMkfo/6ioT/c8MMESdlazU
+         a1a1Kwxu+Vpfp4wri8kxGF7AKNMHv1TeS4UKrtilZZdJl1XuE4PzvcdrXv7dR2AoNiIP
+         uFcHvqkygdheAQjXOhGgdgq9xeoDVPW0MjXkKF3zLFXTH8b0s1c89OMohxCMIXohdCSn
+         5PzA==
+X-Gm-Message-State: AOAM530iVdlYrXWVd49nz2Gz7NthZEtK50dY2zdJ+ilBoBIZVjAeffHl
+        ZjDzftkDbSTGPRkETmUGFrgyoCW9WkasV0hmBv54Pw==
+X-Google-Smtp-Source: ABdhPJzNqekMMxyk/B5nOTuy7BzBzfXpYdqoOl1hZ7GQRZVBtPFvvGSBBp2ksLmDaN2z5nG15SHOxsvOfYayG4y1uoE=
+X-Received: by 2002:a05:6602:13d3:: with SMTP id o19mr4969665iov.18.1635459988715;
+ Thu, 28 Oct 2021 15:26:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211012021321.291635-1-irogers@google.com> <CAFP8O3L_Oi916yOAuPB7MFpa3QoDQtreRbV7oNt2Yh6h1Coq9A@mail.gmail.com>
+In-Reply-To: <CAFP8O3L_Oi916yOAuPB7MFpa3QoDQtreRbV7oNt2Yh6h1Coq9A@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 28 Oct 2021 15:26:16 -0700
+Message-ID: <CAP-5=fU_Zf4w2K-uEM40Wr0o-v6O+3vQTfEjAJu842HdyotZHw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] tools: Bump minimum LLVM C++ std to GNU++14
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Leo Yan <leo.yan@linaro.org>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isabella Basso <isabellabdoamaral@usp.br>
+Hi Arnaldo,
 
-Use KUnit framework to make tests more easily integrable with CIs. Even
-though these tests are not yet properly written as unit tests this
-change should help in debugging.
+Is there anything you'd like me to do extra for these two patches?
 
-Also remove kernel messages (i.e. through pr_info) as KUnit handles all
-debugging output and let it handle module init and exit details.
+Thanks,
+Ian
 
-Reviewed-by: David Gow <davidgow@google.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Tested-by: David Gow <davidgow@google.com>
-Co-developed-by: Augusto Durães Camargo <augusto.duraes33@gmail.com>
-Signed-off-by: Augusto Durães Camargo <augusto.duraes33@gmail.com>
-Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-Signed-off-by: Isabella Basso <isabbasso@riseup.net>
----
-Changes since v2:
-- As suggested by David Gow:
-  1. Remove unnecessary __init bits from KUnit functions.
-  2. Change KUnit's "EXPECT_FALSE"s for "EXPECT_EQ"s.
-Changes since v1:
-- As suggested by David Gow:
-  1. Keep module support.
-  2. Reword commit message.
-- As reported by the kernel test bot:
-  1. Fix compilation for m68k and parisc architectures.
-
- lib/Kconfig.debug |  28 ++++---
- lib/Makefile      |   2 +-
- lib/test_hash.c   | 194 +++++++++++++++-------------------------------
- 3 files changed, 81 insertions(+), 143 deletions(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index eb6c4daf5fcb..04eec87c2964 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2204,15 +2204,6 @@ config TEST_RHASHTABLE
-
- 	  If unsure, say N.
-
--config TEST_HASH
--	tristate "Perform selftest on hash functions"
--	help
--	  Enable this option to test the kernel's integer (<linux/hash.h>), and
--	  string (<linux/stringhash.h>) hash functions on boot (or module load).
--
--	  This is intended to help people writing architecture-specific
--	  optimized versions.  If unsure, say N.
--
- config TEST_SIPHASH
- 	tristate "Perform selftest on siphash functions"
- 	help
-@@ -2361,6 +2352,25 @@ config BITFIELD_KUNIT
-
- 	  If unsure, say N.
-
-+config HASH_KUNIT_TEST
-+	tristate "KUnit Test for integer hash functions" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Enable this option to test the kernel's string (<linux/stringhash.h>), and
-+	  integer (<linux/hash.h>) hash functions on boot.
-+
-+	  KUnit tests run during boot and output the results to the debug log
-+	  in TAP format (https://testanything.org/). Only useful for kernel devs
-+	  running the KUnit test harness, and not intended for inclusion into a
-+	  production build.
-+
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  This is intended to help people writing architecture-specific
-+	  optimized versions. If unsure, say N.
-+
- config RESOURCE_KUNIT_TEST
- 	tristate "KUnit test for resource API"
- 	depends on KUNIT
-diff --git a/lib/Makefile b/lib/Makefile
-index 02eff11956d4..c8e5c00c07f1 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -62,7 +62,7 @@ obj-$(CONFIG_TEST_BITOPS) += test_bitops.o
- CFLAGS_test_bitops.o += -Werror
- obj-$(CONFIG_TEST_SYSCTL) += test_sysctl.o
- obj-$(CONFIG_TEST_SIPHASH) += test_siphash.o
--obj-$(CONFIG_TEST_HASH) += test_hash.o
-+obj-$(CONFIG_HASH_KUNIT_TEST) += test_hash.o
- obj-$(CONFIG_TEST_IDA) += test_ida.o
- obj-$(CONFIG_KASAN_KUNIT_TEST) += test_kasan.o
- CFLAGS_test_kasan.o += -fno-builtin
-diff --git a/lib/test_hash.c b/lib/test_hash.c
-index 032849a48da7..bb25fda34794 100644
---- a/lib/test_hash.c
-+++ b/lib/test_hash.c
-@@ -14,17 +14,15 @@
-  * and hash_64().
-  */
-
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt "\n"
--
- #include <linux/compiler.h>
- #include <linux/types.h>
- #include <linux/module.h>
- #include <linux/hash.h>
- #include <linux/stringhash.h>
--#include <linux/printk.h>
-+#include <kunit/test.h>
-
- /* 32-bit XORSHIFT generator.  Seed must not be zero. */
--static u32 __init __attribute_const__
-+static u32 __attribute_const__
- xorshift(u32 seed)
- {
- 	seed ^= seed << 13;
-@@ -34,7 +32,7 @@ xorshift(u32 seed)
- }
-
- /* Given a non-zero x, returns a non-zero byte. */
--static u8 __init __attribute_const__
-+static u8 __attribute_const__
- mod255(u32 x)
- {
- 	x = (x & 0xffff) + (x >> 16);	/* 1 <= x <= 0x1fffe */
-@@ -45,8 +43,7 @@ mod255(u32 x)
- }
-
- /* Fill the buffer with non-zero bytes. */
--static void __init
--fill_buf(char *buf, size_t len, u32 seed)
-+static void fill_buf(char *buf, size_t len, u32 seed)
- {
- 	size_t i;
-
-@@ -71,40 +68,32 @@ struct test_hash_params {
- };
-
- #ifdef HAVE_ARCH__HASH_32
--static bool __init
--test_int__hash_32(struct test_hash_params *params)
-+static void
-+test_int__hash_32(struct kunit *test, struct test_hash_params *params)
- {
- 	params->hash_or[1][0] |= params->h2 = __hash_32_generic(params->h0);
- #if HAVE_ARCH__HASH_32 == 1
--	if (params->h1 != params->h2) {
--		pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
--		       params->h0, params->h1, params->h2);
--		return false;
--	}
-+	KUNIT_EXPECT_EQ_MSG(test, params->h1, params->h2,
-+			    "__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
-+			    params->h0, params->h1, params->h2);
- #endif
--	return true;
- }
- #endif
-
- #ifdef HAVE_ARCH_HASH_64
--static bool __init
--test_int_hash_64(struct test_hash_params *params, u32 const *m, int *k)
-+static void
-+test_int_hash_64(struct kunit *test, struct test_hash_params *params, u32 const *m, int *k)
- {
- 	params->h2 = hash_64_generic(*params->h64, *k);
- #if HAVE_ARCH_HASH_64 == 1
--	if (params->h1 != params->h2) {
--		pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() = %#x",
--		       *params->h64, *k, params->h1, params->h2);
--		return false;
--	}
-+	KUNIT_EXPECT_EQ_MSG(test, params->h1, params->h2,
-+			    "hash_64(%#llx, %d) = %#x != hash_64_generic() = %#x",
-+			    *params->h64, *k, params->h1, params->h2);
- #else
--	if (params->h2 > *m) {
--		pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
--		       *params->h64, *k, params->h1, *m);
--		return false;
--	}
-+	KUNIT_EXPECT_LE_MSG(test, params->h1, params->h2,
-+			    "hash_64_generic(%#llx, %d) = %#x > %#x",
-+			    *params->h64, *k, params->h1, *m);
- #endif
--	return true;
- }
- #endif
-
-@@ -117,8 +106,8 @@ test_int_hash_64(struct test_hash_params *params, u32 const *m, int *k)
-  * inline, the code being tested is actually in the module, and you can
-  * recompile and re-test the module without rebooting.
-  */
--static bool __init
--test_int_hash(unsigned long long h64, u32 hash_or[2][33])
-+static void
-+test_int_hash(struct kunit *test, unsigned long long h64, u32 hash_or[2][33])
- {
- 	int k;
- 	struct test_hash_params params = { &h64, (u32)h64, 0, 0, hash_or };
-@@ -126,8 +115,7 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
- 	/* Test __hash32 */
- 	hash_or[0][0] |= params.h1 = __hash_32(params.h0);
- #ifdef HAVE_ARCH__HASH_32
--	if (!test_int__hash_32(&params))
--		return false;
-+	test_int__hash_32(test, &params);
- #endif
-
- 	/* Test k = 1..32 bits */
-@@ -136,29 +124,24 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
-
- 		/* Test hash_32 */
- 		hash_or[0][k] |= params.h1 = hash_32(params.h0, k);
--		if (params.h1 > m) {
--			pr_err("hash_32(%#x, %d) = %#x > %#x", params.h0, k, params.h1, m);
--			return false;
--		}
-+		KUNIT_EXPECT_LE_MSG(test, params.h1, m,
-+				    "hash_32(%#x, %d) = %#x > %#x",
-+				    params.h0, k, params.h1, m);
-
- 		/* Test hash_64 */
- 		hash_or[1][k] |= params.h1 = hash_64(h64, k);
--		if (params.h1 > m) {
--			pr_err("hash_64(%#llx, %d) = %#x > %#x", h64, k, params.h1, m);
--			return false;
--		}
-+		KUNIT_EXPECT_LE_MSG(test, params.h1, m,
-+				    "hash_64(%#llx, %d) = %#x > %#x",
-+				    h64, k, params.h1, m);
- #ifdef HAVE_ARCH_HASH_64
--		if (!test_int_hash_64(&params, &m, &k))
--			return false;
-+		test_int_hash_64(test, &params, &m, &k);
- #endif
- 	}
--
--	return true;
- }
-
- #define SIZE 256	/* Run time is cubic in SIZE */
-
--static int __init test_string_or(void)
-+static void test_string_or(struct kunit *test)
- {
- 	char buf[SIZE+1];
- 	u32 string_or = 0;
-@@ -178,20 +161,15 @@ static int __init test_string_or(void)
- 	} /* j */
-
- 	/* The OR of all the hash values should cover all the bits */
--	if (~string_or) {
--		pr_err("OR of all string hash results = %#x != %#x",
--		       string_or, -1u);
--		return -EINVAL;
--	}
--
--	return 0;
-+	KUNIT_EXPECT_EQ_MSG(test, string_or, -1u,
-+			    "OR of all string hash results = %#x != %#x",
-+			    string_or, -1u);
- }
-
--static int __init test_hash_or(void)
-+static void test_hash_or(struct kunit *test)
- {
- 	char buf[SIZE+1];
- 	u32 hash_or[2][33] = { { 0, } };
--	unsigned tests = 0;
- 	unsigned long long h64 = 0;
- 	int i, j;
-
-@@ -206,39 +184,27 @@ static int __init test_hash_or(void)
- 			u32 h0 = full_name_hash(buf+i, buf+i, j-i);
-
- 			/* Check that hashlen_string gets the length right */
--			if (hashlen_len(hashlen) != j-i) {
--				pr_err("hashlen_string(%d..%d) returned length"
--					" %u, expected %d",
--					i, j, hashlen_len(hashlen), j-i);
--				return -EINVAL;
--			}
-+			KUNIT_EXPECT_EQ_MSG(test, hashlen_len(hashlen), j-i,
-+					    "hashlen_string(%d..%d) returned length %u, expected %d",
-+					    i, j, hashlen_len(hashlen), j-i);
- 			/* Check that the hashes match */
--			if (hashlen_hash(hashlen) != h0) {
--				pr_err("hashlen_string(%d..%d) = %08x != "
--					"full_name_hash() = %08x",
--					i, j, hashlen_hash(hashlen), h0);
--				return -EINVAL;
--			}
-+			KUNIT_EXPECT_EQ_MSG(test, hashlen_hash(hashlen), h0,
-+					    "hashlen_string(%d..%d) = %08x != full_name_hash() = %08x",
-+					    i, j, hashlen_hash(hashlen), h0);
-
- 			h64 = h64 << 32 | h0;	/* For use with hash_64 */
--			if (!test_int_hash(h64, hash_or))
--				return -EINVAL;
--			tests++;
-+			test_int_hash(test, h64, hash_or);
- 		} /* i */
- 	} /* j */
-
--	if (~hash_or[0][0]) {
--		pr_err("OR of all __hash_32 results = %#x != %#x",
--			hash_or[0][0], -1u);
--		return -EINVAL;
--	}
-+	KUNIT_EXPECT_EQ_MSG(test, hash_or[0][0], -1u,
-+			    "OR of all __hash_32 results = %#x != %#x",
-+			    hash_or[0][0], -1u);
- #ifdef HAVE_ARCH__HASH_32
- #if HAVE_ARCH__HASH_32 != 1	/* Test is pointless if results match */
--	if (~hash_or[1][0]) {
--		pr_err("OR of all __hash_32_generic results = %#x != %#x",
--			hash_or[1][0], -1u);
--		return -EINVAL;
--	}
-+	KUNIT_EXPECT_EQ_MSG(test, hash_or[1][0], -1u,
-+			    "OR of all __hash_32_generic results = %#x != %#x",
-+			    hash_or[1][0], -1u);
- #endif
- #endif
-
-@@ -246,65 +212,27 @@ static int __init test_hash_or(void)
- 	for (i = 1; i <= 32; i++) {
- 		u32 const m = ((u32)2 << (i-1)) - 1;	/* Low i bits set */
-
--		if (hash_or[0][i] != m) {
--			pr_err("OR of all hash_32(%d) results = %#x "
--				"(%#x expected)", i, hash_or[0][i], m);
--			return -EINVAL;
--		}
--		if (hash_or[1][i] != m) {
--			pr_err("OR of all hash_64(%d) results = %#x "
--				"(%#x expected)", i, hash_or[1][i], m);
--			return -EINVAL;
--		}
-+		KUNIT_EXPECT_EQ_MSG(test, hash_or[0][i], m,
-+				    "OR of all hash_32(%d) results = %#x (%#x expected)",
-+				    i, hash_or[0][i], m);
-+		KUNIT_EXPECT_EQ_MSG(test, hash_or[1][i], m,
-+				    "OR of all hash_64(%d) results = %#x (%#x expected)",
-+				    i, hash_or[1][i], m);
- 	}
--
--	pr_notice("%u tests passed.", tests);
--
--	return 0;
- }
-
--static void __init notice_skipped_tests(void)
--{
--	/* Issue notices about skipped tests. */
--#ifdef HAVE_ARCH__HASH_32
--#if HAVE_ARCH__HASH_32 != 1
--	pr_info("__hash_32() is arch-specific; not compared to generic.");
--#endif
--#else
--	pr_info("__hash_32() has no arch implementation to test.");
--#endif
--#ifdef HAVE_ARCH_HASH_64
--#if HAVE_ARCH_HASH_64 != 1
--	pr_info("hash_64() is arch-specific; not compared to generic.");
--#endif
--#else
--	pr_info("hash_64() has no arch implementation to test.");
--#endif
--}
--
--static int __init
--test_hash_init(void)
--{
--	int ret;
--
--	ret = test_string_or();
--	if (ret < 0)
--		return ret;
--
--	ret = test_hash_or();
--	if (ret < 0)
--		return ret;
--
--	notice_skipped_tests();
-+static struct kunit_case hash_test_cases[] __refdata = {
-+	KUNIT_CASE(test_string_or),
-+	KUNIT_CASE(test_hash_or),
-+	{}
-+};
-
--	return ret;
--}
-+static struct kunit_suite hash_test_suite = {
-+	.name = "hash",
-+	.test_cases = hash_test_cases,
-+};
-
--static void __exit test_hash_exit(void)
--{
--}
-
--module_init(test_hash_init);	/* Does everything */
--module_exit(test_hash_exit);	/* Does nothing */
-+kunit_test_suite(hash_test_suite);
-
- MODULE_LICENSE("GPL");
---
-2.33.1
-
+On Mon, Oct 11, 2021 at 8:09 PM F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@googl=
+e.com> wrote:
+>
+> On Mon, Oct 11, 2021 at 7:13 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > LLVM 9 (current release is LLVM 13) moved the minimum C++ version to
+> > GNU++14. Bump the version numbers in the feature test and perf build.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+>
+>
+> Reviewed-by: Fangrui Song <maskray@google.com>
