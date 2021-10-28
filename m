@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B51643F17B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2020043F183
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhJ1VUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhJ1VUb (ORCPT
+        id S230498AbhJ1VXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:23:14 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:56959 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230404AbhJ1VXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:20:31 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91841C061570;
-        Thu, 28 Oct 2021 14:18:03 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id i5so5345792pla.5;
-        Thu, 28 Oct 2021 14:18:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ognCBoDmFtJ0jDf9zfDBkQa2RYeMmm2YH6+AY/lKCjM=;
-        b=lOCqcChIKAD8dJfBjdbwL8TXk5QjcZcv9l3rc0j5+eya4fdOCh4wIkKuJV9HS31xGF
-         rrCjQnVUpqpqYv6Vtx8LBVhv9AoBXs9Pd9DRLHWbqKs08y7jgQvI3u2wA3xTLNwM70SS
-         jAakJYIRxEaSSAid8d7bOebSAGQgxYbpLjZ4VJ22eKKebLe5RJUwjMadHkCl9pYZ82ko
-         9eEA/U7VHmTp2caVUysV98zxsjJj1QLW/526wruP8a1kLXjm77HYX+wDzwKuYeItK20S
-         H7xJJUvN//0mvaDI9jB+94MeuFqT5qFdv7Fkc9lCV9rOjQcFu1xL6wLAshp9LEt2CD6b
-         Qg5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ognCBoDmFtJ0jDf9zfDBkQa2RYeMmm2YH6+AY/lKCjM=;
-        b=AV8AyXpCLhxv5OGvs0vWQZw++BS6dtYe9eV0Elz2xr8CIrDZ/sEi3qjZGPmdYqV6bV
-         /CUj2br1RpGO6FfAfOGGq5cxEUWmuUMG91qF5gzcxLZH//pkno1Z0zWrofph7H3Mj8zk
-         WhFoYV8w+2UqXDR8qvQ7opv2fvwxziS1Y/x1L4nZtydm1MKKpCnXyEWy7stjHeb94gIs
-         Fgt0y6d/fV/iCKmutgpcRHp218lzwF/P4DTy5FSrmX+au4BMdst23Xtioj4wWsBVXMZ4
-         PUr9vIQBRe0a4b5yhZNS0xnaGR0GGJGxoL0VWYZjMo2Rr7Z/rS7fuHx0EqIPribLX8gb
-         v87A==
-X-Gm-Message-State: AOAM532cuwo0P7itHEzTiR8xdBAcG2pClKpxzoFJHjR7/68LlrBGsFO7
-        a4bZ2kKJvzasEaQZdDrYbLE=
-X-Google-Smtp-Source: ABdhPJzrTgJfhrpqGWj1qM5QwUFP0K5QAEpTzWvTeWlrqi8R3sgEBjKhWA41WO/fRhzNB3xO7wtvoQ==
-X-Received: by 2002:a17:902:904b:b0:13f:b0c9:3c5d with SMTP id w11-20020a170902904b00b0013fb0c93c5dmr6293241plz.26.1635455883112;
-        Thu, 28 Oct 2021 14:18:03 -0700 (PDT)
-Received: from jaschultz-Thelio-Major.corp.microsoft.com ([2001:4898:80e8:0:1173:767a:1b1e:f6a4])
-        by smtp.gmail.com with ESMTPSA id t14sm3506610pga.62.2021.10.28.14.18.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 14:18:02 -0700 (PDT)
-From:   Jarrett Schultz <jaschultzms@gmail.com>
-X-Google-Original-From: Jarrett Schultz <jaschultzMS@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Jarrett Schultz <jaschultzMS@gmail.com>,
-        Jarrett Schultz <jaschultz@microsoft.com>
-Subject: [PATCH 3/3] arm64: dts: qcom: surface-duo: Add surface xbl
-Date:   Thu, 28 Oct 2021 14:17:53 -0700
-Message-Id: <20211028211753.573480-4-jaschultzMS@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211028211753.573480-1-jaschultzMS@gmail.com>
-References: <20211028211753.573480-1-jaschultzMS@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 28 Oct 2021 17:23:07 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211028212038epoutp049d7a817e3ffbb46e3b8aaf918e87fd88~yTpoxpyEA2898428984epoutp04k
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 21:20:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211028212038epoutp049d7a817e3ffbb46e3b8aaf918e87fd88~yTpoxpyEA2898428984epoutp04k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1635456038;
+        bh=/EjSMhYGEm/nCsr4I+KeyH40YJhIhGSu1lbsTf35ye8=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=MxT4e2IXzncwnAy8TW3eieJKu/39Rb3bpVpmVGOeycRz3ZDVs0CSSRi0bxn6oGMaJ
+         AZIYw0Pdw/wM0SPnySqiuGw76fNj51YSzN8C/dAV3GW3M895s4wiZMzXeGOlytmYNV
+         tCU+vzTcryysNWs1L91c4RrRic5rnaQHUgpmzMp0=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20211028212038epcas2p209d36abeb5a729b6cf660e20b0ce7c48~yTpoPtwaV0419104191epcas2p2u;
+        Thu, 28 Oct 2021 21:20:38 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.102]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HgJPb1LdMz4x9Pp; Thu, 28 Oct
+        2021 21:20:35 +0000 (GMT)
+X-AuditID: b6c32a48-d73ff70000002f6d-54-617b14228eb7
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4F.BF.12141.2241B716; Fri, 29 Oct 2021 06:20:34 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        Keoseong Park <keosung.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1d7c1faf6b6fa71599b5157ae95fc48ce479b722.camel@linux.ibm.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20211028212034epcms2p82a6b0527e18ab6e3208e37a6188bf203@epcms2p8>
+Date:   Fri, 29 Oct 2021 06:20:34 +0900
+X-CMS-MailID: 20211028212034epcms2p82a6b0527e18ab6e3208e37a6188bf203
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFJsWRmVeSWpSXmKPExsWy7bCmua6SSHWiwYTnlhYP5m1js3j58yqb
+        xeq7/WwW0z78ZLZ4eUjTYtWDcIuVq48yWcw528BksejGNiaL4yffMVrsvaVtcXnXHDaL7us7
+        2CyWH//H5MDncfmKt8fOWXfZPS6fLfWYsOgAo8fumw1sHh+f3mLx6NuyitHj8yY5j/YD3UwB
+        nFHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAhysp
+        lCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCswL9IoTc4tL89L18lJLrAwNDIxMgQoT
+        sjN+L2tgKvjDXfHp0Xf2BsbNnF2MnBwSAiYSt5cdYOti5OIQEtjBKDGl4RZLFyMHB6+AoMTf
+        HcIgNcICbhLLV01iBLGFBJQk1l+cxQ4R15O49XANWJxNQEdi+on77CBzRASeM0ncWrudFcRh
+        FvjLKPHlywoWiG28EjPan0LZ0hLbl28F6+YU8JY4ua4dKq4h8WNZLzOELSpxc/Vbdhj7/bH5
+        jBC2iETrvbNQNYISD37uhopLShzb/YEJwq6X2HrnFyPIERICPYwSh3feYoVI6Etc69gItoxX
+        wFdi8sGDYM0sAqoS23d/ZoOocZFY23MSrIZZQF5i+9s5zKBQYRbQlFi/Sx/ElBBQljhyC+6t
+        ho2/2dHZzAJ8Eh2H/8LFd8x7AnWamsS6n+uZJjAqz0IE9Swku2Yh7FrAyLyKUSy1oDg3PbXY
+        qMAEHrvJ+bmbGMGJWMtjB+Pstx/0DjEycTAeYpTgYFYS4b08rzxRiDclsbIqtSg/vqg0J7X4
+        EKMp0JcTmaVEk/OBuSCvJN7QxNLAxMzM0NzI1MBcSZzXUjQ7UUggPbEkNTs1tSC1CKaPiYNT
+        qoEp8kG545LriyU+WvKeMOpa3nrq5HaleyFbF2x576vTLnXK9fLXxYe9uebzbFuiWdp+vcNA
+        6tevyzrbPK9Hfp6ycfNppw+/19gxbbp7lFVP9Krsly8/pnHa/2A6/YeJWTZhRrXd1S2CT/Ty
+        TWxWr9zl2Nl5b7vCvltCun+iWnztPx1k5tW7/sHsjpiIVeLlNdvO8Pb6OT6u+M7tp7l2odyL
+        Dzfb9qhcztqyk/+UpJE244NU7v2WLq79jmLqK/eZGqefKYrka5U/J/lTeoYy4/ry+WodDuXL
+        p9aJnDZ7tIC1SaHZoDreKynfZdH36ZsnBfnkrE7flXaaM+PNs5IXsyfsitNvu73oL5eh5GL1
+        l2GblFiKMxINtZiLihMBEeq3pE0EAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff
+References: <1d7c1faf6b6fa71599b5157ae95fc48ce479b722.camel@linux.ibm.com>
+        <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
+        <0f9229c3c4c7859524411a47db96a3b53ac89c90.camel@linux.ibm.com>
+        <0d66b6d0-26c6-573f-e2a0-022e22c47b52@acm.org>
+        <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p8>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce device tree source for the surface xbl driver.
+Hi James,
 
-Signed-off-by: Jarrett Schultz <jaschultz@microsoft.com>
----
- arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
+> On Thu, 2021-10-28 at 08:59 -0700, Bart Van Assche wrote:
+> > On 10/28/21 7:28 AM, James Bottomley wrote:
+> > > If the block people are happy with this, then I'm OK with it, but
+> > > it
+> > > doesn't look like you've solved the fanout deadlock problem because
+> > > this new mechanism is still going to allocate a new tag.
+> > 
+> > (+Jens, Christoph and linux-block)
+> > 
+> > Hi James,
+> > 
+> > My understanding is that the UFS HPB code makes ufshcd_queuecommand()
+> > return SCSI_MLQUEUE_HOST_BUSY if the pool with pre-allocated requests
+> > is exhausted. This will make the SCSI core reissue a SCSI command
+> > until completion of another command has freed up one of the pre-
+> > allocated requests. This is not the most efficient approach but
+> > should not trigger a deadlock.
+>  
+> I think the deadlock is triggered if the system is down to its last
+> reserved request on the memory clearing device and the next entry in
+> the queue for this device is one which does a fanout so we can't
+> service it with the single reserved request we have left for the
+> purposes of making forward progress.  Sending it back doesn't help,
+> assuming this is the only memory clearing path, because retrying it
+> won't help ... we have to succeed with a request on this path to move
+> forward with clearing memory.
+The above approach can retry several times (before the HPB timeout) but, it
+gives up to allocate pre-request and it sends as just READ. So deadlock can
+be avoided.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts b/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts
-index 736da9af44e0..9fd9f733a791 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-microsoft-surface-duo.dts
-@@ -57,6 +57,12 @@ vol_up {
- 			linux,code = <KEY_VOLUMEUP>;
- 		};
- 	};
-+
-+	xbl@146bfa94 {
-+		compatible = "microsoft,sm8150-surface-duo-xbl";
-+		reg = <0x00 0x146bfa94 0x00 0x100>;
-+		status = "okay";
-+	};
- };
- 
- &apps_rsc {
--- 
-2.25.1
-
+Thanks,
+Daejun
