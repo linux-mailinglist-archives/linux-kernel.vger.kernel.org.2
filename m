@@ -2,79 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3849443F1C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBE743F1CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 23:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhJ1Ve5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 17:34:57 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:45667 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231717AbhJ1Vef (ORCPT
+        id S231506AbhJ1VfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 17:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231468AbhJ1VfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 17:34:35 -0400
-Received: by mail-oi1-f169.google.com with SMTP id z126so10230613oiz.12;
-        Thu, 28 Oct 2021 14:32:07 -0700 (PDT)
+        Thu, 28 Oct 2021 17:35:09 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229FEC061227;
+        Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id l2so13056363lji.6;
+        Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
+        b=USVIOuLFNftY9TSlAv8GQB7acWI1sWWXinRBTyt58drm2RaLh5La11nG4ixMTMewfR
+         mX32BgQ2N30EhppM8q0HGzyhqJFMUCJMnblCfs4t5KonQ44KE0wlYv2W8rFYqs4V2koj
+         XX371v1ONZUx01vnBeB6kBqd5XtkGxjVTj1e6iP0L3n7qnRFNsZrpRBj/O9TAqf3J13f
+         DVFT1FMABW5ltJOUpFKPkQHX+APbXjkM1X+NMw4LCmok7h64fUY8hoIatZpEbYmauo9R
+         3tzIe6iUnZRzMnNPnMBZ+KjZo2BGgmZ8KUvvaXZMV9Llm3C259zfQ4YRn+8CQPkkCOFN
+         RJzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pV+lYlLAx38YX42772eORjOf2v8z4XTyW8SH1ArbmLs=;
-        b=HJZnUIDGLAky9D06HCWNr5EycKhPLTCu8cuaQBJTcoqe8TSJZSLM5Q8oFXq4s4/o9t
-         w0MIpui2O/swlwMxBHo6MtIk2b15rWcu5wobHfFpSidx8saCpqxba3rgTbyVewRlssOs
-         HusNh1nIs4SL1WB+3D91iHTDvzj8Qp+WFrXYsD2dAbSx7ax0+/fr9fWTPKKuo/nLAUAs
-         gtgl1geiLE87FmclhdM6Ou2G6BPC/iJxTvFTgL07VGfrzjn0ovPg3qz9KwKby0Sabgao
-         YMPKbvBG7tF7hmem+lBA2jujMjqirjq03VuhJtKDUY5Aabg2lAZMGssnpla6pg1EiKH4
-         n2DA==
-X-Gm-Message-State: AOAM5306jffaKC/Klllwdc8EV71ir42OQ80K5Cvjnp4AUYKuZ/xA6FFI
-        c7Q0Xu6F65latMoBpgtCvg==
-X-Google-Smtp-Source: ABdhPJyuxPMrmxNkcdcCEerZo6yZspo2c/4b31BFtQfeY5X28VqH21jX8eIJFihX+OyHXAGdgbwp9g==
-X-Received: by 2002:a54:4e8f:: with SMTP id c15mr4927670oiy.113.1635456727512;
-        Thu, 28 Oct 2021 14:32:07 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id h17sm1261392oog.17.2021.10.28.14.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 14:32:06 -0700 (PDT)
-Received: (nullmailer pid 622969 invoked by uid 1000);
-        Thu, 28 Oct 2021 21:32:05 -0000
-Date:   Thu, 28 Oct 2021 16:32:05 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        linux-kernel@vger.kernel.org,
-        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Julien Su <juliensu@mxic.com.tw>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jaime Liao <jaimeliao@mxic.com.tw>
-Subject: Re: [PATCH 06/18] dt-bindings: spi: mxic: The interrupt property is
- not mandatory
-Message-ID: <YXsW1Q1dh2+e2ONB@robh.at.kernel.org>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-7-miquel.raynal@bootlin.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
+        b=x1/SikoFEcrTbmPz93P/kN5wRqho0t39OVDAJv+OHPpejl3BDkhaQa+Q9zEimY+lTG
+         pkmzIEiDMujGUPeupqDWi3XMPXC96Px1Jxizh+kdbxxNsUO7bOtSnkm7FzjaSeDbR7tF
+         al46WibVXIEkI5bzTADQl/TbhehmBadMq/7qTE0YlWDMUetLZYpVygysz6pjV4tE1iIs
+         H2Vra42snnaOazZwAVdNz84+0KUKOu/7i+LOsK2rmMd1q04WGPxoXq66L7XX3/eWxPdu
+         OXFkwYpBBn8m8whifSIt3NH8bLkW+cFeJQJIABshOqUEDc3smi2IznpVKm0USjFTNCzs
+         RRww==
+X-Gm-Message-State: AOAM532nyuVTlKEcTJTTLcJNf+3yw3C5RkKuj29rxy1FGshrRdwapLvb
+        Zf8n43psf8yToj5DIHTaLofjTTmfMmI=
+X-Google-Smtp-Source: ABdhPJwcWGds1J/UVngHunSwfN7ztb9W9OVxlAX827dktWLGe1JrS01AY9nWnDg96vqg3wWMmL+l6Q==
+X-Received: by 2002:a2e:9b0e:: with SMTP id u14mr7220400lji.247.1635456760396;
+        Thu, 28 Oct 2021 14:32:40 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
+        by smtp.googlemail.com with ESMTPSA id bi14sm474384lfb.290.2021.10.28.14.32.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 14:32:39 -0700 (PDT)
+Subject: Re: [PATCH v2 03/45] notifier: Add
+ atomic/blocking_notifier_has_unique_priority()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-4-digetx@gmail.com>
+ <YXqCz/utp2DFJJ45@smile.fi.intel.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
+Date:   Fri, 29 Oct 2021 00:32:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020142809.349347-7-miquel.raynal@bootlin.com>
+In-Reply-To: <YXqCz/utp2DFJJ45@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Oct 2021 16:27:57 +0200, Miquel Raynal wrote:
-> The interrupt property is not mandatory at all, this property should not
-> be part of the required properties list, so move it into the optional
-> properties list.
+28.10.2021 14:00, Andy Shevchenko пишет:
+> On Thu, Oct 28, 2021 at 12:16:33AM +0300, Dmitry Osipenko wrote:
+>> Add atomic/blocking_notifier_has_unique_priority() helpers which return
+>> true if given handler has unique priority.
 > 
-> Fixes: 326e5c8d4a87 ("dt-binding: spi: Document Macronix controller bindings")
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/spi/spi-mxic.txt | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> ...
 > 
+>> +/**
+>> + *	atomic_notifier_has_unique_priority - Checks whether notifier's priority is unique
+>> + *	@nh: Pointer to head of the atomic notifier chain
+>> + *	@n: Entry in notifier chain to check
+>> + *
+>> + *	Checks whether there is another notifier in the chain with the same priority.
+>> + *	Must be called in process context.
+>> + *
+>> + *	Returns true if priority is unique, false otherwise.
+> 
+> Why this indentation?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This is the same doc-comment style used by this file in general. I
+haven't tried to invent anything new.
+
+
+> ...
+> 
+>> +	/*
+>> +	 * This code gets used during boot-up, when task switching is
+>> +	 * not yet working and interrupts must remain disabled.  At
+> 
+> One space is enough.
+
+This comment is replicated multiple times over this source file. You can
+find it before each down_write(). I borrowed the text as-is, for
+consistency.
