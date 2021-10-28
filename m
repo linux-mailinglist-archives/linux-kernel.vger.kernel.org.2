@@ -2,532 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B5343E3E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685C843E3EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhJ1OjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhJ1Oi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:38:58 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7E3C061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:36:31 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id b12so6164452wrh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NuKSKhq+LJNFGWFZ54Znk00tU2bQ3a59y26xZbZTkY0=;
-        b=W2vlhm9tTlOftcdPxk+krlNZe5bJyaEc9INyl9aZOmX0JqlW0LB83IqsqkRAdLZpEt
-         9qHoUCPaIvYTle2ZYNS9mImwSPWMdq6K0CrQnwzAuyXAByCIZHc1bZUhsyI6u9ncqv/S
-         YUUz27FPxpnK715X/s53yStC1zZuyM0gIgIIkzqz61xc5FmGj+FdNi76AIfhlWFKi9Ab
-         bxjRWFe/h2+XO7uKVFLAWmf2PO/eP9N1IXadKdFwWjPy9MneuTQAnWMw+7IRnK3g/RQ7
-         kh/ed6q7qHu52er9YUezkfj9vgSqOlSzdSur4hZH+foK2esnFF5hZALIc4onrbEBKKqt
-         HyYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NuKSKhq+LJNFGWFZ54Znk00tU2bQ3a59y26xZbZTkY0=;
-        b=cDOYRWHdql0Tst2okABzj6yG1TzGI7DsBRN5AVZVLFFrkgey/ILsZqUxTtNUJn1a7B
-         6AGje5DRCjDliszzq9M394DwHOIUFvPzwdJF6JCxc9jxXkXvpo9zfIEcj0Zn9eBp970l
-         45fFFPkGoTbwYa6xnw4/rha/Zq2kaMElEW3lN3uSFIkBvf2XncDne6qgHuIP53Buy0oL
-         tKAwdmBd0JodIQIRFG5Oo4xyabrQp5cQ7Lf1S6KQmqZT20/mQFTQvnQFd30TpqTOW51u
-         /XngmLTNjT7Tgd2kYkcmsU0bhQgxuf2EwhW9Y1z0Q7RvHs8wBOnZRy5rncpYfkyT7eg4
-         Y07w==
-X-Gm-Message-State: AOAM533QenGC+O2AhJolFJ43Rv476Z3x+zAoJxwhBVToERQWJvO0KmyD
-        Wd/WITVSFhRfBfp4CXB+4XohF3U33hr2lA==
-X-Google-Smtp-Source: ABdhPJzFJfOBFsIqpLg+wXJlDeWk4mdZzne8R5XqGAVKRMVYViBs3aYpt3BfeizpR7Kkv6BJLAoU3A==
-X-Received: by 2002:a5d:4b8e:: with SMTP id b14mr6045996wrt.259.1635431789876;
-        Thu, 28 Oct 2021 07:36:29 -0700 (PDT)
-Received: from localhost.localdomain ([185.199.97.5])
-        by smtp.gmail.com with ESMTPSA id u2sm3031883wrr.35.2021.10.28.07.36.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 07:36:25 -0700 (PDT)
-From:   Oleksandr Andrushchenko <andr2000@gmail.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     boris.ostrovsky@oracle.com, jgross@suse.com, julien@xen.org,
-        sstabellini@kernel.org, jbeulich@suse.com,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-Subject: [RESEND PATCH v6] xen-pciback: allow compiling on other archs than x86
-Date:   Thu, 28 Oct 2021 17:36:20 +0300
-Message-Id: <20211028143620.144936-1-andr2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231318AbhJ1Okc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:40:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231299AbhJ1Ok3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:40:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D63360F9B;
+        Thu, 28 Oct 2021 14:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635431882;
+        bh=nb7hadX1IVa2oFNbJtHdb0jVHNwL2nVEwRk4XRPlPVI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=gDtAMnHadk+rxLKs7JSehz6T6fcbvujYbj1tMLbOy5ZV4NnBTLHUC/KRmArx8Unqm
+         Un/q7InN6qkDNf0WdZ+76tR+lnouF9cUzO5mzHF5p/E8r7syJWOvwuE9u6GZfpLxPq
+         u/Wh7bfsJdYGlznncVaOgqh1/l/adjD6GDzxwov1Tzv3VRYwSZeL0cGpRAY0fC9k9Q
+         bNn+lT5iDHTBqTbT1S2tzCo9lUmy4HzVMEhBVdpFicGllyZ5jKvz0MGDBrrbfhd7cK
+         4EzrkKE0yy+0SeHEp3/77oTvpWetYTFEFWbvsv2xrr69uh6UdCPjFIx3kktKuUxn6u
+         Tv5gD8bqq7STg==
+Message-ID: <d13f3f13eda6f9d73e0754db3238f27aaa7f2e85.camel@kernel.org>
+Subject: Re: [RFC PATCH v3] ceph: ceph: add remote object copies to fs
+ client metrics
+From:   Jeff Layton <jlayton@kernel.org>
+To:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>,
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Patrick Donnelly <pdonnell@redhat.com>
+Date:   Thu, 28 Oct 2021 10:38:01 -0400
+In-Reply-To: <YXqy1rRu9hDS72Cx@suse.de>
+References: <20211028114826.27192-1-lhenriques@suse.de>
+         <06ef4f08edebf8b0a1a8660adfc46597d0d028b7.camel@kernel.org>
+         <YXqy1rRu9hDS72Cx@suse.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+On Thu, 2021-10-28 at 15:25 +0100, Luís Henriques wrote:
+> On Thu, Oct 28, 2021 at 08:41:52AM -0400, Jeff Layton wrote:
+> > On Thu, 2021-10-28 at 12:48 +0100, Luís Henriques wrote:
+> > > This patch adds latency and size metrics for remote object copies
+> > > operations ("copyfrom").  For now, these metrics will be available on the
+> > > client only, they won't be sent to the MDS.
+> > > 
+> > > Cc: Patrick Donnelly <pdonnell@redhat.com>
+> > > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > > ---
+> > > This patch is still an RFC because it is... ugly.  Although it now
+> > > provides nice values (latency and size) using the metrics infrastructure,
+> > > it actually needs to extend the ceph_osdc_copy_from() function to add 2
+> > > extra args!  That's because we need to get the timestamps stored in
+> > > ceph_osd_request, which is handled within that function.
+> > > 
+> > > The alternative is to ignore those timestamps and collect new ones in
+> > > ceph_do_objects_copy():
+> > > 
+> > > 	start_req = ktime_get();
+> > > 	ceph_osdc_copy_from(...);
+> > > 	end_req = ktime_get();
+> > > 
+> > > These would be more coarse-grained, of course.  Any other suggestions?
+> > > 
+> > 
+> > Not really. It is definitely ugly, I'll grant you that though...
+> > 
+> > The cleaner method might be to just inline ceph_osdc_copy_from in
+> > ceph_do_objects_copy so that you deal with the req in there.
+> 
+> Yeah, but the reason for having these 2 functions was to keep net/ceph/
+> code free from cephfs-specific code.  Inlining ceph_osdc_copy_from would
+> need to bring some extra FS knowledge into libceph.ko.  Right now the
+> funcion in osd_client receives only the required args for doing a copyfrom
+> operation.  (But TBH it's possible that libceph already contains several
+> bits that are cephfs or rbd specific.)
+> 
 
-Xen-pciback driver was designed to be built for x86 only. But it
-can also be used by other architectures, e.g. Arm.
 
-Currently PCI backend implements multiple functionalities at a time,
-such as:
-1. It is used as a database for assignable PCI devices, e.g. xl
-   pci-assignable-{add|remove|list} manipulates that list. So, whenever
-   the toolstack needs to know which PCI devices can be passed through
-   it reads that from the relevant sysfs entries of the pciback.
-2. It is used to hold the unbound PCI devices list, e.g. when passing
-   through a PCI device it needs to be unbound from the relevant device
-   driver and bound to pciback (strictly speaking it is not required
-   that the device is bound to pciback, but pciback is again used as a
-   database of the passed through PCI devices, so we can re-bind the
-   devices back to their original drivers when guest domain shuts down)
-3. Device reset for the devices being passed through
-4. Para-virtualised use-cases support
+Oh, I was more just suggesting that you just copy the guts out of
+ceph_osdc_copy_from() and paste them into the only caller
+(ceph_do_objects_copy). That would give you access to the OSD req field
+in ceph_do_objects_copy and you could just copy the appropriate fields
+there.
 
-The para-virtualised part of the driver is not always needed as some
-architectures, e.g. Arm or x86 PVH Dom0, are not using backend-frontend
-model for PCI device passthrough.
 
-For such use-cases make the very first step in splitting the
-xen-pciback driver into two parts: Xen PCI stub and PCI PV backend
-drivers.
+> However, I just realized that I do have some code here that changes
+> ceph_osdc_copy_from() to return the OSD req struct.  The caller would then
+> be responsible for doing the ceph_osdc_wait_request().  This code was from
+> my copy_file_range parallelization patch (which I should revisit one of
+> these days), but could be reused here.  Do you think it would be
+> acceptable?
+> 
 
-For that add new configuration options CONFIG_XEN_PCI_STUB and
-CONFIG_XEN_PCIDEV_STUB, so the driver can be limited in its
-functionality, e.g. no support for para-virtualised scenario.
-x86 platform will continue using CONFIG_XEN_PCIDEV_BACKEND for the
-fully featured backend driver.
+Yeah, that would work too. The problem you have is that the OSD request
+is driven by ceph_osdc_copy_from, and you probably want to do that in
+ceph_do_objects_copy instead so you can get to the timestamp fields.
 
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Signed-off-by: Anastasiia Lukianenko <anastasiia_lukianenko@epam.com>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Reviewed-by: Juergen Gross <jgross@suse.com>
----
-Changes since v5:
-- rebased
-- fixed a warning found by:
-  Reported-by: kernel test robot <lkp@intel.com>
-  All warnings (new ones prefixed by >>):
-  >> drivers/xen/pci.c:279:5: warning: no previous prototype for 'xen_find_device_domain_owner' [-Wmissing-prototypes]
-Changes since v4:
-- squashed two patches
-- simplified Makefile
-Changes since v3:
- - Fix >>32 shift for 32-bit architectures
-Changes since v2:
- - swap the patch order
-Since v1:
- - Do not move pci_xen_initial_domain as it is x86 specific
----
- arch/x86/include/asm/xen/pci.h              | 19 ------
- arch/x86/pci/xen.c                          | 76 +--------------------
- drivers/xen/Kconfig                         | 24 +++++++
- drivers/xen/Makefile                        |  2 +-
- drivers/xen/pci.c                           | 76 +++++++++++++++++++++
- drivers/xen/xen-pciback/Makefile            |  7 ++
- drivers/xen/xen-pciback/conf_space_header.c |  8 ++-
- drivers/xen/xen-pciback/pci_stub.c          |  3 +-
- drivers/xen/xen-pciback/pciback.h           |  5 ++
- drivers/xen/xen-pciback/xenbus.c            |  8 ++-
- include/xen/pci.h                           | 28 ++++++++
- 11 files changed, 156 insertions(+), 100 deletions(-)
- create mode 100644 include/xen/pci.h
+> <...>
+> > > +	spinlock_t copyfrom_metric_lock;
+> > > +	u64 total_copyfrom;
+> > > +	u64 copyfrom_size_sum;
+> > > +	u64 copyfrom_size_min;
+> > > +	u64 copyfrom_size_max;
+> > > +	ktime_t copyfrom_latency_sum;
+> > > +	ktime_t copyfrom_latency_sq_sum;
+> > > +	ktime_t copyfrom_latency_min;
+> > > +	ktime_t copyfrom_latency_max;
+> > > +
+> > 
+> > Not a comment about your patch, specifically, but we have a lot of
+> > copy/pasted code to deal with different parts of ceph_client_metric.
+> > 
+> > It might be nice to eventually turn each of the read/write/copy metric
+> > blocks in this struct into an array, and collapse a lot of the other
+> > helper functions together.
+> > 
+> > If you feel like doing that cleanup, I'd be happy to review. Otherwise,
+> > I'll plan to look at it in the near future.
+> 
+> Yeah, sure.  I can have a look at that too.
+> 
+> Cheers,
+> --
+> Luís
 
-diff --git a/arch/x86/include/asm/xen/pci.h b/arch/x86/include/asm/xen/pci.h
-index 4557f7cb0fa6..9015b888edd6 100644
---- a/arch/x86/include/asm/xen/pci.h
-+++ b/arch/x86/include/asm/xen/pci.h
-@@ -22,25 +22,6 @@ static inline int __init pci_xen_initial_domain(void)
- 	return -1;
- }
- #endif
--#ifdef CONFIG_XEN_DOM0
--int xen_find_device_domain_owner(struct pci_dev *dev);
--int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
--int xen_unregister_device_domain_owner(struct pci_dev *dev);
--#else
--static inline int xen_find_device_domain_owner(struct pci_dev *dev)
--{
--	return -1;
--}
--static inline int xen_register_device_domain_owner(struct pci_dev *dev,
--						   uint16_t domain)
--{
--	return -1;
--}
--static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
--{
--	return -1;
--}
--#endif
- 
- #if defined(CONFIG_PCI_MSI)
- #if defined(CONFIG_PCI_XEN)
-diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
-index 5debe4ac6f81..12da00558631 100644
---- a/arch/x86/pci/xen.c
-+++ b/arch/x86/pci/xen.c
-@@ -23,6 +23,7 @@
- 
- #include <xen/features.h>
- #include <xen/events.h>
-+#include <xen/pci.h>
- #include <asm/xen/pci.h>
- #include <asm/xen/cpuid.h>
- #include <asm/apic.h>
-@@ -585,78 +586,3 @@ int __init pci_xen_initial_domain(void)
- }
- #endif
- 
--#ifdef CONFIG_XEN_DOM0
--
--struct xen_device_domain_owner {
--	domid_t domain;
--	struct pci_dev *dev;
--	struct list_head list;
--};
--
--static DEFINE_SPINLOCK(dev_domain_list_spinlock);
--static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
--
--static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--
--	list_for_each_entry(owner, &dev_domain_list, list) {
--		if (owner->dev == dev)
--			return owner;
--	}
--	return NULL;
--}
--
--int xen_find_device_domain_owner(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--	int domain = -ENODEV;
--
--	spin_lock(&dev_domain_list_spinlock);
--	owner = find_device(dev);
--	if (owner)
--		domain = owner->domain;
--	spin_unlock(&dev_domain_list_spinlock);
--	return domain;
--}
--EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
--
--int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
--{
--	struct xen_device_domain_owner *owner;
--
--	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
--	if (!owner)
--		return -ENODEV;
--
--	spin_lock(&dev_domain_list_spinlock);
--	if (find_device(dev)) {
--		spin_unlock(&dev_domain_list_spinlock);
--		kfree(owner);
--		return -EEXIST;
--	}
--	owner->domain = domain;
--	owner->dev = dev;
--	list_add_tail(&owner->list, &dev_domain_list);
--	spin_unlock(&dev_domain_list_spinlock);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
--
--int xen_unregister_device_domain_owner(struct pci_dev *dev)
--{
--	struct xen_device_domain_owner *owner;
--
--	spin_lock(&dev_domain_list_spinlock);
--	owner = find_device(dev);
--	if (!owner) {
--		spin_unlock(&dev_domain_list_spinlock);
--		return -ENODEV;
--	}
--	list_del(&owner->list);
--	spin_unlock(&dev_domain_list_spinlock);
--	kfree(owner);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
--#endif /* CONFIG_XEN_DOM0 */
-diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
-index 1b2c3aca6887..a1b11c62da9e 100644
---- a/drivers/xen/Kconfig
-+++ b/drivers/xen/Kconfig
-@@ -181,10 +181,34 @@ config SWIOTLB_XEN
- 	select DMA_OPS
- 	select SWIOTLB
- 
-+config XEN_PCI_STUB
-+	bool
-+
-+config XEN_PCIDEV_STUB
-+	tristate "Xen PCI-device stub driver"
-+	depends on PCI && !X86 && XEN
-+	depends on XEN_BACKEND
-+	select XEN_PCI_STUB
-+	default m
-+	help
-+	  The PCI device stub driver provides limited version of the PCI
-+	  device backend driver without para-virtualized support for guests.
-+	  If you select this to be a module, you will need to make sure no
-+	  other driver has bound to the device(s) you want to make visible to
-+	  other guests.
-+
-+	  The "hide" parameter (only applicable if backend driver is compiled
-+	  into the kernel) allows you to bind the PCI devices to this module
-+	  from the default device drivers. The argument is the list of PCI BDFs:
-+	  xen-pciback.hide=(03:00.0)(04:00.0)
-+
-+	  If in doubt, say m.
-+
- config XEN_PCIDEV_BACKEND
- 	tristate "Xen PCI-device backend driver"
- 	depends on PCI && X86 && XEN
- 	depends on XEN_BACKEND
-+	select XEN_PCI_STUB
- 	default m
- 	help
- 	  The PCI device backend driver allows the kernel to export arbitrary
-diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
-index 3434593455b2..5aae66e638a7 100644
---- a/drivers/xen/Makefile
-+++ b/drivers/xen/Makefile
-@@ -24,7 +24,7 @@ obj-$(CONFIG_XEN_SYS_HYPERVISOR)	+= sys-hypervisor.o
- obj-$(CONFIG_XEN_PVHVM_GUEST)		+= platform-pci.o
- obj-$(CONFIG_SWIOTLB_XEN)		+= swiotlb-xen.o
- obj-$(CONFIG_XEN_MCE_LOG)		+= mcelog.o
--obj-$(CONFIG_XEN_PCIDEV_BACKEND)	+= xen-pciback/
-+obj-$(CONFIG_XEN_PCI_STUB)	        += xen-pciback/
- obj-$(CONFIG_XEN_PRIVCMD)		+= xen-privcmd.o
- obj-$(CONFIG_XEN_ACPI_PROCESSOR)	+= xen-acpi-processor.o
- obj-$(CONFIG_XEN_EFI)			+= efi.o
-diff --git a/drivers/xen/pci.c b/drivers/xen/pci.c
-index 224df03ce42e..2c890f4f2cbc 100644
---- a/drivers/xen/pci.c
-+++ b/drivers/xen/pci.c
-@@ -8,6 +8,7 @@
- #include <linux/pci.h>
- #include <linux/acpi.h>
- #include <linux/pci-acpi.h>
-+#include <xen/pci.h>
- #include <xen/xen.h>
- #include <xen/interface/physdev.h>
- #include <xen/interface/xen.h>
-@@ -254,3 +255,78 @@ static int xen_mcfg_late(void)
- 	return 0;
- }
- #endif
-+
-+#ifdef CONFIG_XEN_DOM0
-+struct xen_device_domain_owner {
-+	domid_t domain;
-+	struct pci_dev *dev;
-+	struct list_head list;
-+};
-+
-+static DEFINE_SPINLOCK(dev_domain_list_spinlock);
-+static struct list_head dev_domain_list = LIST_HEAD_INIT(dev_domain_list);
-+
-+static struct xen_device_domain_owner *find_device(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	list_for_each_entry(owner, &dev_domain_list, list) {
-+		if (owner->dev == dev)
-+			return owner;
-+	}
-+	return NULL;
-+}
-+
-+int xen_find_device_domain_owner(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+	int domain = -ENODEV;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	owner = find_device(dev);
-+	if (owner)
-+		domain = owner->domain;
-+	spin_unlock(&dev_domain_list_spinlock);
-+	return domain;
-+}
-+EXPORT_SYMBOL_GPL(xen_find_device_domain_owner);
-+
-+int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	owner = kzalloc(sizeof(struct xen_device_domain_owner), GFP_KERNEL);
-+	if (!owner)
-+		return -ENODEV;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	if (find_device(dev)) {
-+		spin_unlock(&dev_domain_list_spinlock);
-+		kfree(owner);
-+		return -EEXIST;
-+	}
-+	owner->domain = domain;
-+	owner->dev = dev;
-+	list_add_tail(&owner->list, &dev_domain_list);
-+	spin_unlock(&dev_domain_list_spinlock);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(xen_register_device_domain_owner);
-+
-+int xen_unregister_device_domain_owner(struct pci_dev *dev)
-+{
-+	struct xen_device_domain_owner *owner;
-+
-+	spin_lock(&dev_domain_list_spinlock);
-+	owner = find_device(dev);
-+	if (!owner) {
-+		spin_unlock(&dev_domain_list_spinlock);
-+		return -ENODEV;
-+	}
-+	list_del(&owner->list);
-+	spin_unlock(&dev_domain_list_spinlock);
-+	kfree(owner);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(xen_unregister_device_domain_owner);
-+#endif
-diff --git a/drivers/xen/xen-pciback/Makefile b/drivers/xen/xen-pciback/Makefile
-index e8d981d43235..d63df09de81c 100644
---- a/drivers/xen/xen-pciback/Makefile
-+++ b/drivers/xen/xen-pciback/Makefile
-@@ -1,5 +1,12 @@
- # SPDX-License-Identifier: GPL-2.0
-+
-+# N.B. The below cannot be expressed with a single line using
-+# CONFIG_XEN_PCI_STUB as it always remains in "y" state,
-+# thus preventing the driver to be built as a module.
-+# Please note, that CONFIG_XEN_PCIDEV_BACKEND and
-+# CONFIG_XEN_PCIDEV_STUB are mutually exclusive.
- obj-$(CONFIG_XEN_PCIDEV_BACKEND) += xen-pciback.o
-+obj-$(CONFIG_XEN_PCIDEV_STUB) += xen-pciback.o
- 
- xen-pciback-y := pci_stub.o pciback_ops.o xenbus.o
- xen-pciback-y += conf_space.o conf_space_header.o \
-diff --git a/drivers/xen/xen-pciback/conf_space_header.c b/drivers/xen/xen-pciback/conf_space_header.c
-index ac45cdc38e85..981435103af1 100644
---- a/drivers/xen/xen-pciback/conf_space_header.c
-+++ b/drivers/xen/xen-pciback/conf_space_header.c
-@@ -236,8 +236,12 @@ static void *bar_init(struct pci_dev *dev, int offset)
- 	else {
- 		pos = (offset - PCI_BASE_ADDRESS_0) / 4;
- 		if (pos && (res[pos - 1].flags & IORESOURCE_MEM_64)) {
--			bar->val = res[pos - 1].start >> 32;
--			bar->len_val = -resource_size(&res[pos - 1]) >> 32;
-+			/*
-+			 * Use ">> 16 >> 16" instead of direct ">> 32" shift
-+			 * to avoid warnings on 32-bit architectures.
-+			 */
-+			bar->val = res[pos - 1].start >> 16 >> 16;
-+			bar->len_val = -resource_size(&res[pos - 1]) >> 16 >> 16;
- 			return bar;
- 		}
- 	}
-diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
-index f8e4faa96ad6..bba527620507 100644
---- a/drivers/xen/xen-pciback/pci_stub.c
-+++ b/drivers/xen/xen-pciback/pci_stub.c
-@@ -19,7 +19,8 @@
- #include <linux/sched.h>
- #include <linux/atomic.h>
- #include <xen/events.h>
--#include <asm/xen/pci.h>
-+#include <xen/pci.h>
-+#include <xen/xen.h>
- #include <asm/xen/hypervisor.h>
- #include <xen/interface/physdev.h>
- #include "pciback.h"
-diff --git a/drivers/xen/xen-pciback/pciback.h b/drivers/xen/xen-pciback/pciback.h
-index 95e28ee48d52..9a64196e831d 100644
---- a/drivers/xen/xen-pciback/pciback.h
-+++ b/drivers/xen/xen-pciback/pciback.h
-@@ -71,6 +71,11 @@ struct pci_dev *pcistub_get_pci_dev(struct xen_pcibk_device *pdev,
- 				    struct pci_dev *dev);
- void pcistub_put_pci_dev(struct pci_dev *dev);
- 
-+static inline bool xen_pcibk_pv_support(void)
-+{
-+	return IS_ENABLED(CONFIG_XEN_PCIDEV_BACKEND);
-+}
-+
- /* Ensure a device is turned off or reset */
- void xen_pcibk_reset_device(struct pci_dev *pdev);
- 
-diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
-index c09c7ebd6968..bde63ef677b8 100644
---- a/drivers/xen/xen-pciback/xenbus.c
-+++ b/drivers/xen/xen-pciback/xenbus.c
-@@ -14,7 +14,7 @@
- #include <linux/workqueue.h>
- #include <xen/xenbus.h>
- #include <xen/events.h>
--#include <asm/xen/pci.h>
-+#include <xen/pci.h>
- #include "pciback.h"
- 
- #define INVALID_EVTCHN_IRQ  (-1)
-@@ -743,6 +743,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
- 
- int __init xen_pcibk_xenbus_register(void)
- {
-+	if (!xen_pcibk_pv_support())
-+		return 0;
-+
- 	xen_pcibk_backend = &xen_pcibk_vpci_backend;
- 	if (passthrough)
- 		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
-@@ -752,5 +755,6 @@ int __init xen_pcibk_xenbus_register(void)
- 
- void __exit xen_pcibk_xenbus_unregister(void)
- {
--	xenbus_unregister_driver(&xen_pcibk_driver);
-+	if (xen_pcibk_pv_support())
-+		xenbus_unregister_driver(&xen_pcibk_driver);
- }
-diff --git a/include/xen/pci.h b/include/xen/pci.h
-new file mode 100644
-index 000000000000..b8337cf85fd1
---- /dev/null
-+++ b/include/xen/pci.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __XEN_PCI_H__
-+#define __XEN_PCI_H__
-+
-+#if defined(CONFIG_XEN_DOM0)
-+int xen_find_device_domain_owner(struct pci_dev *dev);
-+int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
-+int xen_unregister_device_domain_owner(struct pci_dev *dev);
-+#else
-+static inline int xen_find_device_domain_owner(struct pci_dev *dev)
-+{
-+	return -1;
-+}
-+
-+static inline int xen_register_device_domain_owner(struct pci_dev *dev,
-+						   uint16_t domain)
-+{
-+	return -1;
-+}
-+
-+static inline int xen_unregister_device_domain_owner(struct pci_dev *dev)
-+{
-+	return -1;
-+}
-+#endif
-+
-+#endif
 -- 
-2.25.1
+Jeff Layton <jlayton@kernel.org>
 
