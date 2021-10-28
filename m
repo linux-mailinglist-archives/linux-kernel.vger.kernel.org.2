@@ -2,106 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A97143E62A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B68C43E639
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 18:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhJ1Qg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 12:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJ1Qg0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 12:36:26 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED92C061745
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:33:59 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id q129so9159810oib.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 09:33:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nem2XTY5QU11TIb5tpm+rntM/cfQ1YaYLiw0IXoaZ+w=;
-        b=Y3qFNcE15hVggRrMhiAeClG/Hnfm+SplZEeWKDF6zQdWbTj1BeHIubrS60YhBSk9FD
-         6NshmXy756/SwcXKW7YKdIa1eKHzXYn7Sv0sCtio1Rc0MsZxsVULUDOTwj2Vue+T+FMI
-         C0cChZdf1dEZGcbEFPab7NJ153OsC19SbmM88Xd5Zpe89W49OIEiFs4G8p3/Uui7TuXM
-         e/F4QKlhelC1nXa0FSH5uWEaREI7Pg6Jhof/tmCZRqlp5X4XCAqpYVB8AiHqzG6LBzVu
-         qhMe8xxNj6xIa1xQjFM3vadRTjG8vKWDaarULUoL6E1jbwVrc/sn9hdJGg0jBl/UKOaV
-         e+Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nem2XTY5QU11TIb5tpm+rntM/cfQ1YaYLiw0IXoaZ+w=;
-        b=eovJWUgz63lt3ZTPP5wnTHLYmwh5iWcHVHsV9makv3Ojn7FKXoG5vFfLhCR68IAwn3
-         Mbod1RmTAweOTh5ds4d5A0+uq1wHzhV4phNGCPkJT/+A9ciGAiZ3xnFbutpiAdVMCFFk
-         COu0zIBheBoHH3H3YKw/VZdDaYCahouTVs0UlyYjtnAKYM5ipKt54wsNXD898TFJ22D0
-         LZc/ihPoEcx8eBBYf7v+DO/mSBJPF/ixxeGhSBu5bBB7ErK+DYAQX9L5BZL+AAcXyeO5
-         13Am4kAptDLuTgrBf+6hk/0krbFiDeeI5g13302jllmySSiqX+xpmrHWv7raQ8YDIooQ
-         I4ng==
-X-Gm-Message-State: AOAM533y08Jkd1T34Huj/i/EAHIMeyZlbu1BZQzF83wv7ckD2g7imv4B
-        2aieFX1gpwta3F0ffJNYWkWziQ==
-X-Google-Smtp-Source: ABdhPJwtlHeKphy+Nfalit6/5el3VVG+6AjCVfyW9NdfXB5zsE959C+I2Txn2mrMSl4H3Eauhv3f4Q==
-X-Received: by 2002:a05:6808:1a0c:: with SMTP id bk12mr3929768oib.48.1635438838563;
-        Thu, 28 Oct 2021 09:33:58 -0700 (PDT)
-Received: from ripper.. (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x13sm1058721ooj.37.2021.10.28.09.33.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 09:33:58 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH] drm/bridge: sn65dsi86: ti_sn65dsi86_read_u16() __maybe_unused
-Date:   Thu, 28 Oct 2021 09:35:48 -0700
-Message-Id: <20211028163548.273736-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.33.1
+        id S229846AbhJ1QkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 12:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229565AbhJ1QkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 12:40:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58AE461056;
+        Thu, 28 Oct 2021 16:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635439071;
+        bh=1mfaE+t0DGF3qhqf6/10hRKufFVGSY27UZia8A0NKyU=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=JOnfjlMZ2/OkxYmpeCyrIi9FSsE9220WL8zRKqYlBFG7GT8SR8ONlZft/D+NnfhOC
+         Swe0b7txGApP/RKxMJk6UG0Lkv+qSkNsEjRVhHLBkJXiaLHcK5YubTMXPAkEIcYCuO
+         Okf8YM9MUOtEiuAimzWRh5l6ew4fINhV21veLZAWp7fRgnJGZf3cxIMO4wvMn3TL/X
+         3eqGlLJKbEPxDR5CaNqArbp5TSHm0KThso4u5ZL20tkvx5pWNJ6wk3mVftbUlxnSf2
+         WB+tZX7IzcCAKCB8g5i+HmqbHI7nlCqgve7e8xbM1F6jGRK3fpXmlCHDKvTWJuAe0w
+         hH7JDwZS723Kw==
+Date:   Thu, 28 Oct 2021 09:37:50 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Tyshchenko <olekstysh@gmail.com>
+cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+Subject: Re: [PATCH V2 3/4] xen/unpopulated-alloc: Add mechanism to use Xen
+ resource
+In-Reply-To: <1635264312-3796-4-git-send-email-olekstysh@gmail.com>
+Message-ID: <alpine.DEB.2.21.2110280920110.20134@sstabellini-ThinkPad-T480s>
+References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com> <1635264312-3796-4-git-send-email-olekstysh@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When built without CONFIG_PWM there are no references to
-ti_sn65dsi86_read_u16(), avoid the W=1 build warning by marking the
-function as __maybe_unused.
+On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
+> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> 
+> The main reason of this change is that unpopulated-alloc
+> code cannot be used in its current form on Arm, but there
+> is a desire to reuse it to avoid wasting real RAM pages
+> for the grant/foreign mappings.
+> 
+> The problem is that system "iomem_resource" is used for
+> the address space allocation, but the really unallocated
+> space can't be figured out precisely by the domain on Arm
+> without hypervisor involvement. For example, not all device
+> I/O regions are known by the time domain starts creating
+> grant/foreign mappings. And following the advise from
+> "iomem_resource" we might end up reusing these regions by
+> a mistake. So, the hypervisor which maintains the P2M for
+> the domain is in the best position to provide unused regions
+> of guest physical address space which could be safely used
+> to create grant/foreign mappings.
+> 
+> Introduce new helper arch_xen_unpopulated_init() which purpose
+> is to create specific Xen resource based on the memory regions
+> provided by the hypervisor to be used as unused space for Xen
+> scratch pages.
+> 
+> If arch doesn't implement arch_xen_unpopulated_init() to
+> initialize Xen resource the default "iomem_resource" will be used.
+> So the behavior on x86 won't be changed.
+> 
+> Also fall back to allocate xenballooned pages (steal real RAM
+> pages) if we do not have any suitable resource to work with and
+> as the result we won't be able to provide unpopulated pages.
+> 
+> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> ---
+> Changes RFC -> V2:
+>    - new patch, instead of
+>     "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide unallocated space"
+> ---
+>  drivers/xen/unpopulated-alloc.c | 89 +++++++++++++++++++++++++++++++++++++++--
+>  include/xen/xen.h               |  2 +
+>  2 files changed, 88 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
+> index a03dc5b..1f1d8d8 100644
+> --- a/drivers/xen/unpopulated-alloc.c
+> +++ b/drivers/xen/unpopulated-alloc.c
+> @@ -8,6 +8,7 @@
+>  
+>  #include <asm/page.h>
+>  
+> +#include <xen/balloon.h>
+>  #include <xen/page.h>
+>  #include <xen/xen.h>
+>  
+> @@ -15,13 +16,29 @@ static DEFINE_MUTEX(list_lock);
+>  static struct page *page_list;
+>  static unsigned int list_count;
+>  
+> +static struct resource *target_resource;
+> +static struct resource xen_resource = {
+> +	.name = "Xen unused space",
+> +};
+> +
+> +/*
+> + * If arch is not happy with system "iomem_resource" being used for
+> + * the region allocation it can provide it's own view by initializing
+> + * "xen_resource" with unused regions of guest physical address space
+> + * provided by the hypervisor.
+> + */
+> +int __weak arch_xen_unpopulated_init(struct resource *res)
+> +{
+> +	return -ENOSYS;
+> +}
+> +
+>  static int fill_list(unsigned int nr_pages)
+>  {
+>  	struct dev_pagemap *pgmap;
+> -	struct resource *res;
+> +	struct resource *res, *tmp_res = NULL;
+>  	void *vaddr;
+>  	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
+> -	int ret = -ENOMEM;
+> +	int ret;
+>  
+>  	res = kzalloc(sizeof(*res), GFP_KERNEL);
+>  	if (!res)
+> @@ -30,7 +47,7 @@ static int fill_list(unsigned int nr_pages)
+>  	res->name = "Xen scratch";
+>  	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+>  
+> -	ret = allocate_resource(&iomem_resource, res,
+> +	ret = allocate_resource(target_resource, res,
+>  				alloc_pages * PAGE_SIZE, 0, -1,
+>  				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
+>  	if (ret < 0) {
+> @@ -38,6 +55,31 @@ static int fill_list(unsigned int nr_pages)
+>  		goto err_resource;
+>  	}
+>  
+> +	/*
+> +	 * Reserve the region previously allocated from Xen resource to avoid
+> +	 * re-using it by someone else.
+> +	 */
+> +	if (target_resource != &iomem_resource) {
+> +		tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
+> +		if (!res) {
+> +			ret = -ENOMEM;
+> +			goto err_insert;
+> +		}
+> +
+> +		tmp_res->name = res->name;
+> +		tmp_res->start = res->start;
+> +		tmp_res->end = res->end;
+> +		tmp_res->flags = res->flags;
+> +
+> +		ret = insert_resource(&iomem_resource, tmp_res);
+> +		if (ret < 0) {
+> +			pr_err("Cannot insert IOMEM resource [%llx - %llx]\n",
+> +			       tmp_res->start, tmp_res->end);
+> +			kfree(tmp_res);
+> +			goto err_insert;
+> +		}
+> +	}
 
-__maybe_unused is used insted of a #ifdef guard as it looks slighly
-cleaner and it avoids issues if in the future other permutations of the
-config options would use the function.
+I am a bit confused.. why do we need to do this? Who could be
+erroneously re-using the region? Are you saying that the next time
+allocate_resource is called it could find the same region again? It
+doesn't seem possible?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
 
-Robert, I believe you pushed out the driver patch introducing this issue
-yesterday. Can you please add the relevant Fixes?
+>  	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+>  	if (!pgmap) {
+>  		ret = -ENOMEM;
+> @@ -95,12 +137,40 @@ static int fill_list(unsigned int nr_pages)
+>  err_memremap:
+>  	kfree(pgmap);
+>  err_pgmap:
+> +	if (tmp_res) {
+> +		release_resource(tmp_res);
+> +		kfree(tmp_res);
+> +	}
+> +err_insert:
+>  	release_resource(res);
+>  err_resource:
+>  	kfree(res);
+>  	return ret;
+>  }
+>  
+> +static void unpopulated_init(void)
+> +{
+> +	static bool inited = false;
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+initialized = false
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 430067a3071c..e1f43b73155b 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -215,8 +215,8 @@ static const struct regmap_config ti_sn65dsi86_regmap_config = {
- 	.cache_type = REGCACHE_NONE,
- };
- 
--static int ti_sn65dsi86_read_u16(struct ti_sn65dsi86 *pdata,
--				 unsigned int reg, u16 *val)
-+static int __maybe_unused ti_sn65dsi86_read_u16(struct ti_sn65dsi86 *pdata,
-+						unsigned int reg, u16 *val)
- {
- 	u8 buf[2];
- 	int ret;
--- 
-2.33.1
 
+> +	int ret;
+> +
+> +	if (inited)
+> +		return;
+> +
+> +	/*
+> +	 * Try to initialize Xen resource the first and fall back to default
+> +	 * resource if arch doesn't offer one.
+> +	 */
+> +	ret = arch_xen_unpopulated_init(&xen_resource);
+> +	if (!ret)
+> +		target_resource = &xen_resource;
+> +	else if (ret == -ENOSYS)
+> +		target_resource = &iomem_resource;
+> +	else
+> +		pr_err("Cannot initialize Xen resource\n");
+> +
+> +	inited = true;
+> +}
+
+Would it make sense to call unpopulated_init from an init function,
+rather than every time xen_alloc_unpopulated_pages is called?
+
+
+>  /**
+>   * xen_alloc_unpopulated_pages - alloc unpopulated pages
+>   * @nr_pages: Number of pages
+> @@ -112,6 +182,16 @@ int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+>  	unsigned int i;
+>  	int ret = 0;
+>  
+> +	unpopulated_init();
+> +
+> +	/*
+> +	 * Fall back to default behavior if we do not have any suitable resource
+> +	 * to allocate required region from and as the result we won't be able to
+> +	 * construct pages.
+> +	 */
+> +	if (!target_resource)
+> +		return alloc_xenballooned_pages(nr_pages, pages);
+
+The commit message says that the behavior on x86 doesn't change but this
+seems to be a change that could impact x86?
+
+
+>  	mutex_lock(&list_lock);
+>  	if (list_count < nr_pages) {
+>  		ret = fill_list(nr_pages - list_count);
+> @@ -159,6 +239,9 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+>  {
+>  	unsigned int i;
+>  
+> +	if (!target_resource)
+> +		return free_xenballooned_pages(nr_pages, pages);
+> +
+>  	mutex_lock(&list_lock);
+>  	for (i = 0; i < nr_pages; i++) {
+>  		pages[i]->zone_device_data = page_list;
+> diff --git a/include/xen/xen.h b/include/xen/xen.h
+> index 43efba0..55d2ef8 100644
+> --- a/include/xen/xen.h
+> +++ b/include/xen/xen.h
+> @@ -55,6 +55,8 @@ extern u64 xen_saved_max_mem_size;
+>  #ifdef CONFIG_XEN_UNPOPULATED_ALLOC
+>  int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+>  void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+> +struct resource;
+
+This is to avoid having to #include linux/ioport.h, right? Is it a
+problem or is it just to minimize the headers dependencies?
+
+It looks like adding #include <linux/ioport.h> below #include
+<linux/types.h> in include/xen/xen.h would work too. I am not sure what
+is the best way though, I'll let Juergen comment.
+
+
+> +int arch_xen_unpopulated_init(struct resource *res);
+>  #else
+>  #define xen_alloc_unpopulated_pages alloc_xenballooned_pages
+>  #define xen_free_unpopulated_pages free_xenballooned_pages
+> -- 
+> 2.7.4
+> 
