@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23D843E9D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08A643E9E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhJ1UrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 16:47:09 -0400
-Received: from mail-pg1-f174.google.com ([209.85.215.174]:43704 "EHLO
-        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhJ1UrI (ORCPT
+        id S231282AbhJ1Uve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 16:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231281AbhJ1Uvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:47:08 -0400
-Received: by mail-pg1-f174.google.com with SMTP id b4so574736pgh.10;
-        Thu, 28 Oct 2021 13:44:41 -0700 (PDT)
+        Thu, 28 Oct 2021 16:51:31 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C9EC061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 13:49:03 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id e4so12349985wrc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 13:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3IvTfylI/s5zjCUTJoTbfVOltBPWwJQSWlH2bF2QUuk=;
+        b=oDbwPY9FhMa5+lI34zwqKLXaGGEJP1uhqTbtRsJgcXK9YE2LdLZaiUk6cnSS0e/z7B
+         NGrVlsXfrFTsjnJAwwqdqoPbDLCN13n0CUMg2Hnu9Bl0kC3Ynqw3gDSy7EFkY5hOaWsV
+         cF0zEMmnNLEFqZq5usfApABvoY2RR5EkszAaoSGt/8bvwq4noNBArvxJqCHhkqxyKzRr
+         TCdGfdedDm8XQDbRwnJRXjlusfgnqW9aWPfo1myOMwH/pLlZhbQeP8c90RfxBdZBXhPs
+         3Z9fNnvvkFYCsQbWi5xjsw9AsZDY36nun2WGqIOWEjNfzCfRof3UPiUFd7N2JMgiPi4q
+         l/yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8KCR3llTsNC/EmVOsfOprBNdpwIqMeBDoZEp27pTMi8=;
-        b=JVx6EWJZXVrKsB2A3yuzYip67Qj7eYbMBZMah8PIQs0bmyIn4zswwBEDvDvUc/1/zt
-         iaRUC5R6/0NwAOe/ybCWqiD2onDcnwhcuh2XT6VY6VcG/8zt1UXmMnMqSZZ4RmdVDYtI
-         7NON1Ngcoitxj0Gchu7T3VVEP2nGdROSZYzixXu+CrNzZAMXMFH28rjAdREfuINyEesy
-         1IXsUR5e0gmTe5RGFL7gTr79zeztJV5SYi1IT+ReN38RfMkXwkHq2Ea4IsYMa9eRWW0K
-         f8iAsyxCYA67MVDXnZv0P1r/XIHWo31MgBEQZjQM4YCzzTh+oS6kC5AfJsIcMjyzih/e
-         yA0w==
-X-Gm-Message-State: AOAM533zpOWtk1jqiC9m/TNehhzvyNAgaZw8ghAcwoBynw0J0lobHCl+
-        xzd9EEwCCDW3jgSHo38Pza6SBjorhcjpxg==
-X-Google-Smtp-Source: ABdhPJzoENSGqL8QXsdXUGjZjVGz2Ebjj1mHxs++PsMoJrnpxpe82+qU+mdjEQU1bdtNqaGXnrjzSA==
-X-Received: by 2002:a05:6a00:23c8:b0:47c:37d5:430 with SMTP id g8-20020a056a0023c800b0047c37d50430mr6624529pfc.72.1635453880334;
-        Thu, 28 Oct 2021 13:44:40 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:e816:bd0d:426c:f959])
-        by smtp.gmail.com with ESMTPSA id u12sm3637773pfi.18.2021.10.28.13.44.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 13:44:39 -0700 (PDT)
-Subject: Re: [PATCH] zram: use ATTRIBUTE_GROUPS
-To:     Luis Chamberlain <mcgrof@kernel.org>, minchan@kernel.org,
-        ngupta@vflare.org, senozhatsky@chromium.org, axboe@kernel.dk
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-References: <20211028203600.2157356-1-mcgrof@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <520834ee-edd2-282c-017a-b7ed075bd8a0@acm.org>
-Date:   Thu, 28 Oct 2021 13:44:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3IvTfylI/s5zjCUTJoTbfVOltBPWwJQSWlH2bF2QUuk=;
+        b=cGkJhC3KfjAwF9IATvDYdT8+AIPwo+fYnhzE9MknR+JybgC1cJxAk2in3Ds+8MUheD
+         JO/GFs3rhy7Xx37y5IN15Z8F4GbXQ/St6q3/Y3Rq8m1/0uyxSa48YLoetJ3CKMk4KgVB
+         r7qfd7Vo86r2W8JYE838tw/1+oS6GNHu7Q1lcFyPWtwKTTTk5hNRHxCucjq3WGJYVE6D
+         oUt5OiIv8zojegEH4rn/R5X7ZTkP3cEdN/HhP5mSILstIhV0IXtOnQ3QGp7ucZg5/h+2
+         fHWH4ZjRMosThTs/QQw15L9h1m5xQCyl5T2WE7vWlblX5BDGAw1smmU1h1anP4a46G96
+         X/mQ==
+X-Gm-Message-State: AOAM5323K1dINQL4QK7FU5QwKNBdqOAiAjdLqRFNzTWfXyzeLTM114uy
+        ktGBalxisINLd6iwOeG5ypR+Lg==
+X-Google-Smtp-Source: ABdhPJz5CVcMhbABFkm8qYpPeC8ZX0TX4ML2WSs+7463nI9XPEFL1WLEfTk4g3/yjS9ylWLJZoLIFw==
+X-Received: by 2002:adf:a78a:: with SMTP id j10mr8764668wrc.231.1635454142409;
+        Thu, 28 Oct 2021 13:49:02 -0700 (PDT)
+Received: from Jessicas-MacBook-Pro.local (global-5-141.nat-2.net.cam.ac.uk. [131.111.5.141])
+        by smtp.gmail.com with ESMTPSA id m34sm2584987wms.25.2021.10.28.13.49.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 28 Oct 2021 13:49:02 -0700 (PDT)
+Received: by Jessicas-MacBook-Pro.local (Postfix, from userid 501)
+        id 6C870927B2D0; Thu, 28 Oct 2021 21:48:54 +0100 (BST)
+Date:   Thu, 28 Oct 2021 21:48:54 +0100
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     linux-kernel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        devicetree@vger.kernel.org, Greentime Hu <greentime.hu@sifive.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vincent Chen <vincent.chen@sifive.com>
+Subject: Re: [v4 10/11] riscv: dts: fu740: Add pmu node
+Message-ID: <YXsMtrmuavGAHk8S@Jessicas-MacBook-Pro.local>
+References: <20211025195350.242914-1-atish.patra@wdc.com>
+ <20211025195350.242914-11-atish.patra@wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <20211028203600.2157356-1-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211025195350.242914-11-atish.patra@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/21 1:36 PM, Luis Chamberlain wrote:
-> Embrace ATTRIBUTE_GROUPS to avoid boiler plate code.
-> This should not introduce any functional changes.
+On Mon, Oct 25, 2021 at 12:53:49PM -0700, Atish Patra wrote:
+> HiFive unmatched supports HPMCounters but does not implement mcountinhibit
+> or sscof extension. Thus, perf monitoring can be used on the unmatched
+> board without sampling.
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Add the PMU node with compatible string so that Linux perf driver can
+> utilize this to enable PMU.
+> 
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
 > ---
->   drivers/block/zram/zram_drv.c | 11 ++---------
->   1 file changed, 2 insertions(+), 9 deletions(-)
+>  arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> index fcaf2750f68f..268f727f7cba 100644
-> --- a/drivers/block/zram/zram_drv.c
-> +++ b/drivers/block/zram/zram_drv.c
-> @@ -1874,14 +1874,7 @@ static struct attribute *zram_disk_attrs[] = {
->   	NULL,
->   };
->   
-> -static const struct attribute_group zram_disk_attr_group = {
-> -	.attrs = zram_disk_attrs,
-> -};
-> -
-> -static const struct attribute_group *zram_disk_attr_groups[] = {
-> -	&zram_disk_attr_group,
-> -	NULL,
-> -};
-> +ATTRIBUTE_GROUPS(zram_disk);
->   
->   /*
->    * Allocate and initialize new zram device. the function returns
-> @@ -1953,7 +1946,7 @@ static int zram_add(void)
->   		blk_queue_max_write_zeroes_sectors(zram->disk->queue, UINT_MAX);
->   
->   	blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, zram->disk->queue);
-> -	device_add_disk(NULL, zram->disk, zram_disk_attr_groups);
-> +	device_add_disk(NULL, zram->disk, zram_disk_groups);
->   
->   	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
->   
-> 
+> diff --git a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+> index abbb960f90a0..b35b96b58820 100644
+> --- a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+> +++ b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+> @@ -140,6 +140,9 @@ soc {
+>  		#size-cells = <2>;
+>  		compatible = "simple-bus";
+>  		ranges;
+> +		pmu {
+> +			compatible = "riscv,pmu";
+> +		};
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+This is a property of the user-replaceable firmware, not a property of
+the hardware, so having this in the device tree under /soc, let alone
+hard-coded in Linux, is utterly wrong. Why can this not just be probed
+like any other SBI interface? The "Probe SBI extension" interface is
+precisely for this kind of thing.
+
+Jess
