@@ -2,132 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1BC43E962
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDEF43E969
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 22:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhJ1UOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 16:14:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10258 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230104AbhJ1UOs (ORCPT
+        id S231169AbhJ1UR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 16:17:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49880 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhJ1URx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 16:14:48 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19SJx2wW001311;
-        Thu, 28 Oct 2021 20:12:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=Z/3hJoKeT+P0qYCR6I9qk6FbOWD/Ypqht9BjPk9dvmA=;
- b=MoxqXp+VSVa4qIVrDOIoAz1i8g6JaTdv2/Zhdt7ppNLyzqg5G16CzHFDrny2DNs5k/SE
- 2S3Cv830A0w3H6yxzFQgwNwopeBl1i0O9SRQZIM4g+4zyHafQvjvWpTNq/6SMyubijWj
- qJEEeu7ESpDO5qprjuV0Q4e/X84L1/HKVosmGCneKL0y1m2v1Z2qAbD+UxB6YWO87OH7
- DJxG6MfQy5dlsBXAAdt5jBl8QATAYlWBiXokNDFAYXrD5Twa4K3ar8BU9QT9uZXgB9MP
- pzltWBGhVndrO2+pNu2s968/bKTVZPzE/dzwxYGsnPXe5IwAwKLfjX/JWYoPMHOwy1Ld vA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c02d1gdrq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 20:12:08 +0000
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19SK0JGq004689;
-        Thu, 28 Oct 2021 20:12:07 GMT
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c02d1gdr8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 20:12:07 +0000
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19SJrPbi009183;
-        Thu, 28 Oct 2021 20:12:06 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03dal.us.ibm.com with ESMTP id 3bx4fnf9e8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Oct 2021 20:12:06 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19SKC4fx15597920
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Oct 2021 20:12:04 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B7DA78064;
-        Thu, 28 Oct 2021 20:12:04 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C673C7808C;
-        Thu, 28 Oct 2021 20:12:02 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.163.12.226])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Oct 2021 20:12:02 +0000 (GMT)
-Message-ID: <ed088511bfe2414a7f84a459b954192f9992af3b.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: ufs: Fix proper API to send HPB pre-request
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Bart Van Assche <bvanassche@acm.org>, daejun7.park@samsung.com,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        Keoseong Park <keosung.park@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Date:   Thu, 28 Oct 2021 16:12:01 -0400
-In-Reply-To: <42ca5f60-4c57-ade1-5fb7-be935ac4ccce@acm.org>
-References: <CGME20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-         <20211027223619epcms2p60bbc74c9ba9757c58709a99acd0892ff@epcms2p6>
-         <0f9229c3c4c7859524411a47db96a3b53ac89c90.camel@linux.ibm.com>
-         <0d66b6d0-26c6-573f-e2a0-022e22c47b52@acm.org>
-         <1d7c1faf6b6fa71599b5157ae95fc48ce479b722.camel@linux.ibm.com>
-         <42ca5f60-4c57-ade1-5fb7-be935ac4ccce@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 28 Oct 2021 16:17:53 -0400
+Date:   Thu, 28 Oct 2021 20:15:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635452125;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=akuf1P3ReGLDbx60EitA9ibylgdEPFka1HBsvSGBxI8=;
+        b=pSoNmDi5oEGIPprbGs+U2WoWB3YS/vanWPbht0rDe6+8ypc3XBq+4/uILOOZfAmIqlDxhA
+        NaZiplrP1WMH+jJ16dEef/2mq33MsRfCFwq6JxwgAv+5w0OXqx+OCzCdPvo/yg/6HtJU3t
+        tE7oAUFneUXNUoNIGL1lRl9v+1bSol8mOme/NZAbrFtD83SnpW0K6a3poKcDEnWUzYJdLk
+        Aez0dFIfCEVWoyK16nrnp/mvY4Hs5n6P6NywzhgaES0P29Db3ScZ+NebKQRZAIZEvraO4P
+        Q8LrToHWdgP727vQiShPZxM3sQaScNt0UbF4e47e7qYVOXzhCbWrN91EGvct4Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635452125;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=akuf1P3ReGLDbx60EitA9ibylgdEPFka1HBsvSGBxI8=;
+        b=t4tQERnQYtJ3ZlFBB01ZKiPiJybENWZg5Q/dOGVR4PCw1EfCTq/ndlsvQEhb1fgLnuBtZP
+        Jv+lDTHukhrGhWBA==
+From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] h8300: Fix linux/irqchip.h include mess
+Cc:     Guenter Roeck <linux@roeck-us.net>, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+In-Reply-To: <20211028172849.GA701812@roeck-us.net>
+References: <20211028172849.GA701812@roeck-us.net>
 MIME-Version: 1.0
+Message-ID: <163545212372.626.13842745419251863344.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zEUnaoyLhw7QU2dZQxD3DI-_4LJm6DV8
-X-Proofpoint-ORIG-GUID: Lt_dkF0Q_MoZawqNaZXpDxKY_36e4Seq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-28_05,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 phishscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- clxscore=1011 mlxlogscore=999 impostorscore=0 bulkscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2110280105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-28 at 13:04 -0700, Bart Van Assche wrote:
-> On 10/28/21 12:12 PM, James Bottomley wrote:
-> > I think the deadlock is triggered if the system is down to its last
-> > reserved request on the memory clearing device and the next entry
-> > in the queue for this device is one which does a fanout so we can't
-> > service it with the single reserved request we have left for the
-> > purposes of making forward progress.  Sending it back doesn't help,
-> > assuming this is the only memory clearing path, because retrying it
-> > won't help ... we have to succeed with a request on this path to
-> > move forward with clearing memory.
-> > 
-> > I think this problem could be solved by processing the WRITE BUFFER
-> > and the request serially by hijacking the request sent down, but we
-> > can't solve it if we try to allocate a new request.
-> 
-> Hi James,
-> 
-> How about fixing the abuse of blk_insert_cloned_request() in the UFS
-> HPB before the v5.16 SCSI pull request is sent to Linus and
-> implementing the proposal from your email at a later time? I'm
-> proposing to defer further UFS HPB rework since the issue described
-> above only affects UFS HPB users and does not obstruct maintenance or
-> refactoring of the block layer core.
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Well, yes, I'm already on record as saying we need to do that and add
-the functionality back compatibly in a later release.  I think excising
-the WRITE BUFFER path, which is simply an optimization and will affect
-performance but not function, solves the above issue (and the clone API
-problem as well) completely but I haven't heard the patch I proposed
-has actually been tested yet.
+Commit-ID:     837d7a8fe852cf93fff1cd3b73d707b3a6ae340f
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/837d7a8fe852cf93fff1cd3b73d707b3a6ae340f
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Thu, 28 Oct 2021 19:24:25 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Thu, 28 Oct 2021 21:02:48 +01:00
 
-James
+h8300: Fix linux/irqchip.h include mess
 
+h8300 drags linux/irqchip.h from asm/irq.h, which is in general a bad
+idea (asm/*.h should avoid dragging linux/*.h, as it is usually supposed
+to work the other way around).
 
+Move the inclusion of linux/irqchip.h to the single location where it
+actually matters in the arch code.
+
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20211028172849.GA701812@roeck-us.net
+---
+ arch/h8300/include/asm/irq.h | 2 --
+ arch/h8300/kernel/irq.c      | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/h8300/include/asm/irq.h b/arch/h8300/include/asm/irq.h
+index 5fc5b43..776cf06 100644
+--- a/arch/h8300/include/asm/irq.h
++++ b/arch/h8300/include/asm/irq.h
+@@ -2,8 +2,6 @@
+ #ifndef _H8300_IRQ_H_
+ #define _H8300_IRQ_H_
+ 
+-#include <linux/irqchip.h>
+-
+ #if defined(CONFIG_CPU_H8300H)
+ #define NR_IRQS 64
+ #define IRQ_CHIP h8300h_irq_chip
+diff --git a/arch/h8300/kernel/irq.c b/arch/h8300/kernel/irq.c
+index 834e4d7..8ad6d70 100644
+--- a/arch/h8300/kernel/irq.c
++++ b/arch/h8300/kernel/irq.c
+@@ -8,6 +8,7 @@
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
++#include <linux/irqchip.h>
+ #include <linux/irqdomain.h>
+ #include <linux/of_irq.h>
+ #include <asm/traps.h>
