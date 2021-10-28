@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F8C43F2A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC6743F2A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Oct 2021 00:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhJ1WYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 18:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
+        id S231502AbhJ1WY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 18:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbhJ1WYO (ORCPT
+        with ESMTP id S231393AbhJ1WYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 18:24:14 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828AFC061570;
-        Thu, 28 Oct 2021 15:21:46 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id s9so2452944qvk.12;
-        Thu, 28 Oct 2021 15:21:46 -0700 (PDT)
+        Thu, 28 Oct 2021 18:24:25 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17809C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:21:58 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id y18-20020a25a092000000b005bddb39f160so10749859ybh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 15:21:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=/T5F9B07gErRjYPria9st2w4l8wiE8xoQUEOHVZGBvM=;
-        b=cqtX/zRCsu1o1qbVcFQmpDrYQ3+yL++ZD059O9aXErqM7s4r2YYk5G5k6k2MU4WCXU
-         5d9YWkx5fJDDC7hrEIMFECAkWrHvfrIPWk+geI54qxLUqmOAnVK02sc9AJISjJpvooQs
-         0zCZZuh/1T9etRR+mtyGLfqGY/vTqliOfMm36Hb3U+/PWjc+H8oXWfwGDaFpFbs2Sla3
-         u8ym2NCG/EC7t25SqQOUy3lpC//9B96QDlNOatYWD3nDfJZT2JIENAyIzoNuzazZ0g2t
-         VT3fwMoXDjzXR3zxawPSPtCA56kee46tlvy9mcwY2qRL7pmL+i765nXuC+YlA9C9kE5r
-         7IlA==
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=PqjjRvX15zED8OdTh3J1r3VA59T74vznUoYXXlWKQUc=;
+        b=e+hAzVuvA6pZEdq7ha9j/xZ/wi+tB54o3Cg4uhZp8Vrfl4yCNs96yhs/i/fR6/f7+U
+         M8pGUHDA7w0nSKXzjtwPSgHXl1e4uKsHZw5dXrMqSLxGCVNB8JNbE+auE4zRqRqpS88X
+         I3Vtg1f6Hw3cKHJNXydZ+toZKxwe1Zag1CPyoCJh/V0c3i402VDdoTx9FSLEV+tNM6Uc
+         0r5t6mv3cYXMd+aHHrNqM3CUYWlFINfbohoBc3XYUGsIqlrk/ZScAUrlPyA4Pe+aeBsB
+         zhJi3oPs9R54W8Y485icAVY8fB8lfn0P49ayeDPuEGU6kRdI8zSzhyP7uz2ocGwItbwl
+         a0JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/T5F9B07gErRjYPria9st2w4l8wiE8xoQUEOHVZGBvM=;
-        b=BQNbapo5Z+vF3qShO4lMIXUvXEfZe6TjaMpsUaTq/NuC8VJAou3WiUboWA9v5w1QT0
-         9v/c3Z839/ZPl8o72wzRmsZKnfvWAmC3LqdLu4NPISCVK4Dup/902JMPFhLWfMmYXzqk
-         aw7YMCOLFq3tXSx2Sl3wF4raNauE51LxlBBRL9q4yIRZr9/xlpju60W7ZVPTOrceYBfZ
-         ew2bBai3yHBhAnADb6yoG/U+2ckAGO8Wiq/YbEvvkaiO03NyOOaPsvvFW/Mm8C0IXdPW
-         j3MfmvXq45qR4pBlOT/00CRRzU1zbLARUNnY/iuePA39L6ULZvrSw9uijsjWRjwxTM6I
-         s2Lg==
-X-Gm-Message-State: AOAM531XxXhmoTgdR1PLckAS6OJC/qcKhJ9o5oh0IaK3U6ig+d79nBQE
-        Ns5ws9b4uKtdIfwxKB1mgLg9tS6PTzLuWQ==
-X-Google-Smtp-Source: ABdhPJxrFWd7ykakPW+atJE2BnfLAVVaBklvxy7ljS6mwW0kjUE7gDDiD31OnzQ/fxQohs1eq6P5kQ==
-X-Received: by 2002:a05:6214:5086:: with SMTP id kk6mr6749178qvb.63.1635459705668;
-        Thu, 28 Oct 2021 15:21:45 -0700 (PDT)
-Received: from 10-18-43-117.dynapool.wireless.nyu.edu (216-165-95-164.natpool.nyu.edu. [216.165.95.164])
-        by smtp.gmail.com with ESMTPSA id c10sm3067773qtd.27.2021.10.28.15.21.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 15:21:45 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 18:21:42 -0400
-From:   Zekun Shen <bruceshenzk@gmail.com>
-To:     bruceshenzk@gmail.com
-Cc:     ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ath9k: Fix out-of-bound memcpy in ath9k_hif_usb_rx_stream
-Message-ID: <YXsidrRuK6zBJicZ@10-18-43-117.dynapool.wireless.nyu.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=PqjjRvX15zED8OdTh3J1r3VA59T74vznUoYXXlWKQUc=;
+        b=IjkUyZFWHQ07g+IJPVqIQGOeO5n+A0GuW2V0FgC9qe9ZAl84HsMWdW2qK3MD4r0b1U
+         k61df99oMnRGGImf5uyGGGhjFXIKJwuhUJYQBZuZ2EKzEdwhGUvC1ACjQFAiT08d6kdc
+         KZy+ptCNuCTrfFyD49M7amFCdXYOoChvkCYGxoPSaBOJgG4f0xDv5tWxnV8JXY6fKhnb
+         9AOEK+5l+mEGlGb36wJoGG1VRzwavW9aS14PFre/LPFCij6/f1hc4iTUoIdIBkS0BS3d
+         0DQ31KvKNEDSjQbmU8paXe7WkGT3b5CeoKc5uXUVcyOQoIPZf65fnnl5w7lSoyX0X6up
+         w0Zg==
+X-Gm-Message-State: AOAM530No2Dq37zwnJG1WrXNYMtUCz1G/QiqiPskJV28Kcxr3CLK2CZZ
+        R5/iHpF13IS4Tq9O5XhJu5k16zoNUZs=
+X-Google-Smtp-Source: ABdhPJx5X6GZdx3nKSM3DFNGC4xUMnmjf5Z6+uBL2u8x5+06D3F+RbR57apuMl+589B0v/rWWayC5rs4Kyw=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:cbc8:1a0d:eab9:2274])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1029:: with SMTP id
+ x9mr8512263ybt.67.1635459717288; Thu, 28 Oct 2021 15:21:57 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 28 Oct 2021 15:21:46 -0700
+Message-Id: <20211028222148.2924457-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH 0/2] x86/hyperv: Bug fix and what I hope is an enhancement
+From:   Sean Christopherson <seanjc@google.com>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Large pkt_len can lead to out-out-bound memcpy. Current
-ath9k_hif_usb_rx_stream allows combining the content of two urb
-inputs to one pkt. The first input can indicate the size of the
-pkt. Any remaining size is saved in hif_dev->rx_remain_len.
-While processing the next input, memcpy is used with rx_remain_len.
+Patch 01 is a fix for a NULL pointer deref that I ran into with a bad VMM
+configuration.
 
-4-byte pkt_len can go up to 0xffff, while a single input is 0x4000
-maximum in size (MAX_RX_BUF_SIZE). Thus, the patch adds a check for
-pkt_len which must not exceed 2 * MAX_RX_BUG_SIZE.
+Patch 02 effectively makes the required MSRs mandatory for recognizing
+Hyper-V at all.  I'm not confident this is truly desirable, e.g. there
+might be some features that are still kinda sorta usable, but on the other
+hand there's a large pile of features that end up being a waste of cycles
+to worm their way back to the native ops.
 
-BUG: KASAN: slab-out-of-bounds in ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
-Read of size 46393 at addr ffff888018798000 by task kworker/0:1/23
+QEMU 5.1 (and other versions) makes it all too easy to advertise Hyper-V
+and a slew of features without advertising the Hyper-V HYPERCALL MSR, e.g.
+forcing QEMU features +hv-ipi,+hv-tlbflush,+hv-vpindex,+hv-reenlightenment
+advertises a bunch of things, but not the HYPERCALL MSR.
 
-CPU: 0 PID: 23 Comm: kworker/0:1 Not tainted 5.6.0 #63
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS rel-1.10.2-0-g5f4c7b1-prebuilt.qemu-project.org 04/01/2014
-Workqueue: events request_firmware_work_func
-Call Trace:
- <IRQ>
- dump_stack+0x76/0xa0
- print_address_description.constprop.0+0x16/0x200
- ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
- ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
- __kasan_report.cold+0x37/0x7c
- ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
- kasan_report+0xe/0x20
- check_memory_region+0x15a/0x1d0
- memcpy+0x20/0x50
- ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
- ? hif_usb_mgmt_cb+0x2d9/0x2d9 [ath9k_htc]
- ? _raw_spin_lock_irqsave+0x7b/0xd0
- ? _raw_spin_trylock_bh+0x120/0x120
- ? __usb_unanchor_urb+0x12f/0x210
- __usb_hcd_giveback_urb+0x1e4/0x380
- usb_giveback_urb_bh+0x241/0x4f0
- ? __hrtimer_run_queues+0x316/0x740
- ? __usb_hcd_giveback_urb+0x380/0x380
- tasklet_action_common.isra.0+0x135/0x330
- __do_softirq+0x18c/0x634
- irq_exit+0x114/0x140
- smp_apic_timer_interrupt+0xde/0x380
- apic_timer_interrupt+0xf/0x20
+That results in the guest identifying Hyper-V and setting a variety of PV
+ops that then get ignored because hyperv_init() silently disables Hyper-V
+for all intents and purposes.  The VMM (or its controller) is obviously
+off in the weeds, but ideally the guest kernel would acknowledge the bad
+setup in some way.
 
-Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
----
- drivers/net/wireless/ath/ath9k/hif_usb.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Sean Christopherson (2):
+  x86/hyperv: Fix NULL deref in set_hv_tscchange_cb() if Hyper-V setup
+    fails
+  x86/hyperv: Move required MSRs check to initial platform probing
 
-diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
-index 860da13bf..0681bc5fa 100644
---- a/drivers/net/wireless/ath/ath9k/hif_usb.c
-+++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
-@@ -589,6 +589,12 @@ static void ath9k_hif_usb_rx_stream(struct hif_device_usb *hif_dev,
- 			RX_STAT_INC(skb_dropped);
- 			return;
- 		}
-+		if (pkt_len > 2 * MAX_RX_BUF_SIZE) {
-+			dev_err(&hif_dev->udev->dev,
-+				"ath9k_htc: invalid pkt_len (%x)\n", pkt_len);
-+			RX_STAT_INC(skb_dropped);
-+			return;
-+		}
- 
- 		pad_len = 4 - (pkt_len & 0x3);
- 		if (pad_len == 4)
+ arch/x86/hyperv/hv_init.c      | 16 +++++++---------
+ arch/x86/kernel/cpu/mshyperv.c | 20 +++++++++++++++-----
+ 2 files changed, 22 insertions(+), 14 deletions(-)
+
 -- 
-2.25.1
+2.33.0.1079.g6e70778dc9-goog
 
