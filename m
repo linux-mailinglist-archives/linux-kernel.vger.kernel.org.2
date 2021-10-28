@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1C743E304
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB67743E30A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhJ1OGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:06:54 -0400
-Received: from mga04.intel.com ([192.55.52.120]:44548 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230471AbhJ1OGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:06:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10150"; a="229161842"
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="229161842"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 07:04:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,190,1631602800"; 
-   d="scan'208";a="636208867"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by fmsmga001.fm.intel.com with SMTP; 28 Oct 2021 07:04:19 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 28 Oct 2021 17:04:19 +0300
-Date:   Thu, 28 Oct 2021 17:04:19 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid divide
- by zero
-Message-ID: <YXqt46TPL9tUZCL1@intel.com>
-References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
-X-Patchwork-Hint: comment
+        id S230506AbhJ1OHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:07:52 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:16612 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhJ1OHs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Oct 2021 10:07:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1635429922; x=1666965922;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=/Z5PQUKKMjzWeSU9bmE98K9hFHikgVsh9PZzWEEOrx8=;
+  b=panOJuzKXWTEijdAZljLBEJy6CAz7+xWrK1RMolqytH4e8Rh0gIsynrT
+   tfEjb+GcUiozCVNexxGrGeO+wGFXwpzYRi65X6xFslYMFOUUQxPREf6CM
+   xI4pJHKpAHkSrfwqFdF7jc7epaBRfIJ3oGDP5T+8BUE6orcyZCeSlyhAG
+   Y=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 28 Oct 2021 07:05:21 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Oct 2021 07:05:20 -0700
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Oct 2021 19:35:04 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 0FA084E6A; Thu, 28 Oct 2021 07:05:02 -0700 (PDT)
+From:   Kalyan Thota <quic_kalyant@quicinc.com>
+To:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org, swboyd@chromium.org,
+        abhinavk@codeaurora.org, Kalyan Thota <quic_kalyant@quicinc.com>
+Subject: [v1] drm/msm/disp/dpu1: set default group ID for CTL.
+Date:   Thu, 28 Oct 2021 07:05:01 -0700
+Message-Id: <1635429901-5734-1-git-send-email-quic_kalyant@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <y>
+References: <y>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 08:57:17AM -0500, George Kennedy wrote:
-> Do a sanity check on struct drm_format_info hsub and vsub values to
-> avoid divide by zero.
-> 
-> Syzkaller reported a divide error in framebuffer_check() when the
-> DRM_FORMAT_Q410 or DRM_FORMAT_Q401 pixel_format is passed in via
-> the DRM_IOCTL_MODE_ADDFB2 ioctl. The drm_format_info struct for
-> the DRM_FORMAT_Q410 pixel_pattern has ".hsub = 0" and ".vsub = 0".
-> fb_plane_width() uses hsub as a divisor and fb_plane_height() uses
-> vsub as a divisor. These divisors need to be sanity checked for
-> zero before use.
-> 
-> divide error: 0000 [#1] SMP KASAN NOPTI
-> CPU: 0 PID: 14995 Comm: syz-executor709 Not tainted 5.15.0-rc6-syzk #1
-> Hardware name: Red Hat KVM, BIOS 1.13.0-2
-> RIP: 0010:framebuffer_check drivers/gpu/drm/drm_framebuffer.c:199 [inline]
-> RIP: 0010:drm_internal_framebuffer_create+0x604/0xf90
-> drivers/gpu/drm/drm_framebuffer.c:317
-> 
-> Call Trace:
->  drm_mode_addfb2+0xdc/0x320 drivers/gpu/drm/drm_framebuffer.c:355
->  drm_mode_addfb2_ioctl+0x2a/0x40 drivers/gpu/drm/drm_framebuffer.c:391
->  drm_ioctl_kernel+0x23a/0x2e0 drivers/gpu/drm/drm_ioctl.c:795
->  drm_ioctl+0x589/0xac0 drivers/gpu/drm/drm_ioctl.c:898
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:874 [inline]
->  __se_sys_ioctl fs/ioctl.c:860 [inline]
->  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
-> ---
->  drivers/gpu/drm/drm_framebuffer.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
-> index 07f5abc..a146e4b 100644
-> --- a/drivers/gpu/drm/drm_framebuffer.c
-> +++ b/drivers/gpu/drm/drm_framebuffer.c
-> @@ -195,6 +195,16 @@ static int framebuffer_check(struct drm_device *dev,
->  	/* now let the driver pick its own format info */
->  	info = drm_get_format_info(dev, r);
->  
-> +	if (info->hsub == 0) {
-> +		DRM_DEBUG_KMS("bad horizontal chroma subsampling factor %u\n", info->hsub);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (info->vsub == 0) {
-> +		DRM_DEBUG_KMS("bad vertical chroma subsampling factor %u\n", info->vsub);
-> +		return -EINVAL;
-> +	}
+From: Kalyan Thota <kalyan_t@codeaurora.org>
 
-Looks like duct tape to me. I think we need to either fix those formats
-to have valid format info, or just revert the whole patch that added such
-broken things.
+New required programming in CTL for SC7280. Group ID informs
+HW of which VM owns that CTL. Force this group ID to
+default/disabled until virtualization support is enabled in SW.
 
-> +
->  	for (i = 0; i < info->num_planes; i++) {
->  		unsigned int width = fb_plane_width(r->width, info, i);
->  		unsigned int height = fb_plane_height(r->height, info, i);
-> -- 
-> 1.8.3.1
+Signed-off-by: Kalyan Thota <quic_kalyant@quicinc.com>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h | 5 ++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c     | 3 +++
+ 3 files changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index ce6f32a..283605c 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -45,7 +45,7 @@
+ 	(PINGPONG_SDM845_MASK | BIT(DPU_PINGPONG_TE2))
+ 
+ #define CTL_SC7280_MASK \
+-	(BIT(DPU_CTL_ACTIVE_CFG) | BIT(DPU_CTL_FETCH_ACTIVE))
++	(BIT(DPU_CTL_ACTIVE_CFG) | BIT(DPU_CTL_FETCH_ACTIVE) | BIT(DPU_CTL_VM_CFG))
+ 
+ #define MERGE_3D_SM8150_MASK (0)
+ 
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+index 4ade44b..57b9be1 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+@@ -179,13 +179,16 @@ enum {
+ 
+ /**
+  * CTL sub-blocks
+- * @DPU_CTL_SPLIT_DISPLAY       CTL supports video mode split display
++ * @DPU_CTL_SPLIT_DISPLAY,	CTL supports video mode split display
++ * @DPU_CTL_FETCH_ACTIVE,	Active CTL for fetch HW (SSPPs).
++ * @DPU_CTL_VM_CFG,		CTL supports multiple VMs.
+  * @DPU_CTL_MAX
+  */
+ enum {
+ 	DPU_CTL_SPLIT_DISPLAY = 0x1,
+ 	DPU_CTL_ACTIVE_CFG,
+ 	DPU_CTL_FETCH_ACTIVE,
++	DPU_CTL_VM_CFG,
+ 	DPU_CTL_MAX
+ };
+ 
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+index 64740ddb..455b06a 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+@@ -498,6 +498,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+ 	u32 intf_active = 0;
+ 	u32 mode_sel = 0;
+ 
++	if ((test_bit(DPU_CTL_VM_CFG, &ctx->caps->features)))
++		mode_sel = 0xf0000000;
++
+ 	if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
+ 		mode_sel |= BIT(17);
+ 
 -- 
-Ville Syrjälä
-Intel
+2.7.4
+
