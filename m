@@ -2,151 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C57C43E3BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7782B43E3C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Oct 2021 16:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhJ1OcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Oct 2021 10:32:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36636 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhJ1OcU (ORCPT
+        id S231207AbhJ1OdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Oct 2021 10:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231133AbhJ1OdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:32:20 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 46EDD21974;
-        Thu, 28 Oct 2021 14:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635431392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fnQacjJrzF+VweZrVr7dh+1tn73gKyrFNWxwR+b7ei0=;
-        b=ERg7um1WGG8zfpmDgP3TGle9Yf3ztkCuGEIZdoHS5dL8X0Vg8gW++cWhz0bVbtKrpAGSXA
-        SsD9HwfkLiqDl96FWWT9xNDHiDiCmcjablNpmV58HR+Z1qn6oj4jdhPxsXEsQA45A+3MIG
-        ryfQ24YTT7JBCqICf6KQPzgBKvtm400=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635431392;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fnQacjJrzF+VweZrVr7dh+1tn73gKyrFNWxwR+b7ei0=;
-        b=CaHggJbrtI8oFFghRMpZCpZ6oyWWDWVl9lPuGFhbZPAtFama8SqP/REafP64RHFR4mJlUV
-        Aa7ILBBGX8VOXaCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CB84513E9D;
-        Thu, 28 Oct 2021 14:29:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DomcLt+zemGuHQAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 28 Oct 2021 14:29:51 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id b25d11a7;
-        Thu, 28 Oct 2021 14:29:51 +0000 (UTC)
-Date:   Thu, 28 Oct 2021 15:29:50 +0100
-From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Patrick Donnelly <pdonnell@redhat.com>
-Subject: Re: [RFC PATCH v3] ceph: ceph: add remote object copies to fs client
- metrics
-Message-ID: <YXqz3rCNrj2vsSwI@suse.de>
-References: <20211028114826.27192-1-lhenriques@suse.de>
- <d80cc52c-4617-7941-c227-0465cbc8fc23@redhat.com>
+        Thu, 28 Oct 2021 10:33:04 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5D4C061745
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:30:37 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id q74so9857953ybq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Oct 2021 07:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=AMzHvE6iFoRbCSW4ZWnBwU8VC6Cf7/LaIGtF+c+QmMg=;
+        b=KQ7KT+CH29DLVZsTNqgs1FIcOVxtiSh3jrlqyvyACtkLvYtOoJdg+b2EyJ+o4/0T/s
+         JNvyuro5D5VyRPyceGXUwc0Z6kphNbGHchXAT0N6z9IAEt3guxw1D32CAqGUMkVxh/Y1
+         4rEPUetFemrQpqbCVU5Ms5AoRgnfKdjrYUOiq6V2CKUPskQ7s7sizXyBlyiuf+4hcJEm
+         0GtvrBUxLxnScf0hohscF3En/8ddHQegJ8yraxssc+dVmKEI6cb/kc5geUGne3820RNG
+         S2Uhn64ZIRmxEEBbK1STTuju/t2t6QxX1w9XmXSDRAetxsq+yBgu9xb4vSBjbL3zMQhO
+         0RfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=AMzHvE6iFoRbCSW4ZWnBwU8VC6Cf7/LaIGtF+c+QmMg=;
+        b=rRlkqNTNs05OHn/QIhxQ6Rl69mMtE8PlMtS8XwcETckhN7daGha1igZKTPDVAA8ngR
+         in5cr4ufBxV4i0OKqQGerXvjyWNE6cCOqSKjCSbJ5ScmpjDAvbSNoaGkxlCmUecSUGe1
+         /42cTx3wso8oR+pkSQnx26VQz7RfK4QoDyE2wecrZtZPNHRwBoPyzKAZRnXB06e6SEvl
+         CrUJ+wldbc8pCQGZ11TimwauMPHtPZHY8DkVeOkczDMWxCUyaUzehBV+CY9pVScaH8pG
+         zlomLWX5RrWGrojNs8iWQT+DJKaAOUJ8tSIABR1yHuDhpe+q/REaKRBZ1JFNJAqnYxov
+         Y2pw==
+X-Gm-Message-State: AOAM532kE4yycOGRw6XWXC1hVGEvU+qk130tufClIjGasLe9MU8LxkUe
+        avRBJUB2fmAxmXX74Q5mGFPeA5ONap/Yy5EsrFQ=
+X-Google-Smtp-Source: ABdhPJwod1/++4d/F1OL8jECbizwVRPjPqqiNerj1Ak4GuKBJbPJV8+lcCjdyrQfdDtwx4CbzzI45NwUqCBCo67Kg1o=
+X-Received: by 2002:a25:a188:: with SMTP id a8mr4732819ybi.374.1635431436885;
+ Thu, 28 Oct 2021 07:30:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d80cc52c-4617-7941-c227-0465cbc8fc23@redhat.com>
+Received: by 2002:a05:7000:49c1:0:0:0:0 with HTTP; Thu, 28 Oct 2021 07:30:36
+ -0700 (PDT)
+Reply-To: compaorekone34@gmail.com
+From:   kone compaore <abbttnab20@gmail.com>
+Date:   Thu, 28 Oct 2021 07:30:36 -0700
+Message-ID: <CAEKSJ0R=PCOuTGy9YGPtvqJJSs9MqwZWm+BDKaz+8zqVzwJ0Hw@mail.gmail.com>
+Subject: Greetings from kone
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 09:27:08PM +0800, Xiubo Li wrote:
-> 
-> On 10/28/21 7:48 PM, Luís Henriques wrote:
-> > This patch adds latency and size metrics for remote object copies
-> > operations ("copyfrom").  For now, these metrics will be available on the
-> > client only, they won't be sent to the MDS.
-> > 
-> > Cc: Patrick Donnelly<pdonnell@redhat.com>
-> > Signed-off-by: Luís Henriques<lhenriques@suse.de>
-> > ---
-> > This patch is still an RFC because it is... ugly.  Although it now
-> > provides nice values (latency and size) using the metrics infrastructure,
-> > it actually needs to extend the ceph_osdc_copy_from() function to add 2
-> > extra args!  That's because we need to get the timestamps stored in
-> > ceph_osd_request, which is handled within that function.
-> > 
-> > The alternative is to ignore those timestamps and collect new ones in
-> > ceph_do_objects_copy():
-> > 
-> > 	start_req = ktime_get();
-> > 	ceph_osdc_copy_from(...);
-> > 	end_req = ktime_get();
-> > 
-> > These would be more coarse-grained, of course.  Any other suggestions?
-> > 
-> > Cheers,
-> > -- Luís fs/ceph/debugfs.c | 19 ++++++++++++++++++ fs/ceph/file.c | 7
-> > ++++++- fs/ceph/metric.c | 35 +++++++++++++++++++++++++++++++++
-> > fs/ceph/metric.h | 14 +++++++++++++ include/linux/ceph/osd_client.h | 3
-> > ++- net/ceph/osd_client.c | 8 ++++++-- 6 files changed, 82
-> > insertions(+), 4 deletions(-) diff --git a/fs/ceph/debugfs.c
-> > b/fs/ceph/debugfs.c index 55426514491b..b657170d6bc3 100644 ---
-> > a/fs/ceph/debugfs.c +++ b/fs/ceph/debugfs.c @@ -203,6 +203,16 @@ static
-> > int metrics_latency_show(struct seq_file *s, void *p)
-> > spin_unlock(&m->metadata_metric_lock); CEPH_LAT_METRIC_SHOW("metadata",
-> > total, avg, min, max, sq); + spin_lock(&m->copyfrom_metric_lock); +
-> > total = m->total_copyfrom; + sum = m->copyfrom_latency_sum; + avg =
-> > total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0; + min =
-> > m->copyfrom_latency_min; + max = m->copyfrom_latency_max; + sq =
-> > m->copyfrom_latency_sq_sum; + spin_unlock(&m->copyfrom_metric_lock); +
-> > CEPH_LAT_METRIC_SHOW("copyfrom", total, avg, min, max, sq); + return 0;
-> > } @@ -234,6 +244,15 @@ static int metrics_size_show(struct seq_file *s,
-> > void *p) spin_unlock(&m->write_metric_lock);
-> > CEPH_SZ_METRIC_SHOW("write", total, avg_sz, min_sz, max_sz, sum_sz); +
-> > spin_lock(&m->copyfrom_metric_lock); + total = m->total_copyfrom; +
-> > sum_sz = m->copyfrom_size_sum; + avg_sz = total > 0 ?
-> > DIV64_U64_ROUND_CLOSEST(sum_sz, total) : 0; + min_sz =
-> > m->copyfrom_size_min; + max_sz = m->copyfrom_size_max; +
-> > spin_unlock(&m->copyfrom_metric_lock); + CEPH_SZ_METRIC_SHOW("copyfrom",
-> > total, avg_sz, min_sz, max_sz, sum_sz); + return 0; } diff --git
-> > a/fs/ceph/file.c b/fs/ceph/file.c index e61018d9764e..d1139bbcd58d
-> > 100644 --- a/fs/ceph/file.c +++ b/fs/ceph/file.c @@ -2208,6 +2208,7 @@
-> > static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64
-> > *src_off struct ceph_object_locator src_oloc, dst_oloc; struct
-> > ceph_object_id src_oid, dst_oid; size_t bytes = 0; + ktime_t start_req,
-> > end_req; u64 src_objnum, src_objoff, dst_objnum, dst_objoff; u32
-> > src_objlen, dst_objlen; u32 object_size = src_ci->i_layout.object_size;
-> > @@ -2242,7 +2243,11 @@ static ssize_t ceph_do_objects_copy(struct
-> > ceph_inode_info *src_ci, u64 *src_off CEPH_OSD_OP_FLAG_FADVISE_DONTNEED,
-> > dst_ci->i_truncate_seq, dst_ci->i_truncate_size, -
-> > CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ); +
-> > CEPH_OSD_COPY_FROM_FLAG_TRUNCATE_SEQ, + &start_req, &end_req); +
-> > ceph_update_copyfrom_metrics(&fsc->mdsc->metric, + start_req, end_req, +
-> > object_size, ret);
+Greetings,
 
-(Ugh!  Your mail client completely messed-up the patch and took me a while
-to figure out what you're suggesting :-) )
+Greetings to you and your family.
 
-> Maybe you can move this to ceph_osdc_copy_from() by passing the object_size
-> to it ?
+My name is Mr. Kone Compaore, the auditing general with the bank,
+Africa Develop bank (ADB) Ouagadougou, Burkina Faso, in West Africa. I
+am contacting you to seek your honesty and sincere cooperation in
+confidential manner to transfer the sum of 10.5 (Ten million five
+hundred thousand Dollars) to your existing or new bank account.
 
-I think this would mean to push into net/ceph/ more details about cephfs
-(such as the knowledge about metrics).  Which I think we should avoid.
-I've just suggested something different in my reply to Jeff, maybe that's
-a better approach (basically, get the OSD request struct from
-ceph_osdc_copy_from()).
+This money belongs to one of our bank client, a Libyan oil exporter
+who was working with the former Libyan government; I learn t that he
+was killed by the revolutionary forces since October 2011. Our bank is
+planning to transfer this entire fund into the government public
+treasury as unclaimed fund if nobody comes to claim the money from our
+bank after four years without account activities .
 
-Cheers,
---
-Luís
+What the bank need is proof and information about the late customer
+which I will assist you on. This is a genuine, risk free and legal
+business transaction, All details shall be sent to you once I hear
+from you.
+
+The information as contained herein be accorded the necessary
+attention, urgency as well as the secrecy it deserves.
+
+If you are really sure of your integrity, trustworthy and
+confidentiality reply back to me urgently for more details
+
+Best regards,
+Kone Compaore
